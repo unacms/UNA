@@ -91,7 +91,7 @@ export const settingsDefault = {
             scrolled:
                 ' my-auto w-full items-cente bg-card/80 backdrop-blur-xl border-b border-border transition-all shadow-sm',
             content: ' h-16 mx-auto justify-between ',
-            content_left: ' flex-row items-center ps-1 2xl:ps-2 pe-1 flex-none xl:w-80 2xl:w-96 ',
+            content_left: ' flex-row items-center px-2 flex-none xl:w-80 2xl:w-96 ',
             content_right: ' flex-row items-center justify-end ps-1 pe-3 2xl:pe-4 flex-none xl:w-80 2xl:w-96 ',
             content_center:
                 ' hidden flex-auto xl:flex gap-1 items-center justify-center px-3 max-w-3xl ',
@@ -975,7 +975,7 @@ export const settingsDefault = {
             cover_base: 'w-full bg-card',
             cover_content:
                 'items-center h-full w-full overflow-hidden justify-between',
-            cover_small: 'max-w-7xl mx-auto flex-row w-full px-3 items-center bg-card/80 h-14 backdrop-blur-xl'
+            cover_small: 'max-w-7xl mx-auto flex-row w-full px-3 items-center bg-card/80 backdrop-blur-xl'
         },
        
         checkbox_set: {

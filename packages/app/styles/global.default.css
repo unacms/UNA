@@ -186,13 +186,13 @@
     .u-link-hitarea::before {
         content: "";
         position: absolute;
-        inset: -6px;
+        inset: -4px;
         border-radius: 0.375rem; /* rounded-md */
     }
-    .u-link-hitarea-xs::before { inset: -6px; }
-    .u-link-hitarea-sm::before { inset: -8px; }
-    .u-link-hitarea-md::before { inset: -10px; }
-    .u-link-hitarea-lg::before { inset: -12px; }
+    .u-link-hitarea-xs::before { inset: -8px; }
+    .u-link-hitarea-sm::before { inset: -6px; }
+    .u-link-hitarea-md::before { inset: -4px; }
+    .u-link-hitarea-lg::before { inset: -0px; }
 
     /* Generic action (button) hit area */
     .u-action-hitarea::before {
@@ -201,11 +201,11 @@
         inset: -8px;
         border-radius: 0.5rem; /* match button rounding */
     }
-    .u-action-hitarea-xxs::before { inset: -6px; }
+    .u-action-hitarea-xxs::before { inset: -8px; }
     .u-action-hitarea-xs::before { inset: -8px; }
-    .u-action-hitarea-sm::before { inset: -10px; }
-    .u-action-hitarea-base::before { inset: -12px; }
-    .u-action-hitarea-lg::before { inset: -14px; }
+    .u-action-hitarea-sm::before { inset: -6px; }
+    .u-action-hitarea-base::before { inset: -4px; }
+    .u-action-hitarea-lg::before { inset: -0px; }
 
     /* Larger hit area for web timestamp link without layout shift (legacy alias) */
     .u-time-hitarea::before {
