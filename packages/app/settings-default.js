@@ -948,7 +948,7 @@ export const settingsDefault = {
             primaryBg: 'rgba(37,99,235,0.1)',
         },
         dropdown: {
-            cnt: ' rounded-2xl overflow-hidden shadow-lg p-1.5 bg-popover/60 backdrop-blur-xl z-50  ',
+            cnt: ' rounded-2xl overflow-hidden shadow-md border-[0.5px] border-border/80 p-1.5 bg-popover/80 backdrop-blur-xl z-50  ',
         },
         conductor: {
             menu: ' w-full items-left justify-center ',
@@ -1314,7 +1314,7 @@ export const settingsDefault = {
         },
         panels: {
             'u-panel-base': ' h-full flex-col ',
-            'u-panel-handler': ' w-1 web:hover:bg-border/80 web:active:bg-ring/80',
+            'u-panel-handler': ' w-0 web:hover:bg-border/80 web:active:bg-ring/80',
             'u-panel-line':
                 '  ',
             'u-panel-group': ' h-full flex',

@@ -471,7 +471,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                 sizable={cellsCustomConfig.sizable}
             />
             <Panel className=" w-full" {...cellsCustomConfig.cells?.center}>
-                {panelsVisible.jots && <View className='flex-1  border-border/80 lg:border-l'>
+                {panelsVisible.jots && <View className='flex-1  border-border/80 lg:border-l bg-card'>
                     <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
                     <View className={`w-full ${!isWeb ? 'flex-1' : ''}`} style={{ height: layoutHeightRight }}>
                         {jotsComponent}
@@ -529,7 +529,7 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
 
 
     return (
-        <View className=' flex-1'>
+        <View className='flex-1 bg-card'>
             {(isWeb && !isSmallScreen) && header}
             {data && data.length > 0 ? <View className=' w-full flex-1'>
                 <UniList

@@ -20,7 +20,7 @@ const ListFeed = memo((data)  => {
   return <Pressable onPress={(e) => onPress(e, data)} className={ isActive ? ' bg-neutral-500/10' : '' }>
             <View className="flex-row p-2 sm:px-3 groupweb:duration-200 overflow-hidden m-1 sm:mx-2 rounded-lg hover:bg-neutral-500/10 active:opacity-50 active:translate-y-0.5">
 
-            <View className="w-12 h-12 mr-2  rounded-full flex-none bg-secondary-500/10">
+            <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
             <Profile
               { ...author_data }
               displayType="unit_wo_info"
