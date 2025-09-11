@@ -1,5 +1,5 @@
 import { Text as NativeText, Platform } from 'react-native'
-import { appSetting, decodeText, normalizeClasses } from 'app/lib/util'
+import { appSetting, decodeText, htmlDecode, normalizeClasses } from 'app/lib/util'
 import * as React from 'react'
 
 // Use DOM element on web so Tailwind classes apply without NativeWind babel
@@ -39,9 +39,10 @@ export const Text =({
     const finalClassName = `${baseClassName} ${isUseCustomFont ? (fontFamily || isUseCustomFont) : ''}`.trim()
     const fontStyle = (!isWeb && !!isUseCustomFont) ? { fontFamily: fontFamily || isUseCustomFont } : {}
     const spreadProps = isWeb ? sanitizeWebTextProps(rest) : rest
+    const content = typeof children === "string" ? decodeText(children) : children;
     return (
         <Text_ {...spreadProps} className={finalClassName} style={fontStyle} >
-            {children}
+            {content}
         </Text_>
     )
 }

@@ -6,6 +6,7 @@ import { Platform } from 'react-native'
 import Link from 'app/ui/atoms/link'
 import { Text, H1, H2, H3, H4, H5, H6 } from 'app/design/typography'
 import { getPart } from 'app/lib/parts/part'
+import { appSetting, decodeText, htmlDecode, normalizeClasses } from 'app/lib/util'
 
 const StyledStrong = (props) => {
     if (Platform.OS === 'web') {
@@ -208,7 +209,7 @@ const parseHtmlToReact = (html, parentKey = '0') => {
 
 export default function ElementHtml({ customClassName, data }) {
     if (!data) return null
-    let html = data.replace(/\n|\r/g, '').replace(/&nbsp;/g, ' ')
+    let html = decodeText(data.replace(/\n|\r/g, '').replace(/&nbsp;/g, ' '));
     if (html.trim() != '' && !html.includes('<p')) html = `<p>${html}</p>`
     return (
         <View className={`${customClassName || 'u-vanilla-html'}`}>

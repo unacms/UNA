@@ -19,10 +19,11 @@ export const isWeb = Platform.OS === 'web'
 export const LAYOUT_BREAKPOINTS = {
     '2xl': 1536,
     xl: 1280,
-    lg: 1024, 
-    md: 768,  
-    sm: 640   
-  };
+    lg: 1024,
+    md: 768,
+    sm: 640
+};
+
 
 export function appSetting(section, name, path) {
     return setting(section, name, path, remoteSettings.data);
@@ -34,15 +35,15 @@ export function isObjectsEqual(obj, obj2) {
 }
 
 export async function subscribeOneSignal(currentUser, askPermission = false) {
-    if (!isWeb){
+    if (!isWeb) {
         OneSignal.Debug.setLogLevel(LogLevel.Verbose);
         OneSignal.initialize(appSetting('config', 'api_keys', 'onesignal'));
 
         let permissionStatus = await OneSignal.Notifications.getPermissionAsync();
-        
+
         if (!permissionStatus && askPermission) {
             await OneSignal.Notifications.requestPermission(true);
-            permissionStatus = await OneSignal.Notifications.getPermissionAsync(); 
+            permissionStatus = await OneSignal.Notifications.getPermissionAsync();
         }
 
         if (permissionStatus) {
@@ -59,7 +60,7 @@ export function cd(className, density = 'default', section = 'offsets') {
 
 export function normalizeClasses(a) {
     if (!a) return a
-    return isWeb ? a : a.replace(/\b\S*(hover|focus|active|group|duration|group-hover):\S*\b/g, "") .replace(/\s{2,}/g, " ").trim();
+    return isWeb ? a : a.replace(/\b\S*(hover|focus|active|group|duration|group-hover):\S*\b/g, "").replace(/\s{2,}/g, " ").trim();
 }
 
 export function decodeText(str) {
@@ -79,7 +80,7 @@ export function truncateString(str, num) {
 export async function getClipboard() {
     if (isWeb) {
         return await navigator.clipboard.readText();
-       
+
     }
     else {
         return await Clipboard.getString();
@@ -133,7 +134,7 @@ export function clearNotif() {
     }
 
     clearNotifications();
-    
+
 }
 
 export const getDataFromCache = (pref, storageKeyValue) => {
@@ -147,7 +148,7 @@ export async function asyncStorageSet(key, data) {
     if (isWeb) {
         storageSet(key, '', data, true);
     }
-    else{
+    else {
         AsyncStorage.setItem(key, data);
     }
 }
@@ -156,7 +157,7 @@ export async function asyncStorageGet(key) {
     if (isWeb) {
         return storageGet(key, '', true);
     }
-    else{
+    else {
         return await AsyncStorage.getItem(key)
     }
 }
@@ -169,7 +170,7 @@ export function storageSet(pref, key, data, isLocal = false) {
         }
     }
     else {
-        if (typeof localStorage !== 'undefined'){
+        if (typeof localStorage !== 'undefined') {
             const serializedData = appSetting('cache', 'compress') ? compress(data) : JSON.stringify(data);
             const storage = isLocal ? localStorage : sessionStorage;
             storage.setItem(`${pref}-${key}`, serializedData);
@@ -187,7 +188,7 @@ export function storageGet(pref, key, isLocal = false) {
         // return await AsyncStorage.getItem(`${pref}-${key}`);
     }
     else {
-        if (typeof localStorage !== 'undefined'){
+        if (typeof localStorage !== 'undefined') {
             const storage = isLocal ? localStorage : sessionStorage;
             const storedData = storage.getItem(`${pref}-${key}`);
             if (!storedData) return null;
@@ -216,7 +217,7 @@ export function storageClear(pref, key) {
         sessionStorage.clear();
 }
 
-export const formatDate = (date, t)  => {
+export const formatDate = (date, t) => {
     const day = String(date.getDate());
     const monthNames = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -224,24 +225,24 @@ export const formatDate = (date, t)  => {
     ];
     const month = t(monthNames[date.getMonth()]);
     let year = date.getFullYear();
-    if (year == new Date().getFullYear()) 
-        year ='';
+    if (year == new Date().getFullYear())
+        year = '';
     return `${day} ${month} ${year}`;
 }
 
-export const formatDate2 = (date, t)  => {
+export const formatDate2 = (date, t) => {
     const now = new Date();
     const tomorrow = new Date(now);
     tomorrow.setDate(now.getDate() + 1);
     const isToday = now.getFullYear() === date.getFullYear() &&
-                    now.getMonth() === date.getMonth() &&
-                    now.getDate() === date.getDate();
+        now.getMonth() === date.getMonth() &&
+        now.getDate() === date.getDate();
     if (isToday)
         return "Today "
 
     const isTomorrow = tomorrow.getFullYear() === date.getFullYear() &&
-    tomorrow.getMonth() === date.getMonth() &&
-    tomorrow.getDate() === date.getDate();
+        tomorrow.getMonth() === date.getMonth() &&
+        tomorrow.getDate() === date.getDate();
 
     if (isTomorrow)
         return "Tomorrow ";
@@ -249,7 +250,7 @@ export const formatDate2 = (date, t)  => {
     return formatDate(date, t)
 }
 
-export const formatTime = (ts)  => {
+export const formatTime = (ts) => {
     const date = new Date(ts * 1000);
     const hours = date.getHours();
     const minutes = date.getMinutes();
@@ -272,7 +273,7 @@ export const formatDateInterval = (dateStart, dateEnd, t) => {
     if (isSingleDate) {
         sRv += isSingleTime ? formatTime(dateStart) : `${formatTime(dateStart)} - ${formatTime(dateEnd)}`;
     } else {
-        sRv += ' ' + formatTime(dateStart) + ' - ' + formatDate2(new Date(dateEnd * 1000), t) +' '+ formatTime(dateEnd);
+        sRv += ' ' + formatTime(dateStart) + ' - ' + formatDate2(new Date(dateEnd * 1000), t) + ' ' + formatTime(dateEnd);
     }
 
     return sRv;
@@ -321,10 +322,10 @@ export function md5(str) {
     return Crypto.randomUUID();
 }
 export async function md52(str) {
-    return  await Crypto.digestStringAsync(
+    return await Crypto.digestStringAsync(
         Crypto.CryptoDigestAlgorithm.SHA256,
         str
-      );
+    );
 }
 
 export function getPageWidth(uri, config) {
@@ -411,7 +412,7 @@ export function getLayoutName(data, uri) {
 
 export function getHeaderSettings(uri, isDesktop, layout, config) {
     let settings = getPageSettings(config, uri);
-    
+
     if (!settings?.headerSettings) {
         if (layout == 'navigator') {
             settings = { headerSettings: { offset: false, header: false, backButton: false, menu: true, footer: false } }
@@ -447,7 +448,7 @@ export function getHeaderSettings(uri, isDesktop, layout, config) {
     let bShowAltTopMenu = typeof settings?.headerSettings?.showAltTopMenu !== 'undefined' ? settings.headerSettings.showAltTopMenu : false;
 
     // Apply offset on all viewports, not just larger ones PLAESE DONT CHANGE IT
-    if (isDesktop) 
+    if (isDesktop)
         bOffset = true;
 
     return {
@@ -477,7 +478,7 @@ export function getUnitModeBySource(endpoint) {
             return unit_by_source[key];
     }
 
-    if (endpoint?.params?.type == 'context'){
+    if (endpoint?.params?.type == 'context') {
         return 'context';
     }
 
@@ -527,7 +528,7 @@ export function truncateHTML(html, maxLength) {
 
     let textLength = 0;
     let truncated = '';
-    
+
     // Регулярное выражение для поиска тегов и текстовых фрагментов
     const tagOrTextRegex = /<\/?([a-z][a-z0-9]*)\b[^>]*>|[^<]+/gi;
     let match;
@@ -538,7 +539,7 @@ export function truncateHTML(html, maxLength) {
     // Идем по HTML и обрезаем текстовый контент до maxLength
     while ((match = tagOrTextRegex.exec(html))) {
         const part = match[0];
-        
+
         if (part[0] === '<') {
             // Если это тег, проверяем открывающий или закрывающий
             const tagName = match[1];
@@ -703,7 +704,7 @@ export function linkify2(text, excluded = []) {
         if ([APP_URL, UNA_URL].every(domain => !match[0].includes(domain))) {
             const url = match[0];
             if (!excluded.some(ex => url.includes(ex))) {
-                return url; 
+                return url;
             }
         }
     }
@@ -856,9 +857,9 @@ export function stripTags(s) {
 }*/
 export function stripTagsWithLinks(s, allowed = ['a', 'p', 'br']) {
     if (s) {
-      const allowedTags = allowed.join('|');
-      const regex = new RegExp(`<(?!(\\/?)(${allowedTags})(?=>|\\s.*>))\\/?.*?>`, 'ig');
-      return String(s).replace(regex, '').replace(/\s+/g, ' ');
+        const allowedTags = allowed.join('|');
+        const regex = new RegExp(`<(?!(\\/?)(${allowedTags})(?=>|\\s.*>))\\/?.*?>`, 'ig');
+        return String(s).replace(regex, '').replace(/\s+/g, ' ');
     }
     return s;
 }
@@ -874,14 +875,14 @@ function urltoFile(url, defaultFilename = 'file', defaultMimeType = 'application
                 if (contentDisposition && contentDisposition.includes('filename')) {
                     const matches = contentDisposition.match(/filename="?(.+?)"?$/);
                     if (matches && matches[1]) {
-                        filename = matches[1]; 
+                        filename = matches[1];
                     }
                 } else {
                     const urlParts = url.split('/');
                     const rawFilename = urlParts[urlParts.length - 1];
 
                     if (rawFilename.includes('.') && rawFilename.split('.').length > 1) {
-                        filename = rawFilename; 
+                        filename = rawFilename;
                     } else {
                         const ext = mimeType.split('/')[1] || 'bin';
                         filename = `${rawFilename || defaultFilename}.${ext}`;
@@ -919,10 +920,10 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
             // Для data URI
             fileType = uri.split(';')[0].split(':')[1]; // MIME-тип
             fileExt = fileType.split('/')[1]; // Расширение
-            
+
         } else {
             // Для локального пути или URL
-            
+
             const fileName = uri.split('/').pop(); // Имя файла
             fileExt = fileName.split('.').pop(); // Расширение
             fileType = `image/${fileExt}`; // MIME-тип
@@ -933,10 +934,10 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
                 const result = await fetcher([fetchUrl, null, formData]);
                 if (result?.data?.link) {
                     console.log('555', result)
-                    calback({result:result?.data?.link, extraVar:extraVar});
+                    calback({ result: result?.data?.link, extraVar: extraVar });
                 }
                 else {
-                    calback({result:result, extraVar:extraVar})
+                    calback({ result: result, extraVar: extraVar })
                 }
 
             });
@@ -952,20 +953,20 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
             type: `image/${fileType}`,
         });
 
-        
+
         const result = await fetcher([fetchUrl, null, formData]);
         console.log("result", result)
         if (result?.data?.link) {
-            calback({result:result?.data?.link, extraVar:extraVar});
+            calback({ result: result?.data?.link, extraVar: extraVar });
         }
         else {
-            calback({result:result, extraVar:extraVar})
+            calback({ result: result, extraVar: extraVar })
         }
     }
 };
 
 export function visibilityById(visibility, t) {
-    
+
     const visibilityOptions = {
         2: { icon: 'Lock', text: t('Me only') },
         3: { icon: 'Globe', text: t('Public') },
@@ -977,8 +978,8 @@ export function visibilityById(visibility, t) {
         8: { icon: 'Workflow', text: t('Specific Relationships...') },
         9: { icon: 'Award', text: t('Specific Memberships...') },
     };
-    
-    return  visibilityOptions[visibility] || null;
+
+    return visibilityOptions[visibility] || null;
 }
 
 export function strToObj(s) {
@@ -1002,13 +1003,13 @@ export function getPageSettings(config, uri) {
 }
 
 export function getMenuSettings(object, config, menu) {
-    if (!appSetting('layout', 'user_remote_config')) 
+    if (!appSetting('layout', 'user_remote_config'))
         return appSetting('menu_items', object);
 
     let a = {}
     if (appSetting('layout', 'user_remote_config') && config)
         a = strToObj(config);
-    
+
     if (a && !a.name && menu?.title)
         a.name = menu.title;
 
@@ -1077,10 +1078,10 @@ export async function getDataForMenu(menu, callback) {
 
 export function findIconFromRemote(s) {
     if (!s || /^[A-Z][^\s]*$/.test(s))
-       return s;
+        return s;
     const data = appSetting('menu_items', 'iconset');
     for (let word of s.replace(/\bcol-\S*\b/g, '').trim().split(/\s+/)) {
-       
+
         if (data[word]) {
             return data[word];
         }
@@ -1096,7 +1097,7 @@ export function menuItemsByNameNew(name, menu, currentUser, url = '') {
 export function menuItemsByName(name, items, currentUser, url = '', config = null) {
     if (!items)
         return [];
-    
+
     const menuSettings = getMenuSettings(name, config);//appSetting('menu_items', name)
     let menuSettingNames = []
 
@@ -1168,8 +1169,8 @@ export function menuItemsFilter(items, currentUser) {
         if (item.link === '{profile}') {
             return { ...item, link: currentUser?.url };
         }
-        if (item?.link && item?.link?.includes("{profile_url_postfix}") ) { // SHOULD BE IMPROVED by url_postfix
-           
+        if (item?.link && item?.link?.includes("{profile_url_postfix}")) { // SHOULD BE IMPROVED by url_postfix
+
             return { ...item, link: item.link.replace("{profile_url_postfix}", currentUser?.url.replace('/view-persons-profile/', '')) };
         }
         return item;
