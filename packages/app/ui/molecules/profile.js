@@ -147,14 +147,14 @@ function AtomProfile_(oProps) {
             sSize: 'w-10 h-10',
             iSizeWidth: 40,
             iSizeHeight: 40,
-            sSizeFont: ' text-sm leading-5 tracking-tight font-bold ',
+            sSizeFont: ' text-sm leading-5 tracking-tight font-semibold ',
             sSizeFontLetter: ' p-2 text-center text-xl font-semibold',
         },
         lg: {
             sSize: 'w-12 h-12',
             iSizeWidth: 48,
             iSizeHeight: 48,
-            sSizeFont: ' text-base leading-6',
+            sSizeFont: ' text-lg leading-6 tracking-tight font-semibold',
             sSizeFontLetter: 'text-3xl font-semibold',
         },
         xl: {

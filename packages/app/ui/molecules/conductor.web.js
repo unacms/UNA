@@ -398,6 +398,7 @@ const TopSideBarContainer = ({ routes, index, setIndex, onChangeRoute }) => {
                 fullWidth={conductorTheme.topmenu_button_fullWidth}
                 addon={!appSetting('conductor', 'show_nav_counters') && a.addon ? null : a.addon}
                 key={`tab-${a.index}`}
+                hitArea="lg"
                 onPress={() => {
                     setIndex(a.index);
                     window.history.pushState({}, '', '/' + a.key);
