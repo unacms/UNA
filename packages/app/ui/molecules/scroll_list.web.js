@@ -29,6 +29,7 @@ export default function ScrollList({
     isNoContainer = false,
 }) {
     const isDesktop = useIsDesktop();
+    console.log("isDesktop", isDesktop)
     const isCollapsibleHeader = appSetting('native', 'collapsible_header') && !isDesktop;
     const isShowScrollToTopButton = appSetting('native', 'scroll_to_top_button') && !isDesktop;
     const transparencyOffset = 200;
@@ -57,8 +58,6 @@ export default function ScrollList({
     const headerStyle = useAnimatedStyle(() => {
 
         opacity.value = withTiming(isShow.value ? 1 : 0, { duration: animationDuration });
-        //const opacityValue = withTiming(isShow.value ? 1 : 0, { duration: animationDuration });
-        //const transformValue = withTiming(isShow.value ? 0 : -114, { duration: animationDuration });
         return {
             position: 'fixed',
             top: '0px',
@@ -69,19 +68,7 @@ export default function ScrollList({
                 { translateY: withTiming(isShow.value ? 0 : -114, { duration: animationDuration }) },
             ],
         };
-    }, [scrollDirection, scrollY, isShow]);
-
-    const buttonStyle = useAnimatedStyle(() => {
-
-        const opacityValue = withTiming(isShowButton.value ? 1 : 0, { duration: animationDuration });
-        return {
-            position: 'fixed',
-            right: 10,
-            bottom: 140,
-            zIndex: 1000,
-            // opacity: opacityValue,
-        };
-    }, [isShowButton]);
+    }, [scrollDirection, scrollY, isShow, isDesktop]);
 
     const updateScroll = (value) => {
         const currentY = Math.round(value / 10) * 10;
@@ -153,7 +140,7 @@ export default function ScrollList({
     return (
         <View className={`flex-1`} style={{ paddingTop: !isDesktop && !useCustomScrollHandler ? headerHeight : 0, paddingBottom: !isDesktop ? bottomPadding : 0 }}>
             {enhanced}
-            {!isDesktop && <Animated.View className="backdrop-blur-lg" style={[headerStyle]}>
+            {!isDesktop && <Animated.View className="backdrop-blur-lg test2" style={[headerStyle]}>
 
                 <View className="w-full bg-card"  >
                     <Header
@@ -170,16 +157,6 @@ export default function ScrollList({
                 </View>
 
             </Animated.View>}
-            {/* TODO: Review this */}
-            {/* {isShowScrollToTopButton && <Animated.View style={[buttonStyle]}>
-                <Button
-                    onPress={scrollToTop}
-                    startDecorator={inverted ? "ChevronDown" : "ChevronUp"}
-                    size="sm"
-                    variant="primary"
-                    rounded
-                ></Button>
-            </Animated.View>} */}
         </View>
     )
 }
