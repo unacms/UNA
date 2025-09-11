@@ -1453,7 +1453,7 @@ export const settingsDefault = {
 
             // Active Thumb Position
             'u-controls-switcher-thumb-active-base': 'translate-x-6',
-            'u-controls-switcher-thumb-active-sm': 'translate-x-2',
+            'u-controls-switcher-thumb-active-sm': 'translate-x-6',
 
             // Track Colors
             'u-controls-switcher-track-col':
