@@ -22,11 +22,11 @@
         --destructive: var(--red); /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--white); /*content on destructive buttons, destructive surfaces*/
         --border: var(--neutral-200); /*borders, dividers, focus rings*/
-        --input: var(--neutral-100); /*form inputs*/
+        --input: var(--white); /*form inputs*/
         --ring: var(--accent-500); /*focus rings*/
 
         /* Box shadow variables for light mode - NativeWind compatible */
-        --shadow-xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.03);
+        --shadow-xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
         --shadow-sm: 0px 1px 4px 0px rgba(0, 0, 0, 0.05);
         --shadow-md: 0px 2px 8px 0px rgba(0, 0, 0, 0.1);
         --shadow-lg: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
@@ -110,7 +110,7 @@
         --destructive: var(--red); /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--neutral-950); /*content on destructive buttons, destructive surfaces*/
         --border: var(--neutral-800); /*borders, dividers, focus rings*/
-        --input: var(--neutral-800); /*form inputs*/
+        --input: var(--neutral-900); /*form inputs*/
         --ring: var(--accent-700); /*focus rings*/
 
         /* Box shadow variables for dark mode - more pronounced shadows */

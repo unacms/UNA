@@ -1028,7 +1028,7 @@ export const settingsDefault = {
         },
 
         inputs: {
-            default: ' bg-input border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80  rounded-xl focus:bg-card focus:ring-border px-3 min-h-12 flex-auto text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-100',
+            default: ' bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 min-h-12 flex-auto text-base leading-6 overflow-hidden shadow-xs placeholder-muted-foreground text-card-foreground web:duration-100',
            
             multi: ' border border-border focus:border-border rounded-xl web:focus:bg-card p-3 min-h-12 flex-auto text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300',
             rounded:
@@ -1209,17 +1209,17 @@ export const settingsDefault = {
                 hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
             },
             sm: {
-                padding: ' px-1 py-0.5 active:scale-95 rounded-md items-center flex ',
+                padding: ' px-1  active:scale-95 rounded-md items-center flex ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-sm ',
                 hitSlop: { top: 8, right: 8, bottom: 8, left: 8 },
             },
             md: {
-                padding: ' px-2 py-1 rounded-md items-center flex',
+                padding: ' px-2  rounded-lg items-center flex',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-md ',
                 hitSlop: { top: 10, right: 10, bottom: 10, left: 10 },
             },
             lg: {
-                padding: ' px-3 py-2 rounded-lg items-center flex ',
+                padding: ' px-2  rounded-xl items-center flex ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-lg ',
                 hitSlop: { top: 12, right: 12, bottom: 12, left: 12 },
             },
@@ -1299,10 +1299,10 @@ export const settingsDefault = {
         },
         cards: {
             'u-card-list':
-                ' u-card-list bg-card shadow-sm border border-border/80 web:border-0 web:ring-0 web:ring-inset web:ring-border/80 text-card-foreground overflow-hidden sm:rounded-2xl mb-0.5 sm:mb-3 ',
+                ' u-card-list bg-card/80 shadow-sm border border-border/80 web:border-0 web:ring-0 web:ring-inset web:ring-border/80 text-card-foreground overflow-hidden sm:rounded-2xl mb-0.5 sm:mb-3 ',
             'u-card-list-padding': ' p-3 lg:p-4 ',
             'u-card-base':
-                ' u-card-base bg-card shadow-sm border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 text-card-foreground overflow-hidden rounded-2xl gap-4',
+                ' u-card-base bg-card/80 shadow-sm border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 text-card-foreground overflow-hidden rounded-2xl gap-4',
             'u-card-padding': ' p-4 ',
             'u-card-header': 'flex gap-2',
             'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',
@@ -1323,7 +1323,7 @@ export const settingsDefault = {
             'u-block-base':
                 'u-max-width-block rounded-xl lg:rounded-2xl gap-4 ',
             'u-block-bg':
-                'bg-card shadow-sm text-card-foreground border border-border',
+                'bg-card/80 shadow-sm text-card-foreground ',
             'u-block-pad':
                 'p-4',
             'u-block-header':
@@ -1571,7 +1571,7 @@ export const settingsDefault = {
                 'text-red-500 dark:text-neutral-300 web:dark:group-hover:text-neutral-50',
 
             'u-btn-group-item-text-cnt':
-                ' web:group-hover:bg-muted/60 web:hover:!bg-secondary/60 web:duration-200 ',
+                ' web:group-hover:bg-muted/60 web:hover:!bg-muted web:duration-200 ',
             'u-btn-group-item-text-text':
                 ' font-medium text-muted-foreground web:group-hover:text-foreground ',
             'u-btn-group-item-text-icon':

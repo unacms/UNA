@@ -126,7 +126,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
                     <Icon icon="ChevronsUpDown" size={24} />
                 </Row>
             }
-            minPopupWidth={352}
+            minPopupWidth={360}
             open={isOpen}
             onOpenChange={handleOpenChange}
         >
