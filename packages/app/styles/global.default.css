@@ -253,8 +253,8 @@ body {
 
 .u-vanilla-html-small {
     /* @apply prose dark:prose-invert; */
-    @apply text-neutral-800 dark:text-neutral-200;
-    font-size: 14px;
+    @apply text-card-foreground;
+    font-size: 16px;
     line-height: 18px;
     max-width: none;
     word-wrap: break-word;

@@ -254,7 +254,7 @@ export default function FormComments(props) {
                             {
                                 form_name: props.name,
                                 container_class: 'comments',
-                                classes: 'flex-1 text-sm leading-5 text-card-foreground tiptap-comments',
+                                classes: 'flex-1 text-card-foreground tiptap-comments',
                                 autofocus: isAutoFocus,
                                 bg: 'transparent',
                                 placeholder: 'Leave a comment...',

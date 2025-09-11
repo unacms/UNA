@@ -96,8 +96,9 @@ export default function RftText({
     if (object_id) url1 += '&cid=' + object_id
 
     const isCommentsEditor = props.container_class === 'comments'
-    const editorFontSize = isCommentsEditor ? '14px' : '16px'
-    const editorLineHeight = isCommentsEditor ? '18px' : '20px'
+    // Ensure at least 16px to avoid iOS Safari zoom on focus. Align with global CSS.
+    const editorFontSize = '16px'
+    const editorLineHeight = isCommentsEditor ? '20px' : '24px'
 
     // Get the editor settings for toolbar configuration
     const editorSettings = appSetting('editor', 'toolbar')

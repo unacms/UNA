@@ -8,7 +8,7 @@ import { FileButton } from 'app/lib/form-helpers';
 
 export default function FormMessenger(props) {
     const isWeb = Platform.OS == 'web';
-    const initialHeight = 44; // Single line height, grows immediately on second line
+    const initialHeight = 40; // Single line height, grows immediately on second line
     const formContext = useFormContext();
     const [isExImage, setIsExImage] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
@@ -71,7 +71,7 @@ export default function FormMessenger(props) {
 
             </View>
             <View
-                className={`flex-auto bg-bgritem dark:bg-bgritem-d rounded-xl justify-center items-end ${sPad}`}
+                className="flex-auto bg-muted/60 rounded-xl border border-border/80 px-3 py-2"
                 style={{
                     height: editorHeight,
                     transition: 'height 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
