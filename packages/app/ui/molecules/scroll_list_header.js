@@ -112,7 +112,7 @@ export const Header = memo(({
                 </View>
             }
             {(backButtonPresented && (!isWeb || history.length > 2)) && (
-                <View className=" px-3"><Button variant="secondary" rounded onPress={() => {
+                <View className=" px-2 items-center"><Button variant="text" rounded onPress={() => {
                     FeedbackHaptics('Medium');
                     router ? router?.back() : history.back();
                 }} startDecorator="ArrowLeft" size="base" /></View>

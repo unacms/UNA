@@ -938,7 +938,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
                             const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.center || {};
                             return panelProps;
                         })()}>
-                            <View className="flex-1 sm:p-3 h-full overflow-hidden" >
+                            <View className="flex-1 sm:p-4 h-full overflow-hidden" >
                                 {MainComponent(true)}
                             </View>
                         </Panel>
