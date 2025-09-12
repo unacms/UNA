@@ -782,7 +782,7 @@ export default function RftText({
             onLayout={handleLayout}
             className={`flex-1 relative rounded-lg ${
                 isToolBar
-                    ? ' border/80 card-foreground rounded-lg p-3 '
+                    ? ' px-3 py-2 bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border flex-auto overflow-hidden shadow-xs placeholder-muted-foreground text-card-foreground web:duration-100 '
                     : (bg == 'transparent' ? '' : inputSettings.multi)
             }`}
         >
@@ -840,10 +840,10 @@ export default function RftText({
                         style={{
                             position: 'absolute',
                             width: '100%',
-                            bottom: 0,
+                            bottom: 8,
                         }}
                     >
-                        <View className="flex-auto ">
+                        <View className="flex-none ">
                             <Toolbar hidden={false} editor={editor} items={b} />
                         </View>
                     </KeyboardAvoidingView>

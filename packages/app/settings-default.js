@@ -223,7 +223,8 @@ export const settingsDefault = {
         optional_text: '', // OLD appSetting('layout', 'form_fields_optional_text')
         mandatory_icon: 'Asterisk', // OLD appSetting('layout', 'form_fields_mandatory_icon')
         auto_ghosts_in_files: true,
-        field_gap: '4',
+        form_container: 'w-full gap-3 sm:gap-4 max-w-2xl mx-auto ',
+        field_padding: ' ',
         caption_classes:
             'font-semibold text-sm text-card-foreground',
         without_captions: [
@@ -1030,7 +1031,7 @@ export const settingsDefault = {
         inputs: {
             default: ' bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 min-h-12 flex-auto text-base leading-6 overflow-hidden shadow-xs placeholder-muted-foreground text-card-foreground web:duration-100',
            
-            multi: ' border border-border focus:border-border rounded-xl web:focus:bg-card p-3 min-h-12 flex-auto text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300',
+            multi: ' bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 py-2 min-h-12 flex-auto text-base leading-6 overflow-hidden shadow-xs placeholder-muted-foreground text-card-foreground web:duration-100 ',
             rounded:
                 ' border border-border/80 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-full web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
             roundedsmall:
@@ -1333,9 +1334,7 @@ export const settingsDefault = {
             'u-block-title':
                 'text-card-foreground text-xl font-bold leading-6 tracking-tight',
             'u-block-description': 'text-muted-foreground text-sm ',
-            'u-block-content':
-                'text-card-foreground ',
-          
+            'u-block-content': 'text-card-foreground ',  
             'u-block-footer':
                 'flex text-card-foreground gap-4 ',
             'u-block-actions':

@@ -172,7 +172,8 @@ export default function (props) {
             props: {
                 ...input.props,
                 use_caption_as_placeholder: appSetting('forms', 'without_captions').includes(name) ? true : false,
-                ...(index === inputs.length - 1 - inputs.slice().reverse().findIndex(input => input.props?.type !== "hidden") && { noMargin: true })
+                ...(index === inputs.length - 1 - inputs.slice().reverse().findIndex(input => input.props?.type !== "hidden") && { noPadding: true }),
+                ...(index === inputs.length - 1 - inputs.slice().reverse().findIndex(input => input.props?.type !== "hidden") && { noPadding: true })
             },
         }));
     }
@@ -207,7 +208,7 @@ export default function (props) {
 
 
     return (
-        <View className={`w-full gap-y-${appSetting('forms', 'field_gap') || '4'} ${props?.exProps?.classes}`}>
+        <View className={`${appSetting('forms', 'form_container')} ${props?.exProps?.classes}`}>
             {(isAutoChange) && <Row className='items-center justify-between mb-3'>
                 {/*<Text className="text-xl font-bold text-neutral-800  dark:text-neutral-200 ">Filters</Text>*/}
                 {!isObjectsEqual(defaultFormValues, currentFormValues) && <Button

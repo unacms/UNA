@@ -243,7 +243,7 @@ export default function FormFeed(props) {
                             form_name: props.name,
                             styles: { verticalAlign: 'top' },
                             focus: true,
-                            noMargin: true,
+                            noPadding: true,
                             bg: 'transparent',
                             placeholder: 'Write here...',
                             linkify: true,
@@ -288,7 +288,7 @@ export default function FormFeed(props) {
                                     props.data.inputs['labels'],
                                     props.handleSubmit,
                                     'notitle',
-                                    { hide_button: true, noMargin: true }
+                                    { hide_button: true, noPadding: true }
                                 )
                             }
                         </View>
@@ -371,7 +371,7 @@ export default function FormFeed(props) {
                                     'default',
                                     {
                                         disabled: text != '' ? false : true,
-                                        noMargin: true,
+                                        noPadding: true,
                                         size: 'base',
                                         notFullWidth: true,
                                         icon: "SendHorizontal",

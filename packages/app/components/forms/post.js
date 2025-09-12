@@ -171,7 +171,7 @@ export default function FormPost(props) {
                             inputs['labels'],
                             handleSubmit,
                             'notitle',
-                            { noMargin:true, align: 'right' }
+                            { noPadding:true, align: 'right' }
                         )}
                     </Row>
                 </View>
@@ -183,7 +183,7 @@ export default function FormPost(props) {
                             inputs['cat'],
                             handleSubmit,
                             'notitle',
-                            { noMargin:true,  align: 'right',  variant: 'text', size: 'sm' }
+                            { noPadding:true,  align: 'right',  variant: 'text', size: 'sm' }
                         )}
                     </Row>
                 </View>
@@ -195,7 +195,7 @@ export default function FormPost(props) {
                             inputs['allow_comments'],
                             handleSubmit,
                             'default',
-                            { noMargin:true }
+                            { noPadding:true }
                         )}
                     </View>
                 </View>
@@ -203,13 +203,13 @@ export default function FormPost(props) {
                     inputs['do_publish'],
                     handleSubmit,
                     'default',
-                    { noMargin: true }
+                    { noPadding: true }
                 )}
                 {getFormFieldByData(
                     inputs['do_submit'],
                     handleSubmit,
                     'default',
-                    { noMargin: true }
+                    { noPadding: true }
                 )}
             </View>
         </View>
