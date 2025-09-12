@@ -15,7 +15,7 @@ export default function Tooltip({children, content}) {
         onMouseEnter: () => {
             timeoutRef.current = setTimeout(() => {
                 setVisible(true);
-            }, 500); // 500ms delay
+            }, 600); // 500ms delay
         },
         onMouseLeave: () => {
             if (timeoutRef.current) {
@@ -73,10 +73,10 @@ export default function Tooltip({children, content}) {
             {visible && (
                 <ViewRef
                     ref={tooltipRef}
-                    className="absolute z-50 shadow top-full w-auto backdrop-blur bg-black/60 dark:bg-white/60 rounded-full py-2 px-4 mt-2.5"
+                    className="absolute z-50 shadow top-full w-auto backdrop-blur-xl bg-inverted/80 rounded-full py-1.5 px-3 mt-2.5"
                     style={tooltipStyle}
                 >
-                    <Text className="text-neutral-100 dark:text-neutral-900 whitespace-nowrap">{content}</Text>
+                    <Text className="text-inverted-foreground whitespace-nowrap text-sm">{content}</Text>
                 </ViewRef>
             )}
         </ViewRef>

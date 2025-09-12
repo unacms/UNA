@@ -29,7 +29,9 @@ export default function ElementEntityAuthor(oProps) {
     const isDesktop = useIsDesktop();
     const sInfo = (
         <Row className='items-center '>
-            <Time ts={oProps.data.entry_date}></Time>
+            <Time size="sm" variant="link" className="text-sm text-muted-foreground leading-6"
+                                    ts={oProps.data.entry_date}
+                                />
             {
                 !!oProps.data?.entry_context?.id && (
 
@@ -115,7 +117,7 @@ export default function ElementEntityAuthor(oProps) {
     const menuOptions = handleMenuManageSelect ? { onSelect: (oItem, event) => handleMenuManageSelect(oItem, event, setPageData) } : {};
 
     return (
-        <Row className={`justify-between gap-2  `}>
+        <Row className="justify-between gap-3 px-3 sm:px-4">
             <FormModal pageData={pageData} setPageData={setPageData} />
             <Redirect ref={redirectdRef} />
             {viewState.view == 'edited' && (<Modal
@@ -136,7 +138,7 @@ export default function ElementEntityAuthor(oProps) {
             }
 
             <View className={oProps.data.text ? '' : 'flex-auto'}>
-                <Profile {...oProps.data.author_data} displayType="unit" displaySize={isDesktop ? "lgb" : "base"} className='hidden lg:flex' showInfo={sInfo} />
+                <Profile {...oProps.data.author_data} displayType="unit" displaySize={isDesktop ? "lg" : "base"} className='hidden lg:flex' showInfo={sInfo} />
             </View>
           
             {(oProps.data.text && false) && (

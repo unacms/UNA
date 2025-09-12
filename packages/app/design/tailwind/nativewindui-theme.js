@@ -44,6 +44,10 @@ const nativewindUIColors = {
         DEFAULT: withOpacity('muted'),
         foreground: withOpacity('muted-foreground'),
     },
+    inverted: {
+        DEFAULT: withOpacity('inverted'),
+        foreground: withOpacity('inverted-foreground'),
+    },
     accent: {
         DEFAULT: withOpacity('accent'),
         foreground: withOpacity('accent-foreground'),

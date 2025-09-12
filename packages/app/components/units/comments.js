@@ -260,7 +260,7 @@ export default function UnitComments(props) {
         <Wrapper style={combinedStyles}>
             <Row className={`${cd('gap-sm')}`}>
                 {cells}
-                <View className={`w-9 z-50 flex-0 relative ${cd('mt-md')}`}>
+                <View className="w-9 z-50 flex-0 relate">
                     <Profile
                         {...data.author_data}
                         displayType="unit_wo_info"
@@ -272,10 +272,8 @@ export default function UnitComments(props) {
                         <View className="w-0.5 ml-4 top-0.5 flex-auto bg-muted"></View>
                     )}
                 </View>
-                <View className="flex-1 flex-col gap-0.5">
-                <View
-                    className="bg-muted/60 flex-1 rounded-xl p-2 gap-1 mt-3"
-                >
+                <View className="flex-1 flex-col gap-0.5 mb-3">
+                <View className="bg-muted/60 flex-1 rounded-xl p-2 gap-1">
                     <View className="flex-row items-center justify-between gap-2 ">
                         <Profile
                             {...data.author_data}

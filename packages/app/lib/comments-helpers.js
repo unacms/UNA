@@ -398,9 +398,9 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
 
     let header = commentData.total_count > 0 ? (
 
-        <Row className={'flex-row ' + (classesBrowse ? classesBrowse : `${cd('px-lg')} ${cd('pt-lg')} justify-between`)}>
+        <Row className={'flex-row ' + (classesBrowse ? classesBrowse : `p-3 sm:px-4 justify-between items-center  border-t border-border/60`)}>
 
-            <Text className='flex-auto text-base font-bold text-neutral-900 dark:text-neutral-50'>{title} ({commentData.total_count})</Text>
+            <Text className='flex-auto text-base font-bold text-card-foreground'>{title} ({commentData.total_count})</Text>
             {!appSetting('comments', 'hide_sort') && <View className="ml-4">
                 <Pressable className="flex-auto" onPress={(event) => { event.preventDefault() }}>
                     <DropdownMenu items={[
@@ -451,7 +451,7 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
                     }
 
                     return (
-                        <View className={`${cd('px-lg')}`} key={index}>
+                        <View className="px-3 sm:px-4" key={index}>
                             <UnitComments 
                                 selectedId={scrollToIndex} 
                                 hideActions={hideActions} 

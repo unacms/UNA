@@ -7,7 +7,7 @@ import { useCurrentUser } from 'app/context/user'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { useTranslation } from 'react-i18next'
 import Browse from 'app/components/elements/browse'
-import { Link } from 'solito/link'
+import Link from 'app/ui/atoms/link'
 import { useIsDesktop } from 'app/context/measure';
 export default function ({ buttonProps, children, tooltip, fullWidth }) {
     const { currentUser, setCurrentUser } = useCurrentUser()

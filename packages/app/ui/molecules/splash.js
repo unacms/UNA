@@ -88,7 +88,8 @@ export default function Splash(props) {
                             size="sm"
                             itemClassName="text-sm"
                             
-                        />         </>
+                        />
+        </>
     ) : (
         <View
             className={`flex-col justify-center pt-14 lg:pt-0 web:min-h-[calc(100vh-16rem)] w-full absolute`}
@@ -107,7 +108,8 @@ export default function Splash(props) {
                             size="sm"
                             itemClassName="text-sm"
                             
-                        />         </View>
+                        />
+        </View>
     )
 
     return (

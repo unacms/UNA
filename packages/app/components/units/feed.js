@@ -68,9 +68,7 @@ function DefaultUnit({ data }) {
                         id: 'block-comments',
                         data: (
                             <>
-                                <View
-                                    className={`${cd('p-lg')} ${cd('gap-md')}`}
-                                >
+                                <View className="gap-3 px-3 sm:px-4">
                                     <Author data={data} url={url} t={t} />
                                     {MainContentComponent}
                                     <Row className={`${cd('gap-md')} items-center flex-auto justify-between flex-wrap-reverse`}>

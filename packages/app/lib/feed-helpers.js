@@ -574,7 +574,7 @@ export const Author = memo(({ data, url, t }) => {
                                     right: 8,
                                 }}
                             >
-                                <Time size="sm"
+                                <Time size="sm" variant="link" stylesNameAdd="text-xs leading-5"
                                     ts={data.date}
                                 />
                             </Link>

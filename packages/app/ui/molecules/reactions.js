@@ -539,14 +539,14 @@ const ReactionPopover = ({
                                     left: buttonPos.x,
                                     elevation: 5,
                                 }}
-                                className=" absolute flex-row p-2 rounded-full border border-border p-2 bg-popover"
+                                className=" absolute flex-row rounded-full border border-border p-1 bg-popover"
                             >
                                 {items.map((item) => (
                                     <TouchableOpacity
                                         key={item.id}
                                         onPress={() => handleSelect(item)}
                                     >
-                                        <Tooltip content={item.title}><Text className="text-3xl px-2">{item.emoji}</Text></Tooltip>
+                                        <Tooltip content={item.title}><Text className="text-3xl w-12 h-12 items-center justify-center flex web:hover:bg-muted/60 web:active:bg-muted rounded-full">{item.emoji}</Text></Tooltip>
                                     </TouchableOpacity>
                                 ))}
                             </View>

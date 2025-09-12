@@ -8,6 +8,7 @@ import { Platform } from 'react-native'
 import { useLocalSearchParams } from 'app/lib/hooks/router'
 import emitter from 'app/context/emitter';
 import { useIsDesktop, useWindowHeight } from 'app/context/measure';
+import { appSetting } from 'app/lib/util';
 
 
 export default function PageLayout({ data, blocks, isModal, url }) {
@@ -143,8 +144,11 @@ export default function PageLayout({ data, blocks, isModal, url }) {
         )
     }
     return (
-        <View {...viewProps} className={`flex-1 w-full h-full sm:h-[calc(100vh-16rem)] max-w-5xl mx-auto `}>
-            <View className="w-full flex-1 bg-card shadow-sm  text-card-foreground rounded-2xl lg:my-4 ">
+        <View {...viewProps} className="flex-1 w-full h-full sm:h-[calc(100vh-16rem)] ">
+            <View className={` ${appSetting(
+                    'layout',
+                    'post_container'
+                )} `}>
                 <View onLayout={handleListLayout} pointerEvents="box-none" className='w-full flex-1' style={{ marginBottom: !isDesktop ? 0 : formHeight }}>
                     <CommentsBrowse
                         scrollProps={
@@ -166,12 +170,13 @@ export default function PageLayout({ data, blocks, isModal, url }) {
                         replyId={replyId}
                     />
                 </View>
-            </View>
-            <KbAvoidingView>
+                <KbAvoidingView>
                 <View onLayout={handleLayout} style={{ width: listWidth }} className='bg-card ml-[1px] rounded-2xl px-4 py-3 bor web:fixed web:bottom-0 web:lg:bottom-4   w-full max-w-5xl'>
                     <CommentsForm handleForm={setAddData} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
                 </View>
             </KbAvoidingView>
+            </View>
+            
         </View>
     );
 }

@@ -52,7 +52,7 @@ export const settingsDefault = {
         ui_density_switcher: true,
         max_width: ' w-full  ',
         max_width_content: ' w-full max-w-7xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
-        feed_container: ' sm:p-3 mx-auto w-full max-w-4xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
+        post_container: ' max-w-5xl w-full flex-1 bg-card/80 shadow-sm text-card-foreground rounded-2xl py-3 sm:py-4 lg:my-4 mx-auto ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
 
         search: true,
         sidebar_search: true,
@@ -1202,14 +1202,14 @@ export const settingsDefault = {
 
             
             xs: {
-                padding: ' px-0.5 rounded-sm items-center flex  ',
+                padding: ' px-0.5 -mx-0.5 rounded-sm items-center flex  ',
                 // Web pseudo-element class to extend clickable hit area
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-xs ',
                 // Native Pressable hitSlop defaults (can be overridden per usage)
                 hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
             },
             sm: {
-                padding: ' px-1  active:scale-95 rounded-md items-center flex ',
+                padding: ' px-1 -mx-1 active:scale-95 rounded-md items-center flex ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-sm ',
                 hitSlop: { top: 8, right: 8, bottom: 8, left: 8 },
             },
@@ -1321,7 +1321,7 @@ export const settingsDefault = {
         },
         blocks: {
             'u-block-base':
-                'u-max-width-block rounded-xl lg:rounded-2xl gap-4 ',
+                ' rounded-xl lg:rounded-2xl gap-4 ',
             'u-block-bg':
                 'bg-card/80 shadow-sm text-card-foreground ',
             'u-block-pad':

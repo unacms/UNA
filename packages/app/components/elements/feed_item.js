@@ -49,8 +49,8 @@ export default function ElementFeedItem({data, isModal}) {
     }
 
     return (
-        <View className="relative sm:my-0 w-full mx-auto max-w-5xl">
-            <View className={`${cd('px-lg')} `}>
+        <View className="relative sm:my-0 gap-3 p-3 sm:px-4 flex-auto">
+            <View className="">
                 <Html data={tlContent}/>
                 {!!content.embed && <Embed data={content.embed} />}
 
@@ -64,7 +64,7 @@ export default function ElementFeedItem({data, isModal}) {
             <UnitImages images={content_attach} />
             {
                 data.event.menu_actions.items.length > 0 && (<View className=" flex-row items-center ">
-                    <Row className={`flex-auto items-center flex-wrap-reverse justify-between ${cd('gap-md')} ${cd('pt-md')} ${cd('px-lg')}`}>
+                    <Row className="flex-auto items-center flex-wrap-reverse justify-between gap-3">
                         <ActionMenu data={menu_actions2} />
                         {(!!data.event.menu_counters && appSetting('feed', 'counters_menu')) && <CounterMenu data={data.event.menu_counters} />}
 

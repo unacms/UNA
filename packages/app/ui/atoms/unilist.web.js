@@ -52,7 +52,9 @@ export default function UniList(props) {
         </View>;
     }
 
-    const style = height && height != '100%' ? { height: `${height}px` } : {};
+    // If height is not provided or equals '100%', prefer window scrolling to avoid zero-sized containers
+    const isWindowScroll = !height || height === '100%';
+    const style = height && height !== '100%' ? { height: `${height}px` } : {};
 
     const isScrolling = (isFinished) => {
 
@@ -86,7 +88,7 @@ export default function UniList(props) {
 
     const commonVirtuosoProps = {
         data,
-        useWindowScroll: !height,
+        useWindowScroll: isWindowScroll,
         style,
         ref: refer ? refer : uniRef,
         endReached: onEndReached,

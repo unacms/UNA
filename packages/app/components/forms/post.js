@@ -45,7 +45,7 @@ export default function FormPost(props) {
         inputs['allow_comments'].caption = '';
 
     // Prepare author name for the visibility switcher
-    const authorName = <Text className='font-semibold text-neutral-800 dark:text-neutral-200'>{currentUser.display_name}</Text>;
+    const authorName = <Text className="font-semibold text-card-foreground">{currentUser.display_name}</Text>;
 
     return (
         <View className="w-full max-w-5xl flex-col p-3 sm:p-4 mx-auto">
