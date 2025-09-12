@@ -10,17 +10,17 @@ import FormModal from 'app/ui/molecules/form_modal';
 
 const ContentCard = memo(({ authorData, date, content }) => {
     return (
-        <CardList className='max-w-4xl mx-auto w-full  '>
-            <View className="flex-row items-center gap-3 ">
+        
+            <View className="p-2 mb-1 flex-row items-center gap-3 max-w-4xl mx-auto w-full web:hover:bg-muted/60 rounded-xl ">
                 <View className="rounded-full flex-none " >
                     <Profile {...authorData} displayType="unit_wo_info" displaySize="lg" />
                 </View>
                 <Row className="flex-auto my-auto ">
-                    <Text className='flex-auto mr-2  text-sm text-neutral-900 dark:text-neutral-100' numberOfLines={2}>{content}</Text>
+                    <Text className='flex-auto mr-2 leading-tight text-sm text-card-foreground' numberOfLines={3}>{content}</Text>
                     <Text className='text-sm flex-none text-muted-foreground'><Time ts={date}></Time></Text>
                 </Row>
             </View>
-        </CardList>
+        
     )
 })
 
