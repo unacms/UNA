@@ -89,9 +89,7 @@ export default function (props) {
 export function FormError({ errorText, errorLink }) {
     const errorMessage = (
         <View className="label px-1">
-            <Text className="ml-0.5 mt-0.5 label-text-alt text-sm text-red-600 animate-pulse dark:text-red-400">
-                {linkedText(errorText)}
-            </Text>
+            <Text className="ml-0.5 mt-0.5 label-text-alt text-sm text-red-600 animate-pulse dark:text-red-400">{errorText}</Text>
         </View>
     )
 

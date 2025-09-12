@@ -1,12 +1,12 @@
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import { Button, Input, InputRounded, Modal } from 'app/design/controls';
+import { Button, Input } from 'app/design/controls';
 import { useCurrentUser } from 'app/context/user';
-import { useState, useContext, useRef } from 'react'
+import { useState, useRef } from 'react'
 import Msg from 'app/ui/molecules/msg';
 import { fetcher } from 'app/lib/fetcher';
 import { useTranslation } from 'react-i18next';
-
+import { FormError } from './_field';
 import Redirect from 'app/ui/atoms/redirect';
 import { storageClear } from 'app/lib/util';
 import { Platform } from 'react-native';
@@ -68,9 +68,7 @@ export default function ElementConfirmEmail(props) {
                             </View>
                             <Button variant="default" size="lg" title={t("Confirm")} onPress={() => handleConfirm()} />
                         </Row>
-                        {inputError && <View className="label">
-                            <Text className="ml-0.5 mt-0.5 label-text-alt text-sm text-red-600 animate-pulse dark:text-red-400 font-medium">{t("Code invalid")}</Text>
-                        </View>}
+                        {inputError && <FormError errorText={t("Code invalid")} />}
                         <View className="flex-row items-center justify-center w-full">
                             <View className="flex-1 h-px w-full bg-neutral-200 dark:bg-neutral-500" />
                             <Text className="mx-4 text-xs text-neutral-500 dark:text-neutral-400 font-normal">OR</Text>

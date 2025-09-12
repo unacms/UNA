@@ -16,22 +16,9 @@ import Link from 'app/ui/atoms/link'
 import { BlockDataByName } from 'app/lib/util'
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
-function PageContent(props) {
+function PageContent({children}) {
     const { t } = useTranslation()
-    const data = BlockDataByName(props.data, 'system:login_form');
-    const hasForm = data.content.some(item => item.type === "form");
-
-    const Block = <BlockByData
-        url={props.data.url}
-        uri={props.data.uri}
-        contentOnly={true}
-        data={data}
-        formProps={{ hide_errors: true, button_full_width: true }}
-    />
-
-    if (!hasForm)
-        return Block
-
+    
     return (
         <Card padding="p-0 pb-4" className="bg-card/50">
             <AnimatedView direction="up" delay={300}>
@@ -44,7 +31,7 @@ function PageContent(props) {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="gap-4">
-                        {Block}
+                        {children}
                         <Row className="text-center text-sm items-center text-muted-foreground">
                             <Link
                                 className="mx-auto"
@@ -80,12 +67,26 @@ export default function PageLayout(props) {
     const isWeb = Platform.OS === 'web';
     const refer = useRef();
 
+    const data = BlockDataByName(props.data, 'system:login_form');
+    const hasForm = data.content.some(item => item.type === "form");
+
+    const Block = <BlockByData
+        url={props.data.url}
+        uri={props.data.uri}
+        contentOnly={true}
+        data={data}
+        formProps={{ hide_errors: true, button_full_width: true }}
+    />
+
+    if (!hasForm)
+        return Block
+
     const content = isWeb ? (<View className={`flex-col justify-center pt-16 ${TABLET_MODE_FROM}:pt-0 mx-auto w-full web:min-h-[calc(100vh-20rem)] ${getPageWidth(props.uri, props.data?.config)}`}>
         <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto">
             {appStatic('components_logincontent')}
             <View className="max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto gap-y-4">
                 <AnimatedView>
-                    <PageContent {...props} />
+                    <PageContent >{Block}</PageContent>
                 </AnimatedView>
             </View>
         </View>
@@ -99,7 +100,7 @@ export default function PageLayout(props) {
     </View>) : (
 
         <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto p-3 p-3 py-16 ">
-            <PageContent {...props} />
+            <PageContent >{Block}</PageContent>
             <MenuFooter
                 cntClasses="mx-auto flex-row flex-wrap gap-3 p-1"
                 variant="ghost"
@@ -108,7 +109,6 @@ export default function PageLayout(props) {
 
             />
         </View>)
-
 
     return (
         <ScrollList

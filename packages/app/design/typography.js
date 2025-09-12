@@ -34,8 +34,7 @@ export const Text =({
 }) => {
     const isWeb = Platform.OS == 'web'
     const isUseCustomFont = appSetting('native', 'use_custom_font')
-    const hasCustomClassName = !!(className && String(className).trim().length > 0)
-    const baseClassName = hasCustomClassName ? className : 'text-foreground text-base'
+    const baseClassName = className || 'text-foreground text-base'
     const finalClassName = `${baseClassName} ${isUseCustomFont ? (fontFamily || isUseCustomFont) : ''}`.trim()
     const fontStyle = (!isWeb && !!isUseCustomFont) ? { fontFamily: fontFamily || isUseCustomFont } : {}
     const spreadProps = isWeb ? sanitizeWebTextProps(rest) : rest

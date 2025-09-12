@@ -15,7 +15,7 @@ import AnimatedView from 'app/ui/atoms/animated-view';
 
 const isWeb = Platform.OS === 'web'
 
-function PageContent({ isAllowJoin, url, uri, data }) {
+function PageContent({ children }) {
     const { t } = useTranslation()
     return (
         <Card padding="p-0 pb-4" >
@@ -31,13 +31,7 @@ function PageContent({ isAllowJoin, url, uri, data }) {
                         </CardDescription>}
                     </CardHeader>
                     <CardContent>
-                        <BlockByData
-                            url={url}
-                            uri={uri}
-                            contentOnly={true}
-                            data={data}
-                            formProps={{ hide_errors: true, button_full_width: true }}
-                        />
+                        {children}
                     </CardContent>
                     <CardFooter>
                         <AuthPanel createAccountLink={false} loginLink={!isWeb} showSeparator={true} />
@@ -70,14 +64,16 @@ export default function PageLayout(props) {
     const isAllowJoin = joinData?.content.some(item => item.type === "form")
     const hasForm = isAllowJoin || inviteData?.content.some(item => item.type === "form");
 
-    if (!hasForm) {
-        return <BlockByData
-            url={props.data.url}
-            uri={props.data.uri}
-            contentOnly={true}
-            data={joinData || inviteData}
+    const Block = <BlockByData
+                url={props.data.url}
+                uri={props.data.uri}
+                contentOnly={true}
+                data={joinData || inviteData}
+                formProps={{ hide_errors: true, button_full_width: true }}
+            />
 
-        />
+    if (!hasForm) {
+        return Block
     }
 
     const content = isWeb ? (
@@ -110,7 +106,7 @@ export default function PageLayout(props) {
                 <View className="max-w-xl w-full lg:w-1/2 flex-auto mx-auto p-4 sm:p-8 my-auto">
                     <AnimatedView direction="up" delay={200}>
                         <View className="relative">
-                            <PageContent {...props} isAllowJoin={isAllowJoin} data={isAllowJoin ? joinData : inviteData} />
+                            <PageContent >{Block}</PageContent>
                         </View>
                     </AnimatedView>
                 </View>
@@ -128,7 +124,7 @@ export default function PageLayout(props) {
             <View className="my-auto flex-col items-center lg:items-start flex-auto " >
                 {appStatic('join_text')}
             </View>
-            <PageContent {...props} isAllowJoin={isAllowJoin} data={isAllowJoin ? joinData : inviteData} />
+            <PageContent >{Block}</PageContent>
             <MenuFooter
                 cntClasses="mx-auto flex-row flex-wrap gap-3 p-1"
                 variant="ghost"
