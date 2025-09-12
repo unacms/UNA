@@ -18,7 +18,6 @@ import { useCurrentUser } from 'app/context/user'
 import Search from 'app/ui/molecules/search';
 import DynamicMenu from 'app/components/nav/menu-dynamic';
 import { storageClear, menuItemsFilter} from 'app/lib/util';
-import Footer from 'app/components/nav/footer';
 import { subscribe } from 'app/ui/atoms/socket';
 import { fetcher } from 'app/lib/fetcher';
 import { useBottomSheetData } from 'app/context/bottomsheet';
@@ -710,7 +709,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
     const Preload = useMemo(() => getSkeletonForList(sSkeleton, numColumns), [sSkeleton, numColumns]);
 
     const RenderScene = useCallback(({ route, header, prevRoute, headerHeight, isCoverDisabled, isInPanel }) => {
-
+        const isDesktop = useIsDesktop();
         const dataItems = route?.data
         const contentPaddingClass = header ? '' : '';
 
@@ -738,7 +737,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
                 route={route}
                 unit={route.endpoint?.unit}
                 useWindowScroll={!isInPanel}
-                height={isInPanel ? window.innerHeight : undefined}
+                height={isInPanel ? (isDesktop ? window.innerHeight : window.innerHeight - headerHeight - 64) : undefined}
                 numColumns={numColumns}
                 onEndReached={handleEndReached}
                 isInPanel={isInPanel}
@@ -816,7 +815,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
                     })()}>
                         <View className={`${cd('p-md')} fixed-process `}>
                             {route?.sidebar?.content.map((item, index) => {
-                                return <View className="mb-4" key={'item' + index}><ItemRenderer unitType={sidebarUnitType} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} /></View>
+                                return <ItemRenderer unitType={sidebarUnitType} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} />
                             })}
                             <View><BlockByName data={route.pageData ? route.pageData : data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1} /></View>
                         </View>
@@ -957,7 +956,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
                         {MainComponent()}
                     </Row>
                 </View>
-                <Footer />
+               
             </View>
         );
     }
@@ -970,7 +969,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
                 {sceneHeaderComponent}
                 <RenderScene isCoverDisabled={isCoverDisabled} prevRoute={prevRoute} headerHeight={isShowFilters && routes.length > 1 ? defaultHeaderHeight + 52 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
             </View>
-            <Footer />
+           
         </View>
     );
 }

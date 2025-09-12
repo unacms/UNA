@@ -29,7 +29,6 @@ export default function ScrollList({
     isNoContainer = false,
 }) {
     const isDesktop = useIsDesktop();
-    console.log("isDesktop", isDesktop)
     const isCollapsibleHeader = appSetting('native', 'collapsible_header') && !isDesktop;
     const isShowScrollToTopButton = appSetting('native', 'scroll_to_top_button') && !isDesktop;
     const transparencyOffset = 200;

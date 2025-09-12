@@ -117,12 +117,11 @@ return;*/
             <>
                 {topBlocks?.map((item, index) => {
                     return (
-                        <BlockByName
-                            key={'block_' + index}
+                        <View className='mb-0.5 sm:mb-3' key={'block_' + index}><BlockByName
                             name={item.block}
                             data={props.data}
                             {...item.block.props}
-                        />
+                        /></View>
                     )
                 })}
             </>

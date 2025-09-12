@@ -37,11 +37,8 @@ export default function () {
         profile = <View className="w-7 h-7"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>
     }
 
-
     if (pathname == '/')
         pathname = '/home';
-
-
 
     return (
         <View

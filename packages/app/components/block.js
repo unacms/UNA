@@ -80,6 +80,32 @@ export function BlockByName(props) {
     return null; 
 }
 
+export function BlockByData(props) {
+    let { data, name, contentOnly, uri, url, ...rest } = props;
+ const blockNameString = (typeof name === 'string') ? name : name?.name;
+    
+    if (data) {
+        return <Block 
+            exProps={name?.exProps}
+            extraProps={{ ...(name?.exProps || name), source: blockNameString }} 
+            key={data.id} 
+            uri={uri} 
+            url={url} 
+            block={data} 
+            showTitle={name?.showTitle} 
+            fullWidth={name?.fullWidth} 
+            contentOnly={contentOnly || name?.contentOnly}
+            showPad={name?.showPad} 
+            showPadding={name?.showPadding}
+            showBg={name?.showBg} 
+            unitType={name?.unitType} 
+            {...rest} 
+        />;
+    }
+    
+    return null; 
+}
+
 export function BlockByServiceName(props) {
     let { data, name, ...rest } = props
     let b = null;

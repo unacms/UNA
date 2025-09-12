@@ -45,7 +45,7 @@ const MenuFooter = ({ cntClasses, btnStyle, menu_items, variant, size, itemClass
                     href={`/${item.link}`}
                     key={item.link || index}
                     variant={visualProps.variant}
-                    size={visualProps.size}
+                    //size={visualProps.size} discuss with Roman to restore
                     className={visualProps.className}
                 >
                     {t(item.title)}

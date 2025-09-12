@@ -93,7 +93,7 @@ export default function FormFieldSubmit(props) {
         .join(' ');
 
     return (
-        <Field {...restFieldProps}>
+        <Field {...props}>
             <Row className={rowClassName}>
                 <Button
                     title={!icon_only ? value : ''}

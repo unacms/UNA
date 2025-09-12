@@ -1,5 +1,5 @@
 import { View, Row } from 'app/design/view'
-import { BlockByName } from 'app/components/block'
+import { BlockByName, BlockByData } from 'app/components/block'
 import { Text } from 'app/design/typography'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'app/ui/molecules/card'
 import { Platform } from 'react-native'
@@ -13,43 +13,53 @@ import AnimatedView from 'app/ui/atoms/animated-view';
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 
+import { BlockDataByName } from 'app/lib/util'
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
 function PageContent(props) {
     const { t } = useTranslation()
+    const data = BlockDataByName(props.data, 'system:login_form');
+    const hasForm = data.content.some(item => item.type === "form");
+
+    const Block = <BlockByData
+        url={props.data.url}
+        uri={props.data.uri}
+        contentOnly={true}
+        data={data}
+        formProps={{ hide_errors: true, button_full_width: true }}
+    />
+
+    if (!hasForm)
+        return Block
+
     return (
         <Card padding="p-0 pb-4" className="bg-card/50">
-        <AnimatedView direction="up" delay={300}>
-        <Card padding="p-6  ">
-            <CardHeader>
-                <CardTitle>{t('login_modal_title')} {t('app_name')}</CardTitle>
-                <CardDescription>
-                    {t('splash_page_login')}
-                
-                </CardDescription>
-            </CardHeader>
-            <CardContent className="gap-4">
-                <BlockByName
-                    name="system:login_form"
-                    contentOnly={true}
-                    data={props.data}
-                    formProps={{ hide_errors: true, button_full_width: true }}
-                />
-                <Row className="text-center text-sm items-center text-muted-foreground">
-                    <Link
-                        className="mx-auto"
-                        variant="primary"
-                        size="sm"
-                        href="/forgot-password"
-                        haptics="Medium"
-                    >
-                        {t('Forgot password?')}
-                    </Link>
-                </Row>
-                <AuthPanel showSeparator={true} />
-            </CardContent>
-        </Card></AnimatedView>
-        <CardFooter>
+            <AnimatedView direction="up" delay={300}>
+                <Card padding="p-6  ">
+                    <CardHeader>
+                        <CardTitle>{t('login_modal_title')} {t('app_name')}</CardTitle>
+                        <CardDescription>
+                            {t('splash_page_login')}
+
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="gap-4">
+                        {Block}
+                        <Row className="text-center text-sm items-center text-muted-foreground">
+                            <Link
+                                className="mx-auto"
+                                variant="primary"
+                                size="sm"
+                                href="/forgot-password"
+                                haptics="Medium"
+                            >
+                                {t('Forgot password?')}
+                            </Link>
+                        </Row>
+                        <AuthPanel showSeparator={true} />
+                    </CardContent>
+                </Card></AnimatedView>
+            <CardFooter>
                 <Row className="text-center flex-none mx-auto text-base items-center gap-1">
                     <Text className="text-muted-foreground text-base">{t('splash_page_login2')}</Text>
                     <Link
@@ -61,16 +71,16 @@ function PageContent(props) {
                         {t('splash_page_new_account')}
                     </Link>
                 </Row>
-        </CardFooter>
+            </CardFooter>
         </Card>
-        )
+    )
 }
 
 export default function PageLayout(props) {
     const isWeb = Platform.OS === 'web';
     const refer = useRef();
 
-    const content = isWeb ? (<View className={`flex-col justify-center pt-16 ${TABLET_MODE_FROM}:pt-0 mx-auto w-full web:min-h-[calc(100vh-16rem)] ${getPageWidth(props.uri, props.data?.config)}`}>
+    const content = isWeb ? (<View className={`flex-col justify-center pt-16 ${TABLET_MODE_FROM}:pt-0 mx-auto w-full web:min-h-[calc(100vh-20rem)] ${getPageWidth(props.uri, props.data?.config)}`}>
         <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto">
             {appStatic('components_logincontent')}
             <View className="max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto gap-y-4">
@@ -80,23 +90,23 @@ export default function PageLayout(props) {
             </View>
         </View>
         <MenuFooter
-                            cntClasses="mx-auto flex-row flex-wrap gap-3 p-1"
-                            variant="ghost"
-                            size="sm"
-                            itemClassName="text-sm p-1"
-                            
-                        /> 
+            cntClasses="mx-auto flex-row flex-wrap gap-3 p-1"
+            variant="ghost"
+            size="sm"
+            itemClassName="text-sm p-1"
+
+        />
     </View>) : (
 
         <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto p-3 p-3 py-16 ">
             <PageContent {...props} />
             <MenuFooter
-                            cntClasses="mx-auto flex-row flex-wrap gap-3 p-1"
-                            variant="ghost"
-                            size="sm"
-                            itemClassName="text-sm p-1"
-                            
-                        /> 
+                cntClasses="mx-auto flex-row flex-wrap gap-3 p-1"
+                variant="ghost"
+                size="sm"
+                itemClassName="text-sm p-1"
+
+            />
         </View>)
 
 

@@ -7,9 +7,9 @@ import { Icon } from 'app/ui/atoms/icon'
 import { Button } from 'app/design/controls'
 
 export default function (props) {
-    let caption = props.caption
+    const caption = props.caption
     if (props.format == 'notitle') caption = ''
-    let sClassName =
+    const sClassName =
         ' w-full form-control form-control-' +
         props.name +
         (props.noPadding === true ? '  ' : ' ' + appSetting('forms', 'field_padding') + ' ') +

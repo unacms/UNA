@@ -1300,7 +1300,7 @@ export const settingsDefault = {
         },
         cards: {
             'u-card-list':
-                ' u-card-list bg-card/80 shadow-sm border border-border/80 web:border-0 web:ring-0 web:ring-inset web:ring-border/80 text-card-foreground overflow-hidden sm:rounded-2xl mb-0.5 sm:mb-3 ',
+                ' u-card-list bg-card/80 shadow-sm border border-border/80 web:border-0 web:ring-0 web:ring-inset web:ring-border/80 text-card-foreground overflow-hidden sm:rounded-2xl ',
             'u-card-list-padding': ' p-3 lg:p-4 ',
             'u-card-base':
                 ' u-card-base bg-card/80 shadow-sm border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 text-card-foreground overflow-hidden rounded-2xl gap-4',
@@ -1322,7 +1322,7 @@ export const settingsDefault = {
         },
         blocks: {
             'u-block-base':
-                ' max-w-5xl rounded-xl lg:rounded-2xl gap-4 ',
+                ' u-max-width-block sm:rounded-2xl gap-4 ',
             'u-block-bg':
                 'bg-card/80 shadow-sm text-card-foreground ',
             'u-block-pad':

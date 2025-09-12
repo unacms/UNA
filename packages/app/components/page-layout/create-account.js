@@ -1,5 +1,5 @@
 import { View, Row } from 'app/design/view'
-import { BlockByName, DataByName } from 'app/components/block'
+import { BlockByName, DataByName, BlockByData } from 'app/components/block'
 import { Text } from 'app/design/typography'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'app/ui/molecules/card'
 import Link from 'app/ui/atoms/link'
@@ -13,57 +13,37 @@ import ScrollList from 'app/ui/molecules/scroll_list'
 import MenuFooter from 'app/components/nav/menu-footer';
 import AnimatedView from 'app/ui/atoms/animated-view';
 
-
 const isWeb = Platform.OS === 'web'
 
-function PageContent(props) {
-
-    const isAllowJoin = props.isAllowJoin
+function PageContent({ isAllowJoin, url, uri, data }) {
     const { t } = useTranslation()
     return (
         <Card padding="p-0 pb-4" >
-        <AnimatedView direction="up" delay={300}>
-        <Card padding="p-6 ">
-            <CardHeader>
-                <CardTitle>
-                    {t('create_account_page_caption')}
-                </CardTitle>
-                {isWeb && <CardDescription>
-                    {t('create_account_page_caption2')}
-                    
-                </CardDescription>}
-            </CardHeader>
-             <CardContent>
-            {!isAllowJoin && (
-                <BlockByName
-                    name={props.blocks.form_invitation}
-                     contentOnly={true}
-                    data={props.data}
-                    formProps={{
+            <AnimatedView direction="up" delay={300}>
+                <Card padding="p-6 ">
+                    <CardHeader>
+                        <CardTitle>
+                            {t('create_account_page_caption')}
+                        </CardTitle>
+                        {isWeb && <CardDescription>
+                            {t('create_account_page_caption2')}
 
-                        hide_errors: true,
-                        button_full_width: true,
-                    }}
-                />
-            )}
-            {isAllowJoin && (
-                <BlockByName
-                    name={props.blocks.form_join}
-                     contentOnly={true}
-                    data={props.data}
-                    formProps={{
-
-                        hide_errors: true,
-                        button_full_width: true,
-                    }}
-                />
-            )}
-            </CardContent>
+                        </CardDescription>}
+                    </CardHeader>
+                    <CardContent>
+                        <BlockByData
+                            url={url}
+                            uri={uri}
+                            contentOnly={true}
+                            data={data}
+                            formProps={{ hide_errors: true, button_full_width: true }}
+                        />
+                    </CardContent>
+                    <CardFooter>
+                        <AuthPanel createAccountLink={false} loginLink={!isWeb} showSeparator={true} />
+                    </CardFooter>
+                </Card></AnimatedView>
             <CardFooter>
-            <AuthPanel createAccountLink={false} loginLink={!isWeb} showSeparator={true} />
-            </CardFooter>
-        </Card></AnimatedView>
-        <CardFooter>
                 <Row className="text-center flex-none mx-auto text-base items-center gap-1">
                     <Text className="text-muted-foreground text-base">{t('create_account_page_already_have')}</Text>
                     <Link
@@ -75,16 +55,31 @@ function PageContent(props) {
                         {t('create_account_page_sign_in')}
                     </Link>
                 </Row>
-        </CardFooter>
+            </CardFooter>
         </Card>
     );
 }
 
 export default function PageLayout(props) {
     const { t } = useTranslation()
-    const joinData = DataByName(props.data, props.blocks.form_join)
-    const isAllowJoin = joinData.content[0].type == 'form'
     const refer = useRef();
+
+    const joinData = DataByName(props.data, props.blocks.form_join)
+    const inviteData = DataByName(props.data, props.blocks.form_invitation)
+
+    const isAllowJoin = joinData?.content.some(item => item.type === "form")
+    const hasForm = isAllowJoin || inviteData?.content.some(item => item.type === "form");
+
+    if (!hasForm) {
+        return <BlockByData
+            url={props.data.url}
+            uri={props.data.uri}
+            contentOnly={true}
+            data={joinData || inviteData}
+
+        />
+    }
+
     const content = isWeb ? (
         <View className={`flex-col justify-center web:min-h-[calc(100vh-16rem)] w-full `}>
             <View className="w-full lg:flex-row mx-auto my-auto max-w-7xl">
@@ -115,31 +110,32 @@ export default function PageLayout(props) {
                 <View className="max-w-xl w-full lg:w-1/2 flex-auto mx-auto p-4 sm:p-8 my-auto">
                     <AnimatedView direction="up" delay={200}>
                         <View className="relative">
-                            <PageContent {...props} isAllowJoin={isAllowJoin} />
+                            <PageContent {...props} isAllowJoin={isAllowJoin} data={isAllowJoin ? joinData : inviteData} />
                         </View>
                     </AnimatedView>
                 </View>
             </View>
             <MenuFooter
-                            cntClasses="mx-auto flex-row flex-wrap gap-3 p-1"
-                            variant="ghost"
-                            size="sm"
-                            itemClassName="text-sm p-1"
-                            
-                        />        </View>
+                cntClasses="mx-auto flex-row flex-wrap gap-3 p-1"
+                variant="ghost"
+                size="sm"
+                itemClassName="text-sm p-1"
+
+            />
+        </View>
     ) : (
         <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto p-3 pt-16">
             <View className="my-auto flex-col items-center lg:items-start flex-auto " >
                 {appStatic('join_text')}
             </View>
-            <PageContent {...props} isAllowJoin={isAllowJoin} />
+            <PageContent {...props} isAllowJoin={isAllowJoin} data={isAllowJoin ? joinData : inviteData} />
             <MenuFooter
-                            cntClasses="mx-auto flex-row flex-wrap gap-3 p-1"
-                            variant="ghost"
-                            size="sm"
-                            itemClassName="text-sm p-1"
-                            
-                        /> 
+                cntClasses="mx-auto flex-row flex-wrap gap-3 p-1"
+                variant="ghost"
+                size="sm"
+                itemClassName="text-sm p-1"
+
+            />
         </View>
     );
 

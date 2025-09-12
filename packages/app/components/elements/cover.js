@@ -129,20 +129,21 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
         >
             {getCoverBackButton(bPerson)}
             <Row className='items-center' >
-                {bPerson && (
+               
                     <Row className='items-center gap-2'>
+                        {bPerson && (
                     <Profile
                         {...data.profile}
                         displayType="unit_wo_info"
                         displaySize="base"
-                    />
+                    />)}
                     <Profile
                         {...data.profile}
                         displayType="unit_wo_image"
                         displaySize="lg"
                     />
                     </Row>
-                )}
+               
                  
                 {isAddSelector && (
                     <View className={`${TABLET_MODE_FROM}:hidden `}>
