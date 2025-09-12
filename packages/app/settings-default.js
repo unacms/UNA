@@ -1322,7 +1322,7 @@ export const settingsDefault = {
         },
         blocks: {
             'u-block-base':
-                ' rounded-xl lg:rounded-2xl gap-4 ',
+                ' max-w-5xl rounded-xl lg:rounded-2xl gap-4 ',
             'u-block-bg':
                 'bg-card/80 shadow-sm text-card-foreground ',
             'u-block-pad':

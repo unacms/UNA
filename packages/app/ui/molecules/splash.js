@@ -83,10 +83,10 @@ export default function Splash(props) {
                 <PageContent {...props} />
             </View>
             <MenuFooter
-                            cntClasses="mx-auto flex-row flex-wrap gap-1 p-1"
+                            cntClasses="mx-auto flex-row flex-wrap gap-3 p-1"
                             variant="ghost"
                             size="sm"
-                            itemClassName="text-sm"
+                            itemClassName="text-sm p-1"
                             
                         />
         </>
@@ -103,10 +103,10 @@ export default function Splash(props) {
                 </View>
             </View>
             <MenuFooter
-                            cntClasses="mx-auto flex-row flex-wrap gap-1 p-1"
+                            cntClasses="mx-auto flex-row flex-wrap gap-3 p-1"
                             variant="ghost"
                             size="sm"
-                            itemClassName="text-sm"
+                            itemClassName="text-sm p-1"
                             
                         />
         </View>

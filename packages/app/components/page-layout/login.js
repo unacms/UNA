@@ -80,10 +80,10 @@ export default function PageLayout(props) {
             </View>
         </View>
         <MenuFooter
-                            cntClasses="mx-auto flex-row flex-wrap gap-1 p-1"
+                            cntClasses="mx-auto flex-row flex-wrap gap-3 p-1"
                             variant="ghost"
                             size="sm"
-                            itemClassName="text-sm"
+                            itemClassName="text-sm p-1"
                             
                         /> 
     </View>) : (
@@ -91,10 +91,10 @@ export default function PageLayout(props) {
         <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto p-3 p-3 py-16 ">
             <PageContent {...props} />
             <MenuFooter
-                            cntClasses="mx-auto flex-row flex-wrap gap-1 p-1"
+                            cntClasses="mx-auto flex-row flex-wrap gap-3 p-1"
                             variant="ghost"
                             size="sm"
-                            itemClassName="text-sm"
+                            itemClassName="text-sm p-1"
                             
                         /> 
         </View>)

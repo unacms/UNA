@@ -235,7 +235,7 @@ export default function MenuAccount({ buttonProps, children }) {
                             cntClasses="w-full flex-row flex-wrap gap-1 p-1"
                             variant="ghost"
                             size="sm"
-                            itemClassName="text-sm"
+                            itemClassName="text-sm p-1"
                             menu_items={menu_footer_items}
                         />
                     ) : null
