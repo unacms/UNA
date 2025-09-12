@@ -10,8 +10,7 @@ import { useTranslation } from 'react-i18next'
 import { fetcher } from 'app/lib/fetcher';
 import Redirect from 'app/ui/atoms/redirect'
 import { Pressable } from 'app/design/view';
-import { Text } from 'app/design/typography'
-import { FormError } from 'app/components/form-fields/_field.js';
+import { FormError } from 'app/components/form-fields/_field';
 import { View } from 'app/design/view'
 import { useRouter, redirectTo } from 'app/lib/hooks/router'
 

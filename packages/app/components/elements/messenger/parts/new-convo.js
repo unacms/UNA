@@ -6,7 +6,7 @@ import { Button, Modal } from 'app/design/controls'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { SelectUsers } from 'app/components/form-fields/initial_members';
 import Loading from 'app/ui/atoms/loading'
-import { FormError } from './_field';
+import { FormError } from 'app/components/form-fields/_field';
 
 export default function CreateConvo({ onSave, initedData = [], convoId }) {
     const [message, setMessage] = useState('');

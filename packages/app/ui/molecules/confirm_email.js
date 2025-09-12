@@ -6,7 +6,7 @@ import { useState, useRef } from 'react'
 import Msg from 'app/ui/molecules/msg';
 import { fetcher } from 'app/lib/fetcher';
 import { useTranslation } from 'react-i18next';
-import { FormError } from './_field';
+import { FormError } from 'app/components/form-fields/_field';
 import Redirect from 'app/ui/atoms/redirect';
 import { storageClear } from 'app/lib/util';
 import { Platform } from 'react-native';
