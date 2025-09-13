@@ -73,7 +73,7 @@ export default function PageLayout({ data, blocks, isModal, url }) {
         return Object.entries(blocks)
             .filter(([key, value]) => value.forHeader)
             .map(([key, value]) => ({
-                data: <BlockByName data={data} name={value} contentOnly={true} />
+                data: <View className={value?.name === 'entity_author' ? 'px-3 sm:px-4' : ''}><BlockByName data={data} name={value} contentOnly={true} /></View>
             }));
     }, [blocks, data]);
 

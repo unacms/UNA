@@ -350,7 +350,7 @@ export const settingsDefault = {
             show_combined: true,
             button_variant: 'secondary',
             rounded: false,
-            button_size: 'xs',
+            button_size: 'sm',
             button_rounded: false,
             align_items: 'start',
             no_gap_between_buttons: false,
@@ -1542,7 +1542,7 @@ export const settingsDefault = {
                 ' font-medium text-card-foreground web:group-hover:text-foreground ',
             'u-btn-outline-trans': '  web:duration-200',
 
-            'u-btn-group-item-cnt': '  bg-muted web:hover:bg-secondary/60 ',
+            'u-btn-group-item-cnt': '   ',
             'u-btn-group-item-text':
                 ' font-medium text-card-foreground web:group-hover:text-foreground ',
             'u-btn-group-item-icon':
