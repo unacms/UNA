@@ -3,15 +3,12 @@ import { useState, useEffect, useMemo, memo } from 'react';
 import { appSetting, getBlocksFromData, cloneObject, getPageData } from 'app/lib/util';
 import { useLayoutData } from 'app/context/layout';
 import { processBlocks } from 'app/lib/conductor-helpers';
-import { useIsDesktop } from 'app/context/measure';
 
 const ConductorMemo = memo(Conductor, (prev, next) => prev.ts === next.ts);
 
 export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
     const { layoutData } = useLayoutData();
     const [pageData, setPageData] = useState(data);
-    const isDesktop = useIsDesktop();
-    const isAltView = layoutName === 'profile-alt' && isDesktop;
 
     useEffect(() => {
         if (layoutData && layoutData?.type == 'сonnections:action' && layoutData?.data?.reload) {
@@ -52,13 +49,9 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
     const renderedBlocks = useMemo(() => {
         const initialBlocks = blocks || getBlocksFromData(pageData);
         return processBlocks(initialBlocks);
-    }, [blocks, pageData.ts]);
+    }, [blocks, pageData.ts]); //??????
 
-
-    const coverMode = appSetting('cover', 'view_by_module', pageData.cover_block.profile?.module)
-    const isCoverDisabled = isAltView || coverMode == 'none';
-
-
+    const isCoverDisabled = appSetting('cover', 'view_by_module', pageData.cover_block.profile?.module) == 'none';
 
     return (
         <ConductorMemo
@@ -69,10 +62,7 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
             menu={menu}
             data={pageData}
             blocks={renderedBlocks.mainBlocks}
-            leftSideBar={isAltView}
-            leftSideBarWidth={isAltView ? ' lg:w-96' : ''}
             leftSideBarBlocks={renderedBlocks.leftBlocks}
-
         />
     )
 }

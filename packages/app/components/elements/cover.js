@@ -111,7 +111,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
         return null
     }
 
-    if (coverMode === 'none') {
+    if (coverMode === 'none' && isDesktop) {
         return null
     }
 

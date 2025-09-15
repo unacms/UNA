@@ -8,19 +8,15 @@ import { appStatic } from 'app/lib/app-static';
 import { menuItemsFilter } from 'app/lib/util';
 import MenuAdd from 'app/components/nav/menu-add'
 import { menuItemsByName, appSetting, getMenuSettings } from 'app/lib/util'
-import Search from 'app/ui/molecules/search';
 import Link from 'app/ui/atoms/link'
 import { useRouter } from 'app/lib/hooks/router'
-import { cd } from 'app/lib/util'
 import { useLayoutData } from 'app/context/layout';
 import { useTranslation } from 'react-i18next';
-import MenuLauncher from 'app/components/nav/menu-launcher'
-import { Button, ButtonRef } from 'app/design/controls'
+
+import { Button } from 'app/design/controls'
 import { getComponent } from 'app/components/registry';
 import {
-    CoverMenuMeta,
     CoverMenu,
-    CoverMenuMore,
 } from 'app/components/nav/menu-cover'
 
 export const TextHeader = memo(({ text }) => {
@@ -99,6 +95,7 @@ export const Header = memo(({
     const ContextSelector = getComponent('molecule', 'context_selector')
     const HeaderElement = getComponent('molecule', 'header_element');
 
+    
     return (
 
             <Row className="items-center justify-between h-14">

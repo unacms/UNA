@@ -207,12 +207,12 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, currentBreakpoi
     />
 }
 
-const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, leftSideBarWidth, headerSettings, AddBlocksCnt }) => {
+const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, headerSettings, AddBlocksCnt, layoutName }) => {
     const menuSettings = getMenuSettings(menu.object, menu.config, menu);
     const { t } = useTranslation();
     const addButtons = AddMenu(menu, 'hideInSideBar');
     return (
-        <LeftSidebar title={t(menuSettings?.name)} addButtons={addButtons} >
+        <LeftSidebar title={layoutName == 'profile' ? '' : t(menuSettings?.name)} addButtons={addButtons} >
             {headerSettings.hideLeftmenu != true && routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
                 const btn = callFn('getButtonForConductor', [a, index, currentUser])
 
@@ -307,7 +307,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled,
 
     const animatedStyleHeaderCoverSmall = useAnimatedStyle(() => {
         return {
-            display: scrollValue.value == 1 ? 'none' : 'flex',
+            display: scrollValue.value == 1 || (isCoverDisabled && !isDesktop) ? 'none' : 'flex',
         };
     }, [scrollValue]);
 
@@ -333,7 +333,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled,
                 </Animated.View>
                 <Animated.View style={[{}, animatedStyleHeaderCoverSmall]}>
                     <View className={conductorTheme.cover_small} >
-                        {(isCover && !isHideCover) && <View className="w-full">
+                        {(isCover && !isHideCover || !isDesktop) && <View className="w-full">
                             <CoverSmall context={pageData.context} data={pageData.cover_block} />
                         </View>}
                     </View>
@@ -345,7 +345,9 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled,
         </>
     )
 };
-
+/*
+leftSideBar to remove
+*/
 const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIndex, getNumCols, currentBreakpoint, onChangeRoute, isHideCover, omitDefaultBackground = false }) => {
     const { t } = useTranslation();
     const { layoutName: layout } = useLayoutSettings();
@@ -389,7 +391,7 @@ const RenderSceneHeader = ({ route, setFilterValue }) => {
     )
 };
 
-export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = appSetting('conductor', 'sidebar_width'), skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 106 }) {
+export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks=[], leftSideBarWidth = appSetting('conductor', 'sidebar_width'), skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 106 }) {
     const uniRef = useRef();
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
@@ -403,7 +405,6 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
 
     const [routes, setRoutes] = useState(initedTabs);
 
-   
     const [cntWidth, setCntWidth] = useState(0);
     const [isRevalidate, setIsRevalidate] = useState(false);
 
@@ -669,14 +670,14 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
 
     const Preload = useMemo(() => getSkeletonForList(sSkeleton, numColumns), [sSkeleton, numColumns]);
 
-    const RenderScene = useCallback(({ route, header, prevRoute, headerHeight, isCoverDisabled, isInPanel }) => {
+    const RenderScene = useCallback(({ route, header, prevRoute, headerHeight, AddBlocksCnt, isInPanel }) => {
         const isDesktop = useIsDesktop();
         const dataItems = route?.data
         const contentPaddingClass = header ? '' : '';
 
-
         const isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
-        const isLeftCol = (route?.leftSideBarBlocks?.length > 0 && (layoutName === 'profile') || (leftSideBar && layoutName !== 'profile'));
+        const isLeftCol = (route?.leftSideBarBlocks?.length > 0 );
+        console.log("isLeftCol", route?.leftSideBarBlocks)
         const TabFlashListM = useMemo(() => {
             return <UniList
                 scrollProps={header ?
@@ -738,8 +739,8 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
                         return panelProps;
                     })()}>
                         <View className={`fixed-process ${layoutName == 'profile' ? cd('p-md') : appSetting('conductor', 'sidebar_container')}`}>
-                            {AddBlocksCnt}
                             <LeftSideBarContainer
+                                layoutName={layoutName}
                                 index={index}
                                 setIndex={setIndex}
                                 menu={menu}
@@ -790,18 +791,6 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
         <RenderSceneHeader route={currentRoute} setFilterValue={setFilterValue} />
     ), [currentRoute, setFilterValue]);
 
-    const leftSideBarComponent = useMemo(() => (
-        <LeftSideBarContainer
-            index={index}
-            setIndex={setIndex}
-            menu={menu}
-            routes={routes}
-            currentUser={currentUser}
-            leftSideBarWidth={leftSideBarWidth}
-            headerSettings={headerSettings}
-            AddBlocksCnt={AddBlocksCnt} />
-    ), [index, setIndex, menu, routes, currentUser, leftSideBarWidth, headerSettings, AddBlocksCnt]);
-
     const isHideCover = data?.cover_block?.profile && appSetting('cover', 'hide_cover_for_context') && data?.cover_block?.profile?.id === data?.context?.current?.id && isDesktop;
 
     const tabBarObj = useMemo(() => (
@@ -842,7 +831,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
 
     ), [cntWidth, currentUser, routes, index, isHideCover]);
 
-    const isUseCurrentHeader = (layoutName === 'profile' || layoutName === 'profile-alt') && !isCoverDisabled
+    const isUseCurrentHeader = layoutName === 'profile' && (!isCoverDisabled || !isDesktop)
 
     return (
         <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
@@ -850,7 +839,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
             <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
             <View className={`${layoutName === 'profile' ? conductorTheme.content_max_width : ''} mx-auto w-full min-h-screen ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}>
                 {sceneHeaderComponent}
-                <RenderScene isCoverDisabled={isCoverDisabled} prevRoute={prevRoute} headerHeight={isShowFilters && routes.length > 1 ? defaultHeaderHeight + 52 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
+                <RenderScene AddBlocksCnt={AddBlocksCnt} prevRoute={prevRoute} headerHeight={isShowFilters && routes.length > 1 ? defaultHeaderHeight + 52 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
             </View>
            
         </View>
