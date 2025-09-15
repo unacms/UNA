@@ -547,10 +547,10 @@
     "@sigstore/core" "^2.0.0"
     "@sigstore/protobuf-specs" "^0.4.1"
 
-"@stripe/connect-js@^3.3.28":
-  version "3.3.28"
-  resolved "https://registry.yarnpkg.com/@stripe/connect-js/-/connect-js-3.3.28.tgz#6696b768c7123e77edeb8396e7664c1fc01928e0"
-  integrity sha512-+1gZawF2bOPkgD/GkpQ8P11KnhJipymkGWjtlp5iGeg3c/JiD3IhYwp8jOhNJIFFcr/QKCq/YwlHQ5XFZ6sSwA==
+"@stripe/connect-js@^3.3.29":
+  version "3.3.29"
+  resolved "https://registry.yarnpkg.com/@stripe/connect-js/-/connect-js-3.3.29.tgz#9442f4d30a5af21a89fe276a7608e1b5a45faffc"
+  integrity sha512-Gwq4lWw7InFPQbdKbxvOBBpqIEvJyEzcREC9mWnukSeXuwf6gzFD3cT/LJU6+F/2v3w2Y5S+kcsAu07LCkyjzQ==
 
 "@svta/common-media-library@^0.12.4":
   version "0.12.4"

@@ -5,7 +5,7 @@
     "@claviska/jquery-minicolors": "^2.3.6",
     "@egjs/hammerjs": "^2.0.17",
     "@fullcalendar/core": "^6.1.19",
-    "@stripe/connect-js": "^3.3.28",
+    "@stripe/connect-js": "^3.3.29",
     "at.js": "^1.5.4",
     "autosize": "^6.0.1",
     "chart.js": "^4.5.0",
