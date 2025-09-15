@@ -10,21 +10,6 @@ import { globalIgnores } from 'eslint/config'
 export default tseslint.config([
   globalIgnores(['dist']),
   {
-    files: ['**/*.{js,jsx}'],
-    extends: [
-      js.configs.recommended,
-      reactHooks.configs['recommended-latest']
-    ],
-    languageOptions: {
-      ecmaVersion: 2020,
-      sourceType: 'module',
-      parserOptions: {
-        ecmaFeatures: { jsx: true }
-      },
-      globals: globals.browser,
-    },
-  },
-  {
     files: ['**/*.{ts,tsx}'],
     extends: [
       js.configs.recommended,

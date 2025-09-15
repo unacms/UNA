@@ -13,6 +13,7 @@ module.exports = {
   theme: {
     ...theme,
   },
+  darkMode: ['class', '[theme="dark"]'],
   plugins: [],
 }
 

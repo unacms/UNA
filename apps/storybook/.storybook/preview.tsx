@@ -1,36 +1,34 @@
 import type { Preview } from '@storybook/react-vite'
 import '../../../packages/app/styles/global.default.css';
-// Ensure settings are available for appSetting calls BEFORE any components load
-import { settings } from '../../../packages/app/settings';
-import { remoteSettings } from '../../../packages/app/settings-remote';
+import { useEffect } from 'react';
+import { useLayoutSettingsStore } from '../../../packages/app/context/layout-settings';
 
-// Initialize settings immediately at module load time for Storybook
-if (!remoteSettings.data) {
-  (remoteSettings as { data: any }).data = settings;
-}
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import React, { Component, type ReactNode } from 'react';
-
-class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean; error?: unknown }> {
-  constructor(props: { children: ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
-  static getDerivedStateFromError(error: unknown) {
-    return { hasError: true, error };
-  }
-  componentDidCatch() {}
-  render() {
-    if (this.state.hasError) {
-      const err = this.state.error as Error | string | undefined;
-      return <div role="alert">Story error: {String((err as Error)?.message || err)}</div>;
+const ThemeDecorator = (Story: any, context: any) => {
+  const theme = context.globals.theme || 'light';
+  
+  useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute('theme', theme);
+    root.setAttribute('data-theme', theme);
+    
+    // Also set class for Tailwind dark mode
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
     }
-    return this.props.children as ReactNode;
-  }
-}
+    
+    // Update the layout settings store so components can react
+    const store = useLayoutSettingsStore.getState();
+    store.updateLayoutSettings({ theme });
+  }, [theme]);
 
-
+  return (
+    <div className=" flex p-8 items-center justify-center align-middle">
+      <Story />
+    </div>
+  );
+};
 
 const preview: Preview = {
   parameters: {
@@ -44,22 +42,22 @@ const preview: Preview = {
       toc: true,
     },
   },
-  decorators: [
-    (Story) => (
-      <div className="min-h-screen bg-background p-4">
-        <ErrorBoundary>
-          <Story />
-        </ErrorBoundary>
-      </div>
-    ),
-    (Story) => (
-      <div className="min-h-screen bg-background p-4">
-        <ErrorBoundary>
-          <Story />
-        </ErrorBoundary>
-      </div>
-    ),
-  ],
+  globalTypes: {
+    theme: {
+      description: 'Global theme for components',
+      defaultValue: 'light',
+      toolbar: {
+        title: 'Theme',
+        icon: 'circlehollow',
+        items: [
+          { value: 'light', icon: 'circlehollow', title: 'Light' },
+          { value: 'dark', icon: 'circle', title: 'Dark' }
+        ],
+        dynamicTitle: true,
+      },
+    },
+  },
+  decorators: [ThemeDecorator],
 };
 
 export default preview;

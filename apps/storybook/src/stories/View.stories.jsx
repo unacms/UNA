@@ -8,7 +8,7 @@ export default {
 };
 
 export const DefaultView = () => (
-  <View className="p-4 bg-card rounded-lg">
+  <View className="p-4 bg-gray-100 rounded-lg">
     <Text>This is a basic View component</Text>
   </View>
 );
@@ -34,9 +34,9 @@ export const ScrollViewExample = () => (
 export const PressableExample = () => (
   <Pressable
     onPress={() => alert('Pressed!')}
-    className="p-4 bg-purple-200 rounded-lg"
+    className="p-4 bg-card rounded-lg"
   >
-    <Text>Press Me</Text>
+    <Text className="text-foreground">Press Me</Text>
   </Pressable>
 );
 

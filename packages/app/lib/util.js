@@ -66,6 +66,8 @@ export function normalizeClasses(a) {
 export function decodeText(str) {
     return decode(str);
 }
+
+export const htmlDecode = decodeText; // Alias for backward compatibility
 export function cloneObject(obj) {
     return flatted_parse(flatted_stringify(obj))
 }
@@ -301,7 +303,10 @@ function compress(data) {
 
     try {
         let a = flatted_stringify(data);
-        return Buffer.from(pako.deflate(a)).toString('base64');
+        // Use browser-compatible approach instead of Buffer
+        const compressed = pako.deflate(a);
+        const binaryString = Array.from(compressed, byte => String.fromCharCode(byte)).join('');
+        return btoa(binaryString);
     } catch (error) {
         console.log('!!!-Compression error:', data, error);
         return null;
@@ -310,7 +315,13 @@ function compress(data) {
 
 function decompress(data) {
     try {
-        return flatted_parse(pako.inflate(Uint8Array.from(Buffer.from(data, 'base64')), { to: 'string' }));
+        // Use browser-compatible approach instead of Buffer
+        const binaryString = atob(data);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        return flatted_parse(pako.inflate(bytes, { to: 'string' }));
     } catch (error) {
         console.log('!!!-Decompression error:', error, error);
         return null;

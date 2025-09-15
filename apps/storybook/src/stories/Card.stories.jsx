@@ -34,11 +34,6 @@ export default {
       control: "boolean",
       defaultValue: true,
     },
-    theme: {
-      control: "select",
-      options: ["light", "dark"],
-      defaultValue: "light",
-    },
     direction: {
       control: "select",
       options: ["ltr", "rtl"],
@@ -76,7 +71,6 @@ export const DefaultCard = (args) => {
 
   return (
     <div 
-      data-theme={args.theme}
       dir={args.direction}
       className="min-h-screen bg-background p-4"
     >
@@ -112,7 +106,6 @@ DefaultCard.args = {
   showDescription: true,
   showContent: true,
   showFooter: true,
-  theme: "light",
   direction: "ltr",
   title: "Card title",
   description: "Optional description",
@@ -129,7 +122,6 @@ export const CardListStory = (args) => {
 
   return (
     <div 
-      data-theme={args.theme}
       dir={args.direction}
       className="min-h-screen bg-background p-4"
     >
@@ -157,7 +149,6 @@ CardListStory.args = {
   itemCount: 3,
   showItemTitle: true,
   showItemContent: true,
-  theme: "light",
   direction: "ltr",
   itemTitle: "List Item",
   itemContent: "This is list item content",
@@ -175,11 +166,6 @@ CardListStory.argTypes = {
   showItemContent: {
     control: "boolean",
     defaultValue: true,
-  },
-  theme: {
-    control: "select",
-    options: ["light", "dark"],
-    defaultValue: "light",
   },
   direction: {
     control: "select",

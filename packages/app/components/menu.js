@@ -105,7 +105,7 @@ export default function ElementMenu(oProps) {
     if (iconset) oParams.iconset = iconset;
 
     const sortedItems = [...oProps.items].sort((a, b) => {
-        // приводим primary к 0/1
+        
         const pa = (a.primary === true || a.primary === 1) ? 1 : 0;
         const pb = (b.primary === true || b.primary === 1) ? 1 : 0;
         return pb - pa;
