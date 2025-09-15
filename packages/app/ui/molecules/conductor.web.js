@@ -17,7 +17,7 @@ import { useLayoutData } from 'app/context/layout';
 import { useCurrentUser } from 'app/context/user'
 import Search from 'app/ui/molecules/search';
 import DynamicMenu from 'app/components/nav/menu-dynamic';
-import { storageClear, menuItemsFilter} from 'app/lib/util';
+import { storageClear, menuItemsFilter } from 'app/lib/util';
 import { subscribe } from 'app/ui/atoms/socket';
 import { fetcher } from 'app/lib/fetcher';
 import { useBottomSheetData } from 'app/context/bottomsheet';
@@ -101,25 +101,28 @@ const AddMenu = (menu, filter) => {
             },);
         }
     }
+    return <Row className="gap-x-2">
+        {addButtonsSet.map((button) => {
 
-    return addButtonsSet.map((button) => {
+            let btn = undefined;
+            if (button.section)
+                btn = <Search section={button.section} params={{ trigger: { size: "sm" } }} />
+            else {
+                btn = <Button title={t(button.title)} startDecorator={button.icon} rounded size="base" variant="secondary" onPress={() => (handleFormModal(button, event, setPageData))} />;
+                btn = (button.link && button.name != "Add") ? <Link href={button.link} >{btn}</Link> : btn
+            }
 
-        let btn = undefined;
-        if (button.section)
-            btn = <Search section={button.section} params={{ trigger: { size: "sm" } }} />
-        else {
-            btn = <Button title={t(button.title)} startDecorator={button.icon} variant="secondary" rounded size="sm" onPress={() => (handleFormModal(button, event, setPageData))} />;
-            btn = (button.link && button.name != "Add") ? <Link href={button.link} >{btn}</Link> : btn
-        }
+            return (
 
-        return (
-            <View className=" " key={`add-${button.icon}`} >
-                {btn}
-                <FormModal pageData={pageData} setPageData={setPageData} />
-            </View>
+                <View key={`add-${button.icon}-${button.name}`} >
+                    {btn}
+                    <FormModal pageData={pageData} setPageData={setPageData} />
+                </View>
 
-        )
-    });
+
+            )
+        })}
+    </Row>
 }
 
 function ConductorMenu({ routes, index, t, setIndex, getNumCols, currentBreakpoint, onChangeRoute, leftSideBar }) {
@@ -207,7 +210,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, currentBreakpoi
     />
 }
 
-const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, headerSettings, AddBlocksCnt, layoutName }) => {
+const LeftSideBarContainer = ({ menu, routes, currentUser, index, leftSideBarWidth, setIndex, headerSettings, AddBlocksCnt, layoutName }) => {
     const menuSettings = getMenuSettings(menu.object, menu.config, menu);
     const { t } = useTranslation();
     const addButtons = AddMenu(menu, 'hideInSideBar');
@@ -243,7 +246,7 @@ const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, head
 const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled, isHideCover }) => {
     const coverRef = useRef(null);
     const menuRef = useRef(null);
-     const isDesktop = useIsDesktop();
+    const isDesktop = useIsDesktop();
     const scrollValue = useSharedValue(isCoverDisabled ? 0 : 1);
     const hideDefaultHeaderFrom = useSharedValue(200);
     const coverHeight = useSharedValue(0);
@@ -314,14 +317,14 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled,
     const animatedStyleHeaderSpacer = useAnimatedStyle(() => {
         return {
             display: scrollValue.value == 1 || (isCoverDisabled && !isDesktop) ? 'none' : 'flex',
-            height: scrollValue.value == 1 || (isCoverDisabled && !isDesktop)  ? '0px' : (coverHeight.value + menuHeight.value) + 'px',
+            height: scrollValue.value == 1 || (isCoverDisabled && !isDesktop) ? '0px' : (coverHeight.value + menuHeight.value) + 'px',
 
         };
     }, [scrollValue, coverHeight.value, menuHeight.value]);
 
     return (
         <>
-            <Animated.View style={[{ zIndex: 'z-50' }, animatedStyleHeaderSpacer]}/>
+            <Animated.View style={[{ zIndex: 'z-50' }, animatedStyleHeaderSpacer]} />
             <Animated.View className={`${conductorTheme.cover_base} cover-1`} style={[{ zIndex: 'z-50' }, animatedStyleHeaderCommon]}>
                 <Animated.View style={[{}, animatedStyleHeaderCover]}>
                     <ViewRef ref={coverRef} className={conductorTheme.cover_content}   >
@@ -391,7 +394,8 @@ const RenderSceneHeader = ({ route, setFilterValue }) => {
     )
 };
 
-export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks=[], leftSideBarWidth = appSetting('conductor', 'sidebar_width'), skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 106 }) {
+
+export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks = [], leftSideBarWidth = appSetting('conductor', 'sidebar_width'), skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 106 }) {
     const uniRef = useRef();
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
@@ -433,15 +437,15 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
     };
 
     useEffect(() => {
-       const foundIndex = routes.findIndex(function (item) {
+        const foundIndex = routes.findIndex(function (item) {
             if (useSectionAsMenu) {
                 return data.url === item.key;
             } else {
                 return item.key.includes('?') ? data.url === item.key : cleanUrl === item.key;
             }
         });
-        if (foundIndex !==index);
-            setIndex(foundIndex)
+        if (foundIndex !== index);
+        setIndex(foundIndex)
     }, [ts]);
 
     const currentRoute = routes.find((item) => item.index === index);
@@ -454,7 +458,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
         initialHeaderSettings.offset = false;
     }
     const [headerSettings, setHeaderSettings] = useState(initialHeaderSettings);
-    
+
     const [numColumns, setNumColumns] = useState(getNumCols(currentBreakpoint, currentRoute, leftSideBar));
 
     const {
@@ -601,7 +605,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
     const setFilterValue = (values) => {
         setIndex((prevIndex) => {
             setRoutes((prevRoutes) => {
-                const newRoutes = [...prevRoutes]; 
+                const newRoutes = [...prevRoutes];
                 values.forEach((value) => {
                     const name = value.name;
                     const val = value.value;
@@ -616,10 +620,10 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
                 newRoutes[prevIndex].endpoint.finished = false;
                 newRoutes[prevIndex].data = [];
                 newRoutes[prevIndex].endpoint.params.start = 0;
-                return newRoutes; 
+                return newRoutes;
             });
 
-            return prevIndex; 
+            return prevIndex;
         });
     };
 
@@ -676,8 +680,8 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
         const contentPaddingClass = header ? '' : '';
 
         const isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
-        const isLeftCol = (route?.leftSideBarBlocks?.length > 0 );
-        console.log("isLeftCol", route?.leftSideBarBlocks)
+        const isLeftCol = (route?.leftSideBarBlocks?.length > 0 && (layoutName === 'profile') || (leftSideBar && layoutName !== 'profile'));
+
         const TabFlashListM = useMemo(() => {
             return <UniList
                 scrollProps={header ?
@@ -745,6 +749,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
                                 setIndex={setIndex}
                                 menu={menu}
                                 routes={routes}
+
                                 currentUser={currentUser}
                                 leftSideBarWidth={leftSideBarWidth}
                                 headerSettings={headerSettings}
@@ -775,7 +780,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
                     })()}>
                         <View className={`${cd('p-md')} fixed-process `}>
                             {route?.sidebar?.content.map((item, index) => {
-                                return <ItemRenderer unitType={sidebarUnitType} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} />
+                                return <ItemRenderer key={`${route?.index}-${item.id}`} unitType={sidebarUnitType} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} />
                             })}
                             <View><BlockByName data={route.pageData ? route.pageData : data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1} /></View>
                         </View>
@@ -837,11 +842,11 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
         <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
             {(isUseCurrentHeader || isDesktop) && headerComponent}
             <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
-            <View className={`${layoutName === 'profile' ? conductorTheme.content_max_width : ''} mx-auto w-full min-h-screen ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}>
+            <View className={`${layoutName === 'profile' ? conductorTheme.content_max_width : ''} mx-auto w-full lg:py-2 min-h-screen ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}>
                 {sceneHeaderComponent}
                 <RenderScene AddBlocksCnt={AddBlocksCnt} prevRoute={prevRoute} headerHeight={isShowFilters && routes.length > 1 ? defaultHeaderHeight + 52 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
             </View>
-           
+
         </View>
     );
 }

@@ -1,6 +1,6 @@
 import { DataByName } from 'app/components/block'
 import { Conductor } from 'app/ui/molecules/conductor';
-import { getLayout } from 'app/lib/util';
+import { getBlocksFromData } from 'app/lib/util';
 import { useMemo} from 'react';
 import { useCurrentUser } from 'app/context/user'
 import { processBlocks } from 'app/lib/conductor-helpers';
@@ -40,7 +40,15 @@ export default function PageLayout(props) {
         menu.items.push({id:-1, name: props.uri, title:'', link: props.data.url, hideInTop: true});
     }
     const pageData = props.data;
-    const blocks = processBlocks(props.blocks);
+    //const blocks = processBlocks(props.blocks);
+  
+
+    const renderedBlocks = useMemo(() => {
+        const initialBlocks = props.blocks || getBlocksFromData(pageData);
+        return processBlocks(initialBlocks);
+    }, [props.blocks, pageData.ts]); 
+
+    console.log("renderedBlocks.mainBlocksrenderedBlocks.mainBlocks", renderedBlocks.mainBlocks)
 
     return (
         <Conductor 
@@ -48,10 +56,10 @@ export default function PageLayout(props) {
             isHideDefaultHeader={false} 
             menu={menu} 
             data={pageData} 
-            blocks={blocks.mainBlocks}
+            blocks={renderedBlocks.mainBlocks}
             useSectionAsMenu={false}
             leftSideBar={leftSideBar}
-            leftSideBarBlocks={blocks.leftBlocks}
+            leftSideBarBlocks={renderedBlocks.leftBlocks}
         />
     )
 

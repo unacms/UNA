@@ -25,7 +25,7 @@ function BlockItemRenderer({ route, numColumns, item, unit, module, unitMode, un
         return <View className='h-px'><Text>&nbsp;</Text></View>;
     }
     return (
-        <View className={`mb-0.5 sm:mb-3 u-max-width-block ${block?.props?.extraProps?.list && !sidebar ? 'lg:h-px overflow-hidden ' : ''}`} key={`${route.index}-${item.id}`}>
+        <View className={`mb-0.5 sm:mb-3 w-full mx-auto u-max-width-block ${block?.props?.extraProps?.list && !sidebar ? 'lg:h-px overflow-hidden ' : ''}`} key={`${route.index}-${item.id}`}>
             {block}
         </View>
     );
