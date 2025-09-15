@@ -342,7 +342,6 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled,
                     {tabBarObj}
                 </View>
             </Animated.View>
-
         </>
     )
 };
@@ -359,12 +358,6 @@ const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIn
                     <ConductorMenu currentUser={currentUser} leftSideBar={leftSideBar} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} currentBreakpoint={currentBreakpoint} onChangeRoute={onChangeRoute} />
                 </View>
                 {(!!pageData.cover_block?.actions_menu) && <Row className="hidden lg:block items-center   ">
-                    {/*isHideCover && <CoverMenu
-                        {...pageData.cover_block.actions_menu}
-                        uri={pageData.uri}
-                        isSplitMenu={true}
-                        containerClasses="gap-x-2"
-                    />*/}
                     {!!appSetting('cover', 'more_menu_in_navbar', pageData?.module) && <Row className="gap-2">
                         <CoverMenu
                             {...pageData.cover_block.actions_menu}
@@ -379,37 +372,8 @@ const TabBar = ({ menu, routes, leftSideBar, pageData, currentUser, index, setIn
                         /></Row>}
                 </Row>}
             </TopSidebar>
-
         )
     }
-};
-
-const TopSideBarContainer = ({ routes, index, setIndex, onChangeRoute }) => {
-    return <Row className={conductorTheme.topmenu_cnt}>
-        {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
-
-            let btn = <Button
-                variant={a.index == index ? conductorTheme.topmenu_button_variant_active : conductorTheme.topmenu_button_variant}
-                size={conductorTheme.topmenu_button_size}
-                pressed={a.index == index ? conductorTheme.topmenu_button_pressed : false}
-                title={(a.title)}
-                align={conductorTheme.topmenu_button_align}
-                fullWidth={conductorTheme.topmenu_button_fullWidth}
-                addon={!appSetting('conductor', 'show_nav_counters') && a.addon ? null : a.addon}
-                key={`tab-${a.index}`}
-                hitArea="lg"
-                onPress={() => {
-                    setIndex(a.index);
-                    window.history.pushState({}, '', '/' + a.key);
-                    if (onChangeRoute) {
-                        onChangeRoute(a);
-                    }
-                }}
-            />
-
-            return btn
-        })}
-    </Row>
 };
 
 const RenderSceneHeader = ({ route, setFilterValue }) => {
@@ -433,7 +397,6 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
     const { layoutName: tmplLayout, density } = useLayoutSettings();
     const toasterRef = useRef(); // ref for toaster
     const cleanUrl = data.url.split("?")[0];
-    const windowHeight = useWindowHeight();
     const currentBreakpoint = useBreakpoint();
     const isDesktop = useIsDesktop();
     const initedTabs = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu, leftSideBarBlocks);
@@ -637,7 +600,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
     const setFilterValue = (values) => {
         setIndex((prevIndex) => {
             setRoutes((prevRoutes) => {
-                const newRoutes = [...prevRoutes]; // Актуальные маршруты
+                const newRoutes = [...prevRoutes]; 
                 values.forEach((value) => {
                     const name = value.name;
                     const val = value.value;
@@ -652,12 +615,10 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
                 newRoutes[prevIndex].endpoint.finished = false;
                 newRoutes[prevIndex].data = [];
                 newRoutes[prevIndex].endpoint.params.start = 0;
-
-                console.log("newRoutes2", newRoutes);
-                return newRoutes; // Обновляем состояние
+                return newRoutes; 
             });
 
-            return prevIndex; // Возвращаем актуальный index (он не изменяется в этой функции)
+            return prevIndex; 
         });
     };
 
@@ -715,8 +676,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
 
 
         const isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
-        const isLeftCol = route?.leftSideBarBlocks?.length > 0 && (layoutName === 'profile');
-
+        const isLeftCol = (route?.leftSideBarBlocks?.length > 0 && (layoutName === 'profile') || (leftSideBar && layoutName !== 'profile'));
         const TabFlashListM = useMemo(() => {
             return <UniList
                 scrollProps={header ?
@@ -754,20 +714,10 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
             />
         }, [dataItems, numColumns, dataItems.length, isInPanel]);
 
-        if (layoutName == 'navigator') {
-            return (
-                <View className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'} ${layoutName !== 'navigator' && cd('p-md')} ${contentPaddingClass}`}>
-                    {TabFlashListM}
-                    {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
-                </View>
-            )
-        }
-
         const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
         const layout_cols = !isLeftCol && !isRightCol ? 'c' : !isLeftCol ? 'c-r' : !isRightCol ? 'l-c' : 'l-c-r';
         const cellsCustomConfig = appSetting('layouts', route?.pageData?.uri) || appSetting('layouts', `cols-${layout_cols}`);
         const pageData = route.inited ? route.pageData : prevRoute.pageData;
-        //if (cellsCustomConfig?.adjustable) {
         return (
             <PanelGroup
                 key={`${pageData?.uri || 'default'}-pnl2-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
@@ -787,8 +737,17 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
                         const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.left || {};
                         return panelProps;
                     })()}>
-                        <View className={`fixed-process ${cd('p-md')}`}>
+                        <View className={`fixed-process ${layoutName == 'profile' ? cd('p-md') : appSetting('conductor', 'sidebar_container')}`}>
                             {AddBlocksCnt}
+                            <LeftSideBarContainer
+                                index={index}
+                                setIndex={setIndex}
+                                menu={menu}
+                                routes={routes}
+                                currentUser={currentUser}
+                                leftSideBarWidth={leftSideBarWidth}
+                                headerSettings={headerSettings}
+                                AddBlocksCnt={AddBlocksCnt} />
                         </View>
                     </Panel>
                     <PanelHandler
@@ -883,89 +842,13 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
 
     ), [cntWidth, currentUser, routes, index, isHideCover]);
 
-    const topSideBarComponent = useMemo(() => (
-        <TopSideBarContainer
-            routes={routes}
-            index={index}
-            setIndex={setIndex}
-            onChangeRoute={onChangeRoute} />
-
-    ), [routes, index, setIndex, onChangeRoute]);
-
-
     const isUseCurrentHeader = (layoutName === 'profile' || layoutName === 'profile-alt') && !isCoverDisabled
-
-    if (leftSideBar) {
-
-        const offset = 64
-        let a = <View style={{ minHeight: (windowHeight - offset) }} className={`${leftSideBarWidth}  ${conductorTheme.left_menu_cnt} ${appSetting('conductor', 'sidebar')}`}>
-            {leftSideBarComponent}
-        </View>
-        const sidebar = appSetting('conductor', 'sidebar')
-        let rc = ""
-        if (sidebar == 'rounded') {
-            rc = "items-start justify-start mt-4"
-            a = <View className={`${leftSideBarWidth} mr-4 hidden lg:block sm:rounded-2xl bg-card `}>
-                {leftSideBarComponent}
-            </View>
-        }
-
-        const MainComponent = (isInPanel = false) => <View className=" flex-auto ">
-            {(headerSettings.showAltTopMenu) && topSideBarComponent}
-            {/*(!isDesktop && layoutName == 'navigator' && leftSideBarBlocks.length > 0) && <View className="items-start ml-4 mt-2 mb-2">
-                                <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />
-                            </View>*/}
-            {sceneHeaderComponent}
-            <RenderScene isCoverDisabled={isCoverDisabled} prevRoute={prevRoute} headerHeight={isShowFilters && routes.length > 1 ? defaultHeaderHeight + 52 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} isInPanel={isInPanel} />
-        </View>
-
-        if (cellsCustomConfig?.adjustable) {
-            return (
-                <View className={appSetting('layout', 'max_width')} style={{ height: '100vh', position: 'relative' }}>
-                    <PanelGroup key={`${data?.uri}-pnl1-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`} autoSaveId={cellsCustomConfig.sizable ? `cells-navigator` : undefined} direction="horizontal" className={appSetting('layout', 'max_width') + " h-full"}>
-                        {isShowColumn(true, currentBreakpoint, cellsCustomConfig.cells?.left) && <>
-                            <Panel {...(() => {
-                                const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.left || {};
-                                return panelProps;
-                            })()}>
-                                {leftSideBarComponent}
-                            </Panel>
-                            <PanelHandler
-                                gap="hidden lg:block" sizable={cellsCustomConfig.sizable}
-                            /></>}
-                        <Panel {...(() => {
-                            const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.center || {};
-                            return panelProps;
-                        })()}>
-                            <View className="flex-1 sm:p-4 h-full overflow-hidden" >
-                                {MainComponent(true)}
-                            </View>
-                        </Panel>
-                    </PanelGroup>
-                </View>
-            );
-        }
-
-        return (
-            <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
-                {isUseCurrentHeader && headerComponent}
-                <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
-                <View style={{ minHeight: (windowHeight - offset) }} className={appSetting('layout', 'max_width  ') + 'mx-auto w-full  '} >{/*mt-28 lg:mt-0*/}
-                    <Row className={rc}>
-                        {a}
-                        {MainComponent()}
-                    </Row>
-                </View>
-               
-            </View>
-        );
-    }
 
     return (
         <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
             {(isUseCurrentHeader || isDesktop) && headerComponent}
             <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
-            <View className={`${conductorTheme.content_max_width} mx-auto w-full min-h-screen ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}>
+            <View className={`${layoutName === 'profile' ? conductorTheme.content_max_width : ''} mx-auto w-full min-h-screen ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}>
                 {sceneHeaderComponent}
                 <RenderScene isCoverDisabled={isCoverDisabled} prevRoute={prevRoute} headerHeight={isShowFilters && routes.length > 1 ? defaultHeaderHeight + 52 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
             </View>

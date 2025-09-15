@@ -479,10 +479,10 @@ export function getNumCols(currentBreakpoint, currentRoute, leftSideBar) {
 export function LeftSidebar({ title, addButtons, children, width, menu }) {
     const { t } = useTranslation()
     return (
-        <View className={` ${appSetting('conductor', 'sidebar_container')}`}>
-            <View style={{ height: 64 }} />
+        <View>
+           
                 {(!!title || !!addButtons?.length > 0) && (
-                    <Row className="sticky top-[64px] z-10 justify-between items-center h-12 px-2 py-1.5 mb-2.5 z-10 ">
+                    <Row className="sticky z-10 justify-between items-center h-12 px-2 py-1.5 mb-2.5 z-10 ">
                         <Text className=" text-2xl tracking-tight truncate mr-auto font-bold leading-11 text-card-foreground hidden lg:flex  ">
                             {t(title)}
                         </Text>

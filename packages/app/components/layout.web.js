@@ -270,8 +270,7 @@ export default function Layout(props) {
     }, []);
     const { layoutName: pageLayoutName } = useLayoutSettings();
     const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, isDesktop, layoutName, data.config));
-
-
+    
     useEffect(() => {
         let a = getHeaderSettings(uri, isDesktop, layoutName, data.config);
         if (pageLayoutName == 'ver') {
@@ -280,13 +279,13 @@ export default function Layout(props) {
         }
         
         // Disable offset for navigator layout with adjustable panels
-        if (layoutName === 'navigator') {
+       /* if (layoutName === 'navigator') {
             const cellsCustomConfig = appSetting('layouts', 'navigator') || appSetting('layouts', 'cols-l-c');
             if (cellsCustomConfig?.adjustable) {
                 a.offset = false;
             }
         }
-
+*/
         if (!deepEqual(headerSettings, a)) {
             setHeaderSettings(a);
         }
@@ -342,15 +341,11 @@ const Content = React.memo(({ children, headerSettings, currentUser, layoutName,
     const isHideHeader = (appSetting('layout', 'hide_header_for_non_logged') && !currentUser) || appSetting('layout', 'hide_header_for_all');
     return (
         <View className="w-full items-stretch cnt-root mx-auto flex-row " key={url}>
-            
                 <View className={((layoutName != 'messenger' && layoutName != 'post' && !isHideHeader) ? ' pb-16 web:pb-0 lg:pb-0 ' : '') + ' w-full mx-auto'}>{/*mb-16* TODO lg:pb-0*/}
-                    
-                        {(headerSettings.offset && !isHideHeader) && <View className={` ${appSetting('layout', 'header', 'offset')}`} />}{/*use this to offset the header globally*/}
-                        <Informer />
-                        {children}
-                    
+                    {(headerSettings.offset && !isHideHeader) && <View className={` ${appSetting('layout', 'header', 'offset')}`} />}{/*use this to offset the header globally*/}
+                    <Informer />
+                    {children}
                 </View>
-            
         </View>
     );
 });

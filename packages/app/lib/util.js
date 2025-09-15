@@ -423,10 +423,9 @@ export function getLayoutName(data, uri) {
 
 export function getHeaderSettings(uri, isDesktop, layout, config) {
     let settings = getPageSettings(config, uri);
-
     if (!settings?.headerSettings) {
         if (layout == 'navigator') {
-            settings = { headerSettings: { offset: false, header: false, backButton: false, menu: true, footer: false } }
+            settings = { headerSettings: { offset: isDesktop? true: false, header: false, backButton: false, menu: true, footer: false } }
         }
         if (layout == 'messenger') {
             settings = { headerSettings: { offset: false, header: false, backButton: false, menu: true, footer: true } }
