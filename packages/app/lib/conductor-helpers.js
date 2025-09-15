@@ -100,8 +100,7 @@ export function fillTabs(
     data,
     blocks,
     currentUser,
-    useSectionAsMenu,
-    leftSideBarBlocks
+    useSectionAsMenu
 ) {
     let menuItems = menuItemsByName(
         menu.object,
@@ -148,10 +147,10 @@ export function fillTabs(
             i.icon = item.icon
             i.endpoint = contentAndEndpoint.endpoint
             i.sidebar = contentAndEndpoint.sidebar
+            i.leftbar = contentAndEndpoint.leftbar
             i.config = data?.config
             i.storageKeyValue = storageKey(i.link, false)
             i.blocks = blocks
-            i.leftSideBarBlocks = leftSideBarBlocks
             i.pageData = data
             if (appSetting('cache', 'list')) {
                 let stateC = getDataFromCache('ul:state', i.storageKeyValue)
@@ -170,6 +169,7 @@ export function fillTabs(
         } else {
             let contentAndEndpoint = processUrl(data, blocks)
             i.sidebar = contentAndEndpoint.sidebar
+            i.leftbar = contentAndEndpoint.leftbar
             i.link = item.link
             i.hideInTop = item.hideInTop
             i.item = item
@@ -243,6 +243,7 @@ export async function parseData(routes, index, setRoutes, newData) {
                 {},
                 routes,
                 false,
+                false,
                 null
             )
         }
@@ -287,6 +288,7 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
             blocks,
             routes,
             contentAndEndpoint.sidebar,
+            contentAndEndpoint.leftbar,
             sResponse.data
         )
     }
@@ -300,6 +302,7 @@ export function addMoreData(
     blocks,
     routes,
     sidebar = false,
+    leftbar = false,
     pageData = null
 ) {
     let hasChanged = false
@@ -324,8 +327,8 @@ export function addMoreData(
 
         if (pageData && !route.pageData) {
             updatedRoute.pageData = pageData
-            const blocks2 = processBlocks(updatedRoute.blocks)
-            updatedRoute.leftSideBarBlocks = blocks2.leftBlocks
+         //   const blocks2 = processBlocks(updatedRoute.blocks)
+          //  updatedRoute.leftSideBarBlocks = blocks2.leftBlocks
         }
 
         if (pageData?.config && !route.config) {
@@ -334,6 +337,9 @@ export function addMoreData(
 
         if (sidebar) {
             updatedRoute.sidebar = sidebar
+        }
+        if (leftbar) {
+            updatedRoute.leftbar = leftbar
         }
 
         storageSet('ul:data', updatedRoute.storageKeyValue, {
@@ -394,16 +400,21 @@ export function processUrl(data, blocks) {
     const contentAndEndpoint = Object.values(blocks).reduce(
         (acc, block) => {
             const b = getContent(data, block)
-
-            if (b.type === 'browse' && !block.sidebar) {
-                acc = processBrowse(acc, b)
-            } else {
-                if (block.sidebar) {
-                    acc.sidebar.content = processContent(acc.sidebar, b)
-                }
-                if (!block.sidebar || block.list) {
-                    if (!block.hidden && !block.leftbar)
-                        acc.content = processContent(acc, b)
+            
+            if (block.leftbar){
+                 acc.leftbar.content = processContent(acc.leftbar, b)
+            }
+            else{
+                if (b.type === 'browse' && !block.sidebar) {
+                    acc = processBrowse(acc, b)
+                } else {
+                    if (block.sidebar) {
+                        acc.sidebar.content = processContent(acc.sidebar, b)
+                    }
+                    if (!block.sidebar || block.list) {
+                        if (!block.hidden && !block.leftbar)
+                            acc.content = processContent(acc, b)
+                    }
                 }
             }
             return acc
@@ -412,18 +423,18 @@ export function processUrl(data, blocks) {
             content: [],
             endpoint: null,
             sidebar: { endpoint: null, content: [] },
+            leftbar: { endpoint: null, content: [] },
         }
     )
-
     return contentAndEndpoint
 }
 
-export function getNumCols(currentBreakpoint, currentRoute, leftSideBar) {
+export function getNumCols(currentBreakpoint, currentRoute) {
     const customNumCol = callFn('getNumColsForConductor', [
         currentBreakpoint,
         currentRoute,
-        leftSideBar,
     ])
+    const leftSideBar = currentRoute?.leftbar?.content?.length 
     if (customNumCol > 0) return customNumCol
     const isWeb = Platform.OS === 'web'
     const blocksroutes = currentRoute?.blocks
@@ -499,23 +510,24 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
 
 export function TopSidebar({
     styles,
-    leftSideBar,
     addButtons,
     children,
     title,
     layout,
+    layoutName,
     omitDefaultBackground = false,
 }) {
     const { currentUser } = useCurrentUser()
+    const isHideOnDesktop = layoutName !== 'profile';
     return (
         <View
             style={styles}
             className={` ${!omitDefaultBackground ? conductorTheme.menu : ''} ${
-                leftSideBar ? 'lg:hidden' : ''
+                isHideOnDesktop ? 'lg:hidden' : ''
             }`}
         >
             <View
-                className={`${leftSideBar ? '' : 'mx-auto'} w-full ${
+                className={`${isHideOnDesktop ? '' : 'mx-auto'} w-full ${
                     conductorTheme.menu_max_width
                 }`}
             >

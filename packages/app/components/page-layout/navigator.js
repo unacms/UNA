@@ -39,27 +39,15 @@ export default function PageLayout(props) {
     if (!isNamePresent){
         menu.items.push({id:-1, name: props.uri, title:'', link: props.data.url, hideInTop: true});
     }
-    const pageData = props.data;
-    //const blocks = processBlocks(props.blocks);
-  
-
-    const renderedBlocks = useMemo(() => {
-        const initialBlocks = props.blocks || getBlocksFromData(pageData);
-        return processBlocks(initialBlocks);
-    }, [props.blocks, pageData.ts]); 
-
-    console.log("renderedBlocks.mainBlocksrenderedBlocks.mainBlocks", renderedBlocks.mainBlocks)
 
     return (
         <Conductor 
             layoutName={props.layoutName}
             isHideDefaultHeader={false} 
             menu={menu} 
-            data={pageData} 
-            blocks={renderedBlocks.mainBlocks}
+            data={props.data} 
+            blocks={props.blocks}
             useSectionAsMenu={false}
-            leftSideBar={leftSideBar}
-            leftSideBarBlocks={renderedBlocks.leftBlocks}
         />
     )
 

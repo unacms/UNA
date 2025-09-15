@@ -94,6 +94,10 @@ function getCoverBackButton(is_person) {
 
 export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
     const isDesktop = useIsDesktop();
+
+    if (!data?.profile?.module)
+        return null
+
     const bPerson =
         data.profile.module == 'bx_persons' ||
         appSetting('cover', 'show_pic_by_module', data?.profile?.module)

@@ -46,11 +46,6 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
 
     }, [pageData.ts, uri, pageData.url]);
 
-    const renderedBlocks = useMemo(() => {
-        const initialBlocks = blocks || getBlocksFromData(pageData);
-        return processBlocks(initialBlocks);
-    }, [blocks, pageData.ts]); //??????
-
     const isCoverDisabled = appSetting('cover', 'view_by_module', pageData.cover_block.profile?.module) == 'none';
 
     return (
@@ -61,8 +56,7 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
             isCoverDisabled={isCoverDisabled}
             menu={menu}
             data={pageData}
-            blocks={renderedBlocks.mainBlocks}
-            leftSideBarBlocks={renderedBlocks.leftBlocks}
+            blocks={blocks || getBlocksFromData(pageData)}
         />
     )
 }
