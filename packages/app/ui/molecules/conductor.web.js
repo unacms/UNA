@@ -357,7 +357,7 @@ const TabBar = ({ menu, routes, pageData, layoutName, currentUser, index, setInd
                 <View className="flex-1">
                     <ConductorMenu currentUser={currentUser} routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} currentBreakpoint={currentBreakpoint} onChangeRoute={onChangeRoute} />
                 </View>
-                {(!!pageData.cover_block?.actions_menu) && <Row className="hidden lg:block items-center   ">
+                {(!!pageData.cover_block?.actions_menu) && <Row className="hidden lg:block items-center mx-3 ">
                     {!!appSetting('cover', 'more_menu_in_navbar', pageData?.module) && <Row className="gap-2">
                         <CoverMenu
                             {...pageData.cover_block.actions_menu}
