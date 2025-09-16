@@ -232,7 +232,7 @@ export default function MenuAccount({ buttonProps, children }) {
                 footer={
                     menu_footer_items.length > 0 ? (
                         <MenuFooter
-                            cntClasses="w-full flex-row flex-wrap gap-1 p-1"
+                            cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-1 p-2 pb-1 mt-1"
                             variant="ghost"
                             size="sm"
                             itemClassName="text-sm p-1"

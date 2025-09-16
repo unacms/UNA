@@ -66,8 +66,14 @@ export default function ElementLink(props) {
 
     const sizeClass = (() => {
         if (!size) return '';
-        const token = ThemeLinkSizes[size]?.padding;
         const hitareaClass = hitarea === false ? '' : (ThemeLinkSizes[size]?.hitarea_class || '');
+        // For ghost variant: use pseudo padding instead of DOM padding
+        if (selectedVariant === 'ghost') {
+            const padSize = ['xs','sm','md','lg'].includes(size) ? size : 'md';
+            const pseudoPadClass = `u-link-ghost-pad-${padSize}`;
+            return [pseudoPadClass, hitareaClass].filter(Boolean).join(' ');
+        }
+        const token = ThemeLinkSizes[size]?.padding;
         return [token || '', hitareaClass].filter(Boolean).join(' ');
     })();
 

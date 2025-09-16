@@ -112,12 +112,12 @@ export default function PageLayout(props) {
                 </View>
             </View>
             <MenuFooter
-                cntClasses="mx-auto flex-row flex-wrap gap-3 p-1"
-                variant="ghost"
-                size="sm"
-                itemClassName="text-sm p-1"
-
-            />
+                            cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
+                            variant="ghost"
+                            size="sm"
+                            itemClassName="text-sm p-1"
+                            
+                        />
         </View>
     ) : (
         <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto p-3 pt-16">
@@ -126,12 +126,12 @@ export default function PageLayout(props) {
             </View>
             <PageContent >{Block}</PageContent>
             <MenuFooter
-                cntClasses="mx-auto flex-row flex-wrap gap-3 p-1"
-                variant="ghost"
-                size="sm"
-                itemClassName="text-sm p-1"
-
-            />
+                            cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
+                            variant="ghost"
+                            size="sm"
+                            itemClassName="text-sm p-1"
+                            
+                        />
         </View>
     );
 

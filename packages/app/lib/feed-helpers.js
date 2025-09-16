@@ -557,7 +557,7 @@ export const Author = memo(({ data, url, t }) => {
                                 variant="ghost"
                                 className="u-time-hitarea relative "
                             >
-                                <Time size="sm" variant="link" stylesNameAdd="text-xs leading-5"
+                                <Time size="sm" variant="link" 
                                     ts={data.date}
                                 />
                             </Link>
