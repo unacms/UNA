@@ -150,7 +150,7 @@ const SplashTextComponent = (props) => {
 
 const JoinTextComponent = (props) => {
     return (
-        <AnimatedView className="w-[200px] h-[200px] lg:w-80 lg:h-80 web:duration-300">
+        <AnimatedView className="w-40 h-40 lg:w-80 lg:h-80 web:duration-300">
             <SvgFile src_dark="create-account-dark.svg" src_default="create-account-light.svg" alt="Create account illustration" />
         </AnimatedView>
     )

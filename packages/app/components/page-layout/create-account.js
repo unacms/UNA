@@ -81,7 +81,7 @@ export default function PageLayout(props) {
             <View className="w-full lg:flex-row mx-auto my-auto max-w-7xl">
                 <View className="my-auto flex-col lg:w-1/2 items-center lg:items-start flex-auto p-4 sm:p-8 xl:p-16 mt-16 lg:mt-0" accessible={true}>
                     {appStatic('join_text')}
-                    <AnimatedView direction="up" className="flex-auto hidden lg:flex items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">
+                    <AnimatedView direction="up" className="flex-auto flex items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">
                         <Text
                             accessible={true}
                             accessibilityRole="heading"
