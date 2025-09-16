@@ -41,7 +41,7 @@ export default function HeaderElement({ mode }) {
                                 return <MenuAccount />
                             case "link":
                                 return (
-                                    <Link href={item.href == '{messenger}' ? appSetting('messenger', 'url') : item.href}>
+                                    <Link {...(item.target ? { target: item.target } : {})} href={item.href == '{messenger}' ? appSetting('messenger', 'url') : item.href}>
                                         <Button {...(item.props || {})}
                                             {...(item.href === '{messenger}'
                                                 ? {
