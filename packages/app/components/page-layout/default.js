@@ -6,6 +6,8 @@ import Animated from 'react-native-reanimated';
 import { appStatic } from 'app/lib/app-static'
 
 
+
+
 export default function PageLayout(props) {
     const refer = useRef();
     const content = (
@@ -13,7 +15,9 @@ export default function PageLayout(props) {
             <View className='sm:p-4 web:duration-300 w-full'>
                 {props.children}
             </View>
+
            {appStatic('components_footer')}
+
         </Animated.ScrollView>
     );
 
