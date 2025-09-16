@@ -1210,7 +1210,7 @@ export const settingsDefault = {
                 hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
             },
             sm: {
-                padding: ' px-1 -mx-1 active:scale-95 rounded-md items-center flex ',
+                padding: '  active:scale-95 rounded-md items-center flex ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-sm ',
                 hitSlop: { top: 8, right: 8, bottom: 8, left: 8 },
             },
@@ -1237,8 +1237,8 @@ export const settingsDefault = {
             'u-link-text-text': ' web:duration-200 web:hover:underline text-card-foreground web:hover:text-forground decoration-[1.5px] underline-offset-2 decoration-card-foreground/60 ',
             'u-link-text-trans': ' web:duration-200',
 
-            // Ghost: transparent by default; muted on hover/active
-            'u-link-ghost-cnt': 'group bg-transparent web:hover:bg-muted/60 active:bg-muted ',
+            // Ghost: use pseudo-element for web background; keep native pressed bg
+            'u-link-ghost-cnt': ' group u-link-ghost  ',
             'u-link-ghost-text': ' text-muted-foreground web:group-hover:text-accent ',
             'u-link-ghost-trans': ' web:duration-200 ',
 

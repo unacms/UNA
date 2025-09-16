@@ -127,7 +127,8 @@ export default function ElementLink(props) {
     // Fallback hitSlop from theme by size (native only); explicit prop wins; allow disabling with hitarea={false}
     const resolvedHitSlop = hitSlop ?? (hitarea === false ? undefined : (size ? ThemeLinkSizes[size]?.hitSlop : undefined));
 
-    const composedClassName = [variantClass, sizeClass, className].filter(Boolean).join(' ').trim();
+    const ghostNativePressedClass = selectedVariant === 'ghost' ? ' active:bg-muted rounded-lg ' : '';
+    const composedClassName = [variantClass, sizeClass, ghostNativePressedClass, className].filter(Boolean).join(' ').trim();
 
 
 if (mode == 'text'){
