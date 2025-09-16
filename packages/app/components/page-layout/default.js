@@ -2,9 +2,8 @@ import { View } from 'app/design/view';
 import { getPageWidth } from 'app/lib/util'
 import ScrollList from 'app/ui/molecules/scroll_list'
 import { useRef } from 'react';
-import MenuFooter from 'app/components/nav/menu-footer';
 import Animated from 'react-native-reanimated';
-
+import { appStatic } from 'app/lib/app-static'
 
 
 export default function PageLayout(props) {
@@ -14,16 +13,7 @@ export default function PageLayout(props) {
             <View className='sm:p-4 web:duration-300 w-full'>
                 {props.children}
             </View>
-           
-            <MenuFooter
-                            cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
-                            variant="ghost"
-                            size="sm"
-                            itemClassName="text-sm p-1"
-                            
-                        />
-                        
-              
+           {appStatic('components_footer')}
         </Animated.ScrollView>
     );
 

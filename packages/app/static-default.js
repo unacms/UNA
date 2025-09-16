@@ -17,6 +17,7 @@ import { ThemeName } from 'app/design/theme';
 import { Platform } from 'react-native'
 import AnimatedView from 'app/ui/atoms/animated-view';
 import SvgFile from 'app/ui/molecules/svg-file';
+import MenuFooter from 'app/components/nav/menu-footer';
 
 const isWeb = Platform.OS === 'web';
 
@@ -619,7 +620,13 @@ const ComponentsDummyComponent = (props) => {
 }
 
 const ComponentsFooter = () => {
-    return <></>
+    return <MenuFooter
+            cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
+            variant="ghost"
+            size="sm"
+            itemClassName="text-sm p-1"
+
+        />
 }
 
 const ComponentsPricingHeader = () => {
