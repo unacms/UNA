@@ -21,8 +21,8 @@ export default function PageLayout({ data, blocks, isModal, url }) {
     const [scrollToEnd, setScrollToEnd] = useState(false);
     const [formHeight, setFormHeight] = useState(0);
     const [listWidth, setListWidth] = useState(0)
-    const [containerHeight, setContainerHeight] = useState(0);
-    const [modalFormHeight, setModalFormHeight] = useState(0);
+    //const [containerHeight, setContainerHeight] = useState(0);
+    //const [modalFormHeight, setModalFormHeight] = useState(0);
 
     const localUrl = isModal ? url : useLocalSearchParams().url;
     const commentsData = useMemo(() => DataByName(data, blocks.comments), [data, blocks.comments]);
@@ -91,27 +91,32 @@ export default function PageLayout({ data, blocks, isModal, url }) {
         setListWidth(event.nativeEvent.layout.width - 2)
     }
 
-    const handleContainerLayout = useCallback((event) => {
+    /*const handleContainerLayout = useCallback((event) => {
         setContainerHeight(event.nativeEvent.layout.height)
-    }, []);
+    }, []);*/
 
     const handleLayoutModal = (event) => {
-        setModalFormHeight(event.nativeEvent.layout.height)
+        const h =
+            windowWHeight -
+            offset -
+            event.nativeEvent.layout.height
+        setHeight(h)
     }
 
-    useEffect(() => {
+
+    /*useEffect(() => {
         if (containerHeight > 0){
             const h = Math.max(containerHeight - modalFormHeight, 0);
             setHeight(h);
         }
-    }, [containerHeight, modalFormHeight]);
+    }, [containerHeight, modalFormHeight]);*/
 
 
     if (isModal) {
         // NEEED TO IMPROVE TO AVOID DOUBLE CODE
 
         return (
-            <View className="w-full " onLayout={handleContainerLayout}>
+            <View className="w-full">
                 <View className="w-full " style={{ height: height }}>
                     <CommentsBrowse
                         scrollProps={
@@ -146,9 +151,9 @@ export default function PageLayout({ data, blocks, isModal, url }) {
     return (
         <View {...viewProps} className="flex-1 w-full h-full sm:h-[calc(100vh-16rem)] ">
             <View className={` ${appSetting(
-                    'layout',
-                    'post_container'
-                )} `}>
+                'layout',
+                'post_container'
+            )} `}>
                 <View onLayout={handleListLayout} pointerEvents="box-none" className='w-full flex-1' style={{ marginBottom: !isDesktop ? 0 : formHeight }}>
                     <CommentsBrowse
                         scrollProps={
@@ -171,12 +176,12 @@ export default function PageLayout({ data, blocks, isModal, url }) {
                     />
                 </View>
                 <KbAvoidingView>
-                <View onLayout={handleLayout} style={{ width: listWidth }} className='bg-card ml-[1px] rounded-2xl px-4 py-3 bor web:fixed web:bottom-0 web:lg:bottom-4   w-full max-w-5xl'>
-                    <CommentsForm handleForm={setAddData} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
-                </View>
-            </KbAvoidingView>
+                    <View onLayout={handleLayout} style={{ width: listWidth }} className='bg-card ml-[1px] rounded-2xl px-4 py-3 bor web:fixed web:bottom-0 web:lg:bottom-4   w-full max-w-5xl'>
+                        <CommentsForm handleForm={setAddData} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
+                    </View>
+                </KbAvoidingView>
             </View>
-            
+
         </View>
     );
 }
