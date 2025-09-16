@@ -35,6 +35,8 @@ import Galery from 'app/ui/molecules/galery'
 import { Button } from 'app/design/controls'
 import { useBreakpoint, useWindowHeight } from 'app/context/measure';
 
+const blockTheme = appSetting('theme', 'blocks');
+
 const Item = memo(({ item, index, numColumns, data, unitMode, props }) => (
     <View
         className={
@@ -542,6 +544,9 @@ export default function (props) {
     if (!dataItems.data.length && props.showTitleInside)
          return;
 
+    console.log("propsprops", props)
+
+
 
     return (
         <View className="w-full h-full">
@@ -553,9 +558,9 @@ export default function (props) {
                 title="Show New Posts"
                 size="sm"
             />
-            <View className="w-full  " style={styles}>
+            <View className={`w-full ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''}`} style={styles}>
                 {props.showTitleInside && (
-                    <Row className="items-center justify-between px-2 my-3">
+                    <Row className={`items-center justify-between ${props.showBg ? '': 'px-2 my-3'}`}>
                         <Text className=" text-card-foreground text-xl font-bold leading-none lg:leading-none tracking-tight ">
                             {t(props.block.title)}
                         </Text>

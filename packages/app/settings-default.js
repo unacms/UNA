@@ -147,6 +147,7 @@ export const settingsDefault = {
     context_selector: {
         default_item: '',
         logo: true,
+        logo_mode: 'full'
     },
     cover: {
         use_background: true, //appSetting('layout', 'use_background')
