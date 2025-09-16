@@ -63,7 +63,7 @@ function getContextRoot(data, url, uri) {
     if (!data.current?.id) {
         return {
             url: '/',
-            image: appStatic('logo', { mode: 'full', }),
+            image: appStatic('logo', { mode: appSetting('context_selector', 'logo_mode') }),
             name: false,
         }
     }
