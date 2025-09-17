@@ -9,9 +9,17 @@ export function ParseHtmlClasses(className, tag) {
     return className;
 }
 
-export function ProfileDisplayNameLink(title, url, href, fontSize, actions) {
+export function ProfileDisplayNameLink(title, url, href, fontSize, actions, options) {
+    const inheritColor = options?.inheritColor === true;
+    const inheritTextSize = options?.inheritTextSize === true;
+    const extraTextClass = options?.textClassName || '';
+
+    const baseColorClass = inheritColor ? '' : ' text-secondary-label web:hover:text-primary ';
+    const sizeClass = inheritTextSize ? '' : (fontSize || 'text-sm');
+    const composed = `${baseColorClass} truncate text-ellipsis tracking-tight ${sizeClass} ${extraTextClass}`.trim();
+
     return (
-        <Text className={" text-card-foreground web:hover:text-foreground truncate text-ellipsis " + (fontSize || 'text-sm leading-5')}>
+        <Text className={composed}>
             {title}
         </Text>
     )

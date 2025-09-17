@@ -67,14 +67,17 @@ export default function ElementLink(props) {
     const sizeClass = (() => {
         if (!size) return '';
         const hitareaClass = hitarea === false ? '' : (ThemeLinkSizes[size]?.hitarea_class || '');
+        const textSizeClass = ThemeLinkSizes[size]?.text || '';
+        const roundedClass = ThemeLinkSizes[size]?.rounded || '';
+        const focusClass = ThemeLinkSizes[size]?.focus || '';
         // For ghost variant: use pseudo padding instead of DOM padding
         if (selectedVariant === 'ghost') {
             const padSize = ['xs','sm','md','lg'].includes(size) ? size : 'md';
             const pseudoPadClass = `u-link-ghost-pad-${padSize}`;
-            return [pseudoPadClass, hitareaClass].filter(Boolean).join(' ');
+            return [pseudoPadClass, hitareaClass, textSizeClass, roundedClass, focusClass].filter(Boolean).join(' ');
         }
         const token = ThemeLinkSizes[size]?.padding;
-        return [token || '', hitareaClass].filter(Boolean).join(' ');
+        return [token || '', hitareaClass, textSizeClass, roundedClass, focusClass].filter(Boolean).join(' ');
     })();
 
     const composedClassName = [variantClass, sizeClass, className].filter(Boolean).join(' ').trim();

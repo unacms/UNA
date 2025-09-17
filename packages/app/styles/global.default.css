@@ -14,7 +14,7 @@
         --primary: var(--accent); /*background for primary buttons, links, active states, focus rings. Use use high-contract background from gray-scale or accent-scale.*/
         --primary-foreground: var(--accent-foreground); /*content on primary buttons, active states, primary surfaces*/
         --secondary: var(--neutral-300);  /*background for secondary buttons, secondary surfaces*/
-        --secondary-foreground: var(--neutral-700); /*content on secondary buttons, secondary surfaces*/
+        --secondary-foreground: var(--neutral-800); /*content on secondary buttons, secondary surfaces*/
         --accent: var(--accent-600); /*background for accent buttons, accent surfaces*/
         --accent-foreground: var(--white); /*content on accent buttons, accent surfaces*/
         --muted: var(--neutral-200); /*background for ui items, sections, hover states*/
@@ -26,6 +26,16 @@
         --border: var(--neutral-200); /*borders, dividers, focus rings*/
         --input: var(--white); /*form inputs*/
         --ring: var(--accent-500); /*focus rings*/
+
+        --label: var(--neutral-900); /*Primary text (high emphasis)*/
+        --secondary-label: var(--neutral-800); /*Secondary text (medium emphasis)*/
+        --tertiary-label: var(--neutral-700); /*Tertiary text (low emphasis)*/
+        --quaternary-label: var(--neutral-600); /*Very subtle text (e.g., disabled, placeholder)*/
+        --placeholder-text: var(--neutral-500); /*Placeholder text inside inputs*/
+        --system-background: var(--neutral-50); /*Main surface background*/
+        --secondary-background: var(--neutral-100); /*Secondary layered background*/
+        --tertiary-background: var(--white); /*Card-like background*/
+
 
         /* Box shadow variables for light mode - NativeWind compatible */
         --shadow-xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
@@ -101,11 +111,11 @@
         --card-foreground: var(--neutral-300); /*content on cards, sidebars, navbars*/
         --popover: var(--neutral-900); /*background for popovers, inputs, tooltips, modals, elevated surfaces*/
         --popover-foreground: var(--neutral-200); /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
-        --primary: var(--accent); /*background for primary buttons, links, active states, focus rings. Use use high-contract background from gray-scale or accent-scale.*/
+        --primary: var(--accent-600); /*background for primary buttons, links, active states, focus rings. Use use high-contract background from gray-scale or accent-scale.*/
         --primary-foreground: var(--accent-foreground); /*content on primary buttons, active states, primary surfaces*/
         --secondary: var(--neutral-700);  /*background for secondary buttons, secondary surfaces*/
-        --secondary-foreground: var(--neutral-300); /*content on secondary buttons, secondary surfaces*/
-        --accent: var(--accent-600); /*background for accent buttons, accent surfaces*/
+        --secondary-foreground: var(--neutral-200); /*content on secondary buttons, secondary surfaces*/
+        --accent: var(--accent-500); /*background for accent buttons, accent surfaces*/
         --accent-foreground: var(--neutral-950); /*content on accent buttons, accent surfaces*/
         --muted: var(--neutral-800); /*background for ui items, sections, hover states*/
         --muted-foreground: var(--neutral-400); /*muted content*/
@@ -116,6 +126,15 @@
         --border: var(--neutral-800); /*borders, dividers, focus rings*/
         --input: var(--neutral-900); /*form inputs*/
         --ring: var(--accent-700); /*focus rings*/
+
+        --label: var(--neutral-100); /*Primary text (high emphasis)*/
+        --secondary-label: var(--neutral-200); /*Secondary text (medium emphasis)*/
+        --tertiary-label: var(--neutral-300); /*Tertiary text (low emphasis)*/
+        --quaternary-label: var(--neutral-400); /*Very subtle text (e.g., disabled, placeholder)*/
+        --placeholder-text: var(--neutral-500); /*Placeholder text inside inputs*/
+        --system-background: var(--neutral-900); /*Main surface background*/
+        --secondary-background: var(--neutral-800); /*Secondary layered background*/
+        --tertiary-background: var(--neutral-700); /*Card-like background*/
 
         /* Box shadow variables for dark mode - more pronounced shadows */
         --shadow-xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.5);
@@ -201,7 +220,7 @@
         background-color: rgba(0, 0, 0, 0.001);
     }
     .u-link-hitarea-xs::before { inset: -8px; }
-    .u-link-hitarea-sm::before { inset: -6px; }
+    .u-link-hitarea-sm::before { inset: -12px; }
     .u-link-hitarea-md::before { inset: -4px; }
     .u-link-hitarea-lg::before { inset: -2px; }
 
@@ -214,7 +233,7 @@
     }
     .u-action-hitarea-xxs::before { inset: -8px; }
     .u-action-hitarea-xs::before { inset: -8px; }
-    .u-action-hitarea-sm::before { inset: -6px; }
+    .u-action-hitarea-sm::before { inset: -px; }
     .u-action-hitarea-base::before { inset: -4px; }
     .u-action-hitarea-lg::before { inset: -2px; }
 
@@ -233,7 +252,7 @@
         /* defaults; overridden by size modifiers */
         --u-link-ghost-inset-x: -4px;
         --u-link-ghost-inset-y: -2px;
-        --u-link-ghost-radius: 0.5rem; /* rounded-lg */
+        --u-link-ghost-radius: 0.375rem; /* rounded-md */
     }
     .u-link-ghost::after {
         content: "";
@@ -253,22 +272,22 @@
     }
 
     /* Size modifiers for pseudo background padding and rounding */
-    .u-link-ghost-pad-xs {
+    .u-link-ghost.u-link-ghost-pad-xs {
         --u-link-ghost-inset-x: -2px;
-        --u-link-ghost-inset-y: -1px;
+        --u-link-ghost-inset-y: -2px;
+        --u-link-ghost-radius: 0.25rem; /* rounded-sm */
+    }
+    .u-link-ghost.u-link-ghost-pad-sm {
+        --u-link-ghost-inset-x: -4px;
+        --u-link-ghost-inset-y: 0px;
         --u-link-ghost-radius: 0.375rem; /* rounded-md */
     }
-    .u-link-ghost-pad-sm {
-        --u-link-ghost-inset-x: -4px;
-        --u-link-ghost-inset-y: -2px;
-        --u-link-ghost-radius: 0.5rem; /* rounded-lg */
-    }
-    .u-link-ghost-pad-md {
+    .u-link-ghost.u-link-ghost-pad-md {
         --u-link-ghost-inset-x: -6px;
         --u-link-ghost-inset-y: -3px;
         --u-link-ghost-radius: 0.5rem; /* rounded-lg */
     }
-    .u-link-ghost-pad-lg {
+    .u-link-ghost.u-link-ghost-pad-lg {
         --u-link-ghost-inset-x: -8px;
         --u-link-ghost-inset-y: -4px;
         --u-link-ghost-radius: 0.75rem; /* rounded-xl */

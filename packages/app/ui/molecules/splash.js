@@ -103,7 +103,7 @@ export default function Splash(props) {
                 </View>
             </View>
             <MenuFooter
-                            cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
+                            cntClasses="h-12 flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
                             variant="ghost"
                             size="sm"
                             itemClassName="text-sm p-1"
