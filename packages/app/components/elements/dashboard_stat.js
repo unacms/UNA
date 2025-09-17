@@ -335,14 +335,14 @@ function ElementDashboardStat(props) {
                 </ScrollView>
             </Modal>
 
-            <Row className={`flex-wrap ${cd('gap-md')}`}>
+            <Row className="flex-wrap gap-3">
                 {filtredData.map((item, index) => {
                     if (item) {
                         if (item?.type != 'growth') {
                             return (
 
                                 <View
-                                    className=" p-3 lg:p-4 bg-muted rounded-2xl w-full gap-3 flex-1  min-w-48 lg:min-w-64"
+                                    className=" p-3 lg:p-4 bg-secondary/60 hover:bg-secondary rounded-2xl w-full gap-3 flex-1  min-w-48 lg:min-w-64"
                                     key={index}
                                 ><Link href={item.url.replace("{profile_url_postfix}", currentUser?.url.replace('/view-persons-profile/', ''))}>
                                         <View className="flex-row w-full h-10 justify-between items-center">
@@ -350,11 +350,11 @@ function ElementDashboardStat(props) {
                                                 icon={item.icon}
                                                 width={32}
                                                 height={32}
-                                                color={colors.default}
+                                               
                                             />
 
                                             {item.count > 0 ? (
-                                                <Text className="flex-none  text-3xl font-semibold text-muted-foreground leading-none">
+                                                <Text className="flex-none text-3xl font-semibold text-foreground leading-none">
                                                     {item.count}
                                                 </Text>
                                             ) : (<>
@@ -406,7 +406,7 @@ function ElementDashboardStat(props) {
                         return (
 
                             <View
-                                className="p-3 lg:p-4 bg-muted rounded-2xl w-full flex-1 min-w-48 lg:min-w-64"
+                                className="p-3 lg:p-4 bg-secondary/60 hover:bg-secondary rounded-2xl w-full flex-1 min-w-48 lg:min-w-64"
                                 key={index}
                             ><Link href={item.url} >
                                     <View className="flex-row w-full h-10 justify-between items-center">

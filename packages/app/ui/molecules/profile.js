@@ -21,13 +21,13 @@ import { getPart } from 'app/lib/parts/part';
  * 
  */
 
-export function DisplayNameLink({title, url, href, fontSize, actions}) {
-    return getPart("ProfileDisplayNameLink", [title, url, href, fontSize, actions])
+export function DisplayNameLink({title, url, href, fontSize, actions, inheritColor, inheritTextSize, textClassName}) {
+    return getPart("ProfileDisplayNameLink", [title, url, href, fontSize, actions, { inheritColor, inheritTextSize, textClassName }])
 }
 
 function DisplayNameText({ title, fontSize }) {
     return (
-        <Text className={' text-card-foreground web:hover:text-primary ' + fontSize + '  truncate '}>
+        <Text className={fontSize + 'truncate tracking-tight'}>
             {title}
         </Text>
     )
@@ -67,23 +67,24 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
        <View className="my-auto">
 
             {bShowLinks ? (
-                <Row className="items-center gap-0.5">
+                <Row className="items-center gap-2">
                     <Link variant="ghost" size="sm" emulate={emulate} haptics="Select"  href={oProps.url}>
                         <DisplayNameLink
                             title={oProps.display_name}
                             url={oProps.url}
                             fontSize={sSizeFont}
                             href={oProps.href}
+                            inheritColor
+                            inheritTextSize
                         />
                     </Link>
                     {info2}
                    
                 </Row>
             ) : (
-                <Row className="items-center gap-.5">
+                <Row className="items-center gap-0.5">
                     <DisplayNameText title={oProps.display_name} fontSize={sSizeFont} />
                     {info2}
-                   
                 </Row>
             )}
 
@@ -140,14 +141,14 @@ function AtomProfile_(oProps) {
             sSize: 'w-9 h-9',
             iSizeWidth: 36,
             iSizeHeight: 36,
-            sSizeFont: 'text-sm leading-5 tracking-tight font-semibold',
+            sSizeFont: 'text-sm leading-4 tracking-tight font-semibold',
             sSizeFontLetter: ' text-base opacity-50 font-semibold',
         },
         base: {
             sSize: 'w-10 h-10',
             iSizeWidth: 40,
             iSizeHeight: 40,
-            sSizeFont: ' text-sm leading-5 tracking-tight font-semibold ',
+            sSizeFont: '  ',
             sSizeFontLetter: ' p-2 text-center text-xl font-semibold',
         },
         lg: {

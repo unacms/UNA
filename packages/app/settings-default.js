@@ -1203,26 +1203,38 @@ export const settingsDefault = {
 
             
             xs: {
-                padding: ' px-0.5 -mx-0.5 rounded-sm items-center flex  ',
+                padding: ' rounded-sm items-center flex rounded-sm ',
                 // Web pseudo-element class to extend clickable hit area
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-xs ',
                 // Native Pressable hitSlop defaults (can be overridden per usage)
                 hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
+                text: ' text-xs leading-4 min-h-4 items-center justify-center flex',
+                rounded: ' rounded-sm ',
+                focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background ',
             },
             sm: {
-                padding: '  active:scale-95 rounded-md items-center flex ',
-                hitarea_class: ' relative u-link-hitarea u-link-hitarea-sm ',
+                padding: ' active:scale-95 rounded-md items-center flex ',
+                hitarea_class: 'relative u-link-hitarea u-link-hitarea-sm ',
                 hitSlop: { top: 8, right: 8, bottom: 8, left: 8 },
+                text: ' text-sm leading-5 min-h-5 items-center justify-center flex',
+                rounded: ' rounded-md ',
+                focus: ' focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-1  outline-offset-card ',
             },
             md: {
                 padding: ' px-2  rounded-lg items-center flex',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-md ',
                 hitSlop: { top: 10, right: 10, bottom: 10, left: 10 },
+                text: ' text-sm leading-6 ',
+                rounded: ' rounded-lg ',
+                focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background ',
             },
             lg: {
                 padding: ' px-2  rounded-xl items-center flex ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-lg ',
                 hitSlop: { top: 12, right: 12, bottom: 12, left: 12 },
+                text: ' text-base leading-6 ',
+                rounded: ' rounded-xl ',
+                focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background ',
             },
         },
 
@@ -1238,8 +1250,8 @@ export const settingsDefault = {
             'u-link-text-trans': ' web:duration-200',
 
             // Ghost: use pseudo-element for web background; keep native pressed bg
-            'u-link-ghost-cnt': ' group u-link-ghost  ',
-            'u-link-ghost-text': ' text-muted-foreground web:group-hover:text-accent ',
+            'u-link-ghost-cnt': ' u-link-ghost  ',
+            'u-link-ghost-text': ' text-label web:hover:text-accent font-semibold ',
             'u-link-ghost-trans': ' web:duration-200 ',
 
             // Secondary: muted by default; secondary on hover/active
@@ -1322,7 +1334,7 @@ export const settingsDefault = {
         },
         blocks: {
             'u-block-base':
-                ' u-max-width-block sm:rounded-2xl gap-4 ',
+                'u-max-width-block sm:rounded-2xl gap-4 ',
             'u-block-bg':
                 'bg-card/80 shadow-sm text-card-foreground ',
             'u-block-pad':
