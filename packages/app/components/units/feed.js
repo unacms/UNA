@@ -68,10 +68,10 @@ function DefaultUnit({ data }) {
                         id: 'block-comments',
                         data: (
                             <>
-                                <View className="gap-3 px-3 sm:px-4">
+                                <View className="gap-3 p-3 sm:px-4">
                                     <Author data={data} url={url} t={t} />
                                     {MainContentComponent}
-                                    <Row className="gap-3 items-center flex-auto justify-between flex-wrap-reverse">
+                                    <Row className="gap-2 items-center flex-auto justify-between flex-wrap-reverse">
                                         <ActionMenu
                                             data={menu_actions2}
                                             showCommentsModal={showCommentsModal}
@@ -137,17 +137,17 @@ function DefaultUnit({ data }) {
                         />
                     </View>
                 </Row>
-                <View className={`${cd('mb-md')} flex-auto `}>
+                <View className="flex-auto">
                     {MainContentComponent}
                 </View>
-
-                <Row className={`${cd('gap-md')} items-center flex-auto justify-between flex-wrap-reverse`}>
+                
+                        
+                <Row className=" gap-3 items-center flex-auto justify-between flex-wrap-reverse mt-3 pt-3 border-t border-border/60">
                     <ActionMenu
                         data={data.menu_actions}
                         showCommentsModal={showCommentsModal}
                     />
-                    {!!data.menu_counters &&
-                        appSetting('feed', 'counters_menu') && (
+                  {!!data.menu_counters && appSetting('feed', 'counters_menu') && (
                             <CounterMenu
                                 data={data.menu_counters}
                                 showCommentsModal={showCommentsModal}

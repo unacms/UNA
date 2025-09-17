@@ -332,13 +332,11 @@ export const settingsDefault = {
             button_show_title_from_size: '',
             button_full_width: false,
             button_size: 'sm',
-            button_variant: 'secondary',
+            button_variant: 'text',
 
             pressed_classes: {
-                pressed_container: ' bg-accent ',
-                pressed_text: ' text-accent-foreground font-medium ',
-                pressed_ring:
-                    ' bg-ring  ',
+                pressed_container: ' bg-accent/10 web:hover:bg-accent/20 ',
+                pressed_text: ' text-accent font-medium ',
             },
             button_rounded: true,
             align_items: 'start',
@@ -351,7 +349,7 @@ export const settingsDefault = {
             button_variant: 'text',
             rounded: true,
             button_size: 'sm',
-            button_rounded: false,
+            button_rounded: true,
             align_items: 'start',
             no_gap_between_buttons: false,
         },

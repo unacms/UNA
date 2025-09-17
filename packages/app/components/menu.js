@@ -40,7 +40,7 @@ const MenuItem = memo(({ item, itemRefs, index, visibleItemsCount, params, bShow
     } else if (params?.button_full_width === true) {
         spacingClass = ' flex-1 ';
     } else {
-        spacingClass = isLastVisible ? ' ' : ' me-2 ';
+        spacingClass = isLastVisible ? ' ' : 'mt-0';
     }
 
     return (
@@ -182,7 +182,7 @@ export default function ElementMenu(oProps) {
             } else if (oProps?.params?.button_full_width === true) {
                 spacingClass = ' flex-1 ';
             } else {
-                spacingClass = isLast ? ' ' : ' me-2 ';
+                spacingClass = isLast ? ' ' : ' me-2';
             }
 
             return (
