@@ -60,7 +60,7 @@ const HeaderLine = memo(
                     
                 )}
                 {(!context ||
-                    (!currentUser.confirmed &&
+                    (!currentUser?.confirmed &&
                         appSetting('layout', 'lock_unconfirmed'))) &&
                     (uri == 'home' || isDesktop) && (
                         <Link href="/home" variant="ghost" size="lg" >
@@ -68,7 +68,7 @@ const HeaderLine = memo(
                         </Link>
                     )}
                 {context &&
-                    (currentUser.confirmed ||
+                    (currentUser?.confirmed ||
                         !appSetting('layout', 'lock_unconfirmed')) && (
                         <ContextSelector data={context} url={url} uri={uri} />
                     )}

@@ -54,7 +54,7 @@ const handleDo = (performAction, fOnDo, sAction, oEvent) => {
 };
 
 const handleOnDo = (setElementVars, setModalContent, fOnDone, oData) => {
-    if (oData.a == 'questionnaire') {
+    if (oData?.a == 'questionnaire') {
         setModalContent({ content: oData.data, designbox_id: 0 });
     }
     else {
