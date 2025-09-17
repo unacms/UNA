@@ -16,11 +16,11 @@ export function ProfileDisplayNameLink(title, url, href, fontSize, actions, opti
 
     const baseColorClass = inheritColor ? '' : ' text-secondary-label web:hover:text-primary ';
     const sizeClass = inheritTextSize ? '' : (fontSize || 'text-sm');
-    const composed = `${baseColorClass} truncate text-ellipsis tracking-tight ${sizeClass} ${extraTextClass}`.trim();
+    const composed = `${baseColorClass} truncate text-ellipsis tracking-tight ${sizeClass} фф ${extraTextClass}`.trim();
 
     return (
         <Text className={composed}>
-            {title}
+           я {title}
         </Text>
     )
 }

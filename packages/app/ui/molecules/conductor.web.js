@@ -371,15 +371,17 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
         const { breakpoint: centerBreakpoint, ...centerPanelProps } = cellsCustomConfig.cells?.center || {}
         const { breakpoint: rightBreakpoint, ...rightPanelProps } = cellsCustomConfig.cells?.right || {}
 
+        const onLayout = (sizes) => {
+            setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100);
+        };
+
         return (
             <PanelGroup
                 key={`${pageData?.uri || 'default'}-pnl2-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
                 autoSaveId={cellsCustomConfig.sizable ? `cells-${pageData?.uri || 'default'}` : undefined}
                 direction="horizontal"
                 className={(layoutName == 'navigator' ? '' : '') + " h-full"}
-                onLayout={() => {
-                    window.dispatchEvent(new Event('resize_panel'));
-                }}
+                onLayout={onLayout}
             >
                 {isLeftCol && <>
                     <Panel className={`hidden ${leftBreakpoint}:block`} {...leftPanelProps}>

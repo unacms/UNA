@@ -28,19 +28,18 @@ export default function ElementEntityAuthor(oProps) {
     const [pageData, setPageData] = useState(false);
     const isDesktop = useIsDesktop();
     const sInfo = (
-        <Row className='items-center '>
-            <Time size="sm" variant="link" className="text-sm text-muted-foreground leading-6"
-                                    ts={oProps.data.entry_date}
-                                />
+        <Row className='flex-none flex-row gap-1 items-center justify-center '>
+            <Time size="sm" variant="link"
+                ts={oProps.data.entry_date}
+            />
             {
                 !!oProps.data?.entry_context?.id && (
 
                     <>
-                        <Text className=" text-neutral-600 dark:text-neutral-400 font-medium text-sm "> in </Text>
-                        <Profile {...oProps.data.entry_context} displayType="unit_wo_info" displaySize="sm" />
-                        <Text className=" text-neutral-600 dark:text-neutral-400 leading-6 font-medium text-sm ">
-                            <Link href={oProps.data.entry_context.url}><Text className="ml-0.5 text-neutral-600 dark:text-neutral-400 font-medium text-xs ">{oProps.data.entry_context.display_name}</Text></Link>
-                        </Text>
+                        <Text className=" text-muted-foreground text-xs  leading-5 text-center flex-auto font-medium"> in </Text>
+                        <Profile {...oProps.data.entry_context} displayType="unit_wo_info" displaySize="2xs" />
+                        <Text className="text-muted-foreground text-xs  leading-5 text-center flex-auto font-medium ">{oProps.data.entry_context.display_name}</Text>
+
                     </>
 
                 )}
@@ -57,7 +56,7 @@ export default function ElementEntityAuthor(oProps) {
         fetcher,
         !true ? undefined : { revalidateIfStale: false, revalidateOnFocus: false, revalidateOnReconnect: false }
     )*/
-   
+
     const { data: dynamicData, error } = useFetchForm('/api.php?r=bx_timeline/get_edit_form/&params[]=' + item_id, postData);
 
     useEffect(() => {
@@ -89,10 +88,10 @@ export default function ElementEntityAuthor(oProps) {
     }
 
     aMenuManageItems = aMenuManageItems.filter((item) => (item.title != ''))
-    
+
     if (oProps?.data?.menu_manage?.object == 'bx_timeline_menu_item_manage') {
         handleMenuManageSelect = async (oItem, event) => {
-           
+
             switch (oItem.name) {
                 case 'item-edit':
                     const oResultEdit = await fetcher(
@@ -110,7 +109,7 @@ export default function ElementEntityAuthor(oProps) {
             }
         }
     }
-    else{
+    else {
         handleMenuManageSelect = handleFormModal;
     }
 
@@ -124,7 +123,7 @@ export default function ElementEntityAuthor(oProps) {
                 onVisible={true}
                 transparent={true}
                 headerBorder={true}
-                padding= ' '
+                padding=' '
             >
                 <Form
                     {...viewState.data}
@@ -140,7 +139,7 @@ export default function ElementEntityAuthor(oProps) {
             <View className={oProps.data.text ? '' : 'flex-auto'}>
                 <Profile {...oProps.data.author_data} displayType="unit" displaySize={isDesktop ? "lg" : "base"} className='hidden lg:flex' showInfo={sInfo} />
             </View>
-          
+
             {(oProps.data.text && false) && (
                 <View className='flex-auto overflow-hidden text-ellipsis w-1/2 lg:w-auto px-4'>
                     <Link href={oProps.data.url}>
