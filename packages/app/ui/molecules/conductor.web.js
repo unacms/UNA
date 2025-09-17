@@ -674,7 +674,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
         const contentPaddingClass = header ? '' : '';
 
         const isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
-        const isLeftCol = (route?.leftbar?.content?.length > 0);
+        const isLeftCol = (route?.leftbar?.content?.length > 0) || layoutName == 'navigator';
 
         const TabFlashListM = useMemo(() => {
             return <UniList
@@ -757,7 +757,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
                     const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.center || {};
                     return panelProps;
                 })()}>
-                    <View className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'} ${layoutName !== 'navigator' ? 'sm:' + cd('p-md'): 'lg:py-2 '} ${contentPaddingClass}`}>
+                    <View className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'} ${layoutName !== 'navigator' ? 'sm:' + cd('p-md'): 'lg:p-2 '} ${contentPaddingClass}`}>
                         {TabFlashListM}
                         {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
                     </View>

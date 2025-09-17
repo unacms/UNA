@@ -91,10 +91,11 @@ Units.Small = function Small({ data, imageSizes }) {
                     <Text numberOfLines={2} className="text-neutral-800  mb-1 tracking-tight leading-tight dark:text-neutral-200 web:sm:hover:text-primary text-lg font-bold">
                         {data.title}
                     </Text>
+                 </Link>
                     <Text numberOfLines={2} className="text-neutral-600 mb-2 dark:text-neutral-400 text-sm">
                         {data.summary_plain}
                     </Text>
-                </Link>
+               
                 <View className="mt-auto">
                     <AuthorData authorData={data.author_data} />
                 </View>
