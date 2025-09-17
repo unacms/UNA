@@ -26,46 +26,482 @@ import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 import emitter from 'app/context/emitter';
 import Cover, { CoverSmall } from 'app/components/elements/cover';
 import { CoverMenuMore, CoverMenu } from 'app/components/nav/menu-cover'
-import { Panel, PanelGroup, PanelHandler, isShowColumn } from "app/ui/molecules/resizable-panels";
+import { Panel, PanelGroup, PanelHandler } from "app/ui/molecules/resizable-panels";
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { cd } from 'app/lib/util'
-import { useIsDesktop, useBreakpoint, useWindowHeight } from 'app/context/measure';
+import { useIsDesktop, useBreakpoint } from 'app/context/measure';
 
 const conductorTheme = appSetting('theme', 'conductor');
 
-const getUnitType = (currentRoute) => {
-    const blocksroutes = currentRoute?.blocks;
-    if (blocksroutes) {
-        const blockKeys = Object.keys(blocksroutes);
-        for (const key of blockKeys) {
-            if (!blocksroutes[key].sidebar && blocksroutes[key].unitType) {
-                return blocksroutes[key].unitType;
-            }
-        }
-    }
-}
+export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionAsMenu, skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 106 }) {
+    const uniRef = useRef();
+    const { currentUser } = useCurrentUser();
+    const { setBottomSheetData } = useBottomSheetData();
+    const { layoutData, setLayoutData } = useLayoutData();
+    const { layoutName: tmplLayout } = useLayoutSettings();
+    const toasterRef = useRef(); // ref for toaster
+    const cleanUrl = data.url.split("?")[0];
+    const currentBreakpoint = useBreakpoint();
+    const isDesktop = useIsDesktop();
+    const initedTabs = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);
+    const [routes, setRoutes] = useState(initedTabs);
 
-const AddBlocks = (route, onFormChangedValues) => {
-    const leftSideBarBlocksObj = route?.leftbar?.content.map((block) => {
-        const { key, ...blockProps } = block;
-        return <BlockByName
-            key={block}
-            name={block.block}
-            onChange={onFormChangedValues}
-            data={route.pageData}
-            sidebar={true}
-        />
+    const [cntWidth, setCntWidth] = useState(0);
+    const [isRevalidate, setIsRevalidate] = useState(false);
+
+    useEffect(() => {
+        setRoutes(initedTabs);
+    }, [keyword, data.url, data.elements]);
+
+    // found current index from routes
+    const getFoundIndex = useCallback(() => {
+        const found = routes.findIndex(item => {
+            if (useSectionAsMenu) {
+                return data.url === item.key;
+            } else {
+                return item.key.includes('?')
+                    ? data.url === item.key
+                    : cleanUrl === item.key;
+            }
+        });
+        return found !== -1 ? found : 0;
+    }, [routes, useSectionAsMenu, data.url, cleanUrl]);
+
+    const initialIndex = useMemo(() => getFoundIndex(), [getFoundIndex]);
+
+    const [index, _setIndex] = useState(initialIndex);
+    const [prevIndex, setPrevIndex] = useState(initialIndex);
+
+    const setIndex = (newIndex) => {
+        setPrevIndex(index);
+        _setIndex(newIndex);
+    };
+
+    useEffect(() => {
+        const foundIndex = getFoundIndex();
+        if (foundIndex !== index)
+            setIndex(foundIndex)
+    }, [ts]);
+
+    const currentRoute = routes.find((item) => item.index === index);
+    const prevRoute = useMemo(() => routes.find((item) => item.index === prevIndex), [routes, prevIndex]);;
+    const queryKey = [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters), data.uri];
+    const cellsCustomConfig = appSetting('layouts', 'navigator') || appSetting('layouts', `cols-l-c`);
+    const initialHeaderSettings = getHeaderSettings(getURI(currentRoute?.key), isDesktop, layoutName, currentRoute.config);
+
+    // Disable offset for adjustable panel layouts
+    if (cellsCustomConfig?.adjustable) {
+        initialHeaderSettings.offset = false;
+    }
+    const [headerSettings, setHeaderSettings] = useState(initialHeaderSettings);
+
+    const [numColumns, setNumColumns] = useState(getNumCols(currentBreakpoint, currentRoute));
+
+    const {
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+
+    } = useInfiniteQuery({
+        queryKey: queryKey,
+        queryFn: ({ pageParam }) => parseData(routes, index, setRoutes),
+        getNextPageParam: (lastPage, pages) => {
+            if (lastPage?.data?.length > 0) {
+                return lastPage?.endpoint;
+            }
+
+            return;
+        },
+        enabled: currentRoute?.endpoint?.params?.start == 0//route?.endpoint?.params?.start == 0
     });
 
-    return <>
-        {(route?.leftbar?.content?.length > 0) &&
-            <View className="gap-y-4">
-                {leftSideBarBlocksObj.map((block, index) => {
-                    return <View key={"lb-" + index}>{block}</View>
-                })}
-            </View>
+    const handleEndReached = useCallback(async (lastItemIndex) => {
+
+        if (isFetchingNextPage)
+            return;
+        if (hasNextPage === false)
+            return;
+        if (currentRoute?.endpoint?.finished)
+            return;
+        if (lastItemIndex == false)
+            return;
+        fetchNextPage();
+    }, [currentRoute?.endpoint?.finished, isFetchingNextPage, hasNextPage]);
+
+
+    useEffect(() => {
+        if (currentRoute.inited) {
+            const headerSettingsN = getHeaderSettings(getURI(currentRoute?.key), isDesktop, layoutName, currentRoute.config);
+            // Disable offset for adjustable panel layouts
+            if (cellsCustomConfig?.adjustable) {
+                headerSettingsN.offset = false;
+            }
+
+            if (!isObjectsEqual(headerSettings, headerSettingsN)) {
+                setHeaderSettings(headerSettingsN);
+            }
         }
-    </>
+
+    }, [isDesktop, layoutName, currentRoute?.key, currentRoute.config]);
+
+    useEffect(() => {
+        if (currentRoute.cached) {
+            revalidateData();
+        }
+        if (currentRoute?.endpoint?.unit == 'feed') {
+            subscribe('bx_timeline_0', 'added', setIsRevalidate);
+            subscribe('bx_timeline_0', 'deleted', setIsRevalidate);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (isRevalidate)
+            revalidateData();
+    }, [isRevalidate]);
+
+    useEffect(() => {
+        const numColumnsN = getNumCols(currentBreakpoint, currentRoute);
+        if (numColumnsN != numColumns) {
+            setNumColumns(numColumnsN);
+        }
+    }, [currentBreakpoint, currentRoute]);
+
+    /* UPDATE CONTENT PART */
+    useEffect(() => {
+        setToaster2Visible(false);
+        setBottomSheetData(false)
+    }, [index]);
+
+    const setToaster2Visible = (val) => {
+        const current = toasterRef.current;
+        if (current) {
+            current.setVisible(val);
+        }
+    }
+
+    const revalidateData = useCallback(async () => {
+        const hasEndpoint = Boolean(currentRoute?.endpoint);
+        let endpointUpdateContent = '';
+        let bUpdateContent = false;
+        const revalidatedData = JSON.parse(isRevalidate);
+
+        if (hasEndpoint) {
+
+            const a = [...new Set(currentRoute.data
+                .filter(item => item.type !== 'block')
+                .map(item => item.id)
+            )].slice(0, 10).join(',');
+
+            if ((a || true) && revalidatedData.author_id != currentUser?.id && !currentRoute.endpoint.request_url.includes("system/get_results/TemplSearchExtendedServices")) {
+                endpointUpdateContent = currentRoute.endpoint.request_url + JSON.stringify({
+                    'params': { ...currentRoute.endpoint.params, validate: a }
+                });
+                bUpdateContent = true;
+            }
+        }
+        if (bUpdateContent) {
+            const validatedData = (await fetcher(endpointUpdateContent)).data?.[0]?.data?.data;
+
+            if (validatedData && (validatedData == 'valid' || validatedData == 'invalid')) {
+                setToaster2Visible(validatedData !== 'valid');
+            }
+        }
+    }, [currentRoute, isRevalidate, currentUser?.id]);
+
+    const showNewContent2 = async () => {
+        storageClear('ul:data', currentRoute.storageKeyValue)
+        storageClear('ul:state', currentRoute.storageKeyValue)
+
+        const newRoutes = [...routes];
+        newRoutes[index].endpoint.finished = false;
+        newRoutes[index].data = newRoutes[index].data.filter(item => item.type === 'block');;
+        newRoutes[index].endpoint.params.start = 0;
+        setRoutes(newRoutes);
+        setToaster2Visible(false);
+    }
+    /* UPDATE CONTENT PART */
+
+    /* NEW POST TO FEED */
+    useEffect(() => {
+        if (currentRoute.endpoint?.unit === 'feed' && layoutData && layoutData.data && (layoutData?.type == 'feed:new_content' || layoutData?.type == 'feed:remove_content')) {
+            let clonedData = currentRoute.data
+            const data = handleFeedLayoutData(layoutData, clonedData)
+            const newRoutes = [...routes];
+            newRoutes[index].data = data
+            setRoutes(newRoutes);
+            setLayoutData(null)
+        }
+        callFn("updateRouteDataForConnections", [currentRoute, layoutData, routes, index, setRoutes])
+
+    }, [layoutData]);
+    /* NEW POST TO FEED */
+
+    const setFilterValue = (values) => {
+        setIndex((prevIndex) => {
+            setRoutes((prevRoutes) => {
+                const newRoutes = [...prevRoutes];
+                values.forEach((value) => {
+                    const name = value.name;
+                    const val = value.value;
+
+                    if (newRoutes[prevIndex].endpoint.params.filters) {
+                        newRoutes[prevIndex].endpoint.params.filters[name] = val;
+                    } else {
+                        newRoutes[prevIndex].endpoint.params.filters = { [name]: val };
+                    }
+                });
+
+                newRoutes[prevIndex].endpoint.finished = false;
+                newRoutes[prevIndex].data = [];
+                newRoutes[prevIndex].endpoint.params.start = 0;
+                return newRoutes;
+            });
+
+            return prevIndex;
+        });
+    };
+
+    const onFormChangedValues = useCallback((values) => {
+        let filterValues = [];
+        for (let key in values) {
+            filterValues.push({ name: key, value: Array.isArray(values[key]) ? values[key].join(',') : values[key] })
+        };
+
+        setFilterValue(filterValues)
+        //  setBottomSheetData(false);
+    }, []);
+
+    useEffect(() => {
+        fetchAndUpdateData(routes, index, setRoutes);
+    }, [index]);
+
+    const handleLayoutTop = (event) => {
+        setCntWidth(event.nativeEvent.layout.width)
+    };
+
+    const LeftBarContentBlocks = LeftBarContent(currentRoute, onFormChangedValues);
+
+    const showFilters = useCallback(() => {
+        setBottomSheetData({ title: 'Filters', content: LeftBarContentBlocks, showClose: true, snapPoints: ['50%', '75%'], modal: true });
+    }, [LeftBarContentBlocks]);
+
+    const unitType = useMemo(() => {
+        const type = getUnitModeBySource(currentRoute?.endpoint);
+        return type === 'default' ? getUnitType(currentRoute) : type;
+    }, [currentRoute?.endpoint, currentRoute?.inited, currentRoute?.blocks]);
+
+    const sSkeleton = useMemo(() => {
+        const a = callFn("getSkeletonByEndPoint", [currentRoute]);
+        if (a)
+            return a;
+        const baseSkeleton = skeleton || currentRoute?.endpoint?.module || currentRoute?.endpoint?.unit;
+        return unitType ? [baseSkeleton, unitType] : baseSkeleton;
+    }, [skeleton, currentRoute, unitType]);
+
+    useEffect(() => {
+        setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100);
+    }, []);
+
+    const Preload = useMemo(() => getSkeletonForList(sSkeleton, numColumns), [sSkeleton, numColumns]);
+
+    const RenderScene = useCallback(({ route, header, prevRoute, headerHeight }) => {
+        const pageData = route.inited ? route.pageData : prevRoute.pageData;
+        const dataItems = route?.data;
+
+        const isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
+        const isLeftCol = route?.leftbar?.content?.length > 0 || layoutName == 'navigator';
+
+        const renderItem = useCallback(
+            ({ item, index }) => (
+                <ItemRenderer
+                    unitType={unitType}
+                    route={route}
+                    numColumns={numColumns}
+                    item={{ ...item, feed_type: route?.endpoint?.params?.type }}
+                    unit={route?.endpoint?.unit}
+                    module={route?.endpoint?.module}
+                />
+            ),
+            [route, numColumns, unitType]
+        );
+
+        const MainContent = useMemo(() => {
+            return <UniList
+                scrollProps={header ?
+                    {
+                        pageData: route.inited ? route.pageData : prevRoute.pageData,
+                        subHeaderComponent: header,
+                        headerHeight: headerHeight,
+                        isBackButton: false,
+                        isMenuNameAsTitle: true
+                    } : null
+                }
+                index={route.index}
+                data={dataItems}
+                endpoint={route.endpoint}
+                listState={route?.state}
+                storagekey={route.storageKeyValue}
+                refer={uniRef}
+                route={route}
+                unit={route.endpoint?.unit}
+                useWindowScroll={true}
+                numColumns={numColumns}
+                onEndReached={handleEndReached}
+                renderItem={renderItem}
+                ListFooterComponent={
+                    <View>
+                        {(hasNextPage && isFetchingNextPage) ? (
+                            Preload
+                        ) : null}
+                    </View>
+                }
+            />
+        }, [dataItems, numColumns, dataItems.length]);
+
+        const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
+        const layoutCols = !isLeftCol && !isRightCol ? 'c' : !isLeftCol ? 'c-r' : !isRightCol ? 'l-c' : 'l-c-r';
+        
+        const cellsCustomConfig = useMemo(() => {
+            return appSetting('layouts', route?.pageData?.uri)
+                || appSetting('layouts', `cols-${layoutCols}`);
+        }, [route?.pageData?.uri, layoutCols]);
+
+
+        const { breakpoint: leftBreakpoint, ...leftPanelProps } = cellsCustomConfig.cells?.left || {}
+        const { breakpoint: centerBreakpoint, ...centerPanelProps } = cellsCustomConfig.cells?.center || {}
+        const { breakpoint: rightBreakpoint, ...rightPanelProps } = cellsCustomConfig.cells?.right || {}
+
+        return (
+            <PanelGroup
+                key={`${pageData?.uri || 'default'}-pnl2-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
+                autoSaveId={cellsCustomConfig.sizable ? `cells-${pageData?.uri || 'default'}` : undefined}
+                direction="horizontal"
+                className={(layoutName == 'navigator' ? '' : '') + " h-full"}
+                onLayout={() => {
+                    window.dispatchEvent(new Event('resize_panel'));
+                }}
+            >
+                {isLeftCol && <>
+                    <Panel className={`hidden ${leftBreakpoint}:block`} {...leftPanelProps}>
+                        <View className={`fixed-process ${layoutName == 'profile' ? cd('p-md') : appSetting('conductor', 'sidebar_container')}`}>
+                            <LeftSideBarContainer
+                                layoutName={layoutName}
+                                index={index}
+                                setIndex={setIndex}
+                                menu={menu}
+                                routes={routes}
+                                currentUser={currentUser}
+                                headerSettings={headerSettings}
+                            >{LeftBarContentBlocks}</LeftSideBarContainer>
+                        </View>
+                    </Panel>
+                    <PanelHandler gap="hidden xl:block" sizable={cellsCustomConfig.sizable} />
+                </>
+                }
+                <Panel {...centerPanelProps}>
+                    <View className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'} ${layoutName !== 'navigator' ? 'sm:' + cd('p-md') : 'lg:p-2 '}`}>
+                        {MainContent}
+                        {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
+                    </View>
+                </Panel>
+                {isRightCol && <>
+                    <PanelHandler gap="hidden lg:block" sizable={cellsCustomConfig.sizable} />
+                    <Panel className={`hidden ${rightBreakpoint}:block`} {...rightPanelProps}>
+                        <View className={`${cd('p-md')} fixed-process `}>
+                            {route?.sidebar?.content.map((item, index) => {
+                                return <ItemRenderer key={`${route?.index}-${item.id}`} unitType={sidebarUnitType} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} />
+                            })}
+                            <View>
+                                <BlockByName data={route.pageData ? route.pageData : data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1} />
+                            </View>
+                        </View>
+                    </Panel>
+                </>}
+            </PanelGroup>
+        );
+    }, [numColumns, currentBreakpoint, index]);
+
+    const isHideCover = data?.cover_block?.profile && appSetting('cover', 'hide_cover_for_context') && data?.cover_block?.profile?.id === data?.context?.current?.id && isDesktop;
+
+    const showFiltersBtn = !isDesktop && layoutName === 'navigator' && ((currentRoute?.leftbar?.content?.length ?? 0) > 0);
+
+    const headerComponent = (
+        <HeaderContainer
+            isHideCover={isHideCover}
+            tabBarObj={
+                <>
+                    <TabBar
+                        isHideCover={isHideCover}
+                        menu={menu}
+                        routes={routes}
+                        layoutName={layoutName}
+                        currentUser={currentUser}
+                        index={index}
+                        setIndex={setIndex}
+                        getNumCols={getNumCols}
+                        currentBreakpoint={currentBreakpoint}
+                        onChangeRoute={onChangeRoute}
+                        omitDefaultBackground={false}
+                        pageData={data}
+                    />
+                    {showFiltersBtn && (
+                        <View className="items-start px-3 sm:px-4 py-2">
+                            <Button
+                                title="Filters"
+                                variant="default"
+                                size="sm"
+                                rounded
+                                onPress={showFilters}
+                            />
+                        </View>
+                    )}
+                </>
+            }
+            headerSettings={headerSettings}
+            pageData={data}
+            isCoverDisabled={isCoverDisabled}
+        />
+    );
+
+    const isUseCurrentHeader = layoutName === 'profile' && (!isCoverDisabled || !isDesktop)
+
+    return (
+        <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
+            {(isUseCurrentHeader || isDesktop) && headerComponent}
+            <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
+            <View className={`${layoutName === 'profile' ? conductorTheme.content_max_width : ''} mx-auto w-full min-h-screen ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}>
+                <RenderSceneHeader route={currentRoute} setFilterValue={setFilterValue} />
+                <RenderScene numColumns={numColumns} currentBreakpoint={currentBreakpoint} index={index} prevRoute={prevRoute} headerHeight={showFiltersBtn && routes.length > 1 ? defaultHeaderHeight + 52 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
+            </View>
+        </View>
+    );
+}
+
+
+const getUnitType = (currentRoute) =>
+    Object.values(currentRoute?.blocks ?? {}).find(
+        (b) => !b.sidebar && b.unitType
+    )?.unitType;
+
+
+const LeftBarContent = (route, onFormChangedValues) => {
+    const items = route?.leftbar?.content ?? [];
+    if (items.length === 0) return null;
+
+    return (
+        <View className="gap-y-4">
+            {items.map((block, index) => (
+                <View key={`lb-${block.id ?? block.block ?? index}`}>
+                    <BlockByName
+                        name={block.block}
+                        onChange={onFormChangedValues}
+                        data={route?.pageData}
+                        sidebar={true}
+                    />
+                </View>
+            ))}
+        </View>
+    );
 };
 
 const AddMenu = (menu, filter) => {
@@ -205,7 +641,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, currentBreakpoi
     />
 }
 
-const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, headerSettings, AddBlocksCnt, layoutName }) => {
+const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, headerSettings, children, layoutName }) => {
     const menuSettings = getMenuSettings(menu.object, menu.config, menu);
     const { t } = useTranslation();
     const addButtons = AddMenu(menu, 'hideInSideBar');
@@ -233,7 +669,7 @@ const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, head
                     </Link>
                 )
             })}
-            {AddBlocksCnt}
+            {children}
         </LeftSidebar>
     )
 }
@@ -388,459 +824,3 @@ const RenderSceneHeader = ({ route, setFilterValue }) => {
         </>
     )
 };
-
-
-export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionAsMenu, skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 106 }) {
-    const uniRef = useRef();
-    const { currentUser } = useCurrentUser();
-    const { setBottomSheetData } = useBottomSheetData();
-    const { layoutData, setLayoutData } = useLayoutData();
-    const { layoutName: tmplLayout, density } = useLayoutSettings();
-    const toasterRef = useRef(); // ref for toaster
-    const cleanUrl = data.url.split("?")[0];
-    const currentBreakpoint = useBreakpoint();
-    const isDesktop = useIsDesktop();
-    const initedTabs = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);
-
-    const [routes, setRoutes] = useState(initedTabs);
-
-    const [cntWidth, setCntWidth] = useState(0);
-    const [isRevalidate, setIsRevalidate] = useState(false);
-
-    useEffect(() => {
-        setRoutes(initedTabs);
-    }, [keyword, data.url, data.elements]);
-
-
-    const initialIndex = useMemo(() => {
-        const foundIndex = routes.findIndex(function (item) {
-            if (useSectionAsMenu) {
-                return data.url === item.key;
-            } else {
-                return item.key.includes('?') ? data.url === item.key : cleanUrl === item.key;
-            }
-        });
-        return foundIndex !== -1 ? foundIndex : 0;
-    }, [routes, cleanUrl, useSectionAsMenu]);
-
-    const [index, _setIndex] = useState(initialIndex);
-    const [prevIndex, setPrevIndex] = useState(initialIndex);
-
-    const setIndex = (newIndex) => {
-        setPrevIndex(index);
-        _setIndex(newIndex);
-    };
-
-    useEffect(() => {
-        const foundIndex = routes.findIndex(function (item) {
-            if (useSectionAsMenu) {
-                return data.url === item.key;
-            } else {
-                return item.key.includes('?') ? data.url === item.key : cleanUrl === item.key;
-            }
-        });
-        if (foundIndex !== index);
-        setIndex(foundIndex)
-    }, [ts]);
-
-    const currentRoute = routes.find((item) => item.index === index);
-    const prevRoute = useMemo(() => routes.find((item) => item.index === prevIndex), [routes, prevIndex]);;
-    const queryKey = [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters), data.uri];
-    const cellsCustomConfig = appSetting('layouts', 'navigator') || appSetting('layouts', `cols-l-c`);
-    const initialHeaderSettings = getHeaderSettings(getURI(currentRoute?.key), isDesktop, layoutName, currentRoute.config);
-    // Disable offset for adjustable panel layouts
-    if (cellsCustomConfig?.adjustable) {
-        initialHeaderSettings.offset = false;
-    }
-    const [headerSettings, setHeaderSettings] = useState(initialHeaderSettings);
-
-    const [numColumns, setNumColumns] = useState(getNumCols(currentBreakpoint, currentRoute));
-
-    const {
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-
-    } = useInfiniteQuery({
-        queryKey: queryKey,
-        queryFn: ({ pageParam }) => parseData(routes, index, setRoutes),
-        getNextPageParam: (lastPage, pages) => {
-            if (lastPage?.data?.length > 0) {
-                return lastPage?.endpoint;
-            }
-
-            return;
-        },
-        enabled: currentRoute?.endpoint?.params?.start == 0//route?.endpoint?.params?.start == 0
-    });
-
-    const handleEndReached = useCallback(async (lastItemIndex) => {
-
-        if (isFetchingNextPage)
-            return;
-        if (hasNextPage === false)
-            return;
-        if (currentRoute?.endpoint?.finished)
-            return;
-        if (lastItemIndex == false)
-            return;
-        fetchNextPage();
-    }, [currentRoute?.endpoint?.finished, isFetchingNextPage, hasNextPage]);
-
-
-    useEffect(() => {
-        if (currentRoute.inited) {
-            const headerSettingsN = getHeaderSettings(getURI(currentRoute?.key), isDesktop, layoutName, currentRoute.config);
-            // Disable offset for adjustable panel layouts
-            if (cellsCustomConfig?.adjustable) {
-                headerSettingsN.offset = false;
-            }
-
-            if (!isObjectsEqual(headerSettings, headerSettingsN)) {
-                setHeaderSettings(headerSettingsN);
-            }
-        }
-
-    }, [isDesktop, layoutName, currentRoute?.key, currentRoute.config]);
-
-    useEffect(() => {
-        if (currentRoute.cached) {
-            revalidateData();
-
-        }
-        if (currentRoute?.endpoint?.unit == 'feed') {
-            subscribe('bx_timeline_0', 'added', setIsRevalidate);
-            subscribe('bx_timeline_0', 'deleted', setIsRevalidate);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (isRevalidate)
-            revalidateData();
-    }, [isRevalidate]);
-
-    useEffect(() => {
-        const numColumnsN = getNumCols(currentBreakpoint, currentRoute);
-        if (numColumnsN != numColumns) {
-            setNumColumns(numColumnsN);
-        }
-    }, [currentBreakpoint, currentRoute]);
-
-    /* UPDATE CONTENT PART */
-    useEffect(() => {
-        setToaster2Visible(false);
-        setBottomSheetData(false)
-    }, [index]);
-
-    const setToaster2Visible = (val) => {
-        const current = toasterRef.current;
-        if (current) {
-            current.setVisible(val);
-        }
-    }
-
-    const revalidateData = useCallback(async () => {
-        const hasEndpoint = Boolean(currentRoute?.endpoint);
-        let endpointUpdateContent = '';
-        let bUpdateContent = false;
-        const revalidatedData = JSON.parse(isRevalidate);
-
-        if (hasEndpoint) {
-
-            const a = [...new Set(currentRoute.data
-                .filter(item => item.type !== 'block')
-                .map(item => item.id)
-            )].slice(0, 10).join(',');
-
-            if ((a || true) && revalidatedData.author_id != currentUser?.id && !currentRoute.endpoint.request_url.includes("system/get_results/TemplSearchExtendedServices")) {
-                endpointUpdateContent = currentRoute.endpoint.request_url + JSON.stringify({
-                    'params': { ...currentRoute.endpoint.params, validate: a }
-                });
-                bUpdateContent = true;
-            }
-        }
-        if (bUpdateContent) {
-            const validatedData = (await fetcher(endpointUpdateContent)).data?.[0]?.data?.data;
-
-            if (validatedData && (validatedData == 'valid' || validatedData == 'invalid')) {
-                setToaster2Visible(validatedData !== 'valid');
-            }
-        }
-    }, [currentRoute, isRevalidate, currentUser?.id]);
-
-    const showNewContent2 = async () => {
-        storageClear('ul:data', currentRoute.storageKeyValue)
-        storageClear('ul:state', currentRoute.storageKeyValue)
-
-        const newRoutes = [...routes];
-        newRoutes[index].endpoint.finished = false;
-        newRoutes[index].data = newRoutes[index].data.filter(item => item.type === 'block');;
-        newRoutes[index].endpoint.params.start = 0;
-        setRoutes(newRoutes);
-        setToaster2Visible(false);
-    }
-    /* UPDATE CONTENT PART */
-
-    /* NEW POST TO FEED */
-    useEffect(() => {
-        if (currentRoute.endpoint?.unit === 'feed' && layoutData && layoutData.data && (layoutData?.type == 'feed:new_content' || layoutData?.type == 'feed:remove_content')) {
-            let clonedData = currentRoute.data
-            const data = handleFeedLayoutData(layoutData, clonedData)
-            const newRoutes = [...routes];
-            newRoutes[index].data = data
-            setRoutes(newRoutes);
-            setLayoutData(null)
-        }
-        callFn("updateRouteDataForConnections", [currentRoute, layoutData, routes, index, setRoutes])
-
-    }, [layoutData]);
-    /* NEW POST TO FEED */
-
-    const setFilterValue = (values) => {
-        setIndex((prevIndex) => {
-            setRoutes((prevRoutes) => {
-                const newRoutes = [...prevRoutes];
-                values.forEach((value) => {
-                    const name = value.name;
-                    const val = value.value;
-
-                    if (newRoutes[prevIndex].endpoint.params.filters) {
-                        newRoutes[prevIndex].endpoint.params.filters[name] = val;
-                    } else {
-                        newRoutes[prevIndex].endpoint.params.filters = { [name]: val };
-                    }
-                });
-
-                newRoutes[prevIndex].endpoint.finished = false;
-                newRoutes[prevIndex].data = [];
-                newRoutes[prevIndex].endpoint.params.start = 0;
-                return newRoutes;
-            });
-
-            return prevIndex;
-        });
-    };
-
-    const onFormChangedValues = useCallback((values) => {
-        let filterValues = [];
-        for (let key in values) {
-            filterValues.push({ name: key, value: Array.isArray(values[key]) ? values[key].join(',') : values[key] })
-        };
-
-        setFilterValue(filterValues)
-        //  setBottomSheetData(false);
-    }, []);
-
-    const onFormSubmit = useCallback((formData, d) => {
-        onFormChangedValues(d);
-    }, []);
-
-    useEffect(() => {
-        fetchAndUpdateData(routes, index, setRoutes);
-    }, [index]);
-
-    const handleLayoutTop = (event) => {
-        setCntWidth(event.nativeEvent.layout.width)
-    };
-
-    const AddBlocksCnt = AddBlocks(currentRoute, onFormChangedValues);
-    
-    const showFilters = useCallback(() => {
-        setBottomSheetData({ title: 'Filters', content: AddBlocksCnt, showClose: true, snapPoints: ['50%', '75%'], modal: true });
-    }, [AddBlocksCnt]);
-
-    const unitType = useMemo(() => {
-        const type = getUnitModeBySource(currentRoute?.endpoint);
-        return type === 'default' ? getUnitType(currentRoute) : type;
-    }, [currentRoute?.endpoint, currentRoute?.inited, currentRoute?.blocks]);
-
-    const sSkeleton = useMemo(() => {
-        const a = callFn("getSkeletonByEndPoint", [currentRoute]);
-        if (a)
-            return a;
-        let baseSkeleton = skeleton || currentRoute?.endpoint?.module || currentRoute?.endpoint?.unit;
-        return unitType ? [baseSkeleton, unitType] : baseSkeleton;
-    }, [skeleton, currentRoute, unitType]);
-
-    useEffect(() => {
-        setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100);
-    }, []);
-
-    const Preload = useMemo(() => getSkeletonForList(sSkeleton, numColumns), [sSkeleton, numColumns]);
-
-    const RenderScene = useCallback(({ route, header, prevRoute, headerHeight, AddBlocksCnt, isInPanel }) => {
-        const isDesktop = useIsDesktop();
-        const dataItems = route?.data
-        const contentPaddingClass = header ? '' : '';
-
-        const isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
-        const isLeftCol = (route?.leftbar?.content?.length > 0) || layoutName == 'navigator';
-
-        const TabFlashListM = useMemo(() => {
-            return <UniList
-                scrollProps={header ?
-                    {
-                        pageData: route.inited ? route.pageData : prevRoute.pageData,
-                        subHeaderComponent: header,
-                        headerHeight: headerHeight,
-                        isBackButton: false,
-                        isMenuNameAsTitle: true
-                    } : null
-                }
-                index={route.index}
-                data={dataItems}
-                endpoint={route.endpoint}
-                listState={route?.state}
-                storagekey={route.storageKeyValue}
-                refer={uniRef}
-                route={route}
-                unit={route.endpoint?.unit}
-                useWindowScroll={!isInPanel}
-                height={isInPanel ? (isDesktop ? window.innerHeight : window.innerHeight - headerHeight - 64) : undefined}
-                numColumns={numColumns}
-                onEndReached={handleEndReached}
-                isInPanel={isInPanel}
-                renderItem={({ item, index }) => (
-                    <ItemRenderer unitType={unitType} route={route} numColumns={numColumns} item={{ ...item, feed_type: route?.endpoint?.params?.type }} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />
-                )}
-                ListFooterComponent={
-                    <View>
-                        {(hasNextPage && isFetchingNextPage) ? (
-                            Preload
-                        ) : null}
-                    </View>
-                }
-            />
-        }, [dataItems, numColumns, dataItems.length, isInPanel]);
-
-        const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
-        const layout_cols = !isLeftCol && !isRightCol ? 'c' : !isLeftCol ? 'c-r' : !isRightCol ? 'l-c' : 'l-c-r';
-        const cellsCustomConfig = appSetting('layouts', route?.pageData?.uri) || appSetting('layouts', `cols-${layout_cols}`);
-        const pageData = route.inited ? route.pageData : prevRoute.pageData;
-        return (
-            <PanelGroup
-                key={`${pageData?.uri || 'default'}-pnl2-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
-                autoSaveId={cellsCustomConfig.sizable ? `cells-${pageData?.uri || 'default'}` : undefined}
-                direction="horizontal"
-                className={(layoutName == 'navigator' ? '' : '') + " h-full"}
-                onLayout={() => {
-                    requestAnimationFrame(() => {
-                        document.body.offsetHeight;
-                        window.dispatchEvent(new Event('resize_panel'));
-                    });
-                }}
-
-            >
-                {isLeftCol && <>
-                    <Panel className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`} {...(() => {
-                        const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.left || {};
-                        return panelProps;
-                    })()}>
-                        <View className={`fixed-process ${layoutName == 'profile' ? cd('p-md') : appSetting('conductor', 'sidebar_container')}`}>
-                            <LeftSideBarContainer
-                                layoutName={layoutName}
-                                index={index}
-                                setIndex={setIndex}
-                                menu={menu}
-                                routes={routes}
-                                currentUser={currentUser}
-                                headerSettings={headerSettings}
-                                AddBlocksCnt={AddBlocksCnt} />
-                        </View>
-                    </Panel>
-                    <PanelHandler
-                        gap="hidden xl:block" sizable={cellsCustomConfig.sizable}
-                    />
-                </>
-                }
-                <Panel  {...(() => {
-                    const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.center || {};
-                    return panelProps;
-                })()}>
-                    <View className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'} ${layoutName !== 'navigator' ? 'sm:' + cd('p-md'): 'lg:p-2 '} ${contentPaddingClass}`}>
-                        {TabFlashListM}
-                        {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
-                    </View>
-                </Panel>
-                {isRightCol && <>
-                    <PanelHandler
-                        gap="hidden lg:block" sizable={cellsCustomConfig.sizable}
-                    />
-                    <Panel className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`} {...(() => {
-                        const { breakpoint, ...panelProps } = cellsCustomConfig.cells?.right || {};
-                        return panelProps;
-                    })()}>
-                        <View className={`${cd('p-md')} fixed-process `}>
-                            {route?.sidebar?.content.map((item, index) => {
-                                return <ItemRenderer key={`${route?.index}-${item.id}`} unitType={sidebarUnitType} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} />
-                            })}
-                            <View>
-                                <BlockByName data={route.pageData ? route.pageData : data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1} />
-                            </View>
-                        </View>
-                    </Panel>
-                </>}
-            </PanelGroup>
-        );
-
-
-    }, [numColumns, currentBreakpoint, index, density]);
-
-    const sceneHeaderComponent = useMemo(() => (
-        <RenderSceneHeader route={currentRoute} setFilterValue={setFilterValue} />
-    ), [currentRoute, setFilterValue]);
-
-    const isHideCover = data?.cover_block?.profile && appSetting('cover', 'hide_cover_for_context') && data?.cover_block?.profile?.id === data?.context?.current?.id && isDesktop;
-
-    const tabBarObj = useMemo(() => (
-        <TabBar
-            isHideCover={isHideCover}
-            menu={menu}
-            routes={routes}
-            layoutName={layoutName}
-            currentUser={currentUser}
-            index={index}
-            setIndex={setIndex}
-            getNumCols={getNumCols}
-            currentBreakpoint={currentBreakpoint}
-            onChangeRoute={onChangeRoute}
-            omitDefaultBackground={false}
-            pageData={data}
-        />
-    ), [menu, routes, currentUser, index, setIndex, getNumCols, currentBreakpoint, onChangeRoute, isHideCover]);
-
-    const isShowFilters = layoutName == 'navigator' && currentRoute?.leftbar?.content?.length > 0 ; //?????
-
-    const tabBarObj1 = !isDesktop && isShowFilters ?
-        <>
-            {tabBarObj}
-            <View className={`items-start px-3 sm:px-4 py-2`}>
-                <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />
-            </View>
-        </> : tabBarObj;
-
-    const headerComponent = useMemo(() => (
-        <HeaderContainer
-            isHideCover={isHideCover}
-            tabBarObj={tabBarObj1}
-            headerSettings={headerSettings}
-            pageData={data}
-            isCoverDisabled={isCoverDisabled}
-        />
-
-    ), [cntWidth, currentUser, routes, index, isHideCover]);
-
-    const isUseCurrentHeader = layoutName === 'profile' && (!isCoverDisabled || !isDesktop)
-
-    return (
-        <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
-            {(isUseCurrentHeader || isDesktop) && headerComponent}
-            <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
-            <View className={`${layoutName === 'profile' ? conductorTheme.content_max_width : ''} mx-auto w-full min-h-screen ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}>
-                {sceneHeaderComponent}
-                <RenderScene AddBlocksCnt={AddBlocksCnt} prevRoute={prevRoute} headerHeight={isShowFilters && routes.length > 1 ? defaultHeaderHeight + 52 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
-            </View>
-
-        </View>
-    );
-}
