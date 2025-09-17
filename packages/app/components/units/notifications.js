@@ -4,23 +4,26 @@ import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import Time from 'app/ui/atoms/time';
 import Link from 'app/ui/atoms/link'
-import { CardList } from 'app/ui/molecules/card'
+
 import Profile from 'app/ui/molecules/profile';
 import FormModal from 'app/ui/molecules/form_modal';
+import Html from 'app/ui/atoms/html';
 
 const ContentCard = memo(({ authorData, date, content }) => {
     return (
-        
-            <View className="p-2 mb-1 flex-row items-center gap-3 max-w-4xl mx-auto w-full web:hover:bg-muted/60 rounded-xl ">
-                <View className="rounded-full flex-none " >
-                    <Profile {...authorData} displayType="unit_wo_info" displaySize="lg" />
-                </View>
-                <Row className="flex-auto my-auto ">
-                    <Text className='flex-auto mr-2 leading-tight text-sm text-card-foreground' numberOfLines={3}>{content}</Text>
-                    <Text className='text-sm flex-none text-muted-foreground'><Time ts={date}></Time></Text>
-                </Row>
+
+        <View className="p-2 mb-1 flex-row items-center gap-3 max-w-4xl mx-auto w-full web:hover:bg-muted/60 rounded-xl ">
+            <View className="rounded-full flex-none " >
+                <Profile {...authorData} displayType="unit_wo_info" displaySize="lg" />
             </View>
-        
+            <Row className="flex-auto my-auto justify-between">
+                <View className='flex-auto'>
+                    <Html data={content} customClassName="u-vanilla-html-small" />
+                </View>
+                <Text className='text-sm flex-none text-muted-foreground'><Time ts={date}></Time></Text>
+            </Row>
+        </View>
+
     )
 })
 
@@ -32,7 +35,7 @@ function Unit({ data }) {
     const [pageData, setPageData] = useState(false);
 
     const content_parsed = (data?.content_parsed?.site || data?.content_parsed || '').replace('&#8230;', '...');
-    const content = useMemo(() => stripTags(content_parsed ?? ""), [content_parsed]);
+    // const content = useMemo(() => stripTags(content_parsed ?? ""), [content_parsed]);
 
     const url2 = url.substring(1);
 
@@ -45,10 +48,10 @@ function Unit({ data }) {
 
     if (!!data?.content?.modal_view) {
         return (
-            <><Pressable onPress={handlePress} >
-                <ContentCard authorData={data.author_data} date={data.date} content={content} />
-
-            </Pressable>
+            <>
+                <Pressable onPress={handlePress} >
+                    <ContentCard authorData={data.author_data} date={data.date} content={content_parsed} />
+                </Pressable>
                 <FormModal pageData={pageData} setPageData={setPageData} modalView={data?.content?.modal_view} url={url} />
             </>
         );
@@ -56,7 +59,7 @@ function Unit({ data }) {
 
     return (
         <Link href={url}>
-            <ContentCard authorData={data.author_data} date={data.date} content={content} />
+            <ContentCard authorData={data.author_data} date={data.date} content={content_parsed} />
         </Link>
     );
 }

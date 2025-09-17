@@ -809,7 +809,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
         />
     ), [menu, routes, currentUser, index, setIndex, getNumCols, currentBreakpoint, onChangeRoute, isHideCover]);
 
-    const isShowFilters = layoutName == 'navigator' ; //?????
+    const isShowFilters = layoutName == 'navigator' && currentRoute?.leftbar?.content?.length > 0 ; //?????
 
     const tabBarObj1 = !isDesktop && isShowFilters ?
         <>

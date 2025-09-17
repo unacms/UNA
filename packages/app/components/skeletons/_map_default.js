@@ -31,7 +31,7 @@ const OneColumn = memo(() => (
 
 const Notif = memo(() => (
     
-    <View className=" w-full">
+    <View className=" w-full max-w-4xl mx-auto">
         <CardList className=" mt-px lg:mb-2 lg:mx-2 p-3 lg:p-4 border-none lg:rounded-2xl " >
         <View className="animate-pulse flex-row items-center gap-2">
             <View className="rounded-full bg-neutral-500/40 h-12 w-12"></View>

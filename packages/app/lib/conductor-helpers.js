@@ -227,10 +227,14 @@ export async function parseData(routes, index, setRoutes, newData) {
 
         endpoint.finished = finished
 
-        let ld = sResponse.data[0]?.data.params
+        const ld = sResponse.data[0]?.data.params
 
         if (ld) {
-            params.start = parseInt(ld.start) + parseInt(ld.per_page)
+            if (sResponse.data[0]?.data?.unit != 'notifications')
+                params.start = parseInt(ld.start) + parseInt(ld.per_page)
+            else{
+                params.start = parseInt(ld.start)
+            }
         }
         endpoint.params = params
 
