@@ -1239,7 +1239,7 @@ export const settingsDefault = {
         link_styles: {
             // Default (SwiftUI-like Link): underline on hover; visited color; link color tokens
             'u-link-default-cnt': ' group ',
-            'u-link-default-text': ' text-primary web:hover:underline web:hover:text-primary/90 web:visited:text-primary ',
+            'u-link-default-text': ' text-secondary-label web:hover:text-label ',
             'u-link-default-trans': ' web:duration-200 ',
 
             // Plain: inherit text; no decoration idle; subtle hover/active feedback
