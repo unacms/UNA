@@ -348,8 +348,8 @@ export const settingsDefault = {
             show_action: false,
             show_counter: true,
             show_combined: true,
-            button_variant: 'secondary',
-            rounded: false,
+            button_variant: 'text',
+            rounded: true,
             button_size: 'sm',
             button_rounded: false,
             align_items: 'start',
@@ -1207,7 +1207,7 @@ export const settingsDefault = {
                 // Web pseudo-element class to extend clickable hit area
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-xs ',
                 // Native Pressable hitSlop defaults (can be overridden per usage)
-                hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
+                hitSlop: { top: 8, right: 8, bottom: 8, left: 8 },
                 text: ' text-xs leading-4 min-h-4 items-center justify-center flex',
                 rounded: ' rounded-sm ',
                 focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background ',
@@ -1215,60 +1215,59 @@ export const settingsDefault = {
             sm: {
                 padding: ' active:scale-95 rounded-md items-center flex ',
                 hitarea_class: 'relative u-link-hitarea u-link-hitarea-sm ',
-                hitSlop: { top: 8, right: 8, bottom: 8, left: 8 },
-                text: ' text-sm leading-5 min-h-5 items-center justify-center flex',
-                rounded: ' rounded-md ',
-                focus: ' focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-1  outline-offset-card ',
+                hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
+                text: 'text-sm leading-5 min-h-5 items-center justify-center flex',
+                rounded: 'rounded-md',
+                focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-1 ring-offset-ring ',
             },
             md: {
                 padding: ' px-2  rounded-lg items-center flex',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-md ',
-                hitSlop: { top: 10, right: 10, bottom: 10, left: 10 },
-                text: ' text-sm leading-6 ',
+                hitSlop: { top: 4, right: 4, bottom: 4, left: 4 },
+                text: ' text-sm leading-6 min-h-6 items-center justify-center flex',
                 rounded: ' rounded-lg ',
                 focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background ',
             },
             lg: {
                 padding: ' px-2  rounded-xl items-center flex ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-lg ',
-                hitSlop: { top: 12, right: 12, bottom: 12, left: 12 },
-                text: ' text-base leading-6 ',
+                hitSlop: { top: 2, right: 2, bottom: 2, left: 2 },
+                text: ' text-base leading-8 min-h-8 items-center justify-center flex ',
                 rounded: ' rounded-xl ',
                 focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background ',
             },
         },
 
         link_styles: {
-            // Default
-            'u-link-default-cnt': '  ',
-            'u-link-default-text': '  ',
-            'u-link-default-trans': '  ',
-            
-            // Text
-            'u-link-text-cnt': '  ',
-            'u-link-text-text': ' web:duration-200 web:hover:underline text-card-foreground web:hover:text-forground decoration-[1.5px] underline-offset-2 decoration-card-foreground/60 ',
-            'u-link-text-trans': ' web:duration-200',
+            // Default (SwiftUI-like Link): underline on hover; visited color; link color tokens
+            'u-link-default-cnt': ' group ',
+            'u-link-default-text': ' text-primary web:hover:underline web:hover:text-primary/90 web:visited:text-primary ',
+            'u-link-default-trans': ' web:duration-200 ',
 
-            // Ghost: use pseudo-element for web background; keep native pressed bg
-            'u-link-ghost-cnt': ' u-link-ghost  ',
-            'u-link-ghost-text': ' text-label web:hover:text-accent font-semibold ',
+            // Plain: inherit text; no decoration idle; subtle hover/active feedback
+            'u-link-plain-cnt': ' group ',
+            'u-link-plain-text': ' web:hover:opacity-90 web:active:opacity-80 ',
+            'u-link-plain-trans': ' web:duration-200 ',
+
+            // Ghost: pseudo background via CSS vars; color logic maintained
+            'u-link-ghost-cnt': ' u-link-ghost ',
+            'u-link-ghost-text': ' text-label web:hover:text-accent ',
             'u-link-ghost-trans': ' web:duration-200 ',
 
-            // Secondary: muted by default; secondary on hover/active
-            'u-link-secondary-cnt':  ' group bg-secondary/60 web:hover:bg-secondary active:opacity-60 ',
-            'u-link-secondary-text':  ' text-muted-foreground web:hover:text-secondary-foreground  ',
-            'u-link-secondary-trans': ' web:duration-200 ',
+            // Bordered: tertiary fill bg; link label colors; no underline
+            'u-link-bordered-cnt':  ' group bg-muted/60 web:hover:bg-muted rounded-md ',
+            'u-link-bordered-text':  ' text-primary web:hover:text-primary/90 web:visited:text-primary ',
+            'u-link-bordered-trans': ' web:duration-200 ',
 
-            // Accent: accent background and foreground
-            ' u-link-accent-cnt':
-            ' bg-accent/60 web:hover:bg-accent web:active:opacity-50 rounded ',
-            ' u-link-accent-text': ' text-accent-foreground/80 web:hover:text-accent-foreground text-sm ',
-            ' u-link-accent-trans': ' web:duration-200 ',
+            // BorderedProminent: accent background; stable text color
+            'u-link-borderedProminent-cnt': ' group bg-accent web:hover:bg-accent/90 active:bg-accent rounded-md ',
+            'u-link-borderedProminent-text': ' text-accent-foreground ',
+            'u-link-borderedProminent-trans': ' web:duration-200 ',
 
-            // Primary: link-style text
-            'u-link-primary-cnt': ' ',
-            'u-link-primary-text': ' font-medium text-primary web:hover:underline ',
-            'u-link-primary-trans': ' web:duration-200 ',
+            // BorderedSecondary: same bg as Bordered; secondary label text behavior
+            'u-link-borderedSecondary-cnt':  ' group bg-muted/60 web:hover:bg-muted rounded-md ',
+            'u-link-borderedSecondary-text':  ' text-secondary-label web:hover:text-label web:active:text-tertiary-label ',
+            'u-link-borderedSecondary-trans': ' web:duration-200 ',
         },
         offsets: {
             'gap-lg': 'gap-4',

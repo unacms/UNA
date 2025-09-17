@@ -30,7 +30,7 @@ const StyledEM = (props) => {
 }
 
 const StyledP = ({ children, className, ...props }) => {
-    className += ' text-foreground '
+    className += ' text-secondary-label '
     if (Platform.OS === 'web') {
         const WebDiv = 'div'
         return <WebDiv {...props} className={`${className} `} >{children}</WebDiv>

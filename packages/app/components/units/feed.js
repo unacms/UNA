@@ -71,7 +71,7 @@ function DefaultUnit({ data }) {
                                 <View className="gap-3 px-3 sm:px-4">
                                     <Author data={data} url={url} t={t} />
                                     {MainContentComponent}
-                                    <Row className={`${cd('gap-md')} items-center flex-auto justify-between flex-wrap-reverse`}>
+                                    <Row className="gap-3 items-center flex-auto justify-between flex-wrap-reverse">
                                         <ActionMenu
                                             data={menu_actions2}
                                             showCommentsModal={showCommentsModal}

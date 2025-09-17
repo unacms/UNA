@@ -16,6 +16,8 @@
         --secondary: var(--neutral-300);  /*background for secondary buttons, secondary surfaces*/
         --secondary-foreground: var(--neutral-800); /*content on secondary buttons, secondary surfaces*/
         --accent: var(--accent-600); /*background for accent buttons, accent surfaces*/
+        --accent-hover: var(--accent-500); /*background for accent buttons, accent surfaces on hover*/
+        --accent-active: var(--accent-800); /*background for accent buttons, accent surfaces on active*/
         --accent-foreground: var(--white); /*content on accent buttons, accent surfaces*/
         --muted: var(--neutral-200); /*background for ui items, sections, hover states*/
         --muted-foreground: var(--neutral-600); /*muted content*/
@@ -31,10 +33,13 @@
         --secondary-label: var(--neutral-800); /*Secondary text (medium emphasis)*/
         --tertiary-label: var(--neutral-700); /*Tertiary text (low emphasis)*/
         --quaternary-label: var(--neutral-600); /*Very subtle text (e.g., disabled, placeholder)*/
+        --link-label: var(--accent-600); /*Link text color*/
+        --link-label-hover: var(--accent-500); /*Link text color on hover*/
+        --link-label-visited: var(--accent-800); /*Link text color on active*/
         --placeholder-text: var(--neutral-500); /*Placeholder text inside inputs*/
-        --system-background: var(--neutral-50); /*Main surface background*/
-        --secondary-background: var(--neutral-100); /*Secondary layered background*/
-        --tertiary-background: var(--white); /*Card-like background*/
+        --fill-primary: var(--neutral-50); /*Main surface background*/
+        --fill-secondary: var(--neutral-100); /*Secondary layered background*/
+        --fill-tertiary: var(--neutral-200); /*Card-like background*/
 
 
         /* Box shadow variables for light mode - NativeWind compatible */
@@ -128,13 +133,18 @@
         --ring: var(--accent-700); /*focus rings*/
 
         --label: var(--neutral-100); /*Primary text (high emphasis)*/
+        --link-label: var(--accent-400); /*Link text color*/
+        --link-label-hover: var(--accent-300); /*Link text color on hover*/
+        --link-label-visited: var(--accent-600); /*Link text color on active*/
         --secondary-label: var(--neutral-200); /*Secondary text (medium emphasis)*/
         --tertiary-label: var(--neutral-300); /*Tertiary text (low emphasis)*/
         --quaternary-label: var(--neutral-400); /*Very subtle text (e.g., disabled, placeholder)*/
         --placeholder-text: var(--neutral-500); /*Placeholder text inside inputs*/
-        --system-background: var(--neutral-900); /*Main surface background*/
-        --secondary-background: var(--neutral-800); /*Secondary layered background*/
-        --tertiary-background: var(--neutral-700); /*Card-like background*/
+        --fill-primary: var(--neutral-950); /*Main surface background*/
+        --fill-secondary: var(--neutral-900); /*Secondary layered background*/
+        --fill-tertiary: var(--neutral-800); /*Card-like background*/
+
+
 
         /* Box shadow variables for dark mode - more pronounced shadows */
         --shadow-xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.5);
@@ -220,9 +230,9 @@
         background-color: rgba(0, 0, 0, 0.001);
     }
     .u-link-hitarea-xs::before { inset: -8px; }
-    .u-link-hitarea-sm::before { inset: -12px; }
-    .u-link-hitarea-md::before { inset: -4px; }
-    .u-link-hitarea-lg::before { inset: -2px; }
+    .u-link-hitarea-sm::before { inset: -8px; }
+    .u-link-hitarea-md::before { inset: -6px; }
+    .u-link-hitarea-lg::before { inset: -6px; }
 
     /* Generic action (button) hit area */
     .u-action-hitarea::before {
@@ -233,17 +243,9 @@
     }
     .u-action-hitarea-xxs::before { inset: -8px; }
     .u-action-hitarea-xs::before { inset: -8px; }
-    .u-action-hitarea-sm::before { inset: -px; }
-    .u-action-hitarea-base::before { inset: -4px; }
-    .u-action-hitarea-lg::before { inset: -2px; }
-
-    /* Larger hit area for web timestamp link without layout shift (legacy alias) */
-    .u-time-hitarea::before {
-        content: "";
-        position: absolute;
-        inset: -4px;
-        border-radius: 0.375rem;
-    }
+    .u-action-hitarea-sm::before { inset: -8px; }
+    .u-action-hitarea-base::before { inset: -6px; }
+    .u-action-hitarea-lg::before { inset: -6px; }
 
     /* Ghost link background via pseudo-element (web only) */
     .u-link-ghost {
@@ -273,18 +275,18 @@
 
     /* Size modifiers for pseudo background padding and rounding */
     .u-link-ghost.u-link-ghost-pad-xs {
-        --u-link-ghost-inset-x: -2px;
-        --u-link-ghost-inset-y: -2px;
+        --u-link-ghost-inset-x: -1px;
+        --u-link-ghost-inset-y: -0px;
         --u-link-ghost-radius: 0.25rem; /* rounded-sm */
     }
     .u-link-ghost.u-link-ghost-pad-sm {
-        --u-link-ghost-inset-x: -4px;
+        --u-link-ghost-inset-x: -2px;
         --u-link-ghost-inset-y: 0px;
         --u-link-ghost-radius: 0.375rem; /* rounded-md */
     }
     .u-link-ghost.u-link-ghost-pad-md {
-        --u-link-ghost-inset-x: -6px;
-        --u-link-ghost-inset-y: -3px;
+        --u-link-ghost-inset-x: -4px;
+        --u-link-ghost-inset-y: -2px;
         --u-link-ghost-radius: 0.5rem; /* rounded-lg */
     }
     .u-link-ghost.u-link-ghost-pad-lg {
@@ -322,7 +324,7 @@ body {
     /* @apply prose dark:prose-invert; */
     @apply text-neutral-800 dark:text-neutral-200;
     font-size: 16px;
-    line-height: 20px;
+    line-height: 24px;
     max-width: none;
     word-wrap: break-word;
     font-weight: 400;
@@ -332,8 +334,8 @@ body {
 .u-vanilla-html-small {
     /* @apply prose dark:prose-invert; */
     @apply text-card-foreground;
-    font-size: 16px;
-    line-height: 18px;
+    font-size: 14px;
+    line-height: 20px;
     max-width: none;
     word-wrap: break-word;
     font-weight: 400;
