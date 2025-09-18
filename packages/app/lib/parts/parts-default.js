@@ -20,7 +20,7 @@ export function ProfileDisplayNameLink(title, url, href, fontSize, actions, opti
 
     return (
         <Text className={composed}>
-           я {title}
+            {title}
         </Text>
     )
 }

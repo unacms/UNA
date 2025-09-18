@@ -84,7 +84,6 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
         );
 
     }*/
-
     return (
         <>
             <Suggestions />
@@ -92,7 +91,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
             <NavbarMemo pageLayoutName={pageLayoutName} headerSettings={headerSettings} context={data?.context} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} >
                 <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
             </NavbarMemo>
-            <Footer />
+            {headerSettings.footer !== false && <Footer />}
             <BottomSheet />
             <ModalPopup />
         </>

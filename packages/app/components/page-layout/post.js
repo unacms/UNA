@@ -91,10 +91,6 @@ export default function PageLayout({ data, blocks, isModal, url }) {
         setListWidth(event.nativeEvent.layout.width - 2)
     }
 
-    /*const handleContainerLayout = useCallback((event) => {
-        setContainerHeight(event.nativeEvent.layout.height)
-    }, []);*/
-
     const handleLayoutModal = (event) => {
         const h =
             windowWHeight -
@@ -104,16 +100,8 @@ export default function PageLayout({ data, blocks, isModal, url }) {
     }
 
 
-    /*useEffect(() => {
-        if (containerHeight > 0){
-            const h = Math.max(containerHeight - modalFormHeight, 0);
-            setHeight(h);
-        }
-    }, [containerHeight, modalFormHeight]);*/
-
-
     if (isModal) {
-        // NEEED TO IMPROVE TO AVOID DOUBLE CODE
+
 
         return (
             <View className="w-full">
@@ -150,10 +138,7 @@ export default function PageLayout({ data, blocks, isModal, url }) {
     }
     return (
         <View {...viewProps} className="flex-1 w-full h-full sm:h-[calc(100vh-16rem)] ">
-            <View className={` ${appSetting(
-                'layout',
-                'post_container'
-            )} `}>
+            <View className={`max-w-5xl w-full flex-1 bg-card/80 shadow-sm text-card-foreground rounded-2xl py-3 sm:py-4 lg:mt-4 mx-auto `}>
                 <View onLayout={handleListLayout} pointerEvents="box-none" className='w-full flex-1' style={{ marginBottom: !isDesktop ? 0 : formHeight }}>
                     <CommentsBrowse
                         scrollProps={
@@ -176,8 +161,10 @@ export default function PageLayout({ data, blocks, isModal, url }) {
                     />
                 </View>
                 <KbAvoidingView>
-                    <View onLayout={handleLayout} style={{ width: listWidth }} className='bg-card ml-[1px] rounded-2xl px-4 py-3 bor web:fixed web:bottom-0 web:lg:bottom-4   w-full max-w-5xl'>
-                        <CommentsForm handleForm={setAddData} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
+                    <View onLayout={handleLayout} style={{ width: listWidth + 5 }} className='-ml-[2px] -mr-[2px] border-background border bg-background web:fixed z-50 web:bottom-0  '>
+                        <View className='lg:rounded-b-2xl px-4 py-3  lg:mb-4 bg-card shadow-sm ml-[1px] '>
+                            <CommentsForm handleForm={setAddData} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
+                        </View>
                     </View>
                 </KbAvoidingView>
             </View>
