@@ -947,7 +947,7 @@ export const settingsDefault = {
             primaryBg: 'rgba(37,99,235,0.1)',
         },
         dropdown: {
-            cnt: ' rounded-2xl overflow-hidden shadow-md border-[0.5px] border-border/80 p-1.5 bg-popover/80 backdrop-blur-xl z-50  ',
+            cnt: ' rounded-2xl overflow-hidden shadow-md border border-border p-2 bg-popover/60 backdrop-blur-xl z-50  ',
         },
         conductor: {
             menu: ' w-full items-left justify-center ',
@@ -1249,7 +1249,7 @@ export const settingsDefault = {
 
             // Ghost: pseudo background via CSS vars; color logic maintained
             'u-link-ghost-cnt': ' u-link-ghost ',
-            'u-link-ghost-text': ' text-label web:hover:text-accent ',
+            'u-link-ghost-text': ' text-card-foreground web:hover:text-accent ',
             'u-link-ghost-trans': ' web:duration-200 ',
 
             // Bordered: tertiary fill bg; link label colors; no underline

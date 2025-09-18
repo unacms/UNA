@@ -8,13 +8,13 @@
         --background: var(--neutral-100); /*main page background*/
         --foreground: var(--neutral-950); /*main page content*/
         --card: var(--white); /*cards, sidebars, navbars background*/
-        --card-foreground: var(--neutral-900); /*content on cards, sidebars, navbars*/
+        --card-foreground: var(--neutral-800); /*content on cards, sidebars, navbars*/
         --popover: var(--white); /*background for popovers, inputs, tooltips, modals, elevated surfaces*/
-        --popover-foreground: var(--neutral-900); /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
+        --popover-foreground: var(--neutral-800); /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
         --primary: var(--accent); /*background for primary buttons, links, active states, focus rings. Use use high-contract background from gray-scale or accent-scale.*/
         --primary-foreground: var(--accent-foreground); /*content on primary buttons, active states, primary surfaces*/
         --secondary: var(--neutral-300);  /*background for secondary buttons, secondary surfaces*/
-        --secondary-foreground: var(--neutral-800); /*content on secondary buttons, secondary surfaces*/
+        --secondary-foreground: var(--neutral-900); /*content on secondary buttons, secondary surfaces*/
         --accent: var(--accent-600); /*background for accent buttons, accent surfaces*/
         --accent-hover: var(--accent-500); /*background for accent buttons, accent surfaces on hover*/
         --accent-active: var(--accent-800); /*background for accent buttons, accent surfaces on active*/
@@ -39,7 +39,7 @@
         --placeholder-text: var(--neutral-500); /*Placeholder text inside inputs*/
         --fill-primary: var(--neutral-50); /*Main surface background*/
         --fill-secondary: var(--neutral-100); /*Secondary layered background*/
-        --fill-tertiary: var(--neutral-200); /*Card-like background*/
+        --fill-tertiary: var(--neutral-500); /*Card-like background*/
 
 
         /* Box shadow variables for light mode - NativeWind compatible */
@@ -115,7 +115,7 @@
         --card: var(--neutral-900); /*cards, sidebars, navbars background*/
         --card-foreground: var(--neutral-300); /*content on cards, sidebars, navbars*/
         --popover: var(--neutral-900); /*background for popovers, inputs, tooltips, modals, elevated surfaces*/
-        --popover-foreground: var(--neutral-200); /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
+        --popover-foreground: var(--neutral-300); /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
         --primary: var(--accent-600); /*background for primary buttons, links, active states, focus rings. Use use high-contract background from gray-scale or accent-scale.*/
         --primary-foreground: var(--accent-foreground); /*content on primary buttons, active states, primary surfaces*/
         --secondary: var(--neutral-700);  /*background for secondary buttons, secondary surfaces*/

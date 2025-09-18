@@ -163,7 +163,7 @@ export default function MenuAccount({ buttonProps, children }) {
                             >
                                 <Row
                                     key={index}
-                                    className="items-center justify-between gap-x-3 w-full my-1"
+                                    className="items-center justify-between gap-x-3 w-full p-1 web:hover:bg-muted/60 rounded-lg"
                                 >
                                     <Row className="items-center flex-auto">
                                         <View className="px-0.5">
@@ -232,7 +232,7 @@ export default function MenuAccount({ buttonProps, children }) {
                 footer={
                     menu_footer_items.length > 0 ? (
                         <MenuFooter
-                            cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-1 p-2 pb-1 mt-1"
+                            cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-x-2 gap-y-1 p-2 pb-1 mt-1 max-w-64"
                             variant="ghost"
                             size="sm"
                             itemClassName="text-sm p-1"

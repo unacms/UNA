@@ -27,7 +27,7 @@ export default function DropdownPopup({
     open,
     onOpenChange,
     trigger,
-    minPopupWidth = 320,
+    minPopupWidth = 256,
     defaultOpen = false,
     showOnTop = false,
     contentClasses = dropdownTheme?.cnt 
