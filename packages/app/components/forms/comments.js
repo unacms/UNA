@@ -181,11 +181,8 @@ export default function FormComments(props) {
     props.data.inputs['cmt_submit'].icon_only = true
     props.data.inputs['cmt_image'].rounded = 'true'
     props.data.inputs['cmt_image'].variant = 'default'
-
-
     //const minVisualHeightWhenTypingForPadding = 80;
    // const shouldHaveExtraPadding = (false) || (!hasText && baseHeight > 40);
-  
 
     const attachmentButtonContainerClasses = [
         'absolute',
