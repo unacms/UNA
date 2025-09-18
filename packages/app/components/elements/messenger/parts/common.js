@@ -182,7 +182,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                 }, 100);
             }
         }
-
     }
 
     useEffect(() => {

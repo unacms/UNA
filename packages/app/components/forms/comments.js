@@ -171,8 +171,6 @@ export default function FormComments(props) {
             handleSubmitWithSanitization();
         }
     };
-
-
     props.data.inputs['cmt_submit'].hide_errors = true
 
     props.data.inputs['cmt_submit'].icon = 'SendHorizontal'
