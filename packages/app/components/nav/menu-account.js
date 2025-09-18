@@ -163,17 +163,17 @@ export default function MenuAccount({ buttonProps, children }) {
                             >
                                 <Row
                                     key={index}
-                                    className="items-center justify-between gap-x-3 w-full p-1 web:hover:bg-muted/60 rounded-lg"
+                                    className="items-center justify-between gap-x-3 w-full px-2 py-1.5 h-12 web:hover:bg-muted/60 rounded-lg"
                                 >
                                     <Row className="items-center flex-auto">
-                                        <View className="px-0.5">
+                                        
                                             <Profile
                                                 {...item}
                                                 url_avatar={item.avatar}
                                                 displayType="unit_wo_info"
                                                 displaySize="sm"
                                             />
-                                        </View>
+                                        
                                         <Text className="text-sm leading-8 px-1.5 font-medium text-neutral-700 dark:text-neutral-200 whitespace-nowrap">
                                             {item.display_name}
                                         </Text>
@@ -194,18 +194,18 @@ export default function MenuAccount({ buttonProps, children }) {
                     }
                     if (item.link == '{separator}') {
                         sTitle = (
-                            <Row className="items-center flex-auto my-1 sm:border-t border-bdr dark:border-bdr-d"></Row>
+                            <Row className="items-center flex-auto my-1 sm:border-t border-border/60"></Row>
                         )
                         sType = 'separator'
                     }
                     if (item.link == '{switch_profile_selector}') {
                         sTitle = (
                             <Row className="w-full items-center flex-auto my-1">
-                                <ProfileSwitcher hideTitle={true}>
+                                <ProfileSwitcher className="w-full" hideTitle={true}>
                                     <Button
-                                        variant="text"
+                                        variant="secondary"
                                         fullWidth
-                                        align="start"
+                                        align="center"
                                         solid
                                         size="sm"
 

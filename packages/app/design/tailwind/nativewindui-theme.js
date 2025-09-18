@@ -55,10 +55,62 @@ const nativewindUIColors = {
     popover: {
         DEFAULT: withOpacity('popover'),
         foreground: withOpacity('popover-foreground'),
+        50: withOpacity('accent-50'),
+        100: withOpacity('accent-100'),
+        200: withOpacity('accent-200'),
+        300: withOpacity('accent-300'),
+        400: withOpacity('accent-400'),
+        500: withOpacity('accent-500'),
+        600: withOpacity('accent-600'),
+        700: withOpacity('accent-700'),
+        800: withOpacity('accent-800'),
+        900: withOpacity('accent-900'),
+        950: withOpacity('accent-950'),
     },
     card: {
         DEFAULT: withOpacity('card'),
         foreground: withOpacity('card-foreground'),
+    },
+    label: {
+        primary: withOpacity('label-primary'),
+        secondary: withOpacity('label-secondary'),
+        tertiary: withOpacity('label-tertiary'),
+        quaternary: withOpacity('label-quaternary'),
+        link: withOpacity('label-link'),
+        link_hover: withOpacity('label-link-hover'),
+        
+    },
+   
+    placeholder: {
+        DEFAULT: withOpacity('placeholder'),
+    },
+    fill: {
+        primary: withOpacity('fill-primary'),
+        secondary: withOpacity('fill-secondary'),
+        tertiary: withOpacity('fill-tertiary'),
+    },
+    shadow: {
+        DEFAULT: withOpacity('shadow'),
+        xs: withOpacity('shadow-xs'),
+        sm: withOpacity('shadow-sm'),
+        md: withOpacity('shadow-md'),
+        lg: withOpacity('shadow-lg'),
+        xl: withOpacity('shadow-xl'),
+        '2xl': withOpacity('shadow-2xl'),
+    },
+    neutral: {
+        DEFAULT: withOpacity('neutral'),
+        50: withOpacity('neutral-50'),
+        100: withOpacity('neutral-100'),
+        200: withOpacity('neutral-200'),
+        300: withOpacity('neutral-300'),
+        400: withOpacity('neutral-400'),
+        500: withOpacity('neutral-500'),
+        600: withOpacity('neutral-600'),
+        700: withOpacity('neutral-700'),
+        800: withOpacity('neutral-800'),
+        900: withOpacity('neutral-900'),
+        950: withOpacity('neutral-950'),
     },
 
     // Raw state colors

@@ -86,7 +86,7 @@ export default function ElementMenu(oProps) {
 
 
     //--- horizontal menu items alignment
-    const sAlignItems = oProps.alignItems || oParams.align_items || 'between';
+    const sAlignItems = oProps.alignItems || oParams.justify_items || 'between';
     sClassName += `justify-${sAlignItems}`;
 
     if (isWeb) {
@@ -154,6 +154,10 @@ export default function ElementMenu(oProps) {
     }
     if (!isWeb) {
         isUseStaticWidth = true;
+    }
+
+    if (oProps?.params?.menu_width) {
+        sClassName += ` ${oProps.params.menu_width}`;
     }
 
     if (isUseStaticWidth) {

@@ -140,12 +140,13 @@ export const CommentsSection = memo(
         t,
     }) => {
         const ShowMoreCmts = (
-            <Button variant="link" size="sm" title={t('View more comments')} />
+            <Button variant="text" size="xs" title={t('View more comments...')} />
         )
         return (
             <View className=" pt-2 ">
+                <View className="border-t border-border/40 -mx-2 pt-1.5 mt-1.5 ">
                 {isShowMoreComments && (
-                    <View className="pt-2">
+                    <View className=" me-auto">
                         {isCommentsModal ? (
                             <Pressable
                                 onPress={() => {
@@ -159,6 +160,7 @@ export const CommentsSection = memo(
                         )}
                     </View>
                 )}
+                </View>
                 <CommentsBrowse
                     maxCount={appSetting('comments', 'count_in_feed')}
                     contentUrl={url}
@@ -260,7 +262,7 @@ export const ItemInfo = memo(({ data, t }) => {
         owners?.length > 0 ? (
             owners?.length == 1 ? (
                 <>
-                    <View className="text-muted ">
+                    <View className="text-quaternary-label">
                         <Icon icon='Dot' size={16}  />
                     </View>  
                     <Link href={data.owners[0].url} emulate={true}>
@@ -359,7 +361,7 @@ export const MenuManage = ({ id, menu, setViewState }) => {
                 <Button
                     variant="text"
                     size="sm"
-                    rounded
+                    
                     startDecorator="Ellipsis"
                     onPress={() => {
                         if (Platform.OS === 'web')
@@ -444,7 +446,7 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
     return (
         aMenuManageItems?.length > 0 && (
             <>
-                <View className="flex-none ml-2 x">
+                <View className="flex-none" aria-label="Manage menu">
                     <DropdownMenu
                         items={aMenuManageItems}
                         defaultOpen={defaultOpen}
@@ -493,7 +495,7 @@ export const VisibilityInfo = memo(({ data }) => {
 
     return (
         <Row className="items-center justify-center text-center">
-             <View className="text-muted ">
+             <View className="text-muted hidden">
                     <Icon icon="Dot" size={16} />
                 </View>
             <View className="flex-none flex-row gap-1 items-center justify-center ">
@@ -542,22 +544,34 @@ export const Author = memo(({ data, url, t }) => {
             : data.author_data
 
     return (
-       <View className="flex-auto ">
+       <Row className="flex-auto justify-between items-top ">
             <Profile
                 {...dataIcon}
                 displayType="unit"
                 displaySize="base"
                 showInfo={
                     <Row className="items-center flex-wrap">
+                        
+                        
+                        <VisibilityInfo data={data} />
+                        <ItemInfo data={data} t={t} />
+                       
+                    </Row>
+                }
+                showInfo2={<Badges badges={data.author_badges} size="xs" />}
+                showActions={ActionsElements}
+            />
+            
                         {isWeb ? (
                             <Link
                                 href={url}
                                 emulate={false}
                                 size="sm"
                                 variant="ghost"
-                                className="u-time-hitarea relative "
+                                className="mb-auto"
+                               
                             >
-                                <Time size="sm" variant="link" 
+                                <Time variant="link" 
                                     ts={data.date}
                                 />
                             </Link>
@@ -567,6 +581,7 @@ export const Author = memo(({ data, url, t }) => {
                                 mode="text"
                                 size="sm"
                                 variant="secondary"
+                                className="mb-auto"
                                 hitSlop={{
                                     top: 8,
                                     bottom: 8,
@@ -574,24 +589,12 @@ export const Author = memo(({ data, url, t }) => {
                                     right: 8,
                                 }}
                             >
-                                <Time size="sm" variant="link" stylesNameAdd="text-xs leading-5"
+                                <Time variant="link" 
                                     ts={data.date}
                                 />
                             </Link>
                         )}
-                        
-                        <VisibilityInfo data={data} />
-
-                       
-                       
-                        <ItemInfo data={data} t={t} />
-                       
-                    </Row>
-                }
-                showInfo2={<Badges badges={data.author_badges} size="xs" />}
-                showActions={ActionsElements}
-            />
-        </View>
+        </Row>
     )
 })
 

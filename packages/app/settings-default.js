@@ -333,24 +333,25 @@ export const settingsDefault = {
             button_full_width: false,
             button_size: 'sm',
             button_variant: 'text',
-
+            menu_width: ' w-min ',
             pressed_classes: {
-                pressed_container: ' bg-accent/10 web:hover:bg-accent/20 ',
+                pressed_container: ' active:bg-accent/10 web:hover:bg-accent/10 ',
                 pressed_text: ' text-accent font-medium ',
             },
-            button_rounded: true,
-            align_items: 'start',
+            button_rounded: false,
+            justify_items: 'start',
             no_gap_between_buttons: false, // is false no gap between buttons + right margin, is true  gap between buttons + no margin
         },
         counters_menu: {
             show_action: false,
             show_counter: true,
             show_combined: true,
-            button_variant: 'text',
+            menu_width: 'w-full',
+            button_variant: 'link',
             rounded: true,
-            button_size: 'sm',
+            button_size: 'xs',
             button_rounded: true,
-            align_items: 'start',
+            justify_items: 'between',
             no_gap_between_buttons: false,
         },
         /*
@@ -947,7 +948,7 @@ export const settingsDefault = {
             primaryBg: 'rgba(37,99,235,0.1)',
         },
         dropdown: {
-            cnt: ' rounded-2xl overflow-hidden shadow-md border border-border p-2 bg-popover/60 backdrop-blur-xl z-50  ',
+            cnt: ' rounded-2xl overflow-hidden shadow-xl border border-border p-2 bg-popover/60 backdrop-blur-xl z-50  ',
         },
         conductor: {
             menu: ' w-full items-left justify-center ',
@@ -1007,7 +1008,7 @@ export const settingsDefault = {
             content_ver: '',
             content_hor: 'flex-row  ',
             item_ver:
-                ' px-2 group flex flex-row h-10 items-center rounded-lg font-medium web:hover:bg-muted/60 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer',
+                ' px-2 py-1.5 group flex h-12 flex-row  items-center rounded-lg font-medium web:hover:bg-muted/60 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer',
             item_hor:
                 'flex block web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-neutral-700    web:duration-200 dark:text-neutral-300 outline-none ',
             item_np:
@@ -1015,13 +1016,13 @@ export const settingsDefault = {
             item_cnt: 'items-center w-full flex-row',
             item_text: ' text-sm font-medium text-card-foreground px-2',
             item_icon:
-                'flex items-center w-8 h-8 bg-bgritem dark:bg-bgritem-d web:group-hover:bg-bgritem-h web:dark:group-hover:bg-bgritem-dh rounded-full justify-center',
+                'flex items-center w-9 h-9 bg-secondary/60 web:group-hover:bg-secondary rounded-full justify-center',
             icon_size: 20, // Default icon size for dropdown menu icons
         },
         modal: {
-            fog: 'bg-background/50 backdrop-blur-xl ',
+            fog: 'bg-background/80  ',
             container:
-                ' h-full sm:h-auto shadow bg-card sm:rounded-2xl  overflow-hidden ',
+                ' h-full sm:h-auto shadow-xl bg-popover/80 backdrop-blur border border-border web:ring-1 web:ring-inset web:ring-popover sm:rounded-2xl overflow-hidden ',
             content: ' h-auto ',
             header: ' p-3 items-start justify-start border-b border-border/80',
         },
@@ -1041,7 +1042,7 @@ export const settingsDefault = {
         button_sizes: {
             default_size: 'base',
             default_variant: 'default',
-            pressed_container: ' bg-primary/10  ',
+            pressed_container: ' web:hover:bg-accent/10 active:bg-accent/20  ',
             pressed_text: ' text-primary font-medium ',
             xxs: {
                 rounded: ' rounded-sm ',
@@ -1534,16 +1535,17 @@ export const settingsDefault = {
             'u-btn-danger-trans': ' web:duration-200',
             
 
-            'u-btn-text-cnt': ' group web:hover:bg-muted/60 active:bg-muted web:active:bg-muted web:focus-visible:bg-muted/60 active:scale-95 web:duration-200  ',
+            'u-btn-text-cnt': ' group web:hover:bg-muted/60 active:bg-muted active:scale-105 lg:active:scale-95 ',
             'u-btn-text-text':
-                ' font-medium text-card-foreground web:group-hover:text-foreground',
+                ' font-medium text-label-tertiary web:group-hover:text-label-primary',
             'u-btn-text-trans': ' web:duration-200',
             'u-btn-text-focus': ' web:focus-visible:bg-muted/60 ',
 
-            'u-btn-link-cnt': '  ',
+            'u-btn-link-cnt': ' group active:bg-muted/60 ',
             'u-btn-link-text':
-                ' font-medium text-primary web:group-hover:text-primary/90 ',
-            'u-btn-link-trans': ' web:duration-200 ',
+                ' font-medium text-label-tertiary group-hover:text-label-link active:text-label-link web:duration-200',
+            'u-btn-text-trans': ' web:duration-200 active:scale-105 lg:active:scale-95 ',
+            
 
             'u-btn-outline-cnt':
                 ' bg-transparent border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 ',

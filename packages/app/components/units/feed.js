@@ -18,7 +18,7 @@ import {
     FeedEditForm,
 } from 'app/lib/feed-helpers'
 import { Platform } from 'react-native'
-import { CardList } from 'app/ui/molecules/card'
+import { CardList, CardFooter } from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/atoms/animated-block'
 
 function DefaultUnit({ data }) {
@@ -129,7 +129,7 @@ function DefaultUnit({ data }) {
             <CardList>
                 <Row className="gap-3 flex-auto mb-3">
                     <Author data={data} url={url} t={t} />
-                    <View className="flex-none mb-auto">
+                    <View className="flex-none mb-auto hidden">
                         <MenuManage
                             id={data.id}
                             menu={data?.menu_manage}
@@ -137,22 +137,28 @@ function DefaultUnit({ data }) {
                         />
                     </View>
                 </Row>
-                <View className="flex-auto">
+                <View className="flex-auto mb-2">
                     {MainContentComponent}
                 </View>
-                
-                        
-                <Row className=" gap-3 items-center flex-auto justify-between flex-wrap-reverse mt-3 pt-3 border-t border-border/60">
-                    <ActionMenu
-                        data={data.menu_actions}
-                        showCommentsModal={showCommentsModal}
-                    />
-                  {!!data.menu_counters && appSetting('feed', 'counters_menu') && (
+                <Row className="-mx-1.5">
+                {!!data.menu_counters && appSetting('feed', 'counters_menu') && (
                             <CounterMenu
                                 data={data.menu_counters}
                                 showCommentsModal={showCommentsModal}
                             />
-                        )}
+                )}   
+                 </Row>
+                <Row className=" gap-3 items-center flex-auto justify-between pt-1.5 mt-1 -mx-2 -mb-2  border-t border-border/40">
+                    <ActionMenu
+                        data={data.menu_actions}
+                        showCommentsModal={showCommentsModal}
+                    />
+                     <MenuManage
+                            id={data.id}
+                            menu={data?.menu_manage}
+                            setViewState={setViewState}
+                        />
+                 
 
                 </Row>
 
@@ -167,6 +173,7 @@ function DefaultUnit({ data }) {
                         isShowMoreComments={isShowMoreComments}
                     />
                 )}
+                
             </CardList>
         </AnimatedBlock>
     )
