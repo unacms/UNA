@@ -197,6 +197,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                             jots: [...prevJots.data.jots, ...jotUpdated.data.jots]
                         }
                     }));
+                    scrolTo();
                 }
                 if (jotUpdated.data.msg) {
                     setListError(jotUpdated.data.msg);
