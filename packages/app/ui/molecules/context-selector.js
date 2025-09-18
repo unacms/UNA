@@ -82,6 +82,7 @@ function getContextRoot(data, url, uri) {
 }
 
 export default function ContextSelector({ data, url, uri, mode }) {
+        console.log("ContextSelector", data, url, uri, mode)
     const [isOpen, setIsOpen] = useState(false)
     if (!data) return null
 
