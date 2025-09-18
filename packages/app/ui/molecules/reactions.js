@@ -458,7 +458,7 @@ export default function ElementReactions(oProps) {
             (bShowCounter && !!aCounter);
 
         sResult = hasContent ? (
-            <View className={"flex-auto flex-row items-center " + (oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? '  px-0 ' : ' pr-1 pb-2 ') : '')} >
+            <View className={"flex-auto flex-row items-center " + (oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? '  ' : 'me-3') : '')} >
                 {bShowAction && !!sActionButton && <View key={sObject + '-action-button'} className={'flex-auto' + (bShowFull && bCounter ? ' mr-2 ' : '')}>{sActionButton}</View>}
                 {bShowAction && !!sActionPopup && <View key={sObject + '-action-popup'}>{sActionPopup}</View>}
                 {bCounter && <View key={sObject + '-counter-button'} className="flex-auto flex-row gap-x-1">{aCounter[0]}</View>}

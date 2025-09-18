@@ -525,7 +525,7 @@ export const Button = (props) => {
             classes = classes.replaceAll(/bg-\S+/g, '').replaceAll(/ring-\S+/g, '') + ` ${bgColor}`;
         }
         if (variant === 'group-item-none') {
-            classes += ' justify-start';
+            classes += ' justify-between';
         } else {
             classes += ` justify-${align}`;
         }

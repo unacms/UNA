@@ -7,7 +7,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import { Button } from 'app/design/controls'
 
 export default function (props) {
-    const caption = props.format == 'notitle' ? '' : props.caption
+    const caption = props.format === 'notitle' ? '' : props.caption
 
     const sClassName =
         ' w-full form-control form-control-' +

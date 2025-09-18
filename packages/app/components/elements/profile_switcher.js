@@ -16,6 +16,7 @@ export default function (props) {
     const [data, setData] = useState(false)
     const [show, setShow] = useState(false)
     const redirectdRef = useRef();
+    const wrapperClassName = props.className || '';
 
     const handleSwitch = async (id) => {
         const result = await fetcher('/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' + id);
@@ -48,11 +49,11 @@ export default function (props) {
     return (
         <>
             {!props.useDefault ?
-                <Pressable className="" onPress={() => handleClick()}>
+                <Pressable className={wrapperClassName} onPress={() => handleClick()}>
                     {props.children}
                 </Pressable> :
                 <Link href={currentUser.url} emulate={true} >
-                    <Row className={rounded + " w-full group items-center px-0.5 justify-between cursor-pointer hover:bg-bgrbutton dark:hover:bg-bgrbutton-d"}>
+                    <Row className={(rounded + " w-full group items-center px-0.5 justify-between cursor-pointer hover:bg-bgrbutton dark:hover:bg-bgrbutton-d " + wrapperClassName).trim()}>
                         <Row className='flex-row items-center p-1.5'>
                             <Profile
                                 {...currentUser}

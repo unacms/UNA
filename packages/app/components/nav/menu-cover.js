@@ -175,7 +175,7 @@ export function CoverMenuMeta(props) {
                 button_variant: 'secondary',
                 button_size: 'sm',
                 className: ' min-h-10 flex-row flex-wrap flex-auto items-center',//lg:w-full lg:gap-y-2
-                align_items: 'start'
+                justify_items: 'start'
             }}
         />
     )

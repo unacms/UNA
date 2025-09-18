@@ -124,10 +124,10 @@ function AtomProfile_(oProps) {
 
     const sizes = {
         '2xs': {
-            sSize: 'w-5 h-5',
-            iSizeWidth: 20,
-            iSizeHeight: 20,
-            sSizeFont: 'text-xs leading-5', 
+            sSize: 'w-4 h-4',
+            iSizeWidth: 16,
+            iSizeHeight: 16,
+            sSizeFont: 'text-xs leading-4', 
             sSizeFontLetter: ' text-xs font-semibold',
         },
         xs: {
@@ -219,7 +219,7 @@ function AtomProfile_(oProps) {
     switch (sDisplayType) {
         case 'unit':
             return (
-                <Row className="gap-2 sm:gap-3 items-center">
+                <Row className="gap-2 items-center">
                     <View className="flex-none">
                         <UnitWoInfo oProps={oProps} sSize={sSize} sSizeFontLetter={sSizeFontLetter} emulate={emulate} iSizeWidth={iSizeWidth} bShowLinks={bShowLinks} />
                     </View>

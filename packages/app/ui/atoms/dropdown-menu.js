@@ -51,7 +51,8 @@ function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant, sh
             <Redirect ref={redirectdRef} />
             <DropdownPopup
                 showOnTop={showOnTop}
-                minPopupWidth={320}
+                minPopupWidth={256}
+                
                 open={isOpen}
                 onOpenChange={setIsOpen}
                 trigger={<SafeMenuTrigger>{children}</SafeMenuTrigger>}

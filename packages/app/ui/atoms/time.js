@@ -46,7 +46,7 @@ export default function ElementTime(props) {
         return s;
     }, [props.ts, date, t, props.format]);
 
-    const { stylesName, stylesNameAdd, title, accessibilityLabel, variant = 'default', ...otherProps } = props;
+    const { stylesName, addClassName, title, accessibilityLabel, variant = 'default', ...otherProps } = props;
 
     const mergedProps = {
         ...(Platform.OS === 'web' ? { title: title || '' } : {}),
@@ -55,12 +55,12 @@ export default function ElementTime(props) {
 
     const defaultClasses =
         variant === 'link'
-            ? '  font-medium leading-5 text-xs text-muted-foreground web:group-hover:text-accent relative u-time-hitarea '
-            : '  font-medium leading-5 text-xs text-muted-foreground ';
+            ? ' font-medium text-xs leading-5 text-muted-foreground web:group-hover:text-accent '
+            : ' font-medium text-xs leading-5 text-muted-foreground ';
 
     return (
         <Text
-            className={stylesName || `${defaultClasses}${stylesNameAdd || ''}`}
+            className={stylesName || `${defaultClasses}${addClassName || ''}`}
             {...mergedProps}
             {...otherProps}
         >
