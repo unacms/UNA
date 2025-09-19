@@ -40,7 +40,7 @@ export const Text =({
     const fontStyle = (!isWeb ) ? { fontFamily: fontFamily || 'font-main' } : {}
     return (
         <Text_ {...spreadProps} className={finalClassName} style={fontStyle}  >
-            {content}{fontFamily.toString()}
+            {content}
         </Text_>
     )
 }
