@@ -37,9 +37,8 @@ export const Text =({
     const finalClassName = `${baseClassName} ${fontFamily || 'font-main'}`.trim()
     const spreadProps = isWeb ? sanitizeWebTextProps(rest) : rest
     const content = typeof children === "string" ? decodeText(children) : children;
-    const fontStyle = (!isWeb ) ? { fontFamily: fontFamily || 'font-main' } : {}
     return (
-        <Text_ {...spreadProps} className={finalClassName} style={fontStyle}  >
+        <Text_ {...spreadProps} className={finalClassName} >
             {content}
         </Text_>
     )
