@@ -37,19 +37,22 @@ export function useSafeAreaInsets() {
   return { top: 0, right: 0, bottom: 0, left: 0 } as const;
 }
 
-export const Stack: React.FC<React.PropsWithChildren> = ({ children }) => <>{children}</>;
+type ChildrenProps = { children?: React.ReactNode };
 
-export const Tabs: React.FC<React.PropsWithChildren> = ({ children }) => <>{children}</>;
+export const Stack: React.FC<ChildrenProps> = ({ children }) => <>{children}</>;
+
+export const Tabs: React.FC<ChildrenProps> = ({ children }) => <>{children}</>;
 
 export const Redirect: React.FC = () => null;
 
-export const Link = React.forwardRef<HTMLAnchorElement, React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: Href }>(
-  ({ href, children, ...rest }, ref) => (
-    <a ref={ref} href={resolveHref(href)} {...rest}>
-      {children}
-    </a>
-  ),
-);
+export const Link = React.forwardRef<
+  HTMLAnchorElement,
+  React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: Href }
+>(({ href, children, ...rest }, ref) => (
+  <a ref={ref} href={resolveHref(href)} {...rest}>
+    {children}
+  </a>
+));
 
 Link.displayName = 'ExpoRouterLinkMock';
 

@@ -52,7 +52,7 @@ export const settingsDefault = {
         ui_density_switcher: true,
         max_width: ' w-full  ',
         max_width_content: ' w-full max-w-7xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
-        post_container: ' max-w-5xl w-full flex-1 bg-card/80 shadow-sm text-card-foreground rounded-2xl py-3 sm:py-4 lg:my-4 mx-auto ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
+        post_container: ' max-w-4xl w-full flex-1 bg-card/80 shadow-sm text-card-foreground rounded-2xl py-3 sm:py-4 lg:my-4 mx-auto ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
 
         search: true,
         sidebar_search: true,

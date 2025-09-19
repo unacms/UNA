@@ -41,7 +41,7 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
             const value = pageData.elements[key][key2]?.content[0];
 
             if (value?.type === 'form' && value?.name === 'feed') {
-                modalWidth = 'max-w-2xl';
+                modalWidth = 'max-w-4xl';
             }
         });
     });
