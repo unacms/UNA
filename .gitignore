@@ -84,8 +84,6 @@ build/**
 !.yarn/versions
 yarn.lock
 package-lock.json
-packages/app/design/fonts/CenturyGothic.ttf
-packages/app/design/fonts/TimesNewRoman.ttf
 docs/client-proposal-architecture.mdx
 
 *storybook.log

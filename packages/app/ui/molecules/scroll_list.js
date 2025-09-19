@@ -111,7 +111,7 @@ export default function ScrollList({
     const enhanced = React.cloneElement(content, baseProps);
 
     return (
-        <View className='flex-1'>
+        <View className='w-full h-full'>
             <Animated.View className="absolute top-0 w-full z-50" style={[headerStyle]}>
                 <BlurView tint="default"
                     intensity={100}
