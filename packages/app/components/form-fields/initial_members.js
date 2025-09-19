@@ -82,20 +82,20 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
     }, [state.selectedUsers, isSingle]);
 
     return <View className="px-1">
-        <ScrollView keyboardDismissMode="none" keyboardShouldPersistTaps="handled" className="w-full " >
-            <Row className="text-center w-full  flex-wrap gap-x-2 ">
+        <ScrollView keyboardDismissMode="none" keyboardShouldPersistTaps="handled" className="w-full overflow-x-visible min-h-64" >
+            <Row className="text-center w-full flex-wrap gap-1 pb-4">
                 {state.selectedUsers && state.selectedUsers.map((item) => <User key={item.id} data={item} onSelect={onRemove} />)}
             </Row>
-            <Row className="py-2 gap-x-2 ">
+            <Row className="pb-4 gap-2">
                 <InputRounded
                     placeholder={"Select users..."}
                     className="px-2 mr-2  w-full"
                     onChangeText={onChangeText}
                     role="textbox"
                 />
-                <Button variant="outline" disabled={state.selectedUsers.length == 0} startDecorator="Check" rounded onPress={() => onSaveInt()} />
+                <Button variant="primary" size="lg" disabled={state.selectedUsers.length == 0} startDecorator="Check" onPress={() => onSaveInt()} />
             </Row>
-            <Row className="text-center w-full flex-wrap gap-x-2 ">
+            <Row className="text-center w-full flex-wrap gap-1 ">
                 {state.suggestedUsers && !state.showLoading && state.suggestedUsers.map((item) => <User key={item.id} data={item} onSelect={onSelectUser} />)}
                 {state.showLoading && <View className=' w-full items-center justify-center py-2'><Loading /></View>}
                 {state.suggestedUsers.length == 0 && state.searchText != '' && !state.showLoading && <Text className="text-sm py-2">{t('Nothing found')}</Text>}

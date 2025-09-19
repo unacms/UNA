@@ -39,7 +39,7 @@ export default function ({ buttonProps, children, tooltip, fullWidth }) {
         tooltip: tooltip || 'Notifications',
         rounded: true,
         startDecorator: 'Bell',
-        size: isDesktop ? 'base' : 'lg',
+        size: isDesktop ? 'base' : 'base',
     }
 
     buttonProps = { ...defaultButtonProps, ...(buttonProps || {}) }
