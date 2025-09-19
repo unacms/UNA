@@ -95,7 +95,7 @@ export default function MenuAccount({ buttonProps, children }) {
         rounded: true,
         padding: '0px',
         startDecorator: profile,
-        size: isDesktop ? 'sm' : 'lg',
+        size: isDesktop ? 'base' : 'base',
     }
 
     buttonProps = { ...defaultButtonProps, ...(buttonProps || {}) }

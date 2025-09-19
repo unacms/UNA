@@ -239,7 +239,7 @@
     .u-link-hitarea-xs::before { inset: -8px; }
     .u-link-hitarea-sm::before { inset: -8px; }
     .u-link-hitarea-md::before { inset: -6px; }
-    .u-link-hitarea-lg::before { inset: -6px; }
+    .u-link-hitarea-lg::before { inset: -4px; }
 
     /* Generic action (button) hit area */
     .u-action-hitarea::before {
@@ -252,7 +252,7 @@
     .u-action-hitarea-xs::before { inset: -8px; }
     .u-action-hitarea-sm::before { inset: -6px; }
     .u-action-hitarea-base::before { inset: -4px; }
-    .u-action-hitarea-lg::before { inset: -2px; }
+    .u-action-hitarea-lg::before { inset: -4px; }
 
     /* Ghost link background via pseudo-element (web only) */
     .u-link-ghost {

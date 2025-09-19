@@ -63,7 +63,7 @@ const HeaderLine = memo(
                     (!currentUser?.confirmed &&
                         appSetting('layout', 'lock_unconfirmed'))) &&
                     (uri == 'home' || isDesktop) && (
-                        <Link href="/home" variant="ghost" size="lg" >
+                        <Link href="/home" size="lg" className=' px-2' >
                             {appStatic('logo')}
                         </Link>
                     )}

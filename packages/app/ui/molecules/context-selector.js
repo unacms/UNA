@@ -104,7 +104,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
 
     const CurrentContext = (
         <Link className="flex-auto items-center justify-start w-full flex" href={contextRoot.url}>
-            <Row className="items-center gap-1.5 lg:gap-2 px-1.5 lg:px-2">
+            <Row className="items-center gap-2 px-2">
                 <View className='rounded-full items-center justify-center'>
                     {contextRoot.image}
                 </View>

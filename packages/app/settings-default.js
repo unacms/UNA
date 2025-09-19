@@ -91,8 +91,8 @@ export const settingsDefault = {
             scrolled:
                 ' my-auto w-full items-cente bg-card/80 backdrop-blur-xl border-b border-border transition-all shadow-sm',
             content: ' h-16 mx-auto justify-between ',
-            content_left: ' flex-row items-center px-2 flex-none xl:w-80 2xl:w-96 ',
-            content_right: ' flex-row items-center justify-end ps-1 pe-3 2xl:pe-4 flex-none xl:w-80 2xl:w-96 ',
+            content_left: ' flex-row items-center px-2 flex-none xl:w-80 2xl:w-96 ps-2 ',
+            content_right: ' flex-row items-center justify-end flex-none xl:w-80 2xl:w-96 pe-2 ',
             content_center:
                 ' hidden flex-auto xl:flex gap-1 items-center justify-center px-3 max-w-3xl ',
             special: {
@@ -1012,7 +1012,7 @@ export const settingsDefault = {
             content_ver: '',
             content_hor: 'flex-row  ',
             item_ver:
-                ' px-2 py-1.5 group flex h-12 flex-row  items-center rounded-lg font-medium web:hover:bg-muted/60 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer',
+                ' px-2 py-1.5 group flex h-12 flex-row items-center rounded-lg font-medium web:hover:bg-muted/60 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer',
             item_hor:
                 'flex block web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-neutral-700    web:duration-200 dark:text-neutral-300 outline-none ',
             item_np:

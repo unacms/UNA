@@ -73,7 +73,7 @@ const Logo = ({ mode = 'adaptive' }) => {
                     />
                 </Svg>
             </View>
-            <View className={`${textStyles[mode]} px-1`}>
+            <View className={`${textStyles[mode]}`}>
                 <Svg
                     aria-label="Logo Text"
                     width={72}
