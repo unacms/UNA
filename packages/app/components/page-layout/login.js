@@ -16,9 +16,9 @@ import Link from 'app/ui/atoms/link'
 import { BlockDataByName } from 'app/lib/util'
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from');
 
-function PageContent({children}) {
+function PageContent({ children }) {
     const { t } = useTranslation()
-    
+
     return (
         <Card padding="p-0 pb-4" className="bg-card/50">
             <AnimatedView direction="up" delay={300}>
@@ -91,14 +91,13 @@ export default function PageLayout(props) {
             </View>
         </View>
         <MenuFooter
-                            cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
-                            variant="ghost"
-                            size="sm"
-                            itemClassName="text-sm p-1"
-                            
-                        />
-    </View>) : (
+            cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
+            variant="ghost"
+            size="sm"
+            itemClassName="text-sm p-1"
 
+        />
+    </View>) : (
         <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto p-3 p-3 py-16 ">
             <PageContent >{Block}</PageContent>
             <MenuFooter

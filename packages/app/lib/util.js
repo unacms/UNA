@@ -425,7 +425,7 @@ export function getHeaderSettings(uri, isDesktop, layout, config) {
     let settings = getPageSettings(config, uri);
     if (!settings?.headerSettings) {
         if (layout == 'navigator') {
-            settings = { headerSettings: { offset: isDesktop? true: false, header: false, backButton: false, menu: true, footer: false } }
+            settings = { headerSettings: { offset: isDesktop? true: false, header: false, backButton: false, menu: true, footer: true } }
         }
         if (layout == 'messenger') {
             settings = { headerSettings: { offset: false, header: false, backButton: false, menu: true, footer: true } }
@@ -455,7 +455,6 @@ export function getHeaderSettings(uri, isDesktop, layout, config) {
     let sColumns = typeof settings?.headerSettings?.columns !== 'undefined' ? settings.headerSettings.columns : '';
 
     let bHideLeftmenu = typeof settings?.headerSettings?.hideLeftmenu !== 'undefined' ? settings.headerSettings.hideLeftmenu : false;
-    let bShowAltTopMenu = typeof settings?.headerSettings?.showAltTopMenu !== 'undefined' ? settings.headerSettings.showAltTopMenu : false;
 
     // Apply offset on all viewports, not just larger ones PLAESE DONT CHANGE IT
     if (isDesktop)
@@ -471,7 +470,6 @@ export function getHeaderSettings(uri, isDesktop, layout, config) {
         cover: sCover,
         columns: sColumns,
         hideLeftmenu: bHideLeftmenu,
-        showAltTopMenu: bShowAltTopMenu
     }
 }
 

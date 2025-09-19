@@ -45,7 +45,7 @@ export const Header = memo(({
     let textName = pageData?.name;
 
     if (isMenuNameAsTitle) {
-        const menuSettings = getMenuSettings(pageData?.menu?.object, pageData?.menu?.config);
+        const menuSettings = getMenuSettings(pageData?.menu?.object, pageData?.menu?.config, pageData?.menu);
         textName = menuSettings.name;
     }
     const headerContent = headerComponent ? headerComponent : textName;
@@ -86,7 +86,7 @@ export const Header = memo(({
             scrollToTop();
         }
     }
-    , [layoutData]);
+        , [layoutData]);
 
     if (isNoContainer)
         return headerContent;
@@ -94,18 +94,17 @@ export const Header = memo(({
 
     const ContextSelector = getComponent('molecule', 'context_selector')
     const HeaderElement = getComponent('molecule', 'header_element');
-
     
     return (
 
-            <Row className="items-center justify-between h-14">
-            {((!currentUser || !pageData?.context) && !text && (!settings?.headerSettings || settings?.headerSettings?.header)) && 
+        <Row className="items-center justify-between h-14">
+            {((!currentUser || !pageData?.context) && !text && (!settings?.headerSettings || settings?.headerSettings?.header)) &&
                 <View className=" px-3">
-                <Link href="/home" aria-label="Home">
-                    <Pressable className="items-center">
-                        {appStatic('logo')}
-                    </Pressable>
-                </Link>
+                    <Link href="/home" aria-label="Home">
+                        <Pressable className="items-center">
+                            {appStatic('logo')}
+                        </Pressable>
+                    </Link>
                 </View>
             }
             {(backButtonPresented && (!isWeb || history.length > 2)) && (
@@ -116,20 +115,20 @@ export const Header = memo(({
             )}
             {(pageData?.context?.current?.url || isHome) && <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
             {(!!text) && <Row className='items-center px-3'><>
-            {(!!text && !pageData?.context?.current?.url) && (
-                <TextHeader text={text}></TextHeader>
-            )}
-            {(pageData?.context && !pageData?.context?.current?.url && !isHome) && <ContextSelector mode="min" url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
+                {(!!text && !pageData?.context?.current?.url) && (
+                    <TextHeader text={text}></TextHeader>
+                )}
+                {(pageData?.context && !pageData?.context?.current?.url && !isHome) && <ContextSelector mode="min" url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
             </></Row>}
             {(type !== 'string' && headerContent) && <View className="flex-auto">{headerContent}</View>}
             <Row className=" items-end">
                 {rightHeaderComponent ? rightHeaderComponent : memoizedRightComponents}
-                <HeaderElement mode="small"  />
+                <HeaderElement mode="small" />
                 {(pageData?.context && pageData?.cover_block?.actions_menu) && <CoverMenu
-                                                {...pageData.cover_block.actions_menu}
-                                                uri={pageData.uri}
-                                                isSplitMenu={false}
-                                            />}
+                    {...pageData.cover_block.actions_menu}
+                    uri={pageData.uri}
+                    isSplitMenu={false}
+                />}
             </Row>
         </Row>
     );
@@ -153,14 +152,14 @@ function getRightHeader(items, currentUser, pagePath) {
                 items?.map((button) => {
                     let btn = undefined;
                     if (button.section || button.link == 'search')
-                        btn=<></>//btn = <Search section={button.section} params={{ trigger: { title: button.title, icon: button.icon ? button.icon : 'Search', size: 'base', variant: 'secondary', onPress: () => FeedbackHaptics('Medium') } }} />
+                        btn = <></>//btn = <Search section={button.section} params={{ trigger: { title: button.title, icon: button.icon ? button.icon : 'Search', size: 'base', variant: 'secondary', onPress: () => FeedbackHaptics('Medium') } }} />
                     else {
                         btn = <Button
                             rounded title={button.title}
                             variant='secondary'
                             startDecorator={button.icon}
                             size="base"
-                            
+
                             addon={button.link == appSetting('messenger', 'url') ? { variant: 'primary', text: currentUser?.counters?.bx_messenger_new_messages, hideZero: true } : undefined}
                         />;
                         btn = button.link ? <Link href={button.link} >{btn}</Link> : btn
