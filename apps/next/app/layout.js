@@ -10,6 +10,7 @@ import Subscriber from 'app/ui/molecules/subscriber';
 import AnimatedBackground from 'app/ui/atoms/animated-background';
 import { appSetting } from 'app/lib/util';
 import { useLayoutSettings } from 'app/context/layout-settings';
+import { getWebFontsForLayout } from 'app/design/fonts/web';
 
 export default function RootLayout({ children }) {
     const { langCode } = useLayoutSettings();
@@ -34,9 +35,13 @@ export default function RootLayout({ children }) {
     // Memoize QueryClient to prevent unnecessary recreations
     const queryClient = useMemo(() => new QueryClient(), []);
 
+    const { className: fontClassName, variable: fontVariable } = getWebFontsForLayout();
+
+    const bodyClassName = [fontClassName, appSetting('layout', 'body')].filter(Boolean).join(' ').trim();
+
     return (
-        <html>
-            <body className={appSetting('layout', 'body')}>
+        <html lang={langCode} className={fontVariable}>
+            <body className={bodyClassName}>
                 <QueryClientProvider client={queryClient}>
                     <AnimatedBackground />
                     {typeof window !== 'undefined' && window.location.hostname.endsWith('vercel.app') ? <Analytics /> : null}

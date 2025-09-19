@@ -131,13 +131,17 @@ export const settingsDefault = {
         lazy_tabs: false, // OLD appSetting('layout', 'native_lazy_tabs')
         disable_screenshots: false, // OLD appSetting('layout', 'disable_screenshots')
         show_tabs_non_logged: true, // OLD appSetting('layout', 'show_nav_non_logged_native')
-        use_custom_font: false, //'font-main' //OLD appSetting('layout', 'use_custom_font')
+        use_custom_font: 'font-main', //OLD appSetting('layout', 'use_custom_font')
         bluetooth: false, //OLD appSetting('layout', 'bluetooth')
         bluetooth_device_name_prefix: 'NEO', //OLD appSetting('layout', 'bluetooth_device_name_prefix')
         onesignal_request_on_load: true,
         check_version: 'optional', // variants: [no, required, optional]
         collapsible_header: true,
         scroll_to_top_button: true,
+    },
+    web: {
+        use_custom_font: 'font-main',
+        fonts: null, // override in settings.js with next/font instances per token
     },
     async_workers: {
         list: ['CounterChecker'], //['EventChecker'],//NotifChecker OLD appSetting('layout', 'async_workers')
@@ -1354,7 +1358,7 @@ export const settingsDefault = {
             'u-badge-default': ' bg-transparent   ',
             'u-badge-destructive': ' bg-destructive ',
             'u-badge-outline': ' bg-transparent border border-border  ',
-            'u-badge-accent': ' bg-accent/50  ',
+            'u-badge-accent': ' bg-accent  ',
             'u-badge-secondary': ' bg-secondary ',
             'u-badge-text': ' whitespace-nowrap tracking-tight font-medium ',
             'u-badge-default-text': ' text-primary ',
@@ -1650,4 +1654,3 @@ export const settingsDefault = {
         },
     },
 }
-

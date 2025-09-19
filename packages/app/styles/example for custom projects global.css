@@ -1,19 +1,23 @@
 @font-face {
-    font-family: 'MainFont';
-    src: url('/fonts/TimesNewRoman.ttf') format('truetype');
-  }
-  
-  @font-face {
-    font-family: 'TitleFont';
-    src: url('/fonts/CenturyGothic.ttf') format('truetype');
-  }
+  font-family: 'MainFont';
+  src: url('/fonts/MainFont.woff2') format('woff2'),
+       url('/fonts/MainFont.woff') format('woff');
+  font-display: swap;
+}
 
-  .font-main {
-    font-family: 'MainFont';
-  }
+@font-face {
+  font-family: 'TitleFont';
+  src: url('/fonts/TitleFont.woff2') format('woff2'),
+       url('/fonts/TitleFont.woff') format('woff');
+  font-display: swap;
+}
 
-  .font-title {
-    font-family: 'TitleFont';
-  }
+.font-main {
+  font-family: 'MainFont';
+}
 
-  //fontFamily="font-title"
+.font-title {
+  font-family: 'TitleFont';
+}
+
+/* fontFamily="font-title" */

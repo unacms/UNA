@@ -24,8 +24,8 @@ function renderListItem_(url, text, icon, isActive) {
             <Row
                 className={`w-full px-2 h-12 gap-2 group rounded-xl justify-between items-center ${
                     isActive
-                        ? ' bg-accent/60 text-accent-foreground rounded-xl  web:hover:bg-accent web:duration-200 '
-                        : '  web:hover:bg-muted/60 web:duration-200 '
+                        ? ' bg-accent/60 text-accent-foreground rounded-xl web:hover:bg-accent web:duration-200 '
+                        : ' web:hover:bg-muted/60 web:duration-200 '
                 }`}
             >
                 <Row className="items-center flex-auto gap-2">
@@ -182,7 +182,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
                                          <Row
                                              className={` rounded-xl ${
                                                  isActiveAppRoot
-                                                     ? ' bg-accent/0 text-accent-foreground/0 web:hover:bg-accent/0'
+                                                     ? ' bg-accent/60 text-accent-foreground web:hover:bg-accent'
                                                      : ' web:hover:bg-muted/60'
                                              }`}
                                          >

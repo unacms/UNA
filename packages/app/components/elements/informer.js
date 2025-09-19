@@ -35,7 +35,7 @@ export default function ElementInformer({data}) {
                     
                     return (                   
                         <View key={'informer' + index} className="max-w-screen-lg mx-auto bg-accent  p-3 rounded-lg m-2 gap-y-3 justify-center items-center">
-                            <Text className="text-accent-foreground/80">{stripTags(item.msg)}</Text>
+                            <Text className="text-accent-foreground">{stripTags(item.msg)}</Text>
                         </View>
                     )
                 })}

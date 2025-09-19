@@ -73,11 +73,14 @@ function processUrl(url, router, currentUser, TabList) {
 export default function () {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const { setLayoutData } = useLayoutData()
-    const isUseCustomFont = appSetting('native', 'use_custom_font');
-    const fontsToLoad = isUseCustomFont ? fonts : {};
+    const customFontToken = appSetting('native', 'use_custom_font');
+    const fontsToLoad = useMemo(() => {
+        if (!customFontToken) return {};
+        return fonts;
+    }, [customFontToken]);
     const { themeName } = useLayoutSettings();
-    
-    const [fontsLoaded] = useFonts(fontsToLoad);
+
+    const [_fontsLoaded] = useFonts(fontsToLoad);
     const { t } = useTranslation();
 
     const router = useRouter();
@@ -240,7 +243,7 @@ export default function () {
          
     }, [currentUser]);
 
-    if (!fontsLoaded || currentUser === null) {
+    if (currentUser === null) {
         return null;
     }
 

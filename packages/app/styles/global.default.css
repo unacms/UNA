@@ -191,6 +191,14 @@
     [data-theme="light"] {
         @apply light-theme-vars;
     }
+
+    .font-main {
+        font-family: var(--font-main, 'Inter'), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    }
+
+    .font-title {
+        font-family: var(--font-title, var(--font-main, 'Inter')), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    }
 }
 
 /* Global outline color only (no width). Components control size/offset. */
