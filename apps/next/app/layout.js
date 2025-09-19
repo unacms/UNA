@@ -8,11 +8,12 @@ import { resources } from 'app/translation';
 import { useEffect, useMemo } from 'react'
 import Subscriber from 'app/ui/molecules/subscriber';
 import AnimatedBackground from 'app/ui/atoms/animated-background';
-import { appSetting } from 'app/lib/util';
 import { useLayoutSettings } from 'app/context/layout-settings';
-import { getWebFontsForLayout } from 'app/design/fonts/web';
+import { fontVars } from 'app/design/fonts/fonts-web';
 
 export default function RootLayout({ children }) {
+
+    
     const { langCode } = useLayoutSettings();
 
     // Initialize i18n in useEffect to avoid setState during render
@@ -35,13 +36,9 @@ export default function RootLayout({ children }) {
     // Memoize QueryClient to prevent unnecessary recreations
     const queryClient = useMemo(() => new QueryClient(), []);
 
-    const { className: fontClassName, variable: fontVariable } = getWebFontsForLayout();
-
-    const bodyClassName = [fontClassName, appSetting('layout', 'body')].filter(Boolean).join(' ').trim();
-
     return (
-        <html lang={langCode} className={fontVariable}>
-            <body className={bodyClassName}>
+        <html className={fontVars}>
+            <body>
                 <QueryClientProvider client={queryClient}>
                     <AnimatedBackground />
                     {typeof window !== 'undefined' && window.location.hostname.endsWith('vercel.app') ? <Analytics /> : null}

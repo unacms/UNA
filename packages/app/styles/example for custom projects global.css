@@ -1,15 +1,11 @@
 @font-face {
   font-family: 'MainFont';
-  src: url('/fonts/MainFont.woff2') format('woff2'),
-       url('/fonts/MainFont.woff') format('woff');
-  font-display: swap;
+  src: url('/fonts/TimesNewRoman.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'TitleFont';
-  src: url('/fonts/TitleFont.woff2') format('woff2'),
-       url('/fonts/TitleFont.woff') format('woff');
-  font-display: swap;
+  src: url('/fonts/CenturyGothic.ttf') format('truetype');
 }
 
 .font-main {

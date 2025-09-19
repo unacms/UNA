@@ -33,16 +33,14 @@ export const Text =({
     ...rest
 }) => {
     const isWeb = Platform.OS == 'web'
-    const configuredFont = appSetting(isWeb ? 'web' : 'native', 'use_custom_font')
-    const hasCustomFont = !!configuredFont
     const baseClassName = className || 'text-foreground text-base'
-    const finalClassName = `${baseClassName} ${hasCustomFont ? (fontFamily || configuredFont) : ''}`.trim()
-    const fontStyle = (!isWeb && hasCustomFont) ? { fontFamily: fontFamily || configuredFont } : {}
+    const finalClassName = `${baseClassName} ${fontFamily || 'font-main'}`.trim()
     const spreadProps = isWeb ? sanitizeWebTextProps(rest) : rest
     const content = typeof children === "string" ? decodeText(children) : children;
+    const fontStyle = (!isWeb ) ? { fontFamily: fontFamily || 'font-main' } : {}
     return (
-        <Text_ {...spreadProps} className={finalClassName} style={fontStyle} >
-            {content}
+        <Text_ {...spreadProps} className={finalClassName} style={fontStyle}  >
+            {content}{fontFamily.toString()}
         </Text_>
     )
 }

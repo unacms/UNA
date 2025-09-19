@@ -32,6 +32,18 @@ const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
 export default function (props) {
     
+   /*  return <>
+     <Text fontFamily="font-main" className="text-red-500 text-3xl" >The quick brown fox jumps over the lazy dog.  
+Packz my box with five dozen liquor jugs. 
+</Text>
+     <Text fontFamily="font-title" className="text-red-500 text-3xl" >The quick brown fox jumps over the lazy dog.  
+Pack my box with five dozen liquor jugs.    
+</Text>
+
+ <Text  className="text-red-500 text-3xl" >The quick brown fox jumps over the lazy dog.  
+Pack my box with five dozen liquor jugs.   
+</Text>
+</>
    /* const wh = useWindowWidth();
     console.log("whwhwh", wh)
     return
@@ -42,7 +54,7 @@ export default function (props) {
          console.log("!!!!!!!bucket ", currentBreakpoint )
 return;*/
     //  return <Button variant="accent" title="dfsdfsd" startDecorator="Plus"></Button>
-    // return <><Text className="text-red-500 text-3xl" >zcxzxc zx</Text><Text fontFamily="font-title" className="text-red-500 text-3xl" >zcxzxc zx</Text></>
+    
     // return <Loading/>
     /*return (
     <Text className="text-red-500">zcxzxc zxc<Icon className="text-red-500 " icon="Plus"></Icon></Text>

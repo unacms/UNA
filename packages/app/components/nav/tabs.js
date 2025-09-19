@@ -5,7 +5,7 @@ import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
 import { Theme } from 'app/design/theme';
 import Profile from 'app/ui/molecules/profile';
-import { useEffect, useMemo } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next';
 //import BottomSheetDataContext from 'app/context/bottomsheet';
 import { FeedbackHaptics, getPageData, subscribeOneSignal } from 'app/lib/util';
@@ -73,23 +73,15 @@ function processUrl(url, router, currentUser, TabList) {
 export default function () {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const { setLayoutData } = useLayoutData()
-    const customFontToken = appSetting('native', 'use_custom_font');
-    const fontsToLoad = useMemo(() => {
-        if (!customFontToken) return {};
-        return fonts;
-    }, [customFontToken]);
     const { themeName } = useLayoutSettings();
-
-    const [_fontsLoaded] = useFonts(fontsToLoad);
+    const [fontsLoaded] = useFonts(fonts);
     const { t } = useTranslation();
-
     const router = useRouter();
     const { colors } = Theme();
     const iconWidth = 24;
     const iconHeight = 24;
     const isShowTabs = currentUser || appSetting('native', 'show_tabs_non_logged')
     const notificationUrl = appSetting('notifications', 'url');
-
     const TabList = useMemo(() => currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged'), [currentUser?.id]);
 
     const profile = useMemo(() => {
@@ -243,7 +235,11 @@ export default function () {
          
     }, [currentUser]);
 
-    if (currentUser === null) {
+
+
+  
+
+     if (!fontsLoaded || currentUser === null) {
         return null;
     }
 

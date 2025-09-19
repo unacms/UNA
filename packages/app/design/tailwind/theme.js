@@ -1,5 +1,6 @@
 const merge = require('deepmerge');
 const configCustom = require('app/design/tailwind-custom/theme');
+const isNative = process.env.TAILWIND_TARGET === 'native';
 const { nativewindUIColors } = require('app/design/tailwind/nativewindui-theme');
 
 const colors = {
@@ -139,7 +140,8 @@ const theme = {
             '8xl': '1440px',
         },
         fontFamily: {
-            default: ['default-font', 'sans-serif']
+            main: ['var(--font-main)'],
+            title: ['var(--font-title)'],
         },
       
         aspectRatio: {

@@ -192,14 +192,25 @@
         @apply light-theme-vars;
     }
 
-    .font-main {
-        font-family: var(--font-main, 'Inter'), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-    }
-
-    .font-title {
-        font-family: var(--font-title, var(--font-main, 'Inter')), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-    }
 }
+/*
+@font-face {
+    font-family: 'MainFont';
+    src: url('/fonts/Inter-VariableFont.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'TitleFont';
+    src: url('/fonts/Inter-VariableFont.ttf') format('truetype');
+}
+  
+
+.font-main {
+  font-family: 'MainFont';
+}
+.font-title {
+  font-family: 'TitleFont';
+}*/
 
 /* Global outline color only (no width). Components control size/offset. */
 *:focus-visible {
