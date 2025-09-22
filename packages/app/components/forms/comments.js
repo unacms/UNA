@@ -202,9 +202,9 @@ export default function FormComments(props) {
     attachmentButtonContainerClasses.push(currentAttachmentButtonWidthClass);
 
     if (hasText || imagesValue) {
-        attachmentButtonContainerClasses.push('left-0');
+        attachmentButtonContainerClasses.push('left-0 bottom-0 p-1');
     } else {
-        attachmentButtonContainerClasses.push('right-0');
+        attachmentButtonContainerClasses.push('right-0 bottom-0 p-1');
     }
 
     return (
@@ -222,7 +222,7 @@ export default function FormComments(props) {
 
                 )}
                 <View className="flex-1">
-                    <View className=" items-stretch bg-muted/60 rounded-xl border border-border/80 px-3 py-2" >
+                    <View className=" items-stretch bg-muted/60 rounded-xl border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border px-2.5  min-h-9 py-2" >
                     <Animated.View 
                    
                      style={inputWrapperAnimatedStyle}
@@ -273,7 +273,7 @@ export default function FormComments(props) {
                     </Animated.View>
                     </View>
                     <View className={attachmentButtonContainerClasses.join(' ')}>
-                        {isWeb && <FileButton field_name='cmt_image' size='sm' icon="Image" source='library' variant='text' />}
+                        {isWeb && <FileButton field_name='cmt_image' size='xs' icon="Image" source='library' variant='text' />}
                         {!isWeb && (
                             <Animated.View
                                 entering={SlideInLeft.duration(300)}
@@ -282,17 +282,17 @@ export default function FormComments(props) {
                             >
                                 <Row className="h-full items-center">
                                     <View className="h-full p-1 flex items-center justify-center">
-                                        <FileButton field_name='cmt_image' icon="Image" source='library' variant='text' />
+                                        <FileButton field_name='cmt_image' size='xs' icon="Image" source='library' variant='text' />
                                     </View>
                                     <View className="h-full p-1 flex items-center justify-center">
-                                        <FileButton field_name='cmt_image' icon="Camera" source='camera' variant='text' />
+                                        <FileButton field_name='cmt_image' size='xs' icon="Camera" source='camera' variant='text' />
                                     </View>
                                 </Row>
                             </Animated.View>
                         )}
                     </View>
                     {(!!hasText || !!imagesValue) && (
-                        <View className="absolute right-0 bottom-0  p-1">
+                        <View className="absolute right-0 bottom-0 p-1">
                             {getFormFieldByData(
                                 props.data.inputs['cmt_submit'],
                                 handleSubmitWithSanitization,
@@ -305,7 +305,7 @@ export default function FormComments(props) {
                                     icon_only: true,
                                     icon: 'ArrowUp',
                                     title: 'Send',
-                                    size: 'sm',
+                                    size: 'xs',
                                     variant: 'primary',
                                     rounded: true,
                                     alt: 'Post',
