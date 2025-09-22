@@ -5,7 +5,7 @@ import Profile from 'app/ui/molecules/profile'
 import { Icon } from 'app/ui/atoms/icon'
 import { Svg, Path } from 'react-native-svg'
 import { Button, Modal } from 'app/design/controls'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { fetcher } from 'app/lib/fetcher'
 import Tabs from 'app/ui/molecules/tabs'
 import {
@@ -22,6 +22,7 @@ import Badge from 'app/ui/molecules/badge'
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { cd } from 'app/lib/util'
 import { Loading } from 'app/loading'
+import { renderForm } from 'app/components/elements/form'
 
 export function ReputationActions({ data }) {
     return (
@@ -164,25 +165,25 @@ function ReputationSummarySimple({ data }) {
                         {data.author_data.display_name}
                     </Text>
                     {data.levels.map((item, index) => (
-                            <View key={index} className={`flex-row ${cd('gap-sm')} flex-auto items-center`}>
-                                
-                                <Badge variant="secondary" data={{text:item.title, icon:item.icon}} />
-                               
-                                <View className="flex-auto justify-end flex-row">
-                                    <Button
-                                        variant="text"
-                                        rounded
-                                        size="sm"
-                                        startDecorator="ListPlus"
-                                        onPress={() => setIsModal2(true)}
-                                    />
-                                      
-                                </View>
+                        <View key={index} className={`flex-row ${cd('gap-sm')} flex-auto items-center`}>
+
+                            <Badge variant="secondary" data={{ text: item.title, icon: item.icon }} />
+
+                            <View className="flex-auto justify-end flex-row">
+                                <Button
+                                    variant="text"
+                                    rounded
+                                    size="sm"
+                                    startDecorator="ListPlus"
+                                    onPress={() => setIsModal2(true)}
+                                />
+
                             </View>
-                            
-                        ))}
+                        </View>
+
+                    ))}
                     <View className={`flex-row ${cd('gap-sm')} flex-auto justify-between items-center`}>
-                      
+
                         <View className={`flex-row items-end ${cd('gap-sm')}`}>
                             <Text className="text-3xl font-bold text-foreground">
                                 {data.points || 0}
@@ -192,118 +193,142 @@ function ReputationSummarySimple({ data }) {
                             </Text>
                         </View>
                         <Button
-                                            variant="text"
-                                            rounded
-                                            size="sm"
-                                            startDecorator="Info"
-                                            onPress={() => setIsModal(true)}
-                                        />
+                            variant="text"
+                            rounded
+                            size="sm"
+                            startDecorator="Info"
+                            onPress={() => setIsModal(true)}
+                        />
                     </View>
-                   
+
                 </View>
             </View>
-          
+
         </View>
     )
 }
 
+const getPositionColors = (index) => {
+    switch (index) {
+        case 0:
+            return 'bg-yellow-500' // Gold for 1st place
+        case 1:
+            return 'bg-gray-400 dark:bg-gray-600' // Silver for 2nd place
+        case 2:
+            return 'bg-amber-600' // Bronze for 3rd place
+        default:
+            return 'bg-transparent border border-gray-300 dark:border-gray-600'
+    }
+}
+
+const getStarColor = (index) => {
+    switch (index) {
+        case 0:
+            return '#EAB308' // Gold
+        case 1:
+            return '#9CA3AF' // Silver
+        case 2:
+            return '#D97706' // Bronze
+        default:
+            return 'transparent'
+    }
+}
+
+const getTextColor = (index) => {
+    return index < 3 ? 'text-white' : 'text-gray-600 dark:text-gray-400'
+}
+
+const StarIcon = ({ color, size = 28 }) => (
+    <Svg
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        fill={color}
+        stroke={color}
+    >
+        <Path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
+    </Svg>
+)
+
+
 export function ReputationLeaderboard({ data }) {
-    const getPositionColors = (index) => {
-        switch (index) {
-            case 0:
-                return 'bg-yellow-500' // Gold for 1st place
-            case 1:
-                return 'bg-gray-400 dark:bg-gray-600' // Silver for 2nd place
-            case 2:
-                return 'bg-amber-600' // Bronze for 3rd place
-            default:
-                return 'bg-transparent border border-gray-300 dark:border-gray-600'
-        }
-    }
 
-    const getStarColor = (index) => {
-        switch (index) {
-            case 0:
-                return '#EAB308' // Gold
-            case 1:
-                return '#9CA3AF' // Silver
-            case 2:
-                return '#D97706' // Bronze
-            default:
-                return 'transparent'
-        }
-    }
+    const formProps = { ...data?.filter_form, layout: 'hor' };
+    const [profilesList, setProfilesList] = useState(data.profiles);
 
-    const getTextColor = (index) => {
-        return index < 3 ? 'text-white' : 'text-gray-600 dark:text-gray-400'
-    }
+    const onFormChange = useCallback(async (values) => {
+        const transformedValues = Object.fromEntries(
+            Object.entries(values).map(([key, value]) => [
+                key,
+                Array.isArray(value) ? value.join(',') : value
+            ])
+        );
+        const requestUrl = data?.request_url + JSON.stringify(transformedValues);
+        const res = await fetcher(requestUrl);
+        setProfilesList(res.data.profiles)
+    }, []);
 
-    const StarIcon = ({ color, size = 28 }) => (
-        <Svg
-            width={size}
-            height={size}
-            viewBox="0 0 24 24"
-            fill={color}
-            stroke={color}
-        >
-            <Path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
-        </Svg>
-    )
+    const searchForm = useMemo(() => renderForm(formProps, onFormChange), [formProps, onFormChange]);
 
     return (
-        <View className={`items-center w-full flex-col ${cd('gap-sm')} ${cd('px-sm')} max-w-xl mx-auto`}>
-            {data.profiles.map((item, index) => (
-                <Row
-                    className={`w-full flex-wrap justify-between items-center ${
-                        index != 0 && 'mt-3'
-                    }`}
-                    key={index}
-                >
-                    <Row className={`items-center ${cd('gap-sm')}`}>
-                        <View className="w-7 h-7 items-center justify-center relative">
-                            {index < 3 ? (
-                                <>
-                                    <StarIcon
-                                        color={getStarColor(index)}
-                                        size={28}
-                                    />
-                                    <Text
-                                        className={`${getTextColor(
+        <>
+            <View className='w-[375px] ml-4 mb-4 '>
+
+                {searchForm}
+
+            </View>
+            <View className={`items-center w-full flex-col ${cd('gap-sm')} ${cd('px-sm')} max-w-xl mx-auto`}>
+                {profilesList.map((item, index) => (
+                    <Row
+                        className={`w-full flex-wrap justify-between items-center ${index != 0 && 'mt-3'
+                            }`}
+                        key={index}
+                    >
+                        <Row className={`items-center ${cd('gap-sm')}`}>
+                            <View className="w-7 h-7 items-center justify-center relative">
+                                {index < 3 ? (
+                                    <>
+                                        <StarIcon
+                                            color={getStarColor(index)}
+                                            size={28}
+                                        />
+                                        <Text
+                                            className={`${getTextColor(
+                                                index
+                                            )} text-xs font-bold absolute`}
+                                        >
+                                            {index + 1}
+                                        </Text>
+                                    </>
+                                ) : (
+                                    <View
+                                        className={`w-6 h-6 rounded-full ${getPositionColors(
                                             index
-                                        )} text-xs font-bold absolute`}
+                                        )} items-center justify-center`}
                                     >
-                                        {index + 1}
-                                    </Text>
-                                </>
-                            ) : (
-                                <View
-                                    className={`w-6 h-6 rounded-full ${getPositionColors(
-                                        index
-                                    )} items-center justify-center`}
-                                >
-                                    <Text
-                                        className={`${getTextColor(
-                                            index
-                                        )} text-sm font-bold`}
-                                    >
-                                        {index + 1}
-                                    </Text>
-                                </View>
-                            )}
-                        </View>
-                        <Profile
-                            {...item.unit}
-                            displayType="unit"
-                            displaySize="base"
-                        />
+                                        <Text
+                                            className={`${getTextColor(
+                                                index
+                                            )} text-sm font-bold`}
+                                        >
+                                            {index + 1}
+                                        </Text>
+                                    </View>
+                                )}
+                            </View>
+                            <Profile
+                                {...item.unit}
+                                displayType="unit"
+                                displaySize="base"
+                            />
+                        </Row>
+                        <Text className=" text-base font-bold text-muted-foreground">
+                            {item.sign}
+                            {item.points}
+                        </Text>
                     </Row>
-                    <Text className=" text-base font-bold text-muted-foreground">
-                        {item.sign}
-                        {item.points}
-                    </Text>
-                </Row>
-            ))}
-        </View>
+                ))}
+            </View></>
     )
 }
 

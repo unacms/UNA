@@ -10,5 +10,5 @@ export default function FormFieldControls(props) {
     if (props[1] && props[1].type == 'submit')
         return <Submit {...props[1]} handleSubmit={props.handleSubmit}/>
 
-    return <>TODO input_set</>
+    return null
 }

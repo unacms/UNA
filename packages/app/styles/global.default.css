@@ -219,6 +219,11 @@
     outline-offset: 2px;
     outline-width: 2px;
 }
+select{
+    appearance: none;           
+    -webkit-appearance: none;   
+    -moz-appearance: none;      
+}
 [data-theme="dark"] *:focus-visible {
     outline-color: rgb(var(--ring));
 }

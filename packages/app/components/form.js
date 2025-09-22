@@ -162,7 +162,7 @@ export default function (props) {
     }
 
     let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true, lastChangedField, props.saveOnChanges, props.formProps);
-  
+
     if (inputs?.length > 0)
         inputs = inputs.filter(item => ((item.key !== null && item.key.toString() !== '') || item.props.type == 'block_end'))
 
@@ -206,11 +206,9 @@ export default function (props) {
         return result;
     }, {});
 
-
     return (
         <View className={`${appSetting('forms', 'form_container')} ${props?.exProps?.classes}`}>
-            {(isAutoChange) && <Row className='items-center justify-between mb-3'>
-                {/*<Text className="text-xl font-bold text-neutral-800  dark:text-neutral-200 ">Filters</Text>*/}
+            {(isAutoChange && props.layout !== 'hor') && <Row className='items-center justify-between mb-3'>
                 {!isObjectsEqual(defaultFormValues, currentFormValues) && <Button
                     title='Reset Filters'
                     startDecorator='X'
@@ -223,7 +221,19 @@ export default function (props) {
             {props.onSubmittig && <View className='absolute w-full h-full  z-50'></View>}
             {methods.formState.isSubmitting}
             <FormProvider {...methods}>
-                {inputs}
+                <View className={`${props.layout === 'hor' ? 'flex-row gap-x-2 items-end' : ''}`}>
+                    {inputs}
+                    {(isAutoChange && props.layout === 'hor') && <Row className='items-center justify-between mb-3'>
+                        {!isObjectsEqual(defaultFormValues, currentFormValues) && <Button
+                            title='Reset Filters'
+                            startDecorator='X'
+                            size='sm'
+                            variant='secondary'
+                            onPress={() => methods.reset()}
+                        />
+                        }
+                    </Row>}
+                </View>
             </FormProvider>
         </View>
 
