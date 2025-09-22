@@ -469,7 +469,7 @@ export const settingsDefault = {
             show_counter_style: 'compound', //'compound' or 'divided'
             show_counter_as_button: false,
             haptics_type: 'Medium',
-            icon_type_web: 'emoji', //'svg' or 'emoji'
+            icon_type_web: 'svg', //'svg' or 'emoji'
             icon_type_native: 'emoji', //'emoji' only
             items: [
                 { id: 1, name: 'like' },
@@ -486,9 +486,9 @@ export const settingsDefault = {
                     like: { svg: 'ThumbsUp', emoji: '👍' },
                     love: { svg: 'Heart', emoji: '🥰' },
                     joy: { svg: 'Smile', emoji: '😂' },
-                    surprise: { svg: 'SmileyXEyes', emoji: '😮' },
-                    sadness: { svg: 'SmileySad', emoji: '😔' },
-                    anger: { svg: 'SmileyAngry', emoji: '😠' },
+                    surprise: { svg: 'Smile', emoji: '😮' }, // Using Smile as fallback for surprise
+                    sadness: { svg: 'Frown', emoji: '😔' },
+                    anger: { svg: 'Angry', emoji: '😠' },
                 },
                 native: {
                     default: { svg: 'Smile', emoji: '🙂' },

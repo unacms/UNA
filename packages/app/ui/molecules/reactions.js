@@ -19,7 +19,9 @@ import {
     TouchableOpacity
 } from 'react-native';
 import { Text } from 'app/design/typography'
+import { Icon } from 'app/ui/atoms/icon'
 import Tooltip from 'app/ui/atoms/tooltip';
+import { isEmoji } from 'app/lib/util';
 
 const getName = (sType, sSystem, sObjectId, sName) => {
     let aName = [sType, sSystem.replace(/_/g, '-'), sObjectId];
@@ -392,7 +394,7 @@ export default function ElementReactions(oProps) {
                     return {
                         id: oItem.id,
                         name: oItem.name,
-                        emoji: _getIconAlias(oItem.name),
+                        icon: _getIconAlias(oItem.name),
                         title: t('rvote_' + oItem.name + '_title')
                     };
                 });
@@ -546,7 +548,15 @@ const ReactionPopover = ({
                                         key={item.id}
                                         onPress={() => handleSelect(item)}
                                     >
-                                        <Tooltip content={item.title}><Text className="text-3xl w-12 h-12 items-center justify-center flex web:hover:bg-muted/60 web:active:bg-muted rounded-full">{item.emoji}</Text></Tooltip>
+                                        <Tooltip content={item.title}>
+                                            {isEmoji(item.icon) ? (
+                                                <Text className="text-3xl w-12 h-12 items-center justify-center web:hover:scale-110 flex web:hover:bg-muted/60 web:active:bg-muted rounded-full">{item.icon}</Text>
+                                            ) : (
+                                                <View className="w-12 h-12 items-center text-muted-foreground web:hover:text-foreground web:hover:scale-110 web:duration-200 justify-center flex web:hover:bg-muted/60 web:active:bg-muted rounded-full">
+                                                    <Icon icon={item.icon} size={30} />
+                                                </View>
+                                            )}
+                                        </Tooltip>
                                     </TouchableOpacity>
                                 ))}
                             </View>

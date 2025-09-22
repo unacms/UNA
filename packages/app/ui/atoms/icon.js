@@ -28,7 +28,7 @@ export function Icon(props) {
 
     const IconComponent = useMemo(() => {
         const IconComponent2 = IconSet[processedIcon];
-        
+
         if (IconComponent2){
             IconComponent2.displayName = processedIcon;
             return cssInterop(IconComponent2, {
@@ -42,6 +42,7 @@ export function Icon(props) {
                 },
             });
         }
+        return null;
     }, [processedIcon]);
 
 
