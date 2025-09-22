@@ -147,7 +147,7 @@ export default function (props) {
                 {selected && selected.map((oItem) => <User type={isSingle ? '' : "remove"} key={oItem.id} data={oItem} onSelect={onRemove} />)}
                 </Row>
                 <Button
-                    title={t('Select ...')}
+                    
                     startDecorator="Plus"
                     variant="default"
                     rounded
