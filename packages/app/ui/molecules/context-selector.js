@@ -24,11 +24,11 @@ function renderListItem_(url, text, icon, isActive) {
             <Row
                 className={`w-full px-2 h-12 gap-2 group rounded-xl justify-between items-center ${
                     isActive
-                        ? ' bg-accent/60 text-accent-foreground rounded-xl web:hover:bg-accent web:duration-200 '
+                        ? ' bg-primary/10 text-foreground rounded-xl web:hover:bg-muted/60 web:duration-200 '
                         : ' web:hover:bg-muted/60 web:duration-200 '
                 }`}
             >
-                <Row className="items-center flex-auto gap-2">
+                <Row className="items-center flex-auto gap-2 text-card-foreground web:hover:text-foreground ">
                     <View
                         className={`items-center w-9 h-9 justify-center ${
                             isActive
@@ -38,7 +38,7 @@ function renderListItem_(url, text, icon, isActive) {
                     >
                         {icon}
                     </View>
-                    <Text className="text-base flex-auto font-semibold text-popover-foreground">
+                    <Text className="text-base flex-auto font-semibold text-card-foreground web:hover:text-foreground">
                         {text}
                     </Text>
                 </Row>
