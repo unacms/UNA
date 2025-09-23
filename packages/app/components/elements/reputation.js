@@ -253,7 +253,7 @@ const StarIcon = ({ color, size = 28 }) => (
 
 export function ReputationLeaderboard({ data }) {
 
-    const formProps = { ...data?.filter_form, layout: 'hor' };
+    const formProps = data?.filter_form ? { ...data?.filter_form, layout: 'hor' } : null;
     const [profilesList, setProfilesList] = useState(data.profiles);
 
     const onFormChange = useCallback(async (values) => {
@@ -268,15 +268,15 @@ export function ReputationLeaderboard({ data }) {
         setProfilesList(res.data.profiles)
     }, []);
 
-    const searchForm = useMemo(() => renderForm(formProps, onFormChange), [formProps, onFormChange]);
+    const searchForm = formProps ? useMemo(() => renderForm(formProps, onFormChange), [formProps, onFormChange]) : null;
 
     return (
         <>
-            <View className='w-[375px] ml-4 mb-4 '>
+            {!!searchForm && <View className='w-[375px] ml-4 mb-4 '>
 
                 {searchForm}
 
-            </View>
+            </View>}
             <View className={`items-center w-full flex-col ${cd('gap-sm')} ${cd('px-sm')} max-w-xl mx-auto`}>
                 {profilesList.map((item, index) => (
                     <Row

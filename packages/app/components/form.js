@@ -47,7 +47,7 @@ export default function (props) {
     const isAutoChange = !!props.onChange;
     const [lastChangedField, setLastChangedField] = useState(null);
 
-    let name = props.data.params?.display?.includes('_delete') ? '' : (props.name ? props.name : props.data.params?.display)
+    let name = props.data?.params?.display?.includes('_delete') ? '' : (props.name ? props.name : props?.data?.params?.display)
     const defaultValues = {}
 
     // 1. Initialize isAutofocus based on a new prop, defaulting to false.

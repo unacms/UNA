@@ -10,6 +10,7 @@ import Subscriber from 'app/ui/molecules/subscriber';
 import AnimatedBackground from 'app/ui/atoms/animated-background';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { fontVars } from 'app/design/fonts/fonts-web';
+import { appSetting } from 'app/lib/util';
 
 export default function RootLayout({ children }) {
 
@@ -38,7 +39,7 @@ export default function RootLayout({ children }) {
 
     return (
         <html className={fontVars}>
-            <body>
+            <body className={appSetting('layout', 'body')}>
                 <QueryClientProvider client={queryClient}>
                     <AnimatedBackground />
                     {typeof window !== 'undefined' && window.location.hostname.endsWith('vercel.app') ? <Analytics /> : null}
