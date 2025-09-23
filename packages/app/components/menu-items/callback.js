@@ -87,7 +87,8 @@ export default function MenuItemButton(oProps) {
 
     const oIconAliases = {
         'item-comment': 'MessageCircleMore',
-        'item-share': 'Share2'
+        'item-share': 'Share2',
+      
     };
 
     const bShowActionAsButton = oProps.params?.show_action_as_button == undefined || oProps.params.show_action_as_button === true;
@@ -128,6 +129,8 @@ export default function MenuItemButton(oProps) {
                 else if (!!oIconset[oProps.name])
                     sButtonIcon = oIconset[oProps.name];
             }
+            if (!sButtonIcon)
+                sButtonIcon = oProps.icon
 
             if (oProps.mode == 'dropdown-menu') {
                 sContent = <><Redirect ref={redirectdRef} /><DropdownMenuItem 
