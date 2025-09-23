@@ -3,7 +3,6 @@
 import { useEffect, useState, memo, useMemo } from 'react';
 import { storageGet, storageSet, findIconFromRemote, appSetting } from 'app/lib/util'
 import SvgIcons from  'app/icons-svg';
-import { IconSet } from 'app/icons';
 
 export const Icon = memo(function Icon(props) {
     const { icon: origIcon, className, width, height, color, size, strokeWidth, ...rest } = props;
@@ -18,7 +17,6 @@ export const Icon = memo(function Icon(props) {
     // Инициализируем состояние с иконкой из локального хранилища
     const [currentIcon, setCurrentIcon] = useState(() => storageGet(`icon-${key}`, '', true));
     const InlineIcon = SvgIcons[icon];
-    const LucideIcon = IconSet[icon];
 
 
 
@@ -43,8 +41,8 @@ export const Icon = memo(function Icon(props) {
         };
 
         // Проверяем, есть ли иконка в локальном хранилище, и вызываем `fetchIcon`, если её нет
-        // Skip fetching if it's a Lucide icon or custom SVG icon
-        if (!InlineIcon && !LucideIcon && !isXmlSvg){
+       
+        if (!InlineIcon && !isXmlSvg){
             const cachedIcon = storageGet(`icon-${key}`, '', true);
             if (icon && !cachedIcon) {
                 fetchIcon();
@@ -52,15 +50,12 @@ export const Icon = memo(function Icon(props) {
                 setCurrentIcon(cachedIcon);
             }
         }
-
+       
     }, [icon, key]); // Зависим только от иконки и ключа
 
     if (!currentIcon) {
         if (InlineIcon){
             return <InlineIcon width={width || size} height={height || size} />;
-        }
-        if (LucideIcon){
-            return <LucideIcon size={size} color={color} className={className} {...rest} />;
         }
         if (isXmlSvg){
             const result = origIcon
@@ -73,7 +68,7 @@ export const Icon = memo(function Icon(props) {
             return <div style={{color:color}} className={className} {...rest} dangerouslySetInnerHTML={{ __html: result }} />;
         }
         return null; // Возвращаем null, если иконка не загружена
-
+        
     }
 
     return (

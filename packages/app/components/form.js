@@ -221,7 +221,7 @@ export default function (props) {
             {props.onSubmittig && <View className='absolute w-full h-full  z-50'></View>}
             {methods.formState.isSubmitting}
             <FormProvider {...methods}>
-                <View className={`${props.layout === 'hor' ? 'flex-row gap-x-2 items-end' : ''}`}>
+                <View className={`${props.layout === 'hor' ? 'flex-row gap-x-2 items-end' : appSetting('forms', 'form_container')}`}>
                     {inputs}
                     {(isAutoChange && props.layout === 'hor') && <Row className='items-center justify-between mb-3'>
                         {!isObjectsEqual(defaultFormValues, currentFormValues) && <Button
