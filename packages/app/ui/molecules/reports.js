@@ -258,7 +258,7 @@ const ElementReports = forwardRef((oProps, ref) => {
         );
 
         sActionPopup = (
-            <Modal title={t('Report')} outerClickClose={false} onVisible={popupVisibleDo} onClose={() => { setPopupVisibleDo(false) }}>
+            <Modal title={t('Report')} onVisible={popupVisibleDo} onClose={() => { setPopupVisibleDo(false) }}>
                 <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">
                     <View>
                         <Text>Report Type:</Text>
@@ -336,7 +336,7 @@ const ElementReports = forwardRef((oProps, ref) => {
         );
 
         sCounterPopup = (
-            <Modal title={t('Reports')} outerClickClose={false} onVisible={popupVisiblePerformed} onClose={() => { setPopupVisiblePerformed(false) }}>
+            <Modal title={t('Reports')}  onVisible={popupVisiblePerformed} onClose={() => { setPopupVisiblePerformed(false) }}>
                 <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">{sUsers}</View>
             </Modal>
         );

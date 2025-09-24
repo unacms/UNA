@@ -315,7 +315,7 @@ export default function (props) {
 
             <View className="w-full overflow-hidden">
                 {addType && <Modal
-                    outerClickClose={false}
+                    
                     onVisible={addType}
                     onClose={() => {
                         setAddType(false)

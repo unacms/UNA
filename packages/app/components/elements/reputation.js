@@ -125,7 +125,7 @@ function ReputationSummarySimple({ data }) {
                 scrollable
                 title="Score rules"
                 onVisible={isModal}
-                outerClickClose
+               
                 onClose={() => setIsModal(false)}
             >
                 <View className="w-full lg:min-w-md">
@@ -136,7 +136,7 @@ function ReputationSummarySimple({ data }) {
                 scrollable
                 title="Levels"
                 onVisible={isModal2}
-                outerClickClose
+               
                 onClose={() => setIsModal2(false)}
             >
                 <View className="w-full lg:min-w-md">

@@ -117,7 +117,7 @@ function DefaultUnit({ data }) {
             )}
             {isCommentsModal && (
                 <Modal
-                    outerClickClose={false}
+                    
                     onClose={() => setCmtsData(false)}
                     onVisible={!!cmtsData}
                     title={cmtsData.title}

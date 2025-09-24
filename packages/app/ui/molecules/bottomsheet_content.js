@@ -75,7 +75,6 @@ export default function ElementBottomSheetContent(props) {
                         bottomSheetData.onClose();
                 }}
                 padding={bottomSheetData?.modal?.padding}
-                outerClickClose={false}
                 transparent={true}
             >
                 <View className='w-full ' style={{ maxHeight: windowHeight - 100 }}>

@@ -544,10 +544,6 @@ export default function (props) {
     if (!dataItems.data.length && props.showTitleInside)
          return;
 
-    console.log("propsprops", props)
-
-
-
     return (
         <View className="w-full h-full">
             <View className="w-full" onLayout={handleLayout}></View>

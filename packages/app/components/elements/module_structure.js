@@ -234,7 +234,7 @@ export default function ModuleStructure({ data }) {
                     onClose={() => { getModuleData(); }}
                     title={title}
                     scrollable={true}
-                    outerClickClose={false}
+                    
                     fullWidth={true}
 
                 >

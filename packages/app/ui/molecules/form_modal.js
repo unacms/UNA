@@ -21,7 +21,7 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
         const { layoutBlocks } = layout;
         return (
             <Modal
-                outerClickClose={false}
+
                 onClose={() => setPageData(false)}
                 onVisible={!!pageData}
                 title={`${authorData.content[0].data.author_data.display_name}'s post`}
@@ -51,11 +51,11 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
             maxWidth={modalWidth}
             title={isShowHeader ? pageData.title : null}
             onVisible={!!pageData}
-            outerClickClose={false}
             {...(isShowHeader && { onClose: () => { setPageData(false); handleModalClose() } })}
             padding={isShowHeader ? " p-0 " : " p-0 "}
             transparent={true}
             onRequestClose={handleModalClose}
+            onClose= {() => {setPageData(false);}}
         >
             <Container key={pageData.module + (pageData.ts)} className={`flex-1 ${isShowHeader ? '' : 'overflow-visible'}`}>{/*px-3 sm:px-0*/}
                 {

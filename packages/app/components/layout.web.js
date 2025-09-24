@@ -53,7 +53,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
         }
         if (!isModal)
             return <></>
-        return (<Modal title={t('login_modal_title')} onVisible={isModal} outerClickClose={false} onClose={() => handleCloseModal()}>
+        return (<Modal title={t('login_modal_title')} onVisible={isModal}  onClose={() => handleCloseModal()}>
             {appStatic('components_modal', p)}
         </Modal>);
     };

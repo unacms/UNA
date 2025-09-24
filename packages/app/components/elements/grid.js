@@ -431,7 +431,7 @@ export default function ElementGrid(props) {
     let a = <View className="w-full">
      
         {modalContent && (
-            <Modal title={modalContent.content[0]?.title ? modalContent.content[0]?.title : " "} onVisible={!!modalContent} outerClickClose={false} onClose={() => handleCloseModal()}>
+            <Modal title={modalContent.content[0]?.title ? modalContent.content[0]?.title : " "} onVisible={!!modalContent} onClose={() => handleCloseModal()}>
                 <View className='px-4'>
                     <BlockByData onFormEmpty={() => handleUpdate()} block={modalContent} />
                 </View>
@@ -439,7 +439,7 @@ export default function ElementGrid(props) {
         )
         }
         {modalContentElement && (
-            <Modal scrollable title="Checkout" onVisible={!!modalContentElement} outerClickClose={false} onClose={() => handleCloseModalElement()}>
+            <Modal scrollable title="Checkout" onVisible={!!modalContentElement} onClose={() => handleCloseModalElement()}>
                 <View className='px-4'>
                     {modalContentElement}
                 </View>

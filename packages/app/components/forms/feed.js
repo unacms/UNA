@@ -411,7 +411,7 @@ export default function FormFeed(props) {
                         />
                     )}
                     onVisible={showImage}
-                    outerClickClose={false}
+                    
                     {...(!isSmall && { onClose: handleModalClose })}
                     padding=" p-0 "
                     transparent={true}

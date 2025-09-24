@@ -81,7 +81,6 @@ export default function ElementSearch(oProps) {
             {sResult}
             <Modal
                 title={t('Search')}
-                outerClickClose={false}
                 onVisible={!!showModal}
                 onClose={() => {
                     setShowModal(false)

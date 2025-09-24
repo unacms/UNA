@@ -237,39 +237,42 @@ export function Modal({
     const insets = useSafeAreaInsets();
 
     const Content = (
-        <View  style={{ paddingTop: isIOS? insets?.top : 0 }} className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto ${layoutShift}:inset-0 h-full h-modal ${sClassPosition}`}>
-    <View className={`w-full ${maxWidth} ${fullWidth ? '' : `${layoutShift}:w-auto`} relative ${modalSettings.container.replaceAll("{ls}", layoutShift)} `}>
-        <View className={`relative ${!autoHeight ? 'h-full' : ''} ${modalSettings.content.replaceAll("{ls}", layoutShift)}`}>
-            {
-                (title || onClose) && <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header} `}>
-                    {(title && type === 'string') && (
-                        <View className='flex-auto absolute left-0 right-0'>
-                            <Text className='text-xl text-center leading-9 font-bold text-card-foreground '>{title}</Text>
-                        </View>
-                    )}
-                    {(title && type !== 'string') && (title)}
-                    {onClose && (
-                        <View className='ml-auto'>
-                            <Button variant='secondary' size='sm' rounded startDecorator='X' onPress={onClose} />
-                        </View>
-                    )}
-                </Row>
-            }
-            <Cnt style={styles} className={`${padding} flex-auto `}>{children}</Cnt>{/*overflow-y-auto*/}
-        </View>
-    </View>
-</View>)
+        <View style={{ paddingTop: isIOS ? insets?.top : 0 }} className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto ${layoutShift}:inset-0 h-full h-modal ${sClassPosition}`}>
+            <View className={`w-full ${maxWidth} ${fullWidth ? '' : `${layoutShift}:w-auto`} relative ${modalSettings.container.replaceAll("{ls}", layoutShift)} `}>
+                <View className={`relative ${!autoHeight ? 'h-full' : ''} ${modalSettings.content.replaceAll("{ls}", layoutShift)}`}>
+                    {
+                        (title) && <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header} `}>
+                            {(title && type === 'string') && (
+                                <View className='flex-auto absolute left-0 right-0'>
+                                    <Text className='text-xl text-center leading-9 font-bold text-card-foreground '>{title}</Text>
+                                </View>
+                            )}
+                            {(title && type !== 'string') && (title)}
+                            {(onClose && type === 'string') && (
+                                <View className='ml-auto'>
+                                    <Button variant='secondary' size='sm' rounded startDecorator='X' onPress={onClose} />
+                                </View>
+                            )}
+                        </Row>
+                    }
+                    <Pressable onPress={(event) => {event.stopPropagation()}}>
+                    <Cnt style={styles} className={`${padding} flex-auto `}>{children}</Cnt></Pressable>
+                </View>
+            </View>
+        </View>)
 
     return (
         <ModalDef visible={onVisible} animationType={animation} transparent={isWeb}>
             <Pressable className={`pointerEvents cursor-default flex justify-end w-full h-full 
-                ${modalSettings.fog}`} 
-                onPress={(event) => {   isOuterClose ? onClose : undefined; event.stopPropagation();}}
-
-
+                ${modalSettings.fog}`}
+                onPress={(event) => {
+                    if (isOuterClose) {
+                        onClose()
+                    }
+                    event.stopPropagation();
+                }}
             >
-               {isWeb ? <RemoveScroll className='flex-1'>{Content}</RemoveScroll> : Content}
-            </Pressable>
+                {isWeb ? <RemoveScroll className='flex-1'>{Content}</RemoveScroll> : Content}</Pressable>
         </ModalDef>
     );
 }

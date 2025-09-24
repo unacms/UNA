@@ -1,5 +1,6 @@
 import { useState, useEffect  } from 'react';
 import { fetcher } from 'app/lib/fetcher';
+import { storageSet, storageClear } from 'app/lib/util';
 
 export default function useFetchForm (url, postData) {
     const [data, setData] = useState(null);
@@ -13,14 +14,17 @@ export default function useFetchForm (url, postData) {
 
         const fetchData = async () => {
             //setLoading(true);
-            try {
+           // try {
                 const response = await fetcher([url, '', postData]);
+                console.log("clear")
+                storageClear('forms', url);
+                storageSet('form', url, null, true);
                 setData(response);
-            } catch (err) {
+          //  } catch (err) {
                // setError(err);
-            } finally {
+           // } finally {
                // setLoading(false);
-            }
+            //}
         };
 
         fetchData();

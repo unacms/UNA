@@ -151,7 +151,7 @@ export default function ElementConnections(oProps) {
         return (
             <>
                 <ButtonAction title={sTitle} onPress={(event) => _handleDo(sAction, event)} {...oButtonProps} />
-                {modalContent && <Modal title={t("Questionnaire")} onVisible={modalContent} outerClickClose={false} onClose={_handleCloseModal}>
+                {modalContent && <Modal title={t("Questionnaire")} onVisible={modalContent} onClose={_handleCloseModal}>
                     <View className='px-4'>
                         <BlockByData onFormEmpty={_handleFormSubmittedAndValid} block={modalContent} />
                     </View>

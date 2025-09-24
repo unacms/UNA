@@ -3,9 +3,9 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import { View, Row } from 'app/design/view'
 import { getComponent } from 'app/components/registry';
-import { FeedbackHaptics } from 'app/lib/util';
+import { FeedbackHaptics, storageSet, appSetting, storageGet, storageClear } from 'app/lib/util';
 import { Platform } from 'react-native';
-import { appSetting } from 'app/lib/util';
+
 import useDebounce from 'app/lib/hooks/debounce'
 import { Button } from 'app/design/controls';
 import { isObjectsEqual } from 'app/lib/util'
@@ -42,6 +42,7 @@ const checkInputType = (name, form_name, input_name) => {
 
 export default function (props) {
     const data = props.data;
+    const cacheKey = props.request.url;
     const response = props.response;
     const onFormSubmit = props.onFormSubmit;
     const isAutoChange = !!props.onChange;
@@ -93,7 +94,7 @@ export default function (props) {
         //TODO: gandle error
     }
     const { ...methods } = useForm({
-        mode: 'onChange'
+        mode: 'onChange',
     });
     const { formState: { isSubmitted } } = methods;
 
@@ -130,7 +131,17 @@ export default function (props) {
             methods.setValue('cmt_parent_id', defaultValues['cmt_parent_id']);
         }, 100);
     }
-    let _handleSubmit = methods.handleSubmit(onSubmit, onError)
+    //let _handleSubmit = methods.handleSubmit(onSubmit, onError)
+
+    const _handleSubmit = methods.handleSubmit(
+        (data) => {
+            console.log("99999999999", methods.formState.isSubmitSuccessful, methods.formState.isSubmitted, methods.formState.isSubmitting)
+            //storageClear('forms', cacheKey);
+            storageSet('form', cacheKey, null, true);
+            onSubmit(data);
+        },
+        onError
+    );
 
     useEffect(() => {
         if (props.isSubmit) {
@@ -147,6 +158,41 @@ export default function (props) {
             props.onChange(debouncedFields);
         }
     }, [debouncedFields]);
+
+    useEffect(() => {
+        let timer;
+
+        const sub = watch(values => {
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                storageSet('form', cacheKey, JSON.stringify(values), true);
+
+            }, 500);
+        });
+        return () => sub.unsubscribe();
+    }, [watch]);
+
+    useEffect(() => {
+        const raw = storageGet('form', cacheKey, true)
+
+        if (raw) {
+            const draft = JSON.parse(raw);
+            const current = methods.getValues();
+            const updates = {};
+
+            const keysWithHtml = Object.keys(data.inputs).filter(
+                (key) => data.inputs[key].html > 0
+            );
+
+            keysWithHtml.forEach((key) => {
+                if (draft[key] !== undefined) {
+                    updates[key] = '#INITED#' + draft[key];
+                }
+            });
+            methods.reset({ ...current, ...draft ,...updates }, { keepDefaultValues: true });
+        }
+
+    }, []);
 
 
     if (isAutoChange) {
