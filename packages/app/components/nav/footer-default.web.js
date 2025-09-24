@@ -52,7 +52,7 @@ export default function () {
                 <Row className="flex-auto items-center flex-row w-full px-2 gap-x-2">
                     {TabList.filter(item => !item.hide).map((tab, index) => {
                         const isActive = appSetting('messenger', 'url') === tab.url ? pathname.includes(tab.url) : pathname === tab.url;
-                        return <MenuBottomItem key={`bmi-${index}`} notifCount={notifCount} iFrCounter={iFrCounter} profile={profile} link={tab.url} index={index} icon={tab.icon} title={t(tab.title)} isActive={isActive} />
+                        return <MenuBottomItem key={`bmi-${index}`} notifCount={notifCount} iFrCounter={iFrCounter} profile={profile} link={tab.url} badge={tab.badge} index={index} icon={tab.icon} title={t(tab.title)} isActive={isActive} />
                     })}
                 </Row>
             </View>
@@ -60,19 +60,19 @@ export default function () {
     );
 }
 
-function MenuBottomItem({ link, title, index, icon, isActive, profile, iFrCounter, notifCount }) {
+function MenuBottomItem({ link, title, index, badge, icon, isActive, profile, iFrCounter, notifCount }) {
     const { currentUser } = useCurrentUser();
-    const badge = [
+    const badgeObj = [
         {
-            condition: link === appSetting('notifications', 'url') && notifCount > 0,
+            condition: (link === appSetting('notifications', 'url') || badge == 'notifications') && notifCount > 0, //to remove in 11.25 link === appSetting('notifications', 'url')
             value: { variant: 'primary', text: notifCount }
         },
         {
-            condition: link === appSetting('messenger', 'url') && currentUser?.counters?.bx_messenger_new_messages > 0,
+            condition: (link === appSetting('messenger', 'url') || badge == 'messenger') && currentUser?.counters?.bx_messenger_new_messages > 0,
             value: { variant: 'primary', text: currentUser?.counters?.bx_messenger_new_messages }
         },
         {
-            condition: link === '/friends' && iFrCounter > 0,
+            condition: (link === '/friends' || badge == 'friends') && iFrCounter > 0,
             value: { variant: 'primary', text: iFrCounter }
         }
     ].find(item => item.condition)?.value || null;
@@ -84,13 +84,12 @@ function MenuBottomItem({ link, title, index, icon, isActive, profile, iFrCounte
                 noprefetch={link === appSetting('notifications', 'url') ? "false" : "true"}
                 className="w-full"
             >
-                
                 <View className={`min-h-12 justify-between items-center ${isActive && ''}`}>
                     <Text className={`${isActive ? 'text-primary' : 'text-muted-foreground'}`}>
                         {link === appSetting('dashboard', 'url') ? profile : <Icon icon={icon} size={28} />}
                     </Text>
                     {<Text className={`group-hover:text-primary text-xs tracking-tight leading-5 whitespace-nowrap ${isActive ? 'text-primary' : 'text-muted-foreground'}`}>{title}</Text>}
-                    {badge && <View className={`absolute bg-destructive  border-2 border-card web:border-0 web:ring-2 web:ring-inset web:ring-card rounded-full px-2 items-center justify-center  -top-1.5 left-1/2 -translate-x-1/2 ml-5`}><Text className="text-white text-xs tracking-tight leading-5 ">{badge.text}</Text></View>}
+                    {badgeObj && <View className={`absolute bg-destructive  border-2 border-card web:border-0 web:ring-2 web:ring-inset web:ring-card rounded-full px-2 items-center justify-center  -top-1.5 left-1/2 -translate-x-1/2 ml-5`}><Text className="text-white text-xs tracking-tight leading-5 ">{badgeObj.text}</Text></View>}
                 </View>
             </Link>
         </View>

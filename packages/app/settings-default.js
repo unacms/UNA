@@ -671,18 +671,21 @@ export const settingsDefault = {
                 title: 'Friends',
                 url: '/friends',
                 icon: 'UsersRound',
+                badge: 'friends'
             },
             {
                 key: '/tab2',
                 title: 'Messages',
                 url: '/messenger',
                 icon: 'MessageCircleMore',
+                badge: 'messenger'
             },
             {
                 key: '/tab3',
                 title: 'Notifications',
                 url: '/notifications-view',
                 icon: 'Bell',
+                badge: 'notifications'
             },
             {
                 key: '/tab4',
