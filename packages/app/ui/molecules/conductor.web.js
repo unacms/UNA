@@ -741,10 +741,10 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled,
         };
     }, [scrollValue]);
 
-
+    console.log("isCoverDisabled", isCoverDisabled)
     const animatedStyleHeaderCoverSmall = useAnimatedStyle(() => {
         return {
-            display: scrollValue.value == 1 || (isCoverDisabled && !isDesktop) ? 'none' : 'flex',
+            display: scrollValue.value == 1  ? 'none' : 'flex', // display: scrollValue.value == 1 || (isCoverDisabled && !isDesktop) ? 'none' : 'flex',
         };
     }, [scrollValue]);
 
