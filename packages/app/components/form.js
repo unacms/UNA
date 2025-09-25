@@ -42,7 +42,7 @@ const checkInputType = (name, form_name, input_name) => {
 
 export default function (props) {
     const data = props.data;
-    const cacheKey = props.request.url;
+    const cacheKey = props?.request?.url || false;
     const response = props.response;
     const onFormSubmit = props.onFormSubmit;
     const isAutoChange = !!props.onChange;
@@ -135,9 +135,6 @@ export default function (props) {
 
     const _handleSubmit = methods.handleSubmit(
         (data) => {
-            console.log("99999999999", methods.formState.isSubmitSuccessful, methods.formState.isSubmitted, methods.formState.isSubmitting)
-            //storageClear('forms', cacheKey);
-            storageSet('form', cacheKey, null, true);
             onSubmit(data);
         },
         onError
@@ -160,21 +157,13 @@ export default function (props) {
     }, [debouncedFields]);
 
     useEffect(() => {
-        let timer;
-
-        const sub = watch(values => {
-            clearTimeout(timer);
-            timer = setTimeout(() => {
-                storageSet('form', cacheKey, JSON.stringify(values), true);
-
-            }, 500);
-        });
-        return () => sub.unsubscribe();
-    }, [watch]);
+        if (cacheKey && debouncedFields && Object.keys(debouncedFields).length > 0) {
+            storageSet('form', cacheKey, JSON.stringify(debouncedFields), true);
+        }
+    }, [debouncedFields, cacheKey]);
 
     useEffect(() => {
-        const raw = storageGet('form', cacheKey, true)
-
+        const raw = cacheKey ? storageGet('form', cacheKey, true) : false
         if (raw) {
             const draft = JSON.parse(raw);
             const current = methods.getValues();
@@ -184,7 +173,7 @@ export default function (props) {
                 (key) => data.inputs[key].html > 0
             );
 
-            keysWithHtml.forEach((key) => {
+            keysWithHtml.forEach((key) => { // HUCK FOR rtf inputs
                 if (draft[key] !== undefined) {
                     updates[key] = '#INITED#' + draft[key];
                 }

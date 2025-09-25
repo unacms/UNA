@@ -155,11 +155,12 @@ export function CoverMenuMore(props) {
                 showVertical:props?.params?.showVertical ?? false,
                 show_action: true,
                 show_counter: true,
+                button_rounded: true,
                 show_combined: true,
                 button_variant: buttonVariant,
                 button_size: buttonSize,
                 button_full_width: props?.params?.button_full_width ?? false,
-                className: 'flex-wrap justify-end',
+                className: 'flex-wrap justify-end gap-x-2',
                 isFixedCount: true,
             }}
         />

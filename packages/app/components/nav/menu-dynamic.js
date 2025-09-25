@@ -54,7 +54,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
 
     }, [isDynamicMenu]);
 
-    let ExMenu = (visibleItemsCount < items.length) && (
+    const ExMenu = (visibleItemsCount < items.length) && (
         <DropdownMenu
             onSelect={(oItem, event) => {
                 if (oItem.noAction) {
@@ -84,7 +84,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
             <FormModal pageData={pageData} setPageData={setPageData} />
             <Container
                 contentContainerStyle={{ alignItems: 'center' }}
-                className={isWeb ? (containerClasses ? containerClasses.trim() + ' overflow-visible' : 'overflow-visible') : (containerClasses ? containerClasses.trim() + ' overflow-visible' : 'overflow-visible')}
+                className={isWeb ? (containerClasses ? containerClasses.trim() + ' overflow-visible gap-x-2' : 'overflow-visible gap-x-2') : (containerClasses ? containerClasses.trim() + ' overflow-visible gap-x-2' : 'overflow-visible gap-x-2')}
                 horizontal={true}
                 onLayout={handleLayout}
             >

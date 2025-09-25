@@ -525,7 +525,7 @@ const AddMenu = (menu, filter) => {
                 link: menu.add_url,
             });
         }
-        if (menu.name) {
+        if (menu.name && menu.add_url) {
             addButtonsSet.push({
                 icon: 'Search',
                 name: 'Search',
@@ -645,6 +645,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, currentBreakpoi
 
 const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, headerSettings, children, layoutName }) => {
     const menuSettings = getMenuSettings(menu.object, menu.config, menu);
+
     const { t } = useTranslation();
     const addButtons = AddMenu(menu, 'hideInSideBar');
     return (

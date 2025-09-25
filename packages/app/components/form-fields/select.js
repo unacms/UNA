@@ -12,10 +12,22 @@ export default function (props) {
     
     const { field } = useController({ name, rules, defaultValue });
 
+    console.log("props", props.value, value)
+
     useEffect(() => {
-        if (value != field.value)
+        if (value != field.value){
+           
             field.onChange(value);
+        }
     }, [value]);
+
+    useEffect(() => {
+         console.log("useEffect1");
+        if (value != field.value){
+            console.log("useEffect");
+            setValue(field.value);
+        }
+    }, [field.value]);
 
     const setValueF = (val) =>
     {
