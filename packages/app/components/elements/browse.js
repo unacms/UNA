@@ -441,13 +441,15 @@ export default function (props) {
 
     const isShowPreloads = dataItems.data.length == 0 && data.request_url &&  (((dataItems?.params?.start === 0 && !props.only_one_page) /*&& data.unit != 'notifications'*/) || status === 'loading')
     let PreloadComponent = null
-    if (isShowPreloads) {
+    if (hasNextPage && isFetchingNextPage) {
         PreloadComponent = Preload
     } else {
-        //  if (dataItems.data.length == 0 && isShowEmptyMessage){
-        //    PreloadComponent = callFn("noContentByUrl", [data.request_url])
-        // }
+          if (dataItems.data.length == 0 && isShowEmptyMessage){
+            PreloadComponent = callFn("noContentByUrl", [{request_url: data.request_url}])
+         }
     }
+
+
 
 
     const memoizedUniListProps = useMemo(
@@ -499,12 +501,8 @@ export default function (props) {
                     ? props.exProps?.headerBlocks
                     : () => props.exProps?.headerBlocks)
                 : undefined,
-            ListFooterComponent:
-                hasNextPage && isFetchingNextPage
-                    ? Preload
-                    : dataItems.data.length == 0 && isShowEmptyMessage
-                        ? callFn('noContentByUrl', [data.request_url])
-                        : null,
+            ListFooterComponent: PreloadComponent
+               
         }),
         [
             props?.exProps?.scrollProps,
