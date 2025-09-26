@@ -158,12 +158,12 @@ export default function (props) {
                     onBlur={field.onBlur}
                     defaultValue={props.value}
                 />
-                {!!props.owner_info && <Row className=" h-5.5 items-center px-1 text-neutral-600 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400   web:duration-300">
+                {!!props.owner_info && <Row className=" h-5.5 items-center text-neutral-600 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400   web:duration-300">
                     <View className='flex-none mb-auto'>
                         <Profile
                             {...props.owner_info}
                             displayType="unit_wo_info"
-                            displaySize="xs"
+                            displaySize="2xs"
                         />
                     </View>
                     <View className='px-1  flex-auto'>
@@ -214,7 +214,7 @@ export default function (props) {
         <>
             {modalElement}
             <Field {...props} error2={formContext.formState.errors[name]}>
-                <View className='flex-row items-center px-2 bg-input/20 border border-border/80 h-14 rounded-xl'>
+                <View className='flex-row items-center px-2 bg-input/20 border border-border/80 h-12 rounded-xl'>
                 <Button
                     title={filteredValues.find(item => item.value == field.value)?.label || filteredValues[0].label}
                     startDecorator="Globe"

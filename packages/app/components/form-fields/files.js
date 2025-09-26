@@ -454,7 +454,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
         }
         let w = props.name == 'picture' ? 'w-48 h-48 overflow-hidden' : 'w-full ' + appSetting('cover', 'aspect_ratio');
         if (!props.viewClasses) {
-            w += ' bg-bgrinput dark:bg-bgrinput-d border-bdrinput dark:border-bdrinput-d rounded-lg'
+            w += ' bg-bgrinput dark:bg-bgrinput-d border-bdrinput dark:border-bdrinput-d rounded-xl overflow-hidden'
         }
         else {
             w += ' ' + props.viewClasses

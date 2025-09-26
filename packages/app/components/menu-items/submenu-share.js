@@ -27,7 +27,7 @@ export default function MenuItemSubmenuShare(oProps) {
             case 'item-repost':
                 const sResponse = await fetcher('/api.php?r=bx_timeline/repost/&params=' + JSON.stringify(Object.values(oItem.data)));
                 if(sResponse?.data ){
-                    const sMsg = sResponse.data?.message ? sResponse.data?.message : 'The item was successfully reposted.';
+                    const sMsg = sResponse.data?.message ? sResponse.data?.message : 'Post shared successfully.';
                     console.log("sMsg", sMsg)
                     setShowMsg(sMsg);
                 }

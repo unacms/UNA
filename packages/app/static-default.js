@@ -182,7 +182,7 @@ const ComponentsCommentsEmpty = () => {
                     <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
                         {t('No comments yet')}
                     </Text>
-                    <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
+                    <Text className="text-center text-base text-muted-foreground ">
                         {t('Be the first to share what you think')}
                     </Text>
                 </View>
@@ -223,7 +223,7 @@ const ComponentsContentEmpty = () => {
                     <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
                         {t('Nothing found')}
                     </Text>
-                    <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
+                    <Text className="text-center text-base text-muted-foreground ">
                         {t('Try again later')}
                     </Text>
                 </View>
@@ -244,7 +244,7 @@ const PageNotFound = () => {
                     <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
                         {t('404 - not found')}
                     </Text>
-                    <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
+                    <Text className="text-center text-base text-muted-foreground ">
                         {t('Page not found, sorry.')}
                     </Text>
                 </View>
@@ -261,10 +261,10 @@ const PageNotAllowed = () => {
                     <View className="flex-col mx-auto m-4 text-neutral-800 dark:text-neutral-200 ">
                         <Icon icon="Binoculars" width={32} height={32} />
                     </View>
-                    <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
+                    <Text className="text-center text-lg text-card-foreground lg:text-xl font-semibold  ">
                         {t('403 - not allowed')}
                     </Text>
-                    <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
+                    <Text className="text-center text-base text-muted-foreground ">
                         {t('Page not allowed, sorry.')}
                     </Text>
                 </View>

@@ -344,7 +344,7 @@ return;*/
                         </>
                     )}
                     <Panel {...cellsCustomConfig.cells?.center}>
-                        <View className={`sm:${cd('p-md')} max-w-3xl mx-auto`}>{FeedContent}</View>
+                        <View className="max-w-3xl sm:pt-3 mx-auto">{FeedContent}</View>
                     </Panel>
 
                     {isWeb && (

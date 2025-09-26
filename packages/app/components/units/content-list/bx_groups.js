@@ -42,9 +42,9 @@ export default function Unit(props) {
         return (
             <>
                 <Redirect ref={redirectdRef} />
-                <CardList padding={cd('p-sm')} className='mb-2'>
+                <CardList padding="p-1" className='mb-2'>
                     <Link className="group " href={data.url}>
-                        <View className="flex-row  p-1">
+                        
                             <View className="aspect-square w-1/3 rounded-xl overflow-hidden items-center justify-center bg-neutral-500/20">
                                 <Image
                                     {...data.cover}
@@ -55,25 +55,25 @@ export default function Unit(props) {
                                 />
 
                             </View>
-                            <View className="flex-col p-3  flex-auto items-between justify-between ">
+                            <View className="flex-col p-2  flex-auto items-between justify-between ">
                                 <View>
                                     <Text
                                         numberOfLines={1}
-                                        className=" text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary "
+                                        className=" text-base leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary "
                                     >
                                         {data.title}
                                     </Text>
                                     <Row className="items-center h-6 my-3">
 
 
-                                        <View className="mr-2  h-6">
+                                        <View className="mr-2 h-5">
                                             <ProfilesList
                                                 data={
                                                     data.members_list
                                                 }
                                                 showEmpty={false}
                                                 maxCount={3}
-                                                displaySize="xs"
+                                                displaySize="2xs"
                                             />
 
                                         </View>
@@ -93,7 +93,7 @@ export default function Unit(props) {
                                     {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2  ml-2 sm:ml-0'}`}>{oMenuItemSecondary}</View>}
                                 </View>
                             </View>
-                        </View>
+                       
                     </Link>
                 </CardList>
             </>
@@ -104,9 +104,8 @@ export default function Unit(props) {
         return (
             <>
                 <Redirect ref={redirectdRef} />
-                <CardList padding={cd('p-sm')} className='mb-2 md:mb-0'>
+                <CardList padding="p-1" className='mb-2 md:mb-0'>
                     <Link className="group " href={data.url}>
-                        <View className="flex-row sm:flex-col p-1">
                             <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center bg-neutral-500/20">
                                 <Image
                                     {...data.cover}
@@ -117,25 +116,25 @@ export default function Unit(props) {
                                 />
 
                             </View>
-                            <View className="flex-col p-3  flex-auto items-between justify-between ">
+                            <View className="flex-col p-2 flex-auto items-between justify-between ">
                                 <View>
                                     <Text
                                         numberOfLines={1}
-                                        className=" text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary "
+                                        className=" text-base leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary "
                                     >
                                         {data.title}
                                     </Text>
                                     <Row className="items-center h-6 my-3">
 
 
-                                        <View className="mr-2  h-6">
+                                        <View className="mr-2 h-5">
                                             <ProfilesList
                                                 data={
                                                     data.members_list
                                                 }
                                                 showEmpty={false}
                                                 maxCount={3}
-                                                displaySize="xs"
+                                                displaySize="2xs"
                                             />
 
                                         </View>
@@ -155,7 +154,6 @@ export default function Unit(props) {
                                     {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2  ml-2 sm:ml-0'}`}>{oMenuItemSecondary}</View>}
                                 </View>
                             </View>
-                        </View>
                     </Link>
                 </CardList>
             </>

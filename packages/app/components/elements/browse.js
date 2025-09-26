@@ -383,7 +383,7 @@ export default function (props) {
         return (
             <View className="p-8">
                 <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-neutral-500/10 ">
-                    <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
+                    <Text className="text-center text-base text-muted-foreground ">
                         No notifications
                     </Text>
                 </View>
