@@ -157,8 +157,8 @@ export default function RftText({
         display:none;
     }
     body P {
-        margin-bottom: 0px;
-        margin-top: 0px;
+        margin-bottom: 6px;
+        margin-top: 6px;
     }
     body P:first-child {
         margin-top: 0px;

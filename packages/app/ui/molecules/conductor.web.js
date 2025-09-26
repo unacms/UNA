@@ -310,7 +310,6 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
 
         const isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
         const isLeftCol = route?.leftbar?.content?.length > 0 || layoutName == 'navigator';
-
         const renderItem = useCallback(
             ({ item, index }) => (
                 <ItemRenderer
@@ -648,9 +647,10 @@ const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, head
 
     const { t } = useTranslation();
     const addButtons = AddMenu(menu, 'hideInSideBar');
+    console.log("headerSettings.hideLeftmenu", headerSettings.hideLeftmenu)
     return (
         <LeftSidebar title={layoutName == 'profile' ? '' : t(menuSettings?.name)} addButtons={addButtons} >
-            {headerSettings.hideLeftmenu != true && routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
+            {layoutName == 'navigator' && routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
                 const btn = callFn('getButtonForConductor', [a, index, currentUser])
 
                 if (a?.icon == '*') {

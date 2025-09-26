@@ -206,6 +206,7 @@ export default function (props) {
             ...input,
             props: {
                 ...input.props,
+                form_layout: props.layout,
                 use_caption_as_placeholder: appSetting('forms', 'without_captions').includes(name) ? true : false,
                 ...(index === inputs.length - 1 - inputs.slice().reverse().findIndex(input => input.props?.type !== "hidden") && { noPadding: true }),
                 ...(index === inputs.length - 1 - inputs.slice().reverse().findIndex(input => input.props?.type !== "hidden") && { noPadding: true })
@@ -242,7 +243,7 @@ export default function (props) {
     }, {});
 
     return (
-        <View className={`${appSetting('forms', 'form_container')} ${props?.exProps?.classes}`}>
+        <View className={`${props.layout !== 'hor' ? appSetting('forms', 'form_container'): 'w-full'} ${props?.exProps?.classes}`}>
             {(isAutoChange && props.layout !== 'hor') && <Row className='items-center justify-between mb-3'>
                 {!isObjectsEqual(defaultFormValues, currentFormValues) && <Button
                     title='Reset Filters'
@@ -256,9 +257,9 @@ export default function (props) {
             {props.onSubmittig && <View className='absolute w-full h-full  z-50'></View>}
             {methods.formState.isSubmitting}
             <FormProvider {...methods}>
-                <View className={`${props.layout === 'hor' ? 'flex-row gap-x-2 items-end' : appSetting('forms', 'form_container')}`}>
+                <View className={`${props.layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : appSetting('forms', 'form_container')}`}>
                     {inputs}
-                    {(isAutoChange && props.layout === 'hor') && <Row className='items-center justify-between mb-3'>
+                    {(isAutoChange && props.layout === 'hor') && <Row className='items-center justify-between '>
                         {!isObjectsEqual(defaultFormValues, currentFormValues) && <Button
                             title='Reset Filters'
                             startDecorator='X'

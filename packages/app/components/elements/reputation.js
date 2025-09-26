@@ -210,11 +210,11 @@ function ReputationSummarySimple({ data }) {
 
 const getPositionColors = (index) => {
     switch (index) {
-        case 0:
-            return 'bg-yellow-500' // Gold for 1st place
         case 1:
-            return 'bg-gray-400 dark:bg-gray-600' // Silver for 2nd place
+            return 'bg-yellow-500' // Gold for 1st place
         case 2:
+            return 'bg-gray-400 dark:bg-gray-600' // Silver for 2nd place
+        case 3:
             return 'bg-amber-600' // Bronze for 3rd place
         default:
             return 'bg-transparent border border-gray-300 dark:border-gray-600'
@@ -223,11 +223,11 @@ const getPositionColors = (index) => {
 
 const getStarColor = (index) => {
     switch (index) {
-        case 0:
-            return '#EAB308' // Gold
         case 1:
-            return '#9CA3AF' // Silver
+            return '#EAB308' // Gold
         case 2:
+            return '#9CA3AF' // Silver
+        case 3:
             return '#D97706' // Bronze
         default:
             return 'transparent'
@@ -235,7 +235,7 @@ const getStarColor = (index) => {
 }
 
 const getTextColor = (index) => {
-    return index < 3 ? 'text-white' : 'text-gray-600 dark:text-gray-400'
+    return index <= 3 ? 'text-white' : 'text-gray-600 dark:text-gray-400'
 }
 
 const StarIcon = ({ color, size = 28 }) => (
@@ -254,6 +254,11 @@ const StarIcon = ({ color, size = 28 }) => (
 export function ReputationLeaderboard({ data }) {
 
     const formProps = data?.filter_form ? { ...data?.filter_form, layout: 'hor' } : null;
+    formProps.data.inputs.days.mode = 'buttons'
+    formProps.data.inputs.days.caption = '';
+    formProps.data.inputs.username.placeholder = 'Search by name'
+    formProps.data.inputs.username.caption = '';
+    
     const [profilesList, setProfilesList] = useState(data.profiles);
 
     const onFormChange = useCallback(async (values) => {
@@ -272,10 +277,8 @@ export function ReputationLeaderboard({ data }) {
 
     return (
         <>
-            {!!searchForm && <View className='w-[375px] ml-4 mb-4 '>
-
+            {!!searchForm && <View className='mb-8 max-w-xl mx-auto w-full'>
                 {searchForm}
-
             </View>}
             <View className={`items-center w-full flex-col ${cd('gap-sm')} ${cd('px-sm')} max-w-xl mx-auto`}>
                 {profilesList.map((item, index) => (
@@ -286,32 +289,32 @@ export function ReputationLeaderboard({ data }) {
                     >
                         <Row className={`items-center ${cd('gap-sm')}`}>
                             <View className="w-7 h-7 items-center justify-center relative">
-                                {index < 3 ? (
+                                {item.position <= 3 ? (
                                     <>
                                         <StarIcon
-                                            color={getStarColor(index)}
+                                            color={getStarColor(item.position)}
                                             size={28}
                                         />
                                         <Text
                                             className={`${getTextColor(
-                                                index
+                                                item.position
                                             )} text-xs font-bold absolute`}
                                         >
-                                            {index + 1}
+                                            {item.position}
                                         </Text>
                                     </>
                                 ) : (
                                     <View
                                         className={`w-6 h-6 rounded-full ${getPositionColors(
-                                            index
+                                            item.position
                                         )} items-center justify-center`}
                                     >
                                         <Text
                                             className={`${getTextColor(
-                                                index
-                                            )} text-sm font-bold`}
+                                                item.position
+                                            )} text-sm font-bold absolute`}
                                         >
-                                            {index + 1}
+                                            {item.position}
                                         </Text>
                                     </View>
                                 )}

@@ -31,6 +31,10 @@ const StyledEM = (props) => {
 
 const StyledP = ({ children, className, ...props }) => {
     className += ' text-secondary-label '
+    className += props.isfirst === 'true' ? 'mt-0 ' : 'mt-1.5 '
+    className += props.islast === 'true' ? 'mt-0 ' : 'mb-1.5 '
+
+
     if (Platform.OS === 'web') {
         const WebDiv = 'div'
         return <WebDiv {...props} className={`${className} `} >{children}</WebDiv>
@@ -95,6 +99,9 @@ const parseHtmlToReact = (html, parentKey = '0') => {
         /<br\s*\/?>/gi,
         (_, index) => `<br key="${getKey('br')}"></br>`
     )
+
+
+
     html = html.replace(
         /<img\s*([^>]*)\/?>/gi,
         (match, attributes, index) => {
@@ -121,13 +128,18 @@ const parseHtmlToReact = (html, parentKey = '0') => {
         }
 
         if (normalizedTag === 'br') {
-            elements.push(<Text key={getKey('br')}>{'\n'}</Text>)
+            if (Platform.OS === 'web') {
+                const WebDiv = 'div'
+                elements.push(<WebDiv key={getKey('br')}></WebDiv>)
+            }
+            else {
+                return elements.push(<P key={getKey('br')}></P>)
+            }
+
             continue
         }
 
         let srcClass = attributes.match(/class=['"]?([^'"\s>]+)['"]?/)
-
-        
 
         if (normalizedTag === 'a') {
             const hrefMatch = attributes.match(/href="([^"]+)"/)

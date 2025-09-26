@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import Field, {getValidationRules} from './_field';
 import { useFormContext, useController } from 'react-hook-form';
 import Dropdown from 'app/ui/atoms/dropdown'
+import { Row } from 'app/design/view'
+import { Button } from 'app/design/controls'
 
 export default function (props) {
     const name = props.name;
@@ -12,7 +14,6 @@ export default function (props) {
     
     const { field } = useController({ name, rules, defaultValue });
 
-    console.log("props", props.value, value)
 
     useEffect(() => {
         if (value != field.value){
@@ -22,9 +23,7 @@ export default function (props) {
     }, [value]);
 
     useEffect(() => {
-         console.log("useEffect1");
         if (value != field.value){
-            console.log("useEffect");
             setValue(field.value);
         }
     }, [field.value]);
@@ -38,6 +37,19 @@ export default function (props) {
     }
 
     const values = getVisibilityValues(props.values);
+
+    console.log("values", values)
+    if (props.mode == 'buttons'){
+        return (
+            <Field {...props} error2={formContext.formState.errors[name]}>
+            <Row className='gap-x-2'>
+                {values.map(item =>{
+                    return <Button key={item.value} variant="outline" pressed={field.value==item.value} title={item.label} onPress={() =>{setValueF(item.value)}}/>   
+                })}
+            </Row>
+            </Field>
+        );
+    }
 
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
