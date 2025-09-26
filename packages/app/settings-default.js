@@ -1066,7 +1066,7 @@ export const settingsDefault = {
                 padding_icon_only: ' h-7 w-7 ',
                 padding_with_title: ' px-1.5 gap-1 ',
                 icon_container:
-                    ' h-7 text-sm flex items-center justify-center',
+                    ' h-7 w-7 text-sm flex items-center justify-center',
                 title_container: ' text-xs leading-7 text-xs',
                 icon_size: 16,
                 icon_margin: ' ', // conditional margin for icon container when title is present
@@ -1447,10 +1447,10 @@ export const settingsDefault = {
         switcher: {
             // Container
             'u-controls-switcher-container':
-                'items-center flex-row-reverse justify-between gap-x-2 web:h-14 min-w-14 rounded-xl flex-auto p-3 bg-input/40 border border-border/80 ',
+                'items-center flex-row-reverse justify-between gap-x-2 min-w-12 rounded-xl flex-auto p-1.5 bg-input border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 ',
 
             // Text
-            'u-controls-switcher-text': 'text-card-foreground text-base',
+            'u-controls-switcher-text': 'text-card-foreground text-base px-1.5',
 
             // Track
             'u-controls-switcher-track': 'rounded-full',

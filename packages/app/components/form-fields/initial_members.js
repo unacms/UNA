@@ -13,9 +13,9 @@ import { useTranslation } from 'react-i18next';
 const User = ({ data, onSelect, type }) => {
     return (
         <Pressable className="" onPress={() => onSelect(data)}>
-            <Row className=" gap-x-2 pl-1 pr-3 h-11 overflow-hidden truncate rounded-full border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 bg-muted items-center justiy-center">
-                {<Profile displaySize="sm" displayType="unit_wo_info" {...data} showLinks={false} />}
-                <Text className="text-card-foreground web:hover:text-primary native: text-base web: text-base font-semibold tracking-tight truncate">
+            <Row className=" gap-x-2 pl-1 pr-3 h-9 overflow-hidden truncate rounded-full border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 bg-muted items-center justiy-center">
+                {<Profile displaySize="xs" displayType="unit_wo_info" {...data} showLinks={false} />}
+                <Text className="text-card-foreground web:hover:text-primary text-sm font-semibold tracking-tight truncate">
                     {data.display_name}
                 </Text>
                 {type == 'remove' && <Text className="text-card-foreground"><Icon icon="X" size={20} /></Text>}
@@ -142,16 +142,16 @@ export default function (props) {
             <Modal id='file-preview2' title="Choose users" onVisible={!!isModal} onClose={() => { setIsModal(false) }}>
                 <SelectUsers isSingle={isSingle} onSave={onSave} requestUrl={'/api.php?r=' + props.ajax_get_suggestions + "&params="} initedData={[]} />
             </Modal>
-            <View className='w-full p-1 justify-between items-center flex-row flex-wrap border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-xl bg-input/60'>
-                <Row className='gap-x-2 items-start  flex-wrap flex-1'>
+            <View className='w-full p-1.5 justify-between items-center flex-row flex-wrap border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-xl bg-input/60'>
+                <Row className='gap-2 items-start  flex-wrap flex-1'>
                 {selected && selected.map((oItem) => <User type={isSingle ? '' : "remove"} key={oItem.id} data={oItem} onSelect={onRemove} />)}
                 </Row>
                 <Button
                     
                     startDecorator="Plus"
                     variant="default"
-                    rounded
-
+                    
+                    size="sm"
 
                     onPress={() => showSelect()}
                 />
