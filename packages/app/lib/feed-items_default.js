@@ -68,14 +68,14 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
         <View
             className={
                 isCompact
-                    ? ' flex-row space-x-2 mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1'
-                    : ' flex-col md:flex-row space-x-2 overflow-hidden rounded-lg bg-bgritem dark:bg-bgritem-d p-1 my-3'
+                    ? ' flex-row gap-3 2xl:gap-4 mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1'
+                    : ' flex-col md:flex-row gap-3 2xl:gap-4 overflow-hidden rounded-lg bg-muted p-1.5'
             }
         >
             {data.mainImage && (
                 <View className={isCompact ? 'w-64' : 'w-full md:w-1/3 '}>
                     <View
-                        className="w-full aspect-video"
+                        className="w-full aspect-video  overflow-hidden rounded "
                         style={styles.card_image}
                     >
                         <Image
@@ -88,7 +88,7 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
                     </View>
                 </View>
             )}
-            <View className="flex-auto px-2  pb-2 my-auto flex-col">
+            <View className="flex-auto my-auto flex-col">
                 <Link href={url} className="">
                     <Text
                         numberOfLines={1}
@@ -114,21 +114,19 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
                     </Text>
                     <Text
                         numberOfLines={2}
-                        className=" text-neutral-950 hover:text-primary dark:text-neutral-50 text-lg sm:text-xl tracking-tight font-bold"
+                        className=" text-neutral-950 hover:text-primary text-lg sm:text-xl tracking-tight font-bold"
                     >
                         {data.content?.title || ''}
                     </Text>
                 </Link>
-                <View>
-                    <View>
+                
                         <Text
-                            className="text-neutral-800 dark:text-neutral-200 text-base leading-6"
+                            className="text-card-foreground text-base leading-6"
                             numberOfLines={3}
                         >
                             {stripTags(data.content?.text || '')}
                         </Text>
-                    </View>
-                </View>
+                    
             </View>
         </View>
     )
@@ -144,11 +142,11 @@ export const AdView = memo(({ data, styles, url, isCompact }) => {
     }, [])
 
     return (
-        <View className=" flex-col md:flex-row space-x-2  overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1 my-3">
+        <View className=" flex-col md:flex-row space-x-2  overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1">
             {data.mainImage && (
-                <View className="w-full md:w-1/3  ">
+                <View className="w-full md:w-1/3  overflow-hidden rounded-xl  ">
                     <View
-                        className="w-full aspect-video   "
+                        className="w-full aspect-video "
                         style={styles.card_image}
                     >
                         <Image

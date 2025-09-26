@@ -37,7 +37,7 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
 
     const isHiddenVisibility = data?.inputs?.['object_privacy_view']?.origtype == 'hidden' || !data?.inputs?.['object_privacy_view']
 
-    const authorName = (<Text className="text-neutral-900 dark:text-neutral-100 leading-5 font-bold tracking-tight text-sm truncate">
+    const authorName = (<Text className="text-foreground leading-5 font-bold tracking-tight text-sm truncate">
         {author ? author.display_name : currentUser.display_name}
     </Text>
     )
@@ -45,9 +45,9 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
     return (
         <View className="flex-row flex-auto items-center justify-between gap-x-2 text-neutral-400 dark:text-neutral-600  ">
             <View className="gap-x-2 mr-2 flex-row flex-auto ">
-                <Profile {...profileData} displaySize="lg" displayType="unit_wo_info" />
+                <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
 
-                <View className={`flex-col flex-auto ${!isHiddenVisibility ? 'group ' : ''}`}>
+                <View className={`flex-col flex-auto ${!isHiddenVisibility ? 'group' : ''}`}>
 
                     {data?.inputs?.['object_privacy_view'] ? getFormFieldByData(
                         {
