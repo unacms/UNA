@@ -292,7 +292,7 @@ export function ReputationLeaderboard({ data }) {
                         key={index}
                     >
                         <Row className={`items-center ${cd('gap-sm')}`}>
-                            <View className="w-7 h-7 items-center justify-center relative">
+                            {item.position > 0 && <View className="w-7 h-7 items-center justify-center relative">
                                 {item.position <= 3 ? (
                                     <>
                                         <StarIcon
@@ -322,7 +322,7 @@ export function ReputationLeaderboard({ data }) {
                                         </Text>
                                     </View>
                                 )}
-                            </View>
+                            </View>}
                             <Profile
                                 {...item.unit}
                                 displayType="unit"
