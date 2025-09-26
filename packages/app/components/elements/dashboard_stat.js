@@ -312,7 +312,7 @@ function ElementDashboardStat(props) {
                 title="API Performance Report"
                 onVisible={!!showApiPerformance}
                 onClose={() => setShowApiPerformance(false)}
-                maxWidth="max-w-4xl"
+                maxWidth="max-w-3xl"
                 maxHeight="max-h-[90vh]"
                 scrollable={true}
             >
@@ -326,7 +326,7 @@ function ElementDashboardStat(props) {
                 title="Theme Compatibility Test"
                 onVisible={!!showThemeTest}
                 onClose={() => setShowThemeTest(false)}
-                maxWidth="max-w-4xl"
+                maxWidth="max-w-3xl"
                 maxHeight="max-h-[90vh]"
                 scrollable={true}
             >

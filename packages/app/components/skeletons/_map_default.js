@@ -8,7 +8,7 @@ const items = Array(5).fill('');
 
 
 const Default = memo(() => (
-    <Card className='flex-auto m-2' padding={cd('p-sm')}>
+    <Card className='flex-auto m-2' padding="p-3">
         <View className="relative bg-muted/60  aspect-video rounded-xl  w-full "></View>
         <View className=" h-32 py-4 p-3">
             <View className="h-5  w-1/2 bg-muted/60 rounded-full"></View>
@@ -37,9 +37,9 @@ const Notif = memo(() => (
             <View className="rounded-full bg-neutral-500/40 h-12 w-12"></View>
             <View className="flex-1 gap-1.5">
                 <View className="flex-row justify-between">
-                    <View className="h-3 w-1/2 bg-neutral-500/60 rounded-full"></View>           
+                    <View className="h-3 w-1/2 bg-muted/60 rounded-full"></View>           
                 </View>
-                <View className="h-3 w-full bg-neutral-500/50 rounded-full"></View>
+                <View className="h-3 w-full bg-muted/60 rounded-full"></View>
             </View>
         </View>
         </CardList>

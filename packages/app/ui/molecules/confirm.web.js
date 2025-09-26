@@ -17,8 +17,8 @@ export default function ElementConfirm({ handleOk, handleCancel, onVisible, titl
                 <View className='gap-y-4'>
                     <View className='text-center w-full'><Text className="text-center text-base text-neutral-600 dark:text-neutral-400">{title}</Text></View>
                     <Row className='gap-x-4 justify-center'>
-                        <Button variant="primary" size="sm" rounded title={titleOk} onPress={() => _handleOk()} />
-                        <Button variant="default" size="sm" rounded title={titleCancel} onPress={() => _handleCancel()} />
+                        <Button variant="primary" size="base" title={titleOk} onPress={() => _handleOk()} />
+                        <Button variant="default" size="base" title={titleCancel} onPress={() => _handleCancel()} />
                     </Row>
                 </View>
             </Modal>

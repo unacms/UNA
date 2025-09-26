@@ -331,7 +331,7 @@ export const ItemInfo = memo(({ data, t }) => {
                     <View className="text-muted ">
                         <Icon icon='Dot' size={16}  />
                     </View>  
-                    <Text className="text-muted-foreground font-medium tracking-tight text-xs mx-1 leading-5 ">
+                    <Text className="text-muted-foreground font-medium tracking-tight text-xs leading-5 ">
                         {l}
                     </Text>
                 </>

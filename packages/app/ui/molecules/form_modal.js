@@ -35,13 +35,13 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
     const isShowHeader = pageData.module != "bx_timeline";
     const Container = isShowHeader ? ScrollView : View;
 
-    let modalWidth = 'max-w-4xl';
+    let modalWidth = 'max-w-3xl';
     Object.keys(pageData?.elements || {}).forEach(key => {
         Object.keys(pageData.elements[key] || {}).forEach(key2 => {
             const value = pageData.elements[key][key2]?.content[0];
 
             if (value?.type === 'form' && value?.name === 'feed') {
-                modalWidth = 'max-w-4xl';
+                modalWidth = 'max-w-3xl';
             }
         });
     });

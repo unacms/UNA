@@ -178,7 +178,7 @@ export function Modal({
     textAlign = 'center',
     headerBorder = true,
     fullWidth = true,
-    maxWidth = 'max-w-4xl',
+    maxWidth = 'max-w-3xl',
     children,
     padding = " p-4 ",
     scrollable = false,

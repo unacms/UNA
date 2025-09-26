@@ -54,7 +54,7 @@ export default function PageLayout(props) {
 
     return (  
         <View className='sm:p-2  items-center'>
-            <View className='w-full max-w-4xl'>
+            <View className='w-full max-w-3xl'>
             <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New notifications" size="sm" />
             <BlockByName exProps={{ scrollProps: { pageData: props.data, headerHeight: 64 } }} data={props.data} key={timeStamp.ts} cachePrefix={timeStamp.ts} name={props.blocks.browse} />
             </View>

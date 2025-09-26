@@ -52,7 +52,7 @@ export const settingsDefault = {
         ui_density_switcher: true,
         max_width: ' w-full  ',
         max_width_content: ' w-full max-w-7xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
-        post_container: ' max-w-4xl w-full flex-1 bg-card/80 shadow-sm text-card-foreground rounded-2xl py-3 sm:py-4 lg:my-4 mx-auto ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
+        post_container: ' max-w-3xl w-full flex-1 bg-card/80 shadow-sm text-card-foreground rounded-2xl py-3 sm:py-4 lg:my-4 mx-auto ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
 
         search: true,
         sidebar_search: true,
@@ -94,7 +94,7 @@ export const settingsDefault = {
             content_left: ' flex-row items-center px-2 flex-none xl:w-80 2xl:w-96 ps-2 ',
             content_right: ' flex-row items-center justify-end flex-none xl:w-80 2xl:w-96 pe-2 ',
             content_center:
-                ' hidden flex-auto xl:flex gap-1 items-center justify-center px-3 max-w-3xl ',
+                ' hidden flex-auto xl:flex gap-1 items-center justify-center  max-w-3xl ',
             special: {
                 profile: 'hidden lg:flex',
                 messenger: 'hidden lg:flex',
@@ -296,7 +296,7 @@ export const settingsDefault = {
         items_lifetime: 30,
     },
     feed: {
-        feed_container: 'relative flex-auto mx-auto w-full max-w-4xl sm:p-3 ',
+        feed_container: 'relative flex-auto mx-auto w-full max-w-3xl  ',
         show_html: false,
         default_feed: 'foryou',
         list: [
@@ -1045,7 +1045,7 @@ export const settingsDefault = {
         button_sizes: {
             default_size: 'base',
             default_variant: 'default',
-            pressed_container: ' web:hover:bg-accent/10 active:bg-accent/20  ',
+            pressed_container: ' bg-primary/10 web:hover:bg-accent/10 active:bg-accent/20  ',
             pressed_text: ' text-primary font-medium ',
             xxs: {
                 rounded: ' rounded-sm ',

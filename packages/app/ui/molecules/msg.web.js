@@ -1,6 +1,7 @@
 import { Text} from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { Button, Input, InputRounded, Modal } from 'app/design/controls';
+import { Icon } from 'app/ui/atoms/icon';
 
 import { useState } from 'react';
 
@@ -14,11 +15,13 @@ export default function ElementMsg(props) {
     return (
         <>
             <Modal id={'file-preview'} onVisible={props.onVisible} >
-                <View className='gap-y-4'>
-                    <View className='text-center w-full'><Text className="text-center text-base text-neutral-600 dark:text-neutral-400">{props.title}</Text></View>
-                    <Row className='gap-x-4 justify-center'>
-                        <Button variant="primary" size="sm" rounded  title="OK"  onPress={() => handleOk()} />
-                    </Row>
+                <View className='gap-4'>
+                   
+                        <Row className='gap-4 min-h-24 justify-center items-center w-full bg-muted/60 rounded-lg p-4 text-card-foreground'>
+                            <Icon icon="Info" size={24} />
+                            <Text className=" text-base text-card-foreground">{props.title}</Text>
+                        </Row>
+                        <Button variant="primary" size="base" fullWidth title="OK"  onPress={() => handleOk()} />
                 </View>
             </Modal>
            
