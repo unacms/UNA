@@ -254,10 +254,14 @@ const StarIcon = ({ color, size = 28 }) => (
 export function ReputationLeaderboard({ data }) {
 
     const formProps = data?.filter_form ? { ...data?.filter_form, layout: 'hor' } : null;
-    formProps.data.inputs.days.mode = 'buttons'
-    formProps.data.inputs.days.caption = '';
-    formProps.data.inputs.username.placeholder = 'Search by name'
-    formProps.data.inputs.username.caption = '';
+    if (formProps?.data?.inputs?.days){
+        formProps.data.inputs.days.mode = 'buttons'
+        formProps.data.inputs.days.caption = '';
+    }
+    if (formProps?.data?.inputs?.username){
+        formProps.data.inputs.username.placeholder = 'Search by name'
+        formProps.data.inputs.username.caption = '';
+    }
     
     const [profilesList, setProfilesList] = useState(data.profiles);
 
