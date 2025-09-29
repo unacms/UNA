@@ -7,13 +7,12 @@ import { Icon } from 'app/ui/atoms/icon'
 import { Button } from 'app/design/controls'
 
 export default function (props) {
-    console.log("props", props)
     const caption = props.format === 'notitle' ? '' : props.caption
 
     const sClassName =
         ' form-control form-control-' +
         props.name +
-        (props.form_layout !== 'hor' ? 'w-full ' : '') +
+        (props.form_layout !== 'hor' ? ' w-full ' : '') +
         (props.noPadding === true ? '  ' : ' ' + appSetting('forms', 'field_padding') + ' ') +
         (props?.classes ? ' ' + props?.classes : '')
 
