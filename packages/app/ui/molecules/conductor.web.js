@@ -45,8 +45,6 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
     const isDesktop = useIsDesktop();
     const initedTabs = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);
     const [routes, setRoutes] = useState(initedTabs);
-
-    const [cntWidth, setCntWidth] = useState(0);
     const [isRevalidate, setIsRevalidate] = useState(false);
 
     useEffect(() => {
@@ -85,7 +83,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
 
     const currentRoute = routes.find((item) => item.index === index);
     const prevRoute = useMemo(() => routes.find((item) => item.index === prevIndex), [routes, prevIndex]);;
-    const queryKey = [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters), data.uri];
+    const queryKey = [currentRoute?.endpoint?.request_url, currentRoute.link, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)];
     const cellsCustomConfig = appSetting('layouts', 'navigator') || appSetting('layouts', `cols-l-c`);
     const initialHeaderSettings = getHeaderSettings(getURI(currentRoute?.key), isDesktop, layoutName, currentRoute.config);
 
@@ -116,14 +114,13 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
     });
 
     const handleEndReached = useCallback(async (lastItemIndex) => {
-
         if (isFetchingNextPage)
             return;
         if (hasNextPage === false)
             return;
         if (currentRoute?.endpoint?.finished)
             return;
-        if (lastItemIndex == false)
+        if (lastItemIndex === false)
             return;
         fetchNextPage();
     }, [currentRoute?.endpoint?.finished, isFetchingNextPage, hasNextPage]);
@@ -275,9 +272,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
         fetchAndUpdateData(routes, index, setRoutes);
     }, [index]);
 
-    const handleLayoutTop = (event) => {
-        setCntWidth(event.nativeEvent.layout.width)
-    };
+
 
     const LeftBarContentBlocks = LeftBarContent(currentRoute, onFormChangedValues);
 
@@ -323,7 +318,6 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
             ),
             [route, numColumns, unitType]
         );
-
         const MainContent = useMemo(() => {
             return <UniList
                 scrollProps={header ?
@@ -467,7 +461,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
     const isUseCurrentHeader = layoutName === 'profile' && (!isCoverDisabled || !isDesktop)
 
     return (
-        <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
+        <View className="w-full h-full" scrollEnabled={false}>
             {(isUseCurrentHeader || isDesktop) && headerComponent}
             <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
             <View className={`${layoutName === 'profile' ? conductorTheme.content_max_width : ''} mx-auto w-full min-h-screen ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}>
@@ -647,7 +641,6 @@ const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, head
 
     const { t } = useTranslation();
     const addButtons = AddMenu(menu, 'hideInSideBar');
-    console.log("headerSettings.hideLeftmenu", headerSettings.hideLeftmenu)
     return (
         <LeftSidebar title={layoutName == 'profile' ? '' : t(menuSettings?.name)} addButtons={addButtons} >
             {layoutName == 'navigator' && routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
@@ -741,7 +734,6 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled,
         };
     }, [scrollValue]);
 
-    console.log("isCoverDisabled", isCoverDisabled)
     const animatedStyleHeaderCoverSmall = useAnimatedStyle(() => {
         return {
             display: scrollValue.value == 1  ? 'none' : 'flex', // display: scrollValue.value == 1 || (isCoverDisabled && !isDesktop) ? 'none' : 'flex',

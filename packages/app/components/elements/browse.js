@@ -274,7 +274,10 @@ export default function (props) {
                         ? newData.pages.map((page) => page.data).flat()
                         : []),
                 ],
-                params: getCurrentParams(),
+                params: {
+                    ...getCurrentParams(),
+                    loaded: true,
+                },
             })
         }
     }, [newData?.pages])
@@ -445,7 +448,7 @@ export default function (props) {
         PreloadComponent = Preload
     } else {
           if (dataItems.data.length == 0 && isShowEmptyMessage){
-            PreloadComponent = callFn("noContentByUrl", [{request_url: data.request_url}])
+            PreloadComponent = callFn("noContentByUrl", [{request_url: data.request_url, params: dataItems?.params}])
          }
     }
 
