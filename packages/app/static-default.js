@@ -18,7 +18,7 @@ import { Platform } from 'react-native'
 import AnimatedView from 'app/ui/atoms/animated-view';
 import SvgFile from 'app/ui/molecules/svg-file';
 import MenuFooter from 'app/components/nav/menu-footer';
-
+import { appSetting } from 'app/lib/util'
 const isWeb = Platform.OS === 'web';
 
 //mode can be 'adaptive', 'full', 'mark', 'text'
@@ -108,24 +108,23 @@ const SplashTextInner = (
             accessible={true}
             accessibilityRole="header"
             aria-level={1}
-            className="text-3xl sm:text-4xl lg:text-5xl text-center lg:text-start tracking-tight font-bold text-neutral-800 dark:text-neutral-200 text-balance web:duration-300"
+            className="text-4xl sm:text-5xl text-center lg:text-start tracking-tighter font-bold text-label-primary text-balance web:duration-300"
         >
-            Welcome to your community!
+            Come and join us!
         </Text>
         <Text
             accessible={true}
             accessibilityRole="text"
-            className=" text-base sm:text-lg xl:text-xl text-center lg:text-start text-neutral-600 dark:text-neutral-400 text-balance web:duration-300"
+            className=" text-lg sm:text-xl text-center lg:text-start text-label-quaternary font-medium text-pretty web:duration-300"
         >
-            Join the conversation, share your thoughts, and connect with others.
-            Your voice matters - be part of our growing community!
+           {appSetting('app', 'title')} is the best place to share your thoughts, find new friends and connect with the community.
         </Text>
     </>
 )
 
 const SplashTextComponent = (props) => {
     return isWeb ? (
-        <View className="my-auto flex-col items-center lg:items-start flex-auto p-4 sm:p-8 xl:p-16 " accessible={true}>
+        <View className="my-auto flex-col items-center lg:items-start flex-auto p-4 sm:p-6 " accessible={true}>
             <AnimatedView className="w-[200px] h-[200px] lg:w-80 lg:h-80 web:duration-300">
                 <SvgFile src_dark="splash-dark.svg" src_default="splash-light.svg" alt="Splash screen illustration" />
             </AnimatedView>

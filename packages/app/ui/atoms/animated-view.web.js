@@ -7,16 +7,16 @@ cssInterop(Animated.View, { className: 'style' });
 
 function AnimatedView({ children, direction = 'down', className, delay = 0 }) {
     const opacity = useSharedValue(0);
-    const initialY = direction === 'up' ? 50 : -50;
+    const initialY = direction === 'up' ? 20 : -20;
     const translateY = useSharedValue(initialY);
 
-    const animationDuration = appSetting('layout', 'card_animation_duration') || 350;
+    const animationDuration = appSetting('layout', 'card_animation_duration') || 200;
 
     useEffect(() => {
         opacity.value = withDelay(delay, withTiming(1, { duration: animationDuration }));
         translateY.value = withDelay(delay, withSpring(0, {
-            damping: 9,
-            stiffness: 70,
+            damping: 8,
+            stiffness: 40,
         }));
     }, []);
 

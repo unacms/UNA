@@ -1218,7 +1218,7 @@ export const settingsDefault = {
                 padding: ' active:scale-95 rounded-md items-center flex ',
                 hitarea_class: 'relative u-link-hitarea u-link-hitarea-sm ',
                 hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
-                text: 'text-sm leading-5 min-h-5 items-center justify-center flex',
+                text: 'text-sm  items-center justify-center flex',
                 rounded: 'rounded-md',
                 focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-1 ring-offset-ring ',
             },
@@ -1243,7 +1243,7 @@ export const settingsDefault = {
         link_styles: {
             // Default (SwiftUI-like Link): underline on hover; visited color; link color tokens
             'u-link-default-cnt': ' group ',
-            'u-link-default-text': ' text-secondary-label web:hover:text-label ',
+            'u-link-default-text': ' text-label-link web:hover:text-label-link-hover ',
             'u-link-default-trans': ' web:duration-200 ',
 
             // Plain: inherit text; no decoration idle; subtle hover/active feedback
@@ -1322,7 +1322,7 @@ export const settingsDefault = {
             'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',
             'u-card-title':
                 'text-card-foreground text-2xl font-bold leading-none tracking-tight',
-            'u-card-description': 'text-muted-foreground text-sm ',
+            'u-card-description': 'text-muted-foreground text-sm font-medium leading-6',
             'u-card-content': 'text-card-foreground ',
             'u-card-footer': 'flex text-base text-card-foreground gap-2',
         },
@@ -1341,12 +1341,12 @@ export const settingsDefault = {
             'u-block-pad':
                 'p-4',
             'u-block-header':
-                ' flex-row items-center gap-4',
+                ' flex-row items-center gap-2',
             'u-block-icon': 'text-card-foreground',
             'u-block-name': 'flex flex-col flex-auto gap-y-2 gap-x-4',
             'u-block-title':
-                'text-card-foreground text-xl font-bold leading-6 tracking-tight',
-            'u-block-description': 'text-muted-foreground text-sm ',
+                'text-card-foreground text-xl font-bold leading-none tracking-tight',
+            'u-block-description': 'text-muted-foreground text-sm font-medium leading-6',
             'u-block-content': 'text-card-foreground ',  
             'u-block-footer':
                 'flex text-card-foreground gap-4 ',

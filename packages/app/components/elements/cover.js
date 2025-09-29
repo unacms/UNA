@@ -9,7 +9,7 @@ import * as ImagePicker from 'expo-image-picker'
 
 import { genRnd } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
-import { manipulateAsync } from 'expo-image-manipulator'
+import { manipulateAsync } from 'app/lib/image-manipulator'
 import { Image as ImageNative } from 'react-native'
 import { useCurrentUser } from 'app/context/user'
 import {
@@ -245,16 +245,17 @@ function CoverImage({
                                 )
                             }
 
-                            const resizedPhoto = await manipulateAsync(uri, [
-                                {
-                                    resize: {
-                                        width: manipulatedWidth,
-                                        height: manipulatedHeight,
+                            if (manipulateAsync) {
+                                const resizedPhoto = await manipulateAsync(uri, [
+                                    {
+                                        resize: {
+                                            width: manipulatedWidth,
+                                            height: manipulatedHeight,
+                                        },
                                     },
-                                },
-                            ])
-
-                            uri = resizedPhoto.uri
+                                ])
+                                uri = resizedPhoto.uri;
+                            }
                         }
                     }
                     if (mode == 'picture') {
@@ -283,8 +284,10 @@ function CoverImage({
                         if (s > 500) {
                             acts.push({ resize: { width: 500, height: 500 } })
                         }
-                        const resizedPhoto = await manipulateAsync(uri, acts)
-                        uri = resizedPhoto.uri
+                        if (manipulateAsync) {
+                            const resizedPhoto = await manipulateAsync(uri, acts)
+                            uri = resizedPhoto.uri
+                        }
                     }
                     const hash = md5(uri)
                     setImageUrl(uri)

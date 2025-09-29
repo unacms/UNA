@@ -32,9 +32,9 @@ import Link from 'app/ui/atoms/link'
 function PageContent(props) {
     const { t } = useTranslation()
     return (
-        <Card padding="p-0 pb-4" className="bg-card/50">
+        
         <AnimatedView direction="up" delay={300}>
-        <Card padding="p-6  ">
+        <Card padding="p-6 ">
             <CardHeader>
                 <CardTitle>{t('login_modal_title')} {t('app_name')}</CardTitle>
                 <CardDescription>
@@ -55,21 +55,21 @@ function PageContent(props) {
                 
                 <AuthPanel forgotPasswordLink={true} showSeparator={true} />
             </CardFooter>
-        </Card></AnimatedView>
-        <CardFooter>
-                <Row className="text-center flex-none mx-auto text-base items-center text-muted-foreground gap-1">
+        </Card>
+        
+                <Row className="text-center flex-none mx-auto my-4 text-base items-center text-muted-foreground gap-1">
                     <Text className="text-muted-foreground text-base">{t('splash_page_login2')}</Text>
                     <Link
-                        variant="primary"
-                        size="md"
+                        
+                        
                         href="/create-account"
                         haptics="Medium"
                     >
                         {t('splash_page_new_account')}
                     </Link>
                 </Row>
-        </CardFooter>
-        </Card>
+                </AnimatedView>
+        
     )
 }
 
@@ -94,10 +94,10 @@ export default function Splash(props) {
         <View className={`flex-col justify-center pt-14 lg:pt-0 web:min-h-[calc(100vh-16rem)] w-full`} >
             <View className="w-full lg:flex-row mx-auto my-auto max-w-7xl ">
                 {appStatic('splash_text')}
-                <View className="flex-col-reverse lg:flex-col max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto">
-                    <AnimatedView direction="up">
+                <View className="flex-col-reverse lg:flex-col max-w-xl w-full flex-auto mx-auto p-4 sm:p-6 my-auto">
+                    
                         <PageContent {...props} />
-                    </AnimatedView>
+                    
                 </View>
             </View>
             <MenuFooter

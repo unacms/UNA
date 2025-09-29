@@ -35,7 +35,7 @@ const nextConfig = {
     swcPlugins: [[require.resolve('./plugins/swc_plugin_reanimated.wasm')]],
   },*/
   transpilePackages: [
-    
+    'app',
     'react-native',
     'react-native-web',
     'solito',
@@ -65,7 +65,6 @@ const nextConfig = {
     '@appandflow/react-native-google-autocomplete',
     'react-native-country-flag',
     'expo-document-picker',
-    'expo-image-manipulator',
     'expo-constants',
     "react-native-svg",
     '@expo/metro-runtime',
@@ -87,7 +86,7 @@ const nextConfig = {
       concatenateModules: true,
       minimize: true,
     };
-    
+
     // Existing webpack config
     config.resolve.alias = {
       ...config.resolve.alias,
@@ -114,6 +113,12 @@ const nextConfig = {
         ...config.module.parser,
         javascript: { exportsPresence: 'warn' },
     };
+
+    // Exclude expo-image-manipulator from being processed on web
+    config.externals = config.externals || [];
+    config.externals.push({
+      'expo-image-manipulator': 'commonjs expo-image-manipulator',
+    });
 
     return config;
   },
