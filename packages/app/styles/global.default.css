@@ -25,7 +25,7 @@
         --inverted-foreground: var(--neutral-50); /*content on inverted surfaces*/
         --destructive: var(--red); /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--white); /*content on destructive buttons, destructive surfaces*/
-        --border: var(--neutral-200); /*borders, dividers, focus rings*/
+        --border: var(--neutral-300); /*borders, dividers, focus rings*/
         --input: var(--white); /*form inputs*/
         --ring: var(--accent-500); /*focus rings*/
 

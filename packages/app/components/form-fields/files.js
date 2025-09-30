@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import Field, { getValidationRules } from './_field';
 import { View, ViewRef, Row, Pressable } from 'app/design/view'
 import * as ImagePicker from 'expo-image-picker';
-import { manipulateAsync, SaveFormat } from 'expo-image-manipulator'
+import { manipulateAsync, SaveFormat } from 'app/lib/image-manipulator'
 import { Button } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import { genRnd, appSetting } from 'app/lib/util';
@@ -194,13 +194,14 @@ export default function (props) {
                             manipulatedWidth = Math.round((width * manipulatedHeight) / height);
                         }
 
-                        const resizedPhoto = await manipulateAsync(
-                            uri,
-                            [{ resize: { width: manipulatedWidth, height: manipulatedHeight } }], // Изменение ширины до 800 пикселей; высота будет рассчитана автоматически
-                            { compress: 0.4, format: SaveFormat.JPEG }
-                        );
-
-                        uri = resizedPhoto.uri;
+                        if (manipulateAsync) {
+                            const resizedPhoto = await manipulateAsync(
+                                uri,
+                                [{ resize: { width: manipulatedWidth, height: manipulatedHeight } }], // Изменение ширины до 800 пикселей; высота будет рассчитана автоматически
+                                { compress: 0.4, format: SaveFormat.JPEG }
+                            );
+                            uri = resizedPhoto.uri;
+                        }
                     }
 
                     uploadImage(

@@ -95,7 +95,7 @@ export default function MenuTop({ url, uri }) {
                     </View>
                 );
             })}
-            <Animated.View pointerEvents="none" style={animatedStyle} className="rounded-full flex-none bg-primary/80 absolute -bottom-2 left-0 h-[3px]" />
+            <Animated.View style={[animatedStyle, { pointerEvents: 'none' }]} className="rounded-full flex-none bg-primary/80 absolute -bottom-2 left-0 h-[3px]" />
         </Row>
 
     )

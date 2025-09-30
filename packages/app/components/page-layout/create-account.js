@@ -86,7 +86,7 @@ export default function PageLayout(props) {
                             accessible={true}
                             accessibilityRole="heading"
                             aria-level={1}
-                            className="text-3xl sm:text-4xl lg:text-5xl text-center lg:text-start tracking-tight font-bold text-neutral-800 dark:text-neutral-200 text-pretty"
+                            className="text-4xl sm:text-5xl text-center lg:text-start tracking-tight font-bold text-label-primary text-pretty"
                         >
                             {isAllowJoin
                                 ? t('create_account_page_title')
@@ -95,7 +95,7 @@ export default function PageLayout(props) {
                         <Text
                             accessible={true}
                             accessibilityRole="text"
-                            className="text-base lg:text-lg xl:text-xl text-center lg:text-start text-neutral-600 dark:text-neutral-400 text-pretty"
+                            className="text-lg sm:text-xl text-center lg:text-start text-label-quaternary text-pretty"
                         >
                             {isAllowJoin
                                 ? t('create_account_page_text')
