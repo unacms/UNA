@@ -76,11 +76,11 @@ const getData = cache(async (params, search_params) => {
         return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: 503 };
     }
 
-    if (!res.ok) {
+   /* if (!res.ok) {
         const body = await res.text().catch(() => '');
         console.error('Server fetch failed (http):', res.status, body);
         return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: res.status };
-    }
+    }*/
 
     const resClone = res.clone();
     try {

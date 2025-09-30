@@ -7,7 +7,6 @@ export default function ElementRedirect({data}) {
     const router = useRouter();
     const uri = data?.uri === '/' || !data?.uri ? '/home' : data.uri;
     const timeout = data?.timeout;
-    console.log("aaaaa");
     useEffect(() => {
         if (timeout) {
             setTimeout(() => redirectTo(router, uri), timeout);

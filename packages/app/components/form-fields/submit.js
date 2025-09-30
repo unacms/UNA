@@ -67,7 +67,6 @@ export default function FormFieldSubmit(props) {
         variant,
         rounded,
         size,
-        disabled: formState.isSubmitting || disabled,
         fullWidth: fb
     };
 
@@ -100,6 +99,8 @@ export default function FormFieldSubmit(props) {
                     startDecorator={icon}
                     {...buttonProps}
                     {...buttonHandlers}
+                    disabled = {formState.isSubmitting || disabled}
+                    pressed = {formState.isSubmitting || disabled}
                 />
                 {saveOnChanges && (
                     <Button

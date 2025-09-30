@@ -16,7 +16,6 @@ export default function useFetchForm (url, postData) {
             //setLoading(true);
            // try {
                 const response = await fetcher([url, '', postData]);
-                console.log("clear", url)
                 storageClear('forms', url);
                 storageSet('form', url, null, true);
                 setData(response);
