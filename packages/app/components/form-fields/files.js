@@ -22,6 +22,7 @@ import { useTranslation } from 'react-i18next'
 import emitter from 'app/context/emitter';
 
 export default function (props) {
+    
     const name = props.name;
     const [uploadFinished, setUploadFinished] = useState(null);
     const [message, setMessage] = useState(false);
@@ -44,6 +45,8 @@ export default function (props) {
     const url = useMemo(() => {
         return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&obfuscate_faces=' + obfuscateFaces + '&&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (bMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
     }, [props, obfuscateFaces]);
+
+console.log("imageSource"+ props.name, imageSource)
 
     useEffect(() => {
         const uploadImagesAsync = async (assets) => {
@@ -101,7 +104,7 @@ export default function (props) {
             RestoreGhosts(0);
         }
         if (!formValue) {
-            setImageSource({ images: [] });
+        //    setImageSource({ images: [] });
         }
     }, [formValue]);
 
@@ -124,7 +127,7 @@ export default function (props) {
                     /* const updatedImages = imageSource?.images?.map(item =>
                          item.hash === uploadFinished.extraVar.hash ? { ...uploadFinished?.result.data.ghost, uri: item.uri } : item
                      );*/
-                    setImageSourceN([{ ...uploadFinished?.result.data.ghost, hash: uploadFinished.extraVar.hash }]);
+                    setImageSourceN([{ ...uploadFinished?.result.data.ghost, hash: uploadFinished.extraVar.hash }], bMultiple);
                 }
                 else {
 
@@ -145,8 +148,14 @@ export default function (props) {
         RestoreGhosts();
     }, [uploadFinishedArr]);
 
-    const setImageSourceN = (newImages) => {
-
+    const setImageSourceN = (newImages, bMultiple) => {
+        if (!bMultiple){
+                setImageSource({
+                    images: newImages
+                }
+            );
+            return;
+        }
         setImageSource(prev => {
             const existingImages = prev?.images || [];
 
@@ -335,7 +344,8 @@ export default function (props) {
                     setMessage('Some files are not supported.');
                 }
                 let k = await uploadImages(goodAssets);
-                setImageSourceN(k);
+                console.log("aaaamageSourcepictu", 2)
+                setImageSourceN(k, bMultiple);
             }
         }
         else {
@@ -372,7 +382,7 @@ export default function (props) {
     if (props.view == 'button') {
         return <ButtonCover imageSource={imageSource} selectImage={selectImage} />
     }
-
+    console.log("imageSource.images", imageSource.images)
     if (props.view == 'preview') {
         return imageSource?.images?.length > 0 ? <ActionButton uploadImages={uploadImages} imagesList={imageSource.images} bMultiple={bMultiple} props={props} selectImage={selectImage} handleDelete={handleDelete} />
             : <></>;
