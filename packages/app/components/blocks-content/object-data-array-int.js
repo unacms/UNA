@@ -63,22 +63,22 @@ export default function BlockContentObjectDataArrayInt(props) {
 
     useEffect(() => {
         if (dynamicData) {
-             if (dynamicData.data?.length >0){
-             setRealData(prev => {
-                if (!isObjectsEqual(prev, dynamicData.data)) {
-                    return dynamicData.data.map(item => ({
-                        ...item,
-                        data: {
-                            ...item.data,
-                            updated: Date.now()
-                        }
-                    }));
-                }
-                return prev;
-            });
+            if (dynamicData.data?.length > 0) {
+                setRealData(prev => {
+                    if (!isObjectsEqual(prev, dynamicData.data)) {
+                        return dynamicData.data.map(item => ({
+                            ...item,
+                            data: {
+                                ...item.data,
+                                updated: Date.now()
+                            }
+                        }));
+                    }
+                    return prev;
+                });
             }
-            else{
-                 setRealData([dynamicData.data]);
+            else {
+                setRealData([dynamicData.data]);
             }
         } else {
             setRealData(props.data);
