@@ -53,7 +53,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
         }
         if (!isModal)
             return <></>
-        return (<Modal title={t('login_modal_title')} onVisible={isModal}  onClose={() => handleCloseModal()}>
+        return (<Modal title={t('login_modal_title')} onVisible={isModal} onClose={() => handleCloseModal()}>
             {appStatic('components_modal', p)}
         </Modal>);
     };
@@ -69,7 +69,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
             {appStatic('maintenance_mode')}
         </>
     }
-    
+
 
     /*if (!isDesktop) {
         return (
@@ -206,55 +206,55 @@ export default function Layout(props) {
     }
 
     function handleScroll() {
-  const TOP_OFFSET = getTopOffset();
-  const HYST = 8;
-  const avail = Math.max(0, window.innerHeight - TOP_OFFSET);
+        const TOP_OFFSET = getTopOffset();
+        const HYST = 8;
+        const avail = Math.max(0, window.innerHeight - TOP_OFFSET);
 
-  document.querySelectorAll('.fixed-process').forEach(el => {
-    const parent = el.parentElement;
-    const container = parent?.parentElement;
-    if (!parent || !container) return;
+        document.querySelectorAll('.fixed-process').forEach(el => {
+            const parent = el.parentElement;
+            const container = parent?.parentElement;
+            if (!parent || !container) return;
 
-    if (parent.offsetWidth > 0) el.style.width = `${parent.offsetWidth}px`;
+            if (parent.offsetWidth > 0) el.style.width = `${parent.offsetWidth}px`;
 
-    const elH = el.offsetHeight;
-    const containerTopDoc = window.scrollY + container.getBoundingClientRect().top;
-    const containerBottomDoc = containerTopDoc + container.scrollHeight;
+            const elH = el.offsetHeight;
+            const containerTopDoc = window.scrollY + container.getBoundingClientRect().top;
+            const containerBottomDoc = containerTopDoc + container.scrollHeight;
 
-    const stickyStart = containerTopDoc - TOP_OFFSET;
-    const stickyEnd   = containerBottomDoc - elH - TOP_OFFSET;
-    const y = window.scrollY;
+            const stickyStart = containerTopDoc - TOP_OFFSET;
+            const stickyEnd = containerBottomDoc - elH - TOP_OFFSET;
+            const y = window.scrollY;
 
-    // сброс по умолчанию
-    el.classList.remove('is-fixed');
-    el.style.position = '';
-    el.style.top = '';
-    el.style.bottom = '';
+            // сброс по умолчанию
+            el.classList.remove('is-fixed');
+            el.style.position = '';
+            el.style.top = '';
+            el.style.bottom = '';
+            
+            if (container.scrollHeight <= elH || y < stickyStart || stickyStart == 0) return;
 
-    if (container.scrollHeight <= elH || y < stickyStart) return;
+            if (y > stickyEnd + HYST) {
+                // прижимаем к низу
+                el.style.position = 'absolute';
+                el.style.bottom = '0';
+                return;
+            }
 
-    if (y > stickyEnd + HYST) {
-      // прижимаем к низу
-      el.style.position = 'absolute';
-      el.style.bottom = '0';
-      return;
+            // фиксируем
+            el.classList.add('is-fixed');
+            el.style.position = 'fixed';
+
+            if (elH <= avail) {
+                // помещается во viewport
+                el.style.top = `${TOP_OFFSET}px`;
+            } else {
+                // прокручиваем внутри viewport
+                const overflow = elH - avail;
+                const progress = Math.min(Math.max(y - stickyStart, 0), overflow);
+                el.style.top = `${TOP_OFFSET - progress}px`;
+            }
+        });
     }
-
-    // фиксируем
-    el.classList.add('is-fixed');
-    el.style.position = 'fixed';
-
-    if (elH <= avail) {
-      // помещается во viewport
-      el.style.top = `${TOP_OFFSET}px`;
-    } else {
-      // прокручиваем внутри viewport
-      const overflow = elH - avail;
-      const progress = Math.min(Math.max(y - stickyStart, 0), overflow);
-      el.style.top = `${TOP_OFFSET - progress}px`;
-    }
-  });
-}
 
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
@@ -269,22 +269,22 @@ export default function Layout(props) {
     }, []);
     const { layoutName: pageLayoutName } = useLayoutSettings();
     const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, isDesktop, layoutName, data.config));
-    
+
     useEffect(() => {
         let a = getHeaderSettings(uri, isDesktop, layoutName, data.config);
         if (pageLayoutName == 'ver') {
             if (isDesktop)
                 a.offset = false;
         }
-        
+
         // Disable offset for navigator layout with adjustable panels
-       /* if (layoutName === 'navigator') {
-            const cellsCustomConfig = appSetting('layouts', 'navigator') || appSetting('layouts', 'cols-l-c');
-            if (cellsCustomConfig?.adjustable) {
-                a.offset = false;
-            }
-        }
-*/
+        /* if (layoutName === 'navigator') {
+             const cellsCustomConfig = appSetting('layouts', 'navigator') || appSetting('layouts', 'cols-l-c');
+             if (cellsCustomConfig?.adjustable) {
+                 a.offset = false;
+             }
+         }
+ */
         if (!deepEqual(headerSettings, a)) {
             setHeaderSettings(a);
         }
@@ -340,11 +340,11 @@ const Content = React.memo(({ children, headerSettings, currentUser, layoutName,
     const isHideHeader = (appSetting('layout', 'hide_header_for_non_logged') && !currentUser) || appSetting('layout', 'hide_header_for_all');
     return (
         <View className="w-full items-stretch cnt-root mx-auto flex-row " key={url}>
-                <View className={((layoutName != 'messenger' && layoutName != 'post' && !isHideHeader) ? ' pb-16 web:pb-0 lg:pb-0 ' : '') + ' w-full mx-auto'}>{/*mb-16* TODO lg:pb-0*/}
-                    {(headerSettings.offset && !isHideHeader) && <View className={` ${appSetting('layout', 'header', 'offset')}`} />}{/*use this to offset the header globally*/}
-                    <Informer />
-                    {children}
-                </View>
+            <View className={((layoutName != 'messenger' && layoutName != 'post' && !isHideHeader) ? ' pb-16 web:pb-0 lg:pb-0 ' : '') + ' w-full mx-auto'}>{/*mb-16* TODO lg:pb-0*/}
+                {(headerSettings.offset && !isHideHeader) && <View className={` ${appSetting('layout', 'header', 'offset')}`} />}{/*use this to offset the header globally*/}
+                <Informer />
+                {children}
+            </View>
         </View>
     );
 });
