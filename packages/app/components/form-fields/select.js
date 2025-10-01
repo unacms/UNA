@@ -38,7 +38,6 @@ export default function (props) {
 
     const values = getVisibilityValues(props.values);
 
-    console.log("values", values)
     if (props.mode == 'buttons'){
         return (
             <Field {...props} error2={formContext.formState.errors[name]}>

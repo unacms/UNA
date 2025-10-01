@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useFetchForm from 'app/lib/hooks/fetch'
 import Element from 'app/components/element';
-import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
+import { isObjectsEqual } from 'app/lib/util'
 
 export default function BlockContentObjectDataArray(props) {
     const [postData, setPostData] = useState(null);
-    
+
     // check if any element in a block has request URL
     let immutable = false;
     let requestUrl = null;
@@ -16,14 +16,14 @@ export default function BlockContentObjectDataArray(props) {
         return a.request ? false : true;
     });
 
-   /* const { data: dynamicData, error, isLoading } = useRequest(
-        postData ? [requestUrl, '', postData] : null,
-        immutable ? {
-            revalidateIfStale: false,
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false
-        } : undefined
-    );*/
+    /* const { data: dynamicData, error, isLoading } = useRequest(
+         postData ? [requestUrl, '', postData] : null,
+         immutable ? {
+             revalidateIfStale: false,
+             revalidateOnFocus: false,
+             revalidateOnReconnect: false
+         } : undefined
+     );*/
     const { data: dynamicData, error } = useFetchForm(requestUrl, postData);
 
     // update state when form is submitted
@@ -34,9 +34,9 @@ export default function BlockContentObjectDataArray(props) {
     // handle errors and loading 
     if (error || dynamicData?.error) return <Text className="text-black dark:text-white">An error has occurred: {error ? error : dynamicData?.error}</Text>;
     //if (postData && !dynamicData) return <Text className="text-black dark:text-white">&nbsp;</Text>;
-    
 
- const setInputValueByName = (data, inputName, newValue) => {
+
+    const setInputValueByName = (data, inputName, newValue) => {
         for (const item of data) {
             if (item.type === "form" && item.data.inputs[inputName]) {
                 item.data.inputs[inputName].value = newValue;
@@ -46,35 +46,57 @@ export default function BlockContentObjectDataArray(props) {
         return false;  // Input with the given name was not found
     };
 
-    if (postData && Array.isArray(postData) && !dynamicData){
+    if (postData && Array.isArray(postData) && !dynamicData) {
         postData.forEach((value, key) => {
             setInputValueByName(props.data, key, value);
         });
     }
 
-    let realData = props.data;
-    if (dynamicData){
-        realData = dynamicData.data;
-    }
+    const [realData, setRealData] = useState(props.data);
 
-    if (dynamicData && dynamicData.data?.length == 0){
-      
-        if (props.onFormEmpty){
+    useEffect(() => {
+        if (dynamicData) {
+             
+             if (dynamicData.data?.length >0){
+             setRealData(prev => {
+                if (!isObjectsEqual(prev, dynamicData.data)) {
+                    return dynamicData.data.map(item => ({
+                        ...item,
+                        data: {
+                            ...item.data,
+                            updated: Date.now()
+                        }
+                    }));
+                }
+                return prev;
+            });
+            }
+            else{
+                 setRealData(dynamicData.data);
+            }
+        } else {
+            setRealData(props.data);
+        }
+    }, [dynamicData, props.data]);
+
+    if (dynamicData && dynamicData.data?.length == 0) {
+
+        if (props.onFormEmpty) {
             props.onFormEmpty();
         }
     }
 
-    if (realData && Array.isArray(realData)){
+    if (realData && Array.isArray(realData)) {
         return (
             <>
-                {realData?.map(a => <Element key={a.id+a.type} type={a.type} {...props} onSubmittig={postData && !dynamicData} saveOnChanges={props.saveOnChanges} onFormSubmit={props.onFormSubmit ? props.onFormSubmit : onFormSubmit} {...a} />)}
+                {realData?.map(a => <Element key={a.id + a.type} type={a.type} {...props} saveOnChanges={props.saveOnChanges} onFormSubmit={props.onFormSubmit ? props.onFormSubmit : onFormSubmit} {...a} />)}
             </>
         );
     }
-    if (realData){
+    if (realData) {
         return (
             <>
-                <Element key={realData.id+realData.type} type={realData.type} {...props} onSubmittig={postData && !dynamicData} saveOnChanges={props.saveOnChanges} onFormSubmit={props.onFormSubmit ? props.onFormSubmit : onFormSubmit} {...realData} />
+                <Element key={realData.id + realData.type} type={realData.type} {...props} saveOnChanges={props.saveOnChanges} onFormSubmit={props.onFormSubmit ? props.onFormSubmit : onFormSubmit} {...realData} />
             </>
         );
     }

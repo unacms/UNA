@@ -5,7 +5,7 @@ import { View, Row } from 'app/design/view'
 import { getComponent } from 'app/components/registry';
 import { FeedbackHaptics, storageSet, appSetting, storageGet, storageClear } from 'app/lib/util';
 import { Platform } from 'react-native';
-
+import emitter from 'app/context/emitter';
 import useDebounce from 'app/lib/hooks/debounce'
 import { Button } from 'app/design/controls';
 import { isObjectsEqual } from 'app/lib/util'
@@ -79,7 +79,6 @@ export default function (props) {
     }
 
     const onSubmit = async d => {
-
         FeedbackHaptics('Medium')
         const formData = new FormData();
         Object.keys(d).map(function (key) {
@@ -131,10 +130,10 @@ export default function (props) {
             methods.setValue('cmt_parent_id', defaultValues['cmt_parent_id']);
         }, 100);
     }
-    //let _handleSubmit = methods.handleSubmit(onSubmit, onError)
 
     const _handleSubmit = methods.handleSubmit(
         (data) => {
+            emitter.emit(`form_${name}`, { action: 'submited' })
             onSubmit(data);
         },
         onError
@@ -145,6 +144,13 @@ export default function (props) {
             _handleSubmit();
         }
     }, [props.isSubmit]);
+
+    useEffect(() => {
+        if (props.data?.updated)
+            emitter.emit(`form_${name}`, { action: 'received' })
+
+    }, [props.data?.updated]);
+
 
     const { watch } = methods;
     const allFields = watch();
@@ -254,8 +260,6 @@ export default function (props) {
                 />
                 }
             </Row>}
-            {props.onSubmittig && <View className='absolute w-full h-full  z-50'></View>}
-            {methods.formState.isSubmitting}
             <FormProvider {...methods}>
                 <View className={`${props.layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : appSetting('forms', 'form_container')}`}>
                     {inputs}

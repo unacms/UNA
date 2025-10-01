@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import Field, { FormError } from './_field';
 import { useController, useFormContext } from 'react-hook-form';
 import { Button, Hidden } from 'app/design/controls';
@@ -6,6 +6,9 @@ import { View, Row } from 'app/design/view';
 import { Platform } from 'react-native';
 import { appSetting } from 'app/lib/util';
 import { useIsDesktop } from 'app/context/measure';
+import emitter from 'app/context/emitter';
+import { useEffect } from 'react';
+import Loading from 'app/ui/atoms/loading';
 
 export default function FormFieldSubmit(props) {
     // Destructure props with default values
@@ -29,6 +32,7 @@ export default function FormFieldSubmit(props) {
     const formContext = useFormContext();
     const { formState } = formContext;
     const isDesktop = useIsDesktop();
+    const [isSumbitting, setIsSumbitting] = useState(false);
     // Initialize controller for form field
     const { field } = useController({ name, rules: {}, defaultValue: value });
 
@@ -36,7 +40,7 @@ export default function FormFieldSubmit(props) {
     const formProps = appSetting('forms', form_name) || {};
 
     // Memoize handlers to prevent unnecessary re-renders
-    const handlePress =  useCallback(async() => {
+    const handlePress = useCallback(async () => {
         if (formState.isSubmitting || disabled) return;
         handleSubmit();
     }, [disabled, handleSubmit, formState.isSubmitting]);
@@ -58,8 +62,23 @@ export default function FormFieldSubmit(props) {
         errorKeys.length > 0 && !hide_errors && !formProps.hide_errors;
 
     let fb = formProps.button_full_width || props.button_full_width || !isDesktop
-    
-    if (notFullWidth){
+
+    useEffect(() => {
+        const subscription = emitter.addListener(`form_${form_name}`, (data) => {
+            if (data.action == 'submited') {
+                setIsSumbitting(true);
+            }
+            if (data.action == 'received') {
+                setIsSumbitting(false);
+            }
+        })
+
+        return () => {
+            subscription.remove()
+        }
+    }, [])
+
+    if (notFullWidth) {
         fb = false;
     }
     // Prepare button properties
@@ -86,7 +105,7 @@ export default function FormFieldSubmit(props) {
         'gap-x-2',
         '',
         'items-center',
-        
+
     ]
         .filter(Boolean)
         .join(' ');
@@ -96,11 +115,12 @@ export default function FormFieldSubmit(props) {
             <Row className={rowClassName}>
                 <Button
                     title={!icon_only ? value : ''}
-                    startDecorator={icon}
+                    startDecorator={isSumbitting ? <Loading size="small" color="#fff"/> : icon}
                     {...buttonProps}
                     {...buttonHandlers}
-                    disabled = {formState.isSubmitting || disabled}
-                    pressed = {formState.isSubmitting || disabled}
+                    disabled={isSumbitting || disabled}
+                    
+                    //pressed={isSumbitting}
                 />
                 {saveOnChanges && (
                     <Button

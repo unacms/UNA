@@ -1,8 +1,9 @@
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useEffect } from 'react';
 import useFetchForm from 'app/lib/hooks/fetch'
 import { Text } from 'app/design/typography'
 import { Loading } from 'app/loading'
 import { getComponent } from 'app/components/registry';
+import { isObjectsEqual } from 'app/lib/util'
 
 export function BlockByData(props) {
     return <BlockContentObjectDataArrayInt data={props.block.content} type={props.block.type} {...props} />
@@ -21,15 +22,15 @@ export default function BlockContentObjectDataArrayInt(props) {
     });
 
     // get data from URL if needed
-   /* let { data: dynamicData, error } = useSWR(
-        postData ? [requestUrl, '', postData] : null,
-        fetcher,
-        !immutable ? undefined : {
-            revalidateIfStale: false,
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false
-        }
-    );*/
+    /* let { data: dynamicData, error } = useSWR(
+         postData ? [requestUrl, '', postData] : null,
+         fetcher,
+         !immutable ? undefined : {
+             revalidateIfStale: false,
+             revalidateOnFocus: false,
+             revalidateOnReconnect: false
+         }
+     );*/
     const { data: dynamicData, error } = useFetchForm(requestUrl, postData);
 
     // update state when form is submitted
@@ -58,10 +59,31 @@ export default function BlockContentObjectDataArrayInt(props) {
         });
     }
 
-    let realData = props.data;
-    if (dynamicData) {
-        realData = dynamicData.data;
-    }
+    const [realData, setRealData] = useState(props.data);
+
+    useEffect(() => {
+        if (dynamicData) {
+             if (dynamicData.data?.length >0){
+             setRealData(prev => {
+                if (!isObjectsEqual(prev, dynamicData.data)) {
+                    return dynamicData.data.map(item => ({
+                        ...item,
+                        data: {
+                            ...item.data,
+                            updated: Date.now()
+                        }
+                    }));
+                }
+                return prev;
+            });
+            }
+            else{
+                 setRealData([dynamicData.data]);
+            }
+        } else {
+            setRealData(props.data);
+        }
+    }, [dynamicData, props.data]);
 
     if (dynamicData && dynamicData.data?.length == 0) {
 
@@ -70,45 +92,21 @@ export default function BlockContentObjectDataArrayInt(props) {
         }
     }
 
-    /* MAY BE NEED TO REWORK FOR NATIVE like
-    const components = {
-    'simple_list': require('app/components/elements/simple_list').default,
-    'form': require('app/components/elements/form').default,
-    'grid': require('app/components/elements/grid').default,
-    'msg': require('app/components/elements/msg').default,
-    'redirect': require('app/components/elements/redirect').default
-};
-*/
-
-   /* const components = {
-        'form': Form,
-        'simple_list': React.lazy(() => import('app/components/elements/simple_list')),
-        //'form': React.lazy(() => import('app/components/elements/form')),
-        'grid': React.lazy(() => import('app/components/elements/grid')),
-        'paid_join': React.lazy(() => import('app/components/elements/grid')),
-        'msg': React.lazy(() => import('app/components/elements/msg')),
-        'redirect': React.lazy(() => import('app/components/elements/redirect'))
-    };*/
-    
-    if (realData && !Array.isArray(realData)){
-        realData = [realData];
-    }
-
     // display each block element from static data or from dynamic data
     return realData && realData?.map(a => {
         //const type = !dynamicData ? props.block.content[0].type : a?.type;
         const type = a?.type;
         if (!type)
             return <></>
-        const Component =  getComponent('element', String(type));
+        const Component = getComponent('element', String(type));
         // Debug: pass through identifiers to help block inference
         if (!props.exProps) props.exProps = {};
         props.exProps.module = props?.module;
         props.exProps.method = props?.method;
         return (
-        <Suspense fallback={<Loading />} key={a.id + a?.type}>
-            <Component key={a.id + a?.type} type={a?.type} onSubmittig={postData && !dynamicData} onFormSubmit={onFormSubmit} {...a} exProps={props.exProps}/>
-        </Suspense>
+            <Suspense fallback={<Loading />} key={a.id + a?.type}>
+                <Component key={a.id + a?.type} type={a?.type} onFormSubmit={onFormSubmit} {...a} exProps={props.exProps} />
+            </Suspense>
         )
     }
     )
