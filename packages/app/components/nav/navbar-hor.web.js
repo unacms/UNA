@@ -153,7 +153,7 @@ export default function (props) {
                             />
                             <MenuTop url={props.url} uri={props.uri} />
                             <Row className={headerTheme.content_right}>
-                                <HeaderElement />
+                                <HeaderElement url={props.url} uri={props.uri}/>
                             </Row>
                         </View>
                     </View>

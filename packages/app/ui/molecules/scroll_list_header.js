@@ -123,7 +123,7 @@ export const Header = memo(({
             {(type !== 'string' && headerContent) && <View className="flex-auto">{headerContent}</View>}
             <Row className=" items-end">
                 {rightHeaderComponent ? rightHeaderComponent : memoizedRightComponents}
-                <HeaderElement mode="small" />
+                <HeaderElement mode="small" url={pageData.url} uri={pageData.uri} />
                 {(pageData?.context && pageData?.cover_block?.actions_menu) && <CoverMenu
                     {...pageData.cover_block.actions_menu}
                     uri={pageData.uri}

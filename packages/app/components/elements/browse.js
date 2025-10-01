@@ -442,12 +442,11 @@ export default function (props) {
         ))
     }
 
-    const isShowPreloads = dataItems.data.length == 0 && data.request_url &&  (((dataItems?.params?.start === 0 && !props.only_one_page) /*&& data.unit != 'notifications'*/) || status === 'loading')
     let PreloadComponent = null
-    if (hasNextPage && isFetchingNextPage) {
+    if (dataItems.data.length == 0 && !dataItems.params?.loaded) {
         PreloadComponent = Preload
     } else {
-          if (dataItems.data.length == 0 && isShowEmptyMessage){
+          if (dataItems.params?.loaded && dataItems.data.length == 0){
             PreloadComponent = callFn("noContentByUrl", [{request_url: data.request_url, params: dataItems?.params}])
          }
     }
@@ -504,7 +503,7 @@ export default function (props) {
                     ? props.exProps?.headerBlocks
                     : () => props.exProps?.headerBlocks)
                 : undefined,
-            ListFooterComponent: PreloadComponent
+            ListFooterComponent: ((hasNextPage && isFetchingNextPage)) ? Preload : null,
                
         }),
         [

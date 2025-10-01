@@ -9,7 +9,8 @@ import { useTranslation } from 'react-i18next'
 import Browse from 'app/components/elements/browse'
 import Link from 'app/ui/atoms/link'
 import { useIsDesktop } from 'app/context/measure';
-export default function ({ buttonProps, children, tooltip, fullWidth }) {
+
+export default function ({ buttonProps, children, tooltip, fullWidth, uri }) {
     const { currentUser, setCurrentUser } = useCurrentUser()
     const isDesktop = useIsDesktop();
     const [ntfsOpen, setNtfsOpen] = useState(false)
@@ -56,7 +57,7 @@ export default function ({ buttonProps, children, tooltip, fullWidth }) {
     }
 
     const dropdown = (
-        <DropdownPopup
+        appSetting('notifications', 'url') === '/' + uri ? <Button {...buttonProps} pressed={true} /> : <DropdownPopup
             open={ntfsOpen}
             minPopupWidth={360}
             onOpenChange={handleNotificationsToggle}

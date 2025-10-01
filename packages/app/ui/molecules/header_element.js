@@ -10,8 +10,8 @@ import MenuAccount from 'app/components/nav/menu-account'
 import MenuLauncher from 'app/components/nav/menu-launcher'
 import { useIsDesktop } from 'app/context/measure';
 
-export default function HeaderElement({ mode }) {
-
+export default function HeaderElement({ mode, url, uri }) {
+    console.log("url, uri", url, uri, appSetting('messenger', 'url'))
     const { currentUser } = useCurrentUser();
     const bSearch = appSetting('layout', 'search') == true;
     const bMessenger = appSetting('messenger', 'url') ? true : false;
@@ -36,7 +36,7 @@ export default function HeaderElement({ mode }) {
                             case "add":
                                 return <MenuAdd />
                             case "notifications":
-                                return bNotifs ? <NotificationButton /> : null
+                                return bNotifs ? <NotificationButton uri={uri} /> : null
                             case "account":
                                 return <MenuAccount />
                             case "link":
@@ -52,6 +52,7 @@ export default function HeaderElement({ mode }) {
                                                     },
                                                     variant: isDesktop ? 'secondary' : 'text',
                                                     size: isDesktop ? 'base' : 'base',
+                                                    pressed : appSetting('messenger', 'url') === '/' + uri
                                                 }
                                                 : {})}
                                         />
