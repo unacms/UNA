@@ -69,7 +69,10 @@ export default function FormFieldSubmit(props) {
                 setIsSumbitting(true);
             }
             if (data.action == 'received') {
-                setIsSumbitting(false);
+                setTimeout(() => {
+					 setIsSumbitting(false);
+				}, 1000);
+               
             }
         })
 
