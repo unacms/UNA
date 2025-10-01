@@ -100,7 +100,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
 
     const bPerson =
         data.profile.module == 'bx_persons' ||
-        appSetting('cover', 'show_pic_by_module', data?.profile?.module)
+            appSetting('cover', 'show_pic_by_module', data?.profile?.module)
             ? true
             : false
     const coverMode =
@@ -132,28 +132,31 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
             className={`${conductorTheme.content_max_width} flex-row items-center justify-between mx-auto h-14`}
         >
             {getCoverBackButton(bPerson)}
-            <Row className='items-center' >
-               
-                    <Row className='items-center gap-2'>
-                        {bPerson && (
-                    <Profile
-                        {...data.profile}
-                        displayType="unit_wo_info"
-                        displaySize="base"
-                    />)}
+            <Row className='items-left' >
+                {appSetting('context_selector', 'show_always') ? <View className={`${TABLET_MODE_FROM}:hidden `}>
+                    <ContextSelector data={context} mode="compact" />
+                </View> : <>                    <Row className='items-center gap-2'>
+                    {bPerson && (
+                        <Profile
+                            {...data.profile}
+                            displayType="unit_wo_info"
+                            displaySize="base"
+                        />)}
                     <Profile
                         {...data.profile}
                         displayType="unit_wo_image"
                         displaySize="lg"
                     />
-                    </Row>
-               
-                 
-                {isAddSelector && (
-                    <View className={`${TABLET_MODE_FROM}:hidden `}>
-                        <ContextSelector data={context} mode="min" />
-                    </View>
-                )}
+                </Row>
+
+
+                    {isAddSelector && (
+                        <View className={`${TABLET_MODE_FROM}:hidden `}>
+                            <ContextSelector data={context} mode="min" />
+                        </View>
+                    )}
+                </>
+                }
             </Row>
             <View className="flex-none items-end ">
                 <Row className="w-full justify-between">
@@ -197,7 +200,7 @@ function CoverImage({
     const handleSwitch = async (id) => {
         const result = await fetcher(
             '/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' +
-                id
+            id
         )
         location.reload()
     }
@@ -323,11 +326,10 @@ function CoverImage({
                 className={`duration-300 bg-primary lg:rounded-b-lg lg:pt-3 lg:px-3 w-full ${appSetting(
                     'layout',
                     'max_width_content'
-                )} mx-auto overflow-hidden ${
-                    isCover
+                )} mx-auto overflow-hidden ${isCover
                         ? ` h-[30vh] sm:${appSetting('cover', 'aspect_ratio')}`
                         : 'pb-32'
-                }`}
+                    }`}
             >
                 {isCover && (
                     <Image
@@ -404,7 +406,7 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
         appSetting('cover', 'view_by_module', data?.profile?.module) || mode
     const bPerson =
         data.profile.module == 'bx_persons' ||
-        appSetting('cover', 'show_pic_by_module', data?.profile?.module)
+            appSetting('cover', 'show_pic_by_module', data?.profile?.module)
             ? true
             : false
     const bAllowEdit =
@@ -505,9 +507,8 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                         <View className="flex-row sm:items-end flex-auto flex-wrap gap-3 lg:ml-auto">
                             {bPerson && (
                                 <View
-                                    className={`${
-                                        isMin ? 'h-24' : 'h-9'
-                                    } lg:hidden flex-auto justify-end `}
+                                    className={`${isMin ? 'h-24' : 'h-9'
+                                        } lg:hidden flex-auto justify-end `}
                                 >
                                     <View className=" flex-row flex-auto z-50 rounded-full p-1 flex-none bg-white mr-auto dark:bg-neutral-900 translate-y-1 -translate-x-1 ">
                                         <CoverImage
@@ -524,13 +525,12 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                                 </View>
                             )}
                             <Row
-                                className={`gap-2 ${
-                                    appSetting(
-                                        'cover',
-                                        'more_menu_in_navbar',
-                                        data?.profile?.module
-                                    ) && 'lg:hidden'
-                                }`}
+                                className={`gap-2 ${appSetting(
+                                    'cover',
+                                    'more_menu_in_navbar',
+                                    data?.profile?.module
+                                ) && 'lg:hidden'
+                                    }`}
                             >
                                 <CoverMenu
                                     {...data.actions_menu}

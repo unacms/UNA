@@ -22,19 +22,17 @@ function renderListItem_(url, text, icon, isActive) {
     return (
         <Link key={url} className="w-full" href={url}>
             <Row
-                className={`w-full px-2 h-12 gap-2 group rounded-xl justify-between items-center ${
-                    isActive
+                className={`w-full px-2 h-12 gap-2 group rounded-xl justify-between items-center ${isActive
                         ? ' bg-primary/10 text-foreground rounded-xl web:hover:bg-muted/60 web:duration-200 '
                         : ' web:hover:bg-muted/60 web:duration-200 '
-                }`}
+                    }`}
             >
                 <Row className="items-center flex-auto gap-2 text-card-foreground web:hover:text-foreground ">
                     <View
-                        className={`items-center w-9 h-9 justify-center ${
-                            isActive
+                        className={`items-center w-9 h-9 justify-center ${isActive
                                 ? ' bg-primary text-primary-foreground  '
                                 : ' bg-muted/60 web:group-hover:bg-secondary/60 web:duration-200 '
-                        } rounded-full`}
+                            } rounded-full`}
                     >
                         {icon}
                     </View>
@@ -82,7 +80,7 @@ function getContextRoot(data, url, uri) {
 }
 
 export default function ContextSelector({ data, url, uri, mode }) {
-        console.log("ContextSelector", data, url, uri, mode)
+    console.log("ContextSelector", data, url, uri, mode)
     const [isOpen, setIsOpen] = useState(false)
     if (!data) return null
 
@@ -144,7 +142,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
                         renderListItem_(
                             item.url,
                             item.title,
-                            item.icon && (item.icon == '{logo}' ? appStatic('logo', { mode: 'mark', }) : 
+                            item.icon && (item.icon == '{logo}' ? appStatic('logo', { mode: 'mark', }) :
                                 <Icon
                                     icon={item.icon}
                                     size={20}
@@ -168,43 +166,49 @@ export default function ContextSelector({ data, url, uri, mode }) {
         return DropDown
     }
 
+    if (mode === 'compact') {
+        return <ButtonsGroup variant="text" size="lg" fullWidth={true} >
+            {CurrentContext}
+            {DropDown}
+        </ButtonsGroup>
+    }
+
     return (
         <>
             {data?.list?.length > 0 || data?.links?.length > 0 ? (
-                 <Row className=' items-center'> 
-                 {!!contextRoot.name &&
-                     appSetting('context_selector', 'logo') && (
-                         <>
-                             {(() => {
-                                 const isActiveAppRoot = uri === 'home'
-                                 return (
-                                     <Link href="/">
-                                         <Row
-                                             className={` rounded-xl ${
-                                                 isActiveAppRoot
-                                                     ? ' bg-accent/60 text-accent-foreground web:hover:bg-accent'
-                                                     : ' web:hover:bg-muted/60'
-                                             }`}
-                                         >
-                                             <View className="p-1.5 flex-row rounded-full items-center justify-center">
-                                                 {appStatic('logo', { mode: 'mark', })}
-                                             </View>
-                                         </Row>
-                                     </Link>
-                                 )
-                             })()}
-                             <Icon
-                                 icon="ChevronRight"
-                                 size={20}
-                                 className="w-5 h-5 text-muted-foreground"
-                             />
-                         </>
-                     )}
-                   
+                <Row className=' items-center'>
+                    {!!contextRoot.name &&
+                        appSetting('context_selector', 'logo') && (
+                            <>
+                                {(() => {
+                                    const isActiveAppRoot = uri === 'home'
+                                    return (
+                                        <Link href="/">
+                                            <Row
+                                                className={` rounded-xl ${isActiveAppRoot
+                                                        ? ' bg-accent/60 text-accent-foreground web:hover:bg-accent'
+                                                        : ' web:hover:bg-muted/60'
+                                                    }`}
+                                            >
+                                                <View className="p-1.5 flex-row rounded-full items-center justify-center">
+                                                    {appStatic('logo', { mode: 'mark', })}
+                                                </View>
+                                            </Row>
+                                        </Link>
+                                    )
+                                })()}
+                                <Icon
+                                    icon="ChevronRight"
+                                    size={20}
+                                    className="w-5 h-5 text-muted-foreground"
+                                />
+                            </>
+                        )}
+
                     <ButtonsGroup variant="text" size="lg" fullWidth={true} >
                         {CurrentContext}
                         {DropDown}
-                    </ButtonsGroup> 
+                    </ButtonsGroup>
                 </Row>
             ) : (
                 CurrentContext
