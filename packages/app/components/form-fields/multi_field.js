@@ -26,12 +26,12 @@ export default function FormFieldMultiField(props) {
 
 
     function makeArray(N) {
-  const t0 = Date.now();
-  return Array.from({ length: N }, (_, i) => ({
-    id: -(t0 + i),  
-    value: ''
-  }));
-}
+        const t0 = Date.now();
+        return Array.from({ length: N }, (_, i) => ({
+            id: -(t0 + i),
+            value: ''
+        }));
+    }
 
     const AddNew = () => {
         setValues(prev => [...prev, { 'id': -Date.now(), value: '' }]);
@@ -44,30 +44,30 @@ export default function FormFieldMultiField(props) {
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
             <View className='gap-y-2 sm:gap-y-3 w-full'>
-            {values.map((value, index) => {
-                return (
-                    <Row key={`vls${index}`} >
-                        <Input
-                            name={props.name}
-                            onChangeText={(text) => {
-                                setValues(prevValues =>
-                                    prevValues.map(item =>
-                                        item.id === value.id ? { ...item, value: text } : item
-                                    )
-                                );
-                            }}
-                            value={value.value}
+                {values.map((value, index) => {
+                    return (
+                        <Row key={`vls${index}`} >
+                            <Input
+                                name={props.name}
+                                onChangeText={(text) => {
+                                    setValues(prevValues =>
+                                        prevValues.map(item =>
+                                            item.id === value.id ? { ...item, value: text } : item
+                                        )
+                                    );
+                                }}
+                                value={value.value}
 
-                        />
-                        
-                        {index >= minCount &&<View className='pl-2'><Button variant="secondary" onPress={() => Delete(value.id)} size="lg" startDecorator="X" /></View>}
-                        {index == minCount-1 &&<View className='pl-2'><Button variant="secondary" onPress={AddNew} size="lg" startDecorator="Plus" /></View>}
-                        
-                    </Row>
-                )
-            })}
+                            />
+
+                            {index >= minCount && <View className='pl-2'><Button variant="secondary" onPress={() => Delete(value.id)} size="lg" startDecorator="X" /></View>}
+                            {index == minCount - 1 && <View className='pl-2'><Button variant="secondary" onPress={AddNew} size="lg" startDecorator="Plus" /></View>}
+
+                        </Row>
+                    )
+                })}
             </View>
-           
+
         </Field>
     );
 }

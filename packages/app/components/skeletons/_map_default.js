@@ -124,7 +124,7 @@ const FeedSmall = memo(() => (<View className="sm:px-4 sm:pb-2 flex-auto ">
 </View>))
 
 const FeedDefault = memo(() => (
-    <CardList className=" animate-pulse w-full">
+    <CardList className=" animate-pulse w-full mb-0.5 sm:mb-3">
         
         <View className="flex-row gap-x-2 mb-2">
             <View className="relative flex-row">

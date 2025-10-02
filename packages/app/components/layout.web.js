@@ -215,7 +215,6 @@ export default function Layout(props) {
             const container = parent?.parentElement;
             if (!parent || !container) return;
 
-            if (parent.offsetWidth > 0) el.style.width = `${parent.offsetWidth}px`;
 
             const elH = el.offsetHeight;
             const containerTopDoc = window.scrollY + container.getBoundingClientRect().top;
@@ -243,7 +242,8 @@ export default function Layout(props) {
             // фиксируем
             el.classList.add('is-fixed');
             el.style.position = 'fixed';
-
+            if (parent.offsetWidth > 0) el.style.width = `${parent.offsetWidth}px`;
+            
             if (elH <= avail) {
                 // помещается во viewport
                 el.style.top = `${TOP_OFFSET}px`;

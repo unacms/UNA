@@ -76,9 +76,12 @@ export default function JotItem({ item, index, handleReply }) {
             </View>
             <View className='flex-auto'>
                 <View className='bg-bgritem dark:bg-bgritem-d rounded-xl px-3 u-vanilla-html-small' >
-                    <Row className="items-center mb-0.5 pt-2">
-                        <Profile {...item.author_data} displayType="unit_text_link" />
-                        <View><Text className="text-neutral-400 dark:text-neutral-600 px-1">·</Text></View>
+                    <Row className="items-center justify-between gap-1 mb-0.5 pt-2">
+                        <Profile 
+                            {...item.author_data} 
+                             displayType="unit_wo_image"
+                        />
+                      
                         <Time ts={item.created}></Time>
                     </Row>
                     {viewState.view == 'edited' ? (

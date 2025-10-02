@@ -45,8 +45,6 @@ function DefaultUnit({ data }) {
         menu_actions2.items = menu_actions2.items.filter(
             (x) => x.name !== "item-comment"
         );
-        console.log("menu_actions2", menu_actions2)
-
 
         let res = await fetcher(
             '/api.php?r=' +
@@ -126,7 +124,7 @@ function DefaultUnit({ data }) {
                     {cmtsData.data}
                 </Modal>
             )}
-            <CardList>
+            <CardList className="mb-0.5 sm:mb-3">
                 <Row className="gap-3 flex-auto mb-3">
                     <Author data={data} url={url} t={t} />
                     <View className="flex-none mb-auto hidden">

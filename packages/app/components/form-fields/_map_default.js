@@ -5,7 +5,6 @@ import Password from './password';
 import Submit from './submit';
 import Switcher from './switcher';
 import TextField from './text';
-
 import Editor from './editor';
 import Select from './select';
 import Files from './files';
@@ -27,6 +26,7 @@ import MultiField from './multi_field';
 import Embed from './embed';
 import Polls from './polls';
 import StripeConnect from './stripe_connect';
+import List from './list';
 
 export const componentsMapDefault = {
     input_set: InputSet,
@@ -64,5 +64,6 @@ export const componentsMapDefault = {
     block_end: BlockEnd,
     labels: Labels,
     doublerange: DoubleRange,
-    checkbox_set: CheckboxSet
+    checkbox_set: CheckboxSet,
+    list: List
 };

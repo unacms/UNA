@@ -46,7 +46,6 @@ export default function (props) {
         return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&obfuscate_faces=' + obfuscateFaces + '&&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (bMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
     }, [props, obfuscateFaces]);
 
-console.log("imageSource"+ props.name, imageSource)
 
     useEffect(() => {
         const uploadImagesAsync = async (assets) => {
