@@ -13,7 +13,7 @@ export default function FormFieldMultiField(props) {
     const params = strToObj(props.params);
 
     const minCount = params.minCount || 1;
-    const maxCount = params.minCount || 10;
+    const maxCount = params.maxCount || 10;
 
     const CreateEmpty = () => {
         const keys = params.fields.map(f => f.name);
@@ -56,9 +56,6 @@ export default function FormFieldMultiField(props) {
         });
     };
 
-    
-
-
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
             <View className='gap-y-2 sm:gap-y-3 w-full'>
@@ -78,7 +75,8 @@ export default function FormFieldMultiField(props) {
                                 />)
                             })}
                             {index >= minCount && <View><Button variant="secondary" onPress={() => Delete(index)} size="lg" startDecorator="X" /></View>}
-                            {(index == 0 && values.length <=maxCount ) && <View><Button variant="secondary" onPress={AddNew} size="lg" startDecorator="Plus" /></View>}
+                            {(index == 0 && values.length <maxCount ) && <View><Button variant="secondary" onPress={AddNew} size="lg" startDecorator="Plus" /></View>}
+                          
                         </Row>
                     )
                 })}
