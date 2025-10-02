@@ -10,7 +10,7 @@ function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitTy
         return <BlockItemRenderer item={item} route={route} sidebar={sidebar} />;
     } else {
         return (
-            <View key={`${route?.index}-${item.id}`} className='mb-0.5 sm:mb-3'>
+            <View key={`${route?.index}-${item.id}`} className='mb-0 sm:mb-0'>
                 <Unit unitType={unitType} module={module} unit={unit} data={item} mode={unitMode} />
             </View>
         );

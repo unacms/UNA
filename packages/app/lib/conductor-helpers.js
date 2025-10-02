@@ -456,26 +456,32 @@ export function getNumCols(currentBreakpoint, currentRoute) {
     if (currentRoute?.endpoint?.unit == 'feed') return 1
 
     let perLineSettings = []
-    if (currentRoute?.endpoint && currentRoute?.endpoint?.request_url) {
+    const endpoint = currentRoute?.endpoint
+    if (endpoint && endpoint?.request_url) {
         perLineSettings = appSetting('browse', 'per_line_profile')
     }
     if (
-        currentRoute?.endpoint?.request_url.includes('TemplServiceProfiles') ||
-        currentRoute?.endpoint?.unit.includes('-profile-') ||
-        currentRoute?.endpoint?.unit.includes('-context-')
+        endpoint?.request_url?.includes('TemplServiceProfiles') ||
+        endpoint?.unit?.includes('-profile-') ||
+        endpoint?.unit?.includes('-context-')
     ) {
         perLineSettings = appSetting('browse', 'per_line_profile')
     }
-    if (
-        leftSideBar &&
-        currentRoute?.endpoint &&
-        currentRoute?.endpoint?.request_url
-    ) {
+    const isGroups =
+        endpoint?.unit === 'group' ||
+        endpoint?.unit === 'groups' ||
+        endpoint?.unit?.includes('group') ||
+        endpoint?.module === 'bx_groups' ||
+        endpoint?.request_url?.includes('bx_groups')
+    if (isGroups) {
+        perLineSettings = appSetting('browse', 'per_line_groups')
+    }
+    if (leftSideBar && endpoint && endpoint?.request_url) {
         perLineSettings = appSetting('browse', 'per_line_left_side_bar')
     }
     const perLineSettingsByModule = appSetting(
         'browse',
-        'per_line_' + currentRoute?.endpoint?.module
+        'per_line_' + endpoint?.module
     )
     if (perLineSettingsByModule) {
         perLineSettings = perLineSettingsByModule

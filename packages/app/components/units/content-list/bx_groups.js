@@ -4,7 +4,7 @@ import Link from 'app/ui/atoms/link'
 import { getImageSizes, FeedbackHaptics, tp, t } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import { CardList } from 'app/ui/molecules/card'
+import { Card } from 'app/ui/molecules/card'
 import Redirect from 'app/ui/atoms/redirect'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
@@ -104,22 +104,23 @@ export default function Unit(props) {
         return (
             <>
                 <Redirect ref={redirectdRef} />
-                <CardList padding="p-1" className='mb-2 md:mb-0'>
-                    <Link className="group " href={data.url}>
-                            <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center bg-neutral-500/20">
+                <Link className="group" href={data.url}>
+                <Card padding="p-1" className='flex-auto'>
+                    
+                            <View className="relative bg-muted aspect-video overflow-hidden rounded-xl w-full">
                                 <Image
                                     {...data.cover}
                                     alt={data.title}
                                     view="cover"
-                                    className="absolute u-cover rounded-xl"
+                                    className="absolute u-cover"
                                     sizes={imageSizes}
                                 />
 
                             </View>
-                            <View className="flex-col p-2 flex-auto items-between justify-between ">
+                            <View className=" h-32 px-3 pb-3 flex-auto justify-between">
                                 <View>
                                     <Text
-                                        numberOfLines={1}
+                                        numberOfLines={2}
                                         className=" text-base leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary "
                                     >
                                         {data.title}
@@ -154,8 +155,8 @@ export default function Unit(props) {
                                     {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2  ml-2 sm:ml-0'}`}>{oMenuItemSecondary}</View>}
                                 </View>
                             </View>
-                    </Link>
-                </CardList>
+                    
+                </Card></Link>
             </>
         );
     }

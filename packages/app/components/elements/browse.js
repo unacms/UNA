@@ -42,7 +42,7 @@ const Item = memo(({ item, index, numColumns, data, unitMode, props }) => (
         className={
             numColumns > 1
                 ? 'w-full pb-2 '
-                : ' mb-0.5 sm:mb-3 ' + (data.unit != 'feed' ? '   w-full' : '  ') + '  '
+                : ' mb-0.5 sm:mb-3 ' + (data.unit != 'feed' ? 'w-full' : '  ') + '  '
         }
     >
         <Unit

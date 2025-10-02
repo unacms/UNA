@@ -388,7 +388,7 @@ export const settingsDefault = {
     },
     browse: {
         per_line: [
-            { width: 1280, count: 5 },
+            { width: 1280, count: 4 },
             { width: 1024, count: 4 },
             { width: 768, count: 3 },
             { width: 640, count: 2 },
@@ -412,6 +412,12 @@ export const settingsDefault = {
         per_line_bx_courses: [
             { width: 1536, count: 5 },
             { width: 1280, count: 4 },
+            { width: 1024, count: 3 },
+            { width: 768, count: 2 },
+        ],
+        per_line_groups: [
+            { width: 1536, count: 4 },
+            { width: 1280, count: 3 },
             { width: 1024, count: 3 },
             { width: 768, count: 2 },
         ],
@@ -820,15 +826,15 @@ export const settingsDefault = {
             sizable: false,
             cells: {
                 left: {
-                    defaultSize: 25,
-                    minSize: 20,
+                    defaultSize: 20,
+                    minSize: 15,
                     maxSize: 30,
                     breakpoint: 'xl',
                 },
-                center: { defaultSize: 50, minSize: 40, maxSize: 60 },
+                center: { defaultSize: 60, minSize: 40, maxSize: 70 },
                 right: {
-                    defaultSize: 25,
-                    minSize: 20,
+                    defaultSize: 20,
+                    minSize: 15,
                     maxSize: 30,
                     breakpoint: 'xl',
                 },
@@ -879,12 +885,12 @@ export const settingsDefault = {
             sizable: true,
             cells: {
                 left: {
-                    defaultSize: 25,
-                    minSize: 25,
-                    maxSize: 40,
+                    defaultSize: 20,
+                    minSize: 15,
+                    maxSize: 30,
                     breakpoint: 'xl',
                 },
-                center: { defaultSize: 75, minSize: 70, maxSize: 80 },
+                center: { defaultSize: 80, minSize: 70, maxSize: 80 },
             },
         },
         'cols-c-r': {
@@ -1219,7 +1225,7 @@ export const settingsDefault = {
                 padding: ' active:scale-95 rounded-md items-center flex ',
                 hitarea_class: 'relative u-link-hitarea u-link-hitarea-sm ',
                 hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
-                text: 'text-sm  items-center justify-center flex',
+                text: 'text-sm leading-tight items-center justify-center flex',
                 rounded: 'rounded-md',
                 focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-1 ring-offset-ring ',
             },
