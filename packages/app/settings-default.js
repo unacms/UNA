@@ -52,7 +52,7 @@ export const settingsDefault = {
         ui_density_switcher: true,
         max_width: ' w-full  ',
         max_width_content: ' w-full max-w-7xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
-        post_container: ' max-w-3xl w-full flex-1 bg-card/80 shadow-sm text-card-foreground rounded-2xl py-3 sm:py-4 lg:my-4 mx-auto ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
+        post_container: ' max-w-3xl w-full flex-1 bg-card shadow-sm text-card-foreground rounded-2xl py-3 sm:py-4 lg:my-4 mx-auto ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
 
         search: true,
         sidebar_search: true,
@@ -87,9 +87,9 @@ export const settingsDefault = {
             container:
                 ' header-fixed hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%] web:duration-500  ',
             initial:
-                ' my-auto w-full items-cente bg-card/80 backdrop-blur-xl border-b border-border/80 transition-all shadow-xs ',
+                ' my-auto w-full items-cente bg-card/90 backdrop-blur-xl border-b border-border/60 transition-all  ',
             scrolled:
-                ' my-auto w-full items-cente bg-card/80 backdrop-blur-xl border-b border-border transition-all shadow-sm',
+                ' my-auto w-full items-cente bg-card/90 backdrop-blur-xl border-b border-border/60 transition-all shadow-sm',
             content: ' h-16 mx-auto justify-between ',
             content_left: ' flex-row items-center px-2 flex-none xl:w-80 2xl:w-96 ps-2 ',
             content_right: ' flex-row items-center justify-end flex-none xl:w-80 2xl:w-96 pe-2 ',
@@ -207,7 +207,7 @@ export const settingsDefault = {
         show_nav_counters: 'primary', // OLD appSetting('layout', 'show_nav_counters')
         show_nav_titles: false, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
-        sidebar_container: ' p-2 bg-card/80 h-full overflow-y-auto flex flex-col ring-1 ring-border/80 ',
+        sidebar_container: ' p-2 bg-card h-full overflow-y-auto flex flex-col ring-1 ring-border/60 ',
         sidebar_position: ' z-50 fixed fixed-process ',
         bgrDecorator: true, // Enable/disable decorator background globally for conductor buttons
     },
@@ -982,10 +982,10 @@ export const settingsDefault = {
             topmenu_button_size: 'base',
             topmenu_button_pressed: true,
             left_menu_cnt: '  ',
-            cover_base: 'w-full bg-card',
+            cover_base: 'w-full bg-card/90 backdrop-blur-xl',
             cover_content:
                 'items-center h-full w-full overflow-hidden justify-between',
-            cover_small: 'max-w-7xl mx-auto flex-row w-full px-3 items-center bg-card/80 backdrop-blur-xl'
+            cover_small: 'max-w-7xl mx-auto flex-row w-full px-3 items-center '
         },
        
         checkbox_set: {
@@ -1320,10 +1320,10 @@ export const settingsDefault = {
         },
         cards: {
             'u-card-list':
-                ' u-card-list bg-card/80 shadow-sm border border-border/80 web:border-0 web:ring-0 web:ring-inset web:ring-border/80 text-card-foreground overflow-hidden sm:rounded-2xl ',
+                ' u-card-list bg-card/80 shadow-sm border border-border/60 web:border-0 web:ring-0 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden sm:rounded-2xl ',
             'u-card-list-padding': ' p-3 lg:p-4 ',
             'u-card-base':
-                ' u-card-base bg-card/80 shadow-sm border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 text-card-foreground overflow-hidden rounded-2xl gap-4',
+                ' u-card-base bg-card/80 shadow-sm border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden rounded-2xl gap-4',
             'u-card-padding': ' p-4 ',
             'u-card-header': 'flex gap-2',
             'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',

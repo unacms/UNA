@@ -208,7 +208,7 @@ const Carousel = memo(({ data = [] }) => {
             </Row>
 
         </Modal>}
-        <View className='w-full mx-auto px-1'>
+        <View className='w-full mx-auto'>
             <Gallery windowWidthOr={windowWidthOr} data={data} handleShowImage={handleShowImage} />
         </View>
 

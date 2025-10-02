@@ -139,7 +139,7 @@ export default function ScrollList({
     return (
         <View className="flex-auto" style={{ paddingTop: !isDesktop && !useCustomScrollHandler ? headerHeight : 0, paddingBottom: !isDesktop ? bottomPadding : 0 }}>
             {enhanced}
-            {!isDesktop && <Animated.View className="backdrop-blur-xl w-full bg-card/80 px-1" style={[headerStyle]}>
+            {!isDesktop && <Animated.View className="backdrop-blur-xl w-full bg-card/90" style={[headerStyle]}>
                     <Header
                         backButtonPresented={isBackButton}
                         headerComponent={headerComponent}

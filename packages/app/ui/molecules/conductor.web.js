@@ -33,7 +33,7 @@ import { useIsDesktop, useBreakpoint } from 'app/context/measure';
 
 const conductorTheme = appSetting('theme', 'conductor');
 
-export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionAsMenu, skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 106 }) {
+export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionAsMenu, skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 112 }) {
     const uniRef = useRef();
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
