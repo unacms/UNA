@@ -1,11 +1,10 @@
 import { DataByName } from 'app/components/block'
 import { Conductor } from 'app/ui/molecules/conductor';
-import { getBlocksFromData } from 'app/lib/util';
 import { useMemo} from 'react';
-import { useCurrentUser } from 'app/context/user'
-import { processBlocks } from 'app/lib/conductor-helpers';
-import { Platform } from 'react-native'
 import { useLayoutSettings } from 'app/context/layout-settings';
+import { useEffect } from 'react';
+import { appSetting, clearNotif } from 'app/lib/util';
+import { useCurrentUser } from 'app/context/user'
 
 function getMenu(props, layout) {
     let menu = Object.assign({}, props.data.menu);;
@@ -31,7 +30,7 @@ function getMenu(props, layout) {
 }
 
 export default function PageLayout(props) {
-
+    const { currentUser, setCurrentUser } = useCurrentUser();
     const { layoutName: layout } = useLayoutSettings();
     const leftSideBar = layout != 'hor' ? false : true
     const menu = useMemo(() => getMenu(props, layout), [leftSideBar]);
@@ -39,6 +38,19 @@ export default function PageLayout(props) {
     if (!isNamePresent){
         menu.items.push({id:-1, name: props.uri, title:'', link: props.data.url, hideInTop: true});
     }
+
+    useEffect(() => {
+        if (appSetting('notifications', 'url') === '/' + props.uri){
+            console.log(55)
+            clearNotif();
+            setCurrentUser({
+                notifications: 0,
+                notificationsTs:Date.now()
+            });
+        }
+
+    }, [])
+    
 
     return (
         <Conductor 
