@@ -63,7 +63,7 @@ export default function PageLayout({ data, blocks, isModal, url }) {
     }, [localUrl]);
 
     const aItems = useMemo(() => Object.entries(blocks)
-        .filter(([key, value]) => value.forList && ((!isDesktop && value.forHeader == null) || isDesktop))
+        .filter(([key, value]) => value.forList)
         .map(([key, value]) => ({
             id: `block_${key}`,
             data: <View className={value.name.includes("entity_text_block") ? 'px-4' : ''}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
@@ -101,8 +101,6 @@ export default function PageLayout({ data, blocks, isModal, url }) {
 
 
     if (isModal) {
-
-
         return (
             <View className="w-full">
                 <View className="w-full " style={{ height: height }}>
@@ -111,7 +109,7 @@ export default function PageLayout({ data, blocks, isModal, url }) {
                             {
                                 headerHeight: 64,
                                 pageData: data,
-                                headerComponent: headerItems[0].data,
+                                // headerComponent: headerItems[0].data,
                                 isBackButton: true,
                                 padding: 16,
                             }
@@ -145,7 +143,7 @@ export default function PageLayout({ data, blocks, isModal, url }) {
                             {
                                 headerHeight: 64,
                                 pageData: data,
-                                headerComponent: headerItems[0].data,
+                                // headerComponent: headerItems[0].data,
                                 isBackButton: true,
                                 padding: 16,
                             }

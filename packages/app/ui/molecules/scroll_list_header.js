@@ -94,7 +94,7 @@ export const Header = memo(({
 
     const ContextSelector = getComponent('molecule', 'context_selector')
     const HeaderElement = getComponent('molecule', 'header_element');
-    
+
     return (
 
         <Row className="items-center justify-between h-14">
@@ -114,7 +114,7 @@ export const Header = memo(({
                 }} startDecorator="ArrowLeft" size="base" /></View>
             )}
             {(pageData?.context?.current?.url || isHome) && <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
-            {(!!text) && <Row className='items-center px-3'><>
+            {((!!text && !pageData?.context?.current?.url) || (pageData?.context && !pageData?.context?.current?.url && !isHome)) && <Row className='items-center px-3'><>
                 {(!!text && !pageData?.context?.current?.url) && (
                     <TextHeader text={text}></TextHeader>
                 )}
