@@ -11,7 +11,6 @@ import MenuLauncher from 'app/components/nav/menu-launcher'
 import { useIsDesktop } from 'app/context/measure';
 
 export default function HeaderElement({ mode, url, uri }) {
-    console.log("url, uri", url, uri, appSetting('messenger', 'url'))
     const { currentUser } = useCurrentUser();
     const bSearch = appSetting('layout', 'search') == true;
     const bMessenger = appSetting('messenger', 'url') ? true : false;

@@ -207,7 +207,7 @@ export const settingsDefault = {
         show_nav_counters: 'primary', // OLD appSetting('layout', 'show_nav_counters')
         show_nav_titles: false, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
-        sidebar_container: ' p-2 bg-card h-full overflow-y-auto flex flex-col ring-1 ring-border/60 ',
+        sidebar_container: ' w-full bg-card h-full overflow-y-auto flex flex-col ring-1 ring-border/60 ',
         sidebar_position: ' z-50 fixed fixed-process ',
         bgrDecorator: true, // Enable/disable decorator background globally for conductor buttons
     },

@@ -378,8 +378,8 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
             >
                 {isLeftCol && <>
                     <Panel className={`hidden ${leftBreakpoint}:block`} {...leftPanelProps}>
-                        <View className={`fixed-process ${layoutName == 'profile' ? cd('p-md') : appSetting('conductor', 'sidebar_container')}`}>
-                            <LeftSideBarContainer
+                        <View className={`${layoutName == 'profile' ? cd('p-md') + ' fixed-process' : appSetting('conductor', 'sidebar_container')}`}>
+                            {layoutName == 'profile' ? <LeftSideBarContainer
                                 layoutName={layoutName}
                                 index={index}
                                 setIndex={setIndex}
@@ -387,7 +387,16 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
                                 routes={routes}
                                 currentUser={currentUser}
                                 headerSettings={headerSettings}
-                            >{LeftBarContentBlocks}</LeftSideBarContainer>
+                            >{LeftBarContentBlocks}</LeftSideBarContainer> : <View className=' fixed-process  p-2 '><LeftSideBarContainer
+                                layoutName={layoutName}
+                                index={index}
+                                setIndex={setIndex}
+                                menu={menu}
+                                routes={routes}
+                                currentUser={currentUser}
+                                headerSettings={headerSettings}
+                            >{LeftBarContentBlocks}</LeftSideBarContainer></View>
+                            }
                         </View>
                     </Panel>
                     <PanelHandler gap="hidden xl:block" sizable={cellsCustomConfig.sizable} />
@@ -761,13 +770,13 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled,
                     </ViewRef>
                 </Animated.View>
                 <Animated.View style={[{}, animatedStyleHeaderCoverSmall]}>
-                    <View className={conductorTheme.cover_small} >
+                    <View className={conductorTheme.cover_small + '  header-fixed'} >
                         {(isCover && !isHideCover || !isDesktop) && <View className="w-full">
                             <CoverSmall context={pageData.context} data={pageData.cover_block} />
                         </View>}
                     </View>
                 </Animated.View>
-                <View className="w-full" ref={menuRef}>
+                <View className="w-full header-fixed" ref={menuRef}>
                     {tabBarObj}
                 </View>
             </Animated.View>
