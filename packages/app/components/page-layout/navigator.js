@@ -50,7 +50,6 @@ export default function PageLayout(props) {
         }
 
     }, [])
-    
 
     return (
         <Conductor 
