@@ -3,7 +3,7 @@ import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, useAnimatedStyle } from "react-native-reanimated";
 import { View, ViewRef, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
-import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, handleFeedLayoutData, getMenuSettings, isObjectsEqual } from 'app/lib/util';
+import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, handleFeedLayoutData, getMenuSettings, isObjectsEqual, getBreakpoint } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, LeftSidebar, TopSidebar, getNumCols } from 'app/lib/conductor-helpers';
 import { ItemRenderer } from 'app/components/item-renderer';
 import { Button } from 'app/design/controls';
@@ -360,13 +360,43 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
         }, [route?.pageData?.uri, layoutCols]);
 
 
-        const { breakpoint: leftBreakpoint, ...leftPanelProps } = cellsCustomConfig.cells?.left || {}
-        const { breakpoint: centerBreakpoint, ...centerPanelProps } = cellsCustomConfig.cells?.center || {}
-        const { breakpoint: rightBreakpoint, ...rightPanelProps } = cellsCustomConfig.cells?.right || {}
+        const { cells = {} } = cellsCustomConfig || {};
+        const currentBreakpointName = getBreakpoint(currentBreakpoint);
+
+        function resolvePanelProps(base, responsive, bpName = currentBreakpointName) {
+            const override = responsive?.[bpName];
+            return override ? { ...base, ...override } : base; // merge поверх базовых
+        }
+
+        // LEFT
+        const {
+            breakpoint: leftBreakpoint,
+            responsive: leftResponsive,
+            ...leftBase
+        } = cells.left ?? {};
+        const leftPanelProps = resolvePanelProps(leftBase, leftResponsive);
+
+        // CENTER
+        const {
+            breakpoint: centerBreakpoint,
+            responsive: centerResponsive,
+            ...centerBase
+        } = cells.center ?? {};
+        const centerPanelProps = resolvePanelProps(centerBase, centerResponsive);
+
+        // RIGHT
+        const {
+            breakpoint: rightBreakpoint,
+            responsive: rightResponsive,
+            ...rightBase
+        } = cells.right ?? {};
+        const rightPanelProps = resolvePanelProps(rightBase, rightResponsive); 
 
         const onLayout = (sizes) => {
             setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100);
         };
+
+
 
         return (
             <PanelGroup

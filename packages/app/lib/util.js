@@ -24,6 +24,14 @@ export const LAYOUT_BREAKPOINTS = {
     sm: 640
 };
 
+const LAYOUT_BREAKPOINTS_DESC = Object.entries(LAYOUT_BREAKPOINTS).sort((a, b) => b[1] - a[1]);
+
+export function getBreakpoint(width) {
+    for (const [label, min] of LAYOUT_BREAKPOINTS_DESC) {
+        if (width >= min) return label; 
+    }
+    return '';
+}
 
 export function appSetting(section, name, path) {
     return setting(section, name, path, remoteSettings.data);

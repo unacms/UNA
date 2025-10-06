@@ -830,6 +830,7 @@ export const settingsDefault = {
                     minSize: 15,
                     maxSize: 30,
                     breakpoint: 'xl',
+                    
                 },
                 center: { defaultSize: 60, minSize: 40, maxSize: 70 },
                 right: {
@@ -889,6 +890,7 @@ export const settingsDefault = {
                     minSize: 15,
                     maxSize: 30,
                     breakpoint: 'xl',
+                   
                 },
                 center: { defaultSize: 80, minSize: 70, maxSize: 80 },
             },
@@ -897,12 +899,32 @@ export const settingsDefault = {
             adjustable: true,
             sizable: true,
             cells: {
-                center: { defaultSize: 60, minSize: 50, maxSize: 70 },
+                center: { 
+                    defaultSize: 60, 
+                    minSize: 50, 
+                    maxSize: 70,
+                    responsive: {
+                        '2xl':{
+                            defaultSize: 80,
+                            minSize: 70,
+                            maxSize: 85,
+                            breakpoint: 'xl',
+                        }
+                    }
+                },
                 right: {
                     defaultSize: 40,
                     minSize: 30,
                     maxSize: 50,
                     breakpoint: 'lg',
+                    responsive: {
+                        '2xl':{
+                            defaultSize: 20,
+                            minSize: 15,
+                            maxSize: 30,
+                            breakpoint: 'xl',
+                        }
+                    }
                 },
             },
         },
