@@ -78,6 +78,9 @@ export default function (props) {
     const [isRevalidate, setIsRevalidate] = useState(false)
     const { currentUser } = useCurrentUser()
     const data = props.data
+    const isOneLine =  data.params.view == 'showcase'
+    const isOnePage = props.only_one_page || isOneLine;
+    const isShowTitleInside = props.showTitleInside || isOneLine;
 
 
     const cacheParams = Object.entries(((p = {}) => {
@@ -235,13 +238,13 @@ export default function (props) {
         (lastItemIndex) => {
             if (!data.request_url) return
             if (!hasNextPage) return
-            if (props.only_one_page == true) return
+            if (isOnePage == true) return
             if (props.extraProps?.limit == true) return
             if (isFetchingNextPage) return
             if (lastItemIndex == false) return
             fetchNextPage()
         },
-        [hasNextPage, props.only_one_page, isFetchingNextPage]
+        [hasNextPage, isOnePage, isFetchingNextPage]
     )
 
     const getCurrentParams = (isUseDefault = false) => {
@@ -394,7 +397,8 @@ export default function (props) {
         )
     }
 
-    let contentElement = false
+    let contentElement = false;
+
     if (props.extraProps?.galery) {
         const uniqueItems = dataItems.data.filter(
             (v, i, a) => a.findIndex((t) => t.id === v.id) === i
@@ -419,15 +423,16 @@ export default function (props) {
 
     }
 
-    if (props.sidebar && !props.extraProps?.galery) {
+    if ((props.sidebar && !props.extraProps?.galery) || isOneLine) {
+
         const uniqueItems = dataItems.data.filter(
             (v, i, a) => a.findIndex((t) => t.id === v.id) === i
         )
         const limitedItems = props.extraProps?.limit
             ? uniqueItems.slice(0, props.extraProps?.limit)
-            : uniqueItems
+            : isOneLine? uniqueItems.slice(0, numColumns): uniqueItems
         contentElement = limitedItems.map((item, index) => (
-            <View key={`item${index}`} className={`mb-3 ${data.unit !== 'feed' ? 'w-full' : ''}`}>
+            <View key={`item${index}`} className={`mb-3  ${data.unit !== 'feed' ? (isOneLine ? ' p-2 w-1/'+numColumns :'w-full') : ''}`}>
                 <Unit
                     unit={data.unit ? data.unit : ''}
                     mode={unitMode}
@@ -440,6 +445,9 @@ export default function (props) {
                 />
             </View>
         ))
+        if (isOneLine){
+            contentElement = <Row>{contentElement}</Row>
+        }
     }
 
     let PreloadComponent = null
@@ -453,7 +461,7 @@ export default function (props) {
 
 
 
-
+    
     const memoizedUniListProps = useMemo(
         () => ({
             scrollProps: props?.exProps?.scrollProps,
@@ -541,11 +549,11 @@ export default function (props) {
         contentElement = <UniList {...memoizedUniListProps} />
     }
 
-    if (!dataItems.data.length && props.showTitleInside)
+    if (!dataItems.data.length && isShowTitleInside)
          return;
 
     return (
-        <View className="w-full h-full">
+        <View className={`w-full ${isOneLine ? '' : 'h-full'}`}>
             <View className="w-full" onLayout={handleLayout}></View>
             <Toaster
                 ref={toasterRef2}
@@ -555,7 +563,7 @@ export default function (props) {
                 size="sm"
             />
             <View className={`w-full ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''}`} style={styles}>
-                {props.showTitleInside && (
+                {isShowTitleInside && (
                     <Row className={`items-center justify-between ${props.showBg ? '': 'px-2 my-3'}`}>
                         <Text className=" text-card-foreground text-xl font-bold leading-none lg:leading-none tracking-tight ">
                             {t(props.block.title)}
