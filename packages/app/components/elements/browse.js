@@ -568,7 +568,7 @@ export default function (props) {
                         <Text className=" text-card-foreground text-xl font-bold leading-none lg:leading-none tracking-tight ">
                             {t(props.block.title)}
                         </Text>
-                        {props.addLink ? (
+                        {!!props.addLink && (
                             <Link href={props.addLink.url}>
                                 <Button
                                     variant="link"
@@ -577,7 +577,18 @@ export default function (props) {
                                     title={t(props.addLink.text)}
                                 />
                             </Link>
-                        ) : null}
+                        ) }
+                        {(isOneLine && data.params.home_url)  && (
+                            <Link href={data.params.home_url}>
+                                <Button
+                                    variant="link"
+                                    size="sm"
+                                    rounded
+                                    title={t('View All')}
+                                />
+                            </Link>
+                        ) }
+
                     </Row>
                 )}
               {contentElement}
