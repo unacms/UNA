@@ -268,6 +268,7 @@ const getCounterCompound = (getIconAlias, handleGetPerformedByCpd, actionsDataSt
 };
 
 export default function ElementReactions(oProps) {
+    console.log("oProps", oProps.params)
     const { t } = useTranslation();
     const bWeb = Platform.OS === 'web';
     const oSettings = appSetting('social_actions', 'reaction');
@@ -288,14 +289,15 @@ export default function ElementReactions(oProps) {
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both') && !!oCounter && !!oCounter?.items;
     const bShowFull = bShowAction && bShowCounter;
     const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true;
-
+    const settings = appSetting('feed', 'actions_menu');
+    
     const oButtonProps = {
         variant: oProps?.primary ? 'primary' : oProps.params?.button_variant,
         size: oProps.params?.button_size,
         rounded: oProps.params?.button_rounded,
         fullWidth: oProps.params?.button_full_width,
         showTitleFromSize: oProps.params?.button_show_title_from_size,
-        pressedClasses: oProps.params?.pressed_classes,
+        pressedClasses: settings?.pressed_classes,
         ring: oProps.params?.button_ring
     };
 
