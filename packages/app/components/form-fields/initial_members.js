@@ -82,7 +82,7 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
     }, [state.selectedUsers, isSingle]);
 
     return <View className="px-1">
-        <ScrollView keyboardDismissMode="none" keyboardShouldPersistTaps="handled" className="w-full overflow-x-visible min-h-64" >
+        <ScrollView keyboardDismissMode="none" keyboardShouldPersistTaps="handled" className="w-full overflow-visible min-h-64" >
             <Row className="text-center w-full flex-wrap gap-1 pb-4">
                 {state.selectedUsers && state.selectedUsers.map((item) => <User key={item.id} data={item} onSelect={onRemove} />)}
             </Row>

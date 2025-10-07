@@ -182,7 +182,7 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
         case 'link':
             return <Link href={cell.data.url}><Text className="text-primary">{cell.data.text}</Text></Link>
         case 'text':
-            return <Text className="text-neutral-800 dark:text-neutral-200">{stripTags(cell.value)}</Text>
+            return <Text className="text-neutral-800 dark:text-neutral-200 truncate overflow-hidden">{stripTags(cell.value)}</Text>
         case 'order':
             return <Text className="text-neutral-800 dark:text-neutral-200 text-lg">
                 <Icon icon='MoveVertical' />

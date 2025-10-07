@@ -78,7 +78,7 @@ export default function (props) {
     const [isRevalidate, setIsRevalidate] = useState(false)
     const { currentUser } = useCurrentUser()
     const data = props.data
-    const isOneLine =  data.params.view == 'showcase'
+    const isOneLine =  data?.params?.view == 'showcase'
     const isOnePage = props.only_one_page || isOneLine;
     const isShowTitleInside = props.showTitleInside || isOneLine;
 

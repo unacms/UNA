@@ -103,17 +103,18 @@ export default function ContextSelector({ data, url, uri, mode }) {
     const CurrentContext = (
         <Link className="flex-auto items-center justify-start w-full flex" href={contextRoot.url}>
             <Row className="items-center gap-2 px-2">
-                <View className='rounded-full items-center justify-center'>
+                <View className='rounded-full items-center justify-center bg-muted/60 web:group-hover:bg-secondary/60 web:duration-200 text-card-foreground web:hover:text-foreground'>
                     {contextRoot.image}
                 </View>
                 {!!contextRoot.name && (
-                    <Text className="text-base font-semibold tracking-tight truncate text-card-foreground">
+                    <Text className="text-base font-semibold tracking-tight truncate text-card-foreground  web:hover:text-foreground">
                         {contextRoot.name}
                     </Text>
                 )}
             </Row>
         </Link>
     )
+
 
     const isLinkSelected = data.links?.some(item => item.url == contextRoot.url);
 
