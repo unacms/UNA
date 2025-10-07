@@ -22,6 +22,8 @@ import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Tooltip from 'app/ui/atoms/tooltip';
 import { isEmoji } from 'app/lib/util';
+import { useWindowSize } from 'app/context/measure';
+import { RemoveScroll } from 'react-remove-scroll';
 
 const getName = (sType, sSystem, sObjectId, sName) => {
     let aName = [sType, sSystem.replace(/_/g, '-'), sObjectId];
@@ -268,7 +270,6 @@ const getCounterCompound = (getIconAlias, handleGetPerformedByCpd, actionsDataSt
 };
 
 export default function ElementReactions(oProps) {
-    console.log("oProps", oProps.params)
     const { t } = useTranslation();
     const bWeb = Platform.OS === 'web';
     const oSettings = appSetting('social_actions', 'reaction');
@@ -290,7 +291,7 @@ export default function ElementReactions(oProps) {
     const bShowFull = bShowAction && bShowCounter;
     const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true;
     const settings = appSetting('feed', 'actions_menu');
-    
+
     const oButtonProps = {
         variant: oProps?.primary ? 'primary' : oProps.params?.button_variant,
         size: oProps.params?.button_size,
@@ -482,44 +483,28 @@ const ReactionPopover = ({
     asChild = false,
     childRefProp = 'ref',
 }) => {
-    const bWeb = Platform.OS === 'web';
-    const SCREEN_WIDTH = Dimensions.get('window').width;
-    const POPOVER_WIDTH = 300;
+    const isWeb = Platform.OS === 'web';
+    const { width: windowWidth, height: windowHeight } = useWindowSize();
     const [modalVisible, setModalVisible] = useState(false);
     const [buttonPos, setButtonPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
     const buttonRef = useRef(null);
 
     const openModal = () => {
         if (!buttonRef.current) return;
-        if (bWeb) { // FIX AFTER NEXT 15, NEED TO FIND THE WAY FOR SINGLE CODE
-            if (buttonRef.current) {
-  const rect = buttonRef.current.getBoundingClientRect();
-  const x = Math.min(rect.left, window.innerWidth - POPOVER_WIDTH - 8);
-  const y = bWeb ? rect.top : rect.top - 20;
 
-  setButtonPos({
-    x,
-    y,
-    width: rect.width,
-    height: rect.height
-  });
-  setModalVisible(true);
-}
-        }
-        else {
-            UIManager.measure(
-                findNodeHandle(buttonRef.current),
-                (x, y, width, height, pageX, pageY) => {
-                    setButtonPos({
-                        x: Math.min(
-                            pageX,
-                            SCREEN_WIDTH - POPOVER_WIDTH - 8
-                        ), y: bWeb ? pageY : pageY - 20, width, height
-                    });
-                    setModalVisible(true);
-                }
-            );
-        }
+        buttonRef.current.measureInWindow((x, y, width, height) => {
+            console.log(x, y, width, height)
+            const popupHeight = 60;
+            let actY = isWeb ? y : y - 20;
+            if (actY + popupHeight >= windowHeight - 64) {
+                actY = y - popupHeight - height
+            }
+
+            setButtonPos({
+                x: x, y: actY, width, height
+            });
+            setModalVisible(true);
+        })
     };
 
     const handleSelect = (item) => {
@@ -527,47 +512,45 @@ const ReactionPopover = ({
         onTap?.(item);
     };
 
-    const content = (
-        <>
-            {modalVisible && (
-                <ModalBase
-                    transparent={true}
-                    visible={modalVisible}
-                    onRequestClose={() => setModalVisible(false)}
-                >
-                    <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-                        <View className="flex-1 bg-transparent">
-                            <View
-                                style={{
-                                    top: buttonPos.y + buttonPos.height + 5,
-                                    left: buttonPos.x,
-                                    elevation: 5,
-                                }}
-                                className=" absolute flex-row rounded-full border border-border p-1 bg-popover"
-                            >
-                                {items.map((item) => (
-                                    <TouchableOpacity
-                                        key={item.id}
-                                        onPress={() => handleSelect(item)}
-                                    >
-                                        <Tooltip content={item.title}>
-                                            {isEmoji(item.icon) ? (
-                                                <Text className="text-3xl w-12 h-12 items-center justify-center web:hover:scale-110 flex web:hover:bg-muted/60 web:active:bg-muted rounded-full">{item.icon}</Text>
-                                            ) : (
-                                                <View className="w-12 h-12 items-center text-muted-foreground web:hover:text-foreground web:hover:scale-110 web:duration-200 justify-center flex web:hover:bg-muted/60 web:active:bg-muted rounded-full">
-                                                    <Icon icon={item.icon} size={30} />
-                                                </View>
-                                            )}
-                                        </Tooltip>
-                                    </TouchableOpacity>
-                                ))}
-                            </View>
+    const ReactionContent = <View
+        style={{
+            top: buttonPos.y + buttonPos.height + 5,
+            left: buttonPos.x,
+            elevation: 5,
+        }}
+        className=" absolute flex-row rounded-full border border-border p-1 bg-popover"
+    >
+        {items.map((item) => (
+            <TouchableOpacity
+                key={item.id}
+                onPress={() => handleSelect(item)}
+            >
+                <Tooltip content={item.title}>
+                    {isEmoji(item.icon) ? (
+                        <Text className="text-3xl w-12 h-12 items-center justify-center web:hover:scale-110 flex web:hover:bg-muted/60 web:active:bg-muted rounded-full">{item.icon}</Text>
+                    ) : (
+                        <View className="w-12 h-12 items-center text-muted-foreground web:hover:text-foreground web:hover:scale-110 web:duration-200 justify-center flex web:hover:bg-muted/60 web:active:bg-muted rounded-full">
+                            <Icon icon={item.icon} size={30} />
                         </View>
-                    </TouchableWithoutFeedback>
-                </ModalBase>
-            )}
-        </>
-    );
+                    )}
+                </Tooltip>
+            </TouchableOpacity>
+        ))}
+    </View>
+
+    const content = modalVisible ? <ModalBase
+        presentationStyle="overFullScreen"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+    >
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+            <View className="flex-1 bg-transparent">
+                {isWeb ? <RemoveScroll>{ReactionContent}</RemoveScroll> : ReactionContent}
+            </View>
+        </TouchableWithoutFeedback>
+    </ModalBase> : null
+
 
     if (asChild) {
         const childProps = {

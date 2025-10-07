@@ -31,25 +31,25 @@ export default function () {
             <View className="gap-y-2 w-full">
                 <Row className="flex-row gap-y-2 flex-wrap gap-x-2 w-full items-center justify-center"><AuthPanel /></Row>
                 <Link className="flex-1 min-w-200" href="/forgot-password" haptics="Medium">
-                                    <Button
-                                        title={t('login_modal_fp')}
-                                        variant="default"
-                                        startDecorator="RotateCcw"
-                                        fullWidth
-                                        size="base"
-                                         
-                                    />
-                                </Link>
-                                <Link className="flex-1 min-w-200" href="/create-account" haptics="Medium">
-                                    <Button
-                                        title={t('login_modal_new_account')}
-                                        variant="default"
-                                        fullWidth
-                                        size="base"
-                                        startDecorator="UserRoundPlus"
-                                         
-                                    />
-                                </Link>
+                    <Button
+                        title={t('login_modal_fp')}
+                        variant="default"
+                        startDecorator="RotateCcw"
+                        fullWidth
+                        size="base"
+
+                    />
+                </Link>
+                <Link className="flex-1 min-w-200" href="/create-account" haptics="Medium">
+                    <Button
+                        title={t('login_modal_new_account')}
+                        variant="default"
+                        fullWidth
+                        size="base"
+                        startDecorator="UserRoundPlus"
+
+                    />
+                </Link>
             </View>
         </View>
     )
