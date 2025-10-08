@@ -110,12 +110,12 @@ export function fillTabs(
         menu?.config
     )
     // Forcefully filter out 'friend-suggestions'
-    menuItems = menuItems.filter(
+    /*menuItems = menuItems.filter(
         (item) =>
             item.link !== 'friend-suggestions' &&
             item.key !== 'friend-suggestions' &&
             item.name !== 'friend-suggestions'
-    )
+    )*/
 
     return menuItems.map((item, index) => {
         item.link = item.link.replace('page/', '')
