@@ -110,7 +110,10 @@ export function BlockByServiceName(props) {
     let { data, name, ...rest } = props
     let b = null;
     if (name) {
-        Object.keys(data?.elements).forEach(key => {
+        if (!data || !data.elements || typeof data.elements !== 'object') {
+            b = null;
+        } else {
+        Object.keys(data.elements).forEach(key => {
             Object.keys(data.elements[key]).forEach(key2 => {
                 if (data.elements[key][key2].content) {
                     Object.keys(data.elements[key][key2].content).forEach(key3 => {
@@ -120,6 +123,7 @@ export function BlockByServiceName(props) {
                 }
             });
         });
+        }
     }
     if (b)
         return <Block exProps={name.exProps} extraProps={{ ...(name.exProps || {}), source: name }} key={b.id} uri={data.uri} url={data.url} block={b} showTitle={name.showTitle} fullWidth={name.fullWidth} showPad={name.showPad} showPadding={name.showPadding} showBg={name.showBg} unitType={name.unitType} {...rest} />;

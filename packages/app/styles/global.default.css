@@ -13,7 +13,7 @@
         --popover-foreground: var(--neutral-800); /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
         --primary: var(--accent); /*background for primary buttons, links, active states, focus rings. Use use high-contract background from gray-scale or accent-scale.*/
         --primary-foreground: var(--accent-foreground); /*content on primary buttons, active states, primary surfaces*/
-        --secondary: var(--neutral-300);  /*background for secondary buttons, secondary surfaces*/
+        --secondary: var(--neutral-200);  /*background for secondary buttons, secondary surfaces*/
         --secondary-foreground: var(--neutral-900); /*content on secondary buttons, secondary surfaces*/
         --accent: var(--accent-600); /*background for accent buttons, accent surfaces*/
         --accent-hover: var(--accent-500); /*background for accent buttons, accent surfaces on hover*/
@@ -118,7 +118,7 @@
         --popover-foreground: var(--neutral-300); /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
         --primary: var(--accent-500); /*background for primary buttons, links, active states, focus rings. Use use high-contract background from gray-scale or accent-scale.*/
         --primary-foreground: var(--accent-foreground); /*content on primary buttons, active states, primary surfaces*/
-        --secondary: var(--neutral-700);  /*background for secondary buttons, secondary surfaces*/
+        --secondary: var(--neutral-800);  /*background for secondary buttons, secondary surfaces*/
         --secondary-foreground: var(--neutral-200); /*content on secondary buttons, secondary surfaces*/
         --accent: var(--accent-500); /*background for accent buttons, accent surfaces*/
         --accent-foreground: var(--neutral-950); /*content on accent buttons, accent surfaces*/
@@ -193,6 +193,13 @@
     }
 
 }
+
+@layer base {
+    /* Ensure Tailwind `border` (width-only) has a sensible default color from theme vars */
+    *, ::before, ::after {
+        border-color: rgb(var(--border));
+    }
+}
 /*
 @font-face {
     font-family: 'MainFont';
@@ -264,7 +271,6 @@ select{
         inset: -8px;
         border-radius: 0.5rem; /* match button rounding */
     }
-    .u-action-hitarea-xxs::before { inset: -8px; }
     .u-action-hitarea-xs::before { inset: -8px; }
     .u-action-hitarea-sm::before { inset: -6px; }
     .u-action-hitarea-base::before { inset: -4px; }

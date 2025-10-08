@@ -548,7 +548,7 @@ export const Author = memo(({ data, url, t }) => {
             <Profile
                 {...dataIcon}
                 displayType="unit"
-                displaySize="base"
+                displaySize="lg"
                 showInfo={
                     <Row className="items-center flex-wrap">
                         

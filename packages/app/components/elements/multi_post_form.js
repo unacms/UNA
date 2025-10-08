@@ -1,7 +1,7 @@
 import { View, Row, ScrollView, Pressable } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
 import { useState, useContext, useEffect, useCallback, useMemo } from 'react'
-import { FeedbackHaptics, getAlert, menuItemsByNameNew, cloneObject } from 'app/lib/util'
+import { FeedbackHaptics, getAlert, menuItemsByNameNew, cloneObject, appSetting } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
 import { CardList } from 'app/ui/molecules/card'
@@ -49,30 +49,23 @@ export default function MultiPostForm({ data }) {
 
     return (
 
-        <CardList>
-            <Row className={` ${cd('gap-sm')}`}>
-                
-                <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
-                
-                <View className="flex-auto">
-                    <Button
-                        size="base"
-                        variant="secondary"
-                        fullWidth
-                        rounded
-                        title={t('Create new ') + firstForm.title.toLowerCase()}
-                        align="start"
+        <CardList className="flex-row gap-2 lg:gap-3">
+            <Profile {...profileData} displaySize="lg" displayType="unit_wo_info" />
+              
+                    <Pressable 
                         onPress={getFirstForm}
-                    />
-                </View>
+                        className={`${appSetting('feed', 'post_trigger')}`}
+                    >
+                        <Text>{t('Create new ') + firstForm.title.toLowerCase()}</Text>
+                    </Pressable>
             
             <FormModal key={pageData?.ts} pageData={pageData} setPageData={setPageData} />
             {menu_add_items.length > 0 && <Row className={` ${cd('gap-sm')} flex-none`}>
                 {menu_add_items.map((item, index) => (
-                    <Button key={item.name} size="base" fullWidth variant="secondary" rounded iconOnly onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon}  />
+                    <Button key={item.name} size="lg" fullWidth variant="secondary" rounded iconOnly onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon}  />
                 ))}
             </Row>}
-            </Row>
+            
         </CardList>
 
     )

@@ -187,6 +187,24 @@ export default function (props) {
         const text = visibilityData ? visibilityData.text : ''
 
         const v = filteredValues.find(item => item.value == field.value)?.label || filteredValues[0].label;
+        // Optional plain Button rendering when requested
+        if (props.noContainer) {
+            const displayText = selectedSubLabels.length > 0
+                ? selectedSubLabels.slice(0, 3).join(', ') + (selectedSubLabels.length > 3 ? ' + ' + (selectedSubLabels.length - 3) + ' more' : '')
+                : text;
+            return (<>
+                {modalElement}
+                {props.addElement}
+                <Button
+                    title={displayText}
+                    startDecorator={icon}
+                    endDecorator="ChevronsUpDown"
+                    variant={props.variant || 'secondary'}
+                    size={props.size || 'sm'}
+                    onPress={() => handleShowModal()}
+                />
+            </>);
+        }
         return (<>
             {modalElement}
             <Pressable onPress={() => handleShowModal()}>

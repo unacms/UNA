@@ -156,7 +156,7 @@ return;*/
             <Row className=' items-center h-14 '>
                 <ScrollView horizontal={true} className={`${cd('px-lg')} flex w-full scrollbar-hide`} >
                     <Row
-                        className={`  ${feedList.length > 1 ? '  gap-2 ' : ''
+                        className={`  ${feedList.length > 1 ? ' gap-2 ' : ''
                             }    `}
                     >
                         {feedList.length > 1 &&
