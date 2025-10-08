@@ -118,6 +118,10 @@ const theme = {
             ...colors,
             ...nativewindUIColors,
         },
+        borderColor: {
+            // Make `border` (width-only) pick up semantic default color on web and native
+            DEFAULT: nativewindUIColors.border,
+        },
       
         boxShadow: {
             'xs': 'var(--shadow-xs)',

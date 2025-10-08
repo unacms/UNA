@@ -379,7 +379,10 @@ export function getRandomColor(str) {
 
 export function getBlocksFromData(data) {
     let blocks = {};
-    Object.keys(data?.elements).forEach(key => {
+    if (!data || !data.elements || typeof data.elements !== 'object') {
+        return blocks;
+    }
+    Object.keys(data.elements).forEach(key => {
         Object.keys(data.elements[key]).forEach(key2 => {
             blocks['block' + data.elements[key][key2].id] = { name: data.elements[key][key2].source, showPad: true }
             if (data.elements[key][key2] && Array.isArray(data.elements[key][key2].content) && data.elements[key][key2].content[0] && data.elements[key][key2].content[0].type != 'browse') {

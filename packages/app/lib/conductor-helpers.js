@@ -361,9 +361,12 @@ export function addMoreData(
 
 export function getContent(data, block) {
     const blockName = block.name
-    const b = Object.values(data?.elements)
-        .flatMap(Object.values)
-        .find((element) => element.content && element.source === blockName)
+    if (!data || !data.elements || typeof data.elements !== 'object') {
+        return { data: null, type: 'block', block }
+    }
+    const b = Object.values(data.elements)
+        .flatMap((v) => (v && typeof v === 'object' ? Object.values(v) : []))
+        .find((element) => element?.content && element?.source === blockName)
 
     return b?.content[0]?.type === 'browse' && !block.sidebar
         ? { data: b.content[0].data, type: 'browse' }

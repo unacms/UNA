@@ -88,7 +88,7 @@ export default function Unit(props) {
                         <View className="sm:h-14">
                             <Text
                                 numberOfLines={1}
-                                className=" text-lg leading-9 font-semibold text-card-foreground"
+                                className=" text-mase leading-9 font-bold text-card-foreground"
                             >
                                 {data.title}
                             </Text>

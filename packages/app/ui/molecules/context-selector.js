@@ -31,7 +31,7 @@ function renderListItem_(url, text, icon, isActive) {
                     <View
                         className={`items-center w-9 h-9 justify-center ${isActive
                                 ? ' bg-primary text-primary-foreground  '
-                                : ' bg-muted/60 web:group-hover:bg-secondary/60 web:duration-200 '
+                                : ' bg-muted/60 web:group-hover:bg-secondary/80 web:duration-200 '
                             } rounded-full`}
                     >
                         {icon}
@@ -103,7 +103,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
     const CurrentContext = (
         <Link className="flex-auto items-center justify-start w-full flex" href={contextRoot.url}>
             <Row className="items-center gap-2 px-2">
-                <View className='rounded-full items-center justify-center bg-muted/60 web:group-hover:bg-secondary/60 web:duration-200 text-card-foreground web:hover:text-foreground'>
+                <View className='rounded-full items-center justify-center web:duration-200 text-card-foreground web:hover:text-foreground'>
                     {contextRoot.image}
                 </View>
                 {!!contextRoot.name && (
