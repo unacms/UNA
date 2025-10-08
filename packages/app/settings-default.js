@@ -298,7 +298,7 @@ export const settingsDefault = {
     },
     feed: {
         feed_container: 'relative flex-auto mx-auto w-full max-w-3xl  ',
-        post_trigger: 'active:bg-muted rounded-lg lg:rounded-full flex-auto text-muted-foreground web:hover:text-foreground lg:bg-muted/80 hover:bg-muted   justify-center px-1 lg:px-4',
+        post_trigger: 'active:bg-muted rounded-lg font-medium lg:rounded-full flex-auto text-muted-foreground web:hover:text-foreground  lg:bg-muted/80 lg:hover:bg-muted justify-center px-1 lg:px-4',
         show_html: false,
         default_feed: 'foryou',
         list: [
@@ -1642,7 +1642,7 @@ export const settingsDefault = {
                 'text-red-500 dark:text-neutral-300 web:dark:group-hover:text-neutral-50',
 
             'u-btn-group-item-text-cnt':
-                ' web:group-hover:bg-muted/60 web:hover:!bg-muted web:duration-200 ',
+                '  web:lg:hover:!bg-secondary/80 active:bg-secondary web:duration-200 ',
             'u-btn-group-item-text-text':
                 ' font-semibold text-muted-foreground web:group-hover:text-foreground ',
             'u-btn-group-item-text-icon':

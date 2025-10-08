@@ -97,9 +97,9 @@ export const Header = memo(({
 
     return (
 
-        <Row className="items-center justify-between h-14">
+        <Row className="items-center justify-between h-14 px-1">
             {((!currentUser || !pageData?.context) && !text && (!settings?.headerSettings || settings?.headerSettings?.header)) &&
-                <View className=" px-3">
+                <View className="px-3">
                     <Link href="/home" aria-label="Home">
                         <Pressable className="items-center">
                             {appStatic('logo')}
@@ -108,7 +108,7 @@ export const Header = memo(({
                 </View>
             }
             {(backButtonPresented && (!isWeb || history.length > 2)) && (
-                <View className=" px-2 items-center"><Button variant="text" rounded onPress={() => {
+                <View className="px-2 items-center"><Button variant="text" rounded onPress={() => {
                     FeedbackHaptics('Medium');
                     router ? router?.back() : history.back();
                 }} startDecorator="ArrowLeft" size="base" /></View>
