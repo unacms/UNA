@@ -445,7 +445,7 @@ export default function FormFeed(props) {
                 >
                     {
                         props?.exProps?.showForm !== false && (
-                            <Row className={`${cd('gap-sm')}`}>
+                            <Row className="gap-2 lg:gap-3">
                                 <View className="my-auto">
                                     <ProfileView isImageOnly={true} />
                                 </View>

@@ -298,6 +298,7 @@ export const settingsDefault = {
     },
     feed: {
         feed_container: 'relative flex-auto mx-auto w-full max-w-3xl  ',
+        post_trigger: 'active:bg-muted rounded-lg lg:rounded-full flex-auto text-muted-foreground web:hover:text-foreground lg:bg-muted/80 hover:bg-muted   justify-center px-1 lg:px-4',
         show_html: false,
         default_feed: 'foryou',
         list: [
@@ -1098,7 +1099,7 @@ export const settingsDefault = {
                 padding_with_title: ' px-2 gap-1 ',
                 icon_container:
                     ' text-base h-9 flex items-center justify-center',
-                title_container: ' text-sm leading-9 inline-flex items-cente px-0.5  ',
+                title_container: ' text-sm leading-9 inline-flex items-center  ',
                 icon_size: 20,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '  ', // conditional margin for text container when icon is present
@@ -1107,7 +1108,7 @@ export const settingsDefault = {
             },
             
             base: {
-                rounded: ' rounded-md ',
+                rounded: ' rounded-lg ',
                 padding: '  ',
                 padding_icon_only: ' h-10 w-10 ',
                 padding_with_title: ' px-3 gap-2 h-10 items-center ',
@@ -1125,7 +1126,7 @@ export const settingsDefault = {
                 padding_icon_only: ' h-12 w-12 ',
                 padding_with_title: ' px-4 h-12 items-center ',
                 icon_container: '  text-lg flex items-center ',
-                title_container: ' leading-12 px-2 text-base items-center flex',
+                title_container: ' leading-12 text-base items-center flex',
                 icon_size: 24,
                 icon_margin: '', // conditional margin for icon container when title is present
                 title_margin: '', // conditional margin for text container when icon is present
@@ -1370,10 +1371,10 @@ export const settingsDefault = {
         },
         cards: {
             'u-card-list':
-                ' u-card-list bg-card/80 shadow-sm border border-border/60 web:border-0 web:ring-0 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden sm:rounded-2xl ',
+                ' u-card-list bg-card shadow-sm border border-border/60 web:border-0 web:ring-0 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden sm:rounded-2xl ',
             'u-card-list-padding': ' p-3 lg:p-4 ',
             'u-card-base':
-                ' u-card-base bg-card/80 shadow-sm border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden rounded-2xl gap-4',
+                ' u-card-base bg-card shadow-sm border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden rounded-2xl gap-4',
             'u-card-padding': ' p-4 ',
             'u-card-header': 'flex gap-2',
             'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',
@@ -1595,7 +1596,7 @@ export const settingsDefault = {
             'u-btn-danger-trans': ' web:duration-200',
             
 
-            'u-btn-text-cnt': ' group web:hover:bg-muted/60 active:bg-muted active:scale-105 lg:active:scale-95 ',
+            'u-btn-text-cnt': ' group web:sm:hover:bg-muted/60 active:bg-muted  ',
             'u-btn-text-text':
                 ' font-semibold text-label-tertiary web:group-hover:text-label-primary',
             'u-btn-text-trans': ' web:duration-200',
@@ -1604,7 +1605,7 @@ export const settingsDefault = {
             'u-btn-link-cnt': ' group active:bg-muted/60 ',
             'u-btn-link-text':
                 ' font-semibold text-label-tertiary group-hover:text-label-link active:text-label-link web:duration-200',
-            'u-btn-text-trans': ' web:duration-200 active:scale-105 lg:active:scale-95 ',
+            'u-btn-text-trans': ' web:duration-200  ',
             
 
             'u-btn-outline-cnt':

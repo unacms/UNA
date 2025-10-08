@@ -6,7 +6,6 @@ export default function UI(props) {
     const sizes = ['xs', 'sm', 'base', 'lg'];
     const variants = ['default', 'primary', 'secondary', 'danger', 'text', 'link', 'outline', 'tab'];
 
-    // Конфигурации отображения кнопок
     const buttonGroups = [
         { label: 'Normal', props: {} },
         { label: 'Rounded', props: { rounded: true } },
