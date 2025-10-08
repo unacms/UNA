@@ -981,7 +981,7 @@ export const settingsDefault = {
             primaryBg: 'rgba(37,99,235,0.1)',
         },
         dropdown: {
-            cnt: ' rounded-2xl overflow-hidden shadow-xl border border-border p-2 bg-popover z-50  ',
+            cnt: ' rounded-2xl overflow-hidden shadow-xl border border-border/80 p-1 bg-popover z-50  ',
         },
         conductor: {
             menu: ' w-full items-left justify-center ',
@@ -1642,7 +1642,7 @@ export const settingsDefault = {
                 'text-red-500 dark:text-neutral-300 web:dark:group-hover:text-neutral-50',
 
             'u-btn-group-item-text-cnt':
-                '  web:lg:hover:!bg-secondary/80 active:bg-secondary web:duration-200 ',
+                '  web:lg:hover:bg-secondary/80 active:bg-secondary web:duration-200 ',
             'u-btn-group-item-text-text':
                 ' font-semibold text-muted-foreground web:group-hover:text-foreground ',
             'u-btn-group-item-text-icon':

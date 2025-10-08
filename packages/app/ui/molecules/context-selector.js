@@ -101,8 +101,8 @@ export default function ContextSelector({ data, url, uri, mode }) {
     }
 
     const CurrentContext = (
-        <Link className="flex-auto items-center justify-start w-full flex" href={contextRoot.url}>
-            <Row className="items-center gap-2 px-2">
+        <Link variant="ghost" size="lg" href={contextRoot.url}>
+            <Row className="items-center gap-2 ">
                 <View className='rounded-full items-center justify-center web:duration-200 text-card-foreground web:hover:text-foreground'>
                     {contextRoot.image}
                 </View>
@@ -121,15 +121,15 @@ export default function ContextSelector({ data, url, uri, mode }) {
     const DropDown = (
         <DropdownPopup
             trigger={
-                <Row className="items-center justify-center w-11 h-11">
-                    <Icon icon="ChevronsUpDown" size={24} />
-                </Row>
+                <Button iconOnly startDecorator="ChevronsUpDown" variant="text" size="base" rounded />
+                    
+                
             }
             minPopupWidth={360}
             open={isOpen}
             onOpenChange={handleOpenChange}
         >
-            <View className="flex-col gap-y-0.5">
+            <View className="flex-col gap-px">
                 {data.list.map((item) =>
                     renderListItem(
                         item,
@@ -155,7 +155,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
                     ) : (
                         <View
                             key={Math.random()}
-                            className="border-t border-bdr dark:border-bdr-d mt-1 pt-1"
+                            
                         />
                     )
                 )}
@@ -206,10 +206,10 @@ export default function ContextSelector({ data, url, uri, mode }) {
                             </>
                         )}
 
-                    <ButtonsGroup variant="text" size="lg" fullWidth={true} >
+                    <Row className="items-center gap-2 px-1">
                         {CurrentContext}
                         {DropDown}
-                    </ButtonsGroup>
+                    </Row>
                 </Row>
             ) : (
                 CurrentContext
