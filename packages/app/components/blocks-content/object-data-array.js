@@ -62,7 +62,7 @@ export default function BlockContentObjectDataArray(props) {
                 if (!isObjectsEqual(prev, dynamicData.data)) {
                     return dynamicData.data.map(item => ({
                         ...item,
-                        data: {
+                        data: item.type !== 'form' ? item.data : {
                             ...item.data,
                             updated: Date.now()
                         }
