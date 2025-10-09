@@ -396,8 +396,6 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
             setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100);
         };
 
-
-
         return (
             <PanelGroup
                 key={`${pageData?.uri || 'default'}-pnl2-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
@@ -433,9 +431,9 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
                 </>
                 }
                 <Panel {...centerPanelProps}>
-                    <View className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'} ${layoutName !== 'navigator' ? 'sm:' + cd('p-md') : 'lg:p-2 '}`}>
+                    <View className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'} ${layoutName !== 'navigator' ? 'mt-0.5 sm:' + cd('p-md') : 'lg:p-2 '}`}>
                         {MainContent}
-                        {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
+                        {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.filter(item => (item.type !='block')).length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
                     </View>
                 </Panel>
                 {isRightCol && <>
