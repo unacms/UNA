@@ -48,7 +48,7 @@ const getData = cache(async (params, search_params) => {
         },
         cache: 'no-store'
     };
-    let l = UNA_URL + '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
+    let l = UNA_URL + '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path+'&ts='+Date.now();
     let searchParams = JSON.parse(JSON.stringify(search_params));
 
     delete searchParams.cookieString;
