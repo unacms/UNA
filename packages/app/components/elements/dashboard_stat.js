@@ -345,7 +345,7 @@ function ElementDashboardStat(props) {
                                     className=" p-3 lg:p-4 bg-secondary/80 hover:bg-secondary rounded-2xl w-full gap-3 flex-1  min-w-48 lg:min-w-64"
                                     key={index}
                                 ><Link href={item.url.replace("{profile_url_postfix}", currentUser?.url.replace('/view-persons-profile/', ''))}>
-                                        <View className="flex-row w-full h-10 justify-between items-center">
+                                        <View className="flex-row w-full h-10 justify-between items-center text-card-foreground ">
                                             <Icon
                                                 icon={item.icon}
                                                 width={32}
@@ -377,7 +377,6 @@ function ElementDashboardStat(props) {
                                             <Text className="flex-auto text-lg font-semibold text-card-foreground leading-none">
                                                 {item.title}
                                             </Text>
-
                                             {item.count > 0 && <Text>
                                                 {getCounter(
                                                     item[item.action],
@@ -386,17 +385,17 @@ function ElementDashboardStat(props) {
                                                     colors.default
                                                 )}
                                             </Text>}
-                                            {(item?.type == 'messenger' && currentUser?.counters?.bx_messenger_new_messages) && (
+                                            {(item?.type == 'messenger' && currentUser?.counters?.bx_messenger_new_messages > 0) ? (
                                                 <View className='bg-destructive border border-card web:border-0 web:ring-2 web:ring-card rounded-full px-1.5 items-center justify-center'>
-                                                    <Text className='text-white text-sm font-medium'>{currentUser?.counters?.bx_messenger_new_messages}</Text>
+                                                    <Text className='text-card-foreground text-sm font-medium'>{currentUser?.counters?.bx_messenger_new_messages}</Text>
                                                 </View>
-                                                )
+                                                ) : null
                                             }
-                                             {(item?.type == 'notifications' && currentUser.notifications) && (
+                                             {(item?.type == 'notifications' && currentUser.notifications > 0) ? (
                                                 <View className='bg-destructive border border-card web:border-0 web:ring-2 web:ring-card rounded-full px-1.5 items-center justify-center'>
-                                                    <Text className='text-white text-sm font-medium'>{currentUser.notifications}</Text>
+                                                   <Text className='text-card-foreground text-sm font-medium'>{currentUser.notifications}</Text>
                                                 </View>
-                                                )
+                                                ) : null
                                             }
                                         </View></Link>
                                 </View>
@@ -409,12 +408,11 @@ function ElementDashboardStat(props) {
                                 className="p-3 lg:p-4 bg-secondary/80 hover:bg-secondary rounded-2xl w-full flex-1 min-w-48 lg:min-w-64"
                                 key={index}
                             ><Link href={item.url} >
-                                    <View className="flex-row w-full h-10 justify-between items-center">
+                                    <View className="flex-row w-full h-10 justify-between items-center text-card-foreground">
                                         <Icon
                                             icon={item.icon}
                                             width={32}
                                             height={32}
-                                            color={colors.default}
                                         />
                                         <Text className="flex-none text-3xl font-semibold text-muted-foreground leading-none">
                                             {item.current}
