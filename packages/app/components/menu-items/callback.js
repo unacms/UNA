@@ -76,6 +76,12 @@ const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, red
             storageClear();
         setLayoutData(getAlert(oProps.data.on_callback_param, { time: Date.now(), reload: true }));
     }
+    if (oProps.data.on_callback == 'alert,hide') {
+        setButtonProps({...buttonProps, visible:false})
+        if (oProps.data.on_callback_clear_cache)
+            storageClear();
+        setLayoutData(getAlert(oProps.data.on_callback_param, { time: Date.now(), reload: true }));
+    }
 };
 
 export default function MenuItemButton(oProps) {
