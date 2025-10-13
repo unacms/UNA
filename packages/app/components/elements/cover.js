@@ -129,7 +129,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
 
     return (
         <Row className={`${conductorTheme.content_max_width} flex-row items-center justify-between mx-auto h-14`}>
-            <Row className='items-left' >
+            <Row className='items-center' >
                 <View className='mr-2'>{getCoverBackButton(bPerson)}</View>
                 {appSetting('context_selector', 'show_always') ? <View className={`${TABLET_MODE_FROM}:hidden `}>
                     <ContextSelector data={context} mode="compact" />
@@ -433,6 +433,11 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
 
     return (
         <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
+            {appSetting('context_selector', 'show_always') ? <Row className='items-center w-full h-14 px-3 ' >
+                <View className='mr-2'>{getCoverBackButton(bPerson)}</View>
+            <View className={`${TABLET_MODE_FROM}:hidden `}>
+                    <View><ContextSelector data={context} mode="compact" /></View>
+                </View></Row>: <></>}
             {!isMin && (
                 <CoverImage
                     mode="cover"
