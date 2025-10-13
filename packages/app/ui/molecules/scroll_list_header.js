@@ -96,34 +96,36 @@ export const Header = memo(({
     const HeaderElement = getComponent('molecule', 'header_element');
 
     return (
-
-        <Row className="items-center justify-between h-14 px-1">
-            {((!currentUser || !pageData?.context) && !text && (!settings?.headerSettings || settings?.headerSettings?.header)) &&
-                <View className="px-3">
-                    <Link href="/home" aria-label="Home">
-                        <Pressable className="items-center">
-                            {appStatic('logo')}
-                        </Pressable>
-                    </Link>
-                </View>
-            }
-            {(backButtonPresented && (!isWeb || history.length > 2)) && (
-                <View className="px-2 items-center"><Button variant="text" rounded onPress={() => {
-                    FeedbackHaptics('Medium');
-                    router ? router?.back() : history.back();
-                }} startDecorator="ArrowLeft" size="base" /></View>
-            )}
-            {(pageData?.context?.current?.url || isHome) && <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
-            {((!!text && !pageData?.context?.current?.url) || (pageData?.context && !pageData?.context?.current?.url && !isHome)) && <Row className='items-center px-3'><>
-                {(!!text && !pageData?.context?.current?.url) && (
-                    <TextHeader text={text}></TextHeader>
+        <Row className="items-center justify-between h-14">
+            <Row className="items-center justify-start">
+                {((!currentUser || !pageData?.context) && !text && (!settings?.headerSettings || settings?.headerSettings?.header)) &&
+                    <View className="px-3">
+                        <Link href="/home" aria-label="Home">
+                            <Pressable className="items-center">
+                                {appStatic('logo')}
+                            </Pressable>
+                        </Link>
+                    </View>
+                }
+                {(backButtonPresented && (!isWeb || history.length > 2)) && (
+                    <View className="px-2 items-center"><Button variant="text" rounded onPress={() => {
+                        FeedbackHaptics('Medium');
+                        router ? router?.back() : history.back();
+                    }} startDecorator="ArrowLeft" size="base" /></View>
                 )}
-                {(pageData?.context && !pageData?.context?.current?.url && !isHome) && <ContextSelector mode="min" url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
-            </></Row>}
-            {(type !== 'string' && headerContent) && <View className="flex-auto">{headerContent}</View>}
+                {(pageData?.context?.current?.url || isHome) && <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
+                {((!!text && !pageData?.context?.current?.url) || (pageData?.context && !pageData?.context?.current?.url && !isHome)) && <Row className='items-center px-3'><>
+                    {(!!text && !pageData?.context?.current?.url) && (
+                        <TextHeader text={text}></TextHeader>
+                    )}
+                    {(pageData?.context && !pageData?.context?.current?.url && !isHome) && <ContextSelector mode="min" url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
+                </></Row>}
+                {(type !== 'string' && headerContent) && <View className="flex-auto">{headerContent}</View>}
+
+            </Row>
             <Row className=" items-end">
                 {rightHeaderComponent ? rightHeaderComponent : memoizedRightComponents}
-                <HeaderElement mode="small" url={pageData.url} uri={pageData.uri} />
+                <HeaderElement mode="small" url={pageData?.url} uri={pageData?.uri} />
                 {(pageData?.context && pageData?.cover_block?.actions_menu) && <CoverMenu
                     {...pageData.cover_block.actions_menu}
                     uri={pageData.uri}

@@ -24,6 +24,7 @@ export async function GET(request) {
 
         // Extract size and dimensions from query parameters
         const width = searchParams.get("width");
+        const fill = searchParams.get("fill");
         const height = searchParams.get("height");
         const size = searchParams.get("size");
          const strokeWidth = searchParams.get('strokeWidth');
@@ -32,6 +33,7 @@ export async function GET(request) {
         const iconProps = {
             color: "currentColor",
             ...(width && { width }),
+            ...(fill && { fill }),
             ...(height && { height }),
             ...(size && { size }),
             ...(strokeWidth && { strokeWidth }),

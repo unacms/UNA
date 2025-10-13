@@ -99,14 +99,13 @@ export default function PageLayout({ data, blocks, isModal, url }) {
         setHeight(h)
     }
 
-
     if (isModal) {
         return (
             <View className="w-full">
                 <View className="w-full " style={{ height: height }}>
                     <CommentsBrowse
                         scrollProps={
-                            {
+                            isModal ? {pageData: null, headerComponent: <></>, isNoContainer: true, headerHeight: 8}: {
                                 headerHeight: 64,
                                 pageData: data,
                                 // headerComponent: headerItems[0].data,
@@ -114,6 +113,7 @@ export default function PageLayout({ data, blocks, isModal, url }) {
                                 padding: 16,
                             }
                         }
+                        useCustomScrollHandler={true}
                         height={height > 0 ? height : undefined}
                         scrollToIndex={scrollToEnd}
                         addItems={aItems}
@@ -166,7 +166,6 @@ export default function PageLayout({ data, blocks, isModal, url }) {
                     </View>
                 </KbAvoidingView>
             </View>
-
         </View>
     );
 }

@@ -128,11 +128,9 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
     }
 
     return (
-        <View
-            className={`${conductorTheme.content_max_width} flex-row items-center justify-between mx-auto h-14`}
-        >
-            {getCoverBackButton(bPerson)}
+        <Row className={`${conductorTheme.content_max_width} flex-row items-center justify-between mx-auto h-14`}>
             <Row className='items-left' >
+                <View className='mr-2'>{getCoverBackButton(bPerson)}</View>
                 {appSetting('context_selector', 'show_always') ? <View className={`${TABLET_MODE_FROM}:hidden `}>
                     <ContextSelector data={context} mode="compact" />
                 </View> : <>                    <Row className='items-center gap-2'>
@@ -148,8 +146,6 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                         displaySize="lg"
                     />
                 </Row>
-
-
                     {isAddSelector && (
                         <View className={`${TABLET_MODE_FROM}:hidden `}>
                             <ContextSelector data={context} mode="min" />
@@ -174,7 +170,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                     </>
                 </Row>
             </View>
-        </View>
+        </Row>
     )
 }
 
@@ -327,8 +323,8 @@ function CoverImage({
                     'layout',
                     'max_width_content'
                 )} mx-auto overflow-hidden ${isCover
-                        ? ` h-[30vh] sm:${appSetting('cover', 'aspect_ratio')}`
-                        : 'pb-32'
+                    ? ` h-[30vh] sm:${appSetting('cover', 'aspect_ratio')}`
+                    : 'pb-32'
                     }`}
             >
                 {isCover && (

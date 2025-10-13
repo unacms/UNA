@@ -1,4 +1,4 @@
-import { Text} from 'app/design/typography'
+import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { Button, Input, InputRounded, Modal } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
@@ -13,18 +13,16 @@ export default function ElementMsg(props) {
     }
 
     return (
-        <>
-            <Modal id={'file-preview'} onVisible={props.onVisible} >
-                <View className='gap-4'>
-                   
-                        <Row className='gap-4 min-h-24 justify-center items-center w-full bg-muted/60 rounded-lg p-4 text-card-foreground'>
-                            <Icon icon="Info" size={24} />
-                            <Text className=" text-base text-card-foreground">{props.title}</Text>
-                        </Row>
-                        <Button variant="primary" size="base" fullWidth title="OK"  onPress={() => handleOk()} />
-                </View>
-            </Modal>
-           
-        </>
+        <Modal id={'file-preview'} onVisible={props.onVisible} >
+            <View className='gap-4'>
+
+                <Row className='gap-4 min-h-24 justify-center items-center w-full bg-muted/60 rounded-lg p-4 text-card-foreground'>
+                    <Icon icon="Info" size={24} />
+                    <Text className=" text-base text-card-foreground">{props.title}</Text>
+                </Row>
+                <View className='justify-center items-center'><Button variant="primary" size="base" title="OK" onPress={() => handleOk()} /></View>
+            </View>
+        </Modal>
+
     );
 }

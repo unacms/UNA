@@ -6,9 +6,10 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { useIsDesktop } from 'app/context/measure';
+import { Icon } from 'app/ui/atoms/icon'
 
 export default function () {
-    const bApps = appSetting('layout', 'apps') == true;
+    const bApps = appSetting('layout', 'apps') ;
     const cached = storageGet('menu:launcher', '');
     const isDesktop = useIsDesktop();
     const [menuData, setMenuData] = useState(cached);
@@ -37,6 +38,8 @@ export default function () {
     if ((menu_launcher_items.length == 0) && menuData)
         return <></>;
 
+    console.log("")
+
     return (
      
             <DropdownMenu items={menu_launcher_items.map((item, index) => ({
@@ -50,7 +53,7 @@ export default function () {
                     tooltip="All Apps"
                     rounded
                     alt={t("All Apps")}
-                    startDecorator="LayoutGrid"
+                    startDecorator={bApps === true ? "LayoutGrid" : <Icon width={24} icon={bApps}/>}
                     variant={buttonVariant}
                     size={buttonSize}
                 />
