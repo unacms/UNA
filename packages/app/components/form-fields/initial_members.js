@@ -11,6 +11,18 @@ import { Icon } from 'app/ui/atoms/icon'
 import { useTranslation } from 'react-i18next';
 
 const User = ({ data, onSelect, type }) => {
+    if (type !== 'multi'){
+        return (
+            <Pressable className="" onPress={() => onSelect(data)}>
+                <Row className=" gap-x-2 pl-1 pr-3 h-9 overflow-hidden truncate  items-center justiy-center">
+                    {<Profile displaySize="xs" displayType="unit_wo_info" {...data} showLinks={false} />}
+                    <Text className="text-card-foreground web:hover:text-primary text-sm font-semibold tracking-tight truncate">
+                        {data.display_name}
+                    </Text>
+                </Row>
+            </Pressable>
+        )
+    }
     return (
         <Pressable className="" onPress={() => onSelect(data)}>
             <Row className=" gap-x-2 pl-1 pr-3 h-9 overflow-hidden truncate rounded-full border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 bg-muted items-center justiy-center">
@@ -18,7 +30,7 @@ const User = ({ data, onSelect, type }) => {
                 <Text className="text-card-foreground web:hover:text-primary text-sm font-semibold tracking-tight truncate">
                     {data.display_name}
                 </Text>
-                {type == 'remove' && <Text className="text-card-foreground"><Icon icon="X" size={20} /></Text>}
+                <Text className="text-card-foreground"><Icon icon="X" size={20} /></Text>
             </Row>
         </Pressable>
     );
@@ -106,7 +118,6 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
 
 export default function (props) {
     const rules = {};
-    const { t } = useTranslation();
     const defaultValue = props.value ? props.value : '';
     const formContext = useFormContext();
     const name = props.name ? props.name : '';
@@ -144,15 +155,12 @@ export default function (props) {
             </Modal>
             <View className='w-full p-1.5 justify-between items-center flex-row flex-wrap border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-xl bg-input/60'>
                 <Row className='gap-2 items-start  flex-wrap flex-1'>
-                {selected && selected.map((oItem) => <User type={isSingle ? '' : "remove"} key={oItem.id} data={oItem} onSelect={onRemove} />)}
+                    {selected && selected.map((oItem) => <User type={isSingle ? '' : "multi"} key={oItem.id} data={oItem} onSelect={isSingle ? showSelect : onRemove} />)}
                 </Row>
                 <Button
-                    
-                    startDecorator="Plus"
+                    startDecorator={isSingle ? 'RefreshCw' : 'Plus'}
                     variant="default"
-                    
                     size="sm"
-
                     onPress={() => showSelect()}
                 />
             </View>
