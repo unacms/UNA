@@ -33,5 +33,5 @@ export const componentsMapDefault = {
     'layout_top_area_3_columns': PageUniversal,
     'layout_top_area_2_columns': PageUniversal,
     'layout_topbottom_area_2_columns': PageUniversal,
-    
+    'layout_1_column_thin': PageCustomLogin
 };

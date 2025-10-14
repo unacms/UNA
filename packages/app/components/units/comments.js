@@ -30,17 +30,13 @@ import { Animated, StyleSheet } from 'react-native'
 import { Theme } from 'app/design/theme'
 import { cd } from 'app/lib/util'
 import { Icon } from 'app/ui/atoms/icon'
+import { usePulseOne }  from 'app/lib/hooks/usePulseOnce'
 
 export default function UnitComments(props) {
     const { t } = useTranslation()
-    const { colors } = Theme()
     let { currentUser } = useCurrentUser()
     const [viewState, setViewState] = useState({ view: '' })
     const [postData, setPostData] = useState(null)
-
-    const entryAnim = useRef(new Animated.Value(0)).current // Base animation value, starts at 0 (hidden/offset)
-    const [didAnimateIn, setDidAnimateIn] = useState(false)
-    const selectionAnimationValue = useRef(new Animated.Value(0)).current
 
     let level = props.level || 0
     let lvls = props.lvls || []
@@ -53,7 +49,6 @@ export default function UnitComments(props) {
 
     const handleReply = useCallback(
         (data, isNoReaction) => {
-            console.log("datadatadata", data)
             if (!isNoReaction) FeedbackHaptics('Medium')
             props.handleReply(data)
         },
@@ -66,106 +61,8 @@ export default function UnitComments(props) {
         }
     }, [props.replyId])
 
-    useEffect(() => {
-        if (props.selectedId == data.cmt_id) {
-            selectionAnimationValue.setValue(0) // Reset before blinking
-            Animated.sequence([
-                Animated.timing(selectionAnimationValue, {
-                    toValue: 1,
-                    duration: 200,
-                    useNativeDriver: false,
-                }),
-                Animated.timing(selectionAnimationValue, {
-                    toValue: 0,
-                    duration: 200,
-                    useNativeDriver: false,
-                }),
-                Animated.timing(selectionAnimationValue, {
-                    toValue: 1,
-                    duration: 200,
-                    useNativeDriver: false,
-                }),
-                Animated.timing(selectionAnimationValue, {
-                    toValue: 0,
-                    duration: 200,
-                    useNativeDriver: false,
-                }),
-                Animated.timing(selectionAnimationValue, {
-                    toValue: 1,
-                    duration: 200,
-                    useNativeDriver: false,
-                }),
-                Animated.timing(selectionAnimationValue, {
-                    toValue: 0,
-                    duration: 200,
-                    useNativeDriver: false,
-                }),
-            ]).start()
-        }
-    }, [props.selectedId, data.cmt_id, selectionAnimationValue, colors.primary])
-
-    useEffect(() => {
-        if (props.isNewComment && !didAnimateIn) {
-            // New comment, and hasn't animated in yet
-            entryAnim.setValue(0) // Explicitly start from 0
-            Animated.spring(entryAnim, {
-                toValue: 1, // Animate to 1 (visible/final position)
-                tension: 40,
-                friction: 7,
-                useNativeDriver: true,
-            }).start(() => {
-                setDidAnimateIn(true)
-            })
-        } else if (!props.isNewComment && !didAnimateIn) {
-            // Not a new comment, and hasn't "animated in" (e.g., initial mount of an old comment)
-            entryAnim.setValue(1) // Set directly to visible state
-            setDidAnimateIn(true) // Mark as "animated in" because it's in its final state
-        } else if (didAnimateIn) {
-            // Already animated in, ensure it stays at the final state (value 1)
-            // This handles cases where isNewComment might change after initial animation/setup
-            entryAnim.setValue(1)
-        }
-    }, [props.isNewComment, didAnimateIn, entryAnim])
-
-    const interpolatedSelectionBackground = selectionAnimationValue.interpolate(
-        {
-            inputRange: [0, 1],
-            outputRange: ['transparent', colors.primary],
-        }
-    )
-
-    const entryStyle = {
-        opacity: entryAnim.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, 1],
-        }),
-        transform: [
-            {
-                translateY: entryAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [50, 0],
-                }),
-            },
-            {
-                scale: entryAnim.interpolate({
-                    inputRange: [0, 0.5, 1],
-                    outputRange: [0.95, 1.05, 1],
-                }),
-            },
-        ],
-    }
-
     if (!data) return null
 
-    /* let { data: dynamicData, error } = useSWR(
-         postData ? ['/api.php?r=' + appSetting("urls", "cmts") + '/&params[]={"module":"' + props.module + '","object_id":' + props.data.cmt_object_id + ',"action":"edit","id":' + props.data.cmt_id + '}', '', postData] : null,
-         fetcher,
-         !true ? undefined : {
-             revalidateIfStale: false,
-             revalidateOnFocus: false,
-             revalidateOnReconnect: false
-         }
-     );*/
     const { data: dynamicData, error } = useFetchForm(
         '/api.php?r=' +
             appSetting('urls', 'cmts') +
@@ -246,18 +143,13 @@ export default function UnitComments(props) {
             </Modal>
         )
     const isSelected = props.selectedId == data.cmt_id
-    const Wrapper = Animated.View
 
-    const combinedStyles = [
-        { width: '100%' },
-        entryStyle, // Apply entry animations (opacity, transform)
-        isSelected ? { backgroundColor: interpolatedSelectionBackground } : {},
-    ]
+    const { animatedStyle } = isSelected ? usePulseOne({ pulseDurationMs: 500, pulses: 6, autoStart: true, minOpacity: 0.2 }) : {};
 
     const Badges = getComponent('molecule', 'badges')
 
     return (
-        <Wrapper style={combinedStyles}>
+        <Animated.View style={animatedStyle}>
             <Row className={`${cd('gap-sm')}`}>
                 {cells}
                 <View className="w-9 z-50 flex-0 mt-3">
@@ -446,8 +338,7 @@ export default function UnitComments(props) {
                     )}
                 </View>
             </Row>
-         
-        </Wrapper>
+        </Animated.View>
     )
 }
 

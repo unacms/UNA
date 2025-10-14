@@ -232,7 +232,7 @@ export const settingsDefault = {
             // OLD appSetting('forms', 'form_without_captions')
             'sys_login',
             'sys_account_create',
-
+            'sys_forgot_password',
             'bx_invites_request_send',
         ],
         visibility_control_names: [
@@ -252,13 +252,14 @@ export const settingsDefault = {
             rounded: false,
         },
 
-        /* sys_login: { hide_errors: true, button_full_width: true },*/
+        sys_login: { hide_errors: true, button_full_width: true },
 
         sys_forgot_password: {
             hide_errors: true,
-            button_full_width: false,
+            button_full_width: true,
             
         },
+
         /* bx_invites_request_send: {
             hide_errors: true,
             button_full_width: true,
