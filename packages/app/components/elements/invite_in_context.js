@@ -29,7 +29,7 @@ export default function InviteInContext(props) {
             <Input placeholder='Enter 5-digit code' value={inputValue} onChangeText={(value) => { setInputValue(value) }} />
             {res.message && <Text>{res.message}</Text>}
             {res?.result && (
-                <Card>
+                <View className='mt-1'><Card>
                     <View>
                         <CardTitle>You're joining:</CardTitle>
                         <Row className='w-full mt-4 justify-between'><Profile {...res.data} displayType="unit" size="lg" />
@@ -37,6 +37,7 @@ export default function InviteInContext(props) {
                         </Row>
                     </View>
                 </Card>
+                </View>
             )
             }
         </>

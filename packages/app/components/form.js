@@ -41,6 +41,7 @@ const checkInputType = (name, form_name, input_name) => {
 }
 
 export default function (props) {
+   
     const data = props.data;
     const cacheKey = props?.request?.url || false;
     const response = props.response;
@@ -51,8 +52,9 @@ export default function (props) {
     let name = props.data?.params?.display?.includes('_delete') ? '' : (props.name ? props.name : props?.data?.params?.display)
     const defaultValues = {}
 
+    const { auto_focus, ...formProps } = props.formProps ?? {};
     // 1. Initialize isAutofocus based on a new prop, defaulting to false.
-    let isAutofocusEnabledForForm = props.enableAutoFocus === true;
+    let isAutofocusEnabledForForm = auto_focus === true;
 
     if (data.inputs) {
         const inputKeys = Object.keys(data.inputs); // Get keys to ensure order
@@ -61,9 +63,14 @@ export default function (props) {
                 data.inputs[key].value = 0;
 
             // 2. If autofocus is enabled for this form, apply to the first field and then disable for subsequent fields.
-            if (isAutofocusEnabledForForm) {
-                data.inputs[key].auto_focus = true;
-                isAutofocusEnabledForForm = false; // Ensure only the first field gets autofocus
+            if (data.inputs[key].type == "text" || data.inputs[key].type == "textarea"){
+                if (isAutofocusEnabledForForm) {
+                    data.inputs[key].auto_focus = true;
+                    isAutofocusEnabledForForm = false; // Ensure only the first field gets autofocus
+                }
+                else{
+                    data.inputs[key].auto_focus = false;
+                }
             }
 
             ['visibility', 'selector'].forEach(type => {
@@ -77,6 +84,7 @@ export default function (props) {
                 defaultValues[key] = data.inputs[key].value;
         }
     }
+
 
     const onSubmit = async d => {
         FeedbackHaptics('Medium')
@@ -201,8 +209,8 @@ export default function (props) {
         }
 
     }
-
-    let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true, lastChangedField, props.saveOnChanges, props.formProps);
+   
+    let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true, lastChangedField, props.saveOnChanges, formProps);
 
     if (inputs?.length > 0)
         inputs = inputs.filter(item => ((item.key !== null && item.key.toString() !== '') || item.props.type == 'block_end'))

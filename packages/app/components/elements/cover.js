@@ -433,7 +433,7 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
 
     return (
         <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
-            {appSetting('context_selector', 'show_always') ? <Row className='items-center w-full h-14 px-3 ' >
+            {appSetting('context_selector', 'show_always') ? <Row className={`${TABLET_MODE_FROM}:hidden items-center w-full h-14 px-3 `} >
                 <View className='mr-2'>{getCoverBackButton(bPerson)}</View>
             <View className={`${TABLET_MODE_FROM}:hidden `}>
                     <View><ContextSelector data={context} mode="compact" /></View>
