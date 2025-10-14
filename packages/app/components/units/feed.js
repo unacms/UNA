@@ -35,11 +35,6 @@ function DefaultUnit({ data }) {
         [data]
     )
 
-    const MainContentComponent = useMemo(
-        () => <MainContent url={url} data={data} />,
-        [url, data]
-    )
-
     const showCommentsModal = async (initFormData) => {
         let menu_actions2 = cloneObject(data.menu_actions)
         menu_actions2.items = menu_actions2.items.filter(
@@ -68,7 +63,7 @@ function DefaultUnit({ data }) {
                             <>
                                 <View className="gap-3 p-3 sm:px-4">
                                     <Author data={data} url={url} t={t} />
-                                    {MainContentComponent}
+                                    <MainContent fulltext={true} url={url} data={data} />
                                     <Row className="gap-2 items-center flex-auto justify-between flex-wrap-reverse">
                                         <ActionMenu
                                             data={menu_actions2}
@@ -115,7 +110,7 @@ function DefaultUnit({ data }) {
             )}
             {isCommentsModal && (
                 <Modal
-                    
+
                     onClose={() => setCmtsData(false)}
                     onVisible={!!cmtsData}
                     title={cmtsData.title}
@@ -136,27 +131,27 @@ function DefaultUnit({ data }) {
                     </View>
                 </Row>
                 <View className="flex-auto mb-2">
-                    {MainContentComponent}
+                    <MainContent url={url} data={data} />
                 </View>
                 <Row className="-mx-1.5">
-                {!!data.menu_counters && appSetting('feed', 'counters_menu') && (
-                            <CounterMenu
-                                data={data.menu_counters}
-                                showCommentsModal={showCommentsModal}
-                            />
-                )}   
-                 </Row>
+                    {!!data.menu_counters && appSetting('feed', 'counters_menu') && (
+                        <CounterMenu
+                            data={data.menu_counters}
+                            showCommentsModal={showCommentsModal}
+                        />
+                    )}
+                </Row>
                 <Row className=" gap-3 items-center flex-auto justify-between pt-1.5 mt-1 -mx-2 -mb-2  border-t border-border/40">
                     <ActionMenu
                         data={data.menu_actions}
                         showCommentsModal={showCommentsModal}
                     />
-                     <MenuManage
-                            id={data.id}
-                            menu={data?.menu_manage}
-                            setViewState={setViewState}
-                        />
-                 
+                    <MenuManage
+                        id={data.id}
+                        menu={data?.menu_manage}
+                        setViewState={setViewState}
+                    />
+
 
                 </Row>
 
@@ -171,7 +166,7 @@ function DefaultUnit({ data }) {
                         isShowMoreComments={isShowMoreComments}
                     />
                 )}
-                
+
             </CardList>
         </AnimatedBlock>
     )

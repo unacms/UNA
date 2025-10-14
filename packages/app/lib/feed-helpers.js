@@ -175,6 +175,7 @@ export const CommentsSection = memo(
 )
 
 export const MainContent = memo(({ url, data, fulltext }) => {
+    console.log("fulltextfulltext", fulltext)
     const bIsTitle =
         data?.content?.title && data?.content?.title?.trim() != ''
             ? true
