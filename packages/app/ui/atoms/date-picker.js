@@ -5,7 +5,8 @@ import { Modal } from 'app/design/controls'
 import { Button } from 'app/design/controls';
 import { Text } from 'app/design/typography';
 import { TextInput as Input } from 'react-native'
-
+import { formatDate } from 'app/lib/util'
+import { useTranslation } from 'react-i18next';
 const years = [];
 for (let y = 1900; y <= 2100; y++) {
     years.push({ value: y });
@@ -143,6 +144,7 @@ function getDatePart(date, part) {
 export default function ({ name, value = '', type, onChange }) {
 
     const bIsTime = type === 'datetime';
+    const { t } = useTranslation();
     const [showModal, setShowModal] = useState(false);
     const initValue = formatDateTime(value);
     const [dValue, setdValue] = useState(value ? initValue : null);
@@ -218,17 +220,7 @@ export default function ({ name, value = '', type, onChange }) {
         setdValue(value);
     }
 
-    function formatDate(date) {
-        if (date instanceof Date === false) {
-            return '';
-        }
-        const dd = String(date.getDate()).padStart(2, '0');
-        const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-        const yyyy = date.getFullYear();
-        return `${dd}.${mm}.${yyyy}`;
-    }
-
-
+   
     return (
         <>
             <Modal onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
@@ -243,7 +235,7 @@ export default function ({ name, value = '', type, onChange }) {
                 </View>
             </Modal>
             <Row className='gap-3 p-1 items-center border/50 border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 text-neutral-900 rounded-xl'>
-                <Button title={`${dValue ? formatDate(dValue) : 'Select date'}`} variant="text" endDecorator="Calendar" onPress={() => { setShowModal(true) }} />
+                <Button title={`${dValue ? formatDate(dValue, t, {yearPolicy: 'always', month: 'numeric'}) : 'Select date'}`} variant="text" endDecorator="Calendar" onPress={() => { setShowModal(true) }} />
                 {bIsTime && (<><View className='w-5'><Input
                     onChangeText={text => handleChangeTime(text, 23, 'h')}
                     onBlur={handleChangeTime2}

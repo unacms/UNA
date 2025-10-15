@@ -64,7 +64,6 @@ function PageContent({ children, isLoginPage, title }) {
                     <Text className="text-muted-foreground text-base">{t('splash_page_login2')}</Text>
                     <Link
                         variant="primary"
-                        size="md"
                         href="/create-account"
                         haptics="Medium"
                     >

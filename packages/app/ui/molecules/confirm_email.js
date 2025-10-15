@@ -12,7 +12,8 @@ import { storageClear } from 'app/lib/util';
 import { Platform } from 'react-native';
 import Link from 'app/ui/atoms/link';
 import { Block, BlockHeader, BlockContent, BlockFooter, BlockTitle, BlockDescription, BlockIcon, BlockName, BlockActions } from 'app/ui/molecules/page-block'
-
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'app/ui/molecules/card'
+import AnimatedView from 'app/ui/atoms/animated-view';
 
 export default function ElementConfirmEmail(props) {
     const isWeb = Platform.OS == 'web'
@@ -45,45 +46,42 @@ export default function ElementConfirmEmail(props) {
     };
 
     return (
-        <><Redirect ref={redirectdRef} />
-            <Msg onVisible={showMsg} title={"New verification code emailed"} handleOk={() => { setShowMsg(false) }} />
-            <Block className='u-max-width-block mx-auto w-full mt-4'>
-                <BlockHeader>
-                    <BlockName>
-                        <BlockTitle>
-                            <Text>
-                                {t("Unconfirmed email address")}
-                            </Text>
-                        </BlockTitle>
-                        <BlockDescription >
+        <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto"><View className="max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto gap-y-4">
+            <AnimatedView direction="up" delay={300}>
+                <Redirect ref={redirectdRef} />
+                <Card padding="p-6  ">
+                    <CardHeader>
+                        <CardTitle>{t("Unconfirmed email address")}</CardTitle>
+                        <CardDescription>
                             {t("Please check your email")}
-                        </BlockDescription>
-                    </BlockName>
-                </BlockHeader>
-                <BlockContent>
-                    <View className='gap-y-4'>
-                        <Row className='w-full gap-x-2 items-start justify-between'>
-                            <View className='flex-auto'>
-                                <Input placeholder={t("Verification code")} value={inputValue} onChangeText={(value) => { setInputValue(value) }} />
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="gap-4">
+                        <Msg onVisible={showMsg} title={"New verification code emailed"} handleOk={() => { setShowMsg(false) }} />
+                        <View className='gap-y-4'>
+                            <Row className='w-full gap-x-2 items-start justify-between'>
+                                <View className='flex-auto'>
+                                    <Input placeholder={t("Verification code")} value={inputValue} onChangeText={(value) => { setInputValue(value) }} />
+                                </View>
+                                <Button variant="primary" size="lg" title={t("Confirm")} onPress={() => handleConfirm()} />
+                            </Row>
+                            {inputError && <FormError errorText={t("Code invalid")} />}
+                            <View className="flex-row items-center justify-center w-full">
+                                <View className="flex-1 h-px w-full bg-neutral-200 dark:bg-neutral-500" />
+                                <Text className="mx-4 text-xs text-neutral-500 dark:text-neutral-400 font-normal">OR</Text>
+                                <View className="flex-1 h-px w-full bg-neutral-200 dark:bg-neutral-500" />
                             </View>
-                            <Button variant="default" size="lg" title={t("Confirm")} onPress={() => handleConfirm()} />
-                        </Row>
-                        {inputError && <FormError errorText={t("Code invalid")} />}
-                        <View className="flex-row items-center justify-center w-full">
-                            <View className="flex-1 h-px w-full bg-neutral-200 dark:bg-neutral-500" />
-                            <Text className="mx-4 text-xs text-neutral-500 dark:text-neutral-400 font-normal">OR</Text>
-                            <View className="flex-1 h-px w-full bg-neutral-200 dark:bg-neutral-500" />
+                            <View className="gap-y-2 w-full">
+                                <Button  size="lg" title={t("Resend email")} onPress={pressBack} fullWidth />
+                                <Link href="/logout" className="w-full">
+                                    <Button  size="lg" title={t("Sign out")} fullWidth />
+                                </Link>
+                            </View>
                         </View>
-                        <View className="gap-y-2 w-full">
-                            <Button variant="link" size="sm" title={t("Resend email")} onPress={pressBack} fullWidth />
-                            <Link href="/logout" className="w-full">
-                                <Button variant="default" size="base" title={t("Sign out")} fullWidth />
-                            </Link>
-                        </View>
-                    </View>
-                </BlockContent>
-            </Block>
-
-        </>
+                    </CardContent>
+                </Card>
+            </AnimatedView>
+        </View>
+        </View>
     );
 }

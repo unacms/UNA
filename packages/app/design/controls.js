@@ -499,7 +499,7 @@ export const Button = (props) => {
     const showTooltip = useMemo(() => isDesktop && tooltip, [isDesktop, tooltip]);
 
     const sClassContainer = useMemo(() => {
-        let classes = 'flex-row items-center';
+        let classes = 'flex-row items-center gap-x-1';
         
         // Determine if button has title for width calculation
         const hasTitle = !!title;

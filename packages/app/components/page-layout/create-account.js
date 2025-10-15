@@ -42,7 +42,7 @@ function PageContent({ children }) {
                     <Text className="text-muted-foreground text-base">{t('create_account_page_already_have')}</Text>
                     <Link
                         variant="primary"
-                        size="md"
+
                         href="/login"
                         haptics="Medium"
                     >

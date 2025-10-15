@@ -226,7 +226,7 @@ export function storageClear(pref, key) {
     else
         sessionStorage.clear();
 }
-
+/*
 export const formatDate = (date, t) => {
     const day = String(date.getDate());
     const monthNames = [
@@ -238,28 +238,80 @@ export const formatDate = (date, t) => {
     if (year == new Date().getFullYear())
         year = '';
     return `${day} ${month} ${year}`;
+}*/
+const _fmtCache = new Map();
+
+export const formatDate = (
+    input,
+    t,
+    {
+        inFuture = false,
+        inPast = false,
+        locale,                     // 'en-US'
+        month = 'short',            // 'numeric' | '2-digit' | 'short' | 'long' | ...
+        showTime = false,
+        showDate = true,
+        hour12,                     // true/false | undefined (оставит поведение локали)
+        timeZone,                   // fex 'UTC'
+        yearPolicy = 'auto',        // 'auto' | 'always' | 'never'
+    } = {}
+) => {
+    const date = input instanceof Date ? input : new Date(input);
+    if (Number.isNaN(date.getTime())) return ''; // или бросить ошибку
+    const nowYear = new Date().getFullYear();
+    
+    let rel = '';
+    if (inFuture && showDate) {
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
+        const dDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        rel = dDay.getTime() === today.getTime() ? t('Today ') : dDay.getTime() === tomorrow.getTime() ? t('Tomorrow ') : '';
+    }
+
+    if (inPast){
+        const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto', style: 'short' });
+        const now = new Date();
+        const diffMs = date - now;  
+        const sec = Math.round(diffMs / 1000);
+        const absSec = Math.abs(sec);
+        if (absSec < 60) 
+            return t('Now'); 
+        const min = Math.round(sec / 60);
+        if (Math.abs(min) < 60){
+            const str = rtf.format(min, 'minute')
+            return str.split(' ')[0] + str.split(' ')[1][0]
+        }
+        const hrs = Math.round(sec / 3600);
+        if (Math.abs(hrs) < 24){
+            const str = rtf.format(hrs, 'hour')
+            return str.split(' ')[0] + str.split(' ')[1][0]   
+        }
 }
 
-export const formatDate2 = (date, t) => {
-    const now = new Date();
-    const tomorrow = new Date(now);
-    tomorrow.setDate(now.getDate() + 1);
-    const isToday = now.getFullYear() === date.getFullYear() &&
-        now.getMonth() === date.getMonth() &&
-        now.getDate() === date.getDate();
-    if (isToday)
-        return "Today "
+    const opts = {
+        ...(showDate && !rel ? { day: 'numeric', month } : {}),
+        ...(showTime ? { hour: '2-digit', minute: '2-digit' } : {}),
+    };
 
-    const isTomorrow = tomorrow.getFullYear() === date.getFullYear() &&
-        tomorrow.getMonth() === date.getMonth() &&
-        tomorrow.getDate() === date.getDate();
+    if (((yearPolicy === 'always') || (yearPolicy === 'auto' && date.getFullYear() !== nowYear)) && showDate) {
+        opts.year = 'numeric';
+    }
 
-    if (isTomorrow)
-        return "Tomorrow ";
+    if (hour12 !== undefined) 
+        opts.hour12 = hour12;
+    if (timeZone) 
+        opts.timeZone = timeZone;
 
-    return formatDate(date, t)
-}
+    const key = JSON.stringify([locale, opts]);
 
+    let fmt = _fmtCache.get(key);
+    if (!fmt) {
+        fmt = new Intl.DateTimeFormat(locale, opts);
+        _fmtCache.set(key, fmt);
+    }
+    return rel + fmt.format(date);
+};
+/*
 export const formatTime = (ts) => {
     const date = new Date(ts * 1000);
     const hours = date.getHours();
@@ -272,22 +324,43 @@ export const formatTime = (ts) => {
 
     // Format hours and minutes with leading zeros if needed
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-}
+}*/
 
 export const formatDateInterval = (dateStart, dateEnd, t) => {
-    const isSingleDate = (new Date(dateStart * 1000)).toLocaleDateString() === (new Date(dateEnd * 1000)).toLocaleDateString();
-    const isSingleTime = (new Date(dateStart * 1000)).toLocaleTimeString() === (new Date(dateEnd * 1000)).toLocaleTimeString();
+    const start = new Date(dateStart * 1000);
+    const end   = new Date(dateEnd * 1000);
 
-    let sRv = formatDate2(new Date(dateStart * 1000), t);
+    const isSingleDate = (start).toLocaleDateString() === (end).toLocaleDateString();
+    const isSingleTime = (start).toLocaleTimeString() === (end).toLocaleTimeString();
+
+    if (isSingleDate)
+        if (isSingleTime)
+            return formatDate(start, t, {inFuture:true, showTime: true, month: 'numeric'});
+        else
+            return formatDate(start, t, {inFuture:true, showTime: true, month: 'numeric'}) + ' - ' + formatDate(end, t, {inFuture:true, showTime: true, showDate: false, month: 'numeric'});
+    else
+        return formatDate(start, t, {inFuture:true, showTime: true, month: 'numeric'}) + ' - ' + formatDate(end, t, {inFuture:true, showTime: true, showDate: true, month: 'numeric'});
+
+
+}
+/*
+export const formatDateInterval = (dateStart, dateEnd, t) => {
+    const start = new Date(dateStart * 1000);
+    const end   = new Date(dateEnd * 1000);
+
+    const isSingleDate = (new Date(start)).toLocaleDateString() === (new Date(end)).toLocaleDateString();
+    const isSingleTime = (new Date(start)).toLocaleTimeString() === (new Date(end)).toLocaleTimeString();
+
+    let sRv = formatDate(new Date(dateStart * 1000), t, {inFuture:true});
 
     if (isSingleDate) {
         sRv += isSingleTime ? formatTime(dateStart) : `${formatTime(dateStart)} - ${formatTime(dateEnd)}`;
     } else {
-        sRv += ' ' + formatTime(dateStart) + ' - ' + formatDate2(new Date(dateEnd * 1000), t) + ' ' + formatTime(dateEnd);
+        sRv += ' ' + formatTime(dateStart) + ' - ' + formatDate(new Date(dateEnd * 1000), t, {inFuture:true}) + ' ' + formatTime(dateEnd);
     }
 
     return sRv;
-}
+}*/
 
 export function storageRemove(pref, key, isLocal = false) {
     if (!isWeb) {

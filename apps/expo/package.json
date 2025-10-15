@@ -26,7 +26,6 @@
     "app": "*",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "country-codes-flags-phone-codes": "^1.1.1",
-    "date-fns": "^2.30.0",
     "expo": "^52.0.47",
     "expo-auth-session": "~6.0.3",
     "expo-blur": "~14.0.1",
