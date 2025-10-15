@@ -148,7 +148,7 @@ export default function PageLayout(props) {
                 </BlockHeader>
                 <BlockContent>
                     <ElementDashboardStat {...props} />
-                    <View className={`flex-row flex-wrap ${cd('gap-sm')}`}>
+                    <View className={`flex-row flex-wrap ${cd('gap-sm')} mt-4`}>
                         {langs.length > 1 && (
                             <View className="w-full max-w-sm flex-1 min-w-[160px]">
                                 <DropdownMenu
