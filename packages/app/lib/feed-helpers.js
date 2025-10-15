@@ -175,7 +175,6 @@ export const CommentsSection = memo(
 )
 
 export const MainContent = memo(({ url, data, fulltext }) => {
-    console.log("fulltextfulltext", fulltext)
     const bIsTitle =
         data?.content?.title && data?.content?.title?.trim() != ''
             ? true
@@ -351,7 +350,7 @@ export const ItemInfo = memo(({ data, t }) => {
 export const MenuManage = ({ id, menu, setViewState }) => {
     const [menuData, setMenuData] = useState(false)
 
-    if (!menu.object) return null
+    if (!menu?.object) return null
 
     if (menu.items)
         return <MenuManage_ id={id} menu={menu} setViewState={setViewState} />
@@ -469,7 +468,7 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
 
 export const ActionMenu = memo(({ data }) => {
     const settings = appSetting('feed', 'actions_menu');
-    if (data.items.length > 2){
+    if (data?.items?.length > 2){
         for (let i = 2; i < data.items.length; i++)
             if (data.items[i].data)
                 data.items[i].data.paramsi ={'button_show_title_from_size':'sm'}
