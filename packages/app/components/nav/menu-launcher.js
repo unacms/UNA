@@ -53,7 +53,7 @@ export default function () {
                     tooltip="All Apps"
                     rounded
                     alt={t("All Apps")}
-                    startDecorator={bApps === true ? "LayoutGrid" : <Icon width={24} icon={bApps}/>}
+                    startDecorator={bApps === true ? "LayoutGrid" : bApps}
                     variant={buttonVariant}
                     size={buttonSize}
                 />
