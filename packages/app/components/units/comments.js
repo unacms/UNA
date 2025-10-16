@@ -251,7 +251,7 @@ export default function UnitComments(props) {
                    
                    
                 </View>
-                {viewState.view != 'edited' && (
+                {(viewState.view != 'edited' && !data.disabled) && (
                         <Row className="gap-1">
                             {!!currentUser &&
                             !!props.handleReply &&
