@@ -317,7 +317,7 @@ return;*/
                     key={`cells-home-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
                     autoSaveId={cellsCustomConfig.sizable ? `cells-home` : undefined}
                     direction="horizontal"
-                    className={`${appSetting('layout', 'max_width')} mx-auto w-full flex-auto relative flex-row`}
+                    className={`${appSetting('layout', 'home_container')} mx-auto flex-auto relative flex-row`}
                     onLayout={(e) => {
                         if (isWeb) {
                             requestAnimationFrame(() => {
@@ -344,7 +344,7 @@ return;*/
                         </>
                     )}
                     <Panel {...cellsCustomConfig.cells?.center}>
-                        <View className="max-w-3xl sm:pt-3 mx-auto">{FeedContent}</View>
+                        <View className={`${appSetting('layout', 'feed_container')}`}>{FeedContent}</View>
                     </Panel>
 
                     {isWeb && (

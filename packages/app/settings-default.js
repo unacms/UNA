@@ -50,8 +50,10 @@ export const settingsDefault = {
         avaliable_langs: ['auto', 'en', 'ru'],
         screen: ' w-full  ',
         ui_density_switcher: true,
-        max_width: ' w-full  ',
-        max_width_content: ' w-full max-w-7xl ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
+        max_width: ' w-full ',
+        max_width_content: ' w-full max-w-7xl ',
+        home_container: ' w-full 2xl:max-w-8xl web:duration-500', 
+        feed_container: ' max-w-2xl sm:pt-3 mx-auto ',
         post_container: ' max-w-3xl w-full flex-1 bg-card shadow-sm text-card-foreground rounded-2xl py-3 sm:py-4 lg:my-4 mx-auto ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
 
         search: true,
@@ -94,7 +96,7 @@ export const settingsDefault = {
             content_left: ' flex-row items-center px-2 flex-none xl:w-80 2xl:w-96 ps-2 ',
             content_right: ' flex-row items-center justify-end flex-none xl:w-80 2xl:w-96 pe-2 ',
             content_center:
-                ' hidden flex-auto xl:flex gap-1 items-center justify-center  max-w-3xl ',
+                ' hidden flex-auto xl:flex gap-1 items-center justify-center  max-w-2xl ',
             special: {
                 profile: 'hidden lg:flex',
                 messenger: 'hidden lg:flex',
@@ -824,22 +826,49 @@ export const settingsDefault = {
             max_width: '',
         },
         home: {
-            adjustable: false,
-            sizable: false,
+            adjustable: true,
+            sizable: true,
             cells: {
                 left: {
-                    defaultSize: 20,
-                    minSize: 15,
-                    maxSize: 30,
-                    breakpoint: 'xl',
                     
+
+                    defaultSize: 30, 
+                    minSize: 20, 
+                    maxSize: 40,
+                    breakpoint: 'lg',
+                    responsive: {
+                        '2xl':{
+                            defaultSize: 25,
+                            minSize: 20,
+                            maxSize: 30,
+                            
+                        }
+                    }
                 },
-                center: { defaultSize: 60, minSize: 40, maxSize: 70 },
+                center: { 
+                    defaultSize: 70, 
+                    minSize: 60, 
+                    maxSize: 80,
+                    responsive: {
+                        '2xl':{
+                            defaultSize: 80,
+                            minSize: 70,
+                            maxSize: 90,
+                        }
+                    }
+                },
                 right: {
-                    defaultSize: 20,
-                    minSize: 15,
-                    maxSize: 30,
+                    defaultSize: 30,
+                    minSize: 20,
+                    maxSize: 40,
                     breakpoint: 'xl',
+                    responsive: {
+                        '2xl':{
+                            defaultSize: 25,
+                            minSize: 20,
+                            maxSize: 30,
+                        }
+                    }
                 },
             },
         },
@@ -1387,9 +1416,9 @@ export const settingsDefault = {
         },
         panels: {
             'u-panel-base': ' h-full flex-col ',
-            'u-panel-handler': ' w-0 web:hover:bg-border/80 web:active:bg-ring/80',
+            'u-panel-handler': ' w-2 mx-1 2xl:mx-2 web:hover:bg-muted/50 web:active:bg-muted/50 web:duration-200',
             'u-panel-line':
-                '  ',
+                ' bg-muted w-px mx-auto h-full rounded-full  ',
             'u-panel-group': ' h-full flex',
         },
         blocks: {
