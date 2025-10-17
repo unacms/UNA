@@ -67,17 +67,16 @@ export default function (props) {
                 if (data.action == 'add') {
                     selectImage(data.source)
                 }
+                if (data.action == 'clear') {
+                     setImageSource({ images: [] });
+                }
+               
             })
             return () => {
                 subscription.remove()
             }
         }
     }, [hasPermissionLibrary])
-
-    const RestoreGhosts = async (data) => {
-        if (isAutoGhosts)
-            return;
-    };
 
     useEffect(() => {
         if (props.previewPlaceHolder) {
@@ -97,27 +96,6 @@ export default function (props) {
             field.onChange('');
         }
     }, [imageSource]);
-
-    useEffect(() => {
-        if (formValue && field.value && !isNaN(field.value)) {
-            RestoreGhosts(0);
-        }
-        if (!formValue) {
-        //    setImageSource({ images: [] });
-        }
-    }, [formValue]);
-
-    useEffect(() => {
-        if (!imageSource.images && !props.useUrl) {
-            RestoreGhosts(0);
-        }
-        if (formContext.formState.isSubmitted) {
-            setTimeout(() => {
-                //may be need restore
-                // RestoreGhosts(0);
-            }, 100);
-        }
-    }, [formContext.formState.isSubmitted, imageSource.images]);
 
     useEffect(() => {
         if (uploadFinished?.result) {
@@ -142,10 +120,6 @@ export default function (props) {
 
         }
     }, [uploadFinished]);
-
-    useEffect(() => {
-        RestoreGhosts();
-    }, [uploadFinishedArr]);
 
     const setImageSourceN = (newImages, bMultiple) => {
         if (!bMultiple){

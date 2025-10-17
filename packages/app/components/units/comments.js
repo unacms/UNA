@@ -61,6 +61,10 @@ export default function UnitComments(props) {
         }
     }, [props.replyId])
 
+    const isSelected = props.selectedId == data.cmt_id
+
+    const { animatedStyle } = usePulseOne({ pulseDurationMs: 500, pulses: 3, autoStart: true, minOpacity: 0.2 });
+
     if (!data) return null
 
     const { data: dynamicData, error } = useFetchForm(
@@ -142,14 +146,12 @@ export default function UnitComments(props) {
                 </View>
             </Modal>
         )
-    const isSelected = props.selectedId == data.cmt_id
-
-    const { animatedStyle } = isSelected ? usePulseOne({ pulseDurationMs: 500, pulses: 6, autoStart: true, minOpacity: 0.2 }) : {};
+ 
 
     const Badges = getComponent('molecule', 'badges')
 
     return (
-        <Animated.View style={animatedStyle}>
+        <Animated.View style={isSelected ? animatedStyle : {}}>
             <Row className={`${cd('gap-sm')}`}>
                 {cells}
                 <View className="w-9 z-50 flex-0 mt-3">

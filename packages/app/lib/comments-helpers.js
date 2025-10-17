@@ -368,9 +368,10 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
     useEffect(() => {
         if (scrollToIndex !== false) {
             const itemIndex = scrollToIndex === true ? dataOut.length-1 : dataOut.findIndex(obj => obj.id == scrollToIndex);
-            if (itemIndex > 0){
+            if (itemIndex > 0 ){
                 setTimeout(() => {
-                    flashListRef.current.scrollToIndex({ animated: true, index: itemIndex });
+                    if (flashListRef.current)
+                        flashListRef.current.scrollToIndex({ animated: true, index: itemIndex });
                 }, 300);
             }
 

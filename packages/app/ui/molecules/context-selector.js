@@ -1,4 +1,4 @@
-import { View, Row } from 'app/design/view'
+    import { View, Row } from 'app/design/view'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
@@ -9,16 +9,7 @@ import { appStatic } from 'app/lib/app-static'
 import { FeedbackHaptics, appSetting } from 'app/lib/util'
 import { useState } from 'react'
 
-function renderListItem(props, isActive, onItemClick) {
-    return renderListItem_(
-        props.url,
-        props.display_name,
-        <Profile {...props} displayType="unit_wo_info" displaySize="sm" />,
-        isActive
-    )
-}
-
-function renderListItem_(url, text, icon, isActive) {
+function ListItem({url, text, icon, isActive}) {
     return (
         <Link key={url} className="w-full" href={url}>
             <Row
@@ -80,14 +71,11 @@ function getContextRoot(data, url, uri) {
 }
 
 export default function ContextSelector({ data, url, uri, mode }) {
-    console.log("ContextSelector", data, url, uri, mode)
+
     const [isOpen, setIsOpen] = useState(false)
     if (!data) return null
 
     const contextRoot = getContextRoot(data, url, uri)
-    const isActiveContextRoot =
-        contextRoot?.url === '/' + (url || '') ||
-        (contextRoot?.url === '/' && uri === 'home')
 
     const handleOpenChange = (open) => {
         if (open && !isOpen) {
@@ -96,9 +84,6 @@ export default function ContextSelector({ data, url, uri, mode }) {
         setIsOpen(open)
     }
 
-    const handleItemClick = () => {
-        setIsOpen(false)
-    }
 
     const CurrentContext = (
         <Link variant="ghost" size="lg" href={contextRoot.url}>
@@ -115,15 +100,12 @@ export default function ContextSelector({ data, url, uri, mode }) {
         </Link>
     )
 
-
     const isLinkSelected = data.links?.some(item => item.url == contextRoot.url);
 
     const DropDown = (
         <DropdownPopup
             trigger={
                 <Button iconOnly startDecorator="ChevronsUpDown" variant="text" size="base" rounded />
-                    
-                
             }
             minPopupWidth={360}
             open={isOpen}
@@ -131,27 +113,28 @@ export default function ContextSelector({ data, url, uri, mode }) {
         >
             <View className="flex-col gap-px">
                 {data.list.map((item) =>
-                    renderListItem(
-                        item,
-                        item.id === data.current?.id && !isLinkSelected,
-                        handleItemClick
-                    )
+                    <ListItem 
+                        url={item.url} 
+                        text={item.display_name}
+                        icon={<Profile {...item} displayType="unit_wo_info" displaySize="sm" />}  
+                        isActive={item.id === data.current?.id && !isLinkSelected}
+                    />
                 )}
 
                 {data.links?.map((item) =>
                     item.url ? (
-                        renderListItem_(
-                            item.url,
-                            item.title,
-                            item.icon && (item.icon == '{logo}' ? appStatic('logo', { mode: 'mark', }) :
-                                <Icon
-                                    icon={item.icon}
-                                    size={20}
-                                    className="w-5 h-5"
-                                />
-                            ),
-                            contextRoot.url == item.url
-                        )
+                        <ListItem 
+                            url={item.url} 
+                            text={item.title} 
+                            icon={item.icon && (item.icon == '{logo}' ? appStatic('logo', { mode: 'mark', }) :
+                                    <Icon
+                                        icon={item.icon}
+                                        size={20}
+                                        className="w-5 h-5"
+                                    />
+                                )}
+                            isActive={contextRoot.url == item.url}/>
+                        
                     ) : (
                         <View
                             key={Math.random()}

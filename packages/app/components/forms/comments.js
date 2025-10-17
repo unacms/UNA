@@ -8,8 +8,8 @@ import { stripTags, removeEmptyTags } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
 import { FileButton } from 'app/lib/form-helpers'
-import { cd } from 'app/lib/util'
 import { useWindowHeight } from 'app/context/measure';
+import emitter from 'app/context/emitter';
 
 export default function FormComments(props) {
     const screenHeight = useWindowHeight();
@@ -116,6 +116,7 @@ export default function FormComments(props) {
     useEffect(() => {
         if (formContext.formState.isSubmitted) {
             formContext.setValue('cmt_text', '');
+            emitter.emit(`fld_files_cmt_image`, { action: 'clear' })
         }
     }, [formContext.formState.isSubmitted, formContext]);
 

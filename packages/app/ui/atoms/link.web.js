@@ -6,7 +6,7 @@ import { appSetting, cd } from 'app/lib/util'
 
 export default function ElementLink(props) {  
 
-    let { href, emulate, target, variant, size, className = '', hitarea = true,  ...rest } = props;
+    let { href, emulate, target, variant, size, className = '', hitarea = true, noprefetch,  ...rest } = props;
     const router = useRouter();
 
     const handlePress = (event, href) => {
@@ -89,7 +89,7 @@ export default function ElementLink(props) {
             </Pressable>
         );
 
-    const prefetch = rest?.noprefetch || href == '/logout' || href == 'logout' ? false : true;
+    const isPrefetch = noprefetch || href == '/logout' || href == 'logout' ? false : true;
 
     return (
         <Link 
@@ -98,7 +98,7 @@ export default function ElementLink(props) {
             href={href} 
             {...rest} 
             className={composedClassName}
-            prefetch={prefetch} 
+            prefetch={isPrefetch} 
             onClick={(e) => handleLinkClick(e, href, target)}
         > 
             {props.children}
