@@ -1,12 +1,13 @@
 import { View, Row, ScrollView } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
-import React, { useState } from 'react'
+import React, { useState, useMemo, useRef, useEffect } from 'react'
 import {
     cd,
     appSetting,
     storageSet,
     storageGet,
     asyncStorageSet,
+    getBreakpoint
 } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { Button } from 'app/design/controls'
@@ -23,6 +24,7 @@ import {
     Panel,
     PanelGroup,
     PanelHandler,
+    resolvePanelProps
 } from 'app/ui/molecules/resizable-panels'
 import { useLayoutSettings } from 'app/context/layout-settings'
 import Badge from 'app/ui/molecules/badge'
@@ -310,53 +312,86 @@ return;*/
             </>
         )
 
-        const cellsCustomConfig = appSetting('layouts', 'home') || appSetting('layouts', 'cols-l-c-r')
+        const cellsCustomConfig = useMemo(() => {
+            return appSetting('layouts', 'home') || appSetting('layouts', 'cols-l-c-r');
+        }, []);
+        const groupRef = useRef(null);
+        const currentBreakpoint = useBreakpoint();
+        const { cells = {} } = cellsCustomConfig || {};
+        const currentBreakpointName = getBreakpoint(currentBreakpoint);
+        
+        // LEFT
+        const {
+            breakpoint: leftBreakpoint,
+            responsive: leftResponsive,
+            ...leftBase
+        } = cells.left ?? {};
+        const leftPanelProps = resolvePanelProps(leftBase, leftResponsive, currentBreakpointName);
+
+
+        // CENTER
+        const {
+            breakpoint: centerBreakpoint,
+            responsive: centerResponsive,
+            ...centerBase
+        } = cells.center ?? {};
+        const centerPanelProps = resolvePanelProps(centerBase, centerResponsive, currentBreakpointName);
+
+        // RIGHT
+        const {
+            breakpoint: rightBreakpoint,
+            responsive: rightResponsive,
+            ...rightBase
+        } = cells.right ?? {};
+        const rightPanelProps = resolvePanelProps(rightBase, rightResponsive, currentBreakpointName); 
+
+        const onLayout = (sizes) => {
+            setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100);
+        };
+
+        useEffect(() => {
+            if (isWeb){
+                groupRef.current?.setLayout([leftPanelProps.defaultSize, centerPanelProps.defaultSize, rightPanelProps.defaultSize]);
+            }
+        }, [currentBreakpointName]);
+
+
         return (
             <>{BlocksCenter}
                 <PanelGroup
-                    key={`cells-home-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
+                    ref={groupRef}
+                    key={`cells-home${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
                     autoSaveId={cellsCustomConfig.sizable ? `cells-home` : undefined}
                     direction="horizontal"
                     className={`${appSetting('layout', 'home_container')} mx-auto flex-auto relative flex-row`}
-                    onLayout={(e) => {
-                        if (isWeb) {
-                            requestAnimationFrame(() => {
-                                document.body.offsetHeight
-                                window.dispatchEvent(new Event('resize_panel'))
-                            })
-                        }
-                    }}
+                    onLayout={onLayout}
                 >
                     {layoutName == 'hor' && isWeb && (
                         <>
-                            <Panel
-                                className={`hidden ${cellsCustomConfig.cells?.left?.breakpoint}:block`}
-                                {...cellsCustomConfig.cells?.left}
-                            >
+                            <Panel className={`hidden ${leftBreakpoint}:block ${currentBreakpointName}:w-full`} {...leftPanelProps}>
                                 <View className=" px-2 py-3 fixed-process ">
                                     {SideBarContent}
                                 </View>
                             </Panel>
                             <PanelHandler
-                                gap="hidden xl:block"
+                                gap={`hidden ${leftBreakpoint}:block`}
                                 sizable={cellsCustomConfig.sizable}
                             />
                         </>
                     )}
-                    <Panel {...cellsCustomConfig.cells?.center}>
-                        <View className={`${appSetting('layout', 'feed_container')}`}>{FeedContent}</View>
+                    <Panel className={`${currentBreakpointName}:w-full`} {...centerPanelProps}>
+                        <View className={`${appSetting('layout', 'feed_container')}`}>
+                            {FeedContent}
+                        </View>
                     </Panel>
 
                     {isWeb && (
                         <>
                             <PanelHandler
-                                gap="hidden lg:block"
+                                gap={`hidden ${rightBreakpoint}:block`}
                                 sizable={cellsCustomConfig.sizable}
                             />
-                            <Panel
-                                className={`hidden ${cellsCustomConfig.cells?.right?.breakpoint}:block`}
-                                {...cellsCustomConfig.cells?.right}
-                            >
+                            <Panel className={`hidden ${rightBreakpoint}:block ${currentBreakpointName}:w-full`} {...rightPanelProps}>
                                 <View className={`${cd('p-md')} ${cd('gap-lg')} fixed-process`}>
                                     {AsideContent}
                                 </View>

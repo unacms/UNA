@@ -830,39 +830,56 @@ export const settingsDefault = {
             sizable: true,
             cells: {
                 left: {
-                    
-
                     defaultSize: 30, 
-                    minSize: 20, 
-                    maxSize: 40,
+                    minSize: 30, 
+                    maxSize: 30,
                     breakpoint: 'lg',
                     responsive: {
                         'xl':{
                             defaultSize: 25,
+                            minSize: 25,
+                            maxSize: 25,
+                            
+                        },
+                        '2xl':{
+                            defaultSize: 20,
                             minSize: 20,
-                            maxSize: 30,
+                            maxSize: 20,
                             
                         }
                     }
                 },
                 center: { 
                     defaultSize: 70, 
-                    minSize: 60, 
-                    maxSize: 80,
+                    minSize: 70, 
+                    maxSize: 70,
                     responsive: {
                         'xl':{
                             defaultSize: 50,
-                            minSize: 40,
+                            minSize: 50,
+                            maxSize: 50,
+                        },
+                        '2xl':{
+                            defaultSize: 60,
+                            minSize: 60,
                             maxSize: 60,
+                            
                         }
                     }
                 },
                 right: {
                     defaultSize: 25,
-                    minSize: 20,
-                    maxSize: 30,
+                    minSize: 25,
+                    maxSize: 25,
                     breakpoint: 'xl',
-                    
+                    responsive: {
+                        '2xl':{
+                            defaultSize: 20,
+                            minSize: 20,
+                            maxSize: 20,
+                            
+                        }
+                    }
                 },
             },
         },
@@ -930,9 +947,9 @@ export const settingsDefault = {
                     maxSize: 70,
                     responsive: {
                         '2xl':{
-                            defaultSize: 80,
-                            minSize: 70,
-                            maxSize: 85,
+                            defaultSize: 70,
+                            minSize: 65,
+                            maxSize: 75,
                             breakpoint: 'xl',
                         }
                     }
@@ -944,9 +961,9 @@ export const settingsDefault = {
                     breakpoint: 'lg',
                     responsive: {
                         '2xl':{
-                            defaultSize: 20,
-                            minSize: 15,
-                            maxSize: 30,
+                            defaultSize: 30,
+                            minSize: 25,
+                            maxSize: 35,
                             breakpoint: 'xl',
                         }
                     }

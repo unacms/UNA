@@ -20,7 +20,7 @@ function createPanelComponent({ baseClass, Component = PanelDef, role, ariaLevel
 
         return (
             <Component
-                className={` ${panelTheme[baseClass]} $ ${className}`}
+                className={`${panelTheme[baseClass]} ${className}`}
                 role={role}
                 aria-level={ariaLevel}
                 {...styleProps}
@@ -62,3 +62,7 @@ export const isShowColumn = (cond, windowWidth, cell) => {
     return false
 }
 
+export function resolvePanelProps(base, responsive, bpName) {
+    const override = responsive?.[bpName];
+    return override ? { ...base, ...override } : base; 
+}

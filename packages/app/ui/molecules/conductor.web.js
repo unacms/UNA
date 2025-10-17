@@ -26,7 +26,7 @@ import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 import emitter from 'app/context/emitter';
 import Cover, { CoverSmall } from 'app/components/elements/cover';
 import { CoverMenuMore, CoverMenu } from 'app/components/nav/menu-cover'
-import { Panel, PanelGroup, PanelHandler } from "app/ui/molecules/resizable-panels";
+import { Panel, PanelGroup, PanelHandler, resolvePanelProps } from "app/ui/molecules/resizable-panels";
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { cd } from 'app/lib/util'
 import { useIsDesktop, useBreakpoint } from 'app/context/measure';
@@ -351,6 +351,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
             />
         }, [dataItems, numColumns, dataItems.length]);
 
+        const groupRef = useRef(null);
         const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
         const layoutCols = !isLeftCol && !isRightCol ? 'c' : !isLeftCol ? 'c-r' : !isRightCol ? 'l-c' : 'l-c-r';
         
@@ -359,14 +360,8 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
                 || appSetting('layouts', `cols-${layoutCols}`);
         }, [route?.pageData?.uri, layoutCols]);
 
-
         const { cells = {} } = cellsCustomConfig || {};
         const currentBreakpointName = getBreakpoint(currentBreakpoint);
-
-        function resolvePanelProps(base, responsive, bpName = currentBreakpointName) {
-            const override = responsive?.[bpName];
-            return override ? { ...base, ...override } : base; // merge поверх базовых
-        }
 
         // LEFT
         const {
@@ -374,7 +369,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
             responsive: leftResponsive,
             ...leftBase
         } = cells.left ?? {};
-        const leftPanelProps = resolvePanelProps(leftBase, leftResponsive);
+        const leftPanelProps = resolvePanelProps(leftBase, leftResponsive, currentBreakpointName);
 
         // CENTER
         const {
@@ -382,7 +377,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
             responsive: centerResponsive,
             ...centerBase
         } = cells.center ?? {};
-        const centerPanelProps = resolvePanelProps(centerBase, centerResponsive);
+        const centerPanelProps = resolvePanelProps(centerBase, centerResponsive, currentBreakpointName);
 
         // RIGHT
         const {
@@ -390,14 +385,28 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
             responsive: rightResponsive,
             ...rightBase
         } = cells.right ?? {};
-        const rightPanelProps = resolvePanelProps(rightBase, rightResponsive); 
+        const rightPanelProps = resolvePanelProps(rightBase, rightResponsive, currentBreakpointName); 
 
         const onLayout = (sizes) => {
             setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100);
         };
 
+        useEffect(() => {
+            const layouts = []
+            if (isLeftCol){
+                layouts.push(leftPanelProps.defaultSize)
+            }
+            layouts.push(centerPanelProps.defaultSize);
+            if (isRightCol){
+                layouts.push(rightPanelProps.defaultSize)
+            }
+            groupRef.current?.setLayout(layouts);
+        }, [currentBreakpointName]);
+        
+
         return (
             <PanelGroup
+                ref={groupRef}
                 key={`${pageData?.uri || 'default'}-pnl2-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
                 autoSaveId={cellsCustomConfig.sizable ? `cells-${pageData?.uri || 'default'}` : undefined}
                 direction="horizontal"
@@ -427,7 +436,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
                             }
                         </View>
                     </Panel>
-                    <PanelHandler gap="hidden xl:block" sizable={cellsCustomConfig.sizable} />
+                    <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
                 </>
                 }
                 <Panel {...centerPanelProps}>
@@ -437,7 +446,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
                     </View>
                 </Panel>
                 {isRightCol && <>
-                    <PanelHandler gap="hidden lg:block" sizable={cellsCustomConfig.sizable} />
+                    <PanelHandler gap={`hidden ${rightBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
                     <Panel className={`hidden ${rightBreakpoint}:block`} {...rightPanelProps}>
                         <View className={`${cd('p-md')} fixed-process `}>
                             {route?.sidebar?.content.map((item, index) => {
