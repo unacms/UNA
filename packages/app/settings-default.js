@@ -837,7 +837,7 @@ export const settingsDefault = {
                     maxSize: 40,
                     breakpoint: 'lg',
                     responsive: {
-                        '2xl':{
+                        'xl':{
                             defaultSize: 25,
                             minSize: 20,
                             maxSize: 30,
@@ -850,25 +850,19 @@ export const settingsDefault = {
                     minSize: 60, 
                     maxSize: 80,
                     responsive: {
-                        '2xl':{
-                            defaultSize: 80,
-                            minSize: 70,
-                            maxSize: 90,
+                        'xl':{
+                            defaultSize: 50,
+                            minSize: 40,
+                            maxSize: 60,
                         }
                     }
                 },
                 right: {
-                    defaultSize: 30,
+                    defaultSize: 25,
                     minSize: 20,
-                    maxSize: 40,
+                    maxSize: 30,
                     breakpoint: 'xl',
-                    responsive: {
-                        '2xl':{
-                            defaultSize: 25,
-                            minSize: 20,
-                            maxSize: 30,
-                        }
-                    }
+                    
                 },
             },
         },
