@@ -232,7 +232,7 @@ export async function parseData(routes, index, setRoutes, newData) {
         if (ld) {
             if (sResponse.data[0]?.data?.unit != 'notifications')
                 params.start = parseInt(ld.start) + parseInt(ld.per_page)
-            else{
+            else {
                 params.start = parseInt(ld.start)
             }
         }
@@ -272,7 +272,7 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
         }
         const sResponse = await fetcher(
             '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' +
-                link
+            link
         )
 
         //  let settings = appSetting('l-ayouts', getURI(currentRoute.link));
@@ -331,8 +331,8 @@ export function addMoreData(
 
         if (pageData && !route.pageData) {
             updatedRoute.pageData = pageData
-         //   const blocks2 = processBlocks(updatedRoute.blocks)
-          //  updatedRoute.leftSideBarBlocks = blocks2.leftBlocks
+            //   const blocks2 = processBlocks(updatedRoute.blocks)
+            //  updatedRoute.leftSideBarBlocks = blocks2.leftBlocks
         }
 
         if (pageData?.config && !route.config) {
@@ -407,11 +407,11 @@ export function processUrl(data, blocks) {
     const contentAndEndpoint = Object.values(blocks).reduce(
         (acc, block) => {
             const b = getContent(data, block)
-            
-            if (block.leftbar){
-                 acc.leftbar.content = processContent(acc.leftbar, b)
+
+            if (block.leftbar) {
+                acc.leftbar.content = processContent(acc.leftbar, b)
             }
-            else{
+            else {
                 if (b.type === 'browse' && !block.sidebar) {
                     acc = processBrowse(acc, b)
                 } else {
@@ -441,7 +441,7 @@ export function getNumCols(currentBreakpoint, currentRoute) {
         currentBreakpoint,
         currentRoute,
     ])
-    const leftSideBar = currentRoute?.leftbar?.content?.length 
+    const leftSideBar = currentRoute?.leftbar?.content?.length
     if (customNumCol > 0) return customNumCol
     const isWeb = Platform.OS === 'web'
     const blocksroutes = currentRoute?.blocks
@@ -503,20 +503,20 @@ export function getNumCols(currentBreakpoint, currentRoute) {
 export function LeftSidebar({ title, addButtons, children, width, menu }) {
     const { t } = useTranslation()
     return (
-        <View>
-           
-                {(!!title || !!addButtons?.length > 0) && (
-                    <Row className="sticky z-10 justify-between items-center h-12 px-2 py-1.5 mb-2.5 z-10 ">
-                        <Text className=" text-2xl tracking-tight truncate mr-auto font-bold leading-11 text-card-foreground hidden lg:flex  ">
-                            {t(title)}
-                        </Text>
-                        <Row>{addButtons}</Row>
-                    </Row>
-                )}
-                <View className="flex-1">
+        <View className={appSetting('conductor', 'sidebar_inner_container')}>
+
+            {(!!title || !!addButtons?.length > 0) && (
+                <Row className={appSetting('conductor', 'sidebar_title')}>
+                    <Text className=" text-2xl tracking-tight truncate mr-auto font-bold leading-11 text-card-foreground hidden lg:flex  ">
+                        {t(title)}
+                    </Text>
+                    <Row>{addButtons}</Row>
+                </Row>
+            )}
+            <View className="flex-1">
                 {children}
-                </View>
-            
+            </View>
+
         </View>
     )
 }
@@ -535,19 +535,17 @@ export function TopSidebar({
     return (
         <View
             style={styles}
-            className={` ${!omitDefaultBackground ? conductorTheme.menu : ''} ${
-                isHideOnDesktop ? 'lg:hidden' : ''
-            }`}
+            className={` ${!omitDefaultBackground ? conductorTheme.menu : ''} ${isHideOnDesktop ? 'lg:hidden' : ''
+                }`}
         >
             <View
-                className={`${isHideOnDesktop ? '' : 'mx-auto'} w-full ${
-                    conductorTheme.menu_max_width
-                }`}
+                className={`${isHideOnDesktop ? '' : 'mx-auto'} w-full ${conductorTheme.menu_max_width
+                    }`}
             >
                 <Row
                     className=" items-center justify-between ">
-             
-                    
+
+
                     {!currentUser && title ? (
                         <View className="ps-3">
                             <TextHeader text={title} />

@@ -33,7 +33,8 @@ import { useIsDesktop, useBreakpoint } from 'app/context/measure';
 
 const conductorTheme = appSetting('theme', 'conductor');
 
-const RenderScene = ({ route, header, prevRoute, headerHeight, layoutName, numColumns, unitType, handleEndReached, isFetchingNextPage, hasNextPage, currentBreakpoint, index, Preload }) => {
+const RenderScene = ({ route, menu, header, routes, headerSettings, prevRoute, headerHeight, layoutName, numColumns, LeftBarContentBlocks, setIndex, unitType, handleEndReached, isFetchingNextPage, hasNextPage, currentBreakpoint, index, Preload }) => {
+    const { currentUser } = useCurrentUser();
     const uniRef = useRef();
     const pageRoute = route.inited ? route : prevRoute;
     const pageData = pageRoute.pageData;
@@ -521,7 +522,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
         <View className="w-full h-full" scrollEnabled={false}>
             {(isUseCurrentHeader || isDesktop) && headerComponent}
             <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
-            <View className={`${layoutName === 'profile' ? conductorTheme.content_max_width : ''} mx-auto w-full min-h-screen ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}>
+            <View className={`${layoutName === 'profile' ? conductorTheme.content_max_width : conductorTheme.content_max_width_nav} mx-auto  min-h-screen ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}>
                 <RenderSceneHeader route={currentRoute} setFilterValue={setFilterValue} />
                 <RenderScene
                     index={index}
@@ -529,6 +530,11 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
                     isFetchingNextPage={isFetchingNextPage}
                     handleEndReached={handleEndReached}
                     unitType={unitType}
+                    setIndex={setIndex}
+                    headerSettings={headerSettings}
+                    LeftBarContentBlocks= {LeftBarContentBlocks}
+                    routes={routes}
+                    menu={menu}
                     layoutName={layoutName}
                     numColumns={numColumns}
                     currentBreakpoint={currentBreakpoint}
@@ -714,7 +720,7 @@ const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, head
     const addButtons = AddMenu(menu, 'hideInSideBar');
     return (
         <LeftSidebar title={layoutName == 'profile' ? '' : t(menuSettings?.name)} addButtons={addButtons} >
-            {layoutName == 'navigator' && routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
+            {(layoutName == 'navigator' && routes.length > 1)  && routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
                 const btn = callFn('getButtonForConductor', [a, index, currentUser])
 
                 if (a?.icon == '*') {

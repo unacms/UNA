@@ -258,7 +258,7 @@ export default function (props) {
 
     return (
         <View className={`${props.layout !== 'hor' ? appSetting('forms', 'form_container'): 'w-full'} ${props?.exProps?.classes}`}>
-            {(isAutoChange && props.layout !== 'hor') && <Row className='items-center justify-between mb-3'>
+            {/*(isAutoChange && props.layout !== 'hor') && <Row className='items-center justify-between mb-3'>
                 {!isObjectsEqual(defaultFormValues, currentFormValues) && <Button
                     title='Reset Filters'
                     startDecorator='X'
@@ -267,7 +267,7 @@ export default function (props) {
                     onPress={() => methods.reset()}
                 />
                 }
-            </Row>}
+            </Row>*/}
             <FormProvider {...methods}>
                 <View className={`${props.layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : appSetting('forms', 'form_container')}`}>
                     {inputs}

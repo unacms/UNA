@@ -211,6 +211,8 @@ export const settingsDefault = {
         show_nav_titles: false, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
         sidebar_container: ' w-full bg-card h-full overflow-y-auto flex flex-col ring-1 ring-border/60 ',
+        sidebar_inner_container: '',
+        sidebar_title: 'sticky z-10 justify-between items-center h-12 px-2 py-1.5 mb-2.5 z-10',
         sidebar_position: ' z-50 fixed fixed-process ',
         bgrDecorator: true, // Enable/disable decorator background globally for conductor buttons
     },
@@ -1029,6 +1031,7 @@ export const settingsDefault = {
             menu: ' w-full items-left justify-center ',
             menu_max_width: ' w-full max-w-7xl ',
             content_max_width: ' w-full max-w-7xl ',
+            content_max_width_nav: ' w-full max-w-screen-2xl ',
             menu_is_dynamic: false,
             menu_cnt: ' flex-row flex-none gap-1 mx-3 h-14 items-center overflow-x-auto ',
             menu_categ_ident: ' pl-12 ',
@@ -1103,7 +1106,7 @@ export const settingsDefault = {
         },
 
         inputs: {
-            default: ' bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 min-h-12 flex-auto text-base leading-6 overflow-hidden shadow-xs placeholder-muted-foreground text-card-foreground web:duration-100',
+            default: ' bg-input/90 border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 min-h-12 flex-auto text-base leading-6 overflow-hidden shadow-xs placeholder-muted-foreground text-card-foreground web:duration-100',
            
             multi: ' bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 py-2 min-h-12 flex-auto text-base leading-6 overflow-hidden shadow-xs placeholder-muted-foreground text-card-foreground web:duration-100 ',
             rounded:
