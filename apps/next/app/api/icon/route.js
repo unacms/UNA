@@ -1,58 +1,50 @@
+// app/api/icon/route.js
 
-import { renderToString } from "react-dom/server.browser";
-//import * as Icons from 'lucide-react-native'
-import * as Icons from "lucide-react";
+// ⛔️ полностью отключаем SSG/ISR для роута
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const runtime = 'nodejs'; // исключаем edge
+
+// ❌ УДАЛИТЕ 'use server' вверху файла
+
 export async function GET(request) {
-    try {
-        const { searchParams } = new URL(request.url);
-        const iconName = searchParams.get("icon");
-        
-        if (!iconName || !Icons[iconName]) {
-            return new Response(
-                JSON.stringify({ icon: '' }),
-                {
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                }
-    
-            );
-        }
+  // ⬇️ динамические импорты, чтобы сборщик не подхватывал react-dom/server на этапе анализа
+  const { renderToString } = await import('react-dom/server');
+  const Icons = await import('lucide-react');
 
-        const IconComponent = Icons[searchParams.get('icon')];
+  try {
+    const { searchParams } = new URL(request.url);
+    const iconName = searchParams.get('icon') || '';
+    const IconComponent = Icons[iconName];
 
-        // Extract size and dimensions from query parameters
-        const width = searchParams.get("width");
-        const fill = searchParams.get("fill");
-        const height = searchParams.get("height");
-        const size = searchParams.get("size");
-         const strokeWidth = searchParams.get('strokeWidth');
-
-        // Dynamically set icon properties
-        const iconProps = {
-            color: "currentColor",
-            ...(width && { width }),
-            ...(fill && { fill }),
-            ...(height && { height }),
-            ...(size && { size }),
-            ...(strokeWidth && { strokeWidth }),
-        };
-
-        // Render the SVG component to a string
-        const iconString = renderToString(<IconComponent {...iconProps} />);
-
-        // Return the raw SVG with appropriate headers
-        return new Response(
-            JSON.stringify({ icon: iconString }),
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-
-        );
-    } catch (error) {
-        console.error("Error rendering icon:", error);
-        return new Response("Internal Server Error", { status: 500 });
+    if (!IconComponent) {
+      return new Response(JSON.stringify({ icon: '' }), {
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+      });
     }
+
+    const width = searchParams.get('width');
+    const height = searchParams.get('height');
+    const size = searchParams.get('size');
+    const fill = searchParams.get('fill');
+    const strokeWidth = searchParams.get('strokeWidth');
+
+    const iconProps = {
+      color: 'currentColor',
+      ...(width && { width }),
+      ...(height && { height }),
+      ...(size && { size }),
+      ...(fill && { fill }),
+      ...(strokeWidth && { strokeWidth }),
+    };
+
+    const svg = renderToString(<IconComponent {...iconProps} />);
+
+    return new Response(JSON.stringify({ icon: svg }), {
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+    });
+  } catch (e) {
+    console.error('Error rendering icon:', e);
+    return new Response('Internal Server Error', { status: 500 });
+  }
 }
