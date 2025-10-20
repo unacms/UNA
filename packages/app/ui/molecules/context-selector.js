@@ -64,6 +64,7 @@ function getContextRoot(data, url, uri) {
                 {...data.current}
                 displayType="unit_wo_info"
                 displaySize="sm"
+                showLinks = {false}
             />
         ),
         name: data.current.display_name,
@@ -86,8 +87,8 @@ export default function ContextSelector({ data, url, uri, mode }) {
 
 
     const CurrentContext = (
-        <Link variant="ghost" size="lg" href={contextRoot.url}>
-            <Row className="items-center gap-2 ">
+        <Link variant="ghost" size="lg" href={contextRoot.url} title="Context Home">
+            <Row className="items-center gap-2 py-0.5">
                 <View className='rounded-full items-center justify-center web:duration-200 text-card-foreground web:hover:text-foreground'>
                     {contextRoot.image}
                 </View>
@@ -112,16 +113,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
             onOpenChange={handleOpenChange}
         >
             <View className="flex-col gap-px">
-                {data.list.map((item) =>
-                    <ListItem 
-                        url={item.url} 
-                        text={item.display_name}
-                        icon={<Profile {...item} displayType="unit_wo_info" displaySize="sm" />}  
-                        isActive={item.id === data.current?.id && !isLinkSelected}
-                    />
-                )}
-
-                {data.links?.map((item) =>
+                {data.links?.filter(item => (item.hidden != true)).map((item) =>
                     item.url ? (
                         <ListItem 
                             url={item.url} 
@@ -142,6 +134,14 @@ export default function ContextSelector({ data, url, uri, mode }) {
                         />
                     )
                 )}
+                {data.list.map((item) =>
+                    <ListItem 
+                        url={item.url} 
+                        text={item.display_name}
+                        icon={<Profile {...item} displayType="unit_wo_info" displaySize="sm" />}  
+                        isActive={item.id === data.current?.id && !isLinkSelected}
+                    />
+                )}
             </View>
         </DropdownPopup>
     )
@@ -150,12 +150,12 @@ export default function ContextSelector({ data, url, uri, mode }) {
         return DropDown
     }
 
-    if (mode === 'compact') {
+    /*if (mode === 'compact') {
         return <ButtonsGroup variant="text" size="lg" fullWidth={true} >
             {CurrentContext}
             {DropDown}
         </ButtonsGroup>
-    }
+    }*/
 
     return (
         <>
@@ -167,18 +167,18 @@ export default function ContextSelector({ data, url, uri, mode }) {
                                 {(() => {
                                     const isActiveAppRoot = uri === 'home'
                                     return (
-                                        <Link href="/">
+                                        <View className='px-2'><Link href="/" variant="ghost"  size="lg" title="Home">
                                             <Row
                                                 className={` rounded-xl ${isActiveAppRoot
                                                         ? ' bg-accent/60 text-accent-foreground web:hover:bg-accent'
                                                         : ' web:hover:bg-muted/60'
                                                     }`}
                                             >
-                                                <View className="p-1.5 flex-row rounded-full items-center justify-center">
+                                                <View className="flex-row rounded-full items-center justify-center">
                                                     {appStatic('logo', { mode: 'mark', })}
                                                 </View>
                                             </Row>
-                                        </Link>
+                                        </Link></View>
                                     )
                                 })()}
                                 <Icon
@@ -189,7 +189,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
                             </>
                         )}
 
-                    <Row className="items-center gap-2 px-1">
+                    <Row className="items-center gap-2 pl-2">
                         {CurrentContext}
                         {DropDown}
                     </Row>

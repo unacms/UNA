@@ -114,11 +114,14 @@ export const Header = memo(({
                     }} startDecorator="ArrowLeft" size="base" /></View>
                 )}
                 {(pageData?.context?.current?.url || isHome) && <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
-                {((!!text && !pageData?.context?.current?.url) || (pageData?.context && !pageData?.context?.current?.url && !isHome)) && <Row className='items-center px-3'><>
+                {(!appSetting('context_selector', 'show_always') && ((!!text && !pageData?.context?.current?.url) || (pageData?.context && !pageData?.context?.current?.url && !isHome))) && <Row className='items-center px-3'><>
                     {(!!text && !pageData?.context?.current?.url) && (
                         <TextHeader text={text}></TextHeader>
                     )}
                     {(pageData?.context && !pageData?.context?.current?.url && !isHome) && <ContextSelector mode="min" url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
+                </></Row>}
+                 {(appSetting('context_selector', 'show_always') ) && <Row className='items-center px-2'><>
+                    {(pageData?.context && !pageData?.context?.current?.url && !isHome) && <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
                 </></Row>}
                 {(type !== 'string' && headerContent) && <View className="flex-auto">{headerContent}</View>}
 
