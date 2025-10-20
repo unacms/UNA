@@ -1031,7 +1031,7 @@ export const settingsDefault = {
             menu: ' w-full items-left justify-center ',
             menu_max_width: ' w-full max-w-7xl ',
             content_max_width: ' w-full max-w-7xl ',
-            content_max_width_nav: ' w-full max-w-screen-2xl ',
+            content_max_width_nav: ' w-full  ',
             menu_is_dynamic: false,
             menu_cnt: ' flex-row flex-none gap-1 mx-3 h-14 items-center overflow-x-auto ',
             menu_categ_ident: ' pl-12 ',
