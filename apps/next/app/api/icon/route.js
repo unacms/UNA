@@ -1,9 +1,10 @@
-"use server";
+
 export const dynamic = 'force-dynamic'; // запрещает статическую пререндеринга
 export const revalidate = 0;            // отключает кеш пререндеринга
 
 
-import { renderToString } from "react-dom/server.browser";
+import { renderToString } from 'react-dom/server'; // ✅ вместо "react-dom/server.browser"
+
 //import * as Icons from 'lucide-react-native'
 import * as Icons from "lucide-react";
 export async function GET(request) {
