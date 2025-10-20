@@ -358,7 +358,7 @@ return;*/
 
         return (
             <>{BlocksCenter}
-                <PanelGroup
+              {appSetting('layout', 'home_container') !== false && <PanelGroup
                     ref={groupRef}
                     key={`cells-home${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
                     autoSaveId={cellsCustomConfig.sizable ? `cells-home` : undefined}
@@ -398,7 +398,8 @@ return;*/
                             </Panel>
                         </>
                     )}
-                </PanelGroup></>
+                </PanelGroup>}
+                </>
         )
     }
 }
