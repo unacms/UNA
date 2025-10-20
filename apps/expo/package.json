@@ -22,6 +22,7 @@
     "@rnmapbox/maps": "^10.1.37",
     "@stripe/connect-js": "^3.3.25",
     "@stripe/stripe-react-native": "0.38.6",
+    "@tailwindcss/container-queries": "^0.1.1",
     "@tanstack/react-query": "^4.32.0",
     "app": "*",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",

@@ -12,6 +12,6 @@ module.exports = {
   theme: {
     ...theme,
   },
-  plugins: [],
+   plugins: [require("@tailwindcss/container-queries")],
 }
 

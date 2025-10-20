@@ -47,6 +47,7 @@ const nextConfig = {
     '@react-native-clipboard/clipboard',
     '@babel/core',
     '@react-navigation/native',
+    '@tailwindcss/container-queries',
     'react-native-calendars',
     'react-native-image-pan-zoom',
     'react-native-swipe-gestures',

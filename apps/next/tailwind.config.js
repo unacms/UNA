@@ -16,7 +16,7 @@ module.exports = {
   darkMode: ['class', '[theme="dark"]'],
   important: 'html',
   presets: [require("nativewind/preset")],
-  plugins: [],
+   plugins: [require("@tailwindcss/container-queries")],
   future: {hoverOnlyWhenSupported: true}
 }
 
