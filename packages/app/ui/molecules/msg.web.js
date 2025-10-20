@@ -20,7 +20,7 @@ export default function ElementMsg(props) {
                     <Icon icon="Info" size={24} />
                     <Text className=" text-base text-card-foreground">{props.title}</Text>
                 </Row>
-                <View className='justify-center items-center'><Button variant="primary" size="base" title="OK" onPress={() => handleOk()} /></View>
+                <Row className='justify-center items-center min-w-[100px] mx-auto'><Button variant="primary" fullWidth size="base" title="OK" onPress={() => handleOk()} /></Row>
             </View>
         </Modal>
 

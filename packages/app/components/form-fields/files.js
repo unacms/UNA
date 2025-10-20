@@ -355,7 +355,6 @@ export default function (props) {
     if (props.view == 'button') {
         return <ButtonCover imageSource={imageSource} selectImage={selectImage} />
     }
-    console.log("imageSource.images", imageSource.images)
     if (props.view == 'preview') {
         return imageSource?.images?.length > 0 ? <ActionButton uploadImages={uploadImages} imagesList={imageSource.images} bMultiple={bMultiple} props={props} selectImage={selectImage} handleDelete={handleDelete} />
             : <></>;

@@ -153,18 +153,18 @@ export function fillTabs(
             i.blocks = blocks
             i.pageData = data
             if (appSetting('cache', 'list')) {
-                let stateC = getDataFromCache('ul:state', i.storageKeyValue)
+                /*let stateC = getDataFromCache('ul:state', i.storageKeyValue)
                 if (stateC) {
                     // i.endpoint = stateC.endpoint;
                     i.state = stateC.state
                 }
-
-                let stateD = getDataFromCache('ul:data', i.storageKeyValue)
+*/
+                /*let stateD = getDataFromCache('ul:data', i.storageKeyValue)
                 if (stateD) {
                     i.endpoint = stateD.endpoint
                     i.data = stateD.data
                     i.cached = true
-                }
+                }*/
             }
         } else {
             let contentAndEndpoint = processUrl(data, blocks)

@@ -33,8 +33,174 @@ import { useIsDesktop, useBreakpoint } from 'app/context/measure';
 
 const conductorTheme = appSetting('theme', 'conductor');
 
-export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionAsMenu, skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 112 }) {
+const RenderScene = ({ route, header, prevRoute, headerHeight, layoutName, numColumns, unitType, handleEndReached, isFetchingNextPage, hasNextPage, currentBreakpoint, index, Preload }) => {
     const uniRef = useRef();
+    const pageRoute = route.inited ? route : prevRoute;
+    const pageData = pageRoute.pageData;
+    const dataItems = route?.data;
+
+    const isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
+    const isLeftCol = route?.leftbar?.content?.length > 0 || layoutName == 'navigator';
+    const renderItem = useCallback(
+        ({ item, index }) => (
+            <ItemRenderer
+                unitType={unitType}
+                route={pageRoute}
+                numColumns={numColumns}
+                item={{ ...item, feed_type: pageRoute?.endpoint?.params?.type }}
+                unit={pageRoute?.endpoint?.unit}
+                module={pageRoute?.endpoint?.module}
+            />
+        ),
+        [pageRoute, numColumns, unitType]
+    );
+    const MainContent = useMemo(() => {
+        return <UniList
+            scrollProps={header ?
+                {
+                    pageData: pageData,
+                    subHeaderComponent: header,
+                    headerHeight: headerHeight,
+                    isBackButton: false,
+                    isMenuNameAsTitle: true
+                } : null
+            }
+            index={pageRoute.index}
+            data={dataItems}
+            endpoint={pageRoute.endpoint}
+            listState={pageRoute?.state}
+            storagekey={pageRoute.storageKeyValue}
+            refer={uniRef}
+            route={pageRoute}
+            unit={pageRoute.endpoint?.unit}
+            useWindowScroll={true}
+            numColumns={numColumns}
+            onEndReached={handleEndReached}
+            renderItem={renderItem}
+            ListFooterComponent={
+                <View>
+                    {(hasNextPage && isFetchingNextPage) ? (
+                        Preload
+                    ) : null}
+                </View>
+            }
+        />
+    }, [dataItems, numColumns, dataItems.length]);
+
+    const groupRef = useRef(null);
+    const sidebarUnitType = pageRoute.blocks?.browse_sidebar?.unitType || 'default';
+    const layoutCols = !isLeftCol && !isRightCol ? 'c' : !isLeftCol ? 'c-r' : !isRightCol ? 'l-c' : 'l-c-r';
+
+    const cellsCustomConfig = useMemo(() => {
+        return appSetting('layouts', route?.pageData?.uri)
+            || appSetting('layouts', `cols-${layoutCols}`);
+    }, [pageRoute?.pageData?.uri, layoutCols]);
+
+    const { cells = {} } = cellsCustomConfig || {};
+    const currentBreakpointName = getBreakpoint(currentBreakpoint);
+
+    // LEFT
+    const {
+        breakpoint: leftBreakpoint,
+        responsive: leftResponsive,
+        ...leftBase
+    } = cells.left ?? {};
+    const leftPanelProps = resolvePanelProps(leftBase, leftResponsive, currentBreakpointName);
+
+    // CENTER
+    const {
+        breakpoint: centerBreakpoint,
+        responsive: centerResponsive,
+        ...centerBase
+    } = cells.center ?? {};
+    const centerPanelProps = resolvePanelProps(centerBase, centerResponsive, currentBreakpointName);
+
+    // RIGHT
+    const {
+        breakpoint: rightBreakpoint,
+        responsive: rightResponsive,
+        ...rightBase
+    } = cells.right ?? {};
+    const rightPanelProps = resolvePanelProps(rightBase, rightResponsive, currentBreakpointName);
+
+    const onLayout = (sizes) => {
+        setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100);
+    };
+
+    useEffect(() => {
+        const layouts = []
+        if (isLeftCol) {
+            layouts.push(leftPanelProps.defaultSize)
+        }
+        layouts.push(centerPanelProps.defaultSize);
+        if (isRightCol) {
+            layouts.push(rightPanelProps.defaultSize)
+        }
+        if (groupRef) {
+            groupRef.current?.setLayout(layouts);
+        }
+    }, [currentBreakpointName, index, groupRef]);
+
+    return (
+        <PanelGroup
+            ref={groupRef}
+            key={`${pageData?.uri || 'default'}-pnl2-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
+            autoSaveId={cellsCustomConfig.sizable ? `cells-${pageData?.uri || 'default'}` : undefined}
+            direction="horizontal"
+            className={(layoutName == 'navigator' ? '' : '') + " h-full"}
+            onLayout={onLayout}
+        >
+            {isLeftCol && <>
+                <Panel className={`hidden ${leftBreakpoint}:block`} {...leftPanelProps}>
+                    <View className={`${layoutName == 'profile' ? cd('p-md') + ' fixed-process' : appSetting('conductor', 'sidebar_container')}`}>
+                        {layoutName == 'profile' ? <LeftSideBarContainer
+                            layoutName={layoutName}
+                            index={index}
+                            setIndex={setIndex}
+                            menu={menu}
+                            routes={routes}
+                            currentUser={currentUser}
+                            headerSettings={headerSettings}
+                        >{LeftBarContentBlocks}</LeftSideBarContainer> : <View className=' fixed-process  p-2 '><LeftSideBarContainer
+                            layoutName={layoutName}
+                            index={index}
+                            setIndex={setIndex}
+                            menu={menu}
+                            routes={routes}
+                            currentUser={currentUser}
+                            headerSettings={headerSettings}
+                        >{LeftBarContentBlocks}</LeftSideBarContainer></View>
+                        }
+                    </View>
+                </Panel>
+                <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
+            </>
+            }
+            <Panel {...centerPanelProps}>
+                <View className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'} ${layoutName !== 'navigator' ? 'mt-0.5 sm:' + cd('p-md') : 'lg:p-2 '}`}>
+                    {MainContent}
+                    {pageRoute?.endpoint?.request_url && (!pageRoute.endpoint?.finished ? Preload : (dataItems.filter(item => (item.type != 'block')).length == 0 && callFn("noContentByUrl", [pageRoute?.endpoint])))}
+                </View>
+            </Panel>
+            {isRightCol && <>
+                <PanelHandler gap={`hidden ${rightBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
+                <Panel className={`hidden ${rightBreakpoint}:block`} {...rightPanelProps}>
+                    <View className={`${cd('p-md')} fixed-process `}>
+                        {pageRoute?.sidebar?.content.map((item, index) => {
+                            return <ItemRenderer key={`${pageRoute?.index}-${item.id}`} unitType={sidebarUnitType} route={pageRoute} numColumns={1} sidebar={true} item={item} unit={pageRoute?.sidebar?.endpoint?.unit} module={pageRoute?.sidebar?.endpoint?.module ? pageRoute?.sidebar?.endpoint?.module : ''} />
+                        })}
+                        <View>
+                            {!!route.pageData && <BlockByName data={pageRoute.pageData} name={pageRoute.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1} />}
+                        </View>
+                    </View>
+                </Panel>
+            </>}
+        </PanelGroup>
+    );
+};
+
+export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionAsMenu, skeleton = '', onChangeRoute, keyword, layoutName, defaultHeaderHeight = 112 }) {
+
     const { currentUser } = useCurrentUser();
     const { setBottomSheetData } = useBottomSheetData();
     const { layoutData, setLayoutData } = useLayoutData();
@@ -75,15 +241,21 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
         _setIndex(newIndex);
     };
 
-    useEffect(() => {
+ 
+
+    const currentRoute = routes.find((item) => item.index === index);
+
+   useEffect(() => {
         const foundIndex = getFoundIndex();
         if (foundIndex !== index)
             setIndex(foundIndex)
+        console.log("storageClear", ts, currentRoute, currentRoute.storageKeyValue)
+        storageClear('ul:data', currentRoute.storageKeyValue)
+        storageClear('ul:state', currentRoute.storageKeyValue)
     }, [ts]);
 
-    const currentRoute = routes.find((item) => item.index === index);
     const prevRoute = useMemo(() => routes.find((item) => item.index === prevIndex), [routes, prevIndex]);;
-    const queryKey = [currentRoute?.endpoint?.request_url, currentRoute.link, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)];
+    const queryKey = [currentRoute?.endpoint?.request_url, currentRoute.link, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters), ts];
     const cellsCustomConfig = appSetting('layouts', 'navigator') || appSetting('layouts', `cols-l-c`);
     const initialHeaderSettings = getHeaderSettings(getURI(currentRoute?.key), isDesktop, layoutName, currentRoute.config);
 
@@ -299,168 +471,7 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
 
     const Preload = useMemo(() => getSkeletonForList(sSkeleton, numColumns), [sSkeleton, numColumns]);
 
-    const RenderScene = useCallback(({ route, header, prevRoute, headerHeight }) => {
-        const pageData = route.inited ? route.pageData : prevRoute.pageData;
-        const dataItems = route?.data;
 
-        const isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
-        const isLeftCol = route?.leftbar?.content?.length > 0 || layoutName == 'navigator';
-        const renderItem = useCallback(
-            ({ item, index }) => (
-                <ItemRenderer
-                    unitType={unitType}
-                    route={route}
-                    numColumns={numColumns}
-                    item={{ ...item, feed_type: route?.endpoint?.params?.type }}
-                    unit={route?.endpoint?.unit}
-                    module={route?.endpoint?.module}
-                />
-            ),
-            [route, numColumns, unitType]
-        );
-        const MainContent = useMemo(() => {
-            return <UniList
-                scrollProps={header ?
-                    {
-                        pageData: route.inited ? route.pageData : prevRoute.pageData,
-                        subHeaderComponent: header,
-                        headerHeight: headerHeight,
-                        isBackButton: false,
-                        isMenuNameAsTitle: true
-                    } : null
-                }
-                index={route.index}
-                data={dataItems}
-                endpoint={route.endpoint}
-                listState={route?.state}
-                storagekey={route.storageKeyValue}
-                refer={uniRef}
-                route={route}
-                unit={route.endpoint?.unit}
-                useWindowScroll={true}
-                numColumns={numColumns}
-                onEndReached={handleEndReached}
-                renderItem={renderItem}
-                ListFooterComponent={
-                    <View>
-                        {(hasNextPage && isFetchingNextPage) ? (
-                            Preload
-                        ) : null}
-                    </View>
-                }
-            />
-        }, [dataItems, numColumns, dataItems.length]);
-
-        const groupRef = useRef(null);
-        const sidebarUnitType = route.blocks?.browse_sidebar?.unitType || 'default';
-        const layoutCols = !isLeftCol && !isRightCol ? 'c' : !isLeftCol ? 'c-r' : !isRightCol ? 'l-c' : 'l-c-r';
-        
-        const cellsCustomConfig = useMemo(() => {
-            return appSetting('layouts', route?.pageData?.uri)
-                || appSetting('layouts', `cols-${layoutCols}`);
-        }, [route?.pageData?.uri, layoutCols]);
-
-        const { cells = {} } = cellsCustomConfig || {};
-        const currentBreakpointName = getBreakpoint(currentBreakpoint);
-
-        // LEFT
-        const {
-            breakpoint: leftBreakpoint,
-            responsive: leftResponsive,
-            ...leftBase
-        } = cells.left ?? {};
-        const leftPanelProps = resolvePanelProps(leftBase, leftResponsive, currentBreakpointName);
-
-        // CENTER
-        const {
-            breakpoint: centerBreakpoint,
-            responsive: centerResponsive,
-            ...centerBase
-        } = cells.center ?? {};
-        const centerPanelProps = resolvePanelProps(centerBase, centerResponsive, currentBreakpointName);
-
-        // RIGHT
-        const {
-            breakpoint: rightBreakpoint,
-            responsive: rightResponsive,
-            ...rightBase
-        } = cells.right ?? {};
-        const rightPanelProps = resolvePanelProps(rightBase, rightResponsive, currentBreakpointName); 
-
-        const onLayout = (sizes) => {
-            setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100);
-        };
-
-        useEffect(() => {
-            const layouts = []
-            if (isLeftCol){
-                layouts.push(leftPanelProps.defaultSize)
-            }
-            layouts.push(centerPanelProps.defaultSize);
-            if (isRightCol){
-                layouts.push(rightPanelProps.defaultSize)
-            }
-            groupRef.current?.setLayout(layouts);
-        }, [currentBreakpointName]);
-        
-
-        return (
-            <PanelGroup
-                ref={groupRef}
-                key={`${pageData?.uri || 'default'}-pnl2-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
-                autoSaveId={cellsCustomConfig.sizable ? `cells-${pageData?.uri || 'default'}` : undefined}
-                direction="horizontal"
-                className={(layoutName == 'navigator' ? '' : '') + " h-full"}
-                onLayout={onLayout}
-            >
-                {isLeftCol && <>
-                    <Panel className={`hidden ${leftBreakpoint}:block`} {...leftPanelProps}>
-                        <View className={`${layoutName == 'profile' ? cd('p-md') + ' fixed-process' : appSetting('conductor', 'sidebar_container')}`}>
-                            {layoutName == 'profile' ? <LeftSideBarContainer
-                                layoutName={layoutName}
-                                index={index}
-                                setIndex={setIndex}
-                                menu={menu}
-                                routes={routes}
-                                currentUser={currentUser}
-                                headerSettings={headerSettings}
-                            >{LeftBarContentBlocks}</LeftSideBarContainer> : <View className=' fixed-process  p-2 '><LeftSideBarContainer
-                                layoutName={layoutName}
-                                index={index}
-                                setIndex={setIndex}
-                                menu={menu}
-                                routes={routes}
-                                currentUser={currentUser}
-                                headerSettings={headerSettings}
-                            >{LeftBarContentBlocks}</LeftSideBarContainer></View>
-                            }
-                        </View>
-                    </Panel>
-                    <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
-                </>
-                }
-                <Panel {...centerPanelProps}>
-                    <View className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'} ${layoutName !== 'navigator' ? 'mt-0.5 sm:' + cd('p-md') : 'lg:p-2 '}`}>
-                        {MainContent}
-                        {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.filter(item => (item.type !='block')).length == 0 && callFn("noContentByUrl", [route?.endpoint])))}
-                    </View>
-                </Panel>
-                {isRightCol && <>
-                    <PanelHandler gap={`hidden ${rightBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
-                    <Panel className={`hidden ${rightBreakpoint}:block`} {...rightPanelProps}>
-                        <View className={`${cd('p-md')} fixed-process `}>
-                            {route?.sidebar?.content.map((item, index) => {
-                                return <ItemRenderer key={`${route?.index}-${item.id}`} unitType={sidebarUnitType} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} />
-                            })}
-                            <View>
-                                <BlockByName data={route.pageData ? route.pageData : data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1} />
-                            </View>
-                        </View>
-                    </Panel>
-                </>}
-            </PanelGroup>
-        );
-    }, [numColumns, currentBreakpoint, index]);
 
     const isHideCover = data?.cover_block?.profile && appSetting('cover', 'hide_cover_for_context') && data?.cover_block?.profile?.id === data?.context?.current?.id && isDesktop;
 
@@ -512,7 +523,21 @@ export function Conductor({ isCoverDisabled, ts, menu, data, blocks, useSectionA
             <Toaster ref={toasterRef} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
             <View className={`${layoutName === 'profile' ? conductorTheme.content_max_width : ''} mx-auto w-full min-h-screen ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}>
                 <RenderSceneHeader route={currentRoute} setFilterValue={setFilterValue} />
-                <RenderScene numColumns={numColumns} currentBreakpoint={currentBreakpoint} index={index} prevRoute={prevRoute} headerHeight={showFiltersBtn && routes.length > 1 ? defaultHeaderHeight + 52 : defaultHeaderHeight} header={isUseCurrentHeader ? null : headerComponent} route={currentRoute} />
+                <RenderScene
+                    index={index}
+                    hasNextPage={hasNextPage}
+                    isFetchingNextPage={isFetchingNextPage}
+                    handleEndReached={handleEndReached}
+                    unitType={unitType}
+                    layoutName={layoutName}
+                    numColumns={numColumns}
+                    currentBreakpoint={currentBreakpoint}
+                    prevRoute={prevRoute}
+                    headerHeight={showFiltersBtn && routes.length > 1 ? defaultHeaderHeight + 52 : defaultHeaderHeight}
+                    header={isUseCurrentHeader ? null : headerComponent}
+                    route={currentRoute}
+                    Preload={Preload}
+                />
             </View>
         </View>
     );
@@ -717,7 +742,7 @@ const LeftSideBarContainer = ({ menu, routes, currentUser, index, setIndex, head
 }
 
 const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled, isHideCover }) => {
- 
+
     const isDesktop = useIsDesktop();
     const scrollValue = useSharedValue(isCoverDisabled ? 0 : 1);
     const hideDefaultHeaderFrom = useSharedValue(200);
@@ -730,8 +755,8 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled,
     const handleScroll = useCallback(() => {
         requestAnimationFrame(() => {
             const currentScrollY = window.scrollY;
-             scrollValue.value = currentScrollY > hideDefaultHeaderFrom.value ? 0 : 1;
-        });       
+            scrollValue.value = currentScrollY > hideDefaultHeaderFrom.value ? 0 : 1;
+        });
     }, [scrollValue]);
 
     useEffect(() => {
@@ -753,7 +778,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled,
             position: scrollValue.value == 1 || (false) ? 'relative' : 'fixed',
             marginBottom: scrollValue.value == 1 || (false) ? '0px' : hideDefaultHeaderFrom.value + 'px',
         };
-    }, [scrollValue,isDesktop, isCoverDisabled]);
+    }, [scrollValue, isDesktop, isCoverDisabled]);
 
     const animatedStyleHeaderCover = useAnimatedStyle(() => {
         return {
@@ -763,7 +788,7 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled,
 
     const animatedStyleHeaderCoverSmall = useAnimatedStyle(() => {
         return {
-            display: scrollValue.value == 1  ? 'none' : 'flex', // display: scrollValue.value == 1 || (isCoverDisabled && !isDesktop) ? 'none' : 'flex',
+            display: scrollValue.value == 1 ? 'none' : 'flex', // display: scrollValue.value == 1 || (isCoverDisabled && !isDesktop) ? 'none' : 'flex',
         };
     }, [scrollValue]);
 
@@ -776,14 +801,14 @@ const HeaderContainer = ({ tabBarObj, pageData, headerSettings, isCoverDisabled,
     }, [scrollValue, coverHeight]);
 
 
-const onCoverLayout = useCallback((e) => {
-    coverHeight.value = e.nativeEvent.layout.height || 0;
-}, []);
+    const onCoverLayout = useCallback((e) => {
+        coverHeight.value = e.nativeEvent.layout.height || 0;
+    }, []);
 
 
-const onMenuLayout = useCallback((e) => {
-  menuHeight.value = e.nativeEvent.layout.height || 0;
-}, []);
+    const onMenuLayout = useCallback((e) => {
+        menuHeight.value = e.nativeEvent.layout.height || 0;
+    }, []);
 
     return (
         <View className="z-50">
@@ -791,7 +816,7 @@ const onMenuLayout = useCallback((e) => {
             <Animated.View style={[{ width: '100%' }, animatedStyleHeaderCommon]}>
                 <View className={`${conductorTheme.cover_base} cover-1`} onLayout={onCoverLayout}>
                     <Animated.View style={[{}, animatedStyleHeaderCover]}>
-                        <ViewRef  className={conductorTheme.cover_content}   >
+                        <ViewRef className={conductorTheme.cover_content}   >
                             {(isCover && !isHideCover) && <View className="w-full ">
                                 <Cover data={pageData.cover_block} mode={headerSettings.cover} uri={uri} context={pageData.context} />
                             </View>}

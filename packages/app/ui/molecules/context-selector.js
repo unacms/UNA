@@ -9,6 +9,8 @@ import { appStatic } from 'app/lib/app-static'
 import { FeedbackHaptics, appSetting } from 'app/lib/util'
 import { useState } from 'react'
 
+const rootUrl = appSetting('context_selector', 'root_url');
+
 function ListItem({url, text, icon, isActive}) {
     return (
         <Link key={url} className="w-full" href={url}>
@@ -40,6 +42,16 @@ function ListItem({url, text, icon, isActive}) {
 }
 
 function getContextRoot(data, url, uri) {
+
+  
+    if (uri == rootUrl) {
+        return {
+            url: rootUrl,
+            image: appStatic('logo', { mode: appSetting('context_selector', 'logo_mode') }),
+            name: false,
+        }
+    }
+
     const link = data.links?.find((item) => item.url?.includes('/' + url))
     if (link) {
         return {
@@ -48,14 +60,7 @@ function getContextRoot(data, url, uri) {
             name: link.title,
         }
     }
-
-    if (!data.current?.id) {
-        return {
-            url: '/',
-            image: appStatic('logo', { mode: appSetting('context_selector', 'logo_mode') }),
-            name: false,
-        }
-    }
+    
 
     return {
         url: data.current.url,
@@ -116,6 +121,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
                 {data.links?.filter(item => (item.hidden != true)).map((item) =>
                     item.url ? (
                         <ListItem 
+                            key={item.url}
                             url={item.url} 
                             text={item.title} 
                             icon={item.icon && (item.icon == '{logo}' ? appStatic('logo', { mode: 'mark', }) :
@@ -136,6 +142,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
                 )}
                 {data.list.map((item) =>
                     <ListItem 
+                        key={item.url}
                         url={item.url} 
                         text={item.display_name}
                         icon={<Profile {...item} displayType="unit_wo_info" displaySize="sm" />}  
@@ -156,7 +163,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
             {DropDown}
         </ButtonsGroup>
     }*/
-
+    
     return (
         <>
             {data?.list?.length > 0 || data?.links?.length > 0 ? (
@@ -165,9 +172,9 @@ export default function ContextSelector({ data, url, uri, mode }) {
                         appSetting('context_selector', 'logo') && (
                             <>
                                 {(() => {
-                                    const isActiveAppRoot = uri === 'home'
+                                    const isActiveAppRoot = uri === rootUrl
                                     return (
-                                        <View className='px-2'><Link href="/" variant="ghost"  size="lg" title="Home">
+                                        <View className='px-2'><Link href={`/${rootUrl}`} variant="ghost"  size="lg" title="Home">
                                             <Row
                                                 className={` rounded-xl ${isActiveAppRoot
                                                         ? ' bg-accent/60 text-accent-foreground web:hover:bg-accent'

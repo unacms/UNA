@@ -151,6 +151,7 @@ export const settingsDefault = {
         logo: true,
         logo_mode: 'full',
         show_always: false,
+        root_url: 'home'
     },
     cover: {
         use_background: true, //appSetting('layout', 'use_background')
