@@ -829,8 +829,8 @@ export const settingsDefault = {
             max_width: '',
         },
         home: {
-            adjustable: false,
-            sizable: false,
+            adjustable: true,
+            sizable: true,
             cells: {
                 left: {
                     defaultSize: 25, 
@@ -932,13 +932,13 @@ export const settingsDefault = {
             sizable: true,
             cells: {
                 left: {
-                    defaultSize: 20,
+                    defaultSize: 30,
                     minSize: 15,
                     maxSize: 30,
                     breakpoint: 'xl',
                    
                 },
-                center: { defaultSize: 80, minSize: 70, maxSize: 80 },
+                center: { defaultSize: 70, minSize: 70, maxSize: 80 },
             },
         },
         'cols-c-r': {

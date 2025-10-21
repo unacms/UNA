@@ -283,7 +283,7 @@ const RenderScene = ({
                         isRightCol ? 'flex-auto' : 'w-full mx-auto'
                     } ${
                         layoutName !== 'navigator'
-                            ? 'mt-0.5 sm:' + 'p-2'
+                            ? 'mt-0.5 sm:p-2'
                             : 'lg:p-2 '
                     }`}
                 >
@@ -303,7 +303,7 @@ const RenderScene = ({
                         sizable={cellsCustomConfig.sizable}
                     />
                     <Panel
-                        className={`hidden ${rightBreakpoint}:block`}
+                        className={`hidden ${rightBreakpoint}:block mt-0.5 sm:p-2`}
                         {...rightPanelProps}
                     >
                         <View className=" fixed-process ">

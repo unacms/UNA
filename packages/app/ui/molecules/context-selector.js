@@ -46,7 +46,7 @@ function getContextRoot(data, url, uri) {
 
     if (uri == rootUrl || !data.current?.id) {
         return {
-            url: rootUrl,
+            url: '/' + rootUrl,
             image: appStatic('logo', { mode: appSetting('context_selector', 'logo_mode') }),
             name: false,
         }
