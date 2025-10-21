@@ -210,8 +210,8 @@ export const settingsDefault = {
         show_nav_counters: 'primary', // OLD appSetting('layout', 'show_nav_counters')
         show_nav_titles: false, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
-        sidebar_container: ' w-full bg-card h-full overflow-y-auto flex flex-col ring-1 ring-border/60 ',
-        sidebar_inner_container: '',
+        sidebar_container: ' w-full bg-card h-full',
+        sidebar_inner_container: ' p-3  h-full overflow-y-auto flex flex-col  ',
         sidebar_title: 'sticky z-10 justify-between items-center h-12 px-2 py-1.5 mb-2.5 z-10',
         sidebar_position: ' z-50 fixed fixed-process ',
         bgrDecorator: true, // Enable/disable decorator background globally for conductor buttons
@@ -829,13 +829,46 @@ export const settingsDefault = {
             max_width: '',
         },
         home: {
-            adjustable: true,
-            sizable: true,
+            adjustable: false,
+            sizable: false,
             cells: {
                 left: {
-                    defaultSize: 30, 
-                    minSize: 30, 
-                    maxSize: 30,
+                    defaultSize: 25, 
+                    minSize: 25, 
+                    maxSize: 25,
+                    breakpoint: 'xl',
+                    responsive: {
+                       
+                        '2xl':{
+                            defaultSize: 25,
+                            minSize: 25,
+                            maxSize: 25,
+                            
+                        }
+                    }
+                },
+                center: { 
+                    defaultSize: 65, 
+                    minSize: 65, 
+                    maxSize: 65,
+                    responsive: {
+                        'xl':{
+                            defaultSize: 50,
+                            minSize: 50,
+                            maxSize: 50,
+                        },
+                        '2xl':{
+                            defaultSize: 50,
+                            minSize: 50,
+                            maxSize: 50,
+                            
+                        }
+                    }
+                },
+                right: {
+                    defaultSize: 35,
+                    minSize: 35,
+                    maxSize: 35,
                     breakpoint: 'lg',
                     responsive: {
                         'xl':{
@@ -845,41 +878,9 @@ export const settingsDefault = {
                             
                         },
                         '2xl':{
-                            defaultSize: 20,
-                            minSize: 20,
-                            maxSize: 20,
-                            
-                        }
-                    }
-                },
-                center: { 
-                    defaultSize: 70, 
-                    minSize: 70, 
-                    maxSize: 70,
-                    responsive: {
-                        'xl':{
-                            defaultSize: 50,
-                            minSize: 50,
-                            maxSize: 50,
-                        },
-                        '2xl':{
-                            defaultSize: 60,
-                            minSize: 60,
-                            maxSize: 60,
-                            
-                        }
-                    }
-                },
-                right: {
-                    defaultSize: 25,
-                    minSize: 25,
-                    maxSize: 25,
-                    breakpoint: 'xl',
-                    responsive: {
-                        '2xl':{
-                            defaultSize: 20,
-                            minSize: 20,
-                            maxSize: 20,
+                            defaultSize: 25,
+                            minSize: 25,
+                            maxSize: 25,
                             
                         }
                     }
@@ -1034,12 +1035,9 @@ export const settingsDefault = {
             content_max_width_nav: ' w-full  ',
             menu_is_dynamic: false,
             menu_cnt: ' flex-row flex-none gap-1 mx-3 h-14 items-center overflow-x-auto ',
-            menu_categ_ident: ' pl-12 ',
-            right_column_cnt: 'fixed-process px-1.5 sm:px-2 py-4',
-            right_column_cnt2: 'hidden xl:flex flex-auto max-w-sm',
-
-            left_column_cnt: 'fixed-process px-1.5 sm:px-2 py-4',
-            left_column_cnt2: 'hidden xl:flex flex-auto max-w-sm',
+            menu_categ_indent: ' pl-12 ',
+         
+          
 
             topmenu_cnt:
                 'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
@@ -1431,9 +1429,9 @@ export const settingsDefault = {
         },
         panels: {
             'u-panel-base': ' h-full flex-col ',
-            'u-panel-handler': ' w-2 mx-1 2xl:mx-2 web:hover:bg-muted/50 web:active:bg-muted/50 web:duration-200',
+            'u-panel-handler': 'relative w-0 web:before:absolute web:before:inset-y-0 web:before:-left-1 web:before:-right-1 web:before:bg-transparent web:before:hover:bg-accent/5 web:before:active:bg-accent/5 web:before:duration-200 ',
             'u-panel-line':
-                ' bg-muted w-px mx-auto h-full rounded-full  ',
+                'absolute w-px h-full bg-muted rounded-full left-1/2 top-0 -translate-x-1/2',
             'u-panel-group': ' h-full flex',
         },
         blocks: {
