@@ -1106,7 +1106,7 @@ export const settingsDefault = {
         inputs: {
             default: ' bg-input/90 border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 min-h-12 flex-auto text-base leading-6 overflow-hidden shadow-xs placeholder-muted-foreground text-card-foreground web:duration-100',
            
-            multi: ' bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 py-2 min-h-12 flex-auto text-base leading-6 overflow-hidden shadow-xs placeholder-muted-foreground text-card-foreground web:duration-100 ',
+            multi: ' bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 py-2 min-h-12 flex-auto text-base leading-6 overflow-y-scroll [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden shadow-xs placeholder-muted-foreground text-card-foreground web:duration-100 ',
             rounded:
                 ' border border-border/80 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-full web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
             roundedsmall:
