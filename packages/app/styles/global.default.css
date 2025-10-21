@@ -479,6 +479,11 @@ body,
     object-fit: cover !important;
 }
 
+/* Fix for druggable items in grid*/
+.is-dragging{
+    z-index: 99999 !important;
+}
+
 /* Fixed Process Improvements */
 .fixed-process {
     position: relative;

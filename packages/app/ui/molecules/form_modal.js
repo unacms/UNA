@@ -1,5 +1,5 @@
 import { Modal } from 'app/design/controls'
-import { getPageData, getLayoutName, BlockDataByType, BlockDataByName  } from 'app/lib/util';
+import { getPageData, getLayoutName, BlockDataByType, BlockDataByName } from 'app/lib/util';
 import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
 import { ScrollView, View, Row } from 'app/design/view'
 import { useCallback } from 'react'
@@ -49,33 +49,36 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
     return (
         <Modal
             maxWidth={modalWidth}
+            scrollable={true}
             title={isShowHeader ? pageData.title : null}
             onVisible={!!pageData}
             {...(isShowHeader && { onClose: () => { setPageData(false); handleModalClose() } })}
             padding={isShowHeader ? " p-0 " : " p-0 "}
             transparent={true}
             onRequestClose={handleModalClose}
-            onClose= {() => {setPageData(false);}}
+            onClose={() => { setPageData(false); }}
         >
-            <Container key={pageData.module + (pageData.ts)} className={`flex-1 ${isShowHeader ? '' : 'overflow-visible'}`}>{/*px-3 sm:px-0*/}
-                {
-                    Object.keys(pageData?.elements || {}).map(key =>
-                        Object.keys(pageData.elements[key] || {}).map(key2 => (
-                            <BlockByData
-                                key={`${key}-${key2}`}
-                                onFormEmpty={() => { setPageData(false) }}
-                                block={pageData.elements[key][key2]}
-                                exProps={{
-                                    onClose: () => { setPageData(false); },
-                                    resetOnSubmit: true,
-                                    formOnly: true,
-                                    classes: 'p-3 sm:p-4'
-                                }}
-                            />
-                        ))
-                    )
-                }
-            </Container>
+            <View className='p-3'>
+                <Container key={pageData.module + (pageData.ts)} className={`flex-1 ${isShowHeader ? '' : 'overflow-visible'}`}>{/*px-3 sm:px-0*/}
+                    {
+                        Object.keys(pageData?.elements || {}).map(key =>
+                            Object.keys(pageData.elements[key] || {}).map(key2 => (
+                                <BlockByData
+                                    key={`${key}-${key2}`}
+                                    onFormEmpty={() => { setPageData(false) }}
+                                    block={pageData.elements[key][key2]}
+                                    exProps={{
+                                        onClose: () => { setPageData(false); },
+                                        resetOnSubmit: true,
+                                        formOnly: true,
+                                        classes: 'p-3 sm:p-4'
+                                    }}
+                                />
+                            ))
+                        )
+                    }
+                </Container>
+            </View>
         </Modal>
     )
 }

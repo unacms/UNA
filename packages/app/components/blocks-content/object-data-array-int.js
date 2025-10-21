@@ -100,9 +100,9 @@ export default function BlockContentObjectDataArrayInt(props) {
             return <></>
         const Component = getComponent('element', String(type));
         // Debug: pass through identifiers to help block inference
-        if (!props.exProps) props.exProps = {};
-        props.exProps.module = props?.module;
-        props.exProps.method = props?.method;
+     //   if (!props.exProps) props.exProps = {};
+      //  props.exProps.module = props?.module;
+       // props.exProps.method = props?.method;
         return (
             <Suspense fallback={<Loading />} key={a.id + a?.type}>
                 <Component key={a.id + a?.type} type={a?.type} onFormSubmit={onFormSubmit} {...a} exProps={props.exProps} />

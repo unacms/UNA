@@ -466,13 +466,13 @@ export default function ElementGrid(props) {
 
                 {actionsIndependent.map((item, index) => {
                     if (item.type == 'modal') {
-                        return <Button startDecorator="Plus" size="sm" showTitleFromSize='sm' title={t(item?.title || "Add new")} onPress={() => { handleActionBlock(item) }} />
+                        return <Button key={`btn-${item.name}`} startDecorator="Plus" size="sm" showTitleFromSize='sm' title={t(item?.title || "Add new")} onPress={() => { handleActionBlock(item) }} />
                     }
                     if (item.type == 'menu') {
-                        return <MultiAdd handleUpdate={handleUpdate} setBottomSheetData={setBottomSheetData} data={item} />
+                        return <MultiAdd key={`btn-${item.name}`} handleUpdate={handleUpdate} setBottomSheetData={setBottomSheetData} data={item} />
                     }
                     if (item.type == 'link') {
-                        return <Link href={item.link}><Button size="sm" title={item.title} showTitleFromSize='sm' /></Link>
+                        return <Link key={`btn-${item.name}`} href={item.link}><Button size="sm" title={item.title} showTitleFromSize='sm' /></Link>
                     }
                 })}
                 
