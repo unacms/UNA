@@ -1,4 +1,4 @@
-    import { View, Row } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
@@ -11,20 +11,20 @@ import { useState } from 'react'
 
 const rootUrl = appSetting('context_selector', 'root_url');
 
-function ListItem({url, text, icon, isActive}) {
+function ListItem({ url, text, icon, isActive }) {
     return (
         <Link key={url} className="w-full" href={url}>
             <Row
                 className={`w-full px-2 h-12 gap-2 group rounded-xl justify-between items-center ${isActive
-                        ? ' bg-primary/10 text-foreground rounded-xl web:hover:bg-muted/60 web:duration-200 '
-                        : ' web:hover:bg-muted/60 web:duration-200 '
+                    ? ' bg-primary/10 text-foreground rounded-xl web:hover:bg-muted/60 web:duration-200 '
+                    : ' web:hover:bg-muted/60 web:duration-200 '
                     }`}
             >
                 <Row className="items-center flex-auto gap-2 text-card-foreground web:hover:text-foreground ">
                     <View
                         className={`items-center w-9 h-9 justify-center ${isActive
-                                ? ' bg-primary text-primary-foreground  '
-                                : ' bg-muted/60 web:group-hover:bg-secondary/80 web:duration-200 '
+                            ? ' bg-primary text-primary-foreground  '
+                            : ' bg-muted/60 web:group-hover:bg-secondary/80 web:duration-200 '
                             } rounded-full`}
                     >
                         {icon}
@@ -43,8 +43,8 @@ function ListItem({url, text, icon, isActive}) {
 
 function getContextRoot(data, url, uri) {
 
-  
-    if (uri == rootUrl) {
+
+    if (uri == rootUrl || !data.current?.id) {
         return {
             url: rootUrl,
             image: appStatic('logo', { mode: appSetting('context_selector', 'logo_mode') }),
@@ -60,7 +60,7 @@ function getContextRoot(data, url, uri) {
             name: link.title,
         }
     }
-    
+
 
     return {
         url: data.current.url,
@@ -69,7 +69,7 @@ function getContextRoot(data, url, uri) {
                 {...data.current}
                 displayType="unit_wo_info"
                 displaySize="sm"
-                showLinks = {false}
+                showLinks={false}
             />
         ),
         name: data.current.display_name,
@@ -120,32 +120,32 @@ export default function ContextSelector({ data, url, uri, mode }) {
             <View className="flex-col gap-px">
                 {data.links?.filter(item => (item.hidden != true)).map((item) =>
                     item.url ? (
-                        <ListItem 
+                        <ListItem
                             key={item.url}
-                            url={item.url} 
-                            text={item.title} 
+                            url={item.url}
+                            text={item.title}
                             icon={item.icon && (item.icon == '{logo}' ? appStatic('logo', { mode: 'mark', }) :
-                                    <Icon
-                                        icon={item.icon}
-                                        size={20}
-                                        className="w-5 h-5"
-                                    />
-                                )}
-                            isActive={contextRoot.url == item.url}/>
-                        
+                                <Icon
+                                    icon={item.icon}
+                                    size={20}
+                                    className="w-5 h-5"
+                                />
+                            )}
+                            isActive={contextRoot.url == item.url} />
+
                     ) : (
                         <View
                             key={Math.random()}
-                            
+
                         />
                     )
                 )}
                 {data.list.map((item) =>
-                    <ListItem 
+                    <ListItem
                         key={item.url}
-                        url={item.url} 
+                        url={item.url}
                         text={item.display_name}
-                        icon={<Profile {...item} displayType="unit_wo_info" displaySize="sm" />}  
+                        icon={<Profile {...item} displayType="unit_wo_info" displaySize="sm" />}
                         isActive={item.id === data.current?.id && !isLinkSelected}
                     />
                 )}
@@ -163,7 +163,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
             {DropDown}
         </ButtonsGroup>
     }*/
-    
+
     return (
         <>
             {data?.list?.length > 0 || data?.links?.length > 0 ? (
@@ -174,11 +174,11 @@ export default function ContextSelector({ data, url, uri, mode }) {
                                 {(() => {
                                     const isActiveAppRoot = uri === rootUrl
                                     return (
-                                        <View className='px-2'><Link href={`/${rootUrl}`} variant="ghost"  size="lg" title="Home">
+                                        <View className='px-2'><Link href={`/${rootUrl}`} variant="ghost" size="lg" title="Home">
                                             <Row
                                                 className={` rounded-xl ${isActiveAppRoot
-                                                        ? ' bg-accent/60 text-accent-foreground web:hover:bg-accent'
-                                                        : ' web:hover:bg-muted/60'
+                                                    ? ' bg-accent/60 text-accent-foreground web:hover:bg-accent'
+                                                    : ' web:hover:bg-muted/60'
                                                     }`}
                                             >
                                                 <View className="flex-row rounded-full items-center justify-center">
