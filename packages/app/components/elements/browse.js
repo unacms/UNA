@@ -8,7 +8,7 @@ import {
     memo,
     useMemo,
 } from 'react'
-import { View, Row } from 'app/design/view'
+import { View, Row, ScrollView } from 'app/design/view'
 import { Platform } from 'react-native'
 import UniList from 'app/ui/atoms/unilist'
 import { fetcher } from 'app/lib/fetcher'
@@ -78,7 +78,7 @@ export default function (props) {
     const [isRevalidate, setIsRevalidate] = useState(false)
     const { currentUser } = useCurrentUser()
     const data = props.data
-    const isOneLine =  data?.params?.view == 'showcase'
+    const isOneLine = data?.params?.view == 'showcase'
     const isOnePage = props.only_one_page || isOneLine;
     const isShowTitleInside = props.showTitleInside || isOneLine;
 
@@ -93,7 +93,7 @@ export default function (props) {
 
     const storageKeyValue = storageKey(
         (props.uri ? props.uri : '') +
-        (data.request_url ? ':' + data.request_url : '') + ':'+cacheParams +
+        (data.request_url ? ':' + data.request_url : '') + ':' + cacheParams +
         (props.cachePrefix ? ':' + props.cachePrefix : '')
     )
 
@@ -142,7 +142,7 @@ export default function (props) {
 
     /* unit mode & change unit mode */
     const unitMode = props.unitMode
-    
+
     const currentBreakpoint = useBreakpoint();
     const windowHeight = useWindowHeight();
 
@@ -160,9 +160,9 @@ export default function (props) {
     }
 
     const hOffset = isWeb ? 64 : 56
-    
+
     const styles = isWeb
-        ? { }
+        ? {}
         : {
             height: defParams?.height
                 ? defParams.height
@@ -430,10 +430,11 @@ export default function (props) {
         )
         const limitedItems = props.extraProps?.limit
             ? uniqueItems.slice(0, props.extraProps?.limit)
-            : isOneLine? uniqueItems.slice(0, numColumns): uniqueItems
-        contentElement = limitedItems.map((item, index) => (
-            <View key={`item${index}`} className={`mb-3  ${data.unit !== 'feed' ? (isOneLine ? ' p-2 w-1/'+numColumns :'w-full') : ''}`}>
-                <Unit
+            : (isOneLine && !props.noContainer) ? uniqueItems.slice(0, numColumns) : uniqueItems
+        contentElement = limitedItems.map((item, index) => {
+            if (props.noContainer) {
+                return (<Unit
+                    key={`item${index}`}
                     unit={data.unit ? data.unit : ''}
                     mode={unitMode}
                     module={data.module ? data.module : ''}
@@ -442,11 +443,28 @@ export default function (props) {
                     view={data.view ? data.view : ''}
                     {...props}
                     data={item}
-                />
-            </View>
-        ))
-        if (isOneLine){
+                />);
+            }
+            return (
+                <View key={`item${index}`} className={`mb-3  ${data.unit !== 'feed' ? (isOneLine ? ' p-2 w-1/' + numColumns : 'w-full') : ''}`}>
+                    <Unit
+                        unit={data.unit ? data.unit : ''}
+                        mode={unitMode}
+                        module={data.module ? data.module : ''}
+                        sidebar={props.sidebar}
+                        object_id={data.object_id ? data.object_id : ''}
+                        view={data.view ? data.view : ''}
+                        {...props}
+                        data={item}
+                    />
+                </View>
+            )
+        })
+        if (isOneLine && !props.noContainer) {
             contentElement = <Row>{contentElement}</Row>
+        }
+        if (isOneLine && props.noContainer) {
+            contentElement = <ScrollView horizontal={true}><Row className='gap-4 pb-8'>{contentElement}</Row></ScrollView>
         }
     }
 
@@ -454,14 +472,14 @@ export default function (props) {
     if (dataItems.data.length == 0 && !dataItems.params?.loaded) {
         PreloadComponent = Preload
     } else {
-          if (dataItems.params?.loaded && dataItems.data.length == 0){
-            PreloadComponent = callFn("noContentByUrl", [{request_url: data.request_url, params: dataItems?.params}])
-         }
+        if (dataItems.params?.loaded && dataItems.data.length == 0) {
+            PreloadComponent = callFn("noContentByUrl", [{ request_url: data.request_url, params: dataItems?.params }])
+        }
     }
 
 
 
-    
+
     const memoizedUniListProps = useMemo(
         () => ({
             scrollProps: props?.exProps?.scrollProps,
@@ -512,7 +530,7 @@ export default function (props) {
                     : () => props.exProps?.headerBlocks)
                 : undefined,
             ListFooterComponent: ((hasNextPage && isFetchingNextPage)) ? Preload : null,
-               
+
         }),
         [
             props?.exProps?.scrollProps,
@@ -541,7 +559,7 @@ export default function (props) {
             Preload,
         ]
     )
-    if (contentElement === null){
+    if (contentElement === null) {
         return
     }
 
@@ -550,7 +568,7 @@ export default function (props) {
     }
 
     if (!dataItems.data.length && isShowTitleInside)
-         return;
+        return;
 
     return (
         <View className={`w-full ${isOneLine ? '' : 'h-full'}`}>
@@ -564,7 +582,7 @@ export default function (props) {
             />
             <View className={`w-full ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''}`} style={styles}>
                 {isShowTitleInside && (
-                    <Row className={`items-center justify-between ${props.showBg ? '': 'px-2 my-3'}`}>
+                    <Row className={`items-center justify-between ${props.showBg ? '' : 'px-2 my-3'}`}>
                         <Text className=" text-card-foreground text-xl font-bold leading-none lg:leading-none tracking-tight ">
                             {t(props.block.title)}
                         </Text>
@@ -577,8 +595,8 @@ export default function (props) {
                                     title={t(props.addLink.text)}
                                 />
                             </Link>
-                        ) }
-                        {(isOneLine && data.params.home_url)  && (
+                        )}
+                        {(isOneLine && data.params.home_url) && (
                             <Link href={data.params.home_url}>
                                 <Button
                                     variant="link"
@@ -587,11 +605,11 @@ export default function (props) {
                                     title={t('View All')}
                                 />
                             </Link>
-                        ) }
+                        )}
 
                     </Row>
                 )}
-              {contentElement}
+                {contentElement}
             </View>
         </View>
     )
