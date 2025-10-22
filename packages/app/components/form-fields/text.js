@@ -8,7 +8,7 @@ import { Text } from 'app/design/typography'
 const PhoneInput = lazy(() => import('app/components/form-fields/phone'));
 
 export default function FormFieldText(props) {
-    
+    console.log("props", props)
     const name = props.name;
     const defaultValue = props.value ? props.value : '';
     const rules = getValidationRules(props);
@@ -56,6 +56,7 @@ export default function FormFieldText(props) {
                 onBlur={field.onBlur}
                 value={String(field.value)}
                 aria-label={props.caption}
+                {...(props.checker?.params?.max ? { maxLength: props.checker.params.max } : {})}
             />
             }
         </Field>
