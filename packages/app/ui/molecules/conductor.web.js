@@ -1120,7 +1120,7 @@ const HeaderContainer = ({
 }) => {
     const isDesktop = useIsDesktop()
     const scrollValue = useSharedValue(isCoverDisabled ? 0 : 1)
-    const hideDefaultHeaderFrom = useSharedValue(200)
+    const hideDefaultHeaderFrom = useSharedValue(100)
     const coverHeight = useSharedValue(0)
 
     const uri = pageData?.uri
