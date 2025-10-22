@@ -52,8 +52,8 @@ export const settingsDefault = {
         ui_density_switcher: true,
         max_width: ' w-full ',
         max_width_content: ' w-full max-w-7xl ',
-        home_container: ' w-full 2xl:max-w-8xl web:duration-500', 
-        feed_container: ' max-w-2xl sm:pt-3 mx-auto ',
+        home_container: ' w-full 2xl:max-w-screen-2xl web:duration-500', 
+        feed_container: ' max-w-3xl sm:p-3 mx-auto ',
         post_container: ' max-w-3xl w-full flex-1 bg-card shadow-sm text-card-foreground rounded-2xl py-3 sm:py-4 lg:my-4 mx-auto ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
 
         search: true,
@@ -92,11 +92,11 @@ export const settingsDefault = {
                 ' my-auto w-full items-cente bg-card/90 backdrop-blur-xl border-b border-border/60 transition-all  ',
             scrolled:
                 ' my-auto w-full items-cente bg-card/90 backdrop-blur-xl border-b border-border/60 transition-all shadow-sm',
-            content: ' h-16 mx-auto justify-between ',
-            content_left: ' flex-row items-center flex-none xl:w-80 2xl:w-96 ps-2 ',
-            content_right: ' flex-row items-center justify-end flex-none xl:w-80 2xl:w-96 pe-2 ',
+            content: ' h-16 mx-auto justify-between max-w-screen-2xl',
+            content_left: ' flex-row items-center flex-none w-80 ps-2 xl:ps-3 ',
+            content_right: ' flex-row items-center justify-end flex-none w-80 pe-2 xl:pe-3 ',
             content_center:
-                ' hidden flex-auto xl:flex gap-1 items-center justify-center  max-w-2xl ',
+                ' hidden flex-auto xl:flex gap-1 items-center justify-center max-w-3xl xl:px-3 ',
             special: {
                 profile: 'hidden lg:flex',
                 messenger: 'hidden lg:flex',

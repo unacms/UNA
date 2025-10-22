@@ -369,7 +369,7 @@ return;*/
                     {layoutName == 'hor' && isWeb && (
                         <>
                             <Panel className={`hidden ${leftBreakpoint}:block ${currentBreakpointName}:w-full`} {...leftPanelProps}>
-                                <View className=" px-2 py-3 fixed-process ">
+                                <View className=" p-3 fixed-process ">
                                     {SideBarContent}
                                 </View>
                             </Panel>
