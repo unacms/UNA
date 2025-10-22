@@ -211,6 +211,11 @@ const RenderScene = ({
         }
     }, [currentBreakpointName, index, groupRef])
 
+    useEffect(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    }, [index])
+
+  
     return (
         <PanelGroup
             ref={groupRef}
@@ -303,10 +308,10 @@ const RenderScene = ({
                         sizable={cellsCustomConfig.sizable}
                     />
                     <Panel
-                        className={`hidden ${rightBreakpoint}:block mt-0.5 sm:p-2`}
+                        className={`hidden ${rightBreakpoint}:block `}
                         {...rightPanelProps}
                     >
-                        <View className=" fixed-process ">
+                        <View className=" fixed-process mt-0.5 sm:p-2">
                             {pageRoute?.sidebar?.content.map((item, index) => {
                                 return (
                                     <ItemRenderer
