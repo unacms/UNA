@@ -167,7 +167,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
     return (
         <>
             {data?.list?.length > 0 || data?.links?.length > 0 ? (
-                <Row className=' items-center'>
+                <Row className='items-center'>
                     {!!contextRoot.name &&
                         appSetting('context_selector', 'logo') && (
                             <>
