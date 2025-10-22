@@ -332,7 +332,7 @@ export default function Layout(props) {
         applyStyles(stylesBgImage);
         applyStyles(stylesBg);
     }, [stylesBgImage, stylesBg]);
-    return <><MemoizedContent pageLayoutName={pageLayoutName} blocks={blocks} headerSettings={headerSettings} currentUser={currentUser} layoutName={layoutName} data={data} children={children} uri={uri} />{JSON.stringify(data.context?.current)}</>
+    return <MemoizedContent pageLayoutName={pageLayoutName} blocks={blocks} headerSettings={headerSettings} currentUser={currentUser} layoutName={layoutName} data={data} children={children} uri={uri} />
 }
 
 const Content = React.memo(({ children, headerSettings, currentUser, layoutName, url }) => {
