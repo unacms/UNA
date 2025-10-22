@@ -59,6 +59,6 @@ export function Root(props) {
         data.page_status = 404
     }
     return (
-        <><Layouts path={props?.path} data={data} uri={data?.uri} url={data?.url} /><div class='h-1 w-full hidden'>{JSON.stringify(data)}</div></>
+        <Layouts path={props?.path} data={data} uri={data?.uri} url={data?.url} />
     );
 }
