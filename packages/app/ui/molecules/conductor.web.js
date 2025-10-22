@@ -75,7 +75,7 @@ const RenderScene = ({
     hasNextPage,
     currentBreakpoint,
     index,
-    Preload,
+    skeleton,
 }) => {
     const { currentUser } = useCurrentUser()
     const uniRef = useRef()
@@ -100,6 +100,18 @@ const RenderScene = ({
         ),
         [pageRoute, numColumns, unitType]
     )
+
+    const Preload = useMemo(
+        () => getSkeletonForList(skeleton, numColumns),
+        [skeleton, numColumns]
+    )
+
+    const PreloadShort = useMemo(
+        () => getSkeletonForList(skeleton, numColumns, false),
+        [skeleton, numColumns]
+    )
+
+
     const MainContent = useMemo(() => {
         return (
             <UniList
@@ -295,7 +307,7 @@ const RenderScene = ({
                     {MainContent}
                     {pageRoute?.endpoint?.request_url &&
                         (!pageRoute.endpoint?.finished
-                            ? Preload
+                            ? dataItems.filter((item) => item.type != 'block').length == 0 ? Preload : PreloadShort
                             : dataItems.filter((item) => item.type != 'block')
                                   .length == 0 &&
                               callFn('noContentByUrl', [pageRoute?.endpoint]))}
@@ -704,11 +716,7 @@ export function Conductor({
         setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100)
     }, [])
 
-    const Preload = useMemo(
-        () => getSkeletonForList(sSkeleton, numColumns),
-        [sSkeleton, numColumns]
-    )
-
+   
     const isHideCover =
         data?.cover_block?.profile &&
         appSetting('cover', 'hide_cover_for_context') &&
@@ -806,7 +814,7 @@ export function Conductor({
                     }
                     header={isUseCurrentHeader ? null : headerComponent}
                     route={currentRoute}
-                    Preload={Preload}
+                    skeleton={sSkeleton}
                 />
             </View>
         </View>
