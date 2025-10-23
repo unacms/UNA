@@ -2,14 +2,8 @@ import { Share } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { appSetting } from 'app/lib/util';
 import { View } from 'app/design/view'
-import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
-import React, { useCallback, useMemo } from 'react';
-
-const getName = (type, system, object_id, sName) => {
-    const aName = [type, system.replace(/_/g, '-'), object_id];
-    if (sName) aName.push(sName);  // Упростили проверку на sName
-    return aName.join('-');
-};
+import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonsGroupMenu } from 'app/design/controls';
+import { useCallback, useMemo } from 'react';
 
 const handleDo = async (url, event) => {
     event.preventDefault();
@@ -41,20 +35,26 @@ export default function ElementShares(oProps) {
     const { t } = useTranslation();
     const oSettings = appSetting('social_actions', 'share');
 
-    const oParams = {...oSettings, ...oProps.params};
+    const oParams = { ...oSettings, ...oProps.params };
     const sIcon = oSettings[oProps['system']]?.icon || "Share2";
     const oAction = oProps.action;
 
     const bShowAction = oParams?.show_action !== false;
 
-    const oButtonProps = {
-        variant: oProps.primary ? 'primary' : oProps.params?.button_variant,
-        size: oProps.params?.button_size,
-        rounded: oProps.params?.button_rounded,
-        fullWidth: oProps.params?.button_full_width,
-        ring: oProps.params?.button_ring
-    };
-
+     let oButtonProps = {};
+    if(oProps.primary)
+        oButtonProps.variant = 'primary';
+    if(oProps.params?.button_variant != undefined)
+        oButtonProps.variant = oProps.params.button_variant;
+    if(oProps.params?.button_size != undefined)
+        oButtonProps.size = oProps.params.button_size;
+    if(oProps.params?.button_rounded != undefined)
+        oButtonProps.rounded = oProps.params.button_rounded;
+    if(oProps.params?.button_full_width != undefined)
+        oButtonProps.fullWidth = oProps.params.button_full_width;
+    if(oProps.params?.button_show_title_from_size != undefined)
+        oButtonProps.showTitleFromSize = oProps.params.button_show_title_from_size;
+    
     //--- show action
     const bShowActionAsButton = oParams?.show_action_as_button !== false;
     const bShowActionLabel = oParams?.show_action_label !== false;
@@ -63,12 +63,17 @@ export default function ElementShares(oProps) {
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
     const handlePress = useCallback((event) => handleDo(oAction.url, event), [oAction.url]);
-
-    const sObject = useMemo(() => getName(oProps.type, oProps.system, oProps.object_id), [oProps.type, oProps.system, oProps.object_id]);
+    
+    console.log("oButtonProps-share", oButtonProps)
+    const button = <ButtonAction key="action" startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={handlePress} {...oButtonProps} />;
+    let aButtonsGroup = [];
+    if (!!bShowAction)
+        aButtonsGroup.push(button);
 
     return (
-        <View className="flex-auto flex-row items-center">
-            {bShowAction && <View key={sObject + '-action'} className={'flex-auto'}><ButtonAction key="action" startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={handlePress} {...oButtonProps} /></View>}
+        <View className='flex-auto'>
+            <ButtonsGroupMenu  {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
         </View>
     );
- }
+
+}

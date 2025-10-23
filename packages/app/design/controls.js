@@ -701,11 +701,11 @@ export function ButtonsGroupMenu(props) {
         variant,
         size = 'xs',
         rounded = true,
+        children,
         ...rest
     } = props;
 
     const _variant = variant || appSetting('layout', 'button_style_for_actions');
-
     return (
         <ButtonsGroup 
             fullWidth={true}  
@@ -714,7 +714,7 @@ export function ButtonsGroupMenu(props) {
             rounded={rounded}
             {...rest}
         >
-            {props.children}
+            {children}
         </ButtonsGroup>
     )
 }

@@ -1,7 +1,8 @@
 import { useState, useCallback } from 'react';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
-import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
+import { View } from 'app/design/view'
+import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonsGroupMenu } from 'app/design/controls';
 import DropdownMenuItem from 'app/components/menu-items/dropdown-menu-item'
 
 const performAction = async (sSystem, iObjectId, sAction, aParams, onLoad) => {
@@ -76,7 +77,13 @@ export default function ElementFeatures(oProps) {
         />;
     }
 
+    let aButtonsGroup = [<ButtonAction key="action" title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? _handleDo : () => { }} pressed={bShowActionUndo && bShowActionFeatured} disabled={bShowActionDisabled} {...oButtonProps} />];
+
     return (
-        <ButtonAction key="action" title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? _handleDo : () => { }} pressed={bShowActionUndo && bShowActionFeatured} disabled={bShowActionDisabled} {...oButtonProps} />
+        <View>
+            <ButtonsGroupMenu  {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
+
+        </View>
+
     );
 }

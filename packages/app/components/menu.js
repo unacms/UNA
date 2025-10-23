@@ -90,7 +90,7 @@ export default function ElementMenu(oProps) {
     sClassName += `justify-${sAlignItems}`;
 
     if (isWeb) {
-        sClassName += ' overflow-visible';
+        sClassName += ' overflow-hidden';
     }
 
     //--- show menu's content only

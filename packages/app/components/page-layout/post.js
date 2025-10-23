@@ -72,7 +72,7 @@ export default function PageLayout({ data, blocks, isModal, url }) {
         .filter(([key, value]) => value.forList)
         .map(([key, value]) => ({
             id: `block_${key}`,
-            data: <View className={value.name.includes("entity_text_block") ? 'px-4' : ''}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
+            data: <View className={value.name.includes("entity_text_block") || value.name.includes("get_block_text_and_subentries") ? 'px-4' : ''}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
         })), [blocks, data]);
 
     const aItemsLeftBar = Object.entries(blocks).filter(([key, value]) => value.leftbar);

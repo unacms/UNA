@@ -104,6 +104,9 @@ export const settingsDefault = {
                 default: ' flex ',
             },
         },
+        footer: {
+            hide_for_layouts: ['post']
+        },
         vertical: {
             blocks: [
                 /*  {
@@ -150,7 +153,7 @@ export const settingsDefault = {
         default_item: '',
         logo: true,
         logo_mode: 'full',
-        show_always: false,
+        show_always: true,
         root_url: 'home'
     },
     cover: {

@@ -38,8 +38,6 @@ export default function () {
     if ((menu_launcher_items.length == 0) && menuData)
         return <></>;
 
-    console.log("")
-
     return (
      
             <DropdownMenu items={menu_launcher_items.map((item, index) => ({

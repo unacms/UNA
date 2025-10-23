@@ -28,7 +28,7 @@ export default function ElementEntityAuthor(oProps) {
     const [pageData, setPageData] = useState(false);
     const isDesktop = useIsDesktop();
     const sInfo = (
-        <Row className='flex-none flex-row gap-1 items-center justify-center '>
+        <Row className='flex-none flex-row gap-1 items-center justify-start '>
             <Time size="sm" variant="link"
                 ts={oProps.data.entry_date}
             />

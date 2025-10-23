@@ -69,21 +69,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
             {appStatic('maintenance_mode')}
         </>
     }
-
-
-    /*if (!isDesktop) {
-        return (
-            <>
-                <Suggestions />
-                <AsyncWorker />
-                <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
-                {(headerSettings?.footer !== false || !currentUser) && <Footer />}
-                <BottomSheet />
-                <ModalPopup />
-            </>
-        );
-
-    }*/
+   console.log("layoutName", layoutName, appSetting('layout ', 'footer', 'hide_for_layouts').includes(layoutName))
     return (
         <>
             <Suggestions />
@@ -91,7 +77,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
             <NavbarMemo pageLayoutName={pageLayoutName} headerSettings={headerSettings} context={data?.context} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} >
                 <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
             </NavbarMemo>
-            {headerSettings.footer !== false && <Footer />}
+            {headerSettings.footer !== false && !appSetting('layout', 'footer', 'hide_for_layouts').includes(layoutName) && <Footer />}
             <BottomSheet />
             <ModalPopup />
         </>
