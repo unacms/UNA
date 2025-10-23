@@ -281,7 +281,7 @@ export const ItemInfo = memo(({ data, t }) => {
                             setShowContextList(true)
                         }}
                     >
-                        <Text className=" bg-primary/10 hover:bg-primary/20 px-1.5 py-0.5 rounded-md text-primary hover:text-linkhover text-sm font-medium">
+                        <Text className=" bg-label-tertiary px-1 rounded-md text-label-primary hover:text-linkhover text-sm font-medium">
                             {owners[0].title} + {owners.length - 1}
                         </Text>
                     </Pressable>
@@ -494,28 +494,26 @@ export const VisibilityInfo = memo(({ data }) => {
     const isUser = data.object_privacy_view < 0
 
     return (
-        <Row className="items-center justify-center text-center">
-             <View className="text-muted hidden">
-                    <Icon icon="Dot" size={16} />
-                </View>
-            <View className="flex-none flex-row gap-1 items-center justify-center ">
-               
-                {isUser ? (
-                    <Profile
-                        {...data.author_data}
-                        displayType="unit_wo_info"
-                        displaySize="2xs"
-                    />
-                ) : icon ? (
-                    <View className="text-muted-foreground ">
-                        <Icon icon={icon} width={14} height={14} />
-                    </View>
-                ) : null}
-                <Text className="text-muted-foreground text-xs  leading-5 text-center flex-auto font-medium">
-                    {isUser ? data.author_data.display_name : text}
-                </Text>
-            </View>
-        </Row>
+        
+                
+                <Row className="flex-none gap-1 items-center min-h-5">
+                
+                    {isUser ? (
+                        <Profile
+                            {...data.author_data}
+                            displayType="unit_wo_info"
+                            displaySize="2xs"
+                        />
+                    ) : icon ? (
+                        <View className="text-muted-foreground leading-5 ">
+                            <Icon icon={icon} width={14} height={14} />
+                        </View>
+                    ) : null}
+                    <Text className="text-muted-foreground text-xs leading-5 text-center flex-auto font-medium">
+                        {isUser ? data.author_data.display_name : text}
+                    </Text>
+                </Row>
+        
     )
 })
 

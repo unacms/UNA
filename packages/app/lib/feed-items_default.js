@@ -284,10 +284,10 @@ export const DefaultView = memo(
                     )}
 
                     {bIsTitle && (
-                        <Link href={url} className="">
+                        <Link href={url} className="pb-2 text-label-primary hover:text-accent text-lg sm:text-xl font-bold ">
                             <Text
                                 numberOfLines={3}
-                                className=" pb-2 text-neutral-950 hover:text-primary dark:text-neutral-50 text-xl sm:text-2xl tracking-tight font-bold"
+                                className=" font-title "
                             >
                                 {data.content?.title || ''}
                             </Text>
@@ -327,7 +327,7 @@ export const DefaultView = memo(
                                             }
                                             numberOfLines={3}
                                             openSmall={false}
-                                            textClassName=" text-neutral-800 dark:text-neutral-200 text-base leading-6 "
+                                            textClassName=" text-label-secondary text-sm "
                                         />
                                     )}
                                     {!!data.content?.embed && (
@@ -339,7 +339,7 @@ export const DefaultView = memo(
                             )}
                             {!bIsTimelineContent && (
                                 <Text
-                                    className="text-neutral-800 dark:text-neutral-200 text-base leading-6"
+                                    className="text-label-secondary text-sm"
                                     numberOfLines={3}
                                 >
                                     {stripTags(data.content?.text || '')}
@@ -426,7 +426,7 @@ export const PollView = memo(
                         <Link href={url} className="">
                             <Text
                                 numberOfLines={3}
-                                className=" pb-2 text-neutral-950 hover:text-primary dark:text-neutral-50 text-lg sm:text-xl tracking-tight font-bold"
+                                className=" pb-3 text-label-primary hover:text-primary text-lg sm:text-xl tracking-tight font-bold"
                             >
                                 {data.content?.title || ''}
                             </Text>

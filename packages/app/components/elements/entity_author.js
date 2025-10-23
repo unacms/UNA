@@ -116,7 +116,7 @@ export default function ElementEntityAuthor(oProps) {
     const menuOptions = handleMenuManageSelect ? { onSelect: (oItem, event) => handleMenuManageSelect(oItem, event, setPageData) } : {};
 
     return (
-        <Row className="justify-between gap-3 px-3 sm:px-4">
+        <Row className="justify-between gap-3 px-3 sm:px-4 pb-3 sm:pb-4">
             <FormModal pageData={pageData} setPageData={setPageData} />
             <Redirect ref={redirectdRef} />
             {viewState.view == 'edited' && (<Modal

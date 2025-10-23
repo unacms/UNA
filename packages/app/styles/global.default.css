@@ -309,8 +309,8 @@ select{
         --u-link-ghost-radius: 0.25rem; /* rounded-sm */
     }
     .u-link-ghost.u-link-ghost-pad-sm {
-        --u-link-ghost-inset-x: -4px;
-        --u-link-ghost-inset-y: -2px;
+        --u-link-ghost-inset-x: -2px;
+        --u-link-ghost-inset-y: -1px;
         --u-link-ghost-radius: 0.25rem; /* rounded-md */
     }
     .u-link-ghost.u-link-ghost-pad-md {

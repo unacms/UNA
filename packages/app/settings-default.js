@@ -1139,7 +1139,7 @@ export const settingsDefault = {
                 hitSlop: { top: 8, right: 8, bottom: 8, left: 8 },
             },
             sm: {
-                rounded: ' rounded-md ',
+                rounded: ' rounded-lg ',
                 padding: '  ',
                 padding_icon_only: ' h-9 w-9 ',
                 padding_with_title: ' px-2 gap-1 ',
@@ -1327,7 +1327,7 @@ export const settingsDefault = {
                 focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-1 ring-offset-ring ',
             },
             md: {
-                padding: ' px-2  rounded-lg items-center flex',
+                padding: ' px-2 rounded-lg items-center flex',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-md ',
                 hitSlop: { top: 4, right: 4, bottom: 4, left: 4 },
                 text: ' text-sm leading-6 min-h-6 items-center justify-center flex',
