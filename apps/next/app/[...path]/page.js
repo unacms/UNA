@@ -7,6 +7,7 @@ import 'app/styles/global.default.css'
 import 'app/styles/global.css'
 import { notFound } from 'next/navigation'
 const SITE_TITLE = 'NEO';
+
 let remote_config = { hash: null, data: null };
 let remoteSettingsPromise = null;
 
