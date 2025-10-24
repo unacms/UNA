@@ -34,6 +34,7 @@ import Link from 'app/ui/atoms/link'
 import Galery from 'app/ui/molecules/galery'
 import { Button } from 'app/design/controls'
 import { useBreakpoint, useWindowHeight } from 'app/context/measure';
+import emitter from 'app/context/emitter'
 
 const blockTheme = appSetting('theme', 'blocks');
 
@@ -284,6 +285,19 @@ export default function (props) {
             })
         }
     }, [newData?.pages])
+
+       useEffect(() => {
+        const subscription = emitter.addListener(`page`, (data) => {
+            if (data.action == 'reload') {
+                showNewContent2();
+            }
+
+        })
+
+        return () => {
+            subscription.remove()
+        }
+    }, [])
 
     /* UPDATE CONTENT PART */
 

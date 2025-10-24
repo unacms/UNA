@@ -976,8 +976,10 @@ function urltoFile(url, defaultFilename = 'file', defaultMimeType = 'application
                     if (rawFilename.includes('.') && rawFilename.split('.').length > 1) {
                         filename = rawFilename;
                     } else {
-                        const ext = mimeType.split('/')[1] || 'bin';
-                        filename = `${rawFilename || defaultFilename}.${ext}`;
+                        if (mimeType != 'image/svg+xml'){
+                            const ext = mimeType.split('/')[1] || 'bin';
+                                filename = `${rawFilename || defaultFilename}.${ext}`;
+                        }
                     }
                 }
                 return new File([blob], filename, { type: mimeType });
@@ -1012,10 +1014,11 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
             // Для data URI
             fileType = uri.split(';')[0].split(':')[1]; // MIME-тип
             fileExt = fileType.split('/')[1]; // Расширение
+            if (fileExt == 'svg+xml'){
+                fileExt = 'svg';
+            }
 
         } else {
-            // Для локального пути или URL
-
             const fileName = uri.split('/').pop(); // Имя файла
             fileExt = fileName.split('.').pop(); // Расширение
             fileType = `image/${fileExt}`; // MIME-тип
@@ -1025,7 +1028,6 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
                 formData.append("file", file);
                 const result = await fetcher([fetchUrl, null, formData]);
                 if (result?.data?.link) {
-                    console.log('555', result)
                     calback({ result: result?.data?.link, extraVar: extraVar });
                 }
                 else {
@@ -1036,7 +1038,6 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
     }
     else {
         const formData = new FormData();
-        console.log("555")
         const fileName = uri.split('/').pop();
         const fileType = uri.match(/\.([a-z0-9]+)$/i)[1];
         formData.append("file", {
@@ -1047,7 +1048,6 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
 
 
         const result = await fetcher([fetchUrl, null, formData]);
-        console.log("result", result)
         if (result?.data?.link) {
             calback({ result: result?.data?.link, extraVar: extraVar });
         }

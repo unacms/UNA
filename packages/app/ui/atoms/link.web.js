@@ -6,7 +6,7 @@ import { appSetting, cd } from 'app/lib/util'
 
 export default function ElementLink(props) {  
 
-    let { href, emulate, target, variant, size, className = '', hitarea = true, noprefetch,  ...rest } = props;
+    let { href, emulate, target, variant, size, className = '', hitarea = true, noprefetch, onClick, ...rest } = props;
     const router = useRouter();
 
     const handlePress = (event, href) => {
@@ -17,6 +17,8 @@ export default function ElementLink(props) {
     }
 
     const handleLinkClick = useCallback((event, href, target) => {
+        if (onClick)
+            onClick();
         if (!target){
             if (href != window.location.pathname + window.location.search){
             //  var tag = document.createElement("div");
@@ -29,7 +31,7 @@ export default function ElementLink(props) {
                 }
             }
         }
-    }, []);
+    }, [onClick]);
 
     if (href == 'javascript:' || href === undefined || href == '/javascript:')
         href='';

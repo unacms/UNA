@@ -1,10 +1,11 @@
 import { SolitoImage } from 'solito/image'
-
 import { Platform } from 'react-native'
 import { StyleSheet, PixelRatio } from 'react-native';
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { useMemo } from 'react';
 import { UNA_URL } from 'app/config';
+//import SvgFile from 'app/ui/molecules/svg-file';
+//import { Image as ImageRN } from 'react-native';
 
 export const SolitoImageStyled = SolitoImage
 
@@ -62,8 +63,18 @@ export default function ElementImage(props) {
         sizes = "(max-width:768px) 100vw, 500px";
     }
 
-    //if (null === src)
-    //    src = '/spacer.png';
+   /* if (src.includes('.svg')){
+        return src;
+        
+        return <ImageRN
+            source={{ uri: src }}
+            style={{ width: '100%', height: '100%' }}
+            resizeMode="cover"
+            view="cover"
+            alt=""
+        />
+    }*/
+
 
     const bg_image = appSetting('layout', 'background_cover');
 

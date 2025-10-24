@@ -11,10 +11,11 @@ export default function ({ src_dark, src_default, width, height }) {
     const src = theme === 'dark' ? src_dark : src_default;
 
     useEffect(() => {
-        const baseUrl = appSetting('config', 'native_app_images_url');
-        const url = baseUrl + '/svg/' + src;
-        
-
+        let url = src;
+        if (!src.startsWith('http') && !src.startsWith('https')) {
+            const baseUrl = appSetting('config', 'native_app_images_url');
+            url = baseUrl + '/svg/' + src;
+        }       
         
         fetch(url)
             .then(res => {
