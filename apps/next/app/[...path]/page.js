@@ -9,23 +9,36 @@ import { notFound } from 'next/navigation'
 const SITE_TITLE = 'NEO';
 
 let remote_config = { hash: null, data: null };
-let remoteSettingsPromise = null;
+//export const runtime = 'edge'
+let cachedData = {};
 
-// дедуп внутри одного HTTP-запроса: общий промис на модуль
-const _dataPromises = new Map();
-async function getOnceFromProps(props) {
-    const params = await props.params;
-    const search_params = await props.searchParams;
-    const key = buildStableKey(params, search_params);
-    if (_dataPromises.has(key)) return _dataPromises.get(key);
-    const prom = getData(params, search_params).finally(() => _dataPromises.delete(key));
-    _dataPromises.set(key, prom);
-    return prom;
+async function getCachedData(props) {
+     //AFTER REACT 19 UPDATE NEED REMOVE DOUBLE CALLS
+    const params = await props.params
+    const search_params = await props.searchParams
+
+    // Generate a unique key for each `props` input to store cache separately for each set of `props`
+    const cacheKey = JSON.stringify({ params, search_params });
+    const currentTime = Date.now();
+
+    // Check if data is in cache and if it's still valid (not older than 1 second)
+    if (cachedData[cacheKey] && (currentTime - cachedData[cacheKey].timestamp < 1000)) {
+        return cachedData[cacheKey].data;
+    }
+
+    // If not cached or expired, fetch new data and store it in cache with a timestamp
+    const data = await getData(params, search_params);
+    cachedData[cacheKey] = {
+        data,
+        timestamp: currentTime,
+    };
+
+    return data;
 }
 
 
-const getData = async (params, search_params) => {
-
+const getData = cache(async (params, search_params) => {
+    
     let path = params.path.join('/');
     let cookieString = search_params.cookieString;
 
@@ -36,7 +49,7 @@ const getData = async (params, search_params) => {
         },
         cache: 'no-store'
     };
-    /*let l = UNA_URL + '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
+    let l = UNA_URL + '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path+'&ts='+Date.now();
     let searchParams = JSON.parse(JSON.stringify(search_params));
 
     delete searchParams.cookieString;
@@ -53,25 +66,22 @@ const getData = async (params, search_params) => {
 
     if (Object.keys(searchParams).length > 0) {
         l = l + '&params[]=' + sBlocks + '&params[]=' + JSON.stringify(searchParams);
-    }*/
-    const url = new URL('/api.php', UNA_URL);
-    url.searchParams.set('r', 'system/get_page_by_request/TemplServicePages');
-    url.searchParams.append('params[]', path);
-    const { cookieString: _c, path: _p, blocks = '', ...rest } = search_params || {};
-    if (blocks && Object.keys(rest).length === 0) url.searchParams.append('params[]', blocks);
-    if (Object.keys(rest).length > 0) {
-        url.searchParams.append('params[]', blocks);
-        url.searchParams.append('params[]', JSON.stringify(rest));
     }
-    url.searchParams.append('ts', Date.now());
-    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', url);
-    /*let res;
+
+    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', searchParams, l);
+    let res;
     try {
         res = await fetch(l, opts)
     } catch (error) {
         console.error('Server fetch failed (network/connection):', error);
         return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: 503 };
     }
+
+   /* if (!res.ok) {
+        const body = await res.text().catch(() => '');
+        console.error('Server fetch failed (http):', res.status, body);
+        return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: res.status };
+    }*/
 
     const resClone = res.clone();
     try {
@@ -81,23 +91,7 @@ const getData = async (params, search_params) => {
         console.error("!-------------------------! JSON error:", text);
         return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: 500 };
     }
-*/
-
-    let res;
-    try {
-        res = await fetch(url, opts)
-    }
-    catch (error) {
-        return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: 503 };
-    }
-    const body = await res.text();
-    try {
-        return JSON.parse(body);
-    } catch (error) {
-        console.error("!-------------------------! JSON error:", body);
-        return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: 500 };
-    }
-};
+});
 
 
 export const viewport = {
@@ -112,8 +106,8 @@ export const viewport = {
 
 
 export async function generateMetadata(props) {
-
-    const data = await getOnceFromProps(props);
+    
+    const data = await getCachedData(props);
     const description = data?.data?.description || SITE_TITLE;
     const name = data?.data?.title || SITE_TITLE;
     const image = data?.data?.image;
@@ -147,45 +141,29 @@ export async function generateMetadata(props) {
             ...(image && {
                 images: [image],
             }),
-
+            
         },
 
     }
 }
 
-function buildStableKey(params, search_params) {
-    const s = { ...search_params };
-    delete s?.cookieString;
-    return JSON.stringify({ p: params?.path, s });
-}
-
-async function maybeRefreshSettings(currentHash) {
-
-    if (remote_config.data && currentHash === remote_config.hash) return;
-    remoteSettingsPromise ||= getRemoteSettings(true).catch(e => {
-        console.error('Remote settings fetch failed:', e);
-        return remote_config; // откат к последним
-    });
-    remote_config = await remoteSettingsPromise;
-    remoteSettingsPromise = null;
-}
-
 export default async function Page(props) {
-    const dataPromise = getOnceFromProps(props);   // стартуем сразу
-    const params = await props.params;
-    const searchParams = await props.searchParams;
-    const data = await dataPromise;                // дожидаемся позже
-    const stableKey = buildStableKey(params, searchParams) + Date.now();
 
-    await maybeRefreshSettings(data?.hash);
-
+    const data = await getCachedData(props);
+    if (!remote_config.data || data?.hash != remote_config.hash) {
+        try {
+            remote_config = await getRemoteSettings(true);
+        } catch (e) {
+            console.error('Remote settings fetch failed:', e);
+        }
+    }
     if (data?.data?.page_status == 404) {
         notFound(props)
     }
 
     return (
         <Suspense fallback={<Loading />}>
-            <Root key={stableKey} settings={remote_config.data} path={'home'} data={data?.data} uri={data?.data?.uri} url={data?.data?.url} code={data?.code}></Root>
+            <Root settings={remote_config.data} path={'home'} data={data?.data} uri={data?.data?.uri} url={data?.data?.url} code={data?.code}></Root>
         </Suspense>
     )
 }
