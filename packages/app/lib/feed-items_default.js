@@ -423,10 +423,10 @@ export const PollView = memo(
                         </View>
                     )}
                     {bIsTitle && (
-                        <Link href={url} className="">
+                        <Link href={url} className="mb-3">
                             <Text
                                 numberOfLines={3}
-                                className=" pb-3 text-label-primary hover:text-primary text-lg sm:text-xl tracking-tight font-bold"
+                                className="  text-label-secondary hover:text-primary text-lg sm:text-xl tracking-tight font-bold"
                             >
                                 {data.content?.title || ''}
                             </Text>

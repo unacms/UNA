@@ -89,7 +89,7 @@ export function PollItem({ data, showTitle, onDelete, disabled = false, results_
 
     return (
         
-        <View className='w-full p-3 rounded-xl bg-bgritem dark:bg-bgritem-d '>
+        <View className='w-full p-3 rounded-xl bg-muted/50 gap-1.5'>
         <Row className='items-center justify-between w-full gap-x-2 '>
             {showTitle && <Text className="text-neutral-950 p-1 hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl dark:text-neutral-50 text-lg tracking-tight font-semibold">{data.title}</Text>}
             {(!data.is_hidden_results && totalVotes > 0) && (
@@ -108,7 +108,7 @@ export function PollItem({ data, showTitle, onDelete, disabled = false, results_
             {state.isShowResults && <Results data={state.results} />}
 
             {!!data.subentries && !state.isShowResults && data.subentries.map((item2, index) => (
-                <Row key={`lbl-${index}`} className={`mt-2 items-center border bg-bgrbutton dark:bg-bgrbutton-d border-bdrbutton dark:border-bdrbutton-d rounded-lg ${state.isVoted ? 'opacity-50' : 'web:hover:bg-bgritemprimary web:active:bg-bgritemprimary-h web:dark:hover:bg-bgritemprimary-d web:dark:active:bg-bgritemprimary-dh'}`}>
+                <Row key={`lbl-${index}`} className={` items-center border border-border/50 bg-card web:hover:border-ring web:hover:ring rounded-lg ${state.isVoted ? 'opacity-50 web:hover:ring-0' : ' active:bg-muted'}`}>
                     <RadioButton
                         value={item2.entry_id}
                         status={item2.id == state.value ? 'checked' : 'unchecked'}
