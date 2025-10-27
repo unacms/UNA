@@ -183,9 +183,9 @@ export default function UnitComments(props) {
                         {!!data.cmt_mood && (
                             <>
                                 <View>
-                                <View className="text-muted -mx-1">
-                        <Icon icon='Dot' size={16}  />
-                    </View>  
+                                <View className="text-muted">
+                                    <Icon icon='Dot' size={14}  />
+                                </View>  
                                 </View>
                                 <StarsView
                                     rating={data.cmt_mood}

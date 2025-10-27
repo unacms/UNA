@@ -67,7 +67,7 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
        <View className="my-auto gap-0.5">
 
             {bShowLinks ? (
-                <Row className="items-center gap-1 items-center min-h-5">
+                <Row className="items-center gap-2 items-center min-h-5">
                     <Link variant="ghost" size="sm" emulate={emulate} haptics="Select"  href={oProps.url}>
                         <DisplayNameLink
                             title={oProps.display_name}
@@ -79,7 +79,9 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
                         />
                     </Link>
                     {info2}
-                   
+                    <Row className="bg-green-300">
+                        {actions}
+                </Row>
                 </Row>
             ) : (
                 <Row className="items-center gap-1">
@@ -90,9 +92,7 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
 
             {info}
         </View>
-            <Row className="flex-none mb-auto">
-                {actions}
-            </Row>
+            
         </Row>
       
     )

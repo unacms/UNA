@@ -262,11 +262,11 @@ export const ItemInfo = memo(({ data, t }) => {
         owners?.length > 0 ? (
             owners?.length == 1 ? (
                 <>
-                    <View className="text-quaternary-label">
-                        <Icon icon='Dot' size={16}  />
+                    <View className="text-muted">
+                        <Icon icon='Dot' size={14}  />
                     </View>  
                     <Link href={data.owners[0].url} emulate={true}>
-                        <Text className=" bg-primary/10 hover:bg-primary/20 p-1.5 rounded-md text-primary hover:text-linkhover text-xs ">
+                        <Text className=" text-label-quaternary web:hover:text-label-link-hover font-medium text-xs ">
                             {owners[0].title}
                         </Text>
                     </Link>
@@ -274,14 +274,14 @@ export const ItemInfo = memo(({ data, t }) => {
             ) : (
                 <>
                     <View className="text-muted ">
-                        <Icon icon='Dot' size={16}  />
+                        <Icon icon='Dot' size={14}  />
                     </View>  
                     <Pressable
                         onPress={() => {
                             setShowContextList(true)
                         }}
                     >
-                        <Text className=" bg-label-tertiary px-1 rounded-md text-label-primary hover:text-linkhover text-sm font-medium">
+                        <Text className=" bg-muted/50 px-1.5 leading-5 rounded-md text-muted-foreground border border-border/40 web:border-0 web:ring-1 web:ring-inset web:ring-border/40 hover:text-linkhover text-xs font-medium">
                             {owners[0].title} + {owners.length - 1}
                         </Text>
                     </Pressable>
@@ -329,7 +329,7 @@ export const ItemInfo = memo(({ data, t }) => {
             l && (
                 <>
                     <View className="text-muted ">
-                        <Icon icon='Dot' size={16}  />
+                        <Icon icon='Dot' size={14}  />
                     </View>  
                     <Text className="text-muted-foreground font-medium tracking-tight text-xs leading-5 ">
                         {l}
@@ -526,7 +526,7 @@ export const Author = memo(({ data, url, t }) => {
             <Element
                 params={{
                     button_variant: 'link',
-                    button_size: 'xs',
+                    button_size: 'xxs',
                     hide_icon: true,
                     button_rounded: false,
                 }}

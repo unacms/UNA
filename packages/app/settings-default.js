@@ -1123,7 +1123,20 @@ export const settingsDefault = {
             default_variant: 'default',
             pressed_container: ' bg-primary/10 web:hover:bg-accent/10 active:bg-accent/20  ',
             pressed_text: ' text-primary font-medium ',
-            
+            xxs: {
+                rounded: ' rounded-md ',
+                padding: ' ',
+                padding_icon_only: ' px-1',
+                padding_with_title: ' px-1 gap-1 ',
+                icon_container:
+                    ' h-5 text-sm flex items-center justify-center',
+                title_container: ' text-xs leading-5 text-xs',
+                icon_size: 16,
+                icon_margin: '  ', // conditional margin for icon container when title is present
+                title_margin: ' ', //
+                hitarea_class: ' relative u-action-hitarea u-action-hitarea-xs ',
+                hitSlop: { top: 8, right: 8, bottom: 8, left: 8 },
+            },
             xs: {
                 rounded: ' rounded-md ',
                 padding: ' ',
@@ -1650,7 +1663,7 @@ export const settingsDefault = {
 
             'u-btn-link-cnt': ' group active:bg-muted/60 ',
             'u-btn-link-text':
-                ' font-semibold text-label-tertiary group-hover:text-label-link active:text-label-link web:duration-200',
+                ' font-semibold text-label-link group-hover:text-label-link-hover active:text-label-link-hover web:duration-200',
             'u-btn-text-trans': ' web:duration-200  ',
             
 
