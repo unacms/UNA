@@ -31,6 +31,7 @@ export default function (props) {
         props?.subvalue ? props.subvalue.split(",").map(value => parseInt(value, 10)) : []
     );
 
+
     const { colors } = Theme();
 
     const handleValueChange = (val) => {
@@ -67,10 +68,10 @@ export default function (props) {
             key: item.key,
             value: item.value.display_name,
             icon: <Profile
-            {...item.value}
-            displayType="unit_wo_info"
-            displaySize="sm"
-        />
+                {...item.value}
+                displayType="unit_wo_info"
+                displaySize="sm"
+            />
         }));
     };
 
@@ -82,9 +83,9 @@ export default function (props) {
         return true;
     });
 
-   
 
-  
+
+
 
     const values_friends = props.values_friends ? prepareValuesFriends(props.values_friends) : null;
 
@@ -132,13 +133,13 @@ export default function (props) {
         <>
             <RbList values={filteredValues} setValue={handleValueChange} selectedValue={field.value} />
             <View className='flex-row justify-end pt-3 mt-3 border-t border-bdr dark:border-bdr-d'>
-            <Button title="Done" size="base" variant="primary" onPress={applyVisibility} /></View>
+                <Button title="Done" size="base" variant="primary" onPress={applyVisibility} /></View>
         </>
     );
 
     const modalElement = (
         <Modal
-            title={isModalSub ? modalHeader : 'Choose audience'}
+            title={isModalSub ? modalHeader : t('Choose audience')}
             onVisible={isModal}
             onClose={!isModalSub ? () => setIsModal(false) : undefined}
             transparent
@@ -167,10 +168,10 @@ export default function (props) {
                         />
                     </View>
                     <View className='px-1  flex-auto'>
-                        <Profile 
-                            {...props.owner_info} 
-                            displayType="unit_wo_image" 
-                            displaySize="sm" 
+                        <Profile
+                            {...props.owner_info}
+                            displayType="unit_wo_image"
+                            displaySize="sm"
                             showInfo={false}
                             showLinks={false}
                         />
@@ -179,19 +180,23 @@ export default function (props) {
             </>
         )
     }
+    const visibilityData = visibilityById(field.value, t);
+    const icon = visibilityData ? visibilityData.icon : 'Globe'
+
+    const v = filteredValues.find(item => item.value == field.value);
+    const text = visibilityData ? visibilityData.text : ''
+    const displayText = selectedSubLabels.length > 0
+        ? selectedSubLabels.slice(0, 3).join(', ') + (selectedSubLabels.length > 3 ? ' + ' + (selectedSubLabels.length - 3) + ' more' : '')
+        : text || v?.label || t('Choose audience');
 
     if (props.format == 'nofield') {
-        
-        const visibilityData = visibilityById(field.value, t);
-        const icon = visibilityData ? visibilityData.icon : ''
-        const text = visibilityData ? visibilityData.text : ''
 
-        const v = filteredValues.find(item => item.value == field.value)?.label || filteredValues[0].label;
+
+
         // Optional plain Button rendering when requested
         if (props.noContainer) {
-            const displayText = selectedSubLabels.length > 0
-                ? selectedSubLabels.slice(0, 3).join(', ') + (selectedSubLabels.length > 3 ? ' + ' + (selectedSubLabels.length - 3) + ' more' : '')
-                : text;
+
+
             return (<>
                 {modalElement}
                 {props.addElement}
@@ -214,10 +219,10 @@ export default function (props) {
                         icon={icon}
                         width={16}
                         height={16}
-                        className={"text-neutral-600"}  
+                        className={"text-neutral-600"}
                     />
-                    <Text className=" leading-5.5 ml-1 whitespace-nowrap text-ellipsis overflow-hidden tracking-tight text-neutral-600 web:group-hover:text-neutral-800 dark:text-neutral-400 web:dark:group-hover:text-neutral-200 font-medium text-sm native:text-sm ">{selectedSubLabels.length> 0 ? selectedSubLabels.slice(0, 3).join(', ') + (selectedSubLabels.length > 3 ? ' + ' + (selectedSubLabels.length - 3) + ' more' : '') : text}</Text>
-                     <Icon
+                    <Text className=" leading-5.5 ml-1 whitespace-nowrap text-ellipsis overflow-hidden tracking-tight text-neutral-600 web:group-hover:text-neutral-800 dark:text-neutral-400 web:dark:group-hover:text-neutral-200 font-medium text-sm native:text-sm ">{displayText}</Text>
+                    <Icon
                         icon="ChevronDown"
                         width={16}
                         height={16}
@@ -233,14 +238,14 @@ export default function (props) {
             {modalElement}
             <Field {...props} error2={formContext.formState.errors[name]}>
                 <View className='flex-row items-center px-2 bg-input/20 border border-border/80 h-12 rounded-xl'>
-                <Button
-                    title={filteredValues.find(item => item.value == field.value)?.label || filteredValues[0].label}
-                    startDecorator="Globe"
-                    variant="default"
-                    size="base"
-                    rounded
-                    onPress={() => handleShowModal()}
-                />
+                    <Button
+                        title={displayText}
+                        startDecorator="Globe"
+                        variant="default"
+                        size="base"
+                        rounded
+                        onPress={() => handleShowModal()}
+                    />
                 </View>
             </Field>
         </>

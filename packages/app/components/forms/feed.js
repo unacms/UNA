@@ -189,7 +189,8 @@ export default function FormFeed(props) {
         }
     }, [])
 
-    let text = formContext.watch('text')
+    let text = formContext.watch('text');
+    let object_privacy_view = formContext.watch('object_privacy_view');
     if (!text) text = ''
     if (typeof text === 'string') {
         text = stripTags(text).trim()
@@ -371,7 +372,7 @@ export default function FormFeed(props) {
                                     props.handleSubmit,
                                     'default',
                                     {
-                                        disabled: text != '' ? false : true,
+                                        disabled: text != '' && object_privacy_view != '' ? false : true,
                                         noPadding: true,
                                         size: 'base',
                                         notFullWidth: true,
