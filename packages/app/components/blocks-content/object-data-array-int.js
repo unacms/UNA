@@ -105,7 +105,7 @@ export default function BlockContentObjectDataArrayInt(props) {
        // props.exProps.method = props?.method;
         return (
             <Suspense fallback={<Loading />} key={a.id + a?.type}>
-                <Component key={a.id + a?.type} type={a?.type} onFormSubmit={onFormSubmit} {...a} exProps={props.exProps} />
+                <Component key={a.id + a?.type} type={a?.type} onFormEmpty={props.onFormEmpty} onFormSubmit={onFormSubmit} {...a} exProps={props.exProps} />
             </Suspense>
         )
     }

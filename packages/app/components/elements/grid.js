@@ -110,12 +110,15 @@ const ActionButton = React.memo(({ id, index, itemAction, setShowConfirm, delete
         if (name == 'edit_budget') {
             return 'Wallet'
         }
+        if (name == 'set_role') {
+            return 'UserRoundCog'
+        }
         return false;
     };
 
     let icon = getActionButtonIcon(itemAction.name);
 
-    const excludedActions = ['set_role', 'clear_reports', 'set_acl_level'];
+    const excludedActions = ['clear_reports', 'set_acl_level'];
 
     if (excludedActions.includes(itemAction.name) || hide) {
         return <></>;
@@ -280,10 +283,11 @@ export default function ElementGrid(props) {
     };
 
     const handleActionBlock = async (data) => {
+    
         if (data.type == 'modal') {
             let fetchedData = await fetchData(data.action, data.params, data.callback);
             let cnt = { content: fetchedData.data, designbox_id: 0 }
-            setBottomSheetData({ title: cnt.content[0]?.title ? cnt.content[0]?.title : " ", content: <View className='px-1'><BlockByData onFormEmpty={() => handleUpdate()} block={cnt} /></View> });
+            setBottomSheetData({ title: cnt.content[0]?.title || data.title, content: <View className='px-1'><BlockByData onFormEmpty={() => handleUpdate()} block={cnt} /></View> });
         }
         if (data.type == 'object'){
             setModalContentElement(<Stripe seller_id={data.seller_id } items={data.items} />);
@@ -295,6 +299,8 @@ export default function ElementGrid(props) {
     };
 
     const handleCloseModal = () => {
+        console.log("5555");
+
         setBottomSheetData(false);
         setModalContent(false);
     };
@@ -304,7 +310,6 @@ export default function ElementGrid(props) {
     };
 
     const handleUpdate = () => {
-        console.log("aaa");
         setTimeout(() => {
             handleCloseModal();
             resetData();

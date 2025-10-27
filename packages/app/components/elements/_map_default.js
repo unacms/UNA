@@ -18,6 +18,7 @@ import DashboardStat from './dashboard_stat';
 import SmartGrid from './smart_grid';
 import ProfileContacts from './contacts';
 import SimpleList from './simple_list';
+import Membership from './membership';
 import Lang from './lang';
 import Invite from './invite';
 import Map from './map';
@@ -52,6 +53,7 @@ export const componentsMapDefault = {
     reputation_actions: ReputationActions,
     reputation_widget: ReputationWidget,
     chart: Chart,
+    membership: Membership,
     comment_content:CommentContent,
     browse: Browse,
     grid: Grid,
