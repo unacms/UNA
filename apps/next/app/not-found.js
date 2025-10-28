@@ -7,9 +7,8 @@ import { cache } from 'react'
 import { UNA_URL, UNA_API_KEY } from 'app/config';
 import { cookies } from 'next/headers'
 
-
 export const getData = cache(async (props) => {
-    
+
     const cookieStore = await cookies()
     let c = cookieStore.getAll();
     let cookieString = '';
