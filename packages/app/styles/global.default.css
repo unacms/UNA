@@ -20,9 +20,9 @@
         --accent: var(--accent-600); /*background for accent buttons, accent surfaces*/
         --accent-hover: var(--accent-500); /*background for accent buttons, accent surfaces on hover*/
         --accent-active: var(--accent-800); /*background for accent buttons, accent surfaces on active*/
-        --accent-foreground: var(--white); /*content on accent buttons, accent surfaces*/
+        --accent-foreground: var(--accent-800); /*content on accent buttons, accent surfaces*/
         --muted: var(--neutral-200); /*background for ui items, sections, hover states*/
-        --muted-foreground: var(--neutral-600); /*muted content*/
+        --muted-foreground: var(--neutral-500); /*muted content*/
         --inverted: var(--neutral-950); /*background for inverted surfaces*/
         --inverted-foreground: var(--neutral-50); /*content on inverted surfaces*/
         --destructive: var(--red); /*background for destructive buttons, destructive surfaces*/
@@ -118,16 +118,16 @@
         --inverted-foreground: var(--neutral-950); /*main page content*/
         --card: var(--neutral-900); /*cards, sidebars, navbars background*/
         --card-foreground: var(--neutral-300); /*content on cards, sidebars, navbars*/
-        --popover: var(--neutral-900); /*background for popovers, inputs, tooltips, modals, elevated surfaces*/
+        --popover: var(--neutral-700); /*background for popovers, inputs, tooltips, modals, elevated surfaces*/
         --popover-foreground: var(--neutral-300); /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
         --primary: var(--accent-500); /*background for primary buttons, links, active states, focus rings. Use use high-contract background from gray-scale or accent-scale.*/
         --primary-foreground: var(--accent-foreground); /*content on primary buttons, active states, primary surfaces*/
         --secondary: var(--neutral-800);  /*background for secondary buttons, secondary surfaces*/
         --secondary-foreground: var(--neutral-200); /*content on secondary buttons, secondary surfaces*/
         --accent: var(--accent-500); /*background for accent buttons, accent surfaces*/
-        --accent-foreground: var(--neutral-950); /*content on accent buttons, accent surfaces*/
+        --accent-foreground: var(--accent-500); /*content on accent buttons, accent surfaces*/
         --muted: var(--neutral-800); /*background for ui items, sections, hover states*/
-        --muted-foreground: var(--neutral-400); /*muted content*/
+        --muted-foreground: var(--neutral-500); /*muted content*/
         --inverted: var(--neutral-50); /*background for inverted surfaces*/
         --inverted-foreground: var(--neutral-950); /*content on inverted surfaces*/
         --destructive: var(--red); /*background for destructive buttons, destructive surfaces*/
