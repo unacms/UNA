@@ -1029,7 +1029,7 @@ export const settingsDefault = {
             primaryBg: 'rgba(37,99,235,0.1)',
         },
         dropdown: {
-            cnt: ' rounded-2xl overflow-hidden shadow-xl border border-border/80 p-1 bg-popover z-50  ',
+            cnt: ' rounded-2xl overflow-hidden shadow-xl border border-border/80 p-2 bg-popover z-50  ',
         },
         conductor: {
             menu: ' w-full items-left justify-center ',

@@ -70,17 +70,17 @@ export default function ({ buttonProps, children, tooltip, fullWidth, uri }) {
             }
         >
             {ntfsOpen && (
-                <View key="ddp-content" className="px-1.5 pb-1.5">
-                    <View className="flex-row items-center mb-1">
-                        <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">
+                <View key="ddp-content" className="gap-1">
+                    <View className="flex-row items-center ">
+                        <Text className="text-secondary-foreground px-1 text-lg flex-auto font-bold ml-0.5">
                             {t('Notifications')}
                         </Text>
                         <Link href={appSetting('notifications', 'url')}>
                             <Button
-                                variant="text"
+                                variant="link"
                                 size="sm"
-                                rounded
-                                endDecorator="ChevronsRight"
+                                
+                                
                                 title={t('View all')}
                                 onPress={() => {
                                     setNtfsOpen(false)

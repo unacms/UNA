@@ -12,16 +12,16 @@ import Html from 'app/ui/atoms/html';
 const ContentCard = memo(({ authorData, date, content }) => {
     return (
 
-        <View className="p-2 mb-1 flex-row items-center gap-3 max-w-4xl mx-auto w-full web:hover:bg-muted/60 rounded-xl ">
-            <View className="rounded-full flex-none " >
+        <View className="px-2 py-1.5 flex-row items-center gap-3 max-w-4xl mx-auto w-full web:hover:bg-muted/60 rounded-lg ">
+            <View className="rounded-full flex-none mb-auto " >
                 <Profile {...authorData} displayType="unit_wo_info" displaySize="lg" />
             </View>
-            <Row className="flex-auto my-auto justify-between">
+            <View className="flex-auto my-auto ">
                 <View className='flex-auto'>
                     <Html data={content} customClassName="u-vanilla-html-small" />
                 </View>
-                <Text className='text-sm flex-none text-muted-foreground'><Time ts={date}></Time></Text>
-            </Row>
+                <Text className='text-sm flex-none font-medium text-muted-foreground'><Time ts={date}></Time></Text>
+            </View>
         </View>
 
     )
