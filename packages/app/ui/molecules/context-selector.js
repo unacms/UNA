@@ -8,6 +8,7 @@ import Profile from 'app/ui/molecules/profile'
 import { appStatic } from 'app/lib/app-static'
 import { FeedbackHaptics, appSetting } from 'app/lib/util'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next';
 
 const rootUrl = appSetting('context_selector', 'root_url');
 
@@ -77,7 +78,9 @@ function getContextRoot(data, url, uri) {
 }
 
 export default function ContextSelector({ data, url, uri, mode }) {
-    const [isOpen, setIsOpen] = useState(false)
+    const [isOpen, setIsOpen] = useState(false);
+    const { t } = useTranslation();
+
     if (!data) return null
 
     const contextRoot = getContextRoot(data, url, uri)
@@ -91,7 +94,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
 
 
     const CurrentContext = (
-        <Link variant="ghost" size="lg" href={contextRoot.url} title="Context Home">
+        <Link variant="ghost" size="lg" href={contextRoot.url} title={t("Context Home")}>
             <Row className="items-center gap-2 py-0.5">
                 <View className='rounded-full items-center justify-center web:duration-200 text-card-foreground web:hover:text-foreground'>
                     {contextRoot.image}
