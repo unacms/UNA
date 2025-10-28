@@ -49,7 +49,7 @@ export default function () {
             <View
                 className={`z-50 w-full pb-0 ${isInStandaloneMode() ? "h-12" : "h-16"}`}
             >
-                <Row className="flex-auto items-center flex-row w-full px-2 gap-x-2">
+                <Row className="flex-auto items-center flex-row w-full px-1 gap-1">
                     {TabList.filter(item => !item.hide).map((tab, index) => {
                         const isActive = appSetting('messenger', 'url') === tab.url ? pathname.includes(tab.url) : pathname === tab.url;
                         return <MenuBottomItem key={`bmi-${index}`} notifCount={notifCount} iFrCounter={iFrCounter} profile={profile} link={tab.url} badge={tab.badge} index={index} icon={tab.icon} title={t(tab.title)} isActive={isActive} />
@@ -84,12 +84,12 @@ function MenuBottomItem({ link, title, index, badge, icon, isActive, profile, iF
                 noprefetch={link === appSetting('notifications', 'url') ? "false" : "true"}
                 className="w-full"
             >
-                <View className={`min-h-12 justify-between items-center ${isActive && ''}`}>
-                    <Text className={`${isActive ? 'text-primary' : 'text-muted-foreground'}`}>
+                <View className={`flex flex-col justify-between my-auto items-center rounded-xl p-1.5 text-center gap-1 hover:bg-muted/60 justify-center ${isActive && 'bg-accent/10'}`}>
+                    <Text className={`${isActive ? 'text-primary-foreground' : 'text-muted-foreground group-hover:text-primary-foreground'}`}>
                         {link === appSetting('dashboard', 'url') ? profile : <Icon icon={icon} size={28} />}
                     </Text>
-                    {<Text className={`group-hover:text-primary text-xs tracking-tight leading-5 whitespace-nowrap ${isActive ? 'text-primary' : 'text-muted-foreground'}`}>{title}</Text>}
-                    {badgeObj && <View className={`absolute bg-destructive  border-2 border-card web:border-0 web:ring-2 web:ring-inset web:ring-card rounded-full px-2 items-center justify-center  -top-1.5 left-1/2 -translate-x-1/2 ml-5`}><Text className="text-white text-xs tracking-tight leading-5 ">{badgeObj.text}</Text></View>}
+                    {<Text className={` group-hover:text-primary-foreground text-xs tracking-tight leading-none font-medium whitespace-nowrap ${isActive ? 'text-primary-foreground' : 'text-muted-foreground'}`}>{title}</Text>}
+                    {badgeObj && <View className={`absolute bg-destructive border-2 border-card rounded-full px-1.5 min-w-6 items-center justify-center  -top-1 left-1/2 -translate-x-1/2 ml-4`}><Text className="text-white text-xs font-medium tracking-tight leading-5 ">{badgeObj.text}</Text></View>}
                 </View>
             </Link>
         </View>
