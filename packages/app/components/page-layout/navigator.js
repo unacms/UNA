@@ -56,6 +56,7 @@ export default function PageLayout(props) {
             layoutName={props.layoutName}
             isHideDefaultHeader={false} 
             menu={menu} 
+            ts={props.data.ts}
             data={props.data} 
             blocks={props.blocks}
             useSectionAsMenu={false}
