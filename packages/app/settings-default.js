@@ -1122,7 +1122,7 @@ export const settingsDefault = {
             default_size: 'base',
             default_variant: 'default',
             pressed_container: ' bg-primary/10 web:hover:bg-accent/10 active:bg-accent/20  ',
-            pressed_text: ' text-primary font-medium ',
+            pressed_text: ' text-primary-foreground font-medium ',
             xxs: {
                 rounded: ' rounded-md ',
                 padding: ' ',
@@ -1634,7 +1634,7 @@ export const settingsDefault = {
           
 
             'u-btn-primary-cnt': ' focus:outline-2 focus:outline-primary bg-primary web:hover:bg-primary/90 shadow-sm active:opacity-50 ',
-            'u-btn-primary-text': ' font-semibold text-primary-foreground ',
+            'u-btn-primary-text': ' font-semibold text-inverted-foreground ',
             'u-btn-primary-trans': ' web:duration-200',
 
             'u-btn-accent-cnt':
