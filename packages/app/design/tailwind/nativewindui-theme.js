@@ -28,11 +28,14 @@ const nativewindUIColors = {
     ring: withOpacity('ring'),
     background: withOpacity('background'),
     foreground: withOpacity('foreground'),
-    inverted: withOpacity('inverted'),
-    inverted-foreground: withOpacity('inverted-foreground'),
+  
     primary: {
         DEFAULT: withOpacity('primary'),
         foreground: withOpacity('primary-foreground'),
+    },
+    inverted: {
+        DEFAULT: withOpacity('inverted'),
+        foreground: withOpacity('inverted-foreground'),
     },
     secondary: {
         DEFAULT: withOpacity('secondary'),
