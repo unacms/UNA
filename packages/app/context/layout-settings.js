@@ -83,6 +83,7 @@ export const useLayoutSettings = () => {
     const getDefaultLangCode = () => {
         const langs = appSetting('layout', 'avaliable_langs');
         try {
+            // todo need fix for server
             //const locales = navigator && typeof navigator !== 'undefined' ? RNLocalize.getLocales() : [];
             //const langCode = locales?.[0]?.languageCode;
             //return langs.includes(langCode) ? langCode : 'en';
