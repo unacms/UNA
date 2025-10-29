@@ -1,9 +1,10 @@
+'use client';
 import { create } from 'zustand';
 import { useCallback, useEffect } from 'react';
 import { asyncStorageGet, asyncStorageSet } from 'app/lib/util';
 import { appSetting } from 'app/lib/util'
 import { Appearance, Platform } from 'react-native'
-import * as RNLocalize from "react-native-localize";
+//import * as RNLocalize from "react-native-localize";
 import { fetcher } from 'app/lib/fetcher'
 import i18n from 'i18next'
 
@@ -82,9 +83,10 @@ export const useLayoutSettings = () => {
     const getDefaultLangCode = () => {
         const langs = appSetting('layout', 'avaliable_langs');
         try {
-            const locales = typeof navigator !== 'undefined' ? RNLocalize.getLocales() : [];
-            const langCode = locales?.[0]?.languageCode;
-            return langs.includes(langCode) ? langCode : 'en';
+            //const locales = navigator && typeof navigator !== 'undefined' ? RNLocalize.getLocales() : [];
+            //const langCode = locales?.[0]?.languageCode;
+            //return langs.includes(langCode) ? langCode : 'en';
+            return 'en';
         } catch (e) {
             console.warn('Failed to get locales:', e);
             return 'en';
