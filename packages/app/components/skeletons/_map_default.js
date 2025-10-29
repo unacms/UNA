@@ -33,17 +33,15 @@ const OneColumn = memo(() => (
 const Notif = memo(() => (
     
     <View className=" w-full max-w-4xl mx-auto">
-        <CardList className=" mt-px lg:mb-2 lg:mx-2 p-3 lg:p-4 border-none lg:rounded-2xl " >
-        <View className="animate-pulse flex-row items-center gap-2">
-            <View className="rounded-full bg-neutral-500/40 h-12 w-12"></View>
-            <View className="flex-1 gap-1.5">
-                <View className="flex-row justify-between">
-                    <View className="h-3 w-1/2 bg-muted/60 rounded-full"></View>           
-                </View>
-                <View className="h-3 w-full bg-muted/60 rounded-full"></View>
+        <View className="animate-pulse px-2 py-1.5 flex-row items-center gap-3">
+            <View className="rounded-full bg-muted/60 h-11 w-11"></View>
+            <View className="flex-auto gap-1">
+                
+                <View className="h-3 w-full bg-muted/60 rounded-full"></View>           
+                
+                <View className="h-3 w-8 bg-muted/60 rounded-full"></View>
             </View>
         </View>
-        </CardList>
     </View>
    
 ));

@@ -1029,7 +1029,7 @@ export const settingsDefault = {
             primaryBg: 'rgba(37,99,235,0.1)',
         },
         dropdown: {
-            cnt: ' rounded-2xl overflow-hidden shadow-xl border border-border/80 p-2 bg-popover z-50  ',
+            cnt: ' rounded-2xl overflow-hidden shadow-xl border border-border p-2 bg-popover/80 backdrop-blur-xl z-50  ',
         },
         conductor: {
             menu: ' w-full items-left justify-center ',
@@ -1101,7 +1101,7 @@ export const settingsDefault = {
         modal: {
             fog: 'bg-background/80  ',
             container:
-                ' h-full sm:h-auto shadow-xl bg-popover/80 backdrop-blur border border-border web:ring-1 web:ring-inset web:ring-popover sm:rounded-2xl overflow-hidden ',
+                ' h-full sm:h-auto shadow-xl bg-card/80 backdrop-blur border border-border web:ring-1 web:ring-inset web:ring-popover sm:rounded-2xl overflow-hidden ',
             content: ' h-auto ',
             header: ' p-3 items-start justify-start border-b border-border/80',
         },
@@ -1506,26 +1506,26 @@ export const settingsDefault = {
 
             // Header (use with inline styles or Tailwind plugin for scroll)
             'u-controls-tabs-header':
-                'relative flex flex-1 flex-row flex-nowrap overflow-x-auto overflow-y-hidden border-b border-border/80 web:scrollbar-none ',
+                'relative flex flex-1 flex-row flex-nowrap overflow-x-auto bg-muted/40 border border-border/80 rounded-xl overflow-y-hidden  web:scrollbar-none ',
             'u-controls-tabs-header-full-width':
-                'relative w-full flex flex-1 flex-row flex-nowrap overflow-x-auto overflow-y-hidden border-b border-border/80 web:scrollbar-none ',
+                'relative w-full flex flex-1 flex-row flex-nowrap overflow-x-auto overflow-hidden bg-muted/40 border border-muted rounded-xl web:scrollbar-none ',
 
             // Header item base (shared styles without hover)
             'u-controls-tabs-header-item':
-                'inline-flex flex-none justify-center items-center whitespace-nowrap font-medium truncate disabled:pointer-events-none disabled:opacity-50 ',
+                'inline-flex flex-auto justify-center items-center whitespace-nowrap font-medium truncate disabled:pointer-events-none disabled:opacity-50 ',
 
             // Inactive tab (with hover effect)
-            'u-controls-tabs-header-item-inactive': ' group web:hover:bg-muted/60 web:duration-200',
+            'u-controls-tabs-header-item-inactive': ' group web:hover:bg-muted web:duration-500',
 
             // Active tab (no hover effect)
             'u-controls-tabs-header-item-active':
-                ' bg-accent',
+                ' bg-popover shadow-sm web:duration-300 ',
 
             // Header item text
             'u-controls-tabs-header-item-text':
                 'text-muted-foreground web:group-hover:text-card-foreground font-medium ',
             'u-controls-tabs-header-item-text-active':
-                'text-accent-foreground font-medium ',
+                'text-card-foreground font-medium ',
 
             // Tab content
             'u-controls-tabs-tab-content': 'w-full pt-4 ',
@@ -1534,15 +1534,19 @@ export const settingsDefault = {
 
             // Active indicator (absolute element matching active header item width)
             'u-controls-tabs-header-item-active-indicator':
-                'absolute bg-ring rounded-full pointer-events-none web:transition-[left,width] web:duration-200 web:ease-out ',
+                'absolute pointer-events-none web:transition-[left,width] web:duration-200 web:ease-out ',
+            
+            'u-controls-tabs-header-item-active-indicator-inner':
+                ' h-1 bottom-0 bg-accent rounded-t-full blur-lg ',
         },
         // Tab sizes mapping (similar to button_sizes/link_sizes)
         tabs_sizes: {
             default_size: 'md',
             sm: {
-                header: ' p-2  gap-2 ',
-                item: ' h-7 px-2.5 text-sm rounded-md focus-visible:ring-offset-2 ring-offset-background focus-visible:ring-2 focus-visible:ring-ring  ',
-                indicator: ' h-0.5 bottom-0 ',
+                header: 'p-1 gap-1',
+                item: ' h-8 px-2.5 text-sm rounded-lg focus-visible:outline outline-offset-0 outline-ring  ',
+                indicator: ' h-0.5 bottom-0 px-0.5 ',
+                indicator_inner: ' rounded-full ',
                 text: ' text-sm whitespace-nowrap  ',
                 text_active: ' text-sm whitespace-nowrap  ',
             },

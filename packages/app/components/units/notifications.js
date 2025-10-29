@@ -14,13 +14,13 @@ const ContentCard = memo(({ authorData, date, content }) => {
 
         <View className="px-2 py-1.5 flex-row items-center gap-3 max-w-4xl mx-auto w-full web:hover:bg-muted/60 rounded-lg ">
             <View className="rounded-full flex-none mb-auto " >
-                <Profile {...authorData} displayType="unit_wo_info" displaySize="lg" />
+                <Profile {...authorData} displayType="unit_wo_info" displaySize="xl" />
             </View>
-            <View className="flex-auto my-auto ">
+            <View className="flex-auto my-auto gap-1 ">
                 <View className='flex-auto'>
-                    <Html data={content} customClassName="u-vanilla-html-small" />
+                    <Html data={content} customClassName="u-vanilla-html-small leading-tight line-clamp-2" />
                 </View>
-                <Text className='text-sm flex-none font-medium text-muted-foreground'><Time ts={date}></Time></Text>
+                <Time className="text-xs flex-none font-medium text-muted-foreground" ts={date}></Time>
             </View>
         </View>
 
