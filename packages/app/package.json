@@ -6,7 +6,22 @@
   "dependencies": {
     "clsx": "^2.0.0",
     "crypto": "file:../../crypto-shim",
-    "solito": "4.3.0"
+    "solito": "4.3.0",
+
+    "zustand": "^4.5.5",
+    "react-remove-scroll": "^2.6.0",
+    "react-resizable": "^3.0.5",
+    "react-resizable-panels": "^3.0.3",
+    "react-virtuoso": "^4.10.1",
+    "@gorhom/bottom-sheet": "^5.1.2",
+    "google-map-react": "^2.2.1",
+    "react-map-gl": "^8.0.1",
+    "react-onesignal": "3.0.1",
+    "react-grid-layout": "^1.4.4",
+    "@stripe/stripe-js": "^2.2.2",
+    "@10play/tentap-editor": "0.7.4",
+    "@stripe/react-stripe-js": "^2.4.0",
+    "react-native-webview": "13.15.0"
   },
   "sideEffects": false
 }
