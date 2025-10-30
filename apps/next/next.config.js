@@ -7,6 +7,9 @@ const webpackLib = require('webpack');
 
 
 /** @type {import('next').NextConfig} */
+const tenPlayWebviewPath = path.resolve(__dirname, 'node_modules/@10play/react-native-web-webview/lib/module/index.js');
+const tenPlayWebviewShimPath = path.resolve(__dirname, 'node_modules/@10play/react-native-web-webview/lib/module/shim.js');
+
 const nextConfig = {
   assetPrefix: '',
   typescript: {
@@ -58,6 +61,7 @@ const nextConfig = {
     'expo-crypto',
     '@react-native-picker/picker',
     '@10play/tentap-editor',
+    '@10play/react-native-web-webview',
     'expo',
     'expo-image-picker',
     'expo-location',
@@ -92,16 +96,18 @@ const nextConfig = {
     config.resolve.alias = {
       ...config.resolve.alias,
       'react-native': 'react-native-web',
-      'react-native-webview': '@10play/react-native-web-webview',
+      'react-native-webview': tenPlayWebviewPath,
+      'react-native-webview$': tenPlayWebviewPath,
       'crypto': 'expo-crypto',
       'react-native-svg': path.resolve(__dirname, 'node_modules/react-native-svg'),
+      'react-native/Libraries/Utilities/codegenNativeComponent': tenPlayWebviewShimPath,
+      'react-native/Libraries/Utilities/codegenNativeComponent$': tenPlayWebviewShimPath,
     };
 
     // Добавляем fallback для codegenNativeComponent
     config.resolve.fallback = {
       ...config.resolve.fallback,
-      'react-native/Libraries/Utilities/codegenNativeComponent':
-        '@10play/react-native-web-webview/shim',
+      'react-native/Libraries/Utilities/codegenNativeComponent': tenPlayWebviewShimPath,
     };
 
     // Define EXPO_OS to silence expo-modules-core warning

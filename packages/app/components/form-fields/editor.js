@@ -10,9 +10,9 @@ let RftText;
 
 if (Platform.OS === 'web') {
     const dynamic = require('next/dynamic').default;
-   // RftText = dynamic(() => import('app/components/form-fields/editor-inner'), { ssr: false });
+    RftText = dynamic(() => import('app/components/form-fields/editor-inner'), { ssr: false });
 } else {
-    //RftText = require('app/components/form-fields/editor-inner').default;
+    RftText = require('app/components/form-fields/editor-inner').default;
 }
 //const RftText = dynamic(() => import('app/components/form-fields/editor-inner'), { ssr: false });
 
