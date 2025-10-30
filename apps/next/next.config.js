@@ -9,6 +9,7 @@ const webpackLib = require('webpack');
 /** @type {import('next').NextConfig} */
 const tenPlayWebviewPath = path.resolve(__dirname, 'node_modules/@10play/react-native-web-webview/lib/module/index.js');
 const tenPlayWebviewShimPath = path.resolve(__dirname, 'node_modules/@10play/react-native-web-webview/lib/module/shim.js');
+const reanimatedWebPath = path.resolve(__dirname, 'node_modules/react-native-reanimated');
 
 const nextConfig = {
   assetPrefix: '',
@@ -98,6 +99,8 @@ const nextConfig = {
       'react-native': 'react-native-web',
       'react-native-webview': tenPlayWebviewPath,
       'react-native-webview$': tenPlayWebviewPath,
+      'react-native-reanimated': reanimatedWebPath,
+      'react-native-reanimated$': reanimatedWebPath,
       'crypto': 'expo-crypto',
       'react-native-svg': path.resolve(__dirname, 'node_modules/react-native-svg'),
       'react-native/Libraries/Utilities/codegenNativeComponent': tenPlayWebviewShimPath,

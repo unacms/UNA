@@ -38,7 +38,11 @@
   },
   "nohoist": [
     "**/expo-router",
-    "**/expo-router/**"
+    "**/expo-router/**",
+    "**/react-native-reanimated",
+    "**/react-native-reanimated/**",
+    "**/react-native-worklets",
+    "**/react-native-worklets/**"
   ],
   "dependencies": {
     "dotenv-cli": "^7.0.0"
