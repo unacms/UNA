@@ -1,7 +1,7 @@
 {
   "main": "index.js",
   "dependencies": {
-    "@10play/tentap-editor": "0.7.4",
+	"@10play/tentap-editor": "0.7.4",
     "@appandflow/react-native-google-autocomplete": "^2.1.0",
     "@expo/html-elements": "^0.11.2",
     "@gorhom/bottom-sheet": "^5.1.2",
@@ -82,7 +82,7 @@
     "react-native-star-rating-widget": "^1.8.0",
     "react-native-svg": "15.12.1",
     "react-native-tab-view": "^3.5.2",
-    "react-native-worklets": "^0.5.2",
+    "react-native-worklets": "0.5.1",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-version-check": "^3.4.7",
     "react-native-web": "^0.21.0",
@@ -97,11 +97,11 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@babel/plugin-transform-export-namespace-from": "^7.25.9",
-    "@types/react": "~18.3.12",
+    "@types/react": "~19.1.10",
     "react-native-svg-transformer": "^1.5.0",
     "reactotron-react-native": "^5.1.8",
     "tailwindcss": "^3.4.17",
-    "typescript": "~5.3.3"
+    "typescript": "~5.9.2"
   },
   "scripts": {
     "start": "expo start --dev-client",
