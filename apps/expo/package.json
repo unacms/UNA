@@ -1,7 +1,6 @@
 {
   "main": "index.js",
   "dependencies": {
-	"@10play/tentap-editor": "0.7.4",
     "@appandflow/react-native-google-autocomplete": "^2.1.0",
     "@expo/html-elements": "^0.11.2",
     "@gorhom/bottom-sheet": "^5.1.2",
@@ -19,7 +18,6 @@
     "@rn-primitives/radio-group": "^1.2.0",
     "@rn-primitives/switch": "^1.2.0",
     "@rn-primitives/tabs": "^1.2.0",
-    "@rnmapbox/maps": "^10.1.37",
     "@stripe/connect-js": "^3.3.25",
     "@stripe/stripe-react-native": "0.50.3",
     "@tailwindcss/container-queries": "^0.1.1",
@@ -78,15 +76,14 @@
     "react-native-render-html": "^6.3.4",
     "react-native-safe-area-context": "~5.6.0",
     "react-native-screens": "~4.16.0",
-    "react-native-screenshot-prevent": "^1.1.9",
     "react-native-star-rating-widget": "^1.8.0",
     "react-native-svg": "15.12.1",
     "react-native-tab-view": "^3.5.2",
-    "react-native-worklets": "0.5.1",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-version-check": "^3.4.7",
     "react-native-web": "^0.21.0",
     "react-native-webview": "13.15.0",
+    "react-native-worklets": "0.5.1",
     "react-native-youtube-iframe": "^2.3.0",
     "react-remove-scroll": "^2.6.0",
     "set-cookie-parser": "^2.6.0",
@@ -114,6 +111,8 @@
   "name": "expo-app",
   "overrides": {
     "@xmldom/xmldom": "0.8.7",
-    "@babel/traverse": "7.22.8"
+    "@babel/traverse": "7.22.8",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
   }
 }

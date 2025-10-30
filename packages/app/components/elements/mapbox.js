@@ -3,13 +3,14 @@ import { View, Row } from 'app/design/view'
 import { useState, useRef, useCallback } from 'react';
 import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
-import Mapbox from "@rnmapbox/maps";
+//import Mapbox from "@rnmapbox/maps";
 import { useWindowHeight } from 'app/context/measure';
 
 //TODO SMALL POINTS + desc
 //https://blog.logrocket.com/building-custom-maps-react-native-mapbox/
 export default function ElementMapBox({ data }) {
-    Mapbox.setAccessToken("sk.eyJ1Ijoicm9tYW5sZXMiLCJhIjoiY204Zm9sMWMzMGJiaTJqcXRvdmpseHBuaiJ9.uajA_y3AmjRkBYgy4i2RdQ");
+    return <></>
+    /*Mapbox.setAccessToken("sk.eyJ1Ijoicm9tYW5sZXMiLCJhIjoiY204Zm9sMWMzMGJiaTJqcXRvdmpseHBuaiJ9.uajA_y3AmjRkBYgy4i2RdQ");
     const mapRef = useRef(null);
     const [selectedlayers, setSelectedLayers] = useState(['incarcerees']);
     const [popupInfo, setPopupInfo] = useState(null);
@@ -187,5 +188,5 @@ export default function ElementMapBox({ data }) {
             </View>
         </View>
 
-    )
+    )*/
 }

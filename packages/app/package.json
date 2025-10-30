@@ -19,7 +19,7 @@
     "react-onesignal": "3.0.1",
     "react-grid-layout": "^1.4.4",
     "@stripe/stripe-js": "^2.2.2",
-    "@10play/tentap-editor": "0.7.4",
+  
     "@stripe/react-stripe-js": "^2.4.0",
     "react-native-webview": "13.15.0"
   },

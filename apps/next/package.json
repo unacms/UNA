@@ -10,7 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@10play/react-native-web-webview": "^0.0.3",
+
     "@expo/next-adapter": "6.0.0",
     "@jitsi/react-sdk": "^1.3.0",
     "@stripe/connect-js": "^3.3.25",

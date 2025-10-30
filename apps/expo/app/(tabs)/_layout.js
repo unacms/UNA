@@ -10,7 +10,7 @@ import {
     QueryClientProvider,
 } from '@tanstack/react-query'
 
-import RNScreenshotPrevent, { addListener } from 'react-native-screenshot-prevent';
+//import RNScreenshotPrevent, { addListener } from 'react-native-screenshot-prevent';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { appSetting } from 'app/lib/util'
@@ -25,8 +25,8 @@ import { useLayoutSettings } from 'app/context/layout-settings';
 const AppLayout = React.memo(() => {
 
     if (appSetting('native', 'disable_screenshots')) {
-        RNScreenshotPrevent.enabled(true);
-        RNScreenshotPrevent.enableSecureView();
+     //   RNScreenshotPrevent.enabled(true);
+       // RNScreenshotPrevent.enableSecureView();
     }
 
     useEffect(() => {
