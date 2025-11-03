@@ -347,7 +347,7 @@ export const settingsDefault = {
             menu_width: ' w-min ',
             pressed_classes: {
                 pressed_container: ' active:bg-accent/10 web:hover:bg-accent/10 ',
-                pressed_text: ' text-accent font-medium ',
+                pressed_text: ' text-accent-foreground font-medium ',
             },
             button_rounded: false,
             justify_items: 'start',
@@ -1370,7 +1370,7 @@ export const settingsDefault = {
 
             // Ghost: pseudo background via CSS vars; color logic maintained
             'u-link-ghost-cnt': ' u-link-ghost ',
-            'u-link-ghost-text': ' text-card-foreground web:hover:text-accent ',
+            'u-link-ghost-text': ' text-label-secondary web:hover:text-label-primary ',
             'u-link-ghost-trans': ' web:duration-200 ',
 
             // Bordered: tertiary fill bg; link label colors; no underline
@@ -1499,26 +1499,26 @@ export const settingsDefault = {
 
             // Header (use with inline styles or Tailwind plugin for scroll)
             'u-controls-tabs-header':
-                'relative flex flex-1 flex-row flex-nowrap overflow-x-auto border border-border rounded-xl overflow-y-hidden  web:scrollbar-none bg-muted/40   ',
+                'relative flex flex-1 flex-row flex-nowrap overflow-x-auto border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl overflow-y-hidden  web:scrollbar-none bg-muted/50   ',
             'u-controls-tabs-header-full-width':
-                'relative w-full flex flex-1 flex-row flex-nowrap overflow-x-auto overflow-hidden border border-border rounded-xl web:scrollbar-none bg-muted/40   ',
+                'relative w-full flex flex-1 flex-row flex-nowrap overflow-x-auto overflow-hidden border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl web:scrollbar-none bg-muted/50   ',
 
             // Header item base (shared styles without hover)
             'u-controls-tabs-header-item':
                 'inline-flex flex-auto justify-center items-center whitespace-nowrap font-medium truncate disabled:pointer-events-none disabled:opacity-50 ',
 
             // Inactive tab (with hover effect)
-            'u-controls-tabs-header-item-inactive': ' group web:hover:bg-muted web:duration-300',
+            'u-controls-tabs-header-item-inactive': ' group web:hover:bg-muted active:bg-transparent web:duration-300',
 
             // Active tab (no hover effect)
             'u-controls-tabs-header-item-active':
-                ' bg-card shadow-xs web:duration-300 ',
+                '  web:duration-200 ',
 
             // Header item text
             'u-controls-tabs-header-item-text':
-                'text-muted-foreground web:group-hover:text-card-foreground font-medium ',
+                'text-muted-foreground web:group-hover:text-accent-foreground font-medium ',
             'u-controls-tabs-header-item-text-active':
-                'text-card-foreground font-medium ',
+                'text-foreground font-medium ',
 
             // Tab content
             'u-controls-tabs-tab-content': 'w-full pt-4 ',
@@ -1527,19 +1527,19 @@ export const settingsDefault = {
 
             // Active indicator (absolute element matching active header item width)
             'u-controls-tabs-header-item-active-indicator':
-                'absolute pointer-events-none web:transition-[left,width] web:duration-200 web:ease-out ',
+                'absolute pointer-events-none web:transition-[left,width] web:duration-200 web:ease-out bg-popover shadow-xs ',
             
             'u-controls-tabs-header-item-active-indicator-inner':
-                ' h-1 bottom-0 bg-primary rounded-t-full  ',
+                '  bg-accent   ',
         },
         // Tab sizes mapping (similar to button_sizes/link_sizes)
         tabs_sizes: {
             default_size: 'md',
             sm: {
                 header: 'p-1 gap-1',
-                item: ' h-8 px-2.5 text-sm rounded-lg focus-visible:outline outline-offset-0 outline-ring  ',
-                indicator: ' h-0.5 bottom-0 px-0.5 ',
-                indicator_inner: ' rounded-full ',
+                item: ' h-8 text-sm rounded-lg focus-visible:outline outline-offset-0 outline-ring  ',
+                indicator: ' h-0.5 top-1 h-8 rounded-lg  ',
+                indicator_inner: ' rounded-lg h-0.5 top-9 -mt-[1.5px] w-[80%] left-1/2 -translate-x-1/2 ',
                 text: ' text-sm whitespace-nowrap  ',
                 text_active: ' text-sm whitespace-nowrap  ',
             },
@@ -1589,7 +1589,7 @@ export const settingsDefault = {
         checkbox: {
             // Container
             'u-controls-checkbox-container':
-                'items-center py-2 px-3 rounded-lg w-full',
+                'items-center py-2 px-3 min-h-12 rounded-lg w-full',
 
             // Hover & Active backgrounds (optional — Web-only)
             'u-controls-checkbox-container-bg':
@@ -1597,7 +1597,7 @@ export const settingsDefault = {
 
             // Text labels
             'u-controls-checkbox-text':
-                'text-neutral-800 dark:text-neutral-200 text-base leading-5 font-medium pl-2',
+                'text-label-secondary text-base leading-5 font-medium pl-2',
             'u-controls-checkbox-text2':
                 'text-neutral-600 dark:text-neutral-400 text-sm leading-5',
 

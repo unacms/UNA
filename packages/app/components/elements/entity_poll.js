@@ -21,7 +21,7 @@ function Results({ data }) {
                     {data.map((item2, index) => {
                         return (
                             <Row className="items-start w-full mt-2" key={'chk' + index}>
-                                <Row className="w-full min-h-12 border border-transparent rounded-lg overflow-hidden">
+                                <Row className="w-full min-h-12 rounded-lg ">
                                     <Row className='absolute w-full min-h-12 gap-x-0.5  '>
                                         <View className=" rounded-lg overflow-hidden " style={{ width: item2.width, backgroundColor: backgroundColor2[index] }}></View>
                                     </Row>
@@ -29,10 +29,10 @@ function Results({ data }) {
 
                                     <View className='w-full items-center justify-center py-1.5 px-2 '>
 
-                                        <Text numberOfLines={10} className="flex-wrap w-full text-neutral-950 dark:text-neutral-50 font-semibold text-sm flex-wrap ">
+                                        <Text numberOfLines={10} className="flex-wrap w-full text-label-primary font-semibold text-sm flex-wrap ">
                                             {item2.title}
                                         </Text>
-                                        <Text className="font-medium flex-wrap w-full text-neutral-900 dark:text-neutral-100 text-xs flex-wrap">
+                                        <Text className="font-medium flex-wrap w-full text-label-tertiary text-xs flex-wrap">
                                             {item2.width} ({item2.votes.count} votes)
                                         </Text>
                                     </View>
@@ -89,16 +89,16 @@ export function PollItem({ data, showTitle, onDelete, disabled = false, results_
 
     return (
         
-        <View className='w-full p-3 rounded-xl bg-muted/50 gap-1.5'>
+        <View className='w-full p-2 rounded-xl gap-1.5 border border-border/50'>
         <Row className='items-center justify-between w-full gap-x-2 '>
-            {showTitle && <Text className="text-neutral-950 p-1 hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl dark:text-neutral-50 text-lg tracking-tight font-semibold">{data.title}</Text>}
+            {showTitle && <Text className="text-card-foreground p-1 hover:bg-muted/50 dark:hover:bg-bgritem-d rounded-xl  text-lg tracking-tight font-semibold">{data.title}</Text>}
             {(!data.is_hidden_results && totalVotes > 0) && (
                 
                     <Button
                         title={state.isShowResults ? "Show poll" : "Show results"}
                         variant="secondary"
-                        size="sm"
-                        ring
+                        size="xs"
+                        
                         onPress={() => dispatch({ type: 'TOGGLE_RESULTS' })}
                     />
                 
@@ -108,7 +108,7 @@ export function PollItem({ data, showTitle, onDelete, disabled = false, results_
             {state.isShowResults && <Results data={state.results} />}
 
             {!!data.subentries && !state.isShowResults && data.subentries.map((item2, index) => (
-                <Row key={`lbl-${index}`} className={` items-center border border-border/50 bg-card web:hover:border-ring web:hover:ring rounded-lg ${state.isVoted ? 'opacity-50 web:hover:ring-0' : ' active:bg-muted'}`}>
+                <Row key={`lbl-${index}`} className={` items-center border border-border/50 bg-input web:hover:border-ring web:hover:ring rounded-lg ${state.isVoted ? 'opacity-50 web:hover:ring-0' : ' active:bg-muted'}`}>
                     <RadioButton
                         value={item2.entry_id}
                         status={item2.id == state.value ? 'checked' : 'unchecked'}

@@ -299,7 +299,7 @@ return;*/
 
                     {navBarBlocks.map((item, index) => {
                         return (
-                            <View className="mt-0.5 " key={'block_' + index}>
+                            <View className="mt-4 " key={'block_' + index}>
                                 <BlockByName
                                     name={item.block}
                                     data={props.data}
