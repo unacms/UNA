@@ -98,18 +98,7 @@ export default function ElementLink(props) {
     const ThemeLinkSizes = appSetting('theme', 'link_sizes');
     const ThemeLinkStyles = appSetting('theme', 'link_styles');
 
-    const mapVariantToTheme = (v) => {
-        switch (v) {
-            case 'ghost': return 'ghost';
-            case 'plain': return 'plain';
-            case 'bordered': return 'bordered';
-            case 'borderedProminent': return 'borderedProminent';
-            case 'borderedSecondary': return 'borderedSecondary';
-            default: return 'default';
-        }
-    };
-
-    const selectedVariant = mapVariantToTheme(variant);
+    const selectedVariant = variant || 'default';
     const variantClass = [
         ThemeLinkStyles[`u-link-${selectedVariant}-cnt`] || '',
         ThemeLinkStyles[`u-link-${selectedVariant}-text`] || '',

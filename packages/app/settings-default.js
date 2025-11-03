@@ -1037,7 +1037,7 @@ export const settingsDefault = {
             content_max_width: ' w-full max-w-7xl ',
             content_max_width_nav: ' w-full  ',
             menu_is_dynamic: false,
-            menu_cnt: ' flex-row flex-none gap-1 mx-3 h-14 items-center overflow-x-auto ',
+            menu_cnt: ' flex-row flex-none gap-1 pl-2 h-14 items-center overflow-x-auto ',
             menu_categ_indent: ' pl-12 ',
          
           
@@ -1121,8 +1121,8 @@ export const settingsDefault = {
         button_sizes: {
             default_size: 'base',
             default_variant: 'default',
-            pressed_container: ' bg-primary/10 web:hover:bg-accent/10 active:bg-accent/20  ',
-            pressed_text: ' text-primary-foreground font-medium ',
+            pressed_container: ' bg-primary/10 web:hover:bg-primary/10   ',
+            pressed_text: ' text-label-link font-medium ',
             xxs: {
                 rounded: ' rounded-md ',
                 padding: ' ',
@@ -1348,10 +1348,10 @@ export const settingsDefault = {
                 focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background ',
             },
             lg: {
-                padding: ' px-2  rounded-xl items-center flex ',
+                padding: ' px-2 py-1.5 rounded-xl items-center flex ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-lg ',
                 hitSlop: { top: 2, right: 2, bottom: 2, left: 2 },
-                text: ' text-base leading-8 min-h-8 items-center justify-center flex ',
+                text: ' text-base items-center justify-center flex ',
                 rounded: ' rounded-xl ',
                 focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background ',
             },
@@ -1364,7 +1364,7 @@ export const settingsDefault = {
             'u-link-default-trans': ' web:duration-200 ',
 
             // Plain: inherit text; no decoration idle; subtle hover/active feedback
-            'u-link-plain-cnt': ' group ',
+            'u-link-plain-cnt': ' group active:bg-muted web:lg:hover:bg-muted ',
             'u-link-plain-text': ' web:hover:opacity-90 web:active:opacity-80 ',
             'u-link-plain-trans': ' web:duration-200 ',
 
@@ -1379,14 +1379,7 @@ export const settingsDefault = {
             'u-link-bordered-trans': ' web:duration-200 ',
 
             // BorderedProminent: accent background; stable text color
-            'u-link-borderedProminent-cnt': ' group bg-accent web:hover:bg-accent/90 active:bg-accent rounded-md ',
-            'u-link-borderedProminent-text': ' text-accent-foreground ',
-            'u-link-borderedProminent-trans': ' web:duration-200 ',
-
-            // BorderedSecondary: same bg as Bordered; secondary label text behavior
-            'u-link-borderedSecondary-cnt':  ' group bg-muted/60 web:hover:bg-muted rounded-md ',
-            'u-link-borderedSecondary-text':  ' text-secondary-label web:hover:text-label web:active:text-tertiary-label ',
-            'u-link-borderedSecondary-trans': ' web:duration-200 ',
+            
         },
         offsets: {
             'gap-lg': 'gap-4',
@@ -1502,24 +1495,24 @@ export const settingsDefault = {
         },
         tabs: {
             // Container
-            'u-controls-tabs-container': 'w-full flex-col ',
+            'u-controls-tabs-container': 'w-full flex-col  ',
 
             // Header (use with inline styles or Tailwind plugin for scroll)
             'u-controls-tabs-header':
-                'relative flex flex-1 flex-row flex-nowrap overflow-x-auto bg-muted/40 border border-border/80 rounded-xl overflow-y-hidden  web:scrollbar-none ',
+                'relative flex flex-1 flex-row flex-nowrap overflow-x-auto border border-border rounded-xl overflow-y-hidden  web:scrollbar-none bg-muted/40   ',
             'u-controls-tabs-header-full-width':
-                'relative w-full flex flex-1 flex-row flex-nowrap overflow-x-auto overflow-hidden bg-muted/40 border border-muted rounded-xl web:scrollbar-none ',
+                'relative w-full flex flex-1 flex-row flex-nowrap overflow-x-auto overflow-hidden border border-border rounded-xl web:scrollbar-none bg-muted/40   ',
 
             // Header item base (shared styles without hover)
             'u-controls-tabs-header-item':
                 'inline-flex flex-auto justify-center items-center whitespace-nowrap font-medium truncate disabled:pointer-events-none disabled:opacity-50 ',
 
             // Inactive tab (with hover effect)
-            'u-controls-tabs-header-item-inactive': ' group web:hover:bg-muted web:duration-500',
+            'u-controls-tabs-header-item-inactive': ' group web:hover:bg-muted web:duration-300',
 
             // Active tab (no hover effect)
             'u-controls-tabs-header-item-active':
-                ' bg-popover shadow-sm web:duration-300 ',
+                ' bg-card shadow-xs web:duration-300 ',
 
             // Header item text
             'u-controls-tabs-header-item-text':
@@ -1537,7 +1530,7 @@ export const settingsDefault = {
                 'absolute pointer-events-none web:transition-[left,width] web:duration-200 web:ease-out ',
             
             'u-controls-tabs-header-item-active-indicator-inner':
-                ' h-1 bottom-0 bg-accent rounded-t-full blur-lg ',
+                ' h-1 bottom-0 bg-primary rounded-t-full  ',
         },
         // Tab sizes mapping (similar to button_sizes/link_sizes)
         tabs_sizes: {
@@ -1638,7 +1631,7 @@ export const settingsDefault = {
           
 
             'u-btn-primary-cnt': ' focus:outline-2 focus:outline-primary bg-primary web:hover:bg-primary/90 shadow-sm active:opacity-50 ',
-            'u-btn-primary-text': ' font-semibold text-inverted-foreground ',
+            'u-btn-primary-text': ' font-semibold text-primary-foreground ',
             'u-btn-primary-trans': ' web:duration-200',
 
             'u-btn-accent-cnt':
@@ -1661,7 +1654,7 @@ export const settingsDefault = {
 
             'u-btn-text-cnt': ' group web:sm:hover:bg-muted/60 active:bg-muted  ',
             'u-btn-text-text':
-                ' font-semibold text-label-tertiary web:group-hover:text-label-primary',
+                ' font-semibold text-muted-foreground web:group-hover:text-foreground',
             'u-btn-text-trans': ' web:duration-200',
             'u-btn-text-focus': ' web:focus-visible:bg-muted/60 ',
 

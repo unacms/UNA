@@ -31,7 +31,7 @@ import { subscribe } from 'app/ui/atoms/socket'
 import { useCurrentUser } from 'app/context/user'
 import { callFn } from 'app/lib/functions/call'
 import Link from 'app/ui/atoms/link'
-import Galery from 'app/ui/molecules/galery'
+import Gallery from 'app/ui/molecules/gallery'
 import { Button } from 'app/design/controls'
 import { useBreakpoint, useWindowHeight } from 'app/context/measure';
 import emitter from 'app/context/emitter'
@@ -413,7 +413,7 @@ export default function (props) {
 
     let contentElement = false;
 
-    if (props.extraProps?.galery) {
+    if (props.extraProps?.gallery) {
         const uniqueItems = dataItems.data.filter(
             (v, i, a) => a.findIndex((t) => t.id === v.id) === i
         )
@@ -433,11 +433,11 @@ export default function (props) {
                 data={item}
             />
         ));
-        contentElement = items.length == 0 ? null : <Galery items={items} />
+        contentElement = items.length == 0 ? null : <Gallery items={items} />
 
     }
 
-    if ((props.sidebar && !props.extraProps?.galery) || isOneLine) {
+    if ((props.sidebar && !props.extraProps?.gallery) || isOneLine) {
 
         const uniqueItems = dataItems.data.filter(
             (v, i, a) => a.findIndex((t) => t.id === v.id) === i

@@ -36,7 +36,7 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
             {(item.unread > 0 && selectedIndex != index) && (
                 <View className="flex-none bg-primary rounded-full my-auto h-min min-w-5 min-h-5 items-center justify-center px-1.5">
 
-                    <Text className="text-xs text-inverted-foreground font-semibold">
+                    <Text className="text-xs text-primary-foreground font-semibold">
                         {item.unread}
                     </Text>
                 </View>

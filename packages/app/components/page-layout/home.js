@@ -254,7 +254,7 @@ return;*/
                         <Link href={currentUser.url} emulate={true}>
                             <Row
                                 className={
-                                    ' rounded-xl group items-center gap-1 px-2 py-1.5 mb-0.5 hover:bg-muted/60 active:opacity-50  '
+                                    ' rounded-xl group items-center gap-1 px-2 py-1.5  hover:bg-muted/60 active:opacity-50  '
                                 }
                             >
                                 
@@ -299,7 +299,7 @@ return;*/
 
                     {navBarBlocks.map((item, index) => {
                         return (
-                            <View className="mt-3 " key={'block_' + index}>
+                            <View className="mt-0.5 " key={'block_' + index}>
                                 <BlockByName
                                     name={item.block}
                                     data={props.data}

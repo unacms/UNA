@@ -26,10 +26,10 @@ export function MenuItemSidebar({ title, icon, isActive, addon }) {
             
                 <Text className={`h-9 w-9 text-center items-center justify-center flex rounded-full ${
                     isActive
-                        ? 'bg-primary text-inverted-foreground'
+                        ? 'bg-primary text-primary-foreground'
                         : 'bg-secondary/50 text-secondary-foreground web:group-hover:bg-secondary web:group-hover:text-foreground web:duration-200'
                 }`}>
-                    {isEmoji(icon) ? icon : <Icon icon={icon} size="20" className={`${isActive ? 'text-inverted-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`} />}
+                    {isEmoji(icon) ? icon : <Icon icon={icon} size="20" className={`${isActive ? 'text-primary-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`} />}
                 </Text>
             
             <Text className={` px-2 text-sm leading-tight font-semibold  ${isActive && 'text-foreground' || 'text-secondary-foreground group-hover:text-foreground'}`}>{title}</Text>

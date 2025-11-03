@@ -5,7 +5,7 @@ import { Button } from "app/design/controls";
 
 const screenWidth = Dimensions.get('window').width;
 
-const SliderControls = ({ items }) => {
+const Gallery = ({ items }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const position = useRef(new Animated.Value(0)).current;
     const opacity = useRef(new Animated.Value(1)).current;
@@ -70,13 +70,13 @@ const SliderControls = ({ items }) => {
                 {items[currentIndex]}
             </Animated.View>
             <View className='absolute top-[calc(50%)] left-3'>
-                <Button variant="primary" rounded size="base" onPress={goLeft} startDecorator="ArrowLeft" />
+                <Button variant="secondary" rounded size="base" onPress={goLeft} startDecorator="ArrowLeft" />
             </View>
             <View className='absolute top-[calc(50%)] right-3'>
-                <Button variant="primary" rounded size="base" onPress={goRight} startDecorator="ArrowRight" />
+                <Button variant="secondary" rounded size="base" onPress={goRight} startDecorator="ArrowRight" />
             </View>
         </View>
     );
 };
 
-export default SliderControls;
+export default Gallery;
