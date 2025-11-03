@@ -1,15 +1,16 @@
-import { Text } from 'app/design/typography'
+/*import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { useState, useRef, useCallback } from 'react';
 import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import Map, { Source, Layer, Popup } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { appSetting } from 'app/lib/util'
+import { appSetting } from 'app/lib/util'*/
 
 export default function ElementMapBox({ selectedlayers, dataSources, viewport, mapRef, popupInfo, onMapClick, infoFields }) {
 
-    return (
+    return <></>
+    /*return (
 
                 <Map
                     ref={mapRef}
@@ -62,5 +63,5 @@ export default function ElementMapBox({ selectedlayers, dataSources, viewport, m
                     )}
                 </Map>
            
-    )
+    )*/
 }
