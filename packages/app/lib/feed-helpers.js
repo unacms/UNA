@@ -542,8 +542,8 @@ export const Author = memo(({ data, url, t }) => {
             : data.author_data
 
     return (
-       <Row className="flex-auto justify-between items-top ">
-            <Profile
+       <Row className="w-full justify-between items-top">
+            <View className='flex-auto'><Profile
                 {...dataIcon}
                 displayType="unit"
                 displaySize="lg"
@@ -558,7 +558,7 @@ export const Author = memo(({ data, url, t }) => {
                 }
                 showInfo2={<Badges badges={data.author_badges} size="xs" />}
                 showActions={ActionsElements}
-            />
+            /></View>
             
                         {isWeb ? (
                             <Link

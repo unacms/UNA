@@ -4,14 +4,14 @@ import { useCurrentUser } from 'app/context/user';
 import { storageClear } from 'app/lib/util';
 import { remoteSettings } from 'app/settings-remote';
 import { Platform } from 'react-native';
-import { Text } from 'app/design/typography'
+
 
 //import Layouts from 'app/components/layouts';
 let Layouts;
 
 if (Platform.OS === 'web') {
-    const dynamic = require('next/dynamic').default;
-    Layouts = dynamic(() => import('app/components/layouts'), { ssr: false });
+     const dynamic = require('next/dynamic').default;
+     Layouts = dynamic(() => import('app/components/layouts'), { ssr: false });
 } else {
     Layouts = require('app/components/layouts').default;
 }

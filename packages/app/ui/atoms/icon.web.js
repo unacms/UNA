@@ -57,9 +57,7 @@ export const Icon = memo(function Icon(props) {
 
     if (!currentIcon) {
         if (InlineIcon){
-            return <div className={className} style={color ? {color:color} : undefined} {...rest}>
-                <InlineIcon width={width || size} height={height || size} />
-            </div>;
+            return <InlineIcon width={width || size} height={height || size} />;
         }
         if (isXmlSvg){
             const result = origIcon
@@ -69,14 +67,14 @@ export const Icon = memo(function Icon(props) {
                 /<svg(\s[^>]*)?>/i,
                 `<svg$1 width="${width || size}" height="${height || size}">`
             );
-            return <div style={color ? {color:color} : undefined} className={className} {...rest} dangerouslySetInnerHTML={{ __html: result }} />;
+            return <div style={{color:color}} className={className} {...rest} dangerouslySetInnerHTML={{ __html: result }} />;
         }
         return null; // Возвращаем null, если иконка не загружена
         
     }
 
     return (
-        <div style={color ? {color:color} : undefined}  className={className} {...rest} dangerouslySetInnerHTML={{ __html: currentIcon }} />
+        <div style={{color:color}}  className={className} {...rest} dangerouslySetInnerHTML={{ __html: currentIcon }} />
     );
 });
 

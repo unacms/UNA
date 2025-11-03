@@ -431,7 +431,7 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 109, 
     }
 
     return (
-        <View className="w-full flex-1">
+        <View className="w-full h-full">
             <View className="w-full flex-1 ">
                 <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
                 <TabScene {...tabSceneProps} />

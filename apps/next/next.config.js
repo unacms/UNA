@@ -1,18 +1,24 @@
 const path = require('path'); // Импорт path
+const webpack = require('webpack');
 const { withExpo } = require('@expo/next-adapter')
 const merge = require('deepmerge');
 const nextConfigCustom = require('./next.config.custom.js');
-const webpackLib = require('webpack');
 //const MillionCompiler = require('@million/lint');
 
 
 /** @type {import('next').NextConfig} */
-const tenPlayWebviewPath = path.resolve(__dirname, 'node_modules/@10play/react-native-web-webview/lib/module/index.js');
-const tenPlayWebviewShimPath = path.resolve(__dirname, 'node_modules/@10play/react-native-web-webview/lib/module/shim.js');
-const reanimatedWebPath = path.resolve(__dirname, 'node_modules/react-native-reanimated');
+// Путь в монорепо - проверяем сначала локальный node_modules, потом корневой
+const workspaceRoot = path.resolve(__dirname, '../..');
+const tenPlayWebviewLocalPath = path.resolve(__dirname, 'node_modules/@10play/react-native-web-webview');
+const tenPlayWebviewRootPath = path.resolve(workspaceRoot, 'node_modules/@10play/react-native-web-webview');
+const tenPlayWebviewPath = require('fs').existsSync(tenPlayWebviewLocalPath) 
+  ? path.resolve(tenPlayWebviewLocalPath, 'lib/module/index.js')
+  : path.resolve(tenPlayWebviewRootPath, 'lib/module/index.js');
+const tenPlayWebviewShimPath = require('fs').existsSync(tenPlayWebviewLocalPath)
+  ? path.resolve(tenPlayWebviewLocalPath, 'lib/module/shim.js')
+  : path.resolve(tenPlayWebviewRootPath, 'lib/module/shim.js');
 
 const nextConfig = {
-  assetPrefix: '',
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -24,7 +30,6 @@ const nextConfig = {
         dynamic: 0,/* default 30, set to 0 to disable serverside case */
         static: 180,
       },
-      optimizeCss: false, // Reduce CSS preload warnings without disabling splitting
     },
   // reanimated (and thus, Moti) doesn't work with strict mode currently...
   // https://github.com/nandorojo/moti/issues/224
@@ -39,7 +44,7 @@ const nextConfig = {
     swcPlugins: [[require.resolve('./plugins/swc_plugin_reanimated.wasm')]],
   },*/
   transpilePackages: [
-    'app',
+    
     'react-native',
     'react-native-web',
     'solito',
@@ -51,24 +56,24 @@ const nextConfig = {
     '@react-native-clipboard/clipboard',
     '@babel/core',
     '@react-navigation/native',
-    '@tailwindcss/container-queries',
     'react-native-calendars',
     'react-native-image-pan-zoom',
     'react-native-swipe-gestures',
     'expo-haptics',
-    'expo-linear-gradient',
     'expo-modules-core',
     'recyclerlistview',
     'expo-crypto',
     '@react-native-picker/picker',
+    '@10play/tentap-editor',
+    '@10play/react-native-web-webview',
+    '@appandflow/react-native-google-autocomplete',
+    'react-native-webview',
     'expo',
     'expo-image-picker',
     'expo-location',
     'expo-camera',
-    'country-codes-flags-phone-codes',
-    '@appandflow/react-native-google-autocomplete',
-    'react-native-country-flag',
     'expo-document-picker',
+    'expo-image-manipulator',
     'expo-constants',
     "react-native-svg",
     '@expo/metro-runtime',
@@ -76,29 +81,18 @@ const nextConfig = {
     'react-i18next',
     'react-native-localize',
     'victory-native',
+    '@stripe/stripe-react-native',
     'react-native-star-rating-widget',
     '@openspacelabs/react-native-zoomable-view',
-    '@rn-primitives/tabs',
-    '@rn-primitives/switch',
-    '@rn-primitives/checkbox',
-    '@rn-primitives/radio-group',
+    'lucide-react-native'
   ],
   webpack: (config, { isServer }) => {
-    // Add optimization
-    config.optimization = {
-      ...config.optimization,
-      concatenateModules: true,
-      minimize: true,
-    };
-
-    // Existing webpack config
+    // Добавляем алиасы
     config.resolve.alias = {
       ...config.resolve.alias,
       'react-native': 'react-native-web',
       'react-native-webview': tenPlayWebviewPath,
       'react-native-webview$': tenPlayWebviewPath,
-      'react-native-reanimated': reanimatedWebPath,
-      'react-native-reanimated$': reanimatedWebPath,
       'crypto': 'expo-crypto',
       'react-native-svg': path.resolve(__dirname, 'node_modules/react-native-svg'),
       'react-native/Libraries/Utilities/codegenNativeComponent': tenPlayWebviewShimPath,
@@ -111,22 +105,25 @@ const nextConfig = {
       'react-native/Libraries/Utilities/codegenNativeComponent': tenPlayWebviewShimPath,
     };
 
-    // Define EXPO_OS to silence expo-modules-core warning
-    config.plugins.push(new webpackLib.DefinePlugin({
-        'process.env.EXPO_OS': JSON.stringify('web'),
-    }));
+    // Добавляем корневой node_modules в resolve.modules для монорепо
+    config.resolve.modules = [
+      ...(config.resolve.modules || []),
+      path.resolve(__dirname, 'node_modules'),
+      path.resolve(workspaceRoot, 'node_modules'),
+    ];
 
-    // Ignore incorrect re-exports warnings from expo-image-manipulator
-    config.module.parser = {
-        ...config.module.parser,
-        javascript: { exportsPresence: 'warn' },
-    };
-
-    // Exclude expo-image-manipulator from being processed on web
-    config.externals = config.externals || [];
-    config.externals.push({
-      'expo-image-manipulator': 'commonjs expo-image-manipulator',
-    });
+    // Используем NormalModuleReplacementPlugin для замены react-native-webview на веб-версию
+    // Это нужно для @10play/tentap-editor, который использует react-native-webview
+    config.plugins = config.plugins || [];
+    config.plugins.push(
+      new webpack.NormalModuleReplacementPlugin(
+        /^react-native-webview$/,
+        (resource) => {
+          // Заменяем на веб-версию для всех импортов (особенно из @10play/tentap-editor)
+          resource.request = tenPlayWebviewPath;
+        }
+      )
+    );
 
     return config;
   },
@@ -156,21 +153,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'us-east-1.linodeobjects.com',
         pathname: '**',
-      },
-       {
-        protocol: 'https',
-        hostname: 'flagcdn.com',
-        pathname: '**',
-      },
-       {
-        protocol: 'https',
-        hostname: 'linguria.una.io',
-        pathname: '**',
       }
     ],
     disableStaticImages: false
   },
-  compress: true,
 }
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',

@@ -8,22 +8,26 @@
         --background: var(--neutral-100); /*main page background*/
         --foreground: var(--neutral-950); /*main page content*/
         --inverted: var(--neutral-950); /*main page content*/
-        --inverted-foreground: var(--neutral-100); /*main page content*/
+        --inverted-foreground: var(--neutral-50); /*main page content*/
         --card: var(--white); /*cards, sidebars, navbars background*/
         --card-foreground: var(--neutral-800); /*content on cards, sidebars, navbars*/
         --popover: var(--white); /*background for popovers, inputs, tooltips, modals, elevated surfaces*/
         --popover-foreground: var(--neutral-800); /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
         --primary: var(--accent-600); /*background for primary buttons, links, active states, focus rings. Use use high-contract background from gray-scale or accent-scale.*/
-        --primary-foreground: var(--neutral-50); /*priamry content, links, foreground elements*/
+        --primary-foreground: var(--accent-800); /*priamry content, links, foreground elements*/
         --secondary: var(--neutral-200);  /*background for secondary buttons, secondary surfaces*/
-        --secondary-foreground: var(--neutral-700); /*content on secondary buttons, secondary surfaces*/
-        --accent: var(--accent-300); /*background for accent buttons, accent surfaces*/
-        --accent-foreground: var(--accent-700); /*content on accent buttons, accent surfaces*/
+        --secondary-foreground: var(--neutral-900); /*content on secondary buttons, secondary surfaces*/
+        --accent: var(--accent-600); /*background for accent buttons, accent surfaces*/
+        --accent-hover: var(--accent-500); /*background for accent buttons, accent surfaces on hover*/
+        --accent-active: var(--accent-800); /*background for accent buttons, accent surfaces on active*/
+        --accent-foreground: var(--accent-800); /*content on accent buttons, accent surfaces*/
         --muted: var(--neutral-200); /*background for ui items, sections, hover states*/
-        --muted-foreground: var(--neutral-600); /*muted content*/
+        --muted-foreground: var(--neutral-500); /*muted content*/
+        --inverted: var(--neutral-950); /*background for inverted surfaces*/
+        --inverted-foreground: var(--neutral-50); /*content on inverted surfaces*/
         --destructive: var(--red); /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--white); /*content on destructive buttons, destructive surfaces*/
-        --border: var(--neutral-200); /*borders, dividers, focus rings*/
+        --border: var(--neutral-300); /*borders, dividers, focus rings*/
         --input: var(--white); /*form inputs*/
         --ring: var(--accent-500); /*focus rings*/
 
@@ -117,11 +121,11 @@
         --popover: var(--neutral-700); /*background for popovers, inputs, tooltips, modals, elevated surfaces*/
         --popover-foreground: var(--neutral-300); /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
         --primary: var(--accent-500); /*background for primary buttons, links, active states, focus rings. Use use high-contract background from gray-scale or accent-scale.*/
-        --primary-foreground: var(--neutral-950); /*content on primary buttons, active states, primary surfaces*/
+        --primary-foreground: var(--accent-foreground); /*content on primary buttons, active states, primary surfaces*/
         --secondary: var(--neutral-800);  /*background for secondary buttons, secondary surfaces*/
         --secondary-foreground: var(--neutral-200); /*content on secondary buttons, secondary surfaces*/
-        --accent: var(--accent-700); /*background for accent buttons, accent surfaces*/
-        --accent-foreground: var(--accent-300); /*content on accent buttons, accent surfaces*/
+        --accent: var(--accent-500); /*background for accent buttons, accent surfaces*/
+        --accent-foreground: var(--accent-500); /*content on accent buttons, accent surfaces*/
         --muted: var(--neutral-800); /*background for ui items, sections, hover states*/
         --muted-foreground: var(--neutral-500); /*muted content*/
         --inverted: var(--neutral-50); /*background for inverted surfaces*/
@@ -198,19 +202,6 @@
     /* Ensure Tailwind `border` (width-only) has a sensible default color from theme vars */
     *, ::before, ::after {
         border-color: rgb(var(--border));
-    }
-    
-    /* Set default background and text colors */
-    /* Web: applies to body element */
-    body {
-        background-color: rgb(var(--background));
-        color: rgb(var(--foreground));
-    }
-    
-    /* Ensure SVG icons inherit text color from parent */
-    /* This allows SVG stroke="currentColor" to work correctly with Tailwind color classes */
-    svg {
-        color: inherit;
     }
 }
 /*
@@ -308,18 +299,11 @@ select{
         z-index: -1;
         pointer-events: none;
     }
-    /* Mobile: show background only on click/tap */
+    .u-link-ghost:hover::after {
+        background-color: rgb(var(--muted) / 0.6);
+    }
     .u-link-ghost:active::after {
         background-color: rgb(var(--muted));
-    }
-    /* Desktop (lg and above): show background only on hover */
-    @media (min-width: 1024px) {
-        .u-link-ghost:hover::after {
-            background-color: rgb(var(--muted) / 0.6);
-        }
-        .u-link-ghost:active::after {
-            background-color: transparent;
-        }
     }
 
     /* Size modifiers for pseudo background padding and rounding */

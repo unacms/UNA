@@ -13,7 +13,7 @@ export default function ({ title, info, onPress, status, value, disabled, icon, 
             {selected ? <View className="h-2.5 w-2.5 rounded-full bg-primary" /> : null}
         </View>
     return (
-        <Pressable disabled={disabled} onPress={onPress} className={`flex-row gap-3 ${checkboxTheme['u-controls-checkbox-container']} ${checkboxTheme['u-controls-checkbox-container-bg']} ${disabled ? '' : ' hover:bg-neutral-100 dark:hover:bg-neutral-800'} `}>
+        <Pressable disabled={disabled} onPress={onPress} className={`flex-row gap-x-3 ${checkboxTheme['u-controls-checkbox-container']} ${checkboxTheme['u-controls-checkbox-container-bg']} ${disabled ? '' : ' hover:bg-neutral-100 dark:hover:bg-neutral-800'} `}>
             {!!icon && <View className={checkboxTheme['u-controls-checkbox-icon']}>{icon}</View>}
             <View className='flex-auto '>
                 <Text className={checkboxTheme['u-controls-checkbox-text']}>{title}</Text>

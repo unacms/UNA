@@ -3,7 +3,9 @@ import { View } from 'app/design/view';
 import { Icon } from 'app/ui/atoms/icon';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
-import { Theme } from 'app/design/theme';
+import { Theme, ThemeName } from 'app/design/theme';
+import { useColorScheme } from 'react-native';
+import { DarkTheme, DefaultTheme } from "@react-navigation/native";
 import Profile from 'app/ui/molecules/profile';
 import { useEffect, useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next';
@@ -23,7 +25,7 @@ import { callFn } from 'app/lib/functions/call';
 import fonts from 'app/design/fonts/fonts';
 import { Platform } from 'react-native'
 import { Appearance } from 'react-native';
-import VersionCheck from 'react-native-version-check';
+//import VersionCheck from 'react-native-version-check';
 import { Alert } from 'react-native';
 import { useLayoutData } from 'app/context/layout';
 import { getAlert } from 'app/lib/util';
@@ -75,9 +77,35 @@ export default function () {
     const { setLayoutData } = useLayoutData()
     const { themeName } = useLayoutSettings();
     const [fontsLoaded] = useFonts(fonts);
-    const { t } = useTranslation();
     const router = useRouter();
-    const { colors } = Theme();
+    const pathname = usePathname();
+    // useTranslation должен вызываться после всех других хуков, чтобы избежать проблем с порядком
+    // если i18n не инициализирован, useTranslation может вызывать хуки условно
+    const { t } = useTranslation();
+    // Используем useColorScheme напрямую, чтобы избежать повторного вызова useLayoutSettings через Theme()
+    const defColorScheme = useColorScheme();
+    // Вычисляем тему через useMemo, чтобы избежать повторных вычислений и гарантировать стабильный порядок хуков
+    const { colors } = useMemo(() => {
+        const actualThemeName = themeName != 'auto' ? themeName : defColorScheme;
+        const lightTheme = appSetting('theme', 'light');
+        const darkTheme = appSetting('theme', 'dark');
+        const CustomLightTheme = {
+            ...DefaultTheme,
+            colors: {
+                ...DefaultTheme.colors,
+                ...lightTheme
+            },
+        };
+        const CustomDarkTheme = {
+            ...DarkTheme,
+            colors: {
+                ...DarkTheme.colors,
+                ...darkTheme
+            },
+        };
+        const theme = actualThemeName === 'dark' ? CustomDarkTheme : CustomLightTheme;
+        return theme;
+    }, [themeName, defColorScheme]);
     const iconWidth = 24;
     const iconHeight = 24;
     const isShowTabs = currentUser || appSetting('native', 'show_tabs_non_logged')
@@ -175,55 +203,8 @@ export default function () {
         }
     }, [currentUser?.id]);
 
-    const isCheckVersion = appSetting('native', 'check_version');
+    
 
-    useEffect(() => {
-        const checkVersion = async () => {
-            try {
-                const res = await VersionCheck.needUpdate();
-                const forceUpdate = isCheckVersion == 'required';
-                if (res?.isNeeded) {
-                    const buttons = [
-                        {
-                            text: 'Update',
-                            onPress: () => Linking.openURL(res.storeUrl),
-                        },
-                    ];
-                    if (!forceUpdate) {
-                        buttons.push({
-                            text: 'Later',
-                            style: 'cancel',
-                        });
-                    }
-                    Alert.alert(
-                        'New version avaliable',
-                        'Please, update the app to the latest version',
-                        buttons,
-                        { cancelable: !forceUpdate }
-                    );
-                }
-                //enable for check
-                /*else{
-                    const res = VersionCheck.getCurrentVersion();
-                    const res1 = await VersionCheck.getLatestVersion();
-                    Alert.alert(
-                        'current '+res,
-                        'Store'+res1,
-                        [{
-                            text: 'Later',
-                            style: 'cancel',
-                          }]
-                     
-                    );
-                }*/
-            } catch (e) {
-            }
-        };
-        if (isCheckVersion != 'no')
-            checkVersion();
-    }, []);
-
-    const pathname = usePathname();
     useEffect(() => {
         const fetchPageData = async () => {
              const data = await getPageData('home');
@@ -235,14 +216,11 @@ export default function () {
          
     }, [currentUser]);
 
-
-
-  
-
-     if (!fontsLoaded || currentUser === null) {
+    // Условный рендеринг: все хуки должны вызываться до этого места
+    // Используем условный рендеринг в JSX вместо раннего return
+    if (!fontsLoaded || currentUser === null) {
         return null;
     }
-
 
     return (
         <><Suggestions />

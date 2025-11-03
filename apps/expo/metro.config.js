@@ -1,27 +1,14 @@
-// Learn more https://docs.expo.dev/guides/monorepos
-// Learn more https://docs.expo.io/guides/customizing-metro
-/**
- * @type {import('expo/metro-config')}
- */
-const { getDefaultConfig } = require('expo/metro-config')
-const { withNativeWind } = require("nativewind/metro");
-const path = require('path')
+const { getDefaultConfig } = require("expo/metro-config");
+const { withNativeWind } = require('nativewind/metro');
+ 
+module.exports = (() => {
+  const config = getDefaultConfig(__dirname);
 
-// Find the project and workspace directories
-const projectRoot = __dirname
-// This can be replaced with `find-yarn-workspace-root`
-const workspaceRoot = path.resolve(projectRoot, '../..')
-const nextRoot = path.resolve(projectRoot, '../next')
-
-const config = getDefaultConfig(projectRoot, {
-  isCSSEnabled: true,
-})
-
-const { transformer, resolver } = config;
+  const { transformer, resolver } = config;
 
   config.transformer = {
     ...transformer,
-    babelTransformerPath: require.resolve("react-native-svg-transformer")
+    babelTransformerPath: require.resolve("react-native-svg-transformer/expo")
   };
   config.resolver = {
     ...resolver,
@@ -29,22 +16,5 @@ const { transformer, resolver } = config;
     sourceExts: [...resolver.sourceExts, "svg"]
   };
 
-// 1. Watch all files within the monorepo
-config.watchFolders = [workspaceRoot]
-// 2. Let Metro know where to resolve packages and in what order
-config.resolver.nodeModulesPaths = [
-  path.resolve(projectRoot, 'node_modules'),
-  path.resolve(nextRoot, 'node_modules'),
-  path.resolve(workspaceRoot, 'node_modules'),
-]
-// 3. Force Metro to resolve (sub)dependencies only from the `nodeModulesPaths`
-config.resolver.disableHierarchicalLookup = true
-
-// Ensure EXPO_OS is defined for expo-modules-core
-if (!process.env.EXPO_OS) {
-  process.env.EXPO_OS = 'native'
-}
-
-module.exports = withNativeWind(config, { input: "./global.combined.css",  inlineRem: 16, });
-
-
+  return withNativeWind(config, { input: './global.combined.css' });
+})();

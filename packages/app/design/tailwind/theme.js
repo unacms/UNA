@@ -122,14 +122,6 @@ const theme = {
             // Make `border` (width-only) pick up semantic default color on web and native
             DEFAULT: nativewindUIColors.border,
         },
-        textColor: {
-            // Set default text color to foreground semantic token
-            DEFAULT: nativewindUIColors.foreground,
-        },
-        backgroundColor: {
-            // Set default background color to background semantic token
-            DEFAULT: nativewindUIColors.background,
-        },
       
         boxShadow: {
             'xs': 'var(--shadow-xs)',

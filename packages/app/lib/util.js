@@ -247,17 +247,17 @@ export const formatDate = (
     {
         inFuture = false,
         inPast = false,
-        locale,                     // 'en-US'
+        locale,                     // 'en-US' (не используется для универсальности)
         month = 'short',            // 'numeric' | '2-digit' | 'short' | 'long' | ...
         showTime = false,
         showDate = true,
         hour12,                     // true/false | undefined (оставит поведение локали)
-        timeZone,                   // fex 'UTC'
+        timeZone,                   // fex 'UTC' (не используется для универсальности)
         yearPolicy = 'auto',        // 'auto' | 'always' | 'never'
     } = {}
 ) => {
     const date = input instanceof Date ? input : new Date(input);
-    if (Number.isNaN(date.getTime())) return ''; // или бросить ошибку
+    if (Number.isNaN(date.getTime())) return '';
     const nowYear = new Date().getFullYear();
     
     let rel = '';
@@ -269,48 +269,84 @@ export const formatDate = (
     }
 
     if (inPast){
-        const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto', style: 'short' });
         const now = new Date();
         const diffMs = date - now;  
         const sec = Math.round(diffMs / 1000);
         const absSec = Math.abs(sec);
         if (absSec < 60) 
             return t('Now'); 
+        
+        // Универсальное форматирование относительного времени (одинаковое везде)
         const min = Math.round(sec / 60);
         if (Math.abs(min) < 60){
-            const str = rtf.format(min, 'minute')
-            return str.split(' ')[0] + str.split(' ')[1][0]
+            return `${Math.abs(min)}m ago`;
         }
         const hrs = Math.round(sec / 3600);
         if (Math.abs(hrs) < 24){
-            const str = rtf.format(hrs, 'hour')
-            return str.split(' ')[0] + str.split(' ')[1][0]   
+            return `${Math.abs(hrs)}h ago`;
         }
-}
-
-    const opts = {
-        ...(showDate && !rel ? { day: 'numeric', month } : {}),
-        ...(showTime ? { hour: '2-digit', minute: '2-digit' } : {}),
-    };
-
-    if (((yearPolicy === 'always') || (yearPolicy === 'auto' && date.getFullYear() !== nowYear)) && showDate) {
-        opts.year = 'numeric';
     }
 
-    if (hour12 !== undefined) 
-        opts.hour12 = hour12;
-    if (timeZone) 
-        opts.timeZone = timeZone;
-
-    const key = JSON.stringify([locale, opts]);
-
-    let fmt = _fmtCache.get(key);
-    if (!fmt) {
-        fmt = new Intl.DateTimeFormat(locale, opts);
-        _fmtCache.set(key, fmt);
-    }
-    return rel + fmt.format(date);
+    // Универсальное форматирование даты (одинаковое на всех платформах)
+    return formatDateUniversal(date, {
+        showDate,
+        showTime,
+        month,
+        yearPolicy,
+        nowYear,
+        hour12,
+        rel
+    });
 };
+
+// Универсальная функция форматирования даты (одинаковый результат везде)
+function formatDateUniversal(date, { showDate, showTime, month, yearPolicy, nowYear, hour12, rel }) {
+    const parts = [];
+    
+    if (showDate && !rel) {
+        // День
+        parts.push(String(date.getDate()));
+        
+        // Месяц
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const monthLongNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        const monthIndex = date.getMonth();
+        
+        if (month === 'short') {
+            parts.push(monthNames[monthIndex]);
+        } else if (month === 'long') {
+            parts.push(monthLongNames[monthIndex]);
+        } else if (month === 'numeric') {
+            parts.push(String(monthIndex + 1));
+        } else if (month === '2-digit') {
+            parts.push(String(monthIndex + 1).padStart(2, '0'));
+        } else {
+            // По умолчанию short
+            parts.push(monthNames[monthIndex]);
+        }
+        
+        // Год
+        if (yearPolicy === 'always' || (yearPolicy === 'auto' && date.getFullYear() !== nowYear)) {
+            parts.push(String(date.getFullYear()));
+        }
+    }
+    
+    // Время
+    if (showTime) {
+        let hours = date.getHours();
+        let minutes = date.getMinutes();
+        
+        if (hour12) {
+            const period = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            parts.push(`${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')} ${period}`);
+        } else {
+            parts.push(`${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`);
+        }
+    }
+    
+    return rel + parts.join(' ');
+}
 /*
 export const formatTime = (ts) => {
     const date = new Date(ts * 1000);

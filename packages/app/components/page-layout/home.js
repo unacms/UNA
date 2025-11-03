@@ -34,7 +34,6 @@ const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
 export default function (props) {
     
-    
    /*  return <>
      <Text fontFamily="font-main" className="text-red-500 text-3xl" >The quick brown fox jumps over the lazy dog.  
 Packz my box with five dozen liquor jugs. 
@@ -255,7 +254,7 @@ return;*/
                         <Link href={currentUser.url} emulate={true}>
                             <Row
                                 className={
-                                    ' rounded-xl group items-center gap-1 px-2 py-1.5  hover:bg-muted/60 active:opacity-50  '
+                                    ' rounded-xl group items-center gap-1 px-2 py-1.5 mb-0.5 hover:bg-muted/60 active:opacity-50  '
                                 }
                             >
                                 
@@ -300,7 +299,7 @@ return;*/
 
                     {navBarBlocks.map((item, index) => {
                         return (
-                            <View className="mt-4 " key={'block_' + index}>
+                            <View className="mt-3 " key={'block_' + index}>
                                 <BlockByName
                                     name={item.block}
                                     data={props.data}
@@ -347,7 +346,9 @@ return;*/
         const rightPanelProps = resolvePanelProps(rightBase, rightResponsive, currentBreakpointName); 
 
         const onLayout = (sizes) => {
-            setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100);
+            if (isWeb) {
+                setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100);
+            }
         };
 
         useEffect(() => {

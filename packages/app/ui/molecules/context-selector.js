@@ -24,7 +24,7 @@ function ListItem({ url, text, icon, isActive }) {
                 <Row className="items-center flex-auto gap-2 text-card-foreground web:hover:text-foreground ">
                     <View
                         className={`items-center w-9 h-9 justify-center ${isActive
-                            ? ' bg-primary text-primary-foreground  '
+                            ? ' bg-primary text-inverted-foreground  '
                             : ' bg-muted/60 web:group-hover:bg-secondary/80 web:duration-200 '
                             } rounded-full`}
                     >
@@ -35,7 +35,7 @@ function ListItem({ url, text, icon, isActive }) {
                     </Text>
                 </Row>
                 {isActive && (
-                    <View className="rounded-full flex-none bg-primary text-primary-foreground h-2 w-2 "></View>
+                    <View className="rounded-full flex-none bg-primary text-inverted-foreground h-2 w-2 "></View>
                 )}
             </Row>
         </Link>
@@ -94,8 +94,8 @@ export default function ContextSelector({ data, url, uri, mode }) {
 
 
     const CurrentContext = (
-        <Link variant="plain" size="lg" href={contextRoot.url} title={t("Context Home")}>
-            <Row className="items-center gap-2">
+        <Link variant="ghost" size="lg" href={contextRoot.url} title={t("Context Home")}>
+            <Row className="items-center gap-2 py-0.5">
                 <View className='rounded-full items-center justify-center web:duration-200 text-card-foreground web:hover:text-foreground'>
                     {contextRoot.image}
                 </View>
@@ -176,18 +176,18 @@ export default function ContextSelector({ data, url, uri, mode }) {
                                 {(() => {
                                     const isActiveAppRoot = uri === rootUrl
                                     return (
-                                        <Link href={`/${rootUrl}`} variant="plain" size="lg" title="Home" >
+                                        <View className='px-2'><Link href={`/${rootUrl}`} variant="ghost" size="lg" title="Home">
                                             <Row
-                                                className={`${isActiveAppRoot
+                                                className={` rounded-xl ${isActiveAppRoot
                                                     ? ' bg-accent/60 text-accent-foreground web:hover:bg-accent'
-                                                    : ' '
+                                                    : ' web:hover:bg-muted/60'
                                                     }`}
                                             >
-                                                
+                                                <View className="flex-row rounded-full items-center justify-center">
                                                     {appStatic('logo', { mode: 'mark', })}
-                                                
+                                                </View>
                                             </Row>
-                                        </Link>
+                                        </Link></View>
                                     )
                                 })()}
                                 <Icon
@@ -198,7 +198,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
                             </>
                         )}
 
-                    <Row className="items-center gap-2 ">
+                    <Row className="items-center gap-2 pl-2">
                         {CurrentContext}
                         {DropDown}
                     </Row>

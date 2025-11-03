@@ -3,7 +3,7 @@ import { useController, useFormContext } from 'react-hook-form'
 import { InputMulti, Input, TextInputClear, Button } from 'app/design/controls'
 import { useState, useRef, useEffect, useMemo } from 'react'
 import { View, ScrollView } from 'app/design/view'
-/*import {
+import {
     DEFAULT_TOOLBAR_ITEMS,
     useEditorBridge,
     RichText,
@@ -18,7 +18,7 @@ import { View, ScrollView } from 'app/design/view'
     DropCursorBridge,
     PlaceholderBridge,
     Extension,
-} from '@10play/tentap-editor'*/
+} from '@10play/tentap-editor'
 import { useFilesData } from 'app/context/files'
 import { Keyboard, Platform, KeyboardAvoidingView } from 'react-native'
 import { Theme } from 'app/design/theme'
@@ -46,7 +46,6 @@ export default function RftText({
     ...props
 }) {
 
-    return <></>
     const unicFormName = `${props.form_name}` // for catch images in editor
 
     let b = [...DEFAULT_TOOLBAR_ITEMS]

@@ -108,10 +108,7 @@ const expoConfig = {
         "EXPO_OS": "native",
     },
     plugins: [
-        [
-    "expo-web-browser"
-  ],
-
+        "expo-web-browser",
         ["expo-router", {}],
         ["expo-video", {"supportsBackgroundPlayback": false, "supportsPictureInPicture": false}],
         // ["@stripe/stripe-react-native", {"merchantIdentifier": "merchantIdentifier","enableGooglePay": true}],
