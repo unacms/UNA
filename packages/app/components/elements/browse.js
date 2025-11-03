@@ -31,7 +31,7 @@ import { subscribe } from 'app/ui/atoms/socket'
 import { useCurrentUser } from 'app/context/user'
 import { callFn } from 'app/lib/functions/call'
 import Link from 'app/ui/atoms/link'
-import Galery from 'app/ui/molecules/galery'
+import Galery from 'app/ui/molecules/gallery'
 import { Button } from 'app/design/controls'
 import { useBreakpoint, useWindowHeight } from 'app/context/measure';
 import emitter from 'app/context/emitter'
