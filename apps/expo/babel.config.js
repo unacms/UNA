@@ -8,7 +8,7 @@ module.exports = function (api) {
         plugins: [
             'transform-inline-environment-variables',
             '@babel/plugin-transform-export-namespace-from',
-            'react-native-reanimated/plugin',
+            'react-native-worklets/plugin'
         ],
     }
 }
