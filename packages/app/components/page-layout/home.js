@@ -34,6 +34,7 @@ const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
 export default function (props) {
     
+    
    /*  return <>
      <Text fontFamily="font-main" className="text-red-500 text-3xl" >The quick brown fox jumps over the lazy dog.  
 Packz my box with five dozen liquor jugs. 
