@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect, useRef } from 'react';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle } from 'react-native-reanimated';
 import { View } from 'app/design/view';
@@ -33,7 +35,7 @@ function AnimatedBackgroundComponent({ }) {
         setPrevBg(bgRef.current);
         setCurrentBg(newBg);
         
-        opacity.value = '0';
+        opacity.value = 0;
         opacity.value = withTiming(1, { duration: animationDuration });
         
         const timer = setTimeout(() => {
@@ -45,7 +47,7 @@ function AnimatedBackgroundComponent({ }) {
     }, [background, theme]);
 
     const animatedStyle = useAnimatedStyle(() => ({
-        opacity: `${opacity.value}`,
+        opacity: opacity.value,
     }), [opacity]);
 
     return (
