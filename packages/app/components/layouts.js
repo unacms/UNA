@@ -18,13 +18,12 @@ import { Button } from 'app/design/controls'
 import { useWindowDimensions } from 'react-native';
 import { useSetWindowSize } from 'app/context/measure';
 
-function WindowSizeSync({ }) {
+function WindowSizeSync() {
     const { width, height } = useWindowDimensions();
     const setWindowSize = useSetWindowSize();
     useEffect(() => {
         setWindowSize(Math.round(width), Math.round(height));
     }, [width, height, setWindowSize]);
-
 }
 
 export default function Layouts({ path, data, uri, url }) {
@@ -35,7 +34,7 @@ export default function Layouts({ path, data, uri, url }) {
 
     const layout = useMemo(() => {
         return getLayoutName(data, data?.uri?.toString());
-    }, [data, data?.uri]);
+    }, [data]);
 
     return (
         <Layout layout={layout} path={path} data={data} uri={uri} key={`layout${currentUser?.id}`}>
@@ -66,7 +65,7 @@ function ErrorPage({ type }) {
     );
 }
 
-function Wrapper(children) {
+function Wrapper({ children }) {
     return <View className="flex mx-auto w-full ">{children}</View>;/*animated-view*/
 }
 
@@ -106,11 +105,23 @@ function PageLayoutContent(props) {
         }
     }
 
-    const Component = getComponent('layout', layoutName);
+    const Component = useMemo(() => {
+        return getComponent('layout', layoutName);
+    }, [layoutName]);
+
+    if (!Component) {
+        return null;
+    }
+
+    const componentKey = useMemo(() => {
+        return `layout-${layoutName}-${props.uri || url || data?.uri || ''}-${data?.timestamp || ''}`;
+    }, [layoutName, props.uri, url, data?.uri, data?.timestamp]);
 
     if (isCustomLayout && layoutBlocks) {
-        return Wrapper(
-            <Component key={`ts${data?.timestamp}`} layoutName={layoutName} {...props} blocks={layoutBlocks} />
+        return (
+            <Wrapper>
+                <Component key={componentKey} layoutName={layoutName} {...props} blocks={layoutBlocks} />
+            </Wrapper>
         );
     }
 
@@ -122,10 +133,12 @@ function PageLayoutContent(props) {
         <Cell key={key} uri={data?.uri} url={url} blocks={data.elements[key]} />
     ));
 
-    return Wrapper(
-        <Component key={`ts${data?.timestamp}`} layoutName={layoutName} {...props}>
-            {cells}
-        </Component>
+    return (
+        <Wrapper>
+            <Component key={componentKey} layoutName={layoutName} {...props}>
+                {cells}
+            </Component>
+        </Wrapper>
     );
 }
 

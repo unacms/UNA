@@ -6,8 +6,8 @@ import { remoteSettings } from 'app/settings-remote';
 import { Platform } from 'react-native';
 
 
-//import Layouts from 'app/components/layouts';
-let Layouts;
+import Layouts from 'app/components/layouts';
+/*let Layouts;
 
 if (Platform.OS === 'web') {
      const dynamic = require('next/dynamic').default;
@@ -15,7 +15,7 @@ if (Platform.OS === 'web') {
 } else {
     Layouts = require('app/components/layouts').default;
 }
-
+*/
 //const Layouts = React.lazy(() => import('app/components/layouts'));
 //import Layouts from 'app/components/layouts';
 // ################## OLD CODE FOR WEB VERSION

@@ -149,9 +149,9 @@ export default function UnitComments(props) {
  
 
     const Badges = getComponent('molecule', 'badges')
-    const Cnt = Platform.OS === 'web' ? Animated.View : View
+
     return (
-        <Cnt {...(Platform.OS === 'web' && isSelected ? { style: animatedStyle } : {})}>
+        <Animated.View style={isSelected ? animatedStyle : {}}>
             <Row className={`${cd('gap-sm')}`}>
                 {cells}
                 <View className="w-9 z-50 flex-0 mt-3">
@@ -167,7 +167,7 @@ export default function UnitComments(props) {
                     )}
                 </View>
                 <View className="flex-1 flex-col gap-0.5 mt-3">
-                <View className="bg-muted/60 flex-1 rounded-xl px-2.5 py-2 gap-1">
+                <View className="bg-muted/60  rounded-xl px-2.5 py-2 gap-1 ">
                     <View className="flex-row items-center justify-between gap-1 ">
                         <Profile
                             {...data.author_data}
@@ -340,7 +340,7 @@ export default function UnitComments(props) {
                     )}
                 </View>
             </Row>
-        </Cnt>
+        </Animated.View>
     )
 }
 
