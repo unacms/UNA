@@ -149,9 +149,9 @@ export default function UnitComments(props) {
  
 
     const Badges = getComponent('molecule', 'badges')
-
+    const Cnt = Platform.OS === 'web' ? Animated.View : View
     return (
-        <Animated.View style={isSelected ? animatedStyle : {}}>
+        <Cnt {...(Platform.OS === 'web' && isSelected ? { style: animatedStyle } : {})}>
             <Row className={`${cd('gap-sm')}`}>
                 {cells}
                 <View className="w-9 z-50 flex-0 mt-3">
@@ -340,7 +340,7 @@ export default function UnitComments(props) {
                     )}
                 </View>
             </Row>
-        </Animated.View>
+        </Cnt>
     )
 }
 
