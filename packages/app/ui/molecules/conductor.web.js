@@ -301,7 +301,7 @@ const RenderScene = ({
                     } ${
                         layoutName !== 'navigator'
                             ? 'mt-0.5 sm:p-2'
-                            : 'lg:p-2 '
+                            : 'lg:p-1 '
                     }`}
                 >
                     {MainContent}

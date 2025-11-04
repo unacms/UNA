@@ -22,7 +22,7 @@ export function MenuItemSidebarWithWrapper({ link, title, index, icon = 'Circle'
 
 export function MenuItemSidebar({ title, icon, isActive, addon }) {
     return (
-        <Row className={` mb-0.5 px-2 py-1.5 items-center group rounded-xl ${isActive && 'bg-primary/10 web:hover:bg-muted/60 ' || ' web:hover:bg-muted/60 '}`}>
+        <Row className={` px-2 py-1.5 items-center group rounded-xl ${isActive && 'bg-primary/10 web:hover:bg-muted/60 ' || ' web:hover:bg-muted/60 '}`}>
             
                 <Text className={`h-9 w-9 text-center items-center justify-center flex rounded-full ${
                     isActive

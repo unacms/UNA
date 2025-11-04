@@ -53,7 +53,11 @@ export default function HeaderElement({ mode, url, uri }) {
                                                     size: isDesktop ? 'base' : 'base',
                                                     pressed : appSetting('messenger', 'url') === '/' + uri
                                                 }
-                                                : {})}
+                                                : {
+                                                    variant:  isDesktop ? 'secondary' : 'text',
+
+
+                                                })}
                                         />
                                     </Link>
                                 )

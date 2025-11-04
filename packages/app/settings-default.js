@@ -52,7 +52,7 @@ export const settingsDefault = {
         ui_density_switcher: true,
         max_width: ' w-full ',
         max_width_content: ' w-full max-w-7xl ',
-        home_container: ' w-full 2xl:max-w-screen-2xl web:duration-500', 
+        home_container: ' w-full 2xl:max-w-screen-2xl web:duration-500 border-x border-border/60 border-dashed', 
         feed_container: ' max-w-3xl sm:p-3 mx-auto ',
         post_container: ' max-w-3xl w-full flex-1 bg-card shadow-sm text-card-foreground rounded-2xl py-3 sm:py-4 lg:my-4 mx-auto ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
 
@@ -89,12 +89,12 @@ export const settingsDefault = {
             container:
                 ' header-fixed hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%] web:duration-500  ',
             initial:
-                ' my-auto w-full items-cente bg-card/90 backdrop-blur-xl border-b border-border/60 transition-all  ',
+                ' my-auto w-full items-cente bg-card/90 backdrop-blur-xl border-b-[0.5px] border-border/60  shadow-sm transition-all  ',
             scrolled:
                 ' my-auto w-full items-cente bg-card/90 backdrop-blur-xl border-b border-border/60 transition-all shadow-sm',
-            content: ' h-16 mx-auto justify-between max-w-screen-2xl',
-            content_left: ' flex-row items-center flex-none w-80 ps-2 xl:ps-3 ',
-            content_right: ' flex-row items-center justify-end flex-none w-80 pe-2 xl:pe-3 ',
+            content: ' h-16 mx-auto justify-between max-w-screen-2xl xl:border-x xl:border-border/60 border-dashed',
+            content_left: ' flex-row items-center flex-none w-80 ps-3  ',
+            content_right: ' flex-row items-center justify-end flex-none w-80 pe-3 ',
             content_center:
                 ' hidden flex-auto xl:flex gap-1 items-center justify-center max-w-3xl xl:px-3 ',
             special: {
@@ -213,8 +213,8 @@ export const settingsDefault = {
         show_nav_counters: 'primary', // OLD appSetting('layout', 'show_nav_counters')
         show_nav_titles: false, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
-        sidebar_container: ' w-full bg-card h-full',
-        sidebar_inner_container: ' p-3  h-full overflow-y-auto flex flex-col  ',
+        sidebar_container: '  h-full mx-3 ',
+        sidebar_inner_container: ' mt-3 p-2 shadow-sm overflow-y-auto flex flex-col bg-card rounded-2xl  ',
         sidebar_title: 'sticky z-10 justify-between items-center h-12 px-2 py-1.5 mb-2.5 z-10',
         sidebar_position: ' z-50 fixed fixed-process ',
         bgrDecorator: true, // Enable/disable decorator background globally for conductor buttons
@@ -1035,9 +1035,9 @@ export const settingsDefault = {
             menu: ' w-full items-left justify-center ',
             menu_max_width: ' w-full max-w-7xl ',
             content_max_width: ' w-full max-w-7xl ',
-            content_max_width_nav: ' w-full  ',
+            content_max_width_nav: ' w-full max-w-screen-2xl xl:border-x xl:border-border/60 border-dashed  ',
             menu_is_dynamic: false,
-            menu_cnt: ' flex-row flex-none gap-1 mx-3 h-14 items-center overflow-x-auto ',
+            menu_cnt: ' flex-row flex-none gap-1 mx-2 h-14 items-center overflow-x-auto ',
             menu_categ_indent: ' pl-12 ',
          
           
@@ -1121,8 +1121,8 @@ export const settingsDefault = {
         button_sizes: {
             default_size: 'base',
             default_variant: 'default',
-            pressed_container: ' bg-primary/10 web:hover:bg-accent/10 active:bg-accent/20  ',
-            pressed_text: ' text-primary-foreground font-medium ',
+            pressed_container: ' bg-accent web:hover:bg-accent active:bg-accent  ',
+            pressed_text: ' text-accent-foreground font-semibold ',
             xxs: {
                 rounded: ' rounded-md ',
                 padding: ' ',
@@ -1155,7 +1155,7 @@ export const settingsDefault = {
                 rounded: ' rounded-lg ',
                 padding: '  ',
                 padding_icon_only: ' h-9 w-9 ',
-                padding_with_title: ' px-2 gap-1 ',
+                padding_with_title: ' px-2.5 gap-1 ',
                 icon_container:
                     ' text-base h-9 flex items-center justify-center',
                 title_container: ' text-sm leading-9 inline-flex items-center  ',
@@ -1348,7 +1348,7 @@ export const settingsDefault = {
                 focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background ',
             },
             lg: {
-                padding: ' px-2  rounded-xl items-center flex ',
+                padding: ' px-2 rounded-xl items-center flex ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-lg ',
                 hitSlop: { top: 2, right: 2, bottom: 2, left: 2 },
                 text: ' text-base leading-8 min-h-8 items-center justify-center flex ',
@@ -1445,9 +1445,9 @@ export const settingsDefault = {
         },
         panels: {
             'u-panel-base': ' h-full flex-col ',
-            'u-panel-handler': 'relative w-0 web:before:absolute web:before:inset-y-0 web:before:-left-1 web:before:-right-1 web:before:bg-transparent web:before:hover:bg-accent/5 web:before:active:bg-accent/5 web:before:duration-200 ',
+            'u-panel-handler': 'relative w-0 web:before:absolute web:before:inset-y-0 web:before:-left-1 web:before:-right-1 web:before:bg-transparent web:before:hover:bg-accent/50 web:before:active:bg-accent/50 web:before:duration-200 ',
             'u-panel-line':
-                'absolute w-px h-full bg-muted rounded-full left-1/2 top-0 -translate-x-1/2',
+                'absolute w-px h-full bg-border/40 web:group-hover:bg-accent rounded-full left-1/2 top-0 -translate-x-1/2',
             'u-panel-group': ' h-full flex',
         },
         blocks: {

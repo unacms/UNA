@@ -130,7 +130,7 @@ export default function ScrollList({
         }
         headerHeight = 116;
         subHeaderComponent = (
-            <View className='px-3 items-start py-2 justify-center bg-card shadow-sm'>
+            <View className='px-3 items-start py-2 justify-center '>
                 <TextHeader text={textName} />
             </View>
         );

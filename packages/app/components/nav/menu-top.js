@@ -63,8 +63,8 @@ export default function MenuTop({ url, uri }) {
                     indicatorWidth.value = target.width;
                     hasPositionedRef.current = true;
                 } else {
-                    indicatorX.value = withSpring(target.x, { damping: 15, stiffness: 180 });
-                    indicatorWidth.value = withSpring(target.width, { damping: 15, stiffness: 180 });
+                    indicatorX.value = withSpring(target.x, { damping: 20, stiffness: 200, mass: 0.8 });
+                    indicatorWidth.value = withSpring(target.width, { damping: 20, stiffness: 200, mass: 0.8 });
                 }
                 // Persist latest for future remounts
                 __menuTopIndicatorPersist = { initialized: true, x: target.x, width: target.width };
@@ -95,7 +95,7 @@ export default function MenuTop({ url, uri }) {
                     </View>
                 );
             })}
-            {activeIndex > -1 && <Animated.View style={[animatedStyle, { pointerEvents: 'none' }]} className="rounded-full flex-none bg-primary absolute -bottom-2 left-0 h-[3px]" />}
+            {activeIndex > -1 && <Animated.View style={[animatedStyle, { pointerEvents: 'none' }]} className="rounded-full flex-none bg-primary/80 absolute -bottom-2 left-0 h-[3px]" />}
         </Row>
 
     )

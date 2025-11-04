@@ -513,7 +513,7 @@ export function LeftSidebar({ title, addButtons, children, width, menu }) {
                     <Row>{addButtons}</Row>
                 </Row>
             )}
-            <View className="flex-1">
+            <View className="flex-1 gap-0.5">
                 {children}
             </View>
 

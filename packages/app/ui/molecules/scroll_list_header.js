@@ -99,13 +99,13 @@ export const Header = memo(({
         <Row className="items-center justify-between h-14 px-2">
             <Row className="items-center justify-start">
                 {((!currentUser || !pageData?.context) && !text && (!settings?.headerSettings || settings?.headerSettings?.header)) &&
-                    <View className="px-3">
-                        <Link href="/home" aria-label="Home">
+                    
+                        <Link href="/home" size="lg" aria-label="Home">
                             <Pressable className="items-center">
                                 {appStatic('logo')}
                             </Pressable>
                         </Link>
-                    </View>
+                    
                 }
                 {(backButtonPresented && (!isWeb || history.length > 2)) && (
                     <View className="px-2 items-center"><Button variant="text" rounded onPress={() => {
@@ -120,7 +120,7 @@ export const Header = memo(({
                     )}
                     {(pageData?.context && !pageData?.context?.current?.url && !isHome) && <ContextSelector mode="min" url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
                 </></Row>}
-                 {(appSetting('context_selector', 'show_always') ) && <Row className='items-center px-2'><>
+                 {(appSetting('context_selector', 'show_always') ) && <Row className='items-center'><>
                     {(pageData?.context && !pageData?.context?.current?.url && !isHome) && <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />}
                 </></Row>}
                 {(type !== 'string' && headerContent) && <View className="flex-auto">{headerContent}</View>}
