@@ -186,8 +186,6 @@ export default function FormComments(props) {
     const attachmentButtonContainerClasses = [
         'absolute',
         'bottom-0',
-        'w-9',
-        'h-9',
         'flex',
         'items-center',
         'justify-center',
@@ -198,7 +196,7 @@ export default function FormComments(props) {
     if (isWeb) {
         currentAttachmentButtonWidthClass = ' w-9 h-9';
     } else {
-        currentAttachmentButtonWidthClass = 'w-fit';
+        currentAttachmentButtonWidthClass = 'w-18 h-9';
     }
     attachmentButtonContainerClasses.push(currentAttachmentButtonWidthClass);
 

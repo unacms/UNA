@@ -16,7 +16,7 @@ import {
     resolvePanelProps,
 } from 'app/ui/molecules/resizable-panels'
 
-export default function PageLayout({ data, blocks, isModal, url }) {
+export default function PageLayout({ data, blocks, isModal = false, url }) {
     const isWeb = Platform.OS == 'web';
     const windowWHeight = useWindowHeight();
     const isDesktop = useIsDesktop();
@@ -177,7 +177,7 @@ export default function PageLayout({ data, blocks, isModal, url }) {
             groupRef.current?.setLayout(layouts)
         }
     }, [currentBreakpointName, groupRef])
-
+    console.log("isModal", isModal)
     if (isModal) {
         return (
             <View className="w-full">
@@ -218,8 +218,8 @@ export default function PageLayout({ data, blocks, isModal, url }) {
 
     if (!isWeb || !isDesktop || !isMultiColumn) {
         return (
-            <View {...viewProps} className="flex-1 w-full h-full sm:h-[calc(100vh-16rem)] ">
-                <View className={`max-w-4xl w-full flex-1 bg-card/80 shadow-sm text-card-foreground rounded-2xl py-3 sm:py-4 lg:mt-4 mx-auto `}>
+            <View {...viewProps} className="w-full h-full sm:h-[calc(100vh-16rem)]">
+                <View className={`max-w-4xl w-full flex-1 bg-card/80 shadow-sm text-card-foreground rounded-2xl web:py-3 sm:py-4 lg:mt-4 mx-auto `}>
                     <View onLayout={handleListLayout} pointerEvents="box-none" className='w-full flex-1' style={{ marginBottom: !isDesktop ? 0 : formHeight }}>
                         <CommentsBrowse
                             scrollProps={

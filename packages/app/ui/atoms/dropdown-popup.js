@@ -30,7 +30,7 @@ export default function DropdownPopup({
     minPopupWidth = 256,
     defaultOpen = false,
     showOnTop = false,
-    contentClasses = dropdownTheme?.cnt 
+    contentClasses = dropdownTheme?.cnt
 }) {
     const buttonRef = useRef(null);
     const isDesktop = useIsDesktop();
@@ -75,37 +75,37 @@ export default function DropdownPopup({
     const updateButtonPosition = () => {
         if (!buttonRef.current?.measureInWindow) return;
         buttonRef.current.measureInWindow((x, y, width, height) => {
-            
+
             setTimeout(() => {
-            if (contentRef.current?.measureInWindow) {
-                contentRef.current.measureInWindow((_, __, popupWidth, effectivePopupHeight) => {
-                    // Calculate horizontal position
-                    let left = x;
-                    if (x + popupWidth > windowWidth - 16) {
-                        left = windowWidth - popupWidth - 16;
-                    }
-                    if (left < 16) left = 16;
+                if (contentRef.current?.measureInWindow) {
+                    contentRef.current.measureInWindow((_, __, popupWidth, effectivePopupHeight) => {
+                        // Calculate horizontal position
+                        let left = x;
+                        if (x + popupWidth > windowWidth - 16) {
+                            left = windowWidth - popupWidth - 16;
+                        }
+                        if (left < 16) left = 16;
 
-                    // Calculate vertical position
-                    let top = y + height + 8;
+                        // Calculate vertical position
+                        let top = y + height + (isWeb ? 8 : 36);
 
-                    if (showOnTop) {
-                        top = y - effectivePopupHeight - 8;
-                    } else if (top + effectivePopupHeight > windowHeight - 16 && y - effectivePopupHeight - 8 > 16) {
-                        top = y - effectivePopupHeight - 8;
-                    }
-                    if (top == 0)
-                        top = 1
+                        if (showOnTop) {
+                            top = y - effectivePopupHeight - 8;
+                        } else if (top + effectivePopupHeight > windowHeight - 16 && y - effectivePopupHeight - 8 > 16) {
+                            top = y - effectivePopupHeight - 8;
+                        }
+                        if (top == 0)
+                            top = 1
 
-                    setButtonPos({
-                        x: left,
-                        y: top,
-                        width,
-                        height,
-                        maxHeight: windowHeight - top - 16
+                        setButtonPos({
+                            x: left,
+                            y: top,
+                            width,
+                            height,
+                            maxHeight: windowHeight - top - 16
+                        });
                     });
-                });
-            }
+                }
             }, 100);
         });
     };
@@ -134,27 +134,9 @@ export default function DropdownPopup({
         handleToggle(false);
     };
 
-    // Animated styles for backdrop
-    const backdropAnimatedStyle = useAnimatedStyle(() => {
-        return {
-            opacity: interpolate(animationProgress.value, [0, 1], [0, 1]),
-        };
-    }, []);
-
-    // Animated styles for content
-    const contentAnimatedStyle = useAnimatedStyle(() => {
-        return {
-            opacity: animationProgress.value,
-            transform: [
-                {
-                    scale: interpolate(animationProgress.value, [0, 1], [0.8, 1]),
-                },
-            ],
-        };
-    }, []);
-
-    const AnimatedContent = useMemo(() => {
-        const contentStyle = {
+    const Content = <ViewRef
+        ref={contentRef}
+        style={{
             position: 'absolute',
             top: buttonPos.y,
             left: buttonPos.x,
@@ -162,62 +144,15 @@ export default function DropdownPopup({
             elevation: 5,
             minWidth: minPopupWidth,
             maxWidth: windowWidth - 32,
-            maxHeight: windowHeight - buttonPos.y - 32,
+            maxHeight: buttonPos.maxHeight,
             zIndex: 1000,
-        };
-
-        if (isWeb) {
-            // Web version with CSS backdrop-blur
-            return (
-                <Animated.View
-                    ref={contentRef}
-                    style={[contentStyle, !isWeb && contentAnimatedStyle]}
-                    className={`${contentClasses}`}
-                >
-                    {children}
-                </Animated.View>
-            );
-        } else {
-            // Native version with BlurView
-            return (
-                <Animated.View
-                    ref={contentRef}
-                    style={[contentStyle, contentAnimatedStyle]}
-                >
-                    <BlurView
-                        tint="systemMaterial"
-                        intensity={60}
-                        experimentalBlurMethod="none"
-                        className="rounded-2xl overflow-hidden p-2 shadow-[0_10px_10px_rgba(0,0,0,0.15)]"
-                    >
-                        {children}
-                    </BlurView>
-                </Animated.View>
-            );
-        }
-    }, [buttonPos, contentClasses, children, windowWidth, windowHeight, contentAnimatedStyle, isWeb, colors]);
-
-    const Content = true ? (
-        <ViewRef
-            ref={contentRef}
-            style={{
-                position: 'absolute',
-                top: buttonPos.y,
-                left: buttonPos.x,
-                visibility: buttonPos.y > 0 ? 'visible' : 'hidden',
-                elevation: 5,
-                minWidth: minPopupWidth,
-                maxWidth: windowWidth - 32,
-                maxHeight: buttonPos.maxHeight,
-                zIndex: 1000,
-            }}
-            className={`${contentClasses}`}
-        >
-            <ScrollView showsVerticalScrollIndicator={false}>
-                {children}
-            </ScrollView>
-        </ViewRef>
-    ) : AnimatedContent;
+        }}
+        className={`${contentClasses}`}
+    >
+        <ScrollView showsVerticalScrollIndicator={false}>
+            {children}
+        </ScrollView>
+    </ViewRef>
 
     return (
         <>
@@ -250,7 +185,7 @@ export default function DropdownPopup({
                     ) : (
                         <AnimatedPressable
                             className="flex-1"
-                            style={[{ backgroundColor: 'rgba(0,0,0,0.3)' }, backdropAnimatedStyle]}
+                            style={[{ backgroundColor: 'rgba(0,0,0,0.3)' }, {}]}
                             onPress={(event) => handleBackdropPress(event)}
                         >
                             {Content}

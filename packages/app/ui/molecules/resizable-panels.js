@@ -18,6 +18,6 @@ export const isShowColumn = (cond, windowWidth, cell) => {
 }
 
 export function resolvePanelProps(base, responsive, bpName) {
-    return;
+    return {};
 }
 

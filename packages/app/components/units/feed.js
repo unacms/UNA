@@ -29,7 +29,7 @@ function DefaultUnit({ data }) {
     const [cmtsData, setCmtsData] = useState(false)
 
     const isCommentsModal =
-        appSetting('comments', 'show_modal_in_feed') && isWeb
+        appSetting('comments', 'show_modal_in_feed');// && isWeb
     const { url, commentsData, isShowMoreComments } = useMemo(
         () => prepareData(data),
         [data]
