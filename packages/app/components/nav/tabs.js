@@ -115,7 +115,7 @@ export default function () {
     const profile = useMemo(() => {
         if (currentUser) {
             const dUser = { ...currentUser, url_avatar: currentUser?.avatar, url: '/dashboard' };
-            return <View className=" bg-neutral-100 border border-neutral-700 dark:bg-neutral-700 dark:border-neutral-300 rounded-full p-px h-6 w-6"><Profile {...dUser} showLinks={false} displayType="unit_wo_info" displaySize="xs" /></View>;
+            return <View className=" rounded-full "><Profile {...dUser} showLinks={false} displayType="unit_wo_info" displaySize="xs" /></View>;
         }
         return null;
     }, [currentUser?.id, currentUser?.avatar]);
