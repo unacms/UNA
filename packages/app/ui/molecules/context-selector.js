@@ -14,9 +14,9 @@ const rootUrl = appSetting('context_selector', 'root_url');
 
 function ListItem({ url, text, icon, isActive }) {
     return (
-        <Link key={url} className="w-full" href={url}>
+        <Link key={url}  href={url}>
             <Row
-                className={`w-full px-2 h-12 gap-2 group rounded-xl justify-between items-center ${isActive
+                className={`w-full px-2 h-12 gap-2 web:group rounded-xl justify-between items-center ${isActive
                     ? ' bg-primary/10 text-foreground rounded-xl web:hover:bg-muted/60 web:duration-200 '
                     : ' web:hover:bg-muted/60 web:duration-200 '
                     }`}
@@ -206,6 +206,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
             ) : (
                 CurrentContext
             )}
+            
         </>
     )
 }
