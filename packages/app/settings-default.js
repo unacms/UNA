@@ -1108,7 +1108,7 @@ export const settingsDefault = {
         },
 
         inputs: {
-            default: ' bg-input/90 border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 min-h-12 flex-auto text-base leading-6 overflow-hidden shadow-xs placeholder-muted-foreground text-card-foreground web:duration-100',
+            default: ' bg-input/80 border border-border/60 web:border-0 focus:border-primary web:ring-1 web:ring-inset web:ring-border/60 rounded-xl focus:bg-card focus:ring-primary  px-3 min-h-12 flex-auto text-base overflow-hidden shadow-xs placeholder-muted-foreground text-card-foreground web:duration-100',
            
             multi: ' bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 py-2 min-h-12 flex-auto text-base leading-6 overflow-y-scroll [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden shadow-xs placeholder-muted-foreground text-card-foreground web:duration-100 ',
             rounded:
@@ -1153,7 +1153,7 @@ export const settingsDefault = {
                 hitSlop: { top: 8, right: 8, bottom: 8, left: 8 },
             },
             sm: {
-                rounded: ' rounded-lg ',
+                rounded: ' rounded-md ',
                 padding: '  ',
                 padding_icon_only: ' h-9 w-9 ',
                 padding_with_title: ' px-2.5 gap-1 ',
@@ -1638,7 +1638,7 @@ export const settingsDefault = {
             'u-btn-focus': ' web:focus-visible:ring-ring web:focus-visible:ring-offset-background ',
           
 
-            'u-btn-primary-cnt': ' focus:outline-2 focus:outline-primary bg-primary web:hover:bg-primary/90 shadow-sm active:opacity-50 ',
+            'u-btn-primary-cnt': ' focus:outline-4 focus:outline-offset-1 focus:outline-offset-card focus:outline-ring bg-primary web:hover:bg-primary/90 shadow-sm active:opacity-50 ',
             'u-btn-primary-text': ' font-semibold text-primary-foreground ',
             'u-btn-primary-trans': ' web:duration-200',
 
@@ -1660,11 +1660,11 @@ export const settingsDefault = {
             'u-btn-danger-trans': ' web:duration-200',
             
 
-            'u-btn-text-cnt': ' group web:sm:hover:bg-muted/60 active:bg-muted  ',
+            'u-btn-text-cnt': ' group web:sm:hover:bg-secondary/80 active:bg-secondary focus:bg-secondary ',
             'u-btn-text-text':
                 ' font-semibold text-label-tertiary web:group-hover:text-label-primary',
             'u-btn-text-trans': ' web:duration-200',
-            'u-btn-text-focus': ' web:focus-visible:bg-muted/60 ',
+            'u-btn-text-focus': ' focus:text-label-primary ',
 
             'u-btn-link-cnt': ' group active:bg-muted/60 ',
             'u-btn-link-text':
