@@ -110,12 +110,7 @@ const expoConfig = {
     plugins: [
         "expo-web-browser",
         ["expo-router", {}],
-        [
-            "@rnmapbox/maps",
-            {
-                "RNMapboxMapsDownloadToken": "sk.eyJ1Ijoicm9tYW5sZXMiLCJhIjoiY204Zm9sMWMzMGJiaTJqcXRvdmpseHBuaiJ9.uajA_y3AmjRkBYgy4i2RdQ"
-            }
-        ],
+        ["@rnmapbox/maps", {}],
         ["expo-video", {"supportsBackgroundPlayback": false, "supportsPictureInPicture": false}],
         // ["@stripe/stripe-react-native", {"merchantIdentifier": "merchantIdentifier","enableGooglePay": true}],
         ["expo-build-properties", 

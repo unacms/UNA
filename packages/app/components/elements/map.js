@@ -2,11 +2,10 @@
 import { View } from 'app/design/view'
 import { useRef } from 'react';
 
-//import Mapbox from "@rnmapbox/maps";
+import Mapbox from "@rnmapbox/maps";
 
 export default function ElementMap({ data, height }) {
-    return <></>
-    /*if (!data.location?.lat)
+    if (!data.location?.lat)
         return <></>
 
     Mapbox.setAccessToken("sk.eyJ1Ijoicm9tYW5sZXMiLCJhIjoiY204Zm9sMWMzMGJiaTJqcXRvdmpseHBuaiJ9.uajA_y3AmjRkBYgy4i2RdQ");
@@ -26,5 +25,5 @@ export default function ElementMap({ data, height }) {
 
             </Mapbox.MapView>
         </View>
-    );*/
+    );
 }
