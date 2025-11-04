@@ -33,10 +33,7 @@ const nativewindUIColors = {
         DEFAULT: withOpacity('primary'),
         foreground: withOpacity('primary-foreground'),
     },
-    inverted: {
-        DEFAULT: withOpacity('inverted'),
-        foreground: withOpacity('inverted-foreground'),
-    },
+   
     secondary: {
         DEFAULT: withOpacity('secondary'),
         foreground: withOpacity('secondary-foreground'),
@@ -49,10 +46,7 @@ const nativewindUIColors = {
         DEFAULT: withOpacity('muted'),
         foreground: withOpacity('muted-foreground'),
     },
-    inverted: {
-        DEFAULT: withOpacity('inverted'),
-        foreground: withOpacity('inverted-foreground'),
-    },
+    
     accent: {
         DEFAULT: withOpacity('accent'),
         foreground: withOpacity('accent-foreground'),

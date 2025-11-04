@@ -55,7 +55,7 @@ export default function ThemeCompatibilityTest({ data }) {
                     onPress={() => setThemeName('light')}
                     className="bg-primary hover:bg-primary/50 px-4 py-2 rounded-lg"
                 >
-                    <Text className="text-inverted-foreground font-medium">Light</Text>
+                    <Text className="text-primary-foreground font-medium">Light</Text>
                 </Pressable>
 
                 <Pressable

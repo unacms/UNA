@@ -346,7 +346,7 @@ export const settingsDefault = {
             button_variant: 'text',
             menu_width: ' w-min ',
             pressed_classes: {
-                pressed_container: ' active:bg-accent/10 web:hover:bg-accent/10 ',
+                pressed_container: ' active:bg-accent web:hover:bg-accent ',
                 pressed_text: ' text-accent font-medium ',
             },
             button_rounded: false,
@@ -1638,7 +1638,7 @@ export const settingsDefault = {
           
 
             'u-btn-primary-cnt': ' focus:outline-2 focus:outline-primary bg-primary web:hover:bg-primary/90 shadow-sm active:opacity-50 ',
-            'u-btn-primary-text': ' font-semibold text-inverted-foreground ',
+            'u-btn-primary-text': ' font-semibold text-primary-foreground ',
             'u-btn-primary-trans': ' web:duration-200',
 
             'u-btn-accent-cnt':

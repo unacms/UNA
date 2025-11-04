@@ -73,10 +73,10 @@ export default function Tooltip({children, content}) {
             {visible && (
                 <ViewRef
                     ref={tooltipRef}
-                    className="absolute z-50 shadow top-full w-auto backdrop-blur-xl bg-inverted/80 rounded-full py-1.5 px-3 mt-2.5"
+                    className="absolute z-50 shadow-lg top-full w-auto backdrop-blur bg-popover/90 rounded-full py-1.5 px-3 mt-2.5"
                     style={tooltipStyle}
                 >
-                    <Text className="text-inverted-foreground whitespace-nowrap text-sm">{content}</Text>
+                    <Text className="text-card-foreground whitespace-nowrap text-sm">{content}</Text>
                 </ViewRef>
             )}
         </ViewRef>

@@ -24,7 +24,7 @@ function ListItem({ url, text, icon, isActive }) {
                 <Row className="items-center flex-auto gap-2 text-card-foreground web:hover:text-foreground ">
                     <View
                         className={`items-center w-9 h-9 justify-center ${isActive
-                            ? ' bg-primary text-inverted-foreground  '
+                            ? ' bg-primary text-primary-foreground  '
                             : ' bg-muted/60 web:group-hover:bg-secondary/80 web:duration-200 '
                             } rounded-full`}
                     >
@@ -35,7 +35,7 @@ function ListItem({ url, text, icon, isActive }) {
                     </Text>
                 </Row>
                 {isActive && (
-                    <View className="rounded-full flex-none bg-primary text-inverted-foreground h-2 w-2 "></View>
+                    <View className="rounded-full flex-none bg-primary text-primary-foreground h-2 w-2 "></View>
                 )}
             </Row>
         </Link>

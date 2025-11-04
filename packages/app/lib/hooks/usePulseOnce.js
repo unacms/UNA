@@ -2,13 +2,13 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { AccessibilityInfo, Animated } from 'react-native';
 
 /**
- * Параметры:
- * - pulseDurationMs: длительность ОДНОГО пульса (вниз-вверх), по умолчанию 3000
- * - pulses: сколько раз пульсировать (целое >= 1), по умолчанию 1
- * - minOpacity: "глубина" пульса (0..1), по умолчанию 0.5
- * - autoStart: автозапуск при маунте, по умолчанию true
- * - respectReducedMotion: учитывать системную настройку "уменьшение анимации", по умолчанию true
- * - onEnd: колбэк по завершении всех пульсов
+ * Parameters:
+ * - pulseDurationMs: duration of ONE pulse (down-up), default 3000ms
+ * - pulses: how many times to pulse (integer >= 1), default 1
+ * - minOpacity: the "depth" of the pulse (0..1), default 0.5
+ * - autoStart: automatically start animation on mount, default true
+ * - respectReducedMotion: respect system "reduce motion" accessibility setting, default true
+ * - onEnd: callback after all pulses are finished
  */
 export function usePulseOne({
     pulseDurationMs = 3000,
@@ -19,9 +19,9 @@ export function usePulseOne({
     onEnd,
 } = {}) {
     const opacity = useRef(new Animated.Value(1)).current;
-    const runningRef = useRef(null); // текущая анимация, чтобы остановить при unmount
+    const runningRef = useRef(null); // currently running animation, for cleanup on unmount
 
-    // Один пульс: 1 -> minOpacity -> 1
+    // One pulse: 1 -> minOpacity -> 1
     const onePulse = useMemo(() => {
         const down = Math.max(1, Math.floor(pulseDurationMs / 2));
         const up = Math.max(1, pulseDurationMs - down);
@@ -33,12 +33,12 @@ export function usePulseOne({
 
     const buildAnimation = useCallback(() => {
         if (pulses <= 1) return onePulse;
-        // Запускаем onePulse N раз
+        // Run onePulse N times
         return Animated.loop(onePulse, { iterations: pulses });
     }, [onePulse, pulses]);
 
     const start = useCallback(async () => {
-        // если 0 пульсов — просто сразу завершить
+        // If 0 pulses, simply finish immediately
         if (!pulses || pulses < 1) {
             opacity.setValue(1);
             onEnd && onEnd();
@@ -55,7 +55,7 @@ export function usePulseOne({
                 }
             }
         } catch {
-            // молча игнорируем сбои AccessibilityInfo
+            // Silently ignore AccessibilityInfo errors
         }
 
         const anim = buildAnimation();
@@ -68,7 +68,7 @@ export function usePulseOne({
     useEffect(() => {
         if (autoStart) start();
         return () => {
-            // остановить при размонтировании
+            // Stop animation when unmounting
             if (runningRef.current?.stop) runningRef.current.stop();
             opacity.stopAnimation();
         };

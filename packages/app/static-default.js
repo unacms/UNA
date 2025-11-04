@@ -108,7 +108,7 @@ const SplashTextInner = (
             accessible={true}
             accessibilityRole="header"
             aria-level={1}
-            className="text-4xl sm:text-5xl text-center lg:text-start tracking-tighter font-bold text-label-primary text-balance web:duration-300"
+            className="text-4xl sm:text-5xl text-center lg:text-start tracking-tight font-bold text-label-primary text-balance web:duration-300"
         >
             Come and join us!
         </Text>
