@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import Field, { getValidationRules } from './_field';
 import { View, ViewRef, Row, Pressable } from 'app/design/view'
 import * as ImagePicker from 'expo-image-picker';
-//import { manipulateAsync, SaveFormat } from 'app/lib/image-manipulator'
+import { manipulateAsync, SaveFormat } from 'app/lib/image-manipulator'
 import { Button } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import { genRnd, appSetting } from 'app/lib/util';
@@ -169,7 +169,8 @@ export default function (props) {
                     let manipulatedWidth = 1600;
                     let manipulatedHeight = 1600;
 
-                    /*if (width > manipulatedWidth || height > manipulatedHeight) {
+                    if (width > manipulatedWidth || height > manipulatedHeight) {
+                        console.log("width", width)
                         if (width > height) {
                             manipulatedHeight = Math.round((height * manipulatedWidth) / width);
                         } else {
@@ -184,7 +185,7 @@ export default function (props) {
                             );
                             uri = resizedPhoto.uri;
                         }
-                    }*/
+                    }
 
                     uploadImage(
                         uri,
