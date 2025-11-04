@@ -426,7 +426,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     if (!isWeb || isSmallScreen){
         return (
-        <View className='flex-1 w-full h-full flex-row bg-card'>
+        <View className='web:flex-1 w-full h-full flex-row bg-card'>
             {panelsVisible.convos && <View className=' w-full'>
                 {convosComponent}
             </View>}

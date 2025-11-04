@@ -693,7 +693,7 @@ export const settingsDefault = {
             {
                 key: '/tab2',
                 title: 'Messages',
-                url: '/item/excited-about-the-new-neo-app-built-with',
+                url: '/messenger',
                 icon: 'MessageCircleMore',
                 badge: 'messenger'
             },
