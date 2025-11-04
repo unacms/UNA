@@ -248,7 +248,7 @@ const getCounterCompound = (getIconAlias, handleGetPerformedByCpd, actionsDataSt
         let sClass = '';
         if (aItem.name != sSelected)
             sClass = 'hidden ';
-        sClass += 'gap-2 overflow-y-auto text-neutral-700 dark:text-neutral-200';
+        sClass += 'gap-2 overflow-y-auto text-card-foreground';
 
         return (
             <View key={aItem.name} className={sClass}>{aUsers}</View>

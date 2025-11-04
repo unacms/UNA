@@ -119,7 +119,7 @@ function DefaultUnit({ data }) {
                     {cmtsData.data}
                 </Modal>
             )}
-            <CardList className="mb-0.5 sm:mb-3">
+            <CardList border="border-y border-x-none sm:border-x" className="mb-0.5 sm:mb-3">
                 <Row className="gap-3 flex-auto mb-3">
                     <Author data={data} url={url} t={t} />
                     <View className="flex-none mb-auto hidden">

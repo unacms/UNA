@@ -262,9 +262,9 @@ export const ItemInfo = memo(({ data, t }) => {
         owners?.length > 0 ? (
             owners?.length == 1 ? (
                 <>
-                    <View className="text-muted">
-                        <Icon icon='Dot' size={14}  />
-                    </View>  
+                    
+                <Icon className="text-muted" icon='Dot' size={14}  />
+                    
                     <Link href={data.owners[0].url} emulate={true}>
                         <Text className=" text-label-quaternary web:hover:text-label-link-hover font-medium text-xs ">
                             {owners[0].title}
@@ -273,15 +273,15 @@ export const ItemInfo = memo(({ data, t }) => {
                 </>
             ) : (
                 <>
-                    <View className="text-muted ">
-                        <Icon icon='Dot' size={14}  />
-                    </View>  
+                    
+                        <Icon className="text-muted " icon='Dot' size={14}  />
+                     
                     <Pressable
                         onPress={() => {
                             setShowContextList(true)
                         }}
                     >
-                        <Text className=" bg-muted/50 px-1.5 leading-5 rounded-md text-muted-foreground border border-border/40 web:border-0 web:ring-1 web:ring-inset web:ring-border/40 hover:text-linkhover text-xs font-medium">
+                        <Text className=" bg-muted px-1.5 leading-5 items-center justify-text-center justify-center h-5 rounded-md text-muted-foreground  hover:text-linkhover text-xs font-medium">
                             {owners[0].title} + {owners.length - 1}
                         </Text>
                     </Pressable>
@@ -328,9 +328,9 @@ export const ItemInfo = memo(({ data, t }) => {
         return (
             l && (
                 <>
-                    <View className="text-muted ">
-                        <Icon icon='Dot' size={14}  />
-                    </View>  
+                   
+                        <Icon className="text-muted " icon='Dot' size={14}  />
+                    
                     <Text className="text-muted-foreground font-medium tracking-tight text-xs leading-5 ">
                         {l}
                     </Text>
@@ -496,7 +496,7 @@ export const VisibilityInfo = memo(({ data }) => {
     return (
         
                 
-                <Row className="flex-none gap-1 items-center min-h-5">
+                <View className="gap-1  flex-row self-start items-center ">
                 
                     {isUser ? (
                         <Profile
@@ -505,14 +505,12 @@ export const VisibilityInfo = memo(({ data }) => {
                             displaySize="2xs"
                         />
                     ) : icon ? (
-                        <View className="text-muted-foreground leading-5 ">
-                            <Icon icon={icon} width={14} height={14} />
-                        </View>
+                            <Icon className="text-muted-foreground" icon={icon} width={14} height={14} />
                     ) : null}
-                    <Text className="text-muted-foreground text-xs leading-5 text-center flex-auto font-medium">
+                    <Text className="text-muted-foreground text-xs leading-5 font-medium">
                         {isUser ? data.author_data.display_name : text}
                     </Text>
-                </Row>
+                </View>
         
     )
 })
@@ -548,7 +546,7 @@ export const Author = memo(({ data, url, t }) => {
                 displayType="unit"
                 displaySize="lg"
                 showInfo={
-                    <Row className="items-center flex-wrap">
+                    <Row className=" flex-wrap">
                         
                         
                         <VisibilityInfo data={data} />

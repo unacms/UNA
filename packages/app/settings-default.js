@@ -1431,7 +1431,7 @@ export const settingsDefault = {
         },
         cards: {
             'u-card-list':
-                ' u-card-list bg-card shadow-sm border border-border/60 web:border-0 web:ring-0 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden sm:rounded-2xl ',
+                ' u-card-list bg-card shadow-sm border-y sm:border-x border-border/50 web:border-0 web:ring-0 web:ring-inset web:ring-border/50 text-card-foreground overflow-hidden sm:rounded-2xl ',
             'u-card-list-padding': ' p-3 lg:p-4 ',
             'u-card-base':
                 ' u-card-base bg-card shadow-sm border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden rounded-2xl gap-4',
@@ -1717,7 +1717,7 @@ export const settingsDefault = {
                 'font-semibold text-muted-foreground web:hover:text-foreground web:active:text-foreground  ',
             'u-btn-group-item-link-icon':
                 'text-primary dark:text-primary web:dark:group-hover:text-primary',
-            'u-btn-group-item-link-pressed-cnt': 'bg-primary/10 ',
+            'u-btn-group-item-link-pressed-cnt': 'bg-accent ',
             'u-btn-group-item-link-pressed-text': 'text-primary',
             'u-btn-group-item-link-pressed-icon': 'text-primary',
 
