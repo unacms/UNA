@@ -1341,7 +1341,7 @@ export const settingsDefault = {
                 focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-1 ring-offset-ring ',
             },
             md: {
-                padding: ' px-1 items-center flex ',
+                padding: ' px-0.5 items-center flex ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-md ',
                 hitSlop: { top: 4, right: 4, bottom: 4, left: 4 },
                 text: ' text-base flex underline-offset-2',

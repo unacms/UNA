@@ -28,48 +28,47 @@ import Link from 'app/ui/atoms/link'
  * @param {object} props - Component properties, including optional login form data.
  */
 
-
 function PageContent(props) {
     const { t } = useTranslation()
     return (
-        
-                <AnimatedView direction="up" delay={200}>
-                <Card padding="p-6 ">
-                    <CardHeader>
-                        <CardTitle>{t('login_modal_title')} {t('app_name')}</CardTitle>
-                        <CardDescription>
-                            {t('splash_page_login')}
-                        
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="gap-4">
-                        <BlockByName
-                            name="system:login_form"
-                            contentOnly={true}
-                            data={props.data}
-                            formProps={{ hide_errors: true, button_full_width: true }}
-                        />
-                        
-                    </CardContent>
-                    <CardFooter>
-                        
-                        <AuthPanel forgotPasswordLink={true} showSeparator={true} />
-                    </CardFooter>
-                </Card>
-        
-                <Row className=" mx-auto my-4 gap-1">
-                    <Text className="text-muted-foreground ">{t('splash_page_login2')}</Text>
-                    <Link
-                        
-                        variant="default"
-                        href="/create-account"
-                        haptics="Medium"
-                    >
-                        {t('splash_page_new_account')}
-                    </Link>
-                </Row>
-                </AnimatedView>
-        
+        <AnimatedView direction="up" delay={200}>
+            <Card padding="p-6">
+                <CardHeader>
+                    <CardTitle>
+                        {t('login_modal_title')} {t('app_name')}
+                    </CardTitle>
+                    <CardDescription>{t('splash_page_login')}</CardDescription>
+                </CardHeader>
+                <CardContent className="gap-4">
+                    <BlockByName
+                        name="system:login_form"
+                        contentOnly={true}
+                        data={props.data}
+                        formProps={{
+                            hide_errors: true,
+                            button_full_width: true,
+                        }}
+                    />
+                </CardContent>
+                <CardFooter>
+                    <AuthPanel forgotPasswordLink={true} showSeparator={true} />
+                </CardFooter>
+            </Card>
+
+            <Row className="mx-auto my-4 gap-1">
+                <Text className="text-muted-foreground ">
+                    {t('splash_page_login2')}
+                </Text>
+                <Link
+                    variant="default"
+                    size="md"
+                    href="/create-account"
+                    haptics="Medium"
+                >
+                    {t('splash_page_new_account')}
+                </Link>
+            </Row>
+        </AnimatedView>
     )
 }
 
@@ -83,30 +82,28 @@ export default function Splash(props) {
                 <PageContent {...props} />
             </View>
             <MenuFooter
-                            cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
-                            variant="ghost"
-                            size="sm"
-                            itemClassName="text-sm p-1"
-                            
-                        />
+                cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
+                variant="ghost"
+                size="sm"
+                itemClassName="text-sm p-1"
+            />
         </>
     ) : (
-        <View className={`flex-col justify-center pt-14 lg:pt-0 web:min-h-[calc(100vh-16rem)] w-full`} >
+        <View
+            className={`flex-col justify-center pt-14 lg:pt-0 web:min-h-[calc(100vh-16rem)] w-full`}
+        >
             <View className="w-full lg:flex-row mx-auto my-auto max-w-7xl ">
                 {appStatic('splash_text')}
                 <View className="flex-col-reverse lg:flex-col max-w-xl w-full flex-auto mx-auto p-4 sm:p-6 my-auto">
-                    
-                        <PageContent {...props} />
-                    
+                    <PageContent {...props} />
                 </View>
             </View>
             <MenuFooter
-                            cntClasses="h-12 flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
-                            variant="ghost"
-                            size="sm"
-                            itemClassName="text-sm p-1"
-                            
-                        />
+                cntClasses="h-12 flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
+                variant="ghost"
+                size="sm"
+                itemClassName="text-sm p-1"
+            />
         </View>
     )
 
