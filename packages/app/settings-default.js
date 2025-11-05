@@ -1333,7 +1333,7 @@ export const settingsDefault = {
                 focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background ',
             },
             sm: {
-                padding: ' active:scale-95 rounded-md items-center flex ',
+                padding: ' web:active:scale-95 rounded-md items-center flex ',
                 hitarea_class: 'relative u-link-hitarea u-link-hitarea-sm ',
                 hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
                 text: 'text-sm leading-tight items-center justify-center flex',
@@ -1349,7 +1349,7 @@ export const settingsDefault = {
                 focus: ' focus-visible:outline-offset-1 focus-visible:outline-4 focus-visible:ring-1 focus-visible:ring-offset-1 focus-visible:ring-1   ',
             },
             lg: {
-                padding: ' px-2 rounded-xl items-center flex active:outline-ring ',
+                padding: ' px-2 rounded-xl items-center flex web:active:outline-ring ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-lg ',
                 hitSlop: { top: 2, right: 2, bottom: 2, left: 2 },
                 text: ' text-base leading-8 min-h-8 items-center justify-center flex ',
@@ -1623,14 +1623,14 @@ export const settingsDefault = {
         },
 
         button_styles: {
-            'u-btn-default-cnt': ' bg-popover web:hover:bg-muted shadow-xs border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 web:hover:ring-border active:opacity-50 ',
+            'u-btn-default-cnt': ' bg-popover web:hover:bg-muted shadow-xs border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 web:hover:ring-border web:active:opacity-50 ',
             'u-btn-default-text':
                 ' font-semibold text-popover-foreground  ',
             'u-btn-default-trans': '  web:duration-200',
             'u-btn-focus': ' web:focus-visible:ring-ring web:focus-visible:ring-offset-background ',
           
 
-            'u-btn-primary-cnt': ' focus:outline-4 focus:outline-offset-1 focus:outline-offset-card focus:outline-ring bg-primary web:hover:bg-primary/90 shadow-sm active:opacity-50 ',
+            'u-btn-primary-cnt': ' focus:outline-4 focus:outline-offset-1 focus:outline-offset-card focus:outline-ring bg-primary web:hover:bg-primary/90 shadow-sm web:active:opacity-50 ',
             'u-btn-primary-text': ' font-semibold text-primary-foreground ',
             'u-btn-primary-trans': ' web:duration-200',
 
@@ -1640,7 +1640,7 @@ export const settingsDefault = {
             'u-btn-accent-trans': '  web:duration-200',
             
 
-            'u-btn-secondary-cnt': ' group bg-secondary/80 web:hover:bg-secondary web:focus-visible:bg-secondary ',
+            'u-btn-secondary-cnt': ' web:group bg-secondary/80 web:hover:bg-secondary web:focus-visible:bg-secondary ',
             'u-btn-secondary-text':
                 ' web:duration-200 font-semibold text-secondary-foreground web:group-hover:text-foreground ',
             'u-btn-secondary-trans': ' web:duration-200 ',
@@ -1652,13 +1652,13 @@ export const settingsDefault = {
             'u-btn-danger-trans': ' web:duration-200',
             
 
-            'u-btn-text-cnt': ' group web:sm:hover:bg-secondary/80 active:bg-secondary focus:bg-secondary ',
+            'u-btn-text-cnt': ' web:group web:sm:hover:bg-secondary/80 web:active:bg-secondary web:focus:bg-secondary ',
             'u-btn-text-text':
                 ' font-semibold text-label-tertiary web:group-hover:text-label-primary',
             'u-btn-text-trans': ' web:duration-200',
-            'u-btn-text-focus': ' focus:text-label-primary ',
+            'u-btn-text-focus': ' web:focus:text-label-primary ',
 
-            'u-btn-link-cnt': ' group active:bg-muted/60 ',
+            'u-btn-link-cnt': ' web:group active:bg-muted/60 ',
             'u-btn-link-text':
                 ' font-semibold text-label-link group-hover:text-label-linkhover active:text-label-linkhover web:duration-200',
             'u-btn-text-trans': ' web:duration-200  ',
@@ -1698,7 +1698,7 @@ export const settingsDefault = {
                 'text-red-500 dark:text-neutral-300 web:dark:group-hover:text-neutral-50',
 
             'u-btn-group-item-text-cnt':
-                '  web:lg:hover:bg-secondary/80 active:bg-secondary web:duration-200 ',
+                '  web:lg:hover:bg-secondary/80 web:active:bg-secondary web:duration-200 ',
             'u-btn-group-item-text-text':
                 ' font-semibold text-muted-foreground web:group-hover:text-foreground ',
             'u-btn-group-item-text-icon':
@@ -1738,7 +1738,7 @@ export const settingsDefault = {
         },
         buttons_group_styles: {
             'u-btn-default-cnt':
-                ' flex-row bg-popover/80 web:hover:bg-popover shadow-xs border-[0.5px] border-border/80 web:border-0 web:ring-[0.5px] web:ring-inset web:ring-border/80 web:hover:ring-border active:opacity-50 ',
+                ' flex-row bg-popover/80 web:hover:bg-popover shadow-xs border-[0.5px] border-border/80 web:border-0 web:ring-[0.5px] web:ring-inset web:ring-border/80 web:hover:ring-border web:active:opacity-50 ',
             'u-btn-accent-cnt':
                 'border border-emerald-600 dark:border-emerald-500 bg-emerald-100 dark:bg-emerald-900 flex flex-row',
             'u-btn-outline-cnt':
@@ -1754,7 +1754,7 @@ export const settingsDefault = {
             'u-btn-secondary-trans': '   web:duration-300 ',
 
             'u-btn-link-cnt':
-                ' border border-transparent dark:border-transparent flex flex-row active:opacity-50 items-center ',
+                ' border border-transparent dark:border-transparent flex flex-row web:active:opacity-50 items-center ',
             'u-btn-link-text':
                 ' font-semibold web:group-hover:underline text-card-foreground  web:hover:text-neutral-950 web:dark:hover:text-neutral-50 web:active:opacity-50 ',
             'u-btn-link-trans': '   web:duration-300 ',
