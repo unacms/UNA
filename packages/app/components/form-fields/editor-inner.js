@@ -785,7 +785,7 @@ export default function RftText({
             onLayout={handleLayout}
             className={`flex-1 relative rounded-lg ${
                 isToolBar
-                    ? ' px-3 py-2 bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border flex-auto overflow-hidden shadow-xs placeholder-placeholder text-card-foreground web:duration-100 '
+                    ? ' px-3 py-2 bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border flex-auto overflow-hidden shadow-xs placeholder-label-tertiary text-card-foreground web:duration-100 '
                     : (bg == 'transparent' ? '' : inputSettings.multi)
             }`}
         >

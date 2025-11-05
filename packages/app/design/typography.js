@@ -33,7 +33,7 @@ export const Text =({
     ...rest
 }) => {
     const isWeb = Platform.OS == 'web'
-    const baseClassName = className || 'text-foreground text-base'
+    const baseClassName = className || '  '
     const finalClassName = `${baseClassName} ${fontFamily || 'font-main'}`.trim()
     const spreadProps = isWeb ? sanitizeWebTextProps(rest) : rest
     const content = typeof children === "string" ? decodeText(children) : children;

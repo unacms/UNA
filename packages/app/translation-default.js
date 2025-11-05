@@ -77,7 +77,7 @@ export const resourcesDefault = {
             "feed_type_bx_spaces": "added an Space",
             "feed_type_bx_polls": "added a Poll",
 
-            "splash_page_title": "Log in to your account",
+            "splash_page_title": "Welcome to the community!",
             "splash_page_text": "Use your email and password to sign in",
             "splash_page_account": "Don't have an account?",
             "splash_page_fp": "Forgot password?",

@@ -31,8 +31,10 @@ import Link from 'app/ui/atoms/link'
 function PageContent(props) {
     const { t } = useTranslation()
     return (
+        <View className="w-full justify-center lg:w-1/2 p-4 sm:p-8 md:p-12 p-6 ">
+
         <AnimatedView direction="up" delay={200}>
-            <Card padding="p-6">
+            <Card padding="p-6 max-w-xl w-full mx-auto">
                 <CardHeader>
                     <CardTitle>
                         {t('login_modal_title')} {t('app_name')}
@@ -56,7 +58,7 @@ function PageContent(props) {
             </Card>
 
             <Row className=" mx-auto my-4 gap-1 text-base justify-center items-center text-center">
-                <Text className="text-muted-foreground ">
+                <Text className="text-label-secondary ">
                     {t('splash_page_login2')}
                 </Text>
                 <Link
@@ -69,6 +71,7 @@ function PageContent(props) {
                 </Link>
             </Row>
         </AnimatedView>
+        </View>
     )
 }
 
@@ -76,33 +79,33 @@ export default function Splash(props) {
     const isWeb = Platform.OS == 'web'
     const refer = useRef()
     const content = !isWeb ? (
-        <>
-            <View className="w-full gap-y-8 mx-auto p-3 pt-16">
+        <View className="flex-col justify-center w-full ">
+            <View className={`justify-center w-full mx-auto lg:flex-row  border-x border-guide/20 border-dashed divide-x divide-dashed  divide-guide/20 ${appSetting('layout', 'max_width_content')}`}>
                 {appStatic('splash_text')}
                 <PageContent {...props} />
+                
+               
             </View>
             <MenuFooter
-                cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
+                cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-3 p-3"
                 variant="ghost"
                 size="sm"
-                itemClassName="text-sm p-1"
+                itemClassName=""
             />
-        </>
+        </View>
     ) : (
-        <View
-            className={`flex-col justify-center pt-14 lg:pt-0 web:min-h-[calc(100vh-16rem)] w-full`}
-        >
-            <View className="w-full lg:flex-row mx-auto my-auto max-w-7xl ">
+        <View className="flex-col justify-center pt-14 lg:pt-0 w-full ">
+            <View className={`justify-center w-full mx-auto lg:flex-row  border-x border-guide/20 border-dashed divide-x divide-dashed  divide-guide/20 ${appSetting('layout', 'max_width_content')}`}>
                 {appStatic('splash_text')}
-                <View className="flex-col-reverse lg:flex-col max-w-xl w-full flex-auto mx-auto p-4 sm:p-6 my-auto">
-                    <PageContent {...props} />
-                </View>
+                <PageContent {...props} />
+                
+                
             </View>
             <MenuFooter
-                cntClasses="h-12 flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
+                cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-3 p-3"
                 variant="ghost"
                 size="sm"
-                itemClassName="text-sm p-1"
+                itemClassName=""
             />
         </View>
     )

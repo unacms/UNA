@@ -266,7 +266,7 @@ export const ItemInfo = memo(({ data, t }) => {
                 <Icon className="text-muted" icon='Dot' size={14}  />
                     
                     <Link href={data.owners[0].url} emulate={true}>
-                        <Text className=" text-label-quaternary web:hover:text-label-linkhover font-medium text-xs ">
+                        <Text className=" text-label-secondary web:hover:text-label-linkhover font-medium text-xs ">
                             {owners[0].title}
                         </Text>
                     </Link>

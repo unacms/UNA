@@ -13,31 +13,29 @@ import { useTranslation } from 'react-i18next'
 import { tp } from 'app/lib/util'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import PopupModal from 'app/ui/molecules/popup_modal'
-import { ThemeName } from 'app/design/theme';
+import { ThemeName } from 'app/design/theme'
 import { Platform } from 'react-native'
-import AnimatedView from 'app/ui/atoms/animated-view';
-import SvgFile from 'app/ui/molecules/svg-file';
-import MenuFooter from 'app/components/nav/menu-footer';
+import AnimatedView from 'app/ui/atoms/animated-view'
+import SvgFile from 'app/ui/molecules/svg-file'
+import MenuFooter from 'app/components/nav/menu-footer'
 import { appSetting } from 'app/lib/util'
-const isWeb = Platform.OS === 'web';
-
+const isWeb = Platform.OS === 'web'
 //mode can be 'adaptive', 'full', 'mark', 'text'
 const Logo = ({ mode = 'adaptive' }) => {
-   
-    const theme = ThemeName();
+    const theme = ThemeName()
 
     const textStyles = {
         adaptive: ' hidden sm:block  ',
         mark: ' hidden ',
         full: ' ',
-    };
+    }
 
     const markStyles = {
         text: 'hidden sm:block ',
-    };
+    }
 
     return (
-        <Row className='items-center gap-3'>
+        <Row className="items-center gap-3">
             <View className={`${markStyles[mode]}`}>
                 <Svg
                     aria-label="Logo Mark"
@@ -99,41 +97,58 @@ const Logo = ({ mode = 'adaptive' }) => {
                 </Svg>
             </View>
         </Row>
-    );
+    )
 }
 
-const SplashTextInner = (
-    <>
-        <Text
-            accessible={true}
-            accessibilityRole="header"
-            aria-level={1}
-            className="text-4xl sm:text-5xl text-center lg:text-start tracking-tight font-bold text-label-primary text-balance web:duration-300"
-        >
-            Come and join us!
-        </Text>
-        <Text
-            accessible={true}
-            accessibilityRole="text"
-            className=" text-lg sm:text-xl text-center lg:text-start text-label-quaternary font-medium text-pretty web:duration-300"
-        >
-           {appSetting('app', 'title')} is the best place to share your thoughts, find new friends and connect with the community.
-        </Text>
-    </>
-)
+const SplashTextInner = () => {
+    const { t } = useTranslation()
+    return (
+        <View className="flex-col justify-end items-center lg:items-start flex-auto max-w-xl lg:max-w-2xl">
+            <View className="text-center lg:text-start gap-6 ">
+                <Text
+                    accessible={true}
+                    accessibilityRole="header"
+                    aria-level={1}
+                    className="text-4xl sm:text-5xl tracking-tight font-bold text-label-primary text-balance"
+                >
+                    {t('splash_page_title')}
+                </Text>
+                <Text
+                    accessible={true}
+                    accessibilityRole="text"
+                    className=" tracking-tight text-label-secondary text-base sm:text-lg lg:text-xl"
+                >
+                    {appSetting('app', 'title')} is the best place to share your
+                    thoughts, find new friends and connect with the community.
+                </Text>
+            </View>
+        </View>
+    )
+}
 
 const SplashTextComponent = (props) => {
     return isWeb ? (
-        <View className="my-auto flex-col items-center lg:items-start flex-auto p-4 sm:p-6 " accessible={true}>
-            <AnimatedView className="w-[200px] h-[200px] lg:w-80 lg:h-80 web:duration-300">
-                <SvgFile src_dark="splash-dark.svg" src_default="splash-light.svg" alt="Splash screen illustration" />
+        <View className=" items-center lg:items-start flex-auto p-4 sm:p-8 md:p-12  w-full mx-auto">
+            <AnimatedView direction="up" className=" px-4 sm:px-8 md:px-12 w-1/2 h-1/2 web:duration-300 absolute left-0 top-0">
+                <SvgFile
+                    src_dark="splash-dark.svg"
+                    src_default="splash-light.svg"
+                    alt="Splash screen illustration"
+                />
             </AnimatedView>
-            <AnimatedView delay={100} direction="up" className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">
-                {SplashTextInner}
+            <AnimatedView
+                delay={100}
+                direction="up"
+                className="flex-auto items-center lg:items-start "
+            >
+                <SplashTextInner />
             </AnimatedView>
         </View>
     ) : (
-        <View className="flex-col items-center lg:items-start gap-x-8 flex-auto px-4 sm:px-8 xl:px-16 lg:pb-16" accessible={true}>
+        <View
+            className="flex-col items-center lg:items-start gap-x-8 flex-auto px-4 sm:px-8 xl:px-16 lg:pb-16"
+            accessible={true}
+        >
             <View className="w-[200px] h-[200px] lg:w-80 lg:h-80 web:duration-300">
                 <SvgFile
                     src_dark="splash-dark.svg"
@@ -142,7 +157,7 @@ const SplashTextComponent = (props) => {
                 />
             </View>
             <View className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">
-                {SplashTextInner}
+                <SplashTextInner />
             </View>
         </View>
     )
@@ -151,7 +166,11 @@ const SplashTextComponent = (props) => {
 const JoinTextComponent = (props) => {
     return (
         <AnimatedView className="w-40 h-40 lg:w-80 lg:h-80 web:duration-300">
-            <SvgFile src_dark="create-account-dark.svg" src_default="create-account-light.svg" alt="Create account illustration" />
+            <SvgFile
+                src_dark="create-account-dark.svg"
+                src_default="create-account-light.svg"
+                alt="Create account illustration"
+            />
         </AnimatedView>
     )
 }
@@ -360,7 +379,10 @@ const ComponentsLoginContentComponent = (props) => {
                     alt="Login illustration"
                 />
             </AnimatedView>
-            <AnimatedView direction="up" className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">
+            <AnimatedView
+                direction="up"
+                className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl"
+            >
                 <View className="flex-col gap-y-8 flex-auto my-4 ">
                     <Text className="text-4xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200 justify-center items-center  ">
                         Sign in to your account
@@ -580,7 +602,9 @@ const ComponentsDummyComponent = (props) => {
                     height={16}
                 />
                 <Text
-                    className={'flex-none text-red-800 dark:text-red-200 text-xs'}
+                    className={
+                        'flex-none text-red-800 dark:text-red-200 text-xs'
+                    }
                 >
                     456
                 </Text>
@@ -609,7 +633,9 @@ const ComponentsDummyComponent = (props) => {
                     height={16}
                 />
                 <Text
-                    className={'flex-none text-gray-800 dark:text-gray-200 text-xs'}
+                    className={
+                        'flex-none text-gray-800 dark:text-gray-200 text-xs'
+                    }
                 >
                     123
                 </Text>
@@ -619,13 +645,14 @@ const ComponentsDummyComponent = (props) => {
 }
 
 const ComponentsFooter = () => {
-    return <MenuFooter
+    return (
+        <MenuFooter
             cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
             variant="ghost"
             size="sm"
             itemClassName="text-sm p-1"
-
         />
+    )
 }
 
 const ComponentsPricingHeader = () => {
@@ -635,7 +662,6 @@ const ComponentsPricingHeader = () => {
 const ComponentsPricingFooter = () => {
     return <>TODO ComponentsPricingFooter</>
 }
-
 
 const ComponentsFullFooter = () => {
     const { t } = useTranslation()
@@ -706,6 +732,5 @@ export const staticDefault = {
     components_fullfooter: ComponentsFullFooter,
     components_logincontent: ComponentsLoginContentComponent,
     splash_text: SplashTextComponent,
-    join_text: JoinTextComponent
-
+    join_text: JoinTextComponent,
 }

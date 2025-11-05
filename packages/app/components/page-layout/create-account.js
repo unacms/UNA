@@ -46,7 +46,7 @@ function PageContent({ children }) {
             </Card>
 
             <Row className=" mx-auto my-4 gap-1 text-base justify-center items-center text-center">
-                <Text className="text-label-tertiary">
+                <Text className="text-label-secondary">
                     {t('create_account_page_already_have')}
                 </Text>
                 <Link
@@ -114,7 +114,7 @@ export default function PageLayout(props) {
                         <Text
                             accessible={true}
                             accessibilityRole="text"
-                            className="text-lg sm:text-xl text-center lg:text-start text-label-quaternary text-pretty"
+                            className="text-lg sm:text-xl text-center lg:text-start text-label-secondary text-pretty"
                         >
                             {isAllowJoin
                                 ? t('create_account_page_text')

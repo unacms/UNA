@@ -24,14 +24,12 @@
         --border: var(--neutral-300); /*borders, dividers, focus rings*/
         --input: var(--white); /*form inputs*/
         --ring: var(--accent-500); /*focus rings*/
-
-        --label-primary: var(--neutral-950); /*Primary text (high emphasis)*/
-        --label-secondary: var(--neutral-800); /*Secondary text (medium emphasis)*/
-        --label-tertiary: var(--neutral-600); /*Tertiary text (low emphasis)*/
-        --label-quaternary: var(--neutral-400); /*Very subtle text (e.g., disabled, placeholder)*/
+        --guide: var(--neutral-500); /*guide color*/
+        --label-primary: var(--neutral-900); /*Primary text (high emphasis)*/
+        --label-secondary: var(--neutral-600); /*Secondary text (medium emphasis)*/
+        --label-tertiary: var(--neutral-400); /*Tertiary text (low emphasis)*/
         --label-link: var(--accent-600); /*Link text color*/
         --label-linkhover: var(--accent-800); /*Link text color on hover*/
-        --placeholder: var(--neutral-400); /*Placeholder text inside inputs*/
         --fill-primary: var(--neutral-50); /*Main surface background*/
         --fill-secondary: var(--neutral-100); /*Secondary layered background*/
         --fill-tertiary: var(--neutral-500); /*Card-like background*/
@@ -47,8 +45,8 @@
 
          /* neutral scale (zinc) - standard Tailwind CSS zinc 50-950 */
         --neutral: 113 113 122;
-        --neutral-50: 250 250 250;    /* #fafafa */
-        --neutral-100: 244 244 245;   /* #f4f4f5 */
+        --neutral-50: 248 248 250;    /* #fafafa */
+        --neutral-100: 244 244 247;   /* #f4f4f5 */
         --neutral-200: 228 228 231;   /* #e4e4e7 */
         --neutral-300: 212 212 216;   /* #d4d4d8 */
         --neutral-400: 161 161 170;   /* #a1a1aa */
@@ -124,15 +122,13 @@
         --destructive-foreground: var(--neutral-950); /*content on destructive buttons, destructive surfaces*/
         --border: var(--neutral-800); /*borders, dividers, focus rings*/
         --input: var(--neutral-900); /*form inputs*/
-        --ring: var(--accent-700); /*focus rings*/
-
-        --label-primary: var(--neutral-50); /*Primary text (high emphasis)*/
-        --label-secondary: var(--neutral-200); /*Secondary text (medium emphasis)*/
-        --label-tertiary: var(--neutral-400); /*Tertiary text (low emphasis)*/
-        --label-quaternary: var(--neutral-600); /*Very subtle text (e.g., disabled, placeholder)*/
+        --ring: var(--accent-800); /*focus rings*/
+        --guide: var(--neutral-600); /*guide color*/
+        --label-primary: var(--neutral-100); /*Primary text (high emphasis)*/
+        --label-secondary: var(--neutral-400); /*Secondary text (medium emphasis)*/
+        --label-tertiary: var(--neutral-600); /*Tertiary text (low emphasis)*/
         --label-link: var(--accent-400); /*Link text color*/
         --label-linkhover: var(--accent-600); /*Link text color on hover*/
-        --placeholder: var(--neutral-500); /*Placeholder text inside inputs*/
         --fill-primary: var(--neutral-950); /*Main surface background*/
         --fill-secondary: var(--neutral-900); /*Secondary layered background*/
         --fill-tertiary: var(--neutral-800); /*Card-like background*/

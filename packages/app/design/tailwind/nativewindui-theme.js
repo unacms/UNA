@@ -74,15 +74,13 @@ const nativewindUIColors = {
         primary: withOpacity('label-primary'),
         secondary: withOpacity('label-secondary'),
         tertiary: withOpacity('label-tertiary'),
-        quaternary: withOpacity('label-quaternary'),
         link: withOpacity('label-link'),
         linkhover: withOpacity('label-linkhover'),
         
     },
    
-    placeholder: {
-        DEFAULT: withOpacity('placeholder'),
-    },
+    guide: withOpacity('guide'),
+    
     fill: {
         primary: withOpacity('fill-primary'),
         secondary: withOpacity('fill-secondary'),

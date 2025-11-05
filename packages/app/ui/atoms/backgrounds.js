@@ -36,7 +36,7 @@ export const SvgBackgroundSplashDark = () => (
                 <stop 
                     offset="0" 
                     stopColor="rgb(var(--primary))" 
-                    stopOpacity="0.05" 
+                    stopOpacity="0" 
                 />
                 <stop 
                     offset="1" 
