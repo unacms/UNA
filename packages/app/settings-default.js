@@ -694,7 +694,7 @@ export const settingsDefault = {
             {
                 key: '/tab2',
                 title: 'Messages',
-                url: '/messenger',
+                url: '/explore',
                 icon: 'MessageCircleMore',
                 badge: 'messenger'
             },

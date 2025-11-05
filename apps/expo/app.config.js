@@ -106,11 +106,14 @@ const expoConfig = {
         "PORT": process.env.PORT,
         "APP_URL": process.env.APP_URL,
         "EXPO_OS": "native",
+        "RNMAPBOX_MAPS_DOWNLOAD_TOKEN": "sk.eyJ1Ijoicm9tYW5sZXMiLCJhIjoiY204Zm9sMWMzMGJiaTJqcXRvdmpseHBuaiJ9.uajA_y3AmjRkBYgy4i2RdQ",
     },
     plugins: [
         "expo-web-browser",
         ["expo-router", {}],
-        ["@rnmapbox/maps", {}],
+        ["@rnmapbox/maps",
+            {
+            }],
         ["expo-video", {"supportsBackgroundPlayback": false, "supportsPictureInPicture": false}],
         // ["@stripe/stripe-react-native", {"merchantIdentifier": "merchantIdentifier","enableGooglePay": true}],
         ["expo-build-properties", 
