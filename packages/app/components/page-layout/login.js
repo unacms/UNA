@@ -40,7 +40,7 @@ function PageContent({ children, isLoginPage, title }) {
     }
 
     return (
-        <AnimatedView direction="up" delay={300}>
+        <AnimatedView className="gap-4" direction="up" delay={300}>
             <Card padding="p-6">
                 <CardHeader>
                     <CardTitle>
@@ -65,7 +65,7 @@ function PageContent({ children, isLoginPage, title }) {
                 </CardContent>
             </Card>
 
-            <Row className=" mx-auto my-4 gap-1 text-base justify-center items-center text-center">
+            <Row className=" mx-auto gap-1 text-base justify-center items-center text-center">
                 <Text className=" text-muted-foreground">
                     {t('splash_page_login2')}
                 </Text>

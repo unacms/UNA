@@ -25,9 +25,11 @@ const isWeb = Platform.OS === 'web'
 function PageContent({ children }) {
     const { t } = useTranslation()
     return (
-        <AnimatedView direction="up" delay={200}>
-            <Card padding="p-6">
-                <CardHeader>
+        <View className="w-full justify-center lg:w-1/2 p-4 sm:p-8 md:p-12 p-6 ">
+
+        <AnimatedView className="gap-4" direction="up" delay={200}>
+        <Card padding="p-6 max-w-xl w-full mx-auto">
+            <CardHeader>
                     <CardTitle>{t('create_account_page_caption')}</CardTitle>
                     {isWeb && (
                         <CardDescription>
@@ -45,7 +47,7 @@ function PageContent({ children }) {
                 </CardFooter>
             </Card>
 
-            <Row className=" mx-auto my-4 gap-1 text-base justify-center items-center text-center">
+            <Row className=" mx-auto gap-1 text-base justify-center items-center text-center">
                 <Text className="text-label-secondary">
                     {t('create_account_page_already_have')}
                 </Text>
@@ -58,7 +60,8 @@ function PageContent({ children }) {
                     {t('create_account_page_sign_in')}
                 </Link>
             </Row>
-        </AnimatedView>
+        </AnimatedView> 
+        </View>
     )
 }
 
@@ -88,54 +91,44 @@ export default function PageLayout(props) {
     }
 
     const content = isWeb ? (
-        <View
-            className={`flex-col justify-center web:min-h-[calc(100vh-16rem)] w-full `}
-        >
-            <View className="w-full lg:flex-row mx-auto my-auto max-w-7xl">
-                <View
-                    className="my-auto flex-col lg:w-1/2 items-center lg:items-start flex-auto p-4 sm:p-8 xl:p-16 mt-16 lg:mt-0"
+        <View className="flex-col justify-center pt-14 lg:pt-0 w-full ">
+            <View className={`justify-center w-full mx-auto lg:flex-row border-x border-guide/20 border-dashed divide-x divide-dashed  divide-guide/20 ${appSetting('layout', 'max_width_content')}`}>
+                
+            <View className=" items-center lg:items-start flex-auto p-4 sm:p-8 md:p-12  w-full mx-auto">
+
+                        {appStatic('join_text')}
+                        <View className="text-center lg:text-start gap-6 ">
+                            <Text
                     accessible={true}
+                    accessibilityRole="header"
+                    aria-level={1}
+                    className="text-4xl sm:text-5xl tracking-tight font-bold text-label-primary text-balance"
                 >
-                    {appStatic('join_text')}
-                    <AnimatedView
-                        direction="up"
-                        className="flex-auto flex items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl"
-                    >
-                        <Text
-                            accessible={true}
-                            accessibilityRole="heading"
-                            aria-level={1}
-                            className="text-4xl sm:text-5xl text-center lg:text-start tracking-tight font-bold text-label-primary text-pretty"
-                        >
-                            {isAllowJoin
-                                ? t('create_account_page_title')
-                                : t('create_account_page_title_request_invite')}
-                        </Text>
-                        <Text
-                            accessible={true}
-                            accessibilityRole="text"
-                            className="text-lg sm:text-xl text-center lg:text-start text-label-secondary text-pretty"
-                        >
-                            {isAllowJoin
-                                ? t('create_account_page_text')
-                                : t('create_account_page_text_request_invite')}
-                        </Text>
-                    </AnimatedView>
-                </View>
-                <View className="max-w-xl w-full lg:w-1/2 flex-auto mx-auto p-4 sm:p-8 my-auto">
-                    <AnimatedView direction="up" delay={200}>
-                        <View className="relative">
-                            <PageContent>{Block}</PageContent>
+                                {isAllowJoin
+                                    ? t('create_account_page_title')
+                                    : t('create_account_page_title_request_invite')}
+                            </Text>
+                            <Text
+                    accessible={true}
+                    accessibilityRole="text"
+                    className=" tracking-tight text-label-secondary text-base sm:text-lg lg:text-xl"
+                >
+                                {isAllowJoin
+                                    ? t('create_account_page_text')
+                                    : t('create_account_page_text_request_invite')}
+                            </Text>
                         </View>
-                    </AnimatedView>
-                </View>
+                    </View>
+                    <PageContent>{Block}</PageContent>
+                        
+                
             </View>
             <MenuFooter
-                cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
-                variant="ghost"
-                size="sm"
-                itemClassName="text-sm p-1"
-            />
+                    cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-3 p-3"
+                    variant="ghost"
+                    size="sm"
+                    itemClassName=""
+                />
         </View>
     ) : (
         <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto p-3 pt-16">

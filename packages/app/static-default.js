@@ -103,7 +103,7 @@ const Logo = ({ mode = 'adaptive' }) => {
 const SplashTextInner = () => {
     const { t } = useTranslation()
     return (
-        <View className="flex-col justify-end items-center lg:items-start flex-auto max-w-xl lg:max-w-2xl">
+        <View className="flex-col justify-center items-center lg:items-start flex-auto max-w-xl lg:max-w-2xl">
             <View className="text-center lg:text-start gap-6 ">
                 <Text
                     accessible={true}
@@ -119,7 +119,7 @@ const SplashTextInner = () => {
                     className=" tracking-tight text-label-secondary text-base sm:text-lg lg:text-xl"
                 >
                     {appSetting('app', 'title')} is the best place to share your
-                    thoughts, find new friends and connect with the community.
+                    ideas, explore new things, find real friends and connect with the community.
                 </Text>
             </View>
         </View>
@@ -129,7 +129,7 @@ const SplashTextInner = () => {
 const SplashTextComponent = (props) => {
     return isWeb ? (
         <View className=" items-center lg:items-start flex-auto p-4 sm:p-8 md:p-12  w-full mx-auto">
-            <AnimatedView direction="up" className=" px-4 sm:px-8 md:px-12 w-1/2 h-1/2 web:duration-300 absolute left-0 top-0">
+            <AnimatedView direction="up" className="flex-auto w-1/2 h-1/2 ">
                 <SvgFile
                     src_dark="splash-dark.svg"
                     src_default="splash-light.svg"
@@ -165,13 +165,15 @@ const SplashTextComponent = (props) => {
 
 const JoinTextComponent = (props) => {
     return (
-        <AnimatedView className="w-40 h-40 lg:w-80 lg:h-80 web:duration-300">
-            <SvgFile
+        <View className=" items-center lg:items-start flex-auto  w-full mx-auto">
+            <AnimatedView direction="up" className=" w-1/2 h-1/2 web:duration-300 ">
+                            <SvgFile
                 src_dark="create-account-dark.svg"
                 src_default="create-account-light.svg"
                 alt="Create account illustration"
             />
         </AnimatedView>
+        </View>
     )
 }
 

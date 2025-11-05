@@ -33,7 +33,7 @@ function PageContent(props) {
     return (
         <View className="w-full justify-center lg:w-1/2 p-4 sm:p-8 md:p-12 p-6 ">
 
-        <AnimatedView direction="up" delay={200}>
+        <AnimatedView className="gap-4" direction="up" delay={200}>
             <Card padding="p-6 max-w-xl w-full mx-auto">
                 <CardHeader>
                     <CardTitle>
@@ -57,7 +57,7 @@ function PageContent(props) {
                 </CardFooter>
             </Card>
 
-            <Row className=" mx-auto my-4 gap-1 text-base justify-center items-center text-center">
+            <Row className=" mx-auto gap-1 text-base justify-center items-center text-center">
                 <Text className="text-label-secondary ">
                     {t('splash_page_login2')}
                 </Text>
@@ -80,7 +80,7 @@ export default function Splash(props) {
     const refer = useRef()
     const content = !isWeb ? (
         <View className="flex-col justify-center w-full ">
-            <View className={`justify-center w-full mx-auto lg:flex-row  border-x border-guide/20 border-dashed divide-x divide-dashed  divide-guide/20 ${appSetting('layout', 'max_width_content')}`}>
+            <View className={`justify-center w-full mx-auto lg:flex-row  border-x border-guide/20 border-dashed divide-x divide-dashed  divide-guide/0 ${appSetting('layout', 'max_width_content')}`}>
                 {appStatic('splash_text')}
                 <PageContent {...props} />
                 
@@ -95,7 +95,7 @@ export default function Splash(props) {
         </View>
     ) : (
         <View className="flex-col justify-center pt-14 lg:pt-0 w-full ">
-            <View className={`justify-center w-full mx-auto lg:flex-row  border-x border-guide/20 border-dashed divide-x divide-dashed  divide-guide/20 ${appSetting('layout', 'max_width_content')}`}>
+            <View className={`justify-center w-full mx-auto lg:flex-row border-x border-guide/20 border-dashed divide-x divide-dashed  divide-guide/20 ${appSetting('layout', 'max_width_content')}`}>
                 {appStatic('splash_text')}
                 <PageContent {...props} />
                 

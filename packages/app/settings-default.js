@@ -93,7 +93,7 @@ export const settingsDefault = {
                 ' my-auto w-full items-cente bg-card/60 backdrop-blur-xl border-b-[0.5px] border-border/60 shadow-sm transition-all  ',
             scrolled:
                 ' my-auto w-full items-cente bg-card/90 backdrop-blur-xl border-b border-border/60 transition-all shadow-sm',
-            content: ' h-16 mx-auto justify-between max-w-screen-2xl xl:border-x xl:border-border/60 border-dashed',
+            content: ' h-16 mx-auto justify-between 2xl:border-x 2xl:border-border/60 border-dashed',
             content_left: ' flex-row items-center flex-none w-80 ps-3  ',
             content_right: ' flex-row items-center justify-end flex-none w-80 pe-3 ',
             content_center:
