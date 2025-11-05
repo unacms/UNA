@@ -15,16 +15,18 @@ export default function ElementEntityInfo({ data }) {
                 let value = getValue(a);
                 if (value){
                     return (
-                        <View className={ (a.type!='textarea'? 'flex-row items-center ': '') +" flex-wrap gap-y-2 gap-x-2"} key={a.name}>
-                            <Row className="items-center">
-                                <View className="text-neutral-800 dark:text-neutral-200">{getIcon(a)}</View>
-                                <View className={defaultIcon? "ml-2" :''}>
-                                    <Text className="font-bold text-base text-neutral-800 dark:text-neutral-200">
+                        <View className={ (a.type!='textarea'? 'flex-row items-center ': '') +" gap-x-2"} key={a.name}>
+                            <Row className="items-center ">
+                                <View className="text-neutral-800 dark:text-neutral-200 h-8 w-8 p-1 overflow-hidden items-center justify-center">{getIcon(a)}</View>
+                                <View className={`${defaultIcon ? "ml-2" : ''} `}>
+                                    <Text className="font-bold text-base text-neutral-800 dark:text-neutral-200 ">
                                         {a.caption}
                                     </Text>
                                 </View>
                             </Row>
-                            {getValue(a)}
+                            <View className="flex-1">
+                                {getValue(a)}
+                            </View>
                         </View>
                     )
                 }
@@ -93,7 +95,7 @@ export default function ElementEntityInfo({ data }) {
                     return <Time stylesName=" text-base text-neutral-800 dark:text-neutral-200" ts={a.value}></Time>
                 }
                 return (
-                    <Text className=" text-neutral-800 text-base dark:text-neutral-200">
+                    <Text className=" text-neutral-800 text-base dark:text-neutral-200  whitespace-normal break-words">
                     {a.value}
                     </Text>
                 )
@@ -101,6 +103,9 @@ export default function ElementEntityInfo({ data }) {
     }
 
     function getIcon(a) {
+        if (a.icon){
+             return <Icon icon={ a.icon.charAt(0).toUpperCase() + a.icon.slice(1)} />
+        }
         switch (a.name) {
             case 'gender':
                 return <Icon icon="VenusAndMars" />
