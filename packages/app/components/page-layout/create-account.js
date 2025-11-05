@@ -97,7 +97,7 @@ export default function PageLayout(props) {
             <View className=" items-center lg:items-start flex-auto p-4 sm:p-8 md:p-12  w-full mx-auto">
 
                         {appStatic('join_text')}
-                        <View className="text-center lg:text-start gap-6 ">
+                        <View className="text-center items-center justify-center lg:items-start gap-6 h-1/2">
                             <Text
                     accessible={true}
                     accessibilityRole="header"

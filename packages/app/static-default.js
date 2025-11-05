@@ -165,7 +165,7 @@ const SplashTextComponent = (props) => {
 
 const JoinTextComponent = (props) => {
     return (
-        <View className=" items-center lg:items-start flex-auto  w-full mx-auto">
+        <View className=" items-center lg:items-start flex-auto h-1/2 w-full mx-auto">
             <AnimatedView direction="up" className=" w-1/2 h-1/2 web:duration-300 ">
                             <SvgFile
                 src_dark="create-account-dark.svg"
