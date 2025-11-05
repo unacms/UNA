@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
     "start": "next start",
     "start:pm2": "pm2 startOrRestart pm2.config.js --env prod",
     "lint": "next lint"
@@ -24,7 +24,7 @@
     "google-map-react": "^2.2.1",
     "lucide-react": "^0.525.0",
     "mapbox-gl": "^3.16.0",
-    "next": "15",
+    "next": "16",
     "raf": "^3.4.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",

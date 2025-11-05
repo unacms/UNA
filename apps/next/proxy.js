@@ -5,7 +5,7 @@ export const config = {
     //runtime: 'experimental-edge',
 };
 
-export function middleware(request) {
+export function proxy(request) {
     
     if (!request.nextUrl.pathname.includes('.php')) {
         
