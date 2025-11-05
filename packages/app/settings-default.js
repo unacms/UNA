@@ -308,7 +308,7 @@ export const settingsDefault = {
     },
     feed: {
         feed_container: 'relative flex-auto mx-auto w-full max-w-3xl  ',
-        post_trigger: 'active:bg-muted rounded-lg font-medium lg:rounded-full flex-auto text-muted-foreground web:hover:text-foreground  lg:bg-muted/80 lg:hover:bg-muted justify-center px-1 lg:px-4',
+        post_trigger: 'web:active:bg-muted rounded-lg font-medium lg:rounded-full flex-auto text-muted-foreground web:hover:text-foreground  lg:bg-muted/80 lg:hover:bg-muted justify-center px-1 lg:px-4',
         show_html: false,
         default_feed: 'foryou',
         list: [
@@ -347,7 +347,7 @@ export const settingsDefault = {
             button_variant: 'text',
             menu_width: ' w-min ',
             pressed_classes: {
-                pressed_container: ' active:bg-accent web:hover:bg-accent ',
+                pressed_container: ' web:active:bg-accent web:hover:bg-accent ',
                 pressed_text: ' text-accent font-medium ',
             },
             button_rounded: false,
@@ -1122,7 +1122,7 @@ export const settingsDefault = {
         button_sizes: {
             default_size: 'base',
             default_variant: 'default',
-            pressed_container: ' bg-accent web:hover:bg-accent active:bg-accent  ',
+            pressed_container: ' bg-accent web:hover:bg-accent web:active:bg-accent  ',
             pressed_text: ' text-accent-foreground font-semibold ',
             xxs: {
                 rounded: ' rounded-md ',
@@ -1330,7 +1330,7 @@ export const settingsDefault = {
                 hitSlop: { top: 8, right: 8, bottom: 8, left: 8 },
                 text: ' text-xs leading-4 min-h-4 items-center justify-center flex',
                 rounded: ' rounded-sm ',
-                focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background ',
+                focus: ' web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2 web:ring-offset-background ',
             },
             sm: {
                 padding: ' web:active:scale-95 rounded-md items-center flex ',
@@ -1338,7 +1338,7 @@ export const settingsDefault = {
                 hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
                 text: 'text-sm leading-tight items-center justify-center flex',
                 rounded: 'rounded-md',
-                focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-1 ring-offset-ring ',
+                focus: ' web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring/60 web:focus-visible:ring-offset-1 web:ring-offset-ring ',
             },
             md: {
                 padding: ' px-0.5 ',
@@ -1346,7 +1346,7 @@ export const settingsDefault = {
                 hitSlop: { top: 4, right: 4, bottom: 4, left: 4 },
                 text: ' underline-offset-2  ',
                 rounded: ' rounded-md ',
-                focus: ' focus-visible:outline-offset-1 focus-visible:outline-4 focus-visible:ring-1 focus-visible:ring-offset-1 focus-visible:ring-1   ',
+                focus: ' web:focus-visible:outline-offset-1 web:focus-visible:outline-4 web:focus-visible:ring-1 web:focus-visible:ring-offset-1 web:focus-visible:ring-1   ',
             },
             lg: {
                 padding: ' px-2 rounded-xl items-center flex web:active:outline-ring ',
@@ -1354,13 +1354,13 @@ export const settingsDefault = {
                 hitSlop: { top: 2, right: 2, bottom: 2, left: 2 },
                 text: ' text-base leading-8 min-h-8 items-center justify-center flex ',
                 rounded: ' rounded-xl ',
-                focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background ',
+                focus: ' web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2 web:ring-offset-background ',
             },
         },
 
         link_styles: {
             // Default (SwiftUI-like Link): underline on hover; visited color; link color tokens
-            'u-link-default-cnt': ' focus-visible:ring-offset-background focus-visible:bg-background focus-visible:outline-ring/50 focus-visible:ring-ring active:bg-accent ',
+            'u-link-default-cnt': ' web:focus-visible:ring-offset-background web:focus-visible:bg-background web:focus-visible:outline-ring/50 web:focus-visible:ring-ring web:active:bg-accent ',
             'u-link-default-text': ' text-label-link web:hover:text-label-linkhover web:hover:underline decoration-from-font  ',
             'u-link-default-trans': ' web:duration-200 ',
 
@@ -1537,7 +1537,7 @@ export const settingsDefault = {
             default_size: 'md',
             sm: {
                 header: 'p-1 gap-1',
-                item: ' h-8 px-2.5 text-sm rounded-lg focus-visible:outline outline-offset-0 outline-ring  ',
+                item: ' h-8 px-2.5 text-sm rounded-lg web:focus-visible:outline web:outline-offset-0 outline-ring  ',
                 indicator: ' h-0.5 bottom-0 px-0.5 ',
                 indicator_inner: ' rounded-full ',
                 text: ' text-sm whitespace-nowrap  ',
@@ -1630,7 +1630,7 @@ export const settingsDefault = {
             'u-btn-focus': ' web:focus-visible:ring-ring web:focus-visible:ring-offset-background ',
           
 
-            'u-btn-primary-cnt': ' focus:outline-4 focus:outline-offset-1 focus:outline-offset-card focus:outline-ring bg-primary web:hover:bg-primary/90 shadow-sm web:active:opacity-50 ',
+            'u-btn-primary-cnt': ' web:focus:outline-4 web:focus:outline-offset-1 web:focus:outline-offset-card web:focus:outline-ring bg-primary web:hover:bg-primary/90 shadow-sm web:active:opacity-50 ',
             'u-btn-primary-text': ' font-semibold text-primary-foreground ',
             'u-btn-primary-trans': ' web:duration-200',
 
@@ -1658,9 +1658,9 @@ export const settingsDefault = {
             'u-btn-text-trans': ' web:duration-200',
             'u-btn-text-focus': ' web:focus:text-label-primary ',
 
-            'u-btn-link-cnt': ' web:group active:bg-muted/60 ',
+            'u-btn-link-cnt': ' web:group web:active:bg-muted/60 ',
             'u-btn-link-text':
-                ' font-semibold text-label-link group-hover:text-label-linkhover active:text-label-linkhover web:duration-200',
+                ' font-semibold text-label-link web:group-hover:text-label-linkhover web:active:text-label-linkhover web:duration-200',
             'u-btn-text-trans': ' web:duration-200  ',
             
 
@@ -1691,7 +1691,7 @@ export const settingsDefault = {
                 'text-neutral-700 dark:text-neutral-300 web:dark:group-hover:text-neutral-50',
 
             'u-btn-group-item-secondary-cnt':
-                ' hover:bg-secondary h-full w-full overflow-hidden',
+                ' web:hover:bg-secondary h-full w-full overflow-hidden',
             'u-btn-group-item-secondary-text':
                 'font-semibold text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 web:dark:group-hover:text-white',
             'u-btn-group-item-secondary-icon':
@@ -1723,9 +1723,9 @@ export const settingsDefault = {
             'u-btn-group-item-accent-cnt':
                 'border border-transparent dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',
             'u-btn-group-item-accent-text':
-                'font-semibold text-neutral-800 dark:text-neutral-200 dark:group-hover:text-neutral-50',
+                'font-semibold text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
             'u-btn-group-item-accent-icon':
-                'text-neutral-700 dark:text-neutral-300 dark:group-hover:text-neutral-50',
+                'text-neutral-700 dark:text-neutral-300 web:web:dark:group-hover:text-neutral-50',
 
             'u-btn-label-cnt':
                 'border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 web:hover:bg-neutral-100 dark:web:hover:bg-neutral-800 web:active:opacity-70',
