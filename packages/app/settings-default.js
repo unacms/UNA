@@ -1341,15 +1341,15 @@ export const settingsDefault = {
                 focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-1 ring-offset-ring ',
             },
             md: {
-                padding: ' px-0.5 items-center flex ',
+                padding: ' px-0.5 ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-md ',
                 hitSlop: { top: 4, right: 4, bottom: 4, left: 4 },
-                text: ' text-base flex underline-offset-2',
+                text: ' underline-offset-2  ',
                 rounded: ' rounded-md ',
-                focus: ' focus-visible:outline-offset-2 focus-visible:outline-4 focus-visible:ring-1 focus-visible:ring-offset-1   ',
+                focus: ' focus-visible:outline-offset-1 focus-visible:outline-4 focus-visible:ring-1 focus-visible:ring-offset-1 focus-visible:ring-1   ',
             },
             lg: {
-                padding: ' px-2 rounded-xl items-center flex ',
+                padding: ' px-2 rounded-xl items-center flex active:outline-ring ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-lg ',
                 hitSlop: { top: 2, right: 2, bottom: 2, left: 2 },
                 text: ' text-base leading-8 min-h-8 items-center justify-center flex ',
@@ -1360,8 +1360,8 @@ export const settingsDefault = {
 
         link_styles: {
             // Default (SwiftUI-like Link): underline on hover; visited color; link color tokens
-            'u-link-default-cnt': ' group focus-visible:ring-offset-background focus-visible:bg-background focus-visible:outline-ring/50 focus-visible:ring-ring active:bg-accent ',
-            'u-link-default-text': ' text-label-link web:hover:text-label-linkhover web:hover:underline  ',
+            'u-link-default-cnt': ' focus-visible:ring-offset-background focus-visible:bg-background focus-visible:outline-ring/50 focus-visible:ring-ring active:bg-accent ',
+            'u-link-default-text': ' text-label-link web:hover:text-label-linkhover web:hover:underline decoration-from-font  ',
             'u-link-default-trans': ' web:duration-200 ',
 
             // Plain: inherit text; no decoration idle; subtle hover/active feedback

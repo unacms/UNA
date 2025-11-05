@@ -126,11 +126,11 @@
         --input: var(--neutral-900); /*form inputs*/
         --ring: var(--accent-700); /*focus rings*/
 
-        --label-primary: var(--neutral-100); /*Primary text (high emphasis)*/
+        --label-primary: var(--white); /*Primary text (high emphasis)*/
         --label-secondary: var(--neutral-200); /*Secondary text (medium emphasis)*/
-        --label-tertiary: var(--neutral-300); /*Tertiary text (low emphasis)*/
-        --label-quaternary: var(--neutral-400); /*Very subtle text (e.g., disabled, placeholder)*/
-        --label-link: var(--accent-500); /*Link text color*/
+        --label-tertiary: var(--neutral-400); /*Tertiary text (low emphasis)*/
+        --label-quaternary: var(--neutral-600); /*Very subtle text (e.g., disabled, placeholder)*/
+        --label-link: var(--accent-400); /*Link text color*/
         --label-linkhover: var(--accent-600); /*Link text color on hover*/
         --placeholder: var(--neutral-500); /*Placeholder text inside inputs*/
         --fill-primary: var(--neutral-950); /*Main surface background*/
