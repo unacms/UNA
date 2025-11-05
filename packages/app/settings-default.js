@@ -1108,15 +1108,15 @@ export const settingsDefault = {
         },
 
         inputs: {
-            default: ' bg-input/80 border border-border/60 web:border-0 focus:border-primary web:ring-1 web:ring-inset web:ring-border/60 rounded-xl focus:bg-card focus:ring-primary  px-3 min-h-12 flex-auto text-base overflow-hidden shadow-xs placeholder-muted-foreground text-card-foreground web:duration-100',
+            default: ' bg-input/60 focus:bg-input border border-border/60 web:border-0 focus:border-ring web:ring-1 web:ring-inset web:ring-border/60 rounded-xl focus:bg-input web:focus:ring-ring px-3 min-h-12 flex-auto text-base overflow-hidden shadow-xs placeholder-placeholder text-label-secondary web:duration-100 focus:outline-4 focus-visible:outline-ring/50 ',
            
-            multi: ' bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 py-2 min-h-12 flex-auto text-base leading-6 overflow-y-scroll [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden shadow-xs placeholder-muted-foreground text-card-foreground web:duration-100 ',
+            multi: ' bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 py-2 min-h-12 flex-auto text-base leading-6 overflow-y-scroll [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden shadow-xs placeholder-placeholder text-card-foreground web:duration-100 ',
             rounded:
-                ' border border-border/80 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-full web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
+                ' border border-border/80 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-full web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder-placeholder text-card-foreground web:duration-300 ',
             roundedsmall:
-                ' rounded-full border/50 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/80 px-2 min-h-10 flex-auto  text-base leading-5 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
-            small: ' border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-lg web:focus:bg-card px-2 min-h-10 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
-            select: ' pr-10 border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-xl bg-input web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
+                ' rounded-full border/50 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/80 px-2 min-h-10 flex-auto  text-base leading-5 overflow-hidden placeholder-placeholder text-card-foreground web:duration-300 ',
+            small: ' border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-lg web:focus:bg-card px-2 min-h-10 flex-auto  text-base leading-6 overflow-hidden placeholder-placeholder text-card-foreground web:duration-300 ',
+            select: ' pr-10 border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-xl bg-input web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder-placeholder text-card-foreground web:duration-300 ',
         },
 
         button_sizes: {
@@ -1423,16 +1423,16 @@ export const settingsDefault = {
         },
         cards: {
             'u-card-list':
-                ' u-card-list bg-card shadow-sm border-y sm:border-x border-border/50 web:border-0 web:ring-0 web:ring-inset web:ring-border/50 text-card-foreground overflow-hidden sm:rounded-2xl ',
+                ' u-card-list bg-card/60 shadow-sm border-y sm:border-x border-border/50 web:border-0 web:ring-0 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden sm:rounded-2xl ',
             'u-card-list-padding': ' p-3 lg:p-4 ',
             'u-card-base':
-                ' u-card-base bg-card shadow-sm border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden rounded-2xl gap-4',
+                ' u-card-base bg-card/60 shadow-sm border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden rounded-2xl gap-4',
             'u-card-padding': ' p-4 ',
             'u-card-header': 'flex gap-2',
             'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',
             'u-card-title':
                 'text-card-foreground text-2xl font-bold leading-none tracking-tight',
-            'u-card-description': 'text-muted-foreground text-sm font-medium leading-6',
+            'u-card-description': 'text-label-tertiary text-sm',
             'u-card-content': 'text-card-foreground ',
             'u-card-footer': 'flex text-base text-card-foreground gap-2',
         },
