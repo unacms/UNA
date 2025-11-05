@@ -1,6 +1,6 @@
 import { UNA_URL, UNA_API_KEY, getRemoteSettings } from 'app/config';
 import { cache } from 'react'
-import { Root } from 'app/root'
+import Root from 'app/root-client'
 import { Suspense } from 'react'
 import { Loading } from 'app/loading'
 import 'app/styles/global.default.css'

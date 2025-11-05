@@ -69,7 +69,6 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
             {appStatic('maintenance_mode')}
         </>
     }
-   console.log("layoutName", layoutName, appSetting('layout ', 'footer', 'hide_for_layouts').includes(layoutName))
     return (
         <>
             <Suggestions />

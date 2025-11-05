@@ -428,12 +428,6 @@ export function Conductor({
     useEffect(() => {
         const foundIndex = getFoundIndex()
         if (foundIndex !== index) setIndex(foundIndex)
-        console.log(
-            'storageClear',
-            ts,
-            currentRoute,
-            currentRoute.storageKeyValue
-        )
         storageClear('ul:data', currentRoute.storageKeyValue)
         storageClear('ul:state', currentRoute.storageKeyValue)
     }, [ts])

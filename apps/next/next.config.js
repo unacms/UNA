@@ -18,6 +18,8 @@ const tenPlayWebviewShimPath = require('fs').existsSync(tenPlayWebviewLocalPath)
   ? path.resolve(tenPlayWebviewLocalPath, 'lib/module/shim.js')
   : path.resolve(tenPlayWebviewRootPath, 'lib/module/shim.js');
 
+const reanimatedPath = path.resolve(__dirname, 'node_modules/react-native-reanimated');
+
 const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
@@ -48,7 +50,6 @@ const nextConfig = {
     'react-native',
     'react-native-web',
     'solito',
-    'react-native-reanimated',
     'nativewind',
     "react-native-css-interop",
     '@expo/html-elements',
@@ -97,6 +98,7 @@ const nextConfig = {
       'react-native-svg': path.resolve(__dirname, 'node_modules/react-native-svg'),
       'react-native/Libraries/Utilities/codegenNativeComponent': tenPlayWebviewShimPath,
       'react-native/Libraries/Utilities/codegenNativeComponent$': tenPlayWebviewShimPath,
+      'react-native-reanimated': reanimatedPath,  // <-- Явно указываем версию 3.10.1
     };
 
     // Добавляем fallback для codegenNativeComponent
@@ -105,15 +107,17 @@ const nextConfig = {
       'react-native/Libraries/Utilities/codegenNativeComponent': tenPlayWebviewShimPath,
     };
 
-    // Добавляем корневой node_modules в resolve.modules для монорепо
+    // ИЗМЕНИТЕ порядок resolve.modules - локальный node_modules должен быть ПЕРВЫМ
     config.resolve.modules = [
-      ...(config.resolve.modules || []),
-      path.resolve(__dirname, 'node_modules'),
-      path.resolve(workspaceRoot, 'node_modules'),
+      path.resolve(__dirname, 'node_modules'),  // <-- ПЕРВЫМ! Локальная версия 3.10.1
+      ...(config.resolve.modules || []).filter(m => 
+        m !== path.resolve(__dirname, 'node_modules') && 
+        m !== path.resolve(workspaceRoot, 'node_modules')
+      ),
+      path.resolve(workspaceRoot, 'node_modules'),  // <-- Потом корневой (может содержать 4.1.3)
     ];
 
-    // Используем NormalModuleReplacementPlugin для замены react-native-webview на веб-версию
-    // Это нужно для @10play/tentap-editor, который использует react-native-webview
+    // Используем NormalModuleReplacementPlugin для принудительной замены
     config.plugins = config.plugins || [];
     config.plugins.push(
       new webpack.NormalModuleReplacementPlugin(
@@ -121,6 +125,13 @@ const nextConfig = {
         (resource) => {
           // Заменяем на веб-версию для всех импортов (особенно из @10play/tentap-editor)
           resource.request = tenPlayWebviewPath;
+        }
+      ),
+      // Принудительно заменяем react-native-reanimated на версию 3.10.1
+      new webpack.NormalModuleReplacementPlugin(
+        /^react-native-reanimated$/,
+        (resource) => {
+          resource.request = reanimatedPath;
         }
       )
     );
