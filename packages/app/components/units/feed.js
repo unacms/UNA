@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { appSetting, cd, cloneObject } from 'app/lib/util'
-import { View, Row, Pressable } from 'app/design/view'
+import { View, Row, ScrollView } from 'app/design/view'
 import { Modal } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher'
 import { useTranslation } from 'react-i18next'
@@ -20,6 +20,8 @@ import {
 import { Platform } from 'react-native'
 import { CardList, CardFooter } from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/atoms/animated-block'
+import { getComponent } from 'app/components/registry';
+import { Text } from 'app/design/typography'
 
 function DefaultUnit({ data }) {
     const isWeb = Platform.OS === 'web'
@@ -98,7 +100,30 @@ function DefaultUnit({ data }) {
     }
 
     if (viewState.view == 'deleted') return <></>
-
+    if (data.type == 'timeline_recommendations') {
+        const Unit = getComponent('content-list', data.module);
+        const contentElement = data.content.data.map((item, index) => {
+            return (
+                <View className="w-[280px]" key={`item${index}_row`}>
+                    <Unit
+                        data={item}
+                    />
+                </View>
+            );
+        });
+        return (
+            <AnimatedBlock>
+                <Row className="items-center justify-between px-2 my-3">
+                    <Text className=" text-card-foreground text-xl font-bold leading-none lg:leading-none tracking-tight ">
+                        {t(data.title)}
+                    </Text>
+                </Row>
+                <ScrollView horizontal={true}>
+                    <Row className='gap-4 mb-0.5 sm:mb-3 '>{contentElement}</Row>
+                </ScrollView>
+            </AnimatedBlock>
+        )
+    }
     return (
         <AnimatedBlock>
             {viewState.view == 'edited' && (
