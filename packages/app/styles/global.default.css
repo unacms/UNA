@@ -25,13 +25,13 @@
         --input: var(--white); /*form inputs*/
         --ring: var(--accent-500); /*focus rings*/
 
-        --label-primary: var(--neutral-900); /*Primary text (high emphasis)*/
+        --label-primary: var(--neutral-950); /*Primary text (high emphasis)*/
         --label-secondary: var(--neutral-800); /*Secondary text (medium emphasis)*/
-        --label-tertiary: var(--neutral-700); /*Tertiary text (low emphasis)*/
-        --label-quaternary: var(--neutral-600); /*Very subtle text (e.g., disabled, placeholder)*/
+        --label-tertiary: var(--neutral-600); /*Tertiary text (low emphasis)*/
+        --label-quaternary: var(--neutral-400); /*Very subtle text (e.g., disabled, placeholder)*/
         --label-link: var(--accent-600); /*Link text color*/
-        --label-link-hover: var(--accent-500); /*Link text color on hover*/
-        --placeholder: var(--neutral-500); /*Placeholder text inside inputs*/
+        --label-linkhover: var(--accent-800); /*Link text color on hover*/
+        --placeholder: var(--neutral-400); /*Placeholder text inside inputs*/
         --fill-primary: var(--neutral-50); /*Main surface background*/
         --fill-secondary: var(--neutral-100); /*Secondary layered background*/
         --fill-tertiary: var(--neutral-500); /*Card-like background*/
@@ -110,7 +110,7 @@
         --foreground: var(--neutral-50); /*main page content*/
         --card: var(--neutral-900); /*cards, sidebars, navbars background*/
         --card-foreground: var(--neutral-300); /*content on cards, sidebars, navbars*/
-        --popover: var(--neutral-700); /*background for popovers, inputs, tooltips, modals, elevated surfaces*/
+        --popover: var(--neutral-800); /*background for popovers, inputs, tooltips, modals, elevated surfaces*/
         --popover-foreground: var(--neutral-300); /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
         --primary: var(--accent-600); /*background for primary buttons, links, active states, focus rings. Use use high-contract background from gray-scale or accent-scale.*/
         --primary-foreground: var(--accent-950); /*content on primary buttons, active states, primary surfaces*/
@@ -126,12 +126,12 @@
         --input: var(--neutral-900); /*form inputs*/
         --ring: var(--accent-700); /*focus rings*/
 
-        --label-primary: var(--neutral-100); /*Primary text (high emphasis)*/
+        --label-primary: var(--neutral-50); /*Primary text (high emphasis)*/
         --label-secondary: var(--neutral-200); /*Secondary text (medium emphasis)*/
-        --label-tertiary: var(--neutral-300); /*Tertiary text (low emphasis)*/
-        --label-quaternary: var(--neutral-400); /*Very subtle text (e.g., disabled, placeholder)*/
-        --label-link: var(--accent-500); /*Link text color*/
-        --label-link-hover: var(--accent-600); /*Link text color on hover*/
+        --label-tertiary: var(--neutral-400); /*Tertiary text (low emphasis)*/
+        --label-quaternary: var(--neutral-600); /*Very subtle text (e.g., disabled, placeholder)*/
+        --label-link: var(--accent-400); /*Link text color*/
+        --label-linkhover: var(--accent-600); /*Link text color on hover*/
         --placeholder: var(--neutral-500); /*Placeholder text inside inputs*/
         --fill-primary: var(--neutral-950); /*Main surface background*/
         --fill-secondary: var(--neutral-900); /*Secondary layered background*/
@@ -217,8 +217,8 @@
 *:focus-visible {
     outline-color: rgb(var(--ring));
     outline-style: solid;
-    outline-offset: 2px;
-    outline-width: 2px;
+    outline-offset: 0px;
+    outline-width: 3px;
 }
 select{
     appearance: none;           

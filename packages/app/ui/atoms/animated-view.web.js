@@ -10,13 +10,14 @@ function AnimatedView({ children, direction = 'down', className, delay = 0 }) {
     const initialY = direction === 'up' ? 20 : -20;
     const translateY = useSharedValue(initialY);
 
-    const animationDuration = appSetting('layout', 'card_animation_duration') || 200;
+    const animationDuration = appSetting('layout', 'card_animation_duration') || 100;
 
     useEffect(() => {
         opacity.value = withDelay(delay, withTiming(1, { duration: animationDuration }));
         translateY.value = withDelay(delay, withSpring(0, {
-            damping: 8,
-            stiffness: 40,
+            damping: 20,
+            mass: 0.8,
+            stiffness: 200,
         }));
     }, []);
 

@@ -86,7 +86,7 @@ function PlainText(props) {
             onChangeText={field.onChange}
             onBlur={field.onBlur}
             value={field.value}
-            className='placeholder-muted-foreground text-foreground leading-6 text-lg font-medium py-3 '
+            className='placeholder-placeholder text-foreground leading-6 text-lg font-medium py-3 '
             aria-label={accessibility}
         />
     }

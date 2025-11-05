@@ -66,7 +66,7 @@ export const settingsDefault = {
         tooltips: true,
         hide_header_for_non_logged: false,
         hide_header_for_all: false,
-        card_animation_duration: 200,
+        card_animation_duration: 100,
         user_remote_config: true,
         background_image_color: '', //OLD appSetting('layout', 'background_cover_color')
         background_image: '', //`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
@@ -1108,15 +1108,15 @@ export const settingsDefault = {
         },
 
         inputs: {
-            default: ' bg-input/80 border border-border/60 web:border-0 focus:border-primary web:ring-1 web:ring-inset web:ring-border/60 rounded-xl focus:bg-card focus:ring-primary  px-3 min-h-12 flex-auto text-base overflow-hidden shadow-xs placeholder-muted-foreground text-card-foreground web:duration-100',
+            default: ' bg-input/60 focus:bg-input border border-border/60 web:border-0 focus:border-ring web:ring-1 web:ring-inset web:ring-border/60 rounded-xl focus:bg-input web:focus:ring-ring px-3 min-h-12 flex-auto text-base overflow-hidden shadow-xs placeholder-placeholder text-label-secondary web:duration-100 focus:outline-4 focus-visible:outline-ring/50 ',
            
-            multi: ' bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 py-2 min-h-12 flex-auto text-base leading-6 overflow-y-scroll [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden shadow-xs placeholder-muted-foreground text-card-foreground web:duration-100 ',
+            multi: ' bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 py-2 min-h-12 flex-auto text-base leading-6 overflow-y-scroll [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden shadow-xs placeholder-placeholder text-card-foreground web:duration-100 ',
             rounded:
-                ' border border-border/80 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-full web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
+                ' border border-border/80 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-full web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder-placeholder text-card-foreground web:duration-300 ',
             roundedsmall:
-                ' rounded-full border/50 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/80 px-2 min-h-10 flex-auto  text-base leading-5 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
-            small: ' border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-lg web:focus:bg-card px-2 min-h-10 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
-            select: ' pr-10 border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-xl bg-input web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-300 ',
+                ' rounded-full border/50 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/80 px-2 min-h-10 flex-auto  text-base leading-5 overflow-hidden placeholder-placeholder text-card-foreground web:duration-300 ',
+            small: ' border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-lg web:focus:bg-card px-2 min-h-10 flex-auto  text-base leading-6 overflow-hidden placeholder-placeholder text-card-foreground web:duration-300 ',
+            select: ' pr-10 border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-xl bg-input web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder-placeholder text-card-foreground web:duration-300 ',
         },
 
         button_sizes: {
@@ -1318,7 +1318,7 @@ export const settingsDefault = {
         },
         // Link styling (variants and sizes) to allow restyling without component changes
         link_sizes: {
-            default_size: 'base',
+            default_size: 'md',
             default_variant: 'default',
 
             
@@ -1341,15 +1341,15 @@ export const settingsDefault = {
                 focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-1 ring-offset-ring ',
             },
             md: {
-                padding: ' px-2 rounded-lg items-center flex',
+                padding: ' px-0.5 ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-md ',
                 hitSlop: { top: 4, right: 4, bottom: 4, left: 4 },
-                text: ' text-sm leading-6 min-h-6 items-center justify-center flex',
-                rounded: ' rounded-lg ',
-                focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background ',
+                text: ' underline-offset-2  ',
+                rounded: ' rounded-md ',
+                focus: ' focus-visible:outline-offset-1 focus-visible:outline-4 focus-visible:ring-1 focus-visible:ring-offset-1 focus-visible:ring-1   ',
             },
             lg: {
-                padding: ' px-2 rounded-xl items-center flex ',
+                padding: ' px-2 rounded-xl items-center flex active:outline-ring ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-lg ',
                 hitSlop: { top: 2, right: 2, bottom: 2, left: 2 },
                 text: ' text-base leading-8 min-h-8 items-center justify-center flex ',
@@ -1360,8 +1360,8 @@ export const settingsDefault = {
 
         link_styles: {
             // Default (SwiftUI-like Link): underline on hover; visited color; link color tokens
-            'u-link-default-cnt': ' group ',
-            'u-link-default-text': ' text-label-link web:hover:text-label-link-hover ',
+            'u-link-default-cnt': ' focus-visible:ring-offset-background focus-visible:bg-background focus-visible:outline-ring/50 focus-visible:ring-ring active:bg-accent ',
+            'u-link-default-text': ' text-label-link web:hover:text-label-linkhover web:hover:underline decoration-from-font  ',
             'u-link-default-trans': ' web:duration-200 ',
 
             // Plain: inherit text; no decoration idle; subtle hover/active feedback
@@ -1379,15 +1379,7 @@ export const settingsDefault = {
             'u-link-bordered-text':  ' text-primary web:hover:text-primary/90 web:visited:text-primary ',
             'u-link-bordered-trans': ' web:duration-200 ',
 
-            // BorderedProminent: accent background; stable text color
-            'u-link-borderedProminent-cnt': ' group bg-accent web:hover:bg-accent/90 active:bg-accent rounded-md ',
-            'u-link-borderedProminent-text': ' text-accent-foreground ',
-            'u-link-borderedProminent-trans': ' web:duration-200 ',
-
-            // BorderedSecondary: same bg as Bordered; secondary label text behavior
-            'u-link-borderedSecondary-cnt':  ' group bg-muted/60 web:hover:bg-muted rounded-md ',
-            'u-link-borderedSecondary-text':  ' text-secondary-label web:hover:text-label web:active:text-tertiary-label ',
-            'u-link-borderedSecondary-trans': ' web:duration-200 ',
+          
         },
         offsets: {
             'gap-lg': 'gap-4',
@@ -1431,16 +1423,16 @@ export const settingsDefault = {
         },
         cards: {
             'u-card-list':
-                ' u-card-list bg-card shadow-sm border-y sm:border-x border-border/50 web:border-0 web:ring-0 web:ring-inset web:ring-border/50 text-card-foreground overflow-hidden sm:rounded-2xl ',
+                ' u-card-list bg-card/60 shadow-sm border-y sm:border-x border-border/50 web:border-0 web:ring-0 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden sm:rounded-2xl ',
             'u-card-list-padding': ' p-3 lg:p-4 ',
             'u-card-base':
-                ' u-card-base bg-card shadow-sm border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden rounded-2xl gap-4',
+                ' u-card-base bg-card/60 shadow-sm border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden rounded-2xl gap-4',
             'u-card-padding': ' p-4 ',
             'u-card-header': 'flex gap-2',
             'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',
             'u-card-title':
                 'text-card-foreground text-2xl font-bold leading-none tracking-tight',
-            'u-card-description': 'text-muted-foreground text-sm font-medium leading-6',
+            'u-card-description': 'text-label-tertiary text-sm',
             'u-card-content': 'text-card-foreground ',
             'u-card-footer': 'flex text-base text-card-foreground gap-2',
         },
@@ -1540,7 +1532,7 @@ export const settingsDefault = {
             'u-controls-tabs-header-item-active-indicator-inner':
                 ' h-1 bottom-0 bg-accent rounded-t-full blur-lg ',
         },
-        // Tab sizes mapping (similar to button_sizes/link_sizes)
+        
         tabs_sizes: {
             default_size: 'md',
             sm: {
@@ -1668,7 +1660,7 @@ export const settingsDefault = {
 
             'u-btn-link-cnt': ' group active:bg-muted/60 ',
             'u-btn-link-text':
-                ' font-semibold text-label-link group-hover:text-label-link-hover active:text-label-link-hover web:duration-200',
+                ' font-semibold text-label-link group-hover:text-label-linkhover active:text-label-linkhover web:duration-200',
             'u-btn-text-trans': ' web:duration-200  ',
             
 
