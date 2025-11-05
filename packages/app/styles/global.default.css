@@ -30,7 +30,7 @@
         --label-tertiary: var(--neutral-700); /*Tertiary text (low emphasis)*/
         --label-quaternary: var(--neutral-600); /*Very subtle text (e.g., disabled, placeholder)*/
         --label-link: var(--accent-600); /*Link text color*/
-        --label-link-hover: var(--accent-500); /*Link text color on hover*/
+        --label-linkhover: var(--accent-800); /*Link text color on hover*/
         --placeholder: var(--neutral-500); /*Placeholder text inside inputs*/
         --fill-primary: var(--neutral-50); /*Main surface background*/
         --fill-secondary: var(--neutral-100); /*Secondary layered background*/
@@ -131,7 +131,7 @@
         --label-tertiary: var(--neutral-300); /*Tertiary text (low emphasis)*/
         --label-quaternary: var(--neutral-400); /*Very subtle text (e.g., disabled, placeholder)*/
         --label-link: var(--accent-500); /*Link text color*/
-        --label-link-hover: var(--accent-600); /*Link text color on hover*/
+        --label-linkhover: var(--accent-600); /*Link text color on hover*/
         --placeholder: var(--neutral-500); /*Placeholder text inside inputs*/
         --fill-primary: var(--neutral-950); /*Main surface background*/
         --fill-secondary: var(--neutral-900); /*Secondary layered background*/

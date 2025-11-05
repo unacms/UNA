@@ -34,7 +34,7 @@ function PageContent({ children, isLoginPage, title }) {
     }
 
     return (
-        <Card padding="p-0 pb-4" className="bg-card/50">
+        
             <AnimatedView direction="up" delay={300}>
                 <Card padding="p-6  ">
                     <CardHeader>
@@ -58,20 +58,21 @@ function PageContent({ children, isLoginPage, title }) {
                         </Row>
                         <AuthPanel showSeparator={true} />
                     </CardContent>
-                </Card></AnimatedView>
-            <CardFooter>
-                <Row className="text-center flex-none mx-auto text-base items-center gap-1">
-                    <Text className="text-muted-foreground text-base">{t('splash_page_login2')}</Text>
+                </Card>
+            
+                <Row className=" mx-auto my-4 gap-1">
+                    <Text className="text-muted-foreground">{t('splash_page_login2')}</Text>
                     <Link
-                        variant="primary"
+                        variant="default"
+                        size="md"
                         href="/create-account"
                         haptics="Medium"
                     >
                         {t('splash_page_new_account')}
                     </Link>
                 </Row>
-            </CardFooter>
-        </Card>
+            
+                </AnimatedView>
     )
 }
 

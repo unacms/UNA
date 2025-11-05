@@ -33,35 +33,35 @@ function PageContent(props) {
     const { t } = useTranslation()
     return (
         
-        <AnimatedView direction="up" delay={300}>
-        <Card padding="p-6 ">
-            <CardHeader>
-                <CardTitle>{t('login_modal_title')} {t('app_name')}</CardTitle>
-                <CardDescription>
-                    {t('splash_page_login')}
-                
-                </CardDescription>
-            </CardHeader>
-            <CardContent className="gap-4">
-                <BlockByName
-                    name="system:login_form"
-                    contentOnly={true}
-                    data={props.data}
-                    formProps={{ hide_errors: true, button_full_width: true }}
-                />
-                
-            </CardContent>
-            <CardFooter>
-                
-                <AuthPanel forgotPasswordLink={true} showSeparator={true} />
-            </CardFooter>
-        </Card>
+                <AnimatedView direction="up" delay={200}>
+                <Card padding="p-6 ">
+                    <CardHeader>
+                        <CardTitle>{t('login_modal_title')} {t('app_name')}</CardTitle>
+                        <CardDescription>
+                            {t('splash_page_login')}
+                        
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="gap-4">
+                        <BlockByName
+                            name="system:login_form"
+                            contentOnly={true}
+                            data={props.data}
+                            formProps={{ hide_errors: true, button_full_width: true }}
+                        />
+                        
+                    </CardContent>
+                    <CardFooter>
+                        
+                        <AuthPanel forgotPasswordLink={true} showSeparator={true} />
+                    </CardFooter>
+                </Card>
         
-                <Row className="text-center flex-none mx-auto my-4 text-base items-center text-muted-foreground gap-1">
-                    <Text className="text-muted-foreground text-base">{t('splash_page_login2')}</Text>
+                <Row className=" mx-auto my-4 gap-1">
+                    <Text className="text-muted-foreground ">{t('splash_page_login2')}</Text>
                     <Link
                         
-                        
+                        variant="default"
                         href="/create-account"
                         haptics="Medium"
                     >

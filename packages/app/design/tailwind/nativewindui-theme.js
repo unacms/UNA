@@ -76,7 +76,7 @@ const nativewindUIColors = {
         tertiary: withOpacity('label-tertiary'),
         quaternary: withOpacity('label-quaternary'),
         link: withOpacity('label-link'),
-        link_hover: withOpacity('label-link-hover'),
+        linkhover: withOpacity('label-linkhover'),
         
     },
    

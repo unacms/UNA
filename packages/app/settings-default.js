@@ -66,7 +66,7 @@ export const settingsDefault = {
         tooltips: true,
         hide_header_for_non_logged: false,
         hide_header_for_all: false,
-        card_animation_duration: 200,
+        card_animation_duration: 100,
         user_remote_config: true,
         background_image_color: '', //OLD appSetting('layout', 'background_cover_color')
         background_image: '', //`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.08' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
@@ -1318,7 +1318,7 @@ export const settingsDefault = {
         },
         // Link styling (variants and sizes) to allow restyling without component changes
         link_sizes: {
-            default_size: 'base',
+            default_size: 'md',
             default_variant: 'default',
 
             
@@ -1341,12 +1341,12 @@ export const settingsDefault = {
                 focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-1 ring-offset-ring ',
             },
             md: {
-                padding: ' px-2 rounded-lg items-center flex',
+                padding: ' px-1 items-center flex ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-md ',
                 hitSlop: { top: 4, right: 4, bottom: 4, left: 4 },
-                text: ' text-sm leading-6 min-h-6 items-center justify-center flex',
-                rounded: ' rounded-lg ',
-                focus: ' focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background ',
+                text: ' text-base flex underline-offset-2',
+                rounded: ' rounded-md ',
+                focus: ' focus-visible:outline-offset-2 focus-visible:outline-4 focus-visible:ring-1 focus-visible:ring-offset-1   ',
             },
             lg: {
                 padding: ' px-2 rounded-xl items-center flex ',
@@ -1360,8 +1360,8 @@ export const settingsDefault = {
 
         link_styles: {
             // Default (SwiftUI-like Link): underline on hover; visited color; link color tokens
-            'u-link-default-cnt': ' group ',
-            'u-link-default-text': ' text-label-link web:hover:text-label-link-hover ',
+            'u-link-default-cnt': ' group focus-visible:ring-offset-background focus-visible:bg-background focus-visible:outline-ring/50 focus-visible:ring-ring active:bg-accent ',
+            'u-link-default-text': ' text-label-link web:hover:text-label-linkhover web:hover:underline  ',
             'u-link-default-trans': ' web:duration-200 ',
 
             // Plain: inherit text; no decoration idle; subtle hover/active feedback
@@ -1379,15 +1379,7 @@ export const settingsDefault = {
             'u-link-bordered-text':  ' text-primary web:hover:text-primary/90 web:visited:text-primary ',
             'u-link-bordered-trans': ' web:duration-200 ',
 
-            // BorderedProminent: accent background; stable text color
-            'u-link-borderedProminent-cnt': ' group bg-accent web:hover:bg-accent/90 active:bg-accent rounded-md ',
-            'u-link-borderedProminent-text': ' text-accent-foreground ',
-            'u-link-borderedProminent-trans': ' web:duration-200 ',
-
-            // BorderedSecondary: same bg as Bordered; secondary label text behavior
-            'u-link-borderedSecondary-cnt':  ' group bg-muted/60 web:hover:bg-muted rounded-md ',
-            'u-link-borderedSecondary-text':  ' text-secondary-label web:hover:text-label web:active:text-tertiary-label ',
-            'u-link-borderedSecondary-trans': ' web:duration-200 ',
+          
         },
         offsets: {
             'gap-lg': 'gap-4',
@@ -1540,7 +1532,7 @@ export const settingsDefault = {
             'u-controls-tabs-header-item-active-indicator-inner':
                 ' h-1 bottom-0 bg-accent rounded-t-full blur-lg ',
         },
-        // Tab sizes mapping (similar to button_sizes/link_sizes)
+        
         tabs_sizes: {
             default_size: 'md',
             sm: {
@@ -1668,7 +1660,7 @@ export const settingsDefault = {
 
             'u-btn-link-cnt': ' group active:bg-muted/60 ',
             'u-btn-link-text':
-                ' font-semibold text-label-link group-hover:text-label-link-hover active:text-label-link-hover web:duration-200',
+                ' font-semibold text-label-link group-hover:text-label-linkhover active:text-label-linkhover web:duration-200',
             'u-btn-text-trans': ' web:duration-200  ',
             
 
