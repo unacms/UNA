@@ -81,17 +81,17 @@ function PageContentUniversal({ children, data, layoutName }) {
     const midCells = cells.filter((c) => c.area === 'mid');
 
     return (
-        <View className={`mx-auto w-full u-max-width-block gap-y-${gap} p-3 sm:p-4`}>
+        <View className={`mx-auto w-full u-max-width-block gap-y-${gap} p-2 sm:p-4`}>
             <PanelRow gap={gap} cell={topCell} currentBreakpoint={currentBreakpoint} />
             <PanelGroup key={`cells-${uri}-${layoutName}-${sizable ? 'sizable' : 'static'}`} autoSaveId={sizable ? `cells-${uri}-${layoutName}` : undefined} direction="horizontal">
                 {midCells.map((cell, i) => {
-                    return <PanelCell key={cell.key} sizable={sizable} currentBreakpoint={currentBreakpoint} cell={cell} index={i} />
+                    return <PanelCell key={cell.key} sizable={sizable} currentBreakpoint={currentBreakpoint} cell={cell} index={topCell.length > 0 ? i : 0}  />
                 })}
             </PanelGroup>
             {midCells.map((cell, i) => {
                 return <PanelRow key={cell.key} gap={gap} currentBreakpoint={currentBreakpoint} cell={cell} />
             })}
-            <PanelRow gap={gap} cell={bottomCell} currentBreakpoint={currentBreakpoint} />
+            {bottomCell.length > 0 && <PanelRow gap={gap} cell={bottomCell} currentBreakpoint={currentBreakpoint} />}
         </View>
     )
 }
