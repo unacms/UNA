@@ -37,7 +37,7 @@ async function getCachedData(props) {
 }
 
 
-const getData = cache(async (params, search_params) => {
+const getData = async (params, search_params) => {
     
     let path = params.path.join('/');
     let cookieString = search_params.cookieString;
@@ -91,7 +91,7 @@ const getData = cache(async (params, search_params) => {
         console.error("!-------------------------! JSON error:", text);
         return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: 500 };
     }
-});
+};
 
 
 export const viewport = {
