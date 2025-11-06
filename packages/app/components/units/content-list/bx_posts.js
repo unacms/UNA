@@ -73,7 +73,7 @@ Units.Search = function Search({ data, imageSizes }) {
 
 Units.Small = function Small({ data, imageSizes }) {
     return (
-        <CardList padding="p-1">
+        <CardList className="mb-0.5 sm:mb-3">
             {data.image && (
                 <View className="aspect-square md:aspect-video flex-none rounded-xl  overflow-hidden h-30 sm:h-36 mb-auto  ">
                     <Image

@@ -694,7 +694,7 @@ export const settingsDefault = {
             {
                 key: '/tab2',
                 title: 'Messages',
-                url: '/explore',
+                url: '/posts-home',
                 icon: 'MessageCircleMore',
                 badge: 'messenger'
             },

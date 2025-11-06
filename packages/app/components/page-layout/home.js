@@ -213,8 +213,8 @@ return;*/
                                         scrollProps: {
                                             pageData: props.data,
                                             headerHeight: isFeedMenuPresent
-                                                ? 122
-                                                : 56,
+                                                ? 100
+                                                : isWeb ? 56 : 48,
                                             subHeaderComponent: subHeader,
                                         },
                                     }}

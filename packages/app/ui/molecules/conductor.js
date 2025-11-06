@@ -87,11 +87,15 @@ const TabScene = React.memo(({
     isProfileHeader
 }) => {
 
-    const handleEndReached = useCallback(() => {
-        if (!route?.endpoint || route?.endpoint?.params?.start === 0 || refreshing || route?.endpoint?.finished)
-            return;
-        fetchNextPage();
-    }, [route?.endpoint, route?.endpoint?.params?.start, route?.endpoint?.finished, fetchNextPage, refreshing]);
+   
+    const handleEndReached = useCallback(
+        async (lastItemIndex) => {
+            if (!route?.endpoint || route?.endpoint?.params?.start === 0 || refreshing || route?.endpoint?.finished)
+                return;
+            fetchNextPage()
+        },
+        [route?.endpoint, route?.endpoint?.params?.start, route?.endpoint?.finished, fetchNextPage, refreshing]
+    )
 
     const renderItem = useCallback(({ item, index }) => (
         <ItemRenderer
@@ -143,7 +147,7 @@ const TabScene = React.memo(({
     )
 });
 
-export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 109, smallHeader, minHeaderHeight, isHideDefaultHeader, leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
+export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 88, smallHeader, minHeaderHeight, isHideDefaultHeader, leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
 
     minHeaderHeight = minHeaderHeight || 100;
     isHideDefaultHeader = isHideDefaultHeader || false;
@@ -224,10 +228,12 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 109, 
             revalidateData();
     }, [isRevalidate]);
 
-    const bEnabled = currentRoute?.endpoint?.params?.start == 0 && !isRefreshing;
+    
+    const bEnabled = (currentRoute?.endpoint?.params?.start == 0 || currentRoute.data.length < currentRoute?.endpoint?.params?.per_page) && !isRefreshing;
 
     const {
         fetchNextPage,
+        hasNextPage
     } = useInfiniteQuery({
         queryKey: qKey,
         queryFn: ({ pageParam }) => parseData(routes, index, setRoutes),
@@ -240,12 +246,11 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 109, 
         },
         enabled: false//routes[index]?.data?.length == 0
     });
-
     useEffect(() => {
         if (bEnabled) {
             fetchNextPage();
         }
-    }, [bEnabled]);
+    }, [bEnabled, currentRoute.data.length]);
 
     useEffect(() => {
         setToaster2Visible(false);
