@@ -21,16 +21,13 @@ export function proxy(request) {
 
             if (cookieString != ''){
                 const response =  NextResponse.rewrite(new URL(url + (url.includes('?') ? '&' : '?') + "cookieString=" + cookieString));
-                response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
-                response.headers.set('CDN-Cache-Control', 'no-store')
-                response.headers.set('Vercel-CDN-Cache-Control', 'no-store')
                 return response
             }
             else{
                 const response = NextResponse.rewrite(new URL(url))
-                response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
-                response.headers.set('CDN-Cache-Control', 'no-store')
-                response.headers.set('Vercel-CDN-Cache-Control', 'no-store')
+                response.headers.set('Cache-Control', 'public, s-maxage=1')
+                response.headers.set('CDN-Cache-Control', 'public, s-maxage=60')
+                response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=3600')
                 return response
             }
         }

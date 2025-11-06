@@ -77,8 +77,6 @@ const RenderScene = ({
     index,
     skeleton,
 }) => {
-    
-
     const { currentUser } = useCurrentUser()
     const uniRef = useRef()
     const pageRoute = route.inited ? route : prevRoute
@@ -379,6 +377,7 @@ export function Conductor({
     layoutName,
     defaultHeaderHeight = 112,
 }) {
+    const [timestamp, setTimestamp] = useState(Date.now());
     const { currentUser } = useCurrentUser()
     const { setBottomSheetData } = useBottomSheetData()
     const { layoutData, setLayoutData } = useLayoutData()
@@ -394,18 +393,10 @@ export function Conductor({
         currentUser,
         useSectionAsMenu
     )
-    const [tss, setTss] = useState(Date.now());
-    console.log("tsstss", tss)
-    const [routes, setRoutes_] = useState(initedTabs)
+    const [routes, setRoutes] = useState(initedTabs)
     const [isRevalidate, setIsRevalidate] = useState(false)
 
-    function setRoutes(a){
-        console.log("setRoutes_", a)
-        setRoutes_(a);
-    }
-
     useEffect(() => {
-        console.log("setRoutes1")
         setRoutes(initedTabs)
     }, [keyword, data.url, data.elements])
 
@@ -449,11 +440,10 @@ export function Conductor({
     const queryKey = [
         currentRoute?.endpoint?.request_url,
         currentRoute.link,
-        keyword || '',
-        currentRoute?.endpoint?.params?.filters ? JSON.stringify(currentRoute?.endpoint?.params?.filters) : '',
+        keyword,
+        JSON.stringify(currentRoute?.endpoint?.params?.filters),
         ts,
-        currentUser?.id || -1,
-        tss
+        timestamp
     ]
     const cellsCustomConfig =
         appSetting('layouts', 'navigator') || appSetting('layouts', `cols-l-c`)
@@ -474,8 +464,6 @@ export function Conductor({
         getNumCols(currentBreakpoint, currentRoute)
     )
 
-    const bEnabled = currentRoute?.endpoint?.params?.start == 0;
-
     const { fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
         {
             queryKey: queryKey,
@@ -487,32 +475,17 @@ export function Conductor({
 
                 return
             },
-            enabled: false//currentRoute?.endpoint?.params?.start == 0, //route?.endpoint?.params?.start == 0
+            enabled: currentRoute?.endpoint?.params?.start == 0, //route?.endpoint?.params?.start == 0
         }
     )
 
-     useEffect(() => {
-            if (bEnabled) {
-                 console.log("fetchNextPage", currentRoute?.endpoint?.params?.start, routes, bEnabled)
-                fetchNextPage();
-            }
-        }, [bEnabled]);
-
-    console.log("pars", currentRoute?.endpoint?.params?.start)
-     console.log("routes",routes);
-     console.log("queryKey", queryKey)
-
     
     const handleEndReached = useCallback(
-       
-
         async (lastItemIndex) => {
-            
             if (isFetchingNextPage) return
             if (hasNextPage === false) return
             if (currentRoute?.endpoint?.finished) return
             if (lastItemIndex === false) return
-            console.log("handleEndReached", currentRoute, isFetchingNextPage, hasNextPage, currentRoute?.endpoint?.finished, lastItemIndex)
             fetchNextPage()
         },
         [currentRoute?.endpoint?.finished, isFetchingNextPage, hasNextPage]
@@ -629,7 +602,6 @@ export function Conductor({
             (item) => item.type === 'block'
         )
         newRoutes[index].endpoint.params.start = 0
-        console.log("setRoutes2")
         setRoutes(newRoutes)
         setToaster2Visible(false)
     }
@@ -648,7 +620,6 @@ export function Conductor({
             const data = handleFeedLayoutData(layoutData, clonedData)
             const newRoutes = [...routes]
             newRoutes[index].data = data
-            console.log("setRoutes3")
             setRoutes(newRoutes)
             setLayoutData(null)
         }
@@ -664,7 +635,6 @@ export function Conductor({
 
     const setFilterValue = (values) => {
         setIndex((prevIndex) => {
-            console.log("setRoutes4")
             setRoutes((prevRoutes) => {
                 const newRoutes = [...prevRoutes]
                 values.forEach((value) => {

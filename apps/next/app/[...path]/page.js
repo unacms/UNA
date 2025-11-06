@@ -1,13 +1,11 @@
 import { UNA_URL, UNA_API_KEY, getRemoteSettings } from 'app/config';
+import { cache } from 'react'
 import Root from 'app/root-client'
 import { Suspense } from 'react'
 import { Loading } from 'app/loading'
 import 'app/styles/global.default.css'
 import 'app/styles/global.css'
 import { notFound } from 'next/navigation'
-// Отключаем кеширование Next.js для этой страницы
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
 const SITE_TITLE = 'NEO';
 
 let remote_config = { hash: null, data: null };
@@ -25,12 +23,7 @@ async function getCachedData(props) {
 
     // Check if data is in cache and if it's still valid (not older than 1 second)
     if (cachedData[cacheKey] && (currentTime - cachedData[cacheKey].timestamp < 1000)) {
-        // Обновляем timestamp даже для закешированных данных
-        const cachedResult = JSON.parse(JSON.stringify(cachedData[cacheKey].data));
-        if (cachedResult?.data) {
-            cachedResult.data.ts = currentTime;
-        }
-        return cachedResult;
+        return cachedData[cacheKey].data;
     }
 
     // If not cached or expired, fetch new data and store it in cache with a timestamp
@@ -44,7 +37,7 @@ async function getCachedData(props) {
 }
 
 
-const getData = async (params, search_params) => {
+const getData = cache(async (params, search_params) => {
     
     let path = params.path.join('/');
     let cookieString = search_params.cookieString;
@@ -92,18 +85,13 @@ const getData = async (params, search_params) => {
 
     const resClone = res.clone();
     try {
-        const result = await res.json();
-        // Добавляем актуальный клиентский timestamp в данные
-        if (result?.data) {
-            result.data.ts = Date.now();
-        }
-        return result;
+        return await res.json();
     } catch (error) {
         const text = await resClone.text();
         console.error("!-------------------------! JSON error:", text);
         return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: 500 };
     }
-};
+});
 
 
 export const viewport = {
