@@ -28,8 +28,10 @@ async function runOneSignal() {
     const ONESIGNAL_KEY = appSetting('config', 'api_keys', 'onesignal');
     const isLocalhost = window.location.hostname === 'localhost';
     if (!isLocalhost && ONESIGNAL_KEY && !appSetting('config', 'onesignal_web_disable')) {
-        await OneSignal.init({ appId: ONESIGNAL_KEY, allowLocalhostAsSecureOrigin: true });
-        OneSignal.Slidedown.promptPush();
+        if (!window.OneSignal || !window.OneSignal.isInitialized) {
+            await OneSignal.init({ appId: ONESIGNAL_KEY, allowLocalhostAsSecureOrigin: true });
+            OneSignal.Slidedown.promptPush();
+        }
     }
 }
 

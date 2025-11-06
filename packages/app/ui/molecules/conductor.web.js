@@ -439,8 +439,8 @@ export function Conductor({
     const queryKey = [
         currentRoute?.endpoint?.request_url,
         currentRoute.link,
-        keyword,
-        JSON.stringify(currentRoute?.endpoint?.params?.filters),
+        keyword || '',
+        currentRoute?.endpoint?.params?.filters ? JSON.stringify(currentRoute?.endpoint?.params?.filters) : '',
         ts,
         currentUser?.id || -1
     ]
