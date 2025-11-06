@@ -394,6 +394,8 @@ export function Conductor({
         currentUser,
         useSectionAsMenu
     )
+    const [tss, setTss] = useState(Date.now());
+    console.log("tsstss", tss)
     const [routes, setRoutes_] = useState(initedTabs)
     const [isRevalidate, setIsRevalidate] = useState(false)
 
@@ -450,7 +452,8 @@ export function Conductor({
         keyword || '',
         currentRoute?.endpoint?.params?.filters ? JSON.stringify(currentRoute?.endpoint?.params?.filters) : '',
         ts,
-        currentUser?.id || -1
+        currentUser?.id || -1,
+        tss
     ]
     const cellsCustomConfig =
         appSetting('layouts', 'navigator') || appSetting('layouts', `cols-l-c`)
