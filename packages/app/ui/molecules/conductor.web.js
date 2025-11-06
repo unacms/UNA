@@ -56,8 +56,7 @@ import { cd } from 'app/lib/util'
 import { useIsDesktop, useBreakpoint } from 'app/context/measure'
 
 const conductorTheme = appSetting('theme', 'conductor')
-import rq from '@tanstack/react-query/package.json' assert { type: 'json' };
-console.log('RQ version:', rq.version);
+
 const RenderScene = ({
     route,
     menu,
