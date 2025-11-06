@@ -472,6 +472,8 @@ export function Conductor({
         getNumCols(currentBreakpoint, currentRoute)
     )
 
+    const bEnabled = currentRoute?.endpoint?.params?.start == 0;
+
     const { fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
         {
             queryKey: queryKey,
@@ -483,9 +485,16 @@ export function Conductor({
 
                 return
             },
-            enabled: currentRoute?.endpoint?.params?.start == 0, //route?.endpoint?.params?.start == 0
+            enabled: false//currentRoute?.endpoint?.params?.start == 0, //route?.endpoint?.params?.start == 0
         }
     )
+
+     useEffect(() => {
+            if (bEnabled) {
+                 console.log("fetchNextPage", currentRoute?.endpoint?.params?.start, routes, bEnabled)
+                fetchNextPage();
+            }
+        }, [bEnabled]);
 
     console.log("pars", currentRoute?.endpoint?.params?.start)
      console.log("routes",routes);
