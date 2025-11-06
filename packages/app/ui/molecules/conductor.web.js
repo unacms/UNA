@@ -442,6 +442,7 @@ export function Conductor({
         keyword,
         JSON.stringify(currentRoute?.endpoint?.params?.filters),
         ts,
+        currentUser?.id || -1
     ]
     const cellsCustomConfig =
         appSetting('layouts', 'navigator') || appSetting('layouts', `cols-l-c`)
@@ -476,10 +477,7 @@ export function Conductor({
             enabled: currentRoute?.endpoint?.params?.start == 0, //route?.endpoint?.params?.start == 0
         }
     )
-    console.log("start", currentRoute?.endpoint?.params?.start)
- console.log("queryKey", queryKey, ts);
-  console.log("currentRoute", currentRoute);
-  
+
     
     const handleEndReached = useCallback(
         async (lastItemIndex) => {
@@ -487,7 +485,7 @@ export function Conductor({
             if (hasNextPage === false) return
             if (currentRoute?.endpoint?.finished) return
             if (lastItemIndex === false) return
-            //fetchNextPage()
+            fetchNextPage()
         },
         [currentRoute?.endpoint?.finished, isFetchingNextPage, hasNextPage]
     )
