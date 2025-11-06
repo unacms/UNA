@@ -84,7 +84,7 @@ function MenuBottomItem({ link, title, index, badge, icon, isActive, profile, iF
                 className="w-full"
             >
                 <View className={`flex flex-col justify-between my-auto items-center rounded-xl p-1.5 text-center gap-1 hover:bg-muted/60 justify-center ${isActive && 'bg-accent web:hover:bg-accent/90'}`}>
-                    <Text className={`${isActive ? 'text-label-primary' : 'text-label-tertiary group-hover:text-label-primary'}`}>
+                    <Text className={`${isActive ? 'text-accent-foreground' : 'text-label-tertiary group-hover:text-label-primary'}`}>
                         {link === appSetting('dashboard', 'url') ? profile : <Icon icon={icon} size={28} />}
                     </Text>
                     {<Text className={` group-hover:text-accent-foreground text-xs tracking-tight leading-none font-medium whitespace-nowrap ${isActive ? 'text-accent-foreground' : 'text-label-tertiary group-hover:text-label-primary'}`}>{title}</Text>}
