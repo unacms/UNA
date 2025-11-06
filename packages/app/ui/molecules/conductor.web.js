@@ -484,14 +484,17 @@ export function Conductor({
 
     
     const handleEndReached = useCallback(
-        /*async (lastItemIndex) => {
+       
+
+        async (lastItemIndex) => {
+             console.log("handleEndReached", currentRoute, isFetchingNextPage, hasNextPage, currentRoute?.endpoint?.finished, lastItemIndex)
             if (isFetchingNextPage) return
             if (hasNextPage === false) return
             if (currentRoute?.endpoint?.finished) return
             if (lastItemIndex === false) return
             fetchNextPage()
         },
-        [currentRoute?.endpoint?.finished, isFetchingNextPage, hasNextPage]*/
+        [currentRoute?.endpoint?.finished, isFetchingNextPage, hasNextPage]
     )
 
     useEffect(() => {
