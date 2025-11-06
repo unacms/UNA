@@ -26,29 +26,52 @@ const NavbarMemo = React.memo(function NavbarMemo(props) {
 
 // Глобальный флаг для отслеживания инициализации OneSignal (общий для всех экземпляров компонента)
 let oneSignalInitialized = false;
+let oneSignalInitPromise = null;
 
 async function runOneSignal() {
     const ONESIGNAL_KEY = appSetting('config', 'api_keys', 'onesignal');
     const isLocalhost = window.location.hostname === 'localhost';
     if (!isLocalhost && ONESIGNAL_KEY && !appSetting('config', 'onesignal_web_disable')) {
-        // Проверяем глобальный флаг и состояние OneSignal
-        console.log('OneSignal: Initializing', oneSignalInitialized);
-        if (oneSignalInitialized || (window.OneSignal && window.OneSignal.isInitialized)) {
+        // Если уже инициализирован, выходим
+        if (oneSignalInitialized) {
             return;
         }
         
-        try {
-            console.log('OneSignal: Initializing', oneSignalInitialized);
-            await OneSignal.init({ appId: ONESIGNAL_KEY, allowLocalhostAsSecureOrigin: true });
-            oneSignalInitialized = true;
-            OneSignal.Slidedown.promptPush();
-        } catch (error) {
-            if (error.message && error.message.includes('already initialized')) {
-                oneSignalInitialized = true;
-            } else {
-                console.error('OneSignal initialization error:', error);
-            }
+        // Если есть активный промис инициализации, ждем его
+        if (oneSignalInitPromise) {
+            await oneSignalInitPromise;
+            return;
         }
+        
+        // Проверяем состояние OneSignal SDK
+        if (window.OneSignal && (window.OneSignal.isInitialized || window.OneSignal._isInitialized)) {
+            oneSignalInitialized = true;
+            return;
+        }
+        
+        // Создаем промис инициализации для предотвращения параллельных вызовов
+        oneSignalInitPromise = (async () => {
+            try {
+                console.log('OneSignal: Starting initialization');
+                await OneSignal.init({ appId: ONESIGNAL_KEY, allowLocalhostAsSecureOrigin: true });
+                oneSignalInitialized = true;
+                OneSignal.Slidedown.promptPush();
+            } catch (error) {
+                // Обрабатываем различные варианты ошибок "already initialized"
+                const errorMessage = error?.message || error?.toString() || '';
+                if (errorMessage.includes('already initialized') || 
+                    errorMessage.includes('SDK already initialized')) {
+                    oneSignalInitialized = true;
+                    console.log('OneSignal: Already initialized, skipping');
+                } else {
+                    console.error('OneSignal initialization error:', error);
+                }
+            } finally {
+                oneSignalInitPromise = null;
+            }
+        })();
+        
+        await oneSignalInitPromise;
     }
 }
 

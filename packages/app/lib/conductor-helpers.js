@@ -239,7 +239,7 @@ export async function parseData(routes, index, setRoutes, newData) {
         endpoint.params = params
 
         if (newData.length > 0 || isFinished) {
-            console.log("addMoreData1", newData.length)
+            console.log("addMoreData1", newData.length, isFinished, newData, routes)
             addMoreData(
                 newData,
                 endpoint,
