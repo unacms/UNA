@@ -551,7 +551,7 @@ export function getHeaderSettings(uri, isDesktop, layout, config) {
             settings = { headerSettings: { offset: false, header: false, backButton: false, menu: true, footer: true } }
         }
         if (layout == 'profile') {
-            settings = { headerSettings: { offset: false, header: false, footer: false } }
+            settings = { headerSettings: { offset: false, header: false, footer: true } }
         }
     }
 

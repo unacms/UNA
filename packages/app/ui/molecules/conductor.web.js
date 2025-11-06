@@ -252,7 +252,7 @@ const RenderScene = ({
                         <View
                             className={`${
                                 layoutName == 'profile'
-                                    ? cd('p-2') + ' fixed-process'
+                                    ? 'mt-0.5 sm:p-2' + ' fixed-process'
                                     : appSetting(
                                           'conductor',
                                           'sidebar_container'
@@ -1063,6 +1063,7 @@ const LeftSideBarContainer = ({
     const addButtons = AddMenu(menu, 'hideInSideBar')
     return (
         <LeftSidebar
+            layoutName={layoutName}
             title={layoutName == 'profile' ? '' : t(menuSettings?.name)}
             addButtons={addButtons}
         >

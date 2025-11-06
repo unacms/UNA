@@ -500,10 +500,10 @@ export function getNumCols(currentBreakpoint, currentRoute) {
     return 1
 }
 
-export function LeftSidebar({ title, addButtons, children, width, menu }) {
+export function LeftSidebar({ title, addButtons, children, width, menu, layoutName }) {
     const { t } = useTranslation()
     return (
-        <View className={appSetting('conductor', 'sidebar_inner_container')}>
+        <View className={`${appSetting('conductor', 'sidebar_inner_container')} ${layoutName == 'profile' ? '' : 'mt-3'}`}>
 
             {(!!title || !!addButtons?.length > 0) && (
                 <Row className={appSetting('conductor', 'sidebar_title')}>

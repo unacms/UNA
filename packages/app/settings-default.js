@@ -215,7 +215,7 @@ export const settingsDefault = {
         show_nav_titles: false, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
         sidebar_container: '  h-full mx-3 ',
-        sidebar_inner_container: ' mt-3 p-2 shadow-sm overflow-y-auto flex flex-col bg-card rounded-2xl  ',
+        sidebar_inner_container: ' p-2 shadow-sm overflow-y-auto flex flex-col bg-card rounded-2xl  ',
         sidebar_title: 'sticky z-10 justify-between items-center h-12 px-2 py-1.5 mb-2.5 z-10',
         sidebar_position: ' z-50 fixed fixed-process ',
         bgrDecorator: true, // Enable/disable decorator background globally for conductor buttons
@@ -940,9 +940,25 @@ export const settingsDefault = {
                     minSize: 15,
                     maxSize: 30,
                     breakpoint: 'xl',
+                    responsive: {
+                        '2xl':{
+                            defaultSize: 20,
+                            minSize: 15,
+                            maxSize: 30,
+                            
+                        }
+                    }
                    
                 },
-                center: { defaultSize: 70, minSize: 70, maxSize: 80 },
+                center: { 
+                    defaultSize: 70, minSize: 70, maxSize: 80,
+                    '2xl':{
+                            defaultSize: 80,
+                            minSize: 70,
+                            maxSize: 85,
+                            
+                        }
+                },
             },
         },
         'cols-c-r': {
