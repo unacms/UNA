@@ -487,11 +487,12 @@ export function Conductor({
        
 
         async (lastItemIndex) => {
-             console.log("handleEndReached", currentRoute, isFetchingNextPage, hasNextPage, currentRoute?.endpoint?.finished, lastItemIndex)
+            
             if (isFetchingNextPage) return
             if (hasNextPage === false) return
             if (currentRoute?.endpoint?.finished) return
             if (lastItemIndex === false) return
+            console.log("handleEndReached", currentRoute, isFetchingNextPage, hasNextPage, currentRoute?.endpoint?.finished, lastItemIndex)
             fetchNextPage()
         },
         [currentRoute?.endpoint?.finished, isFetchingNextPage, hasNextPage]
