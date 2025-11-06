@@ -395,8 +395,13 @@ export function Conductor({
         currentUser,
         useSectionAsMenu
     )
-    const [routes, setRoutes] = useState(initedTabs)
+    const [routes, setRoutes_] = useState(initedTabs)
     const [isRevalidate, setIsRevalidate] = useState(false)
+
+    function setRoutes(a){
+        console.log("setRoutes_", a)
+        setRoutes_(a);
+    }
 
     useEffect(() => {
         setRoutes(initedTabs)
