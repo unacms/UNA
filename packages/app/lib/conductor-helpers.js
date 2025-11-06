@@ -239,6 +239,7 @@ export async function parseData(routes, index, setRoutes, newData) {
         endpoint.params = params
 
         if (newData.length > 0 || isFinished) {
+            console.log("addMoreData1", newData.length)
             addMoreData(
                 newData,
                 endpoint,
@@ -284,6 +285,7 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
         if (!blocks) blocks = getBlocksFromData(sResponse.data)
 
         let contentAndEndpoint = processUrl(sResponse.data, settings?.blocks)
+          console.log("addMoreData2", contentAndEndpoint)
         addMoreData(
             contentAndEndpoint.content,
             contentAndEndpoint.endpoint,

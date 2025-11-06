@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, lazy, useState, useRef } from 'react';
+import React, { useEffect, useCallback, lazy, useState } from 'react';
 import Footer from 'app/components/nav/footer';
 import { Modal } from 'app/design/controls'
 import Informer from 'app/components/elements/informer';
@@ -24,22 +24,27 @@ const NavbarMemo = React.memo(function NavbarMemo(props) {
     );
 });
 
-async function runOneSignal(initRef) {
+// Глобальный флаг для отслеживания инициализации OneSignal (общий для всех экземпляров компонента)
+let oneSignalInitialized = false;
+
+async function runOneSignal() {
     const ONESIGNAL_KEY = appSetting('config', 'api_keys', 'onesignal');
     const isLocalhost = window.location.hostname === 'localhost';
     if (!isLocalhost && ONESIGNAL_KEY && !appSetting('config', 'onesignal_web_disable')) {
-        if (initRef.current || (window.OneSignal && window.OneSignal.isInitialized)) {
+        // Проверяем глобальный флаг и состояние OneSignal
+        console.log('OneSignal: Initializing', oneSignalInitialized);
+        if (oneSignalInitialized || (window.OneSignal && window.OneSignal.isInitialized)) {
             return;
         }
         
         try {
-            console.log('OneSignal: Initializing');
+            console.log('OneSignal: Initializing', oneSignalInitialized);
             await OneSignal.init({ appId: ONESIGNAL_KEY, allowLocalhostAsSecureOrigin: true });
-            initRef.current = true;
+            oneSignalInitialized = true;
             OneSignal.Slidedown.promptPush();
         } catch (error) {
             if (error.message && error.message.includes('already initialized')) {
-                initRef.current = true;
+                oneSignalInitialized = true;
             } else {
                 console.error('OneSignal initialization error:', error);
             }
@@ -115,7 +120,6 @@ export default function Layout(props) {
     const { layoutName } = layout;
     const isDesktop = useIsDesktop();
     const theme = ThemeName();
-    const oneSignalInitRef = useRef(false);
     const root = window.document.documentElement;
     root.setAttribute('theme', theme)
     root.setAttribute('data-theme', theme);
@@ -162,7 +166,7 @@ export default function Layout(props) {
         addLinkTag('preconnect', 'https://cdn.onesignal.com', 'anonymous');
         addLinkTag('dns-prefetch', 'https://onesignal.com');
 
-        runOneSignal(oneSignalInitRef);
+        runOneSignal();
 
     }, []);
 
