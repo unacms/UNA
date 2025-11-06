@@ -21,6 +21,9 @@ export function proxy(request) {
 
             if (cookieString != ''){
                 const response =  NextResponse.rewrite(new URL(url + (url.includes('?') ? '&' : '?') + "cookieString=" + cookieString));
+                response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+                response.headers.set('CDN-Cache-Control', 'no-store')
+                response.headers.set('Vercel-CDN-Cache-Control', 'no-store')
                 return response
             }
             else{
