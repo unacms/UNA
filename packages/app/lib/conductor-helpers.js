@@ -355,6 +355,7 @@ export function addMoreData(
     })
 
     if (hasChanged) {
+        console.log("setRoutes8")
         setRoutes(updatedRoutes)
     }
 }

@@ -404,6 +404,7 @@ export function Conductor({
     }
 
     useEffect(() => {
+        console.log("setRoutes1")
         setRoutes(initedTabs)
     }, [keyword, data.url, data.elements])
 
@@ -617,6 +618,7 @@ export function Conductor({
             (item) => item.type === 'block'
         )
         newRoutes[index].endpoint.params.start = 0
+        console.log("setRoutes2")
         setRoutes(newRoutes)
         setToaster2Visible(false)
     }
@@ -635,6 +637,7 @@ export function Conductor({
             const data = handleFeedLayoutData(layoutData, clonedData)
             const newRoutes = [...routes]
             newRoutes[index].data = data
+            console.log("setRoutes3")
             setRoutes(newRoutes)
             setLayoutData(null)
         }
@@ -650,6 +653,7 @@ export function Conductor({
 
     const setFilterValue = (values) => {
         setIndex((prevIndex) => {
+            console.log("setRoutes4")
             setRoutes((prevRoutes) => {
                 const newRoutes = [...prevRoutes]
                 values.forEach((value) => {
