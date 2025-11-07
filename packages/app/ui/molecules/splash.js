@@ -57,15 +57,25 @@ function PageContent(props) {
                 </CardFooter>
             </Card>
 
-            <Row className=" mx-auto gap-1 text-base justify-center items-center text-center">
-                <Text className="text-label-secondary ">
+            <Row 
+                className="mx-auto gap-1 text-base justify-center items-center text-center"
+                accessibilityRole="text"
+                accessibilityLabel={`${t('splash_page_login2')} ${t('splash_page_new_account')}`}
+            >
+                <Text 
+                    className="text-label-secondary"
+                    accessibilityRole="text"
+                >
                     {t('splash_page_login2')}
                 </Text>
                 <Link
-                    variant="default"
+                    variant="plain"
                     size="md"
                     href="/create-account"
                     haptics="Medium"
+                    accessibilityRole="link"
+                    accessibilityLabel={t('splash_page_new_account')}
+                    accessibilityHint={t('splash_page_login2') ? `${t('splash_page_login2')} - ${t('splash_page_new_account')}` : undefined}
                 >
                     {t('splash_page_new_account')}
                 </Link>

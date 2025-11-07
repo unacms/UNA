@@ -23,7 +23,7 @@
         --destructive-foreground: var(--white); /*content on destructive buttons, destructive surfaces*/
         --border: var(--neutral-300); /*borders, dividers, focus rings*/
         --input: var(--white); /*form inputs*/
-        --ring: var(--accent-500); /*focus rings*/
+        --ring: var(--accent-600); /*focus rings*/
         --guide: var(--neutral-500); /*guide color*/
         --label-primary: var(--neutral-900); /*Primary text (high emphasis)*/
         --label-secondary: var(--neutral-600); /*Secondary text (medium emphasis)*/
@@ -111,23 +111,23 @@
         --popover: var(--neutral-800); /*background for popovers, inputs, tooltips, modals, elevated surfaces*/
         --popover-foreground: var(--neutral-300); /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
         --primary: var(--accent-600); /*background for primary buttons, links, active states, focus rings. Use use high-contract background from gray-scale or accent-scale.*/
-        --primary-foreground: var(--accent-950); /*content on primary buttons, active states, primary surfaces*/
+        --primary-foreground: var(--white); /*content on primary buttons, active states, primary surfaces*/
         --secondary: var(--neutral-800);  /*background for secondary buttons, secondary surfaces*/
         --secondary-foreground: var(--neutral-200); /*content on secondary buttons, secondary surfaces*/
         --accent: var(--accent-900); /*background for accent buttons, accent surfaces*/
-        --accent-foreground: var(--accent-400); /*content on accent buttons, accent surfaces*/
+        --accent-foreground: var(--accent-500); /*content on accent buttons, accent surfaces*/
         --muted: var(--neutral-800); /*background for ui items, sections, hover states*/
         --muted-foreground: var(--neutral-500); /*muted content*/
         --destructive: var(--red); /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--neutral-950); /*content on destructive buttons, destructive surfaces*/
         --border: var(--neutral-800); /*borders, dividers, focus rings*/
         --input: var(--neutral-900); /*form inputs*/
-        --ring: var(--accent-800); /*focus rings*/
+        --ring: var(--accent-600); /*focus rings*/
         --guide: var(--neutral-600); /*guide color*/
         --label-primary: var(--neutral-100); /*Primary text (high emphasis)*/
         --label-secondary: var(--neutral-400); /*Secondary text (medium emphasis)*/
         --label-tertiary: var(--neutral-600); /*Tertiary text (low emphasis)*/
-        --label-link: var(--accent-400); /*Link text color*/
+        --label-link: var(--accent-500); /*Link text color*/
         --label-linkhover: var(--accent-600); /*Link text color on hover*/
         --fill-primary: var(--neutral-950); /*Main surface background*/
         --fill-secondary: var(--neutral-900); /*Secondary layered background*/

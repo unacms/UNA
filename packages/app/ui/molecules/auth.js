@@ -24,28 +24,39 @@ export default function AuthPanel({
     return (
         <View className="w-full gap-4">
             {forgotPasswordLink && (
-                <Row className="text-center text-sm items-center text-muted-foreground">
-                    <Link
-                        className="mx-auto"
-                        variant="primary"
-                        size="sm"
-                        href="/forgot-password"
-                        haptics="Medium"
-                    >
-                        {t('Forgot password?')}
-                    </Link>
-                </Row>
+                <Link
+                    className="mx-auto"
+                    variant="plain"
+                    size="md"
+                    href="/forgot-password"
+                    haptics="Medium"
+                    accessibilityRole="link"
+                    accessibilityLabel={t('Forgot password?')}
+                    accessibilityHint="Navigate to password recovery page"
+                >
+                    {t('Forgot password?')}
+                </Link>
             )}
             {createAccountLink && (
-                <Row className="text-center flex-none mx-auto text-sm items-center text-muted-foreground">
-                    {' '}
-                    {t('splash_page_login2')}{' '}
+                <Row 
+                    className="text-center flex-none mx-auto text-sm items-center text-muted-foreground gap-1"
+                    accessibilityRole="text"
+                    accessibilityLabel={`${t('splash_page_login2')} ${t('splash_page_new_account')}`}
+                >
+                    <Text 
+                        className="text-muted-foreground"
+                        accessibilityRole="text"
+                    >
+                        {t('splash_page_login2')}
+                    </Text>
                     <Link
-                        
                         variant="primary"
                         size="sm"
                         href="/create-account"
                         haptics="Medium"
+                        accessibilityRole="link"
+                        accessibilityLabel={t('splash_page_new_account')}
+                        accessibilityHint={t('splash_page_login2') ? `${t('splash_page_login2')} - ${t('splash_page_new_account')}` : undefined}
                     >
                         {t('splash_page_new_account')}
                     </Link>
@@ -53,27 +64,53 @@ export default function AuthPanel({
             )}
 
             {loginLink && (
-                <Link href="/login" haptics="Medium">
+                <Link 
+                    href="/login" 
+                    haptics="Medium"
+                    accessibilityRole="link"
+                    accessibilityLabel={t('Continue with email')}
+                    accessibilityHint="Navigate to login page with email"
+                >
                     <Button
                         title={t('Continue with email')}
                         variant="default"
                         fullWidth
                         size="base"
                         startDecorator="UserRoundPlus"
+                        accessibilityRole="button"
                     />
                 </Link>
             )}
 
             {showSeparator && (
-                <View className="flex-row items-center justify-center w-full">
-                    <View className="flex-1 h-px w-full bg-border/80" />
-                    <Text className="mx-4 text-xs text-muted-foreground">
+                <View 
+                    className="flex-row items-center justify-center w-full"
+                    accessibilityRole="text"
+                    accessibilityLabel={t('splash_page_login3')}
+                >
+                    <View 
+                        className="flex-1 h-px w-full bg-border/80"
+                        accessibilityElementsHidden={true}
+                        importantForAccessibility="no"
+                    />
+                    <Text 
+                        className="mx-4 text-xs text-muted-foreground"
+                        accessibilityRole="text"
+                    >
                         {t('splash_page_login3')}
                     </Text>
-                    <View className="flex-1 h-px w-full bg-border/80" />
+                    <View 
+                        className="flex-1 h-px w-full bg-border/80"
+                        accessibilityElementsHidden={true}
+                        importantForAccessibility="no"
+                    />
                 </View>
             )}
-            <View className="web:flex-row web:flex-wrap gap-x-2 gap-y-2 w-full">
+            <View 
+                className="web:flex-row web:flex-wrap gap-x-2 gap-y-2 w-full"
+                accessibilityRole="group"
+                accessibilityLabel="Alternative sign-in methods"
+            >
                 {appSetting('auth', 'google') && <AuthGoogle />}
                 {appSetting('auth', 'github') && (
                     <AuthGitHub button={googleButton} />
