@@ -1,4 +1,4 @@
-import { useState, useContext, useRef, useMemo, memo } from 'react'
+import { useRef, useMemo, memo } from 'react'
 import { useCardData } from 'app/context/card'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
@@ -12,7 +12,6 @@ import { useTranslation } from 'react-i18next'
 import Letter from 'app/ui/atoms/letter'
 import { callFn } from 'app/lib/functions/call'
 import { Platform } from 'react-native'
-import { cd } from 'app/lib/util'
 
 const ProfilesListCnt = memo(({ data }) => (
     <ProfilesList data={data} showEmpty={false} maxCount={3} displaySize="2xs" />
@@ -77,7 +76,7 @@ export default function Unit(props) {
         return
 
     return (
-        <CardList padding={cd('p-xs')} >
+        <CardList padding="p-1">
             <Redirect ref={redirectdRef} />
             <Link className="group " href={data.url}>
                 <View
@@ -85,15 +84,15 @@ export default function Unit(props) {
                 >
                     <ImageSection data={data} imageSizes={imageSizes} />
                     <View className="flex-col pl-4 my-auto sm:p-2 flex-auto ">
-                        <View className="sm:h-14">
+                        <View className="sm:h-12">
                             <Text
                                 numberOfLines={1}
-                                className=" text-mase leading-9 font-bold text-card-foreground"
+                                className=" text-base leading-6 font-semibold text-label-primary"
                             >
                                 {data.title}
                             </Text>
 
-                            <Row className="items-center gap-1.5 ">
+                            <Row className="items-center gap-1.5 h-6 ">
                                 <ProfilesListCnt
                                     data={
                                         isFollowers
@@ -104,7 +103,7 @@ export default function Unit(props) {
                                     }
                                 />
 
-                                <Text className="truncate text-sm tracking-tight flex-auto text-neutral-600 dark:text-neutral-400">
+                                <Text className="truncate text-sm tracking-tight flex-auto text-label-secondary">
                                     {isFollowers
                                         ? data?.followers_count +
                                         ' followers'
@@ -112,7 +111,7 @@ export default function Unit(props) {
                                 </Text>
                             </Row>
                         </View>
-                        <View className="flex-row sm:flex-col pt-3 ">
+                        <View className="flex-row sm:flex-col pt-2 ">
                             <View className="w-1/2 sm:w-full pr-2 sm:pr-0">
                                 {oMenuItemPrimary}
                             </View>
@@ -131,3 +130,4 @@ export default function Unit(props) {
         </CardList>
     )
 }
+

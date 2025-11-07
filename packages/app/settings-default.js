@@ -94,9 +94,9 @@ export const settingsDefault = {
             container:
                 ' header-fixed hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%] web:duration-500  ',
             initial:
-                ' my-auto w-full items-cente bg-card/60 backdrop-blur-xl border-b-[0.5px] border-border/60 shadow-sm transition-all  ',
+                ' my-auto w-full items-cente bg-background backdrop-blur-xl border-b border-border/60  transition-all  ',
             scrolled:
-                ' my-auto w-full items-cente bg-card/90 backdrop-blur-xl border-b border-border/60 transition-all shadow-sm',
+                ' my-auto w-full items-cente bg-card/80 backdrop-blur-xl border-b border-border/60 transition-all shadow-sm',
             content: ' h-16 mx-auto justify-between 2xl:border-x 2xl:border-border/60 border-dashed',
             content_left: ' flex-row items-center flex-none w-80 ps-3  ',
             content_right: ' flex-row items-center justify-end flex-none w-80 pe-3 ',
@@ -219,7 +219,7 @@ export const settingsDefault = {
         show_nav_titles: false, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
         sidebar_container: '  h-full mx-3 ',
-        sidebar_inner_container: ' p-2 shadow-sm overflow-y-auto flex flex-col bg-card rounded-2xl  ',
+        sidebar_inner_container: ' p-2 shadow-sm overflow-y-auto flex flex-col bg-card rounded-2xl ring-1 ring-border/60 ring-inset  ',
         sidebar_title: 'sticky z-10 justify-between items-center h-12 px-2 py-1.5 mb-2.5 z-10',
         sidebar_position: ' z-50 fixed fixed-process ',
         bgrDecorator: true, // Enable/disable decorator background globally for conductor buttons
@@ -1173,7 +1173,7 @@ export const settingsDefault = {
                 hitSlop: { top: 8, right: 8, bottom: 8, left: 8 },
             },
             sm: {
-                rounded: ' rounded-md ',
+                rounded: ' rounded-lg ',
                 padding: '  ',
                 padding_icon_only: ' h-9 w-9 ',
                 padding_with_title: ' px-2.5 gap-1 ',
@@ -1385,8 +1385,8 @@ export const settingsDefault = {
             'u-link-default-trans': ' web:duration-200 ',
 
             // Plain: inherit text; no decoration idle; subtle hover/active feedback
-            'u-link-plain-cnt': ' web:focus-visible:ring-offset-background web:focus-visible:bg-background web:focus-visible:outline-ring/20 web:focus-visible:ring-ring ',
-            'u-link-plain-text': ' text-label-link web:hover:text-label-linkhover web:hover:underline underline-red-500 ',
+            'u-link-plain-cnt': ' web:focus-visible:ring-offset-card web:focus-visible:bg-card web:focus-visible:outline-ring/20 web:focus-visible:ring-ring ',
+            'u-link-plain-text': ' text-label-link web:hover:text-label-linkhover web:hover:underline  ',
             'u-link-plain-trans': ' web:duration-200 ',
 
             // Ghost: pseudo background via CSS vars; color logic maintained
@@ -1443,7 +1443,7 @@ export const settingsDefault = {
         },
         cards: {
             'u-card-list':
-                ' u-card-list bg-card/60 shadow-sm border-y sm:border-x border-border/50 web:border-0 web:ring-0 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden sm:rounded-2xl ',
+                ' u-card-list bg-card/60 shadow-sm border-y sm:border border-border/50 web:sm:border-0 web:sm:ring-1 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden sm:rounded-2xl ',
             'u-card-list-padding': ' p-3 lg:p-4 ',
             'u-card-base':
                 ' u-card-base bg-card/60 shadow-sm border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden rounded-2xl gap-4',
@@ -1643,27 +1643,35 @@ export const settingsDefault = {
         },
 
         button_styles: {
-            'u-btn-default-cnt': ' bg-popover web:hover:bg-muted shadow-xs border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 web:hover:ring-border web:active:opacity-50 ',
-            'u-btn-default-text':
-                ' font-semibold text-popover-foreground  ',
-            'u-btn-default-trans': '  web:duration-200',
-            'u-btn-focus': ' web:focus-visible:ring-ring web:focus-visible:ring-offset-background ',
+            // Default button (neutral/popover)
+            'u-btn-default-cnt': [
+                'bg-popover',
+                'shadow-xs border border-border/60 web:border-0',
+                'web:ring-1 web:ring-inset web:ring-border/60',
+                'web:hover:ring-border web:focus:ring-border',
+                'web:hover:bg-popover/80',
+                'web:focus:outline-4 web:active:outline-4 outline-ring/40',
+
+                'web:focus:outline-offset-1 web:focus:outline-offset-card web:hover:shadow-sm',
+                'active:shadow-none active:translate-y-px',
+            
+            ].join(' '),
+            'u-btn-default-text': 'font-semibold text-popover-foreground',
+            'u-btn-default-trans': 'web:duration-200',
+            'u-btn-focus': 'web:focus:ring-border',
           
 
             'u-btn-primary-cnt': [
                 // Background and main color
-                ' bg-primary focus:bg-primary web:hover:bg-primary',
-                // Border and ring
-                ' border border-primary focus:border-primary web:border-0 web:ring-1 web:ring-inset web:ring-primary web:focus:ring-1 web:focus:ring-primary',
-                // Focus outline
-                ' web:focus:outline-4 focus:outline-ring/20 web:focus:outline-offset-0 web:focus:outline-offset-background web:hover:shadow ',
-                // Shadow and transitions
-                ' shadow-xs ',
-                // Active/opacity feedback
-                ' active:opacity-90 web:active:animate-pulse active:shadow-none ',
+                ' bg-primary/90 web:hover:bg-primary',
+                'web:focus:outline-offset-1 web:focus:outline-offset-card web:hover:shadow-sm',
+
+                ' web:focus:outline-4 web:focus:outline-ring/40  ',
+                ' shadow-xs web:hover:shadow  ',
+                ' active:shadow-none active:translate-y-px',
             ].join(' '),
             'u-btn-primary-text': ' font-semibold text-primary-foreground ',
-            'u-btn-primary-trans': ' web:duration-300',
+            'u-btn-primary-trans': ' web:duration-300', 
 
             'u-btn-accent-cnt':
                 ' bg-accent  web:active:ring-2 web:active:ring-accent web:active:ring-offset-2 web:active:outline-none ',

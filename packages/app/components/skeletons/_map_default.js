@@ -1,8 +1,5 @@
 import { View, ScrollView, Row } from 'app/design/view'
-import { appSetting, cd } from 'app/lib/util'
 import Card, {CardList} from 'app/ui/molecules/card'
-import { Platform } from 'react-native'
-import { Text } from 'app/design/typography';
 import { memo } from 'react'
 const items = Array(5).fill('');
 
@@ -10,6 +7,16 @@ const items = Array(5).fill('');
 const Default = memo(() => (
     <Card className='flex-auto m-2' padding="p-1">
         <View className="relative  bg-muted aspect-video rounded-xl w-full"></View>
+        <View className="h-32 px-3 pb-3 flex-auto justify-between">
+            <View className=" h-4 w-1/2 bg-muted rounded-full"></View>
+            <View className=" h-4 w-1/2 bg-muted rounded-full"></View>
+        </View>
+    </Card>
+));
+
+const Persons = memo(() => (
+    <Card className='flex-auto m-2' padding="p-1">
+        <View className="relative  bg-muted aspect-square rounded-xl w-full"></View>
         <View className="h-32 px-3 pb-3 flex-auto justify-between">
             <View className=" h-4 w-1/2 bg-muted rounded-full"></View>
             <View className=" h-4 w-1/2 bg-muted rounded-full"></View>
@@ -157,5 +164,6 @@ export const skeletonsMapDefault = {
     bx_posts: Posts,
     bx_posts_small: PostsSmall,
     feed: FeedDefault,
-    one_column_browse: OneColumn
+    one_column_browse: OneColumn,
+    bx_persons: Persons
 };
