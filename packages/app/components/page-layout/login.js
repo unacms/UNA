@@ -40,7 +40,9 @@ function PageContent({ children, isLoginPage, title }) {
     }
 
     return (
-        <AnimatedView className="gap-4" direction="up" delay={300}>
+          <View className="w-full justify-center lg:w-1/2 p-4 sm:p-8 md:p-12 p-6 ">
+        
+                    <AnimatedView className="gap-4" direction="up" delay={200}>
             <Card padding="p-6">
                 <CardHeader>
                     <CardTitle>
@@ -79,6 +81,7 @@ function PageContent({ children, isLoginPage, title }) {
                 </Link>
             </Row>
         </AnimatedView>
+        </View>
     )
 }
 
@@ -115,8 +118,8 @@ export default function PageLayout(props) {
             />
         </View>
     ) : (
-        <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto p-3 p-3 py-16 ">
-            <PageContent>{props.children}</PageContent>
+     <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto ">
+            <PageContent isLoginPage={true}>{props.children}</PageContent>
             <MenuFooter
                 cntClasses="mx-auto flex-row flex-wrap gap-3 p-3"
                 variant="ghost"
@@ -129,7 +132,7 @@ export default function PageLayout(props) {
             refer={refer}
             content={content}
             pageData={props.data}
-            headerHeight={isWeb ? 0 : 64}
+            headerHeight={isWeb ? 0 : 48}
             contentType="ScrollList"
         />
     )

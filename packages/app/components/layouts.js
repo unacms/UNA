@@ -44,37 +44,40 @@ export default function Layouts({ path, data, uri, url }) {
 
 
     const { t } = useTranslation();
-    const v = semver.coerce(data.version)?.version;
+    const v = semver.coerce(data.version)?.version || false;
     const minVersion = appSetting('config', 'min_server_version');
     const maxVersion = appSetting('config', 'stable_server_version');
     const appVersion = appSetting('config', 'app_version');
-    if (semver.ltr(v, minVersion, { includePrerelease: true })) {
-        return (
-            <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto">
-                <View className="max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto gap-y-4">
-                    <AnimatedView direction="up" delay={300}>
-                        <Card padding="p-6  ">
-                            <CardHeader>
-                                <CardTitle>{t("version_incompatible_title")}</CardTitle>
-                            </CardHeader>
-                            <CardContent className="gap-4">
-                                <Text>
-                                    {t("version_incompatible_text1", { version: appVersion })}
-                                </Text>
-                                <Text>
-                                    {t("version_incompatible_text2", { version: data.version, min_version: minVersion })}
-                                </Text>
-                                <Text>
-                                    {t("version_incompatible_text3")}
-                                </Text>
-                            </CardContent>
-                        </Card>
-                    </AnimatedView>
+    if (data.version) {
+
+        if (semver.ltr(v, minVersion, { includePrerelease: true })) {
+            return (
+                <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto">
+                    <View className="max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto gap-y-4">
+                        <AnimatedView direction="up" delay={300}>
+                            <Card padding="p-6  ">
+                                <CardHeader>
+                                    <CardTitle>{t("version_incompatible_title")}</CardTitle>
+                                </CardHeader>
+                                <CardContent className="gap-4">
+                                    <Text>
+                                        {t("version_incompatible_text1", { version: appVersion })}
+                                    </Text>
+                                    <Text>
+                                        {t("version_incompatible_text2", { version: data.version, min_version: minVersion })}
+                                    </Text>
+                                    <Text>
+                                        {t("version_incompatible_text3")}
+                                    </Text>
+                                </CardContent>
+                            </Card>
+                        </AnimatedView>
+                    </View>
                 </View>
-            </View>
-        )
+            )
+        }
     }
-    const isVersionInfo = semver.gtr(v, maxVersion, { includePrerelease: true }) && currentUser?.operator;
+    const isVersionInfo = v && semver.gtr(v, maxVersion, { includePrerelease: true }) && currentUser?.operator;
 
     return (
         <Layout layout={layout} path={path} data={data} uri={uri} key={`layout${currentUser?.id}`}>
@@ -110,6 +113,7 @@ export default function Layouts({ path, data, uri, url }) {
             </DropdownPopup></View>}
         </Layout>
     )
+
     /*<Toast
                 position='top'
                 topOffset={120}
@@ -155,9 +159,18 @@ function PageLayoutContent(props) {
         return <ErrorPage type={data?.page_status} />;
     }
 
+    const Component = useMemo(() => {
+        return getComponent('layout', layoutName);
+    }, [layoutName]);
+
+    const componentKey = useMemo(() => {
+        return `layout-${layoutName}-${props.uri || url || data?.uri || ''}-${data?.timestamp || ''}`;
+    }, [layoutName, props.uri, url, data?.uri, data?.timestamp]);
+
     if (currentUser && !currentUser.confirmed && appSetting('layout', 'lock_unconfirmed')) {
         return <ConfirmEmail url={url} />;
     }
+
     if (hasProfileInformer && appSetting('layout', 'lock_no_profile')) {
 
         if (currentUser?.menu?.items?.length > 1) {
@@ -177,17 +190,9 @@ function PageLayoutContent(props) {
         }
     }
 
-    const Component = useMemo(() => {
-        return getComponent('layout', layoutName);
-    }, [layoutName]);
-
     if (!Component) {
         return null;
     }
-
-    const componentKey = useMemo(() => {
-        return `layout-${layoutName}-${props.uri || url || data?.uri || ''}-${data?.timestamp || ''}`;
-    }, [layoutName, props.uri, url, data?.uri, data?.timestamp]);
 
     if (isCustomLayout && layoutBlocks) {
         return (

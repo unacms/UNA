@@ -9,14 +9,14 @@ import MenuAdd from 'app/components/nav/menu-add'
 import MenuAccount from 'app/components/nav/menu-account'
 import MenuLauncher from 'app/components/nav/menu-launcher'
 import { useIsDesktop } from 'app/context/measure';
+import { Platform } from 'react-native'
 
 export default function HeaderElement({ mode, url, uri }) {
     const { currentUser } = useCurrentUser();
     const bSearch = appSetting('layout', 'search') == true;
-    const bMessenger = appSetting('messenger', 'url') ? true : false;
     const bNotifs = appSetting('notifications', 'url') ? true : false;
     const isDesktop = useIsDesktop();
-    
+    const isWeb = Platform.OS == 'web'
     const toolbarConfig = appSetting('header_toolbar', 'hor')
     const itemsToRender = currentUser
         ? toolbarConfig?.loggedIn
@@ -24,7 +24,7 @@ export default function HeaderElement({ mode, url, uri }) {
 
     return (
         <Row className="justify-end gap-2 items-center px-1 xl:px-2 ">
-            {itemsToRender?.map((item, index) => (
+            {itemsToRender?.filter(item => (isWeb ? item.web != false : item.native != false)).map((item, index) => (
                 <View key={index} className={item.className}>
                     {(() => {
                         switch (item.component) {
