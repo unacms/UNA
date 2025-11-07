@@ -107,6 +107,16 @@ export const resourcesDefault = {
             "login_modal_heading": 'Login to see more',
             "login_modal_subheading": 'Enter your email and password to login',
             "login_modal_rp": 'Forgot password?',
+
+            "version_incompatible_title": "Incompatible Version",
+            "version_incompatible_text1": "This app (v. {{version}}) requires a newer server version to function properly.",
+            "version_incompatible_text2": "The connected server is running v.{{version}}, but the minimum supported server version is v. {{min_version}}.",
+            "version_incompatible_text3": "Please update your UNA server to the latest compatible release.",
+
+            "version_warning_title": "Unverified Server Version",
+            "version_warning_text1": "This app (v. {{version}}) is newer than the connected server (v. {{server_version}}).",
+            "version_warning_text2": "The UNA server was tested up to v. {{version}}; compatibility beyond this is not guaranteed.",
+            "version_warning_text3": "You can continue, but stability and some features may be affected.",
         }
         
     },

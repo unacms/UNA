@@ -28,6 +28,10 @@ export const settingsDefault = {
           
         },
         show_ui: false,
+
+        app_version: '15.0.0',
+        min_server_version: '15.0.0',
+        stable_server_version: '15.x.x'
     },
     app: {
         title: 'NEO',

@@ -46,42 +46,43 @@ export default function ElementConfirmEmail(props) {
     };
 
     return (
-        <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto"><View className="max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto gap-y-4">
-            <AnimatedView direction="up" delay={300}>
-                <Redirect ref={redirectdRef} />
-                <Card padding="p-6  ">
-                    <CardHeader>
-                        <CardTitle>{t("Unconfirmed email address")}</CardTitle>
-                        <CardDescription>
-                            {t("Please check your email")}
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="gap-4">
-                        <Msg onVisible={showMsg} title={"New verification code emailed"} handleOk={() => { setShowMsg(false) }} />
-                        <View className='gap-y-4'>
-                            <Row className='w-full gap-x-2 items-start justify-between'>
-                                <View className='flex-auto'>
-                                    <Input placeholder={t("Verification code")} value={inputValue} onChangeText={(value) => { setInputValue(value) }} />
+        <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto">
+            <View className="max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto gap-y-4">
+                <AnimatedView direction="up" delay={300}>
+                    <Redirect ref={redirectdRef} />
+                    <Card padding="p-6  ">
+                        <CardHeader>
+                            <CardTitle>{t("Unconfirmed email address")}</CardTitle>
+                            <CardDescription>
+                                {t("Please check your email")}
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="gap-4">
+                            <Msg onVisible={showMsg} title={"New verification code emailed"} handleOk={() => { setShowMsg(false) }} />
+                            <View className='gap-y-4'>
+                                <Row className='w-full gap-x-2 items-start justify-between'>
+                                    <View className='flex-auto'>
+                                        <Input placeholder={t("Verification code")} value={inputValue} onChangeText={(value) => { setInputValue(value) }} />
+                                    </View>
+                                    <Button variant="primary" size="lg" title={t("Confirm")} onPress={() => handleConfirm()} />
+                                </Row>
+                                {inputError && <FormError errorText={t("Code invalid")} />}
+                                <View className="flex-row items-center justify-center w-full">
+                                    <View className="flex-1 h-px w-full bg-neutral-200 dark:bg-neutral-500" />
+                                    <Text className="mx-4 text-xs text-neutral-500 dark:text-neutral-400 font-normal">OR</Text>
+                                    <View className="flex-1 h-px w-full bg-neutral-200 dark:bg-neutral-500" />
                                 </View>
-                                <Button variant="primary" size="lg" title={t("Confirm")} onPress={() => handleConfirm()} />
-                            </Row>
-                            {inputError && <FormError errorText={t("Code invalid")} />}
-                            <View className="flex-row items-center justify-center w-full">
-                                <View className="flex-1 h-px w-full bg-neutral-200 dark:bg-neutral-500" />
-                                <Text className="mx-4 text-xs text-neutral-500 dark:text-neutral-400 font-normal">OR</Text>
-                                <View className="flex-1 h-px w-full bg-neutral-200 dark:bg-neutral-500" />
+                                <View className="gap-y-2 w-full">
+                                    <Button size="lg" title={t("Resend email")} onPress={pressBack} fullWidth />
+                                    <Link href="/logout" className="w-full">
+                                        <Button size="lg" title={t("Sign out")} fullWidth />
+                                    </Link>
+                                </View>
                             </View>
-                            <View className="gap-y-2 w-full">
-                                <Button  size="lg" title={t("Resend email")} onPress={pressBack} fullWidth />
-                                <Link href="/logout" className="w-full">
-                                    <Button  size="lg" title={t("Sign out")} fullWidth />
-                                </Link>
-                            </View>
-                        </View>
-                    </CardContent>
-                </Card>
-            </AnimatedView>
-        </View>
+                        </CardContent>
+                    </Card>
+                </AnimatedView>
+            </View>
         </View>
     );
 }

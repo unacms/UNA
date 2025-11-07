@@ -13,10 +13,16 @@ import { registerAll } from 'app/components/registry-init';
 import RedirectElement from 'app/components/elements/redirect'
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
-import Card from 'app/ui/molecules/card'
 import { Button } from 'app/design/controls'
 import { useWindowDimensions } from 'react-native';
 import { useSetWindowSize } from 'app/context/measure';
+import semver from 'semver';
+import { useTranslation } from 'react-i18next';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'app/ui/molecules/card'
+import AnimatedView from 'app/ui/atoms/animated-view';
+import Toast from 'react-native-toast-message'
+import DropdownPopup from 'app/ui/atoms/dropdown-popup'
+
 
 function WindowSizeSync() {
     const { width, height } = useWindowDimensions();
@@ -36,12 +42,78 @@ export default function Layouts({ path, data, uri, url }) {
         return getLayoutName(data, data?.uri?.toString());
     }, [data]);
 
+
+    const { t } = useTranslation();
+    const v = semver.coerce(data.version)?.version;
+    const minVersion = appSetting('config', 'min_server_version');
+    const maxVersion = appSetting('config', 'stable_server_version');
+    const appVersion = appSetting('config', 'app_version');
+    if (semver.ltr(v, minVersion, { includePrerelease: true })) {
+        return (
+            <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto">
+                <View className="max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto gap-y-4">
+                    <AnimatedView direction="up" delay={300}>
+                        <Card padding="p-6  ">
+                            <CardHeader>
+                                <CardTitle>{t("version_incompatible_title")}</CardTitle>
+                            </CardHeader>
+                            <CardContent className="gap-4">
+                                <Text>
+                                    {t("version_incompatible_text1", { version: appVersion })}
+                                </Text>
+                                <Text>
+                                    {t("version_incompatible_text2", { version: data.version, min_version: minVersion })}
+                                </Text>
+                                <Text>
+                                    {t("version_incompatible_text3")}
+                                </Text>
+                            </CardContent>
+                        </Card>
+                    </AnimatedView>
+                </View>
+            </View>
+        )
+    }
+    const isVersionInfo = semver.gtr(v, maxVersion, { includePrerelease: true }) && currentUser?.operator;
+
     return (
         <Layout layout={layout} path={path} data={data} uri={uri} key={`layout${currentUser?.id}`}>
             <PageLayoutContent layout={layout} path={path} data={data} uri={uri} url={url} />
             <WindowSizeSync />
+            {isVersionInfo && <View className="fixed bottom-16 left-5"><DropdownPopup
+                open={true}
+                minPopupWidth={320}
+                trigger={<Button
+                    key="btn"
+                    variant="danger"
+                    size="base"
+                    rounded
+                    startDecorator="TriangleAlert"
+                />}
+            >
+                <View className="gap-2">
+                    <Text className="text-xs text-label-secondary font-medium">
+                        {t("version_warning_title")}
+                    </Text>
+                    <Text className="text-xs text-label-secondary ">
+                        {t("version_warning_text1", { version: appVersion, server_version: data.version })}
+                    </Text>
+                    <Text className="text-xs text-label-secondary ">
+                        {t("version_warning_text2", { version: maxVersion })}
+                    </Text>
+                    <Text className="text-xs text-label-secondary ">
+                        {t("version_warning_text3")}
+                    </Text>
+                </View>
+
+
+            </DropdownPopup></View>}
         </Layout>
     )
+    /*<Toast
+                position='top'
+                topOffset={120}
+            />*/
 }
 
 function ErrorPage({ type }) {
