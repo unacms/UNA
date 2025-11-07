@@ -699,6 +699,7 @@ export function Conductor({
         return type === 'default' ? getUnitType(currentRoute) : type
     }, [currentRoute?.endpoint, currentRoute?.inited, currentRoute?.blocks])
 
+    
     const sSkeleton = useMemo(() => {
         const a = callFn('getSkeletonByEndPoint', [currentRoute])
         if (a) return a
@@ -708,6 +709,8 @@ export function Conductor({
             currentRoute?.endpoint?.unit
         return unitType ? [baseSkeleton, unitType] : baseSkeleton
     }, [skeleton, currentRoute, unitType])
+
+    console.log("sSkeleton", skeleton, sSkeleton, currentRoute?.endpoint?.module, currentRoute?.endpoint?.unit, unitType)
 
     useEffect(() => {
         setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100)

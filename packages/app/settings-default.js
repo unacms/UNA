@@ -956,11 +956,13 @@ export const settingsDefault = {
                 },
                 center: { 
                     defaultSize: 70, minSize: 70, maxSize: 80,
-                    '2xl':{
-                            defaultSize: 80,
-                            minSize: 70,
-                            maxSize: 85,
-                            
+                    responsive: {
+                        '2xl':{
+                                defaultSize: 80,
+                                minSize: 70,
+                                maxSize: 85,
+                                
+                            }
                         }
                 },
             },

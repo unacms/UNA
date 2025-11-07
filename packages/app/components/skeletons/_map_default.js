@@ -155,8 +155,6 @@ const FeedDefault = memo(() => (
     </CardList>
 ));
 
-//const Feed = memo(() => (appSetting('feed', 'default_view') == 'small' ? <FeedSmall /> : <FeedDefault />));
-
 export const skeletonsMapDefault = {
     default: Default,
     notifications: Notif,
@@ -165,5 +163,13 @@ export const skeletonsMapDefault = {
     bx_posts_small: PostsSmall,
     feed: FeedDefault,
     one_column_browse: OneColumn,
-    bx_persons: Persons
+    bx_persons: Persons,
+    system_person_friends: Persons,
+    system_browse_friend_requests: Persons,
+    system_person_friend_requested: Persons,
+    system_person_friend_requested: Persons,
+    system_person_friends_recommendations: Persons,
+    system_person_following_recommendations: Persons,
+    system_person_followers: Persons,
+    system_person_following: Persons,
 };
