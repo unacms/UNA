@@ -40,47 +40,47 @@ function PageContent({ children, isLoginPage, title }) {
     }
 
     return (
-          <View className="w-full justify-center lg:w-1/2 p-4 sm:p-8 md:p-12 p-6 ">
-        
-                    <AnimatedView className="gap-4" direction="up" delay={200}>
-            <Card padding="p-6">
-                <CardHeader>
-                    <CardTitle>
-                        {t('login_modal_title')} {t('app_name')}
-                    </CardTitle>
-                    <CardDescription>{t('splash_page_login')}</CardDescription>
-                </CardHeader>
-                <CardContent className="gap-4">
-                    {children}
-                    <Row className="text-center text-sm items-center text-muted-foreground">
-                        <Link
-                            className="mx-auto"
-                            variant="primary"
-                            size="sm"
-                            href="/forgot-password"
-                            haptics="Medium"
-                        >
-                            {t('Forgot password?')}
-                        </Link>
-                    </Row>
-                    <AuthPanel showSeparator={true} />
-                </CardContent>
-            </Card>
+        <View className="w-full justify-center p-4 sm:p-8 md:p-12 p-6 ">
 
-            <Row className=" mx-auto gap-1 text-base justify-center items-center text-center">
-                <Text className=" text-muted-foreground">
-                    {t('splash_page_login2')}
-                </Text>
-                <Link
-                    variant="default"
-                    size="md"
-                    href="/create-account"
-                    haptics="Medium"
-                >
-                    {t('splash_page_new_account')}
-                </Link>
-            </Row>
-        </AnimatedView>
+            <AnimatedView className="gap-4" direction="up" delay={200}>
+                <Card padding="p-6">
+                    <CardHeader>
+                        <CardTitle>
+                            {t('login_modal_title')} {t('app_name')}
+                        </CardTitle>
+                        <CardDescription>{t('splash_page_login')}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="gap-4">
+                        {children}
+                        <Row className="text-center text-sm items-center text-muted-foreground">
+                            <Link
+                                className="mx-auto"
+                                variant="primary"
+                                size="sm"
+                                href="/forgot-password"
+                                haptics="Medium"
+                            >
+                                {t('Forgot password?')}
+                            </Link>
+                        </Row>
+                        <AuthPanel showSeparator={true} />
+                    </CardContent>
+                </Card>
+
+                <Row className=" mx-auto gap-1 text-base justify-center items-center text-center">
+                    <Text className=" text-muted-foreground">
+                        {t('splash_page_login2')}
+                    </Text>
+                    <Link
+                        variant="default"
+                        size="md"
+                        href="/create-account"
+                        haptics="Medium"
+                    >
+                        {t('splash_page_new_account')}
+                    </Link>
+                </Row>
+            </AnimatedView>
         </View>
     )
 }
@@ -118,7 +118,7 @@ export default function PageLayout(props) {
             />
         </View>
     ) : (
-     <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto ">
+        <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto ">
             <PageContent isLoginPage={true}>{props.children}</PageContent>
             <MenuFooter
                 cntClasses="mx-auto flex-row flex-wrap gap-3 p-3"
