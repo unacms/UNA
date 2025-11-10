@@ -395,7 +395,7 @@ return;*/
                             />
                             <Panel className={`hidden ${rightBreakpoint}:block ${currentBreakpointName}:w-full`} {...rightPanelProps}>
                                 <View className={`${cd('p-md')} ${cd('gap-lg')} fixed-process`}>
-                                    {AsideContent}
+                                 {AsideContent}
                                 </View>
                             </Panel>
                         </>

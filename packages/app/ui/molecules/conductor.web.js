@@ -36,7 +36,7 @@ import { useLayoutData } from 'app/context/layout'
 import { useCurrentUser } from 'app/context/user'
 import Search from 'app/ui/molecules/search'
 import DynamicMenu from 'app/components/nav/menu-dynamic'
-import { storageClear, menuItemsFilter } from 'app/lib/util'
+import { storageClear, menuItemsFilter, storageSet, storageGet } from 'app/lib/util'
 import { subscribe } from 'app/ui/atoms/socket'
 import { fetcher } from 'app/lib/fetcher'
 import { useBottomSheetData } from 'app/context/bottomsheet'
@@ -207,40 +207,58 @@ const RenderScene = ({
         currentBreakpointName
     )
 
+    const asId =  cellsCustomConfig.sizable
+                    ? `cells-${panelLayoutKey}`
+                    : undefined;
+  
+    function getLayouts() {
+  const layouts = [];
+
+  if (isLeftCol) {
+    layouts.push(leftPanelProps.defaultSize);
+  }
+
+  layouts.push(centerPanelProps.defaultSize);
+
+  if (isRightCol) {
+    layouts.push(rightPanelProps.defaultSize);
+  }
+
+  return layouts;
+}
+                
+
     const onLayout = (sizes) => {
+        const layouts =  getLayouts();
+        if (JSON.stringify(sizes) != JSON.stringify(layouts)){
+            storageSet('rrp', asId+'-'+currentBreakpointName, sizes, true);
+        }
         setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100)
     }
 
     useEffect(() => {
-        const layouts = []
-        if (isLeftCol) {
-            layouts.push(leftPanelProps.defaultSize)
-        }
-        layouts.push(centerPanelProps.defaultSize)
-        if (isRightCol) {
-            layouts.push(rightPanelProps.defaultSize)
-        }
+        const sl = storageGet('rrp', asId+'-'+currentBreakpointName, true);
         if (groupRef) {
-            groupRef.current?.setLayout(layouts)
+            groupRef.current?.setLayout(sl || getLayouts())
         }
-    }, [currentBreakpointName, index, groupRef])
+    }, [currentBreakpointName, index])
 
     useEffect(() => {
         window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     }, [index])
 
-  
+    
+    console.log("asId", asId)
+
+    
+
     return (
         <PanelGroup
             ref={groupRef}
             key={`${panelLayoutKey}-pnl2-${
                 cellsCustomConfig.sizable ? 'sizable' : 'static'
             }`}
-            autoSaveId={
-                cellsCustomConfig.sizable
-                    ? `cells-${panelLayoutKey}`
-                    : undefined
-            }
+            
             direction="horizontal"
             className={(layoutName == 'navigator' ? '' : '') + ' h-full'}
             onLayout={onLayout}

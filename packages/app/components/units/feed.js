@@ -117,7 +117,7 @@ function DefaultUnit({ data }) {
     if (viewState.view == 'deleted') return <></>
     if (data.type == 'timeline_recommendations') {
         const Unit = getComponent('content-list', data.module);
-
+       // console.log("datadata", data)
 
         const contentElement = data.content.data.map((item, index) => {
             return (
