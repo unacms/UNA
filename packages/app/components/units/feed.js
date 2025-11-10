@@ -27,6 +27,8 @@ import {
 import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { getComponent } from 'app/components/registry'
 import Scroll from 'app/ui/molecules/scroll'
+import Link from 'app/ui/atoms/link'
+import { Button } from 'app/design/controls'
 
 function DefaultUnit({ data }) {
     const isWeb = Platform.OS === 'web'
@@ -49,12 +51,12 @@ function DefaultUnit({ data }) {
 
         let res = await fetcher(
             '/api.php?r=' +
-                appSetting('urls', 'cmts') +
-                '/&params[]={"module":"' +
-                data?.cmts?.module +
-                '","object_id":' +
-                data?.cmts?.object_id +
-                '}'
+            appSetting('urls', 'cmts') +
+            '/&params[]={"module":"' +
+            data?.cmts?.module +
+            '","object_id":' +
+            data?.cmts?.object_id +
+            '}'
         )
         res?.data?.form?.data?.inputs?.cmt_text &&
             (res.data.form.data.inputs.cmt_text.autofocus = true)
@@ -115,7 +117,7 @@ function DefaultUnit({ data }) {
     if (viewState.view == 'deleted') return <></>
     if (data.type == 'timeline_recommendations') {
         const Unit = getComponent('content-list', data.module);
-       
+
 
         const contentElement = data.content.data.map((item, index) => {
             return (
@@ -124,7 +126,26 @@ function DefaultUnit({ data }) {
                 </View>
             )
         })
-       return <Scroll horizontal={true} step={300} className='w-full'><Row className="gap-2 pb-3 ">{contentElement}</Row></Scroll>
+        return (
+            <AnimatedBlock>
+                <CardList className="mb-0.5 sm:mb-3 " padding="p-0">
+                    <CardHeader className=" px-4 pt-4  flex-row items-center justify-between">
+                        <CardTitle>{t(data.title)}</CardTitle>
+                        <Link
+                            variant="plainghost"
+                            size="md"
+                            href="/create-account"
+                            haptics="Medium"
+                        >
+                            {' '}
+                            {t('View all')}
+                        </Link>
+                    </CardHeader>
+
+                    <Scroll horizontal={true} step={300} className='w-full'><Row className="gap-2  p-3">{contentElement}</Row></Scroll>
+                </CardList>
+            </AnimatedBlock>
+        );
     }
     return (
         <AnimatedBlock>
