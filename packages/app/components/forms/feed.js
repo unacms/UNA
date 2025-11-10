@@ -19,6 +19,7 @@ import Reanimated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from
 import { getEditorHeight } from 'app/lib/form-helpers';
 import { PollButton, LabelButton, FileButton } from 'app/lib/form-helpers'
 import { useBreakpoint, useWindowHeight } from 'app/context/measure';
+import emitter from 'app/context/emitter';
 
 function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setShowImage, author }) {
     const { currentUser } = useCurrentUser();
@@ -166,6 +167,7 @@ export default function FormFeed(props) {
     useEffect(() => {
         if (props.response?.id && props.response?.id != responseId) {
             setLayoutData(getAlert('feed:new_content', props.response))
+            emitter.emit('feed', { action: 'new_content', data: props.response });
             onClose();
             setResponseId(props.response?.id)
         }

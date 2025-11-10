@@ -42,6 +42,7 @@ import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger'
 import { useLayoutData } from 'app/context/layout'
 import { stripTags, cd, isWeb } from 'app/lib/util'
 import { useIsDesktop, useWindowHeight } from 'app/context/measure';
+import emitter from 'app/context/emitter';
 
 export const CommentsModal = memo(
     ({ commentsData, initFormData, itemContent, closeOnPost }) => {
@@ -398,11 +399,12 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
                 break
 
             case 'item-delete':
-                const oResultDeleted = await fetcher(
+                await fetcher(
                     '/api.php?r=bx_timeline/delete/&params[]=' + id
                 )
-                setViewState({ view: 'deleted' })
-                setLayoutData(getAlert('feed:remove_content', id))
+                setViewState({ view: 'deleted' });
+                emitter.emit('feed', { action: 'remove_content', id: id });
+                setLayoutData(getAlert('feed:remove_content', id));// TODO REMOVE AFTER CUT setLayoutData/getAlert
                 break
         }
     }
