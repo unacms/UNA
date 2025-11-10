@@ -11,6 +11,7 @@ import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
 import { callFn } from 'app/lib/functions/call';
 import Profile from 'app/ui/molecules/profile'
+import Badge from 'app/ui/molecules/badge'
 import { cd } from 'app/lib/util'
 
 export default function Unit(props) {
@@ -47,7 +48,7 @@ export default function Unit(props) {
         return (
             <>
                 <Redirect ref={redirectdRef} />
-                <CardList padding={cd('p-sm')} className='mb-2 md:mb-0 rounded-xl sm:rounded-xl' padding="p-0">
+                <CardList className='mb-2 md:mb-0 rounded-xl sm:rounded-xl' padding="p-0">
                     <Link className="group " href={data.url}>
                         <View className="flex-row sm:flex-col p-1">
                             <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-lg overflow-hidden items-center justify-center bg-neutral-500/20">
@@ -60,7 +61,7 @@ export default function Unit(props) {
                                 />
 
                             </View>
-                            <View className="flex-col p-3 flex-auto items-between justify-between ">
+                            <View className="flex-col p-2 flex-auto items-between justify-between ">
                                 <View>
                                     <Row className="items-center gap-2">
                                         {bShowProfilePic && (
@@ -79,33 +80,35 @@ export default function Unit(props) {
                                             {data.title}
                                         </Text>
                                     </Row>
-                                    <Row className="items-center h-6 my-3">
+                                    <Row className="items-center h-5 my-3">
 
 
-                                        <View className="mr-2  h-6">
+                                        <View className="mr-2  h-5">
                                             <ProfilesList
                                                 data={
                                                     data.members_list
                                                 }
                                                 showEmpty={false}
                                                 maxCount={3}
-                                                displaySize="xs"
+                                                displaySize="2xs"
                                             />
 
                                         </View>
                                         {
-                                            <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
+                                            <Text className="truncate text-xs leading-tight flex-auto text-label-tertiary">
                                                 {friendsLabel}
                                             </Text>
                                         }
 
-                                        <Text className=" bg-primary/10  rounded-md  px-1.5 py-1 text-xs flex-none items-center font-semibold text-neutral-600 dark:text-neutral-400">
-                                            {data.visibility != "3" ? (
-                                                <>Private</>
-                                            ) : (
-                                                <>Public</>
-                                            )}
-                                        </Text>
+                                        <Badge 
+                                            data={{
+                                                text: data.visibility != "3" ? "Private" : "Public",
+                                                icon: data.visibility != "3" ? "Lock" : "Globe",
+                                                color: data.visibility != "3" ? "gray" : "blue"
+                                            }}
+                                            size="xs"
+                                            className="flex-none"
+                                        />
                                     </Row>
                                 </View>
                                 <View className="flex-row  sm:flex-col  w-full">
