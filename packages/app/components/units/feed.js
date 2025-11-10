@@ -195,7 +195,7 @@ function DefaultUnit({ data }) {
                             />
                         )}
                 </Row>
-                <Row className=" gap-3 items-center flex-auto justify-between pt-2 mt-1 -mx-1 -mb-1  border-t border-border/40">
+                <Row className=" gap-3 items-center flex-auto justify-between pt-2.5 px-3 mt-1 -mx-4 -mb-1  border-t border-border/40">
                     <ActionMenu
                         data={data.menu_actions}
                         showCommentsModal={showCommentsModal}

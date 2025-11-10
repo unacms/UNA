@@ -1165,7 +1165,7 @@ export const settingsDefault = {
                 rounded: ' rounded-lg ',
                 padding: '  ',
                 padding_icon_only: ' h-9 w-9 ',
-                padding_with_title: ' px-2.5 gap-1 ',
+                padding_with_title: ' px-2 gap-1 ',
                 icon_container:
                     ' text-base h-9 flex items-center justify-center',
                 title_container: ' text-sm leading-9 inline-flex items-center  ',

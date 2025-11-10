@@ -144,8 +144,8 @@ export const CommentsSection = memo(
             <Button variant="text" size="xs" title={t('View more comments...')} />
         )
         return (
-            <View className=" pt-2 ">
-                <View className="border-t border-border/40 -mx-2 pt-1.5 mt-1.5 ">
+            <View className="  ">
+                <View className="border-t  border-border/40 -mx-4 mt-3.5 ">
                 {isShowMoreComments && (
                     <View className=" me-auto">
                         {isCommentsModal ? (
