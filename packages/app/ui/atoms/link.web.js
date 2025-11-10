@@ -52,7 +52,7 @@ export default function ElementLink(props) {
         switch (v) {
             case 'ghost': return 'ghost';
             case 'plain': return 'plain';
-            case 'bordered': return 'bordered';
+            case 'plainghost': return 'plainghost';
             case 'borderedProminent': return 'borderedProminent';
             case 'borderedSecondary': return 'borderedSecondary';
             default: return 'default';
@@ -72,8 +72,8 @@ export default function ElementLink(props) {
         const textSizeClass = ThemeLinkSizes[size]?.text || '';
         const roundedClass = ThemeLinkSizes[size]?.rounded || '';
         const focusClass = ThemeLinkSizes[size]?.focus || '';
-        // For ghost variant: use pseudo padding instead of DOM padding
-        if (selectedVariant === 'ghost') {
+        // For ghost and plainghost variants: use pseudo padding instead of DOM padding
+        if (selectedVariant === 'ghost' || selectedVariant === 'plainghost') {
             const padSize = ['xs','sm','md','lg'].includes(size) ? size : 'md';
             const pseudoPadClass = `u-link-ghost-pad-${padSize}`;
             return [pseudoPadClass, hitareaClass, textSizeClass, roundedClass, focusClass].filter(Boolean).join(' ');

@@ -1356,19 +1356,19 @@ export const settingsDefault = {
             },
             sm: {
                 padding: ' px-0.5 ',
-                hitarea_class: ' relative u-link-hitarea u-link-hitarea-md ',
+                hitarea_class: ' relative u-link-hitarea u-link-hitarea-sm ',
                 hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
-                text: ' underline-offset-2  ',
-                rounded: ' rounded ',
+                text: ' underline-offset-2 text-sm decoration-[1px] ',
+                rounded: ' rounded-md ',
                 focus: ' web:focus-visible:outline-offset-0 web:focus-visible:outline-4 web:focus-visible:ring-1 web:focus-visible:ring-offset-0   ',
             },
             md: {
-                padding: '  ',
+                padding: ' px-1 ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-md ',
                 hitSlop: { top: 4, right: 4, bottom: 4, left: 4 },
-                text: ' underline-offset-2 decoration-[1.5px] ',
-                rounded: ' rounded-md ',
-                focus: ' web:focus-visible:outline-offset-4 web:focus-visible:outline-4 web:focus-visible:ring-2 web:focus-visible:ring-offset-2 web:focus-visible:ring-1   ',
+                text: ' underline-offset-2 decoration-[1.5px] text-base ',
+                rounded: ' rounded-lg focus:rounded active:rounded-sm ',
+                focus: ' web:focus-visible:outline-offset-[6px] web:focus-visible:outline-4 web:focus-visible:ring-2 web:focus-visible:ring-offset-[4px] web:focus-visible:ring-1 active:outline-4 active:outline-offset-8   ',
             },
             lg: {
                 padding: ' px-2 rounded-xl items-center flex web:active:outline-ring ',
@@ -1381,25 +1381,25 @@ export const settingsDefault = {
         },
 
         link_styles: {
-            // Default (SwiftUI-like Link): underline on hover; visited color; link color tokens
-            'u-link-default-cnt': ' web:focus-visible:ring-offset-background web:focus-visible:bg-background web:focus-visible:outline-ring/20 web:focus-visible:ring-ring  ',
-            'u-link-default-text': ' decoration-from-font  ',
+            // inherit text; no decoration idle; subtle hover/active feedback
+            'u-link-default-cnt': '   ',
+            'u-link-default-text': '   ',
             'u-link-default-trans': ' web:duration-200 ',
 
-            // Plain: inherit text; no decoration idle; subtle hover/active feedback
-            'u-link-plain-cnt': ' web:focus-visible:ring-offset-card web:focus-visible:bg-card web:focus-visible:outline-ring/20 web:focus-visible:ring-ring ',
-            'u-link-plain-text': ' text-label-link web:hover:text-label-linkhover web:hover:underline  ',
+            // simple link, no background
+            'u-link-plain-cnt': ' web:focus-visible:outline-ring/20 web:focus-visible:ring-ring ',
+            'u-link-plain-text': ' text-label-link web:hover:text-label-linkhover web:hover:underline ',
             'u-link-plain-trans': ' web:duration-200 ',
 
             // Ghost: pseudo background via CSS vars; color logic maintained
-            'u-link-ghost-cnt': ' u-link-ghost web:focus-visible:ring-offset-background web:focus-visible:bg-background web:focus-visible:outline-ring/20 web:focus-visible:ring-ring web:active:bg-accent ',
-            'u-link-ghost-text': ' text-label-secondary web:hover:text-label-primary ',
+            'u-link-ghost-cnt': ' u-link-ghost web:focus:ring-offset-background focus:bg-background web:focus-visible:outline-ring/20 web:focus-visible:ring-ring web:active:bg-accent ',
+            'u-link-ghost-text': ' text-label-link web:hover:text-label-linkhover web:hover:underline ',
             'u-link-ghost-trans': ' web:duration-200 ',
 
-            // Bordered: tertiary fill bg; link label colors; no underline
-            'u-link-bordered-cnt':  ' group bg-muted/60 web:hover:bg-muted rounded-md ',
-            'u-link-bordered-text':  ' text-primary web:hover:text-primary/90 web:visited:text-primary ',
-            'u-link-bordered-trans': ' web:duration-200 ',
+            // simple link, no background, hover background
+            'u-link-plainghost-cnt':  ' u-link-ghost web:focus:outline-ring/20 web:focus:ring-ring web:focus-visible:ring-offset-card web:focus-visible:bg-card web:hover:ring-transparent active:outline active:opacity-80   ',
+            'u-link-plainghost-text':  ' text-label-link web:hover:text-label-linkhover ',
+            'u-link-plainghost-trans': ' web:duration-100 ',
 
           
         },
@@ -1453,7 +1453,7 @@ export const settingsDefault = {
             'u-card-header': 'flex gap-2',
             'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',
             'u-card-title':
-                ' text-label-primary text-xl font-semibold leading-none tracking-tight',
+                ' text-label-secondary leading-6 text-lg font-semibold leading-none tracking-tight',
             'u-card-description': ' text-label-secondary text-sm',
             'u-card-content': 'text-card-foreground ',
             'u-card-footer': 'flex text-base text-card-foreground gap-2',

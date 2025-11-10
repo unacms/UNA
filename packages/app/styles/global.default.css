@@ -26,8 +26,8 @@
         --ring: var(--accent-600); /*focus rings*/
         --guide: var(--neutral-500); /*guide color*/
         --label-primary: var(--neutral-900); /*Primary text (high emphasis)*/
-        --label-secondary: var(--neutral-600); /*Secondary text (medium emphasis)*/
-        --label-tertiary: var(--neutral-400); /*Tertiary text (low emphasis)*/
+        --label-secondary: var(--neutral-700); /*Secondary text (medium emphasis)*/
+        --label-tertiary: var(--neutral-500); /*Tertiary text (low emphasis)*/
         --label-link: var(--accent-600); /*Link text color*/
         --label-linkhover: var(--accent-800); /*Link text color on hover*/
         --fill-primary: var(--neutral-50); /*Main surface background*/
@@ -125,8 +125,8 @@
         --ring: var(--accent-600); /*focus rings*/
         --guide: var(--neutral-600); /*guide color*/
         --label-primary: var(--neutral-100); /*Primary text (high emphasis)*/
-        --label-secondary: var(--neutral-400); /*Secondary text (medium emphasis)*/
-        --label-tertiary: var(--neutral-600); /*Tertiary text (low emphasis)*/
+        --label-secondary: var(--neutral-300); /*Secondary text (medium emphasis)*/
+        --label-tertiary: var(--neutral-500); /*Tertiary text (low emphasis)*/
         --label-link: var(--accent-500); /*Link text color*/
         --label-linkhover: var(--accent-600); /*Link text color on hover*/
         --fill-primary: var(--neutral-950); /*Main surface background*/
@@ -251,7 +251,7 @@ select{
     }
     .u-link-hitarea-xs::before { inset: -8px; }
     .u-link-hitarea-sm::before { inset: -8px; }
-    .u-link-hitarea-md::before { inset: -6px; }
+    .u-link-hitarea-md::before { inset: -8px; }
     .u-link-hitarea-lg::before { inset: -4px; }
 
     /* Generic action (button) hit area */
@@ -263,7 +263,7 @@ select{
     }
     .u-action-hitarea-xs::before { inset: -8px; }
     .u-action-hitarea-sm::before { inset: -6px; }
-    .u-action-hitarea-base::before { inset: -4px; }
+    .u-action-hitarea-md::before { inset: -4px; }
     .u-action-hitarea-lg::before { inset: -4px; }
 
     /* Ghost link background via pseudo-element (web only) */
@@ -300,12 +300,12 @@ select{
     }
     .u-link-ghost.u-link-ghost-pad-sm {
         --u-link-ghost-inset-x: -4px;
-        --u-link-ghost-inset-y: -1px;
-        --u-link-ghost-radius: 0.25rem; /* rounded-md */
+        --u-link-ghost-inset-y: -2px;
+        --u-link-ghost-radius: 0.375rem; /* rounded-md */
     }
     .u-link-ghost.u-link-ghost-pad-md {
-        --u-link-ghost-inset-x: -4px;
-        --u-link-ghost-inset-y: -2px;
+        --u-link-ghost-inset-x: -6px;
+        --u-link-ghost-inset-y: -6px;
         --u-link-ghost-radius: 0.5rem; /* rounded-lg */
     }
     .u-link-ghost.u-link-ghost-pad-lg {

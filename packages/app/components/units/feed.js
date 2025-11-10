@@ -18,10 +18,17 @@ import {
     FeedEditForm,
 } from 'app/lib/feed-helpers'
 import { Platform } from 'react-native'
-import { CardList, CardFooter } from 'app/ui/molecules/card'
+import {
+    CardList,
+    CardHeader,
+    CardTitle,
+    CardFooter,
+} from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/atoms/animated-block'
-import { getComponent } from 'app/components/registry';
+import { getComponent } from 'app/components/registry'
 import { Text } from 'app/design/typography'
+import Link from 'app/ui/atoms/link'
+import { Button } from 'app/design/controls'
 
 function DefaultUnit({ data }) {
     const isWeb = Platform.OS === 'web'
@@ -30,8 +37,7 @@ function DefaultUnit({ data }) {
     const [viewState, setViewState] = useState({ view: '' })
     const [cmtsData, setCmtsData] = useState(false)
 
-    const isCommentsModal =
-        appSetting('comments', 'show_modal_in_feed');// && isWeb
+    const isCommentsModal = appSetting('comments', 'show_modal_in_feed') // && isWeb
     const { url, commentsData, isShowMoreComments } = useMemo(
         () => prepareData(data),
         [data]
@@ -40,17 +46,17 @@ function DefaultUnit({ data }) {
     const showCommentsModal = async (initFormData) => {
         let menu_actions2 = cloneObject(data.menu_actions)
         menu_actions2.items = menu_actions2.items.filter(
-            (x) => x.name !== "item-comment"
-        );
+            (x) => x.name !== 'item-comment'
+        )
 
         let res = await fetcher(
             '/api.php?r=' +
-            appSetting('urls', 'cmts') +
-            '/&params[]={"module":"' +
-            data?.cmts?.module +
-            '","object_id":' +
-            data?.cmts?.object_id +
-            '}'
+                appSetting('urls', 'cmts') +
+                '/&params[]={"module":"' +
+                data?.cmts?.module +
+                '","object_id":' +
+                data?.cmts?.object_id +
+                '}'
         )
         res?.data?.form?.data?.inputs?.cmt_text &&
             (res.data.form.data.inputs.cmt_text.autofocus = true)
@@ -65,23 +71,32 @@ function DefaultUnit({ data }) {
                             <>
                                 <View className="gap-3 p-3 sm:px-4">
                                     <Author data={data} url={url} t={t} />
-                                    <MainContent fulltext={true} url={url} data={data} />
+                                    <MainContent
+                                        fulltext={true}
+                                        url={url}
+                                        data={data}
+                                    />
                                     <Row className="gap-2 items-center flex-auto justify-between flex-wrap-reverse">
                                         <ActionMenu
                                             data={menu_actions2}
-                                            showCommentsModal={showCommentsModal}
+                                            showCommentsModal={
+                                                showCommentsModal
+                                            }
                                         />
                                         {!!data.menu_counters &&
-                                            appSetting('feed', 'counters_menu') && (
+                                            appSetting(
+                                                'feed',
+                                                'counters_menu'
+                                            ) && (
                                                 <CounterMenu
                                                     data={data.menu_counters}
-                                                    showCommentsModal={showCommentsModal}
+                                                    showCommentsModal={
+                                                        showCommentsModal
+                                                    }
                                                 />
                                             )}
-
                                     </Row>
                                 </View>
-
                             </>
                         ),
                     }}
@@ -101,26 +116,33 @@ function DefaultUnit({ data }) {
 
     if (viewState.view == 'deleted') return <></>
     if (data.type == 'timeline_recommendations') {
-        const Unit = getComponent('content-list', data.module);
+        const Unit = getComponent('content-list', data.module)
         const contentElement = data.content.data.map((item, index) => {
             return (
                 <View className="w-[280px]" key={`item${index}_row`}>
-                    <Unit
-                        data={item}
-                    />
+                    <Unit data={item} />
                 </View>
-            );
-        });
+            )
+        })
         return (
             <AnimatedBlock>
-                <Row className="items-center justify-between px-2 my-3">
-                    <Text className=" text-card-foreground text-xl font-bold leading-none lg:leading-none tracking-tight ">
-                        {t(data.title)}
-                    </Text>
-                </Row>
-                <ScrollView horizontal={true}>
-                    <Row className='gap-4 mb-0.5 sm:mb-3 '>{contentElement}</Row>
-                </ScrollView>
+                <CardList className="mb-0.5 sm:mb-3 " padding="p-0">
+                    <CardHeader className=" px-4 pt-4  flex-row items-center justify-between">
+                        <CardTitle>{t(data.title)}</CardTitle>
+                        <Link
+                            variant="plainghost"
+                            size="md"
+                            href="/create-account"
+                            haptics="Medium"
+                        >
+                            {' '}
+                            {t('View all')}
+                        </Link>
+                    </CardHeader>
+                    <ScrollView horizontal={true}>
+                        <Row className="gap-2 p-3 ">{contentElement}</Row>
+                    </ScrollView>
+                </CardList>
             </AnimatedBlock>
         )
     }
@@ -135,7 +157,6 @@ function DefaultUnit({ data }) {
             )}
             {isCommentsModal && (
                 <Modal
-
                     onClose={() => setCmtsData(false)}
                     onVisible={!!cmtsData}
                     title={cmtsData.title}
@@ -144,7 +165,10 @@ function DefaultUnit({ data }) {
                     {cmtsData.data}
                 </Modal>
             )}
-            <CardList border="border-y border-x-none sm:border-x" className="mb-0.5 sm:mb-3">
+            <CardList
+                border="border-y border-x-none sm:border-x"
+                className="mb-0.5 sm:mb-3"
+            >
                 <Row className="gap-3 flex-auto mb-3">
                     <Author data={data} url={url} t={t} />
                     <View className="flex-none mb-auto hidden">
@@ -159,12 +183,13 @@ function DefaultUnit({ data }) {
                     <MainContent url={url} data={data} />
                 </View>
                 <Row className="-mx-1.5">
-                    {!!data.menu_counters && appSetting('feed', 'counters_menu') && (
-                        <CounterMenu
-                            data={data.menu_counters}
-                            showCommentsModal={showCommentsModal}
-                        />
-                    )}
+                    {!!data.menu_counters &&
+                        appSetting('feed', 'counters_menu') && (
+                            <CounterMenu
+                                data={data.menu_counters}
+                                showCommentsModal={showCommentsModal}
+                            />
+                        )}
                 </Row>
                 <Row className=" gap-3 items-center flex-auto justify-between pt-2 mt-1 -mx-1 -mb-1  border-t border-border/40">
                     <ActionMenu
@@ -176,8 +201,6 @@ function DefaultUnit({ data }) {
                         menu={data?.menu_manage}
                         setViewState={setViewState}
                     />
-
-
                 </Row>
 
                 {commentsData && (
@@ -191,7 +214,6 @@ function DefaultUnit({ data }) {
                         isShowMoreComments={isShowMoreComments}
                     />
                 )}
-
             </CardList>
         </AnimatedBlock>
     )

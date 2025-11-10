@@ -102,7 +102,7 @@ export default function ElementLink(props) {
         switch (v) {
             case 'ghost': return 'ghost';
             case 'plain': return 'plain';
-            case 'bordered': return 'bordered';
+            case 'plainghost': return 'plainghost';
             case 'borderedProminent': return 'borderedProminent';
             case 'borderedSecondary': return 'borderedSecondary';
             default: return 'default';
@@ -127,7 +127,7 @@ export default function ElementLink(props) {
     // Fallback hitSlop from theme by size (native only); explicit prop wins; allow disabling with hitarea={false}
     const resolvedHitSlop = hitSlop ?? (hitarea === false ? undefined : (size ? ThemeLinkSizes[size]?.hitSlop : undefined));
 
-    const ghostNativePressedClass = selectedVariant === 'ghost' ? ' active:bg-muted rounded-lg ' : '';
+    const ghostNativePressedClass = (selectedVariant === 'ghost' || selectedVariant === 'plainghost') ? ' active:bg-muted rounded-lg ' : '';
     const composedClassName = [variantClass, sizeClass, ghostNativePressedClass, className].filter(Boolean).join(' ').trim();
 
 

@@ -47,10 +47,10 @@ export default function Unit(props) {
         return (
             <>
                 <Redirect ref={redirectdRef} />
-                <CardList padding={cd('p-sm')} className='mb-2 md:mb-0'>
+                <CardList padding={cd('p-sm')} className='mb-2 md:mb-0 rounded-xl sm:rounded-xl' padding="p-0">
                     <Link className="group " href={data.url}>
                         <View className="flex-row sm:flex-col p-1">
-                            <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center bg-neutral-500/20">
+                            <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-lg overflow-hidden items-center justify-center bg-neutral-500/20">
                                 <Image
                                     {...data.cover}
                                     alt={data.title}
@@ -60,9 +60,9 @@ export default function Unit(props) {
                                 />
 
                             </View>
-                            <View className="flex-col p-3  flex-auto items-between justify-between ">
+                            <View className="flex-col p-3 flex-auto items-between justify-between ">
                                 <View>
-                                    <Row className="items-center gap-x-2">
+                                    <Row className="items-center gap-2">
                                         {bShowProfilePic && (
                                             <Profile
                                                 url_avatar={data?.image?.src}
@@ -74,7 +74,7 @@ export default function Unit(props) {
                                         )}
                                         <Text
                                             numberOfLines={1}
-                                            className="flex-auto text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary "
+                                            className="flex-auto text-base leading-tight tracking-tight font-semibold text-neutral-800 dark:text-neutral-200 group-hover:text-primary "
                                         >
                                             {data.title}
                                         </Text>
