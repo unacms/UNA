@@ -3,6 +3,7 @@ import Menu from 'app/components/menu'
 import { useState } from 'react'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { useIsDesktop } from 'app/context/measure';
+import { View } from 'app/design/view';
 
 export function CoverMenuSmall(props) {
     const [ntfsOpen, setNtfsOpen] = useState(false)
@@ -80,7 +81,7 @@ export function CoverMenu(props) {
     });
 
     return (
-        <Menu
+        <View><Menu
             {...propsCopy}
             displayType="button"
             autoSize={!isSplitMenu}
@@ -97,7 +98,7 @@ export function CoverMenu(props) {
                 className: 'flex-wrap',
                 isFixedCount: true,
             }}
-        />
+        /></View>
     )
 }
 

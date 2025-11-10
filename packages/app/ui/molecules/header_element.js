@@ -54,7 +54,7 @@ export default function HeaderElement({ mode, url, uri }) {
                                                     pressed : appSetting('messenger', 'url') === '/' + uri
                                                 }
                                                 : {
-                                                    variant:  isDesktop ? 'secondary' : 'text',
+                                                    variant: item.props.variant ? item.props.variant :  isDesktop ? 'secondary' : 'text',
 
 
                                                 })}
