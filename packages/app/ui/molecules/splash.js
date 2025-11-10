@@ -69,7 +69,7 @@ function PageContent(props) {
                     {t('splash_page_login2')}
                 </Text>
                 <Link
-                    variant="plain"
+                    variant="accent"
                     size="md"
                     href="/create-account"
                     haptics="Medium"

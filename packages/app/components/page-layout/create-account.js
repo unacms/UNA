@@ -52,7 +52,7 @@ function PageContent({ children }) {
                         {t('create_account_page_already_have')}
                     </Text>
                     <Link
-                        variant="default"
+                        variant="accent"
                         size="md"
                         href="/login"
                         haptics="Medium"

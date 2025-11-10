@@ -1644,11 +1644,11 @@ export const settingsDefault = {
         button_styles: {
             // Default button (neutral/popover)
             'u-btn-default-cnt': [
-                'bg-popover/50 backdrop-blur',
-                ' shadow-line border border-border/60 web:border-0',
-                'web:ring-1 web:ring-inset web:ring-popover',
-                'web:hover:ring-popover web:focus:ring-popover',
-                'web:hover:bg-popover/60',
+                'bg-popover/80 backdrop-blur shadow-xs ',
+                'border border-border/60 web:border-0',
+                'web:ring-1 web:ring-inset web:ring-border/60',
+                'web:hover:ring-border web:focus:ring-border',
+                'web:hover:bg-popover',
                 'web:focus:outline-4 web:active:outline-4 outline-ring/40',
 
                 ' web:focus:outline-offset-1 web:focus:outline-offset-card ',
