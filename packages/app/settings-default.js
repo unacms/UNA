@@ -1304,7 +1304,7 @@ export const settingsDefault = {
             xs: {
                 padding: ' ',
                 wide_padding: ' px-1 ',
-                container: '  min-w-5 h-5 overflow-hidden justify-center items-center ',
+                container: ' min-w-4 h-4 overflow-hidden justify-center items-center ',
                 image_container: ' items-center justify-center rounded overflow-hidden ',
                 icon_size: 16,
                 text: ' text-xs leading-4 px-1 ',
@@ -1355,10 +1355,10 @@ export const settingsDefault = {
                 focus: ' web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2 web:ring-offset-background ',
             },
             sm: {
-                padding: ' px-0.5 ',
+                padding: ' ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-sm ',
                 hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
-                text: ' underline-offset-2 text-sm decoration-[1px] ',
+                text: ' underline-offset-2 text-sm decoration-[1.5px] ',
                 rounded: ' rounded-md ',
                 focus: ' web:focus-visible:outline-offset-0 web:focus-visible:outline-4 web:focus-visible:ring-1 web:focus-visible:ring-offset-0   ',
             },
@@ -1388,8 +1388,13 @@ export const settingsDefault = {
 
             // simple link, no background
             'u-link-plain-cnt': ' web:focus-visible:outline-ring/20 web:focus-visible:ring-ring ',
-            'u-link-plain-text': ' text-label-link web:hover:text-label-linkhover web:hover:underline ',
+            'u-link-plain-text': ' text-label-secondary web:hover:text-label-primary web:hover:underline ',
             'u-link-plain-trans': ' web:duration-200 ',
+
+            // simple link, no background
+            'u-link-accent-cnt': ' web:focus-visible:outline-ring/20 web:focus-visible:ring-ring ',
+            'u-link-accent-text': ' text-label-link web:hover:text-label-linkhover web:hover:underline ',
+            'u-link-accent-trans': ' web:duration-200 ',
 
             // Ghost: pseudo background via CSS vars; color logic maintained
             'u-link-ghost-cnt': ' u-link-ghost web:focus:ring-offset-background focus:bg-background web:focus-visible:outline-ring/20 web:focus-visible:ring-ring web:active:bg-accent ',
@@ -1489,7 +1494,7 @@ export const settingsDefault = {
             'u-badge-default': ' bg-transparent   ',
             'u-badge-destructive': ' bg-destructive ',
             'u-badge-outline': ' bg-transparent border border-border  ',
-            'u-badge-accent': ' bg-accent  ',
+            'u-badge-accent': ' bg-accent ',
             'u-badge-secondary': ' bg-secondary ',
             'u-badge-text': ' whitespace-nowrap tracking-tight font-medium ',
             'u-badge-default-text': ' text-primary ',
@@ -1693,11 +1698,11 @@ export const settingsDefault = {
             'u-btn-danger-trans': ' web:duration-200',
             
 
-            'u-btn-text-cnt': ' web:group web:sm:hover:bg-secondary/80 web:active:bg-secondary web:focus:bg-secondary ',
+            'u-btn-text-cnt': ' web:group web:sm:hover:bg-muted/60 active:bg-muted web:focus:bg-muted/60 ',
             'u-btn-text-text':
-                ' font-semibold text-label-secondary web:group-hover:text-label-primary',
+                ' font-semibold text-label-secondary web:group-hover:text-label-primary web:focus:text-label-primary',
             'u-btn-text-trans': ' web:duration-200',
-            'u-btn-text-focus': ' web:focus:text-label-primary ',
+         
 
             'u-btn-link-cnt': ' web:group web:active:bg-muted/60 ',
             'u-btn-link-text':
@@ -1706,7 +1711,7 @@ export const settingsDefault = {
             
 
             'u-btn-outline-cnt':
-                ' bg-transparent border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 ',
+                ' bg-transparent border border-border/60 web:border-0 web:ring-1 backdrop-blur-xl web:ring-inset web:ring-border/80 ',
             'u-btn-outline-text':
                 ' font-semibold text-card-foreground web:group-hover:text-foreground ',
             'u-btn-outline-trans': '  web:duration-200',

@@ -75,7 +75,7 @@ export default function Unit(props) {
                                         )}
                                         <Text
                                             numberOfLines={1}
-                                            className="flex-auto text-base leading-tight tracking-tight font-semibold text-neutral-800 dark:text-neutral-200 group-hover:text-primary "
+                                            className="flex-auto text-base leading-tight tracking-tight font-semibold text-label-secondary group-hover:text-label-primary "
                                         >
                                             {data.title}
                                         </Text>

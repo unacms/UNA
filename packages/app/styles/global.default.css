@@ -114,8 +114,8 @@
         --primary-foreground: var(--white); /*content on primary buttons, active states, primary surfaces*/
         --secondary: var(--neutral-800);  /*background for secondary buttons, secondary surfaces*/
         --secondary-foreground: var(--neutral-200); /*content on secondary buttons, secondary surfaces*/
-        --accent: var(--accent-900); /*background for accent buttons, accent surfaces*/
-        --accent-foreground: var(--accent-500); /*content on accent buttons, accent surfaces*/
+        --accent: var(--accent-950); /*background for accent buttons, accent surfaces*/
+        --accent-foreground: var(--accent-300); /*content on accent buttons, accent surfaces*/
         --muted: var(--neutral-800); /*background for ui items, sections, hover states*/
         --muted-foreground: var(--neutral-500); /*muted content*/
         --destructive: var(--red); /*background for destructive buttons, destructive surfaces*/
@@ -127,7 +127,7 @@
         --label-primary: var(--neutral-100); /*Primary text (high emphasis)*/
         --label-secondary: var(--neutral-300); /*Secondary text (medium emphasis)*/
         --label-tertiary: var(--neutral-500); /*Tertiary text (low emphasis)*/
-        --label-link: var(--accent-500); /*Link text color*/
+        --label-link: var(--accent-400); /*Link text color*/
         --label-linkhover: var(--accent-600); /*Link text color on hover*/
         --fill-primary: var(--neutral-950); /*Main surface background*/
         --fill-secondary: var(--neutral-900); /*Secondary layered background*/

@@ -53,6 +53,7 @@ export default function ElementLink(props) {
             case 'ghost': return 'ghost';
             case 'plain': return 'plain';
             case 'plainghost': return 'plainghost';
+            case 'accent': return 'accent';
             case 'borderedProminent': return 'borderedProminent';
             case 'borderedSecondary': return 'borderedSecondary';
             default: return 'default';
