@@ -54,8 +54,8 @@ export default function ElementLink(props) {
             case 'plain': return 'plain';
             case 'plainghost': return 'plainghost';
             case 'accent': return 'accent';
-            case 'borderedProminent': return 'borderedProminent';
-            case 'borderedSecondary': return 'borderedSecondary';
+            case 'accentghost': return 'accentghost';
+            case 'ghost': return 'ghost';
             default: return 'default';
         }
     };
@@ -74,7 +74,7 @@ export default function ElementLink(props) {
         const roundedClass = ThemeLinkSizes[size]?.rounded || '';
         const focusClass = ThemeLinkSizes[size]?.focus || '';
         // For ghost and plainghost variants: use pseudo padding instead of DOM padding
-        if (selectedVariant === 'ghost' || selectedVariant === 'plainghost') {
+        if (selectedVariant === 'ghost' || selectedVariant === 'plainghost' || selectedVariant === 'accentghost') {
             const padSize = ['xs','sm','md','lg'].includes(size) ? size : 'md';
             const pseudoPadClass = `u-link-ghost-pad-${padSize}`;
             return [pseudoPadClass, hitareaClass, textSizeClass, roundedClass, focusClass].filter(Boolean).join(' ');

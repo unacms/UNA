@@ -124,6 +124,7 @@ const theme = {
         },
       
         boxShadow: {
+            'line': 'var(--shadow-line)',
             'xs': 'var(--shadow-xs)',
             'sm': 'var(--shadow-sm)',
             'md': 'var(--shadow-md)',

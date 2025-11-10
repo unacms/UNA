@@ -351,8 +351,8 @@ export const settingsDefault = {
             button_variant: 'text',
             menu_width: ' w-min ',
             pressed_classes: {
-                pressed_container: ' web:active:bg-accent web:hover:bg-accent ',
-                pressed_text: ' text-accent font-medium ',
+                pressed_container: ' bg-accent active:bg-accent web:hover:bg-accent ',
+                pressed_text: ' text-accent-foreground font-medium ',
             },
             button_rounded: false,
             justify_items: 'start',
@@ -363,7 +363,7 @@ export const settingsDefault = {
             show_counter: true,
             show_combined: true,
             menu_width: 'w-full',
-            button_variant: 'link',
+            button_variant: 'ghost',
             rounded: true,
             button_size: 'xs',
             button_rounded: true,
@@ -1146,25 +1146,12 @@ export const settingsDefault = {
             default_variant: 'default',
             pressed_container: ' bg-accent web:hover:bg-accent web:active:bg-accent  ',
             pressed_text: ' text-accent-foreground font-semibold ',
-            xxs: {
-                rounded: ' rounded-md ',
-                padding: ' ',
-                padding_icon_only: ' px-1',
-                padding_with_title: ' px-1 gap-1 ',
-                icon_container:
-                    ' h-5 text-sm flex items-center justify-center',
-                title_container: ' text-xs leading-5 text-xs',
-                icon_size: 16,
-                icon_margin: '  ', // conditional margin for icon container when title is present
-                title_margin: ' ', //
-                hitarea_class: ' relative u-action-hitarea u-action-hitarea-xs ',
-                hitSlop: { top: 8, right: 8, bottom: 8, left: 8 },
-            },
+         
             xs: {
                 rounded: ' rounded-md ',
                 padding: ' ',
                 padding_icon_only: ' px-1',
-                padding_with_title: ' px-2 gap-1 ',
+                padding_with_title: ' px-1 gap-1 ',
                 icon_container:
                     ' h-6 text-sm flex items-center justify-center',
                 title_container: ' text-xs leading-6 text-xs',
@@ -1313,7 +1300,7 @@ export const settingsDefault = {
             sm: {
                 padding: ' px-1 ',
                 wide_padding: ' px-2 ',
-                container: ' min-w-7 h-7 gap-1 ',
+                container: ' min-w-6 h-6 gap-1 ',
                 image_container: ' items-center justify-center ',
                 icon_size: 20,
                 text: ' text-sm leading-[20px] ',
@@ -1355,12 +1342,12 @@ export const settingsDefault = {
                 focus: ' web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2 web:ring-offset-background ',
             },
             sm: {
-                padding: ' ',
+                padding: '  ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-sm ',
                 hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
-                text: ' underline-offset-2 text-sm decoration-[1.5px] ',
-                rounded: ' rounded-md ',
-                focus: ' web:focus-visible:outline-offset-0 web:focus-visible:outline-4 web:focus-visible:ring-1 web:focus-visible:ring-offset-0   ',
+                text: ' text-sm leading-6 underline-offset-2 text-sm ',
+                rounded: '  rounded-lg focus:rounded active:rounded',
+                focus: ' web:focus-visible:outline-offset-[4px] web:focus-visible:outline-4 web:focus-visible:ring-1 web:focus-visible:ring-offset-[3px]  active:outline-4 active:outline-offset-8   ',
             },
             md: {
                 padding: ' px-1 ',
@@ -1368,7 +1355,7 @@ export const settingsDefault = {
                 hitSlop: { top: 4, right: 4, bottom: 4, left: 4 },
                 text: ' underline-offset-2 decoration-[1.5px] text-base ',
                 rounded: ' rounded-lg focus:rounded active:rounded-sm ',
-                focus: ' web:focus-visible:outline-offset-[6px] web:focus-visible:outline-4 web:focus-visible:ring-2 web:focus-visible:ring-offset-[4px] web:focus-visible:ring-1 active:outline-4 active:outline-offset-8   ',
+                focus: ' web:focus-visible:outline-offset-[8px] web:focus-visible:outline-4 web:focus-visible:ring-2 web:focus-visible:ring-offset-[6px]  active:outline-4 active:outline-offset-8   ',
             },
             lg: {
                 padding: ' px-2 rounded-xl items-center flex web:active:outline-ring ',
@@ -1381,30 +1368,35 @@ export const settingsDefault = {
         },
 
         link_styles: {
-            // inherit text; no decoration idle; subtle hover/active feedback
+            // inherit color and decoration
             'u-link-default-cnt': '   ',
             'u-link-default-text': '   ',
             'u-link-default-trans': ' web:duration-200 ',
 
-            // simple link, no background
+            // neutral color link, no background
             'u-link-plain-cnt': ' web:focus-visible:outline-ring/20 web:focus-visible:ring-ring ',
             'u-link-plain-text': ' text-label-secondary web:hover:text-label-primary web:hover:underline ',
             'u-link-plain-trans': ' web:duration-200 ',
 
-            // simple link, no background
+            // branded color link, no background
             'u-link-accent-cnt': ' web:focus-visible:outline-ring/20 web:focus-visible:ring-ring ',
             'u-link-accent-text': ' text-label-link web:hover:text-label-linkhover web:hover:underline ',
             'u-link-accent-trans': ' web:duration-200 ',
 
-            // Ghost: pseudo background via CSS vars; color logic maintained
-            'u-link-ghost-cnt': ' u-link-ghost web:focus:ring-offset-background focus:bg-background web:focus-visible:outline-ring/20 web:focus-visible:ring-ring web:active:bg-accent ',
-            'u-link-ghost-text': ' text-label-link web:hover:text-label-linkhover web:hover:underline ',
-            'u-link-ghost-trans': ' web:duration-200 ',
+            // neutral color link, no background, hover background
+            'u-link-ghost-cnt':  ' u-link-ghost web:focus:outline-ring/20 web:focus:ring-ring web:focus-visible:ring-offset-card web:focus-visible:bg-card web:hover:ring-transparent active:outline active:opacity-80   ',
+            'u-link-ghost-text':  ' text-label-tertiary web:hover:text-label-primary ',
+            'u-link-ghost-trans': ' web:duration-100 ',
 
-            // simple link, no background, hover background
+            // branded color link, no background, hover background
             'u-link-plainghost-cnt':  ' u-link-ghost web:focus:outline-ring/20 web:focus:ring-ring web:focus-visible:ring-offset-card web:focus-visible:bg-card web:hover:ring-transparent active:outline active:opacity-80   ',
-            'u-link-plainghost-text':  ' text-label-link web:hover:text-label-linkhover ',
+            'u-link-plainghost-text':  ' text-label-tertiary web:hover:text-label-primary ',
             'u-link-plainghost-trans': ' web:duration-100 ',
+
+            // branded color link, no background, hover background
+            'u-link-accentghost-cnt':  ' u-link-ghost web:focus:outline-ring/20 web:focus:ring-ring web:focus-visible:ring-offset-card web:focus-visible:bg-card web:hover:ring-transparent active:outline active:opacity-80   ',
+            'u-link-accentghost-text':  ' text-label-link web:hover:text-label-linkhover ',
+            'u-link-accentghost-trans': ' web:duration-100 ',
 
           
         },
@@ -1652,15 +1644,15 @@ export const settingsDefault = {
         button_styles: {
             // Default button (neutral/popover)
             'u-btn-default-cnt': [
-                'bg-popover',
-                'shadow-xs border border-border/60 web:border-0',
-                'web:ring-1 web:ring-inset web:ring-border/60',
-                'web:hover:ring-border web:focus:ring-border',
-                'web:hover:bg-popover/80',
+                'bg-popover/50 backdrop-blur',
+                ' shadow-line border border-border/60 web:border-0',
+                'web:ring-1 web:ring-inset web:ring-popover',
+                'web:hover:ring-popover web:focus:ring-popover',
+                'web:hover:bg-popover/60',
                 'web:focus:outline-4 web:active:outline-4 outline-ring/40',
 
-                'web:focus:outline-offset-1 web:focus:outline-offset-card web:hover:shadow-sm',
-                'active:shadow-none active:translate-y-px',
+                ' web:focus:outline-offset-1 web:focus:outline-offset-card ',
+                ' active:translate-y-px',
             
             ].join(' '),
             'u-btn-default-text': 'font-semibold text-popover-foreground',
@@ -1679,6 +1671,7 @@ export const settingsDefault = {
             ].join(' '),
             'u-btn-primary-text': ' font-semibold text-primary-foreground ',
             'u-btn-primary-trans': ' web:duration-300', 
+
 
             'u-btn-accent-cnt':
                 ' bg-accent  web:active:ring-2 web:active:ring-accent web:active:ring-offset-2 web:active:outline-none ',
@@ -1704,9 +1697,9 @@ export const settingsDefault = {
             'u-btn-text-trans': ' web:duration-200',
          
 
-            'u-btn-link-cnt': ' web:group web:active:bg-muted/60 ',
+            'u-btn-link-cnt': ' px-0 group web:active:bg-muted/60 ',
             'u-btn-link-text':
-                ' font-semibold text-label-link web:group-hover:text-label-linkhover web:active:text-label-linkhover web:duration-200',
+                ' font-semibold text-label-link web:group-hover:text-label-linkhover web:group-hover:underline web:active:text-label-linkhover ',
             'u-btn-text-trans': ' web:duration-200  ',
             
 
@@ -1784,7 +1777,7 @@ export const settingsDefault = {
         },
         buttons_group_styles: {
             'u-btn-default-cnt':
-                ' flex-row bg-popover/80 web:hover:bg-popover shadow-xs border-[0.5px] border-border/80 web:border-0 web:ring-[0.5px] web:ring-inset web:ring-border/80 web:hover:ring-border web:active:opacity-50 ',
+                ' flex-row bg-popover/80 web:hover:bg-popover shadow-xs border-[0.5px] border-border/80 web:border-0 web:ring-[0.5px] web:ring-inset web:ring-border/60 web:hover:ring-border web:active:opacity-50 ',
             'u-btn-accent-cnt':
                 'border border-emerald-600 dark:border-emerald-500 bg-emerald-100 dark:bg-emerald-900 flex flex-row',
             'u-btn-outline-cnt':
