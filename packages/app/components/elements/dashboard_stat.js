@@ -135,7 +135,7 @@ export default function PageLayout(props) {
                         </BlockDescription>
                     </BlockName>
                     <BlockActions>
-                        {currentUser.profiles_count > 1 && (
+                        
                             <ProfileSwitcher hideTitle={true}>
                                 <Button
                                     variant="secondary"
@@ -143,7 +143,7 @@ export default function PageLayout(props) {
                                     rounded
                                 />
                             </ProfileSwitcher>
-                        )}
+                      
                     </BlockActions>
                 </BlockHeader>
                 <BlockContent>

@@ -10,13 +10,8 @@ export function getSkeletonForList(name, num = 5, isFirst = true) {
         else
             name = name.join('_');
     }
-
-    console.log("namename", name)
-
     const Item =  getComponent('skeleton', name) || getComponent('skeleton', 'default');
-
     const trimmed = isFirst ? items : items.slice(0, 2);
-
     return (
         <View>
             {trimmed.map((item, index) => (

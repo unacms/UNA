@@ -26,9 +26,7 @@ import {
 } from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { getComponent } from 'app/components/registry'
-import { Text } from 'app/design/typography'
-import Link from 'app/ui/atoms/link'
-import { Button } from 'app/design/controls'
+import Scroll from 'app/ui/molecules/scroll'
 
 function DefaultUnit({ data }) {
     const isWeb = Platform.OS === 'web'
@@ -116,7 +114,9 @@ function DefaultUnit({ data }) {
 
     if (viewState.view == 'deleted') return <></>
     if (data.type == 'timeline_recommendations') {
-        const Unit = getComponent('content-list', data.module)
+        const Unit = getComponent('content-list', data.module);
+       
+
         const contentElement = data.content.data.map((item, index) => {
             return (
                 <View className="w-[280px]" key={`item${index}_row`}>
@@ -124,27 +124,7 @@ function DefaultUnit({ data }) {
                 </View>
             )
         })
-        return (
-            <AnimatedBlock>
-                <CardList className="mb-0.5 sm:mb-3 " padding="p-0">
-                    <CardHeader className=" px-4 pt-4  flex-row items-center justify-between">
-                        <CardTitle>{t(data.title)}</CardTitle>
-                        <Link
-                            variant="plainghost"
-                            size="md"
-                            href="/create-account"
-                            haptics="Medium"
-                        >
-                            {' '}
-                            {t('View all')}
-                        </Link>
-                    </CardHeader>
-                    <ScrollView horizontal={true}>
-                        <Row className="gap-2 p-3 ">{contentElement}</Row>
-                    </ScrollView>
-                </CardList>
-            </AnimatedBlock>
-        )
+       return <Scroll horizontal={true} step={300} className='w-full'><Row className="gap-2 pb-3 ">{contentElement}</Row></Scroll>
     }
     return (
         <AnimatedBlock>

@@ -5,7 +5,8 @@ import { Button } from "app/design/controls";
 
 const screenWidth = Dimensions.get('window').width;
 
-const Gallery = ({ items }) => {
+
+export default function Gallery({ items }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const position = useRef(new Animated.Value(0)).current;
     const opacity = useRef(new Animated.Value(1)).current;
@@ -78,5 +79,3 @@ const Gallery = ({ items }) => {
         </View>
     );
 };
-
-export default Gallery;

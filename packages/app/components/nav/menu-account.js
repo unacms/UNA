@@ -119,6 +119,12 @@ export default function MenuAccount({ buttonProps, children }) {
             { link: '{switch_profile_selector}' },
         ]
     }
+    else{
+         profileList = [
+            ...profileList,
+            { link: '{switch_profile_selector}' },
+        ]
+    }
 
     const updatedMenu = menu_account_items.flatMap((item) =>
         item.link === '{switch_profile}'
@@ -178,7 +184,7 @@ export default function MenuAccount({ buttonProps, children }) {
                                             {item.display_name}
                                         </Text>
                                     </Row>
-                                    <RadioButton
+                                    {currentUser.id != item.id && <RadioButton
                                         rb_obly={true}
                                         value={''}
                                         status={
@@ -187,7 +193,7 @@ export default function MenuAccount({ buttonProps, children }) {
                                                 : 'unchecked'
                                         }
                                         title={''}
-                                    />
+                                    />}
                                 </Row>
                             </Pressable>
                         )

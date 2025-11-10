@@ -114,6 +114,7 @@ export async function generateMetadata(props) {
     const isClientProject = UNA_URL != 'https://api.neo.so';
 
     return {
+        title: name,
         description: description,
         manifest: isClientProject ? '/static/manifest.json' : '/manifest.json',
         icons: {

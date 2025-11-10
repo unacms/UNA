@@ -73,9 +73,6 @@ function PageContent(props) {
                     size="md"
                     href="/create-account"
                     haptics="Medium"
-                    accessibilityRole="link"
-                    accessibilityLabel={t('splash_page_new_account')}
-                    accessibilityHint={t('splash_page_login2') ? `${t('splash_page_login2')} - ${t('splash_page_new_account')}` : undefined}
                 >
                     {t('splash_page_new_account')}
                 </Link>

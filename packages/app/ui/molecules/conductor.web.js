@@ -299,9 +299,9 @@ const RenderScene = ({
                     className={`${
                         isRightCol ? 'flex-auto' : 'w-full mx-auto'
                     } ${
-                        layoutName !== 'navigator'
+                        layoutName !== 'navigator' 
                             ? 'mt-0.5 sm:p-2'
-                            : 'lg:p-1 '
+                            : (!pageRoute?.endpoint?.request_url ? 'sm:my-3 mt-0.5 sm:px-3 ' : 'lg:p-1')
                     }`}
                 >
                     {MainContent}
@@ -709,8 +709,6 @@ export function Conductor({
             currentRoute?.endpoint?.unit
         return unitType ? [baseSkeleton, unitType] : baseSkeleton
     }, [skeleton, currentRoute, unitType])
-
-    console.log("sSkeleton", skeleton, sSkeleton, currentRoute?.endpoint?.module, currentRoute?.endpoint?.unit, unitType)
 
     useEffect(() => {
         setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100)

@@ -71,12 +71,12 @@ export default function ScrollControl({ horisontal, children, step, initialValue
                 {children}
             </ScrollView>
             {(offset.offset > 0) && (
-                <View className="absolute w-24 h-full bg-gradient-to-r to-transparent from-bgrbody px-1 justify-center">
+                <View className="absolute w-24 h-full bg-gradient-to-r to-transparent from-background px-1 justify-center">
                     {leftButton ? <Pressable onPress={scrollUp}>{leftButton}</Pressable> : <Button startDecorator="ChevronLeft" variant="outline" rounded onPress={scrollUp} />}
                 </View>)
             }
             {(offset.offset + offset.scrollViewWidth < offset.contentWidth) && (
-                <View className="absolute w-24 right-0 h-full bg-gradient-to-l to-transparent from-bgrbody px-1 justify-center items-end">
+                <View className="absolute w-24 right-0 h-full bg-gradient-to-l to-transparent from-background px-1 justify-center items-end">
                         {rightButton ? <Pressable onPress={scrollDown}>{rightButton}</Pressable> : <Button startDecorator="ChevronRight" variant="outline" rounded onPress={scrollDown} />}
                 </View>) }
         </View>

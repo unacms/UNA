@@ -30,9 +30,7 @@ export default function AuthPanel({
                     size="md"
                     href="/forgot-password"
                     haptics="Medium"
-                    accessibilityRole="link"
-                    accessibilityLabel={t('Forgot password?')}
-                    accessibilityHint="Navigate to password recovery page"
+
                 >
                     {t('Forgot password?')}
                 </Link>
@@ -54,9 +52,7 @@ export default function AuthPanel({
                         size="sm"
                         href="/create-account"
                         haptics="Medium"
-                        accessibilityRole="link"
-                        accessibilityLabel={t('splash_page_new_account')}
-                        accessibilityHint={t('splash_page_login2') ? `${t('splash_page_login2')} - ${t('splash_page_new_account')}` : undefined}
+
                     >
                         {t('splash_page_new_account')}
                     </Link>
@@ -67,9 +63,7 @@ export default function AuthPanel({
                 <Link 
                     href="/login" 
                     haptics="Medium"
-                    accessibilityRole="link"
-                    accessibilityLabel={t('Continue with email')}
-                    accessibilityHint="Navigate to login page with email"
+
                 >
                     <Button
                         title={t('Continue with email')}

@@ -1,4 +1,4 @@
-import { View, Pressable, Row } from 'app/design/view'
+import { View, Pressable, Row, ScrollView } from 'app/design/view'
 import Link from 'app/ui/atoms/link'
 import { useState, Children, useRef, useEffect } from 'react'
 import { Button } from 'app/design/controls'
@@ -10,7 +10,7 @@ import Redirect from 'app/ui/atoms/redirect';
 import { useTranslation } from 'react-i18next';
 import { Modal } from 'app/design/controls'
 
-export default function (props) {
+export default function ProfileSwitcher (props) {
     const { t } = useTranslation();
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [data, setData] = useState(false)
@@ -48,7 +48,7 @@ export default function (props) {
     const rounded = props.rounded ? props.rounded : 'rounded-lg'
     return (
         <>
-            {!props.useDefault ?
+            {true ?
                 <Pressable className={wrapperClassName} onPress={() => handleClick()}>
                     {props.children}
                 </Pressable> :
@@ -84,6 +84,7 @@ export default function (props) {
             }
             {(show && data) && <Modal id='file-preview' title={t("Your Profiles")} onVisible={show} onClose={() => { setShow(false) }}>
                 <Redirect ref={redirectdRef} />
+                <ScrollView>
                 <View className="   flex-col">
                     {!props.hideTitle && <View className="flex-row items-center  justify-between">
                         <Text className="text-lg px-1.5 py-2 font-bold text-neutral-800 dark:text-neutral-200 ">
@@ -135,6 +136,7 @@ export default function (props) {
                         </View>}
                     </View>
                 </View>
+                </ScrollView>
             </Modal>}
         </>
     )
