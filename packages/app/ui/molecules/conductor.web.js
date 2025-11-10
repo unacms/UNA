@@ -165,6 +165,8 @@ const RenderScene = ({
             appSetting('layouts', `cols-${layoutCols}`)
         )
     }, [pageRoute?.pageData?.uri, layoutCols])
+    
+    const panelLayoutKey = `${layoutCols}-${pageData?.uri || 'default'}`
 
     const { cells = {} } = cellsCustomConfig || {}
     const currentBreakpointName = getBreakpoint(currentBreakpoint)
@@ -231,12 +233,12 @@ const RenderScene = ({
     return (
         <PanelGroup
             ref={groupRef}
-            key={`${pageData?.uri || 'default'}-pnl2-${
+            key={`${panelLayoutKey}-pnl2-${
                 cellsCustomConfig.sizable ? 'sizable' : 'static'
             }`}
             autoSaveId={
                 cellsCustomConfig.sizable
-                    ? `cells-${pageData?.uri || 'default'}`
+                    ? `cells-${panelLayoutKey}`
                     : undefined
             }
             direction="horizontal"
