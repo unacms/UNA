@@ -144,8 +144,8 @@ export const CommentsSection = memo(
             <Button variant="text" size="xs" title={t('View more comments...')} />
         )
         return (
-            <View className=" pt-2 ">
-                <View className="border-t border-border/40 -mx-2 pt-1.5 mt-1.5 ">
+            <View className="  ">
+                <View className="border-t  border-border/40 -mx-4 mt-3.5 ">
                 {isShowMoreComments && (
                     <View className=" me-auto">
                         {isCommentsModal ? (
@@ -523,16 +523,19 @@ export const Author = memo(({ data, url, t }) => {
         const Element = getComponent('molecule', String(item.type))
         if (!Element) return null // Explicitly return null for no component
         return (
+            <Row className=" items-center">
+            <Icon className="text-label-tertiary -mx-1" icon='Dot' size={14}  />
             <Element
                 params={{
                     button_variant: 'link',
-                    button_size: 'xxs',
+                    button_size: 'xs',
                     hide_icon: true,
                     button_rounded: false,
                 }}
                 key={`action-${index}`}
                 {...item}
             />
+            </Row>
         )
     })
 
@@ -565,11 +568,11 @@ export const Author = memo(({ data, url, t }) => {
                                 href={url}
                                 emulate={false}
                                 size="sm"
-                                variant="ghost"
+                                variant="plainghost"
                                 className="mb-auto"
                                
                             >
-                                <Time variant="link" 
+                                <Time 
                                     ts={data.date}
                                 />
                             </Link>

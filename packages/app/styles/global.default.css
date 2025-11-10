@@ -36,6 +36,7 @@
 
 
         /* Box shadow variables for light mode - NativeWind compatible */
+        --shadow-line: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
         --shadow-xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
         --shadow-sm: 0px 1px 4px 0px rgba(0, 0, 0, 0.05);
         --shadow-md: 0px 2px 8px 0px rgba(0, 0, 0, 0.1);
@@ -136,6 +137,7 @@
 
 
         /* Box shadow variables for dark mode - more pronounced shadows */
+        --shadow-line: 0px 1px 2px 0px rgba(0, 0, 0, 0.3);
         --shadow-xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.5);
         --shadow-sm: 0px 1px 4px 0px rgba(0, 0, 0, 0.3);
         --shadow-md: 0px 2px 8px 0px rgba(0, 0, 0, 0.3);
@@ -299,13 +301,13 @@ select{
         --u-link-ghost-radius: 0.25rem; /* rounded-sm */
     }
     .u-link-ghost.u-link-ghost-pad-sm {
-        --u-link-ghost-inset-x: -4px;
+        --u-link-ghost-inset-x: -2px;
         --u-link-ghost-inset-y: -2px;
         --u-link-ghost-radius: 0.375rem; /* rounded-md */
     }
     .u-link-ghost.u-link-ghost-pad-md {
-        --u-link-ghost-inset-x: -6px;
-        --u-link-ghost-inset-y: -6px;
+        --u-link-ghost-inset-x: -4px;
+        --u-link-ghost-inset-y: -4px;
         --u-link-ghost-radius: 0.5rem; /* rounded-lg */
     }
     .u-link-ghost.u-link-ghost-pad-lg {

@@ -23,6 +23,7 @@ import {
     CardHeader,
     CardTitle,
     CardFooter,
+    CardContent,
 } from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { getComponent } from 'app/components/registry'
@@ -128,11 +129,11 @@ function DefaultUnit({ data }) {
         })
         return (
             <AnimatedBlock>
-                <CardList className="mb-0.5 sm:mb-3 " padding="p-0">
-                    <CardHeader className=" px-4 pt-4  flex-row items-center justify-between">
+                <CardList className="mb-0.5 sm:mb-3 " padding="p-0.5">
+                    <CardHeader className=" p-4 flex-row items-center justify-between">
                         <CardTitle>{t(data.title)}</CardTitle>
                         <Link
-                            variant="plainghost"
+                            variant="accentghost"
                             size="md"
                             href="/create-account"
                             haptics="Medium"
@@ -141,8 +142,10 @@ function DefaultUnit({ data }) {
                             {t('View all')}
                         </Link>
                     </CardHeader>
-
-                    <Scroll horizontal={true} step={300} className='w-full'><Row className="gap-2  p-3">{contentElement}</Row></Scroll>
+                    <CardContent className=" overflow-hidden rounded-b-xl">
+                        <Scroll horizontal={true} step={300} className='w-full'><Row className="gap-2 pb-3 px-3">{contentElement}</Row></Scroll>
+                    </CardContent>
+                    
                 </CardList>
             </AnimatedBlock>
         );
@@ -183,7 +186,7 @@ function DefaultUnit({ data }) {
                 <View className="flex-auto mb-2">
                     <MainContent url={url} data={data} />
                 </View>
-                <Row className="-mx-1.5">
+                <Row className="">
                     {!!data.menu_counters &&
                         appSetting('feed', 'counters_menu') && (
                             <CounterMenu
@@ -192,7 +195,7 @@ function DefaultUnit({ data }) {
                             />
                         )}
                 </Row>
-                <Row className=" gap-3 items-center flex-auto justify-between pt-2 mt-1 -mx-1 -mb-1  border-t border-border/40">
+                <Row className=" gap-3 items-center flex-auto justify-between pt-2.5 px-3 mt-1 -mx-4 -mb-1  border-t border-border/40">
                     <ActionMenu
                         data={data.menu_actions}
                         showCommentsModal={showCommentsModal}

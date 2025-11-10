@@ -284,7 +284,7 @@ export const DefaultView = memo(
                     )}
 
                     {bIsTitle && (
-                        <Link href={url} className="pb-2 text-label-primary hover:text-accent text-lg sm:text-xl font-bold ">
+                        <Link href={url} className="pb-2 text-label-secondary hover:text-label-primary text-lg font-bold ">
                             <Text
                                 numberOfLines={3}
                                 className=" font-title "
@@ -426,7 +426,7 @@ export const PollView = memo(
                         <Link href={url} className="mb-3">
                             <Text
                                 numberOfLines={3}
-                                className="  text-label-secondary hover:text-primary text-lg sm:text-xl tracking-tight font-bold"
+                                className="  text-label-secondary hover:text-label-primary text-lg tracking-tight font-bold"
                             >
                                 {data.content?.title || ''}
                             </Text>

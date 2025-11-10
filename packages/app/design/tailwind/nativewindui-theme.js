@@ -88,6 +88,7 @@ const nativewindUIColors = {
     },
     shadow: {
         DEFAULT: withOpacity('shadow'),
+        line: withOpacity('shadow-line'),
         xs: withOpacity('shadow-xs'),
         sm: withOpacity('shadow-sm'),
         md: withOpacity('shadow-md'),

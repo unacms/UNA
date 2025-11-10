@@ -64,10 +64,10 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
 function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, info2 }) {
     return (
        <Row className="justify-between">
-       <View className="my-auto gap-0.5">
+       <View className="my-auto">
 
             {bShowLinks ? (
-                <Row className="gap-1 items-center min-h-5">
+                <Row className="gap-1 items-center min-h-6">
                     <Link variant="plain" size="sm" emulate={emulate} haptics="Select"  href={oProps.url}>
                         <DisplayNameLink
                             title={oProps.display_name}

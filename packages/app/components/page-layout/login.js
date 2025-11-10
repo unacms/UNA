@@ -72,7 +72,7 @@ function PageContent({ children, isLoginPage, title }) {
                         {t('splash_page_login2')}
                     </Text>
                     <Link
-                        variant="default"
+                        variant="accent"
                         size="md"
                         href="/create-account"
                         haptics="Medium"
