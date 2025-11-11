@@ -1,10 +1,9 @@
 import { View, Row } from 'app/design/view'
 import { BlockByName, BlockByData } from 'app/components/block'
-import { Text } from 'app/design/typography'
+import { Text, H2 } from 'app/design/typography'
 import {
     Card,
     CardHeader,
-    CardTitle,
     CardDescription,
     CardContent,
     CardFooter,
@@ -31,7 +30,7 @@ function PageContent({ children, isLoginPage, title }) {
             <AnimatedView direction="up" delay={300}>
                 <Card padding="p-6  ">
                     <CardHeader>
-                        <CardTitle>{title}</CardTitle>
+                        <H2 className="text-label-secondary leading-none text-lg font-semibold tracking-tight">{title}</H2>
                     </CardHeader>
                     <CardContent className="gap-4">{children}</CardContent>
                 </Card>
@@ -45,9 +44,9 @@ function PageContent({ children, isLoginPage, title }) {
             <AnimatedView className="gap-4" direction="up" delay={200}>
                 <Card padding="p-6">
                     <CardHeader>
-                        <CardTitle>
+                        <H2 className="text-label-secondary leading-none text-lg font-semibold tracking-tight">
                             {t('login_modal_title')} {t('app_name')}
-                        </CardTitle>
+                        </H2>
                         <CardDescription>{t('splash_page_login')}</CardDescription>
                     </CardHeader>
                     <CardContent className="gap-4">

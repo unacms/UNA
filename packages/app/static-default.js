@@ -1,5 +1,5 @@
 import { View, ScrollView, Row } from 'app/design/view'
-import { Text } from 'app/design/typography'
+import { Text, H1 } from 'app/design/typography'
 import { Button, Modal } from 'app/design/controls'
 import Svg, { Path, Circle, Ellipse } from 'react-native-svg'
 import Link from 'app/ui/atoms/link'
@@ -104,14 +104,11 @@ const SplashTextInner = () => {
     const { t } = useTranslation()
     return (
             <View className="text-center max-w-xs sm:max-w-lg lg:text-start gap-4 w-full flex-auto mx-auto ">
-                <Text
-                    accessible={true}
-                    accessibilityRole="header"
-                    aria-level={1}
+                <H1
                     className="text-4xl sm:text-5xl tracking-tight font-bold text-label-primary text-balance"
                 >
                     {t('splash_page_title')} {appSetting('app', 'title')}
-                </Text>
+                </H1>
                 <Text
                     accessible={true}
                     accessibilityRole="text"
@@ -383,9 +380,9 @@ const ComponentsLoginContentComponent = (props) => {
                 className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl"
             >
                 <View className="flex-col gap-y-8 flex-auto my-4 ">
-                    <Text className="text-4xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200 justify-center items-center  ">
+                    <H1 className="text-4xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200 justify-center items-center  ">
                         Sign in to your account
-                    </Text>
+                    </H1>
                     <View className="flex-col gap-y-4">
                         <View className="flex-row gap-x-4 ">
                             <Icon

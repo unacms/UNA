@@ -40,7 +40,11 @@ export default function HeaderElement({ mode, url, uri }) {
                                 return <MenuAccount />
                             case "link":
                                 return (
-                                    <Link {...(item.target ? { target: item.target } : {})} href={item.href == '{messenger}' ? appSetting('messenger', 'url') : item.href}>
+                                    <Link 
+                                        {...(item.target ? { target: item.target } : {})} 
+                                        href={item.href == '{messenger}' ? appSetting('messenger', 'url') : item.href}
+                                        alt={item.alt || item.title || (item.props?.title)}
+                                    >
                                         <Button {...(item.props || {})}
                                             {...(item.href === '{messenger}'
                                                 ? {

@@ -448,7 +448,7 @@ const getAddon = (addon, isTitle) => {
         sButtonAddonText = addon;
     }
 
-    const position = addon?.position == 'bottom' ? 'bottom-0' : ' -top-1 -end-1';
+    const position = addon?.position == 'bottom' ? 'bottom-0 -end-1' : '-top-1 -end-1';
 
     if (!isTitle && sButtonAddonText)
         return <View className={`absolute ${sButtonAddonBg} border border-card web:border-0 web:ring-1 web:ring-card rounded-full px-1 min-w-5 min-h-5 min items-center justify-center ${position}`}><Text className='text-white text-xs font-semibold'>{sButtonAddonText}</Text></View>
@@ -658,10 +658,66 @@ export const Button = (props) => {
 
   
 
+    // Generate accessible name for buttons
+    const getAccessibleName = useCallback(() => {
+        // Priority order: explicit alt > tooltip > title > icon name
+        if (rest.alt) return rest.alt;
+        if (tooltip && typeof tooltip === 'string') return tooltip;
+        if (title && typeof title === 'string') return title;
+        
+        // For icon-only buttons, derive name from icon
+        const iconName = startDecorator || endDecorator;
+        if (iconName && !title) {
+            // Convert icon name to human-readable format
+            // e.g., "ChevronLeft" -> "Chevron Left", "X" -> "Close"
+            const iconMap = {
+                'X': 'Close',
+                'ChevronLeft': 'Previous',
+                'ChevronRight': 'Next',
+                'ChevronUp': 'Up',
+                'ChevronDown': 'Down',
+                'Plus': 'Add',
+                'Minus': 'Remove',
+                'Trash': 'Delete',
+                'Trash2': 'Delete',
+                'Edit': 'Edit',
+                'Edit2': 'Edit',
+                'Edit3': 'Edit',
+                'Search': 'Search',
+                'Menu': 'Menu',
+                'MoreVertical': 'More options',
+                'MoreHorizontal': 'More options',
+                'Heart': 'Like',
+                'Star': 'Favorite',
+                'Share': 'Share',
+                'Share2': 'Share',
+                'MessageCircle': 'Comment',
+                'MessageSquare': 'Messages',
+                'Send': 'Send',
+                'Bell': 'Notifications',
+                'Settings': 'Settings',
+                'Home': 'Home',
+                'User': 'Profile',
+                'UserRound': 'Login',
+                'LogIn': 'Login',
+                'LogOut': 'Logout',
+            };
+            
+            if (iconMap[iconName]) return iconMap[iconName];
+            
+            // Fallback: convert CamelCase to readable text
+            return iconName.replace(/([A-Z])/g, ' $1').trim();
+        }
+        
+        return undefined;
+    }, [rest.alt, tooltip, title, startDecorator, endDecorator]);
+
+    const accessibleName = getAccessibleName();
+    
     const buttonAttributes = onPress && !disabled  ?{
-        ...(rest.alt ? { 
-            'aria-label': rest.alt,
-            alt: rest.alt 
+        ...(accessibleName ? { 
+            'aria-label': accessibleName,
+            alt: accessibleName 
         } : {}),
         role: rest['aria-haspopup'] === 'menu' ? 'menubutton' : 'button',
     } : {};

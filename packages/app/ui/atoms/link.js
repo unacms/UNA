@@ -80,15 +80,27 @@ export default function ElementLink(props) {
         const content = (typeof children === 'string' || typeof children === 'number') ? (
             <Text>{children}</Text>
         ) : children;
+        
+        // Generate accessible label for external links
+        const externalAccessibleLabel = rest.alt || (typeof children === 'string' ? children : undefined);
+        
         if (mode == 'text'){
             return (
-                <Text onPress={handleExternalLinkPress}>
+                <Text 
+                    onPress={handleExternalLinkPress}
+                    aria-label={externalAccessibleLabel}
+                    accessibilityLabel={externalAccessibleLabel}
+                >
                     {children}
                 </Text>
             );
         }
         return (
-            <Pressable onPress={handleExternalLinkPress}>
+            <Pressable 
+                onPress={handleExternalLinkPress}
+                aria-label={externalAccessibleLabel}
+                accessibilityLabel={externalAccessibleLabel}
+            >
                 {content}
             </Pressable>
         );
@@ -133,8 +145,19 @@ export default function ElementLink(props) {
 
 
 if (mode == 'text'){
+    // Generate accessible label for text mode links
+    const accessibleLabel = rest.alt || (typeof children === 'string' ? children : undefined);
+    const { alt, ...linkRest } = rest;
+    
     return (
-        <Link push href={p} asChild {...rest}>
+        <Link 
+            push 
+            href={p} 
+            asChild 
+            aria-label={accessibleLabel}
+            accessibilityLabel={accessibleLabel}
+            {...linkRest}
+        >
                 {children}
         </Link>
     );
@@ -144,9 +167,26 @@ if (mode == 'text'){
         <Text>{children}</Text>
     ) : children;
 
+    // Generate accessible label for link if needed
+    const accessibleLabel = rest.alt || (typeof children === 'string' ? children : undefined);
+    
+    // Remove alt from rest since it's not valid for <a> elements
+    const { alt, ...linkRest } = rest;
+
     return (
-        <Link push href={p} asChild {...rest}>
-            <Pressable hitSlop={resolvedHitSlop} onPress={haptics ? handleHapticsPress : undefined} className={composedClassName}>
+        <Link 
+            push 
+            href={p} 
+            asChild 
+            aria-label={accessibleLabel}
+            accessibilityLabel={accessibleLabel}
+            {...linkRest}
+        >
+            <Pressable 
+                hitSlop={resolvedHitSlop} 
+                onPress={haptics ? handleHapticsPress : undefined} 
+                className={composedClassName}
+            >
                 {content}
             </Pressable>
         </Link>
