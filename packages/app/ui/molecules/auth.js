@@ -78,26 +78,40 @@ export default function AuthPanel({
 
             {showSeparator && (
                 <View 
-                    className="flex-row items-center justify-center w-full"
+                    className="flex-row items-center justify-center w-full mt-px"
                     accessibilityRole="text"
                     accessibilityLabel={t('splash_page_login3')}
                 >
+                    <View className="flex-col rounded overflow-hidden h-0.5 flex-1 w-full">
                     <View 
-                        className="flex-1 h-px w-full bg-border/80"
+                        className="flex-1 h-px w-full bg-black/5 dark:bg-black"
                         accessibilityElementsHidden={true}
                         importantForAccessibility="no"
                     />
+                    <View 
+                        className="flex-1 h-px w-full  bg-white dark:bg-white/5"
+                        accessibilityElementsHidden={true}
+                        importantForAccessibility="no"
+                    />
+                    </View>
                     <Text 
-                        className="mx-4 text-xs text-muted-foreground"
+                        className="px-2 pb-px rounded-full text-xs leading-none mt-px  text-label-tertiary "
                         accessibilityRole="text"
                     >
                         {t('splash_page_login3')}
                     </Text>
+                    <View className="flex-col rounded overflow-hidden h-0.5 flex-1 w-full">
                     <View 
-                        className="flex-1 h-px w-full bg-border/80"
+                        className="flex-1 h-px w-full bg-black/5 dark:bg-black"
                         accessibilityElementsHidden={true}
                         importantForAccessibility="no"
                     />
+                    <View 
+                        className="flex-1 h-px w-full  bg-white dark:bg-white/5"
+                        accessibilityElementsHidden={true}
+                        importantForAccessibility="no"
+                    />
+                    </View>
                 </View>
             )}
             <View 

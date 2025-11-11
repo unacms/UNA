@@ -499,7 +499,7 @@ export const Button = (props) => {
     const showTooltip = useMemo(() => isDesktop && tooltip, [isDesktop, tooltip]);
 
     const sClassContainer = useMemo(() => {
-        let classes = 'flex-row items-center gap-x-1';
+        let classes = 'group flex-row items-center gap-x-1';
         
         // Determine if button has title for width calculation
         const hasTitle = !!title;
@@ -667,23 +667,31 @@ export const Button = (props) => {
     } : {};
     const buttonContent = (
         <Cnt
-            className={`${fullWidth ? 'flex-auto ' : ''} ${sClassContainer} ${sizeClasses} ${(ThemeCssClassesButton['u-btn-' + variant + '-focus'] || ThemeCssClassesButton['u-btn-focus'] || '')}`}
+            style={{ overflow: 'hidden' }}
+            className={`relative ${fullWidth ? 'flex-auto ' : ''} ${sClassContainer} ${sizeClasses} ${(ThemeCssClassesButton['u-btn-' + variant + '-focus'] || ThemeCssClassesButton['u-btn-focus'] || '')}`}
             {...rest}
             {...buttonAttributes}
             onPress={onPress && !disabled ? handlePress : undefined}
             hitSlop={resolvedHitSlop}
             {...refProps}
         >
-            {sButtonIconStart}
+            {/* Hover layer - positioned above background, below content */}
+            {variant !== 'custom' && (
+                <View 
+                    style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, pointerEvents: 'none', zIndex: 1 }}
+                    className={`${ThemeCssClassesButton['u-btn-' + variant + '-hover'] || ''}`} 
+                />
+            )}
+            {sButtonIconStart && <View className="relative z-10">{sButtonIconStart}</View>}
             {isTitle && (
-                <Text className={`${sClassText} ${sTitleContainer}`} numberOfLines={1}>
+                <Text className={`relative z-10 ${sClassText} ${sTitleContainer}`} numberOfLines={1}>
                     {title}
                 </Text>
             )}
-            {sButtonIconEnd}
-            {isTitle && oButtonAddon}
-            {children}
-            {!isTitle && oButtonAddon}
+            {sButtonIconEnd && <View className="relative z-10">{sButtonIconEnd}</View>}
+            {isTitle && oButtonAddon && <View className="relative z-10">{oButtonAddon}</View>}
+            {children && <View className="relative z-10">{children}</View>}
+            {!isTitle && oButtonAddon && <View className="relative z-10">{oButtonAddon}</View>}
         </Cnt>
     );
 

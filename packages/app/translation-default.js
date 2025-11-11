@@ -77,7 +77,7 @@ export const resourcesDefault = {
             "feed_type_bx_spaces": "added an Space",
             "feed_type_bx_polls": "added a Poll",
 
-            "splash_page_title": "Welcome to the community!",
+            "splash_page_title": "Welcome to",
             "splash_page_text": "Use your email and password to sign in",
             "splash_page_account": "Don't have an account?",
             "splash_page_fp": "Forgot password?",
@@ -87,9 +87,9 @@ export const resourcesDefault = {
             "splash_page_login3": 'OR',
             "splash_page_rp": 'Forgot password?',
              
-            "create_account_page_title": "Join Now !",
+            "create_account_page_title": "Time to join!",
             "create_account_page_title_request_invite": "Request Invitation",
-            "create_account_page_text": "Create an account to get started. It\'s quick and easy to join",
+            "create_account_page_text": "Joining is quick and easy. Create your own community account to get started.",
             "create_account_page_text_request_invite": "Registration is by invitation only. Please use invitation code to join.",
             "create_account_page_caption": "Create your account",
             "create_account_page_caption2": "Welcome! Please fill in the details to get started.",

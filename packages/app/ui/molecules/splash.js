@@ -87,7 +87,7 @@ export default function Splash(props) {
     const refer = useRef()
     const content = !isWeb ? (
         <View className="flex-col justify-center w-full ">
-            <View className={`justify-center w-full mx-auto lg:flex-row  border-x border-guide/20 border-dashed divide-x divide-dashed  divide-guide/0 ${appSetting('layout', 'max_width_content')}`}>
+            <View className={`justify-center w-full mx-auto lg:flex-row  border-x-0 border-guide/20 border-dashed divide-x divide-dashed  divide-guide/0 ${appSetting('layout', 'max_width_content')}`}>
                 {appStatic('splash_text')}
                 <PageContent {...props} />
                 
@@ -102,7 +102,7 @@ export default function Splash(props) {
         </View>
     ) : (
         <View className="flex-col justify-center pt-14 lg:pt-0 w-full ">
-            <View className={`justify-center w-full mx-auto lg:flex-row border-x border-guide/20 border-dashed divide-x divide-dashed  divide-guide/20 ${appSetting('layout', 'max_width_content')}`}>
+            <View className={`justify-center w-full mx-auto lg:flex-row border-x-0 border-guide/20 border-dashed divide-x-0 divide-dashed divide-guide/20 ${appSetting('layout', 'max_width_content')}`}>
                 {appStatic('splash_text')}
                 <PageContent {...props} />
                 

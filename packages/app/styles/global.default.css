@@ -15,14 +15,14 @@
         --primary-foreground: var(--accent-50); /*priamry content, links, foreground elements*/
         --secondary: var(--neutral-200);  /*background for secondary buttons, secondary surfaces*/
         --secondary-foreground: var(--neutral-900); /*content on secondary buttons, secondary surfaces*/
-        --accent: var(--accent-100); /*background for accent buttons, accent surfaces*/
-        --accent-foreground: var(--accent-600); /*content on accent buttons, accent surfaces*/
+        --accent: var(--accent-600); /*background for accent buttons, accent surfaces*/
+        --accent-foreground: var(--white); /*content on accent buttons, accent surfaces*/
         --muted: var(--neutral-200); /*background for ui items, sections, hover states*/
         --muted-foreground: var(--neutral-600); /*muted content*/
         --destructive: var(--red); /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--white); /*content on destructive buttons, destructive surfaces*/
         --border: var(--neutral-300); /*borders, dividers, focus rings*/
-        --input: var(--white); /*form inputs*/
+        --input: var(--neutral-100); /*form inputs*/
         --ring: var(--accent-600); /*focus rings*/
         --guide: var(--neutral-500); /*guide color*/
         --label-primary: var(--neutral-900); /*Primary text (high emphasis)*/
@@ -36,10 +36,9 @@
 
 
         /* Box shadow variables for light mode - NativeWind compatible */
-        --shadow-line: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
         --shadow-xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
-        --shadow-sm: 0px 1px 4px 0px rgba(0, 0, 0, 0.05);
-        --shadow-md: 0px 2px 8px 0px rgba(0, 0, 0, 0.1);
+        --shadow-sm: 0px 1px 3px 0px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
         --shadow-lg: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
         --shadow-xl: 0px 20px 25px -5px rgba(0, 0, 0, 0.1);
         --shadow-2xl: 0px 25px 50px -10px rgba(0, 0, 0, 0.1);
@@ -115,15 +114,15 @@
         --primary-foreground: var(--white); /*content on primary buttons, active states, primary surfaces*/
         --secondary: var(--neutral-800);  /*background for secondary buttons, secondary surfaces*/
         --secondary-foreground: var(--neutral-200); /*content on secondary buttons, secondary surfaces*/
-        --accent: var(--accent-950); /*background for accent buttons, accent surfaces*/
-        --accent-foreground: var(--accent-300); /*content on accent buttons, accent surfaces*/
+        --accent: var(--accent-500); /*background for accent buttons, accent surfaces*/
+        --accent-foreground: var(--white); /*content on accent buttons, accent surfaces*/
         --muted: var(--neutral-800); /*background for ui items, sections, hover states*/
         --muted-foreground: var(--neutral-500); /*muted content*/
         --destructive: var(--red); /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--neutral-950); /*content on destructive buttons, destructive surfaces*/
         --border: var(--neutral-800); /*borders, dividers, focus rings*/
         --input: var(--neutral-900); /*form inputs*/
-        --ring: var(--accent-600); /*focus rings*/
+        --ring: var(--accent-500); /*focus rings*/
         --guide: var(--neutral-600); /*guide color*/
         --label-primary: var(--neutral-100); /*Primary text (high emphasis)*/
         --label-secondary: var(--neutral-300); /*Secondary text (medium emphasis)*/
@@ -137,9 +136,8 @@
 
 
         /* Box shadow variables for dark mode - more pronounced shadows */
-        --shadow-line: 0px 1px 2px 0px rgba(0, 0, 0, 0.3);
         --shadow-xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.5);
-        --shadow-sm: 0px 1px 4px 0px rgba(0, 0, 0, 0.3);
+        --shadow-sm: 0px 1px 4px 0px rgba(0, 0, 0, 0.5);
         --shadow-md: 0px 2px 8px 0px rgba(0, 0, 0, 0.3);
         --shadow-lg: 0px 8px 16px 0px rgba(0, 0, 0, 0.4);
         --shadow-xl: 0px 20px 25px -5px rgba(0, 0, 0, 0.4);

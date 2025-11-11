@@ -92,18 +92,17 @@ export default function PageLayout(props) {
 
     const content = isWeb ? (
         <View className="flex-col justify-center pt-14 lg:pt-0 w-full ">
-            <View className={`justify-center w-full mx-auto lg:flex-row border-x border-guide/20 border-dashed divide-x divide-dashed  divide-guide/20 ${appSetting('layout', 'max_width_content')}`}>
+            <View className={`justify-center w-full mx-auto lg:flex-row border-x-0 border-guide/20 border-dashed divide-x-0 divide-dashed divide-guide/20 ${appSetting('layout', 'max_width_content')}`}>
 
-                <View className=" items-center lg:items-start flex-auto p-4 sm:p-8 md:p-12  w-full mx-auto">
+                <View className=" text-center lg:text-start items-center lg:items-start flex-auto p-4 sm:p-8 md:p-12 gap-4 w-full mx-auto">
 
                     {appStatic('join_text')}
-                    <View className="text-center items-center justify-center lg:items-start gap-6">
-                        <Text
-                            accessible={true}
-                            accessibilityRole="header"
-                            aria-level={1}
-                            className="text-4xl sm:text-5xl tracking-tight font-bold text-label-primary text-balance"
-                        >
+                    <Text
+                    accessible={true}
+                    accessibilityRole="header"
+                    aria-level={1}
+                    className="text-4xl sm:text-5xl tracking-tight font-bold text-label-primary text-balance"
+                >
                             {isAllowJoin
                                 ? t('create_account_page_title')
                                 : t('create_account_page_title_request_invite')}
@@ -111,13 +110,13 @@ export default function PageLayout(props) {
                         <Text
                             accessible={true}
                             accessibilityRole="text"
-                            className=" tracking-tight text-label-secondary text-base sm:text-lg lg:text-xl"
+                            className=" text-label-secondary text-base sm:text-lg lg:text-xl text-pretty"
                         >
                             {isAllowJoin
                                 ? t('create_account_page_text')
                                 : t('create_account_page_text_request_invite')}
                         </Text>
-                    </View>
+                    
                 </View>
                 <PageContent>{Block}</PageContent>
 

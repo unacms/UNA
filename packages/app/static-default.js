@@ -103,33 +103,32 @@ const Logo = ({ mode = 'adaptive' }) => {
 const SplashTextInner = () => {
     const { t } = useTranslation()
     return (
-        <View className="flex-col justify-center items-center lg:items-start flex-auto max-w-xl lg:max-w-2xl">
-            <View className="text-center lg:text-start gap-6 ">
+            <View className="text-center max-w-xs sm:max-w-lg lg:text-start gap-4 w-full flex-auto mx-auto ">
                 <Text
                     accessible={true}
                     accessibilityRole="header"
                     aria-level={1}
                     className="text-4xl sm:text-5xl tracking-tight font-bold text-label-primary text-balance"
                 >
-                    {t('splash_page_title')}
+                    {t('splash_page_title')} {appSetting('app', 'title')}
                 </Text>
                 <Text
                     accessible={true}
                     accessibilityRole="text"
-                    className=" tracking-tight text-label-secondary text-base sm:text-lg lg:text-xl"
+                    className=" text-label-secondary text-base sm:text-lg lg:text-xl text-pretty"
                 >
-                    {appSetting('app', 'title')} is the best place to share your
-                    ideas, explore new things, find real friends and connect with the community.
+                    The best place to share your
+                    ideas, find real friends and connect with the community.
                 </Text>
             </View>
-        </View>
+        
     )
 }
 
 const SplashTextComponent = (props) => {
     return isWeb ? (
-        <View className=" items-center lg:items-start flex-auto p-4 sm:p-8 md:p-12  w-full mx-auto">
-            <AnimatedView direction="up" className="flex-auto w-1/2 h-1/2 ">
+        <View className=" items-center lg:items-start flex-auto p-4 sm:p-8 md:p-12 gap-4 w-full mx-auto">
+            <AnimatedView direction="up" className="flex-auto w-64 h-64 sm:w-80 sm:h-80 ">
                 <SvgFile
                     src_dark="splash-dark.svg"
                     src_default="splash-light.svg"
@@ -139,7 +138,7 @@ const SplashTextComponent = (props) => {
             <AnimatedView
                 delay={100}
                 direction="up"
-                className="flex-auto items-center lg:items-start "
+                className="flex-auto w-full "
             >
                 <SplashTextInner />
             </AnimatedView>
@@ -165,15 +164,13 @@ const SplashTextComponent = (props) => {
 
 const JoinTextComponent = (props) => {
     return (
-        <View className=" items-center lg:items-start flex-auto h-1/2 w-full mx-auto">
-            <AnimatedView direction="up" className=" w-1/2 h-1/2 web:duration-300 ">
+            <AnimatedView direction="up" className=" w-64 h-64 sm:w-80 sm:h-80 web:duration-300 ">
                             <SvgFile
                 src_dark="create-account-dark.svg"
                 src_default="create-account-light.svg"
                 alt="Create account illustration"
             />
         </AnimatedView>
-        </View>
     )
 }
 
