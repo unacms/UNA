@@ -1385,7 +1385,7 @@ export const settingsDefault = {
 
             // neutral color link, no background, hover background
             'u-link-ghost-cnt':  ' u-link-ghost web:focus:outline-ring/20 web:focus:ring-ring web:focus-visible:ring-offset-card web:focus-visible:bg-card web:hover:ring-transparent active:outline active:opacity-80   ',
-            'u-link-ghost-text':  ' text-label-tertiary web:hover:text-label-primary ',
+            'u-link-ghost-text':  ' text-label-secondary web:hover:text-label-primary ',
             'u-link-ghost-trans': ' web:duration-100 ',
 
             // branded color link, no background, hover background
