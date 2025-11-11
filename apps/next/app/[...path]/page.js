@@ -97,7 +97,7 @@ const getData = cache(async (params, search_params) => {
 export const viewport = {
     width: 'device-width',
     initialScale: 1,
-    viewportFit: 'viewport-fit',
+    viewportFit: 'cover',
     themeColor: [
         { media: '(prefers-color-scheme: light)', color: 'rgba(255,255,255,0.8)' },
         { media: '(prefers-color-scheme: dark)', color: 'rgba(24,24,27,0.8)' },
