@@ -21,7 +21,8 @@ export default function FormFieldPassword(props) {
         <Field {...props}>
             <View>
             <Input 
-                textContentType="none"
+                textContentType="password"
+                autoComplete="current-password"
                 placeholderTextColor="#6b7280"
                 placeholder = {placeholder}
                 secureTextEntry={isVisible}
