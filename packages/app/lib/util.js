@@ -279,11 +279,11 @@ export const formatDate = (
         // Универсальное форматирование относительного времени (одинаковое везде)
         const min = Math.round(sec / 60);
         if (Math.abs(min) < 60){
-            return `${Math.abs(min)}m ago`;
+            return `${Math.abs(min)}m` + t(' ago');
         }
         const hrs = Math.round(sec / 3600);
         if (Math.abs(hrs) < 24){
-            return `${Math.abs(hrs)}h ago`;
+            return `${Math.abs(hrs)}h` + t(' ago');
         }
     }
 

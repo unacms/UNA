@@ -118,12 +118,12 @@ const RenderScene = ({
                 scrollProps={
                     header
                         ? {
-                              pageData: pageData,
-                              subHeaderComponent: header,
-                              headerHeight: headerHeight,
-                              isBackButton: false,
-                              isMenuNameAsTitle: true,
-                          }
+                            pageData: pageData,
+                            subHeaderComponent: header,
+                            headerHeight: headerHeight,
+                            isBackButton: false,
+                            isMenuNameAsTitle: true,
+                        }
                         : null
                 }
                 index={pageRoute.index}
@@ -154,10 +154,10 @@ const RenderScene = ({
         !isLeftCol && !isRightCol
             ? 'c'
             : !isLeftCol
-            ? 'c-r'
-            : !isRightCol
-            ? 'l-c'
-            : 'l-c-r'
+                ? 'c-r'
+                : !isRightCol
+                    ? 'l-c'
+                    : 'l-c-r'
 
     const cellsCustomConfig = useMemo(() => {
         return (
@@ -165,7 +165,7 @@ const RenderScene = ({
             appSetting('layouts', `cols-${layoutCols}`)
         )
     }, [pageRoute?.pageData?.uri, layoutCols])
-    
+
     const panelLayoutKey = `${layoutCols}-${pageData?.uri || 'default'}`
 
     const { cells = {} } = cellsCustomConfig || {}
@@ -207,39 +207,41 @@ const RenderScene = ({
         currentBreakpointName
     )
 
-    const asId =  cellsCustomConfig.sizable
-                    ? `cells-${panelLayoutKey}`
-                    : undefined;
-  
+    const asId = cellsCustomConfig.sizable
+        ? `cells-${panelLayoutKey}`
+        : undefined;
+
     function getLayouts() {
-  const layouts = [];
+        const layouts = [];
 
-  if (isLeftCol) {
-    layouts.push(leftPanelProps.defaultSize);
-  }
+        if (isLeftCol && leftPanelProps.defaultSize) {
+            layouts.push(leftPanelProps.defaultSize);
+        }
+        if (centerPanelProps.defaultSize)
+            layouts.push(centerPanelProps.defaultSize);
 
-  layouts.push(centerPanelProps.defaultSize);
+        if (isRightCol && rightPanelProps.defaultSize) {
+            layouts.push(rightPanelProps.defaultSize);
+        }
 
-  if (isRightCol) {
-    layouts.push(rightPanelProps.defaultSize);
-  }
+        return layouts.length > 0 ? layouts : null;
+    }
 
-  return layouts;
-}
-                
 
     const onLayout = (sizes) => {
-        const layouts =  getLayouts();
-        if (JSON.stringify(sizes) != JSON.stringify(layouts)){
-            storageSet('rrp', asId+'-'+currentBreakpointName, sizes, true);
+        const layouts = getLayouts();
+        if (JSON.stringify(sizes) != JSON.stringify(layouts) && asId && layouts) {
+            storageSet('rrp', asId + '-' + currentBreakpointName, sizes, true);
         }
         setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100)
     }
 
     useEffect(() => {
-        const sl = storageGet('rrp', asId+'-'+currentBreakpointName, true);
+        const sl = storageGet('rrp', asId + '-' + currentBreakpointName, true);
         if (groupRef) {
-            groupRef.current?.setLayout(sl || getLayouts())
+            const l = sl || getLayouts()
+            if (l)
+                groupRef.current?.setLayout(sl || getLayouts())
         }
     }, [currentBreakpointName, index])
 
@@ -250,10 +252,9 @@ const RenderScene = ({
     return (
         <PanelGroup
             ref={groupRef}
-            key={`${panelLayoutKey}-pnl2-${
-                cellsCustomConfig.sizable ? 'sizable' : 'static'
-            }`}
-            
+            key={`${panelLayoutKey}-pnl2-${cellsCustomConfig.sizable ? 'sizable' : 'static'
+                }`}
+
             direction="horizontal"
             className={(layoutName == 'navigator' ? '' : '') + ' h-full'}
             onLayout={onLayout}
@@ -265,14 +266,13 @@ const RenderScene = ({
                         {...leftPanelProps}
                     >
                         <View
-                            className={`${
-                                layoutName == 'profile'
+                            className={`${layoutName == 'profile'
                                     ? 'mt-0.5 sm:p-2' + ' fixed-process'
                                     : appSetting(
-                                          'conductor',
-                                          'sidebar_container'
-                                      )
-                            }`}
+                                        'conductor',
+                                        'sidebar_container'
+                                    )
+                                }`}
                         >
                             {layoutName == 'profile' ? (
                                 <LeftSideBarContainer
@@ -311,21 +311,19 @@ const RenderScene = ({
             )}
             <Panel {...centerPanelProps}>
                 <View
-                    className={`${
-                        isRightCol ? 'flex-auto' : 'w-full mx-auto'
-                    } ${
-                        layoutName !== 'navigator' 
+                    className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'
+                        } ${layoutName !== 'navigator'
                             ? 'mt-0.5 sm:p-2'
                             : (!pageRoute?.endpoint?.request_url ? 'sm:my-3 mt-0.5 sm:px-3 ' : 'lg:p-1')
-                    }`}
+                        }`}
                 >
                     {MainContent}
                     {pageRoute?.endpoint?.request_url &&
                         (!pageRoute.endpoint?.finished
                             ? dataItems.filter((item) => item.type != 'block').length == 0 ? Preload : PreloadShort
                             : dataItems.filter((item) => item.type != 'block')
-                                  .length == 0 &&
-                              callFn('noContentByUrl', [pageRoute?.endpoint]))}
+                                .length == 0 &&
+                            callFn('noContentByUrl', [pageRoute?.endpoint]))}
                 </View>
             </Panel>
             {isRightCol && (
@@ -354,7 +352,7 @@ const RenderScene = ({
                                         module={
                                             pageRoute?.sidebar?.endpoint?.module
                                                 ? pageRoute?.sidebar?.endpoint
-                                                      ?.module
+                                                    ?.module
                                                 : ''
                                         }
                                     />
@@ -494,7 +492,7 @@ export function Conductor({
         }
     )
 
-    
+
     const handleEndReached = useCallback(
         async (lastItemIndex) => {
             if (isFetchingNextPage) return
@@ -714,7 +712,7 @@ export function Conductor({
         return type === 'default' ? getUnitType(currentRoute) : type
     }, [currentRoute?.endpoint, currentRoute?.inited, currentRoute?.blocks])
 
-    
+
     const sSkeleton = useMemo(() => {
         const a = callFn('getSkeletonByEndPoint', [currentRoute])
         if (a) return a
@@ -729,7 +727,7 @@ export function Conductor({
         setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100)
     }, [])
 
-   
+
     const isHideCover =
         data?.cover_block?.profile &&
         appSetting('cover', 'hide_cover_for_context') &&
@@ -793,13 +791,11 @@ export function Conductor({
                 size="sm"
             />
             <View
-                className={`${
-                    layoutName === 'profile'
+                className={`${layoutName === 'profile'
                         ? conductorTheme.content_max_width
                         : conductorTheme.content_max_width_nav
-                } mx-auto  min-h-screen ${
-                    tmplLayout == 'mixed' ? 'mt-12' : ''
-                }`}
+                    } mx-auto  min-h-screen ${tmplLayout == 'mixed' ? 'mt-12' : ''
+                    }`}
             >
                 <RenderSceneHeader
                     route={currentRoute}
@@ -1307,20 +1303,20 @@ const TabBar = ({
                             'more_menu_in_navbar',
                             pageData?.module
                         ) && (
-                            <Row className="gap-2">
-                                <CoverMenu
-                                    {...pageData.cover_block.actions_menu}
-                                    uri={pageData.uri}
-                                    isSplitMenu={true}
-                                    containerClasses="gap-2 "
-                                />
-                                <CoverMenuMore
-                                    {...pageData.cover_block.actions_menu}
-                                    uri={pageData.uri}
-                                    isSplitMenu={true}
-                                />
-                            </Row>
-                        )}
+                                <Row className="gap-2">
+                                    <CoverMenu
+                                        {...pageData.cover_block.actions_menu}
+                                        uri={pageData.uri}
+                                        isSplitMenu={true}
+                                        containerClasses="gap-2 "
+                                    />
+                                    <CoverMenuMore
+                                        {...pageData.cover_block.actions_menu}
+                                        uri={pageData.uri}
+                                        isSplitMenu={true}
+                                    />
+                                </Row>
+                            )}
                     </Row>
                 )}
             </TopSidebar>
@@ -1335,10 +1331,10 @@ const RenderSceneHeader = ({ route, setFilterValue }) => {
     const counter = appSetting('conductor', 'show_nav_counters')
         ? 0
         : route.addon
-        ? route.addon.text
             ? route.addon.text
-            : route.addon
-        : 0
+                ? route.addon.text
+                : route.addon
+            : 0
     const isTitle = appSetting('conductor', 'show_nav_titles')
     return (
         <>

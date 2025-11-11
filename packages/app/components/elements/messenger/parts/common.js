@@ -529,7 +529,7 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
 
 
     return (
-        <View className='flex-1 bg-card'>
+        <View className='flex-1 bg-card' style={{minHeight:layoutHeightLeft}}>
             {(isWeb && !isSmallScreen) && header}
             {data && data.length > 0 ? <View className=' w-full flex-1'>
                 <UniList

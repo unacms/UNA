@@ -95,7 +95,7 @@ export default function MenuItemButton(oProps) {
                         {(oProps.list && oProps.list.length > 0) && <ProfilesList data={oProps.list} showEmpty={false} maxCount={3} displaySize="sm" />}
                         {oProps?.link ?
                             (!oProps.noAction ?
-                                <Link emulate={true} href={oProps.link[0] === '/' ? oProps.link : (oProps.link.includes("://") ? oProps.link : '/' + oProps.link)}>
+                                <Link emulate={true} href={oProps.link[0] === '/' ? oProps.link : (oProps?.link?.includes("://") ? oProps.link : '/' + oProps.link)}>
                                     {buttonAction}
                                 </Link>
                                 : (!oProps.onPress ? buttonAction : React.cloneElement(buttonAction, { onPress: oProps.onPress }))

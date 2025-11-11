@@ -1,10 +1,8 @@
 "use client"
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import { storageClear } from 'app/lib/util';
-import { remoteSettings } from 'app/settings-remote';
-import { Platform } from 'react-native';
-
+import { useRouter, redirectTo } from 'app/lib/hooks/router'
 
 import Layouts from 'app/components/layouts';
 /*let Layouts;
@@ -57,6 +55,13 @@ export function Root(props) {
 
     if (props.code == 404 && !data?.page_status) {
         data.page_status = 404
+    }
+    const router = useRouter();
+
+  
+    if (data.redirect){
+        redirectTo(router, data.redirect)
+        return null
     }
     return (
         <Layouts path={props?.path} data={data} uri={data?.uri} url={data?.url} />
