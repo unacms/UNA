@@ -41,7 +41,7 @@ export default function RootLayout({ children }) {
         <html lang={langCode} className={fontVars}>
             <body className={appSetting('layout', 'body')}>
                 <QueryClientProvider client={queryClient}>
-                    {typeof window !== 'undefined' && window.location.hostname.endsWith('vercel.app') ? <Analytics /> : null}
+                    {typeof window !== 'undefined' ? <Analytics /> : null}
                     <SpeedInsights />
                     {children}
                     <Subscriber />
