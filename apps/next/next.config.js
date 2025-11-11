@@ -40,6 +40,8 @@ const nextConfig = {
   // once that gets fixed, set this back to true
   reactStrictMode: false,
   poweredByHeader: false,
+  // Enable source maps for production to help with debugging and Lighthouse insights
+  productionBrowserSourceMaps: true,
   /*experimental: {
     forceSwcTransforms: true,
     // scrollRestoration: true,
