@@ -24,13 +24,13 @@ export function MenuItemSidebar({ title, icon, isActive, addon }) {
     return (
         <Row className={` px-2 py-1.5 items-center group rounded-xl ${isActive && 'bg-primary/10 web:hover:bg-muted/60 ' || ' web:hover:bg-muted/60 '}`}>
             
-                <Text className={`h-9 w-9 text-center items-center justify-center flex rounded-full ${
+                <View className={`h-9 w-9 items-center justify-center flex rounded-full ${
                     isActive
                         ? 'bg-primary text-primary-foreground'
                         : 'bg-secondary/50 text-secondary-foreground web:group-hover:bg-secondary web:group-hover:text-foreground web:duration-200'
                 }`}>
-                    {isEmoji(icon) ? icon : <Icon icon={icon} size="20" className={`${isActive ? 'text-primary-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`} />}
-                </Text>
+                    {isEmoji(icon) ? <Text>{icon}</Text> : <Icon icon={icon} size="20" className={`${isActive ? 'text-primary-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`} />}
+                </View>
             
             <Text className={` px-2 text-sm leading-tight font-semibold  ${isActive && 'text-foreground' || 'text-label-secondary group-hover:text-label-primary'}`}>{title}</Text>
             {getPart("CounterIndicator", [addon, true])}
