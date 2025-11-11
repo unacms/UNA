@@ -1464,7 +1464,7 @@ export const settingsDefault = {
         },
         blocks: {
             'u-block-base':
-                'u-max-width-block sm:rounded-2xl gap-4 ',
+                'u-max-width-block sm:rounded-2xl gap-4 border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60',
             'u-block-bg':
                 'bg-card/80 shadow-sm text-card-foreground ',
             'u-block-pad':
