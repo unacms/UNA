@@ -55,7 +55,7 @@ export default function Unit(props) {
         redirectdRef.current.redirect(sUrl)
     }
 
-    const { oMenuItemPrimary, oMenuItemSecondary } = useMemo(() => {
+    const { oMenuItemPrimary, oMenuItemSecondary, oMenuItemDelete } = useMemo(() => {
         return callFn('getUnitMenuItems', [
             props.unitType,
             data,
@@ -78,11 +78,12 @@ export default function Unit(props) {
     return (
         <CardList padding="p-1">
             <Redirect ref={redirectdRef} />
-            <Link className="group " href={data.url}>
+            <Link className="web:group " href={data.url}>
                 <View
                     className={`flex-row sm:flex-col p-2 sm:p-0 sm:h-full`}
                 >
                     <ImageSection data={data} imageSizes={imageSizes} />
+                    {!!oMenuItemDelete && <View className="absolute right-1 top-1">{oMenuItemDelete}</View>}
                     <View className="flex-col pl-4 my-auto sm:p-2 flex-auto ">
                         <View className="sm:h-12">
                             <Text

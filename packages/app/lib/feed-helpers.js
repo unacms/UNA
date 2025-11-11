@@ -521,10 +521,11 @@ export const Author = memo(({ data, url, t }) => {
     const Badges = getComponent('molecule', 'badges')
     const ActionsElements = data.author_actions?.map((item, index) => {
         const Element = getComponent('molecule', String(item.type))
-        if (!Element) return null // Explicitly return null for no component
+        if (!Element) 
+            return null 
         return (
-            <Row className=" items-center">
-            <Icon className="text-label-tertiary -mx-1" icon='Dot' size={14}  />
+            <Row className=" items-center" key={`action-${item.cid}-${item.iid}`}>
+            <Icon className="text-label-tertiary -mx-1" key="icon" icon='Dot' size={14}  />
             <Element
                 params={{
                     button_variant: 'link',
@@ -532,7 +533,7 @@ export const Author = memo(({ data, url, t }) => {
                     hide_icon: true,
                     button_rounded: false,
                 }}
-                key={`action-${index}`}
+                
                 {...item}
             />
             </Row>

@@ -31,7 +31,7 @@ export default function Unit(props) {
 
     const friendsLabel = data.members_count > 0 ? tp("members", data?.members_count) : ''
 
-    const { oMenuItemPrimary, oMenuItemSecondary } = useMemo(() => {
+    const { oMenuItemPrimary, oMenuItemSecondary, oMenuItemDelete } = useMemo(() => {
         return callFn("getUnitMenuItems", [props.unitType, data, handleClick, t, props.module]);
     }, [props.unitType, data, handleClick, t]);
 
@@ -48,8 +48,8 @@ export default function Unit(props) {
         return (
             <>
                 <Redirect ref={redirectdRef} />
-                <CardList className='mb-2 md:mb-0 rounded-xl sm:rounded-xl' padding="p-0">
-                    <Link className="group " href={data.url}>
+                <CardList padding="p-1">
+                    <Link className="we:group " href={data.url}>
                         <View className="flex-row sm:flex-col p-1">
                             <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-lg overflow-hidden items-center justify-center bg-neutral-500/20">
                                 <Image
@@ -61,6 +61,7 @@ export default function Unit(props) {
                                 />
 
                             </View>
+                            {!!oMenuItemDelete && <View className="absolute right-2 top-2">{oMenuItemDelete}</View>}
                             <View className="flex-col p-2 flex-auto items-between justify-between ">
                                 <View>
                                     <Row className="items-center gap-2">

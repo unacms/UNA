@@ -31,8 +31,5 @@ export default function ElementSimpleList(props) {
     }
 
     const selectedValues = decomposeToPowersOfTwo(data.value)
-    console.log("selectedValues", selectedValues, data.value)
-
-    console.log("datadata", data)
     return <ChkList values={data.values} setValue={handleSubValueChange} selectedValue={selectedValues} />
 }

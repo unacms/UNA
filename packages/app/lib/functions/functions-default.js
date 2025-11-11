@@ -263,8 +263,9 @@ const createMenuItem = (menuItem, isPrimary) => {
                 ...menuItem.data,
                 primary: isPrimary,
                 params: {
-                    button_rounded: false,
-                    button_full_width: true,
+                    button_rounded: menuItem.data?.params?.button_rounded || false,
+                    button_full_width: menuItem.data?.params?.button_full_width || true,
+                    only_icon: menuItem.data?.params?.only_icon || false,
                     on_done: (sAction, oData) => {
                         // Handle action completion
                     },
@@ -292,12 +293,12 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
 
     let oMenuItemPrimary = null;
     let oMenuItemSecondary = null;
-    let bMenuItemsMoreShow = true;
+    let oMenuItemDelete = null;
 
     if (data?.meta) {
         let sPrimary = "";
         let sSecondary = "";
-
+        let sDelete = "";
         if (moduleName == 'bx_persons' || moduleName == 'bx_organizations' || moduleName == 'system'){
             switch (unitType) {
                 case "person_friends":
@@ -313,9 +314,12 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
                     };
                     break;
                 case "person_friends_recommendations":
+                    sPrimary = "befriend";
+                    sDelete = "ignore-befriend";
+                    break;
                 case "browse_friend_requests":
                     sPrimary = "befriend";
-                    sSecondary = unitType === "browse_friend_requests" ? "unfriend" : "ignore-befriend";
+                    sSecondary = "unfriend";
                     break;
                 case "person_friends_suggestion":
                     sPrimary = "befriend";
@@ -326,6 +330,7 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
                     break;
                 case "person_following_recommendations":
                     sPrimary = "subscribe";
+                    sDelete = "ignore-subscribe";
                     break;
                 case "person_followers":
                     sPrimary = "subscribe";
@@ -339,13 +344,14 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
         else{
             sPrimary = "join";
             sSecondary = "leave";
+            if (unitType == 'context_recommendations')
+                sDelete = "ignore-join";
             if (moduleName == "bx_channels") {
                 sPrimary = "subscribe";
                 sSecondary = "unsubscribe";
             }
         }
 
-        
         if (!oMenuItemPrimary) {
             oMenuItemPrimary = data.meta.items.find(item => item.name === sPrimary);
         }
@@ -353,6 +359,11 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
 
         if (!oMenuItemSecondary) {
             oMenuItemSecondary = data.meta.items.find(item => item.name === sSecondary);
+        }
+
+        if (!oMenuItemDelete) {
+            oMenuItemDelete = data.meta.items.find(item => item.name === sDelete);
+           
         }
 
         if (!oMenuItemPrimary && oMenuItemSecondary){
@@ -368,14 +379,21 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
         }
 
         oMenuItemPrimary = createMenuItem(oMenuItemPrimary, true);
-
-        
         oMenuItemSecondary = createMenuItem(oMenuItemSecondary, false);
+        if (oMenuItemDelete) {
+            oMenuItemDelete = {
+                ...oMenuItemDelete, 
+ 
+                data: {...oMenuItemDelete.data, title:'', params: {...oMenuItemDelete.data.params, button_full_width: false, button_rounded: true, only_icon:true}}
+            };
+            oMenuItemDelete = createMenuItem(oMenuItemDelete, false);
+        }
     }
 
     return {
         oMenuItemPrimary,
         oMenuItemSecondary,
+        oMenuItemDelete
     };
 }
 

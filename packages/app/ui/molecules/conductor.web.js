@@ -247,11 +247,6 @@ const RenderScene = ({
         window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     }, [index])
 
-    
-    console.log("asId", asId)
-
-    
-
     return (
         <PanelGroup
             ref={groupRef}
