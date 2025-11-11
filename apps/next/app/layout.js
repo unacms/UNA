@@ -42,7 +42,7 @@ export default function RootLayout({ children }) {
             <body className={appSetting('layout', 'body')}>
                 <QueryClientProvider client={queryClient}>
                     {typeof window !== 'undefined' && window.location.hostname.endsWith('vercel.app') ? <Analytics /> : null}
-                    {!!process.env['VERCEL'] ? <SpeedInsights /> : null}
+                    <SpeedInsights />
                     {children}
                     <Subscriber />
                 </QueryClientProvider>
