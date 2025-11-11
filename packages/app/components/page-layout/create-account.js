@@ -1,10 +1,9 @@
 import { View, Row } from 'app/design/view'
 import { BlockByName, DataByName, BlockByData } from 'app/components/block'
-import { Text } from 'app/design/typography'
+import { Text, H1, H2 } from 'app/design/typography'
 import {
     Card,
     CardHeader,
-    CardTitle,
     CardDescription,
     CardContent,
     CardFooter,
@@ -30,7 +29,7 @@ function PageContent({ children }) {
             <AnimatedView className="gap-4" direction="up" delay={200}>
                 <Card padding="p-6 max-w-xl w-full mx-auto">
                     <CardHeader>
-                        <CardTitle>{t('create_account_page_caption')}</CardTitle>
+                        <H2 className="text-label-secondary leading-none text-lg font-semibold tracking-tight">{t('create_account_page_caption')}</H2>
                         {isWeb && (
                             <CardDescription>
                                 {t('create_account_page_caption2')}
@@ -97,16 +96,13 @@ export default function PageLayout(props) {
                 <View className=" text-center lg:text-start items-center lg:items-start flex-auto p-4 sm:p-8 md:p-12 gap-4 w-full mx-auto">
 
                     {appStatic('join_text')}
-                    <Text
-                    accessible={true}
-                    accessibilityRole="header"
-                    aria-level={1}
+                    <H1
                     className="text-4xl sm:text-5xl tracking-tight font-bold text-label-primary text-balance"
                 >
                             {isAllowJoin
                                 ? t('create_account_page_title')
                                 : t('create_account_page_title_request_invite')}
-                        </Text>
+                        </H1>
                         <Text
                             accessible={true}
                             accessibilityRole="text"

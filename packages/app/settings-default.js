@@ -784,13 +784,13 @@ export const settingsDefault = {
                 { component: 'launcher', className: 'hidden sm:block' },
                 { component: 'add', className: '' },
                 { component: 'notifications', className: 'hidden sm:block' },
-                { component: 'link', href: "{messenger}", className: 'hidden sm:block', props: { variant: "secondary", rounded: true, size: "base", startDecorator: "MessageSquare" } },
+                { component: 'link', href: "{messenger}", className: 'hidden sm:block', title: 'Messages', props: { variant: "secondary", rounded: true, size: "base", startDecorator: "MessageSquare" } },
                 { component: 'account', className: 'hidden lg:block' },
             ],
             loggedOut: [
                 { component: 'search', className: 'items-center' },
                 { component: 'launcher', className: 'items-center' },
-                { component: 'link', className: 'items-center', href: "/login", props: { variant: "secondary", rounded: true, size: "base", startDecorator: "UserRound" } },
+                { component: 'link', className: 'items-center', href: "/login", title: 'Login', props: { variant: "secondary", rounded: true, size: "base", startDecorator: "UserRound" } },
             ],
         },
         mixed: {
@@ -799,13 +799,13 @@ export const settingsDefault = {
                 { component: 'launcher', className: 'hidden' },
                 { component: 'add', className: '' },
                 { component: 'notifications', className: 'hidden sm:block' },
-                { component: 'link', href: "{messenger}", className: 'hidden sm:block', props: { variant: "secondary", rounded: true, size: "base", startDecorator: "MessageSquare" } },
+                { component: 'link', href: "{messenger}", className: 'hidden sm:block', title: 'Messages', props: { variant: "secondary", rounded: true, size: "base", startDecorator: "MessageSquare" } },
                 { component: 'account', className: 'hidden sm:block' },
             ],
             loggedOut: [
                 { component: 'search', className: '' },
                 { component: 'launcher', className: '' },
-                { component: 'link', className: '', href: "/login", props: { variant: "secondary", rounded: true, size: "base", startDecorator: "UserRound" } },
+                { component: 'link', className: '', href: "/login", title: 'Login', props: { variant: "secondary", rounded: true, size: "base", startDecorator: "UserRound" } },
             ],
         },
         ver: {
@@ -1447,7 +1447,7 @@ export const settingsDefault = {
             'u-card-base':
                 ' u-card-base bg-card/60 shadow-sm border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden rounded-2xl gap-4',
             'u-card-padding': ' p-4 ',
-            'u-card-header': 'flex gap-2',
+            'u-card-header': 'flex gap-1',
             'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',
             'u-card-title':
                 ' text-label-secondary leading-6 text-lg font-semibold leading-none tracking-tight',

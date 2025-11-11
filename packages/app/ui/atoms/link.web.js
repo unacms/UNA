@@ -6,8 +6,11 @@ import { appSetting, cd } from 'app/lib/util'
 
 export default function ElementLink(props) {  
 
-    let { href, emulate, target, variant, size, className = '', hitarea = true, noprefetch, onClick, ...rest } = props;
+    let { href, emulate, target, variant, size, className = '', hitarea = true, noprefetch, onClick, alt, ...rest } = props;
     const router = useRouter();
+    
+    // Convert alt to aria-label (alt is not valid for <a> elements)
+    const accessibleLabel = alt || (typeof props.children === 'string' ? props.children : undefined);
 
     const handlePress = (event, href) => {
         if (href){
@@ -87,7 +90,13 @@ export default function ElementLink(props) {
 
     if (emulate === true)
         return (
-            <Pressable {...rest} className={composedClassName} onPress={() => handlePress(event, href)} >
+            <Pressable 
+                {...rest} 
+                className={composedClassName} 
+                onPress={() => handlePress(event, href)}
+                aria-label={accessibleLabel}
+                accessibilityLabel={accessibleLabel}
+            >
                 {props.children}
             </Pressable>
         );
@@ -96,13 +105,13 @@ export default function ElementLink(props) {
 
     return (
         <Link 
-            
             target={target} 
             href={href} 
             {...rest} 
             className={composedClassName}
             prefetch={isPrefetch} 
             onClick={(e) => handleLinkClick(e, href, target)}
+            aria-label={accessibleLabel}
         > 
             {props.children}
         </Link>

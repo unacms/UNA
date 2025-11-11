@@ -1,9 +1,8 @@
 import { View, Row } from 'app/design/view'
-import { Text } from 'app/design/typography'
+import { Text, H2 } from 'app/design/typography'
 import {
     Card,
     CardHeader,
-    CardTitle,
     CardDescription,
     CardContent,
     CardFooter,
@@ -36,9 +35,9 @@ function PageContent(props) {
         <AnimatedView className="gap-4" direction="up" delay={200}>
             <Card padding="p-6 max-w-xl w-full mx-auto">
                 <CardHeader>
-                    <CardTitle>
+                    <H2 className="text-label-secondary leading-none text-lg font-semibold tracking-tight">
                         {t('login_modal_title')} {t('app_name')}
-                    </CardTitle>
+                    </H2>
                     <CardDescription>{t('splash_page_login')}</CardDescription>
                 </CardHeader>
                 <CardContent className="gap-4">
