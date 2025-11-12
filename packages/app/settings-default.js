@@ -1450,7 +1450,7 @@ export const settingsDefault = {
             'u-card-header': 'flex gap-1',
             'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',
             'u-card-title':
-                ' text-label-secondary leading-6 text-lg font-semibold leading-none tracking-tight',
+                ' text-label-primary leading-6 text-xl font-semibold leading-none tracking-tight',
             'u-card-description': ' text-label-secondary text-sm',
             'u-card-content': 'text-card-foreground ',
             'u-card-footer': 'flex text-base text-card-foreground gap-2',
