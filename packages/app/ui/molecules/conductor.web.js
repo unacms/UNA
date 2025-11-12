@@ -145,7 +145,7 @@ const RenderScene = ({
                 }
             />
         )
-    }, [dataItems, numColumns, dataItems.length])
+    }, [dataItems, numColumns, dataItems.length, header, headerHeight])
 
     const groupRef = useRef(null)
     const sidebarUnitType =
@@ -1236,7 +1236,7 @@ const HeaderContainer = ({
                     <Animated.View style={[{}, animatedStyleHeaderCoverSmall]}>
                         <ViewRef
                             className={
-                                conductorTheme.cover_small + '  header-fixed'
+                                conductorTheme.cover_small + '  header-fixed 66'
                             }
                         >
                             {((isCover && !isHideCover) || !isDesktop) && (
@@ -1249,7 +1249,7 @@ const HeaderContainer = ({
                             )}
                         </ViewRef>
                     </Animated.View>
-                    <View className="w-full header-fixed">{tabBarObj}</View>
+                    <View className="w-full header-fixed 77">{tabBarObj}</View>
                 </View>
             </Animated.View>
         </View>
