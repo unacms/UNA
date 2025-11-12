@@ -10,24 +10,6 @@ import useDebounce from 'app/lib/hooks/debounce'
 import { Button } from 'app/design/controls';
 import { isObjectsEqual } from 'app/lib/util'
 
-// Conditional wrapper for web forms - uses HTML form element on web, View on native
-const FormWrapper = ({ children, className, onSubmit, isWeb }) => {
-    if (isWeb) {
-        return (
-            <form
-                className={className}
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    if (onSubmit) onSubmit();
-                }}
-            >
-                {children}
-            </form>
-        );
-    }
-    return <View className={className}>{children}</View>;
-};
-
 
 function getFormType(name) {
     return getComponent('form', String(name))
@@ -274,8 +256,6 @@ export default function (props) {
         return result;
     }, {});
 
-    const isWeb = Platform.OS === 'web';
-
     return (
         <View className={`${props.layout !== 'hor' ? appSetting('forms', 'form_container'): 'w-full'} ${props?.exProps?.classes}`}>
             {/*(isAutoChange && props.layout !== 'hor') && <Row className='items-center justify-between mb-3'>
@@ -289,11 +269,7 @@ export default function (props) {
                 }
             </Row>*/}
             <FormProvider {...methods}>
-                <FormWrapper 
-                    className={`${props.layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : appSetting('forms', 'form_container')}`}
-                    onSubmit={_handleSubmit}
-                    isWeb={isWeb}
-                >
+                <View className={`${props.layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : appSetting('forms', 'form_container')}`}>
                     {inputs}
                     {(isAutoChange && props.layout === 'hor') && <Row className='items-center justify-between '>
                         {!isObjectsEqual(defaultFormValues, currentFormValues) && <Button
@@ -305,7 +281,7 @@ export default function (props) {
                         />
                         }
                     </Row>}
-                </FormWrapper>
+                </View>
             </FormProvider>
         </View>
 
