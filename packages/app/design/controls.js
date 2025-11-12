@@ -499,7 +499,7 @@ export const Button = (props) => {
     const showTooltip = useMemo(() => isDesktop && tooltip, [isDesktop, tooltip]);
 
     const sClassContainer = useMemo(() => {
-        let classes = 'group flex-row items-center gap-x-1';
+        let classes = 'group flex-row items-center ';
         
         // Determine if button has title for width calculation
         const hasTitle = !!title;
@@ -567,8 +567,9 @@ export const Button = (props) => {
         let titleContainerClass = titleVisible ? '' : ' hidden ' + (showTitleFromSize ? showTitleFromSize : 'sm') + ':block';
         let sizeClasses = '';
 
-        const sClassDefaultRounding = !variant.startsWith('group-item') ? ThemeButtonSizes[size]?.rounded : '';
-        const sClassFullRounding = !variant.startsWith('group-item') ? 'rounded-full' : '';
+        const isLinkVariant = variant === 'link' || variant.includes('-link');
+        const sClassDefaultRounding = !variant.startsWith('group-item') && !isLinkVariant ? ThemeButtonSizes[size]?.rounded : '';
+        const sClassFullRounding = !variant.startsWith('group-item') && !isLinkVariant ? 'rounded-full' : '';
         const roundingClass = rounded ? sClassFullRounding : sClassDefaultRounding;
 
         if (variant != 'custom') {
@@ -578,7 +579,10 @@ export const Button = (props) => {
             const isIconOnly = hasIcon && !hasTitle;
             
             let paddingClass;
-            if (isIconOnly && ThemeButtonSizes[size]?.padding_icon_only) {
+            if (isLinkVariant) {
+                // Link variants don't use padding
+                paddingClass = '';
+            } else if (isIconOnly && ThemeButtonSizes[size]?.padding_icon_only) {
                 paddingClass = ThemeButtonSizes[size].padding_icon_only;
             } else if (hasTitle && ThemeButtonSizes[size]?.padding_with_title) {
                 paddingClass = ThemeButtonSizes[size].padding_with_title;
@@ -723,7 +727,6 @@ export const Button = (props) => {
     } : {};
     const buttonContent = (
         <Cnt
-            style={{ overflow: 'hidden' }}
             className={`relative ${fullWidth ? 'flex-auto ' : ''} ${sClassContainer} ${sizeClasses} ${(ThemeCssClassesButton['u-btn-' + variant + '-focus'] || ThemeCssClassesButton['u-btn-focus'] || '')}`}
             {...rest}
             {...buttonAttributes}
@@ -731,13 +734,7 @@ export const Button = (props) => {
             hitSlop={resolvedHitSlop}
             {...refProps}
         >
-            {/* Hover layer - positioned above background, below content */}
-            {variant !== 'custom' && (
-                <View 
-                    style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, pointerEvents: 'none', zIndex: 1 }}
-                    className={`${ThemeCssClassesButton['u-btn-' + variant + '-hover'] || ''}`} 
-                />
-            )}
+            
             {sButtonIconStart && <View className="relative z-10">{sButtonIconStart}</View>}
             {isTitle && (
                 <Text className={`relative z-10 ${sClassText} ${sTitleContainer}`} numberOfLines={1}>

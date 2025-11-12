@@ -1163,12 +1163,12 @@ export const settingsDefault = {
             },
             sm: {
                 rounded: ' rounded-lg ',
-                padding: '  ',
+                padding: ' min-h-9 ',
                 padding_icon_only: ' h-9 w-9 ',
-                padding_with_title: ' px-2 gap-1 ',
+                padding_with_title: ' px-2 h-9 gap-1 ',
                 icon_container:
-                    ' text-base h-9 flex items-center justify-center',
-                title_container: ' text-sm leading-9 inline-flex items-center  ',
+                    ' text-base flex items-center justify-center',
+                title_container: ' rounded text-sm inline-flex items-center  ',
                 icon_size: 20,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '  ', // conditional margin for text container when icon is present
@@ -1346,7 +1346,7 @@ export const settingsDefault = {
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-sm ',
                 hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
                 text: ' text-sm leading-6 underline-offset-2 text-sm ',
-                rounded: '  rounded-lg focus:rounded active:rounded',
+                rounded: '  rounded-lg ',
                 focus: ' web:focus-visible:outline-offset-4 web:focus-visible:outline-4 web:focus-visible:ring-1 web:focus-visible:ring-offset-[3px]  active:outline-4 active:outline-offset-8   ',
             },
             md: {
@@ -1355,7 +1355,7 @@ export const settingsDefault = {
                 hitSlop: { top: 4, right: 4, bottom: 4, left: 4 },
                 text: ' underline-offset-2 decoration-[1.5px] text-base  ',
                 rounded: ' rounded ',
-                focus: ' focus:outline-offset-4 focus:outline-4 active:outline-4 active:outline-offset-4 focus:ring-2 active:ring-2 focus:ring-offset-2 ',
+                focus: ' focus:outline-offset-4 focus:outline-4 active:outline-2 active:outline-offset-2 focus-visible:ring-2  focus:ring-offset-2 ',
             },
             lg: {
                 padding: ' px-2 rounded-xl items-center flex web:active:outline-ring ',
@@ -1374,7 +1374,7 @@ export const settingsDefault = {
             'u-link-default-trans': ' web:duration-200 ',
 
             // neutral color link, no background
-            'u-link-plain-cnt': ' outline-ring/20 ring-ring focus:ring-offset-card focus:bg-card focus:outline focus:bg-card active:outline active:bg-card  ',
+            'u-link-plain-cnt': ' outline-ring/20 ring-ring focus:ring-offset-card focus:bg-card focus-visible:outline active:outline focus:bg-card active:bg-ring/10  ',
             'u-link-plain-text': ' text-label-secondary web:hover:text-label-primary web:hover:underline ',
             'u-link-plain-trans': ' web:duration-200 ',
 
@@ -1644,7 +1644,7 @@ export const settingsDefault = {
         button_styles: {
             // Default button (neutral/popover)
             'u-btn-default-cnt': [
-                ' bg-popover/80 web:hover:bg-popover backdrop-blur ',
+                ' bg-popover/80 web:hover:bg-popover backdrop-blur overflow-hidden ',
                 ' border border-border/60 web:border-0',
                 ' web:ring-1 web:ring-inset web:ring-border/60',
                 ' web:hover:ring-border web:focus:ring-border',
@@ -1655,13 +1655,12 @@ export const settingsDefault = {
             ].join(' '),
             'u-btn-default-text': 'font-semibold text-popover-foreground',
             'u-btn-default-trans': 'web:duration-200',
-            'u-btn-default-hover': '',
 
           
             // Primary button (primary/accent)
             'u-btn-primary-cnt': [
                 // Background and main color
-                ' bg-primary ',
+                ' bg-primary overflow-hidden ',
                 ' outline-offset-2 outline-offset-card ',
                 ' web:focus:outline-4 web:focus:outline-ring/40 focus:outline-offset-2 active:outline active:outline-offset-2   ',
                 ' shadow-xs web:hover:shadow-md active:shadow-none web:active:shadow-none  ',
@@ -1669,42 +1668,37 @@ export const settingsDefault = {
             ].join(' '),
             'u-btn-primary-text': ' font-semibold text-primary-foreground ',
             'u-btn-primary-trans': ' web:duration-300',
-            'u-btn-primary-hover': '  web:group-hover:bg-black/10 web:dark:group-hover:bg-white/10 web:duration-300', 
 
 
             'u-btn-accent-cnt':
-                ' bg-accent  web:active:ring-2 web:active:ring-accent web:active:ring-offset-2 web:active:outline-none ',
+                ' bg-accent overflow-hidden web:active:ring-2 web:active:ring-accent web:active:ring-offset-2 web:active:outline-none ',
             'u-btn-accent-text': ' font-semibold text-white ',
             'u-btn-accent-trans': '  web:duration-200',
             'u-btn-accent-hover': 'web:group-hover:bg-white/10 web:duration-200',
             
 
-            'u-btn-secondary-cnt': ' web:group bg-secondary/80 web:hover:bg-secondary web:focus-visible:bg-secondary ',
+            'u-btn-secondary-cnt': 'overflow-hidden web:group bg-secondary/80 web:hover:bg-secondary web:focus-visible:bg-secondary ',
             'u-btn-secondary-text':
                 ' web:duration-200 font-semibold text-secondary-foreground web:group-hover:text-foreground ',
             'u-btn-secondary-trans': ' web:duration-200 ',
-            'u-btn-secondary-hover': 'web:group-hover:bg-foreground/5 web:duration-200',
             
 
             'u-btn-danger-cnt':
                 '  dark:border-transparent bg-red-600 web:hover:bg-red-500 web:hover:shadow web:active:opacity-50 web:active:shadow-none',
             'u-btn-danger-text': 'font-semibold text-danger-foreground',
             'u-btn-danger-trans': ' web:duration-200',
-            'u-btn-danger-hover': 'web:group-hover:bg-white/10 web:duration-200',
             
 
-            'u-btn-text-cnt': ' web:group web:sm:hover:bg-muted/60 active:bg-muted web:focus:bg-muted/60 ',
+            'u-btn-text-cnt': ' web:group active:bg-muted web:focus:bg-muted/60 overflow-hidden ',
             'u-btn-text-text':
                 ' font-semibold text-label-secondary web:group-hover:text-label-primary web:focus:text-label-primary',
             'u-btn-text-trans': ' web:duration-200',
-            'u-btn-text-hover': 'web:group-hover:bg-muted/60 web:duration-200',
          
 
-            'u-btn-link-cnt': ' px-0 group web:active:bg-muted/60 ',
+            'u-btn-link-cnt': '  group  ',
             'u-btn-link-text':
                 ' font-semibold text-label-link web:group-hover:text-label-linkhover web:group-hover:underline web:active:text-label-linkhover ',
             'u-btn-link-trans': ' web:duration-200  ',
-            'u-btn-link-hover': 'web:group-hover:bg-muted/20 web:duration-200',
             
 
             'u-btn-outline-cnt':
@@ -1712,7 +1706,6 @@ export const settingsDefault = {
             'u-btn-outline-text':
                 ' font-semibold text-card-foreground web:group-hover:text-foreground ',
             'u-btn-outline-trans': '  web:duration-200',
-            'u-btn-outline-hover': 'web:group-hover:bg-muted/10 web:duration-200',
 
             'u-btn-group-item-cnt': '   ',
             'u-btn-group-item-text':

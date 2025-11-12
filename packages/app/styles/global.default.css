@@ -114,7 +114,7 @@
         --primary-foreground: var(--white); /*content on primary buttons, active states, primary surfaces*/
         --secondary: var(--neutral-800);  /*background for secondary buttons, secondary surfaces*/
         --secondary-foreground: var(--neutral-200); /*content on secondary buttons, secondary surfaces*/
-        --accent: var(--accent-500); /*background for accent buttons, accent surfaces*/
+        --accent: var(--accent-600); /*background for accent buttons, accent surfaces*/
         --accent-foreground: var(--white); /*content on accent buttons, accent surfaces*/
         --muted: var(--neutral-800); /*background for ui items, sections, hover states*/
         --muted-foreground: var(--neutral-500); /*muted content*/
@@ -122,13 +122,13 @@
         --destructive-foreground: var(--neutral-950); /*content on destructive buttons, destructive surfaces*/
         --border: var(--neutral-800); /*borders, dividers, focus rings*/
         --input: var(--neutral-900); /*form inputs*/
-        --ring: var(--accent-500); /*focus rings*/
+        --ring: var(--accent-600); /*focus rings*/
         --guide: var(--neutral-600); /*guide color*/
         --label-primary: var(--neutral-100); /*Primary text (high emphasis)*/
         --label-secondary: var(--neutral-300); /*Secondary text (medium emphasis)*/
         --label-tertiary: var(--neutral-500); /*Tertiary text (low emphasis)*/
-        --label-link: var(--accent-400); /*Link text color*/
-        --label-linkhover: var(--accent-600); /*Link text color on hover*/
+        --label-link: var(--accent-600); /*Link text color*/
+        --label-linkhover: var(--accent-800); /*Link text color on hover*/
         --fill-primary: var(--neutral-950); /*Main surface background*/
         --fill-secondary: var(--neutral-900); /*Secondary layered background*/
         --fill-tertiary: var(--neutral-800); /*Card-like background*/
@@ -212,9 +212,10 @@
 /* Global outline color only (no width). Components control size/offset. */
 *:focus-visible {
     outline-color: rgb(var(--ring));
-    outline-style: solid;
+    outline-style: auto;
     outline-offset: 0px;
-    outline-width: 3px;
+    outline-width: 2px;
+    outline-offset: 2px;
 }
 select{
     appearance: none;           

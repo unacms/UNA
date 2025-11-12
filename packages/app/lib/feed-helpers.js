@@ -507,9 +507,9 @@ export const VisibilityInfo = memo(({ data }) => {
                             displaySize="2xs"
                         />
                     ) : icon ? (
-                            <Icon className="text-muted-foreground" icon={icon} width={14} height={14} />
+                            <Icon className="text-label-tertiary" icon={icon} width={16} height={16} />
                     ) : null}
-                    <Text className="text-muted-foreground text-xs leading-5 font-medium">
+                    <Text className="text-label-tertiary text-sm leading-5 font-semibold">
                         {isUser ? data.author_data.display_name : text}
                     </Text>
                 </View>
@@ -525,11 +525,11 @@ export const Author = memo(({ data, url, t }) => {
             return null 
         return (
             <Row className=" items-center" key={`action-${item.cid}-${item.iid}`}>
-            <Icon className="text-label-tertiary -mx-1" key="icon" icon='Dot' size={14}  />
+            <Icon className="text-label-tertiary" key="icon" icon='Dot' size={14}  />
             <Element
                 params={{
                     button_variant: 'link',
-                    button_size: 'xs',
+                    button_size: 'sm',
                     hide_icon: true,
                     button_rounded: false,
                 }}

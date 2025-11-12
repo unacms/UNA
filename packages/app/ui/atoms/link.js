@@ -131,10 +131,12 @@ export default function ElementLink(props) {
 
     const sizeClass = (() => {
         if (!size) return '';
-        const token = ThemeLinkSizes[size]?.padding;
-        if (!token) return '';
-        // token is a space-delimited string of Tailwind classes; keep as-is (buttons use direct classes here)
-        return token;
+        const hitareaClass = hitarea === false ? '' : (ThemeLinkSizes[size]?.hitarea_class || '');
+        const textSizeClass = ThemeLinkSizes[size]?.text || '';
+        const roundedClass = ThemeLinkSizes[size]?.rounded || '';
+        const focusClass = ThemeLinkSizes[size]?.focus || '';
+        const paddingClass = ThemeLinkSizes[size]?.padding || '';
+        return [paddingClass, hitareaClass, textSizeClass, roundedClass, focusClass].filter(Boolean).join(' ');
     })();
 
     // Fallback hitSlop from theme by size (native only); explicit prop wins; allow disabling with hitarea={false}
