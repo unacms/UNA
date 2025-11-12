@@ -7,6 +7,7 @@ import {
     storageKey,
     getDataFromCache,
     storageSet,
+    strToObj
 } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
 import { View, Row } from 'app/design/view'
@@ -102,6 +103,7 @@ export function fillTabs(
     currentUser,
     useSectionAsMenu
 ) {
+
     let menuItems = menuItemsByName(
         menu.object,
         menu.items,
@@ -117,7 +119,14 @@ export function fillTabs(
             item.name !== 'friend-suggestions'
     )*/
 
+              //  console.log("menuItems", menuItems)
+
+    
+
     return menuItems.map((item, index) => {
+        
+        //const menu_settings = item.config ? JSON.parse(item.config): null;
+
         item.link = item.link.replace('page/', '')
         //TOFIX
         const i = { key: item.link, title: item.title, index }
@@ -131,6 +140,7 @@ export function fillTabs(
 
             bCurrent = e?.section == d?.section
         }
+        console.log('strToObj', item.config, strToObj(item.config))
         if (bCurrent) {
             let contentAndEndpoint = processUrl(data, blocks)
             i.data = contentAndEndpoint.content
@@ -143,7 +153,7 @@ export function fillTabs(
             if (i.link == 'friend-requests') {
                 i.addon = { text: item.addon || '', variant: 'primary' }
             }
-            i.menu_settings = item.settings
+            i.menu_settings = appSetting('layout', 'user_remote_config') && item.config ? (strToObj(item.config)).settings : item.settings;
             i.icon = item.icon
             i.endpoint = contentAndEndpoint.endpoint
             i.sidebar = contentAndEndpoint.sidebar
@@ -178,7 +188,7 @@ export function fillTabs(
             if (i.link == 'friend-requests') {
                 i.addon = { text: item.addon || '', variant: 'primary' }
             }
-            i.menu_settings = item.settings
+            i.menu_settings = appSetting('layout', 'user_remote_config') && item.config ? strToObj(item.config) : item.settings;
             i.icon = item.icon
             i.inited = false
             i.storageKeyValue = storageKey(i.link, false)

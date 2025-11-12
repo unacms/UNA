@@ -145,7 +145,7 @@ const RenderScene = ({
                 }
             />
         )
-    }, [dataItems, numColumns, dataItems.length, header, headerHeight])
+    }, [dataItems, numColumns, dataItems.length, header, headerHeight, hasNextPage, isFetchingNextPage])
 
     const groupRef = useRef(null)
     const sidebarUnitType =
@@ -950,7 +950,7 @@ function ConductorMenu({
 
     const MenuItem = memo(
         ({ item: a, itemRefs, index: index2, visibleItemsCount }) => {
-            return callFn('getButtonForConductorSmall', [
+            return <View className={`sadasd ${a?.menu_settings?.class}`}>{callFn('getButtonForConductorSmall', [
                 a,
                 index,
                 () => {
@@ -962,7 +962,7 @@ function ConductorMenu({
                     }
                 },
                 routes,
-            ])
+            ])}</View>
         }
     )
 
