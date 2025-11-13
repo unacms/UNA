@@ -1450,7 +1450,7 @@ export const settingsDefault = {
                 ' u-card-list bg-card/60 shadow-sm border-y sm:border border-border/50 web:sm:border-0 web:sm:ring-1 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden sm:rounded-2xl ',
             'u-card-list-padding': ' p-3 lg:p-4 ',
             'u-card-base':
-                ' u-card-base bg-card/60 shadow-sm border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden rounded-2xl gap-4',
+                ' u-card-base bg-card/60 shadow-sm border border-border/60   text-card-foreground overflow-hidden rounded-2xl gap-4',
             'u-card-padding': ' p-4 ',
             'u-card-header': 'flex gap-1',
             'u-card-icon': 'text-card-foreground px-4 gap-2',

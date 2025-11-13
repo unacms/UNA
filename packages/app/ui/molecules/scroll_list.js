@@ -61,7 +61,7 @@ export default function ScrollList({
                 { translateY: isShow ? withTiming(0, animationConfig) : withTiming(-114, animationConfig) },
             ],
         };
-    });
+    }, []);
 
     const buttonStyle = useAnimatedStyle(() => {
         return {

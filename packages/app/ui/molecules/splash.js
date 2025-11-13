@@ -94,7 +94,7 @@ export default function Splash(props) {
     const content = isWeb ? (
         <View className="flex-col justify-center lg:pt-0 w-full ">
             <View
-                className={`justify-center w-full mx-auto lg:flex-row ${appSetting(
+                fixclassName={`justify-center w-full mx-auto lg:flex-row ${appSetting(
                     'layout',
                     'max_width_content'
                 )}`}
@@ -112,7 +112,7 @@ export default function Splash(props) {
     ) : (
         <View className=" w-full ">
             <View
-                className={`flex-1 w-full lg:flex-row ${appSetting(
+                className={`w-full lg:flex-row ${appSetting(
                     'layout',
                     'max_width_content'
                 )}`}
