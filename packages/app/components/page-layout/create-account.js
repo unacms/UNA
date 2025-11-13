@@ -7,6 +7,7 @@ import {
     CardDescription,
     CardContent,
     CardFooter,
+    CardTitle,
 } from 'app/ui/molecules/card'
 import Link from 'app/ui/atoms/link'
 import { Platform } from 'react-native'
@@ -27,27 +28,27 @@ function PageContent({ children }) {
         <View className="w-full justify-center lg:w-1/2 p-4 sm:p-8 md:p-12 p-6 ">
 
             <AnimatedView className="gap-4" direction="up" delay={200}>
-                <Card padding="p-6 max-w-xl w-full mx-auto">
-                    <CardHeader>
-                        <H2 className="text-label-secondary leading-none text-lg font-semibold tracking-tight">{t('create_account_page_caption')}</H2>
-                        {isWeb && (
+            <Card padding="p-6 max-w-xl w-full mx-auto">
+            <CardHeader>
+                        <CardTitle>{t('create_account_page_caption')}</CardTitle>
+                        
                             <CardDescription>
                                 {t('create_account_page_caption2')}
                             </CardDescription>
-                        )}
+                    
                     </CardHeader>
                     <CardContent>{children}</CardContent>
                     <CardFooter>
                         <AuthPanel
                             createAccountLink={false}
-                            loginLink={!isWeb}
+                            
                             showSeparator={true}
                         />
                     </CardFooter>
                 </Card>
 
-                <Row className=" mx-auto gap-1 text-base justify-center items-center text-center">
-                    <Text className="text-label-secondary">
+                <Row className=" mx-auto gap-1 justify-center items-center text-center">
+                    <Text className="text-label-secondary text-base ">
                         {t('create_account_page_already_have')}
                     </Text>
                     <Link
@@ -119,7 +120,7 @@ export default function PageLayout(props) {
 
             </View>
             <MenuFooter
-                cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-3 p-3"
+                cntClasses="flex w-full items-center border-t border-border/40 justify-center flex-row flex-wrap gap-4 p-4"
                 variant="ghost"
                 size="sm"
                 itemClassName=""
@@ -130,10 +131,10 @@ export default function PageLayout(props) {
 
             <PageContent>{Block}</PageContent>
             <MenuFooter
-                cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
+                cntClasses="flex w-full items-center border-t border-border/40 justify-center flex-row flex-wrap gap-4 p-4"
                 variant="ghost"
                 size="sm"
-                itemClassName="text-sm p-1"
+                itemClassName=""
             />
         </View>
     )

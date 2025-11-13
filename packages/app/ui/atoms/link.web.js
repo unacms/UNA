@@ -51,21 +51,7 @@ export default function ElementLink(props) {
         href ='/'
     }
 
-
-
-    const mapVariantToTheme = (v) => {
-        switch (v) {
-            case 'ghost': return 'ghost';
-            case 'plain': return 'plain';
-            case 'plainghost': return 'plainghost';
-            case 'accent': return 'accent';
-            case 'accentghost': return 'accentghost';
-            case 'ghost': return 'ghost';
-            default: return 'default';
-        }
-    };
-
-    const selectedVariant = mapVariantToTheme(variant);
+    const selectedVariant = variant || 'default';
     const variantClass = [
         ThemeLinkStyles[`u-link-${selectedVariant}-cnt`] || '',
         ThemeLinkStyles[`u-link-${selectedVariant}-text`] || '',

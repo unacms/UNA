@@ -1135,7 +1135,7 @@ export const settingsDefault = {
         },
 
         inputs: {
-            default: ' bg-input/60 border border-border/60 focus:bg-transparent leading-5 focus:border-2 focus:border-ring rounded-xl px-3 min-h-12 flex-auto text-base placeholder:text-label-tertiary text-label-secondary focus:outline-ring/40 web:duration-200 overflow-hidden',
+            default: ' bg-input/40 border border-border/60 focus:bg-transparent leading-5 focus:border-2 focus:border-ring rounded-xl px-3 min-h-12 flex-auto text-base placeholder:text-label-tertiary text-label-secondary focus:outline-ring/40 web:duration-200 overflow-hidden',
            
             multi: ' bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 py-2 min-h-12 flex-auto text-base leading-6 overflow-y-scroll [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden shadow-xs placeholder:text-label-tertiary text-card-foreground web:duration-100 ',
             rounded:
@@ -1358,9 +1358,9 @@ export const settingsDefault = {
                 padding: '  ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-md ',
                 hitSlop: { top: 4, right: 4, bottom: 4, left: 4 },
-                text: ' underline-offset-2 decoration-[1.5px] text-base  ',
+                text: ' underline-offset-2  text-base  ',
                 rounded: ' rounded ',
-                focus: ' focus:outline-offset-4 focus:outline-4 active:outline-2 active:outline-offset-2 focus-visible:ring-2  focus:ring-offset-2 ',
+                focus: '  active:outline-4 active:outline-offset-2 web:focus-visible:outline-offset-2  ',
             },
             lg: {
                 padding: ' px-2 rounded-xl items-center flex web:active:outline-ring ',
@@ -1379,27 +1379,27 @@ export const settingsDefault = {
             'u-link-default-trans': ' web:duration-200 ',
 
             // neutral color link, no background
-            'u-link-plain-cnt': ' outline-ring/20 ring-ring focus:ring-offset-card focus:bg-card focus-visible:outline active:outline focus:bg-card active:bg-ring/10  ',
+            'u-link-plain-cnt': ' web:outline-ring/40 web:focus-visible:outline web:active:outline  ',
             'u-link-plain-text': ' text-label-secondary web:hover:text-label-primary web:hover:underline ',
             'u-link-plain-trans': ' web:duration-200 ',
 
             // branded color link, no background
-            'u-link-accent-cnt': ' outline-ring/20 ring-ring focus:ring-offset-card focus:bg-card focus:outline focus:bg-card active:outline active:bg-card  ',
+            'u-link-accent-cnt': ' web:outline-ring/40 web:focus-visible:outline web:active:outline  ',
             'u-link-accent-text': ' text-label-link web:hover:text-label-linkhover web:hover:underline ',
             'u-link-accent-trans': ' web:duration-200 ',
 
             // neutral color link, no background, hover background
-            'u-link-ghost-cnt':  ' u-link-ghost web:focus:outline-ring/20 web:focus:ring-ring web:focus-visible:ring-offset-card web:focus-visible:bg-card web:hover:ring-transparent active:outline active:opacity-80   ',
+            'u-link-ghost-cnt':  ' u-link-ghost web:focus:outline-ring/20 web:focus:ring-ring web:focus-visible:ring-offset-card web:focus-visible:bg-card web:hover:ring-transparent web:active:outline active:opacity-80   ',
             'u-link-ghost-text':  ' text-label-secondary web:hover:text-label-primary ',
             'u-link-ghost-trans': ' web:duration-100 ',
 
             // branded color link, no background, hover background
-            'u-link-plainghost-cnt':  ' u-link-ghost web:focus:outline-ring/20 web:focus:ring-ring web:focus-visible:ring-offset-card web:focus-visible:bg-card web:hover:ring-transparent active:outline active:opacity-80   ',
+            'u-link-plainghost-cnt':  ' u-link-ghost web:focus:outline-ring/20 web:focus:ring-ring web:focus-visible:ring-offset-card web:focus-visible:bg-card web:hover:ring-transparent web:active:outline active:opacity-80   ',
             'u-link-plainghost-text':  ' text-label-tertiary web:hover:text-label-primary ',
             'u-link-plainghost-trans': ' web:duration-100 ',
 
             // branded color link, no background, hover background
-            'u-link-accentghost-cnt':  ' u-link-ghost web:focus:outline-ring/20 web:focus:ring-ring web:focus-visible:ring-offset-card web:focus-visible:bg-card web:hover:ring-transparent active:outline active:opacity-80   ',
+            'u-link-accentghost-cnt':  ' u-link-ghost web:focus:outline-ring/20 web:focus:ring-ring web:focus-visible:ring-offset-card web:focus-visible:bg-card web:hover:ring-transparent web:active:outline active:opacity-80   ',
             'u-link-accentghost-text':  ' text-label-link web:hover:text-label-linkhover ',
             'u-link-accentghost-trans': ' web:duration-100 ',
 

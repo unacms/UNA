@@ -36,13 +36,13 @@ function PageContent(props) {
                 <Card padding="p-6 max-w-xl w-full mx-auto">
                     <CardHeader>
                         <CardTitle>
-                            {t('login_modal_title')} {t('app_name')}
+                            {t('login_modal_title')} 
                         </CardTitle>
                         <CardDescription>
                             {t('splash_page_login')}
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="gap-4">
+                    <CardContent>
                         <BlockByName
                             name="system:login_form"
                             contentOnly={true}
@@ -62,14 +62,14 @@ function PageContent(props) {
                 </Card>
 
                 <Row
-                    className="mx-auto gap-1 text-base justify-center items-center text-center"
+                    className="mx-auto gap-1 justify-center items-center text-center"
                     accessibilityRole="text"
                     accessibilityLabel={`${t('splash_page_login2')} ${t(
                         'splash_page_new_account'
                     )}`}
                 >
                     <Text
-                        className="text-label-secondary"
+                        className="text-label-secondary text-base"
                         accessibilityRole="text"
                     >
                         {t('splash_page_login2')}
@@ -94,7 +94,7 @@ export default function Splash(props) {
     const content = isWeb ? (
         <View className="flex-col justify-center lg:pt-0 w-full ">
             <View
-                fixclassName={`justify-center w-full mx-auto lg:flex-row ${appSetting(
+                className={`justify-center w-full mx-auto lg:flex-row ${appSetting(
                     'layout',
                     'max_width_content'
                 )}`}
@@ -121,7 +121,7 @@ export default function Splash(props) {
                 <PageContent {...props} />
             </View>
             <MenuFooter
-                cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-3 p-3"
+                cntClasses="flex w-full items-center border-t border-border/40 justify-center flex-row flex-wrap gap-4 p-4"
                 variant="ghost"
                 size="sm"
                 itemClassName=""

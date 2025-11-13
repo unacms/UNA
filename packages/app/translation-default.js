@@ -2,7 +2,7 @@ export const resourcesDefault = {
     en: {
         translation: 
         {
-            "app_name": "NEO",
+            "app_name": "UNA",
             "USD": "$",
             "price-period-lifetime": "Lifetime",
             "price-period-month": "Monthly",
@@ -100,7 +100,7 @@ export const resourcesDefault = {
             "login_page_title": "Sign in to your account",
             "login_page_text": "Use your email and password to sign in",
 
-            "login_modal_title": "Sign in to",
+            "login_modal_title": "Sign in to your account",
             "login_modal_text": "Enter your email and password to login",
             "login_modal_fp": "Forgot password?",
             "login_modal_new_account": 'Create new account',

@@ -7,6 +7,7 @@ import {
     CardDescription,
     CardContent,
     CardFooter,
+    CardTitle,
 } from 'app/ui/molecules/card'
 import { Platform } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
@@ -28,9 +29,9 @@ function PageContent({ children, isLoginPage, title }) {
     if (!isLoginPage) {
         return (
             <AnimatedView direction="up" delay={300}>
-                <Card padding="p-6  ">
+                <Card padding="p-6 max-w-xl w-full mx-auto">
                     <CardHeader>
-                        <H2 className="text-label-secondary leading-none text-lg font-semibold tracking-tight">{title}</H2>
+                        <CardTitle>{title}</CardTitle>
                     </CardHeader>
                     <CardContent className="gap-4">{children}</CardContent>
                 </Card>
@@ -42,19 +43,20 @@ function PageContent({ children, isLoginPage, title }) {
         <View className="w-full justify-center p-4 sm:p-8 md:p-12 p-6 ">
 
             <AnimatedView className="gap-4" direction="up" delay={200}>
-                <Card padding="p-6">
+            <Card padding="p-6 max-w-xl w-full mx-auto">
                     <CardHeader>
-                        <H2 className="text-label-secondary leading-none text-lg font-semibold tracking-tight">
-                            {t('login_modal_title')} {t('app_name')}
-                        </H2>
+                            <CardTitle>
+                            {t('login_modal_title')}
+                            </CardTitle> 
+                        
                         <CardDescription>{t('splash_page_login')}</CardDescription>
                     </CardHeader>
-                    <CardContent className="gap-4">
+                    <CardContent>
                         {children}
                         <Row className="text-center text-sm items-center text-muted-foreground">
                             <Link
                                 className="mx-auto"
-                                variant="primary"
+                                variant="plain"
                                 size="sm"
                                 href="/forgot-password"
                                 haptics="Medium"
@@ -66,8 +68,8 @@ function PageContent({ children, isLoginPage, title }) {
                     </CardContent>
                 </Card>
 
-                <Row className=" mx-auto gap-1 text-base justify-center items-center text-center">
-                    <Text className=" text-muted-foreground">
+                <Row className=" mx-auto gap-1 justify-center items-center text-center">
+                    <Text className="text-base text-label-secondary">
                         {t('splash_page_login2')}
                     </Text>
                     <Link
@@ -120,8 +122,10 @@ export default function PageLayout(props) {
         <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto ">
             <PageContent isLoginPage={true}>{props.children}</PageContent>
             <MenuFooter
-                cntClasses="mx-auto flex-row flex-wrap gap-3 p-3"
+                cntClasses="flex w-full items-center border-t border-border/40 justify-center flex-row flex-wrap gap-4 p-4"
                 variant="ghost"
+                size="sm"
+                itemClassName=""
             />
         </View>
     )

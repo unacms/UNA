@@ -5,7 +5,7 @@ import { menuItemsByName, menuItemsByNameNew, getDataForMenu } from 'app/lib/uti
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useMemo, memo } from 'react';
 import Link from 'app/ui/atoms/link'
-import { Text } from 'app/design/typography'
+
 let footerMenuDataCache = null;
 
 const MenuFooter = ({ cntClasses, btnStyle, menu_items, variant, size, itemClassName }) => {
@@ -46,10 +46,9 @@ const MenuFooter = ({ cntClasses, btnStyle, menu_items, variant, size, itemClass
                     key={item.link || index}
                     variant={visualProps.variant}
                     size={visualProps.size}
-                    //size={visualProps.size} discuss with Roman to restore
-                    
+                    className={visualProps.className}
                 >
-                    <Text className={visualProps.className}>{t(item.title)}</Text>
+                    {t(item.title)}
                 </Link>
             ))}
         </View>

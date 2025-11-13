@@ -75,54 +75,12 @@ export default function ElementLink(props) {
     if (!sanitizedHref) {
         return children;
     }
-    // Если ссылка внешняя, открываем в браузере
-    if (domain && domain !== rootUrl || asExternal === true) {
-        const content = (typeof children === 'string' || typeof children === 'number') ? (
-            <Text>{children}</Text>
-        ) : children;
-        
-        // Generate accessible label for external links
-        const externalAccessibleLabel = rest.alt || (typeof children === 'string' ? children : undefined);
-        
-        if (mode == 'text'){
-            return (
-                <Text 
-                    onPress={handleExternalLinkPress}
-                    aria-label={externalAccessibleLabel}
-                    accessibilityLabel={externalAccessibleLabel}
-                >
-                    {children}
-                </Text>
-            );
-        }
-        return (
-            <Pressable 
-                onPress={handleExternalLinkPress}
-                aria-label={externalAccessibleLabel}
-                accessibilityLabel={externalAccessibleLabel}
-            >
-                {content}
-            </Pressable>
-        );
-    }
-
-    // Variants and sizes from theme
+    
+    // Variants and sizes from theme - compute once for all link types
     const ThemeLinkSizes = appSetting('theme', 'link_sizes');
     const ThemeLinkStyles = appSetting('theme', 'link_styles');
 
-    const mapVariantToTheme = (v) => {
-        switch (v) {
-            case 'ghost': return 'ghost';
-            case 'plain': return 'plain';
-            case 'accent': return 'accent';
-            case 'plainghost': return 'plainghost';
-            case 'accentghost': return 'accentghost';
-            case 'ghost': return 'ghost';
-            default: return 'default';
-        }
-    };
-
-    const selectedVariant = mapVariantToTheme(variant);
+    const selectedVariant = variant || 'default';
     const variantClass = [
         ThemeLinkStyles[`u-link-${selectedVariant}-cnt`] || '',
         ThemeLinkStyles[`u-link-${selectedVariant}-text`] || '',
@@ -145,6 +103,39 @@ export default function ElementLink(props) {
     const ghostNativePressedClass = (selectedVariant === 'ghost' || selectedVariant === 'plainghost' || selectedVariant === 'accentghost') ? ' active:bg-muted rounded-lg ' : '';
     const composedClassName = [variantClass, sizeClass, ghostNativePressedClass, className].filter(Boolean).join(' ').trim();
 
+    // Если ссылка внешняя, открываем в браузере
+    if (domain && domain !== rootUrl || asExternal === true) {
+        const content = (typeof children === 'string' || typeof children === 'number') ? (
+            <Text className={composedClassName} pointerEvents="none">{children}</Text>
+        ) : children;
+        
+        // Generate accessible label for external links
+        const externalAccessibleLabel = rest.alt || (typeof children === 'string' ? children : undefined);
+        
+        if (mode == 'text'){
+            return (
+                <Text 
+                    onPress={handleExternalLinkPress}
+                    className={composedClassName}
+                    aria-label={externalAccessibleLabel}
+                    accessibilityLabel={externalAccessibleLabel}
+                >
+                    {children}
+                </Text>
+            );
+        }
+        return (
+            <Pressable 
+                onPress={handleExternalLinkPress}
+                className={composedClassName}
+                aria-label={externalAccessibleLabel}
+                accessibilityLabel={externalAccessibleLabel}
+            >
+                {content}
+            </Pressable>
+        );
+    }
+
 
 if (mode == 'text'){
     // Generate accessible label for text mode links
@@ -160,13 +151,15 @@ if (mode == 'text'){
             accessibilityLabel={accessibleLabel}
             {...linkRest}
         >
-                {children}
+            <Text className={composedClassName}>{children}</Text>
         </Link>
     );
 }
 
+    // For non-text mode, wrap string/number children in Text with variant classes applied
+    // pointerEvents="none" allows touches to pass through to parent Pressable
     const content = (typeof children === 'string' || typeof children === 'number') ? (
-        <Text>{children}</Text>
+        <Text className={composedClassName} pointerEvents="none">{children}</Text>
     ) : children;
 
     // Generate accessible label for link if needed
