@@ -218,7 +218,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
     if (!isWeb || !isDesktop || !isMultiColumn) {
         return (
-            <View {...viewProps} className="w-full h-full sm:h-[calc(100vh-16rem)]">
+            <View {...viewProps} className="w-full h-full sm:min-h-[calc(100vh-16rem)]">
                 <View className={`max-w-4xl w-full flex-1 bg-card/80 shadow-sm text-card-foreground rounded-2xl web:py-3 sm:py-4 lg:mt-4 mx-auto `}>
                     <View onLayout={handleListLayout} pointerEvents="box-none" className='w-full flex-1' style={{ marginBottom: !isDesktop ? 0 : formHeight }}>
                         <CommentsBrowse
@@ -269,7 +269,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
             }
             direction="horizontal"
             {...viewProps}
-            className={` ${isMultiColumn ? appSetting('layout', 'max_width_content') + 'mx-auto' : ''} flex-1 w-full h-full sm:h-[calc(100vh-16rem)]`}
+            className={` ${isMultiColumn ? appSetting('layout', 'max_width_content') + 'mx-auto' : ''} flex-1 w-full h-full sm:min-h-[calc(100vh-16rem)]`}
             onLayout={onLayout}
         >
             {isLeftCol && (
