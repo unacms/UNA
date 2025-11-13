@@ -189,7 +189,7 @@ export default function (props) {
 
             keysWithHtml.forEach((key) => { // HUCK FOR rtf inputs
                 if (draft[key] !== undefined) {
-                    updates[key] = '#INITED#' + draft[key];
+                    updates[key] = '<!--INITED-->' + draft[key];
                 }
             });
             methods.reset({ ...current, ...draft ,...updates }, { keepDefaultValues: true });

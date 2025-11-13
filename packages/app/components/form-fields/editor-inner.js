@@ -228,9 +228,10 @@ export default function RftText({
     }
 
     useEffect(() => {
-        if (editor && (field?.value == '' || field?.value?.startsWith("#INITED#")) && editor.getHTML() != field.value) {
+        console.log("field?.value", field?.value)
+        if (editor && (field?.value == '' || field?.value?.startsWith("<!--INITED-->")) && editor.getHTML() != field.value) {
              setTimeout(() => {
-                 editor.setContent(field.value.replace("#INITED#", ''))
+                 editor.setContent(field.value.replaceAll("<!--INITED-->", ''))
             }, 500);
            
         }
