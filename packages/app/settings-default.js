@@ -1135,15 +1135,15 @@ export const settingsDefault = {
         },
 
         inputs: {
-            default: ' bg-input focus:bg-transparent border border-border/60  focus:border-ring web:ring-inset web:ring-border/60 rounded-xl web:focus:ring-ring px-3 min-h-12 flex-auto text-base overflow-hidden shadow-xs placeholder-label-primary text-label-secondary web:focus:outline-4 focus:outline-ring/20 web:focus:outline-offset-0 web:focus:outline-offset-card  web:duration-300',
+            default: ' bg-input focus:bg-transparent border border-border/60  focus:border-ring web:ring-inset web:ring-border/60 rounded-xl web:focus:ring-ring px-3 min-h-12 flex-auto text-base overflow-hidden shadow-xs placeholder:text-label-primary text-label-secondary web:focus:outline-4 focus:outline-ring/20 web:focus:outline-offset-0 web:focus:outline-offset-card  web:duration-300',
            
-            multi: ' bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 py-2 min-h-12 flex-auto text-base leading-6 overflow-y-scroll [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden shadow-xs placeholder-label-tertiary text-card-foreground web:duration-100 ',
+            multi: ' bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 py-2 min-h-12 flex-auto text-base leading-6 overflow-y-scroll [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden shadow-xs placeholder:text-label-tertiary text-card-foreground web:duration-100 ',
             rounded:
-                ' border border-border/80 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-full web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder-label-tertiary text-card-foreground web:duration-300 ',
+                ' border border-border/80 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-full web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder:text-label-tertiary text-card-foreground web:duration-300 ',
             roundedsmall:
-                ' rounded-full border/50 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/80 px-2 min-h-10 flex-auto  text-base leading-5 overflow-hidden placeholder-label-tertiary text-card-foreground web:duration-300 ',
-            small: ' border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-lg web:focus:bg-card px-2 min-h-10 flex-auto  text-base leading-6 overflow-hidden placeholder-label-tertiary text-card-foreground web:duration-300 ',
-            select: ' pr-10 border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-xl bg-input web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder-label-tertiary text-card-foreground web:duration-300 ',
+                ' rounded-full border/50 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/80 px-2 min-h-10 flex-auto  text-base leading-5 overflow-hidden placeholder:text-label-tertiary text-card-foreground web:duration-300 ',
+            small: ' border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-lg web:focus:bg-card px-2 min-h-10 flex-auto  text-base leading-6 overflow-hidden placeholder:text-label-tertiary text-card-foreground web:duration-300 ',
+            select: ' pr-10 border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-xl bg-input web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder:text-label-tertiary text-card-foreground web:duration-300 ',
         },
 
         button_sizes: {
