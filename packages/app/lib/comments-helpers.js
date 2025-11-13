@@ -328,7 +328,8 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
             if (!dataArrayRef.current.includes(k.id)) {
                 dataArrayRef.current.push(k.id);
             }
-            cb2(true);
+            handleMoreNew();
+            //cb2(true);
         }
     }
 
