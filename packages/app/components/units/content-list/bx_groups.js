@@ -4,7 +4,7 @@ import Link from 'app/ui/atoms/link'
 import { getImageSizes, FeedbackHaptics, tp, t } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import { Card } from 'app/ui/molecules/card'
+import { Card, CardList } from 'app/ui/molecules/card'
 import Redirect from 'app/ui/atoms/redirect'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';

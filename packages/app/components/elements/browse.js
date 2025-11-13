@@ -64,8 +64,7 @@ export default function (props) {
     const data = props.data
     const isOneLine = data?.params?.view == 'showcase'
     const isOnePage = props.only_one_page || isOneLine;
-    const isShowTitleInside = props.showTitleInside || isOneLine;
-
+    const isShowTitleInside = props.showTitleInside || props.extraProps.showTitleInside || isOneLine;
     useEffect(() => {
         if (props.data.unit == 'feed') {
             subscribe('bx_timeline_0', 'added', refetch)

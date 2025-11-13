@@ -63,8 +63,6 @@ export default function ElementShares(oProps) {
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
     const handlePress = useCallback((event) => handleDo(oAction.url, event), [oAction.url]);
-    
-    console.log("oButtonProps-share", oButtonProps)
     const button = <ButtonAction key="action" startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={handlePress} {...oButtonProps} />;
     let aButtonsGroup = [];
     if (!!bShowAction)
