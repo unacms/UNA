@@ -4,6 +4,10 @@ import { useRouter } from 'app/lib/hooks/router'
 import { useCallback } from 'react';
 import { appSetting, cd } from 'app/lib/util'
 
+// Variants and sizes from theme
+const ThemeLinkSizes = appSetting('theme', 'link_sizes');
+const ThemeLinkStyles = appSetting('theme', 'link_styles');
+
 export default function ElementLink(props) {  
 
     let { href, emulate, target, variant, size, className = '', hitarea = true, noprefetch, onClick, alt, ...rest } = props;
@@ -47,9 +51,7 @@ export default function ElementLink(props) {
         href ='/'
     }
 
-    // Variants and sizes from theme
-    const ThemeLinkSizes = appSetting('theme', 'link_sizes');
-    const ThemeLinkStyles = appSetting('theme', 'link_styles');
+
 
     const mapVariantToTheme = (v) => {
         switch (v) {
@@ -101,7 +103,7 @@ export default function ElementLink(props) {
             </Pressable>
         );
 
-    const isPrefetch = noprefetch || href == '/logout' || href == 'logout' ? false : true;
+    const isPrefetch = noprefetch || href == '/logout' || href == 'logout' || appSetting('config', 'noprefetch') ? false : true;
 
     return (
         <Link 

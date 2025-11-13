@@ -228,7 +228,6 @@ export default function RftText({
     }
 
     useEffect(() => {
-        console.log("field?.value", field?.value)
         if (editor && (field?.value == '' || field?.value?.startsWith("<!--INITED-->")) && editor.getHTML() != field.value) {
              setTimeout(() => {
                  editor.setContent(field.value.replaceAll("<!--INITED-->", ''))

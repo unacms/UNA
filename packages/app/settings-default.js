@@ -11,7 +11,7 @@ export const settingsDefault = {
             env('APP_URL') == 'http://localhost:3000'
                 ? 'https://neo.so'
                 : 'https://neo.so',
-
+        noprefetch: false,
         debug: true,
         use_proxy_web: true,
         use_proxy_native: false,
