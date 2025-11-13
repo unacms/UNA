@@ -1135,7 +1135,7 @@ export const settingsDefault = {
         },
 
         inputs: {
-            default: ' bg-input focus:bg-transparent border border-border/60  focus:border-ring web:ring-inset web:ring-border/60 rounded-xl web:focus:ring-ring px-3 min-h-12 flex-auto text-base overflow-hidden shadow-xs placeholder:text-label-primary text-label-secondary web:focus:outline-4 focus:outline-ring/20 web:focus:outline-offset-0 web:focus:outline-offset-card  web:duration-300',
+            default: ' bg-input/60 border border-border/60 focus:bg-transparent leading-5 focus:border-2 focus:border-ring rounded-xl px-3 min-h-12 flex-auto text-base placeholder:text-label-tertiary text-label-secondary focus:outline-ring/40 web:duration-200 overflow-hidden',
            
             multi: ' bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 py-2 min-h-12 flex-auto text-base leading-6 overflow-y-scroll [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden shadow-xs placeholder:text-label-tertiary text-card-foreground web:duration-100 ',
             rounded:
@@ -1453,10 +1453,10 @@ export const settingsDefault = {
                 ' u-card-base bg-card/60 shadow-sm border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden rounded-2xl gap-4',
             'u-card-padding': ' p-4 ',
             'u-card-header': 'flex gap-1',
-            'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',
+            'u-card-icon': 'text-card-foreground px-4 gap-2',
             'u-card-title':
-                ' text-label-primary leading-none text-xl font-semibold leading-none tracking-tight',
-            'u-card-description': ' text-label-secondary text-base',
+                ' text-label-primary leading-none text-xl lg:text-2xl font-semibold leading-none tracking-tight',
+            'u-card-description': ' text-label-secondary text-sm lg:text-base text-balance',
             'u-card-content': 'text-card-foreground ',
             'u-card-footer': 'flex text-base text-card-foreground gap-2',
         },

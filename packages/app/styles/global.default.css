@@ -22,7 +22,7 @@
         --destructive: var(--red); /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--white); /*content on destructive buttons, destructive surfaces*/
         --border: var(--neutral-300); /*borders, dividers, focus rings*/
-        --input: var(--neutral-100); /*form inputs*/
+        --input: var(--neutral-200); /*form inputs*/
         --ring: var(--accent-600); /*focus rings*/
         --guide: var(--neutral-500); /*guide color*/
         --label-primary: var(--neutral-900); /*Primary text (high emphasis)*/
@@ -121,7 +121,7 @@
         --destructive: var(--red); /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--neutral-950); /*content on destructive buttons, destructive surfaces*/
         --border: var(--neutral-800); /*borders, dividers, focus rings*/
-        --input: var(--neutral-900); /*form inputs*/
+        --input: var(--neutral-800); /*form inputs*/
         --ring: var(--accent-600); /*focus rings*/
         --guide: var(--neutral-600); /*guide color*/
         --label-primary: var(--neutral-100); /*Primary text (high emphasis)*/
@@ -217,8 +217,8 @@
     outline-color: rgb(var(--ring));
     outline-style: auto;
     outline-offset: 0px;
-    outline-width: 2px;
-    outline-offset: 2px;
+    outline-width: 4px;
+
 }
 select{
     appearance: none;           
