@@ -6,6 +6,7 @@ import {
     CardDescription,
     CardContent,
     CardFooter,
+    CardTitle,
 } from 'app/ui/molecules/card'
 import { appSetting } from 'app/lib/util'
 import { Platform } from 'react-native'
@@ -31,52 +32,58 @@ function PageContent(props) {
     const { t } = useTranslation()
     return (
         <View className="w-full justify-center lg:w-1/2 p-4 sm:p-8 md:p-12 p-6 ">
+            <AnimatedView className="gap-4" direction="up" delay={200}>
+                <Card padding="p-6 max-w-xl w-full mx-auto">
+                    <CardHeader>
+                        <CardTitle>
+                            {t('login_modal_title')} {t('app_name')}
+                        </CardTitle>
+                        <CardDescription>
+                            {t('splash_page_login')}
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="gap-4">
+                        <BlockByName
+                            name="system:login_form"
+                            contentOnly={true}
+                            data={props.data}
+                            formProps={{
+                                hide_errors: true,
+                                button_full_width: true,
+                            }}
+                        />
+                    </CardContent>
+                    <CardFooter>
+                        <AuthPanel
+                            forgotPasswordLink={true}
+                            showSeparator={true}
+                        />
+                    </CardFooter>
+                </Card>
 
-        <AnimatedView className="gap-4" direction="up" delay={200}>
-            <Card padding="p-6 max-w-xl w-full mx-auto">
-                <CardHeader>
-                    <H2 className="text-label-secondary leading-none text-lg font-semibold tracking-tight">
-                        {t('login_modal_title')} {t('app_name')}
-                    </H2>
-                    <CardDescription>{t('splash_page_login')}</CardDescription>
-                </CardHeader>
-                <CardContent className="gap-4">
-                    <BlockByName
-                        name="system:login_form"
-                        contentOnly={true}
-                        data={props.data}
-                        formProps={{
-                            hide_errors: true,
-                            button_full_width: true,
-                        }}
-                    />
-                </CardContent>
-                <CardFooter>
-                    <AuthPanel forgotPasswordLink={true} showSeparator={true} />
-                </CardFooter>
-            </Card>
-
-            <Row 
-                className="mx-auto gap-1 text-base justify-center items-center text-center"
-                accessibilityRole="text"
-                accessibilityLabel={`${t('splash_page_login2')} ${t('splash_page_new_account')}`}
-            >
-                <Text 
-                    className="text-label-secondary"
+                <Row
+                    className="mx-auto gap-1 text-base justify-center items-center text-center"
                     accessibilityRole="text"
+                    accessibilityLabel={`${t('splash_page_login2')} ${t(
+                        'splash_page_new_account'
+                    )}`}
                 >
-                    {t('splash_page_login2')}
-                </Text>
-                <Link
-                    variant="accent"
-                    size="md"
-                    href="/create-account"
-                    haptics="Medium"
-                >
-                    {t('splash_page_new_account')}
-                </Link>
-            </Row>
-        </AnimatedView>
+                    <Text
+                        className="text-label-secondary"
+                        accessibilityRole="text"
+                    >
+                        {t('splash_page_login2')}
+                    </Text>
+                    <Link
+                        variant="accent"
+                        size="md"
+                        href="/create-account"
+                        haptics="Medium"
+                    >
+                        {t('splash_page_new_account')}
+                    </Link>
+                </Row>
+            </AnimatedView>
         </View>
     )
 }
@@ -84,13 +91,16 @@ function PageContent(props) {
 export default function Splash(props) {
     const isWeb = Platform.OS == 'web'
     const refer = useRef()
-    const content = !isWeb ? (
-        <View className="flex-col justify-center w-full ">
-            <View className={`justify-center w-full mx-auto lg:flex-row  border-x-0 border-guide/20 border-dashed divide-x divide-dashed  divide-guide/0 ${appSetting('layout', 'max_width_content')}`}>
+    const content = isWeb ? (
+        <View className="flex-col justify-center lg:pt-0 w-full ">
+            <View
+                className={`justify-center w-full mx-auto lg:flex-row ${appSetting(
+                    'layout',
+                    'max_width_content'
+                )}`}
+            >
                 {appStatic('splash_text')}
                 <PageContent {...props} />
-                
-               
             </View>
             <MenuFooter
                 cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-3 p-3"
@@ -100,12 +110,15 @@ export default function Splash(props) {
             />
         </View>
     ) : (
-        <View className="flex-col justify-center pt-14 lg:pt-0 w-full ">
-            <View className={`justify-center w-full mx-auto lg:flex-row border-x-0 border-guide/20 border-dashed divide-x-0 divide-dashed divide-guide/20 ${appSetting('layout', 'max_width_content')}`}>
+        <View className=" w-full ">
+            <View
+                className={`flex-1 w-full lg:flex-row ${appSetting(
+                    'layout',
+                    'max_width_content'
+                )}`}
+            >
                 {appStatic('splash_text')}
                 <PageContent {...props} />
-                
-                
             </View>
             <MenuFooter
                 cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-3 p-3"
@@ -121,7 +134,7 @@ export default function Splash(props) {
             refer={refer}
             content={content}
             pageData={props.data}
-            headerHeight={isWeb ? 0 : 64}
+            headerHeight={isWeb ? 48 : 48}
             contentType="ScrollList"
         />
     )

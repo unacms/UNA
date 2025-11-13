@@ -103,16 +103,16 @@ const Logo = ({ mode = 'adaptive' }) => {
 const SplashTextInner = () => {
     const { t } = useTranslation()
     return (
-            <View className="text-center max-w-xs sm:max-w-lg lg:text-start gap-4 w-full flex-auto mx-auto ">
+            <View className="text-center max-w-sm sm:max-w-lg lg:text-start gap-4 w-full flex-auto mx-auto ">
                 <H1
-                    className="text-4xl sm:text-5xl tracking-tight font-bold text-label-primary text-balance"
+                    className="text-4xl sm:text-5xl tracking-tight font-bold text-label-primary text-balance text-center lg:text-start"
                 >
                     {t('splash_page_title')} {appSetting('app', 'title')}
                 </H1>
                 <Text
                     accessible={true}
                     accessibilityRole="text"
-                    className=" text-label-secondary text-base sm:text-lg lg:text-xl text-pretty"
+                    className=" text-label-secondary text-center lg:text-start text-base sm:text-lg lg:text-xl text-pretty"
                 >
                     The best place to share your
                     ideas, find real friends and connect with the community.
@@ -141,21 +141,22 @@ const SplashTextComponent = (props) => {
             </AnimatedView>
         </View>
     ) : (
-        <View
-            className="flex-col items-center lg:items-start gap-x-8 flex-auto px-4 sm:px-8 xl:px-16 lg:pb-16"
-            accessible={true}
+        <View className=" items-center lg:items-start flex-auto p-4 sm:p-8 md:p-12 gap-4 w-full mx-auto">
+        <AnimatedView direction="up" className="flex-auto w-64 h-64 sm:w-80 sm:h-80 ">
+            <SvgFile
+                src_dark="splash-dark.svg"
+                src_default="splash-light.svg"
+                alt="Splash screen illustration"
+            />
+        </AnimatedView>
+        <AnimatedView
+            delay={100}
+            direction="up"
+            className="flex-auto w-full "
         >
-            <View className="w-[200px] h-[200px] lg:w-80 lg:h-80 web:duration-300">
-                <SvgFile
-                    src_dark="splash-dark.svg"
-                    src_default="splash-light.svg"
-                    alt="Splash screen illustration"
-                />
-            </View>
-            <View className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">
-                <SplashTextInner />
-            </View>
-        </View>
+            <SplashTextInner />
+        </AnimatedView>
+    </View>
     )
 }
 

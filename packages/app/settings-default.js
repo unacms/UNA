@@ -94,7 +94,7 @@ export const settingsDefault = {
             container:
                 ' header-fixed hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%] web:duration-500  ',
             initial:
-                ' my-auto w-full items-cente bg-background backdrop-blur-xl border-b border-border/60  transition-all  ',
+                ' my-auto w-full items-cente bg-card backdrop-blur-xl border-b border-border/60  transition-all  ',
             scrolled:
                 ' my-auto w-full items-cente bg-card/80 backdrop-blur-xl border-b border-border/60 transition-all shadow-sm',
             content: ' h-16 mx-auto justify-between 2xl:border-x-0 2xl:border-border/60 border-dashed',
@@ -1003,6 +1003,11 @@ export const settingsDefault = {
     },
     // Behavior settings for block rendering (deprecated; use showPadding: false or list prop)
     theme: {
+        corner_smoothing: {
+            enabled: true,
+            factor: 2,
+            full_factor: 1.3,
+        },
         profile_colors: [
             'orange',
             'yellow',
@@ -1018,7 +1023,7 @@ export const settingsDefault = {
         native_tabs: {
             tabBarItemStyle: {
                 marginBottom: 0,
-                height: 50,
+                height: 48,
                 marginTop: 4,
                 paddingBottom: 0,
                 borderRadius: 12,
@@ -1045,9 +1050,9 @@ export const settingsDefault = {
             primary: 'rgba(59, 130, 246, 1)',
             outline: 'rgba(59, 130, 246, 0.5)',
             headerBackground: 'rgba(24,24,27,1)',
-            barsBackground: 'rgba(24,24,27,1)', //header background in native
+            barsBackground: 'rgba(24 24 27,1)', //header background in native
             bottomSheetBackground: 'rgba(24,24,27,1)',
-            barsColor: 'rgba(209,213,219,1)', //tabbar icons color in native
+            barsColor: 'rgba(161,161,170,1)', //tabbar icons color in native
             safeAreaBackground: 'rgba(24,24,27,1)', // Add this new property
             primaryBg: 'rgba(37,99,235,0.1)',
         },
@@ -1124,13 +1129,13 @@ export const settingsDefault = {
         modal: {
             fog: 'bg-background/80  ',
             container:
-                ' h-full sm:h-auto shadow-xl bg-card/80 backdrop-blur border border-border web:ring-1 web:ring-inset web:ring-popover sm:rounded-2xl overflow-hidden ',
+            ' h-full sm:h-auto shadow-xl bg-card/80 backdrop-blur border border-border web:ring-1 web:ring-inset web:ring-popover sm:rounded-2xl overflow-hidden ',
             content: ' h-auto ',
             header: ' p-3 items-start justify-start border-b border-border/80',
         },
 
         inputs: {
-            default: ' bg-input focus:bg-transparent border border-border/60 web:border-0 focus:border-ring web:ring-1 web:focus:ring-2 web:ring-inset web:ring-border/60 rounded-xl web:focus:ring-ring px-3 min-h-12 flex-auto text-base overflow-hidden shadow-xs placeholder-label-tertiary text-label-secondary web:focus:outline-4 focus:outline-ring/20 web:focus:outline-offset-0 web:focus:outline-offset-card  web:duration-300',
+            default: ' bg-input focus:bg-transparent border border-border/60  focus:border-ring web:ring-inset web:ring-border/60 rounded-xl web:focus:ring-ring px-3 min-h-12 flex-auto text-base overflow-hidden shadow-xs placeholder-label-primary text-label-secondary web:focus:outline-4 focus:outline-ring/20 web:focus:outline-offset-0 web:focus:outline-offset-card  web:duration-300',
            
             multi: ' bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 py-2 min-h-12 flex-auto text-base leading-6 overflow-y-scroll [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden shadow-xs placeholder-label-tertiary text-card-foreground web:duration-100 ',
             rounded:
@@ -1193,7 +1198,7 @@ export const settingsDefault = {
                 rounded: ' rounded-xl ',
                 padding: '  ',
                 padding_icon_only: ' h-12 w-12 ',
-                padding_with_title: ' px-4 h-12 items-center ',
+                padding_with_title: ' px-4 gap-2 h-12 items-center ',
                 icon_container: '  text-lg flex items-center ',
                 title_container: ' leading-12 text-base items-center flex',
                 icon_size: 24,
@@ -1450,8 +1455,8 @@ export const settingsDefault = {
             'u-card-header': 'flex gap-1',
             'u-card-icon': 'text-card-foreground px-4 gap-y-2 gap-x-3',
             'u-card-title':
-                ' text-label-primary leading-6 text-xl font-semibold leading-none tracking-tight',
-            'u-card-description': ' text-label-secondary text-sm',
+                ' text-label-primary leading-none text-xl font-semibold leading-none tracking-tight',
+            'u-card-description': ' text-label-secondary text-base',
             'u-card-content': 'text-card-foreground ',
             'u-card-footer': 'flex text-base text-card-foreground gap-2',
         },
@@ -1689,7 +1694,7 @@ export const settingsDefault = {
             'u-btn-danger-trans': ' web:duration-200',
             
 
-            'u-btn-text-cnt': ' web:group active:bg-muted web:focus:bg-muted/60 overflow-hidden ',
+            'u-btn-text-cnt': ' web:group active:bg-muted web:focus-visible:bg-muted/60 web:hover:bg-muted/60 overflow-hidden ',
             'u-btn-text-text':
                 ' font-semibold text-label-secondary web:group-hover:text-label-primary web:focus:text-label-primary',
             'u-btn-text-trans': ' web:duration-200',

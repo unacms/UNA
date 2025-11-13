@@ -20,7 +20,7 @@ export default function ScrollList({
     content,
     index,
     pageData,
-    headerHeight = 64,
+    headerHeight = 56,
     isBackButton = false,
     contentType,
     refer,
