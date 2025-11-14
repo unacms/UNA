@@ -402,9 +402,13 @@ export function noContentByUrl(endpoint){
 }
 
 export function layoutForList(endpoint){
-    if (endpoint.module == 'bx_groups')
-        return 'w-full @xl/list:w-1/2 @3xl/list:w-1/3 @6xl/list:w-1/4 ';
-    return 'w-full @md/list:w-1/2 @xl/list:w-1/3 @5xl/list:w-1/4 @6xl/list:w-1/5 ';
+     if (endpoint?.request_url.includes('bx_timeline'))
+        return 'w-full';
+
+    if (endpoint?.module == 'bx_groups')
+        return 'w-full @xl/list:w-1/2 @3xl/list:w-1/3 @6xl/list:w-1/4 p-2';
+    
+    return 'w-full @md/list:w-1/2 @xl/list:w-1/3 @5xl/list:w-1/4 @6xl/list:w-1/5 p-2';
 }
 
 export function getNumColsForConductor(width, currentRoute, leftSideBar) {

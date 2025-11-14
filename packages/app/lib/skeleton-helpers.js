@@ -16,7 +16,7 @@ export function getSkeletonForList(name, num = 5, isFirst = true, layout) {
         <View>
             {trimmed.map((item, index) => (
                 <View key={'browse_item' + index} className={`@container/list flex-row w-full animate-pulse max-w-screen-xl mx-auto overflow-hidden`}>
-                    {[...Array(num)].map((_, i) => <View key={i} className={layout}><Item /></View>)}
+                    {[...Array(num)].map((_, i) => <View key={i} className={layout || 'w-full'}><Item /></View>)}
                 </View>
             ))}
         </View>

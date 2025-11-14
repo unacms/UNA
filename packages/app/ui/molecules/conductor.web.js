@@ -493,6 +493,7 @@ export function Conductor({
             if (hasNextPage === false) return
             if (currentRoute?.endpoint?.finished) return
             if (lastItemIndex === false) return
+            console.log("handleEndReached", handleEndReached)
             fetchNextPage()
         },
         [currentRoute?.endpoint?.finished, isFetchingNextPage, hasNextPage]

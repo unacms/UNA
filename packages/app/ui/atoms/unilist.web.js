@@ -73,7 +73,7 @@ export default function UniList(props) {
     }
 
     const ItemComponent = ({ className, ...props }) => (
-        <ReactNativeView className={`${layout ? layout + ' ' + cd('p-sm') : 'w-full'} ${className || cd('mb-md')}`} {...props} />
+        <ReactNativeView className={`${layout || 'w-full'} ${className || cd('mb-md')}`} {...props} />
     );
 
     const ListComponent = forwardRef(({ className, ...props }, ref) => {
@@ -133,7 +133,8 @@ export default function UniList(props) {
                         itemContent={itemContent}
                         stateChanged={stateChanged}
                         {...(scrollToLastItem ? { initialTopMostItemIndex: data.length } : {})}
-                        atBottomStateChange={onEndReached}
+                       // atBottomStateChange={()=>{console.log("atBottomStateChange"), onEndReached()}}
+                        endReached={()=>{console.log("onEndReached"), onEndReached()}}
                     />
                 </View>
             )
