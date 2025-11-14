@@ -66,7 +66,6 @@ const RenderScene = ({
     prevRoute,
     headerHeight,
     layoutName,
-    numColumns,
     LeftBarContentBlocks,
     setIndex,
     unitType,
@@ -92,23 +91,22 @@ const RenderScene = ({
             <ItemRenderer
                 unitType={unitType}
                 route={pageRoute}
-                numColumns={numColumns}
                 item={{ ...item, feed_type: pageRoute?.endpoint?.params?.type }}
                 unit={pageRoute?.endpoint?.unit}
                 module={pageRoute?.endpoint?.module}
             />
         ),
-        [pageRoute, numColumns, unitType]
+        [pageRoute, unitType]
     )
 
     const Preload = useMemo(
-        () => getSkeletonForList(skeleton, numColumns),
-        [skeleton, numColumns]
+        () => getSkeletonForList(skeleton, 4),//TODO
+        [skeleton]
     )
 
     const PreloadShort = useMemo(
-        () => getSkeletonForList(skeleton, numColumns, false),
-        [skeleton, numColumns]
+        () => getSkeletonForList(skeleton, 4, false),//TODO
+        [skeleton]
     )
 
 
@@ -130,12 +128,12 @@ const RenderScene = ({
                 data={dataItems}
                 endpoint={pageRoute.endpoint}
                 listState={pageRoute?.state}
+                layout={callFn('layoutForList', [pageRoute?.endpoint])}
                 storagekey={pageRoute.storageKeyValue}
                 refer={uniRef}
                 route={pageRoute}
                 unit={pageRoute.endpoint?.unit}
                 useWindowScroll={true}
-                numColumns={numColumns}
                 onEndReached={handleEndReached}
                 renderItem={renderItem}
                 ListFooterComponent={
@@ -145,7 +143,7 @@ const RenderScene = ({
                 }
             />
         )
-    }, [dataItems, numColumns, dataItems.length, header, headerHeight, hasNextPage, isFetchingNextPage])
+    }, [dataItems, dataItems.length, header, headerHeight, hasNextPage, isFetchingNextPage])
 
     const groupRef = useRef(null)
     const sidebarUnitType =
@@ -343,7 +341,6 @@ const RenderScene = ({
                                         key={`${pageRoute?.index}-${item.id}`}
                                         unitType={sidebarUnitType}
                                         route={pageRoute}
-                                        numColumns={1}
                                         sidebar={true}
                                         item={item}
                                         unit={
@@ -473,9 +470,6 @@ export function Conductor({
     }
     const [headerSettings, setHeaderSettings] = useState(initialHeaderSettings)
 
-    const [numColumns, setNumColumns] = useState(
-        getNumCols(currentBreakpoint, currentRoute)
-    )
 
     const { fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
         {
@@ -536,13 +530,6 @@ export function Conductor({
     useEffect(() => {
         if (isRevalidate) revalidateData()
     }, [isRevalidate])
-
-    useEffect(() => {
-        const numColumnsN = getNumCols(currentBreakpoint, currentRoute)
-        if (numColumnsN != numColumns) {
-            setNumColumns(numColumnsN)
-        }
-    }, [currentBreakpoint, currentRoute])
 
     /* UPDATE CONTENT PART */
     useEffect(() => {
@@ -813,7 +800,6 @@ export function Conductor({
                     routes={routes}
                     menu={menu}
                     layoutName={layoutName}
-                    numColumns={numColumns}
                     currentBreakpoint={currentBreakpoint}
                     prevRoute={prevRoute}
                     headerHeight={

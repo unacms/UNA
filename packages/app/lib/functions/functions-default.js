@@ -401,6 +401,13 @@ export function noContentByUrl(endpoint){
     return appStatic('components_content_empty')
 }
 
+export function layoutForList(endpoint){
+    console.log('endpoint', endpoint);
+    if (endpoint.module == 'bx_groups')
+        return 'w-full @xl/list:w-1/2 @3xl/list:w-1/3 @6xl/list:w-1/4 ';
+    return 'w-full @md/list:w-1/2 @xl/list:w-1/3 @5xl/list:w-1/4 @6xl/list:w-1/5 ';
+}
+
 export function getNumColsForConductor(width, currentRoute, leftSideBar) {
     return 0;
 }
@@ -447,55 +454,5 @@ export function getFiltersForConductor(filters, setFilterValue, filterValues) {
         return null;
 
     return null;
-    /*
-    return (
-        <Row className={appSetting('layout', 'max_width') + " mx-auto w-full p-3 sm:p-4 pb-1 sm:pb-0 w-full gap-x-4 items-center "}>
-
-            {Object.keys(inputs).map((key, index) => {
-                if (inputs[key].type == 'radio_set') {
-                    let values = [];
-                    if (Array.isArray(inputs[key].values)) {
-                        values = inputs[key].values.map(function (key) {
-                            return key.value && key.key != "date_range" ? { label: key.value, value: key.key } : null;
-                        });
-                        values = values.filter(Boolean);
-                    }
-                    return (
-                        <Row key={index} className="items-center">
-                            <Dropdown
-                                labelField="label"
-                                valueField="value"
-                                value={route?.endpoint?.params?.filters?.[inputs[key].name]}
-                                onChange={(value) => setFilterValue([{ name: inputs[key].name, value: value }])}
-                                data={values}
-                            />
-                        </Row>
-                    );
-                } else if (inputs[key].type == 'text') {
-                    return (
-                        <Row key={index} className="items-center">
-                            <Input
-                                name="search"
-                                placeholder={inputs[key].caption}
-                                value={route?.endpoint?.params?.filters?.[inputs[key].name]}
-
-                                onChangeText={(value) => setFilterValue(inputs[key].name, value)}
-                            />
-                        </Row>
-                    );
-                } else if (inputs[key].type == 'location') {
-                    return (
-                        <Row key={index} className="items-center">
-                            <Location
-                                name="search"
-                                value={{ location_string: route?.endpoint?.params?.filters?.[inputs[key].name] }}
-                                onChange={(value) => { setFilterValue([{ name: inputs[key].name, value: value.location_string }, { name: inputs[key].name + '_country', value: value.country }, { name: inputs[key].name + '_state', value: value.state }, { name: inputs[key].name + '_city', value: value.city }]) }}
-                            />
-                        </Row>
-                    );
-                }
-                return null; // Return null if none of the conditions are met
-            })}
-        </Row>
-    );*/
+    
 }

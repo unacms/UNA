@@ -12,7 +12,7 @@ import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 
 export default function UniList(props) {
     let { useCustomScrollHandler, scrollProps, preloadComponent, sortable, data, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
-        onSort, numColumns, keyboardShouldPersistTaps, keyExtractor, useWindowScroll, height, listState, endpoint, index, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, isInPanel, ...rest } = props
+        onSort, mode, numColumns, layout, keyboardShouldPersistTaps, keyExtractor, useWindowScroll, height, listState, endpoint, index, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, isInPanel, ...rest } = props
 
     const uniRef = useRef();
     const currentBreakpoint = useBreakpoint();
@@ -73,7 +73,7 @@ export default function UniList(props) {
     }
 
     const ItemComponent = ({ className, ...props }) => (
-        <ReactNativeView className={`w-1/${numColumns} ${cd('p-sm')} ${className || cd('mb-md')}`} {...props} />
+        <ReactNativeView className={`${layout ? layout + ' ' + cd('p-sm') : 'w-full'} ${className || cd('mb-md')}`} {...props} />
     );
 
     const ListComponent = forwardRef(({ className, ...props }, ref) => {
@@ -93,7 +93,7 @@ export default function UniList(props) {
         ref: refer ? refer : uniRef,
         endReached: onEndReached,
         overscan: 900,
-        components: numColumns > 1 ? {
+        components: mode != 'simple' ? {
             List: ListComponent,
             Item: ItemComponent,
             Footer: () => {
@@ -119,19 +119,14 @@ export default function UniList(props) {
         isScrolling,
         ...rest,
     };
-
-
-
-
     let contentComponent = null
-
     if (preloadComponent) {
         contentComponent = preloadComponent;
     }
     else {
-        if (numColumns > 1 && !sortable) {
+        if (mode != 'simple' && !sortable) {
             contentComponent = (
-                <View style={style}>
+                <View className="@container/list" style={style}>
                     {ListHeaderComponent && ListHeaderComponent()}
                     <VirtuosoGrid
                         {...commonVirtuosoProps}

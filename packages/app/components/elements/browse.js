@@ -279,7 +279,7 @@ export default function (props) {
         scrollProps: props?.exProps?.scrollProps,
         preloadComponent: PreloadComponent,
         numColumns,
-        mode: 'simple',
+        mode: 'simple', // TODO
         data: dataItems,
         unit: data.unit,
         // Use viewport height minus header for web in panel layouts
