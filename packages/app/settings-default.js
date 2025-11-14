@@ -1455,8 +1455,8 @@ export const settingsDefault = {
             'u-card-header': 'flex gap-1',
             'u-card-icon': 'text-card-foreground px-4 gap-2',
             'u-card-title':
-                ' text-label-primary leading-none text-xl lg:text-2xl font-semibold leading-none tracking-tight',
-            'u-card-description': ' text-label-secondary text-sm lg:text-base text-balance',
+                ' text-label-secondary leading-none text-xl lg:text-2xl font-semibold leading-none tracking-tight',
+            'u-card-description': ' text-label-tertiary text-sm lg:text-base text-balance',
             'u-card-content': 'text-card-foreground ',
             'u-card-footer': 'flex text-base text-card-foreground gap-2',
         },

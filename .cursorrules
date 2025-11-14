@@ -18,12 +18,6 @@ NEO is a React Native/Next.js cross-platform application with:
 - Icon handling, theming, and component behavior should be consistent across platforms
 
 
-Notes:
-- `cd` returns plain Tailwind utility strings for the active density; it does not generate dynamic class names.
-- No `data-density` attributes or CSS overrides are used.
-- Keep spacing tokens centralized in `theme.offsets`; avoid hardcoded pixel values.
-- Pass only one key to `cd()` at a time. For multiple spacings, call `cd()` separately and concatenate. For example, use `${cd('px-sm')} ${cd('py-xs')}` and not `cd('px-sm py-xs')`.
-
 ### 3. Routing Architecture
 - **Native**: Expo Router with file-based routing (`apps/expo/app/`)
 - **Web**: Next.js 15 App Router (`apps/next/app/`)
@@ -120,12 +114,6 @@ When debugging or implementing features, always check:
 - Different implementations between web and native for the same feature
 - Missing icons on one platform but working on another
 - Hardcoded colors instead of theme tokens
-- Components that don't respond to density changes via `cd()`
-- Using dynamic density class name strings instead of `cd()` mappings
-- Passing multiple tokens to a single `cd()` call (e.g., `cd('px-sm py-xs')`) instead of calling `cd()` per token
-- Static classes unnecessarily added to Tailwind safelist (only dynamic classes need safelist)
-- useCallback/useMemo missing `density` in dependency arrays when density value itself is used in logic
-- Hardcoded spacing values instead of `cd('...')` tokens
 - Complex authentication logic that could be simplified
 - Direct fetch() calls bypassing the `fetcher` function
 - Incorrect UNA endpoint patterns (not following `/api.php?r=module/action/Template`)
@@ -178,20 +166,14 @@ neo/
 2. **Test on both platforms** if making shared changes
 3. **Follow existing conventions** in the same directory/module
 4. **Use appropriate theme system** (semantic tokens for new, custom for existing)
-5. **Implement density support** using `cd('...')` tokens from `theme.offsets`; import `cd` where needed
-6. No safelist changes are needed for `cd()` (it returns static Tailwind utilities)
 7. **Verify responsive behavior** across screen sizes
-8. **Test density switching** to ensure components update automatically
 9. **Check authentication flow** if user-dependent features
 
 ## Success Criteria
 
 - Cross-platform consistency maintained
 - Modern design system tokens utilized appropriately
-- Density system properly implemented via `cd()` tokens
-- All density-aware spacing comes from `theme.offsets` via `cd()` (no hardcoded spacing)
 - Performance optimized for both web and native
 - Code quality improved incrementally
 - Patterns established and followed consistently
 - Responsive design working seamlessly
-- Components adapt gracefully to all three density modes 

@@ -23,13 +23,17 @@
         --destructive-foreground: var(--white); /*content on destructive buttons, destructive surfaces*/
         --border: var(--neutral-300); /*borders, dividers, focus rings*/
         --input: var(--neutral-200); /*form inputs*/
-        --ring: var(--accent-600); /*focus rings*/
+        --ring: var(--accent-500); /*focus rings*/
         --guide: var(--neutral-500); /*guide color*/
-        --label-primary: var(--neutral-900); /*Primary text (high emphasis)*/
-        --label-secondary: var(--neutral-600); /*Secondary text (medium emphasis)*/
-        --label-tertiary: var(--neutral-500); /*Tertiary text (low emphasis)*/
+        --label-primary: var(--neutral-950); /*Primary text (high emphasis)*/
+        --label-secondary: var(--neutral-800); /*Secondary text (medium emphasis)*/
+        --label-tertiary: var(--neutral-600); /*Tertiary text (low emphasis)*/
+        --label-quaternary: var(--neutral-400); /*Quaternary text (low emphasis)*/
         --label-link: var(--accent-600); /*Link text color*/
         --label-linkhover: var(--accent-800); /*Link text color on hover*/
+        --link-primary:var(--accent-500); /*Link text color*/
+        --link-secondary:var(--accent-700); 
+        --link-tertiary:var(--accent-900); /*Link text color on
         --fill-primary: var(--neutral-50); /*Main surface background*/
         --fill-secondary: var(--neutral-100); /*Secondary layered background*/
         --fill-tertiary: var(--neutral-500); /*Card-like background*/
@@ -124,11 +128,15 @@
         --input: var(--neutral-800); /*form inputs*/
         --ring: var(--accent-600); /*focus rings*/
         --guide: var(--neutral-600); /*guide color*/
-        --label-primary: var(--neutral-100); /*Primary text (high emphasis)*/
-        --label-secondary: var(--neutral-400); /*Secondary text (medium emphasis)*/
-        --label-tertiary: var(--neutral-600); /*Tertiary text (low emphasis)*/
-        --label-link: var(--accent-600); /*Link text color*/
-        --label-linkhover: var(--accent-800); /*Link text color on hover*/
+        --label-primary: var(--neutral-50); /*Primary text (high emphasis)*/
+        --label-secondary: var(--neutral-200); /*Secondary text (medium emphasis)*/
+        --label-tertiary: var(--neutral-400); /*Tertiary text (low emphasis)*/
+        --label-quaternary: var(--neutral-600); /*Quaternary text (low emphasis)*/
+        --label-link: var(--accent-500); /*Link text color*/
+        --label-linkhover: var(--accent-700); /*Link text color on hover*/
+        --link-primary:var(--accent-500); /*Link text color*/
+        --link-secondary:var(--accent-700); 
+        --link-tertiary:var(--accent-900); /*Link text color on visited*/
         --fill-primary: var(--neutral-950); /*Main surface background*/
         --fill-secondary: var(--neutral-900); /*Secondary layered background*/
         --fill-tertiary: var(--neutral-800); /*Card-like background*/
@@ -321,56 +329,112 @@ select{
 
 @layer utilities {
     @supports (corner-shape: superellipse(1)) {
-        :is([class~="rounded-none"], [class*=":rounded-none"]) {
-            border-radius: 0;
+        /* Base (non-prefixed) rounding utilities */
+        :is([class~="rounded-none"]) {
+            border-radius: 0 !important;
             /* stylelint-disable-next-line property-no-unknown */
             corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1));
         }
 
-        :is([class~="rounded"], [class$=":rounded"], [class*=":rounded "]) {
-            border-radius: calc(0.25rem * var(--neo-corner-superellipse-factor, 1));
+        :is([class~="rounded"]) {
+            border-radius: calc(0.25rem * var(--neo-corner-superellipse-factor, 1)) !important;
             /* stylelint-disable-next-line property-no-unknown */
             corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1));
         }
 
-        :is([class~="rounded-sm"], [class*=":rounded-sm"]) {
-            border-radius: calc(0.125rem * var(--neo-corner-superellipse-factor, 1));
+        :is([class~="rounded-sm"]) {
+            border-radius: calc(0.125rem * var(--neo-corner-superellipse-factor, 1)) !important;
             /* stylelint-disable-next-line property-no-unknown */
             corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1));
         }
 
-        :is([class~="rounded-md"], [class*=":rounded-md"]) {
-            border-radius: calc(0.375rem * var(--neo-corner-superellipse-factor, 1));
+        :is([class~="rounded-md"]) {
+            border-radius: calc(0.375rem * var(--neo-corner-superellipse-factor, 1)) !important;
             /* stylelint-disable-next-line property-no-unknown */
             corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1));
         }
 
-        :is([class~="rounded-lg"], [class*=":rounded-lg"]) {
-            border-radius: calc(0.5rem * var(--neo-corner-superellipse-factor, 1));
+        :is([class~="rounded-lg"]) {
+            border-radius: calc(0.5rem * var(--neo-corner-superellipse-factor, 1)) !important;
             /* stylelint-disable-next-line property-no-unknown */
             corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1));
         }
 
-        :is([class~="rounded-xl"], [class*=":rounded-xl"]) {
-            border-radius: calc(0.75rem * var(--neo-corner-superellipse-factor, 1));
+        :is([class~="rounded-xl"]) {
+            border-radius: calc(0.75rem * var(--neo-corner-superellipse-factor, 1)) !important;
             /* stylelint-disable-next-line property-no-unknown */
             corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1));
         }
 
-        :is([class~="rounded-2xl"], [class*=":rounded-2xl"]) {
-            border-radius: calc(1rem * var(--neo-corner-superellipse-factor, 1));
+        :is([class~="rounded-2xl"]) {
+            border-radius: calc(1rem * var(--neo-corner-superellipse-factor, 1)) !important;
             /* stylelint-disable-next-line property-no-unknown */
             corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1));
         }
 
-        :is([class~="rounded-3xl"], [class*=":rounded-3xl"]) {
-            border-radius: calc(1.5rem * var(--neo-corner-superellipse-factor, 1));
+        :is([class~="rounded-3xl"]) {
+            border-radius: calc(1.5rem * var(--neo-corner-superellipse-factor, 1)) !important;
             /* stylelint-disable-next-line property-no-unknown */
             corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1));
         }
 
-        :is([class~="rounded-full"], [class*=":rounded-full"]) {
-            border-radius: calc(9999px * var(--neo-corner-superellipse-full-factor, 1));
+        :is([class~="rounded-full"]) {
+            border-radius: calc(9999px * var(--neo-corner-superellipse-full-factor, 1)) !important;
+            /* stylelint-disable-next-line property-no-unknown */
+            corner-shape: superellipse(var(--neo-corner-superellipse-full-factor, 1));
+        }
+
+        /* Modifier-prefixed rounding utilities (sm:, hover:, focus:, etc.) */
+        :is([class$=":rounded"], [class*=":rounded "]) {
+            border-radius: calc(0.25rem * var(--neo-corner-superellipse-factor, 1)) !important;
+            /* stylelint-disable-next-line property-no-unknown */
+            corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1));
+        }
+
+        :is([class*=":rounded-none"]) {
+            border-radius: 0 !important;
+            /* stylelint-disable-next-line property-no-unknown */
+            corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1));
+        }
+
+        :is([class*=":rounded-sm"]) {
+            border-radius: calc(0.125rem * var(--neo-corner-superellipse-factor, 1)) !important;
+            /* stylelint-disable-next-line property-no-unknown */
+            corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1));
+        }
+
+        :is([class*=":rounded-md"]) {
+            border-radius: calc(0.375rem * var(--neo-corner-superellipse-factor, 1)) !important;
+            /* stylelint-disable-next-line property-no-unknown */
+            corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1));
+        }
+
+        :is([class*=":rounded-lg"]) {
+            border-radius: calc(0.5rem * var(--neo-corner-superellipse-factor, 1)) !important;
+            /* stylelint-disable-next-line property-no-unknown */
+            corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1));
+        }
+
+        :is([class*=":rounded-xl"]) {
+            border-radius: calc(0.75rem * var(--neo-corner-superellipse-factor, 1)) !important;
+            /* stylelint-disable-next-line property-no-unknown */
+            corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1));
+        }
+
+        :is([class*=":rounded-2xl"]) {
+            border-radius: calc(1rem * var(--neo-corner-superellipse-factor, 1)) !important;
+            /* stylelint-disable-next-line property-no-unknown */
+            corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1));
+        }
+
+        :is([class*=":rounded-3xl"]) {
+            border-radius: calc(1.5rem * var(--neo-corner-superellipse-factor, 1)) !important;
+            /* stylelint-disable-next-line property-no-unknown */
+            corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1));
+        }
+
+        :is([class*=":rounded-full"]) {
+            border-radius: calc(9999px * var(--neo-corner-superellipse-full-factor, 1)) !important;
             /* stylelint-disable-next-line property-no-unknown */
             corner-shape: superellipse(var(--neo-corner-superellipse-full-factor, 1));
         }

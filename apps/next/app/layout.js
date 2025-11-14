@@ -12,6 +12,19 @@ import { useLayoutSettings } from 'app/context/layout-settings';
 import { fontVars } from 'app/design/fonts/fonts-web';
 import { appSetting } from 'app/lib/util';
 
+// Suppress shadow* deprecation warnings from third-party libraries (react-native-toast-message)
+// until they update to use boxShadow
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+    const originalWarn = console.warn;
+    console.warn = (...args) => {
+        const message = args[0]?.toString() || '';
+        if (message.includes('"shadow*" style props are deprecated. Use "boxShadow".')) {
+            return; // Suppress this specific warning
+        }
+        originalWarn(...args);
+    };
+}
+
 export default function RootLayout({ children }) {
 
     

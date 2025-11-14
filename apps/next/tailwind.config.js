@@ -7,7 +7,6 @@ module.exports = {
     '../../packages/**/*.{js,jsx,ts,tsx}',
   ],
   safelist: [
-    // Card component density classes
     
   ],
   theme: {

@@ -7,6 +7,19 @@ import 'react-native-url-polyfill/auto';
 import { StatusBar, Platform } from 'react-native';
 //import 'expo-router/entry';
 import * as SplashScreen from 'expo-splash-screen';
+
+// Suppress NativeWind shadow* deprecation warning until NativeWind v4 fixes it internally
+// NativeWind v4.2.1 converts Tailwind shadow classes to deprecated shadow* props
+if (__DEV__) {
+    const originalWarn = console.warn;
+    console.warn = (...args) => {
+        const message = args[0]?.toString() || '';
+        if (message.includes('"shadow*" style props are deprecated. Use "boxShadow".')) {
+            return; // Suppress this specific warning
+        }
+        originalWarn(...args);
+    };
+}
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { registerRootComponent } from "expo";
 import { ExpoRoot } from "expo-router";

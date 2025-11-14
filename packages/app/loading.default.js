@@ -55,7 +55,7 @@ export function Loading() {
     if (isWeb) {
         return <div style={{
             width: '100px', height: '100vh', display: 'flex', margin: '0px auto', justifyContent: 'center',
-        }}><img src="/loader.svg" /></div>
+        }}><img src="/loader.svg" alt="Loading indicator" /></div>
     }
     else {
         return (

@@ -22,7 +22,7 @@ function ImageSection({ data, imageSizes }) {
     return (
         <View
             className={` ${isWeb && 'h-28 sm:h-auto'
-                } aspect-square sm:w-full rounded-full sm:rounded-xl overflow-hidden items-center bg-muted justify-center`}
+                } aspect-square sm:w-full sm:rounded-xl overflow-hidden items-center bg-muted justify-center`}
         >
             <Image
                 src={data?.image?.src}

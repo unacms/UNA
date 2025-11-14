@@ -78,6 +78,11 @@ const nativewindUIColors = {
         linkhover: withOpacity('label-linkhover'),
         
     },
+    link: {
+        primary: withOpacity('link-primary'),
+        secondary: withOpacity('link-secondary'),
+        tertiary: withOpacity('link-tertiary'),
+    },
    
     guide: withOpacity('guide'),
     

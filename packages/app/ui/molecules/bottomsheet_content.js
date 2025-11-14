@@ -111,14 +111,15 @@ function BottomSheet2(props) {
     const styles = StyleSheet.create({
         container: {
             flex: 1,
-
         },
         bottomSheet: {
             borderWidth: 0,
-            shadowColor: "rgba(0,0,0,15)",
-            shadowOpacity: 0.15,
-            shadowRadius: 8,
             elevation: 10,
+            ...Platform.select({
+                web: {
+                    boxShadow: '0px 12px 32px rgba(0, 0, 0, 0.2)',
+                },
+            }),
         },
     });
 
@@ -138,6 +139,10 @@ function BottomSheet2(props) {
     }, [props.children]);
 
 
+    const handleDismiss = useCallback(() => {
+        setBottomSheetData(null);
+    }, [setBottomSheetData]);
+
     const renderBackdrop = useCallback(
         (props) => (
             <BottomSheetBackdrop
@@ -153,11 +158,11 @@ function BottomSheet2(props) {
     const renderWebBackdrop = useCallback(
         ({ style }) => (
             <Pressable
-                onPress={() => { handleDismiss }}
+                onPress={handleDismiss}
                 style={[style, { backgroundColor: 'rgba(0, 0, 0, 0.8)' }]}
             />
         ),
-        []
+        [handleDismiss]
     );
 
     const backdropComponent = Platform.select({
@@ -165,10 +170,6 @@ function BottomSheet2(props) {
         default: renderBackdrop,
     });
 
-
-    const handleDismiss = () => {
-        setBottomSheetData(null)
-    };
 
     return (
         <BottomSheetModalProvider>

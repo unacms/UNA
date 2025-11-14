@@ -21,6 +21,9 @@ const tenPlayWebviewShimPath = require('fs').existsSync(tenPlayWebviewLocalPath)
 const reanimatedPath = path.resolve(__dirname, 'node_modules/react-native-reanimated');
 
 const nextConfig = {
+  env: {
+    EXPO_OS: 'web',
+  },
   typescript: {
     ignoreBuildErrors: true,
   },
