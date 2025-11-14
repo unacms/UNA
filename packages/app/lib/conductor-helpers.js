@@ -140,7 +140,7 @@ export function fillTabs(
 
             bCurrent = e?.section == d?.section
         }
-        console.log('strToObj', item.config, strToObj(item.config))
+        
         if (bCurrent) {
             let contentAndEndpoint = processUrl(data, blocks)
             i.data = contentAndEndpoint.content

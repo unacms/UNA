@@ -99,16 +99,17 @@ const RenderScene = ({
         [pageRoute, unitType]
     )
 
+    const layout = callFn('layoutForList', [pageRoute?.endpoint]);
+
     const Preload = useMemo(
-        () => getSkeletonForList(skeleton, 4),//TODO
+        () => getSkeletonForList(skeleton, 5, true, layout),
         [skeleton]
     )
 
     const PreloadShort = useMemo(
-        () => getSkeletonForList(skeleton, 4, false),//TODO
+        () => getSkeletonForList(skeleton, 5, false, layout),
         [skeleton]
     )
-
 
     const MainContent = useMemo(() => {
         return (
@@ -128,7 +129,7 @@ const RenderScene = ({
                 data={dataItems}
                 endpoint={pageRoute.endpoint}
                 listState={pageRoute?.state}
-                layout={callFn('layoutForList', [pageRoute?.endpoint])}
+                layout={layout}
                 storagekey={pageRoute.storageKeyValue}
                 refer={uniRef}
                 route={pageRoute}
@@ -479,7 +480,6 @@ export function Conductor({
                 if (lastPage?.data?.length > 0) {
                     return lastPage?.endpoint
                 }
-
                 return
             },
             enabled: currentRoute?.endpoint?.params?.start == 0, //route?.endpoint?.params?.start == 0

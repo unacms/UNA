@@ -3,7 +3,7 @@ import { getComponent } from 'app/components/registry';
 
 const items = Array(5).fill('');
 
-export function getSkeletonForList(name, num = 5, isFirst = true) {
+export function getSkeletonForList(name, num = 5, isFirst = true, layout) {
     if (Array.isArray(name)){
         if (name.includes('feed'))
             name = 'feed';
@@ -15,8 +15,8 @@ export function getSkeletonForList(name, num = 5, isFirst = true) {
     return (
         <View>
             {trimmed.map((item, index) => (
-                <View key={'browse_item' + index} className="flex-row w-full animate-pulse max-w-screen-xl mx-auto overflow-hidden">
-                    {[...Array(num)].map((_, i) => <Item key={i} />)}
+                <View key={'browse_item' + index} className={`@container/list flex-row w-full animate-pulse max-w-screen-xl mx-auto overflow-hidden`}>
+                    {[...Array(num)].map((_, i) => <View key={i} className={layout}><Item /></View>)}
                 </View>
             ))}
         </View>

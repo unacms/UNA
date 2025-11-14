@@ -402,7 +402,6 @@ export function noContentByUrl(endpoint){
 }
 
 export function layoutForList(endpoint){
-    console.log('endpoint', endpoint);
     if (endpoint.module == 'bx_groups')
         return 'w-full @xl/list:w-1/2 @3xl/list:w-1/3 @6xl/list:w-1/4 ';
     return 'w-full @md/list:w-1/2 @xl/list:w-1/3 @5xl/list:w-1/4 @6xl/list:w-1/5 ';
