@@ -56,7 +56,9 @@ export default function RootLayout({ children }) {
                 <QueryClientProvider client={queryClient}>
                     {typeof window !== 'undefined' ? <Analytics /> : null}
                     <SpeedInsights />
-                    {children}
+                    <main id="main-content" role="main" className={appSetting('layout', 'main') || undefined}>
+                        {children}
+                    </main>
                     <Subscriber />
                 </QueryClientProvider>
             </body>
