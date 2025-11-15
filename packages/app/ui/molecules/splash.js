@@ -34,12 +34,12 @@ function PageContent(props) {
         <View className="w-full justify-center lg:w-1/2 p-4 sm:p-8 md:p-12 p-6 ">
             <AnimatedView className="gap-4" direction="up" delay={200}>
                 <Card
-                    padding="p-6 gap-6 max-w-xl w-full mx-auto rounded-3xl"
+                    padding="p-0 gap-5 max-w-xl w-full mx-auto rounded-3xl"
                     role="form"
                     titleId="login-card-title"
                     aria-describedby="login-card-description"
                 >
-                    <CardHeader>
+                    <CardHeader className="px-6 pt-5">
                         <CardTitle id="login-card-title" className="text-center lg:text-start">
                             {t('login_modal_title')} 
                         </CardTitle>
@@ -47,7 +47,7 @@ function PageContent(props) {
                             {t('splash_page_login')}
                         </CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="px-6">
                         <BlockByName
                             name="system:login_form"
                             contentOnly={true}
@@ -57,37 +57,38 @@ function PageContent(props) {
                                 button_full_width: true,
                             }}
                         />
-                    </CardContent>
-                    <CardFooter>
-                        <AuthPanel
+                         <AuthPanel
                             forgotPasswordLink={true}
                             showSeparator={true}
                         />
+                    </CardContent>
+                    <CardFooter>
+                        <Row
+                            className="mx-auto gap-1 justify-center items-center text-center"
+                            accessibilityRole="text"
+                            accessibilityLabel={`${t('splash_page_login2')} ${t(
+                                'splash_page_new_account'
+                            )}`}
+                        >
+                            <Text
+                                className="text-secondary-foreground text-base"
+                                accessibilityRole="text"
+                            >
+                                {t('splash_page_login2')}
+                            </Text>
+                            <Link
+                                variant="accent"
+                                size="md"
+                                href="/create-account"
+                                haptics="Medium"
+                            >
+                                {t('splash_page_new_account')}
+                            </Link>
+                        </Row>
                     </CardFooter>
                 </Card>
 
-                <Row
-                    className="mx-auto gap-1 justify-center items-center text-center"
-                    accessibilityRole="text"
-                    accessibilityLabel={`${t('splash_page_login2')} ${t(
-                        'splash_page_new_account'
-                    )}`}
-                >
-                    <Text
-                        className="text-secondary-foreground text-base"
-                        accessibilityRole="text"
-                    >
-                        {t('splash_page_login2')}
-                    </Text>
-                    <Link
-                        variant="accent"
-                        size="md"
-                        href="/create-account"
-                        haptics="Medium"
-                    >
-                        {t('splash_page_new_account')}
-                    </Link>
-                </Row>
+               
             </AnimatedView>
         </View>
     )

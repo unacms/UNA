@@ -29,7 +29,7 @@ function PageContent({ children, isLoginPage, title }) {
     if (!isLoginPage) {
         return (
             <AnimatedView direction="up" delay={300}>
-                <Card padding="p-6 max-w-xl w-full mx-auto">
+                <Card padding="p-6 gap-6 max-w-xl w-full mx-auto rounded-3xl">
                     <CardHeader>
                         <CardTitle>{title}</CardTitle>
                     </CardHeader>
@@ -43,44 +43,37 @@ function PageContent({ children, isLoginPage, title }) {
         <View className="w-full justify-center p-4 sm:p-8 md:p-12 p-6 ">
 
             <AnimatedView className="gap-4" direction="up" delay={200}>
-            <Card padding="p-6 max-w-xl w-full mx-auto">
-                    <CardHeader>
-                            <CardTitle>
+            <Card padding="p-0 gap-6 max-w-xl w-full mx-auto rounded-3xl">
+                        <CardHeader className="px-6 pt-5">
+                            <CardTitle className="text-center lg:text-start">
                             {t('login_modal_title')}
                             </CardTitle> 
                         
-                        <CardDescription>{t('splash_page_login')}</CardDescription>
+                        <CardDescription className="text-center lg:text-start">{t('splash_page_login')}</CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="px-6 ">
                         {children}
-                        <Row className="text-center text-sm items-center text-muted-foreground">
-                            <Link
-                                className="mx-auto"
-                                variant="plain"
-                                size="sm"
-                                href="/forgot-password"
-                                haptics="Medium"
-                            >
-                                {t('Forgot password?')}
-                            </Link>
-                        </Row>
-                        <AuthPanel showSeparator={true} />
+                        
+                        <AuthPanel showSeparator={true} forgotPasswordLink={true} />
                     </CardContent>
+                    <CardFooter >
+                        <Row className=" mx-auto gap-1 justify-center items-center text-center">
+                        <Text className="text-base text-secondary-foreground">
+                            {t('splash_page_login2')}
+                        </Text>
+                        <Link
+                            variant="accent"
+                            size="md"
+                            href="/create-account"
+                            haptics="Medium"
+                        >
+                            {t('splash_page_new_account')}
+                        </Link>
+                </Row>
+                    </CardFooter>
                 </Card>
 
-                <Row className=" mx-auto gap-1 justify-center items-center text-center">
-                    <Text className="text-base text-secondary-foreground">
-                        {t('splash_page_login2')}
-                    </Text>
-                    <Link
-                        variant="accent"
-                        size="md"
-                        href="/create-account"
-                        haptics="Medium"
-                    >
-                        {t('splash_page_new_account')}
-                    </Link>
-                </Row>
+                
             </AnimatedView>
         </View>
     )

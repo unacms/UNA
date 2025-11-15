@@ -22,7 +22,7 @@ export default function AuthPanel({
     if (appSetting('auth', 'enabled') !== true) return null
     const { t } = useTranslation()
     return (
-        <View className="w-full gap-4">
+        <View className="w-full gap-3 sm:gap-4 pt-3 sm:pt-4">
             {forgotPasswordLink && (
                 <Link
                     className="mx-auto"

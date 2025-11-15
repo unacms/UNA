@@ -28,11 +28,11 @@ function PageContent({ children }) {
         <View className="w-full justify-center lg:w-1/2 p-4 sm:p-8 md:p-12 p-6 ">
 
             <AnimatedView className="gap-4" direction="up" delay={200}>
-            <Card padding="p-6 sm:max-w-xl w-full mx-auto">
+            <Card padding="p-6 gap-6 max-w-xl w-full mx-auto rounded-3xl">
             <CardHeader>
-                        <CardTitle>{t('create_account_page_caption')}</CardTitle>
+                        <CardTitle className="text-center lg:text-start">{t('create_account_page_caption')}</CardTitle>
                         
-                            <CardDescription>
+                            <CardDescription className="text-center lg:text-start">
                                 {t('create_account_page_caption2')}
                             </CardDescription>
                     
