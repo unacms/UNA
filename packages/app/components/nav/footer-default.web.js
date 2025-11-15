@@ -85,10 +85,10 @@ function MenuBottomItem({ link, title, index, badge, icon, isActive, profile, iF
                 alt={title}
             >
                 <View className={`flex flex-col justify-between my-auto items-center rounded-xl p-1.5 text-center gap-1 hover:bg-muted/60 justify-center ${isActive && 'bg-accent/10'}`}>
-                    <Text className={`${isActive ? 'text-label-link' : 'text-label-secondary group-hover:text-label-primary'}`}>
+                    <Text className={`${isActive ? 'text-label-link' : 'text-secondary-foreground group-hover:text-foreground'}`}>
                         {link === appSetting('dashboard', 'url') ? profile : <Icon icon={icon} size={28} />}
                     </Text>
-                    {<Text className={` group-hover:text-label-linkhover text-xs tracking-tight leading-none font-medium whitespace-nowrap ${isActive ? 'text-label-link' : 'text-label-tertiary group-hover:text-label-primary'}`}>{title}</Text>}
+                    {<Text className={` group-hover:text-label-linkhover text-xs tracking-tight leading-none font-medium whitespace-nowrap ${isActive ? 'text-label-link' : 'text-muted-foreground group-hover:text-foreground'}`}>{title}</Text>}
                     {badgeObj && <View className={`absolute bg-destructive border-2 border-card rounded-full px-1.5 min-w-6 items-center justify-center  -top-1 left-1/2 -translate-x-1/2 ml-4`}><Text className="text-white text-xs font-medium tracking-tight leading-5 ">{badgeObj.text}</Text></View>}
                 </View>
             </Link>

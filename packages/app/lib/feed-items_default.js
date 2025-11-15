@@ -284,7 +284,7 @@ export const DefaultView = memo(
                     )}
 
                     {bIsTitle && (
-                        <Link href={url} className="pb-2 text-label-secondary hover:text-label-primary text-lg font-bold ">
+                        <Link href={url} className="pb-2 text-secondary-foreground hover:text-foreground text-lg font-bold ">
                             <Text
                                 numberOfLines={3}
                                 className=" font-title "
@@ -327,7 +327,7 @@ export const DefaultView = memo(
                                             }
                                             numberOfLines={3}
                                             openSmall={false}
-                                            textClassName=" text-label-secondary text-sm "
+                                            textClassName=" text-secondary-foreground text-sm "
                                         />
                                     )}
                                     {!!data.content?.embed && (
@@ -339,7 +339,7 @@ export const DefaultView = memo(
                             )}
                             {!bIsTimelineContent && (
                                 <Text
-                                    className="text-label-secondary text-sm"
+                                    className="text-secondary-foreground text-sm"
                                     numberOfLines={3}
                                 >
                                     {stripTags(data.content?.text || '')}
@@ -426,7 +426,7 @@ export const PollView = memo(
                         <Link href={url} className="mb-3">
                             <Text
                                 numberOfLines={3}
-                                className="  text-label-secondary hover:text-label-primary text-lg tracking-tight font-bold"
+                                className="  text-secondary-foreground hover:text-foreground text-lg tracking-tight font-bold"
                             >
                                 {data.content?.title || ''}
                             </Text>

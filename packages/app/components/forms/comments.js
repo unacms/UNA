@@ -8,11 +8,16 @@ import { stripTags, removeEmptyTags } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
 import { FileButton } from 'app/lib/form-helpers'
-import { useWindowHeight } from 'app/context/measure';
+import { useWindowHeight, useIsDesktop } from 'app/context/measure';
 import emitter from 'app/context/emitter';
 
 export default function FormComments(props) {
     const screenHeight = useWindowHeight();
+    const isDesktop = useIsDesktop();
+    const exProps = props?.exProps ?? {};
+    const isModalForm = !!exProps.isModal;
+    const forceBottomGrowth = !!exProps.forceBottomGrowth;
+    const shouldGrowFromBottom = forceBottomGrowth || isModalForm || !isDesktop;
     const baseHeight = props.data.inputs['cmt_id']?.value ? 160 : 18
     const maxHeight = Platform.OS === 'web' ? /*screenHeight / 2*/ 160 : (screenHeight - 300) / 2 // 300 is approximate keyboard height
     const formContext = useFormContext()
@@ -36,10 +41,11 @@ export default function FormComments(props) {
     const inputWrapperAnimatedStyle = useAnimatedStyle(() => {
         return {
             alignItems: 'center',
+            justifyContent: shouldGrowFromBottom ? 'flex-end' : 'flex-start',
             paddingBottom: isWeb ? (maxHeight == animatedEditorHeight.value ? '40px' : '0px') : maxHeight == animatedEditorHeight.value ? 40 : 0,
             height: isWeb ? `${animatedEditorHeight.value}px` : animatedEditorHeight.value,
         };
-    }, [animatedEditorHeight]);
+    }, [animatedEditorHeight, shouldGrowFromBottom]);
 
     const updateAnimatedHeight = (newHeight) => {
         if (Math.round(animatedEditorHeight.value) !== Math.round(newHeight)) {
@@ -208,7 +214,7 @@ export default function FormComments(props) {
 
     return (
         <View className="w-full ">
-            <Row className="w-full gap-x-2 items-end ">
+            <Row className={`w-full gap-x-2 ${shouldGrowFromBottom ? 'items-end' : 'items-start'}`}>
                 {currentUser && (
 
                     <Profile
@@ -221,7 +227,7 @@ export default function FormComments(props) {
 
                 )}
                 <View className="flex-1">
-                    <View className=" items-stretch bg-muted/60 rounded-xl border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border px-2.5  min-h-9 py-2" >
+                    <View className=" items-stretch bg-input/40 border border-input rounded-xl px-2.5 py-2" >
                     <Animated.View 
                    
                      style={inputWrapperAnimatedStyle}
@@ -272,7 +278,7 @@ export default function FormComments(props) {
                     </Animated.View>
                     </View>
                     <View className={attachmentButtonContainerClasses.join(' ')}>
-                        {isWeb && <FileButton field_name='cmt_image' size='xs' icon="Image" source='library' variant='text' />}
+                        {isWeb && <FileButton field_name='cmt_image' size='sm' icon="Image" source='library' variant='text' />}
                         {!isWeb && (
                             <Animated.View
                                 entering={SlideInLeft.duration(300)}

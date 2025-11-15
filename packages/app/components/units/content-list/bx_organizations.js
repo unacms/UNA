@@ -89,7 +89,7 @@ export default function Unit(props) {
                         <View className="sm:h-12">
                             <Text
                                 numberOfLines={1}
-                                className=" text-base leading-6 font-semibold text-label-primary"
+                                className=" text-base leading-6 font-semibold text-foreground"
                             >
                                 {data.title}
                             </Text>
@@ -105,7 +105,7 @@ export default function Unit(props) {
                                     }
                                 />
 
-                                <Text className="truncate text-sm tracking-tight flex-auto text-label-secondary">
+                                <Text className="truncate text-sm tracking-tight flex-auto text-secondary-foreground">
                                     {isFollowers
                                         ? data?.followers_count +
                                         ' followers'

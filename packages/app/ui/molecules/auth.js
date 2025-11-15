@@ -30,7 +30,6 @@ export default function AuthPanel({
                     size="md"
                     href="/forgot-password"
                     haptics="Medium"
-
                 >
                     {t('Forgot password?')}
                 </Link>
@@ -95,7 +94,7 @@ export default function AuthPanel({
                     />
                     </View>
                     <Text 
-                        className="px-2 pb-px rounded-full text-xs leading-none mt-px  text-label-tertiary "
+                        className="hidden px-2 pb-px rounded-full text-xs leading-none mt-px  text-muted-foreground "
                         accessibilityRole="text"
                     >
                         {t('splash_page_login3')}

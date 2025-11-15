@@ -40,10 +40,10 @@ function PageContent(props) {
                     aria-describedby="login-card-description"
                 >
                     <CardHeader>
-                        <CardTitle id="login-card-title">
+                        <CardTitle id="login-card-title" className="text-center lg:text-start">
                             {t('login_modal_title')} 
                         </CardTitle>
-                        <CardDescription id="login-card-description">
+                        <CardDescription id="login-card-description" className="text-center lg:text-start">
                             {t('splash_page_login')}
                         </CardDescription>
                     </CardHeader>
@@ -74,7 +74,7 @@ function PageContent(props) {
                     )}`}
                 >
                     <Text
-                        className="text-label-secondary text-base"
+                        className="text-secondary-foreground text-base"
                         accessibilityRole="text"
                     >
                         {t('splash_page_login2')}

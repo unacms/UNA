@@ -51,7 +51,7 @@ export const H1 = ({ children, className, ...rest }) => {
     const HeadingComponent = Platform.OS === 'web' ? 'h1' : NativeText
        
     return (
-        <HeadingComponent className={ `text-4xl lg:text-5xl tracking-tight font-bold text-label-primary text-balance ${className || ''}`} {...(Platform.OS === 'web' ? sanitizeWebTextProps(rest) : rest)}>
+        <HeadingComponent className={ `text-3xl lg:text-4xl tracking-tight font-bold text-foreground text-balance ${className || ''}`} {...(Platform.OS === 'web' ? sanitizeWebTextProps(rest) : rest)}>
             {children}
         </HeadingComponent>
     )
@@ -70,7 +70,7 @@ export const H2 = ({ children, className, ...rest }) => {
     const HeadingComponent = Platform.OS === 'web' ? 'h2' : NativeText
 
     return (
-        <HeadingComponent className={`text-xl xl:text-2xl font-bold tracking-tight text-label-primary ${className || ''}`} {...(Platform.OS === 'web' ? sanitizeWebTextProps(rest) : rest)}>
+        <HeadingComponent className={`text-xl xl:text-2xl font-bold tracking-tight text-foreground ${className || ''}`} {...(Platform.OS === 'web' ? sanitizeWebTextProps(rest) : rest)}>
             {children}
         </HeadingComponent>
     )

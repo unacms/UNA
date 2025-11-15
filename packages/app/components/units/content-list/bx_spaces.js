@@ -76,7 +76,7 @@ export default function Unit(props) {
                                         )}
                                         <Text
                                             numberOfLines={1}
-                                            className="flex-auto text-base leading-tight tracking-tight font-semibold text-label-secondary group-hover:text-label-primary "
+                                            className="flex-auto text-base leading-tight tracking-tight font-semibold text-secondary-foreground group-hover:text-foreground "
                                         >
                                             {data.title}
                                         </Text>
@@ -96,7 +96,7 @@ export default function Unit(props) {
 
                                         </View>
                                         {
-                                            <Text className="truncate text-xs leading-tight flex-auto text-label-tertiary">
+                                            <Text className="truncate text-xs leading-tight flex-auto text-muted-foreground">
                                                 {friendsLabel}
                                             </Text>
                                         }

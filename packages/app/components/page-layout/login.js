@@ -69,7 +69,7 @@ function PageContent({ children, isLoginPage, title }) {
                 </Card>
 
                 <Row className=" mx-auto gap-1 justify-center items-center text-center">
-                    <Text className="text-base text-label-secondary">
+                    <Text className="text-base text-secondary-foreground">
                         {t('splash_page_login2')}
                     </Text>
                     <Link

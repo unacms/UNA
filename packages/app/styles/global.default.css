@@ -6,24 +6,24 @@
     .light-theme-vars {
         /*semantic colors*/
         --background: var(--neutral-100); /*main page background*/
-        --foreground: var(--neutral-950); /*main page content*/
+        --foreground: var(--neutral-900); /*main page content*/
         --card: var(--white); /*cards, sidebars, navbars background*/
-        --card-foreground: var(--neutral-800); /*content on cards, sidebars, navbars*/
+        --card-foreground: var(--neutral-950); /*content on cards, sidebars, navbars*/
         --popover: var(--white); /*background for popovers, inputs, tooltips, modals, elevated surfaces*/
-        --popover-foreground: var(--neutral-800); /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
+        --popover-foreground: var(--neutral-900); /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
         --primary: var(--accent-600); /*background for primary buttons, links, active states, focus rings. Use use high-contract background from gray-scale or accent-scale.*/
-        --primary-foreground: var(--accent-50); /*priamry content, links, foreground elements*/
+        --primary-foreground: var(--white); /*priamry content, links, foreground elements*/
         --secondary: var(--neutral-200);  /*background for secondary buttons, secondary surfaces*/
-        --secondary-foreground: var(--neutral-900); /*content on secondary buttons, secondary surfaces*/
+        --secondary-foreground: var(--neutral-700); /*content on secondary buttons, secondary surfaces*/
+        --muted: var(--neutral-200); /*background for ui items, sections, hover states*/
+        --muted-foreground: var(--neutral-500); /*muted content*/
         --accent: var(--accent-600); /*background for accent buttons, accent surfaces*/
         --accent-foreground: var(--white); /*content on accent buttons, accent surfaces*/
-        --muted: var(--neutral-200); /*background for ui items, sections, hover states*/
-        --muted-foreground: var(--neutral-600); /*muted content*/
         --destructive: var(--red); /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--white); /*content on destructive buttons, destructive surfaces*/
         --border: var(--neutral-300); /*borders, dividers, focus rings*/
         --input: var(--neutral-200); /*form inputs*/
-        --ring: var(--accent-500); /*focus rings*/
+        --ring: var(--accent-600); /*focus rings*/
         --guide: var(--neutral-500); /*guide color*/
         --label-primary: var(--neutral-950); /*Primary text (high emphasis)*/
         --label-secondary: var(--neutral-800); /*Secondary text (medium emphasis)*/
@@ -34,10 +34,7 @@
         --link-primary:var(--accent-500); /*Link text color*/
         --link-secondary:var(--accent-700); 
         --link-tertiary:var(--accent-900); /*Link text color on
-        --fill-primary: var(--neutral-50); /*Main surface background*/
-        --fill-secondary: var(--neutral-100); /*Secondary layered background*/
-        --fill-tertiary: var(--neutral-500); /*Card-like background*/
-
+        
 
         /* Box shadow variables for light mode - NativeWind compatible */
         --shadow-xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
@@ -113,11 +110,11 @@
         --card: var(--neutral-900); /*cards, sidebars, navbars background*/
         --card-foreground: var(--neutral-300); /*content on cards, sidebars, navbars*/
         --popover: var(--neutral-800); /*background for popovers, inputs, tooltips, modals, elevated surfaces*/
-        --popover-foreground: var(--neutral-300); /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
+        --popover-foreground: var(--neutral-50); /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
         --primary: var(--accent-600); /*background for primary buttons, links, active states, focus rings. Use use high-contract background from gray-scale or accent-scale.*/
         --primary-foreground: var(--white); /*content on primary buttons, active states, primary surfaces*/
         --secondary: var(--neutral-800);  /*background for secondary buttons, secondary surfaces*/
-        --secondary-foreground: var(--neutral-200); /*content on secondary buttons, secondary surfaces*/
+        --secondary-foreground: var(--neutral-300); /*content on secondary buttons, secondary surfaces*/
         --accent: var(--accent-600); /*background for accent buttons, accent surfaces*/
         --accent-foreground: var(--white); /*content on accent buttons, accent surfaces*/
         --muted: var(--neutral-800); /*background for ui items, sections, hover states*/
@@ -137,11 +134,7 @@
         --link-primary:var(--accent-500); /*Link text color*/
         --link-secondary:var(--accent-700); 
         --link-tertiary:var(--accent-900); /*Link text color on visited*/
-        --fill-primary: var(--neutral-950); /*Main surface background*/
-        --fill-secondary: var(--neutral-900); /*Secondary layered background*/
-        --fill-tertiary: var(--neutral-800); /*Card-like background*/
-
-
+     
 
         /* Box shadow variables for dark mode - more pronounced shadows */
         --shadow-xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.5);
@@ -222,12 +215,12 @@
 
 /* Global outline color only (no width). Components control size/offset. */
 *:focus-visible {
-    outline-color: rgb(var(--ring));
+    outline-color: rgb(var(--ring) / 0.4);
     outline-style: auto;
-    outline-offset: 0px;
+    outline-offset: 2px;
     outline-width: 4px;
-
 }
+
 select{
     appearance: none;           
     -webkit-appearance: none;   
@@ -284,7 +277,7 @@ select{
         z-index: 0;
         /* defaults; overridden by size modifiers */
         --u-link-ghost-inset-x: -4px;
-        --u-link-ghost-inset-y: -2px;
+        --u-link-ghost-inset-y: -0px;
         --u-link-ghost-radius: 0.375rem; /* rounded-md */
     }
     .u-link-ghost::after {
@@ -301,7 +294,7 @@ select{
         background-color: rgb(var(--muted) / 0.6);
     }
     .u-link-ghost:active::after {
-        background-color: rgb(var(--muted));
+      /*  background-color: rgb(var(--primary) / 1);*/
     }
 
     /* Size modifiers for pseudo background padding and rounding */
@@ -311,8 +304,8 @@ select{
         --u-link-ghost-radius: 0.25rem; /* rounded-sm */
     }
     .u-link-ghost.u-link-ghost-pad-sm {
-        --u-link-ghost-inset-x: -2px;
-        --u-link-ghost-inset-y: -2px;
+        --u-link-ghost-inset-x: -4px;
+        --u-link-ghost-inset-y: -4px;
         --u-link-ghost-radius: 0.375rem; /* rounded-md */
     }
     .u-link-ghost.u-link-ghost-pad-md {

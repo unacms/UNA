@@ -67,8 +67,8 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
        <View className="my-auto">
 
             {bShowLinks ? (
-                <Row className="items-center min-h-6">
-                    <Link variant="plain" className="gap-1 flex-row items-center" size="md" emulate={emulate} haptics="Select"  href={oProps.url}>
+                <Row className="items-center">
+                    <Link variant="plain" className="gap-1 flex-row items-center" size="sm" emulate={emulate} haptics="Select"  href={oProps.url}>
                         <DisplayNameLink
                             title={oProps.display_name}
                             url={oProps.url}

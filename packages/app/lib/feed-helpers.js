@@ -77,7 +77,7 @@ export const CommentsModal = memo(
                 </View>
                 <View
                     onLayout={handleLayout}
-                    className="border-t border-border/80 p-3 lg:px-4 min-h-16"
+                    className="shadow-sm min-h-16"
                 >
                     {CommentsPartsData[1]}
                 </View>
@@ -145,9 +145,9 @@ export const CommentsSection = memo(
         )
         return (
             <View className="  ">
-                <View className="border-t  border-border/40 -mx-4 mt-3.5 ">
+                <View className="border-t border-border/40 -mx-4 mt-3.5 ">
                 {isShowMoreComments && (
-                    <View className=" me-auto">
+                    <View className="p-3">
                         {isCommentsModal ? (
                             <Pressable
                                 onPress={() => {
@@ -267,7 +267,7 @@ export const ItemInfo = memo(({ data, t }) => {
                 <Icon className="text-muted" icon='Dot' size={14}  />
                     
                     <Link href={data.owners[0].url} emulate={true}>
-                        <Text className=" text-label-secondary web:hover:text-label-linkhover font-medium text-xs ">
+                        <Text className=" text-secondary-foreground web:hover:text-label-linkhover font-medium text-xs ">
                             {owners[0].title}
                         </Text>
                     </Link>
@@ -498,7 +498,7 @@ export const VisibilityInfo = memo(({ data }) => {
     return (
         
                 
-                <View className="gap-1  flex-row self-start items-center ">
+                <View className="gap-1 flex-row self-start items-center ">
                 
                     {isUser ? (
                         <Profile
@@ -507,9 +507,9 @@ export const VisibilityInfo = memo(({ data }) => {
                             displaySize="2xs"
                         />
                     ) : icon ? (
-                            <Icon className="text-label-tertiary" icon={icon} width={16} height={16} />
+                            <Icon className="text-muted-foreground" icon={icon} width={16} height={16} />
                     ) : null}
-                    <Text className="text-label-tertiary text-sm leading-5 font-semibold">
+                    <Text className="text-muted-foreground text-sm leading-5">
                         {isUser ? data.author_data.display_name : text}
                     </Text>
                 </View>
@@ -525,7 +525,7 @@ export const Author = memo(({ data, url, t }) => {
             return null 
         return (
             <Row className=" items-center" key={`action-${item.cid}-${item.iid}`}>
-            <Icon className="text-label-tertiary" key="icon" icon='Dot' size={14}  />
+            <Icon className="text-muted-foreground" key="icon" icon='Dot' size={14}  />
             <Element
                 params={{
                     button_variant: 'link',

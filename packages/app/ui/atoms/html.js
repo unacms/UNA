@@ -30,7 +30,7 @@ const StyledEM = (props) => {
 }
 
 const StyledP = ({ children, className, ...props }) => {
-    className += ' text-label-primary '
+    className += ' text-foreground '
     className += props.isfirst === 'true' ? 'mt-0 ' : 'mt-1.5 '
     className += props.islast === 'true' ? 'mt-0 ' : 'mb-1.5 '
 

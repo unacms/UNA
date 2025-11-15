@@ -14,9 +14,9 @@ export function ProfileDisplayNameLink(title, url, href, fontSize, actions, opti
     const inheritTextSize = options?.inheritTextSize === true;
     const extraTextClass = options?.textClassName || '';
 
-    const baseColorClass = inheritColor ? '' : ' text-label-primary web:hover:text-primary ';
+    const baseColorClass = inheritColor ? '' : ' text-foreground web:hover:text-primary ';
     const sizeClass = inheritTextSize ? '' : (fontSize || 'text-sm');
-    const composed = `${baseColorClass} ${sizeClass} ${extraTextClass} truncate text-ellipsis font-bold tracking-tight `.trim();
+    const composed = `${baseColorClass} ${sizeClass} ${extraTextClass} truncate text-ellipsis font-semibold tracking-tight `.trim();
 
     return (
         <Text className={composed}>

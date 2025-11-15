@@ -32,7 +32,7 @@ export function MenuItemSidebar({ title, icon, isActive, addon }) {
                     {isEmoji(icon) ? <Text>{icon}</Text> : <Icon icon={icon} size="20" className={`${isActive ? 'text-primary-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`} />}
                 </View>
             
-            <Text className={` px-2 text-sm leading-tight font-semibold  ${isActive && 'text-foreground' || 'text-label-secondary group-hover:text-label-primary'}`}>{title}</Text>
+            <Text className={` px-2 text-sm leading-tight font-semibold  ${isActive && 'text-foreground' || 'text-secondary-foreground group-hover:text-foreground'}`}>{title}</Text>
             {getPart("CounterIndicator", [addon, true])}
         </Row>
     )

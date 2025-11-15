@@ -95,16 +95,16 @@ export default function Layouts({ path, data, uri, url }) {
                 />}
             >
                 <View className="gap-2">
-                    <Text className="text-xs text-label-secondary font-medium">
+                    <Text className="text-xs text-secondary-foreground font-medium">
                         {t("version_warning_title")}
                     </Text>
-                    <Text className="text-xs text-label-secondary ">
+                    <Text className="text-xs text-secondary-foreground ">
                         {t("version_warning_text1", { version: appVersion, server_version: data.version })}
                     </Text>
-                    <Text className="text-xs text-label-secondary ">
+                    <Text className="text-xs text-secondary-foreground ">
                         {t("version_warning_text2", { version: maxVersion })}
                     </Text>
-                    <Text className="text-xs text-label-secondary ">
+                    <Text className="text-xs text-secondary-foreground ">
                         {t("version_warning_text3")}
                     </Text>
                 </View>

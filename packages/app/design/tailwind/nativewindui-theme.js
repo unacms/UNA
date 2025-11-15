@@ -86,11 +86,7 @@ const nativewindUIColors = {
    
     guide: withOpacity('guide'),
     
-    fill: {
-        primary: withOpacity('fill-primary'),
-        secondary: withOpacity('fill-secondary'),
-        tertiary: withOpacity('fill-tertiary'),
-    },
+    
     shadow: {
         DEFAULT: withOpacity('shadow'),
         xs: withOpacity('shadow-xs'),

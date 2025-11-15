@@ -112,7 +112,7 @@ const SplashTextInner = () => {
                 <Text
                     accessible={true}
                     accessibilityRole="text"
-                    className=" text-label-tertiary text-center lg:text-start text-base sm:text-lg lg:text-xl text-pretty"
+                    className=" text-muted-foreground text-center lg:text-start text-base sm:text-lg lg:text-xl text-pretty"
                 >
                     The best place to share your
                     ideas, find real friends and connect with the community.
@@ -644,7 +644,7 @@ const ComponentsDummyComponent = (props) => {
 const ComponentsFooter = () => {
     return (
         <MenuFooter
-            cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
+            cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 "
             variant="ghost"
             size="sm"
             itemClassName="text-sm p-1"

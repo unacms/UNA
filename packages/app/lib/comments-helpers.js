@@ -402,7 +402,7 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
 
         <Row className={'flex-row ' + (classesBrowse ? classesBrowse : `p-3 sm:px-4 justify-between items-center  border-t border-border/60`)}>
 
-            <Text className='flex-auto text-base font-bold text-card-foreground'>{title} ({commentData.total_count})</Text>
+            <Text className='flex-auto text-base font-semibold text-secondary-foreground'>{title} ({commentData.total_count})</Text>
             {!appSetting('comments', 'hide_sort') && <View className="ml-4">
                 <Pressable className="flex-auto" onPress={(event) => { event.preventDefault() }}>
                     <DropdownMenu items={[
@@ -484,7 +484,7 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
     )
 }
 
-export function CommentsForm({ form, requestUrl, module, browse, formData, handleForm }) {
+export function CommentsForm({ form, requestUrl, module, browse, formData, handleForm, isModal = false }) {
 
     if (!form?.data?.inputs)
         return <></>
@@ -574,10 +574,16 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
     }
 
    
-    const className = "w-full";
+   
+
+    const combinedExProps = {
+        ...(form?.exProps || {}),
+        browse: dynamicData?.data?.browse,
+        isModal,
+    };
 
     return (
-        <View className={className} >
+        <View className="lg:rounded-b-2xl max-w-4xl p-4 bg-card " >
             {
                 form?.data?.inputs?.cmt_parent_id?.value > 0 && (<View className=' rounded-sm border-l-2 border-bgritemprimary dark:border-bgritemprimary-d  py-1 pl-2 mb-2'>
                     <Row className='items-start justify-between max-w-full relative'>
@@ -594,7 +600,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
                     </Row>
                 </View>)
             }
-            <Form {...form} exProps={{ browse: dynamicData?.data?.browse }} resetOnSubmit={true} classContainerName={" flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
+            <Form {...form} exProps={combinedExProps} resetOnSubmit={true} classContainerName={" flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
         </View>
     )
 }

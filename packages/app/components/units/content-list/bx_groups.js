@@ -59,7 +59,7 @@ export default function Unit(props) {
                                 <View>
                                     <Text
                                         numberOfLines={1}
-                                        className=" text-base leading-tight tracking-tight font-bold text-label-secondary group-hover:text-label-primary "
+                                        className=" text-base leading-tight tracking-tight font-bold text-secondary-foreground group-hover:text-foreground "
                                     >
                                         {data.title}
                                     </Text>
@@ -121,7 +121,7 @@ export default function Unit(props) {
                                 <View>
                                     <Text
                                         numberOfLines={2}
-                                        className=" text-base leading-tight tracking-tight font-bold text-label-secondary group-hover:text-label-primary "
+                                        className=" text-base leading-tight tracking-tight font-bold text-secondary-foreground group-hover:text-foreground "
                                     >
                                         {data.title}
                                     </Text>

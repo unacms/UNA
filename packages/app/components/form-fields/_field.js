@@ -10,7 +10,7 @@ export default function (props) {
     const caption = props.format === 'notitle' ? '' : props.caption
 
     const sClassName =
-        ' form-control form-control-' +
+        '  form-control form-control-' +
         props.name +
         (props.form_layout !== 'hor' ? ' w-full ' : '') +
         (props.noPadding === true ? '  ' : ' ' + appSetting('forms', 'field_padding') + ' ') +
@@ -27,7 +27,7 @@ export default function (props) {
 
     const captionElement = (
         <View className=" gap-y-2 z-10">
-            <Text className="label-text block px-0.5 w-full ">
+            <Text className=" text-secondary-foreground block px-0.5 w-full ">
                 <Row className="items-center gap-x-1">
                     <Text className={appSetting('forms', 'caption_classes')}>
                         {caption}
@@ -89,9 +89,9 @@ export default function (props) {
 
 export function FormError({ errorText, errorLink }) {
     const errorMessage = (
-        <View className="label px-1">
-            <Text className="ml-0.5 mt-0.5 label-text-alt text-sm text-red-600 animate-pulse dark:text-red-400">{errorText}</Text>
-        </View>
+        
+            <Text className="text-destructive text-sm bg-destructive/10 px-1 py-0.5 rounded-md">{errorText}</Text>
+        
     )
 
     return errorLink ? (
