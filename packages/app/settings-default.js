@@ -1656,7 +1656,7 @@ export const settingsDefault = {
                 '  ',
                 ' ',     
             ].join(' '),
-            'u-btn-default-text': 'font-semibold text-secondary-foreground group-hover:text-foreground',
+            'u-btn-default-text': 'font-medium text-secondary-foreground group-hover:text-foreground',
             'u-btn-default-trans': 'web:duration-200',
 
           
@@ -1668,84 +1668,84 @@ export const settingsDefault = {
                 ' shadow-xs web:hover:shadow-md web:active:shadow-none active:shadow-none  ',
                 ' ',
             ].join(' '),
-            'u-btn-primary-text': ' font-semibold text-primary-foreground ',
+            'u-btn-primary-text': ' font-medium text-primary-foreground ',
             'u-btn-primary-trans': ' web:duration-200',
 
 
             'u-btn-accent-cnt':
                 ' bg-accent overflow-hidden web:active:ring-2 web:active:ring-accent web:active:ring-offset-2 web:active:outline-none ',
-            'u-btn-accent-text': ' font-semibold text-white ',
+            'u-btn-accent-text': ' font-medium text-white ',
             'u-btn-accent-trans': '  web:duration-200',
             'u-btn-accent-hover': 'web:group-hover:bg-white/10 web:duration-200',
             
 
             'u-btn-secondary-cnt': 'overflow-hidden web:group bg-secondary/80 web:hover:bg-secondary web:focus-visible:bg-secondary ',
             'u-btn-secondary-text':
-                ' web:duration-200 font-semibold text-secondary-foreground web:group-hover:text-foreground ',
+                ' web:duration-200 font-medium text-secondary-foreground web:group-hover:text-foreground ',
             'u-btn-secondary-trans': ' web:duration-200 ',
             
 
             'u-btn-danger-cnt':
                 '  dark:border-transparent bg-red-600 web:hover:bg-red-500 web:hover:shadow web:active:opacity-50 web:active:shadow-none',
-            'u-btn-danger-text': 'font-semibold text-danger-foreground',
+            'u-btn-danger-text': 'font-medium text-danger-foreground',
             'u-btn-danger-trans': ' web:duration-200',
             
 
             'u-btn-text-cnt': ' web:group active:bg-muted web:focus-visible:bg-muted/60 web:hover:bg-muted/60 overflow-hidden ',
             'u-btn-text-text':
-                ' font-semibold text-secondary-foreground web:group-hover:text-foreground web:focus:text-foreground',
+                ' font-medium text-secondary-foreground web:group-hover:text-foreground web:focus:text-foreground',
             'u-btn-text-trans': ' web:duration-200',
          
 
             'u-btn-link-cnt': '  group  ',
             'u-btn-link-text':
-                ' font-semibold text-label-link web:group-hover:text-label-linkhover web:group-hover:underline web:active:text-label-linkhover ',
+                ' font-medium text-label-link web:group-hover:text-label-linkhover web:group-hover:underline web:active:text-label-linkhover ',
             'u-btn-link-trans': ' web:duration-200  ',
             
 
             'u-btn-outline-cnt':
                 ' bg-transparent border border-border/60 web:border-0 web:ring-1 backdrop-blur-xl web:ring-inset web:ring-border/80 ',
             'u-btn-outline-text':
-                ' font-semibold text-card-foreground web:group-hover:text-foreground ',
+                ' font-medium text-card-foreground web:group-hover:text-foreground ',
             'u-btn-outline-trans': '  web:duration-200',
 
             'u-btn-group-item-cnt': '   ',
             'u-btn-group-item-text':
-                ' font-semibold text-card-foreground web:group-hover:text-foreground ',
+                ' font-medium text-card-foreground web:group-hover:text-foreground ',
             'u-btn-group-item-icon':
                 ' text-card-foreground web:group-hover:text-foreground ',
 
             'u-btn-group-item-default-cnt':
                 'border-4 border-red-500 dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',
             'u-btn-group-item-default-text':
-                'font-semibold text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
+                'font-medium text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
             'u-btn-group-item-default-icon':
                 'text-neutral-700 dark:text-neutral-300 web:dark:group-hover:text-neutral-50',
 
             'u-btn-group-item-primary-cnt':
                 'border border-transparent dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',
             'u-btn-group-item-primary-text':
-                'font-semibold text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
+                'font-medium text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
             'u-btn-group-item-primary-icon':
                 'text-neutral-700 dark:text-neutral-300 web:dark:group-hover:text-neutral-50',
 
             'u-btn-group-item-secondary-cnt':
                 ' web:hover:bg-secondary h-full w-full overflow-hidden',
             'u-btn-group-item-secondary-text':
-                'font-semibold text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 web:dark:group-hover:text-white',
+                'font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 web:dark:group-hover:text-white',
             'u-btn-group-item-secondary-icon':
                 'text-red-500 dark:text-neutral-300 web:dark:group-hover:text-neutral-50',
 
             'u-btn-group-item-text-cnt':
                 '  web:lg:hover:bg-secondary/80 web:active:bg-secondary web:duration-200 ',
             'u-btn-group-item-text-text':
-                ' font-semibold text-muted-foreground web:group-hover:text-foreground ',
+                ' font-medium text-muted-foreground web:group-hover:text-foreground ',
             'u-btn-group-item-text-icon':
                 ' text-muted-foreground web:group-hover:text-foreground ',
 
             'u-btn-group-item-link-cnt': '',
             'u-btn-group-item-link-text':
-                'font-semibold text-muted-foreground web:hover:text-foreground web:active:text-foreground  ',
+                'font-medium text-muted-foreground web:hover:text-foreground web:active:text-foreground  ',
             'u-btn-group-item-link-icon':
                 'text-primary dark:text-primary web:dark:group-hover:text-primary',
             'u-btn-group-item-link-pressed-cnt': 'bg-accent ',
@@ -1755,21 +1755,21 @@ export const settingsDefault = {
             'u-btn-group-item-outline-cnt':
                 'border border-bdritem dark:border-bdritem-d web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',
             'u-btn-group-item-outline-text':
-                'font-semibold text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
+                'font-medium text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
             'u-btn-group-item-outline-icon':
                 'text-neutral-700 dark:text-neutral-300 web:dark:group-hover:text-neutral-50',
 
             'u-btn-group-item-accent-cnt':
                 'border border-transparent dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',
             'u-btn-group-item-accent-text':
-                'font-semibold text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
+                'font-medium text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
             'u-btn-group-item-accent-icon':
                 'text-neutral-700 dark:text-neutral-300 web:web:dark:group-hover:text-neutral-50',
 
             'u-btn-label-cnt':
                 'border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 web:hover:bg-neutral-100 dark:web:hover:bg-neutral-800 web:active:opacity-70',
             'u-btn-label-text':
-                'font-semibold text-sm text-neutral-600 dark:text-neutral-400 web:hover:text-neutral-800 dark:web:hover:text-neutral-200',
+                'font-medium text-sm text-neutral-600 dark:text-neutral-400 web:hover:text-neutral-800 dark:web:hover:text-neutral-200',
             'u-btn-label-trans': '  web:duration-200',
 
             'u-btn-group-divider-text-cnt':
@@ -1789,19 +1789,19 @@ export const settingsDefault = {
             'u-btn-secondary-cnt':
                 '  flex-row bg-secondary/80  ',
             'u-btn-secondary-text':
-                ' font-semibold text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 web:dark:group-hover:text-white ',
+                ' font-medium text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 web:dark:group-hover:text-white ',
             'u-btn-secondary-trans': '   web:duration-300 ',
 
             'u-btn-link-cnt':
                 ' border border-transparent dark:border-transparent flex flex-row web:active:opacity-50 items-center ',
             'u-btn-link-text':
-                ' font-semibold web:group-hover:underline text-card-foreground  web:hover:text-neutral-950 web:dark:hover:text-neutral-50 web:active:opacity-50 ',
+                ' font-medium web:group-hover:underline text-card-foreground  web:hover:text-neutral-950 web:dark:hover:text-neutral-50 web:active:opacity-50 ',
             'u-btn-link-trans': '   web:duration-300 ',
 
             'u-btn-label-cnt':
                 'border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 flex flex-row web:active:opacity-70',
             'u-btn-label-text':
-                ' font-semibold text-sm text-neutral-600 dark:text-neutral-400 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 ',
+                ' font-medium text-sm text-neutral-600 dark:text-neutral-400 web:hover:text-neutral-800 web:dark:hover:text-neutral-200 ',
             'u-btn-label-trans': '   web:duration-200 ',
         },
     },

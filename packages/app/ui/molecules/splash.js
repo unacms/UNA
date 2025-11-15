@@ -34,7 +34,7 @@ function PageContent(props) {
         <View className="w-full justify-center lg:w-1/2 p-4 sm:p-8 md:p-12 p-6 ">
             <AnimatedView className="gap-4" direction="up" delay={200}>
                 <Card
-                    padding="p-6 max-w-xl w-full mx-auto"
+                    padding="p-6 gap-6 max-w-xl w-full mx-auto rounded-3xl"
                     role="form"
                     titleId="login-card-title"
                     aria-describedby="login-card-description"
