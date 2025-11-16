@@ -28,8 +28,8 @@ function PageContent({ children }) {
         <View className="w-full justify-center lg:w-1/2 p-4 sm:p-8 md:p-12 p-6 ">
 
             <AnimatedView className="gap-4" direction="up" delay={200}>
-            <Card padding="p-6 gap-6 max-w-xl w-full mx-auto rounded-3xl">
-            <CardHeader>
+            <Card padding="p-0 gap-6 max-w-xl w-full mx-auto rounded-3xl">
+            <CardHeader className="px-6 pt-5">
                         <CardTitle className="text-center lg:text-start">{t('create_account_page_caption')}</CardTitle>
                         
                             <CardDescription className="text-center lg:text-start">
@@ -37,29 +37,28 @@ function PageContent({ children }) {
                             </CardDescription>
                     
                     </CardHeader>
-                    <CardContent>{children}</CardContent>
+                    <CardContent className="px-6">
+                        {children}
+                        <AuthPanel showSeparator={true} createAccountLink={false} loginLink={true} />
+                    </CardContent>
                     <CardFooter>
-                        <AuthPanel
-                            createAccountLink={false}
-                            
-                            showSeparator={true}
-                        />
+                        <Row className=" mx-auto gap-1 justify-center items-center text-center">
+                            <Text className="text-secondary-foreground text-base ">
+                                {t('create_account_page_already_have')}
+                            </Text>
+                            <Link
+                                variant="accent"
+                                size="md"
+                                href="/login"
+                                haptics="Medium"
+                            >
+                                {t('create_account_page_sign_in')}
+                            </Link>
+                        </Row>
                     </CardFooter>
                 </Card>
 
-                <Row className=" mx-auto gap-1 justify-center items-center text-center">
-                    <Text className="text-secondary-foreground text-base ">
-                        {t('create_account_page_already_have')}
-                    </Text>
-                    <Link
-                        variant="accent"
-                        size="md"
-                        href="/login"
-                        haptics="Medium"
-                    >
-                        {t('create_account_page_sign_in')}
-                    </Link>
-                </Row>
+               
             </AnimatedView>
         </View>
     )

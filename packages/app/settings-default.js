@@ -219,8 +219,8 @@ export const settingsDefault = {
         show_nav_titles: false, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
         sidebar_container: '  h-full mx-3 ',
-        sidebar_inner_container: ' p-2 shadow-sm overflow-y-auto flex flex-col bg-card rounded-2xl ring-1 ring-border/60 ring-inset  ',
-        sidebar_title: 'sticky z-10 justify-between items-center h-12 px-2 py-1.5 mb-2.5 z-10',
+        sidebar_inner_container: ' py-2 px-3 shadow-sm overflow-y-auto flex flex-col bg-card rounded-2xl ring-1 ring-border/60 ring-inset  ',
+        sidebar_title: 'sticky z-10 justify-between items-center h-12 ps-2 py-1.5 mb-1.5 z-10',
         sidebar_position: ' z-50 fixed fixed-process ',
         bgrDecorator: true, // Enable/disable decorator background globally for conductor buttons
     },
@@ -1135,7 +1135,7 @@ export const settingsDefault = {
         },
 
         inputs: {
-            default: ' file:text-foreground text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground bg-input/40 border border-input focus-visible:bg-transparent leading-5 focus-visible:border focus-visible:border-ring rounded-xl px-3 min-h-12 flex-auto text-base placeholder-muted-foreground text-foreground  web:duration-200 overflow-hidden',
+            default: ' file:text-foreground text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground bg-input/60 border border-input focus-visible:bg-card leading-5 focus-visible:border-ring focus-visible:outline-accent rounded-xl px-3 min-h-12 flex-auto text-base placeholder-muted-foreground text-foreground  web:duration-200 overflow-hidden',
            
             multi: ' bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 py-2 min-h-12 flex-auto text-base leading-6 overflow-y-scroll [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden shadow-xs placeholder:text-muted-foreground text-card-foreground web:duration-100 ',
             rounded:
@@ -1345,20 +1345,20 @@ export const settingsDefault = {
                 focus: ' web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2 web:ring-offset-background ',
             },
             sm: {
-                padding: '  ',
+                padding: ' px-1 ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-sm ',
                 hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
                 text: ' text-sm ',
                 rounded: '  rounded ',
-                focus: ' web:focus-visible:outline-offset-4 web:focus-visible:outline-4 web:focus-visible:ring-1 web:focus-visible:ring-offset-[3px]  active:outline-4 active:outline-offset-8   ',
+                focus: ' web:focus-visible:outline-offset-4 web:focus-visible:outline-4 active:outline-4 active:outline-offset-8   ',
             },
             md: {
-                padding: '  ',
+                padding: ' px-1 py-0.5 ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-md ',
                 hitSlop: { top: 4, right: 4, bottom: 4, left: 4 },
                 text: ' underline-offset-2  text-base  ',
-                rounded: ' rounded ',
-                focus: '  active:outline-4 active:outline-offset-2 web:focus-visible:outline-offset-2  ',
+                rounded: ' rounded-md ',
+                focus: '    ',
             },
             lg: {
                 padding: ' px-2 rounded-xl items-center flex web:active:outline-ring ',
@@ -1377,12 +1377,12 @@ export const settingsDefault = {
             'u-link-default-trans': ' web:duration-200 ',
 
             // neutral color link, no background
-            'u-link-plain-cnt': ' web:outline-ring/40 web:focus-visible:outline web:active:outline  ',
-            'u-link-plain-text': ' text-secondary-foreground web:hover:text-foreground web:hover:underline ',
+            'u-link-plain-cnt': ' active:bg-muted/60  ',
+            'u-link-plain-text': ' text-secondary-foreground web:hover:text-foreground web:hover:underline decoration-muted-foreground ',
             'u-link-plain-trans': ' web:duration-200 ',
 
             // branded color link, no background
-            'u-link-accent-cnt': ' web:outline-ring/40 web:focus-visible:outline web:active:outline  ',
+            'u-link-accent-cnt': ' active:bg-accent/60 selected:bg-accent/60  ',
             'u-link-accent-text': ' text-label-link web:hover:text-label-linkhover web:hover:underline ',
             'u-link-accent-trans': ' web:duration-200 ',
 
@@ -1647,14 +1647,10 @@ export const settingsDefault = {
         button_styles: {
             // Default button (neutral/popover)
             'u-btn-default-cnt': [
-                ' bg-card/90 web:hover:bg-muted/60 overflow-hidden ',
-                ' border border-border/60 web:hover:border-border ',
-                ' active:outline-ring/40 active:outline-offset-2 active:outline active:outline-4 ',
-                ' ',
-                ' shadow-xs web:hover:shadow-md web:active:shadow-none active:shadow-none',
-                ' active:outline-ring/40 active:outline-offset-2 active:outline active:outline-4   ',
-                '  ',
-                ' ',     
+                ' bg-card web:hover:bg-muted/40 overflow-hidden ',
+                ' border border-border/60 web:hover:border-border web:focus-visible:border-border  ',
+                ' web:focus-visible:outline-offset-2 active:outline active:outline-accent active:outline-offset-1 active:outline-4  ',
+                ' shadow-xs web:hover:shadow-md web:active:shadow-none active:shadow-none',    
             ].join(' '),
             'u-btn-default-text': 'font-medium text-secondary-foreground group-hover:text-foreground',
             'u-btn-default-trans': 'web:duration-200',
@@ -1663,8 +1659,8 @@ export const settingsDefault = {
             // Primary button (primary/accent)
             'u-btn-primary-cnt': [
                 // Background and main color
-                ' bg-primary/90 web:hover:bg-primary active:opacity-80 overflow-hidden ',
-                ' active:outline-ring/40 active:outline-offset-2 active:outline active:outline-4  ',
+                ' bg-primary/90 web:hover:bg-primary overflow-hidden  ',
+                ' web:focus-visible:outline-offset-2 active:outline active:outline-accent active:outline-offset-1 active:outline-4  ',
                 ' shadow-xs web:hover:shadow-md web:active:shadow-none active:shadow-none  ',
                 ' ',
             ].join(' '),

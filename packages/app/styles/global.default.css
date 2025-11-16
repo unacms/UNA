@@ -17,7 +17,7 @@
         --secondary-foreground: var(--neutral-700); /*content on secondary buttons, secondary surfaces*/
         --muted: var(--neutral-200); /*background for ui items, sections, hover states*/
         --muted-foreground: var(--neutral-500); /*muted content*/
-        --accent: var(--accent-600); /*background for accent buttons, accent surfaces*/
+        --accent: var(--accent-200); /*background for accent buttons, accent surfaces*/
         --accent-foreground: var(--white); /*content on accent buttons, accent surfaces*/
         --destructive: var(--red); /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--white); /*content on destructive buttons, destructive surfaces*/
@@ -215,9 +215,9 @@
 
 /* Global outline color only (no width). Components control size/offset. */
 *:focus-visible {
-    outline-color: rgb(var(--ring) / 0.4);
+    outline-color: rgb(var(--ring) / 1);
     outline-style: auto;
-    outline-offset: 2px;
+    outline-offset: 0px;
     outline-width: 4px;
 }
 
