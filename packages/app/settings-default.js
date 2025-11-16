@@ -1342,15 +1342,15 @@ export const settingsDefault = {
                 hitSlop: { top: 8, right: 8, bottom: 8, left: 8 },
                 text: ' text-xs leading-4 min-h-4 items-center justify-center flex',
                 rounded: ' rounded ',
-                focus: ' web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2 web:ring-offset-background ',
+                focus: '  ',
             },
             sm: {
-                padding: ' px-1 ',
+                padding: ' px-0.5 py-px ',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-sm ',
                 hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
                 text: ' text-sm ',
                 rounded: '  rounded ',
-                focus: ' web:focus-visible:outline-offset-4 web:focus-visible:outline-4 active:outline-4 active:outline-offset-8   ',
+                focus: '  web:focus-visible:outline-offset-4  ',
             },
             md: {
                 padding: ' px-1 py-0.5 ',
@@ -1358,16 +1358,15 @@ export const settingsDefault = {
                 hitSlop: { top: 4, right: 4, bottom: 4, left: 4 },
                 text: ' underline-offset-2  text-base  ',
                 rounded: ' rounded-md ',
-                focus: '    ',
+                focus: ' web:focus-visible:outline-offset-2   ',
             },
             lg: {
-                padding: ' px-2 rounded-xl items-center flex web:active:outline-ring ',
-                hitarea_class: ' relative u-link-hitarea u-link-hitarea-lg ',
+                padding: ' px-2 py-1 ',
+                hitarea_class: ' relative u-link-hitarea u-link-hitarea-md ',
                 hitSlop: { top: 2, right: 2, bottom: 2, left: 2 },
-                text: ' text-base leading-8 min-h-8 items-center justify-center flex ',
-                rounded: ' rounded-xl ',
-                focus: ' web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2 web:ring-offset-background ',
-            },
+                text: ' underline-offset-2  text-lg  ',
+                rounded: ' rounded-lg ',
+                focus: ' web:focus-visible:outline-offset-2   ', },
         },
 
         link_styles: {
@@ -1387,17 +1386,17 @@ export const settingsDefault = {
             'u-link-accent-trans': ' web:duration-200 ',
 
             // neutral color link, no background, hover background
-            'u-link-ghost-cnt':  ' u-link-ghost web:outline-ring/40 web:focus-visible:outline web:active:outline   ',
+            'u-link-ghost-cnt':  ' u-link-ghost    ',
             'u-link-ghost-text':  ' text-secondary-foreground web:hover:text-foreground ',
             'u-link-ghost-trans': ' web:duration-100 ',
 
             // branded color link, no background, hover background
-            'u-link-plainghost-cnt':  ' u-link-ghost web:outline-ring/40 web:focus-visible:outline web:active:outline   ',
+            'u-link-plainghost-cnt':  ' u-link-ghost   ',
             'u-link-plainghost-text':  ' text-muted-foreground web:hover:text-foreground ',
             'u-link-plainghost-trans': ' web:duration-100 ',
 
             // branded color link, no background, hover background
-            'u-link-accentghost-cnt':  ' u-link-ghost web:outline-ring/40 web:focus-visible:outline web:active:outline  ',
+            'u-link-accentghost-cnt':  ' u-link-ghost   ',
             'u-link-accentghost-text':  ' text-label-link web:hover:text-label-linkhover ',
             'u-link-accentghost-trans': ' web:duration-100 ',
 
@@ -1647,7 +1646,7 @@ export const settingsDefault = {
         button_styles: {
             // Default button (neutral/popover)
             'u-btn-default-cnt': [
-                ' bg-card web:hover:bg-muted/40 overflow-hidden ',
+                ' bg-card web:hover:bg-muted/40 overflow-hidden active:opacity-80 ',
                 ' border border-border/60 web:hover:border-border web:focus-visible:border-border  ',
                 ' web:focus-visible:outline-offset-2 active:outline active:outline-accent active:outline-offset-1 active:outline-4  ',
                 ' shadow-xs web:hover:shadow-md web:active:shadow-none active:shadow-none',    
