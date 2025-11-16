@@ -505,11 +505,11 @@ body {
 }
 
 .u-vanilla-html ul {
-    @apply list-disc pl-5 mb-3;
+    @apply list-disc pl-5 my-2;
 }
 
 .u-vanilla-html li {
-    @apply mb-1;
+    @apply mb-1.5;
 }
 
 .u-vanilla-html div> :where(:first-child):not(:where([class~="not-prose"] *)),
