@@ -402,7 +402,7 @@ export function noContentByUrl(endpoint){
 }
 
 export function layoutForList(endpoint){
-     if (endpoint?.request_url.includes('bx_timeline'))
+     if (!endpoint && endpoint?.request_url.includes('bx_timeline'))
         return 'w-full';
 
     if (endpoint?.module == 'bx_groups')

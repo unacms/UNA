@@ -4,7 +4,8 @@ import {
     useCallback,
     useEffect,
     memo,
-    useRef
+    useRef,
+    useReducer
 } from 'react'
 import { View, Row, ScrollView } from 'app/design/view'
 import { Platform } from 'react-native'
@@ -59,17 +60,39 @@ const getNumCols = (width, props, data) => {
     return 1
 }
 
+const refetchReducer = (state, action) => {
+    switch (action.type) {
+        case 'SET_ITEMS':
+            return {
+                visibleItems: action.items,
+                hasNewData: false
+            }
+        case 'SHOW_NEW_DATA':
+            return {
+                ...state,
+                hasNewData: true
+            }
+        default:
+            return state
+    }
+}
+
 export default function Browse(props) {
     const isWeb = Platform.OS === 'web'
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
 
-    const [visibleItems, setVisibleItems] = useState([])
-    const [hasNewData, setHasNewData] = useState(false)
-    const latestItemsRef = useRef([])
-    const isFirstLoadRef = useRef(true)
+    const [refetchState, dispatch] = useReducer(refetchReducer, {
+        visibleItems: [],
+        hasNewData: false
+    })
+    const refetchRef = useRef({
+        skipToast: false,
+        isFirstLoad: true,
+        prevItems: []
+    })
     //updateMode can be action, auto, none
-    const updateMode = props.updateMode || props.data.unit == 'feed' ? 'action' : 'none';
+    const updateMode = (props.updateMode || props.data.unit == 'feed') ? 'action' : 'none';
     const data = props.data
     const isOneLine = data?.params?.view == 'showcase'
     const isOnePage = props.only_one_page || isOneLine;
@@ -174,34 +197,29 @@ export default function Browse(props) {
     }
 
     useEffect(() => {
-    if (!pagesData) return
+        if (!pagesData) return
 
-    const items = flattenPages(pagesData)
+        const items = flattenPages(pagesData)
 
-    if (isFirstLoadRef.current) {
-        // первый успешный фетч — всегда просто отрисовываем
-        setVisibleItems(items)
-        latestItemsRef.current = items
-        isFirstLoadRef.current = false
-        return
-    }
-
-    const current = visibleItems
-
-    if (!isSameItems(current, items)) {
-        // данные изменились после рефетча
-        if (updateMode == 'action') {
-            // режим "Показать тост, но не менять список до клика"
-            latestItemsRef.current = items
-            setHasNewData(true)
-        } else {
-            // режим "Сразу обновлять UI без тоста"
-            latestItemsRef.current = items
-            setVisibleItems(items)
-            setHasNewData(false)
+        if (refetchRef.current.isFirstLoad) {
+            dispatch({ type: 'SET_ITEMS', items })
+            refetchRef.current.prevItems = items
+            refetchRef.current.isFirstLoad = false
+            return
         }
-    }
-}, [pagesData, updateMode])
+
+        if (!isSameItems(refetchRef.current.prevItems, items)) {
+            if (refetchRef.current.skipToast) {
+                dispatch({ type: 'SET_ITEMS', items })
+                refetchRef.current.skipToast = false
+            } else if (updateMode == 'action') {
+                dispatch({ type: 'SHOW_NEW_DATA' })
+            } else {
+                dispatch({ type: 'SET_ITEMS', items })
+            }
+            refetchRef.current.prevItems = items
+        }
+    }, [pagesData, updateMode])
 
     let sSkeleton = data.module ? data.module : data.unit
     if (props?.skeleton) sSkeleton = props?.skeleton
@@ -212,11 +230,13 @@ export default function Browse(props) {
     useEffect(() => {
         const subscription = emitter.addListener(`page`, (data) => {
             if (data.action == 'reload') {
+                refetchRef.current.skipToast = true
                 refetch();
             }
         })
         const subscription2 = emitter.addListener(`feed`, (data) => {
             if (data.action == 'remove_content' || data.action == 'new_content') {
+                refetchRef.current.skipToast = true
                 refetch();
             }
         })
@@ -227,7 +247,7 @@ export default function Browse(props) {
         }
     }, [])
 
-    const dataItems = visibleItems
+    const dataItems = refetchState.visibleItems
 
     if (
         dataItems.length == 0 &&
@@ -388,13 +408,14 @@ export default function Browse(props) {
     return (
         <View className={`w-full ${isOneLine ? '' : 'h-full'}`}>
             <View className="w-full" onLayout={handleLayout}></View>
-            {hasNewData && <Toaster
+            {refetchState.hasNewData && <Toaster
 
                 onPress={() => {
-                    setVisibleItems(latestItemsRef.current)
-                    setHasNewData(false)
+                    const latestItems = flattenPages(pagesData)
+                    dispatch({ type: 'SET_ITEMS', items: latestItems })
+                    refetchRef.current.prevItems = latestItems
                 }}
-                isVisible={hasNewData}
+                isVisible={refetchState.hasNewData}
                 variant="primary"
                 title="Show New"
                 size="sm"
