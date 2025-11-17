@@ -54,324 +54,6 @@ import { useIsDesktop, useBreakpoint } from 'app/context/measure'
 
 const conductorTheme = appSetting('theme', 'conductor')
 
-const RenderScene = ({
-    route,
-    menu,
-    header,
-    routes,
-    headerSettings,
-    prevRoute,
-    headerHeight,
-    layoutName,
-    LeftBarContentBlocks,
-    setIndex,
-    unitType,
-    handleEndReached,
-    isFetchingNextPage,
-    hasNextPage,
-    currentBreakpoint,
-    index,
-    skeleton,
-}) => {
-    const { currentUser } = useCurrentUser()
-    const uniRef = useRef()
-    const pageRoute = route.inited ? route : prevRoute
-    const pageData = pageRoute.pageData
-    const dataItems = route?.data
-
-    const isRightCol =
-        route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar
-    const isLeftCol =
-        route?.leftbar?.content?.length > 0 || layoutName == 'navigator'
-    const renderItem = useCallback(
-        ({ item, index }) => (
-            <ItemRenderer
-                unitType={unitType}
-                route={pageRoute}
-                item={{ ...item, feed_type: pageRoute?.endpoint?.params?.type }}
-                unit={pageRoute?.endpoint?.unit}
-                module={pageRoute?.endpoint?.module}
-            />
-        ),
-        [pageRoute, unitType]
-    )
-
-    const layout = callFn('layoutForList', [pageRoute?.endpoint]);
-
-    const Preload = useMemo(
-        () => getSkeletonForList(skeleton, 5, true, layout),
-        [skeleton]
-    )
-
-    const PreloadShort = useMemo(
-        () => getSkeletonForList(skeleton, 5, false, layout),
-        [skeleton]
-    )
-    const MainContent = useMemo(() => {
-        return (
-            <UniList
-                scrollProps={
-                    header
-                        ? {
-                            pageData: pageData,
-                            subHeaderComponent: header,
-                            headerHeight: headerHeight,
-                            isBackButton: false,
-                            isMenuNameAsTitle: true,
-                        }
-                        : null
-                }
-                index={pageRoute.index}
-                data={dataItems}
-                endpoint={pageRoute.endpoint}
-                listState={pageRoute?.state}
-                layout={layout}
-                mode={layout == 'w-full'? 'simple': ''}
-                storagekey={pageRoute.storageKeyValue}
-                refer={uniRef}
-                route={pageRoute}
-                unit={pageRoute.endpoint?.unit}
-                useWindowScroll={true}
-                onEndReached={handleEndReached}
-                renderItem={renderItem}
-                ListFooterComponent={
-                    <View>
-                        {hasNextPage && isFetchingNextPage ? Preload : null}
-                    </View>
-                }
-            />
-        )
-    }, [dataItems, dataItems.length, header, headerHeight, hasNextPage, isFetchingNextPage])
-
-    const groupRef = useRef(null)
-    const sidebarUnitType =
-        pageRoute.blocks?.browse_sidebar?.unitType || 'default'
-    const layoutCols =
-        !isLeftCol && !isRightCol
-            ? 'c'
-            : !isLeftCol
-                ? 'c-r'
-                : !isRightCol
-                    ? 'l-c'
-                    : 'l-c-r'
-
-    const cellsCustomConfig = useMemo(() => {
-        return (
-            appSetting('layouts', route?.pageData?.uri) ||
-            appSetting('layouts', `cols-${layoutCols}`)
-        )
-    }, [pageRoute?.pageData?.uri, layoutCols])
-
-    const panelLayoutKey = `${layoutCols}-${pageData?.uri || 'default'}`
-
-    const { cells = {} } = cellsCustomConfig || {}
-    const currentBreakpointName = getBreakpoint(currentBreakpoint)
-
-    // LEFT
-    const {
-        breakpoint: leftBreakpoint,
-        responsive: leftResponsive,
-        ...leftBase
-    } = cells.left ?? {}
-    const leftPanelProps = resolvePanelProps(
-        leftBase,
-        leftResponsive,
-        currentBreakpointName
-    )
-
-    // CENTER
-    const {
-        breakpoint: centerBreakpoint,
-        responsive: centerResponsive,
-        ...centerBase
-    } = cells.center ?? {}
-    const centerPanelProps = resolvePanelProps(
-        centerBase,
-        centerResponsive,
-        currentBreakpointName
-    )
-
-    // RIGHT
-    const {
-        breakpoint: rightBreakpoint,
-        responsive: rightResponsive,
-        ...rightBase
-    } = cells.right ?? {}
-    const rightPanelProps = resolvePanelProps(
-        rightBase,
-        rightResponsive,
-        currentBreakpointName
-    )
-
-    const asId = cellsCustomConfig.sizable
-        ? `cells-${panelLayoutKey}`
-        : undefined;
-
-    function getLayouts() {
-        const layouts = [];
-
-        if (isLeftCol && leftPanelProps.defaultSize) {
-            layouts.push(leftPanelProps.defaultSize);
-        }
-        if (centerPanelProps.defaultSize)
-            layouts.push(centerPanelProps.defaultSize);
-
-        if (isRightCol && rightPanelProps.defaultSize) {
-            layouts.push(rightPanelProps.defaultSize);
-        }
-
-        return layouts.length > 0 ? layouts : null;
-    }
-
-
-    const onLayout = (sizes) => {
-        const layouts = getLayouts();
-        if (JSON.stringify(sizes) != JSON.stringify(layouts) && asId && layouts) {
-            storageSet('rrp', asId + '-' + currentBreakpointName, sizes, true);
-        }
-        setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100)
-    }
-
-    useEffect(() => {
-        const sl = storageGet('rrp', asId + '-' + currentBreakpointName, true);
-        if (groupRef) {
-            const l = sl || getLayouts()
-            if (l)
-                groupRef.current?.setLayout(sl || getLayouts())
-        }
-    }, [currentBreakpointName, index])
-
-    useEffect(() => {
-        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-    }, [index])
-
-    return (
-        <PanelGroup
-            ref={groupRef}
-            key={`${panelLayoutKey}-pnl2-${cellsCustomConfig.sizable ? 'sizable' : 'static'
-                }`}
-
-            direction="horizontal"
-            className={(layoutName == 'navigator' ? '' : '') + ' h-full'}
-            onLayout={onLayout}
-        >
-            {isLeftCol && (
-                <>
-                    <Panel
-                        className={`hidden ${leftBreakpoint}:block`}
-                        {...leftPanelProps}
-                    >
-                        <View
-                            className={`${layoutName == 'profile'
-                                    ? 'mt-0.5 sm:p-2' + ' fixed-process'
-                                    : appSetting(
-                                        'conductor',
-                                        'sidebar_container'
-                                    )
-                                }`}
-                        >
-                            {layoutName == 'profile' ? (
-                                <LeftSideBarContainer
-                                    layoutName={layoutName}
-                                    index={index}
-                                    setIndex={setIndex}
-                                    menu={menu}
-                                    routes={routes}
-                                    currentUser={currentUser}
-                                    headerSettings={headerSettings}
-                                >
-                                    {LeftBarContentBlocks}
-                                </LeftSideBarContainer>
-                            ) : (
-                                <View className=" fixed-process ">
-                                    <LeftSideBarContainer
-                                        layoutName={layoutName}
-                                        index={index}
-                                        setIndex={setIndex}
-                                        menu={menu}
-                                        routes={routes}
-                                        currentUser={currentUser}
-                                        headerSettings={headerSettings}
-                                    >
-                                        {LeftBarContentBlocks}
-                                    </LeftSideBarContainer>
-                                </View>
-                            )}
-                        </View>
-                    </Panel>
-                    <PanelHandler
-                        gap={`hidden ${leftBreakpoint}:block`}
-                        sizable={cellsCustomConfig.sizable}
-                    />
-                </>
-            )}
-            <Panel {...centerPanelProps}>
-                <View
-                    className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'
-                        } ${layoutName !== 'navigator'
-                            ? 'mt-0.5 sm:p-2'
-                            : (!pageRoute?.endpoint?.request_url ? 'sm:my-3 mt-0.5 sm:px-3 ' : 'lg:p-1')
-                        }`}
-                >
-                    {MainContent}
-                    {pageRoute?.endpoint?.request_url &&
-                        (!pageRoute.endpoint?.finished
-                            ? dataItems.filter((item) => item.type != 'block').length == 0 ? Preload : PreloadShort
-                            : dataItems.filter((item) => item.type != 'block')
-                                .length == 0 &&
-                            callFn('noContentByUrl', [pageRoute?.endpoint]))}
-                </View>
-            </Panel>
-            {isRightCol && (
-                <>
-                    <PanelHandler
-                        gap={`hidden ${rightBreakpoint}:block`}
-                        sizable={cellsCustomConfig.sizable}
-                    />
-                    <Panel
-                        className={`hidden ${rightBreakpoint}:block `}
-                        {...rightPanelProps}
-                    >
-                        <View className=" fixed-process mt-0.5 sm:p-2">
-                            {pageRoute?.sidebar?.content.map((item, index) => {
-                                return (
-                                    <ItemRenderer
-                                        key={`${pageRoute?.index}-${item.id}`}
-                                        unitType={sidebarUnitType}
-                                        route={pageRoute}
-                                        sidebar={true}
-                                        item={item}
-                                        unit={
-                                            pageRoute?.sidebar?.endpoint?.unit
-                                        }
-                                        module={
-                                            pageRoute?.sidebar?.endpoint?.module
-                                                ? pageRoute?.sidebar?.endpoint
-                                                    ?.module
-                                                : ''
-                                        }
-                                    />
-                                )
-                            })}
-                            <View>
-                                {!!route.pageData && (
-                                    <BlockByName
-                                        data={pageRoute.pageData}
-                                        name={pageRoute.blocks?.browse_sidebar}
-                                        sidebar={true}
-                                        perLine={1}
-                                        maxItems={1}
-                                    />
-                                )}
-                            </View>
-                        </View>
-                    </Panel>
-                </>
-            )}
-        </PanelGroup>
-    )
-}
-
 export function Conductor({
     isCoverDisabled,
     ts,
@@ -390,7 +72,6 @@ export function Conductor({
     const { setBottomSheetData } = useBottomSheetData()
     const { layoutData, setLayoutData } = useLayoutData()
     const { layoutName: tmplLayout } = useLayoutSettings()
-    const toasterRef = useRef() // ref for toaster
     const cleanUrl = data.url.split('?')[0]
     const currentBreakpoint = useBreakpoint()
     const isDesktop = useIsDesktop()
@@ -468,9 +149,7 @@ export function Conductor({
     }
     const [headerSettings, setHeaderSettings] = useState(initialHeaderSettings)
 
-
-    const { fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
-        {
+    const { fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
             queryKey: queryKey,
             queryFn: ({ pageParam }) => parseData(routes, index, setRoutes),
             getNextPageParam: (lastPage, pages) => {
@@ -482,7 +161,6 @@ export function Conductor({
             enabled: currentRoute?.endpoint?.params?.start == 0, //route?.endpoint?.params?.start == 0
         }
     )
-
 
     const handleEndReached = useCallback(
         async (lastItemIndex) => {
@@ -526,15 +204,11 @@ export function Conductor({
         //if (isRevalidate) revalidateData()//TODO
     }, [isRevalidate])
 
-    /* UPDATE CONTENT PART */
     useEffect(() => {
         setBottomSheetData(false)
     }, [index])
 
   
-
-    
-    /* UPDATE CONTENT PART */
 
     /* NEW POST TO FEED */
     useEffect(() => {
@@ -735,6 +409,323 @@ export function Conductor({
                 />
             </View>
         </View>
+    )
+}
+
+const RenderScene = ({
+    route,
+    menu,
+    header,
+    routes,
+    headerSettings,
+    prevRoute,
+    headerHeight,
+    layoutName,
+    LeftBarContentBlocks,
+    setIndex,
+    unitType,
+    handleEndReached,
+    isFetchingNextPage,
+    hasNextPage,
+    currentBreakpoint,
+    index,
+    skeleton,
+}) => {
+    const { currentUser } = useCurrentUser()
+    const uniRef = useRef()
+    const pageRoute = route.inited ? route : prevRoute
+    const pageData = pageRoute.pageData
+    const dataItems = route?.data
+
+    const isRightCol =
+        route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar
+    const isLeftCol =
+        route?.leftbar?.content?.length > 0 || layoutName == 'navigator'
+
+    const renderItem = useCallback(
+        ({ item, index }) => (
+            <ItemRenderer
+                unitType={unitType}
+                route={pageRoute}
+                item={{ ...item, feed_type: pageRoute?.endpoint?.params?.type }}
+                unit={pageRoute?.endpoint?.unit}
+                module={pageRoute?.endpoint?.module}
+            />
+        ),
+        [pageRoute, unitType]
+    )
+
+    const layout = callFn('layoutForList', [pageRoute?.endpoint]);
+
+    const Preload = useMemo(
+        () => getSkeletonForList(skeleton, 5, true, layout),
+        [skeleton]
+    )
+
+    const PreloadShort = useMemo(
+        () => getSkeletonForList(skeleton, 5, false, layout),
+        [skeleton]
+    )
+    const MainContent = useMemo(() => {
+        return (
+            <UniList
+                scrollProps={
+                    header
+                        ? {
+                            pageData: pageData,
+                            subHeaderComponent: header,
+                            headerHeight: headerHeight,
+                            isBackButton: false,
+                            isMenuNameAsTitle: true,
+                        }
+                        : null
+                }
+                index={pageRoute.index}
+                data={dataItems}
+                endpoint={pageRoute.endpoint}
+                listState={pageRoute?.state}
+                layout={layout}
+                mode={layout == 'w-full'? 'simple': ''}
+                storagekey={pageRoute.storageKeyValue}
+                refer={uniRef}
+                route={pageRoute}
+                unit={pageRoute.endpoint?.unit}
+                useWindowScroll={true}
+                onEndReached={handleEndReached}
+                renderItem={renderItem}
+                ListFooterComponent={
+                    <View>
+                        {hasNextPage && isFetchingNextPage ? Preload : null}
+                    </View>
+                }
+            />
+        )
+    }, [dataItems, dataItems.length, header, headerHeight, hasNextPage, isFetchingNextPage])
+
+    const groupRef = useRef(null)
+    const sidebarUnitType = pageRoute.blocks?.browse_sidebar?.unitType || 'default'
+    const layoutCols =
+        !isLeftCol && !isRightCol
+            ? 'c'
+            : !isLeftCol
+                ? 'c-r'
+                : !isRightCol
+                    ? 'l-c'
+                    : 'l-c-r'
+
+    const cellsCustomConfig = useMemo(() => {
+        return (
+            appSetting('layouts', route?.pageData?.uri) ||
+            appSetting('layouts', `cols-${layoutCols}`)
+        )
+    }, [pageRoute?.pageData?.uri, layoutCols])
+
+    const panelLayoutKey = `${layoutCols}-${pageData?.uri || 'default'}`
+
+    const { cells = {} } = cellsCustomConfig || {}
+    const currentBreakpointName = getBreakpoint(currentBreakpoint)
+
+    // LEFT
+    const {
+        breakpoint: leftBreakpoint,
+        responsive: leftResponsive,
+        ...leftBase
+    } = cells.left ?? {}
+    const leftPanelProps = resolvePanelProps(
+        leftBase,
+        leftResponsive,
+        currentBreakpointName
+    )
+
+    // CENTER
+    const {
+        breakpoint: centerBreakpoint,
+        responsive: centerResponsive,
+        ...centerBase
+    } = cells.center ?? {}
+    const centerPanelProps = resolvePanelProps(
+        centerBase,
+        centerResponsive,
+        currentBreakpointName
+    )
+
+    // RIGHT
+    const {
+        breakpoint: rightBreakpoint,
+        responsive: rightResponsive,
+        ...rightBase
+    } = cells.right ?? {}
+    const rightPanelProps = resolvePanelProps(
+        rightBase,
+        rightResponsive,
+        currentBreakpointName
+    )
+
+    const asId = cellsCustomConfig.sizable
+        ? `cells-${panelLayoutKey}`
+        : undefined;
+
+    function getLayouts() {
+        const layouts = [];
+
+        if (isLeftCol && leftPanelProps.defaultSize) {
+            layouts.push(leftPanelProps.defaultSize);
+        }
+        if (centerPanelProps.defaultSize)
+            layouts.push(centerPanelProps.defaultSize);
+
+        if (isRightCol && rightPanelProps.defaultSize) {
+            layouts.push(rightPanelProps.defaultSize);
+        }
+
+        return layouts.length > 0 ? layouts : null;
+    }
+
+    const onLayout = (sizes) => {
+        const layouts = getLayouts();
+        if (JSON.stringify(sizes) != JSON.stringify(layouts) && asId && layouts) {
+            storageSet('rrp', asId + '-' + currentBreakpointName, sizes, true);
+        }
+        setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100)
+    }
+
+    useEffect(() => {
+        const sl = storageGet('rrp', asId + '-' + currentBreakpointName, true);
+        if (groupRef) {
+            const l = sl || getLayouts()
+            if (l)
+                groupRef.current?.setLayout(sl || getLayouts())
+        }
+    }, [currentBreakpointName, index])
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    }, [index])
+
+    return (
+        <PanelGroup
+            ref={groupRef}
+            key={`${panelLayoutKey}-pnl2-${cellsCustomConfig.sizable ? 'sizable' : 'static'
+                }`}
+
+            direction="horizontal"
+            className={(layoutName == 'navigator' ? '' : '') + ' h-full'}
+            onLayout={onLayout}
+        >
+            {isLeftCol && (
+                <>
+                    <Panel
+                        className={`hidden ${leftBreakpoint}:block`}
+                        {...leftPanelProps}
+                    >
+                        <View
+                            className={`${layoutName == 'profile'
+                                    ? 'mt-0.5 sm:p-2' + ' fixed-process'
+                                    : appSetting(
+                                        'conductor',
+                                        'sidebar_container'
+                                    )
+                                }`}
+                        >
+                            {layoutName == 'profile' ? (
+                                <LeftSideBarContainer
+                                    layoutName={layoutName}
+                                    index={index}
+                                    setIndex={setIndex}
+                                    menu={menu}
+                                    routes={routes}
+                                    currentUser={currentUser}
+                                    headerSettings={headerSettings}
+                                >
+                                    {LeftBarContentBlocks}
+                                </LeftSideBarContainer>
+                            ) : (
+                                <View className=" fixed-process ">
+                                    <LeftSideBarContainer
+                                        layoutName={layoutName}
+                                        index={index}
+                                        setIndex={setIndex}
+                                        menu={menu}
+                                        routes={routes}
+                                        currentUser={currentUser}
+                                        headerSettings={headerSettings}
+                                    >
+                                        {LeftBarContentBlocks}
+                                    </LeftSideBarContainer>
+                                </View>
+                            )}
+                        </View>
+                    </Panel>
+                    <PanelHandler
+                        gap={`hidden ${leftBreakpoint}:block`}
+                        sizable={cellsCustomConfig.sizable}
+                    />
+                </>
+            )}
+            <Panel {...centerPanelProps}>
+                <View
+                    className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'
+                        } ${layoutName !== 'navigator'
+                            ? 'mt-0.5 sm:p-2'
+                            : (!pageRoute?.endpoint?.request_url ? 'sm:my-3 mt-0.5 sm:px-3 ' : 'lg:p-1')
+                        }`}
+                >
+                    {MainContent}
+                    {pageRoute?.endpoint?.request_url &&
+                        (!pageRoute.endpoint?.finished
+                            ? dataItems.filter((item) => item.type != 'block').length == 0 ? Preload : PreloadShort
+                            : dataItems.filter((item) => item.type != 'block')
+                                .length == 0 &&
+                            callFn('noContentByUrl', [pageRoute?.endpoint]))}
+                </View>
+            </Panel>
+            {isRightCol && (
+                <>
+                    <PanelHandler
+                        gap={`hidden ${rightBreakpoint}:block`}
+                        sizable={cellsCustomConfig.sizable}
+                    />
+                    <Panel
+                        className={`hidden ${rightBreakpoint}:block `}
+                        {...rightPanelProps}
+                    >
+                        <View className=" fixed-process mt-0.5 sm:p-2">
+                            {pageRoute?.sidebar?.content.map((item, index) => {
+                                return (
+                                    <ItemRenderer
+                                        key={`${pageRoute?.index}-${item.id}`}
+                                        unitType={sidebarUnitType}
+                                        route={pageRoute}
+                                        sidebar={true}
+                                        item={item}
+                                        unit={
+                                            pageRoute?.sidebar?.endpoint?.unit
+                                        }
+                                        module={
+                                            pageRoute?.sidebar?.endpoint?.module
+                                                ? pageRoute?.sidebar?.endpoint
+                                                    ?.module
+                                                : ''
+                                        }
+                                    />
+                                )
+                            })}
+                            <View>
+                                {!!route.pageData && (
+                                    <BlockByName
+                                        data={pageRoute.pageData}
+                                        name={pageRoute.blocks?.browse_sidebar}
+                                        sidebar={true}
+                                        perLine={1}
+                                        maxItems={1}
+                                    />
+                                )}
+                            </View>
+                        </View>
+                    </Panel>
+                </>
+            )}
+        </PanelGroup>
     )
 }
 
