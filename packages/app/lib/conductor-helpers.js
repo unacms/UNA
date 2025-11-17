@@ -271,8 +271,7 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
     if (!currentRoute.inited) {
         let link = currentRoute.link
         if (currentRoute.link.includes('?')) {
-            const urlObj = parseUrl(currentRoute.link) // Base URL is required if your URL is relative
-            const queryString = urlObj.queryString
+            const urlObj = parseUrl(currentRoute.link) 
 
             let obj = parseQueryString(urlObj.queryString)
             link =
@@ -280,20 +279,57 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
                 '&params[]=&params[]=' +
                 JSON.stringify(obj)
         }
+
         const sResponse = await fetcher(
             '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' +
             link
         )
 
-        //  let settings = appSetting('l-ayouts', getURI(currentRoute.link));
-        const settings = getPageSettings(
-            sResponse.data?.config,
-            getURI(currentRoute.link)
-        )
-        let blocks = settings?.blocks
-        if (!blocks) blocks = getBlocksFromData(sResponse.data)
+        const settings = getPageSettings(sResponse.data?.config, getURI(currentRoute.link));
 
-        let contentAndEndpoint = processUrl(sResponse.data, settings?.blocks)
+        const blocks = settings?.blocks || getBlocksFromData(sResponse.data)
+
+        const contentAndEndpoint = processUrl(sResponse.data, settings?.blocks)
+
+        addMoreData(
+            contentAndEndpoint.content,
+            contentAndEndpoint.endpoint,
+            setRoutes,
+            index,
+            blocks,
+            routes,
+            contentAndEndpoint.sidebar,
+            contentAndEndpoint.leftbar,
+            sResponse.data
+        )
+    }
+}
+/* new logic */
+export async function getRouteData(routes, index, setRoutes) {
+    const currentRoute = routes.find((item) => item.index === index)
+    if (!currentRoute.inited) {
+        let link = currentRoute.link
+        if (currentRoute.link.includes('?')) {
+            const urlObj = parseUrl(currentRoute.link) 
+
+            let obj = parseQueryString(urlObj.queryString)
+            link =
+                urlObj.path.replace('/', '') +
+                '&params[]=&params[]=' +
+                JSON.stringify(obj)
+        }
+
+        const sResponse = await fetcher(
+            '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' +
+            link
+        )
+
+        const settings = getPageSettings(sResponse.data?.config, getURI(currentRoute.link));
+
+        const blocks = settings?.blocks || getBlocksFromData(sResponse.data)
+
+        const contentAndEndpoint = processUrl(sResponse.data, settings?.blocks)
+
         addMoreData(
             contentAndEndpoint.content,
             contentAndEndpoint.endpoint,
@@ -341,8 +377,6 @@ export function addMoreData(
 
         if (pageData && !route.pageData) {
             updatedRoute.pageData = pageData
-            //   const blocks2 = processBlocks(updatedRoute.blocks)
-            //  updatedRoute.leftSideBarBlocks = blocks2.leftBlocks
         }
 
         if (pageData?.config && !route.config) {
@@ -356,10 +390,10 @@ export function addMoreData(
             updatedRoute.leftbar = leftbar
         }
 
-        storageSet('ul:data', updatedRoute.storageKeyValue, {
+        /*storageSet('ul:data', updatedRoute.storageKeyValue, {
             data: updatedRoute.data,
             endpoint: updatedRoute.endpoint,
-        })
+        })*/
 
         return updatedRoute
     })

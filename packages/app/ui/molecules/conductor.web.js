@@ -19,7 +19,7 @@ import {
 import {
     fillTabs,
     parseData,
-    fetchAndUpdateData,
+    getRouteData,
     LeftSidebar,
     TopSidebar,
     getNumCols,
@@ -273,7 +273,7 @@ export function Conductor({
     }, [])
 
     useEffect(() => {
-        fetchAndUpdateData(routes, index, setRoutes)
+        getRouteData(routes, index, setRoutes)
     }, [index])
 
     const LeftBarContentBlocks = LeftBarContent(
