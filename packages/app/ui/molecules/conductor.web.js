@@ -195,20 +195,14 @@ export function Conductor({
 
     useEffect(() => {
         if (currentRoute?.endpoint?.unit == 'feed') {
-            subscribe('bx_timeline_0', 'added', setIsRevalidate)
-            subscribe('bx_timeline_0', 'deleted', setIsRevalidate)
+            subscribe('bx_timeline_0', 'added', setIsRevalidate)//TODO
+            subscribe('bx_timeline_0', 'deleted', setIsRevalidate)//TODO
         }
     }, [])
-
-    useEffect(() => {
-        //if (isRevalidate) revalidateData()//TODO
-    }, [isRevalidate])
-
+    
     useEffect(() => {
         setBottomSheetData(false)
     }, [index])
-
-  
 
     /* NEW POST TO FEED */
     useEffect(() => {
