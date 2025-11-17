@@ -105,7 +105,8 @@ const SplashTextInner = () => {
     return (
             <View className="text-center max-w-sm sm:max-w-lg lg:text-start gap-4 w-full flex-auto mx-auto ">
                 <H1
-                    className="text-center lg:text-start"
+                    className="text-center lg:text-start" 
+                    fontFamily='font-title'
                 >
                     {t('splash_page_title')} {appSetting('app', 'title')}
                 </H1>

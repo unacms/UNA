@@ -130,6 +130,7 @@ const RenderScene = ({
                 endpoint={pageRoute.endpoint}
                 listState={pageRoute?.state}
                 layout={layout}
+                mode={layout == 'w-full'? 'simple': ''}
                 storagekey={pageRoute.storageKeyValue}
                 refer={uniRef}
                 route={pageRoute}

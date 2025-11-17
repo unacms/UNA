@@ -6,7 +6,7 @@ export const mainFont = localFont({
 });
 
 export const titleFont = localFont({
-  src: [{ path: './Inter-VariableFont.ttf', style: 'normal' }],
+  src: [{ path: './Manrope-VariableFont.ttf', style: 'normal' }],
   variable: '--font-title',
 });
 
