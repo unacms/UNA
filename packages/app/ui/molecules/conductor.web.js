@@ -31,14 +31,12 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
 import { BlockByName } from 'app/components/block'
 import { useTranslation } from 'react-i18next'
-import Toaster from 'app/ui/atoms/toaster'
 import { useLayoutData } from 'app/context/layout'
 import { useCurrentUser } from 'app/context/user'
 import Search from 'app/ui/molecules/search'
 import DynamicMenu from 'app/components/nav/menu-dynamic'
 import { storageClear, menuItemsFilter, storageSet, storageGet } from 'app/lib/util'
 import { subscribe } from 'app/ui/atoms/socket'
-import { fetcher } from 'app/lib/fetcher'
 import { useBottomSheetData } from 'app/context/bottomsheet'
 import { callFn } from 'app/lib/functions/call'
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal'
@@ -52,7 +50,6 @@ import {
     resolvePanelProps,
 } from 'app/ui/molecules/resizable-panels'
 import { useLayoutSettings } from 'app/context/layout-settings'
-import { cd } from 'app/lib/util'
 import { useIsDesktop, useBreakpoint } from 'app/context/measure'
 
 const conductorTheme = appSetting('theme', 'conductor')
@@ -110,7 +107,6 @@ const RenderScene = ({
         () => getSkeletonForList(skeleton, 5, false, layout),
         [skeleton]
     )
-
     const MainContent = useMemo(() => {
         return (
             <UniList
@@ -494,7 +490,7 @@ export function Conductor({
             if (hasNextPage === false) return
             if (currentRoute?.endpoint?.finished) return
             if (lastItemIndex === false) return
-            console.log("handleEndReached", handleEndReached)
+            //console.log("handleEndReached", handleEndReached)
             fetchNextPage()
         },
         [currentRoute?.endpoint?.finished, isFetchingNextPage, hasNextPage]
@@ -520,9 +516,6 @@ export function Conductor({
     }, [isDesktop, layoutName, currentRoute?.key, currentRoute.config])
 
     useEffect(() => {
-        if (currentRoute.cached) {
-            revalidateData()
-        }
         if (currentRoute?.endpoint?.unit == 'feed') {
             subscribe('bx_timeline_0', 'added', setIsRevalidate)
             subscribe('bx_timeline_0', 'deleted', setIsRevalidate)
@@ -530,83 +523,17 @@ export function Conductor({
     }, [])
 
     useEffect(() => {
-        if (isRevalidate) revalidateData()
+        //if (isRevalidate) revalidateData()//TODO
     }, [isRevalidate])
 
     /* UPDATE CONTENT PART */
     useEffect(() => {
-        setToaster2Visible(false)
         setBottomSheetData(false)
     }, [index])
 
-    const setToaster2Visible = (val) => {
-        const current = toasterRef.current
-        if (current) {
-            current.setVisible(val)
-        }
-    }
+  
 
-    const revalidateData = useCallback(async () => {
-        const hasEndpoint = Boolean(currentRoute?.endpoint)
-        let endpointUpdateContent = ''
-        let bUpdateContent = false
-        const revalidatedData = JSON.parse(isRevalidate)
-
-        if (hasEndpoint) {
-            const a = [
-                ...new Set(
-                    currentRoute.data
-                        .filter((item) => item.type !== 'block')
-                        .map((item) => item.id)
-                ),
-            ]
-                .slice(0, 10)
-                .join(',')
-
-            if (
-                (a || true) &&
-                revalidatedData.author_id != currentUser?.id &&
-                !currentRoute.endpoint.request_url.includes(
-                    'system/get_results/TemplSearchExtendedServices'
-                )
-            ) {
-                endpointUpdateContent =
-                    currentRoute.endpoint.request_url +
-                    JSON.stringify({
-                        params: {
-                            ...currentRoute.endpoint.params,
-                            validate: a,
-                        },
-                    })
-                bUpdateContent = true
-            }
-        }
-        if (bUpdateContent) {
-            const validatedData = (await fetcher(endpointUpdateContent))
-                .data?.[0]?.data?.data
-
-            if (
-                validatedData &&
-                (validatedData == 'valid' || validatedData == 'invalid')
-            ) {
-                setToaster2Visible(validatedData !== 'valid')
-            }
-        }
-    }, [currentRoute, isRevalidate, currentUser?.id])
-
-    const showNewContent2 = async () => {
-        storageClear('ul:data', currentRoute.storageKeyValue)
-        storageClear('ul:state', currentRoute.storageKeyValue)
-
-        const newRoutes = [...routes]
-        newRoutes[index].endpoint.finished = false
-        newRoutes[index].data = newRoutes[index].data.filter(
-            (item) => item.type === 'block'
-        )
-        newRoutes[index].endpoint.params.start = 0
-        setRoutes(newRoutes)
-        setToaster2Visible(false)
-    }
+    
     /* UPDATE CONTENT PART */
 
     /* NEW POST TO FEED */
@@ -772,13 +699,6 @@ export function Conductor({
     return (
         <View className="w-full h-full" scrollEnabled={false}>
             {(isUseCurrentHeader || isDesktop) && headerComponent}
-            <Toaster
-                ref={toasterRef}
-                onPress={showNewContent2}
-                variant="primary"
-                title="Show New Posts"
-                size="sm"
-            />
             <View
                 className={`${layoutName === 'profile'
                         ? conductorTheme.content_max_width
