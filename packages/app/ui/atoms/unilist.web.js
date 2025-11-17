@@ -134,7 +134,7 @@ export default function UniList(props) {
                         stateChanged={stateChanged}
                         {...(scrollToLastItem ? { initialTopMostItemIndex: data.length } : {})}
                        // atBottomStateChange={()=>{console.log("atBottomStateChange"), onEndReached()}}
-                        endReached={()=>{console.log("onEndReached"), onEndReached()}}
+                        endReached={()=>{onEndReached()}}
                     />
                 </View>
             )

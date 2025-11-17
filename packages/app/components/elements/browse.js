@@ -4,6 +4,7 @@ import {
     useCallback,
     useEffect,
     memo,
+    useRef
 } from 'react'
 import { View, Row, ScrollView } from 'app/design/view'
 import { Platform } from 'react-native'
@@ -24,6 +25,7 @@ import Galery from 'app/ui/molecules/gallery'
 import { Button } from 'app/design/controls'
 import { useBreakpoint, useWindowHeight } from 'app/context/measure';
 import emitter from 'app/context/emitter'
+import Toaster from 'app/ui/atoms/toaster2'
 
 const blockTheme = appSetting('theme', 'blocks');
 
@@ -57,10 +59,17 @@ const getNumCols = (width, props, data) => {
     return 1
 }
 
-export default function (props) {
+export default function Browse(props) {
     const isWeb = Platform.OS === 'web'
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
+
+    const [visibleItems, setVisibleItems] = useState([])
+    const [hasNewData, setHasNewData] = useState(false)
+    const latestItemsRef = useRef([])
+    const isFirstLoadRef = useRef(true)
+    //updateMode can be action, auto, none
+    const updateMode = props.updateMode || props.data.unit == 'feed' ? 'action' : 'none';
     const data = props.data
     const isOneLine = data?.params?.view == 'showcase'
     const isOnePage = props.only_one_page || isOneLine;
@@ -134,8 +143,8 @@ export default function (props) {
 
         getNextPageParam: (lastPage) => lastPage?.data.length > 0 ? { ...lastPage?.params, start: lastPage?.params.start + lastPage?.params.per_page } : undefined,
         staleTime: 2000,
-        refetchOnWindowFocus: true,
-        refetchOnReconnect: true,
+        refetchOnWindowFocus: updateMode != 'none',
+        refetchOnReconnect: updateMode != 'none',
     })
 
     const handleEndReached = useCallback(
@@ -150,6 +159,49 @@ export default function (props) {
         },
         [hasNextPage, isOnePage, isFetchingNextPage]
     )
+
+    const flattenPages = (pagesData) => (pagesData?.pages ?? []).flatMap((p) => p.data ?? [])
+
+
+    const isSameItems = (a, b) => {
+        if (a.length !== b.length) return false
+        for (let i = 0; i < a.length; i++) {
+            if (a[i].id !== b[i].id) {
+                return false
+            }
+        }
+        return true
+    }
+
+    useEffect(() => {
+    if (!pagesData) return
+
+    const items = flattenPages(pagesData)
+
+    if (isFirstLoadRef.current) {
+        // первый успешный фетч — всегда просто отрисовываем
+        setVisibleItems(items)
+        latestItemsRef.current = items
+        isFirstLoadRef.current = false
+        return
+    }
+
+    const current = visibleItems
+
+    if (!isSameItems(current, items)) {
+        // данные изменились после рефетча
+        if (updateMode == 'action') {
+            // режим "Показать тост, но не менять список до клика"
+            latestItemsRef.current = items
+            setHasNewData(true)
+        } else {
+            // режим "Сразу обновлять UI без тоста"
+            latestItemsRef.current = items
+            setVisibleItems(items)
+            setHasNewData(false)
+        }
+    }
+}, [pagesData, updateMode])
 
     let sSkeleton = data.module ? data.module : data.unit
     if (props?.skeleton) sSkeleton = props?.skeleton
@@ -168,14 +220,14 @@ export default function (props) {
                 refetch();
             }
         })
-        
+
         return () => {
             subscription.remove();
             subscription2.remove()
         }
     }, [])
 
-    const dataItems = (pagesData?.pages ?? []).flatMap((p) => p.data);
+    const dataItems = visibleItems
 
     if (
         dataItems.length == 0 &&
@@ -282,7 +334,6 @@ export default function (props) {
         mode: 'simple', // TODO
         data: dataItems,
         unit: data.unit,
-        // Use viewport height minus header for web in panel layouts
         height: isWeb ? (props?.isInPanel ? windowHeight - 64 : undefined) : props?.height,
         url: props?.url,
         contentContainerStyle: props?.contentContainerStyle,
@@ -321,8 +372,8 @@ export default function (props) {
                 : () => props.exProps?.headerBlocks)
             : undefined,
         ListFooterComponent: ((hasNextPage && isFetchingNextPage)) ? Preload : null,
-
     }
+
     if (contentElement === null) {
         return
     }
@@ -337,6 +388,17 @@ export default function (props) {
     return (
         <View className={`w-full ${isOneLine ? '' : 'h-full'}`}>
             <View className="w-full" onLayout={handleLayout}></View>
+            {hasNewData && <Toaster
+
+                onPress={() => {
+                    setVisibleItems(latestItemsRef.current)
+                    setHasNewData(false)
+                }}
+                isVisible={hasNewData}
+                variant="primary"
+                title="Show New"
+                size="sm"
+            />}
             <View className={`w-full ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''}`} style={isOneLine ? {} : styles}>
                 {isShowTitleInside && (
                     <Row className={`items-center justify-between ${props.showBg ? '' : 'px-2 '}`}>
