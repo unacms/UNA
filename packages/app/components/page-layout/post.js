@@ -206,7 +206,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                 </View>
                 <View
                     onLayout={handleLayoutModal}
-                    className="border-t border-border/80 p-2"
+                    className="border-t border-border/60 p-2"
                 >
                     <CommentsForm isModal={isModal} handleForm={setAddData} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
                 </View>

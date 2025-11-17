@@ -71,7 +71,7 @@ export default function FormMessenger(props) {
 
             </View>
             <View
-                className="flex-auto bg-muted/60 rounded-xl border border-border/80 px-3 py-2"
+                className="flex-auto bg-muted/60 rounded-xl border border-border/60 px-3 py-2"
                 style={{
                     height: editorHeight,
                     transition: 'height 0.2s cubic-bezier(0.4, 0, 0.2, 1)',

@@ -98,8 +98,8 @@ export const settingsDefault = {
             scrolled:
                 ' my-auto w-full items-cente bg-card/80 backdrop-blur-xl border-b border-border/60 transition-all shadow-sm',
             content: ' h-16 mx-auto justify-between 2xl:border-x-0 2xl:border-border/60 border-dashed',
-            content_left: ' flex-row items-center flex-none w-80 ps-3  ',
-            content_right: ' flex-row items-center justify-end flex-none w-80 pe-3 ',
+            content_left: ' flex-row items-center flex-none w-80 ps-2  ',
+            content_right: ' flex-row items-center justify-end flex-none pe-2 ',
             content_center:
                 ' hidden flex-auto xl:flex gap-1 items-center justify-center max-w-3xl xl:px-3 ',
             special: {
@@ -1092,7 +1092,7 @@ export const settingsDefault = {
         doublerange: {
             container: 'w-full items-center justify-between mt-2',
             value_container:
-                'w-36 bg-input border border-border/80 py-2 px-4 text-center rounded-lg justify-between',
+                'w-36 bg-input border border-border/60 py-2 px-4 text-center rounded-lg justify-between',
             text_value: 'text-neutral-700 dark:text-neutral-300',
             text_info: '',
             track_height: 4,
@@ -1131,7 +1131,7 @@ export const settingsDefault = {
             container:
             ' h-full sm:h-auto shadow-xl bg-card/80 backdrop-blur border border-border web:ring-1 web:ring-inset web:ring-popover sm:rounded-2xl overflow-hidden ',
             content: ' h-auto ',
-            header: ' p-3 items-start justify-start border-b border-border/80',
+            header: ' p-3 items-start justify-start border-b border-border/60',
         },
 
         inputs: {
@@ -1139,11 +1139,11 @@ export const settingsDefault = {
            
             multi: ' bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 py-2 min-h-12 flex-auto text-base leading-6 overflow-y-scroll [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden shadow-xs placeholder:text-muted-foreground text-card-foreground web:duration-100 ',
             rounded:
-                ' border border-border/80 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-full web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
+                ' border border-border/60 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-full web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
             roundedsmall:
                 ' rounded-full border/50 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/80 px-2 min-h-10 flex-auto  text-base leading-5 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
-            small: ' border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-lg web:focus:bg-card px-2 min-h-10 flex-auto  text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
-            select: ' pr-10 border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-xl bg-input web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
+            small: ' border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-lg web:focus:bg-card px-2 min-h-10 flex-auto  text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
+            select: ' pr-10 border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-xl bg-input web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
         },
 
         button_sizes: {
@@ -1447,7 +1447,7 @@ export const settingsDefault = {
                 ' u-card-list bg-card/60 shadow-sm border-y sm:border border-border/50 web:sm:border-0 web:sm:ring-1 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden sm:rounded-2xl ',
             'u-card-list-padding': ' p-3 lg:p-4 ',
             'u-card-base':
-                ' u-card-base bg-card/60 shadow-sm border border-border/80   text-card-foreground overflow-hidden rounded-2xl gap-4',
+                ' u-card-base bg-card/60 shadow-sm border border-border/60   text-card-foreground overflow-hidden rounded-2xl gap-4',
             'u-card-padding': ' p-4 ',
             'u-card-header': 'flex gap-1',
             'u-card-icon': 'text-card-foreground px-4 gap-2',
@@ -1520,7 +1520,7 @@ export const settingsDefault = {
 
             // Header (use with inline styles or Tailwind plugin for scroll)
             'u-controls-tabs-header':
-                'relative flex flex-1 flex-row flex-nowrap overflow-x-auto bg-muted/40 border border-border/80 rounded-xl overflow-y-hidden  web:scrollbar-none ',
+                'relative flex flex-1 flex-row flex-nowrap overflow-x-auto bg-muted/40 border border-border/60 rounded-xl overflow-y-hidden  web:scrollbar-none ',
             'u-controls-tabs-header-full-width':
                 'relative w-full flex flex-1 flex-row flex-nowrap overflow-x-auto overflow-hidden bg-muted/40 border border-muted rounded-xl web:scrollbar-none ',
 
@@ -1582,7 +1582,7 @@ export const settingsDefault = {
         switcher: {
             // Container
             'u-controls-switcher-container':
-                'items-center flex-row-reverse justify-between gap-x-2 min-w-12 rounded-xl flex-auto p-1.5 bg-input border border-border/80 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 ',
+                'items-center flex-row-reverse justify-between gap-x-2 min-w-12 rounded-xl flex-auto p-1.5 bg-input border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 ',
 
             // Text
             'u-controls-switcher-text': 'text-card-foreground text-base px-1.5',
@@ -1772,7 +1772,7 @@ export const settingsDefault = {
         },
         buttons_group_styles: {
             'u-btn-default-cnt':
-                ' flex-row bg-popover/80 web:hover:bg-popover shadow-xs border-[0.5px] border-border/80 web:border-0 web:ring-[0.5px] web:ring-inset web:ring-border/60 web:hover:ring-border web:active:opacity-50 ',
+                ' flex-row bg-popover/80 web:hover:bg-popover shadow-xs border-[0.5px] border-border/60 web:border-0 web:ring-[0.5px] web:ring-inset web:ring-border/60 web:hover:ring-border web:active:opacity-50 ',
             'u-btn-accent-cnt':
                 'border border-emerald-600 dark:border-emerald-500 bg-emerald-100 dark:bg-emerald-900 flex flex-row',
             'u-btn-outline-cnt':

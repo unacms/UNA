@@ -237,7 +237,7 @@ export default function (props) {
         <>
             {modalElement}
             <Field {...props} error2={formContext.formState.errors[name]}>
-                <View className='flex-row items-center px-2 bg-input/20 border border-border/80 h-12 rounded-xl'>
+                <View className='flex-row items-center px-2 bg-input/20 border border-border/60 h-12 rounded-xl'>
                     <Button
                         title={displayText}
                         startDecorator="Globe"
