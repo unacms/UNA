@@ -412,8 +412,11 @@ const TabSceneMainContent = ({
         }
 
         const sUrl = pageRoute?.endpoint?.request_url + JSON.stringify({ params: pageParam })
-        const res = await fetcher(sUrl)
-        return { data: res.data[0].data.data, params: res.data[0].data.params }
+        const res = await fetcher(sUrl);
+        if (res?.data[0]?.data?.data)
+            return { data: res.data[0].data.data, params: res.data[0].data.params }
+        else
+            return { data: [], params: pageParam || {} }
     }
 
 
@@ -463,6 +466,10 @@ const TabSceneMainContent = ({
             subscription2.remove()
         }
     }, [])
+    useEffect(() => {
+        refetchRef.current.skipToast = true
+    }, [qKey])
+    
 
     const handleEndReached = useCallback(
         async (lastItemIndex) => {
