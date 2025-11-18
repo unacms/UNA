@@ -363,7 +363,6 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
 
         if (!oMenuItemDelete) {
             oMenuItemDelete = data.meta.items.find(item => item.name === sDelete);
-           
         }
 
         if (!oMenuItemPrimary && oMenuItemSecondary){
@@ -402,7 +401,8 @@ export function noContentByUrl(endpoint){
 }
 
 export function layoutForList(endpoint){
-     if (!endpoint || endpoint?.request_url?.includes('bx_timeline') || endpoint?.params?.request_url?.includes('bx_timeline'))
+    console.log("endpoint", endpoint)
+    if (!endpoint || endpoint?.request_url?.includes('bx_timeline') || endpoint?.params?.request_url?.includes('bx_timeline') || endpoint.unit == "notifications")
         return 'w-full';
 
     if (endpoint?.module == 'bx_groups')
