@@ -542,6 +542,7 @@ const TabSceneMainContent = ({
     )
 
     const dataItems = [...dataItemsPage, ...refetchState.visibleItems];
+    
     return (
         <><UniList
             scrollProps={
@@ -569,38 +570,31 @@ const TabSceneMainContent = ({
             onRefresh={refetch}
             refreshing={isRefetching}
             renderItem={renderItem}
-            ListFooterComponent={
-                <View>
-                    {hasNextPage && isFetchingNextPage ? Preload : null}
-                </View>
-            }
+            
         />
-          
-            {pageRoute?.endpoint?.request_url && 
-                (hasNextPage
-                    ? dataItems.filter((item) => item.type != 'block').length == 0 ? Preload : PreloadShort
-                    : (dataItems.filter((item) => item.type != 'block').length == 0 && !refetchRef.current.isFirstLoad) &&
-                    callFn('noContentByUrl', [pageRoute?.endpoint]))}
+        {(pageRoute?.endpoint?.request_url && hasNextPage === undefined ) && Preload}
+        {(pageRoute?.endpoint?.request_url && hasNextPage) && PreloadShort}
+        {(pageRoute?.endpoint?.request_url && hasNextPage === false && dataItems.filter((item) => item.type != 'block').length == 0) && callFn('noContentByUrl', [pageRoute?.endpoint])}
 
-            {refetchState.hasNewData && <Toaster
+        {refetchState.hasNewData && <Toaster
 
-                onPress={() => {
-                    const latestItems = flattenPagesForUniList(pagesData)
-                    dispatch({ type: 'SET_ITEMS', items: latestItems })
-                    refetchRef.current.prevItems = latestItems
-                    if (uniRef.current) {
-                        uniRef.current.scrollToIndex?.({
-                            index: 0,
-                            align: 'end',
-                            behavior: 'smooth',
-                        })
-                    }
-                }}
-                isVisible={refetchState.hasNewData}
-                variant="primary"
-                title="Show New"
-                size="sm"
-            />}
+            onPress={() => {
+                const latestItems = flattenPagesForUniList(pagesData)
+                dispatch({ type: 'SET_ITEMS', items: latestItems })
+                refetchRef.current.prevItems = latestItems
+                if (uniRef.current) {
+                    uniRef.current.scrollToIndex?.({
+                        index: 0,
+                        align: 'end',
+                        behavior: 'smooth',
+                    })
+                }
+            }}
+            isVisible={refetchState.hasNewData}
+            variant="primary"
+            title="Show New"
+            size="sm"
+        />}
         </>
     )
 };
