@@ -466,6 +466,7 @@ const TabSceneMainContent = ({
             subscription2.remove()
         }
     }, [])
+    
     useEffect(() => {
         refetchRef.current.skipToast = true
     }, [qKey])

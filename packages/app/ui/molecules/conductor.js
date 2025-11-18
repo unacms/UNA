@@ -1,8 +1,8 @@
 import React, { useCallback, useState, useEffect, useMemo, useRef } from "react";
 import { View, ScrollView, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
-import { deepEqual, getUnitModeBySource, handleFeedLayoutData, appSetting } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData, getNumCols } from 'app/lib/conductor-helpers';
+import { deepEqual, getUnitModeBySource } from 'app/lib/util';
+import { fillTabs, parseData, fetchAndUpdateData } from 'app/lib/conductor-helpers';
 import { ItemRenderer } from 'app/components/item-renderer';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
@@ -18,6 +18,7 @@ import { BlockByName } from 'app/components/block';
 import { callFn } from 'app/lib/functions/call';
 import Cover, { CoverSmall } from 'app/components/elements/cover';
 import { useBreakpoint } from 'app/context/measure';
+import emitter from 'app/context/emitter'
 
 const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute, currentUser }) => {
     if (routes.length > 1) {
@@ -210,7 +211,7 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 88, s
     const qKey = useMemo(() => [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)], [currentRoute, index, keyword]);
     const queryClient = useQueryClient();
 
-    const numColumns = getNumCols(currentBreakpoint, currentRoute, null);
+    const numColumns = 1;
 
     useEffect(() => {
         if (currentRoute.cached) {
@@ -222,6 +223,21 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 88, s
             subscribe('bx_timeline_0', 'deleted', setIsRevalidate);
         }
     }, []);
+
+    useEffect(() => {
+
+        
+        const subscription2 = emitter.addListener('feed', (data) => {
+            if (data.action == 'remove_content' || data.action == 'new_content') {
+                //todo
+            }
+        })
+
+        return () => {
+
+            subscription2.remove()
+        }
+    }, [])
 
     useEffect(() => {
         if (isRevalidate)
@@ -318,24 +334,6 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 88, s
             setIsRefreshing(false);
         }
     }, [isRefreshing, queryClient, qKey]);
-
-    /* NEW POST TO FEED */
-    useEffect(() => {
-        if (currentRoute.endpoint?.unit === 'feed' && layoutData && layoutData.data && (layoutData?.type == 'feed:new_content' || layoutData?.type == 'feed:remove_content')) {
-            let clonedData = currentRoute.data
-            const data = handleFeedLayoutData(layoutData, clonedData)
-            // Create a new route object by spreading the existing one and updating data
-            const updatedRoute = { ...routes[index], data };
-
-            // Create a new routes array with the updated route
-            const newRoutes = [...routes];
-            newRoutes[index] = updatedRoute;
-            setRoutes(newRoutes);
-            setLayoutData(null)
-        }
-        callFn("updateRouteDataForConnections", [currentRoute, layoutData, routes, index, setRoutes])
-    }, [layoutData]);
-    /* NEW POST TO FEED */
 
     const Preload = useMemo(() => {
         return getSkeletonForList(skeleton !== '' ? skeleton : (data.module ? data.module : data.unit), numColumns);

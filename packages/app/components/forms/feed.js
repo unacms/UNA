@@ -2,8 +2,7 @@ import { View, Row } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
 import { useState, useRef, useCallback, useMemo } from 'react'
 import { getFormFieldByData } from 'app/lib/form-helpers'
-import { useLayoutData } from 'app/context/layout'
-import { FeedbackHaptics, getAlert } from 'app/lib/util'
+import { FeedbackHaptics } from 'app/lib/util'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 import { Platform } from 'react-native'
 import { Text } from 'app/design/typography'
@@ -12,7 +11,7 @@ import Profile from 'app/ui/molecules/profile'
 import Card from 'app/ui/molecules/card'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { stripTags, cd } from 'app/lib/util'
+import { stripTags } from 'app/lib/util'
 import { Keyboard } from 'react-native'
 import { useFormContext } from 'react-hook-form'
 import Reanimated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from 'react-native-reanimated';
@@ -68,7 +67,6 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
                             addElement: authorName,
                         }
                     ) : authorName}
-
                 </View>
             </View>
         </View>
@@ -83,8 +81,6 @@ export default function FormFeed(props) {
     const [showImage, setShowImage] = useState(isFormOnly ? true : false);
     const [modalKey, setModalKey] = useState(0);
     const [responseId, setResponseId] = useState(0)
-
-    const { setLayoutData } = useLayoutData()
 
     const isWeb = Platform.OS === 'web'
     const isIos = Platform.OS === 'ios'
@@ -166,7 +162,6 @@ export default function FormFeed(props) {
 
     useEffect(() => {
         if (props.response?.id && props.response?.id != responseId) {
-            setLayoutData(getAlert('feed:new_content', props.response))
             emitter.emit('feed', { action: 'new_content', data: props.response });
             onClose();
             setResponseId(props.response?.id)

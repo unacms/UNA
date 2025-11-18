@@ -402,39 +402,11 @@ export const settingsDefault = {
         ],
     },
     browse: {
-        per_line: [
+        per_line: [/* only for images for now*/ 
             { width: 1280, count: 4 },
             { width: 1024, count: 4 },
             { width: 768, count: 3 },
             { width: 640, count: 2 },
-        ],
-        per_line_profile: [
-            { width: 1280, count: 5 },
-            { width: 1024, count: 4 },
-            { width: 768, count: 3 },
-            { width: 640, count: 2 },
-        ],
-        per_line_left_side_bar: [
-            { width: 1536, count: 5 },
-            { width: 1280, count: 4 },
-            { width: 768, count: 3 },
-            { width: 640, count: 2 },
-
-            /*{ width: 1280, count: 4 },
-            { width: 1024, count: 3 },
-            { width: 768, count: 2 },*/
-        ],
-        per_line_bx_courses: [
-            { width: 1536, count: 5 },
-            { width: 1280, count: 4 },
-            { width: 1024, count: 3 },
-            { width: 768, count: 2 },
-        ],
-        per_line_groups: [
-            { width: 1536, count: 4 },
-            { width: 1280, count: 3 },
-            { width: 1024, count: 3 },
-            { width: 768, count: 2 },
         ],
         unit_by_source: {
             'system/browse_friends': 'person_friends',
@@ -444,7 +416,7 @@ export const settingsDefault = {
             'system/browse_friend_requests': 'browse_friend_requests',
             'system/browse_recommendations_subscriptions': 'person_following_recommendations',
             'system/browse_subscribed_me': 'person_followers',
-            browse_subscriptions: 'person_following',
+            'browse_subscriptions': 'person_following',
             'r=bx_events': 'event',
             'r=bx_groups': 'group',
             'r=bx_timeline': 'feed',

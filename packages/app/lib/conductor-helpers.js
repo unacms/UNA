@@ -71,31 +71,6 @@ export function processBlocks(blocks) {
     return { mainBlocks: blocks, leftBlocks: leftBlocks }
 }
 
-export function handleFeedLayoutData(layoutData, data) {
-    if (layoutData && layoutData?.type == 'feed:new_content') {
-        if (layoutData.data?.id) {
-            let insertIndex = data.findIndex((item) => item.type !== 'block')
-            if (insertIndex === -1) {
-                data.splice(data.length, 0, layoutData.data)
-            } else {
-                data.splice(insertIndex, 0, layoutData.data)
-            }
-        }
-        if (Array.isArray(layoutData.data)) {
-            let insertIndex = data.findIndex((item) => item.type !== 'block')
-            if (insertIndex === -1) {
-                data.splice(data.length, 0, ...layoutData.data)
-            } else {
-                data.splice(insertIndex, 0, ...layoutData.data)
-            }
-        }
-    }
-    if (layoutData && layoutData?.type == 'feed:remove_content') {
-        data = data.filter((item) => item.id !== layoutData.data)
-    }
-    return data
-}
-
 export const refetchUniListReducer = (state, action) => {
     switch (action.type) {
         case 'SET_ITEMS':
@@ -507,93 +482,6 @@ export function processUrl(data, blocks) {
         }
     )
     return contentAndEndpoint
-}
-
-export function getNumCols(currentBreakpoint, currentRoute) {
-    const customNumCol = callFn('getNumColsForConductor', [
-        currentBreakpoint,
-        currentRoute,
-    ])
-    const leftSideBar = currentRoute?.leftbar?.content?.length
-    if (customNumCol > 0) return customNumCol
-    const isWeb = Platform.OS === 'web'
-    const blocksroutes = currentRoute?.blocks
-
-    if (currentRoute?.endpoint == null) return 1
-
-    if (blocksroutes) {
-        const blockKeys = Object.keys(blocksroutes)
-        for (const key of blockKeys) {
-            if (blocksroutes[key].perLine > 0 && currentBreakpoint > 0) {
-                return blocksroutes[key].perLine
-            }
-        }
-    }
-    if (currentRoute?.endpoint?.unit == 'feed') return 1
-
-    let perLineSettings = []
-    const endpoint = currentRoute?.endpoint
-    if (endpoint && endpoint?.request_url) {
-        perLineSettings = appSetting('browse', 'per_line_profile')
-    }
-    if (
-        endpoint?.request_url?.includes('TemplServiceProfiles') ||
-        endpoint?.unit?.includes('-profile-') ||
-        endpoint?.unit?.includes('-context-')
-    ) {
-        perLineSettings = appSetting('browse', 'per_line_profile')
-    }
-    const isGroups =
-        endpoint?.unit === 'group' ||
-        endpoint?.unit === 'groups' ||
-        endpoint?.unit?.includes('group') ||
-        endpoint?.module === 'bx_groups' ||
-        endpoint?.request_url?.includes('bx_groups')
-    if (isGroups) {
-        perLineSettings = appSetting('browse', 'per_line_groups')
-    }
-    if (leftSideBar && endpoint && endpoint?.request_url) {
-        perLineSettings = appSetting('browse', 'per_line_left_side_bar')
-    }
-    const perLineSettingsByModule = appSetting(
-        'browse',
-        'per_line_' + endpoint?.module
-    )
-    if (perLineSettingsByModule) {
-        perLineSettings = perLineSettingsByModule
-    }
-
-    for (let i = 0; i < perLineSettings.length; i++) {
-        if (currentBreakpoint >= perLineSettings[i].width) {
-            const count = perLineSettings[i].count
-            return isWeb ? count : count > 1 ? count - 1 : count
-        }
-    }
-
-    return 1
-}
-
-export function LeftSidebar({ title, addButtons, children, width, menu, layoutName }) {//toremove
-    const { t } = useTranslation()
-    return (
-        <View className={`${layoutName == 'profile' ? '' : 'mt-fixed-process'}`}>
-            <View className={`${layoutName == 'profile' ? '' : appSetting('conductor', 'sidebar_inner_container')} ${layoutName == 'profile' ? '' : 'mt-3'}`}>
-
-                {(!!title || !!addButtons?.length > 0) && (
-                    <Row className={appSetting('conductor', 'sidebar_title')}>
-                        <Text className=" text-2xl tracking-tight truncate mr-auto font-bold leading-11 text-card-foreground hidden lg:flex  ">
-                            {t(title)}
-                        </Text>
-                        <Row>{addButtons}</Row>
-                    </Row>
-                )}
-                <View className="flex-1 gap-0.5">
-                    {children}
-                </View>
-
-            </View>
-        </View>
-    )
 }
 
 export function TopSidebar({

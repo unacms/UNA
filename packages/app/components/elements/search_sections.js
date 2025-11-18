@@ -17,25 +17,8 @@ export default function ElementSearchSections(props) {
     return (
         <View className="w-full">
             {props.data.data.map((item, index) => {
-                let perLineSettings = [];
-                let numColumns = 0;
-                if (item.is_profile){
-                    perLineSettings = appSetting('browse', 'per_line_profile');
-                } 
-                else{
-                    perLineSettings = appSetting('browse', 'per_line');
-                }      
-                const perLineSettingsByModule = appSetting('browse', 'per_line_'+item.section);
-                if (perLineSettingsByModule){
-                    perLineSettings=perLineSettingsByModule;
-                }
-               
-                for (let i = 0; i < perLineSettings.length; i++) {
-                    if (numColumns== 0 && currentBreakpoint > perLineSettings[i].width) {
-                        const count = perLineSettings[i].count;
-                        numColumns =  isWeb ? count : (count > 1 ? count - 1 : count);
-                    }
-                }
+                let numColumns = 1;
+                //TODO
 
                 return (
                     <View key={item.section}>
