@@ -401,7 +401,6 @@ export function noContentByUrl(endpoint){
 }
 
 export function layoutForList(endpoint){
-    console.log("endpoint", endpoint)
     if (!endpoint || endpoint?.request_url?.includes('bx_timeline') || endpoint?.params?.request_url?.includes('bx_timeline') || endpoint.unit == "notifications")
         return 'w-full';
 
