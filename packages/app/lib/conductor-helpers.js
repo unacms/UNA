@@ -305,7 +305,7 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
     }
 }
 /* new logic */
-export async function getRouteData(routes, index, setRoutes) {
+export async function getDataForRoute(routes, index, setRoutes) {
     const currentRoute = routes.find((item) => item.index === index)
     if (!currentRoute.inited) {
         let link = currentRoute.link

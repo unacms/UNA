@@ -19,8 +19,7 @@ import {
 import {
     fillTabs,
     parseData,
-    getRouteData,
-    LeftSidebar,
+    getDataForRoute,
     TopSidebar,
 } from 'app/lib/conductor-helpers'
 import { ItemRenderer } from 'app/components/item-renderer'
@@ -271,7 +270,7 @@ export function Conductor({
     }, [])
 
     useEffect(() => {
-        getRouteData(routes, index, setRoutes)
+        getDataForRoute(routes, index, setRoutes)
     }, [index])
 
     const LeftBarContentBlocks = LeftBarContent(
@@ -359,7 +358,7 @@ export function Conductor({
             {LeftBarContentBlocks}
         </LeftSideBarContainer> : null
 
-    const RightColumContent = isRightCol ? <View className=" fixed-process mt-0.5 sm:p-2">
+    const RightColumnContent = isRightCol ? <View className=" fixed-process mt-0.5 sm:p-2">
         {tabRoute?.sidebar?.content.map((item, index) => {
             return (
                 <ItemRenderer
@@ -393,6 +392,19 @@ export function Conductor({
         </View>
     </View> : null
 
+    const CenterColumnContent = <TabSceneMainContent
+        pageRoute={tabRoute}
+        headerHeight={
+            showFiltersBtn && routes.length > 1
+                ? defaultHeaderHeight + 52
+                : defaultHeaderHeight
+        }
+        header={isUseCurrentHeader ? null : headerComponent}
+        handleEndReached={handleEndReached}
+        isFetchingNextPage={isFetchingNextPage}
+        hasNextPage={hasNextPage}
+        skeleton={skeleton}
+    />
 
     return (
         <View className="w-full h-full" scrollEnabled={false}>
@@ -409,47 +421,29 @@ export function Conductor({
                     setFilterValue={setFilterValue}
                 />
                 <TabScene
-                    hasNextPage={hasNextPage}
-                    isFetchingNextPage={isFetchingNextPage}
-                    handleEndReached={handleEndReached}
                     layoutName={layoutName}
-                    headerHeight={
-                        showFiltersBtn && routes.length > 1
-                            ? defaultHeaderHeight + 52
-                            : defaultHeaderHeight
-                    }
-                    header={isUseCurrentHeader ? null : headerComponent}
                     pageRoute={tabRoute}
-                    skeleton={skeleton}
                     leftColumnContent={LeftColumnContent}
-                    rightColumnContent={RightColumContent}
+                    rightColumnContent={RightColumnContent}
+                    centerColumnContent={CenterColumnContent}
                 />
             </View>
         </View>
     )
 }
 
-const TabScene = ({
+const TabSceneMainContent = ({
     pageRoute,
     header,
     headerHeight,
-    layoutName,
     handleEndReached,
     isFetchingNextPage,
     hasNextPage,
     skeleton,
-    leftColumnContent,
-    rightColumnContent
 }) => {
-    const uniRef = useRef()
     const pageData = pageRoute.pageData
+    const uniRef = useRef()
     const dataItems = pageRoute?.data
-    const currentBreakpoint = useBreakpoint()
-    const currentBreakpointName = getBreakpoint(currentBreakpoint)
-
-    const isRightCol = !!rightColumnContent
-    const isLeftCol = !!leftColumnContent
-
     const unitType = useMemo(() => {
         const type = getUnitModeBySource(pageRoute?.endpoint)
         return type === 'default' ? getUnitType(pageRoute) : type
@@ -489,6 +483,61 @@ const TabScene = ({
         () => getSkeletonForList(SkeletonForRoute, 5, false, layout),
         [SkeletonForRoute]
     )
+    return (
+        <><UniList
+            scrollProps={
+                header
+                    ? {
+                        pageData: pageData,
+                        subHeaderComponent: header,
+                        headerHeight: headerHeight,
+                        isBackButton: false,
+                        isMenuNameAsTitle: true,
+                    }
+                    : null
+            }
+            data={dataItems}
+            endpoint={pageRoute.endpoint}
+            listState={pageRoute?.state}
+            layout={layout}
+            mode={layout == 'w-full' ? 'simple' : ''}
+            storagekey={pageRoute.storageKeyValue}
+            refer={uniRef}
+            route={pageRoute}
+            unit={pageRoute.endpoint?.unit}
+            useWindowScroll={true}
+            onEndReached={handleEndReached}
+            renderItem={renderItem}
+            ListFooterComponent={
+                <View>
+                    {hasNextPage && isFetchingNextPage ? Preload : null}
+                </View>
+            }
+        />
+            {pageRoute?.endpoint?.request_url &&
+                (!pageRoute.endpoint?.finished
+                    ? dataItems.filter((item) => item.type != 'block').length == 0 ? Preload : PreloadShort
+                    : dataItems.filter((item) => item.type != 'block')
+                        .length == 0 &&
+                    callFn('noContentByUrl', [pageRoute?.endpoint]))}
+        </>
+    )
+};
+
+const TabScene = ({
+    pageRoute,
+    layoutName,
+    leftColumnContent,
+    rightColumnContent,
+    centerColumnContent
+}) => {
+    const pageData = pageRoute.pageData
+
+    const currentBreakpoint = useBreakpoint()
+    const currentBreakpointName = getBreakpoint(currentBreakpoint)
+
+    const isRightCol = !!rightColumnContent
+    const isLeftCol = !!leftColumnContent
 
     const groupRef = useRef(null)
 
@@ -511,7 +560,6 @@ const TabScene = ({
     const panelLayoutKey = `${layoutCols}-${pageData?.uri || 'default'}`
 
     const { cells = {} } = cellsCustomConfig || {}
-
 
     // LEFT
     const {
@@ -622,42 +670,7 @@ const TabScene = ({
                             : (!pageRoute?.endpoint?.request_url ? 'sm:my-3 mt-0.5 sm:px-3 ' : 'lg:p-1')
                         }`}
                 >
-                    <UniList
-                        scrollProps={
-                            header
-                                ? {
-                                    pageData: pageData,
-                                    subHeaderComponent: header,
-                                    headerHeight: headerHeight,
-                                    isBackButton: false,
-                                    isMenuNameAsTitle: true,
-                                }
-                                : null
-                        }
-                        data={dataItems}
-                        endpoint={pageRoute.endpoint}
-                        listState={pageRoute?.state}
-                        layout={layout}
-                        mode={layout == 'w-full' ? 'simple' : ''}
-                        storagekey={pageRoute.storageKeyValue}
-                        refer={uniRef}
-                        route={pageRoute}
-                        unit={pageRoute.endpoint?.unit}
-                        useWindowScroll={true}
-                        onEndReached={handleEndReached}
-                        renderItem={renderItem}
-                        ListFooterComponent={
-                            <View>
-                                {hasNextPage && isFetchingNextPage ? Preload : null}
-                            </View>
-                        }
-                    />
-                    {pageRoute?.endpoint?.request_url &&
-                        (!pageRoute.endpoint?.finished
-                            ? dataItems.filter((item) => item.type != 'block').length == 0 ? Preload : PreloadShort
-                            : dataItems.filter((item) => item.type != 'block')
-                                .length == 0 &&
-                            callFn('noContentByUrl', [pageRoute?.endpoint]))}
+                    {centerColumnContent}
                 </View>
             </Panel>
             {isRightCol && (
