@@ -27,6 +27,11 @@ import { Button } from 'app/design/controls'
 import { useBreakpoint, useWindowHeight } from 'app/context/measure';
 import emitter from 'app/context/emitter'
 import Toaster from 'app/ui/atoms/toaster2'
+import {
+    refetchUniListReducer,
+    isSameItemsForUniList,
+    flattenPagesForUniList
+} from 'app/lib/conductor-helpers'
 
 const blockTheme = appSetting('theme', 'blocks');
 
@@ -60,29 +65,12 @@ const getNumCols = (width, props, data) => {
     return 1
 }
 
-const refetchReducer = (state, action) => {
-    switch (action.type) {
-        case 'SET_ITEMS':
-            return {
-                visibleItems: action.items,
-                hasNewData: false
-            }
-        case 'SHOW_NEW_DATA':
-            return {
-                ...state,
-                hasNewData: true
-            }
-        default:
-            return state
-    }
-}
-
 export default function Browse(props) {
     const isWeb = Platform.OS === 'web'
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const uniRef = useRef()
-    const [refetchState, dispatch] = useReducer(refetchReducer, {
+    const [refetchState, dispatch] = useReducer(refetchUniListReducer, {
         visibleItems: [],
         hasNewData: false
     })
@@ -97,12 +85,6 @@ export default function Browse(props) {
     const isOneLine = data?.params?.view == 'showcase'
     const isOnePage = props.only_one_page || isOneLine;
     const isShowTitleInside = props?.showTitleInside || props?.extraProps?.showTitleInside || isOneLine;
-    useEffect(() => {
-        if (props.data.unit == 'feed') {
-            subscribe('bx_timeline_0', 'added', refetch)
-            subscribe('bx_timeline_0', 'deleted', refetch)
-        }
-    }, [])
 
     if (data.unit == 'mixed') {
         data.unit = 'general-profile-list'
@@ -178,31 +160,17 @@ export default function Browse(props) {
             if (props.extraProps?.limit == true) return
             if (isFetchingNextPage) return
             if (lastItemIndex == false) return
+
             refetchRef.current.skipToast = true
-
-
             fetchNextPage()
         },
         [hasNextPage, isOnePage, isFetchingNextPage]
     )
 
-    const flattenPages = (pagesData) => (pagesData?.pages ?? []).flatMap((p) => p.data ?? [])
-
-
-    const isSameItems = (a, b) => {
-        if (a.length !== b.length) return false
-        for (let i = 0; i < a.length; i++) {
-            if (a[i].id !== b[i].id) {
-                return false
-            }
-        }
-        return true
-    }
-
     useEffect(() => {
         if (!pagesData) return
 
-        const items = flattenPages(pagesData)
+        const items = flattenPagesForUniList(pagesData)
 
         if (refetchRef.current.isFirstLoad) {
             dispatch({ type: 'SET_ITEMS', items })
@@ -211,7 +179,7 @@ export default function Browse(props) {
             return
         }
 
-        if (!isSameItems(refetchRef.current.prevItems, items)) {
+        if (!isSameItemsForUniList(refetchRef.current.prevItems, items)) {
             if (refetchRef.current.skipToast) {
                 dispatch({ type: 'SET_ITEMS', items })
                 refetchRef.current.skipToast = false
@@ -231,12 +199,18 @@ export default function Browse(props) {
     const Preload = getSkeletonForList(sSkeleton, numColumns)
 
     useEffect(() => {
+        if (props.data.unit == 'feed') {
+            subscribe('bx_timeline_0', 'added', refetch)
+            subscribe('bx_timeline_0', 'deleted', refetch)
+        }
+
         const subscription = emitter.addListener(`page`, (data) => {
             if (data.action == 'reload') {
                 refetchRef.current.skipToast = true
                 refetch();
             }
         })
+
         const subscription2 = emitter.addListener(`feed`, (data) => {
             if (data.action == 'remove_content' || data.action == 'new_content') {
                 refetchRef.current.skipToast = true
@@ -412,25 +386,6 @@ export default function Browse(props) {
     return (
         <View className={`w-full ${isOneLine ? '' : 'h-full'}`}>
             <View className="w-full" onLayout={handleLayout}></View>
-            {refetchState.hasNewData && <Toaster
-
-                onPress={() => {
-                    const latestItems = flattenPages(pagesData)
-                    dispatch({ type: 'SET_ITEMS', items: latestItems })
-                    refetchRef.current.prevItems = latestItems;
-                    if (uniRef.current) {
-                        uniRef.current.scrollToIndex?.({
-                            index: 0,
-                            align: 'start',
-                            behavior: 'smooth',
-                        })
-                    }
-                }}
-                isVisible={refetchState.hasNewData}
-                variant="primary"
-                title="Show New"
-                size="sm"
-            />}
             <View className={`w-full ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''}`} style={isOneLine ? {} : styles}>
                 {isShowTitleInside && (
                     <Row className={`items-center justify-between ${props.showBg ? '' : 'px-2 '}`}>
@@ -462,6 +417,24 @@ export default function Browse(props) {
                 )}
                 {contentElement}
             </View>
+            {refetchState.hasNewData && <Toaster
+                onPress={() => {
+                    const latestItems = flattenPagesForUniList(pagesData)
+                    dispatch({ type: 'SET_ITEMS', items: latestItems })
+                    refetchRef.current.prevItems = latestItems;
+                    if (uniRef.current) {
+                        uniRef.current.scrollToIndex?.({
+                            index: 0,
+                            align: 'end',
+                            behavior: 'smooth',
+                        })
+                    }
+                }}
+                isVisible={refetchState.hasNewData}
+                variant="primary"
+                title="Show New"
+                size="sm"
+            />}
         </View>
     )
 }

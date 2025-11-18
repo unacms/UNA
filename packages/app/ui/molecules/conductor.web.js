@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect, useRef, useMemo, memo } from 'react'
+import { useCallback, useState, useEffect, useRef, useMemo, memo, useReducer } from 'react'
 import { Text } from 'app/design/typography'
 import Animated, {
     useSharedValue,
@@ -11,16 +11,17 @@ import {
     getHeaderSettings,
     getUnitModeBySource,
     getURI,
-    handleFeedLayoutData,
     getMenuSettings,
     isObjectsEqual,
     getBreakpoint,
 } from 'app/lib/util'
 import {
     fillTabs,
-    parseData,
     getDataForRoute,
     TopSidebar,
+    refetchUniListReducer,
+    isSameItemsForUniList,
+    flattenPagesForUniList
 } from 'app/lib/conductor-helpers'
 import { ItemRenderer } from 'app/components/item-renderer'
 import { Button } from 'app/design/controls'
@@ -41,6 +42,7 @@ import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal'
 import emitter from 'app/context/emitter'
 import Cover, { CoverSmall } from 'app/components/elements/cover'
 import { CoverMenuMore, CoverMenu } from 'app/components/nav/menu-cover'
+import { fetcher } from 'app/lib/fetcher'
 import {
     Panel,
     PanelGroup,
@@ -49,6 +51,7 @@ import {
 } from 'app/ui/molecules/resizable-panels'
 import { useLayoutSettings } from 'app/context/layout-settings'
 import { useIsDesktop, useBreakpoint } from 'app/context/measure'
+import Toaster from 'app/ui/atoms/toaster2'
 
 const conductorTheme = appSetting('theme', 'conductor')
 
@@ -80,7 +83,6 @@ export function Conductor({
         useSectionAsMenu
     )
     const [routes, setRoutes] = useState(initedTabs)
-    const [isRevalidate, setIsRevalidate] = useState(false)
 
     useEffect(() => {
         setRoutes(initedTabs)
@@ -123,14 +125,7 @@ export function Conductor({
         () => routes.find((item) => item.index === prevIndex),
         [routes, prevIndex]
     )
-    const queryKey = [
-        currentRoute?.endpoint?.request_url,
-        currentRoute.link,
-        keyword,
-        JSON.stringify(currentRoute?.endpoint?.params?.filters),
-        ts,
-        timestamp
-    ]
+
     const cellsCustomConfig =
         appSetting('layouts', 'navigator') || appSetting('layouts', `cols-l-c`)
     const initialHeaderSettings = getHeaderSettings(
@@ -146,30 +141,7 @@ export function Conductor({
     }
     const [headerSettings, setHeaderSettings] = useState(initialHeaderSettings)
 
-    const { fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-        queryKey: queryKey,
-        queryFn: ({ pageParam }) => parseData(routes, index, setRoutes),
-        getNextPageParam: (lastPage, pages) => {
-            if (lastPage?.data?.length > 0) {
-                return lastPage?.endpoint
-            }
-            return
-        },
-        enabled: currentRoute?.endpoint?.params?.start == 0, //route?.endpoint?.params?.start == 0
-    }
-    )
 
-    const handleEndReached = useCallback(
-        async (lastItemIndex) => {
-            if (isFetchingNextPage) return
-            if (hasNextPage === false) return
-            if (currentRoute?.endpoint?.finished) return
-            if (lastItemIndex === false) return
-            //console.log("handleEndReached", handleEndReached)
-            fetchNextPage()
-        },
-        [currentRoute?.endpoint?.finished, isFetchingNextPage, hasNextPage]
-    )
 
     useEffect(() => {
         if (currentRoute.inited) {
@@ -191,41 +163,8 @@ export function Conductor({
     }, [isDesktop, layoutName, currentRoute?.key, currentRoute.config])
 
     useEffect(() => {
-        if (currentRoute?.endpoint?.unit == 'feed') {
-            subscribe('bx_timeline_0', 'added', setIsRevalidate)//TODO
-            subscribe('bx_timeline_0', 'deleted', setIsRevalidate)//TODO
-        }
-    }, [])
-
-    useEffect(() => {
         setBottomSheetData(false)
     }, [index])
-
-    /* NEW POST TO FEED */
-    useEffect(() => {
-        if (
-            currentRoute.endpoint?.unit === 'feed' &&
-            layoutData &&
-            layoutData.data &&
-            (layoutData?.type == 'feed:new_content' ||
-                layoutData?.type == 'feed:remove_content')
-        ) {
-            let clonedData = currentRoute.data
-            const data = handleFeedLayoutData(layoutData, clonedData)
-            const newRoutes = [...routes]
-            newRoutes[index].data = data
-            setRoutes(newRoutes)
-            setLayoutData(null)
-        }
-        callFn('updateRouteDataForConnections', [
-            currentRoute,
-            layoutData,
-            routes,
-            index,
-            setRoutes,
-        ])
-    }, [layoutData])
-    /* NEW POST TO FEED */
 
     const setFilterValue = (values) => {
         setIndex((prevIndex) => {
@@ -291,7 +230,6 @@ export function Conductor({
     useEffect(() => {
         setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100)
     }, [])
-
 
     const isHideCover =
         data?.cover_block?.profile &&
@@ -400,9 +338,9 @@ export function Conductor({
                 : defaultHeaderHeight
         }
         header={isUseCurrentHeader ? null : headerComponent}
-        handleEndReached={handleEndReached}
-        isFetchingNextPage={isFetchingNextPage}
-        hasNextPage={hasNextPage}
+        keyword={keyword}
+        ts={ts}
+        timestamp={timestamp}
         skeleton={skeleton}
     />
 
@@ -436,18 +374,133 @@ const TabSceneMainContent = ({
     pageRoute,
     header,
     headerHeight,
-    handleEndReached,
-    isFetchingNextPage,
-    hasNextPage,
     skeleton,
+    keyword,
+    ts,
+    timestamp
 }) => {
     const pageData = pageRoute.pageData
     const uniRef = useRef()
-    const dataItems = pageRoute?.data
+    const dataItemsPage = pageRoute?.data
     const unitType = useMemo(() => {
         const type = getUnitModeBySource(pageRoute?.endpoint)
         return type === 'default' ? getUnitType(pageRoute) : type
     }, [pageRoute?.endpoint, pageRoute?.blocks])
+
+    const [refetchState, dispatch] = useReducer(refetchUniListReducer, {
+        visibleItems: [],
+        hasNewData: false
+    })
+    const refetchRef = useRef({
+        skipToast: false,
+        isFirstLoad: true,
+        prevItems: []
+    })
+
+    const qKey = [
+        pageRoute?.endpoint?.request_url,
+        pageRoute.link,
+        keyword,
+        JSON.stringify(pageRoute?.endpoint?.params?.filters),
+        ts,
+        timestamp
+    ]
+
+    async function fetchData({ pageParam = pageRoute?.endpoint?.params }) {
+        if (!pageRoute?.endpoint?.request_url) {
+            return { data: [], params: pageParam || {} }
+        }
+        
+        const sUrl = pageRoute?.endpoint?.request_url + JSON.stringify({ params: pageParam })
+        console.log("sUrl", sUrl)
+        const res = await fetcher(sUrl)
+        return { data: res.data[0].data.data, params: res.data[0].data.params }
+    }
+
+
+    const {
+        data: pagesData,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+        refetch,
+        isRefetching
+    } = useInfiniteQuery({
+        queryKey: qKey,
+        queryFn: fetchData,
+
+        getNextPageParam: (lastPage) => {
+            return lastPage?.data.length > 0 ? { ...lastPage?.params, start: lastPage?.params.start + lastPage?.params.per_page } : undefined
+        },
+        staleTime: 2000,
+        refetchOnWindowFocus: true,
+        refetchOnReconnect: true,
+        enabled: !!pageRoute?.endpoint?.request_url
+    })
+
+    console.log("pageRoute?.endpoint?.request_url", !!pageRoute?.endpoint?.request_url);
+
+
+    useEffect(() => {
+
+        if (pageRoute?.endpoint?.unit == 'feed') {
+            subscribe('bx_timeline_0', 'added', refetch)
+            subscribe('bx_timeline_0', 'deleted', refetch)
+        }
+
+        const subscription = emitter.addListener(`page`, (data) => {
+            if (data.action == 'reload') {
+                refetchRef.current.skipToast = true
+                refetch();
+            }
+        })
+
+        const subscription2 = emitter.addListener('feed', (data) => {
+            if (data.action == 'remove_content' || data.action == 'new_content') {
+                refetchRef.current.skipToast = true
+                refetch();
+            }
+        })
+
+        return () => {
+            subscription.remove();
+            subscription2.remove()
+        }
+    }, [])
+
+    const handleEndReached = useCallback(
+        async (lastItemIndex) => {
+            if (isFetchingNextPage) return
+            if (hasNextPage === false) return
+            if (lastItemIndex === false) return
+            refetchRef.current.skipToast = true
+            fetchNextPage()
+        },
+        [isFetchingNextPage, hasNextPage]
+    )
+
+    useEffect(() => {
+        if (!pagesData) return
+
+        const items = flattenPagesForUniList(pagesData)
+
+        if (refetchRef.current.isFirstLoad) {
+            dispatch({ type: 'SET_ITEMS', items })
+            refetchRef.current.prevItems = items
+            refetchRef.current.isFirstLoad = false
+            return
+        }
+
+        if (!isSameItemsForUniList(refetchRef.current.prevItems, items)) {
+            if (refetchRef.current.skipToast) {
+                dispatch({ type: 'SET_ITEMS', items })
+                refetchRef.current.skipToast = false
+            } else {
+                dispatch({ type: 'SHOW_NEW_DATA' })
+            }
+            refetchRef.current.prevItems = items
+        }
+    }, [pagesData])
 
     const renderItem = useCallback(
         ({ item, index }) => (
@@ -483,6 +536,9 @@ const TabSceneMainContent = ({
         () => getSkeletonForList(SkeletonForRoute, 5, false, layout),
         [SkeletonForRoute]
     )
+
+    const dataItems = [...dataItemsPage, ...refetchState.visibleItems];
+    console.log("refetchState.hasNewData", refetchState.hasNewData)
     return (
         <><UniList
             scrollProps={
@@ -507,6 +563,8 @@ const TabSceneMainContent = ({
             unit={pageRoute.endpoint?.unit}
             useWindowScroll={true}
             onEndReached={handleEndReached}
+            onRefresh={refetch}
+            refreshing={isRefetching}
             renderItem={renderItem}
             ListFooterComponent={
                 <View>
@@ -514,12 +572,32 @@ const TabSceneMainContent = ({
                 </View>
             }
         />
-            {pageRoute?.endpoint?.request_url &&
-                (!pageRoute.endpoint?.finished
+          
+            {pageRoute?.endpoint?.request_url && 
+                (hasNextPage
                     ? dataItems.filter((item) => item.type != 'block').length == 0 ? Preload : PreloadShort
-                    : dataItems.filter((item) => item.type != 'block')
-                        .length == 0 &&
+                    : (dataItems.filter((item) => item.type != 'block').length == 0 && !refetchRef.current.isFirstLoad) &&
                     callFn('noContentByUrl', [pageRoute?.endpoint]))}
+
+            {refetchState.hasNewData && <Toaster
+
+                onPress={() => {
+                    const latestItems = flattenPagesForUniList(pagesData)
+                    dispatch({ type: 'SET_ITEMS', items: latestItems })
+                    refetchRef.current.prevItems = latestItems
+                    if (uniRef.current) {
+                        uniRef.current.scrollToIndex?.({
+                            index: 0,
+                            align: 'end',
+                            behavior: 'smooth',
+                        })
+                    }
+                }}
+                isVisible={refetchState.hasNewData}
+                variant="primary"
+                title="Show New"
+                size="sm"
+            />}
         </>
     )
 };
@@ -1079,12 +1157,8 @@ const HeaderContainer = ({
         coverHeight.value = e.nativeEvent.layout.height || 0
     }, [])
 
-    const onMenuLayout = useCallback((e) => {
-        menuHeight.value = e.nativeEvent.layout.height || 0
-    }, [])
-
     return (
-        <View className="z-50">
+        <View className="z-40">
             <Animated.View style={[{}, animatedStyleHeaderSpacer]} />
             <Animated.View
                 style={[{ width: '100%' }, animatedStyleHeaderCommon]}

@@ -96,6 +96,35 @@ export function handleFeedLayoutData(layoutData, data) {
     return data
 }
 
+export const refetchUniListReducer = (state, action) => {
+    switch (action.type) {
+        case 'SET_ITEMS':
+            return {
+                visibleItems: action.items,
+                hasNewData: false
+            }
+        case 'SHOW_NEW_DATA':
+            return {
+                ...state,
+                hasNewData: true
+            }
+        default:
+            return state
+    }
+}
+
+export const flattenPagesForUniList = (pagesData) => (pagesData?.pages ?? []).flatMap((p) => p.data ?? [])
+
+export const isSameItemsForUniList = (a, b) => {
+    if (a.length !== b.length) return false
+    for (let i = 0; i < a.length; i++) {
+        if (a[i].id !== b[i].id) {
+            return false
+        }
+    }
+    return true
+}
+
 export function fillTabs(
     menu,
     data,
