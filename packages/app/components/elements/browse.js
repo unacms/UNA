@@ -81,7 +81,7 @@ export default function Browse(props) {
     const isWeb = Platform.OS === 'web'
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
-
+    const uniRef = useRef()
     const [refetchState, dispatch] = useReducer(refetchReducer, {
         visibleItems: [],
         hasNewData: false
@@ -178,6 +178,9 @@ export default function Browse(props) {
             if (props.extraProps?.limit == true) return
             if (isFetchingNextPage) return
             if (lastItemIndex == false) return
+            refetchRef.current.skipToast = true
+
+
             fetchNextPage()
         },
         [hasNextPage, isOnePage, isFetchingNextPage]
@@ -351,6 +354,7 @@ export default function Browse(props) {
         scrollProps: props?.exProps?.scrollProps,
         preloadComponent: PreloadComponent,
         numColumns,
+        refer:uniRef,
         mode: 'simple', // TODO
         data: dataItems,
         unit: data.unit,
@@ -413,7 +417,14 @@ export default function Browse(props) {
                 onPress={() => {
                     const latestItems = flattenPages(pagesData)
                     dispatch({ type: 'SET_ITEMS', items: latestItems })
-                    refetchRef.current.prevItems = latestItems
+                    refetchRef.current.prevItems = latestItems;
+                    if (uniRef.current) {
+                        uniRef.current.scrollToIndex?.({
+                            index: 0,
+                            align: 'start',
+                            behavior: 'smooth',
+                        })
+                    }
                 }}
                 isVisible={refetchState.hasNewData}
                 variant="primary"
