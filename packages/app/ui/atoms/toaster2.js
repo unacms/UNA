@@ -26,13 +26,13 @@ export default function Toaster({ isVisible, title, size, onPress }) {
 
 
     return (
-        <><View className={sClassName}>
+        <View className={sClassName}>
             <Animated.View className={isWeb ? "w-full" : ""} style={indicatorStyle} >
                 <View margin="" rounded=' rounded-xl ' addClassName="max-w-screen-lg w-auto p-3 sm:p-4 w-full " className={sClassName2}>
                     <Button variant="primary" title={title} size={size} rounded onPress={onPress} />
                 </View>
             </Animated.View>
-        </View></>
+        </View>
     );
 };
 
