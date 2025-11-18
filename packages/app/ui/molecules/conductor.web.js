@@ -22,7 +22,6 @@ import {
     getRouteData,
     LeftSidebar,
     TopSidebar,
-    getNumCols,
 } from 'app/lib/conductor-helpers'
 import { ItemRenderer } from 'app/components/item-renderer'
 import { Button } from 'app/design/controls'
@@ -68,12 +67,11 @@ export function Conductor({
     defaultHeaderHeight = 112,
 }) {
     const [timestamp, setTimestamp] = useState(Date.now());
-    const { currentUser } = useCurrentUser()
+     const { currentUser } = useCurrentUser()
     const { setBottomSheetData } = useBottomSheetData()
     const { layoutData, setLayoutData } = useLayoutData()
     const { layoutName: tmplLayout } = useLayoutSettings()
     const cleanUrl = data.url.split('?')[0]
-    const currentBreakpoint = useBreakpoint()
     const isDesktop = useIsDesktop()
     const initedTabs = fillTabs(
         menu,
@@ -291,22 +289,6 @@ export function Conductor({
         })
     }, [LeftBarContentBlocks])
 
-    const unitType = useMemo(() => {
-        const type = getUnitModeBySource(currentRoute?.endpoint)
-        return type === 'default' ? getUnitType(currentRoute) : type
-    }, [currentRoute?.endpoint, currentRoute?.inited, currentRoute?.blocks])
-
-
-    const sSkeleton = useMemo(() => {
-        const a = callFn('getSkeletonByEndPoint', [currentRoute])
-        if (a) return a
-        const baseSkeleton =
-            skeleton ||
-            currentRoute?.endpoint?.module ||
-            currentRoute?.endpoint?.unit
-        return unitType ? [baseSkeleton, unitType] : baseSkeleton
-    }, [skeleton, currentRoute, unitType])
-
     useEffect(() => {
         setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100)
     }, [])
@@ -333,11 +315,8 @@ export function Conductor({
                         menu={menu}
                         routes={routes}
                         layoutName={layoutName}
-                        currentUser={currentUser}
                         index={index}
                         setIndex={setIndex}
-                        getNumCols={getNumCols}
-                        currentBreakpoint={currentBreakpoint}
                         onChangeRoute={onChangeRoute}
                         omitDefaultBackground={false}
                         pageData={data}
@@ -361,8 +340,7 @@ export function Conductor({
         />
     )
 
-    const isUseCurrentHeader =
-        layoutName === 'profile' && (!isCoverDisabled || !isDesktop)
+    const isUseCurrentHeader = layoutName === 'profile' && (!isCoverDisabled || !isDesktop);
 
     return (
         <View className="w-full h-full" scrollEnabled={false}>
@@ -383,58 +361,58 @@ export function Conductor({
                     hasNextPage={hasNextPage}
                     isFetchingNextPage={isFetchingNextPage}
                     handleEndReached={handleEndReached}
-                    unitType={unitType}
-                    setIndex={setIndex}
-                    headerSettings={headerSettings}
-                    LeftBarContentBlocks={LeftBarContentBlocks}
-                    routes={routes}
-                    menu={menu}
                     layoutName={layoutName}
-                    currentBreakpoint={currentBreakpoint}
-                    prevRoute={prevRoute}
                     headerHeight={
                         showFiltersBtn && routes.length > 1
                             ? defaultHeaderHeight + 52
                             : defaultHeaderHeight
                     }
                     header={isUseCurrentHeader ? null : headerComponent}
-                    route={currentRoute}
-                    skeleton={sSkeleton}
-                />
+                    pageRoute={currentRoute.inited ? currentRoute : prevRoute}
+                    skeleton={skeleton}
+                >
+                    <LeftSideBarContainer
+                        layoutName={layoutName}
+                        index={index}
+                        setIndex={setIndex}
+                        menu={menu}
+                        routes={routes}
+                        currentUser={currentUser}
+                        headerSettings={headerSettings}
+                    >
+                        {LeftBarContentBlocks}
+                    </LeftSideBarContainer>
+                </RenderScene>
             </View>
         </View>
     )
 }
 
 const RenderScene = ({
-    route,
-    menu,
+    pageRoute,
     header,
-    routes,
-    headerSettings,
-    prevRoute,
     headerHeight,
     layoutName,
-    LeftBarContentBlocks,
-    setIndex,
-    unitType,
     handleEndReached,
     isFetchingNextPage,
     hasNextPage,
-    currentBreakpoint,
     index,
     skeleton,
+    children
 }) => {
-    const { currentUser } = useCurrentUser()
     const uniRef = useRef()
-    const pageRoute = route.inited ? route : prevRoute
     const pageData = pageRoute.pageData
-    const dataItems = route?.data
+    const dataItems = pageRoute?.data
+    const currentBreakpoint = useBreakpoint()
+    const currentBreakpointName = getBreakpoint(currentBreakpoint)
 
-    const isRightCol =
-        route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar
-    const isLeftCol =
-        route?.leftbar?.content?.length > 0 || layoutName == 'navigator'
+    const isRightCol = pageRoute?.sidebar?.content?.length > 0 || pageRoute?.blocks?.browse_sidebar
+    const isLeftCol = pageRoute?.leftbar?.content?.length > 0 || layoutName == 'navigator'
+
+    const unitType = useMemo(() => {
+        const type = getUnitModeBySource(pageRoute?.endpoint)
+        return type === 'default' ? getUnitType(pageRoute) : type
+    }, [pageRoute?.endpoint, pageRoute?.blocks])
 
     const renderItem = useCallback(
         ({ item, index }) => (
@@ -449,16 +427,26 @@ const RenderScene = ({
         [pageRoute, unitType]
     )
 
+    const SkeletonForRoute = useMemo(() => {
+        const a = callFn('getSkeletonByEndPoint', [pageRoute])
+        if (a) return a
+        const baseSkeleton =
+            skeleton ||
+            pageRoute?.endpoint?.module ||
+            pageRoute?.endpoint?.unit
+        return unitType ? [baseSkeleton, unitType] : baseSkeleton
+    }, [skeleton, pageRoute, unitType])
+
     const layout = callFn('layoutForList', [pageRoute?.endpoint]);
 
     const Preload = useMemo(
-        () => getSkeletonForList(skeleton, 5, true, layout),
-        [skeleton]
+        () => getSkeletonForList(SkeletonForRoute, 5, true, layout),
+        [SkeletonForRoute]
     )
 
     const PreloadShort = useMemo(
-        () => getSkeletonForList(skeleton, 5, false, layout),
-        [skeleton]
+        () => getSkeletonForList(SkeletonForRoute, 5, false, layout),
+        [SkeletonForRoute]
     )
     const MainContent = useMemo(() => {
         return (
@@ -509,7 +497,7 @@ const RenderScene = ({
 
     const cellsCustomConfig = useMemo(() => {
         return (
-            appSetting('layouts', route?.pageData?.uri) ||
+            appSetting('layouts', pageRoute?.pageData?.uri) ||
             appSetting('layouts', `cols-${layoutCols}`)
         )
     }, [pageRoute?.pageData?.uri, layoutCols])
@@ -517,7 +505,7 @@ const RenderScene = ({
     const panelLayoutKey = `${layoutCols}-${pageData?.uri || 'default'}`
 
     const { cells = {} } = cellsCustomConfig || {}
-    const currentBreakpointName = getBreakpoint(currentBreakpoint)
+    
 
     // LEFT
     const {
@@ -621,31 +609,9 @@ const RenderScene = ({
                                     )
                                 }`}
                         >
-                            {layoutName == 'profile' ? (
-                                <LeftSideBarContainer
-                                    layoutName={layoutName}
-                                    index={index}
-                                    setIndex={setIndex}
-                                    menu={menu}
-                                    routes={routes}
-                                    currentUser={currentUser}
-                                    headerSettings={headerSettings}
-                                >
-                                    {LeftBarContentBlocks}
-                                </LeftSideBarContainer>
-                            ) : (
+                            {layoutName == 'profile' ? children : (
                                 <View className=" fixed-process ">
-                                    <LeftSideBarContainer
-                                        layoutName={layoutName}
-                                        index={index}
-                                        setIndex={setIndex}
-                                        menu={menu}
-                                        routes={routes}
-                                        currentUser={currentUser}
-                                        headerSettings={headerSettings}
-                                    >
-                                        {LeftBarContentBlocks}
-                                    </LeftSideBarContainer>
+                                    {children}
                                 </View>
                             )}
                         </View>
@@ -705,7 +671,7 @@ const RenderScene = ({
                                 )
                             })}
                             <View>
-                                {!!route.pageData && (
+                                {!!pageRoute.pageData && (
                                     <BlockByName
                                         data={pageRoute.pageData}
                                         name={pageRoute.blocks?.browse_sidebar}
@@ -750,7 +716,6 @@ const LeftBarContent = (route, onFormChangedValues) => {
 
 const AddMenu = (menu, filter) => {
     const [pageData, setPageData] = useState(false)
-
     const { currentUser } = useCurrentUser()
     const { t } = useTranslation()
     const menuSettings = getMenuSettings(menu.object, menu.config)
@@ -829,8 +794,6 @@ function ConductorMenu({
     index,
     t,
     setIndex,
-    getNumCols,
-    currentBreakpoint,
     onChangeRoute,
 }) {
     const name = 'cnd-main-menu'
@@ -848,7 +811,6 @@ function ConductorMenu({
                 index,
                 () => {
                     setIndex(a.index)
-                    getNumCols(currentBreakpoint, routes[index])
                     window.history.pushState({}, '', '/' + a.key)
                     if (onChangeRoute) {
                         onChangeRoute(a)
@@ -892,7 +854,6 @@ function ConductorMenu({
         const handlePress = () => {
             emitter.emit('dynamic_menu', { action: 'hide' })
             setIndex(index)
-            getNumCols(currentBreakpoint, routes[index])
             window.history.pushState({}, '', '/' + key)
             if (onChangeRoute) {
                 onChangeRoute(item)
@@ -1156,11 +1117,8 @@ const TabBar = ({
     routes,
     pageData,
     layoutName,
-    currentUser,
     index,
     setIndex,
-    getNumCols,
-    currentBreakpoint,
     onChangeRoute,
     omitDefaultBackground = false,
 }) => {
@@ -1179,13 +1137,10 @@ const TabBar = ({
             >
                 <View className="flex-1">
                     <ConductorMenu
-                        currentUser={currentUser}
                         routes={routes}
                         index={index}
                         t={t}
                         setIndex={setIndex}
-                        getNumCols={getNumCols}
-                        currentBreakpoint={currentBreakpoint}
                         onChangeRoute={onChangeRoute}
                     />
                 </View>
