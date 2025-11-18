@@ -410,9 +410,8 @@ const TabSceneMainContent = ({
         if (!pageRoute?.endpoint?.request_url) {
             return { data: [], params: pageParam || {} }
         }
-        
+
         const sUrl = pageRoute?.endpoint?.request_url + JSON.stringify({ params: pageParam })
-        console.log("sUrl", sUrl)
         const res = await fetcher(sUrl)
         return { data: res.data[0].data.data, params: res.data[0].data.params }
     }
@@ -437,9 +436,6 @@ const TabSceneMainContent = ({
         refetchOnReconnect: true,
         enabled: !!pageRoute?.endpoint?.request_url
     })
-
-    console.log("pageRoute?.endpoint?.request_url", !!pageRoute?.endpoint?.request_url);
-
 
     useEffect(() => {
 
@@ -538,7 +534,6 @@ const TabSceneMainContent = ({
     )
 
     const dataItems = [...dataItemsPage, ...refetchState.visibleItems];
-    console.log("refetchState.hasNewData", refetchState.hasNewData)
     return (
         <><UniList
             scrollProps={
