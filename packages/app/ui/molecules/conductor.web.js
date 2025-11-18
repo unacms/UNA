@@ -67,7 +67,7 @@ export function Conductor({
     defaultHeaderHeight = 112,
 }) {
     const [timestamp, setTimestamp] = useState(Date.now());
-     const { currentUser } = useCurrentUser()
+    const { currentUser } = useCurrentUser()
     const { setBottomSheetData } = useBottomSheetData()
     const { layoutData, setLayoutData } = useLayoutData()
     const { layoutName: tmplLayout } = useLayoutSettings()
@@ -148,16 +148,16 @@ export function Conductor({
     const [headerSettings, setHeaderSettings] = useState(initialHeaderSettings)
 
     const { fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-            queryKey: queryKey,
-            queryFn: ({ pageParam }) => parseData(routes, index, setRoutes),
-            getNextPageParam: (lastPage, pages) => {
-                if (lastPage?.data?.length > 0) {
-                    return lastPage?.endpoint
-                }
-                return
-            },
-            enabled: currentRoute?.endpoint?.params?.start == 0, //route?.endpoint?.params?.start == 0
-        }
+        queryKey: queryKey,
+        queryFn: ({ pageParam }) => parseData(routes, index, setRoutes),
+        getNextPageParam: (lastPage, pages) => {
+            if (lastPage?.data?.length > 0) {
+                return lastPage?.endpoint
+            }
+            return
+        },
+        enabled: currentRoute?.endpoint?.params?.start == 0, //route?.endpoint?.params?.start == 0
+    }
     )
 
     const handleEndReached = useCallback(
@@ -197,7 +197,7 @@ export function Conductor({
             subscribe('bx_timeline_0', 'deleted', setIsRevalidate)//TODO
         }
     }, [])
-    
+
     useEffect(() => {
         setBottomSheetData(false)
     }, [index])
@@ -342,22 +342,73 @@ export function Conductor({
 
     const isUseCurrentHeader = layoutName === 'profile' && (!isCoverDisabled || !isDesktop);
 
+    const tabRoute = currentRoute.inited ? currentRoute : prevRoute
+    const isLeftCol = tabRoute?.leftbar?.content?.length > 0 || layoutName == 'navigator'
+    const isRightCol = tabRoute?.sidebar?.content?.length > 0 || tabRoute?.blocks?.browse_sidebar
+    const sidebarUnitType = tabRoute.blocks?.browse_sidebar?.unitType || 'default'
+
+    const LeftColumnContent = isLeftCol ?
+        <LeftSideBarContainer
+            layoutName={layoutName}
+            index={index}
+            setIndex={setIndex}
+            menu={menu}
+            routes={routes}
+            headerSettings={headerSettings}
+        >
+            {LeftBarContentBlocks}
+        </LeftSideBarContainer> : null
+
+    const RightColumContent = isRightCol ? <View className=" fixed-process mt-0.5 sm:p-2">
+        {tabRoute?.sidebar?.content.map((item, index) => {
+            return (
+                <ItemRenderer
+                    key={`${tabRoute?.index}-${item.id}`}
+                    unitType={sidebarUnitType}
+                    route={tabRoute}
+                    sidebar={true}
+                    item={item}
+                    unit={
+                        tabRoute?.sidebar?.endpoint?.unit
+                    }
+                    module={
+                        tabRoute?.sidebar?.endpoint?.module
+                            ? tabRoute?.sidebar?.endpoint
+                                ?.module
+                            : ''
+                    }
+                />
+            )
+        })}
+        <View>
+            {!!tabRoute.pageData && (
+                <BlockByName
+                    data={tabRoute.pageData}
+                    name={tabRoute.blocks?.browse_sidebar}
+                    sidebar={true}
+                    perLine={1}
+                    maxItems={1}
+                />
+            )}
+        </View>
+    </View> : null
+
+
     return (
         <View className="w-full h-full" scrollEnabled={false}>
             {(isUseCurrentHeader || isDesktop) && headerComponent}
             <View
                 className={`${layoutName === 'profile'
-                        ? conductorTheme.content_max_width
-                        : conductorTheme.content_max_width_nav
+                    ? conductorTheme.content_max_width
+                    : conductorTheme.content_max_width_nav
                     } mx-auto  min-h-screen ${tmplLayout == 'mixed' ? 'mt-12' : ''
                     }`}
             >
-                <RenderSceneHeader
+                <TabSceneHeader
                     route={currentRoute}
                     setFilterValue={setFilterValue}
                 />
-                <RenderScene
-                    index={index}
+                <TabScene
                     hasNextPage={hasNextPage}
                     isFetchingNextPage={isFetchingNextPage}
                     handleEndReached={handleEndReached}
@@ -368,27 +419,17 @@ export function Conductor({
                             : defaultHeaderHeight
                     }
                     header={isUseCurrentHeader ? null : headerComponent}
-                    pageRoute={currentRoute.inited ? currentRoute : prevRoute}
+                    pageRoute={tabRoute}
                     skeleton={skeleton}
-                >
-                    <LeftSideBarContainer
-                        layoutName={layoutName}
-                        index={index}
-                        setIndex={setIndex}
-                        menu={menu}
-                        routes={routes}
-                        currentUser={currentUser}
-                        headerSettings={headerSettings}
-                    >
-                        {LeftBarContentBlocks}
-                    </LeftSideBarContainer>
-                </RenderScene>
+                    leftColumnContent={LeftColumnContent}
+                    rightColumnContent={RightColumContent}
+                />
             </View>
         </View>
     )
 }
 
-const RenderScene = ({
+const TabScene = ({
     pageRoute,
     header,
     headerHeight,
@@ -396,9 +437,9 @@ const RenderScene = ({
     handleEndReached,
     isFetchingNextPage,
     hasNextPage,
-    index,
     skeleton,
-    children
+    leftColumnContent,
+    rightColumnContent
 }) => {
     const uniRef = useRef()
     const pageData = pageRoute.pageData
@@ -406,8 +447,8 @@ const RenderScene = ({
     const currentBreakpoint = useBreakpoint()
     const currentBreakpointName = getBreakpoint(currentBreakpoint)
 
-    const isRightCol = pageRoute?.sidebar?.content?.length > 0 || pageRoute?.blocks?.browse_sidebar
-    const isLeftCol = pageRoute?.leftbar?.content?.length > 0 || layoutName == 'navigator'
+    const isRightCol = !!rightColumnContent
+    const isLeftCol = !!leftColumnContent
 
     const unitType = useMemo(() => {
         const type = getUnitModeBySource(pageRoute?.endpoint)
@@ -448,44 +489,9 @@ const RenderScene = ({
         () => getSkeletonForList(SkeletonForRoute, 5, false, layout),
         [SkeletonForRoute]
     )
-    const MainContent = useMemo(() => {
-        return (
-            <UniList
-                scrollProps={
-                    header
-                        ? {
-                            pageData: pageData,
-                            subHeaderComponent: header,
-                            headerHeight: headerHeight,
-                            isBackButton: false,
-                            isMenuNameAsTitle: true,
-                        }
-                        : null
-                }
-                index={pageRoute.index}
-                data={dataItems}
-                endpoint={pageRoute.endpoint}
-                listState={pageRoute?.state}
-                layout={layout}
-                mode={layout == 'w-full'? 'simple': ''}
-                storagekey={pageRoute.storageKeyValue}
-                refer={uniRef}
-                route={pageRoute}
-                unit={pageRoute.endpoint?.unit}
-                useWindowScroll={true}
-                onEndReached={handleEndReached}
-                renderItem={renderItem}
-                ListFooterComponent={
-                    <View>
-                        {hasNextPage && isFetchingNextPage ? Preload : null}
-                    </View>
-                }
-            />
-        )
-    }, [dataItems, dataItems.length, header, headerHeight, hasNextPage, isFetchingNextPage])
 
     const groupRef = useRef(null)
-    const sidebarUnitType = pageRoute.blocks?.browse_sidebar?.unitType || 'default'
+
     const layoutCols =
         !isLeftCol && !isRightCol
             ? 'c'
@@ -505,7 +511,7 @@ const RenderScene = ({
     const panelLayoutKey = `${layoutCols}-${pageData?.uri || 'default'}`
 
     const { cells = {} } = cellsCustomConfig || {}
-    
+
 
     // LEFT
     const {
@@ -578,11 +584,11 @@ const RenderScene = ({
             if (l)
                 groupRef.current?.setLayout(sl || getLayouts())
         }
-    }, [currentBreakpointName, index])
+    }, [currentBreakpointName, pageRoute])
 
     useEffect(() => {
         window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-    }, [index])
+    }, [pageRoute])
 
     return (
         <PanelGroup
@@ -600,21 +606,7 @@ const RenderScene = ({
                         className={`hidden ${leftBreakpoint}:block`}
                         {...leftPanelProps}
                     >
-                        <View
-                            className={`${layoutName == 'profile'
-                                    ? 'mt-0.5 sm:p-2' + ' fixed-process'
-                                    : appSetting(
-                                        'conductor',
-                                        'sidebar_container'
-                                    )
-                                }`}
-                        >
-                            {layoutName == 'profile' ? children : (
-                                <View className=" fixed-process ">
-                                    {children}
-                                </View>
-                            )}
-                        </View>
+                        {leftColumnContent}
                     </Panel>
                     <PanelHandler
                         gap={`hidden ${leftBreakpoint}:block`}
@@ -630,7 +622,36 @@ const RenderScene = ({
                             : (!pageRoute?.endpoint?.request_url ? 'sm:my-3 mt-0.5 sm:px-3 ' : 'lg:p-1')
                         }`}
                 >
-                    {MainContent}
+                    <UniList
+                        scrollProps={
+                            header
+                                ? {
+                                    pageData: pageData,
+                                    subHeaderComponent: header,
+                                    headerHeight: headerHeight,
+                                    isBackButton: false,
+                                    isMenuNameAsTitle: true,
+                                }
+                                : null
+                        }
+                        data={dataItems}
+                        endpoint={pageRoute.endpoint}
+                        listState={pageRoute?.state}
+                        layout={layout}
+                        mode={layout == 'w-full' ? 'simple' : ''}
+                        storagekey={pageRoute.storageKeyValue}
+                        refer={uniRef}
+                        route={pageRoute}
+                        unit={pageRoute.endpoint?.unit}
+                        useWindowScroll={true}
+                        onEndReached={handleEndReached}
+                        renderItem={renderItem}
+                        ListFooterComponent={
+                            <View>
+                                {hasNextPage && isFetchingNextPage ? Preload : null}
+                            </View>
+                        }
+                    />
                     {pageRoute?.endpoint?.request_url &&
                         (!pageRoute.endpoint?.finished
                             ? dataItems.filter((item) => item.type != 'block').length == 0 ? Preload : PreloadShort
@@ -649,39 +670,7 @@ const RenderScene = ({
                         className={`hidden ${rightBreakpoint}:block `}
                         {...rightPanelProps}
                     >
-                        <View className=" fixed-process mt-0.5 sm:p-2">
-                            {pageRoute?.sidebar?.content.map((item, index) => {
-                                return (
-                                    <ItemRenderer
-                                        key={`${pageRoute?.index}-${item.id}`}
-                                        unitType={sidebarUnitType}
-                                        route={pageRoute}
-                                        sidebar={true}
-                                        item={item}
-                                        unit={
-                                            pageRoute?.sidebar?.endpoint?.unit
-                                        }
-                                        module={
-                                            pageRoute?.sidebar?.endpoint?.module
-                                                ? pageRoute?.sidebar?.endpoint
-                                                    ?.module
-                                                : ''
-                                        }
-                                    />
-                                )
-                            })}
-                            <View>
-                                {!!pageRoute.pageData && (
-                                    <BlockByName
-                                        data={pageRoute.pageData}
-                                        name={pageRoute.blocks?.browse_sidebar}
-                                        sidebar={true}
-                                        perLine={1}
-                                        maxItems={1}
-                                    />
-                                )}
-                            </View>
-                        </View>
+                        {rightColumnContent}
                     </Panel>
                 </>
             )}
@@ -916,70 +905,88 @@ function ConductorMenu({
 const LeftSideBarContainer = ({
     menu,
     routes,
-    currentUser,
     index,
     setIndex,
-    headerSettings,
     children,
     layoutName,
 }) => {
+    const { t } = useTranslation();
+    const { currentUser } = useCurrentUser();
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
 
-    const { t } = useTranslation()
     const addButtons = AddMenu(menu, 'hideInSideBar')
+    const title = layoutName == 'profile' ? '' : t(menuSettings?.name)
     return (
-        <LeftSidebar
-            layoutName={layoutName}
-            title={layoutName == 'profile' ? '' : t(menuSettings?.name)}
-            addButtons={addButtons}
+        <View
+            className={`${layoutName == 'profile'
+                ? 'mt-0.5 sm:p-2' + ' fixed-process'
+                : appSetting(
+                    'conductor',
+                    'sidebar_container'
+                )
+                }`}
         >
-            {layoutName == 'navigator' &&
-                routes.length > 1 &&
-                routes
-                    .filter((aItem) => aItem.hideInTop != true)
-                    .map((a) => {
-                        const btn = callFn('getButtonForConductor', [
-                            a,
-                            index,
-                            currentUser,
-                        ])
+            <View className={`${layoutName == 'profile' ? '' : 'mt-fixed-process'}`}>
+                <View className={`${layoutName == 'profile' ? '' : appSetting('conductor', 'sidebar_inner_container')} ${layoutName == 'profile' ? '' : 'mt-3'}`}>
+                    {(!!title || !!addButtons?.length > 0) && (
+                        <Row className={appSetting('conductor', 'sidebar_title')}>
+                            <Text className=" text-2xl tracking-tight truncate mr-auto font-bold leading-11 text-card-foreground hidden lg:flex  ">
+                                {t(title)}
+                            </Text>
+                            <Row>{addButtons}</Row>
+                        </Row>
+                    )}
+                    <View className="flex-1 gap-0.5">
+                        {layoutName == 'navigator' &&
+                            routes.length > 1 &&
+                            routes
+                                .filter((aItem) => aItem.hideInTop != true)
+                                .map((a) => {
+                                    const btn = callFn('getButtonForConductor', [
+                                        a,
+                                        index,
+                                        currentUser,
+                                    ])
 
-                        if (a?.icon == '*') {
-                            return (
-                                <Link
-                                    href={a.link}
-                                    key={`lmenu-${a.index}`}
-                                    alt={a.title}
-                                >
-                                    {btn}
-                                </Link>
-                            )
-                        }
-                        return (
-                            <Link
-                                href={a.key}
-                                key={`lmenu-${a.index}`}
-                                alt={a.title}
-                            >
-                                <Pressable
-                                    className={
-                                        a.ident
-                                            ? conductorTheme.menu_categ_indent
-                                            : ''
+                                    if (a?.icon == '*') {
+                                        return (
+                                            <Link
+                                                href={a.link}
+                                                key={`lmenu-${a.index}`}
+                                                alt={a.title}
+                                            >
+                                                {btn}
+                                            </Link>
+                                        )
                                     }
-                                    onPress={(event) => {
-                                        setIndex(a.index)
-                                        window.history.pushState({}, '', a.key)
-                                        event.preventDefault()
-                                    }}
-                                >
-                                    {btn}
-                                </Pressable>
-                            </Link>
-                        )
-                    })}
-            {children}
-        </LeftSidebar>
+                                    return (
+                                        <Link
+                                            href={a.key}
+                                            key={`lmenu-${a.index}`}
+                                            alt={a.title}
+                                        >
+                                            <Pressable
+                                                className={
+                                                    a.ident
+                                                        ? conductorTheme.menu_categ_indent
+                                                        : ''
+                                                }
+                                                onPress={(event) => {
+                                                    setIndex(a.index)
+                                                    window.history.pushState({}, '', a.key)
+                                                    event.preventDefault()
+                                                }}
+                                            >
+                                                {btn}
+                                            </Pressable>
+                                        </Link>
+                                    )
+                                })}
+                        {children}
+                    </View>
+                </View>
+            </View>
+        </View>
     )
 }
 
@@ -1109,9 +1116,7 @@ const HeaderContainer = ({
         </View>
     )
 }
-/*
-leftSideBar to remove
-*/
+
 const TabBar = ({
     menu,
     routes,
@@ -1172,7 +1177,7 @@ const TabBar = ({
     }
 }
 
-const RenderSceneHeader = ({ route, setFilterValue }) => {
+const TabSceneHeader = ({ route, setFilterValue }) => {
     const filters = appSetting('conductor', 'hide_browse_filter')
         ? null
         : route?.endpoint?.filters

@@ -544,23 +544,25 @@ export function getNumCols(currentBreakpoint, currentRoute) {
     return 1
 }
 
-export function LeftSidebar({ title, addButtons, children, width, menu, layoutName }) {
+export function LeftSidebar({ title, addButtons, children, width, menu, layoutName }) {//toremove
     const { t } = useTranslation()
     return (
-        <View className={`${layoutName == 'profile' ? '' : appSetting('conductor', 'sidebar_inner_container')} ${layoutName == 'profile' ? '' : 'mt-3'}`}>
+        <View className={`${layoutName == 'profile' ? '' : 'mt-fixed-process'}`}>
+            <View className={`${layoutName == 'profile' ? '' : appSetting('conductor', 'sidebar_inner_container')} ${layoutName == 'profile' ? '' : 'mt-3'}`}>
 
-            {(!!title || !!addButtons?.length > 0) && (
-                <Row className={appSetting('conductor', 'sidebar_title')}>
-                    <Text className=" text-2xl tracking-tight truncate mr-auto font-bold leading-11 text-card-foreground hidden lg:flex  ">
-                        {t(title)}
-                    </Text>
-                    <Row>{addButtons}</Row>
-                </Row>
-            )}
-            <View className="flex-1 gap-0.5">
-                {children}
+                {(!!title || !!addButtons?.length > 0) && (
+                    <Row className={appSetting('conductor', 'sidebar_title')}>
+                        <Text className=" text-2xl tracking-tight truncate mr-auto font-bold leading-11 text-card-foreground hidden lg:flex  ">
+                            {t(title)}
+                        </Text>
+                        <Row>{addButtons}</Row>
+                    </Row>
+                )}
+                <View className="flex-1 gap-0.5">
+                    {children}
+                </View>
+
             </View>
-
         </View>
     )
 }
