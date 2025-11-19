@@ -1109,7 +1109,7 @@ export const settingsDefault = {
         inputs: {
             default: ' file:text-foreground text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground bg-input/60 border border-input focus-visible:bg-card leading-5 focus-visible:border-ring focus-visible:outline-accent rounded-xl px-3 min-h-12 flex-auto text-base placeholder-muted-foreground text-foreground  web:duration-200 overflow-hidden',
            
-            multi: ' bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border px-3 py-2 min-h-12 flex-auto text-base leading-6 overflow-y-scroll [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden shadow-xs placeholder:text-muted-foreground text-card-foreground web:duration-100 ',
+            multi: 'file:text-foreground text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground bg-input/60 border border-input focus-visible:bg-card leading-5 focus-visible:border-ring focus-visible:outline-accent rounded-xl px-3 py-2 min-h-12 flex-auto text-base placeholder-muted-foreground text-foreground  web:duration-200 overflow-hidden  overflow-y-scroll ',
             rounded:
                 ' border border-border/60 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-full web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
             roundedsmall:
@@ -1618,19 +1618,19 @@ export const settingsDefault = {
         button_styles: {
             // Default button (neutral/popover)
             'u-btn-default-cnt': [
-                ' bg-card web:hover:bg-muted/40 overflow-hidden active:opacity-80 ',
-                ' border border-border/60 web:hover:border-border web:focus-visible:border-border  ',
+                ' bg-card web:hover:bg-muted/40 overflow-hidden web:active:bg-card/50 active:bg-card/50 ',
+                ' border border-border/80 web:hover:border-border web:focus-visible:border-border  ',
                 ' web:focus-visible:outline-offset-2 active:outline active:outline-accent active:outline-offset-1 active:outline-4  ',
                 ' shadow-xs web:hover:shadow-md web:active:shadow-none active:shadow-none',    
             ].join(' '),
-            'u-btn-default-text': 'font-medium text-secondary-foreground group-hover:text-foreground',
+            'u-btn-default-text': 'font-medium text-secondary-foreground web:group-hover:text-foreground web:active:text-foreground active:text-foreground',
             'u-btn-default-trans': 'web:duration-200',
 
           
             // Primary button (primary/accent)
             'u-btn-primary-cnt': [
                 // Background and main color
-                ' bg-primary/90 web:hover:bg-primary overflow-hidden  ',
+                ' bg-primary web:hover:bg-primary/90 overflow-hidden overflow-hidden web:active:bg-primary/80 active:bg-primary/80 ',
                 ' web:focus-visible:outline-offset-2 active:outline active:outline-accent active:outline-offset-1 active:outline-4  ',
                 ' shadow-xs web:hover:shadow-md web:active:shadow-none active:shadow-none  ',
                 ' ',

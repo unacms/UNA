@@ -89,9 +89,19 @@ export default function (props) {
 
 export function FormError({ errorText, errorLink }) {
     const errorMessage = (
-        
-            <Text className="text-destructive text-sm bg-destructive/10 px-1 py-0.5 rounded-md">{errorText}</Text>
-        
+        <View className="items-start mr-auto mt-0.5">
+            <View
+                className="ml-3 w-0 h-0 border-l-transparent border-r-transparent border-b-destructive/20"
+                style={{
+                    borderLeftWidth: 6,
+                    borderRightWidth: 6,
+                    borderBottomWidth: 6,
+                }}
+            />
+            <Text className="text-destructive text-xs bg-destructive/20 px-1 py-0.5 rounded-xl">
+                {errorText}
+            </Text>
+        </View>
     )
 
     return errorLink ? (
