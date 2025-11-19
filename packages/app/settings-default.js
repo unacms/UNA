@@ -1353,8 +1353,8 @@ export const settingsDefault = {
             'u-link-plain-trans': ' web:duration-200 ',
 
             // branded color link, no background
-            'u-link-accent-cnt': ' active:bg-accent/60 selected:bg-accent/60  ',
-            'u-link-accent-text': ' text-label-link web:hover:text-label-linkhover web:hover:underline ',
+            'u-link-accent-cnt': ' active:bg-accent/60  ',
+            'u-link-accent-text': ' text-accent-foreground web:hover:underline ',
             'u-link-accent-trans': ' web:duration-200 ',
 
             // neutral color link, no background, hover background
@@ -1369,7 +1369,7 @@ export const settingsDefault = {
 
             // branded color link, no background, hover background
             'u-link-accentghost-cnt':  ' u-link-ghost   ',
-            'u-link-accentghost-text':  ' text-label-link web:hover:text-label-linkhover ',
+            'u-link-accentghost-text':  ' text-accent-foreground ',
             'u-link-accentghost-trans': ' web:duration-100 ',
 
           
@@ -1425,7 +1425,7 @@ export const settingsDefault = {
             'u-card-icon': 'text-card-foreground px-4 gap-2',
             'u-card-title':
                 ' text-foreground leading-none text-xl lg:text-2xl font-semibold leading-none tracking-tight',
-            'u-card-description': ' text-muted-foreground text-sm lg:text-base text-balance',
+            'u-card-description': ' text-secondary-foreground text-sm lg:text-base text-balance',
             'u-card-content': 'text-card-foreground ',
             'u-card-footer': 'bg-muted/20 border-t border-border/40 p-4 flex text-base text-card-foreground gap-2',
         },

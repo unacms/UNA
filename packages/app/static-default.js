@@ -113,7 +113,7 @@ const SplashTextInner = () => {
                 <Text
                     accessible={true}
                     accessibilityRole="text"
-                    className=" text-muted-foreground text-center lg:text-start text-base sm:text-lg lg:text-xl text-pretty"
+                    className=" text-secondary-foreground text-center lg:text-start text-base sm:text-lg lg:text-xl text-pretty"
                 >
                     The best place to share your
                     ideas, find real friends and connect with the community.
