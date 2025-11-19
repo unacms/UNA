@@ -402,6 +402,7 @@ export const settingsDefault = {
         ],
     },
     browse: {
+        stale_time: 30000,
         per_line: [/* only for images for now*/ 
             { width: 1280, count: 4 },
             { width: 1024, count: 4 },

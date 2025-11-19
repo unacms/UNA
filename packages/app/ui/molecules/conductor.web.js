@@ -434,7 +434,7 @@ const TabSceneMainContent = ({
         getNextPageParam: (lastPage) => {
             return lastPage?.data.length > 0 ? { ...lastPage?.params, start: lastPage?.params.start + lastPage?.params.per_page } : undefined
         },
-        staleTime: 2000,
+        staleTime: appSetting('browse', 'stale_time'),
         refetchOnWindowFocus: true,
         refetchOnReconnect: true,
         enabled: !!pageRoute?.endpoint?.request_url
@@ -455,9 +455,19 @@ const TabSceneMainContent = ({
         })
 
         const subscription2 = emitter.addListener('feed', (data) => {
-            if (data.action == 'remove_content' || data.action == 'new_content') {
+            if (data.action == 'remove_content') {
+                dispatch({ type: 'REMOVE_ITEM', id: data.id })
+                if (refetchRef.current?.prevItems) {
+                    refetchRef.current.prevItems = refetchRef.current.prevItems.filter(item => item.id != data.id)
+                }
                 refetchRef.current.skipToast = true
-                refetch();
+            }
+            if (data.action == 'new_content') {
+                dispatch({ type: 'PREPEND_ITEM', item: data.data })
+                if (refetchRef.current?.prevItems) {
+                    refetchRef.current.prevItems = [data.data, ...refetchRef.current.prevItems]
+                }
+                refetchRef.current.skipToast = true
             }
         })
 
@@ -468,7 +478,7 @@ const TabSceneMainContent = ({
     }, [])
     
     useEffect(() => {
-        refetchRef.current.skipToast = true
+        //refetchRef.current.skipToast = true
     }, [qKey])
     
 
@@ -492,6 +502,7 @@ const TabSceneMainContent = ({
             dispatch({ type: 'SET_ITEMS', items })
             refetchRef.current.prevItems = items
             refetchRef.current.isFirstLoad = false
+            refetchRef.current.skipToast = false
             return
         }
 
@@ -501,6 +512,7 @@ const TabSceneMainContent = ({
                 refetchRef.current.skipToast = false
             } else {
                 dispatch({ type: 'SHOW_NEW_DATA' })
+                refetchRef.current.skipToast = false
             }
             refetchRef.current.prevItems = items
         }
@@ -577,7 +589,6 @@ const TabSceneMainContent = ({
         {(pageRoute?.endpoint?.request_url && hasNextPage === false && dataItems.filter((item) => item.type != 'block').length == 0) && callFn('noContentByUrl', [pageRoute?.endpoint])}
 
         {refetchState.hasNewData && <Toaster
-
             onPress={() => {
                 const latestItems = flattenPagesForUniList(pagesData)
                 dispatch({ type: 'SET_ITEMS', items: latestItems })
@@ -1024,52 +1035,54 @@ const LeftSideBarContainer = ({
                             <Row>{addButtons}</Row>
                         </Row>
                     )}
-                    <View className="flex-1 gap-0.5">
-                        {layoutName == 'navigator' &&
-                            routes.length > 1 &&
-                            routes
-                                .filter((aItem) => aItem.hideInTop != true)
-                                .map((a) => {
-                                    const btn = callFn('getButtonForConductor', [
-                                        a,
-                                        index,
-                                        currentUser,
-                                    ])
+                    <View className="flex-1 gap-y-4">
+                        {layoutName == 'navigator' && routes.length > 1 && (
+                            <View className='w-full'>
+                                {routes
+                                    .filter((aItem) => aItem.hideInTop != true)
+                                    .map((a) => {
+                                        const btn = callFn('getButtonForConductor', [
+                                            a,
+                                            index,
+                                            currentUser,
+                                        ])
 
-                                    if (a?.icon == '*') {
+                                        if (a?.icon == '*') {
+                                            return (
+                                                <Link
+                                                    href={a.link}
+                                                    key={`lmenu-${a.index}`}
+                                                    alt={a.title}
+                                                >
+                                                    {btn}
+                                                </Link>
+                                            )
+                                        }
                                         return (
                                             <Link
-                                                href={a.link}
+                                                href={a.key}
                                                 key={`lmenu-${a.index}`}
                                                 alt={a.title}
                                             >
-                                                {btn}
+                                                <Pressable
+                                                    className={
+                                                        a.ident
+                                                            ? conductorTheme.menu_categ_indent
+                                                            : ''
+                                                    }
+                                                    onPress={(event) => {
+                                                        setIndex(a.index)
+                                                        window.history.pushState({}, '', a.key)
+                                                        event.preventDefault()
+                                                    }}
+                                                >
+                                                    {btn}
+                                                </Pressable>
                                             </Link>
                                         )
-                                    }
-                                    return (
-                                        <Link
-                                            href={a.key}
-                                            key={`lmenu-${a.index}`}
-                                            alt={a.title}
-                                        >
-                                            <Pressable
-                                                className={
-                                                    a.ident
-                                                        ? conductorTheme.menu_categ_indent
-                                                        : ''
-                                                }
-                                                onPress={(event) => {
-                                                    setIndex(a.index)
-                                                    window.history.pushState({}, '', a.key)
-                                                    event.preventDefault()
-                                                }}
-                                            >
-                                                {btn}
-                                            </Pressable>
-                                        </Link>
-                                    )
-                                })}
+                                    })}
+                                </View>
+                            )}
                         {children}
                     </View>
                 </View>

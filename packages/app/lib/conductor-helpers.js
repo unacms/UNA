@@ -78,6 +78,16 @@ export const refetchUniListReducer = (state, action) => {
                 visibleItems: action.items,
                 hasNewData: false
             }
+        case 'PREPEND_ITEM':
+            return {
+                ...state,
+                visibleItems: [action.item, ...state.visibleItems]
+            }
+        case 'REMOVE_ITEM':
+            return {
+                ...state,
+                visibleItems: state.visibleItems.filter(item => item.id != action.id)
+            }
         case 'SHOW_NEW_DATA':
             return {
                 ...state,

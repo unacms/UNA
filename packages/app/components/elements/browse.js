@@ -125,7 +125,6 @@ export default function Browse(props) {
                 : windowHeight - hOffset,
         }
 
-
     async function fetchData({ pageParam = defParams }) {
         const sUrl = data.request_url + JSON.stringify({ params: pageParam })
         const res = await fetcher(sUrl)
@@ -147,7 +146,7 @@ export default function Browse(props) {
         queryFn: fetchData,
 
         getNextPageParam: (lastPage) => lastPage?.data.length > 0 ? { ...lastPage?.params, start: lastPage?.params.start + lastPage?.params.per_page } : undefined,
-        staleTime: 2000,
+        staleTime: appSetting('browse', 'stale_time'),
         refetchOnWindowFocus: updateMode != 'none',
         refetchOnReconnect: updateMode != 'none',
     })
@@ -176,9 +175,9 @@ export default function Browse(props) {
             dispatch({ type: 'SET_ITEMS', items })
             refetchRef.current.prevItems = items
             refetchRef.current.isFirstLoad = false
+             refetchRef.current.skipToast = false
             return
         }
-
         if (!isSameItemsForUniList(refetchRef.current.prevItems, items)) {
             if (refetchRef.current.skipToast) {
                 dispatch({ type: 'SET_ITEMS', items })
@@ -212,9 +211,19 @@ export default function Browse(props) {
         })
 
         const subscription2 = emitter.addListener(`feed`, (data) => {
-            if (data.action == 'remove_content' || data.action == 'new_content') {
+            if (data.action == 'remove_content') {
+                dispatch({ type: 'REMOVE_ITEM', id: data.id })
+                if (refetchRef.current?.prevItems) {
+                    refetchRef.current.prevItems = refetchRef.current.prevItems.filter(item => item.id != data.id)
+                }
                 refetchRef.current.skipToast = true
-                refetch();
+            }
+            if (data.action == 'new_content') {
+                dispatch({ type: 'PREPEND_ITEM', item: data.data })
+                if (refetchRef.current?.prevItems) {
+                    refetchRef.current.prevItems = [data.data, ...refetchRef.current.prevItems]
+                }
+                refetchRef.current.skipToast = true
             }
         })
 
@@ -265,11 +274,9 @@ export default function Browse(props) {
             />
         ));
         contentElement = items.length == 0 ? null : <Galery items={items} />
-
     }
 
     if ((props.sidebar && !props.extraProps?.galery) || isOneLine) {
-
         const uniqueItems = dataItems.filter(
             (v, i, a) => a.findIndex((t) => t.id === v.id) === i
         )
@@ -313,23 +320,17 @@ export default function Browse(props) {
         }
     }
 
-    let PreloadComponent = null
-    if (dataItems.length == 0 && !dataItems.params?.loaded) {
-        PreloadComponent = Preload
-    } else {
-
-    }
-
-    if (dataItems.length == 0 && hasNextPage === false) {
-        PreloadComponent = callFn("noContentByUrl", [{ request_url: data.request_url, params: {} }])
-    }
+    const PreloadComponent = dataItems.length === 0 ? (hasNextPage === false
+        ? callFn("noContentByUrl", [{ request_url: data.request_url, params: {} }])
+        : (!dataItems.params?.loaded ? Preload : null)
+    ) : null;
 
     const uniListProps = {
         scrollProps: props?.exProps?.scrollProps,
         preloadComponent: PreloadComponent,
         numColumns,
         refer:uniRef,
-        mode: 'simple', // TODO
+        mode: 'simple', 
         data: dataItems,
         unit: data.unit,
         height: isWeb ? (props?.isInPanel ? windowHeight - 64 : undefined) : props?.height,

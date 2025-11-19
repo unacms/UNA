@@ -173,7 +173,6 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
         total_count: browse?.data?.total_count
     });
 
-
     useEffect(() => {
         /* Added for reload comments from notifs */
         setCommentData(

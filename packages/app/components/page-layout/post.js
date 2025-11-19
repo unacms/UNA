@@ -177,7 +177,6 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
             groupRef.current?.setLayout(layouts)
         }
     }, [currentBreakpointName, groupRef])
-    console.log("isModal", isModal)
     if (isModal) {
         return (
             <View className="w-full">
