@@ -141,13 +141,13 @@ export const CommentsSection = memo(
         t,
     }) => {
         const ShowMoreCmts = (
-            <Button variant="text" size="xs" title={t('View more comments...')} />
+            <Button variant="text" size="sm" title={t('View more comments...')} />
         )
         return (
             <View className="  ">
                 <View className="border-t border-border/40 -mx-4 mt-3.5 ">
                 {isShowMoreComments && (
-                    <View className="p-3">
+                    <View className="px-3 pt-3 me-auto">
                         {isCommentsModal ? (
                             <Pressable
                                 onPress={() => {
