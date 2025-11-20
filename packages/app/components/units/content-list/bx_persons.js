@@ -76,7 +76,7 @@ export default function Unit(props) {
         return
 
     return (
-        <CardList padding="p-1">
+        <CardList padding="p-1.5">
             <Redirect ref={redirectdRef} />
             <Link className="web:group " href={data.url}>
                 <View
@@ -85,7 +85,7 @@ export default function Unit(props) {
                     <ImageSection data={data} imageSizes={imageSizes} />
                     {!!oMenuItemDelete && <View className="absolute right-1 top-1">{oMenuItemDelete}</View>}
                     <View className="flex-col pl-4 my-auto sm:p-2 flex-auto ">
-                        <View className="sm:h-12">
+                        <View className="gap-1 p-0.5">
                             <Text
                                 numberOfLines={1}
                                 className=" text-base leading-6 font-semibold text-foreground"

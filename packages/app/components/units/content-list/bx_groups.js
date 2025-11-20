@@ -63,7 +63,7 @@ export default function Unit(props) {
                                     >
                                         {data.title}
                                     </Text>
-                                    <Row className="items-center h-6 my-3">
+                                    <Row className="items-center ">
 
 
                                         <View className="mr-2 h-5">
@@ -117,15 +117,15 @@ export default function Unit(props) {
                                 />
 
                             </View>
-                            <View className=" h-32 px-3 pb-3 flex-auto justify-between">
-                                <View>
+                            <View className="flex-col h-32 px-3 pb-3 flex-auto justify-between">
+                                <View className="">
                                     <Text
                                         numberOfLines={2}
                                         className=" text-base leading-tight tracking-tight font-bold text-secondary-foreground group-hover:text-foreground "
                                     >
                                         {data.title}
                                     </Text>
-                                    <Row className="items-center h-6 my-3">
+                                    <Row className="items-center h-6 pt-3">
 
 
                                         <View className="mr-2 h-5">

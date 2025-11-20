@@ -12,7 +12,7 @@ export default function defaultUnit(props) {
     const imageSizes = getImageSizes()
 
     return (
-        <CardList padding="p-1 gap-1">
+        <CardList padding="p-1.5">
             
                 <Link href={data.url}>
                     <View className="aspect-video rounded-xl overflow-hidden w-full">
@@ -26,20 +26,20 @@ export default function defaultUnit(props) {
                     </View>
                 </Link>
 
-                <View className="flex-auto p-1 flex-col gap-1">
+                <View className="flex-auto p-2 flex-col gap-2">
                     <Link href={data.url}>
                         <Text
                             numberOfLines={2}
-                            className="text-card-foreground hover:bg-accent/60 sm:hover:text-primary rounded-md p-1 leading-tight text-lg font-bold"
+                            className="text-card-foreground sm:hover:text-accent-foreground leading-tight text-lg font-semibold"
                         >
                             {data.title}
                         </Text>
                     </Link>
-                    <View className="flex-row p-1 gap-1 w-full">
+                    <View className="flex-row  gap-2 w-full items-center">
                         <Profile
                             {...data.author_data}
                             displayType="unit_wo_info"
-                            displaySize="xs"
+                            displaySize="2xs"
                             showInfo={false}
                         />
                         <Profile

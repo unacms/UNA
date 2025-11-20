@@ -310,22 +310,22 @@ select{
     /* Size modifiers for pseudo background padding and rounding */
     .u-link-ghost.u-link-ghost-pad-xs {
         --u-link-ghost-inset-x: -2px;
-        --u-link-ghost-inset-y: -2px;
+        --u-link-ghost-inset-y: -1px;
         --u-link-ghost-radius: 0.25rem; /* rounded-sm */
     }
     .u-link-ghost.u-link-ghost-pad-sm {
-        --u-link-ghost-inset-x: -4px;
-        --u-link-ghost-inset-y: -4px;
+        --u-link-ghost-inset-x: -6px;
+        --u-link-ghost-inset-y: -3px;
         --u-link-ghost-radius: 0.375rem; /* rounded-md */
     }
     .u-link-ghost.u-link-ghost-pad-md {
-        --u-link-ghost-inset-x: -4px;
+        --u-link-ghost-inset-x: -8px;
         --u-link-ghost-inset-y: -4px;
         --u-link-ghost-radius: 0.5rem; /* rounded-lg */
     }
     .u-link-ghost.u-link-ghost-pad-lg {
-        --u-link-ghost-inset-x: -8px;
-        --u-link-ghost-inset-y: -4px;
+        --u-link-ghost-inset-x: -12px;
+        --u-link-ghost-inset-y: -6px;
         --u-link-ghost-radius: 0.75rem; /* rounded-xl */
     }
 }
