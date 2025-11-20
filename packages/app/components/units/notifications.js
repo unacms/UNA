@@ -4,7 +4,7 @@ import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import Time from 'app/ui/atoms/time';
 import Link from 'app/ui/atoms/link'
-
+import { CardList } from 'app/ui/molecules/card'
 import Profile from 'app/ui/molecules/profile';
 import FormModal from 'app/ui/molecules/form_modal';
 import Html from 'app/ui/atoms/html';
@@ -12,9 +12,9 @@ import Html from 'app/ui/atoms/html';
 const ContentCard = memo(({ authorData, date, content }) => {
     return (
 
-        <View className="px-2 py-1.5 flex-row items-center gap-3 max-w-4xl mx-auto w-full web:hover:bg-muted/60 rounded-lg ">
+        <CardList className="px-2 py-1.5 mt-2 flex-row items-center gap-3 max-w-4xl mx-auto w-full web:hover:bg-accent/40 sm:rounded-2xl ">
             <View className="rounded-full flex-none mb-auto " >
-                <Profile {...authorData} displayType="unit_wo_info" displaySize="xl" />
+                <Profile {...authorData} displayType="unit_wo_info" displaySize="lg" />
             </View>
             <View className="flex-auto my-auto gap-1 ">
                 <View className='flex-auto'>
@@ -22,7 +22,7 @@ const ContentCard = memo(({ authorData, date, content }) => {
                 </View>
                 <Time className="text-xs flex-none font-medium text-muted-foreground" ts={date}></Time>
             </View>
-        </View>
+        </CardList>
 
     )
 })
