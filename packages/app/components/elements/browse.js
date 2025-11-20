@@ -1,6 +1,5 @@
 import Unit from 'app/components/unit'
 import {
-    useState,
     useCallback,
     useEffect,
     memo,
@@ -10,7 +9,6 @@ import {
 import { View, Row, ScrollView } from 'app/design/view'
 import { Platform } from 'react-native'
 import UniList from 'app/ui/atoms/unilist'
-import { fetcher } from 'app/lib/fetcher'
 import {
     appSetting,
 } from 'app/lib/util'
@@ -24,7 +22,7 @@ import { callFn } from 'app/lib/functions/call'
 import Link from 'app/ui/atoms/link'
 import Galery from 'app/ui/molecules/gallery'
 import { Button } from 'app/design/controls'
-import { useBreakpoint, useWindowHeight } from 'app/context/measure';
+import { useWindowHeight } from 'app/context/measure';
 import emitter from 'app/context/emitter'
 import Toaster from 'app/ui/atoms/toaster2'
 import {
@@ -56,15 +54,6 @@ const Item = memo(({ item, index, numColumns, data, unitMode, props }) => (
         />
     </View>
 ))
-
-const getNumCols = (width, props, data) => {
-    if (props.perLine) return props.perLine
-
-    if (data.unit.startsWith('general-') || data.unit.startsWith('search-')) {
-        return width > 600 ? 4 : 1
-    }
-    return 1
-}
 
 export default function Browse(props) {
     const isWeb = Platform.OS === 'web'
@@ -100,21 +89,10 @@ export default function Browse(props) {
     /* unit mode & change unit mode */
     const unitMode = props.unitMode
 
-    const currentBreakpoint = useBreakpoint();
     const windowHeight = useWindowHeight();
 
+    const numColumns = props.perLine || 1;
 
-    const [numColumns, setNumColumns] = useState(
-        getNumCols(currentBreakpoint, props, data)
-    )
-
-    const handleLayout = (event) => {
-        const containerWidth = event.nativeEvent.layout.width
-        const numColumnsNew = getNumCols(containerWidth, props, data)
-        if (numColumnsNew != numColumns) {
-            setNumColumns(numColumnsNew)
-        }
-    }
 
     const hOffset = isWeb ? 64 : 56
 
@@ -126,22 +104,6 @@ export default function Browse(props) {
                 : windowHeight - hOffset,
         }
 
-   /* async function fetchData({ pageParam = defParams }) {
-        const sUrl = data.request_url + JSON.stringify({ params: pageParam })
-        const res = await fetcher(sUrl)
-        const payload = Array.isArray(res?.data) ? res.data[0]?.data : undefined
-
-        if (payload?.data) {
-            return {
-                data: payload.data,
-                params: payload.params ?? pageParam ?? {},
-                pageParams: 'zzz'
-            }
-        }
-
-        return { data: [], params: pageParam || {}, pageParams: 'zzz' }
-    }
-*/  
     const qKey = [props.uri || '', data.request_url || '', currentUser?.id, props?.cachePrefix || '']
 
     const {
@@ -344,7 +306,6 @@ export default function Browse(props) {
     const uniListProps = {
         scrollProps: props?.exProps?.scrollProps,
         preloadComponent: PreloadComponent,
-        numColumns,
         refer:uniRef,
         mode: 'simple', 
         data: dataItems,
@@ -402,7 +363,7 @@ export default function Browse(props) {
 
     return (
         <View className={`w-full ${isOneLine ? '' : 'h-full'}`}>
-            <View className="w-full" onLayout={handleLayout}></View>
+            <View className="w-full" ></View>
             <View className={`w-full ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''}`} style={isOneLine ? {} : styles}>
                 {isShowTitleInside && (
                     <Row className={`items-center justify-between ${props.showBg ? '' : 'px-2 '}`}>
