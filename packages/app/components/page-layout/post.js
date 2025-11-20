@@ -49,6 +49,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                     console.log("notifsnotifs", hash)
                     setReplyId(hash);
                     emitter.emit('editor', { action: 'focus', note: "setReplyId", timeout: 800 });
+                    setScrollToEnd(hash.replace('cmt_id=', ''));
                 }
                 else {
                     if (hash.includes('cid=')) {
