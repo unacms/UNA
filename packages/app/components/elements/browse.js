@@ -30,7 +30,8 @@ import Toaster from 'app/ui/atoms/toaster2'
 import {
     refetchUniListReducer,
     isSameItemsForUniList,
-    flattenPagesForUniList
+    flattenPagesForUniList,
+    fetchUniListData
 } from 'app/lib/conductor-helpers'
 
 const blockTheme = appSetting('theme', 'blocks');
@@ -125,7 +126,7 @@ export default function Browse(props) {
                 : windowHeight - hOffset,
         }
 
-    async function fetchData({ pageParam = defParams }) {
+   /* async function fetchData({ pageParam = defParams }) {
         const sUrl = data.request_url + JSON.stringify({ params: pageParam })
         const res = await fetcher(sUrl)
         const payload = Array.isArray(res?.data) ? res.data[0]?.data : undefined
@@ -140,7 +141,7 @@ export default function Browse(props) {
 
         return { data: [], params: pageParam || {}, pageParams: 'zzz' }
     }
-
+*/  
     const qKey = [props.uri || '', data.request_url || '', currentUser?.id, props?.cachePrefix || '']
 
     const {
@@ -153,7 +154,12 @@ export default function Browse(props) {
         isRefetching
     } = useInfiniteQuery({
         queryKey: qKey,
-        queryFn: fetchData,
+       //queryFn: fetchData,
+        queryFn: ({ pageParam }) => fetchUniListData({ 
+            pageParam, 
+            requestUrl: data.request_url, 
+            defaultParams: defParams 
+        }),
 
         getNextPageParam: (lastPage) => lastPage?.data.length > 0 ? { ...lastPage?.params, start: lastPage?.params.start + lastPage?.params.per_page } : undefined,
         staleTime: appSetting('browse', 'stale_time'),

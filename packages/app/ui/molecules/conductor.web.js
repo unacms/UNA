@@ -21,7 +21,8 @@ import {
     TopSidebar,
     refetchUniListReducer,
     isSameItemsForUniList,
-    flattenPagesForUniList
+    flattenPagesForUniList,
+    fetchUniListData
 } from 'app/lib/conductor-helpers'
 import { ItemRenderer } from 'app/components/item-renderer'
 import { Button } from 'app/design/controls'
@@ -117,8 +118,8 @@ export function Conductor({
     useEffect(() => {
         const foundIndex = getFoundIndex()
         if (foundIndex !== index) setIndex(foundIndex)
-        storageClear('ul:data', currentRoute.storageKeyValue)
-        storageClear('ul:state', currentRoute.storageKeyValue)
+       // storageClear('ul:data', currentRoute.storageKeyValue)
+       // storageClear('ul:state', currentRoute.storageKeyValue)
     }, [ts])
 
     const prevRoute = useMemo(
@@ -406,26 +407,6 @@ const TabSceneMainContent = ({
         timestamp
     ]
 
-    async function fetchData({ pageParam = pageRoute?.endpoint?.params }) {
-        if (!pageRoute?.endpoint?.request_url) {
-            return { data: [], params: pageParam || {} }
-        }
-
-        const sUrl = pageRoute?.endpoint?.request_url + JSON.stringify({ params: pageParam })
-        const res = await fetcher(sUrl);
-        const payload = Array.isArray(res?.data) ? res.data[0]?.data : undefined
-
-        if (payload?.data) {
-            return {
-                data: payload.data,
-                params: payload.params ?? pageParam ?? {}
-            }
-        }
-
-        return { data: [], params: pageParam || {} }
-    }
-
-
     const {
         data: pagesData,
         fetchNextPage,
@@ -435,10 +416,14 @@ const TabSceneMainContent = ({
         isRefetching
     } = useInfiniteQuery({
         queryKey: qKey,
-        queryFn: fetchData,
+        queryFn: ({ pageParam }) => fetchUniListData({ 
+            pageParam, 
+            requestUrl: pageRoute?.endpoint?.request_url, 
+            defaultParams: pageRoute?.endpoint?.params 
+        }), 
 
         getNextPageParam: (lastPage) => {
-            return lastPage?.data.length > 0 ? { ...lastPage?.params, start: lastPage?.params.start + lastPage?.params.per_page } : undefined
+            return (lastPage?.data.length > 0 && lastPage?.cursor) ? { ...lastPage?.params, start: lastPage?.cursor } : undefined
         },
         staleTime: appSetting('browse', 'stale_time'),
         refetchOnWindowFocus: true,

@@ -12,7 +12,7 @@ import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 
 export default function UniList(props) {
     let { useCustomScrollHandler, scrollProps, preloadComponent, sortable, data, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
-        onSort, mode, numColumns, layout, keyboardShouldPersistTaps, keyExtractor, useWindowScroll: useWindowScrollProp, height, listState, endpoint, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, isInPanel, ...rest } = props
+        onSort, mode, layout, numColumns, keyboardShouldPersistTaps, keyExtractor, useWindowScroll: useWindowScrollProp, height, listState, endpoint, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, isInPanel, ...rest } = props
 
     const uniRef = useRef();
     const currentBreakpoint = useBreakpoint();
@@ -80,7 +80,7 @@ export default function UniList(props) {
     const isWindowScroll = hasResolvedHeight ? shouldUseWindowScroll : true;
     const style = normalizedHeight ? { height: normalizedHeight } : {};
 
-    const isScrolling = (isFinished) => {
+    /*const isScrolling = (isFinished) => {
 
         if (!isFinished && refer?.current && refer.current.getState && rest.storagekey) {
 
@@ -89,12 +89,12 @@ export default function UniList(props) {
                 storageSet('ul:state', rest.storagekey, ch);
             });
         }
-    }
+    }*/
 
-    const stateChanged = (state) => {
+    /*const stateChanged = (state) => {
         const ch = { state: state }
         storageSet('ul:state', rest.storagekey, ch);
-    }
+    }*/
 
     const ItemComponent = ({ className, ...props }) => (
         <ReactNativeView className={`${layout || 'w-full'} ${className || cd('mb-md')}`} {...props} />
@@ -116,7 +116,7 @@ export default function UniList(props) {
         style,
         ref: refer ? refer : uniRef,
         endReached: onEndReached,
-        overscan: 900,
+        overscan: props.unit == 'notifications'? 100 : 900,
         components: mode != 'simple' ? {
             List: ListComponent,
             Item: ItemComponent,
@@ -140,7 +140,7 @@ export default function UniList(props) {
                 return useCustomScrollHandler ? <View style={{ paddingTop: scrollProps.headerHeight }}></View> : null;
             },
         },
-        isScrolling,
+       // isScrolling,
         ...rest,
     };
     let contentComponent = null
@@ -155,7 +155,7 @@ export default function UniList(props) {
                     <VirtuosoGrid
                         {...commonVirtuosoProps}
                         itemContent={itemContent}
-                        stateChanged={stateChanged}
+                        //stateChanged={stateChanged}
                         {...(scrollToLastItem ? { initialTopMostItemIndex: data.length } : {})}
                        // atBottomStateChange={()=>{console.log("atBottomStateChange"), onEndReached()}}
                         endReached={()=>{onEndReached()}}

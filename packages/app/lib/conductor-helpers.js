@@ -71,6 +71,35 @@ export function processBlocks(blocks) {
     return { mainBlocks: blocks, leftBlocks: leftBlocks }
 }
 
+export async function fetchUniListData({ pageParam, requestUrl, defaultParams }) {
+    const currentParam = pageParam || defaultParams
+
+    if (!requestUrl) {
+        return { data: [], params: currentParam || {} }
+    }
+
+    const sUrl =
+        requestUrl +
+        JSON.stringify({ params: currentParam })
+        
+    const res = await fetcher(sUrl)
+    const payload = Array.isArray(res?.data) ? res.data[0]?.data : undefined
+
+    const params = payload?.params ?? currentParam ?? {}
+    if (payload?.data) {
+        return {
+            data: payload.data,
+            params: params,
+            cursor:
+                payload.unit != 'notifications'
+                    ? params.start + params.per_page
+                    : params.start,
+        }
+    }
+
+    return { data: [], params: currentParam || {} }
+}
+
 export const refetchUniListReducer = (state, action) => {
     switch (action.type) {
         case 'SET_ITEMS':
@@ -208,7 +237,7 @@ export function fillTabs(
             i.storageKeyValue = storageKey(i.link, false)
             i.data = []
             i.config = null
-            if (appSetting('cache', 'list')) {
+            /*if (appSetting('cache', 'list')) {
                 let stateC = getDataFromCache('ul:state', i.storageKeyValue)
                 if (stateC) {
                     //i.endpoint = stateC.endpoint;
@@ -219,7 +248,7 @@ export function fillTabs(
                     i.endpoint = stateD.endpoint
                     i.data = stateD.data
                 }
-            }
+            }*/
         }
 
         return i
