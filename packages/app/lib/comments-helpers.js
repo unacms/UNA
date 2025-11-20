@@ -144,7 +144,7 @@ export function CommentsParts(commentsData, aItems, height = 0, initFormData, is
     ]
 }
 
-export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort = false, maxCount, height = 0, showCommentsModal, classesBrowse = '', commentsTitle = "Comments", contentUrl, replyId, hideActions = false, selectedId = 0, scrollToIndex = false }) {
+export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort = false, maxCount, height = 0, showCommentsModal, classesBrowse = '', commentsTitle = "Comments", contentUrl, replyId, hideActions = false, selectedId = 0, scrollToIndex = false, isModal=false }) {
     const UnitComments =  getComponent('unit', 'comments');
 
     const { t } = useTranslation();
@@ -432,7 +432,7 @@ export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handle
             <UniList
                 scrollProps={scrollProps}
                 mode='simple'
-                useWindowScroll
+                useWindowScroll={!isModal}
                 height={height > 0 ? height : undefined}
                 data={dataOut}
                 refer={flashListRef}
