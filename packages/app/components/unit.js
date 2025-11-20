@@ -2,7 +2,11 @@ import { getComponent } from 'app/components/registry';
 import { useMemo, memo } from 'react';
 
 function Unit(props) {
-    const Component = useMemo(() =>  getComponent('unit', props.unit) || getComponent('unit', 'default'), [props.unit]);
+    if (!props?.unit)
+        return null;
+
+    const Component = getComponent('unit', props.unit);
+
     return <Component {...props} />;
 }
 
