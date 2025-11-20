@@ -128,7 +128,17 @@ export default function Browse(props) {
     async function fetchData({ pageParam = defParams }) {
         const sUrl = data.request_url + JSON.stringify({ params: pageParam })
         const res = await fetcher(sUrl)
-        return { data: res.data[0].data.data, params: res.data[0].data.params, pageParams: 'zzz' }
+        const payload = Array.isArray(res?.data) ? res.data[0]?.data : undefined
+
+        if (payload?.data) {
+            return {
+                data: payload.data,
+                params: payload.params ?? pageParam ?? {},
+                pageParams: 'zzz'
+            }
+        }
+
+        return { data: [], params: pageParam || {}, pageParams: 'zzz' }
     }
 
     const qKey = [props.uri || '', data.request_url || '', currentUser?.id, props?.cachePrefix || '']

@@ -129,8 +129,8 @@ function DefaultUnit({ data }) {
         return (
             <AnimatedBlock>
                 <CardList className="mb-0.5 sm:mb-3 " padding="p-0.5">
-                    <CardHeader className=" p-4 flex-row items-center justify-between">
-                        <CardTitle>{t(data.title)}</CardTitle>
+                    <CardHeader className=" px-4 py-3 flex-row items-center justify-between">
+                        <CardTitle className="text-secondary-foreground">{t(data.title)}</CardTitle>
                         <Link
                             variant="accentghost"
                             size="md"

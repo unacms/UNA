@@ -33,8 +33,8 @@ export default function ElementTime(props) {
 
     const defaultClasses =
         variant === 'link'
-            ? '  text-label-link web:group-hover:text-label-linkhover '
-            : '   ';
+            ? '  text-accent-foreground '
+            : '  text-muted-foreground ';
 
     return (
         <Text

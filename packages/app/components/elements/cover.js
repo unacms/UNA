@@ -337,7 +337,7 @@ function CoverImage({
                     />
                 )}
                 {imageUrl?.includes('data:') && (
-                    <View className="h-full w-full opacity-50 bg-bgrtabbar dark:bg-bgrtabbar-d w-full opacity-50 justify-center">
+                    <View className="h-full w-full opacity-50 bg-card w-full justify-center">
                         <Loading />
                     </View>
                 )}

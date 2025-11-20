@@ -28,15 +28,15 @@ export default function ElementEntityAuthor(oProps) {
     const [pageData, setPageData] = useState(false);
     const isDesktop = useIsDesktop();
     const sInfo = (
-        <Row className='flex-none flex-row gap-1 items-center justify-start '>
-            <Time size="sm" variant="link"
+        <Row className='flex-none gap-1 items-center justify-start text-muted-foreground text-xs font-medium leading-4 '>
+            <Time size="xs"
                 ts={oProps.data.entry_date}
             />
             {
                 !!oProps.data?.entry_context?.id && (
 
                     <>
-                        <Text className=" text-muted-foreground text-xs  leading-5 text-center flex-auto font-medium"> in </Text>
+                        <Text className=" text-center flex-auto font-medium"> in </Text>
                         <Profile {...oProps.data.entry_context} displayType="unit_wo_info" displaySize="2xs" />
                         <Text className="text-muted-foreground text-xs  leading-5 text-center flex-auto font-medium ">{oProps.data.entry_context.display_name}</Text>
 

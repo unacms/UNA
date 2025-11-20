@@ -121,7 +121,7 @@ export function getAddonForConductor(a, index, currentUser) {
         addon = null
 
     if (addon) {
-        const addonClasses = addon.variant === 'primary' ? "bg-pop dark:bg-pop-d" : "bg-neutral-500 dark:bg-neutral-500";
+        const addonClasses = addon.variant === 'primary' ? "bg-destructive" : "bg-secondary";
         const addonText = addon.variant === 'primary' ? addon.text : addon;
         if (addonText) {
             addonContent = (

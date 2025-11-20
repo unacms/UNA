@@ -114,6 +114,20 @@ const colors = {
 
 const theme = {
     extend: {
+        containers: {
+            '2xs': '16rem',
+            'xs': '20rem',
+            'sm': '24rem',
+            'md': '28rem',
+            'lg': '32rem',
+            'xl': '36rem',
+            '2xl': '42rem',
+            '3xl': '48rem',
+            '4xl': '56rem',
+            '5xl': '64rem',
+            '6xl': '72rem',
+            '7xl': '80rem',
+        },
         colors: {
             ...colors,
             ...nativewindUIColors,
@@ -152,6 +166,17 @@ const theme = {
             '3/1': '3 / 1',
             '4/1': '4 / 1',
             '5/1': '5 / 1',
+        },
+        borderRadius: {
+            none: '0px',
+            sm: 'var(--radius-sm)',
+            DEFAULT: 'var(--radius-default)',
+            md: 'var(--radius-md)',
+            lg: 'var(--radius-lg)',
+            xl: 'var(--radius-xl)',
+            '2xl': 'var(--radius-2xl)',
+            '3xl': 'var(--radius-3xl)',
+            full: 'var(--radius-full)',
         },
         // NOTE: Do not redefine fontSize again below. Keep all font sizes in the single block above.
         keyframes: {

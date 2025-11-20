@@ -475,7 +475,7 @@ const getAddon = (addon, isTitle) => {
         sButtonAddonText = addon;
     }
 
-    const position = addon?.position == 'bottom' ? 'bottom-0 -end-1' : '-top-1 -end-1';
+    const position = addon?.position == 'bottom' ? 'bottom-0 -end-1' : '-top-6 -end-2';
 
     if (!isTitle && sButtonAddonText)
         return <View className={`absolute ${sButtonAddonBg} border border-card web:border-0 web:ring-1 web:ring-card rounded-full px-1 min-w-5 min-h-5 min items-center justify-center ${position}`}><Text className='text-white text-xs font-semibold'>{sButtonAddonText}</Text></View>

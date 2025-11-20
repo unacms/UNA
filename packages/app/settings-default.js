@@ -1102,7 +1102,7 @@ export const settingsDefault = {
         modal: {
             fog: 'bg-background/80  ',
             container:
-            ' h-full sm:h-auto shadow-xl bg-card/80 backdrop-blur border border-border web:ring-1 web:ring-inset web:ring-popover sm:rounded-2xl overflow-hidden ',
+            ' h-full sm:h-auto shadow-xl bg-card/80 backdrop-blur border border-border sm:rounded-2xl overflow-hidden ',
             content: ' h-auto ',
             header: ' p-3 items-start justify-start border-b border-border/60',
         },
@@ -1122,8 +1122,8 @@ export const settingsDefault = {
         button_sizes: {
             default_size: 'base',
             default_variant: 'default',
-            pressed_container: ' bg-accent web:hover:bg-accent web:active:bg-accent  ',
-            pressed_text: ' text-accent-foreground font-semibold ',
+            pressed_container: ' bg-accent/60 web:hover:bg-accent web:active:bg-accent  ',
+            pressed_text: ' text-accent-foreground font-medium ',
          
             xs: {
                 rounded: ' rounded-md ',
@@ -1318,12 +1318,12 @@ export const settingsDefault = {
                 focus: '  ',
             },
             sm: {
-                padding: ' px-0.5 py-px ',
+                padding: ' px-1 py-0.5 -mx-1 -my-0.5',
                 hitarea_class: ' relative u-link-hitarea u-link-hitarea-sm ',
                 hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
                 text: ' text-sm ',
-                rounded: '  rounded ',
-                focus: '  web:focus-visible:outline-offset-4  ',
+                rounded: '  rounded-md ',
+                focus: '  web:focus-visible:outline-offset-2  ',
             },
             md: {
                 padding: ' px-1 py-0.5 ',
@@ -1350,7 +1350,7 @@ export const settingsDefault = {
 
             // neutral color link, no background
             'u-link-plain-cnt': ' active:bg-muted/60  ',
-            'u-link-plain-text': ' text-secondary-foreground web:hover:text-foreground web:hover:underline decoration-muted-foreground ',
+            'u-link-plain-text': ' text-foreground web:hover:text-accent-foreground web:hover:underline ',
             'u-link-plain-trans': ' web:duration-200 ',
 
             // branded color link, no background
@@ -1425,7 +1425,7 @@ export const settingsDefault = {
             'u-card-header': 'flex gap-1',
             'u-card-icon': 'text-card-foreground px-4 gap-2',
             'u-card-title':
-                ' text-foreground leading-none text-xl lg:text-2xl font-semibold leading-none tracking-tight',
+                ' text-foreground leading-none text-xl font-semibold leading-none tracking-tight',
             'u-card-description': ' text-secondary-foreground text-sm lg:text-base text-balance',
             'u-card-content': 'text-card-foreground ',
             'u-card-footer': 'bg-muted/20 border-t border-border/40 p-4 flex text-base text-card-foreground gap-2',
@@ -1443,7 +1443,7 @@ export const settingsDefault = {
             'u-block-bg':
                 'bg-card/80 shadow-sm text-card-foreground border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60',
             'u-block-pad':
-                'p-4',
+                'p-4 @xl/block:p-6',
             'u-block-header':
                 ' flex-row items-center gap-2',
             'u-block-icon': 'text-card-foreground',

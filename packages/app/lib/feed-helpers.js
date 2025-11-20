@@ -264,7 +264,7 @@ export const ItemInfo = memo(({ data, t }) => {
             owners?.length == 1 ? (
                 <>
                     
-                <Icon className="text-muted" icon='Dot' size={14}  />
+                <Icon className="text-muted -mx-0.5 " icon='Dot' size={14}  />
                     
                     <Link href={data.owners[0].url} emulate={true}>
                         <Text className=" text-secondary-foreground web:hover:text-label-linkhover font-medium text-xs ">
@@ -275,7 +275,7 @@ export const ItemInfo = memo(({ data, t }) => {
             ) : (
                 <>
                     
-                        <Icon className="text-muted " icon='Dot' size={14}  />
+                        <Icon className="text-muted -mx-0.5 " icon='Dot' size={14}  />
                      
                     <Pressable
                         onPress={() => {
@@ -330,9 +330,9 @@ export const ItemInfo = memo(({ data, t }) => {
             l && (
                 <>
                    
-                        <Icon className="text-muted " icon='Dot' size={14}  />
+                        <Icon className="text-muted -mx-0.5 " icon='Dot' size={14}  />
                     
-                    <Text className="text-muted-foreground font-medium tracking-tight text-xs leading-5 ">
+                    <Text className="text-muted-foreground font-medium  text-xs leading-4 ">
                         {l}
                     </Text>
                 </>
@@ -473,9 +473,9 @@ export const ActionMenu = memo(({ data }) => {
     if (data?.items?.length > 2){
         for (let i = 2; i < data.items.length; i++)
             if (data.items[i].data)
-                data.items[i].data.paramsi ={'button_show_title_from_size':'sm'}
+                data.items[i].data.params ={'button_show_title_from_size':'sm'}
             else
-                 data.items[i].paramsi ={'button_show_title_from_size':'sm'} 
+                 data.items[i].params ={'button_show_title_from_size':'sm'} 
     }
     return settings && <Menu {...data } displayType="button" params={settings} />
 })
@@ -498,8 +498,7 @@ export const VisibilityInfo = memo(({ data }) => {
     return (
         
                 
-                <View className="gap-1 flex-row self-start items-center ">
-                
+                <View className="gap-1 flex-row items-center ">
                     {isUser ? (
                         <Profile
                             {...data.author_data}
@@ -507,9 +506,9 @@ export const VisibilityInfo = memo(({ data }) => {
                             displaySize="2xs"
                         />
                     ) : icon ? (
-                            <Icon className="text-muted-foreground" icon={icon} width={16} height={16} />
+                            <Icon className="text-muted-foreground " icon={icon} width={14} height={14} />
                     ) : null}
-                    <Text className="text-muted-foreground text-sm leading-5">
+                    <Text className="text-muted-foreground text-xs font-medium leading-4">
                         {isUser ? data.author_data.display_name : text}
                     </Text>
                 </View>
@@ -524,8 +523,8 @@ export const Author = memo(({ data, url, t }) => {
         if (!Element) 
             return null 
         return (
-            <Row className=" items-center" key={`action-${item.cid}-${item.iid}`}>
-            <Icon className="text-muted-foreground" key="icon" icon='Dot' size={14}  />
+            <Row className="items-center" key={`action-${item.cid}-${item.iid}`}>
+            <Icon className="text-muted -mx-0.5 " key="icon" icon='Dot' size={14}  />
             <Element
                 params={{
                     button_variant: 'link',
@@ -547,17 +546,15 @@ export const Author = memo(({ data, url, t }) => {
 
     return (
        <Row className="w-full justify-between items-top">
-            <View className='flex-auto'><Profile
+            <View className='flex-auto'>
+                <Profile
                 {...dataIcon}
                 displayType="unit"
                 displaySize="lg"
                 showInfo={
-                    <Row className=" flex-wrap">
-                        
-                        
+                    <Row className="items-center flex-wrap"> 
                         <VisibilityInfo data={data} />
-                        <ItemInfo data={data} t={t} />
-                       
+                        <ItemInfo data={data} t={t} />                    
                     </Row>
                 }
                 showInfo2={<Badges badges={data.author_badges} size="xs" />}

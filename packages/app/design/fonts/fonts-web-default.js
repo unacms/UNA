@@ -6,7 +6,7 @@ export const mainFont = localFont({
 });
 
 export const titleFont = localFont({
-  src: [{ path: './Manrope-VariableFont.ttf', style: 'normal' }],
+  src: [{ path: './Lexend-VariableFont_wght.ttf', weight: '100 900', style: 'normal' }],
   variable: '--font-title',
 });
 

@@ -284,10 +284,10 @@ export const DefaultView = memo(
                     )}
 
                     {bIsTitle && (
-                        <Link href={url} className="pb-2 text-secondary-foreground hover:text-foreground text-lg font-bold ">
+                        <Link href={url} className="pb-2 text-foreground hover:text-accent-foreground text-xl sm:text-2xl font-bold ">
                             <Text
                                 numberOfLines={3}
-                                className=" font-title "
+                                className="font-semibold font-title tracking-tight"
                             >
                                 {data.content?.title || ''}
                             </Text>

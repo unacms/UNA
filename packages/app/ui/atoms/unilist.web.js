@@ -12,7 +12,7 @@ import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 
 export default function UniList(props) {
     let { useCustomScrollHandler, scrollProps, preloadComponent, sortable, data, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
-        onSort, mode, numColumns, layout, keyboardShouldPersistTaps, keyExtractor, useWindowScroll, height, listState, endpoint, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, isInPanel, ...rest } = props
+        onSort, mode, numColumns, layout, keyboardShouldPersistTaps, keyExtractor, useWindowScroll: useWindowScrollProp, height, listState, endpoint, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, isInPanel, ...rest } = props
 
     const uniRef = useRef();
     const currentBreakpoint = useBreakpoint();
@@ -52,9 +52,33 @@ export default function UniList(props) {
         </View>;
     }
 
-    // If height is not provided or equals '100%', prefer window scrolling to avoid zero-sized containers
-    const isWindowScroll = !height || height === '100%';
-    const style = height && height !== '100%' ? { height: `${height}px` } : {};
+    const normalizedHeight = (() => {
+        if (typeof height === 'number') {
+            return height > 0 ? `${height}px` : undefined;
+        }
+        if (typeof height === 'string') {
+            const trimmedHeight = height.trim();
+            if (!trimmedHeight || trimmedHeight === '100%' || trimmedHeight === 'auto') {
+                return undefined;
+            }
+            if (!Number.isNaN(Number(trimmedHeight))) {
+                const numericHeight = Number(trimmedHeight);
+                return numericHeight > 0 ? `${numericHeight}px` : undefined;
+            }
+            const parsedFloat = parseFloat(trimmedHeight);
+            if (!Number.isNaN(parsedFloat) && parsedFloat <= 0) {
+                return undefined;
+            }
+            return trimmedHeight;
+        }
+        return undefined;
+    })();
+
+    const hasResolvedHeight = Boolean(normalizedHeight);
+    const shouldUseWindowScroll =
+        typeof useWindowScrollProp === 'boolean' ? useWindowScrollProp : !hasResolvedHeight;
+    const isWindowScroll = hasResolvedHeight ? shouldUseWindowScroll : true;
+    const style = normalizedHeight ? { height: normalizedHeight } : {};
 
     const isScrolling = (isFinished) => {
 

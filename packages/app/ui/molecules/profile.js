@@ -63,8 +63,8 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
 
 function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, info2 }) {
     return (
-       <Row className="justify-between">
-       <View className="my-auto">
+       
+    <View className="gap-1 ">
 
             {bShowLinks ? (
                 <Row className="items-center">
@@ -92,9 +92,9 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
             )}
 
             {info}
-        </View>
+    </View>
             
-        </Row>
+        
       
     )
 }

@@ -183,7 +183,7 @@ export default function UnitComments(props) {
                         {!!data.cmt_mood && (
                             <>
                                 <View>
-                                <View className="text-muted">
+                                <View className="text-muted -mx-0.5 ">
                                     <Icon icon='Dot' size={14}  />
                                 </View>  
                                 </View>

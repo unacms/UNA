@@ -210,27 +210,29 @@ export function BlockWrapper(props) {
         : (rest?.extraProps?.list ? true : noPaddingRequested);
 
     return (
-        <PageBlock
-            key={block.id}
-            isBg={bIsShowBg}
-            isPad={bIsShowPadding}
-            className={
-                "w-full mx-auto" +
-               
-                (!fullWidth && !cssClasses.includes("max-w-") ? appSetting('layout', 'max_width_block') : "") +
-                cssClasses
-            }
-        >
-            {bIsShowTitle && (
-                <BlockHeader>
-                    <BlockTitle>{stripTags(block.title)}</BlockTitle>
-                </BlockHeader>
-            )}
-            <BlockContent>
-                {props.children}
-            </BlockContent>
-            
-        </PageBlock>
+        <View className="@container/block w-full">
+            <PageBlock
+                key={block.id}
+                isBg={bIsShowBg}
+                isPad={bIsShowPadding}
+                className={
+                    "w-full mx-auto" +
+
+                    (!fullWidth && !cssClasses.includes("max-w-") ? appSetting('layout', 'max_width_block') : "") +
+                    cssClasses
+                }
+            >
+                {bIsShowTitle && (
+                    <BlockHeader>
+                        <BlockTitle>{stripTags(block.title)}</BlockTitle>
+                    </BlockHeader>
+                )}
+                <BlockContent>
+                    {props.children}
+                </BlockContent>
+
+            </PageBlock>
+        </View>
     );
 } 
 

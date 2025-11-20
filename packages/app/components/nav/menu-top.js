@@ -108,15 +108,15 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
                 <View className="flex-auto group" key={`menu-${index}`}>
                     <Row
                         className={`items-center justify-center h-12 min-w-14 px-1.5 flex-auto rounded-xl web:duration-200 web:group-active:opacity-50 ${isActive
-                            ? 'bg-transparent text-primary'
-                            : 'text-muted-foreground web:group-hover:text-foreground web:hover:bg-muted/60 active:bg-muted'
+                            ? 'bg-transparent text-accent-foreground'
+                            : 'text-secondary-foreground web:group-hover:text-foreground web:hover:bg-muted/60 active:bg-accent'
                             }`}
                     >
                         <Icon
                             icon={icon}
-                            className={`${isActive ? "text-primary h-9 w-9 items-center justify-center flex" : "text-muted-foreground web:group-hover:text-foreground h-9 w-9 items-center justify-center flex"}`}
+                            className={`${isActive ? "text-accent-foreground h-9 w-9 items-center justify-center flex" : "text-secondary-foreground web:group-hover:text-foreground h-9 w-9 items-center justify-center flex"}`}
                         />
-                        {isTitle && <Text className={`whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ${isActive ? 'text-primary' : 'text-neutral-800 dark:text-neutral-200'} text-base px-3 leading-6`}>{title}</Text>}
+                        {isTitle && <Text className={`whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ${isActive ? 'text-accent-foreground' : 'text-secondary-foreground'} text-base px-3 leading-6`}>{title}</Text>}
                     </Row>
                 </View>
             </Tooltip>

@@ -27,13 +27,13 @@ export function ProfileDisplayNameLink(title, url, href, fontSize, actions, opti
 
 export function CounterIndicator(addon, isTitle) {
     let sButtonAddonText = "";
-    let sButtonAddonBg = "bg-neutral-500 dark:bg-neutral-500";
+    let sButtonAddonBg = "bg-secondary";
     if (typeof addon === 'object') {
         sButtonAddonText = addon?.text;
         if (addon?.hideZero && sButtonAddonText == '0')
             return null;
         if (addon?.variant == 'primary')
-            sButtonAddonBg = ' bg-pop dark:bg-pop-d';
+            sButtonAddonBg = ' bg-destructive ';
     }
     else {
         sButtonAddonText = addon;

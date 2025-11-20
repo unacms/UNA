@@ -413,10 +413,16 @@ const TabSceneMainContent = ({
 
         const sUrl = pageRoute?.endpoint?.request_url + JSON.stringify({ params: pageParam })
         const res = await fetcher(sUrl);
-        if (res?.data[0]?.data?.data)
-            return { data: res.data[0].data.data, params: res.data[0].data.params }
-        else
-            return { data: [], params: pageParam || {} }
+        const payload = Array.isArray(res?.data) ? res.data[0]?.data : undefined
+
+        if (payload?.data) {
+            return {
+                data: payload.data,
+                params: payload.params ?? pageParam ?? {}
+            }
+        }
+
+        return { data: [], params: pageParam || {} }
     }
 
 

@@ -26,6 +26,19 @@ function sanitizeWebTextProps(props) {
     return domProps;
 }
 
+const getSpacing = (top, bottom, isfirst, islast) => {
+    if (isfirst === undefined && islast === undefined) {
+        return `${top} ${bottom}`
+    }
+    const isFirst = isfirst === 'true' || isfirst === true
+    const isLast = islast === 'true' || islast === true
+
+    const t = isFirst ? 'mt-0 pt-0' : top
+    const b = isLast ? 'mb-0 pb-0' : bottom
+    return `${t} ${b}`
+}
+
+
 export const Text = ({
     children,
     className,
@@ -52,68 +65,78 @@ export const Text = ({
 /**
  * Components can have defaultProps and styles
  */
-export const H1 = ({ children, className, fontFamily = '', ...rest }) => {
+export const H1 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }) => {
     const HeadingComponent = isWeb ? 'h1' : NativeText
+    const spacing = getSpacing('', 'pb-4', isfirst, islast)
 
     return (
-        <HeadingComponent className={`text-3xl lg:text-4xl tracking-tight font-bold text-foreground text-balance mb-2  ${className || ''} ${fontFamily || 'font-main'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
+        <HeadingComponent className={`text-3xl lg:text-4xl tracking-tighter font-semibold text-foreground text-balance ${spacing}  ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
             {children}
         </HeadingComponent>
     )
 }
 
-export const H1C = ({ children, className, fontFamily = '', ...rest }) => {
+export const H1C = ({ children, className, fontFamily = '', isfirst, islast, ...rest }) => {
     const HeadingComponent = isWeb ? 'h1' : NativeText
+    const spacing = getSpacing('pt-3', 'pb-3', isfirst, islast)
+
     return (
-        <HeadingComponent className={`text-xl lg:text-2xl font-bold tracking-tight py-3 text-foreground ${className || ''} ${fontFamily || 'font-main'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
+        <HeadingComponent className={`text-xl lg:text-2xl font-bold tracking-tight text-foreground ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
             {children}
         </HeadingComponent>
     )
 }
 
-export const H2 = ({ children, className, fontFamily = '', ...rest }) => {
+export const H2 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }) => {
     const HeadingComponent = isWeb ? 'h2' : NativeText
+    const spacing = getSpacing('pt-5', 'pb-4', isfirst, islast)
 
     return (
-        <HeadingComponent className={`text-xl xl:text-2xl font-bold tracking-tight my-2 text-foreground ${className || ''} ${fontFamily || 'font-main'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
+        <HeadingComponent className={`text-xl xl:text-2xl font-bold tracking-tight text-foreground ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
             {children}
         </HeadingComponent>
     )
 }
 
-export const H3 = ({ children, className, fontFamily = '', ...rest }) => {
+export const H3 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }) => {
     const HeadingComponent = isWeb ? 'h3' : NativeText
+    const spacing = getSpacing('pt-1', 'pb-1', isfirst, islast)
 
     return (
-        <HeadingComponent className={`text-lg lg:text-xl font-bold tracking-tight py-1 text-foreground ${className || ''} ${fontFamily || 'font-main'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
+        <HeadingComponent className={`text-lg lg:text-xl font-bold tracking-tight text-foreground ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
             {children}
         </HeadingComponent>
     )
 }
 
-export const H4 = ({ children, className, fontFamily = '', ...rest }) => {
+export const H4 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }) => {
     const HeadingComponent = isWeb ? 'h4' : NativeText
+    const spacing = isfirst !== undefined ? getSpacing('pt-4', 'pb-2', isfirst, islast) : ''
 
     return (
-        <HeadingComponent className={`text-base lg:text-lg font-semibold tracking-tight text-foreground ${className || ''} ${fontFamily || 'font-main'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
+        <HeadingComponent className={`text-base lg:text-lg font-semibold tracking-tight text-foreground ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
             {children}
         </HeadingComponent>
     )
 }
 
-export const H5 = ({ children, className, fontFamily = '', ...rest }) => {
+export const H5 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }) => {
     const HeadingComponent = isWeb ? 'h5' : NativeText
+    const spacing = isfirst !== undefined ? getSpacing('pt-3', 'pb-1', isfirst, islast) : ''
+
     return (
-        <HeadingComponent className={`text-lg sm:text-xl font-semibold tracking-tight text-foreground ${className || ''} ${fontFamily || 'font-main'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
+        <HeadingComponent className={`text-lg sm:text-xl font-semibold tracking-tight text-foreground ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
             {children}
         </HeadingComponent>
     )
 }
 
-export const H6 = ({ children, className, fontFamily = '', ...rest }) => {
+export const H6 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }) => {
     const HeadingComponent = isWeb ? 'h6' : NativeText
+    const spacing = isfirst !== undefined ? getSpacing('pt-2', 'pb-1', isfirst, islast) : ''
+
     return (
-        <HeadingComponent className={` text-base sm:text-lg font-semibold tracking-tight text-foreground ${className || ''} ${fontFamily || 'font-main'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
+        <HeadingComponent className={` text-base sm:text-lg font-semibold tracking-tight text-foreground ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
             {children}
         </HeadingComponent>
     )
