@@ -21,7 +21,6 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     const windowWHeight = useWindowHeight();
     const isDesktop = useIsDesktop();
     const [formData, setFormData] = useState({});
-    const [addData, setAddData] = useState({});
     const [replyId, setReplyId] = useState(false);
     const [scrollToEnd, setScrollToEnd] = useState(false);
     const [formHeight, setFormHeight] = useState(0);
@@ -32,7 +31,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
     const localUrl = isModal ? url : useLocalSearchParams().url;
     const commentsData = useMemo(() => DataByName(data, blocks.comments), [data, blocks.comments]);
-    console.log("localUrl", localUrl)
+
 
     // for modal
     const offset = isDesktop ? 100 : 60
@@ -200,7 +199,6 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         isModal={true}
                         handleReply={data => setFormData({ ts: Date.now(), text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data, cmt_id: data.cmt_id, cmt_object_id: data.cmt_object_id })}
                         browse={commentsData?.content[0]?.browse}
-                        addData={addData}
                         module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
                         requestUrl={commentsData?.content[0]?.url}
                         replyId={replyId}
@@ -208,9 +206,9 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                 </View>
                 <View
                     onLayout={handleLayoutModal}
-                    className="border-t border-border/60 p-2"
+                    className="border-t border-border/60"
                 >
-                    <CommentsForm isModal={isModal} handleForm={setAddData} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
+                    <CommentsForm isModal={isModal} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
                 </View>
             </View>
         )
@@ -237,7 +235,6 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                             addItems={aItems}
                             handleReply={data => setFormData({ ts: Date.now(), text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data, cmt_id: data.cmt_id, cmt_object_id: data.cmt_object_id })}
                             browse={commentsData?.content[0]?.browse}
-                            addData={addData}
                             module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
                             requestUrl={commentsData?.content[0]?.url}
                             replyId={replyId}
@@ -246,7 +243,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                     <KbAvoidingView>
                         <View onLayout={handleLayout} style={{ width: listWidth + 5 }} className='-ml-[2px] -mr-[2px] border-background border bg-background web:fixed z-50 web:bottom-0  '>
                             <View className=' lg:mb-4  ml-[1px] '>
-                                <CommentsForm isModal={isModal} handleForm={setAddData} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
+                                <CommentsForm isModal={isModal} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
                             </View>
                         </View>
                     </KbAvoidingView>
@@ -313,7 +310,6 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                             addItems={aItems}
                             handleReply={data => setFormData({ ts: Date.now(), text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data, cmt_id: data.cmt_id, cmt_object_id: data.cmt_object_id })}
                             browse={commentsData?.content[0]?.browse}
-                            addData={addData}
                             module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
                             requestUrl={commentsData?.content[0]?.url}
                             replyId={replyId}
@@ -322,7 +318,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                     <KbAvoidingView>
                         <View onLayout={handleLayout} style={{ width: listWidth + 5 }} className='-ml-[2px] -mr-[2px] border-background border bg-background web:fixed z-50 web:bottom-0  '>
                             <View className='lg:rounded-b-2xl px-4 py-3  lg:mb-4 bg-card shadow-sm ml-[1px] '>
-                                <CommentsForm handleForm={setAddData} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
+                                <CommentsForm browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
                             </View>
                         </View>
                     </KbAvoidingView>

@@ -28,7 +28,7 @@ import { fetcher } from 'app/lib/fetcher'
 import { getComponent } from 'app/components/registry'
 import Card from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/atoms/animated-block'
-import { CommentsBrowse, CommentsParts } from 'app/lib/comments-helpers'
+import { CommentsBrowse/*, CommentsParts*/ } from 'app/lib/comments-helpers'
 import { Pressable } from 'app/design/view'
 import { subscribe } from 'app/ui/atoms/socket'
 import { getDataForMenu } from 'app/lib/util'
@@ -44,7 +44,7 @@ import { stripTags, cd, isWeb } from 'app/lib/util'
 import { useIsDesktop, useWindowHeight } from 'app/context/measure';
 import emitter from 'app/context/emitter';
 
-export const CommentsModal = memo(
+/*export const CommentsModal = memo(
     ({ commentsData, initFormData, itemContent, closeOnPost }) => {
         const windowHeight = useWindowHeight();
         const isDesktop = useIsDesktop();
@@ -84,7 +84,7 @@ export const CommentsModal = memo(
             </View>
         )
     }
-)
+)*/
 
 export const FeedEditForm = memo(({ setViewState, viewState, id }) => {
     const { t } = useTranslation()

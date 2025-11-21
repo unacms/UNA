@@ -1,9 +1,9 @@
-import { useMemo, useRef, memo, useCallback } from 'react'
-import { Platform } from 'react-native'
-import { menuItemsByName, linkify, FeedbackHaptics } from 'app/lib/util'
+import { useMemo, memo, useCallback, useState, useEffect } from 'react'
+import { Platform, Animated } from 'react-native'
+import { menuItemsByName, linkify, FeedbackHaptics, stripTags, appSetting, getDataForMenu, cd } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import { Button } from 'app/design/controls'
+import { Button, Modal } from 'app/design/controls'
 import Html from 'app/ui/atoms/html'
 import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
@@ -12,25 +12,18 @@ import Embed from 'app/ui/molecules/embed'
 import Menu from 'app/components/menu'
 import { useCurrentUser } from 'app/context/user'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
-import React from 'react'
 import { fetcher } from 'app/lib/fetcher'
-import { useState, useEffect } from 'react'
 import Form from 'app/components/elements/form'
-//import useSWR from "swr";
 import useFetchForm from 'app/lib/hooks/fetch'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
-import { stripTags, appSetting, getDataForMenu } from 'app/lib/util'
 import Carousel from 'app/ui/molecules/carousel'
 import { getComponent } from 'app/components/registry'
 import { StarsView } from 'app/ui/atoms/stars'
-import { Modal } from 'app/design/controls'
 import Loading from 'app/ui/atoms/loading'
-import { Animated, StyleSheet } from 'react-native'
-import { Theme } from 'app/design/theme'
-import { cd } from 'app/lib/util'
 import { Icon } from 'app/ui/atoms/icon'
-import { usePulseOne }  from 'app/lib/hooks/usePulseOnce'
+import { usePulseOne } from 'app/lib/hooks/usePulseOnce'
+import emitter from 'app/context/emitter';
 
 export default function UnitComments(props) {
     const { t } = useTranslation()
@@ -69,14 +62,14 @@ export default function UnitComments(props) {
 
     const { data: dynamicData, error } = useFetchForm(
         '/api.php?r=' +
-            appSetting('urls', 'cmts') +
-            '/&params[]={"module":"' +
-            props.module +
-            '","object_id":' +
-            props.data.cmt_object_id +
-            ',"action":"edit","id":' +
-            props.data.cmt_id +
-            '}',
+        appSetting('urls', 'cmts') +
+        '/&params[]={"module":"' +
+        props.module +
+        '","object_id":' +
+        props.data.cmt_object_id +
+        ',"action":"edit","id":' +
+        props.data.cmt_id +
+        '}',
         postData
     )
 
@@ -130,7 +123,7 @@ export default function UnitComments(props) {
             <Modal
                 title={t('Edit comment')}
                 onVisible={true}
-                
+
                 onClose={() => {
                     setViewState({ view: '' })
                 }}
@@ -146,7 +139,7 @@ export default function UnitComments(props) {
                 </View>
             </Modal>
         )
- 
+
 
     const Badges = getComponent('molecule', 'badges')
 
@@ -167,114 +160,114 @@ export default function UnitComments(props) {
                     )}
                 </View>
                 <View className="flex-1 flex-col gap-0.5 mt-3">
-                <View className="bg-muted/60  rounded-xl px-2.5 py-1.5 ">
-                    <View className="flex-row items-center justify-between gap-1 ">
-                        <Profile
-                            {...data.author_data}
-                            displayType="unit_wo_image"
-                            displaySize="sm"
-                            showInfo="false"
-                            showInfo2={<Badges badges={data.author_badges} size="xs" />}
-                        />
-
-                        <Link href={data.cmt_url} size="sm" variant="ghost" emulate={true}>
-                            <Time ts={data.cmt_time}></Time>
-                        </Link>
-                        {!!data.cmt_mood && (
-                            <>
-                                <View>
-                                <View className="text-muted -mx-0.5 ">
-                                    <Icon icon='Dot' size={14}  />
-                                </View>  
-                                </View>
-                                <StarsView
-                                    rating={data.cmt_mood}
-                                    starSize={20}
+                    <View className="bg-muted/60  rounded-xl px-2.5 py-1.5 ">
+                        <View className="flex-row items-center justify-between gap-1 ">
+                            <Row>
+                                <Profile
+                                    {...data.author_data}
+                                    displayType="unit_wo_image"
+                                    displaySize="sm"
+                                    showInfo="false"
+                                    showInfo2={<Badges badges={data.author_badges} size="xs" />}
                                 />
-                            </>
-                        )}
-                        {maxLevel < data.cmt_level &&
-                            appSetting('comments', 'in_reply') &&
-                            parent?.data && (
-                                <Row>
-                                    <Text className="text-muted-foreground px-1 text-sm ">
-                                        · In reply to
-                                    </Text>
-                                    <Profile
-                                        {...parent.data.author_data}
-                                        displayType="unit_wo_image"
-                                        displaySize="sm"
-                                        showInfo="false"
-                                    />
-                                    {false && (
-                                        <Text className="text-muted-foreground px-1 text-sm whitespace-nowrap text-ellipsis overflow-hidden">
-                                            {' '}
-                                            {stripTags(parent?.data?.cmt_text)}
-                                        </Text>
+                                {maxLevel < data.cmt_level &&
+                                    appSetting('comments', 'in_reply') &&
+                                    parent?.data && (
+                                        <Row>
+                                            <Text className="text-muted-foreground px-1 text-sm ">
+                                                · In reply to
+                                            </Text>
+                                            <Profile
+                                                {...parent.data.author_data}
+                                                displayType="unit_wo_image"
+                                                displaySize="sm"
+                                                showInfo="false"
+                                            />
+                                            {false && (
+                                                <Text className="text-muted-foreground px-1 text-sm whitespace-nowrap text-ellipsis overflow-hidden">
+                                                    {' '}
+                                                    {stripTags(parent?.data?.cmt_text)}
+                                                </Text>
+                                            )}
+                                        </Row>
                                     )}
-                                </Row>
+                            </Row>
+                            {!!data.cmt_mood && (
+                                <>
+                                    <View>
+                                        <View className="text-muted -mx-0.5 ">
+                                            <Icon icon='Dot' size={14} />
+                                        </View>
+                                    </View>
+                                    <StarsView
+                                        rating={data.cmt_mood}
+                                        starSize={20}
+                                    />
+                                </>
                             )}
-                    </View>
-                    {view == 'flat' && data.cmt_parent_id > 0 && (
-                        <View className="   border border-border/60 rounded-md p-2 my-1">
-                            <View className="flex-row items-baseline">
-                                <View>
-                                    <Text className="text-xs text-muted-foreground">
-                                        In Reply to{' '}
-                                    </Text>
-                                </View>
-                                <View className=" "></View>
-                            </View>
-                            <ContentMore
-                                content={data.cmt_parent.data.cmt_text}
-                                numberOfLines={1}
-                                openSmall={false}
-                                textClassName=" text-base text-muted-foreground"
-                            />
+
+                            <Link href={data.cmt_url} size="sm" variant="ghost" emulate={true}>
+                                <Time ts={data.cmt_time}></Time>
+                            </Link>
                         </View>
-                    )}
-                    <View className="">
-                        <Html
-                            htmlStyles={{ fontSize: 16 }}
-                            customClassName="u-vanilla-html-small"
-                            data={linkify(data.cmt_text)}
-                        />
-                        {!!data.embed && (
-                            <View>
-                                <Embed data={data.embed} size="small" />
+                        {view == 'flat' && data.cmt_parent_id > 0 && (
+                            <View className="   border border-border/60 rounded-md p-2 my-1">
+                                <View className="flex-row items-baseline">
+                                    <View>
+                                        <Text className="text-xs text-muted-foreground">
+                                            In Reply to{' '}
+                                        </Text>
+                                    </View>
+                                    <View className=" "></View>
+                                </View>
+                                <ContentMore
+                                    content={data.cmt_parent.data.cmt_text}
+                                    numberOfLines={1}
+                                    openSmall={false}
+                                    textClassName=" text-base text-muted-foreground"
+                                />
+                            </View>
+                        )}
+                        <View className="">
+                            <Html
+                                htmlStyles={{ fontSize: 16 }}
+                                customClassName="u-vanilla-html-small"
+                                data={linkify(data.cmt_text)}
+                            />
+                            {!!data.embed && (
+                                <View>
+                                    <Embed data={data.embed} size="small" />
+                                </View>
+                            )}
+                        </View>
+                        {viewState.view != 'edited' && imageList.length > 0 && (
+                            <View className="max-w-xs w-full">
+                                <Carousel data={imageList} />
                             </View>
                         )}
                     </View>
-                    {viewState.view != 'edited' && imageList.length > 0 && (
-                        <View className="max-w-xs w-full">
-                            <Carousel data={imageList} />
-                        </View>
-                    )}
-                   
-                   
-                </View>
-                {(viewState.view != 'edited' && !data.disabled) && (
+                    {(viewState.view != 'edited' && !data.disabled) && (
                         <Row className="gap-1">
                             {!!currentUser &&
-                            !!props.handleReply &&
-                            !props.module.includes('_reviews') ? (
-                                
-                                    <Button
-                                        align="start"
-                                        title={t('Reply')}
-                                        size="xs"
-                                        rounded
-                                        startDecorator="MessageCircle"
-                                        variant="text"
-                                        onPress={() => handleReply(data)}
-                                    />
-                                
+                                !!props.handleReply &&
+                                !props.module.includes('_reviews') ? (
+
+                                <Button
+                                    align="start"
+                                    title={t('Reply')}
+                                    size="xs"
+                                    rounded
+                                    startDecorator="MessageCircle"
+                                    variant="text"
+                                    onPress={() => handleReply(data)}
+                                />
+
                             ) : (
                                 <View></View>
                             )}
                             {!!currentUser &&
-                            !props.handleReply &&
-                            !props.module.includes('_reviews') ? (
+                                !props.handleReply &&
+                                !props.module.includes('_reviews') ? (
                                 <View className=" ">
                                     <Link
                                         href={
@@ -415,32 +408,33 @@ const MenuManage_ = memo(
                 case 'item-edit':
                     const result1 = await fetcher(
                         '/api.php?r=' +
-                            appSetting('urls', 'cmts') +
-                            '/&params[]={"module":"' +
-                            module +
-                            '","object_id":' +
-                            cmt_object_id +
-                            ',"action":"edit","id":' +
-                            cmt_id +
-                            '}'
+                        appSetting('urls', 'cmts') +
+                        '/&params[]={"module":"' +
+                        module +
+                        '","object_id":' +
+                        cmt_object_id +
+                        ',"action":"edit","id":' +
+                        cmt_id +
+                        '}'
                     )
                     setViewState({ view: 'edited', data: result1.data.form })
                     break
 
                 case 'item-delete':
-                    const result = await fetcher(
-                        '/api.php?r=' +
-                            appSetting('urls', 'cmts') +
-                            '/&params[]={"module":"' +
-                            module +
-                            '","object_id":' +
-                            cmt_object_id +
-                            ',"action":"remove","id":' +
-                            cmt_id +
-                            '}'
-                    )
-                    setViewState({ view: 'deleted' })
-                   // props.handleDelete()
+                     const result = await fetcher(
+                         '/api.php?r=' +
+                             appSetting('urls', 'cmts') +
+                             '/&params[]={"module":"' +
+                             module +
+                             '","object_id":' +
+                             cmt_object_id +
+                             ',"action":"remove","id":' +
+                             cmt_id +
+                             '}'
+                     )
+                    emitter.emit(`comment_${module}_${cmt_object_id}`, { action: 'remove_content', data: { id: cmt_id } });
+                    //setViewState({ view: 'deleted' })
+                    // props.handleDelete()
                     break
 
                 /* case 'item-report':
@@ -453,39 +447,39 @@ const MenuManage_ = memo(
         // const aMenuManageItems = menuItemsByName('comments_manage_menu', data.menu_manage.items, currentUser).map(
         const aMenuManageItems = !!currentUser
             ? menu &&
-              menuItemsByName(
-                  'comments_manage_menu',
-                  menu?.items,
-                  currentUser
-              ).map((aItem) => {
-                  let sTitle = aItem.title
-                  if (!!aItem.display_type && aItem.display_type == 'element') {
-                      const Element = getComponent(
-                          'molecule',
-                          String(aItem.data.type)
-                      )
-                      if (!!Element) {
-                          sTitle = (
-                              <Element
-                                  mode="dropdown-menu"
-                                  key={aItem.id ? aItem.id : aItem.name}
-                                  {...aItem.data}
-                              />
-                          )
-                      }
-                  }
+            menuItemsByName(
+                'comments_manage_menu',
+                menu?.items,
+                currentUser
+            ).map((aItem) => {
+                let sTitle = aItem.title
+                if (!!aItem.display_type && aItem.display_type == 'element') {
+                    const Element = getComponent(
+                        'molecule',
+                        String(aItem.data.type)
+                    )
+                    if (!!Element) {
+                        sTitle = (
+                            <Element
+                                mode="dropdown-menu"
+                                key={aItem.id ? aItem.id : aItem.name}
+                                {...aItem.data}
+                            />
+                        )
+                    }
+                }
 
-                  if (aItem.name == 'loader') {
-                      sTitle = <Loading size="small" />
-                  }
+                if (aItem.name == 'loader') {
+                    sTitle = <Loading size="small" />
+                }
 
-                  return {
-                      id: aItem.id ? aItem.id : aItem.name,
-                      name: aItem.name,
-                      link: aItem.link,
-                      title: sTitle,
-                  }
-              })
+                return {
+                    id: aItem.id ? aItem.id : aItem.name,
+                    name: aItem.name,
+                    link: aItem.link,
+                    title: sTitle,
+                }
+            })
             : []
 
         return (

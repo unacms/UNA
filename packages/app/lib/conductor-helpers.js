@@ -112,6 +112,11 @@ export const refetchUniListReducer = (state, action) => {
                 ...state,
                 visibleItems: [action.item, ...state.visibleItems]
             }
+        case 'APPEND_ITEM':
+            return {
+                ...state,
+                visibleItems: [...state.visibleItems, action.item]
+            }
         case 'REMOVE_ITEM':
             return {
                 ...state,

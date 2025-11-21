@@ -43,7 +43,6 @@ import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal'
 import emitter from 'app/context/emitter'
 import Cover, { CoverSmall } from 'app/components/elements/cover'
 import { CoverMenuMore, CoverMenu } from 'app/components/nav/menu-cover'
-import { fetcher } from 'app/lib/fetcher'
 import {
     Panel,
     PanelGroup,

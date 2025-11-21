@@ -1,25 +1,515 @@
-import { appSetting, md5 } from 'app/lib/util';
+import { appSetting } from 'app/lib/util';
 import { Pressable, View, Row } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { Text } from 'app/design/typography'
-import { useState, useContext, useRef, useEffect } from 'react';
- import { getComponent } from 'app/components/registry';;
-import { Button, Modal } from 'app/design/controls'
-//import useSWR from "swr";
+import { useState, useReducer, useRef, useEffect, useCallback } from 'react';
+import { getComponent } from 'app/components/registry';;
+import { Button } from 'app/design/controls'
 import useFetchForm from 'app/lib/hooks/fetch'
 import { fetcher } from 'app/lib/fetcher';
 import Loading from 'app/ui/atoms/loading'
 import Form from 'app/components/elements/form';
-import { Keyboard } from 'react-native'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { subscribe } from 'app/ui/atoms/socket';
 import { useCurrentUser } from 'app/context/user';
-import Toaster from 'app/ui/atoms/toaster';
 import { useTranslation } from 'react-i18next';
-import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
-import { stripTags } from 'app/lib/util';
 import { getPart } from 'app/lib/parts/part';
-import { cd } from 'app/lib/util'
+import { useInfiniteQuery } from '@tanstack/react-query'
+import {
+    refetchUniListReducer,
+    isSameItemsForUniList
+} from 'app/lib/conductor-helpers'
+import Toaster from 'app/ui/atoms/toaster2'
+import emitter from 'app/context/emitter'
+
+export function CommentsBrowse({ scrollProps,
+    browse,
+    requestUrl,
+    module,
+    handleReply,
+    addItems,
+    isShort = false,
+    maxCount,
+    height = 0,
+    classesBrowse = '',
+    commentsTitle = "Comments",
+    contentUrl,
+    replyId,
+    hideActions = false,
+    scrollToIndex = false,
+    isModal=false 
+}) {
+    const UnitComments = getComponent('unit', 'comments');
+    const { t } = useTranslation();
+    const flashListRef = useRef(null);
+    const { currentUser } = useCurrentUser();
+    const viewMode = browse?.data?.view;
+
+    const [refetchState, dispatch] = useReducer(refetchUniListReducer, {
+        visibleItems: [],
+        hasNewData: false
+    })
+
+    const refetchRef = useRef({
+        skipToast: false,
+        isFirstLoad: true,
+        prevItems: []
+    })
+
+    const baseParams = {
+        //static
+        module: module,
+        object_id: browse?.data?.object_id,
+        per_view: browse?.data?.per_view,
+        view: browse?.data?.view,
+        max_level: browse?.data?.max_level,
+
+        //dynamic
+        order_way: browse?.data?.order,
+        start_from: browse?.data?.start,
+        total_count: browse?.data?.total_count
+    }
+
+    const [browseParams, setBrowseParams] = useState(baseParams);
+    const [scrollIndex, setScrollIndex] = useState(scrollToIndex);
+
+    function prepareUrl(params) {
+        let def = {
+            module: browseParams.module,
+            object_id: browseParams.object_id,
+            start_from: params?.start_from ?? browse?.data?.start ?? 0,
+            order_way: browseParams.order_way,
+        }
+        return requestUrl + JSON.stringify({ ...def, ...params })
+    }
+
+    async function fetchComments({ pageParam }) {
+        const {
+            start_from = 0,
+        } = pageParam || {}
+
+        const sRequest = prepareUrl({
+            is_form: false,
+            start_from,
+        })
+        const sResponse = await fetcher(sRequest)
+        const data = sResponse?.data?.browse?.data
+
+        return {
+            raw: sResponse,
+            tree: data?.data,
+            start: data?.start,
+            count: data?.count,
+            per_view: data?.per_view,
+            total_count: data?.total_count,
+        }
+    }
+
+    function buildFlatListFromTree(items, viewMode) {
+        const result = []
+
+        function walk(items, level, last_child_in, lvls) {
+            if (!items) return
+
+            Object.keys(items).forEach((k) => {
+                let ilen = Object.keys(items[k]).length
+                let item = ilen == 1 ? items[k][Object.keys(items[k])[0]] : items[k]
+
+                let childs = Object.keys(item.items || {})
+                let last_child = 0
+                if (childs.length > 0) {
+                    last_child = item.items[childs[childs.length - 1]].id
+                }
+
+                item.level = level
+                item.last_child = last_child_in
+                lvls[level] = last_child_in != item.id
+                item.lvls = lvls.slice()
+
+                // parent пока оставим как есть — позже можно оптимизировать
+                item.parent = result.filter(
+                    (item2) => item2.data.cmt_id == item.data.cmt_parent_id
+                )[0]
+
+                result.push(item)
+
+                if (item.items && viewMode != 'flat') {
+                    walk(item.items, level + 1, last_child, lvls.slice())
+                }
+            })
+        }
+
+        walk(items, 0, 0, [])
+
+        return result
+    }
+
+    function flattenPagesForComments(pagesData, viewMode) {
+        if (!pagesData?.pages?.length) return []
+
+        const all = []
+
+        pagesData.pages.forEach((page) => {
+            const tree =
+                page?.raw?.data?.browse?.data?.data
+                || page.tree
+                || page.data
+            if (!tree) return
+
+            const flat = buildFlatListFromTree(tree, viewMode)
+            all.push(...flat)
+        })
+
+        return all
+    }
+
+    //Scroll to item by initial params 
+    useEffect(() => {
+        if (scrollIndex !== false && scrollIndex !== true) {
+            scrollToItemByCommentId(scrollIndex);
+        }
+        //to the end
+        if (scrollIndex === true) {
+            scrollToItemByIndex(dataOut.length - 1);
+        }
+    }, [scrollIndex]);
+
+    useEffect(() => {
+        if (!isShort) {
+            subscribe('cmts_' + browseParams.module + '_' + browseParams.object_id, 'comment_added', refetch);
+            subscribe('cmts_' + browseParams.module + '_' + browseParams.object_id, 'comment_edited', refetch);
+            subscribe('cmts_' + browseParams.module + '_' + browseParams.object_id, 'comment_deleted', refetch);
+        }
+
+        const subscription = emitter.addListener(`page`, (data) => {
+            if (data.action == 'reload') {
+                refetchRef.current.skipToast = true
+                refetch();
+            }
+        })
+
+        const subscription2 = emitter.addListener(`comment_${baseParams.module}_${baseParams.object_id}`, (data) => {
+            if (data.action == 'remove_content') {
+                dispatch({ type: 'REMOVE_ITEM', id: data.data.id })
+                if (refetchRef.current?.prevItems) {
+                    refetchRef.current.prevItems = refetchRef.current.prevItems.filter(item => item.id != data.id)
+                }
+                refetchRef.current.skipToast = true;
+                setBrowseParams(prev => ({
+                    ...prev,
+                    total_count: prev.total_count - 1,
+                }));
+            }
+            if (data.action == 'new_content') {
+                //MANY BE NEED TO IMPROVE
+
+                const newItem = data.data;
+                // Используем ref, так как он содержит актуальный список внутри замыкания useEffect
+                const items = refetchRef.current.prevItems || [];
+
+                // Определяем ID родителя (предполагаем, что он в data.cmt_parent_id)
+                const parentId = newItem.data?.cmt_parent_id || newItem.cmt_parent_id || 0;
+                let insertIndex = 0;
+
+                if (parentId == 0) {
+                    // Корневой комментарий
+                    // Если нужно в начало (новые сверху):
+                    insertIndex = browseParams.order_way == 'asc' ? items.length : 0;
+                    // Если нужно в конец (старые сверху): insertIndex = items.length;
+
+                    newItem.level = 0;
+                } else {
+                    // Это ответ - ищем родителя
+                    const parentIndex = items.findIndex(i => (i.data?.cmt_id == parentId) || (i.id == parentId));
+
+                    if (parentIndex !== -1) {
+                        const parent = items[parentIndex];
+                        newItem.level = (parent.level || 0) + 1;
+
+                        // Ищем, куда вставить: пропускаем самого родителя и всех его потомков.
+                        // Потомки имеют level строго больше, чем у родителя.
+                        let i = parentIndex + 1;
+                        while (i < items.length && items[i].level > parent.level) {
+                            i++;
+                        }
+                        insertIndex = i;
+                    } else {
+                        // Если родитель не найден (например, не загружен), вставляем в начало
+                        insertIndex = 0;
+                        newItem.level = 0;
+                    }
+                    setBrowseParams(prev => ({
+                        ...prev,
+                        total_count: prev.total_count + 1,
+                    }));
+                }
+
+                // Создаем новый массив с вставленным элементом
+                const newItems = [...items];
+                newItems.splice(insertIndex, 0, newItem);
+
+                // Обновляем список через SET_ITEMS
+                dispatch({ type: 'SET_ITEMS', items: newItems })
+
+                if (refetchRef.current) {
+                    refetchRef.current.prevItems = newItems;
+                    refetchRef.current.skipToast = true;
+                }
+
+                setScrollIndex(newItem.id)
+                refetchRef.current.skipToast = true;
+                refetch()
+            }
+        })
+
+        return () => {
+            subscription.remove();
+            subscription2.remove()
+        }
+    }, [])
+
+    const qKey = ['comments', module, currentUser?.id, browseParams.object_id, browseParams.order_way]
+
+    const {
+        data: pagesData,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+        refetch,
+        isRefetching,
+    } = useInfiniteQuery({
+        queryKey: qKey,
+        queryFn: fetchComments,
+
+        initialPageParam: {
+            start_from: 0,
+        },
+
+        getNextPageParam: (lastPage) => {
+            if (!lastPage || lastPage.start === 0 || lastPage.count === 0) return undefined
+            return {
+                start_from: lastPage.start
+            }
+        },
+
+        initialData: () => {
+            if (!browse?.data) return undefined
+            const d = browse.data
+            return {
+                pages: [
+                    {
+                        raw: { data: { browse: { data: d } } },
+                        tree: d.data,
+                        start: d.start,
+                        count: d.count,
+                        per_view: d.per_view,
+                        total_count: d.total_count,
+                    },
+                ],
+                pageParams: [
+                    {
+                        start_from: 0,
+                    },
+                ],
+            }
+        },
+        staleTime: isShort? Infinity : appSetting('browse', 'stale_time'),
+        refetchOnWindowFocus: true,
+        refetchOnReconnect: true,
+        enabled: !isShort
+    })
+
+
+    useEffect(() => {
+        if (!pagesData) return
+
+        const items = flattenPagesForComments(pagesData, viewMode)
+
+        if (refetchRef.current.isFirstLoad) {
+            dispatch({ type: 'SET_ITEMS', items })
+            refetchRef.current.prevItems = items
+            refetchRef.current.isFirstLoad = false
+            return
+        }
+
+        if (isSameItemsForUniList(refetchRef.current.prevItems, items)) {
+            return
+        }
+
+        if (refetchRef.current.skipToast) {
+            dispatch({ type: 'SET_ITEMS', items })
+            refetchRef.current.skipToast = false
+        } else {
+            dispatch({ type: 'SHOW_NEW_DATA' })
+        }
+
+
+        refetchRef.current.prevItems = items
+    }, [pagesData, viewMode])
+
+     useEffect(() => {
+        if (isShort) return
+
+        if (refetchRef.current.isFirstLoad && browseParams.order_way === baseParams.order_way) {
+            return
+        }
+        
+        // Если order_way изменился, перезагружаем данные
+        if (!refetchRef.current.isFirstLoad || browseParams.order_way !== baseParams.order_way) {
+            refetchRef.current.skipToast = true
+            refetchRef.current.isFirstLoad = true
+            refetch()
+        }
+    }, [browseParams.order_way])
+
+    const handleEndReached = useCallback(
+        (lastItemIndex) => {
+            if (maxCount) return
+            if (!browseParams.object_id) return
+            if (!hasNextPage) return
+            if (isFetchingNextPage) return
+            if (lastItemIndex == false) return
+
+            refetchRef.current.skipToast = true
+            fetchNextPage()
+        },
+        [hasNextPage, maxCount, browseParams.object_id, isFetchingNextPage]
+    )
+
+    const handleOrder = async (orderWay) => {
+        setBrowseParams(prev => ({
+            ...prev,
+            order_way: orderWay,
+        }));
+    }
+
+    console.log("refetchState.visibleItems", refetchState.visibleItems, baseParams.object_id)
+
+    if (isShort) {
+        return (maxCount ? refetchState.visibleItems.slice(0, maxCount) : refetchState.visibleItems).map((item, index) => (
+            <View key={item.id}>
+                <UnitComments contentUrl={contentUrl} module={browseParams.module} {...item} view={viewMode} max_level={browseParams.max_level} handleReply={handleReply} />
+            </View>))
+    }
+    const title = t(module + '_title') === module + '_title' ? t(commentsTitle) : t(module + '_title');
+
+    const header = browseParams.total_count > 0 ? (
+        <Row className={'flex-row ' + (classesBrowse ? classesBrowse : `p-3 sm:px-4 justify-between items-center  border-t border-border/60`)}>
+            <Text className='flex-auto text-base font-semibold text-secondary-foreground'>{title} ({browseParams.total_count})</Text>
+            {!appSetting('comments', 'hide_sort') && <View className="ml-4">
+                <Pressable className="flex-auto" onPress={(event) => { event.preventDefault() }}>
+                    <DropdownMenu items={[
+                        { id: 'newest', name: 'asc', title: t('Oldest first'), selected: browseParams.order_way == 'asc' },
+                        { id: 'oldest', name: 'desc', title: t('Newest first'), selected: browseParams.order_way == 'desc' }
+                    ]} onSelect={(oItem) => { handleOrder(oItem.name) }}>
+                        <Button variant="secondary" startDecorator={browseParams.order_way == 'asc' ? "ArrowDownAZ" : "ArrowDownZA"} size="xs" />
+                    </DropdownMenu>
+                </Pressable>
+            </View>}
+        </Row>) : <Text>&nbsp;</Text>;
+
+    const extra = (addItems || []).filter(i => i.id !== 'block_comments-empty' || (!refetchState.visibleItems.length && browseParams.object_id));
+
+console.log("refetchState.visibleItems", refetchState.visibleItems)
+
+    const dataOut = !refetchState.visibleItems.some(i => i.id === 'block_header') && extra.length
+        ? [...extra, { id: 'block_header', data: header }, ...refetchState.visibleItems]
+        : refetchState.visibleItems;
+
+    function scrollToItemByCommentId(cmtId) {
+        const index = refetchState.visibleItems.findIndex(obj => obj.id == cmtId)
+        const itemIndex = index ? index + 1 + extra.length : index;
+        scrollToItemByIndex(itemIndex);
+    }
+
+    function scrollToItemByIndex(itemIndex) {
+        if (itemIndex > 0) {
+            setTimeout(() => {
+                if (flashListRef.current)
+                    flashListRef.current.scrollToIndex(
+                        {
+                            animated: true,
+                            index: itemIndex,
+                            align: 'end',
+                            behavior: 'smooth',
+                        }
+                    );
+            }, 300);
+        }
+    }
+
+    return (
+        <>
+            <UniList
+                scrollProps={scrollProps}
+                mode='simple'
+                useWindowScroll={!isModal}
+                height={height > 0 ? height : undefined}
+                data={dataOut}
+                refer={flashListRef}
+                onRefresh={refetch}
+                refreshing={isRefetching}
+                renderItem={({ item, index }) => {
+
+                    if (item.id.toString().includes('block')) {
+                        return item.data;
+                    }
+
+                    return (
+                        <View className="px-3 sm:px-4" key={index}>
+                            <UnitComments
+                                selectedId={scrollToIndex}
+                                hideActions={hideActions}
+                                replyId={replyId}
+                                module={browseParams.module}
+                                {...item}
+                                view={viewMode}
+                                max_level={browseParams.max_level}
+                                handleReply={handleReply}
+                                isNewComment={false}//todo
+                            />
+                        </View>
+                    )
+                }}
+                onEndReached={handleEndReached}
+                ListFooterComponent={
+                    (browseParams.object_id && hasNextPage && isFetchingNextPage) ? (
+                        <View className=''><Loading /></View>
+                    ) : null
+                }
+            />
+            {refetchState.hasNewData && (
+                <Toaster
+                    position="top"
+                    onPress={() => {
+                        const latestItems = flattenPagesForComments(pagesData, viewMode)
+                        dispatch({ type: 'SET_ITEMS', items: latestItems })
+
+                        refetchRef.current.prevItems = latestItems
+
+
+                        // сюда можно добавить скролл к нужному месту TODO
+                        if (flashListRef.current) {
+                            flashListRef.current.scrollToIndex?.({
+                                index: latestItems.length - 1,
+                                animated: true,
+                            })
+                        }
+                        setBrowseParams(prev => ({
+                            ...prev,
+                            total_count: pagesData.pages[0].total_count,
+                        }));
+                    }}
+                    isVisible={refetchState.hasNewData}
+                    variant="primary"
+                    title={t('Show new comments')}
+                    size="sm"
+                />
+            )}
+
+        </>
+    )
+}
 
 export function findParent(data, c, o, insert) {
     if (Array.isArray(data)) {
@@ -81,409 +571,7 @@ export function parseData(browse, dynamicData) {
     return browse;
 }
 
-export function CommentsParts(commentsData, aItems, height = 0, initFormData, isModal = false, closeOnPost = false, header = null, pageData = null) {
-    const [formData, setFormData] = useState({});
-    const [addData, setAddData] = useState({});
-
-    // Early return if commentsData is null/undefined
-    if (!commentsData) {
-        return [
-            <View className="p-4 text-center">
-                <Text className="text-muted-foreground">Loading comments...</Text>
-            </View>,
-            null
-        ];
-    }
-
-    const handleReply = async (data) => {
-        setFormData({ ts:Date.now(), text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data, cmt_id: data.cmt_id, cmt_object_id: data.cmt_object_id })
-    }
-
-    useEffect(() => {
-        if (initFormData) {
-            handleReply(initFormData)
-        }
-    }, []);
-
-    const handleForm = async (data) => {
-        setAddData(data);
-        if (closeOnPost) {
-            closeOnPost()
-        }
-    }
-
-    const scrollToIndex = isModal ? (initFormData?.cmt_id ? initFormData.cmt_id : true) : false;
-
-    // Handle both commentsData structures:
-    // 1. From prepareData: { data: browseData, ... }
-    // 2. From API response: { browse: browseData, form, url, module, ... }
-    const browseData = commentsData.browse || commentsData.data;
-    const moduleData = commentsData.module || browseData?.data?.module;
-    const requestUrl = commentsData.url || '';
-
-    return [
-        <CommentsBrowse 
-            scrollProps={
-                header ? {
-                    headerHeight:64, 
-                    pageData:pageData, 
-                    headerComponent: header, 
-                    isBackButton: true, 
-                } : null
-            } 
-            scrollToIndex = {scrollToIndex}
-            height={height > 0 ? height : undefined} 
-            addItems={aItems} handleReply={handleReply} 
-            browse={browseData} addData={addData} 
-            module={moduleData} 
-            requestUrl={requestUrl} 
-        />,
-        <KbAvoidingView>
-            <CommentsForm isModal={isModal} handleForm={handleForm} browse={browseData} module={moduleData} form={commentsData.form} formData={formData} requestUrl={requestUrl} />
-        </KbAvoidingView>
-    ]
-}
-
-export function CommentsBrowse({ scrollProps, browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort = false, maxCount, height = 0, showCommentsModal, classesBrowse = '', commentsTitle = "Comments", contentUrl, replyId, hideActions = false, selectedId = 0, scrollToIndex = false, isModal=false }) {
-    const UnitComments =  getComponent('unit', 'comments');
-
-    const { t } = useTranslation();
-    const flashListRef = useRef(null);
-    let { currentUser, setCurrentUser } = useCurrentUser();
-
-    let dataOut = [];
-    let viewMode = browse?.data?.view;
-
-    const [commentData, setCommentData] = useState({
-        parentId: 0,
-        startFrom: browse?.data?.start,
-        perView: browse?.data?.per_view,
-        last_count: browse?.data?.count,
-        moduleName: module,
-        orderWay: browse?.data?.order,
-        view: browse?.data?.view,
-        objectId: browse?.data?.object_id,
-        maxLevel: browse?.data?.max_level,
-        formText: '',
-        formAuthor: '',
-        postData: null,
-        num: 0,
-        listData: browse,
-        lastInserted: 0,
-        total_count: browse?.data?.total_count
-    });
-
-    useEffect(() => {
-        /* Added for reload comments from notifs */
-        setCommentData(
-            {
-                parentId: 0,
-                startFrom: browse?.data?.start,
-                perView: browse?.data?.per_view,
-                last_count: browse?.data?.count,
-                moduleName: module,
-                orderWay: browse?.data?.order,
-                view: browse?.data?.view,
-                objectId: browse?.data?.object_id,
-                maxLevel: browse?.data?.max_level,
-                formText: '',
-                formAuthor: '',
-                postData: null,
-                num: 0,
-                listData: browse,
-                lastInserted: 0,
-                total_count: browse?.data?.total_count
-            }
-        );
-    }, [browse?.data]);
-
-    useEffect(() => {
-        if (isShort) {
-            setCommentData(
-                prevData => ({
-                    ...prevData,
-                    listData: browse
-                })
-            );
-        }
-    }, [browse]);
-
-
-    const addCommentData = (params) => {
-        if (!params.postData)
-            params.postData = null;
-        if (!params.lastInserted)
-            params.lastInserted = 0;
-        setCommentData(Object.assign({}, commentData, params));
-    }
-
-    const handleDelete = () => {
-        addCommentData({ total_count: commentData.total_count - 1 })
-    }
-
-    function prepareUrl(params) {
-        let def = { 'module': commentData.moduleName, 'object_id': commentData.objectId, 'start_from': commentData.startFrom, 'order_way': commentData.orderWay };
-        return requestUrl + JSON.stringify({ ...def, ...params });
-    }
-
-    useEffect(() => {
-        if (addData && addData?.data?.browse && addData?.data?.browse?.insert) {
-            let browse = parseData(commentData.listData, addData);
-            let i = Object.keys(addData?.data?.browse.data.data[0])[0].replace('i', '');
-            addCommentData({ listData: browse, total_count: commentData.total_count + 1, lastInserted: i })
-        }
-    }, [addData]);
-
-
-
-
-
-    function DataForList(items, level, last_child_in, lvls) {
-        if (!items)
-            return;
-        Object.keys(items).forEach(function (k) {
-            let ilen = Object.keys(items[k]).length
-            let item = null;
-            if (ilen == 1) {
-                item = items[k][Object.keys(items[k])[0]];
-            }
-            else {
-                item = items[k]
-            }
-
-            let childs = Object.keys(item.items);
-            let last_child = 0;
-            if (childs.length > 0) {
-                last_child = item.items[childs[childs.length - 1]].id;
-            }
-
-            item.level = level;
-            item.last_child = last_child_in;
-            lvls[level] = (last_child_in != item.id ? true : false);
-            item.lvls = lvls.slice();
-
-            item.parent = dataOut.filter(item2 => (item2.data.cmt_id == item.data.cmt_parent_id))[0];
-            dataOut.push(item)
-            if (item.items && viewMode != 'flat') {
-                DataForList(item.items, level + 1, last_child, lvls.slice());
-            }
-        })
-    }
-
-    const handleMore = async (force = false) => {
-        if (maxCount)
-            return;
-
-        if (!commentData.objectId)
-            return;
-
-        //if (commentData.last_count == commentData.perView) {
-        if (commentData.last_count != 0){
-            handleMoreInner();
-        }
-    }
-
-    const handleMoreInner = async () => {
-        const sRequest = prepareUrl({ 'is_form': false });
-        const sResponse = await fetcher(sRequest);
-        if (sResponse && sResponse.data != undefined && sResponse?.data?.browse?.data) {
-            let browse = parseData(commentData.listData, sResponse);
-            let iCount = sResponse?.data?.browse?.data?.count;
-            if (sResponse.data.browse.data.start == 0)
-                iCount = 0;
-            addCommentData({ startFrom: sResponse.data.browse.data.start, last_count: iCount, listData: browse })
-        }
-    }
-
-    const handleMoreNew = async () => {
-        const sRequest = prepareUrl({ 'is_form': false, comment_id: dataArrayRef.current.join(',') });
-        const sResponse = await fetcher(sRequest);
-        if (sResponse && sResponse.data != undefined) {
-            let browse = parseData(commentData.listData, sResponse);
-            let iCount = sResponse?.data?.browse?.data?.count;
-            let i = Object.keys(sResponse.data.browse.data.data[0])[0].replace('i', '');
-            addCommentData({ last_count: iCount, listData: browse, total_count: commentData.total_count + iCount, lastInserted: i })
-        }
-    }
-
-    const handleOrder = async (orderWay) => {
-        const sRequest = prepareUrl({ 'start_from': 0, 'is_form': false, 'order_way': orderWay });
-        const sResponse = await fetcher(sRequest);
-        if (sResponse && sResponse.data != undefined) {
-            browse.data.data = [];
-            browse = parseData(browse, sResponse);
-            addCommentData({ startFrom: 0, orderWay: orderWay, startFrom: sResponse.data.browse.data.start, last_count: sResponse.data.browse.data.count, postData: null })
-        }
-    }
-
-    DataForList(commentData?.listData?.data?.data, 0, 0, []);
-
-    const toasterRef = useRef();
-    const [processedNewCommentId, setProcessedNewCommentId] = useState(null);
-
-    const cb = (data) => {
-        let k = JSON.parse(data);
-        if (currentUser && currentUser.id != k.author_id) {
-            if (!dataArrayRef.current.includes(k.id)) {
-                dataArrayRef.current.push(k.id);
-            }
-            handleMoreNew();
-            //cb2(true);
-        }
-    }
-
-    const showNewContent = () => {
-        cb2(false);
-        handleMoreNew();
-        dataArrayRef.current = [];
-    }
-
-    const cb2 = (val) => {
-        if (toasterRef) {
-            const current = toasterRef.current;
-            if (current) {
-                current.setVisible(val);
-            }
-        }
-    }
-
-    useEffect(() => {
-        if (commentData.lastInserted > 0 && commentData.lastInserted !== processedNewCommentId) {
-            const itemIndex = dataOut.findIndex(obj => obj.id == commentData.lastInserted);
-            if (itemIndex !== -1) { // Ensure item is found before scrolling
-                setTimeout(() => {
-                    flashListRef.current?.scrollToIndex({ animated: true, index: itemIndex });
-                    // We will set processedNewCommentId after the animation is likely to have started or completed.
-                    // For now, the logic in UnitComments (isNewComment ? 0 : 1 for animation value)
-                    // and this check (commentData.lastInserted !== processedNewCommentId) in renderItem
-                    // should suffice to trigger animation only for the newest.
-                    // To be absolutely sure it only animates once, UnitComments could have an internal state, 
-                    // or we could setProcessedNewCommentId here after a longer delay if needed.
-                }, 300); // Keep existing scroll logic
-            }
-        }
-    }, [commentData.lastInserted, dataOut, processedNewCommentId]); // Added dataOut and processedNewCommentId to dependency array
-
-
-    useEffect(() => {
-        if (scrollToIndex !== false) {
-            const itemIndex = scrollToIndex === true ? dataOut.length-1 : dataOut.findIndex(obj => obj.id == scrollToIndex);
-            if (itemIndex > 0 ){
-                setTimeout(() => {
-                    if (flashListRef.current)
-                        flashListRef.current.scrollToIndex({ animated: true, index: itemIndex });
-                }, 300);
-            }
-
-        }
-    }, [scrollToIndex]);
-
-    useEffect(() => {
-        if (!isShort)
-            subscribe('cmts_' + commentData.moduleName + '_' + commentData.objectId, 'comment_added', cb);
-    }, [])
-
-    const dataArrayRef = useRef([]);
-
-    if (isShort) {
-        if (maxCount)
-            dataOut = dataOut.slice(0, maxCount);
-        return dataOut.map((item, index) => (
-            <View key={item.id}>
-                <UnitComments contentUrl={contentUrl} module={commentData.moduleName} {...item} view={viewMode} max_level={commentData.maxLevel} handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
-            </View>))
-    }
-    let title = t(module + '_title');
-    if (title == module + '_title')
-        title = t(commentsTitle);
-
-    let header = commentData.total_count > 0 ? (
-
-        <Row className={'flex-row ' + (classesBrowse ? classesBrowse : `p-3 sm:px-4 justify-between items-center  border-t border-border/60`)}>
-
-            <Text className='flex-auto text-base font-semibold text-secondary-foreground'>{title} ({commentData.total_count})</Text>
-            {!appSetting('comments', 'hide_sort') && <View className="ml-4">
-                <Pressable className="flex-auto" onPress={(event) => { event.preventDefault() }}>
-                    <DropdownMenu items={[
-                        { id: 'newest', name: 'desc', title: t('Oldest first') },
-                        { id: 'oldest', name: 'asc', title: t('Newest first') }
-                    ]} onSelect={(oItem) => { handleOrder(oItem.name) }}>
-                        <Button variant="secondary" startDecorator="ArrowDownAZ" size="xs" />
-                    </DropdownMenu>
-                </Pressable>
-            </View>}
-        </Row>) : <Text>&nbsp;</Text>;
-
-    if (addItems) {
-        if (dataOut.length > 0 || !commentData.objectId) {
-            let actionsItemIndex = addItems.findIndex(item => item.id === 'block_comments-empty');
-            if (actionsItemIndex > 0)
-                addItems.splice(actionsItemIndex, 1);
-        }
-    }
-    let h = dataOut.find(item => item.id === 'block_header')
-
-    if (!h && addItems)
-        dataOut = [...addItems, { id: 'block_header', data: header }, ...dataOut];
-
-    return (
-        <>
-            <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New comment" size="sm" />
-            <UniList
-                scrollProps={scrollProps}
-                mode='simple'
-                useWindowScroll={!isModal}
-                height={height > 0 ? height : undefined}
-                data={dataOut}
-                refer={flashListRef}
-                //onScrollToIndex={handleScrollToIndex}
-                renderItem={({ item, index }) => {
-
-                    if (item.id.toString().includes('block')) {
-                        return item.data;
-                    }
-                    
-                    const isNew = commentData.lastInserted === item.id && commentData.lastInserted !== processedNewCommentId;
-                    if (isNew) {
-                         // Set processedNewCommentId *after* this render cycle where isNew is true,
-                         // so the animation prop is correctly passed for the first render of the new comment.
-                         // Queue it to avoid direct state update during render.
-                        setTimeout(() => setProcessedNewCommentId(item.id), 0);
-                    }
-
-                    return (
-                        <View className="px-3 sm:px-4" key={index}>
-                            <UnitComments 
-                                selectedId={scrollToIndex} 
-                                hideActions={hideActions} 
-                                replyId={replyId} 
-                                module={commentData.moduleName} 
-                                {...item} 
-                                view={viewMode} 
-                                max_level={commentData.maxLevel} 
-                                handleReply={handleReply} 
-                                handleEdit={handleEdit} 
-                                handleDelete={handleDelete} 
-                                isNewComment={isNew}
-                            />
-                        </View>
-                    )
-                }}
-
-
-                onEndReached={handleMore}
-                ListFooterComponent={
-                    (commentData.objectId && commentData.last_count == commentData.perView) ? (
-                        <View className='m-2'><Loading /></View>
-                    ) : null
-                }
-            />
-
-        </>
-    )
-}
-
-export function CommentsForm({ form, requestUrl, module, browse, formData, handleForm, isModal = false }) {
+export function CommentsForm({ form, requestUrl, module, browse, formData, isModal = false }) {
 
     if (!form?.data?.inputs)
         return <></>
@@ -529,12 +617,12 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
                             form.data.inputs.cmt_text.value = `<a class="bx-mention-link" ts="${formData.ts}" data-id="[object Object]" href="#" title="${formData.author.display_name.trim()}" dchar="@" data-profile-id="-1" contenteditable="false">${formData.author.display_name.trim()}</a>&shy;&nbsp;`;
                         }
                         else {
-                            form.data.inputs.cmt_text.value = '<a class="bx-mention-link" ts='+formData.ts+' href="' + formData.author.url + '">' + formData.author.display_name.trim() + '</a>&shy;&nbsp;';
+                            form.data.inputs.cmt_text.value = '<a class="bx-mention-link" ts=' + formData.ts + ' href="' + formData.author.url + '">' + formData.author.display_name.trim() + '</a>&shy;&nbsp;';
                         }
 
                     }
                 }
-               // form.data.reset = true;
+                // form.data.reset = true;
                 form.data.inputs.cmt_text.autofocus = formData.parent_id;
                 addCommentData({ formText: formData.text, formAuthor: formData.author.display_name, parentId: formData.parent_id })
             }
@@ -548,7 +636,9 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
 
     useEffect(() => {
         if (dynamicData?.data?.browse) {
-            handleForm(dynamicData);
+            // console.log("datadata2", dynamicData.data.browse.data.data[0]['i'+dynamicData.data.browse.new[0]], dynamicData.data.browse.new[0])
+            emitter.emit(`comment_${module}_${browse.data.object_id}`, { action: 'new_content', data: dynamicData.data.browse.data.data[0]['i' + dynamicData.data.browse.new[0]] });
+            //handleForm(dynamicData);
             handleCancel() // DISABLED TO AVOID ANY REREBDERS AFTER NEW COMMENTS
         }
     }, [dynamicData]);
@@ -557,7 +647,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
         form.data.inputs.cmt_parent_id.value = 0;
         form.data.inputs.cmt_text.value = '';
         //form.data.inputs.cmt_text.autofocus = false;
-      //  form.data.reset = true;
+        //  form.data.reset = true;
         formData.parent_id = 0;
 
         addCommentData({ formText: '', formAuthor: '', parentId: 0 }) // DISABLED TO AVOID ANY REREBDERS AFTER NEW COMMENTS
@@ -572,15 +662,15 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
         setCommentForm(formData);
     }
 
-   
-   
+
+
 
     const combinedExProps = {
         ...(form?.exProps || {}),
         browse: dynamicData?.data?.browse,
         isModal,
     };
-
+    console.log("form?.data?.inputs?.cmt_parent_id?.value", form?.data?.inputs?.cmt_parent_id?.value)
     return (
         <View className="lg:rounded-b-2xl max-w-4xl p-4 bg-card " >
             {

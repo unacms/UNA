@@ -40,11 +40,11 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
     const Wrapper = handleSelect ? Pressable : View;
     const Content = (
         <Wrapper
-            className={menuSettings[classes?.item || 'item_ver']}
+            className={menuSettings[classes?.item || 'item_ver'] + (item.selected && ' bg-primary/10 text-foreground')}
             key={key}
             onPress={(event) => handleSelect(event, item)}
         >
-            <Row className="justify-between items-center">
+            <Row className="justify-between items-center ">
                 <View className={menuSettings.item_cnt}>
                 {(!!icon && !!menuSettings.item_icon) && <View className={menuSettings.item_icon}>{icon}</View>}
                 {!!item?.title &&
