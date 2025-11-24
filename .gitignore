@@ -84,7 +84,7 @@ build/**
 !.yarn/versions
 yarn.lock
 package-lock.json
-docs/client-proposal-architecture.mdx
+
 
 *storybook.log
 storybook-static
