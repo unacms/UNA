@@ -475,10 +475,10 @@ const getAddon = (addon, isTitle) => {
         sButtonAddonText = addon;
     }
 
-    const position = addon?.position == 'bottom' ? 'bottom-0 -end-1' : '-top-6 -end-2';
+    const position = addon?.position == 'bottom' ? 'bottom-0 -end-1' : '-top-2 -end-2';
 
     if (!isTitle && sButtonAddonText)
-        return <View className={`absolute ${sButtonAddonBg} border border-card web:border-0 web:ring-1 web:ring-card rounded-full px-1 min-w-5 min-h-5 min items-center justify-center ${position}`}><Text className='text-white text-xs font-semibold'>{sButtonAddonText}</Text></View>
+        return <View className={`absolute ${sButtonAddonBg} border-2 border-card rounded-full px-1 min-w-6 min-h-6 min items-center justify-center ${position}`}><Text className='text-white text-xs font-semibold'>{sButtonAddonText}</Text></View>
 
     return sButtonAddonText && sButtonAddonText ? <View className='flex-1 items-end '>
         <View className={sButtonAddonBg + ' rounded-full min-w-5 min-h-5 px-1.5 py-0.5 text-center items-center'}>
@@ -771,9 +771,20 @@ export const Button = (props) => {
             {sButtonIconEnd && <View className="relative z-10">{sButtonIconEnd}</View>}
             {isTitle && oButtonAddon && <View className="relative z-10">{oButtonAddon}</View>}
             {children && <View className="relative z-10">{children}</View>}
-            {!isTitle && oButtonAddon && <View className="relative z-10">{oButtonAddon}</View>}
         </Cnt>
     );
+
+    if (!isTitle && oButtonAddon) {
+        const wrapper = (
+            <View className={`relative flex-row items-center justify-center ${fullWidth ? 'flex-auto w-full' : 'w-fit'}`}>
+                {buttonContent}
+                <View className="absolute top-0 right-0 w-full h-full z-20 pointer-events-none" pointerEvents="none">
+                    {oButtonAddon}
+                </View>
+            </View>
+        );
+        return showTooltip ? <Tooltip content={tooltip}>{wrapper}</Tooltip> : wrapper;
+    }
 
     return showTooltip ? <Tooltip content={tooltip}>{buttonContent}</Tooltip> : buttonContent;
 };

@@ -15,7 +15,6 @@ import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import Profile from 'app/ui/molecules/profile'
 import { Text } from 'app/design/typography'
-import UI from 'app/ui/molecules/ui'
 import { MenuItemSidebarWithWrapper } from 'app/components/nav/menu-item-sidebar'
 import { Platform } from 'react-native'
 import { callFn } from 'app/lib/functions/call'
@@ -65,9 +64,7 @@ return;*/
 </>
     )*/
     const isWeb = Platform.OS == 'web'
-    if (appSetting('config', 'show_ui')) {
-        return <UI />
-    }
+
 
     const { layoutName, layoutSettings } = useLayoutSettings()
     const { t } = useTranslation()

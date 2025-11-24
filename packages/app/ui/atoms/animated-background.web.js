@@ -18,7 +18,10 @@ function BackgroundComponent({ }) {
     return (
         <>
             {currentBg && (
-                <View style={{ position: 'fixed', width: '100vw', height: '100vh', top: 0, left: 0, zIndex: -1 }}>
+                <View 
+                    className="animate-in fade-in duration-1000"
+                    style={{ position: 'fixed', width: '100vw', height: '100vh', top: 0, left: 0, zIndex: -1 }}
+                >
                     {currentBg}
                 </View>
             )}
