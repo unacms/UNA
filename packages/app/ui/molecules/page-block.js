@@ -4,7 +4,7 @@ import { appSetting} from 'app/lib/util';
 
 const blockTheme = appSetting('theme', 'blocks');
 
-function createBlockComponent({ baseClass, Component = View, role, isBg, isPad, ariaLevel }) {
+function createBlockComponent({ baseClass, Component = View, role, isBg, isPad, ariaLevel, animate = false }) {
     return function BlockSubComponent({ className = '', density, isBg, isPad,  ...props }) {
         return (
             <Component
@@ -12,6 +12,7 @@ function createBlockComponent({ baseClass, Component = View, role, isBg, isPad, 
                     ${baseClass} 
                     ${(isBg && baseClass == 'u-block-base') ? blockTheme['u-block-bg'] : ''} 
                     ${(isPad) ? blockTheme['u-block-pad'] : ''} 
+                    ${animate ? 'animate-in fade-in slide-in-from-bottom-4 duration-500' : ''}
                     ${blockTheme[baseClass]} ${className}`
                 }
                 role={role}
@@ -22,7 +23,7 @@ function createBlockComponent({ baseClass, Component = View, role, isBg, isPad, 
     };
 }
 
-const Block = createBlockComponent({ baseClass: 'u-block-base', isBg: true, isPad: true });
+const Block = createBlockComponent({ baseClass: 'u-block-base', isBg: true, isPad: true, animate: true });
 
 const BlockHeader = createBlockComponent({ baseClass: 'u-block-header' });
 

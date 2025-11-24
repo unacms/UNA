@@ -14,7 +14,7 @@ export const Icon = memo(function Icon(props) {
     // Мемоизируем ключ, чтобы он не пересчитывался при каждом рендере
     const key = useMemo(() => `${icon}-${width || ''}-${height || ''}-${size || ''}-${fill || ''}`, [icon, width, height, size, strokeWidth, fill]);
 
-    // Инициализируем состояние с иконкой из локального хранилища
+    // Инициализируем состояние с иконкой из локального хранилища, чтобы избежать первого пустого рендера
     const [currentIcon, setCurrentIcon] = useState(() => storageGet(`icon-${key}`, '', true));
     const InlineIcon = SvgIcons[icon];
 
@@ -67,14 +67,14 @@ export const Icon = memo(function Icon(props) {
                 /<svg(\s[^>]*)?>/i,
                 `<svg$1 width="${width || size}" height="${height || size}">`
             );
-            return <div style={{color:color}} className={className} {...rest} dangerouslySetInnerHTML={{ __html: result }} />;
+            return <span style={{color:color, display: 'flex'}} className={className} {...rest} dangerouslySetInnerHTML={{ __html: result }} />;
         }
         return null; // Возвращаем null, если иконка не загружена
         
     }
 
     return (
-        <div style={{color:color}}  className={className} {...rest} dangerouslySetInnerHTML={{ __html: currentIcon }} />
+        <span style={{color:color, display: 'flex'}}  className={className} {...rest} dangerouslySetInnerHTML={{ __html: currentIcon }} />
     );
 });
 

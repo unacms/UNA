@@ -5,20 +5,20 @@ const items = Array(5).fill('');
 
 
 const Default = memo(() => (
-    <Card className='flex-auto m-2' padding="p-1">
+    <Card className='flex-auto gap-1' padding="p-1.5">
         <View className="relative  bg-muted aspect-video rounded-xl w-full"></View>
-        <View className="h-32 px-3 pb-3 flex-auto justify-between">
-            <View className=" h-4 w-1/2 bg-muted rounded-full"></View>
-            <View className=" h-4 w-1/2 bg-muted rounded-full"></View>
+        <View className=" p-1.5 flex-auto justify-between gap-1.5">
+            <View className=" h-5 w-3/4 bg-muted rounded-full"></View>
+            <View className=" h-5 w-1/2 bg-muted rounded-full"></View>
         </View>
     </Card>
 ));
 
 const Persons = memo(() => (
-    <Card className='flex-auto m-2' padding="p-1">
+    <Card className='flex-auto' padding="p-1.5">
         <View className="relative  bg-muted aspect-square rounded-xl w-full"></View>
         <View className="h-32 px-3 pb-3 flex-auto justify-between">
-            <View className=" h-4 w-1/2 bg-muted rounded-full"></View>
+            <View className=" h-4 w-3/4 bg-muted rounded-full"></View>
             <View className=" h-4 w-1/2 bg-muted rounded-full"></View>
         </View>
     </Card>

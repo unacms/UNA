@@ -7,4 +7,4 @@ function AnimatedView({ children, direction = 'down', className, delay = 0 }) {
     return <View className={`${className} animate-in fade-in ${slideClass} duration-500 fill-mode-both`} style={{ animationDelay: `${delay}ms` }}>{children}</View>;
 };
 
-export default React.memo(AnimatedView);
+export default React.memo(AnimatedView); 

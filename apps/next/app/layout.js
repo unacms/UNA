@@ -10,6 +10,8 @@ import Subscriber from 'app/ui/molecules/subscriber';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { fontVars } from 'app/design/fonts/fonts-web';
 import { appSetting } from 'app/lib/util';
+import 'app/styles/global.default.css'
+import 'app/styles/global.css'
 
 // Suppress shadow* deprecation warnings from third-party libraries (react-native-toast-message)
 // until they update to use boxShadow

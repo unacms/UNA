@@ -1,11 +1,5 @@
 import { View } from 'app/design/view';
-import Animated, {
-    useSharedValue,
-    useAnimatedStyle,
-    useDerivedValue,
-    withTiming,
-} from 'react-native-reanimated';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { appSetting, isShowCover, getPageSettings } from 'app/lib/util'
 import { Header, TextHeader } from 'app/ui/molecules/scroll_list_header';
 import { useCurrentUser } from 'app/context/user';
@@ -30,64 +24,28 @@ export default function ScrollList({
 }) {
     const isDesktop = useIsDesktop();
     const isCollapsibleHeader = appSetting('native', 'collapsible_header') && !isDesktop;
-    const isShowScrollToTopButton = appSetting('native', 'scroll_to_top_button') && !isDesktop;
-    const transparencyOffset = 200;
-    const animationDuration = 300;
     const { currentUser } = useCurrentUser();
-    const opacity = useSharedValue(1);
-
-    /* ANIMATION */
-    const scrollY = useSharedValue(0);
-    const scrollDirection = useSharedValue('none');
-
-    const isShow = useDerivedValue(() => {
-        return (
-            scrollDirection.value === 'up' ||
-            scrollY.value < transparencyOffset ||
-            scrollY.value === 0
-        );
-    }, [scrollY, scrollDirection]);
-
-    const isShowButton = useDerivedValue(() => {
-        return (
-            scrollY.value > transparencyOffset
-        );
-    }, [scrollY, transparencyOffset]);
-
-    const headerStyle = useAnimatedStyle(() => {
-
-        opacity.value = withTiming(isShow.value ? 1 : 0, { duration: animationDuration });
-        return {
-            position: 'fixed',
-            top: '0px',
-            left: '0px',
-            width: '100%',
-            opacity: '1',
-            transform: [
-                { translateY: withTiming(isShow.value ? 0 : -114, { duration: animationDuration }) },
-            ],
-        };
-    }, [scrollDirection, scrollY, isShow, isDesktop]);
-
-    const updateScroll = (value) => {
-        const currentY = Math.round(value / 10) * 10;
-        if (currentY === scrollY.value) return;
-        scrollDirection.value = currentY > scrollY.value ? 'down' : 'up';
-        scrollY.value = currentY;
-    };
-
-    const onScroll = (event) => {
-        if (inverted)
-            updateScroll(event.target.scrollHeight - event.target.scrollTop - event.target.clientHeight);
-        else
-            updateScroll(event.target.scrollTop);
-    };
+    
+    const [showHeader, setShowHeader] = useState(true);
+    const lastScrollYRef = useRef(0);
 
     const handleScroll = useCallback(() => {
+        if (!isCollapsibleHeader) return;
+        
         requestAnimationFrame(() => {
-            updateScroll(window.scrollY);
+            const currentScrollY = window.scrollY;
+            const isScrollingUp = currentScrollY < lastScrollYRef.current;
+            const isAtTop = currentScrollY < 100; // small buffer for top
+
+            if (isScrollingUp || isAtTop) {
+                setShowHeader(true);
+            } else if (currentScrollY > 100) {
+                setShowHeader(false);
+            }
+            
+            lastScrollYRef.current = currentScrollY;
         });
-    }, [scrollDirection, scrollY]);
+    }, [isCollapsibleHeader]);
 
     useEffect(() => {
         if (isCollapsibleHeader) {
@@ -96,7 +54,7 @@ export default function ScrollList({
                 window.removeEventListener('scroll', handleScroll);
             };
         }
-    }, []);
+    }, [handleScroll, isCollapsibleHeader]);
 
     const scrollToTop = () => {
         if (contentType === 'FlatList') {
@@ -110,12 +68,9 @@ export default function ScrollList({
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
-    /* ANIMATION */
 
     const isSimplePage = ['home', 'login', 'create-account'].includes(pageData?.uri) && !currentUser;
-    const baseProps = {
-        ...((useCustomScrollHandler && isCollapsibleHeader) && { onScroll }),
-    };
+    const baseProps = {};
 
     if (!isShowCover(pageData?.cover, currentUser))
         return content;
@@ -136,10 +91,13 @@ export default function ScrollList({
         );
     }
 
+    const headerClasses = `backdrop-blur-xl w-full bg-card fixed top-0 left-0 z-50 transition-transform duration-300 ${showHeader ? 'translate-y-0' : '-translate-y-full'}`;
+
     return (
         <View className="flex-auto" style={{ paddingTop: !isDesktop && !useCustomScrollHandler ? headerHeight : 0, paddingBottom: !isDesktop ? bottomPadding : 0 }}>
             {enhanced}
-            {!isDesktop && <Animated.View className="backdrop-blur-xl w-full bg-card" style={[headerStyle]}>
+            {!isDesktop && (
+                <View className={headerClasses}>
                     <Header
                         backButtonPresented={isBackButton}
                         headerComponent={headerComponent}
@@ -151,7 +109,8 @@ export default function ScrollList({
                         isNoContainer={isNoContainer}
                     />
                     {subHeaderComponent}
-            </Animated.View>}
+                </View>
+            )}
         </View>
     )
 }

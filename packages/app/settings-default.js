@@ -219,7 +219,7 @@ export const settingsDefault = {
         show_nav_titles: false, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
         sidebar_container: '  h-full mx-3 ',
-        sidebar_inner_container: ' py-2 px-3 shadow-sm overflow-y-auto flex flex-col bg-card rounded-2xl ring-1 ring-border/60 ring-inset  ',
+        sidebar_inner_container: ' py-2 px-3 shadow-sm overflow-y-auto flex flex-col bg-card rounded-2xl border border-border/60  ',
         sidebar_title: 'sticky z-10 justify-between items-center h-12 ps-2 py-1.5 mb-1.5 z-10',
         sidebar_position: ' z-50 fixed fixed-process ',
         bgrDecorator: true, // Enable/disable decorator background globally for conductor buttons
@@ -1417,10 +1417,10 @@ export const settingsDefault = {
         },
         cards: {
             'u-card-list':
-                ' u-card-list bg-card/60 shadow-sm border-y sm:border border-border/50 web:sm:border-0 web:sm:ring-1 web:ring-inset web:ring-border/60 text-card-foreground overflow-hidden sm:rounded-2xl ',
+                ' u-card-list bg-card/60 shadow-sm border-y sm:border border-border/60 text-card-foreground overflow-hidden sm:rounded-2xl ',
             'u-card-list-padding': ' p-3 lg:p-4 ',
             'u-card-base':
-                ' u-card-base bg-card/60 shadow-sm border border-border/60   text-card-foreground overflow-hidden rounded-2xl gap-4',
+                ' u-card-base bg-card/60 shadow-sm border border-border/60 text-card-foreground overflow-hidden rounded-2xl',
             'u-card-padding': ' p-4 ',
             'u-card-header': 'flex gap-1',
             'u-card-icon': 'text-card-foreground px-4 gap-2',
@@ -1432,9 +1432,9 @@ export const settingsDefault = {
         },
         panels: {
             'u-panel-base': ' h-full flex-col ',
-            'u-panel-handler': 'relative w-0 web:before:absolute web:before:inset-y-0 web:before:-left-1 web:before:-right-1 web:before:bg-transparent web:before:hover:bg-accent/50 web:before:active:bg-accent/50 web:before:duration-200 ',
+            'u-panel-handler': 'relative w-0 web:before:absolute web:before:inset-y-0 web:before:-left-0.5 web:before:-right-0.5 web:before:bg-transparent web:before:hover:bg-accent web:before:active:bg-accent/50 web:before:duration-200 ',
             'u-panel-line':
-                'absolute w-px h-full bg-border/40 web:group-hover:bg-accent rounded-full left-1/2 top-0 -translate-x-1/2',
+                'absolute w-px h-full bg-border/0 web:group-hover:bg-primary/50 active:bg-primary/50 rounded-full left-1/2 top-0 -translate-x-1/2',
             'u-panel-group': ' h-full flex',
         },
         blocks: {

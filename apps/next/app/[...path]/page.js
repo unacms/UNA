@@ -3,8 +3,8 @@ import { cache } from 'react'
 import Root from 'app/root-client'
 import { Suspense } from 'react'
 import { Loading } from 'app/loading'
-import 'app/styles/global.default.css'
-import 'app/styles/global.css'
+// import 'app/styles/global.default.css'
+// import 'app/styles/global.css'
 import { notFound } from 'next/navigation'
 const SITE_TITLE = 'NEO';
 
