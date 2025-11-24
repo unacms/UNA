@@ -7,7 +7,6 @@ import { initReactI18next } from 'react-i18next';
 import { resources } from 'app/translation';
 import { useEffect, useMemo } from 'react'
 import Subscriber from 'app/ui/molecules/subscriber';
-//import AnimatedBackground from 'app/ui/atoms/animated-background';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { fontVars } from 'app/design/fonts/fonts-web';
 import { appSetting } from 'app/lib/util';
@@ -47,14 +46,12 @@ export default function RootLayout({ children }) {
         }
     }, [langCode]);
 
-    // Memoize QueryClient to prevent unnecessary recreations
     const queryClient = useMemo(() => new QueryClient(), []);
-    //<AnimatedBackground />
     return (
         <html lang={langCode} className={fontVars}>
             <body className={appSetting('layout', 'body')}>
                 <QueryClientProvider client={queryClient}>
-                    {typeof window !== 'undefined' ? <Analytics /> : null}
+                    <Analytics />
                     <SpeedInsights />
                         {children}
                     <Subscriber />
