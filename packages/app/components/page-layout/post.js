@@ -20,7 +20,6 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     const isWeb = Platform.OS == 'web';
     const windowWHeight = useWindowHeight();
     const isDesktop = useIsDesktop();
-    const [formData, setFormData] = useState({});
     const [replyId, setReplyId] = useState(false);
     const [scrollToEnd, setScrollToEnd] = useState(false);
     const [formHeight, setFormHeight] = useState(0);
@@ -177,7 +176,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
             groupRef.current?.setLayout(layouts)
         }
     }, [currentBreakpointName, groupRef])
-    console.log("isModal", isModal)
+
     if (isModal) {
         return (
             <View className="w-full">
@@ -197,7 +196,6 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         scrollToIndex={scrollToEnd}
                         addItems={aItems}
                         isModal={true}
-                        handleReply={data => setFormData({ ts: Date.now(), text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data, cmt_id: data.cmt_id, cmt_object_id: data.cmt_object_id })}
                         browse={commentsData?.content[0]?.browse}
                         module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
                         requestUrl={commentsData?.content[0]?.url}
@@ -208,7 +206,13 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                     onLayout={handleLayoutModal}
                     className="border-t border-border/60"
                 >
-                    <CommentsForm isModal={isModal} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
+                    <CommentsForm 
+                        isModal={isModal} 
+                        objectId={commentsData?.content[0]?.browse.data.object_id} 
+                        module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} 
+                        form={commentsData?.content[0]?.form} 
+                        requestUrl={commentsData?.content[0]?.url} 
+                    />
                 </View>
             </View>
         )
@@ -233,7 +237,6 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                             }
                             scrollToIndex={scrollToEnd}
                             addItems={aItems}
-                            handleReply={data => setFormData({ ts: Date.now(), text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data, cmt_id: data.cmt_id, cmt_object_id: data.cmt_object_id })}
                             browse={commentsData?.content[0]?.browse}
                             module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
                             requestUrl={commentsData?.content[0]?.url}
@@ -243,7 +246,13 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                     <KbAvoidingView>
                         <View onLayout={handleLayout} style={{ width: listWidth + 5 }} className='-ml-[2px] -mr-[2px] border-background border bg-background web:fixed z-50 web:bottom-0  '>
                             <View className=' lg:mb-4  ml-[1px] '>
-                                <CommentsForm isModal={isModal} browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
+                                <CommentsForm 
+                                    isModal={isModal} 
+                                    objectId={commentsData?.content[0]?.browse.data.object_id} 
+                                    module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} 
+                                    form={commentsData?.content[0]?.form} 
+                                    requestUrl={commentsData?.content[0]?.url} 
+                                />
                             </View>
                         </View>
                     </KbAvoidingView>
@@ -308,7 +317,6 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                             }
                             scrollToIndex={scrollToEnd}
                             addItems={aItems}
-                            handleReply={data => setFormData({ ts: Date.now(), text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data, cmt_id: data.cmt_id, cmt_object_id: data.cmt_object_id })}
                             browse={commentsData?.content[0]?.browse}
                             module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
                             requestUrl={commentsData?.content[0]?.url}
@@ -318,7 +326,12 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                     <KbAvoidingView>
                         <View onLayout={handleLayout} style={{ width: listWidth + 5 }} className='-ml-[2px] -mr-[2px] border-background border bg-background web:fixed z-50 web:bottom-0  '>
                             <View className='lg:rounded-b-2xl px-4 py-3  lg:mb-4 bg-card shadow-sm ml-[1px] '>
-                                <CommentsForm browse={commentsData?.content[0]?.browse} module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} form={commentsData?.content[0]?.form} formData={formData} requestUrl={commentsData?.content[0]?.url} />
+                                <CommentsForm 
+                                    objectId={commentsData?.content[0]?.browse.data.object_id}
+                                    module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} 
+                                    form={commentsData?.content[0]?.form} 
+                                    requestUrl={commentsData?.content[0]?.url} 
+                                />
                             </View>
                         </View>
                     </KbAvoidingView>

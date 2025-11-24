@@ -28,7 +28,7 @@ import { fetcher } from 'app/lib/fetcher'
 import { getComponent } from 'app/components/registry'
 import Card from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/atoms/animated-block'
-import { CommentsBrowse/*, CommentsParts*/ } from 'app/lib/comments-helpers'
+import { CommentsBrowse, CommentsBrowseShort /*, CommentsParts*/ } from 'app/lib/comments-helpers'
 import { Pressable } from 'app/design/view'
 import { subscribe } from 'app/ui/atoms/socket'
 import { getDataForMenu } from 'app/lib/util'
@@ -162,13 +162,11 @@ export const CommentsSection = memo(
                     </View>
                 )}
                 </View>
-                <CommentsBrowse
-                    maxCount={appSetting('comments', 'count_in_feed')}
+                <CommentsBrowseShort
                     contentUrl={url}
-                    browse={commentsDataInline}
+                    browseData={commentsDataInline?.data}
                     module={data?.cmts.module}
-                    isShort={true}
-                    {...(isCommentsModal && { handleReply: showCommentsModal })}
+                    handleReply = {isCommentsModal ? showCommentsModal : 'link'}
                 />
             </View>
         )

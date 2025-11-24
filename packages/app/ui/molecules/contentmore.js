@@ -5,14 +5,14 @@ import Html from 'app/ui/atoms/html';
 import { truncateHTML } from 'app/lib/util';
 import { storageSet, storageGet } from 'app/lib/util'
 
-function HtmlMemo({ data }) {
+function HtmlMemo({ data, customClassName }) {
     const computedData = useMemo(() => {
-        return <Html data={data} />
-    }, [data])
+        return <Html customClassName={customClassName} data={data} />
+    }, [data, customClassName])
     return computedData
 }
 
-export function ContentMore({ content, embed, numberOfSymbols = 350, textStyle, openSmall, showLink = true, showLess = false, id=false }) {
+export function ContentMore({ content, embed, numberOfSymbols = 350, textStyle, openSmall, customClassName, showLink = true, showLess = false, id=false }) {
     let initedValue = openSmall;
     if (id){
         let a = storageGet('layout:shmo', '');
@@ -57,11 +57,11 @@ export function ContentMore({ content, embed, numberOfSymbols = 350, textStyle, 
         setShowFull((prevShowFull) => !prevShowFull);
         //e.preventDefault(); commented by links in html text
     };
-
+    
     if (showButton) {
         return (
             <Pressable onPress={handleToggle}>
-                <HtmlMemo data={showFull ? content + linkContent : shortHtml + linkContent} htmlStyles={textStyle} />
+                <HtmlMemo data={showFull ? content + linkContent : shortHtml + linkContent} customClassName={customClassName} />
                 {showLess && (
                     <Text className="text-primary dark:text-primary text-base" >{showFull ? "Show less" : "Show more"}</Text>
                 )}

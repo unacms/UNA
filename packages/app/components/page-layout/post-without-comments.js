@@ -7,7 +7,7 @@ import Card from 'app/ui/molecules/card'
 import { useIsDesktop } from 'app/context/measure';
 export default function PageLayout(props) {
 
-    const [formData, setFormData] = useState({});
+
     const [addData, setAddData] = useState({});
     const [sizes, setSizes] = useState({cntHeight:0, listHeight:100, formHeight:0, formWidth:100});
     const isDesktop = useIsDesktop();
@@ -15,11 +15,7 @@ export default function PageLayout(props) {
     const viewFormRef = useRef();
     const viewCntRef = useRef();
 
-    const handleReply =  async (id, author, text) => {
-        setFormData({text:stripTags(text), parent_id:id, author:author})
-        document.getElementsByClassName("form-control-cmt_text")[0].getElementsByTagName("textarea")[0].focus();
-        
-    }
+
     
     const handleForm =  async (data) => {
         setAddData(data)

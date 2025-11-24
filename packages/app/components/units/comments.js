@@ -27,23 +27,33 @@ import emitter from 'app/context/emitter';
 
 export default function UnitComments(props) {
     const { t } = useTranslation()
-    let { currentUser } = useCurrentUser()
+    const { currentUser } = useCurrentUser()
     const [viewState, setViewState] = useState({ view: '' })
     const [postData, setPostData] = useState(null)
 
-    let level = props.level || 0
-    let lvls = props.lvls || []
-    let data = props.data
-    let items = props.items
-    let view = props.view
-    let files = props.files
-    let maxLevel = props.max_level
-    let parent = props.parent
+    const level = props.level || 0
+    const lvls = props.lvls || []
+    const data = props.data
+    const items = props.items
+    const view = props.view
+    const files = props.files
+    const maxLevel = props.max_level
+    const parent = props.parent
+
+    const module = props.module;
+    const objectId = props.data.cmt_object_id;
 
     const handleReply = useCallback(
         (data, isNoReaction) => {
-            if (!isNoReaction) FeedbackHaptics('Medium')
-            props.handleReply(data)
+            if (!isNoReaction) {
+                FeedbackHaptics('Medium')
+            }
+            if (props.handleReply) {
+                props.handleReply(data)
+            }
+            else {
+                emitter.emit(`comment_${module}_${objectId}`, { action: 'reply_comment', data: data });
+            }
         },
         [props.handleReply]
     )
@@ -248,46 +258,31 @@ export default function UnitComments(props) {
                     </View>
                     {(viewState.view != 'edited' && !data.disabled) && (
                         <Row className="gap-1">
-                            {!!currentUser &&
-                                !!props.handleReply &&
-                                !props.module.includes('_reviews') ? (
-
-                                <Button
-                                    align="start"
-                                    title={t('Reply')}
-                                    size="xs"
-                                    rounded
-                                    startDecorator="MessageCircle"
-                                    variant="text"
-                                    onPress={() => handleReply(data)}
-                                />
-
-                            ) : (
-                                <View></View>
-                            )}
-                            {!!currentUser &&
-                                !props.handleReply &&
-                                !props.module.includes('_reviews') ? (
-                                <View className=" ">
-                                    <Link
-                                        href={
-                                            props.contentUrl +
-                                            '#cmt_id=' +
-                                            data.cmt_id
-                                        }
-                                    >
-                                        <Button
-                                            align="start"
-                                            title={t('Reply')}
-                                            size="xs"
-                                            rounded
-                                            startDecorator="MessageCircle"
-                                            variant="text"
-                                        />
-                                    </Link>
-                                </View>
-                            ) : (
-                                <View></View>
+                            {!!currentUser && (
+                                props.handleReply === 'link' ? (
+                                    <View>
+                                        <Link href={`${props.contentUrl}#cmt_id=${data.cmt_id}`}>
+                                            <Button
+                                                align="start"
+                                                title={t('Reply')}
+                                                size="xs"
+                                                rounded
+                                                startDecorator="MessageCircle"
+                                                variant="text"
+                                            />
+                                        </Link>
+                                    </View>
+                                ) : (
+                                    <Button
+                                        align="start"
+                                        title={t('Reply')}
+                                        size="xs"
+                                        rounded
+                                        startDecorator="MessageCircle"
+                                        variant="text"
+                                        onPress={() => handleReply(data)}
+                                    />
+                                )
                             )}
                             <View className="flex-row flex-auto gap-1 ">
                                 <Menu
@@ -421,17 +416,17 @@ const MenuManage_ = memo(
                     break
 
                 case 'item-delete':
-                     const result = await fetcher(
-                         '/api.php?r=' +
-                             appSetting('urls', 'cmts') +
-                             '/&params[]={"module":"' +
-                             module +
-                             '","object_id":' +
-                             cmt_object_id +
-                             ',"action":"remove","id":' +
-                             cmt_id +
-                             '}'
-                     )
+                    const result = await fetcher(
+                        '/api.php?r=' +
+                        appSetting('urls', 'cmts') +
+                        '/&params[]={"module":"' +
+                        module +
+                        '","object_id":' +
+                        cmt_object_id +
+                        ',"action":"remove","id":' +
+                        cmt_id +
+                        '}'
+                    )
                     emitter.emit(`comment_${module}_${cmt_object_id}`, { action: 'remove_content', data: { id: cmt_id } });
                     //setViewState({ view: 'deleted' })
                     // props.handleDelete()

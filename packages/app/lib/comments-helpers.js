@@ -1,4 +1,4 @@
-import { appSetting } from 'app/lib/util';
+import { appSetting, stripTags } from 'app/lib/util';
 import { Pressable, View, Row } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { Text } from 'app/design/typography'
@@ -22,22 +22,19 @@ import {
 import Toaster from 'app/ui/atoms/toaster2'
 import emitter from 'app/context/emitter'
 
-export function CommentsBrowse({ scrollProps,
+export function CommentsBrowse({
+    scrollProps,
     browse,
     requestUrl,
     module,
-    handleReply,
     addItems,
-    isShort = false,
-    maxCount,
     height = 0,
     classesBrowse = '',
     commentsTitle = "Comments",
-    contentUrl,
     replyId,
     hideActions = false,
     scrollToIndex = false,
-    isModal=false 
+    isModal = false
 }) {
     const UnitComments = getComponent('unit', 'comments');
     const { t } = useTranslation();
@@ -105,64 +102,6 @@ export function CommentsBrowse({ scrollProps,
         }
     }
 
-    function buildFlatListFromTree(items, viewMode) {
-        const result = []
-
-        function walk(items, level, last_child_in, lvls) {
-            if (!items) return
-
-            Object.keys(items).forEach((k) => {
-                let ilen = Object.keys(items[k]).length
-                let item = ilen == 1 ? items[k][Object.keys(items[k])[0]] : items[k]
-
-                let childs = Object.keys(item.items || {})
-                let last_child = 0
-                if (childs.length > 0) {
-                    last_child = item.items[childs[childs.length - 1]].id
-                }
-
-                item.level = level
-                item.last_child = last_child_in
-                lvls[level] = last_child_in != item.id
-                item.lvls = lvls.slice()
-
-                // parent пока оставим как есть — позже можно оптимизировать
-                item.parent = result.filter(
-                    (item2) => item2.data.cmt_id == item.data.cmt_parent_id
-                )[0]
-
-                result.push(item)
-
-                if (item.items && viewMode != 'flat') {
-                    walk(item.items, level + 1, last_child, lvls.slice())
-                }
-            })
-        }
-
-        walk(items, 0, 0, [])
-
-        return result
-    }
-
-    function flattenPagesForComments(pagesData, viewMode) {
-        if (!pagesData?.pages?.length) return []
-
-        const all = []
-
-        pagesData.pages.forEach((page) => {
-            const tree =
-                page?.raw?.data?.browse?.data?.data
-                || page.tree
-                || page.data
-            if (!tree) return
-
-            const flat = buildFlatListFromTree(tree, viewMode)
-            all.push(...flat)
-        })
-
-        return all
-    }
-
     //Scroll to item by initial params 
     useEffect(() => {
         if (scrollIndex !== false && scrollIndex !== true) {
@@ -175,11 +114,11 @@ export function CommentsBrowse({ scrollProps,
     }, [scrollIndex]);
 
     useEffect(() => {
-        if (!isShort) {
-            subscribe('cmts_' + browseParams.module + '_' + browseParams.object_id, 'comment_added', refetch);
-            subscribe('cmts_' + browseParams.module + '_' + browseParams.object_id, 'comment_edited', refetch);
-            subscribe('cmts_' + browseParams.module + '_' + browseParams.object_id, 'comment_deleted', refetch);
-        }
+       
+        subscribe('cmts_' + browseParams.module + '_' + browseParams.object_id, 'comment_added', refetch);
+        subscribe('cmts_' + browseParams.module + '_' + browseParams.object_id, 'comment_edited', refetch);
+        subscribe('cmts_' + browseParams.module + '_' + browseParams.object_id, 'comment_deleted', refetch);
+        
 
         const subscription = emitter.addListener(`page`, (data) => {
             if (data.action == 'reload') {
@@ -313,10 +252,9 @@ export function CommentsBrowse({ scrollProps,
                 ],
             }
         },
-        staleTime: isShort? Infinity : appSetting('browse', 'stale_time'),
+        staleTime: appSetting('browse', 'stale_time'),
         refetchOnWindowFocus: true,
         refetchOnReconnect: true,
-        enabled: !isShort
     })
 
 
@@ -347,13 +285,12 @@ export function CommentsBrowse({ scrollProps,
         refetchRef.current.prevItems = items
     }, [pagesData, viewMode])
 
-     useEffect(() => {
-        if (isShort) return
+    useEffect(() => {
 
         if (refetchRef.current.isFirstLoad && browseParams.order_way === baseParams.order_way) {
             return
         }
-        
+
         // Если order_way изменился, перезагружаем данные
         if (!refetchRef.current.isFirstLoad || browseParams.order_way !== baseParams.order_way) {
             refetchRef.current.skipToast = true
@@ -364,7 +301,6 @@ export function CommentsBrowse({ scrollProps,
 
     const handleEndReached = useCallback(
         (lastItemIndex) => {
-            if (maxCount) return
             if (!browseParams.object_id) return
             if (!hasNextPage) return
             if (isFetchingNextPage) return
@@ -373,7 +309,7 @@ export function CommentsBrowse({ scrollProps,
             refetchRef.current.skipToast = true
             fetchNextPage()
         },
-        [hasNextPage, maxCount, browseParams.object_id, isFetchingNextPage]
+        [hasNextPage, browseParams.object_id, isFetchingNextPage]
     )
 
     const handleOrder = async (orderWay) => {
@@ -381,15 +317,6 @@ export function CommentsBrowse({ scrollProps,
             ...prev,
             order_way: orderWay,
         }));
-    }
-
-    console.log("refetchState.visibleItems", refetchState.visibleItems, baseParams.object_id)
-
-    if (isShort) {
-        return (maxCount ? refetchState.visibleItems.slice(0, maxCount) : refetchState.visibleItems).map((item, index) => (
-            <View key={item.id}>
-                <UnitComments contentUrl={contentUrl} module={browseParams.module} {...item} view={viewMode} max_level={browseParams.max_level} handleReply={handleReply} />
-            </View>))
     }
     const title = t(module + '_title') === module + '_title' ? t(commentsTitle) : t(module + '_title');
 
@@ -409,8 +336,6 @@ export function CommentsBrowse({ scrollProps,
         </Row>) : <Text>&nbsp;</Text>;
 
     const extra = (addItems || []).filter(i => i.id !== 'block_comments-empty' || (!refetchState.visibleItems.length && browseParams.object_id));
-
-console.log("refetchState.visibleItems", refetchState.visibleItems)
 
     const dataOut = !refetchState.visibleItems.some(i => i.id === 'block_header') && extra.length
         ? [...extra, { id: 'block_header', data: header }, ...refetchState.visibleItems]
@@ -465,7 +390,6 @@ console.log("refetchState.visibleItems", refetchState.visibleItems)
                                 {...item}
                                 view={viewMode}
                                 max_level={browseParams.max_level}
-                                handleReply={handleReply}
                                 isNewComment={false}//todo
                             />
                         </View>
@@ -509,6 +433,88 @@ console.log("refetchState.visibleItems", refetchState.visibleItems)
 
         </>
     )
+}
+
+function buildFlatListFromTree(items, viewMode) {
+    const result = []
+
+    function walk(items, level, last_child_in, lvls) {
+        if (!items) return
+
+        Object.keys(items).forEach((k) => {
+            let ilen = Object.keys(items[k]).length
+            let item = ilen == 1 ? items[k][Object.keys(items[k])[0]] : items[k]
+
+            let childs = Object.keys(item.items || {})
+            let last_child = 0
+            if (childs.length > 0) {
+                last_child = item.items[childs[childs.length - 1]].id
+            }
+
+            item.level = level
+            item.last_child = last_child_in
+            lvls[level] = last_child_in != item.id
+            item.lvls = lvls.slice()
+
+            // parent пока оставим как есть — позже можно оптимизировать
+            item.parent = result.filter(
+                (item2) => item2.data.cmt_id == item.data.cmt_parent_id
+            )[0]
+
+            result.push(item)
+
+            if (item.items && viewMode != 'flat') {
+                walk(item.items, level + 1, last_child, lvls.slice())
+            }
+        })
+    }
+
+    walk(items, 0, 0, [])
+
+    return result
+}
+
+function flattenPagesForComments(pagesData, viewMode) {
+    if (!pagesData?.pages?.length) return []
+
+    const all = []
+
+    pagesData.pages.forEach((page) => {
+        const tree =
+            page?.raw?.data?.browse?.data?.data
+            || page.tree
+            || page.data
+        if (!tree) return
+
+        const flat = buildFlatListFromTree(tree, viewMode)
+        all.push(...flat)
+    })
+
+    return all
+}
+
+export function CommentsBrowseShort({
+    contentUrl,
+    browseData,
+    module,
+    handleReply
+}) {
+    const UnitComments = getComponent('unit', 'comments');
+    const viewMode = browseData?.view;
+    const items = browseData?.data ? buildFlatListFromTree(browseData.data, viewMode) : [];
+    const maxCount= appSetting('comments', 'count_in_feed');
+
+    return (maxCount ? items.slice(0, maxCount) : items).map((item, index) => (
+        <View key={item.id}>
+            <UnitComments 
+                contentUrl={contentUrl} 
+                module={module} 
+                {...item} 
+                view={viewMode} 
+                max_level={browseData?.max_level} 
+                handleReply={handleReply} 
+            />
+        </View>))
 }
 
 export function findParent(data, c, o, insert) {
@@ -571,30 +577,39 @@ export function parseData(browse, dynamicData) {
     return browse;
 }
 
-export function CommentsForm({ form, requestUrl, module, browse, formData, isModal = false }) {
+export function CommentsForm({ form, requestUrl, module, objectId, isModal = false }) {
 
     if (!form?.data?.inputs)
         return <></>
-    const [commentData, setCommentData] = useState({
-        parentId: 0,
-        startFrom: browse.data.start,
-        perView: browse.data.per_view,
-        last_count: browse.data.count,
-        moduleName: module,
-        orderWay: browse.data.order,
-        view: browse.data.view,
-        objectId: browse.data.object_id,
-        formText: '',
-        formAuthor: '',
-        postData: null,
-        num: 0,
-        listData: null,
-        total_count: browse.data.total_count
-    });
 
-    const addCommentData = (params) => {
-        setCommentData(Object.assign({}, commentData, params));
-    }
+    const [formData, setFormData] = useState({});
+    
+    const [commentForm, setCommentForm] = useState();
+
+    const url = requestUrl + JSON.stringify({ 'module': module, 'object_id': objectId });
+
+    const { data: dynamicData, error } = useFetchForm(url, commentForm);
+
+
+    useEffect(() => {
+        const subscription = emitter.addListener(`comment_${module}_${objectId}`, (data) => {
+            if (data.action == 'reply_comment') {
+                setFormData({
+                    text: stripTags(data.data.cmt_text),
+                    parent_id: data.data.cmt_id,
+                    author: data.data.author_data,
+                    cmt_id: data.data.cmt_id,
+                    cmt_object_id: data.data.cmt_object_id
+                })
+            }
+        })
+
+        return () => {
+            subscription.remove();
+
+        }
+    }, [])
+
 
     useEffect(() => {
         const updateFormData = async () => {
@@ -622,66 +637,49 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, isMod
 
                     }
                 }
-                // form.data.reset = true;
                 form.data.inputs.cmt_text.autofocus = formData.parent_id;
-                addCommentData({ formText: formData.text, formAuthor: formData.author.display_name, parentId: formData.parent_id })
+                
             }
         }
         updateFormData();
-    }, [formData.parent_id, formData.ts]);
+    }, [formData.parent_id]);
 
-    const [commentForm, setCommentForm] = useState();
 
-    const { data: dynamicData, error } = useFetchForm(prepareUrl(), commentForm);
 
     useEffect(() => {
         if (dynamicData?.data?.browse) {
-            // console.log("datadata2", dynamicData.data.browse.data.data[0]['i'+dynamicData.data.browse.new[0]], dynamicData.data.browse.new[0])
-            emitter.emit(`comment_${module}_${browse.data.object_id}`, { action: 'new_content', data: dynamicData.data.browse.data.data[0]['i' + dynamicData.data.browse.new[0]] });
-            //handleForm(dynamicData);
-            handleCancel() // DISABLED TO AVOID ANY REREBDERS AFTER NEW COMMENTS
+            emitter.emit(`comment_${module}_${objectId}`, { action: 'new_content', data: dynamicData.data.browse.data.data[0]['i' + dynamicData.data.browse.new[0]] });
+            handleCancel() 
         }
     }, [dynamicData]);
 
     const handleCancel = async () => {
+        setFormData({});
         form.data.inputs.cmt_parent_id.value = 0;
         form.data.inputs.cmt_text.value = '';
-        //form.data.inputs.cmt_text.autofocus = false;
-        //  form.data.reset = true;
-        formData.parent_id = 0;
-
-        addCommentData({ formText: '', formAuthor: '', parentId: 0 }) // DISABLED TO AVOID ANY REREBDERS AFTER NEW COMMENTS
-    }
-
-    function prepareUrl(params) {
-        let def = { 'module': module, 'object_id': commentData.objectId, 'start_from': commentData.startFrom, 'order_way': commentData.orderWay };
-        return requestUrl + JSON.stringify({ ...def, ...params });
     }
 
     const onFormSubmit = (formData, d) => {
         setCommentForm(formData);
     }
 
-
-
-
     const combinedExProps = {
         ...(form?.exProps || {}),
         browse: dynamicData?.data?.browse,
         isModal,
     };
-    console.log("form?.data?.inputs?.cmt_parent_id?.value", form?.data?.inputs?.cmt_parent_id?.value)
+
     return (
         <View className="lg:rounded-b-2xl max-w-4xl p-4 bg-card " >
             {
-                form?.data?.inputs?.cmt_parent_id?.value > 0 && (<View className=' rounded-sm border-l-2 border-bgritemprimary dark:border-bgritemprimary-d  py-1 pl-2 mb-2'>
+                formData.parent_id > 0 && (<View className=' rounded-sm border-l-2 border-bgritemprimary dark:border-bgritemprimary-d  py-1 pl-2 mb-2'>
                     <Row className='items-start justify-between max-w-full relative'>
                         <View className=' flex-auto pr-4'>
                             <Row className='max-w-full '>
                                 <Text className='text-xs text-neutral-900 dark:text-neutral-50'>Reply to: </Text>
-                                <Text className='font-semibold text-xs text-neutral-900 dark:text-neutral-50'>{getPart("ProfileDisplayName", [commentData.formAuthor])}</Text>
+                                <Text className='font-semibold text-xs text-neutral-900 dark:text-neutral-50'>{getPart("ProfileDisplayName", [formData.author.display_name])}</Text>
                             </Row>
-                            <Text className=' text-base overflow-hidden text-neutral-900 dark:text-neutral-50 text-sm' numberOfLines={3}>{form.data.inputs.cmt_parent_id.value == 0 ? '' : '' + commentData.formText}</Text>
+                            <Text className=' text-base overflow-hidden text-neutral-900 dark:text-neutral-50 text-sm' numberOfLines={3}>{formData.parent_id > 0 ? formData.text : ''}</Text>
                         </View>
                         <View className=" right-0 t-0">
                             <Button align="start" rounded startDecorator="X" size="xs" variant="outline" onPress={() => handleCancel()} />

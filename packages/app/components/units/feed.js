@@ -58,9 +58,9 @@ function DefaultUnit({ data }) {
     }
 
     if (viewState.view == 'deleted') return <></>
+
     if (data.type == 'timeline_recommendations') {
         const Unit = getComponent('content-list', data.module);
-
         const contentElement = data.content.data.map((item, index) => {
             return (
                 <View className="w-[280px]" key={`item${index}_row`}>
