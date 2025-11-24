@@ -1,5 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import { appSetting } from 'app/lib/util'
+//"mapbox-gl": "^3.16.0",
 //import 'mapbox-gl/dist/mapbox-gl.css';
 import { View } from 'app/design/view'
 
