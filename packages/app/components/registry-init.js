@@ -6,11 +6,11 @@ const componentMapLoaders = {
     molecule: () => require('app/ui/molecules/_map').componentsMap,
     form: () => require('app/components/forms/_map').componentsMap,
     layout: () => require('app/components/page-layout/_map').componentsMap,
-    'menu-item': () => require('app/components/menu-items/_map').componentsMap,
-    unit: () => require('app/components/units/_map').componentsMap,
-    'content-list': () => require('app/components/units/content-list/_map').componentsMap,
-    'profile-list': () => require('app/components/units/profile-list/_map').componentsMap,
-    skeleton: () => require('app/components/skeletons/_map').skeletonsMap,
+   // 'menu-item': () => require('app/components/menu-items/_map').componentsMap,
+   // unit: () => require('app/components/units/_map').componentsMap,
+   // 'content-list': () => require('app/components/units/content-list/_map').componentsMap,
+   // 'profile-list': () => require('app/components/units/profile-list/_map').componentsMap,
+   // skeleton: () => require('app/components/skeletons/_map').skeletonsMap,
 };
 
 const componentMapsCache = {};

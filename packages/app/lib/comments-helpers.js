@@ -158,22 +158,17 @@ export function CommentsBrowse({
 
                     newItem.level = 0;
                 } else {
-                    // Это ответ - ищем родителя
                     const parentIndex = items.findIndex(i => (i.data?.cmt_id == parentId) || (i.id == parentId));
 
                     if (parentIndex !== -1) {
                         const parent = items[parentIndex];
                         newItem.level = (parent.level || 0) + 1;
-
-                        // Ищем, куда вставить: пропускаем самого родителя и всех его потомков.
-                        // Потомки имеют level строго больше, чем у родителя.
                         let i = parentIndex + 1;
                         while (i < items.length && items[i].level > parent.level) {
                             i++;
                         }
                         insertIndex = i;
                     } else {
-                        // Если родитель не найден (например, не загружен), вставляем в начало
                         insertIndex = 0;
                         newItem.level = 0;
                     }
@@ -183,15 +178,14 @@ export function CommentsBrowse({
                     }));
                 }
 
-                // Создаем новый массив с вставленным элементом
                 const newItems = [...items];
                 newItems.splice(insertIndex, 0, newItem);
 
-                // Обновляем список через SET_ITEMS
+
                 dispatch({ type: 'SET_ITEMS', items: newItems })
 
                 if (refetchRef.current) {
-                    refetchRef.current.prevItems = newItems;
+                   // refetchRef.current.prevItems = newItems;// disable for current refetch
                     refetchRef.current.skipToast = true;
                 }
 
