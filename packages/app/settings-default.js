@@ -27,7 +27,7 @@ export const settingsDefault = {
             mapbox: 'pk.eyJ1Ijoicm9tYW5sZXMiLCJhIjoiY204Zm9kY3ByMGE4bzJrc2R6Zzg4NW0zMCJ9.Jme_Zudsug5mmqcbjII9cQ',
           
         },
-        show_ui: false,
+        show_ui: true,
 
         app_version: '15.0.0',
         min_server_version: '15.0.0',
