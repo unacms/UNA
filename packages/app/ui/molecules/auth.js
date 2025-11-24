@@ -37,8 +37,6 @@ export default function AuthPanel({
             {createAccountLink && (
                 <Row 
                     className="text-center flex-none mx-auto text-sm items-center text-muted-foreground gap-1"
-                    accessibilityRole="text"
-                    accessibilityLabel={`${t('splash_page_login2')} ${t('splash_page_new_account')}`}
                 >
                     <Text 
                         className="text-muted-foreground"
@@ -78,7 +76,7 @@ export default function AuthPanel({
             {showSeparator && (
                 <View 
                     className="flex-row items-center justify-center w-full mt-px"
-                    accessibilityRole="text"
+                    accessibilityRole="separator"
                     accessibilityLabel={t('splash_page_login3')}
                 >
                     <View className="flex-col rounded overflow-hidden h-0.5 flex-1 w-full">

@@ -86,9 +86,7 @@ function PageContent(props) {
                             </Link>
                         </Row>
                     </CardFooter>
-                </Card>
-
-               
+                </Card>            
             </AnimatedView>
         </View>
     )
