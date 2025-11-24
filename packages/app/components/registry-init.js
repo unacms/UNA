@@ -1,4 +1,4 @@
-import { registerComponent, isInited } from 'app/components/registry';
+import { registerComponent, isInited, setEnsureComponentResolver } from 'app/components/registry';
 
 import { componentsMap as FormFields } from 'app/components/form-fields/_map';
 import { componentsMap as Elements  } from 'app/components/elements/_map';
@@ -11,66 +11,44 @@ import { componentsMap as ContentList } from "app/components/units/content-list/
 import { componentsMap as ProfileList} from "app/components/units/profile-list/_map";
 import { skeletonsMap as Skeletons} from 'app/components/skeletons/_map'
 
-export function registerAll() {
-    if (!isInited()){
-        for (const [name, Component] of Object.entries(FormFields)) {
-            if (Component) {
-                registerComponent('form-field', name, Component);
-            }
-        }
-        for (const [name, Component] of Object.entries(Elements)) {
-            if (Component) {
-                registerComponent('element', name, Component);
-            }
-        }
+const componentMaps = {
+    'form-field': FormFields,
+    element: Elements,
+    molecule: Molecules,
+    form: Forms,
+    layout: Layouts,
+    'menu-item': MenuItems,
+    unit: Units,
+    'content-list': ContentList,
+    'profile-list': ProfileList,
+    skeleton: Skeletons,
+};
 
-        for (const [name, Component] of Object.entries(Molecules)) {
-            if (Component) {
-                registerComponent('molecule', name, Component);
-            }
-        }
-
-        for (const [name, Component] of Object.entries(Forms)) {
-            if (Component) {
-                registerComponent('form', name, Component);
-            }
-        }
-
-        for (const [name, Component] of Object.entries(Layouts)) {
-            if (Component) {
-                registerComponent('layout', name, Component);
-            }
-        }
-
-        for (const [name, Component] of Object.entries(MenuItems)) {
-            if (Component) {
-                registerComponent('menu-item', name, Component);
-            }
-        }
-
-        for (const [name, Component] of Object.entries(Units)) {
-            if (Component) {
-                registerComponent('unit', name, Component);
-            }
-        }
-
-        for (const [name, Component] of Object.entries(ContentList)) {
-            if (Component) {
-                registerComponent('content-list', name, Component);
-            }
-        }
-
-        for (const [name, Component] of Object.entries(ProfileList)) {
-            if (Component) {
-                registerComponent('profile-list', name, Component);
-            }
-        }
-
-        for (const [name, Component] of Object.entries(Skeletons)) {
-            if (Component) {
-                registerComponent('skeleton', name, Component);
-            }
+function registerMap(type, map) {
+    for (const [name, Component] of Object.entries(map)) {
+        if (Component) {
+            registerComponent(type, name, Component);
         }
     }
 }
+
+export function registerAll() {
+    if (isInited()) {
+        return;
+    }
+    for (const [type, map] of Object.entries(componentMaps)) {
+        registerMap(type, map);
+    }
+}
+
+function ensureComponent(type, name) {
+    const map = componentMaps[type];
+    if (!map || !map[name]) {
+        return null;
+    }
+    registerComponent(type, name, map[name]);
+    return map[name];
+}
+
+setEnsureComponentResolver(ensureComponent);
 

@@ -14,7 +14,7 @@ import RedirectElement from 'app/components/elements/redirect'
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
-import { useWindowDimensions } from 'react-native';
+import { useWindowDimensions, Platform } from 'react-native';
 import { useSetWindowSize } from 'app/context/measure';
 import semver from 'semver';
 import { useTranslation } from 'react-i18next';
@@ -34,7 +34,9 @@ function WindowSizeSync() {
 
 export default function Layouts({ path, data, uri, url }) {
 
-    registerAll();
+    if (Platform.OS !== 'web') {
+        registerAll();
+    }
 
     const { currentUser } = useCurrentUser();
 
