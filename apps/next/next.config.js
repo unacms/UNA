@@ -30,12 +30,11 @@ const nextConfig = {
     /*experimental: {
       ppr: true,
     },*/
-    experimental: {
-      staleTimes: {
-        dynamic: 0,/* default 30, set to 0 to disable serverside case */
-        static: 180,
-      },
-    },
+  /*experimental: {
+    forceSwcTransforms: true,
+    // scrollRestoration: true,
+    swcPlugins: [[require.resolve('./plugins/swc_plugin_reanimated.wasm')]],
+  },*/
   // reanimated (and thus, Moti) doesn't work with strict mode currently...
   // https://github.com/nandorojo/moti/issues/224
   // https://github.com/necolas/react-native-web/pull/2330
@@ -45,11 +44,6 @@ const nextConfig = {
   poweredByHeader: false,
   // Enable source maps for production to help with debugging and Lighthouse insights
   productionBrowserSourceMaps: true,
-  /*experimental: {
-    forceSwcTransforms: true,
-    // scrollRestoration: true,
-    swcPlugins: [[require.resolve('./plugins/swc_plugin_reanimated.wasm')]],
-  },*/
   transpilePackages: [
     
     'react-native',
