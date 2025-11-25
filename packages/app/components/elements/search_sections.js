@@ -22,7 +22,7 @@ export default function ElementSearchSections(props) {
 
                 return (
                     <View key={item.section}>
-                        <Row className='items-center justify-between px-2 py-1.5 mb-0.5'>
+                        <Row className='items-center justify-between p-2 mb-0.5'>
                             <Text className=" text-base font-semibold tracking-tight text-neutral-600 dark:text-neutral-400 ">{t(item.section_name)}</Text>
                             <Link href={`/search-keyword?keyword=test&section=${item.section}`}>
                                 <Button variant='link' size='sm' title={t('View all')} />
