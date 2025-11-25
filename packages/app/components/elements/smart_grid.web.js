@@ -7,7 +7,7 @@ import { useState, useEffect, useMemo, memo } from 'react';
 import { Button, Modal } from "app/design/controls";
 import { fetcher } from 'app/lib/fetcher';
 import Form from 'app/components/elements/form';
-import Map from 'app/components/elements/map';
+//import Map from 'app/components/elements/map';
 import { appSetting } from 'app/lib/util'
 import { WidthProvider, Responsive } from "react-grid-layout";
 
