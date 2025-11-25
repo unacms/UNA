@@ -402,6 +402,8 @@ const TabSceneMainContent = ({
         timestamp
     ]
 
+    console.log("qKey", qKey)
+
     const {
         data: pagesData,
         fetchNextPage,
@@ -464,7 +466,7 @@ const TabSceneMainContent = ({
     }, [])
     
     useEffect(() => {
-        //refetchRef.current.skipToast = true
+        refetchRef.current.skipToast = true
     }, [qKey])
     
 
@@ -629,7 +631,8 @@ const TabScene = ({
         )
     }, [pageRoute?.pageData?.uri, layoutCols])
 
-    const panelLayoutKey = `${layoutCols}-${pageData?.uri || 'default'}`
+
+    const panelLayoutKey = `${layoutCols}-${pageData?.menu?.object || pageData?.uri || 'default'}`
 
     const { cells = {} } = cellsCustomConfig || {}
 
