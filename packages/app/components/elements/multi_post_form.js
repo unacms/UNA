@@ -50,7 +50,7 @@ export default function MultiPostForm({ data }) {
     return (
 
         <CardList className="flex-row gap-2 lg:gap-3">
-            <Profile {...profileData} displaySize="lg" displayType="unit_wo_info" />
+            <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
               
                     <Pressable 
                         onPress={getFirstForm}
