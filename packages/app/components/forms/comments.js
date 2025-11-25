@@ -223,7 +223,7 @@ export default function FormComments(props) {
                             height: isWeb ? `${editorHeight}px` : editorHeight,
                             ...(isWeb && { transition: 'height 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), padding-bottom 0.1s cubic-bezier(0.25, 0.1, 0.25, 1)' })
                         }}
-                    >
+                   >
                         {getFormFieldByData(
                             props.data.inputs['action'],
                             props.handleSubmit,
@@ -272,9 +272,9 @@ export default function FormComments(props) {
                     <View className={attachmentButtonContainerClasses.join(' ')}>
                         <FileButton field_name='cmt_image' size={isWeb ? 'sm' : 'xs'} icon="Image" source='library' variant='text' />
                         {!isWeb && (
-                            <View className="h-full p-1 flex items-center justify-center">
-                                <FileButton field_name='cmt_image' size='xs' icon="Camera" source='camera' variant='text' />
-                            </View>
+                                    <View className="h-full p-1 flex items-center justify-center">
+                                        <FileButton field_name='cmt_image' size='xs' icon="Camera" source='camera' variant='text' />
+                                    </View>
                         )}
                     </View>
                     {(!!hasText || !!imagesValue) && (

@@ -1,9 +1,5 @@
 import { useCallback, useState, useEffect, useRef, useMemo, memo, useReducer } from 'react'
 import { Text } from 'app/design/typography'
-import Animated, {
-    useSharedValue,
-    useAnimatedStyle,
-} from 'react-native-reanimated'
 import { View, ViewRef, Row, Pressable } from 'app/design/view'
 import UniList from 'app/ui/atoms/unilist'
 import {
@@ -1089,9 +1085,9 @@ const HeaderContainer = ({
     isHideCover,
 }) => {
     const isDesktop = useIsDesktop()
-    const scrollValue = useSharedValue(isCoverDisabled ? 0 : 1)
-    const hideDefaultHeaderFrom = useSharedValue(100)
-    const coverHeight = useSharedValue(0)
+    const [isScrolled, setIsScrolled] = useState(isCoverDisabled)
+    const [coverHeight, setCoverHeight] = useState(0)
+    const hideDefaultHeaderFrom = 100
 
     const uri = pageData?.uri
     const coverMode = appSetting(
@@ -1104,10 +1100,9 @@ const HeaderContainer = ({
     const handleScroll = useCallback(() => {
         requestAnimationFrame(() => {
             const currentScrollY = window.scrollY
-            scrollValue.value =
-                currentScrollY > hideDefaultHeaderFrom.value ? 0 : 1
+            setIsScrolled(currentScrollY > hideDefaultHeaderFrom)
         })
-    }, [scrollValue])
+    }, [])
 
     useEffect(() => {
         if (!appSetting('cover', 'fixed') && isCover) {
@@ -1119,55 +1114,43 @@ const HeaderContainer = ({
                 window.removeEventListener('scroll', handleScroll)
             }
         }
-    }, [handleScroll])
-
-    const animatedStyleHeaderCommon = useAnimatedStyle(() => {
-        return {
-            position: scrollValue.value == 1 || false ? 'relative' : 'fixed',
-            marginBottom:
-                scrollValue.value == 1 || false
-                    ? '0px'
-                    : hideDefaultHeaderFrom.value + 'px',
-        }
-    }, [scrollValue, isDesktop, isCoverDisabled])
-
-    const animatedStyleHeaderCover = useAnimatedStyle(() => {
-        return {
-            display: scrollValue.value == 1 ? 'flex' : 'none',
-        }
-    }, [scrollValue])
-
-    const animatedStyleHeaderCoverSmall = useAnimatedStyle(() => {
-        return {
-            display: scrollValue.value == 1 ? 'none' : 'flex', // display: scrollValue.value == 1 || (isCoverDisabled && !isDesktop) ? 'none' : 'flex',
-        }
-    }, [scrollValue])
-
-    const animatedStyleHeaderSpacer = useAnimatedStyle(() => {
-        return {
-            display: scrollValue.value == 1 || false ? 'none' : 'flex',
-            height:
-                scrollValue.value == 1 || false
-                    ? '0px'
-                    : coverHeight.value + 'px',
-        }
-    }, [scrollValue, coverHeight])
+    }, [handleScroll, isCover])
 
     const onCoverLayout = useCallback((e) => {
-        coverHeight.value = e.nativeEvent.layout.height || 0
+        setCoverHeight(e.nativeEvent.layout.height || 0)
     }, [])
+
+    const showLargeCover = !isScrolled
+    const showSmallCover = isScrolled
 
     return (
         <View className="z-40">
-            <Animated.View style={[{}, animatedStyleHeaderSpacer]} />
-            <Animated.View
-                style={[{ width: '100%' }, animatedStyleHeaderCommon]}
+            <View 
+                style={{ 
+                    display: showLargeCover ? 'none' : 'flex',
+                    height: showLargeCover ? '0px' : `${coverHeight}px`,
+                    transition: 'height 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                }} 
+            />
+            <View
+                style={{ 
+                    width: '100%',
+                    position: showLargeCover ? 'relative' : 'fixed',
+                    marginBottom: showLargeCover ? '0px' : `${hideDefaultHeaderFrom}px`,
+                    transition: 'margin-bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                }}
             >
                 <View
                     className={`${conductorTheme.cover_base} cover-1`}
                     onLayout={onCoverLayout}
                 >
-                    <Animated.View style={[{}, animatedStyleHeaderCover]}>
+                    <View 
+                        style={{ 
+                            display: showLargeCover ? 'flex' : 'none',
+                            transition: 'opacity 0.3s ease-out',
+                            opacity: showLargeCover ? 1 : 0,
+                        }}
+                    >
                         <ViewRef className={conductorTheme.cover_content}>
                             {isCover && !isHideCover && (
                                 <View className="w-full ">
@@ -1180,8 +1163,14 @@ const HeaderContainer = ({
                                 </View>
                             )}
                         </ViewRef>
-                    </Animated.View>
-                    <Animated.View style={[{}, animatedStyleHeaderCoverSmall]}>
+                    </View>
+                    <View 
+                        style={{ 
+                            display: showSmallCover ? 'flex' : 'none',
+                            transition: 'opacity 0.3s ease-out',
+                            opacity: showSmallCover ? 1 : 0,
+                        }}
+                    >
                         <ViewRef
                             className={
                                 conductorTheme.cover_small + '  header-fixed 66'
@@ -1196,10 +1185,10 @@ const HeaderContainer = ({
                                 </View>
                             )}
                         </ViewRef>
-                    </Animated.View>
+                    </View>
                     <View className="w-full header-fixed 77">{tabBarObj}</View>
                 </View>
-            </Animated.View>
+            </View>
         </View>
     )
 }
