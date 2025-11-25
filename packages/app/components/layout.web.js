@@ -258,7 +258,7 @@ export default function Layout(props) {
             el.style.bottom = '';
             if (container.scrollHeight <= elH || y < stickyStart ) return;//|| stickyStart == 0
 
-            if (y > stickyEnd + HYST) {
+            if (y > stickyEnd + HYST && window.scrollY> 0) {
                 // прижимаем к низу
                 el.style.position = 'absolute';
                 el.style.bottom = '0';

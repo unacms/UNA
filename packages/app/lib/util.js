@@ -1015,6 +1015,9 @@ function urltoFile(url, defaultFilename = 'file', defaultMimeType = 'application
                             const ext = mimeType.split('/')[1] || 'bin';
                                 filename = `${rawFilename || defaultFilename}.${ext}`;
                         }
+                        else{
+                             filename = `${rawFilename || defaultFilename}.svg`;
+                        }
                     }
                 }
                 return new File([blob], filename, { type: mimeType });
