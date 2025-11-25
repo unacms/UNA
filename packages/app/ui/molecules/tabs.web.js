@@ -56,11 +56,8 @@ export default function Tabs({ tabs, activeTab, fullWidth = false, size, content
             onValueChange={setCurrentTab}
             className={tabsTheme['u-controls-tabs-container']}
         >
-            <View className="relative overflow-hidden" ref={headerWrapperRef}>
-            <View className={`${tabsTheme['u-controls-tabs-header-item-active-indicator']}${sizeCfg.indicator || ''} ${ready ? 'web:transition-all web:duration-200 web:ease-out px-2' : ''}`}
-                    style={{ left: `${indicatorStyle.left}px`, width: `${indicatorStyle.width}px` }}>
-                        <View className={`${tabsTheme['u-controls-tabs-header-item-active-indicator-inner']}${sizeCfg.indicator_inner || ''}`} />
-                </View>
+            <View className="relative" ref={headerWrapperRef}>
+            
                 <TabsPrimitive.List ref={listRef} className={`${fullWidth ? tabsTheme['u-controls-tabs-header-full-width'] : tabsTheme['u-controls-tabs-header']}${sizeCfg.header || ''}`}>
                     {tabs.map((tab) => (
                         <TabsPrimitive.Trigger
@@ -75,6 +72,10 @@ export default function Tabs({ tabs, activeTab, fullWidth = false, size, content
                         </TabsPrimitive.Trigger>
                     ))}
                 </TabsPrimitive.List>
+                <View className={`${tabsTheme['u-controls-tabs-header-item-active-indicator']}${sizeCfg.indicator || ''} ${ready ? 'web:transition-all web:duration-200 web:ease-out' : ''}`}
+                    style={{ left: `${indicatorStyle.left}px`, width: `${indicatorStyle.width}px` }}>
+                        <View className={`${tabsTheme['u-controls-tabs-header-item-active-indicator-inner']}${sizeCfg.indicator_inner || ''}`} />
+                </View>
                
             </View>
 
