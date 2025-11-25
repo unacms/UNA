@@ -99,7 +99,7 @@ export default function Tabs({
             onValueChange={handleTabChange}
             className={tabsTheme['u-controls-tabs-container']}
         >
-            <View className="relative overflow-hidden">
+            <View className="relative">
                 {/* Animated indicator */}
                 <Animated.View 
                     style={[indicatorStyle]}

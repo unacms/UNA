@@ -563,7 +563,7 @@ export const Author = memo(({ data, url, t }) => {
                             <Link
                                 href={url}
                                 emulate={false}
-                                size="sm"
+                                size="xs"
                                 variant="plainghost"
                                 className="mb-auto"
                                

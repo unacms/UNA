@@ -284,14 +284,13 @@ export function ReputationLeaderboard({ data }) {
             {!!searchForm && <View className='mb-8 max-w-xl mx-auto w-full'>
                 {searchForm}
             </View>}
-            <View className={`items-center w-full flex-col ${cd('gap-sm')} ${cd('px-sm')} max-w-xl mx-auto`}>
+            <View className="items-center w-full flex-col gap-3 px-2 py-3 max-w-xl mx-auto">
                 {profilesList.map((item, index) => (
                     <Row
-                        className={`w-full flex-wrap justify-between items-center ${index != 0 && 'mt-3'
-                            }`}
+                        className="w-full flex-wrap justify-between items-center "
                         key={index}
                     >
-                        <Row className={`items-center ${cd('gap-sm')}`}>
+                        <Row className="items-center gap-2">
                             {item.position > 0 && <View className="w-7 h-7 items-center justify-center relative">
                                 {item.position <= 3 ? (
                                     <>
@@ -326,7 +325,7 @@ export function ReputationLeaderboard({ data }) {
                             <Profile
                                 {...item.unit}
                                 displayType="unit"
-                                displaySize="base"
+                                displaySize="sm"
                             />
                         </Row>
                         <Text className=" text-base font-bold text-muted-foreground">
