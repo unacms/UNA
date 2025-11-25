@@ -2,6 +2,7 @@ import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
 import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
+import ProfileHoverCard from 'app/ui/molecules/profile-hover-card'
 import {
     memo,
     useState,
@@ -545,19 +546,21 @@ export const Author = memo(({ data, url, t }) => {
     return (
        <Row className="w-full justify-between items-top">
             <View className='flex-auto'>
-                <Profile
-                {...dataIcon}
-                displayType="unit"
-                displaySize="base"
-                showInfo={
-                    <Row className="items-center flex-wrap"> 
-                        <VisibilityInfo data={data} />
-                        <ItemInfo data={data} t={t} />                    
-                    </Row>
-                }
-                showInfo2={<Badges badges={data.author_badges} size="xs" />}
-                showActions={ActionsElements}
-            /></View>
+                <ProfileHoverCard profileData={dataIcon}>
+                    <Profile
+                    {...dataIcon}
+                    displayType="unit"
+                    displaySize="base"
+                    showInfo={
+                        <Row className="items-center flex-wrap"> 
+                            <VisibilityInfo data={data} />
+                            <ItemInfo data={data} t={t} />                    
+                        </Row>
+                    }
+                    showInfo2={<Badges badges={data.author_badges} size="xs" />}
+                    showActions={ActionsElements}
+                /></ProfileHoverCard>
+            </View>
             
                         {isWeb ? (
                             <Link
@@ -602,11 +605,13 @@ export function SmallUnit({ data }) {
             <Link href={url} className="w-full" emulate={true}>
                 <Card className={' w-full tl-' + data.id}>
                     <View className=" mr-2 xl:mr-3 rounded-full flex-none bg-secondary-500/10">
-                        <Profile
-                            {...data.author_data}
-                            displayType="unit_wo_info"
-                            displaySize="base"
-                        />
+                        <ProfileHoverCard profileData={data.author_data}>
+                            <Profile
+                                {...data.author_data}
+                                displayType="unit_wo_info"
+                                displaySize="base"
+                            />
+                        </ProfileHoverCard>
                     </View>
                     <View className="flex-auto flex-col my-auto">
                         <Row className={`flex-row ${cd('gap-sm')}`}>
