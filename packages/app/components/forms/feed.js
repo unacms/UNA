@@ -14,7 +14,6 @@ import { useTranslation } from 'react-i18next'
 import { stripTags } from 'app/lib/util'
 import { Keyboard } from 'react-native'
 import { useFormContext } from 'react-hook-form'
-import Reanimated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from 'react-native-reanimated';
 import { getEditorHeight } from 'app/lib/form-helpers';
 import { PollButton, LabelButton, FileButton } from 'app/lib/form-helpers'
 import { useBreakpoint, useWindowHeight } from 'app/context/measure';
@@ -92,22 +91,13 @@ export default function FormFeed(props) {
     const screenHeight = useWindowHeight();
     const baseEditorHeight = 120; // Initial height for the post input
     const editorMaxHeight = screenHeight / 2; // Max height it can grow to
-    const animatedEditorHeight = useSharedValue(baseEditorHeight);
+    const [editorHeight, setEditorHeight] = useState(baseEditorHeight);
     const rawEditorText = formContext.watch('text');
     const hasText = useMemo(() => stripTags(rawEditorText || '').trim().length > 0, [rawEditorText]);
 
-    const editorWrapperAnimatedStyle = useAnimatedStyle(() => {
-        return {
-            height: `${animatedEditorHeight.value}`,
-        };
-    }, [animatedEditorHeight]);
-
-    const updateAnimatedHeight = (newHeight) => {
-        if (Math.round(animatedEditorHeight.value) !== Math.round(newHeight)) {
-            animatedEditorHeight.value = withTiming(newHeight, {
-                duration: 100,
-                easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-            });
+    const updateEditorHeight = (newHeight) => {
+        if (Math.round(editorHeight) !== Math.round(newHeight)) {
+            setEditorHeight(newHeight);
         }
     };
 
@@ -138,7 +128,7 @@ export default function FormFeed(props) {
             editorMaxHeight
         );
         const finalHeight = Math.max(newCalculatedHeight, baseEditorHeight);
-        updateAnimatedHeight(finalHeight);
+        updateEditorHeight(finalHeight);
     }
 
     useEffect(() => {
@@ -147,11 +137,11 @@ export default function FormFeed(props) {
         const minVisualHeightWhenTyping = 50; // Synchronized with checkEditorHeight logic
 
         if (actualHasText) {
-            updateAnimatedHeight(Math.max(animatedEditorHeight.value, minVisualHeightWhenTyping));
+            updateEditorHeight(Math.max(editorHeight, minVisualHeightWhenTyping));
         } else {
-            updateAnimatedHeight(baseEditorHeight);
+            updateEditorHeight(baseEditorHeight);
         }
-    }, [rawEditorText, baseEditorHeight, animatedEditorHeight]);
+    }, [rawEditorText, baseEditorHeight]);
 
     function onClose() {
         setShowImage(false)
@@ -233,7 +223,13 @@ export default function FormFeed(props) {
         {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
         <View className="justify-between flex-col flex-auto ">
             <View className="w-full flex-1 justify-start px-3 ">
-                <Reanimated.View style={editorWrapperAnimatedStyle} className="flex-auto">
+                <View 
+                    className="flex-auto"
+                    style={{ 
+                        height: editorHeight,
+                        ...(isWeb && { transition: 'height 0.1s cubic-bezier(0.25, 0.1, 0.25, 1)' })
+                    }}
+                >
                     {getFormFieldByData(
                         props.data.inputs['text'],
                         props.handleSubmit,
@@ -251,7 +247,7 @@ export default function FormFeed(props) {
                             onHeight: checkEditorHeight,
                         }
                     )}
-                </Reanimated.View>
+                </View>
                 <View >
                     <Row className='flex-wrap w-full'>
                         {

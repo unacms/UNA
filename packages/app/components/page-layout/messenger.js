@@ -1,11 +1,10 @@
 import { BlockDataByName } from 'app/lib/util'
 import Messenger from 'app/components/elements/messenger';
-import { View } from 'app/design/view';
+import { View, ScrollView } from 'app/design/view';
 import { getPageWidth } from 'app/lib/util'
 import ScrollList from 'app/ui/molecules/scroll_list'
 import { useRef } from 'react';
 import MenuFooter from 'app/components/nav/menu-footer';
-import Animated from 'react-native-reanimated';
 import Cell from 'app/components/cell';
 
 export default function PageLayout(props) {
@@ -17,7 +16,7 @@ export default function PageLayout(props) {
         const cells = Object.keys(props.data.elements).map((key) => (
             <Cell key={key} uri={props.data?.uri} url={props.data.url} blocks={props.data.elements[key]} />
         ));
-        const content = <Animated.ScrollView ref={refer} className={getPageWidth(props.uri, props.data?.config) + ' mx-auto w-full '} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
+        const content = <ScrollView ref={refer} className={getPageWidth(props.uri, props.data?.config) + ' mx-auto w-full '} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
                 <View className='p-3 sm:p-4  web:duration-300 w-full '>
                     {cells}
                 </View>
@@ -28,7 +27,7 @@ export default function PageLayout(props) {
                             itemClassName="text-sm p-1"
                             
                         />
-            </Animated.ScrollView>
+            </ScrollView>
         return <ScrollList
             refer={refer}
             content={content}

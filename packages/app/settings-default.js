@@ -1030,7 +1030,7 @@ export const settingsDefault = {
             primaryBg: 'rgba(37,99,235,0.1)',
         },
         dropdown: {
-            cnt: ' rounded-2xl overflow-hidden shadow-xl border border-border p-2 bg-popover web:bg-popover/80 backdrop-blur-xl z-50  ',
+            cnt: ' rounded-2xl overflow-hidden shadow-xl border border-border p-2 bg-popover web:bg-popover/90 backdrop-blur-xl z-50  ',
         },
         conductor: {
             menu: ' w-full items-left justify-center ',
@@ -1449,7 +1449,7 @@ export const settingsDefault = {
             'u-block-icon': 'text-card-foreground',
             'u-block-name': 'flex flex-col flex-auto gap-y-2 gap-x-4',
             'u-block-title':
-                'text-foreground leading-none text-xl lg:text-2xl font-semibold leading-none tracking-tight',
+                'text-foreground leading-none text-xl font-semibold leading-none tracking-tight',
             'u-block-description': 'text-muted-foreground text-sm font-medium leading-6',
             'u-block-content': 'text-card-foreground ',  
             'u-block-footer':

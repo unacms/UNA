@@ -8,11 +8,12 @@ import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { useTranslation } from 'react-i18next'
 import Browse from 'app/components/elements/browse'
 import Link from 'app/ui/atoms/link'
-import { useIsDesktop } from 'app/context/measure';
+import { useIsDesktop, useWindowHeight } from 'app/context/measure';
 
 export default function ({ buttonProps, children, tooltip, fullWidth, uri }) {
     const { currentUser, setCurrentUser } = useCurrentUser()
     const isDesktop = useIsDesktop();
+    const windowHeight = useWindowHeight();
     const [ntfsOpen, setNtfsOpen] = useState(false)
     const notifCount = currentUser.notifications
     const { t } = useTranslation()
@@ -23,17 +24,20 @@ export default function ({ buttonProps, children, tooltip, fullWidth, uri }) {
         unit: 'notifications',
     }
 
+    // Calculate dynamic height: window height minus header (64px), padding (32px), and some bottom margin (100px)
+    const notificationHeight = windowHeight - 196;
+
     const memoizedBrowse = useMemo(() => {
         return (
             <Browse
                 key={notifCount}
-                only_one_page={true}
+                only_one_page={false}
                 cachePrefix={Date.now()}
-                height={400}
+                height={notificationHeight}
                 data={data}
             />
         )
-    }, [notifCount])
+    }, [notifCount, notificationHeight])
 
     const defaultButtonProps = {
         variant: isDesktop ? 'secondary' : 'text',

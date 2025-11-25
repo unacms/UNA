@@ -102,12 +102,18 @@ export default function UnitComments(props) {
         const effectiveLevel = Math.min(level, maxLevel)
         for (let i = 0; i < effectiveLevel; i++) {
             cellsArray.push(
-                <View key={`sp-${level}-${i}`} className="w-10">
+                <View key={`sp-${level}-${i}`} className="w-8">
                     {lvls[i + 1] && (
-                        <View className="ml-4 w-0.5 flex-auto bg-muted" />
+                        <View className="mx-auto w-0.5 gap-0.5 -my-2 flex-auto">
+                            <View className="mx-auto w-0.5 flex-auto bg-muted rounded-b-full" />
+                            <View className="mx-auto w-0.5 h-0.5 flex-none bg-muted rounded-full" />
+                            <View className="mx-auto w-0.5 h-0.5 flex-none bg-muted rounded-full" />
+                            <View className="mx-auto w-0.5 h-0.5 flex-none bg-muted rounded-full" />
+
+                        </View>
                     )}
                     {i === level - 1 && (
-                        <View className=" ml-4 h-8 w-8 border-muted border-l-2 border-b-2 absolute  rounded-bl-3xl flex-auto" />
+                        <View className=" ml-4 h-8 w-5 border-muted border-l-2 border-b-2 absolute -start-px -top-1 rounded-bl-xl flex-auto" />
                     )}
                 </View>
             )
@@ -155,22 +161,22 @@ export default function UnitComments(props) {
 
     return (
         <Animated.View style={isSelected ? animatedStyle : {}}>
-            <Row className={`${cd('gap-sm')}`}>
+            <Row className="gap-1">
                 {cells}
-                <View className="w-9 z-50 flex-0 mt-3">
+                <View className="w-8 z-50 flex-0 mt-3">
                     <Profile
                         {...data.author_data}
                         displayType="unit_wo_info"
-                        displaySize="sm"
+                        displaySize="xs"
                         showInfo="false"
                     />
 
                     {items.length != 0 && view != 'flat' && (
-                        <View className="w-0.5 ml-4 top-0.5 flex-auto bg-muted"></View>
+                        <View className="w-0.5 mx-auto top-0.5 -mb-2 rounded-full flex-auto bg-muted"></View>
                     )}
                 </View>
                 <View className="flex-1 flex-col gap-0.5 mt-3">
-                    <View className="bg-muted/60  rounded-xl px-2.5 py-1.5 ">
+                    <View className="bg-muted/60 rounded-xl px-2 py-1.5 ">
                         <View className="flex-row items-center justify-between gap-1 ">
                             <Row>
                                 <Profile

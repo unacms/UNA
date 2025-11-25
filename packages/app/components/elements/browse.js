@@ -310,7 +310,7 @@ export default function Browse(props) {
         mode: 'simple', 
         data: dataItems,
         unit: data.unit,
-        height: isWeb ? (props?.isInPanel ? windowHeight - 64 : undefined) : props?.height,
+        height: isWeb ? (props?.isInPanel ? windowHeight - 64 : props?.height) : props?.height,
         url: props?.url,
         contentContainerStyle: props?.contentContainerStyle,
         isInPanel: props?.isInPanel,
@@ -366,8 +366,8 @@ export default function Browse(props) {
             <View className="w-full" ></View>
             <View className={`w-full ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''}`} style={isOneLine ? {} : styles}>
                 {isShowTitleInside && (
-                    <Row className={`items-center justify-between ${props.showBg ? '' : 'px-2 '}`}>
-                        <Text className=" text-card-foreground text-xl font-bold leading-none lg:leading-none tracking-tight ">
+                    <Row className={`items-center justify-between ${props.showBg ? '' : 'p-2 '}`}>
+                        <Text className=" text-secondary-foreground text-base font-semibold leading-none lg:leading-none tracking-tight ">
                             {t(props.block.title)}
                         </Text>
                         {!!props.addLink && (

@@ -50,7 +50,7 @@ export default function MultiPostForm({ data }) {
     return (
 
         <CardList className="flex-row gap-2 lg:gap-3">
-            <Profile {...profileData} displaySize="lg" displayType="unit_wo_info" />
+            <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
               
                     <Pressable 
                         onPress={getFirstForm}
@@ -62,7 +62,7 @@ export default function MultiPostForm({ data }) {
             <FormModal key={pageData?.ts} pageData={pageData} setPageData={setPageData} />
             {menu_add_items.length > 0 && <Row className={` ${cd('gap-sm')} flex-none`}>
                 {menu_add_items.map((item, index) => (
-                    <Button key={item.name} size="lg" fullWidth variant="secondary" rounded iconOnly onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon}  />
+                    <Button key={item.name} size="base" fullWidth variant="secondary" rounded iconOnly onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon}  />
                 ))}
             </Row>}
             

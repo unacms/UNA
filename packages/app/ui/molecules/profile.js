@@ -64,7 +64,7 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
 function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, info2 }) {
     return (
        
-    <View className="gap-1 ">
+    <View className="gap-0.5 ">
 
             {bShowLinks ? (
                 <Row className="items-center">
@@ -132,9 +132,9 @@ function AtomProfile_(oProps) {
             sSizeFontLetter: ' text-xs font-semibold',
         },
         xs: {
-            sSize: 'w-7 h-7',
-            iSizeWidth: 28,
-            iSizeHeight: 28,
+            sSize: 'w-8 h-8',
+            iSizeWidth: 32,
+            iSizeHeight: 32,
             sSizeFont: 'text-xs leading-5', 
             sSizeFontLetter: ' text-sm font-semibold',
         },
