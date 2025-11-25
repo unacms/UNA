@@ -1,13 +1,12 @@
 import React, { lazy, Suspense } from 'react';
 import { appSetting } from 'app/lib/util'
-//"mapbox-gl": "^3.16.0",
-//import 'mapbox-gl/dist/mapbox-gl.css';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import { View } from 'app/design/view'
 
-//const Map = lazy(() => import('react-map-gl/mapbox'));
+const Map = lazy(() => import('react-map-gl/mapbox'));
 
 export default function ElementMap({ data, height }) {
-    /*return <View className='w-full aspect-square'  >
+    return <View className='w-full aspect-square'  >
         <Suspense fallback={<View></View>}>
             <Map
                 style={{ flex: 1 }}
@@ -22,5 +21,5 @@ export default function ElementMap({ data, height }) {
                 mapStyle="mapbox://styles/mapbox/streets-v9"
             />
         </Suspense>
-    </View>*/
+    </View>
 }
