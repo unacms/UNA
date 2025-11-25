@@ -1,65 +1,76 @@
-import { registerComponent, isInited, setEnsureComponentResolver } from 'app/components/registry';
+import { registerComponent, isInited } from 'app/components/registry';
 
-const componentMapLoaders = {
-    'form-field': () => require('app/components/form-fields/_map').componentsMap,
-    element: () => require('app/components/elements/_map').componentsMap,
-    molecule: () => require('app/ui/molecules/_map').componentsMap,
-    form: () => require('app/components/forms/_map').componentsMap,
-    layout: () => require('app/components/page-layout/_map').componentsMap,
-    'menu-item': () => require('app/components/menu-items/_map').componentsMap,
-    unit: () => require('app/components/units/_map').componentsMap,
-    'content-list': () => require('app/components/units/content-list/_map').componentsMap,
-    'profile-list': () => require('app/components/units/profile-list/_map').componentsMap,
-    skeleton: () => require('app/components/skeletons/_map').skeletonsMap,
-};
+import { componentsMap as FormFields } from 'app/components/form-fields/_map';
+import { componentsMap as Elements  } from 'app/components/elements/_map';
+import { componentsMap as Molecules} from 'app/ui/molecules/_map'
+import { componentsMap as Forms } from 'app/components/forms/_map';
+import { componentsMap as Layouts } from 'app/components/page-layout/_map';
+import { componentsMap as MenuItems } from 'app/components/menu-items/_map';
+import { componentsMap as Units} from 'app/components/units/_map';
+import { componentsMap as ContentList } from "app/components/units/content-list/_map";
+import { componentsMap as ProfileList} from "app/components/units/profile-list/_map";
+import { skeletonsMap as Skeletons} from 'app/components/skeletons/_map'
 
-const componentMapsCache = {};
+export function registerAll() {
+    if (!isInited()){
+        for (const [name, Component] of Object.entries(FormFields)) {
+            if (Component) {
+                registerComponent('form-field', name, Component);
+            }
+        }
+        for (const [name, Component] of Object.entries(Elements)) {
+            if (Component) {
+                registerComponent('element', name, Component);
+            }
+        }
 
-function getComponentMap(type) {
-    if (componentMapsCache[type]) {
-        return componentMapsCache[type];
-    }
-    const loader = componentMapLoaders[type];
-    if (!loader) {
-        return null;
-    }
-    const map = loader();
-    componentMapsCache[type] = map;
-    return map;
-}
+        for (const [name, Component] of Object.entries(Molecules)) {
+            if (Component) {
+                registerComponent('molecule', name, Component);
+            }
+        }
 
-function registerMap(type) {
-    const map = getComponentMap(type);
-    if (!map) {
-        return;
-    }
-    for (const [name, Component] of Object.entries(map)) {
-        if (Component) {
-            registerComponent(type, name, Component);
+        for (const [name, Component] of Object.entries(Forms)) {
+            if (Component) {
+                registerComponent('form', name, Component);
+            }
+        }
+
+        for (const [name, Component] of Object.entries(Layouts)) {
+            if (Component) {
+                registerComponent('layout', name, Component);
+            }
+        }
+
+        for (const [name, Component] of Object.entries(MenuItems)) {
+            if (Component) {
+                registerComponent('menu-item', name, Component);
+            }
+        }
+
+        for (const [name, Component] of Object.entries(Units)) {
+            if (Component) {
+                registerComponent('unit', name, Component);
+            }
+        }
+
+        for (const [name, Component] of Object.entries(ContentList)) {
+            if (Component) {
+                registerComponent('content-list', name, Component);
+            }
+        }
+
+        for (const [name, Component] of Object.entries(ProfileList)) {
+            if (Component) {
+                registerComponent('profile-list', name, Component);
+            }
+        }
+
+        for (const [name, Component] of Object.entries(Skeletons)) {
+            if (Component) {
+                registerComponent('skeleton', name, Component);
+            }
         }
     }
 }
-
-export function registerAll() {
-    if (isInited()) {
-        return;
-    }
-    for (const type of Object.keys(componentMapLoaders)) {
-        registerMap(type);
-    }
-}
-
-function ensureComponent(type, name) {
-    const map = getComponentMap(type);
-    if (!map) {
-        return null;
-    }
-    const Component = map[name];
-    if (Component) {
-        registerComponent(type, name, Component);
-    }
-    return Component;
-}
-
-setEnsureComponentResolver(ensureComponent);
 

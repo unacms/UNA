@@ -7,9 +7,9 @@ import { useState, useEffect, useMemo, memo } from 'react';
 import { Button, Modal } from "app/design/controls";
 import { fetcher } from 'app/lib/fetcher';
 import Form from 'app/components/elements/form';
-import Map from 'app/components/elements/map';
 import { appSetting } from 'app/lib/util'
 import { WidthProvider, Responsive } from "react-grid-layout";
+import { getComponent } from 'app/components/registry';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -35,6 +35,8 @@ const ResponsiveReactGridLayoutM = memo(({ data, bAllowEdit, rowHeight, breakpoi
 ));
 
 export default function (props) {
+     const Map = getComponent('element', 'map');
+
     const bAllowEdit = props.is_allowed_edit;
     const blockId = props.block_id;
     const contentId = props.content_id;

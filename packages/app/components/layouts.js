@@ -33,11 +33,8 @@ function WindowSizeSync() {
 }
 
 export default function Layouts({ path, data, uri, url }) {
-
-    if (Platform.OS !== 'web') {
-        registerAll();
-    }
-
+    registerAll();
+    
     const { currentUser } = useCurrentUser();
 
     const layout = useMemo(() => {
