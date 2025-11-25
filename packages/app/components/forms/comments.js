@@ -1,8 +1,7 @@
 import { View, Row, ScrollView } from 'app/design/view'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { getFormFieldByData, getEditorHeight } from 'app/lib/form-helpers'
 import { Platform } from 'react-native'
-import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing, SlideInLeft, SlideOutLeft } from 'react-native-reanimated'
 import { useFormContext } from 'react-hook-form'
 import { stripTags, removeEmptyTags } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
@@ -22,7 +21,7 @@ export default function FormComments(props) {
     const maxHeight = Platform.OS === 'web' ? /*screenHeight / 2*/ 160 : (screenHeight - 300) / 2 // 300 is approximate keyboard height
     const formContext = useFormContext()
 
-    const animatedEditorHeight = useSharedValue(baseHeight)
+    const [editorHeight, setEditorHeight] = useState(baseHeight)
 
     const isWeb = Platform.OS == 'web'
     const { currentUser } = useCurrentUser()
@@ -38,21 +37,9 @@ export default function FormComments(props) {
 
     const hasText = useMemo(() => stripTags(rawEditorText || '').trim().length > 0, [rawEditorText]);
 
-    const inputWrapperAnimatedStyle = useAnimatedStyle(() => {
-        return {
-            alignItems: 'center',
-            justifyContent: shouldGrowFromBottom ? 'flex-end' : 'flex-start',
-            paddingBottom: isWeb ? (maxHeight == animatedEditorHeight.value ? '40px' : '0px') : maxHeight == animatedEditorHeight.value ? 40 : 0,
-            height: isWeb ? `${animatedEditorHeight.value}px` : animatedEditorHeight.value,
-        };
-    }, [animatedEditorHeight, shouldGrowFromBottom]);
-
-    const updateAnimatedHeight = (newHeight) => {
-        if (Math.round(animatedEditorHeight.value) !== Math.round(newHeight)) {
-            animatedEditorHeight.value = withTiming(newHeight, {
-                duration: 100,
-                easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-            });
+    const updateEditorHeight = (newHeight) => {
+        if (Math.round(editorHeight) !== Math.round(newHeight)) {
+            setEditorHeight(newHeight);
         }
     };
 
@@ -73,7 +60,7 @@ export default function FormComments(props) {
             // If the reported placeholder content + its chrome fits within baseHeight, or slightly over by less than a full step,
             // force it to baseHeight. This prevents small placeholder overflows from bumping height by a full step.
             if (placeholderVisualHeight < baseHeight + growthStepAmount) {
-                updateAnimatedHeight(baseHeight);
+                updateEditorHeight(baseHeight);
                 return;
             }
             // If placeholder is unusually large, let normal logic handle it, but it will start from baseHeight.
@@ -103,7 +90,7 @@ export default function FormComments(props) {
             growthStepAmount,
             maxHeight
         );
-        updateAnimatedHeight(newCalculatedHeight);
+        updateEditorHeight(newCalculatedHeight);
     }
 
     useEffect(() => {
@@ -113,11 +100,11 @@ export default function FormComments(props) {
         const minVisualHeightWhenTyping = 80;
 
         if (actualHasText) {
-            updateAnimatedHeight(Math.max(animatedEditorHeight.value, minVisualHeightWhenTyping));
+            updateEditorHeight(Math.max(editorHeight, minVisualHeightWhenTyping));
         } else {
-            updateAnimatedHeight(baseHeight);
+            updateEditorHeight(baseHeight);
         }
-    }, [rawEditorText, baseHeight, animatedEditorHeight]);
+    }, [rawEditorText, baseHeight]);
 
     useEffect(() => {
         if (formContext.formState.isSubmitted) {
@@ -228,10 +215,15 @@ export default function FormComments(props) {
                 )}
                 <View className="flex-1">
                     <View className=" items-stretch bg-input/40 border border-input rounded-xl px-2.5 py-2" >
-                    <Animated.View 
-                   
-                     style={inputWrapperAnimatedStyle}
-                   >
+                    <View 
+                        style={{
+                            alignItems: 'center',
+                            justifyContent: shouldGrowFromBottom ? 'flex-end' : 'flex-start',
+                            paddingBottom: isWeb ? (maxHeight == editorHeight ? '40px' : '0px') : maxHeight == editorHeight ? 40 : 0,
+                            height: isWeb ? `${editorHeight}px` : editorHeight,
+                            ...(isWeb && { transition: 'height 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), padding-bottom 0.1s cubic-bezier(0.25, 0.1, 0.25, 1)' })
+                        }}
+                    >
                         {getFormFieldByData(
                             props.data.inputs['action'],
                             props.handleSubmit,
@@ -275,25 +267,14 @@ export default function FormComments(props) {
                             props.handleSubmit,
                             'custom'
                         )}
-                    </Animated.View>
+                    </View>
                     </View>
                     <View className={attachmentButtonContainerClasses.join(' ')}>
-                        {isWeb && <FileButton field_name='cmt_image' size='sm' icon="Image" source='library' variant='text' />}
+                        <FileButton field_name='cmt_image' size={isWeb ? 'sm' : 'xs'} icon="Image" source='library' variant='text' />
                         {!isWeb && (
-                            <Animated.View
-                                entering={SlideInLeft.duration(300)}
-                                exiting={SlideOutLeft.duration(300)}
-                                className="h-full w-full"
-                            >
-                                <Row className="h-full items-center">
-                                    <View className="h-full p-1 flex items-center justify-center">
-                                        <FileButton field_name='cmt_image' size='xs' icon="Image" source='library' variant='text' />
-                                    </View>
-                                    <View className="h-full p-1 flex items-center justify-center">
-                                        <FileButton field_name='cmt_image' size='xs' icon="Camera" source='camera' variant='text' />
-                                    </View>
-                                </Row>
-                            </Animated.View>
+                            <View className="h-full p-1 flex items-center justify-center">
+                                <FileButton field_name='cmt_image' size='xs' icon="Camera" source='camera' variant='text' />
+                            </View>
                         )}
                     </View>
                     {(!!hasText || !!imagesValue) && (

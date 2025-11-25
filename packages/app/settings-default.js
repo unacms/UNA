@@ -1030,7 +1030,7 @@ export const settingsDefault = {
             primaryBg: 'rgba(37,99,235,0.1)',
         },
         dropdown: {
-            cnt: ' rounded-2xl overflow-hidden shadow-xl border border-border p-2 bg-popover web:bg-popover/80 backdrop-blur-xl z-50  ',
+            cnt: ' rounded-2xl overflow-hidden shadow-xl border border-border p-2 bg-popover web:bg-popover/90 backdrop-blur-xl z-50  ',
         },
         conductor: {
             menu: ' w-full items-left justify-center ',

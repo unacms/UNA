@@ -7,10 +7,9 @@ import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Tooltip from 'app/ui/atoms/tooltip';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming, withSpring } from 'react-native-reanimated';
 
 // Persist indicator state across remounts (web/native)
-let __menuTopIndicatorPersist = { initialized: false, x: 0, width: 0 };
+let __menuTopIndicatorPersist = { initialized: false, translateX: 0, width: 0 };
 
 export default function MenuTop({ url, uri }) {
     const { currentUser } = useCurrentUser();
@@ -28,6 +27,11 @@ export default function MenuTop({ url, uri }) {
 
     // Track measured layouts for each tab item
     const [itemLayouts, setItemLayouts] = useState({});
+    const [indicatorStyle, setIndicatorStyle] = useState({ 
+        translateX: __menuTopIndicatorPersist.translateX, 
+        width: __menuTopIndicatorPersist.width, 
+        visible: __menuTopIndicatorPersist.initialized 
+    });
 
     const handleItemLayout = (index, layout) => {
         setItemLayouts((prev) => {
@@ -38,45 +42,16 @@ export default function MenuTop({ url, uri }) {
         });
     };
 
-    // Animated underline shared values
-    const indicatorX = useSharedValue(0);
-    const indicatorWidth = useSharedValue(0);
-
-    const hasPositionedRef = useRef(false);
-
-    // Restore last known position on mount to avoid starting from 0
-    useEffect(() => {
-        if (__menuTopIndicatorPersist.initialized && !hasPositionedRef.current) {
-            indicatorX.value = __menuTopIndicatorPersist.x;
-            indicatorWidth.value = __menuTopIndicatorPersist.width;
-            hasPositionedRef.current = true;
-        }
-    }, []);
-
     useEffect(() => {
         if (activeIndex != null && activeIndex >= 0) {
             const target = itemLayouts[activeIndex];
             if (target && typeof target.x === 'number' && typeof target.width === 'number') {
-                if (!hasPositionedRef.current) {
-                    // First paint after mount/remount: place without anim to avoid jumping from 0
-                    indicatorX.value = target.x;
-                    indicatorWidth.value = target.width;
-                    hasPositionedRef.current = true;
-                } else {
-                    indicatorX.value = withSpring(target.x, { damping: 20, stiffness: 200, mass: 0.8 });
-                    indicatorWidth.value = withSpring(target.width, { damping: 20, stiffness: 200, mass: 0.8 });
-                }
-                // Persist latest for future remounts
-                __menuTopIndicatorPersist = { initialized: true, x: target.x, width: target.width };
+                setIndicatorStyle({ translateX: target.x, width: target.width, visible: true });
+                // Persist for future remounts
+                __menuTopIndicatorPersist = { initialized: true, translateX: target.x, width: target.width };
             }
         }
     }, [activeIndex, itemLayouts]);
-
-    const animatedStyle = useAnimatedStyle(() => ({
-        transform: [{ translateX: indicatorX.value }],
-        transformOrigin: 'left center',
-        width: `${indicatorWidth.value}px`,
-    }), [indicatorX, indicatorWidth, activeIndex]);
 
     return (
         <Row className={`${appSetting('layout', 'header', 'content_center')} relative`}>
@@ -95,7 +70,16 @@ export default function MenuTop({ url, uri }) {
                     </View>
                 );
             })}
-            {activeIndex > -1 && <Animated.View style={[animatedStyle, { pointerEvents: 'none' }]} className="rounded-full flex-none bg-ring absolute -bottom-2 left-0 h-[3px]" />}
+            <View 
+                className="rounded-full flex-none bg-ring absolute -bottom-2 left-0 h-[3px]"
+                style={{ 
+                    width: indicatorStyle.width,
+                    transform: `translateX(${indicatorStyle.translateX}px)`,
+                    opacity: indicatorStyle.visible ? 1 : 0,
+                    pointerEvents: 'none',
+                    transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out'
+                }}
+            />
         </Row>
 
     )

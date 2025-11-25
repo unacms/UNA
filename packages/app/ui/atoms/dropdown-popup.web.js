@@ -1,0 +1,189 @@
+import { useState, useRef, useEffect, useMemo } from 'react';
+import {
+    Modal as ModalBase,
+    TouchableOpacity,
+    Platform
+} from 'react-native';
+import { Pressable, ScrollView, View, ViewRef } from 'app/design/view'
+import { RemoveScroll } from 'react-remove-scroll';
+import { appSetting } from 'app/lib/util';
+import { Theme } from 'app/design/theme';
+import { useIsDesktop, useWindowSize } from 'app/context/measure';
+
+const dropdownTheme = appSetting('theme', 'dropdown');
+
+export default function DropdownPopup({
+    children,
+    open,
+    onOpenChange,
+    trigger,
+    minPopupWidth = 256,
+    defaultOpen = false,
+    showOnTop = false,
+    contentClasses = dropdownTheme?.cnt
+}) {
+    const buttonRef = useRef(null);
+    const isDesktop = useIsDesktop();
+    const contentRef = useRef(null);
+    const contentInnerRef = useRef(null);
+    const [buttonPos, setButtonPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
+    const { width: windowWidth, height: windowHeight } = useWindowSize();
+    const isWeb = useMemo(() => Platform.OS === 'web', []);
+    const { colors } = Theme();
+    const animation = useMemo(
+        () => (isDesktop ? 'fade' : 'none'),
+        [isDesktop]
+    );
+    const [isOpen, setIsOpen] = useState(defaultOpen);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [contentLoaded, setContentLoaded] = useState(false);
+
+    const isControlledOutside = typeof onOpenChange === 'function';
+    const isRealOpen = isControlledOutside ? open : isOpen;
+
+    useEffect(() => {
+        if (isRealOpen) {
+            if (!isModalVisible) {
+                setIsModalVisible(true);
+                setContentLoaded(false);
+            }
+            // Mark content as loaded after a brief delay to allow children to render
+            const loadTimer = setTimeout(() => {
+                setContentLoaded(true);
+            }, 50);
+            return () => clearTimeout(loadTimer);
+        } else {
+            // Delay hiding modal to allow animation
+            const timer = setTimeout(() => {
+                if (isModalVisible) {
+                    setIsModalVisible(false);
+                    setContentLoaded(false);
+                }
+            }, 200);
+            return () => clearTimeout(timer);
+        }
+    }, [isRealOpen, isModalVisible]);
+
+    const updateButtonPosition = () => {
+        if (!buttonRef.current?.measureInWindow) return;
+        buttonRef.current.measureInWindow((x, y, width, height) => {
+
+            setTimeout(() => {
+                if (contentRef.current?.measureInWindow) {
+                    contentRef.current.measureInWindow((_, __, popupWidth, effectivePopupHeight) => {
+                        // Calculate horizontal position
+                        let left = x;
+                        if (x + popupWidth > windowWidth - 16) {
+                            left = windowWidth - popupWidth - 16;
+                        }
+                        if (left < 16) left = 16;
+
+                        // Calculate vertical position
+                        let top = y + height + (isWeb ? 8 : 36);
+
+                        if (showOnTop) {
+                            top = y - effectivePopupHeight - 8;
+                        } else if (top + effectivePopupHeight > windowHeight - 16 && y - effectivePopupHeight - 8 > 16) {
+                            top = y - effectivePopupHeight - 8;
+                        }
+                        if (top == 0)
+                            top = 1
+
+                        setButtonPos({
+                            x: left,
+                            y: top,
+                            width,
+                            height,
+                            maxHeight: windowHeight - top - 16
+                        });
+                    });
+                }
+            }, 100);
+        });
+    };
+
+    useEffect(() => {
+        if (isRealOpen) {
+            updateButtonPosition();
+            // Add window resize listener for web
+            if (isWeb) {
+                window.addEventListener('resize', updateButtonPosition);
+                return () => window.removeEventListener('resize', updateButtonPosition);
+            }
+        }
+    }, [isRealOpen, windowWidth, showOnTop]);
+
+    const handleToggle = (bOpen) => {
+        if (isControlledOutside) {
+            onOpenChange(bOpen);
+        } else {
+            setIsOpen(bOpen);
+        }
+    };
+
+    const handleBackdropPress = (event) => {
+        event.stopPropagation();
+        handleToggle(false);
+    };
+
+    const Content = <ViewRef
+        ref={contentRef}
+        style={{
+            position: 'absolute',
+            top: buttonPos.y,
+            left: buttonPos.x,
+            visibility: buttonPos.y > 0 ? 'visible' : 'hidden',
+            elevation: 5,
+            minWidth: minPopupWidth,
+            maxWidth: windowWidth - 32,
+            maxHeight: buttonPos.maxHeight,
+            zIndex: 1000,
+        }}
+        className={`${contentClasses} ${isRealOpen ? 'animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-200' : ''}`}
+    >
+        <View 
+            ref={contentInnerRef}
+            style={{
+                minHeight: contentLoaded ? 'auto' : minPopupWidth,
+                maxHeight: buttonPos.maxHeight,
+                transition: 'min-height 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                display: 'flex',
+                flexDirection: 'column',
+            }}
+        >
+            {children}
+        </View>
+    </ViewRef>
+
+    return (
+        <>
+            <TouchableOpacity
+                collapsable={false}
+                ref={buttonRef}
+                onPress={() => handleToggle(true)}
+            >
+                {trigger}
+            </TouchableOpacity>
+
+            {isModalVisible && (
+                <ModalBase
+                    transparent={true}
+                    visible={isModalVisible}
+                    presentationStyle="overFullScreen"
+                    animationType={animation}
+                    onRequestClose={() => handleToggle(false)}
+                    onDismiss={() => {
+                        // Ensure modal is fully cleaned up on native
+                        if (!isWeb && !isRealOpen) {
+                            setIsModalVisible(false);
+                        }
+                    }}
+                >
+                    <Pressable className="flex-1 z-20" onPress={(event) => handleBackdropPress(event)}>
+                        <RemoveScroll>{Content}</RemoveScroll>
+                    </Pressable>
+                </ModalBase>
+            )}
+        </>
+    );
+}

@@ -310,7 +310,7 @@ export default function Browse(props) {
         mode: 'simple', 
         data: dataItems,
         unit: data.unit,
-        height: isWeb ? (props?.isInPanel ? windowHeight - 64 : undefined) : props?.height,
+        height: isWeb ? (props?.isInPanel ? windowHeight - 64 : props?.height) : props?.height,
         url: props?.url,
         contentContainerStyle: props?.contentContainerStyle,
         isInPanel: props?.isInPanel,
