@@ -19,7 +19,7 @@ export default function AuthPanel({
     createAccountLink = false,
     loginLink = false,
 }) {
-    if (appSetting('auth', 'enabled') !== true) return null
+
     const { t } = useTranslation()
     return (
         <View className="w-full gap-3 sm:gap-4 pt-3 sm:pt-4">
@@ -73,7 +73,7 @@ export default function AuthPanel({
                 </Link>
             )}
 
-            {showSeparator && (
+            {(showSeparator && (appSetting('auth', 'google') || appSetting('auth', 'github') || appSetting('auth', 'linkedin') || appSetting('auth', 'x') || appSetting('auth', 'passkey') || appSetting('auth', 'saml'))) && (
                 <View 
                     className="flex-row items-center justify-center w-full mt-px"
                     accessibilityRole="separator"
