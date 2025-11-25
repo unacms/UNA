@@ -1515,7 +1515,7 @@ export const settingsDefault = {
                 'text-card-foreground font-medium ',
 
             // Tab content
-            'u-controls-tabs-tab-content': 'w-full pt-4 ',
+            'u-controls-tabs-tab-content': 'w-full',
             'u-controls-tabs-tab-content-animated':
                 'web:animate-[tabContentFadeIn_0.2s_ease-out]',
 
@@ -1524,7 +1524,7 @@ export const settingsDefault = {
                 'absolute pointer-events-none web:transition-[left,width] web:duration-200 web:ease-out ',
             
             'u-controls-tabs-header-item-active-indicator-inner':
-                ' h-1 bottom-0 bg-accent rounded-t-full blur-lg ',
+                ' h-1 bottom-0 bg-accent-foreground rounded-t-full  ',
         },
         
         tabs_sizes: {
@@ -1538,16 +1538,16 @@ export const settingsDefault = {
                 text_active: ' text-sm whitespace-nowrap  ',
             },
             md: {
-                header: ' p-1 gap-1 mb-4',
+                header: ' p-1 gap-1',
                 item: ' h-10 px-4 lg:px-6 text-sm rounded-lg web:focus-visible:outline-2 ',
-                indicator: ' h-0.5 bottom-0 ',
+                indicator: ' h-0.5 bottom-0  px-0.5',
                 text: ' text-md ',
                 text_active: ' text-base ',
             },
             lg: {
                 header: ' p-1 gap-1.5 ',
                 item: ' h-12 px-4 text-base rounded-lg  web:focus-visible:outline-2',
-                indicator: ' h-1 bottom-0 ',
+                indicator: ' h-0.5 bottom-0  px-0.5 ',
                 text: ' text-lg ',
                 text_active: ' text-base ',
             },
