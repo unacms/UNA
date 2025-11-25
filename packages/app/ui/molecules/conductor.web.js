@@ -1027,7 +1027,7 @@ const LeftSideBarContainer = ({
                     )}
                     <View className="flex-1 gap-y-4">
                         {layoutName == 'navigator' && routes.length > 1 && (
-                            <View className='w-full'>
+                            <View className='w-full gap-0.5'>
                                 {routes
                                     .filter((aItem) => aItem.hideInTop != true)
                                     .map((a) => {
