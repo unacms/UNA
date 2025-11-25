@@ -1,13 +1,25 @@
-import localFont from 'next/font/local';
+import { Inter, Lexend } from 'next/font/google';
 
-export const mainFont = localFont({
-  src: [{ path: './Inter-VariableFont.ttf', style: 'normal' }],
+// Optimized Google Font loading for web
+// - Only loads needed weights (400, 500, 600, 700)
+// - Latin subset only (reduces size by ~80%)
+// - display: 'swap' for better loading performance
+// - Automatic font subsetting and optimization by Next.js
+
+export const mainFont = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-main',
+  display: 'swap',
+  preload: true,
+  fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
 });
 
-export const titleFont = localFont({
-  src: [{ path: './Lexend-VariableFont_wght.ttf', weight: '100 900', style: 'normal' }],
+export const titleFont = Lexend({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-title',
+  display: 'swap',
+  preload: true,
+  fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
 });
-
-

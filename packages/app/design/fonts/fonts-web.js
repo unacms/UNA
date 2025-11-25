@@ -1,19 +1,22 @@
-import localFont from 'next/font/local';
 import { mainFont, titleFont } from './fonts-web-default';
 
 // DON'T EDIT THIS FILE IN MAIN REPO!!!
 // only for custom projects
-
-/*const mainFont2 = localFont({
-  src: [{ path: './TimesNewRoman.ttf', style: 'normal' }],
-  variable: '--font-main',
-});
-
-const titleFont2 = localFont({
-  src: [{ path: './CenturyGothic.ttf', style: 'normal' }],
-  variable: '--font-title',
-});
-
-export const fontVars = `${mainFont2.variable} ${titleFont2.variable}`;*/
+// 
+// To use local/custom fonts instead of Google Fonts, uncomment below:
+// 
+// import localFont from 'next/font/local';
+// 
+// const mainFont = localFont({
+//   src: [{ path: './YourCustomFont.ttf', style: 'normal' }],
+//   variable: '--font-main',
+//   display: 'swap',
+// });
+// 
+// const titleFont = localFont({
+//   src: [{ path: './YourTitleFont.ttf', style: 'normal' }],
+//   variable: '--font-title',
+//   display: 'swap',
+// });
 
 export const fontVars = `${mainFont.variable} ${titleFont.variable}`;
