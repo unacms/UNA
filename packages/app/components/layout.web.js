@@ -256,9 +256,9 @@ export default function Layout(props) {
             el.style.position = '';
             el.style.top = '';
             el.style.bottom = '';
-            if (container.scrollHeight <= elH || y < stickyStart ) return;//|| stickyStart == 0
+            if (container.scrollHeight <= elH || y < stickyStart || window.scrollY == 0) return;//|| stickyStart == 0
 
-            if (y > stickyEnd + HYST && window.scrollY> 0) {
+            if (y > stickyEnd + HYST) {
                 // прижимаем к низу
                 el.style.position = 'absolute';
                 el.style.bottom = '0';
