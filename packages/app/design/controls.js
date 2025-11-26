@@ -754,7 +754,7 @@ export const Button = (props) => {
     } : {};
     const buttonContent = (
         <Cnt
-            className={`relative ${fullWidth ? 'flex-auto ' : ''} ${sClassContainer} ${sizeClasses} ${(ThemeCssClassesButton['u-btn-' + variant + '-focus'] || ThemeCssClassesButton['u-btn-focus'] || '')}`}
+            className={`${fullWidth ? 'flex-auto ' : ''} ${sClassContainer} ${sizeClasses} ${(ThemeCssClassesButton['u-btn-' + variant + '-focus'] || ThemeCssClassesButton['u-btn-focus'] || '')}`}
             {...rest}
             {...buttonAttributes}
             onPress={onPress && !disabled ? handlePress : undefined}
@@ -762,26 +762,26 @@ export const Button = (props) => {
             {...refProps}
         >
             
-            {sButtonIconStart && <View className="relative z-10">{sButtonIconStart}</View>}
+            {sButtonIconStart && <Row className="z-10 gap-x-0.5">{sButtonIconStart}</Row>}
             {isTitle && (
-                <Text className={`relative z-10 ${sClassText} ${sTitleContainer}`} numberOfLines={1}>
+                <Text className={`z-10 ${sClassText} ${sTitleContainer}`} numberOfLines={1}>
                     {title}
                 </Text>
             )}
-            {sButtonIconEnd && <View className="relative z-10">{sButtonIconEnd}</View>}
-            {isTitle && oButtonAddon && <View className="relative z-10">{oButtonAddon}</View>}
-            {children && <View className="relative z-10">{children}</View>}
+            {sButtonIconEnd && <View className="z-10">{sButtonIconEnd}</View>}
+            {isTitle && oButtonAddon && <View className="z-10">{oButtonAddon}</View>}
+            {children && <View className="z-10">{children}</View>}
         </Cnt>
     );
 
     if (!isTitle && oButtonAddon) {
         const wrapper = (
-            <View className={`relative flex-row items-center justify-center ${fullWidth ? 'flex-auto w-full' : 'w-fit'}`}>
+            <Row className={`items-center justify-center ${fullWidth ? 'flex-auto w-full' : 'w-fit'}`}>
                 {buttonContent}
                 <View className="absolute top-0 right-0 w-full h-full z-20 pointer-events-none" pointerEvents="none">
                     {oButtonAddon}
                 </View>
-            </View>
+            </Row>
         );
         return showTooltip ? <Tooltip content={tooltip}>{wrapper}</Tooltip> : wrapper;
     }
