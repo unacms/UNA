@@ -294,6 +294,8 @@ export const settingsDefault = {
                 iconDark: 'rgba(55, 65, 80, 1)',
             },
         },
+        css:'A.bx-mention-link, A.bx-tag{ color: rgba(37, 99, 235, 1)}',
+        css_dark:'A.bx-mention-link, A.bx-tag{ color: rgba(59, 130, 246, 1)}}',
     },
     jitsi: {
         prefix: 'prefix_',

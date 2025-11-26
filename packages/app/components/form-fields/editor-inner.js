@@ -185,15 +185,8 @@ export default function RftText({
     .mention-list li.active {
         background: lightblue;
     }
-    A.bx-mention-link,
-    A.bx-tag{
-        color: ${
-            ThemeName() === 'dark'
-                ? 'rgba(59, 130, 246, 1)'
-                : 'rgba(37, 99, 235, 1)'
-        };
-    }
-    ${appSetting('editor', 'css')}
+
+    ${ThemeName() === 'dark' ? appSetting('editor', 'css_dark') : appSetting('editor', 'css')}
 
     .tiptap, #root > div:nth-of-type(1){
         scrollbar-width: none; /* Firefox */
