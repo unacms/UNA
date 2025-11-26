@@ -1,22 +1,30 @@
-import * as React from 'react';
-import { memo } from 'react';
+import { memo, useState, useEffect } from 'react';
 import { Platform } from 'react-native';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from 'app/ui/atoms/hover-card';
 import Profile from 'app/ui/molecules/profile';
 import Link from 'app/ui/atoms/link';
+import { getPageData } from 'app/lib/util';
+import {
+    CoverMenuMeta,
+    CoverMenu,
+    CoverMenuMore,
+} from 'app/components/nav/menu-cover'
 
 const isWeb = Platform.OS === 'web';
 
 /**
  * Simple static content - no data fetching to avoid re-renders
  */
-const ProfileCardContent = memo(function ProfileCardContent({ profileData }) {
+const ProfileCardContent = memo(function ProfileCardContent({ profileData,  pageData}) {
     const displayName = profileData?.display_name || '';
     const avatarUrl = profileData?.url_avatar;
     const profileUrl = profileData?.url;
-    const moduleName = profileData?.module?.replace('bx_', '');
+
+    
+
+
 
     return (
         <View className="overflow-hidden rounded-md bg-popover">
@@ -38,13 +46,25 @@ const ProfileCardContent = memo(function ProfileCardContent({ profileData }) {
                                 {displayName}
                             </Text>
                         </Link>
-                        {moduleName ? (
-                            <Text className="text-xs text-muted-foreground">
-                                @{moduleName}
-                            </Text>
-                        ) : null}
+                        <Text className='text-xs' numberOfLines={2}>{pageData?.data?.description}</Text>
                     </View>
                 </Row>
+                <View className="my-2 gap-y-2">
+                    {!!pageData && <Row>
+                        <CoverMenuMeta {...pageData.data.cover_block.meta_menu} button_size='xs' />
+                        </Row>
+                    }
+                    {!!pageData && <Row>
+                        <CoverMenu
+                            {...pageData.data.cover_block.actions_menu}
+                            uri={profileUrl}
+                            isSplitMenu={true}
+     
+                            size="sm"
+                        />
+
+                    </Row>}
+                </View>
             </View>
         </View>
     );
@@ -65,11 +85,22 @@ function ProfileHoverCard_({ profileData, children, disabled = false }) {
         return children;
     }
 
+    const [pageData, setPageData] = useState(false);
+
+    useEffect(() => {
+        (async () => {
+            const sResponse = await getPageData(profileData?.url.slice(1), false);
+            if (sResponse.data !== pageData.data) {
+                setPageData({ data: sResponse.data });
+            }
+        })();
+    }, []);
+
     return (
         <HoverCard>
             <HoverCardTrigger>{children}</HoverCardTrigger>
-            <HoverCardContent className="w-72 p-0">
-                <ProfileCardContent profileData={profileData} />
+            <HoverCardContent className="w-80 p-0">
+                <ProfileCardContent profileData={profileData} pageData={pageData} />
             </HoverCardContent>
         </HoverCard>
     );
