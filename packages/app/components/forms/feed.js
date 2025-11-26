@@ -1,13 +1,14 @@
-import { View, Row } from 'app/design/view'
+import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
 import { useState, useRef, useCallback, useMemo } from 'react'
 import { getFormFieldByData } from 'app/lib/form-helpers'
-import { FeedbackHaptics } from 'app/lib/util'
+import { FeedbackHaptics, visibilityById } from 'app/lib/util'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 import { Platform } from 'react-native'
 import { Text } from 'app/design/typography'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
+import { Icon } from 'app/ui/atoms/icon'
 import Card from 'app/ui/molecules/card'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -18,15 +19,141 @@ import { getEditorHeight } from 'app/lib/form-helpers';
 import { PollButton, LabelButton, FileButton } from 'app/lib/form-helpers'
 import { useBreakpoint, useWindowHeight } from 'app/context/measure';
 import emitter from 'app/context/emitter';
+import { fetcher } from 'app/lib/fetcher';
+import { getVisibilityValues } from 'app/components/form-fields/select';
 
 function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setShowImage, author }) {
-    const { currentUser } = useCurrentUser();
+    const { t } = useTranslation();
+    const { currentUser, setCurrentUser } = useCurrentUser();
+    const formContext = useFormContext();
+    
+    // Profile selection state
+    const [showProfileModal, setShowProfileModal] = useState(false);
+    const [availableProfiles, setAvailableProfiles] = useState(null);
+    const [isSwitchingProfile, setIsSwitchingProfile] = useState(false);
+
+    // Privacy selector state
+    const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+    const [showPrivacySubModal, setShowPrivacySubModal] = useState(false); // For sub-selection (specific friends, etc.)
+    const [subValues, setSubValues] = useState([]); // Selected sub-items
+
+    // Watch the privacy field value
+    const privacyFieldName = 'object_privacy_view';
+    const currentPrivacyValue = formContext?.watch(privacyFieldName);
+
+    // Get privacy input data
+    const privacyInput = data?.inputs?.['object_privacy_view'];
+    
+    // Initialize subValues from form field on mount
+    useEffect(() => {
+        const existingSubValue = privacyInput?.subvalue;
+        if (existingSubValue) {
+            setSubValues(existingSubValue.split(",").map(value => parseInt(value, 10)));
+        }
+    }, [privacyInput?.subvalue]);
+
+    // Fetch available profiles when modal opens
+    useEffect(() => {
+        if (showProfileModal && !availableProfiles) {
+            fetchProfiles();
+        }
+    }, [showProfileModal]);
+
+    const fetchProfiles = async () => {
+        try {
+            const response = await fetcher('/api.php?r=system/account_profile_switcher/TemplServiceProfiles');
+            if (response?.data?.[0]?.data?.profiles) {
+                setAvailableProfiles(response.data[0].data.profiles);
+            }
+        } catch (error) {
+            console.error('Failed to fetch profiles:', error);
+        }
+    };
+
+    const handleProfileSelect = async (profile) => {
+        // If selecting the same profile, just close the modal
+        if (profile.id === currentUser.id) {
+            setShowProfileModal(false);
+            return;
+        }
+
+        setIsSwitchingProfile(true);
+        try {
+            // Add hash to URL to re-open post form after reload
+            if (typeof window !== 'undefined') {
+                window.location.hash = 'create-post';
+            }
+            
+            // Call API to switch profile globally
+            const result = await fetcher('/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' + profile.id);
+            if (result?.data) {
+                // Update global user context (this switches the profile app-wide)
+                setCurrentUser(result.data);
+            }
+        } catch (error) {
+            console.error('Failed to switch profile:', error);
+            // Clear the hash if switch failed
+            if (typeof window !== 'undefined') {
+                window.history.replaceState(null, '', window.location.pathname + window.location.search);
+            }
+        } finally {
+            setIsSwitchingProfile(false);
+            setShowProfileModal(false);
+        }
+    };
+
+    // Options that require sub-selection (specific friends, relationships, memberships)
+    const SUB_SELECTION_OPTIONS = [6, 8, 9];
+
+    const handlePrivacySelect = (value) => {
+        const numValue = parseInt(value, 10);
+        formContext.setValue(privacyFieldName, value);
+        
+        // Clear sub-values when changing to a different option
+        if (numValue !== parseInt(currentPrivacyValue, 10)) {
+            setSubValues([]);
+        }
+        
+        // Check if this option needs sub-selection
+        if (SUB_SELECTION_OPTIONS.includes(numValue)) {
+            setShowPrivacySubModal(numValue);
+        } else {
+            setShowPrivacyModal(false);
+        }
+    };
+
+    const handleSubValueToggle = (value) => {
+        // Keep values as-is (could be string or number depending on data source)
+        setSubValues(prev => {
+            // Check if value exists (handle both string and number comparison)
+            const valueExists = prev.some(v => String(v) === String(value));
+            if (valueExists) {
+                return prev.filter(v => String(v) !== String(value));
+            } else {
+                return [...prev, value];
+            }
+        });
+    };
+
+    const applySubSelection = () => {
+        // Save sub-values to form field
+        formContext.setValue(privacyFieldName + '_items', subValues);
+        setShowPrivacySubModal(false);
+        setShowPrivacyModal(false);
+    };
 
     if (!currentUser) return null;
 
-    const profileData = author ? author : {
+    // Use author (for editing) or current user (the globally selected profile)
+    const displayProfile = author ? author : {
         ...currentUser,
         url_avatar: currentUser.avatar,
+        url: null,
+    };
+
+    const profileData = {
+        ...displayProfile,
+        url_avatar: displayProfile.url_avatar || displayProfile.avatar,
         url: null,
     };
 
@@ -35,39 +162,321 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
     }
 
     const isHiddenVisibility = data?.inputs?.['object_privacy_view']?.origtype == 'hidden' || !data?.inputs?.['object_privacy_view']
+    const hasMultipleProfiles = currentUser?.profiles_count > 1;
 
-    const authorName = (<Text className="text-foreground leading-6 font-bold tracking-tight text-base truncate">
-        {author ? author.display_name : currentUser.display_name}
-    </Text>
-    )
+    const authorName = (
+        <Text className="text-foreground leading-6 font-semibold tracking-tight text-sm truncate">
+            {displayProfile.display_name}
+        </Text>
+    );
+
+    // Get privacy options from the form field data
+    // Prepare sub-options for each type
+    const prepareValuesFriends = (values) => {
+        if (!values || !Array.isArray(values)) return [];
+        return values.map(item => ({
+            key: item.key,
+            value: item.value?.display_name || item.value,
+            icon: item.value?.display_name ? (
+                <Profile
+                    {...item.value}
+                    displayType="unit_wo_info"
+                    displaySize="sm"
+                />
+            ) : null
+        }));
+    };
+
+    const prepareSubOptions = (values) => {
+        if (!values) return [];
+        return getVisibilityValues(values);
+    };
+
+    const subOptionsMap = {
+        6: privacyInput?.values_friends ? prepareSubOptions(prepareValuesFriends(privacyInput.values_friends)) : [],
+        8: privacyInput?.values_relations ? prepareSubOptions(privacyInput.values_relations) : [],
+        9: privacyInput?.values_memberships ? prepareSubOptions(privacyInput.values_memberships) : [],
+    };
+    
+    // Filter out options that require sub-selection but don't have data (matching original visibility.js behavior)
+    const allPrivacyOptions = privacyInput?.values ? getVisibilityValues(privacyInput.values).filter(item => item.value !== '') : [];
+    const privacyOptions = allPrivacyOptions.filter(item => {
+        const numValue = parseInt(item.value, 10);
+        // Only show sub-selection options if the corresponding data exists
+        if (numValue === 6 && !privacyInput?.values_friends) return false;
+        if (numValue === 8 && !privacyInput?.values_relations) return false;
+        if (numValue === 9 && !privacyInput?.values_memberships) return false;
+        return true;
+    });
+    
+    const currentSubOptions = subOptionsMap[showPrivacySubModal] || [];
+    
+    // Get labels for selected sub-values for display
+    const getSelectedSubLabels = () => {
+        const options = subOptionsMap[parseInt(currentPrivacyValue, 10)] || [];
+        return options.filter(item => subValues.some(v => String(v) === String(item.value))).map(item => item.label);
+    };
+    const selectedSubLabels = getSelectedSubLabels();
+    
+    // Get current privacy display info
+    const currentPrivacyInfo = visibilityById(currentPrivacyValue, t);
+    const currentPrivacyOption = privacyOptions.find(opt => opt.value == currentPrivacyValue);
+    
+    // Build display text with sub-selection info
+    let privacyDisplayText = currentPrivacyInfo?.text || currentPrivacyOption?.label || t('Choose audience');
+    if (selectedSubLabels.length > 0 && SUB_SELECTION_OPTIONS.includes(parseInt(currentPrivacyValue, 10))) {
+        privacyDisplayText = selectedSubLabels.length > 2 
+            ? `${selectedSubLabels.slice(0, 2).join(', ')} +${selectedSubLabels.length - 2}`
+            : selectedSubLabels.join(', ');
+    }
+    const privacyIcon = currentPrivacyInfo?.icon || 'Globe';
+
+    // Profile selection modal
+    const profileModal = (
+        <Modal
+            title={isSwitchingProfile ? t("Switching...") : t("Post as")}
+            onVisible={showProfileModal}
+            onClose={!isSwitchingProfile ? () => setShowProfileModal(false) : undefined}
+            transparent
+            headerBorder
+            scrollable
+        >
+            <ScrollView className="max-h-80">
+                <View className={`flex-col gap-y-1 ${isSwitchingProfile ? 'opacity-50' : ''}`}>
+                    {/* Current user profile - always shown first with checkmark */}
+                    <Pressable
+                        onPress={() => setShowProfileModal(false)}
+                        disabled={isSwitchingProfile}
+                        className="flex-row items-center px-2 py-1.5 rounded-xl gap-2 hover:bg-muted/60"
+                    >
+                        <Profile
+                            {...currentUser}
+                            url_avatar={currentUser.avatar}
+                            displayType="unit_wo_info"
+                            displaySize="base"
+                        />
+                        <Text className="flex-auto text-base font-semibold text-foreground truncate">
+                            {currentUser.display_name}
+                        </Text>
+                        <Icon icon="Check" size={20} className="text-primary" />
+                    </Pressable>
+
+                    {/* Other available profiles */}
+                    {availableProfiles?.filter(p => p.id !== currentUser.id).map((profile) => (
+                        <Pressable
+                            key={profile.id}
+                            onPress={() => handleProfileSelect({
+                                ...profile,
+                                url_avatar: profile.avatar,
+                            })}
+                            disabled={isSwitchingProfile}
+                            className="flex-row items-center px-2 py-1.5 rounded-xl gap-2 hover:bg-muted/60"
+                        >
+                            <Profile
+                                {...profile}
+                                url_avatar={profile.avatar}
+                                displayType="unit_wo_info"
+                                displaySize="base"
+                            />
+                            <Text className="flex-auto text-base font-semibold text-foreground truncate">
+                                {profile.display_name}
+                            </Text>
+                        </Pressable>
+                    ))}
+                </View>
+            </ScrollView>
+        </Modal>
+    );
+
+    // Get title for sub-selection modal
+    const getSubModalTitle = () => {
+        const info = visibilityById(showPrivacySubModal, t);
+        return info?.text || t('Select');
+    };
+
+    // Sub-selection modal header with back button
+    const subModalHeader = (
+        <Row className="w-full items-center">
+            <View className='flex-auto absolute left-0 right-0'>
+                <Text className='text-foreground text-xl font-bold tracking-tight text-center'>
+                    {getSubModalTitle()}
+                </Text>
+            </View>
+            <View>
+                <Button 
+                    variant='secondary' 
+                    size='sm' 
+                    rounded 
+                    startDecorator='ArrowLeft' 
+                    onPress={() => setShowPrivacySubModal(false)} 
+                />
+            </View>
+        </Row>
+    );
+
+    // Privacy selection modal
+    const privacyModal = (
+        <Modal
+            title={showPrivacySubModal ? subModalHeader : t("Choose audience")}
+            onVisible={showPrivacyModal}
+            onClose={!showPrivacySubModal ? () => setShowPrivacyModal(false) : undefined}
+            transparent
+            headerBorder
+            scrollable
+        >
+            {showPrivacySubModal ? (
+                // Sub-selection content (specific friends, relationships, memberships)
+                <>
+                    <ScrollView className="max-h-80">
+                        <View className="flex-col gap-y-1">
+                            {currentSubOptions.length > 0 ? (
+                                currentSubOptions.map((option) => {
+                                    const isSelected = subValues.some(v => String(v) === String(option.value));
+                                    return (
+                                        <Pressable
+                                            key={option.value}
+                                            onPress={() => handleSubValueToggle(option.value)}
+                                            className="flex-row items-center px-2 py-2.5 rounded-xl gap-3 hover:bg-muted/60"
+                                        >
+                                            {option.icon ? (
+                                                <View className="w-8 h-8 items-center justify-center">
+                                                    {option.icon}
+                                                </View>
+                                            ) : (
+                                                <View className="w-8 h-8 items-center justify-center rounded-full bg-muted/60">
+                                                    <Icon icon="User" size={18} className="text-foreground" />
+                                                </View>
+                                            )}
+                                            <Text className="flex-auto text-base font-medium text-foreground">
+                                                {option.label}
+                                            </Text>
+                                            <View className={`w-5 h-5 rounded border-2 items-center justify-center ${isSelected ? 'bg-primary border-primary' : 'border-muted-foreground'}`}>
+                                                {isSelected && <Icon icon="Check" size={14} className="text-primary-foreground" />}
+                                            </View>
+                                        </Pressable>
+                                    );
+                                })
+                            ) : (
+                                <View className="p-4 items-center">
+                                    <Text className="text-muted-foreground text-center">
+                                        {t("No options available")}
+                                    </Text>
+                                </View>
+                            )}
+                        </View>
+                    </ScrollView>
+                    <View className='flex-row justify-end pt-3 mt-3 border-t border-border'>
+                        <Button 
+                            title={t("Done")} 
+                            size="base" 
+                            variant="primary" 
+                            onPress={applySubSelection} 
+                        />
+                    </View>
+                </>
+            ) : (
+                // Main privacy options
+                <ScrollView className="max-h-80">
+                    <View className="flex-col gap-y-1">
+                        {privacyOptions.map((option) => {
+                            const optionInfo = visibilityById(option.value, t);
+                            const optionIcon = optionInfo?.icon || 'Globe';
+                            const optionLabel = optionInfo?.text || option.label;
+                            const isSelected = option.value == currentPrivacyValue;
+                            const hasSubOptions = SUB_SELECTION_OPTIONS.includes(parseInt(option.value, 10));
+
+                            return (
+                                <Pressable
+                                    key={option.value}
+                                    onPress={() => handlePrivacySelect(option.value)}
+                                    className="flex-row items-center px-2 py-2.5 rounded-xl gap-3 hover:bg-muted/60"
+                                >
+                                    <View className="w-8 h-8 items-center justify-center rounded-full bg-muted/60">
+                                        <Icon icon={optionIcon} size={18} className="text-foreground" />
+                                    </View>
+                                    <View className="flex-auto">
+                                        <Text className="text-base font-medium text-foreground">
+                                            {optionLabel}
+                                        </Text>
+                                        {/* Show selected sub-items info */}
+                                        {isSelected && selectedSubLabels.length > 0 && hasSubOptions && (
+                                            <Text className="text-sm text-muted-foreground">
+                                                {selectedSubLabels.length > 3 
+                                                    ? `${selectedSubLabels.slice(0, 3).join(', ')} +${selectedSubLabels.length - 3} more`
+                                                    : selectedSubLabels.join(', ')}
+                                            </Text>
+                                        )}
+                                    </View>
+                                    {hasSubOptions && (
+                                        <Icon icon="ChevronRight" size={18} className="text-muted-foreground" />
+                                    )}
+                                    {isSelected && !hasSubOptions && (
+                                        <Icon icon="Check" size={20} className="text-primary" />
+                                    )}
+                                </Pressable>
+                            );
+                        })}
+                    </View>
+                </ScrollView>
+            )}
+        </Modal>
+    );
 
     return (
-        <View className="flex-row flex-auto items-center justify-between gap-x-2 text-neutral-400 dark:text-neutral-600  ">
-            <View className="gap-x-2 mr-2 flex-row flex-auto items-center ">
-                <Profile {...profileData} displaySize="lg" displayType="unit_wo_info" />
+        <View className="flex-row flex-auto items-center justify-between gap-x-2 text-neutral-400 dark:text-neutral-600">
+            <View className="gap-1 flex-row flex-auto items-center">
+                {/* Profile Switcher - clickable to open profile selection modal */}
+                <Pressable 
+                    onPress={() => hasMultipleProfiles && setShowProfileModal(true)}
+                    className="flex-row items-center gap-x-2 group px-2 py-1.5 bg-muted/60 rounded-xl"
+                    disabled={!hasMultipleProfiles}
+                >
+                    <Profile {...profileData} displaySize="xs" displayType="unit_wo_info" />
+                    <View className="flex-row items-center gap-x-1">
+                        {authorName}
+                        {hasMultipleProfiles && (
+                            <Icon 
+                                icon="ChevronsUpDown" 
+                                size={16} 
+                                className="text-muted-foreground opacity-60 group-hover:opacity-100 web:transition-opacity" 
+                            />
+                        )}
+                    </View>
+                </Pressable>
 
-                <View className={`flex-col  ${!isHiddenVisibility ? ' test ' : ''}`}>
+                {/* Separator icon */}
+                {!isHiddenVisibility && (
+                    <Icon 
+                        icon="ChevronRight" 
+                        size={16} 
+                        className="text-muted-foreground opacity-60" 
+                    />
+                )}
 
-                    {data?.inputs?.['object_privacy_view'] ? getFormFieldByData(
-                        {
-                            ...data.inputs['object_privacy_view'],
-                        },
-                        handleSubmit,
-                        'nofield',
-
-                        {
-                            onShowModal: setShowImage,
-                            showModal: showImage,
-                            size: 'xs',
-                            maxLength: 0,
-                            variant: 'secondary',
-                            noContainer: true,
-                            align: 'start',
-                            addElement: authorName,
-                        }
-                    ) : authorName}
-                </View>
+                {/* Privacy selector - custom styled to match profile switcher */}
+                {!isHiddenVisibility && data?.inputs?.['object_privacy_view'] && (
+                    <Pressable 
+                        onPress={() => setShowPrivacyModal(true)}
+                        className="flex-row items-center gap-x-2 group px-2 py-1.5 bg-muted/60 rounded-xl"
+                    >
+                        <Icon icon={privacyIcon} size={18} className="text-foreground w-7 h-7 items-center justify-center bg-muted rounded-full" />
+                        <Text className="text-foreground font-semibold text-sm">
+                            {privacyDisplayText}
+                        </Text>
+                        <Icon 
+                            icon="ChevronsUpDown" 
+                            size={16} 
+                            className="text-muted-foreground opacity-60 group-hover:opacity-100 web:transition-opacity" 
+                        />
+                    </Pressable>
+                )}
             </View>
+
+            {/* Profile selection modal */}
+            {profileModal}
+            
+            {/* Privacy selection modal */}
+            {privacyModal}
         </View>
     );
 }
@@ -80,6 +489,46 @@ export default function FormFeed(props) {
     const [showImage, setShowImage] = useState(isFormOnly ? true : false);
     const [modalKey, setModalKey] = useState(0);
     const [responseId, setResponseId] = useState(0)
+
+    // Check if we should re-open the form after a profile switch
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+
+        const checkAndOpenForm = () => {
+            console.log('[FormFeed] Checking hash:', window.location.hash, 'current showImage:', showImage);
+            if (window.location.hash === '#create-post') {
+                console.log('[FormFeed] Opening form from hash - setting showImage to true');
+                // Clear the hash
+                window.history.replaceState(null, '', window.location.pathname + window.location.search);
+                // Open the form with a slight delay to ensure state is ready
+                requestAnimationFrame(() => {
+                    console.log('[FormFeed] Actually setting showImage now');
+                    setShowImage(true);
+                    setModalKey(k => k + 1);
+                });
+            }
+        };
+
+        // Check immediately
+        checkAndOpenForm();
+        
+        // Also check after delays (in case of timing issues with hydration)
+        const timer1 = setTimeout(checkAndOpenForm, 100);
+        const timer2 = setTimeout(checkAndOpenForm, 500);
+        const timer3 = setTimeout(checkAndOpenForm, 1000);
+        const timer4 = setTimeout(checkAndOpenForm, 2000);
+        
+        // Listen for hash changes
+        window.addEventListener('hashchange', checkAndOpenForm);
+        
+        return () => {
+            clearTimeout(timer1);
+            clearTimeout(timer2);
+            clearTimeout(timer3);
+            clearTimeout(timer4);
+            window.removeEventListener('hashchange', checkAndOpenForm);
+        };
+    }, [showImage]);
 
     const isWeb = Platform.OS === 'web'
     const isIos = Platform.OS === 'ios'
@@ -222,7 +671,7 @@ export default function FormFeed(props) {
         {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
         {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
         <View className="justify-between flex-col flex-auto ">
-            <View className="w-full flex-1 justify-start px-3 ">
+            <View className="w-full flex-1 justify-start p-2 ">
                 <View 
                     className="flex-auto"
                     style={{ 
@@ -304,15 +753,7 @@ export default function FormFeed(props) {
 
             <View className="  ">
 
-                <View className={
-                    '  items-center flex-auto w-full gap-x-2 p-3   ' +
-                    (isWeb ? ' ' : ' ') +
-                    (isSmall
-                        ? ' ' +
-                        (isIos ? '  ' : ' bottom-0 ') +
-                        '  '
-                        : ' lalal ')
-                }>
+                <View className=" items-center flex-auto w-full gap-2">
 
                     <Row className="gap-x-2 w-full justify-between ">
                         <Row className="flex-none gap-x-2">
@@ -384,13 +825,15 @@ export default function FormFeed(props) {
     if (isFormOnly) {
         return (
             <View className="w-full flex-1 h-full">
-                <View className="items-start justify-start p-3 ">
+                <View className="items-start justify-start ">
                     {header}
                 </View>
                 {form}
             </View>
         )
     }
+
+    console.log('[FormFeed] Rendering, showImage:', showImage, 'modalKey:', modalKey);
 
     return (
         <View className="w-full">

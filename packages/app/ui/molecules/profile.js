@@ -132,9 +132,9 @@ function AtomProfile_(oProps) {
             sSizeFontLetter: ' text-xs font-semibold',
         },
         xs: {
-            sSize: 'w-8 h-8',
-            iSizeWidth: 32,
-            iSizeHeight: 32,
+            sSize: 'w-7 h-7',
+            iSizeWidth: 28,
+            iSizeHeight: 28,
             sSizeFont: 'text-xs leading-5', 
             sSizeFontLetter: ' text-sm font-semibold',
         },

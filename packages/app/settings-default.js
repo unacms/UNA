@@ -1593,7 +1593,7 @@ export const settingsDefault = {
 
             // Text labels
             'u-controls-checkbox-text':
-                'text-neutral-800 dark:text-neutral-200 text-base leading-5 font-medium pl-2',
+                'text-neutral-800 dark:text-neutral-200 text-base leading-5 font-semibold',
             'u-controls-checkbox-text2':
                 'text-neutral-600 dark:text-neutral-400 text-sm leading-5',
 
