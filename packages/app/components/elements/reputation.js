@@ -321,7 +321,7 @@ export function ReputationLeaderboard({ data }) {
                     {searchForm}
                 </View>
             )}
-            <View className="items-center w-full flex-col gap-3 px-2 py-3 max-w-xl mx-auto">
+            <View className="items-center w-full flex-col gap-3 p-3 max-w-xl mx-auto">
                 {profilesList.map((item, index) => (
                     <Row
                         className="w-full flex-wrap justify-between items-center "
