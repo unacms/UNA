@@ -89,7 +89,7 @@ export default function ElementLink(props) {
             </Pressable>
         );
 
-    const isPrefetch = noprefetch || href == '/logout' || href == 'logout' || appSetting('config', 'noprefetch') ? false : true;
+    const isPrefetch = false;//noprefetch || href == '/logout' || href == 'logout' || appSetting('config', 'noprefetch') ? false : true;
 
     return (
         <Link 
