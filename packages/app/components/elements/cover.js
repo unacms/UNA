@@ -495,7 +495,7 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                             </ScrollView>
                         )}
                         {!!data.profile.info?.date_start && (
-                            <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden rounded-md flex-none items-center">
+                            <Text className="  text-muted-foreground text-xs uppercase font-semibold tracking-tight overflow-hidden rounded-md flex-none items-center">
                                 {formatDateInterval(
                                     data.profile.info?.date_start,
                                     data.profile.info?.date_end,

@@ -161,7 +161,7 @@ export default function UnitComments(props) {
 
     return (
         <Animated.View style={isSelected ? animatedStyle : {}}>
-            <Row className="gap-1">
+            <Row className="gap-2">
                 {cells}
                 <View className="w-8 z-50 flex-0 mt-3">
                     <Profile

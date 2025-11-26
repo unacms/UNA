@@ -133,10 +133,10 @@ export default function UI(props) {
                                     <Text className="font-medium">Project Stats</Text>
                                 </View>
                             </HoverCardTrigger>
-                            <HoverCardContent className="w-72">
-                                <View className="gap-3">
-                                    <Text className="font-semibold">Project Overview</Text>
-                                    <View className="flex-row justify-between">
+                            <HoverCardContent className="w-72 ">
+                                <View className="gap-3 p-2">
+                                    <Text className="font-semibold px-2">Project Overview</Text>
+                                    <View className="flex-row justify-between p-2">
                                         <View className="items-center">
                                             <Text className="text-2xl font-bold text-primary">128</Text>
                                             <Text className="text-xs text-muted-foreground">Components</Text>
@@ -158,7 +158,6 @@ export default function UI(props) {
                     {/* ProfileHoverCard */}
                     <View className="mb-6">
                         <Text className="text-lg font-medium mb-2 text-muted-foreground">Profile HoverCard</Text>
-                        <Text className="text-sm text-muted-foreground mb-3">Used in feed items to show author details on hover. Fetches extended profile data dynamically.</Text>
                         <ProfileHoverCard 
                             profileData={{
                                 id: 1,
@@ -180,6 +179,61 @@ export default function UI(props) {
                                 />
                             </View>
                         </ProfileHoverCard>
+                    </View>
+
+                    {/* Anonymous Profile HoverCard */}
+                    <View className="mb-6">
+                        <Text className="text-lg font-medium mb-2 text-muted-foreground">Anonymous Profile</Text>
+                        <HoverCard>
+                            <HoverCardTrigger>
+                                <View className="inline-flex items-center gap-2 cursor-pointer flex-row">
+                                    <View className="w-10 h-10 rounded-full bg-muted/60 items-center justify-center border border-border/50">
+                                        <Icon icon="Ghost" size={20} className="text-muted-foreground" />
+                                    </View>
+                                    <Text className="font-medium text-accent-foreground font-semibold">Strawberry Penguin</Text>
+                                </View>
+                            </HoverCardTrigger>
+                            <HoverCardContent className="w-80 p-0">
+                                <View className="overflow-hidden rounded-md bg-popover">
+                                    <View className="p-4">
+                                        <Row className="gap-3 items-center">
+                                            <View className="flex-none">
+                                                <View className="w-14 h-14 rounded-full bg-gradient-to-br from-pink-100 to-amber-100 dark:from-pink-900/30 dark:to-amber-900/30 items-center justify-center border-2 border-pink-200/50 dark:border-pink-700/30">
+                                                    <Icon icon="Ghost" size={28} className="text-pink-400 dark:text-pink-300" />
+                                                </View>
+                                            </View>
+                                            <View className="flex-1 gap-0.5">
+                                                <Text className="text-base font-bold text-foreground">
+                                                    Strawberry Penguin
+                                                </Text>
+                                                <Text className="text-xs text-muted-foreground">
+                                                    Protected name
+                                                </Text>
+                                            </View>
+                                        </Row>
+                                        
+                                        <View className="mt-4 pt-3 border-t border-border/50">
+                                            <Text className="text-sm font-semibold text-foreground mb-2">
+                                                Want to see real names?
+                                            </Text>
+                                            <Text className="text-xs text-secondary-foreground">
+                                                After three mutual respects, you both choose whether to trust. Mutual trust unlocks real names — everyone else sees aliases.
+                                            </Text>
+                                        </View>
+                                        
+                                        <View className="mt-4">
+                                            <Button 
+                                                variant="primary" 
+                                                size="sm" 
+                                                title="Respect this Post"
+                                                startDecorator="Heart"
+                                                onPress={() => console.log('Respect clicked')}
+                                            />
+                                        </View>
+                                    </View>
+                                </View>
+                            </HoverCardContent>
+                        </HoverCard>
                     </View>
                 </View>
             </View>

@@ -19,7 +19,7 @@ import {
     TableCellText,
 } from 'app/ui/molecules/table'
 import Badge from 'app/ui/molecules/badge'
-import { useLayoutSettings } from 'app/context/layout-settings';
+import { useLayoutSettings } from 'app/context/layout-settings'
 import { cd } from 'app/lib/util'
 import { Loading } from 'app/loading'
 import { renderForm } from 'app/components/elements/form'
@@ -102,30 +102,57 @@ export function ReputationWidget({ data }) {
         fetchAllTabs()
     }, [])
 
-    const preparedTabs = tabsData.map((item) => ({
+    // Reorder tabs: leaderboard tabs first, then "You" (summary) tab last
+    const reorderedTabs = useMemo(() => {
+        const leaderboardTabs = tabsData.filter((item) =>
+            item.url.includes('leaderboard')
+        )
+        const summaryTabs = tabsData.filter(
+            (item) => !item.url.includes('leaderboard')
+        )
+        return [...leaderboardTabs, ...summaryTabs]
+    }, [tabsData])
+
+    const preparedTabs = reorderedTabs.map((item) => ({
         ...item,
         key: item.url,
         content: item.url.includes('leaderboard') ? (
-            item.data ? <ReputationLeaderboard data={item.data} /> : <View className='h-12'><Loading /></View>
+            item.data ? (
+                <ReputationLeaderboard data={item.data} />
+            ) : (
+                <View className="h-12">
+                    <Loading />
+                </View>
+            )
+        ) : item.data ? (
+            <ReputationSummary data={item.data} />
         ) : (
-            item.data ? <ReputationSummary data={item.data} /> : <View className='h-12'><Loading /></View>
+            <View className="h-12">
+                <Loading />
+            </View>
         ),
     }))
 
-    return <Tabs fullWidth tabs={preparedTabs} size="sm" activeTab={tabsData[0].url} />
+    return (
+        <Tabs
+            fullWidth
+            tabs={preparedTabs}
+            size="sm"
+            activeTab={reorderedTabs[0]?.url}
+        />
+    )
 }
 
 function ReputationSummarySimple({ data }) {
-    const { density } = useLayoutSettings();
+    const { density } = useLayoutSettings()
     const [isModal, setIsModal] = useState(false)
     const [isModal2, setIsModal2] = useState(false)
     return (
-        <View className={`w-full ${cd('gap-md')}`}>
+        <View className="w-full">
             <Modal
                 scrollable
                 title="Score rules"
                 onVisible={isModal}
-               
                 onClose={() => setIsModal(false)}
             >
                 <View className="w-full lg:min-w-md">
@@ -136,74 +163,77 @@ function ReputationSummarySimple({ data }) {
                 scrollable
                 title="Levels"
                 onVisible={isModal2}
-               
                 onClose={() => setIsModal2(false)}
             >
                 <View className="w-full lg:min-w-md">
                     <ReputationLevels data={data.levels_list} />
                 </View>
             </Modal>
-            <View className={`flex-auto flex-row ${cd('gap-md')} w-full items-center`}>
-                <View className={` ${cd('p-xs', density)} border-4 border-accent rounded-full`}>
-                    <Profile
-                        {...data.author_data}
-                        displayType="unit_wo_info"
-                        displaySize="xl"
-                    />
-                    <View className="absolute -bottom-1 -end-1 rounded-full bg-background p-0.5">
-                        <Badge
-                            className={` `}
-                            variant="accent"
-                            size="sm"
-                            rounded
-                            data={{ icon: data?.levels?.[0]?.icon, is_icon_only: true }}
-                        />
-                    </View>
-                </View>
-                <View className={`flex-auto ${cd('gap-xs')} justify-center`}>
-                    <Text className="font-bold text-2xl text-foreground">
+            <View className="flex-auto flex-row gap-3 p-4 w-full ">
+                <Profile
+                    {...data.author_data}
+                    displayType="unit_wo_info"
+                    displaySize="xl"
+                />
+
+                <View className="flex-auto gap-0.5 justify-center">
+                    <Text className="font-semibold text-lg text-foreground">
                         {data.author_data.display_name}
                     </Text>
                     {data.levels.map((item, index) => (
-                        <View key={index} className={`flex-row ${cd('gap-sm')} flex-auto items-center`}>
+                        <View
+                            key={index}
+                            className="flex-row gap-3 items-center"
+                        >
+                            <Badge
+                                variant="secondary"
+                                data={{ text: item.title, icon: item.icon }}
+                            />
 
-                            <Badge variant="secondary" data={{ text: item.title, icon: item.icon }} />
-
-                            <View className="flex-auto justify-end flex-row">
-                                <Button
-                                    variant="text"
-                                    rounded
-                                    size="sm"
-                                    startDecorator="ListPlus"
-                                    onPress={() => setIsModal2(true)}
-                                />
-
-                            </View>
+                            <Button
+                                variant="text"
+                                rounded
+                                size="xs"
+                                startDecorator="ListPlus"
+                                onPress={() => setIsModal2(true)}
+                            />
+                            <Button
+                                variant="text"
+                                rounded
+                                size="xs"
+                                startDecorator="Info"
+                                onPress={() => setIsModal(true)}
+                            />
                         </View>
-
                     ))}
-                    <View className={`flex-row ${cd('gap-sm')} flex-auto justify-between items-center`}>
-
-                        <View className={`flex-row items-end ${cd('gap-sm')}`}>
-                            <Text className="text-3xl font-bold text-foreground">
-                                {data.points || 0}
-                            </Text>
-                            <Text className="text-lg text-muted-foreground">
-                                points
-                            </Text>
-                        </View>
-                        <Button
-                            variant="text"
-                            rounded
-                            size="sm"
-                            startDecorator="Info"
-                            onPress={() => setIsModal(true)}
-                        />
-                    </View>
-
                 </View>
             </View>
-
+            <View className="flex-row gap-3 flex-auto flex-wrap px-2">
+                <View className="flex-1   border border-border rounded-xl px-4 py-3">
+                    <Text className="text-sm text-muted-foreground mb-1">
+                        Total
+                    </Text>
+                    <Text className="text-2xl font-bold text-foreground">
+                        {data.points || 0}
+                    </Text>
+                </View>
+                <View className="flex-1  border border-border rounded-xl px-4 py-3">
+                    <Text className="text-sm text-muted-foreground mb-1">
+                        7 Days
+                    </Text>
+                    <Text className="text-2xl font-bold text-foreground">
+                        {data.points_7d || 0}
+                    </Text>
+                </View>
+                <View className="flex-1   border border-border rounded-xl px-4 py-3">
+                    <Text className="text-sm text-muted-foreground mb-1">
+                        30 Days
+                    </Text>
+                    <Text className="text-2xl font-bold text-foreground">
+                        {data.points_30d || 0}
+                    </Text>
+                </View>
+            </View>
         </View>
     )
 }
@@ -250,40 +280,47 @@ const StarIcon = ({ color, size = 28 }) => (
     </Svg>
 )
 
-
 export function ReputationLeaderboard({ data }) {
-
-    const formProps = data?.filter_form ? { ...data?.filter_form, layout: 'hor' } : null;
-    if (formProps?.data?.inputs?.days){
+    const formProps = data?.filter_form
+        ? { ...data?.filter_form, layout: 'hor' }
+        : null
+    if (formProps?.data?.inputs?.days) {
         formProps.data.inputs.days.mode = 'buttons'
-        formProps.data.inputs.days.caption = '';
+        formProps.data.inputs.days.caption = ''
     }
-    if (formProps?.data?.inputs?.username){
+    if (formProps?.data?.inputs?.username) {
         formProps.data.inputs.username.placeholder = 'Search by name'
-        formProps.data.inputs.username.caption = '';
+        formProps.data.inputs.username.caption = ''
     }
-    
-    const [profilesList, setProfilesList] = useState(data.profiles);
+
+    const [profilesList, setProfilesList] = useState(data.profiles)
 
     const onFormChange = useCallback(async (values) => {
         const transformedValues = Object.fromEntries(
             Object.entries(values).map(([key, value]) => [
                 key,
-                Array.isArray(value) ? value.join(',') : value
+                Array.isArray(value) ? value.join(',') : value,
             ])
-        );
-        const requestUrl = data?.request_url + JSON.stringify(transformedValues);
-        const res = await fetcher(requestUrl);
+        )
+        const requestUrl = data?.request_url + JSON.stringify(transformedValues)
+        const res = await fetcher(requestUrl)
         setProfilesList(res.data.profiles)
-    }, []);
+    }, [])
 
-    const searchForm = formProps ? useMemo(() => renderForm(formProps, onFormChange), [formProps, onFormChange]) : null;
+    const searchForm = formProps
+        ? useMemo(
+              () => renderForm(formProps, onFormChange),
+              [formProps, onFormChange]
+          )
+        : null
 
     return (
         <>
-            {!!searchForm && <View className='mb-8 max-w-xl mx-auto w-full'>
-                {searchForm}
-            </View>}
+            {!!searchForm && (
+                <View className="mb-8 max-w-xl mx-auto w-full">
+                    {searchForm}
+                </View>
+            )}
             <View className="items-center w-full flex-col gap-3 px-2 py-3 max-w-xl mx-auto">
                 {profilesList.map((item, index) => (
                     <Row
@@ -291,37 +328,41 @@ export function ReputationLeaderboard({ data }) {
                         key={index}
                     >
                         <Row className="items-center gap-2">
-                            {item.position > 0 && <View className="w-7 h-7 items-center justify-center relative">
-                                {item.position <= 3 ? (
-                                    <>
-                                        <StarIcon
-                                            color={getStarColor(item.position)}
-                                            size={28}
-                                        />
-                                        <Text
-                                            className={`${getTextColor(
+                            {item.position > 0 && (
+                                <View className="w-7 h-7 items-center justify-center relative">
+                                    {item.position <= 3 ? (
+                                        <>
+                                            <StarIcon
+                                                color={getStarColor(
+                                                    item.position
+                                                )}
+                                                size={28}
+                                            />
+                                            <Text
+                                                className={`${getTextColor(
+                                                    item.position
+                                                )} text-xs font-bold absolute`}
+                                            >
+                                                {item.position}
+                                            </Text>
+                                        </>
+                                    ) : (
+                                        <View
+                                            className={`w-6 h-6 rounded-full ${getPositionColors(
                                                 item.position
-                                            )} text-xs font-bold absolute`}
+                                            )} items-center justify-center`}
                                         >
-                                            {item.position}
-                                        </Text>
-                                    </>
-                                ) : (
-                                    <View
-                                        className={`w-6 h-6 rounded-full ${getPositionColors(
-                                            item.position
-                                        )} items-center justify-center`}
-                                    >
-                                        <Text
-                                            className={`${getTextColor(
-                                                item.position
-                                            )} text-sm font-bold absolute`}
-                                        >
-                                            {item.position}
-                                        </Text>
-                                    </View>
-                                )}
-                            </View>}
+                                            <Text
+                                                className={`${getTextColor(
+                                                    item.position
+                                                )} text-sm font-bold absolute`}
+                                            >
+                                                {item.position}
+                                            </Text>
+                                        </View>
+                                    )}
+                                </View>
+                            )}
                             <Profile
                                 {...item.unit}
                                 displayType="unit"
@@ -334,7 +375,8 @@ export function ReputationLeaderboard({ data }) {
                         </Text>
                     </Row>
                 ))}
-            </View></>
+            </View>
+        </>
     )
 }
 

@@ -1526,7 +1526,7 @@ export const settingsDefault = {
                 'absolute pointer-events-none web:transition-[left,width] web:duration-200 web:ease-out ',
             
             'u-controls-tabs-header-item-active-indicator-inner':
-                ' h-0.5 bottom-0 bg-accent-foreground rounded-t-full  ',
+                ' h-px -bottom-px bg-ring/50 rounded-full  ',
         },
         
         tabs_sizes: {
@@ -1541,17 +1541,17 @@ export const settingsDefault = {
             },
             md: {
                 header: ' p-1 gap-1',
-                item: ' h-10 px-4 lg:px-6 text-sm rounded-lg web:focus-visible:outline-2 ',
-                indicator: ' h-0.5 bottom-0  px-2',
-                text: ' text-md ',
+                item: ' h-10 px-4 lg:px-6 text-base rounded-lg web:focus-visible:outline-2 ',
+                indicator: ' h-0.5 bottom-0  px-3',
+                text: ' text-base ',
                 text_active: ' text-base ',
             },
             lg: {
                 header: ' p-1 gap-1.5 ',
-                item: ' h-12 px-4 text-base rounded-lg  web:focus-visible:outline-2',
-                indicator: ' h-0.5 bottom-0  px-2 ',
+                item: ' h-12 px-4 text-lg rounded-lg  web:focus-visible:outline-2',
+                indicator: ' h-0.5 bottom-0  px-4 ',
                 text: ' text-lg ',
-                text_active: ' text-base ',
+                text_active: ' text-lg ',
             },
         },
         switcher: {
