@@ -621,7 +621,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                 data={isWeb ? data : data.slice().reverse()}
                 height={layoutHeightRight - (!isWeb || isSmallScreen ? 0 : 64)}
                 mode="simple"
-                useWindowScroll
+                
                 useCustomScrollHandler={isSmallScreen ? true : false}
                 renderItem={({ item, index }) => <ItemJot handleReply={handleReply} item={item} index={index} />}
                 scrollProps={{ pageData: null, headerComponent: header, inverted: true, headerHeight: 64, isNoContainer: true, }}
