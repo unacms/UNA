@@ -460,7 +460,7 @@ export function getContent(data, block) {
         .flatMap((v) => (v && typeof v === 'object' ? Object.values(v) : []))
         .find((element) => element?.content && element?.source === blockName)
 
-    return b?.content[0]?.type === 'browse' && !block.sidebar
+    return b?.content[0]?.type === 'browse' && !block.sidebar && !block.leftbar
         ? { data: b.content[0].data, type: 'browse' }
         : { data: b, type: 'block', block: block }
 }
