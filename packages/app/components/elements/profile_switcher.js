@@ -41,7 +41,7 @@ export default function ProfileSwitcher (props) {
 
     const profileList = data?.profiles?.filter((item) => (item.id != currentUser.id));
 
-    if (!currentUser) {
+    if (!currentUser || (currentUser.profiles_count < 2 && currentUser?.menu?.items == 0)) {
         return <></>;
     }
 
