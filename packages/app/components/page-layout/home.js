@@ -296,7 +296,7 @@ return;*/
 
                     {navBarBlocks.map((item, index) => {
                         return (
-                            <View className="mt-3 " key={'block_' + index}>
+                            <View className={(appSetting('layout', 'show_profile_info') || feedList.length > 1) || index > 0 ?  "mt-3 ": ''} key={'block_' + index}>
                                 <BlockByName
                                     name={item.block}
                                     data={props.data}
