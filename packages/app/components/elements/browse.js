@@ -3,8 +3,10 @@ import {
     useCallback,
     useEffect,
     memo,
+    useMemo,
     useRef,
-    useReducer
+    useReducer,
+    useState 
 } from 'react'
 import { View, Row, ScrollView } from 'app/design/view'
 import { Platform } from 'react-native'
@@ -31,6 +33,7 @@ import {
     flattenPagesForUniList,
     fetchUniListData
 } from 'app/lib/conductor-helpers'
+import { getComponent } from 'app/components/registry';
 
 const blockTheme = appSetting('theme', 'blocks');
 
@@ -55,10 +58,15 @@ const Item = memo(({ item, index, numColumns, data, unitMode, props }) => (
     </View>
 ))
 
+
+
+
 export default function Browse(props) {
     const isWeb = Platform.OS === 'web'
     const { t } = useTranslation()
-    const { currentUser } = useCurrentUser()
+    const { currentUser } = useCurrentUser();
+    const Form = getComponent('element', 'form');
+
     const uniRef = useRef()
     const [refetchState, dispatch] = useReducer(refetchUniListReducer, {
         visibleItems: [],
@@ -80,11 +88,13 @@ export default function Browse(props) {
         data.unit = 'general-profile-list'
     }
 
-    const defParams = {
+    const [defParams, setDefParams] = useState({
         ...(data.params ?? {}),
         ...(props?.params ?? {}),
         moduleName: data.module ?? '',
-    };
+    });
+
+    const [showFilters, setShowFilters] = useState(false);
 
     /* unit mode & change unit mode */
     const unitMode = props.unitMode
@@ -92,6 +102,29 @@ export default function Browse(props) {
     const windowHeight = useWindowHeight();
 
     const numColumns = props.perLine || 1;
+
+    const formProps = data?.filter_form;
+
+    const handleFilterFormChange = useCallback((values) => {
+        const transformedValues = Object.fromEntries(
+            Object.entries(values).map(([key, value]) => [
+                key,
+                Array.isArray(value) ? value.join(',') : value
+            ])
+        );
+
+        const a = transformedValues.by_hashtag ? { type: 'bx_channels', context: transformedValues.by_hashtag } : { type: 'feed' };
+        
+        setDefParams(prev => ({
+            ...prev,
+            modules: transformedValues.modules,
+                media: transformedValues.media,
+                ...a
+        }));
+        refetchRef.current.skipToast = true
+        refetch()
+    });
+
 
 
     const hOffset = isWeb ? 64 : 56
@@ -116,11 +149,11 @@ export default function Browse(props) {
         isRefetching
     } = useInfiniteQuery({
         queryKey: qKey,
-       //queryFn: fetchData,
-        queryFn: ({ pageParam }) => fetchUniListData({ 
-            pageParam, 
-            requestUrl: data.request_url, 
-            defaultParams: defParams 
+        //queryFn: fetchData,
+        queryFn: ({ pageParam }) => fetchUniListData({
+            pageParam,
+            requestUrl: data.request_url,
+            defaultParams: defParams
         }),
 
         getNextPageParam: (lastPage) => lastPage?.data.length > 0 ? { ...lastPage?.params, start: lastPage?.params.start + lastPage?.params.per_page } : undefined,
@@ -153,7 +186,7 @@ export default function Browse(props) {
             dispatch({ type: 'SET_ITEMS', items })
             refetchRef.current.prevItems = items
             refetchRef.current.isFirstLoad = false
-             refetchRef.current.skipToast = false
+            refetchRef.current.skipToast = false
             return
         }
         if (!isSameItemsForUniList(refetchRef.current.prevItems, items)) {
@@ -306,8 +339,8 @@ export default function Browse(props) {
     const uniListProps = {
         scrollProps: props?.exProps?.scrollProps,
         preloadComponent: PreloadComponent,
-        refer:uniRef,
-        mode: 'simple', 
+        refer: uniRef,
+        mode: 'simple',
         data: dataItems,
         unit: data.unit,
         height: isWeb ? (props?.isInPanel ? windowHeight - 64 : props?.height) : props?.height,
@@ -393,6 +426,11 @@ export default function Browse(props) {
 
                     </Row>
                 )}
+                {formProps && <View className=" w-full">
+                    <Row className="w-full items-end justify-end"><Button startDecorator="Settings2" variant="outline" title={!showFilters ? "Show filters" : "Hide filters"} onPress={() => setShowFilters(!showFilters)} /></Row>
+                    {showFilters && <Form {...formProps} key="form" name={formProps.name} onChange={handleFilterFormChange} />}
+                    </View>
+                }
                 {contentElement}
             </View>
             {refetchState.hasNewData && <Toaster

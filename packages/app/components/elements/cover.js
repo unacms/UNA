@@ -188,7 +188,7 @@ function CoverImage({
         mode == 'cover' ? coverData.src : profileData.url_avatar
     )
 
-    const uo = profileData.module + '_cover_crop'
+    const uo = profileData.module + (mode == 'cover' ? '_cover_crop' : '_picture_crop');
     const so = coverData.storage
     const img_trans = ''
     const c = profileData.info.id
