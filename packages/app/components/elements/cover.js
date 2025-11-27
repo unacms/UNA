@@ -418,10 +418,10 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
 
     const isMin = coverMode === 'min'
 
-    const isAddSelector =
+   /* const isAddSelector =
         context &&
         context.list[0] &&
-        data.profile.module == context.list[0].module
+        data.profile.module == context.list[0].module*/
     const ContextSelector = getComponent('molecule', 'context_selector')
     const Badges = getComponent('molecule', 'badges')
 
@@ -478,14 +478,14 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                                 {data.profile.display_name}
                             </Text>
                             <Badges badges={data.badges} size="xs" />
-                            {isAddSelector && (
+                            {/*isAddSelector && (
                                 <View className={`${TABLET_MODE_FROM}:hidden`}>
                                     <ContextSelector
                                         data={context}
                                         mode="min"
                                     />
                                 </View>
-                            )}
+                            )*/}
                         </Row>
                         {isWeb ? (
                             <CoverMenuMeta {...data.meta_menu} />
