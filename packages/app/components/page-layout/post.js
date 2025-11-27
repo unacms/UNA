@@ -286,7 +286,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                             className={`fixed-process'}`}
                         >
                             {aItemsLeftBar.length > 0 && (
-                                <View className='fixed-process w-96 hidden sm:flex '>
+                                <View className='fixed-process w-96 hidden sm:flex gap-y-3 '>
                                     {
                                         aItemsLeftBar.map(([key, value]) => {
                                             return (
@@ -303,7 +303,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                 </>
             )}
             <Panel {...centerPanelProps} className="mt-0.5 sm:p-2">
-                <View className={`max-w-4xl w-full h-full bg-card/80 shadow-sm text-card-foreground rounded-2xl py-3 sm:py-4 mx-auto `}>
+                <View className={`w-full h-full bg-card/80 shadow-sm text-card-foreground rounded-2xl py-3 sm:py-4 mx-auto `}>
                     <View onLayout={handleListLayout} pointerEvents="box-none" className='w-full flex-1' style={{ marginBottom: formHeight }}>
                         <CommentsBrowse
                             scrollProps={
