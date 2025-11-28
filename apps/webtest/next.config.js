@@ -19,6 +19,12 @@ const nextConfig = {
   // Optimize production builds
   productionBrowserSourceMaps: false,
 
+  // SWC compiler configuration - target modern browsers only
+  compiler: {
+    // Remove console.log in production
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+
   // Experimental optimizations
   experimental: {
     // Optimize package imports - tree-shake and reduce bundle size
