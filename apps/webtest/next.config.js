@@ -2,6 +2,9 @@ const path = require('path')
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Next.js 16 Cache Components (enables 'use cache' directive)
+  cacheComponents: true,
+
   // Transpile shared packages (works for both webpack and turbopack)
   transpilePackages: ['@neo/test-components'],
 
