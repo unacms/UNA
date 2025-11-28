@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@base-ui-components/react": "^1.0.0-beta.7",
     "@neo/test-components": "*",
     "next": "^16.0.4",
     "react": "^19.0.0",

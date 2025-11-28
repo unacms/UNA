@@ -54,6 +54,7 @@
   .bg-background { background-color: var(--color-background); }
   .bg-foreground { background-color: var(--color-foreground); }
   .bg-card { background-color: var(--color-card); }
+  .bg-popover { background-color: var(--color-popover); }
   .bg-primary { background-color: var(--color-primary); }
   .bg-secondary { background-color: var(--color-secondary); }
   .bg-muted { background-color: var(--color-muted); }
@@ -65,6 +66,8 @@
   .text-primary { color: var(--color-primary); }
   .text-primary-foreground { color: var(--color-primary-foreground); }
   .text-secondary-foreground { color: var(--color-secondary-foreground); }
+  .text-accent-foreground { color: var(--color-accent-foreground); }
+  .text-popover-foreground { color: var(--color-popover-foreground); }
   .text-destructive { color: var(--color-destructive); }
   .text-destructive-foreground { color: var(--color-destructive-foreground); }
   
@@ -83,5 +86,211 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+}
+
+/* Navigation Menu Styles - Base UI */
+@layer components {
+  /* Navigation root */
+  .nav-root {
+    position: relative;
+    display: flex;
+    max-width: max-content;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Navigation list */
+  .nav-list {
+    display: flex;
+    flex: 1;
+    list-style: none;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Navigation trigger/link base styles */
+  .nav-trigger {
+    display: inline-flex;
+    height: 2.25rem;
+    width: max-content;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    border-radius: var(--radius);
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background-color: transparent;
+    border: none;
+    color: var(--color-foreground);
+    cursor: pointer;
+    transition: background-color 150ms ease, color 150ms ease;
+    text-decoration: none;
+  }
+
+  .nav-trigger:hover,
+  .nav-trigger:focus {
+    background-color: var(--color-accent);
+    color: var(--color-accent-foreground);
+    outline: none;
+  }
+
+  .nav-trigger[data-popup-open] {
+    background-color: var(--color-accent);
+  }
+
+  /* Chevron icon */
+  .nav-icon {
+    position: relative;
+    top: 1px;
+    transition: transform 200ms ease;
+  }
+
+  .nav-trigger[data-popup-open] .nav-icon {
+    transform: rotate(180deg);
+  }
+
+  /* Positioner - fixed positioning for portal */
+  .nav-positioner {
+    position: fixed;
+    z-index: 100;
+    outline: none;
+  }
+
+  /* Popup container */
+  .nav-popup {
+    position: relative;
+    background-color: var(--color-popover);
+    color: var(--color-popover-foreground);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    box-shadow: 0 10px 38px -10px rgba(22, 23, 24, 0.35), 0 10px 20px -15px rgba(22, 23, 24, 0.2);
+    transform-origin: var(--transform-origin);
+    opacity: 0;
+    transform: scale(0.96);
+    transition: opacity 200ms ease, transform 200ms ease;
+  }
+
+  .nav-popup[data-open] {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .nav-popup[data-starting-style] {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  .nav-popup[data-ending-style] {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  /* Viewport - contains the content */
+  .nav-viewport {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
+
+  /* Content */
+  .nav-content {
+    width: max-content;
+    padding: 1rem;
+  }
+
+  .nav-content[data-starting-style] {
+    opacity: 0;
+  }
+
+  .nav-content[data-ending-style] {
+    opacity: 0;
+  }
+
+  /* Link card styles */
+  .nav-link-card {
+    display: block;
+    text-decoration: none;
+    padding: 0.75rem;
+    border-radius: var(--radius);
+    transition: background-color 150ms ease;
+  }
+
+  .nav-link-card:hover,
+  .nav-link-card:focus {
+    background-color: var(--color-accent);
+    outline: none;
+  }
+
+  .nav-link-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+    margin: 0 0 0.25rem 0;
+    line-height: 1;
+  }
+
+  .nav-link-description {
+    font-size: 0.875rem;
+    color: var(--color-muted-foreground);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  /* Grid layout for links */
+  .nav-grid-links {
+    display: grid;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-grid-links-2col {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 500px;
+  }
+
+  .nav-grid-links-featured {
+    grid-template-columns: 0.75fr 1fr;
+    width: 500px;
+  }
+
+  /* Featured card */
+  .nav-featured-card {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+    justify-content: flex-end;
+    border-radius: var(--radius);
+    background: linear-gradient(to bottom, var(--color-muted), var(--color-secondary));
+    padding: 1.5rem;
+    text-decoration: none;
+    outline: none;
+    grid-row: span 3;
+  }
+
+  .nav-featured-card:focus {
+    box-shadow: 0 0 0 2px var(--color-ring);
+  }
+
+  .nav-featured-title {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+    margin: 1rem 0 0.5rem 0;
+  }
+
+  .nav-featured-description {
+    font-size: 0.875rem;
+    color: var(--color-muted-foreground);
+    margin: 0;
+    line-height: 1.4;
   }
 }
