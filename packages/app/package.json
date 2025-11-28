@@ -2,6 +2,9 @@
   "version": "0.0.0",
   "name": "app",
   "main": "index.ts",
+  "scripts": {
+    "build": "echo 'No build step required'"
+  },
   "dependencies": {
     "clsx": "^2.0.0",
     "crypto": "file:../../crypto-shim",
