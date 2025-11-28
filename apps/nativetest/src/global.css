@@ -1,0 +1,78 @@
+@import 'tailwindcss';
+@import 'uniwind';
+
+/* Include shared components from monorepo */
+@source "../../packages/test-components/src";
+
+/* Shared theme tokens - same structure as webtest */
+@layer theme {
+  :root {
+    @variant light {
+      --color-background: #ffffff;
+      --color-foreground: #0a0a0a;
+      --color-card: #ffffff;
+      --color-card-foreground: #0a0a0a;
+      --color-popover: #ffffff;
+      --color-popover-foreground: #0a0a0a;
+      --color-primary: #2563eb;
+      --color-primary-foreground: #fafafa;
+      --color-secondary: #f4f4f5;
+      --color-secondary-foreground: #18181b;
+      --color-muted: #f4f4f5;
+      --color-muted-foreground: #71717a;
+      --color-accent: #f4f4f5;
+      --color-accent-foreground: #18181b;
+      --color-destructive: #ef4444;
+      --color-destructive-foreground: #fafafa;
+      --color-border: #e4e4e7;
+      --color-input: #e4e4e7;
+      --color-ring: #2563eb;
+    }
+
+    @variant dark {
+      --color-background: #0a0a0a;
+      --color-foreground: #fafafa;
+      --color-card: #0a0a0a;
+      --color-card-foreground: #fafafa;
+      --color-popover: #0a0a0a;
+      --color-popover-foreground: #fafafa;
+      --color-primary: #3b82f6;
+      --color-primary-foreground: #0a0a0a;
+      --color-secondary: #27272a;
+      --color-secondary-foreground: #fafafa;
+      --color-muted: #27272a;
+      --color-muted-foreground: #a1a1aa;
+      --color-accent: #27272a;
+      --color-accent-foreground: #fafafa;
+      --color-destructive: #7f1d1d;
+      --color-destructive-foreground: #fafafa;
+      --color-border: #27272a;
+      --color-input: #27272a;
+      --color-ring: #3b82f6;
+    }
+  }
+}
+
+/* Utility classes using theme tokens */
+@layer utilities {
+  .bg-background { background-color: var(--color-background); }
+  .bg-foreground { background-color: var(--color-foreground); }
+  .bg-card { background-color: var(--color-card); }
+  .bg-primary { background-color: var(--color-primary); }
+  .bg-secondary { background-color: var(--color-secondary); }
+  .bg-muted { background-color: var(--color-muted); }
+  .bg-accent { background-color: var(--color-accent); }
+  .bg-destructive { background-color: var(--color-destructive); }
+  
+  .text-foreground { color: var(--color-foreground); }
+  .text-muted-foreground { color: var(--color-muted-foreground); }
+  .text-primary { color: var(--color-primary); }
+  .text-primary-foreground { color: var(--color-primary-foreground); }
+  .text-secondary-foreground { color: var(--color-secondary-foreground); }
+  .text-destructive { color: var(--color-destructive); }
+  .text-destructive-foreground { color: var(--color-destructive-foreground); }
+  
+  .border-border { border-color: var(--color-border); }
+  .border-input { border-color: var(--color-input); }
+}
+

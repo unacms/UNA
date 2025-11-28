@@ -18,11 +18,17 @@
     "ios:device": "cd apps/expo && dotenv -e ../../.env.local -- npx expo run:ios --device",
     "android": "cd apps/expo && dotenv -e ../../.env.local -- npx expo run:android",
     "web": "cd apps/next && dotenv -e ../../.env.local -- yarn dev",
+    "webtest": "cd apps/webtest && yarn dev",
+    "nativetest": "cd apps/nativetest && expo start",
+    "nativetest:ios": "cd apps/nativetest && expo run:ios",
+    "nativetest:android": "cd apps/nativetest && expo run:android",
+    "nativetest:prebuild": "cd apps/nativetest && expo prebuild",
     "build": "cd apps/next && dotenv -e ../../.env.local -- yarn build",
+    "build:webtest": "cd apps/webtest && yarn build",
     "prod": "cd apps/next && dotenv -e ../../.env.local -- yarn start",
     "prod:pm2": "cd apps/next && dotenv -e ../../.env.local -- yarn start:pm2",
     "analyze": "cd apps/next && cross-env ANALYZE=true yarn build",
-    "clean": "rm -rf ./node_modules && rm -rf ./apps/expo/node_modules && rm -rf ./apps/next/node_modules && rm -rf ./packages/app/node_modules"
+    "clean": "rm -rf ./node_modules && rm -rf ./apps/expo/node_modules && rm -rf ./apps/next/node_modules && rm -rf ./apps/webtest/node_modules && rm -rf ./apps/nativetest/node_modules && rm -rf ./packages/app/node_modules && rm -rf ./packages/test-components/node_modules"
   },
   "nohoist": [
     "**/expo-router",

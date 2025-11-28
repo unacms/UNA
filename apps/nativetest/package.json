@@ -1,0 +1,32 @@
+{
+  "name": "nativetest",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "expo start",
+    "ios": "expo run:ios",
+    "android": "expo run:android",
+    "prebuild": "expo prebuild",
+    "prebuild:clean": "expo prebuild --clean",
+    "eas-build:dev": "eas build --profile development",
+    "eas-build:preview": "eas build --profile preview",
+    "eas-build:prod": "eas build --profile production"
+  },
+  "dependencies": {
+    "@neo/test-components": "*",
+    "expo": "^54.0.22",
+    "expo-dev-client": "~5.1.0",
+    "expo-status-bar": "~3.0.8",
+    "react": "19.1.0",
+    "react-native": "0.81.5",
+    "tailwindcss": "^4.0.0",
+    "uniwind": "^1.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@types/react": "~19.1.0",
+    "typescript": "~5.9.2"
+  }
+}
+

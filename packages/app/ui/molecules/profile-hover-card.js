@@ -27,7 +27,6 @@ const ProfileCardContent = memo(function ProfileCardContent({ profileData,  page
 
 
     return (
-        <View className="overflow-hidden rounded-md bg-popover">
             <View className="p-2">
                 <Row className="gap-3 items-start">
                     <View className="flex-none">
@@ -66,7 +65,7 @@ const ProfileCardContent = memo(function ProfileCardContent({ profileData,  page
                     </Row>}
                 </View>
             </View>
-        </View>
+        
     );
 });
 
