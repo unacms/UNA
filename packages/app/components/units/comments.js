@@ -33,10 +33,10 @@ export default function UnitComments(props) {
 
     const level = props.level || 0
     const lvls = props.lvls || []
-    const data = props.data
+    let data = props.data
     const items = props.items
     const view = props.view
-    const files = props.files
+    let files = props.files
     const maxLevel = props.max_level
     const parent = props.parent
 
