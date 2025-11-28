@@ -1,18 +1,40 @@
+const path = require('path')
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Next.js 16 Cache Components (Partial Prerendering)
-  cacheComponents: true,
-  
-  // React Compiler (moved from experimental in Next.js 16)
-  reactCompiler: true,
-
-  // Transpile shared packages
+  // Transpile shared packages (works for both webpack and turbopack)
   transpilePackages: ['@neo/test-components'],
 
-  // Turbopack configuration (Next.js 16 default bundler)
+  // TypeScript configuration
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+
+  // Webpack configuration for production builds
+  webpack: (config) => {
+    // Resolve @neo/test-components from monorepo packages
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@neo/test-components': path.resolve(__dirname, '../../packages/test-components/src'),
+    }
+
+    // Resolve extensions for web-specific files
+    config.resolve.extensions = [
+      '.web.tsx',
+      '.web.ts', 
+      '.web.js',
+      '.tsx',
+      '.ts',
+      '.js',
+      ...config.resolve.extensions,
+    ]
+
+    return config
+  },
+
+  // Turbopack configuration (dev mode with Next.js 15+)
   turbopack: {
     resolveAlias: {
-      // Alias for shared test components
       '@neo/test-components': '../../packages/test-components/src',
     },
     resolveExtensions: [
@@ -23,11 +45,6 @@ const nextConfig = {
       '.ts',
       '.js',
     ],
-  },
-
-  // TypeScript paths
-  typescript: {
-    ignoreBuildErrors: false,
   },
 }
 
