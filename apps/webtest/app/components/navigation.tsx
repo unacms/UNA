@@ -65,7 +65,7 @@ function NavLink(props: NavigationMenu.Link.Props) {
 export function SiteNavigation() {
   return (
     <NavigationMenu.Root className="nav-root">
-      <NavigationMenu.List className="nav-list">
+      <NavigationMenu.List className="nav-list" role="menubar">
         {/* Getting Started Dropdown */}
         <NavigationMenu.Item>
           <NavigationMenu.Trigger className="nav-trigger">
