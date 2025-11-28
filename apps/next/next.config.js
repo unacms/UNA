@@ -3,7 +3,6 @@ const webpack = require('webpack');
 const { withExpo } = require('@expo/next-adapter')
 const merge = require('deepmerge');
 const nextConfigCustom = require('./next.config.custom.js');
-//const MillionCompiler = require('@million/lint');
 
 
 /** @type {import('next').NextConfig} */
@@ -18,7 +17,12 @@ const tenPlayWebviewShimPath = require('fs').existsSync(tenPlayWebviewLocalPath)
   ? path.resolve(tenPlayWebviewLocalPath, 'lib/module/shim.js')
   : path.resolve(tenPlayWebviewRootPath, 'lib/module/shim.js');
 
-const reanimatedPath = path.resolve(__dirname, 'node_modules/react-native-reanimated');
+// Reanimated is no longer used on web - all components have .web.js versions
+// We stub it out to prevent any accidental imports from crashing
+const reanimatedStubPath = path.resolve(__dirname, 'stubs/react-native-reanimated.js');
+
+// Bottom sheet is also not used on web - components use Modal instead
+const bottomSheetStubPath = path.resolve(__dirname, 'stubs/gorhom-bottom-sheet.js');
 
 const nextConfig = {
   env: {
@@ -35,11 +39,8 @@ const nextConfig = {
     // scrollRestoration: true,
     swcPlugins: [[require.resolve('./plugins/swc_plugin_reanimated.wasm')]],
   },*/
-  // reanimated (and thus, Moti) doesn't work with strict mode currently...
-  // https://github.com/nandorojo/moti/issues/224
-  // https://github.com/necolas/react-native-web/pull/2330
-  // https://github.com/nandorojo/moti/issues/224
-  // once that gets fixed, set this back to true
+  // TODO: Can potentially enable strict mode now that reanimated is removed from web
+  // Previously disabled due to reanimated/Moti issues
   reactStrictMode: false,
   poweredByHeader: false,
   // Enable source maps for production to help with debugging and Lighthouse insights
@@ -99,7 +100,8 @@ const nextConfig = {
       'react-native-svg': path.resolve(__dirname, 'node_modules/react-native-svg'),
       'react-native/Libraries/Utilities/codegenNativeComponent': tenPlayWebviewShimPath,
       'react-native/Libraries/Utilities/codegenNativeComponent$': tenPlayWebviewShimPath,
-      'react-native-reanimated': reanimatedPath,  // <-- Явно указываем версию 3.10.1
+      'react-native-reanimated': reanimatedStubPath,  // Stub - reanimated not used on web
+      '@gorhom/bottom-sheet': bottomSheetStubPath,  // Stub - bottom sheet not used on web
     };
 
     // Добавляем fallback для codegenNativeComponent
@@ -128,11 +130,18 @@ const nextConfig = {
           resource.request = tenPlayWebviewPath;
         }
       ),
-      // Принудительно заменяем react-native-reanimated на версию 3.10.1
+      // Stub out react-native-reanimated - not used on web
       new webpack.NormalModuleReplacementPlugin(
         /^react-native-reanimated$/,
         (resource) => {
-          resource.request = reanimatedPath;
+          resource.request = reanimatedStubPath;
+        }
+      ),
+      // Stub out @gorhom/bottom-sheet - not used on web
+      new webpack.NormalModuleReplacementPlugin(
+        /^@gorhom\/bottom-sheet$/,
+        (resource) => {
+          resource.request = bottomSheetStubPath;
         }
       )
     );
