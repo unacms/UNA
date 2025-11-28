@@ -2,6 +2,9 @@ const path = require('path')
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Enable gzip compression (for self-hosted; Vercel handles this automatically)
+  compress: true,
+
   // Next.js 16 Cache Components (enables 'use cache' directive)
   cacheComponents: true,
 
