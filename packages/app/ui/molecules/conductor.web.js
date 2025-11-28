@@ -47,7 +47,7 @@ import {
 } from 'app/ui/molecules/resizable-panels'
 import { useLayoutSettings } from 'app/context/layout-settings'
 import { useIsDesktop, useBreakpoint } from 'app/context/measure'
-import Toaster from 'app/ui/atoms/toaster2'
+import Snackbar from 'app/ui/atoms/snackbar'
 
 const conductorTheme = appSetting('theme', 'conductor')
 
@@ -574,7 +574,8 @@ const TabSceneMainContent = ({
         {(pageRoute?.endpoint?.request_url && hasNextPage) && PreloadShort}
         {(pageRoute?.endpoint?.request_url && hasNextPage === false && dataItems.filter((item) => item.type != 'block').length == 0) && callFn('noContentByUrl', [pageRoute?.endpoint])}
 
-        {refetchState.hasNewData && <Toaster
+        <Snackbar
+            visible={refetchState.hasNewData}
             onPress={() => {
                 const latestItems = flattenPagesForUniList(pagesData)
                 dispatch({ type: 'SET_ITEMS', items: latestItems })
@@ -587,11 +588,10 @@ const TabSceneMainContent = ({
                     })
                 }
             }}
-            isVisible={refetchState.hasNewData}
             variant="primary"
             title="Show New"
             size="sm"
-        />}
+        />
         </>
     )
 };

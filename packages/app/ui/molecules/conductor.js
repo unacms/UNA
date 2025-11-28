@@ -12,7 +12,7 @@ import { useLayoutData } from 'app/context/layout';
 import { Theme } from 'app/design/theme';
 import { subscribe } from 'app/ui/atoms/socket';
 import { fetcher } from 'app/lib/fetcher';
-import Toaster from 'app/ui/atoms/toaster';
+import Snackbar from 'app/ui/atoms/snackbar';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByName } from 'app/components/block';
 import { callFn } from 'app/lib/functions/call';
@@ -164,7 +164,7 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 88, s
     const [routes, setRoutes1] = useState(initedTabs);
     const [menuState, setMenuState] = useState(menu);
     const [isRevalidate, setIsRevalidate] = useState(false);
-    const toasterRef2 = useRef();
+    const [snackbarVisible, setSnackbarVisible] = useState(false);
     const currentBreakpoint = useBreakpoint();
 
 
@@ -269,7 +269,7 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 88, s
     }, [bEnabled, currentRoute.data.length]);
 
     useEffect(() => {
-        setToaster2Visible(false);
+        setSnackbarVisible(false);
     }, [index]);
 
     const showNewContent2 = async () => {
@@ -278,14 +278,7 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 88, s
         newRoutes[index].data = newRoutes[index].data.filter(item => item.type === 'block');;
         newRoutes[index].endpoint.params.start = 0;
         setRoutes(newRoutes);
-        setToaster2Visible(false);
-    }
-
-    const setToaster2Visible = (val) => {
-        const current = toasterRef2.current;
-        if (current) {
-            current.setVisible(val);
-        }
+        setSnackbarVisible(false);
     }
 
     const revalidateData = useCallback(async () => {
@@ -311,7 +304,7 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 88, s
             const validatedData = (await fetcher(endpointUpdateContent)).data?.[0]?.data?.data;
 
             if (validatedData && (validatedData == 'valid' || validatedData == 'invalid')) {
-                setToaster2Visible(validatedData !== 'valid');
+                setSnackbarVisible(validatedData !== 'valid');
             }
         }
     }, [currentRoute, isRevalidate, currentUser?.id]);
@@ -436,7 +429,7 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 88, s
     return (
         <View className="w-full h-full">
             <View className="w-full flex-1 ">
-                <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="Show New Posts" size="sm" />
+                <Snackbar visible={snackbarVisible} onPress={showNewContent2} onDismiss={() => setSnackbarVisible(false)} variant="primary" title="Show New Posts" size="sm" />
                 <TabScene {...tabSceneProps} />
             </View>
         </View>

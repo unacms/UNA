@@ -19,7 +19,7 @@ import {
     refetchUniListReducer,
     isSameItemsForUniList
 } from 'app/lib/conductor-helpers'
-import Toaster from 'app/ui/atoms/toaster2'
+import Snackbar from 'app/ui/atoms/snackbar'
 import emitter from 'app/context/emitter'
 
 export function CommentsBrowse({
@@ -396,34 +396,32 @@ export function CommentsBrowse({
                     ) : null
                 }
             />
-            {refetchState.hasNewData && (
-                <Toaster
-                    position="top"
-                    onPress={() => {
-                        const latestItems = flattenPagesForComments(pagesData, viewMode)
-                        dispatch({ type: 'SET_ITEMS', items: latestItems })
+            <Snackbar
+                visible={refetchState.hasNewData}
+                position="top"
+                onPress={() => {
+                    const latestItems = flattenPagesForComments(pagesData, viewMode)
+                    dispatch({ type: 'SET_ITEMS', items: latestItems })
 
-                        refetchRef.current.prevItems = latestItems
+                    refetchRef.current.prevItems = latestItems
 
 
-                        // сюда можно добавить скролл к нужному месту TODO
-                        if (flashListRef.current) {
-                            flashListRef.current.scrollToIndex?.({
-                                index: latestItems.length - 1,
-                                animated: true,
-                            })
-                        }
-                        setBrowseParams(prev => ({
-                            ...prev,
-                            total_count: pagesData.pages[0].total_count,
-                        }));
-                    }}
-                    isVisible={refetchState.hasNewData}
-                    variant="primary"
-                    title={t('Show new comments')}
-                    size="sm"
-                />
-            )}
+                    // сюда можно добавить скролл к нужному месту TODO
+                    if (flashListRef.current) {
+                        flashListRef.current.scrollToIndex?.({
+                            index: latestItems.length - 1,
+                            animated: true,
+                        })
+                    }
+                    setBrowseParams(prev => ({
+                        ...prev,
+                        total_count: pagesData.pages[0].total_count,
+                    }));
+                }}
+                variant="primary"
+                title={t('Show new comments')}
+                size="sm"
+            />
 
         </>
     )

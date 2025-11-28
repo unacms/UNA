@@ -26,7 +26,7 @@ import Galery from 'app/ui/molecules/gallery'
 import { Button } from 'app/design/controls'
 import { useWindowHeight } from 'app/context/measure';
 import emitter from 'app/context/emitter'
-import Toaster from 'app/ui/atoms/toaster2'
+import Snackbar from 'app/ui/atoms/snackbar'
 import {
     refetchUniListReducer,
     isSameItemsForUniList,
@@ -433,7 +433,8 @@ export default function Browse(props) {
                 }
                 {contentElement}
             </View>
-            {refetchState.hasNewData && <Toaster
+            <Snackbar
+                visible={refetchState.hasNewData}
                 onPress={() => {
                     const latestItems = flattenPagesForUniList(pagesData)
                     dispatch({ type: 'SET_ITEMS', items: latestItems })
@@ -446,11 +447,10 @@ export default function Browse(props) {
                         })
                     }
                 }}
-                isVisible={refetchState.hasNewData}
                 variant="primary"
                 title="Show New"
                 size="sm"
-            />}
+            />
         </View>
     )
 }

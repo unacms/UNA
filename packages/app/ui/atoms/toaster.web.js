@@ -1,15 +1,14 @@
 /**
- * Toast Component - Native Implementation
+ * Toast Component - Web Implementation
  * 
- * Uses sonner-native for React Native toast notifications.
- * @see https://github.com/gunnartorfis/sonner-native
+ * Uses sonner for web toast notifications.
+ * @see https://sonner.emilkowal.ski
  * 
  * Installation:
- * npx expo install sonner-native react-native-reanimated react-native-gesture-handler react-native-safe-area-context react-native-svg
+ * yarn add sonner
  */
 
-import { Toaster as SonnerNativeToaster, toast as sonnerNativeToast } from 'sonner-native';
-import { useColorScheme } from 'react-native';
+import { Toaster as SonnerToaster, toast as sonnerToast } from 'sonner';
 import { appSetting } from 'app/lib/util';
 
 // Get toast theme settings
@@ -19,15 +18,17 @@ const toastTheme = appSetting('theme', 'toast') || {};
  * Toaster component - Add this to your app root
  * 
  * @example
- * // In your App.tsx or layout
+ * // In your layout.js (Next.js)
  * import { Toaster } from 'app/ui/atoms/toaster';
  * 
- * export default function App() {
+ * export default function RootLayout({ children }) {
  *   return (
- *     <View style={{ flex: 1 }}>
- *       <NavigationContainer>...</NavigationContainer>
- *       <Toaster />
- *     </View>
+ *     <html>
+ *       <body>
+ *         {children}
+ *         <Toaster />
+ *       </body>
+ *     </html>
  *   );
  * }
  */
@@ -37,24 +38,36 @@ export function Toaster({
     visibleToasts = 3,
     closeButton = false,
     richColors = true,
-    swipeToDismissDirection = 'up',
+    expand = false,
+    theme = 'system',
+    offset = '16px',
+    gap = 14,
     ...props
 }) {
-    const colorScheme = useColorScheme();
-    const theme = props.theme || colorScheme || 'system';
-
     return (
-        <SonnerNativeToaster
+        <SonnerToaster
             position={position}
             duration={duration}
             visibleToasts={visibleToasts}
             closeButton={closeButton}
             richColors={richColors}
+            expand={expand}
             theme={theme}
-            swipeToDismissDirection={swipeToDismissDirection}
+            offset={offset}
+            gap={gap}
             toastOptions={{
                 style: toastTheme.style,
                 className: toastTheme.className,
+                classNames: {
+                    toast: toastTheme.toastClassName,
+                    title: toastTheme.titleClassName,
+                    description: toastTheme.descriptionClassName,
+                    success: toastTheme.successClassName,
+                    error: toastTheme.errorClassName,
+                    warning: toastTheme.warningClassName,
+                    info: toastTheme.infoClassName,
+                    ...toastTheme.classNames,
+                },
                 ...props.toastOptions,
             }}
             {...props}
@@ -105,6 +118,14 @@ export function Toaster({
  *   },
  * });
  * 
+ * // Custom JSX content
+ * toast.custom((t) => (
+ *   <div>
+ *     <p>Custom content</p>
+ *     <button onClick={() => toast.dismiss(t)}>Close</button>
+ *   </div>
+ * ));
+ * 
  * // Custom duration
  * toast('Quick message', { duration: 2000 });
  * 
@@ -115,7 +136,7 @@ export function Toaster({
  * // Dismiss all toasts
  * toast.dismiss();
  */
-export const toast = sonnerNativeToast;
+export const toast = sonnerToast;
 
 // Re-export for convenience
 export { toast as default };
