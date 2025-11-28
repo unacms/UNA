@@ -81,6 +81,46 @@ function SiteHeader() {
   )
 }
 
+// Critical CSS for above-the-fold content - inlined to eliminate render-blocking chain
+const criticalCSS = `
+:root{--color-background:#fff;--color-foreground:#0a0a0a;--color-primary:#2563eb;--color-primary-foreground:#fafafa;--color-muted-foreground:#52525b;--color-border:#e4e4e7;--color-accent:#f4f4f5;--radius:0.5rem}
+body{margin:0;background-color:var(--color-background);color:var(--color-foreground);font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+.min-h-screen{min-height:100vh}
+.sticky{position:sticky}
+.top-0{top:0}
+.z-50{z-index:50}
+.h-16{height:4rem}
+.px-6{padding-left:1.5rem;padding-right:1.5rem}
+.border-b{border-bottom-width:1px}
+.border-border{border-color:var(--color-border)}
+.bg-background\\/95{background-color:rgba(255,255,255,.95)}
+.backdrop-blur{backdrop-filter:blur(8px)}
+.flex{display:flex}
+.items-center{align-items:center}
+.justify-between{justify-content:space-between}
+.gap-2{gap:.5rem}
+.gap-6{gap:1.5rem}
+.max-w-7xl{max-width:80rem}
+.mx-auto{margin-left:auto;margin-right:auto}
+.h-full{height:100%}
+.w-8{width:2rem}
+.h-8{height:2rem}
+.rounded-lg{border-radius:var(--radius)}
+.rounded-md{border-radius:calc(var(--radius) - 2px)}
+.bg-primary{background-color:var(--color-primary)}
+.text-primary-foreground{color:var(--color-primary-foreground)}
+.w-5{width:1.25rem}
+.h-5{height:1.25rem}
+.text-lg{font-size:1.125rem;line-height:1.75rem}
+.font-bold{font-weight:700}
+.text-sm{font-size:.875rem;line-height:1.25rem}
+.font-medium{font-weight:500}
+.text-muted-foreground{color:var(--color-muted-foreground)}
+.px-4{padding-left:1rem;padding-right:1rem}
+.py-2{padding-top:.5rem;padding-bottom:.5rem}
+@media(min-width:768px){.hidden{display:none}.md\\:flex{display:flex}}
+`.replace(/\n/g, '')
+
 export default function RootLayout({
   children,
 }: {
@@ -89,14 +129,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Preconnect to Vercel's analytics/speed insights if used */}
+        {/* Preconnect to Vercel's edge network */}
         <link rel="dns-prefetch" href="//vercel.live" />
-        {/* Inline critical CSS variables to prevent FOUC */}
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `:root{--color-background:#fff;--color-foreground:#0a0a0a;--color-primary:#2563eb}`,
-          }}
-        />
+        {/* Critical CSS inlined to eliminate render-blocking chain */}
+        <style dangerouslySetInnerHTML={{ __html: criticalCSS }} />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
         <SiteHeader />

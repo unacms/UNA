@@ -29,6 +29,8 @@ const nextConfig = {
   experimental: {
     // Optimize package imports - tree-shake and reduce bundle size
     optimizePackageImports: ['@base-ui-components/react'],
+    // Optimize CSS loading
+    optimizeCss: true,
   },
 
   // Webpack configuration for production builds
