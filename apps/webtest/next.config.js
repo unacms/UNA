@@ -16,8 +16,17 @@ const nextConfig = {
     ignoreBuildErrors: false,
   },
 
+  // Optimize production builds
+  productionBrowserSourceMaps: false,
+
+  // Experimental optimizations
+  experimental: {
+    // Optimize package imports - tree-shake and reduce bundle size
+    optimizePackageImports: ['@base-ui-components/react'],
+  },
+
   // Webpack configuration for production builds
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     // Resolve @neo/test-components from monorepo packages
     config.resolve.alias = {
       ...config.resolve.alias,
@@ -34,6 +43,34 @@ const nextConfig = {
       '.js',
       ...config.resolve.extensions,
     ]
+
+    // Optimize chunks for fewer HTTP requests
+    if (!isServer) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+          minSize: 20000,
+          maxSize: 244000,
+          cacheGroups: {
+            // Bundle all Base UI into a single chunk
+            baseui: {
+              test: /[\\/]node_modules[\\/]@base-ui-components[\\/]/,
+              name: 'baseui',
+              chunks: 'all',
+              priority: 30,
+            },
+            // Bundle common vendor code
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendor',
+              chunks: 'all',
+              priority: 20,
+            },
+          },
+        },
+      }
+    }
 
     return config
   },

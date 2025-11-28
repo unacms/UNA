@@ -1,14 +1,42 @@
 // Root Layout - Server Component
 // Navigation menu uses Base UI primitives with custom styling
 
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import './globals.css'
-import { SiteNavigation } from './components/navigation'
+
+// Lazy load the navigation menu - it's not needed for initial render
+const SiteNavigation = dynamic(
+  () => import('./components/navigation').then((mod) => mod.SiteNavigation),
+  { 
+    ssr: true,
+    loading: () => <NavPlaceholder />
+  }
+)
+
+// Lightweight placeholder while navigation loads
+function NavPlaceholder() {
+  return (
+    <div className="flex gap-1">
+      {['Getting Started', 'Components', 'Pricing', 'About'].map((item) => (
+        <span key={item} className="px-4 py-2 text-sm font-medium text-muted-foreground">
+          {item}
+        </span>
+      ))}
+    </div>
+  )
+}
 
 export const metadata: Metadata = {
   title: 'NEO Testground',
   description: 'Experimental UI patterns and server component testing',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#ffffff',
 }
 
 // Server-rendered header shell with client navigation
@@ -60,6 +88,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        {/* Preconnect to Vercel's analytics/speed insights if used */}
+        <link rel="dns-prefetch" href="//vercel.live" />
+        {/* Inline critical CSS variables to prevent FOUC */}
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `:root{--color-background:#fff;--color-foreground:#0a0a0a;--color-primary:#2563eb}`,
+          }}
+        />
+      </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
         <SiteHeader />
         <main>{children}</main>
