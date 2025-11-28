@@ -64,8 +64,12 @@ function NavLink(props: NavigationMenu.Link.Props) {
 
 export function SiteNavigation() {
   return (
-    <NavigationMenu.Root className="nav-root">
-      <NavigationMenu.List className="nav-list" role="menubar">
+    <NavigationMenu.Root className="nav-root" aria-label="Main navigation">
+      {/* Use render prop to control the ul element without aria-orientation */}
+      <NavigationMenu.List
+        className="nav-list"
+        render={<ul className="nav-list" />}
+      >
         {/* Getting Started Dropdown */}
         <NavigationMenu.Item>
           <NavigationMenu.Trigger className="nav-trigger">
