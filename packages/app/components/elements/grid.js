@@ -477,7 +477,7 @@ export default function ElementGrid(props) {
                         return <MultiAdd key={`btn-${item.name}`} handleUpdate={handleUpdate} setBottomSheetData={setBottomSheetData} data={item} />
                     }
                     if (item.type == 'link') {
-                        return <Link key={`btn-${item.name}`} href={item.link}><Button size="sm" title={item.title} showTitleFromSize='sm' /></Link>
+                        return <Link key={`btn-${item.name}`} href={item.link || item.url}><Button size="sm" title={item.title} showTitleFromSize='sm' /></Link>
                     }
                 })}
                 

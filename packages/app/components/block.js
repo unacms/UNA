@@ -1,13 +1,15 @@
 import String from './blocks-content/string';
 import ObjectDataObject from './blocks-content/object-data-object';
 import ObjectDataArray from './blocks-content/object-data-array';
-import { BlockDataByName } from 'app/lib/util';
+import { BlockDataByName, strToObj } from 'app/lib/util';
 import { appStatic } from 'app/lib/app-static';
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { stripTags, appSetting } from 'app/lib/util';
-import { Block as PageBlock, BlockContent, BlockList, BlockHeader, BlockTitle } from 'app/ui/molecules/page-block'
-
+import { Block as PageBlock, BlockContent, BlockName, BlockActions, BlockHeader, BlockTitle } from 'app/ui/molecules/page-block'
+import Link from 'app/ui/atoms/link'
+import { Button } from 'app/design/controls'
+import { useTranslation } from 'react-i18next'
 
 const componentsMap = {
     object: ObjectDataObject,
@@ -17,7 +19,7 @@ const componentsMap = {
 
 export function BlockByName2({ b, name, contentOnly }) {
     const blockNameString = (typeof name === 'string') ? name : name?.name;
-    let c = Block({ uri: '', block: b, contentOnly: contentOnly, showTitle: name.showTitle, showPad: name.showPad, showBg: name.showBg, extraProps: { ...name, source: blockNameString }, sidebar: name.sidebar, showTitleInside:name.showTitleInside  })
+    let c = Block({ uri: '', block: b, contentOnly: contentOnly, showTitle: name.showTitle, showPad: name.showPad, showBg: name.showBg, extraProps: { ...name, source: blockNameString }, sidebar: name.sidebar, showTitleInside: name.showTitleInside })
     return c;
 }
 
@@ -47,7 +49,7 @@ export function BlockByName(props) {
                         for (const key3 of Object.keys(data.elements[key][key2].content)) {
                             if (data.elements[key][key2].source === blockNameString) {
                                 b = data.elements[key][key2];
-                                break; 
+                                break;
                             }
                         }
                     }
@@ -59,51 +61,51 @@ export function BlockByName(props) {
     }
 
     if (b) {
-        return <Block 
+        return <Block
             exProps={name?.exProps}
-            extraProps={{ ...(name?.exProps || name), source: blockNameString }} 
-            key={b.id} 
-            uri={data.uri} 
-            url={data.url} 
-            block={b} 
-            showTitle={name?.showTitle} 
-            fullWidth={name?.fullWidth} 
+            extraProps={{ ...(name?.exProps || name), source: blockNameString }}
+            key={b.id}
+            uri={data.uri}
+            url={data.url}
+            block={b}
+            showTitle={name?.showTitle}
+            fullWidth={name?.fullWidth}
             contentOnly={contentOnly || name?.contentOnly}
-            showPad={name?.showPad} 
+            showPad={name?.showPad}
             showPadding={name?.showPadding}
-            showBg={name?.showBg} 
-            unitType={name?.unitType} 
-            {...rest} 
+            showBg={name?.showBg}
+            unitType={name?.unitType}
+            {...rest}
         />;
     }
-    
-    return null; 
+
+    return null;
 }
 
 export function BlockByData(props) {
     let { data, name, contentOnly, uri, url, ...rest } = props;
- const blockNameString = (typeof name === 'string') ? name : name?.name;
-    
+    const blockNameString = (typeof name === 'string') ? name : name?.name;
+
     if (data) {
-        return <Block 
+        return <Block
             exProps={name?.exProps}
-            extraProps={{ ...(name?.exProps || name), source: blockNameString }} 
-            key={data.id} 
-            uri={uri} 
-            url={url} 
-            block={data} 
-            showTitle={name?.showTitle} 
-            fullWidth={name?.fullWidth} 
+            extraProps={{ ...(name?.exProps || name), source: blockNameString }}
+            key={data.id}
+            uri={uri}
+            url={url}
+            block={data}
+            showTitle={name?.showTitle}
+            fullWidth={name?.fullWidth}
             contentOnly={contentOnly || name?.contentOnly}
-            showPad={name?.showPad} 
+            showPad={name?.showPad}
             showPadding={name?.showPadding}
-            showBg={name?.showBg} 
-            unitType={name?.unitType} 
-            {...rest} 
+            showBg={name?.showBg}
+            unitType={name?.unitType}
+            {...rest}
         />;
     }
-    
-    return null; 
+
+    return null;
 }
 
 export function BlockByServiceName(props) {
@@ -113,16 +115,16 @@ export function BlockByServiceName(props) {
         if (!data || !data.elements || typeof data.elements !== 'object') {
             b = null;
         } else {
-        Object.keys(data.elements).forEach(key => {
-            Object.keys(data.elements[key]).forEach(key2 => {
-                if (data.elements[key][key2].content) {
-                    Object.keys(data.elements[key][key2].content).forEach(key3 => {
-                        if (data.elements[key][key2].source == name.toString())
-                            b = data.elements[key][key2];
-                    });
-                }
+            Object.keys(data.elements).forEach(key => {
+                Object.keys(data.elements[key]).forEach(key2 => {
+                    if (data.elements[key][key2].content) {
+                        Object.keys(data.elements[key][key2].content).forEach(key3 => {
+                            if (data.elements[key][key2].source == name.toString())
+                                b = data.elements[key][key2];
+                        });
+                    }
+                });
             });
-        });
         }
     }
     if (b)
@@ -153,8 +155,8 @@ function StaticBlock_(name, rest) {
     }
 }
 
-export function StaticBlock({name, showBg, showTitle, showPadding, title}) {
-    const block = { designbox_id: 0, id: name, title:title };
+export function StaticBlock({ name, showBg, showTitle, showPadding, title }) {
+    const block = { designbox_id: 0, id: name, title: title };
     return (
         <BlockWrapper block={block} showBg={showBg} showTitle={showTitle} showPadding={showPadding}>
             {appStatic('components_' + name.replace('static:', ''))}
@@ -163,7 +165,8 @@ export function StaticBlock({name, showBg, showTitle, showPadding, title}) {
 }
 
 export function BlockWrapper(props) {
-    let { block, showTitle, showBg, fullWidth, contentOnly, list, showPadding, ...rest } = props
+    const { t } = useTranslation()
+    let { config, block, showTitle, showBg, fullWidth, contentOnly, list, showPadding, ...rest } = props
     block.designbox_id = Number(block.designbox_id);
     const aNoTitle = [0, 10, 13, 3];
     const aNoBg = [0, 10, 14, 4];
@@ -189,7 +192,7 @@ export function BlockWrapper(props) {
     if (typeof showTitle !== 'undefined') {
         bIsShowTitle = showTitle;
     }
-   
+
     if (typeof showPadding !== 'undefined') {
         bIsShowPadding = showPadding;
     }
@@ -197,7 +200,8 @@ export function BlockWrapper(props) {
     let cssClasses = rest?.extraProps?.cssClasses ? rest?.extraProps?.cssClasses : "";
     // Streamlined logic: avoid unnecessary fragment, ensure BlockContent is not wrapping elements twice
 
-    if ((props?.block?.content && props?.block?.content[0]?.type == 'browse'))//|| block.designbox_id == 0
+    const content_type = config?.content_type || props?.block?.content?.[0]?.type
+    if ((content_type == 'browse' || content_type == 'browse_list'))
         contentOnly = true;
 
     if (contentOnly)
@@ -224,27 +228,38 @@ export function BlockWrapper(props) {
             >
                 {bIsShowTitle && (
                     <BlockHeader>
-                        <BlockTitle>{stripTags(block.title)}</BlockTitle>
+                        <BlockName>
+                            <BlockTitle>{stripTags(block.title)}</BlockTitle>
+                        </BlockName>
+                        {config.header_more_url && (<BlockActions>
+                            <Link href={config.header_more_url}>
+                                <Button
+                                    variant="link"
+                                    size="sm"
+                                    rounded
+                                    title={t(config.header_more_text || 'View All')}
+                                />
+                            </Link>
+                        </BlockActions>)}
                     </BlockHeader>
                 )}
                 <BlockContent>
                     {props.children}
                 </BlockContent>
-
             </PageBlock>
         </View>
     );
-} 
+}
 
 export default function Block(props) {
     const block = props.block;
 
-   
-    const { name: extraPropsName, key,  ... extraPropsRest } = props?.extraProps ?? {};
+    const { name: extraPropsName, key, ...extraPropsRest } = props?.extraProps ?? {};
     const staticBlock = StaticBlock_(extraPropsName, extraPropsRest)
-    if (staticBlock){
+    if (staticBlock) {
         return staticBlock
     }
+    const config = block.config_api ? (strToObj(block.config_api)) : {}
 
     const type = block.content && Array.isArray(block.content) ? 'array' : typeof block.content;
     const BlockType = componentsMap[type];
@@ -252,8 +267,8 @@ export default function Block(props) {
         return null;
 
     return (
-        <BlockWrapper block={block} contentOnly={props.contentOnly} showBg={props.showBg} showPad={props.showPad} showTitle={props.showTitle} fullWidth={props.fullWidth} extraProps={props.extraProps} list={props.list} showPadding={props.showPadding}>
-            <BlockType data={block.content} type={block.type} {...props} />
+        <BlockWrapper config={config} block={block} contentOnly={props.contentOnly} showBg={props.showBg} showPad={props.showPad} showTitle={props.showTitle} fullWidth={props.fullWidth} extraProps={props.extraProps} list={props.list} showPadding={props.showPadding}>
+            <BlockType data={block.content} type={block.type} {...props} {...config} />
         </BlockWrapper>
     );
 }

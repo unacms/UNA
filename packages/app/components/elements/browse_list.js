@@ -6,7 +6,7 @@ import {
     useMemo,
     useRef,
     useReducer,
-    useState 
+    useState
 } from 'react'
 import { View, Row, ScrollView } from 'app/design/view'
 import { Platform } from 'react-native'
@@ -17,12 +17,9 @@ import {
 import { Text } from 'app/design/typography'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
-import { useTranslation } from 'react-i18next'
 import { subscribe } from 'app/ui/atoms/socket'
 import { useCurrentUser } from 'app/context/user'
 import { callFn } from 'app/lib/functions/call'
-import Link from 'app/ui/atoms/link'
-import Galery from 'app/ui/molecules/gallery'
 import { Button } from 'app/design/controls'
 import { useWindowHeight } from 'app/context/measure';
 import emitter from 'app/context/emitter'
@@ -36,12 +33,10 @@ import {
 import { getComponent } from 'app/components/registry';
 import { BrowseItem } from 'app/lib/common-helpers'
 
-const blockTheme = appSetting('theme', 'blocks');
-
 export default function Browse(props) {
     const isWeb = Platform.OS === 'web'
-    const { t } = useTranslation()
     const { currentUser } = useCurrentUser();
+
     const Form = getComponent('element', 'form');
 
     const uniRef = useRef()
@@ -57,9 +52,6 @@ export default function Browse(props) {
     //updateMode can be action, auto, none
     const updateMode = (props.updateMode || props.data.unit == 'feed') ? 'action' : 'none';
     const data = props.data
-    const isOneLine = data?.params?.view == 'showcase'
-    const isOnePage = props.only_one_page || isOneLine;
-    const isShowTitleInside = props?.showTitleInside || props?.extraProps?.showTitleInside || isOneLine;
 
     if (data.unit == 'mixed') {
         data.unit = 'general-profile-list'
@@ -78,8 +70,6 @@ export default function Browse(props) {
 
     const windowHeight = useWindowHeight();
 
-    const numColumns = props.perLine || 1;
-
     const formProps = data?.filter_form;
 
     const handleFilterFormChange = useCallback((values) => {
@@ -91,18 +81,16 @@ export default function Browse(props) {
         );
 
         const a = transformedValues.by_hashtag ? { type: 'bx_channels', context: transformedValues.by_hashtag } : { type: 'feed' };
-        
+
         setDefParams(prev => ({
             ...prev,
             modules: transformedValues.modules,
-                media: transformedValues.media,
-                ...a
+            media: transformedValues.media,
+            ...a
         }));
         refetchRef.current.skipToast = true
         refetch()
     });
-
-
 
     const hOffset = isWeb ? 64 : 56
 
@@ -143,15 +131,13 @@ export default function Browse(props) {
         (lastItemIndex) => {
             if (!data.request_url) return
             if (!hasNextPage) return
-            if (isOnePage == true) return
-            if (props.extraProps?.limit == true) return
             if (isFetchingNextPage) return
             if (lastItemIndex == false) return
 
             refetchRef.current.skipToast = true
             fetchNextPage()
         },
-        [hasNextPage, isOnePage, isFetchingNextPage]
+        [hasNextPage, isFetchingNextPage]
     )
 
     useEffect(() => {
@@ -183,7 +169,7 @@ export default function Browse(props) {
     if (props?.skeleton) sSkeleton = props?.skeleton
 
     if (props.unitType) sSkeleton = [sSkeleton, props.unitType]
-    const Preload = getSkeletonForList(sSkeleton, numColumns)
+    const Preload = getSkeletonForList(sSkeleton, 1)
 
     useEffect(() => {
         if (props.data.unit == 'feed') {
@@ -239,75 +225,6 @@ export default function Browse(props) {
         )
     }
 
-    let contentElement = false;
-
-    if (props.extraProps?.galery) {
-        const uniqueItems = dataItems.filter(
-            (v, i, a) => a.findIndex((t) => t.id === v.id) === i
-        )
-        const limitedItems = props.extraProps?.limit
-            ? uniqueItems.slice(0, props.extraProps?.limit)
-            : uniqueItems
-
-        const items = limitedItems.map((item, index) => (
-            <Unit
-                unit={data.unit ? data.unit : ''}
-                mode={unitMode}
-                module={data.module ? data.module : ''}
-                sidebar={props.sidebar}
-                object_id={data.object_id ? data.object_id : ''}
-                view={data.view ? data.view : ''}
-                {...props}
-                data={item}
-            />
-        ));
-        contentElement = items.length == 0 ? null : <Galery items={items} />
-    }
-
-    if ((props.sidebar && !props.extraProps?.galery) || isOneLine) {
-        const uniqueItems = dataItems.filter(
-            (v, i, a) => a.findIndex((t) => t.id === v.id) === i
-        )
-        const limitedItems = props.extraProps?.limit
-            ? uniqueItems.slice(0, props.extraProps?.limit)
-            : (isOneLine && !props.noContainer) ? uniqueItems.slice(0, numColumns) : uniqueItems
-        contentElement = limitedItems.map((item, index) => {
-            if (props.noContainer) {
-                return (<Unit
-                    key={`item${index}`}
-                    unit={data.unit ? data.unit : ''}
-                    mode={unitMode}
-                    module={data.module ? data.module : ''}
-                    sidebar={props.sidebar}
-                    object_id={data.object_id ? data.object_id : ''}
-                    view={data.view ? data.view : ''}
-                    {...props}
-                    data={item}
-                />);
-            }
-            return (
-                <View key={`item${index}`} className={`mb-3  ${data.unit !== 'feed' ? (isOneLine ? ' p-2 w-1/' + numColumns : 'w-full') : ''}`}>
-                    <Unit
-                        unit={data.unit ? data.unit : ''}
-                        mode={unitMode}
-                        module={data.module ? data.module : ''}
-                        sidebar={props.sidebar}
-                        object_id={data.object_id ? data.object_id : ''}
-                        view={data.view ? data.view : ''}
-                        {...props}
-                        data={item}
-                    />
-                </View>
-            )
-        })
-        if (isOneLine && !props.noContainer) {
-            contentElement = <Row>{contentElement}</Row>
-        }
-        if (isOneLine && props.noContainer) {
-            contentElement = <ScrollView horizontal={true}><Row className='gap-4 pb-8'>{contentElement}</Row></ScrollView>
-        }
-    }
-
     const PreloadComponent = dataItems.length === 0 ? (hasNextPage === false
         ? callFn("noContentByUrl", [{ request_url: data.request_url, params: {} }])
         : (!dataItems.params?.loaded ? Preload : null)
@@ -335,7 +252,7 @@ export default function Browse(props) {
                     key={'item' + item.id}
                     item={item}
                     index={index}
-                    numColumns={numColumns}
+
                     data={data}
                     unitMode={unitMode}
                     props={props}
@@ -344,7 +261,7 @@ export default function Browse(props) {
                 <BrowseItem
                     item={item}
                     index={index}
-                    numColumns={numColumns}
+
                     data={data}
                     unitMode={unitMode}
                     props={props}
@@ -360,56 +277,14 @@ export default function Browse(props) {
         ListFooterComponent: ((hasNextPage && isFetchingNextPage)) ? Preload : null,
     }
 
-    if (contentElement === null) {
-        return
-    }
-
-    if (contentElement === false) {
-        contentElement = <UniList {...uniListProps} />
-    }
-
-    if (!dataItems.length && isShowTitleInside)
-        return;
-
     return (
-        <View className={`w-full ${isOneLine ? '' : 'h-full'}`}>
-            <View className="w-full" ></View>
-            <View className={`w-full ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''}`} style={isOneLine ? {} : styles}>
-                {isShowTitleInside && (
-                    <Row className={`items-center justify-between ${props.showBg ? '' : 'p-2 '}`}>
-                        <Text className=" text-secondary-foreground text-base font-semibold leading-none lg:leading-none tracking-tight ">
-                            {t(props.block.title)}
-                        </Text>
-                        {!!props.addLink && (
-                            <Link href={props.addLink.url}>
-                                <Button
-                                    variant="link"
-                                    size="sm"
-                                    rounded
-                                    title={t(props.addLink.text)}
-                                />
-                            </Link>
-                        )}
-                        {(isOneLine && data.params.home_url) && (
-                            <Link href={data.params.home_url}>
-                                <Button
-                                    variant="link"
-                                    size="sm"
-                                    rounded
-                                    title={t('View All')}
-                                />
-                            </Link>
-                        )}
-
-                    </Row>
-                )}
-                {formProps && <View className=" w-full">
-                    <Row className="w-full items-end justify-end"><Button startDecorator="Settings2" variant="outline" title={!showFilters ? "Show filters" : "Hide filters"} onPress={() => setShowFilters(!showFilters)} /></Row>
-                    {showFilters && <Form {...formProps} key="form" name={formProps.name} onChange={handleFilterFormChange} />}
-                    </View>
-                }
-                {contentElement}
+        <View className='w-full' style={styles}>
+            {formProps && <View className=" w-full">
+                <Row className="w-full items-end justify-end"><Button startDecorator="Settings2" variant="outline" title={!showFilters ? "Show filters" : "Hide filters"} onPress={() => setShowFilters(!showFilters)} /></Row>
+                {showFilters && <Form {...formProps} key="form" name={formProps.name} onChange={handleFilterFormChange} />}
             </View>
+            }
+            <UniList {...uniListProps} />
             <Snackbar
                 visible={refetchState.hasNewData}
                 onPress={() => {

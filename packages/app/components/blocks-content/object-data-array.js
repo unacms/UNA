@@ -15,15 +15,6 @@ export default function BlockContentObjectDataArray(props) {
         requestUrl = a.request?.url || null;
         return a.request ? false : true;
     });
-
-    /* const { data: dynamicData, error, isLoading } = useRequest(
-         postData ? [requestUrl, '', postData] : null,
-         immutable ? {
-             revalidateIfStale: false,
-             revalidateOnFocus: false,
-             revalidateOnReconnect: false
-         } : undefined
-     );*/
     const { data: dynamicData, error } = useFetchForm(requestUrl, postData);
 
     // update state when form is submitted

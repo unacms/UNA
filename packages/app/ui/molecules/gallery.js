@@ -6,7 +6,7 @@ import { Button } from "app/design/controls";
 const screenWidth = Dimensions.get('window').width;
 
 
-export default function Gallery({ items }) {
+export default function Gallery({ items, autoscroll }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const position = useRef(new Animated.Value(0)).current;
     const opacity = useRef(new Animated.Value(1)).current;

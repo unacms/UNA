@@ -4,6 +4,7 @@ import { Platform } from 'react-native'
 import Link from 'app/ui/atoms/link'
 import { memo } from 'react';
 import Profile from "app/ui/molecules/profile";
+import Unit from 'app/components/unit'
 
 export function getBackButtonWeb() {
     const isWeb = Platform.OS === 'web';
@@ -34,3 +35,24 @@ export const AuthorData = memo(({ authorData, displaySize }) => (
         showInfo="false"
     />
 ));
+
+export const BrowseItem = memo(({ item, index, numColumns, data, unitMode, props }) => (
+    <View
+        className={
+            numColumns > 1
+                ? 'w-full pb-2 '
+                : ' ' + (data.unit != 'feed' ? 'w-full mb-0.5  ' : '  ') + '  '
+        }
+    >
+        <Unit
+            unit={data.unit ? data.unit : ''}
+            mode={unitMode}
+            module={data.module ? data.module : ''}
+            sidebar={props.sidebar}
+            object_id={data.object_id ? data.object_id : ''}
+            view={data.view ? data.view : ''}
+            {...props}
+            data={item}
+        />
+    </View>
+))

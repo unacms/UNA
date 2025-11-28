@@ -1,4 +1,6 @@
 import Browse from './browse';
+import BrowseSimple from './browse_simple';
+import BrowseList from './browse_list';
 import Form from './form';
 import Msg from './msg';
 import Login from './login';
@@ -56,6 +58,8 @@ export const componentsMapDefault = {
     membership: Membership,
     comment_content:CommentContent,
     browse: Browse,
+    browse_simple: BrowseSimple,
+    browse_list: BrowseList,
     grid: Grid,
     pricing: Pricing,
     invite: Invite,
