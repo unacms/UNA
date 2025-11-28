@@ -1,5 +1,19 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalEnv": [
+    "UNA_API_KEY",
+    "PROTO",
+    "HOST",
+    "PORT",
+    "NEXT_PUBLIC_UNA_URL",
+    "NEXT_PUBLIC_APP_URL",
+    "NEXT_PUBLIC_ANALYTICS",
+    "NODE_ENV",
+    "VERCEL",
+    "VERCEL_ENV",
+    "VERCEL_URL",
+    "VERCEL_GIT_COMMIT_SHA"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
