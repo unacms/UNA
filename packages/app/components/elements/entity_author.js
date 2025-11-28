@@ -35,12 +35,12 @@ export default function ElementEntityAuthor(oProps) {
             {
                 !!oProps.data?.entry_context?.id && (
 
-                    <>
+                    <Row className='items-center'>
                         <Text className=" text-center flex-auto font-medium"> in </Text>
                         <Profile {...oProps.data.entry_context} displayType="unit_wo_info" displaySize="2xs" />
                         <Text className="text-muted-foreground text-xs  leading-5 text-center flex-auto font-medium ">{oProps.data.entry_context.display_name}</Text>
 
-                    </>
+                    </Row>
 
                 )}
         </Row>
