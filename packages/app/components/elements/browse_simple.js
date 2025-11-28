@@ -1,27 +1,39 @@
 import Unit from 'app/components/unit'
 import Galery from 'app/ui/molecules/gallery'
+import { View, Row, ScrollView } from 'app/design/view'
+ import { callFn } from 'app/lib/functions/call'
+export default function Browse({ unitMode, data, limit_by, view, autoscroll, }) {
 
-export default function Browse({ unitMode, data, limit_by, galery_view, galery_autoscroll}) {
-
+    // view can be row (explore page as example), galery (featured blocks in sidebar as example)
     if (data.unit == 'mixed') {
         data.unit = 'general-profile-list'
     }
 
+    const layout = callFn('layoutForList', [data.module]);
+
     const limitedData = limit_by ? data.data.slice(0, limit_by) : data.data
 
-    const items = limitedData.map((item, index) => {
-        return (<Unit
-            key={`item${index}`}
+    const items =  limitedData.map((item, index) => {
+        return view == 'row' ? (<View key={`item${index}`} className={layout || 'w-full'}><Unit
+            
             unit={data.unit ? data.unit : ''}
             mode={unitMode}
             module={data.module ? data.module : ''}
             object_id={data.object_id ? data.object_id : ''}
             view={data.view ? data.view : ''}
             data={item}
-        />);
+        /></View>) : <Unit
+            
+            unit={data.unit ? data.unit : ''}
+            mode={unitMode}
+            module={data.module ? data.module : ''}
+            object_id={data.object_id ? data.object_id : ''}
+            view={data.view ? data.view : ''}
+            data={item}
+        />;
     })
 
-    return galery_view ?  <Galery autoscroll={galery_autoscroll} items={items} /> : items;
+    return view == 'galery' ? <Galery autoscroll={autoscroll} items={items} /> : (view == 'row' ? <Row className="@container/list overflow-hidden">{items}</Row> : items);
 
 
 }

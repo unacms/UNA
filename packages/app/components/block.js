@@ -229,7 +229,9 @@ export function BlockWrapper(props) {
                 {bIsShowTitle && (
                     <BlockHeader>
                         <BlockName>
-                            <BlockTitle>{stripTags(block.title)}</BlockTitle>
+                            {content_type !== 'browse_simple' ? <BlockTitle>{stripTags(block.title)}</BlockTitle> :  <Text className=" ps-2 text-secondary-foreground text-base font-semibold leading-none lg:leading-none tracking-tight ">
+                            {stripTags(block.title)}
+                        </Text>}
                         </BlockName>
                         {config.header_more_url && (<BlockActions>
                             <Link href={config.header_more_url}>
