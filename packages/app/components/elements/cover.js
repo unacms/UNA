@@ -418,10 +418,6 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
 
     const isMin = coverMode === 'min'
 
-   /* const isAddSelector =
-        context &&
-        context.list[0] &&
-        data.profile.module == context.list[0].module*/
     const ContextSelector = getComponent('molecule', 'context_selector')
     const Badges = getComponent('molecule', 'badges')
 
@@ -468,7 +464,7 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                         </View>
                     </View>
                 )}
-                <View className="flex-auto lg:flex-row flex-col-reverse gap-2 sm:gap-3">
+               <View className={`flex-auto gap-2 sm:gap-3 ${bPerson ? 'lg:flex-row flex-col-reverse' : 'flex-row'}`}>
                     <View className="flex-col flex-auto gap-2 ">
                         <Row className=" gap-2 flex-auto items-center min-h-12">
                             <Text
@@ -478,14 +474,6 @@ export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
                                 {data.profile.display_name}
                             </Text>
                             <Badges badges={data.badges} size="xs" />
-                            {/*isAddSelector && (
-                                <View className={`${TABLET_MODE_FROM}:hidden`}>
-                                    <ContextSelector
-                                        data={context}
-                                        mode="min"
-                                    />
-                                </View>
-                            )*/}
                         </Row>
                         {isWeb ? (
                             <CoverMenuMeta {...data.meta_menu} />
