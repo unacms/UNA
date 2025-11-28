@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from 'react'
 import { NavigationMenu } from '@base-ui-components/react/navigation-menu'
 import Link from 'next/link'
 
@@ -62,13 +63,21 @@ function NavLink(props: NavigationMenu.Link.Props) {
   )
 }
 
+// Custom list component that filters out aria-orientation (invalid for list role)
+const NavList = React.forwardRef<
+  HTMLUListElement,
+  React.HTMLAttributes<HTMLUListElement> & { 'aria-orientation'?: string }
+>(function NavList({ 'aria-orientation': _, ...props }, ref) {
+  return <ul ref={ref} {...props} />
+})
+
 export function SiteNavigation() {
   return (
     <NavigationMenu.Root className="nav-root" aria-label="Main navigation">
-      {/* Use render prop to control the ul element without aria-orientation */}
+      {/* NavList filters out aria-orientation which is invalid for list role */}
       <NavigationMenu.List
         className="nav-list"
-        render={<ul className="nav-list" />}
+        render={<NavList />}
       >
         {/* Getting Started Dropdown */}
         <NavigationMenu.Item>
