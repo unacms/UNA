@@ -8,7 +8,17 @@
     "start": "next start -p 3001",
     "lint": "next lint"
   },
+  "browserslist": [
+    "chrome >= 91",
+    "firefox >= 90",
+    "safari >= 14",
+    "edge >= 91",
+    "not dead",
+    "not ie 11",
+    "not op_mini all"
+  ],
   "dependencies": {
+    "@base-ui-components/react": "^1.0.0-beta.7",
     "@neo/test-components": "*",
     "next": "^16.0.4",
     "react": "^19.0.0",

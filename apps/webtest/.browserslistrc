@@ -1,0 +1,19 @@
+# Target modern browsers only - no polyfills needed
+# This saves ~14KB by not including legacy transforms
+
+# Modern browsers that support ES2020+
+chrome >= 91
+firefox >= 90
+safari >= 14
+edge >= 91
+
+# No IE support
+not ie 11
+not ie_mob 11
+
+# No legacy Opera Mini
+not op_mini all
+
+# No dead browsers
+not dead
+
