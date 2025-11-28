@@ -29,8 +29,9 @@ const nextConfig = {
   experimental: {
     // Optimize package imports - tree-shake and reduce bundle size
     optimizePackageImports: ['@base-ui-components/react'],
-    // Optimize CSS loading
-    optimizeCss: true,
+    // Inline CSS directly into HTML - eliminates separate CSS request
+    // Best for small apps where CSS < 50KB
+    inlineCss: true,
   },
 
   // Webpack configuration for production builds
