@@ -1,5 +1,12 @@
-// Site Top Nav Demo Page - Server Component with caching
+// Site Top Nav Demo Page - Server Component using HeroUI v3
+import { Button, Card, CardContent, CardTitle, CardDescription, Chip } from "@heroui/react"
 import { cacheLife } from 'next/cache'
+import Link from "next/link"
+
+export const metadata = {
+  title: 'Site Top Nav | NEO Testground',
+  description: 'Public pages with horizontal navigation demo.',
+}
 
 export default async function SiteTopNavPage() {
   'use cache'
@@ -7,12 +14,12 @@ export default async function SiteTopNavPage() {
 
   return (
     <>
-      {/* Hero Section - Pure HTML */}
-      <section className="py-20 px-6 bg-gradient-to-b from-primary/5 to-transparent">
+      {/* Hero Section */}
+      <section className="py-20 px-6 bg-linear-to-b from-primary/5 to-transparent">
         <div className="max-w-3xl mx-auto text-center">
-          <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium bg-primary/10 text-primary rounded-full">
+          <Chip className="bg-primary/10 text-primary mb-4">
             Welcome to NEO
-          </span>
+          </Chip>
           <h1 className="text-5xl font-bold mb-6">
             Connect, Share, and Grow Together
           </h1>
@@ -20,23 +27,17 @@ export default async function SiteTopNavPage() {
             Join a community of creators, thinkers, and innovators. Share your ideas and discover what matters to you.
           </p>
           <div className="flex gap-4 justify-center">
-            <a
-              href="/signup"
-              className="px-6 py-3 text-lg font-medium bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
-            >
-              Get Started
-            </a>
-            <a
-              href="/learn"
-              className="px-6 py-3 text-lg font-medium border border-border rounded-lg hover:bg-accent"
-            >
-              Learn More
-            </a>
+            <Button variant="primary" size="lg" asChild>
+              <Link href="/signup">Get Started</Link>
+            </Button>
+            <Button variant="tertiary" size="lg" asChild>
+              <Link href="/docs">Learn More</Link>
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* Features Grid - Static HTML */}
+      {/* Features Grid */}
       <section className="py-16 px-6">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">Why Choose NEO</h2>
@@ -78,7 +79,7 @@ export default async function SiteTopNavPage() {
   )
 }
 
-// Pure function component - no hooks, no client JS
+// Pure function component - renders as Server Component
 function FeatureCard({
   icon,
   title,
@@ -89,12 +90,12 @@ function FeatureCard({
   description: string
 }) {
   return (
-    <div className="p-6 rounded-lg border border-border bg-card">
-      <div className="text-4xl mb-4">{icon}</div>
-      <h3 className="text-lg font-semibold mb-2">{title}</h3>
-      <p className="text-sm text-muted-foreground">{description}</p>
-    </div>
+    <Card>
+      <CardContent className="p-6">
+        <div className="text-4xl mb-4">{icon}</div>
+        <CardTitle className="mb-2">{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
+      </CardContent>
+    </Card>
   )
 }
-
-

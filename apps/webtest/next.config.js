@@ -2,13 +2,13 @@ const path = require('path')
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable gzip compression (for self-hosted; Vercel handles this automatically)
+  // Enable gzip compression
   compress: true,
 
-  // Next.js 16 Cache Components (enables 'use cache' directive)
+  // Next.js 16 Cache Components
   cacheComponents: true,
 
-  // Transpile shared packages (works for both webpack and turbopack)
+  // Transpile shared packages
   transpilePackages: ['@neo/test-components'],
 
   // TypeScript configuration
@@ -19,30 +19,28 @@ const nextConfig = {
   // Optimize production builds
   productionBrowserSourceMaps: false,
 
-  // SWC compiler configuration - target modern browsers only
+  // SWC compiler configuration
   compiler: {
-    // Remove console.log in production
     removeConsole: process.env.NODE_ENV === 'production',
   },
 
   // Experimental optimizations
   experimental: {
-    // Optimize package imports - tree-shake and reduce bundle size
-    optimizePackageImports: ['@base-ui-components/react'],
-    // Inline CSS directly into HTML - eliminates separate CSS request
-    // Best for small apps where CSS < 50KB
+    // Optimize HeroUI imports - tree-shake unused components
+    optimizePackageImports: ['@heroui/react'],
+    // Inline CSS
     inlineCss: true,
   },
 
-  // Webpack configuration for production builds
+  // Webpack configuration
   webpack: (config, { isServer }) => {
-    // Resolve @neo/test-components from monorepo packages
+    // Resolve shared packages
     config.resolve.alias = {
       ...config.resolve.alias,
       '@neo/test-components': path.resolve(__dirname, '../../packages/test-components/src'),
     }
 
-    // Resolve extensions for web-specific files
+    // Web-specific file extensions
     config.resolve.extensions = [
       '.web.tsx',
       '.web.ts', 
@@ -53,38 +51,10 @@ const nextConfig = {
       ...config.resolve.extensions,
     ]
 
-    // Optimize chunks for fewer HTTP requests
-    if (!isServer) {
-      config.optimization = {
-        ...config.optimization,
-        splitChunks: {
-          chunks: 'all',
-          minSize: 20000,
-          maxSize: 244000,
-          cacheGroups: {
-            // Bundle all Base UI into a single chunk
-            baseui: {
-              test: /[\\/]node_modules[\\/]@base-ui-components[\\/]/,
-              name: 'baseui',
-              chunks: 'all',
-              priority: 30,
-            },
-            // Bundle common vendor code
-            vendor: {
-              test: /[\\/]node_modules[\\/]/,
-              name: 'vendor',
-              chunks: 'all',
-              priority: 20,
-            },
-          },
-        },
-      }
-    }
-
     return config
   },
 
-  // Turbopack configuration (dev mode with Next.js 15+)
+  // Turbopack configuration
   turbopack: {
     resolveAlias: {
       '@neo/test-components': '../../packages/test-components/src',

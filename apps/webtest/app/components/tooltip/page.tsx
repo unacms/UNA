@@ -1,4 +1,7 @@
-// Tooltip Component Page - Pure Server Component
+// Tooltip Component Page - Server Component using HeroUI v3
+// Note: Interactive tooltip would require client component
+
+import { Button, Card, CardContent, Separator } from "@heroui/react"
 
 export const metadata = {
   title: 'Tooltip | NEO Testground',
@@ -17,66 +20,83 @@ export default function TooltipComponentPage() {
         {/* Preview */}
         <section>
           <h2 className="text-2xl font-semibold mb-6">Preview</h2>
-          <div className="p-6 border border-border rounded-lg">
-            {/* Static tooltip preview */}
-            <div className="flex flex-col items-center gap-8">
-              <div className="relative inline-block">
-                <button className="px-4 py-2 bg-primary text-primary-foreground rounded-md font-medium">
-                  Hover me
-                </button>
-                {/* Static tooltip shown */}
-                <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-1.5 bg-foreground text-background text-sm rounded-md whitespace-nowrap">
-                  This is a tooltip
-                  <div className="absolute left-1/2 -translate-x-1/2 top-full border-4 border-transparent border-t-foreground" />
+          <Card>
+            <CardContent className="p-6">
+              {/* Static tooltip preview */}
+              <div className="flex flex-col items-center gap-8">
+                <div className="relative inline-block">
+                  <Button variant="primary">Hover me</Button>
+                  {/* Static tooltip shown */}
+                  <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-1.5 bg-foreground text-background text-sm rounded-md whitespace-nowrap">
+                    This is a tooltip
+                    <div className="absolute left-1/2 -translate-x-1/2 top-full border-4 border-transparent border-t-foreground" />
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </section>
 
         {/* Positions */}
         <section>
           <h2 className="text-2xl font-semibold mb-6">Positions</h2>
-          <div className="grid grid-cols-2 gap-4 p-6 border border-border rounded-lg">
-            {['Top', 'Right', 'Bottom', 'Left'].map((position) => (
-              <div key={position} className="text-center p-4 bg-muted rounded-lg">
-                <span className="text-sm font-medium">{position}</span>
+          <Card>
+            <CardContent className="p-6">
+              <div className="grid grid-cols-2 gap-4">
+                {['Top', 'Right', 'Bottom', 'Left'].map((position) => (
+                  <div key={position} className="text-center p-4 bg-muted rounded-lg">
+                    <span className="text-sm font-medium">{position}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </CardContent>
+          </Card>
         </section>
+
+        <Separator />
 
         {/* Usage */}
         <section>
           <h2 className="text-2xl font-semibold mb-6">Usage</h2>
           <div className="bg-muted p-4 rounded-lg">
             <pre className="font-mono text-sm overflow-x-auto">
-{`import { Tooltip } from '@base-ui/tooltip'
+{`"use client"
 
-<Tooltip.Provider>
-  <Tooltip.Root>
-    <Tooltip.Trigger>
-      Hover me
-    </Tooltip.Trigger>
-    <Tooltip.Portal>
-      <Tooltip.Positioner>
-        <Tooltip.Popup>
-          Tooltip content
-          <Tooltip.Arrow />
-        </Tooltip.Popup>
-      </Tooltip.Positioner>
-    </Tooltip.Portal>
-  </Tooltip.Root>
-</Tooltip.Provider>`}
+import { Tooltip, TooltipTrigger, TooltipContent } from "@heroui/react"
+
+export function TooltipDemo() {
+  return (
+    <Tooltip>
+      <TooltipTrigger>
+        <Button>Hover me</Button>
+      </TooltipTrigger>
+      <TooltipContent>
+        This is a tooltip
+      </TooltipContent>
+    </Tooltip>
+  )
+}
+
+// With placement
+<Tooltip placement="right">
+  <TooltipTrigger>
+    <Button>Right tooltip</Button>
+  </TooltipTrigger>
+  <TooltipContent>
+    Appears on the right
+  </TooltipContent>
+</Tooltip>`}
             </pre>
           </div>
+          <p className="text-sm text-muted-foreground mt-4">
+            Note: Tooltip requires a client component for interactivity.
+          </p>
         </section>
       </div>
 
       <p className="text-center text-sm text-muted-foreground mt-16 pt-8 border-t border-border">
-        This is a <strong>placeholder page</strong> for testing purposes.
+        This is a <strong>placeholder page</strong> showing a static preview.
       </p>
     </div>
   )
 }
-

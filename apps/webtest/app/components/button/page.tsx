@@ -1,4 +1,6 @@
-// Button Component Page - Pure Server Component
+// Button Component Page - Server Component using HeroUI v3
+
+import { Button, Card, CardContent, Separator } from "@heroui/react"
 
 export const metadata = {
   title: 'Button | NEO Testground',
@@ -17,60 +19,86 @@ export default function ButtonComponentPage() {
         {/* Variants */}
         <section>
           <h2 className="text-2xl font-semibold mb-6">Variants</h2>
-          <div className="flex flex-wrap gap-4 p-6 border border-border rounded-lg">
-            <button className="px-4 py-2 bg-primary text-primary-foreground rounded-md font-medium hover:bg-primary/90">
-              Primary
-            </button>
-            <button className="px-4 py-2 bg-secondary text-secondary-foreground rounded-md font-medium hover:bg-secondary/80">
-              Secondary
-            </button>
-            <button className="px-4 py-2 bg-destructive text-destructive-foreground rounded-md font-medium hover:bg-destructive/90">
-              Destructive
-            </button>
-            <button className="px-4 py-2 border border-input bg-background rounded-md font-medium hover:bg-accent">
-              Outline
-            </button>
-            <button className="px-4 py-2 rounded-md font-medium hover:bg-accent">
-              Ghost
-            </button>
-          </div>
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex flex-wrap gap-4">
+                <Button variant="primary">Primary</Button>
+                <Button variant="secondary">Secondary</Button>
+                <Button variant="tertiary">Tertiary</Button>
+                <Button variant="ghost">Ghost</Button>
+                <Button variant="danger">Danger</Button>
+              </div>
+            </CardContent>
+          </Card>
         </section>
 
         {/* Sizes */}
         <section>
           <h2 className="text-2xl font-semibold mb-6">Sizes</h2>
-          <div className="flex flex-wrap items-center gap-4 p-6 border border-border rounded-lg">
-            <button className="px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded-md font-medium">
-              Small
-            </button>
-            <button className="px-4 py-2 bg-primary text-primary-foreground rounded-md font-medium">
-              Medium
-            </button>
-            <button className="px-6 py-3 text-lg bg-primary text-primary-foreground rounded-md font-medium">
-              Large
-            </button>
-          </div>
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex flex-wrap items-center gap-4">
+                <Button size="sm" variant="primary">Small</Button>
+                <Button size="md" variant="primary">Medium</Button>
+                <Button size="lg" variant="primary">Large</Button>
+              </div>
+            </CardContent>
+          </Card>
         </section>
 
         {/* States */}
         <section>
           <h2 className="text-2xl font-semibold mb-6">States</h2>
-          <div className="flex flex-wrap gap-4 p-6 border border-border rounded-lg">
-            <button className="px-4 py-2 bg-primary text-primary-foreground rounded-md font-medium opacity-50 cursor-not-allowed" disabled>
-              Disabled
-            </button>
-            <button className="px-4 py-2 bg-primary text-primary-foreground rounded-md font-medium">
-              <span className="inline-block animate-spin mr-2">⟳</span>
-              Loading
-            </button>
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex flex-wrap gap-4">
+                <Button variant="primary" className="opacity-50 cursor-not-allowed">
+                  Disabled
+                </Button>
+                <Button variant="primary">
+                  <span className="inline-block animate-spin mr-2">⟳</span>
+                  Loading
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        <Separator />
+
+        {/* Usage */}
+        <section>
+          <h2 className="text-2xl font-semibold mb-6">Usage</h2>
+          <div className="bg-muted p-4 rounded-lg">
+            <pre className="font-mono text-sm overflow-x-auto">
+{`import { Button } from "@heroui/react"
+
+// Primary button
+<Button variant="primary">Click me</Button>
+
+// Button variants
+<Button variant="secondary">Secondary</Button>
+<Button variant="tertiary">Tertiary</Button>
+<Button variant="ghost">Ghost</Button>
+<Button variant="danger">Danger</Button>
+
+// Button sizes
+<Button size="sm">Small</Button>
+<Button size="md">Medium</Button>
+<Button size="lg">Large</Button>
+
+// Button as link (using asChild)
+<Button asChild>
+  <Link href="/docs">Go to Docs</Link>
+</Button>`}
+            </pre>
           </div>
         </section>
       </div>
 
       <p className="text-center text-sm text-muted-foreground mt-16 pt-8 border-t border-border">
-        This is a <strong>placeholder page</strong> for testing purposes.
+        This page is a <strong>Server Component</strong> — HeroUI is RSC-compatible.
       </p>
     </div>
   )
 }
-

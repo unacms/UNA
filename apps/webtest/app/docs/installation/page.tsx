@@ -1,8 +1,10 @@
-// Installation Docs Page - Pure Server Component
+// Installation Docs Page - Server Component using HeroUI v3
+
+import { Card, CardContent, Separator } from "@heroui/react"
 
 export const metadata = {
   title: 'Installation | NEO Testground',
-  description: 'Step-by-step guide to setting up your development environment.',
+  description: 'Step-by-step guide to setting up HeroUI v3 with Next.js.',
 }
 
 export default function InstallationPage() {
@@ -10,49 +12,126 @@ export default function InstallationPage() {
     <div className="max-w-3xl mx-auto px-6 py-16">
       <h1 className="text-4xl font-bold mb-4">Installation</h1>
       <p className="text-xl text-muted-foreground mb-8">
-        Step-by-step guide to setting up your development environment.
+        Step-by-step guide to setting up HeroUI v3 with Next.js 16.
       </p>
 
-      <div className="prose prose-zinc dark:prose-invert max-w-none">
-        <h2 className="text-2xl font-semibold mt-8 mb-4">Prerequisites</h2>
-        <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
-          <li>Node.js 18.17 or later</li>
-          <li>macOS, Windows, or Linux</li>
-          <li>A package manager (npm, yarn, or pnpm)</li>
-        </ul>
+      <div className="space-y-8">
+        <section>
+          <h2 className="text-2xl font-semibold mb-4">Prerequisites</h2>
+          <Card>
+            <CardContent className="p-6">
+              <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                <li>Node.js 18.17 or later</li>
+                <li>Next.js 16 with App Router</li>
+                <li>Tailwind CSS v4</li>
+                <li>A package manager (yarn recommended)</li>
+              </ul>
+            </CardContent>
+          </Card>
+        </section>
 
-        <h2 className="text-2xl font-semibold mt-8 mb-4">Quick Start</h2>
-        <div className="bg-muted p-4 rounded-lg font-mono text-sm mb-4">
-          <code>npx create-neo-app@latest my-app</code>
-        </div>
+        <Separator />
 
-        <h2 className="text-2xl font-semibold mt-8 mb-4">Manual Installation</h2>
-        <ol className="list-decimal pl-6 space-y-4 text-muted-foreground">
-          <li>
-            <strong className="text-foreground">Install dependencies</strong>
-            <div className="bg-muted p-3 rounded-lg font-mono text-sm mt-2">
-              <code>yarn add next react react-dom</code>
-            </div>
-          </li>
-          <li>
-            <strong className="text-foreground">Create your first page</strong>
-            <div className="bg-muted p-3 rounded-lg font-mono text-sm mt-2">
-              <code>mkdir -p app && touch app/page.tsx</code>
-            </div>
-          </li>
-          <li>
-            <strong className="text-foreground">Start the development server</strong>
-            <div className="bg-muted p-3 rounded-lg font-mono text-sm mt-2">
-              <code>yarn dev</code>
-            </div>
-          </li>
-        </ol>
+        <section>
+          <h2 className="text-2xl font-semibold mb-4">1. Install HeroUI</h2>
+          <Card>
+            <CardContent className="p-6">
+              <div className="bg-muted p-4 rounded-lg font-mono text-sm">
+                <code>yarn add @heroui/react</code>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        <section>
+          <h2 className="text-2xl font-semibold mb-4">2. Configure next.config.js</h2>
+          <Card>
+            <CardContent className="p-6">
+              <div className="bg-muted p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                <pre>{`// next.config.js
+module.exports = {
+  transpilePackages: ['@heroui/react'],
+}`}</pre>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        <section>
+          <h2 className="text-2xl font-semibold mb-4">3. Add Component Styles</h2>
+          <Card>
+            <CardContent className="p-6">
+              <p className="text-sm text-muted-foreground mb-4">
+                HeroUI v3 beta requires manual CSS for components. Add these styles to your globals.css:
+              </p>
+              <div className="bg-muted p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                <pre>{`/* globals.css */
+@import 'tailwindcss';
+
+/* HeroUI Button styles */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  border-radius: var(--radius);
+  transition: all 150ms ease;
+  cursor: pointer;
+}
+
+.button--primary {
+  background-color: var(--color-primary);
+  color: var(--color-primary-foreground);
+}
+/* ... more styles */`}</pre>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        <section>
+          <h2 className="text-2xl font-semibold mb-4">4. Use Components</h2>
+          <Card>
+            <CardContent className="p-6">
+              <div className="bg-muted p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                <pre>{`import { Button, Card, Chip } from "@heroui/react"
+
+export default function Page() {
+  return (
+    <Card>
+      <Chip>New</Chip>
+      <Button variant="primary">Click me</Button>
+    </Card>
+  )
+}`}</pre>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        <Separator />
+
+        <section>
+          <h2 className="text-2xl font-semibold mb-4">Server Component Support</h2>
+          <Card>
+            <CardContent className="p-6">
+              <p className="text-muted-foreground mb-4">
+                HeroUI v3 is built on React Aria Components and is designed to work with React Server Components.
+                Most components can be rendered on the server without the "use client" directive.
+              </p>
+              <p className="text-muted-foreground">
+                Interactive components (like dialogs, dropdowns, tooltips) require client components
+                for event handling and state management.
+              </p>
+            </CardContent>
+          </Card>
+        </section>
       </div>
 
       <p className="text-center text-sm text-muted-foreground mt-16 pt-8 border-t border-border">
-        This is a <strong>placeholder page</strong> for testing purposes.
+        This page is a <strong>Server Component</strong> — HeroUI is RSC-compatible.
       </p>
     </div>
   )
 }
-

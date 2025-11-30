@@ -1,4 +1,7 @@
-// Dialog Component Page - Pure Server Component
+// Dialog Component Page - Server Component using HeroUI v3
+// Note: Interactive dialog would require client component
+
+import { Button, Card, CardContent, Separator } from "@heroui/react"
 
 export const metadata = {
   title: 'Dialog | NEO Testground',
@@ -17,55 +20,67 @@ export default function DialogComponentPage() {
         {/* Preview */}
         <section>
           <h2 className="text-2xl font-semibold mb-6">Preview</h2>
-          <div className="p-6 border border-border rounded-lg">
-            {/* Static dialog preview */}
-            <div className="relative w-full max-w-md mx-auto p-6 bg-background border border-border rounded-lg shadow-lg">
-              <h3 className="text-lg font-semibold mb-2">Are you sure?</h3>
-              <p className="text-muted-foreground mb-6">
-                This action cannot be undone. This will permanently delete your account
-                and remove your data from our servers.
-              </p>
-              <div className="flex justify-end gap-3">
-                <button className="px-4 py-2 border border-input rounded-md font-medium hover:bg-accent">
-                  Cancel
-                </button>
-                <button className="px-4 py-2 bg-destructive text-destructive-foreground rounded-md font-medium">
-                  Delete
-                </button>
+          <Card>
+            <CardContent className="p-6">
+              {/* Static dialog preview */}
+              <div className="relative w-full max-w-md mx-auto p-6 bg-background border border-border rounded-lg shadow-lg">
+                <h3 className="text-lg font-semibold mb-2">Are you sure?</h3>
+                <p className="text-muted-foreground mb-6">
+                  This action cannot be undone. This will permanently delete your account
+                  and remove your data from our servers.
+                </p>
+                <div className="flex justify-end gap-3">
+                  <Button variant="tertiary">Cancel</Button>
+                  <Button variant="danger">Delete</Button>
+                </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </section>
+
+        <Separator />
 
         {/* Usage */}
         <section>
           <h2 className="text-2xl font-semibold mb-6">Usage</h2>
           <div className="bg-muted p-4 rounded-lg">
             <pre className="font-mono text-sm overflow-x-auto">
-{`import { Dialog } from '@base-ui/dialog'
+{`"use client"
 
-<Dialog.Root>
-  <Dialog.Trigger>Open Dialog</Dialog.Trigger>
-  <Dialog.Portal>
-    <Dialog.Backdrop />
-    <Dialog.Popup>
-      <Dialog.Title>Dialog Title</Dialog.Title>
-      <Dialog.Description>
-        Dialog content goes here.
-      </Dialog.Description>
-      <Dialog.Close>Close</Dialog.Close>
-    </Dialog.Popup>
-  </Dialog.Portal>
-</Dialog.Root>`}
+import { Dialog, DialogTrigger, DialogContent } from "@heroui/react"
+
+export function DeleteDialog() {
+  return (
+    <Dialog>
+      <DialogTrigger>
+        <Button variant="danger">Delete Account</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <Dialog.Title>Are you sure?</Dialog.Title>
+        <Dialog.Description>
+          This action cannot be undone.
+        </Dialog.Description>
+        <div className="flex justify-end gap-3 mt-4">
+          <Dialog.Close>
+            <Button variant="tertiary">Cancel</Button>
+          </Dialog.Close>
+          <Button variant="danger">Delete</Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}`}
             </pre>
           </div>
+          <p className="text-sm text-muted-foreground mt-4">
+            Note: Dialog requires a client component for interactivity.
+          </p>
         </section>
       </div>
 
       <p className="text-center text-sm text-muted-foreground mt-16 pt-8 border-t border-border">
-        This is a <strong>placeholder page</strong> for testing purposes.
+        This is a <strong>placeholder page</strong> showing a static preview.
       </p>
     </div>
   )
 }
-

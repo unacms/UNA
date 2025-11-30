@@ -1,96 +1,143 @@
-// Home Page - Server Component with caching
-import { cacheLife } from 'next/cache'
-import Link from 'next/link'
-import { Button } from '@neo/test-components'
+// Home Page - Server Component using HeroUI v3
+// HeroUI components are RSC-compatible (built on React Aria Components)
 
-// This entire component is cached and part of the static shell
-export default async function Home() {
-  'use cache'
-  cacheLife('hours')
+import { Button, Card, CardContent, CardTitle, CardDescription, Chip, Separator } from "@heroui/react"
+import Link from "next/link"
 
+export default function HomePage() {
   return (
-    <main className="p-8 max-w-4xl mx-auto">
-      <header className="mb-12">
-        <h1 className="text-4xl font-bold text-foreground mb-4">NEO Webtest</h1>
-        <p className="text-lg text-muted-foreground">
-          Next.js 16 + Turbopack + Cache Components + React Compiler
+    <div className="max-w-6xl mx-auto px-6 py-12">
+      {/* Hero Section */}
+      <section className="text-center py-16">
+        <Chip className="bg-primary/10 text-primary mb-6">
+          HeroUI v3 + Next.js 16
+        </Chip>
+        <h1 className="text-5xl font-bold mb-6">
+          Build Beautiful Apps
+          <span className="block text-primary">Faster Than Ever</span>
+        </h1>
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+          NEO Testground showcases HeroUI v3 components with Next.js 16 App Router,
+          React 19, and full dark mode support.
         </p>
-      </header>
-
-      <section className="mb-12">
-        <h2 className="text-2xl font-semibold text-foreground mb-4">Architecture</h2>
-        <ul className="space-y-2 text-muted-foreground">
-          <li>✓ Server Components by default</li>
-          <li>✓ <code className="bg-muted px-1 rounded">use cache</code> for cacheable content</li>
-          <li>✓ React Compiler enabled</li>
-          <li>✓ Tailwind CSS 4</li>
-          <li>✓ Shared @neo/test-components package</li>
-        </ul>
-      </section>
-
-      {/* Shared Button Component Demo */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-semibold text-foreground mb-4">
-          Shared Button Component
-        </h2>
-        <p className="text-sm text-muted-foreground mb-4">
-          Same Button component used in nativetest (Expo), rendered with Tailwind CSS
-        </p>
-        
-        <div className="flex flex-wrap gap-3">
-          <Button variant="primary">Primary</Button>
-          <Button variant="secondary">Secondary</Button>
-          <Button variant="destructive">Destructive</Button>
-          <Button variant="outline">Outline</Button>
-          <Button variant="ghost">Ghost</Button>
-        </div>
-
-        <div className="flex flex-wrap gap-3 mt-4">
-          <Button variant="primary" size="sm">Small</Button>
-          <Button variant="primary" size="md">Medium</Button>
-          <Button variant="primary" size="lg">Large</Button>
-        </div>
-
-        <div className="flex flex-wrap gap-3 mt-4">
-          <Button variant="primary" loading>Loading</Button>
-          <Button variant="primary" disabled>Disabled</Button>
+        <div className="flex gap-4 justify-center">
+          <Button variant="primary" size="lg" asChild>
+            <Link href="/docs">Get Started</Link>
+          </Button>
+          <Button variant="tertiary" size="lg" asChild>
+            <Link href="/components">View Components</Link>
+          </Button>
         </div>
       </section>
 
-      <section className="mb-12">
-        <h2 className="text-2xl font-semibold text-foreground mb-6">Experiments</h2>
-        <nav className="grid gap-4 sm:grid-cols-2">
-          <ExperimentCard
+      <Separator className="my-12" />
+
+      {/* Features */}
+      <section className="py-12">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold mb-4">Why HeroUI v3?</h2>
+          <p className="text-muted-foreground">
+            Beautiful, accessible components built with Tailwind CSS v4 and React Aria
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          <FeatureCard
+            icon="♿"
+            title="Accessible"
+            description="Built on React Aria Components for WAI-ARIA compliance and screen reader support."
+          />
+          <FeatureCard
+            icon="🎨"
+            title="Themeable"
+            description="Customize with Tailwind utilities, CSS variables, or compose parts differently."
+          />
+          <FeatureCard
+            icon="⚡"
+            title="Lightweight"
+            description="Tree-shaken. Only what you use goes into your app."
+          />
+          <FeatureCard
+            icon="📘"
+            title="TypeScript"
+            description="Fully typed APIs with excellent autocomplete and IDE support."
+          />
+          <FeatureCard
+            icon="🚀"
+            title="Future-proof"
+            description="Built for React 19 and Tailwind v4, designed for AI-assisted development."
+          />
+          <FeatureCard
+            icon="📱"
+            title="Cross-Platform"
+            description="HeroUI Native brings the same design language to React Native."
+          />
+        </div>
+      </section>
+
+      <Separator className="my-12" />
+
+      {/* Quick Links */}
+      <section className="py-12">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold mb-4">Explore</h2>
+          <p className="text-muted-foreground">
+            Test different UI patterns and component combinations
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          <LinkCard
+            href="/components"
+            title="Components"
+            description="Buttons, cards, dialogs, and more"
+          />
+          <LinkCard
             href="/layouts"
             title="Layouts"
-            description="Server-rendered navigation layouts"
+            description="Navigation patterns and page layouts"
           />
-          <ExperimentCard
+          <LinkCard
             href="/streaming"
             title="Streaming"
             description="Suspense boundaries and loading states"
           />
-          <ExperimentCard
-            href="/components"
-            title="Components"
-            description="Server vs client component patterns"
-          />
-        </nav>
+        </div>
       </section>
 
-      <footer className="text-sm text-muted-foreground border-t border-border pt-8">
-        <p>Running on port 3001 • Isolated from main app</p>
-        <p className="mt-1">
-          <code className="bg-muted px-1 rounded">cacheComponents: true</code> •{' '}
-          <code className="bg-muted px-1 rounded">reactCompiler: true</code>
+      {/* Footer */}
+      <footer className="text-center py-12 text-sm text-muted-foreground">
+        <p>Built with HeroUI v3 and Next.js 16</p>
+        <p className="mt-2">
+          This page is a <strong>Server Component</strong> — HeroUI is RSC-compatible.
         </p>
       </footer>
-    </main>
+    </div>
   )
 }
 
-// Pure server component - no client JS needed
-function ExperimentCard({
+// Pure function components - render as Server Components
+function FeatureCard({
+  icon,
+  title,
+  description,
+}: {
+  icon: string
+  title: string
+  description: string
+}) {
+  return (
+    <Card>
+      <CardContent className="p-6">
+        <span className="text-4xl mb-4 block">{icon}</span>
+        <CardTitle className="mb-2">{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
+      </CardContent>
+    </Card>
+  )
+}
+
+function LinkCard({
   href,
   title,
   description,
@@ -100,12 +147,13 @@ function ExperimentCard({
   description: string
 }) {
   return (
-    <Link
-      href={href}
-      className="block p-6 rounded-lg border border-border bg-card hover:bg-accent transition-colors"
-    >
-      <h3 className="text-lg font-semibold text-foreground mb-2">{title}</h3>
-      <p className="text-sm text-muted-foreground">{description}</p>
+    <Link href={href} className="block">
+      <Card className="h-full hover:shadow-lg transition-shadow">
+        <CardContent className="p-6">
+          <CardTitle>{title}</CardTitle>
+          <CardDescription>{description}</CardDescription>
+        </CardContent>
+      </Card>
     </Link>
   )
 }

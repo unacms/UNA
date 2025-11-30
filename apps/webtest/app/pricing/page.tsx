@@ -1,7 +1,7 @@
-// Pricing Page - Pure Server Component
-// No client JavaScript - renders as static HTML
+// Pricing Page - Server Component using HeroUI v3
 
-import Link from 'next/link'
+import { Button, Card, CardContent, Separator } from "@heroui/react"
+import Link from "next/link"
 
 export const metadata = {
   title: 'Pricing | NEO Testground',
@@ -73,6 +73,8 @@ export default function PricingPage() {
         ))}
       </section>
 
+      <Separator className="my-12" />
+
       {/* FAQ */}
       <section className="max-w-3xl mx-auto">
         <h2 className="text-2xl font-semibold text-center mb-8">
@@ -98,29 +100,28 @@ export default function PricingPage() {
         </div>
       </section>
 
+      <Separator className="my-12" />
+
       {/* CTA */}
-      <section className="text-center mt-16 py-12 px-8 bg-muted rounded-lg">
+      <section className="text-center py-12 px-8 bg-muted rounded-lg">
         <h2 className="text-2xl font-semibold mb-4">Still have questions?</h2>
         <p className="text-muted-foreground mb-6">
           Our team is here to help you find the right plan.
         </p>
-        <Link
-          href="/about"
-          className="px-6 py-3 border border-border rounded-md font-medium hover:bg-accent inline-block"
-        >
-          Contact Us
-        </Link>
+        <Button variant="tertiary" size="lg" asChild>
+          <Link href="/about">Contact Us</Link>
+        </Button>
       </section>
 
       {/* Footer note */}
       <p className="text-center text-sm text-muted-foreground mt-12">
-        This page is a <strong>Server Component</strong> — zero client JavaScript.
+        This page is a <strong>Server Component</strong> — HeroUI is RSC-compatible.
       </p>
     </div>
   )
 }
 
-// Pure function components - no hooks, no client JS
+// Pure function components
 function PricingCard({
   name,
   price,
@@ -139,52 +140,45 @@ function PricingCard({
   highlighted: boolean
 }) {
   return (
-    <div
-      className={`p-8 rounded-lg border ${
-        highlighted
-          ? 'border-primary bg-primary/5 ring-2 ring-primary'
-          : 'border-border bg-card'
-      }`}
-    >
-      {highlighted && (
-        <span className="inline-block px-3 py-1 text-xs font-medium bg-primary text-primary-foreground rounded-full mb-4">
-          Most Popular
-        </span>
-      )}
-      <h3 className="text-xl font-semibold">{name}</h3>
-      <div className="mt-4 mb-2">
-        <span className="text-4xl font-bold">{price}</span>
-        {period && <span className="text-muted-foreground">{period}</span>}
-      </div>
-      <p className="text-sm text-muted-foreground mb-6">{description}</p>
-      
-      <ul className="space-y-3 mb-8">
-        {features.map((feature) => (
-          <li key={feature} className="flex items-center gap-2 text-sm">
-            <CheckIcon />
-            {feature}
-          </li>
-        ))}
-      </ul>
+    <Card className={highlighted ? 'border-primary ring-2 ring-primary' : ''}>
+      <CardContent className="p-8">
+        {highlighted && (
+          <span className="inline-block px-3 py-1 text-xs font-medium bg-primary text-primary-foreground rounded-full mb-4">
+            Most Popular
+          </span>
+        )}
+        <h3 className="text-xl font-semibold">{name}</h3>
+        <div className="mt-4 mb-2">
+          <span className="text-4xl font-bold">{price}</span>
+          {period && <span className="text-muted-foreground">{period}</span>}
+        </div>
+        <p className="text-sm text-muted-foreground mb-6">{description}</p>
+        
+        <ul className="space-y-3 mb-8">
+          {features.map((feature) => (
+            <li key={feature} className="flex items-center gap-2 text-sm">
+              <CheckIcon />
+              {feature}
+            </li>
+          ))}
+        </ul>
 
-      <Link
-        href="/signup"
-        className={`block w-full py-3 text-center rounded-md font-medium ${
-          highlighted
-            ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-            : 'border border-border hover:bg-accent'
-        }`}
-      >
-        {cta}
-      </Link>
-    </div>
+        <Button 
+          variant={highlighted ? 'primary' : 'tertiary'}
+          className="w-full"
+          asChild
+        >
+          <Link href="/signup">{cta}</Link>
+        </Button>
+      </CardContent>
+    </Card>
   )
 }
 
 function CheckIcon() {
   return (
     <svg
-      className="w-4 h-4 text-primary flex-shrink-0"
+      className="w-4 h-4 text-primary shrink-0"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -207,4 +201,3 @@ function FAQ({ question, answer }: { question: string; answer: string }) {
     </div>
   )
 }
-

@@ -1,7 +1,7 @@
-// About Page - Pure Server Component
-// No client JavaScript - renders as static HTML
+// About Page - Server Component using HeroUI v3
 
-import Link from 'next/link'
+import { Button, Card, CardContent, CardTitle, CardDescription, Separator } from "@heroui/react"
+import Link from "next/link"
 
 export const metadata = {
   title: 'About | NEO Testground',
@@ -32,28 +32,40 @@ export default function AboutPage() {
         </p>
       </section>
 
+      <Separator className="my-12" />
+
       {/* Tech Stack */}
       <section className="mb-16">
         <h2 className="text-2xl font-semibold mb-6">Technology Stack</h2>
         <div className="grid sm:grid-cols-2 gap-4">
-          <TechCard
-            title="Next.js 16"
-            description="App Router with Turbopack, Cache Components, and React Compiler"
-          />
-          <TechCard
-            title="React 19"
-            description="Server Components, Actions, and the latest React features"
-          />
-          <TechCard
-            title="React Native + Expo"
-            description="Cross-platform mobile development with shared components"
-          />
-          <TechCard
-            title="Tailwind CSS 4"
-            description="Utility-first styling with CSS variables for theming"
-          />
+          <Card>
+            <CardContent className="p-6">
+              <CardTitle>Next.js 16</CardTitle>
+              <CardDescription>App Router with Turbopack, Cache Components, and React Compiler</CardDescription>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-6">
+              <CardTitle>React 19</CardTitle>
+              <CardDescription>Server Components, Actions, and the latest React features</CardDescription>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-6">
+              <CardTitle>HeroUI v3</CardTitle>
+              <CardDescription>Beautiful, accessible components with React Aria and Tailwind CSS v4</CardDescription>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-6">
+              <CardTitle>React Native + Expo</CardTitle>
+              <CardDescription>Cross-platform mobile development with shared components</CardDescription>
+            </CardContent>
+          </Card>
         </div>
       </section>
+
+      <Separator className="my-12" />
 
       {/* Team */}
       <section className="mb-16">
@@ -65,6 +77,8 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <Separator className="my-12" />
+
       {/* CTA */}
       <section className="text-center py-12 px-8 bg-muted rounded-lg">
         <h2 className="text-2xl font-semibold mb-4">Ready to get started?</h2>
@@ -72,39 +86,24 @@ export default function AboutPage() {
           Explore our documentation and start building today.
         </p>
         <div className="flex gap-4 justify-center">
-          <Link
-            href="/docs"
-            className="px-6 py-3 bg-primary text-primary-foreground rounded-md font-medium hover:bg-primary/90"
-          >
-            Read the Docs
-          </Link>
-          <Link
-            href="/pricing"
-            className="px-6 py-3 border border-border rounded-md font-medium hover:bg-accent"
-          >
-            View Pricing
-          </Link>
+          <Button variant="primary" size="lg" asChild>
+            <Link href="/docs">Read the Docs</Link>
+          </Button>
+          <Button variant="tertiary" size="lg" asChild>
+            <Link href="/pricing">View Pricing</Link>
+          </Button>
         </div>
       </section>
 
       {/* Footer note */}
       <p className="text-center text-sm text-muted-foreground mt-12">
-        This page is a <strong>Server Component</strong> — zero client JavaScript.
+        This page is a <strong>Server Component</strong> — HeroUI is RSC-compatible.
       </p>
     </div>
   )
 }
 
-// Pure function components - no hooks, no client JS
-function TechCard({ title, description }: { title: string; description: string }) {
-  return (
-    <div className="p-6 border border-border rounded-lg bg-card">
-      <h3 className="font-semibold mb-2">{title}</h3>
-      <p className="text-sm text-muted-foreground">{description}</p>
-    </div>
-  )
-}
-
+// Pure function component
 function TeamMember({ name, role }: { name: string; role: string }) {
   return (
     <div className="text-center">
@@ -116,4 +115,3 @@ function TeamMember({ name, role }: { name: string; role: string }) {
     </div>
   )
 }
-
