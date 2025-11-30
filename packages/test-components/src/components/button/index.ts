@@ -1,4 +1,4 @@
-// Button component - auto-resolves to .web.tsx or .native.tsx based on platform
-export { Button } from './button'
-export type { ButtonProps, ButtonVariant, ButtonSize } from './types'
-
+// Button component - platform-specific implementations
+export { Button } from "./button"
+export type { ButtonProps, ButtonVariant, ButtonSize, ButtonRenderProps } from "./types"
+export { buttonClasses } from "./types"

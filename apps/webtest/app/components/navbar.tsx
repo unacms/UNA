@@ -8,7 +8,7 @@ import {
   DropdownMenu,
   DropdownItem,
   Link,
-} from "@heroui/react"
+} from "@neo/test-components"
 import NextLink from "next/link"
 import { ThemeSwitcher } from "./theme-switcher"
 

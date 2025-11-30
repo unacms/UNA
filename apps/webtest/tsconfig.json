@@ -17,6 +17,14 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
+    
+    // Additional strict checks
+    "noUncheckedIndexedAccess": true,    // Catch undefined array/object access
+    "noImplicitReturns": true,           // All code paths must return
+    "noFallthroughCasesInSwitch": true,  // Catch switch fallthrough
+    "forceConsistentCasingInFileNames": true, // Prevent case issues
+    "verbatimModuleSyntax": true,        // Modern import/export syntax
+    
     "plugins": [
       {
         "name": "next"

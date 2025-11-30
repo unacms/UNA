@@ -1,56 +1,104 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
-/* HeroUI v3 theme configuration */
-@layer theme {
-  :root {
-    /* Light theme (default) */
-    --color-background: #ffffff;
-    --color-foreground: #0a0a0a;
-    --color-card: #ffffff;
-    --color-card-foreground: #0a0a0a;
-    --color-popover: #ffffff;
-    --color-popover-foreground: #0a0a0a;
-    --color-primary: #2563eb;
-    --color-primary-foreground: #fafafa;
-    --color-secondary: #f4f4f5;
-    --color-secondary-foreground: #18181b;
-    --color-muted: #f4f4f5;
-    --color-muted-foreground: #52525b;
-    --color-accent: #f4f4f5;
-    --color-accent-foreground: #18181b;
-    --color-destructive: #dc2626;
-    --color-destructive-foreground: #ffffff;
-    --color-border: #e4e4e7;
-    --color-input: #e4e4e7;
-    --color-ring: #2563eb;
-    --radius: 0.5rem;
+/* 
+ * HeroUI v3 Theme Configuration
+ * https://v3.heroui.com/docs/handbook/theming
+ * 
+ * Naming convention:
+ * - Colors without suffix are backgrounds (e.g., --accent)
+ * - Colors with -foreground are for text (e.g., --accent-foreground)
+ */
+
+/* Theme Variables - Light Mode (default) */
+@theme {
+  /* Core colors */
+  --color-background: #ffffff;
+  --color-foreground: #0a0a0a;
+  
+  /* Surface colors */
+  --color-card: #ffffff;
+  --color-card-foreground: #0a0a0a;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #0a0a0a;
+  
+  /* Primary - brand color */
+  --color-primary: #2563eb;
+  --color-primary-foreground: #fafafa;
+  
+  /* Secondary - muted actions */
+  --color-secondary: #f4f4f5;
+  --color-secondary-foreground: #18181b;
+  
+  /* Muted - subtle backgrounds */
+  --color-muted: #f4f4f5;
+  --color-muted-foreground: #52525b;
+  
+  /* Accent - hover states */
+  --color-accent: #f4f4f5;
+  --color-accent-foreground: #18181b;
+  
+  /* Destructive - danger actions */
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #ffffff;
+  
+  /* Borders and inputs */
+  --color-border: #e4e4e7;
+  --color-input: #e4e4e7;
+  --color-ring: #2563eb;
+  
+  /* Radius */
+  --radius: 0.5rem;
+  --radius-sm: 0.375rem;
+  --radius-lg: 0.75rem;
+}
+
+/* Dark Mode Theme */
+.dark {
+  --color-background: #0a0a0a;
+  --color-foreground: #fafafa;
+  --color-card: #0a0a0a;
+  --color-card-foreground: #fafafa;
+  --color-popover: #0a0a0a;
+  --color-popover-foreground: #fafafa;
+  --color-primary: #3b82f6;
+  --color-primary-foreground: #0a0a0a;
+  --color-secondary: #27272a;
+  --color-secondary-foreground: #fafafa;
+  --color-muted: #27272a;
+  --color-muted-foreground: #d4d4d8;
+  --color-accent: #27272a;
+  --color-accent-foreground: #fafafa;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #fafafa;
+  --color-border: #27272a;
+  --color-input: #27272a;
+  --color-ring: #3b82f6;
+}
+
+/* Base styles */
+@layer base {
+  * {
+    border-color: var(--color-border);
   }
-
-  .dark {
-    --color-background: #0a0a0a;
-    --color-foreground: #fafafa;
-    --color-card: #0a0a0a;
-    --color-card-foreground: #fafafa;
-    --color-popover: #0a0a0a;
-    --color-popover-foreground: #fafafa;
-    --color-primary: #3b82f6;
-    --color-primary-foreground: #0a0a0a;
-    --color-secondary: #27272a;
-    --color-secondary-foreground: #fafafa;
-    --color-muted: #27272a;
-    --color-muted-foreground: #d4d4d8;
-    --color-accent: #27272a;
-    --color-accent-foreground: #fafafa;
-    --color-destructive: #b91c1c;
-    --color-destructive-foreground: #fafafa;
-    --color-border: #27272a;
-    --color-input: #27272a;
-    --color-ring: #3b82f6;
+  
+  html {
+    color-scheme: light;
+  }
+  
+  html.dark {
+    color-scheme: dark;
+  }
+  
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
 }
 
-/* Utility classes using theme tokens */
+/* Utility classes for theme tokens */
 @layer utilities {
+  /* Backgrounds */
   .bg-background { background-color: var(--color-background); }
   .bg-foreground { background-color: var(--color-foreground); }
   .bg-card { background-color: var(--color-card); }
@@ -61,6 +109,7 @@
   .bg-accent { background-color: var(--color-accent); }
   .bg-destructive { background-color: var(--color-destructive); }
   
+  /* Text colors */
   .text-foreground { color: var(--color-foreground); }
   .text-muted-foreground { color: var(--color-muted-foreground); }
   .text-primary { color: var(--color-primary); }
@@ -71,27 +120,23 @@
   .text-destructive { color: var(--color-destructive); }
   .text-destructive-foreground { color: var(--color-destructive-foreground); }
   
+  /* Borders */
   .border-border { border-color: var(--color-border); }
   .border-input { border-color: var(--color-input); }
   
+  /* Ring */
   .ring-ring { --tw-ring-color: var(--color-ring); }
 }
 
-/* Base styles */
-@layer base {
-  * {
-    border-color: var(--color-border);
-  }
-  body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  }
-}
-
-/* HeroUI v3 Component Styles (beta - styles not bundled yet) */
+/* 
+ * HeroUI v3 Component Styles
+ * Uses BEM methodology for consistent customization
+ * https://v3.heroui.com/docs/handbook/styling
+ */
 @layer components {
-  /* Button base */
+  /* ========================================
+   * BUTTON
+   * ======================================== */
   .button {
     display: inline-flex;
     align-items: center;
@@ -104,6 +149,8 @@
     outline: none;
     border: none;
     text-decoration: none;
+    white-space: nowrap;
+    user-select: none;
   }
 
   .button:focus-visible {
@@ -112,9 +159,11 @@
   }
 
   .button:disabled,
-  .button[data-disabled] {
+  .button[data-disabled],
+  .button[aria-disabled="true"] {
     opacity: 0.5;
     cursor: not-allowed;
+    pointer-events: none;
   }
 
   /* Button sizes */
@@ -142,7 +191,7 @@
     color: var(--color-primary-foreground);
   }
 
-  .button--primary:hover:not(:disabled),
+  .button--primary:hover:not(:disabled):not([data-disabled]),
   .button--primary[data-hovered]:not([data-disabled]) {
     background-color: color-mix(in srgb, var(--color-primary) 90%, black);
   }
@@ -158,9 +207,30 @@
     color: var(--color-secondary-foreground);
   }
 
-  .button--secondary:hover:not(:disabled),
+  .button--secondary:hover:not(:disabled):not([data-disabled]),
   .button--secondary[data-hovered]:not([data-disabled]) {
-    background-color: color-mix(in srgb, var(--color-secondary) 90%, black);
+    background-color: color-mix(in srgb, var(--color-secondary) 85%, var(--color-foreground));
+  }
+
+  .button--secondary:active:not(:disabled),
+  .button--secondary[data-pressed]:not([data-disabled]) {
+    transform: scale(0.98);
+  }
+
+  .button--tertiary {
+    background-color: transparent;
+    color: var(--color-foreground);
+    border: 1px solid var(--color-border);
+  }
+
+  .button--tertiary:hover:not(:disabled):not([data-disabled]),
+  .button--tertiary[data-hovered]:not([data-disabled]) {
+    background-color: var(--color-accent);
+  }
+
+  .button--tertiary:active:not(:disabled),
+  .button--tertiary[data-pressed]:not([data-disabled]) {
+    transform: scale(0.98);
   }
 
   .button--ghost {
@@ -168,23 +238,14 @@
     color: var(--color-foreground);
   }
 
-  .button--ghost:hover:not(:disabled),
+  .button--ghost:hover:not(:disabled):not([data-disabled]),
   .button--ghost[data-hovered]:not([data-disabled]) {
     background-color: var(--color-accent);
   }
 
-  .button--tertiary,
-  .button--outline {
-    background-color: transparent;
-    color: var(--color-foreground);
-    border: 1px solid var(--color-border);
-  }
-
-  .button--tertiary:hover:not(:disabled),
-  .button--outline:hover:not(:disabled),
-  .button--tertiary[data-hovered]:not([data-disabled]),
-  .button--outline[data-hovered]:not([data-disabled]) {
-    background-color: var(--color-accent);
+  .button--ghost:active:not(:disabled),
+  .button--ghost[data-pressed]:not([data-disabled]) {
+    transform: scale(0.98);
   }
 
   .button--danger {
@@ -192,9 +253,24 @@
     color: var(--color-destructive-foreground);
   }
 
-  .button--danger:hover:not(:disabled),
+  .button--danger:hover:not(:disabled):not([data-disabled]),
   .button--danger[data-hovered]:not([data-disabled]) {
     background-color: color-mix(in srgb, var(--color-destructive) 90%, black);
+  }
+
+  .button--danger:active:not(:disabled),
+  .button--danger[data-pressed]:not([data-disabled]) {
+    background-color: color-mix(in srgb, var(--color-destructive) 80%, black);
+    transform: scale(0.98);
+  }
+
+  .button--danger-soft {
+    background-color: color-mix(in srgb, var(--color-destructive) 15%, transparent);
+    color: var(--color-destructive);
+  }
+
+  .button--danger-soft:hover:not(:disabled):not([data-disabled]) {
+    background-color: color-mix(in srgb, var(--color-destructive) 25%, transparent);
   }
 
   .button--icon-only {
@@ -202,20 +278,46 @@
     aspect-ratio: 1;
   }
 
-  /* Card */
+  .button--icon-only.button--sm { width: 2rem; }
+  .button--icon-only.button--md { width: 2.5rem; }
+  .button--icon-only.button--lg { width: 3rem; }
+
+  /* ========================================
+   * CARD
+   * ======================================== */
   .card {
     background-color: var(--color-card);
+    color: var(--color-card-foreground);
     border: 1px solid var(--color-border);
     border-radius: var(--radius);
   }
 
-  /* Chip */
+  .card__content {
+    padding: 1.5rem;
+  }
+
+  .card__title {
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  .card__description {
+    color: var(--color-muted-foreground);
+    font-size: 0.875rem;
+  }
+
+  /* ========================================
+   * CHIP
+   * ======================================== */
   .chip {
     display: inline-flex;
     align-items: center;
     padding: 0.25rem 0.75rem;
     font-size: 0.875rem;
+    font-weight: 500;
     border-radius: 9999px;
+    background-color: var(--color-secondary);
+    color: var(--color-secondary-foreground);
   }
 
   .chip--primary {
@@ -223,22 +325,81 @@
     color: var(--color-primary);
   }
 
-  /* Separator */
+  .chip--success {
+    background-color: color-mix(in srgb, #22c55e 15%, transparent);
+    color: #15803d;
+  }
+
+  .chip--warning {
+    background-color: color-mix(in srgb, #f59e0b 15%, transparent);
+    color: #b45309;
+  }
+
+  .chip--danger {
+    background-color: color-mix(in srgb, var(--color-destructive) 15%, transparent);
+    color: var(--color-destructive);
+  }
+
+  /* ========================================
+   * SEPARATOR
+   * ======================================== */
   .separator {
     height: 1px;
+    width: 100%;
     background-color: var(--color-border);
   }
 
-  /* Dropdown */
+  .separator--vertical {
+    height: auto;
+    width: 1px;
+    align-self: stretch;
+  }
+
+  /* ========================================
+   * INPUT
+   * ======================================== */
+  .input {
+    display: flex;
+    width: 100%;
+    height: 2.5rem;
+    padding: 0 0.75rem;
+    font-size: 0.875rem;
+    background-color: transparent;
+    border: 1px solid var(--color-input);
+    border-radius: var(--radius);
+    color: var(--color-foreground);
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+
+  .input:focus {
+    outline: none;
+    border-color: var(--color-ring);
+    box-shadow: 0 0 0 1px var(--color-ring);
+  }
+
+  .input::placeholder {
+    color: var(--color-muted-foreground);
+  }
+
+  .input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* ========================================
+   * DROPDOWN
+   * ======================================== */
   .dropdown__trigger {
     cursor: pointer;
   }
 
   .dropdown__popover {
     background-color: var(--color-popover);
+    color: var(--color-popover-foreground);
     border: 1px solid var(--color-border);
     border-radius: var(--radius);
-    box-shadow: 0 10px 38px -10px rgba(22, 23, 24, 0.35), 0 10px 20px -15px rgba(22, 23, 24, 0.2);
+    box-shadow: 0 10px 38px -10px rgba(22, 23, 24, 0.35), 
+                0 10px 20px -15px rgba(22, 23, 24, 0.2);
     padding: 0.5rem;
     min-width: 12rem;
     z-index: 100;
@@ -251,11 +412,104 @@
     cursor: pointer;
     text-decoration: none;
     color: var(--color-foreground);
+    font-size: 0.875rem;
   }
 
   .dropdown__item:hover,
   .dropdown__item[data-highlighted] {
     background-color: var(--color-accent);
     outline: none;
+  }
+
+  /* ========================================
+   * MODAL
+   * ======================================== */
+  .modal__backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 50;
+  }
+
+  .modal__content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    padding: 1.5rem;
+    max-width: 32rem;
+    width: calc(100% - 2rem);
+    z-index: 51;
+  }
+
+  .modal__header {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .modal__body {
+    color: var(--color-muted-foreground);
+    margin-bottom: 1.5rem;
+  }
+
+  .modal__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  /* ========================================
+   * SPINNER
+   * ======================================== */
+  .spinner {
+    display: inline-block;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+  }
+
+  .spinner--sm {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .spinner--md {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .spinner--lg {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* ========================================
+   * SKELETON
+   * ======================================== */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--color-muted) 0%,
+      color-mix(in srgb, var(--color-muted) 50%, var(--color-background)) 50%,
+      var(--color-muted) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton 2s linear infinite;
+    border-radius: var(--radius);
+  }
+
+  @keyframes skeleton {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
   }
 }

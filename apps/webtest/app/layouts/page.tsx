@@ -1,7 +1,7 @@
 // Layouts Demo - Server Component using HeroUI v3
 // Demonstrates server-rendered navigation without client JS
 
-import { Button, Card, CardContent, CardTitle, CardDescription, Chip, Separator } from "@heroui/react"
+import { Button, Card, CardContent, CardTitle, CardDescription, Chip, Separator } from "@neo/test-components"
 import { cacheLife } from 'next/cache'
 import Link from 'next/link'
 

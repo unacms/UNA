@@ -1,5 +1,5 @@
 // Site Top Nav Demo Page - Server Component using HeroUI v3
-import { Button, Card, CardContent, CardTitle, CardDescription, Chip } from "@heroui/react"
+import { Button, Card, CardContent, CardTitle, CardDescription, Chip } from "@neo/test-components"
 import { cacheLife } from 'next/cache'
 import Link from "next/link"
 

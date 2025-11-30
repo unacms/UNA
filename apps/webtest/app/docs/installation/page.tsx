@@ -1,6 +1,6 @@
 // Installation Docs Page - Server Component using HeroUI v3
 
-import { Card, CardContent, Separator } from "@heroui/react"
+import { Card, CardContent, Separator } from "@neo/test-components"
 
 export const metadata = {
   title: 'Installation | NEO Testground',
@@ -95,7 +95,7 @@ module.exports = {
           <Card>
             <CardContent className="p-6">
               <div className="bg-muted p-4 rounded-lg font-mono text-sm overflow-x-auto">
-                <pre>{`import { Button, Card, Chip } from "@heroui/react"
+                <pre>{`import { Button, Card, Chip } from "@neo/test-components"
 
 export default function Page() {
   return (

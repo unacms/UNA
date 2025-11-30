@@ -1,6 +1,6 @@
 // About Page - Server Component using HeroUI v3
 
-import { Button, Card, CardContent, CardTitle, CardDescription, Separator } from "@heroui/react"
+import { Button, Card, CardContent, CardTitle, CardDescription, Separator } from "@neo/test-components"
 import Link from "next/link"
 
 export const metadata = {

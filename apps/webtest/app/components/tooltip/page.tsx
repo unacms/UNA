@@ -1,7 +1,7 @@
 // Tooltip Component Page - Server Component using HeroUI v3
 // Note: Interactive tooltip would require client component
 
-import { Button, Card, CardContent, Separator } from "@heroui/react"
+import { Button, Card, CardContent, Separator } from "@neo/test-components"
 
 export const metadata = {
   title: 'Tooltip | NEO Testground',
@@ -62,7 +62,7 @@ export default function TooltipComponentPage() {
             <pre className="font-mono text-sm overflow-x-auto">
 {`"use client"
 
-import { Tooltip, TooltipTrigger, TooltipContent } from "@heroui/react"
+import { Tooltip, TooltipTrigger, TooltipContent, Button } from "@neo/test-components"
 
 export function TooltipDemo() {
   return (

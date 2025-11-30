@@ -1,7 +1,7 @@
 // Home Page - Server Component using HeroUI v3
 // HeroUI components are RSC-compatible (built on React Aria Components)
 
-import { Button, Card, CardContent, CardTitle, CardDescription, Chip, Separator } from "@heroui/react"
+import { Button, Card, CardContent, CardTitle, CardDescription, Chip, Separator } from "@neo/test-components"
 import Link from "next/link"
 
 export default function HomePage() {

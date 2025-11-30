@@ -1,7 +1,7 @@
 // Tabs Component Page - Server Component using HeroUI v3
 // Note: Interactive tabs would require client component
 
-import { Card, CardContent, Separator } from "@heroui/react"
+import { Card, CardContent, Separator } from "@neo/test-components"
 
 export const metadata = {
   title: 'Tabs | NEO Testground',
@@ -55,28 +55,23 @@ export default function TabsComponentPage() {
             <pre className="font-mono text-sm overflow-x-auto">
 {`"use client"
 
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@heroui/react"
+import { Tabs, Tab } from "@neo/test-components"
 
 export function AccountTabs() {
   return (
-    <Tabs defaultValue="account">
-      <TabsList>
-        <TabsTrigger value="account">Account</TabsTrigger>
-        <TabsTrigger value="password">Password</TabsTrigger>
-        <TabsTrigger value="settings">Settings</TabsTrigger>
-      </TabsList>
-      <TabsContent value="account">
+    <Tabs aria-label="Account options" defaultSelectedKey="account">
+      <Tab key="account" title="Account">
         <h3>Account Settings</h3>
         <p>Manage your account here.</p>
-      </TabsContent>
-      <TabsContent value="password">
+      </Tab>
+      <Tab key="password" title="Password">
         <h3>Password Settings</h3>
         <p>Change your password here.</p>
-      </TabsContent>
-      <TabsContent value="settings">
+      </Tab>
+      <Tab key="settings" title="Settings">
         <h3>Other Settings</h3>
         <p>Configure other preferences.</p>
-      </TabsContent>
+      </Tab>
     </Tabs>
   )
 }`}

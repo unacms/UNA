@@ -1,7 +1,7 @@
 // Login Page - Server Component using HeroUI v3
 // Note: Form inputs use native HTML as HeroUI Input requires client JS
 
-import { Button, Card, CardContent, Separator } from "@heroui/react"
+import { Button, Card, CardContent, Separator } from "@neo/test-components"
 import Link from "next/link"
 
 export const metadata = {

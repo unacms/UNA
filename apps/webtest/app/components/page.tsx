@@ -1,7 +1,7 @@
 // Components Showcase - Server Component using HeroUI v3
 // Demonstrates available HeroUI components
 
-import { Button, Card, CardContent, CardTitle, CardDescription, Chip, Separator } from "@heroui/react"
+import { Button, Card, CardContent, CardTitle, CardDescription, Chip, Separator } from "@neo/test-components"
 import Link from "next/link"
 
 export const metadata = {

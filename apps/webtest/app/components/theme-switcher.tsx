@@ -1,7 +1,7 @@
 "use client"
 
 // Theme switcher using HeroUI Button
-import { Button } from "@heroui/react"
+import { Button } from "@neo/test-components"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 

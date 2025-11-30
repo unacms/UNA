@@ -1,7 +1,7 @@
 // Dialog Component Page - Server Component using HeroUI v3
 // Note: Interactive dialog would require client component
 
-import { Button, Card, CardContent, Separator } from "@heroui/react"
+import { Button, Card, CardContent, Separator } from "@neo/test-components"
 
 export const metadata = {
   title: 'Dialog | NEO Testground',
@@ -47,27 +47,32 @@ export default function DialogComponentPage() {
             <pre className="font-mono text-sm overflow-x-auto">
 {`"use client"
 
-import { Dialog, DialogTrigger, DialogContent } from "@heroui/react"
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@neo/test-components"
+import { useState } from "react"
 
 export function DeleteDialog() {
+  const [isOpen, setIsOpen] = useState(false)
+  
   return (
-    <Dialog>
-      <DialogTrigger>
-        <Button variant="danger">Delete Account</Button>
-      </DialogTrigger>
-      <DialogContent>
-        <Dialog.Title>Are you sure?</Dialog.Title>
-        <Dialog.Description>
-          This action cannot be undone.
-        </Dialog.Description>
-        <div className="flex justify-end gap-3 mt-4">
-          <Dialog.Close>
-            <Button variant="tertiary">Cancel</Button>
-          </Dialog.Close>
-          <Button variant="danger">Delete</Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+    <>
+      <Button variant="danger" onPress={() => setIsOpen(true)}>
+        Delete Account
+      </Button>
+      <Modal isOpen={isOpen} onOpenChange={setIsOpen}>
+        <ModalContent>
+          <ModalHeader>Are you sure?</ModalHeader>
+          <ModalBody>
+            This action cannot be undone.
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="tertiary" onPress={() => setIsOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="danger">Delete</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   )
 }`}
             </pre>

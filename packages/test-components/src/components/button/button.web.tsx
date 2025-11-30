@@ -1,45 +1,58 @@
-// Button - Web Implementation (Next.js SSR-safe)
-// This is a Server Component by default - no 'use client' needed for static buttons
+// Button - Web Implementation using HeroUI v3
+// Re-exports HeroUI Button with proper BEM class integration
+// RSC-compatible for static buttons; client-side for interactive
 
-import type { ButtonProps } from './types'
-import { buttonBase, buttonVariants, buttonSizes } from './types'
+import { Button as HeroUIButton } from "@heroui/react"
+import { buttonClasses } from "./types"
+import type { ButtonProps } from "./types"
 
 function cn(...classes: (string | undefined | false)[]) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ")
 }
 
+/**
+ * Button component wrapping HeroUI v3 Button
+ * 
+ * Uses BEM classes for theming:
+ * - .button (base)
+ * - .button--{variant} (primary, secondary, tertiary, ghost, danger)
+ * - .button--{size} (sm, md, lg)
+ * - .button--icon-only
+ * 
+ * @see https://v3.heroui.com/docs/components/button
+ */
 export function Button({
   children,
-  variant = 'primary',
-  size = 'md',
-  disabled = false,
-  loading = false,
+  variant = "primary",
+  size = "md",
+  isDisabled = false,
+  isPending = false,
+  isIconOnly = false,
   className,
   onPress,
-}: ButtonProps) {
+  asChild,
+  ...props
+}: ButtonProps & { href?: string }) {
+  // Build BEM class string
+  const bemClasses = cn(
+    buttonClasses.base,
+    buttonClasses.sizes[size],
+    buttonClasses.variants[variant],
+    isIconOnly && buttonClasses.iconOnly
+  )
+
   return (
-    <button
-      type="button"
-      disabled={disabled || loading}
-      onClick={onPress}
-      className={cn(
-        buttonBase,
-        buttonVariants[variant],
-        buttonSizes[size],
-        // Web-specific: hover states (not available in native)
-        variant === 'primary' && 'hover:bg-primary/90',
-        variant === 'secondary' && 'hover:bg-secondary/80',
-        variant === 'destructive' && 'hover:bg-destructive/90',
-        variant === 'outline' && 'hover:bg-accent',
-        variant === 'ghost' && 'hover:bg-accent',
-        className
-      )}
+    <HeroUIButton
+      className={cn(bemClasses, className)}
+      isDisabled={isDisabled}
+      isPending={isPending}
+      onPress={onPress}
+      {...props}
     >
-      {loading ? (
-        <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-      ) : null}
       {children}
-    </button>
+    </HeroUIButton>
   )
 }
 
+// Re-export the HeroUI Button for advanced usage
+export { Button as HeroUIButton } from "@heroui/react"

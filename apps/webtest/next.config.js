@@ -24,6 +24,10 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
 
+  // React Compiler - automatic memoization (Next.js 16)
+  // https://react.dev/learn/react-compiler
+  reactCompiler: true,
+
   // Experimental optimizations
   experimental: {
     // Optimize HeroUI imports - tree-shake unused components

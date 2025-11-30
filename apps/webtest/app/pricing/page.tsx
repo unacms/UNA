@@ -1,6 +1,6 @@
 // Pricing Page - Server Component using HeroUI v3
 
-import { Button, Card, CardContent, Separator } from "@heroui/react"
+import { Button, Card, CardContent, Separator } from "@neo/test-components"
 import Link from "next/link"
 
 export const metadata = {
