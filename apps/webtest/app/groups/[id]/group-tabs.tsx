@@ -2,24 +2,27 @@
 
 // Group Tabs - Client Component for interactive tab navigation
 // Uses standard HeroUI v3 Tabs from @neo/test-components
-// Shows condensed title when main header scrolls out of view
+// Shows condensed title + avatar when main header scrolls out of view
 
 import { Tabs } from '@neo/test-components'
 import { Dropdown, Label, Button } from '@heroui/react'
-import { MessageSquare, Info, Users, MoreHorizontal, UserPlus, Share2, Flag } from 'lucide-react'
+import { MessageSquare, Info, Users, MoreHorizontal, UserPlus, Share2, Flag, HeartHandshake, VolumeX } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavbarIsland } from '@/app/components/navbar-island'
 
 interface GroupTabsProps {
   groupName: string
+  groupAvatar?: string
   feedContent: React.ReactNode
   aboutContent: React.ReactNode
   membersContent: React.ReactNode
+  respectContent?: React.ReactNode
+  mutesContent?: React.ReactNode
 }
 
-export function GroupTabs({ groupName, feedContent, aboutContent, membersContent }: GroupTabsProps) {
+export function GroupTabs({ groupName, groupAvatar, feedContent, aboutContent, membersContent, respectContent, mutesContent }: GroupTabsProps) {
   const [showTitle, setShowTitle] = useState(false)
-  const { setTitle } = useNavbarIsland()
+  const { setContent } = useNavbarIsland()
 
   // Determine tab size based on scroll state
   // When scrolled = smaller tabs for compact sticky header
@@ -37,8 +40,8 @@ export function GroupTabs({ groupName, feedContent, aboutContent, membersContent
           // Show title when header is NOT intersecting (scrolled past)
           const isScrolled = !entry.isIntersecting
           setShowTitle(isScrolled)
-          // Update navbar island on mobile
-          setTitle(isScrolled ? groupName : null)
+          // Update navbar island on mobile with both title and image
+          setContent(isScrolled ? groupName : null, isScrolled && groupAvatar ? groupAvatar : null)
         }
       },
       { 
@@ -50,29 +53,38 @@ export function GroupTabs({ groupName, feedContent, aboutContent, membersContent
     observer.observe(headerElement)
     return () => {
       observer.disconnect()
-      // Clean up navbar title when unmounting
-      setTitle(null)
+      // Clean up navbar content when unmounting
+      setContent(null, null)
     }
-  }, [groupName, setTitle])
+  }, [groupName, groupAvatar, setContent])
 
   return (
     <Tabs defaultSelectedKey="feed" size={tabSize}>
       {/* Tabs bar - sticky at top-16 */}
       <div className="bg-card border-b border-border/60 sticky top-16 z-40">
-        <div className="max-w-7xl mx-auto px-4 py-2 lg:px-6">
+        <div className="max-w-7xl mx-auto px-4 py-3 lg:px-6">
           <div className="flex gap-4 items-center justify-between">
-            {/* Left side: Title (md+ only) + Tabs */}
+            {/* Left side: Avatar + Title (md+ only) + Tabs */}
             <div className="flex items-center">
-              {/* Condensed title - appears when scrolled, hidden on mobile (shown in separate bar above) */}
-              <h2 
+              {/* Condensed avatar + title - appears when scrolled, hidden on mobile (shown in navbar) */}
+              <div 
                 className={`
-                  hidden md:block font-semibold text-xl text-foreground whitespace-nowrap overflow-hidden text-ellipsis
+                  hidden md:flex items-center gap-2
                   transition-all duration-200 ease-out
-                  ${showTitle ? 'opacity-100 max-w-[200px] mr-4 lg:mr-6' : 'opacity-0 max-w-0 mr-0'}
+                  ${showTitle ? 'opacity-100 max-w-[250px] mr-4 lg:mr-6' : 'opacity-0 max-w-0 mr-0 overflow-hidden'}
                 `}
               >
-                {groupName}
-              </h2>
+                {groupAvatar && (
+                  <img 
+                    src={groupAvatar} 
+                    alt={groupName}
+                    className="w-8 h-8 rounded-full object-cover shrink-0"
+                  />
+                )}
+                <h2 className="font-semibold text-xl text-foreground whitespace-nowrap overflow-hidden text-ellipsis">
+                  {groupName}
+                </h2>
+              </div>
 
               <Tabs.ListContainer>
                 <Tabs.List aria-label="Group sections" className="w-fit bg-card p-0">
@@ -97,6 +109,24 @@ export function GroupTabs({ groupName, feedContent, aboutContent, membersContent
                   </span>
                   <Tabs.Indicator className="bg-accent shadow-none" />
                 </Tabs.Tab>
+                {respectContent && (
+                  <Tabs.Tab id="respect" className="data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground">
+                    <span className="flex items-center gap-2">
+                      <HeartHandshake className="hidden md:block" />
+                      Respect
+                    </span>
+                    <Tabs.Indicator className="bg-accent shadow-none" />
+                  </Tabs.Tab>
+                )}
+                {mutesContent && (
+                  <Tabs.Tab id="mutes" className="data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground">
+                    <span className="flex items-center gap-2">
+                      <VolumeX className="hidden md:block" />
+                      Mutes
+                    </span>
+                    <Tabs.Indicator className="bg-accent shadow-none" />
+                  </Tabs.Tab>
+                )}
               </Tabs.List>
               </Tabs.ListContainer>
             </div>
@@ -159,6 +189,18 @@ export function GroupTabs({ groupName, feedContent, aboutContent, membersContent
       <Tabs.Panel id="members">
         {membersContent}
       </Tabs.Panel>
+      
+      {respectContent && (
+        <Tabs.Panel id="respect">
+          {respectContent}
+        </Tabs.Panel>
+      )}
+      
+      {mutesContent && (
+        <Tabs.Panel id="mutes">
+          {mutesContent}
+        </Tabs.Panel>
+      )}
     </Tabs>
   )
 }

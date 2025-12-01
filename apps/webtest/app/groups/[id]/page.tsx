@@ -37,6 +37,7 @@ const mockGroup = {
   name: "Tech Innovators",
   description: "A community for technology enthusiasts, developers, and innovators to share ideas, collaborate on projects, and stay updated with the latest tech trends.",
   coverImage: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&h=400&fit=crop",
+  avatar: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=200&h=200&fit=crop",
   memberCount: 2847,
   isPublic: true,
   isVisible: true,
@@ -212,6 +213,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
         {/* Group Tabs with Content */}
         <GroupTabs 
           groupName={group.name}
+          groupAvatar={group.avatar}
           feedContent={feedContent}
           aboutContent={aboutContent}
           membersContent={membersContent}
@@ -248,34 +250,42 @@ function GroupHeader({ group }: { group: typeof mockGroup }) {
     <div id="group-header" className="bg-card border-b border-border/60">
       <div className="max-w-7xl mx-auto px-4 lg:px-6 py-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          {/* Group Name and Chips */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-2xl sm:text-3xl font-bold text-foreground truncate">
-                {group.name}
-              </h1>
-              <div className="flex items-center gap-2">
-                <Chip className="text-xs">
-                  {group.isPublic ? (
-                    <><Globe className="w-3 h-3 mr-1" /> Public</>
-                  ) : (
-                    <><Lock className="w-3 h-3 mr-1" /> Private</>
-                  )}
-                </Chip>
-                {group.isVisible && (
-                  <Chip className="text-xs bg-primary/10 text-primary">
-                    <Eye className="w-3 h-3 mr-1" /> Visible
+          {/* Group Avatar, Name and Chips */}
+          <div className="flex items-center gap-4 flex-1 min-w-0">
+            {/* Large Profile Avatar */}
+            <img
+              src={group.avatar}
+              alt={group.name}
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-4 border-background shadow shrink-0"
+            />
+            <div className="min-w-0">
+              <div className="flex items-center gap-3 flex-wrap">
+                <h1 className="text-2xl sm:text-3xl font-bold text-foreground truncate">
+                  {group.name}
+                </h1>
+                <div className="flex items-center gap-2">
+                  <Chip className="text-xs">
+                    {group.isPublic ? (
+                      <><Globe className="w-3 h-3 mr-1" /> Public</>
+                    ) : (
+                      <><Lock className="w-3 h-3 mr-1" /> Private</>
+                    )}
                   </Chip>
-                )}
+                  {group.isVisible && (
+                    <Chip className="text-xs bg-primary/10 text-primary">
+                      <Eye className="w-3 h-3 mr-1" /> Visible
+                    </Chip>
+                  )}
+                </div>
               </div>
+              <p className="mt-1 text-sm text-muted-foreground flex items-center gap-2">
+                <Users className="w-4 h-4" />
+                <span>{group.memberCount.toLocaleString()} members</span>
+                <span className="text-border">•</span>
+                <MapPin className="w-4 h-4" />
+                <span>{group.location}</span>
+              </p>
             </div>
-            <p className="mt-1 text-sm text-muted-foreground flex items-center gap-2">
-              <Users className="w-4 h-4" />
-              <span>{group.memberCount.toLocaleString()} members</span>
-              <span className="text-border">•</span>
-              <MapPin className="w-4 h-4" />
-              <span>{group.location}</span>
-            </p>
           </div>
 
           {/* Main Actions */}

@@ -28,6 +28,18 @@ import { PageFooter } from "../components/page-footer"
 // Mock groups data - in real app would come from UNA API
 const mockGroups = [
   {
+    id: "ambient-circle",
+    name: "Ambient Circle",
+    description: "A safe space for meaningful conversations with protected identities.",
+    coverImage: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&h=200&fit=crop",
+    memberCount: 1234,
+    isPublic: false,
+    isFeatured: true,
+    category: "Support",
+    recentActivity: "1 hour ago",
+    avatar: "https://images.unsplash.com/photo-1516534775068-ba3e7458af70?w=100&h=100&fit=crop",
+  },
+  {
     id: "tech-innovators",
     name: "Tech Innovators",
     description: "A community for technology enthusiasts, developers, and innovators.",
@@ -37,7 +49,7 @@ const mockGroups = [
     isFeatured: true,
     category: "Technology",
     recentActivity: "2 hours ago",
-    avatar: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=100&h=100&fit=crop",
+    avatar: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=100&h=100&fit=crop",
   },
   {
     id: "design-masters",
@@ -49,7 +61,7 @@ const mockGroups = [
     isFeatured: true,
     category: "Design",
     recentActivity: "5 hours ago",
-    avatar: "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=100&h=100&fit=crop",
+    avatar: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=100&h=100&fit=crop",
   },
   {
     id: "startup-founders",
@@ -61,7 +73,7 @@ const mockGroups = [
     isFeatured: false,
     category: "Business",
     recentActivity: "1 day ago",
-    avatar: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=100&h=100&fit=crop",
+    avatar: "https://images.unsplash.com/photo-1553484771-371a605b060b?w=100&h=100&fit=crop",
   },
   {
     id: "photography-club",
@@ -73,7 +85,7 @@ const mockGroups = [
     isFeatured: false,
     category: "Art",
     recentActivity: "3 hours ago",
-    avatar: "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=100&h=100&fit=crop",
+    avatar: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=100&h=100&fit=crop",
   },
   {
     id: "ai-researchers",
@@ -85,7 +97,7 @@ const mockGroups = [
     isFeatured: true,
     category: "Technology",
     recentActivity: "30 minutes ago",
-    avatar: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=100&h=100&fit=crop",
+    avatar: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=100&h=100&fit=crop",
   },
   {
     id: "fitness-motivation",
@@ -97,7 +109,7 @@ const mockGroups = [
     isFeatured: false,
     category: "Health",
     recentActivity: "4 hours ago",
-    avatar: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=100&h=100&fit=crop",
+    avatar: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=100&h=100&fit=crop",
   },
 ]
 
@@ -212,15 +224,18 @@ interface GroupCardProps {
 function GroupCard({ group, featured = false }: GroupCardProps) {
   return (
     <Link href={`/groups/${group.id}`} className="block group">
-      <Card className="h-full overflow-hidden hover:shadow-lg transition-all duration-200 hover:border-primary/30">
-        {/* Cover Image */}
-        <div className="relative h-32 overflow-hidden">
-          <img
-            src={group.coverImage}
-            alt={`${group.name} cover`}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+      <Card className="h-full hover:shadow-lg transition-all duration-200 hover:border-primary/30">
+        {/* Cover Image with Avatar */}
+        <div className="relative">
+          {/* Cover */}
+          <div className="h-32 overflow-hidden rounded">
+            <img
+              src={group.coverImage}
+              alt={`${group.name} cover`}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded " />
+          </div>
           
           {/* Badges */}
           <div className="absolute top-2 left-2 flex gap-1">
@@ -238,16 +253,17 @@ function GroupCard({ group, featured = false }: GroupCardProps) {
             </Chip>
           </div>
           
-          {/* Avatar overlay */}
-          <div className="absolute -bottom-6 left-4">
-            <Avatar className="w-14 h-14 border-4 border-card">
-              <Avatar.Image src={group.avatar} alt={group.name} />
-              <Avatar.Fallback>{group.name.charAt(0)}</Avatar.Fallback>
-            </Avatar>
+          {/* Avatar - positioned half over cover */}
+          <div className="absolute right-2 -bottom-12">
+            <img
+              src={group.avatar}
+              alt={group.name}
+              className="w-24 h-24 rounded-full object-cover border-4 border-card"
+            />
           </div>
         </div>
 
-        <CardContent className="pt-8 pb-4">
+        <CardContent className="">
           <CardTitle className="text-lg mb-1 group-hover:text-primary transition-colors">
             {group.name}
           </CardTitle>
