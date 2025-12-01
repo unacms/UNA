@@ -23,7 +23,7 @@ export default function Browse({ unitMode, data, limit_by, view, autoscroll, }) 
             view={data.view ? data.view : ''}
             data={item}
         /></View>) : <Unit
-            
+            key={`item${index}`}
             unit={data.unit ? data.unit : ''}
             mode={unitMode}
             module={data.module ? data.module : ''}
