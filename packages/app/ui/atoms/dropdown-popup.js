@@ -6,20 +6,9 @@ import {
 } from 'react-native';
 import { Pressable, ScrollView, View, ViewRef } from 'app/design/view'
 import { RemoveScroll } from 'react-remove-scroll';
-import Animated, {
-    useSharedValue,
-    useAnimatedStyle,
-    withTiming,
-    withSpring,
-    interpolate,
-    runOnJS,
-} from 'react-native-reanimated';
 import { appSetting } from 'app/lib/util';
-import { BlurView } from 'expo-blur';
 import { Theme } from 'app/design/theme';
 import { useIsDesktop, useWindowSize } from 'app/context/measure';
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const dropdownTheme = appSetting('theme', 'dropdown');
 
 export default function DropdownPopup({
@@ -49,8 +38,6 @@ export default function DropdownPopup({
     const isControlledOutside = typeof onOpenChange === 'function';
     const isRealOpen = isControlledOutside ? open : isOpen;
 
-    // Animation values
-    const animationProgress = useSharedValue(0);
 
     useEffect(() => {
         // Add safety checks for modal state
@@ -59,16 +46,9 @@ export default function DropdownPopup({
             if (!isModalVisible) {
                 setIsModalVisible(true);
             }
-            animationProgress.value = withSpring(1, {
-                damping: 20,
-                stiffness: 300,
-            });
+           
         } else {
-            animationProgress.value = withTiming(0, { duration: 200 }, (finished) => {
-                if (finished && isModalVisible) {
-                    runOnJS(setIsModalVisible)(false);
-                }
-            });
+            setIsModalVisible(false);
         }
     }, [isRealOpen, isModalVisible]);
 
@@ -183,13 +163,13 @@ export default function DropdownPopup({
                             <RemoveScroll>{Content}</RemoveScroll>
                         </Pressable>
                     ) : (
-                        <AnimatedPressable
+                        <Pressable
                             className="flex-1"
                             style={[{ backgroundColor: 'rgba(0,0,0,0.3)' }, {}]}
                             onPress={(event) => handleBackdropPress(event)}
                         >
                             {Content}
-                        </AnimatedPressable>
+                        </Pressable>
                     )}
                 </ModalBase>
             )}

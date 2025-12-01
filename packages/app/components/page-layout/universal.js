@@ -3,7 +3,6 @@ import { appSetting, getPageWidth, cd } from 'app/lib/util'
 import ScrollList from 'app/ui/molecules/scroll_list'
 import { useRef, memo, useMemo } from 'react';
 import MenuFooter from 'app/components/nav/menu-footer';
-import Animated from 'react-native-reanimated';
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { Panel, PanelGroup, PanelHandler } from "app/ui/molecules/resizable-panels";
 import { useLayoutSettings } from 'app/context/layout-settings';
@@ -127,7 +126,7 @@ export default function PageLayoutUniversal(props) {
 
     const refer = useRef();
     const content = (
-        <Animated.ScrollView ref={refer} className={getPageWidth(props.uri, props.data?.config) + ' mx-auto w-full '} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
+        <ScrollView ref={refer} className={getPageWidth(props.uri, props.data?.config) + ' mx-auto w-full '} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
             <PageContentUniversal {...props} />
             <MenuFooter
                 cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
@@ -136,7 +135,7 @@ export default function PageLayoutUniversal(props) {
                 itemClassName="text-sm p-1"
 
             />
-        </Animated.ScrollView>
+        </ScrollView>
     );
 
     return (

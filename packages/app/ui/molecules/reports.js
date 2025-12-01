@@ -9,7 +9,6 @@ import { View } from 'app/design/view';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile';
 import { subscribe } from 'app/ui/atoms/socket';
-import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing, withSequence } from "react-native-reanimated";
 import Dropdown from 'app/ui/atoms/dropdown'
 import { InputMulti } from 'app/design/controls'
 import { Platform } from 'react-native';
@@ -299,21 +298,6 @@ const ElementReports = forwardRef((oProps, ref) => {
             iCount = oCounterGlobal.count;
     }
 
-    const sharedValue = useSharedValue(1);
-
-    const indicatorStyle = useAnimatedStyle(() => {
-        return {
-            opacity: sharedValue.value,
-        };
-    }, [sharedValue]);
-
-    useEffect(() => {
-        sharedValue.value = withSequence(
-            withTiming(0, { duration: 500 }), // fade out
-            withTiming(1, { duration: 500 }) // fade in
-        );
-    }, [iCount]);
-
     let sCounterButton = undefined;
     let sCounterPopup = undefined;
     if (bShowCounter && iCount > 0) {
@@ -330,9 +314,9 @@ const ElementReports = forwardRef((oProps, ref) => {
             sUsers = getSkeleton();
 
         sCounterButton = (
-            <Animated.View key="counter" style={indicatorStyle}>
+            <View key="counter" style={indicatorStyle}>
                 <ButtonCounter startDecorator={!bShowCombined ? sIcon : false} title={iCount + ''} onPress={_handleGetPerformedBy} {...oButtonProps} />
-            </Animated.View>
+            </View>
         );
 
         sCounterPopup = (

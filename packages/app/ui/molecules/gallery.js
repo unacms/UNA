@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Animated, PanResponder, Dimensions } from 'react-native';
 import { View } from 'app/design/view';
 import { Button } from "app/design/controls";
@@ -10,6 +10,8 @@ export default function Gallery({ items, autoscroll }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const position = useRef(new Animated.Value(0)).current;
     const opacity = useRef(new Animated.Value(1)).current;
+    const [isPaused, setIsPaused] = useState(false);
+
 
     const animateToIndex = (newIndex, direction) => {
         Animated.parallel([
@@ -51,11 +53,27 @@ export default function Gallery({ items, autoscroll }) {
         animateToIndex(nextIndex, 1);
     };
 
+// Автоскролл
+useEffect(() => {
+    if (!autoscroll || isPaused || items.length <= 1) return;
+    
+    const interval = typeof autoscroll === 'number' ? autoscroll : 3000;
+    const timer = setInterval(() => {
+        goRight();
+    }, interval);
+
+    return () => clearInterval(timer);
+}, [autoscroll, isPaused, currentIndex, items.length]);
+
     const panResponder = useRef(
         PanResponder.create({
             onMoveShouldSetPanResponder: (_, gesture) =>
                 Math.abs(gesture.dx) > 20,
+            onPanResponderGrant: () => {
+                setIsPaused(true); 
+            },
             onPanResponderRelease: (_, gesture) => {
+                setIsPaused(false); 
                 if (gesture.dx > 50) {
                     goLeft();
                 } else if (gesture.dx < -50) {

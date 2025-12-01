@@ -5,7 +5,6 @@ import { fetcher } from 'app/lib/fetcher';
 import { View } from 'app/design/view'
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile';
-import Animated, { useSharedValue, withTiming, useAnimatedStyle, withSequence } from "react-native-reanimated";
 
 const getName = (sType, sSystem, sObjectId, sName) => {
     let aName = [sType, sSystem.replace(/_/g, '-'), sObjectId];
@@ -145,19 +144,6 @@ export default function ElementFavorites(oProps) {
 
     const ButtonCounter = !bShowCombined ? (bShowCounterAsButton ? ButtonMenuCounterDefault : ButtonMenuCounterText) : ButtonMenuGroupItem;
     
-    const sharedValue = useSharedValue(1);
-    const indicatorStyle = useAnimatedStyle(() => {
-        return {
-        opacity: sharedValue.value,
-        };
-    }, [sharedValue]);
-
-    useEffect(() => {
-        sharedValue.value = withSequence(
-        withTiming(0, { duration: 500 }), // fade out
-        withTiming(1, { duration: 500 }) // fade in
-        );
-    }, [iCount]);
     
     let sCounterButton = undefined;
     let sCounterPopup = undefined;
@@ -175,9 +161,9 @@ export default function ElementFavorites(oProps) {
             sUsers = getSkeleton();
 
         sCounterButton = (
-            <Animated.View key="counter" style={indicatorStyle}>
+            <View key="counter" style={indicatorStyle}>
                 <ButtonCounter startDecorator={!bShowCombined ? 'Bookmark' : false} title={iCount + ''} onPress={_handleGetPerformedBy} {...oButtonProps} />
-            </Animated.View>
+            </View>
         );
 
         sCounterPopup = (
