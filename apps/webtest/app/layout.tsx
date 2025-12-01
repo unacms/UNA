@@ -2,6 +2,7 @@
 // SSR-first: No React context for theming
 // Theme is set via blocking script + CSS variables
 
+import { Suspense } from 'react'
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { ThemeScript } from './theme-script'
@@ -36,7 +37,9 @@ export default function RootLayout({
         <NavbarIslandProvider>
           {/* Navbar is server-rendered, only islands inside are client components */}
           <SiteNavbar />
-          <main>{children}</main>
+          <Suspense>
+            <main>{children}</main>
+          </Suspense>
         </NavbarIslandProvider>
       </body>
     </html>
