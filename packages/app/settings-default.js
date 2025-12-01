@@ -316,20 +316,10 @@ export const settingsDefault = {
         feed_container: 'relative flex-auto mx-auto w-full max-w-3xl  ',
         post_trigger: 'web:active:bg-muted rounded-lg font-medium lg:rounded-full flex-auto text-muted-foreground web:hover:text-foreground  lg:bg-muted/80 lg:hover:bg-muted justify-center px-1 lg:px-4',
         show_html: false,
-        default_feed: 'foryou',
+        default_feed: 'account',
         list: [
-            {
-                name: 'foryou',
-                icon: 'Sparkle',
-                title: 'For you',
-                showTitle: true,
-            },
-            // {
-            //     name: 'account',
-            //     icon: 'Binoculars',
-            //     title: 'Following',
-            //     showTitle: true,
-            // },
+            { name: 'foryou', icon: 'Sparkle', title: 'For you', showTitle: true },
+             { name: 'account', icon: 'Binoculars', title: 'Following', showTitle: true },
             // { name: 'hot', icon: 'Flame', title: 'Hot', showTitle: true },
             // { name: 'public', icon: 'Egg', title: 'Public', showTitle: true },
             // { name: 'channels', icon: 'Hash', title: 'News', showTitle: true },

@@ -27,6 +27,8 @@ import { Button } from 'app/design/controls'
 import { useWindowHeight } from 'app/context/measure';
 import emitter from 'app/context/emitter'
 import Snackbar from 'app/ui/atoms/snackbar'
+import DropdownPopup from 'app/ui/atoms/dropdown-popup'
+
 import {
     refetchUniListReducer,
     isSameItemsForUniList,
@@ -91,13 +93,16 @@ export default function Browse(props) {
         );
 
         const a = transformedValues.by_hashtag ? { type: 'bx_channels', context: transformedValues.by_hashtag } : { type: 'feed' };
-        
+
+        const b = transformedValues.by_context ? { type: 'by_context', context: transformedValues.by_context } : { type: 'feed' };
+        //TODO
         setDefParams(prev => ({
             ...prev,
             modules: transformedValues.modules,
                 media: transformedValues.media,
                 ...a
         }));
+
         refetchRef.current.skipToast = true
         refetch()
     });
@@ -371,6 +376,10 @@ export default function Browse(props) {
     if (!dataItems.length && isShowTitleInside)
         return;
 
+    const handleOpenChange = (open) => {
+        setShowFilters(open)
+    }
+
     return (
         <View className={`w-full ${isOneLine ? '' : 'h-full'}`}>
             <View className="w-full" ></View>
@@ -403,10 +412,17 @@ export default function Browse(props) {
 
                     </Row>
                 )}
-                {formProps && <View className=" w-full">
-                    <Row className="w-full items-end justify-end"><Button startDecorator="Settings2" variant="outline" title={!showFilters ? "Show filters" : "Hide filters"} onPress={() => setShowFilters(!showFilters)} /></Row>
-                    {showFilters && <Form {...formProps} key="form" name={formProps.name} onChange={handleFilterFormChange} />}
-                    </View>
+                {formProps &&  <DropdownPopup
+                            trigger={
+                                <Row className="w-full items-end justify-end mb-3">
+                                    <Button startDecorator="Settings2" variant="outline" title={!showFilters ? "Show filters" : "Hide filters"} />
+                                </Row>
+                            }
+                            minPopupWidth={360}
+                            open={showFilters}
+                            onOpenChange={handleOpenChange}
+                        ><View className="m-2"><Form {...formProps} key="form" name={formProps.name} onChange={handleFilterFormChange} /></View></DropdownPopup>
+
                 }
                 {contentElement}
             </View>

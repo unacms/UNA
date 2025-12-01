@@ -78,6 +78,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     const aItemsRightBar = Object.entries(blocks).filter(([key, value]) => value.sidebar);
 
     const isRightCol = aItemsRightBar.length > 0
+    console.log("aItemsRightBar", aItemsRightBar)
     const isLeftCol = aItemsLeftBar.length > 0
 
     const viewProps = isWeb ? {
@@ -206,23 +207,23 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                     onLayout={handleLayoutModal}
                     className="border-t border-border/60"
                 >
-                    <CommentsForm 
-                        isModal={isModal} 
-                        objectId={commentsData?.content[0]?.browse.data.object_id} 
-                        module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} 
-                        form={commentsData?.content[0]?.form} 
-                        requestUrl={commentsData?.content[0]?.url} 
+                    <CommentsForm
+                        isModal={isModal}
+                        objectId={commentsData?.content[0]?.browse.data.object_id}
+                        module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
+                        form={commentsData?.content[0]?.form}
+                        requestUrl={commentsData?.content[0]?.url}
                     />
                 </View>
             </View>
         )
     }
 
-    const isMultiColumn = aItemsLeftBar.length > 0;
+    const isMultiColumn = aItemsLeftBar.length > 0 || aItemsRightBar.length > 0;
 
     if (!isWeb || !isDesktop || !isMultiColumn) {
         return (
-             <View {...viewProps} className={`w-full ${isWeb ? '' : 'h-full'}`}>
+            <View {...viewProps} className={`w-full ${isWeb ? '' : 'h-full'}`}>
                 <View className={`max-w-4xl w-full flex-1 bg-card shadow-sm text-card-foreground rounded-2xl  lg:my-4 mx-auto `}>
                     <View onLayout={handleListLayout} pointerEvents="box-none" className='w-full flex-1 ' style={{ marginBottom: formHeight }}>
                         <CommentsBrowse
@@ -246,12 +247,12 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                     <KbAvoidingView>
                         <View onLayout={handleLayout} style={{ width: listWidth + 5 }} className='-ml-[2px] -mr-[2px] border-background border bg-background web:fixed z-50 web:bottom-0  '>
                             <View className=' lg:mb-4  ml-[1px] '>
-                                <CommentsForm 
-                                    isModal={isModal} 
-                                    objectId={commentsData?.content[0]?.browse.data.object_id} 
-                                    module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} 
-                                    form={commentsData?.content[0]?.form} 
-                                    requestUrl={commentsData?.content[0]?.url} 
+                                <CommentsForm
+                                    isModal={isModal}
+                                    objectId={commentsData?.content[0]?.browse.data.object_id}
+                                    module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
+                                    form={commentsData?.content[0]?.form}
+                                    requestUrl={commentsData?.content[0]?.url}
                                 />
                             </View>
                         </View>
@@ -282,9 +283,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         className={`hidden ${leftBreakpoint}:block mt-0.5 sm:p-2`}
                         {...leftPanelProps}
                     >
-                        <View
-                            className={`fixed-process'}`}
-                        >
+                        <View className={`fixed-process'}`} >
                             {aItemsLeftBar.length > 0 && (
                                 <View className='fixed-process w-96 hidden sm:flex gap-y-3 '>
                                     {
@@ -326,11 +325,11 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                     <KbAvoidingView>
                         <View onLayout={handleLayout} style={{ width: listWidth + 5 }} className='-ml-[2px] -mr-[2px] border-background border bg-background web:fixed z-50 web:bottom-0  '>
                             <View className='lg:rounded-b-2xl px-4 py-3  lg:mb-4 bg-card shadow-sm ml-[1px] '>
-                                <CommentsForm 
+                                <CommentsForm
                                     objectId={commentsData?.content[0]?.browse.data.object_id}
-                                    module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module} 
-                                    form={commentsData?.content[0]?.form} 
-                                    requestUrl={commentsData?.content[0]?.url} 
+                                    module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
+                                    form={commentsData?.content[0]?.form}
+                                    requestUrl={commentsData?.content[0]?.url}
                                 />
                             </View>
                         </View>
@@ -347,11 +346,9 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         className={`hidden ${rightBreakpoint}:block mt-0.5 sm:p-2`}
                         {...rightPanelProps}
                     >
-                        <View
-                            className={`fixed-process'}`}
-                        >
+                        <View className={`fixed-process'}`}>
                             {aItemsRightBar.length > 0 && (
-                                <View className='fixed-process w-96 hidden sm:flex '>
+                                <View className='fixed-process w-96 hidden sm:flex gap-y-3 '>
                                     {
                                         aItemsRightBar.map(([key, value]) => {
                                             return (

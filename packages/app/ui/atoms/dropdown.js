@@ -35,7 +35,6 @@ export default function Dropdown(props) {
 
     useEffect(() => {
         if (props.value != selectedVal){
-            console.log("useEffect");
             setSelectedVal(props.value);
         }
     }, [props.value]);

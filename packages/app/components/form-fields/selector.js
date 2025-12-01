@@ -57,7 +57,7 @@ function ChkList({ values, value2, addValue2, isMultiple }) {
 export default function (props) {
     const [isModal, setIsModal] = useState(false);
     const rules = {};
-    const isMultiple = props.origtype == 'select' ? false : true;
+    const isMultiple = props.origtype == 'select' || props.is_single === true ? false : true;
     const defaultValue = props?.value ? (Array.isArray(props.value) ? props.value.map(String) : [props.value.toString()]) : '';
     const name = props.name ? props.name : '';
     const { field } = useController({ name, rules, defaultValue });
