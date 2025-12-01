@@ -64,13 +64,23 @@ export function Conductor({
     layoutName,
     defaultHeaderHeight = 112,
 }) {
-    const [timestamp, setTimestamp] = useState(Date.now());
+    const [timestamp] = useState(Date.now());
     const { currentUser } = useCurrentUser()
     const { setBottomSheetData } = useBottomSheetData()
-    const { layoutData, setLayoutData } = useLayoutData()
     const { layoutName: tmplLayout } = useLayoutSettings()
     const cleanUrl = data.url.split('?')[0]
     const isDesktop = useIsDesktop()
+    const [isScrolled, setIsScrolled] = useState(isCoverDisabled)
+    const hideDefaultHeaderFrom = 100
+
+    const coverMode = appSetting(
+        'cover',
+        'view_by_module',
+        data.cover_block?.profile?.module
+    )
+
+    const isCover = data.cover_block && coverMode != 'none' ? true : false
+
     const initedTabs = fillTabs(
         menu,
         data,
@@ -97,6 +107,25 @@ export function Conductor({
         })
         return found !== -1 ? found : 0
     }, [routes, useSectionAsMenu, data.url, cleanUrl])
+
+    const handleScroll = useCallback(() => {
+        requestAnimationFrame(() => {
+            const currentScrollY = window.scrollY
+            setIsScrolled(currentScrollY > hideDefaultHeaderFrom)
+        })
+    }, [])
+
+    useEffect(() => {
+        if (!appSetting('cover', 'fixed') && isCover) {
+            window.addEventListener('scroll', handleScroll)
+        }
+
+        return () => {
+            if (!appSetting('cover', 'fixed') && isCover) {
+                window.removeEventListener('scroll', handleScroll)
+            }
+        }
+    }, [handleScroll, isCover])
 
     const initialIndex = useMemo(() => getFoundIndex(), [getFoundIndex])
 
@@ -240,7 +269,10 @@ export function Conductor({
 
     const headerComponent = (
         <HeaderContainer
+            isCover = {isCover}
+            isScrolled = {isScrolled}
             isHideCover={isHideCover}
+            hideDefaultHeaderFrom={hideDefaultHeaderFrom}
             tabBarObj={
                 <>
                     <TabBar
@@ -269,7 +301,6 @@ export function Conductor({
             }
             headerSettings={headerSettings}
             pageData={data}
-            isCoverDisabled={isCoverDisabled}
         />
     )
 
@@ -328,6 +359,7 @@ export function Conductor({
 
     const CenterColumnContent = <TabSceneMainContent
         pageRoute={tabRoute}
+        isScrolled={isScrolled}
         headerHeight={
             showFiltersBtn && routes.length > 1
                 ? defaultHeaderHeight + 52
@@ -373,7 +405,8 @@ const TabSceneMainContent = ({
     skeleton,
     keyword,
     ts,
-    timestamp
+    timestamp,
+    isScrolled
 }) => {
     const pageData = pageRoute.pageData
     const uniRef = useRef()
@@ -568,6 +601,7 @@ const TabSceneMainContent = ({
             onRefresh={refetch}
             refreshing={isRefetching}
             renderItem={renderItem}
+            paddingTop={isScrolled ? 200:0}
             
         />
         {(pageRoute?.endpoint?.request_url && hasNextPage === undefined ) && Preload}
@@ -1082,40 +1116,18 @@ const HeaderContainer = ({
     tabBarObj,
     pageData,
     headerSettings,
-    isCoverDisabled,
+    isCover,
     isHideCover,
+    isScrolled, 
+    hideDefaultHeaderFrom
 }) => {
     const isDesktop = useIsDesktop()
-    const [isScrolled, setIsScrolled] = useState(isCoverDisabled)
+
     const [coverHeight, setCoverHeight] = useState(0)
-    const hideDefaultHeaderFrom = 100
+   
 
     const uri = pageData?.uri
-    const coverMode = appSetting(
-        'cover',
-        'view_by_module',
-        pageData.cover_block?.profile?.module
-    )
-    const isCover = pageData.cover_block && coverMode != 'none' ? true : false
-
-    const handleScroll = useCallback(() => {
-        requestAnimationFrame(() => {
-            const currentScrollY = window.scrollY
-            setIsScrolled(currentScrollY > hideDefaultHeaderFrom)
-        })
-    }, [])
-
-    useEffect(() => {
-        if (!appSetting('cover', 'fixed') && isCover) {
-            window.addEventListener('scroll', handleScroll)
-        }
-
-        return () => {
-            if (!appSetting('cover', 'fixed') && isCover) {
-                window.removeEventListener('scroll', handleScroll)
-            }
-        }
-    }, [handleScroll, isCover])
+    
 
     const onCoverLayout = useCallback((e) => {
         setCoverHeight(e.nativeEvent.layout.height || 0)

@@ -12,7 +12,7 @@ import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 
 export default function UniList(props) {
     let { useCustomScrollHandler, scrollProps, preloadComponent, sortable, data, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
-        onSort, mode, layout, numColumns, keyboardShouldPersistTaps, keyExtractor, useWindowScroll: useWindowScrollProp, height, listState, endpoint, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, isInPanel, ...rest } = props
+        onSort, mode, layout, numColumns, keyboardShouldPersistTaps, keyExtractor, useWindowScroll: useWindowScrollProp, height, listState, endpoint, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, isInPanel, paddingTop, ...rest } = props
 
     const uniRef = useRef();
     const currentBreakpoint = useBreakpoint();
@@ -78,23 +78,12 @@ export default function UniList(props) {
     const shouldUseWindowScroll =
         typeof useWindowScrollProp === 'boolean' ? useWindowScrollProp : !hasResolvedHeight;
     const isWindowScroll = hasResolvedHeight ? shouldUseWindowScroll : true;
-    const style = normalizedHeight ? { height: normalizedHeight } : {};
+    
+    let style = normalizedHeight ? { height: normalizedHeight } : {};
+    if (paddingTop) {
+        style.paddingTop = paddingTop
+    }
 
-    /*const isScrolling = (isFinished) => {
-
-        if (!isFinished && refer?.current && refer.current.getState && rest.storagekey) {
-
-            refer.current.getState((state) => {
-                const ch = { state: state }
-                storageSet('ul:state', rest.storagekey, ch);
-            });
-        }
-    }*/
-
-    /*const stateChanged = (state) => {
-        const ch = { state: state }
-        storageSet('ul:state', rest.storagekey, ch);
-    }*/
 
     const ItemComponent = ({ className, ...props }) => (
         <ReactNativeView className={`${layout || 'w-full'} ${className || cd('mb-md')}`} {...props} />
@@ -116,7 +105,7 @@ export default function UniList(props) {
         style,
         ref: refer ? refer : uniRef,
         endReached: onEndReached,
-        overscan: props.unit == 'notifications'? 100 : 900,
+        overscan: props.unit == 'notifications' ? 100 : 900,
         components: mode != 'simple' ? {
             List: ListComponent,
             Item: ItemComponent,
@@ -124,6 +113,7 @@ export default function UniList(props) {
                 return ListFooterComponent
             },
             Header: () => {
+
                 // Add header spacer only for panel layouts on lg+ viewports where content scrolls under semi-transparent header
                 if (isInPanel && scrollProps?.headerHeight > 0 && currentBreakpoint >= LAYOUT_BREAKPOINTS.lg) {
                     return <View style={{ height: 64 }} />;
@@ -140,7 +130,7 @@ export default function UniList(props) {
                 return useCustomScrollHandler ? <View style={{ paddingTop: scrollProps.headerHeight }}></View> : null;
             },
         },
-       // isScrolling,
+        // isScrolling,
         ...rest,
     };
     let contentComponent = null
@@ -157,8 +147,8 @@ export default function UniList(props) {
                         itemContent={itemContent}
                         //stateChanged={stateChanged}
                         {...(scrollToLastItem ? { initialTopMostItemIndex: data.length } : {})}
-                       // atBottomStateChange={()=>{console.log("atBottomStateChange"), onEndReached()}}
-                        endReached={()=>{onEndReached()}}
+                        // atBottomStateChange={()=>{console.log("atBottomStateChange"), onEndReached()}}
+                        endReached={() => { onEndReached() }}
                     />
                 </View>
             )
