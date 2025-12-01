@@ -1,4 +1,4 @@
-import { View } from 'app/design/view';
+import { View, ScrollView } from 'app/design/view';
 import { appSetting, getPageWidth, cd } from 'app/lib/util'
 import ScrollList from 'app/ui/molecules/scroll_list'
 import { useRef, memo, useMemo } from 'react';
