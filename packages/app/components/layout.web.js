@@ -256,13 +256,14 @@ export default function Layout(props) {
             el.style.position = '';
             el.style.top = '';
             el.style.bottom = '';
+            console.log("container.scrollHeight <= elH || y < stickyStart || window.scrollY", container.scrollHeight, elH, y < stickyStart,  window.scrollY)
             if (container.scrollHeight <= elH || y < stickyStart || window.scrollY == 0) return;//|| stickyStart == 0
 
             if (y > stickyEnd + HYST) {
-                // прижимаем к низу
-                el.style.position = 'absolute';
-                el.style.bottom = '0';
-                return;
+                // disabled: bug in timeline in context infinite scroll  
+          //      el.style.position = 'absolute';
+            //    el.style.bottom = '0';
+             //   return;
             }
 
             // фиксируем
