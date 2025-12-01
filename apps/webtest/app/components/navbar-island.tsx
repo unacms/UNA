@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, ReactNode } from 'react'
+import { createContext, useContext, useState, type ReactNode } from 'react'
 import { ChevronRight } from 'lucide-react'
 
 // Context for navbar island content

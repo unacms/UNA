@@ -7,9 +7,9 @@
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 
-function ChevronDownIcon(props: React.SVGProps<SVGSVGElement>) {
+function ChevronDownIcon({ className }: { className?: string }) {
   return (
-    <svg fill="none" height="14" viewBox="0 0 24 24" width="14" {...props}>
+    <svg fill="none" height="14" viewBox="0 0 24 24" width="14" className={className}>
       <path
         d="M7 10l5 5 5-5"
         stroke="currentColor"

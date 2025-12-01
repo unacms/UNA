@@ -67,6 +67,9 @@ export function Button({
   }
 
   // For regular buttons, use native button to avoid class duplication
+  // Render prop children not supported in native button mode
+  const buttonContent = typeof children === 'function' ? null : children
+  
   return (
     <button
       type={type}
@@ -77,7 +80,7 @@ export function Button({
       data-pending={isPending || undefined}
       {...props}
     >
-      {children}
+      {buttonContent}
     </button>
   )
 }

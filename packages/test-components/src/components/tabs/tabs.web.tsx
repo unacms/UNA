@@ -40,7 +40,6 @@ function TabsRoot({
   return (
     <HeroUITabs
       orientation={orientation}
-      size={size}
       selectedKey={selectedKey}
       defaultSelectedKey={defaultSelectedKey}
       onSelectionChange={onSelectionChange}
