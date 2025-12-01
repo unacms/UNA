@@ -2,6 +2,7 @@
 
 import { Button, Card, CardContent, Separator } from "@neo/test-components"
 import Link from "next/link"
+import { PageFooter } from "../components/page-footer"
 
 export const metadata = {
   title: 'Pricing | NEO Testground',
@@ -57,6 +58,7 @@ const plans = [
 
 export default function PricingPage() {
   return (
+    <>
     <div className="max-w-6xl mx-auto px-6 py-16">
       {/* Hero */}
       <section className="text-center mb-16">
@@ -113,11 +115,14 @@ export default function PricingPage() {
         </Button>
       </section>
 
-      {/* Footer note */}
-      <p className="text-center text-sm text-muted-foreground mt-12">
-        This page is a <strong>Server Component</strong> — HeroUI is RSC-compatible.
-      </p>
     </div>
+    
+    {/* Performance Report Footer - controlled by settings */}
+    <PageFooter 
+      pageName="Pricing"
+      data={{ componentType: 'server' }}
+    />
+    </>
   )
 }
 

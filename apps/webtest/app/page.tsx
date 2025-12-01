@@ -3,9 +3,11 @@
 
 import { Button, Card, CardContent, CardTitle, CardDescription, Chip, Separator } from "@neo/test-components"
 import Link from "next/link"
+import { PageFooter } from "./components/page-footer"
 
 export default function HomePage() {
   return (
+    <>
     <div className="max-w-6xl mx-auto px-6 py-12">
       {/* Hero Section */}
       <section className="text-center py-16">
@@ -105,14 +107,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="text-center py-12 text-sm text-muted-foreground">
-        <p>Built with HeroUI v3 and Next.js 16</p>
-        <p className="mt-2">
-          This page is a <strong>Server Component</strong> — HeroUI is RSC-compatible.
-        </p>
-      </footer>
     </div>
+    
+    {/* Performance Report Footer - controlled by settings */}
+    <PageFooter 
+      pageName="Home"
+      data={{ componentType: 'server' }}
+    />
+    </>
   )
 }
 

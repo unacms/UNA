@@ -6,6 +6,7 @@
 // Custom Components (platform-specific implementations)
 // ============================================
 export * from "./components/button"
+export * from "./components/performance-footer"
 
 // ============================================
 // Re-export HeroUI v3 components for web

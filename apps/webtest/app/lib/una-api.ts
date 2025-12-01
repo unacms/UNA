@@ -72,7 +72,6 @@ export interface UNAFetchResult {
   meta: {
     url: string
     componentType: 'server'
-    timestamp: string
   }
 }
 
@@ -119,8 +118,7 @@ export async function fetchUNAPage(pagePath: string): Promise<UNAFetchResult> {
         },
         meta: {
           url: fullUrl,
-          componentType: 'server',
-          timestamp: new Date().toISOString()
+          componentType: 'server'
         }
       }
     }
@@ -141,8 +139,7 @@ export async function fetchUNAPage(pagePath: string): Promise<UNAFetchResult> {
       },
       meta: {
         url: fullUrl,
-        componentType: 'server',
-        timestamp: new Date().toISOString()
+        componentType: 'server'
       }
     }
   } catch (error) {
@@ -162,8 +159,7 @@ export async function fetchUNAPage(pagePath: string): Promise<UNAFetchResult> {
       },
       meta: {
         url: fullUrl,
-        componentType: 'server',
-        timestamp: new Date().toISOString()
+        componentType: 'server'
       }
     }
   }
@@ -233,4 +229,86 @@ export function extractTextFromHTML(html: string): string {
     .replace(/&#39;/g, "'")
     .replace(/\s+/g, ' ')
     .trim()
+}
+
+/**
+ * Menu item from UNA CMS
+ */
+export interface UNAMenuItem {
+  name: string
+  title: string
+  link: string
+  icon?: string
+  onclick?: string
+  active?: boolean
+  primary?: boolean
+  submenu?: UNAMenuItem[]
+}
+
+/**
+ * Menu response from UNA API
+ * The API returns { data: UNAMenuItem[] } or an array directly
+ */
+export interface UNAMenuResponse {
+  data?: UNAMenuItem[]
+  status?: number
+}
+
+/**
+ * Fetch menu from UNA CMS
+ * 
+ * @param menuObject - The menu object name (e.g., "sys_footer", "sys_homepage")
+ * @returns Array of menu items
+ */
+export async function fetchUNAMenu(menuObject: string): Promise<UNAMenuItem[]> {
+  const params = JSON.stringify({ object: menuObject, params: null })
+  const endpoint = `/api.php?r=system/get_menu/TemplServices&params[]=${encodeURIComponent(params)}`
+  const fullUrl = UNA_URL + endpoint
+  
+  try {
+    const response = await fetch(fullUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': UNA_API_KEY ? `Bearer ${UNA_API_KEY}` : '',
+        'Accept': 'application/json',
+      },
+      // Cache the menu for 5 minutes
+      next: { 
+        revalidate: 300,
+        tags: [`una-menu-${menuObject}`]
+      }
+    })
+
+    if (!response.ok) {
+      console.error(`UNA Menu API error: ${response.status} ${response.statusText}`)
+      return []
+    }
+
+    const responseData = await response.json()
+    
+    // Handle different response formats:
+    // 1. { data: [...] } - wrapped response
+    // 2. [...] - direct array
+    // 3. null/undefined - no data
+    if (Array.isArray(responseData)) {
+      return responseData
+    }
+    if (responseData && Array.isArray(responseData.data)) {
+      return responseData.data
+    }
+    
+    console.warn('UNA Menu API returned unexpected format:', typeof responseData)
+    return []
+  } catch (error) {
+    console.error('Failed to fetch UNA menu:', error)
+    return []
+  }
+}
+
+/**
+ * Fetch footer menu from UNA CMS
+ * Convenience function for the sys_footer menu
+ */
+export async function fetchFooterMenu(): Promise<UNAMenuItem[]> {
+  return fetchUNAMenu('sys_footer')
 }
