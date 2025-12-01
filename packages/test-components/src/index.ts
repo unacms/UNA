@@ -46,8 +46,8 @@ export {
   DropdownPopover,
   DropdownMenu,
   DropdownItem,
+  // Tabs - HeroUI v3 uses compound pattern: Tabs.List, Tabs.Tab, Tabs.Panel, Tabs.Indicator
   Tabs,
-  Tab,
   Link,
   
   // Forms

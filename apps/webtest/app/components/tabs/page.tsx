@@ -1,91 +1,227 @@
-// Tabs Component Page - Server Component using HeroUI v3
-// Note: Interactive tabs would require client component
+// Tabs Component Page - Server Component with Client Tab Demos
+// HeroUI v3 Tabs use compound pattern: Tabs.List, Tabs.Tab, Tabs.Panel, Tabs.Indicator
 
 import { Card, CardContent, Separator } from "@neo/test-components"
+import { 
+  BasicTabsDemo, 
+  VerticalTabsDemo, 
+  DisabledTabDemo,
+  CustomStyledTabsDemo 
+} from "./tabs-demo"
+import { PageFooter } from "../page-footer"
 
 export const metadata = {
   title: 'Tabs | NEO Testground',
-  description: 'A set of layered sections of content.',
+  description: 'HeroUI v3 Tabs - organize content into multiple sections.',
 }
 
 export default function TabsComponentPage() {
   return (
-    <div className="max-w-3xl mx-auto px-6 py-16">
-      <h1 className="text-4xl font-bold mb-4">Tabs</h1>
-      <p className="text-xl text-muted-foreground mb-12">
-        A set of layered sections of content—known as tab panels—that display one panel at a time.
-      </p>
+    <>
+      <div className="max-w-4xl mx-auto px-6 py-16">
+        <h1 className="text-4xl font-bold mb-4">Tabs</h1>
+        <p className="text-xl text-muted-foreground mb-12">
+          Tabs organize content into multiple sections and allow users to navigate between them.
+          Built on React Aria Components for full accessibility.
+        </p>
 
-      <div className="space-y-12">
-        {/* Preview */}
-        <section>
-          <h2 className="text-2xl font-semibold mb-6">Preview</h2>
-          <Card>
-            <CardContent className="p-6">
-              {/* Static tabs preview */}
-              <div className="w-full">
-                <div className="flex border-b border-border">
-                  <button className="px-4 py-2 text-sm font-medium border-b-2 border-primary text-foreground">
-                    Account
-                  </button>
-                  <button className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground">
-                    Password
-                  </button>
-                  <button className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground">
-                    Settings
-                  </button>
-                </div>
-                <div className="p-4">
-                  <h3 className="font-medium mb-2">Account Settings</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Manage your account settings and preferences here.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
+        <div className="space-y-12">
+          {/* Basic Tabs */}
+          <section>
+            <h2 className="text-2xl font-semibold mb-4">Basic Tabs</h2>
+            <p className="text-muted-foreground mb-6">
+              Standard horizontal tabs with an animated indicator.
+            </p>
+            <Card>
+              <CardContent className="p-6">
+                <BasicTabsDemo />
+              </CardContent>
+            </Card>
+          </section>
 
-        <Separator />
+          <Separator />
 
-        {/* Usage */}
-        <section>
-          <h2 className="text-2xl font-semibold mb-6">Usage</h2>
-          <div className="bg-muted p-4 rounded-lg">
-            <pre className="font-mono text-sm overflow-x-auto">
-{`"use client"
+          {/* Vertical Tabs */}
+          <section>
+            <h2 className="text-2xl font-semibold mb-4">Vertical Tabs</h2>
+            <p className="text-muted-foreground mb-6">
+              Tabs can be oriented vertically for sidebar-style navigation.
+            </p>
+            <Card>
+              <CardContent className="p-6">
+                <VerticalTabsDemo />
+              </CardContent>
+            </Card>
+          </section>
 
-import { Tabs, Tab } from "@neo/test-components"
+          <Separator />
 
-export function AccountTabs() {
+          {/* Disabled Tab */}
+          <section>
+            <h2 className="text-2xl font-semibold mb-4">Disabled Tab</h2>
+            <p className="text-muted-foreground mb-6">
+              Individual tabs can be disabled to prevent selection.
+            </p>
+            <Card>
+              <CardContent className="p-6">
+                <DisabledTabDemo />
+              </CardContent>
+            </Card>
+          </section>
+
+          <Separator />
+
+          {/* Custom Styles */}
+          <section>
+            <h2 className="text-2xl font-semibold mb-4">Custom Styles</h2>
+            <p className="text-muted-foreground mb-6">
+              Tabs can be customized with Tailwind CSS classes.
+            </p>
+            <Card>
+              <CardContent className="p-6 flex justify-center">
+                <CustomStyledTabsDemo />
+              </CardContent>
+            </Card>
+          </section>
+
+          <Separator />
+
+          {/* Usage Code */}
+          <section>
+            <h2 className="text-2xl font-semibold mb-4">Usage</h2>
+            <p className="text-muted-foreground mb-6">
+              HeroUI v3 Tabs use a compound component pattern with dot notation.
+              Tabs require client-side JavaScript for interactivity.
+            </p>
+            <Card>
+              <CardContent className="p-0">
+                <pre className="font-mono text-sm overflow-x-auto p-6 bg-muted/50 rounded-lg">
+{`'use client'
+
+import { Tabs } from '@heroui/react'
+
+export function MyTabs() {
   return (
-    <Tabs aria-label="Account options" defaultSelectedKey="account">
-      <Tab key="account" title="Account">
-        <h3>Account Settings</h3>
-        <p>Manage your account here.</p>
-      </Tab>
-      <Tab key="password" title="Password">
-        <h3>Password Settings</h3>
-        <p>Change your password here.</p>
-      </Tab>
-      <Tab key="settings" title="Settings">
-        <h3>Other Settings</h3>
-        <p>Configure other preferences.</p>
-      </Tab>
+    <Tabs className="w-full">
+      <Tabs.ListContainer>
+        <Tabs.List aria-label="Options">
+          <Tabs.Tab id="overview">
+            Overview
+            <Tabs.Indicator />
+          </Tabs.Tab>
+          <Tabs.Tab id="analytics">
+            Analytics
+            <Tabs.Indicator />
+          </Tabs.Tab>
+        </Tabs.List>
+      </Tabs.ListContainer>
+      <Tabs.Panel className="pt-4" id="overview">
+        <p>View your project overview.</p>
+      </Tabs.Panel>
+      <Tabs.Panel className="pt-4" id="analytics">
+        <p>Track your metrics.</p>
+      </Tabs.Panel>
     </Tabs>
   )
 }`}
-            </pre>
-          </div>
-          <p className="text-sm text-muted-foreground mt-4">
-            Note: Tabs requires a client component for interactivity.
-          </p>
-        </section>
+                </pre>
+              </CardContent>
+            </Card>
+          </section>
+
+          <Separator />
+
+          {/* API Reference */}
+          <section>
+            <h2 className="text-2xl font-semibold mb-4">API Reference</h2>
+            
+            <div className="space-y-6">
+              {/* Tabs Props */}
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="font-semibold mb-4">Tabs Props</h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-border">
+                          <th className="text-left py-2 pr-4 font-medium">Prop</th>
+                          <th className="text-left py-2 pr-4 font-medium">Type</th>
+                          <th className="text-left py-2 pr-4 font-medium">Default</th>
+                          <th className="text-left py-2 font-medium">Description</th>
+                        </tr>
+                      </thead>
+                      <tbody className="text-muted-foreground">
+                        <tr className="border-b border-border/50">
+                          <td className="py-2 pr-4 font-mono text-foreground">orientation</td>
+                          <td className="py-2 pr-4 font-mono">"horizontal" | "vertical"</td>
+                          <td className="py-2 pr-4">"horizontal"</td>
+                          <td className="py-2">Tab layout orientation</td>
+                        </tr>
+                        <tr className="border-b border-border/50">
+                          <td className="py-2 pr-4 font-mono text-foreground">selectedKey</td>
+                          <td className="py-2 pr-4 font-mono">string</td>
+                          <td className="py-2 pr-4">-</td>
+                          <td className="py-2">Controlled selected tab key</td>
+                        </tr>
+                        <tr className="border-b border-border/50">
+                          <td className="py-2 pr-4 font-mono text-foreground">defaultSelectedKey</td>
+                          <td className="py-2 pr-4 font-mono">string</td>
+                          <td className="py-2 pr-4">-</td>
+                          <td className="py-2">Default selected tab key</td>
+                        </tr>
+                        <tr>
+                          <td className="py-2 pr-4 font-mono text-foreground">onSelectionChange</td>
+                          <td className="py-2 pr-4 font-mono">(key: Key) =&gt; void</td>
+                          <td className="py-2 pr-4">-</td>
+                          <td className="py-2">Selection change handler</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Tab Props */}
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="font-semibold mb-4">Tabs.Tab Props</h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-border">
+                          <th className="text-left py-2 pr-4 font-medium">Prop</th>
+                          <th className="text-left py-2 pr-4 font-medium">Type</th>
+                          <th className="text-left py-2 pr-4 font-medium">Default</th>
+                          <th className="text-left py-2 font-medium">Description</th>
+                        </tr>
+                      </thead>
+                      <tbody className="text-muted-foreground">
+                        <tr className="border-b border-border/50">
+                          <td className="py-2 pr-4 font-mono text-foreground">id</td>
+                          <td className="py-2 pr-4 font-mono">string</td>
+                          <td className="py-2 pr-4">-</td>
+                          <td className="py-2">Unique tab identifier</td>
+                        </tr>
+                        <tr>
+                          <td className="py-2 pr-4 font-mono text-foreground">isDisabled</td>
+                          <td className="py-2 pr-4 font-mono">boolean</td>
+                          <td className="py-2 pr-4">false</td>
+                          <td className="py-2">Whether tab is disabled</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </section>
+        </div>
       </div>
 
-      <p className="text-center text-sm text-muted-foreground mt-16 pt-8 border-t border-border">
-        This is a <strong>placeholder page</strong> showing a static preview.
-      </p>
-    </div>
+      <PageFooter 
+        pageName="Tabs"
+        data={{ componentType: 'hybrid' }}
+      />
+    </>
   )
 }
