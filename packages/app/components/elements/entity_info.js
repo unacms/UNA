@@ -5,6 +5,7 @@ import Html from 'app/ui/atoms/html'
 import { Icon } from 'app/ui/atoms/icon'
 import { appSetting } from 'app/lib/util'
 import ProfilesList from 'app/ui/molecules/profile_list'
+import Link from 'app/ui/atoms/link'
 
 export default function ElementEntityInfo({ data }) {
     const defaultIcon = appSetting('entry', 'default_info_icon');
@@ -14,9 +15,9 @@ export default function ElementEntityInfo({ data }) {
         if (v) {
             if (a.type) {
                 let value = getValue(a);
-                if (value){
+                if (value) {
                     return (
-                        <View className={ (a.type!='textarea'? 'flex-row items-center ': '') +" gap-x-2"} key={a.name}>
+                        <View className={(a.type != 'textarea' ? 'flex-row items-center ' : '') + " gap-x-2"} key={a.name}>
                             <Row className="items-center ">
                                 <View className="text-neutral-800 dark:text-neutral-200 h-8 w-8 p-1 overflow-hidden items-center justify-center">{getIcon(a)}</View>
                                 <View className={`${defaultIcon ? "ml-2" : ''} `}>
@@ -38,23 +39,125 @@ export default function ElementEntityInfo({ data }) {
     })
 
     return (
-            <View className='flex-col gap-y-4 '>{inputs}</View>
+        <View className='flex-col gap-y-4 '>{inputs}</View>
     )
-    
-
 
     function getValue(a) {
+        function isUrl(str) {
+            if (typeof str !== 'string' || !str.trim()) return false;
+
+            const value = str.trim();
+
+            // 1. Сначала пробуем как есть
+            try {
+                const url = new URL(value);
+                return url.protocol === 'http:' || url.protocol === 'https:';
+            } catch (e) {
+                // 2. Если нет протокола — пробуем добавить https://
+                try {
+                    const url = new URL('https://' + value);
+                    return url.hostname.includes('.');
+                } catch (e2) {
+                    return false;
+                }
+            }
+        }
+
+        const getHandleForDisplay = (input) => {
+            if (typeof input !== 'string') return input;
+
+            const original = input;
+            let value = input.trim();
+            if (!value) return original;
+
+            if (!/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(value)) {
+                value = 'https://' + value;
+            }
+
+            try {
+                const url = new URL(value);
+
+                let hostname = url.hostname.toLowerCase();
+                hostname = hostname.replace(/^(www|m)\./, '');
+
+                const pathSegments = url.pathname.split('/').filter(Boolean);
+                if (pathSegments.length === 0) return original;
+
+                const firstSegment = decodeURIComponent(pathSegments[0]);
+
+                const getSlug = (segment) => {
+                    if (!segment) return null;
+                    const cleaned = segment.replace(/^@/, '').trim();
+                    return cleaned || null;
+                };
+
+                const isTwitter =
+                    hostname === 'twitter.com' || hostname.endsWith('.twitter.com');
+                const isX = hostname === 'x.com' || hostname.endsWith('.x.com');
+                const isInstagram =
+                    hostname === 'instagram.com' || hostname.endsWith('.instagram.com');
+                const isGithub =
+                    hostname === 'github.com' || hostname.endsWith('.github.com');
+                const isLinkedIn =
+                    hostname === 'linkedin.com' || hostname.endsWith('.linkedin.com');
+                const isTikTok =
+                    hostname === 'tiktok.com' || hostname.endsWith('.tiktok.com');
+                const isFacebook =
+                    hostname === 'facebook.com' || hostname.endsWith('.facebook.com');
+
+                // Twitter / X / Instagram → @username
+                if (isTwitter || isX || isInstagram) {
+                    const slug = getSlug(firstSegment);
+                    return slug ? `@${slug}` : original;
+                }
+
+                // GitHub → username
+                if (isGithub) {
+                    const slug = getSlug(firstSegment);
+                    return slug ?? original;
+                }
+
+                // LinkedIn → slug
+                if (isLinkedIn) {
+                    const [first, second] = pathSegments;
+                    let slug = null;
+
+                    if (first === 'in' && second) slug = getSlug(second);
+                    else if (first === 'company' && second) slug = getSlug(second);
+                    else if (first === 'school' && second) slug = getSlug(second);
+
+                    return slug ?? original;
+                }
+
+                // TikTok → @username
+                if (isTikTok) {
+                    const slug = getSlug(firstSegment);
+                    return slug ? `@${slug}` : original;
+                }
+
+                // Facebook → slug (обычно /pageusername)
+                if (isFacebook) {
+                    const slug = getSlug(firstSegment);
+                    return slug ?? original;
+                }
+
+                return original;
+            } catch {
+                return original;
+            }
+        };
+
         switch (a.type) {
             case 'datepicker':
             case 'datetime':
-                if (isNaN(a.value)){
-                    a.value = (new Date(a.value)/1000);
+                if (isNaN(a.value)) {
+                    a.value = (new Date(a.value) / 1000);
                 }
 
                 return <Time stylesName=" text-base text-neutral-800 dark:text-neutral-200" ts={a.value}></Time>
 
             case 'select':
-                if (a.value !=0 && a.value != ''){
+                if (a.value != 0 && a.value != '') {
                     const sel = a?.values?.find(item => item.key.toString() === a.value.toString())
                     return (
                         <Text className=" text-neutral-800 text-base dark:text-neutral-200">
@@ -79,44 +182,55 @@ export default function ElementEntityInfo({ data }) {
 
             case 'location':
                 return <Text className=" text-neutral-800 text-base dark:text-neutral-200">
-                {a.value.location_string}
+                    {a.value.location_string}
                 </Text>
 
-             case 'initial_members':
+            case 'initial_members':
                 return <ProfilesList
-                                                                data={
-                                                                    a.value_data
-                                                                }
-                                                                showEmpty={false}
-                                                                maxCount={3}
-                                                                displaySize="xs"
-                                                            />
-            
+                    data={
+                        a.value_data
+                    }
+                    showEmpty={false}
+                    maxCount={3}
+                    displaySize="xs"
+                />
+
 
             case 'switcher':
                 return <Text className=" text-neutral-800 text-base dark:text-neutral-200">
-                {a.value == 1 ? 'Yes' : 'No'}
+                    {a.value == 1 ? 'Yes' : 'No'}
                 </Text>
 
             default:
-                if (a.name == "profile_last_active"){
-                    if (isNaN(a.value)){
-                        a.value = (new Date(a.value)/1000);
+                if (a.name == "profile_last_active") {
+                    if (isNaN(a.value)) {
+                        a.value = (new Date(a.value) / 1000);
                     }
 
                     return <Time stylesName=" text-base text-neutral-800 dark:text-neutral-200" ts={a.value}></Time>
                 }
+
+                if (isUrl(a.value)) {
+                    return (
+                        <Link href={a.value}>
+                            <Text className=" text-neutral-800 text-base dark:text-neutral-200  whitespace-normal break-words">
+                                {getHandleForDisplay(a.value)}
+                            </Text>
+                        </Link>
+                    )
+                }
+
                 return (
                     <Text className=" text-neutral-800 text-base dark:text-neutral-200  whitespace-normal break-words">
-                    {a.value}
+                        {a.value}
                     </Text>
                 )
         }
     }
 
     function getIcon(a) {
-        if (a.icon){
-             return <Icon icon={ a.icon.charAt(0).toUpperCase() + a.icon.slice(1)} />
+        if (a.icon) {
+            return <Icon icon={a.icon.charAt(0).toUpperCase() + a.icon.slice(1)} />
         }
         switch (a.name) {
             case 'gender':
