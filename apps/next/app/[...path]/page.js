@@ -149,8 +149,47 @@ export async function generateMetadata(props) {
 }
 
 export default async function Page(props) {
-
+    const params = await props.params;
+    const path = params?.path?.join('/') || '';
+    const isHomePage = path === '' || path === 'home' || path === 'index';
+    
     const data = await getCachedData(props);
+    
+    // Handle API errors gracefully - especially for home/splash page
+    // UNA may return errors for guest users when certain blocks (e.g., messenger) 
+    // try to access user context. The frontend should still render the splash page.
+    const hasApiError = data?.code === 500 || data?.code === 503;
+    
+    if (hasApiError && isHomePage) {
+        console.warn('UNA API error on home page - rendering with fallback data for splash screen');
+        // Provide minimal fallback data so splash page can render
+        const fallbackData = {
+            title: SITE_TITLE,
+            description: SITE_TITLE,
+            uri: '/',
+            url: '/',
+            page_name: 'home',
+            page_type: 'home',
+            logged: 0,
+            // Empty blocks - splash will render static content
+            blocks: {}
+        };
+        
+        if (!remote_config.data) {
+            try {
+                remote_config = await getRemoteSettings(true);
+            } catch (e) {
+                console.error('Remote settings fetch failed:', e);
+            }
+        }
+        
+        return (
+            <Suspense fallback={<Loading />}>
+                <Root settings={remote_config.data} path={'home'} data={fallbackData} uri={'/'} url={'/'} code={200} />
+            </Suspense>
+        );
+    }
+    
     if (!remote_config.data || data?.hash != remote_config.hash) {
         try {
             remote_config = await getRemoteSettings(true);
