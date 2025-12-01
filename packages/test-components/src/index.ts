@@ -6,6 +6,7 @@
 // Custom Components (platform-specific implementations)
 // ============================================
 export * from "./components/button"
+export * from "./components/tabs"
 export * from "./components/performance-footer"
 
 // ============================================
@@ -41,13 +42,8 @@ export {
   TooltipContent,
   
   // Navigation
-  Dropdown,
-  DropdownTrigger,
-  DropdownPopover,
-  DropdownMenu,
-  DropdownItem,
-  // Tabs - HeroUI v3 uses compound pattern: Tabs.List, Tabs.Tab, Tabs.Panel, Tabs.Indicator
-  Tabs,
+  // Note: Dropdown is imported directly from @heroui/react due to module resolution issues
+  // The Dropdown wrapper in ./components/dropdown is ready for future use
   Link,
   
   // Forms

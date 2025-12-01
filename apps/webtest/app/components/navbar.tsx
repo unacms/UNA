@@ -2,45 +2,31 @@
 // Structure is server-rendered, only interactive parts are client components
 
 import Link from "next/link"
-import { ThemeSwitcher } from "./theme-switcher"
-import { NavDropdowns } from "./nav-dropdowns"
-
-function LogoIcon() {
-  return (
-    <svg className="w-8 h-8" viewBox="0 0 32 32" fill="none">
-      <rect width="32" height="32" rx="8" className="fill-primary" />
-      <path
-        d="M17 8L10 18h6v6l7-10h-6V8z"
-        className="fill-primary-foreground"
-        strokeWidth="1.5"
-      />
-    </svg>
-  )
-}
+import { AppLogo } from "./app-logo"
+import { NavbarIsland } from "./navbar-island"
 
 // Server Component - no "use client" directive
 export function SiteNavbar() {
   return (
-    <header className="sticky top-0 z-50 h-16 px-6 border-b border-border bg-background/95 backdrop-blur">
-      <nav className="h-full max-w-7xl mx-auto flex items-center justify-between">
-        <div className="flex items-center gap-6">
+    <header className="sticky top-0 z-50 h-16  border-b border-border/60 mx-auto bg-background/95 backdrop-blur">
+      <nav className="h-full max-w-7xl mx-auto flex items-center justify-between px-4 lg:px-6">
+        <div className="flex items-center gap-4 md:gap-6 min-w-0">
           {/* Logo - server rendered */}
-          <Link href="/" className="flex items-center gap-2">
-            <LogoIcon />
-            <span className="text-lg font-bold">NEO</span>
+          <Link href="/" className="flex items-center shrink-0">
+            <AppLogo mode="adaptive" markSize={32} />
           </Link>
+
+          {/* Mobile Island - client component for dynamic page titles */}
+          <NavbarIsland />
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1">
-            {/* Static links - server rendered */}
             <Link href="/" className="px-4 py-2 text-sm font-medium hover:text-primary transition-colors">
               Home
             </Link>
-
-            {/* Dropdown menus - client island */}
-            <NavDropdowns />
-
-            {/* Static links - server rendered */}
+            <Link href="/groups" className="px-4 py-2 text-sm font-medium hover:text-primary transition-colors">
+              Groups
+            </Link>
             <Link href="/pricing" className="px-4 py-2 text-sm font-medium hover:text-primary transition-colors">
               Pricing
             </Link>
@@ -50,15 +36,11 @@ export function SiteNavbar() {
           </div>
         </div>
 
-        {/* Right side */}
+        {/* Right side - Auth links */}
         <div className="flex items-center gap-2">
-          {/* Theme switcher - client island */}
-          <ThemeSwitcher />
-          
-          {/* Auth links - server rendered */}
           <Link 
             href="/login" 
-            className="hidden lg:flex px-4 py-2 text-sm font-medium hover:text-primary transition-colors"
+            className="hidden sm:flex px-4 py-2 text-sm font-medium hover:text-primary transition-colors"
           >
             Sign In
           </Link>

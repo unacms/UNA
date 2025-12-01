@@ -5,12 +5,12 @@ import { SiteTopNav } from 'app/ui/molecules/tests/layouts/nav-components'
 
 export default async function SiteTopNavLayout({ children }) {
     return (
-        <div className="min-h-screen bg-background flex flex-col">
+        <div className="min-h-screen w-full bg-background flex flex-col">
             <SiteTopNav isAuthenticated={false} />
-            <main className="flex-1">
+            <main className="flex-1 w-full">
                 {children}
             </main>
-            <footer className="border-t border-border py-8 px-4">
+            <footer className="w-full border-t border-border py-8 px-4">
                 <div className="max-w-7xl mx-auto text-center text-sm text-muted-foreground">
                     © 2024 NEO. All rights reserved.
                 </div>

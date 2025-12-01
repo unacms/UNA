@@ -5,6 +5,8 @@ import { PerformanceFooter, type PerformanceData, Separator } from '@neo/test-co
 import Link from 'next/link'
 import { settings } from '../lib/settings'
 import { fetchFooterMenu, type UNAMenuItem } from '../lib/una-api'
+import { ThemeSwitcher } from './theme-switcher'
+import { NavDropdowns } from './nav-dropdowns'
 
 // Static year - update annually if needed
 const COPYRIGHT_YEAR = 2025
@@ -84,33 +86,42 @@ function FooterMenu({ items }: { items: UNAMenuItem[] }) {
     return (
       <div className="bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-            {/* Logo/Brand */}
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-bold text-foreground">NEO</span>
-              <span className="text-sm text-muted-foreground">Testground</span>
+          <div className="flex flex-col gap-6">
+            {/* Top row: Brand, Navigation, Copyright */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+              {/* Logo/Brand */}
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-bold text-foreground">NEO</span>
+                <span className="text-sm text-muted-foreground">Testground</span>
+              </div>
+              
+              {/* Fallback Links */}
+              <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+                <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  About
+                </Link>
+                <Link href="/terms" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Terms
+                </Link>
+                <Link href="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Privacy
+                </Link>
+                <Link href="/docs" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Documentation
+                </Link>
+              </nav>
+              
+              {/* Copyright */}
+              <p className="text-xs text-muted-foreground">
+                © {COPYRIGHT_YEAR} NEO Platform
+              </p>
             </div>
             
-            {/* Fallback Links */}
-            <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-              <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                About
-              </Link>
-              <Link href="/terms" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Terms
-              </Link>
-              <Link href="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Privacy
-              </Link>
-              <Link href="/docs" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Documentation
-              </Link>
-            </nav>
-            
-            {/* Copyright */}
-            <p className="text-xs text-muted-foreground">
-              © {COPYRIGHT_YEAR} NEO Platform
-            </p>
+            {/* Bottom row: Developer tools - Components, Docs, Theme */}
+            <div className="flex flex-wrap items-center justify-center gap-4 pt-4 border-t border-border/40">
+              <NavDropdowns />
+              <ThemeSwitcher />
+            </div>
           </div>
         </div>
       </div>
@@ -120,24 +131,33 @@ function FooterMenu({ items }: { items: UNAMenuItem[] }) {
   return (
     <div className="bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-          {/* Logo/Brand */}
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold text-foreground">NEO</span>
-            <span className="text-sm text-muted-foreground">Testground</span>
+        <div className="flex flex-col gap-6">
+          {/* Top row: Brand, Navigation, Copyright */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+            {/* Logo/Brand */}
+            <div className="flex items-center gap-2">
+              <span className="text-xl font-bold text-foreground">NEO</span>
+              <span className="text-sm text-muted-foreground">Testground</span>
+            </div>
+            
+            {/* UNA CMS Footer Menu */}
+            <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+              {menuItems.map((item, index) => (
+                <FooterMenuItem key={item.name || index} item={item} />
+              ))}
+            </nav>
+            
+            {/* Copyright */}
+            <p className="text-xs text-muted-foreground">
+              © {COPYRIGHT_YEAR} NEO Platform
+            </p>
           </div>
           
-          {/* UNA CMS Footer Menu */}
-          <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-            {menuItems.map((item, index) => (
-              <FooterMenuItem key={item.name || index} item={item} />
-            ))}
-          </nav>
-          
-          {/* Copyright */}
-          <p className="text-xs text-muted-foreground">
-            © {COPYRIGHT_YEAR} NEO Platform
-          </p>
+          {/* Bottom row: Developer tools - Components, Docs, Theme */}
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-4 border-t border-border/40">
+            <NavDropdowns />
+            <ThemeSwitcher />
+          </div>
         </div>
       </div>
     </div>

@@ -99,7 +99,7 @@ function GroupNameBar({ group, isPrivate }) {
         <View className="bg-primary/10 dark:bg-primary/5 px-4 py-4">
             <Row className="items-center justify-between max-w-6xl mx-auto w-full">
                 <Row className="items-center gap-3">
-                    <Text className="text-2xl font-bold text-foreground uppercase tracking-wide">
+                    <Text className="text-2xl font-bold text-foreground">
                         {group.title}
                     </Text>
                     {isPrivate && (
@@ -176,6 +176,34 @@ function GroupTabsBar({ activeTab = 'feed', onTabChange }) {
 function GroupIntro({ group }) {
     return (
         <Card className="p-6">
+            {/* 16:9 Image */}
+            <View className="aspect-video rounded-xl overflow-hidden relative mb-4">
+                {/* Vibrant gradient background */}
+                <View className="absolute inset-0 bg-gradient-to-br from-violet-600 via-purple-500 to-fuchsia-500" />
+                
+                {/* Decorative pattern overlay */}
+                <View className="absolute inset-0 opacity-20">
+                    <View className="absolute top-10 left-10 w-32 h-32 rounded-full bg-white/30 blur-2xl" />
+                    <View className="absolute top-20 right-20 w-48 h-48 rounded-full bg-pink-300/40 blur-3xl" />
+                    <View className="absolute bottom-10 left-1/3 w-40 h-40 rounded-full bg-indigo-300/30 blur-2xl" />
+                </View>
+                
+                {/* Grid pattern */}
+                <View 
+                    className="absolute inset-0 opacity-10"
+                    style={{
+                        backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
+                        backgroundSize: '40px 40px'
+                    }}
+                />
+                
+                {/* Centered icon */}
+                <View className="absolute inset-0 items-center justify-center">
+                    <View className="w-24 h-24 rounded-2xl bg-white/10 backdrop-blur-sm items-center justify-center border border-white/20">
+                        <Icon icon="Users" size={48} className="text-white/70" />
+                    </View>
+                </View>
+            </View>
             <Text className="text-lg font-semibold mb-4">Welcome to {group.title}</Text>
             <View className="gap-4">
                 {/* Rich text intro - simulating formatted content */}
@@ -348,8 +376,10 @@ export default function GroupUnauthenticated() {
             <AppNavbar />
 
             <ScrollView className="flex-1">
-                {/* Group Cover Image - 16:9 */}
-                <GroupCover title={group.title} />
+                {/* Group Cover Image - 16:9 (hidden) */}
+                <View className="hidden">
+                    <GroupCover title={group.title} />
+                </View>
 
                 {/* Group Name + Main Actions */}
                 <GroupNameBar group={group} isPrivate={isPrivate} />

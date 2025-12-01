@@ -98,7 +98,7 @@ export default function TabsComponentPage() {
                 <pre className="font-mono text-sm overflow-x-auto p-6 bg-muted/50 rounded-lg">
 {`'use client'
 
-import { Tabs } from '@heroui/react'
+import { Tabs } from '@neo/test-components'
 
 export function MyTabs() {
   return (

@@ -34,6 +34,8 @@ const nextConfig = {
     optimizePackageImports: ['@heroui/react'],
     // Inline CSS
     inlineCss: true,
+    // Enable View Transitions API for smooth element morphing
+    viewTransition: true,
   },
 
   // Webpack configuration

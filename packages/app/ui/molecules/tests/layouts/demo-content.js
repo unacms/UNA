@@ -11,7 +11,7 @@ import Card from '../../card'
 // Hero section for site layouts
 export function HeroSection() {
     return (
-        <View className="py-16 px-4 bg-gradient-to-b from-primary/5 to-transparent">
+        <View className="w-full py-16 px-4 bg-gradient-to-b from-primary/5 to-transparent">
             <View className="max-w-3xl mx-auto items-center text-center">
                 <View className="mb-4 px-4 py-1.5 rounded-full bg-primary/10 self-center">
                     <Text className="text-sm font-medium text-primary">Welcome to NEO</Text>
@@ -41,7 +41,7 @@ export function FeatureGrid() {
     ]
 
     return (
-        <View className="py-12 px-4">
+        <View className="w-full py-12 px-4">
             <View className="max-w-5xl mx-auto">
                 <Text className="text-2xl font-bold text-foreground text-center mb-8">Why Choose NEO</Text>
                 <View className="flex-row flex-wrap gap-4 justify-center">

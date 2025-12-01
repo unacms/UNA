@@ -1,6 +1,6 @@
-// Button - Web Implementation using HeroUI v3
-// Re-exports HeroUI Button with proper BEM class integration
-// RSC-compatible for static buttons; client-side for interactive
+// Button - Web Implementation
+// Uses native button with BEM classes for theming
+// For asChild pattern, uses HeroUI Button which handles it correctly
 
 import { Button as HeroUIButton } from "@heroui/react"
 import { buttonClasses } from "./types"
@@ -11,15 +11,24 @@ function cn(...classes: (string | undefined | false)[]) {
 }
 
 /**
- * Button component wrapping HeroUI v3 Button
+ * Button component with BEM theming
  * 
- * Uses BEM classes for theming:
- * - .button (base)
+ * Uses BEM classes for styling:
+ * - .button (base) - includes gap for icon spacing
  * - .button--{variant} (primary, secondary, tertiary, ghost, danger)
  * - .button--{size} (sm, md, lg)
  * - .button--icon-only
  * 
- * @see https://v3.heroui.com/docs/components/button
+ * Icons are spaced via gap, no margin classes needed on icons.
+ * 
+ * @example
+ * ```tsx
+ * // Basic button
+ * <Button>Click me</Button>
+ * 
+ * // Link styled as button (uses asChild)
+ * <Button asChild><Link href="/page">Go</Link></Button>
+ * ```
  */
 export function Button({
   children,
@@ -31,8 +40,9 @@ export function Button({
   className,
   onPress,
   asChild,
+  type = "button",
   ...props
-}: ButtonProps & { href?: string }) {
+}: ButtonProps & { href?: string; type?: "button" | "submit" | "reset" }) {
   // Build BEM class string
   const bemClasses = cn(
     buttonClasses.base,
@@ -41,18 +51,36 @@ export function Button({
     isIconOnly && buttonClasses.iconOnly
   )
 
+  const combinedClassName = cn(bemClasses, className)
+
+  // For asChild pattern, use HeroUI Button which handles it correctly
+  // Filter out non-DOM props that shouldn't be passed to child elements
+  if (asChild) {
+    return (
+      <HeroUIButton
+        className={combinedClassName}
+        asChild
+      >
+        {children}
+      </HeroUIButton>
+    )
+  }
+
+  // For regular buttons, use native button to avoid class duplication
   return (
-    <HeroUIButton
-      className={cn(bemClasses, className)}
-      isDisabled={isDisabled}
-      isPending={isPending}
-      onPress={onPress}
+    <button
+      type={type}
+      className={combinedClassName}
+      disabled={isDisabled || isPending}
+      aria-disabled={isDisabled || isPending || undefined}
+      data-disabled={isDisabled || undefined}
+      data-pending={isPending || undefined}
       {...props}
     >
       {children}
-    </HeroUIButton>
+    </button>
   )
 }
 
-// Re-export the HeroUI Button for advanced usage
-export { Button as HeroUIButton } from "@heroui/react"
+// Re-export HeroUI Button for advanced usage if needed
+export { HeroUIButton }

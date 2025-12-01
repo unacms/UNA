@@ -3,7 +3,7 @@
 // Tabs Demo - Client Component for interactive HeroUI v3 Tabs
 // Tabs require client-side JavaScript for interactivity
 
-import { Tabs } from '@heroui/react'
+import { Tabs } from '@neo/test-components'
 
 /**
  * Basic Tabs Demo

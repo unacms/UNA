@@ -12,6 +12,7 @@ const colorThemes = [
   { id: "purple", label: "Purple", color: "#7c3aed" },
   { id: "green", label: "Green", color: "#059669" },
   { id: "orange", label: "Orange", color: "#ea580c" },
+  { id: "weave", label: "Weave", color: "#06b6d4" },  // Cyan-500 accent
 ] as const
 
 type ColorTheme = typeof colorThemes[number]["id"]

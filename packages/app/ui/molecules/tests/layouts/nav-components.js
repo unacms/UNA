@@ -30,8 +30,8 @@ export function SiteTopNav({ isAuthenticated = false }) {
     ]
 
     return (
-        <View className="h-16 px-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <Row className="h-full max-w-7xl mx-auto items-center justify-between">
+        <View className="w-full h-16 px-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <Row className="h-full max-w-7xl w-full mx-auto items-center justify-between">
                 <Row className="items-center gap-8">
                     <SiteLogo />
                     <Row className="hidden md:flex gap-1">

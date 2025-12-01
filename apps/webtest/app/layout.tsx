@@ -6,6 +6,7 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { ThemeScript } from './theme-script'
 import { SiteNavbar } from './components/navbar'
+import { NavbarIslandProvider } from './components/navbar-island'
 
 export const metadata: Metadata = {
   title: 'NEO Testground',
@@ -31,9 +32,12 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="//vercel.live" />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
-        {/* Navbar is server-rendered, only ThemeSwitcher inside is a client island */}
-        <SiteNavbar />
-        <main>{children}</main>
+        {/* NavbarIslandProvider enables pages to inject content into navbar */}
+        <NavbarIslandProvider>
+          {/* Navbar is server-rendered, only islands inside are client components */}
+          <SiteNavbar />
+          <main>{children}</main>
+        </NavbarIslandProvider>
       </body>
     </html>
   )

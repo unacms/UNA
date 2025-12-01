@@ -132,6 +132,63 @@
 }
 
 /* ============================================
+ * WEAVE THEME (Stone neutrals + Cyan accent)
+ * Stone: Warm earthy neutrals
+ * Cyan: Vibrant blue-green accent
+ * ============================================ */
+[data-theme="weave"] {
+  /* Stone neutrals (light) */
+  --color-background: #fafaf9;      /* stone-50 */
+  --color-foreground: #1c1917;      /* stone-900 */
+  --color-card: #ffffff;
+  --color-card-foreground: #1c1917; /* stone-900 */
+  --color-popover: #ffffff;
+  --color-popover-foreground: #1c1917;
+  --color-secondary: #f5f5f4;       /* stone-100 */
+  --color-secondary-foreground: #292524; /* stone-800 */
+  --color-muted: #e7e5e4;           /* stone-200 */
+  --color-muted-foreground: #57534e; /* stone-600 */
+  --color-border: #d6d3d1;          /* stone-300 */
+  --color-input: #d6d3d1;           /* stone-300 */
+  /* Stone primary */
+  --color-primary: #57534e;         /* stone-600 */
+  --color-primary-foreground: #fafaf9; /* stone-50 */
+  --color-ring: #57534e;            /* stone-600 */
+  /* Cyan accent */
+  --color-accent: #cffafe;          /* cyan-100 */
+  --color-accent-foreground: #0e7490; /* cyan-700 */
+  /* HeroUI v3 Component Colors */
+  --color-default: #e7e5e4;         /* stone-200 */
+  --color-default-foreground: #292524; /* stone-800 */
+}
+
+[data-theme="weave"].dark {
+  /* Stone neutrals (dark) */
+  --color-background: #0c0a09;      /* stone-950 */
+  --color-foreground: #fafaf9;      /* stone-50 */
+  --color-card: #1c1917;            /* stone-900 */
+  --color-card-foreground: #fafaf9; /* stone-50 */
+  --color-popover: #1c1917;         /* stone-900 */
+  --color-popover-foreground: #fafaf9;
+  --color-secondary: #292524;       /* stone-800 */
+  --color-secondary-foreground: #fafaf9;
+  --color-muted: #292524;           /* stone-800 */
+  --color-muted-foreground: #a8a29e; /* stone-400 */
+  --color-border: #44403c;          /* stone-700 */
+  --color-input: #44403c;           /* stone-700 */
+  /* Stone primary (lighter for dark mode) */
+  --color-primary: #a8a29e;         /* stone-400 */
+  --color-primary-foreground: #0c0a09; /* stone-950 */
+  --color-ring: #a8a29e;            /* stone-400 */
+  /* Cyan accent (dark mode) */
+  --color-accent: #164e63;          /* cyan-900 */
+  --color-accent-foreground: #a5f3fc; /* cyan-200 */
+  /* HeroUI v3 Component Colors (Dark) */
+  --color-default: #292524;         /* stone-800 */
+  --color-default-foreground: #fafaf9;
+}
+
+/* ============================================
  * BASE STYLES
  * ============================================ */
 @layer base {
@@ -288,16 +345,65 @@
   .button--icon-only.button--md { width: 2.5rem; }
   .button--icon-only.button--lg { width: 3rem; }
 
-  /* CARD */
+  /* CARD - HeroUI v3 BEM styles
+   * https://v3.heroui.com/docs/components/card
+   */
   .card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
     background-color: var(--color-card);
     color: var(--color-card-foreground);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
   }
-  .card__content { padding: 1.5rem; }
-  .card__title { font-weight: 600; line-height: 1.25; }
-  .card__description { color: var(--color-muted-foreground); font-size: 0.875rem; }
+  .card__header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .card__title {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  .card__description {
+    color: var(--color-muted-foreground);
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+  .card__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .card__footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+  }
+
+  /* Card variants */
+  .card--default {
+    background-color: var(--color-card);
+  }
+  .card--transparent {
+    background-color: transparent;
+    border-color: transparent;
+    padding: 0;
+  }
+  .card--secondary {
+    background-color: var(--color-secondary);
+  }
+  .card--tertiary {
+    background-color: var(--color-muted);
+  }
+  .card--quaternary {
+    background-color: var(--color-accent);
+  }
 
   /* CHIP */
   .chip {
@@ -352,30 +458,195 @@
   .input::placeholder { color: var(--color-muted-foreground); }
   .input:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  /* DROPDOWN */
-  .dropdown__trigger { cursor: pointer; }
+  /* ============================================
+   * DROPDOWN - HeroUI v3 Official Styles
+   * https://v3.heroui.com/docs/components/dropdown
+   * Uses HeroUI's actual class names: menu-item, label, etc.
+   * ============================================ */
+  
+  /* Dropdown root */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* Dropdown trigger */
+  .dropdown__trigger { 
+    cursor: pointer; 
+  }
+
+  /* Dropdown popover - targets HeroUI's popover */
+  [data-slot="dropdown-popover"],
   .dropdown__popover {
     background-color: var(--color-popover);
     color: var(--color-popover-foreground);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    box-shadow: 0 10px 38px -10px rgba(22, 23, 24, 0.35), 0 10px 20px -15px rgba(22, 23, 24, 0.2);
-    padding: 0.5rem;
-    min-width: 12rem;
+    border-radius: var(--radius-lg);
+    box-shadow: 
+      0 10px 38px -10px rgba(22, 23, 24, 0.35), 
+      0 10px 20px -15px rgba(22, 23, 24, 0.2);
+    padding: 0.25rem;
+    min-width: 14rem;
     z-index: 100;
+    outline: none;
+    /* Animation */
+    animation: dropdown-enter 150ms cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .dropdown__item {
-    display: block;
+
+  @keyframes dropdown-enter {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Dropdown menu - targets HeroUI's menu */
+  [data-slot="dropdown-menu"],
+  .dropdown__menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    outline: none;
+    padding: 0.25rem;
+  }
+
+  /* Menu Item - HeroUI uses .menu-item class */
+  .menu-item,
+  [data-slot="menu-item"] {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     padding: 0.5rem 0.75rem;
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: var(--radius);
     cursor: pointer;
     text-decoration: none;
     color: var(--color-foreground);
     font-size: 0.875rem;
-  }
-  .dropdown__item:hover, .dropdown__item[data-highlighted] {
-    background-color: var(--color-accent);
+    line-height: 1.25rem;
     outline: none;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+
+  /* Menu item states */
+  .menu-item:hover,
+  .menu-item[data-hovered],
+  .menu-item[data-focused],
+  [data-slot="menu-item"]:hover,
+  [data-slot="menu-item"][data-hovered],
+  [data-slot="menu-item"][data-focused] {
+    background-color: var(--color-default);
+    outline: none;
+  }
+
+  .menu-item[data-selected],
+  [data-slot="menu-item"][data-selected] {
+    background-color: var(--color-default);
+    font-weight: 500;
+  }
+
+  .menu-item[data-disabled],
+  [data-slot="menu-item"][data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Menu item variants */
+  .menu-item--default {}
+
+  .menu-item--danger {
+    color: var(--color-danger);
+  }
+  .menu-item--danger:hover,
+  .menu-item--danger[data-hovered],
+  .menu-item--danger[data-focused] {
+    background-color: color-mix(in srgb, var(--color-danger) 10%, transparent);
+    color: var(--color-danger);
+  }
+
+  /* Label component - used within menu items */
+  .label,
+  [data-slot="label"] {
+    flex: 1;
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+  }
+
+  /* Description component - used within menu items */
+  .description,
+  [data-slot="description"] {
+    font-size: 0.75rem;
+    color: var(--color-muted-foreground);
+  }
+
+  /* Menu section */
+  .menu-section,
+  [data-slot="menu-section"] {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .menu-section:not(:first-child),
+  [data-slot="menu-section"]:not(:first-child) {
+    border-top: 1px solid var(--color-border);
+    margin-top: 0.25rem;
+    padding-top: 0.25rem;
+  }
+
+  /* Menu item indicator (for selection) */
+  .menu-item-indicator,
+  [data-slot="menu-item-indicator"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+  }
+
+  .menu-item-indicator[data-selected]::after,
+  [data-slot="menu-item-indicator"][data-selected]::after {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background-color: var(--color-primary);
+  }
+
+  /* Submenu indicator */
+  .submenu-indicator,
+  [data-slot="submenu-indicator"] {
+    margin-left: auto;
+    color: var(--color-muted-foreground);
+  }
+
+  /* Header within dropdown/menu */
+  .header,
+  [data-slot="header"] {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-muted-foreground);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Keyboard shortcut within menu item */
+  [slot="keyboard"],
+  .kbd {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: var(--color-muted-foreground);
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    background-color: var(--color-muted);
+    padding: 0.125rem 0.375rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
   }
 
   /* MODAL */
@@ -562,6 +833,53 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
+
+  /* Size variants */
+  .tabs--sm .tabs__tab {
+    height: 1.5rem;
+    font-size: 0.75rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  .tabs--sm .tabs__list {
+    padding: 0.125rem;
+    border-radius: calc(var(--radius-xl) + 0.125rem);
+  }
+  .tabs--sm .tabs__indicator {
+    border-radius: var(--radius-xl);
+  }
+
+  .tabs--md .tabs__tab {
+    height: 2rem;
+    font-size: 0.875rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .tabs--lg .tabs__tab {
+    height: 2.5rem;
+    font-size: 1rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+  .tabs--lg .tabs__list {
+    padding: 0.375rem;
+    border-radius: calc(var(--radius-3xl) + 0.375rem);
+  }
+
+  /* Icon sizes for tabs - matching button proportions */
+  .tabs--sm .tabs__tab svg {
+    width: 0.75rem;  /* 12px */
+    height: 0.75rem;
+  }
+  .tabs--md .tabs__tab svg {
+    width: 0.875rem; /* 14px */
+    height: 0.875rem;
+  }
+  .tabs--lg .tabs__tab svg {
+    width: 1rem;     /* 16px */
+    height: 1rem;
+  }
   
   /* Hover states */
   @media (hover: hover) {
@@ -618,5 +936,147 @@
     .tabs__indicator {
       transition: none;
     }
+  }
+
+  /* LISTBOX - HeroUI v3 BEM styles
+   * https://v3.heroui.com/docs/components/listbox
+   */
+  .listbox {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    outline: none;
+  }
+
+  .listbox-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    outline: none;
+    cursor: default;
+    border-radius: var(--radius);
+    transition: background-color 150ms ease;
+  }
+
+  .listbox-item:hover,
+  .listbox-item[data-hovered="true"] {
+    background-color: var(--color-muted);
+  }
+
+  .listbox-item:focus-visible,
+  .listbox-item[data-focus-visible="true"] {
+    outline: 2px solid var(--color-ring);
+    outline-offset: -2px;
+  }
+
+  .listbox-item[data-selected="true"] {
+    background-color: var(--color-accent);
+  }
+
+  .listbox-item[data-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .listbox-item--danger {
+    color: var(--color-destructive);
+  }
+
+  .listbox-item--danger:hover,
+  .listbox-item--danger[data-hovered="true"] {
+    background-color: color-mix(in srgb, var(--color-destructive) 10%, transparent);
+  }
+
+  /* ListBox Label and Description */
+  .listbox-item [data-slot="label"] {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+  }
+
+  .listbox-item [data-slot="description"] {
+    font-size: 0.75rem;
+    color: var(--color-muted-foreground);
+  }
+
+  /* ListBox Section */
+  .listbox-section {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .listbox-section [data-slot="header"] {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-muted-foreground);
+  }
+
+  /* ListBox Item Indicator */
+  .listbox-item__indicator {
+    margin-left: auto;
+    color: var(--color-accent-foreground);
+    opacity: 0;
+  }
+
+  .listbox-item__indicator[data-visible="true"],
+  .listbox-item[data-selected="true"] .listbox-item__indicator {
+    opacity: 1;
+  }
+}
+
+/* ============================================
+ * VIEW TRANSITIONS - Smooth element morphing
+ * Used for scroll-based title animations
+ * ============================================ */
+
+/* Group title transition - morphs between main header and sticky bar */
+::view-transition-old(group-title),
+::view-transition-new(group-title) {
+  /* Smooth cross-fade with position animation */
+  animation-duration: 250ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Old title fades and scales down */
+::view-transition-old(group-title) {
+  animation-name: title-fade-out;
+}
+
+/* New title fades and scales up */
+::view-transition-new(group-title) {
+  animation-name: title-fade-in;
+}
+
+@keyframes title-fade-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes title-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(group-title),
+  ::view-transition-new(group-title) {
+    animation: none;
   }
 }
