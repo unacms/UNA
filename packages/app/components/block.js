@@ -261,7 +261,7 @@ export default function Block(props) {
     if (staticBlock) {
         return staticBlock
     }
-    const config = block.config_api ? (strToObj(block.config_api)) : {}
+    const config = block.config_api || {}
 
     const type = block.content && Array.isArray(block.content) ? 'array' : typeof block.content;
     const BlockType = componentsMap[type];
