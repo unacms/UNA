@@ -289,15 +289,53 @@ export async function fetchUNAMenu(menuObject: string): Promise<UNAMenuItem[]> {
     // Handle different response formats:
     // 1. { data: [...] } - wrapped response
     // 2. [...] - direct array
-    // 3. null/undefined - no data
+    // 3. { items: [...] } - items property
+    // 4. { data: { items: [...] } } - nested items
+    // 5. { menu_name: [...], menu_name2: [...] } - object with menu arrays
+    // 6. null/undefined - no data
+    
     if (Array.isArray(responseData)) {
       return responseData
     }
-    if (responseData && Array.isArray(responseData.data)) {
-      return responseData.data
+    
+    if (responseData && typeof responseData === 'object') {
+      // Check for data.items
+      if (Array.isArray(responseData.data?.items)) {
+        return responseData.data.items
+      }
+      // Check for data array
+      if (Array.isArray(responseData.data)) {
+        return responseData.data
+      }
+      // Check for items array
+      if (Array.isArray(responseData.items)) {
+        return responseData.items
+      }
+      // Check if the object keys are menu items (object with name/title/link)
+      const keys = Object.keys(responseData)
+      if (keys.length > 0) {
+        // If values are arrays, concatenate them
+        const allItems: UNAMenuItem[] = []
+        for (const key of keys) {
+          const value = responseData[key]
+          if (Array.isArray(value)) {
+            allItems.push(...value)
+          } else if (value && typeof value === 'object' && 'title' in value) {
+            // Individual menu item
+            allItems.push(value as UNAMenuItem)
+          }
+        }
+        if (allItems.length > 0) {
+          return allItems
+        }
+      }
     }
     
-    console.warn('UNA Menu API returned unexpected format:', typeof responseData)
+    // Only log if we truly can't parse - include structure hint
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('UNA Menu API returned unexpected format for', menuObject, '- keys:', 
+        responseData ? Object.keys(responseData).slice(0, 5) : 'null')
+    }
     return []
   } catch (error) {
     console.error('Failed to fetch UNA menu:', error)
