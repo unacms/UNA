@@ -68,7 +68,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     }, [localUrl]);
 
     const aItems = useMemo(() => Object.entries(blocks)
-        .filter(([key, value]) => value.forList)
+        .filter(([key, value]) => (isDesktop ? value.forList : value.forList || value.leftbar || value.sidebar))
         .map(([key, value]) => ({
             id: `block_${key}`,
             data: <View className={value.name.includes("entity_text_block") || value.name.includes("get_block_text_and_subentries") ? 'px-4' : ''}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
@@ -77,9 +77,8 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     const aItemsLeftBar = Object.entries(blocks).filter(([key, value]) => value.leftbar);
     const aItemsRightBar = Object.entries(blocks).filter(([key, value]) => value.sidebar);
 
-    const isRightCol = aItemsRightBar.length > 0
-    console.log("aItemsRightBar", aItemsRightBar)
-    const isLeftCol = aItemsLeftBar.length > 0
+    const isRightCol = aItemsRightBar.length > 0 && isDesktop
+    const isLeftCol = aItemsLeftBar.length > 0 && isDesktop 
 
     const viewProps = isWeb ? {
         style: { minHeight: !isDesktop ? windowWHeight : windowWHeight - 64 },
