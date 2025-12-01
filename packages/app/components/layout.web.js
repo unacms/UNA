@@ -79,14 +79,14 @@ async function runOneSignal() {
 const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutName, layoutName, data, children, uri, blocks }) => {
     const [isModal, setIsModal] = useState(false);
     const { t } = useTranslation()
-
     useEffect(() => {
         if (currentUser === false && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'home', 'login', 'forgot-password', 'confirm-email'].includes(uri)) {
+          
             setTimeout(() => {
                 setIsModal(true)
             }, appSetting('layout', 'show_login_modal'));
         }
-    }, []);
+    }, [currentUser]);
 
     const ModalPopup = ({ }) => {
         let p = {
@@ -101,7 +101,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
     };
 
     const handleCloseModal = () => {
-        storageSet('layout:modal', '', true, true);
+        //storageSet('layout:modal', '', true, true);
         setIsModal(false)
     }
 
