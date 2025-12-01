@@ -360,6 +360,7 @@ export function Conductor({
     const CenterColumnContent = <TabSceneMainContent
         pageRoute={tabRoute}
         isScrolled={isScrolled}
+        isCover={isCover}
         headerHeight={
             showFiltersBtn && routes.length > 1
                 ? defaultHeaderHeight + 52
@@ -406,7 +407,8 @@ const TabSceneMainContent = ({
     keyword,
     ts,
     timestamp,
-    isScrolled
+    isScrolled,
+    isCover 
 }) => {
     const pageData = pageRoute.pageData
     const uniRef = useRef()
@@ -601,7 +603,7 @@ const TabSceneMainContent = ({
             onRefresh={refetch}
             refreshing={isRefetching}
             renderItem={renderItem}
-            paddingTop={isScrolled ? 200:0}
+            paddingTop={isScrolled && !appSetting('cover', 'fixed') && isCover ? 200 : 0}
             
         />
         {(pageRoute?.endpoint?.request_url && hasNextPage === undefined ) && Preload}
