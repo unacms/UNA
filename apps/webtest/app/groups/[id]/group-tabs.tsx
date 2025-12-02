@@ -2,15 +2,17 @@
 
 // Group Tabs - Client Component for interactive tab navigation
 // Uses standard HeroUI v3 Tabs from @neo/test-components
-// Shows condensed title + avatar when main header scrolls out of view
+// Shows condensed title + avatar + switcher when main header scrolls out of view
 
 import { Tabs } from '@neo/test-components'
 import { Dropdown, Label, Button } from '@heroui/react'
 import { MessageSquare, Info, Users, MoreHorizontal, UserPlus, Share2, Flag, HeartHandshake, VolumeX } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavbarIsland } from '@/app/components/navbar-island'
+import { GroupSwitcherTrigger } from '@/app/components/group-switcher'
 
 interface GroupTabsProps {
+  groupId: string
   groupName: string
   groupAvatar?: string
   feedContent: React.ReactNode
@@ -20,7 +22,7 @@ interface GroupTabsProps {
   mutesContent?: React.ReactNode
 }
 
-export function GroupTabs({ groupName, groupAvatar, feedContent, aboutContent, membersContent, respectContent, mutesContent }: GroupTabsProps) {
+export function GroupTabs({ groupId, groupName, groupAvatar, feedContent, aboutContent, membersContent, respectContent, mutesContent }: GroupTabsProps) {
   const [showTitle, setShowTitle] = useState(false)
   const { setContent } = useNavbarIsland()
 
@@ -40,8 +42,12 @@ export function GroupTabs({ groupName, groupAvatar, feedContent, aboutContent, m
           // Show title when header is NOT intersecting (scrolled past)
           const isScrolled = !entry.isIntersecting
           setShowTitle(isScrolled)
-          // Update navbar island on mobile with both title and image
-          setContent(isScrolled ? groupName : null, isScrolled && groupAvatar ? groupAvatar : null)
+          // Update navbar island on mobile with groupId, title, and image for switcher
+          setContent(
+            isScrolled ? groupName : null, 
+            isScrolled && groupAvatar ? groupAvatar : null,
+            isScrolled ? groupId : null
+          )
         }
       },
       { 
@@ -54,24 +60,24 @@ export function GroupTabs({ groupName, groupAvatar, feedContent, aboutContent, m
     return () => {
       observer.disconnect()
       // Clean up navbar content when unmounting
-      setContent(null, null)
+      setContent(null, null, null)
     }
-  }, [groupName, groupAvatar, setContent])
+  }, [groupId, groupName, groupAvatar, setContent])
 
   return (
     <Tabs defaultSelectedKey="feed" size={tabSize}>
       {/* Tabs bar - sticky at top-16 */}
       <div className="bg-card border-b border-border/60 sticky top-16 z-40">
         <div className="max-w-7xl mx-auto px-4 py-3 lg:px-6">
-          <div className="flex gap-4 items-center justify-between">
-            {/* Left side: Avatar + Title (md+ only) + Tabs */}
-            <div className="flex items-center">
-              {/* Condensed avatar + title - appears when scrolled, hidden on mobile (shown in navbar) */}
+          <div className="flex gap-2 sm:gap-4 items-center">
+            {/* Left side: Avatar + Title (md+ only) + Tabs - takes remaining space and scrolls */}
+            <div className="flex items-center min-w-0 flex-1 overflow-x-auto scrollbar-none">
+              {/* Condensed avatar + title + switcher - appears when scrolled, hidden on mobile (shown in navbar) */}
               <div 
                 className={`
                   hidden md:flex items-center gap-2
                   transition-all duration-200 ease-out
-                  ${showTitle ? 'opacity-100 max-w-[250px] mr-4 lg:mr-6' : 'opacity-0 max-w-0 mr-0 overflow-hidden'}
+                  ${showTitle ? 'opacity-100 max-w-[300px] mr-4 lg:mr-6' : 'opacity-0 max-w-0 mr-0 overflow-hidden'}
                 `}
               >
                 {groupAvatar && (
@@ -84,10 +90,14 @@ export function GroupTabs({ groupName, groupAvatar, feedContent, aboutContent, m
                 <h2 className="font-semibold text-xl text-foreground whitespace-nowrap overflow-hidden text-ellipsis">
                   {groupName}
                 </h2>
+                <GroupSwitcherTrigger
+                  currentGroupId={groupId}
+                  currentGroupName={groupName}
+                />
               </div>
 
               <Tabs.ListContainer>
-                <Tabs.List aria-label="Group sections" className="w-fit bg-card p-0">
+                <Tabs.List aria-label="Group sections" className="w-fit bg-card p-0 flex-nowrap">
                 <Tabs.Tab id="feed" className="data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground">
                   <span className="flex items-center gap-2">
                     <MessageSquare className="hidden md:block" />
@@ -132,7 +142,7 @@ export function GroupTabs({ groupName, groupAvatar, feedContent, aboutContent, m
             </div>
 
             {/* Right side: Action buttons (lg only when scrolled) + Dropdown */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               {/* Primary action buttons - visible on lg+ when scrolled */}
               <div 
                 className={`

@@ -30,6 +30,7 @@ import {
 import { PageFooter } from "../../components/page-footer"
 import { GroupTabs } from "./group-tabs"
 import { AppLogo } from "../../components/app-logo"
+import { GroupSwitcher, GroupSwitcherTrigger } from "../../components/group-switcher"
 
 // Sample group data - in real app would come from UNA API
 const mockGroup = {
@@ -212,6 +213,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
 
         {/* Group Tabs with Content */}
         <GroupTabs 
+          groupId={group.id}
           groupName={group.name}
           groupAvatar={group.avatar}
           feedContent={feedContent}
@@ -250,41 +252,54 @@ function GroupHeader({ group }: { group: typeof mockGroup }) {
     <div id="group-header" className="bg-card border-b border-border/60">
       <div className="max-w-7xl mx-auto px-4 lg:px-6 py-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          {/* Group Avatar, Name and Chips */}
-          <div className="flex items-center gap-4 flex-1 min-w-0">
-            {/* Large Profile Avatar */}
-            <img
-              src={group.avatar}
-              alt={group.name}
-              className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-4 border-background shadow shrink-0"
-            />
-            <div className="min-w-0">
-              <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="text-2xl sm:text-3xl font-bold text-foreground truncate">
-                  {group.name}
-                </h1>
-                <div className="flex items-center gap-2">
-                  <Chip className="text-xs">
-                    {group.isPublic ? (
-                      <><Globe className="w-3 h-3 mr-1" /> Public</>
-                    ) : (
-                      <><Lock className="w-3 h-3 mr-1" /> Private</>
-                    )}
-                  </Chip>
-                  {group.isVisible && (
-                    <Chip className="text-xs bg-primary/10 text-primary">
-                      <Eye className="w-3 h-3 mr-1" /> Visible
-                    </Chip>
-                  )}
-                </div>
+          {/* Group Avatar + Info Column */}
+          <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+            {/* Avatar - link to group home */}
+            <Link href={`/groups/${group.id}`} className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-full overflow-hidden">
+              <img 
+                src={group.avatar} 
+                alt={group.name} 
+                className="w-full h-full object-cover"
+              />
+            </Link>
+            
+            {/* Title + Meta Info Column */}
+            <div className="min-w-0 flex-1">
+              {/* Title Row */}
+              <div className="flex items-center gap-2">
+                <Link href={`/groups/${group.id}`} className="hover:underline">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-foreground truncate">
+                    {group.name}
+                  </h1>
+                </Link>
+                <GroupSwitcherTrigger
+                  currentGroupId={group.id}
+                  currentGroupName={group.name}
+                />
               </div>
-              <p className="mt-1 text-sm text-muted-foreground flex items-center gap-2">
-                <Users className="w-4 h-4" />
-                <span>{group.memberCount.toLocaleString()} members</span>
-                <span className="text-border">•</span>
-                <MapPin className="w-4 h-4" />
-                <span>{group.location}</span>
-              </p>
+              
+              {/* Meta Info - under title */}
+              <div className="flex items-center gap-2 mt-1 flex-wrap">
+                <Chip className="text-xs">
+                  {group.isPublic ? (
+                    <><Globe className="w-3 h-3 mr-1" /> Public</>
+                  ) : (
+                    <><Lock className="w-3 h-3 mr-1" /> Private</>
+                  )}
+                </Chip>
+                {group.isVisible && (
+                  <Chip className="text-xs bg-primary/10 text-primary">
+                    <Eye className="w-3 h-3 mr-1" /> Visible
+                  </Chip>
+                )}
+                <span className="text-sm text-muted-foreground flex items-center gap-2">
+                  <Users className="w-4 h-4" />
+                  <span>{group.memberCount.toLocaleString()} members</span>
+                  <span className="text-border">•</span>
+                  <MapPin className="w-4 h-4" />
+                  <span>{group.location}</span>
+                </span>
+              </div>
             </div>
           </div>
 

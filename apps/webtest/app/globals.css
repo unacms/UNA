@@ -355,8 +355,11 @@
     padding: 1rem;
     background-color: var(--color-card);
     color: var(--color-card-foreground);
-    border: 1px solid var(--color-border);
+    border: 0px solid var(--color-border);
     border-radius: var(--radius-lg);
+    box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.05),
+    0px 1px 2px -1px rgba(0, 0, 0, 0.05),
+    0px 2px 4px 0px rgba(0, 0, 0, 0.05);
   }
   .card__header {
     display: flex;
@@ -1079,4 +1082,18 @@
   ::view-transition-new(group-title) {
     animation: none;
   }
+}
+
+/* ============================================
+ * UTILITY CLASSES
+ * ============================================ */
+
+/* Hide scrollbar but keep scroll functionality */
+.scrollbar-none {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, Opera */
 }

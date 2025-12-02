@@ -224,7 +224,7 @@ interface GroupCardProps {
 function GroupCard({ group, featured = false }: GroupCardProps) {
   return (
     <Link href={`/groups/${group.id}`} className="block group">
-      <Card className="h-full hover:shadow-lg transition-all duration-200 hover:border-primary/30">
+      <Card className="p-2 h-full hover:shadow-lg gap-1 transition-all duration-200 hover:border-primary/30">
         {/* Cover Image with Avatar */}
         <div className="relative">
           {/* Cover */}
@@ -263,7 +263,7 @@ function GroupCard({ group, featured = false }: GroupCardProps) {
           </div>
         </div>
 
-        <CardContent className="">
+        <CardContent className="p-2">
           <CardTitle className="text-lg mb-1 group-hover:text-primary transition-colors">
             {group.name}
           </CardTitle>

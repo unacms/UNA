@@ -2,14 +2,17 @@
 
 import { createContext, useContext, useState, type ReactNode } from 'react'
 import { ChevronRight } from 'lucide-react'
+import { GroupSwitcherTrigger } from './group-switcher'
 
 // Context for navbar island content
 interface NavbarIslandContextType {
   title: string | null
   image: string | null
+  groupId: string | null
   setTitle: (title: string | null) => void
   setImage: (image: string | null) => void
-  setContent: (title: string | null, image: string | null) => void
+  setGroupId: (groupId: string | null) => void
+  setContent: (title: string | null, image: string | null, groupId?: string | null) => void
 }
 
 const NavbarIslandContext = createContext<NavbarIslandContextType | null>(null)
@@ -18,15 +21,17 @@ const NavbarIslandContext = createContext<NavbarIslandContextType | null>(null)
 export function NavbarIslandProvider({ children }: { children: ReactNode }) {
   const [title, setTitle] = useState<string | null>(null)
   const [image, setImage] = useState<string | null>(null)
+  const [groupId, setGroupId] = useState<string | null>(null)
   
-  // Helper to set both at once
-  const setContent = (newTitle: string | null, newImage: string | null) => {
+  // Helper to set all at once
+  const setContent = (newTitle: string | null, newImage: string | null, newGroupId?: string | null) => {
     setTitle(newTitle)
     setImage(newImage)
+    setGroupId(newGroupId ?? null)
   }
   
   return (
-    <NavbarIslandContext.Provider value={{ title, image, setTitle, setImage, setContent }}>
+    <NavbarIslandContext.Provider value={{ title, image, groupId, setTitle, setImage, setGroupId, setContent }}>
       {children}
     </NavbarIslandContext.Provider>
   )
@@ -49,14 +54,14 @@ export function NavbarIsland() {
   // If no context (during SSR or outside provider), render nothing
   if (!context) return null
   
-  const { title, image } = context
+  const { title, image, groupId } = context
   
   return (
     <div 
       className={`
         md:hidden flex items-center gap-2 overflow-hidden
         transition-all duration-200 ease-out
-        ${title ? 'opacity-100 max-w-[220px]' : 'opacity-0 max-w-0'}
+        ${title ? 'opacity-100 max-w-[280px]' : 'opacity-0 max-w-0'}
       `}
     >
       <ChevronRight className="w-4 h-4 shrink-0 text-muted-foreground" />
@@ -70,6 +75,12 @@ export function NavbarIsland() {
       <span className="font-semibold text-base text-foreground truncate">
         {title}
       </span>
+      {groupId && title && (
+        <GroupSwitcherTrigger
+          currentGroupId={groupId}
+          currentGroupName={title}
+        />
+      )}
     </div>
   )
 }

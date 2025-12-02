@@ -13,7 +13,7 @@ import {
   Separator,
   Button,
 } from "@neo/test-components"
-import { ListBox, Label, Description } from "@heroui/react"
+// Removed ListBox - using simple div structure instead to avoid hydration issues
 import Link from "next/link"
 import { 
   Users, 
@@ -29,6 +29,7 @@ import {
 } from "lucide-react"
 import { PageFooter } from "../../components/page-footer"
 import { GroupTabs } from "../[id]/group-tabs"
+import { GroupSwitcher, GroupSwitcherTrigger } from "../../components/group-switcher"
 
 // Ambient Circle group data
 const ambientCircle = {
@@ -286,6 +287,7 @@ export default function AmbientCirclePage() {
 
         {/* Group Tabs with Content */}
         <GroupTabs 
+          groupId={group.id}
           groupName={group.name}
           groupAvatar={group.avatar}
           feedContent={feedContent}
@@ -309,22 +311,34 @@ function GroupHeader({ group }: { group: typeof ambientCircle }) {
     <div id="group-header" className="bg-card border-b border-border/60">
       <div className="max-w-7xl mx-auto px-4 lg:px-6 py-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          {/* Group Avatar, Name and Chips */}
-          <div className="flex items-center gap-4 flex-1 min-w-0">
-            {/* Large Profile Avatar */}
-            <img
-              src={group.avatar}
-              alt={group.name}
-              className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover  shrink-0"
-            />
-            <div className="min-w-0">
-              <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="text-2xl sm:text-3xl font-bold text-foreground truncate">
-                  {group.name}
-                </h1>
-                
+          {/* Group Avatar + Info Column */}
+          <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+            {/* Avatar - link to group home */}
+            <Link href={`/groups/${group.id}`} className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-full overflow-hidden">
+              <img 
+                src={group.avatar} 
+                alt={group.name} 
+                className="w-full h-full object-cover"
+              />
+            </Link>
+            
+            {/* Title + Meta Info Column */}
+            <div className="min-w-0 flex-1">
+              {/* Title Row */}
+              <div className="flex items-center gap-2">
+                <Link href={`/groups/${group.id}`} className="hover:underline">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-foreground truncate">
+                    {group.name}
+                  </h1>
+                </Link>
+                <GroupSwitcherTrigger
+                  currentGroupId={group.id}
+                  currentGroupName={group.name}
+                />
               </div>
-              <p className="mt-2 text-sm text-muted-foreground flex items-center gap-2">
+              
+              {/* Meta Info - under title */}
+              <p className="mt-1 text-sm text-muted-foreground flex items-center gap-2">
                 <Users className="w-4 h-4" />
                 <span>{group.memberCount.toLocaleString()} members</span>
                 <span className="text-border">•</span>
@@ -382,14 +396,14 @@ function GroupIntroCard({ intro }: { intro: string }) {
 // ============================================
 function AppIntroCard() {
   return (
-    <Card className="overflow-hidden border-0 shadow-lg">
+    <Card className="p-2 overflow-hidden bg-linear-to-b from-stone-100 via-amber-50 to-orange-50 dark:from-stone-900 dark:via-amber-950/50 dark:to-orange-950/30">
       {/* Warm gradient background similar to screenshot */}
-      <div className="relative bg-gradient-to-br from-stone-100 via-amber-50 to-orange-50 dark:from-stone-900 dark:via-amber-950/50 dark:to-orange-950/30">
+      <div className="relative ">
         <CardContent className="p-0">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
             {/* Left side - Text content */}
-            <div className="p-8 md:p-10 flex flex-col justify-center">
-              <h2 className="text-3xl md:text-4xl font-bold text-stone-800 dark:text-stone-100 leading-tight mb-4">
+            <div className="p-4 md:p-6 flex flex-col justify-center">
+              <h2 className="text-2xl md:text-3xl font-bold text-stone-800 dark:text-stone-100 leading-tight mb-4">
                 Where important conversations happen
               </h2>
               <p className="text-lg text-stone-600 dark:text-stone-300 mb-6">
@@ -406,11 +420,8 @@ function AppIntroCard() {
             </div>
             
             {/* Right side - Illustration */}
-            <div className="relative min-h-[280px] md:min-h-[320px] flex items-end justify-center overflow-hidden">
-              {/* Warm circular background blob */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-[90%] h-[90%] rounded-full bg-gradient-to-br from-amber-300/60 via-orange-400/50 to-red-400/40 blur-2xl" />
-              </div>
+            <div className="relative min-h-[280px] md:min-h-[320px] flex items-end justify-center overflow-hidden rounded">
+             
               {/* Illustration image - people in conversation */}
               <img
                 src="https://images.unsplash.com/photo-1543269865-cbf427effbad?w=500&h=400&fit=crop"
@@ -480,22 +491,22 @@ function GroupAboutCard({ group }: { group: typeof ambientCircle }) {
       </CardHeader>
       <CardContent className="p-0">
         {/* Group description */}
-        <p className="px-4 py-3 text-sm text-muted-foreground border-b border-border/50">
+        <p className="px-4 py-3 text-sm text-muted-foreground">
           {group.description}
         </p>
-        <ListBox aria-label="Group information" selectionMode="none" className="p-0">
+        
           {infoItems.map((item) => (
-            <ListBox.Item key={item.id} id={item.id} textValue={item.value} className="px-4 py-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+            <div key={item.id} className="px-4 pb-4 flex items-start gap-3">
+              <div className="shrink-0 w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
                 <item.icon className="w-4 h-4 text-muted-foreground" />
               </div>
-              <div className="flex flex-col">
-                <Label>{item.value}</Label>
-                <Description>{item.description}</Description>
+              <div className="flex flex-col min-w-0">
+                <span className="font-medium text-sm text-foreground">{item.value}</span>
+                <span className="text-xs text-muted-foreground mt-0.5">{item.description}</span>
               </div>
-            </ListBox.Item>
+            </div>
           ))}
-        </ListBox>
+        
       </CardContent>
     </Card>
   )
@@ -535,18 +546,14 @@ function GroupMembersCard({
         </div>
         
         {/* Privacy note */}
-        <div className="mt-4 p-3 rounded-lg bg-muted/50 text-center">
+        <div className="mt-3 p-3 rounded-lg bg-muted/50 text-center">
           <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
             <Shield className="w-3 h-3" />
             Member identities are protected
           </p>
         </div>
         
-        <Button variant="ghost" className="w-full mt-3" asChild>
-          <Link href="#members">
-            View Community
-          </Link>
-        </Button>
+       
       </CardContent>
     </Card>
   )
