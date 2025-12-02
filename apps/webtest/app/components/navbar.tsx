@@ -3,14 +3,15 @@
 
 import Link from "next/link"
 import { AppLogo } from "./app-logo"
-import { NavbarIsland } from "./navbar-island"
+import { NavbarIsland, NavbarActions } from "./navbar-island"
+import { NavbarAuthButtons } from "./navbar-auth"
 
 // Server Component - no "use client" directive
 export function SiteNavbar() {
   return (
     <header className="sticky top-0 z-50 h-16  border-b border-border/60 mx-auto bg-background/95 backdrop-blur">
-      <nav className="h-full max-w-7xl mx-auto flex items-center justify-between px-4 lg:px-6">
-        <div className="flex items-center gap-4 md:gap-6 min-w-0">
+      <nav className="h-full max-w-7xl mx-auto flex items-center justify-between ">
+        <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 min-w-0 px-3 sm:px-4 lg:px-6 py-3">
           {/* Logo - server rendered */}
           <Link href="/" className="flex items-center shrink-0">
             <AppLogo mode="adaptive" markSize={32} />
@@ -36,20 +37,12 @@ export function SiteNavbar() {
           </div>
         </div>
 
-        {/* Right side - Auth links */}
-        <div className="flex items-center gap-2">
-          <Link 
-            href="/login" 
-            className="hidden sm:flex px-4 py-2 text-sm font-medium hover:text-primary transition-colors"
-          >
-            Sign In
-          </Link>
-          <Link 
-            href="/signup" 
-            className="button button--sm button--primary"
-          >
-            Get Started
-          </Link>
+        {/* Right side - Actions (mobile) + Auth buttons (client component) */}
+        <div className="flex items-center gap-2 px-3 sm:px-4 lg:px-6 py-3">
+          {/* Mobile actions from NavbarIsland */}
+          <NavbarActions />
+          {/* Auth buttons - responds to auth state */}
+          <NavbarAuthButtons />
         </div>
       </nav>
     </header>

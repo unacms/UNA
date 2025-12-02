@@ -6,7 +6,7 @@
 // Uses client-only rendering to avoid hydration mismatch with HeroUI Button
 
 import { Dropdown, Button } from '@heroui/react'
-import { ChevronsUpDown, Check } from 'lucide-react'
+import { ChevronsUpDown, Check, Plus, Compass } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
@@ -123,29 +123,55 @@ export function GroupSwitcher({
                 selectedKeys={[currentGroupId]}
                 selectionMode="single"
               >
-                {userGroups.map((group) => {
-                  const isCurrent = group.id === currentGroupId
-                  return (
-                    <Dropdown.Item
-                      key={group.id}
-                      id={group.id}
-                      textValue={group.name}
-                      href={`/groups/${group.id}`}
-                    >
-                      <div className="w-10 h-10 shrink-0 rounded-full overflow-hidden">
-                        <img 
-                          src={group.avatar} 
-                          alt={group.name} 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <span className="flex-1 font-medium">{group.name}</span>
-                      {isCurrent && (
-                        <Check className="w-4 h-4 text-primary shrink-0" />
-                      )}
-                    </Dropdown.Item>
-                  )
-                })}
+                <Dropdown.Section aria-label="Your Groups">
+                  {userGroups.map((group) => {
+                    const isCurrent = group.id === currentGroupId
+                    return (
+                      <Dropdown.Item
+                        key={group.id}
+                        id={group.id}
+                        textValue={group.name}
+                        href={`/groups/${group.id}`}
+                      >
+                        <div className="w-10 h-10 shrink-0 rounded-full overflow-hidden">
+                          <img 
+                            src={group.avatar} 
+                            alt={group.name} 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <span className="flex-1 font-medium">{group.name}</span>
+                        {isCurrent && (
+                          <Check className="w-4 h-4 text-primary shrink-0" />
+                        )}
+                      </Dropdown.Item>
+                    )
+                  })}
+                </Dropdown.Section>
+                <Dropdown.Section aria-label="Actions">
+                  <Dropdown.Item
+                    key="create-group"
+                    id="create-group"
+                    textValue="Create a Group"
+                    href="/create-group"
+                  >
+                    <div className="w-10 h-10 shrink-0 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Plus className="w-5 h-5 text-primary" />
+                    </div>
+                    <span className="flex-1 font-medium">Create a Group</span>
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    key="discover-groups"
+                    id="discover-groups"
+                    textValue="Discover Groups"
+                    href="/groups"
+                  >
+                    <div className="w-10 h-10 shrink-0 rounded-full bg-muted flex items-center justify-center">
+                      <Compass className="w-5 h-5 text-muted-foreground" />
+                    </div>
+                    <span className="flex-1 font-medium">Discover Groups</span>
+                  </Dropdown.Item>
+                </Dropdown.Section>
               </Dropdown.Menu>
             </Dropdown.Popover>
           </Dropdown>
@@ -181,7 +207,7 @@ export function GroupSwitcherTrigger({
       <Button
         variant="secondary"
         isIconOnly
-        size="sm"
+        size="md"
         className="bg-transparent hover:bg-muted active:bg-muted rounded-full shrink-0"
         aria-label={`Switch group, currently ${currentGroupName}`}
       >
@@ -193,29 +219,55 @@ export function GroupSwitcherTrigger({
           selectedKeys={[currentGroupId]}
           selectionMode="single"
         >
-          {userGroups.map((group) => {
-            const isCurrent = group.id === currentGroupId
-            return (
-              <Dropdown.Item
-                key={group.id}
-                id={group.id}
-                textValue={group.name}
-                href={`/groups/${group.id}`}
-              >
-                <div className="w-10 h-10 shrink-0 rounded-full overflow-hidden">
-                  <img 
-                    src={group.avatar} 
-                    alt={group.name} 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <span className="flex-1 font-medium">{group.name}</span>
-                {isCurrent && (
-                  <Check className="w-4 h-4 text-primary shrink-0" />
-                )}
-              </Dropdown.Item>
-            )
-          })}
+          <Dropdown.Section aria-label="Your Groups">
+            {userGroups.map((group) => {
+              const isCurrent = group.id === currentGroupId
+              return (
+                <Dropdown.Item
+                  key={group.id}
+                  id={group.id}
+                  textValue={group.name}
+                  href={`/groups/${group.id}`}
+                >
+                  <div className="w-10 h-10 shrink-0 rounded-full overflow-hidden">
+                    <img 
+                      src={group.avatar} 
+                      alt={group.name} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <span className="flex-1 font-medium">{group.name}</span>
+                  {isCurrent && (
+                    <Check className="w-4 h-4 text-primary shrink-0" />
+                  )}
+                </Dropdown.Item>
+              )
+            })}
+          </Dropdown.Section>
+          <Dropdown.Section aria-label="Actions">
+            <Dropdown.Item
+              key="create-group"
+              id="create-group"
+              textValue="Create a Group"
+              href="/create-group"
+            >
+              <div className="w-10 h-10 shrink-0 rounded-full bg-primary/10 flex items-center justify-center">
+                <Plus className="w-5 h-5 text-primary" />
+              </div>
+              <span className="flex-1 font-medium">Create a Group</span>
+            </Dropdown.Item>
+            <Dropdown.Item
+              key="discover-groups"
+              id="discover-groups"
+              textValue="Discover Groups"
+              href="/groups"
+            >
+              <div className="w-10 h-10 shrink-0 rounded-full bg-muted flex items-center justify-center">
+                <Compass className="w-5 h-5 text-muted-foreground" />
+              </div>
+              <span className="flex-1 font-medium">Discover Groups</span>
+            </Dropdown.Item>
+          </Dropdown.Section>
         </Dropdown.Menu>
       </Dropdown.Popover>
     </Dropdown>

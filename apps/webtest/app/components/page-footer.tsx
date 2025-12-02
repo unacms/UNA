@@ -7,6 +7,7 @@ import { settings } from '../lib/settings'
 import { fetchFooterMenu, type UNAMenuItem } from '../lib/una-api'
 import { ThemeSwitcher } from './theme-switcher'
 import { NavDropdowns } from './nav-dropdowns'
+import { AuthStateSwitcher } from './auth-state-switcher'
 
 // Static year - update annually if needed
 const COPYRIGHT_YEAR = 2025
@@ -117,10 +118,11 @@ function FooterMenu({ items }: { items: UNAMenuItem[] }) {
               </p>
             </div>
             
-            {/* Bottom row: Developer tools - Components, Docs, Theme */}
+            {/* Bottom row: Developer tools - Components, Docs, Theme, Auth State */}
             <div className="flex flex-wrap items-center justify-center gap-4 pt-4 border-t border-border/40">
               <NavDropdowns />
               <ThemeSwitcher />
+              <AuthStateSwitcher />
             </div>
           </div>
         </div>
@@ -153,10 +155,11 @@ function FooterMenu({ items }: { items: UNAMenuItem[] }) {
             </p>
           </div>
           
-          {/* Bottom row: Developer tools - Components, Docs, Theme */}
+          {/* Bottom row: Developer tools - Components, Docs, Theme, Auth State */}
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4 border-t border-border/40">
             <NavDropdowns />
             <ThemeSwitcher />
+            <AuthStateSwitcher />
           </div>
         </div>
       </div>

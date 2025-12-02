@@ -1,6 +1,7 @@
-// Group Page - Server Component for unauthenticated users
+// Group Page - Server Component
 // Demonstrates HeroUI v3 components: Card, Avatar, ListBox, Surface, Skeleton
 // Following the layout structure: cover → header → tabs → content
+// Auth state is handled by client components for layout variations
 
 import { 
   Card, 
@@ -8,7 +9,6 @@ import {
   CardHeader, 
   CardTitle, 
   CardDescription,
-  CardFooter,
   Avatar,
   Chip,
   Separator,
@@ -21,8 +21,6 @@ import {
   Globe, 
   Lock, 
   MapPin, 
-  Share2, 
-  UserPlus,
   Eye,
   EyeOff,
   Calendar,
@@ -30,7 +28,9 @@ import {
 import { PageFooter } from "../../components/page-footer"
 import { GroupTabs } from "./group-tabs"
 import { AppLogo } from "../../components/app-logo"
-import { GroupSwitcher, GroupSwitcherTrigger } from "../../components/group-switcher"
+import { GroupSwitcherTrigger } from "../../components/group-switcher"
+import { GroupHeaderActions } from "./group-actions"
+import { CoverScroll } from "./cover-scroll"
 
 // Sample group data - in real app would come from UNA API
 const mockGroup = {
@@ -78,7 +78,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
 
   // Feed tab content
   const feedContent = (
-    <div className="max-w-7xl mx-auto px-2 lg:px-6 lg:py-2 ">
+    <div className="max-w-7xl mx-auto p-3 sm:p-4 lg:p-6 ">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
         <div className="lg:col-span-2 space-y-6">
           <GroupIntroCard intro={group.intro} />
@@ -99,7 +99,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
 
   // About tab content
   const aboutContent = (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div className="max-w-7xl mx-auto p-3 sm:p-4 lg:p-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
         <div className="lg:col-span-2 space-y-6">
           <GroupIntroCard intro={group.intro} />
@@ -128,7 +128,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
 
   // Members tab content
   const membersContent = (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div className="max-w-7xl mx-auto p-3 sm:p-4 lg:p-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
         <div className="lg:col-span-2 space-y-6">
           <Card>
@@ -203,7 +203,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
   )
 
   return (
-    <>
+    <CoverScroll>
       <div className="min-h-screen bg-background">
         {/* Cover Image Section */}
         <GroupCoverImage src={group.coverImage} alt={group.name} />
@@ -223,7 +223,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
       </div>
 
       <PageFooter pageName="Group" />
-    </>
+    </CoverScroll>
   )
 }
 
@@ -232,7 +232,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
 // ============================================
 function GroupCoverImage({ src, alt }: { src: string; alt: string }) {
   return (
-    <div className="relative w-full aspect-[16/6] sm:aspect-[16/5] lg:aspect-[16/4] bg-muted overflow-hidden">
+    <div id="group-cover" className="relative w-full aspect-[16/6] sm:aspect-[16/5] lg:aspect-[16/4] bg-muted overflow-hidden">
       <img
         src={src}
         alt={`${alt} cover`}
@@ -253,8 +253,8 @@ function GroupCoverImage({ src, alt }: { src: string; alt: string }) {
 function GroupHeader({ group }: { group: typeof mockGroup }) {
   return (
     <div id="group-header" className="bg-card border-b border-border/60">
-      <div className="max-w-7xl mx-auto px-4 lg:px-6 py-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-3">
+        <div className="flex flex-col md:flex-row md:justify-between gap-4">
           {/* Group Avatar + Info Column */}
           <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
             {/* Avatar - link to group home */}
@@ -283,7 +283,7 @@ function GroupHeader({ group }: { group: typeof mockGroup }) {
               
               {/* Meta Info - under title */}
               <div className="flex items-center gap-2 mt-1 flex-wrap">
-                <Chip className="text-xs">
+                <Chip className="text-xs  mr-1">
                   {group.isPublic ? (
                     <><Globe className="w-3 h-3 mr-1" /> Public</>
                   ) : (
@@ -291,7 +291,7 @@ function GroupHeader({ group }: { group: typeof mockGroup }) {
                   )}
                 </Chip>
                 {group.isVisible && (
-                  <Chip className="text-xs bg-primary/10 text-primary">
+                  <Chip className="hidden text-xs bg-primary/10 text-primary">
                     <Eye className="w-3 h-3 mr-1" /> Visible
                   </Chip>
                 )}
@@ -306,17 +306,8 @@ function GroupHeader({ group }: { group: typeof mockGroup }) {
             </div>
           </div>
 
-          {/* Main Actions */}
-          <div className="flex items-center gap-2">
-            <Button variant="primary">
-              <UserPlus className="w-4 h-4" />
-              Join Group
-            </Button>
-            <Button variant="secondary">
-              <Share2 className="w-4 h-4" />
-              Share
-            </Button>
-          </div>
+          {/* Main Actions - auth-state aware */}
+          <GroupHeaderActions groupId={group.id} />
         </div>
       </div>
     </div>
@@ -460,16 +451,23 @@ function GroupAboutCard({ group }: { group: typeof mockGroup }) {
     {
       id: "members",
       icon: Users,
-      value: `${group.memberCount.toLocaleString()} members`,
+      // Use Intl.NumberFormat with explicit locale to avoid hydration mismatch
+      value: `${new Intl.NumberFormat('en-US').format(group.memberCount)} members`,
       description: "Total community members",
     },
     {
       id: "created",
       icon: Calendar,
-      value: new Date(group.createdAt).toLocaleDateString('en-US', { 
-        month: 'long', 
-        year: 'numeric' 
-      }),
+      value: (() => {
+        // Format date consistently to avoid hydration mismatch
+        // Use UTC methods to ensure server/client consistency
+        const date = new Date(group.createdAt + 'T00:00:00Z')
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                           'July', 'August', 'September', 'October', 'November', 'December']
+        const month = monthNames[date.getUTCMonth()]
+        const year = date.getUTCFullYear()
+        return `${month} ${year}`
+      })(),
       description: "When this group was founded",
     },
   ]

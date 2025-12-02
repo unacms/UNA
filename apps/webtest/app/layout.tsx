@@ -8,6 +8,7 @@ import './globals.css'
 import { ThemeScript } from './theme-script'
 import { SiteNavbar } from './components/navbar'
 import { NavbarIslandProvider } from './components/navbar-island'
+import { AuthStateProvider } from './components/auth-state'
 
 export const metadata: Metadata = {
   title: 'NEO Testground',
@@ -33,14 +34,17 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="//vercel.live" />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
-        {/* NavbarIslandProvider enables pages to inject content into navbar */}
-        <NavbarIslandProvider>
-          {/* Navbar is server-rendered, only islands inside are client components */}
-          <SiteNavbar />
-          <Suspense>
-            <main>{children}</main>
-          </Suspense>
-        </NavbarIslandProvider>
+        {/* AuthStateProvider for prototype auth state switching */}
+        <AuthStateProvider>
+          {/* NavbarIslandProvider enables pages to inject content into navbar */}
+          <NavbarIslandProvider>
+            {/* Navbar is server-rendered, only islands inside are client components */}
+            <SiteNavbar />
+            <Suspense>
+              <main>{children}</main>
+            </Suspense>
+          </NavbarIslandProvider>
+        </AuthStateProvider>
       </body>
     </html>
   )

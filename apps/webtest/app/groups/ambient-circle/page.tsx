@@ -20,8 +20,6 @@ import {
   Shield, 
   Lock, 
   MapPin, 
-  Share2, 
-  UserPlus,
   Eye,
   EyeOff,
   Calendar,
@@ -29,7 +27,8 @@ import {
 } from "lucide-react"
 import { PageFooter } from "../../components/page-footer"
 import { GroupTabs } from "../[id]/group-tabs"
-import { GroupSwitcher, GroupSwitcherTrigger } from "../../components/group-switcher"
+import { GroupSwitcherTrigger } from "../../components/group-switcher"
+import { GroupHeaderActions } from "../[id]/group-actions"
 
 // Ambient Circle group data
 const ambientCircle = {
@@ -76,7 +75,7 @@ export default function AmbientCirclePage() {
 
   // Feed tab content
   const feedContent = (
-    <div className="max-w-7xl mx-auto px-2 lg:px-6 lg:py-2">
+    <div className="max-w-7xl mx-auto p-3 sm:p-4 lg:p-6 ">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
         <div className="lg:col-span-2 space-y-6">
           <GroupIntroCard intro={group.intro} />
@@ -96,7 +95,7 @@ export default function AmbientCirclePage() {
 
   // About tab content
   const aboutContent = (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div className="max-w-7xl mx-auto p-3 sm:p-4 lg:p-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
         <div className="lg:col-span-2 space-y-6">
           <GroupIntroCard intro={group.intro} />
@@ -125,7 +124,7 @@ export default function AmbientCirclePage() {
 
   // Members tab content
   const membersContent = (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div className="max-w-7xl mx-auto p-3 sm:p-4 lg:p-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
         <div className="lg:col-span-2 space-y-6">
           <Card>
@@ -193,7 +192,7 @@ export default function AmbientCirclePage() {
 
   // Respect tab content - people who respected you
   const respectContent = (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div className="max-w-7xl mx-auto p-3 sm:p-4 lg:p-6">
       <Card>
         <CardHeader>
           <CardTitle>People Who Respected You</CardTitle>
@@ -234,7 +233,7 @@ export default function AmbientCirclePage() {
 
   // Mutes tab content - posts you muted
   const mutesContent = (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div className="max-w-7xl mx-auto p-3 sm:p-4 lg:p-6">
       <Card>
         <CardHeader>
           <CardTitle>Muted Posts</CardTitle>
@@ -310,7 +309,7 @@ function GroupHeader({ group }: { group: typeof ambientCircle }) {
   return (
     <div id="group-header" className="bg-card border-b border-border/60">
       <div className="max-w-7xl mx-auto px-4 lg:px-6 py-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex flex-col md:flex-row md:justify-between gap-4">
           {/* Group Avatar + Info Column */}
           <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
             {/* Avatar - link to group home */}
@@ -348,17 +347,8 @@ function GroupHeader({ group }: { group: typeof ambientCircle }) {
             </div>
           </div>
 
-          {/* Main Actions */}
-          <div className="flex items-center gap-2">
-            <Button variant="primary">
-              <UserPlus className="w-4 h-4" />
-              Join Group
-            </Button>
-            <Button variant="secondary">
-              <Share2 className="w-4 h-4" />
-              Share
-            </Button>
-          </div>
+          {/* Main Actions - auth-state aware */}
+          <GroupHeaderActions groupId={group.id} />
         </div>
       </div>
     </div>

@@ -31,6 +31,8 @@ export interface TabsProps {
   className?: string
   /** Whether tabs are disabled */
   isDisabled?: boolean
+  /** Whether to show separators between tabs */
+  showSeparators?: boolean
 }
 
 // Tab item props

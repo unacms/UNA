@@ -35,6 +35,7 @@ function TabsRoot({
   onSelectionChange,
   className,
   isDisabled,
+  showSeparators = true,
   ...props
 }: TabsProps) {
   return (
@@ -51,6 +52,7 @@ function TabsRoot({
         className
       )}
       {...props}
+      {...({ "data-separators": showSeparators ? "true" : "false" } as React.HTMLAttributes<HTMLElement>)}
     >
       {children}
     </HeroUITabs>
