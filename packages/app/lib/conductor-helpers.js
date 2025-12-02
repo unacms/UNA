@@ -477,6 +477,13 @@ function processEndpoint(acc, b) {
     }
 }
 
+function processBrowse(acc, b) {
+    acc.endpoint = processEndpoint(acc, b)
+    acc.content = [...acc.content, ...b.data.data]
+    return acc
+}
+
+
 function processContent(acc, b) {
     if (b?.data?.id || b.block?.id) {
         return [
@@ -487,15 +494,38 @@ function processContent(acc, b) {
     return acc.content
 }
 
-function processBrowse(acc, b) {
-    acc.endpoint = processEndpoint(acc, b)
-    acc.content = [...acc.content, ...b.data.data]
-    return acc
+function mapLayoutBlocks(items = []) {
+    const content = items.filter(item => (item?.content?.[0].type !== 'browse' && item?.content?.[0].type !== 'browse_list')).map(block => ({
+        data: block,
+        id: `block-${block?.id}`,
+        type: 'block',
+        block: { name: block?.source },
+    }));
+    const endpoint = items.find(item => (item?.content?.[0].type === 'browse' || item?.content?.[0].type === 'browse_list'));
+    return { content: content, endpoint: endpoint?.content?.[0].data }
+}
+
+function processParsedUrl(data, blocks) {
+    const cellCenter = mapLayoutBlocks(data.elements.cell_center);
+    const cellRight = mapLayoutBlocks(data.elements.cell_right);
+    const cellLeft = mapLayoutBlocks(data.elements.cell_left);
+    return {
+        content: cellCenter.content,
+        endpoint: cellCenter.endpoint,
+        sidebar: { endpoint: cellRight.endpoint, content: cellRight.content },
+        leftbar: { endpoint: cellLeft.endpoint, content:  cellLeft.content },
+    }
 }
 
 export function processUrl(data, blocks) {
-    if (!blocks) blocks = getBlocksFromData(data)
+    if (data.layout_parsed){
+        const a = processParsedUrl(data, blocks);
+        //console.log("datadatadata-blocks1", a)
+        return a;
 
+    }
+    if (!blocks) blocks = getBlocksFromData(data)
+  
     const contentAndEndpoint = Object.values(blocks).reduce(
         (acc, block) => {
             const b = getContent(data, block)
@@ -525,6 +555,7 @@ export function processUrl(data, blocks) {
             leftbar: { endpoint: null, content: [] },
         }
     )
+      console.log("datadatadata-blocks", contentAndEndpoint)
     return contentAndEndpoint
 }
 
