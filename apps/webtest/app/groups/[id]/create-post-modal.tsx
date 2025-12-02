@@ -119,6 +119,8 @@ export function CreatePostModal({
   
   // Handle open/close animations
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined
+    
     if (isOpen) {
       setIsVisible(true)
       requestAnimationFrame(() => {
@@ -139,14 +141,17 @@ export function CreatePostModal({
     } else {
       setIsAnimating(false)
       setShowPopover(false)
-      const timer = setTimeout(() => {
+      timer = setTimeout(() => {
         setIsVisible(false)
         // Reset form when closing
         setPostContent('')
         setShowProfileDropdown(false)
         setShowAudienceDropdown(false)
       }, 200)
-      return () => clearTimeout(timer)
+    }
+    
+    return () => {
+      if (timer) clearTimeout(timer)
     }
   }, [isOpen, showAdminPrompt])
   
