@@ -36,6 +36,8 @@ function TabsRoot({
   className,
   isDisabled,
   showSeparators = true,
+  // Exclude style from props to avoid type conflict with HeroUI's StyleOrFunction
+  style: _style,
   ...props
 }: TabsProps) {
   return (
@@ -51,8 +53,8 @@ function TabsRoot({
         tabsClasses.sizes[size],
         className
       )}
+      data-separators={showSeparators ? "true" : "false"}
       {...props}
-      {...({ "data-separators": showSeparators ? "true" : "false" } as React.HTMLAttributes<HTMLElement>)}
     >
       {children}
     </HeroUITabs>
