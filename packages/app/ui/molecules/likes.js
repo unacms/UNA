@@ -178,7 +178,7 @@ export default function ElementLikes(oProps) {
             sUsers = getSkeleton();
 
         sCounterButton = (
-            <View key="counter" style={indicatorStyle}>
+            <View key="counter" >
                 <ButtonCounter startDecorator={!bShowCombined ? 'ThumbsUp' : false} title={iCount+''} onPress={_handleGetPerformedBy} {...oButtonProps} />
             </View>
         );

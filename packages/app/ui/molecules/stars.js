@@ -261,7 +261,7 @@ export default function ElementStars(oProps) {
             sUsers = getSkeleton();
 
         sCounterButton = (
-            <Animated.View key="counter" style={indicatorStyle}>
+            <Animated.View key="counter" >
                 <ButtonCounter  startDecorator={'Star'} title={fRate + ''} onPress={_handleGetPerformedBy} {...oButtonProps} />
             </Animated.View>
         );

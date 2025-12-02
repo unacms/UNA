@@ -314,7 +314,7 @@ const ElementReports = forwardRef((oProps, ref) => {
             sUsers = getSkeleton();
 
         sCounterButton = (
-            <View key="counter" style={indicatorStyle}>
+            <View key="counter">
                 <ButtonCounter startDecorator={!bShowCombined ? sIcon : false} title={iCount + ''} onPress={_handleGetPerformedBy} {...oButtonProps} />
             </View>
         );
