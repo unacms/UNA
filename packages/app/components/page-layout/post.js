@@ -72,7 +72,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         .map(([key, value]) => ({
             id: `block_${key}`,
             data: <View className={value.name.includes("entity_text_block") || value.name.includes("get_block_text_and_subentries") ? 'px-4' : ''}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
-        })), [blocks, data]);
+        })), [blocks, data, isDesktop]);
 
     const aItemsLeftBar = Object.entries(blocks).filter(([key, value]) => value.leftbar);
     const aItemsRightBar = Object.entries(blocks).filter(([key, value]) => value.sidebar);
@@ -119,9 +119,6 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     }, [data?.uri, layoutCols])
 
     const { cells = {} } = cellsCustomConfig || {}
-
-
-
 
     // LEFT
     const {
@@ -288,7 +285,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                                     {
                                         aItemsLeftBar.map(([key, value]) => {
                                             return (
-                                                <BlockByName data={data} name={value} sidebar={true} />
+                                                <BlockByName key={value.name} data={data} name={value} sidebar={true} />
                                             )
                                         })}
                                 </View>)}
@@ -351,7 +348,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                                     {
                                         aItemsRightBar.map(([key, value]) => {
                                             return (
-                                                <BlockByName data={data} name={value} sidebar={true} />
+                                                <BlockByName key={value.name} data={data} name={value} sidebar={true} />
                                             )
                                         })}
                                 </View>)}
