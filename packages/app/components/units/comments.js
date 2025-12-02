@@ -245,11 +245,12 @@ export default function UnitComments(props) {
                             </View>
                         )}
                         <View className="">
-                            <Html
-                                htmlStyles={{ fontSize: 16 }}
-                                customClassName="u-vanilla-html-small"
-                                data={linkify(data.cmt_text)}
-                            />
+                            <ContentMore
+                                    content={data.cmt_text}
+                                    numberOfSymbols={100}
+                                    openSmall={false}
+                                    textClassName=" text-base text-muted-foreground"
+                                />
                             {!!data.embed && (
                                 <View>
                                     <Embed data={data.embed} size="small" />
