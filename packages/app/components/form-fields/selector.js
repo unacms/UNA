@@ -148,7 +148,7 @@ export default function (props) {
                 <View className={`w-full justify-between min-h-12 px-3 ${inputSettings.ring}`}>
                     <View className={`${props.align === 'right' ? 'justify-end pl-4' : 'justify-start pr-4'} w-full flex-auto items-center flex-row flex-wrap`}>
                         {props.align == 'right' && <Button
-                            startDecorator="Plus"
+                            startDecorator={isMultiple ? "Plus"  : ""}
                             variant={variant}
                             size={size}
                             onPress={showSelect}
@@ -166,10 +166,10 @@ export default function (props) {
                         )
                         )}
                         {props.align != 'right' && <Button
-                            startDecorator="Plus"
+                            startDecorator={isMultiple ? "Plus"  : ""}
                             variant={variant}
                             size={size}
-                            title='Add'
+                            title={isMultiple ? "Add"  : "Select"}
                             onPress={showSelect}
                         />}
                     </View>

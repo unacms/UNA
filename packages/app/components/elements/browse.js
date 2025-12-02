@@ -84,15 +84,16 @@ export default function Browse(props) {
 
     const formProps = data?.filter_form;
     const handleFilterFormChange = useCallback((values) => {
+        console.log("values", values)
         const transformedValues = Object.fromEntries(
             Object.entries(values).map(([key, value]) => [
                 key,
                 Array.isArray(value) ? value.join(',') : value
             ])
         );
+        const by_context = transformedValues.by_context ? transformedValues.by_context.split('|') : []; 
+        const contexts = transformedValues.by_context ? { type: by_context[0], context: by_context[1] } : { type: 'feed' };
 
-        const contexts = transformedValues.by_context ? { type: 'by_context', context: transformedValues.by_context } : { type: 'feed' };//type -module  context=id
-//reload //paging
         setDefParams(prev => ({
             ...prev,
             modules: transformedValues.modules,
@@ -116,7 +117,9 @@ export default function Browse(props) {
                 : windowHeight - hOffset,
         }
 
-    const qKey = [props.uri || '', data.request_url || '', currentUser?.id, props?.cachePrefix || '']
+    const qKey = [props.uri || '', data.request_url || '', currentUser?.id, props?.cachePrefix || '', defParams?.context || '', defParams?.modules || '', defParams?.media || '']
+
+    console.log("defParams", defParams, qKey)
 
     const {
         status,
