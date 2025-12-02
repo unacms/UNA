@@ -9,7 +9,7 @@ import { NavbarAuthButtons } from "./navbar-auth"
 // Server Component - no "use client" directive
 export function SiteNavbar() {
   return (
-    <header className="sticky top-0 z-50 h-16  border-b border-border/60 mx-auto bg-background/95 backdrop-blur">
+    <header className="sticky top-0 z-50 h-16  border-b border-border/60 mx-auto bg-card/95 backdrop-blur-xl">
       <nav className="h-full max-w-7xl mx-auto flex items-center justify-between ">
         <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 min-w-0 px-3 sm:px-4 lg:px-6 py-3">
           {/* Logo - server rendered */}

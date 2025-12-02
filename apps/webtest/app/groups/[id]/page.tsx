@@ -14,7 +14,7 @@ import {
   Separator,
   Button,
 } from "@neo/test-components"
-import { ListBox, Label, Description } from "@heroui/react"
+// ListBox removed - using plain divs to avoid hydration mismatch from dynamic IDs
 import Link from "next/link"
 import { 
   Users, 
@@ -27,10 +27,11 @@ import {
 } from "lucide-react"
 import { PageFooter } from "../../components/page-footer"
 import { GroupTabs } from "./group-tabs"
-import { AppLogo } from "../../components/app-logo"
 import { GroupSwitcherTrigger } from "../../components/group-switcher"
 import { GroupHeaderActions } from "./group-actions"
 import { CoverScroll } from "./cover-scroll"
+import { AppIntroCard } from "./app-intro-card"
+import { GroupFeed, GroupIntroWrapper } from "./group-feed"
 
 // Sample group data - in real app would come from UNA API
 const mockGroup = {
@@ -81,9 +82,12 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
     <div className="max-w-7xl mx-auto p-3 sm:p-4 lg:p-6 ">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <GroupIntroCard intro={group.intro} />
+          {/* Members see feed, others see intro cards */}
+          <GroupFeed groupId={group.id} />
+          <GroupIntroWrapper>
+            <GroupIntroCard intro={group.intro} />
+          </GroupIntroWrapper>
           <AppIntroCard />
-          {/* <ActivityPreviewCard /> */}
         </div>
         <div className="space-y-6">
           <GroupAboutCard group={group} />
@@ -252,7 +256,7 @@ function GroupCoverImage({ src, alt }: { src: string; alt: string }) {
 // ============================================
 function GroupHeader({ group }: { group: typeof mockGroup }) {
   return (
-    <div id="group-header" className="bg-card border-b border-border/60">
+    <div id="group-header" className="bg-card/95 border-b border-border/60 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-3">
         <div className="flex flex-col md:flex-row md:justify-between gap-4">
           {/* Group Avatar + Info Column */}
@@ -341,36 +345,7 @@ function GroupIntroCard({ intro }: { intro: string }) {
   )
 }
 
-// ============================================
-// App-wide CTA Card
-// ============================================
-function AppIntroCard() {
-  return (
-    <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
-      <CardContent className="p-4">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="shrink-0 w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center">
-            <AppLogo mode="mark" markSize={40} />
-          </div>
-          <div className="flex-1">
-            <h3 className="text-lg font-semibold mb-1">Join the Community</h3>
-            <p className="text-sm text-muted-foreground mb-3">
-              Sign up to join groups, connect with members, and participate in discussions.
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <Button variant="primary" size="sm" asChild>
-                <Link href="/signup">Create Account</Link>
-              </Button>
-              <Button variant="tertiary" size="sm" asChild>
-                <Link href="/login">Sign In</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
+// AppIntroCard is now imported from ./app-intro-card.tsx (client component, guest-only)
 
 // ============================================
 // Activity Preview Card (for unauthenticated)
@@ -478,19 +453,20 @@ function GroupAboutCard({ group }: { group: typeof mockGroup }) {
         <CardTitle className="text-lg">About</CardTitle>
       </CardHeader>
       <CardContent className="p-0">
-        <ListBox aria-label="Group information" selectionMode="none" className="p-0">
+        {/* Using div list instead of ListBox to avoid hydration mismatch from dynamic IDs */}
+        <div className="divide-y divide-border" role="list" aria-label="Group information">
           {infoItems.map((item) => (
-            <ListBox.Item key={item.id} id={item.id} textValue={item.value} className="px-4 py-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+            <div key={item.id} className="flex items-start gap-3 px-4 py-3" role="listitem">
+              <div className="shrink-0 w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
                 <item.icon className="w-4 h-4 text-muted-foreground" />
               </div>
               <div className="flex flex-col">
-                <Label>{item.value}</Label>
-                <Description>{item.description}</Description>
+                <span className="text-sm font-medium text-foreground">{item.value}</span>
+                <span className="text-xs text-muted-foreground">{item.description}</span>
               </div>
-            </ListBox.Item>
+            </div>
           ))}
-        </ListBox>
+        </div>
       </CardContent>
     </Card>
   )

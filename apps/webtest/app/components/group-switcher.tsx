@@ -4,11 +4,17 @@
 // Avatar and title are links to group home
 // Only the chevron icon triggers the dropdown
 // Uses client-only rendering to avoid hydration mismatch with HeroUI Button
+//
+// Auth-state aware:
+// - Guest: Only "Discover Groups"
+// - Logged in (non-member): "Create a Group" + "Discover Groups"
+// - Member: User's groups + "Create a Group" + "Discover Groups"
 
 import { Dropdown, Button } from '@heroui/react'
 import { ChevronsUpDown, Check, Plus, Compass } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useAuthStateSafe } from './auth-state'
 
 // Mock groups data - in real app would come from user's membership data
 const userGroups = [
@@ -45,6 +51,9 @@ export function GroupSwitcher({
   avatarSize = 'lg',
 }: GroupSwitcherProps) {
   const [mounted, setMounted] = useState(false)
+  const { authState } = useAuthStateSafe()
+  const isMember = authState === 'group-member'
+  const isGuest = authState === 'unauthenticated'
   
   useEffect(() => {
     setMounted(true)
@@ -120,46 +129,54 @@ export function GroupSwitcher({
             <Dropdown.Popover className="min-w-[280px]">
               <Dropdown.Menu
                 aria-label="Your groups"
-                selectedKeys={[currentGroupId]}
-                selectionMode="single"
+                selectedKeys={isMember ? [currentGroupId] : []}
+                selectionMode={isMember ? "single" : "none"}
               >
-                <Dropdown.Section aria-label="Your Groups">
-                  {userGroups.map((group) => {
-                    const isCurrent = group.id === currentGroupId
-                    return (
-                      <Dropdown.Item
-                        key={group.id}
-                        id={group.id}
-                        textValue={group.name}
-                        href={`/groups/${group.id}`}
-                      >
-                        <div className="w-10 h-10 shrink-0 rounded-full overflow-hidden">
-                          <img 
-                            src={group.avatar} 
-                            alt={group.name} 
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <span className="flex-1 font-medium">{group.name}</span>
-                        {isCurrent && (
-                          <Check className="w-4 h-4 text-primary shrink-0" />
-                        )}
-                      </Dropdown.Item>
-                    )
-                  })}
-                </Dropdown.Section>
+                {/* Member: Show user's groups */}
+                {isMember && (
+                  <Dropdown.Section aria-label="Your Groups">
+                    {userGroups.map((group) => {
+                      const isCurrent = group.id === currentGroupId
+                      return (
+                        <Dropdown.Item
+                          key={group.id}
+                          id={group.id}
+                          textValue={group.name}
+                          href={`/groups/${group.id}`}
+                        >
+                          <div className="w-10 h-10 shrink-0 rounded-full overflow-hidden">
+                            <img 
+                              src={group.avatar} 
+                              alt={group.name} 
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <span className="flex-1 font-medium">{group.name}</span>
+                          {isCurrent && (
+                            <Check className="w-4 h-4 text-primary shrink-0" />
+                          )}
+                        </Dropdown.Item>
+                      )
+                    })}
+                  </Dropdown.Section>
+                )}
+                {/* Actions section - content varies by auth state */}
                 <Dropdown.Section aria-label="Actions">
-                  <Dropdown.Item
-                    key="create-group"
-                    id="create-group"
-                    textValue="Create a Group"
-                    href="/create-group"
-                  >
-                    <div className="w-10 h-10 shrink-0 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Plus className="w-5 h-5 text-primary" />
-                    </div>
-                    <span className="flex-1 font-medium">Create a Group</span>
-                  </Dropdown.Item>
+                  {/* Create a Group - only for logged in users (member or authenticated) */}
+                  {!isGuest && (
+                    <Dropdown.Item
+                      key="create-group"
+                      id="create-group"
+                      textValue="Create a Group"
+                      href="/create-group"
+                    >
+                      <div className="w-10 h-10 shrink-0 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Plus className="w-5 h-5 text-primary" />
+                      </div>
+                      <span className="flex-1 font-medium">Create a Group</span>
+                    </Dropdown.Item>
+                  )}
+                  {/* Discover Groups - available to everyone */}
                   <Dropdown.Item
                     key="discover-groups"
                     id="discover-groups"
@@ -187,6 +204,9 @@ export function GroupSwitcherTrigger({
   currentGroupName,
 }: GroupSwitcherTriggerProps) {
   const [mounted, setMounted] = useState(false)
+  const { authState } = useAuthStateSafe()
+  const isMember = authState === 'group-member'
+  const isGuest = authState === 'unauthenticated'
   
   useEffect(() => {
     setMounted(true)
@@ -216,46 +236,54 @@ export function GroupSwitcherTrigger({
       <Dropdown.Popover className="min-w-[280px]">
         <Dropdown.Menu
           aria-label="Your groups"
-          selectedKeys={[currentGroupId]}
-          selectionMode="single"
+          selectedKeys={isMember ? [currentGroupId] : []}
+          selectionMode={isMember ? "single" : "none"}
         >
-          <Dropdown.Section aria-label="Your Groups">
-            {userGroups.map((group) => {
-              const isCurrent = group.id === currentGroupId
-              return (
-                <Dropdown.Item
-                  key={group.id}
-                  id={group.id}
-                  textValue={group.name}
-                  href={`/groups/${group.id}`}
-                >
-                  <div className="w-10 h-10 shrink-0 rounded-full overflow-hidden">
-                    <img 
-                      src={group.avatar} 
-                      alt={group.name} 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <span className="flex-1 font-medium">{group.name}</span>
-                  {isCurrent && (
-                    <Check className="w-4 h-4 text-primary shrink-0" />
-                  )}
-                </Dropdown.Item>
-              )
-            })}
-          </Dropdown.Section>
+          {/* Member: Show user's groups */}
+          {isMember && (
+            <Dropdown.Section aria-label="Your Groups">
+              {userGroups.map((group) => {
+                const isCurrent = group.id === currentGroupId
+                return (
+                  <Dropdown.Item
+                    key={group.id}
+                    id={group.id}
+                    textValue={group.name}
+                    href={`/groups/${group.id}`}
+                  >
+                    <div className="w-10 h-10 shrink-0 rounded-full overflow-hidden">
+                      <img 
+                        src={group.avatar} 
+                        alt={group.name} 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <span className="flex-1 font-medium">{group.name}</span>
+                    {isCurrent && (
+                      <Check className="w-4 h-4 text-primary shrink-0" />
+                    )}
+                  </Dropdown.Item>
+                )
+              })}
+            </Dropdown.Section>
+          )}
+          {/* Actions section - content varies by auth state */}
           <Dropdown.Section aria-label="Actions">
-            <Dropdown.Item
-              key="create-group"
-              id="create-group"
-              textValue="Create a Group"
-              href="/create-group"
-            >
-              <div className="w-10 h-10 shrink-0 rounded-full bg-primary/10 flex items-center justify-center">
-                <Plus className="w-5 h-5 text-primary" />
-              </div>
-              <span className="flex-1 font-medium">Create a Group</span>
-            </Dropdown.Item>
+            {/* Create a Group - only for logged in users (member or authenticated) */}
+            {!isGuest && (
+              <Dropdown.Item
+                key="create-group"
+                id="create-group"
+                textValue="Create a Group"
+                href="/create-group"
+              >
+                <div className="w-10 h-10 shrink-0 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Plus className="w-5 h-5 text-primary" />
+                </div>
+                <span className="flex-1 font-medium">Create a Group</span>
+              </Dropdown.Item>
+            )}
+            {/* Discover Groups - available to everyone */}
             <Dropdown.Item
               key="discover-groups"
               id="discover-groups"

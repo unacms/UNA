@@ -1044,7 +1044,7 @@ export const settingsDefault = {
             topmenu_button_size: 'base',
             topmenu_button_pressed: true,
             left_menu_cnt: '  ',
-            cover_base: 'w-full bg-card/90 backdrop-blur-xl',
+            cover_base: 'w-full bg-card/95 backdrop-blur-xl',
             cover_content:
                 'items-center h-full w-full overflow-hidden justify-between',
             cover_small: 'max-w-7xl mx-auto flex-row w-full px-3 items-center '

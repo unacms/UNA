@@ -14,7 +14,7 @@
 
 /* Default Theme - Blue (light) */
 @theme {
-  --color-background: #ffffff;
+  --color-background: #fafafa;
   --color-foreground: #0a0a0a;
   --color-card: #ffffff;
   --color-card-foreground: #0a0a0a;
@@ -50,9 +50,9 @@
 .dark {
   --color-background: #0a0a0a;
   --color-foreground: #fafafa;
-  --color-card: #0a0a0a;
+  --color-card: #171717;
   --color-card-foreground: #fafafa;
-  --color-popover: #0a0a0a;
+  --color-popover: #171717;
   --color-popover-foreground: #fafafa;
   --color-primary: #3b82f6;
   --color-primary-foreground: #fafafa;
