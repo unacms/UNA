@@ -18,7 +18,7 @@ const ContentCard = memo(({ authorData, date, content }) => {
             </View>
             <View className="flex-auto my-auto gap-1 ">
                 <View className='flex-auto'>
-                    <Html data={content} customClassName="u-vanilla-html-small leading-tight line-clamp-2" />
+                    <Html data={content} customClassName="u-vanilla-html-small leading-tight line-clamp-2 " />
                 </View>
                 <Time className="text-xs flex-none font-medium text-muted-foreground" ts={date}></Time>
             </View>

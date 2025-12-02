@@ -21,6 +21,7 @@ import {
 } from 'app/lib/conductor-helpers'
 import Snackbar from 'app/ui/atoms/snackbar'
 import emitter from 'app/context/emitter'
+import { appStatic } from 'app/lib/app-static';
 
 export function CommentsBrowse({
     scrollProps,
@@ -329,7 +330,7 @@ export function CommentsBrowse({
             </View>}
         </Row>) : <Text>&nbsp;</Text>;
 
-    const extra = (addItems || []).filter(i => i.id !== 'block_comments-empty' || (!refetchState.visibleItems.length && browseParams.object_id));
+    const extra = (addItems || []).filter(i => i.id !== 'block_comments-empty');
 
     const dataOut = !refetchState.visibleItems.some(i => i.id === 'block_header') && extra.length
         ? [...extra, { id: 'block_header', data: header }, ...refetchState.visibleItems]
@@ -396,6 +397,7 @@ export function CommentsBrowse({
                     ) : null
                 }
             />
+            {!refetchState.visibleItems.length && appStatic('components_comments_empty')}
             <Snackbar
                 visible={refetchState.hasNewData}
                 position="top"

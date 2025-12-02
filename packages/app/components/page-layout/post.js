@@ -16,6 +16,38 @@ import {
     resolvePanelProps,
 } from 'app/ui/molecules/resizable-panels'
 
+const mapLayoutBlocks = (items = []) =>
+    items.map(({ source }) => ({
+        name: source,
+        block: { name: source },
+    }));
+
+const defineCells = (blocks, data) => {
+    if (data?.layout_parsed) {
+        const elements = data.elements || {};
+
+        const sideBarBlocks = mapLayoutBlocks(elements.cell_right);
+        const centerBlocks = mapLayoutBlocks(elements.cell_center);
+        const leftBarBlocks = mapLayoutBlocks(elements.cell_left);
+        const topBlocks = mapLayoutBlocks(elements.cell_top);
+
+        return { sideBarBlocks, topBlocks, centerBlocks, leftBarBlocks };
+    }
+
+    const mapFromBlocks = (predicate) =>
+        Object.entries(blocks)
+            .filter(([, value]) => predicate(value))
+            .map(([key, value]) => (value));
+
+    const sideBarBlocks = mapFromBlocks(b => b.sidebar);
+    const topBlocks = mapFromBlocks(b => b.forHeader);
+    const centerBlocks = mapFromBlocks(b => b.forList);
+    const leftBarBlocks = mapFromBlocks(b => b.leftbar);
+
+
+    return { sideBarBlocks: sideBarBlocks, topBlocks: topBlocks, centerBlocks: centerBlocks, leftBarBlocks: leftBarBlocks };
+};
+
 export default function PageLayout({ data, blocks, isModal = false, url }) {
     const isWeb = Platform.OS == 'web';
     const windowWHeight = useWindowHeight();
@@ -29,8 +61,9 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     const groupRef = useRef(null)
 
     const localUrl = isModal ? url : useLocalSearchParams().url;
-    const commentsData = useMemo(() => DataByName(data, blocks.comments), [data, blocks.comments]);
+    const commentsData = useMemo(() => data?.layout_parsed ? data.elements.cell_bottom[0] : DataByName(data, blocks?.comments), [data, blocks?.comments]);
 
+    console.log("commentsData", commentsData)
 
     // for modal
     const offset = isDesktop ? 100 : 60
@@ -67,18 +100,19 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         }
     }, [localUrl]);
 
-    const aItems = useMemo(() => Object.entries(blocks)
-        .filter(([key, value]) => (isDesktop ? value.forList : value.forList || value.leftbar || value.sidebar))
-        .map(([key, value]) => ({
-            id: `block_${key}`,
-            data: <View className={value.name.includes("entity_text_block") || value.name.includes("get_block_text_and_subentries") ? 'px-4' : ''}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
-        })), [blocks, data, isDesktop]);
 
-    const aItemsLeftBar = Object.entries(blocks).filter(([key, value]) => value.leftbar);
-    const aItemsRightBar = Object.entries(blocks).filter(([key, value]) => value.sidebar);
+    const { leftBarBlocks, sideBarBlocks, centerBlocks } = defineCells(blocks, data);
 
-    const isRightCol = aItemsRightBar.length > 0 && isDesktop
-    const isLeftCol = aItemsLeftBar.length > 0 && isDesktop 
+    const mainBlocks = isDesktop ? centerBlocks : [...centerBlocks, ...sideBarBlocks, ...leftBarBlocks]
+
+    const aItems = useMemo(() => mainBlocks.map((value) => ({
+        id: `block_${value.name}`,
+        data: <View className={value.name.includes("entity_text_block") || value.name.includes("get_block_text_and_subentries") ? 'px-4' : ''}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
+    })), [blocks, data, isDesktop]);
+
+
+    const isRightCol = sideBarBlocks.length > 0 && isDesktop
+    const isLeftCol = leftBarBlocks.length > 0 && isDesktop
 
     const viewProps = isWeb ? {
         style: { minHeight: !isDesktop ? windowWHeight : windowWHeight - 64 },
@@ -215,7 +249,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         )
     }
 
-    const isMultiColumn = aItemsLeftBar.length > 0 || aItemsRightBar.length > 0;
+    const isMultiColumn = leftBarBlocks.length > 0 || sideBarBlocks.length > 0;
 
     if (!isWeb || !isDesktop || !isMultiColumn) {
         return (
@@ -280,15 +314,14 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         {...leftPanelProps}
                     >
                         <View className={`fixed-process'}`} >
-                            {aItemsLeftBar.length > 0 && (
-                                <View className='fixed-process w-96 hidden sm:flex gap-y-3 '>
-                                    {
-                                        aItemsLeftBar.map(([key, value]) => {
-                                            return (
-                                                <BlockByName key={value.name} data={data} name={value} sidebar={true} />
-                                            )
-                                        })}
-                                </View>)}
+                            <View className='fixed-process w-96 hidden sm:flex gap-y-3 '>
+                                {
+                                    leftBarBlocks.map(([key, value]) => {
+                                        return (
+                                            <BlockByName key={value.name} data={data} name={value} sidebar={true} />
+                                        )
+                                    })}
+                            </View>
                         </View>
                     </Panel>
                     <PanelHandler
@@ -343,15 +376,15 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         {...rightPanelProps}
                     >
                         <View className={`fixed-process'}`}>
-                            {aItemsRightBar.length > 0 && (
-                                <View className='fixed-process w-96 hidden sm:flex gap-y-3 '>
-                                    {
-                                        aItemsRightBar.map(([key, value]) => {
-                                            return (
-                                                <BlockByName key={value.name} data={data} name={value} sidebar={true} />
-                                            )
-                                        })}
-                                </View>)}
+                            <View className='fixed-process w-96 hidden sm:flex gap-y-3 '>
+                                {
+                                    sideBarBlocks.map((value) => {
+                                        console.log("value", value)
+                                        return (
+                                            <BlockByName key={value.name} data={data} name={value} sidebar={true} />
+                                        )
+                                    })}
+                            </View>
                         </View>
                     </Panel>
                 </>

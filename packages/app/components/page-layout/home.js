@@ -1,6 +1,6 @@
 import { View, Row, ScrollView } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
-import React, { useState, useMemo, useRef, useEffect } from 'react'
+import React, { useState, useMemo, useRef, useEffect, Children } from 'react'
 import {
     cd,
     appSetting,
@@ -31,31 +31,82 @@ import { useBreakpoint, useWindowSize, useIsDesktop, useWindowHeight, useWindowW
 
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
-export default function (props) {
-    
-   /*  return <>
-     <Text fontFamily="font-main" className="text-red-500 text-3xl" >The quick brown fox jumps over the lazy dog.  
-Packz my box with five dozen liquor jugs. 
-</Text>
-     <Text fontFamily="font-title" className="text-red-500 text-3xl" >The quick brown fox jumps over the lazy dog.  
-Pack my box with five dozen liquor jugs.    
-</Text>
+const getTimelineBlock = (name, timelineBlocks) => {
+    const map = {
+        foryou: 'bx_timeline:get_block_view_feed_and_hot',
+        account: 'bx_timeline:get_block_view_account',
+        hot: 'bx_timeline:get_block_view_hot',
+        public: 'bx_timeline:get_block_view_home',
+        channels: 'bx_timeline:get_block_view_channels',
+    };
 
- <Text  className="text-red-500 text-3xl" >The quick brown fox jumps over the lazy dog.  
-Pack my box with five dozen liquor jugs.   
-</Text>
-</>
-   /* const wh = useWindowWidth();
-    console.log("whwhwh", wh)
-    return
-   /*   const currentBreakpoint = useBreakpoint();
-     const isDesktop = useIsDesktop();
-     // const windowSize = useWindowSize();
-      //console.log("!!!!!!!useWindowSize ", windowSize )
-         console.log("!!!!!!!bucket ", currentBreakpoint )
-return;*/
+    return timelineBlocks.find(item => item.name === map[name]);
+};
+
+const mapLayoutBlocks = (items = []) =>
+    items.map(({ source }) => ({
+        name: source,
+        block: { name: source },
+    }));
+
+const defineCells = (blocks, data) => {
+    if (data?.layout_parsed) {
+        const elements = data.elements || {};
+        const centerCell = elements.cell_center || [];
+
+        const sideBarBlocks = mapLayoutBlocks(elements.cell_right);
+        const centerBlocks = mapLayoutBlocks(elements.cell_top);
+        const navBarBlocks = mapLayoutBlocks(elements.cell_left);
+        const timelineBlocks = mapLayoutBlocks(
+            centerCell.filter(item => item?.source?.includes('bx_timeline'))
+        );
+        const topBlocks = mapLayoutBlocks(
+            centerCell.filter(item => !item?.source?.includes('bx_timeline'))
+        );
+
+        return { sideBarBlocks, topBlocks, centerBlocks, navBarBlocks, timelineBlocks };
+    }
+
+    const mapFromBlocks = (predicate) =>
+        Object.entries(blocks)
+            .filter(([, value]) => predicate(value))
+            .map(([key, value]) => ({ name: key, block: value }));
+
+    const sideBarBlocks = mapFromBlocks(b => b.sidebar);
+    const topBlocks = mapFromBlocks(b => b.topbar);
+    const centerBlocks = mapFromBlocks(b => b.center);
+    const navBarBlocks = mapFromBlocks(b => b.leftbar);
+    const timelineBlocks = [];
+
+    return { sideBarBlocks, topBlocks, centerBlocks, navBarBlocks, timelineBlocks };
+};
+
+
+export default function ({ data, blocks }) {
+
+    /*  return <>
+      <Text fontFamily="font-main" className="text-red-500 text-3xl" >The quick brown fox jumps over the lazy dog.  
+ Packz my box with five dozen liquor jugs. 
+ </Text>
+      <Text fontFamily="font-title" className="text-red-500 text-3xl" >The quick brown fox jumps over the lazy dog.  
+ Pack my box with five dozen liquor jugs.    
+ </Text>
+ 
+  <Text  className="text-red-500 text-3xl" >The quick brown fox jumps over the lazy dog.  
+ Pack my box with five dozen liquor jugs.   
+ </Text>
+ </>
+    /* const wh = useWindowWidth();
+     console.log("whwhwh", wh)
+     return
+    /*   const currentBreakpoint = useBreakpoint();
+      const isDesktop = useIsDesktop();
+      // const windowSize = useWindowSize();
+       //console.log("!!!!!!!useWindowSize ", windowSize )
+          console.log("!!!!!!!bucket ", currentBreakpoint )
+ return;*/
     //  return <Button variant="accent" title="dfsdfsd" startDecorator="Plus"></Button>
-    
+
     // return <Loading/>
     /*return (
     <Text className="text-red-500">zcxzxc zxc<Icon className="text-red-500 " icon="Plus"></Icon></Text>
@@ -64,7 +115,6 @@ return;*/
 </>
     )*/
     const isWeb = Platform.OS == 'web'
-
 
     const { layoutName, layoutSettings } = useLayoutSettings()
     const { t } = useTranslation()
@@ -86,38 +136,10 @@ return;*/
 
     if (!currentUser) {
         const Splash = getComponent('molecule', 'splash')
-        return <Splash {...props} />
+        return <Splash data={data} />
     }
 
-    const sideBarBlocks = Object.keys(props.blocks)
-        .filter((key) => props.blocks[key].sidebar)
-        .map((key) => {
-            return { name: key, block: props.blocks[key] }
-        })
-
-    const topBlocks = Object.keys(props.blocks)
-        .filter((key) => props.blocks[key].topbar)
-        .map((key) => {
-            return { name: key, block: props.blocks[key] }
-        })
-
-    const centerBlocks = Object.keys(props.blocks)
-        .filter((key) => props.blocks[key].center)
-        .map((key) => {
-            return { name: key, block: props.blocks[key] }
-        })
-
-    const navBarBlocks = Object.keys(props.blocks)
-        .filter((key) => props.blocks[key].leftbar)
-        .map((key) => {
-            return { name: key, block: props.blocks[key] }
-        })
-
-    /*useEffect(() => {
-        if (isWeb) {
-            window.dispatchEvent(new Event('resize_panel'))
-        }
-    }, [windowWidth])*/
+    const { sideBarBlocks, navBarBlocks, topBlocks, centerBlocks, timelineBlocks } = defineCells(blocks, data);
 
     if (currentUser) {
         asyncStorageSet('layout:visited', 'true')
@@ -130,7 +152,7 @@ return;*/
                     return (
                         <View className='mb-0.5 sm:mb-3' key={'block_' + index}><BlockByName
                             name={item.block}
-                            data={props.data}
+                            data={data}
                             {...item.block.props}
                         /></View>
                     )
@@ -145,7 +167,7 @@ return;*/
                     <BlockByName
                         key={'block_' + index}
                         name={item.block}
-                        data={props.data}
+                        data={data}
                         {...item.block.props}
                     />
                 )
@@ -195,20 +217,20 @@ return;*/
                         return (
                             <View className='' key={'view' + index}>
                                 <BlockByName
-                                    data={props.data}
+                                    data={data}
 
                                     name={
-                                        props.blocks[item.name + '_feed_form']
+                                        blocks?.[item.name + '_feed_form']
                                     }
                                 />
                                 <BlockByName
-                                    data={props.data}
-                                    name={props.blocks[item.name + '_feed']}
+                                    data={data}
+                                    name={timelineBlocks.length ? getTimelineBlock(item.name, timelineBlocks) : blocks?.[item.name + '_feed']}
                                     unitMode={layoutSettings.feed_unit}
                                     exProps={{
                                         headerBlocks: headerBlocks,
                                         scrollProps: {
-                                            pageData: props.data,
+                                            pageData: data,
                                             headerHeight: isFeedMenuPresent
                                                 ? 100
                                                 : isWeb ? 56 : 48,
@@ -234,14 +256,13 @@ return;*/
                             exProps={item.block}
                             key={'block_' + index}
                             name={item.block}
-                            data={props.data}
+                            data={data}
                             {...item.block.props}
                         />
                     )
                 })}
             </>
         )
-
 
         const SideBarContent = (
             <>
@@ -254,14 +275,14 @@ return;*/
                                     ' rounded-xl group items-center gap-1 px-2 py-1.5 mb-0.5 hover:bg-muted/60 active:opacity-50  '
                                 }
                             >
-                                
-                                    <Profile
-                                        {...currentUser}
-                                        url_avatar={currentUser.avatar}
-                                        displayType="unit_wo_info"
-                                        displaySize="sm"
-                                    />
-                                
+
+                                <Profile
+                                    {...currentUser}
+                                    url_avatar={currentUser.avatar}
+                                    displayType="unit_wo_info"
+                                    displaySize="sm"
+                                />
+
 
                                 <View >
                                     <Text className="px-1 text-sm leading-tight font-semibold truncate text-card-foreground web:group-hover:text-foreground ">
@@ -296,10 +317,10 @@ return;*/
 
                     {navBarBlocks.map((item, index) => {
                         return (
-                            <View className={(appSetting('layout', 'show_profile_info') || feedList.length > 1) || index > 0 ?  "mt-3 ": ''} key={'block_' + index}>
+                            <View className={(appSetting('layout', 'show_profile_info') || feedList.length > 1) || index > 0 ? "mt-3 " : ''} key={'block_' + index}>
                                 <BlockByName
                                     name={item.block}
-                                    data={props.data}
+                                    data={data}
                                     {...item.block.props}
                                 />
                             </View>
@@ -316,7 +337,7 @@ return;*/
         const currentBreakpoint = useBreakpoint();
         const { cells = {} } = cellsCustomConfig || {};
         const currentBreakpointName = getBreakpoint(currentBreakpoint);
-        
+
         // LEFT
         const {
             breakpoint: leftBreakpoint,
@@ -340,7 +361,7 @@ return;*/
             responsive: rightResponsive,
             ...rightBase
         } = cells.right ?? {};
-        const rightPanelProps = resolvePanelProps(rightBase, rightResponsive, currentBreakpointName); 
+        const rightPanelProps = resolvePanelProps(rightBase, rightResponsive, currentBreakpointName);
 
         const onLayout = (sizes) => {
             if (isWeb) {
@@ -349,7 +370,7 @@ return;*/
         };
 
         useEffect(() => {
-            if (isWeb){
+            if (isWeb) {
                 groupRef.current?.setLayout([leftPanelProps.defaultSize, centerPanelProps.defaultSize, rightPanelProps.defaultSize]);
             }
         }, [currentBreakpointName]);
@@ -357,7 +378,7 @@ return;*/
 
         return (
             <>{BlocksCenter}
-              {appSetting('layout', 'home_container') !== false && <PanelGroup
+                {appSetting('layout', 'home_container') !== false && <PanelGroup
                     ref={groupRef}
                     key={`cells-home${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
                     autoSaveId={cellsCustomConfig.sizable ? `cells-home` : undefined}
@@ -392,13 +413,13 @@ return;*/
                             />
                             <Panel className={`hidden ${rightBreakpoint}:block ${currentBreakpointName}:w-full`} {...rightPanelProps}>
                                 <View className={`${cd('p-md')} ${cd('gap-lg')} fixed-process`}>
-                                 {AsideContent}
+                                    {AsideContent}
                                 </View>
                             </Panel>
                         </>
                     )}
                 </PanelGroup>}
-                </>
+            </>
         )
     }
 }

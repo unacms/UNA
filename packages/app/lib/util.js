@@ -521,6 +521,21 @@ export function getLayoutName(data, uri) {
             name: 'profile',
         },
         {
+            cond: uri === 'home',
+            name: 'home',
+            custom: true,
+        },
+        {
+            cond: uri === 'login',
+            name: 'login',
+            custom: true,
+        },
+        {
+            cond: uri === 'create-account',
+            name: 'create-account',
+            custom: true,
+        },
+        {
             cond: data?.menu?.items?.length > 0 && !uri.includes('create-'),
             name: 'navigator',
         },
@@ -533,6 +548,7 @@ export function getLayoutName(data, uri) {
 
     for (const { cond, name, blocks = customBlocks, custom = isCustom } of checks) {
         if (cond) {
+            console.log('aaaaa', name);
             return { layoutName: name, layoutBlocks: blocks, isCustomLayout: custom };
         }
     }

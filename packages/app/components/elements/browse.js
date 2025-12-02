@@ -83,7 +83,6 @@ export default function Browse(props) {
     const numColumns = props.perLine || 1;
 
     const formProps = data?.filter_form;
-    console.log("formProps", formProps)
     const handleFilterFormChange = useCallback((values) => {
         const transformedValues = Object.fromEntries(
             Object.entries(values).map(([key, value]) => [
@@ -92,8 +91,8 @@ export default function Browse(props) {
             ])
         );
 
-        const contexts = transformedValues.by_context ? { type: 'by_context', context: transformedValues.by_context } : { type: 'feed' };
-
+        const contexts = transformedValues.by_context ? { type: 'by_context', context: transformedValues.by_context } : { type: 'feed' };//type -module  context=id
+//reload //paging
         setDefParams(prev => ({
             ...prev,
             modules: transformedValues.modules,

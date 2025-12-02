@@ -592,7 +592,7 @@ const ComponentsDummyComponent = (props) => {
                 </Text>
             </Row>
 
-            <Row className="mb-auto  text-red-800 bg-red-200 dark:bg-red-950 gap-x-1 py-1 px-2 rounded-full dark:text-red-200 ">
+            <Row className="mb-auto  text-red-800 bg-red-200 dark:bg-red-950 gap-x-1 py-1 px-2 rounded-full dark:text-red-200 line-clamp-3 line-clamp-4 line-clamp-5 line-clamp-6">
                 <Icon
                     className="text-red-600 dark:text-red-400"
                     icon="ArrowBigUp"
@@ -608,7 +608,7 @@ const ComponentsDummyComponent = (props) => {
                 </Text>
             </Row>
 
-            <Row className="w-1/5 mb-auto bg-sky-400 bg-indigo-400 text-gray-800 bg-gray-200 dark:bg-gray-950 gap-x-1 py-1 px-2 rounded-full dark:text-gray-200 ">
+            <Row className="w-1/5 mb-auto line-clamp-3 line-clamp-4 line-clamp-5 bg-sky-400 bg-indigo-400 text-gray-800 bg-gray-200 dark:bg-gray-950 gap-x-1 py-1 px-2 rounded-full dark:text-gray-200 ">
                 <Icon
                     className="text-gray-600 dark:text-gray-400"
                     icon="ArrowBigUp"

@@ -31,6 +31,7 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+    reactCompiler: true,
     /*experimental: {
       ppr: true,
     },*/

@@ -59,8 +59,6 @@ function PageContentUniversal({ children, data, layoutName }) {
 
     const cellsDefaultConfig = layoutConfigs[layoutName] ?? layoutConfigs.default;
 
-
-
     const cellsConfig = cellsDefaultConfig.map((defaultCell) => {
         const override = cellsCustomConfig.cells?.find((c) => c.key === defaultCell.key);
         return override ? { ...defaultCell, ...override } : defaultCell;
@@ -75,9 +73,17 @@ function PageContentUniversal({ children, data, layoutName }) {
         ))
     }, [children, data.elements, cellsConfig]);
 
-    const topCell = cells.find((c) => c.area === 'top');
-    const bottomCell = cells.find((c) => c.area === 'bottom');
-    const midCells = cells.filter((c) => c.area === 'mid');
+    const isParsedLayout = data.layout_parsed;
+
+    const topCell = isParsedLayout ? {key: 'cell_top', data: data.elements?.['cell_top'], chd: children.find((c) => c.key === 'cell_top')} : cells.find((c) => c.area === 'top');
+    const bottomCell = isParsedLayout ? {key: 'cell_bottom', data: data.elements?.['cell_bottom'], chd: children.find((c) => c.key === 'cell_bottom')} : cells.find((c) => c.area === 'bottom');
+    const midCells = isParsedLayout ? [
+        {key: 'cell_left', defaultSize: 25, minSize: 10, data: data.elements?.['cell_left'], chd: children.find((c) => c.key === 'cell_left')},
+        {key: 'cell_center', defaultSize: 50, minSize: 10, breakpoint: 'md', data: data.elements?.['cell_center'], chd: children.find((c) => c.key === 'cell_center')},
+        {key: 'cell_right', defaultSize: 25, minSize: 10, breakpoint: 'lg', data: data.elements?.['cell_right'], chd: children.find((c) => c.key === 'cell_right')}
+    ] : cells.filter((c) => c.area === 'mid');
+
+    console.log("datadatadata2", sizable)
 
     return (
         <View className={`mx-auto w-full u-max-width-block gap-y-${gap} p-2 sm:p-4`}>
@@ -90,7 +96,7 @@ function PageContentUniversal({ children, data, layoutName }) {
             {midCells.map((cell, i) => {
                 return <PanelRow key={cell.key} gap={gap} currentBreakpoint={currentBreakpoint} cell={cell} />
             })}
-            {bottomCell.length > 0 && <PanelRow gap={gap} cell={bottomCell} currentBreakpoint={currentBreakpoint} />}
+            {bottomCell.data.length > 0 && <PanelRow gap={gap} cell={bottomCell} currentBreakpoint={currentBreakpoint} />}
         </View>
     )
 }

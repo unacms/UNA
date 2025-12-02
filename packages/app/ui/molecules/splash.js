@@ -28,7 +28,7 @@ import Link from 'app/ui/atoms/link'
  * @param {object} props - Component properties, including optional login form data.
  */
 
-function PageContent(props) {
+function PageContent({data}) {
     const { t } = useTranslation()
     return (
         <View className="w-full justify-center lg:w-1/2 p-4 sm:p-8 md:p-12 p-6 ">
@@ -51,7 +51,7 @@ function PageContent(props) {
                         <BlockByName
                             name="system:login_form"
                             contentOnly={true}
-                            data={props.data}
+                            data={data}
                             formProps={{
                                 hide_errors: true,
                                 button_full_width: true,

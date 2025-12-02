@@ -256,7 +256,6 @@ export default function Layout(props) {
             el.style.position = '';
             el.style.top = '';
             el.style.bottom = '';
-            console.log("container.scrollHeight <= elH || y < stickyStart || window.scrollY", container.scrollHeight, elH, y < stickyStart,  window.scrollY)
             if (container.scrollHeight <= elH || y < stickyStart || window.scrollY == 0) return;//|| stickyStart == 0
 
             if (y > stickyEnd + HYST) {
