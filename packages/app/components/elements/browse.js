@@ -83,7 +83,7 @@ export default function Browse(props) {
     const numColumns = props.perLine || 1;
 
     const formProps = data?.filter_form;
-
+    console.log("formProps", formProps)
     const handleFilterFormChange = useCallback((values) => {
         const transformedValues = Object.fromEntries(
             Object.entries(values).map(([key, value]) => [
@@ -92,15 +92,13 @@ export default function Browse(props) {
             ])
         );
 
-        const a = transformedValues.by_hashtag ? { type: 'bx_channels', context: transformedValues.by_hashtag } : { type: 'feed' };
+        const contexts = transformedValues.by_context ? { type: 'by_context', context: transformedValues.by_context } : { type: 'feed' };
 
-        const b = transformedValues.by_context ? { type: 'by_context', context: transformedValues.by_context } : { type: 'feed' };
-        //TODO
         setDefParams(prev => ({
             ...prev,
             modules: transformedValues.modules,
-                media: transformedValues.media,
-                ...a
+            media: transformedValues.media,
+            ...contexts
         }));
 
         refetchRef.current.skipToast = true
