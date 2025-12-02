@@ -31,15 +31,8 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-    reactCompiler: true,
-    /*experimental: {
-      ppr: true,
-    },*/
-  /*experimental: {
-    forceSwcTransforms: true,
-    // scrollRestoration: true,
-    swcPlugins: [[require.resolve('./plugins/swc_plugin_reanimated.wasm')]],
-  },*/
+    //reactCompiler: true,
+    
   // TODO: Can potentially enable strict mode now that reanimated is removed from web
   // Previously disabled due to reanimated/Moti issues
   reactStrictMode: false,
