@@ -4,7 +4,7 @@
 // Shows post composer and list of posts
 // Only visible to members, guests/logged-in see intro cards instead
 
-import { Card, CardContent, Button, Avatar } from "@neo/test-components"
+import { Card, CardContent, Button } from "@neo/test-components"
 import { useAuthStateSafe } from "../../components/auth-state"
 import { 
   Smile, 
@@ -18,7 +18,7 @@ import {
   BadgeCheck,
   Heart
 } from "lucide-react"
-import { useState, useEffect, useRef, useCallback } from "react"
+import React, { useState, useEffect, useRef, useCallback } from "react"
 
 // Mock current user
 const currentUser = {
@@ -253,8 +253,8 @@ function PostCard({ post }: { post: Post }) {
       return <p className="text-foreground">{post.content}</p>
     }
     
-    let content = post.content
-    const parts: (string | JSX.Element)[] = []
+    const content = post.content
+    const parts: React.ReactNode[] = []
     let lastIndex = 0
     
     post.mentions.forEach((mention, idx) => {
