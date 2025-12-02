@@ -236,6 +236,9 @@ function GroupCoverImage({ src, alt }: { src: string; alt: string }) {
       <img
         src={src}
         alt={`${alt} cover`}
+        loading="eager"
+        fetchPriority="high"
+        decoding="async"
         className="absolute inset-0 w-full h-full object-cover"
       />
       {/* Gradient overlay for text readability */}
@@ -331,6 +334,8 @@ function GroupIntroCard({ intro }: { intro: string }) {
         <img
           src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&h=450&fit=crop"
           alt="Group featured content"
+          loading="lazy"
+          decoding="async"
           className="absolute inset-0 w-full h-full object-cover"
         />
       </div>

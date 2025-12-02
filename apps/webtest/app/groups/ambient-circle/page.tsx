@@ -376,6 +376,8 @@ function GroupIntroCard({ intro }: { intro: string }) {
         <img
           src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&h=450&fit=crop"
           alt="People having meaningful conversations"
+          loading="lazy"
+          decoding="async"
           className="absolute inset-0 w-full h-full object-cover opacity-90"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
@@ -426,6 +428,8 @@ function AppIntroCard() {
               <img
                 src="https://images.unsplash.com/photo-1543269865-cbf427effbad?w=500&h=400&fit=crop"
                 alt="People connecting in conversation"
+                loading="lazy"
+                decoding="async"
                 className="relative z-10 w-full h-full object-cover object-top"
               />
             </div>

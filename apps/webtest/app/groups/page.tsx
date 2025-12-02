@@ -223,7 +223,7 @@ interface GroupCardProps {
 
 function GroupCard({ group, featured = false }: GroupCardProps) {
   return (
-    <Link href={`/groups/${group.id}`} className="block group">
+    <Link href={`/groups/${group.id}`} className="block group" prefetch={false}>
       <Card className="p-2 h-full hover:shadow-lg gap-1 transition-all duration-200 hover:border-primary/30">
         {/* Cover Image with Avatar */}
         <div className="relative">
@@ -232,6 +232,8 @@ function GroupCard({ group, featured = false }: GroupCardProps) {
             <img
               src={group.coverImage}
               alt={`${group.name} cover`}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded " />
@@ -258,6 +260,8 @@ function GroupCard({ group, featured = false }: GroupCardProps) {
             <img
               src={group.avatar}
               alt={group.name}
+              loading="lazy"
+              decoding="async"
               className="w-24 h-24 rounded-full object-cover border-4 border-card"
             />
           </div>
