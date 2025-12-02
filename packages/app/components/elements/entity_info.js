@@ -104,6 +104,10 @@ export default function ElementEntityInfo({ data }) {
                     hostname === 'tiktok.com' || hostname.endsWith('.tiktok.com');
                 const isFacebook =
                     hostname === 'facebook.com' || hostname.endsWith('.facebook.com');
+                const isYouTube =
+                    hostname === 'youtube.com' ||
+                    hostname.endsWith('.youtube.com') ||
+                    hostname === 'youtu.be';
 
                 // Twitter / X / Instagram → @username
                 if (isTwitter || isX || isInstagram) {
@@ -139,6 +143,34 @@ export default function ElementEntityInfo({ data }) {
                 if (isFacebook) {
                     const slug = getSlug(firstSegment);
                     return slug ?? original;
+                }
+
+                // YouTube
+                if (isYouTube) {
+                    // youtu.be/VIDEO_ID → считаем ссылкой на видео
+                    if (hostname === 'youtu.be') {
+                        return original;
+                    }
+
+                    const [first, second] = pathSegments;
+
+                    // /@handle → @handle
+                    if (first && first.startsWith('@')) {
+                        const slug = getSlug(first);
+                        return slug ? `@${slug}` : original;
+                    }
+
+                    // /channel/UCxxxx  /user/Name  /c/CustomName → slug без @
+                    if (
+                        (first === 'channel' || first === 'user' || first === 'c') &&
+                        second
+                    ) {
+                        const slug = getSlug(second);
+                        return slug ?? original;
+                    }
+
+                    // /watch, /shorts, /live и прочие видео-ссылки → как есть
+                    return original;
                 }
 
                 return original;
@@ -212,7 +244,7 @@ export default function ElementEntityInfo({ data }) {
 
                 if (isUrl(a.value)) {
                     return (
-                        <Link href={a.value}>
+                        <Link href={a.value} target="_blank">
                             <Text className=" text-neutral-800 text-base dark:text-neutral-200  whitespace-normal break-words">
                                 {getHandleForDisplay(a.value)}
                             </Text>
