@@ -18,6 +18,8 @@ export function RespectModal({ isOpen, onClose }: RespectModalProps) {
   
   // Handle open/close animations
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined
+    
     if (isOpen) {
       setIsVisible(true)
       // Small delay to trigger animation
@@ -29,10 +31,13 @@ export function RespectModal({ isOpen, onClose }: RespectModalProps) {
     } else {
       setIsAnimating(false)
       // Wait for animation to complete before hiding
-      const timer = setTimeout(() => {
+      timer = setTimeout(() => {
         setIsVisible(false)
       }, 200) // Match transition duration
-      return () => clearTimeout(timer)
+    }
+    
+    return () => {
+      if (timer) clearTimeout(timer)
     }
   }, [isOpen])
   
