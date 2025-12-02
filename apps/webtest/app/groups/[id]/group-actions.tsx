@@ -10,6 +10,7 @@ import { Button } from "@neo/test-components"
 import { Dropdown, Label, Button as HeroUIButton } from "@heroui/react"
 import { UserPlus, Share2, MoreHorizontal, Flag, Mail } from 'lucide-react'
 import { useAuthStateSafe } from '../../components/auth-state'
+import { useState, useEffect } from 'react'
 
 interface GroupHeaderActionsProps {
   groupId: string
@@ -17,6 +18,25 @@ interface GroupHeaderActionsProps {
 
 export function GroupHeaderActions({ groupId }: GroupHeaderActionsProps) {
   const { authState } = useAuthStateSafe()
+  const [isHydrated, setIsHydrated] = useState(false)
+  
+  // Wait for hydration to prevent mismatch
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
+  
+  // During SSR and initial hydration, render a consistent placeholder
+  // that matches what the server renders (unauthenticated state)
+  if (!isHydrated) {
+    return (
+      <div className="flex items-center gap-2">
+        <Button variant="secondary">
+          <Share2 className="w-4 h-4" />
+          Share
+        </Button>
+      </div>
+    )
+  }
   
   // Guest users only see Share button
   if (authState === 'unauthenticated') {

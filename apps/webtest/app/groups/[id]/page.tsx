@@ -448,13 +448,13 @@ function GroupAboutCard({ group }: { group: typeof mockGroup }) {
   ]
 
   return (
-    <Card className="p-0">
-      <CardHeader className="px-4 pt-4">
+    <Card className="p-0 gap-0">
+      <CardHeader className="px-4 pt-3">
         <CardTitle className="text-lg">About</CardTitle>
       </CardHeader>
       <CardContent className="p-0">
         {/* Using div list instead of ListBox to avoid hydration mismatch from dynamic IDs */}
-        <div className="divide-y divide-border" role="list" aria-label="Group information">
+        <div className="divide-y divide-border/20" role="list" aria-label="Group information">
           {infoItems.map((item) => (
             <div key={item.id} className="flex items-start gap-3 px-4 py-3" role="listitem">
               <div className="shrink-0 w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
