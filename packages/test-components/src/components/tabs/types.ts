@@ -1,38 +1,74 @@
-// HeroUI v3 Tabs Types - aligned with official API
-// https://v3.heroui.com/docs/components/tabs
-// Tabs use compound pattern: Tabs.ListContainer, Tabs.List, Tabs.Tab, Tabs.Panel, Tabs.Indicator
+// HeroUI Tabs Types - Complete variant support
+// Based on HeroUI v2.8.5 API with v3 compound pattern
+// https://www.heroui.com/docs/components/tabs
 
-import type { TabsProps as HeroUITabsProps } from "@heroui/react"
+import type { Key } from "react"
 
-// Re-export HeroUI's tabs props as our base
-export type { TabsProps as HeroUITabsProps } from "@heroui/react"
+// Variant styles (from HeroUI v2.8.5)
+export type TabsVariant = "solid" | "bordered" | "light" | "underlined"
 
-// HeroUI v3 orientation options
+// Color options (from HeroUI v2.8.5)
+export type TabsColor = "default" | "primary" | "secondary" | "success" | "warning" | "danger"
+
+// Orientation options
 export type TabsOrientation = "horizontal" | "vertical"
 
 // Size options
 export type TabsSize = "sm" | "md" | "lg"
 
-// Extended props for our wrapper
+// Radius options (from HeroUI v2.8.5)
+export type TabsRadius = "none" | "sm" | "md" | "lg" | "full"
+
+// Placement options (from HeroUI v2.8.5) - for horizontal orientation
+export type TabsPlacement = "top" | "bottom" | "start" | "end"
+
+// Extended props for our wrapper - full HeroUI v2.8.5 API
 export interface TabsProps {
   /** Tab content (compound children) */
   children: React.ReactNode
+  /** Visual style variant */
+  variant?: TabsVariant
+  /** Color theme for tabs */
+  color?: TabsColor
   /** Tab orientation */
   orientation?: TabsOrientation
   /** Tab size */
   size?: TabsSize
+  /** Border radius style */
+  radius?: TabsRadius
+  /** Tab list placement (for horizontal tabs) */
+  placement?: TabsPlacement
+  /** Whether tabs should take full width */
+  fullWidth?: boolean
   /** Controlled selected key */
-  selectedKey?: string
+  selectedKey?: Key
   /** Default selected key (uncontrolled) */
-  defaultSelectedKey?: string
+  defaultSelectedKey?: Key
   /** Selection change handler */
-  onSelectionChange?: (key: React.Key) => void
+  onSelectionChange?: (key: Key) => void
+  /** Keys of disabled tabs */
+  disabledKeys?: Key[]
+  /** Whether all tabs are disabled */
+  isDisabled?: boolean
+  /** Disable cursor/indicator animation */
+  disableCursorAnimation?: boolean
+  /** Disable all animations */
+  disableAnimation?: boolean
+  /** Whether to show separators between tabs (solid variant only) */
+  showSeparators?: boolean
+  /** Whether to destroy inactive tab panels (for performance) */
+  destroyInactiveTabPanel?: boolean
   /** Additional className for styling */
   className?: string
-  /** Whether tabs are disabled */
-  isDisabled?: boolean
-  /** Whether to show separators between tabs */
-  showSeparators?: boolean
+  /** Slot classNames for custom styling */
+  classNames?: {
+    base?: string
+    tabList?: string
+    tab?: string
+    tabContent?: string
+    cursor?: string
+    panel?: string
+  }
 }
 
 // Tab item props
@@ -41,8 +77,12 @@ export interface TabProps {
   children: React.ReactNode
   /** Unique identifier for the tab */
   id: string
+  /** Tab title (for accessibility) */
+  title?: React.ReactNode
   /** Whether this tab is disabled */
   isDisabled?: boolean
+  /** URL for tab as link (Next.js router integration) */
+  href?: string
   /** Additional className */
   className?: string
 }
@@ -67,6 +107,14 @@ export interface TabListProps {
   className?: string
 }
 
+// Tab list container props
+export interface TabListContainerProps {
+  /** Tab list and related elements */
+  children: React.ReactNode
+  /** Additional className */
+  className?: string
+}
+
 // Tab indicator props
 export interface TabIndicatorProps {
   /** Additional className */
@@ -79,16 +127,52 @@ export const tabsClasses = {
   listContainer: "tabs__list-container",
   list: "tabs__list",
   tab: "tabs__tab",
+  tabContent: "tabs__tab-content",
   panel: "tabs__panel",
   indicator: "tabs__indicator",
+  // Variants
+  variants: {
+    solid: "tabs--solid",
+    bordered: "tabs--bordered",
+    light: "tabs--light",
+    underlined: "tabs--underlined",
+  },
+  // Colors
+  colors: {
+    default: "tabs--default",
+    primary: "tabs--primary",
+    secondary: "tabs--secondary",
+    success: "tabs--success",
+    warning: "tabs--warning",
+    danger: "tabs--danger",
+  },
+  // Orientations
   orientations: {
     horizontal: "tabs--horizontal",
     vertical: "tabs--vertical",
   },
+  // Sizes
   sizes: {
     sm: "tabs--sm",
     md: "tabs--md",
     lg: "tabs--lg",
   },
+  // Radius
+  radius: {
+    none: "tabs--radius-none",
+    sm: "tabs--radius-sm",
+    md: "tabs--radius-md",
+    lg: "tabs--radius-lg",
+    full: "tabs--radius-full",
+  },
+  // Placement
+  placement: {
+    top: "tabs--placement-top",
+    bottom: "tabs--placement-bottom",
+    start: "tabs--placement-start",
+    end: "tabs--placement-end",
+  },
+  // Modifiers
+  fullWidth: "tabs--full-width",
+  noAnimation: "tabs--no-animation",
 } as const
-

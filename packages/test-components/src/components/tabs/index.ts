@@ -5,9 +5,13 @@ export type {
   TabProps, 
   TabPanelProps, 
   TabListProps, 
+  TabListContainerProps,
   TabIndicatorProps,
+  TabsVariant,
+  TabsColor,
   TabsOrientation,
   TabsSize,
+  TabsRadius,
+  TabsPlacement,
 } from "./types"
 export { tabsClasses } from "./types"
-
