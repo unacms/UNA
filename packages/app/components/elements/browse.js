@@ -74,6 +74,7 @@ export default function Browse(props) {
     });
 
     const [showFilters, setShowFilters] = useState(false);
+    const [filterValues, setFilterValues] = useState(null);
 
     /* unit mode & change unit mode */
     const unitMode = props.unitMode
@@ -82,9 +83,10 @@ export default function Browse(props) {
 
     const numColumns = props.perLine || 1;
 
-    const formProps = data?.filter_form;
+    let formProps = data?.filter_form;
+
     const handleFilterFormChange = useCallback((values) => {
-        console.log("values", values)
+        setFilterValues(values)
         const transformedValues = Object.fromEntries(
             Object.entries(values).map(([key, value]) => [
                 key,
@@ -92,7 +94,11 @@ export default function Browse(props) {
             ])
         );
         const by_context = transformedValues.by_context ? transformedValues.by_context.split('|') : []; 
-        const contexts = transformedValues.by_context ? { type: by_context[0], context: by_context[1] } : { type: 'feed' };
+        const contexts = by_context[0] ? { type: by_context[0], context: by_context[1] } : { type: 'feed',  context: '' };
+        dispatch({ type: 'SET_ITEMS', items: [] });
+        refetchRef.current.prevItems = [];
+        refetchRef.current.isFirstLoad = true;
+        refetchRef.current.skipToast = true;
 
         setDefParams(prev => ({
             ...prev,
@@ -101,11 +107,17 @@ export default function Browse(props) {
             ...contexts
         }));
 
-        refetchRef.current.skipToast = true
         refetch()
     });
 
-
+    if (filterValues && formProps){
+        if (formProps.data.inputs.modules)
+            formProps.data.inputs.modules.value = filterValues.modules;
+        if (formProps.data.inputs.media)
+            formProps.data.inputs.media.value = filterValues.media;
+        if (formProps.data.inputs.by_context)
+            formProps.data.inputs.by_context.value = filterValues.by_context;
+    }
 
     const hOffset = isWeb ? 64 : 56
 
@@ -118,8 +130,6 @@ export default function Browse(props) {
         }
 
     const qKey = [props.uri || '', data.request_url || '', currentUser?.id, props?.cachePrefix || '', defParams?.context || '', defParams?.modules || '', defParams?.media || '']
-
-    console.log("defParams", defParams, qKey)
 
     const {
         status,
@@ -412,18 +422,29 @@ export default function Browse(props) {
 
                     </Row>
                 )}
-                {formProps &&  <DropdownPopup
+                {formProps && (
+                    <Row className="w-full items-end justify-end mb-3">
+                        <DropdownPopup
                             trigger={
-                                <Row className="w-full items-end justify-end mb-3">
+                                
                                     <Button startDecorator="Settings2" variant="outline" title={!showFilters ? "Show filters" : "Hide filters"} />
-                                </Row>
+                                
                             }
                             minPopupWidth={360}
                             open={showFilters}
                             onOpenChange={handleOpenChange}
-                        ><View className="m-2"><Form {...formProps} key="form" name={formProps.name} onChange={handleFilterFormChange} /></View></DropdownPopup>
-
-                }
+                        >
+                            <View className="m-2">
+                                <Form 
+                                    {...formProps} 
+                                    key="form" 
+                                    name={formProps.name} 
+                                    onChange={handleFilterFormChange} 
+                                    />
+                            </View>
+                        </DropdownPopup>
+                    </Row>
+                )}
                 {contentElement}
             </View>
             <Snackbar
