@@ -178,6 +178,8 @@ export default function FormFeed(props) {
 
     let text = formContext.watch('text');
     let object_privacy_view = formContext.watch('object_privacy_view');
+    const isHiddenVisibility = props.data?.inputs?.['object_privacy_view']?.origtype == 'hidden' || !props.data?.inputs?.['object_privacy_view']
+    console.log("object_privacy_view", object_privacy_view)
     if (!text) text = ''
     if (typeof text === 'string') {
         text = stripTags(text).trim()
@@ -215,6 +217,11 @@ export default function FormFeed(props) {
     const isPollsPresent = !!props.data.inputs['polls'];
     const isLabelsPresent = !!props.data.inputs['labels'];
 
+    let isButtonDisabled = false;
+    if ( text == '')
+        isButtonDisabled = true;
+    if (!isHiddenVisibility && object_privacy_view == '')
+        isButtonDisabled = true;
 
     const form = <KbAvoidingView className="flex-1">
         {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default')}
@@ -365,7 +372,7 @@ export default function FormFeed(props) {
                                     props.handleSubmit,
                                     'default',
                                     {
-                                        disabled: text != '' && object_privacy_view != '' ? false : true,
+                                        disabled: isButtonDisabled,
                                         noPadding: true,
                                         size: 'base',
                                         notFullWidth: true,
