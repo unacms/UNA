@@ -70,8 +70,7 @@ export function Conductor({
     const { layoutName: tmplLayout } = useLayoutSettings()
     const cleanUrl = data.url.split('?')[0]
     const isDesktop = useIsDesktop()
-    const [isScrolled, setIsScrolled] = useState(isCoverDisabled)
-    const hideDefaultHeaderFrom = 100
+    
 
     const coverMode = appSetting(
         'cover',
@@ -107,25 +106,6 @@ export function Conductor({
         })
         return found !== -1 ? found : 0
     }, [routes, useSectionAsMenu, data.url, cleanUrl])
-
-    const handleScroll = useCallback(() => {
-        requestAnimationFrame(() => {
-            const currentScrollY = window.scrollY
-            setIsScrolled(currentScrollY > hideDefaultHeaderFrom)
-        })
-    }, [])
-
-    useEffect(() => {
-        if (!appSetting('cover', 'fixed') && isCover) {
-            window.addEventListener('scroll', handleScroll)
-        }
-
-        return () => {
-            if (!appSetting('cover', 'fixed') && isCover) {
-                window.removeEventListener('scroll', handleScroll)
-            }
-        }
-    }, [handleScroll, isCover])
 
     const initialIndex = useMemo(() => getFoundIndex(), [getFoundIndex])
 
@@ -270,9 +250,8 @@ export function Conductor({
     const headerComponent = (
         <HeaderContainer
             isCover = {isCover}
-            isScrolled = {isScrolled}
+            isCoverDisabled={isCoverDisabled}
             isHideCover={isHideCover}
-            hideDefaultHeaderFrom={hideDefaultHeaderFrom}
             tabBarObj={
                 <>
                     <TabBar
@@ -359,7 +338,6 @@ export function Conductor({
 
     const CenterColumnContent = <TabSceneMainContent
         pageRoute={tabRoute}
-        isScrolled={isScrolled}
         isCover={isCover}
         headerHeight={
             showFiltersBtn && routes.length > 1
@@ -407,7 +385,6 @@ const TabSceneMainContent = ({
     keyword,
     ts,
     timestamp,
-    isScrolled,
     isCover 
 }) => {
     const pageData = pageRoute.pageData
@@ -603,7 +580,6 @@ const TabSceneMainContent = ({
             onRefresh={refetch}
             refreshing={isRefetching}
             renderItem={renderItem}
-            paddingTop={isScrolled && !appSetting('cover', 'fixed') && isCover ? 200 : 0}
             
         />
         {(pageRoute?.endpoint?.request_url && hasNextPage === undefined ) && Preload}
@@ -1120,89 +1096,79 @@ const HeaderContainer = ({
     headerSettings,
     isCover,
     isHideCover,
-    isScrolled, 
-    hideDefaultHeaderFrom
+    isCoverDisabled
 }) => {
+    const [hideDefaultHeaderFrom, setHideDefaultHeaderFrom] = useState(100);
+    const [smallCoverHeight, setSmallCoverHeight] = useState(100);
     const isDesktop = useIsDesktop()
-
-    const [coverHeight, setCoverHeight] = useState(0)
-   
-
+    const [isScrolled, setIsScrolled] = useState(isCoverDisabled)
     const uri = pageData?.uri
-    
 
-    const onCoverLayout = useCallback((e) => {
-        setCoverHeight(e.nativeEvent.layout.height || 0)
+    const handleScroll = useCallback(() => {
+        requestAnimationFrame(() => {
+            const currentScrollY = window.scrollY
+            setIsScrolled(currentScrollY > (hideDefaultHeaderFrom - smallCoverHeight - 20))
+        })
+    }, [hideDefaultHeaderFrom, smallCoverHeight])
+
+    useEffect(() => {
+        if (!appSetting('cover', 'fixed') && isCover) {
+            window.addEventListener('scroll', handleScroll)
+        }
+
+        return () => {
+            if (!appSetting('cover', 'fixed') && isCover) {
+                window.removeEventListener('scroll', handleScroll)
+            }
+        }
+    }, [handleScroll, isCover])
+
+    const onCoverLayout1 = useCallback((e) => {
+        setHideDefaultHeaderFrom(e.nativeEvent.layout.height)
     }, [])
 
-    const showLargeCover = !isScrolled
-    const showSmallCover = isScrolled
+    const onCoverLayout2 = useCallback((e) => {
+        setSmallCoverHeight(e.nativeEvent.layout.height)
+    }, [])
 
     return (
         <View className="z-40">
-            <View 
-                style={{ 
-                    display: showLargeCover ? 'none' : 'flex',
-                    height: showLargeCover ? '0px' : `${coverHeight}px`,
-                    transition: 'height 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                }} 
-            />
-            <View
-                style={{ 
-                    width: '100%',
-                    position: showLargeCover ? 'relative' : 'fixed',
-                    marginBottom: showLargeCover ? '0px' : `${hideDefaultHeaderFrom}px`,
-                    transition: 'margin-bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            <View className={`${conductorTheme.cover_base} cover-1`}
+                style={{
+                    marginBottom: !isScrolled ? '0px' : `${smallCoverHeight}px`,
                 }}
             >
-                <View
-                    className={`${conductorTheme.cover_base} cover-1`}
-                    onLayout={onCoverLayout}
-                >
-                    <View 
-                        style={{ 
-                            display: showLargeCover ? 'flex' : 'none',
-                            transition: 'opacity 0.3s ease-out',
-                            opacity: showLargeCover ? 1 : 0,
-                        }}
-                    >
-                        <ViewRef className={conductorTheme.cover_content}>
-                            {isCover && !isHideCover && (
-                                <View className="w-full ">
-                                    <Cover
-                                        data={pageData.cover_block}
-                                        mode={headerSettings.cover}
-                                        uri={uri}
-                                        context={pageData.context}
-                                    />
-                                </View>
-                            )}
-                        </ViewRef>
+                <View>
+                    <View className={conductorTheme.cover_content}>
+                        {isCover && !isHideCover && (
+                            <View className="w-full " onLayout={onCoverLayout1}>
+                                <Cover
+                                    data={pageData.cover_block}
+                                    mode={headerSettings.cover}
+                                    uri={uri}
+                                    context={pageData.context}
+                                />
+                            </View>
+                        )}
                     </View>
-                    <View 
-                        style={{ 
-                            display: showSmallCover ? 'flex' : 'none',
-                            transition: 'opacity 0.3s ease-out',
-                            opacity: showSmallCover ? 1 : 0,
-                        }}
-                    >
-                        <ViewRef
-                            className={
-                                conductorTheme.cover_small + '  header-fixed 66'
-                            }
-                        >
-                            {((isCover && !isHideCover) || !isDesktop) && (
-                                <View className="w-full">
-                                    <CoverSmall
-                                        context={pageData.context}
-                                        data={pageData.cover_block}
-                                    />
-                                </View>
-                            )}
-                        </ViewRef>
-                    </View>
-                    <View className="w-full header-fixed 77">{tabBarObj}</View>
                 </View>
+            </View>
+            <View className={` header-fixed 77 ${conductorTheme.cover_base} ` + (isScrolled ? 'fixed' : '')}>
+                <View className={conductorTheme.cover_small}
+                    style={{
+                        display: isScrolled ? 'flex' : 'none',
+                    }}
+                >
+                    {((isCover && !isHideCover) || !isDesktop) && (
+                        <View className="w-full">
+                            <CoverSmall
+                                context={pageData.context}
+                                data={pageData.cover_block}
+                            />
+                        </View>
+                    )}
+                </View>
+                <View onLayout={onCoverLayout2}>{tabBarObj}</View>
             </View>
         </View>
     )
