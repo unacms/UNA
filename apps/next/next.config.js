@@ -32,7 +32,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
     //reactCompiler: true,
-    
+     reactCompiler: true,
   // TODO: Can potentially enable strict mode now that reanimated is removed from web
   // Previously disabled due to reanimated/Moti issues
   reactStrictMode: false,

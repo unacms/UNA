@@ -801,7 +801,7 @@ const LeftBarContent = (route, onFormChangedValues) => {
     )
 }
 
-const AddMenu = (menu, filter) => {
+const AddMenu = ({ menu, filter }) => {
     const [pageData, setPageData] = useState(false)
     const { currentUser } = useCurrentUser()
     const { t } = useTranslation()
@@ -884,6 +884,7 @@ function ConductorMenu({
     onChangeRoute,
 }) {
     const name = 'cnd-main-menu'
+    const { currentUser } = useCurrentUser()
     const filteredItems = routes.filter((aItem) => aItem.hideInTop != true)
     const menuClasses = conductorTheme.menu_cnt
 
@@ -908,39 +909,22 @@ function ConductorMenu({
         }
     )
 
-    if (!conductorTheme.menu_is_dynamic) {
-        return (
-            <View className={menuClasses}>
-                {filteredItems.map((aItem, iKey) => {
-                    return (
-                        <MenuItem
-                            key={name + 'menu' + iKey}
-                            item={aItem}
-                            index={iKey}
-                        />
-                    )
-                })}
-            </View>
-        )
-    }
-
-    const MenuItemEx = memo(({ item, index }) => {
+    const MenuItemEx = memo(({ item, index: itemIndex }) => {
         const { title, addon, icon, link, menu_settings, key } = item
         const translatedTitle = (
             <Text className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 leading-6 font-medium text-base">
                 {t(title)}
             </Text>
         )
-        const { currentUser } = useCurrentUser()
         let addonContent = callFn('getAddonForConductor', [
             item,
-            index,
+            itemIndex,
             currentUser,
         ])
 
         const handlePress = () => {
             emitter.emit('dynamic_menu', { action: 'hide' })
-            setIndex(index)
+            setIndex(itemIndex)
             window.history.pushState({}, '', '/' + key)
             if (onChangeRoute) {
                 onChangeRoute(item)
@@ -984,6 +968,22 @@ function ConductorMenu({
         )
     })
 
+    if (!conductorTheme.menu_is_dynamic) {
+        return (
+            <View className={menuClasses}>
+                {filteredItems.map((aItem, iKey) => {
+                    return (
+                        <MenuItem
+                            key={name + 'menu' + iKey}
+                            item={aItem}
+                            index={iKey}
+                        />
+                    )
+                })}
+            </View>
+        )
+    }
+
     return (
         <DynamicMenu
             name={name}
@@ -1012,7 +1012,7 @@ const LeftSideBarContainer = ({
     const { currentUser } = useCurrentUser();
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
 
-    const addButtons = AddMenu(menu, 'hideInSideBar')
+    const addButtons = <AddMenu menu={menu} filter="hideInSideBar" />
     const title = layoutName == 'profile' ? '' : t(menuSettings?.name)
     return (
         <View
@@ -1188,7 +1188,7 @@ const TabBar = ({
     const { layoutName: layout } = useLayoutSettings()
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
     if (routes.length > 1) {
-        const addButtons = AddMenu(menu, 'hideInTopBar')
+        const addButtons = <AddMenu menu={menu} filter="hideInTopBar" />
         return (
             <TopSidebar
                 layoutName={layoutName}
