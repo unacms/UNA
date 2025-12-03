@@ -1,634 +1,654 @@
 # NEO Monorepo
-⚛️ Expo52 + NextJS14 + Nativewind4
 
+⚛️ A unified cross-platform codebase for web and native applications built with **Expo 54**, **Next.js 16**, and **NativeWind 4**.
 
-## 🔦 About
+---
 
-NEO Monorepo is a unified codebase for web and native UI apps for UNA. 
+## Table of Contents
 
-## Routing
+- [About](#about)
+- [Monorepo Structure](#monorepo-structure)
+- [Technology Stack](#technology-stack)
+- [Getting Started](#getting-started)
+- [Commands Reference](#commands-reference)
+- [Configuration](#configuration)
+- [Customization Guide](#customization-guide)
+- [Branch Development](#branch-development)
+- [Deployment](#deployment)
+- [Routing Architecture](#routing-architecture)
 
-The NEO monorepo uses a hybrid routing strategy to optimize for both native and web platforms. Native routing is handled by `expo-router`, while web routing uses the Next.js App Router. For a detailed explanation of the architecture, component abstractions, and implementation for both platforms, please see the [full routing documentation](./docs/routing.md).
+---
 
-## 🏁 Start the app
+## About
 
-- Install dependencies: `yarn`
+NEO Monorepo is a unified codebase providing web and native UI applications for UNA CMS. It enables code sharing between platforms while maintaining platform-specific optimizations.
 
-- Next.js local dev: `yarn web`
-  - Runs `yarn next`
-    
-- Expo local dev:
-  - First, build a dev client onto your device or simulator
-    - `cd apps/expo`
-    - Then, either `expo run:ios`, or `eas build`
-  - After building the dev client, from the root of the monorepo...
-    - `yarn native` (This runs `expo start --dev-client`)
+**Key Features:**
+- Shared business logic and UI components across web and native
+- UNA CMS API integration with real-time updates via Pusher
+- Tailwind CSS-based design system with NativeWind
+- Type-safe development with TypeScript
 
-- Add configutaion file .env.local in root folder
+---
 
-```UNA_API_KEY="KEY_FROM_UNA_STUDIO"
-PROTO="http:"
-HOST="localhost"
-PORT="3000"
+## Monorepo Structure
+
+```
+neo/
+├── apps/
+│   ├── next/           # Main web application (Next.js 16)
+│   ├── expo/           # Main native application (Expo 54 / React Native)
+│   ├── webtest/        # Experimental web app (Next.js 16 + HeroUI v3)
+│   └── nativetest/     # Experimental native app (Expo 54 + Uniwind)
+│
+├── packages/
+│   ├── app/            # Shared application code (components, lib, design)
+│   └── test-components/ # Experimental shared components for test apps
+│
+├── docs/               # Documentation
+├── crypto-shim/        # Polyfill for crypto module
+├── package.json        # Root workspace configuration
+├── turbo.json          # Turborepo configuration
+└── yarn.lock           # Dependency lockfile
+```
+
+### Apps Explained
+
+| App | Purpose | Port | Tech Stack |
+|-----|---------|------|------------|
+| `apps/next` | **Production web app** - Main web interface for UNA | 3000 | Next.js 16, Tailwind CSS 3, NativeWind |
+| `apps/expo` | **Production native app** - iOS/Android apps | - | Expo 54, React Native 0.81, NativeWind |
+| `apps/webtest` | **Experimental web** - Testing new UI components | 3001 | Next.js 16, Tailwind CSS 4, HeroUI v3 |
+| `apps/nativetest` | **Experimental native** - Testing Uniwind integration | - | Expo 54, React Native 0.81, Uniwind |
+
+### Packages Explained
+
+| Package | Purpose |
+|---------|---------|
+| `packages/app` | Shared application code: components, hooks, utilities, design system, settings, translations |
+| `packages/test-components` | Experimental shared components for `webtest` and `nativetest` apps |
+
+---
+
+## Technology Stack
+
+### Core Dependencies
+
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| React | 19.1.0 | UI framework |
+| React Native | 0.81.5 | Native mobile framework |
+| Expo | 54.0.x | Native development platform |
+| Next.js | 16.0.6 | Web framework |
+| TypeScript | 5.7+ | Type safety |
+| Tailwind CSS | 3.4.17 | Styling (main apps) |
+| NativeWind | 4.2.1 | Tailwind for React Native |
+
+### Key Libraries
+
+| Library | Purpose |
+|---------|---------|
+| `expo-router` | File-based routing for native |
+| `solito` | Cross-platform navigation |
+| `@tanstack/react-query` | Data fetching and caching |
+| `zustand` | State management |
+| `pusher-js` | Real-time WebSocket updates |
+| `react-native-reanimated` | Native animations |
+| `lucide-react` / `lucide-react-native` | Icons |
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- **Node.js** 18+ (LTS recommended)
+- **Yarn** 1.22+ (package manager - do NOT use npm)
+- **Xcode** 15+ (for iOS development)
+- **Android Studio** (for Android development)
+- **Expo CLI** (`npm install -g expo-cli`)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd neo
+
+# Install all dependencies
+yarn
+
+# Create environment configuration
+cp .env.example .env.local
+```
+
+### Environment Configuration
+
+Create `.env.local` in the root directory:
+
+```env
+# UNA CMS Configuration
+UNA_API_KEY="KEY_FROM_UNA_STUDIO"
+UNA_URL=https://api.example.com
+NEXT_PUBLIC_UNA_URL=https://api.example.com
+
+# Application URLs
+APP_URL=https://example.com
+NEXT_PUBLIC_APP_URL=https://example.com
+APP_ORIGIN=neo://app
+
+# Server Configuration
+PROTO=http:
+HOST=localhost
+PORT=3000
 HTTPS=true
-
-APP_ORIGIN = origin scheme, example - neo://app
-
-NEXT_PUBLIC_UNA_URL = URL of UNA instance, example - https://api.neo.so
-NEXT_PUBLIC_APP_URL = URL of NEO instance, example - https://neo.so
-UNA_URL = URL of UNA instance, example - https://api.neo.so
-APP_URL = URL of NEO instance, example - https://neo.so
-
 ```
 
+---
 
-## 🆕 Add new dependencies
+## Commands Reference
 
-### Pure JS dependencies
+### Development Commands
 
-If you're installing a JavaScript-only dependency that will be used across platforms, install it in `apps/expo`:
+| Command | Description |
+|---------|-------------|
+| `yarn web` | Start Next.js web app (port 3000) |
+| `yarn native` | Start Expo dev server for native apps |
+| `yarn webtest` | Start experimental web app (port 3001) |
+| `yarn nativetest` | Start experimental native app |
+| `yarn ios` | Run native app on iOS simulator |
+| `yarn android` | Run native app on Android emulator |
+| `yarn ios:device` | Run native app on physical iOS device |
 
-```sh
+### Build Commands
+
+| Command | Description |
+|---------|-------------|
+| `yarn build` | Build Next.js production bundle |
+| `yarn build:webtest` | Build experimental web app |
+| `yarn analyze` | Analyze bundle size |
+
+### Production Commands
+
+| Command | Description |
+|---------|-------------|
+| `yarn prod` | Start production server (single instance) |
+| `yarn prod:pm2` | Start production server with PM2 (clustered) |
+
+### Utility Commands
+
+| Command | Description |
+|---------|-------------|
+| `yarn clean` | Remove all node_modules directories |
+
+### Native App Build
+
+```bash
+# Navigate to expo app
 cd apps/expo
-yarn add date-fns
-cd ../..
-yarn
-```
-then add it to next.config.js in transpilePackages like
 
-```  transpilePackages: [
-    'react-native',
-    'react-native-web',
-    ...
+# Build dev client
+expo run:ios        # iOS
+expo run:android    # Android
+
+# EAS Build (cloud)
+eas build --platform ios
+eas build --platform android
 ```
 
-### Next.JS dependencies
+---
 
-If you're installing a library for web version only, you must install it in `apps/next`:
+## Configuration
 
-```sh
-cd apps/next
-yarn add react-native-reanimated
+### Configuration Files Overview
 
-cd ../..
-yarn
-```
+The project uses a layered configuration approach separating **main/default** files (should not be modified in branches) from **custom** files (safe to modify in branches).
 
-## 🛠️ List of files that can be changed for customization
+#### Main Files (DO NOT MODIFY IN BRANCHES)
 
-### apps\expo\app.config.custom.js - allows you to change configuration for native apps's build
+These files contain the base configuration and should only be modified in the main NEO repository:
 
-Example:
-```
+| File | Purpose |
+|------|---------|
+| `packages/app/settings-default.js` | Default application settings |
+| `packages/app/translation-default.js` | Default translations |
+| `packages/app/static-default.js` | Default static content |
+| `packages/app/icons.default.js` | Default icon mappings |
+| `packages/app/icons-svg.default.js` | Default SVG icons |
+| `packages/app/design/tailwind/theme.js` | Main Tailwind theme |
+| `packages/app/loading.default.js` | Default loading components |
+| `packages/app/lib/functions/functions-default.js` | Default utility functions |
+| `packages/app/components/*/\_map_default.js` | Default component mappings |
 
-module.exports = {
-  "name": "Weave",
-  "owner": "unacms", 
-  "slug": "neo-weave",
-  "scheme": "weave",
-  "version": "1.1.8",
-  "icon": "./assets/testsite/icon.png",
-  "splash": {
-    "image": "./assets/testsite/splash.png",
-    "contentFit": "contain",
-    "backgroundColor": "#ffffff",
-    "timeout":4000
-  },
-  "ios": {
-    "bundleIdentifier": "com.testsite.app",
-    "associatedDomains": ["applinks:testsite.com"],
-    "buildNumber": "1181",
-    "entitlements": {
-      "aps-environment": "production"
-    },
-    "userInterfaceStyle": "automatic",
-    "infoPlist": {
-        "NSCameraUsageDescription": "This app uses the camera allow calls in Jitsi.",
-        "NSPhotoLibraryUsageDescription": "This app uses the camera allow calls in Jitsi.",
-        "NSPhotoLibraryAddUsageDescription": "This app uses the camera allow calls in Jitsi.",
-        "NSMicrophoneUsageDescriptionin": "This app uses the mic allow calls in Jitsi.",
-        "NSCalendarsUsageDescription": "See your scheduled meetings in Jitsi.",
-        "NSLocationWhenInUseUsageDescription": "Quick contacts between users.",
-        "UIUserInterfaceStyle": "Light",
-        "LSMinimumSystemVersion": "14.0",
-        "OneSignal_disable_badge_clearing": "NO"
-      },
-  },
-  "android": {
-    "package": "com.testsite.app",
-    "versionCode": "1181",
-    "gradlePath": "gradle/wrapper/gradle-wrapper.properties",
-    "kotlinVersion": "1.9.25",
-    "adaptiveIcon": {
-      "foregroundImage": "./assets/testsite/adaptive-icon.png",
-    },
-    "permissions":  [
-      "android.permission.ACCESS_NETWORK_STATE", 
-      "android.permission.CAMERA", 
-      "android.permission.INTERNET"
-    ],
-    "intentFilters": [
-      {
-        "action": "VIEW",
-        "data": [
-          {
-            "scheme": "https",
-            "host": "testsite.com",
-            "pathPrefix": "/"
-          }
-        ],
-        "category": ["BROWSABLE", "DEFAULT"]
-      }
-    ]
-  },
-  "extra": {
-    "eas": {
-      "projectId": "---"
-    },
-    "UNA_API_KEY": "---",
+#### Custom Files (SAFE TO MODIFY IN BRANCHES)
 
-    "NEXT_PUBLIC_UNA_URL": "https://api.testsite.com",
-    "UNA_URL": "https://api.testsite.com",
-    "NEXT_PUBLIC_APP_URL": "https://testsite.com",
-    "APP_URL": "https://testsite.com",
-    "APP_ORIGIN" : "testsite://app",
-    "PROTO": "http:",
-    "HOST": "localhost",
-    "PORT": "3000",
-    "HTTPS": true
-  },
-  plugins: [
-    [
-      "expo-router",
-      {
-       
-      }
-    ],
-    [
-      "expo-video",
-      {
-        "supportsBackgroundPlayback": false,
-        "supportsPictureInPicture": false
-      }
-    ],
-    [
-      "onesignal-expo-plugin",
-      {
-        mode: "production",
-        smallIcons:["./assets/testsite/ic_stat_onesignal_default.png"],
-        largeIcons:["./assets/testsite/ic_onesignal_large_icon_default.png"]
-      }
-    ],
-    [
-      'expo-build-properties',
-      {
-        ios: {
-          deploymentTarget: '15.1',
-        },
-        android: {
-          minSdkVersion: 29, // Android 10
-          compileSdkVersion: 35,
-          targetSdkVersion: 35,
-          buildToolsVersion: "35.0.0",
-          kotlinVersion: '1.9.25'
-        }
-      },
-    ],
-  ],
-};
+These files are designed for customization in branch/client projects:
 
+| File | Purpose |
+|------|---------|
+| `packages/app/settings.js` | Override settings |
+| `packages/app/translation.js` | Override translations |
+| `packages/app/static.js` | Override static content |
+| `packages/app/icons.js` | Override/add icons |
+| `packages/app/icons-svg.js` | Override/add SVG icons |
+| `packages/app/design/tailwind-custom/theme.js` | Custom Tailwind theme |
+| `packages/app/loading.js` | Override loading components |
+| `packages/app/lib/functions/functions.js` | Override utility functions |
+| `packages/app/components/*/\_map.js` | Override component mappings |
+| `apps/expo/app.config.custom.js` | Native app build configuration |
+| `apps/next/next.config.custom.js` | Next.js custom configuration |
 
-```
+---
 
-### apps\next\next.config.custom.js - allows you to change next.JS configuration
+## Customization Guide
 
-```
-const nextConfigCustom = {
-    images: {
-        remotePatterns: [
-            {
-              protocol: 'https',
-              hostname: 'dev.test.com',
-              pathname: '**',
-            },
-        ]
-    }
-};
+### Settings Customization
 
-module.exports = nextConfigCustom;
+Override settings in `packages/app/settings.js`:
 
-```
-
-### packages\app\settings.js - allows you to override default/add new settings  
-
-Example:
-```
+```javascript
 import { settingsDefault } from './settings-default';
-settingsDefault.layout.default_layout = 'hor';
-...
+
+// Override specific settings
+settingsDefault.layout.defaults.name = 'ver';
+settingsDefault.app.title = 'My App';
+
 export const settings = settingsDefault;
 ```
 
-### packages\app\translation.js - allows you to override default/add new translations
+### Translation Customization
 
-```
+Override translations in `packages/app/translation.js`:
+
+```javascript
 import { resourcesDefault } from './translation-default';
-resourcesDefault.en.translation['bx_market_reviews_title'] = 'Reviews'
-...
+
+resourcesDefault.en.translation['bx_market_reviews_title'] = 'Reviews';
+resourcesDefault.en.translation['custom_key'] = 'Custom Value';
+
 export const resources = resourcesDefault;
 ```
 
-### packages\app\static.js - allows you to override default/add new static content or design parts 
+### Tailwind Theme Customization
 
+Customize theme in `packages/app/design/tailwind-custom/theme.js`:
+
+```javascript
+const colors = {
+  bgrcard: {
+    DEFAULT: '#ffffff',
+    d: '#1a1a1a',
+  },
+  // Add custom colors...
+};
+
+const theme = {
+  extend: {
+    colors: colors,
+    // Add custom theme extensions...
+  },
+};
+
+module.exports = { theme, colors };
 ```
-import { staticDefault } from './static-default';
-const LogoMark = (
-    <Svg width={46} height={46} viewBox="0 0 46 46" >
-        <G stroke="#6941C6" strokeWidth={2}>
-            <Path
-                d="M4 11a8 8 0 0116 0v7a1 1 0 01-1 1h-7a8 8 0 01-8-8zM26 26a1 1 0 011-1h7a8 8 0 11-8 8v-7zM4 33a8 8 0 018-8h7a1 1 0 011 1v7a8 8 0 11-16 0z"
-                fill="#6941C6"
-            />
-            <Path d="M26 11a8 8 0 118 8h-7a1 1 0 01-1-1v-7z" />
-        </G>
-        <Defs></Defs>
-    </Svg>
-)
-...
-staticDefault.logo_mark = LogoMark;
-export const staticComponents = staticDefault;
-```
 
-### override default/add new icons 
+### Icon Customization
 
-#### packages\app\icons.js - icons for native app from lucide.dev
+#### Lucide Icons (`packages/app/icons.js`)
 
-```
+```javascript
 'use client'
 
-import { IconSet as IconSetDedault } from './icons.default';
-import { Airplane}  from "lucide-react-native";
-
+import { IconSet as IconSetDefault } from './icons.default';
+import { Airplane } from 'lucide-react-native';
 
 export const IconSet = {
-	'Airplane': Airplane,
-	...IconSetDedault
-}
+  'Airplane': Airplane,
+  ...IconSetDefault
+};
 ```
 
-#### packages\app\icons-svg.js - custom SVG icons
+#### Custom SVG Icons (`packages/app/icons-svg.js`)
 
-```
+```javascript
 'use client'
-import * as SvgIconsDef from  'app/icons-svg.default';
-import Svg, { Path, Circle, Ellipse } from 'react-native-svg'
+import * as SvgIconsDef from 'app/icons-svg.default';
+import Svg, { Path } from 'react-native-svg';
 
-const CustomIcon = ({ width = "100%", height = "100%", color="#868686" }) => (
-	<Svg width={width} height={height} viewBox="0 0 17 18" fill="none" >
-		<Path fillRule="evenodd" clipRule="evenodd" d="M12.9107 0.836272C13.5087 0.134793 14.5621 0.0509244 15.2636 0.648949C15.9651 1.24697 16.049 2.30043 15.4509 3.00191L10.4143 8.90987L9.13989 9.64897C8.11983 10.2406 6.92313 9.22034 7.34587 8.11953L7.87402 6.74423L12.9107 0.836272ZM14.4527 1.60019C14.2766 1.45004 14.0121 1.4711 13.8619 1.64722L8.96417 7.39224L8.51278 8.56766L9.60197 7.93598L14.4997 2.19096C14.6499 2.01484 14.6288 1.75034 14.4527 1.60019ZM4.39467 2.32223C3.13147 2.32223 2.125 3.32694 2.125 4.54485V12.3556C2.59826 12.0068 3.17737 11.7998 3.81136 11.7998H14.6247V7.06102C14.6247 6.71584 14.9045 6.43602 15.2497 6.43602C15.5948 6.43602 15.8747 6.71584 15.8747 7.06102V11.7998L15.875 13.0498H14.4273V16.6972H15.6587C16.0039 16.6972 16.2837 16.977 16.2837 17.3222C16.2837 17.6674 16.0039 17.9472 15.6587 17.9472H3.81136C2.15615 17.9472 0.875 16.5366 0.875 14.8735V4.54485C0.875 2.61736 2.4605 1.07223 4.39467 1.07223H8.73666C9.08184 1.07223 9.36166 1.35205 9.36166 1.69723C9.36166 2.0424 9.08184 2.32223 8.73666 2.32223H4.39467ZM13.1773 16.6972V13.0498H3.81136C2.91351 13.0498 2.125 13.8318 2.125 14.8735C2.125 15.9152 2.91351 16.6972 3.81136 16.6972H13.1773Z" fill={color} />
-	</Svg>
-
-)
+const CustomIcon = ({ width = "100%", height = "100%", color = "#868686" }) => (
+  <Svg width={width} height={height} viewBox="0 0 24 24" fill="none">
+    <Path d="M12 2L2 7l10 5 10-5-10-5z" fill={color} />
+  </Svg>
+);
 
 export default {
-    ...SvgIconsDef,
-    CustomIcon
+  ...SvgIconsDef,
+  CustomIcon
+};
+```
+
+### Native App Configuration
+
+Customize `apps/expo/app.config.custom.js`:
+
+```javascript
+module.exports = {
+  name: "My App",
+  owner: "myorg",
+  slug: "my-app",
+  scheme: "myapp",
+  version: "1.0.0",
+  icon: "./assets/custom/icon.png",
+  splash: {
+    image: "./assets/custom/splash.png",
+    backgroundColor: "#ffffff",
+  },
+  ios: {
+    bundleIdentifier: "com.myorg.myapp",
+    buildNumber: "1",
+  },
+  android: {
+    package: "com.myorg.myapp",
+    versionCode: 1,
+  },
+  extra: {
+    eas: { projectId: "your-project-id" },
+    UNA_API_KEY: "your-api-key",
+    NEXT_PUBLIC_UNA_URL: "https://api.yoursite.com",
+    UNA_URL: "https://api.yoursite.com",
+  },
+};
+```
+
+### Next.js Configuration
+
+Customize `apps/next/next.config.custom.js`:
+
+```javascript
+const nextConfigCustom = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'yourdomain.com',
+        pathname: '**',
+      },
+    ],
+  },
 };
 
+module.exports = nextConfigCustom;
 ```
 
-### packages\app\design\tailwind-custom\theme.js - override default/customize tailwind theme
+### Component Overrides
 
-```
-const colors = {
-  screen: {
-      DEFAULT: '#f3f4f6',
-      d: '#030712',
-  },
-}
-const theme = {
-   extend: {
-    colors: colors,
-    aspectRatio: {
-        '3/1': '3 / 1',
-        '4/1': '4 / 1',
-        '5/1': '5 / 1',
-        '5/2': '5 / 2',
-    },
-  },
-}
-module.exports = { theme, colors };
+Override components by creating custom files and updating the `_map.js` file:
 
-```
+1. Create `packages/app/ui/molecules/custom/my-component.js`
+2. Update `packages/app/ui/molecules/_map.js`:
 
-### packages\app\lib\functions\functions.js - override default/customize common functions
-
-```
-...
-export function getBadgeForTab(currentUser, url) {
-    ...
-}
-...
-
-```
-
-### override default/add new elements 
-
-1) create folder "custom" in packages\app\ui\molecules\
-2) add needed file in packages\app\ui\molecules\custom
-3) modify packages\app\ui\molecules\_map.js
-
-```
-import Reports from 'app/ui/molecules/custom/reports';
+```javascript
 import { componentsMapDefault } from './_map_default';
+import MyComponent from 'app/ui/molecules/custom/my-component';
 
-componentsMapDefault.reports = Reports
+componentsMapDefault['my-component'] = MyComponent;
 
-export const componentsMap = componentsMapDefault
-
+export const componentsMap = componentsMapDefault;
 ```
 
-### override default/add new service workers 
+### Static Assets
 
-1) create folder "custom" in packages\app\ui\workers\
-2) add needed file in packages\app\ui\workers\custom
-3) modify papackages\app\ui\workers\_map.js
+| Asset Type | Location |
+|------------|----------|
+| Favicon | `apps/next/public/static/favicon.ico` |
+| Manifest | `apps/next/public/static/manifest.json` |
+| SVG Images | `apps/next/public/svg/local/` |
+| App Icons | `apps/expo/assets/` |
 
-```
-import { componentsMapDefault } from 'app/ui/workers/_map_default';
+---
 
-import Counters from 'app/ui/workers/custom/counters';
-componentsMapDefault['Counters'] = Counters;
+## Branch Development
 
-export const componentsMap = componentsMapDefault
+### Recommended `.gitignore` for Branch Projects
 
-```
+When creating a branch/client project, add these entries to `.gitignore` to prevent modifying main repository files:
 
-### override default/add new page blocks 
+```gitignore
+# ===================================
+# PROTECT MAIN REPOSITORY FILES
+# ===================================
 
-1) create folder "custom" in packages\app\components\elements\
-2) add needed file in packages\app\components\elements\custom
-3) modify packages\app\components\elements\_map.js
+# Settings defaults (modify settings.js instead)
+packages/app/settings-default.js
 
-```
-import { componentsMapDefault } from './_map_default';
+# Translation defaults (modify translation.js instead)
+packages/app/translation-default.js
 
-import EntityCover from './custom/entity_cover';
-componentsMapDefault.entity_cover = EntityCover;
+# Static defaults (modify static.js instead)
+packages/app/static-default.js
 
-export const componentsMap = componentsMapDefault
-```
+# Icon defaults (modify icons.js instead)
+packages/app/icons.default.js
+packages/app/icons-svg.default.js
 
-### override default/add new form fields
+# Loading defaults (modify loading.js instead)
+packages/app/loading.default.js
 
-1) create folder "custom" in packages\app\components\form-fields\
-2) add needed file in packages\app\components\form-fields\custom
-3) modify packages\app\components\form-fields\_map.js
+# Main theme (modify tailwind-custom/theme.js instead)
+packages/app/design/tailwind/theme.js
 
-```
-import { componentsMapDefault } from './_map_default';
+# Default component maps (modify _map.js instead)
+packages/app/components/**/_map_default.js
+packages/app/ui/**/_map_default.js
 
-import EntityCover from './custom/entity_cover';
-componentsMapDefault.entity_cover = EntityCover;
+# Function defaults (modify functions.js instead)
+packages/app/lib/functions/functions-default.js
 
-export const componentsMap = componentsMapDefault
-```
+# Feed items defaults
+packages/app/lib/feed-items_default.js
 
-### override default/add new forms
-
-1) create folder "custom" in packages\app\components\form\
-2) add needed file in packages\app\components\form\custom
-3) modify packages\app\components\form\_map.js
-
-```
-import { componentsMapDefault } from './_map_default';
-
-import EntityCover from './custom/entity_cover';
-componentsMapDefault.entity_cover = EntityCover;
-
-export const componentsMap = componentsMapDefault
-```
-
-### override default/add new menu items
-
-1) create folder "custom" in packages\app\components\menu-items\
-2) add needed file in packages\app\components\menu-items\custom
-3) modify packages\app\components\menu-items\_map.js
-
-```
-import { componentsMapDefault } from './_map_default';
-
-import EntityCover from './custom/entity_cover';
-componentsMapDefault.entity_cover = EntityCover;
-
-export const componentsMap = componentsMapDefault
+# ===================================
+# ALLOWED CUSTOM FILES (DO NOT IGNORE)
+# ===================================
+# packages/app/settings.js
+# packages/app/translation.js
+# packages/app/static.js
+# packages/app/icons.js
+# packages/app/icons-svg.js
+# packages/app/loading.js
+# packages/app/design/tailwind-custom/theme.js
+# packages/app/components/**/_map.js
+# packages/app/ui/**/_map.js
+# packages/app/lib/functions/functions.js
+# apps/expo/app.config.custom.js
+# apps/next/next.config.custom.js
 ```
 
-### override default/add new page layouts
+### Branch Workflow
 
-1) create folder "custom" in packages\app\components\page-layout\
-2) add needed file in packages\app\components\page-layout\custom
-3) modify packages\app\components\page-layout\_map.js
+1. **Create branch from main**
+2. **Never modify** `*-default.js` or main configuration files
+3. **Only modify** designated custom files
+4. **Keep changes isolated** to custom files for easy rebasing
 
-```
-import { componentsMapDefault } from './_map_default';
-import PageCustomPost from 'app/components/page-layout/custom/post';
-componentsMapDefault['post-new'] = PageCustomPost;
-export const componentsMap = componentsMapDefault
+---
 
-```
+## Deployment
 
-### override default/add new skeletons
+### Vercel Deployment
 
-1) create folder "custom" in packages\app\components\skeletons\
-2) add needed file in packages\app\components\skeletons\custom
-3) modify packages\app\components\skeletons\_map.js
+The web app is configured for Vercel with `apps/next/vercel.json`:
 
-```
-import { skeletonsMapDefault } from './_map_default';
-import {Market, Jobs, Persons} from 'app/components/skeletons/custom/skeletons';
-skeletonsMapDefault['bx_market'] = Market;
-skeletonsMapDefault['bx_jobs'] = Jobs;
-skeletonsMapDefault['bx_persons'] = Persons;
-skeletonsMapDefault['bx_organizations'] = Persons;
-export const skeletonsMap = skeletonsMapDefault
-
-```
-
-### override default/add new common units
-
-1) create folder "custom" in packages\app\components\units\
-2) add needed file in packages\app\components\units\custom
-3) modify packages\app\components\units\_map.js
-
-```
-import { componentsMapDefault } from './_map_default';
-import Feed from 'app/components/units/custom/feed';
-componentsMapDefault['feed'] = Feed;
-export const componentsMap = componentsMapDefault
-
-```
-
-### override default/add new content units
-
-1) create folder "custom" in packages\app\components\units\content-list\
-2) add needed file in packages\app\components\units\content-list\custom
-3) modify packages\app\components\units\content-list\_map.js
-
-```
-import { componentsMapDefault } from './_map_default';
-import UnitGroup from 'app/components/units/content-list/custom/bx_groups';
-componentsMapDefault['bx_groups'] = UnitGroup;
-export const componentsMap = componentsMapDefault
-
-```
-
-### override default/add new profile units
-
-1) create folder "custom" in packages\app\components\units\profile-list\
-2) add needed file in packages\app\components\units\profile-list\custom
-3) modify packages\app\components\units\profile-list\_map.js
-
-```
-import { componentsMapDefault } from './_map_default';
-import UnitGroup from 'app/components/units/profile-list/custom/bx_groups';
-componentsMapDefault['bx_groups'] = UnitGroup;
-export const componentsMap = componentsMapDefault
-
-```
-
-### change backgrounds for lon-logged page
-
-1) create folder "custom" in packages\app\ui\atoms\
-2) add needed file backgrounds.js in packages\app\ui\atoms\custom with backgrounds
-3) add function getBackgrounds() in packages\app\lib\functions\functions.js like below
-
-```
-import { 
-    SvgBackgroundSplash, 
-    SvgBackgroundSplashDark,
-    SvgBackgroundCreateAccount,
-    SvgBackgroundCreateAccountDark,
-    SvgBackgroundLogin,
-    SvgBackgroundLoginDark,
-} from 'app/ui/atoms/custom/backgrounds';
-
-export function getBackgrounds() {
-     return {
-        splash: {
-            light: <SvgBackgroundSplash />,
-            dark: <SvgBackgroundSplashDark />,
-        },
-        'create-account': {
-            light: <SvgBackgroundCreateAccount />,
-            dark: <SvgBackgroundCreateAccountDark />,
-        },
-        login: {
-            light: <SvgBackgroundLogin />,
-            dark: <SvgBackgroundLoginDark />,
-        },
-        default: {
-            light: <View className="w-full h-full bg-bgrbody dark:bg-bgrbody-d" />,
-            dark: <View className="w-full h-full bg-bgrbody dark:bg-bgrbody-d" />,
-        }
-    }
-}
-
-```
-
-### add svg images
-
-All custom SVG images should be placed in apps\next\public\svg\local\
-then inserted like 
-
-```
-<SvgFile src_dark="local/create-account-dark.svg" src_default="local/create-account-light.svg" alt="Create account illustration"/>
-
-```
-
-### change favicon & manifest
-
-Favicon should be placed in \apps\next\public\static\favicon.ico
-Manifest should be placed in \apps\next\public\static\manifest.json
-
-example mainfest:
-```
+```json
 {
-  "short_name": "Figuria",
-  "name": "Figuria",
-  "description": "Figuria Social Network",
-  "orientation": "portrait",
-  "icons": [
-    {
-      "src": "logo192.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    },
-    {
-      "src": "maskable_icon_x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "maskable_icon_x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "maskable_icon_x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any "
-    },
-    {
-      "src": "maskable_icon_x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
-  ],
-  "start_url": "/",
-  "background_color": "#13716b",
-  "display": "standalone",
-  "scope": "/",
-  "theme_color": "#13716b"
+  "framework": "nextjs",
+  "installCommand": "cd ../.. && yarn install",
+  "buildCommand": "yarn build",
+  "outputDirectory": ".next"
 }
-
 ```
 
-### add custom font
-1) add fonts in folder app/design/fonts/
-2) for web modify packages\app\design\fonts\fonts-web.js like
+**Steps:**
+1. Connect your repository to Vercel
+2. Set root directory to `apps/next`
+3. Configure environment variables in Vercel dashboard
+4. Deploy
 
+### Self-Hosted Node Server
+
+#### Single Instance
+
+```bash
+# Build the application
+yarn build
+
+# Start production server
+yarn prod
 ```
-/*const mainFont2 = localFont({
-  src: [{ path: './TimesNewRoman.ttf', style: 'normal' }],
-  variable: '--font-main',
-});
 
-const titleFont2 = localFont({
-  src: [{ path: './CenturyGothic.ttf', style: 'normal' }],
-  variable: '--font-title',
-});
+#### PM2 Cluster Mode
 
-export const fontVars = `${mainFont2.variable} ${titleFont2.variable}`;*/
+```bash
+# Install PM2 globally
+npm install -g pm2
 
+# Build and start with PM2
+yarn build
+yarn prod:pm2
 ```
 
-3) for native modify packages\app\design\fonts\fonts.js like
-6) in file  packages\app\design\fonts\fonts.js add
+PM2 configuration in `apps/next/pm2.config.js`:
+- **Local/Dev:** 2 instances, 250MB memory limit
+- **Production:** 4 instances, 1GB memory limit
 
-```
-export default { 
-    'font-main': require('app/design/fonts/TimesNewRoman.ttf'), 
-    'font-title': require('app/design/fonts/CenturyGothic.ttf')
-};
+#### PM2 Management Commands
 
+```bash
+pm2 list              # View running processes
+pm2 logs neoapp       # View logs
+pm2 restart neoapp    # Restart application
+pm2 stop neoapp       # Stop application
+pm2 delete neoapp     # Remove from PM2
 ```
+
+### Native App Distribution
+
+#### EAS Build (Recommended)
+
+```bash
+cd apps/expo
+
+# Development build
+eas build --profile development --platform ios
+eas build --profile development --platform android
+
+# Production build
+eas build --profile production --platform ios
+eas build --profile production --platform android
+
+# Submit to stores
+eas submit --platform ios
+eas submit --platform android
+```
+
+#### Local Build
+
+```bash
+cd apps/expo
+
+# iOS (requires macOS + Xcode)
+expo run:ios --configuration Release
+
+# Android
+expo run:android --variant release
+```
+
+---
+
+## Routing Architecture
+
+NEO uses a hybrid routing strategy:
+
+- **Native (Expo):** File-based routing with `expo-router` in `apps/expo/app/`
+- **Web (Next.js):** App Router in `apps/next/app/`
+- **Cross-platform navigation:** `solito` for shared navigation patterns
+
+For detailed routing documentation, see [docs/routing.md](./docs/routing.md).
+
+---
+
+## Adding Dependencies
+
+### Pure JS Dependencies (Cross-Platform)
+
+```bash
+cd apps/expo
+yarn add package-name
+cd ../..
+yarn
+```
+
+Then add to `transpilePackages` in `apps/next/next.config.js`:
+
+```javascript
+transpilePackages: [
+  'react-native',
+  'react-native-web',
+  'package-name',  // Add here
+  // ...
+]
+```
+
+### Web-Only Dependencies
+
+```bash
+cd apps/next
+yarn add package-name
+cd ../..
+yarn
+```
+
+### Native-Only Dependencies
+
+```bash
+cd apps/expo
+yarn add package-name
+cd ../..
+yarn
+```
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| Module not found | Run `yarn clean && yarn` |
+| Metro bundler cache | Run `yarn native --clear` |
+| Next.js cache | Delete `.next` folder and rebuild |
+| iOS pods outdated | `cd apps/expo/ios && pod install` |
+| Type errors | Run `yarn typecheck` to identify issues |
+
+### Useful Debug Commands
+
+```bash
+# Check workspace dependencies
+yarn workspaces info
+
+# Analyze bundle
+yarn analyze
+
+# Clean all caches
+yarn clean
+rm -rf apps/expo/.expo
+rm -rf apps/next/.next
+yarn
+```
+
+---
+
+## License
+
+See [LICENSE](./LICENSE) for details.

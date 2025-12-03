@@ -1,16 +1,125 @@
 /**
  * NEO Native Test App
  * 
- * Demonstrates icon usage with:
- * - Lucide React Native (primary, consistent with web)
- * - DynamicIcon fallback for other icon sets
+ * Demonstrates:
+ * - Icon usage with Lucide React Native
+ * - Tabs component with HeroUI Native API
  */
 
 import { StatusBar } from 'expo-status-bar'
 import { View, Text, ScrollView } from 'react-native'
-import { Sun, Moon, Home, Settings, User, Bell, Heart, Star } from 'lucide-react-native'
+import { useState } from 'react'
+import { Sun, Moon, Home, Settings, User, Bell, Heart, Star, Image, Music, Video } from 'lucide-react-native'
 import { DynamicIcon } from './components/Icon'
+import { Tabs } from '@neo/test-components'
 import './global.css'
+
+/**
+ * Tabs Demo - Pill Variant (default)
+ */
+function TabsPillDemo() {
+  return (
+    <Tabs defaultValue="photos" variant="solid">
+      <Tabs.ListContainer>
+        <Tabs.List aria-label="Media tabs">
+          <Tabs.Indicator />
+          <Tabs.Trigger value="photos">
+            <Image size={16} color="#71717a" />
+            <Tabs.Label>Photos</Tabs.Label>
+          </Tabs.Trigger>
+          <Tabs.Trigger value="music">
+            <Music size={16} color="#71717a" />
+            <Tabs.Label>Music</Tabs.Label>
+          </Tabs.Trigger>
+          <Tabs.Trigger value="videos">
+            <Video size={16} color="#71717a" />
+            <Tabs.Label>Videos</Tabs.Label>
+          </Tabs.Trigger>
+        </Tabs.List>
+      </Tabs.ListContainer>
+      <Tabs.Content value="photos">
+        <Text className="text-muted-foreground">Your photo gallery</Text>
+      </Tabs.Content>
+      <Tabs.Content value="music">
+        <Text className="text-muted-foreground">Your music library</Text>
+      </Tabs.Content>
+      <Tabs.Content value="videos">
+        <Text className="text-muted-foreground">Your video collection</Text>
+      </Tabs.Content>
+    </Tabs>
+  )
+}
+
+/**
+ * Tabs Demo - Underlined Variant
+ */
+function TabsUnderlinedDemo() {
+  return (
+    <Tabs defaultValue="overview" variant="underlined" color="primary">
+      <Tabs.ListContainer>
+        <Tabs.List aria-label="Navigation tabs">
+          <Tabs.Indicator />
+          <Tabs.Trigger value="overview">
+            <Tabs.Label>Overview</Tabs.Label>
+          </Tabs.Trigger>
+          <Tabs.Trigger value="analytics">
+            <Tabs.Label>Analytics</Tabs.Label>
+          </Tabs.Trigger>
+          <Tabs.Trigger value="reports">
+            <Tabs.Label>Reports</Tabs.Label>
+          </Tabs.Trigger>
+        </Tabs.List>
+      </Tabs.ListContainer>
+      <Tabs.Content value="overview">
+        <Text className="text-muted-foreground">Project overview</Text>
+      </Tabs.Content>
+      <Tabs.Content value="analytics">
+        <Text className="text-muted-foreground">Analytics data</Text>
+      </Tabs.Content>
+      <Tabs.Content value="reports">
+        <Text className="text-muted-foreground">Generated reports</Text>
+      </Tabs.Content>
+    </Tabs>
+  )
+}
+
+/**
+ * Tabs Demo - With Colors
+ */
+function TabsColorsDemo() {
+  const [selected, setSelected] = useState('primary')
+  
+  return (
+    <View className="gap-4">
+      <Tabs value={selected} onValueChange={setSelected} color="success">
+        <Tabs.ListContainer>
+          <Tabs.List aria-label="Color tabs">
+            <Tabs.Indicator />
+            <Tabs.Trigger value="primary">
+              <Tabs.Label>Primary</Tabs.Label>
+            </Tabs.Trigger>
+            <Tabs.Trigger value="success">
+              <Tabs.Label>Success</Tabs.Label>
+            </Tabs.Trigger>
+            <Tabs.Trigger value="warning">
+              <Tabs.Label>Warning</Tabs.Label>
+            </Tabs.Trigger>
+          </Tabs.List>
+        </Tabs.ListContainer>
+        <Tabs.Content value="primary">
+          <Text className="text-muted-foreground">Primary tab content</Text>
+        </Tabs.Content>
+        <Tabs.Content value="success">
+          <Text className="text-muted-foreground">Success tab content</Text>
+        </Tabs.Content>
+        <Tabs.Content value="warning">
+          <Text className="text-muted-foreground">Warning tab content</Text>
+        </Tabs.Content>
+      </Tabs>
+      <Text className="text-xs text-muted-foreground">Selected: {selected}</Text>
+    </View>
+  )
+}
 
 export default function App() {
   return (
@@ -23,9 +132,34 @@ export default function App() {
           NEO Native Test
         </Text>
         <Text className="text-muted-foreground mt-2">
-          Testing Lucide icons (same as web)
+          Testing components with HeroUI Native patterns
         </Text>
       </View>
+      
+      {/* Tabs Demos */}
+      <View className="px-6 py-4">
+        <Text className="text-xl font-semibold text-foreground mb-4">
+          Tabs (Solid/Pill)
+        </Text>
+        <TabsPillDemo />
+      </View>
+      
+      <View className="px-6 py-4">
+        <Text className="text-xl font-semibold text-foreground mb-4">
+          Tabs (Underlined)
+        </Text>
+        <TabsUnderlinedDemo />
+      </View>
+      
+      <View className="px-6 py-4">
+        <Text className="text-xl font-semibold text-foreground mb-4">
+          Tabs (Controlled with Color)
+        </Text>
+        <TabsColorsDemo />
+      </View>
+      
+      {/* Divider */}
+      <View className="h-px bg-border mx-6 my-4" />
       
       {/* Lucide Icons - Primary (Consistent with Web) */}
       <View className="px-6 py-4">

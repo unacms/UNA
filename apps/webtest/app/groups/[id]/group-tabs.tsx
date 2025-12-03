@@ -161,26 +161,26 @@ export function GroupTabs({ groupId, groupName, groupAvatar, feedContent, aboutC
 
               <Tabs.ListContainer>
                 <Tabs.List aria-label="Group sections" className="w-fit bg-transparent px-3 sm:px-4 lg:px-6 py-3 flex-nowrap">
-                <Tabs.Tab id="feed" className="data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground">
+                <Tabs.Tab id="feed" className="aria-selected:text-accent-foreground">
                   Feed
                   <Tabs.Indicator className="bg-accent shadow-none" />
                 </Tabs.Tab>
-                <Tabs.Tab id="about" className="data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground">
+                <Tabs.Tab id="about" className="aria-selected:text-accent-foreground">
                   About
                   <Tabs.Indicator className="bg-accent shadow-none" />
                 </Tabs.Tab>
-                <Tabs.Tab id="members" className="data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground">
+                <Tabs.Tab id="members" className="aria-selected:text-accent-foreground">
                   Members
                   <Tabs.Indicator className="bg-accent shadow-none" />
                 </Tabs.Tab>
                 {respectContent && (
-                  <Tabs.Tab id="respect" className="data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground">
+                  <Tabs.Tab id="respect" className="aria-selected:text-accent-foreground">
                     Respect
                     <Tabs.Indicator className="bg-accent shadow-none" />
                   </Tabs.Tab>
                 )}
                 {mutesContent && (
-                  <Tabs.Tab id="mutes" className="data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground">
+                  <Tabs.Tab id="mutes" className="aria-selected:text-accent-foreground">
                     Mutes
                     <Tabs.Indicator className="bg-accent shadow-none" />
                   </Tabs.Tab>

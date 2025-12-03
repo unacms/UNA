@@ -22,6 +22,7 @@
     "lucide-react-native": "^0.476.0",
     "react": "19.1.0",
     "react-native": "0.81.5",
+    "react-native-reanimated": "~3.17.4",
     "react-native-svg": "^15.0.0",
     "tailwindcss": "^4.0.0",
     "uniwind": "^1.0.0"
