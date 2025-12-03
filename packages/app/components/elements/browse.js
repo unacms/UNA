@@ -11,9 +11,7 @@ import {
 import { View, Row, ScrollView } from 'app/design/view'
 import { Platform } from 'react-native'
 import UniList from 'app/ui/atoms/unilist'
-import {
-    appSetting,
-} from 'app/lib/util'
+import { appSetting, isObjectsEqual} from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
@@ -74,7 +72,7 @@ export default function Browse(props) {
     });
 
     const [showFilters, setShowFilters] = useState(false);
-    const [filterValues, setFilterValues] = useState(null);
+    const [filterValues, setFilterValues] = useState({by_context: '', modules: [], media: []});
 
     /* unit mode & change unit mode */
     const unitMode = props.unitMode
@@ -86,28 +84,32 @@ export default function Browse(props) {
     let formProps = data?.filter_form;
 
     const handleFilterFormChange = useCallback((values) => {
-        setFilterValues(values)
-        const transformedValues = Object.fromEntries(
-            Object.entries(values).map(([key, value]) => [
-                key,
-                Array.isArray(value) ? value.join(',') : value
-            ])
-        );
-        const by_context = transformedValues.by_context ? transformedValues.by_context.split('|') : []; 
-        const contexts = by_context[0] ? { type: by_context[0], context: by_context[1] } : { type: 'feed',  context: '' };
-        dispatch({ type: 'SET_ITEMS', items: [] });
-        refetchRef.current.prevItems = [];
-        refetchRef.current.isFirstLoad = true;
-        refetchRef.current.skipToast = true;
+       console.log("handleFilterFormChange", values, filterValues, isObjectsEqual(filterValues, values))
+        if (!isObjectsEqual(filterValues, values) ){
+             
+            setFilterValues(values)
+            const transformedValues = Object.fromEntries(
+                Object.entries(values).map(([key, value]) => [
+                    key,
+                    Array.isArray(value) ? value.join(',') : value
+                ])
+            );
+            const by_context = transformedValues.by_context ? transformedValues.by_context.split('|') : []; 
+            const contexts = by_context[0] ? { type: by_context[0], context: by_context[1] } : { type: 'feed',  context: '' };
+            dispatch({ type: 'SET_ITEMS', items: [] });
+            refetchRef.current.prevItems = [];
+            refetchRef.current.isFirstLoad = true;
+            refetchRef.current.skipToast = true;
 
-        setDefParams(prev => ({
-            ...prev,
-            modules: transformedValues.modules,
-            media: transformedValues.media,
-            ...contexts
-        }));
+            setDefParams(prev => ({
+                ...prev,
+                modules: transformedValues.modules,
+                media: transformedValues.media,
+                ...contexts
+            }));
 
-        refetch()
+            refetch()
+        }
     });
 
     if (filterValues && formProps){
