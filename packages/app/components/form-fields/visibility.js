@@ -190,13 +190,7 @@ export default function (props) {
         : text || v?.label || t('Choose audience');
 
     if (props.format == 'nofield') {
-
-
-
-        // Optional plain Button rendering when requested
         if (props.noContainer) {
-
-
             return (<>
                 {modalElement}
                 {props.addElement}

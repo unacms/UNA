@@ -10,13 +10,13 @@ import Redirect from 'app/ui/atoms/redirect';
 import { useTranslation } from 'react-i18next';
 import { Modal } from 'app/design/controls'
 
-export default function ProfileSwitcher (props) {
+export default function ProfileSwitcher ({className, rounded = 'rounded-lg', children, hideTitle, listOnly }) {
     const { t } = useTranslation();
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [data, setData] = useState(false)
     const [show, setShow] = useState(false)
     const redirectdRef = useRef();
-    const wrapperClassName = props.className || '';
+    const wrapperClassName = className || '';
 
     const handleSwitch = async (id) => {
         const result = await fetcher('/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' + id);
@@ -45,12 +45,11 @@ export default function ProfileSwitcher (props) {
         return <></>;
     }
 
-    const rounded = props.rounded ? props.rounded : 'rounded-lg'
     return (
         <>
             {true ?
                 <Pressable className={wrapperClassName} onPress={() => handleClick()}>
-                    {props.children}
+                    {children}
                 </Pressable> :
                 <Link href={currentUser.url} emulate={true} >
                     <Row className={(rounded + " w-full group items-center px-0.5 justify-between cursor-pointer hover:bg-bgrbutton dark:hover:bg-bgrbutton-d " + wrapperClassName).trim()}>
@@ -86,7 +85,7 @@ export default function ProfileSwitcher (props) {
                 <Redirect ref={redirectdRef} />
                 <ScrollView>
                 <View className="   flex-col">
-                    {!props.hideTitle && <View className="flex-row items-center  justify-between">
+                    {!hideTitle && <View className="flex-row items-center  justify-between">
                         <Text className="text-lg px-1.5 py-2 font-bold text-neutral-800 dark:text-neutral-200 ">
                             Your Profiles
                         </Text>
@@ -111,7 +110,7 @@ export default function ProfileSwitcher (props) {
                             </Link>
                         )
                     })}
-                    <View className='sm:flex-row justity-between mt-4 w-full sm:mx-0'>
+                    {!listOnly && <View className='sm:flex-row justity-between mt-4 w-full sm:mx-0'>
                         {!!currentUser?.menu?.items && currentUser.menu.items.map((item, index) => (
                             <View key={index} className={'mb-2 sm:mb-0 w-full sm:w-1/' + (currentUser.menu.items.length + 1) + ' pr-2 '}>
                                 <Link href={`/${item.name}`}>
@@ -134,7 +133,7 @@ export default function ProfileSwitcher (props) {
                                 />
                             </Link>
                         </View>}
-                    </View>
+                    </View>}
                 </View>
                 </ScrollView>
             </Modal>}

@@ -17,7 +17,9 @@ import { useFormContext } from 'react-hook-form'
 import { getEditorHeight } from 'app/lib/form-helpers';
 import { PollButton, LabelButton, FileButton } from 'app/lib/form-helpers'
 import { useBreakpoint, useWindowHeight } from 'app/context/measure';
+import ProfileSwitcher from 'app/components/elements/profile_switcher'
 import emitter from 'app/context/emitter';
+import { Icon } from 'app/ui/atoms/icon'
 
 function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setShowImage, author }) {
     const { currentUser } = useCurrentUser();
@@ -185,18 +187,59 @@ export default function FormFeed(props) {
         text = stripTags(text).trim()
     }
 
-    const header = (
-        <Row className="w-full items-start">
+    const { currentUser } = useCurrentUser();
+    const hasMultipleProfiles = currentUser?.profiles_count > 1;
 
-            <View className="flex-auto">
-                <ProfileView
-                    author={props.exProps?.item?.author_data}
-                    data={props.data}
-                    handleSubmit={props.handleSubmit}
-                    showImage={showImage}
-                    setShowImage={setShowImage}
-                />
-            </View>
+    const displayProfile = props.exProps?.item?.author_data ? props.exProps?.item?.author_data : {
+        ...currentUser,
+        url_avatar: currentUser.avatar,
+        url: null,
+    };
+
+    const profileData = {
+        ...displayProfile,
+        url_avatar: displayProfile.url_avatar || displayProfile.avatar,
+        url: null,
+    };
+
+    const header = (
+        <Row className="w-full items-center justify-between gap-x-2">
+            <Row className="gap-1 flex-row flex-auto items-center">
+                <ProfileSwitcher hideTitle={true} listOnly={true}>
+                    <Button 
+                        size="sm" 
+                        variant="secondary" 
+                        startDecorator={<Profile {...profileData} displaySize="xs" displayType="unit_wo_info" />} 
+                        title={displayProfile.display_name} 
+                        endDecorator={hasMultipleProfiles ? 'ChevronsUpDown' : null}
+                    />
+                </ProfileSwitcher>
+
+                <Icon
+                        icon="ChevronRight"
+                        size={16}
+                        className="text-muted-foreground opacity-60"
+                    />
+                    
+                {props.data?.inputs?.['object_privacy_view'] ? getFormFieldByData(
+                    {
+                        ...props.data.inputs['object_privacy_view'],
+                    },
+                    props.handleSubmit,
+                    'nofield',
+                    {
+                        onShowModal: setShowImage,
+                        showModal: showImage,
+                        size: 'sm',
+                        maxLength: 0,
+                        variant: 'secondary',
+                        noContainer: true,
+                        align: 'start',
+
+                    }
+                ) : 'hz'}
+            </Row>
+
 
             <Button
                 onPress={onClose}
@@ -218,7 +261,7 @@ export default function FormFeed(props) {
     const isLabelsPresent = !!props.data.inputs['labels'];
 
     let isButtonDisabled = false;
-    if ( text == '')
+    if (text == '')
         isButtonDisabled = true;
     if (!isHiddenVisibility && object_privacy_view == '')
         isButtonDisabled = true;
@@ -230,9 +273,9 @@ export default function FormFeed(props) {
         {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
         <View className="justify-between flex-col flex-auto ">
             <View className="w-full flex-1 justify-start px-3 ">
-                <View 
+                <View
                     className="flex-auto"
-                    style={{ 
+                    style={{
                         height: editorHeight,
                         ...(isWeb && { transition: 'height 0.1s cubic-bezier(0.25, 0.1, 0.25, 1)' })
                     }}
@@ -341,7 +384,7 @@ export default function FormFeed(props) {
                             )}
                             {props.data.inputs['video'] && (
                                 <View className="">
-                                    <FileButton field_name='video' icon="Image" tooltip='Add Photos or Videos'  />
+                                    <FileButton field_name='video' icon="Image" tooltip='Add Photos or Videos' />
                                 </View>
                             )}
                             {(props.data.inputs['video'] && !isWeb) && (
@@ -351,7 +394,7 @@ export default function FormFeed(props) {
                             )}
                             {props.data.inputs['file'] && (
                                 <View>
-                                    <FileButton field_name='file' icon="Paperclip"  />
+                                    <FileButton field_name='file' icon="Paperclip" />
                                 </View>
                             )}
                             {isLabelsPresent && (
@@ -413,7 +456,7 @@ export default function FormFeed(props) {
                         />
                     )}
                     onVisible={showImage}
-                    
+
                     {...(!isSmall && { onClose: handleModalClose })}
                     padding=" p-0 "
                     transparent={true}
