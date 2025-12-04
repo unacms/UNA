@@ -548,7 +548,7 @@ export function RouterIntegrationDemo() {
       </p>
       <Tabs 
         variant="underlined"
-        selectedKey={tabs[0].id}  // In real app: pathname
+        selectedKey={tabs[0]?.id ?? '/dashboard'}  // In real app: pathname
         onSelectionChange={handleSelectionChange}
       >
         <Tabs.ListContainer>
