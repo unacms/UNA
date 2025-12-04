@@ -41,9 +41,8 @@ const checkInputType = (name, form_name, input_name) => {
 }
 
 export default function (props) {
-   
     const data = props.data;
-    const cacheKey = props?.request?.url || false;
+    
     const response = props.response;
     const onFormSubmit = props.onFormSubmit;
     const isAutoChange = !!props.onChange;
@@ -74,7 +73,9 @@ export default function (props) {
             }
 
             ['visibility', 'selector'].forEach(type => {
+                
                 if (checkInputType(type, name, data.inputs[key].name)) {
+                    
                     data.inputs[key].origtype = data.inputs[key].origtype || data.inputs[key].type;
                     data.inputs[key].type = type;
                 }
@@ -85,6 +86,9 @@ export default function (props) {
         }
     }
 
+    const { csrf_token, ...restDefaultValues } = defaultValues; 
+   
+    const cacheKey = props?.request?.url+JSON.stringify(restDefaultValues) || false;
 
     const onSubmit = async d => {
         FeedbackHaptics('Medium')
@@ -238,6 +242,7 @@ export default function (props) {
         )
     }
 
+    
     const defaultFormValues = Object.keys(allFields).reduce((result, key) => {
         if (defaultValues.hasOwnProperty(key) && data.inputs[key].type !== 'location') {
             result[key] = defaultValues[key];
