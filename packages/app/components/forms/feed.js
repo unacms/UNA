@@ -21,7 +21,7 @@ import ProfileSwitcher from 'app/components/elements/profile_switcher'
 import emitter from 'app/context/emitter';
 import { Icon } from 'app/ui/atoms/icon'
 
-function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setShowImage, author }) {
+/*function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setShowImage, author }) {
     const { currentUser } = useCurrentUser();
 
     if (!currentUser) return null;
@@ -72,12 +72,12 @@ function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setSh
             </View>
         </View>
     );
-}
+}*/
 
-export default function FormFeed(props) {
+export default function FormFeed({data, handleSubmit, exProps, name, response}) {
     const formContext = useFormContext()
     const { t } = useTranslation()
-    const isFormOnly = props.exProps?.formOnly === true || props.name === 'feed_edit';
+    const isFormOnly = exProps?.formOnly === true || name === 'feed_edit';
 
     const [showImage, setShowImage] = useState(isFormOnly ? true : false);
     const [modalKey, setModalKey] = useState(0);
@@ -147,18 +147,16 @@ export default function FormFeed(props) {
 
     function onClose() {
         setShowImage(false)
-        if (props.exProps?.onClose) {
-            props.exProps.onClose()
-        }
+        exProps?.onClose?.();
     }
 
     useEffect(() => {
-        if (props.response?.id && props.response?.id != responseId) {
-            emitter.emit('feed', { action: 'new_content', data: props.response });
+        if (response?.id && response?.id != responseId) {
+            emitter.emit('feed', { action: 'new_content', data: response });
             onClose();
-            setResponseId(props.response?.id)
+            setResponseId(response?.id)
         }
-    }, [props.response?.id])
+    }, [response?.id])
 
     useEffect(() => {
         if (showImage) {
@@ -180,7 +178,7 @@ export default function FormFeed(props) {
 
     let text = formContext.watch('text');
     let object_privacy_view = formContext.watch('object_privacy_view');
-    const isHiddenVisibility = props.data?.inputs?.['object_privacy_view']?.origtype == 'hidden' || !props.data?.inputs?.['object_privacy_view']
+    const isHiddenVisibility = data?.inputs?.['object_privacy_view']?.origtype == 'hidden' || !data?.inputs?.['object_privacy_view']
     console.log("object_privacy_view", object_privacy_view)
     if (!text) text = ''
     if (typeof text === 'string') {
@@ -190,7 +188,7 @@ export default function FormFeed(props) {
     const { currentUser } = useCurrentUser();
     const hasMultipleProfiles = currentUser?.profiles_count > 1;
 
-    const displayProfile = props.exProps?.item?.author_data ? props.exProps?.item?.author_data : {
+    const displayProfile = exProps?.item?.author_data || {
         ...currentUser,
         url_avatar: currentUser.avatar,
         url: null,
@@ -220,12 +218,12 @@ export default function FormFeed(props) {
                         size={16}
                         className="text-muted-foreground opacity-60"
                     />
-                    
-                {props.data?.inputs?.['object_privacy_view'] ? getFormFieldByData(
+
+                {data?.inputs?.['object_privacy_view'] ? getFormFieldByData(
                     {
-                        ...props.data.inputs['object_privacy_view'],
+                        ...data.inputs['object_privacy_view'],
                     },
-                    props.handleSubmit,
+                    handleSubmit,
                     'nofield',
                     {
                         onShowModal: setShowImage,
@@ -257,8 +255,8 @@ export default function FormFeed(props) {
     }, []);
 
 
-    const isPollsPresent = !!props.data.inputs['polls'];
-    const isLabelsPresent = !!props.data.inputs['labels'];
+    const isPollsPresent = !!data.inputs['polls'];
+    const isLabelsPresent = !!data.inputs['labels'];
 
     let isButtonDisabled = false;
     if (text == '')
@@ -267,10 +265,10 @@ export default function FormFeed(props) {
         isButtonDisabled = true;
 
     const form = <KbAvoidingView className="flex-1">
-        {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default')}
-        {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
-        {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
-        {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
+        {getFormFieldByData(data.inputs['action'], handleSubmit, 'default')}
+        {getFormFieldByData(data.inputs['object_cf'], handleSubmit, 'default')}
+        {getFormFieldByData(data.inputs['owner_id'], handleSubmit, 'default')}
+        {getFormFieldByData(data.inputs['type'], handleSubmit, 'default')}
         <View className="justify-between flex-col flex-auto ">
             <View className="w-full flex-1 justify-start px-3 ">
                 <View
@@ -281,11 +279,11 @@ export default function FormFeed(props) {
                     }}
                 >
                     {getFormFieldByData(
-                        props.data.inputs['text'],
-                        props.handleSubmit,
+                        data.inputs['text'],
+                        handleSubmit,
                         'custom',
                         {
-                            form_name: props.name,
+                            form_name: name,
                             styles: { verticalAlign: 'top' },
                             focus: true,
                             noPadding: true,
@@ -302,24 +300,24 @@ export default function FormFeed(props) {
                     <Row className='flex-wrap w-full'>
                         {
                             getFormFieldByData(
-                                props.data.inputs['video'],
-                                props.handleSubmit,
+                                data.inputs['video'],
+                                handleSubmit,
                                 'notitle',
                                 { hide_button: true, list_only: true }
                             )
                         }
                         {
                             getFormFieldByData(
-                                props.data.inputs['photo'],
-                                props.handleSubmit,
+                                data.inputs['photo'],
+                                handleSubmit,
                                 'notitle',
                                 { hide_button: true, list_only: true }
                             )
                         }
                         {
                             getFormFieldByData(
-                                props.data.inputs['file'],
-                                props.handleSubmit,
+                                data.inputs['file'],
+                                handleSubmit,
                                 'notitle',
                                 { hide_button: true, list_only: true }
                             )
@@ -330,8 +328,8 @@ export default function FormFeed(props) {
                         <View className="flex-auto">
                             {
                                 getFormFieldByData(
-                                    props.data.inputs['labels'],
-                                    props.handleSubmit,
+                                    data.inputs['labels'],
+                                    handleSubmit,
                                     'notitle',
                                     { hide_button: true, noPadding: true }
                                 )
@@ -341,8 +339,8 @@ export default function FormFeed(props) {
                     {isPollsPresent && (
                         <View className="">
                             {getFormFieldByData(
-                                props.data.inputs['polls'],
-                                props.handleSubmit,
+                                data.inputs['polls'],
+                                handleSubmit,
                                 'custom',
                                 { hide_button: true }
                             )}
@@ -366,33 +364,31 @@ export default function FormFeed(props) {
 
                     <Row className="gap-x-2 w-full justify-between ">
                         <Row className="flex-none gap-x-2">
-                            {props.data.inputs['obfuscate_faces'] && (
+                            {data.inputs['obfuscate_faces'] && (
                                 <View className="">
                                     {getFormFieldByData(
-                                        props.data.inputs['obfuscate_faces'],
-                                        props.handleSubmit,
+                                        data.inputs['obfuscate_faces'],
+                                        handleSubmit,
                                         'default'
-
-
                                     )}
                                 </View>
                             )}
-                            {props.data.inputs['photo'] && (
+                            {data.inputs['photo'] && (
                                 <View className="">
                                     <FileButton field_name='photo' icon="Image" tooltip='Add Photos' />
                                 </View>
                             )}
-                            {props.data.inputs['video'] && (
+                            {data.inputs['video'] && (
                                 <View className="">
                                     <FileButton field_name='video' icon="Image" tooltip='Add Photos or Videos' />
                                 </View>
                             )}
-                            {(props.data.inputs['video'] && !isWeb) && (
+                            {(data.inputs['video'] && !isWeb) && (
                                 <View className="">
                                     <FileButton field_name='video' icon="Image" />
                                 </View>
                             )}
-                            {props.data.inputs['file'] && (
+                            {data.inputs['file'] && (
                                 <View>
                                     <FileButton field_name='file' icon="Paperclip" />
                                 </View>
@@ -411,8 +407,8 @@ export default function FormFeed(props) {
                         <View className=" flex-1 web:flex-none items-end ">
                             <View>
                                 {getFormFieldByData(
-                                    props.data.inputs['tlb_do_submit'],
-                                    props.handleSubmit,
+                                    data.inputs['tlb_do_submit'],
+                                    handleSubmit,
                                     'default',
                                     {
                                         disabled: isButtonDisabled,
@@ -442,15 +438,15 @@ export default function FormFeed(props) {
         )
     }
 
-    return (
+    /*return (
         <View className="w-full">
             {showImage && (
                 <Modal
                     key={modalKey}
                     title={isSmall ? header : (
                         <ProfileView
-                            data={props.data}
-                            handleSubmit={props.handleSubmit}
+                            data={data}
+                            handleSubmit={handleSubmit}
                             showImage={showImage}
                             setShowImage={setShowImage}
                         />
@@ -466,7 +462,7 @@ export default function FormFeed(props) {
                     {form}
                 </Modal>
             )}
-            {props.exProps?.mode == 'button' ? (
+            {exProps?.mode == 'button' ? (
                 <Button
                     variant="primary"
                     title="Post"
@@ -513,5 +509,5 @@ export default function FormFeed(props) {
                 </Card>
             )}
         </View>
-    )
+    )*/
 }
