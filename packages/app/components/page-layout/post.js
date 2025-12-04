@@ -63,8 +63,6 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     const localUrl = isModal ? url : useLocalSearchParams().url;
     const commentsData = useMemo(() => data?.layout_parsed ? data.elements.cell_bottom[0] : DataByName(data, blocks?.comments), [data, blocks?.comments]);
 
-    console.log("commentsData", commentsData)
-
     // for modal
     const offset = isDesktop ? 100 : 60
     const [height, setHeight] = useState(
@@ -105,9 +103,11 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
     const mainBlocks = isDesktop ? centerBlocks : [...centerBlocks, ...sideBarBlocks, ...leftBarBlocks]
 
+    console.log("mainBlocks", mainBlocks)
+
     const aItems = useMemo(() => mainBlocks.map((value) => ({
         id: `block_${value.name}`,
-        data: <View className={value.name.includes("entity_text_block") || value.name.includes("get_block_text_and_subentries") ? 'px-4' : ''}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
+        data: <View className={value.name.includes("entity_text_block") || value.name.includes("get_block_text_and_subentries") ? 'px-4' : ''}><BlockByName isModal={isModal} data={data} name={value} contentOnly={value.sidebar || value.ledtbar ? false : true} /></View>
     })), [blocks, data, isDesktop]);
 
 
