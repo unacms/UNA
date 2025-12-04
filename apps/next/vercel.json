@@ -3,6 +3,7 @@
   "framework": "nextjs",
   "installCommand": "cd ../.. && yarn install",
   "buildCommand": "yarn build",
-  "outputDirectory": ".next"
+  "outputDirectory": ".next",
+  "git": { "deploymentEnabled": false }
 }
 
