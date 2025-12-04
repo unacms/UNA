@@ -233,13 +233,13 @@ export function BlockWrapper(props) {
                             {stripTags(block.title)}
                         </Text>}
                         </BlockName>
-                        {config.header_more_url && (<BlockActions>
-                            <Link href={config.header_more_url}>
+                        {config?.header_more_url && (<BlockActions>
+                            <Link href={config?.header_more_url}>
                                 <Button
                                     variant="link"
                                     size="sm"
                                     rounded
-                                    title={t(config.header_more_text || 'View All')}
+                                    title={t(config?.header_more_text || 'View All')}
                                 />
                             </Link>
                         </BlockActions>)}
