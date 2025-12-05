@@ -1,10 +1,12 @@
 import Form from 'app/components/form';
-
+import { BlockWrapper } from 'app/components/block-wrapper'
 export default function ElementForm(props) {
 
     const { classContainerName, ...rest } = props
     return (
-        <Form {...rest} />
+        <BlockWrapper {...props.blockWrapperProps}>
+            <Form {...rest} />
+        </BlockWrapper>
     );
 }
 

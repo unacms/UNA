@@ -5,10 +5,11 @@ import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import Mapbox from "@rnmapbox/maps";
 import { useWindowHeight } from 'app/context/measure';
+import { BlockWrapper } from 'app/components/block-wrapper'
 
 //TODO SMALL POINTS + desc
 //https://blog.logrocket.com/building-custom-maps-react-native-mapbox/
-export default function ElementMapBox({ data }) {
+export default function ElementMapBox({ data, blockWrapperProps }) {
     Mapbox.setAccessToken("sk.eyJ1Ijoicm9tYW5sZXMiLCJhIjoiY204Zm9sMWMzMGJiaTJqcXRvdmpseHBuaiJ9.uajA_y3AmjRkBYgy4i2RdQ");
     const mapRef = useRef(null);
     const [selectedlayers, setSelectedLayers] = useState(['incarcerees']);
@@ -135,6 +136,7 @@ export default function ElementMapBox({ data }) {
     };
 
     return (
+        <BlockWrapper {...blockWrapperProps}>
         <View className="w-full " style={{ height: windowHeight - 134 }}>
             <Row className="gap-x-4 mb-2 justify-center">
                 {dataSources.map((layer, index) => (
@@ -186,6 +188,6 @@ export default function ElementMapBox({ data }) {
                 </Mapbox.MapView>
             </View>
         </View>
-
+</BlockWrapper>
     )
 }

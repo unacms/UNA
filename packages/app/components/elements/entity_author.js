@@ -1,4 +1,4 @@
-import { getAlert, getPageData } from 'app/lib/util';
+import { getAlert } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
 import { Button } from 'app/design/controls';
 import { View, Row } from 'app/design/view';
@@ -10,18 +10,16 @@ import { Text } from 'app/design/typography'
 import { fetcher } from 'app/lib/fetcher'
 import Redirect from 'app/ui/atoms/redirect'
 import { useRef, useState, useEffect } from 'react';
-//import use-SWR from 'swr'
 import useFetchForm from 'app/lib/hooks/fetch'
 import { Modal } from 'app/design/controls'
-import { useTranslation } from 'react-i18next';
 import Form from 'app/components/elements/form'
 import { useLayoutData } from 'app/context/layout';
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
-import { cd } from 'app/lib/util'
 import { useIsDesktop } from 'app/context/measure';
+import { BlockWrapper } from 'app/components/block-wrapper'
 
-export default function ElementEntityAuthor(oProps) {
-    let { currentUser } = useCurrentUser();
+export default function ElementEntityAuthor({data, blockWrapperProps}) {
+    const { currentUser } = useCurrentUser();
     const [viewState, setViewState] = useState({ view: '' })
     const [postData, setPostData] = useState(null)
     const { setLayoutData } = useLayoutData()
@@ -30,15 +28,15 @@ export default function ElementEntityAuthor(oProps) {
     const sInfo = (
         <Row className='flex-none gap-1 items-center justify-start text-muted-foreground text-xs font-medium leading-4 '>
             <Time size="xs"
-                ts={oProps.data.entry_date}
+                ts={data.entry_date}
             />
             {
-                !!oProps.data?.entry_context?.id && (
+                !!data?.entry_context?.id && (
 
                     <Row className='items-center'>
                         <Text className=" text-center flex-auto font-medium"> in </Text>
-                        <Profile {...oProps.data.entry_context} displayType="unit_wo_info" displaySize="2xs" />
-                        <Text className="text-muted-foreground text-xs  leading-5 text-center flex-auto font-medium ">{oProps.data.entry_context.display_name}</Text>
+                        <Profile {...data.entry_context} displayType="unit_wo_info" displaySize="2xs" />
+                        <Text className="text-muted-foreground text-xs  leading-5 text-center flex-auto font-medium ">{data.entry_context.display_name}</Text>
 
                     </Row>
 
@@ -48,7 +46,7 @@ export default function ElementEntityAuthor(oProps) {
 
     let handleMenuManageSelect = false
 
-    const item_id = oProps?.data?.entry_id;
+    const item_id = data?.entry_id;
     const redirectdRef = useRef();
 
     /*const { data: dynamicData, error } = useSWR(
@@ -73,8 +71,8 @@ export default function ElementEntityAuthor(oProps) {
     }
 
     let aMenuManageItems = [];
-    if (!!currentUser && oProps?.data?.menu_manage?.items) {
-        oProps.data.menu_manage.items.forEach((aItem) => {
+    if (!!currentUser && data?.menu_manage?.items) {
+        data.menu_manage.items.forEach((aItem) => {
             if (aItem?.display_type && (aItem.display_type != 'link' && aItem.name != 'report'))
                 return;
 
@@ -89,7 +87,7 @@ export default function ElementEntityAuthor(oProps) {
 
     aMenuManageItems = aMenuManageItems.filter((item) => (item.title != ''))
 
-    if (oProps?.data?.menu_manage?.object == 'bx_timeline_menu_item_manage') {
+    if (data?.menu_manage?.object == 'bx_timeline_menu_item_manage') {
         handleMenuManageSelect = async (oItem, event) => {
 
             switch (oItem.name) {
@@ -116,6 +114,7 @@ export default function ElementEntityAuthor(oProps) {
     const menuOptions = handleMenuManageSelect ? { onSelect: (oItem, event) => handleMenuManageSelect(oItem, event, setPageData) } : {};
 
     return (
+        <BlockWrapper {...blockWrapperProps}>
         <Row className="justify-between gap-3 p-4">
             <FormModal pageData={pageData} setPageData={setPageData} />
             <Redirect ref={redirectdRef} />
@@ -136,15 +135,15 @@ export default function ElementEntityAuthor(oProps) {
             </Modal>)
             }
 
-            <View className={oProps.data.text ? '' : 'flex-auto'}>
-                <Profile {...oProps.data.author_data} displayType="unit" displaySize={isDesktop ? "lg" : "base"} className='hidden lg:flex' showInfo={sInfo} />
+            <View className={data.text ? '' : 'flex-auto'}>
+                <Profile {...data.author_data} displayType="unit" displaySize={isDesktop ? "lg" : "base"} className='hidden lg:flex' showInfo={sInfo} />
             </View>
 
-            {(oProps.data.text && false) && (
+            {(data.text && false) && (
                 <View className='flex-auto overflow-hidden text-ellipsis w-1/2 lg:w-auto px-4'>
-                    <Link href={oProps.data.url}>
+                    <Link href={data.url}>
                         <Text className=" lg:text-center overflow-hidden text-ellipsis text-lg font-bold font-bold  text-neutral-900 dark:text-neutral-50 overflow" numberOfLines={2}>
-                            {oProps.data.text}
+                            {data.text}
                         </Text>
                     </Link>
                 </View>
@@ -158,5 +157,6 @@ export default function ElementEntityAuthor(oProps) {
                 }
             </View>
         </Row>
+        </BlockWrapper>
     );
 }

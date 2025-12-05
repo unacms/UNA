@@ -24,6 +24,7 @@ import { Platform } from 'react-native'
 import { useRouter, useNavigation } from 'app/lib/hooks/router'
 import { getComponent } from 'app/components/registry'
 import { useIsDesktop } from 'app/context/measure';
+import { BlockWrapper } from 'app/components/block-wrapper'
 
 const conductorTheme = appSetting('theme', 'conductor')
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')

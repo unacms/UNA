@@ -6,8 +6,9 @@ import Link from 'app/ui/atoms/link';
 import { Modal } from 'app/design/controls'
 import Video from 'app/ui/atoms/video';
 import { FeedbackHaptics } from 'app/lib/util';
+import { BlockWrapper } from 'app/components/block-wrapper'
 
-export default function ({ data }) {
+export default function ElementEntityAttachments({ data, blockWrapperProps }) {
 
     const [showImage, setShowImage] = useState(false);
 
@@ -64,7 +65,7 @@ export default function ({ data }) {
     }
     
     return (
-        <>
+        <BlockWrapper {...blockWrapperProps}>
             <Modal id={'file-preview'} title="Preview title" onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
                 <View className="w-full h-64 lg:h-96" >
                     {showImage && showImage[1] == 'image' && <Image className="w-full h-full" src={showImage[0]} alt='' view="cover" />}
@@ -74,7 +75,7 @@ export default function ({ data }) {
             <Row className="relative  flex-wrap lg:p-4 p-2 sm:my-0 bg-card  w-full mx-auto max-w-4xl">
                 {aImages}
             </Row>
-        </>
+        </BlockWrapper>
     );
    
     

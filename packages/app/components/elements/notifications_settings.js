@@ -1,15 +1,14 @@
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Switch from 'app/ui/atoms/switcher'
-import { Theme } from 'app/design/theme';
 import { fetcher } from 'app/lib/fetcher';
 import { Button } from 'app/design/controls'
 import { firstLetterCap } from 'app/lib/util';
 import { useTranslation } from 'react-i18next';
+import { BlockWrapper } from 'app/components/block-wrapper'
 
-export default function (props) {
-    const { colors } = Theme();
+export default function (props, blockWrapperProps) {
     const [activeIndex, setActiveIndex] = useState(0);
     let aData = [];
     const { t } = useTranslation();
@@ -38,7 +37,7 @@ export default function (props) {
         } : item));
     }
 
-    return <>
+    return <BlockWrapper {...blockWrapperProps}>
         <Row className='p-2'>
             {
                 data.map((item, index) => {
@@ -73,5 +72,5 @@ export default function (props) {
                 }
             })
         }
-    </>
+    </BlockWrapper>
 }

@@ -26,6 +26,7 @@ import { useWindowHeight } from 'app/context/measure';
 import emitter from 'app/context/emitter'
 import Snackbar from 'app/ui/atoms/snackbar'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
+import { BlockWrapper } from 'app/components/block-wrapper'
 
 import {
     refetchUniListReducer,
@@ -393,6 +394,7 @@ export default function Browse(props) {
     }
 
     return (
+        <BlockWrapper {...props.blockWrapperProps}>
         <View className={`w-full ${isOneLine ? '' : 'h-full'}`}>
             <View className="w-full" ></View>
             <View className={`w-full ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''}`} style={isOneLine ? {} : styles}>
@@ -467,6 +469,6 @@ export default function Browse(props) {
                 title="Show New"
                 size="sm"
             />
-        </View>
+        </View></BlockWrapper>
     )
 }

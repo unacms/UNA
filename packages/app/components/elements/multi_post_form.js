@@ -1,7 +1,7 @@
-import { View, Row, ScrollView, Pressable } from 'app/design/view'
-import { Button, Modal } from 'app/design/controls'
-import { useState, useContext, useEffect, useCallback, useMemo } from 'react'
-import { FeedbackHaptics, getAlert, menuItemsByNameNew, cloneObject, appSetting } from 'app/lib/util'
+import { Row, Pressable } from 'app/design/view'
+import { Button } from 'app/design/controls'
+import { useState, useEffect, useMemo } from 'react'
+import { menuItemsByNameNew, cloneObject, appSetting } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
 import { CardList } from 'app/ui/molecules/card'
@@ -9,8 +9,9 @@ import { useTranslation } from 'react-i18next'
 import FormModal, { handleFormModal, getFormModal } from 'app/ui/molecules/form_modal';
 import { Text, H2 } from 'app/design/typography'
 import { cd } from 'app/lib/util'
+import { BlockWrapper } from 'app/components/block-wrapper'
 
-export default function MultiPostForm({ data }) {
+export default function MultiPostForm({ data, blockWrapperProps }) {
     const { currentUser } = useCurrentUser();
     const { t } = useTranslation()
     const [pageData, setPageData] = useState(false);
@@ -48,25 +49,26 @@ export default function MultiPostForm({ data }) {
         return;
 
     return (
+        <BlockWrapper {...blockWrapperProps}>
+            <CardList className="flex-row gap-2 lg:gap-3">
+                <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
 
-        <CardList className="flex-row gap-2 lg:gap-3">
-            <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
-              
-                    <Pressable 
-                        onPress={getFirstForm}
-                        className={`${appSetting('feed', 'post_trigger')}`}
-                    >
-                        <Text>{t('Create new ') + firstForm.title.toLowerCase()}</Text>
-                    </Pressable>
-            
-            <FormModal key={pageData?.ts} pageData={pageData} setPageData={setPageData} />
-            {menu_add_items.length > 0 && <Row className={` ${cd('gap-sm')} flex-none`}>
-                {menu_add_items.map((item, index) => (
-                    <Button key={item.name} size="base" fullWidth variant="secondary" rounded iconOnly onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon}  />
-                ))}
-            </Row>}
-            
-        </CardList>
+                <Pressable
+                    onPress={getFirstForm}
+                    className={`${appSetting('feed', 'post_trigger')}`}
+                >
+                    <Text>{t('Create new ') + firstForm.title.toLowerCase()}</Text>
+                </Pressable>
+
+                <FormModal key={pageData?.ts} pageData={pageData} setPageData={setPageData} />
+                {menu_add_items.length > 0 && <Row className={` ${cd('gap-sm')} flex-none`}>
+                    {menu_add_items.map((item, index) => (
+                        <Button key={item.name} size="base" fullWidth variant="secondary" rounded iconOnly onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon} />
+                    ))}
+                </Row>}
+
+            </CardList>
+        </BlockWrapper>
 
     )
 }

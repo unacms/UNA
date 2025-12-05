@@ -4,12 +4,13 @@ import { fetcher } from 'app/lib/fetcher';
 import { useCurrentUser } from 'app/context/user';
 import { View } from 'app/design/view'
 import { Loading } from 'app/loading'
+import { BlockWrapper } from 'app/components/block-wrapper'
 
 const handleNotificationsChange = ({ total, actionRequired }) => {
     console.log('Всего уведомлений:', total, 'Требуют действия:', actionRequired);
 };
 
-export default function NotificationBanner({ data }) {
+export default function NotificationBanner({ data, blockWrapperProps }) {
 
     const secretRef = useRef(null);
     const { currentUser } = useCurrentUser();
@@ -55,5 +56,11 @@ export default function NotificationBanner({ data }) {
         };
     }, [currentUser.id]);
 
-    return <View ref={containerRef} className={`w-full overflow-hidden ${heights[data.embed]}`} ><Loading/></View>;
+    return (
+        <BlockWrapper {...blockWrapperProps}>
+            <View ref={containerRef} className={`w-full overflow-hidden ${heights[data.embed]}`} >
+                <Loading/>
+            </View>
+        </BlockWrapper>
+    );
 }

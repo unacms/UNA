@@ -1,11 +1,11 @@
-import { View, Row } from 'app/design/view';
-import { Text } from 'app/design/typography';
-import Time from 'app/ui/atoms/time';
 import ProfilesList from 'app/ui/molecules/profile_list'
+import { BlockWrapper } from 'app/components/block-wrapper'
 
-export default function ElementProfilesList({data}) {
-    
+export default function ElementProfilesList({ data, blockWrapperProps }) {
+
     return (
-          <ProfilesList data={data.data} showEmpty={false} maxCount={12} displaySize="lg" />
+        <BlockWrapper {...blockWrapperProps}>
+            <ProfilesList data={data.data} showEmpty={false} maxCount={12} displaySize="lg" />
+        </BlockWrapper>
     );
 }

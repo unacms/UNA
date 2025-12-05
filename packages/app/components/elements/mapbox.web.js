@@ -2,9 +2,11 @@ import { View, Row } from 'app/design/view'
 import { useState, useRef, useCallback, lazy, Suspense } from 'react';
 import { Button } from 'app/design/controls'
 import Loading from 'app/ui/atoms/loading'
+import { BlockWrapper } from 'app/components/block-wrapper'
+
 const MapComponent = lazy(() => import('app/components/elements/mapbox-inner'));
 
-export default function ElementMapBox({ data }) {
+export default function ElementMapBox({ data, blockWrapperProps }) {
     const mapRef = useRef(null);
     const [selectedlayers, setSelectedLayers] = useState(['incarcerees']);
     const [popupInfo, setPopupInfo] = useState(null); // Данные для popup
@@ -81,6 +83,7 @@ export default function ElementMapBox({ data }) {
     };
 
     return (
+        <BlockWrapper {...blockWrapperProps}>
         <View className=" items-center">
             <Row className="gap-x-4 my-2">
                 {dataSources.map((layer, index) => (
@@ -100,5 +103,6 @@ export default function ElementMapBox({ data }) {
                 </Suspense>
             </View>
         </View>
+        </BlockWrapper>
     )
 }

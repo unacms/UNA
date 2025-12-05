@@ -1,10 +1,10 @@
 
 import { View } from 'app/design/view'
 import { useRef } from 'react';
-
+import { BlockWrapper } from 'app/components/block-wrapper'
 import Mapbox from "@rnmapbox/maps";
 
-export default function ElementMap({ data, height }) {
+export default function ElementMap({ data, height, blockWrapperProps }) {
     if (!data.location?.lat)
         return <></>
 
@@ -13,17 +13,19 @@ export default function ElementMap({ data, height }) {
     const mapRef = useRef(null);
 
     return (
-        <View className='w-full aspect-square' style={{ height: height }}>
-            <Mapbox.MapView style={{ flex: 1 }} ref={mapRef}  styleURL="mapbox://styles/mapbox/light-v11">
-                <Mapbox.Camera
-                    zoomLevel={14}
-                    centerCoordinate={[data.location.lng, data.location.lat]}
-                    animationMode="flyTo"
-                    animationDuration={2000}
-                />
+        <BlockWrapper {...blockWrapperProps}>
+            <View className='w-full aspect-square' style={{ height: height }}>
+                <Mapbox.MapView style={{ flex: 1 }} ref={mapRef} styleURL="mapbox://styles/mapbox/light-v11">
+                    <Mapbox.Camera
+                        zoomLevel={14}
+                        centerCoordinate={[data.location.lng, data.location.lat]}
+                        animationMode="flyTo"
+                        animationDuration={2000}
+                    />
 
 
-            </Mapbox.MapView>
-        </View>
+                </Mapbox.MapView>
+            </View>
+        </BlockWrapper>
     );
 }

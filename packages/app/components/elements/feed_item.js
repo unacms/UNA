@@ -9,9 +9,9 @@ import { appSetting } from 'app/lib/util'
 import { ActionMenu, CounterMenu } from 'app/lib/feed-helpers'
 import { UnitImages } from 'app/lib/feed-items'
 import { PollItem } from 'app/components/elements/entity_poll';
-import { cd } from 'app/lib/util'
+import { BlockWrapper } from 'app/components/block-wrapper'
 
-export default function ElementFeedItem({data, isModal}) {
+export default function ElementFeedItem({ data, isModal, blockWrapperProps }) {
     const { layoutData } = useLayoutData();
     const [content, setContent] = useState(data.event.content)
     const isWeb = Platform.OS == 'web' ? true : false;
@@ -42,35 +42,37 @@ export default function ElementFeedItem({data, isModal}) {
     }
 
     let menu_actions2 = cloneObject(data.event.menu_actions)
-    if (isModal){
+    if (isModal) {
         menu_actions2.items = menu_actions2.items.filter(
             (x) => x.name !== "item-comment"
         );
     }
 
     return (
-        <View className="relative sm:my-0 gap-3 p-3 sm:px-4 flex-auto">
-            <View className="">
-                <Html data={tlContent}/>
-                {!!content.embed && <Embed data={content.embed} />}
+        <BlockWrapper {...blockWrapperProps}>
+            <View className="relative sm:my-0 gap-3 p-3 sm:px-4 flex-auto">
+                <View className="">
+                    <Html data={tlContent} />
+                    {!!content.embed && <Embed data={content.embed} />}
 
-                <View className='w-full'>
-                    {content.polls_attach && content.polls_attach.map((item, index) => {
-                        return <View key={"att" + index} className='mt-4'><PollItem  data={item} showTitle={true} results_url='/api.php?r=bx_timeline/get_block_poll_results' /></View>
-                    })}
+                    <View className='w-full'>
+                        {content.polls_attach && content.polls_attach.map((item, index) => {
+                            return <View key={"att" + index} className='mt-4'><PollItem data={item} showTitle={true} results_url='/api.php?r=bx_timeline/get_block_poll_results' /></View>
+                        })}
+                    </View>
                 </View>
+
+                <UnitImages images={content_attach} />
+                {
+                    data.event.menu_actions.items.length > 0 && (<View className=" flex-row items-center ">
+                        <Row className="flex-auto items-center flex-wrap-reverse justify-between gap-3">
+                            <ActionMenu data={menu_actions2} />
+                            {(!!data.event.menu_counters && appSetting('feed', 'counters_menu')) && <CounterMenu data={data.event.menu_counters} />}
+
+                        </Row>
+                    </View>)
+                }
             </View>
-
-            <UnitImages images={content_attach} />
-            {
-                data.event.menu_actions.items.length > 0 && (<View className=" flex-row items-center ">
-                    <Row className="flex-auto items-center flex-wrap-reverse justify-between gap-3">
-                        <ActionMenu data={menu_actions2} />
-                        {(!!data.event.menu_counters && appSetting('feed', 'counters_menu')) && <CounterMenu data={data.event.menu_counters} />}
-
-                    </Row>
-                </View>)
-            }
-        </View>
+        </BlockWrapper>
     )
 }

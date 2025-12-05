@@ -7,7 +7,7 @@ import Profile from 'app/ui/molecules/profile';
 import Confirm from 'app/ui/molecules/confirm';
 import { Button } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher';
-import React, { useEffect, useState, useMemo, useCallback, useRef  } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { Theme } from 'app/design/theme';
 import Switch from 'app/ui/atoms/switcher'
 import CheckBox from 'app/ui/atoms/checkbox';
@@ -21,49 +21,16 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Icon } from 'app/ui/atoms/icon'
 import Redirect from 'app/ui/atoms/redirect';
 import Stripe from 'app/ui/molecules/stripe';
-import { useBreakpoint} from 'app/context/measure';
+import { useBreakpoint } from 'app/context/measure';
+import { BlockWrapper } from 'app/components/block-wrapper'
+
+
 const getWidth1 = (width) => {
     if (!width)
         return undefined;
 
     return width
 }
-
-/*const getWidth = (width) => {
-    if(!width)
-        return'';
-
-    let iWidth = parseInt(width.replace('%', ''), 10);
-        const tailwindClasses = {
-            8.333333: 'w-1/12',
-            16.666667: 'w-2/12',
-            25: 'w-1/4',
-            33.333333: 'w-1/3',
-            41.666667: 'w-4/12',
-            50: 'w-1/2',
-            58.333333: 'w-7/12',
-            66.666667: 'w-2/3',
-            75: 'w-3/4',
-            83.333333: 'w-5/6',
-            91.666667: 'w-11/12',
-            100: 'w-full'
-        };
-    
-        let closest = null;
-        let closestDiff = Infinity;
-    
-        for (let key in tailwindClasses) {
-            const diff = Math.abs(key - iWidth);
-            if (diff < closestDiff) {
-                closest = tailwindClasses[key];
-                closestDiff = diff;
-            }
-        }
-    
-        return closest;
-};*/
-
-
 
 const ActionButton = React.memo(({ id, index, itemAction, setShowConfirm, deleteRows, fetchData, handleBlock, item }) => {
     const [hide, setHide] = useState(false);
@@ -164,12 +131,12 @@ const ActionButton = React.memo(({ id, index, itemAction, setShowConfirm, delete
     if (itemAction.type === 'callback') {
         return (
             <>
-            <Redirect ref={redirectRef} />
-            <Button
-                key={index}
-                {...commonProps}
-                onPress={() => getAction(itemAction, setShowConfirm)}
-            /></>
+                <Redirect ref={redirectRef} />
+                <Button
+                    key={index}
+                    {...commonProps}
+                    onPress={() => getAction(itemAction, setShowConfirm)}
+                /></>
         );
     }
 
@@ -204,7 +171,7 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
                     value={selected.includes(cell.data)}
                     status={selected.includes(cell.data) ? 'checked' : 'unchecked'}
                     onPress={() => setSelection(cell.data)}
-                    isBackground = {false}
+                    isBackground={false}
                 /></>
         case 'profile':
             return <Profile {...cell.data} displaySize="sm" />
@@ -283,14 +250,14 @@ export default function ElementGrid(props) {
     };
 
     const handleActionBlock = async (data) => {
-    
+
         if (data.type == 'modal') {
             let fetchedData = await fetchData(data.action, data.params, data.callback);
             let cnt = { content: fetchedData.data, designbox_id: 0 }
             setBottomSheetData({ title: cnt.content[0]?.title || data.title, content: <View className='px-1'><BlockByData onFormEmpty={() => handleUpdate()} block={cnt} /></View> });
         }
-        if (data.type == 'object'){
-            setModalContentElement(<Stripe seller_id={data.seller_id } items={data.items} />);
+        if (data.type == 'object') {
+            setModalContentElement(<Stripe seller_id={data.seller_id} items={data.items} />);
         }
     };
 
@@ -318,13 +285,13 @@ export default function ElementGrid(props) {
     }
 
     const fetchData = useCallback(async (action, params, callback) => {
-        let sUrl = callback ? '/api.php?r='+callback : '/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=' + settings.object + '&a=' + action;
+        let sUrl = callback ? '/api.php?r=' + callback : '/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=' + settings.object + '&a=' + action;
         if (settings?.query_append && !callback)
             Object.keys(settings.query_append).forEach((sKey) => {
                 sUrl += '&' + sKey + '=' + settings.query_append[sKey];
             });
-      
-        return await fetcher(sUrl + (callback? '' :params));
+
+        return await fetcher(sUrl + (callback ? '' : params));
     }, [settings.object]);
 
 
@@ -431,10 +398,10 @@ export default function ElementGrid(props) {
 
     const actionsBulk = Object.values(data.actions.bulk);
     const actionsIndependent = Object.values(data.actions.independent);
-/*   <Text className="tracking-tight text-lg font-bold text-neutral-900 dark:text-neutral-50 mb-2">{stripTags(props?.block?.title)}</Text>*/
-    
+    /*   <Text className="tracking-tight text-lg font-bold text-neutral-900 dark:text-neutral-50 mb-2">{stripTags(props?.block?.title)}</Text>*/
+
     let a = <View className="w-full">
-     
+
         {modalContent && (
             <Modal title={modalContent.content[0]?.title ? modalContent.content[0]?.title : " "} onVisible={!!modalContent} onClose={() => handleCloseModal()}>
                 <View className='px-4'>
@@ -480,7 +447,7 @@ export default function ElementGrid(props) {
                         return <Link key={`btn-${item.name}`} href={item.link || item.url}><Button size="sm" title={item.title} showTitleFromSize='sm' /></Link>
                     }
                 })}
-                
+
                 {actionsBulk.map((item, index) => {
                     if (item.name == 'delete') {
                         return <Button key={item.name} startDecorator="Trash" size="sm" showTitleFromSize='sm' title={t("Delete selected")} disabled={selected.length == 0} onPress={() => { handleDeleteSelected() }} />
@@ -556,11 +523,13 @@ export default function ElementGrid(props) {
         </View>
     </View>;
 
-    return (
+    const gridContent = (
         currentBreakpoint === 0 ? <ScrollView horizontal={true} className='min-w-full'>
             <View className='w-full mx-auto ' style={{ minWidth: 600 }} >
                 {a}
             </View>
         </ScrollView> : a
     );
+
+    return <BlockWrapper {...props.blockWrapperProps}>{gridContent}</BlockWrapper>
 }

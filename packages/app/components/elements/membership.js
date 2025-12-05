@@ -1,10 +1,9 @@
 
 import ChkList from 'app/ui/molecules/checkbox_list';
 import { fetcher } from 'app/lib/fetcher';
+import { BlockWrapper } from 'app/components/block-wrapper'
 
-export default function ElementSimpleList(props) {
-    const data = props.data;
-    console.log("dsfsdfsd", props)
+export default function ElementSimpleList({ onFormEmpty, data, blockWrapperProps }) {
 
     function decomposeToPowersOfTwo(n) {
         const powers = [];
@@ -27,9 +26,14 @@ export default function ElementSimpleList(props) {
             .map(v => `role[]=${v}`)
             .join('&') + '&';;
         await fetcher(request_url);
-        props.onFormEmpty();
+        onFormEmpty();
     }
 
     const selectedValues = decomposeToPowersOfTwo(data.value)
-    return <ChkList values={data.values} setValue={handleSubValueChange} selectedValue={selectedValues} />
+    return (
+        <BlockWrapper {...blockWrapperProps}>
+            <ChkList values={data.values} setValue={handleSubValueChange} selectedValue={selectedValues} />
+        </BlockWrapper>
+    )
+
 }

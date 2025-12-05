@@ -9,6 +9,7 @@ import { useReducer } from 'react'
 import RadioButton from 'app/ui/atoms/radiobutton';
 import { getColor } from 'app/components/elements/chart';
 import { Button } from 'app/design/controls'
+import { BlockWrapper } from 'app/components/block-wrapper'
 
 function Results({ data }) {
     if (data) {
@@ -122,10 +123,10 @@ export function PollItem({ data, showTitle, onDelete, disabled = false, results_
     );
 }
 
-export default function ElementEntityPoll({ data }) {
+export default function ElementEntityPoll({ data, blockWrapperProps }) {
     const videoId = data.video_embed && getYouTubeVideoId(data.video_embed) || null;
     return (
-        <View className="w-full">
+        <BlockWrapper {...blockWrapperProps}><View className="w-full">
             <View className="w-full">
                 {(!!data.video?.src_mp4) && <View className='w-full aspect-video rounded-xl overflow-hidden lg:mt-6'>
                     <Video poster={data.video.src_poster} src={data.video.src_mp4} cover={true} controls={true} muted={"muted"} />
@@ -140,5 +141,6 @@ export default function ElementEntityPoll({ data }) {
                 <PollItem data={data} />
             </View>
         </View>
+        </BlockWrapper>
     );
 }

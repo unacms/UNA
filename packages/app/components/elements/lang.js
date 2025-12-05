@@ -1,14 +1,11 @@
-import { Text} from 'app/design/typography'
-import { View } from 'app/design/view'
 import Html from 'app/ui/atoms/html';
-import { stripTags } from 'app/lib/util';
+import { BlockWrapper } from 'app/components/block-wrapper'
 
-export default function ElementLang({data}) {
+export default function ElementLang({ data, blockWrapperProps }) {
 
-    //<Text className="text-lg font-bold text-neutral-800 dark:text-neutral-200 ">{stripTags(data.title)}</Text>
     return (
-        
+        <BlockWrapper {...blockWrapperProps}>
             <Html data={data.content} />
-        
+        </BlockWrapper>
     );
 }

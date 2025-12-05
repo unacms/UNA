@@ -1,8 +1,10 @@
 import Unit from 'app/components/unit'
 import Galery from 'app/ui/molecules/gallery'
 import { View, Row, ScrollView } from 'app/design/view'
- import { callFn } from 'app/lib/functions/call'
-export default function Browse({ unitMode, data, limit_by, view, autoscroll, }) {
+import { callFn } from 'app/lib/functions/call'
+import { BlockWrapper } from 'app/components/block-wrapper'
+
+export default function Browse({ unitMode, data, limit_by, view, autoscroll, blockWrapperProps}) {
 
     // view can be row (explore page as example), galery (featured blocks in sidebar as example)
     if (data.unit == 'mixed') {
@@ -33,7 +35,7 @@ export default function Browse({ unitMode, data, limit_by, view, autoscroll, }) 
         />;
     })
 
-    return view == 'galery' ? <Galery autoscroll={autoscroll} items={items} /> : (view == 'row' ? <Row className="@container/list overflow-hidden">{items}</Row> : items);
-
+    const content = view == 'galery' ? <Galery autoscroll={autoscroll} items={items} /> : (view == 'row' ? <Row className="@container/list overflow-hidden">{items}</Row> : items);
+    return <BlockWrapper {...blockWrapperProps}>{content}</BlockWrapper>
 
 }

@@ -20,48 +20,50 @@ import {
 } from 'app/ui/molecules/table'
 import Badge from 'app/ui/molecules/badge'
 import { useLayoutSettings } from 'app/context/layout-settings'
-import { cd } from 'app/lib/util'
 import { Loading } from 'app/loading'
 import { renderForm } from 'app/components/elements/form'
+import { BlockWrapper } from 'app/components/block-wrapper'
 
-export function ReputationActions({ data }) {
+export function ReputationActions({ data, blockWrapperProps }) {
     return (
-        <Table className="w-full">
-            <TableHeader>
-                <TableRow>
-                    <TableHead className="flex-[3]">
-                        <TableHeaderText>Action</TableHeaderText>
-                    </TableHead>
-                    <TableHead className="flex-1 justify-center">
-                        <TableHeaderText>Points (active)</TableHeaderText>
-                    </TableHead>
-                    <TableHead className="flex-1 justify-center">
-                        <TableHeaderText>Points (passive)</TableHeaderText>
-                    </TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {data.map((item, index) => (
-                    <TableRow key={index}>
-                        <TableCell className="flex-[3]">
-                            <TableCellText>
-                                {item.unit} {item.action}
-                            </TableCellText>
-                        </TableCell>
-                        <TableCell className="flex-1 justify-center">
-                            <TableCellText className="font-medium">
-                                {item.points_active}
-                            </TableCellText>
-                        </TableCell>
-                        <TableCell className="flex-1 justify-center">
-                            <TableCellText className="font-medium">
-                                {item.points_passive}
-                            </TableCellText>
-                        </TableCell>
+        <BlockWrapper {...blockWrapperProps}>
+            <Table className="w-full">
+                <TableHeader>
+                    <TableRow>
+                        <TableHead className="flex-[3]">
+                            <TableHeaderText>Action</TableHeaderText>
+                        </TableHead>
+                        <TableHead className="flex-1 justify-center">
+                            <TableHeaderText>Points (active)</TableHeaderText>
+                        </TableHead>
+                        <TableHead className="flex-1 justify-center">
+                            <TableHeaderText>Points (passive)</TableHeaderText>
+                        </TableHead>
                     </TableRow>
-                ))}
-            </TableBody>
-        </Table>
+                </TableHeader>
+                <TableBody>
+                    {data.map((item, index) => (
+                        <TableRow key={index}>
+                            <TableCell className="flex-[3]">
+                                <TableCellText>
+                                    {item.unit} {item.action}
+                                </TableCellText>
+                            </TableCell>
+                            <TableCell className="flex-1 justify-center">
+                                <TableCellText className="font-medium">
+                                    {item.points_active}
+                                </TableCellText>
+                            </TableCell>
+                            <TableCell className="flex-1 justify-center">
+                                <TableCellText className="font-medium">
+                                    {item.points_passive}
+                                </TableCellText>
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </BlockWrapper >
     )
 }
 
@@ -309,9 +311,9 @@ export function ReputationLeaderboard({ data }) {
 
     const searchForm = formProps
         ? useMemo(
-              () => renderForm(formProps, onFormChange),
-              [formProps, onFormChange]
-          )
+            () => renderForm(formProps, onFormChange),
+            [formProps, onFormChange]
+        )
         : null
 
     return (

@@ -1,21 +1,17 @@
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Image from 'app/ui/atoms/image';
+import { BlockWrapper } from 'app/components/block-wrapper'
 
-export default function (props) {
-    const initedData = props.data.content.sm;
-
-
-    return <View className='w-full'>
-        {initedData?.map(a =>
-        (
-
-            getCell(a)
-
-        )
-        )}
-
-    </View>
+export default function ({ blockWrapperProps, data }) {
+    const initedData = data.content.sm;
+    return (
+        <BlockWrapper {...blockWrapperProps}>
+            <View className='w-full'>
+                {initedData?.map(a =>(getCell(a)))}
+            </View>
+        </BlockWrapper>
+    )
 }
 
 function getCell(block, bAllowEdit) {
@@ -58,6 +54,7 @@ function getCell(block, bAllowEdit) {
     }
 
     return (
+
         <View key={block.i} className="mb-1 mx-1 shadow groupweb:duration-200 overflow-hidden bg-card">
             {blockContent}
         </View>

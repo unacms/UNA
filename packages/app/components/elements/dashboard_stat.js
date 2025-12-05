@@ -33,6 +33,7 @@ import ThemeCompatibilityTest from 'app/ui/molecules/nativewindui'
 import { useDensitySwitcher } from 'app/ui/atoms/density-switcher'
 import { useLayoutSettings } from 'app/context/layout-settings'
 import { cd } from 'app/lib/util'
+import { BlockWrapper } from 'app/components/block-wrapper'
 
 function getCounter(num, icon = '', add = '', color = '') {
     if (!num) num = 0
@@ -85,7 +86,7 @@ function getCounter(num, icon = '', add = '', color = '') {
     )
 }
 
-export default function PageLayout(props) {
+export default function DashboardStat(props) {
     if (!appSetting('layout', 'user_remote_config'))
         return <DasbordStatOld {...props} />
     const {
@@ -110,39 +111,40 @@ export default function PageLayout(props) {
         dUser.url_avatar = dUser.avatar
         profile = <Profile {...dUser} displayType="unit_wo_info" size="lg" />
     }
-    if (!currentUser) return <></>
+    if (!currentUser) return null
 
     return (
-        <ScrollView>
-            <Block className="u-max-width-block">
-                <BlockHeader>
-                    <BlockIcon>
-                        <Profile
-                            {...currentUser}
-                            url_avatar={currentUser.avatar}
-                            displayType="unit_wo_info"
-                            displaySize="xl"
-                        />
-                    </BlockIcon>
-                    <BlockName>
-                        <BlockTitle>
-                            <Text>{currentUser.display_name}</Text>
-                        </BlockTitle>
-                        <BlockDescription>
-                            <View>
-                                <Badge 
-                                    variant="default" 
-                                    data={{ 
-                                        text: currentUser.membership_name,
-                                        icon: currentUser.membership_icon,
-                                        icon_url: currentUser.membership_icon_url
-                                    }} 
-                                />
-                            </View>
-                        </BlockDescription>
-                    </BlockName>
-                    <BlockActions>
-                        
+        <BlockWrapper {...props.blockWrapperProps}>
+            <ScrollView>
+                <Block className="u-max-width-block">
+                    <BlockHeader>
+                        <BlockIcon>
+                            <Profile
+                                {...currentUser}
+                                url_avatar={currentUser.avatar}
+                                displayType="unit_wo_info"
+                                displaySize="xl"
+                            />
+                        </BlockIcon>
+                        <BlockName>
+                            <BlockTitle>
+                                <Text>{currentUser.display_name}</Text>
+                            </BlockTitle>
+                            <BlockDescription>
+                                <View>
+                                    <Badge
+                                        variant="default"
+                                        data={{
+                                            text: currentUser.membership_name,
+                                            icon: currentUser.membership_icon,
+                                            icon_url: currentUser.membership_icon_url
+                                        }}
+                                    />
+                                </View>
+                            </BlockDescription>
+                        </BlockName>
+                        <BlockActions>
+
                             <ProfileSwitcher hideTitle={true}>
                                 <Button
                                     variant="secondary"
@@ -150,98 +152,70 @@ export default function PageLayout(props) {
                                     rounded
                                 />
                             </ProfileSwitcher>
-                      
-                    </BlockActions>
-                </BlockHeader>
-                <BlockContent>
-                    <ElementDashboardStat {...props} />
-                    <View className={`flex-row flex-wrap ${cd('gap-sm')} mt-4`}>
-                        {langs.length > 1 && (
-                            <View className="w-full max-w-sm flex-1 min-w-[160px]">
-                                <DropdownMenu
-                                    items={langs.map((lang) => ({
-                                        id: lang,
-                                        key: lang,
-                                        name: lang,
-                                        title: t('lang_' + lang),
-                                    }))}
-                                    onSelect={(oItem) => {
-                                        setLang(oItem.id)
-                                    }}
-                                >
-                                    <Button
-                                        variant="secondary"
-                                        title={t('lang_' + lang)}
-                                        startDecorator="Languages"
-                                        fullWidth
-                                        align="left"
-                                    />
-                                </DropdownMenu>
-                            </View>
-                        )}
-                        {appSetting('dashboard', 'switch_theme') && (
-                            <View className="w-full max-w-sm flex-1 min-w-[160px]">
-                                <DropdownMenu
-                                    items={['dark', 'light', 'auto'].map(
-                                        (theme) => ({
-                                            key: theme,
-                                            id: theme,
-                                            name: theme,
-                                            title: t('theme_' + theme),
-                                        })
-                                    )}
-                                    onSelect={(oItem) => {
-                                        setThemeName(oItem.id)
-                                    }}
-                                >
-                                    <Button
-                                        variant="secondary"
-                                        title={t('theme_' + themeName)}
-                                        startDecorator="Moon"
-                                        fullWidth
-                                        align="left"
-                                    />
-                                </DropdownMenu>
-                            </View>
-                        )}
-                        {densityOptions.length > 1 && (
-                            <View className="w-full max-w-sm flex-1 min-w-[160px]">
-                                <DropdownMenu
-                                    items={densityOptions}
-                                    onSelect={(option) => setDensity(option.id)}
-                                >
-                                    <Button
-                                        variant="secondary"
-                                        title={currentDensity?.title}
-                                        startDecorator={currentDensity?.icon}
-                                        fullWidth
-                                        align="left"
-                                    />
-                                </DropdownMenu>
-                            </View>
-                        )}
 
-                        {appSetting('layout', 'avaliable_layouts').length >
-                            1 && (
+                        </BlockActions>
+                    </BlockHeader>
+                    <BlockContent>
+                        <ElementDashboardStat {...props} />
+                        <View className={`flex-row flex-wrap ${cd('gap-sm')} mt-4`}>
+                            {langs.length > 1 && (
                                 <View className="w-full max-w-sm flex-1 min-w-[160px]">
                                     <DropdownMenu
-                                        items={appSetting(
-                                            'layout',
-                                            'avaliable_layouts'
-                                        ).map((lang) => ({
+                                        items={langs.map((lang) => ({
                                             id: lang,
                                             key: lang,
                                             name: lang,
-                                            title: t('format_' + lang),
+                                            title: t('lang_' + lang),
                                         }))}
                                         onSelect={(oItem) => {
-                                            setLayoutName(oItem.id)
+                                            setLang(oItem.id)
                                         }}
                                     >
                                         <Button
                                             variant="secondary"
-                                            title={t('format_' + layoutName)}
-                                            startDecorator="Layout"
+                                            title={t('lang_' + lang)}
+                                            startDecorator="Languages"
+                                            fullWidth
+                                            align="left"
+                                        />
+                                    </DropdownMenu>
+                                </View>
+                            )}
+                            {appSetting('dashboard', 'switch_theme') && (
+                                <View className="w-full max-w-sm flex-1 min-w-[160px]">
+                                    <DropdownMenu
+                                        items={['dark', 'light', 'auto'].map(
+                                            (theme) => ({
+                                                key: theme,
+                                                id: theme,
+                                                name: theme,
+                                                title: t('theme_' + theme),
+                                            })
+                                        )}
+                                        onSelect={(oItem) => {
+                                            setThemeName(oItem.id)
+                                        }}
+                                    >
+                                        <Button
+                                            variant="secondary"
+                                            title={t('theme_' + themeName)}
+                                            startDecorator="Moon"
+                                            fullWidth
+                                            align="left"
+                                        />
+                                    </DropdownMenu>
+                                </View>
+                            )}
+                            {densityOptions.length > 1 && (
+                                <View className="w-full max-w-sm flex-1 min-w-[160px]">
+                                    <DropdownMenu
+                                        items={densityOptions}
+                                        onSelect={(option) => setDensity(option.id)}
+                                    >
+                                        <Button
+                                            variant="secondary"
+                                            title={currentDensity?.title}
+                                            startDecorator={currentDensity?.icon}
                                             fullWidth
                                             align="left"
                                         />
@@ -249,46 +223,75 @@ export default function PageLayout(props) {
                                 </View>
                             )}
 
-                        {appSetting('layout', 'avaliable_feed_units').length > 1 && (
-                            <View className="w-full max-w-sm flex-1 min-w-[160px]">
-                                <DropdownMenu
-                                    items={appSetting(
-                                        'layout',
-                                        'avaliable_feed_units'
-                                    ).map((feed_unit) => ({
-                                        id: feed_unit,
-                                        key: feed_unit,
-                                        name: feed_unit,
-                                        title: t(feed_unit),
-                                    }))}
-                                    onSelect={(oItem) => {
-                                        updateLayoutSettings({ feed_unit: oItem.id })
-                                    }}
-                                >
-                                    <Button
-                                        variant="secondary"
-                                        title={t(layoutSettings.feed_unit)}
-                                        fullWidth
-                                        align="left"
-                                    />
-                                </DropdownMenu>
-                            </View>
-                        )}
-                    </View>
-                </BlockContent>
-                <BlockFooter>
-                    <Button
-                        variant="outline"
-                        title={t('Sign out')}
-                        startDecorator="LogOut"
-                        fullWidth
-                        size="base"
-                        as={Link}
-                        href="/logout"
-                    />
-                </BlockFooter>
-            </Block>
-        </ScrollView>
+                            {appSetting('layout', 'avaliable_layouts').length >
+                                1 && (
+                                    <View className="w-full max-w-sm flex-1 min-w-[160px]">
+                                        <DropdownMenu
+                                            items={appSetting(
+                                                'layout',
+                                                'avaliable_layouts'
+                                            ).map((lang) => ({
+                                                id: lang,
+                                                key: lang,
+                                                name: lang,
+                                                title: t('format_' + lang),
+                                            }))}
+                                            onSelect={(oItem) => {
+                                                setLayoutName(oItem.id)
+                                            }}
+                                        >
+                                            <Button
+                                                variant="secondary"
+                                                title={t('format_' + layoutName)}
+                                                startDecorator="Layout"
+                                                fullWidth
+                                                align="left"
+                                            />
+                                        </DropdownMenu>
+                                    </View>
+                                )}
+
+                            {appSetting('layout', 'avaliable_feed_units').length > 1 && (
+                                <View className="w-full max-w-sm flex-1 min-w-[160px]">
+                                    <DropdownMenu
+                                        items={appSetting(
+                                            'layout',
+                                            'avaliable_feed_units'
+                                        ).map((feed_unit) => ({
+                                            id: feed_unit,
+                                            key: feed_unit,
+                                            name: feed_unit,
+                                            title: t(feed_unit),
+                                        }))}
+                                        onSelect={(oItem) => {
+                                            updateLayoutSettings({ feed_unit: oItem.id })
+                                        }}
+                                    >
+                                        <Button
+                                            variant="secondary"
+                                            title={t(layoutSettings.feed_unit)}
+                                            fullWidth
+                                            align="left"
+                                        />
+                                    </DropdownMenu>
+                                </View>
+                            )}
+                        </View>
+                    </BlockContent>
+                    <BlockFooter>
+                        <Button
+                            variant="outline"
+                            title={t('Sign out')}
+                            startDecorator="LogOut"
+                            fullWidth
+                            size="base"
+                            as={Link}
+                            href="/logout"
+                        />
+                    </BlockFooter>
+                </Block>
+            </ScrollView>
+        </BlockWrapper>
     )
 }
 
@@ -357,7 +360,7 @@ function ElementDashboardStat(props) {
                                                 icon={item.icon}
                                                 width={32}
                                                 height={32}
-                                               
+
                                             />
 
                                             {item.count > 0 ? (
@@ -396,13 +399,13 @@ function ElementDashboardStat(props) {
                                                 <View className='bg-destructive border border-card web:border-0 web:ring-2 web:ring-card rounded-full px-1.5 items-center justify-center'>
                                                     <Text className='text-card-foreground text-sm font-medium'>{currentUser?.counters?.bx_messenger_new_messages}</Text>
                                                 </View>
-                                                ) : null
+                                            ) : null
                                             }
-                                             {(item?.type == 'notifications' && currentUser.notifications > 0) ? (
+                                            {(item?.type == 'notifications' && currentUser.notifications > 0) ? (
                                                 <View className='bg-destructive border border-card web:border-0 web:ring-2 web:ring-card rounded-full px-1.5 items-center justify-center'>
-                                                   <Text className='text-card-foreground text-sm font-medium'>{currentUser.notifications}</Text>
+                                                    <Text className='text-card-foreground text-sm font-medium'>{currentUser.notifications}</Text>
                                                 </View>
-                                                ) : null
+                                            ) : null
                                             }
                                         </View></Link>
                                 </View>

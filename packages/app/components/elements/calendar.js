@@ -6,6 +6,7 @@ import { Button } from 'app/design/controls';
 import { Text } from 'app/design/typography';
 import { Icon } from 'app/ui/atoms/icon';
 import { Theme } from 'app/design/theme';
+import { BlockWrapper } from 'app/components/block-wrapper'
 
 const formatValueDate = (v) => {
     const date = new Date(v.dt);
@@ -52,7 +53,7 @@ const CalendarHeader = (dValue, addMonth) => {
 
 const generateValues = range => Array.from({ length: range }, (_, i) => ({ label: i.toString().padStart(2, '0'), value: i.toString().padStart(2, '0') }));
 
-export default function ({ name, value = '', type, onChange }) {
+export default function ({ name, value = '', type, onChange, blockWrapperProps }) {
     const { colors } = Theme();
     const bIsTime = type === 'datetime';
     const [showModal, setShowModal] = useState(false);
@@ -98,7 +99,7 @@ export default function ({ name, value = '', type, onChange }) {
     const minutes = useMemo(() => generateValues(60), []);
 
     return (
-        <>
+        <BlockWrapper {...blockWrapperProps}>
             <Modal onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
                 <View className='  max-w-sm w-full mx-auto'>
                     <View className='  max-w-sm w-full mx-auto '>
@@ -154,6 +155,6 @@ export default function ({ name, value = '', type, onChange }) {
             <Row>
                 <Button title={formatValue(cValue, bIsTime)} endDecorator="Calendar" onPress={() => { setShowModal(true) }} />
             </Row>
-        </>
+        </BlockWrapper>
     );
 }

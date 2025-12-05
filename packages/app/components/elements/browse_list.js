@@ -32,7 +32,7 @@ import {
 } from 'app/lib/conductor-helpers'
 import { getComponent } from 'app/components/registry';
 import { BrowseItem } from 'app/lib/common-helpers'
-
+import { BlockWrapper } from 'app/components/block-wrapper'
 export default function Browse(props) {
     const isWeb = Platform.OS === 'web'
     const { currentUser } = useCurrentUser();
@@ -278,7 +278,7 @@ export default function Browse(props) {
     }
 
     return (
-        <View className='w-full' style={styles}>
+        <BlockWrapper {...props.blockWrapperProps}><View className='w-full' style={styles}>
             {formProps && <View className=" w-full">
                 <Row className="w-full items-end justify-end"><Button startDecorator="Settings2" variant="outline" title={!showFilters ? "Show filters" : "Hide filters"} onPress={() => setShowFilters(!showFilters)} /></Row>
                 {showFilters && <Form {...formProps} key="form" name={formProps.name} onChange={handleFilterFormChange} />}
@@ -303,6 +303,6 @@ export default function Browse(props) {
                 title="Show New"
                 size="sm"
             />
-        </View>
+        </View></BlockWrapper>
     )
 }

@@ -3,9 +3,9 @@ import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
 import { useState, useEffect, useMemo } from 'react';
 import { appSetting, setClipboard } from 'app/lib/util'
-//import { VictoryChart, VictoryLine } from "victory-native";
 import Dropdown from 'app/ui/atoms/dropdown'
 import Calendar from 'app/ui/atoms/calendar'
+import { BlockWrapper } from 'app/components/block-wrapper'
 
 export function getColor(color) {
     if (color == 'orange') return '#f97316';
@@ -80,7 +80,7 @@ function VictoryLineChart({size, dataChart}) {
 
 
 
-export default function ElementChart({ data }) {
+export default function ElementChart({ data, blockWrapperProps }) {
 
     const [chartParams, setChartParams] = useState(data.params);
     const [dataChart, setDataChart] = useState([]);
@@ -193,13 +193,13 @@ export default function ElementChart({ data }) {
         );
     }
     return (
-        <>
+        <BlockWrapper {...blockWrapperProps}>
             <View className='mb-4'>
                 <Text className="text-lg font-bold text-neutral-800 dark:text-neutral-200">{data.title}</Text>
             </View>
             <View className='max-w-5xl w-full mx-auto'>
                 {CharComponent}
             </View>
-        </>
+        </BlockWrapper>
     )
 }

@@ -6,6 +6,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import { appSetting } from 'app/lib/util'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import Link from 'app/ui/atoms/link'
+import { BlockWrapper } from 'app/components/block-wrapper'
 
 export default function ElementEntityInfo({ data }) {
     const defaultIcon = appSetting('entry', 'default_info_icon');
@@ -39,7 +40,11 @@ export default function ElementEntityInfo({ data }) {
     })
 
     return (
-        <View className='flex-col gap-y-4 '>{inputs}</View>
+        <BlockWrapper {...blockWrapperProps}>
+            <View className='flex-col gap-y-4 '>
+                {inputs}
+            </View>
+        </BlockWrapper>
     )
 
     function getValue(a) {

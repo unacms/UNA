@@ -1,16 +1,16 @@
-import { View, Row } from 'app/design/view'
+import { View } from 'app/design/view'
 import Tabs from 'app/ui/molecules/tabs'
 import { Modal } from 'app/design/controls';
 import Stripe from 'app/ui/molecules/stripe';
 import { useState, useRef } from 'react';
-import { cd } from 'app/lib/util'
 import { getComponent } from 'app/components/registry';
 import { appStatic } from 'app/lib/app-static'
 import { useTranslation } from 'react-i18next'
 import { fetcher } from 'app/lib/fetcher';
 import Redirect from 'app/ui/atoms/redirect';
+import { BlockWrapper } from 'app/components/block-wrapper'
 
-export default function ElementPricing({ data }) {
+export default function ElementPricing({ data, blockWrapperProps }) {
     const { t } = useTranslation()
     const preparedTabs = [];
 
@@ -32,7 +32,7 @@ export default function ElementPricing({ data }) {
 
 
     if (sorted.length == 1)
-        return <ElementPricingPeriod data={data.data} period={sorted[0]} unit={data.settings.unit} settings={data.settings} />
+        return <BlockWrapper {...blockWrapperProps}><ElementPricingPeriod data={data.data} period={sorted[0]} unit={data.settings.unit} settings={data.settings} /></BlockWrapper>
 
     sorted.forEach(item => {
         preparedTabs.push({
@@ -44,11 +44,11 @@ export default function ElementPricing({ data }) {
     });
 
     return (
-        <>
+        <BlockWrapper {...blockWrapperProps}>
             {appStatic('components_pricing_header')}
             <Tabs tabs={preparedTabs} activeTab={preparedTabs[0].key} />
             {appStatic('components_pricing_footer')}
-        </>
+        </BlockWrapper>
     )
 }
 

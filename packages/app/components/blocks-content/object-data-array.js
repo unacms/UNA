@@ -3,6 +3,7 @@ import useFetchForm from 'app/lib/hooks/fetch'
 import Element from 'app/components/element';
 import { Text } from 'app/design/typography'
 import { isObjectsEqual } from 'app/lib/util'
+import { BlockWrapper } from 'app/components/block-wrapper'
 
 export default function BlockContentObjectDataArray(props) {
     const [postData, setPostData] = useState(null);
@@ -77,18 +78,27 @@ export default function BlockContentObjectDataArray(props) {
         }
     }
 
-    if (realData && Array.isArray(realData)) {
-        return (
-            <>
-                {realData?.map(a => <Element key={a.id + a.type} type={a.type} {...props} saveOnChanges={props.saveOnChanges} onFormSubmit={props.onFormSubmit ? props.onFormSubmit : onFormSubmit} {...a} />)}
-            </>
-        );
+    if (!realData) {
+        return null;
     }
-    if (realData) {
-        return (
-            <>
-                <Element key={realData.id + realData.type} type={realData.type} {...props} saveOnChanges={props.saveOnChanges} onFormSubmit={props.onFormSubmit ? props.onFormSubmit : onFormSubmit} {...realData} />
-            </>
-        );
+
+    const items = Array.isArray(realData) ? realData : [realData];
+    const handleFormSubmit = props.onFormSubmit ||onFormSubmit;
+
+    const content = items.map(a => (
+        <Element
+            key={a.id + a.type}
+            type={a.type}
+            {...props}
+            saveOnChanges={props.saveOnChanges}
+            onFormSubmit={handleFormSubmit}
+            {...a}
+        />
+    ));
+
+    if (items.length > 1) {
+        return <BlockWrapper {...props.blockWrapperProps}>{content}</BlockWrapper>;
     }
+
+    return content;
 }

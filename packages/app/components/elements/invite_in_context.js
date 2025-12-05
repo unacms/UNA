@@ -1,13 +1,14 @@
 import { View, Row } from 'app/design/view';
-import { Button, Input, InputRounded, Modal } from 'app/design/controls';
+import { Button, Input } from 'app/design/controls';
 import { fetcher } from 'app/lib/fetcher';
 import { useState, useEffect } from 'react'
 import Profile from 'app/ui/molecules/profile'
 import { Text } from 'app/design/typography'
-import Card, { CardContent, CardTitle } from 'app/ui/molecules/card'
+import Card, { CardTitle } from 'app/ui/molecules/card'
 import Link from 'app/ui/atoms/link'
+import { BlockWrapper } from 'app/components/block-wrapper'
 
-export default function InviteInContext(props) {
+export default function InviteInContext({ blockWrapperProps }) {
     const [inputValue, setInputValue] = useState("");
     const [res, setRes] = useState("");
     //aY9sC
@@ -24,7 +25,7 @@ export default function InviteInContext(props) {
     }, [inputValue]);
 
     return (
-        <>
+        <BlockWrapper {...blockWrapperProps}>
             <Text className=" text-foreground  text-base mb-3">Enter your group code to join a community and start connecting.</Text>
             <Input placeholder='Enter 5-digit code' value={inputValue} onChangeText={(value) => { setInputValue(value) }} />
             {res.message && <Text>{res.message}</Text>}
@@ -40,7 +41,7 @@ export default function InviteInContext(props) {
                 </View>
             )
             }
-        </>
+        </BlockWrapper>
     )
 
 }

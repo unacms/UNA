@@ -10,6 +10,7 @@ import Form from 'app/components/elements/form';
 import { appSetting } from 'app/lib/util'
 import { WidthProvider, Responsive } from "react-grid-layout";
 import { getComponent } from 'app/components/registry';
+import { BlockWrapper } from 'app/components/block-wrapper'
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -34,15 +35,14 @@ const ResponsiveReactGridLayoutM = memo(({ data, bAllowEdit, rowHeight, breakpoi
     </ResponsiveReactGridLayout></View>
 ));
 
-export default function (props) {
-     const Map = getComponent('element', 'map');
+export default function ({ is_allowed_edit, block_id, content_id, content_module, data: inited_data, blockWrapperProps }) {
+    const Map = getComponent('element', 'map');
 
-    const bAllowEdit = props.is_allowed_edit;
-    const blockId = props.block_id;
-    const contentId = props.content_id;
-    const contentModule = props.content_module;
+    const bAllowEdit = is_allowed_edit;
+    const blockId = block_id;
+    const contentId = content_id;
+    const contentModule = content_module;
 
-    const defaultCols = 4;
     const settings = { minW: 1, maxW: 2, minH: 1, maxH: 2, resizeHandles: ["s", "w", "e", "n", "sw", "nw", "se", "ne"] };
     const rowHeight = 260;
     const addSettings = (item) => {
@@ -55,36 +55,19 @@ export default function (props) {
             resizeHandles: settings.resizeHandles,
         }
     }
-    let initedData = props.data.content;
+    let initedData = inited_data.content;
     if (!initedData.lg)
         initedData = { lg: [], sm: [] };
 
     const [data, setData] = useState(initedData)
-    /*useEffect(() => {
-        const fetchData = async () => {
-            const sResponse = await fetcher('/api.php?r=system/get_page_block_data/TemplServicePages&params[]=' + blockId + '&params[]=' + contentId + '&params[]=' + contentModule);
-            if (sResponse.data) {
-                setData(sResponse.data);
-            }
-            else {
-                setData({ lg: [], sm: [] });
-            }
-        };
-
-        fetchData();
-    }, []);*/
 
     Object.keys(initedData).forEach(key => {
         initedData[key] = initedData[key].map(addSettings);
     });
 
-
     const [addType, setAddType] = useState(false);
     const [breakpoint, setBreakpoint] = useState('lg')
 
-
-    const onChangeLayout = (layout, allLayouts) => {
-    };
 
     const onDrag = (layout) => {
         const updatedData1 = data[breakpoint].map(item => {
@@ -302,7 +285,7 @@ export default function (props) {
                 {blockContent}
                 {bAllowEdit && <View className="absolute left-1/4 w-1/2 flex-row justify-center gap-x-4  items-center bottom-5 z-50">
                     <Pressable onMouseDown={(event) => onRemove(event, block.i)} onTouchStart={(event) => onRemove(event, block.i)}>
-                            <Button variant='default' size='xs' rounded startDecorator='X' />
+                        <Button variant='default' size='xs' rounded startDecorator='X' />
                     </Pressable>
                     <Pressable onPressIn={(event) => { onChange(event, block.i) }}>
                         <Button variant='default' size='xs' rounded startDecorator='Pencil' />
@@ -314,10 +297,10 @@ export default function (props) {
     }
 
     return (
-
+        <BlockWrapper {...blockWrapperProps}>
             <View className="w-full overflow-hidden">
                 {addType && <Modal
-                    
+
                     onVisible={addType}
                     onClose={() => {
                         setAddType(false)
@@ -348,6 +331,7 @@ export default function (props) {
                     resizeHandles={["s", "w", "e", "n", "sw", "nw", "se", "ne"]}
                 />
             </View>
+        </BlockWrapper>
 
     );
 }

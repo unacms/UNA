@@ -2,8 +2,9 @@ import { useRouter, redirectTo } from 'app/lib/hooks/router'
 import { useEffect } from 'react';
 import { Loading } from 'app/loading'
 import { View } from 'app/design/view'
+import { BlockWrapper } from 'app/components/block-wrapper'
 
-export default function ElementRedirect({data}) {
+export default function ElementRedirect({data, blockWrapperProps}) {
     const router = useRouter();
     const uri = data?.uri === '/' || !data?.uri ? '/home' : data.uri;
     const timeout = data?.timeout;
@@ -15,5 +16,5 @@ export default function ElementRedirect({data}) {
         }
     }, [uri, timeout]);
 
-    return timeout ? <View className='w-full'><Loading /></View> : null;
+    return timeout ? <BlockWrapper {...blockWrapperProps}><View className='w-full'><Loading /></View></BlockWrapper> : null;
 }

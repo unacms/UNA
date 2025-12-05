@@ -8,18 +8,16 @@ import EntityAttachments from './entity_attachments';
 import TextMore from 'app/ui/molecules/textmore';
 import Link from 'app/ui/atoms/link'
 import { Button } from 'app/design/controls';
+import { BlockWrapper } from 'app/components/block-wrapper'
 
-export default function (props) {
-
-    const data = props.data;
-
+export default function ({data, blockWrapperProps}) {
     return (
-        <View className="w-full px-3 sm:px-4">
+        <BlockWrapper {...blockWrapperProps}><View className="w-full px-3 sm:px-4">
             <ContentMore numberOfSymbols={200} showLess={true} content={data.text} numberOfLines={3} openSmall={false} textClassName="  text-base text-neutral-600 dark:text-neutral-400" />
             <Link href={data.link}>
                 <Button size="sm" title="View all comments" variant="link" endDecorator="ChevronRight"/>
             </Link>
-        </View>
+        </View></BlockWrapper>
     );
 }
 

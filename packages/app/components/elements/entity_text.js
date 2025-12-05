@@ -8,16 +8,15 @@ import EntityAttachments from './entity_attachments';
 import TextMore from 'app/ui/molecules/textmore';
 import Video from 'app/ui/atoms/video';
 import Youtube from 'app/ui/molecules/youtube'
+import { BlockWrapper } from 'app/components/block-wrapper'
 
-export default function (props) {
-    const data = props.data;
-    const block = props.block;
+export default function ({blockWrapperProps, data, block, showPad, sidebar}) {
     const view = appSetting('entry', 'default_view');
     switch (view) {
         case 'small':
-            return <Small data={data} showPad={props.showPad} />;
+            return <Small blockWrapperProps={blockWrapperProps}  data={data} showPad={showPad} />;
         default:
-            return <Default block={block} data={data} showPad={props.showPad} sidebar={props.sidebar} />;
+            return <Default blockWrapperProps={blockWrapperProps} block={block} data={data} showPad={showPad} sidebar={sidebar} />;
     }
 }
 
@@ -56,28 +55,32 @@ const getImagesData = (data) => {
     return att;
 };
 
-function Default({ data, showPad, sidebar, block }) {
+function Default({ data, showPad, sidebar, block, blockWrapperProps }) {
     const att = getImagesData(data);
     const text = clearLinks(data.entry_text);
     const isSmall = block?.module == "bx_market";
-
     const videoId = data.video_embed && getYouTubeVideoId(data.video_embed) || null;
+    
+    if (!text && !data.video && !data.image && !videoId)
+        return null
 
     return (
-        <View className="w-full">
-            {(!!data.video?.src_mp4) && <View className='w-full aspect-video rounded-xl overflow-hidden lg:mt-6'>
-                <Video poster={data.video.src_poster} src={data.video.src_mp4} cover={true}  controls={true} muted={"muted"} />
-            </View>}
-            {(videoId) && <View className='w-full aspect-video rounded-xl overflow-hidden lg:mt-6'>
-                <Youtube videoId={videoId} size={3} />
-            </View>}
-            {(!!data.image && !data.video) && <View className="w-full h-[30vh] mb-4 sm:rounded-xl overflow-hidden"><Image {...data.image} alt={data.title} className=" u-cover" view="cover" /></View>}
-            <View className={`mx-auto w-full ${(showPad == false || sidebar ? '' : ' ')}`}>
-                {isSmall ? <TextMore tagName='h1' text={data.entry_title} numberOfLines={2} className="font-bold tracking-tight  text-neutral-900 dark:text-neutral-50 "></TextMore> :  <H1>{data.entry_title}</H1>}
-                {isSmall ? <ContentMore numberOfSymbols={200} showLess={true} content={text} numberOfLines={3}  openSmall={false} textClassName="  text-base text-neutral-600 dark:text-neutral-400" /> :  <Html data={text} />}
-                
+        <BlockWrapper {...blockWrapperProps}>
+            <View className="w-full">
+                {(!!data.video?.src_mp4) && <View className='w-full aspect-video rounded-xl overflow-hidden lg:mt-6'>
+                    <Video poster={data.video.src_poster} src={data.video.src_mp4} cover={true} controls={true} muted={"muted"} />
+                </View>}
+                {(videoId) && <View className='w-full aspect-video rounded-xl overflow-hidden lg:mt-6'>
+                    <Youtube videoId={videoId} size={3} />
+                </View>}
+                {(!!data.image && !data.video) && <View className="w-full h-[30vh] mb-4 sm:rounded-xl overflow-hidden"><Image {...data.image} alt={data.title} className=" u-cover" view="cover" /></View>}
+                <View className={`mx-auto w-full ${(showPad == false || sidebar ? '' : ' ')}`}>
+                    {isSmall ? <TextMore tagName='h1' text={data.entry_title} numberOfLines={2} className="font-bold tracking-tight  text-neutral-900 dark:text-neutral-50 "></TextMore> : <H1>{data.entry_title}</H1>}
+                    {isSmall ? <ContentMore numberOfSymbols={200} showLess={true} content={text} numberOfLines={3} openSmall={false} textClassName="  text-base text-neutral-600 dark:text-neutral-400" /> : <Html data={text} />}
+
+                </View>
+                <EntityAttachments data={att} />
             </View>
-            <EntityAttachments data={att} />
-        </View>
+        </BlockWrapper>
     );
 }
