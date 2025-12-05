@@ -73,7 +73,7 @@ export default function Unit(props) {
                                                 }
                                                 showEmpty={false}
                                                 maxCount={3}
-                                                displaySize="2xs"
+                                                displaySize="xs"
                                             />
 
                                         </View>
@@ -117,7 +117,7 @@ export default function Unit(props) {
                                 />
 
                             </View>
-                            <View className="flex-col h-32 px-3 pb-3 flex-auto justify-between">
+                            <View className="flex-col h-32 p-2 flex-auto justify-between">
                                 <View className="">
                                     <Text
                                         numberOfLines={2}
@@ -135,7 +135,7 @@ export default function Unit(props) {
                                                 }
                                                 showEmpty={false}
                                                 maxCount={3}
-                                                displaySize="2xs"
+                                                displaySize="xs"
                                             />
 
                                         </View>

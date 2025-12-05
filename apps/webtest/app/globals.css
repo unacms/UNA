@@ -983,7 +983,7 @@
   .tabs[data-variant="light"] .tabs__list {
     padding: 0;
     background-color: transparent;
-    gap: 0.5rem;
+    gap: 0.25rem;
   }
   
   .tabs--light .tabs__tab,

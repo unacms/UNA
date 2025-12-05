@@ -2,7 +2,7 @@ import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
-import { getRandomColor } from 'app/lib/util';
+import { getRandomColor, appSetting } from 'app/lib/util';
 import { memo } from 'react';
 import { getPart } from 'app/lib/parts/part';
 /**
@@ -114,6 +114,31 @@ function UnitTextLink({ oProps, sSizeFont,  emulate }) {
     )
 }
 
+// Fallback sizes in case settings are not available
+const fallbackSizes = {
+    '3xs': { container: 'w-4 h-4', width: 16, height: 16, font: 'text-[10px] leading-4', letter_font: 'text-[8px] font-semibold' },
+    '2xs': { container: 'w-5 h-5', width: 20, height: 20, font: 'text-xs leading-5', letter_font: 'text-[10px] font-semibold' },
+    xs: { container: 'w-6 h-6', width: 24, height: 24, font: 'text-xs leading-5', letter_font: 'text-xs font-semibold' },
+    sm: { container: 'w-8 h-8', width: 32, height: 32, font: 'text-sm leading-4 tracking-tight font-semibold', letter_font: 'text-sm font-semibold' },
+    md: { container: 'w-9 h-9', width: 36, height: 36, font: 'text-sm leading-5 tracking-tight font-semibold', letter_font: 'text-base font-semibold' },
+    base: { container: 'w-10 h-10', width: 40, height: 40, font: 'text-base', letter_font: 'text-lg font-semibold' },
+    lg: { container: 'w-12 h-12', width: 48, height: 48, font: 'text-lg leading-6 tracking-tight font-semibold', letter_font: 'text-xl font-semibold' },
+    xl: { container: 'w-14 h-14', width: 56, height: 56, font: 'text-xl', letter_font: 'text-2xl font-semibold' },
+    '2xl': { container: 'w-20 h-20', width: 80, height: 80, font: 'text-xl', letter_font: 'text-3xl font-semibold' },
+    '3xl': { container: 'w-40 h-40', width: 160, height: 160, font: 'text-2xl', letter_font: 'text-5xl font-semibold' },
+    '4xl': { container: 'w-80 h-80', width: 320, height: 320, font: 'text-4xl', letter_font: 'text-8xl font-semibold' },
+};
+
+/**
+ * Get profile size configuration from settings or fallback
+ * @param {string} sizeName - Size name (e.g., 'xs', 'sm', 'base', 'lg')
+ * @returns {object} Size configuration with container, width, height, font, letter_font
+ */
+export function getProfileSize(sizeName) {
+    const settingsSize = appSetting('theme', 'profile_sizes', sizeName);
+    return settingsSize || fallbackSizes[sizeName] || fallbackSizes.base;
+}
+
 function AtomProfile_(oProps) {
     //--- display type
     const sDisplayType = oProps.displayType
@@ -123,86 +148,15 @@ function AtomProfile_(oProps) {
     //--- the profile image size
     const sDisplaySize = oProps.displaySize ? oProps.displaySize : 'base'
 
-    const sizes = {
-        '2xs': {
-            sSize: 'w-5 h-5',
-            iSizeWidth: 20,
-            iSizeHeight: 20,
-            sSizeFont: 'text-xs leading-5', 
-            sSizeFontLetter: ' text-xs font-semibold',
-        },
-        xs: {
-            sSize: 'w-7 h-7',
-            iSizeWidth: 28,
-            iSizeHeight: 28,
-            sSizeFont: 'text-xs leading-5', 
-            sSizeFontLetter: ' text-sm font-semibold',
-        },
-        sm: {
-            sSize: 'w-9 h-9',
-            iSizeWidth: 36,
-            iSizeHeight: 36,
-            sSizeFont: 'text-sm leading-4 tracking-tight font-semibold',
-            sSizeFontLetter: ' text-base opacity-50 font-semibold',
-        },
-        base: {
-            sSize: 'w-10 h-10',
-            iSizeWidth: 40,
-            iSizeHeight: 40,
-            sSizeFont: '  ',
-            sSizeFontLetter: ' p-2 text-center text-xl font-semibold',
-        },
-        lg: {
-            sSize: 'w-11 h-11',
-            iSizeWidth: 44,
-            iSizeHeight: 44,
-            sSizeFont: ' text-lg leading-6 tracking-tight font-semibold',
-            sSizeFontLetter: 'text-3xl font-semibold',
-        },
-        xl: {
-            sSize: 'w-14 h-14',
-            iSizeWidth: 56,
-            iSizeHeight: 56,
-            sSizeFont: 'text-xl',
-            sSizeFontLetter: 'text-4xl opacity-50 font-semibold',
-        },
-        '1.5xl': {
-            sSize: 'w-18 h-18',
-            iSizeWidth: 72,
-            iSizeHeight: 72,
-            sSizeFont: 'text-xl',
-            sSizeFontLetter: 'text-5xl',
-        },
-        '2xl': {
-            sSize: 'w-24 h-24',
-            iSizeWidth: 96,
-            iSizeHeight: 96,
-            sSizeFont: 'text-xl',
-            sSizeFontLetter: 'text-6xl',
-        },
-        '3xl': {
-            sSize: 'w-32 h-32',
-            iSizeWidth: 128,
-            iSizeHeight: 128,
-            sSizeFont: 'text-2xl',
-            sSizeFontLetter: 'text-5xl',
-        },
-        '4xl': {
-            sSize: 'w-40 h-40',
-            iSizeWidth: 160,
-            iSizeHeight: 160,
-            sSizeFont: 'text-3xl',
-            sSizeFontLetter: 'text-7xl',
-        },
-        full: {
-            sSize: 'w-64 h-64',
-            iSizeWidth: 256,
-            iSizeHeight: 256,
-            sSizeFont: 'text-4xl',
-            sSizeFontLetter: 'text-7xl',
-        },
-    };
-    let { sSize, iSizeWidth, iSizeHeight, sSizeFont, sSizeFontLetter } = sizes[sDisplaySize] || sizes.base;
+    // Get size from settings with fallback
+    const sizeConfig = getProfileSize(sDisplaySize);
+    
+    // Map to internal variable names for backward compatibility
+    let sSize = sizeConfig.container;
+    const iSizeWidth = sizeConfig.width;
+    const iSizeHeight = sizeConfig.height;
+    const sSizeFont = sizeConfig.font;
+    const sSizeFontLetter = sizeConfig.letter_font;
 
     sSize += ' rounded-full '
 

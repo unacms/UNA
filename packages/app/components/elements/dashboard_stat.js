@@ -130,7 +130,14 @@ export default function PageLayout(props) {
                         </BlockTitle>
                         <BlockDescription>
                             <View>
-                                <Badge variant="default" data={{ text: currentUser.membership_name }} />
+                                <Badge 
+                                    variant="default" 
+                                    data={{ 
+                                        text: currentUser.membership_name,
+                                        icon: currentUser.membership_icon,
+                                        icon_url: currentUser.membership_icon_url
+                                    }} 
+                                />
                             </View>
                         </BlockDescription>
                     </BlockName>

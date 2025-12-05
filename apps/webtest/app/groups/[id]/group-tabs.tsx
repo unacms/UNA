@@ -1,8 +1,12 @@
 'use client'
 
 // Group Tabs - Client Component for interactive tab navigation
-// Uses standard HeroUI v3 Tabs from @neo/test-components
+// Uses standard HeroUI v3 Tabs from @heroui/react
 // Shows condensed title + avatar + switcher when main header scrolls out of view
+//
+// IMPORTANT: React Aria's collection system requires Tabs.ListContainer and Tabs.Panel
+// to be direct children of Tabs - no wrapper divs allowed between them!
+// The sticky header layout is achieved by styling the ListContainer itself.
 
 import { Tabs } from '@neo/test-components'
 import { Dropdown, Label, Button } from '@heroui/react'
@@ -70,16 +74,109 @@ function GroupActionsDropdown({ size = 'md' }: { size?: 'sm' | 'md' }) {
   )
 }
 
+// Condensed header content - shown when scrolled
+function CondensedHeader({ 
+  showTitle, 
+  groupName, 
+  groupAvatar, 
+  groupId 
+}: { 
+  showTitle: boolean
+  groupName: string
+  groupAvatar?: string
+  groupId: string
+}) {
+  return (
+    <div 
+      className={`
+        hidden md:flex items-center gap-2 shrink-0
+        transition-all duration-200 ease-out
+        ${showTitle ? 'opacity-100 ps-3 sm:ps-4 lg:ps-6' : 'opacity-0 max-w-0 overflow-hidden'}
+      `}
+    >
+      {groupAvatar && (
+        <Image 
+          src={groupAvatar} 
+          alt={groupName}
+          width={32}
+          height={32}
+          unoptimized
+          className="w-8 h-8 rounded-full object-cover shrink-0"
+        />
+      )}
+      <h2 className="font-semibold text-xl text-foreground whitespace-nowrap overflow-hidden text-ellipsis">
+        {groupName}
+      </h2>
+      <GroupSwitcherTrigger
+        currentGroupId={groupId}
+        currentGroupName={groupName}
+      />
+    </div>
+  )
+}
+
+// Action buttons - shown when scrolled on desktop
+function ActionButtons({ 
+  showTitle, 
+  isGuest, 
+  isMember 
+}: { 
+  showTitle: boolean
+  isGuest: boolean
+  isMember: boolean
+}) {
+  return (
+    <div className="flex items-center gap-2 shrink-0 pe-3 sm:pe-4 lg:pe-6">
+      {/* Primary action buttons - visible on lg+ when scrolled, auth-state aware */}
+      <div 
+        className={`
+          hidden lg:flex items-center gap-2
+          transition-all duration-200 ease-out
+          ${showTitle ? 'opacity-100' : 'opacity-0 pointer-events-none'}
+        `}
+      >
+        {/* Guests only see Share, authenticated see Join/Invite + Share */}
+        {isGuest ? (
+          <Button variant="secondary" size="sm" isIconOnly aria-label="Share">
+            <Share2 className="w-4 h-4" />
+          </Button>
+        ) : (
+          <>
+            {isMember ? (
+              <Button variant="primary" size="sm">
+                <Mail className="w-4 h-4" />
+                Invite
+              </Button>
+            ) : (
+              <Button variant="primary" size="sm">
+                <UserPlus className="w-4 h-4" />
+                Join
+              </Button>
+            )}
+            <Button variant="secondary" size="sm" isIconOnly aria-label="Share">
+              <Share2 className="w-4 h-4" />
+            </Button>
+          </>
+        )}
+      </div>
+
+      {/* Actions Dropdown - desktop only, not for guests */}
+      {!isGuest && (
+        <div className="hidden lg:block">
+          <GroupActionsDropdown size={showTitle ? 'sm' : 'md'} />
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function GroupTabs({ groupId, groupName, groupAvatar, feedContent, aboutContent, membersContent, respectContent, mutesContent }: GroupTabsProps) {
   const [showTitle, setShowTitle] = useState(false)
+  const [selectedTab, setSelectedTab] = useState<string>('feed')
   const { setContent, setActions } = useNavbarIsland()
   const { authState } = useAuthStateSafe()
   const isMember = authState === 'group-member'
   const isGuest = authState === 'unauthenticated'
-
-  // Determine tab size based on scroll state
-  // When scrolled = smaller tabs for compact sticky header
-  const tabSize = showTitle ? 'md' : 'lg'
 
   // Track when the main header scrolls out of view
   useEffect(() => {
@@ -124,43 +221,47 @@ export function GroupTabs({ groupId, groupName, groupAvatar, feedContent, aboutC
     }
   }, [groupId, groupName, groupAvatar, setContent, setActions, authState])
 
-  return (
-    <Tabs defaultSelectedKey="feed" size={tabSize} showSeparators={false} className="gap-0">
-      {/* Tabs bar - sticky at top-16 */}
-      <div className="bg-card/95 backdrop-blur border-b border-border/60 sticky top-16 z-40">
-        <div className="max-w-7xl mx-auto ">
-          <div className="flex items-center">
-            {/* Left side: Avatar + Title (md+ only) + Tabs - takes remaining space and scrolls */}
-            <div className="flex items-center min-w-0 flex-1 overflow-x-auto scrollbar-none ">
-              {/* Condensed avatar + title + switcher - appears when scrolled, hidden on mobile (shown in navbar) */}
-              <div 
-                className={`
-                  hidden md:flex items-center gap-2
-                  transition-all duration-200 ease-out
-                  ${showTitle ? 'opacity-100  ps-3 sm:ps-4 lg:ps-6 py-3' : 'opacity-0 max-w-0 overflow-hidden'}
-                `}
-              >
-                {groupAvatar && (
-                  <Image 
-                    src={groupAvatar} 
-                    alt={groupName}
-                    width={32}
-                    height={32}
-                    unoptimized
-                    className="w-8 h-8 rounded-full object-cover shrink-0"
-                  />
-                )}
-                <h2 className="font-semibold text-xl text-foreground whitespace-nowrap overflow-hidden text-ellipsis">
-                  {groupName}
-                </h2>
-                <GroupSwitcherTrigger
-                  currentGroupId={groupId}
-                  currentGroupName={groupName}
-                />
-              </div>
+  // Render content based on selected tab
+  const renderContent = () => {
+    switch (selectedTab) {
+      case 'feed':
+        return feedContent
+      case 'about':
+        return aboutContent
+      case 'members':
+        return membersContent
+      case 'respect':
+        return respectContent
+      case 'mutes':
+        return mutesContent
+      default:
+        return feedContent
+    }
+  }
 
-              <Tabs.ListContainer>
-                <Tabs.List aria-label="Group sections" className="w-fit bg-transparent px-3 sm:px-4 lg:px-6 py-3 flex-nowrap">
+  return (
+    <>
+      {/* Sticky tabs header - separate from Tabs to avoid React Aria context conflicts with Dropdown */}
+      <div className="bg-card/95 backdrop-blur border-b border-border/60 sticky top-16 z-40">
+        <div className="max-w-7xl mx-auto flex items-center">
+          {/* Condensed header - shows on scroll */}
+          <CondensedHeader 
+            showTitle={showTitle} 
+            groupName={groupName} 
+            groupAvatar={groupAvatar} 
+            groupId={groupId} 
+          />
+          
+          {/* Tab list using Tabs component */}
+          <Tabs 
+            selectedKey={selectedTab} 
+            onSelectionChange={(key) => setSelectedTab(key as string)}
+            size={showTitle ? 'md' : 'lg'}
+            showSeparators={false}
+            className="flex-1"
+          >
+            <Tabs.ListContainer>
+              <Tabs.List aria-label="Group sections" className="bg-transparent px-3 sm:px-4 lg:px-6 py-3 flex-nowrap">
                 <Tabs.Tab id="feed" className="aria-selected:text-accent-foreground">
                   Feed
                   <Tabs.Indicator className="bg-accent shadow-none" />
@@ -186,79 +287,19 @@ export function GroupTabs({ groupId, groupName, groupAvatar, feedContent, aboutC
                   </Tabs.Tab>
                 )}
               </Tabs.List>
-              </Tabs.ListContainer>
-            </div>
-
-            {/* Right side: Action buttons (lg only when scrolled) + Dropdown */}
-            <div className="flex items-center gap-2 shrink-0 pe-3 sm:pe-4 lg:pe-6 py-3">
-              {/* Primary action buttons - visible on lg+ when scrolled, auth-state aware */}
-              <div 
-                className={`
-                  hidden lg:flex items-center gap-2
-                  transition-all duration-200 ease-out
-                  ${showTitle ? 'opacity-100' : 'opacity-0 pointer-events-none'}
-                `}
-              >
-                {/* Guests only see Share, authenticated see Join/Invite + Share */}
-                {isGuest ? (
-                  <Button variant="secondary" size="sm" isIconOnly aria-label="Share">
-                    <Share2 className="w-4 h-4" />
-                  </Button>
-                ) : (
-                  <>
-                    {isMember ? (
-                      <Button variant="primary" size="sm">
-                        <Mail className="w-4 h-4" />
-                        Invite
-                      </Button>
-                    ) : (
-                      <Button variant="primary" size="sm">
-                        <UserPlus className="w-4 h-4" />
-                        Join
-                      </Button>
-                    )}
-                    <Button variant="secondary" size="sm" isIconOnly aria-label="Share">
-                      <Share2 className="w-4 h-4" />
-                    </Button>
-                  </>
-                )}
-              </div>
-
-              {/* Actions Dropdown - desktop only, not for guests */}
-              {!isGuest && (
-                <div className="hidden lg:block">
-                  <GroupActionsDropdown size={showTitle ? 'sm' : 'md'} />
-                </div>
-              )}
-            </div>
-          </div>
+            </Tabs.ListContainer>
+          </Tabs>
+          
+          {/* Action buttons - OUTSIDE of Tabs to avoid React Aria context conflicts */}
+          <ActionButtons showTitle={showTitle} isGuest={isGuest} isMember={isMember} />
         </div>
       </div>
 
-      <Tabs.Panel id="feed" className="p-0">
-        {feedContent}
-      </Tabs.Panel>
-      
-      <Tabs.Panel id="about" className="p-0">
-        {aboutContent}
-      </Tabs.Panel>
-      
-      <Tabs.Panel id="members" className="p-0">
-        {membersContent}
-      </Tabs.Panel>
-      
-      {respectContent && (
-        <Tabs.Panel id="respect" className="p-0">
-          {respectContent}
-        </Tabs.Panel>
-      )}
-      
-      {mutesContent && (
-        <Tabs.Panel id="mutes" className="p-0">
-          {mutesContent}
-        </Tabs.Panel>
-      )}
-    </Tabs>
+      {/* Tab content - rendered manually based on selection */}
+      <div className="p-0">
+        {renderContent()}
+      </div>
+    </>
   )
 }
 

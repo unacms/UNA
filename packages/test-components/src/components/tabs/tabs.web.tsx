@@ -1,17 +1,19 @@
 'use client'
 
-// Tabs Web Implementation - wraps HeroUI v3 Tabs
-// Supports HeroUI v2.8.5 variants with v3 compound pattern
+// Tabs Web Implementation - re-exports HeroUI v3 Tabs
+// HeroUI v3 Tabs uses React Aria Components internally with strict context requirements
+// The compound components MUST be used directly - wrapping them breaks the React Aria context
 // https://v3.heroui.com/docs/components/tabs
-// https://www.heroui.com/docs/components/tabs
 
 import { Tabs as HeroUITabs } from "@heroui/react"
 import { cn } from "../../theme/utils"
-import { tabsClasses, type TabsProps, type TabListContainerProps, type TabListProps, type TabProps, type TabPanelProps, type TabIndicatorProps } from "./types"
+import { tabsClasses, type TabsProps } from "./types"
 
 /**
  * Tabs - Wrapper around HeroUI v3 Tabs with full variant support
- * Uses compound component pattern with sub-components
+ * 
+ * IMPORTANT: This component re-exports HeroUI's compound components directly.
+ * Do NOT wrap them in custom functions - this breaks React Aria's context system.
  * 
  * @example Basic usage
  * ```tsx
@@ -28,18 +30,10 @@ import { tabsClasses, type TabsProps, type TabListContainerProps, type TabListPr
  * </Tabs>
  * ```
  * 
- * @example With variants
+ * @example With variants (via className/data attributes)
  * ```tsx
- * <Tabs variant="underlined" color="primary" size="lg">
+ * <Tabs variant="underlined" size="lg">
  *   ...
- * </Tabs>
- * ```
- * 
- * @example With Next.js router
- * ```tsx
- * <Tabs selectedKey={pathname} onSelectionChange={(key) => router.push(key)}>
- *   <Tabs.Tab id="/dashboard" href="/dashboard">Dashboard</Tabs.Tab>
- *   <Tabs.Tab id="/settings" href="/settings">Settings</Tabs.Tab>
  * </Tabs>
  * ```
  */
@@ -100,58 +94,12 @@ function TabsRoot({
   )
 }
 
-// Custom ListContainer with our BEM classes
-function ListContainer({ children, className }: TabListContainerProps) {
-  return (
-    <HeroUITabs.ListContainer className={cn(tabsClasses.listContainer, className)}>
-      {children}
-    </HeroUITabs.ListContainer>
-  )
-}
-
-// Custom List with our BEM classes
-function List({ children, className, "aria-label": ariaLabel }: TabListProps) {
-  return (
-    <HeroUITabs.List aria-label={ariaLabel} className={cn(tabsClasses.list, className)}>
-      {children}
-    </HeroUITabs.List>
-  )
-}
-
-// Custom Tab with our BEM classes
-function Tab({ children, id, title, isDisabled, href, className }: TabProps) {
-  return (
-    <HeroUITabs.Tab 
-      id={id} 
-      isDisabled={isDisabled} 
-      href={href}
-      className={cn(tabsClasses.tab, className)}
-      aria-label={title ? String(title) : undefined}
-    >
-      {children}
-    </HeroUITabs.Tab>
-  )
-}
-
-// Custom Panel with our BEM classes
-function Panel({ children, id, className }: TabPanelProps) {
-  return (
-    <HeroUITabs.Panel id={id} className={cn(tabsClasses.panel, className)}>
-      {children}
-    </HeroUITabs.Panel>
-  )
-}
-
-// Custom Indicator with our BEM classes
-function Indicator({ className }: TabIndicatorProps) {
-  return <HeroUITabs.Indicator className={cn(tabsClasses.indicator, className)} />
-}
-
-// Create compound component
+// Re-export HeroUI compound components directly
+// DO NOT wrap these - React Aria's context system requires direct component references
 export const Tabs = Object.assign(TabsRoot, {
-  ListContainer,
-  List,
-  Tab,
-  Panel,
-  Indicator,
+  ListContainer: HeroUITabs.ListContainer,
+  List: HeroUITabs.List,
+  Tab: HeroUITabs.Tab,
+  Panel: HeroUITabs.Panel,
+  Indicator: HeroUITabs.Indicator,
 })

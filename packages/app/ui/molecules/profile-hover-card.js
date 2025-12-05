@@ -50,7 +50,7 @@ const ProfileCardContent = memo(function ProfileCardContent({ profileData,  page
                 </Row>
                 <View className="my-2 gap-y-2">
                     {!!pageData && <Row>
-                        <CoverMenuMeta {...pageData.data.cover_block.meta_menu} button_size='xs' />
+                        <CoverMenuMeta {...pageData.data.cover_block.meta_menu} button_size='xs' list_display_size='xs' />
                         </Row>
                     }
                     {!!pageData && <Row>

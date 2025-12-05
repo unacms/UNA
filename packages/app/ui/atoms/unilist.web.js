@@ -75,11 +75,18 @@ export default function UniList(props) {
     })();
 
     const hasResolvedHeight = Boolean(normalizedHeight);
+    
+    // If explicit useWindowScroll prop is provided, respect it
+    // Otherwise, default to window scroll when no valid height is provided
     const shouldUseWindowScroll =
         typeof useWindowScrollProp === 'boolean' ? useWindowScrollProp : !hasResolvedHeight;
+    
+    // Always use window scroll if no height is resolved to prevent zero-sized element errors
     const isWindowScroll = hasResolvedHeight ? shouldUseWindowScroll : true;
     
-    let style = normalizedHeight ? { height: normalizedHeight } : {};
+    // Only set height style if we have a valid height AND we're not using window scroll
+    // This prevents virtuoso from receiving conflicting signals
+    let style = (normalizedHeight && !isWindowScroll) ? { height: normalizedHeight } : {};
     if (paddingTop) {
         style.paddingTop = paddingTop
     }
@@ -99,10 +106,15 @@ export default function UniList(props) {
         );
     });
 
+    // Style for virtuoso: only pass explicit height when NOT using window scroll, but preserve paddingTop
+    const virtuosoStyle = isWindowScroll 
+        ? (paddingTop ? { paddingTop } : {}) 
+        : style;
+    
     const commonVirtuosoProps = {
         data,
         useWindowScroll: isWindowScroll,
-        style,
+        style: virtuosoStyle,
         ref: refer ? refer : uniRef,
         endReached: onEndReached,
         overscan: props.unit == 'notifications' ? 100 : 900,
@@ -138,9 +150,12 @@ export default function UniList(props) {
         contentComponent = preloadComponent;
     }
     else {
+        // Wrapper style: use explicit height only when not using window scroll, otherwise let it flow naturally
+        const wrapperStyle = isWindowScroll ? {} : style;
+        
         if (mode != 'simple' && !sortable) {
             contentComponent = (
-                <View className="@container/list" style={style}>
+                <View className="@container/list" style={wrapperStyle}>
                     {ListHeaderComponent && ListHeaderComponent()}
                     <VirtuosoGrid
                         {...commonVirtuosoProps}
@@ -187,7 +202,7 @@ export default function UniList(props) {
             }
             else {
                 contentComponent = (
-                    <View style={style}>
+                    <View style={wrapperStyle}>
                         {ListHeaderComponent && ListHeaderComponent()}
                         <Virtuoso
                             itemContent={itemContent}

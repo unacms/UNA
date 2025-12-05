@@ -27,6 +27,7 @@ import {
 } from 'app/ui/molecules/resizable-panels'
 import { useLayoutSettings } from 'app/context/layout-settings'
 import Badge from 'app/ui/molecules/badge'
+import Badges from 'app/ui/molecules/badges'
 import { useBreakpoint, useWindowSize, useIsDesktop, useWindowHeight, useWindowWidth } from 'app/context/measure';
 
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
@@ -280,16 +281,29 @@ export default function ({ data, blocks }) {
                                     {...currentUser}
                                     url_avatar={currentUser.avatar}
                                     displayType="unit_wo_info"
-                                    displaySize="sm"
+                                    displaySize="md"
                                 />
 
 
-                                <View >
-                                    <Text className="px-1 text-sm leading-tight font-semibold truncate text-card-foreground web:group-hover:text-foreground ">
-                                        {currentUser.display_name}
-                                    </Text>
-                                    <Badge size="xs" variant="default" iconOnly data={{ text: currentUser.membership_name }} />
-                                </View>
+                                <Row className="flex-auto items-center justify-between gap-1">
+                                    <Row className="items-center gap-1 flex-auto min-w-0">
+                                        <Text className="px-1 text-sm leading-tight font-semibold truncate text-card-foreground web:group-hover:text-foreground ">
+                                            {currentUser.display_name}
+                                        </Text>
+                                        {currentUser.badges && <Badges badges={currentUser.badges} size="xs" />}
+                                    </Row>
+                                    {currentUser.membership_name && (
+                                        <Badge 
+                                            size="xs" 
+                                            variant="default" 
+                                            data={{ 
+                                                text: currentUser.membership_name, 
+                                                icon: currentUser.membership_icon,
+                                                icon_url: currentUser.membership_icon_url
+                                            }} 
+                                        />
+                                    )}
+                                </Row>
                             </Row>
                         </Link>
 

@@ -92,7 +92,7 @@ export default function MenuItemButton(oProps) {
                 sContent = (
                     <Row className={bShowVertical ? "flex-col flex-auto items-stretch" : "flex-auto items-center"}>
 
-                        {(oProps.list && oProps.list.length > 0) && <ProfilesList data={oProps.list} showEmpty={false} maxCount={3} displaySize="sm" />}
+                        {(oProps.list && oProps.list.length > 0) && <ProfilesList data={oProps.list} showEmpty={false} maxCount={oProps.params?.list_max_count || 3} displaySize={oProps.params?.list_display_size || "sm"} />}
                         {oProps?.link ?
                             (!oProps.noAction ?
                                 <Link emulate={true} href={oProps.link[0] === '/' ? oProps.link : (oProps?.link?.includes("://") ? oProps.link : '/' + oProps.link)}>
