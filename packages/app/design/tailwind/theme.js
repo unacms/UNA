@@ -1,7 +1,7 @@
 const merge = require('deepmerge');
 const configCustom = require('app/design/tailwind-custom/theme');
 const isNative = process.env.TAILWIND_TARGET === 'native';
-const { nativewindUIColors } = require('app/design/tailwind/nativewindui-theme');
+//const { nativewindUIColors } = require('app/design/tailwind/nativewindui-theme');
 
 const colors = {
     neutral: {
@@ -130,12 +130,12 @@ const theme = {
         },
         colors: {
             ...colors,
-            ...nativewindUIColors,
+        //    ...nativewindUIColors,
         },
-        borderColor: {
+        /*borderColor: {
             // Make `border` (width-only) pick up semantic default color on web and native
             DEFAULT: nativewindUIColors.border,
-        },
+        },*/
       
         boxShadow: {
             'xs': 'var(--shadow-xs)',
