@@ -19,7 +19,8 @@ export default function DropdownPopup({
     minPopupWidth = 256,
     defaultOpen = false,
     showOnTop = false,
-    contentClasses = dropdownTheme?.cnt
+    contentClasses = dropdownTheme?.cnt,
+    hoverMode = false, // When true, allows page scroll while popup is open
 }) {
     const buttonRef = useRef(null);
     const isDesktop = useIsDesktop();
@@ -161,7 +162,7 @@ export default function DropdownPopup({
                 >
                     {isWeb ? (
                         <Pressable className="flex-1  z-20" onPress={(event) => handleBackdropPress(event)}>
-                            <RemoveScroll>{Content}</RemoveScroll>
+                            {hoverMode ? Content : <RemoveScroll>{Content}</RemoveScroll>}
                         </Pressable>
                     ) : (
                         <Pressable

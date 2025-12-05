@@ -543,11 +543,17 @@ export const Author = memo(({ data, url, t }) => {
             ? data.context_data
             : data.author_data
 
+    // Create a hover card wrapper function that only wraps avatar/name
+    const hoverCardWrapper = (content) => (
+        <ProfileHoverCard profileData={dataIcon}>
+            {content}
+        </ProfileHoverCard>
+    );
+
     return (
        <Row className="w-full justify-between items-top">
             <View className='flex-auto'>
-                <ProfileHoverCard profileData={dataIcon}>
-                    <Profile
+                <Profile
                     {...dataIcon}
                     displayType="unit"
                     displaySize="base"
@@ -557,9 +563,10 @@ export const Author = memo(({ data, url, t }) => {
                             <ItemInfo data={data} t={t} />                    
                         </Row>
                     }
-                    showInfo2={<Badges badges={data.author_badges} size="xs" />}
+                    showInfo2={<Badges badges={data.author_badges} size="2xs" />}
                     showActions={ActionsElements}
-                /></ProfileHoverCard>
+                    hoverCardWrapper={hoverCardWrapper}
+                />
             </View>
             
                         {isWeb ? (
@@ -600,18 +607,25 @@ export const Author = memo(({ data, url, t }) => {
 
 export function SmallUnit({ data }) {
     let url = '/' + data.url
+    
+    // Create a hover card wrapper function for avatar only
+    const hoverCardWrapper = (content) => (
+        <ProfileHoverCard profileData={data.author_data}>
+            {content}
+        </ProfileHoverCard>
+    );
+
     return (
         <AnimatedBlock>
             <Link href={url} className="w-full" emulate={true}>
                 <Card className={' w-full tl-' + data.id}>
                     <View className=" mr-2 xl:mr-3 rounded-full flex-none bg-secondary-500/10">
-                        <ProfileHoverCard profileData={data.author_data}>
-                            <Profile
-                                {...data.author_data}
-                                displayType="unit_wo_info"
-                                displaySize="base"
-                            />
-                        </ProfileHoverCard>
+                        <Profile
+                            {...data.author_data}
+                            displayType="unit_wo_info"
+                            displaySize="base"
+                            hoverCardWrapper={hoverCardWrapper}
+                        />
                     </View>
                     <View className="flex-auto flex-col my-auto">
                         <Row className={`flex-row ${cd('gap-sm')}`}>

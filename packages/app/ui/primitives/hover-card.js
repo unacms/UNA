@@ -98,8 +98,9 @@ const HoverCard = React.memo(function HoverCard({
 
   const setOpen = React.useCallback((newOpen) => {
     if (newOpen) {
-      // Set protection end time - ignore close events for 300ms after opening
-      protectionEndTime.current = Date.now() + 300;
+      // Set protection end time - ignore close events for 100ms after opening
+      // Reduced from 300ms for faster dismissal while still preventing flickering
+      protectionEndTime.current = Date.now() + 100;
     } else {
       protectionEndTime.current = 0;
     }
@@ -148,11 +149,11 @@ const HoverCard = React.memo(function HoverCard({
     if (closeTimerRef.current) {
       clearTimeout(closeTimerRef.current);
     }
-    // Very short delay to allow state to settle
+    // Immediate close with minimal delay for state to settle
     closeTimerRef.current = setTimeout(() => {
       closeTimerRef.current = null;
       tryClose();
-    }, 50);
+    }, 10);
   }, [tryClose]);
 
   const handleTriggerMouseEnter = React.useCallback(() => {

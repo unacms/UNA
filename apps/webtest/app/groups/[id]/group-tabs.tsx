@@ -116,6 +116,7 @@ function CondensedHeader({
 }
 
 // Action buttons - shown when scrolled on desktop
+// Uses mounted state to avoid hydration mismatch with auth-dependent rendering
 function ActionButtons({ 
   showTitle, 
   isGuest, 
@@ -125,43 +126,54 @@ function ActionButtons({
   isGuest: boolean
   isMember: boolean
 }) {
+  const [mounted, setMounted] = useState(false)
+  
+  // Only render auth-dependent content after mounting to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   return (
     <div className="flex items-center gap-2 shrink-0 pe-3 sm:pe-4 lg:pe-6">
       {/* Primary action buttons - visible on lg+ when scrolled, auth-state aware */}
-      <div 
-        className={`
-          hidden lg:flex items-center gap-2
-          transition-all duration-200 ease-out
-          ${showTitle ? 'opacity-100' : 'opacity-0 pointer-events-none'}
-        `}
-      >
-        {/* Guests only see Share, authenticated see Join/Invite + Share */}
-        {isGuest ? (
-          <Button variant="secondary" size="sm" isIconOnly aria-label="Share">
-            <Share2 className="w-4 h-4" />
-          </Button>
-        ) : (
-          <>
-            {isMember ? (
-              <Button variant="primary" size="sm">
-                <Mail className="w-4 h-4" />
-                Invite
-              </Button>
-            ) : (
-              <Button variant="primary" size="sm">
-                <UserPlus className="w-4 h-4" />
-                Join
-              </Button>
-            )}
+      {/* Only render after mount to prevent hydration mismatch */}
+      {mounted && (
+        <div 
+          className={`
+            hidden lg:flex items-center gap-2
+            transition-all duration-200 ease-out
+            ${showTitle ? 'opacity-100' : 'opacity-0 pointer-events-none'}
+          `}
+        >
+          {/* Guests only see Share, authenticated see Join/Invite + Share */}
+          {isGuest ? (
             <Button variant="secondary" size="sm" isIconOnly aria-label="Share">
               <Share2 className="w-4 h-4" />
             </Button>
-          </>
-        )}
-      </div>
+          ) : (
+            <>
+              {isMember ? (
+                <Button variant="primary" size="sm">
+                  <Mail className="w-4 h-4" />
+                  Invite
+                </Button>
+              ) : (
+                <Button variant="primary" size="sm">
+                  <UserPlus className="w-4 h-4" />
+                  Join
+                </Button>
+              )}
+              <Button variant="secondary" size="sm" isIconOnly aria-label="Share">
+                <Share2 className="w-4 h-4" />
+              </Button>
+            </>
+          )}
+        </div>
+      )}
 
       {/* Actions Dropdown - desktop only, not for guests */}
-      {!isGuest && (
+      {/* Only render after mount to prevent hydration mismatch */}
+      {mounted && !isGuest && (
         <div className="hidden lg:block">
           <GroupActionsDropdown size={showTitle ? 'sm' : 'md'} />
         </div>

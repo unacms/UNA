@@ -38,9 +38,9 @@ function DisplayInfo(oProps) {
     return <></>
 }
 
-function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, emulate }) {
+function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, emulate, hoverCardWrapper }) {
     let name = oProps.display_name ? oProps.display_name.substr(0, 1) : ''
-    const content = 
+    const avatarContent = 
         <View className={`${sSize} overflow-hidden bg-secondary rounded-full`}>
             {!oProps.url_avatar && <View className={'h-full items-center justify-center bg-' + getRandomColor(oProps.id) + '-500 uppercase'}>
                 <Text className={sSizeFontLetter + ' text-white '}>{name}</Text>
@@ -55,48 +55,54 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
             />
             }
         </View>
-;
+    ;
 
-    return oProps.url && bShowLinks ? <Link emulate={emulate} href={oProps.url}>{content}</Link> : content
+    // Build the linked avatar
+    const linkedAvatar = oProps.url && bShowLinks 
+        ? <Link emulate={emulate} href={oProps.url}>{avatarContent}</Link> 
+        : avatarContent;
 
+    // Wrap with hover card if provided
+    if (hoverCardWrapper) {
+        return hoverCardWrapper(linkedAvatar);
+    }
+    return linkedAvatar;
 }
 
-function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, info2 }) {
+function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, info2, hoverCardWrapper }) {
+    // Wrapper function that either wraps with hover card or returns as-is
+    const wrapWithHoverCard = (content) => {
+        if (hoverCardWrapper) {
+            return hoverCardWrapper(content);
+        }
+        return content;
+    };
+
+    const nameLink = bShowLinks ? (
+        <Link variant="plain" className="flex-row items-center" size="sm" emulate={emulate} haptics="Select" href={oProps.url}>
+            <DisplayNameLink
+                title={oProps.display_name}
+                url={oProps.url}
+                fontSize={sSizeFont}
+                href={oProps.href}
+                inheritColor
+                inheritTextSize
+            />
+        </Link>
+    ) : (
+        <DisplayNameText title={oProps.display_name} fontSize={sSizeFont} />
+    );
+
     return (
-       
-    <View className="gap-0.5 ">
-
-            {bShowLinks ? (
-                <Row className="items-center">
-                    <Link variant="plain" className="gap-1 flex-row items-center" size="sm" emulate={emulate} haptics="Select"  href={oProps.url}>
-                        <DisplayNameLink
-                            title={oProps.display_name}
-                            url={oProps.url}
-                            fontSize={sSizeFont}
-                            href={oProps.href}
-                            inheritColor
-                            inheritTextSize
-                        />
-                         {info2}
-                    </Link>
-                   
-                    
-                    {actions}
-                
-                </Row>
-            ) : (
-                <Row className="items-center gap-1 min-h-5">
-                    <DisplayNameText title={oProps.display_name} fontSize={sSizeFont} />
-                    {info2}
-                </Row>
-            )}
-
+        <View className="gap-0.5">
+            <Row className="items-center gap-1 min-h-5">
+                {wrapWithHoverCard(nameLink)}
+                {info2}
+                {actions}
+            </Row>
             {info}
-    </View>
-            
-        
-      
-    )
+        </View>
+    );
 }
 
 function UnitText({ oProps, sSizeFont }) {
@@ -171,24 +177,27 @@ function AtomProfile_(oProps) {
 
     const sShowInfo2 = oProps.showInfo2
 
+    // Hover card wrapper function passed from parent
+    const hoverCardWrapper = oProps.hoverCardWrapper;
+
     switch (sDisplayType) {
         case 'unit':
             return (
                 <Row className="gap-2 items-center">
                     <View className="flex-none">
-                        <UnitWoInfo oProps={oProps} sSize={sSize} sSizeFontLetter={sSizeFontLetter} emulate={emulate} iSizeWidth={iSizeWidth} bShowLinks={bShowLinks} />
+                        <UnitWoInfo oProps={oProps} sSize={sSize} sSizeFontLetter={sSizeFontLetter} emulate={emulate} iSizeWidth={iSizeWidth} bShowLinks={bShowLinks} hoverCardWrapper={hoverCardWrapper} />
                     </View>
                     <View className="flex-auto">
-                        <UnitWoImage oProps={oProps} sSizeFont={sSizeFont} bShowLinks={bShowLinks} emulate={emulate} info={sShowInfo} info2={sShowInfo2} actions={oProps.showActions} />
+                        <UnitWoImage oProps={oProps} sSizeFont={sSizeFont} bShowLinks={bShowLinks} emulate={emulate} info={sShowInfo} info2={sShowInfo2} actions={oProps.showActions} hoverCardWrapper={hoverCardWrapper} />
                     </View>
                 </Row>
             )
 
         case 'unit_wo_info':
-            return <UnitWoInfo oProps={oProps} sSize={sSize} sSizeFontLetter={sSizeFontLetter} emulate={emulate} iSizeWidth={iSizeWidth} bShowLinks={bShowLinks} />
+            return <UnitWoInfo oProps={oProps} sSize={sSize} sSizeFontLetter={sSizeFontLetter} emulate={emulate} iSizeWidth={iSizeWidth} bShowLinks={bShowLinks} hoverCardWrapper={hoverCardWrapper} />
 
         case 'unit_wo_image':
-            return <UnitWoImage oProps={oProps} sSizeFont={sSizeFont} bShowLinks={bShowLinks} emulate={emulate} info={sShowInfo} info2={sShowInfo2} actions={oProps.showActions} />
+            return <UnitWoImage oProps={oProps} sSizeFont={sSizeFont} bShowLinks={bShowLinks} emulate={emulate} info={sShowInfo} info2={sShowInfo2} actions={oProps.showActions} hoverCardWrapper={hoverCardWrapper} />
 
         case 'unit_text':
             return <UnitText oProps={oProps} sSizeFont={sSizeFont}  />
