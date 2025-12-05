@@ -1,6 +1,7 @@
 // Navbar - Server Component with client islands
 // Structure is server-rendered, only interactive parts are client components
 
+import { Suspense } from "react"
 import Link from "next/link"
 import { AppLogo } from "./app-logo"
 import { NavbarIsland, NavbarActions } from "./navbar-island"
@@ -22,8 +23,11 @@ export function SiteNavbar() {
           <NavbarIsland />
 
           {/* Desktop Nav - HeroUI Tabs with route integration */}
+          {/* Wrapped in Suspense because NavbarTabs uses usePathname() */}
           <div className="hidden md:block">
-            <NavbarTabs />
+            <Suspense>
+              <NavbarTabs />
+            </Suspense>
           </div>
         </div>
 

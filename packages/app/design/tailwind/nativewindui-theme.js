@@ -140,7 +140,7 @@ const nativewindUITheme = {
     colors: nativewindUIColors,
 };
 
-export {
+module.exports = {
     nativewindUITheme,
     nativewindUIColors,
     withOpacity,
