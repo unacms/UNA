@@ -8,7 +8,7 @@ import ProfilesList from 'app/ui/molecules/profile_list'
 import Link from 'app/ui/atoms/link'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
-export default function ElementEntityInfo({ data }) {
+export default function ElementEntityInfo({ data, blockWrapperProps }) {
     const defaultIcon = appSetting('entry', 'default_info_icon');
     const inputs = Object.keys(data.inputs).map(function (key) {
         const a = data.inputs[key]
