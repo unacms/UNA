@@ -1,6 +1,6 @@
 import { View, Row } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
-import { useState, useRef, useCallback, useMemo } from 'react'
+import { useState, useRef, useCallback, useMemo, useEffect } from 'react'
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import { FeedbackHaptics } from 'app/lib/util'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
@@ -9,7 +9,6 @@ import { Text } from 'app/design/typography'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
 import Card from 'app/ui/molecules/card'
-import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { stripTags } from 'app/lib/util'
 import { Keyboard } from 'react-native'
@@ -97,11 +96,19 @@ export default function FormFeed({data, handleSubmit, exProps, name, response}) 
     const rawEditorText = formContext.watch('text');
     const hasText = useMemo(() => stripTags(rawEditorText || '').trim().length > 0, [rawEditorText]);
 
-    const updateEditorHeight = (newHeight) => {
-        if (Math.round(editorHeight) !== Math.round(newHeight)) {
+    // Track the last reported height to avoid unnecessary re-renders from small fluctuations
+    const lastReportedHeightRef = useRef(baseEditorHeight);
+    const lineHeight = 24; // Matches .tiptap-default line-height
+
+    const updateEditorHeight = useCallback((newHeight) => {
+        // Only update if height changed by at least half a line height (12px)
+        // This prevents flickering from small scrollHeight fluctuations
+        const heightDiff = Math.abs(newHeight - lastReportedHeightRef.current);
+        if (heightDiff >= lineHeight / 2) {
+            lastReportedHeightRef.current = newHeight;
             setEditorHeight(newHeight);
         }
-    };
+    }, []);
 
     function checkEditorHeight(reportedInternalHeight) {
         const actualHasText = stripTags(formContext.getValues('text') || '').trim().length > 0;
@@ -133,17 +140,18 @@ export default function FormFeed({data, handleSubmit, exProps, name, response}) 
         updateEditorHeight(finalHeight);
     }
 
+    // Only reset height when text becomes completely empty (not on every keystroke)
+    const prevHasTextRef = useRef(hasText);
     useEffect(() => {
-        const strippedText = stripTags(rawEditorText || '').trim();
-        const actualHasText = strippedText.length > 0;
-        const minVisualHeightWhenTyping = 50; // Synchronized with checkEditorHeight logic
-
-        if (actualHasText) {
-            updateEditorHeight(Math.max(editorHeight, minVisualHeightWhenTyping));
-        } else {
-            updateEditorHeight(baseEditorHeight);
+        const hadText = prevHasTextRef.current;
+        prevHasTextRef.current = hasText;
+        
+        // Only reset to base height when transitioning from having text to empty
+        if (hadText && !hasText) {
+            lastReportedHeightRef.current = baseEditorHeight;
+            setEditorHeight(baseEditorHeight);
         }
-    }, [rawEditorText, baseEditorHeight]);
+    }, [hasText, baseEditorHeight]);
 
     function onClose() {
         setShowImage(false)

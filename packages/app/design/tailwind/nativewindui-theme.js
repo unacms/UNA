@@ -1,4 +1,19 @@
-import { hairlineWidth, platformSelect } from 'nativewind/theme';
+// Web-compatible implementations of nativewind/theme utilities
+// These functions work in both native (via nativewind) and web (via fallback)
+
+// hairlineWidth returns the thinnest possible border width
+// On native: 1/PixelRatio, on web: 1px
+function hairlineWidth() {
+    return '1px';
+}
+
+// platformSelect returns the appropriate value for the current platform
+// On web, we always return the 'default' value (or fallback to 'web', then first available)
+function platformSelect(options) {
+    if (options.default !== undefined) return options.default;
+    if (options.web !== undefined) return options.web;
+    return options.ios || options.android || '';
+}
 
 // Enhanced withOpacity function (handles both RGB and RGBA colors)
 function withOpacity(variableName) {

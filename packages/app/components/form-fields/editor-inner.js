@@ -143,29 +143,36 @@ export default function RftText({
               : 'rgba(255, 255, 255, 1)'
       };
     }
-    body{
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
+    html, body, *, *::before, *::after {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    }
+    body {
         font-size: ${editorFontSize};
-        line-height:  ${editorLineHeight};
+        line-height: ${editorLineHeight};
         color: var(--color-text);
         background-color: transparent;
-        margin:0;
-        white-space: pre;
-        overflow: hidden;
+        margin: 0;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
-    img{
-        display:none;
+    img {
+        display: none;
     }
-    body P {
+    body P, body p {
         margin-bottom: 12px;
         margin-top: 12px;
+        font-family: inherit !important;
     }
-    body P:first-child {
+    body P:first-child, body p:first-child {
         margin-top: 0px;
     }
-    .is-editor-empty:first-child::before{
-        float:none !important;
-        position:absolute;
+    .is-editor-empty:first-child::before {
+        float: none !important;
+        position: absolute;
+    }
+    .ProseMirror, .tiptap, .ProseMirror p, .tiptap p, .ProseMirror *, .tiptap * {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
     }
     .mention-list {
         position: absolute;
@@ -188,20 +195,19 @@ export default function RftText({
 
     ${ThemeName() === 'dark' ? appSetting('editor', 'css_dark') : appSetting('editor', 'css')}
 
-    .tiptap, #root > div:nth-of-type(1){
-        scrollbar-width: none; /* Firefox */
-        -ms-overflow-style: none;  /* IE и Edge */
-        &::-webkit-scrollbar {
-            display: none; /* Chrome, Safari и Opera */
-            width: 0;
-            height: 0;
-        }
-    }   
-    .ProseMirror.tiptap{
-        height:auto !important;
-        overflow:visible !important;
-        /* Experimental CSS transition for height changes within WebView */
-        transition: height 0.15s ease-out, min-height 0.15s ease-out;
+    .tiptap, #root > div:nth-of-type(1) {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .tiptap::-webkit-scrollbar, #root > div:nth-of-type(1)::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+    }
+    .ProseMirror.tiptap {
+        height: auto !important;
+        overflow: visible !important;
+        min-height: inherit;
     }
     `
     if (isPlainText) {
@@ -609,22 +615,63 @@ export default function RftText({
                         }
                     }, true);
 
-                    function updateHeight() {
+                    // Debounced height update to prevent resize on every keystroke
+                    let heightUpdateTimeout = null;
+                    let lastReportedHeight = 0;
+                    const LINE_HEIGHT = 24; // Match CSS line-height
+                    const HEIGHT_THRESHOLD = LINE_HEIGHT / 2; // Only report if changed by at least half a line
+                    
+                    function updateHeight(immediate = false) {
                         const currentHeight = editorElement.scrollHeight;
-                        window.ReactNativeWebView.postMessage(JSON.stringify({
-                            type: 'height',
-                            payload: currentHeight,
-                        }));
+                        const heightDiff = Math.abs(currentHeight - lastReportedHeight);
+                        
+                        // Only report if height changed by at least half a line height
+                        if (heightDiff < HEIGHT_THRESHOLD && !immediate) {
+                            return;
+                        }
+                        
+                        if (immediate && heightDiff >= HEIGHT_THRESHOLD) {
+                            // Immediate update (for newlines, significant changes)
+                            lastReportedHeight = currentHeight;
+                            window.ReactNativeWebView.postMessage(JSON.stringify({
+                                type: 'height',
+                                payload: currentHeight,
+                            }));
+                        } else if (!immediate) {
+                            // Debounced update for regular typing
+                            if (heightUpdateTimeout) {
+                                clearTimeout(heightUpdateTimeout);
+                            }
+                            heightUpdateTimeout = setTimeout(() => {
+                                const finalHeight = editorElement.scrollHeight;
+                                const finalDiff = Math.abs(finalHeight - lastReportedHeight);
+                                // Only report if height actually changed significantly
+                                if (finalDiff >= HEIGHT_THRESHOLD) {
+                                    lastReportedHeight = finalHeight;
+                                    window.ReactNativeWebView.postMessage(JSON.stringify({
+                                        type: 'height',
+                                        payload: finalHeight,
+                                    }));
+                                }
+                            }, 150);
+                        }
                     }
 
-                    const observer = new MutationObserver(() => {
-                        updateHeight();
+                    // Only observe structural changes (new paragraphs/lines), not character data
+                    const observer = new MutationObserver((mutations) => {
+                        // Check if this is a structural change (new line) vs character change
+                        const hasStructuralChange = mutations.some(m => 
+                            m.type === 'childList' && (m.addedNodes.length > 0 || m.removedNodes.length > 0)
+                        );
+                        if (hasStructuralChange) {
+                            updateHeight(true);
+                        }
                     });
 
                     observer.observe(editorElement, {
                         childList: true,
                         subtree: true,
-                        characterData: true
+                        characterData: false // Don't observe character data changes
                     });
 
                     editorElement.addEventListener("blur", () => {
@@ -633,7 +680,7 @@ export default function RftText({
                         if (selection.rangeCount > 0) {
                             lastSelectionRange = selection.getRangeAt(0).cloneRange();
                         }
-                        updateHeight();
+                        updateHeight(true);
                     });
 
                     editorElement.addEventListener("focus", () => {
@@ -643,7 +690,7 @@ export default function RftText({
                             selection.removeAllRanges();
                             selection.addRange(lastSelectionRange);
                         }
-                        updateHeight();
+                        updateHeight(true);
                     });
 
                     function getTextBeforeCursor() {
@@ -685,8 +732,7 @@ export default function RftText({
                     });
 
                     editorElement.addEventListener("input", function (event) {
-                        updateHeight();
-
+                        // Don't update height on every input - let MutationObserver handle structural changes
                         const text = getTextBeforeCursor();
                         const symbol = text.charAt(0);
 
