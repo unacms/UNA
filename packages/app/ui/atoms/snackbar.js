@@ -186,7 +186,7 @@ export default function Snackbar({
 
     return (
         <View
-            pointerEvents="box-none"
+            style={{ pointerEvents: 'box-none' }}
             className={`${positionClasses} z-50`}
         >
             <GestureDetector gesture={panGesture}>

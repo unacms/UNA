@@ -10,20 +10,20 @@ import { strToObj } from 'app/lib/util';
 export default function FormFieldMultiField(props) {
 
     const name = props.name;
-    const params = strToObj(props.params);
+    const params = strToObj(props.params) || {};
 
     const minCount = params.minCount || 1;
     const maxCount = params.maxCount || 10;
 
     const CreateEmpty = () => {
-        const keys = params.fields.map(f => f.name);
+        const keys = (params.fields || []).map(f => f.name);
         return keys.reduce((acc, key) => {
             acc[key] = '';
             return acc;
         }, {});
     }
 
-    const initedValue = props.value ? strToObj(props.value).filter(obj =>
+    const initedValue = props.value ? (strToObj(props.value) || []).filter(obj =>
         Object.values(obj).some(val => val !== '')
     ) : [CreateEmpty()];
 
@@ -62,7 +62,7 @@ export default function FormFieldMultiField(props) {
                 {values.map((value, index) => {
                     return (
                         <Row key={`vls${index}`} className='gap-x-2' >
-                            {params.fields.map((fld, index2) => {
+                            {(params.fields || []).map((fld, index2) => {
 
                                 return (<Input
                                     key={`fld-${fld.name}`}

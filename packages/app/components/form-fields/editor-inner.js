@@ -353,6 +353,19 @@ export default function RftText({
         }
     }
 
+    // Filter duplicate extensions to prevent TipTap warnings
+    // TenTapStartKit includes listItem and textStyle which can conflict with other bridges
+    const allExtensions = [...TenTapStartKit, ...baseExtensions];
+    const seenNames = new Set();
+    const uniqueExtensions = allExtensions.filter((ext) => {
+        const name = ext?.name || ext?.tiptapExtension?.name;
+        if (name && seenNames.has(name)) {
+            return false;
+        }
+        if (name) seenNames.add(name);
+        return true;
+    });
+
     const editor = useEditorBridge({
         autofocus: props.autofocus,
         avoidIosKeyboard: false,
@@ -360,7 +373,7 @@ export default function RftText({
         placeholder: props.placeholder,
         theme: customEditorTheme,
         initialContent: field.value,
-        bridgeExtensions: [...TenTapStartKit, ...baseExtensions],
+        bridgeExtensions: uniqueExtensions,
     })
 
     useEffect(() => {

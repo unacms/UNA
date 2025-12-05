@@ -778,7 +778,7 @@ export const Button = (props) => {
         const wrapper = (
             <Row className={`items-center justify-center ${fullWidth ? 'flex-auto w-full' : 'w-fit'}`}>
                 {buttonContent}
-                <View className="absolute top-0 right-0 w-full h-full z-20 pointer-events-none" pointerEvents="none">
+                <View className="absolute top-0 right-0 w-full h-full z-20 pointer-events-none" style={{ pointerEvents: 'none' }}>
                     {oButtonAddon}
                 </View>
             </Row>

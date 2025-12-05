@@ -255,7 +255,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         return (
             <View {...viewProps} className={`w-full ${isWeb ? '' : 'h-full'}`}>
                 <View className={`max-w-4xl w-full flex-1 bg-card shadow-sm text-card-foreground rounded-2xl  lg:my-4 mx-auto `}>
-                    <View onLayout={handleListLayout} pointerEvents="box-none" className='w-full flex-1 ' style={{ marginBottom: formHeight }}>
+                    <View onLayout={handleListLayout} style={{ pointerEvents: 'box-none', marginBottom: formHeight }} className='w-full flex-1 '>
                         <CommentsBrowse
                             scrollProps={
                                 {
@@ -332,7 +332,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
             )}
             <Panel {...centerPanelProps} className="mt-0.5 sm:p-2">
                 <View className={`w-full h-full bg-card/80 shadow-sm text-card-foreground rounded-2xl py-3 sm:py-4 mx-auto `}>
-                    <View onLayout={handleListLayout} pointerEvents="box-none" className='w-full flex-1' style={{ marginBottom: formHeight }}>
+                    <View onLayout={handleListLayout} style={{ pointerEvents: 'box-none', marginBottom: formHeight }} className='w-full flex-1'>
                         <CommentsBrowse
                             scrollProps={
                                 {

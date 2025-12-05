@@ -106,7 +106,7 @@ export default function ElementLink(props) {
     // Если ссылка внешняя, открываем в браузере
     if (domain && domain !== rootUrl || asExternal === true) {
         const content = (typeof children === 'string' || typeof children === 'number') ? (
-            <Text className={composedClassName} pointerEvents="none">{children}</Text>
+            <Text className={composedClassName} style={{ pointerEvents: 'none' }}>{children}</Text>
         ) : children;
         
         // Generate accessible label for external links
@@ -157,9 +157,9 @@ if (mode == 'text'){
 }
 
     // For non-text mode, wrap string/number children in Text with variant classes applied
-    // pointerEvents="none" allows touches to pass through to parent Pressable
+    // style.pointerEvents="none" allows touches to pass through to parent Pressable
     const content = (typeof children === 'string' || typeof children === 'number') ? (
-        <Text className={composedClassName} pointerEvents="none">{children}</Text>
+        <Text className={composedClassName} style={{ pointerEvents: 'none' }}>{children}</Text>
     ) : children;
 
     // Generate accessible label for link if needed

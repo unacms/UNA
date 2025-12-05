@@ -15,7 +15,7 @@ const Units = {};
 Units.Small = function Small({ data, imageSizes }) {
     return (
         <CardList padding={cd('p-sm')} >
-            <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
+            <View className="  aspect-video flex-none rounded-xl overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
                 {data.image && (
                     <Image
                         {...data.image}
@@ -98,7 +98,7 @@ Units.Base = function Base({ data, imageSizes }) {
                                         (!data.image
                                             ? " hidden sm:block "
                                             : "") +
-                                        " aspect-video flex-none rounded-lg sm:rounded-xl overflow-hidden w-1/4 sm:w-auto sm:h-24 "
+                                        " aspect-video flex-none rounded-xl sm:rounded-xl overflow-hidden w-1/4 sm:w-auto sm:h-24 "
                                     }
                                 >
                                     <Image

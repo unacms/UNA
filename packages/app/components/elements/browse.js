@@ -278,7 +278,7 @@ export default function Browse(props) {
                 data={item}
             />
         ));
-        contentElement = items.length == 0 ? null : <Galery items={items} />
+        contentElement = items.length == 0 ? null : <Galery items={items} autoscroll={props.extraProps?.autoscroll ?? 5000} />
     }
 
     if ((props.sidebar && !props.extraProps?.galery) || isOneLine) {

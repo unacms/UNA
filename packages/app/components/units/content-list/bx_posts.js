@@ -13,7 +13,7 @@ const Units = {};
 Units.Base = function Base({ data, imageSizes }) {
     return (
         <Card padding="p-1">
-            <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
+            <View className="  aspect-video flex-none rounded-xl overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
                 {data.image && (
                     <Image
                         {...data.image}
@@ -43,7 +43,7 @@ Units.Base = function Base({ data, imageSizes }) {
 Units.Search = function Search({ data, imageSizes }) {
     return (
         <Card padding="p-1" >
-            <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
+            <View className="  aspect-video flex-none rounded-xl overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
                 {data.image && (
                     <Image
                         {...data.image}

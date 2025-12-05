@@ -229,7 +229,7 @@ export function BlockWrapper(props) {
                 {bIsShowTitle && (
                     <BlockHeader>
                         <BlockName>
-                            {content_type !== 'browse_simple' ? <BlockTitle>{stripTags(block.title)}</BlockTitle> :  <Text className=" ps-2 text-secondary-foreground text-base font-semibold leading-none lg:leading-none tracking-tight ">
+                            {content_type !== 'browse_simple' ? <BlockTitle>{stripTags(block.title)}</BlockTitle> :  <Text className="text-secondary-foreground text-base font-semibold leading-none lg:leading-none tracking-tight ">
                             {stripTags(block.title)}
                         </Text>}
                         </BlockName>

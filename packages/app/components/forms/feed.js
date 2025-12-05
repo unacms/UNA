@@ -179,7 +179,6 @@ export default function FormFeed({data, handleSubmit, exProps, name, response}) 
     let text = formContext.watch('text');
     let object_privacy_view = formContext.watch('object_privacy_view');
     const isHiddenVisibility = data?.inputs?.['object_privacy_view']?.origtype == 'hidden' || !data?.inputs?.['object_privacy_view']
-    console.log("object_privacy_view", object_privacy_view)
     if (!text) text = ''
     if (typeof text === 'string') {
         text = stripTags(text).trim()
