@@ -40,18 +40,14 @@ const checkInputType = (name, form_name, input_name) => {
     return false;
 }
 
-export default function (props) {
-    const data = props.data;
-    
-    const response = props.response;
-    const onFormSubmit = props.onFormSubmit;
-    const isAutoChange = !!props.onChange;
+export default function ({ layout, data, response, onFormSubmit, name: formName, formProps: initedFormProps, resetOnSubmit, isSubmit, onChange, saveOnChanges, exProps, request }) {
+    const isAutoChange = !!onChange;
     const [lastChangedField, setLastChangedField] = useState(null);
 
-    let name = props.data?.params?.display?.includes('_delete') ? '' : (props.name ? props.name : props?.data?.params?.display)
+    const name = data?.params?.display?.includes('_delete') ? '' : (formName || data?.params?.display)
     const defaultValues = {}
 
-    const { auto_focus, ...formProps } = props.formProps ?? {};
+    const { auto_focus, ...formProps } = initedFormProps ?? {};
     // 1. Initialize isAutofocus based on a new prop, defaulting to false.
     let isAutofocusEnabledForForm = auto_focus === true;
 
@@ -62,20 +58,20 @@ export default function (props) {
                 data.inputs[key].value = 0;
 
             // 2. If autofocus is enabled for this form, apply to the first field and then disable for subsequent fields.
-            if (data.inputs[key].type == "text" || data.inputs[key].type == "textarea"){
+            if (data.inputs[key].type == "text" || data.inputs[key].type == "textarea") {
                 if (isAutofocusEnabledForForm) {
                     data.inputs[key].auto_focus = true;
                     isAutofocusEnabledForForm = false; // Ensure only the first field gets autofocus
                 }
-                else{
+                else {
                     data.inputs[key].auto_focus = false;
                 }
             }
 
             ['visibility', 'selector'].forEach(type => {
-                
+
                 if (checkInputType(type, name, data.inputs[key].name)) {
-                    
+
                     data.inputs[key].origtype = data.inputs[key].origtype || data.inputs[key].type;
                     data.inputs[key].type = type;
                 }
@@ -86,9 +82,9 @@ export default function (props) {
         }
     }
 
-    const { csrf_token, ...restDefaultValues } = defaultValues; 
-   
-    const cacheKey = props?.request?.url+JSON.stringify(restDefaultValues) || false;
+    const { csrf_token, ...restDefaultValues } = defaultValues;
+
+    const cacheKey = request?.url + JSON.stringify(restDefaultValues) || false;
 
     const onSubmit = async d => {
         FeedbackHaptics('Medium')
@@ -113,7 +109,7 @@ export default function (props) {
 
     useEffect(() => {
         if (methods.formState.isSubmitSuccessful) {
-            if (props.resetOnSubmit)
+            if (resetOnSubmit)
                 methods.reset();
         }
     }, [methods.formState, methods.submittedData, methods.reset]);
@@ -152,16 +148,16 @@ export default function (props) {
     );
 
     useEffect(() => {
-        if (props.isSubmit) {
+        if (isSubmit) {
             _handleSubmit();
         }
-    }, [props.isSubmit]);
+    }, [isSubmit]);
 
     useEffect(() => {
-        if (props.data?.updated)
+        if (data?.updated)
             emitter.emit(`form_${name}`, { action: 'received' })
 
-    }, [props.data?.updated]);
+    }, [data?.updated]);
 
 
     const { watch } = methods;
@@ -170,7 +166,7 @@ export default function (props) {
 
     useEffect(() => {
         if (isAutoChange && Object.keys(debouncedFields).length > 0) {
-            props.onChange(debouncedFields);
+            onChange(debouncedFields);
         }
     }, [debouncedFields]);
 
@@ -196,7 +192,7 @@ export default function (props) {
                     updates[key] = '<!--INITED-->' + draft[key];
                 }
             });
-            methods.reset({ ...current, ...draft ,...updates }, { keepDefaultValues: true });
+            methods.reset({ ...current, ...draft, ...updates }, { keepDefaultValues: true });
         }
 
     }, []);
@@ -213,8 +209,8 @@ export default function (props) {
         }
 
     }
-   
-    let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true, lastChangedField, props.saveOnChanges, formProps);
+
+    let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true, lastChangedField, saveOnChanges, formProps);
 
     if (inputs?.length > 0)
         inputs = inputs.filter(item => ((item.key !== null && item.key.toString() !== '') || item.props.type == 'block_end'))
@@ -224,7 +220,7 @@ export default function (props) {
             ...input,
             props: {
                 ...input.props,
-                form_layout: props.layout,
+                form_layout: layout,
                 use_caption_as_placeholder: appSetting('forms', 'without_captions').includes(name) ? true : false,
                 ...(index === inputs.length - 1 - inputs.slice().reverse().findIndex(input => input.props?.type !== "hidden") && { noPadding: true }),
                 ...(index === inputs.length - 1 - inputs.slice().reverse().findIndex(input => input.props?.type !== "hidden") && { noPadding: true })
@@ -234,7 +230,7 @@ export default function (props) {
 
     const ElementForm = getFormType(name)
     if ('undefined' !== typeof ElementForm) {
-        inputs = <ElementForm name={name} data={data} response={response} handleSubmit={_handleSubmit} exProps={props.exProps}></ElementForm>
+        inputs = <ElementForm name={name} data={data} response={response} handleSubmit={_handleSubmit} exProps={exProps}></ElementForm>
         return (
             <FormProvider {...methods}>
                 {inputs}
@@ -242,7 +238,7 @@ export default function (props) {
         )
     }
 
-    
+
     const defaultFormValues = Object.keys(allFields).reduce((result, key) => {
         if (defaultValues.hasOwnProperty(key) && data.inputs[key].type !== 'location') {
             result[key] = defaultValues[key];
@@ -262,21 +258,11 @@ export default function (props) {
     }, {});
 
     return (
-        <View className={`${props.layout !== 'hor' ? appSetting('forms', 'form_container'): 'w-full'} ${props?.exProps?.classes}`}>
-            {/*(isAutoChange && props.layout !== 'hor') && <Row className='items-center justify-between mb-3'>
-                {!isObjectsEqual(defaultFormValues, currentFormValues) && <Button
-                    title='Reset Filters'
-                    startDecorator='X'
-                    size='sm'
-                    variant='secondary'
-                    onPress={() => methods.reset()}
-                />
-                }
-            </Row>*/}
+        <View className={`${layout !== 'hor' ? appSetting('forms', 'form_container') : 'w-full'} ${exProps?.classes}`}>
             <FormProvider {...methods}>
-                <View className={`${props.layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : appSetting('forms', 'form_container')}`}>
+                <View className={`${layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : appSetting('forms', 'form_container')}`}>
                     {inputs}
-                    {(isAutoChange && props.layout === 'hor') && <Row className='items-center justify-between '>
+                    {(isAutoChange && layout === 'hor') && <Row className='items-center justify-between '>
                         {!isObjectsEqual(defaultFormValues, currentFormValues) && <Button
                             title='Reset Filters'
                             startDecorator='X'
