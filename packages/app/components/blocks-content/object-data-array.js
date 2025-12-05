@@ -83,7 +83,7 @@ export default function BlockContentObjectDataArray(props) {
     }
 
     const items = Array.isArray(realData) ? realData : [realData];
-    const handleFormSubmit = props.onFormSubmit ||onFormSubmit;
+    const handleFormSubmit = props.onFormSubmit || onFormSubmit;
 
     const content = items.map(a => (
         <Element

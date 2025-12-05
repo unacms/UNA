@@ -72,7 +72,7 @@ export default function ScrollList({
     const isSimplePage = ['home', 'login', 'create-account'].includes(pageData?.uri) && !currentUser;
     const baseProps = {};
 
-    if (!isShowCover(pageData?.cover, currentUser))
+    if (!isShowCover(pageData?.cover, currentUser,pageData?.url))
         return content;
 
     const enhanced = React.cloneElement(content, baseProps);

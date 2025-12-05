@@ -548,7 +548,6 @@ export function getLayoutName(data, uri) {
 
     for (const { cond, name, blocks = customBlocks, custom = isCustom } of checks) {
         if (cond) {
-            console.log('aaaaa', name);
             return { layoutName: name, layoutBlocks: blocks, isCustomLayout: custom };
         }
     }
@@ -1406,8 +1405,8 @@ export function removeEmptyTags(html) {
     return html.replace(/<p>(?:\s|&nbsp;)*<\/p>/gi, '');
 }
 
-export function isShowCover(cover, currentUser) {
-    if (cover === null || cover === undefined)
+export function isShowCover(cover, currentUser, url) {
+    if (cover === null || cover === undefined || url=='home')
         cover = 1;
     if (cover === 1) // for all
         return true;

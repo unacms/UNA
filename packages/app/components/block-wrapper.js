@@ -6,10 +6,12 @@ import Link from 'app/ui/atoms/link'
 import { Button } from 'app/design/controls'
 import { useTranslation } from 'react-i18next'
 
-export function BlockWrapper(props) {
-    console.log("props", props)
+export function BlockWrapper({config, block, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, children}) {
     const { t } = useTranslation()
-    let { config, block, showTitle, showBg, fullWidth, contentOnly, list, showPadding, ...rest } = props
+
+    if (!block?.designbox_id)
+        return children;
+
     block.designbox_id = Number(block.designbox_id);
     const aNoTitle = [0, 10, 13, 3];
     const aNoBg = [0, 10, 14, 4];
@@ -40,21 +42,15 @@ export function BlockWrapper(props) {
         bIsShowPadding = showPadding;
     }
 
-    let cssClasses = rest?.extraProps?.cssClasses ? rest?.extraProps?.cssClasses : "";
+    const cssClasses = extraProps?.cssClasses || "";
     // Streamlined logic: avoid unnecessary fragment, ensure BlockContent is not wrapping elements twice
 
-    const content_type = config?.content_type || props?.block?.content?.[0]?.type
+    const content_type = config?.content_type || block?.content?.[0]?.type
     if ((content_type == 'browse' || content_type == 'browse_list'))
         contentOnly = true;
 
     if (contentOnly)
-        return props.children
-
-    // Determine if this block should render as list based on prop, exProps, or showPadding flag
-    const noPaddingRequested = bIsShowPadding === false; // JSON flag
-    const useList = typeof list !== 'undefined'
-        ? list
-        : (rest?.extraProps?.list ? true : noPaddingRequested);
+        return children
 
     return (
         <View className="@container/block w-full">
@@ -89,7 +85,7 @@ export function BlockWrapper(props) {
                     </BlockHeader>
                 )}
                 <BlockContent>
-                    {props.children}
+                    {children}
                 </BlockContent>
             </PageBlock>
         </View>

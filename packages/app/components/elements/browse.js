@@ -6,12 +6,12 @@ import {
     useMemo,
     useRef,
     useReducer,
-    useState 
+    useState
 } from 'react'
 import { View, Row, ScrollView } from 'app/design/view'
 import { Platform } from 'react-native'
 import UniList from 'app/ui/atoms/unilist'
-import { appSetting, isObjectsEqual} from 'app/lib/util'
+import { appSetting, isObjectsEqual } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
@@ -36,7 +36,7 @@ import {
 } from 'app/lib/conductor-helpers'
 import { getComponent } from 'app/components/registry';
 import { BrowseItem } from 'app/lib/common-helpers'
-
+import { useIsDesktop } from 'app/context/measure';
 const blockTheme = appSetting('theme', 'blocks');
 
 export default function Browse(props) {
@@ -44,7 +44,7 @@ export default function Browse(props) {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser();
     const Form = getComponent('element', 'form');
-
+    const isDesktop = useIsDesktop();
     const uniRef = useRef()
     const [refetchState, dispatch] = useReducer(refetchUniListReducer, {
         visibleItems: [],
@@ -73,7 +73,7 @@ export default function Browse(props) {
     });
 
     const [showFilters, setShowFilters] = useState(false);
-    const [filterValues, setFilterValues] = useState({by_context: '', modules: [], media: []});
+    const [filterValues, setFilterValues] = useState({ by_context: '', modules: [], media: [] });
 
     /* unit mode & change unit mode */
     const unitMode = props.unitMode
@@ -85,9 +85,8 @@ export default function Browse(props) {
     let formProps = data?.filter_form;
 
     const handleFilterFormChange = useCallback((values) => {
-       console.log("handleFilterFormChange", values, filterValues, isObjectsEqual(filterValues, values))
-        if (!isObjectsEqual(filterValues, values) ){
-             
+        if (!isObjectsEqual(filterValues, values)) {
+
             setFilterValues(values)
             const transformedValues = Object.fromEntries(
                 Object.entries(values).map(([key, value]) => [
@@ -95,8 +94,8 @@ export default function Browse(props) {
                     Array.isArray(value) ? value.join(',') : value
                 ])
             );
-            const by_context = transformedValues.by_context ? transformedValues.by_context.split('|') : []; 
-            const contexts = by_context[0] ? { type: by_context[0], context: by_context[1] } : { type: 'feed',  context: '' };
+            const by_context = transformedValues.by_context ? transformedValues.by_context.split('|') : [];
+            const contexts = by_context[0] ? { type: by_context[0], context: by_context[1] } : { type: 'feed', context: '' };
             dispatch({ type: 'SET_ITEMS', items: [] });
             refetchRef.current.prevItems = [];
             refetchRef.current.isFirstLoad = true;
@@ -113,7 +112,7 @@ export default function Browse(props) {
         }
     });
 
-    if (filterValues && formProps){
+    if (filterValues && formProps) {
         if (formProps.data.inputs.modules)
             formProps.data.inputs.modules.value = filterValues.modules;
         if (formProps.data.inputs.media)
@@ -331,8 +330,52 @@ export default function Browse(props) {
         : (!dataItems.params?.loaded ? Preload : null)
     ) : null;
 
+
+        const handleOpenChange = (open) => {
+        setShowFilters(open)
+    }
+
+    const filterElement = !!formProps ? (
+        <Row className="w-full items-end justify-end mb-3">
+            <DropdownPopup
+                trigger={
+
+                    <Button startDecorator="Settings2" variant="outline" title={!showFilters ? "Show filters" : "Hide filters"} />
+
+                }
+                minPopupWidth={360}
+                open={showFilters}
+                onOpenChange={handleOpenChange}
+            >
+                <View className="m-2">
+                    <Form
+                        {...formProps}
+                        key="form"
+                        name={formProps.name}
+                        onChange={handleFilterFormChange}
+                    />
+                </View>
+            </DropdownPopup>
+        </Row>
+    ): false
+
+    let ListHeaderComponent = props.exProps?.headerBlocks
+            ? (typeof props.exProps?.headerBlocks === 'function'
+                ? props.exProps?.headerBlocks
+                : () => props.exProps?.headerBlocks)
+            : undefined
+
+    let scrollProps  = props?.exProps?.scrollProps 
+    if (filterElement && !isDesktop){
+        if (props?.exProps?.scrollProps)
+            scrollProps.headerHeight = 120
+        ListHeaderComponent = () => filterElement
+    }
+
+    console.log("ListHeaderComponent", ListHeaderComponent)
+
     const uniListProps = {
-        scrollProps: props?.exProps?.scrollProps,
+        scrollProps: scrollProps,
         preloadComponent: PreloadComponent,
         refer: uniRef,
         mode: 'simple',
@@ -370,11 +413,7 @@ export default function Browse(props) {
             );
         },
         onEndReached: handleEndReached,
-        ListHeaderComponent: props.exProps?.headerBlocks
-            ? (typeof props.exProps?.headerBlocks === 'function'
-                ? props.exProps?.headerBlocks
-                : () => props.exProps?.headerBlocks)
-            : undefined,
+        ListHeaderComponent: ListHeaderComponent,
         ListFooterComponent: ((hasNextPage && isFetchingNextPage)) ? Preload : null,
     }
 
@@ -389,86 +428,61 @@ export default function Browse(props) {
     if (!dataItems.length && isShowTitleInside)
         return;
 
-    const handleOpenChange = (open) => {
-        setShowFilters(open)
-    }
-
     return (
         <BlockWrapper {...props.blockWrapperProps}>
-        <View className={`w-full ${isOneLine ? '' : 'h-full'}`}>
-            <View className="w-full" ></View>
-            <View className={`w-full ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''}`} style={isOneLine ? {} : styles}>
-                {isShowTitleInside && (
-                    <Row className={`items-center justify-between ${props.showBg ? '' : 'p-2 '}`}>
-                        <Text className=" text-secondary-foreground text-base font-semibold leading-none lg:leading-none tracking-tight ">
-                            {t(props.block.title)}
-                        </Text>
-                        {!!props.addLink && (
-                            <Link href={props.addLink.url}>
-                                <Button
-                                    variant="link"
-                                    size="sm"
-                                    rounded
-                                    title={t(props.addLink.text)}
-                                />
-                            </Link>
-                        )}
-                        {(isOneLine && data.params.home_url) && (
-                            <Link href={data.params.home_url}>
-                                <Button
-                                    variant="link"
-                                    size="sm"
-                                    rounded
-                                    title={t('View All')}
-                                />
-                            </Link>
-                        )}
-
-                    </Row>
-                )}
-                {formProps && (
-                    <Row className="w-full items-end justify-end mb-3">
-                        <DropdownPopup
-                            trigger={
-                                
-                                    <Button startDecorator="Settings2" variant="outline" title={!showFilters ? "Show filters" : "Hide filters"} />
-                                
-                            }
-                            minPopupWidth={360}
-                            open={showFilters}
-                            onOpenChange={handleOpenChange}
-                        >
-                            <View className="m-2">
-                                <Form 
-                                    {...formProps} 
-                                    key="form" 
-                                    name={formProps.name} 
-                                    onChange={handleFilterFormChange} 
+            <View className={`w-full ${isOneLine ? '' : 'h-full'}`}>
+                <View className="w-full" ></View>
+                <View className={`w-full ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''}`} style={isOneLine ? {} : styles}>
+                    {isShowTitleInside && (
+                        <Row className={`items-center justify-between ${props.showBg ? '' : 'p-2 '}`}>
+                            <Text className=" text-secondary-foreground text-base font-semibold leading-none lg:leading-none tracking-tight ">
+                                {t(props.block.title)}
+                            </Text>
+                            {!!props.addLink && (
+                                <Link href={props.addLink.url}>
+                                    <Button
+                                        variant="link"
+                                        size="sm"
+                                        rounded
+                                        title={t(props.addLink.text)}
                                     />
-                            </View>
-                        </DropdownPopup>
-                    </Row>
-                )}
-                {contentElement}
+                                </Link>
+                            )}
+                            {(isOneLine && data.params.home_url) && (
+                                <Link href={data.params.home_url}>
+                                    <Button
+                                        variant="link"
+                                        size="sm"
+                                        rounded
+                                        title={t('View All')}
+                                    />
+                                </Link>
+                            )}
+
+                        </Row>
+                    )}
+                    {isDesktop && filterElement}
+                    {contentElement}
+                </View>
+                <Snackbar
+                    visible={refetchState.hasNewData}
+                    onPress={() => {
+                        const latestItems = flattenPagesForUniList(pagesData)
+                        dispatch({ type: 'SET_ITEMS', items: latestItems })
+                        refetchRef.current.prevItems = latestItems;
+                        if (uniRef.current) {
+                            uniRef.current.scrollToIndex?.({
+                                index: 0,
+                                align: 'end',
+                                behavior: 'smooth',
+                            })
+                        }
+                    }}
+                    variant="primary"
+                    title="Show New"
+                    size="sm"
+                />
             </View>
-            <Snackbar
-                visible={refetchState.hasNewData}
-                onPress={() => {
-                    const latestItems = flattenPagesForUniList(pagesData)
-                    dispatch({ type: 'SET_ITEMS', items: latestItems })
-                    refetchRef.current.prevItems = latestItems;
-                    if (uniRef.current) {
-                        uniRef.current.scrollToIndex?.({
-                            index: 0,
-                            align: 'end',
-                            behavior: 'smooth',
-                        })
-                    }
-                }}
-                variant="primary"
-                title="Show New"
-                size="sm"
-            />
-        </View></BlockWrapper>
+        </BlockWrapper>
     )
 }
