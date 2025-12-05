@@ -803,7 +803,7 @@ export const settingsDefault = {
         },
         home: {
             adjustable: true,
-            sizable: true,
+            sizable: false,
             cells: {
                 left: {
                     defaultSize: 25, 
