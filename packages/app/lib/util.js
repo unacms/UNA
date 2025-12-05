@@ -1351,7 +1351,23 @@ export async function getPageData(url, codeOnly = false) {
         const params = Object.fromEntries(
             pagePath.queryString.split('&').map(param => param.split('='))
         );
-        sAdd = `&params[]=&params[]=${JSON.stringify(params)}`;
+        
+        // this shit to fix double leveled params in feed form like 
+        //?r=system/get_page_content_by_request/TemplServicePages&params[]=fanfeed-view/corey-dozier&params[]=&params[]=%7B%22params%22:%7B%22context_id%22:-17%7D%7D&lang=en
+        //?r=system/get_page_content_by_request/TemplServicePages&params[]=page/timeline-view&params[]=&params[]=%7B%22profile_id%22:%221496%22,%22params[]%22:%22%7B\%22params\%22:%7B\%22context_id\%22:-17%7D%7D%22%7D&lang=en
+        // on pages /crowd/football
+
+        if (params['params[]']) {
+            let a = JSON.parse(params['params[]']);
+            if (a.params) {
+                params = { ...params, ...a.params };
+            }
+            delete params['params[]'];
+            sAdd = `&params[]=&params[]=${JSON.stringify({params:params})}`;
+        }
+        else{
+            sAdd = `&params[]=&params[]=${JSON.stringify(params)}`;
+        }
     }
 
     return await fetcher(`/api.php?r=system/get_page_${codeOnly ? 'content_' : ''}by_request/TemplServicePages&params[]=${pagePath.path}${sAdd}`);
