@@ -536,6 +536,9 @@ export function RouterIntegrationDemo() {
     { id: '/profile', label: 'Profile' },
   ]
   
+  // Determine selected tab from pathname, fallback to first tab if not found
+  const selectedTab = tabs.find(tab => tab.id === pathname)?.id ?? tabs[0]?.id ?? '/dashboard'
+  
   const handleSelectionChange = (key: React.Key) => {
     // In a real app, this would navigate: router.push(key as string)
     console.log('Navigate to:', key)
@@ -548,7 +551,7 @@ export function RouterIntegrationDemo() {
       </p>
       <Tabs 
         variant="underlined"
-        selectedKey={tabs[0]?.id ?? '/dashboard'}  // In real app: pathname
+        selectedKey={selectedTab}
         onSelectionChange={handleSelectionChange}
       >
         <Tabs.ListContainer>

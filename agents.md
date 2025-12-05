@@ -462,6 +462,12 @@ channel.bind('event-name', (data) => {
 
 Before submitting changes, verify:
 
+### TypeScript Verification
+- [ ] Run `npx tsc --noEmit` in the relevant app directory
+- [ ] No "Object is possibly 'undefined'" errors
+- [ ] Array access uses optional chaining (`array[0]?.prop`)
+- [ ] Object property access handles null/undefined cases
+
 ### Project Separation
 - [ ] Changes to test apps don't import from `packages/app`
 - [ ] Changes to main apps don't import from `packages/test-components`
@@ -496,6 +502,66 @@ Before submitting changes, verify:
 - [ ] Data fetched on server when possible
 - [ ] Heavy components code-split or lazy loaded
 - [ ] No redundant memoization (React Compiler handles it)
+
+### TypeScript Safety (Critical for Production Builds)
+
+**Always run TypeScript check before committing:**
+
+```bash
+# Check specific app
+cd apps/webtest && npx tsc --noEmit
+cd apps/next && npx tsc --noEmit
+cd apps/expo && npx tsc --noEmit
+```
+
+**Common patterns that cause production TypeScript errors:**
+
+1. **Array access without bounds checking:**
+   ```javascript
+   // ❌ WRONG - Object is possibly 'undefined'
+   const firstItem = items[0].id;
+   
+   // ✅ CORRECT - Safe access with fallback
+   const firstItem = items[0]?.id ?? defaultValue;
+   ```
+
+2. **Object property access on potentially undefined:**
+   ```javascript
+   // ❌ WRONG - Object is possibly 'undefined'
+   const name = user.profile.name;
+   
+   // ✅ CORRECT - Optional chaining
+   const name = user?.profile?.name ?? 'Unknown';
+   ```
+
+3. **Function parameters that could be null:**
+   ```javascript
+   // ❌ WRONG - Parameter might be null
+   function process(data) {
+     return data.value;
+   }
+   
+   // ✅ CORRECT - Handle null case
+   function process(data) {
+     if (!data) return null;
+     return data.value;
+   }
+   ```
+
+4. **Map/filter results assumed to exist:**
+   ```javascript
+   // ❌ WRONG - find() can return undefined
+   const item = items.find(i => i.id === id);
+   console.log(item.name);
+   
+   // ✅ CORRECT - Check before use
+   const item = items.find(i => i.id === id);
+   if (item) {
+     console.log(item.name);
+   }
+   ```
+
+**Note:** Development builds may not catch all TypeScript errors that strict production builds will catch. Always verify with `tsc --noEmit` before pushing.
 
 ---
 
