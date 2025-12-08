@@ -99,10 +99,153 @@ export default function RftText({
         url1 += '&object_privacy_view=' + object_privacy_view
     if (object_id) url1 += '&cid=' + object_id
 
-    const isCommentsEditor = props.container_class === 'comments'
+        const isCommentsEditor = props.container_class === 'comments'
     // Ensure at least 16px to avoid iOS Safari zoom on focus. Align with global CSS.
     const editorFontSize = '16px'
     const editorLineHeight = isCommentsEditor ? '20px' : '24px'
+    // Match published feed font (Inter via --font-main) so the editor looks identical to posts.
+    const editorFontFamily =
+        'var(--font-main, "Inter", "Inter Variable", "InterVariable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif)'
+    const themeName = ThemeName() || 'light'
+    const editorPalette = {
+        light: {
+            text: 'rgba(30, 40, 55, 1)',
+            background: 'rgba(255, 255, 255, 1)',
+        },
+        dark: {
+            text: 'rgba(225, 230, 240, 1)',
+            background: 'rgba(15, 25, 40, 1)',
+        },
+    }
+    const editorTextColor =
+        themeName === 'dark' ? editorPalette.dark.text : editorPalette.light.text
+
+    const buildEditorCSS = (mode) => {
+        const isDark = mode === 'dark'
+        const cssOverrides = isDark
+            ? appSetting('editor', 'css_dark')
+            : appSetting('editor', 'css')
+
+        return `
+    /* Load Inter inside the editor iframe to match published posts */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+      --editor-font: ${editorFontFamily};
+      --color-text-light: ${editorPalette.light.text};
+      --color-text-dark: ${editorPalette.dark.text};
+      --color-background-light: ${editorPalette.light.background};
+      --color-background-dark: ${editorPalette.dark.background};
+      --color-text: ${isDark ? editorPalette.dark.text : editorPalette.light.text};
+      --color-background: ${isDark ? editorPalette.dark.background : editorPalette.light.background};
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --color-text: var(--color-text-dark);
+            --color-background: var(--color-background-dark);
+        }
+    }
+
+    html, body, *, *::before, *::after {
+        font-family: var(--editor-font) !important;
+        color: var(--color-text);
+    }
+    body {
+        font-size: ${editorFontSize};
+        line-height: ${editorLineHeight};
+        color: var(--color-text);
+        background-color: transparent;
+        margin: 0;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+    img {
+        display: none;
+    }
+    body P, body p {
+        margin-bottom: 12px;
+        margin-top: 12px;
+        font-family: inherit !important;
+        color: var(--color-text);
+    }
+    body P:first-child, body p:first-child {
+        margin-top: 0px;
+    }
+    .is-editor-empty:first-child::before {
+        float: none !important;
+        position: absolute;
+    }
+    .ProseMirror, .tiptap, .ProseMirror p, .tiptap p, .ProseMirror *, .tiptap * {
+        font-family: var(--editor-font) !important;
+        color: var(--color-text);
+        background-color: transparent;
+    }
+    .mention-list {
+        position: absolute;
+        background: var(--color-background);
+        border: 1px solid #ccc;
+        list-style: none;
+        padding: 5px;
+        margin: 0;
+        max-height: 150px;
+        overflow-y: auto;
+        color: var(--color-text);
+    }
+    .mention-list li {
+        padding: 5px;
+        cursor: pointer;
+    }
+    .mention-list li:hover,
+    .mention-list li.active {
+        background: lightblue;
+    }
+
+    ${cssOverrides}
+
+    .tiptap, #root > div:nth-of-type(1) {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .tiptap::-webkit-scrollbar, #root > div:nth-of-type(1)::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+    }
+    .ProseMirror.tiptap {
+        height: auto !important;
+        overflow: visible !important;
+        min-height: inherit;
+    }
+    `
+    }
+
+    const applyIframeTheme = (mode) => {
+        const css = JSON.stringify(buildEditorCSS(mode))
+        const themeAttr = mode === 'dark' ? 'dark' : 'light'
+
+        return `
+        (function() {
+            const css = ${css};
+            const styleId = 'neo-editor-font-style';
+            const headEl = document.head || document.getElementsByTagName('head')[0];
+            if (!headEl) return;
+            let styleTag = document.getElementById(styleId);
+            if (!styleTag) {
+                styleTag = document.createElement('style');
+                styleTag.id = styleId;
+                headEl.appendChild(styleTag);
+            }
+            styleTag.innerHTML = css;
+            const setThemeAttr = (target) => {
+                if (target) target.setAttribute('data-theme', '${themeAttr}');
+            };
+            setThemeAttr(document.documentElement);
+            setThemeAttr(document.body);
+        })();
+        `
+    }
 
     // Get the editor settings for toolbar configuration
     const editorSettings = appSetting('editor', 'toolbar')
@@ -130,86 +273,7 @@ export default function RftText({
         fetchData()
     }, [keywordval])
 
-    let customCodeBlockCSS = `
-    :root {
-      --color-text: ${
-          ThemeName() === 'dark'
-              ? 'rgba(225, 230, 240, 1)'
-              : 'rgba(30, 40, 55, 1)'
-      };
-      --color-background: ${
-          ThemeName() === 'dark'
-              ? 'rgba(15, 25, 40, 1)'
-              : 'rgba(255, 255, 255, 1)'
-      };
-    }
-    html, body, *, *::before, *::after {
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-    }
-    body {
-        font-size: ${editorFontSize};
-        line-height: ${editorLineHeight};
-        color: var(--color-text);
-        background-color: transparent;
-        margin: 0;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-    }
-    img {
-        display: none;
-    }
-    body P, body p {
-        margin-bottom: 12px;
-        margin-top: 12px;
-        font-family: inherit !important;
-    }
-    body P:first-child, body p:first-child {
-        margin-top: 0px;
-    }
-    .is-editor-empty:first-child::before {
-        float: none !important;
-        position: absolute;
-    }
-    .ProseMirror, .tiptap, .ProseMirror p, .tiptap p, .ProseMirror *, .tiptap * {
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-    }
-    .mention-list {
-        position: absolute;
-        background: white;
-        border: 1px solid #ccc;
-        list-style: none;
-        padding: 5px;
-        margin: 0;
-        max-height: 150px;
-        overflow-y: auto;
-    }
-    .mention-list li {
-        padding: 5px;
-        cursor: pointer;
-    }
-    .mention-list li:hover,
-    .mention-list li.active {
-        background: lightblue;
-    }
-
-    ${ThemeName() === 'dark' ? appSetting('editor', 'css_dark') : appSetting('editor', 'css')}
-
-    .tiptap, #root > div:nth-of-type(1) {
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-    }
-    .tiptap::-webkit-scrollbar, #root > div:nth-of-type(1)::-webkit-scrollbar {
-        display: none;
-        width: 0;
-        height: 0;
-    }
-    .ProseMirror.tiptap {
-        height: auto !important;
-        overflow: visible !important;
-        min-height: inherit;
-    }
-    `
+    let customCodeBlockCSS = buildEditorCSS(themeName)
     if (isPlainText) {
         customCodeBlockCSS += `
         b, strong, font, u, s, i, em, span, code, h1, h2, h3, h4, h5, h6{
@@ -381,6 +445,15 @@ export default function RftText({
         initialContent: field.value,
         bridgeExtensions: uniqueExtensions,
     })
+
+    const lastAppliedThemeRef = useRef(null)
+
+    useEffect(() => {
+        if (!editor) return
+        if (lastAppliedThemeRef.current === themeName) return
+        lastAppliedThemeRef.current = themeName
+        editor.injectJS(applyIframeTheme(themeName))
+    }, [editor, themeName])
 
     useEffect(() => {
         editor.setPlaceholder(props.placeholder)
@@ -575,6 +648,8 @@ export default function RftText({
                         platformOS: '${Platform.OS}'
                     };
                     const editorElement = document.getElementsByClassName("tiptap")[0];
+
+                    ${applyIframeTheme(themeName)}
 
                     document.addEventListener('keydown', function(event) {
                         if (event.key === 'Enter' || event.code === 'Enter') {
@@ -869,7 +944,11 @@ export default function RftText({
             )}
             <RichText
                 exclusivelyUseCustomOnMessage={false}
-                style={{ backgroundColor: 'transparent' }}
+                style={{
+                    backgroundColor: 'transparent',
+                    color: editorTextColor,
+                    fontFamily: editorFontFamily,
+                }}
                 editor={editor}
                 onMessage={onMessage}
                 editable={!props.disabled}
@@ -880,6 +959,7 @@ export default function RftText({
                                 ? 'tiptap-comments'
                                 : 'tiptap-default'
                         } ${props.classes || ''}`,
+                        style: `font-family: ${editorFontFamily}; color: ${editorTextColor};`,
                     },
                 }}
                 onDebouncedUpdate={(editor) => {
