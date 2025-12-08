@@ -12,6 +12,6 @@ module.exports = {
   theme: {
     ...theme,
   },
-   plugins: [require("@tailwindcss/container-queries"), require("tailwindcss-animate")],
+   plugins: [require("@tailwindcss/container-queries")],
 }
 
