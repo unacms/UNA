@@ -21,7 +21,12 @@
     "build": "cd apps/next && dotenv -e ../../.env.local -- yarn build",
     "prod": "cd apps/next && dotenv -e ../../.env.local -- yarn start",
     "prod:pm2": "cd apps/next && dotenv -e ../../.env.local -- yarn start:pm2",
-    "docs": "cd apps/docs && yarn next",
+    "webtest": "cd apps/webtest && yarn dev",
+    "nativetest": "cd apps/nativetest && expo start",
+    "nativetest:ios": "cd apps/nativetest && expo run:ios",
+    "nativetest:android": "cd apps/nativetest && expo run:android",
+    "nativetest:prebuild": "cd apps/nativetest && expo prebuild",
+    "build:webtest": "cd apps/webtest && yarn build",
     "analyze": "cd apps/next && cross-env ANALYZE=true yarn build",
     "clean": "rm -rf ./node_modules && rm -rf ./apps/expo/node_modules && rm -rf ./apps/next/node_modules && rm -rf ./packages/app/node_modules && rm -rf ./apps/docs/node_modules"
   },

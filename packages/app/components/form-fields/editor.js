@@ -8,17 +8,8 @@ import { Platform } from 'react-native';
 import { lazy } from 'react';
 import  RftText from 'app/components/form-fields/editor-inner';
 
-
-
-//const RftText = dynamic(() => import('app/components/form-fields/editor-inner'), { ssr: false });
-
-//import  RftText from 'app/components/form-fields/editor-inner';
-//const RftText = lazy(() => import('app/components/form-fields/editor-inner')); // Disablet to avoid re-rendern in comments feed
-
 export default function FormFieldText(props) {
-   // const RftText = lazy(() => import('app/components/form-fields/editor-inner'));
     const formContext = useFormContext();
-
     return (
         <Field {...props} error2={formContext.formState.errors[props.name]}>
             

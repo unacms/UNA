@@ -15,6 +15,7 @@ import { ThemeName } from 'app/design/theme';
 import { useTranslation } from 'react-i18next'
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { useIsDesktop } from 'app/context/measure';
+import PopupModal from 'app/ui/molecules/popup_modal'
 
 const Navbar = lazy(() => import('app/components/nav/navbar'));
 
@@ -96,7 +97,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
         if (!isModal)
             return <></>
         return (<Modal title={t('login_modal_title')} onVisible={isModal} onClose={() => handleCloseModal()}>
-            {appStatic('components_modal', p)}
+            <PopupModal/>
         </Modal>);
     };
 

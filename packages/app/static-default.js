@@ -12,7 +12,6 @@ import { Animated } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { tp } from 'app/lib/util'
 import ProfilesList from 'app/ui/molecules/profile_list'
-import PopupModal from 'app/ui/molecules/popup_modal'
 import { ThemeName } from 'app/design/theme'
 import { Platform } from 'react-native'
 import AnimatedView from 'app/ui/atoms/animated-view'
@@ -363,9 +362,7 @@ export function ComponentsIntro(props) {
     )
 }
 
-function ComponentModal({ title = 'test' }) {
-    return <PopupModal />
-}
+
 
 const ComponentsLoginContentComponent = (props) => {
     return (
@@ -724,7 +721,6 @@ export const staticDefault = {
     components_intro: ComponentsIntro,
     components_pricing_header: ComponentsPricingHeader,
     components_pricing_footer: ComponentsPricingFooter,
-    components_modal: ComponentModal,
     components_dummy: ComponentsDummyComponent,
     components_footer: ComponentsFooter,
     components_fullfooter: ComponentsFullFooter,
