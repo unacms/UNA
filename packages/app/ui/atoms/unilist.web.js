@@ -2,10 +2,9 @@
 import { VirtuosoGrid, Virtuoso } from 'react-virtuoso'
 import { View } from 'app/design/view'
 import { View as ReactNativeView } from 'react-native'
-import { useRef } from 'react';
+import { useRef, useEffect, useState, useCallback, forwardRef } from 'react';
 import { storageSet, cd } from 'app/lib/util'
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import { useCallback, forwardRef } from 'react';
 import ScrollList from 'app/ui/molecules/scroll_list'
 import { useBreakpoint } from 'app/context/measure'
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
@@ -15,6 +14,8 @@ export default function UniList(props) {
         onSort, mode, layout, numColumns, keyboardShouldPersistTaps, keyExtractor, useWindowScroll: useWindowScrollProp, height, listState, endpoint, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, isInPanel, paddingTop, ...rest } = props
 
     const uniRef = useRef();
+    const containerRef = useRef(null);
+    const [forceWindowScroll, setForceWindowScroll] = useState(false);
     const currentBreakpoint = useBreakpoint();
 
     data = data.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
@@ -83,10 +84,34 @@ export default function UniList(props) {
     
     // Always use window scroll if no height is resolved to prevent zero-sized element errors
     const isWindowScroll = hasResolvedHeight ? shouldUseWindowScroll : true;
+
+    // Fallback: if a fixed-height list renders in a zero-sized container (e.g. hidden tab),
+    // switch to window scrolling to avoid react-virtuoso "Zero-sized element" errors.
+    useEffect(() => {
+        if (isWindowScroll) {
+            if (forceWindowScroll) setForceWindowScroll(false);
+            return;
+        }
+        if (typeof ResizeObserver === 'undefined') return;
+        const node = containerRef.current;
+        if (!node) return;
+
+        const observer = new ResizeObserver((entries) => {
+            const entry = entries[0];
+            const { width, height } = entry.contentRect;
+            const shouldForce = width === 0 || height === 0;
+            setForceWindowScroll((prev) => (prev === shouldForce ? prev : shouldForce));
+        });
+
+        observer.observe(node);
+        return () => observer.disconnect();
+    }, [isWindowScroll, forceWindowScroll]);
+
+    const resolvedUseWindowScroll = forceWindowScroll ? true : isWindowScroll;
     
     // Only set height style if we have a valid height AND we're not using window scroll
     // This prevents virtuoso from receiving conflicting signals
-    let style = (normalizedHeight && !isWindowScroll) ? { height: normalizedHeight } : {};
+    let style = (normalizedHeight && !resolvedUseWindowScroll) ? { height: normalizedHeight } : {};
     if (paddingTop) {
         style.paddingTop = paddingTop
     }
@@ -107,13 +132,13 @@ export default function UniList(props) {
     });
 
     // Style for virtuoso: only pass explicit height when NOT using window scroll, but preserve paddingTop
-    const virtuosoStyle = isWindowScroll 
+    const virtuosoStyle = resolvedUseWindowScroll 
         ? (paddingTop ? { paddingTop } : {}) 
         : style;
     
     const commonVirtuosoProps = {
         data,
-        useWindowScroll: isWindowScroll,
+        useWindowScroll: resolvedUseWindowScroll,
         style: virtuosoStyle,
         ref: refer ? refer : uniRef,
         endReached: onEndReached,
@@ -151,11 +176,11 @@ export default function UniList(props) {
     }
     else {
         // Wrapper style: use explicit height only when not using window scroll, otherwise let it flow naturally
-        const wrapperStyle = isWindowScroll ? {} : style;
+        const wrapperStyle = resolvedUseWindowScroll ? {} : style;
         
         if (mode != 'simple' && !sortable) {
             contentComponent = (
-                <View className="@container/list" style={wrapperStyle}>
+                <View className="@container/list" style={wrapperStyle} ref={containerRef}>
                     {ListHeaderComponent && ListHeaderComponent()}
                     <VirtuosoGrid
                         {...commonVirtuosoProps}
@@ -171,38 +196,40 @@ export default function UniList(props) {
         else {
             if (sortable) {
                 contentComponent = (
-                    <DragDropContext onDragEnd={onSort}>
-                        <Droppable
-                            droppableId="droppable"
-                            mode="virtual"
-                            renderClone={(provided, snapshot, rubric) => (
-                                itemContentSorted(rubric.source.index, data[rubric.source.index], provided, snapshot.isDragging)
+                    <View style={wrapperStyle} ref={containerRef}>
+                        <DragDropContext onDragEnd={onSort}>
+                            <Droppable
+                                droppableId="droppable"
+                                mode="virtual"
+                                renderClone={(provided, snapshot, rubric) => (
+                                    itemContentSorted(rubric.source.index, data[rubric.source.index], provided, snapshot.isDragging)
 
-                            )}
-                        >
-                            {(provided) => (
-                                <View {...provided.droppableProps} ref={provided.innerRef}>
-                                    <Virtuoso
-                                        itemContent={(index, item) => (
-                                            <Draggable draggableId={`${item.id}`} index={index} key={item.id}>
-                                                {(provided) => itemContentSorted(index, item, provided, false)}
-                                            </Draggable>
-                                        )}
-                                        {...commonVirtuosoProps}
-                                        {...(listState?.ranges && { restoreStateFrom: listState })}
-                                        {...(scrollToLastItem && { initialTopMostItemIndex: data.length })}
-                                        endReached={onEndReached}
-                                    />
-                                    {provided.placeholder}
-                                </View>
-                            )}
-                        </Droppable>
-                    </DragDropContext>
+                                )}
+                            >
+                                {(provided) => (
+                                    <View {...provided.droppableProps} ref={provided.innerRef}>
+                                        <Virtuoso
+                                            itemContent={(index, item) => (
+                                                <Draggable draggableId={`${item.id}`} index={index} key={item.id}>
+                                                    {(provided) => itemContentSorted(index, item, provided, false)}
+                                                </Draggable>
+                                            )}
+                                            {...commonVirtuosoProps}
+                                            {...(listState?.ranges && { restoreStateFrom: listState })}
+                                            {...(scrollToLastItem && { initialTopMostItemIndex: data.length })}
+                                            endReached={onEndReached}
+                                        />
+                                        {provided.placeholder}
+                                    </View>
+                                )}
+                            </Droppable>
+                        </DragDropContext>
+                    </View>
                 )
             }
             else {
                 contentComponent = (
-                    <View style={wrapperStyle}>
+                    <View style={wrapperStyle} ref={containerRef}>
                         {ListHeaderComponent && ListHeaderComponent()}
                         <Virtuoso
                             itemContent={itemContent}
