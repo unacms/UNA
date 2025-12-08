@@ -27,11 +27,10 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
 import { BlockByName } from 'app/components/block'
 import { useTranslation } from 'react-i18next'
-import { useLayoutData } from 'app/context/layout'
 import { useCurrentUser } from 'app/context/user'
 import Search from 'app/ui/molecules/search'
 import DynamicMenu from 'app/components/nav/menu-dynamic'
-import { storageClear, menuItemsFilter, storageSet, storageGet } from 'app/lib/util'
+import { menuItemsFilter, storageSet, storageGet } from 'app/lib/util'
 import { subscribe } from 'app/ui/atoms/socket'
 import { useBottomSheetData } from 'app/context/bottomsheet'
 import { callFn } from 'app/lib/functions/call'
@@ -385,8 +384,8 @@ const TabSceneMainContent = ({
     keyword,
     ts,
     timestamp,
-    isCover 
 }) => {
+    const isDesktop = useIsDesktop()
     const pageData = pageRoute.pageData
     const uniRef = useRef()
     const dataItemsPage = pageRoute?.data
@@ -551,8 +550,10 @@ const TabSceneMainContent = ({
         [SkeletonForRoute]
     )
 
-    const dataItems = [...dataItemsPage, ...refetchState.visibleItems];
+    const dataItems = isDesktop || !!pageRoute?.endpoint?.request_url ? [...dataItemsPage, ...refetchState.visibleItems] : [...dataItemsPage, ...refetchState.visibleItems, ...pageRoute.sidebar.content];
     
+    console.log("pageData", pageRoute)
+
     return (
         <><UniList
             scrollProps={

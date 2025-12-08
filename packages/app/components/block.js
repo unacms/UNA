@@ -198,7 +198,7 @@ export function BlockContent(props) {
 
 const FallbackComponent = (props) => (
     <Text>
-        Undefined element type ({a.content_type || a.type}): {JSON.stringify(props)}
+        Undefined element type ({props?.content_type || props?.type}): {JSON.stringify(props)}
     </Text>
 );
 
