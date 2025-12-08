@@ -1,6 +1,6 @@
 import { Modal } from 'app/design/controls'
 import { getPageData, getLayoutName, BlockDataByType, BlockDataByName } from 'app/lib/util';
-import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
+import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { ScrollView, View, Row } from 'app/design/view'
 import { useCallback } from 'react'
 import { Keyboard } from 'react-native'

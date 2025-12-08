@@ -117,7 +117,7 @@ const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeigh
     }, [windowWHeight, layout])
 
     return (
-        <BlockWrapper {...props.blockWrapperProps}>
+        <BlockWrapper >
             <Messenger addButtons={addButtons} onSave={onSave} fetchConvos={fetchConvos} layoutHeight={height} {...data} url={url} selectedMenu={selectedMenu} convos={convos} defaultConvoId={defaultConvoId} />
         </BlockWrapper>
     );

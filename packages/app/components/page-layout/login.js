@@ -1,5 +1,4 @@
 import { View, Row } from 'app/design/view'
-import { BlockByName, BlockByData } from 'app/components/block'
 import { Text, H2 } from 'app/design/typography'
 import {
     Card,

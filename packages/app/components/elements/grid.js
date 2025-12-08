@@ -16,7 +16,7 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useTranslation } from 'react-i18next';
 import { stripTags } from 'app/lib/util';
 import { Modal } from 'app/design/controls'
-import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
+import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Icon } from 'app/ui/atoms/icon'
 import Redirect from 'app/ui/atoms/redirect';

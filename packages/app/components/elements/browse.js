@@ -372,8 +372,6 @@ export default function Browse(props) {
         ListHeaderComponent = () => filterElement
     }
 
-    console.log("ListHeaderComponent", ListHeaderComponent)
-
     const uniListProps = {
         scrollProps: scrollProps,
         preloadComponent: PreloadComponent,

@@ -12,7 +12,7 @@ import Image from 'app/ui/atoms/image';
 import Svg, { Circle } from 'react-native-svg';
 import Video from 'app/ui/atoms/video';
 import { useBottomSheetData } from 'app/context/bottomsheet';
-import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
+import { BlockByDataInt as BlockByData } from 'app/components/block';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { DragContext, DragItem, DragControl } from 'app/ui/molecules/dropable'
 

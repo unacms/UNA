@@ -166,6 +166,8 @@ export default function FormFeed({data, handleSubmit, exProps, name, response}) 
         }
     }, [response?.id])
 
+    console.log("response", response)
+
     useEffect(() => {
         if (showImage) {
             scrollViewRef.current?.scrollToEnd({ animated: true })

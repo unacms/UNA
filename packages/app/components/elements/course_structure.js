@@ -9,7 +9,7 @@ import Scroll from 'app/ui/molecules/scroll'
 import { memo } from 'react'
 import { useReducer, useCallback } from 'react'
 import { fetcher } from 'app/lib/fetcher'
-import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
+import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { DragContext, DragItem, DragControl } from 'app/ui/molecules/dropable'
 

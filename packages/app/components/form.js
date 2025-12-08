@@ -9,7 +9,7 @@ import emitter from 'app/context/emitter';
 import useDebounce from 'app/lib/hooks/debounce'
 import { Button } from 'app/design/controls';
 import { isObjectsEqual } from 'app/lib/util'
-
+import useFetchForm from 'app/lib/hooks/fetch'
 
 function getFormType(name) {
     return getComponent('form', String(name))
@@ -40,9 +40,59 @@ const checkInputType = (name, form_name, input_name) => {
     return false;
 }
 
-export default function ({ layout, data, response, onFormSubmit, name: formName, formProps: initedFormProps, resetOnSubmit, isSubmit, onChange, saveOnChanges, exProps, request }) {
+export default function ({ layout, data: initedData, name: formName, onFormEmpty, onFormSubmit: onFormSubmitInternal, formProps: initedFormProps, resetOnSubmit, isSubmit, onChange, saveOnChanges, exProps, request }) {
     const isAutoChange = !!onChange;
-    const [lastChangedField, setLastChangedField] = useState(null);
+
+    const [postData, setPostData] = useState(null);
+    const [response, setResponse] = useState(null);
+
+    const [data, setRealData] = useState(initedData);
+    const [otherData, setOtherData] = useState(null);
+
+    const requestUrl = request?.url;
+    const { data: dynamicData } = useFetchForm(requestUrl, postData);
+
+    // update state when form is submitted
+    const onFormSubmit = onFormSubmitInternal ?? ((formData, d) => {
+        if (requestUrl) {
+            setPostData(formData);
+        }
+    });
+
+    console.log("refetch");
+    useEffect(() => {
+        if (dynamicData) {
+
+            const items = Array.isArray(dynamicData.data) ? dynamicData.data : [dynamicData.data];
+            if (items?.length > 0) {
+                setRealData(prev => {
+                    if (!isObjectsEqual(prev, items)) {
+                        const formItem = items.find(item => item?.type === 'form')?.data
+                            ;
+
+                        if (!formItem) return null; // если нет формы — ничего не меняем
+
+                        return {
+                            ...formItem,
+                            updated: Date.now(),
+                        };
+                    }
+
+                    return prev;
+                });
+                setResponse(items.find(item => item?.type === 'form')?.response)
+                setOtherData(prev => {
+                    if (!isObjectsEqual(prev, items)) {
+                        return items.find(item => item?.type !== 'form')
+                    }
+                    return prev;
+                });
+            }
+
+        } else {
+            setRealData(initedData);
+        }
+    }, [dynamicData, initedData]);
 
     const name = data?.params?.display?.includes('_delete') ? '' : (formName || data?.params?.display)
     const defaultValues = {}
@@ -51,7 +101,7 @@ export default function ({ layout, data, response, onFormSubmit, name: formName,
     // 1. Initialize isAutofocus based on a new prop, defaulting to false.
     let isAutofocusEnabledForForm = auto_focus === true;
 
-    if (data.inputs) {
+    if (data?.inputs) {
         const inputKeys = Object.keys(data.inputs); // Get keys to ensure order
         for (const key of inputKeys) { // Iterate with for...of to respect order and allow early exit logic
             if ((data.inputs[key].type == "switcher" || data.inputs[key].type == "checkbox") && data.inputs[key].checked == false)
@@ -132,7 +182,7 @@ export default function ({ layout, data, response, onFormSubmit, name: formName,
         }
     }, []);
 
-    if (data.reset) {
+    if (data?.reset) {
         //TODO: Set Value without timeout
         setTimeout(() => {
             methods.setValue('cmt_parent_id', defaultValues['cmt_parent_id']);
@@ -172,10 +222,13 @@ export default function ({ layout, data, response, onFormSubmit, name: formName,
 
     useEffect(() => {
         if (cacheKey && debouncedFields && Object.keys(debouncedFields).length > 0) {
-            storageSet('form', cacheKey, JSON.stringify(debouncedFields), true);
+            //TOFIX AUTOSAVE IN FORMS
+            //storageSet('form', cacheKey, JSON.stringify(debouncedFields), true);
         }
     }, [debouncedFields, cacheKey]);
 
+    //TOFIX AUTOSAVE IN FORMS
+    /*
     useEffect(() => {
         const raw = cacheKey ? storageGet('form', cacheKey, true) : false
         if (raw) {
@@ -195,7 +248,7 @@ export default function ({ layout, data, response, onFormSubmit, name: formName,
             methods.reset({ ...current, ...draft, ...updates }, { keepDefaultValues: true });
         }
 
-    }, []);
+    }, []);*/
 
 
     if (isAutoChange) {
@@ -210,7 +263,7 @@ export default function ({ layout, data, response, onFormSubmit, name: formName,
 
     }
 
-    let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true, lastChangedField, saveOnChanges, formProps);
+    let inputs = getFormFieldList(name, data?.inputs, _handleSubmit, true, null, saveOnChanges, formProps);
 
     if (inputs?.length > 0)
         inputs = inputs.filter(item => ((item.key !== null && item.key.toString() !== '') || item.props.type == 'block_end'))
@@ -246,7 +299,7 @@ export default function ({ layout, data, response, onFormSubmit, name: formName,
         return result;
     }, {});
 
-    const currentFormValues = Object.keys(data.inputs).reduce((result, key) => {
+    const currentFormValues = data?.inputs ? Object.keys(data.inputs).reduce((result, key) => {
         if (data.inputs[key].type !== 'location') {
             result[key] = allFields[key];
         }
@@ -255,26 +308,39 @@ export default function ({ layout, data, response, onFormSubmit, name: formName,
                 result[key] = allFields[key + '_country'];
         }
         return result;
-    }, {});
+    }, {}) : [];
+
+    let Element = null
+    if (otherData) {
+        Element = getComponent('element', String(otherData.type))
+
+    }
+
+    if (onFormEmpty && dynamicData && dynamicData.data?.length == 0) {
+        onFormEmpty();
+    }
 
     return (
-        <View className={`${layout !== 'hor' ? appSetting('forms', 'form_container') : 'w-full'} ${exProps?.classes}`}>
-            <FormProvider {...methods}>
-                <View className={`${layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : appSetting('forms', 'form_container')}`}>
-                    {inputs}
-                    {(isAutoChange && layout === 'hor') && <Row className='items-center justify-between '>
-                        {!isObjectsEqual(defaultFormValues, currentFormValues) && <Button
-                            title='Reset Filters'
-                            startDecorator='X'
-                            size='sm'
-                            variant='secondary'
-                            onPress={() => methods.reset()}
-                        />
-                        }
-                    </Row>}
-                </View>
-            </FormProvider>
-        </View>
+        <>
+            {otherData && <Element {...otherData} />}
+            <View className={`${layout !== 'hor' ? appSetting('forms', 'form_container') : 'w-full'} ${exProps?.classes}`}>
+                <FormProvider {...methods}>
+                    <View className={`${layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : appSetting('forms', 'form_container')}`}>
+                        {inputs}
+                        {(isAutoChange && layout === 'hor') && <Row className='items-center justify-between '>
+                            {!isObjectsEqual(defaultFormValues, currentFormValues) && <Button
+                                title='Reset Filters'
+                                startDecorator='X'
+                                size='sm'
+                                variant='secondary'
+                                onPress={() => methods.reset()}
+                            />
+                            }
+                        </Row>}
+                    </View>
+                </FormProvider>
+            </View>
+        </>
 
     );
 }

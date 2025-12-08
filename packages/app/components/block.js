@@ -1,15 +1,9 @@
-import String from './blocks-content/string';
-import ObjectDataObject from './blocks-content/object-data-object';
-import ObjectDataArray from './blocks-content/object-data-array';
 import { BlockDataByName } from 'app/lib/util';
 import { appStatic } from 'app/lib/app-static';
 import { BlockWrapper } from 'app/components/block-wrapper'
-
-const componentsMap = {
-    object: ObjectDataObject,
-    array: ObjectDataArray,
-    string: String,
-};
+import { Text } from 'app/design/typography'
+import { useMemo } from "react";
+import { getComponent } from 'app/components/registry';
 
 export function BlockByName2({ b, name, contentOnly }) {
     const blockNameString = (typeof name === 'string') ? name : name?.name;
@@ -27,10 +21,10 @@ export function BlockByName(props) {
         if (blockNameString?.includes('static')) {
             if (typeof name === 'object') {
                 // If name is an object (e.g., { name: "static:foo", showBg: true, ... }), spread it and rest
-                return <><StaticBlock {...name} {...rest} /></>;
+                return <StaticBlock {...name} {...rest} />;
             } else {
                 // If name is a string (e.g., "static:foo"), pass it as 'name' prop, and spread rest
-                return <><StaticBlock name={blockNameString} {...rest} /></>;
+                return <StaticBlock name={blockNameString} {...rest} />;
             }
         }
 
@@ -158,8 +152,6 @@ export function StaticBlock({ name, showBg, showTitle, showPadding, title }) {
     );
 }
 
-
-
 export default function Block(props) {
     const block = props.block;
 
@@ -169,11 +161,6 @@ export default function Block(props) {
         return staticBlock
     }
     const config = block.config_api || {}
-
-    const type = block.content && Array.isArray(block.content) ? 'array' : typeof block.content;
-    const BlockType = componentsMap[type];
-    if (type == 'string' && !['html', 'raw', 'lang'].includes(block.type))
-        return null;
 
     const blockWrapperProps = {
         config,
@@ -188,5 +175,43 @@ export default function Block(props) {
         showPadding: props.showPadding,
     };
 
-    return <BlockType blockWrapperProps={blockWrapperProps} data={block.content} type={block.type} {...props} {...config} />
+    return <BlockContent blockWrapperProps={blockWrapperProps} data={block.content} type={block.type} {...props} {...config} />
 }
+
+export function BlockContent(props) {
+    const items = Array.isArray(props.data) ? props.data : [props.data];
+    const content = items.map(a => (
+        <Element
+            key={a.id + a.type}
+            type={a.type}
+            {...props}
+            {...a}
+        />
+    ));
+
+    if (items.length > 1) {
+        return <BlockWrapper {...props.blockWrapperProps}>{content}</BlockWrapper>;
+    }
+
+    return content;
+}
+
+const FallbackComponent = (props) => (
+    <Text>
+        Undefined element type ({a.content_type || a.type}): {JSON.stringify(props)}
+    </Text>
+);
+
+function Element(a) {
+    const ElementType = useMemo(
+        () => getComponent('element', a.content_type || a.type) || FallbackComponent,
+        [a.type, a.content_type]
+    );
+
+    return <ElementType type={a.type} {...a} />
+}
+
+export function BlockByDataInt(props) {
+    return <BlockContent onFormEmpty={props.onFormEmpty} data={props.block.content} type={props.block.type} {...props} />
+}
+

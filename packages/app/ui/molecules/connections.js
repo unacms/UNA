@@ -4,7 +4,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { View } from 'app/design/view'
 import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
 import { Modal } from 'app/design/controls'
-import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
+import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { useTranslation } from 'react-i18next';
 import { useLayoutData } from 'app/context/layout'
 import { storageClear } from 'app/lib/util'
