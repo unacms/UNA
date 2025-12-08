@@ -497,7 +497,7 @@ export const VisibilityInfo = memo(({ data }) => {
     return (
         
                 
-                <View className="gap-1 flex-row items-center ">
+                <View className="gap-1 flex-row items-center min-h-5">
                     {isUser ? (
                         <Profile
                             {...data.author_data}
@@ -558,7 +558,7 @@ export const Author = memo(({ data, url, t }) => {
                     displayType="unit"
                     displaySize="base"
                     showInfo={
-                        <Row className="items-center flex-wrap"> 
+                        <Row className="items-center flex-wrap min-h-5 items-center "> 
                             <VisibilityInfo data={data} />
                             <ItemInfo data={data} t={t} />                    
                         </Row>

@@ -279,7 +279,7 @@ export default function FormFeed({data, handleSubmit, exProps, name, response}) 
         {getFormFieldByData(data.inputs['owner_id'], handleSubmit, 'default')}
         {getFormFieldByData(data.inputs['type'], handleSubmit, 'default')}
         <View className="justify-between flex-col flex-auto ">
-            <View className="w-full flex-1 justify-start px-3 ">
+            <View className="w-full flex-1 justify-start px-1.5 ">
                 <View
                     className="flex-auto"
                     style={{
@@ -362,7 +362,7 @@ export default function FormFeed({data, handleSubmit, exProps, name, response}) 
             <View className="  ">
 
                 <View className={
-                    '  items-center flex-auto w-full gap-x-2 p-3   ' +
+                    '  items-center flex-auto w-full gap-x-2 sm:p-1   ' +
                     (isWeb ? ' ' : ' ') +
                     (isSmall
                         ? ' ' +
@@ -439,7 +439,7 @@ export default function FormFeed({data, handleSubmit, exProps, name, response}) 
     if (isFormOnly) {
         return (
             <View className="w-full flex-1 h-full">
-                <View className="items-start justify-start p-3 ">
+                <View className="items-start justify-start sm:p-1 ">
                     {header}
                 </View>
                 {form}

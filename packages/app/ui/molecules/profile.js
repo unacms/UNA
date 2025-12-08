@@ -94,7 +94,7 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
     );
 
     return (
-        <View className="gap-0.5">
+        <View className="my-auto">
             <Row className="items-center gap-1 min-h-5">
                 {wrapWithHoverCard(nameLink)}
                 {info2}
