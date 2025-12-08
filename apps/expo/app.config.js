@@ -17,6 +17,9 @@ const expoConfig = {
         "timeout": 0,
         "backgroundColor": "#111827"
     },
+    "experiments": {
+        "autolinkingModuleResolution": true
+    },
     "platforms": [
         "ios",
         "android"

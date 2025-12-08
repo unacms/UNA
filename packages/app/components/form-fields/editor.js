@@ -6,15 +6,10 @@ import { useState, useRef, useEffect } from 'react';
 import { View } from 'app/design/view'
 import { Platform } from 'react-native';
 import { lazy } from 'react';
+import  RftText from 'app/components/form-fields/editor-inner';
 
-let RftText;
 
-if (Platform.OS === 'web') {
-    const dynamic = require('next/dynamic').default;
-    RftText = dynamic(() => import('app/components/form-fields/editor-inner'), { ssr: false });
-} else {
-    RftText = require('app/components/form-fields/editor-inner').default;
-}
+
 //const RftText = dynamic(() => import('app/components/form-fields/editor-inner'), { ssr: false });
 
 //import  RftText from 'app/components/form-fields/editor-inner';
