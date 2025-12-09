@@ -1,11 +1,8 @@
 
 import Field, { getValidationRules } from './_field';
 import { useController, useFormContext } from 'react-hook-form';
-import { InputMulti, Input, TextInputClear, Button } from 'app/design/controls'
-import { useState, useRef, useEffect } from 'react';
-import { View } from 'app/design/view'
-import { Platform } from 'react-native';
-import { lazy } from 'react';
+import { InputMulti, TextInputClear } from 'app/design/controls'
+import { useState, useEffect } from 'react';
 import  RftText from 'app/components/form-fields/editor-inner';
 
 export default function FormFieldText(props) {
@@ -23,7 +20,6 @@ function PlainText(props) {
     const rules = getValidationRules(props);
     const name = props.name;
     const defaultValue = props.value ? props.value : '';
-    const formContext = useFormContext();
     const { field } = useController({ name, rules, defaultValue });
     // Use smaller initial height for comments forms
     const isCommentsForm = props.container_class === 'comments';

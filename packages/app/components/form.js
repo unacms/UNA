@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import { View, Row } from 'app/design/view'
@@ -40,100 +40,154 @@ const checkInputType = (name, form_name, input_name) => {
     return false;
 }
 
-export default function ({ layout, data: initedData, name: formName, onFormEmpty, onFormSubmit: onFormSubmitInternal, formProps: initedFormProps, resetOnSubmit, isSubmit, onChange, saveOnChanges, exProps, request }) {
+export default function Form({
+    layout,
+    data: initedData,
+    name: formName,
+    onFormEmpty,
+    onFormSubmit: onFormSubmitInternal,
+    formProps: initedFormProps,
+    resetOnSubmit,
+    isSubmit,
+    onChange,
+    saveOnChanges,
+    exProps,
+    request
+}) {
     const isAutoChange = !!onChange;
+    const { auto_focus, ...formProps } = initedFormProps ?? {};
+
+    const { ...methods } = useForm({ mode: 'onChange' });
+    const { formState: { isSubmitted } } = methods;
 
     const [postData, setPostData] = useState(null);
-    const [response, setResponse] = useState(null);
 
-    const [data, setRealData] = useState(initedData);
-    const [otherData, setOtherData] = useState(null);
+    const [formBundle, setFormBundle] = useState({
+        form: initedData,
+        extra: null,
+        response: null,
+        //request: request,
+    });
 
-    const requestUrl = request?.url;
-    const { data: dynamicData } = useFetchForm(requestUrl, postData);
+    const name = formBundle.form?.params?.display?.includes('_delete') ? '' : (formName || formBundle.form?.params?.display)
+
+    const { data: dynamicData } = useFetchForm(request?.url, postData);
 
     // update state when form is submitted
     const onFormSubmit = onFormSubmitInternal ?? ((formData, d) => {
-        if (requestUrl) {
+        if (request?.url) {
             setPostData(formData);
         }
     });
 
-    console.log("refetch");
     useEffect(() => {
-        if (dynamicData) {
+        if (!dynamicData) {
+            // Нет динамических данных – возвращаемся к исходным
+            setFormBundle(prev => ({
+                ...prev,
+                form: initedData,
+                extra: null,
+                response: null,
+            }));
+            return;
+        }
 
-            const items = Array.isArray(dynamicData.data) ? dynamicData.data : [dynamicData.data];
-            if (items?.length > 0) {
-                setRealData(prev => {
-                    if (!isObjectsEqual(prev, items)) {
-                        const formItem = items.find(item => item?.type === 'form')?.data
-                            ;
+        const items = Array.isArray(dynamicData.data)
+            ? dynamicData.data
+            : [dynamicData.data];
 
-                        if (!formItem) return null; // если нет формы — ничего не меняем
+        if (!items?.length) return;
 
-                        return {
-                            ...formItem,
-                            updated: Date.now(),
-                        };
-                    }
+        const formItem = items.find(item => item?.type === 'form');
+        const otherItem = items.find(item => item?.type !== 'form');
 
-                    return prev;
-                });
-                setResponse(items.find(item => item?.type === 'form')?.response)
-                setOtherData(prev => {
-                    if (!isObjectsEqual(prev, items)) {
-                        return items.find(item => item?.type !== 'form')
-                    }
-                    return prev;
-                });
+        setFormBundle(prev => {
+            const nextForm = formItem?.data
+                ? { ...formItem.data, updated: Date.now() }
+                : prev.form;
+
+            const nextResponse = formItem?.response ?? prev.response;
+            const nextExtra = otherItem ?? prev.extra;
+
+            // Опциональная оптимизация — не дёргать setState, если реально ничего не изменилось
+            const isSameForm = isObjectsEqual(prev.form, nextForm);
+            const isSameExtra = isObjectsEqual(prev.extra, nextExtra);
+            const isSameResponse = prev.response === nextResponse;
+
+            if (isSameForm && isSameExtra && isSameResponse) {
+                return prev;
             }
 
-        } else {
-            setRealData(initedData);
-        }
+            return {
+                ...prev,
+                form: nextForm,
+                extra: nextExtra,
+                response: nextResponse,
+            };
+        });
     }, [dynamicData, initedData]);
 
-    const name = data?.params?.display?.includes('_delete') ? '' : (formName || data?.params?.display)
-    const defaultValues = {}
+    if (onFormEmpty && dynamicData && dynamicData.data?.length == 0) {
+        onFormEmpty();
+    }
 
-    const { auto_focus, ...formProps } = initedFormProps ?? {};
-    // 1. Initialize isAutofocus based on a new prop, defaulting to false.
-    let isAutofocusEnabledForForm = auto_focus === true;
+    const { processedInputs, defaultValues } = useMemo(() => {
+        const dv = {};
+        const processed = {};
 
-    if (data?.inputs) {
-        const inputKeys = Object.keys(data.inputs); // Get keys to ensure order
-        for (const key of inputKeys) { // Iterate with for...of to respect order and allow early exit logic
-            if ((data.inputs[key].type == "switcher" || data.inputs[key].type == "checkbox") && data.inputs[key].checked == false)
-                data.inputs[key].value = 0;
+        const inputs = formBundle.form?.inputs;
+        if (!inputs) {
+            return { processedInputs: null, defaultValues: dv };
+        }
 
-            // 2. If autofocus is enabled for this form, apply to the first field and then disable for subsequent fields.
-            if (data.inputs[key].type == "text" || data.inputs[key].type == "textarea") {
+        const inputKeys = Object.keys(inputs);
+        let isAutofocusEnabledForForm = auto_focus === true;
+
+        for (const key of inputKeys) {
+            const src = inputs[key];
+            if (!src) continue;
+
+            // создаём копию, НЕ мутируем оригинал
+            const input = { ...src };
+
+            // switcher/checkbox: false > value = 0
+            if (
+                (input.type === 'switcher' || input.type === 'checkbox') &&
+                input.checked === false
+            ) {
+                input.value = 0;
+            }
+
+            // autofocus только на первое text/textarea поле
+            if (input.type === 'text' || input.type === 'textarea') {
                 if (isAutofocusEnabledForForm) {
-                    data.inputs[key].auto_focus = true;
-                    isAutofocusEnabledForForm = false; // Ensure only the first field gets autofocus
-                }
-                else {
-                    data.inputs[key].auto_focus = false;
+                    input.auto_focus = true;
+                    isAutofocusEnabledForForm = false;
+                } else {
+                    input.auto_focus = false;
                 }
             }
 
+            // visibility / selector
             ['visibility', 'selector'].forEach(type => {
-
-                if (checkInputType(type, name, data.inputs[key].name)) {
-
-                    data.inputs[key].origtype = data.inputs[key].origtype || data.inputs[key].type;
-                    data.inputs[key].type = type;
+                if (checkInputType(type, name, input.name)) {
+                    input.origtype = input.origtype || input.type;
+                    input.type = type;
                 }
             });
 
-            if (data.inputs[key].value || data.inputs[key].value == 0)
-                defaultValues[key] = data.inputs[key].value;
+            // defaultValues
+            if (input.value || input.value === 0) {
+                dv[key] = input.value;
+            }
+
+            processed[key] = input;
         }
-    }
+
+        return { processedInputs: processed, defaultValues: dv };
+    }, [formBundle.form?.inputs, auto_focus, name]);
 
     const { csrf_token, ...restDefaultValues } = defaultValues;
-
     const cacheKey = request?.url + JSON.stringify(restDefaultValues) || false;
 
     const onSubmit = async d => {
@@ -141,20 +195,15 @@ export default function ({ layout, data: initedData, name: formName, onFormEmpty
         const formData = new FormData();
         Object.keys(d).map(function (key) {
             formData.append(key, d[key]);
-            if (data.inputs[key])
-                data.inputs[key].value = d[key];
+            //if (processedInputs[key])
+            //      processedInputs[key].value = d[key];
         });
         await onFormSubmit(formData, d);
     }
 
     const onError = async d => {
-        //TODO: gandle error
+        //TODO: handle error
     }
-    const { ...methods } = useForm({
-        mode: 'onChange',
-    });
-    const { formState: { isSubmitted } } = methods;
-
 
 
     useEffect(() => {
@@ -164,50 +213,59 @@ export default function ({ layout, data: initedData, name: formName, onFormEmpty
         }
     }, [methods.formState, methods.submittedData, methods.reset]);
 
-    function handleKeyUp(event) {
-        if (event.srcElement.tagName == 'DIV' || event.srcElement.tagName == 'TEXTAREA')
-            return
+    const _handleSubmit = useMemo(
+        () =>
+            methods.handleSubmit(
+                (data) => {
+                    emitter.emit(`form_${name}`, { action: 'submited' });
+                    onSubmit(data);
+                },
+                onError
+            ),
+        [methods, name, onSubmit, onError]
+    );
 
-        if (event.keyCode === 13) {
+    const handleKeyUp = useCallback((event) => {
+        const tag = event.target?.tagName;
+        if (tag === 'DIV' || tag === 'TEXTAREA') return;
+
+        if (event.key === 'Enter' || event.keyCode === 13) {
             _handleSubmit();
         }
-    }
+    }, [_handleSubmit]);
 
     useEffect(() => {
         if (Platform.OS === 'web') {
-            window.addEventListener("keyup", handleKeyUp);
+            window.addEventListener('keyup', handleKeyUp);
             return () => {
-                window.removeEventListener("keyup", handleKeyUp);
+                window.removeEventListener('keyup', handleKeyUp);
             };
         }
-    }, []);
+    }, [handleKeyUp]);
 
-    if (data?.reset) {
-        //TODO: Set Value without timeout
-        setTimeout(() => {
+    useEffect(() => {
+        if (!formBundle?.form?.reset) return;
+        if (defaultValues['cmt_parent_id'] === undefined) return;
+
+        const id = setTimeout(() => {
             methods.setValue('cmt_parent_id', defaultValues['cmt_parent_id']);
         }, 100);
-    }
 
-    const _handleSubmit = methods.handleSubmit(
-        (data) => {
-            emitter.emit(`form_${name}`, { action: 'submited' })
-            onSubmit(data);
-        },
-        onError
-    );
+        return () => clearTimeout(id);
+    }, [formBundle?.form?.reset, defaultValues['cmt_parent_id'], methods]);
+
 
     useEffect(() => {
         if (isSubmit) {
             _handleSubmit();
         }
-    }, [isSubmit]);
+    }, [isSubmit, _handleSubmit]);
 
     useEffect(() => {
-        if (data?.updated)
+        if (formBundle?.form?.updated)
             emitter.emit(`form_${name}`, { action: 'received' })
 
-    }, [data?.updated]);
+    }, [formBundle?.form?.updated]);
 
 
     const { watch } = methods;
@@ -215,10 +273,10 @@ export default function ({ layout, data: initedData, name: formName, onFormEmpty
     const debouncedFields = useDebounce(allFields, 500);
 
     useEffect(() => {
-        if (isAutoChange && Object.keys(debouncedFields).length > 0) {
+        if (isAutoChange && onChange && Object.keys(debouncedFields).length > 0) {
             onChange(debouncedFields);
         }
-    }, [debouncedFields]);
+    }, [debouncedFields, isAutoChange, onChange]);
 
     useEffect(() => {
         if (cacheKey && debouncedFields && Object.keys(debouncedFields).length > 0) {
@@ -236,8 +294,8 @@ export default function ({ layout, data: initedData, name: formName, onFormEmpty
             const current = methods.getValues();
             const updates = {};
 
-            const keysWithHtml = Object.keys(data.inputs).filter(
-                (key) => data.inputs[key].html > 0
+            const keysWithHtml = Object.keys(processedInputs).filter(
+                (key) => processedInputs[key].html > 0
             );
 
             keysWithHtml.forEach((key) => { // HUCK FOR rtf inputs
@@ -251,39 +309,53 @@ export default function ({ layout, data: initedData, name: formName, onFormEmpty
     }, []);*/
 
 
-    if (isAutoChange) {
-        for (const key in data.inputs) {
-            if (data.inputs[key] && typeof data.inputs[key] === "object" && data.inputs[key].type === "submit") {
-                delete data.inputs[key];
-            }
-            if (data.inputs[key] && typeof data.inputs[key] === "object" && data.inputs[key].name === "csrf_token") {
-                delete data.inputs[key];
-            }
-        }
+    const filteredInputs = useMemo(() => {
+        if (!processedInputs) return null;
+        if (!isAutoChange) return processedInputs;
 
-    }
+        const result = {};
 
-    let inputs = getFormFieldList(name, data?.inputs, _handleSubmit, true, null, saveOnChanges, formProps);
+        Object.entries(processedInputs).forEach(([key, input]) => {
+            if (!input || typeof input !== 'object') return;
 
-    if (inputs?.length > 0)
-        inputs = inputs.filter(item => ((item.key !== null && item.key.toString() !== '') || item.props.type == 'block_end'))
+            if (input.type === 'submit') return;
+            if (input.name === 'csrf_token') return;
 
-    if (inputs) {
+            result[key] = input;
+        });
+
+        return result;
+    }, [processedInputs, isAutoChange]);
+
+    let inputs = getFormFieldList(name, filteredInputs, _handleSubmit, true, null, saveOnChanges, formProps);
+
+    if (inputs?.length) {
+        inputs = inputs.filter(
+            item =>
+                (item.key !== null && item.key.toString() !== '') ||
+                item.props.type === 'block_end'
+        );
+
+        const lastNonHiddenIndexFromEnd = [...inputs].reverse().findIndex(
+            input => input.props?.type !== 'hidden'
+        );
+
+        const lastNonHiddenIndex = lastNonHiddenIndexFromEnd === -1 ? -1 : inputs.length - 1 - lastNonHiddenIndexFromEnd;
+
         inputs = inputs.map((input, index) => ({
             ...input,
             props: {
                 ...input.props,
                 form_layout: layout,
-                use_caption_as_placeholder: appSetting('forms', 'without_captions').includes(name) ? true : false,
-                ...(index === inputs.length - 1 - inputs.slice().reverse().findIndex(input => input.props?.type !== "hidden") && { noPadding: true }),
-                ...(index === inputs.length - 1 - inputs.slice().reverse().findIndex(input => input.props?.type !== "hidden") && { noPadding: true })
+                use_caption_as_placeholder: appSetting('forms', 'without_captions').includes(name),
+                ...(index === lastNonHiddenIndex && { noPadding: true }),
             },
         }));
     }
 
     const ElementForm = getFormType(name)
     if ('undefined' !== typeof ElementForm) {
-        inputs = <ElementForm name={name} data={data} response={response} handleSubmit={_handleSubmit} exProps={exProps}></ElementForm>
+        inputs = <ElementForm name={name} data={{...formBundle?.form, inputs: filteredInputs}} response={formBundle.response} handleSubmit={_handleSubmit} exProps={exProps}></ElementForm>
         return (
             <FormProvider {...methods}>
                 {inputs}
@@ -291,16 +363,15 @@ export default function ({ layout, data: initedData, name: formName, onFormEmpty
         )
     }
 
-
     const defaultFormValues = Object.keys(allFields).reduce((result, key) => {
-        if (defaultValues.hasOwnProperty(key) && data.inputs[key].type !== 'location') {
+        if (defaultValues.hasOwnProperty(key) && filteredInputs?.[key].type !== 'location') {
             result[key] = defaultValues[key];
         }
         return result;
     }, {});
 
-    const currentFormValues = data?.inputs ? Object.keys(data.inputs).reduce((result, key) => {
-        if (data.inputs[key].type !== 'location') {
+    const currentFormValues = filteredInputs ? Object.keys(filteredInputs).reduce((result, key) => {
+        if (filteredInputs?.[key].type !== 'location') {
             result[key] = allFields[key];
         }
         else {
@@ -310,19 +381,11 @@ export default function ({ layout, data: initedData, name: formName, onFormEmpty
         return result;
     }, {}) : [];
 
-    let Element = null
-    if (otherData) {
-        Element = getComponent('element', String(otherData.type))
-
-    }
-
-    if (onFormEmpty && dynamicData && dynamicData.data?.length == 0) {
-        onFormEmpty();
-    }
+    const Element = formBundle.extra ? getComponent('element', String(formBundle.extra.type)) : null
 
     return (
         <>
-            {otherData && <Element {...otherData} />}
+            {Element && <Element {...formBundle.extra} />}
             <View className={`${layout !== 'hor' ? appSetting('forms', 'form_container') : 'w-full'} ${exProps?.classes}`}>
                 <FormProvider {...methods}>
                     <View className={`${layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : appSetting('forms', 'form_container')}`}>
