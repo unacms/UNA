@@ -533,7 +533,6 @@ export function processUrl(data, blocks) {
             leftbar: { endpoint: null, content: [] },
         }
     )
-      console.log("datadatadata-blocks", contentAndEndpoint)
     return contentAndEndpoint
 }
 

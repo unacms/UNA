@@ -551,8 +551,6 @@ const TabSceneMainContent = ({
     )
 
     const dataItems = isDesktop || !!pageRoute?.endpoint?.request_url ? [...dataItemsPage, ...refetchState.visibleItems] : [...dataItemsPage, ...refetchState.visibleItems, ...pageRoute.sidebar.content];
-    
-    console.log("pageData", pageRoute)
 
     return (
         <><UniList

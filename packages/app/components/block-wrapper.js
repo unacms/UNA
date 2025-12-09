@@ -6,10 +6,10 @@ import Link from 'app/ui/atoms/link'
 import { Button } from 'app/design/controls'
 import { useTranslation } from 'react-i18next'
 
-export function BlockWrapper({config, block, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, children}) {
+export function BlockWrapper({ config, block, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, children }) {
     const { t } = useTranslation()
 
-    if (!block?.designbox_id)
+    if (block?.designbox_id == null)
         return children;
 
     block.designbox_id = Number(block.designbox_id);
@@ -52,6 +52,8 @@ export function BlockWrapper({config, block, showTitle, showBg, fullWidth, conte
     if (contentOnly)
         return children
 
+
+
     return (
         <View className="@container/block w-full">
             <PageBlock
@@ -68,9 +70,9 @@ export function BlockWrapper({config, block, showTitle, showBg, fullWidth, conte
                 {bIsShowTitle && (
                     <BlockHeader>
                         <BlockName>
-                            {content_type !== 'browse_simple' ? <BlockTitle>{stripTags(block.title)}</BlockTitle> :  <Text className="text-secondary-foreground text-base font-semibold leading-none lg:leading-none tracking-tight ">
-                            {stripTags(block.title)}
-                        </Text>}
+                            {content_type !== 'browse_simple' ? <BlockTitle>{stripTags(block.title)}</BlockTitle> : <Text className="text-secondary-foreground text-base font-semibold leading-none lg:leading-none tracking-tight ">
+                                {stripTags(block.title)}
+                            </Text>}
                         </BlockName>
                         {config?.header_more_url && (<BlockActions>
                             <Link href={config?.header_more_url}>
