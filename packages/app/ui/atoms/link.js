@@ -103,9 +103,17 @@ export default function ElementLink(props) {
     const ghostNativePressedClass = (selectedVariant === 'ghost' || selectedVariant === 'plainghost' || selectedVariant === 'accentghost') ? ' active:bg-muted rounded-lg ' : '';
     const composedClassName = [variantClass, sizeClass, ghostNativePressedClass, className].filter(Boolean).join(' ').trim();
 
+    // Helper to check if children are all text-like (strings/numbers) including arrays
+    const isTextContent = (child) => {
+        if (child === null || child === undefined) return true;
+        if (typeof child === 'string' || typeof child === 'number') return true;
+        if (Array.isArray(child)) return child.every(isTextContent);
+        return false;
+    };
+
     // Если ссылка внешняя, открываем в браузере
     if (domain && domain !== rootUrl || asExternal === true) {
-        const content = (typeof children === 'string' || typeof children === 'number') ? (
+        const content = isTextContent(children) ? (
             <Text className={composedClassName} style={{ pointerEvents: 'none' }}>{children}</Text>
         ) : children;
         
@@ -158,7 +166,7 @@ if (mode == 'text'){
 
     // For non-text mode, wrap string/number children in Text with variant classes applied
     // style.pointerEvents="none" allows touches to pass through to parent Pressable
-    const content = (typeof children === 'string' || typeof children === 'number') ? (
+    const content = isTextContent(children) ? (
         <Text className={composedClassName} style={{ pointerEvents: 'none' }}>{children}</Text>
     ) : children;
 

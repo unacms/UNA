@@ -314,7 +314,8 @@ export const settingsDefault = {
     },
     feed: {
         feed_container: 'relative flex-auto mx-auto w-full max-w-3xl  ',
-        post_trigger: 'web:active:bg-muted rounded-lg font-medium lg:rounded-full flex-auto text-muted-foreground web:hover:text-foreground  lg:bg-muted/80 lg:hover:bg-muted justify-center px-1 lg:px-4',
+        post_trigger: 'active:bg-muted rounded-lg rounded-full flex-auto lg:bg-muted/80 lg:hover:bg-muted justify-center px-1 lg:px-4',
+        post_trigger_text: 'font-medium text-muted-foreground web:hover:text-foreground',
         show_html: false,
         default_feed: 'foryou',
         list: [
@@ -1110,7 +1111,7 @@ export const settingsDefault = {
             content_max_width: ' w-full max-w-7xl ',
             content_max_width_nav: ' w-full max-w-screen-2xl xl:border-x-0 xl:border-guide/20 border-dashed  ',
             menu_is_dynamic: false,
-            menu_cnt: ' flex-row flex-none gap-1 mx-2 h-14 items-center overflow-x-auto ',
+            menu_cnt: ' flex-row flex-none gap-1 px-2 h-14 items-center overflow-x-auto ',
             menu_categ_indent: ' pl-12 ',
          
           
@@ -1194,8 +1195,8 @@ export const settingsDefault = {
         button_sizes: {
             default_size: 'base',
             default_variant: 'default',
-            pressed_container: ' bg-accent/60 web:hover:bg-accent web:active:bg-accent  ',
-            pressed_text: ' text-accent-foreground font-medium ',
+            pressed_container: ' bg-accent web:hover:bg-accent web:active:bg-accent  ',
+            pressed_text: ' text-accent-foreground font-semibold ',
          
             xs: {
                 rounded: ' rounded-md ',
@@ -1544,7 +1545,7 @@ export const settingsDefault = {
         },
         cards: {
             'u-card-list':
-                ' u-card-list bg-card/60 shadow-sm border-y sm:border border-border/60 text-card-foreground overflow-hidden sm:rounded-2xl ',
+                ' u-card-list bg-card/60 shadow-sm  sm:border border-border/60 text-card-foreground overflow-hidden sm:rounded-2xl ',
             'u-card-list-padding': ' p-3 lg:p-4 ',
             'u-card-base':
                 ' u-card-base bg-card/60 shadow-sm border border-border/60 text-card-foreground overflow-hidden rounded-2xl',
