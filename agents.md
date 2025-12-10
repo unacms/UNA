@@ -370,6 +370,44 @@ Use semantic color tokens that automatically adapt:
 <View className="bg-white dark:bg-gray-900">
 ```
 
+### Native Text Style Inheritance (Critical)
+
+**On React Native, text styles do NOT cascade from View/Pressable parents to Text children.** This is a fundamental difference from web CSS.
+
+```javascript
+// ❌ WRONG - Text color on Pressable won't apply to Text child on native
+<Pressable className="text-muted-foreground">
+  <Text>This text will be BLACK on native, correct on web</Text>
+</Pressable>
+
+// ✅ CORRECT - Apply text styles directly to Text component
+<Pressable className="bg-muted">
+  <Text className="text-muted-foreground">This works on both platforms</Text>
+</Pressable>
+```
+
+**When to watch for this issue:**
+- Text appears black on native but correct color on web
+- Text color semantic tokens (`text-foreground`, `text-muted-foreground`) seem "broken" on native
+- Components using `inheritColor` patterns from web CSS
+
+**Solution pattern for settings-based styles:**
+
+```javascript
+// In settings-default.js - separate container and text classes
+feed: {
+  post_trigger: 'active:bg-muted rounded-lg flex-auto',           // Container styles
+  post_trigger_text: 'font-medium text-muted-foreground',         // Text styles
+}
+
+// In component - apply to correct elements
+<Pressable className={appSetting('feed', 'post_trigger')}>
+  <Text className={appSetting('feed', 'post_trigger_text')}>Content</Text>
+</Pressable>
+```
+
+**Note:** Semantic tokens work perfectly in NativeWind - ensure they're applied to the correct element type.
+
 ---
 
 ## UNA CMS API Integration

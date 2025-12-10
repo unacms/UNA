@@ -175,8 +175,8 @@ export default function ({ data, blocks }) {
             })}</View>
 
         const subHeader = feedList.length > 1 && (
-            <Row className=' items-center h-14 '>
-                <ScrollView horizontal={true} className='flex w-full scrollbar-hide ps-2.5' >
+            
+                <ScrollView horizontal={true} className='flex w-full scrollbar-hide ps-2.5 pb-2 pt-1' >
                     <Row
                         className={`  ${feedList.length > 1 ? ' gap-2 ' : ''
                             }    `}
@@ -201,7 +201,7 @@ export default function ({ data, blocks }) {
                     </Row>
 
                 </ScrollView>
-            </Row>
+            
         )
 
         const isFeedMenuPresent = feedList.length > 1 || appSetting('feed', 'show_selector_view')
@@ -233,7 +233,7 @@ export default function ({ data, blocks }) {
                                         scrollProps: {
                                             pageData: data,
                                             headerHeight: isFeedMenuPresent
-                                                ? 100
+                                                ? 104
                                                 : isWeb ? 56 : 48,
                                             subHeaderComponent: subHeader,
                                         },

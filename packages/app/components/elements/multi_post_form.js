@@ -57,7 +57,7 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
                     onPress={getFirstForm}
                     className={`${appSetting('feed', 'post_trigger')}`}
                 >
-                    <Text>{t('Create new ') + firstForm.title.toLowerCase()}</Text>
+                    <Text className={`${appSetting('feed', 'post_trigger_text')}`}>{t('Create new ') + firstForm.title.toLowerCase()}</Text>
                 </Pressable>
 
                 <FormModal key={pageData?.ts} pageData={pageData} setPageData={setPageData} />
