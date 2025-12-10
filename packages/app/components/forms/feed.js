@@ -20,59 +20,6 @@ import ProfileSwitcher from 'app/components/elements/profile_switcher'
 import emitter from 'app/context/emitter';
 import { Icon } from 'app/ui/atoms/icon'
 
-/*function ProfileView({ isImageOnly = false, data, handleSubmit, showImage, setShowImage, author }) {
-    const { currentUser } = useCurrentUser();
-
-    if (!currentUser) return null;
-
-    const profileData = author ? author : {
-        ...currentUser,
-        url_avatar: currentUser.avatar,
-        url: null,
-    };
-
-    if (isImageOnly) {
-        return <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />;
-    }
-
-    const isHiddenVisibility = data?.inputs?.['object_privacy_view']?.origtype == 'hidden' || !data?.inputs?.['object_privacy_view']
-
-    const authorName = (<Text className="text-foreground leading-6 font-bold tracking-tight text-base truncate">
-        {author ? author.display_name : currentUser.display_name}
-    </Text>
-    )
-
-    return (
-        <View className="flex-row flex-auto items-center justify-between gap-x-2 text-neutral-400 dark:text-neutral-600  ">
-            <View className="gap-x-2 mr-2 flex-row flex-auto items-center ">
-                <Profile {...profileData} displaySize="lg" displayType="unit_wo_info" />
-
-                <View className={`flex-col  ${!isHiddenVisibility ? ' test ' : ''}`}>
-
-                    {data?.inputs?.['object_privacy_view'] ? getFormFieldByData(
-                        {
-                            ...data.inputs['object_privacy_view'],
-                        },
-                        handleSubmit,
-                        'nofield',
-
-                        {
-                            onShowModal: setShowImage,
-                            showModal: showImage,
-                            size: 'xs',
-                            maxLength: 0,
-                            variant: 'secondary',
-                            noContainer: true,
-                            align: 'start',
-                            addElement: authorName,
-                        }
-                    ) : authorName}
-                </View>
-            </View>
-        </View>
-    );
-}*/
-
 export default function FormFeed({data, handleSubmit, exProps, name, response}) {
     const formContext = useFormContext()
     const { t } = useTranslation()
@@ -165,8 +112,6 @@ export default function FormFeed({data, handleSubmit, exProps, name, response}) 
             setResponseId(response?.id)
         }
     }, [response?.id])
-
-    console.log("response", response)
 
     useEffect(() => {
         if (showImage) {

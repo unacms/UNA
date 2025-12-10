@@ -18,12 +18,13 @@ export default function FormComments(props) {
     const forceBottomGrowth = !!exProps.forceBottomGrowth;
     const shouldGrowFromBottom = forceBottomGrowth || isModalForm || !isDesktop;
     const baseHeight = props.data.inputs['cmt_id']?.value ? 160 : 18
-    const maxHeight = Platform.OS === 'web' ? /*screenHeight / 2*/ 160 : (screenHeight - 300) / 2 // 300 is approximate keyboard height
+    const isWeb = Platform.OS == 'web'
+    const maxHeight = isWeb ? /*screenHeight / 2*/ 160 : (screenHeight - 300) / 2 // 300 is approximate keyboard height
     const formContext = useFormContext()
 
     const [editorHeight, setEditorHeight] = useState(baseHeight)
 
-    const isWeb = Platform.OS == 'web'
+  
     const { currentUser } = useCurrentUser()
     const isAutoFocus =
         props.data.inputs['cmt_text']?.value ||
@@ -189,7 +190,7 @@ export default function FormComments(props) {
     if (isWeb) {
         currentAttachmentButtonWidthClass = ' w-9 h-9';
     } else {
-        currentAttachmentButtonWidthClass = 'w-18 h-9';
+        currentAttachmentButtonWidthClass = 'w-18 h-9 flex-row';
     }
     attachmentButtonContainerClasses.push(currentAttachmentButtonWidthClass);
 

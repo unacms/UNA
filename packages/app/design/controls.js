@@ -211,11 +211,12 @@ export function Modal({
     scrollable = false,
     autoHeight = false
 }) {
+    const isWeb = Platform.OS === 'web';
     // Cleanup guard to prevent removeChild errors
     useEffect(() => {
         return () => {
             // Cleanup function to prevent removeChild errors
-            if (Platform.OS === 'web' && typeof window !== 'undefined' && document.body) {
+            if (isWeb && typeof window !== 'undefined' && document.body) {
                 const portals = document.querySelectorAll('[data-react-native-modal]');
                 portals.forEach(portal => {
                     if (portal.parentNode) {
@@ -238,7 +239,7 @@ export function Modal({
     }
 
     const styles = !autoHeight ? { maxHeight: height - offset } : {};
-    const isIOS = Platform.OS === 'ios';
+    
 
     const isOuterClose = (onClose !== 'undefined' && outerClickClose !== false);
     const positionClasses = {
@@ -264,7 +265,7 @@ export function Modal({
     const insets = useSafeAreaInsets();
 
     const Content = (
-        <View style={{ paddingTop: isIOS ? insets?.top : 0 }} className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto ${layoutShift}:inset-0 h-full h-modal ${sClassPosition}`}>
+        <View style={{ paddingTop: !isWeb ? insets?.top : 0 }} className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto ${layoutShift}:inset-0 h-full h-modal ${sClassPosition}`}>
             <View className={`w-full ${maxWidth} ${fullWidth ? '' : `${layoutShift}:w-auto`} relative ${modalSettings.container.replaceAll("{ls}", layoutShift)} `}>
                 <View className={`relative ${!autoHeight ? 'h-full' : ''} ${modalSettings.content.replaceAll("{ls}", layoutShift)}`}>
                     {
