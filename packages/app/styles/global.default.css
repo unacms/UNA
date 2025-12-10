@@ -5,8 +5,8 @@
 @layer base {
     .light-theme-vars {
         /*semantic colors*/
-        --background: var(--neutral-100); /*main page background*/
-        --foreground: var(--neutral-900); /*main page content*/
+        --background: var(--neutral-50); /*main page background*/
+        --foreground: var(--neutral-950); /*main page content*/
         --card: var(--white); /*cards, sidebars, navbars background*/
         --card-foreground: var(--neutral-950); /*content on cards, sidebars, navbars*/
         --popover: var(--white); /*background for popovers, inputs, tooltips, modals, elevated surfaces*/
@@ -400,6 +400,7 @@ body {
     -moz-osx-font-smoothing: neutralscale;
     -ms-overflow-style: scrollbar;
     -webkit-overflow-scrolling: touch;
+    font-family: var(--font-main, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
 }
 
 

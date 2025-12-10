@@ -23,7 +23,7 @@
  * />
  */
 
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { Pressable } from 'react-native';
 import { View } from 'app/design/view';
 import { Text } from 'app/design/typography';
@@ -92,6 +92,7 @@ export default function Snackbar({
     // Animation values
     const translateY = useSharedValue(position === 'bottom' ? 100 : -100);
     const opacity = useSharedValue(0);
+    const [shouldRender, setShouldRender] = useState(visible);
 
     // Handle visibility changes
     useEffect(() => {
@@ -99,11 +100,14 @@ export default function Snackbar({
             // Animate in
             translateY.value = withSpring(0, SPRING_CONFIG);
             opacity.value = withTiming(1, ANIMATION_CONFIG);
+            setShouldRender(true);
         } else {
             // Animate out
             const targetY = position === 'bottom' ? 100 : -100;
             translateY.value = withTiming(targetY, ANIMATION_CONFIG);
             opacity.value = withTiming(0, ANIMATION_CONFIG);
+            const timeout = setTimeout(() => setShouldRender(false), ANIMATION_CONFIG.duration + 50);
+            return () => clearTimeout(timeout);
         }
     }, [visible, position]);
 
@@ -158,7 +162,7 @@ export default function Snackbar({
     const wrapperClasses = snackbarTheme.wrapper || 'bg-primary rounded-full shadow-lg px-2 py-1 flex-row items-center gap-2';
 
     // Don't render if never visible (optimization)
-    if (!visible && opacity.value === 0) {
+    if (!shouldRender) {
         return null;
     }
 

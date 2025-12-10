@@ -9,6 +9,7 @@ import { useEffect, useMemo } from 'react'
 import Subscriber from 'app/ui/molecules/subscriber';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { fontVars } from 'app/design/fonts/fonts-web';
+import { mainFont } from 'app/design/fonts/fonts-web-default';
 import { appSetting } from 'app/lib/util';
 import 'app/styles/global.default.css'
 import 'app/styles/global.css'
@@ -50,7 +51,7 @@ export default function RootLayout({ children }) {
 
     const queryClient = useMemo(() => new QueryClient(), []);
     return (
-        <html lang={langCode} className={fontVars}>
+        <html lang={langCode} className={`${fontVars} ${mainFont.className}`}>
             <body className={appSetting('layout', 'body')}>
                 <QueryClientProvider client={queryClient}>
                     <Analytics />
