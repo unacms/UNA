@@ -158,7 +158,7 @@ export const settingsDefault = {
         default_item: '',
         logo: true,
         logo_mode: 'full',
-        show_always: true,
+        show_always: false,
         root_url: 'home'
     },
     cover: {
@@ -316,7 +316,7 @@ export const settingsDefault = {
         feed_container: 'relative flex-auto mx-auto w-full max-w-3xl  ',
         post_trigger: 'web:active:bg-muted rounded-lg font-medium lg:rounded-full flex-auto text-muted-foreground web:hover:text-foreground  lg:bg-muted/80 lg:hover:bg-muted justify-center px-1 lg:px-4',
         show_html: false,
-        default_feed: 'account',
+        default_feed: 'foryou',
         list: [
             { name: 'foryou', icon: 'Sparkle', title: 'For you', showTitle: true },
              { name: 'account', icon: 'Binoculars', title: 'Following', showTitle: true },
@@ -1215,7 +1215,7 @@ export const settingsDefault = {
                 rounded: ' rounded-lg ',
                 padding: ' min-h-9 ',
                 padding_icon_only: ' h-9 w-9 ',
-                padding_with_title: ' px-2 h-9 gap-1 ',
+                padding_with_title: ' px-3 h-9 gap-1.5 ',
                 icon_container:
                     ' text-base flex items-center justify-center',
                 title_container: ' rounded text-sm inline-flex items-center  ',

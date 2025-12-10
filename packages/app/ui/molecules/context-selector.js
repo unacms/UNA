@@ -94,8 +94,8 @@ export default function ContextSelector({ data, url, uri, mode }) {
 
 
     const CurrentContext = (
-        <Link size="lg" href={contextRoot.url} title={t("Context Home")}>
-            <Row className="items-center gap-2 py-0.5 ">
+        <Link className="flex-row gap-2 py-0.5 w-full" size="lg" href={contextRoot.url} title={t("Context Home")}>
+        
                 <View className='rounded-full items-center justify-center web:duration-200 text-card-foreground web:hover:text-foreground'>
                     {contextRoot.image}
                 </View>
@@ -104,7 +104,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
                         {contextRoot.name}
                     </Text>
                 )}
-            </Row>
+            
         </Link>
     )
 

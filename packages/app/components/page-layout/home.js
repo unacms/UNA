@@ -176,7 +176,7 @@ export default function ({ data, blocks }) {
 
         const subHeader = feedList.length > 1 && (
             <Row className=' items-center h-14 '>
-                <ScrollView horizontal={true} className={`${cd('px-lg')} flex w-full scrollbar-hide`} >
+                <ScrollView horizontal={true} className='flex w-full scrollbar-hide ps-2.5' >
                     <Row
                         className={`  ${feedList.length > 1 ? ' gap-2 ' : ''
                             }    `}
