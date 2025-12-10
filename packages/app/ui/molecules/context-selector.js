@@ -94,8 +94,8 @@ export default function ContextSelector({ data, url, uri, mode }) {
 
 
     const CurrentContext = (
-        <Link variant="ghost" size="lg" href={contextRoot.url} title={t("Context Home")}>
-            <Row className="items-center gap-2 py-0.5">
+        <Link size="lg" href={contextRoot.url} title={t("Context Home")}>
+            <Row className="items-center gap-2 py-0.5 ">
                 <View className='rounded-full items-center justify-center web:duration-200 text-card-foreground web:hover:text-foreground'>
                     {contextRoot.image}
                 </View>
@@ -176,7 +176,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
                                 {(() => {
                                     const isActiveAppRoot = uri === rootUrl
                                     return (
-                                        <View className='px-2'><Link href={`/${rootUrl}`} variant="ghost" size="lg" title="Home">
+                                        <Link href={`/${rootUrl}`} variant="ghost" size="lg" title="Home">
                                             <Row
                                                 className={` rounded-xl ${isActiveAppRoot
                                                     ? ' bg-accent/60 text-accent-foreground web:hover:bg-accent'
@@ -187,7 +187,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
                                                     {appStatic('logo', { mode: 'mark', })}
                                                 </View>
                                             </Row>
-                                        </Link></View>
+                                        </Link>
                                     )
                                 })()}
                                 <Icon
@@ -198,7 +198,7 @@ export default function ContextSelector({ data, url, uri, mode }) {
                             </>
                         )}
 
-                    <Row className="items-center gap-2 pl-2">
+                    <Row className="items-center gap-2 ps-1">
                         {CurrentContext}
                         {DropDown}
                     </Row>

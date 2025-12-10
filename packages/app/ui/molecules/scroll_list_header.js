@@ -96,7 +96,7 @@ export const Header = memo(({
     const HeaderElement = getComponent('molecule', 'header_element');
 
     return (
-        <Row className="items-center justify-between h-14 px-2">
+        <Row className="items-center justify-between h-14">
             <Row className="items-center justify-start">
                 {((!currentUser || !pageData?.context) && !text && (!settings?.headerSettings || settings?.headerSettings?.header) || (!isWeb && !currentUser)) &&
                     
