@@ -493,7 +493,6 @@ const ReactionPopover = ({
         if (!buttonRef.current) return;
 
         buttonRef.current.measureInWindow((x, y, width, height) => {
-            console.log(x, y, width, height)
             const popupHeight = 60;
             let actY = isWeb ? y : y - 20;
             if (actY + popupHeight >= windowHeight - 64) {

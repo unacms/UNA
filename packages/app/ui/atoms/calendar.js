@@ -40,7 +40,6 @@ const loadCalendar = async (setDynamicCalendar) => {
 };
 
 const CalendarHeader = (dValue, addMonth) => {
-    console.log("dValue", dValue)
     return (
     <Row className='w-full justify-between mb-4 items-center mt-2'>
         <Button size="sm" rounded startDecorator="ChevronsLeft" onPress={() => addMonth('y', -1)} />

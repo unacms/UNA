@@ -30,6 +30,7 @@ import { Alert } from 'react-native';
 import { useLayoutData } from 'app/context/layout';
 import { getAlert } from 'app/lib/util';
 import { useLayoutSettings } from 'app/context/layout-settings';
+import { registerAll } from 'app/components/registry-init';
 
 enableScreens(appSetting('native', 'enable_screens'));
 
@@ -79,6 +80,10 @@ export default function () {
     const [fontsLoaded] = useFonts(fonts);
     const router = useRouter();
     const pathname = usePathname();
+
+    registerAll();
+
+    
     // useTranslation должен вызываться после всех других хуков, чтобы избежать проблем с порядком
     // если i18n не инициализирован, useTranslation может вызывать хуки условно
     const { t } = useTranslation();
@@ -203,17 +208,17 @@ export default function () {
         }
     }, [currentUser?.id]);
 
-    
+
 
     useEffect(() => {
         const fetchPageData = async () => {
-             const data = await getPageData('home');
-             setCurrentUser(data.data.user);
+            const data = await getPageData('home');
+            setCurrentUser(data.data.user);
         }
-        if (currentUser === null){
-           fetchPageData();
+        if (currentUser === null) {
+            fetchPageData();
         }
-         
+
     }, [currentUser]);
 
     // Условный рендеринг: все хуки должны вызываться до этого места
@@ -223,7 +228,8 @@ export default function () {
     }
 
     return (
-        <><Suggestions />
+        <>
+            <Suggestions />
             <Subscriber />
             <View className="flex-1">
                 <View className="w-full z-50"><AsyncWorker /></View>
@@ -255,25 +261,25 @@ export default function () {
                                     listeners={{
                                         tabPress: e => {
 
-                                           
-                                          
+
+
                                             if (pathname == `/tab${index}`) {
-                                               /* router.setParams({ 
-                                                    refresh: Date.now() 
-                                                });*/
+                                                /* router.setParams({ 
+                                                     refresh: Date.now() 
+                                                 });*/
                                                 setLayoutData(getAlert('list:move_to_top', true));
                                             }
                                             if (e.type == 'tabPress') {
                                                 let a = e.target.split('-');
                                                 let d = TabList[a[0].replace('tab', '')];
-                                                if (d.url == notificationUrl){
+                                                if (d.url == notificationUrl) {
                                                     clearNotif()
                                                     setCurrentUser({
                                                         notifications: 0,
-                                                        notificationsTs:Date.now()
+                                                        notificationsTs: Date.now()
                                                     });
                                                 }
-                                                    
+
                                             }
                                             FeedbackHaptics('Medium');
                                         },

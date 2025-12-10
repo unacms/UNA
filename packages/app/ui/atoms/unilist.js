@@ -1,10 +1,9 @@
 //import { /*MasonryFlashList,*/ FlashList } from "@shopify/flash-list";
-import { RefreshControl } from 'react-native';
+import { RefreshControl, FlatList } from 'react-native';
 import { View } from 'app/design/view'
-import Animated from 'react-native-reanimated';
 import ScrollList from 'app/ui/molecules/scroll_list'
 import { useRef } from 'react';
-
+import { LegendList } from "@legendapp/list";
 export default function UniList(props) {
     const uniRef = useRef();
     const { preloadComponent, contentContainerStyle, scrollProps, data, index, mode, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, unit, refreshing, onRefresh, height, ...rest } = props
@@ -17,7 +16,7 @@ export default function UniList(props) {
         const content = preloadComponent ? <View className="w-full">
             <View className={`w-full `} style={{ height: scrollProps?.headerHeight }}></View>
             {preloadComponent}
-        </View> : <Animated.FlatList
+        </View> : <LegendList
             contentContainerStyle={{
                 ...(scrollProps?.headerHeight && !scrollProps?.inverted ? { paddingTop: scrollProps.headerHeight } : {}),
                 ...(scrollProps?.headerHeight && scrollProps?.inverted ? { paddingBottom: scrollProps.headerHeight } : {}),

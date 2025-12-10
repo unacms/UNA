@@ -1,11 +1,12 @@
 {
   "main": "index.js",
   "dependencies": {
-    "@10play/tentap-editor": "0.7.0",
+    "@10play/tentap-editor": "1.0.1",
     "@appandflow/react-native-google-autocomplete": "^2.1.0",
     "@expo/html-elements": "^0.11.2",
     "@gorhom/bottom-sheet": "^5.1.2",
     "@hello-pangea/dnd": "^17.0.0",
+    "@legendapp/list": "^2.0.16",
     "@native-html/iframe-plugin": "^2.6.1",
     "@openspacelabs/react-native-zoomable-view": "^2.1.6",
     "@react-native-assets/slider": "^7.0.6",

@@ -413,7 +413,7 @@ export default function ({ data, blocks }) {
                             />
                         </>
                     )}
-                    <Panel className={`${currentBreakpointName}:w-full`} {...centerPanelProps}>
+                    <Panel className={`native:w-full ${currentBreakpointName}:w-full`} {...centerPanelProps}>
                         <View className={`${appSetting('layout', 'feed_container')}`}>
                             {FeedContent}
                         </View>

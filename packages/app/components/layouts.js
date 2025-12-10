@@ -20,7 +20,6 @@ import semver from 'semver';
 import { useTranslation } from 'react-i18next';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'app/ui/molecules/card'
 import AnimatedView from 'app/ui/atoms/animated-view';
-import Toast from 'react-native-toast-message'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 
 
@@ -33,8 +32,10 @@ function WindowSizeSync() {
 }
 
 export default function Layouts({ path, data, uri, url }) {
-    registerAll();
-    
+    const isWeb = Platform.OS === 'web';
+    if (isWeb)
+        registerAll();
+
     const { currentUser } = useCurrentUser();
 
     const layout = useMemo(() => {
@@ -112,11 +113,6 @@ export default function Layouts({ path, data, uri, url }) {
             </DropdownPopup></View>}
         </Layout>
     )
-
-    /*<Toast
-                position='top'
-                topOffset={120}
-            />*/
 }
 
 function ErrorPage({ type }) {

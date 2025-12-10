@@ -57,8 +57,8 @@ export const settingsDefault = {
         ui_density_switcher: true,
         max_width: ' w-full ',
         max_width_content: ' w-full max-w-7xl ',
-        home_container: ' w-full 2xl:max-w-screen-2xl web:duration-500 border-x-0 border-guide/20 border-dashed', 
-        feed_container: ' max-w-3xl sm:p-3 mx-auto ',
+        home_container: ' w-full 2xl:max-w-screen-2xl web:duration-500 web:border-x-0 web:border-guide/20 web:border-dashed', 
+        feed_container: ' w-full max-w-3xl sm:p-3 mx-auto ',
         post_container: ' max-w-3xl w-full flex-1 bg-card shadow-sm text-card-foreground rounded-2xl py-3 sm:py-4 lg:my-4 mx-auto ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
 
         search: true,
@@ -145,7 +145,7 @@ export const settingsDefault = {
         bluetooth_device_name_prefix: 'NEO', //OLD appSetting('layout', 'bluetooth_device_name_prefix')
         onesignal_request_on_load: true,
         check_version: 'optional', // variants: [no, required, optional]
-        collapsible_header: true,
+        collapsible_header: false,
         
         scroll_to_top_button: true,
     },

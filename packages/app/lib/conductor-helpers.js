@@ -498,9 +498,7 @@ function processParsedUrl(data, blocks) {
 export function processUrl(data, blocks) {
     if (data.layout_parsed){
         const a = processParsedUrl(data, blocks);
-        //console.log("datadatadata-blocks1", a)
         return a;
-
     }
     if (!blocks) blocks = getBlocksFromData(data)
   

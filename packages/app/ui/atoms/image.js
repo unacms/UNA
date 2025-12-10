@@ -64,18 +64,6 @@ export default function ElementImage(props) {
         sizes = "(max-width:768px) 100vw, 500px";
     }
 
-   /* if (src.includes('.svg')){
-        return src;
-        
-        return <ImageRN
-            source={{ uri: src }}
-            style={{ width: '100%', height: '100%' }}
-            resizeMode="cover"
-            view="cover"
-            alt=""
-        />
-    }*/
-
 
     const bg_image = appSetting('layout', 'background_cover');
 

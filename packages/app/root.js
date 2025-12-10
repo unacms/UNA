@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import { storageClear } from 'app/lib/util';
 import { useRouter, redirectTo } from 'app/lib/hooks/router'
-
 import Layouts from 'app/components/layouts';
 /*let Layouts;
 

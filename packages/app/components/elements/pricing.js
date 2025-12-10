@@ -59,7 +59,6 @@ function ElementPricingPeriod({ data, period, unit, settings }) {
 
     const fetchData = async (ids) => {
         let sUrl = '/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=' + settings.object + '&a=buy&ids[]=' + ids;
-        console.log("sUrlsUrl", sUrl)
         if (settings?.query_append)
             Object.keys(settings.query_append).forEach((sKey) => {
                 sUrl += '&' + sKey + '=' + settings.query_append[sKey];

@@ -1,10 +1,9 @@
 import { useState, useMemo } from 'react'
 import { appSetting} from 'app/lib/util'
 import { View, Row } from 'app/design/view'
-
+import { Text } from 'app/design/typography'
 import { useTranslation } from 'react-i18next'
 import {
-
     CommentsSection,
     MenuManage,
     ActionMenu,
@@ -30,6 +29,8 @@ import Scroll from 'app/ui/molecules/scroll'
 import Link from 'app/ui/atoms/link'
 import { getPageData } from 'app/lib/util';
 import FormModal from 'app/ui/molecules/form_modal';
+import { Platform } from 'react-native'
+
 function DefaultUnit({ data }) {
     const { t } = useTranslation()
     const [pageData, setPageData] = useState(false);
@@ -59,7 +60,11 @@ function DefaultUnit({ data }) {
 
     if (viewState.view == 'deleted') return <></>
 
+    const isWeb = Platform.OS === 'web';
     if (data.type == 'timeline_recommendations') {
+        if (!isWeb){
+            return null
+        }
         const Unit = getComponent('content-list', data.module);
         const contentElement = data.content.data.map((item, index) => {
             return (
@@ -79,8 +84,10 @@ function DefaultUnit({ data }) {
                             href={data.content.page_url}
                             haptics="Medium"
                         >
-                            {' '}
-                            {t('View all')}
+                            <Text>
+                                {' '}
+                                {t('View all')}
+                            </Text>
                         </Link>
                     </CardHeader>
                     <CardContent className=" overflow-hidden rounded-b-xl">

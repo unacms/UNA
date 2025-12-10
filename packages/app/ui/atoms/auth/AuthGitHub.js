@@ -4,7 +4,6 @@ import { Button } from 'app/design/controls';
 
 export default function AuthGitHub({ button }) {
     const handleGitHubLogin = () => {
-        console.log("GitHub login clicked");
         // Actual GitHub login logic will go here
     };
 

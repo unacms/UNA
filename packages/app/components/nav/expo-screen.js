@@ -1,12 +1,11 @@
 import { Root } from 'app/root'
-import { memo, useState, useEffect, useContext, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { useCurrentUser } from 'app/context/user';
-import { appSetting, parseUrl, parseQueryString, getURI, getPageSettings, getMenuSettings } from 'app/lib/util'
+import { appSetting, parseUrl, parseQueryString, getURI, getPageSettings } from 'app/lib/util'
 import { Loading } from 'app/loading'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
 import { useLocalSearchParams } from 'app/lib/hooks/router'
-import { menuItemsFilter } from 'app/lib/util';
 import * as SplashScreen from 'expo-splash-screen';
 
 export async function getData(path, token, origin, headers, callback, params) {
@@ -26,19 +25,18 @@ export async function getData(path, token, origin, headers, callback, params) {
         path += `&params[]=&params[]=${params}`;
     }
 
-    const t1 = Date.now();
     const fetcherArgs = token || origin || headers || callback ? [path, token, '', origin, headers, callback] : path;
+    console.log("fetcherArgs",fetcherArgs)
+   
     const data = await fetcher(fetcherArgs);
-    const diff = Date.now() - t1;
 
     return { props: { uri: path.length ? path[0] : 'home', ...data } };
 }
 
 export function Screen(params) {
-    
     const local = useLocalSearchParams();
     const pathname = params.tabname;
-    const { currentUser, setCurrentUser } = useCurrentUser();
+    const { currentUser } = useCurrentUser();
     let _path = local.url;
     let isRoot = false;
     // BOTTOM TABS NAVIGATION
@@ -69,12 +67,7 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
             const params = queryString ? JSON.stringify(parseQueryString(queryString)) : null;
             const data = await getData(pathWithoutQuery, null, null, null, null, params);
             if (data?.props) {
-                const pageData1 = data.props;
-                const settings = getPageSettings(pageData1.data?.config, pageData1.data?.uri);
-
                 data.props.data['timestamp'] = Date.now();
-
-    
                 setBottomSheetData(bottomSheetData !== false ? false : bottomSheetData);
                 setPageData(data.props);
             }
