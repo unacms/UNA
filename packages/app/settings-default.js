@@ -314,7 +314,7 @@ export const settingsDefault = {
     },
     feed: {
         feed_container: 'relative flex-auto mx-auto w-full max-w-3xl  ',
-        post_trigger: 'active:bg-muted rounded-lg rounded-full flex-auto lg:bg-muted/80 lg:hover:bg-muted justify-center px-1 lg:px-4',
+        post_trigger: 'active:bg-muted rounded-full flex-auto lg:bg-muted/80 lg:hover:bg-muted justify-center px-1 lg:px-4',
         post_trigger_text: 'font-medium text-muted-foreground web:hover:text-foreground',
         show_html: false,
         default_feed: 'foryou',
@@ -1680,6 +1680,37 @@ export const settingsDefault = {
                 text_active: ' text-lg ',
             },
         },
+
+        // Tooltip component styles and configuration
+        tooltip: {
+            // Timing configuration (in milliseconds)
+            triggerDelay: 3000,      // Delay before showing tooltip
+            dismissDelay: 0,         // Delay before hiding (0 = no auto-dismiss)
+            hoverDelay: 300,         // Delay for hover tooltips
+            hoverOutDelay: 150,      // Delay before hiding on hover out
+            
+            // Animation configuration
+            animationDuration: 200,  // Animation duration in ms
+            
+            // Content container (no overflow-hidden to allow arrow to show)
+            'tooltip-content': [
+                'z-50 rounded-lg px-3 py-2',
+                'bg-foreground shadow-lg',
+            ].join(' '),
+            
+            // Text inside tooltip
+            'tooltip-text': 'text-background text-sm font-medium',
+            
+            // Arrow base (rotated square approach - works with NativeWind)
+            'tooltip-arrow': 'absolute w-3 h-3 bg-foreground rotate-45',
+            
+            // Arrow positions per placement
+            'tooltip-arrow-bottom': '-top-1.5 left-1/2 -translate-x-1/2',   // tooltip below trigger
+            'tooltip-arrow-top': '-bottom-1.5 left-1/2 -translate-x-1/2',   // tooltip above trigger
+            'tooltip-arrow-left': '-right-1.5 top-1/2 -translate-y-1/2',    // tooltip left of trigger
+            'tooltip-arrow-right': '-left-1.5 top-1/2 -translate-y-1/2',    // tooltip right of trigger
+        },
+
         switcher: {
             // Container
             'u-controls-switcher-container':

@@ -20,7 +20,7 @@ import {
 } from 'react-native';
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
-import Tooltip from 'app/ui/atoms/tooltip';
+import Tooltip from 'app/ui/molecules/tooltip';
 import { isEmoji } from 'app/lib/util';
 import { useWindowSize } from 'app/context/measure';
 import { RemoveScroll } from 'react-remove-scroll';

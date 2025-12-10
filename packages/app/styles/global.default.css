@@ -742,3 +742,64 @@ html[theme="dark"]:root {
 .u-controls-tabs-header::-webkit-scrollbar {
     display: none; /* Safari and Chrome */
 }
+
+/* Tooltip animations - Web only */
+/* Tooltip animations with bounce and slight rotation */
+@keyframes tooltipBounceIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(8px) rotate(-1deg) scale(0.96);
+    }
+    50% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-3px) rotate(0.5deg) scale(1.02);
+    }
+    75% {
+        transform: translateX(-50%) translateY(1px) rotate(-0.3deg) scale(0.99);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) rotate(0deg) scale(1);
+    }
+}
+
+@keyframes tooltipBounceInBottom {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-8px) rotate(1deg) scale(0.96);
+    }
+    50% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(3px) rotate(-0.5deg) scale(1.02);
+    }
+    75% {
+        transform: translateX(-50%) translateY(-1px) rotate(0.3deg) scale(0.99);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) rotate(0deg) scale(1);
+    }
+}
+
+@keyframes tooltipFadeOut {
+    0% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) rotate(0deg) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(6px) rotate(-0.5deg) scale(0.98);
+    }
+}
+
+.animate-tooltip-in {
+    animation: tooltipBounceIn 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.animate-tooltip-in-bottom {
+    animation: tooltipBounceInBottom 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.animate-tooltip-out {
+    animation: tooltipFadeOut 150ms ease-out forwards;
+}
