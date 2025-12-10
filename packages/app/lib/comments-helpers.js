@@ -643,6 +643,7 @@ export function CommentsForm({ form, requestUrl, module, objectId, isModal = fal
     useEffect(() => {
         if (dynamicData?.data?.browse) {
             emitter.emit(`comment_${module}_${objectId}`, { action: 'new_content', data: dynamicData.data.browse.data.data[0]['i' + dynamicData.data.browse.new[0]] });
+            emitter.emit(`comments`, { action: 'new_content', data: dynamicData.data, item: dynamicData.data.browse.data.data[0]['i' + dynamicData.data.browse.new[0]] });
             handleCancel() 
         }
     }, [dynamicData]);

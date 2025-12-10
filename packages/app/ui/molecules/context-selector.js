@@ -94,8 +94,8 @@ export default function ContextSelector({ data, url, uri, mode }) {
 
 
     const CurrentContext = (
-        <Link className="flex-row gap-2 py-0.5 w-full" size="lg" href={contextRoot.url} title={t("Context Home")}>
-        
+        <Link size="lg" href={contextRoot.url} title={t("Context Home")}>
+            <Row className="items-center gap-2 py-0.5 ">
                 <View className='rounded-full items-center justify-center web:duration-200 text-card-foreground web:hover:text-foreground'>
                     {contextRoot.image}
                 </View>
@@ -104,12 +104,45 @@ export default function ContextSelector({ data, url, uri, mode }) {
                         {contextRoot.name}
                     </Text>
                 )}
-            
+            </Row>
         </Link>
     )
 
     const isLinkSelected = data.links?.some(item => item.url == contextRoot.url);
 
+    const List =     <View className="flex-col gap-px">
+                    {data.links?.filter(item => (item.hidden != true)).map((item) =>
+                        item.url ? (
+                            <ListItem
+                                key={item.url}
+                                url={item.url}
+                                text={item.title}
+                                icon={item.icon && (item.icon == '{logo}' ? appStatic('logo', { mode: 'mark', }) :
+                                    <Icon
+                                        icon={item.icon}
+                                        size={20}
+                                        className="w-5 h-5"
+                                    />
+                                )}
+                                isActive={contextRoot.url == item.url} />
+
+                        ) : (
+                            <View
+                                key={Math.random()}
+
+                            />
+                        )
+                    )}
+                    {data.list.map((item) =>
+                        <ListItem
+                            key={item.url}
+                            url={item.url}
+                            text={item.display_name}
+                            icon={<Profile {...item} displayType="unit_wo_info" displaySize="sm" />}
+                            isActive={item.id === data.current?.id && !isLinkSelected}
+                        />
+                    )}
+                </View>
     const DropDown = (
         <DropdownPopup
             trigger={
@@ -119,44 +152,16 @@ export default function ContextSelector({ data, url, uri, mode }) {
             open={isOpen}
             onOpenChange={handleOpenChange}
         >
-            <View className="flex-col gap-px">
-                {data.links?.filter(item => (item.hidden != true)).map((item) =>
-                    item.url ? (
-                        <ListItem
-                            key={item.url}
-                            url={item.url}
-                            text={item.title}
-                            icon={item.icon && (item.icon == '{logo}' ? appStatic('logo', { mode: 'mark', }) :
-                                <Icon
-                                    icon={item.icon}
-                                    size={20}
-                                    className="w-5 h-5"
-                                />
-                            )}
-                            isActive={contextRoot.url == item.url} />
-
-                    ) : (
-                        <View
-                            key={Math.random()}
-
-                        />
-                    )
-                )}
-                {data.list.map((item) =>
-                    <ListItem
-                        key={item.url}
-                        url={item.url}
-                        text={item.display_name}
-                        icon={<Profile {...item} displayType="unit_wo_info" displaySize="sm" />}
-                        isActive={item.id === data.current?.id && !isLinkSelected}
-                    />
-                )}
-            </View>
+           {List}
         </DropdownPopup>
     )
 
     if (mode === 'min') {
         return DropDown
+    }
+
+     if (mode === 'list') {
+        return List
     }
 
     /*if (mode === 'compact') {

@@ -49,11 +49,11 @@ const ProfileCardContent = memo(function ProfileCardContent({ profileData,  page
                     </View>
                 </Row>
                 <View className="my-2 gap-y-2">
-                    {!!pageData && <Row>
+                    {!!pageData.data?.cover_block?.meta_menu && <Row>
                         <CoverMenuMeta {...pageData.data.cover_block.meta_menu} button_size='xs' list_display_size='xs' />
                         </Row>
                     }
-                    {!!pageData && <Row>
+                    {!!pageData.data?.cover_block?.actions_menu && <Row>
                         <CoverMenu
                             {...pageData.data.cover_block.actions_menu}
                             uri={profileUrl}
