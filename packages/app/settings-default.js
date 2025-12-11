@@ -1202,7 +1202,7 @@ export const settingsDefault = {
                 rounded: ' rounded-md ',
                 padding: ' ',
                 padding_icon_only: ' px-1',
-                padding_with_title: ' px-1 gap-1 ',
+                padding_with_title: ' px-1.5 gap-1 ',
                 icon_container:
                     ' h-6 text-sm flex items-center justify-center',
                 title_container: ' text-xs leading-6 text-xs',

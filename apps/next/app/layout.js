@@ -28,8 +28,6 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
 }
 
 export default function RootLayout({ children }) {
-
-    
     const { langCode } = useLayoutSettings();
 
     // Initialize i18n in useEffect to avoid setState during render

@@ -5,13 +5,15 @@ import { Inter, Lexend } from 'next/font/google';
 // - Latin subset only (reduces size by ~80%)
 // - display: 'swap' for better loading performance
 // - Automatic font subsetting and optimization by Next.js
+// - preload: false to avoid browser warnings about unused preloaded resources
+//   (fonts still load via CSS @font-face, just without <link rel="preload">)
 
 export const mainFont = Inter({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
   variable: '--font-main',
   display: 'swap',
-  preload: true,
+  preload: false,
   fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
 });
 
@@ -20,6 +22,6 @@ export const titleFont = Lexend({
   weight: ['400', '500', '600', '700'],
   variable: '--font-title',
   display: 'swap',
-  preload: true,
+  preload: false,
   fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
 });

@@ -1,8 +1,9 @@
 import { Root } from 'app/root'
 import { Suspense } from 'react'
 import { Loading } from 'app/loading'
-import 'app/styles/global.default.css'
-import 'app/styles/global.css'
+// CSS imports removed - already imported in root layout.js
+// This prevents Next.js from creating a separate not-found.css bundle
+// that gets speculatively preloaded on all pages
 import { cache } from 'react'
 import { UNA_URL, UNA_API_KEY } from 'app/config';
 import { cookies } from 'next/headers'
