@@ -152,18 +152,28 @@ export default function Layout(props) {
     const { layoutName } = layout;
     const isDesktop = useIsDesktop();
     const theme = ThemeName();
-    const root = window.document.documentElement;
-    root.setAttribute('theme', theme)
-    root.setAttribute('data-theme', theme);
 
+    // Set theme attributes - must be in useEffect for SSR compatibility
+    useEffect(() => {
+        const root = document.documentElement;
+        root.setAttribute('theme', theme);
+        root.setAttribute('data-theme', theme);
+    }, [theme]);
 
-    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
-    darkModeMediaQuery.addListener((e) => {
-        const newColorScheme = e.matches ? "dark" : "light";
-        root.setAttribute('theme', newColorScheme)
-        root.setAttribute('data-theme', newColorScheme);
-    });
+    // Listen for system dark mode changes - must be in useEffect for SSR compatibility
+    useEffect(() => {
+        const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const handleChange = (e) => {
+            const newColorScheme = e.matches ? "dark" : "light";
+            const root = document.documentElement;
+            root.setAttribute('theme', newColorScheme);
+            root.setAttribute('data-theme', newColorScheme);
+        };
+        darkModeMediaQuery.addEventListener('change', handleChange);
+        return () => {
+            darkModeMediaQuery.removeEventListener('change', handleChange);
+        };
+    }, []);
 
     const handlePageShow = useCallback((event) => {
         storageClear();
