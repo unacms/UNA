@@ -1567,13 +1567,13 @@ export const settingsDefault = {
         },
         blocks: {
             'u-block-base':
-                'u-max-width-block sm:rounded-2xl gap-4 ',
+                'u-max-width-block sm:rounded-2xl gap-3 ',
             'u-block-bg':
                 'bg-card/80 shadow-sm text-card-foreground border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60',
             'u-block-pad':
-                'p-4 @xl/block:p-6',
+                'px-4 py-2 @xl/block:p-6',
             'u-block-header':
-                ' flex-row items-center gap-2',
+                ' flex-row items-center gap-2 pt-2',
             'u-block-icon': 'text-card-foreground',
             'u-block-name': 'flex flex-col flex-auto gap-y-2 gap-x-4',
             'u-block-title':

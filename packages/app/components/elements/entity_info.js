@@ -18,11 +18,11 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                 let value = getValue(a);
                 if (value) {
                     return (
-                        <View className={(a.type != 'textarea' ? 'flex-row items-center ' : '') + " gap-x-2"} key={a.name}>
+                        <View className={(a.type != 'textarea' ? 'flex-row items-center ' : '') + " gap-2"} key={a.name}>
                             <Row className="items-center ">
-                                <View className="text-neutral-800 dark:text-neutral-200 h-8 w-8 p-1 overflow-hidden items-center justify-center">{getIcon(a)}</View>
+                                <View className="text-secondary-foreground overflow-hidden items-center justify-center">{getIcon(a)}</View>
                                 <View className={`${defaultIcon ? "ml-2" : ''} `}>
-                                    <Text className="font-bold text-base text-neutral-800 dark:text-neutral-200 ">
+                                    <Text className="font-bold text-base text-card-foreground ">
                                         {a.caption}
                                     </Text>
                                 </View>
@@ -41,7 +41,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <View className='flex-col gap-y-4 '>
+            <View className='flex-col gap-3 py-2 '>
                 {inputs}
             </View>
         </BlockWrapper>
