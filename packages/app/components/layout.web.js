@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next'
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { useIsDesktop } from 'app/context/measure';
 import PopupModal from 'app/ui/molecules/popup_modal'
+import { ScreenHeader } from 'app/ui/molecules/screen_header';
 
 const Navbar = lazy(() => import('app/components/nav/navbar'));
 
@@ -37,19 +38,19 @@ async function runOneSignal() {
         if (oneSignalInitialized) {
             return;
         }
-        
+
         // Если есть активный промис инициализации, ждем его
         if (oneSignalInitPromise) {
             await oneSignalInitPromise;
             return;
         }
-        
+
         // Проверяем состояние OneSignal SDK
         if (window.OneSignal && (window.OneSignal.isInitialized || window.OneSignal._isInitialized)) {
             oneSignalInitialized = true;
             return;
         }
-        
+
         // Создаем промис инициализации для предотвращения параллельных вызовов
         oneSignalInitPromise = (async () => {
             try {
@@ -60,7 +61,7 @@ async function runOneSignal() {
             } catch (error) {
                 // Обрабатываем различные варианты ошибок "already initialized"
                 const errorMessage = error?.message || error?.toString() || '';
-                if (errorMessage.includes('already initialized') || 
+                if (errorMessage.includes('already initialized') ||
                     errorMessage.includes('SDK already initialized')) {
                     oneSignalInitialized = true;
                     console.log('OneSignal: Already initialized, skipping');
@@ -71,7 +72,7 @@ async function runOneSignal() {
                 oneSignalInitPromise = null;
             }
         })();
-        
+
         await oneSignalInitPromise;
     }
 }
@@ -82,7 +83,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
     const { t } = useTranslation()
     useEffect(() => {
         if (currentUser === false && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'home', 'login', 'forgot-password', 'confirm-email'].includes(uri)) {
-          
+
             setTimeout(() => {
                 setIsModal(true)
             }, appSetting('layout', 'show_login_modal'));
@@ -97,7 +98,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
         if (!isModal)
             return <></>
         return (<Modal title={t('login_modal_title')} onVisible={isModal} onClose={() => handleCloseModal()}>
-            <PopupModal/>
+            <PopupModal />
         </Modal>);
     };
 
@@ -112,17 +113,24 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
             {appStatic('maintenance_mode')}
         </>
     }
+
+    const isNewLayoutStyle = layoutName === 'home';
+
+    console.log("layoutName", layoutName)
+
     return (
-        <>
+        <View className="w-full flex-1">
             <Suggestions />
             <AsyncWorker />
-            <NavbarMemo pageLayoutName={pageLayoutName} headerSettings={headerSettings} context={data?.context} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} >
+            {isNewLayoutStyle && <ScreenHeader layoutName={layoutName} pageLayoutName={pageLayoutName} pageData={data} />}
+            {isNewLayoutStyle && <Content isNewLayoutStyle={isNewLayoutStyle} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />}
+            {!isNewLayoutStyle && <NavbarMemo pageLayoutName={pageLayoutName} headerSettings={headerSettings} context={data?.context} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} >
                 <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
-            </NavbarMemo>
+            </NavbarMemo>}
             {headerSettings.footer !== false && !appSetting('layout', 'footer', 'hide_for_layouts').includes(layoutName) && <Footer />}
             <BottomSheet />
             <ModalPopup />
-        </>
+        </View>
     );
 
 });
@@ -261,16 +269,16 @@ export default function Layout(props) {
 
             if (y > stickyEnd + HYST) {
                 // disabled: bug in timeline in context infinite scroll  
-          //      el.style.position = 'absolute';
-            //    el.style.bottom = '0';
-             //   return;
+                //      el.style.position = 'absolute';
+                //    el.style.bottom = '0';
+                //   return;
             }
 
             // фиксируем
             el.classList.add('is-fixed');
             el.style.position = 'fixed';
             if (parent.offsetWidth > 0) el.style.width = `${parent.offsetWidth}px`;
-            
+
             if (elH <= avail) {
                 // помещается во viewport
                 el.style.top = `${TOP_OFFSET}px`;
@@ -363,13 +371,13 @@ export default function Layout(props) {
     return <MemoizedContent pageLayoutName={pageLayoutName} blocks={blocks} headerSettings={headerSettings} currentUser={currentUser} layoutName={layoutName} data={data} children={children} uri={uri} />
 }
 
-const Content = React.memo(({ children, headerSettings, currentUser, layoutName, url }) => {
+const Content = React.memo(({ children, headerSettings, currentUser, layoutName, url, isNewLayoutStyle }) => {
     const isHideHeader = (appSetting('layout', 'hide_header_for_non_logged') && !currentUser) || appSetting('layout', 'hide_header_for_all');
     const mainClassName = `${(layoutName != 'messenger' && layoutName != 'post' && !isHideHeader) ? ' pb-16 web:lg:pb-0 lg:pb-0 ' : ''} w-full mx-auto`;
     return (
         <View className="w-full items-stretch cnt-root mx-auto flex-row " key={url}>
             <main id="main-content" role="main" className={mainClassName}>{/*mb-16* TODO lg:pb-0*/}
-                {(headerSettings.offset && !isHideHeader) && <View className={` ${appSetting('layout', 'header', 'offset')}`} />}{/*use this to offset the header globally*/}
+                {(headerSettings.offset && !isHideHeader && !isNewLayoutStyle) && <View className={` ${appSetting('layout', 'header', 'offset')}`} />}
                 <Informer />
                 {children}
             </main>

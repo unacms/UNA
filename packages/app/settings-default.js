@@ -145,7 +145,7 @@ export const settingsDefault = {
         bluetooth_device_name_prefix: 'NEO', //OLD appSetting('layout', 'bluetooth_device_name_prefix')
         onesignal_request_on_load: true,
         check_version: 'optional', // variants: [no, required, optional]
-        collapsible_header: false,
+        collapsible_header: true,
         
         scroll_to_top_button: true,
     },
@@ -657,7 +657,7 @@ export const settingsDefault = {
             {
                 key: '/tab1',
                 title: 'Friends',
-                url: '/friends',
+                url: '/home',
                 icon: 'UsersRound',
                 badge: 'friends'
             },

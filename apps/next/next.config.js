@@ -65,6 +65,7 @@ const nextConfig = {
     'expo-modules-core',
     'recyclerlistview',
     'expo-crypto',
+    'jotai',
     '@react-native-picker/picker',
     '@10play/tentap-editor',
     '@10play/react-native-web-webview',

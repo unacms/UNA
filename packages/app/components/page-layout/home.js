@@ -29,6 +29,8 @@ import { useLayoutSettings } from 'app/context/layout-settings'
 import Badge from 'app/ui/molecules/badge'
 import Badges from 'app/ui/molecules/badges'
 import { useBreakpoint, useWindowSize, useIsDesktop, useWindowHeight, useWindowWidth } from 'app/context/measure';
+import { useSetAtom } from 'jotai';
+import { subheaderAtom } from 'app/context/jotai/layout';
 
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
@@ -116,8 +118,11 @@ export default function ({ data, blocks }) {
 </>
     )*/
     const isWeb = Platform.OS == 'web'
+    const isDesktop = useIsDesktop();
+    const { layoutName, layoutSettings } = useLayoutSettings();
 
-    const { layoutName, layoutSettings } = useLayoutSettings()
+    const setSubheader = useSetAtom(subheaderAtom);
+
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
 
@@ -174,35 +179,28 @@ export default function ({ data, blocks }) {
                 )
             })}</View>
 
-        const subHeader = feedList.length > 1 && (
-            
-                <ScrollView horizontal={true} className='flex w-full scrollbar-hide ps-2.5 pb-2 pt-1' >
-                    <Row
-                        className={`  ${feedList.length > 1 ? ' gap-2 ' : ''
-                            }    `}
-                    >
-                        {feedList.length > 1 &&
-                            feedList.map((item, index) => {
-                                return (
-                                    <View key={'row_' + index}>
-                                        {callFn('getButtonForConductorHor', [
-                                            item.icon,
-                                            item.showTitle ? t(item.title) : '',
-                                            feedType == item.name,
-                                            null,
-                                            () => {
-                                                setFeedTypeEx(item.name)
-                                            },
-                                        ])}
-                                    </View>
-                                )
-                            })}
-
-                    </Row>
-
-                </ScrollView>
-            
-        )
+        const subHeader = useMemo(() => 
+        feedList.length > 1 ? (
+            <ScrollView horizontal={true} className='flex w-full scrollbar-hide ps-2.5 pb-2 pt-1'>
+                <Row className={`${feedList.length > 1 ? ' gap-2 ' : ''}`}>
+                    {feedList.map((item, index) => (
+                        <View key={'row_' + index}>
+                            {callFn('getButtonForConductorHor', [
+                                item.icon,
+                                item.showTitle ? t(item.title) : '',
+                                feedType == item.name,
+                                null,
+                                () => {
+                                    setFeedTypeEx(item.name)
+                                },
+                            ])}
+                        </View>
+                    ))}
+                </Row>
+            </ScrollView>
+        ) : null,
+        [feedList, feedType] 
+    );
 
         const isFeedMenuPresent = feedList.length > 1 || appSetting('feed', 'show_selector_view')
         const FeedContent = (
@@ -230,13 +228,6 @@ export default function ({ data, blocks }) {
                                     unitMode={layoutSettings.feed_unit}
                                     exProps={{
                                         headerBlocks: headerBlocks,
-                                        scrollProps: {
-                                            pageData: data,
-                                            headerHeight: isFeedMenuPresent
-                                                ? 104
-                                                : isWeb ? 56 : 48,
-                                            subHeaderComponent: subHeader,
-                                        },
                                     }}
                                 />
                             </View>
@@ -389,6 +380,16 @@ export default function ({ data, blocks }) {
             }
         }, [currentBreakpointName]);
 
+
+         useEffect(() => {
+        setSubheader(isDesktop ? null : subHeader);
+    }, [isDesktop, subHeader, setSubheader]);
+    
+
+    useEffect(() => {
+        return () => setSubheader(null);
+    }, [setSubheader]);
+        
 
         return (
             <>{BlocksCenter}

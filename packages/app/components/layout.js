@@ -2,16 +2,18 @@ import { View } from 'app/design/view'
 import BottomSheet from 'app/ui/molecules/bottomsheet_content';
 import { appStatic } from 'app/lib/app-static'
 import { useCurrentUser } from 'app/context/user'
+import { ScreenHeader } from 'app/ui/molecules/screen_header';
+export default function Layout({ data, children, layout }) {
 
-export default function Layout(props) {
     const { currentUser } = useCurrentUser()
-    if (props.data?.page_status == 503 || currentUser?.page_status == 503) {
+    if (data?.page_status == 503 || currentUser?.page_status == 503) {
         return appStatic('maintenance_mode');
     }
 
     return (
         <View className={`text-neutral-900 dark:text-neutral-50 w-full h-full flex-1 bg-background`}>
-            {props.children}
+            {layout.layoutName == 'home' && <ScreenHeader layoutName={layout.layoutName} pageData={data}/>}
+            {children}
             <BottomSheet />
         </View>
     );

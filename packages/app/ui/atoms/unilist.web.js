@@ -2,13 +2,15 @@
 import { VirtuosoGrid, Virtuoso } from 'react-virtuoso'
 import { View } from 'app/design/view'
 import { View as ReactNativeView } from 'react-native'
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { cd } from 'app/lib/util'
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useCallback, forwardRef } from 'react';
 import ScrollList from 'app/ui/molecules/scroll_list'
 import { useBreakpoint } from 'app/context/measure'
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { useSetAtom } from 'jotai';
+import { scrollDirectionAtom } from 'app/context/jotai/layout';
 
 export default function UniList(props) {
     let { useCustomScrollHandler, scrollProps, preloadComponent, sortable, data, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
@@ -16,6 +18,10 @@ export default function UniList(props) {
 
     const uniRef = useRef();
     const currentBreakpoint = useBreakpoint();
+    const scrollY = useRef(0);
+    const scrollState = useRef(0); // Текущее состояние: 0, 1 или -1
+    
+    const setScrollDirection = useSetAtom(scrollDirectionAtom);
 
     data = data.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
 
@@ -83,6 +89,42 @@ export default function UniList(props) {
     
     // Always use window scroll if no height is resolved to prevent zero-sized element errors
     const isWindowScroll = hasResolvedHeight ? shouldUseWindowScroll : true;
+
+    useEffect(() => {
+        if (!isWindowScroll) return;
+        
+        const SCROLL_OFFSET_THRESHOLD = 100;
+        
+        const handleWindowScroll = () => {
+            const currentScrollY = window.scrollY || document.documentElement.scrollTop;
+            const previousScrollY = scrollY.current;
+            
+            let newScrollState;
+            
+            if (currentScrollY < SCROLL_OFFSET_THRESHOLD) {
+                newScrollState = 0;
+            } else if (currentScrollY > previousScrollY && currentScrollY > 0) {
+                newScrollState = 1;
+            } else if (currentScrollY < previousScrollY) {
+                newScrollState = -1;
+            } else {
+                newScrollState = scrollState.current;
+            }
+            
+            if (newScrollState !== scrollState.current) {
+                setScrollDirection(newScrollState);
+                scrollState.current = newScrollState;
+            }
+            
+            scrollY.current = currentScrollY;
+        };
+        
+        window.addEventListener('scroll', handleWindowScroll, { passive: true });
+        
+        return () => {
+            window.removeEventListener('scroll', handleWindowScroll);
+        };
+    }, [isWindowScroll, setScrollDirection]);
     
     // Only set height style if we have a valid height AND we're not using window scroll
     // This prevents virtuoso from receiving conflicting signals

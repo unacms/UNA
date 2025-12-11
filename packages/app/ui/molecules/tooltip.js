@@ -41,6 +41,7 @@ export default function Tooltip({
     showArrow = true,
     arrowClassName = '',
 }) {
+    return children
     const effectiveDelay = delayDuration ?? HOVER_DELAY;
     const triggerRef = useRef(null);
     const [internalOpen, setInternalOpen] = useState(defaultOpen);
@@ -333,6 +334,7 @@ export function ControlledTooltip({
     triggerClassName = '',
     ...props
 }) {
+    return children
     return (
         <Tooltip
             content={content}
