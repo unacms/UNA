@@ -20,7 +20,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                     return (
                         <View className={(a.type != 'textarea' ? 'flex-row items-center ' : '') + " gap-2"} key={a.name}>
                             <Row className="items-center ">
-                                <View className="text-secondary-foreground overflow-hidden items-center justify-center">{getIcon(a)}</View>
+                                <View className="text-secondary-foreground overflow-hidden items-center justify-center w-6 h-6">{getIcon(a)}</View>
                                 <View className={`${defaultIcon ? "ml-2" : ''} `}>
                                     <Text className="font-bold text-base text-card-foreground ">
                                         {a.caption}
@@ -267,7 +267,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
 
     function getIcon(a) {
         if (a.icon) {
-            return <Icon icon={a.icon.charAt(0).toUpperCase() + a.icon.slice(1)} />
+            return <Icon  icon={a.icon.charAt(0).toUpperCase() + a.icon.slice(1)} />
         }
         switch (a.name) {
             case 'gender':
