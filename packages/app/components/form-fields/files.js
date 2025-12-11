@@ -318,7 +318,6 @@ export default function (props) {
                     setMessage('Some files are not supported.');
                 }
                 let k = await uploadImages(goodAssets);
-                console.log("aaaamageSourcepictu", 2)
                 setImageSourceN(k, bMultiple);
             }
         }
@@ -348,6 +347,15 @@ export default function (props) {
         await fetcher(url + "&a=delete&id=" + id);
     }, [url, imageSource]);
 
+    const handleDeleteSingle = useCallback(async (id) => {
+        setImageSource(prev => ({
+            ...prev,
+            images: prev.images.filter(item => item.file_id !== id)
+        }));
+
+        
+    }, [url, imageSource]);
+
 
     // may be need improve in future
     if (video_source == 'embed')
@@ -367,7 +375,7 @@ export default function (props) {
         <Field {...props} error2={formContext.formState.errors[name]}>
             <Msg onVisible={message} title={message} handleOk={() => { setMessage(false) }} />
             {!props.hide_button && <View>
-                <ActionButton uploadImages={uploadImages} imagesList={imageSource.images} props={props} bMultiple={bMultiple} selectImage={selectImage} handleDelete={handleDelete} />
+                <ActionButton uploadImages={uploadImages} imagesList={imageSource.images} props={props} bMultiple={bMultiple} selectImage={selectImage} handleDelete={handleDeleteSingle} />
             </View>}
             {!props.previewPlaceHolder && <Row className='flex-wrap '>{GhostsList(imageSource.images, bMultiple, handleDelete, props)}</Row>}
         </Field>
