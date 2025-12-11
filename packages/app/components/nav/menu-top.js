@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Tooltip from 'app/ui/atoms/tooltip';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 // Persist indicator state across remounts (web/native)
 let __menuTopIndicatorPersist = { initialized: false, translateX: 0, width: 0 };
@@ -50,6 +50,9 @@ export default function MenuTop({ url, uri }) {
                 // Persist for future remounts
                 __menuTopIndicatorPersist = { initialized: true, translateX: target.x, width: target.width };
             }
+        }
+        if(activeIndex == -1){
+             setIndicatorStyle({ translateX: 0, width: 0, visible: false });
         }
     }, [activeIndex, itemLayouts]);
 
