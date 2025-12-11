@@ -12,8 +12,8 @@ import { NavbarIslandProvider } from './components/navbar-island'
 import { AuthStateProvider } from './components/auth-state'
 
 export const metadata: Metadata = {
-  title: 'NEO Testground',
-  description: 'Experimental UI patterns and server component testing',
+  title: 'UNA CMS - Open Source Community Platform',
+  description: 'Build social experiences with one codebase. UNA CMS provides an open-source backend, universal React/React Native apps, standardized APIs, and enterprise-grade scalability.',
 }
 
 export const viewport: Viewport = {

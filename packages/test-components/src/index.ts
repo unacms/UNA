@@ -8,6 +8,7 @@
 export * from "./components/button"
 export * from "./components/tabs"
 export * from "./components/performance-footer"
+export * from "./components/glassy-button"
 
 // ============================================
 // Re-export HeroUI v3 components for web

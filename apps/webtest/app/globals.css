@@ -1361,6 +1361,255 @@
   .listbox-item[data-selected="true"] .listbox-item__indicator {
     opacity: 1;
   }
+
+  /* ============================================
+   * GLASSY BUTTON - Camera feed background
+   * Creates a reflection/mirror effect
+   * ============================================ */
+  .glassy-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    border-radius: var(--radius-3xl);
+    transition: all 200ms ease;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    text-decoration: none;
+    white-space: nowrap;
+    user-select: none;
+    overflow: visible;
+    /* Tailwind shadow-xl */
+    box-shadow: 
+      0 20px 25px 5px rgb(0 0 0 / 0.1), 
+      0 8px 10px 6px rgb(0 0 0 / 0.1);
+    /* Fallback gradient when camera not active */
+    background: linear-gradient(
+      180deg,
+      rgba(180, 180, 190, 0.5) 0%,
+      rgba(100, 100, 110, 0.6) 100%
+    );
+  }
+
+  /* Gradient border using pseudo-element - light to medium-light */
+  .glassy-button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.7) 0%,
+      rgba(220, 220, 225, 0.5) 50%,
+      rgba(180, 180, 190, 0.4) 100%
+    );
+    -webkit-mask: 
+      linear-gradient(#fff 0 0) content-box, 
+      linear-gradient(#fff 0 0);
+    mask: 
+      linear-gradient(#fff 0 0) content-box, 
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .glassy-button:focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+
+  .glassy-button:disabled,
+  .glassy-button[data-disabled],
+  .glassy-button[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  /* Video background layer */
+  .glassy-button__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    filter: blur(var(--glassy-blur, 0px)) saturate(1.1) brightness(1.05);
+    opacity: 0;
+    transition: opacity 300ms ease;
+    border-radius: inherit;
+  }
+
+  .glassy-button--camera-active .glassy-button__video {
+    opacity: 1;
+  }
+
+  /* Glass overlay layer - silver gradient from light top to darker bottom */
+  .glassy-button__overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    transition: opacity 150ms ease;
+    /* Silver-ish gradient overlay */
+    background: linear-gradient(
+      180deg,
+      rgba(220, 220, 230, var(--glassy-overlay-opacity, 0.3)) 0%,
+      rgba(160, 160, 175, calc(var(--glassy-overlay-opacity, 0.3) + 0.05)) 40%,
+      rgba(100, 100, 115, calc(var(--glassy-overlay-opacity, 0.3) + 0.15)) 100%
+    );
+  }
+
+  /* Content layer - always on top */
+  .glassy-button__content {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Size variants */
+  .glassy-button--sm { 
+    height: 2rem; 
+    padding: 0 0.75rem; 
+    font-size: 0.875rem; 
+  }
+  .glassy-button--md { 
+    height: 2.5rem; 
+    padding: 0 1rem; 
+    font-size: 0.875rem; 
+  }
+  .glassy-button--lg { 
+    height: 3rem; 
+    padding: 0 1.5rem; 
+    font-size: 1rem; 
+  }
+
+  /* Icon only */
+  .glassy-button--icon-only { padding: 0; aspect-ratio: 1; }
+  .glassy-button--icon-only.glassy-button--sm { width: 2rem; }
+  .glassy-button--icon-only.glassy-button--md { width: 2.5rem; }
+  .glassy-button--icon-only.glassy-button--lg { width: 3rem; }
+
+  /* Variant: Default - silver/neutral tint */
+  .glassy-button--default {
+    color: white;
+  }
+  .glassy-button--default .glassy-button__overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(200, 200, 210, var(--glassy-overlay-opacity, 0.3)) 0%,
+      rgba(140, 140, 155, calc(var(--glassy-overlay-opacity, 0.3) + 0.1)) 50%,
+      rgba(80, 80, 95, calc(var(--glassy-overlay-opacity, 0.3) + 0.2)) 100%
+    );
+  }
+
+  /* Variant: Primary - blue tint with silver gradient */
+  .glassy-button--primary {
+    color: white;
+  }
+  .glassy-button--primary::before {
+    background: linear-gradient(
+      180deg,
+      rgba(191, 219, 254, 0.8) 0%,
+      rgba(147, 197, 253, 0.5) 50%,
+      rgba(96, 165, 250, 0.4) 100%
+    );
+  }
+  .glassy-button--primary .glassy-button__overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(147, 197, 253, var(--glassy-overlay-opacity, 0.3)) 0%,
+      rgba(59, 130, 246, calc(var(--glassy-overlay-opacity, 0.3) + 0.1)) 50%,
+      rgba(30, 64, 175, calc(var(--glassy-overlay-opacity, 0.3) + 0.2)) 100%
+    );
+  }
+
+  /* Variant: Secondary - purple tint with silver gradient */
+  .glassy-button--secondary {
+    color: white;
+  }
+  .glassy-button--secondary::before {
+    background: linear-gradient(
+      180deg,
+      rgba(221, 214, 254, 0.8) 0%,
+      rgba(196, 181, 253, 0.5) 50%,
+      rgba(167, 139, 250, 0.4) 100%
+    );
+  }
+  .glassy-button--secondary .glassy-button__overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(196, 181, 253, var(--glassy-overlay-opacity, 0.3)) 0%,
+      rgba(139, 92, 246, calc(var(--glassy-overlay-opacity, 0.3) + 0.1)) 50%,
+      rgba(91, 33, 182, calc(var(--glassy-overlay-opacity, 0.3) + 0.2)) 100%
+    );
+  }
+
+  /* Variant: Dark - darker silver gradient */
+  .glassy-button--dark {
+    color: white;
+  }
+  .glassy-button--dark::before {
+    background: linear-gradient(
+      180deg,
+      rgba(180, 180, 190, 0.6) 0%,
+      rgba(140, 140, 150, 0.4) 50%,
+      rgba(100, 100, 110, 0.3) 100%
+    );
+  }
+  .glassy-button--dark .glassy-button__overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(100, 100, 110, calc(var(--glassy-overlay-opacity, 0.3) + 0.2)) 0%,
+      rgba(50, 50, 60, calc(var(--glassy-overlay-opacity, 0.3) + 0.35)) 50%,
+      rgba(10, 10, 15, calc(var(--glassy-overlay-opacity, 0.3) + 0.5)) 100%
+    );
+  }
+
+  /* Variant: Light - brighter silver gradient */
+  .glassy-button--light {
+    color: #1a1a1a;
+  }
+  .glassy-button--light::before {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(230, 230, 235, 0.5) 50%,
+      rgba(180, 180, 190, 0.3) 100%
+    );
+  }
+  .glassy-button--light .glassy-button__overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, calc(var(--glassy-overlay-opacity, 0.3) + 0.5)) 0%,
+      rgba(240, 240, 245, calc(var(--glassy-overlay-opacity, 0.3) + 0.4)) 50%,
+      rgba(200, 200, 210, calc(var(--glassy-overlay-opacity, 0.3) + 0.3)) 100%
+    );
+  }
+  .glassy-button--light .glassy-button__content {
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+  }
+
+  /* Hover animation */
+  .glassy-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  .glassy-button:active:not(:disabled) {
+    transform: scale(0.98) translateY(0);
+    /* Tailwind shadow-sm on click */
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  }
 }
 
 /* ============================================
@@ -1428,4 +1677,206 @@
 
 .scrollbar-none::-webkit-scrollbar {
   display: none;  /* Chrome, Safari, Opera */
+}
+
+/* ============================================
+ * LANDING PAGE ENHANCEMENTS
+ * Gradient backgrounds, animations, and effects
+ * ============================================ */
+
+/* Animated gradient text */
+.gradient-text-animated {
+  background: linear-gradient(
+    90deg,
+    var(--color-primary) 0%,
+    #60a5fa 25%,
+    var(--color-primary) 50%,
+    #60a5fa 75%,
+    var(--color-primary) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 3s ease-in-out infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 200% center; }
+}
+
+/* Floating animation for decorative elements */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Pulse glow effect */
+@keyframes pulse-glow {
+  0%, 100% { 
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+/* Card hover lift effect */
+.hover-lift {
+  transition: transform 300ms ease, box-shadow 300ms ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 20px 25px -5px rgb(0 0 0 / 0.1), 
+    0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+/* Gradient border effect */
+.gradient-border {
+  position: relative;
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+}
+
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-accent) 50%,
+    var(--color-primary) 100%
+  );
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.gradient-border:hover::before {
+  opacity: 1;
+}
+
+/* Glass card effect */
+.glass-card {
+  background: color-mix(in srgb, var(--color-card) 80%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+}
+
+/* Mesh gradient background */
+.mesh-gradient {
+  background: 
+    radial-gradient(at 40% 20%, color-mix(in srgb, var(--color-primary) 15%, transparent) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, color-mix(in srgb, var(--color-accent) 20%, transparent) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, color-mix(in srgb, var(--color-primary) 10%, transparent) 0px, transparent 50%),
+    radial-gradient(at 80% 50%, color-mix(in srgb, var(--color-accent) 15%, transparent) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, color-mix(in srgb, var(--color-primary) 10%, transparent) 0px, transparent 50%),
+    radial-gradient(at 80% 100%, color-mix(in srgb, var(--color-accent) 10%, transparent) 0px, transparent 50%);
+}
+
+/* Shine effect on hover */
+.shine-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine-effect::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 500ms ease;
+}
+
+.shine-effect:hover::after {
+  left: 100%;
+}
+
+/* Stagger animation for lists */
+@keyframes stagger-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-children > * {
+  animation: stagger-in 400ms ease backwards;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 50ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 100ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 150ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 200ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 250ms; }
+.stagger-children > *:nth-child(7) { animation-delay: 300ms; }
+.stagger-children > *:nth-child(8) { animation-delay: 350ms; }
+
+/* Marquee animation for logo strips */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Dot pattern background */
+.dot-pattern {
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--color-foreground) 10%, transparent) 1px, 
+    transparent 1px
+  );
+  background-size: 20px 20px;
+}
+
+/* Grid pattern background */
+.grid-pattern {
+  background-image: 
+    linear-gradient(color-mix(in srgb, var(--color-border) 30%, transparent) 1px, transparent 1px),
+    linear-gradient(to right, color-mix(in srgb, var(--color-border) 30%, transparent) 1px, transparent 1px);
+  background-size: 40px 40px;
 }

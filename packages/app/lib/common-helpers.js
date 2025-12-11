@@ -9,10 +9,12 @@ import Unit from 'app/components/unit'
 export function getBackButtonWeb() {
     const isWeb = Platform.OS === 'web';
     if (!isWeb) return <></>;
-    if (history.length > 2) {
+    // Guard against SSR - history is only available in browser
+    const hasHistory = typeof window !== 'undefined' && window.history && window.history.length > 2;
+    if (hasHistory) {
         return (
             <View className="lg:hidden"  >
-               <Button rounded={true} size="base" variant="text" startDecorator="ArrowLeft" onPress={() => history.back()}/>
+               <Button rounded={true} size="base" variant="text" startDecorator="ArrowLeft" onPress={() => window.history.back()}/>
             </View>
         )
     }
