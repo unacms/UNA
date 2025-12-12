@@ -4,21 +4,18 @@ import { View } from 'app/design/view'
 import ScrollList from 'app/ui/molecules/scroll_list'
 import { useRef, useCallback } from 'react';
 import { LegendList } from "@legendapp/list";
-import { useSetScrollDirection, useHeaderHeight } from 'app/context/jotai/layout';
+import { useSetAtom, useAtomValue } from 'jotai';
+import { scrollDirectionAtom, headerHeightAtom } from 'app/context/jotai/layout';
 
 export default function UniList(props) {
     const uniRef = useRef();
     const { preloadComponent, contentContainerStyle, scrollProps, data, index, mode, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, unit, refreshing, onRefresh, height, ...rest } = props
 
-    const scrollY = useRef(0); 
-    const scrollState = useRef(0); 
-    const setScrollDirection = useSetScrollDirection(); 
-    const headerHeightFromAtom = useHeaderHeight();
-    // Prefer measured shared header height when available, otherwise fall back to legacy scrollProps.
-    const headerHeight =
-        typeof headerHeightFromAtom === 'number' && headerHeightFromAtom > 0
-            ? headerHeightFromAtom
-            : (typeof scrollProps?.headerHeight === 'number' ? scrollProps.headerHeight : 0);
+    const scrollY = useRef(0); // Добавить для отслеживания позиции
+    const scrollState = useRef(0); // Добавить для отслеживания состояния: 0, 1 или -1
+    const setScrollDirection = useSetAtom(scrollDirectionAtom); // Добавить
+    const lastStateChange = useRef(0); // Добавить для debounce
+    const headerHeight = useAtomValue(headerHeightAtom);
     const filteredData = data.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
 
     // Добавить обработчик скролла
@@ -43,12 +40,13 @@ export default function UniList(props) {
             setScrollDirection(newScrollState);
             scrollState.current = newScrollState;
         }
+        console.log("newScrollState", newScrollState)
         scrollY.current = currentScrollY;
     }, [setScrollDirection]);
 
     if (mode == 'simple') {
         const content = preloadComponent ? <View className="w-full flex-1">
-            <View className={`w-full`} style={{ height: headerHeight }} />
+            <View className={`w-full bg-red-500`} style={{ height: scrollProps?.headerHeight }}></View>
             {preloadComponent}
         </View> : <LegendList
             contentContainerStyle={{
@@ -75,14 +73,14 @@ export default function UniList(props) {
             {...rest}
             refreshControl={
                 props.url ? (
-                    <RefreshControl progressViewOffset={headerHeight || 100} size={'large'} refreshing={refreshing} onRefresh={onRefresh} />
+                    <RefreshControl progressViewOffset={100} size={'large'} refreshing={refreshing} onRefresh={onRefresh} />
                 ) : null
             }
         />
 
-        //if (!scrollProps)
+        if (!scrollProps)
             return content;
-        /*return (
+        return (
             <ScrollList
                 content={content}
                 contentType="FlatList"
@@ -91,7 +89,7 @@ export default function UniList(props) {
                 {...scrollProps}
             />
 
-        )*/
+        )
     }
 
 

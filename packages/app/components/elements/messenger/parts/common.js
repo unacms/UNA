@@ -30,7 +30,6 @@ import {
     PanelHandler,
 } from 'app/ui/molecules/resizable-panels'
 import { useIsDesktop } from 'app/context/measure';
-import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
 
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave, addButtons }) {
     const isWeb = Platform.OS == 'web'
@@ -50,8 +49,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [searchValue, setSearchValue] = useState('');
     const [replyItem, setReplyItem] = useState(false);
-
-
 
     const layoutHeightLeft = layoutHeight;
     let layoutHeightRight = layoutHeight - formHeight;
@@ -90,7 +87,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     useEffect(() => {
         fetchConvos(searchValue);
-        if (convos && convos?.data && convos?.data?.length > 0) {
+        if (convos && convos?.data && convos?.data?.length > 0){
             setConvoId(convos.data[0].id);
         }
     }, [searchValue]);
@@ -427,29 +424,29 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     const cellsCustomConfig = appSetting('layouts', 'messenger')
 
-    if (!isWeb || isSmallScreen) {
+    if (!isWeb || isSmallScreen){
         return (
-            <View className='web:flex-1 w-full h-full flex-row bg-card'>
-                {panelsVisible.convos && <View className=' w-full'>
-                    {convosComponent}
-                </View>}
-                {panelsVisible.jots && <View className='flex-1 '>
-                    <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
-                    <View className={`w-full  ${!isWeb ? 'flex-1' : ''}`} style={{ height: layoutHeightRight }}>
-                        {jotsComponent}
+        <View className='web:flex-1 w-full h-full flex-row bg-card'>
+            {panelsVisible.convos && <View className=' w-full'>
+                {convosComponent}
+            </View>}
+             {panelsVisible.jots && <View className='flex-1 '>
+                <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
+                <View className={`w-full  ${!isWeb ? 'flex-1' : '' }`}  style={{ height: layoutHeightRight }}>
+                {jotsComponent}
+                </View>
+                <KbAvoidingView>
+                    <View onLayout={handleLayout} className='  w-full ' >
+                        <FormContainer
+                            form={data.form}
+                            replyItem={replyItem}
+                            onFormSubmit={onFormSubmit}
+                            handleCancelReply={handleCancelReply}
+                        />
                     </View>
-                    <KbAvoidingView>
-                        <View onLayout={handleLayout} className='  w-full ' >
-                            <FormContainer
-                                form={data.form}
-                                replyItem={replyItem}
-                                onFormSubmit={onFormSubmit}
-                                handleCancelReply={handleCancelReply}
-                            />
-                        </View>
-                    </KbAvoidingView>
-                </View>}
-            </View>)
+                </KbAvoidingView>
+            </View>}
+        </View>)
     }
 
     return (
@@ -499,8 +496,6 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
     const isWeb = Platform.OS == 'web'
     const [showSearch, setShowSearch] = useState(false);
 
-    const setHeader = useSetHeader();
-
     function handleSearch2() {
         setShowSearch(!showSearch)
     }
@@ -508,6 +503,8 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
     function onSave2() {
         handleSearch('')
     }
+
+  
 
     const srch = <InputRoundedSmall name="search" placeholder={("Search") + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
 
@@ -517,38 +514,31 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
         </View>
         {!showSearch && <Row className='lg:hidden flex-auto  items-center '>
             {appSetting('messenger', 'back_button') && getBackButtonWeb()}
-            <Text className={`lg:hidden font-bold truncate flex-1  leading-12 lg:px-2 text-card-foreground text-2xl tracking-tight font-main`}>Messenger</Text>
+            <Text className={`lg:hidden font-bold text-card-foreground tracking-tight`}>Messenger</Text>
         </Row>}
         {showSearch && <Row className='lg:hidden flex-auto  items-center '>
             {srch}
         </Row>}
         <Row className='my-auto'>
             <View className='lg:hidden mr-1 lg:mr-0 '>
-                <Button size="base" startDecorator="Search" variant="secondary" rounded onPress={() => handleSearch2()} />
+                <Button size="sm" startDecorator="Search" variant="secondary" rounded onPress={() => handleSearch2()} />
             </View>
             {addButtons}
         </Row>
     </Row>
 
-    useEffect(() => {
-        setHeader(isSmallScreen ? { header: header } : defaultHeader);
-    }, [isSmallScreen, setHeader, header]);
-
-
-    /*useEffect(() => {
-        return () => setHeader(defaultHeader);
-    }, [setHeader]);*/
 
     return (
-        <View className='flex-1 bg-card' style={{ minHeight: layoutHeightLeft }}>
+        <View className='flex-1 bg-card' style={{minHeight:layoutHeightLeft}}>
             {(isWeb && !isSmallScreen) && header}
             {data && data.length > 0 ? <View className=' w-full flex-1'>
                 <UniList
-                    height={layoutHeightLeft - 64}
+                    height={layoutHeightLeft - (!isWeb || isSmallScreen ? 0 : 64)}
                     data={data}
                     mode="simple"
                     useCustomScrollHandler={isSmallScreen ? true : false}
 
+                    scrollProps={{ pageData: null, headerHeight: 64, headerComponent: header, isNoContainer: true, }}
                     renderItem={({ item, index }) => <ItemConvo selectedIndex={selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />}
                 /></View>
                 : <View className='items-center justify-center w-full h-full'><View className="pt-8">
@@ -568,7 +558,7 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
 /*bg-neutral-500/10 border-b border-neutral-500/10*/
 const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots, showConvo, deleteConvo, leaveConvo, getConvo, editConvo, handleReply, startReached }) => {
     const isWeb = Platform.OS == 'web'
-    const setHeader = useSetHeader();
+
     const menuItems = [
         { 'id': 'edit', 'title': 'Edit participants list', 'icon': 'Users' },
         { 'id': 'info', 'title': 'Info', 'icon': 'Info' },
@@ -616,18 +606,10 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
         </View>
     )
 
-    useEffect(() => {
-        setHeader(isSmallScreen ? { header: header } : defaultHeader);
-    }, [isSmallScreen, setHeader, header]);
-
-
-    /*useEffect(() => {
-        return () => setHeader(defaultHeader);
-    }, [setHeader]);*/
-
     return (<>
         {(isWeb && !isSmallScreen) && header}
         {<View className="flex-1">
+
             <UniList
 
                 refer={refListJots}
@@ -637,11 +619,12 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                 onEndReached={!isWeb ? startReached : null}
                 scrollToLastItem={true}
                 data={isWeb ? data : data.slice().reverse()}
-                height={layoutHeightRight - 64}
+                height={layoutHeightRight - (!isWeb || isSmallScreen ? 0 : 64)}
                 mode="simple"
+                
                 useCustomScrollHandler={isSmallScreen ? true : false}
                 renderItem={({ item, index }) => <ItemJot handleReply={handleReply} item={item} index={index} />}
-
+                scrollProps={{ pageData: null, headerComponent: header, inverted: true, headerHeight: 64, isNoContainer: true, }}
             /></View>}
     </>);
 });

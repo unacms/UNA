@@ -115,7 +115,7 @@ export default function ElementEntityAuthor({data, blockWrapperProps}) {
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-        <Row className="justify-between gap-3">
+        <Row className="justify-between gap-3 p-4">
             <FormModal pageData={pageData} setPageData={setPageData} />
             <Redirect ref={redirectdRef} />
             {viewState.view == 'edited' && (<Modal

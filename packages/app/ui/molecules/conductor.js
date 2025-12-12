@@ -225,6 +225,21 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 88, s
     }, []);
 
     useEffect(() => {
+
+        
+        const subscription2 = emitter.addListener('feed', (data) => {
+            if (data.action == 'remove_content' || data.action == 'new_content') {
+                //todo
+            }
+        })
+
+        return () => {
+
+            subscription2.remove()
+        }
+    }, [])
+
+    useEffect(() => {
         if (isRevalidate)
             revalidateData();
     }, [isRevalidate]);

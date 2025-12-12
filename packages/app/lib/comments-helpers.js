@@ -24,6 +24,7 @@ import emitter from 'app/context/emitter'
 import { appStatic } from 'app/lib/app-static';
 
 export function CommentsBrowse({
+    scrollProps,
     browse,
     requestUrl,
     module,
@@ -360,6 +361,7 @@ export function CommentsBrowse({
     return (
         <>
             <UniList
+                scrollProps={scrollProps}
                 mode='simple'
                 useWindowScroll={!isModal}
                 height={height > 0 ? height : undefined}

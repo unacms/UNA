@@ -109,11 +109,4 @@ const TooltipArrow = React.forwardRef(({ className, ...props }, ref) => {
 });
 TooltipArrow.displayName = 'TooltipArrow';
 
-// Native tooltip is currently not implemented UX-wise (and was unreliable on Android).
-// Provide a safe default export so callers can `import Tooltip from ...` cross-platform
-// without crashing; web has a real hover tooltip in `tooltip.web.js`.
-export default function TooltipDefault({ children }) {
-    return children;
-}
-
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipArrow, TooltipProvider };

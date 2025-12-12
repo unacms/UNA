@@ -1,12 +1,12 @@
 import { View, ScrollView } from 'app/design/view';
 import { appSetting, getPageWidth, cd } from 'app/lib/util'
+import ScrollList from 'app/ui/molecules/scroll_list'
 import { useRef, memo, useMemo } from 'react';
 import MenuFooter from 'app/components/nav/menu-footer';
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { Panel, PanelGroup, PanelHandler } from "app/ui/molecules/resizable-panels";
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { useBreakpoint } from 'app/context/measure';
-import Page from 'app/ui/molecules/page'
 
 const isRowLayout = (cell, currentBreakpoint) => !cell.defaultSize || (cell.breakpoint && currentBreakpoint <= LAYOUT_BREAKPOINTS[cell.breakpoint]);
 const hasData = (cellData) => Array.isArray(cellData) && cellData.length > 0;
@@ -75,12 +75,12 @@ function PageContentUniversal({ children, data, layoutName }) {
 
     const isParsedLayout = data.layout_parsed;
 
-    const topCell = isParsedLayout ? { key: 'cell_top', data: data.elements?.['cell_top'], chd: children.find((c) => c.key === 'cell_top') } : cells.find((c) => c.area === 'top');
-    const bottomCell = isParsedLayout ? { key: 'cell_bottom', data: data.elements?.['cell_bottom'], chd: children.find((c) => c.key === 'cell_bottom') } : cells.find((c) => c.area === 'bottom');
+    const topCell = isParsedLayout ? {key: 'cell_top', data: data.elements?.['cell_top'], chd: children.find((c) => c.key === 'cell_top')} : cells.find((c) => c.area === 'top');
+    const bottomCell = isParsedLayout ? {key: 'cell_bottom', data: data.elements?.['cell_bottom'], chd: children.find((c) => c.key === 'cell_bottom')} : cells.find((c) => c.area === 'bottom');
     const midCells = isParsedLayout ? [
-        { key: 'cell_left', defaultSize: 25, minSize: 10, data: data.elements?.['cell_left'], chd: children.find((c) => c.key === 'cell_left') },
-        { key: 'cell_center', defaultSize: 50, minSize: 10, breakpoint: 'md', data: data.elements?.['cell_center'], chd: children.find((c) => c.key === 'cell_center') },
-        { key: 'cell_right', defaultSize: 25, minSize: 10, breakpoint: 'lg', data: data.elements?.['cell_right'], chd: children.find((c) => c.key === 'cell_right') }
+        {key: 'cell_left', defaultSize: 25, minSize: 10, data: data.elements?.['cell_left'], chd: children.find((c) => c.key === 'cell_left')},
+        {key: 'cell_center', defaultSize: 50, minSize: 10, breakpoint: 'md', data: data.elements?.['cell_center'], chd: children.find((c) => c.key === 'cell_center')},
+        {key: 'cell_right', defaultSize: 25, minSize: 10, breakpoint: 'lg', data: data.elements?.['cell_right'], chd: children.find((c) => c.key === 'cell_right')}
     ] : cells.filter((c) => c.area === 'mid');
 
     console.log("datadatadata2", sizable)
@@ -90,7 +90,7 @@ function PageContentUniversal({ children, data, layoutName }) {
             <PanelRow gap={gap} cell={topCell} currentBreakpoint={currentBreakpoint} />
             <PanelGroup key={`cells-${uri}-${layoutName}-${sizable ? 'sizable' : 'static'}`} autoSaveId={sizable ? `cells-${uri}-${layoutName}` : undefined} direction="horizontal">
                 {midCells.map((cell, i) => {
-                    return <PanelCell key={cell.key} sizable={sizable} currentBreakpoint={currentBreakpoint} cell={cell} index={topCell.length > 0 ? i : 0} />
+                    return <PanelCell key={cell.key} sizable={sizable} currentBreakpoint={currentBreakpoint} cell={cell} index={topCell.length > 0 ? i : 0}  />
                 })}
             </PanelGroup>
             {midCells.map((cell, i) => {
@@ -128,20 +128,29 @@ const PanelCell = memo(({ cell, currentBreakpoint, index, sizable }) => {
     );
 });
 
-export default function PageLayoutUniversal({ data, children, layoutName }) {
+export default function PageLayoutUniversal(props) {
 
-    return (
-        <Page data={data}>
-            <PageContentUniversal data={data} layoutName={layoutName}>
-                {children}
-            </PageContentUniversal>
+    const refer = useRef();
+    const content = (
+        <ScrollView ref={refer} className={getPageWidth(props.uri, props.data?.config) + ' mx-auto w-full '} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
+            <PageContentUniversal {...props} />
             <MenuFooter
                 cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
                 variant="ghost"
                 size="sm"
                 itemClassName="text-sm p-1"
+
             />
-        </Page>
+        </ScrollView>
+    );
+
+    return (
+        <ScrollList
+            refer={refer}
+            content={content}
+            pageData={props.data}
+            contentType="ScrollView"
+        />
     )
 }
 

@@ -2,18 +2,26 @@
 import { VirtuosoGrid, Virtuoso } from 'react-virtuoso'
 import { View } from 'app/design/view'
 import { View as ReactNativeView } from 'react-native'
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { cd } from 'app/lib/util'
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useCallback, forwardRef } from 'react';
-import { useScroll } from 'app/lib/hooks/useScroll';
+import ScrollList from 'app/ui/molecules/scroll_list'
+import { useBreakpoint } from 'app/context/measure'
+import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { useSetAtom } from 'jotai';
+import { scrollDirectionAtom } from 'app/context/jotai/layout';
 
 export default function UniList(props) {
-    let { useCustomScrollHandler, preloadComponent, sortable, data, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
+    let { useCustomScrollHandler, scrollProps, preloadComponent, sortable, data, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
         onSort, mode, layout, numColumns, keyboardShouldPersistTaps, keyExtractor, useWindowScroll: useWindowScrollProp, height, listState, endpoint, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, isInPanel, paddingTop, ...rest } = props
 
     const uniRef = useRef();
-    const { onScroll } = useScroll();//DO NOT REMOVE IT"S WORKS
+    const currentBreakpoint = useBreakpoint();
+    const scrollY = useRef(0);
+    const scrollState = useRef(0); // Текущее состояние: 0, 1 или -1
+    
+    const setScrollDirection = useSetAtom(scrollDirectionAtom);
 
     data = data.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
 
@@ -82,6 +90,41 @@ export default function UniList(props) {
     // Always use window scroll if no height is resolved to prevent zero-sized element errors
     const isWindowScroll = hasResolvedHeight ? shouldUseWindowScroll : true;
 
+    useEffect(() => {
+        if (!isWindowScroll) return;
+        
+        const SCROLL_OFFSET_THRESHOLD = 100;
+        
+        const handleWindowScroll = () => {
+            const currentScrollY = window.scrollY || document.documentElement.scrollTop;
+            const previousScrollY = scrollY.current;
+            
+            let newScrollState;
+            
+            if (currentScrollY < SCROLL_OFFSET_THRESHOLD) {
+                newScrollState = 0;
+            } else if (currentScrollY > previousScrollY && currentScrollY > 0) {
+                newScrollState = 1;
+            } else if (currentScrollY < previousScrollY) {
+                newScrollState = -1;
+            } else {
+                newScrollState = scrollState.current;
+            }
+            
+            if (newScrollState !== scrollState.current) {
+                setScrollDirection(newScrollState);
+                scrollState.current = newScrollState;
+            }
+            
+            scrollY.current = currentScrollY;
+        };
+        
+        window.addEventListener('scroll', handleWindowScroll, { passive: true });
+        
+        return () => {
+            window.removeEventListener('scroll', handleWindowScroll);
+        };
+    }, [isWindowScroll, setScrollDirection]);
     
     // Only set height style if we have a valid height AND we're not using window scroll
     // This prevents virtuoso from receiving conflicting signals
@@ -109,8 +152,7 @@ export default function UniList(props) {
     const virtuosoStyle = isWindowScroll 
         ? (paddingTop ? { paddingTop } : {}) 
         : style;
-
-
+    
     const commonVirtuosoProps = {
         data,
         useWindowScroll: isWindowScroll,
@@ -124,11 +166,25 @@ export default function UniList(props) {
             Footer: () => {
                 return ListFooterComponent
             },
-          
+            Header: () => {
+
+                // Add header spacer only for panel layouts on lg+ viewports where content scrolls under semi-transparent header
+                if (isInPanel && scrollProps?.headerHeight > 0 && currentBreakpoint >= LAYOUT_BREAKPOINTS.lg) {
+                    return <View style={{ height: 64 }} />;
+                }
+                return useCustomScrollHandler ? <View style={{ paddingTop: scrollProps.headerHeight }}></View> : null;
+            },
         } : {
             Footer: () => ListFooterComponent,
-            
+            Header: () => {
+                // Add header spacer only for panel layouts on lg+ viewports where content scrolls under semi-transparent header
+                if (isInPanel && scrollProps?.headerHeight > 0 && currentBreakpoint >= LAYOUT_BREAKPOINTS.lg) {
+                    return <View style={{ height: 64 }} />;
+                }
+                return useCustomScrollHandler ? <View style={{ paddingTop: scrollProps.headerHeight }}></View> : null;
+            },
         },
+        // isScrolling,
         ...rest,
     };
     let contentComponent = null
@@ -140,7 +196,7 @@ export default function UniList(props) {
         const wrapperStyle = isWindowScroll ? {} : style;
         
         if (mode != 'simple' && !sortable) {
-            return (
+            contentComponent = (
                 <View className="@container/list" style={wrapperStyle}>
                     {ListHeaderComponent && ListHeaderComponent()}
                     <VirtuosoGrid
@@ -156,7 +212,7 @@ export default function UniList(props) {
         }
         else {
             if (sortable) {
-                return (
+                contentComponent = (
                     <DragDropContext onDragEnd={onSort}>
                         <Droppable
                             droppableId="droppable"
@@ -187,7 +243,7 @@ export default function UniList(props) {
                 )
             }
             else {
-                return (
+                contentComponent = (
                     <View style={wrapperStyle}>
                         {ListHeaderComponent && ListHeaderComponent()}
                         <Virtuoso
@@ -203,5 +259,18 @@ export default function UniList(props) {
         }
     }
 
-    return contentComponent;
+    if (!scrollProps)
+        return contentComponent;
+
+    return (
+        <ScrollList
+            useCustomScrollHandler={useCustomScrollHandler}
+            content={contentComponent}
+            contentType="FlatList"
+            refer={refer ? refer : uniRef}
+            {...scrollProps}
+        />
+
+    )
+
 }

@@ -15,7 +15,6 @@ import {
     PanelHandler,
     resolvePanelProps,
 } from 'app/ui/molecules/resizable-panels'
-import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
 
 const mapLayoutBlocks = (items = []) =>
     items.map(({ source }) => ({
@@ -60,7 +59,6 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     const currentBreakpoint = useBreakpoint();
     const currentBreakpointName = getBreakpoint(currentBreakpoint)
     const groupRef = useRef(null)
-    const setHeader = useSetHeader();
 
     const localUrl = isModal ? url : useLocalSearchParams().url;
     const commentsData = useMemo(() => data?.layout_parsed ? data.elements.cell_bottom[0] : DataByName(data, blocks?.comments), [data, blocks?.comments]);
@@ -105,10 +103,11 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
     const mainBlocks = isDesktop ? centerBlocks : [...centerBlocks, ...sideBarBlocks, ...leftBarBlocks]
 
+    console.log("mainBlocks", mainBlocks)
 
     const aItems = useMemo(() => mainBlocks.map((value) => ({
         id: `block_${value.name}`,
-        data: <View className={'px-4 py-2'}><BlockByName isModal={isModal} data={data} name={value} contentOnly={value.sidebar || value.leftbar ? false : true} /></View>
+        data: <View className={value.name.includes("entity_text_block") || value.name.includes("get_block_text_and_subentries") ? 'px-4' : ''}><BlockByName isModal={isModal} data={data} name={value} contentOnly={value.sidebar || value.ledtbar ? false : true} /></View>
     })), [blocks, data, isDesktop]);
 
 
@@ -209,18 +208,20 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         }
     }, [currentBreakpointName, groupRef])
 
-    const isMultiColumn = leftBarBlocks.length > 0 || sideBarBlocks.length > 0;
-
-    //console.log("headerItems[0].data", aItems[0])
-    useEffect(() => {
-        setHeader(!isWeb || !isDesktop || !isMultiColumn ? { subHeader: aItems[0].data, backButton: true, title: data.title } : defaultHeader);
-    }, [isDesktop, isWeb, isMultiColumn, setHeader]);
-
     if (isModal) {
         return (
             <View className="w-full">
                 <View className="w-full " style={{ height: height }}>
                     <CommentsBrowse
+                        scrollProps={
+                            isModal ? { pageData: null, headerComponent: <></>, isNoContainer: true, headerHeight: 8 } : {
+                                headerHeight: 64,
+                                pageData: data,
+                                // headerComponent: headerItems[0].data,
+                                isBackButton: true,
+                                padding: 16,
+                            }
+                        }
                         useCustomScrollHandler={true}
                         height={height > 0 ? height : undefined}
                         scrollToIndex={scrollToEnd}
@@ -248,7 +249,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         )
     }
 
-
+    const isMultiColumn = leftBarBlocks.length > 0 || sideBarBlocks.length > 0;
 
     if (!isWeb || !isDesktop || !isMultiColumn) {
         return (
@@ -256,9 +257,17 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                 <View className={`max-w-4xl w-full flex-1 bg-card shadow-sm text-card-foreground rounded-2xl  lg:my-4 mx-auto `}>
                     <View onLayout={handleListLayout} style={{ pointerEvents: 'box-none', marginBottom: formHeight }} className='w-full flex-1 '>
                         <CommentsBrowse
-
+                            scrollProps={
+                                {
+                                    headerHeight: 64,
+                                    pageData: data,
+                                    // headerComponent: headerItems[0].data,
+                                    isBackButton: true,
+                                    padding: 16,
+                                }
+                            }
                             scrollToIndex={scrollToEnd}
-                            addItems={aItems.slice(1)}
+                            addItems={aItems}
                             browse={commentsData?.content[0]?.browse}
                             module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
                             requestUrl={commentsData?.content[0]?.url}
@@ -325,6 +334,15 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                 <View className={`w-full h-full bg-card/80 shadow-sm text-card-foreground rounded-2xl py-3 sm:py-4 mx-auto `}>
                     <View onLayout={handleListLayout} style={{ pointerEvents: 'box-none', marginBottom: formHeight }} className='w-full flex-1'>
                         <CommentsBrowse
+                            scrollProps={
+                                {
+                                    headerHeight: 64,
+                                    pageData: data,
+                                    // headerComponent: headerItems[0].data,
+                                    isBackButton: true,
+                                    padding: 16,
+                                }
+                            }
                             scrollToIndex={scrollToEnd}
                             addItems={aItems}
                             browse={commentsData?.content[0]?.browse}

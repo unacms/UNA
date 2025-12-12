@@ -8,7 +8,6 @@
   "dependencies": {
     "clsx": "^2.0.0",
     "crypto": "file:../../crypto-shim",
-    "jotai": "^2.16.0",
     "solito": "4.3.0"
   },
   "sideEffects": false

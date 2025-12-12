@@ -365,7 +365,15 @@ export default function Browse(props) {
                 : () => props.exProps?.headerBlocks)
             : undefined
 
+    let scrollProps  = props?.exProps?.scrollProps 
+    if (filterElement && !isDesktop){
+        if (props?.exProps?.scrollProps)
+            scrollProps.headerHeight = 120
+        ListHeaderComponent = () => filterElement
+    }
+
     const uniListProps = {
+        scrollProps: scrollProps,
         preloadComponent: PreloadComponent,
         refer: uniRef,
         mode: 'simple',

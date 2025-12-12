@@ -38,25 +38,17 @@ export function GlassyButton({
   overlayOpacity = 0.3,
   ...props
 }: GlassyButtonProps) {
-  // NOTE: This component is web-only (uses <video> + navigator.mediaDevices).
-  // Keep refs as `any` so this file can still typecheck in non-DOM TS configs.
-  const videoRef = useRef<any>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
   const [hasCamera, setHasCamera] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
-  const streamRef = useRef<any>(null)
+  const streamRef = useRef<MediaStream | null>(null)
 
   // Start camera stream
   const startCamera = useCallback(async () => {
     if (streamRef.current) return // Already have a stream
     
     try {
-      const mediaDevices = (navigator as any)?.mediaDevices
-      if (!mediaDevices?.getUserMedia) {
-        setHasCamera(false)
-        return
-      }
-
-      const stream = await mediaDevices.getUserMedia({
+      const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           width: { ideal: 320 },
           height: { ideal: 180 },
@@ -79,7 +71,7 @@ export function GlassyButton({
   // Stop camera stream
   const stopCamera = useCallback(() => {
     if (streamRef.current) {
-      streamRef.current.getTracks?.().forEach((track: any) => track?.stop?.())
+      streamRef.current.getTracks().forEach(track => track.stop())
       streamRef.current = null
     }
     if (videoRef.current) {
@@ -144,9 +136,7 @@ export function GlassyButton({
         playsInline
         muted
         style={{
-          // Keep the blurred feed safely inside rounded corners
-          // (base scale is applied in CSS; add mirroring here when requested)
-          transform: mirror ? "scaleX(-1) scale(1.08)" : undefined,
+          transform: mirror ? "scaleX(-1)" : undefined,
         }}
       />
       

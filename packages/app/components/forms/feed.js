@@ -224,7 +224,7 @@ export default function FormFeed({data, handleSubmit, exProps, name, response}) 
         {getFormFieldByData(data.inputs['owner_id'], handleSubmit, 'default')}
         {getFormFieldByData(data.inputs['type'], handleSubmit, 'default')}
         <View className="justify-between flex-col flex-auto ">
-            <View className="w-full flex-1 justify-start p-2 ">
+            <View className="w-full flex-1 justify-start px-1.5 ">
                 <View
                     className="flex-auto"
                     style={{

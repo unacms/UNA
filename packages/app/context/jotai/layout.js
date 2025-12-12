@@ -1,17 +1,11 @@
-import { atom, useSetAtom, useAtomValue } from 'jotai';
+import { atom } from 'jotai';
 
-export const defaultHeader = { header: null, subHeader: null, backButton: false, title: false };
-// Atoms
-export const headerAtom = atom(defaultHeader);
+// Atom для subheader компонента
+export const subheaderAtom = atom(null);
+
+// Atom для направления скролла
+// 0 = top (не скроллили), 1 = вниз, -1 = вверх
 export const scrollDirectionAtom = atom(0);
+
+// Atom для высоты хедера
 export const headerHeightAtom = atom(0);
-
-// Custom hooks
-export const useSetHeader = () => useSetAtom(headerAtom);
-export const useHeader = () => useAtomValue(headerAtom);
-
-export const useSetScrollDirection = () => useSetAtom(scrollDirectionAtom);
-export const useScrollDirection = () => useAtomValue(scrollDirectionAtom);
-
-export const useSetHeaderHeight = () => useSetAtom(headerHeightAtom);
-export const useHeaderHeight = () => useAtomValue(headerHeightAtom);

@@ -231,6 +231,7 @@ export default function Browse(props) {
     ) : null;
 
     const uniListProps = {
+        scrollProps: props?.exProps?.scrollProps,
         preloadComponent: PreloadComponent,
         refer: uniRef,
         mode: 'simple',

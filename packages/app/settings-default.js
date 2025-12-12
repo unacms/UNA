@@ -657,7 +657,7 @@ export const settingsDefault = {
             {
                 key: '/tab1',
                 title: 'Friends',
-                url: '/friends',
+                url: '/home',
                 icon: 'UsersRound',
                 badge: 'friends'
             },

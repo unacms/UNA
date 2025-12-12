@@ -1,5 +1,3 @@
- 
-    
 import { View, Row, ScrollView } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
 import React, { useState, useMemo, useRef, useEffect, Children } from 'react'
@@ -12,6 +10,7 @@ import {
     getBreakpoint
 } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
+import { Button } from 'app/design/controls'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import Profile from 'app/ui/molecules/profile'
@@ -19,6 +18,7 @@ import { Text } from 'app/design/typography'
 import { MenuItemSidebarWithWrapper } from 'app/components/nav/menu-item-sidebar'
 import { Platform } from 'react-native'
 import { callFn } from 'app/lib/functions/call'
+import { getComponent } from 'app/components/registry'
 import {
     Panel,
     PanelGroup,
@@ -29,7 +29,8 @@ import { useLayoutSettings } from 'app/context/layout-settings'
 import Badge from 'app/ui/molecules/badge'
 import Badges from 'app/ui/molecules/badges'
 import { useBreakpoint, useWindowSize, useIsDesktop, useWindowHeight, useWindowWidth } from 'app/context/measure';
-import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
+import { useSetAtom } from 'jotai';
+import { subheaderAtom } from 'app/context/jotai/layout';
 
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
@@ -86,18 +87,44 @@ const defineCells = (blocks, data) => {
 
 export default function ({ data, blocks }) {
 
+    /*  return <>
+      <Text fontFamily="font-main" className="text-red-500 text-3xl" >The quick brown fox jumps over the lazy dog.  
+ Packz my box with five dozen liquor jugs. 
+ </Text>
+      <Text fontFamily="font-title" className="text-red-500 text-3xl" >The quick brown fox jumps over the lazy dog.  
+ Pack my box with five dozen liquor jugs.    
+ </Text>
+ 
+  <Text  className="text-red-500 text-3xl" >The quick brown fox jumps over the lazy dog.  
+ Pack my box with five dozen liquor jugs.   
+ </Text>
+ </>
+    /* const wh = useWindowWidth();
+     console.log("whwhwh", wh)
+     return
+    /*   const currentBreakpoint = useBreakpoint();
+      const isDesktop = useIsDesktop();
+      // const windowSize = useWindowSize();
+       //console.log("!!!!!!!useWindowSize ", windowSize )
+          console.log("!!!!!!!bucket ", currentBreakpoint )
+ return;*/
+    //  return <Button variant="accent" title="dfsdfsd" startDecorator="Plus"></Button>
+
+    // return <Loading/>
+    /*return (
+    <Text className="text-red-500">zcxzxc zxc<Icon className="text-red-500 " icon="Plus"></Icon></Text>
+    <Button startDecorator="Plus" title="fdfdsf" variant="badge"></Button>
+     <Button startDecorator="Plus" variant="badge" title="fdfdsf"></Button>
+</>
+    )*/
     const isWeb = Platform.OS == 'web'
     const isDesktop = useIsDesktop();
     const { layoutName, layoutSettings } = useLayoutSettings();
 
-    const setHeader = useSetHeader();
+    const setSubheader = useSetAtom(subheaderAtom);
 
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
-    // On web SSR, `currentUser` is hydrated via an effect in `app/root` and can be `null` briefly.
-    // Use server-provided user payload to avoid flashing the splash screen for authenticated reloads.
-    const hasServerUser = Boolean(data?.user);
-    const isAuthenticated = (currentUser && currentUser !== false) || hasServerUser;
 
     const feedTypeD = storageGet('feed:type', '', true)
 
@@ -112,9 +139,15 @@ export default function ({ data, blocks }) {
         setFeedType(mode)
     }
 
+
+    if (!currentUser) {
+        const Splash = getComponent('molecule', 'splash')
+        return <Splash data={data} />
+    }
+
     const { sideBarBlocks, navBarBlocks, topBlocks, centerBlocks, timelineBlocks } = defineCells(blocks, data);
 
-    if (isAuthenticated) {
+    if (currentUser) {
         asyncStorageSet('layout:visited', 'true')
         let dUser = Object.assign({}, currentUser)
         dUser.url_avatar = dUser.avatar
@@ -349,13 +382,13 @@ export default function ({ data, blocks }) {
 
 
          useEffect(() => {
-        setHeader(isDesktop ? defaultHeader : {subHeader: subHeader});
-    }, [isDesktop, subHeader, setHeader]);
+        setSubheader(isDesktop ? null : subHeader);
+    }, [isDesktop, subHeader, setSubheader]);
     
 
     useEffect(() => {
-        return () => setHeader(defaultHeader);
-    }, [setHeader]);
+        return () => setSubheader(null);
+    }, [setSubheader]);
         
 
         return (

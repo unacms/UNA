@@ -38,7 +38,7 @@ export default function PageLayout(props) {
         });
         setSnackbarVisible(false);
     }
-//exProps={{ scrollProps: { pageData: props.data, headerHeight: 64 } }}
+
     return (  
         <View className='sm:p-2  items-center'>
             <View className='w-full max-w-3xl'>
@@ -50,7 +50,7 @@ export default function PageLayout(props) {
                 title="New notifications" 
                 size="sm" 
             />
-            <BlockByName data={props.data} key={timeStamp.ts} cachePrefix={timeStamp.ts} name={props.blocks.browse} />
+            <BlockByName exProps={{ scrollProps: { pageData: props.data, headerHeight: 64 } }} data={props.data} key={timeStamp.ts} cachePrefix={timeStamp.ts} name={props.blocks.browse} />
             </View>
         </View>
     )
