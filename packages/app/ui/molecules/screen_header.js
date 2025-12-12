@@ -210,6 +210,11 @@ export const ScreenHeader = ({
         ...(isWeb ? { pointerEvents } : {}),
     };
 
+    // Determine if ContextSelector will be rendered (which may include its own logo)
+    const willRenderContextSelector = (pageData?.context?.current?.url || isHome) && pageData?.context;
+    // Only show standalone logo when ContextSelector won't render (to avoid double logos during hydration)
+    const shouldShowStandaloneLogo = !willRenderContextSelector && !text && (!settings?.headerSettings || settings?.headerSettings?.header);
+
     return (
         <>
             {isWeb && <View style={{ height: headerHeight }} />}
@@ -227,7 +232,7 @@ export const ScreenHeader = ({
             >
                 <Row className="items-center justify-between h-16">
                     <Row className="items-center justify-start">
-                        {((!currentUser || !pageData?.context) && !text && (!settings?.headerSettings || settings?.headerSettings?.header) || (!isWeb && !currentUser)) &&
+                        {(shouldShowStandaloneLogo || (!isWeb && !currentUser)) &&
                             <Link href="/home" size="lg" aria-label="Home">
                                 <Pressable className="items-center">
                                     {appStatic('logo')}

@@ -114,10 +114,15 @@ export const Header = memo(({
     const ContextSelector = getComponent('molecule', 'context_selector')
     const HeaderElement = getComponent('molecule', 'header_element');
 
+    // Determine if ContextSelector will be rendered (which may include its own logo)
+    const willRenderContextSelector = (pageData?.context?.current?.url || isHome) && pageData?.context;
+    // Only show standalone logo when ContextSelector won't render (to avoid double logos during hydration)
+    const shouldShowStandaloneLogo = !willRenderContextSelector && !text && (!settings?.headerSettings || settings?.headerSettings?.header);
+
     return (
         <Row className="items-center justify-between h-14">
             <Row className="items-center justify-start">
-                {((!currentUser || !pageData?.context) && !text && (!settings?.headerSettings || settings?.headerSettings?.header) || (!isWeb && !currentUser)) &&
+                {(shouldShowStandaloneLogo || (!isWeb && !currentUser)) &&
                     
                         <Link href="/home" size="lg" aria-label="Home">
                             <Pressable className="items-center">
