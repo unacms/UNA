@@ -23,7 +23,13 @@ export default function ScrollList({
     isNoContainer = false,
 }) {
     const isDesktop = useIsDesktop();
-    const isCollapsibleHeader = appSetting('native', 'collapsible_header') && !isDesktop;
+    // Hydration-safe: server can't know viewport size, so defer desktop-only logic until after mount
+    // to avoid SSR/client markup mismatches.
+    const [hasMounted, setHasMounted] = useState(false);
+    useEffect(() => setHasMounted(true), []);
+    const effectiveIsDesktop = hasMounted ? isDesktop : false;
+
+    const isCollapsibleHeader = appSetting('native', 'collapsible_header') && !effectiveIsDesktop;
     const { currentUser } = useCurrentUser();
     
     const [showHeader, setShowHeader] = useState(true);
@@ -94,9 +100,9 @@ export default function ScrollList({
     const headerClasses = `backdrop-blur-xl w-full bg-card fixed top-0 left-0 z-50 transition-transform duration-300 ${showHeader ? 'translate-y-0' : '-translate-y-full'}`;
 
     return (
-        <View className="flex-auto" style={{ paddingTop: !isDesktop && !useCustomScrollHandler ? headerHeight : 0, paddingBottom: !isDesktop ? bottomPadding : 0 }}>
+        <View className="flex-auto" style={{ paddingTop: !effectiveIsDesktop && !useCustomScrollHandler ? headerHeight : 0, paddingBottom: !effectiveIsDesktop ? bottomPadding : 0 }}>
             {enhanced}
-            {!isDesktop && (
+            {!effectiveIsDesktop && (
                 <View className={headerClasses}>
                     <Header
                         backButtonPresented={isBackButton}

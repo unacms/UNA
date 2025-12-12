@@ -1381,7 +1381,9 @@
     text-decoration: none;
     white-space: nowrap;
     user-select: none;
-    overflow: visible;
+    /* Clip blurred video/background layers to rounded corners */
+    overflow: hidden;
+    isolation: isolate;
     /* Tailwind shadow-xl */
     box-shadow: 
       0 20px 25px 5px rgb(0 0 0 / 0.1), 
@@ -1444,6 +1446,8 @@
     opacity: 0;
     transition: opacity 300ms ease;
     border-radius: inherit;
+    /* Blur expands painted area; overscan + clip prevents "halo" */
+    transform: scale(1.08);
   }
 
   .glassy-button--camera-active .glassy-button__video {

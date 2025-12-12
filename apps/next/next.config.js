@@ -91,6 +91,10 @@ const nextConfig = {
     'lucide-react-native'
   ],
   webpack: (config, { isServer }) => {
+    // Expo packages expect this to be inlined by babel-preset-expo (Metro).
+    // In Next.js/Webpack builds we define it explicitly to avoid runtime warnings.
+    const expoOs = process.env.EXPO_OS || 'web';
+
     // Добавляем алиасы
     config.resolve.alias = {
       ...config.resolve.alias,
@@ -123,6 +127,9 @@ const nextConfig = {
     // Используем NormalModuleReplacementPlugin для принудительной замены
     config.plugins = config.plugins || [];
     config.plugins.push(
+      new webpack.DefinePlugin({
+        'process.env.EXPO_OS': JSON.stringify(expoOs),
+      }),
       new webpack.NormalModuleReplacementPlugin(
         /^react-native-webview$/,
         (resource) => {

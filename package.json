@@ -6,13 +6,15 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@types/react": "~19.1.0",
+    "@types/react": "~19.1.4",
     "eslint": "^9.17.0",
+    "patch-package": "^8.0.0",
     "lerna-update-wizard": "^1.1.2",
     "turbo": "^2.5.8",
     "typescript": "^5.7.2"
   },
   "scripts": {
+    "postinstall": "patch-package",
     "native": "cd apps/expo && dotenv -e ../../.env.local -- expo start --clear",
     "ios": "cd apps/expo && dotenv -e ../../.env.local -- yarn ios",
     "ios:device": "cd apps/expo && dotenv -e ../../.env.local -- npx expo run:ios --device",

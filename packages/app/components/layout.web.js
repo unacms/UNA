@@ -116,8 +116,6 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
 
     const isNewLayoutStyle = layoutName === 'home';
 
-    console.log("layoutName", layoutName)
-
     return (
         <View className="w-full flex-1">
             <Suggestions />

@@ -29,6 +29,52 @@ export const TextHeader = memo(({ text }) => {
     </Text>
 })
 
+function getRightHeader(items, currentUser) {
+    items = menuItemsFilter(items, currentUser);
+
+    // Keep behavior minimal for now: if nothing to render, bail.
+    if (!Array.isArray(items) || items.length === 0) return null;
+
+    return (
+        <Row className='gap-x-1 items-center'>
+            {items?.map((button) => {
+                let btn = null;
+                if (button.section || button.link == 'search') {
+                    // TODO: implement section/search in header actions
+                    btn = null;
+                } else {
+                    btn = (
+                        <Button
+                            rounded
+                            title={button.title}
+                            variant='secondary'
+                            startDecorator={button.icon}
+                            size="base"
+                            addon={
+                                button.link == appSetting('messenger', 'url')
+                                    ? {
+                                        variant: 'primary',
+                                        text: currentUser?.counters?.bx_messenger_new_messages,
+                                        hideZero: true
+                                    }
+                                    : undefined
+                            }
+                        />
+                    );
+                    btn = button.link ? <Link href={button.link}>{btn}</Link> : btn;
+                }
+
+                if (!btn) return null;
+                return (
+                    <View className="" key={`add-${button.icon || button.link || button.title}`}>
+                        {btn}
+                    </View>
+                );
+            })}
+        </Row>
+    );
+}
+
 export const ScreenHeader = ({ 
     layoutName, 
     pageLayoutName, 
@@ -41,7 +87,8 @@ export const ScreenHeader = ({
 }
 ) => {
     const isDesktop = useIsDesktop();
-    const [headerHeight, setHeaderHeight] = useState(0); // Добавьте в начало компонента
+    // Start with a reasonable default (h-16) to avoid initial content overlap/jump.
+    const [headerHeight, setHeaderHeight] = useState(64);
 
     const subheader = useAtomValue(subheaderAtom);
     const scrollDirection = useAtomValue(scrollDirectionAtom);
@@ -51,7 +98,7 @@ export const ScreenHeader = ({
     const headerTranslateY = useRef(new Animated.Value(0)).current;
 
     const { currentUser } = useCurrentUser();
-    const { layoutData, setLayoutData } = useLayoutData()
+    // TODO: integrate layout actions (scroll-to-top etc) as we propagate beyond home.
     const pagePath = pageData?.uri;
     const settings = getPageSettings(pageData?.config, pagePath);
     const router = useRouter();
@@ -105,6 +152,13 @@ export const ScreenHeader = ({
     const HeaderElement = getComponent('molecule', 'header_element');
     const isCollapsibleHeader = appSetting('native', 'collapsible_header') && !isDesktop;
 
+    // Reset shared header height when leaving this screen to avoid leaking padding to other screens.
+    useEffect(() => {
+        // Ensure a sane non-zero starting value for native lists before first measurement.
+        setHeaderHeightAtom(64);
+        return () => setHeaderHeightAtom(0);
+    }, [setHeaderHeightAtom]);
+
     // Анимация уплывания хедера на нативе
     useEffect(() => {
         if (!isWeb && isCollapsibleHeader && headerHeight > 0) {
@@ -122,15 +176,21 @@ export const ScreenHeader = ({
     const HeaderContainer = !isWeb && isCollapsibleHeader ? Animated.View : View;
     const nativeStyle = !isWeb && isCollapsibleHeader ? {
         transform: [{ translateY: headerTranslateY }],
-        pointerEvents: scrollDirection === 1 ? 'none' : 'auto'
     } : {};
+    const pointerEvents = (!isWeb && isCollapsibleHeader && scrollDirection === 1) ? 'none' : 'auto';
+    // react-native-web warns about pointerEvents prop; prefer style on web.
+    const containerStyle = {
+        ...nativeStyle,
+        ...(isWeb ? { pointerEvents } : {}),
+    };
 
     return (
         <>
             {isWeb && <View style={{ height: headerHeight }} />}
             <HeaderContainer
                 className={`w-full z-50 bg-card backdrop-blur-xl border-b border-border/60 web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out ${cssClass}`}
-                style={nativeStyle}
+                style={containerStyle}
+                pointerEvents={!isWeb ? pointerEvents : undefined}
                 onLayout={(event) => {
                     const { height } = event.nativeEvent.layout;
                     if (height !== headerHeight) {

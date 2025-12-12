@@ -1,4 +1,4 @@
-import React, { useMemo, forwardRef, useEffect, useCallback } from 'react';
+import React, { useMemo, forwardRef, useEffect, useCallback, useState } from 'react';
 import { TextInput as TextInputDef, Modal as ModalDef, Platform } from 'react-native'
 import { Pressable, View, ScrollView, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
@@ -524,7 +524,11 @@ export const Button = (props) => {
     const { colors } = Theme();
     const themeName = ThemeName();
     const isDesktop = useIsDesktop();
-    const showTooltip = useMemo(() => isDesktop && tooltip, [isDesktop, tooltip]);
+    // Hydration-safe: desktop breakpoints differ between SSR and client.
+    // Delay tooltip wrapping until after mount to avoid hydration mismatches.
+    const [hasMounted, setHasMounted] = useState(false);
+    useEffect(() => setHasMounted(true), []);
+    const showTooltip = useMemo(() => hasMounted && isDesktop && tooltip, [hasMounted, isDesktop, tooltip]);
 
     const sClassContainer = useMemo(() => {
         let classes = 'group flex-row items-center ';

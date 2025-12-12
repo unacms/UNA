@@ -14,6 +14,20 @@ import { appSetting } from 'app/lib/util';
 import 'app/styles/global.default.css'
 import 'app/styles/global.css'
 
+// Initialize i18n synchronously before first render so useTranslation works reliably.
+// (Match the native app pattern; language is updated in an effect.)
+if (!i18n.isInitialized) {
+    i18n.use(initReactI18next).init({
+        compatibilityJSON: 'v3',
+        resources,
+        lng: 'en',
+        fallbackLng: 'en',
+        interpolation: {
+            escapeValue: false
+        }
+    });
+}
+
 // Suppress shadow* deprecation warnings from third-party libraries (react-native-toast-message)
 // until they update to use boxShadow
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
@@ -30,20 +44,9 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
 export default function RootLayout({ children }) {
     const { langCode } = useLayoutSettings();
 
-    // Initialize i18n in useEffect to avoid setState during render
     useEffect(() => {
-        if (!i18n.isInitialized) {
-            i18n
-                .use(initReactI18next)
-                .init({
-                    compatibilityJSON: 'v3',
-                    resources: resources,
-                    lng: langCode, // default language
-                    fallbackLng: 'en',
-                    interpolation: {
-                        escapeValue: false
-                    }
-                });
+        if (i18n.isInitialized && langCode) {
+            i18n.changeLanguage(langCode);
         }
     }, [langCode]);
 
