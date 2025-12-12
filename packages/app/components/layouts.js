@@ -189,8 +189,10 @@ function PageLayoutContent({ layout, data }) {
         return null;
     }
 
+    if (currentUser === null)
+        return <></>
     const Splash = getComponent('molecule', 'splash')
-    if (!currentUser && layoutName=='home')
+    if (currentUser === false && layoutName=='home')
         return <Splash data={data} />
 
     if (isCustomLayout && layoutBlocks) {

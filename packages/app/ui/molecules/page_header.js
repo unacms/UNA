@@ -134,11 +134,11 @@ export const PageHeader = ({
                         {isWeb && <MenuTop url={pageData.url} uri={pageData.uri} />}
                         <Row className=" items-end">
                             <HeaderElement mode="small" url={pageData?.url} uri={pageData?.uri} />
-                            {(pageData?.context && pageData?.cover_block?.actions_menu) && <CoverMenu
+                            {/*(pageData?.context && pageData?.cover_block?.actions_menu) && <CoverMenu
                                 {...pageData.cover_block.actions_menu}
                                 uri={pageData.uri}
                                 isSplitMenu={false}
-                            />}
+                            />*/}
                         </Row>
                     </Row>
                     {header.subHeader}

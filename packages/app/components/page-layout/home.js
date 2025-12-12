@@ -12,7 +12,6 @@ import {
     getBreakpoint
 } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
-import { Button } from 'app/design/controls'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import Profile from 'app/ui/molecules/profile'
@@ -20,7 +19,6 @@ import { Text } from 'app/design/typography'
 import { MenuItemSidebarWithWrapper } from 'app/components/nav/menu-item-sidebar'
 import { Platform } from 'react-native'
 import { callFn } from 'app/lib/functions/call'
-import { getComponent } from 'app/components/registry'
 import {
     Panel,
     PanelGroup,
@@ -88,36 +86,6 @@ const defineCells = (blocks, data) => {
 
 export default function ({ data, blocks }) {
 
-    /*  return <>
-      <Text fontFamily="font-main" className="text-red-500 text-3xl" >The quick brown fox jumps over the lazy dog.  
- Packz my box with five dozen liquor jugs. 
- </Text>
-      <Text fontFamily="font-title" className="text-red-500 text-3xl" >The quick brown fox jumps over the lazy dog.  
- Pack my box with five dozen liquor jugs.    
- </Text>
- 
-  <Text  className="text-red-500 text-3xl" >The quick brown fox jumps over the lazy dog.  
- Pack my box with five dozen liquor jugs.   
- </Text>
- </>
-    /* const wh = useWindowWidth();
-     console.log("whwhwh", wh)
-     return
-    /*   const currentBreakpoint = useBreakpoint();
-      const isDesktop = useIsDesktop();
-      // const windowSize = useWindowSize();
-       //console.log("!!!!!!!useWindowSize ", windowSize )
-          console.log("!!!!!!!bucket ", currentBreakpoint )
- return;*/
-    //  return <Button variant="accent" title="dfsdfsd" startDecorator="Plus"></Button>
-
-    // return <Loading/>
-    /*return (
-    <Text className="text-red-500">zcxzxc zxc<Icon className="text-red-500 " icon="Plus"></Icon></Text>
-    <Button startDecorator="Plus" title="fdfdsf" variant="badge"></Button>
-     <Button startDecorator="Plus" variant="badge" title="fdfdsf"></Button>
-</>
-    )*/
     const isWeb = Platform.OS == 'web'
     const isDesktop = useIsDesktop();
     const { layoutName, layoutSettings } = useLayoutSettings();
@@ -143,7 +111,7 @@ export default function ({ data, blocks }) {
         storageSet('feed:type', '', mode, true)
         setFeedType(mode)
     }
-    
+
     const { sideBarBlocks, navBarBlocks, topBlocks, centerBlocks, timelineBlocks } = defineCells(blocks, data);
 
     if (isAuthenticated) {
