@@ -133,12 +133,17 @@ export default function Splash(props) {
         </View>
     )
 
+    // On web, the page already has a top header (Navbar/ScreenHeader) provided by the app layout.
+    // Wrapping splash in ScrollList adds an additional fixed header + paddingTop on initial render,
+    // causing the "double header offset" flash. Use normal document scrolling on web instead.
+    if (isWeb) return content;
+
     return (
         <ScrollList
             refer={refer}
             content={content}
             pageData={props.data}
-            headerHeight={isWeb ? 48 : 48}
+            headerHeight={48}
             contentType="ScrollList"
         />
     )

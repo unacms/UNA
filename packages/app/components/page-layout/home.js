@@ -125,6 +125,10 @@ export default function ({ data, blocks }) {
 
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
+    // On web SSR, `currentUser` is hydrated via an effect in `app/root` and can be `null` briefly.
+    // Use server-provided user payload to avoid flashing the splash screen for authenticated reloads.
+    const hasServerUser = Boolean(data?.user);
+    const isAuthenticated = (currentUser && currentUser !== false) || hasServerUser;
 
     const feedTypeD = storageGet('feed:type', '', true)
 
@@ -140,7 +144,7 @@ export default function ({ data, blocks }) {
     }
 
 
-    if (!currentUser) {
+    if (!isAuthenticated) {
         const Splash = getComponent('molecule', 'splash')
         return <Splash data={data} />
     }

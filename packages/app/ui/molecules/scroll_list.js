@@ -2,17 +2,15 @@ import { View } from 'app/design/view';
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
-    useAnimatedScrollHandler,
     withTiming,
     Easing,
 } from 'react-native-reanimated';
 import { BlurView } from 'expo-blur';
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Theme } from 'app/design/theme';
 import { appSetting } from 'app/lib/util'
 import { Button } from 'app/design/controls';
 import { Header } from 'app/ui/molecules/scroll_list_header';
-import { useEffect } from 'react';
 import { useCurrentUser } from 'app/context/user'
 import { KbAvoidingViewScroll } from 'app/ui/atoms/kb-avoiding-view'
 
@@ -74,12 +72,30 @@ export default function ScrollList({
     }, [index]);
 
 
-    const onScroll = useAnimatedScrollHandler((event) => {
-        const currentY = Math.round(event.contentOffset.y / 10) * 10;
-        if (currentY === scrollY.value) return;
-        scrollDirection.value = currentY > scrollY.value ? 'down' : 'up';
-        scrollY.value = currentY;
-    });
+    // NOTE:
+    // - `useAnimatedScrollHandler` returns a Reanimated event handler object, which will crash if passed
+    //   to non-Reanimated lists (e.g. @legendapp/list). We keep `onScroll` as a plain JS function so it
+    //   is safe for both RN ScrollView/FlatList and Reanimated Animated.* components.
+    const originalOnScroll = content?.props?.onScroll;
+    const onScroll = useCallback(
+        (event) => {
+            const y =
+                event?.contentOffset?.y ??
+                event?.nativeEvent?.contentOffset?.y ??
+                0;
+            const currentY = Math.round(y / 10) * 10;
+
+            if (currentY !== scrollY.value) {
+                scrollDirection.value = currentY > scrollY.value ? 'down' : 'up';
+                scrollY.value = currentY;
+            }
+
+            if (typeof originalOnScroll === 'function') {
+                originalOnScroll(event);
+            }
+        },
+        [originalOnScroll, scrollDirection, scrollY]
+    );
 
     const scrollToTop = () => {
         const scrollFn = contentType === 'FlatList' ? 'scrollToOffset' : 'scrollTo';
@@ -104,7 +120,7 @@ export default function ScrollList({
         <KbAvoidingViewScroll {...props} />
       ),*/
      /* paddingTop: headerHeight,*/
-      ...(isCollapsibleHeader ? { onScroll } : {}),
+      ...(isCollapsibleHeader ? { onScroll, scrollEventThrottle: 16 } : {}),
     }
   : {};
 

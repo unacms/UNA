@@ -5,6 +5,8 @@ import { Header, TextHeader } from 'app/ui/molecules/scroll_list_header';
 import { useCurrentUser } from 'app/context/user';
 import { getMenuSettings } from 'app/lib/util'
 import { useIsDesktop } from 'app/context/measure';
+import { useAtomValue } from 'jotai';
+import { headerHeightAtom } from 'app/context/jotai/layout';
 
 export default function ScrollList({
     content,
@@ -23,6 +25,12 @@ export default function ScrollList({
     isNoContainer = false,
 }) {
     const isDesktop = useIsDesktop();
+    const externalHeaderHeight = useAtomValue(headerHeightAtom);
+    // When ScreenHeader (or other global header) is mounted, it sets headerHeightAtom.
+    // In that case, avoid adding a second header spacer/padding which causes a "double offset"
+    // during initial render (notably on /home).
+    const hasExternalHeader = typeof externalHeaderHeight === 'number' && externalHeaderHeight > 0;
+
     // Hydration-safe: server can't know viewport size, so defer desktop-only logic until after mount
     // to avoid SSR/client markup mismatches.
     const [hasMounted, setHasMounted] = useState(false);
@@ -100,9 +108,15 @@ export default function ScrollList({
     const headerClasses = `backdrop-blur-xl w-full bg-card fixed top-0 left-0 z-50 transition-transform duration-300 ${showHeader ? 'translate-y-0' : '-translate-y-full'}`;
 
     return (
-        <View className="flex-auto" style={{ paddingTop: !effectiveIsDesktop && !useCustomScrollHandler ? headerHeight : 0, paddingBottom: !effectiveIsDesktop ? bottomPadding : 0 }}>
+        <View
+            className="flex-auto"
+            style={{
+                paddingTop: !hasExternalHeader && !effectiveIsDesktop && !useCustomScrollHandler ? headerHeight : 0,
+                paddingBottom: !effectiveIsDesktop ? bottomPadding : 0
+            }}
+        >
             {enhanced}
-            {!effectiveIsDesktop && (
+            {!hasExternalHeader && !effectiveIsDesktop && (
                 <View className={headerClasses}>
                     <Header
                         backButtonPresented={isBackButton}

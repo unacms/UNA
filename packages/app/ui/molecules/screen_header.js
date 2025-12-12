@@ -1,5 +1,5 @@
 import { View, Row, Pressable } from 'app/design/view';
-import { useMemo, useEffect, useState, memo, isValidElement, useRef } from 'react';
+import { createElement, useMemo, useEffect, useLayoutEffect, useState, memo, isValidElement, useRef } from 'react';
 import { Text } from 'app/design/typography'
 import { Platform, Animated } from 'react-native'
 import { FeedbackHaptics, getPageSettings } from 'app/lib/util';
@@ -21,6 +21,9 @@ import {
 import { useAtomValue, useSetAtom } from 'jotai';
 import { subheaderAtom, scrollDirectionAtom, headerHeightAtom } from 'app/context/jotai/layout';
 import MenuTop from 'app/components/nav/menu-top'
+
+// On web (SSR), useLayoutEffect would warn. On native, useLayoutEffect prevents a visible flicker.
+const useIsomorphicLayoutEffect = Platform.OS === 'web' ? useEffect : useLayoutEffect;
 
 export const TextHeader = memo(({ text }) => {
     const { t } = useTranslation();
@@ -93,6 +96,7 @@ export const ScreenHeader = ({
     const subheader = useAtomValue(subheaderAtom);
     const scrollDirection = useAtomValue(scrollDirectionAtom);
     const setHeaderHeightAtom = useSetAtom(headerHeightAtom);
+    const setScrollDirectionAtom = useSetAtom(scrollDirectionAtom);
 
     // Animated value для уплывания хедера вверх на нативе
     const headerTranslateY = useRef(new Animated.Value(0)).current;
@@ -110,7 +114,24 @@ export const ScreenHeader = ({
         const menuSettings = getMenuSettings(pageData?.menu?.object, pageData?.menu?.config, pageData?.menu);
         textName = menuSettings.name;
     }
-    const headerContent = headerComponent ? headerComponent : textName;
+    // Support passing either:
+    // - a React element: headerComponent={<MyHeader />}
+    // - a component type: headerComponent={MyHeader}
+    const resolvedHeaderComponent = useMemo(() => {
+        if (!headerComponent) return null;
+        if (isValidElement(headerComponent)) return headerComponent;
+
+        if (typeof headerComponent === 'function' || (typeof headerComponent === 'object' && headerComponent !== null)) {
+            try {
+                return createElement(headerComponent);
+            } catch {
+                return headerComponent;
+            }
+        }
+        return headerComponent;
+    }, [headerComponent]);
+
+    const headerContent = resolvedHeaderComponent ?? textName;
 
     let rightComponents = settings?.header
     if (!rightComponents || Object.entries(rightComponents).length === 0) {
@@ -153,11 +174,16 @@ export const ScreenHeader = ({
     const isCollapsibleHeader = appSetting('native', 'collapsible_header') && !isDesktop;
 
     // Reset shared header height when leaving this screen to avoid leaking padding to other screens.
-    useEffect(() => {
-        // Ensure a sane non-zero starting value for native lists before first measurement.
+    useIsomorphicLayoutEffect(() => {
+        // Ensure a sane non-zero starting value for lists before first measurement,
+        // and force "not scrolled" state so the header starts visible.
         setHeaderHeightAtom(64);
-        return () => setHeaderHeightAtom(0);
-    }, [setHeaderHeightAtom]);
+        setScrollDirectionAtom(0);
+        return () => {
+            setHeaderHeightAtom(0);
+            setScrollDirectionAtom(0);
+        };
+    }, [setHeaderHeightAtom, setScrollDirectionAtom]);
 
     // Анимация уплывания хедера на нативе
     useEffect(() => {

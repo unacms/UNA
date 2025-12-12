@@ -1,5 +1,5 @@
 import { View, Row, Pressable } from 'app/design/view';
-import { useMemo, useEffect, memo, isValidElement } from 'react';
+import { createElement, useMemo, useEffect, memo, isValidElement } from 'react';
 import { Text } from 'app/design/typography'
 import { Platform } from 'react-native'
 import { FeedbackHaptics, getPageSettings } from 'app/lib/util';
@@ -48,7 +48,26 @@ export const Header = memo(({
         const menuSettings = getMenuSettings(pageData?.menu?.object, pageData?.menu?.config, pageData?.menu);
         textName = menuSettings.name;
     }
-    const headerContent = headerComponent ? headerComponent : textName;
+    // Support passing either:
+    // - a React element: headerComponent={<MyHeader />}
+    // - a component type: headerComponent={MyHeader}
+    const resolvedHeaderComponent = useMemo(() => {
+        if (!headerComponent) return null;
+        if (isValidElement(headerComponent)) return headerComponent;
+
+        // React component types can be functions or objects (memo/forwardRef). If it isn't a valid type,
+        // createElement will throw and we'll fall back to rendering it as-is.
+        if (typeof headerComponent === 'function' || (typeof headerComponent === 'object' && headerComponent !== null)) {
+            try {
+                return createElement(headerComponent);
+            } catch {
+                return headerComponent;
+            }
+        }
+        return headerComponent;
+    }, [headerComponent]);
+
+    const headerContent = resolvedHeaderComponent ?? textName;
 
     let rightComponents = settings?.header
     if (!rightComponents || Object.entries(rightComponents).length === 0) {

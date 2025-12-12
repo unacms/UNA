@@ -58,7 +58,7 @@ export const Row = forwardRef(({ children, className = '', style, ...props }, re
         : style;
     
     return (
-        <ReactNativeView ref={ref} className={'flex-row ' + className} style={mergedStyle} {...props}>
+        <ReactNativeView ref={ref} className={'flex flex-row ' + className} style={mergedStyle} {...props}>
             {children}
         </ReactNativeView>
     );
