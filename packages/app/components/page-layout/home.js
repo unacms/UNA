@@ -29,8 +29,7 @@ import { useLayoutSettings } from 'app/context/layout-settings'
 import Badge from 'app/ui/molecules/badge'
 import Badges from 'app/ui/molecules/badges'
 import { useBreakpoint, useWindowSize, useIsDesktop, useWindowHeight, useWindowWidth } from 'app/context/measure';
-import { useSetAtom } from 'jotai';
-import { subheaderAtom } from 'app/context/jotai/layout';
+import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
 
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
@@ -121,7 +120,7 @@ export default function ({ data, blocks }) {
     const isDesktop = useIsDesktop();
     const { layoutName, layoutSettings } = useLayoutSettings();
 
-    const setSubheader = useSetAtom(subheaderAtom);
+    const setHeader = useSetHeader();
 
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
@@ -381,15 +380,9 @@ export default function ({ data, blocks }) {
         }, [currentBreakpointName]);
 
 
-         useEffect(() => {
-        setSubheader(isDesktop ? null : subHeader);
-    }, [isDesktop, subHeader, setSubheader]);
-    
-
-    useEffect(() => {
-        return () => setSubheader(null);
-    }, [setSubheader]);
-        
+       useEffect(() => {
+        setHeader(isDesktop ? defaultHeader : {subHeader: subHeader});
+    }, [isDesktop, subHeader, setHeader]);
 
         return (
             <>{BlocksCenter}

@@ -12,13 +12,12 @@ import { appSetting } from 'app/lib/util'
 import { Platform } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
 import AuthPanel from 'app/ui/molecules/auth'
-import { useRef } from 'react'
 import { BlockByName } from 'app/components/block'
 import MenuFooter from 'app/components/nav/menu-footer'
 import AnimatedView from 'app/ui/atoms/animated-view'
 import { useTranslation } from 'react-i18next'
-import ScrollList from 'app/ui/molecules/scroll_list'
 import Link from 'app/ui/atoms/link'
+import Page from 'app/ui/molecules/page'
 
 /**
  * Renders the login splash screen with adaptive layouts for web and mobile platforms.
@@ -94,7 +93,6 @@ function PageContent({data}) {
 
 export default function Splash(props) {
     const isWeb = Platform.OS == 'web'
-    const refer = useRef()
     const content = isWeb ? (
         <View className="flex-col justify-center lg:pt-0 w-full ">
             <View
@@ -134,12 +132,8 @@ export default function Splash(props) {
     )
 
     return (
-        <ScrollList
-            refer={refer}
-            content={content}
-            pageData={props.data}
-            headerHeight={isWeb ? 48 : 48}
-            contentType="ScrollList"
-        />
+        <Page>
+            {content}
+        </Page>
     )
 }
