@@ -31,7 +31,9 @@ function WindowSizeSync() {
     }, [width, height, setWindowSize]);
 }
 
-export default function Layouts({ path, data, uri, url }) {
+export default function Layouts({ path, data }) {
+    const uri = data?.uri
+    const url = data?.url
     const isWeb = Platform.OS === 'web';
     if (isWeb)
         registerAll();
@@ -80,8 +82,8 @@ export default function Layouts({ path, data, uri, url }) {
     const isVersionInfo = v && semver.gtr(v, maxVersion, { includePrerelease: true }) && currentUser?.operator;
 
     return (
-        <Layout layout={layout} path={path} data={data} uri={uri} key={`layout${currentUser?.id}`}>
-            <PageLayoutContent layout={layout} path={path} data={data} uri={uri} url={url} />
+        <Layout layout={layout} data={data}>
+            <PageLayoutContent layout={layout} path={path} data={data} />
             <WindowSizeSync />
             {isVersionInfo && <View className="fixed bottom-16 left-5"><DropdownPopup
                 open={true}
@@ -137,14 +139,12 @@ function ErrorPage({ type }) {
 }
 
 function Wrapper({ children }) {
-    return <View className="flex mx-auto w-full ">{children}</View>;/*animated-view*/
+    return <View className="flex mx-auto w-full ">{children}</View>;
 }
 
-function PageLayoutContent(props) {
-
-    const { data, url } = props;
+function PageLayoutContent({ layout, data }) {
     const { currentUser } = useCurrentUser();
-    const { layoutName, layoutBlocks, isCustomLayout } = props.layout;
+    const { layoutName, layoutBlocks, isCustomLayout } = layout;
 
     const hasProfileInformer = currentUser?.informer?.some(
         item => item.id === "sys-account-profile-system"
@@ -159,11 +159,11 @@ function PageLayoutContent(props) {
     }, [layoutName]);
 
     const componentKey = useMemo(() => {
-        return `layout-${layoutName}-${props.uri || url || data?.uri || ''}-${data?.timestamp || ''}`;
-    }, [layoutName, props.uri, url, data?.uri, data?.timestamp]);
+        return `layout-${layoutName}-${data.uri || data.url || ''}-${data?.timestamp || ''}`;
+    }, [layoutName, data.uri, data.url, data?.timestamp]);
 
     if (currentUser && !currentUser.confirmed && appSetting('layout', 'lock_unconfirmed')) {
-        return <ConfirmEmail url={url} />;
+        return <ConfirmEmail url={data.url} />;
     }
 
     if (hasProfileInformer && appSetting('layout', 'lock_no_profile')) {
@@ -189,10 +189,14 @@ function PageLayoutContent(props) {
         return null;
     }
 
+    const Splash = getComponent('molecule', 'splash')
+    if (!currentUser && layoutName=='home')
+        return <Splash data={data} />
+
     if (isCustomLayout && layoutBlocks) {
         return (
             <Wrapper>
-                <Component key={componentKey} layoutName={layoutName} {...props} blocks={layoutBlocks} />
+                <Component key={componentKey} layoutName={layoutName} data={data} blocks={layoutBlocks} />
             </Wrapper>
         );
     }
@@ -202,12 +206,12 @@ function PageLayoutContent(props) {
     }
 
     const cells = Object.keys(data.elements).map((key) => (
-        <Cell key={key} uri={data?.uri} url={url} blocks={data.elements[key]} />
+        <Cell key={key} uri={data?.uri} url={data.url} blocks={data.elements[key]} />
     ));
 
     return (
         <Wrapper>
-            <Component key={componentKey} layoutName={layoutName} {...props}>
+            <Component key={componentKey} layoutName={layoutName} data={data}>
                 {cells}
             </Component>
         </Wrapper>

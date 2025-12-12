@@ -47,6 +47,7 @@ import {
 import { useLayoutSettings } from 'app/context/layout-settings'
 import { useIsDesktop, useBreakpoint } from 'app/context/measure'
 import Snackbar from 'app/ui/atoms/snackbar'
+import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
 
 const conductorTheme = appSetting('theme', 'conductor')
 
@@ -69,7 +70,6 @@ export function Conductor({
     const { layoutName: tmplLayout } = useLayoutSettings()
     const cleanUrl = data.url.split('?')[0]
     const isDesktop = useIsDesktop()
-    
 
     const coverMode = appSetting(
         'cover',
@@ -144,8 +144,6 @@ export function Conductor({
         initialHeaderSettings.offset = false
     }
     const [headerSettings, setHeaderSettings] = useState(initialHeaderSettings)
-
-
 
     useEffect(() => {
         if (currentRoute.inited) {
@@ -388,7 +386,10 @@ const TabSceneMainContent = ({
     const isDesktop = useIsDesktop()
     const pageData = pageRoute.pageData
     const uniRef = useRef()
-    const dataItemsPage = pageRoute?.data
+    const dataItemsPage = pageRoute?.data;
+
+    const setHeader = useSetHeader();
+
     const unitType = useMemo(() => {
         const type = getUnitModeBySource(pageRoute?.endpoint)
         return type === 'default' ? getUnitType(pageRoute) : type
@@ -552,19 +553,13 @@ const TabSceneMainContent = ({
 
     const dataItems = isDesktop || !!pageRoute?.endpoint?.request_url ? [...dataItemsPage, ...refetchState.visibleItems] : [...dataItemsPage, ...refetchState.visibleItems, ...pageRoute.sidebar.content];
 
+    useEffect(() => {
+        setHeader(isDesktop ? defaultHeader : {subHeader: header});
+    }, [isDesktop, header, setHeader]);
+    
     return (
         <><UniList
-            scrollProps={
-                header
-                    ? {
-                        pageData: pageData,
-                        subHeaderComponent: header,
-                        headerHeight: headerHeight,
-                        isBackButton: false,
-                        isMenuNameAsTitle: true,
-                    }
-                    : null
-            }
+            
             data={dataItems}
             endpoint={pageRoute.endpoint}
             listState={pageRoute?.state}

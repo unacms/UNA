@@ -4,17 +4,16 @@ import { View } from 'app/design/view'
 import ScrollList from 'app/ui/molecules/scroll_list'
 import { useRef, useCallback } from 'react';
 import { LegendList } from "@legendapp/list";
-import { useSetAtom, useAtomValue } from 'jotai';
-import { scrollDirectionAtom, headerHeightAtom } from 'app/context/jotai/layout';
+import { useSetScrollDirection, useHeaderHeight } from 'app/context/jotai/layout';
 
 export default function UniList(props) {
     const uniRef = useRef();
     const { preloadComponent, contentContainerStyle, scrollProps, data, index, mode, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, unit, refreshing, onRefresh, height, ...rest } = props
 
-    const scrollY = useRef(0); // Добавить для отслеживания позиции
-    const scrollState = useRef(0); // Добавить для отслеживания состояния: 0, 1 или -1
-    const setScrollDirection = useSetAtom(scrollDirectionAtom); // Добавить
-    const headerHeightFromAtom = useAtomValue(headerHeightAtom);
+    const scrollY = useRef(0); 
+    const scrollState = useRef(0); 
+    const setScrollDirection = useSetScrollDirection(); 
+    const headerHeightFromAtom = useHeaderHeight();
     // Prefer measured shared header height when available, otherwise fall back to legacy scrollProps.
     const headerHeight =
         typeof headerHeightFromAtom === 'number' && headerHeightFromAtom > 0
@@ -81,9 +80,9 @@ export default function UniList(props) {
             }
         />
 
-        if (!scrollProps)
+        //if (!scrollProps)
             return content;
-        return (
+        /*return (
             <ScrollList
                 content={content}
                 contentType="FlatList"
@@ -92,7 +91,7 @@ export default function UniList(props) {
                 {...scrollProps}
             />
 
-        )
+        )*/
     }
 
 

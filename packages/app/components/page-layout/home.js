@@ -1,3 +1,5 @@
+ 
+    
 import { View, Row, ScrollView } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
 import React, { useState, useMemo, useRef, useEffect, Children } from 'react'
@@ -29,8 +31,7 @@ import { useLayoutSettings } from 'app/context/layout-settings'
 import Badge from 'app/ui/molecules/badge'
 import Badges from 'app/ui/molecules/badges'
 import { useBreakpoint, useWindowSize, useIsDesktop, useWindowHeight, useWindowWidth } from 'app/context/measure';
-import { useSetAtom } from 'jotai';
-import { subheaderAtom } from 'app/context/jotai/layout';
+import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
 
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
@@ -121,7 +122,7 @@ export default function ({ data, blocks }) {
     const isDesktop = useIsDesktop();
     const { layoutName, layoutSettings } = useLayoutSettings();
 
-    const setSubheader = useSetAtom(subheaderAtom);
+    const setHeader = useSetHeader();
 
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
@@ -142,16 +143,10 @@ export default function ({ data, blocks }) {
         storageSet('feed:type', '', mode, true)
         setFeedType(mode)
     }
-
-
-    if (!isAuthenticated) {
-        const Splash = getComponent('molecule', 'splash')
-        return <Splash data={data} />
-    }
-
+    
     const { sideBarBlocks, navBarBlocks, topBlocks, centerBlocks, timelineBlocks } = defineCells(blocks, data);
 
-    if (currentUser) {
+    if (isAuthenticated) {
         asyncStorageSet('layout:visited', 'true')
         let dUser = Object.assign({}, currentUser)
         dUser.url_avatar = dUser.avatar
@@ -386,13 +381,13 @@ export default function ({ data, blocks }) {
 
 
          useEffect(() => {
-        setSubheader(isDesktop ? null : subHeader);
-    }, [isDesktop, subHeader, setSubheader]);
+        setHeader(isDesktop ? defaultHeader : {subHeader: subHeader});
+    }, [isDesktop, subHeader, setHeader]);
     
 
     useEffect(() => {
-        return () => setSubheader(null);
-    }, [setSubheader]);
+        return () => setHeader(defaultHeader);
+    }, [setHeader]);
         
 
         return (

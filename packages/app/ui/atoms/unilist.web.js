@@ -6,14 +6,11 @@ import { useRef, useEffect } from 'react';
 import { cd } from 'app/lib/util'
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useCallback, forwardRef } from 'react';
-import ScrollList from 'app/ui/molecules/scroll_list'
 import { useBreakpoint } from 'app/context/measure'
-import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
-import { useSetAtom } from 'jotai';
-import { scrollDirectionAtom } from 'app/context/jotai/layout';
+import { useSetScrollDirection } from 'app/context/jotai/layout';
 
 export default function UniList(props) {
-    let { useCustomScrollHandler, scrollProps, preloadComponent, sortable, data, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
+    let { useCustomScrollHandler, preloadComponent, sortable, data, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
         onSort, mode, layout, numColumns, keyboardShouldPersistTaps, keyExtractor, useWindowScroll: useWindowScrollProp, height, listState, endpoint, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, isInPanel, paddingTop, ...rest } = props
 
     const uniRef = useRef();
@@ -21,7 +18,7 @@ export default function UniList(props) {
     const scrollY = useRef(0);
     const scrollState = useRef(0); // Текущее состояние: 0, 1 или -1
     
-    const setScrollDirection = useSetAtom(scrollDirectionAtom);
+    const setScrollDirection = useSetScrollDirection();
 
     data = data.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
 
@@ -152,7 +149,8 @@ export default function UniList(props) {
     const virtuosoStyle = isWindowScroll 
         ? (paddingTop ? { paddingTop } : {}) 
         : style;
-    
+
+
     const commonVirtuosoProps = {
         data,
         useWindowScroll: isWindowScroll,
@@ -166,25 +164,11 @@ export default function UniList(props) {
             Footer: () => {
                 return ListFooterComponent
             },
-            Header: () => {
-
-                // Add header spacer only for panel layouts on lg+ viewports where content scrolls under semi-transparent header
-                if (isInPanel && scrollProps?.headerHeight > 0 && currentBreakpoint >= LAYOUT_BREAKPOINTS.lg) {
-                    return <View style={{ height: 64 }} />;
-                }
-                return useCustomScrollHandler ? <View style={{ paddingTop: scrollProps.headerHeight }}></View> : null;
-            },
+          
         } : {
             Footer: () => ListFooterComponent,
-            Header: () => {
-                // Add header spacer only for panel layouts on lg+ viewports where content scrolls under semi-transparent header
-                if (isInPanel && scrollProps?.headerHeight > 0 && currentBreakpoint >= LAYOUT_BREAKPOINTS.lg) {
-                    return <View style={{ height: 64 }} />;
-                }
-                return useCustomScrollHandler ? <View style={{ paddingTop: scrollProps.headerHeight }}></View> : null;
-            },
+            
         },
-        // isScrolling,
         ...rest,
     };
     let contentComponent = null
@@ -196,7 +180,7 @@ export default function UniList(props) {
         const wrapperStyle = isWindowScroll ? {} : style;
         
         if (mode != 'simple' && !sortable) {
-            contentComponent = (
+            return (
                 <View className="@container/list" style={wrapperStyle}>
                     {ListHeaderComponent && ListHeaderComponent()}
                     <VirtuosoGrid
@@ -212,7 +196,7 @@ export default function UniList(props) {
         }
         else {
             if (sortable) {
-                contentComponent = (
+                return (
                     <DragDropContext onDragEnd={onSort}>
                         <Droppable
                             droppableId="droppable"
@@ -243,7 +227,7 @@ export default function UniList(props) {
                 )
             }
             else {
-                contentComponent = (
+                return (
                     <View style={wrapperStyle}>
                         {ListHeaderComponent && ListHeaderComponent()}
                         <Virtuoso
@@ -259,18 +243,5 @@ export default function UniList(props) {
         }
     }
 
-    if (!scrollProps)
-        return contentComponent;
-
-    return (
-        <ScrollList
-            useCustomScrollHandler={useCustomScrollHandler}
-            content={contentComponent}
-            contentType="FlatList"
-            refer={refer ? refer : uniRef}
-            {...scrollProps}
-        />
-
-    )
-
+    return contentComponent;
 }

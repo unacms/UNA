@@ -9,6 +9,7 @@ export default function ElementProfileMenu({ data, blockWrapperProps }) {
     const { t } = useTranslation();
     const { currentUser } = useCurrentUser();
     const menu_items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', data, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_sidebar'), currentUser);
+    if (!currentUser) return <></>;
     return (
         <BlockWrapper {...blockWrapperProps}>
             <View className="profile-menu gap-y-0.5">

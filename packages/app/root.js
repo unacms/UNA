@@ -63,6 +63,6 @@ export function Root(props) {
         return null
     }
     return (
-        <Layouts path={props?.path} data={data} uri={data?.uri} url={data?.url} />
+        <Layouts path={props?.path} data={data} />
     );
 }

@@ -23,7 +23,7 @@ export default function HeaderElement({ mode, url, uri }) {
         : toolbarConfig?.loggedOut
 
     return (
-        <Row className="justify-end gap-1 lg:gap-2 items-center px-2 ">
+        <Row className="justify-end gap-1 lg:gap-2 items-center ">
             {itemsToRender?.filter(item => (isWeb ? item.web != false : item.native != false)).map((item, index) => (
                 <View key={index} className={item.className}>
                     {(() => {

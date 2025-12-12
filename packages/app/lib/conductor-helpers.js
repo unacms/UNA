@@ -16,7 +16,7 @@ import {
 } from 'app/lib/util'
 import { Platform } from 'react-native'
 import { useCurrentUser } from 'app/context/user'
-import { TextHeader } from 'app/ui/molecules/scroll_list_header'
+import { TextHeader } from 'app/ui/molecules/page_header'
 
 const conductorTheme = appSetting('theme', 'conductor')
 
@@ -561,7 +561,7 @@ export function TopSidebar({
 
                     {!currentUser && title ? (
                         <View className="ps-3">
-                            <TextHeader text={title} />
+                            <TextHeader text={'choto za gavno ' + title} />
                         </View>
                     ) : null}
                     {children}

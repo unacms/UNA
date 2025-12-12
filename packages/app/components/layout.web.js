@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next'
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { useIsDesktop } from 'app/context/measure';
 import PopupModal from 'app/ui/molecules/popup_modal'
-import { ScreenHeader } from 'app/ui/molecules/screen_header';
+import { PageHeader } from 'app/ui/molecules/page_header';
 
 const Navbar = lazy(() => import('app/components/nav/navbar'));
 
@@ -113,18 +113,18 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
             {appStatic('maintenance_mode')}
         </>
     }
-
-    const isNewLayoutStyle = layoutName === 'home';
-
+    /*
+    const isNewLayoutStyle = layoutName === 'home' || layoutName === 'post' || layoutName === 'navigator' || layoutName === 'messenger' || layoutName === 'default' || layoutName === 'login' || layoutName === 'create-account';
+    
+     {!isNewLayoutStyle && <NavbarMemo pageLayoutName={pageLayoutName} headerSettings={headerSettings} context={data?.context} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} >
+                <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
+            </NavbarMemo>}*/
     return (
         <View className="w-full flex-1">
             <Suggestions />
             <AsyncWorker />
-            {isNewLayoutStyle && <ScreenHeader layoutName={layoutName} pageLayoutName={pageLayoutName} pageData={data} />}
-            {isNewLayoutStyle && <Content isNewLayoutStyle={isNewLayoutStyle} layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />}
-            {!isNewLayoutStyle && <NavbarMemo pageLayoutName={pageLayoutName} headerSettings={headerSettings} context={data?.context} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} >
-                <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
-            </NavbarMemo>}
+            <PageHeader layoutName={layoutName} pageLayoutName={pageLayoutName} pageData={data} />
+            <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
             {headerSettings.footer !== false && !appSetting('layout', 'footer', 'hide_for_layouts').includes(layoutName) && <Footer />}
             <BottomSheet />
             <ModalPopup />
@@ -379,13 +379,12 @@ export default function Layout(props) {
     return <MemoizedContent pageLayoutName={pageLayoutName} blocks={blocks} headerSettings={headerSettings} currentUser={currentUser} layoutName={layoutName} data={data} children={children} uri={uri} />
 }
 
-const Content = React.memo(({ children, headerSettings, currentUser, layoutName, url, isNewLayoutStyle }) => {
+const Content = React.memo(({ children, headerSettings, currentUser, layoutName, url }) => {
     const isHideHeader = (appSetting('layout', 'hide_header_for_non_logged') && !currentUser) || appSetting('layout', 'hide_header_for_all');
     const mainClassName = `${(layoutName != 'messenger' && layoutName != 'post' && !isHideHeader) ? ' pb-16 web:lg:pb-0 lg:pb-0 ' : ''} w-full mx-auto`;
     return (
         <View className="w-full items-stretch cnt-root mx-auto flex-row " key={url}>
-            <main id="main-content" role="main" className={mainClassName}>{/*mb-16* TODO lg:pb-0*/}
-                {(headerSettings.offset && !isHideHeader && !isNewLayoutStyle) && <View className={` ${appSetting('layout', 'header', 'offset')}`} />}
+            <main id="main-content" role="main" className={mainClassName}>
                 <Informer />
                 {children}
             </main>

@@ -12,13 +12,12 @@ import {
 import Link from 'app/ui/atoms/link'
 import { Platform } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
-import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import AuthPanel from 'app/ui/molecules/auth'
 import { appSetting } from 'app/lib/util'
-import ScrollList from 'app/ui/molecules/scroll_list'
 import MenuFooter from 'app/components/nav/menu-footer'
 import AnimatedView from 'app/ui/atoms/animated-view'
+import Page from 'app/ui/molecules/page'
 
 const isWeb = Platform.OS === 'web'
 
@@ -28,14 +27,14 @@ function PageContent({ children }) {
         <View className="w-full justify-center lg:w-1/2 p-4 sm:p-8 md:p-12 p-6 ">
 
             <AnimatedView className="gap-4" direction="up" delay={200}>
-            <Card padding="p-0 gap-6 max-w-xl w-full mx-auto rounded-3xl">
-            <CardHeader className="px-6 pt-5">
+                <Card padding="p-0 gap-6 max-w-xl w-full mx-auto rounded-3xl">
+                    <CardHeader className="px-6 pt-5">
                         <CardTitle className="text-center lg:text-start">{t('create_account_page_caption')}</CardTitle>
-                        
-                            <CardDescription className="text-center lg:text-start">
-                                {t('create_account_page_caption2')}
-                            </CardDescription>
-                    
+
+                        <CardDescription className="text-center lg:text-start">
+                            {t('create_account_page_caption2')}
+                        </CardDescription>
+
                     </CardHeader>
                     <CardContent className="px-6">
                         {children}
@@ -58,18 +57,16 @@ function PageContent({ children }) {
                     </CardFooter>
                 </Card>
 
-               
+
             </AnimatedView>
         </View>
     )
 }
 
-export default function PageLayout(props) {
+export default function PageLayout({ data, blocks }) {
     const { t } = useTranslation()
-    const refer = useRef()
-
-    const joinData = DataByName(props.data, props.blocks.form_join)
-    const inviteData = DataByName(props.data, props.blocks.form_invitation)
+    const joinData = DataByName(data, blocks.form_join)
+    const inviteData = DataByName(data, blocks.form_invitation)
 
     const isAllowJoin = joinData?.content.some((item) => item.type === 'form')
     const hasForm =
@@ -77,8 +74,8 @@ export default function PageLayout(props) {
 
     const Block = (
         <BlockByData
-            url={props.data.url}
-            uri={props.data.uri}
+            url={data.url}
+            uri={data.uri}
             contentOnly={true}
             data={joinData || inviteData}
             formProps={{ hide_errors: true, button_full_width: true }}
@@ -97,26 +94,24 @@ export default function PageLayout(props) {
 
                     {appStatic('join_text')}
                     <H1
-                    className="text-4xl sm:text-5xl tracking-tight font-bold text-foreground text-balance"
-                >
-                            {isAllowJoin
-                                ? t('create_account_page_title')
-                                : t('create_account_page_title_request_invite')}
-                        </H1>
-                        <Text
-                            accessible={true}
-                            accessibilityRole="text"
-                            className=" text-secondary-foreground text-base sm:text-lg lg:text-xl text-pretty"
-                        >
-                            {isAllowJoin
-                                ? t('create_account_page_text')
-                                : t('create_account_page_text_request_invite')}
-                        </Text>
-                    
+                        className="text-4xl sm:text-5xl tracking-tight font-bold text-foreground text-balance"
+                    >
+                        {isAllowJoin
+                            ? t('create_account_page_title')
+                            : t('create_account_page_title_request_invite')}
+                    </H1>
+                    <Text
+                        accessible={true}
+                        accessibilityRole="text"
+                        className=" text-secondary-foreground text-base sm:text-lg lg:text-xl text-pretty"
+                    >
+                        {isAllowJoin
+                            ? t('create_account_page_text')
+                            : t('create_account_page_text_request_invite')}
+                    </Text>
+
                 </View>
                 <PageContent>{Block}</PageContent>
-
-
             </View>
             <MenuFooter
                 cntClasses="flex w-full items-center border-t border-border/40 justify-center flex-row flex-wrap gap-4 p-4"
@@ -139,12 +134,6 @@ export default function PageLayout(props) {
     )
 
     return (
-        <ScrollList
-            refer={refer}
-            content={content}
-            pageData={props.data}
-            headerHeight={isWeb ? 0 : 48}
-            contentType="ScrollList"
-        />
+        <Page data={data}>{content}</Page>
     )
 }
