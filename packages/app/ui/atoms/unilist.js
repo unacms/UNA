@@ -1,7 +1,6 @@
 //import { /*MasonryFlashList,*/ FlashList } from "@shopify/flash-list";
 import { RefreshControl, FlatList } from 'react-native';
 import { View } from 'app/design/view'
-import ScrollList from 'app/ui/molecules/scroll_list'
 import { useRef, useCallback } from 'react';
 import { LegendList } from "@legendapp/list";
 import { useSetScrollDirection, useHeaderHeight } from 'app/context/jotai/layout';

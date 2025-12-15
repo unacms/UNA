@@ -1,22 +1,17 @@
 import { View, Row, Pressable } from 'app/design/view';
-import { useMemo, useEffect, useState, memo, isValidElement, useRef } from 'react';
+import { useEffect, memo, useRef } from 'react';
 import { Text } from 'app/design/typography'
 import { Platform, Animated } from 'react-native'
-import { FeedbackHaptics, getPageSettings } from 'app/lib/util';
+import { FeedbackHaptics } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
 import { appStatic } from 'app/lib/app-static';
-import { menuItemsFilter } from 'app/lib/util';
 import { appSetting, getMenuSettings } from 'app/lib/util'
 import Link from 'app/ui/atoms/link'
 import { useRouter } from 'app/lib/hooks/router'
-import { useTranslation } from 'react-i18next';
 import { useIsDesktop } from 'app/context/measure';
 import { Button } from 'app/design/controls'
 import { getComponent } from 'app/components/registry';
-import {
-    CoverMenu,
-} from 'app/components/nav/menu-cover'
-import { useSetHeaderHeight, useScrollDirection, useHeader, useHeaderHeight } from 'app/context/jotai/layout';
+import { useSetHeaderHeight, useScrollDirection, useHeader, useHeaderHeight, useSetScrollDirection } from 'app/context/jotai/layout';
 import MenuTop from 'app/components/nav/menu-top'
 
 export const TextHeader = memo(({ text }) => {
@@ -35,6 +30,7 @@ export const PageHeader = ({
     const router = useRouter();
     const header = useHeader();
     const scrollDirection = useScrollDirection();
+    const setScrollDirection = useSetScrollDirection();
     const setHeaderHeightAtom = useSetHeaderHeight();
     const headerHeight =useHeaderHeight();
 
@@ -52,7 +48,11 @@ export const PageHeader = ({
     const HeaderElement = getComponent('molecule', 'header_element');
     const menuSettings = getMenuSettings(pageData?.menu?.object, pageData?.menu?.config, pageData?.menu);
 
+    useEffect(() => {
+        setScrollDirection(0);
+    }, [pageData?.url, pageData?.uri, setScrollDirection]);
     
+
     /* set Page title */
     let pageTitle = pageData?.name;
     
@@ -115,6 +115,7 @@ export const PageHeader = ({
                 {header.header ? header.header : (<>
                     <Row className="items-center justify-between web:h-16 px-3">
                         <Row className="items-center justify-start flex-1 lg:flex-none overflow-hidden gap-x-2">
+                            <Row className="items-center justify-start lg:w-80 gap-x-2">
                             {(isBackButton && (!isWeb || history.length > 2)) && (
                                 <View className="items-center">
                                     <Button
@@ -128,11 +129,13 @@ export const PageHeader = ({
                                         size="base" />
                                 </View>
                             )}
-                            {leftElement}
-                            {contextSelectorElement}
+                                {leftElement}
+                                {contextSelectorElement}
+                            </Row>
+                            
                         </Row>
                         {isWeb && <MenuTop url={pageData.url} uri={pageData.uri} />}
-                        <Row className=" items-end">
+                        <Row className=" items-center justify-end lg:w-80">
                             <HeaderElement mode="small" url={pageData?.url} uri={pageData?.uri} />
                             {/*(pageData?.context && pageData?.cover_block?.actions_menu) && <CoverMenu
                                 {...pageData.cover_block.actions_menu}

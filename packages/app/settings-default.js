@@ -89,7 +89,7 @@ export const settingsDefault = {
         tablet_mode_from: 'lg',
         show_tabbar_on_mobile_non_logged: false,
 
-        header: {
+        /*header: {
             offset: ' h-16 w-full ',
             container:
                 ' header-fixed hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%] web:duration-500  ',
@@ -108,7 +108,7 @@ export const settingsDefault = {
                 post: 'hidden lg:flex',
                 default: ' flex ',
             },
-        },
+        },*/
         footer: {
             hide_for_layouts: ['post']
         },
