@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { appSetting} from 'app/lib/util'
+import { appSetting } from 'app/lib/util'
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { useTranslation } from 'react-i18next'
@@ -42,13 +42,13 @@ function DefaultUnit({ data }) {
         [data]
     )
     const showCommentsModal = async (initFormData) => {
-         const url2 = (url.startsWith('/') ? url.slice(1) : url) + (initFormData?.cmt_id > 0 ? '#cmt_id='+initFormData?.cmt_id : '');
-         const sResponse = await getPageData(url2, false);
-                if (sResponse.data !== pageData.data) {
-                    setPageData({data:sResponse.data, url:url, url2:url2});
-                }
+        const url2 = (url.startsWith('/') ? url.slice(1) : url) + (initFormData?.cmt_id > 0 ? '#cmt_id=' + initFormData?.cmt_id : '');
+        const sResponse = await getPageData(url2, false);
+        if (sResponse.data !== pageData.data) {
+            setPageData({ data: sResponse.data, url: url, url2: url2 });
+        }
     }
-    
+
     if (isCommentsModal) {
         const commentItem = data.menu_actions.items.find(
             (x) => x.name === 'item-comment'
@@ -56,13 +56,20 @@ function DefaultUnit({ data }) {
         if (commentItem?.data) {
             commentItem.data.callback = showCommentsModal
         }
+
+        const commentItem1 = data.menu_counters.items.find(
+            (x) => x.name === 'item-comment'
+        )
+        if (commentItem1?.data) {
+            commentItem1.data.callback = showCommentsModal
+        }
     }
 
     if (viewState.view == 'deleted') return <></>
 
     const isWeb = Platform.OS === 'web';
     if (data.type == 'timeline_recommendations') {
-        if (!isWeb){
+        if (!isWeb) {
             return null
         }
         const Unit = getComponent('content-list', data.module);
@@ -93,7 +100,7 @@ function DefaultUnit({ data }) {
                     <CardContent className=" overflow-hidden rounded-b-xl">
                         <Scroll horizontal={true} step={300} className='w-full'><Row className="gap-2 pb-3 px-3">{contentElement}</Row></Scroll>
                     </CardContent>
-                    
+
                 </CardList>
             </AnimatedBlock>
         );
@@ -130,14 +137,12 @@ function DefaultUnit({ data }) {
                         appSetting('feed', 'counters_menu') && (
                             <CounterMenu
                                 data={data.menu_counters}
-                                showCommentsModal={showCommentsModal}
                             />
                         )}
                 </Row>
                 <Row className=" gap-3 items-center flex-auto justify-between pt-2.5 px-3 mt-1 -mx-4 -mb-1  border-t border-border/40">
                     <ActionMenu
                         data={data.menu_actions}
-                        showCommentsModal={showCommentsModal}
                     />
                     <MenuManage
                         id={data.id}
