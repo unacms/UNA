@@ -1,6 +1,6 @@
 import { View, Row, ScrollView } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
-import React, { useState, useMemo, useRef, useEffect, Children } from 'react'
+import React, { useState, useMemo, useRef, useEffect, useLayoutEffect } from 'react'
 import {
     cd,
     appSetting,
@@ -116,6 +116,7 @@ export default function ({ data, blocks }) {
      <Button startDecorator="Plus" variant="badge" title="fdfdsf"></Button>
 </>
     )*/
+   console.log(456)
     const isWeb = Platform.OS == 'web'
     const isDesktop = useIsDesktop();
     const { layoutName, layoutSettings } = useLayoutSettings();
@@ -372,9 +373,16 @@ export default function ({ data, blocks }) {
         }
     }, [currentBreakpointName]);
 
-
+   
     useEffect(() => {
-        setHeader(isDesktop ? defaultHeader : { subHeader: subHeader });
+        if (isWeb) 
+            setHeader(isDesktop ? defaultHeader : { subHeader: subHeader });
+    }, [isDesktop, subHeader, setHeader]);
+
+
+    useLayoutEffect(() => {
+        if (!isWeb) 
+            setHeader(isDesktop ? defaultHeader : { subHeader: subHeader });
     }, [isDesktop, subHeader, setHeader]);
 
     return (

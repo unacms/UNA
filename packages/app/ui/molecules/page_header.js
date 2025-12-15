@@ -11,7 +11,7 @@ import { useRouter } from 'app/lib/hooks/router'
 import { useIsDesktop } from 'app/context/measure';
 import { Button } from 'app/design/controls'
 import { getComponent } from 'app/components/registry';
-import { useSetHeaderHeight, useScrollDirection, useHeader, useHeaderHeight, useSetScrollDirection } from 'app/context/jotai/layout';
+import { useSetHeaderHeight, useScrollDirection, useHeader, useHeaderHeight, useSetScrollDirection, useSetHeader, defaultHeader } from 'app/context/jotai/layout';
 import MenuTop from 'app/components/nav/menu-top'
 
 export const TextHeader = memo(({ text }) => {
@@ -32,6 +32,7 @@ export const PageHeader = ({
     const scrollDirection = useScrollDirection();
     const setScrollDirection = useSetScrollDirection();
     const setHeaderHeightAtom = useSetHeaderHeight();
+     const setHeader = useSetHeader();
     const headerHeight =useHeaderHeight();
 
     const isWeb = Platform.OS === 'web'
@@ -50,6 +51,7 @@ export const PageHeader = ({
 
     useEffect(() => {
         setScrollDirection(0);
+      // setHeader(defaultHeader);
     }, [pageData?.url, pageData?.uri, setScrollDirection]);
     
 

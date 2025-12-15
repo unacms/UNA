@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useState, useEffect, useMemo, useLayoutEffect } from "react";
 import { View, ScrollView, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { deepEqual, getUnitModeBySource } from 'app/lib/util';
@@ -19,6 +19,7 @@ import { callFn } from 'app/lib/functions/call';
 import Cover, { CoverSmall } from 'app/components/elements/cover';
 import { useBreakpoint } from 'app/context/measure';
 import emitter from 'app/context/emitter'
+import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
 
 const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute, currentUser }) => {
     if (routes.length > 1) {
@@ -148,7 +149,7 @@ const TabScene = React.memo(({
     )
 });
 
-export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 88, smallHeader, minHeaderHeight, isHideDefaultHeader, leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
+export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 88, smallHeader, minHeaderHeight, isHideDefaultHeader, leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
 
     minHeaderHeight = minHeaderHeight || 100;
     isHideDefaultHeader = isHideDefaultHeader || false;
@@ -157,7 +158,7 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 88, s
     unitMode = unitMode || '';
 
     const { currentUser } = useCurrentUser();
-    const { layoutData, setLayoutData } = useLayoutData();
+
     const { setBottomSheetData } = useBottomSheetData();
     const initedTabs = useMemo(() => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu), [menu, data, blocks, currentUser, useSectionAsMenu]);;
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -165,8 +166,8 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 88, s
     const [menuState, setMenuState] = useState(menu);
     const [isRevalidate, setIsRevalidate] = useState(false);
     const [snackbarVisible, setSnackbarVisible] = useState(false);
-    const currentBreakpoint = useBreakpoint();
 
+ const setHeader = useSetHeader();
 
 
 
@@ -327,6 +328,12 @@ export function Conductor({ isCoverDisabled, header, defaultHeaderHeight = 88, s
             setIsRefreshing(false);
         }
     }, [isRefreshing, queryClient, qKey]);
+ 
+  
+    useLayoutEffect(() => {
+        setHeader({subHeader: sceneHeader});
+    }, [index, sceneHeader, setHeader]);
+    
 
     const Preload = useMemo(() => {
         return getSkeletonForList(skeleton !== '' ? skeleton : (data.module ? data.module : data.unit), numColumns);
