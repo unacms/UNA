@@ -365,6 +365,10 @@ export default function Browse(props) {
                 : () => props.exProps?.headerBlocks)
             : undefined
 
+    if (filterElement && !isDesktop){
+        ListHeaderComponent = () => filterElement
+    }
+
     const uniListProps = {
         preloadComponent: PreloadComponent,
         refer: uniRef,
