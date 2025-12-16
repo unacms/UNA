@@ -12,6 +12,7 @@ import { parse as flatted_parse, stringify as flatted_stringify } from 'flatted'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LogLevel, OneSignal } from 'react-native-onesignal';
 import { isComponent } from 'app/components/registry';
+import { clsx } from 'clsx';
 
 const nativeCache = [];
 export const isWeb = Platform.OS === 'web'
@@ -37,6 +38,9 @@ export function appSetting(section, name, path) {
     return setting(section, name, path, remoteSettings.data);
 }
 
+export function cn(...classes) {
+    return clsx(classes);
+}
 
 export function isObjectsEqual(obj, obj2) {
     return flatted_stringify(obj) == flatted_stringify(obj2)

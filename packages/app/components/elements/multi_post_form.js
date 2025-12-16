@@ -12,14 +12,6 @@ import { cd } from 'app/lib/util'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import Tooltip from 'app/ui/molecules/tooltip'
 
-// Storage key to track if user has opened the post form
-const POST_FORM_OPENED_KEY = 'feed:post_form_opened';
-
-// Get tooltip timing from settings
-const tooltipConfig = appSetting('theme', 'tooltip') || {};
-const TRIGGER_DELAY = tooltipConfig.triggerDelay ?? 3000;
-const DISMISS_DELAY = tooltipConfig.dismissDelay ?? 0;
-
 export default function MultiPostForm({ data, blockWrapperProps }) {
     const { currentUser } = useCurrentUser();
     const { t } = useTranslation()
@@ -47,27 +39,7 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
     // Show tooltip after configured delay on first feed visit
     // Keep showing until user opens the post form
     useEffect(() => {
-        const postFormOpened = storageGet(POST_FORM_OPENED_KEY, '', true);
-        
-        // Only show tooltip if user has never opened the post form
-        if (!postFormOpened) {
-            const showTimer = setTimeout(() => {
-                setShowTooltip(true);
-            }, TRIGGER_DELAY);
-
-            // Optional auto-dismiss if configured (dismissDelay > 0)
-            let dismissTimer;
-            if (DISMISS_DELAY > 0) {
-                dismissTimer = setTimeout(() => {
-                    setShowTooltip(false);
-                }, TRIGGER_DELAY + DISMISS_DELAY);
-            }
-
-            return () => {
-                clearTimeout(showTimer);
-                if (dismissTimer) clearTimeout(dismissTimer);
-            };
-        }
+        setShowTooltip(true);
     }, []);
 
 
@@ -86,7 +58,6 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
 
     // Mark that user has opened the post form - permanently dismiss tooltip
     const markPostFormOpened = () => {
-        storageSet(POST_FORM_OPENED_KEY, '', 'true', true);
         setShowTooltip(false);
     };
 
@@ -100,14 +71,11 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
         <BlockWrapper {...blockWrapperProps}>
             <CardList className="flex-row gap-2 lg:gap-3">
                 <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
-
                 <Tooltip
                     content={t('Make your first post!')}
                     open={showTooltip}
-                    side="bottom"
-                    sideOffset={8}
-                    showArrow={true}
-                    triggerClassName="flex-auto h-10"
+                    triggerDelay={2000}
+                    triggerClassName="flex-auto"
                 >
                     <Pressable
                         onPress={handleTriggerPress}

@@ -1682,16 +1682,7 @@ export const settingsDefault = {
         },
 
         // Tooltip component styles and configuration
-        tooltip: {
-            // Timing configuration (in milliseconds)
-            triggerDelay: 3000,      // Delay before showing tooltip
-            dismissDelay: 0,         // Delay before hiding (0 = no auto-dismiss)
-            hoverDelay: 300,         // Delay for hover tooltips
-            hoverOutDelay: 150,      // Delay before hiding on hover out
-            
-            // Animation configuration
-            animationDuration: 200,  // Animation duration in ms
-            
+        tooltip: {            
             // Content container (no overflow-hidden to allow arrow to show)
             'tooltip-content': [
                 'z-50 rounded-lg px-3 py-2',

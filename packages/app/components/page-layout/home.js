@@ -10,7 +10,6 @@ import {
     getBreakpoint
 } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
-import { Button } from 'app/design/controls'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import Profile from 'app/ui/molecules/profile'

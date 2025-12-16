@@ -7,6 +7,7 @@ import { useColorScheme } from 'react-native';
 import { DarkTheme, DefaultTheme } from "@react-navigation/native";
 import { appSetting } from 'app/lib/util';
 import { useEffect } from 'react'
+import { PortalHost } from '@rn-primitives/portal';
 import {
     QueryClient,
     QueryClientProvider,
@@ -122,7 +123,9 @@ const AppLayout = React.memo(() => {
             <StatusBar backgroundColor={colors.barsBackground} translucent={true} />
                 <QueryClientProvider client={queryClient}>
                     <SafeAreaView edges={['left', 'right']} style={containerStyle}>
+                        
                         <Tabs />
+                        <PortalHost />
                     </SafeAreaView>
                 </QueryClientProvider>
         </ThemeProvider>

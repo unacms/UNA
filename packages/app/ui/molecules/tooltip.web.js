@@ -3,18 +3,14 @@ import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { View } from 'react-native';
 import { createPortal } from 'react-dom';
 import { Text } from 'app/design/typography';
-import { appSetting } from 'app/lib/util';
-import { clsx } from 'clsx';
-import { useWindowSize } from 'app/context/measure';
 
-function cn(...inputs) {
-    return clsx(inputs);
-}
+import { useWindowSize } from 'app/context/measure';
+import { appSetting, cn } from 'app/lib/util';
+
 
 // Get tooltip configuration from settings
 const tooltipConfig = appSetting('theme', 'tooltip') || {};
-const HOVER_DELAY = tooltipConfig.hoverDelay ?? 300;
-const HOVER_OUT_DELAY = tooltipConfig.hoverOutDelay ?? 150;
+
 
 /**
  * Tooltip component (Web) - Displays a popup with content and pointing arrow
@@ -23,51 +19,28 @@ const HOVER_OUT_DELAY = tooltipConfig.hoverOutDelay ?? 150;
 export default function Tooltip({
     children,
     content,
-    contentComponent,
-    side = 'top',
+    side = 'bottom',
     sideOffset = 8,
+    align = 'center',
+    alignOffset = 0,
     open: controlledOpen,
-    defaultOpen = false,
-    onOpenChange,
-    delayDuration,
+    triggerDelay = 3000,
+    dismissDelay = 0,
     className = '',
-    triggerClassName = '',
     showArrow = true,
     arrowClassName = '',
+    triggerClassName = '',
 }) {
-    const effectiveDelay = delayDuration ?? HOVER_DELAY;
+    const effectiveDelay = triggerDelay;
     const triggerRef = useRef(null);
     const contentRef = useRef(null);
-    const [internalOpen, setInternalOpen] = useState(defaultOpen);
     const [position, setPosition] = useState({ x: 0, y: 0, placement: side });
     const [isVisible, setIsVisible] = useState(false);
     const [isAnimatingOut, setIsAnimatingOut] = useState(false);
     const [isInViewport, setIsInViewport] = useState(true);
-    const openTimerRef = useRef(null);
-    const closeTimerRef = useRef(null);
 
     const { width: windowWidth, height: windowHeight } = useWindowSize();
 
-    const isOpen = controlledOpen !== undefined ? controlledOpen : internalOpen;
-
-    const clearTimers = useCallback(() => {
-        if (openTimerRef.current) {
-            clearTimeout(openTimerRef.current);
-            openTimerRef.current = null;
-        }
-        if (closeTimerRef.current) {
-            clearTimeout(closeTimerRef.current);
-            closeTimerRef.current = null;
-        }
-    }, []);
-
-    const setOpen = useCallback((newOpen) => {
-        clearTimers();
-        if (controlledOpen === undefined) {
-            setInternalOpen(newOpen);
-        }
-        onOpenChange?.(newOpen);
-    }, [controlledOpen, onOpenChange, clearTimers]);
 
     // Update position based on trigger location
     const updatePosition = useCallback(() => {
@@ -109,21 +82,33 @@ export default function Tooltip({
         });
     }, [side, sideOffset]);
 
-    // Handle opening/closing
     useEffect(() => {
-        if (isOpen) {
-            setIsAnimatingOut(false);
-            setIsVisible(true);
-            updatePosition();
-        } else if (isVisible) {
-            setIsAnimatingOut(true);
-            const hideTimer = setTimeout(() => {
-                setIsVisible(false);
+        if (controlledOpen === undefined) return;
+
+        if (controlledOpen) {
+            const timer = setTimeout(() => {
+                 setIsAnimatingOut(false);
+                setIsVisible(true);
+                updatePosition();
+            }, triggerDelay);
+
+            let dismissTimer;
+            if (dismissDelay > 0) {
+                dismissTimer = setTimeout(() => {
+                      setIsVisible(false);
                 setIsAnimatingOut(false);
-            }, 150);
-            return () => clearTimeout(hideTimer);
+                }, triggerDelay + dismissDelay);
+            }
+
+            return () => {
+                clearTimeout(timer);
+                if (dismissTimer) clearTimeout(dismissTimer);
+            };
+        } else {
+            setIsVisible(false);
+                setIsAnimatingOut(false);
         }
-    }, [isOpen, updatePosition]);
+    }, [controlledOpen, triggerDelay, dismissDelay, updatePosition]);
 
     // Update position on scroll/resize and check viewport visibility
     useEffect(() => {
@@ -160,46 +145,6 @@ export default function Tooltip({
             window.removeEventListener('resize', checkPositionAndVisibility);
         };
     }, [isVisible, side, sideOffset]);
-
-    const scheduleOpen = useCallback(() => {
-        clearTimers();
-        openTimerRef.current = setTimeout(() => {
-            openTimerRef.current = null;
-            setOpen(true);
-        }, effectiveDelay);
-    }, [clearTimers, setOpen, effectiveDelay]);
-
-    const scheduleClose = useCallback(() => {
-        clearTimers();
-        closeTimerRef.current = setTimeout(() => {
-            closeTimerRef.current = null;
-            setOpen(false);
-        }, HOVER_OUT_DELAY);
-    }, [clearTimers, setOpen]);
-
-    const handleMouseEnter = useCallback(() => {
-        if (effectiveDelay > 0) {
-            scheduleOpen();
-        } else {
-            setOpen(true);
-        }
-    }, [scheduleOpen, setOpen, effectiveDelay]);
-
-    const handleMouseLeave = useCallback(() => {
-        scheduleClose();
-    }, [scheduleClose]);
-
-    const handleContentMouseEnter = useCallback(() => {
-        clearTimers();
-    }, [clearTimers]);
-
-    const handleContentMouseLeave = useCallback(() => {
-        scheduleClose();
-    }, [scheduleClose]);
-
-    useEffect(() => {
-        return () => clearTimers();
-    }, [clearTimers]);
 
     // Calculate tooltip position styles
     const getTooltipStyle = useMemo(() => {
@@ -250,11 +195,12 @@ export default function Tooltip({
         return cn(baseClasses, positionClass, arrowClassName);
     };
 
-    const tooltipContent = contentComponent || (
-        <Text className={cn(tooltipConfig['tooltip-text'], 'text-sm')}>
-            {content}
-        </Text>
-    );
+   const tooltipContent = typeof content === 'string' ? (
+          <Text className={cn(tooltipConfig['tooltip-text'], 'text-sm text-background')}>
+              {content}
+          </Text>) : content
+      ;
+  
 
     const getAnimationClass = () => {
         if (isAnimatingOut) return 'animate-tooltip-out';
@@ -275,8 +221,6 @@ export default function Tooltip({
                     '-translate-x-1/2',
                     className
                 )}
-                onMouseEnter={handleContentMouseEnter}
-                onMouseLeave={handleContentMouseLeave}
             >
                 {tooltipContent}
                 {showArrow && <View className={getArrowClassName()} />}
@@ -294,8 +238,6 @@ export default function Tooltip({
             <View
                 ref={triggerRef}
                 className={triggerClassName}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
                 collapsable={false}
             >
                 {children}
@@ -304,35 +246,3 @@ export default function Tooltip({
         </>
     );
 }
-
-// Simple controlled tooltip for programmatic use
-export function ControlledTooltip({
-    children,
-    content,
-    open,
-    onOpenChange,
-    side = 'top',
-    sideOffset = 8,
-    showArrow = true,
-    className = '',
-    triggerClassName = '',
-    ...props
-}) {
-    return (
-        <Tooltip
-            content={content}
-            open={open}
-            onOpenChange={onOpenChange}
-            side={side}
-            sideOffset={sideOffset}
-            showArrow={showArrow}
-            className={className}
-            triggerClassName={triggerClassName}
-            delayDuration={0}
-            {...props}
-        >
-            {children}
-        </Tooltip>
-    );
-}
-

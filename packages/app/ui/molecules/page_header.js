@@ -32,7 +32,7 @@ export const PageHeader = ({
     const scrollDirection = useScrollDirection();
     const setScrollDirection = useSetScrollDirection();
     const setHeaderHeightAtom = useSetHeaderHeight();
-     const setHeader = useSetHeader();
+    const setHeader = useSetHeader();
     const headerHeight =useHeaderHeight();
 
     const isWeb = Platform.OS === 'web'
