@@ -77,7 +77,7 @@ export default function Tooltip({
                     avoidCollisions={true}
                     forceMount={controlledOpen ? true : undefined}
                     className={cn(
-                        'bg-foreground px-4 py-2 rounded-lg shadow-lg',
+                        'bg-foreground px-4 py-2 ios:-mt-12 rounded-lg shadow-lg',
                         tooltipConfig['tooltip-content'],
                         className
                     )}

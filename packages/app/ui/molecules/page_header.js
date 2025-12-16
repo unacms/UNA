@@ -115,7 +115,7 @@ export const PageHeader = ({
                 }}
             >
                 {header.header ? header.header : (<>
-                    <Row className="items-center justify-between web:h-16 px-3">
+                    <Row className={`items-center justify-between web:h-16 px-3 ${appSetting('layout', 'header', 'content')}`}>
                         <Row className="items-center justify-start flex-1 lg:flex-none overflow-hidden gap-x-2">
                             <Row className="items-center justify-start lg:w-80 gap-x-2">
                             {(isBackButton && (!isWeb || history.length > 2)) && (

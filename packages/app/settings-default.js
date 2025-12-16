@@ -90,24 +90,7 @@ export const settingsDefault = {
         show_tabbar_on_mobile_non_logged: false,
 
         header: {
-            offset: ' h-16 w-full ',
-            container:
-                ' header-fixed hidden lg:flex fixed w-full mx-auto h-16 left-[50%] translate-x-[-50%] web:duration-500  ',
-            initial:
-                ' my-auto w-full items-cente bg-card backdrop-blur-xl border-b border-border/60  transition-all  ',
-            scrolled:
-                ' my-auto w-full items-cente bg-card/80 backdrop-blur-xl border-b border-border/60 transition-all shadow-sm',
-            content: ' h-16 mx-auto justify-between 2xl:border-x-0 2xl:border-border/60 border-dashed',
-            content_left: ' flex-row items-center flex-none w-80 ps-2  ',
-            content_right: ' flex-row items-center justify-end flex-none w-80 pe-2 ',
-            content_center:
-                ' hidden flex-auto xl:flex gap-1 items-center justify-center max-w-3xl xl:px-3 ',
-            special: {
-                profile: 'hidden lg:flex',
-                messenger: 'hidden lg:flex',
-                post: 'hidden lg:flex',
-                default: ' flex ',
-            },
+            content: ' w-full mx-auto',
         },
         footer: {
             hide_for_layouts: ['post']
