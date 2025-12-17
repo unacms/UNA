@@ -4,6 +4,7 @@ import { appSetting } from 'app/lib/util';
 import { View } from 'app/design/view'
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonsGroupMenu } from 'app/design/controls';
 import { useCallback, useMemo } from 'react';
+import DropdownMenuItem from 'app/components/menu-items/dropdown-menu-item'
 
 const handleDo = async (url, event) => {
     event.preventDefault();
@@ -41,20 +42,20 @@ export default function ElementShares(oProps) {
 
     const bShowAction = oParams?.show_action !== false;
 
-     let oButtonProps = {};
-    if(oProps.primary)
+    let oButtonProps = {};
+    if (oProps.primary)
         oButtonProps.variant = 'primary';
-    if(oProps.params?.button_variant != undefined)
+    if (oProps.params?.button_variant != undefined)
         oButtonProps.variant = oProps.params.button_variant;
-    if(oProps.params?.button_size != undefined)
+    if (oProps.params?.button_size != undefined)
         oButtonProps.size = oProps.params.button_size;
-    if(oProps.params?.button_rounded != undefined)
+    if (oProps.params?.button_rounded != undefined)
         oButtonProps.rounded = oProps.params.button_rounded;
-    if(oProps.params?.button_full_width != undefined)
+    if (oProps.params?.button_full_width != undefined)
         oButtonProps.fullWidth = oProps.params.button_full_width;
-    if(oProps.params?.button_show_title_from_size != undefined)
+    if (oProps.params?.button_show_title_from_size != undefined)
         oButtonProps.showTitleFromSize = oProps.params.button_show_title_from_size;
-    
+
     //--- show action
     const bShowActionAsButton = oParams?.show_action_as_button !== false;
     const bShowActionLabel = oParams?.show_action_label !== false;
@@ -68,6 +69,16 @@ export default function ElementShares(oProps) {
     if (!!bShowAction)
         aButtonsGroup.push(button);
 
+    if (oProps.mode == 'dropdown-menu') {
+        return <DropdownMenuItem
+            item={{
+                title: sTitle,
+                icon: sIcon
+            }}
+            icon={sIcon}
+            handleSelect={(event) => { handleDo(oAction.url, event) }}
+        />;
+    }
     return (
         <View className='flex-auto'>
             <ButtonsGroupMenu  {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>

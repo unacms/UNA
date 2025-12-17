@@ -336,7 +336,7 @@ export default function Browse(props) {
     }
 
     const filterElement = !!formProps ? (
-        <Row className="w-full items-end justify-end mb-3">
+        <Row className="w-full items-end justify-end mb-3 mt-3 sm:mt-0">
             <DropdownPopup
                 trigger={
 

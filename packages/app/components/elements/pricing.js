@@ -43,11 +43,12 @@ export default function ElementPricing({ data, blockWrapperProps }) {
         });
     });
 
+
     return (
         <BlockWrapper {...blockWrapperProps}>
-            {appStatic('components_pricing_header')}
+            {appStatic('components_pricing_header_'+data.settings.object, data.settings)}
             <Tabs tabs={preparedTabs} activeTab={preparedTabs[0].key} />
-            {appStatic('components_pricing_footer')}
+            {appStatic('components_pricing_footer_'+data.settings.object, data.settings)}
         </BlockWrapper>
     )
 }
@@ -80,12 +81,13 @@ function ElementPricingPeriod({ data, period, unit, settings }) {
     }
 
     return (
-        <View className={`${unit !== 'productlist' ? 'flex-row p-3 gap-3': ''} flex-wrap ` }>
+        <View className={`${unit !== 'productlist' ? 'flex-row py-3 ': ''} flex-wrap ` }>
             <Redirect ref={redirectRef} />
             {filtered.map((item, index) => {
                 const Price = getComponent('unit', 'price');
+                const cls = filtered.length > 1 ? 'w-1/' + Math.min(filtered.length, 3) : 'w-full'
                 return (
-                    <Price data={item} unit={unit} key={index} onBuy={getAction} />
+                    <View className={`${cls} p-2`}><Price data={item} unit={unit} key={index} onBuy={getAction} /></View>
                 )
             })}
             {showModal && <Modal onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
