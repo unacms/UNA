@@ -213,7 +213,8 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
     //console.log("headerItems[0].data", aItems[0])
     useEffect(() => {
-        setHeader(!isWeb || !isDesktop || !isMultiColumn ? { subHeader: aItems[0].data, backButton: true, title: data.title } : defaultHeader);
+        if (!isModal)
+            setHeader(!isWeb || !isDesktop || !isMultiColumn ? { subHeader: aItems[0].data, backButton: true, title: data.title } : defaultHeader);
     }, [isDesktop, isWeb, isMultiColumn, setHeader]);
 
     if (isModal) {
