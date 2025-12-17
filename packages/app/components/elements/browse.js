@@ -369,10 +369,12 @@ export default function Browse(props) {
         ListHeaderComponent = () => filterElement
     }
 
+     const layout = callFn('layoutForList', [data.module]);
     const uniListProps = {
         preloadComponent: PreloadComponent,
         refer: uniRef,
-        mode: 'simple',
+        layout: layout,
+        mode: layout=='w-full'  ? 'simple' :'',
         data: dataItems,
         unit: data.unit,
         height: isWeb ? (props?.isInPanel ? windowHeight - 64 : props?.height) : props?.height,

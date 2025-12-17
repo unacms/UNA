@@ -185,7 +185,7 @@ function PageLayoutContent({ layout, data }) {
         }
     }
 
-    if (!Component) {
+    if (!Component || currentUser === null) {
         return null;
     }
 
