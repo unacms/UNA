@@ -151,12 +151,18 @@ export default function RftText({
         font-family: var(--editor-font) !important;
         color: var(--color-text);
     }
+    html, body {
+        overflow: hidden !important;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overscroll-behavior: none;
+    }
     body {
         font-size: ${editorFontSize};
         line-height: ${editorLineHeight};
         color: var(--color-text);
         background-color: transparent;
-        margin: 0;
         white-space: pre-wrap;
         word-wrap: break-word;
         overflow-wrap: break-word;
@@ -172,6 +178,9 @@ export default function RftText({
     }
     body P:first-child, body p:first-child {
         margin-top: 0px;
+    }
+    body P:last-child, body p:last-child {
+        margin-bottom: 0px;
     }
     .is-editor-empty:first-child::before {
         float: none !important;
@@ -204,9 +213,13 @@ export default function RftText({
 
     ${cssOverrides}
 
+    #root, #root > div {
+        overflow: hidden !important;
+    }
     .tiptap, #root > div:nth-of-type(1) {
         scrollbar-width: none;
         -ms-overflow-style: none;
+        overflow: hidden !important;
     }
     .tiptap::-webkit-scrollbar, #root > div:nth-of-type(1)::-webkit-scrollbar {
         display: none;
@@ -220,6 +233,32 @@ export default function RftText({
     }
     `
     }
+
+    const wheelEventForwarder = `
+        // Forward wheel events to parent to allow modal scrolling
+        window.addEventListener('wheel', function(e) {
+            if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
+                // For React Native WebView
+                window.ReactNativeWebView.postMessage(JSON.stringify({
+                    type: 'wheel',
+                    deltaY: e.deltaY,
+                    deltaX: e.deltaX
+                }));
+            } else if (window.parent !== window) {
+                // For web iframe - forward to parent
+                e.preventDefault();
+                const parentEvent = new WheelEvent('wheel', {
+                    deltaX: e.deltaX,
+                    deltaY: e.deltaY,
+                    deltaZ: e.deltaZ,
+                    deltaMode: e.deltaMode,
+                    bubbles: true,
+                    cancelable: true
+                });
+                window.parent.document.dispatchEvent(parentEvent);
+            }
+        }, { passive: false });
+    `
 
     const applyIframeTheme = (mode) => {
         const css = JSON.stringify(buildEditorCSS(mode))
@@ -453,6 +492,10 @@ export default function RftText({
         if (lastAppliedThemeRef.current === themeName) return
         lastAppliedThemeRef.current = themeName
         editor.injectJS(applyIframeTheme(themeName))
+        // Inject wheel event forwarder on web to allow modal scrolling
+        if (Platform.OS === 'web') {
+            editor.injectJS(wheelEventForwarder)
+        }
     }, [editor, themeName])
 
     useEffect(() => {
@@ -690,10 +733,11 @@ export default function RftText({
                         }
                     }, true);
 
-                    // Debounced height update to prevent resize on every keystroke
+                    // Height update tracking
                     let heightUpdateTimeout = null;
                     let lastReportedHeight = 0;
-                    const LINE_HEIGHT = 24; // Match CSS line-height
+                    // Use correct line height based on editor type
+                    const LINE_HEIGHT = ${isCommentsEditor ? 20 : 24}; // Comments: 20px, Feed: 24px (matches CSS)
                     const HEIGHT_THRESHOLD = LINE_HEIGHT / 2; // Only report if changed by at least half a line
                     
                     function updateHeight(immediate = false) {
@@ -734,10 +778,24 @@ export default function RftText({
 
                     // Only observe structural changes (new paragraphs/lines), not character data
                     const observer = new MutationObserver((mutations) => {
-                        // Check if this is a structural change (new line) vs character change
-                        const hasStructuralChange = mutations.some(m => 
-                            m.type === 'childList' && (m.addedNodes.length > 0 || m.removedNodes.length > 0)
-                        );
+                        // Block-level elements that affect layout height
+                        const blockElements = new Set(['P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'UL', 'OL', 'LI', 'BLOCKQUOTE', 'PRE', 'HR', 'TABLE', 'TR', 'TD']);
+                        
+                        // Check if this is a structural change (new block element) vs text node change
+                        const hasStructuralChange = mutations.some(m => {
+                            if (m.type !== 'childList') return false;
+                            
+                            // Check if any added/removed nodes are block-level elements
+                            const addedBlocks = Array.from(m.addedNodes).some(node => 
+                                node.nodeType === Node.ELEMENT_NODE && blockElements.has(node.nodeName)
+                            );
+                            const removedBlocks = Array.from(m.removedNodes).some(node => 
+                                node.nodeType === Node.ELEMENT_NODE && blockElements.has(node.nodeName)
+                            );
+                            
+                            return addedBlocks || removedBlocks;
+                        });
+                        
                         if (hasStructuralChange) {
                             updateHeight(true);
                         }
@@ -807,7 +865,6 @@ export default function RftText({
                     });
 
                     editorElement.addEventListener("input", function (event) {
-                        // Don't update height on every input - let MutationObserver handle structural changes
                         const text = getTextBeforeCursor();
                         const symbol = text.charAt(0);
 
@@ -942,30 +999,36 @@ export default function RftText({
                     </ScrollView>
                 </View>
             )}
-            <RichText
-                exclusivelyUseCustomOnMessage={false}
-                style={{
-                    backgroundColor: 'transparent',
-                    color: editorTextColor,
-                    fontFamily: editorFontFamily,
-                }}
-                editor={editor}
-                onMessage={onMessage}
-                editable={!props.disabled}
-                editorProps={{
-                    attributes: {
-                        class: `prose-mirror ${
-                            isCommentsEditor
-                                ? 'tiptap-comments'
-                                : 'tiptap-default'
-                        } ${props.classes || ''}`,
-                        style: `font-family: ${editorFontFamily}; color: ${editorTextColor};`,
-                    },
-                }}
-                onDebouncedUpdate={(editor) => {
+            <View className="web:contents">
+                <RichText
+                    exclusivelyUseCustomOnMessage={false}
+                    style={{
+                        backgroundColor: 'transparent',
+                        color: editorTextColor,
+                        fontFamily: editorFontFamily,
+                    }}
+                    editor={editor}
+                    onMessage={onMessage}
+                    editable={!props.disabled}
+                    scrollEnabled={false}
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
+                    nestedScrollEnabled={false}
+                    editorProps={{
+                        attributes: {
+                            class: `prose-mirror ${
+                                isCommentsEditor
+                                    ? 'tiptap-comments'
+                                    : 'tiptap-default'
+                            } ${props.classes || ''}`,
+                            style: `font-family: ${editorFontFamily}; color: ${editorTextColor};`,
+                        },
+                    }}
+                    onDebouncedUpdate={(editor) => {
                     // ... existing code ...
                 }}
-            />
+                />
+            </View>
 
             {isToolBar && (
                 <>

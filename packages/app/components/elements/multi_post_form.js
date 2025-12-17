@@ -77,11 +77,13 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
                     triggerDelay={2000}
                     triggerClassName="flex-auto"
                 >
-                    <Pressable
+                    <Pressable 
+                        className={appSetting('feed', 'post_trigger')}
                         onPress={handleTriggerPress}
-                        className={`${appSetting('feed', 'post_trigger')}`}
                     >
-                        <Text className={`${appSetting('feed', 'post_trigger_text')}`}>{t('Create new ') + firstForm.title.toLowerCase()}</Text>
+                        <Text className={appSetting('feed', 'post_trigger_text')}>
+                            {t('Create new ') + firstForm.title.toLowerCase()}
+                        </Text>
                     </Pressable>
                 </Tooltip>
 

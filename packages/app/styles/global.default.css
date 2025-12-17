@@ -665,6 +665,14 @@ html[theme="dark"]:root {
     line-height: 20px;
 }
 
+/* Allow scroll events to pass through WebView/iframe to parent ScrollView */
+iframe[title*="TenTap"],
+iframe[title*="editor"],
+webview {
+    touch-action: pan-y pan-x;
+    -webkit-overflow-scrolling: touch;
+}
+
 .pac-container {
     z-index: 1000000 !important;
 }

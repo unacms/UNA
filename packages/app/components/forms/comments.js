@@ -50,7 +50,7 @@ export default function FormComments(props) {
 
     function checkEditorHeight(reportedInternalHeight) {
         const actualHasText = stripTags(formContext.getValues('cmt_text') || '').trim().length > 0;
-        const growthStepAmount = 18; // Define early for use in placeholder check
+        const growthStepAmount = 20; // Match comment editor line-height (20px)
 
         if (!actualHasText) {
             // If no text, clamp to baseHeight unless the editor reports something
@@ -67,21 +67,20 @@ export default function FormComments(props) {
             // If placeholder is unusually large, let normal logic handle it, but it will start from baseHeight.
         }
 
-        // When typing, initial visual height should accommodate 1 line + all relevant chrome.
-        // 1 line content ~20px. Wrapper chrome when expanded (pt-10, pb-48) = 58px. Editor internal est. ~2px. Total ~80px.
-        const minVisualHeightWhenTyping = 64;
+        // When typing, initial visual height should accommodate 1 line + minimal chrome.
+        // 1 line content ~20px. Wrapper chrome (py-2) = 16px. Editor internal est. ~2px. Total ~38px.
+        const minVisualHeightWhenTyping = 40; // Reduced from 64px to match actual chrome
         const visualFloorHeight = actualHasText ? minVisualHeightWhenTyping : baseHeight;
 
         let totalChromeHeightEstimate;
         if (actualHasText) {
-            // Chrome when editorHeight > baseHeight (triggers pb-12):
-            // Wrapper: 10px (top) + 48px (bottom) = 58px
+            // Chrome when editorHeight > baseHeight:
+            // Wrapper: 8px (top) + 8px (bottom) = 16px (from py-2)
             // Editor internal (estimate): 2px
-            totalChromeHeightEstimate = 58 + 2; // 60px
+            totalChromeHeightEstimate = 16 + 2; // 18px (matches actual styling)
         } else {
-            // This path is for initial calculation if the above early return for !actualHasText wasn't met.
-            // Or if somehow called with !actualHasText after initial placeholder setup.
-            totalChromeHeightEstimate = 18; // Wrapper: 10px top/bottom
+            // Placeholder state
+            totalChromeHeightEstimate = 18; // Wrapper chrome
         }
 
         const newCalculatedHeight = getEditorHeight(
@@ -215,13 +214,14 @@ export default function FormComments(props) {
 
                 )}
                 <View className="flex-1">
-                    <View className=" items-stretch bg-input/40 border border-input rounded-xl px-2.5 py-2" >
+                    <View className=" items-stretch bg-input/40 border border-input rounded-xl px-2.5 py-2" style={{ overflow: 'hidden' }}>
                     <View 
                         style={{
                             alignItems: 'center',
                             justifyContent: shouldGrowFromBottom ? 'flex-end' : 'flex-start',
                             paddingBottom: isWeb ? (maxHeight == editorHeight ? '40px' : '0px') : maxHeight == editorHeight ? 40 : 0,
                             height: isWeb ? `${editorHeight}px` : editorHeight,
+                            overflow: 'hidden',
                             ...(isWeb && { transition: 'height 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), padding-bottom 0.1s cubic-bezier(0.25, 0.1, 0.25, 1)' })
                         }}
                    >
