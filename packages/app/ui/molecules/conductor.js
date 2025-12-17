@@ -21,14 +21,20 @@ import { useBreakpoint } from 'app/context/measure';
 import emitter from 'app/context/emitter'
 import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
 
-const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute, currentUser }) => {
+const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
     if (routes.length > 1) {
         return (
 
             <ScrollView horizontal={true} className=" bg-card ">
                 <Row className="pl-2 justify-center" >
                     {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
-                        const btn = callFn("getButtonForConductorNative", [a, index, currentUser, setIndex, onChangeRoute]);
+                        const btn = callFn("getButtonForConductorSmall", [a, index, () => {
+                            setIndex(a.index)
+                            window.history.pushState({}, '', '/' + a.key)
+                            if (onChangeRoute) {
+                                onChangeRoute(a)
+                            }
+                        }]);
                         return (
                             <View className="p-1 items-center justify-center"
                                 key={`tab-${a.index}`}
@@ -376,7 +382,7 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
     });
 
     const isShowFilters = layoutName == 'navigator' && leftSideBarBlocks && leftSideBarBlocks?.length > 0;
-    const sceneHeader = <TabBar routes={routes} index={index} setIndex={setIndex} onChangeRoute={onChangeRoute} currentUser={currentUser} />
+    const sceneHeader = <TabBar routes={routes} index={index} setIndex={setIndex} onChangeRoute={onChangeRoute}  />
     const filter = (isShowFilters) && (<View className="items-start ml-3 mt-2 mb-1">
         <Button title='Filters' variant="default" size="sm" rounded onPress={showFilters} />
     </View>)

@@ -4,17 +4,19 @@ import { fetcher } from 'app/lib/fetcher'
 import { appSetting, updateRouteDataForConnection, getPageSettings } from 'app/lib/util'
 import { getComponent } from 'app/components/registry';
 import { appStatic } from 'app/lib/app-static';
-import { View, Row } from 'app/design/view'
+import { View } from 'app/design/view'
 import { MenuItemSidebar } from 'app/components/nav/menu-item-sidebar'
-import { 
-    SvgBackgroundSplash, 
+import { MenuItemSubmenu } from 'app/components/nav/menu-item-submenu'
+import {
+    SvgBackgroundSplash,
     SvgBackgroundSplashDark,
     SvgBackgroundCreateAccount,
     SvgBackgroundCreateAccountDark,
     SvgBackgroundLogin,
     SvgBackgroundLoginDark,
 } from 'app/ui/atoms/backgrounds';
-import { useIsDesktop } from 'app/context/measure';
+
+
 
 export function getFriendsCounter(currentUser) {
     return currentUser?.counters?.bx_persons_friend_requests
@@ -22,11 +24,11 @@ export function getFriendsCounter(currentUser) {
 
 export function getBadgeForTab(currentUser, url) {
     const badgeTextSize = appSetting('theme', 'native_tabs', 'badgeTextSize') || 'text-xs';
-    
+
     if (
         url == appSetting('notifications', 'url') &&
         currentUser?.notifications
-    ){
+    ) {
         return (
             <Text className={`${badgeTextSize} text-white font-medium`}>
                 {currentUser?.notifications}
@@ -37,7 +39,7 @@ export function getBadgeForTab(currentUser, url) {
     if (
         url == appSetting('messenger', 'url') &&
         currentUser?.counters?.bx_messenger_new_messages
-    ){
+    ) {
         return (
             <Text className={`${badgeTextSize} text-white font-medium`}>
                 {currentUser?.counters?.bx_messenger_new_messages}
@@ -48,7 +50,7 @@ export function getBadgeForTab(currentUser, url) {
 }
 
 export function getButtonForConductor(a, index, currentUser) {
-    
+
     const settings = getPageSettings(a?.config, a.key);
     const icon = !a.ident
         ? settings?.icon
@@ -58,10 +60,10 @@ export function getButtonForConductor(a, index, currentUser) {
 
     let addon = a.addon ? a.addon : null
     if (!appSetting('conductor', 'show_nav_counters')) addon = null
-    if ( appSetting('conductor', 'show_nav_counters') == 'primary' && a?.addon?.variant != 'primary')
+    if (appSetting('conductor', 'show_nav_counters') == 'primary' && a?.addon?.variant != 'primary')
         addon = null
     return <MenuItemSidebar addon={addon} title={a.title} icon={icon || 'Circle'} isActive={a.index == index ? true : false} />
-       
+
 }
 
 export function getButtonForConductorSmall(a, index, onPress) {
@@ -73,33 +75,19 @@ export function getButtonForConductorSmall(a, index, onPress) {
         a?.addon?.variant != 'primary'
     )
         addon = null
-    
+
     return getButtonForConductorHor(null, a.title, a.index == index, addon, onPress, a);
 }
 
 export function getButtonForConductorHor(icon, title, pressed, addon, onPress, item) {
-    function ConductorButtonResponsive({ icon, title, pressed, addon, onPress, item }) {
-        const isDesktop = useIsDesktop();
-        const size = isDesktop ? 'base' : 'sm';
-        const rounded = !isDesktop;
-        return (
-            <Button
-                startDecorator={icon}
-                title={title}
-                variant={'text'}
-                rounded={rounded}
-                pressed={pressed}
-                disabled={item?.item?.disabled}
-                size={size}
-                haptics="Medium"
-                addon={addon}
-                onPress={onPress}
-            />
-        );
-    }
-    return (
-        <ConductorButtonResponsive icon={icon} title={title} pressed={pressed} addon={addon} onPress={onPress} item={item} />
-    )
+    return <MenuItemSubmenu
+        icon={icon}
+        title={title}
+        pressed={pressed}
+        disabled={item?.item?.disabled}
+        addon={addon}
+        onPress={onPress}
+    />
 }
 
 export function getAddonForConductor(a, index, currentUser) {
@@ -134,52 +122,9 @@ export function getAddonForConductor(a, index, currentUser) {
     return addonContent;
 }
 
-export function getButtonForConductorNative(a, index, currentUser, setIndex, onChangeRoute) {
-    const settings = getPageSettings(a?.config, a.key);
-    let iconName = null; 
-    if (a.ident && a.icon) { 
-        iconName = typeof a.icon === 'string' ? a.icon.replace('*', '') : null;
-    } else if (settings?.icon) { 
-        iconName = settings.icon;
-    } else if (a?.icon) { 
-        iconName = typeof a.icon === 'string' ? a.icon.replace('*', '') : null;
-    }
 
-    let addon = a.addon ? a.addon : null
-    if (!appSetting('conductor', 'show_nav_counters')) addon = null
-    if (
-        appSetting('conductor', 'show_nav_counters') == 'primary' &&
-        a?.addon?.variant != 'primary'
-    )
-        addon = null
 
-    function NativeConductorButtonResponsive({ a, index, onChangeRoute, setIndex, iconName, addon }) {
-        const isDesktop = useIsDesktop();
-        const size = isDesktop ? 'base' : 'sm';
-        const rounded = !isDesktop;
-        return (
-            <Button onPress={() => {
-                setIndex(a.index)
-                if (onChangeRoute) {
-                    onChangeRoute(a);
-                }
-            }} 
-            startDecorator={iconName}
-            addon={addon} 
-            fullWidth={false} 
-            variant={index === a.index ? 'primary' : "text"} 
-            rounded={rounded}
-            size={size} 
-            title={a.title} />
-        );
-    }
-    return (
-        <NativeConductorButtonResponsive a={a} index={index} onChangeRoute={onChangeRoute} setIndex={setIndex} iconName={iconName} addon={addon} />
-    );
-}
-
-export function getSkeletonByEndPoint(currentRoute)
-{
+export function getSkeletonByEndPoint(currentRoute) {
     return null;
 }
 
@@ -257,7 +202,7 @@ const createMenuItem = (menuItem, isPrimary) => {
 
     if (!menuItem) return null;
     if (menuItem.data?.type) {
-        const Element =  getComponent('molecule', String(menuItem.data.type))
+        const Element = getComponent('molecule', String(menuItem.data.type))
         if (Element) {
             const oElementParams = {
                 ...menuItem.data,
@@ -299,7 +244,7 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
         let sPrimary = "";
         let sSecondary = "";
         let sDelete = "";
-        if (moduleName == 'bx_persons' || moduleName == 'bx_organizations' || moduleName == 'system'){
+        if (moduleName == 'bx_persons' || moduleName == 'bx_organizations' || moduleName == 'system') {
             switch (unitType) {
                 case "person_friends":
                     oMenuItemPrimary = {
@@ -341,7 +286,7 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
                     break;
             }
         }
-        else{
+        else {
             sPrimary = "join";
             sSecondary = "leave";
             if (unitType == 'context_recommendations')
@@ -355,7 +300,7 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
         if (!oMenuItemPrimary) {
             oMenuItemPrimary = data.meta.items.find(item => item.name === sPrimary);
         }
-        
+
 
         if (!oMenuItemSecondary) {
             oMenuItemSecondary = data.meta.items.find(item => item.name === sSecondary);
@@ -365,12 +310,12 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
             oMenuItemDelete = data.meta.items.find(item => item.name === sDelete);
         }
 
-        if (!oMenuItemPrimary && oMenuItemSecondary){
-            oMenuItemPrimary=oMenuItemSecondary;
-            oMenuItemSecondary=null;
+        if (!oMenuItemPrimary && oMenuItemSecondary) {
+            oMenuItemPrimary = oMenuItemSecondary;
+            oMenuItemSecondary = null;
         }
 
-        if (!oMenuItemPrimary){
+        if (!oMenuItemPrimary) {
             oMenuItemPrimary = {
                 title: "View",
                 onPress: (event) => handleClick(event, data.url),
@@ -381,9 +326,9 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
         oMenuItemSecondary = createMenuItem(oMenuItemSecondary, false);
         if (oMenuItemDelete) {
             oMenuItemDelete = {
-                ...oMenuItemDelete, 
- 
-                data: {...oMenuItemDelete.data, title:'', params: {...oMenuItemDelete.data.params, button_full_width: false, button_rounded: true, only_icon:true}}
+                ...oMenuItemDelete,
+
+                data: { ...oMenuItemDelete.data, title: '', params: { ...oMenuItemDelete.data.params, button_full_width: false, button_rounded: true, only_icon: true } }
             };
             oMenuItemDelete = createMenuItem(oMenuItemDelete, false);
         }
@@ -396,17 +341,17 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
     };
 }
 
-export function noContentByUrl(endpoint){
+export function noContentByUrl(endpoint) {
     return appStatic('components_content_empty')
 }
 
-export function layoutForList(endpoint){
+export function layoutForList(endpoint) {
     if (!endpoint || endpoint?.request_url?.includes('bx_timeline') || endpoint?.params?.request_url?.includes('bx_timeline') || endpoint.unit == "notifications")
         return 'w-full';
 
     if (endpoint?.module == 'bx_groups')
         return 'w-full @xl/list:w-1/2 @3xl/list:w-1/3 @6xl/list:w-1/4 p-2';
-    
+
     return 'w-full @xl/list:w-1/2 @2xl/list:w-1/3 @5xl/list:w-1/4 @6xl/list:w-1/5 pt-1 sm:p-2';
 }
 
@@ -414,23 +359,22 @@ export function getNumColsForConductor(width, currentRoute, leftSideBar) {
     return 0;
 }
 
-export function getBackground(pathname, currentUser)
-{
-    if (currentUser === false){
-        if(pathname === '/' || pathname === '/home')
+export function getBackground(pathname, currentUser) {
+    if (currentUser === false) {
+        if (pathname === '/' || pathname === '/home')
             return 'splash';
 
-        if(pathname === '/login')
+        if (pathname === '/login')
             return 'login';
 
-        if(pathname === '/create-account')
+        if (pathname === '/create-account')
             return 'create-account';
     }
     return 'default';
 }
 
 export function getBackgrounds() {
-     return {
+    return {
         splash: {
             light: <SvgBackgroundSplash />,
             dark: <SvgBackgroundSplashDark />,
@@ -456,5 +400,5 @@ export function getFiltersForConductor(filters, setFilterValue, filterValues) {
         return null;
 
     return null;
-    
+
 }
