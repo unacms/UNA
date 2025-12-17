@@ -201,12 +201,6 @@ export default function UnitComments(props) {
                                                 displaySize="sm"
                                                 showInfo="false"
                                             />
-                                            {false && (
-                                                <Text className="text-muted-foreground px-1 text-sm whitespace-nowrap text-ellipsis overflow-hidden">
-                                                    {' '}
-                                                    {stripTags(parent?.data?.cmt_text)}
-                                                </Text>
-                                            )}
                                         </Row>
                                     )}
                             </Row>
@@ -252,6 +246,7 @@ export default function UnitComments(props) {
                                     numberOfSymbols={100}
                                     openSmall={false}
                                     textClassName=" text-base text-muted-foreground"
+                                    customClassName="u-vanilla-html"
                                 />
                             {!!data.embed && (
                                 <View>

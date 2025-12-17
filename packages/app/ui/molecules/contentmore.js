@@ -69,6 +69,6 @@ export function ContentMore({ content, embed, numberOfSymbols = 350, textStyle, 
         );
     }
 
-    return <HtmlMemo data={content + linkContent} htmlStyles={textStyle} />;
+    return <HtmlMemo data={content + linkContent} htmlStyles={textStyle} customClassName={customClassName} />;
 
 }
