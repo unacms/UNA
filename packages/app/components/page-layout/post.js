@@ -51,7 +51,7 @@ const defineCells = (blocks, data) => {
 
 export default function PageLayout({ data, blocks, isModal = false, url }) {
     const isWeb = Platform.OS == 'web';
-    const windowWHeight = useWindowHeight();
+    const windowHeight = useWindowHeight();
     const isDesktop = useIsDesktop();
     const [replyId, setReplyId] = useState(false);
     const [scrollToEnd, setScrollToEnd] = useState(false);
@@ -67,9 +67,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
     // for modal
     const offset = isDesktop ? 100 : 60
-    const [height, setHeight] = useState(
-        windowWHeight - offset - 100
-    )
+    const [height, setHeight] = useState(windowHeight - offset - 100)
 
     useEffect(() => {
         if (localUrl) {
@@ -100,6 +98,12 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         }
     }, [localUrl]);
 
+     useEffect(() => {
+         setHeight(windowHeight - offset - 100)
+    }, [windowHeight]);
+
+
+
 
     const { leftBarBlocks, sideBarBlocks, centerBlocks } = defineCells(blocks, data);
 
@@ -116,7 +120,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     const isLeftCol = leftBarBlocks.length > 0 && isDesktop
 
     const viewProps = isWeb ? {
-        style: { minHeight: !isDesktop ? windowWHeight : windowWHeight - 64 },
+        style: { minHeight: !isDesktop ? windowHeight : windowHeight - 64 },
     } : {};
 
     const handleLayout = useCallback((event) => {
@@ -125,13 +129,12 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     }, []);
 
     const handleListLayout = (event) => {
-
         setListWidth(event.nativeEvent.layout.width - 2)
     }
 
     const handleLayoutModal = (event) => {
         const h =
-            windowWHeight -
+            windowHeight -
             offset -
             event.nativeEvent.layout.height
         setHeight(h)
@@ -213,8 +216,8 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
     //console.log("headerItems[0].data", aItems[0])
     useEffect(() => {
-        if (!isModal)
-            setHeader(!isWeb || !isDesktop || !isMultiColumn ? { subHeader: aItems[0].data, backButton: true, title: data.title } : defaultHeader);
+        if (!isModal && !isDesktop)
+            setHeader(!isWeb || !isMultiColumn ? { subHeader: aItems[0].data, backButton: true, title: data.title } : defaultHeader);
     }, [isDesktop, isWeb, isMultiColumn, setHeader]);
 
     if (isModal) {
@@ -252,6 +255,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
 
     if (!isWeb || !isDesktop || !isMultiColumn) {
+        const newItems = !isWeb || !isDesktop ? aItems.slice(1) : aItems;
         return (
             <View {...viewProps} className={`w-full ${isWeb ? '' : 'h-full'}`}>
                 <View className={`max-w-4xl w-full flex-1 bg-card shadow-sm text-card-foreground rounded-2xl  lg:my-4 mx-auto `}>
@@ -259,7 +263,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         <CommentsBrowse
 
                             scrollToIndex={scrollToEnd}
-                            addItems={aItems.slice(1)}
+                            addItems={newItems}
                             browse={commentsData?.content[0]?.browse}
                             module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
                             requestUrl={commentsData?.content[0]?.url}

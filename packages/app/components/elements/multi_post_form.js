@@ -17,7 +17,6 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
     const { t } = useTranslation()
     const [pageData, setPageData] = useState(false);
     const [pageDataDef, setPageDataDef] = useState(false);
-    const [showTooltip, setShowTooltip] = useState(false);
     const menu_add_items = menuItemsByNameNew('', data.menu, currentUser).filter(item => item.name != 'more-auto');
 
     const firstForm = menu_add_items.shift();
@@ -38,9 +37,6 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
 
     // Show tooltip after configured delay on first feed visit
     // Keep showing until user opens the post form
-    useEffect(() => {
-        setShowTooltip(true);
-    }, []);
 
 
     const getFirstForm = async () => {
@@ -56,14 +52,11 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
     if (menu_add_items.length == 0 && !firstForm)
         return;
 
-    // Mark that user has opened the post form - permanently dismiss tooltip
-    const markPostFormOpened = () => {
-        setShowTooltip(false);
-    };
+
 
     const handleTriggerPress = () => {
         // User clicked to create post - permanently dismiss tooltip
-        markPostFormOpened();
+
         getFirstForm();
     };
 
@@ -71,12 +64,7 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
         <BlockWrapper {...blockWrapperProps}>
             <CardList className="flex-row gap-2 lg:gap-3">
                 <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
-                <Tooltip
-                    content={t('Make your first post!')}
-                    open={showTooltip}
-                    triggerDelay={2000}
-                    triggerClassName="flex-auto"
-                >
+                
                     <Pressable 
                         className={appSetting('feed', 'post_trigger')}
                         onPress={handleTriggerPress}
@@ -85,7 +73,7 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
                             {t('Create new ') + firstForm.title.toLowerCase()}
                         </Text>
                     </Pressable>
-                </Tooltip>
+                
 
                 <FormModal key={pageData?.ts} pageData={pageData} setPageData={setPageData} />
                 {menu_add_items.length > 0 && <Row className={` ${cd('gap-sm')} flex-none`}>

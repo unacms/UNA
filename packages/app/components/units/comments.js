@@ -43,6 +43,8 @@ export default function UnitComments(props) {
     const module = props.module;
     const objectId = props.data.cmt_object_id;
 
+    const cmtUrl = data.cmt_url
+
     const handleReply = useCallback(
         (data, isNoReaction) => {
             if (!isNoReaction) {
@@ -167,7 +169,7 @@ export default function UnitComments(props) {
                     <Profile
                         {...data.author_data}
                         displayType="unit_wo_info"
-                        displaySize="xs"
+                        displaySize="sm"
                         showInfo="false"
                     />
 
@@ -222,7 +224,7 @@ export default function UnitComments(props) {
                                 </>
                             )}
 
-                            <Link href={data.cmt_url} size="xs" variant="ghost" emulate={true}>
+                            <Link href={cmtUrl} size="xs" variant="ghost" emulate={true}>
                                 <Time ts={data.cmt_time}></Time>
                             </Link>
                         </View>

@@ -569,12 +569,14 @@ export function parseData(browse, dynamicData) {
     return browse;
 }
 
-export function CommentsForm({ form, requestUrl, module, objectId, isModal = false }) {
+export function CommentsForm({ form: initialForm, requestUrl, module, objectId, isModal = false }) {
 
-    if (!form?.data?.inputs)
+    if (!initialForm?.data?.inputs)
         return <></>
 
     const [formData, setFormData] = useState({});
+
+    const [form, setForm] = useState(initialForm);
     
     const [commentForm, setCommentForm] = useState();
 
@@ -604,36 +606,51 @@ export function CommentsForm({ form, requestUrl, module, objectId, isModal = fal
 
 
     useEffect(() => {
-        const updateFormData = async () => {
-            if (formData.parent_id > 0) {
-                form.data.inputs.cmt_parent_id.value = formData.parent_id;
+       
+        if (formData.parent_id > 0) {
+            const updateFormInputs = async () => {
+                let mentionText = '';
+                
                 if (appSetting('comments', 'mentions')) {
                     const sUrl = appSetting('urls', 'cmts_menthion_url');
                     if (sUrl) {
                         const sResponse = await fetcher(`/api.php?r=${sUrl}&params[]=${formData.cmt_id}&params[]=${formData.cmt_object_id}`);
-
-                        if (sResponse.data) {
-                            form.data.inputs.cmt_text.value = `<a class="bx-mention-link ${sResponse.data.add_classes}" ts="${formData.ts}" data-id="[object Object]" href="/mention${sResponse.data.id}" title="${sResponse.data.name.trim()}" dchar="@" data-profile-id="-1" contenteditable="false">${sResponse.data.name.trim()}</a>&shy;&nbsp;`;
+        
+                        if (sResponse?.data) {
+                            mentionText = `<a class="bx-mention-link ${sResponse.data.add_classes}" ts="${formData.ts}" data-id="[object Object]" href="/mention${sResponse.data.id}" title="${sResponse.data.name.trim()}" dchar="@" data-profile-id="-1" contenteditable="false">${sResponse.data.name.trim()}</a>&shy;&nbsp;`;
                         }
-                        else {
-                            form.data.inputs.cmt_text.value = '';
+                    } else {
+                        if (formData.author?.url === "/javascript:") {
+                            mentionText = `<a class="bx-mention-link" ts="${formData.ts}" data-id="[object Object]" href="#" title="${formData.author.display_name.trim()}" dchar="@" data-profile-id="-1" contenteditable="false">${formData.author.display_name.trim()}</a>&shy;&nbsp;`;
+                        } else if (formData.author?.url) {
+                            mentionText = `<a class="bx-mention-link" ts="${formData.ts}" href="${formData.author.url}">${formData.author.display_name.trim()}</a>&shy;&nbsp;`;
                         }
-                    }
-                    else {
-                        if (formData.author.url == "/javascript:") {
-                            form.data.inputs.cmt_text.value = `<a class="bx-mention-link" ts="${formData.ts}" data-id="[object Object]" href="#" title="${formData.author.display_name.trim()}" dchar="@" data-profile-id="-1" contenteditable="false">${formData.author.display_name.trim()}</a>&shy;&nbsp;`;
-                        }
-                        else {
-                            form.data.inputs.cmt_text.value = '<a class="bx-mention-link" ts=' + formData.ts + ' href="' + formData.author.url + '">' + formData.author.display_name.trim() + '</a>&shy;&nbsp;';
-                        }
-
                     }
                 }
-                form.data.inputs.cmt_text.autofocus = formData.parent_id;
                 
-            }
+                // Обновляем состояние формы правильным способом
+                setForm(prevForm => ({
+                    ...prevForm,
+                    data: {
+                        ...prevForm.data,
+                        inputs: {
+                            ...prevForm.data.inputs,
+                            cmt_parent_id: {
+                                ...prevForm.data.inputs.cmt_parent_id,
+                                value: formData.parent_id
+                            },
+                            cmt_text: {
+                                ...prevForm.data.inputs.cmt_text,
+                                value: mentionText,
+                                autofocus: formData.parent_id
+                            }
+                        }
+                    }
+                }));
+            };
+            
+            updateFormInputs();
         }
-        updateFormData();
     }, [formData.parent_id]);
 
 
@@ -648,8 +665,23 @@ export function CommentsForm({ form, requestUrl, module, objectId, isModal = fal
 
     const handleCancel = async () => {
         setFormData({});
-        form.data.inputs.cmt_parent_id.value = 0;
-        form.data.inputs.cmt_text.value = '';
+        setForm(prevForm => ({
+            ...prevForm,
+            data: {
+                ...prevForm.data,
+                inputs: {
+                    ...prevForm.data.inputs,
+                    cmt_parent_id: {
+                        ...prevForm.data.inputs.cmt_parent_id,
+                        value: 0
+                    },
+                    cmt_text: {
+                        ...prevForm.data.inputs.cmt_text,
+                        value: ''
+                    }
+                }
+            }
+        }));
     }
 
     const onFormSubmit = (formData, d) => {
@@ -661,7 +693,7 @@ export function CommentsForm({ form, requestUrl, module, objectId, isModal = fal
         browse: dynamicData?.data?.browse,
         isModal,
     };
-
+    
     return (
         <View className="lg:rounded-b-2xl max-w-4xl p-4 bg-card " >
             {

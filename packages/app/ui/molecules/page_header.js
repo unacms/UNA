@@ -29,11 +29,11 @@ export const PageHeader = ({
     const { currentUser } = useCurrentUser();
     const router = useRouter();
     const header = useHeader();
+    const setHeader = useSetHeader();
     const scrollDirection = useScrollDirection();
     const setScrollDirection = useSetScrollDirection();
     const setHeaderHeightAtom = useSetHeaderHeight();
-    const setHeader = useSetHeader();
-    const headerHeight =useHeaderHeight();
+    const headerHeight = useHeaderHeight();
 
     const isWeb = Platform.OS === 'web'
     const isDesktop = useIsDesktop();
@@ -51,8 +51,9 @@ export const PageHeader = ({
 
     useEffect(() => {
         setScrollDirection(0);
-      // setHeader(defaultHeader);
-    }, [pageData?.url, pageData?.uri, setScrollDirection]);
+        if (isWeb)
+            setHeader(defaultHeader);
+    }, [pageData?.url, pageData?.uri, setScrollDirection, isDesktop]);
     
 
     /* set Page title */
@@ -101,6 +102,9 @@ export const PageHeader = ({
 
     const contextSelectorElement = isContextSelector && !isFullContextSelector ? <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} mode="min" />: null;
 
+    if (header.header === false){
+        return 
+    }
     return (
         <>
             {isWeb && <View style={{ height: headerHeight }} />}

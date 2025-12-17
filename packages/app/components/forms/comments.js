@@ -121,43 +121,6 @@ export default function FormComments(props) {
         props.handleSubmit();
     };
 
-    const handleKeyPress = (e) => {
-        // rawEditorText is watched by formContext, hasText updates accordingly.
-        // We need to get the most current hasText state.
-        const currentText = formContext.getValues('cmt_text');
-        const currentHasText = stripTags(currentText || '').trim().length > 0;
-
-        if (Platform.OS === 'web') {
-            if (e.key === 'Enter') {
-                if (e.altKey) {
-                    // Alt+Enter on web: allow default (newline)
-                    return;
-                }
-                // Enter alone on web: prevent default and submit if hasText
-                e.preventDefault();
-                if (currentHasText) {
-                    handleSubmitWithSanitization();
-                }
-            }
-        } else { // Native (iOS/Android)
-            // For React Native, e is { nativeEvent: { key: 'Enter' } }
-            // Standard TextInput onKeyPress doesn't easily expose modifier keys (altKey).
-            // This means "Option+Enter for newline" is hard to distinguish from "Enter" alone.
-            // The current requirement is "Enter to submit".
-            // If cmt_text is multiline, this will make Enter submit, not add a newline by default.
-            if (e.nativeEvent.key === 'Enter') {
-                const currentText = formContext.getValues('cmt_text'); // Re-fetch for safety, or rely on closure
-                const currentHasText = stripTags(currentText || '').trim().length > 0;
-                if (currentHasText) {
-                    handleSubmitWithSanitization();
-                    // Note: If the underlying component is a standard multiline TextInput,
-                    // this submits. To also allow newlines on native via Enter key differently,
-                    // the component would need more advanced capabilities or a different event.
-                }
-            }
-        }
-    };
-
     const handleEditorEnterSubmit = () => {
         const currentText = formContext.getValues('cmt_text');
         const currentHasText = stripTags(currentText || '').trim().length > 0;

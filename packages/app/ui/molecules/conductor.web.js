@@ -342,6 +342,7 @@ export function Conductor({
                 : defaultHeaderHeight
         }
         header={isUseCurrentHeader ? null : headerComponent}
+        isUseCurrentHeader={isUseCurrentHeader}
         keyword={keyword}
         ts={ts}
         timestamp={timestamp}
@@ -382,6 +383,7 @@ const TabSceneMainContent = ({
     keyword,
     ts,
     timestamp,
+    isUseCurrentHeader
 }) => {
     const isDesktop = useIsDesktop()
     const pageData = pageRoute.pageData
@@ -554,7 +556,12 @@ const TabSceneMainContent = ({
     const dataItems = isDesktop || !!pageRoute?.endpoint?.request_url ? [...dataItemsPage, ...refetchState.visibleItems] : [...dataItemsPage, ...refetchState.visibleItems, ...pageRoute.sidebar.content];
 
     useEffect(() => {
-        setHeader(isDesktop ? defaultHeader : {subHeader: header});
+        if (isUseCurrentHeader){
+            setHeader(isDesktop ? defaultHeader : {header: false});
+        }
+        else{
+            setHeader(isDesktop ? defaultHeader : {subHeader: header});
+        }
     }, [isDesktop, header, setHeader]);
     
     return (

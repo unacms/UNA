@@ -53,7 +53,7 @@ export default function Form({
     saveOnChanges,
     exProps,
     request
-}) {
+}) {   
     const isAutoChange = !!onChange;
     const { auto_focus, ...formProps } = initedFormProps ?? {};
 
@@ -78,10 +78,11 @@ export default function Form({
         if (request?.url) {
             setPostData(formData);
         }
-    });
-
+    });  
     useEffect(() => {
+      
         if (!dynamicData) {
+           
             // Нет динамических данных – возвращаемся к исходным
             setFormBundle(prev => ({
                 ...prev,
