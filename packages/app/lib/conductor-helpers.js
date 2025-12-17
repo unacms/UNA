@@ -559,11 +559,11 @@ export function TopSidebar({
                     className=" items-center justify-between ">
 
 
-                    {!currentUser && title ? (
+                    {/*!currentUser && title ? (
                         <View className="ps-3">
                             <TextHeader text={'choto za gavno ' + title} />
                         </View>
-                    ) : null}
+                    ) : null*/}
                     {children}
                     {layout != 'mixed' && (
                         <Row className="hidden lg:flex cond-buttons-add">
