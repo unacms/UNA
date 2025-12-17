@@ -1188,7 +1188,7 @@ const TabBar = ({
     const { t } = useTranslation()
     const { layoutName: layout } = useLayoutSettings()
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
-    if (routes.length > 1) {
+    if (routes.length > 0) {
         const addButtons = <AddMenu menu={menu} filter="hideInTopBar" />
         return (
             <TopSidebar
@@ -1198,14 +1198,14 @@ const TabBar = ({
                 layout={layout}
                 title={t(menuSettings?.name)}
             >
-                <View className="flex-1">
-                    <ConductorMenu
+                <View className="flex-1 h-14">
+                    {routes.length > 1 && <ConductorMenu
                         routes={routes}
                         index={index}
                         t={t}
                         setIndex={setIndex}
                         onChangeRoute={onChangeRoute}
-                    />
+                    />}
                 </View>
                 {!!pageData.cover_block?.actions_menu && (
                     <Row className="hidden lg:block items-center mx-3 ">
