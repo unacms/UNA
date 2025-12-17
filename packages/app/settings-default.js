@@ -91,6 +91,7 @@ export const settingsDefault = {
 
         header: {
             content: ' w-full mx-auto',
+            content_center: ' hidden flex-auto xl:flex gap-1 items-center justify-center max-w-3xl xl:px-3 ',
         },
         footer: {
             hide_for_layouts: ['post']
