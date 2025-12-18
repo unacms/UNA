@@ -8,6 +8,7 @@ import { usePathname } from 'app/lib/hooks/router';
 import { callFn } from 'app/lib/functions/call';
 import { Icon } from 'app/ui/atoms/icon'
 import { useTranslation } from 'react-i18next';
+import { useFooter } from 'app/context/jotai/layout';
 
 function isInStandaloneMode() {
     if (window.navigator.standalone) {
@@ -25,8 +26,9 @@ export default function () {
     const notifCount = currentUser ? currentUser.notifications : 0;
     const iFrCounter = callFn("getFriendsCounter", [currentUser]);
     let pathname = usePathname()
+    const footer = useFooter();
 
-    if (!currentUser && !appSetting('layout', 'show_tabbar_on_mobile_non_logged'))
+    if (!currentUser && !appSetting('layout', 'show_tabbar_on_mobile_non_logged')|| !footer)
         return null
 
     let profile = null

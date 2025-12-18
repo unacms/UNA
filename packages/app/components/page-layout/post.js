@@ -15,7 +15,7 @@ import {
     PanelHandler,
     resolvePanelProps,
 } from 'app/ui/molecules/resizable-panels'
-import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
+import { useSetHeader, defaultHeader, useSetFooter } from 'app/context/jotai/layout';
 
 const mapLayoutBlocks = (items = []) =>
     items.map(({ source }) => ({
@@ -61,6 +61,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     const currentBreakpointName = getBreakpoint(currentBreakpoint)
     const groupRef = useRef(null)
     const setHeader = useSetHeader();
+    const setFooter = useSetFooter();
 
     const localUrl = isModal ? url : useLocalSearchParams().url;
     const commentsData = useMemo(() => data?.layout_parsed ? data.elements.cell_bottom[0] : DataByName(data, blocks?.comments), [data, blocks?.comments]);
@@ -98,12 +99,9 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         }
     }, [localUrl]);
 
-     useEffect(() => {
-         setHeight(windowHeight - offset - 100)
+    useEffect(() => {
+        setHeight(windowHeight - offset - 100)
     }, [windowHeight]);
-
-
-
 
     const { leftBarBlocks, sideBarBlocks, centerBlocks } = defineCells(blocks, data);
 
@@ -216,7 +214,6 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
     //console.log("headerItems[0].data", aItems[0])
     useEffect(() => {
-        console.log("fgdgdf")
         if (!isModal) {
             if (!isDesktop) {
                 setHeader({ subHeader: aItems[0].data, backButton: true, title: data.title });
@@ -228,6 +225,13 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         }
 
     }, [isDesktop, isWeb, isMultiColumn, setHeader]);
+
+    useEffect(() => {
+        setFooter(false);
+        return () => {
+            setFooter(true);
+        };
+    }, []);
 
     if (isModal) {
         return (

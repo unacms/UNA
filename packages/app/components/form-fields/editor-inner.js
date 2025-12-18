@@ -1,7 +1,6 @@
-import Field, { getValidationRules } from './_field'
 import { useController, useFormContext } from 'react-hook-form'
-import { InputMulti, Input, TextInputClear, Button } from 'app/design/controls'
-import { useState, useRef, useEffect, useMemo } from 'react'
+import { Button } from 'app/design/controls'
+import { useState, useRef, useEffect } from 'react'
 import { View, ScrollView } from 'app/design/view'
 import {
     DEFAULT_TOOLBAR_ITEMS,
@@ -11,7 +10,6 @@ import {
     darkEditorTheme,
     TenTapStartKit,
     LinkBridge,
-    CoreBridge,
     CodeBridge,
     useEditorContent,
     ImageBridge,

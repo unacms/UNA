@@ -1,14 +1,13 @@
-import React, { useEffect, useCallback, lazy, useState } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import Footer from 'app/components/nav/footer';
 import { Modal } from 'app/design/controls'
 import Informer from 'app/components/elements/informer';
 import Suggestions from 'app/ui/molecules/suggestions';
 import AsyncWorker from 'app/ui/molecules/async_worker';
-import { View, Row } from 'app/design/view';
+import { View } from 'app/design/view';
 import { useCurrentUser } from 'app/context/user'
 import BottomSheet from 'app/ui/molecules/bottomsheet_content';
-import { getHeaderSettings, deepEqual } from 'app/lib/util';
-import { appSetting, storageSet, storageClear, storageGet, decodeText } from 'app/lib/util'
+import { appSetting, storageClear, storageGet, decodeText } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
 import OneSignal from 'react-onesignal';
 import { ThemeName } from 'app/design/theme';
@@ -18,13 +17,6 @@ import { useIsDesktop } from 'app/context/measure';
 import PopupModal from 'app/ui/molecules/popup_modal'
 import { PageHeader } from 'app/ui/molecules/page_header';
 
-const Navbar = lazy(() => import('app/components/nav/navbar'));
-
-const NavbarMemo = React.memo(function NavbarMemo(props) {
-    return (
-        <Navbar {...props} />
-    );
-});
 
 // Глобальный флаг для отслеживания инициализации OneSignal (общий для всех экземпляров компонента)
 let oneSignalInitialized = false;
@@ -78,7 +70,7 @@ async function runOneSignal() {
 }
 
 
-const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutName, layoutName, data, children, uri, blocks }) => {
+const MemoizedContent = React.memo(({ currentUser, pageLayoutName, layoutName, data, children, blocks }) => {
     const [isModal, setIsModal] = useState(false);
     const { t } = useTranslation()
     useEffect(() => {
@@ -114,19 +106,13 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
         </>
     }
 
-    /*
-    const isNewLayoutStyle = layoutName === 'home' || layoutName === 'post' || layoutName === 'navigator' || layoutName === 'messenger' || layoutName === 'default' || layoutName === 'login' || layoutName === 'create-account';
-    
-     {!isNewLayoutStyle && <NavbarMemo pageLayoutName={pageLayoutName} headerSettings={headerSettings} context={data?.context} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} url={data?.url} >
-                <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
-            </NavbarMemo>}*/
     return (
         <View className="w-full flex-1">
             <Suggestions />
             <AsyncWorker />
             <PageHeader layoutName={layoutName} pageLayoutName={pageLayoutName} pageData={data} />
-            <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} url={data?.url} />
-            {headerSettings.footer !== false && !appSetting('layout', 'footer', 'hide_for_layouts').includes(layoutName) && <Footer />}
+            <Content layoutName={layoutName} children={children} currentUser={currentUser} url={data?.url} />
+            <Footer />
             <BottomSheet />
             <ModalPopup />
         </View>
@@ -313,27 +299,6 @@ export default function Layout(props) {
 
     }, []);
     const { layoutName: pageLayoutName } = useLayoutSettings();
-    const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, isDesktop, layoutName, data.config));
-
-    useEffect(() => {
-        let a = getHeaderSettings(uri, isDesktop, layoutName, data.config);
-        if (pageLayoutName == 'ver') {
-            if (isDesktop)
-                a.offset = false;
-        }
-
-        // Disable offset for navigator layout with adjustable panels
-        /* if (layoutName === 'navigator') {
-             const cellsCustomConfig = appSetting('layouts', 'navigator') || appSetting('layouts', 'cols-l-c');
-             if (cellsCustomConfig?.adjustable) {
-                 a.offset = false;
-             }
-         }
- */
-        if (!deepEqual(headerSettings, a)) {
-            setHeaderSettings(a);
-        }
-    }, [uri, isDesktop, layoutName, data.config, currentUser, pageLayoutName, headerSettings]);
 
     useEffect(() => {
         if (data?.title) {
@@ -378,15 +343,15 @@ export default function Layout(props) {
         applyStyles(stylesBgImage);
         applyStyles(stylesBg);
     }, [stylesBgImage, stylesBg]);
-    return <MemoizedContent pageLayoutName={pageLayoutName} blocks={blocks} headerSettings={headerSettings} currentUser={currentUser} layoutName={layoutName} data={data} children={children} uri={uri} />
+    return <MemoizedContent pageLayoutName={pageLayoutName} blocks={blocks} currentUser={currentUser} layoutName={layoutName} data={data} children={children} uri={uri} />
 }
 
-const Content = React.memo(({ children, headerSettings, currentUser, layoutName, url }) => {
+const Content = React.memo(({ children, currentUser, layoutName, url }) => {
     const isHideHeader = (appSetting('layout', 'hide_header_for_non_logged') && !currentUser) || appSetting('layout', 'hide_header_for_all');
     const mainClassName = `${(layoutName != 'messenger' && layoutName != 'post' && !isHideHeader) ? ' pb-16 web:lg:pb-0 lg:pb-0 ' : ''} w-full mx-auto`;
     return (
         <View className="w-full items-stretch cnt-root mx-auto flex-row " key={url}>
-            <main id="main-content" role="main" className={mainClassName}>{/*mb-16* TODO lg:pb-0*/}
+            <main id="main-content" role="main" className={mainClassName}>
                 <Informer />
                 {children}
             </main>

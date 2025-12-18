@@ -138,10 +138,6 @@ function ErrorPage({ type }) {
     );
 }
 
-function Wrapper({ children }) {
-    return <View className="flex mx-auto w-full ">{children}</View>;
-}
-
 function PageLayoutContent({ layout, data }) {
     const { currentUser } = useCurrentUser();
     const { layoutName, layoutBlocks, isCustomLayout } = layout;
@@ -195,9 +191,7 @@ function PageLayoutContent({ layout, data }) {
 
     if (isCustomLayout && layoutBlocks) {
         return (
-            <Wrapper>
-                <Component key={componentKey} layoutName={layoutName} data={data} blocks={layoutBlocks} />
-            </Wrapper>
+            <Component key={componentKey} layoutName={layoutName} data={data} blocks={layoutBlocks} />
         );
     }
 
@@ -210,10 +204,8 @@ function PageLayoutContent({ layout, data }) {
     ));
 
     return (
-        <Wrapper>
-            <Component key={componentKey} layoutName={layoutName} data={data}>
-                {cells}
-            </Component>
-        </Wrapper>
+        <Component key={componentKey} layoutName={layoutName} data={data}>
+            {cells}
+        </Component>
     );
 }
