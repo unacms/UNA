@@ -325,9 +325,11 @@ export const DefaultView = memo(
                                                     ? data.content.text
                                                     : ''
                                             }
-                                            numberOfLines={3}
+                                            numberOfLines={5}
+                                            numberOfSymbols={600}
                                             openSmall={false}
-                                            textClassName=" text-secondary-foreground text-sm "
+                                            showLess={true}
+                                            customClassName="u-vanilla-html"
                                         />
                                     )}
                                     {!!data.content?.embed && (

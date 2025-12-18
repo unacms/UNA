@@ -97,6 +97,7 @@ const getData = cache(async (params, search_params) => {
 export const viewport = {
     width: 'device-width',
     initialScale: 1,
+    maximumScale: 1, // Prevent iOS auto-zoom on input focus
     viewportFit: 'cover',
     themeColor: [
         { media: '(prefers-color-scheme: light)', color: 'rgba(255,255,255,0.8)' },

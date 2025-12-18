@@ -293,7 +293,7 @@ export default function ({ data, blocks }) {
                 )}
 
                 {feedList.length > 1 && (
-                    <View className=" pb-1 mb-1 border-b border-input gap-y-0.5">
+                    <View className=" pb-3 border-b border-input gap-y-0.5">
                         {feedList.map((item, index) => {
                             return (
                                 <MenuItemSidebarWithWrapper

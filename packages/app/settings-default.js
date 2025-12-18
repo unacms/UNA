@@ -1180,7 +1180,7 @@ export const settingsDefault = {
             default_size: 'base',
             default_variant: 'default',
             pressed_container: ' bg-accent web:hover:bg-accent web:active:bg-accent  ',
-            pressed_text: ' text-accent-foreground font-semibold ',
+            pressed_text: ' text-accent-foreground font-medium ',
          
             xs: {
                 rounded: ' rounded-md ',
@@ -1200,7 +1200,7 @@ export const settingsDefault = {
                 rounded: ' rounded-lg ',
                 padding: ' min-h-9 ',
                 padding_icon_only: ' h-9 w-9 ',
-                padding_with_title: ' px-3 h-9 gap-1.5 ',
+                padding_with_title: ' px-2.5 h-9 gap-1.5 ',
                 icon_container:
                     ' text-base flex items-center justify-center',
                 title_container: ' rounded text-sm inline-flex items-center  ',
@@ -1529,7 +1529,7 @@ export const settingsDefault = {
         },
         cards: {
             'u-card-list':
-                ' u-card-list bg-card/60 shadow-sm  sm:border border-border/60 text-card-foreground overflow-hidden sm:rounded-2xl ',
+                ' u-card-list bg-card/60 sm:shadow-sm  sm:border border-border/60 text-card-foreground overflow-hidden sm:rounded-2xl ',
             'u-card-list-padding': ' p-3 lg:p-4 ',
             'u-card-base':
                 ' u-card-base bg-card/60 shadow-sm border border-border/60 text-card-foreground overflow-hidden rounded-2xl',

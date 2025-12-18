@@ -350,9 +350,22 @@ export function layoutForList(endpoint) {
         return 'w-full';
 
     if (endpoint?.module == 'bx_groups')
-        return 'w-full @xl/list:w-1/2 @3xl/list:w-1/3 @6xl/list:w-1/4 p-2';
+        return 'w-full @sm/list:w-1/2 @md/list:w-1/3 @lg/list:w-1/4 ';
 
-    return 'w-full @xl/list:w-1/2 @2xl/list:w-1/3 @5xl/list:w-1/4 @6xl/list:w-1/5 pt-1 sm:p-2';
+    return 'w-full @sm/list:w-1/2 @md/list:w-1/3 @lg/list:w-1/4 @xl/list:w-1/5  ';
+}
+
+export function paddingForList(endpoint) {
+    // Timeline and notifications use no padding (full width items)
+    if (!endpoint || endpoint?.request_url?.includes('bx_timeline') || endpoint?.params?.request_url?.includes('bx_timeline') || endpoint.unit == "notifications")
+        return '';
+
+    // Groups and grid layouts get padding for better spacing
+    if (endpoint?.module == 'bx_groups')
+        return 'p-1.5 @md/list:p-2';
+
+    // Default padding for grid-based content lists
+    return '@sm/list:p-1.5 @md/list:p-2';
 }
 
 export function getNumColsForConductor(width, currentRoute, leftSideBar) {

@@ -16,7 +16,7 @@ export function MenuItemSubmenu({ icon, title, pressed, disabled, addon, onPress
         <Button
             startDecorator={icon}
             title={title}
-            variant={'text'}
+            variant={'secondary'}
             rounded={rounded}
             pressed={pressed}
             disabled={disabled}
