@@ -1,7 +1,7 @@
-import { View, Row } from 'app/design/view';
-import { BlockByName, DataByName } from 'app/components/block';
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import { stripTags, cd, getBreakpoint } from 'app/lib/util';
+import { View } from 'app/design/view';
+import { BlockByName, DataByName } from 'app/components/block';
+import { getBreakpoint } from 'app/lib/util';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import { Platform } from 'react-native'
@@ -216,8 +216,17 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
     //console.log("headerItems[0].data", aItems[0])
     useEffect(() => {
-        if (!isModal && !isDesktop)
-            setHeader(!isWeb || !isMultiColumn ? { subHeader: aItems[0].data, backButton: true, title: data.title } : defaultHeader);
+        console.log("fgdgdf")
+        if (!isModal) {
+            if (!isDesktop) {
+                setHeader({ subHeader: aItems[0].data, backButton: true, title: data.title });
+            }
+            else {
+                setHeader(defaultHeader);
+            }
+
+        }
+
     }, [isDesktop, isWeb, isMultiColumn, setHeader]);
 
     if (isModal) {
