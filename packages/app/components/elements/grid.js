@@ -7,7 +7,7 @@ import Profile from 'app/ui/molecules/profile';
 import Confirm from 'app/ui/molecules/confirm';
 import { Button } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher';
-import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef, useReducer } from 'react';
 import { Theme } from 'app/design/theme';
 import Switch from 'app/ui/atoms/switcher'
 import CheckBox from 'app/ui/atoms/checkbox';
@@ -23,8 +23,13 @@ import Redirect from 'app/ui/atoms/redirect';
 import Stripe from 'app/ui/molecules/stripe';
 import { useBreakpoint } from 'app/context/measure';
 import { BlockWrapper } from 'app/components/block-wrapper'
-
-
+import { useInfiniteQuery } from '@tanstack/react-query'
+import Loading from 'app/ui/atoms/loading'
+import {
+    refetchUniListReducer,
+    flattenPagesForUniList,
+    isSameItemsForUniList
+} from 'app/lib/conductor-helpers'
 const getWidth1 = (width) => {
     if (!width)
         return undefined;
@@ -32,34 +37,38 @@ const getWidth1 = (width) => {
     return width
 }
 
-const ActionButton = React.memo(({ id, index, itemAction, setShowConfirm, deleteRows, fetchData, handleBlock, item }) => {
+const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowConfirm, deleteRows, fetchData, handleBlock, refetch }) => {
     const [hide, setHide] = useState(false);
     const redirectRef = useRef();
     const getActionAfter = async (itemAction) => {
-        if (itemAction.on_callback == 'hide') {
+
+        /*if (itemAction.on_callback == 'hide') {
             setHide(true);
-        }
+        }*/
         if (itemAction.on_callback == 'hide_row') {
-            deleteRows([itemAction.attr.bx_grid_action_data, id]);
+            deleteRows([itemAction.attr.bx_grid_action_data, id]); 
         }
         if (itemAction.on_callback == 'redirect') {
             redirectRef.current.redirect(itemAction.redirect_url);
         }
+
+       refetch();
     }
 
     const getAction = async (itemAction, setShowConfirm) => {
         if (itemAction.confirm == '1') {
             setShowConfirm({
                 show: true,
-                cb: () => {
-                    fetchData(itemAction.name, '&ids[]=' + itemAction.attr.bx_grid_action_data);
+                cb: async () =>  {
+                    await fetchData(itemAction.name, '&ids[]=' + itemAction.attr.bx_grid_action_data);
                     getActionAfter(itemAction);
+                    
                 }
             });
         }
         else {
-            fetchData(itemAction.name, '&ids[]=' + itemAction.attr.bx_grid_action_data);
-            getActionAfter(itemAction)
+            await fetchData(itemAction.name, '&ids[]=' + itemAction.attr.bx_grid_action_data);
+            getActionAfter(itemAction);
         }
     }
 
@@ -141,7 +150,7 @@ const ActionButton = React.memo(({ id, index, itemAction, setShowConfirm, delete
 
 });
 
-const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selected, setShowConfirm, deleteRows, fetchData, handleBlock }) => {
+const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selected,setTimeStamp,  setShowConfirm, deleteRows, refetch, fetchData, handleBlock }) => {
     switch (cell?.type) {
         case 'time':
             return <Time ts={cell.data} stylesName={'text-sm text-neutral-800 dark:text-neutral-200'}></Time>
@@ -189,6 +198,8 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
                         setShowConfirm={setShowConfirm}
                         deleteRows={deleteRows}
                         fetchData={fetchData}
+                        refetch={refetch}
+                        setTimeStamp={setTimeStamp}
                         handleBlock={handleBlock}
                     // You need to define this function in your component
                     />
@@ -215,6 +226,30 @@ const MultiAdd = React.memo(({ data, setBottomSheetData, handleUpdate }) => {
 })
     ;
 
+const fetchGridData = async ({ pageParam, settings, selectedFilter, searchValue }) => {
+    const start = pageParam?.start || 0;
+    let url = "&start=" + start;
+    url += '&filter=' + (selectedFilter ? selectedFilter.id + '%23-%23' : '') + searchValue;
+    
+    let sUrl = '/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=' + settings.object + '&a=display';
+    if (settings?.query_append) {
+        Object.keys(settings.query_append).forEach((sKey) => {
+            sUrl += '&' + sKey + '=' + settings.query_append[sKey];
+        });
+    }
+    
+    const fetchedData = await fetcher(sUrl + url);
+    
+    return {
+        data: fetchedData.data?.data || [],
+        settings: fetchedData.data?.settings || settings,
+        params: {
+            start: start,
+            per_page: fetchedData.data?.settings?.per_page || settings.per_page
+        }
+    };
+};
+
 export default function ElementGrid(props) {
 
     const { setBottomSheetData } = useBottomSheetData();
@@ -224,10 +259,16 @@ export default function ElementGrid(props) {
         return <></>
     const header = data.header.filter((item) => (item?.name != 'reports'))
     const isSortable = header.find((item) => item?.name == 'order');
-    const [dataItems, setDataItems] = useState({ data: data.data, settings: settings });
+    const [refetchState, dispatch] = useReducer(refetchUniListReducer, {
+        visibleItems: [],
+        hasNewData: false
+    })
+    const refetchRef = useRef({
+        isFirstLoad: true,
+        prevItems: []
+    })
     const [selected, setSelected] = useState([]);
     const [showConfirm, setShowConfirm] = useState({ show: false, cb: null });
-    const [endReached, setEndReached] = useState(false);
     const [selectedFilter, setSelectedFilter] = useState('');
     const [searchValue, setSearchValue] = useState('');
     const [timeStamp, setTimeStamp] = useState(Date.now());
@@ -236,10 +277,77 @@ export default function ElementGrid(props) {
     const { t } = useTranslation();
     const currentBreakpoint = useBreakpoint();
 
+    const queryKey = [
+        'grid',
+        settings.object,
+        selectedFilter?.id || '',
+        searchValue,
+        timeStamp
+    ];
+
+    const {
+        status,
+        data: pagesData,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+        refetch,
+        isRefetching
+    } = useInfiniteQuery({
+        queryKey: queryKey,
+        queryFn: ({ pageParam }) => fetchGridData({
+            pageParam,
+            settings,
+            selectedFilter,
+            searchValue
+        }),
+        getNextPageParam: (lastPage) => {
+            if (lastPage?.data.length > 0) {
+                return {
+                    start: lastPage.params.start + lastPage.params.per_page
+                };
+            }
+            return undefined;
+        },
+        staleTime: 1000,
+        initialPageParam: { start: 0 }
+    });
+
+    useEffect(() => {
+        if (!pagesData) return
+
+        const items = flattenPagesForUniList(pagesData)
+
+        if (refetchRef.current.isFirstLoad) {
+            dispatch({ type: 'SET_ITEMS', items })
+            refetchRef.current.prevItems = items
+            refetchRef.current.isFirstLoad = false
+            return
+        }
+        
+        // Обновляем элементы при изменении данных
+        dispatch({ type: 'SET_ITEMS', items })
+        refetchRef.current.prevItems = items
+    }, [pagesData])
+
+    
+
+
+    const dataItems = refetchState.visibleItems
+
+
     const deleteRows = useCallback((idsToRemove) => {
-        const newItems = dataItems.data.filter(item => !idsToRemove.includes(item.id));
-        setDataItems({ ...dataItems, data: newItems });
-    }, [dataItems.data]);
+
+        idsToRemove.forEach(id => {
+            dispatch({ type: 'REMOVE_ITEM', id: id })
+        })
+        
+
+        if (refetchRef.current?.prevItems) {
+            refetchRef.current.prevItems = refetchRef.current.prevItems.filter(item => !idsToRemove.includes(item.id))
+        }
+        
+    }, [refetch]);
 
     const handleDeleteSelected = () => {
         setShowConfirm({
@@ -279,7 +387,6 @@ export default function ElementGrid(props) {
     const handleUpdate = () => {
         setTimeout(() => {
             handleCloseModal();
-            resetData();
             setTimeStamp(Date.now());
         }, 100);
     }
@@ -294,54 +401,28 @@ export default function ElementGrid(props) {
         return await fetcher(sUrl + (callback ? '' : params));
     }, [settings.object]);
 
-
-
-    const fetchDisplayData = async () => {
-        let url = "&start=" + dataItems.settings.start;
-        url += '&filter=' + (selectedFilter ? selectedFilter.id + '%23-%23' : '') + searchValue;
-
-        let fetchedData = await fetchData('display', url);
-        if (fetchedData && fetchedData.data && fetchedData.data?.data) {
-            if (fetchedData.data.data.length > 0) {
-                fetchedData.data.settings.start = parseInt(fetchedData.data.settings.start) + parseInt(fetchedData.data.settings.per_page);
-                setDataItems({
-                    ...dataItems,
-                    settings: fetchedData.data.settings,
-                    data: [...dataItems.data, ...fetchedData.data.data]
-                });
-            }
-            else {
-                setEndReached(true)
-            }
-        }
-    }
-
-    useEffect(() => {
-        fetchDisplayData();
-    }, [selectedFilter, searchValue, timeStamp]);
-
-    const handleEndReached = async () => {
-        if (!endReached) {
-            fetchDisplayData();
-        }
-    };
+    const handleEndReached = useCallback(() => {
+        if (!hasNextPage) return;
+        if (isFetchingNextPage) return;
+        fetchNextPage();
+    }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
     const toggleSwitch = async (id, indexRow) => {
         let bChecked = false;
         const oSwitcher = { active: 'hidden', hidden: 'active' };
 
-        const updatedData = dataItems.data.map((item, i) => {
-            if (i === indexRow) {
-                item.switcher.data = oSwitcher[item.switcher.data];
-                if (item.switcher.data == 'active')
-                    bChecked = true;
-            }
+        // Оптимистичное обновление UI - мутируем напрямую
+        const currentItem = dataItems[indexRow];
+        if (currentItem?.switcher) {
+            currentItem.switcher.data = oSwitcher[currentItem.switcher.data];
+            if (currentItem.switcher.data == 'active')
+                bChecked = true;
+        }
 
-            return item;
-        });
-
-        setDataItems({ ...dataItems, data: updatedData });
-
-        fetchData('enable', '&ids[]=' + id + (bChecked ? '&checked=1' : ''))
+        // Отправляем запрос на сервер
+        await fetchData('enable', '&ids[]=' + id + (bChecked ? '&checked=1' : ''));
+        
+        // Обновляем данные с сервера для синхронизации
+        refetch();
     }
     const setSelection = (data) => {
         if (!selected.includes(data)) {
@@ -353,35 +434,23 @@ export default function ElementGrid(props) {
     }
 
     const handleSearch = (value) => {
-        resetData();
-        setSearchValue(value)
+        setSearchValue(value);
+        setTimeStamp(Date.now());
     };
 
     const handleFilter = (value) => {
-        resetData();
         setSelectedFilter(value);
+        setTimeStamp(Date.now());
     };
 
     const handleSort = useCallback((result) => {
         if (!result.destination) return;
-        const updatedData = [...dataItems.data];
+        const updatedData = [...dataItems];
         const [removed] = updatedData.splice(result.source.index, 1);
         updatedData.splice(result.destination.index, 0, removed);
-        setDataItems({ ...dataItems, data: updatedData });
         fetchData('reorder', '&' + updatedData.map(item => `${settings.object}_row[]=${item.id}`).join('&'));
-    }, [dataItems, settings, fetchData]);
-
-
-    const resetData = () => {
-        setEndReached(false);
-        let s = dataItems.settings;
-        s.start = 0;
-        setDataItems({
-            ...dataItems,
-            settings: s,
-            data: []
-        });
-    }
+        refetch();
+    }, [dataItems, settings, fetchData, refetch]);
 
     const dropdownItems = useMemo(() => {
         // Check the condition inside useMemo
@@ -398,6 +467,8 @@ export default function ElementGrid(props) {
 
     const actionsBulk = Object.values(data.actions.bulk);
     const actionsIndependent = Object.values(data.actions.independent);
+
+
     /*   <Text className="tracking-tight text-lg font-bold text-neutral-900 dark:text-neutral-50 mb-2">{stripTags(props?.block?.title)}</Text>*/
     let a = <View className="w-full">
 
@@ -486,14 +557,25 @@ export default function ElementGrid(props) {
                     })
                 }
             </Row>
-            {(endReached && dataItems.data.length == 0) && <View className=" items-center pt-4"><Text className="text-neutral-800 dark:text-neutral-200">Nothing to show</Text></View>}
+            {(!dataItems || dataItems.length === 0) && status === 'success' && !hasNextPage && (
+                <View className="items-center pt-4">
+                    <Text className="text-neutral-800 dark:text-neutral-200">Nothing to show</Text>
+                </View>
+            )}
            
             <UniList
                 height={400}
                 sortable={false}// TODO FIX
                 onSort={handleSort}
-                data={dataItems.data}
+                data={dataItems}
                 onEndReached={handleEndReached}
+                refreshing={isRefetching}
+                onRefresh={refetch}
+                ListFooterComponent={hasNextPage && isFetchingNextPage ? (
+                    <View className="p-4 items-center">
+                       <Loading size="small" />
+                    </View>
+                ) : null}
                 renderItem={({ item, index: indexRow }) => {
                     return (
                         //className={`${getWidth(cellHeader.width)}
@@ -511,6 +593,8 @@ export default function ElementGrid(props) {
                                         setShowConfirm={setShowConfirm}
                                         deleteRows={deleteRows}
                                         fetchData={fetchData}
+                                        refetch={refetch}
+                                        setTimeStamp={setTimeStamp}
                                         handleBlock={handleActionBlock}
                                     />
                                 </View>
