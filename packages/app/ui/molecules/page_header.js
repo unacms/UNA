@@ -88,16 +88,15 @@ export const PageHeader = ({
     } : {};
     /* animations for hide header */
 
-    /* left element, can be logo, context selecor or title */
-    const leftElement = isFullContextSelector ? <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /> :( isShowLogo ? (
-        <Link href="/home" size="lg" aria-label="Home">
+    const Logo = <Link href="/home" size="lg" aria-label="Home">
             <Pressable className="items-center">
                 {appStatic('logo')}
             </Pressable>
         </Link>
-    ) : (
+    /* left element, can be logo, context selecor or title */
+    const leftElement = !currentUser ? Logo : (isFullContextSelector ? <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /> :( isShowLogo ? Logo : (
         <TextHeader text={pageTitle} />
-    ));
+    )));
     /* left element, can be logo, context selecor or title */
 
     const contextSelectorElement = isContextSelector && !isFullContextSelector ? <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} mode="min" />: null;
