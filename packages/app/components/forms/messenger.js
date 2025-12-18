@@ -1,6 +1,6 @@
 import { View, Row } from 'app/design/view'
 import { useState } from 'react';
-import { getFormFieldByData, getEditorHeight } from 'app/lib/form-helpers'
+import { getFormFieldByData } from 'app/lib/form-helpers'
 import { Platform } from 'react-native'
 import { useFormContext } from 'react-hook-form';
 import { FileButton } from 'app/lib/form-helpers';
@@ -12,15 +12,9 @@ export default function FormMessenger(props) {
     const formContext = useFormContext();
     const [isExImage, setIsExImage] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
-    const [editorHeight, setEditorHeight] = useState(initialHeight);
-    const imagesValue = formContext.watch('files')
-
-
-
-
+    const imagesValue = formContext.watch('files');
 
     function setIsFocus() {
-
         setIsExImage(false)
         setIsFocused(true)
     }
@@ -30,24 +24,7 @@ export default function FormMessenger(props) {
         setIsFocused(false)
     }
 
-    const checkEditorHeight = (height) => {
-        // For messenger, use proper height calculation that matches tiptap-comments line-height
-        // Chrome height: py-2 (8px top + 8px bottom) + container padding + internal editor chrome
-        // Total chrome is approximately 24px to account for all padding and borders
-        const chromeHeight = 24;
-        // Growth step: matches .tiptap-comments line-height = 20px
-        const growthStep = 20;
-        const maxHeight = 200; // Maximum height for messenger input
-
-        // Use the reported height directly for immediate response
-        // The getEditorHeight function will handle proper step-based growth
-        const calculatedHeight = getEditorHeight(height, initialHeight, chromeHeight, growthStep, maxHeight);
-
-        // Use requestAnimationFrame to ensure smooth animation and reduce layout shifts
-        requestAnimationFrame(() => {
-            setEditorHeight(calculatedHeight);
-        });
-    };
+ 
 
     if (typeof props.data.inputs['send'] !== 'undefined')
         props.data.inputs['submit'].icon = 'SendHorizontal';
@@ -73,7 +50,6 @@ export default function FormMessenger(props) {
             <View
                 className="flex-auto bg-muted/60 rounded-xl border border-border/60 px-3 py-2"
                 style={{
-                    height: editorHeight,
                     transition: 'height 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
                     willChange: 'height',
                     transformOrigin: 'bottom center'
@@ -82,7 +58,12 @@ export default function FormMessenger(props) {
                 {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cf'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['payload'], props.handleSubmit, 'custom')}
-                {getFormFieldByData(props.data.inputs['message'], props.handleSubmit, 'custom', { autofocus: false, form_name: props.name, container_class: 'comments', classes: "flex-1 my-0.5", focus: true, bg: 'transparent', submitOnEnter: true, noPadding: true, placeholder: 'Message ...', onHeight: checkEditorHeight, onFocus: setIsFocus, onBlur: setIsBlur })}
+                {getFormFieldByData(props.data.inputs['message'], props.handleSubmit, 'custom', { autofocus: false, form_name: props.name, container_class: 'comments', classes: "flex-1 my-0.5", focus: true, bg: 'transparent', submitOnEnter: true, 
+                    noPadding: true, 
+                    placeholder: 'Message ...',   
+                    initialHeight: 20,
+                    maxHeight: 160,
+                    onFocus: setIsFocus, onBlur: setIsBlur })}
                 {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['message_id'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['send'], props.handleSubmit, 'custom')}

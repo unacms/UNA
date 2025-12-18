@@ -31,19 +31,6 @@ export function inputByKey(array, value) {
     return array.find(obj => obj['key'] === value);
 }
 
-export function getEditorHeight(reportedContentHeight, minVisualHeight, totalChromeHeight, growthStep, maxHeight) {
-    const contentSpaceInMinVisualHeight = minVisualHeight - totalChromeHeight;
-
-    if (reportedContentHeight <= contentSpaceInMinVisualHeight) {
-        return minVisualHeight;
-    } else {
-        const overflowHeight = reportedContentHeight - contentSpaceInMinVisualHeight;
-        const stepsNeeded = Math.ceil(overflowHeight / growthStep);
-        let newHeight = minVisualHeight + (stepsNeeded * growthStep);
-        return Math.min(newHeight, maxHeight);
-    }
-}
-
 export function PollButton({ field_name, size = 'base', variant = 'secondary', icon = "ChartBarBig" }) {
     return (
         <Button

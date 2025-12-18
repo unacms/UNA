@@ -17,17 +17,14 @@ import {
     ImageBridge,
     DropCursorBridge,
     PlaceholderBridge,
-    Extension,
 } from '@10play/tentap-editor'
 import { useFilesData } from 'app/context/files'
-import { Keyboard, Platform, KeyboardAvoidingView } from 'react-native'
+import { Platform, KeyboardAvoidingView } from 'react-native'
 import { Theme } from 'app/design/theme'
 import { getAlert, stripTags, stripTagsWithLinks } from 'app/lib/util'
-import { Text } from 'app/design/typography'
 import { fetcher } from 'app/lib/fetcher'
 import { appSetting } from 'app/lib/util'
 import { ThemeName } from 'app/design/theme'
-import { TextInput } from 'react-native'
 import emitter from 'app/context/emitter'
 
 const inputSettings = appSetting('theme', 'inputs');
@@ -35,9 +32,9 @@ const inputSettings = appSetting('theme', 'inputs');
 export default function RftText({
     name,
     value = '',
-    numLines = 4,
     minHeight,
-    maxHeight,
+    initialHeight= 120,
+    maxHeight = 300,
     onFocus,
     onBlur,
     html,
@@ -84,7 +81,7 @@ export default function RftText({
 
     const [suggestions, setSuggestions] = useState([])
     const [keywordval, setKeyword] = useState(['', ''])
-    const [editorHeight, setEditorHeight] = useState(0)
+    const [editorHeight, setEditorHeight] = useState(initialHeight)
     const [isEnter, setIsEnter] = useState(false)
     const [suggestionsSize, setSuggestionsSize] = useState([0, 0])
     const object_privacy_view =
@@ -230,7 +227,7 @@ export default function RftText({
     .ProseMirror.tiptap {
         height: auto !important;
         overflow: visible !important;
-        min-height: inherit;
+        min-height: auto !important;
     }
     `
     }
@@ -628,9 +625,8 @@ export default function RftText({
             }
 
             if (message?.type == 'height') {
-                setEditorHeight(message.payload)
-                if (props.onHeight) {
-                    props.onHeight(message.payload)
+                if (message.payload>=initialHeight && message.payload<= maxHeight){
+                    setEditorHeight(message.payload)
                 }
             }
 
@@ -734,73 +730,19 @@ export default function RftText({
                         }
                     }, true);
 
-                    // Height update tracking
-                    let heightUpdateTimeout = null;
-                    let lastReportedHeight = 0;
-                    // Use correct line height based on editor type
-                    const LINE_HEIGHT = ${isCommentsEditor ? 20 : 24}; // Comments: 20px, Feed: 24px (matches CSS)
-                    const HEIGHT_THRESHOLD = LINE_HEIGHT / 2; // Only report if changed by at least half a line
-                    
-                    function updateHeight(immediate = false) {
+                    function updateHeight() {
                         const currentHeight = editorElement.scrollHeight;
-                        const heightDiff = Math.abs(currentHeight - lastReportedHeight);
-                        
-                        // Only report if height changed by at least half a line height
-                        if (heightDiff < HEIGHT_THRESHOLD && !immediate) {
-                            return;
-                        }
-                        
-                        if (immediate && heightDiff >= HEIGHT_THRESHOLD) {
-                            // Immediate update (for newlines, significant changes)
-                            lastReportedHeight = currentHeight;
-                            window.ReactNativeWebView.postMessage(JSON.stringify({
-                                type: 'height',
-                                payload: currentHeight,
-                            }));
-                        } else if (!immediate) {
-                            // Debounced update for regular typing
-                            if (heightUpdateTimeout) {
-                                clearTimeout(heightUpdateTimeout);
-                            }
-                            heightUpdateTimeout = setTimeout(() => {
-                                const finalHeight = editorElement.scrollHeight;
-                                const finalDiff = Math.abs(finalHeight - lastReportedHeight);
-                                // Only report if height actually changed significantly
-                                if (finalDiff >= HEIGHT_THRESHOLD) {
-                                    lastReportedHeight = finalHeight;
-                                    window.ReactNativeWebView.postMessage(JSON.stringify({
-                                        type: 'height',
-                                        payload: finalHeight,
-                                    }));
-                                }
-                            }, 150);
-                        }
+                        window.ReactNativeWebView.postMessage(JSON.stringify({
+                            type: 'height',
+                            payload: currentHeight,
+                        }));
                     }
 
-                    // Only observe structural changes (new paragraphs/lines), not character data
-                    const observer = new MutationObserver((mutations) => {
-                        // Block-level elements that affect layout height
-                        const blockElements = new Set(['P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'UL', 'OL', 'LI', 'BLOCKQUOTE', 'PRE', 'HR', 'TABLE', 'TR', 'TD']);
-                        
-                        // Check if this is a structural change (new block element) vs text node change
-                        const hasStructuralChange = mutations.some(m => {
-                            if (m.type !== 'childList') return false;
-                            
-                            // Check if any added/removed nodes are block-level elements
-                            const addedBlocks = Array.from(m.addedNodes).some(node => 
-                                node.nodeType === Node.ELEMENT_NODE && blockElements.has(node.nodeName)
-                            );
-                            const removedBlocks = Array.from(m.removedNodes).some(node => 
-                                node.nodeType === Node.ELEMENT_NODE && blockElements.has(node.nodeName)
-                            );
-                            
-                            return addedBlocks || removedBlocks;
-                        });
-                        
-                        if (hasStructuralChange) {
-                            updateHeight(true);
-                        }
+                    const observer = new MutationObserver(() => {
+                        updateHeight();
                     });
+
+                    
 
                     observer.observe(editorElement, {
                         childList: true,
@@ -1000,7 +942,7 @@ export default function RftText({
                     </ScrollView>
                 </View>
             )}
-            <View className="web:contents">
+            <View style={{height:`${editorHeight}px`}} >
                 <RichText
                     exclusivelyUseCustomOnMessage={false}
                     style={{
