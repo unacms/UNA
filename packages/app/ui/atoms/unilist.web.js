@@ -202,7 +202,7 @@ export default function UniList(props) {
         else {
             if (sortable) {
                 return (
-                    <View className={listPadding} style={wrapperStyle}>
+                    <View  style={wrapperStyle}>
                         <DragDropContext onDragEnd={onSort}>
                             <Droppable
                                 droppableId="droppable"
@@ -235,7 +235,7 @@ export default function UniList(props) {
             }
             else {
                 return (
-                    <View className={listPadding} style={wrapperStyle}>
+                    <View  style={wrapperStyle}>
                         {ListHeaderComponent && ListHeaderComponent()}
                         <Virtuoso
                             itemContent={itemContent}
