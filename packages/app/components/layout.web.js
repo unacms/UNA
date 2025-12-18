@@ -82,7 +82,7 @@ const MemoizedContent = React.memo(({ headerSettings, currentUser, pageLayoutNam
     const [isModal, setIsModal] = useState(false);
     const { t } = useTranslation()
     useEffect(() => {
-        if (currentUser === false && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'home', 'login', 'forgot-password', 'confirm-email'].includes(uri)) {
+        if (currentUser === false && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'login', 'forgot-password', 'confirm-email'].includes(data.uri)) {
 
             setTimeout(() => {
                 setIsModal(true)
@@ -147,7 +147,8 @@ const metaAdder = (queryProperty, value) => {
 export default function Layout(props) {
 
     const { currentUser } = useCurrentUser();
-    const { layout, data, blocks, uri, children } = props;
+    const { layout, data, blocks, children } = props;
+    const uri = data.uri;
     const { layoutName } = layout;
     const isDesktop = useIsDesktop();
     const theme = ThemeName();
