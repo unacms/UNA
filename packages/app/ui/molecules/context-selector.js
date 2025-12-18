@@ -203,9 +203,13 @@ export default function ContextSelector({ data, url, uri, mode }) {
                             </>
                         )}
 
-                    <Row className="items-center gap-2 ps-1">
+                    <Row className="items-center gap-2">
+                        <View className="max-w-64">
                         {CurrentContext}
+                        </View>
+                        <View className="flex-1">
                         {DropDown}
+                        </View>
                     </Row>
                 </Row>
             ) : (
