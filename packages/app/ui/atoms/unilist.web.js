@@ -8,7 +8,6 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useCallback, forwardRef } from 'react';
 import { useBreakpoint } from 'app/context/measure'
 import { useSetScrollDirection } from 'app/context/jotai/layout';
-import { paddingForList } from 'app/lib/functions/functions-default';
 
 export default function UniList(props) {
     let { useCustomScrollHandler, preloadComponent, sortable, data, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
@@ -181,12 +180,12 @@ export default function UniList(props) {
         const wrapperStyle = isWindowScroll ? {} : style;
         
         // Get dynamic padding based on endpoint/module
-        const listPadding = paddingForList(endpoint);
+    
         
         if (mode != 'simple' && !sortable) {
             return (
                 <View className="@container/list" style={wrapperStyle}>
-                <View className={`${listPadding}`} style={wrapperStyle}>
+             
                     {ListHeaderComponent && ListHeaderComponent()}
                     <VirtuosoGrid
                         {...commonVirtuosoProps}
@@ -196,7 +195,7 @@ export default function UniList(props) {
                         // atBottomStateChange={()=>{console.log("atBottomStateChange"), onEndReached()}}
                         endReached={() => { onEndReached() }}
                     />
-                </View>
+               
                 </View>
             )
         }

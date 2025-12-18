@@ -118,7 +118,7 @@ export function ContentMore({
             </Pressable>
             {showButton && showLess && (
                 <Pressable onPress={handleToggle}>
-                    <Text className="text-primary dark:text-primary text-base mt-1">
+                    <Text className={'text-primary dark:text-primary  mt-1 ' + (customClassName || 'text-base')}>
                         {showFull ? "Show less" : "Show more"}
                     </Text>
                 </Pressable>

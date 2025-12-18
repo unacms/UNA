@@ -50,7 +50,7 @@ export default function ElementFeedItem({ data, isModal, blockWrapperProps }) {
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <View className="relative sm:my-0 gap-3 p-3 sm:px-4 flex-auto">
+            <View >
                 <View className="">
                     <Html data={tlContent} />
                     {!!content.embed && <Embed data={content.embed} />}
