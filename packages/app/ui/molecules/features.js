@@ -3,7 +3,7 @@ import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { View } from 'app/design/view'
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonsGroupMenu } from 'app/design/controls';
-import DropdownMenuItem from 'app/components/menu-items/dropdown-menu-item'
+import DropdownMenuItem from 'app/components/menu-items/dropdown-item'
 
 const performAction = async (sSystem, iObjectId, sAction, aParams, onLoad) => {
     const aParamsDefault = { s: sSystem, o: iObjectId };

@@ -5,8 +5,6 @@ import { appSetting, updateRouteDataForConnection, getPageSettings } from 'app/l
 import { getComponent } from 'app/components/registry';
 import { appStatic } from 'app/lib/app-static';
 import { View } from 'app/design/view'
-import { MenuItemSidebar } from 'app/components/nav/menu-item-sidebar'
-import { MenuItemSubmenu } from 'app/components/nav/menu-item-submenu'
 import {
     SvgBackgroundSplash,
     SvgBackgroundSplashDark,
@@ -50,7 +48,7 @@ export function getBadgeForTab(currentUser, url) {
 }
 
 export function getButtonForConductor(a, index, currentUser) {
-
+    const MenuItemSidebar = getComponent('menu-item', 'submenu');
     const settings = getPageSettings(a?.config, a.key);
     const icon = !a.ident
         ? settings?.icon
@@ -80,6 +78,7 @@ export function getButtonForConductorSmall(a, index, onPress) {
 }
 
 export function getButtonForConductorHor(icon, title, pressed, addon, onPress, item) {
+    const MenuItemSubmenu = getComponent('menu-item', 'submenu');
     return <MenuItemSubmenu
         icon={icon}
         title={title}

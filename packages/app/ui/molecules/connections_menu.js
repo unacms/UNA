@@ -3,9 +3,10 @@ import { Button, ButtonMenuActionDefault } from 'app/design/controls'
 import { appSetting } from 'app/lib/util';
 import { useState } from 'react';
 import { fetcher } from 'app/lib/fetcher';
-import DropdownMenuItem from 'app/components/menu-items/dropdown-menu-item'
+import { getComponent } from 'app/components/registry'
 
 export default function ElementConnections(props) {
+     const DropdownMenuItem = getComponent('menu-item', 'dropdown');
     const [elementData, setElementData] = useState(props);
     const settings = appSetting('social_actions', 'connection');
     const icons = elementData.o && settings[elementData.o]?.icons != undefined ? settings[elementData.o].icons : {

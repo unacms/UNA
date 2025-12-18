@@ -11,7 +11,7 @@ import Profile from 'app/ui/molecules/profile';
 import { subscribe } from 'app/ui/atoms/socket';
 import Dropdown from 'app/ui/atoms/dropdown'
 import { InputMulti } from 'app/design/controls'
-import DropdownMenuItem from 'app/components/menu-items/dropdown-menu-item'
+import DropdownMenuItem from 'app/components/menu-items/dropdown-item'
 
 const getName = (sType, sSystem, sObjectId, sName) => {
     let aName = [sType, sSystem.replace(/_/g, '-'), sObjectId];

@@ -8,7 +8,7 @@ import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { useTranslation } from 'react-i18next';
 import { useLayoutData } from 'app/context/layout'
 import { storageClear } from 'app/lib/util'
-import DropdownMenuItem from 'app/components/menu-items/dropdown-menu-item'
+import { getComponent } from 'app/components/registry'
 
 const getKey = (sO, iIid, iCid) => {
     return sO + '_' + iIid + '_' + iCid;
@@ -77,6 +77,7 @@ const handleFormSubmittedAndValid = (handleDo, handleCloseModal) => {
 }
 
 export default function ElementConnections(oProps) {
+    const DropdownMenuItem = getComponent('menu-item', 'dropdown');
     const [elementData, setElementData] = useState(false);
     const [modalContent, setModalContent] = useState(false);
     const { layoutData, setLayoutData } = useLayoutData()

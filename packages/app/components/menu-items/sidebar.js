@@ -5,22 +5,9 @@ import { Icon } from 'app/ui/atoms/icon'
 import { getPart } from 'app/lib/parts/part';
 import { isEmoji, appSetting } from 'app/lib/util';
 
-export function MenuItemSidebarWithWrapper({ link, title, index, icon = 'Circle', userUrl, isActive, onPress, addon }) {
 
-    const finalLink = link?.includes('{profile}') ? link.replace('{profile}', userUrl || '') : link;
-    const Wrapper = onPress ? Pressable : Link;
-    const wrapperProps = onPress
-        ? { onPress }
-        : { href: finalLink, alt: title };
 
-    return (
-        <Wrapper {...wrapperProps}>
-            <MenuItemSidebar title={title} icon={icon} isActive={isActive} addon={addon} />
-        </Wrapper>
-    )
-}
-
-export function MenuItemSidebar({ title, icon, isActive, addon }) {
+export default function MenuItemSidebar({ title, icon, isActive, addon }) {
     return (
         <Row className={` px-2 py-1.5 items-center group rounded-xl ${isActive && 'bg-primary/10 web:hover:bg-muted/60 ' || ' web:hover:bg-muted/60 '}`}>
             

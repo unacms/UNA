@@ -4,7 +4,7 @@ import { appSetting } from 'app/lib/util';
 import { View } from 'app/design/view'
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonsGroupMenu } from 'app/design/controls';
 import { useCallback, useMemo } from 'react';
-import DropdownMenuItem from 'app/components/menu-items/dropdown-menu-item'
+import DropdownMenuItem from 'app/components/menu-items/dropdown-item'
 
 const handleDo = async (url, event) => {
     event.preventDefault();

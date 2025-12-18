@@ -7,10 +7,12 @@ import SubmenuShare from './submenu-share'
 import ProfilesList from "app/ui/molecules/profile_list";
 import { Text } from 'app/design/typography'
 import { getIconByNameFromIconset } from 'app/lib/util';
+import { getComponent } from 'app/components/registry'
 
-import DropdownMenuItem from 'app/components/menu-items/dropdown-menu-item'
 
 export default function MenuItemButton(oProps) {
+
+    const DropdownMenuItem = getComponent('menu-item', 'dropdown');
 
     const bShowActionAsButton = oProps.params?.show_action_as_button == undefined || oProps.params.show_action_as_button === true;
     const bShowVertical = oProps?.params && oProps.params.showVertical != undefined && oProps.params.showVertical === true;

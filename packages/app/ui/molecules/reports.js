@@ -12,7 +12,7 @@ import { subscribe } from 'app/ui/atoms/socket';
 import Dropdown from 'app/ui/atoms/dropdown'
 import { InputMulti } from 'app/design/controls'
 import { Platform } from 'react-native';
-import DropdownMenuItem from 'app/components/menu-items/dropdown-menu-item'
+import { getComponent } from 'app/components/registry'
 
 const getName = (sType, sSystem, sObjectId, sName) => {
     let aName = [sType, sSystem.replace(/_/g, '-'), sObjectId];
@@ -141,6 +141,7 @@ const getSkeleton = () => {
 
 const ElementReports = forwardRef((oProps, ref) => {
     const { t } = useTranslation();
+     const DropdownMenuItem = getComponent('menu-item', 'dropdown');
     const elementRef = useRef(null);
     const [popupVisibleDo, setPopupVisibleDo] = useState(false);
 

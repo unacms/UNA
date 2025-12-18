@@ -1,40 +1,29 @@
-import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
-import { Pressable } from 'app/design/view';
-import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import { View, Row, Pressable } from 'app/design/view'
+import Link from 'app/ui/atoms/link'
+import { Text } from 'app/design/typography'
+import { Icon } from 'app/ui/atoms/icon'
+import { getPart } from 'app/lib/parts/part';
+import { isEmoji, appSetting } from 'app/lib/util';
+import { useIsDesktop } from 'app/context/measure';
+import { Button, Modal } from 'app/design/controls'
 
-export default function MenuItemSubmenu(oProps) {
-
-    const oIconAliases = {};
-
-    const bShowActionAsButton = oProps.params?.show_action_as_button == undefined || oProps.params.show_action_as_button === true;
-
-    let oButtonProps = {
-        variant: oProps.primary === "1" ? 'primary' : oProps.params?.button_variant,
-        size: oProps.params?.button_size,
-        rounded: oProps.params?.button_rounded,
-        fullWidth: oProps.params?.button_full_width,
-        showTitleFromSize: oProps.paramsi?.button_show_title_from_size || oProps.params?.button_show_title_from_size
-    };
-
-    const aSubmenuExcept = [];
-    const aSubmenuItems = oProps.submenu.items.map((oItem) => {
-        if(!(oItem.id || oItem.name) || aSubmenuExcept.includes(oItem.name))
-            return;
-
-        return {
-            id: !!oItem.id ? oItem.id : oItem.name,
-            link: oItem.link,
-            title: oItem.title,
-        };
-    });
-
-    const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
-
+export default function MenuItemSubmenu({ icon, title, pressed, disabled, addon, onPress }) {
+    const isDesktop = useIsDesktop();
+    const size = isDesktop ? 'base' : 'sm';
+    const rounded = !isDesktop;
+    //TODO FOR ANDREW
     return (
-        <Pressable onPress={(event) => {event.preventDefault()}}>
-            <DropdownMenu items={aSubmenuItems}>
-                <ButtonAction title={oProps?.title ? oProps.title : ''} {...oButtonProps} startDecorator={!!oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''} />
-            </DropdownMenu>
-        </Pressable>
-    );
+        <Button
+            startDecorator={icon}
+            title={title}
+            variant={'secondary'}
+            rounded={rounded}
+            pressed={pressed}
+            disabled={disabled}
+            size={size}
+            haptics="Medium"
+            addon={addon}
+            onPress={onPress}
+        />
+    )
 }

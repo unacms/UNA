@@ -14,10 +14,9 @@ import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import Profile from 'app/ui/molecules/profile'
 import { Text } from 'app/design/typography'
-import { MenuItemSidebarWithWrapper } from 'app/components/nav/menu-item-sidebar'
 import { Platform } from 'react-native'
-import { callFn } from 'app/lib/functions/call'
 import { getComponent } from 'app/components/registry'
+import { callFn } from 'app/lib/functions/call'
 import {
     Panel,
     PanelGroup,
@@ -115,7 +114,7 @@ export default function ({ data, blocks }) {
      <Button startDecorator="Plus" variant="badge" title="fdfdsf"></Button>
 </>
     )*/
-   console.log(456)
+    const MenuItemSidebarWithWrapper = getComponent('menu-item', 'sidebar_with_wrapper');
     const isWeb = Platform.OS == 'web'
     const isDesktop = useIsDesktop();
     const { layoutName, layoutSettings } = useLayoutSettings();

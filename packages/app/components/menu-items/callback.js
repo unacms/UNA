@@ -11,7 +11,7 @@ import RbList from 'app/ui/molecules/radio_list';
 import ChkList from 'app/ui/molecules/checkbox_list';
 import { storageClear, getAlert } from 'app/lib/util';
 import { useLayoutData } from 'app/context/layout';
-import DropdownMenuItem from 'app/components/menu-items/dropdown-menu-item'
+import { getComponent } from 'app/components/registry'
 import Badge from 'app/ui/molecules/badge'
 
 const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps) => {
@@ -85,6 +85,8 @@ const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, red
 };
 
 export default function MenuItemButton(oProps) {
+    const DropdownMenuItem = getComponent('menu-item', 'dropdown');
+    
     const redirectdRef = useRef();
     const { setBottomSheetData } = useBottomSheetData();
     //const [isVisible, setIsVisible] = useState(true);

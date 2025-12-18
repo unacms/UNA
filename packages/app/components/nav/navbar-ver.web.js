@@ -13,8 +13,8 @@ import MenuAdd from 'app/components/nav/menu-add'
 import BlockByUrl from 'app/ui/molecules/block'
 import MenuAccount from 'app/components/nav/menu-account'
 import { getComponent } from 'app/components/registry'
-import { MenuItemSidebarWithWrapper } from 'app/components/nav/menu-item-sidebar'
 import { useIsDesktop } from 'app/context/measure';
+import { getComponent } from 'app/components/registry'
 
 const SidebarBottomToolbar = ({ currentUser, menu_add_items, buttonProps }) => {
     const toolbarConfig = appSetting('header_toolbar', 'ver')?.loggedIn?.sidebar;
@@ -62,6 +62,7 @@ const SidebarBottomToolbar = ({ currentUser, menu_add_items, buttonProps }) => {
 };
 
 const SideBar = memo(({ headerSettings, currentUser, uri, url, bSearch, menuPopup, setMenuPopup, showMenu, context }) => {
+    const MenuItemSidebarWithWrapper = getComponent('menu-item', 'sidebar_with_wrapper');
     const { t } = useTranslation();
     const isDesktop = useIsDesktop();
     if (isDesktop && menuPopup)
