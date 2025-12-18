@@ -100,8 +100,9 @@ export default function RftText({
     if (object_id) url1 += '&cid=' + object_id
 
         const isCommentsEditor = props.container_class === 'comments'
-    // Ensure at least 16px to avoid iOS Safari zoom on focus. Align with global CSS.
-    const editorFontSize = '16px'
+    // Comments use 14px (text-sm), other editors use 16px (text-base)
+    // iOS zoom prevention is handled by viewport maximumScale=1
+    const editorFontSize = isCommentsEditor ? '14px' : '16px'
     const editorLineHeight = isCommentsEditor ? '20px' : '24px'
     // Match published feed font (Inter via --font-main) so the editor looks identical to posts.
     const editorFontFamily =

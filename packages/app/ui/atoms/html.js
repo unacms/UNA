@@ -219,12 +219,12 @@ const parseHtmlToReact = (html, parentKey = '0') => {
     return elements
 }
 
-export default function ElementHtml({ customClassName, data }) {
+export default function ElementHtml({ customClassName, data, innerRef }) {
     if (!data) return null
     let html = decodeText(data.replace(/\n|\r/g, '').replace(/&nbsp;/g, ' '));
     if (html.trim() != '' && !html.includes('<p')) html = `<p>${html}</p>`
     return (
-        <View className={`${customClassName || 'u-vanilla-html'}`}>
+        <View className={`${customClassName || 'u-vanilla-html'}`} ref={innerRef}>
             {parseHtmlToReact(html)}
         </View>
     )

@@ -326,7 +326,7 @@ function LessonStructure({ lessonData, startLessonPart }) {
         <View className='w-full '>
             <ScrollView className='w-full'>
                 <View className='mb-4'>
-                    <ContentMore numberOfSymbols={200} showLess={true} content={lessonData?.text} numberOfLines={3} openSmall={false} textClassName="  text-base text-neutral-600 dark:text-neutral-400" />
+                    <ContentMore numberOfSymbols={360} showLess={true} content={lessonData?.text} numberOfLines={3} openSmall={false} customClassName="u-vanilla-html" />
                 </View>
                 <Row className='gap-x-4 mb-4'>
                     <Button variant="default" textColor={`text-white`} bgColor={`${viewType === 0 ? 'bg-red-400' : 'bg-gray-400'}`} title='Lesson' size="sm" onPress={() => { setViewType(0) }} />
@@ -580,7 +580,7 @@ function LessonItem({ lessonItemData, lessonIndex, lessonData, startLessonPart }
                 <Video poster={lessonItemData.video.src_poster} src={lessonItemData.video.src_mp4} cover={true} controls={true} muted={"muted"} />
             </View>}
             <View className='my-4'>
-                <ContentMore numberOfSymbols={200} showLess={false} content={lessonItemData?.text} numberOfLines={3} openSmall={true} textClassName="  text-base text-neutral-600 dark:text-neutral-400" />
+                <ContentMore numberOfSymbols={360} showLess={false} content={lessonItemData?.text} numberOfLines={3} openSmall={true} customClassName="u-vanilla-html" />
             </View>
             {lessonIndex != steps.length - 1 &&
                 <Button endDecorator="ArrowRight" variant="default" title={'Next'} size="sm" rounded onPress={() => { startLessonPart(lessonData.steps[lessonIndex + 1].id, true) }} />

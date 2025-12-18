@@ -234,19 +234,21 @@ export default function UnitComments(props) {
                                 </View>
                                 <ContentMore
                                     content={data.cmt_parent.data.cmt_text}
-                                    numberOfLines={1}
+                                    numberOfLines={2}
+                                    numberOfSymbols={200}
                                     openSmall={false}
-                                    textClassName=" text-base text-muted-foreground"
+                                    customClassName="u-vanilla-html-small"
                                 />
                             </View>
                         )}
                         <View className="">
                             <ContentMore
                                     content={data.cmt_text}
-                                    numberOfSymbols={100}
+                                    numberOfLines={3}
+                                    numberOfSymbols={360}
                                     openSmall={false}
-                                    textClassName=" text-base text-muted-foreground"
-                                    customClassName="u-vanilla-html"
+                                    showLess={true}
+                                    customClassName="u-vanilla-html-small"
                                 />
                             {!!data.embed && (
                                 <View>
