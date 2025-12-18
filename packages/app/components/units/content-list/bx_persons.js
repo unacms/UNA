@@ -22,7 +22,7 @@ function ImageSection({ data, imageSizes }) {
     return (
         <View
             className={` ${isWeb && 'h-28 sm:h-auto'
-                } aspect-square sm:w-full sm:rounded-xl overflow-hidden items-center bg-muted justify-center`}
+                } aspect-square sm:w-full rounded-xl overflow-hidden items-center bg-muted justify-center`}
         >
             <Image
                 src={data?.image?.src}
@@ -76,12 +76,10 @@ export default function Unit(props) {
         return
 
     return (
-        <CardList padding="p-1.5">
+        <CardList padding="p-1.5 mb-px sm:m-1.5" className="rounded-none @sm:rounded-2xl shadow-sm  ">
             <Redirect ref={redirectdRef} />
             <Link className="web:group " href={data.url}>
-                <View
-                    className={`flex-row sm:flex-col p-2 sm:p-0 sm:h-full`}
-                >
+                <View className="flex-row sm:flex-col p-1.5 sm:p-0 sm:h-full">
                     <ImageSection data={data} imageSizes={imageSizes} />
                     {!!oMenuItemDelete && <View className="absolute right-1 top-1">{oMenuItemDelete}</View>}
                     <View className="flex-col pl-4 my-auto sm:p-2 flex-auto ">

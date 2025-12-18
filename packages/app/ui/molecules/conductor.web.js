@@ -753,7 +753,7 @@ const TabScene = ({
                     className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'
                         } ${layoutName !== 'navigator'
                             ? 'mt-0.5 sm:p-2'
-                            : (!pageRoute?.endpoint?.request_url ? 'sm:my-3 mt-0.5 sm:px-3 ' : 'lg:p-1')
+                            : (!pageRoute?.endpoint?.request_url ? 'sm:my-3 mt-0.5 sm:px-3 ' : '')
                         }`}
                 >
                     {centerColumnContent}

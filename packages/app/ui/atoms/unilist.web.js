@@ -8,6 +8,7 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useCallback, forwardRef } from 'react';
 import { useBreakpoint } from 'app/context/measure'
 import { useSetScrollDirection } from 'app/context/jotai/layout';
+import { paddingForList } from 'app/lib/functions/functions-default';
 
 export default function UniList(props) {
     let { useCustomScrollHandler, preloadComponent, sortable, data, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
@@ -179,9 +180,13 @@ export default function UniList(props) {
         // Wrapper style: use explicit height only when not using window scroll, otherwise let it flow naturally
         const wrapperStyle = isWindowScroll ? {} : style;
         
+        // Get dynamic padding based on endpoint/module
+        const listPadding = paddingForList(endpoint);
+        
         if (mode != 'simple' && !sortable) {
             return (
                 <View className="@container/list" style={wrapperStyle}>
+                <View className={`${listPadding}`} style={wrapperStyle}>
                     {ListHeaderComponent && ListHeaderComponent()}
                     <VirtuosoGrid
                         {...commonVirtuosoProps}
@@ -192,43 +197,46 @@ export default function UniList(props) {
                         endReached={() => { onEndReached() }}
                     />
                 </View>
+                </View>
             )
         }
         else {
             if (sortable) {
                 return (
-                    <DragDropContext onDragEnd={onSort}>
-                        <Droppable
-                            droppableId="droppable"
-                            mode="virtual"
-                            renderClone={(provided, snapshot, rubric) => (
-                                itemContentSorted(rubric.source.index, data[rubric.source.index], provided, snapshot.isDragging)
+                    <View className={listPadding} style={wrapperStyle}>
+                        <DragDropContext onDragEnd={onSort}>
+                            <Droppable
+                                droppableId="droppable"
+                                mode="virtual"
+                                renderClone={(provided, snapshot, rubric) => (
+                                    itemContentSorted(rubric.source.index, data[rubric.source.index], provided, snapshot.isDragging)
 
-                            )}
-                        >
-                            {(provided) => (
-                                <View {...provided.droppableProps} ref={provided.innerRef}>
-                                    <Virtuoso
-                                        itemContent={(index, item) => (
-                                            <Draggable draggableId={`${item.id}`} index={index} key={item.id}>
-                                                {(provided) => itemContentSorted(index, item, provided, false)}
-                                            </Draggable>
-                                        )}
-                                        {...commonVirtuosoProps}
-                                        {...(listState?.ranges && { restoreStateFrom: listState })}
-                                        {...(scrollToLastItem && { initialTopMostItemIndex: data.length })}
-                                        endReached={onEndReached}
-                                    />
-                                    {provided.placeholder}
-                                </View>
-                            )}
-                        </Droppable>
-                    </DragDropContext>
+                                )}
+                            >
+                                {(provided) => (
+                                    <View {...provided.droppableProps} ref={provided.innerRef}>
+                                        <Virtuoso
+                                            itemContent={(index, item) => (
+                                                <Draggable draggableId={`${item.id}`} index={index} key={item.id}>
+                                                    {(provided) => itemContentSorted(index, item, provided, false)}
+                                                </Draggable>
+                                            )}
+                                            {...commonVirtuosoProps}
+                                            {...(listState?.ranges && { restoreStateFrom: listState })}
+                                            {...(scrollToLastItem && { initialTopMostItemIndex: data.length })}
+                                            endReached={onEndReached}
+                                        />
+                                        {provided.placeholder}
+                                    </View>
+                                )}
+                            </Droppable>
+                        </DragDropContext>
+                    </View>
                 )
             }
             else {
                 return (
-                    <View style={wrapperStyle}>
+                    <View className={listPadding} style={wrapperStyle}>
                         {ListHeaderComponent && ListHeaderComponent()}
                         <Virtuoso
                             itemContent={itemContent}

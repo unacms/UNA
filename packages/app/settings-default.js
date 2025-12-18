@@ -1529,7 +1529,7 @@ export const settingsDefault = {
         },
         cards: {
             'u-card-list':
-                ' u-card-list bg-card/60 shadow-sm  sm:border border-border/60 text-card-foreground overflow-hidden sm:rounded-2xl ',
+                ' u-card-list bg-card/60 sm:shadow-sm  sm:border border-border/60 text-card-foreground overflow-hidden sm:rounded-2xl ',
             'u-card-list-padding': ' p-3 lg:p-4 ',
             'u-card-base':
                 ' u-card-base bg-card/60 shadow-sm border border-border/60 text-card-foreground overflow-hidden rounded-2xl',
