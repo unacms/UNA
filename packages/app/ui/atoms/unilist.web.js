@@ -8,6 +8,7 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useCallback, forwardRef } from 'react';
 import { useBreakpoint } from 'app/context/measure'
 import { useSetScrollDirection } from 'app/context/jotai/layout';
+import { paddingForList } from 'app/lib/functions/functions-default';
 
 export default function UniList(props) {
     let { useCustomScrollHandler, preloadComponent, sortable, data, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
@@ -17,7 +18,7 @@ export default function UniList(props) {
     const currentBreakpoint = useBreakpoint();
     const scrollY = useRef(0);
     const scrollState = useRef(0); // Текущее состояние: 0, 1 или -1
-    
+
     const setScrollDirection = useSetScrollDirection();
 
     data = data.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
@@ -78,26 +79,26 @@ export default function UniList(props) {
     })();
 
     const hasResolvedHeight = Boolean(normalizedHeight);
-    
+
     // If explicit useWindowScroll prop is provided, respect it
     // Otherwise, default to window scroll when no valid height is provided
     const shouldUseWindowScroll =
         typeof useWindowScrollProp === 'boolean' ? useWindowScrollProp : !hasResolvedHeight;
-    
+
     // Always use window scroll if no height is resolved to prevent zero-sized element errors
     const isWindowScroll = hasResolvedHeight ? shouldUseWindowScroll : true;
 
     useEffect(() => {
         if (!isWindowScroll) return;
-        
+
         const SCROLL_OFFSET_THRESHOLD = 100;
-        
+
         const handleWindowScroll = () => {
             const currentScrollY = window.scrollY || document.documentElement.scrollTop;
             const previousScrollY = scrollY.current;
-            
+
             let newScrollState;
-            
+
             if (currentScrollY < SCROLL_OFFSET_THRESHOLD) {
                 newScrollState = 0;
             } else if (currentScrollY > previousScrollY && currentScrollY > 0) {
@@ -107,22 +108,22 @@ export default function UniList(props) {
             } else {
                 newScrollState = scrollState.current;
             }
-            
+
             if (newScrollState !== scrollState.current) {
                 setScrollDirection(newScrollState);
                 scrollState.current = newScrollState;
             }
-            
+
             scrollY.current = currentScrollY;
         };
-        
+
         window.addEventListener('scroll', handleWindowScroll, { passive: true });
-        
+
         return () => {
             window.removeEventListener('scroll', handleWindowScroll);
         };
     }, [isWindowScroll, setScrollDirection]);
-    
+
     // Only set height style if we have a valid height AND we're not using window scroll
     // This prevents virtuoso from receiving conflicting signals
     let style = (normalizedHeight && !isWindowScroll) ? { height: normalizedHeight } : {};
@@ -146,8 +147,8 @@ export default function UniList(props) {
     });
 
     // Style for virtuoso: only pass explicit height when NOT using window scroll, but preserve paddingTop
-    const virtuosoStyle = isWindowScroll 
-        ? (paddingTop ? { paddingTop } : {}) 
+    const virtuosoStyle = isWindowScroll
+        ? (paddingTop ? { paddingTop } : {})
         : style;
 
 
@@ -164,13 +165,17 @@ export default function UniList(props) {
             Footer: () => {
                 return ListFooterComponent
             },
-          
+
         } : {
             Footer: () => ListFooterComponent,
-            
+
         },
         ...rest,
     };
+
+    // Get dynamic padding based on endpoint/module
+    const listPadding = paddingForList(endpoint);
+
     let contentComponent = null
     if (preloadComponent) {
         contentComponent = preloadComponent;
@@ -178,31 +183,31 @@ export default function UniList(props) {
     else {
         // Wrapper style: use explicit height only when not using window scroll, otherwise let it flow naturally
         const wrapperStyle = isWindowScroll ? {} : style;
-        
+
         // Get dynamic padding based on endpoint/module
-    
-        
+
+
         if (mode != 'simple' && !sortable) {
             return (
                 <View className="@container/list" style={wrapperStyle}>
-             
-                    {ListHeaderComponent && ListHeaderComponent()}
-                    <VirtuosoGrid
-                        {...commonVirtuosoProps}
-                        itemContent={itemContent}
-                        //stateChanged={stateChanged}
-                        {...(scrollToLastItem ? { initialTopMostItemIndex: data.length } : {})}
-                        // atBottomStateChange={()=>{console.log("atBottomStateChange"), onEndReached()}}
-                        endReached={() => { onEndReached() }}
-                    />
-               
+                    <View className={`${listPadding}`} style={wrapperStyle}>
+                        {ListHeaderComponent && ListHeaderComponent()}
+                        <VirtuosoGrid
+                            {...commonVirtuosoProps}
+                            itemContent={itemContent}
+                            //stateChanged={stateChanged}
+                            {...(scrollToLastItem ? { initialTopMostItemIndex: data.length } : {})}
+                            // atBottomStateChange={()=>{console.log("atBottomStateChange"), onEndReached()}}
+                            endReached={() => { onEndReached() }}
+                        />
+                    </View>
                 </View>
             )
         }
         else {
             if (sortable) {
                 return (
-                    <View  style={wrapperStyle}>
+                    <View style={wrapperStyle}>
                         <DragDropContext onDragEnd={onSort}>
                             <Droppable
                                 droppableId="droppable"
@@ -235,15 +240,17 @@ export default function UniList(props) {
             }
             else {
                 return (
-                    <View  style={wrapperStyle}>
-                        {ListHeaderComponent && ListHeaderComponent()}
-                        <Virtuoso
-                            itemContent={itemContent}
-                            {...commonVirtuosoProps}
-                            {...(listState?.ranges && { restoreStateFrom: listState })}
-                            {...(scrollToLastItem && { initialTopMostItemIndex: data.length })}
-                            endReached={onEndReached}
-                        />
+                    <View className={`${listPadding}`} style={wrapperStyle}>
+                        <View style={wrapperStyle}>
+                            {ListHeaderComponent && ListHeaderComponent()}
+                            <Virtuoso
+                                itemContent={itemContent}
+                                {...commonVirtuosoProps}
+                                {...(listState?.ranges && { restoreStateFrom: listState })}
+                                {...(scrollToLastItem && { initialTopMostItemIndex: data.length })}
+                                endReached={onEndReached}
+                            />
+                        </View>
                     </View>
                 )
             }

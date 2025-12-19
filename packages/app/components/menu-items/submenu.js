@@ -12,6 +12,11 @@ export default function MenuItemSubmenu({ icon, title, pressed, disabled, addon,
     const size = isDesktop ? 'base' : 'sm';
     const rounded = !isDesktop;
     //TODO FOR ANDREW
+    /*
+     <Pressable className='mr-1'  onPress={onPress}>
+                           text
+                        </Pressable>
+                        */
     return (
         <Button
             startDecorator={icon}
