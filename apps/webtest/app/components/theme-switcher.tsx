@@ -29,6 +29,15 @@ function getColorTheme(): ColorTheme {
   return (document.documentElement.getAttribute("data-theme") as ColorTheme) || "default"
 }
 
+// Update iOS Safari toolbar color to match navbar
+function updateThemeColorMeta(isDark: boolean) {
+  const themeColor = isDark ? '#171717' : '#ffffff'
+  const meta = document.querySelector('meta[name="theme-color"]')
+  if (meta) {
+    meta.setAttribute('content', themeColor)
+  }
+}
+
 export function ThemeSwitcher() {
   // Local state only for this component's UI
   const [isDark, setIsDark] = useState(false)
@@ -50,6 +59,7 @@ export function ThemeSwitcher() {
         const newIsDark = mediaQuery.matches
         document.documentElement.classList.toggle("dark", newIsDark)
         document.documentElement.style.colorScheme = newIsDark ? "dark" : "light"
+        updateThemeColorMeta(newIsDark)
         setIsDark(newIsDark)
       }
     }
@@ -62,6 +72,7 @@ export function ThemeSwitcher() {
     const newIsDark = !isDark
     document.documentElement.classList.toggle("dark", newIsDark)
     document.documentElement.style.colorScheme = newIsDark ? "dark" : "light"
+    updateThemeColorMeta(newIsDark)
     localStorage.setItem("theme-mode", newIsDark ? "dark" : "light")
     setIsDark(newIsDark)
   }, [isDark])
