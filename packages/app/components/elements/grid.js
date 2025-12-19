@@ -173,7 +173,7 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
                 <Switch
                     size="sm"
                     onValueChange={() => toggleSwitch(id, indexRow)}
-                    value={cell.data == 'active' ? true : false}
+                    value={cell.data == 'active' || cell.data == '1' ? true : false}
 
                 /></>
         case 'checkbox':
@@ -408,13 +408,13 @@ export default function ElementGrid(props) {
     }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
     const toggleSwitch = async (id, indexRow) => {
         let bChecked = false;
-        const oSwitcher = { active: 'hidden', hidden: 'active' };
+        const oSwitcher = { active: 'hidden', hidden: 'active', 0: '1', 1: '0' };
 
         // Оптимистичное обновление UI - мутируем напрямую
         const currentItem = dataItems[indexRow];
         if (currentItem?.switcher) {
-            currentItem.switcher.data = oSwitcher[currentItem.switcher.data];
-            if (currentItem.switcher.data == 'active')
+            currentItem.switcher.data = oSwitcher[currentItem.switcher.data] ;
+            if (currentItem.switcher.data == 'active' || currentItem.switcher.data == '1')
                 bChecked = true;
         }
 

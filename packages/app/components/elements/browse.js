@@ -40,6 +40,7 @@ import { useIsDesktop } from 'app/context/measure';
 const blockTheme = appSetting('theme', 'blocks');
 
 export default function Browse(props) {
+
     const isWeb = Platform.OS === 'web'
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser();
@@ -71,9 +72,10 @@ export default function Browse(props) {
         ...(props?.params ?? {}),
         moduleName: data.module ?? '',
     });
+    let formProps = data?.filter_form;
 
     const [showFilters, setShowFilters] = useState(false);
-    const [filterValues, setFilterValues] = useState({ by_context: '', modules: [], media: [] });
+    const [filterValues, setFilterValues] = useState({ by_context: '', modules: formProps?.data?.inputs?.modules?.value, media: formProps?.data?.inputs?.media?.value });
 
     /* unit mode & change unit mode */
     const unitMode = props.unitMode
@@ -82,7 +84,7 @@ export default function Browse(props) {
 
     const numColumns = props.perLine || 1;
 
-    let formProps = data?.filter_form;
+
 
     const handleFilterFormChange = useCallback((values) => {
         if (!isObjectsEqual(filterValues, values)) {
@@ -331,9 +333,12 @@ export default function Browse(props) {
     ) : null;
 
 
-        const handleOpenChange = (open) => {
+    const handleOpenChange = (open) => {
         setShowFilters(open)
     }
+
+
+    console.log("formProps", formProps)
 
     const filterElement = !!formProps ? (
         <Row className="w-full items-end justify-end mb-3 mt-3 sm:mt-0">
@@ -357,24 +362,24 @@ export default function Browse(props) {
                 </View>
             </DropdownPopup>
         </Row>
-    ): false
+    ) : false
 
     let ListHeaderComponent = props.exProps?.headerBlocks
-            ? (typeof props.exProps?.headerBlocks === 'function'
-                ? props.exProps?.headerBlocks
-                : () => props.exProps?.headerBlocks)
-            : undefined
+        ? (typeof props.exProps?.headerBlocks === 'function'
+            ? props.exProps?.headerBlocks
+            : () => props.exProps?.headerBlocks)
+        : undefined
 
-    if (filterElement && !isDesktop){
+    if (filterElement && !isDesktop) {
         ListHeaderComponent = () => filterElement
     }
 
-     const layout = callFn('layoutForList', [data.module]);
+    const layout = callFn('layoutForList', [data.module]);
     const uniListProps = {
         preloadComponent: PreloadComponent,
         refer: uniRef,
         layout: layout,
-        mode: layout=='w-full'  ? 'simple' :'',
+        mode: layout == 'w-full' ? 'simple' : '',
         data: dataItems,
         unit: data.unit,
         height: isWeb ? (props?.isInPanel ? windowHeight - 64 : props?.height) : props?.height,

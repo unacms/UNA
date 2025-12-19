@@ -1113,7 +1113,7 @@ export const settingsDefault = {
         },
        
         checkbox_set: {
-            container: ' gap-x-2 items-center',
+            container: ' gap-x-2',
         },
         
         doublerange: {

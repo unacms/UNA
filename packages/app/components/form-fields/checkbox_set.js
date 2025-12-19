@@ -10,16 +10,14 @@ import { appSetting } from 'app/lib/util';
 const themeSettings = appSetting('theme', 'checkbox_set');
 
 export default function FormFieldCheckboxSet(props) {
+    const formContext = useFormContext();
     
+    const rules = {};
+    const name = props.name;
+    const defaultValue = props.value ? props.value : '';
+    const { field } = useController({ name, rules, defaultValue });
 
-    let formContext = useFormContext();
-    
-    let rules = {};
-    let name = props.name;
-    let defaultValue = props.value ? props.value : '';
-    let { field } = useController({ name, rules, defaultValue });
-
-    let df = Array.isArray(props.value) ? props.value.map(String): [];
+    const df = Array.isArray(props.value) ? props.value.map(String): [];
     const [value, setValue] = useState(df)
 
     useEffect(() => {
@@ -40,7 +38,7 @@ export default function FormFieldCheckboxSet(props) {
     
     return (
         <Field {...props}>
-            <Row className={`${themeSettings.container} flex-wrap`}>
+            <View className={`${props.view !='column' ? 'flex-row justity-center' : 'items-start'}  ${themeSettings.container} flex-wrap`}>
             {values.map((item2, index) => {
                 const status = value.includes(String(item2.id)) ? 'checked' : 'unchecked';
                 return (
@@ -54,7 +52,7 @@ export default function FormFieldCheckboxSet(props) {
                     </Row>
                 )
             })}
-            </Row>
+            </View>
         </Field>
     );
 }

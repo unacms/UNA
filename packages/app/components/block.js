@@ -4,6 +4,7 @@ import { BlockWrapper } from 'app/components/block-wrapper'
 import { Text } from 'app/design/typography'
 import { useMemo } from "react";
 import { getComponent } from 'app/components/registry';
+import { View } from 'app/design/view'
 
 export function BlockByName2({ b, name, contentOnly }) {
     const blockNameString = (typeof name === 'string') ? name : name?.name;
@@ -190,7 +191,7 @@ export function BlockContent(props) {
     ));
 
     if (items.length > 1) {
-        return <BlockWrapper {...props.blockWrapperProps}>{content}</BlockWrapper>;
+        return <View className="gap-y-4">{content}</View>;
     }
 
     return content;
