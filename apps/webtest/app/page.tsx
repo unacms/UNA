@@ -67,7 +67,7 @@ export default function HomePage() {
         {/* Tech Stack Pills */}
         <div className="flex flex-wrap justify-center gap-3">
           {['React 19', 'React Native', 'Next.js 16', 'Expo', 'TypeScript', 'REST API'].map((tech) => (
-            <span key={tech} className="px-4 py-2 rounded-full bg-card border border-border text-sm font-medium">
+            <span key={tech} className="px-4 py-2 rounded-full bg-card shadow-border text-sm font-medium">
               {tech}
             </span>
           ))}
@@ -199,7 +199,7 @@ export default function HomePage() {
             </div>
 
             <div className="relative">
-              <div className="bg-card rounded-2xl border border-border p-6 shadow-xl">
+              <div className="bg-card rounded-2xl p-6 shadow-border-xl">
                 <div className="space-y-4">
                   <CodeBlock
                     title="API Request"
@@ -411,7 +411,7 @@ function StepCard({ step, title, description, features }: {
   features: string[]
 }) {
   return (
-    <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+    <Card className="relative overflow-hidden group transition-all duration-300">
       <CardContent className="p-8">
         <span className="absolute top-4 right-4 text-6xl font-bold text-primary/10 group-hover:text-primary/20 transition-colors">
           {step}
@@ -438,7 +438,7 @@ function FeatureCard({ icon, title, description }: {
   description: string
 }) {
   return (
-    <Card className="group hover:shadow-lg hover:border-primary/20 transition-all duration-300">
+    <Card className="group transition-all duration-300">
       <CardContent className="p-6">
         <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
           {icon}
@@ -457,7 +457,7 @@ function UseCaseCard({ icon, title, description }: {
   description: string
 }) {
   return (
-    <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+    <Card className="group  transition-all duration-300 hover:-translate-y-1">
       <CardContent className="p-6 text-center">
         <span className="text-4xl mb-4 block">{icon}</span>
         <h3 className="font-bold mb-2">{title}</h3>
@@ -475,7 +475,7 @@ function BenefitCard({ title, description, stat, statLabel }: {
   statLabel: string
 }) {
   return (
-    <Card className="text-center p-8 hover:shadow-lg transition-all duration-300">
+    <Card className="text-center p-8 transition-all duration-300">
       <CardContent className="p-0">
         <div className="text-5xl font-bold text-primary mb-2">{stat}</div>
         <div className="text-sm font-medium text-muted-foreground mb-4">{statLabel}</div>

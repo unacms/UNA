@@ -271,8 +271,11 @@
   right: 0;
   /* Extend to bottom of navbar */
   bottom: 0;
-  /* Match navbar background - card color at 95% opacity */
-  background-color: color-mix(in srgb, var(--color-card) 95%, transparent);
+  /* Gradient with semi-transparency for backdrop-blur to work */
+  /* 95% opacity at top (more solid) to 75% at bottom (more blur visible) */
+  background: linear-gradient(to bottom,
+      color-mix(in srgb, var(--color-card) 95%, transparent) 0%,
+      color-mix(in srgb, var(--color-card) 75%, transparent) 100%);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   z-index: -1;
@@ -373,6 +376,137 @@
 
   .ring-ring {
     --tw-ring-color: var(--color-ring);
+  }
+
+  /* ============================================
+   * SHADOW BORDER UTILITIES
+   * Stacked shadows that replace borders for natural depth
+   * Based on: https://jakub.kr/work/shadows
+   * ============================================ */
+
+  /* Small - subtle, for small elements */
+  .shadow-border-sm {
+    box-shadow:
+      0px 0px 0px 1px rgba(0, 0, 0, 0.04),
+      0px 1px 1px -0.5px rgba(0, 0, 0, 0.04),
+      0px 1px 2px 0px rgba(0, 0, 0, 0.03);
+  }
+
+  .shadow-border-sm:hover {
+    box-shadow:
+      0px 0px 0px 1px rgba(0, 0, 0, 0.06),
+      0px 1px 1px -0.5px rgba(0, 0, 0, 0.06),
+      0px 1px 2px 0px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Default - standard border replacement */
+  .shadow-border {
+    box-shadow:
+      0px 0px 0px 1px rgba(0, 0, 0, 0.06),
+      0px 1px 2px -1px rgba(0, 0, 0, 0.06),
+      0px 2px 4px 0px rgba(0, 0, 0, 0.04);
+  }
+
+  .shadow-border:hover {
+    box-shadow:
+      0px 0px 0px 1px rgba(0, 0, 0, 0.08),
+      0px 1px 2px -1px rgba(0, 0, 0, 0.08),
+      0px 2px 4px 0px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Large - more prominent depth */
+  .shadow-border-lg {
+    box-shadow:
+      0px 0px 0px 1px rgba(0, 0, 0, 0.06),
+      0px 2px 4px -1px rgba(0, 0, 0, 0.06),
+      0px 4px 8px 0px rgba(0, 0, 0, 0.04);
+  }
+
+  .shadow-border-lg:hover {
+    box-shadow:
+      0px 0px 0px 1px rgba(0, 0, 0, 0.08),
+      0px 2px 4px -1px rgba(0, 0, 0, 0.08),
+      0px 4px 8px 0px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Extra Large - maximum depth */
+  .shadow-border-xl {
+    box-shadow:
+      0px 0px 0px 1px rgba(0, 0, 0, 0.06),
+      0px 4px 8px -2px rgba(0, 0, 0, 0.06),
+      0px 8px 16px 0px rgba(0, 0, 0, 0.04);
+  }
+
+  .shadow-border-xl:hover {
+    box-shadow:
+      0px 0px 0px 1px rgba(0, 0, 0, 0.08),
+      0px 4px 8px -2px rgba(0, 0, 0, 0.08),
+      0px 8px 16px 0px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Dark mode variants - use white shadows */
+  .dark .shadow-border-sm {
+    box-shadow:
+      0px 0px 0px 1px rgba(255, 255, 255, 0.06),
+      0px 1px 1px -0.5px rgba(255, 255, 255, 0.04),
+      0px 1px 2px 0px rgba(255, 255, 255, 0.03);
+  }
+
+  .dark .shadow-border-sm:hover {
+    box-shadow:
+      0px 0px 0px 1px rgba(255, 255, 255, 0.08),
+      0px 1px 1px -0.5px rgba(255, 255, 255, 0.06),
+      0px 1px 2px 0px rgba(255, 255, 255, 0.04);
+  }
+
+  .dark .shadow-border {
+    box-shadow:
+      0px 0px 0px 1px rgba(255, 255, 255, 0.08),
+      0px 1px 2px -1px rgba(255, 255, 255, 0.06),
+      0px 2px 4px 0px rgba(255, 255, 255, 0.04);
+  }
+
+  .dark .shadow-border:hover {
+    box-shadow:
+      0px 0px 0px 1px rgba(255, 255, 255, 0.1),
+      0px 1px 2px -1px rgba(255, 255, 255, 0.08),
+      0px 2px 4px 0px rgba(255, 255, 255, 0.06);
+  }
+
+  .dark .shadow-border-lg {
+    box-shadow:
+      0px 0px 0px 1px rgba(255, 255, 255, 0.08),
+      0px 2px 4px -1px rgba(255, 255, 255, 0.06),
+      0px 4px 8px 0px rgba(255, 255, 255, 0.04);
+  }
+
+  .dark .shadow-border-lg:hover {
+    box-shadow:
+      0px 0px 0px 1px rgba(255, 255, 255, 0.1),
+      0px 2px 4px -1px rgba(255, 255, 255, 0.08),
+      0px 4px 8px 0px rgba(255, 255, 255, 0.06);
+  }
+
+  .dark .shadow-border-xl {
+    box-shadow:
+      0px 0px 0px 1px rgba(255, 255, 255, 0.08),
+      0px 4px 8px -2px rgba(255, 255, 255, 0.06),
+      0px 8px 16px 0px rgba(255, 255, 255, 0.04);
+  }
+
+  .dark .shadow-border-xl:hover {
+    box-shadow:
+      0px 0px 0px 1px rgba(255, 255, 255, 0.1),
+      0px 4px 8px -2px rgba(255, 255, 255, 0.08),
+      0px 8px 16px 0px rgba(255, 255, 255, 0.06);
+  }
+
+  /* Transition for smooth hover effects */
+  .shadow-border-sm,
+  .shadow-border,
+  .shadow-border-lg,
+  .shadow-border-xl {
+    transition: box-shadow 150ms ease;
   }
 }
 
@@ -536,9 +670,34 @@
     color: var(--color-card-foreground);
     border: 0px solid var(--color-border);
     border-radius: var(--radius-lg);
-    box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.05),
-      0px 1px 2px -1px rgba(0, 0, 0, 0.05),
-      0px 2px 4px 0px rgba(0, 0, 0, 0.05);
+    /* Using shadow-border pattern for consistent depth */
+    box-shadow:
+      0px 0px 0px 1px rgba(0, 0, 0, 0.06),
+      0px 1px 2px -1px rgba(0, 0, 0, 0.06),
+      0px 2px 4px 0px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 150ms ease;
+  }
+
+  .card:hover {
+    box-shadow:
+      0px 0px 0px 1px rgba(0, 0, 0, 0.06),
+      0px 4px 8px -2px rgba(0, 0, 0, 0.06),
+      0px 12px 24px -4px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Dark mode card shadows */
+  .dark .card {
+    box-shadow:
+      0px 0px 0px 1px rgba(255, 255, 255, 0.08),
+      0px 1px 2px -1px rgba(255, 255, 255, 0.06),
+      0px 2px 4px 0px rgba(255, 255, 255, 0.04);
+  }
+
+  .dark .card:hover {
+    box-shadow:
+      0px 0px 0px 1px rgba(255, 255, 255, 0.08),
+      0px 4px 8px -2px rgba(255, 255, 255, 0.06),
+      0px 12px 24px -4px rgba(255, 255, 255, 0.04);
   }
 
   .card__header {
