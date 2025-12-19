@@ -74,7 +74,7 @@ const MemoizedContent = React.memo(({ currentUser, pageLayoutName, layoutName, d
     const [isModal, setIsModal] = useState(false);
     const { t } = useTranslation()
     useEffect(() => {
-        if (currentUser === false && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'login', 'forgot-password', 'confirm-email'].includes(data.uri)) {
+        if (currentUser === false && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'login','home',  'forgot-password', 'confirm-email'].includes(data.uri)) {
 
             setTimeout(() => {
                 setIsModal(true)
