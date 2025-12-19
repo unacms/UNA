@@ -212,6 +212,26 @@
 }
 
 /* ============================================
+ * iOS SAFARI SAFE AREA SUPPORT
+ * Enables navbar to extend into the notch/Dynamic Island
+ * with semi-transparent blurred background
+ * ============================================ */
+@supports (padding-top: env(safe-area-inset-top)) {
+  /* Navbar extends into safe area with padding */
+  .navbar-safe-area {
+    /* Add padding for safe area at top */
+    padding-top: env(safe-area-inset-top, 0px);
+    /* Total height = nav content (4rem) + safe area padding */
+    min-height: calc(4rem + env(safe-area-inset-top, 0px));
+  }
+  
+  /* Inner nav content maintains consistent height */
+  .navbar-safe-area > nav {
+    height: 4rem;
+  }
+}
+
+/* ============================================
  * UTILITY CLASSES
  * ============================================ */
 @layer utilities {
