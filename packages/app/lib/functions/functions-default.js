@@ -48,7 +48,7 @@ export function getBadgeForTab(currentUser, url) {
 }
 
 export function getButtonForConductor(a, index, currentUser) {
-    const MenuItemSidebar = getComponent('menu-item', 'submenu');
+    const MenuItemSidebar = getComponent('menu-item', 'sidebar');
     const settings = getPageSettings(a?.config, a.key);
     const icon = !a.ident
         ? settings?.icon

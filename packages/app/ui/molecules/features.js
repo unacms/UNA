@@ -3,7 +3,7 @@ import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { View } from 'app/design/view'
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonsGroupMenu } from 'app/design/controls';
-import DropdownMenuItem from 'app/components/menu-items/dropdown-item'
+import { getComponent } from 'app/components/registry'
 
 const performAction = async (sSystem, iObjectId, sAction, aParams, onLoad) => {
     const aParamsDefault = { s: sSystem, o: iObjectId };
@@ -37,6 +37,8 @@ export default function ElementFeatures(oProps) {
     const oSettings = appSetting('social_actions', 'feature');
     const oParams = { ...oSettings, ...oProps.params };
     const oAction = oProps.action;
+
+    const DropdownMenuItem = getComponent('menu-item', 'dropdown');
 
     const oIcons = oProps?.o && oSettings[oProps.o]?.icons != undefined ? oSettings[oProps.o].icons : {
         do: 'Star',

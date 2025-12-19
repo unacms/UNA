@@ -7,9 +7,11 @@ import { setClipboard } from 'app/lib/util'
 import Msg from 'app/ui/molecules/msg';
 import { useState } from 'react';
 import { appSetting } from 'app/lib/util'
+import { Platform } from 'react-native'
 
 export default function MenuItemSubmenuShare(oProps) {
     const [showMsg, setShowMsg] = useState(false);
+    const isWeb = Platform.OS === 'web'
 
     const oIconAliases = appSetting('menu_items', 'iconset')
 
@@ -68,8 +70,10 @@ export default function MenuItemSubmenuShare(oProps) {
 
     const bShowActionAsButton = oProps.params?.show_action_as_button == undefined || oProps.params.show_action_as_button === true;
 
+    const canWebShare = isWeb && typeof navigator !== "undefined" && typeof navigator.share === "function";
+
     const aSubmenuExcept = [];
-    const aSubmenuItems = oProps.submenu.items.map((oItem) => {
+    const aSubmenuItems = oProps.submenu.items .filter(item => (item.name === "item-share" ? canWebShare : true)).map((oItem) => {
         if(!(oItem.id || oItem.name) || aSubmenuExcept.includes(oItem.name))
             return;
         
@@ -87,7 +91,7 @@ export default function MenuItemSubmenuShare(oProps) {
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
     if (aSubmenuItems.length === 1) {
-        return  <ButtonAction onPress={() => {handleMenuManageSelect(aSubmenuItems[0])}} {...oButtonProps} title={oProps?.title ? oProps.title : ''} startDecorator={oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''} />
+    return <></>
     }
 
   
