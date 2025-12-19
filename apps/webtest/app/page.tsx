@@ -51,10 +51,12 @@ export default function HomePage() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-          <GlassyLink variant="primary" size="lg" href="/docs">
-            Start Building
-            <ArrowRightIcon />
-          </GlassyLink>
+        <Button variant="primary" size="lg" className="text-base px-8" asChild>
+                <Link href="/signup">
+                  Start Building
+                  <ArrowRightIcon />
+                </Link>
+              </Button>
           <Button variant="tertiary" size="lg" className="text-base px-8" asChild>
             <Link href="https://github.com/unacms">
               View on GitHub
