@@ -61,6 +61,8 @@ const nextConfig = {
   },
 
   // Turbopack configuration
+  // Note: File system caching is enabled by default in Next.js 16.1
+  // https://nextjs.org/blog/next-16-1#turbopack-file-system-caching-for-next-dev
   turbopack: {
     resolveAlias: {
       '@neo/test-components': '../../packages/test-components/src',

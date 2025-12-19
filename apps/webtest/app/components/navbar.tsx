@@ -11,7 +11,7 @@ import { NavbarTabs } from "./navbar-tabs"
 // Server Component - no "use client" directive
 export function SiteNavbar() {
   return (
-    <header className="sticky top-0 z-50 h-16 border-b border-border/60 mx-auto bg-card/95 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 h-16 mx-auto bg-gradient-to-b from-card to-card/80 backdrop-blur-xl shadow-border">
       <nav className="h-full max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-2 sm:gap-4 lg:gap-6 min-w-0 px-3 sm:px-4 lg:px-6">
           {/* Logo - server rendered */}
