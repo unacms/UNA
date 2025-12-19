@@ -21,9 +21,18 @@ export function ThemeScript() {
     if (color && color !== 'default') {
       document.documentElement.setAttribute('data-theme', color);
     }
+    
+    // Update theme-color meta tag for iOS Safari toolbar
+    // Card color: #ffffff (light) / #171717 (dark)
+    var themeColor = isDark ? '#171717' : '#ffffff';
+    var metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute('content', themeColor);
+    }
   } catch (e) {}
 })();
 `
+
 
   return (
     <script
