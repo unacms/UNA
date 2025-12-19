@@ -1,17 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
 import { View } from 'app/design/view';
 import { ThemeName } from 'app/design/theme';
-import { callFn } from 'app/lib/functions/call';
+import { getBackgrounds, getBackground } from 'app/functions';
 import { usePathname } from 'app/lib/hooks/router';
 import { useCurrentUser } from 'app/context/user';
 
-const backgrounds = callFn("getBackgrounds", []);   
+const backgrounds = getBackgrounds();   
 
 function BackgroundComponent({ }) {
     const theme = ThemeName();
     const pathname = usePathname();
     const { currentUser } = useCurrentUser();
-    const background = callFn("getBackground", [pathname, currentUser]);   
+    const background = getBackground(pathname, currentUser);   
 
     const currentBg = backgrounds[background]?.[theme] || backgrounds.default[theme];
 

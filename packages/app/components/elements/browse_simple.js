@@ -1,7 +1,7 @@
 import Unit from 'app/components/unit'
 import Galery from 'app/ui/molecules/gallery'
-import { View, Row, ScrollView } from 'app/design/view'
-import { callFn } from 'app/lib/functions/call'
+import { View, Row } from 'app/design/view'
+import { layoutForList } from 'app/functions'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
 export default function Browse({ unitMode, data, limit_by, view, autoscroll, blockWrapperProps}) {
@@ -11,7 +11,7 @@ export default function Browse({ unitMode, data, limit_by, view, autoscroll, blo
         data.unit = 'general-profile-list'
     }
 
-    const layout = callFn('layoutForList', [data.module]);
+    const layout = layoutForList(data.module);
 
     const limitedData = limit_by ? data.data.slice(0, limit_by) : data.data
 

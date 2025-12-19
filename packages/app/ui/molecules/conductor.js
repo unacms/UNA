@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect, useMemo, useLayoutEffect } from "react";
-import { View, ScrollView, Row, Pressable } from 'app/design/view';
+import { View, ScrollView, Row } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { deepEqual, getUnitModeBySource } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData } from 'app/lib/conductor-helpers';
@@ -8,18 +8,15 @@ import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
 import { Button } from 'app/design/controls';
 import { useCurrentUser } from 'app/context/user'
-import { useLayoutData } from 'app/context/layout';
-import { Theme } from 'app/design/theme';
 import { subscribe } from 'app/ui/atoms/socket';
 import { fetcher } from 'app/lib/fetcher';
 import Snackbar from 'app/ui/atoms/snackbar';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByName } from 'app/components/block';
-import { callFn } from 'app/lib/functions/call';
+import { getButtonForConductorSmall, noContentByUrl } from 'app/functions';
 import Cover, { CoverSmall } from 'app/components/elements/cover';
-import { useBreakpoint } from 'app/context/measure';
 import emitter from 'app/context/emitter'
-import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
+import { useSetHeader } from 'app/context/jotai/layout';
 
 const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
     if (routes.length > 1) {
@@ -28,13 +25,13 @@ const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
             <ScrollView horizontal={true} className=" bg-card ">
                 <Row className="pl-2 justify-center" >
                     {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
-                        const btn = callFn("getButtonForConductorSmall", [a, index, () => {
+                        const btn = getButtonForConductorSmall(a, index, () => {
                             setIndex(a.index)
                             window.history.pushState({}, '', '/' + a.key)
                             if (onChangeRoute) {
                                 onChangeRoute(a)
                             }
-                        }]);
+                        });
                         return (
                             <View className="p-1 items-center justify-center"
                                 key={`tab-${a.index}`}
@@ -140,7 +137,7 @@ const TabScene = React.memo(({
             unit={route.endpoint?.unit}
             renderItem={renderItem}
             ListFooterComponent={
-                (route?.endpoint?.request_url ? (route?.endpoint?.finished ? (route.data.length == 0 ? callFn("noContentByUrl", [route?.endpoint]) : <></>) : Preload) : <></>)
+                (route?.endpoint?.request_url ? (route?.endpoint?.finished ? (route.data.length == 0 ? noContentByUrl(route?.endpoint) : <></>) : Preload) : <></>)
             }
             maxToRenderPerBatch={5}
             initialNumToRender={5}

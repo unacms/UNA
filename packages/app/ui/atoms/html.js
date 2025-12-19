@@ -5,8 +5,8 @@ import { P, Strong, I, EM, Div, UL, Code } from '@expo/html-elements'
 import { Platform } from 'react-native'
 import Link from 'app/ui/atoms/link'
 import { Text, H1, H2, H3, H4, H5, H6 } from 'app/design/typography'
-import { getPart } from 'app/lib/parts/part'
-import { appSetting, decodeText, htmlDecode, normalizeClasses } from 'app/lib/util'
+import { decodeText } from 'app/lib/util'
+import { ParseHtmlClasses } from 'app/functions';
 
 const StyledStrong = (props) => {
     if (Platform.OS === 'web') {
@@ -152,10 +152,10 @@ const parseHtmlToReact = (html, parentKey = '0') => {
                         className={
                             'text-primary ' +
                             (srcClass && srcClass[1]
-                                ? getPart('ParseHtmlClasses', [
+                                ? ParseHtmlClasses(
                                       srcClass[1],
                                       'link'
-                                  ])
+                                  )
                                 : '')
                         }
                     >
@@ -188,7 +188,7 @@ const parseHtmlToReact = (html, parentKey = '0') => {
                 key={getKey(tag)}
                 className={
                     srcClass && srcClass[1]
-                        ? getPart('ParseHtmlClasses', [srcClass[1], 'text'])
+                        ? ParseHtmlClasses(srcClass[1], 'text')
                         : ''
                 }
                 isfirst="false"

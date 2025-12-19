@@ -16,7 +16,7 @@ import Profile from 'app/ui/molecules/profile'
 import { Text } from 'app/design/typography'
 import { Platform } from 'react-native'
 import { getComponent } from 'app/components/registry'
-import { callFn } from 'app/lib/functions/call'
+import { getButtonForConductorHor, ProfileDisplayName } from 'app/functions'
 import {
     Panel,
     PanelGroup,
@@ -177,7 +177,7 @@ export default function ({ data, blocks }) {
                 <Row className={`${feedList.length > 1 ? ' gap-2 ' : ''}`}>
                     {feedList.map((item, index) => (
                         <View key={'row_' + index}>
-                            {callFn('getButtonForConductorHor', [
+                            {getButtonForConductorHor(
                                 item.icon,
                                 item.showTitle ? t(item.title) : '',
                                 feedType == item.name,
@@ -185,7 +185,7 @@ export default function ({ data, blocks }) {
                                 () => {
                                     setFeedTypeEx(item.name)
                                 },
-                            ])}
+                            )}
                         </View>
                     ))}
                 </Row>

@@ -18,7 +18,7 @@ import { getSkeletonForList } from 'app/lib/skeleton-helpers'
 import { useTranslation } from 'react-i18next'
 import { subscribe } from 'app/ui/atoms/socket'
 import { useCurrentUser } from 'app/context/user'
-import { callFn } from 'app/lib/functions/call'
+import { noContentByUrl, layoutForList } from 'app/functions'
 import Link from 'app/ui/atoms/link'
 import Galery from 'app/ui/molecules/gallery'
 import { Button } from 'app/design/controls'
@@ -328,7 +328,7 @@ export default function Browse(props) {
     }
 
     const PreloadComponent = dataItems.length === 0 ? (hasNextPage === false
-        ? callFn("noContentByUrl", [{ request_url: data.request_url, params: {} }])
+        ? noContentByUrl({ request_url: data.request_url, params: {} })
         : (!dataItems.params?.loaded ? Preload : null)
     ) : null;
 
@@ -374,7 +374,7 @@ export default function Browse(props) {
         ListHeaderComponent = () => filterElement
     }
 
-    const layout = callFn('layoutForList', [data.module]);
+    const layout = layoutForList(data.module);
     const uniListProps = {
         preloadComponent: PreloadComponent,
         refer: uniRef,

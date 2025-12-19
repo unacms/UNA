@@ -33,7 +33,13 @@ import DynamicMenu from 'app/components/nav/menu-dynamic'
 import { menuItemsFilter, storageSet, storageGet } from 'app/lib/util'
 import { subscribe } from 'app/ui/atoms/socket'
 import { useBottomSheetData } from 'app/context/bottomsheet'
-import { callFn } from 'app/lib/functions/call'
+import { getSkeletonByEndPoint,
+layoutForList,
+noContentByUrl,
+getButtonForConductorSmall,
+getAddonForConductor,
+getButtonForConductor,
+getFiltersForConductor } from 'app/functions'
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal'
 import emitter from 'app/context/emitter'
 import Cover, { CoverSmall } from 'app/components/elements/cover'
@@ -532,7 +538,7 @@ const TabSceneMainContent = ({
     )
 
     const SkeletonForRoute = useMemo(() => {
-        const a = callFn('getSkeletonByEndPoint', [pageRoute])
+        const a = getSkeletonByEndPoint(pageRoute)
         if (a) return a
         const baseSkeleton =
             skeleton ||
@@ -541,7 +547,7 @@ const TabSceneMainContent = ({
         return unitType ? [baseSkeleton, unitType] : baseSkeleton
     }, [skeleton, pageRoute, unitType])
 
-    const layout = callFn('layoutForList', [pageRoute?.endpoint]);
+    const layout = layoutForList(pageRoute?.endpoint);
 
     const Preload = useMemo(
         () => getSkeletonForList(SkeletonForRoute, 5, true, layout),
@@ -585,7 +591,7 @@ const TabSceneMainContent = ({
         />
         {(pageRoute?.endpoint?.request_url && hasNextPage === undefined ) && Preload}
         {(pageRoute?.endpoint?.request_url && hasNextPage) && PreloadShort}
-        {(pageRoute?.endpoint?.request_url && hasNextPage === false && dataItems.filter((item) => item.type != 'block').length == 0) && callFn('noContentByUrl', [pageRoute?.endpoint])}
+        {(pageRoute?.endpoint?.request_url && hasNextPage === false && dataItems.filter((item) => item.type != 'block').length == 0) && noContentByUrl(pageRoute?.endpoint)}
 
         <Snackbar
             visible={refetchState.hasNewData}
@@ -895,7 +901,7 @@ function ConductorMenu({
 
     const MenuItem = memo(
         ({ item: a, itemRefs, index: index2, visibleItemsCount }) => {
-            return <View className={`sadasd ${a?.menu_settings?.class}`}>{callFn('getButtonForConductorSmall', [
+            return <View className={`sadasd ${a?.menu_settings?.class}`}>{getButtonForConductorSmall(
                 a,
                 index,
                 () => {
@@ -906,7 +912,7 @@ function ConductorMenu({
                     }
                 },
                 routes,
-            ])}</View>
+            )}</View>
         }
     )
 
@@ -917,11 +923,11 @@ function ConductorMenu({
                 {t(title)}
             </Text>
         )
-        let addonContent = callFn('getAddonForConductor', [
+        const addonContent = getAddonForConductor(
             item,
             itemIndex,
             currentUser,
-        ])
+        )
 
         const handlePress = () => {
             emitter.emit('dynamic_menu', { action: 'hide' })
@@ -1041,11 +1047,11 @@ const LeftSideBarContainer = ({
                                 {routes
                                     .filter((aItem) => aItem.hideInTop != true)
                                     .map((a) => {
-                                        const btn = callFn('getButtonForConductor', [
+                                        const btn = getButtonForConductor(
                                             a,
                                             index,
                                             currentUser,
-                                        ])
+                                        )
 
                                         if (a?.icon == '*') {
                                             return (
@@ -1249,11 +1255,11 @@ const TabSceneHeader = ({ route, setFilterValue }) => {
     const isTitle = appSetting('conductor', 'show_nav_titles')
     return (
         <>
-            {callFn('getFiltersForConductor', [
+            {getFiltersForConductor(
                 filters,
                 setFilterValue,
                 route?.endpoint?.params?.filters,
-            ])}
+            )}
             {counter > 0 && (
                 <View className="mx-4 mb-0 mt-2">
                     <Text className="text-xl font-bold text-neutral-800  dark:text-neutral-200 ">

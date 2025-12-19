@@ -5,7 +5,7 @@ import { appSetting } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user';
 import Profile from 'app/ui/molecules/profile';
 import { usePathname } from 'app/lib/hooks/router';
-import { callFn } from 'app/lib/functions/call';
+import { getFriendsCounter } from 'app/functions';
 import { Icon } from 'app/ui/atoms/icon'
 import { useTranslation } from 'react-i18next';
 import { useFooter } from 'app/context/jotai/layout';
@@ -24,7 +24,7 @@ export default function () {
     const TabList = currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged');
     const { t } = useTranslation();
     const notifCount = currentUser ? currentUser.notifications : 0;
-    const iFrCounter = callFn("getFriendsCounter", [currentUser]);
+    const iFrCounter = getFriendsCounter(currentUser);
     let pathname = usePathname()
     const footer = useFooter();
 

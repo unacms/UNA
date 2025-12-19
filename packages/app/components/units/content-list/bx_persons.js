@@ -10,7 +10,7 @@ import Redirect from 'app/ui/atoms/redirect'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next'
 import Letter from 'app/ui/atoms/letter'
-import { callFn } from 'app/lib/functions/call'
+import { getUnitMenuItems } from 'app/functions'
 import { Platform } from 'react-native'
 
 const ProfilesListCnt = memo(({ data }) => (
@@ -56,13 +56,13 @@ export default function Unit(props) {
     }
 
     const { oMenuItemPrimary, oMenuItemSecondary, oMenuItemDelete } = useMemo(() => {
-        return callFn('getUnitMenuItems', [
+        return getUnitMenuItems(
             props.unitType,
             data,
             handleClick,
             t,
             props.module,
-        ])
+        )
     }, [props.unitType, data, handleClick, t])
 
     const isFollowers =

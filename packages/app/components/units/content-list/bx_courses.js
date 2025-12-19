@@ -9,7 +9,7 @@ import { CardList } from 'app/ui/molecules/card'
 import Redirect from 'app/ui/atoms/redirect'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
-import { callFn } from 'app/lib/functions/call';
+import { getUnitMenuItems } from 'app/functions';
 import { cd } from 'app/lib/util'
 
 export default function Unit(props) {
@@ -30,7 +30,7 @@ export default function Unit(props) {
     const friendsLabel = data.members_count > 0 ? tp("members", data?.members_count) : ''
 
     const { oMenuItemPrimary, oMenuItemSecondary } = useMemo(() => {
-        return callFn("getUnitMenuItems", [props.unitType, data, handleClick, t, props.module]);
+        return getUnitMenuItems(props.unitType, data, handleClick, t, props.module);
     }, [props.unitType, data, handleClick, t]);
 
     switch (props.unitType) {

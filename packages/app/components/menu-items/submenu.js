@@ -2,7 +2,6 @@ import { View, Row, Pressable } from 'app/design/view'
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
-import { getPart } from 'app/lib/parts/part';
 import { isEmoji, appSetting } from 'app/lib/util';
 import { useIsDesktop } from 'app/context/measure';
 import { Button, Modal } from 'app/design/controls'

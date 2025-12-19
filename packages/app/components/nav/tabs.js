@@ -20,8 +20,7 @@ import Subscriber from 'app/ui/molecules/subscriber';
 import { useFonts } from 'expo-font';
 //import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import { enableScreens } from 'react-native-screens';
-import { LogLevel, OneSignal } from 'react-native-onesignal';
-import { callFn } from 'app/lib/functions/call';
+import { getBadgeForTab } from 'app/functions';
 import fonts from 'app/design/fonts/fonts';
 import { Platform } from 'react-native'
 import { Appearance } from 'react-native';
@@ -237,7 +236,7 @@ export default function () {
                     {
                         TabList.map((tab, index) => {
                             const options = {
-                                tabBarBadge: callFn("getBadgeForTab", [currentUser, tab.url]),
+                                tabBarBadge: getBadgeForTab(currentUser, tab.url),
                                 tabBarBadgeAllowFontScaling: false,
                                 title: t(tab.title),
                                 headerShown: false,

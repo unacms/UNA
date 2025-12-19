@@ -16,7 +16,9 @@ import ContextSelector from './context-selector';
 import Badges from './badges';  
 import Splash from './splash';  
 import HeaderElement from './header_element'; 
- 
+import CounterIndicator from './counter-indicator'; 
+import ProfileLink from './profile-link'; 
+
 export const componentsMapDefault = {
     likes: memo(Likes),
     stars: (Stars),
@@ -25,7 +27,6 @@ export const componentsMapDefault = {
     comments: (Comments),
     features:memo(Features),
     favorites:memo(Favorites),
-    
     reports: memo(Reports),
     reposts: memo(Reposts),
     shares: memo(Shares),
@@ -36,5 +37,7 @@ export const componentsMapDefault = {
     splash: Splash,
     badges: Badges,
     header_element: HeaderElement,
+    counter_indicator: CounterIndicator,
+    profile_link: ProfileLink
 };
 

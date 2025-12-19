@@ -13,7 +13,6 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { subscribe } from 'app/ui/atoms/socket';
 import { useCurrentUser } from 'app/context/user';
 import { useTranslation } from 'react-i18next';
-import { getPart } from 'app/lib/parts/part';
 import { useInfiniteQuery } from '@tanstack/react-query'
 import {
     refetchUniListReducer,
@@ -22,6 +21,7 @@ import {
 import Snackbar from 'app/ui/atoms/snackbar'
 import emitter from 'app/context/emitter'
 import { appStatic } from 'app/lib/app-static';
+import { ProfileDisplayName } from 'app/functions';
 
 export function CommentsBrowse({
     browse,
@@ -702,7 +702,7 @@ export function CommentsForm({ form: initialForm, requestUrl, module, objectId, 
                         <View className=' flex-auto pr-4'>
                             <Row className='max-w-full '>
                                 <Text className='text-xs text-neutral-900 dark:text-neutral-50'>Reply to: </Text>
-                                <Text className='font-semibold text-xs text-neutral-900 dark:text-neutral-50'>{getPart("ProfileDisplayName", [formData.author.display_name])}</Text>
+                                <Text className='font-semibold text-xs text-neutral-900 dark:text-neutral-50'>{ProfileDisplayName(formData.author.display_name)}</Text>
                             </Row>
                             <Text className=' text-base overflow-hidden text-neutral-900 dark:text-neutral-50 text-sm' numberOfLines={3}>{formData.parent_id > 0 ? formData.text : ''}</Text>
                         </View>
