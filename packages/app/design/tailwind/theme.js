@@ -140,6 +140,10 @@ const theme = {
             'lg': 'var(--shadow-lg)',
             'xl': 'var(--shadow-xl)',
             '2xl': 'var(--shadow-2xl)',
+            'border-sm': 'var(--shadow-border-sm)',
+            'border': 'var(--shadow-border)',
+            'border-lg': 'var(--shadow-border-lg)',
+            'border-xl': 'var(--shadow-border-xl)',
         },
 
         fontSize: {

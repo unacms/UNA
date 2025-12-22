@@ -129,10 +129,10 @@ function DefaultUnit({ data }) {
                         />
                     </View>
                 </Row>
-                <View className="flex-auto mb-2">
+                <View className="flex-auto mb-2 px-0.5">
                     <MainContent url={url} data={data} />
                 </View>
-                <Row className="">
+                <Row className="border-b border-background -mx-4 -mb-1 px-3">
                     {!!data.menu_counters &&
                         appSetting('feed', 'counters_menu') && (
                             <CounterMenu
@@ -140,7 +140,7 @@ function DefaultUnit({ data }) {
                             />
                         )}
                 </Row>
-                <Row className=" gap-3 items-center flex-auto justify-between pt-2.5 px-3 mt-1 -mx-4 -mb-1  border-t border-border/40">
+                <Row className=" gap-3 items-center flex-auto justify-between pt-1.5 px-2.5 mt-1 -mx-4 -mb-2 border-t border-card">
                     <ActionMenu
                         data={data.menu_actions}
                     />
