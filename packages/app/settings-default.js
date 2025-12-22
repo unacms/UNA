@@ -1197,7 +1197,7 @@ export const settingsDefault = {
                 rounded: ' rounded-lg ',
                 padding: ' min-h-9 ',
                 padding_icon_only: ' h-9 w-9 ',
-                padding_with_title: ' px-2.5 h-9 gap-1.5 ',
+                padding_with_title: ' px-2 h-9 gap-1.5 ',
                 icon_container:
                     ' text-base flex items-center justify-center',
                 title_container: ' rounded text-sm inline-flex items-center  ',
@@ -1526,10 +1526,10 @@ export const settingsDefault = {
         },
         cards: {
             'u-card-list':
-                ' u-card-list bg-card/60 sm:shadow-sm  sm:border border-border/60 text-card-foreground overflow-hidden sm:rounded-2xl ',
+                ' u-card-list bg-card/60 shadow-border text-card-foreground overflow-hidden sm:rounded-xl ',
             'u-card-list-padding': ' p-3 lg:p-4 ',
             'u-card-base':
-                ' u-card-base bg-card/60 shadow-sm border border-border/60 text-card-foreground overflow-hidden rounded-2xl',
+                ' u-card-base bg-card/60 shadow-border text-card-foreground overflow-hidden rounded-2xl',
             'u-card-padding': ' p-4 ',
             'u-card-header': 'flex gap-1',
             'u-card-icon': 'text-card-foreground px-4 gap-2',
@@ -1537,7 +1537,7 @@ export const settingsDefault = {
                 ' text-foreground leading-none text-xl font-semibold leading-none tracking-tight',
             'u-card-description': ' text-secondary-foreground text-sm lg:text-base text-balance',
             'u-card-content': 'text-card-foreground ',
-            'u-card-footer': 'bg-muted/20 border-t border-border/40 p-4 flex text-base text-card-foreground gap-2',
+            'u-card-footer': 'bg-muted/20 border-t border-border/50 p-4 flex text-base text-card-foreground gap-2',
         },
         panels: {
             'u-panel-base': ' h-full flex-col ',
@@ -1548,13 +1548,13 @@ export const settingsDefault = {
         },
         blocks: {
             'u-block-base':
-                'u-max-width-block sm:rounded-2xl gap-3 ',
+                'u-max-width-block sm:rounded-xl gap-3 ',
             'u-block-bg':
-                'bg-card/80 shadow-sm text-card-foreground border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/60',
+                'bg-card/80 shadow-border text-card-foreground ',
             'u-block-pad':
                 'px-4 py-2 @xl/block:p-6',
             'u-block-header':
-                ' flex-row items-center gap-2 pt-2',
+                ' flex-row items-center gap-2 pt-2 ',
             'u-block-icon': 'text-card-foreground',
             'u-block-name': 'flex flex-col flex-auto gap-y-2 gap-x-4',
             'u-block-title':

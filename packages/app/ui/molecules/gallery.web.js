@@ -99,6 +99,7 @@ export default function Gallery({ items, autoscroll }) {
     // Track style - slides both cards together
     const trackStyle = {
         display: 'flex',
+        gap: '1rem',
         width: '200%', // Two slides side by side
         transform: `translateX(${trackOffset}%)`,
         transition: isTransitioning 
@@ -129,7 +130,7 @@ export default function Gallery({ items, autoscroll }) {
     return (
         <View 
             ref={containerRef}
-            className='w-full overflow-hidden relative'
+            className='w-full overflow-hidden relative p-1 '
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
         >
