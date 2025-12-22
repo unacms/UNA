@@ -20,7 +20,6 @@ import Subscriber from 'app/ui/molecules/subscriber';
 import { useFonts } from 'expo-font';
 //import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import { enableScreens } from 'react-native-screens';
-import { getBadgeForTab } from 'app/functions';
 import fonts from 'app/design/fonts/fonts';
 import { Platform } from 'react-native'
 import { Appearance } from 'react-native';
@@ -34,6 +33,33 @@ import { registerAll } from 'app/components/registry-init';
 enableScreens(appSetting('native', 'enable_screens'));
 
 const themeSettings = appSetting('theme', 'native_tabs');
+
+function getBadgeForTab(currentUser, url) {
+    const badgeTextSize = appSetting('theme', 'native_tabs', 'badgeTextSize') || 'text-xs';
+
+    if (
+        url == appSetting('notifications', 'url') &&
+        currentUser?.notifications
+    ) {
+        return (
+            <Text className={`${badgeTextSize} text-white font-medium`}>
+                {currentUser?.notifications}
+            </Text>
+        )
+    }
+
+    if (
+        url == appSetting('messenger', 'url') &&
+        currentUser?.counters?.bx_messenger_new_messages
+    ) {
+        return (
+            <Text className={`${badgeTextSize} text-white font-medium`}>
+                {currentUser?.counters?.bx_messenger_new_messages}
+            </Text>
+        )
+    }
+    return null
+}
 
 function processUrl(url, router, currentUser, TabList) {
     if (currentUser?.id) {
@@ -72,7 +98,7 @@ function processUrl(url, router, currentUser, TabList) {
 }
 
 
-export default function () {
+export default function Tabs () {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const { setLayoutData } = useLayoutData()
     const { themeName } = useLayoutSettings();

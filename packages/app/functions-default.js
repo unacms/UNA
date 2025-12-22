@@ -1,18 +1,7 @@
-import { Text } from 'app/design/typography'
-import { Button, Modal } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher'
-import { appSetting, updateRouteDataForConnection, getPageSettings } from 'app/lib/util'
+import { updateRouteDataForConnection } from 'app/lib/util'
 import { getComponent } from 'app/components/registry';
-import { appStatic } from 'app/lib/app-static';
 import { View } from 'app/design/view'
-import {
-    SvgBackgroundSplash,
-    SvgBackgroundSplashDark,
-    SvgBackgroundCreateAccount,
-    SvgBackgroundCreateAccountDark,
-    SvgBackgroundLogin,
-    SvgBackgroundLoginDark,
-} from 'app/ui/atoms/backgrounds';
 
 export function ProfileDisplayName(title) {
     return title;
@@ -49,122 +38,6 @@ export function paddingForList(endpoint) {
     // Default padding for grid-based content lists
     return '@sm/list:p-1.5 @md/list:p-1.5';
 }
-
-export function getBackground(pathname, currentUser) {
-    if (currentUser === false) {
-        if (pathname === '/' || pathname === '/home')
-            return 'splash';
-
-        if (pathname === '/login')
-            return 'login';
-
-        if (pathname === '/create-account')
-            return 'create-account';
-    }
-    return 'default';
-}
-
-export function getBadgeForTab(currentUser, url) {
-    const badgeTextSize = appSetting('theme', 'native_tabs', 'badgeTextSize') || 'text-xs';
-
-    if (
-        url == appSetting('notifications', 'url') &&
-        currentUser?.notifications
-    ) {
-        return (
-            <Text className={`${badgeTextSize} text-white font-medium`}>
-                {currentUser?.notifications}
-            </Text>
-        )
-    }
-
-    if (
-        url == appSetting('messenger', 'url') &&
-        currentUser?.counters?.bx_messenger_new_messages
-    ) {
-        return (
-            <Text className={`${badgeTextSize} text-white font-medium`}>
-                {currentUser?.counters?.bx_messenger_new_messages}
-            </Text>
-        )
-    }
-    return null
-}
-
-export function getButtonForConductor(a, index, currentUser) {
-    const MenuItemSidebar = getComponent('menu-item', 'sidebar');
-    const settings = getPageSettings(a?.config, a.key);
-    const icon = !a.ident
-        ? settings?.icon
-            ? settings?.icon
-            : a?.icon.replace('*', '')
-        : a.icon.replace('*', '')
-
-    let addon = a.addon ? a.addon : null
-    if (!appSetting('conductor', 'show_nav_counters')) addon = null
-    if (appSetting('conductor', 'show_nav_counters') == 'primary' && a?.addon?.variant != 'primary')
-        addon = null
-    return <MenuItemSidebar addon={addon} title={a.title} icon={icon || 'Circle'} isActive={a.index == index ? true : false} />
-
-}
-
-export function getButtonForConductorSmall(a, index, onPress) {
-
-    let addon = a.addon ? a.addon : null
-    if (!appSetting('conductor', 'show_nav_counters')) addon = null
-    if (
-        appSetting('conductor', 'show_nav_counters') == 'primary' &&
-        a?.addon?.variant != 'primary'
-    )
-        addon = null
-
-    return getButtonForConductorHor(null, a.title, a.index == index, addon, onPress, a);
-}
-
-export function getButtonForConductorHor(icon, title, pressed, addon, onPress, item) {
-    const MenuItemSubmenu = getComponent('menu-item', 'submenu');
-    return <MenuItemSubmenu
-        icon={icon}
-        title={title}
-        pressed={pressed}
-        disabled={item?.item?.disabled}
-        addon={addon}
-        onPress={onPress}
-    />
-}
-
-export function getAddonForConductor(a, index, currentUser) {
-    let addonContent = null;
-    //let settings = appSetting('l-+ayouts', a.key)
-    const settings = getPageSettings(a?.config, a.key);
-    let icon = !a.ident
-        ? settings?.icon
-            ? settings?.icon
-            : a?.icon.replace('*', '')
-        : a.icon.replace('*', '')
-
-    let addon = a.addon ? a.addon : null
-    if (!appSetting('conductor', 'show_nav_counters')) addon = null
-    if (
-        appSetting('conductor', 'show_nav_counters') == 'primary' &&
-        a?.addon?.variant != 'primary'
-    )
-        addon = null
-
-    if (addon) {
-        const addonClasses = addon.variant === 'primary' ? "bg-destructive" : "bg-secondary";
-        const addonText = addon.variant === 'primary' ? addon.text : addon;
-        if (addonText) {
-            addonContent = (
-                <Text className={`${addonClasses} rounded-full px-2 py-0.5  text-center items-center text-white text-xs font-semibold`}>
-                    {addonText}
-                </Text>
-            );
-        }
-    }
-    return addonContent;
-}
-
 
 
 export function getSkeletonByEndPoint(currentRoute) {
@@ -240,47 +113,13 @@ export function updateRouteDataForConnections(
     )
 }
 
-const createMenuItem = (menuItem, isPrimary) => {
-
-    if (!menuItem) return null;
-    if (menuItem.data?.type) {
-        const Element = getComponent('molecule', String(menuItem.data.type))
-        if (Element) {
-            const oElementParams = {
-                ...menuItem.data,
-                primary: isPrimary,
-                params: {
-                    button_rounded: menuItem.data?.params?.button_rounded || false,
-                    button_full_width: menuItem.data?.params?.button_full_width || true,
-                    only_icon: menuItem.data?.params?.only_icon || false,
-                    on_done: (sAction, oData) => {
-                        // Handle action completion
-                    },
-                },
-            };
-            return <Element key={menuItem.id || menuItem.name} {...oElementParams} />;
-        }
-    } else {
-        return (
-            <Button
-                variant={isPrimary ? "primary" : "secondary"}
-                size="sm"
-                fullWidth
-                title={menuItem.title}
-                className="my-auto"
-                startDecorator={menuItem.icon || false}
-                onPress={menuItem.onPress}
-            />
-        );
-    }
-    return null;
-};
-
 export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
 
     let oMenuItemPrimary = null;
     let oMenuItemSecondary = null;
     let oMenuItemDelete = null;
+
+    const MenuItem = getComponent('menu-item', 'unit')
 
     if (data?.meta) {
         let sPrimary = "";
@@ -343,7 +182,6 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
             oMenuItemPrimary = data.meta.items.find(item => item.name === sPrimary);
         }
 
-
         if (!oMenuItemSecondary) {
             oMenuItemSecondary = data.meta.items.find(item => item.name === sSecondary);
         }
@@ -364,15 +202,15 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
             };
         }
 
-        oMenuItemPrimary = createMenuItem(oMenuItemPrimary, true);
-        oMenuItemSecondary = createMenuItem(oMenuItemSecondary, false);
+        oMenuItemPrimary = <MenuItem menuItem={oMenuItemPrimary} isPrimary={true}/>;
+        oMenuItemSecondary = <MenuItem menuItem={oMenuItemSecondary} isPrimary={false}/>;
         if (oMenuItemDelete) {
             oMenuItemDelete = {
                 ...oMenuItemDelete,
 
                 data: { ...oMenuItemDelete.data, title: '', params: { ...oMenuItemDelete.data.params, button_full_width: false, button_rounded: true, only_icon: true } }
             };
-            oMenuItemDelete = createMenuItem(oMenuItemDelete, false);
+            oMenuItemDelete = <MenuItem menuItem={oMenuItemDelete} isPrimary={false}/>
         }
     }
 
@@ -381,10 +219,6 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
         oMenuItemSecondary,
         oMenuItemDelete
     };
-}
-
-export function noContentByUrl(endpoint) {
-    return appStatic('components_content_empty')
 }
 
 export function getBackgrounds() {
@@ -406,13 +240,4 @@ export function getBackgrounds() {
             dark: <View className="w-full h-full bg-background" />,
         }
     }
-}
-
-export function getFiltersForConductor(filters, setFilterValue, filterValues) {
-    const inputs = filters?.inputs;
-    if (!inputs)
-        return null;
-
-    return null;
-
 }

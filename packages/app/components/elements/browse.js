@@ -18,7 +18,7 @@ import { getSkeletonForList } from 'app/lib/skeleton-helpers'
 import { useTranslation } from 'react-i18next'
 import { subscribe } from 'app/ui/atoms/socket'
 import { useCurrentUser } from 'app/context/user'
-import { noContentByUrl, layoutForList } from 'app/functions'
+import { layoutForList } from 'app/functions'
 import Link from 'app/ui/atoms/link'
 import Galery from 'app/ui/molecules/gallery'
 import { Button } from 'app/design/controls'
@@ -327,8 +327,10 @@ export default function Browse(props) {
         }
     }
 
+    const NoContent = getComponent('molecule', 'no_content')
+    
     const PreloadComponent = dataItems.length === 0 ? (hasNextPage === false
-        ? noContentByUrl({ request_url: data.request_url, params: {} })
+        ? <NoContent endpoint={{request_url: data.request_url, params: {} }}/>
         : (!dataItems.params?.loaded ? Preload : null)
     ) : null;
 
@@ -336,9 +338,6 @@ export default function Browse(props) {
     const handleOpenChange = (open) => {
         setShowFilters(open)
     }
-
-
-    console.log("formProps", formProps)
 
     const filterElement = !!formProps ? (
         <Row className="w-full items-end justify-end mb-3 mt-3 sm:mt-0">

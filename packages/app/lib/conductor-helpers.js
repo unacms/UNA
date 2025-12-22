@@ -543,7 +543,6 @@ export function TopSidebar({
     layoutName,
     omitDefaultBackground = false,
 }) {
-    const { currentUser } = useCurrentUser()
     const isHideOnDesktop = layoutName !== 'profile';
     return (
         <View
@@ -557,13 +556,6 @@ export function TopSidebar({
             >
                 <Row
                     className=" items-center justify-between ">
-
-
-                    {/*!currentUser && title ? (
-                        <View className="ps-3">
-                            <TextHeader text={'choto za gavno ' + title} />
-                        </View>
-                    ) : null*/}
                     {children}
                     {layout != 'mixed' && (
                         <Row className="hidden lg:flex cond-buttons-add">
@@ -574,4 +566,35 @@ export function TopSidebar({
             </View>
         </View>
     )
+}
+
+export function getAddon(addon) {
+    const show = appSetting('conductor', 'show_nav_counters')
+    return show && (show !== 'primary' || addon?.variant === 'primary') ? addon : null
+}
+
+export function Addon({item, index}) {
+    let addonContent = null;
+    const settings = getPageSettings(item?.config, item.key);
+    let icon = !item.ident
+        ? settings?.icon
+            ? settings?.icon
+            : item?.icon.replace('*', '')
+        : item.icon.replace('*', '')
+
+    const addon = getAddon(a.addon)
+
+
+    if (addon) {
+        const addonClasses = addon.variant === 'primary' ? "bg-destructive" : "bg-secondary";
+        const addonText = addon.variant === 'primary' ? addon.text : addon;
+        if (addonText) {
+            addonContent = (
+                <Text className={`${addonClasses} rounded-full px-2 py-0.5  text-center items-center text-white text-xs font-semibold`}>
+                    {addonText}
+                </Text>
+            );
+        }
+    }
+    return addonContent;
 }

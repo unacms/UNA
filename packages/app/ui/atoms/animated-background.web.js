@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { View } from 'app/design/view';
 import { ThemeName } from 'app/design/theme';
-import { getBackgrounds, getBackground } from 'app/functions';
 import { usePathname } from 'app/lib/hooks/router';
 import { useCurrentUser } from 'app/context/user';
 
-const backgrounds = getBackgrounds();   
+//const backgrounds = getBackgrounds();   
 
 function BackgroundComponent({ }) {
-    const theme = ThemeName();
+    return <></>
+   /* const theme = ThemeName();
     const pathname = usePathname();
     const { currentUser } = useCurrentUser();
     const background = getBackground(pathname, currentUser);   
@@ -27,6 +27,30 @@ function BackgroundComponent({ }) {
             )}
         </>
     );
+    export function getBackground(pathname, currentUser) {
+    if (currentUser === false) {
+        if (pathname === '/' || pathname === '/home')
+            return 'splash';
+
+        if (pathname === '/login')
+            return 'login';
+
+        if (pathname === '/create-account')
+            return 'create-account';
+    }
+    return 'default';
+}
+
+import {
+    SvgBackgroundSplash,
+    SvgBackgroundSplashDark,
+    SvgBackgroundCreateAccount,
+    SvgBackgroundCreateAccountDark,
+    SvgBackgroundLogin,
+    SvgBackgroundLoginDark,
+} from 'app/ui/atoms/backgrounds';
+    
+    */
 }
 
 export default BackgroundComponent;

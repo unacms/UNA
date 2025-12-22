@@ -18,7 +18,9 @@ import {
     refetchUniListReducer,
     isSameItemsForUniList,
     flattenPagesForUniList,
-    fetchUniListData
+    fetchUniListData,
+    Addon,
+    getAddon
 } from 'app/lib/conductor-helpers'
 import { ItemRenderer } from 'app/components/item-renderer'
 import { Button } from 'app/design/controls'
@@ -33,13 +35,10 @@ import DynamicMenu from 'app/components/nav/menu-dynamic'
 import { menuItemsFilter, storageSet, storageGet } from 'app/lib/util'
 import { subscribe } from 'app/ui/atoms/socket'
 import { useBottomSheetData } from 'app/context/bottomsheet'
-import { getSkeletonByEndPoint,
-layoutForList,
-noContentByUrl,
-getButtonForConductorSmall,
-getAddonForConductor,
-getButtonForConductor,
-getFiltersForConductor } from 'app/functions'
+import {
+    getSkeletonByEndPoint,
+    layoutForList,
+} from 'app/functions'
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal'
 import emitter from 'app/context/emitter'
 import Cover, { CoverSmall } from 'app/components/elements/cover'
@@ -54,6 +53,7 @@ import { useLayoutSettings } from 'app/context/layout-settings'
 import { useIsDesktop, useBreakpoint } from 'app/context/measure'
 import Snackbar from 'app/ui/atoms/snackbar'
 import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
+import { getComponent } from 'app/components/registry';
 
 const conductorTheme = appSetting('theme', 'conductor')
 
@@ -127,8 +127,8 @@ export function Conductor({
     useEffect(() => {
         const foundIndex = getFoundIndex()
         if (foundIndex !== index) setIndex(foundIndex)
-       // storageClear('ul:data', currentRoute.storageKeyValue)
-       // storageClear('ul:state', currentRoute.storageKeyValue)
+        // storageClear('ul:data', currentRoute.storageKeyValue)
+        // storageClear('ul:state', currentRoute.storageKeyValue)
     }, [ts])
 
     const prevRoute = useMemo(
@@ -252,7 +252,7 @@ export function Conductor({
 
     const headerComponent = (
         <HeaderContainer
-            isCover = {isCover}
+            isCover={isCover}
             isCoverDisabled={isCoverDisabled}
             isHideCover={isHideCover}
             tabBarObj={
@@ -431,11 +431,11 @@ const TabSceneMainContent = ({
         isRefetching
     } = useInfiniteQuery({
         queryKey: qKey,
-        queryFn: ({ pageParam }) => fetchUniListData({ 
-            pageParam, 
-            requestUrl: pageRoute?.endpoint?.request_url, 
-            defaultParams: pageRoute?.endpoint?.params 
-        }), 
+        queryFn: ({ pageParam }) => fetchUniListData({
+            pageParam,
+            requestUrl: pageRoute?.endpoint?.request_url,
+            defaultParams: pageRoute?.endpoint?.params
+        }),
 
         getNextPageParam: (lastPage) => {
             return (lastPage?.data.length > 0 && lastPage?.cursor) ? { ...lastPage?.params, start: lastPage?.cursor } : undefined
@@ -482,11 +482,11 @@ const TabSceneMainContent = ({
             subscription2.remove()
         }
     }, [])
-    
+
     useEffect(() => {
         refetchRef.current.skipToast = true
     }, [qKey])
-    
+
 
     const handleEndReached = useCallback(
         async (lastItemIndex) => {
@@ -562,17 +562,20 @@ const TabSceneMainContent = ({
     const dataItems = isDesktop || !!pageRoute?.endpoint?.request_url ? [...dataItemsPage, ...refetchState.visibleItems] : [...dataItemsPage, ...refetchState.visibleItems, ...pageRoute.sidebar.content];
 
     useEffect(() => {
-        if (isUseCurrentHeader){
-            setHeader(isDesktop ? defaultHeader : {header: false});
+        if (isUseCurrentHeader) {
+            setHeader(isDesktop ? defaultHeader : { header: false });
         }
-        else{
-            setHeader(isDesktop ? defaultHeader : {subHeader: header});
+        else {
+            setHeader(isDesktop ? defaultHeader : { subHeader: header });
         }
     }, [isDesktop, header, setHeader]);
-    
+
+    const NoContent = getComponent('molecule', 'no_content')
+
+
     return (
         <><UniList
-            
+
             data={dataItems}
             endpoint={pageRoute.endpoint}
             listState={pageRoute?.state}
@@ -587,30 +590,30 @@ const TabSceneMainContent = ({
             onRefresh={refetch}
             refreshing={isRefetching}
             renderItem={renderItem}
-            
-        />
-        {(pageRoute?.endpoint?.request_url && hasNextPage === undefined ) && Preload}
-        {(pageRoute?.endpoint?.request_url && hasNextPage) && PreloadShort}
-        {(pageRoute?.endpoint?.request_url && hasNextPage === false && dataItems.filter((item) => item.type != 'block').length == 0) && noContentByUrl(pageRoute?.endpoint)}
 
-        <Snackbar
-            visible={refetchState.hasNewData}
-            onPress={() => {
-                const latestItems = flattenPagesForUniList(pagesData)
-                dispatch({ type: 'SET_ITEMS', items: latestItems })
-                refetchRef.current.prevItems = latestItems
-                if (uniRef.current) {
-                    uniRef.current.scrollToIndex?.({
-                        index: 0,
-                        align: 'end',
-                        behavior: 'smooth',
-                    })
-                }
-            }}
-            variant="primary"
-            title="Show New"
-            size="sm"
         />
+            {(pageRoute?.endpoint?.request_url && hasNextPage === undefined) && Preload}
+            {(pageRoute?.endpoint?.request_url && hasNextPage) && PreloadShort}
+            {(pageRoute?.endpoint?.request_url && hasNextPage === false && dataItems.filter((item) => item.type != 'block').length == 0) && <NoContent endpoint={pageRoute?.endpoint} />}
+
+            <Snackbar
+                visible={refetchState.hasNewData}
+                onPress={() => {
+                    const latestItems = flattenPagesForUniList(pagesData)
+                    dispatch({ type: 'SET_ITEMS', items: latestItems })
+                    refetchRef.current.prevItems = latestItems
+                    if (uniRef.current) {
+                        uniRef.current.scrollToIndex?.({
+                            index: 0,
+                            align: 'end',
+                            behavior: 'smooth',
+                        })
+                    }
+                }}
+                variant="primary"
+                title="Show New"
+                size="sm"
+            />
         </>
     )
 };
@@ -891,7 +894,7 @@ function ConductorMenu({
     onChangeRoute,
 }) {
     const name = 'cnd-main-menu'
-    const { currentUser } = useCurrentUser()
+
     const filteredItems = routes.filter((aItem) => aItem.hideInTop != true)
     const menuClasses = conductorTheme.menu_cnt
 
@@ -899,20 +902,29 @@ function ConductorMenu({
         index = 0
     }
 
+    const MenuItemSubmenu = getComponent('menu-item', 'submenu');
+
     const MenuItem = memo(
         ({ item: a, itemRefs, index: index2, visibleItemsCount }) => {
-            return <View className={`sadasd ${a?.menu_settings?.class}`}>{getButtonForConductorSmall(
-                a,
-                index,
-                () => {
-                    setIndex(a.index)
-                    window.history.pushState({}, '', '/' + a.key)
-                    if (onChangeRoute) {
-                        onChangeRoute(a)
-                    }
-                },
-                routes,
-            )}</View>
+           
+            return (
+                <View className={`sadasd ${a?.menu_settings?.class}`}>
+                    <MenuItemSubmenu
+                        title={a.title}
+                        pressed={a.index == index}
+                        disabled={a?.item?.disabled}
+                        addon={getAddon(a.addon)}
+                        onPress={() => {
+                            setIndex(a.index)
+                            window.history.pushState({}, '', '/' + a.key)
+                            if (onChangeRoute) {
+                                onChangeRoute(a)
+                            }
+                        }}
+                        item={a}
+                    />
+                </View>
+            )
         }
     )
 
@@ -923,11 +935,7 @@ function ConductorMenu({
                 {t(title)}
             </Text>
         )
-        const addonContent = getAddonForConductor(
-            item,
-            itemIndex,
-            currentUser,
-        )
+        const addonContent = <Addon item={item} index={itemIndex} />
 
         const handlePress = () => {
             emitter.emit('dynamic_menu', { action: 'hide' })
@@ -942,7 +950,8 @@ function ConductorMenu({
             return (
                 <Link href={link}>
                     <Row className="justify-between items-center min-w-200">
-                        {translatedTitle} {addonContent}
+                        {translatedTitle}
+                        {addonContent}
                     </Row>
                 </Link>
             )
@@ -1016,11 +1025,11 @@ const LeftSideBarContainer = ({
     layoutName,
 }) => {
     const { t } = useTranslation();
-    const { currentUser } = useCurrentUser();
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
-
     const addButtons = <AddMenu menu={menu} filter="hideInSideBar" />
     const title = layoutName == 'profile' ? '' : t(menuSettings?.name)
+    const MenuItemSidebar = getComponent('menu-item', 'sidebar');
+     
     return (
         <View
             className={`${layoutName == 'profile'
@@ -1047,11 +1056,7 @@ const LeftSideBarContainer = ({
                                 {routes
                                     .filter((aItem) => aItem.hideInTop != true)
                                     .map((a) => {
-                                        const btn = getButtonForConductor(
-                                            a,
-                                            index,
-                                            currentUser,
-                                        )
+                                        const btn = <MenuItemSidebar addon={getAddon(a.addon)} title={a.title} icon={a.icon || 'Circle'} isActive={a.index === index } />
 
                                         if (a?.icon == '*') {
                                             return (
@@ -1087,8 +1092,8 @@ const LeftSideBarContainer = ({
                                             </Link>
                                         )
                                     })}
-                                </View>
-                            )}
+                            </View>
+                        )}
                         {children}
                     </View>
                 </View>
@@ -1255,11 +1260,6 @@ const TabSceneHeader = ({ route, setFilterValue }) => {
     const isTitle = appSetting('conductor', 'show_nav_titles')
     return (
         <>
-            {getFiltersForConductor(
-                filters,
-                setFilterValue,
-                route?.endpoint?.params?.filters,
-            )}
             {counter > 0 && (
                 <View className="mx-4 mb-0 mt-2">
                     <Text className="text-xl font-bold text-neutral-800  dark:text-neutral-200 ">

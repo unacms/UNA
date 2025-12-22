@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect, useMemo, useLayoutEffect } fro
 import { View, ScrollView, Row } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { deepEqual, getUnitModeBySource } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData } from 'app/lib/conductor-helpers';
+import { fillTabs, parseData, fetchAndUpdateData, getAddon } from 'app/lib/conductor-helpers';
 import { ItemRenderer } from 'app/components/item-renderer';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
@@ -13,34 +13,46 @@ import { fetcher } from 'app/lib/fetcher';
 import Snackbar from 'app/ui/atoms/snackbar';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByName } from 'app/components/block';
-import { getButtonForConductorSmall, noContentByUrl } from 'app/functions';
 import Cover, { CoverSmall } from 'app/components/elements/cover';
 import emitter from 'app/context/emitter'
 import { useSetHeader } from 'app/context/jotai/layout';
+import { getComponent } from 'app/components/registry';
 
 const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
+    const MenuItemSubmenu = getComponent('menu-item', 'submenu');
     if (routes.length > 1) {
         return (
 
             <ScrollView horizontal={true} className=" bg-card ">
                 <Row className="pl-2 justify-center" >
                     {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
-                        const btn = getButtonForConductorSmall(a, index, () => {
-                            setIndex(a.index)
-                            window.history.pushState({}, '', '/' + a.key)
-                            if (onChangeRoute) {
-                                onChangeRoute(a)
-                            }
-                        });
+
+                        const addon =
+                            showNavCounters &&
+                                (showNavCounters !== 'primary' || a?.addon?.variant === 'primary')
+                                ? a?.addon ?? null
+                                : null
                         return (
                             <View className="p-1 items-center justify-center"
                                 key={`tab-${a.index}`}
                             >
-                                {btn}
+                                <MenuItemSubmenu
+                                    title={a.title}
+                                    pressed={a.index == index}
+                                    disabled={a?.item?.disabled}
+                                    addon={getAddon(a.addon)}
+                                    onPress={() => {
+                                        setIndex(a.index)
+                                        window.history.pushState({}, '', '/' + a.key)
+                                        if (onChangeRoute) {
+                                            onChangeRoute(a)
+                                        }
+                                    }}
+                                    item={a}
+                                />
                             </View>
                         )
                     })}
-
                 </Row>
             </ScrollView>
 
@@ -116,6 +128,9 @@ const TabScene = React.memo(({
     /*if (!route.inited) {
         return <></>;
     }*/
+    const NoContent = getComponent('molecule', 'no_content')
+
+
     return (
         <UniList
             ListHeaderComponent={typeof ListHeaderComponent === 'function' ? ListHeaderComponent : ListHeaderComponent ? () => ListHeaderComponent : undefined}
@@ -137,7 +152,7 @@ const TabScene = React.memo(({
             unit={route.endpoint?.unit}
             renderItem={renderItem}
             ListFooterComponent={
-                (route?.endpoint?.request_url ? (route?.endpoint?.finished ? (route.data.length == 0 ? noContentByUrl(route?.endpoint) : <></>) : Preload) : <></>)
+                (route?.endpoint?.request_url ? (route?.endpoint?.finished ? (route.data.length == 0 ? <NoContent endpoint={route?.endpoint}/> : <></>) : Preload) : <></>)
             }
             maxToRenderPerBatch={5}
             initialNumToRender={5}

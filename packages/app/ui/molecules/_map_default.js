@@ -18,6 +18,7 @@ import Splash from './splash';
 import HeaderElement from './header_element'; 
 import CounterIndicator from './counter-indicator'; 
 import ProfileLink from './profile-link'; 
+import NoContent from './no-content'; 
 
 export const componentsMapDefault = {
     likes: memo(Likes),
@@ -38,6 +39,7 @@ export const componentsMapDefault = {
     badges: Badges,
     header_element: HeaderElement,
     counter_indicator: CounterIndicator,
-    profile_link: ProfileLink
+    profile_link: ProfileLink,
+    no_content: NoContent
 };
 

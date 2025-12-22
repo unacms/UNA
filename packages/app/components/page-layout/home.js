@@ -16,7 +16,6 @@ import Profile from 'app/ui/molecules/profile'
 import { Text } from 'app/design/typography'
 import { Platform } from 'react-native'
 import { getComponent } from 'app/components/registry'
-import { getButtonForConductorHor, ProfileDisplayName } from 'app/functions'
 import {
     Panel,
     PanelGroup,
@@ -171,21 +170,22 @@ export default function ({ data, blocks }) {
             )
         })}</View>
 
+    const MenuItemSubmenu = getComponent('menu-item', 'submenu');
+
     const subHeader = useMemo(() =>
         feedList.length > 1 ? (
             <ScrollView horizontal={true} className='flex w-full scrollbar-hide ps-2.5 pb-2 pt-1'>
                 <Row className={`${feedList.length > 1 ? ' gap-2 ' : ''}`}>
                     {feedList.map((item, index) => (
                         <View key={'row_' + index}>
-                            {getButtonForConductorHor(
-                                item.icon,
-                                item.showTitle ? t(item.title) : '',
-                                feedType == item.name,
-                                null,
-                                () => {
+                            <MenuItemSubmenu
+                                icon={item.icon}
+                                title={item.showTitle ? t(item.title) : ''}
+                                pressed={feedType == item.name}
+                                onPress={() => {
                                     setFeedTypeEx(item.name)
-                                },
-                            )}
+                                }}
+                            />
                         </View>
                     ))}
                 </Row>

@@ -19,7 +19,6 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
 import { subscribe } from 'app/ui/atoms/socket'
 import { useCurrentUser } from 'app/context/user'
-import { noContentByUrl } from 'app/functions'
 import { Button } from 'app/design/controls'
 import { useWindowHeight } from 'app/context/measure';
 import emitter from 'app/context/emitter'
@@ -225,8 +224,10 @@ export default function Browse(props) {
         )
     }
 
+    const NoContent = getComponent('molecule', 'no_content')
+
     const PreloadComponent = dataItems.length === 0 ? (hasNextPage === false
-        ? noContentByUrl({ request_url: data.request_url, params: {} })
+        ? <NoContent endpoint={{request_url: data.request_url, params: {} }}/>
         : (!dataItems.params?.loaded ? Preload : null)
     ) : null;
 
