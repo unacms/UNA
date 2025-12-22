@@ -347,7 +347,7 @@ export default function Browse(props) {
                     <Button startDecorator="Settings2" variant="outline" title={!showFilters ? "Show filters" : "Hide filters"} />
 
                 }
-                minPopupWidth={360}
+                minPopupWidth={120}
                 open={showFilters}
                 onOpenChange={handleOpenChange}
             >
