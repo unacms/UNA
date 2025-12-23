@@ -267,7 +267,7 @@ export default function Layout(props) {
                 // disabled: bug in timeline in context infinite scroll  
                 //      el.style.position = 'absolute';
                 //    el.style.bottom = '0';
-                //   return;
+                   return;
             }
 
             // фиксируем
