@@ -122,6 +122,39 @@ export function Conductor({
         _setIndex(newIndex)
     }
 
+    useEffect(() => {
+        const handlePopState = () => {
+            // Получаем текущий URL из браузера
+            const currentPath = window.location.pathname.slice(1) // убираем начальный /
+            
+            // Ищем соответствующий индекс в routes
+            const foundIndex = routes.findIndex((item) => {
+                if (useSectionAsMenu) {
+                    return currentPath === item.key || '/' + currentPath === item.key
+                } else {
+                    return item.key.includes('?')
+                        ? '/' + currentPath === item.key
+                        : '/' + currentPath === item.key || currentPath === item.key
+                }
+            })
+            
+            if (foundIndex !== -1 && foundIndex !== index) {
+                setIndex(foundIndex)
+                if (onChangeRoute) {
+                    onChangeRoute(routes[foundIndex])
+                }
+            }
+        }
+        
+        // Подписываемся на событие popstate
+        window.addEventListener('popstate', handlePopState)
+        
+        // Очищаем при размонтировании
+        return () => {
+            window.removeEventListener('popstate', handlePopState)
+        }
+    }, [routes, index, useSectionAsMenu, onChangeRoute])
+
     const currentRoute = routes.find((item) => item.index === index)
 
     useEffect(() => {
