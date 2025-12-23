@@ -27,6 +27,8 @@ export default function Unit(props) {
 
     if (state) return
 
+    console.log("propsprops", props)
+
     // for separate page
     if (props.unitType == 'invitations_in_context') {
         return <>
@@ -73,8 +75,10 @@ export default function Unit(props) {
                                 </Row>
                             </View>
                             <View className="flex-row w-full gap-x-2">
-                                <Button title="Accept" size="sm" fullWidth variant="primary" onPress={() => { processInvitation(data.callback_accept) }} />
-                                <Button title="Decline" size="sm" fullWidth variant="secondary" onPress={() => { processInvitation(data.callback_decline) }} />
+
+                                {!!data.callback_accept && <Button title="Accept" size="sm" fullWidth variant="primary" onPress={() => { processInvitation(data.callback_accept) }} />}
+                                {!!data.callback_decline && <Button title="Decline" size="sm" fullWidth variant="secondary" onPress={() => { processInvitation(data.callback_decline) }} />}
+                                {!!data.redirect_url && <Link href={data.redirect_url}><Button title={data.redirect_title} size="sm" fullWidth variant="secondary" /></Link>}
                             </View>
                         </View>
                     </View>
@@ -100,8 +104,9 @@ export default function Unit(props) {
                     </Text>
                     <View className="flex-none">
                         <Row className='gap-x-2'>
-                            <Button title="Accept" size="sm" variant="secondary" rounded onPress={() => { processInvitation(data.callback_accept) }} />
-                            <Button title="Decline" size="sm" variant="secondary" rounded onPress={() => { processInvitation(data.callback_decline) }} />
+                            {!!data.callback_accept && <Button title="Accept" size="sm" variant="secondary" rounded onPress={() => { processInvitation(data.callback_accept) }} />}
+                            {!!data.callback_decline && <Button title="Decline" size="sm" variant="secondary" rounded onPress={() => { processInvitation(data.callback_decline) }} />}
+                            {!!data.redirect_url && <Link href={data.redirect_url}><Button title={data.redirect_title} size="sm" fullWidth variant="secondary" /></Link>}
                         </Row>
                     </View>
                 </View>
