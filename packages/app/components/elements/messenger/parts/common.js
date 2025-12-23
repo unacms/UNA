@@ -595,7 +595,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
     const header = (
         <View className='md:px-0 w-full border-border/60 bg-card border-b h-16 justify-center'>
             <Row className='px-2 lg:px-4 items-center justify-between w-full '>
-                <Row className='items-center justify-start overflow-hidden gap-3 flex-auto'>
+                <Row className='items-center justify-start gap-3 flex-auto'>
                     {isSmallScreen && <BackButton buttonProps={{ variant: "secondary", startDecorator: 'ArrowLeft', rounded: 'rounded' }} callback={showConvo} />}
                     <Text numberOfLines={1} className="font-bold text-card-foreground text-2xl tracking-tight">{title}</Text>
                 </Row>

@@ -8,7 +8,7 @@ import { CardList } from 'app/ui/molecules/card'
 import { useTranslation } from 'react-i18next'
 import FormModal, { handleFormModal, getFormModal } from 'app/ui/molecules/form_modal';
 import { Text, H2 } from 'app/design/typography'
-import { cd } from 'app/lib/util'
+import { View } from 'app/design/view'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import Tooltip from 'app/ui/molecules/tooltip'
 
@@ -63,7 +63,9 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
     return (
         <BlockWrapper {...blockWrapperProps}>
             <CardList className="flex-row gap-2 lg:gap-3">
-                <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
+                <View className="shadow-border-sm rounded-full">
+                    <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
+                </View>
                 
                     <Pressable 
                         className={appSetting('feed', 'post_trigger')}
@@ -76,9 +78,9 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
                 
 
                 <FormModal key={pageData?.ts} pageData={pageData} setPageData={setPageData} />
-                {menu_add_items.length > 0 && <Row className={` ${cd('gap-sm')} flex-none`}>
+                {menu_add_items.length > 0 && <Row className="gap-2 flex-none">
                     {menu_add_items.map((item, index) => (
-                        <Button key={item.name} size="base" fullWidth variant="secondary" rounded iconOnly onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon} />
+                        <Button key={item.name} size="base" fullWidth variant="default" rounded iconOnly onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon} />
                     ))}
                 </Row>}
 

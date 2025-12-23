@@ -86,7 +86,7 @@ function PageContentUniversal({ children, data, layoutName }) {
     console.log("datadatadata2", sizable)
 
     return (
-        <View className={`mx-auto w-full u-max-width-block gap-y-${gap} p-2 sm:p-4`}>
+        <View className='mx-auto w-full u-max-width-block gap-4 p-2 sm:p-4'>
             <PanelRow gap={gap} cell={topCell} currentBreakpoint={currentBreakpoint} />
             <PanelGroup key={`cells-${uri}-${layoutName}-${sizable ? 'sizable' : 'static'}`} autoSaveId={sizable ? `cells-${uri}-${layoutName}` : undefined} direction="horizontal">
                 {midCells.map((cell, i) => {

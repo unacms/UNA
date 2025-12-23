@@ -140,7 +140,7 @@ function DefaultUnit({ data }) {
                             />
                         )}
                 </Row>
-                <Row className=" gap-3 items-center flex-auto justify-between pt-1.5 px-2.5 mt-1 -mx-4 -mb-2 border-t border-card">
+                <Row className=" gap-3 items-center flex-auto justify-between pt-2 px-2 lg:px-2.5 mt-1 -mx-3 lg:-mx-4 -mb-1.5 border-t border-card">
                     <ActionMenu
                         data={data.menu_actions}
                     />

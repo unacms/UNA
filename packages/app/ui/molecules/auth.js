@@ -66,7 +66,7 @@ export default function AuthPanel({
                         title={t('Continue with email')}
                         variant="default"
                         fullWidth
-                        size="base"
+                        size="lg"
                         startDecorator="UserRoundPlus"
                         accessibilityRole="button"
                     />
