@@ -39,7 +39,7 @@
         /*content on destructive buttons, destructive surfaces*/
         --border: var(--neutral-300);
         /*borders, dividers, focus rings*/
-        --input: var(--neutral-200);
+        --input: var(--neutral-100);
         /*form inputs*/
         --ring: var(--accent-600);
         /*focus rings*/
@@ -73,8 +73,8 @@
         --shadow-2xl: 0px 25px 50px -10px rgba(0, 0, 0, 0.1);
 
         /* Shadow Border variables - Light Mode */
-        --shadow-border-sm: 0px 0px 0px 1px rgba(0, 0, 0, 0.04), 0px 1px 1px -0.5px rgba(0, 0, 0, 0.04), 0px 1px 2px 0px rgba(0, 0, 0, 0.03);
-        --shadow-border-sm-hover: 0px 0px 0px 1px rgba(0, 0, 0, 0.06), 0px 1px 1px -0.5px rgba(0, 0, 0, 0.06), 0px 1px 2px 0px rgba(0, 0, 0, 0.04);
+        --shadow-border-sm: 0px 0px 0px 1px rgba(0, 0, 0, 0.04), 0px 1px 1px -0.5px rgba(0, 0, 0, 0.06), 0px 1px 2px 0px rgba(0, 0, 0, 0.04);
+        --shadow-border-sm-hover: 0px 0px 0px 1px rgba(0, 0, 0, 0.06), 0px 1px 1px -0.5px rgba(0, 0, 0, 0.08), 0px 1px 2px 0px rgba(0, 0, 0, 0.06);
         --shadow-border: 0px 0px 0px 1px rgba(0, 0, 0, 0.04), 0px 1px 2px -1px rgba(0, 0, 0, 0.06), 0px 2px 4px 0px rgba(0, 0, 0, 0.04);
         --shadow-border-hover: 0px 0px 0px 1px rgba(0, 0, 0, 0.06), 0px 1px 2px -1px rgba(0, 0, 0, 0.08), 0px 2px 4px 0px rgba(0, 0, 0, 0.06);
         --shadow-border-lg: 0px 0px 0px 1px rgba(0, 0, 0, 0.06), 0px 2px 4px -1px rgba(0, 0, 0, 0.06), 0px 4px 8px 0px rgba(0, 0, 0, 0.04);
@@ -179,11 +179,11 @@
     .dark-theme-vars {
         /*semantic colors - Dark mode*/
 
-        --background: var(--neutral-900);
+        --background: var(--neutral-950);
         /*main page background*/
         --foreground: var(--neutral-50);
         /*main page content*/
-        --card: var(--neutral-800);
+        --card: var(--neutral-900);
         /*cards, sidebars, navbars background*/
         --card-foreground: var(--neutral-300);
         /*content on cards, sidebars, navbars*/
@@ -203,7 +203,7 @@
         /*background for accent buttons, accent surfaces*/
         --accent-foreground: var(--accent-400);
         /*content on accent buttons, accent surfaces*/
-        --muted: var(--neutral-700);
+        --muted: var(--neutral-800);
         /*background for ui items, sections, hover states*/
         --muted-foreground: var(--neutral-500);
         /*muted content*/

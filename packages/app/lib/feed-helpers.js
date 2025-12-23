@@ -142,13 +142,13 @@ export const CommentsSection = memo(
         t,
     }) => {
         const ShowMoreCmts = (
-            <Button variant="text" size="sm" title={t('View more comments...')} />
+            <Button variant="link" size="sm" title={t('View more comments...')} />
         )
         return (
-            <View className="border-t border-background -mx-4 mt-3.5 px-3 sm:px-4">
+            <View className="border-t border-background -mx-3 lg:-mx-4 mt-3.5 px-2 lg:px-3">
                 <View className="border-t border-card -mx-4  ">
                 {isShowMoreComments && (
-                    <View className="px-3 pt-3 me-auto">
+                    <View className="px-3 lg:px-4 pt-2 me-auto">
                         {isCommentsModal ? (
                             <Pressable
                                 onPress={() => {
@@ -628,7 +628,7 @@ export function SmallUnit({ data }) {
                         />
                     </View>
                     <View className="flex-auto flex-col my-auto">
-                        <Row className={`flex-row ${cd('gap-sm')}`}>
+                        <Row className="flex-row gap-2">
                             <Text className=" text-sm flex-auto font-medium text-neutral-800 dark:text-neutral-200">
                                 {data.author_data.display_name}
                             </Text>

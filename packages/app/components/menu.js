@@ -90,7 +90,7 @@ export default function ElementMenu(oProps) {
     sClassName += `justify-${sAlignItems}`;
 
     if (isWeb) {
-        sClassName += ' overflow-hidden';
+        sClassName += ' ';
     }
 
     //--- show menu's content only
@@ -186,7 +186,7 @@ export default function ElementMenu(oProps) {
             } else if (oProps?.params?.button_full_width === true) {
                 spacingClass = ' flex-1 ';
             } else {
-                spacingClass = isLast ? ' ' : ' me-2';
+                spacingClass = isLast ? ' ' : ' me-2 ';
             }
 
             return (
