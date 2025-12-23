@@ -5,6 +5,7 @@ import { View } from 'app/design/view'
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonsGroupMenu } from 'app/design/controls';
 import { useCallback, useMemo } from 'react';
 import DropdownMenuItem from 'app/components/menu-items/dropdown-item'
+import { Platform } from 'react-native'
 
 const handleDo = async (url, event) => {
     event.preventDefault();
@@ -33,6 +34,7 @@ const handleDo = async (url, event) => {
 };
 
 export default function ElementShares(oProps) {
+    const isWeb = Platform.OS === 'web'
     const { t } = useTranslation();
     const oSettings = appSetting('social_actions', 'share');
 
@@ -41,6 +43,8 @@ export default function ElementShares(oProps) {
     const oAction = oProps.action;
 
     const bShowAction = oParams?.show_action !== false;
+
+    const canWebShare = isWeb && typeof navigator !== "undefined" && typeof navigator.share === "function";
 
     let oButtonProps = {};
     if (oProps.primary)
@@ -80,9 +84,9 @@ export default function ElementShares(oProps) {
         />;
     }
     return (
-        <View className='flex-auto'>
+        canWebShare ? <View className='flex-auto'>
             <ButtonsGroupMenu  {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
-        </View>
+        </View> : null
     );
 
 }
