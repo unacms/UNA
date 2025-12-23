@@ -20,7 +20,7 @@ export default function MenuItemSubmenu({ icon, title, pressed, disabled, addon,
         <Button
             startDecorator={icon}
             title={title}
-            variant={'secondary'}
+            variant={'text'}
             rounded={rounded}
             pressed={pressed}
             disabled={disabled}
