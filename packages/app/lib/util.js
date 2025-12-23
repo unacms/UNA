@@ -628,6 +628,10 @@ export function getUnitModeBySource(endpoint) {
         return 'context';
     }
 
+       if (endpoint?.params?.type == 'author') {
+        return 'author';
+    }
+
     return 'default';
 }
 
