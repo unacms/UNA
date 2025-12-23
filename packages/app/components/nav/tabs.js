@@ -1,4 +1,4 @@
-import { Tabs, useRouter, usePathname } from 'app/lib/hooks/router';
+import { Tabs as RouterTabs, useRouter, usePathname } from 'app/lib/hooks/router';
 import { View } from 'app/design/view';
 import { Icon } from 'app/ui/atoms/icon';
 import { useCurrentUser } from 'app/context/user';
@@ -258,7 +258,7 @@ export default function Tabs () {
             <Subscriber />
             <View className="flex-1">
                 <View className="w-full z-50"><AsyncWorker /></View>
-                <Tabs screenOptions={screenOptions}>
+                <RouterTabs screenOptions={screenOptions}>
                     {
                         TabList.map((tab, index) => {
                             const options = {
@@ -279,7 +279,7 @@ export default function Tabs () {
                                 options.href = null;
 
                             return (
-                                <Tabs.Screen
+                                <RouterTabs.Screen
                                     key={`tab${index}`}
                                     name={`tab${index}`}
                                     initialParams={{ url2: tab.url, name: `tab${index}` }}
@@ -314,7 +314,7 @@ export default function Tabs () {
                             );
                         })
                     }
-                </Tabs>
+                </RouterTabs>
             </View>
         </>
     )
