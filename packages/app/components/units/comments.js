@@ -218,7 +218,7 @@ export default function UnitComments(props) {
                                 </>
                             )}
 
-                            <Link href={cmtUrl} size="xs" variant="ghost" emulate={true}>
+                            <Link href={cmtUrl} size="xs" variant="ghost" >
                                 <Time ts={data.cmt_time}></Time>
                             </Link>
                         </View>

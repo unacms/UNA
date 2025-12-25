@@ -27,11 +27,7 @@ const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
                 <Row className="pl-2 justify-center" >
                     {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
 
-                        const addon =
-                            showNavCounters &&
-                                (showNavCounters !== 'primary' || a?.addon?.variant === 'primary')
-                                ? a?.addon ?? null
-                                : null
+                        
                         return (
                             <View className="p-1 items-center justify-center"
                                 key={`tab-${a.index}`}

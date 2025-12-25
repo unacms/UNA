@@ -63,7 +63,7 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
     return (
         <BlockWrapper {...blockWrapperProps}>
             <CardList className="flex-row gap-2 lg:gap-3">
-                <View className="shadow-border-sm rounded-full">
+                <View className="web:shadow-border-sm rounded-full">
                     <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
                 </View>
                 

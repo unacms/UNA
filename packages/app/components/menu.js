@@ -44,9 +44,9 @@ const MenuItem = memo(({ item, itemRefs, index, visibleItemsCount, params, bShow
     }
 
     return (
-        <ViewRef className={` ${spacingClass} ${sAlignItems == 'stretch' ? 'flex-auto' : ''} `}>
+        <View className={` ${spacingClass} ${sAlignItems == 'stretch' ? 'flex-auto' : ''} `}>
             <ItemType key={item.id ? item.id : item.name} {...item} params={params} />
-        </ViewRef>
+        </View>
     )
 });
 

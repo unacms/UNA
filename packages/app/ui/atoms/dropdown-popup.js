@@ -116,7 +116,7 @@ export default function DropdownPopup({
         handleToggle(false);
     };
 
-    const Content = <ViewRef
+    const Content = <View
         ref={contentRef}
         style={{
             position: 'absolute',
@@ -134,7 +134,7 @@ export default function DropdownPopup({
         <ScrollView showsVerticalScrollIndicator={false}>
             {children}
         </ScrollView>
-    </ViewRef>
+    </View>
 
     return (
         <>

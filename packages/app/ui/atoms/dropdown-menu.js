@@ -74,7 +74,7 @@ function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant, sh
 }
 
 const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData }) => {
-
+    const DropdownMenuItem = getComponent('menu-item', 'dropdown');
     const redirectdRef = useRef();
     const handlePressMenu = useCallback(
         (item) => (event) => {
@@ -92,14 +92,16 @@ const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData }) => {
         <View className='w-full mt-0 mb-2'>
              <Redirect ref={redirectdRef} />
             {items.map((item, index) => (
-                <View key={item.id} className={' ' + (index != items.length - 1 ? 'py-2 border-b border-bdr dark:border-bdr-d ' : 'py-2 ')}><DropdownMenuItem
+                <View key={item.id} className={' ' + (index != items.length - 1 ? 'py-2 border-b border-bdr dark:border-bdr-d ' : 'py-2 ')}>
+                    <DropdownMenuItem
                     mode="bottomsheet"
                     key={item.id ?? index}
                     index={index}
                     item={item}
                     handleSelect={handlePressMenu(item)}
                     classes={classes}
-                /></View>
+                />
+                </View>
             ))}
         </View>
     );

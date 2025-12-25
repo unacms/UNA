@@ -15,12 +15,12 @@ const getBP = (w) => {
 
 const initW = Math.round(Dimensions.get('window').width);
 const initH = Math.round(Dimensions.get('window').height);
-
+const isSSR = typeof window === 'undefined';
 export const useMeasureStore = create((set, get) => ({
     currentBreakpoint: getBP(initW),
     windowWidth: initW,
     windowHeight: initH,
-    isDesktop: initW >= DESKTOP_FROM,
+    isDesktop: isSSR ? true : initW >= DESKTOP_FROM,
 
     setWindowSize: (w, h) => {
         const { windowWidth, windowHeight, currentBreakpoint, isDesktop } = get();

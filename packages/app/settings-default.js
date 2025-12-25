@@ -295,7 +295,7 @@ export const settingsDefault = {
     },
     feed: {
         feed_container: 'relative flex-auto mx-auto w-full max-w-3xl  ',
-        post_trigger: 'active:bg-muted rounded-full flex-auto lg:bg-card web:lg:hover:bg-muted/50 web:duration-300 web:transition-all shadow-border-sm justify-center px-1 lg:px-4 group',
+        post_trigger: 'active:bg-muted rounded-full flex-auto lg:bg-card web:lg:hover:bg-muted/50 web:duration-300 web:transition-all web:shadow-border-sm justify-center px-1 lg:px-4 group',
         post_trigger_text: 'font-medium text-base text-muted-foreground web:group-hover:text-foreground web:duration-300 web:transition-colors',
         show_html: false,
         default_feed: 'foryou',
@@ -1526,10 +1526,10 @@ export const settingsDefault = {
         },
         cards: {
             'u-card-list':
-                ' u-card-list bg-card/70 shadow-border text-card-foreground overflow-hidden sm:rounded-xl ',
+                ' u-card-list bg-card/70 web:shadow-border text-card-foreground overflow-hidden sm:rounded-xl ',
             'u-card-list-padding': ' p-3 lg:p-4 ',
             'u-card-base':
-                ' u-card-base bg-card/70 shadow-border text-card-foreground overflow-hidden rounded-2xl',
+                ' u-card-base bg-card/70 web:shadow-border text-card-foreground overflow-hidden rounded-2xl',
             'u-card-padding': ' p-4 ',
             'u-card-header': 'flex gap-1',
             'u-card-icon': 'text-card-foreground px-4 gap-2',
@@ -1550,7 +1550,7 @@ export const settingsDefault = {
             'u-block-base':
                 'u-max-width-block sm:rounded-xl gap-3 ',
             'u-block-bg':
-                'bg-card/80 shadow-border text-card-foreground ',
+                'bg-card/80  web:shadow-border text-card-foreground ',
             'u-block-pad':
                 'px-4 py-2 @xl/block:p-6',
             'u-block-header':
@@ -1751,7 +1751,7 @@ export const settingsDefault = {
             // Default button (neutral/popover)
             'u-btn-default-cnt': [
                 ' bg-card web:hover:bg-card/70 web:active:bg-muted active:bg-muted ',
-                ' shadow-border web:focus-visible:border-border  ',
+                '  web:shadow-border web:focus-visible:border-border  ',
                 ' web:focus-visible:outline-offset-2 active:outline active:outline-accent active:outline-offset-1 active:outline-4  ',
                 ' web:active:shadow-none active:shadow-none',    
             ].join(' '),
