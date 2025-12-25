@@ -85,7 +85,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
 
     if (isFormOnly) {
         return (
-            <View className="w-full flex-1 h-full">
+            <View className="w-full flex-1 ">
                 <View className="items-start justify-start sm:p-1 ">
                     <Row className="w-full items-center justify-between gap-x-2">
                         <Row className="gap-1 flex-row flex-auto items-center">
@@ -131,13 +131,13 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                         />
                     </Row>
                 </View>
-                <KbAvoidingView className="flex-1">
+                <KbAvoidingView className="flex-auto">
                     {getFormFieldByData(data.inputs['action'], handleSubmit, 'default')}
                     {getFormFieldByData(data.inputs['object_cf'], handleSubmit, 'default')}
                     {getFormFieldByData(data.inputs['owner_id'], handleSubmit, 'default')}
                     {getFormFieldByData(data.inputs['type'], handleSubmit, 'default')}
                     <View className="justify-between flex-col flex-auto ">
-                        <View className="w-full flex-1 justify-start p-1.5 ">
+                        <View className="w-full flex-auto justify-start p-1.5 ">
                             <View
                                 className="flex-auto"
                                 style={{
@@ -157,9 +157,9 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                         placeholder: 'Write here...',
                                         linkify: true,
                                         autofocus: Date.now(),
-                                        classes: 'flex-1 tiptap-default',
+                                        classes: 'flex-auto',
                                         initialHeight: 120,
-                                        maxHeight: screenHeight / 2,
+                                        maxHeight: screenHeight / 2 ,
                                     }
                                 )}
                             </View>
@@ -214,8 +214,8 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                 )}
                             </View>
                         </View>
-                        <View>
-                            <View className={`items-center flex-auto w-full gap-x-2 sm:p-1`}>
+                        <View className="">
+                            <View className={`items-center flex-auto w-full gap-x-2 sm:p-1 `}>
                                 <Row className="gap-x-2 w-full justify-between ">
                                     <Row className="flex-none gap-x-2">
                                         {data.inputs['obfuscate_faces'] && (

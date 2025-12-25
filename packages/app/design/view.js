@@ -23,7 +23,6 @@ export const interopRender = (displayName, render, interopConfig = defaultIntero
 export const View = interopComponent(RNView, 'View')
 export const Pressable = interopComponent(RNPressable, 'Pressable')
 export const ScrollView = interopComponent(RNScrollView, 'ScrollView')
-
 export const Row = interopRender(
     'Row',
     ({ children, className, ...props }, ref) => (

@@ -295,7 +295,7 @@ export const settingsDefault = {
     },
     feed: {
         feed_container: 'relative flex-auto mx-auto w-full max-w-3xl  ',
-        post_trigger: 'active:bg-muted rounded-full flex-auto lg:bg-card web:lg:hover:bg-muted/50 web:duration-300 web:transition-all web:shadow-border-sm justify-center px-1 lg:px-4 group',
+        post_trigger: 'active:bg-muted rounded-full flex-auto lg:bg-card web:lg:hover:bg-muted/50 web:duration-300 web:transition-all web:shadow-border-sm justify-center px-2 lg:px-4 group',
         post_trigger_text: 'font-medium text-base text-muted-foreground web:group-hover:text-foreground web:duration-300 web:transition-colors',
         show_html: false,
         default_feed: 'foryou',

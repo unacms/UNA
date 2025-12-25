@@ -232,14 +232,14 @@ export function Modal({
     }, []);
     const currentBreakpoint = useBreakpoint();
     const height = useWindowHeight();
-    const offset = (title || onClose  ? (currentBreakpoint >= LAYOUT_BREAKPOINTS.md ? 100 : 68)  : 0);
+    const offset = (title ? (currentBreakpoint >= LAYOUT_BREAKPOINTS.md ? 100 : 68)  : 0);
 
     if (!animation){
         animation = currentBreakpoint >= LAYOUT_BREAKPOINTS.md ? 'fade' : 'slide';
     }
 
     const styles = !autoHeight ? { maxHeight: height - offset } : {};
-    
+
 
     const isOuterClose = (onClose !== 'undefined' && outerClickClose !== false);
     const positionClasses = {
@@ -265,9 +265,9 @@ export function Modal({
     const insets = useSafeAreaInsets();
 
     const Content = (
-        <View style={{ paddingTop: !isWeb ? insets?.top : 0 }} className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto ${layoutShift}:inset-0 h-full h-modal ${sClassPosition}`}>
-            <View className={`w-full ${maxWidth} ${fullWidth ? '' : `${layoutShift}:w-auto`} relative ${modalSettings.container.replaceAll("{ls}", layoutShift)} `}>
-                <View className={`relative ${!autoHeight ? 'h-full' : ''} ${modalSettings.content.replaceAll("{ls}", layoutShift)}`}>
+        <View style={{ paddingTop: !isWeb ? insets?.top : 0, paddingBottom: !isWeb ? insets?.bottom : 0 }} className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto ${layoutShift}:inset-0 h-full h-modal ${sClassPosition}`}>
+            <View className={`w-full ${maxWidth} ${fullWidth ? '' : `${layoutShift}:w-auto`}  ${modalSettings.container.replaceAll("{ls}", layoutShift)} `}>
+                <View className={` ${!autoHeight ? 'h-full' : ''} ${modalSettings.content.replaceAll("{ls}", layoutShift)}`}>
                     {
                         (title) && <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header} `}>
                             {(title && type === 'string') && (
@@ -283,8 +283,8 @@ export function Modal({
                             )}
                         </Row>
                     }
-                    <Pressable onPress={(event) => {event.stopPropagation()}}>
-                    <Cnt style={styles} className={`${padding} flex-auto `}>{children}</Cnt></Pressable>
+                  
+                    <Cnt style={styles} className={`${padding} flex-auto`}>{children}</Cnt>
                 </View>
             </View>
         </View>)

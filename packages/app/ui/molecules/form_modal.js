@@ -45,11 +45,12 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
             }
         });
     });
-
+    
     return (
         <Modal
             maxWidth={modalWidth}
-            scrollable={true}
+            outerClickClose={false}
+            scrollable={pageData?.module=='bx_timeline' ? false: true}
             title={isShowHeader ? pageData.title : null}
             onVisible={!!pageData}
             {...(isShowHeader && { onClose: () => { setPageData(false); handleModalClose() } })}
@@ -58,7 +59,7 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
             onRequestClose={handleModalClose}
             onClose={() => { setPageData(false); }}
         >
-            <View className='p-3'>
+            <View className='p-3 flex-auto'>
                 <Container key={pageData.module + (pageData.ts)} className={`flex-1 ${isShowHeader ? '' : 'overflow-visible'}`}>{/*px-3 sm:px-0*/}
                     {
                         Object.keys(pageData?.elements || {}).map(key =>

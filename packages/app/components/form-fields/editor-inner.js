@@ -474,7 +474,7 @@ export default function RftText({
     const editor = useEditorBridge({
         autofocus: props.autofocus,
         avoidIosKeyboard: false,
-        dynamicHeight: false,
+        dynamicHeight: true,
         placeholder: props.placeholder,
         theme: customEditorTheme,
         initialContent: field.value,
@@ -905,10 +905,11 @@ export default function RftText({
             suggestionsSize[1] - (keywordval[3] > 0 ? keywordval[3] - 24 : 0)
     }
 
+    console.log("editorHeight", editorHeight, initialHeight)
     return (
         <View
             onLayout={handleLayout}
-            className={`flex-1 relative ${
+            className={`flex-auto ${
                 isToolBar
                     ? ' px-3 py-2 bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border flex-auto overflow-hidden shadow-xs placeholder-label-tertiary text-card-foreground web:duration-100 '
                     : (bg == 'transparent' ? '' : inputSettings.multi)
@@ -940,7 +941,7 @@ export default function RftText({
                     </ScrollView>
                 </View>
             )}
-            <View style={{height:`${editorHeight}px`}} >
+            <View style={{height:editorHeight}}>
                 <RichText
                     exclusivelyUseCustomOnMessage={false}
                     style={{
@@ -982,7 +983,7 @@ export default function RftText({
                             bottom: 8,
                         }}
                     >
-                        <View className="flex-none ">
+                        <View className="flex-none w-full">
                             <Toolbar hidden={false} editor={editor} items={b} />
                         </View>
                     </KeyboardAvoidingView>
