@@ -2,6 +2,7 @@ import { env } from 'app/lib/env'
 
 export const settingsDefault = {
     config: {
+        multitenant: false,
         una_url: env('UNA_URL'),
         app_url: env('APP_URL'),
         una_api_key: env('UNA_API_KEY'),

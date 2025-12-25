@@ -1,4 +1,4 @@
-import { appSetting } from 'app/lib/util';
+import { appSetting, getBaseUrl } from 'app/lib/util';
 import { ThemeName } from 'app/design/theme';
 
 export default function ({src_web, src_dark, src_default, ...props}) {
@@ -12,7 +12,7 @@ export default function ({src_web, src_dark, src_default, ...props}) {
 
     // For web, always use the current domain to support preview deployments
     const baseUrl = typeof window !== 'undefined' 
-        ? `${window.location.protocol}//${window.location.host}`
+        ? getBaseUrl()
         : appSetting('config', 'native_app_images_url');
 
     return (

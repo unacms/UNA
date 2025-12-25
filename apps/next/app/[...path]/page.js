@@ -6,6 +6,8 @@ import { Loading } from 'app/loading'
 // import 'app/styles/global.default.css'
 // import 'app/styles/global.css'
 import { notFound } from 'next/navigation'
+import { headers } from "next/headers"
+
 const SITE_TITLE = 'NEO';
 
 let remote_config = { hash: null, data: null };
@@ -38,18 +40,20 @@ async function getCachedData(props) {
 
 
 const getData = cache(async (params, search_params) => {
-    
+    let hdrs = await headers();
     let path = params.path.join('/');
-    let cookieString = search_params.cookieString;
+    let cookieString = search_params.cookieString;    
 
     const opts = {
         headers: {
             cookie: cookieString,
-            authorization: 'Bearer ' + UNA_API_KEY,
+            authorization: 'Bearer ' + (hdrs?.get("x-tenant-una-key") ?? UNA_API_KEY),
         },
         cache: 'no-store'
     };
-    let l = UNA_URL + '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
+    
+    let l = hdrs?.get("x-tenant-una-url") ?? UNA_URL;
+    l += '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
     let searchParams = JSON.parse(JSON.stringify(search_params));
 
     delete searchParams.cookieString;

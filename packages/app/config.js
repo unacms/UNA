@@ -1,4 +1,5 @@
 import { settings } from 'app/settings';
+export const MULTITENANT = appSetting('config', 'multitenant');
 export const APP_URL = appSetting('config', 'app_url') ;
 export const UNA_URL = appSetting('config', 'una_url');
 export const UNA_API_KEY = appSetting('config', 'una_api_key');

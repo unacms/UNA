@@ -128,6 +128,23 @@ export function getDomainFromUrl(url) {
 
 }
 
+export function getBaseUrl() {
+  // Client-side
+  if (typeof window !== "undefined") {
+    return `${window.location.protocol}//${window.location.host}`;
+  }
+
+  // Server-side
+  try {
+    const h = headers();
+    const host = h.get("host") || "localhost:3000";
+    const proto = h.get("x-forwarded-proto") || "http";
+    return `${proto}://${host}`;
+  } catch {
+    return "http://localhost:3000"; // fallback for SSR
+  }
+}
+
 export async function setClipboard(str) {
     if (!isWeb) {
         Clipboard.setString(str);
@@ -1425,3 +1442,4 @@ export function isShowCover(cover, currentUser, url) {
 
     return false;
 }
+

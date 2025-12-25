@@ -1,14 +1,15 @@
 import { Platform } from 'react-native';
 import i18n from 'i18next';
-import { appSetting , UNA_URL, APP_URL, APP_ORIGIN } from 'app/config';
+import { appSetting , UNA_URL, APP_URL, APP_ORIGIN, MULTITENANT } from 'app/config';
+import { getBaseUrl } from 'app/lib/util';
 
 const USE_PROXY_WEB = appSetting('config', 'use_proxy_web'); 
 const USE_PROXY_NATIVE = appSetting('config', 'use_proxy_native'); 
 
 export async function fetcher (mixed, useProxy = false) {
     let prefix = UNA_URL;
-    if ((Platform.OS === 'web'  && USE_PROXY_WEB) || useProxy){
-        prefix =  APP_URL + "/api";
+    if ((Platform.OS === 'web'  && USE_PROXY_WEB) || useProxy){        
+        prefix = MULTITENANT ? getBaseUrl() : APP_URL + "/api";
     }
 
     if ((Platform.OS != 'web'  && USE_PROXY_NATIVE)){
