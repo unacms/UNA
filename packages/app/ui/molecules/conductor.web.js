@@ -1186,7 +1186,7 @@ const HeaderContainer = ({
                 <View>
                     <View className={conductorTheme.cover_content}>
                         {isCover && !isHideCover && (
-                            <View className="w-full bg-red-500" onLayout={onCoverLayout1}>
+                            <View className="w-full" onLayout={onCoverLayout1}>
                                 <Cover
                                     data={pageData.cover_block}
                                     mode={headerSettings.cover}
