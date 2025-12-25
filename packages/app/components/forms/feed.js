@@ -131,7 +131,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                         />
                     </Row>
                 </View>
-                <KbAvoidingView className="flex-auto">
+                <KbAvoidingView className="flex-auto" modalOffset={60}>
                     {getFormFieldByData(data.inputs['action'], handleSubmit, 'default')}
                     {getFormFieldByData(data.inputs['object_cf'], handleSubmit, 'default')}
                     {getFormFieldByData(data.inputs['owner_id'], handleSubmit, 'default')}

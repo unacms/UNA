@@ -29,12 +29,12 @@ import Animated from "react-native-reanimated";
     );
 }*/
 
-export default function KbAvoidingView({children, className}) {
+export default function KbAvoidingView({children, className, modalOffset}) {
     return (
         <KeyboardAvoidingView 
             className={className}
             behavior={"padding"}
-            keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 30}
+            keyboardVerticalOffset={modalOffset || (Platform.OS === "ios" ? 60 : 30)}
         >
             {children}
         </KeyboardAvoidingView>

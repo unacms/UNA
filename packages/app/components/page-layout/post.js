@@ -235,40 +235,39 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
     if (isModal) {
         return (
-            <View className="w-full  ">
-                <View className="w-full " style={{ height: height }}>
-                 
-                    <CommentsBrowse
-                        useCustomScrollHandler={true}
-                        height={height > 0 ? height : undefined}
-                        scrollToIndex={scrollToEnd}
-                        addItems={aItems}
-                        isModal={true}
-                        browse={commentsData?.content[0]?.browse}
-                        module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
-                        requestUrl={commentsData?.content[0]?.url}
-                        replyId={replyId}
-                    />
+            <View className="w-full  flex-1">
+                <View className='w-full flex-1 '>
+                    <View style={{ height: height }}>
+                        <CommentsBrowse
+                            useCustomScrollHandler={true}
+                            height={height > 0 ? height : undefined}
+                            scrollToIndex={scrollToEnd}
+                            addItems={aItems}
+                            isModal={true}
+                            browse={commentsData?.content[0]?.browse}
+                            module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
+                            requestUrl={commentsData?.content[0]?.url}
+                            replyId={replyId}
+                        />
+                    </View>
                 </View>
-                <KbAvoidingView>
-                <View
-                    onLayout={handleLayoutModal}
-                    className="border-t border-border/60"
-                >
-                    <CommentsForm
-                        isModal={isModal}
-                        objectId={commentsData?.content[0]?.browse.data.object_id}
-                        module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
-                        form={commentsData?.content[0]?.form}
-                        requestUrl={commentsData?.content[0]?.url}
-                    />
-                </View>
+                <KbAvoidingView modalOffset={90}>
+                    <View
+                        onLayout={handleLayoutModal}
+                        className="border-t border-border/60"
+                    >
+                        <CommentsForm
+                            isModal={isModal}
+                            objectId={commentsData?.content[0]?.browse.data.object_id}
+                            module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
+                            form={commentsData?.content[0]?.form}
+                            requestUrl={commentsData?.content[0]?.url}
+                        />
+                    </View>
                 </KbAvoidingView>
             </View>
         )
     }
-
-
 
     if (!isWeb || !isDesktop || !isMultiColumn) {
         const newItems = !isWeb || !isDesktop ? aItems.slice(1) : aItems;
