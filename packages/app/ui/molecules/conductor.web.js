@@ -1175,18 +1175,18 @@ const HeaderContainer = ({
     const onCoverLayout2 = useCallback((e) => {
         setSmallCoverHeight(e.nativeEvent.layout.height)
     }, [])
-
+//hideDefaultHeaderFrom
     return (
         <View className="z-40">
             <View className={`${conductorTheme.cover_base} cover-1`}
                 style={{
-                    marginBottom: !isScrolled ? '0px' : `${smallCoverHeight}px`,
+                    marginBottom: !isScrolled ? '0px' : `${(smallCoverHeight+((isCover && !isHideCover) || !isDesktop ? 56: 0))}px`,
                 }}
             >
                 <View>
                     <View className={conductorTheme.cover_content}>
                         {isCover && !isHideCover && (
-                            <View className="w-full " onLayout={onCoverLayout1}>
+                            <View className="w-full bg-red-500" onLayout={onCoverLayout1}>
                                 <Cover
                                     data={pageData.cover_block}
                                     mode={headerSettings.cover}
