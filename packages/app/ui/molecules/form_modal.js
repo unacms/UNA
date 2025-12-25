@@ -21,7 +21,7 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
         const { layoutBlocks } = layout;
         return (
             <Modal
-
+                outerClickClose={false}
                 onClose={() => setPageData(false)}
                 onVisible={!!pageData}
                 title={`${authorData.content[0].data.author_data.display_name}'s post`}

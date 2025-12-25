@@ -71,7 +71,8 @@ export default function FormComments(props) {
     const hasContent = !!hasText || !!imagesValue
 
     return (
-        <View className="w-full ">
+        
+        <View className="w-full  flex-auto">
             {getFormFieldByData(
                 props.data.inputs['action'],
                 props.handleSubmit,
@@ -97,7 +98,7 @@ export default function FormComments(props) {
                 props.handleSubmit,
                 'custom'
             )}
-            <Row className={`w-full gap-x-2 ${shouldGrowFromBottom ? 'items-end' : 'items-start'}`}>
+            <Row className={`w-full  gap-x-2 ${shouldGrowFromBottom ? 'items-end' : 'items-start'}`}>
                 {currentUser && (
                     <Profile
                         {...currentUser}
@@ -107,14 +108,12 @@ export default function FormComments(props) {
 
                     />
                 )}
-                <View className="flex-1">
-                    <View className=" items-stretch bg-input/40 border border-input rounded-xl " style={{ overflow: 'hidden' }}>
+                <View className="flex-auto ">
+                    <View className=" items-stretch bg-input/40 border border-input rounded-xl flex-auto" >
                         <View
-                            className={`px-2.5 py-2 ${hasContent ? 'mb-9' : ''}`}
+                            className={`px-2.5  flex-auto items-center overflow-hidden ${shouldGrowFromBottom ? "justify-end" : "justify-start"} py-2 ${hasContent ? 'mb-9' : ''}`}
                             style={{
-                                alignItems: 'center',
-                                justifyContent: shouldGrowFromBottom ? 'flex-end' : 'flex-start',
-                                overflow: 'hidden',
+                                
                                 ...(isWeb && { transition: 'height 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), padding-bottom 0.1s cubic-bezier(0.25, 0.1, 0.25, 1)' })
                             }}
                         >
@@ -125,7 +124,7 @@ export default function FormComments(props) {
                                 {
                                     form_name: props.name,
                                     container_class: 'comments',
-                                    classes: 'flex-1 text-card-foreground tiptap-comments',
+                                    classes: 'text-card-foreground tiptap-comments',
                                     autofocus: isAutoFocus,
                                     bg: 'transparent',
                                     placeholder: 'Leave a comment...',
@@ -138,15 +137,15 @@ export default function FormComments(props) {
                                 }
                             )}
                         </View>
-                        <View className={`flex-row absolute bottom-0 ${hasContent ? 'justify-between w-full' : 'justify-end right-0'}`}>
-                            <View className={'items-center justify-center w-9 h-9 p-1'}>
+                        <View className={`flex-row absolute  bottom-0 ${hasContent ? 'justify-between w-full' : 'justify-end right-0'}`}>
+                            <Row className={'items-center justify-center h-9 p-1 '}>
                                 <FileButton field_name='cmt_image' size={isWeb ? 'sm' : 'xs'} icon="Image" source='library' variant='text' />
                                 {!isWeb && (
                                     <View className="h-full p-1 flex items-center justify-center">
                                         <FileButton field_name='cmt_image' size='xs' icon="Camera" source='camera' variant='text' />
                                     </View>
                                 )}
-                            </View>
+                            </Row>
                             {(hasContent) && (
                                 <View className="p-1">
                                     {getFormFieldByData(

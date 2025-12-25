@@ -358,9 +358,10 @@ export function CommentsBrowse({
     }
 
     return (
-        <>
+        <View>
             <UniList
                 mode='simple'
+                isModal={isModal}
                 useWindowScroll={!isModal}
                 height={height > 0 ? height : undefined}
                 data={dataOut}
@@ -423,7 +424,7 @@ export function CommentsBrowse({
                 size="sm"
             />
 
-        </>
+        </View>
     )
 }
 

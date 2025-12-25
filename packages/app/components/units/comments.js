@@ -141,7 +141,7 @@ export default function UnitComments(props) {
             <Modal
                 title={t('Edit comment')}
                 onVisible={true}
-
+                outerClickClose={false}
                 onClose={() => {
                     setViewState({ view: '' })
                 }}

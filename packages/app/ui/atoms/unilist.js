@@ -7,7 +7,7 @@ import { useSetScrollDirection, useHeaderHeight } from 'app/context/jotai/layout
 
 export default function UniList(props) {
     const uniRef = useRef();
-    const { preloadComponent, contentContainerStyle, scrollProps, data, index, mode, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, unit, refreshing, onRefresh, height, ...rest } = props
+    const { preloadComponent, contentContainerStyle, scrollProps, isModal, data, index, mode, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, unit, refreshing, onRefresh, height, ...rest } = props
 
     const scrollY = useRef(0); 
     const scrollState = useRef(0); 
@@ -51,8 +51,8 @@ export default function UniList(props) {
             {preloadComponent}
         </View> : <LegendList
             contentContainerStyle={{
-                ...(headerHeight && !scrollProps?.inverted ? { paddingTop: headerHeight } : {}),
-                ...(headerHeight && scrollProps?.inverted ? { paddingBottom: headerHeight } : {}),
+                ...(headerHeight && !scrollProps?.inverted ? { paddingTop: isModal? 0 : headerHeight } : {}),
+                ...(headerHeight && scrollProps?.inverted ? { paddingBottom: isModal? 0 : headerHeight } : {}),
                 ...contentContainerStyle,
             }}
             ref={refer ? refer : uniRef}

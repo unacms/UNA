@@ -235,8 +235,9 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
     if (isModal) {
         return (
-            <View className="w-full">
+            <View className="w-full  ">
                 <View className="w-full " style={{ height: height }}>
+                 
                     <CommentsBrowse
                         useCustomScrollHandler={true}
                         height={height > 0 ? height : undefined}
@@ -249,6 +250,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         replyId={replyId}
                     />
                 </View>
+                <KbAvoidingView>
                 <View
                     onLayout={handleLayoutModal}
                     className="border-t border-border/60"
@@ -261,6 +263,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         requestUrl={commentsData?.content[0]?.url}
                     />
                 </View>
+                </KbAvoidingView>
             </View>
         )
     }

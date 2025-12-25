@@ -9,7 +9,6 @@ export default function FormFieldText(props) {
     const formContext = useFormContext();
     return (
         <Field {...props} error2={formContext.formState.errors[props.name]}>
-            
             {props.html == 1 || props.html == 2 || props.html == 3 ? <RftText {...props} /> : <PlainText {...props} />}
         </Field>
     );

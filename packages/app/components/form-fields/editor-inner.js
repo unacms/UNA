@@ -905,7 +905,6 @@ export default function RftText({
             suggestionsSize[1] - (keywordval[3] > 0 ? keywordval[3] - 24 : 0)
     }
 
-    console.log("editorHeight", editorHeight, initialHeight)
     return (
         <View
             onLayout={handleLayout}
@@ -941,7 +940,7 @@ export default function RftText({
                     </ScrollView>
                 </View>
             )}
-            <View style={{height:editorHeight}}>
+            <View style={{height:editorHeight}} >
                 <RichText
                     exclusivelyUseCustomOnMessage={false}
                     style={{
