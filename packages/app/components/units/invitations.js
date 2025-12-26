@@ -10,12 +10,11 @@ import Image from 'app/ui/atoms/image'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
 import { CardList } from 'app/ui/molecules/card'
-import { getImageSizes, FeedbackHaptics, tp, t } from 'app/lib/util'
+import { tp } from 'app/lib/util'
 
 export default function Unit(props) {
     const { t } = useTranslation();
     const [state, setState] = useState(false);
-    const imageSizes = getImageSizes();
 
     const data = props.data
     const friendsLabel = data.members_count > 0 ? tp("members", data?.members_count) : ''
@@ -27,11 +26,9 @@ export default function Unit(props) {
 
     if (state) return
 
-    console.log("propsprops", props)
-
     // for separate page
     if (props.unitType == 'invitations_in_context') {
-        return <>
+        return (
             <CardList padding={cd('p-sm')} className='mb-2 md:mb-0'>
                 <Link className="context " href={data.url}>
                     <View className="flex-row sm:flex-col p-1">
@@ -41,7 +38,7 @@ export default function Unit(props) {
                                 alt={data.title}
                                 view="cover"
                                 className="absolute u-cover rounded-xl"
-                                sizes={imageSizes}
+                                sizes='auto'
                             />
 
                         </View>
@@ -84,7 +81,7 @@ export default function Unit(props) {
                     </View>
                 </Link>
             </CardList>
-        </>
+        )
     }
 
     return (

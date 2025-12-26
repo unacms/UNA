@@ -46,24 +46,56 @@ function normalizeWidth(width) {
     }
 }
 
+function getImageSizes() {
+    const perLine = [
+        { width: 1280, count: 4 },
+        { width: 1024, count: 4 },
+        { width: 768, count: 3 },
+        { width: 640, count: 2 },
+    ];
+
+    const sorted = perLine
+        .filter(x => x?.width && x?.count > 0)
+        .sort((a, b) => a.width - b.width);
+
+    if (!sorted.length) return '100vw';
+
+    const parts = sorted.map(({ width, count }) => {
+        const vw = Math.floor(100 / count);
+        return `(max-width: ${width}px) ${vw}vw`;
+    });
+
+    const last = sorted[sorted.length - 1];
+    parts.push(`${Math.floor(100 / last.count)}vw`);
+
+    return parts.join(', ');
+}
+
 export default function ElementImage(props) {
     let { width, height, alt = "", src = '', style, source, nobg, sizes = LAYOUT_BREAKPOINTS.lg, ...rest } = props; // remove width & height
-    if (!src)
-        return;
-    
-    if (!src.startsWith('http') && !src.startsWith('https') && !src.startsWith('blob:') && !src.startsWith('data:image') && !src.startsWith('/static/')) {
+
+    if (!src) return null;
+
+    const isAbsoluteHttp = /^https?:\/\//i.test(src);
+    const isBlob = src.startsWith("blob:");
+    const isDataImage = src.startsWith("data:image");
+    const isStatic = src.startsWith("/static/");
+
+    if (!isAbsoluteHttp && !isBlob && !isDataImage && !isStatic) {
         src = UNA_URL + src;
     }
-    if (sizes === LAYOUT_BREAKPOINTS.lg)
-        sizes = "(max-width:1024px) 100vw, 1024px";
-    if (sizes === LAYOUT_BREAKPOINTS.xl)
-        sizes = "(max-width:1280px) 100vw, 1280px";
-    if (sizes === LAYOUT_BREAKPOINTS.md)
-        sizes = "(max-width:768px) 100vw, 500px";
-    if (!sizes) {
-        sizes = "(max-width:768px) 100vw, 500px";
+
+    if (sizes === "auto") {
+        sizes = getImageSizes();
     }
 
+    const SIZES_BY_BREAKPOINT = {
+        [LAYOUT_BREAKPOINTS.lg]: "(max-width:1024px) 100vw, 1024px",
+        [LAYOUT_BREAKPOINTS.xl]: "(max-width:1280px) 100vw, 1280px",
+        [LAYOUT_BREAKPOINTS.md]: "(max-width:768px) 100vw, 500px",
+    };
+
+    sizes = SIZES_BY_BREAKPOINT[sizes] ?? sizes ?? "(max-width:768px) 100vw, 500px";
 
     const bg_image = appSetting('layout', 'background_cover');
 

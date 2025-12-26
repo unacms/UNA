@@ -1,8 +1,7 @@
-import { useState, useMemo, useRef } from 'react'
-import { useCardData } from 'app/context/card'
+import { useMemo, useRef } from 'react'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
-import { getImageSizes, tp, appSetting } from 'app/lib/util'
+import { tp, appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { CardList } from 'app/ui/molecules/card'
@@ -16,11 +15,7 @@ import Badge from 'app/ui/molecules/badge'
 export default function Unit(props) {
     const { t } = useTranslation();
     const data = props.data;
-    const imageSizes = getImageSizes();
     const redirectdRef = useRef();
-    const [popupVisible, setPopupVisible] = useState(false);
-
-    const { cardData } = useCardData();
 
     const handleClick = (event, sUrl) => {
         event.preventDefault();
@@ -56,7 +51,7 @@ export default function Unit(props) {
                                     alt={data.title}
                                     view="cover"
                                     className="absolute u-cover rounded-xl"
-                                    sizes={imageSizes}
+                                    sizes='auto'
                                 />
 
                             </View>
@@ -100,7 +95,7 @@ export default function Unit(props) {
                                             </Text>
                                         }
 
-                                        <Badge 
+                                        <Badge
                                             data={{
                                                 text: data.visibility != "3" ? "Private" : "Public",
                                                 icon: data.visibility != "3" ? "Lock" : "Globe",

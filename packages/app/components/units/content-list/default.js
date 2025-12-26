@@ -1,14 +1,12 @@
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
 import Profile from 'app/ui/molecules/profile'
-import { getImageSizes } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Card from 'app/ui/molecules/card'
 
 export default function defaultUnit(props) {
     const data = props.data;
-    const imageSizes = getImageSizes()
     let sMeta = (
         <Profile
             {...data.author_data}
@@ -46,7 +44,7 @@ export default function defaultUnit(props) {
                                         alt={data.title}
                                         view="cover"
                                         className="u-cover"
-                                        sizes={imageSizes}
+                                        sizes='auto'
                                     />
                                 </View>
                                 <View className="flex-auto flex-col sm:h-24 mb-auto">

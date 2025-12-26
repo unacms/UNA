@@ -1,14 +1,12 @@
 import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
-import { useState, useEffect, useRef, useContext } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import * as Location from 'expo-location'; 
 import { stripTags } from 'app/lib/util';
 import { Button } from 'app/design/controls';
 import Image from 'app/ui/atoms/image'
 import Time from 'app/ui/atoms/time';
-import Link from 'app/ui/atoms/link'
-import { getImageSizes } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import Redirect from 'app/ui/atoms/redirect';
 import { useBottomSheetData } from 'app/context/bottomsheet';
@@ -99,7 +97,7 @@ export default function WorkerEventChecker(oProps) {
                                     {...item.cover}
                                     view="cover"
                                     className="u-cover"
-                                    sizes={imageSizes}
+                                    sizes='auto'
                                 />
                             </View>}
                         </Row>
@@ -148,7 +146,6 @@ export default function WorkerEventChecker(oProps) {
     if (!data || !local)
         return content
 
-    const imageSizes = getImageSizes()
     data.forEach((item, key) => {
         let d = getDistance(item.location_data.lat, item.location_data.lng, local.coords.latitude, local.coords.longitude);
         if (d < item.threshold) {

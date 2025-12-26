@@ -36,7 +36,7 @@ function DefaultUnit({ data }) {
     const [pageData, setPageData] = useState(false);
     const [viewState, setViewState] = useState({ view: '' })
 
-    const isCommentsModal = appSetting('comments', 'show_modal_in_feed') // && isWeb
+    const isCommentsModal = appSetting('browse', 'show_in_modal', 'bx_timeline') // && isWeb
     const { url, commentsData, isShowMoreComments } = useMemo(
         () => prepareData(data),
         [data]
@@ -114,7 +114,7 @@ function DefaultUnit({ data }) {
                     viewState={viewState}
                 />
             )}
-            <FormModal pageData={pageData.data} setPageData={setPageData} modalView={'bx_timeline'} url={pageData.url2} />
+            <FormModal pageData={pageData.data} setPageData={setPageData} modalView='content_page' url={pageData.url2} />
             <CardList
                 border="border-y border-x-none sm:border-x"
                 className="mb-0.5 sm:mb-3"

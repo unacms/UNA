@@ -1,18 +1,17 @@
 import Image from "app/ui/atoms/image";
-import Link from "app/ui/atoms/link";
 import { Text } from "app/design/typography";
-import { View, Row } from "app/design/view";
+import { View } from "app/design/view";
 import Menu from "app/components/menu";
 import { CardList } from 'app/ui/molecules/card'
 import Time from "app/ui/atoms/time";
-import { useMemo } from 'react';
 import { AuthorData } from 'app/lib/common-helpers'
-import { getImageSizes, appSetting } from 'app/lib/util'
+import { appSetting } from 'app/lib/util'
 import { cd } from 'app/lib/util'
+import LinkOrModal from 'app/ui/molecules/link-or-modal'
 
 const Units = {};
 
-Units.Small = function Small({ data, imageSizes }) {
+Units.Small = function Small({ data }) {
     return (
         <CardList padding={cd('p-sm')} >
             <View className="  aspect-video flex-none rounded-xl overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
@@ -22,16 +21,16 @@ Units.Small = function Small({ data, imageSizes }) {
                         alt={data.title}
                         view="cover"
                         className="u-cover"
-                        sizes={imageSizes}
+                        sizes='auto'
                     />
                 )}
             </View>
             <View className="flex-auto sm:h-40 mt-2 flex-col p-2">
-                <Link href={data.url}>
+                <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
                     <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary leading-tight text-base  font-semibold">
                         {data.title}
                     </Text>
-                </Link>
+                </LinkOrModal>
                 <Text numberOfLines={3} className="text-neutral-600 dark:text-neutral-400 mt-2 mb-auto text-xs ">
                     {data.summary_plain}
                 </Text>
@@ -43,7 +42,7 @@ Units.Small = function Small({ data, imageSizes }) {
     )
 }
 
-Units.Base = function Base({ data, imageSizes }) {
+Units.Base = function Base({ data }) {
     return (
         <>
             <View className="p-2 lg:p-4 mx-auto w-full max-w-4xl border-b border-bdr dark:border-bdr-d">
@@ -72,7 +71,7 @@ Units.Base = function Base({ data, imageSizes }) {
                                         ts={data.added}
                                     ></Time>
                                 </View>
-                                <Link href={data.url}>
+                                <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
                                     <View
                                         className={`flex-auto flex-col gap-y-2`}
                                     >
@@ -89,7 +88,7 @@ Units.Base = function Base({ data, imageSizes }) {
                                             {data.summary_plain}
                                         </Text>
                                     </View>
-                                </Link>
+                                </LinkOrModal>
                             </View>
 
                             {data.image && (
@@ -106,7 +105,7 @@ Units.Base = function Base({ data, imageSizes }) {
                                         alt={data.title}
                                         view="cover"
                                         className="u-cover"
-                                        sizes={imageSizes}
+                                        sizes='auto'
                                     />
                                 </View>
                             )}
@@ -144,9 +143,8 @@ Units.Base = function Base({ data, imageSizes }) {
 
 
 export default function BxForum(props) {
-    const imageSizes = useMemo(() => getImageSizes(), []);
     const unitTypes = appSetting('browse', 'unit_by_mode_' + props.module) || appSetting('browse', 'unit_by_mode_default');
     const Component = Units[unitTypes[props.unitType] || 'Base'];
 
-    return <Component data={props.data} imageSizes={imageSizes} />;
+    return <Component data={props.data} />;
 }

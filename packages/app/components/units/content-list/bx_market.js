@@ -1,17 +1,16 @@
 import Image from "app/ui/atoms/image";
-import Link from "app/ui/atoms/link";
-import { getImageSizes, cd } from "app/lib/util";
+import { cd, appSetting } from "app/lib/util";
 import { Text } from "app/design/typography";
 import { View, Row } from "app/design/view";
 import { CardList } from 'app/ui/molecules/card'
 import Profile from 'app/ui/molecules/profile';
 import Stars from 'app/ui/molecules/stars';
 import { useState } from 'react';
+import LinkOrModal from 'app/ui/molecules/link-or-modal'
 
 export default function Unit(props) {
     const data = props.data;
     const [rating, setRating] = useState(0);
-    const imageSizes = getImageSizes();
     let sMeta = (
         <Profile
             {...data.author_data}
@@ -46,7 +45,7 @@ export default function Unit(props) {
             <CardList padding={cd('p-sm')} className='mb-2 md:mb-0'>
                 <View className="flex-col gap-y-4">
                     <View className="flex-col w-full">
-                        <Link href={data.url}>
+                        <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
                             <View className="w-full p-1">
                                 <View className="w-full mb-auto bg-bgritem dark:bg-bgritem-d aspect-video overflow-hidden rounded-xl">
                                     {cover_raw.trim() != "" && (
@@ -62,7 +61,7 @@ export default function Unit(props) {
                                             alt={data.title}
                                             view="cover"
                                             className="u-cover"
-                                            sizes={imageSizes}
+                                            sizes='auto'
                                         />
                                     )}
                                 </View>
@@ -106,7 +105,7 @@ export default function Unit(props) {
                                     </Text>
                                 </View>
                             </View>
-                        </Link>
+                        </LinkOrModal>
 
                         <View className=" mb-auto px-4 pb-3 sm:pt-0">
                             {sMeta}

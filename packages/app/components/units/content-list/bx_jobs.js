@@ -1,26 +1,14 @@
 import Image from "app/ui/atoms/image";
 import Link from "app/ui/atoms/link";
-import { getImageSizes } from "app/lib/util";
 import { Text } from "app/design/typography";
 import { View, Row } from "app/design/view";
 import { CardList } from 'app/ui/molecules/card'
-import Profile from 'app/ui/molecules/profile';
 import Stars from 'app/ui/molecules/stars';
-import { useState } from 'react';
 import { cd } from 'app/lib/util'
 
 export default function Unit(props) {
     const data = props.data;
-    const [rating, setRating] = useState(0);
-    const imageSizes = getImageSizes();
-    let sMeta = (
-        <Profile
-            {...data.author_data}
-            displayType="unit"
-            displaySize="sm"
-            showInfo="false"
-        />
-    );
+
 
 
     let sRate = undefined;

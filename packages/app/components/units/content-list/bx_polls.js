@@ -1,15 +1,14 @@
 import Image from 'app/ui/atoms/image'
-import Link from 'app/ui/atoms/link'
 import Profile from 'app/ui/molecules/profile'
-import { getImageSizes } from 'app/lib/util'
+import { appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import { CardList } from 'app/ui/molecules/card'
 import { cd } from 'app/lib/util'
+import LinkOrModal from 'app/ui/molecules/link-or-modal'
 
 export default function defaultUnit(props) {
     const data = props.data;
-    const imageSizes = getImageSizes()
     let sMeta = (
         <Profile
             {...data.author_data}
@@ -23,7 +22,7 @@ export default function defaultUnit(props) {
         <CardList padding={cd('p-sm')} className='mb-2 md:mb-0'>
             <View className="flex-col h-full">
                 <View className="flex-col  h-full w-full">
-                    <Link href={data.url}>
+                    <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
                         <View
                             className={
                                 data.image
@@ -42,7 +41,7 @@ export default function defaultUnit(props) {
                                     alt={data.title}
                                     view="cover"
                                     className="u-cover"
-                                    sizes={imageSizes}
+                                    sizes='auto'
                                 />
                             </View>
                             <View className="flex-auto flex-col sm:h-24 mb-auto">
@@ -67,7 +66,7 @@ export default function defaultUnit(props) {
                                 </View>
                             </View>
                         </View>
-                    </Link>
+                    </LinkOrModal>
                     <View className="border-t border-bdr/50 mx-2.5 dark:border-bdr-d/50 mt-auto  pt-2 pb-2.5 ">
                         {sMeta}
                     </View>

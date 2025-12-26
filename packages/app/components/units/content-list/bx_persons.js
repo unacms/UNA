@@ -2,7 +2,7 @@ import { useRef, useMemo, memo } from 'react'
 import { useCardData } from 'app/context/card'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
-import { getImageSizes, tp } from 'app/lib/util'
+import { tp } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { CardList } from 'app/ui/molecules/card'
@@ -29,7 +29,7 @@ function ImageSection({ data, imageSizes }) {
                 alt={data.title}
                 view="cover"
                 className="absolute u-cover rounded-xl"
-                sizes={imageSizes}
+                sizes='auto'
             />
             {!data?.image?.src && (
                 <Letter title={data.fullname} id={data.author_data.id} />
@@ -41,7 +41,6 @@ function ImageSection({ data, imageSizes }) {
 export default function Unit(props) {
     const { t } = useTranslation()
     const data = props.data
-    const imageSizes = getImageSizes()
     const redirectdRef = useRef()
     const { cardData } = useCardData()
 
@@ -80,7 +79,7 @@ export default function Unit(props) {
             <Redirect ref={redirectdRef} />
             <Link className="web:group " href={data.url}>
                 <View className="flex-row sm:flex-col p-1.5 sm:p-0 sm:h-full">
-                    <ImageSection data={data} imageSizes={imageSizes} />
+                    <ImageSection data={data} />
                     {!!oMenuItemDelete && <View className="absolute right-1 top-1">{oMenuItemDelete}</View>}
                     <View className="flex-col pl-4 my-auto sm:p-2 flex-auto ">
                         <View className="gap-1 p-0.5">

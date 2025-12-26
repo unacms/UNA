@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef } from 'react'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
-import { getImageSizes, FeedbackHaptics, tp, t, formatDateInterval } from 'app/lib/util'
+import { FeedbackHaptics, tp, formatDateInterval } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { CardList } from 'app/ui/molecules/card'
@@ -13,7 +13,6 @@ import { getUnitMenuItems } from 'app/functions';
 export default function Unit(props) {
 
     const data = props.data;
-    const imageSizes = getImageSizes();
     const redirectdRef = useRef();
     const [popupVisible, setPopupVisible] = useState(false);
     const { t } = useTranslation();
@@ -51,7 +50,7 @@ export default function Unit(props) {
                                 alt={data.title}
                                 view="cover"
                                 className="absolute u-cover rounded-xl"
-                                sizes={imageSizes}
+                                sizes='auto'
                             />
                         </View>
                         <View className="flex-col p-3  flex-auto items-between justify-between ">

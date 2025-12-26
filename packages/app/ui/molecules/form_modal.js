@@ -14,7 +14,7 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
     if (!pageData)
         return null;
 
-    if (modalView == 'bx_timeline') {
+    if (modalView == 'content_page') {
         const authorData = BlockDataByType(pageData, 'entity_author');
         const Component = getComponent('layout', 'post');
         const layout = getLayoutName(pageData, 'item');

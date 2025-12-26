@@ -11,7 +11,7 @@ import { useSetScrollDirection } from 'app/context/jotai/layout';
 import { paddingForList } from 'app/functions';
 
 export default function UniList(props) {
-    let { useCustomScrollHandler, preloadComponent, sortable, data, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
+    let { useCustomScrollHandler, preloadComponent, isModal, sortable, data, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
         onSort, mode, layout, numColumns, keyboardShouldPersistTaps, keyExtractor, useWindowScroll: useWindowScrollProp, height, listState, endpoint, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, isInPanel, paddingTop, ...rest } = props
 
     const uniRef = useRef();

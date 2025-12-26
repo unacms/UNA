@@ -29,7 +29,7 @@ const LAYOUT_BREAKPOINTS_DESC = Object.entries(LAYOUT_BREAKPOINTS).sort((a, b) =
 
 export function getBreakpoint(width) {
     for (const [label, min] of LAYOUT_BREAKPOINTS_DESC) {
-        if (width >= min) return label; 
+        if (width >= min) return label;
     }
     return '';
 }
@@ -129,20 +129,20 @@ export function getDomainFromUrl(url) {
 }
 
 export function getBaseUrl() {
-  // Client-side
-  if (typeof window !== "undefined") {
-    return `${window.location.protocol}//${window.location.host}`;
-  }
+    // Client-side
+    if (typeof window !== "undefined") {
+        return `${window.location.protocol}//${window.location.host}`;
+    }
 
-  // Server-side
-  try {
-    const h = headers();
-    const host = h.get("host") || "localhost:3000";
-    const proto = h.get("x-forwarded-proto") || "http";
-    return `${proto}://${host}`;
-  } catch {
-    return "http://localhost:3000"; // fallback for SSR
-  }
+    // Server-side
+    try {
+        const h = headers();
+        const host = h.get("host") || "localhost:3000";
+        const proto = h.get("x-forwarded-proto") || "http";
+        return `${proto}://${host}`;
+    } catch {
+        return "http://localhost:3000"; // fallback for SSR
+    }
 }
 
 export async function setClipboard(str) {
@@ -280,7 +280,7 @@ export const formatDate = (
     const date = input instanceof Date ? input : new Date(input);
     if (Number.isNaN(date.getTime())) return '';
     const nowYear = new Date().getFullYear();
-    
+
     let rel = '';
     if (inFuture && showDate) {
         const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -289,21 +289,21 @@ export const formatDate = (
         rel = dDay.getTime() === today.getTime() ? t('Today ') : dDay.getTime() === tomorrow.getTime() ? t('Tomorrow ') : '';
     }
 
-    if (inPast){
+    if (inPast) {
         const now = new Date();
-        const diffMs = date - now;  
+        const diffMs = date - now;
         const sec = Math.round(diffMs / 1000);
         const absSec = Math.abs(sec);
-        if (absSec < 60) 
-            return t('Now'); 
-        
+        if (absSec < 60)
+            return t('Now');
+
         // Универсальное форматирование относительного времени (одинаковое везде)
         const min = Math.round(sec / 60);
-        if (Math.abs(min) < 60){
+        if (Math.abs(min) < 60) {
             return `${Math.abs(min)}m` + t(' ago');
         }
         const hrs = Math.round(sec / 3600);
-        if (Math.abs(hrs) < 24){
+        if (Math.abs(hrs) < 24) {
             return `${Math.abs(hrs)}h` + t(' ago');
         }
     }
@@ -323,16 +323,16 @@ export const formatDate = (
 // Универсальная функция форматирования даты (одинаковый результат везде)
 function formatDateUniversal(date, { showDate, showTime, month, yearPolicy, nowYear, hour12, rel }) {
     const parts = [];
-    
+
     if (showDate && !rel) {
         // День
         parts.push(String(date.getDate()));
-        
+
         // Месяц
         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const monthLongNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         const monthIndex = date.getMonth();
-        
+
         if (month === 'short') {
             parts.push(monthNames[monthIndex]);
         } else if (month === 'long') {
@@ -345,18 +345,18 @@ function formatDateUniversal(date, { showDate, showTime, month, yearPolicy, nowY
             // По умолчанию short
             parts.push(monthNames[monthIndex]);
         }
-        
+
         // Год
         if (yearPolicy === 'always' || (yearPolicy === 'auto' && date.getFullYear() !== nowYear)) {
             parts.push(String(date.getFullYear()));
         }
     }
-    
+
     // Время
     if (showTime) {
         let hours = date.getHours();
         let minutes = date.getMinutes();
-        
+
         if (hour12) {
             const period = hours >= 12 ? 'PM' : 'AM';
             hours = hours % 12 || 12;
@@ -365,7 +365,7 @@ function formatDateUniversal(date, { showDate, showTime, month, yearPolicy, nowY
             parts.push(`${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`);
         }
     }
-    
+
     return rel + parts.join(' ');
 }
 /*
@@ -385,18 +385,18 @@ export const formatTime = (ts) => {
 
 export const formatDateInterval = (dateStart, dateEnd, t) => {
     const start = new Date(dateStart * 1000);
-    const end   = new Date(dateEnd * 1000);
+    const end = new Date(dateEnd * 1000);
 
     const isSingleDate = (start).toLocaleDateString() === (end).toLocaleDateString();
     const isSingleTime = (start).toLocaleTimeString() === (end).toLocaleTimeString();
 
     if (isSingleDate)
         if (isSingleTime)
-            return formatDate(start, t, {inFuture:true, showTime: true, month: 'numeric'});
+            return formatDate(start, t, { inFuture: true, showTime: true, month: 'numeric' });
         else
-            return formatDate(start, t, {inFuture:true, showTime: true, month: 'numeric'}) + ' - ' + formatDate(end, t, {inFuture:true, showTime: true, showDate: false, month: 'numeric'});
+            return formatDate(start, t, { inFuture: true, showTime: true, month: 'numeric' }) + ' - ' + formatDate(end, t, { inFuture: true, showTime: true, showDate: false, month: 'numeric' });
     else
-        return formatDate(start, t, {inFuture:true, showTime: true, month: 'numeric'}) + ' - ' + formatDate(end, t, {inFuture:true, showTime: true, showDate: true, month: 'numeric'});
+        return formatDate(start, t, { inFuture: true, showTime: true, month: 'numeric' }) + ' - ' + formatDate(end, t, { inFuture: true, showTime: true, showDate: true, month: 'numeric' });
 
 
 }
@@ -580,7 +580,7 @@ export function getHeaderSettings(uri, isDesktop, layout, config) {
     let settings = getPageSettings(config, uri);
     if (!settings?.headerSettings) {
         if (layout == 'navigator') {
-            settings = { headerSettings: { offset: isDesktop? true: false, header: false, backButton: false, menu: true, footer: true } }
+            settings = { headerSettings: { offset: isDesktop ? true : false, header: false, backButton: false, menu: true, footer: true } }
         }
         if (layout == 'messenger') {
             settings = { headerSettings: { offset: false, header: false, backButton: false, menu: true, footer: true } }
@@ -645,7 +645,7 @@ export function getUnitModeBySource(endpoint) {
         return 'context';
     }
 
-       if (endpoint?.params?.type == 'author') {
+    if (endpoint?.params?.type == 'author') {
         return 'author';
     }
 
@@ -821,22 +821,6 @@ export function parseQueryString(queryString) {
     });
 
     return obj;
-}
-
-export function getImageSizes() {
-    const perLineSettings = appSetting('browse', 'per_line');
-    let str = "";
-    for (let i = perLineSettings.length - 1; i >= 0; i--) {
-
-        if (i == perLineSettings.length - 1)
-            str += " (max-width:" + perLineSettings[i].width + "px) 100vw, ";
-        else {
-
-            str += "(max-width:" + perLineSettings[i].width + "px) " + Math.round(100 / perLineSettings[i + 1].count) + "vw, ";
-        }
-    }
-    str += '' + (LAYOUT_BREAKPOINTS.xl / perLineSettings[0].count) + 'px';
-    return str
 }
 
 function getPlural(key, count) {
@@ -1051,12 +1035,12 @@ function urltoFile(url, defaultFilename = 'file', defaultMimeType = 'application
                     if (rawFilename.includes('.') && rawFilename.split('.').length > 1) {
                         filename = rawFilename;
                     } else {
-                        if (mimeType != 'image/svg+xml'){
+                        if (mimeType != 'image/svg+xml') {
                             const ext = mimeType.split('/')[1] || 'bin';
-                                filename = `${rawFilename || defaultFilename}.${ext}`;
+                            filename = `${rawFilename || defaultFilename}.${ext}`;
                         }
-                        else{
-                             filename = `${rawFilename || defaultFilename}.svg`;
+                        else {
+                            filename = `${rawFilename || defaultFilename}.svg`;
                         }
                     }
                 }
@@ -1092,7 +1076,7 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
             // Для data URI
             fileType = uri.split(';')[0].split(':')[1]; // MIME-тип
             fileExt = fileType.split('/')[1]; // Расширение
-            if (fileExt == 'svg+xml'){
+            if (fileExt == 'svg+xml') {
                 fileExt = 'svg';
             }
 
@@ -1375,7 +1359,7 @@ export async function getPageData(url, codeOnly = false) {
         const params = Object.fromEntries(
             pagePath.queryString.split('&').map(param => param.split('='))
         );
-        
+
         // this shit to fix double leveled params in feed form like 
         //?r=system/get_page_content_by_request/TemplServicePages&params[]=fanfeed-view/corey-dozier&params[]=&params[]=%7B%22params%22:%7B%22context_id%22:-17%7D%7D&lang=en
         //?r=system/get_page_content_by_request/TemplServicePages&params[]=page/timeline-view&params[]=&params[]=%7B%22profile_id%22:%221496%22,%22params[]%22:%22%7B\%22params\%22:%7B\%22context_id\%22:-17%7D%7D%22%7D&lang=en
@@ -1387,14 +1371,18 @@ export async function getPageData(url, codeOnly = false) {
                 params = { ...params, ...a.params };
             }
             delete params['params[]'];
-            sAdd = `&params[]=&params[]=${JSON.stringify({params:params})}`;
+            sAdd = `&params[]=&params[]=${JSON.stringify({ params: params })}`;
         }
-        else{
+        else {
             sAdd = `&params[]=&params[]=${JSON.stringify(params)}`;
         }
     }
 
-    return await fetcher(`/api.php?r=system/get_page_${codeOnly ? 'content_' : ''}by_request/TemplServicePages&params[]=${pagePath.path}${sAdd}`);
+    const path = pagePath.path.startsWith('/') ? pagePath.path.slice(1) : pagePath.path;
+
+    return await fetcher(
+        `/api.php?r=system/get_page_${codeOnly ? 'content_' : ''}by_request/TemplServicePages&params[]=${path}${sAdd}`
+    );
 }
 
 export function BlockDataByName(data, name) {
@@ -1431,7 +1419,7 @@ export function removeEmptyTags(html) {
 }
 
 export function isShowCover(cover, currentUser, url) {
-    if (cover === null || cover === undefined || url=='home')
+    if (cover === null || cover === undefined || url == 'home')
         cover = 1;
     if (cover === 1) // for all
         return true;

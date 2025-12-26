@@ -1,8 +1,8 @@
-import { useState, useMemo, useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import { useCardData } from 'app/context/card'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
-import { getImageSizes, FeedbackHaptics, tp, t } from 'app/lib/util'
+import { tp } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { CardList } from 'app/ui/molecules/card'
 import Redirect from 'app/ui/atoms/redirect'
@@ -15,7 +15,6 @@ import { cd } from 'app/lib/util'
 export default function Unit(props) {
     const { t } = useTranslation();
     const data = props.data;
-    const imageSizes = getImageSizes();
     const redirectdRef = useRef();
 
     const { cardData, setCardData } = useCardData();
@@ -50,7 +49,7 @@ export default function Unit(props) {
                                 alt={data.title}
                                 view="cover"
                                 className="absolute u-cover rounded-xl"
-                                sizes={imageSizes}
+                                sizes='auto'
                             />
                         </View>
                         <View className="flex-col p-3  flex-auto items-between justify-between ">

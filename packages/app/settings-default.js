@@ -167,7 +167,6 @@ export const settingsDefault = {
     },
     comments: {
         hide_sort: false, //OLD appSetting('layout', 'hide_comments_sort')
-        show_modal_in_feed: true, //OLD appSetting('layout', 'comments_in_modal')
         count_in_feed: 3, //OLD appSetting('layout', 'comments_count_in_feed')
         mentions: true, //OLD appSetting('layout', 'comments_mentions')
         in_reply: true, //OLD appSetting('layout', 'show_in_reply_comments')
@@ -384,6 +383,10 @@ export const settingsDefault = {
             { width: 768, count: 3 },
             { width: 640, count: 2 },
         ],
+        show_in_modal:{
+            bx_posts: true,
+            bx_timeline: true
+        },
         unit_by_source: {
             'system/browse_friends': 'person_friends',
             'system/browse_recommendations_friends': 'person_friends_recommendations',

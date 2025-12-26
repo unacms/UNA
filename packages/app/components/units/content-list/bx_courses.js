@@ -2,7 +2,7 @@ import { useState, useMemo, useRef } from 'react'
 import { useCardData } from 'app/context/card'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
-import { getImageSizes, tp, t } from 'app/lib/util'
+import { tp } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { CardList } from 'app/ui/molecules/card'
@@ -15,7 +15,6 @@ import { cd } from 'app/lib/util'
 export default function Unit(props) {
     const { t } = useTranslation();
     const data = props.data;
-    const imageSizes = getImageSizes();
     const redirectdRef = useRef();
     const [popupVisible, setPopupVisible] = useState(false);
 
@@ -53,7 +52,7 @@ export default function Unit(props) {
                                     alt={data.title}
                                     view="cover"
                                     className="absolute u-cover rounded-xl"
-                                    sizes={imageSizes}
+                                    sizes='auto'
                                 />
 
                             </View>
