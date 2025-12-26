@@ -8,14 +8,13 @@ import { Text } from 'app/design/typography'
 import { FileButton } from 'app/lib/form-helpers';
 
 export default function FormPost(props) {
-    const {data, handleSubmit} = props;
+    const { data, handleSubmit } = props;
     const inputs = data.inputs;
-
 
     const [coverSource, setCoverSource] = useState([])
     let { currentUser } = useCurrentUser();
-    
-   
+
+
     function setPlaceHolderCover(name, previews) {
         if (JSON.stringify(previews) != JSON.stringify(currentUser[name])) {
             setCoverSource((prevImageSource) => ({
@@ -34,12 +33,12 @@ export default function FormPost(props) {
             'p-4 border-dashed border-bdrcard dark:border-bdrcard-d'
         inputs['covers'].caption = 'Add cover image'
     }
-   
-   // inputs['title'].type = 'textarea'
-   // inputs['title'].height = 12
-   // inputs['title'].viewClasses =
-        ' text-2xl lg:text-3xl font-bold my-2 placeholder-neutral-500 text-neutral-900 dark:text-neutral-50 focus:outline-none'
-   // inputs['text'].viewClasses = 'dark:focus:bg-red-500'
+
+    // inputs['title'].type = 'textarea'
+    // inputs['title'].height = 12
+    // inputs['title'].viewClasses =
+    ' text-2xl lg:text-3xl font-bold my-2 placeholder-neutral-500 text-neutral-900 dark:text-neutral-50 focus:outline-none'
+    // inputs['text'].viewClasses = 'dark:focus:bg-red-500'
 
     if (inputs['allow_comments'])
         inputs['allow_comments'].caption = '';
@@ -49,13 +48,13 @@ export default function FormPost(props) {
 
     return (
         <View className="w-full max-w-3xl flex-col p-3 sm:p-4 mx-auto">
-          {getHiddenFields(inputs, handleSubmit)}
-        
+            {getHiddenFields(inputs, handleSubmit)}
+
             <View className="  flex-col  ">
                 <View className="flex-row flex-auto items-center justify-between gap-x-2 mb-4">
                     <View className="gap-x-2 mr-2 flex-row flex-auto items-center group">
-                        <Profile {...currentUser} displaySize="lg" displayType="unit_wo_info" /> 
-                        
+                        <Profile {...currentUser} displaySize="lg" displayType="unit_wo_info" />
+
                         {getFormFieldByData(
                             inputs['allow_view_to'],
                             handleSubmit,
@@ -68,20 +67,20 @@ export default function FormPost(props) {
                         )}
                     </View>
 
-                    <View> 
+                    <View>
                         {getFormFieldByData(
                             inputs['covers'],
                             handleSubmit,
                             'notitle',
-                            { format: 'custom', view: 'button', preview: 'cover', variant: 'text', size: 'sm', previewPlaceHolder: setPlaceHolderCover,  }
+                            { format: 'custom', view: 'button', preview: 'cover', variant: 'text', size: 'sm', previewPlaceHolder: setPlaceHolderCover, }
                         )}
                     </View>
                 </View>
-              
-                 {prevListCover.length > 0 && prevListCover[0]?.key && (
-                        <Row className="flex-wrap">{prevListCover}</Row>
-                    )}
-                    
+
+                {prevListCover.length > 0 && prevListCover[0]?.key && (
+                    <Row className="flex-wrap">{prevListCover}</Row>
+                )}
+
                 <View className="py-1">
                     {getFormFieldByData(
                         inputs['title'],
@@ -115,7 +114,7 @@ export default function FormPost(props) {
                         )}
                         {props.data.inputs['files'] && (
                             <View className="ml-2">
-                                <FileButton field_name='files' variant='text'  icon="Paperclip" rounded={false} />
+                                <FileButton field_name='files' variant='text' icon="Paperclip" rounded={false} />
                             </View>
                         )}
                         {props.data.inputs['sounds'] && (
@@ -123,46 +122,46 @@ export default function FormPost(props) {
                                 <FileButton field_name='files' variant='text' icon="FileAudio" rounded={false} />
                             </View>
                         )}
-                       
-                        </Row>
-                    
+
+                    </Row>
+
                 </View>
                 <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled" className="w-full " horizontal={true}>
-                                        <Row className='flex-wrap '>
-                                            {
-                                                getFormFieldByData(
-                                                    props.data.inputs['pictures'],
-                                                    props.handleSubmit,
-                                                    'notitle',
-                                                    { hide_button: true, list_only: true }
-                                                )
-                                            }
-                                            {
-                                                getFormFieldByData(
-                                                    props.data.inputs['videos'],
-                                                    props.handleSubmit,
-                                                    'notitle',
-                                                    { hide_button: true, list_only: true }
-                                                )
-                                            }
-                                            {
-                                                getFormFieldByData(
-                                                    props.data.inputs['files'],
-                                                    props.handleSubmit,
-                                                    'notitle',
-                                                    { hide_button: true, list_only: true }
-                                                )
-                                            }
-                                            {
-                                                 getFormFieldByData(
-                                                    props.data.inputs['sounds'],
-                                                    props.handleSubmit,
-                                                    'notitle',
-                                                    { hide_button: true, list_only: true }
-                                                )
-                                            }
-                                        </Row>
-                                    </ScrollView>
+                    <Row className='flex-wrap '>
+                        {
+                            getFormFieldByData(
+                                props.data.inputs['pictures'],
+                                props.handleSubmit,
+                                'notitle',
+                                { hide_button: true, list_only: true }
+                            )
+                        }
+                        {
+                            getFormFieldByData(
+                                props.data.inputs['videos'],
+                                props.handleSubmit,
+                                'notitle',
+                                { hide_button: true, list_only: true }
+                            )
+                        }
+                        {
+                            getFormFieldByData(
+                                props.data.inputs['files'],
+                                props.handleSubmit,
+                                'notitle',
+                                { hide_button: true, list_only: true }
+                            )
+                        }
+                        {
+                            getFormFieldByData(
+                                props.data.inputs['sounds'],
+                                props.handleSubmit,
+                                'notitle',
+                                { hide_button: true, list_only: true }
+                            )
+                        }
+                    </Row>
+                </ScrollView>
 
                 <View className='w-full my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d py-1 px-2'>
                     <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm  text-neutral-800 dark:text-neutral-200">Labels</Text>
@@ -171,7 +170,7 @@ export default function FormPost(props) {
                             inputs['labels'],
                             handleSubmit,
                             'notitle',
-                            { noPadding:true, align: 'right' }
+                            { noPadding: true, align: 'right' }
                         )}
                     </Row>
                 </View>
@@ -183,7 +182,7 @@ export default function FormPost(props) {
                             inputs['cat'],
                             handleSubmit,
                             'notitle',
-                            { noPadding:true,  align: 'right',  variant: 'text', size: 'sm' }
+                            { noPadding: true, align: 'right', variant: 'text', size: 'sm' }
                         )}
                     </Row>
                 </View>
@@ -195,7 +194,7 @@ export default function FormPost(props) {
                             inputs['allow_comments'],
                             handleSubmit,
                             'default',
-                            { noPadding:true }
+                            { noPadding: true }
                         )}
                     </View>
                 </View>

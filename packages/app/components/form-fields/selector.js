@@ -55,6 +55,7 @@ function ChkList({ values, value2, addValue2, isMultiple }) {
 
 
 export default function (props) {
+
     const [isModal, setIsModal] = useState(false);
     const rules = {};
     const isMultiple = props.origtype == 'select' || props.is_single === true ? false : true;
@@ -145,11 +146,12 @@ export default function (props) {
         <>
             {ModalCnt}
             <Field {...props}>
-                <View className={`w-full justify-between min-h-12 px-3 ${inputSettings.ring}`}>
+                <View className={`w-full justify-between items-center ${inputSettings.ring}`}>
                     <View className={`${props.align === 'right' ? 'justify-end pl-4' : 'justify-start pr-4'} w-full flex-auto items-center flex-row flex-wrap`}>
                         {props.align == 'right' && <Button
                             startDecorator={isMultiple ? "Plus"  : ""}
                             variant={variant}
+                            title={isMultiple ? ""  : field.value?.length> 0 ? "Change" : "Select"}
                             size={size}
                             onPress={showSelect}
                         />}

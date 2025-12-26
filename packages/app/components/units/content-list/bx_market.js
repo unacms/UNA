@@ -91,7 +91,7 @@ export default function Unit(props) {
                                                     alt={data.title}
                                                     view="cover"
                                                     nobg={true}
-                                                    sizes={imageSizes}
+                                                    sizes='auto'
                                                 />
                                             </View>
                                         )}

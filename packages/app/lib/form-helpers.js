@@ -9,7 +9,6 @@ export function getFormFieldByData(inputData, handleSubmit, format, externalProp
     if (!inputData)
         return <></>;
     const InputType = getComponent('form-field', String(inputData.type));
-
     if (!InputType)
         return <Text>Unsupported field type: {JSON.stringify(inputData)}</Text>
     return <InputType key={inputData.name} {...inputData} format={format} handleSubmit={handleSubmit} {...externalProps} />;

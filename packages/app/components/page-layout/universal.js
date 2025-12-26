@@ -83,8 +83,6 @@ function PageContentUniversal({ children, data, layoutName }) {
         { key: 'cell_right', defaultSize: 25, minSize: 10, breakpoint: 'lg', data: data.elements?.['cell_right'], chd: children.find((c) => c.key === 'cell_right') }
     ] : cells.filter((c) => c.area === 'mid');
 
-    console.log("datadatadata2", sizable)
-
     return (
         <View className='mx-auto w-full u-max-width-block gap-4 p-2 sm:p-4'>
             <PanelRow gap={gap} cell={topCell} currentBreakpoint={currentBreakpoint} />
