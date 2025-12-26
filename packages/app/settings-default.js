@@ -1816,7 +1816,7 @@ export const settingsDefault = {
                 ' text-card-foreground web:group-hover:text-foreground ',
 
             'u-btn-group-item-default-cnt':
-                'border-4 border-red-500 dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',
+                'border-4 border-transparent dark:border-transparent web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',
             'u-btn-group-item-default-text':
                 'font-medium text-neutral-800 dark:text-neutral-200 web:dark:group-hover:text-neutral-50',
             'u-btn-group-item-default-icon':
