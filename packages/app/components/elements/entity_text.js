@@ -67,10 +67,10 @@ function Default({ data, showPad, sidebar, block, blockWrapperProps }) {
     return (
         <BlockWrapper {...blockWrapperProps}>
             <View className="w-full">
-                {(!!data.video?.src_mp4) && <View className='w-full aspect-video rounded-xl '>
+                {(!!data.video?.src_mp4) && <View className='w-full aspect-video rounded-xl overflow-hidden mb-3'>
                     <Video poster={data.video.src_poster} src={data.video.src_mp4} cover={true} controls={true} muted={"muted"} />
                 </View>}
-                {(videoId) && <View className='w-full aspect-video rounded-xl'>
+                {(videoId) && <View className='w-full aspect-video rounded-xl overflow-hidden mb-3'>
                     <Youtube videoId={videoId} size={3} />
                 </View>}
                 {(!!data.image && !data.video) && <View className="w-full h-[30vh] mb-4 sm:rounded-xl overflow-hidden"><Image {...data.image} alt={data.title} className=" u-cover" view="cover" /></View>}

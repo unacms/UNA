@@ -13,6 +13,7 @@ import { LAYOUT_BREAKPOINTS, stripTags } from 'app/lib/util'
 import Carousel from 'app/ui/molecules/carousel'
 import { PollItem } from 'app/components/elements/entity_poll'
 import Html from 'app/ui/atoms/html'
+import Video from 'app/ui/atoms/video';
 
 export const LinkContent = memo(({ url, data }) => (
     <Link href={url}>
@@ -256,7 +257,6 @@ export const DefaultView = memo(
         fulltext,
     }) => {
         const imgs = content_attach
-
         return (
             <>
                 <View className={isCompact ? 'flex-row-reverse' : ' w-full'}>
@@ -332,11 +332,7 @@ export const DefaultView = memo(
                                             customClassName="u-vanilla-html"
                                         />
                                     )}
-                                    {!!data.content?.embed && (
-                                        <View className="">
-                                            <Embed data={data.content.embed} />
-                                        </View>
-                                    )}
+                                   
                                 </View>
                             )}
                             {!bIsTimelineContent && (
@@ -346,6 +342,16 @@ export const DefaultView = memo(
                                 >
                                     {stripTags(data.content?.text || '')}
                                 </Text>
+                            )}
+                            {!!data.content?.embed && (
+                                <View className="rounded-lg overflow-hidden w-full aspect-video ">
+                                    <Embed data={typeof data.content.embed !== 'string' ? data.content.embed : { url: data.content.embed }} />
+                                </View>
+                            )}
+                            {(data.content?.videos?.length > 0 && data.content?.videos[0]?.src_mp4) && (
+                                <View className='w-full aspect-video  rounded-lg overflow-hidden'>
+                                    <Video poster={data.content?.videos[0].src_poster} src={data.content?.videos[0].src_mp4} cover={true} controls={true} muted={"muted"} />
+                                </View>
                             )}
                         </View>
                     </View>
