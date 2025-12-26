@@ -111,7 +111,7 @@ export default function Unit(props) {
                                 alt={data.title}
                                 view="cover"
                                 className="absolute u-cover"
-                                sizes={imageSizes}
+                                sizes='auto'
                             />
 
                         </View>
