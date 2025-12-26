@@ -115,9 +115,9 @@ export function CommentsBrowse({
 
     useEffect(() => {
        
-        subscribe('cmts_' + browseParams.module + '_' + browseParams.object_id, 'comment_added', refetch);
-        subscribe('cmts_' + browseParams.module + '_' + browseParams.object_id, 'comment_edited', refetch);
-        subscribe('cmts_' + browseParams.module + '_' + browseParams.object_id, 'comment_deleted', refetch);
+        const sub1 = subscribe('cmts_' + browseParams.module + '_' + browseParams.object_id, 'comment_added', refetch);
+        const sub2 = subscribe('cmts_' + browseParams.module + '_' + browseParams.object_id, 'comment_edited', refetch);
+        const sub3 = subscribe('cmts_' + browseParams.module + '_' + browseParams.object_id, 'comment_deleted', refetch);
         
 
         const subscription = emitter.addListener(`page`, (data) => {
@@ -196,6 +196,9 @@ export function CommentsBrowse({
         })
 
         return () => {
+            sub1();
+            sub2();
+            sub3();
             subscription.remove();
             subscription2.remove()
         }

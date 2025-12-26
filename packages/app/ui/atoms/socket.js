@@ -11,40 +11,12 @@ const pusherInstance = new Pusher(conf.key, {
 });
 
 export function subscribe(channel_name, event_name, cb) {
-    if (pusherInstance) {
-        let channel = pusherInstance.channel(channel_name);
-        if (!channel)
-            channel = pusherInstance.subscribe(channel_name);
-            channel.bind(event_name, function (data) {
-                cb(data)
-            });
-    }
-};
-/* optimized
-export function subscribe(channel_name, event_name, cb) {
-    if (pusherInstance) {
-        if (!pusherInstance.boundEvents) {
-            pusherInstance.boundEvents = {};
-        }
+    if (!pusherInstance) return () => { };
 
-        let channel = pusherInstance.channel(channel_name);
-        if (!channel) {
-            channel = pusherInstance.subscribe(channel_name);
-        }
+    let channel = pusherInstance.channel(channel_name);
+    if (!channel) channel = pusherInstance.subscribe(channel_name);
 
-        if (!pusherInstance.boundEvents[channel_name]) {
-            pusherInstance.boundEvents[channel_name] = {};
-        }
+    channel.bind(event_name, cb);
 
-        if (!pusherInstance.boundEvents[channel_name][event_name]) {
-            pusherInstance.boundEvents[channel_name][event_name] = [];
-
-            channel.bind(event_name, function(data) {
-                pusherInstance.boundEvents[channel_name][event_name].forEach(callback => callback(data));
-            });
-        }
-
-        pusherInstance.boundEvents[channel_name][event_name].push(cb);
+    return () => channel.unbind(event_name, cb);  // ✅ Добавить возврат функции отписки
 }
-}
-*/

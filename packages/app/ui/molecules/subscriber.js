@@ -16,18 +16,23 @@ export default function Subscriber() {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const { setLayoutData } = useLayoutData()
     useEffect(() => {
-        subscribe('sys_api_0', 'config_changed', onUpdateSettings);
+        const sub1 = subscribe('sys_api_0', 'config_changed', onUpdateSettings);
+        return () => {
+            sub1();
+        };
     }, [])
 
     useEffect(() => {
-        if (currentUser?.id) {
-            subscribe('sys_connections_' + currentUser?.id, 'changed', onUpdateConnections);
-            subscribe('bx_timeline_0', 'edited', onItemEdited);
-        }
+        if (!currentUser?.id) return 
 
-        //if (currentUser?.account_id)
-        //    subscribe('sys_account_' + currentUser.account_id, 'confirmed', onUpdateAccount);
+        const sub1 = subscribe('sys_connections_' + currentUser?.id, 'changed', onUpdateConnections);
+        const sub2 = subscribe('bx_timeline_0', 'edited', onItemEdited);
         
+        return () => {
+            sub1();
+            sub2();
+        };
+
     }, [currentUser?.id])
 
     const onUpdateAccount = useCallback((data) => {

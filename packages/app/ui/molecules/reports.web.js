@@ -186,7 +186,10 @@ const ElementReports = forwardRef((oProps, ref) => {
 
     let { currentUser, setCurrentUser } = useCurrentUser();
     useEffect(() => {
-        subscribe(oProps.system + '_' + oProps.type + '_' + oProps.object_id, 'reported', cb);
+        const sub1 = subscribe(oProps.system + '_' + oProps.type + '_' + oProps.object_id, 'reported', cb);
+        return () => {
+            sub1();
+        };
     }, [])
 
     const cb = (data) => {

@@ -233,10 +233,19 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
             revalidateData();
 
         }
-        if (currentRoute?.endpoint?.unit == 'feed') {
-            subscribe('bx_timeline_0', 'added', setIsRevalidate);
-            subscribe('bx_timeline_0', 'deleted', setIsRevalidate);
-        }
+    }, []);
+
+    useEffect(() => {
+        if (!currentRoute?.endpoint?.unit == 'feed')
+            return;
+        
+        const sub1 = subscribe('bx_timeline_0', 'added', setIsRevalidate);
+        const sub2 = subscribe('bx_timeline_0', 'deleted', setIsRevalidate);
+
+        return () => {
+            sub1();
+            sub2();
+        };
     }, []);
 
     useEffect(() => {

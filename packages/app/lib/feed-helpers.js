@@ -706,7 +706,10 @@ export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit, feed_type }) => {
     )
 
     useEffect(() => {
-        subscribe('bx_timeline_0', 'edited', onItemEdited)
+        const sub1 = subscribe('bx_timeline_0', 'edited', onItemEdited);
+        return () => {
+            sub1();
+        };
     }, [])
 
     return mode == 'small' ? (

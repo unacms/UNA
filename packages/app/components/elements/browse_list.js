@@ -171,10 +171,18 @@ export default function Browse(props) {
     const Preload = getSkeletonForList(sSkeleton, 1)
 
     useEffect(() => {
-        if (props.data.unit == 'feed') {
-            subscribe('bx_timeline_0', 'added', refetch)
-            subscribe('bx_timeline_0', 'deleted', refetch)
-        }
+        if (props.data?.unit !== 'feed') return;
+
+        const offAdded = subscribe('bx_timeline_0', 'added', refetch);
+        const offDeleted = subscribe('bx_timeline_0', 'deleted', refetch);
+        
+        return () => {
+            offAdded();
+            offDeleted();
+        };
+    }, [])    
+
+    useEffect(() => {
 
         const subscription = emitter.addListener(`page`, (data) => {
             if (data.action == 'reload') {

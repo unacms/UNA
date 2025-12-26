@@ -480,12 +480,19 @@ const TabSceneMainContent = ({
     })
 
     useEffect(() => {
+        if (pageRoute?.endpoint?.unit !== 'feed')
+            return 
+        
+        const sub1 = subscribe('bx_timeline_0', 'added', refetch)
+        const sub2 = subscribe('bx_timeline_0', 'deleted', refetch)
 
-        if (pageRoute?.endpoint?.unit == 'feed') {
-            subscribe('bx_timeline_0', 'added', refetch)
-            subscribe('bx_timeline_0', 'deleted', refetch)
-        }
+        return () => {
+            sub1();
+            sub2();
+        };
+    }, [])
 
+    useEffect(() => {
         const subscription = emitter.addListener(`page`, (data) => {
             if (data.action == 'reload') {
                 refetchRef.current.skipToast = true

@@ -27,6 +27,16 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
     };
 }
 
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            staleTime: 60 * 1000,
+            gcTime: 3 * 60 * 1000, // ✅ Уменьшить до 3 минут
+            refetchOnWindowFocus: false,
+        },
+    },
+});
+
 export default function RootLayout({ children }) {
     const { langCode } = useLayoutSettings();
 
@@ -47,7 +57,6 @@ export default function RootLayout({ children }) {
         }
     }, [langCode]);
 
-    const queryClient = useMemo(() => new QueryClient(), []);
     return (
         <html lang={langCode} className={`${fontVars} ${mainFont.className}`}>
             <body className={appSetting('layout', 'body')}>

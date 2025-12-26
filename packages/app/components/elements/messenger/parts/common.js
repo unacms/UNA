@@ -133,13 +133,18 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }, [selectedMenu, defaultConvoId]);
 
     useEffect(() => {
-        if (selectedConvo) {
-            subscribe('bx_messenger', 'convo_' + selectedConvo.id, onNewMessage);
-            subscribe('bx_messenger', 'profile_' + currentUser.id, onCheckConvos);
-            setJots(false)
-            fetchItems(selectedConvo.id, false);
-            updateState();
-        }
+        if (!selectedConvo) return;
+
+        const sub1 = subscribe('bx_messenger', 'convo_' + selectedConvo.id, onNewMessage);
+        const sub2 = subscribe('bx_messenger', 'profile_' + currentUser.id, onCheckConvos);
+        setJots(false)
+        fetchItems(selectedConvo.id, false);
+        updateState();
+
+        return () => {
+            sub1();
+            sub2();
+        };
     }, [convoId]);
 
 

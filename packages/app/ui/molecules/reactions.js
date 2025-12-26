@@ -326,7 +326,10 @@ export default function ElementReactions(oProps) {
 
     let { currentUser, setCurrentUser } = useCurrentUser();
     useEffect(() => {
-        subscribe(oProps.system + '_' + oProps.type + '_' + oProps.object_id, 'voted', cb);
+        const sub1 = subscribe(oProps.system + '_' + oProps.type + '_' + oProps.object_id, 'voted', cb);
+        return () => {
+            sub1();
+        };
     }, [])
 
     const cb = (data) => {

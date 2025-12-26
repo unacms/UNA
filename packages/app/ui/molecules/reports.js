@@ -192,19 +192,12 @@ const ElementReports = forwardRef((oProps, ref) => {
 
     let { currentUser, setCurrentUser } = useCurrentUser();
     useEffect(() => {
-        subscribe(oProps.system + '_' + oProps.type + '_' + oProps.object_id, 'reported', cb);
+        const sub1 = subscribe(oProps.system + '_' + oProps.type + '_' + oProps.object_id, 'reported', cb);
+        return () => {
+            sub1();
+        };
     }, [])
 
-    /* useImperativeHandle(ref, () => {
-         return {
-             report(e) {
-                 if(!elementRef.current.is_reported)
-                     handleGetDo(setPopupVisibleDo, e);
-                 else
-                     handleUndo(_performAction, _setContextVars, (oProps?.onChangeTitle ? oProps.onChangeTitle : false), e);
-             }
-         };
-     }, []);*/
 
     const cb = (data) => {
         let aData = JSON.parse(data);

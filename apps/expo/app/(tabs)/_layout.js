@@ -37,6 +37,16 @@ import { LogLevel, OneSignal } from 'react-native-onesignal';
 import { useLayoutSettings } from 'app/context/layout-settings';
 
 
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            staleTime: 60 * 1000,        // 1 минута
+            gcTime: 3 * 60 * 1000,       // 3 минуты (очистка неактивных данных)
+            refetchOnWindowFocus: false,
+        },
+    },
+});
+
 const AppLayout = React.memo(() => {
 
     /*if (appSetting('native', 'disable_screenshots')) {
@@ -115,8 +125,6 @@ const AppLayout = React.memo(() => {
         height: '100%',
         backgroundColor: colors.safeAreaBackground || colors.barsBackground,
     }), [colors.safeAreaBackground, colors.barsBackground]);
-
-    const queryClient = useMemo(() => new QueryClient(), []);
 
     return (
         <ThemeProvider value={theme} >

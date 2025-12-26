@@ -13,28 +13,12 @@ const pusherInstance = new Pusher(conf.key, {
 const boundEvents = [];
 
 export function subscribe(channel_name, event_name, cb) {
-    if (pusherInstance) {
-        let channel = pusherInstance.channel(channel_name);
-        if (!channel)
-            channel = pusherInstance.subscribe(channel_name);
+    if (!pusherInstance) return () => { };
 
-        //if (!boundEvents[channel_name]) {
-         //   boundEvents[channel_name] = [];
-           // boundEvents[channel_name].push(event_name);
-            channel.bind(event_name, function (data) {
-                cb(data)
-            });
-      //  }
+    let channel = pusherInstance.channel(channel_name);
+    if (!channel) channel = pusherInstance.subscribe(channel_name);
 
+    channel.bind(event_name, cb);
 
-    }
-};
-/*
-export function unbind(pusher, channel_name) {
-    if (pusherInstance) {
-        const channel = pusherInstance.channel(channel_name);
-        if (channel) {
-            channel.unbind();
-        }
-    }
-};*/
+    return () => channel.unbind(event_name, cb);
+}
