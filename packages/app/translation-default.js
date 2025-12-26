@@ -95,6 +95,7 @@ export const resourcesDefault = {
             "create_account_page_caption2": "Welcome! Please fill in the details to get started.",
             "create_account_page_already_have": "Already have an account?",
             "create_account_page_with_email": "Continue with email",
+            "create_account_page_terms": 'By signing up, you agree to the <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.',
             "create_account_page_sign_in": "Sign in",
             
             "login_page_title": "Sign in to your account",

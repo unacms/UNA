@@ -18,6 +18,7 @@ import { appSetting } from 'app/lib/util'
 import MenuFooter from 'app/components/nav/menu-footer'
 import AnimatedView from 'app/ui/atoms/animated-view'
 import Page from 'app/ui/molecules/page'
+import Html from 'app/ui/atoms/html';
 
 const isWeb = Platform.OS === 'web'
 
@@ -54,6 +55,8 @@ function PageContent({ children }) {
                                 {t('create_account_page_sign_in')}
                             </Link>
                         </Row>
+                        
+                        <Html customClassName="text-xs text-center" data={t('create_account_page_terms')}/>
                     </CardFooter>
                 </Card>
 
