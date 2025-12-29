@@ -10,7 +10,7 @@ import Video from 'app/ui/atoms/video';
 import Youtube from 'app/ui/molecules/youtube'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
-export default function ({blockWrapperProps, data, block, showPad, sidebar}) {
+export default function EntityTextBlock ({blockWrapperProps, data, block, showPad, sidebar}) {
     const view = appSetting('entry', 'default_view');
     switch (view) {
         case 'small':
@@ -57,10 +57,9 @@ const getImagesData = (data) => {
 
 function Default({ data, showPad, sidebar, block, blockWrapperProps }) {
     const att = getImagesData(data);
-    const text = clearLinks(data.entry_text);
     const isSmall = block?.module == "bx_market";
-    const videoId = data.video_embed && getYouTubeVideoId(data.video_embed) || null;
-    
+    const {text, videoId} = _checkEmpty(data);
+
     if (!text && !data.video && !data.image && !videoId)
         return null
 
@@ -84,3 +83,16 @@ function Default({ data, showPad, sidebar, block, blockWrapperProps }) {
         </BlockWrapper>
     );
 }
+
+const _checkEmpty = (data) => {
+    const text = clearLinks(data.entry_text);
+    const videoId = data.video_embed && getYouTubeVideoId(data.video_embed) || null;
+    if (!text && !data.video && !data.image && !videoId)
+        return false
+
+    return {text: text, videoId: videoId}
+}
+
+EntityTextBlock.checkEmpty = (item) => {
+    return _checkEmpty(item.data)
+};

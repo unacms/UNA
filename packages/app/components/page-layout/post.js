@@ -381,7 +381,6 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                             <View className='fixed-process w-96 hidden sm:flex gap-y-3 '>
                                 {
                                     sideBarBlocks.map((value) => {
-                                        console.log("value", value)
                                         return (
                                             <BlockByName key={value.name} data={data} name={value} sidebar={true} />
                                         )

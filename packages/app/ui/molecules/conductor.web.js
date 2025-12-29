@@ -54,6 +54,7 @@ import { useIsDesktop, useBreakpoint } from 'app/context/measure'
 import Snackbar from 'app/ui/atoms/snackbar'
 import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
 import { getComponent } from 'app/components/registry';
+import { BlockByName2 } from 'app/components/block'
 
 const conductorTheme = appSetting('theme', 'conductor')
 
@@ -599,7 +600,17 @@ const TabSceneMainContent = ({
         [SkeletonForRoute]
     )
 
-    const dataItems = isDesktop || !!pageRoute?.endpoint?.request_url ? [...dataItemsPage, ...refetchState.visibleItems] : [...dataItemsPage, ...refetchState.visibleItems, ...pageRoute.sidebar.content];
+    // remove empty blocks
+    const dataItemsPageFiltered = dataItemsPage?.filter(item => {
+        if (!item) return false;
+        const block = BlockByName2({ 
+            b: item.data, 
+            name: item.block, 
+        });
+        return block !== null;
+    }) ?? [];
+
+    const dataItems = isDesktop || !!pageRoute?.endpoint?.request_url ? [...dataItemsPageFiltered, ...refetchState.visibleItems] : [...dataItemsPageFiltered, ...refetchState.visibleItems, ...pageRoute.sidebar.content];
 
     useEffect(() => {
         if (isUseCurrentHeader) {

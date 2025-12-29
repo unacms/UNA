@@ -176,12 +176,39 @@ export default function Block(props) {
         showPadding: props.showPadding,
     };
 
-    return <BlockContent blockWrapperProps={blockWrapperProps} data={block.content} type={block.type} {...props} {...config} />
+    const blockContent = BlockContent({
+        blockWrapperProps,
+        data: block.content,
+        type: block.type,
+        ...props,
+        ...config
+    });
+
+    if (blockContent === null) {
+        return null;
+    }
+
+    return blockContent;
 }
 
 export function BlockContent(props) {
     const items = Array.isArray(props.data) ? props.data : [props.data];
-    const content = items.map(a => (
+
+    const itemsToRender = items.filter(item => {
+        const ElementType = getComponent('element', item.content_type || item.type);
+
+        if (ElementType && typeof ElementType.checkEmpty === 'function') {
+            const shouldRender = ElementType.checkEmpty(item);
+            return shouldRender;
+        }
+        return true;
+    });
+
+    if (itemsToRender.length === 0) {
+        return null;
+    }
+
+    const content = itemsToRender.map(a => (
         <Element
             key={a.id + a.type}
             type={a.type}
@@ -190,7 +217,7 @@ export function BlockContent(props) {
         />
     ));
 
-    if (items.length > 1) {
+    if (itemsToRender.length > 1) {
         return <View className="gap-y-4">{content}</View>;
     }
 

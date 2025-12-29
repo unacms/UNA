@@ -16,10 +16,10 @@ function ItemRenderer_({ route, item, unit, module, unitMode, unitType, sidebar 
     }
 }
 
-function BlockItemRenderer({ route, item, sidebar }) {
+export function BlockItemRenderer({ route, item, sidebar }) {
     const block = BlockByName2({ b: item.data, name: item.block, contentOnly:item?.data?.source == "system:get_create_post_form" });
     if (!block) {
-        return <View className='h-px'><Text>&nbsp;</Text></View>;
+        return null;
     }
     return (
         <View className={`${item?.block?.classes} mb-0.5 sm:mb-3 w-full mx-auto u-max-width-block ${block?.props?.extraProps?.list && !sidebar ? 'lg:h-px overflow-hidden ' : ''}`} key={`${route.index}-${item.id}`}>
