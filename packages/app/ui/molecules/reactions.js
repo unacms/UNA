@@ -497,13 +497,25 @@ const ReactionPopover = ({
 
         buttonRef.current.measureInWindow((x, y, width, height) => {
             const popupHeight = 60;
+            const popoverWidth = 300; 
+            const padding = 10; 
             let actY = isWeb ? y : y - 20;
             if (actY + popupHeight >= windowHeight - 64) {
                 actY = y - popupHeight - height
             }
 
+            let adjustedX = x + (width / 2) - (popoverWidth / 2);
+
+            if (adjustedX < padding) {
+                adjustedX = padding;
+            }
+
+            if (adjustedX + popoverWidth > windowWidth - padding) {
+                adjustedX = windowWidth - popoverWidth - padding;
+            }
+
             setButtonPos({
-                x: x, y: actY, width, height
+                x: adjustedX, y: actY, width, height
             });
             setModalVisible(true);
         })
