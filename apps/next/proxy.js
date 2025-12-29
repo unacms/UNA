@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { UNA_URL, UNA_API_KEY, MULTITENANT } from 'app/config';
 export const config = {
-    matcher: ["/((?!static|_next|sw.js|manifest.json|logo192.png|loader.svg|favicon.ico|_vercel).*)"],
+    matcher: ["/((?!sw.js|logo192.png|loader.svg|favicon.ico|_vercel).*)"],
     //runtime: 'experimental-edge',
 };
 
@@ -26,6 +26,18 @@ async function resolveTenant(hostnameWithPort) {
 
 export async function proxy(request) {
     // Main middleware entry: decide how to rewrite incoming requests.
+    const pathname = request.nextUrl.pathname;
+    
+    // Early return for static files and source maps - return 404 immediately without rendering
+    const staticExtensions = ['.map'];
+    const isSourceMap = staticExtensions.some(ext => pathname.endsWith(ext));
+    const isWellKnown = pathname.startsWith('/.well-known/');
+    
+    if (isSourceMap || isWellKnown) {
+        // Return 404 directly without any processing or rendering
+        return new NextResponse(null, { status: 404 });
+    }
+    
     const hostname = request.headers.get("host");
     const tenant = MULTITENANT ? await resolveTenant(hostname) : null;
 

@@ -92,12 +92,7 @@ const nextConfig = {
     '@openspacelabs/react-native-zoomable-view',
     'lucide-react-native'
   ],
-  webpack: (config, { isServer, dev }) => {
-    // Отключить source maps в dev режиме - встраиваем их в файлы
-    if (dev) {
-      config.devtool = 'inline-source-map';
-    }
-
+  webpack: (config, { isServer }) => {
     // Добавляем алиасы
     config.resolve.alias = {
       ...config.resolve.alias,
