@@ -39,7 +39,7 @@ const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
                                     addon={getAddon(a.addon)}
                                     onPress={() => {
                                         setIndex(a.index)
-                                        window.history.pushState({}, '', '/' + a.key)
+                                      
                                         if (onChangeRoute) {
                                             onChangeRoute(a)
                                         }

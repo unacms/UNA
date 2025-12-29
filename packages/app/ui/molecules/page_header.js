@@ -120,7 +120,7 @@ export const PageHeader = ({
         <>
             {isWeb && <View style={{ height: headerHeight }} />}
             <HeaderContainer
-                className={`w-full z-50 bg-card/70 shadow-border  backdrop-blur-xl web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out ${cssClass}`}
+                className={`w-full z-50 bg-card/70 web:shadow-border  backdrop-blur-xl web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out ${cssClass}`}
                 style={nativeStyle}
                 onLayout={(event) => {
                     const { height } = event.nativeEvent.layout;

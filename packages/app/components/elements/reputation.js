@@ -326,10 +326,10 @@ export function ReputationLeaderboard({ data }) {
             <View className="items-center w-full flex-col gap-3 p-3 max-w-xl mx-auto">
                 {profilesList.map((item, index) => (
                     <Row
-                        className="w-full flex-wrap justify-between items-center "
+                        className="w-full justify-between items-center "
                         key={index}
                     >
-                        <Row className="items-center gap-2">
+                        <Row className="items-center gap-2 ">
                             {item.position > 0 && (
                                 <View className="w-7 h-7 items-center justify-center relative">
                                     {item.position <= 3 ? (
@@ -365,16 +365,20 @@ export function ReputationLeaderboard({ data }) {
                                     )}
                                 </View>
                             )}
+                            <View>
                             <Profile
                                 {...item.unit}
                                 displayType="unit"
                                 displaySize="sm"
                             />
+                            </View>
                         </Row>
+                        <View>
                         <Text className=" text-base font-bold text-muted-foreground">
                             {item.sign}
                             {item.points}
                         </Text>
+                        </View>
                     </Row>
                 ))}
             </View>

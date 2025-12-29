@@ -53,7 +53,7 @@ export function Icon(props) {
         return <InlineIcon width={props.width || size} height={props.height || size} color={color} />;
 
     if (isXmlSvg)
-        return <SvgXml xml={icon} width={props.width || size} height={props.height || size} />
+        return <SvgXml xml={icon} width={props.width || size} height={props.height || size} color={color}/>
 
     if (!IconComponent) {
         console.log('Icon not found:', processedIcon);
