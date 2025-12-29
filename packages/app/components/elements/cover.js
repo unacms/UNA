@@ -24,8 +24,8 @@ import { Platform } from 'react-native'
 import { useRouter, useNavigation } from 'app/lib/hooks/router'
 import { getComponent } from 'app/components/registry'
 import { useIsDesktop } from 'app/context/measure';
-import { BlockWrapper } from 'app/components/block-wrapper'
 
+import { PageHeaderSmall } from 'app/ui/molecules/page_header';
 const conductorTheme = appSetting('theme', 'conductor')
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
@@ -121,6 +121,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
     }
 
     let menu = cloneObject(data.actions_menu)
+    const { currentUser } = useCurrentUser()
 
     if (!showMoreMenu) {
         menu.items = menu.items.map((item, index) => {
@@ -130,7 +131,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
 
     return (
         <Row className={`${conductorTheme.content_max_width} flex-row items-center justify-between mx-auto h-14`}>
-            <Row className='items-center' >
+            {!currentUser ? <PageHeaderSmall/> : <><Row className='items-center' >
                 {!appSetting('context_selector', 'show_always') && <View className='mr-2'>{getCoverBackButton(bPerson)}</View>}
                 {appSetting('context_selector', 'show_always') && !isDesktop ? <View className={`${TABLET_MODE_FROM}:hidden `}>
                     <ContextSelector data={context} mode="compact" />
@@ -170,7 +171,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                         />
                     </>
                 </Row>
-            </View>
+            </View></>}
         </Row>
     )
 }
@@ -394,7 +395,7 @@ function CoverImage({
     }
 }
 
-export default function ({ data, mode, uri, showMoreMenu, pageData, context }) {
+export default function Cover({ data, mode, uri, showMoreMenu, pageData, context }) {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const isWeb = Platform.OS === 'web'

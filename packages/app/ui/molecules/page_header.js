@@ -20,6 +20,18 @@ export const TextHeader = memo(({ text }) => {
     </Text>
 })
 
+export const PageHeaderSmall = ({ pageData }) => {
+    const HeaderElement = getComponent('molecule', 'header_element');
+    return <Row className="w-full justify-between">
+        <Link href="/home" size="lg" aria-label="Home">
+            <Pressable className="items-center">
+                {appStatic('logo')}
+            </Pressable>
+        </Link>
+        <HeaderElement mode="small" url={pageData?.url} uri={pageData?.uri} />
+    </Row>
+}
+
 export const PageHeader = ({
     layoutName,
     pageLayoutName,
@@ -54,18 +66,18 @@ export const PageHeader = ({
         if (isWeb)
             setHeader(defaultHeader);
     }, [pageData?.url, pageData?.uri, setScrollDirection, isDesktop]);
-    
+
 
     /* set Page title */
     let pageTitle = pageData?.name;
-    
+
     if (menuSettings.name) {
         pageTitle = menuSettings.name;
     }
     if (header.title) {
         pageTitle = header.title
     }
-    pageTitle = pageTitle.replace('__notification__', '');
+    pageTitle = (pageTitle || '').replace('__notification__', '');
     /* set Page title */
 
     /* animations for hide header */
@@ -89,26 +101,26 @@ export const PageHeader = ({
     /* animations for hide header */
 
     const Logo = <Link href="/home" size="lg" aria-label="Home">
-            <Pressable className="items-center">
-                {appStatic('logo')}
-            </Pressable>
-        </Link>
+        <Pressable className="items-center">
+            {appStatic('logo')}
+        </Pressable>
+    </Link>
     /* left element, can be logo, context selecor or title */
-    const leftElement = !currentUser ? Logo : (isFullContextSelector ? <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /> :( isShowLogo ? Logo : (
+    const leftElement = !currentUser ? Logo : (isFullContextSelector ? <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /> : (isShowLogo ? Logo : (
         <TextHeader text={pageTitle} />
     )));
     /* left element, can be logo, context selecor or title */
 
-    const contextSelectorElement = isContextSelector && !isFullContextSelector ? <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} mode="min" />: null;
+    const contextSelectorElement = isContextSelector && !isFullContextSelector ? <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} mode="min" /> : null;
 
-    if (header.header === false){
-        return 
+    if (header.header === false) {
+        return null
     }
     return (
         <>
             {isWeb && <View style={{ height: headerHeight }} />}
             <HeaderContainer
-                className={`w-full z-50 bg-card/70  web:shadow-border  backdrop-blur-xl web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out ${cssClass}`}
+                className={`w-full z-50 bg-card/70 shadow-border  backdrop-blur-xl web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out ${cssClass}`}
                 style={nativeStyle}
                 onLayout={(event) => {
                     const { height } = event.nativeEvent.layout;
@@ -120,24 +132,24 @@ export const PageHeader = ({
                 {header.header ? header.header : (<>
                     <Row className={`items-center justify-between web:h-16 px-3 ${appSetting('layout', 'header', 'content')}`}>
                         <Row className="items-center justify-start flex-1 lg:flex-none gap-x-2">
-                            <Row className="items-center justify-start flex-1 overflow-hidden lg:w-80 gap-x-2">
-                            {(isBackButton && (!isWeb || history.length > 2)) && (
-                                <View className="items-center">
-                                    <Button
-                                        variant="text"
-                                        rounded
-                                        onPress={() => {
-                                            FeedbackHaptics('Medium');
-                                            router ? router?.back() : history.back();
-                                        }}
-                                        startDecorator="ArrowLeft"
-                                        size="base" />
-                                </View>
-                            )}
+                            <Row className="items-center justify-start lg:w-80 gap-x-2">
+                                {(isBackButton && (!isWeb || history.length > 2)) && (
+                                    <View className="items-center">
+                                        <Button
+                                            variant="text"
+                                            rounded
+                                            onPress={() => {
+                                                FeedbackHaptics('Medium');
+                                                router ? router?.back() : history.back();
+                                            }}
+                                            startDecorator="ArrowLeft"
+                                            size="base" />
+                                    </View>
+                                )}
                                 {leftElement}
                                 {contextSelectorElement}
                             </Row>
-                            
+
                         </Row>
                         {isWeb && <MenuTop url={pageData.url} uri={pageData.uri} />}
                         <Row className=" items-center justify-end lg:w-80">
