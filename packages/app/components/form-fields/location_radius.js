@@ -90,8 +90,10 @@ export default function FormFieldLocation({ name, value, onChange, ...props }) {
     }
 
     return (
-        <Field classes="z-50" {...props}>
-            <Row className="gap-x-4"><InputRef
+        <Field classes="z-50 @container/input-lr " {...props}>
+            <View className="@sm/input-lr:flex-row w-full gap-y-2">
+                <View className="w-full @sm/input-lr:w-3/6">
+                <InputRef
                 placeholder="Start typing your address"
                 value={term}
                 onChangeText={text => {
@@ -99,13 +101,15 @@ export default function FormFieldLocation({ name, value, onChange, ...props }) {
                     setSelectionMade(false);
                 }}
             />
-                <Input
+            </View>
+             <View className="w-full @sm/input-lr:w-2/6">
+                <InputRef
                     placeholder='Radius, in Km'
                     onChangeText={setRadius}
                 />
+</View>
 
-
-            </Row>
+            </View>
             {searchError && <Text>Error</Text>}
             {(!selectionMade && locationResults.length > 0) && (
                 <View className="absolute z-50  w-full max-w-md top-14 p-1 z-50 rounded-xl border-bdr dark:border-bdr-d border bg-card backdrop-blur-xl p-1">
