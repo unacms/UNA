@@ -90,6 +90,9 @@ export default function (props) {
             if (name == 'covers') {
                 formContext.setValue('thumb', fileIds)
             }
+            if (name == 'videos') {
+                formContext.setValue('video', fileIds)
+            }
             field.onChange(fileIds);
         }
         else {
