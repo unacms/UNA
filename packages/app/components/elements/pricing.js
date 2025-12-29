@@ -85,7 +85,7 @@ function ElementPricingPeriod({ data, period, unit, settings }) {
             <Redirect ref={redirectRef} />
             {filtered.map((item, index) => {
                 const Price = getComponent('unit', 'price');
-                const cls = filtered.length > 1 ? 'w-1/' + Math.min(filtered.length, 3) : 'w-full'
+                const cls = filtered.length > 1 ? 'w-full lg:w-1/' + Math.min(filtered.length, 3) : 'w-full'
                 return (
                     <View className={`${cls} p-2`}><Price data={item} unit={unit} key={index} onBuy={getAction} /></View>
                 )
