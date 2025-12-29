@@ -50,7 +50,7 @@ export async function proxy(request) {
     // page or an internal asset (icons) served by this Next.js app.
     if (!request.nextUrl.pathname.includes('.php')) {
 
-        if (tenant == null && MULTITENANT) {
+        if (tenant == null && MULTITENANT && !request.nextUrl.pathname.includes('static')) {
             // rewrite to specific page where new tenant can be created
             return NextResponse.rewrite(new URL(`/new-tenant`, request.url));
         }        
