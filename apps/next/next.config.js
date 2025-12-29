@@ -146,6 +146,11 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
+        protocol: 'http',
+        hostname: 'localhost',
+        pathname: '**',
+      },
+      {
         protocol: 'https',
         hostname: 'api.neo.so',
         pathname: '**',
@@ -171,6 +176,7 @@ const nextConfig = {
         pathname: '**',
       }
     ],
+    // dangerouslyAllowLocalIP: true,
     disableStaticImages: false
   },
 }

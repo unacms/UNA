@@ -1,9 +1,9 @@
 import { SolitoImage } from 'solito/image'
 import { Platform } from 'react-native'
 import { StyleSheet, PixelRatio } from 'react-native';
-import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util';
+import { appSetting, getBaseUrl, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { useMemo } from 'react';
-import { UNA_URL } from 'app/config';
+import { UNA_URL, MULTITENANT_IMAGES_PROXY } from 'app/config';
 //import SvgFile from 'app/ui/molecules/svg-file';
 //import { Image as ImageRN } from 'react-native';
 
@@ -83,6 +83,16 @@ export default function ElementImage(props) {
 
     if (!isAbsoluteHttp && !isBlob && !isDataImage && !isStatic) {
         src = UNA_URL + src;
+        // For multitenant deployments, route images through our image proxy
+        if (MULTITENANT_IMAGES_PROXY) {
+            src = MULTITENANT_IMAGES_PROXY + '/api/image?u=' + UNA_URL + src;
+        } else {
+            src = UNA_URL + src;
+        }
+    }
+    else if (isAbsoluteHttp && !isBlob && !isDataImage && !isStatic && MULTITENANT_IMAGES_PROXY) {
+        // For multitenant deployments, route external images through our image proxy
+        src = MULTITENANT_IMAGES_PROXY + '/api/image?u=' + src;
     }
 
     if (sizes === "auto") {

@@ -2,7 +2,6 @@ import { env } from 'app/lib/env'
 
 export const settingsDefault = {
     config: {
-        multitenant: false,
         una_url: env('UNA_URL'),
         app_url: env('APP_URL'),
         una_api_key: env('UNA_API_KEY'),
@@ -32,7 +31,10 @@ export const settingsDefault = {
 
         app_version: '15.0.0',
         min_server_version: '15.0.0',
-        stable_server_version: '15.x.x'
+        stable_server_version: '15.x.x',
+
+        multitenant: false,
+        multitenant_images_proxy: null,// 'http://localhost:3000', // or null to disable
     },
     app: {
         title: 'UNA',

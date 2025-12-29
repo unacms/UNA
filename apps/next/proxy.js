@@ -24,7 +24,7 @@ async function resolveTenant(hostnameWithPort) {
     return null;
 }
 
-export async function proxy(request) {
+export async function proxy(request) {    
     // Main middleware entry: decide how to rewrite incoming requests.
     const pathname = request.nextUrl.pathname;
     
@@ -37,7 +37,12 @@ export async function proxy(request) {
         // Return 404 directly without any processing or rendering
         return new NextResponse(null, { status: 404 });
     }
-    
+
+    // serve images proxy as it is
+    if (pathname.includes('/api/image')) {
+        return NextResponse.next();
+    }
+
     const hostname = request.headers.get("host");
     const tenant = MULTITENANT ? await resolveTenant(hostname) : null;
 
