@@ -24,6 +24,8 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  // Отключить source maps в production
+  productionBrowserSourceMaps: false,
     /*experimental: {
       ppr: true,
     },*/
@@ -90,7 +92,12 @@ const nextConfig = {
     '@openspacelabs/react-native-zoomable-view',
     'lucide-react-native'
   ],
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, dev }) => {
+    // Отключить source maps в dev режиме - встраиваем их в файлы
+    if (dev) {
+      config.devtool = 'inline-source-map';
+    }
+
     // Добавляем алиасы
     config.resolve.alias = {
       ...config.resolve.alias,

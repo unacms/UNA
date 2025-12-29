@@ -40,8 +40,18 @@ async function getCachedData(props) {
 
 
 const getData = cache(async (params, search_params) => {
-    let hdrs = await headers();
     let path = params.path.join('/');
+    
+    // Ранняя проверка для статических файлов - до любых логов и запросов к UNA
+    const staticFileExtensions = ['.map', '.js', '.css', '.json', '.png', '.jpg', '.svg', '.ico', '.woff', '.woff2', '.ttf'];
+    const isStaticFile = staticFileExtensions.some(ext => path.endsWith(ext));
+    
+    if (isStaticFile || path.startsWith('_next/') || path.startsWith('static/')) {
+        // Возвращаем 404 без логирования и запросов к UNA
+        return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: 404 };
+    }
+    
+    let hdrs = await headers();
     let cookieString = search_params.cookieString;    
 
     const opts = {
@@ -159,6 +169,11 @@ export default async function Page(props) {
     const isHomePage = path === '' || path === 'home' || path === 'index';
     
     const data = await getCachedData(props);
+    
+    // Если это 404 для статических файлов - сразу notFound
+    if (data?.code === 404 && !isHomePage) {
+        notFound();
+    }
     
     // Handle API errors gracefully - especially for home/splash page
     // UNA may return errors for guest users when certain blocks (e.g., messenger) 
