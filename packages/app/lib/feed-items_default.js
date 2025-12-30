@@ -347,12 +347,12 @@ export const DefaultView = memo(
                                 </Text>
                             )}
                             {!!data.content?.embed && (
-                                <View className="rounded-lg overflow-hidden w-full aspect-video ">
+                                <View className="rounded-lg overflow-hidden w-full ">
                                     <Embed data={typeof data.content.embed !== 'string' ? data.content.embed : { url: data.content.embed }} />
                                 </View>
                             )}
                             {(data.content?.videos?.length > 0 && data.content?.videos[0]?.src_mp4) && (
-                                <View className='w-full aspect-video  rounded-lg overflow-hidden'>
+                                <View className='w-full aspect-video rounded-lg overflow-hidden'>
                                     <Video poster={data.content?.videos[0].src_poster} src={data.content?.videos[0].src_mp4} cover={true} controls={true} muted={"muted"} />
                                 </View>
                             )}
