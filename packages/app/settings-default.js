@@ -1162,7 +1162,7 @@ export const settingsDefault = {
         modal: {
             fog: 'bg-background/80  ',
             container:
-            ' h-full sm:h-auto shadow-xl bg-card/80 backdrop-blur border border-border sm:rounded-2xl overflow-hidden ',
+            '  shadow-xl bg-card/80 backdrop-blur border border-border sm:rounded-2xl overflow-hidden ',
             content: ' h-auto ',
             header: ' p-3 items-start justify-start border-b border-border/60',
         },
@@ -1809,7 +1809,7 @@ export const settingsDefault = {
             
 
             'u-btn-outline-cnt':
-                ' bg-transparent border border-border/60 web:border-0 web:ring-1 backdrop-blur-xl web:ring-inset web:ring-border/80 ',
+                ' bg-transparent border border-border ',
             'u-btn-outline-text':
                 ' font-medium text-card-foreground web:group-hover:text-foreground ',
             'u-btn-outline-trans': '  web:duration-200',

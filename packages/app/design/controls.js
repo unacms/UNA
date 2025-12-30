@@ -245,7 +245,7 @@ export function Modal({
     const positionClasses = {
         'top': 'items-start py-8 px-4',
         'bottom': 'items-end py-8 px-4',
-        'center': 'sm:items-center items-start ',
+        'center': autoHeight ? 'items-center' : 'sm:items-center items-start ',
     };
 
     const sClassPosition = positionClasses[position] || positionClasses['center'];
@@ -266,7 +266,7 @@ export function Modal({
 
     const Content = (
         <View style={{ paddingTop: !isWeb ? insets?.top : 0, paddingBottom: !isWeb ? insets?.bottom : 0 }} className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto ${layoutShift}:inset-0 h-full h-modal ${sClassPosition}`}>
-            <View className={`w-full ${maxWidth} ${fullWidth ? '' : `${layoutShift}:w-auto`}  ${modalSettings.container.replaceAll("{ls}", layoutShift)} `}>
+            <View className={`w-full ${maxWidth} ${fullWidth ? '' : `${layoutShift}:w-auto`} ${autoHeight ? '' : 'h-full sm:h-auto'} ${modalSettings.container.replaceAll("{ls}", layoutShift)} `}>
                 <View className={` ${!autoHeight ? 'h-full' : ''} ${modalSettings.content.replaceAll("{ls}", layoutShift)}`}>
                     {
                         (title) && <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header} `}>
