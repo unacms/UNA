@@ -297,7 +297,7 @@ export const settingsDefault = {
     },
     feed: {
         feed_container: 'relative flex-auto mx-auto w-full max-w-3xl  ',
-        post_trigger: 'active:bg-muted rounded-full flex-auto lg:bg-card web:lg:hover:bg-muted/50 web:duration-300 web:transition-all web:shadow-border-sm justify-center px-2 lg:px-4 group',
+        post_trigger: ' web:active:bg-card/60 web:active:shadow-border-sm border border-card  rounded-full flex-auto lg:bg-card/60 web:backdrop-blur web:lg:hover:bg-card web:duration-200 web:transition-all web:shadow-border justify-center px-2 lg:px-4 group',
         post_trigger_text: 'font-medium text-base text-muted-foreground web:group-hover:text-foreground web:duration-300 web:transition-colors',
         show_html: false,
         default_feed: 'foryou',
@@ -1217,7 +1217,7 @@ export const settingsDefault = {
             base: {
                 rounded: ' rounded-lg ',
                 padding: '  ',
-                padding_icon_only: ' h-10 w-10 ',
+                padding_icon_only: ' h-10 w-10 web:active:outline-offset-1 web:active:outline-4 ',
                 padding_with_title: ' px-3 gap-2 h-10 items-center ',
                 icon_container: ' text-base flex items-center ',
                 title_container: ' leading-10 text-base items-center flex   ',
@@ -1465,7 +1465,7 @@ export const settingsDefault = {
 
             // neutral color link, no background
             'u-link-plain-cnt': ' active:bg-muted/60  ',
-            'u-link-plain-text': ' text-foreground web:hover:text-accent-foreground web:hover:underline ',
+            'u-link-plain-text': ' text-foreground web:hover:underline web:duration-200 ',
             'u-link-plain-trans': ' web:duration-200 ',
 
             // branded color link, no background
@@ -1756,12 +1756,12 @@ export const settingsDefault = {
         button_styles: {
             // Default button (neutral/popover)
             'u-btn-default-cnt': [
-                ' bg-card web:hover:bg-card/70 web:active:bg-muted active:bg-muted ',
-                '  web:shadow-border web:focus-visible:border-border  ',
-                ' web:focus-visible:outline-offset-2 active:outline active:outline-accent active:outline-offset-1 active:outline-4  ',
+                ' bg-card/60 web:backdrop-blur web:hover:bg-card web:active:bg-card/60 active:bg-card/60 border border-card active:border-border',
+                ' web:shadow-border web:focus-visible:border-border  ',
+                ' web:active:outline web:active:outline-ring web:active:scale-95 web:duration-200 ',
                 ' web:active:shadow-none active:shadow-none',    
             ].join(' '),
-            'u-btn-default-text': 'font-medium text-secondary-foreground web:group-hover:text-foreground web:active:text-foreground active:text-foreground',
+            'u-btn-default-text': 'font-medium text-secondary-foreground web:group-hover:text-foreground web:active:text-foreground active:text-foreground web:duration-200',
             'u-btn-default-trans': 'web:duration-200',
 
           
@@ -1769,7 +1769,7 @@ export const settingsDefault = {
             'u-btn-primary-cnt': [
                 // Background and main color
                 ' bg-primary web:hover:bg-primary/90 overflow-hidden overflow-hidden web:active:bg-primary/80 active:bg-primary/80 ',
-                ' web:focus-visible:outline-offset-2 active:outline active:outline-accent active:outline-offset-1 active:outline-4  ',
+                ' active:outline active:outline-accent-foreground ',
                 ' shadow-xs web:hover:shadow-md web:active:shadow-none active:shadow-none  ',
                 ' ',
             ].join(' '),
@@ -1852,10 +1852,10 @@ export const settingsDefault = {
             'u-btn-group-item-link-text':
                 'font-medium text-muted-foreground web:hover:text-foreground web:active:text-foreground  ',
             'u-btn-group-item-link-icon':
-                'text-primary dark:text-primary web:dark:group-hover:text-primary',
+                'text-link-secondary web:group-hover:text-link-primary web:duration-200',
             'u-btn-group-item-link-pressed-cnt': 'bg-accent ',
-            'u-btn-group-item-link-pressed-text': 'text-primary',
-            'u-btn-group-item-link-pressed-icon': 'text-primary',
+            'u-btn-group-item-link-pressed-text': 'text-link-primary',
+            'u-btn-group-item-link-pressed-icon': 'text-link-primary',
 
             'u-btn-group-item-outline-cnt':
                 'border border-bdritem dark:border-bdritem-d web:hover:bg-bgritem-h dark:web:hover:bg-bgritem-dh web:active:opacity-50',

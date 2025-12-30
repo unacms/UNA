@@ -690,10 +690,11 @@ export function getUnitModeBySource(endpoint) {
     return truncated;
 }*/
 
-export function truncateHTML(html, maxLength) {
+export function truncateHTML(html, maxLength, maxLines = null) {
     if (!html) return '';
 
     let textLength = 0;
+    let lineCount = 0;
     let truncated = '';
 
     // Регулярное выражение для поиска тегов и текстовых фрагментов
@@ -703,17 +704,25 @@ export function truncateHTML(html, maxLength) {
     // Стек для отслеживания открытых тегов
     const tags = [];
 
-    // Идем по HTML и обрезаем текстовый контент до maxLength
+    // Идем по HTML и обрезаем текстовый контент до maxLength или maxLines
     while ((match = tagOrTextRegex.exec(html))) {
         const part = match[0];
 
         if (part[0] === '<') {
             // Если это тег, проверяем открывающий или закрывающий
-            const tagName = match[1];
+            const tagName = match[1].toLowerCase();
             const isClosingTag = part[1] === '/';
 
-            if (!isClosingTag && !/br|hr|img|input|link|meta|area|base|col|command|embed|keygen|param|source|track|wbr/.test(tagName)) {
-                tags.push(tagName);
+            if (!isClosingTag) {
+                // Check if this tag starts a new line
+                if (/br|p|div|li|h[1-6]|section|article|header|footer/.test(tagName)) {
+                    lineCount++;
+                    if (maxLines !== null && lineCount > maxLines) break;
+                }
+
+                if (!/br|hr|img|input|link|meta|area|base|col|command|embed|keygen|param|source|track|wbr/.test(tagName)) {
+                    tags.push(tagName);
+                }
             } else if (isClosingTag) {
                 const lastIndex = tags.lastIndexOf(tagName);
                 if (lastIndex !== -1) {
@@ -725,18 +734,35 @@ export function truncateHTML(html, maxLength) {
             truncated += part;
         } else {
             // Это текстовая часть
-            const remainingLength = maxLength - textLength;
+            // Проверяем наличие явных переносов строк в тексте
+            const textLines = part.split(/\r\n|\r|\n/);
+            let textPartTruncated = '';
 
-            if (part.length > remainingLength) {
-                // Обрезаем текст, если он превышает оставшуюся длину
-                truncated += part.substring(0, remainingLength);
-                textLength += remainingLength;
-                break;
-            } else {
-                // Добавляем весь текст, так как он не превышает maxLength
-                truncated += part;
-                textLength += part.length;
+            for (let i = 0; i < textLines.length; i++) {
+                if (i > 0 || (lineCount === 0 && textLines[i].trim().length > 0)) {
+                    lineCount++;
+                    if (maxLines !== null && lineCount > maxLines) break;
+                }
+                
+                if (i > 0) textPartTruncated += '\n';
+                
+                const remainingChars = maxLength - textLength;
+                const line = textLines[i];
+
+                if (line.length > remainingChars) {
+                    textPartTruncated += line.substring(0, remainingChars);
+                    textLength += remainingChars;
+                    break;
+                } else {
+                    textPartTruncated += line;
+                    textLength += line.length;
+                }
             }
+
+            truncated += textPartTruncated;
+
+            if (maxLines !== null && lineCount > maxLines) break;
+            if (textLength >= maxLength) break;
         }
     }
 

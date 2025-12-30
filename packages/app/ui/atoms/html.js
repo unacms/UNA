@@ -139,7 +139,7 @@ const parseHtmlToReact = (html, parentKey = '0') => {
             continue
         }
 
-        let srcClass = attributes.match(/class=['"]?([^'"\s>]+)['"]?/)
+        let srcClass = attributes.match(/class=['"]([^'"]*)['"]/) || attributes.match(/class=([^'"\s>]+)/)
 
         if (normalizedTag === 'a') {
             const hrefMatch = attributes.match(/href="([^"]+)"/)

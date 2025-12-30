@@ -1,5 +1,5 @@
 import { Text } from 'app/design/typography'
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { View, Pressable } from 'app/design/view';
 import Html from 'app/ui/atoms/html';
 import { truncateHTML } from 'app/lib/util';
@@ -45,7 +45,6 @@ export function ContentMore({
     }
     
     const [showFull, setShowFull] = useState(initedValue);
-    const [isOverflowing, setIsOverflowing] = useState(false);
     const contentRef = useRef(null);
 
     let linkContent = '';
@@ -58,36 +57,10 @@ export function ContentMore({
     const maxCharsBasedOnLines = numberOfLines * 120;
     const effectiveMaxChars = Math.min(numberOfSymbols, maxCharsBasedOnLines);
     
-    let shortHtml = truncateHTML(content, effectiveMaxChars);
+    let shortHtml = truncateHTML(content, effectiveMaxChars, numberOfLines);
     
-    // Detect overflow on web using CSS line-clamp
-    useEffect(() => {
-        if (isWeb && contentRef.current && !showFull) {
-            const element = contentRef.current;
-            const isContentOverflowing = element.scrollHeight > element.clientHeight;
-            setIsOverflowing(isContentOverflowing);
-        }
-    }, [content, showFull, numberOfLines]);
-
     // Determine if we should show the "See more" button
-    let showButton = false;
-    if (isWeb) {
-        // On web, use CSS overflow detection
-        showButton = isOverflowing;
-    } else {
-        // On native, use character-based truncation result
-        showButton = content && shortHtml && shortHtml.trim() !== content.trim();
-    }
-
-    // Add "Show more" inline for native (character-based truncation)
-    if (showButton && !isWeb && !showFull) {
-        const lastIndex = shortHtml.lastIndexOf('</p>');
-        if (lastIndex !== -1) {
-            shortHtml = shortHtml.slice(0, lastIndex) + 
-                '... <span class="text-primary">Show more</span>' + 
-                '</p>' + shortHtml.slice(lastIndex + 4);
-        }
-    }
+    const showButton = content && shortHtml && shortHtml.trim() !== content.trim();
 
     const handleToggle = () => {
         if (id) {
@@ -102,9 +75,34 @@ export function ContentMore({
         setShowFull(prev => !prev);
     };
 
-    const displayContent = isWeb 
-        ? content + linkContent 
-        : (showFull ? content + linkContent : shortHtml + linkContent);
+    // Prepare toggle text
+    const toggleText = showFull ? " " : "See more";
+    const toggleHtml = ` <span class="text-foreground text-base  font-semibold web:hover:underline">${toggleText}</span>`;
+
+    let displayContent = showFull ? content : shortHtml;
+
+    // Inject toggle into HTML for inline display
+    if (showButton) {
+        if (!showFull) {
+            // Collapsed: add "Show more" inline
+            const lastIndex = displayContent.lastIndexOf('</p>');
+            if (lastIndex !== -1) {
+                displayContent = displayContent.slice(0, lastIndex) + '... ' + toggleHtml + '</p>' + displayContent.slice(lastIndex + 4);
+            } else {
+                displayContent += '... ' + toggleHtml;
+            }
+        } else if (showFull && showLess) {
+            // Expanded: add "See less" inline
+            const lastIndex = displayContent.lastIndexOf('</p>');
+            if (lastIndex !== -1) {
+                displayContent = displayContent.slice(0, lastIndex) + toggleHtml + '</p>' + displayContent.slice(lastIndex + 4);
+            } else {
+                displayContent += toggleHtml;
+            }
+        }
+    }
+
+    displayContent += linkContent;
 
     return (
         <View>
@@ -112,17 +110,10 @@ export function ContentMore({
                 <HtmlMemo 
                     data={displayContent}
                     customClassName={customClassName}
-                    lineClamp={isWeb && !showFull ? numberOfLines : null}
+                    lineClamp={null} // Manual truncation used for inline toggle
                     innerRef={contentRef}
                 />
             </Pressable>
-            {showButton && showLess && (
-                <Pressable onPress={handleToggle}>
-                    <Text className={'text-primary dark:text-primary text-sm mt-1 ' + (customClassName || 'text-sm')}>
-                        {showFull ? "Show less" : "Show more"}
-                    </Text>
-                </Pressable>
-            )}
         </View>
     );
 }
