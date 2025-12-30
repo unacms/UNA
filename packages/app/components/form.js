@@ -105,7 +105,7 @@ export default function Form({
         setFormBundle(prev => {
             const nextForm = formItem?.data
                 ? { ...formItem.data, updated: Date.now() }
-                : prev.form;
+                : { ...prev.form, updated: Date.now() };
 
             const nextResponse = formItem?.response ?? prev.response;
             const nextExtra = otherItem ?? prev.extra;
