@@ -81,7 +81,7 @@ export default function Unit(props) {
                 <View className="flex-row sm:flex-col p-1.5 sm:p-0 sm:h-full">
                     <ImageSection data={data} />
                     {!!oMenuItemDelete && <View className="absolute right-1 top-1">{oMenuItemDelete}</View>}
-                    <View className="flex-col pl-4 my-auto sm:p-2 flex-auto ">
+                    <View className="flex-col pl-4 my-auto sm:p-2 justify-between flex-auto ">
                         <View className="gap-1 p-0.5">
                             <Text
                                 numberOfLines={1}
@@ -115,7 +115,7 @@ export default function Unit(props) {
                             </View>
                             {!!oMenuItemSecondary && (
                                 <View
-                                    className={`w-full ${!!oMenuItemPrimary && 'sm:mt-2'
+                                    className={`w-full ${!!oMenuItemPrimary && ''
                                         }`}
                                 >
                                     {oMenuItemSecondary}

@@ -70,9 +70,7 @@ export function BlockWrapper({ config, block, showTitle, showBg, fullWidth, cont
                 {bIsShowTitle && (
                     <BlockHeader>
                         <BlockName>
-                            {content_type !== 'browse_simple' ? <BlockTitle>{stripTags(block.title)}</BlockTitle> : <Text className="text-secondary-foreground text-base font-semibold leading-none lg:leading-none tracking-tight ">
-                                {stripTags(block.title)}
-                            </Text>}
+                            <BlockTitle>{stripTags(block.title)}</BlockTitle> 
                         </BlockName>
                         {config?.header_more_url && (<BlockActions>
                             <Link href={config?.header_more_url}>

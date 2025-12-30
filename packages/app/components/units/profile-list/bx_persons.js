@@ -28,12 +28,12 @@ export default function Unit(props) {
     return (
         <Link href={data.url} emulate={true}>
             <View
-                className=" flex-row p-2 -mx-2 rounded-xl web:active:opacity-90 web:hover:bg-muted/60 items-center "
+                className=" flex-row px-2 py-1.5 -mx-2 -my-1.5 rounded-xl web:active:opacity-90 web:hover:bg-muted/60 items-center "
             >
                 <Profile
                     url_avatar={data?.image?.src}
                     displayType="unit_wo_info"
-                    displaySize="sm"
+                    displaySize="md"
                     display_name={data.title}
                 />
                 <View className="flex-row justify-between flex-auto items-center">

@@ -1203,10 +1203,10 @@ export const settingsDefault = {
                 rounded: ' rounded-lg ',
                 padding: ' min-h-9 ',
                 padding_icon_only: ' h-9 w-9 ',
-                padding_with_title: ' px-2 h-9 gap-1.5 ',
+                padding_with_title: ' px-2 h-9 gap-0.5 ',
                 icon_container:
                     ' text-base flex items-center justify-center',
-                title_container: ' rounded text-sm inline-flex items-center  ',
+                title_container: ' px-0.5 text-sm inline-flex items-center  ',
                 icon_size: 20,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: '  ', // conditional margin for text container when icon is present
@@ -1554,19 +1554,19 @@ export const settingsDefault = {
         },
         blocks: {
             'u-block-base':
-                'u-max-width-block sm:rounded-xl gap-3 ',
+                'u-max-width-block sm:rounded-xl gap-4 @xl/block:gap-6',
             'u-block-bg':
-                'bg-card/80  web:shadow-border text-card-foreground ',
+                'bg-card/80 web:shadow-border text-card-foreground ',
             'u-block-pad':
-                'px-4 py-2 @xl/block:p-6',
+                'p-4 @xl/block:p-6',
             'u-block-header':
-                ' flex-row items-center gap-2 pt-2 ',
+                ' flex-row items-center gap-2  ',
             'u-block-icon': 'text-card-foreground',
             'u-block-name': 'flex flex-col flex-auto gap-y-2 gap-x-4',
             'u-block-title':
-                'text-foreground leading-none text-xl font-semibold leading-none tracking-tight',
+                'text-muted-foreground leading-none text-base font-semibold tracking-tight',
             'u-block-description': 'text-muted-foreground text-sm font-medium leading-6',
-            'u-block-content': 'text-card-foreground ',  
+            'u-block-content': 'text-card-foreground gap-4 @xl/block:gap-6',  
             'u-block-footer':
                 'flex text-card-foreground gap-4 ',
             'u-block-actions':
@@ -1784,7 +1784,7 @@ export const settingsDefault = {
             'u-btn-accent-hover': 'web:group-hover:bg-white/10 web:duration-200',
             
 
-            'u-btn-secondary-cnt': 'overflow-hidden web:group bg-secondary/70 web:hover:bg-secondary web:focus-visible:bg-secondary ',
+            'u-btn-secondary-cnt': 'overflow-hidden web:group bg-secondary/60 web:hover:bg-secondary web:focus-visible:bg-secondary ',
             'u-btn-secondary-text':
                 ' web:duration-200 font-medium text-secondary-foreground web:group-hover:text-foreground ',
             'u-btn-secondary-trans': ' web:duration-200 ',

@@ -37,6 +37,7 @@ import {
 import { getComponent } from 'app/components/registry';
 import { BrowseItem } from 'app/lib/common-helpers'
 import { useIsDesktop } from 'app/context/measure';
+import { BlockTitle } from 'app/ui/molecules/page-block'
 const blockTheme = appSetting('theme', 'blocks');
 
 export default function Browse(props) {
@@ -443,9 +444,9 @@ export default function Browse(props) {
                 <View className={`w-full ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''}`} style={isOneLine ? {} : styles}>
                     {isShowTitleInside && (
                         <Row className={`items-center justify-between ${props.showBg ? '' : 'p-2 '}`}>
-                            <Text className=" text-secondary-foreground text-base font-semibold leading-none lg:leading-none tracking-tight ">
+                            <BlockTitle>
                                 {t(props.block.title)}
-                            </Text>
+                            </BlockTitle>
                             {!!props.addLink && (
                                 <Link href={props.addLink.url}>
                                     <Button
