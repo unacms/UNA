@@ -114,6 +114,7 @@ export const PageHeader = ({
     const contextSelectorElement = isContextSelector && !isFullContextSelector ? <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} mode="min" /> : null;
 
     if (header.header === false) {
+        setHeaderHeightAtom(0);
         return null
     }
     return (

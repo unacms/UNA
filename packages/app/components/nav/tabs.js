@@ -142,6 +142,10 @@ export default function Tabs () {
     const notificationUrl = appSetting('notifications', 'url');
     const TabList = useMemo(() => currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged'), [currentUser?.id]);
 
+
+    const preloadDelay = appSetting('native', 'lazy_tabs_preload_delay');
+    const [lazyLoadTabs, setLazyLoadTabs] = useState(true);
+    
     const profile = useMemo(() => {
         if (currentUser) {
             const dUser = { ...currentUser, url_avatar: currentUser?.avatar, url: '/dashboard' };
@@ -157,6 +161,18 @@ export default function Tabs () {
     }, [themeName]);
 
     const tabsHeight = Platform.OS == 'ios' ? 52 : 56;
+
+    // Добавить useEffect для отложенной загрузки
+useEffect(() => {
+    if (preloadDelay > 0 && lazyLoadTabs) {
+        const timer = setTimeout(() => {
+            setLazyLoadTabs(false);
+        }, preloadDelay);
+        
+        return () => clearTimeout(timer);
+    }
+}, [preloadDelay, lazyLoadTabs]);
+
 
     const screenOptions = useMemo(() => ({
         tabBarStyle: {
@@ -191,8 +207,9 @@ export default function Tabs () {
         tabBarActiveBackgroundColor: colors.primaryBg,
         freezeOnBlur: true,
         unmountOnBlur: false,
-        lazy: currentUser ? appSetting('native', 'lazy_tabs') : true,
-    }), [colors, isShowTabs, currentUser?.id]);
+        // ЕДИНАЯ ЛОГИКА: для всех пользователей
+        lazy: lazyLoadTabs,
+    }), [colors, isShowTabs, currentUser?.id, lazyLoadTabs]);
 
     // DEEP LINKING
 

@@ -532,24 +532,25 @@ const ReactionPopover = ({
             left: buttonPos.x,
             elevation: 5,
         }}
-        className=" absolute flex-row rounded-full border border-border p-1 bg-popover"
+        className=" absolute flex-row rounded-full border border-border p-1 bg-popover items-center h-14"
     >
-        {items.map((item) => (
-            <TouchableOpacity
-                key={item.id}
-                onPress={() => handleSelect(item)}
-            >
-                <Tooltip content={item.title}>
-                    {isEmoji(item.icon) ? (
-                        <Text className="text-3xl w-12 h-12 items-center justify-center web:hover:scale-110 flex web:hover:bg-muted/60 web:active:bg-muted rounded-full">{item.icon}</Text>
-                    ) : (
-                        <View className="w-12 h-12 items-center text-muted-foreground web:hover:text-foreground web:hover:scale-110 web:duration-200 justify-center flex web:hover:bg-muted/60 web:active:bg-muted rounded-full">
-                            <Icon icon={item.icon} size={30} />
-                        </View>
-                    )}
-                </Tooltip>
-            </TouchableOpacity>
-        ))}
+        {items.map((item) => {
+            const cnt = isEmoji(item.icon) ? (
+                <View className="w-12 items-center justify-center"><Text className="text-3xl  web:hover:scale-110 flex web:hover:bg-muted/60 web:active:bg-muted rounded-full">{item.icon}</Text></View>
+            ) : (
+                <View className="w-12  items-center text-muted-foreground web:hover:text-foreground web:hover:scale-110 web:duration-200 justify-center flex web:hover:bg-muted/60 web:active:bg-muted rounded-full">
+                    <Icon icon={item.icon} size={30} />
+                </View>
+            )
+            return (
+                <TouchableOpacity
+                    key={item.id}
+                    onPress={() => handleSelect(item)}
+                >
+                    {isWeb ? <Tooltip content={item.title}>{cnt}</Tooltip> : cnt}
+                </TouchableOpacity>
+            )
+        })}
     </View>
 
     const content = modalVisible ? <ModalBase

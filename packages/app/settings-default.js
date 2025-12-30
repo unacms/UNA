@@ -122,7 +122,7 @@ export const settingsDefault = {
     },
     native: {
         enable_screens: true, //OLD appSetting('layout', 'native_enable_screens')
-        lazy_tabs: false, // OLD appSetting('layout', 'native_lazy_tabs')
+        lazy_tabs_preload_delay: 10000, 
         disable_screenshots: false, // OLD appSetting('layout', 'disable_screenshots')
         show_tabs_non_logged: true, // OLD appSetting('layout', 'show_nav_non_logged_native')
         bluetooth: false, //OLD appSetting('layout', 'bluetooth')

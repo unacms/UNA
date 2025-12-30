@@ -15,7 +15,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByName } from 'app/components/block';
 import Cover, { CoverSmall } from 'app/components/elements/cover';
 import emitter from 'app/context/emitter'
-import { useSetHeader } from 'app/context/jotai/layout';
+import { useSetHeader, useScrollValue } from 'app/context/jotai/layout';
 import { getComponent } from 'app/components/registry';
 
 const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
@@ -27,7 +27,7 @@ const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
                 <Row className="pl-2 justify-center" >
                     {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
 
-                        
+
                         return (
                             <View className="p-1 items-center justify-center"
                                 key={`tab-${a.index}`}
@@ -39,7 +39,7 @@ const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
                                     addon={getAddon(a.addon)}
                                     onPress={() => {
                                         setIndex(a.index)
-                                      
+
                                         if (onChangeRoute) {
                                             onChangeRoute(a)
                                         }
@@ -85,22 +85,19 @@ const AddBlocks = React.memo(({
 
 const TabScene = React.memo(({
     route,
-    prevRoute,
-    headerComponent,
-    subHeaderComponent,
     ListHeaderComponent,
-    headerHeight,
+    isProfileHeader,
     unitType,
     Preload,
     unitMode,
     fetchNextPage,
     onRefresh,
     refreshing,
-    numColumns,
-    isProfileHeader
+    smallHeader,
+    numColumns
 }) => {
 
-   
+
     const handleEndReached = useCallback(
         async (lastItemIndex) => {
             if (!route?.endpoint || route?.endpoint?.params?.start === 0 || refreshing || route?.endpoint?.finished)
@@ -121,44 +118,35 @@ const TabScene = React.memo(({
         />
     ), [unitType, unitMode, route]);
 
-    /*if (!route.inited) {
-        return <></>;
-    }*/
+    const scrollValue = useScrollValue();
+    console.log('scrollValue', scrollValue);
     const NoContent = getComponent('molecule', 'no_content')
 
 
     return (
-        <UniList
-            ListHeaderComponent={typeof ListHeaderComponent === 'function' ? ListHeaderComponent : ListHeaderComponent ? () => ListHeaderComponent : undefined}
-            scrollProps={
-                {
-                    pageData: route.inited ? route.pageData : prevRoute.pageData,
-                    headerComponent: headerComponent,
-                    subHeaderComponent: subHeaderComponent,
-                    headerHeight: headerHeight,
-                    isBackButton: false,
-                    isMenuNameAsTitle: true,
-                    isProfileHeader: isProfileHeader,
-                    isNoContainer: isProfileHeader,
+        <>
+            {(isProfileHeader && scrollValue > 500) && smallHeader}
+
+            <UniList
+                ListHeaderComponent={typeof ListHeaderComponent === 'function' ? ListHeaderComponent : ListHeaderComponent ? () => ListHeaderComponent : undefined}
+
+                index={route.index}
+                data={route.data}
+                route={route}
+                unit={route.endpoint?.unit}
+                renderItem={renderItem}
+                ListFooterComponent={
+                    (route?.endpoint?.request_url ? (route?.endpoint?.finished ? (route.data.length == 0 ? <NoContent endpoint={route?.endpoint} /> : <></>) : Preload) : <></>)
                 }
-            }
-            index={route.index}
-            data={route.data}
-            route={route}
-            unit={route.endpoint?.unit}
-            renderItem={renderItem}
-            ListFooterComponent={
-                (route?.endpoint?.request_url ? (route?.endpoint?.finished ? (route.data.length == 0 ? <NoContent endpoint={route?.endpoint}/> : <></>) : Preload) : <></>)
-            }
-            maxToRenderPerBatch={5}
-            initialNumToRender={5}
-            numColumns={numColumns}
-            mode="simple"
-            url={route?.endpoint?.request_url}
-            onRefresh={onRefresh}
-            refreshing={refreshing}
-            onEndReached={handleEndReached}
-        />
+                maxToRenderPerBatch={5}
+                initialNumToRender={5}
+                numColumns={numColumns}
+                mode="simple"
+                url={route?.endpoint?.request_url}
+                onRefresh={onRefresh}
+                refreshing={refreshing}
+                onEndReached={handleEndReached}
+            /></>
 
     )
 });
@@ -181,7 +169,7 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
     const [isRevalidate, setIsRevalidate] = useState(false);
     const [snackbarVisible, setSnackbarVisible] = useState(false);
 
- const setHeader = useSetHeader();
+    const setHeader = useSetHeader();
 
 
 
@@ -238,7 +226,7 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
     useEffect(() => {
         if (!currentRoute?.endpoint?.unit == 'feed')
             return;
-        
+
         const sub1 = subscribe('bx_timeline_0', 'added', setIsRevalidate);
         const sub2 = subscribe('bx_timeline_0', 'deleted', setIsRevalidate);
 
@@ -250,7 +238,7 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
 
     useEffect(() => {
 
-        
+
         const subscription2 = emitter.addListener('feed', (data) => {
             if (data.action == 'remove_content' || data.action == 'new_content') {
                 //todo
@@ -268,7 +256,7 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
             revalidateData();
     }, [isRevalidate]);
 
-    
+
     const bEnabled = (currentRoute?.endpoint?.params?.start == 0 || currentRoute.data.length < currentRoute?.endpoint?.params?.per_page) && !isRefreshing;
 
     const {
@@ -351,12 +339,21 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
             setIsRefreshing(false);
         }
     }, [isRefreshing, queryClient, qKey]);
- 
-  
-    useLayoutEffect(() => {
-        setHeader({subHeader: sceneHeader});
-    }, [index, sceneHeader, setHeader]);
-    
+
+    const isUseCurrentHeader = layoutName === 'profile';
+    /* useLayoutEffect(() => {
+         setHeader({subHeader: sceneHeader});
+     }, [index, sceneHeader, setHeader]);
+     */
+    useEffect(() => {
+        if (isUseCurrentHeader) {
+            setHeader({ header: false });
+        }
+        else {
+            setHeader({ subHeader: sceneHeader });
+        }
+    }, [header, setHeader]);
+
 
     const Preload = useMemo(() => {
         return getSkeletonForList(skeleton !== '' ? skeleton : (data.module ? data.module : data.unit), numColumns);
@@ -399,15 +396,20 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
     });
 
     const isShowFilters = layoutName == 'navigator' && leftSideBarBlocks && leftSideBarBlocks?.length > 0;
-    const sceneHeader = <TabBar routes={routes} index={index} setIndex={setIndex} onChangeRoute={onChangeRoute}  />
+    const sceneHeader = <TabBar routes={routes} index={index} setIndex={setIndex} onChangeRoute={onChangeRoute} />
     const filter = (isShowFilters) && (<View className="items-start ml-3 mt-2 mb-1">
         <Button title='Filters' variant="default" size="sm" rounded onPress={showFilters} />
     </View>)
 
     const isProfileHeader = layoutName === 'profile' && !isCoverDisabled;
 
+    const smallSceneHeader = <View className="w-full">
+        <CoverSmall showMoreMenu={true} context={currentRoute?.pageData?.context} data={currentRoute.pageData?.cover_block} />
+        {sceneHeader}
+        {filter}
+    </View>
+
     const tabSceneProps = {
-        prevRoute: prevRoute,
         numColumns: numColumns,
         onRefresh: onStartRefresh,
         refreshing: isRefreshing,
@@ -416,48 +418,43 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
         unitType: unitType,
         unitMode: unitMode,
         fetchNextPage: fetchNextPage,
-        isProfileHeader: isProfileHeader
+        isProfileHeader: isProfileHeader,
+        smallHeader: smallSceneHeader
     };
+
+    const CoverHeader = useMemo(() => {
+
+        return <Cover data={currentRoute.pageData?.cover_block} showMoreMenu={false} uri={currentRoute.pageData?.uri} context={currentRoute?.pageData?.context} />
+    }, [currentRoute.pageData]);
+
+
+
     if (isProfileHeader) {
         if (currentRoute?.pageData) {// may be need to fix
             Object.assign(tabSceneProps, {
-                headerHeight: isProfileHeader ? 0 : defaultHeaderHeight,
-                headerComponent: () => <>
-                    <CoverSmall showMoreMenu={true} context={currentRoute?.pageData?.context} data={currentRoute.pageData?.cover_block} />
-                    {sceneHeader}
-                </>,
+
                 ListHeaderComponent: () => <>
-                    <Cover data={currentRoute.pageData?.cover_block} showMoreMenu={false} uri={currentRoute.pageData?.uri} context={currentRoute?.pageData?.context} />
+                    {CoverHeader}
                     {sceneHeader}
                     {filter}
                 </>
             });
-        }else{
-            if (prevRoute){
-            Object.assign(tabSceneProps, {
-                headerHeight: isProfileHeader ? 0 : defaultHeaderHeight,
-                headerComponent: () => <>
-                    <CoverSmall showMoreMenu={true} context={prevRoute?.pageData?.context} data={prevRoute.pageData?.cover_block} />
-                    {sceneHeader}
-                </>,
-                ListHeaderComponent: () => <>
-                    <Cover data={prevRoute.pageData?.cover_block} showMoreMenu={false} uri={prevRoute.pageData?.uri} context={prevRoute?.pageData?.context} />
-                    {sceneHeader}
-                    {filter}
-                </>
-            });
+        } else {
+            if (prevRoute) {
+                Object.assign(tabSceneProps, {
+
+                    ListHeaderComponent: () => <>
+                        <Cover data={prevRoute.pageData?.cover_block} showMoreMenu={false} uri={prevRoute.pageData?.uri} context={prevRoute?.pageData?.context} />
+                        {sceneHeader}
+                        {filter}
+                    </>
+                });
             }
         }
     }
-    else {
-        Object.assign(tabSceneProps, {
-            headerHeight: isShowFilters && routes.length > 1 ? defaultHeaderHeight + 52 : defaultHeaderHeight,
-            subHeaderComponent: <>{header}{sceneHeader}{filter}</>
-        });
-    }
 
     return (
-        <View className="w-full h-full">
+        <View className="w-full h-full ">
             <View className="w-full flex-1 ">
                 <Snackbar visible={snackbarVisible} onPress={showNewContent2} onDismiss={() => setSnackbarVisible(false)} variant="primary" title="Show New Posts" size="sm" />
                 <TabScene {...tabSceneProps} />

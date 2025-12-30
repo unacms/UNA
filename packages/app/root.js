@@ -4,6 +4,8 @@ import { useCurrentUser } from 'app/context/user';
 import { storageClear } from 'app/lib/util';
 import { useRouter, redirectTo } from 'app/lib/hooks/router'
 import Layouts from 'app/components/layouts';
+import { useSetScrollDirection, useSetScrollValue } from 'app/context/jotai/layout';
+
 /*let Layouts;
 
 if (Platform.OS === 'web') {
@@ -32,6 +34,16 @@ export function Root(props) {
             remoteSettings.data = props.settings;
 
     }, [currentUser?.notifications]);*/
+
+
+    const setScrollDirection = useSetScrollDirection();
+    const setScrollValue = useSetScrollValue();
+    
+    useEffect(() => {
+        // Сброс scroll состояния при смене данных страницы
+        setScrollDirection(0);
+        setScrollValue(0);
+    }, [props?.path, props?.data?.url, setScrollDirection, setScrollValue]);
 
     useEffect(() => {
         if (data?.user) {

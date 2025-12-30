@@ -21,10 +21,9 @@ import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import Loading from 'app/ui/atoms/loading'
 import { Platform } from 'react-native'
-import { useRouter, useNavigation } from 'app/lib/hooks/router'
+import { useRouter, useNavigation, goBack } from 'app/lib/hooks/router'
 import { getComponent } from 'app/components/registry'
 import { useIsDesktop } from 'app/context/measure';
-
 import { PageHeaderSmall } from 'app/ui/molecules/page_header';
 const conductorTheme = appSetting('theme', 'conductor')
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
@@ -95,7 +94,7 @@ function getCoverBackButton(is_person) {
 
 export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
     const isDesktop = useIsDesktop();
-
+    const isWeb = Platform.OS === 'web'
     if (!data?.profile?.module)
         return null
 
@@ -132,7 +131,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
     return (
         <Row className={`${conductorTheme.content_max_width} flex-row items-center justify-between mx-auto h-14`}>
             {!currentUser && !bPerson ? <PageHeaderSmall/> : <><Row className='items-center' >
-                {!appSetting('context_selector', 'show_always') && <View className='mr-2'>{getCoverBackButton(bPerson)}</View>}
+                {(!appSetting('context_selector', 'show_always') || !isWeb) && <View className='mx-2'>{getCoverBackButton(bPerson)}</View>}
                 {appSetting('context_selector', 'show_always') && !isDesktop ? <View className={`${TABLET_MODE_FROM}:hidden `}>
                     <ContextSelector data={context} mode="compact" />
                 </View> : <>                    <Row className='items-center gap-2'>
