@@ -14,6 +14,8 @@ import Carousel from 'app/ui/molecules/carousel'
 import { PollItem } from 'app/components/elements/entity_poll'
 import Html from 'app/ui/atoms/html'
 import Video from 'app/ui/atoms/video';
+import LinkOrModal from 'app/ui/molecules/link-or-modal'
+import { appSetting } from 'app/lib/util'
 
 export const LinkContent = memo(({ url, data }) => (
     <Link href={url}>
@@ -256,6 +258,7 @@ export const DefaultView = memo(
         isCompact,
         fulltext,
     }) => {
+        console.log("data", data)
         const imgs = content_attach
         return (
             <>
@@ -284,14 +287,14 @@ export const DefaultView = memo(
                     )}
 
                     {bIsTitle && (
-                        <Link href={url} className="pb-2 text-foreground hover:text-accent-foreground text-xl sm:text-2xl font-bold ">
+                        <LinkOrModal href={url} showInModal={appSetting('browse', 'show_in_modal', data.type)} className=" ">
                             <Text
                                 numberOfLines={3}
-                                className="font-semibold font-title tracking-tight"
+                                className="pb-2 text-foreground hover:text-accent-foreground text-xl sm:text-2xl font-semibold font-title tracking-tight"
                             >
                                 {data.content?.title || ''}
                             </Text>
-                        </Link>
+                        </LinkOrModal>
                     )}
                     <View className='w-full'>
                         <View className='w-full'>
