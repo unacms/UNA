@@ -1,5 +1,6 @@
-import { appSetting, getBaseUrl } from 'app/lib/util';
+import { appSetting } from 'app/lib/util';
 import { ThemeName } from 'app/design/theme';
+import { getBaseUrl } from 'app/config';
 
 export default function ({src_web, src_dark, src_default, ...props}) {
     const theme = ThemeName();

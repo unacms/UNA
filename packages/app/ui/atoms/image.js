@@ -1,7 +1,7 @@
 import { SolitoImage } from 'solito/image'
 import { Platform } from 'react-native'
 import { StyleSheet, PixelRatio } from 'react-native';
-import { appSetting, getBaseUrl, LAYOUT_BREAKPOINTS } from 'app/lib/util';
+import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { useMemo } from 'react';
 import { UNA_URL, MULTITENANT_IMAGES_PROXY } from 'app/config';
 //import SvgFile from 'app/ui/molecules/svg-file';

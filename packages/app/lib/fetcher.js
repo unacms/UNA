@@ -1,7 +1,6 @@
 import { Platform } from 'react-native';
 import i18n from 'i18next';
-import { appSetting , UNA_URL, APP_URL, APP_ORIGIN, MULTITENANT } from 'app/config';
-import { getBaseUrl } from 'app/lib/util';
+import { appSetting, getBaseUrl, UNA_URL, APP_URL, APP_ORIGIN, MULTITENANT } from 'app/config';
 
 const USE_PROXY_WEB = appSetting('config', 'use_proxy_web'); 
 const USE_PROXY_NATIVE = appSetting('config', 'use_proxy_native'); 
