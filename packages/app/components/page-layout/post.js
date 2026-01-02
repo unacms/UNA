@@ -105,14 +105,13 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
     const { leftBarBlocks, sideBarBlocks, centerBlocks } = defineCells(blocks, data);
 
-    const mainBlocks = isDesktop ? centerBlocks : [...centerBlocks, ...sideBarBlocks, ...leftBarBlocks]
+    const mainBlocks = isDesktop && !isModal ? centerBlocks : [...centerBlocks, ...sideBarBlocks, ...leftBarBlocks]
 
-
+//value.sidebar || value.leftbar ? false : true
     const aItems = useMemo(() => mainBlocks.map((value) => ({
         id: `block_${value.name}`,
-        data: <View className={'px-4 py-2'}><BlockByName isModal={isModal} data={data} name={value} contentOnly={value.sidebar || value.leftbar ? false : true} /></View>
+        data: <View className={'px-4 py-2'}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
     })), [blocks, data, isDesktop]);
-
 
     const isRightCol = sideBarBlocks.length > 0 && isDesktop
     const isLeftCol = leftBarBlocks.length > 0 && isDesktop

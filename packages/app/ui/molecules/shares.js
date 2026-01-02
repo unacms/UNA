@@ -85,7 +85,7 @@ export default function ElementShares(oProps) {
     }
     return (
         canWebShare ? <View className='flex-auto'>
-            <ButtonsGroupMenu  {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
+            {aButtonsGroup}
         </View> : null
     );
 
