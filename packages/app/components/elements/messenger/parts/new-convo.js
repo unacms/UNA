@@ -62,7 +62,7 @@ export function CreateConvoButton({ onSave, onShow, size = 'small', variant = 's
     }
     return <>
         {btn}
-        <Modal  title="Add users to start messaging" onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
+        <Modal outerClickClose={false} title="Add users to start messaging" onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
             <CreateConvo onSave={onSaveHandler} />
         </Modal>
     </>

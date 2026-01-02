@@ -153,7 +153,10 @@ export default function Browse(props) {
             defaultParams: defParams
         }),
 
-        getNextPageParam: (lastPage) => lastPage?.data.length > 0 ? { ...lastPage?.params, start: lastPage?.params.start + lastPage?.params.per_page } : undefined,
+        //getNextPageParam: (lastPage) => lastPage?.data.length > 0 ? { ...lastPage?.params, start: lastPage?.params.start + lastPage?.params.per_page } : undefined,
+        getNextPageParam: (lastPage) => {
+            return (lastPage?.data.length > 0 && lastPage?.cursor) ? { ...lastPage?.params, start: lastPage?.cursor } : undefined
+        },
         staleTime: appSetting('browse', 'stale_time'),
         refetchOnWindowFocus: updateMode != 'none',
         refetchOnReconnect: updateMode != 'none',

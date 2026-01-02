@@ -16,5 +16,5 @@ export default function ElementRedirect({data, blockWrapperProps}) {
         }
     }, [uri, timeout]);
 
-    return timeout ? <BlockWrapper {...blockWrapperProps}><View className='w-full'><Loading /></View></BlockWrapper> : null;
+    return timeout ? null : null;
 }

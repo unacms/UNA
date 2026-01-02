@@ -13,7 +13,7 @@ function Unit({ data }) {
             data?.content?.entry_url?.replace('{bx_url_root}', ''));
     const content_parsed = (data?.content_parsed?.site || data?.content_parsed || '').replace('&#8230;', '...');
     return (
-        <LinkOrModal href={url} showInModal={appSetting('browse', 'show_in_modal', data.type)}>
+        <LinkOrModal href={url} showInModal={data.type? appSetting('browse', 'show_in_modal', data.type): false}>
             <CardList className="px-2 py-1.5 mt-2 flex-row items-center gap-3 max-w-4xl mx-auto w-full web:hover:bg-accent/40 sm:rounded-2xl ">
                 <View className="rounded-full flex-none mb-auto " >
                     <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />

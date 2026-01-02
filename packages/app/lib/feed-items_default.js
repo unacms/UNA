@@ -258,7 +258,6 @@ export const DefaultView = memo(
         isCompact,
         fulltext,
     }) => {
-        console.log("data", data)
         const imgs = content_attach
         return (
             <>
@@ -299,15 +298,7 @@ export const DefaultView = memo(
                     <View className='w-full'>
                         <View className='w-full'>
                             {bIsTimelineContent && (
-                                <View
-                                    className={
-                                        ' ' +
-                                        (data.content?.text &&
-                                        content_attach.length > 0
-                                            ? ' pb-2 '
-                                            : '')
-                                    }
-                                >
+                                <View className={`${(data.content?.text && (content_attach.length > 0 || data.content?.embed || data.content?.videos?.length > 0)) && 'pb-2'}`} >
                                     {fulltext ? (
                                         <Html
                                             data={
