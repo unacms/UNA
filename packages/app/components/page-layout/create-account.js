@@ -38,8 +38,10 @@ function PageContent({ children }) {
 
                     </CardHeader>
                     <CardContent className="px-6">
-                        {children}
-                        <AuthPanel showSeparator={true} createAccountLink={false} loginLink={true} />
+                        <View className="max-w-96 w-full mx-auto">
+                            {children}
+                            <AuthPanel showSeparator={true} createAccountLink={false} loginLink={false} />
+                        </View>
                     </CardContent>
                     <CardFooter>
                         <Row className=" mx-auto gap-1 justify-center items-center text-center">

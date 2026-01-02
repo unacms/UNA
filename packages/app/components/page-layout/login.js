@@ -47,9 +47,10 @@ function PageContent({ children, isLoginPage, title }) {
                         <CardDescription className="text-center lg:text-start">{t('splash_page_login')}</CardDescription>
                     </CardHeader>
                     <CardContent className="px-6 ">
+                        <View className="max-w-96 w-full mx-auto">
                         {children}
-
                         <AuthPanel showSeparator={true} forgotPasswordLink={true} />
+                        </View>
                     </CardContent>
                     <CardFooter >
                         <Row className=" mx-auto gap-1 justify-center items-center text-center">
@@ -85,7 +86,7 @@ export default function PageLayout({ data, children }) {
         >
             <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto">
                 {isLoginPage ? appStatic('components_logincontent') : null}
-                <View className="max-w-xl w-full mx-auto">
+                <View className="w-full lg:w-1/2 mx-auto">
                     <AnimatedView>
                         <PageContent
                             isLoginPage={isLoginPage}
