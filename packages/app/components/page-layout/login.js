@@ -36,7 +36,7 @@ function PageContent({ children, isLoginPage, title }) {
     }
 
     return (
-        <View className="w-full justify-center p-4 sm:p-8 md:p-12 p-6 ">
+        <View className="w-full justify-center max-w-lg p-6 sm:p-8 md:p-12 mx-auto">
             <AnimatedView className="gap-4" direction="up" delay={200}>
                 <Card padding="p-0 gap-6 max-w-xl w-full mx-auto rounded-3xl">
                     <CardHeader className="px-6 pt-5">

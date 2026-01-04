@@ -102,7 +102,7 @@ const Logo = ({ mode = 'adaptive' }) => {
 const SplashTextInner = () => {
     const { t } = useTranslation()
     return (
-            <View className="text-center max-w-sm sm:max-w-lg lg:text-start gap-4 w-full flex-auto mx-auto ">
+            <View className="text-center max-w-lg sm:max-w-2xl lg:text-start gap-4 w-full flex-auto mx-auto ">
                 <H1
                     className="text-center lg:text-start" 
                     fontFamily='font-title'
@@ -162,7 +162,7 @@ const SplashTextComponent = (props) => {
 
 const JoinTextComponent = (props) => {
     return (
-            <AnimatedView direction="up" className=" w-64 h-64 sm:w-80 sm:h-80 web:duration-300 ">
+            <AnimatedView direction="up" className=" w-40 h-40 lg:w-80 lg:h-80 web:duration-300 ">
                             <SvgFile
                 src_dark="create-account-dark.svg"
                 src_default="create-account-light.svg"

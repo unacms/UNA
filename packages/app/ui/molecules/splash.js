@@ -30,7 +30,7 @@ import Page from 'app/ui/molecules/page'
 function PageContent({data}) {
     const { t } = useTranslation()
     return (
-        <View className="w-full justify-center lg:w-1/2 p-4 sm:p-8 md:p-12 p-6 ">
+        <View className="w-full justify-center max-w-lg p-6 sm:p-8 md:p-12 mx-auto">
             <AnimatedView className="gap-4" direction="up" delay={200}>
                 <Card
                     padding="p-0 gap-5 max-w-xl w-full mx-auto "

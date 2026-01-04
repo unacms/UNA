@@ -25,7 +25,7 @@ const isWeb = Platform.OS === 'web'
 function PageContent({ children }) {
     const { t } = useTranslation()
     return (
-        <View className="w-full justify-center lg:w-1/2 p-4 sm:p-8 md:p-12 p-6 ">
+        <View className="w-full justify-center max-w-lg p-6 sm:p-8 md:p-12 mx-auto">
 
             <AnimatedView className="gap-4" direction="up" delay={200}>
                 <Card padding="p-0 gap-6 max-w-xl w-full mx-auto rounded-3xl">
@@ -92,7 +92,7 @@ export default function PageLayout({ data, blocks }) {
     }
 
     const content = isWeb ? (
-        <View className="flex-col justify-center pt-14 lg:pt-0 w-full ">
+        <View className="flex-col justify-center w-full ">
             <View className={`justify-center w-full mx-auto lg:flex-row border-x-0 border-guide/20 border-dashed divide-x-0 divide-dashed divide-guide/20 ${appSetting('layout', 'max_width_content')}`}>
 
                 <View className=" text-center lg:text-start items-center lg:items-start flex-auto p-4 sm:p-8 md:p-12 gap-4 w-full mx-auto">

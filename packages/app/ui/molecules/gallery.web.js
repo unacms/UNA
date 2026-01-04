@@ -130,7 +130,7 @@ export default function Gallery({ items, autoscroll }) {
     return (
         <View 
             ref={containerRef}
-            className='w-full overflow-hidden relative p-1 '
+            className='overflow-hidden relative p-2 -m-2 '
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
         >
@@ -144,10 +144,10 @@ export default function Gallery({ items, autoscroll }) {
             </div>
             {showNavigation && (
                 <>
-                    <View className='absolute top-[calc(50%)] left-3 z-10'>
+                    <View className='absolute top-[calc(50%)] left-1 z-10'>
                         <Button variant="secondary" rounded size="base" onPress={goLeft} startDecorator="ArrowLeft" />
                     </View>
-                    <View className='absolute top-[calc(50%)] right-3 z-10'>
+                    <View className='absolute top-[calc(50%)] right-1 z-10'>
                         <Button variant="secondary" rounded size="base" onPress={goRight} startDecorator="ArrowRight" />
                     </View>
                 </>
