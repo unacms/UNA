@@ -51,7 +51,7 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
     const avatarContent = 
         <View className={`${sSize} overflow-hidden bg-secondary rounded-full`}>
             {!oProps.url_avatar && <View className={'h-full items-center justify-center bg-' + getRandomColor(oProps.id) + '-500 uppercase'}>
-                <Text className={sSizeFontLetter + ' text-white '}>{name}</Text>
+                <Text className={sSizeFontLetter + ' text-secondary-foreground '}>{name}</Text>
             </View>}
             {!!oProps.url_avatar && <Image
                 sizes={iSizeWidth + "px"}
