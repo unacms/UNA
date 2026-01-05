@@ -1170,7 +1170,7 @@ export const settingsDefault = {
         inputs: {
             default: ' file:text-foreground text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground bg-input border border-border/70 focus-visible:bg-card leading-5 focus-visible:border-ring focus-visible:outline-accent rounded-xl px-3 min-h-12 flex-auto text-base placeholder-muted-foreground text-foreground  web:duration-200 overflow-hidden',
            
-            multi: 'file:text-foreground text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground bg-input border border-border/70 focus-visible:bg-card leading-5 focus-visible:border-ring focus-visible:outline-accent rounded-xl px-3 py-2 min-h-12 flex-auto text-base placeholder-muted-foreground text-foreground  web:duration-200 overflow-hidden ',
+            multi: 'file:text-foreground text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground bg-input border border-border/70 focus-visible:bg-card leading-5 focus-visible:border-ring focus-visible:outline-accent rounded-xl px-3 py-2 min-h-12 flex-auto text-base placeholder-muted-foreground text-foreground  web:duration-200 overflow-hidden focus-visible:overflow-visible',
             rounded:
                 ' border border-border/60 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-full web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
             roundedsmall:

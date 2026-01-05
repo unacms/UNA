@@ -209,22 +209,35 @@ export default function RftText({
 
     ${cssOverrides}
 
-    #root, #root > div {
+    .tiptap, #root > div:nth-of-type(1)  {
+        scrollbar-width: none;
+        
         overflow: hidden !important;
     }
-    .tiptap, #root > div:nth-of-type(1) {
-        scrollbar-width: none;
-        -ms-overflow-style: none;
+    .tiptap, #root > div:nth-of-type(1):focus-within  {
+        scrollbar-width: auto;
+
+        overflow-y: scroll !important;
+    }
+        .ProseMirror.tiptap{
+        margin-right:20px;
+        }
+
+        .ProseMirror-focused.tiptap{
+        margin-right:0px;
+        }
+    /*#root, #root > div {
         overflow: hidden !important;
     }
     .tiptap::-webkit-scrollbar, #root > div:nth-of-type(1)::-webkit-scrollbar {
         display: none;
         width: 0;
         height: 0;
-    }
+    }*/
     .ProseMirror.tiptap {
+    scrollbar-width: none;
         height: auto !important;
-        overflow: visible !important;
+        /*overflow: visible !important;*/
         min-height: auto !important;
     }
     `
