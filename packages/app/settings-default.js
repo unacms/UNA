@@ -1779,9 +1779,9 @@ export const settingsDefault = {
 
             'u-btn-accent-cnt':
                 ' bg-accent overflow-hidden web:active:ring-2 web:active:ring-accent web:active:ring-offset-2 web:active:outline-none ',
-            'u-btn-accent-text': ' font-medium text-white ',
+            'u-btn-accent-text': ' font-medium text-accent-foreground ',
             'u-btn-accent-trans': '  web:duration-200',
-            'u-btn-accent-hover': 'web:group-hover:bg-white/10 web:duration-200',
+            'u-btn-accent-hover': 'web:group-hover:bg-accent/90 web:duration-200',
             
 
             'u-btn-secondary-cnt': 'overflow-hidden web:group bg-secondary/60 web:hover:bg-secondary web:focus-visible:bg-secondary ',
