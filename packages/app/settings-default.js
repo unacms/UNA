@@ -1784,7 +1784,7 @@ export const settingsDefault = {
             'u-btn-accent-hover': 'web:group-hover:bg-accent/90 web:duration-200',
             
 
-            'u-btn-secondary-cnt': 'overflow-hidden web:group bg-secondary/60 web:hover:bg-secondary web:focus-visible:bg-secondary ',
+            'u-btn-secondary-cnt': 'overflow-hidden web:group bg-secondary web:hover:bg-secondary/90 web:focus-visible:bg-secondary ',
             'u-btn-secondary-text':
                 ' web:duration-200 font-medium text-secondary-foreground web:group-hover:text-foreground ',
             'u-btn-secondary-trans': ' web:duration-200 ',
