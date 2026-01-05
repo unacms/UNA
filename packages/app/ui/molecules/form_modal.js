@@ -21,7 +21,6 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
         const { layoutBlocks } = layout;
         return (
             <Modal
-                outerClickClose={false}
                 onClose={() => setPageData(false)}
                 onVisible={!!pageData}
                 title={`${authorData.content[0].data.author_data.display_name}'s post`}
@@ -49,7 +48,6 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
     return (
         <Modal
             maxWidth={modalWidth}
-            outerClickClose={false}
             scrollable={pageData?.module=='bx_timeline' ? false: true}
             title={isShowHeader ? pageData.title : null}
             onVisible={!!pageData}

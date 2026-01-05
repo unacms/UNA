@@ -284,7 +284,15 @@ export function Modal({
                         </Row>
                     }
                   
-                    <Cnt style={styles} className={`${padding} flex-auto`}>{children}</Cnt>
+                    <Cnt style={styles} className={`${padding} flex-auto`}>
+                         <Pressable
+                            onPress={(event) => {
+                                event.stopPropagation();
+                            }}
+                        >
+                            {children}
+                        </Pressable>
+                    </Cnt>
                 </View>
             </View>
         </View>)

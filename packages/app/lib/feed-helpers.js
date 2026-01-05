@@ -111,7 +111,6 @@ export const FeedEditForm = memo(({ setViewState, viewState, id }) => {
 
     return (
         <Modal
-            outerClickClose={false}
             onVisible={true}
             transparent={true}
             headerBorder={true}
