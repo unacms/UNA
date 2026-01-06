@@ -555,7 +555,7 @@ export default function RftText({
         }
     }, [formContext.formState.isSubmitted])
     console.log("isWebViewReady", isWebViewReady, editor)
-    /*const htmlContent = useEditorContent(isWebViewReady ? editor : null, { type: 'html' })
+    const htmlContent = useEditorContent(editor, { type: 'html' })
     useEffect(() => {
         if (stripTags(htmlContent)) {
             if (onFocus) onFocus()
@@ -568,7 +568,7 @@ export default function RftText({
             field.onChange(htmlContent)
         }
     }, [htmlContent])
-*/
+
     const processImages = (src, formName) => {
         let images = []
         const fileName = src.split('/').pop() + '.png'
@@ -831,14 +831,20 @@ export default function RftText({
                             /*const query = text.substring(1).toLowerCase();
                             editorElement.setAttribute('query', symbol + query);
                             const selection = window.getSelection();
-                            let range;
+                            let rect = { left: 0, bottom: 0 }; // default
                             let rect;
-                            if (selection.rangeCount > 0) {
-                                range = selection.getRangeAt(0);
-                                rect = range.getBoundingClientRect();
-
-                                editorElement.setAttribute('queryX', rect.left);
-                                editorElement.setAttribute('queryY', rect.bottom);
+                            if (selection && selection.rangeCount > 0   ) {
+                                try {
+                                    const range = selection.getRangeAt(0);
+                                    const rangeRect = range?.getBoundingClientRect();
+                                    if (rangeRect) {
+                                        rect = rangeRect;
+                                        editorElement.setAttribute('queryX', rect.left);
+                                        editorElement.setAttribute('queryY', rect.bottom);
+                                    }
+                                } catch (e) {
+                                    console.warn('[TipTap] getBoundingClientRect failed:', e);
+                                }
                             }
                             if (!mentionVisible) { 
                                 mentionVisible = true;
