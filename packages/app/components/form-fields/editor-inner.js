@@ -513,35 +513,56 @@ export default function RftText({
 
     useEffect(() => {
         const subscription = emitter.addListener('editor', (data) => {
+            // ✅ Проверяем что editor готов
+            if (!editor || !editor.view) {
+                console.warn('Editor not ready yet');
+                return;
+            }
+    
             if (data.action == 'blur') {
                 if (data.timeout) {
                     setTimeout(() => {
-                        console.log('editor-blur', data, editor)
-                        editor.blur()
+                        try {
+                            console.log('editor-blur', data, editor)
+                            editor.blur()
+                        } catch (e) {
+                            console.warn('Error blurring editor:', e)
+                        }
                     }, data.timeout)
                 } else {
-                    console.log('editor-blur', data, editor)
-                    editor.blur()
+                    try {
+                        console.log('editor-blur', data, editor)
+                        editor.blur()
+                    } catch (e) {
+                        console.warn('Error blurring editor:', e)
+                    }
                 }
             }
             if (data.action == 'focus') {
                 if (data.timeout) {
                     setTimeout(() => {
-                        console.log('editor-focus', data, editor)
-                        editor.focus('end')
+                        try {
+                            console.log('editor-focus', data, editor)
+                            editor.focus('end')
+                        } catch (e) {
+                            console.warn('Error focusing editor:', e)
+                        }
                     }, 800)
                 } else {
-                    console.log('editor-focus', data, editor)
-                    editor.focus('end')
+                    try {
+                        console.log('editor-focus', data, editor)
+                        editor.focus('end')
+                    } catch (e) {
+                        console.warn('Error focusing editor:', e)
+                    }
                 }
             }
         })
-
-        // Отписываемся при размонтировании
+    
         return () => {
             subscription.remove()
         }
-    }, [])
+    }, [editor]) // ✅ Добавить editor в зависимости
 
     useEffect(() => {
         if (formContext.formState.isSubmitted && props.kb_stay_open != true) {
@@ -660,8 +681,13 @@ export default function RftText({
             }
 
             if (message?.type === 'requestNewline') {
-                if (editor && editor.chain) {
-                    editor.chain().focus().setHardBreak().run()
+                // ✅ Проверить готовность editor
+                try {
+                    if (editor && editor.chain && editor.view) {
+                        editor.chain().focus().setHardBreak().run()
+                    }
+                } catch (e) {
+                    console.warn('Error inserting newline:', e)
                 }
             }
 
@@ -828,24 +854,44 @@ export default function RftText({
                             const selection = window.getSelection();
                             let range;
                             let rect;
-                            if (selection.rangeCount > 0) {
-                                range = selection.getRangeAt(0);
-                                rect = range.getBoundingClientRect();
-
-                                editorElement.setAttribute('queryX', rect.left);
-                                editorElement.setAttribute('queryY', rect.bottom);
+                            
+                            // ✅ Добавить защиту для iOS
+                            try {
+                                if (selection && selection.rangeCount > 0) {
+                                    range = selection.getRangeAt(0);
+                                    // Проверяем что range валиден и имеет метод getBoundingClientRect
+                                    if (range && typeof range.getBoundingClientRect === 'function') {
+                                        rect = range.getBoundingClientRect();
+                                        
+                                        if (rect) {
+                                            editorElement.setAttribute('queryX', rect.left);
+                                            editorElement.setAttribute('queryY', rect.bottom);
+                                        }
+                                    }
+                                }
+                            } catch (e) {
+                                console.warn('Error getting caret position:', e);
+                                // Fallback - используем координаты editorElement
+                                const fallbackRect = editorElement.getBoundingClientRect();
+                                if (fallbackRect) {
+                                    rect = { left: fallbackRect.left, bottom: fallbackRect.top };
+                                }
                             }
+                            
                             if (!mentionVisible) { 
                                 mentionVisible = true;
                             }
 
-                            window.ReactNativeWebView.postMessage(JSON.stringify({
-                                type: 'mention',
-                                payload: query,
-                                sym: symbol,
-                                left:rect.left,
-                                bottom:rect.bottom
-                            }));
+                            // Отправляем сообщение только если есть координаты
+                            if (rect) {
+                                window.ReactNativeWebView.postMessage(JSON.stringify({
+                                    type: 'mention',
+                                    payload: query,
+                                    sym: symbol,
+                                    left: rect.left,
+                                    bottom: rect.bottom
+                                }));
+                            }
                         } else if (mentionVisible) { 
                             mentionVisible = false;
                             editorElement.removeAttribute('query');
