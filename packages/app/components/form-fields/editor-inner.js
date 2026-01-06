@@ -82,6 +82,9 @@ export default function RftText({
     const [editorHeight, setEditorHeight] = useState(initialHeight)
     const [isEnter, setIsEnter] = useState(false)
     const [suggestionsSize, setSuggestionsSize] = useState([0, 0])
+    const [isWebViewReady, setIsWebViewReady] = useState(false)
+
+
     const object_privacy_view =
         formContext.watch('object_privacy_view') ||
         formContext.watch('cmt_privacy_view')
@@ -512,10 +515,8 @@ export default function RftText({
     }, [props.placeholder])
 
     useEffect(() => {
-        console.log('subscription', editor)
         const subscription = emitter.addListener('editor', (data) => {
-           
-            /*if (data.action == 'blur') {
+            if (data.action == 'blur') {
                 if (data.timeout) {
                     setTimeout(() => {
                         console.log('editor-blur', data, editor)
@@ -536,7 +537,7 @@ export default function RftText({
                     console.log('editor-focus', data, editor)
                     editor.focus('end')
                 }
-            }*/
+            }
         })
 
         // Отписываемся при размонтировании
@@ -553,8 +554,8 @@ export default function RftText({
             */
         }
     }, [formContext.formState.isSubmitted])
-
-    const htmlContent = useEditorContent(editor, { type: 'html' })
+    console.log("isWebViewReady", isWebViewReady, editor)
+    /*const htmlContent = useEditorContent(isWebViewReady ? editor : null, { type: 'html' })
     useEffect(() => {
         if (stripTags(htmlContent)) {
             if (onFocus) onFocus()
@@ -567,7 +568,7 @@ export default function RftText({
             field.onChange(htmlContent)
         }
     }, [htmlContent])
-
+*/
     const processImages = (src, formName) => {
         let images = []
         const fileName = src.split('/').pop() + '.png'
@@ -689,6 +690,7 @@ export default function RftText({
             }
 
             if (message?.type == 'editor-ready') {
+                setIsWebViewReady(true)
                 const submitOnEnter = isCommentsEditor
                     ? appSetting('comments', 'submit_comment_on_enter')
                     : enableSubmitOnEnter
@@ -831,23 +833,23 @@ export default function RftText({
                             let range;
                             let rect;
                             if (selection.rangeCount > 0) {
-                                /*range = selection.getRangeAt(0);
+                                range = selection.getRangeAt(0);
                                 rect = range.getBoundingClientRect();
 
                                 editorElement.setAttribute('queryX', rect.left);
-                                editorElement.setAttribute('queryY', rect.bottom);*/
+                                editorElement.setAttribute('queryY', rect.bottom);
                             }
                             if (!mentionVisible) { 
                                 mentionVisible = true;
                             }
 
-                           /* window.ReactNativeWebView.postMessage(JSON.stringify({
+                            window.ReactNativeWebView.postMessage(JSON.stringify({
                                 type: 'mention',
                                 payload: query,
                                 sym: symbol,
                                 left:rect.left,
                                 bottom:rect.bottom
-                            }));*/
+                            }));
                         } else if (mentionVisible) { 
                             mentionVisible = false;
                             editorElement.removeAttribute('query');
