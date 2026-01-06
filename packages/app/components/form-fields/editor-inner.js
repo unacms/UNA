@@ -479,7 +479,7 @@ export default function RftText({
     const allExtensions = [...TenTapStartKit, ...baseExtensions];
     const seenNames = new Set();
     const uniqueExtensions = allExtensions.filter((ext) => {
-        const name = ext?.name || ext?.tiptapExtension?.name;
+        const name = ext?.name || ext?.tiptapExtension?.name || ext?.config?.name;
         if (name && seenNames.has(name)) {
             return false;
         }
@@ -691,6 +691,7 @@ export default function RftText({
 
             if (message?.type == 'editor-ready') {
                 setIsWebViewReady(true)
+                setTimeout(() => {
                 const submitOnEnter = isCommentsEditor
                     ? appSetting('comments', 'submit_comment_on_enter')
                     : enableSubmitOnEnter
@@ -827,7 +828,7 @@ export default function RftText({
                         const symbol = text.charAt(0);
 
                         if (symbol === '@' || symbol === '#') {
-                            const query = text.substring(1).toLowerCase();
+                            /*const query = text.substring(1).toLowerCase();
                             editorElement.setAttribute('query', symbol + query);
                             const selection = window.getSelection();
                             let range;
@@ -849,7 +850,7 @@ export default function RftText({
                                 sym: symbol,
                                 left:rect.left,
                                 bottom:rect.bottom
-                            }));
+                            }));*/
                         } else if (mentionVisible) { 
                             mentionVisible = false;
                             editorElement.removeAttribute('query');
@@ -901,6 +902,7 @@ export default function RftText({
                             console.warn("Clipboard items are empty!");
                         }
                     })`)
+                     }, 100);
             }
         } catch (error) {}
     }
