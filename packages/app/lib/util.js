@@ -13,7 +13,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LogLevel, OneSignal } from 'react-native-onesignal';
 import { isComponent } from 'app/components/registry';
 import { clsx } from 'clsx';
-import * as RNLocalize from "react-native-localize";
 
 const nativeCache = [];
 export const isWeb = Platform.OS === 'web'
@@ -246,13 +245,6 @@ export const formatDate = (date, t) => {
 }*/
 const _fmtCache = new Map();
 
-function getDateOrderByLocale(tag) {
-    const lang = tag.toLowerCase();
-    if (lang.startsWith("en-us")) return "M D, Y";
-    if (lang.startsWith("zh") || lang.startsWith("ja") || lang.startsWith("ko")) return "Y M D";
-    return "D M Y";
-}
-
 export const formatDate = (
     input,
     t,
@@ -269,7 +261,6 @@ export const formatDate = (
     } = {}
 ) => {
     const date = input instanceof Date ? input : new Date(input);
-    const localeTag = locale || RNLocalize.getLocales()?.[0]?.languageTag || "en-US";
     if (Number.isNaN(date.getTime())) return '';
     const nowYear = new Date().getFullYear();
 
@@ -308,63 +299,46 @@ export const formatDate = (
         yearPolicy,
         nowYear,
         hour12,
-        rel,
-        localeTag
+        rel
     });
 };
 
 // Универсальная функция форматирования даты (одинаковый результат везде)
-function formatDateUniversal(date, {
-    showDate,
-    showTime,
-    month,
-    yearPolicy,
-    nowYear,
-    hour12,
-    rel,
-    localeTag, // добавили
-}) {
+function formatDateUniversal(date, { showDate, showTime, month, yearPolicy, nowYear, hour12, rel }) {
     const parts = [];
 
-    // --- DATE ---
     if (showDate && !rel) {
+        // День
+        parts.push(String(date.getDate()));
+
+        // Месяц
         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const monthLongNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-        const dayStr = String(date.getDate()); // можно padStart(2,'0') если хочешь 2-digit
         const monthIndex = date.getMonth();
 
-        let monthStr;
-        if (month === 'short') monthStr = monthNames[monthIndex];
-        else if (month === 'long') monthStr = monthLongNames[monthIndex];
-        else if (month === 'numeric') monthStr = String(monthIndex + 1);
-        else if (month === '2-digit') monthStr = String(monthIndex + 1).padStart(2, '0');
-        else monthStr = monthNames[monthIndex];
+        if (month === 'short') {
+            parts.push(monthNames[monthIndex]);
+        } else if (month === 'long') {
+            parts.push(monthLongNames[monthIndex]);
+        } else if (month === 'numeric') {
+            parts.push(String(monthIndex + 1));
+        } else if (month === '2-digit') {
+            parts.push(String(monthIndex + 1).padStart(2, '0'));
+        } else {
+            // По умолчанию short
+            parts.push(monthNames[monthIndex]);
+        }
 
-        const needYear = (yearPolicy === 'always') || (yearPolicy === 'auto' && date.getFullYear() !== nowYear);
-        const yearStr = String(date.getFullYear());
-
-        const tokens = { D: dayStr, M: monthStr, Y: needYear ? yearStr : "" };
-
-        // порядок + пунктуация
-        const pattern = getDateOrderByLocale(localeTag); // "M D, Y" etc
-        const dateText = pattern
-            .replace(/\bD\b/g, tokens.D)
-            .replace(/\bM\b/g, tokens.M)
-            .replace(/\bY\b/g, tokens.Y)
-            // подчистим лишнюю пунктуацию/пробелы, если год скрыт
-            .replace(/\s+,/g, ",")
-            .replace(/,\s*$/g, "")
-            .replace(/\s+/g, " ")
-            .trim();
-
-        if (dateText) parts.push(dateText);
+        // Год
+        if (yearPolicy === 'always' || (yearPolicy === 'auto' && date.getFullYear() !== nowYear)) {
+            parts.push(String(date.getFullYear()));
+        }
     }
 
-    // --- TIME ---
+    // Время
     if (showTime) {
         let hours = date.getHours();
-        const minutes = date.getMinutes();
+        let minutes = date.getMinutes();
 
         if (hour12) {
             const period = hours >= 12 ? 'PM' : 'AM';
@@ -375,7 +349,7 @@ function formatDateUniversal(date, {
         }
     }
 
-    return (rel || "") + parts.join(" ");
+    return rel + parts.join(' ');
 }
 /*
 export const formatTime = (ts) => {
@@ -752,9 +726,9 @@ export function truncateHTML(html, maxLength, maxLines = null) {
                     lineCount++;
                     if (maxLines !== null && lineCount > maxLines) break;
                 }
-
+                
                 if (i > 0) textPartTruncated += '\n';
-
+                
                 const remainingChars = maxLength - textLength;
                 const line = textLines[i];
 
