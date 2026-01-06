@@ -908,7 +908,7 @@ export default function RftText({
                             console.warn("Clipboard items are empty!");
                         }
                     })`)
-                     }, 100);
+                     }, 200);
             }
         } catch (error) {}
     }
