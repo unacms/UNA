@@ -342,19 +342,19 @@ export default function RftText({
     }
 
     useEffect(() => {
-        if (editor && (field?.value == '' || field?.value?.startsWith("<!--INITED-->")) && editor.getHTML() != field.value) {
-             setTimeout(() => {
-                 editor.setContent(field.value.replaceAll("<!--INITED-->", ''))
-            }, 500);
-           
-        }
-    }, [field.value])
+    if (editor && isWebViewReady && (field?.value == '' || field?.value?.startsWith("<!--INITED-->")) && editor.getHTML() != field.value) {
+         setTimeout(() => {
+             editor.setContent(field.value.replaceAll("<!--INITED-->", ''))
+        }, 500);
+       
+    }
+}, [field.value, isWebViewReady])
 
     useEffect(() => {
-        if (editor && editor.getHTML() != value) {
-            editor.setContent(value)
-        }
-    }, [value])
+    if (editor && isWebViewReady && editor.getHTML() != value) {
+        editor.setContent(value)
+    }
+}, [value, isWebViewReady])
 
     const baseExtensions = [
         ImageBridge.configureExtension({
@@ -500,19 +500,20 @@ export default function RftText({
     const lastAppliedThemeRef = useRef(null)
 
     useEffect(() => {
-        if (!editor) return
-        if (lastAppliedThemeRef.current === themeName) return
-        lastAppliedThemeRef.current = themeName
-        editor.injectJS(applyIframeTheme(themeName))
-        // Inject wheel event forwarder on web to allow modal scrolling
-        if (Platform.OS === 'web') {
-            editor.injectJS(wheelEventForwarder)
-        }
-    }, [editor, themeName])
+    if (!editor || !isWebViewReady) return
+    if (lastAppliedThemeRef.current === themeName) return
+    lastAppliedThemeRef.current = themeName
+    editor.injectJS(applyIframeTheme(themeName))
+    // Inject wheel event forwarder on web to allow modal scrolling
+    if (Platform.OS === 'web') {
+        editor.injectJS(wheelEventForwarder)
+    }
+}, [editor, themeName, isWebViewReady])
 
     useEffect(() => {
-        editor.setPlaceholder(props.placeholder)
-    }, [props.placeholder])
+    if (!editor || !isWebViewReady) return
+    editor.setPlaceholder(props.placeholder)
+}, [props.placeholder, editor, isWebViewReady])
 
     useEffect(() => {
         const subscription = emitter.addListener('editor', (data) => {
