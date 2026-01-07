@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 // TODO: query database (Redis) to get list of allowed domains (list of UNA hosts) ?
 const ALLOWED_HOSTS = [
   'hihi.com',
+  'ci.una.io',
 ];
 
 export async function GET(req) {
@@ -30,7 +31,7 @@ export async function GET(req) {
     return new Response("Host not allowed", { status: 403 });
   }
 
-  // 🔐 tenant isolation (пример)
+  // 🔐 tenant isolation
   // TODO: implement tenant isolation logic if needed
 
   // 🕒 fetch with timeout

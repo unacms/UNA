@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { UNA_URL, UNA_API_KEY, MULTITENANT } from 'app/config';
+import { getDomainByHostname } from 'app/lib/domains/domains';
 export const config = {
     matcher: ["/((?!sw.js|logo192.png|loader.svg|favicon.ico|_vercel).*)"],
     //runtime: 'experimental-edge',
@@ -8,20 +9,15 @@ export const config = {
 async function setTenantHeaders(response, tenant) {
     response.headers.set("x-tenant-id", tenant.id);
     response.headers.set("x-tenant-una-url", tenant.unaUrl);
-    response.headers.set("x-tenant-una-key", tenant.apiKey);
-    response.headers.set("x-tenant-rev", tenant.rev);
+    response.headers.set("x-tenant-una-key", tenant.unaApiKey);
+    response.headers.set("x-tenant-revision", tenant.revision);
 }
 
 async function resolveTenant(hostnameWithPort) {
     const hostname = hostnameWithPort.split(':')[0];
-
-    // TODO: query database(redis?) to map hostname to tenant ID and other settings.    
-    if (hostname == 'aaa.localhost') 
-        return {'id': 'aaa', 'unaUrl': 'http://hihi.com/unatest', 'apiKey': 'WqFfru3U3FYFssjaU+Tf2!vsHkRtP!xYqP7/,4YmgG?c?YB9', 'rev': 1};
-    if (hostname == 'bbb.localhost') 
-        return {'id': 'bbb', 'unaUrl': 'http://hihi.com/unatest3', 'apiKey': 'P59XZEyQkqjQQ2tuXLSjXRXNHs7fsjYHFsx!z5kuj52BkgT2', 'rev': 42};
-
-    return null;
+    const domain = await getDomainByHostname(hostname); // return {'id': 'aaa', 'unaUrl': 'http://hihi.com/unatest', 'unaApiKey': 'WqFfru3U3FYFssjaU+Tf2!vsHkRtP!xYqP7/,4YmgG?c?YB9', 'revision': 1};
+    // console.log('Resolved tenant for hostname', hostname, ':', domain);
+    return domain;
 }
 
 export async function proxy(request) {    
@@ -52,7 +48,8 @@ export async function proxy(request) {
 
         if (tenant == null && MULTITENANT && !request.nextUrl.pathname.includes('static')) {
             // rewrite to specific page where new tenant can be created
-            return NextResponse.rewrite(new URL(`/new-tenant`, request.url));
+            // return NextResponse.rewrite(new URL(`/new-tenant`, request.url));
+            return NextResponse.redirect(new URL('http://localhost:4000'), 307); // temporary redirect
         }        
 
         // If the path is not an icon, treat it as a normal page: collect
@@ -76,7 +73,7 @@ export async function proxy(request) {
             // cookie string from the query.
             if (cookieString != ''){
                 const response =  NextResponse.rewrite(new URL(url + (url.includes('?') ? '&' : '?') + "cookieString=" + cookieString));
-                if (MULTITENANT)
+                if (MULTITENANT && tenant)
                     setTenantHeaders(response, tenant)
                 return response
             }
@@ -87,7 +84,7 @@ export async function proxy(request) {
                 response.headers.set('Cache-Control', 'public, s-maxage=1')
                 response.headers.set('CDN-Cache-Control', 'public, s-maxage=60')
                 response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=3600')
-                if (MULTITENANT)
+                if (MULTITENANT && tenant)
                     setTenantHeaders(response, tenant)
                 return response
             }
@@ -115,7 +112,7 @@ export async function proxy(request) {
                 return new NextResponse('Tenant not found', { status: 404 });
             }
             unaUrl = tenant.unaUrl;
-            unaApiKey = tenant.apiKey;  
+            unaApiKey = tenant.unaApiKey;  
         }
 
         // Path targets a PHP endpoint: proxy the request to the UNA backend.
