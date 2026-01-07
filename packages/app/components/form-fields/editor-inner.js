@@ -41,10 +41,11 @@ export default function RftText({
     ...props
 }) {
 
+    const isWeb = Platform.OS === 'web'
     const unicFormName = `${props.form_name}` // for catch images in editor
 
     let b = [...DEFAULT_TOOLBAR_ITEMS]
-    if (Platform.OS == 'web') {
+    if (isWeb) {
         const images = [
             'bold.png',
             'italic.png',
@@ -94,7 +95,7 @@ export default function RftText({
         url1 += '&object_privacy_view=' + object_privacy_view
     if (object_id) url1 += '&cid=' + object_id
 
-    const isCommentsEditor = props.container_class === 'comments'
+        const isCommentsEditor = props.container_class === 'comments'
     // Comments use 14px (text-sm), other editors use 16px (text-base)
     // iOS zoom prevention is handled by viewport maximumScale=1
     const editorFontSize = isCommentsEditor ? '14px' : '16px'
@@ -113,7 +114,8 @@ export default function RftText({
             background: 'rgba(15, 25, 40, 1)',
         },
     }
-    const editorTextColor = themeName === 'dark' ? editorPalette.dark.text : editorPalette.light.text
+    const editorTextColor =
+        themeName === 'dark' ? editorPalette.dark.text : editorPalette.light.text
 
     const buildEditorCSS = (mode) => {
         const isDark = mode === 'dark'
@@ -470,30 +472,41 @@ export default function RftText({
         }
     }
 
-  
+    // Filter duplicate extensions to prevent TipTap warnings
+    // TenTapStartKit includes listItem and textStyle which can conflict with other bridges
+    const allExtensions = [...TenTapStartKit, ...baseExtensions];
+    const seenNames = new Set();
+    const uniqueExtensions = allExtensions.filter((ext) => {
+        const name = ext?.name || ext?.tiptapExtension?.name;
+        if (name && seenNames.has(name)) {
+            return false;
+        }
+        if (name) seenNames.add(name);
+        return true;
+    });
 
     const editor = useEditorBridge({
         autofocus: props.autofocus,
         avoidIosKeyboard: false,
-        dynamicHeight: false,
+        dynamicHeight: isWeb? false : true,
         placeholder: props.placeholder,
         theme: customEditorTheme,
         initialContent: field.value,
-        bridgeExtensions: [...TenTapStartKit, ...baseExtensions],
+        bridgeExtensions: uniqueExtensions,
     })
 
     const lastAppliedThemeRef = useRef(null)
 
-    /*useEffect(() => {
+    useEffect(() => {
         if (!editor) return
         if (lastAppliedThemeRef.current === themeName) return
         lastAppliedThemeRef.current = themeName
         editor.injectJS(applyIframeTheme(themeName))
         // Inject wheel event forwarder on web to allow modal scrolling
-        if (Platform.OS === 'web') {
+        if (isWeb) {
             editor.injectJS(wheelEventForwarder)
         }
-    }, [editor, themeName])*/
+    }, [editor, themeName])
 
     useEffect(() => {
         editor.setPlaceholder(props.placeholder)
@@ -525,7 +538,7 @@ export default function RftText({
             }
         })
 
-        // Отписываемся при размонтировании
+        //                                 
         return () => {
             subscription.remove()
         }
@@ -687,6 +700,7 @@ export default function RftText({
                         platformOS: '${Platform.OS}'
                     };
                     const editorElement = document.getElementsByClassName("tiptap")[0];
+
                     ${applyIframeTheme(themeName)}
 
                     document.addEventListener('keydown', function(event) {
