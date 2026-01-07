@@ -111,7 +111,6 @@ export default function DropdownPopup({
     };
 
     const handleBackdropPress = (event) => {
-        console.log("sdfds")
         event.stopPropagation();
         handleToggle(false);
     };

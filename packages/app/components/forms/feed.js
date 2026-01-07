@@ -139,7 +139,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                     <View className="justify-between flex-col flex-auto ">
                         <View className="w-full flex-auto justify-start p-1.5 ">
                             <View
-                                className="flex-auto bg-red-500"
+                                className="flex-auto"
                                 style={{
                                     ...(isWeb && { transition: 'height 0.1s cubic-bezier(0.25, 0.1, 0.25, 1)' })
                                 }}
