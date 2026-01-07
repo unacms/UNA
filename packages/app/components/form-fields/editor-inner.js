@@ -1,6 +1,7 @@
+import Field, { getValidationRules } from './_field'
 import { useController, useFormContext } from 'react-hook-form'
-import { Button } from 'app/design/controls'
-import { useState, useRef, useEffect } from 'react'
+import { InputMulti, Input, TextInputClear, Button } from 'app/design/controls'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { View, ScrollView } from 'app/design/view'
 import {
     DEFAULT_TOOLBAR_ITEMS,
@@ -10,19 +11,23 @@ import {
     darkEditorTheme,
     TenTapStartKit,
     LinkBridge,
+    CoreBridge,
     CodeBridge,
     useEditorContent,
     ImageBridge,
     DropCursorBridge,
     PlaceholderBridge,
+    Extension,
 } from '@10play/tentap-editor'
 import { useFilesData } from 'app/context/files'
-import { Platform, KeyboardAvoidingView } from 'react-native'
+import { Keyboard, Platform, KeyboardAvoidingView } from 'react-native'
 import { Theme } from 'app/design/theme'
 import { getAlert, stripTags, stripTagsWithLinks } from 'app/lib/util'
+import { Text } from 'app/design/typography'
 import { fetcher } from 'app/lib/fetcher'
 import { appSetting } from 'app/lib/util'
 import { ThemeName } from 'app/design/theme'
+import { TextInput } from 'react-native'
 import emitter from 'app/context/emitter'
 
 const inputSettings = appSetting('theme', 'inputs');
@@ -30,9 +35,9 @@ const inputSettings = appSetting('theme', 'inputs');
 export default function RftText({
     name,
     value = '',
+    numLines = 4,
     minHeight,
-    initialHeight= 120,
-    maxHeight = 300,
+    maxHeight,
     onFocus,
     onBlur,
     html,
@@ -79,12 +84,9 @@ export default function RftText({
 
     const [suggestions, setSuggestions] = useState([])
     const [keywordval, setKeyword] = useState(['', ''])
-    const [editorHeight, setEditorHeight] = useState(initialHeight)
+    const [editorHeight, setEditorHeight] = useState(0)
     const [isEnter, setIsEnter] = useState(false)
     const [suggestionsSize, setSuggestionsSize] = useState([0, 0])
-    const [isWebViewReady, setIsWebViewReady] = useState(false)
-
-
     const object_privacy_view =
         formContext.watch('object_privacy_view') ||
         formContext.watch('cmt_privacy_view')
@@ -97,206 +99,10 @@ export default function RftText({
         url1 += '&object_privacy_view=' + object_privacy_view
     if (object_id) url1 += '&cid=' + object_id
 
-        const isCommentsEditor = props.container_class === 'comments'
-    // Comments use 14px (text-sm), other editors use 16px (text-base)
-    // iOS zoom prevention is handled by viewport maximumScale=1
-    const editorFontSize = isCommentsEditor ? '14px' : '16px'
+    const isCommentsEditor = props.container_class === 'comments'
+    // Ensure at least 16px to avoid iOS Safari zoom on focus. Align with global CSS.
+    const editorFontSize = '16px'
     const editorLineHeight = isCommentsEditor ? '20px' : '24px'
-    // Match published feed font (Inter via --font-main) so the editor looks identical to posts.
-    const editorFontFamily =
-        'var(--font-main, "Inter", "Inter Variable", "InterVariable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif)'
-    const themeName = ThemeName() || 'light'
-    const editorPalette = {
-        light: {
-            text: 'rgba(30, 40, 55, 1)',
-            background: 'rgba(255, 255, 255, 1)',
-        },
-        dark: {
-            text: 'rgba(225, 230, 240, 1)',
-            background: 'rgba(15, 25, 40, 1)',
-        },
-    }
-    const editorTextColor =
-        themeName === 'dark' ? editorPalette.dark.text : editorPalette.light.text
-
-    const buildEditorCSS = (mode) => {
-        const isDark = mode === 'dark'
-        const cssOverrides = isDark
-            ? appSetting('editor', 'css_dark')
-            : appSetting('editor', 'css')
-
-        return `
-    /* Load Inter inside the editor iframe to match published posts */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-    :root {
-      --editor-font: ${editorFontFamily};
-      --color-text-light: ${editorPalette.light.text};
-      --color-text-dark: ${editorPalette.dark.text};
-      --color-background-light: ${editorPalette.light.background};
-      --color-background-dark: ${editorPalette.dark.background};
-      --color-text: ${isDark ? editorPalette.dark.text : editorPalette.light.text};
-      --color-background: ${isDark ? editorPalette.dark.background : editorPalette.light.background};
-    }
-
-    @media (prefers-color-scheme: dark) {
-        :root {
-            --color-text: var(--color-text-dark);
-            --color-background: var(--color-background-dark);
-        }
-    }
-
-    html, body, *, *::before, *::after {
-        font-family: var(--editor-font) !important;
-        color: var(--color-text);
-    }
-    html, body {
-        overflow: hidden !important;
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        overscroll-behavior: none;
-    }
-    body {
-        font-size: ${editorFontSize};
-        line-height: ${editorLineHeight};
-        color: var(--color-text);
-        background-color: transparent;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-    }
-    img {
-        display: none;
-    }
-    body P, body p {
-        margin-bottom: 12px;
-        margin-top: 12px;
-        font-family: inherit !important;
-        color: var(--color-text);
-    }
-    body P:first-child, body p:first-child {
-        margin-top: 0px;
-    }
-    body P:last-child, body p:last-child {
-        margin-bottom: 0px;
-    }
-    .is-editor-empty:first-child::before {
-        float: none !important;
-        position: absolute;
-    }
-    .ProseMirror, .tiptap, .ProseMirror p, .tiptap p, .ProseMirror *, .tiptap * {
-        font-family: var(--editor-font) !important;
-        color: var(--color-text);
-        background-color: transparent;
-    }
-    .mention-list {
-        position: absolute;
-        background: var(--color-background);
-        border: 1px solid #ccc;
-        list-style: none;
-        padding: 5px;
-        margin: 0;
-        max-height: 150px;
-        overflow-y: auto;
-        color: var(--color-text);
-    }
-    .mention-list li {
-        padding: 5px;
-        cursor: pointer;
-    }
-    .mention-list li:hover,
-    .mention-list li.active {
-        background: lightblue;
-    }
-
-    ${cssOverrides}
-
-    .tiptap, #root > div:nth-of-type(1)  {
-        scrollbar-width: none;
-        
-        overflow: hidden !important;
-    }
-    .tiptap, #root > div:nth-of-type(1):focus-within  {
-        scrollbar-width: auto;
-
-        overflow-y: scroll !important;
-    }
-        .ProseMirror.tiptap{
-        margin-right:20px;
-        }
-
-        .ProseMirror-focused.tiptap{
-        margin-right:0px;
-        }
-    /*#root, #root > div {
-        overflow: hidden !important;
-    }
-    .tiptap::-webkit-scrollbar, #root > div:nth-of-type(1)::-webkit-scrollbar {
-        display: none;
-        width: 0;
-        height: 0;
-    }*/
-    .ProseMirror.tiptap {
-    scrollbar-width: none;
-        height: auto !important;
-        /*overflow: visible !important;*/
-        min-height: auto !important;
-    }
-    `
-    }
-
-    const wheelEventForwarder = `
-        // Forward wheel events to parent to allow modal scrolling
-        window.addEventListener('wheel', function(e) {
-            if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
-                // For React Native WebView
-                window.ReactNativeWebView.postMessage(JSON.stringify({
-                    type: 'wheel',
-                    deltaY: e.deltaY,
-                    deltaX: e.deltaX
-                }));
-            } else if (window.parent !== window) {
-                // For web iframe - forward to parent
-                e.preventDefault();
-                const parentEvent = new WheelEvent('wheel', {
-                    deltaX: e.deltaX,
-                    deltaY: e.deltaY,
-                    deltaZ: e.deltaZ,
-                    deltaMode: e.deltaMode,
-                    bubbles: true,
-                    cancelable: true
-                });
-                window.parent.document.dispatchEvent(parentEvent);
-            }
-        }, { passive: false });
-    `
-
-    const applyIframeTheme = (mode) => {
-        const css = JSON.stringify(buildEditorCSS(mode))
-        const themeAttr = mode === 'dark' ? 'dark' : 'light'
-
-        return `
-        (function() {
-            const css = ${css};
-            const styleId = 'neo-editor-font-style';
-            const headEl = document.head || document.getElementsByTagName('head')[0];
-            if (!headEl) return;
-            let styleTag = document.getElementById(styleId);
-            if (!styleTag) {
-                styleTag = document.createElement('style');
-                styleTag.id = styleId;
-                headEl.appendChild(styleTag);
-            }
-            styleTag.innerHTML = css;
-            const setThemeAttr = (target) => {
-                if (target) target.setAttribute('data-theme', '${themeAttr}');
-            };
-            setThemeAttr(document.documentElement);
-            setThemeAttr(document.body);
-        })();
-        `
-    }
 
     // Get the editor settings for toolbar configuration
     const editorSettings = appSetting('editor', 'toolbar')
@@ -324,7 +130,87 @@ export default function RftText({
         fetchData()
     }, [keywordval])
 
-    let customCodeBlockCSS = buildEditorCSS(themeName)
+    let customCodeBlockCSS = `
+    :root {
+      --color-text: ${
+          ThemeName() === 'dark'
+              ? 'rgba(225, 230, 240, 1)'
+              : 'rgba(30, 40, 55, 1)'
+      };
+      --color-background: ${
+          ThemeName() === 'dark'
+              ? 'rgba(15, 25, 40, 1)'
+              : 'rgba(255, 255, 255, 1)'
+      };
+    }
+    body{
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
+        font-size: ${editorFontSize};
+        line-height:  ${editorLineHeight};
+        color: var(--color-text);
+        background-color: transparent;
+        margin:0;
+        white-space: pre;
+        overflow: hidden;
+    }
+    img{
+        display:none;
+    }
+    body P {
+        margin-bottom: 12px;
+        margin-top: 12px;
+    }
+    body P:first-child {
+        margin-top: 0px;
+    }
+    .is-editor-empty:first-child::before{
+        float:none !important;
+        position:absolute;
+    }
+    .mention-list {
+        position: absolute;
+        background: white;
+        border: 1px solid #ccc;
+        list-style: none;
+        padding: 5px;
+        margin: 0;
+        max-height: 150px;
+        overflow-y: auto;
+    }
+    .mention-list li {
+        padding: 5px;
+        cursor: pointer;
+    }
+    .mention-list li:hover,
+    .mention-list li.active {
+        background: lightblue;
+    }
+    A.bx-mention-link,
+    A.bx-tag{
+        color: ${
+            ThemeName() === 'dark'
+                ? 'rgba(59, 130, 246, 1)'
+                : 'rgba(37, 99, 235, 1)'
+        };
+    }
+    ${appSetting('editor', 'css')}
+
+    .tiptap, #root > div:nth-of-type(1){
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none;  /* IE и Edge */
+        &::-webkit-scrollbar {
+            display: none; /* Chrome, Safari и Opera */
+            width: 0;
+            height: 0;
+        }
+    }   
+    .ProseMirror.tiptap{
+        height:auto !important;
+        overflow:visible !important;
+        /* Experimental CSS transition for height changes within WebView */
+        transition: height 0.15s ease-out, min-height 0.15s ease-out;
+    }
+    `
     if (isPlainText) {
         customCodeBlockCSS += `
         b, strong, font, u, s, i, em, span, code, h1, h2, h3, h4, h5, h6{
@@ -342,19 +228,19 @@ export default function RftText({
     }
 
     useEffect(() => {
-    if (editor && isWebViewReady && (field?.value == '' || field?.value?.startsWith("<!--INITED-->")) && editor.getHTML() != field.value) {
-         setTimeout(() => {
-             editor.setContent(field.value.replaceAll("<!--INITED-->", ''))
-        }, 500);
-       
-    }
-}, [field.value, isWebViewReady])
+        if (editor && (field?.value == '' || field?.value?.startsWith("#INITED#")) && editor.getHTML() != field.value) {
+             setTimeout(() => {
+                 editor.setContent(field.value.replace("#INITED#", ''))
+            }, 500);
+           
+        }
+    }, [field.value])
 
     useEffect(() => {
-    if (editor && isWebViewReady && editor.getHTML() != value) {
-        editor.setContent(value)
-    }
-}, [value, isWebViewReady])
+        if (editor && editor.getHTML() != value) {
+            editor.setContent(value)
+        }
+    }, [value])
 
     const baseExtensions = [
         ImageBridge.configureExtension({
@@ -474,46 +360,19 @@ export default function RftText({
         }
     }
 
-    // Filter duplicate extensions to prevent TipTap warnings
-    // TenTapStartKit includes listItem and textStyle which can conflict with other bridges
-    const allExtensions = [...TenTapStartKit, ...baseExtensions];
-    const seenNames = new Set();
-    const uniqueExtensions = allExtensions.filter((ext) => {
-        const name = ext?.name || ext?.tiptapExtension?.name || ext?.config?.name;
-        if (name && seenNames.has(name)) {
-            return false;
-        }
-        if (name) seenNames.add(name);
-        return true;
-    });
-
     const editor = useEditorBridge({
         autofocus: props.autofocus,
         avoidIosKeyboard: false,
-        dynamicHeight: true,
+        dynamicHeight: false,
         placeholder: props.placeholder,
         theme: customEditorTheme,
         initialContent: field.value,
-        bridgeExtensions: uniqueExtensions,
+        bridgeExtensions: [...TenTapStartKit, ...baseExtensions],
     })
 
-    const lastAppliedThemeRef = useRef(null)
-
     useEffect(() => {
-    if (!editor || !isWebViewReady) return
-    if (lastAppliedThemeRef.current === themeName) return
-    lastAppliedThemeRef.current = themeName
-    editor.injectJS(applyIframeTheme(themeName))
-    // Inject wheel event forwarder on web to allow modal scrolling
-    if (Platform.OS === 'web') {
-        editor.injectJS(wheelEventForwarder)
-    }
-}, [editor, themeName, isWebViewReady])
-
-    useEffect(() => {
-    if (!editor || !isWebViewReady) return
-    editor.setPlaceholder(props.placeholder)
-}, [props.placeholder, editor, isWebViewReady])
+        editor.setPlaceholder(props.placeholder)
+    }, [props.placeholder])
 
     useEffect(() => {
         const subscription = emitter.addListener('editor', (data) => {
@@ -555,7 +414,7 @@ export default function RftText({
             */
         }
     }, [formContext.formState.isSubmitted])
-    console.log("isWebViewReady", isWebViewReady, editor)
+
     const htmlContent = useEditorContent(editor, { type: 'html' })
     useEffect(() => {
         if (stripTags(htmlContent)) {
@@ -640,8 +499,9 @@ export default function RftText({
             }
 
             if (message?.type == 'height') {
-                if (message.payload>=initialHeight && message.payload<= maxHeight){
-                    setEditorHeight(message.payload)
+                setEditorHeight(message.payload)
+                if (props.onHeight) {
+                    props.onHeight(message.payload)
                 }
             }
 
@@ -691,8 +551,6 @@ export default function RftText({
             }
 
             if (message?.type == 'editor-ready') {
-                setIsWebViewReady(true)
-                setTimeout(() => {
                 const submitOnEnter = isCommentsEditor
                     ? appSetting('comments', 'submit_comment_on_enter')
                     : enableSubmitOnEnter
@@ -705,8 +563,6 @@ export default function RftText({
                         platformOS: '${Platform.OS}'
                     };
                     const editorElement = document.getElementsByClassName("tiptap")[0];
-
-                    ${applyIframeTheme(themeName)}
 
                     document.addEventListener('keydown', function(event) {
                         if (event.key === 'Enter' || event.code === 'Enter') {
@@ -759,12 +615,10 @@ export default function RftText({
                         updateHeight();
                     });
 
-                    
-
                     observer.observe(editorElement, {
                         childList: true,
                         subtree: true,
-                        characterData: false // Don't observe character data changes
+                        characterData: true
                     });
 
                     editorElement.addEventListener("blur", () => {
@@ -773,7 +627,7 @@ export default function RftText({
                         if (selection.rangeCount > 0) {
                             lastSelectionRange = selection.getRangeAt(0).cloneRange();
                         }
-                        updateHeight(true);
+                        updateHeight();
                     });
 
                     editorElement.addEventListener("focus", () => {
@@ -783,7 +637,7 @@ export default function RftText({
                             selection.removeAllRanges();
                             selection.addRange(lastSelectionRange);
                         }
-                        updateHeight(true);
+                        updateHeight();
                     });
 
                     function getTextBeforeCursor() {
@@ -825,27 +679,23 @@ export default function RftText({
                     });
 
                     editorElement.addEventListener("input", function (event) {
+                        updateHeight();
+
                         const text = getTextBeforeCursor();
                         const symbol = text.charAt(0);
 
                         if (symbol === '@' || symbol === '#') {
-                            /*const query = text.substring(1).toLowerCase();
+                            const query = text.substring(1).toLowerCase();
                             editorElement.setAttribute('query', symbol + query);
                             const selection = window.getSelection();
-                            let rect = { left: 0, bottom: 0 }; // default
+                            let range;
                             let rect;
-                            if (selection && selection.rangeCount > 0   ) {
-                                try {
-                                    const range = selection.getRangeAt(0);
-                                    const rangeRect = range?.getBoundingClientRect();
-                                    if (rangeRect) {
-                                        rect = rangeRect;
-                                        editorElement.setAttribute('queryX', rect.left);
-                                        editorElement.setAttribute('queryY', rect.bottom);
-                                    }
-                                } catch (e) {
-                                    console.warn('[TipTap] getBoundingClientRect failed:', e);
-                                }
+                            if (selection.rangeCount > 0) {
+                                range = selection.getRangeAt(0);
+                                rect = range.getBoundingClientRect();
+
+                                editorElement.setAttribute('queryX', rect.left);
+                                editorElement.setAttribute('queryY', rect.bottom);
                             }
                             if (!mentionVisible) { 
                                 mentionVisible = true;
@@ -857,7 +707,7 @@ export default function RftText({
                                 sym: symbol,
                                 left:rect.left,
                                 bottom:rect.bottom
-                            }));*/
+                            }));
                         } else if (mentionVisible) { 
                             mentionVisible = false;
                             editorElement.removeAttribute('query');
@@ -909,7 +759,6 @@ export default function RftText({
                             console.warn("Clipboard items are empty!");
                         }
                     })`)
-                     }, 200);
             }
         } catch (error) {}
     }
@@ -934,9 +783,9 @@ export default function RftText({
     return (
         <View
             onLayout={handleLayout}
-            className={`flex-auto ${
+            className={`flex-1 relative rounded-lg ${
                 isToolBar
-                    ? ' px-3 py-2 bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border flex-auto overflow-hidden shadow-xs placeholder-label-tertiary text-card-foreground web:duration-100 '
+                    ? ' px-3 py-2 bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border flex-auto overflow-hidden shadow-xs placeholder-muted-foreground text-card-foreground web:duration-100 '
                     : (bg == 'transparent' ? '' : inputSettings.multi)
             }`}
         >
@@ -966,36 +815,25 @@ export default function RftText({
                     </ScrollView>
                 </View>
             )}
-            <View style={{height:editorHeight}} >
-                <RichText
-                    exclusivelyUseCustomOnMessage={false}
-                    style={{
-                        backgroundColor: 'transparent',
-                        color: editorTextColor,
-                        fontFamily: editorFontFamily,
-                    }}
-                    editor={editor}
-                    onMessage={onMessage}
-                    editable={!props.disabled}
-                    scrollEnabled={false}
-                    showsVerticalScrollIndicator={false}
-                    showsHorizontalScrollIndicator={false}
-                    nestedScrollEnabled={false}
-                    editorProps={{
-                        attributes: {
-                            class: `prose-mirror ${
-                                isCommentsEditor
-                                    ? 'tiptap-comments'
-                                    : 'tiptap-default'
-                            } ${props.classes || ''}`,
-                            style: `font-family: ${editorFontFamily}; color: ${editorTextColor};`,
-                        },
-                    }}
-                    onDebouncedUpdate={(editor) => {
+            <RichText
+                exclusivelyUseCustomOnMessage={false}
+                style={{ backgroundColor: 'transparent' }}
+                editor={editor}
+                onMessage={onMessage}
+                editable={!props.disabled}
+                editorProps={{
+                    attributes: {
+                        class: `prose-mirror ${
+                            isCommentsEditor
+                                ? 'tiptap-comments'
+                                : 'tiptap-default'
+                        } ${props.classes || ''}`,
+                    },
+                }}
+                onDebouncedUpdate={(editor) => {
                     // ... existing code ...
                 }}
-                />
-            </View>
+            />
 
             {isToolBar && (
                 <>
@@ -1008,7 +846,7 @@ export default function RftText({
                             bottom: 8,
                         }}
                     >
-                        <View className="flex-none w-full">
+                        <View className="flex-none ">
                             <Toolbar hidden={false} editor={editor} items={b} />
                         </View>
                     </KeyboardAvoidingView>
