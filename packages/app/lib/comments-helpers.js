@@ -396,7 +396,7 @@ export function CommentsBrowse({
                 ListFooterComponent={
                     (browseParams.object_id && hasNextPage && isFetchingNextPage) ? (
                         <View className=''><Loading /></View>
-                    ) : null
+                    ) : (!refetchState.visibleItems.length ? appStatic('components_comments_empty') : null)
                 }
             />
             {/*!refetchState.visibleItems.length && appStatic('components_comments_empty')*/}
