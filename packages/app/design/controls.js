@@ -13,7 +13,7 @@ import { useSafeAreaInsets } from 'app/lib/hooks/router'
 import { useIsDesktop, useBreakpoint, useWindowHeight } from 'app/context/measure';
 /* inputs */
 const inputSettings = appSetting('theme', 'inputs');
-
+const isWeb = Platform.OS === 'web';
 export const TextInputClear = TextInputDef
 
 export const Input = ({ className, startDecorator, endDecorator, style, ...props }) => (
@@ -180,11 +180,11 @@ export const PickerStyled = ({ className, ...props }) => (
 );
 
 export const PickerStyledRef = forwardRef(({ classes, className, ...props }, ref) => (
-    <View className={`relative flex-auto items-center flex-row`}>
+    <View className={` ${isWeb ? 'flex-auto items-center flex-row' : ''} `}>
         <PickerDef ref={ref} className={`${classes ? classes : PickerStyles} w-full`} {...props} />
-        <View className="absolute right-3 pointer-events-none">
+        {isWeb && <View className="absolute right-3 pointer-events-none">
             <Icon icon="ChevronDown" size={20} className="text-neutral-500" />
-        </View>
+        </View>}
     </View>
 ));
 
@@ -193,7 +193,7 @@ export const PickerStyledIos = ({ className, ...props }) => (
 );
 
 const modalSettings = appSetting('theme', 'modal');
-const isWeb = Platform.OS === 'web';
+
 
 export function Modal({
     animation,
@@ -289,6 +289,7 @@ export function Modal({
                             onPress={(event) => {
                                 event.stopPropagation();
                             }}
+                            className="flex-auto"
                         >
                             {children}
                         </Pressable>
@@ -535,7 +536,7 @@ export const Button = (props) => {
     const showTooltip = useMemo(() => isDesktop && tooltip, [isDesktop, tooltip]);
 
     const sClassContainer = useMemo(() => {
-        let classes = 'group flex-row items-center ';
+        let classes = 'web:group flex-row items-center ';
         
         // Determine if button has title for width calculation
         const hasTitle = !!title;
