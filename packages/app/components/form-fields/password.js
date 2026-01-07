@@ -30,7 +30,7 @@ export default function FormFieldPassword(props) {
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
                 value={field.value}
-                style={{paddingRight: 48}}
+               // style={{paddingRight: 48}}
             />
             <View className="absolute right-1.5 top-1/2 -translate-y-1/2 justify-center items-center">
                 <Button
