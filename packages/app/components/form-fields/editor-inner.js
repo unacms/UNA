@@ -470,27 +470,16 @@ export default function RftText({
         }
     }
 
-    // Filter duplicate extensions to prevent TipTap warnings
-    // TenTapStartKit includes listItem and textStyle which can conflict with other bridges
-    const allExtensions = [...TenTapStartKit, ...baseExtensions];
-    const seenNames = new Set();
-    const uniqueExtensions = allExtensions.filter((ext) => {
-        const name = ext?.name || ext?.tiptapExtension?.name;
-        if (name && seenNames.has(name)) {
-            return false;
-        }
-        if (name) seenNames.add(name);
-        return true;
-    });
+  
 
     const editor = useEditorBridge({
         autofocus: props.autofocus,
         avoidIosKeyboard: false,
-        dynamicHeight: true,
+        dynamicHeight: false,
         placeholder: props.placeholder,
         theme: customEditorTheme,
         initialContent: field.value,
-        bridgeExtensions: uniqueExtensions,
+        bridgeExtensions: [...TenTapStartKit, ...baseExtensions],
     })
 
     const lastAppliedThemeRef = useRef(null)
@@ -699,7 +688,6 @@ export default function RftText({
                     };
                     const editorElement = document.getElementsByClassName("tiptap")[0];
 
-                    ${applyIframeTheme(themeName)}
 
                     document.addEventListener('keydown', function(event) {
                         if (event.key === 'Enter' || event.code === 'Enter') {
