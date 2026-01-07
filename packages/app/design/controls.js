@@ -262,10 +262,11 @@ export function Modal({
         padding = 'p-4';
     }
 
+    const isDesktop = useIsDesktop();
     const insets = useSafeAreaInsets();
 
     const Content = (
-        <View style={{ paddingTop: !isWeb ? insets?.top : 0, paddingBottom: !isWeb ? insets?.bottom : 0 }} className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto ${layoutShift}:inset-0 h-full h-modal ${sClassPosition}`}>
+        <View style={{ paddingTop: !isWeb ? insets?.top : 0, paddingBottom: !isWeb ? insets?.bottom : 0 }} className={`justify-center left-0 right-0 z-50 w-full overflow-x-hidden h-full overflow-y-auto ${layoutShift}:inset-0  ${sClassPosition}`}>
             <View className={`w-full ${maxWidth} ${fullWidth ? '' : `${layoutShift}:w-auto`} ${autoHeight ? '' : 'h-full sm:h-auto'} ${modalSettings.container.replaceAll("{ls}", layoutShift)} `}>
                 <View className={` ${!autoHeight ? 'h-full' : ''} ${modalSettings.content.replaceAll("{ls}", layoutShift)}`}>
                     {
@@ -284,7 +285,7 @@ export function Modal({
                         </Row>
                     }
                   
-                    <Cnt style={styles} className={`${padding} flex-auto`}>
+                    <Cnt className={`${padding} flex-auto`}>
                          <Pressable
                             onPress={(event) => {
                                 event.stopPropagation();
@@ -309,7 +310,7 @@ export function Modal({
                     event.stopPropagation();
                 }}
             >
-                {isWeb ? <RemoveScroll className='flex-1'>{Content}</RemoveScroll> : Content}</Pressable>
+                {isWeb && isDesktop ? <RemoveScroll className='flex-1'>{Content}</RemoveScroll> : Content}</Pressable>
         </ModalDef>
     );
 }

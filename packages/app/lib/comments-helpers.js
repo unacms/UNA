@@ -399,7 +399,7 @@ export function CommentsBrowse({
                     ) : null
                 }
             />
-            {!refetchState.visibleItems.length && appStatic('components_comments_empty')}
+            {/*!refetchState.visibleItems.length && appStatic('components_comments_empty')*/}
             <Snackbar
                 visible={refetchState.hasNewData}
                 position="top"
