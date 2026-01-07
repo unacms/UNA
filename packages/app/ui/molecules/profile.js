@@ -35,7 +35,7 @@ export function DisplayNameLink({title, url, href, fontSize, actions, inheritCol
 
 function DisplayNameText({ title, fontSize }) {
     return (
-        <Text className={fontSize + 'truncate tracking-tight'}>
+        <Text className={`${fontSize} truncate tracking-tight`}>
             {title}
         </Text>
     )
