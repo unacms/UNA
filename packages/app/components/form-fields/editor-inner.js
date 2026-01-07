@@ -687,7 +687,7 @@ export default function RftText({
                         platformOS: '${Platform.OS}'
                     };
                     const editorElement = document.getElementsByClassName("tiptap")[0];
-
+                    ${applyIframeTheme(themeName)}
 
                     document.addEventListener('keydown', function(event) {
                         if (event.key === 'Enter' || event.code === 'Enter') {
