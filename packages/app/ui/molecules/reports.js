@@ -252,9 +252,9 @@ const ElementReports = forwardRef((oProps, ref) => {
 
         sActionPopup = (
             <Modal title={t('Report')} onVisible={popupVisibleDo} onClose={() => { setPopupVisibleDo(false) }}>
-                <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">
+                <View className="p-2 gap-y-4 overflow-y-auto">
                     <View>
-                        <Text>Report Type:</Text>
+                        <Text className="font-semibold text-sm text-card-foreground font-main">Report Type:</Text>
                     </View>
                     <Dropdown
                         labelField="label"
@@ -264,7 +264,7 @@ const ElementReports = forwardRef((oProps, ref) => {
                         data={valuesType}
                     />
                     <View>
-                        <Text>Report Text:</Text>
+                        <Text className="font-semibold text-sm text-card-foreground font-main">Report Text:</Text>
                     </View>
                     <InputMulti
                         multiline
