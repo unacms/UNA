@@ -116,6 +116,7 @@ export const FeedEditForm = memo(({ setViewState, viewState, id }) => {
             headerBorder={true}
             padding=" "
         >
+            <View className='p-3 flex-auto'>
             <Form
                 {...viewState.data.form}
                 classContainerName="flex-row flex-wrap w-full items-start justify-between"
@@ -127,6 +128,7 @@ export const FeedEditForm = memo(({ setViewState, viewState, id }) => {
                     item: viewState?.data?.item,
                 }}
             />
+            </View>
         </Modal>
     )
 })
