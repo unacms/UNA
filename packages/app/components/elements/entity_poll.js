@@ -109,7 +109,7 @@ export function PollItem({ data, showTitle, onDelete, disabled = false, results_
             {state.isShowResults && <Results data={state.results} />}
 
             {!!data.subentries && !state.isShowResults && data.subentries.map((item2, index) => (
-                <Row key={`lbl-${index}`} className={` items-center border border-border/50 bg-card web:hover:border-ring web:hover:ring rounded-lg ${state.isVoted ? 'opacity-50 web:hover:ring-0' : ' active:bg-muted'}`}>
+                <Row key={`lbl-${index}`} className={` items-center border border-border/50 bg-card web:hover:border-ring web:hover:ring rounded-lg ${state.isVoted ? 'opacity-50 web:hover:ring-0' : ' web:active:bg-muted'}`}>
                     <RadioButton
                         value={item2.entry_id}
                         status={item2.id == state.value ? 'checked' : 'unchecked'}

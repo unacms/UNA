@@ -1083,7 +1083,7 @@ export const settingsDefault = {
             primary: 'rgba(59, 130, 246, 1)',
             outline: 'rgba(59, 130, 246, 0.5)',
             headerBackground: 'rgba(24,24,27,1)',
-            barsBackground: 'rgba(24 24 27,1)', //header background in native
+            barsBackground: 'rgba(24,24,27,1)', //header background in native
             bottomSheetBackground: 'rgba(24,24,27,1)',
             barsColor: 'rgba(161,161,170,1)', //tabbar icons color in native
             safeAreaBackground: 'rgba(24,24,27,1)', // Add this new property
@@ -1224,7 +1224,7 @@ export const settingsDefault = {
                 icon_size: 24,
                 icon_margin: ' ', // conditional margin for icon container when title is present
                 title_margin: ' ', // conditional margin for text container when icon is present
-                hitarea_class: ' relative u-action-hitarea u-action-hitarea-base ',
+                hitarea_class: ' relative web:u-action-hitarea web:u-action-hitarea-base ',
                 hitSlop: { top: 4, right: 4, bottom: 4, left: 4 },
             },
             lg: {
@@ -1464,7 +1464,7 @@ export const settingsDefault = {
             'u-link-default-trans': ' web:duration-200 ',
 
             // neutral color link, no background
-            'u-link-plain-cnt': ' active:bg-muted/60  ',
+            'u-link-plain-cnt': ' web:active:bg-muted/60  ',
             'u-link-plain-text': ' text-foreground web:hover:underline web:duration-200 ',
             'u-link-plain-trans': ' web:duration-200 ',
 
@@ -1756,21 +1756,21 @@ export const settingsDefault = {
         button_styles: {
             // Default button (neutral/popover)
             'u-btn-default-cnt': [
-                ' bg-card/60 web:backdrop-blur web:hover:bg-card web:active:bg-card/60 active:bg-card/60 border border-card active:border-border',
+                ' bg-card/60 web:backdrop-blur web:hover:bg-card web:active:bg-card/60 border border-card web:active:border-border',
                 ' web:shadow-border web:focus-visible:border-border  ',
                 ' web:active:outline web:active:outline-ring web:active:scale-95 web:duration-200 ',
-                ' web:active:shadow-none active:shadow-none',    
+                ' web:active:shadow-none ',    
             ].join(' '),
-            'u-btn-default-text': 'font-medium text-secondary-foreground web:group-hover:text-foreground web:active:text-foreground active:text-foreground web:duration-200',
+            'u-btn-default-text': 'font-medium text-secondary-foreground web:group-hover:text-foreground web:active:text-foreground web:duration-200',
             'u-btn-default-trans': 'web:duration-200',
 
           
             // Primary button (primary/accent)
             'u-btn-primary-cnt': [
                 // Background and main color
-                ' bg-primary web:hover:bg-primary/90 overflow-hidden overflow-hidden web:active:bg-primary/80 active:bg-primary/80 ',
+                ' bg-primary web:hover:bg-primary/90 overflow-hidden overflow-hidden web:active:bg-primary/80  ',
                 ' active:outline active:outline-accent-foreground ',
-                ' shadow-xs web:hover:shadow-md web:active:shadow-none active:shadow-none  ',
+                ' shadow-xs web:hover:shadow-md web:active:shadow-none   ',
                 ' ',
             ].join(' '),
             'u-btn-primary-text': ' font-medium text-primary-foreground ',
@@ -1796,7 +1796,7 @@ export const settingsDefault = {
             'u-btn-danger-trans': ' web:duration-200',
             
 
-            'u-btn-text-cnt': ' web:group active:bg-muted web:focus-visible:bg-muted/60 web:hover:bg-muted/60 overflow-hidden ',
+            'u-btn-text-cnt': ' web:group web:active:bg-muted web:focus-visible:bg-muted/60 web:hover:bg-muted/60 overflow-hidden ',
             'u-btn-text-text':
                 ' font-medium text-secondary-foreground web:group-hover:text-foreground web:focus:text-foreground',
             'u-btn-text-trans': ' web:duration-200',
