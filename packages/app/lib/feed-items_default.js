@@ -26,7 +26,7 @@ export const LinkContent = memo(({ url, data }) => (
         </Text>
         <Text
             numberOfLines={2}
-            className=" text-neutral-950 hover:text-primary dark:text-neutral-50 text-lg sm:text-xl tracking-tight font-bold"
+            className=" text-neutral-950 web:hover:text-primary dark:text-neutral-50 text-lg sm:text-xl tracking-tight font-bold"
         >
             {data.content?.title || ''}
         </Text>
@@ -117,7 +117,7 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
                     </Text>
                     <Text
                         numberOfLines={2}
-                        className=" text-neutral-950 hover:text-primary text-lg sm:text-xl tracking-tight font-bold"
+                        className=" text-neutral-950 web:hover:text-primary text-lg sm:text-xl tracking-tight font-bold"
                     >
                         {data.content?.title || ''}
                     </Text>
@@ -226,7 +226,7 @@ export const MarketView = memo(({ data, styles, url, isCompact }) => {
 
                     <Text
                         numberOfLines={2}
-                        className=" text-neutral-950 hover:text-primary dark:text-neutral-50 text-lg sm:text-xl tracking-tight font-bold"
+                        className=" text-neutral-950 web:hover:text-primary dark:text-neutral-50 text-lg sm:text-xl tracking-tight font-bold"
                     >
                         {data.content?.title || ''}
                     </Text>
@@ -289,7 +289,7 @@ export const DefaultView = memo(
                         <LinkOrModal href={url} showInModal={appSetting('browse', 'show_in_modal', data.type)} className=" ">
                             <Text
                                 numberOfLines={3}
-                                className="pb-2 text-foreground hover:text-accent-foreground text-xl sm:text-2xl font-semibold font-title tracking-tight"
+                                className="pb-2 text-foreground web:hover:text-accent-foreground text-xl sm:text-2xl font-semibold font-title tracking-tight"
                             >
                                 {data.content?.title || ''}
                             </Text>
@@ -428,7 +428,7 @@ export const PollView = memo(
                         <Link href={url} className="mb-3">
                             <Text
                                 numberOfLines={3}
-                                className="  text-secondary-foreground hover:text-foreground text-lg tracking-tight font-bold"
+                                className="  text-secondary-foreground web:hover:text-foreground text-lg tracking-tight font-bold"
                             >
                                 {data.content?.title || ''}
                             </Text>

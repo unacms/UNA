@@ -26,7 +26,7 @@ const SidebarBottomToolbar = ({ currentUser, menu_add_items, buttonProps }) => {
         ),
         account: (
             <MenuAccount>
-                <Row className={"rounded-full items-center justify-between p-1 hover:border-transparent cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50"}>
+                <Row className={"rounded-full items-center justify-between p-1  cursor-pointer  dark:hover:bg-bgrbutton-dh "}>
                     <Row className='gap-2 lg:gap-3 items-center'>
                         <Profile
                             {...currentUser}
@@ -80,7 +80,7 @@ const SideBar = memo(({ headerSettings, currentUser, uri, url, bSearch, menuPopu
                         appSetting('layout', 'lock_unconfirmed'))) &&
                     (uri == 'home' || isDesktop) && (
                         <Link
-                            className=" flex items-center  hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 hover:text-neutral-950 dark:hover:text-neutral-50 web:duration-300 "
+                            className=" flex items-center  web:hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-950 dark:hover:text-neutral-50 web:duration-300 "
                             href="/home"
                         >
                             {appStatic('logo')}

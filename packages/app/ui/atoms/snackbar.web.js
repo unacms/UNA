@@ -125,7 +125,7 @@ export default function Snackbar({
     const containerClasses = snackbarTheme.container || 'flex items-center justify-center px-4';
     
     // Inner wrapper classes (for non-button variant)
-    const wrapperClasses = snackbarTheme.wrapper || 'bg-primary rounded-full shadow-lg px-4 py-2 flex flex-row items-center gap-2 cursor-pointer hover:bg-primary/90 transition-colors';
+    const wrapperClasses = snackbarTheme.wrapper || 'bg-primary rounded-full shadow-lg px-4 py-2 flex flex-row items-center gap-2 cursor-pointer web:hover:bg-primary/90 transition-colors';
 
     // Don't render if not visible and animation complete
     if (!shouldRender) {

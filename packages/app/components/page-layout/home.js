@@ -255,7 +255,7 @@ export default function ({ data, blocks }) {
                     <Link href={currentUser.url} emulate={true}>
                         <Row
                             className={
-                                ' rounded-xl group items-center gap-1 px-2 py-1.5 mb-0.5 hover:bg-muted/60 active:opacity-50  '
+                                ' rounded-xl group items-center gap-1 px-2 py-1.5 mb-0.5 web:hover:bg-muted/60  '
                             }
                         >
 

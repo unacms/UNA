@@ -982,7 +982,7 @@ function ConductorMenu({
     const MenuItemEx = memo(({ item, index: itemIndex }) => {
         const { title, addon, icon, link, menu_settings, key } = item
         const translatedTitle = (
-            <Text className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 leading-6 font-medium text-base">
+            <Text className="text-neutral-600 dark:text-neutral-400 web:hover:text-neutral-800 dark:web:hover:text-neutral-200 leading-6 font-medium text-base">
                 {t(title)}
             </Text>
         )
@@ -1013,7 +1013,7 @@ function ConductorMenu({
                 className={' ' + menu_settings?.class ?? ''}
                 onPress={handlePress}
             >
-                <Row className="  hover:cursor-pointer justify-between  flex flex-row h-10 items-center px-3 text-base rounded-xl web:hover:bg-muted items-center ">
+                <Row className="  web:hover:cursor-pointer justify-between flex flex-row h-10 items-center px-3 text-base rounded-xl web:hover:bg-muted items-center ">
                     {translatedTitle}
                     {addonContent}
                 </Row>

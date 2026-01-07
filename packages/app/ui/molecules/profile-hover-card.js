@@ -41,7 +41,7 @@ const ProfileCardContent = memo(function ProfileCardContent({ profileData,  page
                     </View>
                     <View className="flex-1 gap-1">
                         <Link href={profileUrl} emulate={true}>
-                            <Text className="text-base font-bold text-foreground hover:text-primary">
+                            <Text className="text-base font-bold text-foreground web:hover:text-primary">
                                 {displayName}
                             </Text>
                         </Link>

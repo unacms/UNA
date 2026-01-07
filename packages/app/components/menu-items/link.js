@@ -7,7 +7,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import { getIconByNameFromIconset } from 'app/lib/util';
 
 const DisplayLink = (oProps) => {
-    const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'flex max-w-full text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:underline cursor-pointer');
+    const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'flex max-w-full text-neutral-600 dark:text-neutral-400 web:hover:text-neutral-900 dark:hover:text-neutral-100 web:hover:underline cursor-pointer');
 
     return (
         <View className={sClassName}>
