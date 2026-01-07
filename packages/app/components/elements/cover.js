@@ -94,6 +94,7 @@ function getCoverBackButton(is_person) {
 
 export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
     const isDesktop = useIsDesktop();
+    const { currentUser } = useCurrentUser()
     const isWeb = Platform.OS === 'web'
     if (!data?.profile?.module)
         return null
@@ -120,7 +121,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
     }
 
     let menu = cloneObject(data.actions_menu)
-    const { currentUser } = useCurrentUser()
+    
 
     if (!showMoreMenu) {
         menu.items = menu.items.map((item, index) => {
