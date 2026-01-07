@@ -176,7 +176,7 @@ export function Conductor({
         getURI(currentRoute?.key),
         isDesktop,
         layoutName,
-        currentRoute.config
+        currentRoute?.config
     )
 
     // Disable offset for adjustable panel layouts
