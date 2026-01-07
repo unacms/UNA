@@ -475,7 +475,7 @@ export default function RftText({
     const editor = useEditorBridge({
         autofocus: props.autofocus,
         avoidIosKeyboard: false,
-        dynamicHeight: false,
+        dynamicHeight: true,
         placeholder: props.placeholder,
         theme: customEditorTheme,
         initialContent: field.value,
