@@ -119,9 +119,7 @@ const TabScene = React.memo(({
     ), [unitType, unitMode, route]);
 
     const scrollValue = useScrollValue();
-    console.log('scrollValue', scrollValue);
     const NoContent = getComponent('molecule', 'no_content')
-
 
     return (
         <>
@@ -345,6 +343,18 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
          setHeader({subHeader: sceneHeader});
      }, [index, sceneHeader, setHeader]);
      */
+
+     const isShowFilters = layoutName == 'navigator' && leftSideBarBlocks && leftSideBarBlocks?.length > 0;
+     
+     const sceneHeader = useMemo(
+        () => <TabBar routes={routes} index={index} setIndex={setIndex} onChangeRoute={onChangeRoute} />,
+        [routes, index, setIndex, onChangeRoute]
+    );
+
+     const filter = (isShowFilters) && (<View className="items-start ml-3 mt-2 mb-1">
+         <Button title='Filters' variant="default" size="sm" rounded onPress={showFilters} />
+     </View>)
+
     useEffect(() => {
         if (isUseCurrentHeader) {
             setHeader({ header: false });
@@ -352,7 +362,7 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
         else {
             setHeader({ subHeader: sceneHeader });
         }
-    }, [header, setHeader]);
+    }, [header,sceneHeader, setHeader]);
 
 
     const Preload = useMemo(() => {
@@ -395,11 +405,7 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
         setBottomSheetData(false);
     });
 
-    const isShowFilters = layoutName == 'navigator' && leftSideBarBlocks && leftSideBarBlocks?.length > 0;
-    const sceneHeader = <TabBar routes={routes} index={index} setIndex={setIndex} onChangeRoute={onChangeRoute} />
-    const filter = (isShowFilters) && (<View className="items-start ml-3 mt-2 mb-1">
-        <Button title='Filters' variant="default" size="sm" rounded onPress={showFilters} />
-    </View>)
+   
 
     const isProfileHeader = layoutName === 'profile' && !isCoverDisabled;
 
@@ -414,6 +420,7 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
         onRefresh: onStartRefresh,
         refreshing: isRefreshing,
         route: currentRoute,
+        index:index,    
         Preload: Preload,
         unitType: unitType,
         unitMode: unitMode,
