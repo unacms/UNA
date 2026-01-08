@@ -43,7 +43,7 @@ export default function Unit(props) {
             <>
                 <Redirect ref={redirectdRef} />
                 <CardList padding="p-1">
-                    <Link className="we:group " href={data.url}>
+                    <Link className="web:group " href={data.url}>
                         <View className="flex-row sm:flex-col p-1">
                             <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-lg overflow-hidden items-center justify-center bg-neutral-500/20">
                                 <Image
@@ -70,7 +70,7 @@ export default function Unit(props) {
                                         )}
                                         <Text
                                             numberOfLines={1}
-                                            className="flex-auto text-base leading-tight tracking-tight font-semibold text-secondary-foreground group-hover:text-foreground "
+                                            className="flex-auto text-base leading-tight tracking-tight font-semibold text-secondary-foreground web:group-hover:text-foreground "
                                         >
                                             {data.title}
                                         </Text>
@@ -122,7 +122,7 @@ export default function Unit(props) {
         return (
             <Link href={data.url} emulate={true}>
                 <View
-                    className=" flex-row  web:duration-200 rounded-xl active:opacity-50 web:hover:bg-bgritem dark:hover:bg-bgritem-d items-center "
+                    className=" flex-row  web:duration-200 rounded-xl active:opacity-50 web:hover:bg-bgritem web:dark:hover:bg-bgritem-d items-center "
                 >
                     <View className="p-1.5">
                         <Profile

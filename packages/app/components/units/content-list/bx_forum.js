@@ -27,7 +27,7 @@ Units.Small = function Small({ data }) {
             </View>
             <View className="flex-auto sm:h-40 mt-2 flex-col p-2">
                 <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
-                    <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary leading-tight text-base  font-semibold">
+                    <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 web:hover:text-primary leading-tight text-base  font-semibold">
                         {data.title}
                     </Text>
                 </LinkOrModal>
@@ -77,7 +77,7 @@ Units.Base = function Base({ data }) {
                                     >
                                         <Text
                                             numberOfLines={3}
-                                            className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary text-base sm:text-lg font-bold"
+                                            className="text-neutral-950 tracking-tight dark:text-neutral-50 web:hover:text-primary text-base sm:text-lg font-bold"
                                         >
                                             {data.title}
                                         </Text>

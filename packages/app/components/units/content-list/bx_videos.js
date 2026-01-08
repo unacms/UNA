@@ -26,7 +26,7 @@ export default function defaultUnit(props) {
                 <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
                     <Text
                         numberOfLines={2}
-                        className="text-card-foreground sm:hover:text-accent-foreground leading-tight text-base font-semibold"
+                        className="text-card-foreground web:hover:text-accent-foreground leading-tight text-base font-semibold"
                     >
                         {data.title}
                     </Text>

@@ -41,7 +41,7 @@ export default function Unit(props) {
             <>
                 <Redirect ref={redirectdRef} />
                 <CardList padding="p-1" className='mb-2'>
-                    <Link className="group " href={data.url}>
+                    <Link className="web:group " href={data.url}>
 
                         <View className="aspect-square w-1/3 rounded-xl overflow-hidden items-center justify-center bg-neutral-500/20">
                             <Image
@@ -57,7 +57,7 @@ export default function Unit(props) {
                             <View>
                                 <Text
                                     numberOfLines={1}
-                                    className=" text-base leading-tight tracking-tight font-bold text-secondary-foreground group-hover:text-foreground "
+                                    className=" text-base leading-tight tracking-tight font-bold text-secondary-foreground web:group-hover:text-foreground "
                                 >
                                     {data.title}
                                 </Text>
@@ -102,7 +102,7 @@ export default function Unit(props) {
         return (
             <>
                 <Redirect ref={redirectdRef} />
-                <Link className="group" href={data.url}>
+                <Link className="web:group" href={data.url}>
                     <Card padding="p-1" className='flex-auto'>
 
                         <View className="relative bg-muted aspect-video overflow-hidden rounded-xl w-full">
@@ -119,7 +119,7 @@ export default function Unit(props) {
                             <View className="">
                                 <Text
                                     numberOfLines={2}
-                                    className=" text-base leading-tight tracking-tight font-bold text-secondary-foreground group-hover:text-foreground "
+                                    className=" text-base leading-tight tracking-tight font-bold text-secondary-foreground web:group-hover:text-foreground "
                                 >
                                     {data.title}
                                 </Text>

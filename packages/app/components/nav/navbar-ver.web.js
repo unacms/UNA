@@ -26,7 +26,7 @@ const SidebarBottomToolbar = ({ currentUser, menu_add_items, buttonProps }) => {
         ),
         account: (
             <MenuAccount>
-                <Row className={"rounded-full items-center justify-between p-1  cursor-pointer  dark:hover:bg-bgrbutton-dh "}>
+                <Row className={"rounded-full items-center justify-between p-1  cursor-pointer "}>
                     <Row className='gap-2 lg:gap-3 items-center'>
                         <Profile
                             {...currentUser}
@@ -34,7 +34,7 @@ const SidebarBottomToolbar = ({ currentUser, menu_add_items, buttonProps }) => {
                             displayType="unit_wo_info"
                             displaySize="sm"
                         />
-                        <Text className=" text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100">
+                        <Text className=" text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 ">
                             {currentUser.display_name}
                         </Text>
                     </Row>
@@ -80,7 +80,7 @@ const SideBar = memo(({ headerSettings, currentUser, uri, url, bSearch, menuPopu
                         appSetting('layout', 'lock_unconfirmed'))) &&
                     (uri == 'home' || isDesktop) && (
                         <Link
-                            className=" flex items-center  web:hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-950 dark:hover:text-neutral-50 web:duration-300 "
+                            className="flex items-center web:hover:bg-bgritem web:dark:hover:bg-bgritem-d rounded-xl flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-950 web:dark:hover:text-neutral-50 web:duration-300 "
                             href="/home"
                         >
                             {appStatic('logo')}

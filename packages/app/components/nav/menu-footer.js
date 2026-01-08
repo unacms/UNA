@@ -5,14 +5,17 @@ import { menuItemsByName, menuItemsByNameNew, getDataForMenu } from 'app/lib/uti
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useMemo, memo } from 'react';
 import Link from 'app/ui/atoms/link'
+import { Platform } from 'react-native'
 
-let footerMenuDataCache = null;
+export default function MenuFooter ({ cntClasses, btnStyle, menu_items, variant, size, itemClassName }) {
+    //!!!! component is not work in NATIVE, raise total crush
+    if (Platform.OS !== 'web')
+        return null
 
-const MenuFooter = ({ cntClasses, btnStyle, menu_items, variant, size, itemClassName }) => {
     const { t } = useTranslation();
-    const [menuData, setMenuData] = useState(footerMenuDataCache !== null ? footerMenuDataCache : false);
+    const [menuData, setMenuData] = useState( false);
     const { currentUser } = useCurrentUser();
-    // Backward compatibility: derive visual props from legacy btnStyle unless explicitly provided
+
     const visualProps = useMemo(() => {
         const legacy = btnStyle || {};
         return {
@@ -23,10 +26,9 @@ const MenuFooter = ({ cntClasses, btnStyle, menu_items, variant, size, itemClass
     }, [btnStyle, variant, size, itemClassName]);
 
     useEffect(() => {
-        if (!menu_items && footerMenuDataCache === null) {
+        if (!menu_items) {
             getDataForMenu({ object: appSetting('menu_items', 'objects', 'footer'), params: null }, (data) => {
-                footerMenuDataCache = data || [];
-                setMenuData(footerMenuDataCache);
+                setMenuData(data);
             });
         }
     }, [menu_items]);
@@ -44,7 +46,7 @@ const MenuFooter = ({ cntClasses, btnStyle, menu_items, variant, size, itemClass
                 <Link
                     href={`/${item.link}`}
                     key={item.link || index}
-                    variant={visualProps.variant}
+                   variant={visualProps.variant}
                     size={visualProps.size}
                     className={visualProps.className}
                 >
@@ -55,4 +57,3 @@ const MenuFooter = ({ cntClasses, btnStyle, menu_items, variant, size, itemClass
     );
 };
 
-export default memo(MenuFooter);

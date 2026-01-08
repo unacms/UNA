@@ -29,7 +29,7 @@ export default function Unit(props) {
             <CardList padding={cd('p-sm')} className='mb-2 md:mb-0'>
                 <View className="flex-auto">
                     <Link href={data.url}>
-                        <Text numberOfLines={2} className="text-neutral-800 mb-1 dark:text-neutral-200 sm:hover:text-primary text:lg sm:text-xl font-semibold ">
+                        <Text numberOfLines={2} className="text-neutral-800 mb-1 dark:text-neutral-200 web:hover:text-primary text:lg sm:text-xl font-semibold ">
                             {data.title}
                         </Text>
                         <Text numberOfLines={2} className="text-neutral-600 mb-4 dark:text-neutral-400 text-xs sm:text-sm">

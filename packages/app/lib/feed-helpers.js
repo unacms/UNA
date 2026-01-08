@@ -640,14 +640,14 @@ export function SmallUnit({ data }) {
                             ></Time>
                         </Row>
                         <Text
-                            className="flex-auto text-lg  font-bold text-neutral-800 dark:text-neutral-200 sm:group-hover:text-neutral-950 sm:dark:group-hover:text-neutral-50"
+                            className="flex-auto text-lg  font-bold text-neutral-800 dark:text-neutral-200 "
                             numberOfLines={1}
                         >
                             {data.content.title}
                         </Text>
                         <View className="flex-row w-full items-end content-end">
                             <Text
-                                className="flex-auto mr-2  text-base text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
+                                className="flex-auto mr-2  text-base text-neutral-600 dark:text-neutral-400 "
                                 numberOfLines={1}
                             >
                                 {data.plainText}

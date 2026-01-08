@@ -24,7 +24,7 @@ Units.Base = function Base({ data }) {
             </View>
             <View className="flex-auto sm:h-40 mt-2 flex-col p-2">
                 <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
-                    <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 web:sm:hover:text-primary leading-tight text-base  font-semibold">
+                    <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 web:hover:text-primary leading-tight text-base  font-semibold">
                         {data.title}
                     </Text>
                 </LinkOrModal>
@@ -54,7 +54,7 @@ Units.Search = function Search({ data }) {
             </View>
             <View className="flex-auto sm:h-40 mt-2 flex-col p-2">
                 <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
-                    <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 web:sm:hover:text-primary leading-tight text-base  font-semibold">
+                    <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 web:hover:text-primary leading-tight text-base  font-semibold">
                         {data.title}
                     </Text>
                 </LinkOrModal>
@@ -86,7 +86,7 @@ Units.Small = function Small({ data }) {
 
             <View className="flex-auto">
                 <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
-                    <Text numberOfLines={2} className="text-neutral-800  mb-1 tracking-tight leading-tight dark:text-neutral-200 web:sm:hover:text-primary text-lg font-bold">
+                    <Text numberOfLines={2} className="text-neutral-800  mb-1 tracking-tight leading-tight dark:text-neutral-200 web:hover:text-primary text-lg font-bold">
                         {data.title}
                     </Text>
                 </LinkOrModal>

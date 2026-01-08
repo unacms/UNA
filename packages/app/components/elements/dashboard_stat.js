@@ -279,15 +279,14 @@ export default function DashboardStat(props) {
                         </View>
                     </BlockContent>
                     <BlockFooter>
-                        <Button
+                        <Link href="/logout">
+                        <Button 
                             variant="outline"
                             title={t('Sign out')}
                             startDecorator="LogOut"
                             fullWidth
                             size="base"
-                            as={Link}
-                            href="/logout"
-                        />
+                        /></Link>
                     </BlockFooter>
                 </Block>
             </ScrollView>
@@ -352,7 +351,7 @@ function ElementDashboardStat(props) {
                             return (
 
                                 <View
-                                    className=" p-3 lg:p-4 bg-secondary/80 hover:bg-secondary rounded-2xl w-full gap-3 flex-1  min-w-48 lg:min-w-64"
+                                    className=" p-3 lg:p-4 bg-secondary/80 web:hover:bg-secondary rounded-2xl w-full gap-3 flex-1  min-w-48 lg:min-w-64"
                                     key={index}
                                 ><Link href={item.url.replace("{profile_url_postfix}", currentUser?.url.replace('/view-persons-profile/', ''))}>
                                         <View className="flex-row w-full h-10 justify-between items-center text-card-foreground ">
@@ -415,7 +414,7 @@ function ElementDashboardStat(props) {
                         return (
 
                             <View
-                                className="p-3 lg:p-4 bg-secondary/80 hover:bg-secondary rounded-2xl w-full flex-1 min-w-48 lg:min-w-64"
+                                className="p-3 lg:p-4 bg-secondary/80 web:hover:bg-secondary rounded-2xl w-full flex-1 min-w-48 lg:min-w-64"
                                 key={index}
                             ><Link href={item.url} >
                                     <View className="flex-row w-full h-10 justify-between items-center text-card-foreground">

@@ -297,7 +297,7 @@ export const settingsDefault = {
     },
     feed: {
         feed_container: 'relative flex-auto mx-auto w-full max-w-3xl  ',
-        post_trigger: ' web:active:bg-card/60 web:active:shadow-border-sm border border-card  rounded-full flex-auto lg:bg-card/60 web:backdrop-blur web:lg:hover:bg-card web:duration-200 web:transition-all web:shadow-border justify-center px-2 lg:px-4 group',
+        post_trigger: ' web:active:bg-card/60 web:active:shadow-border-sm border border-card  rounded-full flex-auto lg:bg-card/60 web:backdrop-blur web:lg:hover:bg-card web:duration-200 web:transition-all web:shadow-border justify-center px-2 lg:px-4 web:group',
         post_trigger_text: 'font-medium text-base text-muted-foreground web:group-hover:text-foreground web:duration-300 web:transition-colors',
         show_html: false,
         default_feed: 'foryou',
@@ -1148,7 +1148,7 @@ export const settingsDefault = {
             content_ver: '',
             content_hor: 'flex-row  ',
             item_ver:
-                ' px-2 py-1.5 group flex h-12 flex-row items-center rounded-lg font-medium web:hover:bg-muted/60 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer',
+                ' px-2 py-1.5 web:group flex h-12 flex-row items-center rounded-lg font-medium web:hover:bg-muted/60 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer',
             item_hor:
                 'flex block web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-neutral-700    web:duration-200 dark:text-neutral-300 outline-none ',
             item_np:
@@ -1295,12 +1295,12 @@ export const settingsDefault = {
             },
             base: {
                 rounded: ' rounded-xl ',
-                container: ' h-11 group ',
+                container: ' h-11 web:group ',
                 divider: ' w-0.5 h-full  ',
             },
             lg: {
                 rounded: ' rounded-xl ',
-                container: ' h-12 group ',
+                container: ' h-12 web:group ',
                 divider: ' w-0.5 h-full  ',
             },
         },
@@ -1617,7 +1617,7 @@ export const settingsDefault = {
                 'inline-flex flex-auto justify-center items-center whitespace-nowrap font-medium truncate disabled:pointer-events-none disabled:opacity-50 ',
 
             // Inactive tab (with hover effect)
-            'u-controls-tabs-header-item-inactive': ' group web:hover:bg-muted web:duration-500',
+            'u-controls-tabs-header-item-inactive': ' web:group web:hover:bg-muted web:duration-500',
 
             // Active tab (no hover effect)
             'u-controls-tabs-header-item-active':
@@ -1802,7 +1802,7 @@ export const settingsDefault = {
             'u-btn-text-trans': ' web:duration-200',
          
 
-            'u-btn-link-cnt': '  group  ',
+            'u-btn-link-cnt': ' web:group  ',
             'u-btn-link-text':
                 ' font-medium text-label-link web:group-hover:text-label-linkhover web:group-hover:underline web:active:text-label-linkhover ',
             'u-btn-link-trans': ' web:duration-200  ',

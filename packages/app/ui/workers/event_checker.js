@@ -82,7 +82,7 @@ export default function WorkerEventChecker(oProps) {
                    
                         <Row >
                             <View className={(item.cover ? 'w-4/5' : 'w-full') + ' gap-y-2'}>
-                                <Text className=" text-neutral-900 dark:text-neutral-100 tracking-tight dark:text-neutral-50 sm:hover:text-primary leading-tight text-base font-bold">{item.title}</Text>
+                                <Text className=" text-neutral-900 dark:text-neutral-100 tracking-tight dark:text-neutral-50 web:hover:text-primary leading-tight text-base font-bold">{item.title}</Text>
                                 <Row className='text-center gap-x-2 items-center'>
                                     <Button startDecorator='CalendarCheck' size="xs" />
                                     <Time className=" text-base text-neutral-700 dark:text-neutral-300" ts={item.date_start} />

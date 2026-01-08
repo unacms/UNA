@@ -279,6 +279,7 @@ export default function Form({
         }
     }, [debouncedFields, isAutoChange, onChange]);
 
+    console.log("dsfsdf")
     useEffect(() => {
         if (cacheKey && debouncedFields && Object.keys(debouncedFields).length > 0) {
             //TOFIX AUTOSAVE IN FORMS

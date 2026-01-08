@@ -92,7 +92,7 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
     return (
         <Link className=" rounded-xl min-w-16 flex-auto relative " href={link} alt={title}>
             <Tooltip content={title}>
-                <View className="flex-auto group" key={`menu-${index}`}>
+                <View className="flex-auto web:group" key={`menu-${index}`}>
                     <Row
                         className={`items-center justify-center h-12 min-w-14 px-1.5 flex-auto rounded-xl web:duration-200 web:group-active:opacity-50 ${isActive
                             ? 'bg-transparent text-accent-foreground'

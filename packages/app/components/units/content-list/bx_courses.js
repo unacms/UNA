@@ -44,7 +44,7 @@ export default function Unit(props) {
             <>
                 <Redirect ref={redirectdRef} />
               <CardList padding={cd('p-sm')} >
-                    <Link className="group " href={data.url}>
+                    <Link className="web:group " href={data.url}>
                         <View className="flex-row sm:flex-col p-1">
                             <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center bg-neutral-500/20">
                                 <Image
@@ -60,7 +60,7 @@ export default function Unit(props) {
                                 <View>
                                     <Text
                                         numberOfLines={1}
-                                        className=" text-lg leading-tight tracking-tight font-bold text-secondary-foreground group-hover:text-foreground"
+                                        className=" text-lg leading-tight tracking-tight font-bold text-secondary-foreground web:group-hover:text-foreground"
                                     >
                                         {data.title}
                                     </Text>

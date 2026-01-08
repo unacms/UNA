@@ -79,7 +79,7 @@ export default function Unit(props) {
                                             </Text>
                                             <Text
                                                 numberOfLines={2}
-                                                className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary leading-5 text-base font-bold"
+                                                className="text-neutral-950 tracking-tight dark:text-neutral-50 web:hover:text-primary leading-5 text-base font-bold"
                                             >
                                                 {data.title}
                                             </Text>

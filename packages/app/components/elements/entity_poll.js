@@ -92,7 +92,7 @@ export function PollItem({ data, showTitle, onDelete, disabled = false, results_
         
         <View className='w-full p-3 rounded-xl bg-muted/50 gap-1.5'>
         <Row className='items-center justify-between w-full gap-x-2 '>
-            {showTitle && <Text className="text-neutral-950 p-1 hover:bg-bgritem dark:hover:bg-bgritem-d rounded-xl dark:text-neutral-50 text-lg tracking-tight font-semibold">{data.title}</Text>}
+            {showTitle && <Text className="text-neutral-950 p-1 web:hover:bg-bgritem web:dark:hover:bg-bgritem-d rounded-xl dark:text-neutral-50 text-lg tracking-tight font-semibold">{data.title}</Text>}
             {(!data.is_hidden_results && totalVotes > 0) && (
                 
                     <Button

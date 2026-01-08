@@ -53,7 +53,7 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                     {children}
                 </Pressable> :
                 <Link href={currentUser.url} emulate={true} >
-                    <Row className={(rounded + " w-full group items-center px-0.5 justify-between cursor-pointer web:hover:bg-bgrbutton dark:web:hover:bg-bgrbutton-d " + wrapperClassName).trim()}>
+                    <Row className={(rounded + " w-full web:group items-center px-0.5 justify-between cursor-pointer web:hover:bg-bgrbutton dark:web:hover:bg-bgrbutton-d " + wrapperClassName).trim()}>
                         <Row className='flex-row items-center p-1.5'>
                             <Profile
                                 {...currentUser}
@@ -62,10 +62,10 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                                 displaySize="base"
                             />
                             <View className='flex-col'>
-                                <Text className=" text-base p-1.5 flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-white web:duration-300">
+                                <Text className=" text-base p-1.5 flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 web:group-hover:text-neutral-950 web:dark:group-hover:text-white web:duration-300">
                                     {currentUser.display_name}
                                 </Text>
-                                <Text className=" text-xs p-1.5 flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200 web:duration-300">
+                                <Text className=" text-xs p-1.5 flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 web:duration-300">
                                     {currentUser.membership_name}
                                 </Text></View>
                         </Row>

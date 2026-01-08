@@ -52,7 +52,7 @@ export default function FormPost(props) {
 
             <View className="  flex-col  ">
                 <View className="flex-row flex-auto items-center justify-between gap-x-2 mb-4">
-                    <View className="gap-x-2 mr-2 flex-row flex-auto items-center group">
+                    <View className="gap-x-2 mr-2 flex-row flex-auto items-center web:group">
                         <Profile {...currentUser} displaySize="lg" displayType="unit_wo_info" />
 
                         {getFormFieldByData(
