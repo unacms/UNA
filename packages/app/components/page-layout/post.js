@@ -232,37 +232,34 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         };
     }, []);
 
+    const offset2 = 64;
     if (isModal) {
         return (
-            <View className="w-full  flex-1">
-                <View className='w-full flex-1 '>
-                    <View style={{ height: height }}>
-                        <CommentsBrowse
-                            useCustomScrollHandler={true}
-                            height={height > 0 ? height : undefined}
-                            scrollToIndex={scrollToEnd}
-                            addItems={aItems}
-                            isModal={true}
-                            browse={commentsData?.content[0]?.browse}
-                            module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
-                            requestUrl={commentsData?.content[0]?.url}
-                            replyId={replyId}
-                        />
-                    </View>
-                </View>
+            <View className="w-full justify-between" style={{ height: windowHeight - offset2 }}>
+                <CommentsBrowse
+                    useCustomScrollHandler={true}
+                    height={windowHeight - offset2 - formHeight > 0 ? windowHeight - offset2 - formHeight : undefined}
+                    scrollToIndex={scrollToEnd}
+                    addItems={aItems}
+                    isModal={true}
+                    browse={commentsData?.content[0]?.browse}
+                    module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
+                    requestUrl={commentsData?.content[0]?.url}
+                    replyId={replyId}
+                />
                 <KbAvoidingView modalOffset={90}>
-                    <View
-                        onLayout={handleLayoutModal}
-                        className="border-t border-border/60"
-                    >
-                        <CommentsForm
-                            isModal={isModal}
-                            objectId={commentsData?.content[0]?.browse.data.object_id}
-                            module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
-                            form={commentsData?.content[0]?.form}
-                            requestUrl={commentsData?.content[0]?.url}
-                        />
-                    </View>
+                <View
+                    onLayout={handleLayout}
+                    className="border-t border-border/60 "
+                >
+                    <CommentsForm
+                        isModal={isModal}
+                        objectId={commentsData?.content[0]?.browse.data.object_id}
+                        module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
+                        form={commentsData?.content[0]?.form}
+                        requestUrl={commentsData?.content[0]?.url}
+                    />
+                </View>
                 </KbAvoidingView>
             </View>
         )

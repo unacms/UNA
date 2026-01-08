@@ -23,6 +23,7 @@ import { enableScreens } from 'react-native-screens';
 import fonts from 'app/design/fonts/fonts';
 import { Platform } from 'react-native'
 import { Appearance } from 'react-native';
+import { Text } from 'app/design/typography'
 //import VersionCheck from 'react-native-version-check';
 import { Alert } from 'react-native';
 import { useLayoutData } from 'app/context/layout';

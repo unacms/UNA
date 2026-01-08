@@ -189,7 +189,7 @@ const ComponentsCommentsEmpty = () => {
     const { t } = useTranslation()
     return (
         <>
-            <View className="pt-8">
+            <View className="py-4">
                 <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-neutral-500/10 ">
                     <View className="flex-col mx-auto  text-neutral-800 dark:text-neutral-200 ">
                         <Icon icon="MessageCircle" width={32} height={32} />

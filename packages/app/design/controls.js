@@ -232,7 +232,7 @@ export function Modal({
     }, []);
     const currentBreakpoint = useBreakpoint();
     const height = useWindowHeight();
-    const offset = (title ? (currentBreakpoint >= LAYOUT_BREAKPOINTS.md ? 100 : 68)  : 0);
+    const offset = (title ? 64 : 0);
 
     if (!animation){
         animation = currentBreakpoint >= LAYOUT_BREAKPOINTS.md ? 'fade' : 'slide';
@@ -265,10 +265,16 @@ export function Modal({
     const isDesktop = useIsDesktop();
     const insets = useSafeAreaInsets();
 
+    const styles2 = isDesktop ? {} : {height: height};
+    if (!isDesktop && !autoHeight){
+        styles2.height = height;
+    }
+
+
     const Content = (
-        <View style={{ paddingTop: !isWeb ? insets?.top : 0, paddingBottom: !isWeb ? insets?.bottom : 0 }} className={`justify-center left-0 right-0 z-50 w-full overflow-x-hidden h-full overflow-y-auto ${layoutShift}:inset-0  ${sClassPosition}`}>
-            <View className={`w-full ${maxWidth} ${fullWidth ? '' : `${layoutShift}:w-auto`} ${autoHeight ? '' : 'h-full sm:h-auto'} ${modalSettings.container.replaceAll("{ls}", layoutShift)} `}>
-                <View className={` ${!autoHeight ? 'h-full' : ''} ${modalSettings.content.replaceAll("{ls}", layoutShift)}`}>
+        <View style={{ height: height - (isWeb? 0 :insets?.bottom+insets?.top) }} className={`justify-center left-0 right-0 z-50 w-full overflow-x-hidden h-full overflow-y-hidden ${layoutShift}:inset-0  ${sClassPosition}`}>
+            <View style={styles2} className={`w-full ${maxWidth} ${fullWidth ? '' : `${layoutShift}:w-auto`} ${modalSettings.container} `}>
+                <View style={styles2} className={`${modalSettings.content}`}>
                     {
                         (title) && <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header} `}>
                             {(title && type === 'string') && (
@@ -285,7 +291,7 @@ export function Modal({
                         </Row>
                     }
                   
-                    <Cnt className={`${padding} flex-auto`}>
+                    <Cnt style={styles}     className={`${padding} flex-auto`}>
                          <Pressable
                             onPress={(event) => {
                                 event.stopPropagation();
@@ -301,7 +307,7 @@ export function Modal({
 
     return (
         <ModalDef visible={onVisible} animationType={animation} transparent={isWeb}>
-            <Pressable className={`pointerEvents cursor-default flex justify-end w-full h-full 
+            <Pressable style={styles2} className={`pointerEvents cursor-default flex justify-end w-full 
                 ${modalSettings.fog}`}
                 onPress={(event) => {
                     if (isOuterClose) {
@@ -310,7 +316,7 @@ export function Modal({
                     event.stopPropagation();
                 }}
             >
-                {isWeb && isDesktop ? <RemoveScroll className='flex-1'>{Content}</RemoveScroll> : Content}</Pressable>
+                {isWeb ? <RemoveScroll className='flex-1'>{Content}</RemoveScroll> : Content}</Pressable>
         </ModalDef>
     );
 }

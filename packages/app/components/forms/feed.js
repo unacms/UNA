@@ -82,7 +82,6 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
     const isPollsPresent = !!data.inputs['polls'];
     const isLabelsPresent = !!data.inputs['labels'];
     const isButtonDisabled = !hasText || ((!isHiddenVisibility && object_privacy_view == '')) ? true : false;
-
     if (isFormOnly) {
         return (
             <View className="w-full flex-1 ">
@@ -139,7 +138,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                     <View className="justify-between flex-col flex-auto ">
                         <View className="w-full flex-auto justify-start p-1.5 ">
                             <View
-                                className="flex-auto"
+                                className="flex-auto "
                                 style={{
                                     ...(isWeb && { transition: 'height 0.1s cubic-bezier(0.25, 0.1, 0.25, 1)' })
                                 }}
@@ -159,7 +158,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                         autofocus: Date.now(),
                                         classes: 'flex-auto',
                                         initialHeight: 120,
-                                        maxHeight: screenHeight / 2 ,
+                                        maxHeight: screenHeight / 2 - 80 ,
                                     }
                                 )}
                             </View>
