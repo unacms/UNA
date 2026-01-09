@@ -50,7 +50,7 @@ export default function ElementConfirmEmail(props) {
             <View className="max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto gap-y-4">
                 <AnimatedView direction="up" delay={300}>
                     <Redirect ref={redirectdRef} />
-                    <Card padding="p-6  ">
+                    <Card padding="p-6  gap-6">
                         <CardHeader>
                             <CardTitle>{t("Unconfirmed email address")}</CardTitle>
                             <CardDescription>
