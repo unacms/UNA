@@ -18,7 +18,6 @@ import AnimatedView from 'app/ui/atoms/animated-view'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import Page from 'app/ui/molecules/page'
-import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 /**
  * Renders the login splash screen with adaptive layouts for web and mobile platforms.
  *
@@ -47,7 +46,7 @@ function PageContent({data}) {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="px-6">
-                        <KbAvoidingView modalOffset={90}>
+                        
                         <BlockByName
                             name="system:login_form"
                             contentOnly={true}
@@ -57,7 +56,7 @@ function PageContent({data}) {
                                 button_full_width: true,
                             }}
                         />
-                        </KbAvoidingView>
+
                          <AuthPanel
                             forgotPasswordLink={true}
                             showSeparator={true}

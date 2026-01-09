@@ -8,10 +8,7 @@ import Link from 'app/ui/atoms/link'
 import { Platform } from 'react-native'
 
 export default function MenuFooter ({ cntClasses, btnStyle, menu_items, variant, size, itemClassName }) {
-    //!!!! component is not work in NATIVE, raise total crush
-    if (Platform.OS !== 'web')
-        return null
-
+    
     const { t } = useTranslation();
     const [menuData, setMenuData] = useState( false);
     const { currentUser } = useCurrentUser();

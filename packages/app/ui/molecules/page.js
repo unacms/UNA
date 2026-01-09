@@ -13,7 +13,8 @@ export default function Page({ children, data, page_width, processKeyboard=true 
 
     return (
         <Wrapper
-             {...(!isWeb ? { contentContainerStyle: { paddingTop: headerHeightFromAtom } } : {})}
+            {...(!isWeb && !processKeyboard ? { contentContainerStyle: { paddingTop: headerHeightFromAtom } } : {})}
+            {...(!isWeb && processKeyboard ? { paddingTop: headerHeightFromAtom } : {})}
             className={(page_width || getPageWidth(data?.uri, data?.config)) + ' mx-auto w-full'}
             keyboardShouldPersistTaps="always"
             keyboardDismissMode="on-drag"

@@ -1426,7 +1426,7 @@ export const settingsDefault = {
             
             xs: {
                 padding: '  ',
-                hitarea_class: ' relative u-link-hitarea u-link-hitarea-xs ',
+                hitarea_class: ' web:u-link-hitarea web:u-link-hitarea-xs ',
                 hitSlop: { top: 8, right: 8, bottom: 8, left: 8 },
                 text: ' text-xs leading-4 min-h-4 items-center justify-center flex',
                 rounded: ' rounded ',
@@ -1434,7 +1434,7 @@ export const settingsDefault = {
             },
             sm: {
                 padding: ' ',
-                hitarea_class: ' relative u-link-hitarea u-link-hitarea-sm ',
+                hitarea_class: ' web:u-link-hitarea web:u-link-hitarea-sm ',
                 hitSlop: { top: 6, right: 6, bottom: 6, left: 6 },
                 text: ' text-sm ',
                 rounded: '  rounded-md ',
@@ -1442,7 +1442,7 @@ export const settingsDefault = {
             },
             md: {
                 padding: ' px-1 py-0.5 ',
-                hitarea_class: ' relative u-link-hitarea u-link-hitarea-md ',
+                hitarea_class: ' web:u-link-hitarea web:u-link-hitarea-md ',
                 hitSlop: { top: 4, right: 4, bottom: 4, left: 4 },
                 text: ' underline-offset-2  text-base  ',
                 rounded: ' rounded-md ',
@@ -1450,7 +1450,7 @@ export const settingsDefault = {
             },
             lg: {
                 padding: ' px-2 py-1 ',
-                hitarea_class: ' relative u-link-hitarea u-link-hitarea-md ',
+                hitarea_class: ' web:u-link-hitarea web:u-link-hitarea-md ',
                 hitSlop: { top: 2, right: 2, bottom: 2, left: 2 },
                 text: ' underline-offset-2  text-lg  ',
                 rounded: ' rounded-lg ',
@@ -1474,17 +1474,17 @@ export const settingsDefault = {
             'u-link-accent-trans': ' web:duration-200 ',
 
             // neutral color link, no background, hover background
-            'u-link-ghost-cnt':  ' u-link-ghost    ',
+            'u-link-ghost-cnt':  ' web:u-link-ghost    ',
             'u-link-ghost-text':  ' text-secondary-foreground web:hover:text-foreground ',
             'u-link-ghost-trans': ' web:duration-100 ',
 
             // branded color link, no background, hover background
-            'u-link-plainghost-cnt':  ' u-link-ghost   ',
+            'u-link-plainghost-cnt':  ' web:u-link-ghost   ',
             'u-link-plainghost-text':  ' text-muted-foreground web:hover:text-foreground ',
             'u-link-plainghost-trans': ' web:duration-100 ',
 
             // branded color link, no background, hover background
-            'u-link-accentghost-cnt':  ' u-link-ghost   ',
+            'u-link-accentghost-cnt':  ' web:u-link-ghost   ',
             'u-link-accentghost-text':  ' text-accent-foreground ',
             'u-link-accentghost-trans': ' web:duration-100 ',
 
