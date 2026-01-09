@@ -15,7 +15,7 @@ export default function PageLayout({ data }) {
         ));
 
         return (
-            <Page data={data}>
+            <Page data={data} processKeyboard={false}>
                 <View className='p-3 sm:p-4  web:duration-300 w-full '>
                     {cells}
                 </View>
