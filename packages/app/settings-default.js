@@ -1469,7 +1469,7 @@ export const settingsDefault = {
             'u-link-plain-trans': ' web:duration-200 ',
 
             // branded color link, no background
-            'u-link-accent-cnt': ' active:bg-accent/60  ',
+            'u-link-accent-cnt': ' web:active:bg-accent/60  ',
             'u-link-accent-text': ' text-accent-foreground web:hover:underline ',
             'u-link-accent-trans': ' web:duration-200 ',
 

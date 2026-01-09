@@ -101,7 +101,7 @@ export default function ElementLink(props) {
     const resolvedHitSlop = hitSlop ?? (hitarea === false ? undefined : (size ? ThemeLinkSizes[size]?.hitSlop : undefined));
 
     const ghostNativePressedClass = (selectedVariant === 'ghost' || selectedVariant === 'plainghost' || selectedVariant === 'accentghost') ? ' web:active:bg-muted rounded-lg ' : '';
-    const composedClassName = [variantClass, sizeClass, ghostNativePressedClass, className].filter(Boolean).join(' ').trim();
+    const composedClassName = [variantClass, sizeClass, ghostNativePressedClass, className].filter(Boolean).join(' ').trim().replace(/\bactive:/g, 'web:active:');
 
     // Helper to check if children are all text-like (strings/numbers) including arrays
     const isTextContent = (child) => {
@@ -175,7 +175,7 @@ if (mode == 'text'){
     
     // Remove alt from rest since it's not valid for <a> elements
     const { alt, ...linkRest } = rest;
-
+    
     return (
         <Link 
             push 
