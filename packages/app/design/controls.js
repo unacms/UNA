@@ -269,10 +269,12 @@ export function Modal({
     if (!isDesktop && !autoHeight){
         styles2.height = height;
     }
-
+    
+    const viewportHeight = isWeb ? (window?.innerHeight ?? 0) : 0;
+    const viewportOffset = isWeb ? Math.max(0, viewportHeight - height) : 0;
 
     const Content = (
-        <View style={{ height: height - (isWeb? 0 :insets?.bottom+insets?.top) }} className={`justify-center left-0 right-0 z-50 w-full overflow-x-hidden h-full overflow-y-hidden ${layoutShift}:inset-0  ${sClassPosition}`}>
+        <View style={{ height: height - (isWeb? 0 :insets?.bottom+insets?.top)}} className={`justify-center left-0 right-0 z-50 w-full overflow-x-hidden h-full overflow-y-hidden ${layoutShift}:inset-0  ${sClassPosition}`}>
             <View style={styles2} className={`w-full ${maxWidth} ${fullWidth ? '' : `${layoutShift}:w-auto`} ${modalSettings.container} `}>
                 <View style={styles2} className={`${modalSettings.content}`}>
                     {
@@ -307,7 +309,7 @@ export function Modal({
 
     return (
         <ModalDef visible={onVisible} animationType={animation} transparent={isWeb}>
-            <Pressable style={styles2} className={`pointerEvents cursor-default flex justify-end w-full 
+            <Pressable style={{ ...styles2, marginTop: viewportOffset }} className={`pointerEvents cursor-default flex justify-end w-full 
                 ${modalSettings.fog}`}
                 onPress={(event) => {
                     if (isOuterClose) {
