@@ -209,7 +209,8 @@ export function Modal({
     children,
     padding = " p-4 ",
     scrollable = false,
-    autoHeight = false
+    autoHeight = false,
+    usePadding = false
 }) {
     const isWeb = Platform.OS === 'web';
     // Cleanup guard to prevent removeChild errors
@@ -271,7 +272,7 @@ export function Modal({
     }
     
     const viewportHeight = isWeb ? (window?.innerHeight ?? 0) : 0;
-    const viewportOffset = isWeb ? Math.max(0, viewportHeight - height) : 0;
+    const viewportOffset = isWeb && usePadding ? Math.max(0, viewportHeight - height) : 0;
 
     const Content = (
         <View style={{ height: height - (isWeb? 0 :insets?.bottom+insets?.top)}} className={`justify-center left-0 right-0 z-50 w-full overflow-x-hidden h-full overflow-y-hidden ${layoutShift}:inset-0  ${sClassPosition}`}>

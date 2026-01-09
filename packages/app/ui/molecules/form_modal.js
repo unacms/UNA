@@ -25,6 +25,7 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
                 onVisible={!!pageData}
                 title={`${authorData.content[0].data.author_data.display_name}'s post`}
                 padding=""
+                usePadding={true}
             >
                 <Component url={url} isModal={true} layoutName={'post'} data={pageData} blocks={layoutBlocks} />
             </Modal>
