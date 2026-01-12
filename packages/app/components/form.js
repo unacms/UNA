@@ -3,7 +3,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import { View, Row } from 'app/design/view'
 import { getComponent } from 'app/components/registry';
-import { FeedbackHaptics, storageSet, appSetting, storageGet, storageClear } from 'app/lib/util';
+import { FeedbackHaptics, storageSet, appSetting, isNumeric, storageClear } from 'app/lib/util';
 import { Platform } from 'react-native';
 import emitter from 'app/context/emitter';
 import useDebounce from 'app/lib/hooks/debounce'
@@ -368,16 +368,21 @@ export default function Form({
         if (defaultValues.hasOwnProperty(key) && filteredInputs?.[key].type !== 'location') {
             result[key] = defaultValues[key];
         }
+        else{
+             result[key] ='';
+        }
         return result;
     }, {});
 
     const currentFormValues = filteredInputs ? Object.keys(filteredInputs).reduce((result, key) => {
         if (filteredInputs?.[key].type !== 'location') {
-            result[key] = allFields[key];
+            result[key] = isNumeric(allFields[key]) ? 'vcxv' :allFields[key];
         }
         else {
             if (allFields[key + '_country'])
                 result[key] = allFields[key + '_country'];
+            else
+                 result[key] = '';
         }
         return result;
     }, {}) : [];
@@ -391,7 +396,7 @@ export default function Form({
                 <FormProvider {...methods}>
                     <View className={`${layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : appSetting('forms', 'form_container')}`}>
                         {inputs}
-                        {(isAutoChange && layout === 'hor') && <Row className='items-center justify-between '>
+                        {(isAutoChange ) && <Row className='items-center justify-between absolute -top-4 right-0'>
                             {!isObjectsEqual(defaultFormValues, currentFormValues) && <Button
                                 title='Reset Filters'
                                 startDecorator='X'
