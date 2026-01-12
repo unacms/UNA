@@ -211,32 +211,40 @@ export default function UniList(props) {
                         <DragDropContext onDragEnd={onSort}>
                             <Droppable
                                 droppableId="droppable"
-                                mode="virtual"
                                 renderClone={(provided, snapshot, rubric) => (
-                                    itemContentSorted(rubric.source.index, data[rubric.source.index], provided, snapshot.isDragging)
-
+                                    itemContentSorted(
+                                        rubric.source.index,
+                                        data[rubric.source.index],
+                                        provided,
+                                        snapshot.isDragging
+                                    )
                                 )}
                             >
-                                {(provided) => (
-                                    <View {...provided.droppableProps} ref={provided.innerRef}>
-                                        <Virtuoso
-                                            itemContent={(index, item) => (
-                                                <Draggable draggableId={`${item.id}`} index={index} key={item.id}>
-                                                    {(provided) => itemContentSorted(index, item, provided, false)}
-                                                </Draggable>
-                                            )}
-                                            {...commonVirtuosoProps}
-                                            {...(listState?.ranges && { restoreStateFrom: listState })}
-                                            {...(scrollToLastItem && { initialTopMostItemIndex: data.length })}
-                                            endReached={onEndReached}
-                                        />
+                                {(provided, snapshot) => (
+                                    <div ref={provided.innerRef} {...provided.droppableProps}>
+                                        {data.map((item, index) => (
+                                            <Draggable
+                                                draggableId={`item-${item.id}`}
+                                                index={index}
+                                                key={item.id}
+                                            >
+                                                {(provided, snapshot) =>
+                                                    itemContentSorted(
+                                                        index,
+                                                        item,
+                                                        provided,
+                                                        snapshot.isDragging
+                                                    )
+                                                }
+                                            </Draggable>
+                                        ))}
                                         {provided.placeholder}
-                                    </View>
+                                    </div>
                                 )}
                             </Droppable>
                         </DragDropContext>
                     </View>
-                )
+                );
             }
             else {
                 return (

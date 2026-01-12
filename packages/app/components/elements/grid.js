@@ -565,7 +565,7 @@ export default function ElementGrid(props) {
            
             <UniList
                 height={400}
-                sortable={false}// TODO FIX
+                sortable={isSortable}
                 onSort={handleSort}
                 data={dataItems}
                 onEndReached={handleEndReached}
