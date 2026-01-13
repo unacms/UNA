@@ -1,13 +1,26 @@
-//import { /*MasonryFlashList,*/ FlashList } from "@shopify/flash-list";
-import { RefreshControl, FlatList } from 'react-native';
+import { RefreshControl, Platform } from 'react-native';
 import { View } from 'app/design/view'
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useMemo } from 'react';
 import { LegendList } from "@legendapp/list";
 import { useSetScrollDirection, useHeaderHeight, useSetScrollValue } from 'app/context/jotai/layout';
 
 export default function UniList(props) {
     const uniRef = useRef();
-    const { preloadComponent, contentContainerStyle, ListHeaderComponent, scrollProps, isModal, data, index, mode, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, unit, refreshing, onRefresh, height, ...rest } = props
+    const { 
+        preloadComponent, 
+        contentContainerStyle: contentContainerStyleProp, 
+        ListHeaderComponent, 
+        scrollProps, 
+        isModal, 
+        data, 
+        renderItem, 
+        onEndReached, 
+        ListFooterComponent, 
+        refer, 
+        refreshing, 
+        onRefresh, 
+        ...rest 
+    } = props;
 
     const scrollY = useRef(0);
     const scrollState = useRef(0);
@@ -15,18 +28,25 @@ export default function UniList(props) {
     const setScrollValue = useSetScrollValue();
 
     const headerHeightFromAtom = useHeaderHeight();
-    // Prefer measured shared header height when available, otherwise fall back to legacy scrollProps.
-    const headerHeight =
-        typeof headerHeightFromAtom === 'number' && headerHeightFromAtom > 0
-            ? headerHeightFromAtom
-            : (typeof scrollProps?.headerHeight === 'number' ? scrollProps.headerHeight : 0);
-    const filteredData = data.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
+    
+    const headerHeight = useMemo(() => {
+        if (typeof headerHeightFromAtom === 'number') {
+            return headerHeightFromAtom;
+        }
+        return typeof scrollProps?.headerHeight === 'number' 
+            ? scrollProps.headerHeight 
+            : 0;
+    }, [headerHeightFromAtom, scrollProps?.headerHeight]);
+    
+    const filteredData = useMemo(() => 
+        data.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i),
+        [data]
+    );
 
-    // Добавить обработчик скролла
     const handleScroll = useCallback((event) => {
         const SCROLL_OFFSET_THRESHOLD = 100;
         const currentScrollY = event.nativeEvent.contentOffset.y;
-        setScrollValue(currentScrollY)
+        setScrollValue(currentScrollY);
         const previousScrollY = scrollY.current;
 
         let newScrollState;
@@ -34,9 +54,9 @@ export default function UniList(props) {
         if (currentScrollY < SCROLL_OFFSET_THRESHOLD) {
             newScrollState = 0;
         } else if (currentScrollY > previousScrollY && currentScrollY > 0) {
-            newScrollState = 1; // Скролл вниз
+            newScrollState = 1;
         } else if (currentScrollY < previousScrollY) {
-            newScrollState = -1; // Скролл вверх
+            newScrollState = -1;
         } else {
             newScrollState = scrollState.current;
         }
@@ -46,40 +66,89 @@ export default function UniList(props) {
             scrollState.current = newScrollState;
         }
         scrollY.current = currentScrollY;
-    }, [setScrollDirection]);
+    }, [setScrollDirection, setScrollValue]);
 
+    const handleScrollToIndexFailed = useCallback((info) => {
+        console.log('onScrollToIndexFailed', info);
+    }, []);
 
-    return preloadComponent ? <View className="w-full flex-1">
-        <View className={`w-full`} style={{ height: headerHeight }} />
-        {preloadComponent}
-    </View> : <LegendList
-        contentContainerStyle={{
-            ...(headerHeight && !scrollProps?.inverted ? { paddingTop: isModal ? 0 : headerHeight } : {}),
-            ...(headerHeight && scrollProps?.inverted ? { paddingBottom: isModal ? 0 : headerHeight } : {}),
-            ...contentContainerStyle,
-        }}
-        ref={refer ? refer : uniRef}
-        onEndReachedThreshold={4}
-        data={filteredData}
-        ListHeaderComponent={ListHeaderComponent}
-        keyExtractor={item => item.id}
-        renderItem={renderItem}
-        onEndReached={onEndReached}
-        onScroll={handleScroll} // Добавить это свойство
-        scrollEventThrottle={16} // Добавить для оптимизац
-        keyboardShouldPersistTaps="always"
-        ListFooterComponent={ListFooterComponent}
-        onScrollToIndexFailed={(info) => {
-            console.log('onScrollToIndexFailed', info)
-        }}
-        {...rest}
-        refreshControl={
-            props.url ? (
-                <RefreshControl progressViewOffset={headerHeight || 100} size={'large'} refreshing={refreshing} onRefresh={onRefresh} />
-            ) : null
-        }
-    />
+    const shouldApplyHeaderOffset = !scrollProps?.inverted && !isModal;
+    const shouldApplyFooterOffset = scrollProps?.inverted && !isModal;
 
+    // 🔧 Правильная обработка ListHeaderComponent (может быть функцией или компонентом)
+    const enhancedListHeaderComponent = useCallback(() => {
+        return (
+            <>
+                {shouldApplyHeaderOffset && headerHeight > 0 && (
+                    <View style={{ height: headerHeight }} />
+                )}
+                {ListHeaderComponent && (
+                    typeof ListHeaderComponent === 'function' 
+                        ? <ListHeaderComponent /> 
+                        : ListHeaderComponent
+                )}
+            </>
+        );
+    }, [shouldApplyHeaderOffset, headerHeight, ListHeaderComponent]);
 
+    // 🔧 Правильная обработка ListFooterComponent (может быть функцией или компонентом)
+    const enhancedListFooterComponent = useCallback(() => {
+        return (
+            <>
+                {ListFooterComponent && (
+                    typeof ListFooterComponent === 'function' 
+                        ? <ListFooterComponent /> 
+                        : ListFooterComponent
+                )}
+                {shouldApplyFooterOffset && headerHeight > 0 && (
+                    <View style={{ height: headerHeight }} />
+                )}
+            </>
+        );
+    }, [shouldApplyFooterOffset, headerHeight, ListFooterComponent]);
 
+    const refreshControl = useMemo(() => 
+        props.url ? (
+            <RefreshControl 
+                progressViewOffset={headerHeight || 100} 
+                size="large" 
+                refreshing={refreshing} 
+                onRefresh={onRefresh} 
+            />
+        ) : null,
+        [props.url, headerHeight, refreshing, onRefresh]
+    );
+
+    if (preloadComponent) {
+        return (
+            <View className="w-full flex-1">
+                <View className="w-full" style={{ height: headerHeight }} />
+                {preloadComponent}
+            </View>
+        );
+    }
+
+    return (
+        <LegendList
+            contentContainerStyle={contentContainerStyleProp}
+            ref={refer || uniRef}
+            onEndReachedThreshold={4}
+            data={filteredData}
+            ListHeaderComponent={enhancedListHeaderComponent}
+            ListFooterComponent={enhancedListFooterComponent}
+            keyExtractor={item => item.id}
+            renderItem={renderItem}
+            onEndReached={onEndReached}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            keyboardShouldPersistTaps="always"
+            onScrollToIndexFailed={handleScrollToIndexFailed}
+            refreshControl={refreshControl}
+            
+            contentInsetAdjustmentBehavior="never"
+            automaticallyAdjustContentInsets={false}
+            
+            {...rest}
+        />
+    );
 }
