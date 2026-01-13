@@ -44,6 +44,29 @@ export default function FormFieldLocation({ name, value, onChange, ...props }) {
         // clear field in filter
         if (!value.location_string && !field.value) {
             setTerm("");
+
+            formContext?.unregister(name + '_country');
+            formContext?.unregister(name + '_state');
+            formContext?.unregister(name + '_city');
+            formContext?.unregister(name + '_zip');
+            formContext?.unregister(name + '_lat');
+            formContext?.unregister(name + '_lng');
+            formContext?.unregister(name + '_street');
+            formContext?.unregister(name + '_street_number');
+            
+            // Опционально: вызываем onChange с пустыми значениями
+            onChange?.({
+                location_string: '',
+                lat: '',
+                lng: '',
+                street: '',
+                street_number: '',
+                city: '',
+                state: '',
+                country: '',
+                zipCode: '',
+            });
+            
         }
 
     }, [field.value]);

@@ -212,6 +212,7 @@ export function Conductor({
         setIndex((prevIndex) => {
             setRoutes((prevRoutes) => {
                 const newRoutes = [...prevRoutes]
+                newRoutes[prevIndex].endpoint.params.filters = {}
                 values.forEach((value) => {
                     const name = value.name
                     const val = value.value
@@ -245,9 +246,7 @@ export function Conductor({
                     : values[key],
             })
         }
-
         setFilterValue(filterValues)
-        //  setBottomSheetData(false);
     }, [])
 
     useEffect(() => {

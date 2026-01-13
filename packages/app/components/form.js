@@ -53,7 +53,7 @@ export default function Form({
     saveOnChanges,
     exProps,
     request
-}) {   
+}) {
     const isAutoChange = !!onChange;
     const { auto_focus, ...formProps } = initedFormProps ?? {};
 
@@ -78,11 +78,11 @@ export default function Form({
         if (request?.url) {
             setPostData(formData);
         }
-    });  
+    });
     useEffect(() => {
-      
+
         if (!dynamicData) {
-           
+
             // Нет динамических данных – возвращаемся к исходным
             setFormBundle(prev => ({
                 ...prev,
@@ -356,7 +356,7 @@ export default function Form({
 
     const ElementForm = getFormType(name)
     if ('undefined' !== typeof ElementForm) {
-        inputs = <ElementForm name={name} data={{...formBundle?.form, inputs: filteredInputs}} response={formBundle.response} handleSubmit={_handleSubmit} exProps={exProps}></ElementForm>
+        inputs = <ElementForm name={name} data={{ ...formBundle?.form, inputs: filteredInputs }} response={formBundle.response} handleSubmit={_handleSubmit} exProps={exProps}></ElementForm>
         return (
             <FormProvider {...methods}>
                 {inputs}
@@ -365,29 +365,47 @@ export default function Form({
     }
 
     const defaultFormValues = Object.keys(allFields).reduce((result, key) => {
-        if (defaultValues.hasOwnProperty(key) && filteredInputs?.[key].type !== 'location') {
-            result[key] = defaultValues[key];
+        const field = filteredInputs?.[key];
+        const fieldType = field?.type;
+        const hasDefaultValue = key in defaultValues;
+
+        if (fieldType === 'location') {
+            result[key] = '';
+            return result;
         }
-        else{
-             result[key] ='';
+
+        if (fieldType === 'switcher') {
+            result[key] = field?.checked || '0';
+            return result;
         }
+
+        result[key] = hasDefaultValue ? defaultValues[key] : '';
         return result;
     }, {});
 
     const currentFormValues = filteredInputs ? Object.keys(filteredInputs).reduce((result, key) => {
         if (filteredInputs?.[key].type !== 'location') {
-            result[key] = isNumeric(allFields[key]) ? 'vcxv' :allFields[key];
+            result[key] = isNumeric(allFields[key]) ? allFields[key].toString() : allFields[key];
         }
         else {
             if (allFields[key + '_country'])
                 result[key] = allFields[key + '_country'];
             else
-                 result[key] = '';
+                result[key] = '';
         }
         return result;
     }, {}) : [];
 
-    const Element = formBundle.extra ? getComponent('element', String(formBundle.extra.type)) : null
+    const Element = formBundle.extra ? getComponent('element', String(formBundle.extra.type)) : null;
+
+
+    function stableStringify(obj) {
+        return JSON.stringify(
+            Object.keys(obj).sort().reduce((acc, k) => (acc[k] = obj[k], acc), {})
+        );
+    }
+
+    console.log("allFields", defaultFormValues, currentFormValues)
 
     return (
         <>
@@ -396,8 +414,8 @@ export default function Form({
                 <FormProvider {...methods}>
                     <View className={`${layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : appSetting('forms', 'form_container')}`}>
                         {inputs}
-                        {(isAutoChange ) && <Row className='items-center justify-between absolute -top-4 right-0'>
-                            {!isObjectsEqual(defaultFormValues, currentFormValues) && <Button
+                        {(isAutoChange) && <Row className='items-center justify-between absolute -top-4 right-0'>
+                            {(stableStringify(defaultFormValues) != stableStringify(currentFormValues)) && <Button
                                 title='Reset Filters'
                                 startDecorator='X'
                                 size='sm'

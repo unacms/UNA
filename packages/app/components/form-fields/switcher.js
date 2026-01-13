@@ -1,31 +1,40 @@
-import { useState, useEffect } from 'react';
 import Field from './_field';
 import Switch from 'app/ui/atoms/switcher'
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useController } from 'react-hook-form';
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util'
+
 const switcherTheme = appSetting('theme', 'switcher');
 
 export default function FormFieldSwitcher(props) {
-    const [isEnabled, setIsEnabled] = useState(props.checked ? true : false);
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+    const { name, caption, checked, value } = props;
     const formContext = useFormContext();
+    
+    const initialValue = checked ? 1 : 0;
+    
+    const { field } = useController({ 
+        name, 
+        control: formContext.control,
+        defaultValue: initialValue 
+    });
 
-    useEffect(() => {
-        formContext.setValue(props.name, isEnabled ? 1 : 0)
-    }, [props.name, isEnabled]);
+    const handleToggle = () => {
+        const newValue = field.value ? 0 : 1;
+        field.onChange(newValue);
+    };
 
     return (
         <Field {...props}>
             <View className={switcherTheme['u-controls-switcher-container']}>
                 <Switch
-                    onValueChange={toggleSwitch}
-                    value={isEnabled}
+                    onValueChange={handleToggle}
+                    value={!!field.value}
                 />
-                <Text className={switcherTheme['u-controls-switcher-text']}>{props.caption}</Text>
+                <Text className={switcherTheme['u-controls-switcher-text']}>
+                    {caption}
+                </Text>
             </View>
         </Field>
     );
 }
-
