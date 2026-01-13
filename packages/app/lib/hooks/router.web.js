@@ -1,31 +1,22 @@
-import { useMemo } from 'react';
-import { 
-    useRouter as _useRouter,
-    usePathname as _usePathname
+export { 
+    useRouter,
+    usePathname
 } from 'next/navigation';
-
-export function useLocalSearchParams() {
-    return { url: window.location.href };
-}
 
 export function useGlobalSearchParams() {
     return null;
-}
-
-export function useRouter() {
-    return _useRouter();
-}
-
-export function usePathname() {
-    return _usePathname();
 }
 
 export function useNavigation() {
     return null;
 }
 
-export function useSafeAreaInsets() {
+export function useFocusEffect() {
     return null;
+}
+
+export function useSafeAreaInsets() {
+    return { top: 0, right: 0, bottom: 0, left: 0 };
 }
 
 export function goBack(navigation, router, callback){
@@ -38,6 +29,11 @@ export function goBack(navigation, router, callback){
         } 
     }
 }
+
+export function useLocalSearchParams() {
+    return { url: window.location.href };
+}
+
 
 export function redirectTo(router, url){
     document.location = url

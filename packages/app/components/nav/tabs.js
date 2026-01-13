@@ -99,7 +99,7 @@ function processUrl(url, router, currentUser, TabList) {
 }
 
 
-export default function Tabs () {
+export default function Tabs() {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const { setLayoutData } = useLayoutData()
     const { themeName } = useLayoutSettings();
@@ -109,7 +109,7 @@ export default function Tabs () {
 
     registerAll();
 
-    
+
     // useTranslation должен вызываться после всех других хуков, чтобы избежать проблем с порядком
     // если i18n не инициализирован, useTranslation может вызывать хуки условно
     const { t } = useTranslation();
@@ -146,7 +146,7 @@ export default function Tabs () {
 
     const preloadDelay = appSetting('native', 'lazy_tabs_preload_delay');
     const [lazyLoadTabs, setLazyLoadTabs] = useState(true);
-    
+
     const profile = useMemo(() => {
         if (currentUser) {
             const dUser = { ...currentUser, url_avatar: currentUser?.avatar, url: '/dashboard' };
@@ -164,15 +164,15 @@ export default function Tabs () {
     const tabsHeight = Platform.OS == 'ios' ? 52 : 56;
 
     // Добавить useEffect для отложенной загрузки
-useEffect(() => {
-    if (preloadDelay > 0 && lazyLoadTabs) {
-        const timer = setTimeout(() => {
-            setLazyLoadTabs(false);
-        }, preloadDelay);
-        
-        return () => clearTimeout(timer);
-    }
-}, [preloadDelay, lazyLoadTabs]);
+    useEffect(() => {
+        if (preloadDelay > 0 && lazyLoadTabs) {
+            const timer = setTimeout(() => {
+                setLazyLoadTabs(false);
+            }, preloadDelay);
+
+            return () => clearTimeout(timer);
+        }
+    }, [preloadDelay, lazyLoadTabs]);
 
 
     const screenOptions = useMemo(() => ({
@@ -285,7 +285,7 @@ useEffect(() => {
                                 title: t(tab.title),
                                 headerShown: false,
                                 tabBarIcon: ({ color }) => (
-                                    (tab.url == '/dashboard' && profile) ? <View className="h-full ">{profile}</View> : <View className="h-full"><Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} /></View>
+                                    (tab.url == appSetting('dashboard', 'url') && profile) ? <View className="h-full ">{profile}</View> : <View className="h-full"><Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} /></View>
                                 )
                             };
 

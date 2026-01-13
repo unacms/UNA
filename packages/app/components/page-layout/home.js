@@ -1,6 +1,6 @@
 import { View, Row, ScrollView } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
-import React, { useState, useMemo, useRef, useEffect, useLayoutEffect } from 'react'
+import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import {
     cd,
     appSetting,
@@ -27,6 +27,7 @@ import Badge from 'app/ui/molecules/badge'
 import Badges from 'app/ui/molecules/badges'
 import { useBreakpoint, useWindowSize, useIsDesktop, useWindowHeight, useWindowWidth } from 'app/context/measure';
 import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
+import { useFocusEffect }  from 'app/lib/hooks/router'
 
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
@@ -378,10 +379,13 @@ export default function ({ data, blocks }) {
     }, [isDesktop, subHeader, setHeader]);
 
 
-    useLayoutEffect(() => {
-        if (!isWeb) 
-            setHeader(isDesktop ? defaultHeader : { subHeader: subHeader });
-    }, [isDesktop, subHeader, setHeader]);
+
+    useFocusEffect(
+        useCallback(() => {
+            if (!isWeb) 
+                setHeader(isDesktop ? defaultHeader : { subHeader: subHeader });
+        }, [isWeb, isDesktop, defaultHeader, subHeader, setHeader])
+    );
 
     return (
         <>{BlocksCenter}

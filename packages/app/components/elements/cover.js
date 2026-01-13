@@ -515,8 +515,8 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
                                     </View>
                                 </View>
                             )}
-                            <Row
-                                className={`gap-2 ${appSetting(
+                            <View
+                                className={`gap-2 web:flex-row ${appSetting(
                                     'cover',
                                     'more_menu_in_navbar',
                                     data?.profile?.module
@@ -534,7 +534,7 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
                                     uri={uri}
                                     isSplitMenu={true}
                                 />
-                            </Row>
+                            </View>
                         </View>
                     </View>
                 </View>
