@@ -41,7 +41,8 @@ const expoConfig = {
             "NSBluetoothPeripheralUsageDescription": "Quick contacts between users.",
             "NSLocationWhenInUseUsageDescription": "Quick contacts between users.",
             "UIUserInterfaceStyle": "Automatic",
-            "OneSignal_disable_badge_clearing": "YES"
+            "OneSignal_disable_badge_clearing": "YES",
+            "ITSAppUsesNonExemptEncryption": false
         },
         "entitlements": {
             "aps-environment": "development"
