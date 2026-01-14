@@ -220,13 +220,49 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
     const offset2 = 64;
     if (isModal) {
-        return (
-            <View className="w-full justify-between flex-1" >
-                <View className='w-full flex-1 '>
-                    <View style={{ height: windowHeight - offset2 - formHeight }}>
+        if (isWeb) {
+            return (
+                <View className="w-full justify-between flex-1" >
+                    <View className='w-full flex-1 '>
+                        <View style={{ height: windowHeight - offset2 - formHeight }}>
+                            <CommentsBrowse
+                                useCustomScrollHandler={true}
+                                height={windowHeight - offset2 - formHeight > 0 ? windowHeight - offset2 - formHeight : undefined}
+                                scrollToIndex={scrollToEnd}
+                                addItems={aItems}
+                                isModal={true}
+                                browse={commentsData?.content[0]?.browse}
+                                module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
+                                requestUrl={commentsData?.content[0]?.url}
+                                replyId={replyId}
+                            />
+                        </View>
+                    </View>
+                    <KbAvoidingView modalOffset={90}>
+                        <View
+                            onLayout={handleLayout}
+                            className="border-t border-border/60 "
+                        >
+                            <CommentsForm
+                                isModal={isModal}
+                                objectId={commentsData?.content[0]?.browse.data.object_id}
+                                module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
+                                form={commentsData?.content[0]?.form}
+                                requestUrl={commentsData?.content[0]?.url}
+                            />
+                        </View>
+                    </KbAvoidingView>
+                </View>
+            )
+        }
+        else {
+
+            return (
+                <View className="w-full flex-1 ">
+                    <View className="w-full flex-1" >
                         <CommentsBrowse
                             useCustomScrollHandler={true}
-                            height={windowHeight - offset2 - formHeight > 0 ? windowHeight - offset2 - formHeight : undefined}
+                            height={windowHeight > 0 ? windowHeight - 160 : undefined}
                             scrollToIndex={scrollToEnd}
                             addItems={aItems}
                             isModal={true}
@@ -236,23 +272,23 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                             replyId={replyId}
                         />
                     </View>
+                    <KbAvoidingView modalOffset={90}>
+                        <View
+                            onLayout={handleLayout}
+                            className="border-t border-border/60"
+                        >
+                            <CommentsForm
+                                isModal={isModal}
+                                objectId={commentsData?.content[0]?.browse.data.object_id}
+                                module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
+                                form={commentsData?.content[0]?.form}
+                                requestUrl={commentsData?.content[0]?.url}
+                            />
+                        </View>
+                    </KbAvoidingView>
                 </View>
-                <KbAvoidingView modalOffset={90}>
-                <View
-                    onLayout={handleLayout}
-                    className="border-t border-border/60 "
-                >
-                    <CommentsForm
-                        isModal={isModal}
-                        objectId={commentsData?.content[0]?.browse.data.object_id}
-                        module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
-                        form={commentsData?.content[0]?.form}
-                        requestUrl={commentsData?.content[0]?.url}
-                    />
-                </View>
-                </KbAvoidingView>
-            </View>
-        )
+            )
+        }
     }
 
     if (!isWeb || !isDesktop || !isMultiColumn) {
