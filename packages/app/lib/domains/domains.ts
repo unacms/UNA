@@ -9,6 +9,10 @@ export async function updateDomain(
     unaApiKey?: string;
   }
 ) {
+  if (!redis) {
+    throw new Error('Redis client is not initialized');
+  }
+
   const key = `domain:${domainId}`;
 
   const domain = await redis.hGetAll(key);
@@ -40,6 +44,10 @@ export async function createDomain(userId: string, data: {
   unaUrl: string;
   unaApiKey: string;
 }) {
+  if (!redis) {
+    throw new Error('Redis client is not initialized');
+  }
+
   const id = randomUUID();
   const domainKey = `domain:${id}`;
   const hostnameKey = `hostname:${data.hostname}`;
@@ -66,6 +74,9 @@ export async function createDomain(userId: string, data: {
 }
 
 export async function getUserDomains(userId: string) {
+  if (!redis) {
+    throw new Error('Redis client is not initialized');
+  }
   const ids = await redis.sMembers(`user:${userId}:domains`);
   if (ids.length === 0) return [];
 
@@ -76,6 +87,10 @@ export async function getUserDomains(userId: string) {
 }
 
 export async function getDomainByHostname(hostname: string) {
+  if (!redis) {
+    throw new Error('Redis client is not initialized');
+  }
+  
   const domainId = await redis.get(`hostname:${hostname}`);
   if (!domainId) return null;
 
