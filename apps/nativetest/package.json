@@ -16,9 +16,8 @@
   "dependencies": {
     "@expo/vector-icons": "^14.0.0",
     "@neo/test-components": "*",
-    "expo": "canary",
-    "expo-dev-client": "canary",
-    "expo-status-bar": "canary",
+    "expo": "~54.0.31",
+    "expo-status-bar": "~3.0.8",
     "lucide-react-native": "^0.476.0",
     "react": "19.2.3",
     "react-native": "0.83.0",

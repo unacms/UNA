@@ -104,7 +104,8 @@ const nextConfig = {
       'react-native/Libraries/Utilities/codegenNativeComponent': tenPlayWebviewShimPath,
       'react-native/Libraries/Utilities/codegenNativeComponent$': tenPlayWebviewShimPath,
       'react-native-reanimated': reanimatedPath,  // <-- Явно указываем версию 3.10.1
-      'react-native-localize': path.resolve(__dirname, 'stubs/react-native-localize.js'), // ✅ добавьте эту строку
+      'react-native-localize': path.resolve(__dirname, 'stubs/react-native-localize.js'), 
+      'expo-modules-core': path.resolve(__dirname, 'stubs/expo-modules-core.js'),
     };
 
     // Добавляем fallback для codegenNativeComponent
