@@ -91,6 +91,7 @@ const parseHtmlToReact = (html, parentKey = '0') => {
         return <Text>{html}</Text>
     }
 
+
     let childIndex = 0
     const getKey = (tag) => `${parentKey}-${childIndex++}-${tag}`
     const elements = []
@@ -133,7 +134,7 @@ const parseHtmlToReact = (html, parentKey = '0') => {
                 elements.push(<WebDiv key={getKey('br')}></WebDiv>)
             }
             else {
-                return elements.push(<P key={getKey('br')}></P>)
+                elements.push(<P key={getKey('br')}></P>)
             }
 
             continue

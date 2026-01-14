@@ -14,6 +14,7 @@ import { useWindowHeight } from 'app/context/measure';
 import ProfileSwitcher from 'app/components/elements/profile_switcher'
 import emitter from 'app/context/emitter';
 import { Icon } from 'app/ui/atoms/icon'
+import { Text } from 'app/design/typography';
 
 export default function FormFeed({ data, handleSubmit, exProps, name, response }) {
     const formContext = useFormContext()
@@ -84,7 +85,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
     const isButtonDisabled = !hasText || ((!isHiddenVisibility && object_privacy_view == '')) ? true : false;
     if (isFormOnly) {
         return (
-            <View className="w-full flex-1 ">
+            <View className="w-full flex-1">
                 <View className="items-start justify-start sm:p-1 ">
                     <Row className="w-full items-center justify-between gap-x-2">
                         <Row className="gap-1 flex-row flex-auto items-center">
@@ -97,12 +98,11 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                     endDecorator={hasMultipleProfiles ? 'ChevronsUpDown' : null}
                                 />
                             </ProfileSwitcher>
-                            <Icon
-                                icon="ChevronRight"
-                                size={16}
-                                className="text-muted-foreground opacity-60"
-                            />
-
+                                <Icon
+                                    icon="ChevronRight"
+                                    size={16}
+                                    className="text-muted-foreground"
+                                />
                             {data?.inputs?.['object_privacy_view'] ? getFormFieldByData(
                                 {
                                     ...data.inputs['object_privacy_view'],

@@ -15,7 +15,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByName } from 'app/components/block';
 import Cover, { CoverSmall } from 'app/components/elements/cover';
 import emitter from 'app/context/emitter'
-import { useSetHeader, useScrollValue } from 'app/context/jotai/layout';
+import { useSetHeader, useScrollValue, defaultHeader } from 'app/context/jotai/layout';
 import { getComponent } from 'app/components/registry';
 import { useFocusEffect }  from 'app/lib/hooks/router'
 
@@ -30,7 +30,7 @@ const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
 
 
                         return (
-                            <View className="p-1 items-center justify-center"
+                            <View className={`p-1 items-center justify-center ${a?.menu_settings?.class || ''}`}
                                 key={`tab-${a.index}`}
                             >
                                 <MenuItemSubmenu
@@ -151,8 +151,6 @@ const TabScene = React.memo(({
 });
 
 export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 88, smallHeader, minHeaderHeight, isHideDefaultHeader, leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
-
-    console.log("1111",111)
     minHeaderHeight = minHeaderHeight || 100;
     isHideDefaultHeader = isHideDefaultHeader || false;
     useSectionAsMenu = useSectionAsMenu || false;
@@ -364,14 +362,13 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
 
     useFocusEffect(
         useCallback(() => {
-            console.log('Screen focused!');
             if (isUseCurrentHeader) {
+                console.log('header1');
                 setHeader({ header: false });
             }
             else {
                 setHeader({ subHeader: sceneHeader });
             }
-           
         }, [header, isUseCurrentHeader, sceneHeader, setHeader])
     );
 

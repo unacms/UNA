@@ -1695,7 +1695,7 @@ export const settingsDefault = {
                 'items-center flex-row-reverse justify-between gap-x-2 min-w-12 rounded-xl flex-auto p-1.5 bg-input border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 ',
 
             // Text
-            'u-controls-switcher-text': 'text-card-foreground text-base px-1.5',
+            'u-controls-switcher-text': 'text-card-foreground text-base px-1.5 flex-1 ',
 
             // Track
             'u-controls-switcher-track': 'rounded-full',

@@ -212,7 +212,7 @@ export function Modal({
     autoHeight = false,
     usePadding = false
 }) {
-    const isWeb = Platform.OS === 'web';
+    const isIos = Platform.OS === 'ios';
     // Cleanup guard to prevent removeChild errors
     useEffect(() => {
         return () => {
@@ -233,7 +233,8 @@ export function Modal({
     }, []);
     const currentBreakpoint = useBreakpoint();
     const height = useWindowHeight();
-    const offset = (title ? 64 : 0);
+    const insets = useSafeAreaInsets();
+    const offset = (title ? 64 : isIos ? insets?.bottom + insets?.top : 0);
 
     if (!animation){
         animation = currentBreakpoint >= LAYOUT_BREAKPOINTS.md ? 'fade' : 'slide';
@@ -264,7 +265,7 @@ export function Modal({
     }
 
     const isDesktop = useIsDesktop();
-    const insets = useSafeAreaInsets();
+    
 
     const styles2 = isDesktop ? {} : {height: height};
     if (!isDesktop && !autoHeight){

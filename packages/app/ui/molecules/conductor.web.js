@@ -958,7 +958,7 @@ function ConductorMenu({
         ({ item: a, itemRefs, index: index2, visibleItemsCount }) => {
            
             return (
-                <View className={`sadasd ${a?.menu_settings?.class}`}>
+                <View className={`${a?.menu_settings?.class || ''}`}>
                     <MenuItemSubmenu
                         title={a.title}
                         pressed={a.index == index}
