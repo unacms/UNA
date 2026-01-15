@@ -25,10 +25,10 @@ export default function MenuItemSubmenuShare(oProps) {
     };
 
     const handleMenuManageSelect = async (oItem, event) => {
-        switch(oItem.name) {
+        switch (oItem.name) {
             case 'item-repost':
                 const sResponse = await fetcher('/api.php?r=bx_timeline/repost/&params=' + JSON.stringify(Object.values(oItem.data)));
-                if(sResponse?.data ){
+                if (sResponse?.data) {
                     const sMsg = sResponse.data?.message ? sResponse.data?.message : 'Post shared successfully.';
                     console.log("sMsg", sMsg)
                     setShowMsg(sMsg);
@@ -42,12 +42,12 @@ export default function MenuItemSubmenuShare(oProps) {
             case 'item-share':
                 try {
                     const result = await Share.share({
-                       // title: appSetting('layout', 'share_text'),
+                        // title: appSetting('layout', 'share_text'),
                         url: oItem.link,
-                       // message: appSetting('layout', 'share_text') +""+ oItem.link
+                        // message: appSetting('layout', 'share_text') +""+ oItem.link
                     });
 
-                    switch(result.action) {
+                    switch (result.action) {
                         case Share.sharedAction:
                             if (result.activityType) {
                                 // shared with activity type of result.activityType
@@ -55,7 +55,7 @@ export default function MenuItemSubmenuShare(oProps) {
                                 // shared
                             }
                             break;
-                            
+
                         case Share.dismissedAction:
                             // dismissed
                             break;
@@ -70,36 +70,33 @@ export default function MenuItemSubmenuShare(oProps) {
 
     const bShowActionAsButton = oProps.params?.show_action_as_button == undefined || oProps.params.show_action_as_button === true;
 
-    const canWebShare = isWeb && typeof navigator !== "undefined" && typeof navigator.share === "function";
+    const canWebShare = isWeb && typeof navigator !== "undefined" && typeof navigator.share === "function" || !isWeb;
 
     const aSubmenuExcept = [];
-    const aSubmenuItems = oProps.submenu.items .filter(item => (item.name === "item-share" ? canWebShare : true)).map((oItem) => {
-        if(!(oItem.id || oItem.name) || aSubmenuExcept.includes(oItem.name))
+    const aSubmenuItems = oProps.submenu.items.filter(item => (item.name === "item-share" ? canWebShare : true)).map((oItem) => {
+        if (!(oItem.id || oItem.name) || aSubmenuExcept.includes(oItem.name))
             return;
-        
+
         return {
             id: !!oItem.id ? oItem.id : oItem.name,
             link: oItem.link,
             name: oItem.name,
             title: oItem.title,
             data: oItem.data,
-            icon: oIconAliases[oItem.name],  
+            icon: oIconAliases[oItem.name],
         };
     });
-
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
     if (aSubmenuItems.length === 1) {
-    return <></>
+        return <></>
     }
-
-  
 
     return (
         <>
             <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
-            <Pressable className={"flex-auto"+ (oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? '  px-0 ': '  pr-2 ') : '')} onPress={(event) => {event.preventDefault()}}>
+            <Pressable className={"flex-auto" + (oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? '  px-0 ' : '  pr-2 ') : '')} onPress={(event) => { event.preventDefault() }}>
                 <DropdownMenu items={aSubmenuItems} onSelect={handleMenuManageSelect}>
                     <ButtonAction {...oButtonProps} title={oProps?.title ? oProps.title : ''} startDecorator={oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''} />
                 </DropdownMenu>

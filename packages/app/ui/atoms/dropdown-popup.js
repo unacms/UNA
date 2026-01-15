@@ -28,7 +28,8 @@ export default function DropdownPopup({
     const [buttonPos, setButtonPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
     const { width: windowWidth, height: windowHeight } = useWindowSize();
     const isWeb = useMemo(() => Platform.OS === 'web', []);
-    const { colors } = Theme();
+    const isIos = useMemo(() => Platform.OS == 'ios', []);
+
     const animation = useMemo(
         () => (isDesktop ? 'fade' : 'none'),
         [isDesktop]
@@ -68,7 +69,7 @@ export default function DropdownPopup({
                         if (left < 16) left = 16;
 
                         // Calculate vertical position
-                        let top = y + height + (isWeb ? 8 : 36);
+                        let top = y + height + (isWeb || isIos ? 8 : 36);
 
                         if (showOnTop) {
                             top = y - effectivePopupHeight - 8;
@@ -160,7 +161,7 @@ export default function DropdownPopup({
                     }}
                 >
                     {isWeb ? (
-                        <Pressable className="flex-1  z-20" onPress={(event) => handleBackdropPress(event)}>
+                        <Pressable className="flex-1 z-20" onPress={(event) => handleBackdropPress(event)}>
                             {hoverMode ? Content : <RemoveScroll>{Content}</RemoveScroll>}
                         </Pressable>
                     ) : (

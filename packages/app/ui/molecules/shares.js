@@ -44,7 +44,7 @@ export default function ElementShares(oProps) {
 
     const bShowAction = oParams?.show_action !== false;
 
-    const canWebShare = isWeb && typeof navigator !== "undefined" && typeof navigator.share === "function";
+    const canWebShare = isWeb && typeof navigator !== "undefined" && typeof navigator.share === "function" || !isWeb;
 
     let oButtonProps = {};
     if (oProps.primary)

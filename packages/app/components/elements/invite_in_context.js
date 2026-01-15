@@ -33,9 +33,9 @@ export default function InviteInContext({ blockWrapperProps }) {
                 <View className='mt-1'><Card>
                     <View>
                         <CardTitle>You're joining:</CardTitle>
-                        <Row className='w-full mt-4 justify-between'><Profile {...res.data} displayType="unit" size="lg" />
+                        <View className='w-full mt-4 justify-between sm:flex-row gap-y-3'><Profile {...res.data} displayType="unit" size="lg" />
                             <Link href={res.data.url}><Button variant="primary" size="base" title='Continue' /></Link>
-                        </Row>
+                        </View>
                     </View>
                 </Card>
                 </View>

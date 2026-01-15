@@ -40,7 +40,7 @@ export default function ElementLink(props) {
     const sanitizedHref = invalidHrefs.includes(href) ? '' : href;
 
     // Если href невалиден или пуст, возвращаем детей без обертки
-    let finalHref = sanitizedHref === '/home' ? '/' : sanitizedHref;
+    let finalHref = sanitizedHref;
     if (!finalHref.includes('/')) {
         finalHref = `/${finalHref}`;
     }
