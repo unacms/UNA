@@ -52,9 +52,14 @@ export const EventEmitter = class EventEmitter {
   emit() {}
 };
 
+// Базовый класс для нативных модулей (заглушка для веба)
+export class NativeModule {
+  constructor() {}
+}
+
 export const requireNativeViewManager = () => () => null;
 export const requireNativeModule = () => ({});
-export const requireOptionalNativeModule = () => null; // ← ДОБАВИТЬ ЭТУ СТРОКУ
+export const requireOptionalNativeModule = () => null;
 
 // UUID generator заглушка
 export const uuid = {
@@ -67,16 +72,24 @@ export const uuid = {
   }
 };
 
+// Заглушка для устаревшего API registerWebModule
+export const registerWebModule = () => {
+  // Пустая реализация для обратной совместимости
+  return null;
+};
+
 export default {
   Platform,
   CodedError,
   UnavailabilityError,
   NativeModulesProxy,
   EventEmitter,
+  NativeModule,  // ← Добавить
   requireNativeViewManager,
   requireNativeModule,
-  requireOptionalNativeModule, // ← И ДОБАВИТЬ В DEFAULT EXPORT
+  requireOptionalNativeModule,
   createPermissionHook,
   PermissionStatus,
   uuid,
+  registerWebModule,
 };
