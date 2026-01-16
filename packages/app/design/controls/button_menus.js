@@ -1,6 +1,7 @@
 import { appSetting} from 'app/lib/util'
 import  { Button } from 'app/design/controls/buttons';
-
+import  { ButtonsGroup } from 'app/design/controls/button_groups';
+ 
 export function ButtonsGroupMenu(props) {
     const {
         variant,
