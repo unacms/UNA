@@ -107,7 +107,7 @@ const SplashTextInner = () => {
                     className="text-center lg:text-start" 
                     fontFamily='font-title'
                 >
-                    {t('splash_page_title')} {appSetting('app', 'title')}
+                    {t('splash_page_title')} {appSetting('config', 'title')}
                 </H1>
                 <Text
                     accessible={true}

@@ -1,0 +1,96 @@
+
+
+export const settingsProfiles = {
+    profile_sizes: {
+        default_size: 'base',
+        '3xs': {
+            container: 'w-4 h-4',
+            width: 16,
+            height: 16,
+            font: 'text-[10px] leading-4',
+            letter_font: 'text-[8px] font-semibold',
+        },
+        '2xs': {
+            container: 'w-5 h-5',
+            width: 20,
+            height: 20,
+            font: 'text-xs leading-5',
+            letter_font: 'text-[10px] font-semibold',
+        },
+        xs: {
+            container: 'w-6 h-6',
+            width: 24,
+            height: 24,
+            font: 'text-xs leading-5',
+            letter_font: 'text-xs font-semibold',
+        },
+        sm: {
+            container: 'w-8 h-8',
+            width: 32,
+            height: 32,
+            font: 'text-sm leading-4 tracking-tight font-semibold',
+            letter_font: 'text-sm font-semibold',
+        },
+        md: {
+            container: 'w-9 h-9',
+            width: 36,
+            height: 36,
+            font: 'text-sm leading-5 tracking-tight font-semibold',
+            letter_font: 'text-base font-semibold',
+        },
+        base: {
+            container: 'w-10 h-10',
+            width: 40,
+            height: 40,
+            font: 'text-base',
+            letter_font: 'text-lg font-semibold',
+        },
+        lg: {
+            container: 'w-12 h-12',
+            width: 48,
+            height: 48,
+            font: 'text-lg leading-6 tracking-tight font-semibold',
+            letter_font: 'text-xl font-semibold',
+        },
+        xl: {
+            container: 'w-14 h-14',
+            width: 56,
+            height: 56,
+            font: 'text-xl',
+            letter_font: 'text-2xl font-semibold',
+        },
+        '2xl': {
+            container: 'w-20 h-20',
+            width: 80,
+            height: 80,
+            font: 'text-xl',
+            letter_font: 'text-3xl font-semibold',
+        },
+        '3xl': {
+            container: 'w-40 h-40',
+            width: 160,
+            height: 160,
+            font: 'text-2xl',
+            letter_font: 'text-5xl font-semibold',
+        },
+        '4xl': {
+            container: 'w-80 h-80',
+            width: 320,
+            height: 320,
+            font: 'text-4xl',
+            letter_font: 'text-8xl font-semibold',
+        },
+    },
+    profile_colors: [
+        'orange',
+        'yellow',
+        'green',
+        'teal',
+        'sky',
+        'indigo',
+        'purple',
+        'pink',
+        'rose',
+        'red',
+    ]
+}
