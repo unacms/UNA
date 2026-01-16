@@ -95,6 +95,6 @@ export const settingsTheme = {
         ...settingsLinks,
         ...settingsTabs,
         ...settingsInputs,
-        ...settingsElements,
+        ...settingsElements,    
     }
 }
