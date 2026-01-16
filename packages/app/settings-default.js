@@ -1761,7 +1761,7 @@ export const settingsDefault = {
                 ' web:active:outline web:active:outline-ring web:active:scale-95 web:duration-200 ',
                 ' web:active:shadow-none ',    
             ].join(' '),
-            'u-btn-default-text': 'font-medium text-secondary-foreground web:group-hover:text-foreground web:active:text-foreground web:duration-200',
+            'u-btn-default-text': 'font-medium  text-secondary-foreground web:group-hover:text-foreground web:active:text-foreground web:duration-200',
             'u-btn-default-trans': 'web:duration-200',
 
           
@@ -1786,7 +1786,7 @@ export const settingsDefault = {
 
             'u-btn-secondary-cnt': 'overflow-hidden web:group bg-secondary web:hover:bg-secondary/90 web:focus-visible:bg-secondary ',
             'u-btn-secondary-text':
-                ' web:duration-200 font-medium text-secondary-foreground web:group-hover:text-foreground ',
+                ' web:duration-200 font-medium  text-secondary-foreground web:group-hover:text-foreground ',
             'u-btn-secondary-trans': ' web:duration-200 ',
             
 
@@ -1800,6 +1800,11 @@ export const settingsDefault = {
             'u-btn-text-text':
                 ' font-medium text-secondary-foreground web:group-hover:text-foreground web:focus:text-foreground',
             'u-btn-text-trans': ' web:duration-200',
+
+            'u-btn-ghost-cnt': ' web:group  overflow-hidden ',
+            'u-btn-ghost-text':
+                ' font-medium text-secondary-foreground ',
+            'u-btn-ghost-trans': ' ',
          
 
             'u-btn-link-cnt': ' web:group  ',

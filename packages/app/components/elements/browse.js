@@ -76,7 +76,7 @@ export default function Browse(props) {
     let formProps = data?.filter_form;
 
     const [showFilters, setShowFilters] = useState(false);
-    const [filterValues, setFilterValues] = useState({ by_context: '', modules: formProps?.data?.inputs?.modules?.value, media: formProps?.data?.inputs?.media?.value });
+    const [filterValues, setFilterValues] = useState({ modules: formProps?.data?.inputs?.modules?.value, media: formProps?.data?.inputs?.media?.value });
 
     /* unit mode & change unit mode */
     const unitMode = props.unitMode
