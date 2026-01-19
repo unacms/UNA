@@ -1,5 +1,6 @@
 
 import ChkList from 'app/ui/molecules/checkbox_list';
+import RbList from 'app/ui/molecules/radio_list';
 import { fetcher } from 'app/lib/fetcher';
 import { BlockWrapper } from 'app/components/block-wrapper'
 
@@ -32,7 +33,7 @@ export default function ElementSimpleList({ onFormEmpty, data, blockWrapperProps
     const selectedValues = decomposeToPowersOfTwo(data.value)
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <ChkList values={data.values} setValue={handleSubValueChange} selectedValue={selectedValues} />
+            <ChkList multi={data?.multi === 0 ? false: true} values={data.values} setValue={handleSubValueChange} selectedValue={selectedValues} />
         </BlockWrapper>
     )
 

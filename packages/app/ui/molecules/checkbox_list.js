@@ -3,8 +3,9 @@ import { Row, View, ScrollView } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { useState } from 'react';
 import { Button, Modal } from "app/design/controls";
+import RadioButton from 'app/ui/atoms/radiobutton';
 
-export default function ({ values, selectedValue, setValue }) {
+export default function ({ values, selectedValue, setValue, multi = true }) {
     const [value2, setValue2] = useState(selectedValue);
     const addValue2 = (value) => {
         const selectedValues = value2.includes(value)
@@ -12,6 +13,8 @@ export default function ({ values, selectedValue, setValue }) {
             : [...value2, value];
         setValue2(selectedValues);
     }
+
+    const Control = multi ? CheckBox : RadioButton
     return (
         <View>
             {
@@ -19,7 +22,7 @@ export default function ({ values, selectedValue, setValue }) {
                     return (
                         <Row key={`rb-${index}`} className='items-center'>
                             {item2.value || item2.value === 0 ? <>
-                                <CheckBox
+                                <Control
                                     value={item2?.value}
                                     status={value2.includes(item2?.value) ? 'checked' : 'unchecked'}
                                     onPress={() => { addValue2(item2?.value);  }}
