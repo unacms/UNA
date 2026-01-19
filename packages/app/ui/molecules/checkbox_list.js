@@ -12,11 +12,10 @@ export default function ({ values, selectedValue, setValue }) {
             : [...value2, value];
         setValue2(selectedValues);
     }
-
     return (
         <View>
             {
-                values.map((item2, index) => {
+                values?.map((item2, index) => {
                     return (
                         <Row key={`rb-${index}`} className='items-center'>
                             {item2.value || item2.value === 0 ? <>

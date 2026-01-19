@@ -8,7 +8,11 @@ import { View } from 'app/design/view'
 
 export function BlockByName2({ b, name, contentOnly }) {
     const blockNameString = (typeof name === 'string') ? name : name?.name;
-    let c = Block({ uri: '', block: b, contentOnly: contentOnly, showTitle: name.showTitle, showPad: name.showPad, showBg: name.showBg, extraProps: { ...name, source: blockNameString }, sidebar: name.sidebar, showTitleInside: name.showTitleInside })
+    
+    if (!blockNameString)
+        return 
+
+    const c = Block({ uri: '', block: b, contentOnly: contentOnly, showTitle: name?.showTitle, showPad: name?.showPad, showBg: name?.showBg, extraProps: { ...name, source: blockNameString }, sidebar: name?.sidebar, showTitleInside: name?.showTitleInside })
     return c;
 }
 
