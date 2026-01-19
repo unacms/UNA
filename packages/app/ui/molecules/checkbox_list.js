@@ -8,9 +8,7 @@ import RadioButton from 'app/ui/atoms/radiobutton';
 export default function ({ values, selectedValue, setValue, multi = true }) {
     const [value2, setValue2] = useState(selectedValue);
     const addValue2 = (value) => {
-        const selectedValues = value2.includes(value)
-            ? value2.filter(item => item !== value)
-            : [...value2, value];
+        const selectedValues = value2.includes(value) ? value2.filter(item => item !== value) : multi ?[...value2, value] : [value];
         setValue2(selectedValues);
     }
 
