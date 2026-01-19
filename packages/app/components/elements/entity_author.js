@@ -151,7 +151,7 @@ export default function ElementEntityAuthor({data, blockWrapperProps}) {
             }
             <View>
                 {aMenuManageItems.length > 0 &&
-                    <DropdownMenu items={aMenuManageItems} {...menuOptions}>
+                    <DropdownMenu mode = "popup" items={aMenuManageItems} {...menuOptions}>
                         <Button variant="text" rounded="true" startDecorator="Ellipsis" size="base" />
                     </DropdownMenu>
                 }

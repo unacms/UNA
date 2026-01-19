@@ -451,6 +451,7 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
             <>
                 <View className="flex-none" aria-label="Manage menu">
                     <DropdownMenu
+                        mode = "popup"
                         items={aMenuManageItems}
                         defaultOpen={defaultOpen}
                         onSelect={handleMenuManageSelect}

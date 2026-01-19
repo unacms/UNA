@@ -486,6 +486,7 @@ const MenuManage_ = memo(
             aMenuManageItems?.length > 0 && (
                 <>
                     <DropdownMenu
+                        mode = "popup"
                         defaultOpen={defaultOpen}
                         items={aMenuManageItems.map((aItem) => {
                             return {
