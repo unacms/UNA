@@ -3,7 +3,7 @@ import { Platform } from 'react-native'
 import { StyleSheet, PixelRatio } from 'react-native';
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { useMemo } from 'react';
-import { UNA_URL, MULTITENANT_IMAGES_PROXY } from 'app/config';
+import { UNA_URL, APP_URL,  MULTITENANT_IMAGES_PROXY } from 'app/config';
 //import SvgFile from 'app/ui/molecules/svg-file';
 //import { Image as ImageRN } from 'react-native';
 
@@ -167,6 +167,8 @@ export default function ElementImage(props) {
             alt={alt}
             sizes={sizes}
             style={style}
+            {...(APP_URL === "http://localhost:3000" ? { unoptimized: true } : {})}
+            unoptimized
         />
     ), [rest, src, alt, style, sizes]);
 }

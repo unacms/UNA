@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import { Dimensions } from 'react-native';
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util';
-
+import { useState, useEffect } from 'react';
+import { Platform } from 'react-native'
 const DESKTOP_KEY = appSetting('layout', 'tablet_mode_from') || 'lg';
 const DESKTOP_FROM = LAYOUT_BREAKPOINTS[DESKTOP_KEY] ?? LAYOUT_BREAKPOINTS.lg;
 const BP_VALUES_DESC = Object.values(LAYOUT_BREAKPOINTS).sort((a, b) => b - a);
@@ -16,6 +17,7 @@ const getBP = (w) => {
 const initW = Math.round(Dimensions.get('window').width);
 const initH = Math.round(Dimensions.get('window').height);
 const isSSR = typeof window === 'undefined';
+
 export const useMeasureStore = create((set, get) => ({
     currentBreakpoint: getBP(initW),
     windowWidth: initW,
@@ -36,6 +38,27 @@ export const useMeasureStore = create((set, get) => ({
         set(update);
     },
 }));
+
+export const useActualWindowHeight = () => {
+    const isWeb = Platform.OS === 'web';
+    const fallbackHeight = useWindowHeight();
+    const [actualHeight, setActualHeight] = useState(fallbackHeight);
+
+    useEffect(() => {
+        if (!isWeb || !window.visualViewport) {
+            setActualHeight(fallbackHeight);
+            return;
+        }
+
+        const update = () => setActualHeight(Math.round(window.visualViewport.height));
+        update();
+
+        window.visualViewport.addEventListener('resize', update);
+        return () => window.visualViewport.removeEventListener('resize', update);
+    }, [isWeb, fallbackHeight]);
+
+    return actualHeight;
+};
 
 export const useBreakpoint = () => useMeasureStore((s) => s.currentBreakpoint);
 export const useIsDesktop = () => useMeasureStore((s) => s.isDesktop);

@@ -70,7 +70,7 @@ function DefaultUnit({ data }) {
     const isWeb = Platform.OS === 'web';
     if (data.type == 'timeline_recommendations') {
         if (!isWeb) {
-            return null
+        //    return null
         }
         const Unit = getComponent('content-list', data.module);
         const contentElement = data.content.data.map((item, index) => {

@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import Link from 'app/ui/atoms/link'
 import { Button } from 'app/design/controls';
 import { BlockWrapper } from 'app/components/block-wrapper'
+import { layoutForList } from 'app/functions'
 
 export default function ElementSearchSections({ blockWrapperProps, data }) {
     const { t } = useTranslation();
@@ -14,9 +15,7 @@ export default function ElementSearchSections({ blockWrapperProps, data }) {
         <BlockWrapper {...blockWrapperProps}>
             <View className="w-full">
                 {data.data.map((item, index) => {
-                    let numColumns = 1;
-                    //TODO
-
+                    const layout = layoutForList(item.section);
                     return (
                         <View key={item.section}>
                             <Row className='items-center justify-between p-2 mb-0.5'>
@@ -27,15 +26,16 @@ export default function ElementSearchSections({ blockWrapperProps, data }) {
                             </Row>
 
                             <UniList
+                                layout={layout}
                                 index={0}
-                                data={item.data.slice(0, numColumns == 1 ? 3 : numColumns)}
+                                data={item.data.slice(0, 5)}
                                 endpoint={''}
                                 listState={''}
                                 storagekey={''}
                                 route={{ index: 0 }}
                                 unit={'general-content-list'}
-                                numColumns={numColumns}
                                 renderItem={({ item, index }) => <ItemRenderer module={item.section} unit={'general-content-list'} unitType={'general-content-list'} item={{ ...item }} numColumns={5} />}
+                                onEndReached={null}
                             />
                         </View>
                     )

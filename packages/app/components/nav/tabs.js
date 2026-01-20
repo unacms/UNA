@@ -30,6 +30,8 @@ import { useLayoutData } from 'app/context/layout';
 import { getAlert } from 'app/lib/util';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { registerAll } from 'app/components/registry-init';
+import * as WebBrowser from 'expo-web-browser';
+import { getDomainFromUrl } from 'app/lib/util';
 
 enableScreens(appSetting('native', 'enable_screens'));
 
@@ -302,14 +304,21 @@ export default function Tabs() {
                                     name={`tab${index}`}
                                     initialParams={{ url2: tab.url, name: `tab${index}` }}
                                     listeners={{
-                                        tabPress: e => {
+                                        tabPress: async (e) => {
 
+                                            let a = e.target.split('-');
+                                            let tabData = TabList[a[0].replace('tab', '')];
 
+                                            const isExternalLink = tabData.url && (tabData.url.startsWith('http://') || tabData.url.startsWith('https://'));
+
+                                            if (isExternalLink) {
+                                                e.preventDefault(); 
+                                                await WebBrowser.openBrowserAsync(tabData.url);
+                                                FeedbackHaptics('Medium');
+                                                return;
+                                            }
 
                                             if (pathname == `/tab${index}`) {
-                                                /* router.setParams({ 
-                                                     refresh: Date.now() 
-                                                 });*/
                                                 setLayoutData(getAlert('list:move_to_top', true));
                                             }
                                             if (e.type == 'tabPress') {

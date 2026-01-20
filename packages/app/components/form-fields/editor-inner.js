@@ -1,7 +1,7 @@
 import { useController, useFormContext } from 'react-hook-form'
 import { Button } from 'app/design/controls'
 import { useState, useRef, useEffect } from 'react'
-import { View, ScrollView } from 'app/design/view'
+import { View, Pressable, ScrollView } from 'app/design/view'
 import {
     DEFAULT_TOOLBAR_ITEMS,
     useEditorBridge,
@@ -31,7 +31,7 @@ export default function RftText({
     name,
     value = '',
     minHeight,
-    initialHeight= 120,
+    initialHeight = 120,
     maxHeight = 300,
     onFocus,
     onBlur,
@@ -95,7 +95,7 @@ export default function RftText({
         url1 += '&object_privacy_view=' + object_privacy_view
     if (object_id) url1 += '&cid=' + object_id
 
-        const isCommentsEditor = props.container_class === 'comments'
+    const isCommentsEditor = props.container_class === 'comments'
     // Comments use 14px (text-sm), other editors use 16px (text-base)
     // iOS zoom prevention is handled by viewport maximumScale=1
     const editorFontSize = isCommentsEditor ? '14px' : '16px'
@@ -305,8 +305,7 @@ export default function RftText({
         const fetchData = async () => {
             const url =
                 url1 +
-                `&symbol=${keywordval[1] === '#' ? '%23' : '%40'}&term=${
-                    keywordval[0]
+                `&symbol=${keywordval[1] === '#' ? '%23' : '%40'}&term=${keywordval[0]
                 }`
             const result = await fetcher(url)
             const p = result
@@ -341,10 +340,10 @@ export default function RftText({
 
     useEffect(() => {
         if (editor && (field?.value == '' || field?.value?.startsWith("<!--INITED-->")) && editor.getHTML() != field.value) {
-             setTimeout(() => {
-                 editor.setContent(field.value.replaceAll("<!--INITED-->", ''))
+            setTimeout(() => {
+                editor.setContent(field.value.replaceAll("<!--INITED-->", ''))
             }, 500);
-           
+
         }
     }, [field.value])
 
@@ -458,12 +457,12 @@ export default function RftText({
     const customEditorTheme =
         ThemeName() === 'dark'
             ? {
-                  ...darkEditorTheme,
-                  toolbar: {
-                      ...darkEditorTheme.toolbar,
-                      ...darkThemeCustom.toolbar,
-                  },
-              }
+                ...darkEditorTheme,
+                toolbar: {
+                    ...darkEditorTheme.toolbar,
+                    ...darkThemeCustom.toolbar,
+                },
+            }
             : lightTheme
 
     const handleSubmit = () => {
@@ -487,7 +486,7 @@ export default function RftText({
 
     const editor = useEditorBridge({
         autofocus: props.autofocus,
-        avoidIosKeyboard: false,
+        avoidIosKeyboard: true,
         dynamicHeight: false, //!!! true not work in IOS if true
         placeholder: props.placeholder,
         theme: customEditorTheme,
@@ -637,7 +636,7 @@ export default function RftText({
             }
 
             if (message?.type == 'height') {
-                if (message.payload>=initialHeight && message.payload<= maxHeight){
+                if (message.payload >= initialHeight && message.payload <= maxHeight) {
                     setEditorHeight(message.payload)
                 }
             }
@@ -899,7 +898,7 @@ export default function RftText({
                         }
                     })`)
             }
-        } catch (error) {}
+        } catch (error) { }
     }
 
     const style = { left: 0 }
@@ -922,11 +921,10 @@ export default function RftText({
     return (
         <View
             onLayout={handleLayout}
-            className={`flex-auto ${
-                isToolBar
+            className={`flex-auto ${isToolBar
                     ? ' px-3 py-2 bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border flex-auto overflow-hidden shadow-xs placeholder-label-tertiary text-card-foreground web:duration-100 '
                     : (bg == 'transparent' ? '' : inputSettings.multi)
-            }`}
+                }`}
         >
             {suggestions && suggestions.length > 0 && (
                 <View
@@ -954,7 +952,13 @@ export default function RftText({
                     </ScrollView>
                 </View>
             )}
-            <View style={{height:editorHeight}} >
+
+            <Pressable
+                style={{ height: editorHeight }}
+                onPress={(event) => {
+                    isWeb ? '' : event.stopPropagation(); 
+                }}
+            >
                 <RichText
                     exclusivelyUseCustomOnMessage={false}
                     style={{
@@ -971,19 +975,19 @@ export default function RftText({
                     nestedScrollEnabled={false}
                     editorProps={{
                         attributes: {
-                            class: `prose-mirror ${
-                                isCommentsEditor
+                            class: `prose-mirror ${isCommentsEditor
                                     ? 'tiptap-comments'
                                     : 'tiptap-default'
-                            } ${props.classes || ''}`,
+                                } ${props.classes || ''}`,
                             style: `font-family: ${editorFontFamily}; color: ${editorTextColor};`,
                         },
                     }}
                     onDebouncedUpdate={(editor) => {
-                    // ... existing code ...
-                }}
+                        // ... existing code ...
+                    }}
                 />
-            </View>
+            </Pressable>
+
 
             {isToolBar && (
                 <>
