@@ -516,22 +516,18 @@ export default function RftText({
             if (data.action == 'blur') {
                 if (data.timeout) {
                     setTimeout(() => {
-                        console.log('editor-blur', data, editor)
                         editor.blur()
                     }, data.timeout)
                 } else {
-                    console.log('editor-blur', data, editor)
                     editor.blur()
                 }
             }
             if (data.action == 'focus') {
                 if (data.timeout) {
                     setTimeout(() => {
-                        console.log('editor-focus', data, editor)
                         editor.focus('end')
                     }, 800)
                 } else {
-                    console.log('editor-focus', data, editor)
                     editor.focus('end')
                 }
             }

@@ -43,7 +43,7 @@ export const settingsElements = {
         fog: 'bg-background/80  ',
         container:
         '  shadow-xl bg-card/80 backdrop-blur border border-border sm:rounded-2xl overflow-hidden ',
-        content: ' h-auto ',
+        content: '',
         header: ' p-3 items-start justify-start border-b border-border/60',
     },
     cards: {

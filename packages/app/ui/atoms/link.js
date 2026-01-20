@@ -4,12 +4,16 @@ import { FeedbackHaptics } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, getDomainFromUrl, cd } from 'app/lib/util';
 import * as WebBrowser from 'expo-web-browser';
-import React, { useMemo, useCallback } from 'react';
+import { useMemo, useCallback } from 'react';
 import { Text } from 'app/design/typography'
+
+import { Platform } from 'react-native'
+import emitter from 'app/context/emitter';
 
 export default function ElementLink(props) {
     const { href = '', target, haptics, children, asExternal, mode, variant, size, className = '', hitSlop, hitarea = true,  ...rest } = props;
     const glob = useGlobalSearchParams();
+    const isIos = Platform.OS === 'ios';
     const { currentUser } = useCurrentUser();
 
     const handleHapticsPress = useCallback(() => {
@@ -30,16 +34,12 @@ export default function ElementLink(props) {
             url: item.url,
             index
         }));
-    
-       // const additionalLinks = appSetting('menu_items', 'transpile_urls');
-        return baseLinks;//[...baseLinks, ...additionalLinks];
+        return baseLinks;
     }, [TabList]);
 
-    // Список невалидных значений href
     const invalidHrefs = ['javascript:', '/javascript:', undefined, null];
     const sanitizedHref = invalidHrefs.includes(href) ? '' : href;
 
-    // Если href невалиден или пуст, возвращаем детей без обертки
     let finalHref = sanitizedHref;
     if (!finalHref.includes('/')) {
         finalHref = `/${finalHref}`;
@@ -55,7 +55,6 @@ export default function ElementLink(props) {
         return match ? match.index : -1; 
     }, [LinksForTabs, finalHref]);
 
-    // Формирование пути навигации
     const p = useMemo(() => {
         if (target) {
             return finalHref;
@@ -66,8 +65,6 @@ export default function ElementLink(props) {
         };
     }, [target, finalHref, index, glob.name]);
 
-    // Получение домена и корневого URL
-    // Обработчик внешних ссылок
     const handleExternalLinkPress = useCallback(async () => {
         await WebBrowser.openBrowserAsync(finalHrefWithDomain);
     }, [finalHrefWithDomain]);
@@ -76,7 +73,6 @@ export default function ElementLink(props) {
         return children;
     }
     
-    // Variants and sizes from theme - compute once for all link types
     const ThemeLinkSizes = appSetting('theme', 'link_sizes');
     const ThemeLinkStyles = appSetting('theme', 'link_styles');
 
@@ -111,7 +107,7 @@ export default function ElementLink(props) {
         return false;
     };
 
-    // Если ссылка внешняя, открываем в браузере
+    // open external links in browser
     if (domain && domain !== rootUrl || asExternal === true) {
         const content = isTextContent(children) ? (
             <Text className={composedClassName} style={{ pointerEvents: 'none' }}>{children}</Text>
@@ -175,7 +171,7 @@ if (mode == 'text'){
     
     // Remove alt from rest since it's not valid for <a> elements
     const { alt, ...linkRest } = rest;
-    
+
     return (
         <Link 
             push 
@@ -187,7 +183,10 @@ if (mode == 'text'){
         >
             <Pressable 
                 hitSlop={resolvedHitSlop} 
-                onPress={haptics ? handleHapticsPress : undefined} 
+                onPress={() => {
+                    if (haptics) handleHapticsPress();
+                    if (isIos) emitter.emit('link', { action: 'pressed' });
+                }}
                 className={composedClassName}
             >
                 {content}
