@@ -530,6 +530,7 @@ const TabSceneMainContent = ({
 
     const handleEndReached = useCallback(
         async (lastItemIndex) => {
+            console.log("hasNextPage", hasNextPage)
             if (isFetchingNextPage) return
             if (hasNextPage === false) return
             if (lastItemIndex === false) return
@@ -595,8 +596,8 @@ const TabSceneMainContent = ({
     )
 
     const PreloadShort = useMemo(
-        () => getSkeletonForList(SkeletonForRoute, 5, false, layout),
-        [SkeletonForRoute]
+        () => getSkeletonForList(SkeletonForRoute, refetchRef.current.skipToast ? 0 : 5, false, layout),
+        [SkeletonForRoute, refetchRef.current.skipToast]
     )
 
     // remove empty blocks
