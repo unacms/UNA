@@ -1161,14 +1161,14 @@ const HeaderContainer = ({
     isCoverDisabled
 }) => {
     const [hideDefaultHeaderFrom, setHideDefaultHeaderFrom] = useState(100);
-    const [smallCoverHeight, setSmallCoverHeight] = useState(100);
+    const [smallCoverHeight, setSmallCoverHeight] = useState(79);
     const isDesktop = useIsDesktop()
     const [isScrolled, setIsScrolled] = useState(isCoverDisabled)
     const uri = pageData?.uri
 
     const handleScroll = useCallback(() => {
         requestAnimationFrame(() => {
-            const currentScrollY = window.scrollY
+            const currentScrollY = window.scrollY;
             setIsScrolled(currentScrollY > (hideDefaultHeaderFrom - smallCoverHeight - 20))
         })
     }, [hideDefaultHeaderFrom, smallCoverHeight])

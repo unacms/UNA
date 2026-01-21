@@ -1,19 +1,13 @@
-import React, { useMemo, forwardRef, useEffect, useCallback } from 'react';
-import { TextInput as TextInputDef, Modal as ModalDef, Platform } from 'react-native'
+import { useEffect, useCallback } from 'react';
+import { Modal as ModalDef, Platform } from 'react-native'
 import { Pressable, View, ScrollView, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { Icon } from 'app/ui/atoms/icon'
-import { appSetting, isEmoji, LAYOUT_BREAKPOINTS } from 'app/lib/util'
-import { Picker as PickerDef } from '@react-native-picker/picker';
-import { Theme, ThemeName } from 'app/design/theme';
-import Tooltip from 'app/ui/atoms/tooltip';
-import Loading from 'app/ui/atoms/loading'
+import { appSetting } from 'app/lib/util'
 import { RemoveScroll } from 'react-remove-scroll';
 import { useSafeAreaInsets } from 'app/lib/hooks/router'
-import { useIsDesktop, useBreakpoint, useWindowHeight, useActualWindowHeight } from 'app/context/measure';
+import { useIsDesktop, useActualWindowHeight } from 'app/context/measure';
 import  { Button } from 'app/design/controls/buttons';
 import emitter from 'app/context/emitter';
-
 
 const isWeb = Platform.OS === 'web';
 
@@ -104,11 +98,17 @@ export function Modal({
 
 
     const handleWebOuterPress = useCallback((event) => {
-        isOuterClose ? onClose : undefined; event.stopPropagation(); 
+       if (isOuterClose) {
+                            onClose()
+                        }
+                        event.stopPropagation();
     }, [isOuterClose, onClose]);
 
     const handleNativeOuterPress = useCallback(() => {
-        emitter.emit('editor', { action: 'blur' }); isOuterClose ? onClose : undefined;
+        emitter.emit('editor', { action: 'blur' }); 
+          if (isOuterClose) {
+                            onClose()
+                        }
     }, [isOuterClose, onClose]);
 
     const handleContentPress = useCallback((event) => {
@@ -123,7 +123,7 @@ export function Modal({
                     className={`pointerEvents lg:p-4 cursor-default flex justify-end w-full h-full sm:items-center items-start overflow-hidden ${modalSettings.fog} `}
                     onPress={handleWebOuterPress}
                 >
-                    <RemoveScroll className='flex-1 flex flex-col w-full sm:justify-center overflow-hidden'>
+                    <RemoveScroll className='flex-1 flex flex-col w-full sm:justify-center overflow-hidden' >
                         <View style={{ height: isDesktop ? 'auto' : heightActual }} className={`w-full  ${maxWidth}  left-0 right-0 z-50 w-full mx-auto overflow-hidden ${modalSettings.container} `}>
 
                             <ModalHeader
