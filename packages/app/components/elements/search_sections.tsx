@@ -56,7 +56,7 @@ export default function ElementSearchSections({ blockWrapperProps, data }: Searc
                                 data={{
                                     data: item.data.slice(0, 5),
                                     unit: item.section == "bx_timeline" ? 'feed' : (item.section.includes('_cmts') ? 'comments': 'general-content-list'),
-                                    module: 'search'
+                                    module: item.section
                                 }}
                                 view={BrowseSimpleView.Row}
                                 unitMode='search'
