@@ -26,6 +26,16 @@ import { usePulseOne } from 'app/lib/hooks/usePulseOnce'
 import emitter from 'app/context/emitter';
 
 export default function UnitComments(props) {
+    const UnitView = props.mode == 'search' ? UnitCommentsSearch : UnitCommentsDefault
+    return <UnitView {...props}/>
+}
+
+function UnitCommentsSearch({data}) {
+    return <>{JSON.stringify(data)}</>
+}
+
+function UnitCommentsDefault(props) {
+    return <>cmt</>
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const [viewState, setViewState] = useState({ view: '' })

@@ -21,7 +21,7 @@ interface SearchSectionsProps {
 
 export default function ElementSearchSections({ blockWrapperProps, data }: SearchSectionsProps) {
     const { t } = useTranslation();
-
+    console.log("data", data)
     const EmptyState = (
         <View className="p-2">
             <View className="flex-col gap-y-2 items-center opacity-80 justify-center mx-auto my-auto mb-auto py-4 px-8 h-full rounded-2xl bg-neutral-500/10">
@@ -55,13 +55,12 @@ export default function ElementSearchSections({ blockWrapperProps, data }: Searc
                             <BrowseSimple
                                 data={{
                                     data: item.data.slice(0, 5),
-                                    unit: 'general-content-list',
-                                    module: item.section
+                                    unit: item.section == "bx_timeline" ? 'feed' : (item.section.includes('_cmts') ? 'comments': 'general-content-list'),
+                                    module: 'search'
                                 }}
                                 view={BrowseSimpleView.Row}
                                 unitMode='search'
                             />
-
                         </View>
                     )
                 })}

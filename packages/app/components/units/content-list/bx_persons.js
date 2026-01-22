@@ -21,8 +21,7 @@ function ImageSection({ data, imageSizes }) {
     const isWeb = Platform.OS == 'web'
     return (
         <View
-            className={` ${isWeb && 'h-28 sm:h-auto'
-                } aspect-square sm:w-full rounded-xl overflow-hidden items-center bg-muted justify-center`}
+            className={` ${isWeb && 'h-28 sm:h-auto'} aspect-square sm:w-full rounded-xl overflow-hidden items-center bg-muted justify-center`}
         >
             <Image
                 src={data?.image?.src}

@@ -167,9 +167,14 @@ function DefaultUnit({ data }) {
     )
 }
 
+function SearchUnit({ data }) {
+   return <>{JSON.stringify(data)}</>
+}
+
 export default function UnitFeed_({ data, mode }) {
+    const UnitView = mode == 'search' ? SearchUnit : UnitFeed
     return (
-        <UnitFeed
+        <UnitView
             data={data}
             mode={mode}
             SmallUnit={SmallUnit}
