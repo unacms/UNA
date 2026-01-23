@@ -16,7 +16,7 @@ import { useLayoutSettings } from 'app/context/layout-settings';
 import { useIsDesktop } from 'app/context/measure';
 import PopupModal from 'app/ui/molecules/popup_modal'
 import { PageHeader } from 'app/ui/molecules/page_header';
-
+import Script from 'next/script';
 
 // Глобальный флаг для отслеживания инициализации OneSignal (общий для всех экземпляров компонента)
 let oneSignalInitialized = false;
@@ -347,6 +347,8 @@ export default function Layout(props) {
 }
 
 const Content = React.memo(({ children, currentUser, layoutName, url }) => {
+    const externalScripts = appSetting('layout', 'external_scripts') || [];
+
     const isHideHeader = (appSetting('layout', 'hide_header_for_non_logged') && !currentUser) || appSetting('layout', 'hide_header_for_all');
     const mainClassName = `${(layoutName != 'messenger' && layoutName != 'post' && !isHideHeader) ? ' pb-16 web:lg:pb-0 lg:pb-0 ' : ''} w-full mx-auto`;
     return (
@@ -355,6 +357,15 @@ const Content = React.memo(({ children, currentUser, layoutName, url }) => {
                 <Informer />
                 {children}
             </main>
+            {externalScripts.map((script, index) => (
+                script?.src && (
+                    <Script 
+                        key={index}
+                        src={script.src}
+                        strategy={script.strategy || "afterInteractive"}
+                    />
+                )
+            ))}
         </View>
     );
 });
