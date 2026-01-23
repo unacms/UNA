@@ -4,7 +4,6 @@ import { menuItemsByName, linkify, FeedbackHaptics, stripTags, appSetting, getDa
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
-import Html from 'app/ui/atoms/html'
 import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
 import { ContentMore } from 'app/ui/molecules/contentmore'
@@ -30,12 +29,12 @@ export default function UnitComments(props) {
     return <UnitView {...props}/>
 }
 
-function UnitCommentsSearch({data}) {
-    return <>{JSON.stringify(data)}</>
+function UnitCommentsSearch(props) {
+    return <></>
+    return <UnitCommentsDefault {...props}></UnitCommentsDefault>
 }
 
 function UnitCommentsDefault(props) {
-    return <>cmt</>
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const [viewState, setViewState] = useState({ view: '' })
@@ -135,7 +134,7 @@ function UnitCommentsDefault(props) {
 
     const imageList = useMemo(
         () =>
-            files.map((obj) => ({
+            files?.map((obj) => ({
                 src: obj.file,
                 width: obj.width,
                 height: obj.height,
@@ -182,7 +181,7 @@ function UnitCommentsDefault(props) {
                         showInfo="false"
                     />
 
-                    {items.length != 0 && view != 'flat' && (
+                    {items?.length != 0 && view != 'flat' && (
                         <View className="w-0.5 mx-auto top-0.5 -mb-2 rounded-full flex-auto bg-muted"></View>
                     )}
                 </View>
@@ -265,7 +264,7 @@ function UnitCommentsDefault(props) {
                                 </View>
                             )}
                         </View>
-                        {viewState.view != 'edited' && imageList.length > 0 && (
+                        {viewState.view != 'edited' && imageList?.length > 0 && (
                             <View className="max-w-xs w-full">
                                 <Carousel data={imageList} />
                             </View>
