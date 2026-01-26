@@ -121,7 +121,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
     }
 
     let menu = cloneObject(data.actions_menu)
-    
+
 
     if (!showMoreMenu) {
         menu.items = menu.items.map((item, index) => {
@@ -131,7 +131,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
 
     return (
         <Row className={`${conductorTheme.content_max_width} flex-row items-center justify-between mx-auto h-14`}>
-            {!currentUser && !bPerson ? <PageHeaderSmall/> : <><Row className='items-center' >
+            {!currentUser && !bPerson ? <PageHeaderSmall /> : <><Row className='items-center' >
                 {(!appSetting('context_selector', 'show_always') || !isWeb) && <View className='mx-2'>{getCoverBackButton(bPerson)}</View>}
                 {appSetting('context_selector', 'show_always') && !isDesktop ? <View className={`${TABLET_MODE_FROM}:hidden `}>
                     <ContextSelector data={context} mode="compact" />
@@ -156,22 +156,22 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                 </>
                 }
             </Row>
-            <View className="flex-none items-end ">
-                <Row className="w-full justify-between">
-                    {!showMoreMenu && (
+                <View className="flex-none items-end ">
+                    <Row className="w-full justify-between">
+                        {!showMoreMenu && (
+                            <>
+                                <CoverMenu {...menu} uri={uri} isSplitMenu={true} />
+                            </>
+                        )}
                         <>
-                            <CoverMenu {...menu} uri={uri} isSplitMenu={true} />
+                            <CoverMenuMore
+                                {...menu}
+                                uri={uri}
+                                isSplitMenu={!showMoreMenu}
+                            />
                         </>
-                    )}
-                    <>
-                        <CoverMenuMore
-                            {...menu}
-                            uri={uri}
-                            isSplitMenu={!showMoreMenu}
-                        />
-                    </>
-                </Row>
-            </View></>}
+                    </Row>
+                </View></>}
         </Row>
     )
 }
@@ -412,7 +412,7 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
     const foundItem = currentUser?.informer?.find((item) => {
         return item.id == 'sys-switch-profile-context'
     })
-    let isAllowSwitch = foundItem && isWeb ? foundItem.msg : false
+    let isAllowSwitch = appSetting('cover', 'allow_switch') && foundItem && isWeb ? foundItem.msg : false
     if (isAllowSwitch) {
         let match = isAllowSwitch.match(/switch_to_profile=(\d+)/)
         isAllowSwitch = match ? match[1] : null
@@ -432,10 +432,10 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
     return (
         <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
             {appSetting('context_selector', 'show_always') ? <Row className={`${TABLET_MODE_FROM}:hidden items-center w-full h-14 px-2 `} >
-                
-            <View className={`${TABLET_MODE_FROM}:hidden `}>
+
+                <View className={`${TABLET_MODE_FROM}:hidden `}>
                     <View><ContextSelector data={context} mode="compact" /></View>
-                </View></Row>: <></>}
+                </View></Row> : <></>}
             {!isMin && (
                 <CoverImage
                     mode="cover"
@@ -466,7 +466,7 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
                         </View>
                     </View>
                 )}
-               <View className={`flex-auto gap-2 sm:gap-3 ${bPerson ? 'lg:flex-row flex-col-reverse' : 'flex-row'}`}>
+                <View className={`flex-auto gap-2 sm:gap-3 ${bPerson ? 'lg:flex-row flex-col-reverse' : 'flex-row'}`}>
                     <View className="flex-col flex-auto gap-2 ">
                         <Row className=" gap-2 flex-auto items-center min-h-12">
                             <Text

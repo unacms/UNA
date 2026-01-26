@@ -9,16 +9,15 @@ export const settingsElements = {
         root_url: 'home'
     },
     cover: {
-        use_background: true, //appSetting('layout', 'use_background')
-        aspect_ratio: 'aspect-4/1', //appSetting('layout', 'cover_aspect')
-        allow_edit: true, //appSetting('layout', 'allow_edit_covers')
-        fixed: false, //appSetting('layout', 'fixed_cover')
+        use_background: true, 
+        aspect_ratio: 'aspect-4/1', 
+        allow_edit: true, 
+        allow_switch: true, 
+        fixed: false, 
         scroll: false,
         hide_cover_for_context: false,
-       // split_action_menu: true, //OLD appSetting('layout', 'split_action_menu')
-        back_button_url_for_profile: '/friends', //OLD appSetting('layout', 'back_for_profile')
+        back_button_url_for_profile: '/friends',
         view_by_module: {
-            //appSetting('layout', 'cover_mode'
             bx_courses: 'min',
             bx_spaces: 'max',
             bx_jobs: 'max',
