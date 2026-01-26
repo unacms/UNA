@@ -20,7 +20,6 @@ import {
     CardList,
     CardHeader,
     CardTitle,
-
     CardContent,
 } from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/atoms/animated-block'
@@ -168,7 +167,7 @@ function DefaultUnit({ data }) {
 }
 
 function SearchUnit({ data }) {
-   return <>{JSON.stringify(data)}</>
+   return <View className="@lg/list:p-1.5"><UnitFeed_ data={{...data, cmts:{}}}/></View>
 }
 
 export default function UnitFeed_({ data, mode }) {

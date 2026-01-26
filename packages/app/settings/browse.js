@@ -10,7 +10,7 @@ export const settingsBrowse = {
             { width: 640, count: 2 },
         ],
         show_in_modal:{
-        //    bx_posts: true,
+            bx_posts: true,
             bx_timeline: true
         },
         unit_by_source: {

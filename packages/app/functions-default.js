@@ -15,7 +15,12 @@ export function getFriendsCounter(currentUser) {
     return currentUser?.counters?.bx_persons_friend_requests
 }
 
-export function layoutForList(endpoint) {
+export function layoutForList(endpoint, unitMode = '') {
+    if (unitMode == 'search'){
+        if (endpoint =='bx_timeline' || endpoint.includes('_cmts')){
+             return 'w-full @lg/list:w-1/2 ';
+        }
+    }
     if (!endpoint || endpoint?.request_url?.includes('bx_timeline') || endpoint?.params?.request_url?.includes('bx_timeline') || endpoint.unit == "notifications")
         return 'w-full';
 

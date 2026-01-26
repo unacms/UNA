@@ -23,6 +23,9 @@ import Loading from 'app/ui/atoms/loading'
 import { Icon } from 'app/ui/atoms/icon'
 import { usePulseOne } from 'app/lib/hooks/usePulseOnce'
 import emitter from 'app/context/emitter';
+import { CardList } from 'app/ui/molecules/card'
+import { getPageData } from 'app/lib/util';
+import FormModal from 'app/ui/molecules/form_modal';
 
 export default function UnitComments(props) {
     const UnitView = props.mode == 'search' ? UnitCommentsSearch : UnitCommentsDefault
@@ -30,8 +33,33 @@ export default function UnitComments(props) {
 }
 
 function UnitCommentsSearch(props) {
-    return <></>
-    return <UnitCommentsDefault {...props}></UnitCommentsDefault>
+    const module = props.module.replace("_cmts", '');
+    const [pageData, setPageData] = useState(false);
+
+    const keys = Object.keys(props.data);
+    const url = props?.data[keys[0]].data.cmt_url;
+
+    const isCommentsModal = appSetting('browse', 'show_in_modal', module) 
+
+    const showCommentsModal = async (initFormData) => {
+        const url2 = url;
+        const sResponse = await getPageData(url2, false);
+        if (sResponse.data !== pageData.data) {
+            setPageData({ data: sResponse.data, url: url, url2: url2 });
+        }
+    }
+   
+    return (
+        <>
+            <FormModal pageData={pageData.data} setPageData={setPageData} modalView='content_page' url={pageData.url2} />
+            <CardList
+                    border="border-y border-x-none sm:border-x"
+                    className="mb-0.5 sm:mb-3"
+                >
+                    <UnitCommentsDefault contentUrl={url} handleReply = {isCommentsModal ? showCommentsModal : 'link'} {...props.data[keys[0]]}/>
+            </CardList>
+        </>
+    )
 }
 
 function UnitCommentsDefault(props) {
@@ -356,7 +384,7 @@ const MenuManage = ({
 }) => {
     const [menuData, setMenuData] = useState(false)
 
-    if (!menu.object) return null
+    if (!menu?.object) return null
 
     if (menu.items)
         return (

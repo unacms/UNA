@@ -30,7 +30,7 @@ interface BrowseProps {
 
 export default function Browse({ unitMode, data, limit_by, view, autoscroll, blockWrapperProps }: BrowseProps) {
     const unitType = data.unit === 'mixed' ? 'general-profile-list' : (data.unit || '');
-    const layout = layoutForList(data.module);
+    const layout = layoutForList(data.module, unitMode);
     const limitedData = limit_by ? data.data.slice(0, limit_by) : data.data;
 
     const items = limitedData.map((item, index) => {

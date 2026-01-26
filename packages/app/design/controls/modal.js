@@ -121,11 +121,11 @@ export function Modal({
         return (
             <ModalDef visible={onVisible} animationType={animationType} transparent={true}>
                 <Pressable
-                    className={`pointerEvents lg:p-4 cursor-default flex justify-end w-full h-full sm:items-center items-start overflow-hidden ${modalSettings.fog} `}
+                    className={`pointerEvents cursor-default flex justify-end w-full h-full sm:items-center items-start overflow-hidden ${modalSettings.fog} `}
                     onPress={handleWebOuterPress}
                 >
                     <RemoveScroll className={`flex-1 flex flex-col w-full sm:justify-center ${autoHeight && 'justify-center'} overflow-hidden`} >
-                        <View style={{ height: isDesktop || autoHeight ? 'auto' : heightActual }} className={`w-full  ${maxWidth}  left-0 right-0 z-50 w-full mx-auto overflow-hidden ${modalSettings.container} `}>
+                        <View style={{ height: isDesktop || autoHeight ? 'auto' : heightActual }} className={`w-full ${maxWidth} left-0 right-0 z-50 w-full mx-auto overflow-hidden ${modalSettings.container} `}>
 
                             <ModalHeader
                                 title={title}
