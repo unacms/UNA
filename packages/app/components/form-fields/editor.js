@@ -4,12 +4,20 @@ import { useController, useFormContext } from 'react-hook-form';
 import { InputMulti, TextInputClear } from 'app/design/controls'
 import { useState, useEffect } from 'react';
 import  RftText from 'app/components/form-fields/editor-inner';
+import { Platform } from 'react-native'
+import { View } from 'app/design/view'
+
+const isWeb = Platform.OS === 'web';
 
 export default function FormFieldText(props) {
     const formContext = useFormContext();
     return (
         <Field {...props} error2={formContext.formState.errors[props.name]}>
-            {props.html == 1 || props.html == 2 || props.html == 3 ? <RftText {...props} /> : <PlainText {...props} />}
+            {props.html == 1 || props.html == 2 || props.html == 3 ? <>
+                <RftText {...props} />
+               
+            </> : <PlainText {...props} />}
+             {(isWeb && props.autofocus)&& <View className="absolute w-[1px] h-[1px]"><TextInputClear autoFocus={true}/></View>}
         </Field>
     );
 }
@@ -29,15 +37,20 @@ function PlainText(props) {
     const placeholder = props.use_caption_as_placeholder ? props.caption : props.placeholder;
     const isAutoHeight = true;
 
+
     const minHeightValue = isCommentsForm ? 24 : 100;
+
+    
 
     let input = (
         <InputMulti
+            ref={inputRef}
             multiline
             name={props.name}
             placeholder={placeholder}
             onChangeText={field.onChange}
             onBlur={field.onBlur}
+            autoFocus={props.autofocus}
             value={field.value}
             aria-label={accessibility}
             onContentSizeChange={e => {
