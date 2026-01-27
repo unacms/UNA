@@ -37,14 +37,10 @@ function PlainText(props) {
     const placeholder = props.use_caption_as_placeholder ? props.caption : props.placeholder;
     const isAutoHeight = true;
 
-
     const minHeightValue = isCommentsForm ? 24 : 100;
-
-    
 
     let input = (
         <InputMulti
-            ref={inputRef}
             multiline
             name={props.name}
             placeholder={placeholder}
