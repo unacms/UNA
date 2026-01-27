@@ -42,59 +42,12 @@ import { Icon } from 'app/ui/atoms/icon'
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger'
 import { useLayoutData } from 'app/context/layout'
 import { stripTags, cd, isWeb } from 'app/lib/util'
-import { useIsDesktop, useWindowHeight } from 'app/context/measure';
 import emitter from 'app/context/emitter';
 
-/*export const CommentsModal = memo(
-    ({ commentsData, initFormData, itemContent, closeOnPost }) => {
-        const windowHeight = useWindowHeight();
-        const isDesktop = useIsDesktop();
-        const offset = isDesktop ? 100 : 60
-        const [height, setHeight] = useState(
-            windowHeight - offset - 100
-        )
-        const aItems = [itemContent]
-        const CommentsPartsData = CommentsParts(
-            commentsData,
-            aItems,
-            height,
-            initFormData,
-            true,
-            closeOnPost
-        )
-
-        const handleLayout = (event) => {
-            const h =
-                windowHeight -
-                offset -
-                event.nativeEvent.layout.height
-            setHeight(h)
-        }
-
-        return (
-            <View className="w-full h-full">
-                <View className="w-full " style={{ height: height }}>
-                    {CommentsPartsData[0]}
-                </View>
-                <View
-                    onLayout={handleLayout}
-                    className="shadow-sm min-h-16"
-                >
-                    {CommentsPartsData[1]}
-                </View>
-            </View>
-        )
-    }
-)*/
 
 export const FeedEditForm = memo(({ setViewState, viewState, id }) => {
     const { t } = useTranslation()
     const [postData, setPostData] = useState(null)
-    /*const { data: dynamicData, error } = useSWR(
-        postData ? ['/api.php?r=bx_timeline/get_edit_form/&params[]=' + id, '', postData] : null,
-        fetcher,
-        !true ? undefined : { revalidateIfStale: false, revalidateOnFocus: false, revalidateOnReconnect: false }
-    )*/
     const { data: dynamicData, error } = useFetchForm(
         '/api.php?r=bx_timeline/get_edit_form/&params[]=' + id,
         postData
@@ -234,8 +187,7 @@ export const MainContent = memo(({ url, data, fulltext }) => {
 })
 
 export function prepareData(data) {
-    const url = data.url.includes('://') ? data.url : '/' + data.url
-
+    const url = data.url.includes('://') ? data.url : (data.url.startsWith('/') ? data.url : '/' + data.url)
     let commentsData = null
     let isShowMoreComments = false
     if (data?.cmts?.data?.length > 0) {
