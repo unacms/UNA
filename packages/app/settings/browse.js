@@ -2,6 +2,7 @@
 
 export const settingsBrowse = {
     browse: {
+        new_skeletons : true,
         stale_time: 30000,
         per_line: [/* only for images for now*/ 
             { width: 1280, count: 4 },
@@ -25,6 +26,21 @@ export const settingsBrowse = {
             'r=bx_events': 'event',
             'r=bx_groups': 'group',
             'r=bx_timeline': 'feed',
+        },
+        skeletons: {
+            'person_friends': 'bx_persons',
+            'person_friends_recommendations': 'bx_persons',
+            'person_friend_requested': 'bx_persons',
+            'browse_friend_requests': 'bx_persons',
+            'person_following_recommendations': 'bx_persons',
+            'person_followers': 'bx_persons',
+            'person_following': 'bx_persons',
+
+            'invitations_in_context': 'bx_invitations',
+
+            'group': 'bx_groups',
+            'event': 'bx_events',
+        
         },
         unit_by_mode_default: {
             context: 'Base',

@@ -190,7 +190,7 @@ export default function UniList(props) {
         if (mode != 'simple' && !sortable) {
             return (
                 <View className="@container/list" style={wrapperStyle}>
-                    <View className={`${listPadding}`} style={wrapperStyle}>
+                    <View className={`${data.length ? listPadding : ''}`} style={wrapperStyle}>
                         {ListHeaderComponent && ListHeaderComponent()}
                         <VirtuosoGrid
                             {...commonVirtuosoProps}

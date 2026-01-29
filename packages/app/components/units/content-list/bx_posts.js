@@ -8,9 +8,25 @@ import LinkOrModal from 'app/ui/molecules/link-or-modal'
 
 const Units = {};
 
+function UnitWrapper({ children }) {
+    return (
+         <CardList padding="p-1">
+            {children ? children : (
+                <>
+                    <View className="relative  bg-muted aspect-video rounded-xl w-full"></View>
+                    <View className=" p-1.5 flex-auto justify-between gap-1.5">
+                        <View className=" h-5 w-3/4 bg-muted rounded-full"></View>
+                        <View className=" h-5 w-1/2 bg-muted rounded-full"></View>
+                    </View>
+                </>
+            )}
+        </CardList>
+    )
+}
+
 Units.Base = function Base({ data }) {
     return (
-        <Card padding="p-1">
+        <UnitWrapper padding="p-1">
             <View className="  aspect-video flex-none rounded-xl overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
                 {data.image && (
                     <Image
@@ -35,12 +51,12 @@ Units.Base = function Base({ data }) {
                     <AuthorData authorData={data.author_data} />
                 </View>
             </View>
-        </Card>
+        </UnitWrapper>
     )
 }
 Units.Search = function Search({ data }) {
     return (
-        <Card padding="p-1" >
+        <UnitWrapper padding="p-1" >
             <View className="  aspect-video flex-none rounded-xl overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
                 {data.image && (
                     <Image
@@ -65,13 +81,13 @@ Units.Search = function Search({ data }) {
                     <AuthorData authorData={data.author_data} />
                 </View>
             </View>
-        </Card>
+        </UnitWrapper>
     )
 }
 
 Units.Small = function Small({ data }) {
     return (
-        <CardList className="mb-0.5 sm:mb-3">
+        <UnitWrapper className="mb-0.5 sm:mb-3">
             {data.image && (
                 <View className="aspect-square md:aspect-video flex-none rounded-xl  overflow-hidden h-30 sm:h-36 mb-auto  ">
                     <Image
@@ -97,12 +113,17 @@ Units.Small = function Small({ data }) {
                     <AuthorData authorData={data.author_data} />
                 </View>
             </View>
-        </CardList>
+        </UnitWrapper>
     )
 }
 
 export default function BxPosts(props) {
     const unitTypes = appSetting('browse', 'unit_by_mode_' + props.module) || appSetting('browse', 'unit_by_mode_default');
+
+    if (props.data?.skeleton){
+        return <UnitWrapper/>
+    }
+
     const Component = Units[unitTypes[props.unitType] || 'Base'];
     return <Component data={props.data} />;
 }

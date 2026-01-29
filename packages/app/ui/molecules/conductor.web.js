@@ -38,6 +38,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet'
 import {
     getSkeletonByEndPoint,
     layoutForList,
+    paddingForList
 } from 'app/functions'
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal'
 import emitter from 'app/context/emitter'
@@ -580,24 +581,26 @@ const TabSceneMainContent = ({
 
     const SkeletonForRoute = useMemo(() => {
         const a = getSkeletonByEndPoint(pageRoute)
+        console.log("pageRoute", pageRoute, skeleton, pageRoute?.endpoint?.module, pageRoute?.endpoint?.unit, unitType)
         if (a) return a
         const baseSkeleton =
             skeleton ||
             pageRoute?.endpoint?.module ||
             pageRoute?.endpoint?.unit
         return unitType ? [baseSkeleton, unitType] : baseSkeleton
-    }, [skeleton, pageRoute, unitType])
+    }, [skeleton, pageRoute, unitType,])
 
     const layout = layoutForList(pageRoute?.endpoint);
+    const paddings = paddingForList(pageRoute?.endpoint);
 
     const Preload = useMemo(
-        () => getSkeletonForList(SkeletonForRoute, 5, true, layout),
-        [SkeletonForRoute]
+        () => getSkeletonForList(SkeletonForRoute, 5, true, layout, renderItem, paddings),
+        [SkeletonForRoute, renderItem]
     )
 
     const PreloadShort = useMemo(
-        () => getSkeletonForList(SkeletonForRoute, refetchRef.current.skipToast ? 0 : 5, false, layout),
-        [SkeletonForRoute, refetchRef.current.skipToast]
+        () => getSkeletonForList(SkeletonForRoute, refetchRef.current.skipToast ? 0 : 5, false, layout, renderItem, paddings),
+        [SkeletonForRoute, refetchRef.current.skipToast, renderItem ]
     )
 
     // remove empty blocks
@@ -643,8 +646,8 @@ const TabSceneMainContent = ({
             renderItem={renderItem}
 
         />
-            {(pageRoute?.endpoint?.request_url && hasNextPage === undefined) && Preload}
-            {(pageRoute?.endpoint?.request_url && hasNextPage) && PreloadShort}
+            {true && Preload}
+            {true && PreloadShort}
             {(pageRoute?.endpoint?.request_url && hasNextPage === false && dataItems.filter((item) => item.type != 'block').length == 0) && <NoContent endpoint={pageRoute?.endpoint} />}
 
             <Snackbar

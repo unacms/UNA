@@ -13,17 +13,35 @@ import Letter from 'app/ui/atoms/letter'
 import { getUnitMenuItems } from 'app/functions'
 import { Platform } from 'react-native'
 
+function UnitWrapper({ children }) {
+    return (
+        <CardList padding="p-1.5 mb-px sm:m-1.5" className="rounded-none @sm:rounded-2xl shadow-sm  ">
+            {children ? children : (<><View className="relative bg-muted aspect-square rounded-xl w-full"/>
+            <View className="p-2 gap-1 flex-auto justify-between">
+                <View className=" h-4 w-3/4 bg-muted rounded-full"/>
+                <Row className='items-center gap-x-1'>
+                    <View className=" h-5 w-5 bg-muted rounded-full"/>
+                    <View className=" h-3 w-1/4 bg-muted rounded-full"/>
+                </Row>
+
+                <View className=" h-8 w-full bg-muted rounded-lg"/>
+            </View></>)}
+        </CardList>
+    )
+}
+
 const ProfilesListCnt = memo(({ data }) => (
     <ProfilesList data={data} showEmpty={false} maxCount={3} displaySize="2xs" />
 ))
 
-function ImageSection({ data, imageSizes }) {
+function ImageSection({ data, isSkeleton }) {
     const isWeb = Platform.OS == 'web'
+
     return (
         <View
             className={` ${isWeb && 'h-28 sm:h-auto'} aspect-square sm:w-full rounded-xl overflow-hidden items-center bg-muted justify-center`}
         >
-            <Image
+            {!isSkeleton && <><Image
                 src={data?.image?.src}
                 alt={data.title}
                 view="cover"
@@ -31,8 +49,8 @@ function ImageSection({ data, imageSizes }) {
                 sizes='auto'
             />
             {!data?.image?.src && (
-                <Letter title={data.fullname} id={data.author_data.id} />
-            )}
+                <Letter title={data?.fullname} id={data?.author_data?.id} />
+            )}</>}
         </View>
     )
 }
@@ -73,24 +91,29 @@ export default function Unit(props) {
     if (cardData?.hidden && props.unitType == 'person_friends_recommendations')
         return
 
+    const isSkeleton = data?.skeleton;
+  
     return (
-        <CardList padding="p-1.5 mb-px sm:m-1.5" className="rounded-none @sm:rounded-2xl shadow-sm  ">
+        <UnitWrapper>
             <Redirect ref={redirectdRef} />
             <Link className="web:group " href={data.url}>
                 <View className="flex-row sm:flex-col p-1.5 sm:p-0 sm:h-full">
-                    <ImageSection data={data} />
+                    <ImageSection data={data} isSkeleton={isSkeleton} />
                     {!!oMenuItemDelete && <View className="absolute right-1 top-1">{oMenuItemDelete}</View>}
                     <View className="flex-col pl-4 my-auto sm:p-2 justify-between flex-auto ">
                         <View className="gap-1 p-0.5">
-                            <Text
+                            {isSkeleton ? <View className=" h-6 w-3/4 bg-muted rounded-full"/> : <Text
                                 numberOfLines={1}
                                 className=" text-base leading-6 font-semibold text-foreground"
                             >
                                 {data.title}
-                            </Text>
+                            </Text>}
 
                             <Row className="items-center gap-1.5 h-6 ">
-                                <ProfilesListCnt
+                                {isSkeleton ? <Row className='items-center gap-x-1 w-full'>
+                    <View className=" h-5 w-5 bg-muted rounded-full"/>
+                    <View className=" h-3 w-1/4 bg-muted rounded-full"/>
+                </Row> : <><ProfilesListCnt
                                     data={
                                         isFollowers
                                             ? data.followers_list
@@ -98,19 +121,19 @@ export default function Unit(props) {
                                                 ? data.mutual_friends_list
                                                 : data.friends_list
                                     }
-                                />
-
-                                <Text className="truncate text-sm tracking-tight flex-auto text-secondary-foreground">
+                                /><Text className="truncate text-sm tracking-tight flex-auto text-secondary-foreground">
                                     {isFollowers
                                         ? data?.followers_count +
                                         ' followers'
                                         : friendsLabel}
-                                </Text>
+                                </Text></>}
+
+                                
                             </Row>
                         </View>
                         <View className="flex-row sm:flex-col pt-2 gap-2 ">
                             <View className="w-full">
-                                {oMenuItemPrimary}
+                                {isSkeleton ? <View className=" h-9 w-full bg-muted rounded-lg"/> : oMenuItemPrimary}
                             </View>
                             {!!oMenuItemSecondary && (
                                 <View
@@ -124,7 +147,7 @@ export default function Unit(props) {
                     </View>
                 </View>
             </Link>
-        </CardList>
+        </UnitWrapper>
     )
 }
 
