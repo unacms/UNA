@@ -646,8 +646,8 @@ const TabSceneMainContent = ({
             renderItem={renderItem}
 
         />
-            {true && Preload}
-            {true && PreloadShort}
+            {(pageRoute?.endpoint?.request_url && hasNextPage === undefined) && Preload}
+            {(pageRoute?.endpoint?.request_url && hasNextPage) && PreloadShort}
             {(pageRoute?.endpoint?.request_url && hasNextPage === false && dataItems.filter((item) => item.type != 'block').length == 0) && <NoContent endpoint={pageRoute?.endpoint} />}
 
             <Snackbar
