@@ -27,7 +27,7 @@ function UnitWrapper({ children }) {
 Units.Base = function Base({ data }) {
     return (
         <UnitWrapper padding="p-1">
-            <View className="  aspect-video flex-none rounded-xl overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
+            <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
                 {data.image && (
                     <Image
                         {...data.image}
@@ -40,7 +40,7 @@ Units.Base = function Base({ data }) {
             </View>
             <View className="flex-auto sm:h-40 mt-2 flex-col p-2">
                 <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
-                    <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 web:hover:text-primary leading-tight text-base  font-semibold">
+                    <Text numberOfLines={2} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-tight font-semibold">
                         {data.title}
                     </Text>
                 </LinkOrModal>
@@ -57,7 +57,7 @@ Units.Base = function Base({ data }) {
 Units.Search = function Search({ data }) {
     return (
         <UnitWrapper padding="p-1" >
-            <View className="  aspect-video flex-none rounded-xl overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
+            <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
                 {data.image && (
                     <Image
                         {...data.image}

@@ -85,9 +85,9 @@ export default function WorkerEventChecker(oProps) {
                                 <Text className=" text-neutral-900 dark:text-neutral-100 tracking-tight dark:text-neutral-50 web:hover:text-primary leading-tight text-base font-bold">{item.title}</Text>
                                 <Row className='text-center gap-x-2 items-center'>
                                     <Button startDecorator='CalendarCheck' size="xs" />
-                                    <Time className=" text-base text-neutral-700 dark:text-neutral-300" ts={item.date_start} />
-                                    <Text className=" text-base text-neutral-700 dark:text-neutral-300" >-</Text>
-                                    <Time className=" text-base text-neutral-700 dark:text-neutral-300" ts={item.date_end} />
+                                    <Time className=" " ts={item.date_start} />
+                                    <Text className=" " >-</Text>
+                                    <Time className=" " ts={item.date_end} />
                                 </Row>
                                 {item.location != '' && (<Row className='text-center gap-x-2 items-center'><Button startDecorator='MapPin' size="xs" /><Text className="text-xs text-neutral-700 dark:text-neutral-300">{item.location}</Text></Row>)}
                                 <Text className="text-neutral-700 dark:text-neutral-300" numberOfLines={2}> {stripTags(item.description)}</Text>

@@ -60,7 +60,7 @@ export default function Unit(props) {
             <UnitWrapper>
                 <Redirect ref={redirectdRef} />
                 <Link className="web:group" href={data.url}>
-                    <View className="relative bg-muted aspect-video overflow-hidden rounded-xl w-full">
+                    <View className="relative bg-muted aspect-video overflow-hidden rounded-lg w-full">
                         <Image
                             {...data.cover}
                             alt={data.title}
@@ -72,10 +72,8 @@ export default function Unit(props) {
                     </View>
                     <View className="flex-col h-32 p-2 flex-auto justify-between">
                         <View className="">
-                            <Text
-                                numberOfLines={2}
-                                className=" text-base leading-tight tracking-tight font-bold text-secondary-foreground web:group-hover:text-foreground "
-                            >
+                        <Text numberOfLines={2} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-tight font-semibold">
+
                                 {data.title}
                             </Text>
                             <Row className="items-center h-6 pt-3">

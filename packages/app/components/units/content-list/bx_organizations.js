@@ -22,7 +22,7 @@ function ImageSection({ data }) {
     return (
         <View
             className={` ${isWeb && 'h-28 sm:h-auto'
-                } aspect-square sm:w-full rounded-full sm:rounded-xl overflow-hidden items-center bg-muted justify-center`}
+                } aspect-square sm:w-full rounded-lg overflow-hidden items-center bg-muted justify-center`}
         >
             <Image
                 src={data?.image?.src}
@@ -85,15 +85,12 @@ export default function Unit(props) {
                     <ImageSection data={data} />
                      {!!oMenuItemDelete && <View className="absolute right-1 top-1">{oMenuItemDelete}</View>}
                     <View className="flex-col pl-4 my-auto sm:p-2 flex-auto ">
-                        <View className="sm:h-12">
-                            <Text
-                                numberOfLines={1}
-                                className=" text-base leading-6 font-semibold text-foreground"
-                            >
-                                {data.title}
-                            </Text>
+                        <View className="sm:h-12 gap-1">
+                        <Text numberOfLines={1} className=" text-card-foreground leading-6 tracking-tight web:hover:text-foreground web:hover:underline font-semibold">
 
-                            <Row className="items-center gap-1.5 h-6 ">
+                                {data.title}
+                        </Text>
+                        <Row className="items-center h-5">
                                 <ProfilesListCnt
                                     data={
                                         isFollowers
@@ -104,7 +101,7 @@ export default function Unit(props) {
                                     }
                                 />
 
-                                <Text className="truncate text-sm tracking-tight flex-auto text-secondary-foreground">
+                                <Text className="truncate text-sm leading-5 tracking-tight flex-auto text-secondary-foreground">
                                     {isFollowers
                                         ? data?.followers_count +
                                         ' followers'

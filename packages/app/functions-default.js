@@ -27,7 +27,7 @@ export function layoutForList(endpoint, unitMode = '') {
     if (endpoint?.module == 'bx_groups')
         return 'w-full @sm/list:w-1/2 @md/list:w-1/3 @lg/list:w-1/4 p-1.5';
 
-    return 'w-full @sm/list:w-1/2 @md/list:w-1/3 @lg/list:w-1/4 @xl/list:w-1/5 @sm/list:p-1.5 @md/list:p-1.5 ';
+    return 'w-full @sm/list:w-1/2 @md/list:w-1/3 @lg/list:w-1/4 @xl/list:w-1/5 @sm/list:p-1 @md/list:p-2 ';
 }
 
 export function paddingForList(endpoint) {
@@ -40,7 +40,7 @@ export function paddingForList(endpoint) {
         return 'p-1.5 @md/list:p-1.5';
 
     // Default padding for grid-based content lists
-    return '@sm/list:p-1.5 @md/list:p-1.5';
+    return '@sm/list:p-1 @md/list:p-2';
 }
 
 
@@ -206,8 +206,12 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
             };
         }
 
-        oMenuItemPrimary = <MenuItem menuItem={oMenuItemPrimary} isPrimary={true}/>;
-        oMenuItemSecondary = <MenuItem menuItem={oMenuItemSecondary} isPrimary={false}/>;
+        if (oMenuItemPrimary) {
+            oMenuItemPrimary = <MenuItem menuItem={oMenuItemPrimary} isPrimary={true}/>;
+        }
+        oMenuItemSecondary = oMenuItemSecondary
+            ? <MenuItem menuItem={oMenuItemSecondary} isPrimary={false}/>
+            : null;
         if (oMenuItemDelete) {
             oMenuItemDelete = {
                 ...oMenuItemDelete,

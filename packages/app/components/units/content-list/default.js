@@ -53,12 +53,9 @@ export default function defaultUnit(props) {
                                             } gap-y-2 sm:p-2`}
                                     >
                                         {true && (
-                                            <Text
-                                                numberOfLines={2}
-                                                className="text-neutral-950 tracking-tight dark:text-neutral-50 web:hover:text-primary leading-tight text-base font-bold"
-                                            >
+                                         <Text numberOfLines={2} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-tight font-semibold">
                                                 {data.title}
-                                            </Text>
+                                         </Text>
                                         )}
                                         <Text
                                             numberOfLines={true ? 2 : 6}
