@@ -206,7 +206,26 @@ export default function Browse(props) {
     if (props?.skeleton) sSkeleton = props?.skeleton
 
     if (props.unitType) sSkeleton = [sSkeleton, props.unitType]
-    const Preload = getSkeletonForList(sSkeleton, numColumns)
+    
+    const renderItem = useCallback(
+        ({ item, index }) => (
+            <BrowseItem
+                item={item}
+                index={index}
+                numColumns={numColumns}
+                data={data}
+                unitMode={unitMode}
+                props={props}
+            />
+        ),
+        [data, unitMode, numColumns, props]
+    )
+
+    const layout = layoutForList(data.module);
+    const Preload = useMemo(
+        () => getSkeletonForList(sSkeleton, numColumns, true, layout, renderItem),
+        [sSkeleton, numColumns, layout, renderItem]
+    )
 
 
     useEffect(() => {
@@ -385,7 +404,6 @@ export default function Browse(props) {
         ListHeaderComponent = () => filterElement
     }
 
-    const layout = layoutForList(data.module);
     const uniListProps = {
         preloadComponent: PreloadComponent,
         refer: uniRef,
@@ -402,28 +420,7 @@ export default function Browse(props) {
         no_scroll: props.no_scroll,
         onRefresh: refetch,
         refreshing: isRefetching,
-        renderItem: ({ item, index }) => {
-            return isWeb ? (
-                <BrowseItem
-                    key={'item' + item.id}
-                    item={item}
-                    index={index}
-                    numColumns={numColumns}
-                    data={data}
-                    unitMode={unitMode}
-                    props={props}
-                />
-            ) : (
-                <BrowseItem
-                    item={item}
-                    index={index}
-                    numColumns={numColumns}
-                    data={data}
-                    unitMode={unitMode}
-                    props={props}
-                />
-            );
-        },
+        renderItem: renderItem,
         onEndReached: handleEndReached,
         ListHeaderComponent: ListHeaderComponent,
         ListFooterComponent: ((hasNextPage && isFetchingNextPage)) ? Preload : null,

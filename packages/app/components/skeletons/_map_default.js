@@ -107,26 +107,6 @@ const PostsSmall = memo(() => (
     </View>
 ));
 
-const FeedSmall = memo(() => (<View className="sm:px-4 sm:pb-2 flex-auto ">
-    <View className="bg-card mt-px sm:rounded-lg p-2 flex flex-col gap-4 animate-pulse">
-        <View className="flex-row gap-2">
-            <View className="relative flex-row">
-                <View className="h-12 w-12 aspect-square overflow-hidden bg-neutral-100 dark:bg-neutral-700 mx-auto rounded-full">
-                    <View className="w-[50%] z-20 aspect-square bg-neutral-200 dark:bg-neutral-600 border-2 border-neutral-100 dark:border-neutral-700 mx-auto rounded-full mt-[15%] "></View>
-                    <View className="w-[80%] -translate-y-[5%] aspect-square bg-neutral-200 dark:bg-neutral-600 mx-auto rounded-t-full "></View>
-                </View>
-            </View>
-            <View className="flex-col flex-auto my-auto">
-                <View className="w-full flex-row justify-between">
-                    <View className="h-3 my-1 w-1/4 bg-muted/60 rounded-full"></View>
-                    <View className="h-3 my-1 w-6 bg-muted/60 rounded-full"></View>
-                </View>
-                <View className="h-5 my-1 w-full bg-neutral-500/30 rounded-full"></View>
-                <View className="h-3 my-1 w-3/4 bg-muted/60 rounded-full"></View>
-            </View>
-        </View>
-    </View>
-</View>))
 
 const FeedDefault = memo(() => (
     <CardList className=" animate-pulse w-full mb-0.5 sm:mb-3">

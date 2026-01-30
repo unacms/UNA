@@ -32,6 +32,7 @@ import {
 import { getComponent } from 'app/components/registry';
 import { BrowseItem } from 'app/lib/common-helpers'
 import { BlockWrapper } from 'app/components/block-wrapper'
+import { layoutForList } from 'app/functions'
 export default function Browse(props) {
     const isWeb = Platform.OS === 'web'
     const { currentUser } = useCurrentUser();
@@ -168,7 +169,25 @@ export default function Browse(props) {
     if (props?.skeleton) sSkeleton = props?.skeleton
 
     if (props.unitType) sSkeleton = [sSkeleton, props.unitType]
-    const Preload = getSkeletonForList(sSkeleton, 1)
+    
+    const renderItem = useCallback(
+        ({ item, index }) => (
+            <BrowseItem
+                item={item}
+                index={index}
+                data={data}
+                unitMode={unitMode}
+                props={props}
+            />
+        ),
+        [data, unitMode, props]
+    )
+
+    const layout = layoutForList(data.module);
+    const Preload = useMemo(
+        () => getSkeletonForList(sSkeleton, 1, true, layout, renderItem),
+        [sSkeleton, layout, renderItem]
+    )
 
     useEffect(() => {
         if (props.data?.unit !== 'feed') return;
@@ -254,28 +273,7 @@ export default function Browse(props) {
         no_scroll: props.no_scroll,
         onRefresh: refetch,
         refreshing: isRefetching,
-        renderItem: ({ item, index }) => {
-            return isWeb ? (
-                <BrowseItem
-                    key={'item' + item.id}
-                    item={item}
-                    index={index}
-
-                    data={data}
-                    unitMode={unitMode}
-                    props={props}
-                />
-            ) : (
-                <BrowseItem
-                    item={item}
-                    index={index}
-
-                    data={data}
-                    unitMode={unitMode}
-                    props={props}
-                />
-            );
-        },
+        renderItem: renderItem,
         onEndReached: handleEndReached,
         ListHeaderComponent: props.exProps?.headerBlocks
             ? (typeof props.exProps?.headerBlocks === 'function'

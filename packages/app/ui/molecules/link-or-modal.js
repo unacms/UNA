@@ -6,6 +6,9 @@ import FormModal from 'app/ui/molecules/form_modal';
 import { Platform } from 'react-native';
 
 export default function LinkModal({ href, children, showInModal = false }) {
+    if (!href){
+        return children;
+    }
     if (!showInModal) {
         return (
             <Link href={href}>

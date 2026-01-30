@@ -28,30 +28,7 @@ import Scroll from 'app/ui/molecules/scroll'
 import Link from 'app/ui/atoms/link'
 import { getPageData } from 'app/lib/util';
 import FormModal from 'app/ui/molecules/form_modal';
-
-
-function Skeleton({ }) {
-    return <><View className="flex-row gap-x-2 mb-2">
-        <View className="relative flex-row">
-            <View className="h-10 w-10 aspect-square overflow-hidden bg-muted/60 mx-auto rounded-full">
-                <View className="w-[50%] z-20 aspect-square bg-muted  mx-auto rounded-full mt-[15%] "></View>
-                <View className="w-[80%] translate-y-0.5 aspect-square bg-muted mx-auto rounded-t-full "></View>
-            </View>
-        </View>
-        <View className="flex-col gap-y-1.5 flex-auto my-auto">
-            <View className="w-full  flex-row justify-between">
-                <View className="h-3  w-24 bg-muted/60 rounded-full"></View>
-                <View className="h-3  w-6 bg-muted/60 rounded-full"></View>
-            </View>
-            <View className="h-3  w-16 bg-muted/60 rounded-full"></View>
-        </View>
-    </View>
-
-        <View className="h-3 my-1 w-full bg-muted/60 rounded-full"></View>
-        <View className="h-3 my-1 w-full bg-muted/60 rounded-full"></View>
-        <View className="h-3 my-1 w-full bg-muted/60 rounded-full"></View>
-        <View className="h-3 my-1 w-3/4 bg-muted/60 rounded-full"></View></>
-}
+import { Skeleton } from 'app/ui/atoms/skeleton';
 
 function DefaultUnit({ data }) {
     const isSkeleton = data?.skeleton;
@@ -138,8 +115,9 @@ function DefaultUnit({ data }) {
                 border="border-y border-x-none sm:border-x"
                 className="mb-0.5 sm:mb-3"
             >
-                {isSkeleton ? <Skeleton /> : <>
+                
                     <Row className="gap-3 flex-auto mb-3">
+                        <Skeleton visible={isSkeleton} preset='feed_author'>
                         <Author data={data} url={url} t={t} />
                         <View className="flex-none mb-auto hidden">
                             <MenuManage
@@ -148,9 +126,12 @@ function DefaultUnit({ data }) {
                                 setViewState={setViewState}
                             />
                         </View>
+                        </Skeleton>
                     </Row>
                     <View className="flex-auto mb-2 px-0.5">
+                         <Skeleton visible={isSkeleton} preset='multitext'>
                         <MainContent url={url} data={data} />
+                        </Skeleton>
                     </View>
                     <Row className="border-b border-background -mx-4 -mb-1 px-3">
                         {!!data.menu_counters &&
@@ -182,7 +163,7 @@ function DefaultUnit({ data }) {
                             isShowMoreComments={isShowMoreComments}
                         />
                     )}
-                </>}
+               
             </CardList>
         </AnimatedBlock>
     )

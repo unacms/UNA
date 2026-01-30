@@ -37,10 +37,10 @@ export function paddingForList(endpoint) {
 
     // Groups and grid layouts get padding for better spacing
     if (endpoint?.module == 'bx_groups')
-        return 'p-1.5 @md/list:p-1.5';
+        return 'm-1.5 @md/list:m-1.5';
 
     // Default padding for grid-based content lists
-    return '@sm/list:p-1 @md/list:p-2';
+    return '@sm/list:m-1 @md/list:m-2';
 }
 
 

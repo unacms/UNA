@@ -16,16 +16,16 @@ export function getSkeletonForList(name, num = 5, isFirst = true, layout, render
             else
                 name = name[1];
         }
-        const isFeed = name == 'feed';
+      
         const list = appSetting('browse', 'skeletons')
         const module = list[name] || name;
 
         return (
             <View className='@container/list '>
-                <View className={`${paddings}`} >
+                <View className={`${paddings} overflow-hidden`} >
                     {trimmed.map((item, index) => (
-                        <View key={'browse_item' + index} className={`flex-row w-full animate-pulse max-w-screen-xl mx-auto ${!isFeed && 'overflow-hidden'}`}>
-                            {[...Array(isFeed? 1 : num)].map((_, i) => (
+                        <View key={'browse_item' + index} className={`flex-row w-full animate-pulse max-w-screen-xl mx-auto `}>
+                            {[...Array(num)].map((_, i) => (
                                 <View key={i} className={layout || 'w-full'}>
                                     {renderItem({ item: { module: module, skeleton: true }, index: i })}
                                 </View>

@@ -5,32 +5,11 @@ import { View, Row } from "app/design/view";
 import { CardList } from 'app/ui/molecules/card'
 import Profile from 'app/ui/molecules/profile';
 import Stars from 'app/ui/molecules/stars';
-import { useState } from 'react';
 import LinkOrModal from 'app/ui/molecules/link-or-modal'
-
-function UnitWrapper({ children }) {
-    return (
-        <CardList padding={cd('p-sm')} className='mb-2 md:mb-0'>
-            {children ? children : (
-                <>
-                    <View className="relative  bg-muted aspect-video rounded-xl w-full"></View>
-                    <View className=" p-1.5 flex-auto justify-between gap-1.5">
-                        <View className=" h-5 w-3/4 bg-muted rounded-full"></View>
-                        <View className=" h-5 w-1/2 bg-muted rounded-full"></View>
-                    </View>
-                </>
-            )}
-        </CardList>
-    )
-}
+import { Skeleton } from 'app/ui/atoms/skeleton';
 
 export default function Unit(props) {
     const data = props.data;
-    const [rating, setRating] = useState(0);
-
-    if (data?.skeleton) {
-        return <UnitWrapper />
-    }
 
     let sMeta = (
         <Profile
@@ -41,7 +20,7 @@ export default function Unit(props) {
         />
     );
 
-    let cover_raw = data.cover_raw.replace(
+    let cover_raw = data.cover_raw?.replace(
         /\\u([\d\w]{4})/gi,
         function (match, grp) {
             return String.fromCharCode(parseInt(grp, 16));
@@ -61,50 +40,58 @@ export default function Unit(props) {
             );
         });
 
-
+    const isSkeleton = data?.skeleton;
 
     return (
-        <UnitWrapper>
+        <CardList padding={cd('p-sm')} className='mb-2 md:mb-0'>
             <View className="flex-col gap-y-4">
                 <View className="flex-col w-full">
                     <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
                         <View className="w-full p-1">
                             <View className="w-full mb-auto bg-bgritem dark:bg-bgritem-d aspect-video overflow-hidden rounded-xl">
-                                {cover_raw.trim() != "" && (
-                                    <div
-                                        dangerouslySetInnerHTML={{
-                                            __html: cover_raw,
-                                        }}
-                                    ></div>
-                                )}
-                                {cover_raw.trim() == "" && (
-                                    <Image
-                                        {...data.cover}
-                                        alt={data.title}
-                                        view="cover"
-                                        className="u-cover"
-                                        sizes='auto'
-                                    />
-                                )}
+                                <Skeleton className="" rounded='rounded-lg' visible={isSkeleton}>
+                                    {cover_raw?.trim() != "" && (
+                                        <div
+                                            dangerouslySetInnerHTML={{
+                                                __html: cover_raw,
+                                            }}
+                                        ></div>
+                                    )}
+                                    {cover_raw?.trim() == "" && (
+                                        <Image
+                                            {...data.cover}
+                                            alt={data.title}
+                                            view="cover"
+                                            className="u-cover"
+                                            sizes='auto'
+                                        />
+                                    )}
+                                </Skeleton>
                             </View>
-                            <View className="flex-auto flex-col px-2 py-3 gap-y-2 h-32 ">
+                            <View className="flex-auto px-2 py-3 gap-y-2 h-32 ">
                                 <Row className="justify-between">
-                                    <View className="flex-col gap-y-3">
-                                        <Text className="mr-auto bg-primary/20 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
-                                            {data.price_recurring > 0
-                                                ? data.price_recurring +
-                                                "$/" +
-                                                data.duration_recurring
-                                                : data.price_single > 0
-                                                    ? data.price_single + "$"
-                                                    : "Free"}
-                                        </Text>
-                                        <Text
-                                            numberOfLines={2}
-                                            className="text-neutral-950 tracking-tight dark:text-neutral-50 web:hover:text-primary leading-5 text-base font-bold"
-                                        >
-                                            {data.title}
-                                        </Text>
+                                    <View className=" gap-y-3 flex-auto">
+                                        <Skeleton className="h-6 w-1/4" visible={isSkeleton}>
+                                            <Text className="mr-auto bg-primary/20 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
+                                                {data.price_recurring > 0
+                                                    ? data.price_recurring +
+                                                    "$/" +
+                                                    data.duration_recurring
+                                                    : data.price_single > 0
+                                                        ? data.price_single + "$"
+                                                        : "Free"}
+                                            </Text>
+                                        </Skeleton>
+                                        <Skeleton className="h-6 w-3/4 mt-2" visible={isSkeleton}>
+                                            <View className="overflow-hidden">
+                                                <Text
+                                                    numberOfLines={2}
+                                                    className="text-neutral-950 tracking-tight dark:text-neutral-50 web:hover:text-primary leading-5 text-base font-bold"
+                                                >
+                                                    {data.title}
+                                                </Text>
+                                            </View>
+                                        </Skeleton>
                                     </View>
                                     {data.image && (
                                         <View className="h-14 w-14 aspect-square overflow-hidden border border-bdr dark:border-bdr-d rounded-lg">
@@ -119,22 +106,24 @@ export default function Unit(props) {
                                     )}
                                 </Row>
                                 {sRate}
-                                <Text
-                                    numberOfLines={1}
-                                    className="text-neutral-700 dark:text-neutral-300 mb-auto text-sm"
-                                >
-                                    {data.summary_plain}
-                                </Text>
+                                <Skeleton className="h-6 w-full" visible={isSkeleton}>
+                                    <Text
+                                        numberOfLines={1}
+                                        className="text-neutral-700 dark:text-neutral-300 mb-auto text-sm"
+                                    >
+                                        {data.summary_plain}
+                                    </Text>
+                                </Skeleton>
                             </View>
                         </View>
                     </LinkOrModal>
-
                     <View className=" mb-auto px-4 pb-3 sm:pt-0">
-                        {sMeta}
+                        <Skeleton preset="author" visible={isSkeleton}>
+                            {sMeta}
+                        </Skeleton>
                     </View>
-
                 </View>
             </View>
-        </UnitWrapper>
+        </CardList>
     );
 }
