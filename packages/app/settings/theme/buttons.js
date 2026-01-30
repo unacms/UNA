@@ -200,9 +200,9 @@ export const settingsButtons = {
         'u-btn-ghost-trans': ' ',
      
 
-        'u-btn-link-cnt': ' web:group  ',
+        'u-btn-link-cnt': ' web:hover:bg-accent/60 ',
         'u-btn-link-text':
-            ' font-medium text-label-link web:group-hover:text-label-linkhover web:group-hover:underline web:active:text-label-linkhover ',
+            ' font-medium text-accent-foreground  ',
         'u-btn-link-trans': ' web:duration-200  ',
         
 

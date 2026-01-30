@@ -15,7 +15,7 @@ import { Platform } from 'react-native'
 
 function UnitWrapper({ children }) {
     return (
-        <CardList padding="p-1.5 mb-px sm:m-1.5" className="rounded-none @sm:rounded-2xl shadow-sm  ">
+        <CardList padding="p-1" className="rounded-none @sm:rounded-2xl shadow-sm  ">
             {children ? children : (<><View className="relative bg-muted aspect-square rounded-xl w-full"/>
             <View className="p-2 gap-1 flex-auto justify-between">
                 <View className=" h-4 w-3/4 bg-muted rounded-full"/>
@@ -39,7 +39,7 @@ function ImageSection({ data, isSkeleton }) {
 
     return (
         <View
-            className={` ${isWeb && 'h-28 sm:h-auto'} aspect-square sm:w-full rounded-xl overflow-hidden items-center bg-muted justify-center`}
+            className={` ${isWeb && 'h-28 sm:h-auto'} aspect-square sm:w-full rounded-lg overflow-hidden items-center bg-muted justify-center`}
         >
             {!isSkeleton && <><Image
                 src={data?.image?.src}
@@ -101,15 +101,13 @@ export default function Unit(props) {
                     <ImageSection data={data} isSkeleton={isSkeleton} />
                     {!!oMenuItemDelete && <View className="absolute right-1 top-1">{oMenuItemDelete}</View>}
                     <View className="flex-col pl-4 my-auto sm:p-2 justify-between flex-auto ">
-                        <View className="gap-1 p-0.5">
-                            {isSkeleton ? <View className=" h-6 w-3/4 bg-muted rounded-full"/> : <Text
-                                numberOfLines={1}
-                                className=" text-base leading-6 font-semibold text-foreground"
-                            >
+                        <View className="sm:h-12 gap-1">
+                            {isSkeleton ? <View className=" h-6 w-3/4 bg-muted rounded-full"/> : <Text numberOfLines={1} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-6 font-semibold">
+
                                 {data.title}
                             </Text>}
 
-                            <Row className="items-center gap-1.5 h-6 ">
+                            <Row className="items-center gap-1.5 h-5 ">
                                 {isSkeleton ? <Row className='items-center gap-x-1 w-full'>
                     <View className=" h-5 w-5 bg-muted rounded-full"/>
                     <View className=" h-3 w-1/4 bg-muted rounded-full"/>
@@ -121,7 +119,7 @@ export default function Unit(props) {
                                                 ? data.mutual_friends_list
                                                 : data.friends_list
                                     }
-                                /><Text className="truncate text-sm tracking-tight flex-auto text-secondary-foreground">
+                                /><Text className="truncate text-sm  tracking-tight flex-auto text-secondary-foreground">
                                     {isFollowers
                                         ? data?.followers_count +
                                         ' followers'

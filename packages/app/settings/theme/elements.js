@@ -18,7 +18,7 @@ export const settingsElements = {
         topmenu_button_size: 'base',
         topmenu_button_pressed: true,
         left_menu_cnt: '  ',
-        cover_base: 'w-full bg-card/95 backdrop-blur-xl',
+        cover_base: 'w-full bg-card/70 backdrop-blur-xl',
         cover_content:
             'items-center h-full w-full overflow-hidden justify-between',
         cover_small: 'max-w-7xl mx-auto flex-row w-full px-3 items-center '
@@ -70,19 +70,19 @@ export const settingsElements = {
     },
     blocks: {
         'u-block-base':
-            'u-max-width-block sm:rounded-xl gap-4 @xl/block:gap-6',
+            'u-max-width-block sm:rounded-xl ',
         'u-block-bg':
-            'bg-card/80 web:shadow-border text-card-foreground ',
+            'bg-card/80 web:shadow-border text-card-foreground overflow-hidden ',
         'u-block-pad':
-            'p-4 @xl/block:p-6',
+            'p-2 @xl/block:p-2',
         'u-block-header':
-            ' flex-row items-center gap-2  ',
+            ' flex-row items-center gap-2 py-1.5 px-2 ',
         'u-block-icon': 'text-card-foreground',
-        'u-block-name': 'flex flex-col flex-auto gap-y-2 gap-x-4',
+        'u-block-name': 'flex flex-col flex-auto gap-y-2 gap-x-4 ',
         'u-block-title':
             'text-muted-foreground leading-none text-base font-semibold tracking-tight',
         'u-block-description': 'text-muted-foreground text-sm font-medium leading-6',
-        'u-block-content': 'text-card-foreground gap-4 @xl/block:gap-6',  
+        'u-block-content': 'text-card-foreground  ',  
         'u-block-footer':
             'flex text-card-foreground gap-4 ',
         'u-block-actions':

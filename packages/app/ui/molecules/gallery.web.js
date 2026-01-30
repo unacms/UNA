@@ -99,7 +99,7 @@ export default function Gallery({ items, autoscroll }) {
     // Track style - slides both cards together
     const trackStyle = {
         display: 'flex',
-        gap: '1rem',
+        gap: '1.5rem',
         width: '200%', // Two slides side by side
         transform: `translateX(${trackOffset}%)`,
         transition: isTransitioning 
@@ -130,7 +130,7 @@ export default function Gallery({ items, autoscroll }) {
     return (
         <View 
             ref={containerRef}
-            className='overflow-hidden relative p-2 -m-2 '
+            className=' relative p-2  '
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
         >
@@ -144,11 +144,11 @@ export default function Gallery({ items, autoscroll }) {
             </div>
             {showNavigation && (
                 <>
-                    <View className='absolute top-[calc(50%)] left-1 z-10'>
-                        <Button variant="secondary" rounded size="base" onPress={goLeft} startDecorator="ArrowLeft" />
+                    <View className='absolute top-[calc(50%)] isolate -left-1.5 pl-px z-10'>
+                        <Button variant="default" rounded size="xs" onPress={goLeft} startDecorator="ChevronLeft" />
                     </View>
-                    <View className='absolute top-[calc(50%)] right-1 z-10'>
-                        <Button variant="secondary" rounded size="base" onPress={goRight} startDecorator="ArrowRight" />
+                    <View className='absolute top-[calc(50%)] -right-1.5 pr-px z-10'>
+                        <Button variant="default" rounded size="xs" onPress={goRight} startDecorator="ChevronRight" />
                     </View>
                 </>
             )}

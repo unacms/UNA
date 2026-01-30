@@ -1095,7 +1095,7 @@ const LeftSideBarContainer = ({
                 }`}
         >
             <View className={`${layoutName == 'profile' ? '' : 'mt-fixed-process'}`}>
-                <View className={`${layoutName == 'profile' ? '' : appSetting('conductor', 'sidebar_inner_container')} ${layoutName == 'profile' ? '' : 'mt-3'}`}>
+                <View className={`${layoutName == 'profile' ? '' : appSetting('conductor', 'sidebar_inner_container')} ${layoutName == 'profile' ? '' : 'mt-4'}`}>
                     {(!!title || !!addButtons?.length > 0) && (
                         <Row className={appSetting('conductor', 'sidebar_title')}>
                             <Text className=" text-2xl tracking-tight truncate mr-auto font-bold leading-11 text-card-foreground hidden lg:flex  ">

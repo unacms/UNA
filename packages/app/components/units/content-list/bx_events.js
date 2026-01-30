@@ -56,7 +56,7 @@ export default function Unit(props) {
             <Redirect ref={redirectdRef} />
             <Link className="web:group" href={data.url}>
                 <View className="flex-row sm:flex-col">
-                    <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center bg-neutral-500/20">
+                    <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-lg overflow-hidden items-center justify-center bg-neutral-500/20">
                         <Image
                             {...data.cover}
                             alt={data.title}
@@ -67,10 +67,18 @@ export default function Unit(props) {
                     </View>
                     <View className="flex-col p-3  flex-auto items-between justify-between ">
                         <View>
-                            <Text
-                                numberOfLines={1}
-                                className=" text-lg leading-tight tracking-tight font-bold text-secondary-foreground web:group-hover:text-foreground "
-                            >
+                       
+
+{data.date_start && (
+    <Text className="text-muted-foreground text-xs uppercase font-semibold tracking-tight mb-1">
+        {formatDateInterval(data.date_start, data.date_end, t)}
+    </Text>
+
+)}
+
+
+
+                            <Text numberOfLines={2} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-tight font-semibold">
                                 {data.title}
                             </Text>
                             <Row className="items-center h-6 my-3">
@@ -106,21 +114,13 @@ export default function Unit(props) {
                                 </Text>
                             </Row>
 
-                            <Row className='mb-3 w-full bg-primary/30 px-2 py-1 rounded-md justify-between'>
-
-                                {data.date_start && (
-                                    <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden  rounded-md flex-none items-center">
-                                        {formatDateInterval(data.date_start, data.date_end, t)}
-                                    </Text>
-
-                                )}
-
-
-                            </Row>
+                           
                         </View>
-                        <View className="flex-row  sm:flex-col  w-full">
+                        <View className="flex-row  sm:flex-col gap-2 w-full">
                             {oMenuItemPrimary}
-                            {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2  ml-2 sm:ml-0'}`}>{oMenuItemSecondary}</View>}
+                            {!!oMenuItemSecondary && (
+                                <View>{oMenuItemSecondary}</View>
+                            )}
                         </View>
                     </View>
                 </View>
