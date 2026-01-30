@@ -1,6 +1,6 @@
 import { useController, useFormContext } from 'react-hook-form'
 import { Button } from 'app/design/controls'
-import { useState, useRef, useEffect, useMemo  } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { View, Pressable, ScrollView } from 'app/design/view'
 import {
     DEFAULT_TOOLBAR_ITEMS,
@@ -477,7 +477,7 @@ export default function RftText({
 
     // Filter duplicate extensions to prevent TipTap warnings
     // TenTapStartKit includes listItem and textStyle which can conflict with other bridges
-    const allExtensions = [...baseExtensions,...TenTapStartKit ];
+    const allExtensions = [...baseExtensions, ...TenTapStartKit];
     const seenNames = new Set();
     const uniqueExtensions = allExtensions.filter((ext) => {
         const name = ext?.name || ext?.tiptapExtension?.name;
@@ -514,11 +514,15 @@ export default function RftText({
         if (editor && placeholder) {
             // Баг в TenTap Editor: setPlaceholder() не обновляет DOM в iframe
             // Используем CSS injection как единственное рабочее решение
-            editor.injectCSS(`
+            const t = setTimeout(() => {
+                editor.injectCSS(`
                 .tiptap.ProseMirror p.is-editor-empty:first-child::before {
                     content: "${placeholder.replace(/"/g, '\\"')}" !important;
                 }
             `, 'placeholder-dynamic')
+            }, 200);
+
+            return () => clearTimeout(t);
         }
     }, [editor, placeholder])
 
@@ -929,8 +933,8 @@ export default function RftText({
         <View
             onLayout={handleLayout}
             className={`flex-auto ${isToolBar
-                    ? ' px-3 py-2 bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border flex-auto overflow-hidden shadow-xs placeholder-label-tertiary text-card-foreground web:duration-100 '
-                    : (bg == 'transparent' ? '' : inputSettings.multi)
+                ? ' px-3 py-2 bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border flex-auto overflow-hidden shadow-xs placeholder-label-tertiary text-card-foreground web:duration-100 '
+                : (bg == 'transparent' ? '' : inputSettings.multi)
                 }`}
         >
             {suggestions && suggestions.length > 0 && (
@@ -963,7 +967,7 @@ export default function RftText({
             <Pressable
                 style={{ height: editorHeight }}
                 onPress={(event) => {
-                    isWeb ? '' : event.stopPropagation(); 
+                    isWeb ? '' : event.stopPropagation();
                 }}
             >
                 <RichText
@@ -983,8 +987,8 @@ export default function RftText({
                     editorProps={{
                         attributes: {
                             class: `prose-mirror ${isCommentsEditor
-                                    ? 'tiptap-comments'
-                                    : 'tiptap-default'
+                                ? 'tiptap-comments'
+                                : 'tiptap-default'
                                 } ${classes || ''}`,
                             style: `font-family: ${editorFontFamily}; color: ${editorTextColor};`,
                         },
