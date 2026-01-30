@@ -1,6 +1,6 @@
 import { useController, useFormContext } from 'react-hook-form'
 import { Button } from 'app/design/controls'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo  } from 'react'
 import { View, Pressable, ScrollView } from 'app/design/view'
 import {
     DEFAULT_TOOLBAR_ITEMS,
@@ -30,19 +30,24 @@ const inputSettings = appSetting('theme', 'inputs');
 export default function RftText({
     name,
     value = '',
-    minHeight,
     initialHeight = 120,
     maxHeight = 300,
     onFocus,
-    onBlur,
     html,
     bg,
     enableSubmitOnEnter = false,
-    ...props
+    placeholder,
+    form_name,
+    container_class,
+    kb_stay_open,
+    onEnterSubmit,
+    disabled,
+    classes,
+    autofocus
 }) {
 
     const isWeb = Platform.OS === 'web'
-    const unicFormName = `${props.form_name}` // for catch images in editor
+    const unicFormName = `${form_name}` // for catch images in editor
 
     let b = [...DEFAULT_TOOLBAR_ITEMS]
     if (isWeb) {
@@ -95,7 +100,7 @@ export default function RftText({
         url1 += '&object_privacy_view=' + object_privacy_view
     if (object_id) url1 += '&cid=' + object_id
 
-    const isCommentsEditor = props.container_class === 'comments'
+    const isCommentsEditor = container_class === 'comments'
     // Comments use 14px (text-sm), other editors use 16px (text-base)
     // iOS zoom prevention is handled by viewport maximumScale=1
     const editorFontSize = isCommentsEditor ? '14px' : '16px'
@@ -353,7 +358,7 @@ export default function RftText({
         }
     }, [value])
 
-    const baseExtensions = [
+    const baseExtensions = useMemo(() => [
         ImageBridge.configureExtension({
             inline: false,
             allowBase64: false,
@@ -365,11 +370,10 @@ export default function RftText({
             },
         }),
         PlaceholderBridge.configureExtension({
-            placeholder: props.placeholder,
-            showOnlyWhenEditable: true,
+            placeholder: placeholder,
         }),
         CodeBridge.configureCSS(customCodeBlockCSS),
-    ]
+    ], [placeholder, customCodeBlockCSS])
 
     // Extract toolbar styling values from settings
     const toolbarPadding = editorSettings?.padding || 8
@@ -466,14 +470,14 @@ export default function RftText({
             : lightTheme
 
     const handleSubmit = () => {
-        if (props.onEnterSubmit) {
-            props.onEnterSubmit()
+        if (onEnterSubmit) {
+            onEnterSubmit()
         }
     }
 
     // Filter duplicate extensions to prevent TipTap warnings
     // TenTapStartKit includes listItem and textStyle which can conflict with other bridges
-    const allExtensions = [...TenTapStartKit, ...baseExtensions];
+    const allExtensions = [...baseExtensions,...TenTapStartKit ];
     const seenNames = new Set();
     const uniqueExtensions = allExtensions.filter((ext) => {
         const name = ext?.name || ext?.tiptapExtension?.name;
@@ -485,10 +489,9 @@ export default function RftText({
     });
 
     const editor = useEditorBridge({
-        autofocus: props.autofocus,
+        autofocus: autofocus,
         avoidIosKeyboard: true,
         dynamicHeight: false, //!!! true not work in IOS if true
-        placeholder: props.placeholder,
         theme: customEditorTheme,
         initialContent: field.value,
         bridgeExtensions: uniqueExtensions,
@@ -508,8 +511,16 @@ export default function RftText({
     }, [editor, themeName])
 
     useEffect(() => {
-        editor.setPlaceholder(props.placeholder)
-    }, [props.placeholder])
+        if (editor && placeholder) {
+            // Баг в TenTap Editor: setPlaceholder() не обновляет DOM в iframe
+            // Используем CSS injection как единственное рабочее решение
+            editor.injectCSS(`
+                .tiptap.ProseMirror p.is-editor-empty:first-child::before {
+                    content: "${placeholder.replace(/"/g, '\\"')}" !important;
+                }
+            `, 'placeholder-dynamic')
+        }
+    }, [editor, placeholder])
 
     useEffect(() => {
         const subscription = emitter.addListener('editor', (data) => {
@@ -540,7 +551,7 @@ export default function RftText({
     }, [])
 
     useEffect(() => {
-        if (formContext.formState.isSubmitted && props.kb_stay_open != true) {
+        if (formContext.formState.isSubmitted && kb_stay_open != true) {
             /*setTimeout(() => {
                 editor.blur();
             }, 800);
@@ -650,8 +661,8 @@ export default function RftText({
             }
 
             if (message?.type === 'requestSubmit') {
-                if (props.onEnterSubmit) {
-                    props.onEnterSubmit()
+                if (onEnterSubmit) {
+                    onEnterSubmit()
                 }
             }
 
@@ -964,7 +975,7 @@ export default function RftText({
                     }}
                     editor={editor}
                     onMessage={onMessage}
-                    editable={!props.disabled}
+                    editable={!disabled}
                     scrollEnabled={false}
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
@@ -974,7 +985,7 @@ export default function RftText({
                             class: `prose-mirror ${isCommentsEditor
                                     ? 'tiptap-comments'
                                     : 'tiptap-default'
-                                } ${props.classes || ''}`,
+                                } ${classes || ''}`,
                             style: `font-family: ${editorFontFamily}; color: ${editorTextColor};`,
                         },
                     }}
