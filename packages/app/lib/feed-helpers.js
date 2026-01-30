@@ -70,17 +70,17 @@ export const FeedEditForm = memo(({ setViewState, viewState, id }) => {
             padding=" "
         >
             <View className='p-3 flex-auto'>
-            <Form
-                {...viewState.data.form}
-                classContainerName="flex-row flex-wrap w-full items-start justify-between"
-                onFormSubmit={onFormSubmit}
-                exProps={{
-                    onClose: () => {
-                        setViewState({ view: '' })
-                    },
-                    item: viewState?.data?.item,
-                }}
-            />
+                <Form
+                    {...viewState.data.form}
+                    classContainerName="flex-row flex-wrap w-full items-start justify-between"
+                    onFormSubmit={onFormSubmit}
+                    exProps={{
+                        onClose: () => {
+                            setViewState({ view: '' })
+                        },
+                        item: viewState?.data?.item,
+                    }}
+                />
             </View>
         </Modal>
     )
@@ -102,27 +102,27 @@ export const CommentsSection = memo(
         return (
             <View className="border-t border-background -mx-3 lg:-mx-4 mt-3.5 px-2 lg:px-3">
                 <View className="border-t border-card -mx-4  ">
-                {isShowMoreComments && (
-                    <View className="px-3 lg:px-4 pt-2 me-auto">
-                        {isCommentsModal ? (
-                            <Pressable
-                                onPress={() => {
-                                    showCommentsModal()
-                                }}
-                            >
-                                {ShowMoreCmts}
-                            </Pressable>
-                        ) : (
-                            <Link href={url}>{ShowMoreCmts}</Link>
-                        )}
-                    </View>
-                )}
+                    {isShowMoreComments && (
+                        <View className="px-3 lg:px-4 pt-2 me-auto">
+                            {isCommentsModal ? (
+                                <Pressable
+                                    onPress={() => {
+                                        showCommentsModal()
+                                    }}
+                                >
+                                    {ShowMoreCmts}
+                                </Pressable>
+                            ) : (
+                                <Link href={url}>{ShowMoreCmts}</Link>
+                            )}
+                        </View>
+                    )}
                 </View>
                 <CommentsBrowseShort
                     contentUrl={url}
                     browseData={commentsDataInline?.data}
                     module={data?.cmts.module}
-                    handleReply = {isCommentsModal ? showCommentsModal : 'link'}
+                    handleReply={isCommentsModal ? showCommentsModal : 'link'}
                 />
             </View>
         )
@@ -150,10 +150,10 @@ export const MainContent = memo(({ url, data, fulltext }) => {
     const styles = StyleSheet.create(
         Platform.OS !== 'web'
             ? {
-                  card_image: {
-                      borderRadius: 0,
-                  },
-              }
+                card_image: {
+                    borderRadius: 0,
+                },
+            }
             : {}
     )
 
@@ -209,16 +209,16 @@ export const ItemInfo = memo(({ data, t }) => {
     const [showContextList, setShowContextList] = useState(false)
     const owners = data.owners
         ? data.owners.filter(
-              (item) => item.author_data?.id != data.context_data?.id
-          )
+            (item) => item.author_data?.id != data.context_data?.id
+        )
         : []
     const OwnersList = () =>
         owners?.length > 0 ? (
             owners?.length == 1 ? (
                 <>
-                    
-                <Icon className="text-muted -mx-0.5 " icon='Dot' size={14}  />
-                    
+
+                    <Icon className="text-muted -mx-0.5 " icon='Dot' size={14} />
+
                     <Link href={data.owners[0].url} emulate={true}>
                         <Text className=" text-secondary-foreground web:hover:text-label-linkhover font-medium text-xs ">
                             {owners[0].title}
@@ -227,9 +227,9 @@ export const ItemInfo = memo(({ data, t }) => {
                 </>
             ) : (
                 <>
-                    
-                        <Icon className="text-muted -mx-0.5 " icon='Dot' size={14}  />
-                     
+
+                    <Icon className="text-muted -mx-0.5 " icon='Dot' size={14} />
+
                     <Pressable
                         onPress={() => {
                             setShowContextList(true)
@@ -282,9 +282,9 @@ export const ItemInfo = memo(({ data, t }) => {
         return (
             l && (
                 <>
-                   
-                        <Icon className="text-muted -mx-0.5 " icon='Dot' size={14}  />
-                    
+
+                    <Icon className="text-muted -mx-0.5 " icon='Dot' size={14} />
+
                     <Text className="text-muted-foreground font-medium  text-xs leading-4 ">
                         {l}
                     </Text>
@@ -315,7 +315,7 @@ export const MenuManage = ({ id, menu, setViewState }) => {
                 <Button
                     variant="text"
                     size="sm"
-                    
+
                     startDecorator="Ellipsis"
                     onPress={() => {
                         if (Platform.OS === 'web')
@@ -365,37 +365,37 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
     let oReport = undefined
     const aMenuManageItems = !!currentUser
         ? menu &&
-          menuItemsByName(menu?.object, menu?.items, currentUser).map(
-              (aItem) => {
-                  let sTitle = aItem.title
-                  if (!!aItem.display_type && aItem.display_type == 'element') {
-                      const Element = getComponent(
-                          'molecule',
-                          String(aItem.data.type)
-                      )
-                      if (!!Element) {
-                          sTitle = (
-                              <Element
-                                  mode="dropdown-menu"
-                                  key={aItem.id ? aItem.id : aItem.name}
-                                  {...aItem.data}
-                              />
-                          )
-                      }
-                  }
+        menuItemsByName(menu?.object, menu?.items, currentUser).map(
+            (aItem) => {
+                let sTitle = aItem.title
+                if (!!aItem.display_type && aItem.display_type == 'element') {
+                    const Element = getComponent(
+                        'molecule',
+                        String(aItem.data.type)
+                    )
+                    if (!!Element) {
+                        sTitle = (
+                            <Element
+                                mode="dropdown-menu"
+                                key={aItem.id ? aItem.id : aItem.name}
+                                {...aItem.data}
+                            />
+                        )
+                    }
+                }
 
-                  if (aItem.name == 'loader') {
-                      sTitle = <Loading size="small" />
-                  }
+                if (aItem.name == 'loader') {
+                    sTitle = <Loading size="small" />
+                }
 
-                  return {
-                      id: aItem.id ? aItem.id : aItem.name,
-                      name: aItem.name,
-                      link: aItem.link,
-                      title: sTitle,
-                  }
-              }
-          )
+                return {
+                    id: aItem.id ? aItem.id : aItem.name,
+                    name: aItem.name,
+                    link: aItem.link,
+                    title: sTitle,
+                }
+            }
+        )
         : []
 
     return (
@@ -403,7 +403,7 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
             <>
                 <View className="flex-none" aria-label="Manage menu">
                     <DropdownMenu
-                        mode = "popup"
+                        mode="popup"
                         items={aMenuManageItems}
                         defaultOpen={defaultOpen}
                         onSelect={handleMenuManageSelect}
@@ -424,14 +424,14 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
 
 export const ActionMenu = memo(({ data }) => {
     const settings = appSetting('feed', 'actions_menu');
-    if (data?.items?.length > 2){
+    if (data?.items?.length > 2) {
         for (let i = 2; i < data.items.length; i++)
             if (data.items[i].data)
-                data.items[i].data.params ={'button_show_title_from_size':'sm'}
+                data.items[i].data.params = { 'button_show_title_from_size': 'sm' }
             else
-                 data.items[i].params ={'button_show_title_from_size':'sm'} 
+                data.items[i].params = { 'button_show_title_from_size': 'sm' }
     }
-    return settings && <Menu {...data } displayType="button" params={settings} />
+    return settings && <Menu {...data} displayType="button" params={settings} />
 })
 
 export const CounterMenu = memo(({ data }) => {
@@ -450,23 +450,23 @@ export const VisibilityInfo = memo(({ data }) => {
     const isUser = data.object_privacy_view < 0
 
     return (
-        
-                
-                <View className="gap-1 flex-row items-center min-h-5">
-                    {isUser ? (
-                        <Profile
-                            {...data.author_data}
-                            displayType="unit_wo_info"
-                            displaySize="2xs"
-                        />
-                    ) : icon ? (
-                            <Icon className="text-muted-foreground " icon={icon} width={14} height={14} />
-                    ) : null}
-                    <Text className="text-muted-foreground text-xs font-medium leading-4">
-                        {isUser ? data.author_data.display_name : text}
-                    </Text>
-                </View>
-        
+
+
+        <View className="gap-1 flex-row items-center min-h-5">
+            {isUser ? (
+                <Profile
+                    {...data.author_data}
+                    displayType="unit_wo_info"
+                    displaySize="2xs"
+                />
+            ) : icon ? (
+                <Icon className="text-muted-foreground " icon={icon} width={14} height={14} />
+            ) : null}
+            <Text className="text-muted-foreground text-xs font-medium leading-4">
+                {isUser ? data.author_data.display_name : text}
+            </Text>
+        </View>
+
     )
 })
 
@@ -474,21 +474,21 @@ export const Author = memo(({ data, url, t }) => {
     const Badges = getComponent('molecule', 'badges')
     const ActionsElements = data.author_actions?.map((item, index) => {
         const Element = getComponent('molecule', String(item.type))
-        if (!Element) 
-            return null 
+        if (!Element)
+            return null
         return (
             <Row className="items-center" key={`action-${item.cid}-${item.iid}`}>
-            <Icon className="text-muted -mx-0.5 " key="icon" icon='Dot' size={14}  />
-            <Element
-                params={{
-                    button_variant: 'link',
-                    button_size: 'sm',
-                    hide_icon: true,
-                    button_rounded: false,
-                }}
-                
-                {...item}
-            />
+                <Icon className="text-muted -mx-0.5 " key="icon" icon='Dot' size={14} />
+                <Element
+                    params={{
+                        button_variant: 'link',
+                        button_size: 'sm',
+                        hide_icon: true,
+                        button_rounded: false,
+                    }}
+
+                    {...item}
+                />
             </Row>
         )
     })
@@ -506,16 +506,16 @@ export const Author = memo(({ data, url, t }) => {
     );
 
     return (
-       <Row className="w-full justify-between items-top">
+        <Row className="w-full justify-between items-top">
             <View className='flex-auto'>
                 <Profile
                     {...dataIcon}
                     displayType="unit"
                     displaySize="base"
                     showInfo={
-                        <Row className="items-center flex-wrap min-h-5 items-center "> 
+                        <Row className="items-center flex-wrap min-h-5 items-center ">
                             <VisibilityInfo data={data} />
-                            <ItemInfo data={data} t={t} />                    
+                            <ItemInfo data={data} t={t} />
                         </Row>
                     }
                     showInfo2={<Badges badges={data.author_badges} size="2xs" />}
@@ -523,46 +523,46 @@ export const Author = memo(({ data, url, t }) => {
                     hoverCardWrapper={hoverCardWrapper}
                 />
             </View>
-            
-                        {isWeb ? (
-                            <Link
-                                href={url}
-                                emulate={false}
-                                size="xs"
-                                variant="plainghost"
-                                className="mb-auto"
-                               
-                            >
-                                <Time 
-                                    ts={data.date}
-                                />
-                            </Link>
-                        ) : (
-                            <Link
-                                href={url}
-                                mode="text"
-                                size="sm"
-                                variant="secondary"
-                                className="mb-auto"
-                                hitSlop={{
-                                    top: 8,
-                                    bottom: 8,
-                                    left: 8,
-                                    right: 8,
-                                }}
-                            >
-                                <Time variant="link" 
-                                    ts={data.date}
-                                />
-                            </Link>
-                        )}
+
+            {isWeb ? (
+                <Link
+                    href={url}
+                    emulate={false}
+                    size="xs"
+                    variant="plainghost"
+                    className="mb-auto"
+
+                >
+                    <Time
+                        ts={data.date}
+                    />
+                </Link>
+            ) : (
+                <Link
+                    href={url}
+                    mode="text"
+                    size="sm"
+                    variant="secondary"
+                    className="mb-auto"
+                    hitSlop={{
+                        top: 8,
+                        bottom: 8,
+                        left: 8,
+                        right: 8,
+                    }}
+                >
+                    <Time variant="link"
+                        ts={data.date}
+                    />
+                </Link>
+            )}
         </Row>
     )
 })
 
 export function SmallUnit({ data }) {
     let url = '/' + data.url
-    
+
     // Create a hover card wrapper function for avatar only
     const hoverCardWrapper = (content) => (
         <ProfileHoverCard profileData={data.author_data}>
@@ -588,7 +588,7 @@ export function SmallUnit({ data }) {
                                 {data.author_data.display_name}
                             </Text>
                             <Time variant="link" className=" text-xs flex-none leading-5 "
-                                
+
                                 ts={data.date}
                             ></Time>
                         </Row>
@@ -623,7 +623,7 @@ export function SmallUnit({ data }) {
 
 export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit, feed_type }) => {
     data.mainImage = null
-    if (data?.content?.images){
+    if (data?.content?.images) {
         data.mainImage = data?.content?.images?.length > 0 ? data.content.images[0] : null
     }
     data.comments = null
@@ -646,10 +646,10 @@ export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit, feed_type }) => {
             if (data.id.toString() == datas.id.toString()) {
                 const result = await fetcher(
                     '/api.php?r=' +
-                        appSetting('urls', 'feed_item') +
-                        '{"params":{"browse":"id","value":' +
-                        data.id +
-                        '}}'
+                    appSetting('urls', 'feed_item') +
+                    '{"params":{"browse":"id","value":' +
+                    data.id +
+                    '}}'
                 )
                 if (result.data && !isObjectsEqual(result.data, datas))
                     setDatas(result.data)
