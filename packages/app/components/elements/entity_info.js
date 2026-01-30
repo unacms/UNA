@@ -41,7 +41,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <View className='flex-col gap-3 py-2 '>
+            <View className='flex-col gap-4 p-2 '>
                 {inputs}
             </View>
         </BlockWrapper>

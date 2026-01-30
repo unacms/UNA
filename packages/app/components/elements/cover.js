@@ -470,12 +470,12 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
                     <View className="flex-col flex-auto gap-2 ">
                         <Row className=" gap-2 flex-auto items-center min-h-12">
                             <Text
-                                className={` tracking-tight text-3xl sm:text-4xl font-bold text-foreground`}
+                                className={`font-title tracking-tight text-3xl sm:text-4xl font-bold text-foreground`}
                                 numberOfLines={2}
                             >
                                 {data.profile.display_name}
                             </Text>
-                            <Badges badges={data.badges} size="xs" />
+                            <Badges badges={data.badges} size="2xs" />
                         </Row>
                         {isWeb ? (
                             <CoverMenuMeta {...data.meta_menu} />
