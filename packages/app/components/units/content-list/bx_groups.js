@@ -70,16 +70,16 @@ export default function Unit(props) {
                         />
 
                     </View>
-                    <View className="flex-col h-32 p-2 flex-auto justify-between">
+                    <View className="flex-col flex-auto justify-between">
                         <View className="">
-                        <Text numberOfLines={2} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-tight font-semibold">
+                        <Text numberOfLines={2} className="text-card-foreground tracking-tight px-2 pt-2 web:hover:text-foreground web:hover:underline leading-tight font-semibold">
 
                                 {data.title}
                             </Text>
-                            <Row className="items-center h-6 pt-3">
+                            <Row className="items-center ">
 
 
-                                <View className="mr-2 h-5">
+                                
                                     <ProfilesList
                                         data={
                                             data.members_list
@@ -89,19 +89,19 @@ export default function Unit(props) {
                                         displaySize="xs"
                                     />
 
-                                </View>
+                                
                                 {
                                     <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
                                         {friendsLabel}
                                     </Text>
                                 }
 
-                                <Text className=" bg-primary/10  rounded-md  px-1.5 py-1 text-xs flex-none items-center font-semibold text-neutral-600 dark:text-neutral-400">
+                                <Text className=" bg-primary/10  rounded-md m-2  px-1.5 py-1 text-xs flex-none items-center font-semibold text-neutral-600 dark:text-neutral-400">
                                     {data.visibility != "3" ? t('Private') : t('Public')}
                                 </Text>
                             </Row>
                         </View>
-                        <View className="flex-row  sm:flex-col  w-full">
+                        <View className="flex-row p-2 sm:flex-col  w-full">
                             {oMenuItemPrimary}
                             {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2  ml-2 sm:ml-0'}`}>{oMenuItemSecondary}</View>}
                         </View>

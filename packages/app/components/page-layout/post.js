@@ -104,7 +104,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 //value.sidebar || value.leftbar ? false : true
     const aItems = useMemo(() => mainBlocks.map((value) => ({
         id: `block_${value.name}`,
-        data: <View className={'px-4 py-2'}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
+        data: <View className={'p-2'}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
     })), [blocks, data, isDesktop]);
 
     const isRightCol = sideBarBlocks.length > 0 && isDesktop
@@ -363,7 +363,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                 </>
             )}
             <Panel {...centerPanelProps} className="mt-0.5 sm:p-2">
-                <View className={`w-full h-full bg-card/80 shadow-sm text-card-foreground rounded-2xl py-3 sm:py-4 mx-auto `}>
+                <View className={`w-full h-full bg-card/80 shadow-sm text-card-foreground rounded-2xl mx-auto `}>
                     <View onLayout={handleListLayout} style={{ pointerEvents: 'box-none', marginBottom: formHeight }} className='w-full flex-1'>
                         <CommentsBrowse
                             scrollToIndex={scrollToEnd}
@@ -376,7 +376,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                     </View>
                     <KbAvoidingView>
                         <View onLayout={handleLayout} style={{ width: listWidth + 5 }} className='-ml-[2px] -mr-[2px] border-background border bg-background web:fixed z-50 web:bottom-0  '>
-                            <View className='lg:rounded-b-2xl px-4 py-3  lg:mb-4 bg-card shadow-sm ml-[1px] '>
+                            <View className='lg:rounded-b-2xl  lg:mb-4 bg-card shadow-sm ml-[1px] '>
                                 <CommentsForm
                                     objectId={commentsData?.content[0]?.browse.data.object_id}
                                     module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}

@@ -33,7 +33,7 @@ export const settingsBadges = {
             container: ' min-w-4 h-4 overflow-hidden justify-center items-center  ',
             image_container: ' items-center justify-center rounded overflow-hidden ',
             icon_size: 12,
-            text: ' text-xs leading-4 px-0.5  ',
+            text: ' text-xs leading-4 px-1 py-0.5  ',
             rounded: ' rounded ',
         },
         xs: {

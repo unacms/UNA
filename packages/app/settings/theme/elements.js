@@ -40,9 +40,9 @@ export const settingsElements = {
         icon_size: 20, // Default icon size for dropdown menu icons
     },
     modal: {
-        fog: 'bg-background/80  ',
+        fog: ' bg-background/95  ',
         container:
-        '  shadow-xl bg-card/80 backdrop-blur border border-border sm:rounded-2xl overflow-hidden ',
+        ' bg-card/90 backdrop-blur web:shadow-border sm:rounded-2xl overflow-hidden ',
         content: '',
         header: ' p-3 items-start justify-start border-b border-border/60',
     },
