@@ -7,8 +7,8 @@ import { BlockWrapper } from 'app/components/block-wrapper'
 
 export default function ElementMap({ data, blockWrapperProps }) {
     return (
-        <BlockWrapper {...blockWrapperProps}><View className='w-full aspect-square'  >
-            <Map
+        <BlockWrapper {...blockWrapperProps}><View className='w-full aspect-square p-2'  >
+           <View className='rounded-lg overflow-hidden w-full aspect-square'> <Map
                 style={{ flex: 1 }}
                 // https://visgl.github.io/react-map-gl/docs/get-started/mapbox-tokens
                 mapboxAccessToken={appSetting('config', 'api_keys', 'mapbox')}
@@ -19,7 +19,7 @@ export default function ElementMap({ data, blockWrapperProps }) {
                 }}
 
                 mapStyle="mapbox://styles/mapbox/streets-v9"
-            /></View>
+            /></View></View>
         </BlockWrapper>
     )
 }
