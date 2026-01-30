@@ -49,14 +49,14 @@ function DefaultUnit({ data }) {
     }
 
     if (isCommentsModal) {
-        const commentItem = data.menu_actions.items.find(
+        const commentItem = data?.menu_actions?.items?.find(
             (x) => x.name === 'item-comment'
         )
         if (commentItem?.data) {
             commentItem.data.callback = showCommentsModal
         }
 
-        const commentItem1 = data.menu_counters.items.find(
+        const commentItem1 = data?.menu_counters?.items?.find(
             (x) => x.name === 'item-comment'
         )
         if (commentItem1?.data) {

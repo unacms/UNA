@@ -136,14 +136,14 @@ export const MainContent = memo(({ url, data, fulltext }) => {
             : false
 
     let content_attach = []
-    if (data.content.images_attach && data.content.images_attach.length > 0) {
+    if (data?.content?.images_attach && data?.content?.images_attach?.length > 0) {
         content_attach = content_attach.concat(data.content.images_attach)
     }
-    if (data.content.videos_attach && data.content.videos_attach.length > 0) {
+    if (data?.content?.videos_attach && data?.content?.videos_attach?.length > 0) {
         content_attach = content_attach.concat(data.content.videos_attach)
     }
     let files_attach = []
-    if (data.content.files_attach && data.content.files_attach.length > 0) {
+    if (data?.content?.files_attach && data?.content?.files_attach.length > 0) {
         files_attach = files_attach.concat(data.content.files_attach)
     }
 
@@ -187,7 +187,7 @@ export const MainContent = memo(({ url, data, fulltext }) => {
 })
 
 export function prepareData(data) {
-    const url = data.url.includes('://') ? data.url : (data.url.startsWith('/') ? data.url : '/' + data.url)
+    const url = data?.url?.includes('://') ? data?.url : (data?.url?.startsWith('/') ? data?.url : '/' + data?.url)
     let commentsData = null
     let isShowMoreComments = false
     if (data?.cmts?.data?.length > 0) {
@@ -195,9 +195,9 @@ export function prepareData(data) {
             id: 'cmt_list',
             insert: 'before',
             type: 'browse',
-            data: data.cmts,
+            data: data?.cmts,
         }
-        if (data?.cmts.total_count > appSetting('comments', 'count_in_feed')) {
+        if (data?.cmts?.total_count > appSetting('comments', 'count_in_feed')) {
             isShowMoreComments = true
         }
     }
@@ -623,10 +623,9 @@ export function SmallUnit({ data }) {
 
 export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit, feed_type }) => {
     data.mainImage = null
-    if (data?.content?.images)
-        data.mainImage =
-            data?.content?.images?.length > 0 ? data.content.images[0] : null
-
+    if (data?.content?.images){
+        data.mainImage = data?.content?.images?.length > 0 ? data.content.images[0] : null
+    }
     data.comments = null
     if (data?.cmts?.data?.length > 0) {
         data.comments =
