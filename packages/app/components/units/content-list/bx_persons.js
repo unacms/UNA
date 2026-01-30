@@ -100,14 +100,14 @@ export default function Unit(props) {
                 <View className="flex-row sm:flex-col p-1.5 sm:p-0 sm:h-full">
                     <ImageSection data={data} isSkeleton={isSkeleton} />
                     {!!oMenuItemDelete && <View className="absolute right-1 top-1">{oMenuItemDelete}</View>}
-                    <View className="flex-col pl-4 my-auto sm:p-2 justify-between flex-auto ">
-                        <View className="sm:h-12 gap-1">
-                            {isSkeleton ? <View className=" h-6 w-3/4 bg-muted rounded-full"/> : <Text numberOfLines={1} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-6 font-semibold">
+                    <View className="flex-col pl-4 my-auto sm:p-0 justify-between flex-auto ">
+                        <View className=" gap-1">
+                            {isSkeleton ? <View className=" h-6 w-3/4 bg-muted rounded-full"/> : <Text numberOfLines={1} className="text-card-foreground tracking-tight mx-2 mt-2 web:hover:text-foreground web:hover:underline leading-6 font-semibold">
 
                                 {data.title}
                             </Text>}
 
-                            <Row className="items-center gap-1.5 h-5 ">
+                            <Row className="items-center h-5 ">
                                 {isSkeleton ? <Row className='items-center gap-x-1 w-full'>
                     <View className=" h-5 w-5 bg-muted rounded-full"/>
                     <View className=" h-3 w-1/4 bg-muted rounded-full"/>
@@ -129,7 +129,7 @@ export default function Unit(props) {
                                 
                             </Row>
                         </View>
-                        <View className="flex-row sm:flex-col pt-2 gap-2 ">
+                        <View className="flex-row sm:flex-col p-2 gap-2 ">
                             <View className="w-full">
                                 {isSkeleton ? <View className=" h-9 w-full bg-muted rounded-lg"/> : oMenuItemPrimary}
                             </View>
