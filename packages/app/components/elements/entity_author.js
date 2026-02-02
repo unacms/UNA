@@ -18,7 +18,7 @@ import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 import { useIsDesktop } from 'app/context/measure';
 import { BlockWrapper } from 'app/components/block-wrapper'
 
-export default function ElementEntityAuthor({data, blockWrapperProps}) {
+export default function ElementEntityAuthor({ data, blockWrapperProps }) {
     const { currentUser } = useCurrentUser();
     const [viewState, setViewState] = useState({ view: '' })
     const [postData, setPostData] = useState(null)
@@ -115,48 +115,48 @@ export default function ElementEntityAuthor({data, blockWrapperProps}) {
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-        <Row className="justify-between gap-3">
-            <FormModal pageData={pageData} setPageData={setPageData} />
-            <Redirect ref={redirectdRef} />
-            {viewState.view == 'edited' && (<Modal
-                onVisible={true}
-                transparent={true}
-                headerBorder={true}
-                padding=' '
-            >
-                <Form
-                    {...viewState.data}
-                    classContainerName="flex-row flex-wrap px-2 w-full items-start justify-between"
-                    onFormSubmit={onFormSubmit}
-                    exProps={{
-                        onClose: () => { setViewState({ view: '' }) }
-                    }}
-                />
-            </Modal>)
-            }
-
-            <View className={data.text ? '' : 'flex-auto'}>
-                <Profile {...data.author_data} displayType="unit" displaySize={isDesktop ? "lg" : "base"} className='hidden lg:flex' showInfo={sInfo} />
-            </View>
-
-            {(data.text && false) && (
-                <View className='flex-auto overflow-hidden text-ellipsis w-1/2 lg:w-auto px-4'>
-                    <Link href={data.url}>
-                        <Text className=" lg:text-center overflow-hidden text-ellipsis text-lg font-bold font-bold  text-neutral-900 dark:text-neutral-50 overflow" numberOfLines={2}>
-                            {data.text}
-                        </Text>
-                    </Link>
-                </View>
-            )
-            }
-            <View>
-                {aMenuManageItems.length > 0 &&
-                    <DropdownMenu mode = "popup" items={aMenuManageItems} {...menuOptions}>
-                        <Button variant="text" rounded="true" startDecorator="Ellipsis" size="base" />
-                    </DropdownMenu>
+            <Row className="justify-between gap-3 p-2">
+                <FormModal pageData={pageData} setPageData={setPageData} />
+                <Redirect ref={redirectdRef} />
+                {viewState.view == 'edited' && (<Modal
+                    onVisible={true}
+                    transparent={true}
+                    headerBorder={true}
+                    padding=' '
+                >
+                    <Form
+                        {...viewState.data}
+                        classContainerName="flex-row flex-wrap px-2 w-full items-start justify-between"
+                        onFormSubmit={onFormSubmit}
+                        exProps={{
+                            onClose: () => { setViewState({ view: '' }) }
+                        }}
+                    />
+                </Modal>)
                 }
-            </View>
-        </Row>
+
+                <View className={data.text ? '' : 'flex-auto'}>
+                    <Profile {...data.author_data} displayType="unit" displaySize={isDesktop ? "lg" : "base"} className='hidden lg:flex' showInfo={sInfo} />
+                </View>
+
+                {(data.text && false) && (
+                    <View className='flex-auto overflow-hidden text-ellipsis w-1/2 lg:w-auto px-4'>
+                        <Link href={data.url}>
+                            <Text className=" lg:text-center overflow-hidden text-ellipsis text-lg font-bold font-bold  text-neutral-900 dark:text-neutral-50 overflow" numberOfLines={2}>
+                                {data.text}
+                            </Text>
+                        </Link>
+                    </View>
+                )
+                }
+                <View>
+                    {aMenuManageItems.length > 0 &&
+                        <DropdownMenu mode="popup" items={aMenuManageItems} {...menuOptions}>
+                            <Button variant="text" rounded="true" startDecorator="Ellipsis" size="base" />
+                        </DropdownMenu>
+                    }
+                </View>
+            </Row>
         </BlockWrapper>
     );
 }
