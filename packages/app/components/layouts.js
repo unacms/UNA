@@ -9,6 +9,7 @@ import { appStatic } from 'app/lib/app-static'
 import Redirect from 'app/ui/atoms/redirect'
 import { useRef, useEffect, useMemo } from 'react';
 import ConfirmEmail from 'app/ui/molecules/confirm_email'
+import PageByUrl from 'app/ui/molecules/page-by-url'
 import { registerAll } from 'app/components/registry-init';
 import RedirectElement from 'app/components/elements/redirect'
 import Link from 'app/ui/atoms/link'
@@ -162,7 +163,7 @@ function PageLayoutContent({ layout, data }) {
         return <ConfirmEmail url={data.url} />;
     }
 
-    if (hasProfileInformer && appSetting('layout', 'lock_no_profile')) {
+    if ((hasProfileInformer || currentUser?.membership==2 && data.uri =='home') && appSetting('layout', 'lock_no_profile')) {
 
         if (currentUser?.menu?.items?.length > 1) {
             return (
@@ -177,7 +178,7 @@ function PageLayoutContent({ layout, data }) {
             )
         }
         else {
-            return <RedirectElement data={{ uri: currentUser.menu.items[0].link }} />
+            return <PageByUrl url={currentUser?.menu?.items[0].link} />;
         }
     }
 
