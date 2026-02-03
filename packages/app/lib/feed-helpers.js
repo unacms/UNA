@@ -227,9 +227,7 @@ export const ItemInfo = memo(({ data, t }) => {
                 </>
             ) : (
                 <>
-
                     <Icon className="text-muted -mx-0.5 " icon='Dot' size={14} />
-
                     <Pressable
                         onPress={() => {
                             setShowContextList(true)
@@ -340,8 +338,7 @@ export const MenuManage = ({ id, menu, setViewState }) => {
 }
 
 const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
-    const { currentUser, setCurrentUser } = useCurrentUser()
-    const { setLayoutData } = useLayoutData()
+    const { currentUser } = useCurrentUser()
     const handleMenuManageSelect = async (oItem, event) => {
         switch (oItem.name) {
             case 'item-edit':
@@ -450,8 +447,6 @@ export const VisibilityInfo = memo(({ data }) => {
     const isUser = data.object_privacy_view < 0
 
     return (
-
-
         <View className="gap-1 flex-row items-center min-h-5">
             {isUser ? (
                 <Profile

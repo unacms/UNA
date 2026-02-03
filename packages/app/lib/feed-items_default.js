@@ -122,14 +122,14 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
                         {data.content?.title || ''}
                     </Text>
                 </Link>
-                
-                        <Text
-                            className="text-card-foreground text-base leading-6"
-                            numberOfLines={3}
-                        >
-                            {stripTags(data.content?.text || '')}
-                        </Text>
-                    
+
+                <Text
+                    className="text-card-foreground text-base leading-6"
+                    numberOfLines={3}
+                >
+                    {stripTags(data.content?.text || '')}
+                </Text>
+
             </View>
         </View>
     )
@@ -137,7 +137,7 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
 
 export const AdView = memo(({ data, styles, url, isCompact }) => {
     useEffect(() => {
-        ;(async () => {
+        ; (async () => {
             if (data?.content?.register_impression) {
                 await fetcher('/api.php?r=' + data.content.register_impression)
             }
@@ -217,11 +217,11 @@ export const MarketView = memo(({ data, styles, url, isCompact }) => {
                     <Text className="mr-auto bg-primary/20 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-white">
                         {(data.content?.price_recurring || 0) > 0
                             ? (data.content?.price_recurring || 0) +
-                              '$/' +
-                              (data.content?.duration_recurring || '')
+                            '$/' +
+                            (data.content?.duration_recurring || '')
                             : (data.content?.price_single || 0) > 0
-                            ? (data.content?.price_single || 0) + '$'
-                            : 'Free'}
+                                ? (data.content?.price_single || 0) + '$'
+                                : 'Free'}
                     </Text>
 
                     <Text
@@ -260,108 +260,104 @@ export const DefaultView = memo(
     }) => {
         const imgs = content_attach
         return (
-            <>
-                <View className={isCompact ? 'flex-row-reverse' : ' w-full'}>
-                    {data.mainImage && (
-                        <View
-                            className={
-                                isCompact
-                                    ? ' w-48 mb-auto pr-4'
-                                    : 'w-full mb-3 '
-                            }
-                        >
-                            <View
-                                className="w-full aspect-video  rounded-lg overflow-hidden  "
-                                style={styles.card_image}
-                            >
-                                <Image
-                                    {...data.mainImage}
-                                    alt={data.title}
-                                    view="cover"
-                                    className=" u-cover rounded-xl "
-                                    sizes={LAYOUT_BREAKPOINTS.md}
-                                />
-                            </View>
-                        </View>
-                    )}
 
-                    {bIsTitle && (
-                        <LinkOrModal href={url} showInModal={appSetting('browse', 'show_in_modal', data.type)} className=" ">
-                            <Text
-                                numberOfLines={3}
-                                className="pb-2 text-foreground web:hover:text-accent-foreground text-xl sm:text-2xl font-semibold font-title tracking-tight"
-                            >
-                                {data.content?.title || ''}
-                            </Text>
-                        </LinkOrModal>
-                    )}
-                    <View className='w-full'>
-                        <View className='w-full'>
-                            {bIsTimelineContent && (
-                                <View className={`${(data.content?.text && (content_attach.length > 0 || data.content?.embed || data.content?.videos?.length > 0)) && 'pb-2'}`} >
-                                    {fulltext ? (
-                                        <Html
-                                            data={
-                                                data.content?.text
-                                                    ? data.content.text
-                                                    : ''
-                                            }
-                                        />
-                                    ) : (
-                                        <ContentMore
-                                            id={'feed-' + data.id}
-                                            showLink={
-                                                data?.content?.images_attach
-                                                    ?.length == 0
-                                            }
-                                            content={
-                                                data.content?.text
-                                                    ? data.content.text
-                                                    : ''
-                                            }
-                                            numberOfLines={5}
-                                            numberOfSymbols={600}
-                                            openSmall={false}
-                                            showLess={true}
-                                            customClassName="u-vanilla-html"
-                                        />
-                                    )}
-                                   
-                                </View>
-                            )}
-                            {!bIsTimelineContent && (
-                                <Text
-                                    className="text-secondary-foreground text-sm"
-                                    numberOfLines={3}
-                                >
-                                    {stripTags(data.content?.text || '')}
-                                </Text>
-                            )}
-                            {!!data.content?.embed && (
-                                <View className="rounded-lg overflow-hidden w-full ">
-                                    <Embed data={typeof data.content.embed !== 'string' ? data.content.embed : { url: data.content.embed }} />
-                                </View>
-                            )}
-                            {(data.content?.videos?.length > 0 && data.content?.videos[0]?.src_mp4) && (
-                                <View className='w-full aspect-video rounded-lg overflow-hidden'>
-                                    <Video poster={data.content?.videos[0].src_poster} src={data.content?.videos[0].src_mp4} cover={true} controls={true} muted={"muted"} />
-                                </View>
-                            )}
+            <View className={isCompact ? 'flex-row-reverse' : ' w-full gap-y-2'}>
+                {data.mainImage && (
+                    <View
+                        className={
+                            isCompact
+                                ? ' w-48 mb-auto pr-4'
+                                : 'w-full mb-3 '
+                        }
+                    >
+                        <View
+                            className="w-full aspect-video  rounded-lg overflow-hidden  "
+                            style={styles.card_image}
+                        >
+                            <Image
+                                {...data.mainImage}
+                                alt={data.title}
+                                view="cover"
+                                className=" u-cover rounded-xl "
+                                sizes={LAYOUT_BREAKPOINTS.md}
+                            />
                         </View>
                     </View>
-                    {data.content?.polls_attach &&
-                        data.content.polls_attach.map((item, index) => {
-                            return (
-                                <View className="mt-4" key={'att' + index}>
-                                    <PollItem
-                                        results_url="/api.php?r=bx_timeline/get_block_poll_results"
-                                        data={item}
-                                        showTitle={true}
-                                    />
-                                </View>
-                            )
-                        })}
-                </View>
+                )}
+
+                {bIsTitle && (
+                    <LinkOrModal href={url} showInModal={appSetting('browse', 'show_in_modal', data.type)} className=" ">
+                        <Text
+                            numberOfLines={3}
+                            className="pb-2 text-foreground web:hover:text-accent-foreground text-xl sm:text-2xl font-semibold font-title tracking-tight"
+                        >
+                            {data.content?.title || ''}
+                        </Text>
+                    </LinkOrModal>
+                )}
+
+                {bIsTimelineContent && (
+                    <View>
+                        {fulltext ? (
+                            <Html
+                                data={
+                                    data.content?.text
+                                        ? data.content.text
+                                        : ''
+                                }
+                            />
+                        ) : (
+                            <ContentMore
+                                id={'feed-' + data.id}
+                                showLink={
+                                    data?.content?.images_attach
+                                        ?.length == 0
+                                }
+                                content={
+                                    data.content?.text
+                                        ? data.content.text
+                                        : ''
+                                }
+                                numberOfLines={5}
+                                numberOfSymbols={600}
+                                openSmall={false}
+                                showLess={true}
+                                customClassName="u-vanilla-html"
+                            />
+                        )}
+
+                    </View>
+                )}
+                {!bIsTimelineContent && (
+                    <Text
+                        className="text-secondary-foreground text-sm"
+                        numberOfLines={3}
+                    >
+                        {stripTags(data.content?.text || '')}
+                    </Text>
+                )}
+                {!!data.content?.embed && (
+                    <View className="rounded-lg overflow-hidden w-full ">
+                        <Embed data={typeof data.content.embed !== 'string' ? data.content.embed : { url: data.content.embed }} />
+                    </View>
+                )}
+                {(data.content?.videos?.length > 0 && data.content?.videos[0]?.src_mp4) && (
+                    <View className='w-full aspect-video rounded-lg overflow-hidden'>
+                        <Video poster={data.content?.videos[0].src_poster} src={data.content?.videos[0].src_mp4} cover={true} controls={true} muted={"muted"} />
+                    </View>
+                )}
+                {data.content?.polls_attach &&
+                    data.content.polls_attach.map((item, index) => {
+                        return (
+                            <View className="mt-4" key={'att' + index}>
+                                <PollItem
+                                    results_url="/api.php?r=bx_timeline/get_block_poll_results"
+                                    data={item}
+                                    showTitle={true}
+                                />
+                            </View>
+                        )
+                    })}
                 {bIsTimelineContent && <UnitImages images={imgs} />}
                 {files_attach.map((item, index) => {
                     return (
@@ -385,7 +381,7 @@ export const DefaultView = memo(
                         </Link>
                     )
                 })}
-            </>
+            </View>
         )
     }
 )
@@ -434,7 +430,6 @@ export const PollView = memo(
                             </Text>
                         </Link>
                     )}
-
                     <PollItem data={data.content} />
                 </View>
             </>

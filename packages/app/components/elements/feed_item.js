@@ -50,19 +50,18 @@ export default function ElementFeedItem({ data, isModal, blockWrapperProps }) {
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <View className="p-2">
-                <View >
-                    <Html data={tlContent} />
-                    {!!content.embed && <Embed data={content.embed} />}
-
+            <View className="px-2 gap-y-2">
+                <Html data={tlContent} />
+                {!!content.embed && <Embed data={content.embed} />}
+                {content.polls_attach.length > 0 && (
                     <View className='w-full'>
-                        {content.polls_attach && content.polls_attach.map((item, index) => {
+                        {content.polls_attach.map((item, index) => {
                             return <View key={"att" + index} className='mt-4'><PollItem data={item} showTitle={true} results_url='/api.php?r=bx_timeline/get_block_poll_results' /></View>
                         })}
                     </View>
-                </View>
-
-                <UnitImages images={content_attach} />
+                    )
+                }
+                {content_attach.length > 0 && <UnitImages images={content_attach} />}
                 {
                     data.event.menu_actions.items.length > 0 && (<View className=" flex-row items-center ">
                         <Row className="flex-auto items-center flex-wrap-reverse justify-between gap-2 mt-2">
