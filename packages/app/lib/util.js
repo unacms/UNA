@@ -73,7 +73,19 @@ export function cd(className, density = 'default', section = 'offsets') {
 
 export function normalizeClasses(a) {
     if (!a) return a
-    return isWeb ? a : a.replace(/\b\S*(hover|focus|active|group|duration|group-hover):\S*\b/g, "").replace(/\s{2,}/g, " ").trim();
+    // Notes:
+    // - `group` is a special Tailwind marker (not a style utility).
+    // - `web:group` won't create a `.group` ancestor on web unless we rewrite it.
+    // - On native, we strip web-only and pseudo-class variants to reduce parsing work.
+    if (isWeb) {
+        return a.replace(/\bweb:group\b/g, 'group');
+    }
+
+    return a
+        .replace(/\bweb:group\b/g, '')
+        .replace(/\b\S*(hover|focus|active|group|duration|group-hover):\S*\b/g, "")
+        .replace(/\s{2,}/g, " ")
+        .trim();
 }
 
 export function decodeText(str) {
