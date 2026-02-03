@@ -130,7 +130,7 @@ const TabScene = React.memo(({
                 ListHeaderComponent={typeof ListHeaderComponent === 'function' ? ListHeaderComponent : ListHeaderComponent ? () => ListHeaderComponent : undefined}
 
                 index={route.index}
-                data={route.data}
+                data={[...route.data, ...route.sidebar.content]}
                 route={route}
                 unit={route.endpoint?.unit}
                 renderItem={renderItem}
