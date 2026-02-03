@@ -31,7 +31,7 @@ export const settingsFeed = {
             button_full_width: false,
             button_size: 'sm',
             button_variant: 'text',
-            menu_width: ' w-min ',
+            menu_width: '',
             pressed_classes: {
                 pressed_container: ' bg-accent/70 active:bg-accent border border-accent-foreground/50 web:hover:bg-accent ',
                 pressed_text: ' text-accent-foreground font-medium ',
@@ -44,7 +44,7 @@ export const settingsFeed = {
             show_action: false,
             show_counter: true,
             show_combined: true,
-            menu_width: 'w-full',
+            menu_width: '',
             button_variant: 'ghost',
             rounded: true,
             button_size: 'xs',

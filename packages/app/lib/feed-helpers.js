@@ -100,7 +100,7 @@ export const CommentsSection = memo(
             <Button variant="link" size="sm" title={t('View more comments...')} />
         )
         return (
-            <View className="border-t border-background -mx-3 lg:-mx-4 mt-3.5 px-2 lg:px-3">
+            <View className="border-t border-background -mx-3 lg:-mx-4 px-2 lg:px-3">
                 <View className="border-t border-card -mx-4  ">
                     {isShowMoreComments && (
                         <View className="px-3 lg:px-4 pt-2 me-auto">
@@ -421,6 +421,7 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
 
 export const ActionMenu = memo(({ data }) => {
     const settings = appSetting('feed', 'actions_menu');
+
     if (data?.items?.length > 2) {
         for (let i = 2; i < data.items.length; i++)
             if (data.items[i].data)
@@ -428,12 +429,25 @@ export const ActionMenu = memo(({ data }) => {
             else
                 data.items[i].params = { 'button_show_title_from_size': 'sm' }
     }
-    return settings && <Menu {...data} displayType="button" params={settings} />
+
+    const data_other = {...data, items: data?.items.filter(item => item.class != " bx-mi-primary" && item.primary != 1 )};
+    const data_primary = {...data, items: data?.items.filter(item => item.class == " bx-mi-primary" || item.primary == 1 )};
+
+    return settings && <Row className="w-full justify-between">
+        <Menu {...data_primary} displayType="button" params={settings} />
+        <Menu {...data_other} displayType="button" params={settings} />
+    </Row>
 })
 
 export const CounterMenu = memo(({ data }) => {
     const settings = appSetting('feed', 'counters_menu')
-    return settings && <Menu {...data} displayType="button" params={settings} />
+    const data_other = {...data, items: data?.items.filter(item => item.class != " bx-mi-primary" && item.primary != 1 )};
+    const data_primary = {...data, items: data?.items.filter(item => item.class == " bx-mi-primary" || item.primary == 1 )};
+
+    return settings && <Row className="w-full justify-between">
+        <Menu {...data_primary} displayType="button" params={settings} />
+        <Menu {...data_other} displayType="button" params={settings} />
+    </Row>
 })
 
 export const VisibilityInfo = memo(({ data }) => {

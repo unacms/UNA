@@ -113,9 +113,10 @@ function DefaultUnit({ data }) {
             <FormModal pageData={pageData.data} setPageData={setPageData} modalView='content_page' url={pageData.url2} />
             <CardList
                 border="border-y border-x-none sm:border-x"
-                className="mb-0.5 sm:mb-3"
+                className="gap-y-3 mb-0.5 sm:mb-3"
+                padding="py-3 lg:py-4"
             >
-                <Row className="gap-3 flex-auto mb-3">
+                <Row className="gap-3 flex-auto px-3 lg:px-4">
                     <Skeleton visible={isSkeleton} preset='feed_author'>
                         <Author data={data} url={url} t={t} />
                         <View className="flex-none mb-auto hidden">
@@ -127,20 +128,24 @@ function DefaultUnit({ data }) {
                         </View>
                     </Skeleton>
                 </Row>
-                <View className="flex-auto mb-3">
+                <View className="flex-auto  px-3 lg:px-4">
                     <Skeleton visible={isSkeleton} preset='multitext'>
                         <MainContent url={url} data={data} />
                     </Skeleton>
                 </View>
-                <Row className="border-b border-background -mx-4 px-2.5">
-                    {!!data.menu_counters &&
-                        appSetting('feed', 'counters_menu') && (
-                            <CounterMenu
-                                data={data.menu_counters}
-                            />
-                        )}
+                {!!data.menu_counters && <>
+                <Row className=" px-3 lg:px-4">
+
+                    {appSetting('feed', 'counters_menu') && (
+                        <CounterMenu
+                            data={data.menu_counters}
+                        />
+                    )}
                 </Row>
-                <Row className=" gap-3 items-center flex-auto justify-between pt-2 px-2  -mx-3 lg:-mx-4 -mb-2 border-t border-card">
+                <Row className="w-full border-t border-background h-[1px] "/>
+                </>}
+
+                <Row className="gap-3 items-center flex-auto justify-between  px-3 lg:px-4">
                     <ActionMenu
                         data={data.menu_actions}
                     />
@@ -151,6 +156,7 @@ function DefaultUnit({ data }) {
                     />
                 </Row>
                 {commentsData && (
+                    <View className=" px-3 lg:px-4">
                     <CommentsSection
                         url={url}
                         t={t}
@@ -160,6 +166,7 @@ function DefaultUnit({ data }) {
                         data={data}
                         isShowMoreComments={isShowMoreComments}
                     />
+                    </View>
                 )}
             </CardList>
         </AnimatedBlock>
