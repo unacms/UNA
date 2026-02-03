@@ -284,7 +284,7 @@ const StarIcon = ({ color, size = 28 }) => (
 
 export function ReputationLeaderboard({ data }) {
     const formProps = data?.filter_form
-        ? { ...data?.filter_form, layout: 'hor' }
+        ? { ...data?.filter_form, layout: 'hor', name: 'reputaion_filter_form' }
         : null
     if (formProps?.data?.inputs?.days) {
         formProps.data.inputs.days.mode = 'buttons'

@@ -353,7 +353,6 @@ export default function Form({
             },
         }));
     }
-
     const ElementForm = getFormType(name)
     if ('undefined' !== typeof ElementForm) {
         inputs = <ElementForm name={name} data={{ ...formBundle?.form, inputs: filteredInputs }} response={formBundle.response} handleSubmit={_handleSubmit} exProps={exProps}></ElementForm>
@@ -398,14 +397,11 @@ export default function Form({
 
     const Element = formBundle.extra ? getComponent('element', String(formBundle.extra.type)) : null;
 
-
     function stableStringify(obj) {
         return JSON.stringify(
             Object.keys(obj).sort().reduce((acc, k) => (acc[k] = obj[k], acc), {})
         );
     }
-
-    console.log("allFields", defaultFormValues, currentFormValues)
 
     return (
         <>
@@ -414,7 +410,7 @@ export default function Form({
                 <FormProvider {...methods}>
                     <View className={`${layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : appSetting('forms', 'form_container')}`}>
                         {inputs}
-                        {(isAutoChange) && <Row className='items-center justify-between absolute -top-4 right-0'>
+                        {(isAutoChange) && <Row className={`items-center justify-between  ${layout === 'hor' ? '' : 'absolute right-0 -top-4'} `}>
                             {(stableStringify(defaultFormValues) != stableStringify(currentFormValues)) && <Button
                                 title='Reset Filters'
                                 startDecorator='X'
