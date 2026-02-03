@@ -111,7 +111,7 @@ export default function FormComments(props) {
                 <View className="flex-auto ">
                     <View className=" items-stretch bg-input/40 border border-input rounded-xl flex-auto" >
                         <View
-                            className={`px-2.5  flex-auto items-center overflow-hidden ${shouldGrowFromBottom ? "justify-end" : "justify-start"} py-2 ${hasContent ? 'mb-9' : ''}`}
+                            className={`px-2.5  flex-auto items-center ${shouldGrowFromBottom ? "justify-end" : "justify-start"} py-2 ${hasContent ? 'mb-9' : ''}`}
                             style={{
                                 
                                 ...(isWeb && { transition: 'height 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), padding-bottom 0.1s cubic-bezier(0.25, 0.1, 0.25, 1)' })
