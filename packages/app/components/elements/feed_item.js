@@ -65,7 +65,7 @@ export default function ElementFeedItem({ data, isModal, blockWrapperProps }) {
                 <UnitImages images={content_attach} />
                 {
                     data.event.menu_actions.items.length > 0 && (<View className=" flex-row items-center ">
-                        <Row className="flex-auto items-center flex-wrap-reverse justify-between gap-2 mt-2 -mx-2">
+                        <Row className="flex-auto items-center flex-wrap-reverse justify-between gap-2 mt-2">
                             <ActionMenu data={menu_actions2} />
                             {(!!data.event.menu_counters && appSetting('feed', 'counters_menu')) && <CounterMenu data={data.event.menu_counters} />}
 
