@@ -28,6 +28,7 @@ import Badges from 'app/ui/molecules/badges'
 import { useBreakpoint, useWindowSize, useIsDesktop, useWindowHeight, useWindowWidth } from 'app/context/measure';
 import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
 import { useFocusEffect }  from 'app/lib/hooks/router'
+import { Button } from 'app/design/controls'
 
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
@@ -83,7 +84,7 @@ const defineCells = (blocks, data) => {
 
 
 export default function ({ data, blocks }) {
-
+   
     /*  return <>
       <Text fontFamily="font-main" className="text-red-500 text-3xl" >The quick brown fox jumps over the lazy dog.  
  Packz my box with five dozen liquor jugs. 
