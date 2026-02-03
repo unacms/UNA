@@ -8,12 +8,12 @@ export default function ElementTime(props) {
     const { t } = useTranslation();
     const [date, setDate] = useState(new Date());
 
-    useEffect(() => {
+    /*useEffect(() => {
         const interval = setInterval(() => {
             setDate(new Date());
         }, 60000);
         return () => clearInterval(interval);
-    }, []);
+    }, []);*/
 
     const formattedTime = useMemo(() => {
         const d = new Date(props.ts * 1000);

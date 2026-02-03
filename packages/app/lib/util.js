@@ -304,15 +304,22 @@ export const formatDate = (
         // Универсальное форматирование относительного времени (одинаковое везде)
         const min = Math.round(sec / 60);
         if (Math.abs(min) < 60) {
-            return `${Math.abs(min)}m` + t(' ago');
+            return `${Math.abs(min)}m`;
         }
         const hrs = Math.round(sec / 3600);
         if (Math.abs(hrs) < 24) {
-            return `${Math.abs(hrs)}h` + t(' ago');
+            return `${Math.abs(hrs)}h`;
+        }
+        const days = Math.round(sec / (3600*24));
+        if (Math.abs(days) < 31) {
+            return `${Math.abs(days)}d`;
+        }
+        const weeks = Math.round(sec / (3600*24*7));
+        if (Math.abs(weeks) < 24) {
+            return `${Math.abs(weeks)}w`;
         }
     }
 
-    // Универсальное форматирование даты (одинаковое на всех платформах)
     return formatDateUniversal(date, {
         showDate,
         showTime,
