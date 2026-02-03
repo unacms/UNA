@@ -222,16 +222,14 @@ export default function RftText({
     }
     .tiptap, #root > div:nth-of-type(1):focus-within  {
         scrollbar-width: auto;
-
-        overflow-y: scroll !important;
+        overflow-y: auto !important;
     }
-        .ProseMirror.tiptap{
+    .ProseMirror.tiptap{
         margin-right:20px;
-        }
-
-        .ProseMirror-focused.tiptap{
+    }
+    .ProseMirror-focused.tiptap{
         margin-right:0px;
-        }
+    }
     /*#root, #root > div {
         overflow: hidden !important;
     }
