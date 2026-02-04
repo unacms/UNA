@@ -98,7 +98,7 @@ export default function ElementFavorites(oProps) {
     const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
     const bShowFull = bShowAction && bShowCounter;
-    const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true   
+    const bShowCombined = bShowFull && oParams?.show_combined === true   
 
     const oButtonProps = {
         variant: oProps?.primary ? 'primary' : oProps.params?.button_variant,

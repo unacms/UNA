@@ -1,21 +1,43 @@
 import React from 'react';
-import { View } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { appSetting } from 'app/lib/util'
 import  { Button } from 'app/design/controls/buttons';
 
 const ThemeCssClassesButtonGroups = appSetting('theme', 'buttons_group_styles');
+const BtnClsSize = appSetting('theme', 'button_sizes_neo');
+const BtnCls = appSetting('theme', 'button_styles_neo');
 
-/* buttons group */
-export function ButtonsGroup({
-    className = '',
-    variant = 'default',
+export function NeoButtonsGroup({
     size = 'base',
-    fullWidth = false,
-    showTitleFromSize = '',
-    rounded = false,
-    children = [],
-    ...rest
+    children
 }) {
+    return (
+        <Row className={`${BtnCls.group?.container} ${BtnClsSize[size]?.rounded}`}>
+            {children?.map((child, i) => (
+                <>
+                    {child}
+                    {i < children.length - 1 && <View className={`${BtnCls.group?.separator}`} />}
+                </>
+            ))}
+        </Row>
+    )
+}
+
+export function ButtonsGroup(props) {
+     const {
+  className = '',
+  variant = 'default',
+  size = 'base',
+  fullWidth = false,
+  showTitleFromSize = '',
+  rounded = false,
+  children = null,
+  ...rest
+} = props;
+    
+     if (appSetting('theme', 'neo_button') && !rest.old)
+        return <NeoButtonsGroup {...props} />
+
     let sClassContainer = 'web:group';
     sClassContainer += fullWidth ? ' flex-auto w-full items-stretch' : ' w-fit m-0 truncate ';
     

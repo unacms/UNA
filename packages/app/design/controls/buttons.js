@@ -2,7 +2,7 @@ import React, { useMemo, useCallback, memo } from 'react';
 import { Pressable, View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
-import { appSetting, isEmoji, FeedbackHaptics } from 'app/lib/util'
+import { appSetting, isEmoji, FeedbackHaptics, cn } from 'app/lib/util'
 import { Theme, ThemeName } from 'app/design/theme';
 import Tooltip from 'app/ui/atoms/tooltip';
 import Loading from 'app/ui/atoms/loading'
@@ -48,43 +48,60 @@ const ICON_ACCESSIBLE_MAP = {
 
 const getAddon = (addon, isTitle) => {
     if (!addon) return null;
-  
+
     const isObj = typeof addon === 'object' && addon !== null;
     const text = isObj ? addon.text : addon;
-  
+
     if (!text) return null;
     if (isObj && addon.hideZero && text == '0') return null;
-  
+
     const bg = isObj && addon.variant === 'primary' ? 'bg-destructive' : 'bg-muted';
     const pos = isObj && addon.position === 'bottom' ? 'bottom-0 -end-1' : '-top-2 -end-2';
-  
+
     if (!isTitle) {
-      return (
-        <View className={`absolute ${bg} border-2 border-card rounded-full px-1 min-w-6 min-h-6 items-center justify-center ${pos}`}>
-          <Text className="text-white text-xs font-semibold">{text}</Text>
-        </View>
-      );
+        return (
+            <View className={`absolute ${bg} border-2 border-card rounded-full px-1 min-w-6 min-h-6 items-center justify-center ${pos}`}>
+                <Text className="text-white text-xs font-semibold">{text}</Text>
+            </View>
+        );
     }
-  
+
     return (
-      <View className="flex-1 items-end">
-        <View className={`${bg} rounded-full min-w-5 min-h-5 px-1.5 py-0.5 items-center`}>
-          <Text className="text-white text-xs font-semibold">{text}</Text>
+        <View className="flex-1 items-end">
+            <View className={`${bg} rounded-full min-w-5 min-h-5 px-1.5 py-0.5 items-center`}>
+                <Text className="text-white text-xs font-semibold">{text}</Text>
+            </View>
         </View>
-      </View>
     );
-  };
+};
 
 const NeoIcon = memo(({ icon, className, size }) => {
     if (!icon) return null;
-    if (icon == '_loading') return <Loading size="small" />;
-    if (typeof icon !== 'string') return icon;
 
-    if (isEmoji(icon)) {
-        return <Text className={className}>{icon}</Text>;
+    const renderOne = (one, key) => {
+        if (!one) return null;
+        if (one === "_loading") return <Loading key={key} size="small" />;
+
+        if (React.isValidElement(one)) return <React.Fragment key={key}>{one}</React.Fragment>;
+
+        if (typeof one !== "string") return null;
+
+        if (isEmoji(one)) {
+            return (
+                <Text key={key} className={className}>
+                    {one}
+                </Text>
+            );
+        }
+
+        return <Icon key={key} size={size} className={className} icon={one} />;
+    };
+
+    if (!Array.isArray(icon)) {
+        return renderOne(icon, "icon");
     }
 
-    return <Icon size={size} className={className} icon={icon} />;
+    return icon.map((one, idx) => renderOne(one, idx));
 });
 
 const getAccessibleNameNeo = (alt, tooltip, title, startDecorator, endDecorator) => {
@@ -106,10 +123,9 @@ const getAccessibleNameNeo = (alt, tooltip, title, startDecorator, endDecorator)
 
 const getStateClasses = (active, pressed, hovered, focused, disabled, variant, pressedClasses, type = 'container') => {
     const classes = BtnCls[variant]?.[type];
-    const pressedCls = pressedClasses?.[`pressed_${type}`] || classes?.pressed;
 
     if (disabled) return classes?.disabled || '';
-    if (pressed) return pressedCls || '';
+    if (pressed) return pressedClasses?.[`pressed_${type}`] || classes?.pressed || '';
     if (hovered) return classes?.hovered || '';
     if (active) return classes?.active || '';
     if (focused) return classes?.focused || '';
@@ -121,7 +137,6 @@ const NeoButtonContent = React.memo(({
     hovered = false,
     focused = false,
     active = false,
-    // Сырые props вместо вычисленных
     className,
     classTextName,
     variant,
@@ -134,32 +149,33 @@ const NeoButtonContent = React.memo(({
     endDecorator,
     isTitle,
     title,
-    rounded,
     addon,
-    roundingClass,
     showTitleFromSize,
+    roundingClass,
     children
 }) => {
 
     const hasNoIcons = !startDecorator && !endDecorator;
     const isTitleVisible = hasNoIcons || showTitleFromSize === '';
-    const titleVisibility = isTitleVisible ? '' : ' hidden ' + (showTitleFromSize ? showTitleFromSize : 'sm') + ':block';
+    const breakpoint = showTitleFromSize || 'sm';
+    const titleVisibility = cn(!isTitleVisible && `hidden ${breakpoint}:block`);
 
-    const baseContainerClasses = [
+    const baseContainerClasses = cn(
+        roundingClass,
+        `button-${variant}-${size}`,
         isIconOnly ? '' : 'overflow-hidden',
         className,
-        roundingClass,
         BtnCls[variant]?.container?.base,
-        variant === 'group-item-none' ? 'justify-between' : `justify-${align}`,
+            `justify-${align}`,
         isIconOnly ? BtnClsSize[size]?.container_icon_only : BtnClsSize[size]?.container,
-    ].filter(Boolean).join(' ');
+    );
 
-    const baseTextClasses = [
+    const baseTextClasses = cn(
         'whitespace-nowrap text-ellipsis overflow-hidden',
         classTextName,
         BtnCls[variant]?.text?.base,
         BtnClsSize[size]?.text,
-    ].filter(Boolean).join(' ');
+    );
 
     const oButtonAddon = getAddon(addon, isTitle);
 
@@ -181,7 +197,7 @@ const NeoButtonContent = React.memo(({
             {oButtonAddon && (
                 isTitle ? <View className="z-10">{oButtonAddon}</View> : <View className="absolute top-0 right-0 w-full h-full z-20 pointer-events-none" >{oButtonAddon}</View>
             )}
-            {children && <View className="z-10">{children}</View>}
+            {children}
         </Row>
     );
 });
@@ -191,8 +207,10 @@ export const NeoButton = ({
     variant = ThemeButtonSizes.default_variant,
     size = ThemeButtonSizes.default_size,
     disabled = false,
+    forwardedRef,
     tooltip = false,
     onPress,
+    grouped,
     title = '',
     haptics,
     className = '',
@@ -233,6 +251,7 @@ export const NeoButton = ({
     };
 
     const accessibleName = getAccessibleNameNeo(alt, tooltip, title, startDecorator, endDecorator);
+    const refProps = forwardedRef ? { ref: forwardedRef } : {};
 
     const buttonAttributes =
         isActive && accessibleName
@@ -249,57 +268,50 @@ export const NeoButton = ({
     const hitareaClass = hitarea === false ? '' : `u-action-hitarea u-action-hitarea-${size}`;
 
 
-    const canRound = !variant.startsWith('group-item') && !(variant === 'link' || variant.includes('-link'));
+    const canRound = !grouped && variant !== 'link';
     const roundingClass = !canRound ? '' :
         rounded ? 'rounded-full' :
             BtnClsSize[size]?.rounded ?? '';
-
-    const buttonContent = (state) => (
-        <NeoButtonContent
-          className={className}
-          classTextName={classTextName}
-          roundingClass={roundingClass}
-          variant={variant}
-          align={align}
-          showTitleFromSize={showTitleFromSize}
-          size={size}
-          isIconOnly={isIconOnly}
-          disabled={disabled}
-          pressed={pressed}
-          pressedClasses={pressedClasses}
-          startDecorator={startDecorator}
-          endDecorator={endDecorator}
-          isTitle={isTitle}
-          title={title}
-          addon={addon}
-          active={state?.pressed}
-          hovered={state?.hovered}
-          focused={state?.focused}
-        >
-          {children}
-        </NeoButtonContent>
-      );
-
     return (
-        <Tooltip content={tooltip} enabled={isTooltip}>{isActive ? (
+        <Tooltip content={tooltip} enabled={isTooltip}>
             <Pressable
                 className={`${flexClasses} ${hitareaClass} ${roundingClass}`}
+                disabled={!isActive}
                 hitSlop={resolvedHitSlop}
                 onPress={handlePress}
+                {...refProps}
                 {...buttonAttributes}
             >
-                {(state) => buttonContent(state)}
+                {(state) => <NeoButtonContent
+                    className={className}
+                    classTextName={classTextName}
+                    roundingClass={roundingClass}
+                    variant={variant}
+                    align={align}
+                    showTitleFromSize={showTitleFromSize}
+                    size={size}
+                    isIconOnly={isIconOnly}
+                    disabled={disabled}
+                    pressed={pressed}
+                    pressedClasses={pressedClasses}
+                    startDecorator={startDecorator}
+                    endDecorator={endDecorator}
+                    isTitle={isTitle}
+                    title={title}
+                    addon={addon}
+                    active={state?.pressed}
+                    hovered={state?.hovered}
+                    focused={state?.focused}
+                >
+                    {children}
+                </NeoButtonContent>}
             </Pressable>
-        ) : (
-            <View className={`${flexClasses} ${hitareaClass} ${roundingClass}`}>
-                {buttonContent(null)}
-            </View>
-        )}</Tooltip>
+        </Tooltip>
     )
 }
 
 
-/* buttons */
+/* OLD BUTTONS */
 const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart) => {
 
     if (!sIcon)

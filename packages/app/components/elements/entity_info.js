@@ -1,5 +1,5 @@
 import { View, Row } from 'app/design/view'
-import { Text, H2 } from 'app/design/typography'
+import { Text } from 'app/design/typography'
 import Time from 'app/ui/atoms/time'
 import Html from 'app/ui/atoms/html'
 import { Icon } from 'app/ui/atoms/icon'
@@ -41,7 +41,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <View className='flex-col gap-4 p-2 '>
+            <View className='gap-4 p-2 '>
                 {inputs}
             </View>
         </BlockWrapper>

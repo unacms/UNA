@@ -2,7 +2,7 @@ import { Pressable } from 'app/design/view';
 import { useGlobalSearchParams, Link } from 'app/lib/hooks/router'
 import { FeedbackHaptics } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
-import { appSetting, getDomainFromUrl, cd } from 'app/lib/util';
+import { appSetting, getDomainFromUrl, cn } from 'app/lib/util';
 import * as WebBrowser from 'expo-web-browser';
 import { useMemo, useCallback } from 'react';
 import { Text } from 'app/design/typography'
@@ -77,11 +77,11 @@ export default function ElementLink(props) {
     const ThemeLinkStyles = appSetting('theme', 'link_styles');
 
     const selectedVariant = variant || 'default';
-    const variantClass = [
+    const variantClass = cn(
         ThemeLinkStyles[`u-link-${selectedVariant}-cnt`] || '',
         ThemeLinkStyles[`u-link-${selectedVariant}-text`] || '',
         ThemeLinkStyles[`u-link-${selectedVariant}-trans`] || ''
-    ].join(' ').trim();
+   );
 
     const sizeClass = (() => {
         if (!size) return '';
@@ -90,14 +90,14 @@ export default function ElementLink(props) {
         const roundedClass = ThemeLinkSizes[size]?.rounded || '';
         const focusClass = ThemeLinkSizes[size]?.focus || '';
         const paddingClass = ThemeLinkSizes[size]?.padding || '';
-        return [paddingClass, hitareaClass, textSizeClass, roundedClass, focusClass].filter(Boolean).join(' ');
+        return cn(paddingClass, hitareaClass, textSizeClass, roundedClass, focusClass);
     })();
 
     // Fallback hitSlop from theme by size (native only); explicit prop wins; allow disabling with hitarea={false}
     const resolvedHitSlop = hitSlop ?? (hitarea === false ? undefined : (size ? ThemeLinkSizes[size]?.hitSlop : undefined));
 
     const ghostNativePressedClass = (selectedVariant === 'ghost' || selectedVariant === 'plainghost' || selectedVariant === 'accentghost') ? ' web:active:bg-muted rounded-lg ' : '';
-    const composedClassName = [variantClass, sizeClass, ghostNativePressedClass, className].filter(Boolean).join(' ').trim().replace(/\bactive:/g, 'web:active:');
+    const composedClassName = cn(variantClass, sizeClass, ghostNativePressedClass, className).replace(/\bactive:/g, 'web:active:');
 
     // Helper to check if children are all text-like (strings/numbers) including arrays
     const isTextContent = (child) => {

@@ -2,7 +2,8 @@ import Link from 'next/link'
 import { Pressable } from 'app/design/view'
 import { useRouter } from 'app/lib/hooks/router'
 import { useCallback } from 'react';
-import { appSetting, cd } from 'app/lib/util'
+import { appSetting, cn } from 'app/lib/util'
+
 
 // Variants and sizes from theme
 const ThemeLinkSizes = appSetting('theme', 'link_sizes');
@@ -52,11 +53,11 @@ export default function ElementLink(props) {
     }
 
     const selectedVariant = variant || 'default';
-    const variantClass = [
+    const variantClass = cn(
         ThemeLinkStyles[`u-link-${selectedVariant}-cnt`] || '',
         ThemeLinkStyles[`u-link-${selectedVariant}-text`] || '',
         ThemeLinkStyles[`u-link-${selectedVariant}-trans`] || ''
-    ].join(' ').trim();
+    );
 
     const sizeClass = (() => {
         if (!size) return '';
@@ -68,13 +69,13 @@ export default function ElementLink(props) {
         if (selectedVariant === 'ghost' || selectedVariant === 'plainghost' || selectedVariant === 'accentghost') {
             const padSize = ['xs','sm','md','lg'].includes(size) ? size : 'md';
             const pseudoPadClass = `u-link-ghost-pad-${padSize}`;
-            return [pseudoPadClass, hitareaClass, textSizeClass, roundedClass, focusClass].filter(Boolean).join(' ');
+            return cn(pseudoPadClass, hitareaClass, textSizeClass, roundedClass, focusClass);
         }
         const token = ThemeLinkSizes[size]?.padding;
-        return [token || '', hitareaClass, textSizeClass, roundedClass, focusClass].filter(Boolean).join(' ');
+        return  cn(token || '', hitareaClass, textSizeClass, roundedClass, focusClass);
     })();
 
-    const composedClassName = [variantClass, sizeClass, className].filter(Boolean).join(' ').trim();
+    const composedClassName = cn(variantClass, sizeClass, className);
 
     if (emulate === true)
         return (

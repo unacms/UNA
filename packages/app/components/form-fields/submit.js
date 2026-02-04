@@ -4,7 +4,7 @@ import { useController, useFormContext } from 'react-hook-form';
 import { Button, Hidden } from 'app/design/controls';
 import { View, Row } from 'app/design/view';
 import { Platform } from 'react-native';
-import { appSetting } from 'app/lib/util';
+import { appSetting, cn } from 'app/lib/util';
 import { useIsDesktop } from 'app/context/measure';
 import emitter from 'app/context/emitter';
 import { useEffect } from 'react';
@@ -103,15 +103,12 @@ export default function FormFieldSubmit(props) {
     });
 
     // Prepare row className
-    const rowClassName = [
+    const rowClassName = cn(
         formProps.button_hide_on_small || props.button_hide_on_small ? 'hidden sm:flex' : '',
         'gap-x-2',
         '',
         'items-center',
-
-    ]
-        .filter(Boolean)
-        .join(' ');
+    );
 
     return (
         <Field {...props}>

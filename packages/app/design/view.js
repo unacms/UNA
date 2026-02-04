@@ -5,6 +5,7 @@ import {
 } from 'react-native'
 import { forwardRef } from 'react'
 import { cssInterop } from 'nativewind'
+import { cn } from 'app/lib/util'
 
 const defaultInterop = { className: 'style' }
 
@@ -28,7 +29,7 @@ export const Row = interopRender(
     ({ children, className, ...props }, ref) => (
         <RNView
             ref={ref}
-            className={['flex-row', className].filter(Boolean).join(' ')}
+            className={cn('flex-row', className)}
             {...props}
         >
             {children}

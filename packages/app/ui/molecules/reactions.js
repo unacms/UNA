@@ -298,7 +298,7 @@ export default function ElementReactions(oProps) {
         rounded: oProps.params?.button_rounded,
         fullWidth: oProps.params?.button_full_width,
         showTitleFromSize: oProps.params?.button_show_title_from_size,
-        pressedClasses: settings?.pressed_classes,
+        pressedClasses: appSetting("theme", "neo_button") ? undefined : settings?.pressed_classes,
         ring: oProps.params?.button_ring
     };
 

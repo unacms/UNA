@@ -46,7 +46,6 @@ export const Text = ({
     numberOfLines,
     ...rest
 }) => {
-    /* const finalClassName = [className, fontFamily].filter(Boolean).join(' ') || undefined*/
     const baseClassName = className || '  '
     let finalClassName = `${baseClassName} ${fontFamily || 'font-main'}`.trim()
     const spreadProps = isWeb ? sanitizeWebTextProps(rest) : rest

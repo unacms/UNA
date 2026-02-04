@@ -1,8 +1,8 @@
-import { useState, useCallback } from 'react';
+    import { useState, useCallback } from 'react';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { View } from 'app/design/view'
-import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonsGroupMenu } from 'app/design/controls';
+import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonsGroupMenu, ButtonMenuGroupItem } from 'app/design/controls';
 import { getComponent } from 'app/components/registry'
 
 const performAction = async (sSystem, iObjectId, sAction, aParams, onLoad) => {
@@ -67,8 +67,9 @@ export default function ElementFeatures(oProps) {
     const bShowActionFeatured = objectData?.['is_featured'] != undefined ? objectData['is_featured'] === true : false;
     const bShowActionDisabled = objectData?.['is_disabled'] != undefined ? objectData['is_disabled'] === true : false;
     const sTitle = objectData?.['title'] != undefined ? objectData['title'] : '';
+    const bShowCombined = oParams?.show_combined === true   
 
-    const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
+    const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
     if (oIcons)
         oButtonProps.startDecorator = oIcons[(bShowActionFeatured ? 'un' : '') + 'do'];
 

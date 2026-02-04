@@ -5,7 +5,7 @@ export const settingsButtons = {
     button_sizes: {
         default_size: 'base',
         default_variant: 'default',
-        pressed_container: ' bg-accent web:hover:bg-accent web:active:bg-accent  ',
+        pressed_container: ' bg-accent web:hover:bg-accent web:active:bg-accent 999 ',
         pressed_text: ' text-accent-foreground font-medium ',
      
         xs: {
@@ -149,7 +149,8 @@ export const settingsButtons = {
     },
     button_sizes_neo: {
         default_size: 'base',
-        default_variant: 'default',     
+        default_variant: 'default', 
+
         xs: {
             rounded: 'rounded-md',
             container: 'px-1.5 gap-1',
@@ -160,7 +161,7 @@ export const settingsButtons = {
         },
         sm: {
             rounded: 'rounded-lg ',
-            container: 'px-2 gap-1 h-9 ',
+            container: 'px-2 gap-1 h-9 min-w-9 ',
             container_icon_only: 'h-9 w-9',
             text: 'text-sm leading-6',
             icon_size: 20,
@@ -168,7 +169,7 @@ export const settingsButtons = {
         },
         base: {
             rounded: 'rounded-lg',
-            container: 'px-3 gap-2 h-10',
+            container: 'px-3 gap-2 h-10 min-w-10',
             container_icon_only: 'h-10 w-10',
             title_container: ' leading-10 text-base',
             icon_size: 24,
@@ -176,7 +177,7 @@ export const settingsButtons = {
         },
         lg: {
             rounded: 'rounded-xl',
-            container: 'px-4 gap-2 h-12',
+            container: 'px-4 gap-2 h-12 min-w-12',
             container_icon_only: 'h-12 w-12',
             title_container: ' leading-12 text-base',
             icon_size: 24,
@@ -184,6 +185,10 @@ export const settingsButtons = {
         },
     },
     button_styles_neo: {
+        group:{
+            container: 'overflow-hidden border-[0.5px] items-center border-border/60',
+            separator: ' bg-border/60 w-px h-full',
+        },
         primary:{
             container:{
                 base:'shadow-xs web:duration-200',
