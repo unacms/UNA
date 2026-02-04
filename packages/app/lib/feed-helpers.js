@@ -433,7 +433,7 @@ export const ActionMenu = memo(({ data }) => {
     const data_other = {...data, items: data?.items.filter(item => item.class != " bx-mi-primary" && item.primary != 1 )};
     const data_primary = {...data, items: data?.items.filter(item => item.class == " bx-mi-primary" || item.primary == 1 )};
 
-    return settings && <Row className="w-full justify-between">
+    return settings && <Row className="flex-auto justify-between">
         <Menu {...data_primary} displayType="button" params={settings} />
         <Menu {...data_other} displayType="button" params={settings} />
     </Row>
@@ -444,7 +444,7 @@ export const CounterMenu = memo(({ data }) => {
     const data_other = {...data, items: data?.items.filter(item => item.class != " bx-mi-primary" && item.primary != 1 )};
     const data_primary = {...data, items: data?.items.filter(item => item.class == " bx-mi-primary" || item.primary == 1 )};
 
-    return settings && <Row className="w-full justify-between">
+    return settings && <Row className="flex-auto justify-between">
         <Menu {...data_primary} displayType="button" params={settings} />
         <Menu {...data_other} displayType="button" params={settings} />
     </Row>

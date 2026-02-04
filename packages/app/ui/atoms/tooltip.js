@@ -1,4 +1,8 @@
-import * as React from 'react';
+export default function Tooltip({children, content, enabled = true}) {
+    return children;
+}
+
+/*import * as React from 'react';
 import { View, Pressable, Platform } from 'react-native';
 import * as TooltipPrimitive from 'app/ui/primitives/tooltip';
 import { Text } from 'app/design/typography';
@@ -109,4 +113,4 @@ const TooltipArrow = React.forwardRef(({ className, ...props }, ref) => {
 });
 TooltipArrow.displayName = 'TooltipArrow';
 
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipArrow, TooltipProvider };
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipArrow, TooltipProvider };*/

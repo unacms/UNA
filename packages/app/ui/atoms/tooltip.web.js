@@ -4,7 +4,10 @@ import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
 import { appSetting } from 'app/lib/util';
 
-export default function Tooltip({children, content}) {
+export default function Tooltip({children, content, enabled = true}) {
+    if (!enabled) {
+        return children;
+    }
     const [visible, setVisible] = useState(false);
     const [tooltipStyle, setTooltipStyle] = useState({});
     const tooltipRef = useRef(null);
