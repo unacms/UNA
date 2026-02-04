@@ -22,17 +22,17 @@ function fillArrayToLength(arr, maxCount, defaultValue) {
     if (showEmpty)
         data = fillArrayToLength(data, maxCount, '');
     return  (
-        <Row className='items-center p-2'>
+        <Row className='items-center'>
             {
                 data?.length > 0 && data?.map((profile, index) => {
                     if (profile?.id){
                        // profile.display_name = profile.display_name || profile.title
                        // profile.url_avatar = profile.url_avatar || profile.image.src;
                         const pr = profile.author_data || profile;
-                        return <View key={index} className={sSize + (index > 0 ? " -ml-2 " : " ") + "  bg-card rounded-full shadow-sm"}><Profile {...pr} displayType="unit_wo_info" displaySize={displaySize}  /></View>
+                        return <View key={index} className={ (index > 0 ? " -ml-2 " : " ") + "  bg-card rounded-full shadow-line p-px"}><Profile {...pr} displayType="unit_wo_info" displaySize={displaySize}  /></View>
                     }
                     else{
-                        return <View key={index} className={sSize + (index > 0 ? " -ml-2 " : " ") + " rounded-full bg-card shadow-sm "}></View>
+                        return <View key={index} className={ (index > 0 ? " -ml-2 " : " ") + " rounded-full bg-card shadow-sm "}></View>
                     }
                 })
             }

@@ -5,7 +5,7 @@ export const settingsInputs = {
         cnt: ' rounded-2xl overflow-hidden shadow-xl border border-border p-2 bg-popover web:bg-popover/90 backdrop-blur-xl z-50  ',
     },
     checkbox_set: {
-        container: ' gap-x-2',
+        container: ' gap-x-2 rounded-xl border border-border/60 p-1.5',
     },
     
     doublerange: {
@@ -43,20 +43,20 @@ export const settingsInputs = {
     switcher: {
         // Container
         'u-controls-switcher-container':
-            'items-center flex-row-reverse justify-between gap-x-2 min-w-12 rounded-xl flex-auto p-1.5 bg-input border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 ',
+            'items-center flex-row-reverse justify-between gap-x-2 min-w-12 rounded-xl flex-auto p-2 bg-input border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 ',
 
         // Text
-        'u-controls-switcher-text': 'text-card-foreground text-base px-1.5 flex-1 ',
+        'u-controls-switcher-text': 'text-card-foreground text-base px-1 flex-1 ',
 
         // Track
         'u-controls-switcher-track': 'rounded-full',
-        'u-controls-switcher-track-base': 'w-14 h-8 p-1',
-        'u-controls-switcher-track-sm': 'w-10 h-4 p-0.5',
+        'u-controls-switcher-track-base': 'w-16 p-1 ',
+        'u-controls-switcher-track-sm': 'w-12 h-6 p-0.5',
 
         // Thumb
         'u-controls-switcher-thumb':
             'rounded-full  bg-white web:transition-transform web:duration-200',
-        'u-controls-switcher-thumb-base': 'h-6 w-6',
+        'u-controls-switcher-thumb-base': 'h-6 w-8 shadow-xs',
         'u-controls-switcher-thumb-sm': 'h-3 w-3',
 
         // Active Thumb Position
@@ -65,13 +65,13 @@ export const settingsInputs = {
 
         // Track Colors
         'u-controls-switcher-track-col':
-            'bg-neutral-400 dark:bg-neutral-600',
+            'bg-muted',
         'u-controls-switcher-track-active-col': 'bg-primary',
     },
     checkbox: {
         // Container
         'u-controls-checkbox-container':
-            'items-center py-2 px-3 rounded-lg w-full',
+            'items-center px-1.5 py-1  rounded-lg w-full',
 
         // Hover & Active backgrounds (optional — Web-only)
         'u-controls-checkbox-container-bg':

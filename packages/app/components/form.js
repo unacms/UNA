@@ -410,11 +410,12 @@ export default function Form({
                 <FormProvider {...methods}>
                     <View className={`${layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : appSetting('forms', 'form_container')}`}>
                         {inputs}
-                        {(isAutoChange) && <Row className={`items-center justify-between  ${layout === 'hor' ? '' : 'absolute right-0 -top-4'} `}>
+                        {(isAutoChange) && <Row className={`items-center justify-between  ${layout === 'hor' ? ' ' : ' '} `}>
                             {(stableStringify(defaultFormValues) != stableStringify(currentFormValues)) && <Button
                                 title='Reset Filters'
                                 startDecorator='X'
                                 size='sm'
+                                fullWidth
                                 variant='secondary'
                                 onPress={() => methods.reset()}
                             />

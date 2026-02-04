@@ -27,6 +27,10 @@ export function layoutForList(endpoint, unitMode = '') {
     if (endpoint?.module == 'bx_groups')
         return 'w-full @sm/list:w-1/2 @md/list:w-1/3 @lg/list:w-1/4 p-1.5';
 
+    if (endpoint?.module == 'bx_persons')
+        return 'w-full @sm/list:w-1/3 @md/list:w-1/4 @lg/list:w-1/5 @xl/list:w-1/6 @sm/list:p-1 @md/list:p-2 ';
+
+   
     return 'w-full @sm/list:w-1/2 @md/list:w-1/3 @lg/list:w-1/4 @xl/list:w-1/5 @sm/list:p-1 @md/list:p-2 ';
 }
 

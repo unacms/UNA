@@ -40,7 +40,7 @@ export default function Unit(props) {
     function getBase() {
         const isSkeleton = data?.skeleton;
         return (
-            <CardList padding="p-1">
+            <CardList padding="p-1 gap-1">
                 <Redirect ref={redirectdRef} />
                 <Link className="web:group" href={data.url}>
                     <View className="relative bg-muted aspect-video overflow-hidden rounded-lg w-full">
@@ -55,33 +55,29 @@ export default function Unit(props) {
                         </Skeleton>
 
                     </View>
-                    <View className="flex-auto justify-between">
-                        <View className="">
-                            <Skeleton className="h-6 w-3/4 px-2 mt-2" visible={isSkeleton}>
-                                <Text numberOfLines={2} className="px-2 pt-2 text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-tight font-semibold">
+                    <View className="flex-auto  p-2 gap-3">
+                        <View className="h-16 gap-1 justify-between">
+                            <Skeleton className="h-5 w-3/4" visible={isSkeleton}>
+                                <Text numberOfLines={2} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-5 font-semibold">
                                     {data.title}
                                 </Text>
                             </Skeleton>
-                            <Row className="items-center pr-2 py-1">
+                            <Row className="items-center gap-1 h-5">
                                 <Skeleton preset='profile-list' visible={isSkeleton}>
 
-                                    <ProfilesList
-                                        data={
-                                            data.members_list
-                                        }
-                                        showEmpty={false}
-                                        maxCount={3}
-                                        displaySize="xs"
-                                    />
-
-
-                                    {
-                                        <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
+                                    <>
+                                        <ProfilesList
+                                            data={data.members_list}
+                                            showEmpty={false}
+                                            maxCount={3}
+                                            displaySize="2xs"
+                                        />
+                                        <Text className="truncate text-xs leading-tight flex-auto text-secondary-foreground">
                                             {friendsLabel}
                                         </Text>
-                                    }
+                                    </>
                                 </Skeleton>
-                                <Skeleton visible={isSkeleton} className="h-6 w-1/3">
+                                <Skeleton visible={isSkeleton} className="h-5 w-1/3 border border-card">
                                     <Text className=" bg-primary/10 rounded-md px-1.5 py-1 text-xs flex-none items-center font-semibold text-neutral-600 dark:text-neutral-400">
                                         {data.visibility == "3" ? t('Public') : t('Private')}
                                     </Text>
@@ -89,7 +85,7 @@ export default function Unit(props) {
                             </Row>
                         </View>
 
-                        <View className="flex-row p-2 sm:flex-col  w-full">
+                        <View className="flex-row sm:flex-col gap-2 w-full">
                             <Skeleton className='h-9 w-full' rounded='rounded-lg' visible={isSkeleton}>
                                 {oMenuItemPrimary}
                                 {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2  ml-2 sm:ml-0'}`}>{oMenuItemSecondary}</View>}

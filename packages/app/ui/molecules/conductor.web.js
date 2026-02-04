@@ -628,8 +628,8 @@ const TabSceneMainContent = ({
 
 
     return (
-        <><UniList
-
+        <>{Preload}<UniList
+            
             data={dataItems}
             endpoint={pageRoute.endpoint}
             listState={pageRoute?.state}
@@ -850,7 +850,7 @@ const LeftBarContent = (route, onFormChangedValues) => {
     if (items.length === 0) return null
 
     return (
-        <View className="gap-y-4">
+        <View className="gap-y-4 p-2">
             {items.map((block, index) => (
                 <View key={`lb-${block.id ?? block.block ?? index}`}>
                     <BlockByName
@@ -1148,7 +1148,9 @@ const LeftSideBarContainer = ({
                                     })}
                             </View>
                         )}
+                        
                         {children}
+                        
                     </View>
                 </View>
             </View>

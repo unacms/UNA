@@ -77,23 +77,23 @@ export default function Unit(props) {
     const isSkeleton = data?.skeleton;
 
     return (
-        <CardList padding="p-1" className="rounded-none @sm:rounded-2xl shadow-sm  ">
+        <CardList padding="p-3 sm:p-1">
             <Redirect ref={redirectdRef} />
             <Link className="web:group " href={data.url}>
-                <View className="flex-row sm:flex-col p-1.5 sm:p-0 sm:h-full">
+                <View className="flex-row sm:flex-col gap-1">
                     <Skeleton className="h-28 sm:h-auto aspect-square sm:w-full" rounded='rounded-lg' visible={isSkeleton}>
                         <ImageSection data={data} />
                     </Skeleton>
 
                     {!!oMenuItemDelete && <View className="absolute right-1 top-1">{oMenuItemDelete}</View>}
-                    <View className="flex-col pl-4 my-auto sm:p-2 justify-between flex-auto ">
-                        <View className="sm:h-12 gap-1">
-                            <Skeleton className="h-6 w-3/4" visible={isSkeleton}>
-                                <Text numberOfLines={1} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-6 font-semibold">
+                    <View className="flex-col p-2 justify-between gap-2 flex-auto ">
+                        <View className="gap-2 h-12">
+                            <Skeleton className="h-5 w-3/4" visible={isSkeleton}>
+                                <Text numberOfLines={1} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-5 font-semibold">
                                     {data.title}
                                 </Text>
                             </Skeleton>
-                            <Row className="items-center gap-1.5 h-5 ">
+                            <Row className="items-center gap-1 h-5">
                                 <Skeleton preset='profile-list' visible={isSkeleton}>
                                     <><ProfilesListCnt
                                         data={
@@ -112,7 +112,7 @@ export default function Unit(props) {
                                 </Skeleton>
                             </Row>
                         </View>
-                        <View className="flex-row sm:flex-col pt-2 gap-2 ">
+                        <View className="flex-row sm:flex-col gap-2">
                             <View className="w-full">
                                 <Skeleton className='h-9 w-full' rounded='rounded-lg' visible={isSkeleton}>
                                     {oMenuItemPrimary}
