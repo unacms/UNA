@@ -10,7 +10,7 @@ import Redirect from 'app/ui/atoms/redirect'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next'
 import Letter from 'app/ui/atoms/letter'
-import { getUnitMenuItems } from 'app/functions'
+import { getUnitMenuItems } from 'app/customization/functions'
 import { Platform } from 'react-native'
 import { Skeleton } from 'app/ui/atoms/skeleton';
 

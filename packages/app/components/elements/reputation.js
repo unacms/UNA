@@ -20,7 +20,7 @@ import {
 } from 'app/ui/molecules/table'
 import Badge from 'app/ui/molecules/badge'
 import { useLayoutSettings } from 'app/context/layout-settings'
-import { Loading } from 'app/loading'
+import { Loading } from 'app/customization/loading'
 import { renderForm } from 'app/components/elements/form'
 import { BlockWrapper } from 'app/components/block-wrapper'
 

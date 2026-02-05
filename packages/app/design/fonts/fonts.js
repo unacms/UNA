@@ -1,11 +1,6 @@
-import { fonts } from './fonts-default';
-
-// DON'T EDIT THIS FILE IN MAIN REPO!!!
-// only for custom projects change some specific static components here if needed
-
-/*const fonts2 = { 
+const fonts = { 
     'font-main': require('app/design/fonts/Inter-VariableFont.ttf'), 
-    'font-title': require('app/design/fonts/TimesNewRoman.ttf')
-};*/
+    'font-title': require('app/design/fonts/Lexend-VariableFont_wght.ttf')
+};
 
-export default fonts;
+export { fonts };

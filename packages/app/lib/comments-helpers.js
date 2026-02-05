@@ -21,7 +21,7 @@ import {
 import Snackbar from 'app/ui/atoms/snackbar'
 import emitter from 'app/context/emitter'
 import { appStatic } from 'app/lib/app-static';
-import { ProfileDisplayName } from 'app/functions';
+import { ProfileDisplayName } from 'app/customization/functions';
 
 export function CommentsBrowse({
     browse,

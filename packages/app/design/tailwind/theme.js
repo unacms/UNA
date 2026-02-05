@@ -1,5 +1,5 @@
 const merge = require('deepmerge');
-const configCustom = require('app/design/tailwind-custom/theme');
+const configCustom = require('app/customization/design/tailwind/theme');
 const isNative = process.env.TAILWIND_TARGET === 'native';
 const { nativewindUIColors } = require('app/design/tailwind/nativewindui-theme');
 

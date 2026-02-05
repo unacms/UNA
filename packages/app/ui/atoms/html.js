@@ -6,7 +6,7 @@ import { Platform } from 'react-native'
 import Link from 'app/ui/atoms/link'
 import { Text, H1, H2, H3, H4, H5, H6 } from 'app/design/typography'
 import { decodeText } from 'app/lib/util'
-import { ParseHtmlClasses } from 'app/functions';
+import { ParseHtmlClasses } from 'app/customization/functions';
 
 const StyledStrong = (props) => {
     if (Platform.OS === 'web') {

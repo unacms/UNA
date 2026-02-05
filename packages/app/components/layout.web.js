@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState } from 'react';
-import Footer from 'app/components/nav/footer';
+import Footer from 'app/customization/nav/footer';
 import { Modal } from 'app/design/controls'
 import Informer from 'app/components/elements/informer';
 import Suggestions from 'app/ui/molecules/suggestions';

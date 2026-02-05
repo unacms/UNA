@@ -81,7 +81,6 @@ const getSkeleton = () => {
 };
 
 export default function ElementLikes(oProps) {
-    return <></>
     const { t } = useTranslation();
     const oSettings = appSetting('social_actions', 'like');
 

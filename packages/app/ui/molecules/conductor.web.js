@@ -39,7 +39,7 @@ import {
     getSkeletonByEndPoint,
     layoutForList,
     paddingForList
-} from 'app/functions'
+} from 'app/customization/functions'
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal'
 import emitter from 'app/context/emitter'
 import Cover, { CoverSmall } from 'app/components/elements/cover'

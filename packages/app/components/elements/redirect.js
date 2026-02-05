@@ -1,7 +1,5 @@
 import { useRouter, redirectTo } from 'app/lib/hooks/router'
 import { useEffect } from 'react';
-import { Loading } from 'app/loading'
-import { View } from 'app/design/view'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
 export default function ElementRedirect({data, blockWrapperProps}) {

@@ -1,22 +1,27 @@
-import { mainFont, titleFont } from './fonts-web-default';
+import { Inter, Lexend } from 'next/font/google';
 
-// DON'T EDIT THIS FILE IN MAIN REPO!!!
-// only for custom projects
-// 
-// To use local/custom fonts instead of Google Fonts, uncomment below:
-// 
-// import localFont from 'next/font/local';
-// 
-// const mainFont = localFont({
-//   src: [{ path: './YourCustomFont.ttf', style: 'normal' }],
-//   variable: '--font-main',
-//   display: 'swap',
-// });
-// 
-// const titleFont = localFont({
-//   src: [{ path: './YourTitleFont.ttf', style: 'normal' }],
-//   variable: '--font-title',
-//   display: 'swap',
-// });
+// Optimized Google Font loading for web
+// - Only loads needed weights (400, 500, 600, 700)
+// - Latin subset only (reduces size by ~80%)
+// - display: 'swap' for better loading performance
+// - Automatic font subsetting and optimization by Next.js
+// - preload: false to avoid browser warnings about unused preloaded resources
+//   (fonts still load via CSS @font-face, just without <link rel="preload">)
 
-export const fontVars = `${mainFont.variable} ${titleFont.variable}`;
+export const mainFont = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-main',
+  display: 'swap',
+  preload: false,
+  fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+});
+
+export const titleFont = Lexend({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-title',
+  display: 'swap',
+  preload: false,
+  fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+});

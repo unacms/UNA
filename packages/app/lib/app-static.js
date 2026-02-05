@@ -1,4 +1,4 @@
-import { staticComponents } from 'app/static';
+import { staticComponents } from 'app/customization/static';
 
 export function appStatic(section, props) {
     const Component = staticComponents[section];

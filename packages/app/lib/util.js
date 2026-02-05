@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { decode } from 'html-entities';
 import { appSetting as setting, UNA_URL, APP_URL } from 'app/config';
-import { remoteSettings } from 'app/settings-remote';
+import { remoteSettings } from 'app/settings/remote';
 import { parse as flatted_parse, stringify as flatted_stringify } from 'flatted';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LogLevel, OneSignal } from 'react-native-onesignal';

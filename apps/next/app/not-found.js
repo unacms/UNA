@@ -1,6 +1,6 @@
 import { Root } from 'app/root'
 import { Suspense } from 'react'
-import { Loading } from 'app/loading'
+import { Loading } from 'app/customization/loading'
 // CSS imports removed - already imported in root layout.js
 // This prevents Next.js from creating a separate not-found.css bundle
 // that gets speculatively preloaded on all pages

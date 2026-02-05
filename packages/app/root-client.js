@@ -1,6 +1,6 @@
 'use client'
 import dynamic from 'next/dynamic'
-import { Loading } from 'app/loading'
+import { Loading } from 'app/customization/loading'
 
 // SSR enabled for faster initial page load - server pre-renders the HTML
 // The loading fallback only shows during client-side navigation while chunk loads

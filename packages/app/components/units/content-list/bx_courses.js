@@ -9,7 +9,7 @@ import { CardList } from 'app/ui/molecules/card'
 import Redirect from 'app/ui/atoms/redirect'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
-import { getUnitMenuItems } from 'app/functions';
+import { getUnitMenuItems } from 'app/customization/functions';
 import { cd } from 'app/lib/util'
 
 export default function Unit(props) {

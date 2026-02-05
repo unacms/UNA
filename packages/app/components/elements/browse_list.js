@@ -32,7 +32,7 @@ import {
 import { getComponent } from 'app/components/registry';
 import { BrowseItem } from 'app/lib/common-helpers'
 import { BlockWrapper } from 'app/components/block-wrapper'
-import { layoutForList } from 'app/functions'
+import { layoutForList } from 'app/customization/functions'
 export default function Browse(props) {
     const isWeb = Platform.OS === 'web'
     const { currentUser } = useCurrentUser();

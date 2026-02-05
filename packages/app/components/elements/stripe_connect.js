@@ -3,7 +3,7 @@ import { loadConnectAndInitialize } from '@stripe/connect-js/pure';
 import { fetcher } from 'app/lib/fetcher';
 import { useCurrentUser } from 'app/context/user';
 import { View } from 'app/design/view'
-import { Loading } from 'app/loading'
+import { Loading } from 'app/customization/loading'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
 const handleNotificationsChange = ({ total, actionRequired }) => {

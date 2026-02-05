@@ -4,7 +4,7 @@ import React, { useEffect, useCallback } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import { useLayoutData } from 'app/context/layout';
 import { storageClear, getAlert, getDataFromCache, storageSet } from 'app/lib/util';
-import { remoteSettings } from 'app/settings-remote';
+import { remoteSettings } from 'app/settings/remote';
 import { subscribe } from 'app/ui/atoms/socket';
 import { getRemoteSettings } from 'app/config';
 //import dynamic from 'next/dynamic'

@@ -16,7 +16,7 @@ import {
 //import RNScreenshotPrevent, { addListener } from 'react-native-screenshot-prevent';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { resources } from 'app/translation';
+import { resources } from 'app/customization/translation';
 
 // Инициализируем i18n синхронно до первого рендера, чтобы useTranslation всегда работал стабильно
 if (!i18n.isInitialized) {
@@ -30,7 +30,7 @@ if (!i18n.isInitialized) {
         }
     });
 }
-import { remoteSettings } from 'app/settings-remote';
+import { remoteSettings } from 'app/settings/remote';
 import { getRemoteSettings } from 'app/config';
 import { StatusBar } from 'react-native';
 import { LogLevel, OneSignal } from 'react-native-onesignal';

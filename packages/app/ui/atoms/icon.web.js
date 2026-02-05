@@ -2,7 +2,7 @@
 
 import { useEffect, useState, memo, useMemo } from 'react';
 import { storageGet, storageSet, findIconFromRemote, appSetting } from 'app/lib/util'
-import SvgIcons from  'app/icons-svg';
+import SvgIcons from  'app/customization/icons-svg';
 
 export const Icon = memo(function Icon(props) {
     const { icon: origIcon, className, width, height, color, size, strokeWidth, fill, ...rest } = props;

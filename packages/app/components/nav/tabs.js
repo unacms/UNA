@@ -20,7 +20,7 @@ import Subscriber from 'app/ui/molecules/subscriber';
 import { useFonts } from 'expo-font';
 //import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import { enableScreens } from 'react-native-screens';
-import fonts from 'app/design/fonts/fonts';
+import fonts from 'app/customization/design/fonts/fonts';
 import { Platform } from 'react-native'
 import { Appearance } from 'react-native';
 import { Text } from 'app/design/typography'

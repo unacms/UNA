@@ -1,10 +1,10 @@
 'use client'
 
-import { IconSet } from 'app/icons';
+import { IconSet } from 'app/customization/icons';
 import { findIconFromRemote, appSetting } from 'app/lib/util'
 import { Theme } from 'app/design/theme';
 import { useMemo } from 'react';
-import SvgIcons from 'app/icons-svg';
+import SvgIcons from 'app/customization/icons-svg';
 import { SvgXml } from 'react-native-svg';
 import { cssInterop } from 'nativewind';
 
