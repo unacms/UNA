@@ -581,7 +581,6 @@ const TabSceneMainContent = ({
 
     const SkeletonForRoute = useMemo(() => {
         const a = getSkeletonByEndPoint(pageRoute)
-        console.log("pageRoute", pageRoute, skeleton, pageRoute?.endpoint?.module, pageRoute?.endpoint?.unit, unitType)
         if (a) return a
         const baseSkeleton =
             skeleton ||

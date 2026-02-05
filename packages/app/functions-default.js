@@ -24,7 +24,7 @@ export function layoutForList(endpoint, unitMode = '') {
     if (!endpoint || endpoint?.request_url?.includes('bx_timeline') || endpoint?.params?.request_url?.includes('bx_timeline') || endpoint.unit == "notifications")
         return 'w-full';
 
-    if (endpoint?.module == 'bx_groups')
+    if (endpoint?.module == 'bx_groups' || endpoint?.request_url?.includes('r=bx_groups'))
         return 'w-full @sm/list:w-1/2 @md/list:w-1/3 @lg/list:w-1/4 p-1.5';
 
     if (endpoint?.module == 'bx_persons')
@@ -38,9 +38,8 @@ export function paddingForList(endpoint) {
     // Timeline and notifications use no padding (full width items)
     if (!endpoint || endpoint?.request_url?.includes('bx_timeline') || endpoint?.params?.request_url?.includes('bx_timeline') || endpoint.unit == "notifications")
         return '';
-
     // Groups and grid layouts get padding for better spacing
-    if (endpoint?.module == 'bx_groups')
+    if (endpoint?.module == 'bx_groups' || endpoint?.request_url?.includes('r=bx_groups'))
         return 'm-1.5 @md/list:m-1.5';
 
     // Default padding for grid-based content lists

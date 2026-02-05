@@ -17,10 +17,10 @@ export const Input = ({ className, startDecorator, endDecorator, style, ...props
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef 
-            className={`${className} ${inputSettings.default} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`} 
+        <TextInputDef
+            className={`${className} ${inputSettings.default} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`}
             style={[Platform.OS === 'ios' ? { borderCurve: 'continuous' } : {}, style]}
-            {...props} 
+            {...props}
         />
         {endDecorator && (
             <View className="absolute right-3 h-full items-center justify-center">
@@ -37,11 +37,11 @@ export const InputRef = forwardRef(({ className, startDecorator, endDecorator, s
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef 
-            className={`${className} ${inputSettings.default} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`} 
+        <TextInputDef
+            className={`${className} ${inputSettings.default} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`}
             style={[Platform.OS === 'ios' ? { borderCurve: 'continuous' } : {}, style]}
-            ref={ref} 
-            {...props} 
+            ref={ref}
+            {...props}
         />
         {endDecorator && (
             <View className="absolute right-3 items-center justify-center">
@@ -52,7 +52,7 @@ export const InputRef = forwardRef(({ className, startDecorator, endDecorator, s
 ));
 
 export const InputMulti = forwardRef(({ className, startDecorator, endDecorator, onHeight, style, ...props }, ref) => (
-     <Row className={`items-center flex-auto`}>
+    <Row className={`items-center flex-auto`}>
         {startDecorator && (
             <View className="absolute left-3.5 h-full items-center justify-center">
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
@@ -89,10 +89,10 @@ export const InputRounded = ({ className, startDecorator, endDecorator, style, .
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef 
-            className={`${className} ${inputSettings.default} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`} 
+        <TextInputDef
+            className={`${className} ${inputSettings.default} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`}
             style={[Platform.OS === 'ios' ? { borderCurve: 'continuous' } : {}, style]}
-            {...props} 
+            {...props}
         />
         {endDecorator && (
             <View className="absolute right-3 h-full items-center justify-center">
@@ -109,11 +109,11 @@ export const InputRoundedRef = forwardRef(({ className, startDecorator, endDecor
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef 
-            className={`${className} ${inputSettings.rounded} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`} 
+        <TextInputDef
+            className={`${className} ${inputSettings.rounded} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`}
             style={[Platform.OS === 'ios' ? { borderCurve: 'continuous' } : {}, style]}
-            ref={ref} 
-            {...props} 
+            ref={ref}
+            {...props}
         />
         {endDecorator && (
             <View className="absolute right-2.5 h-full items-center justify-center">
@@ -130,10 +130,10 @@ export const InputRoundedSmall = ({ className, startDecorator, endDecorator, sty
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef 
-            className={`${className} ${inputSettings.roundedsmall} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`} 
+        <TextInputDef
+            className={`${className} ${inputSettings.roundedsmall} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`}
             style={[Platform.OS === 'ios' ? { borderCurve: 'continuous' } : {}, style]}
-            {...props} 
+            {...props}
         />
         {endDecorator && (
             <View className="absolute right-2.5 h-full items-center justify-center">
@@ -150,10 +150,10 @@ export const InputSmall = ({ className, startDecorator, endDecorator, style, ...
                 <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
             </View>
         )}
-        <TextInputDef 
-            className={`${className} ${inputSettings.small} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`} 
+        <TextInputDef
+            className={`${className} ${inputSettings.small} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`}
             style={[Platform.OS === 'ios' ? { borderCurve: 'continuous' } : {}, style]}
-            {...props} 
+            {...props}
         />
         {endDecorator && (
             <View className="absolute right-3 h-full items-center justify-center">
@@ -175,7 +175,9 @@ export const PickerStyled = ({ className, ...props }) => (
 
 export const PickerStyledRef = forwardRef(({ classes, className, ...props }, ref) => (
     <View className={` ${isWeb ? 'flex-auto items-center flex-row' : ''} `}>
-        <PickerDef ref={ref} className={`${classes ? classes : PickerStyles} w-full`} {...props} />
+        <PickerDef ref={ref} className={`${classes ? classes : PickerStyles} w-full`} {...props}
+            {...(isWeb ? { style: {} } : {})}
+        />
         {isWeb && <View className="absolute right-3 pointer-events-none">
             <Icon icon="ChevronDown" size={20} className="text-neutral-500" />
         </View>}
