@@ -2,7 +2,7 @@ const path = require('path'); // Импорт path
 const webpack = require('webpack');
 const { withExpo } = require('@expo/next-adapter')
 const merge = require('deepmerge');
-const nextConfigCustom = require('./next.config.custom.js');
+const nextConfigCustom = require('app/customization/config/next.config');
 //const MillionCompiler = require('@million/lint');
 
 
