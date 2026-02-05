@@ -32,10 +32,6 @@ export const settingsFeed = {
             button_size: 'sm',
             button_variant: 'text',
             menu_width: '',
-            pressed_classes: {
-                pressed_container: ' bg-accent/70 active:bg-accent border border-accent-foreground/50 web:hover:bg-accent ',
-                pressed_text: ' text-accent-foreground font-medium ',
-            },
             button_rounded: false,
             justify_items: 'start',
             no_gap_between_buttons: false, // is false no gap between buttons + right margin, is true  gap between buttons + no margin

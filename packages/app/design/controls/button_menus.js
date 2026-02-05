@@ -2,7 +2,7 @@ import { appSetting } from 'app/lib/util'
 import { Button } from 'app/design/controls/buttons';
 import { ButtonsGroup, NeoButtonsGroup } from 'app/design/controls/button_groups';
 
-export function ButtonMenuGroupItemNeo({ variant, ...rest }) {
+export function ButtonMenuGroupItem({ variant, ...rest }) {
     return (
         <Button
             grouped={true}
@@ -33,36 +33,6 @@ export function ButtonsGroupMenu(props) {
         </ButtonsGroup>
     )
 }
-
-export function ButtonMenuGroupItem(props) {
-    const {
-        variant,
-        size = 'sm',
-        rounded = true,
-        pressed = false,
-        disabled = false,
-        fullWidth = false,
-        ...rest
-    } = props;
-
-    if (appSetting('theme', 'neo_button') && !rest.old)
-        return <ButtonMenuGroupItemNeo {...props} />
-    return (
-        <Button
-            variant={'group-item' + (!!variant ? '-' + variant : '')}
-            size={size}
-            rounded={rounded}
-            pressed={pressed}
-            disabled={disabled}
-            fullWidth={!!variant && variant == 'none' ? 'true' : fullWidth}
-            {...rest}
-        >
-            {props.children}
-        </Button>
-    );
-}
-
-
 
 function ButtonMenuAction({
     variant,
@@ -110,21 +80,3 @@ function ButtonMenuCounter(props) {
 
 export { ButtonMenuAction as ButtonMenuActionDefault, ButtonMenuAction as ButtonMenuActionText };
 export { ButtonMenuCounter as ButtonMenuCounterDefault, ButtonMenuCounter as ButtonMenuCounterText };
-
-/*
-export function ButtonMenuActionDefault(props) {
-    return _ButtonMenuAction(props)
-}
-
-export function ButtonMenuActionText(props) {
-    const { text = 'text', ...rest } = props;
-    return _ButtonMenuAction({ ...rest, text }); 
-}
-
-export function ButtonMenuCounterDefault(props) {
-    return _ButtonMenuCounter(props)
-}
-
-export function ButtonMenuCounterText(props) {
-    return _ButtonMenuCounter(props)
-}*/
