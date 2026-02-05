@@ -1,7 +1,7 @@
-import { Row, Pressable, View } from 'app/design/view'
+import { Row, Pressable } from 'app/design/view'
 import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { appSetting } from 'app/lib/util'
 import {
     menuItemsByName,
     menuItemsByNameNew,
