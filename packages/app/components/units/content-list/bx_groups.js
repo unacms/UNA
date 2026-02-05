@@ -40,7 +40,7 @@ export default function Unit(props) {
     function getBase() {
         const isSkeleton = data?.skeleton;
         return (
-            <CardList padding="p-1 gap-1">
+            <Card padding="p-1 gap-1">
                 <Redirect ref={redirectdRef} />
                 <Link className="web:group" href={data.url}>
                     <View className="relative bg-muted aspect-video overflow-hidden rounded-lg w-full">
@@ -93,7 +93,7 @@ export default function Unit(props) {
                         </View>
                     </View>
                 </Link>
-            </CardList>
+            </Card>
         );
     }
 }

@@ -7,7 +7,7 @@ export const settingsElements = {
         content_max_width: ' w-full max-w-7xl ',
         content_max_width_nav: ' w-full max-w-screen-2xl xl:border-x-0 xl:border-guide/20 border-dashed  ',
         menu_is_dynamic: false,
-        menu_cnt: ' flex-row flex-none gap-1 ps-3 h-14 items-center overflow-x-auto ',
+        menu_cnt: ' flex-row flex-none gap-1 ps-3 sm:ps-4 h-14 items-center overflow-x-auto ',
         menu_categ_indent: ' pl-12 ',
         topmenu_cnt:
             'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
@@ -18,7 +18,7 @@ export const settingsElements = {
         topmenu_button_size: 'base',
         topmenu_button_pressed: true,
         left_menu_cnt: '  ',
-        cover_base: 'w-full backdrop-blur-xl',
+        cover_base: 'w-full',
         cover_content:
             'items-center h-full w-full overflow-hidden justify-between',
         cover_small: 'max-w-7xl mx-auto flex-row w-full px-3 items-center '
@@ -49,8 +49,8 @@ export const settingsElements = {
     cards: {
         'u-card-list': ' u-card-list bg-card sm:shadow-sm text-card-foreground sm:rounded-xl',
         'u-card-list-padding': ' p-3 lg:p-4 ',
-        'u-card-base': ' u-card-base bg-card/70 web:shadow-border text-card-foreground overflow-hidden rounded-2xl',
-        'u-card-padding': ' p-4 ',
+        'u-card-base': ' u-card-base bg-card shadow-sm text-card-foreground overflow-hidden rounded-xl',
+        'u-card-padding': ' p-3 lg:p-4 ',
         'u-card-header': 'flex gap-1',
         'u-card-icon': 'text-card-foreground px-4 gap-2',
         'u-card-title':

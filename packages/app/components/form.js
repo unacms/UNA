@@ -408,7 +408,7 @@ export default function Form({
             {Element && <Element {...formBundle.extra} />}
             <View className={`${layout !== 'hor' ? appSetting('forms', 'form_container') : 'w-full'} ${exProps?.classes}`}>
                 <FormProvider {...methods}>
-                    <View className={`${layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : appSetting('forms', 'form_container')}`}>
+                    <View className={`${layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : 'w-full gap-4'}`}>
                         {inputs}
                         {(isAutoChange) && <Row className={`items-center justify-between  ${layout === 'hor' ? ' ' : ' '} `}>
                             {(stableStringify(defaultFormValues) != stableStringify(currentFormValues)) && <Button

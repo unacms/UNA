@@ -64,8 +64,8 @@ export default function (props) {
     const { field } = useController({ name, rules, defaultValue });
     const [value2, setValue2] = useState(field.value)
 
-    const variant = props.variant || 'default';
-    const size = props.size || 'base';
+    const variant = props.variant || 'secondary';
+    const size = props.size || 'sm';
 
     const addValue2 = useCallback(
         (value) => {
@@ -146,17 +146,17 @@ export default function (props) {
         <>
             {ModalCnt}
             <Field {...props}>
-                <View className={`w-full justify-between items-center ${inputSettings.ring}`}>
-                    <View className={`${props.align === 'right' ? 'justify-end pl-4' : 'justify-start pr-4'} w-full flex-auto items-center flex-row flex-wrap`}>
+                
+                    <View className={`${props.align === 'right' ? 'justify-end' : 'justify-start'} bg-input border border-border/70 rounded-xl w-full flex-auto items-center flex-row flex-wrap p-1 gap-1 min-h-12`}>
                         {props.align == 'right' && <Button
-                            startDecorator={isMultiple ? "Plus"  : ""}
+                            startDecorator={isMultiple ? "Plus" : ""}
                             variant={variant}
                             title={isMultiple ? ""  : field.value?.length> 0 ? "Change" : "Select"}
                             size={size}
                             onPress={showSelect}
                         />}
                         {field.value?.length > 0 && valuesList.filter(item => field.value.includes(item.key)).map((item, index) => (
-                            <View className='m-0.5' key={'label' + index}>
+                            <View className='m-px' key={'label' + index}>
                                 <Button
                                     endDecorator="X"
                                     variant={variant}
@@ -167,15 +167,15 @@ export default function (props) {
                             </View>
                         )
                         )}
-                        {props.align != 'right' && <Button
+                        {props.align != 'right' && <View className='m-px'><Button
                             startDecorator={isMultiple ? "Plus"  : ""}
                             variant={variant}
                             size={size}
                             title={isMultiple ? "Add"  : "Select"}
                             onPress={showSelect}
-                        />}
+                        /></View>}
                     </View>
-                </View>
+                
             </Field></>
     );
 }

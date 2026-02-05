@@ -26,7 +26,7 @@ export default function (props) {
         ['switcher', 'checkbox'].includes(props.type) == false
 
     const captionElement = (
-        <View className=" gap-y-2 z-10">
+        <View className=" gap-y-1 z-10">
             <Text className=" text-secondary-foreground block px-0.5 w-full ">
                 <Row className="items-center gap-x-1">
                     <Text className={appSetting('forms', 'caption_classes')}>

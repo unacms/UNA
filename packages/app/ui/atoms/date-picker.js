@@ -234,14 +234,14 @@ export default function ({ name, value = '', type, onChange }) {
                     </View>
                 </View>
             </Modal>
-            <Row className='gap-3 p-1 items-center border/50 border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border/80 text-neutral-900 rounded-xl'>
-                <Button title={`${dValue ? formatDate(dValue, t, {yearPolicy: 'always', month: 'numeric'}) : 'Select date'}`} variant="text" endDecorator="Calendar" onPress={() => { setShowModal(true) }} />
+            <Row className='gap-3 p-1 border-border border text-secondary-foreground rounded-xl bg-input'>
+                <Button title={`${dValue ? formatDate(dValue, t, {yearPolicy: 'always', month: 'numeric'}) : 'Select date'}`}  variant="secondary" size="base" endDecorator="Calendar" onPress={() => { setShowModal(true) }} />
                 {bIsTime && (<><View className='w-5'><Input
                     onChangeText={text => handleChangeTime(text, 23, 'h')}
                     onBlur={handleChangeTime2}
                     keyboardType="numeric"
                     placeholder="HH:mm"
-                    className='tracking-tight font-medium text-neutral-800 dark:text-neutral-200'
+                    className='tracking-tight font-medium text-secondary-foreground'
                     maxLength={2}
                     placeholderTextColor="#6b7280"
                     value={`${tValue[0]}`}

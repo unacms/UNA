@@ -850,7 +850,7 @@ const LeftBarContent = (route, onFormChangedValues) => {
     if (items.length === 0) return null
 
     return (
-        <View className="gap-y-4 p-2">
+        <View className="gap-y-4">
             {items.map((block, index) => (
                 <View key={`lb-${block.id ?? block.block ?? index}`}>
                     <BlockByName
@@ -1104,7 +1104,7 @@ const LeftSideBarContainer = ({
                             <Row>{addButtons}</Row>
                         </Row>
                     )}
-                    <View className="flex-1 gap-y-4">
+                    <View className="flex-1 gap-y-2">
                         {layoutName == 'navigator' && routes.length > 1 && (
                             <View className='w-full gap-0.5'>
                                 {routes
