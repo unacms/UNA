@@ -9,7 +9,12 @@ const fs = require('fs');
 function copyCustomizationResources() {
     const customizationRoot = path.resolve(__dirname, '../../packages/app/customization');
     const resourcesSource = path.resolve(customizationRoot, 'resources/web');
-    const publicDest = path.resolve(__dirname, 'public');
+    const staticDest = path.resolve(__dirname, 'public/static');
+
+    // Создаем папку static
+    if (!fs.existsSync(staticDest)) {
+        fs.mkdirSync(staticDest, { recursive: true });
+    }
 
     if (fs.existsSync(resourcesSource)) {
         const files = fs.readdirSync(resourcesSource);
@@ -22,15 +27,13 @@ function copyCustomizationResources() {
             const stat = fs.statSync(sourcePath);
 
             if (stat.isFile()) {
-                // Копируем только в public/
-                fs.copyFileSync(sourcePath, path.join(publicDest, file));
+                // Копируем ТОЛЬКО в static/
+                fs.copyFileSync(sourcePath, path.join(staticDest, file));
                 copiedCount++;
             }
         });
 
-        console.log(`✓ Customization: ${copiedCount} files copied to public/`);
-    } else {
-        console.warn('⚠ Customization resources/web/ folder not found');
+        console.log(`✓ Customization: ${copiedCount} files copied to public/static/`);
     }
 }
 

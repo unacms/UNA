@@ -124,13 +124,14 @@ export async function generateMetadata(props) {
     const description = data?.data?.description || SITE_TITLE;
     const name = data?.data?.title || SITE_TITLE;
     const image = data?.data?.image;
-    
+    const isClientProject = UNA_URL != 'https://api.neo.so';
+
     return {
         title: name,
         description: description,
-        manifest: '/manifest.json',
+        manifest: isClientProject ? '/static/manifest.json' : '/manifest.json',
         icons: {
-            icon: '/favicon.ico',
+            icon: isClientProject ? '/static/favicon.ico' : '/favicon.ico',
         },
         other: {
             'mobile-web-app-capable': 'yes',
