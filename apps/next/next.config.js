@@ -2,8 +2,50 @@ const path = require('path'); // Импорт path
 const webpack = require('webpack');
 const { withExpo } = require('@expo/next-adapter')
 const merge = require('deepmerge');
+
+// Импортируем и выполняем копирование ресурсов
+const fs = require('fs');
+function copyCustomizationResources() {
+  const customizationRoot = path.resolve(__dirname, '../../packages/app/customization');
+  const resourcesSource = path.resolve(customizationRoot, 'resources/web');
+  const publicDest = path.resolve(__dirname, 'public');
+  const staticDest = path.resolve(publicDest, 'static');
+
+  // Создаем папку static если её нет
+  if (!fs.existsSync(staticDest)) {
+    fs.mkdirSync(staticDest, { recursive: true });
+  }
+
+  // Копируем все файлы из resources/web
+  if (fs.existsSync(resourcesSource)) {
+    const files = fs.readdirSync(resourcesSource);
+    let copiedCount = 0;
+    
+    files.forEach(file => {
+      // Пропускаем .bak файлы
+      if (file.endsWith('.bak')) return;
+      
+      const sourcePath = path.join(resourcesSource, file);
+      const stat = fs.statSync(sourcePath);
+      
+      if (stat.isFile()) {
+        // Копируем в оба места для совместимости
+        fs.copyFileSync(sourcePath, path.join(publicDest, file));
+        fs.copyFileSync(sourcePath, path.join(staticDest, file));
+        copiedCount++;
+      }
+    });
+    
+    console.log(`✓ Customization: ${copiedCount} files copied from resources/web/`);
+  } else {
+    console.warn('⚠ Customization resources/web/ folder not found');
+  }
+}
+
+// Вызываем копирование ПЕРЕД импортом конфига
+copyCustomizationResources();
+
 const nextConfigCustom = require('app/customization/config/next.config');
-//const MillionCompiler = require('@million/lint');
 
 
 /** @type {import('next').NextConfig} */
