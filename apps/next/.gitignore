@@ -36,3 +36,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# Customization resources (auto-generated from packages/app/customization/resources/web)
+/public/static/
