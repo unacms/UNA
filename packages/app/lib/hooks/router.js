@@ -22,5 +22,9 @@ export function goBack(navigation, router, callback) {
 }
 
 export function redirectTo(router, url) {
-    router.replace(url);
+    //router.replace(url);
+    router.replace({
+        pathname: '/tab0',
+        params: { url: url }
+    })
 }

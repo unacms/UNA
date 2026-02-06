@@ -422,29 +422,22 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
 
     const ContextSelector = getComponent('molecule', 'context_selector')
     const Badges = getComponent('molecule', 'badges')
-
     if (coverMode === 'none') {
-        return null
+        if (isWeb) return null
+       
+        return <>{appSetting('context_selector', 'show_always') ? <Row className={`${TABLET_MODE_FROM}:hidden items-center w-full h-14 px-2 `} >
+
+        <View className={`bg-card/70 h-14`}>
+            <ContextSelector data={context} mode="compact" />
+        </View></Row> : <></>}
+    </>
     }
 
     const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
     return (
         <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
-            {appSetting('context_selector', 'show_always') ? <Row className={`${TABLET_MODE_FROM}:hidden items-center w-full h-14 px-2 `} >
-
-                <View className={`${TABLET_MODE_FROM}:hidden `}>
-                    <View><ContextSelector data={context} mode="compact" /></View>
-                </View></Row> : <></>}
-            {!isMin && (
-                <CoverImage
-                    mode="cover"
-                    coverData={data?.cover}
-                    profileData={data.profile}
-                    allowEdit={bAllowEdit}
-                    allowSwitch={isAllowSwitch}
-                />
-            )}
+            
             <View
                 className={` ${appSetting(
                     'layout',

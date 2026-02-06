@@ -122,6 +122,7 @@ const TabScene = React.memo(({
     const scrollValue = useScrollValue();
     const NoContent = getComponent('molecule', 'no_content')
 
+    const routeData = route?.endpoint? route.data : [...route.data, ...route.sidebar.content]
     return (
         <>
             {(isProfileHeader && scrollValue > 500) && smallHeader}
@@ -130,7 +131,7 @@ const TabScene = React.memo(({
                 ListHeaderComponent={typeof ListHeaderComponent === 'function' ? ListHeaderComponent : ListHeaderComponent ? () => ListHeaderComponent : undefined}
 
                 index={route.index}
-                data={[...route.data, ...route.sidebar.content]}
+                data={routeData}
                 route={route}
                 unit={route.endpoint?.unit}
                 renderItem={renderItem}
@@ -443,8 +444,8 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
     }, [currentRoute.pageData]);
 
 
-
-    if (isProfileHeader) {
+    console.log("isProfileHeader", isProfileHeader)
+    if (true) {//isProfileHeader
         if (currentRoute?.pageData) {// may be need to fix
             Object.assign(tabSceneProps, {
 
