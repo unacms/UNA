@@ -206,6 +206,7 @@ export const Button = ({
     forwardedRef,
     tooltip = false,
     onPress,
+    onTouchStart,
     grouped,
     title = '',
     haptics,
@@ -245,6 +246,11 @@ export const Button = ({
         onPress?.(event);
     };
 
+     const handleTouchStart = (event) => {
+        if (onTouchStart) FeedbackHaptics(haptics);
+        onTouchStart?.(event);
+    };
+    
     const accessibleName = getAccessibleName(alt, tooltip, title, startDecorator, endDecorator);
     const refProps = forwardedRef ? { ref: forwardedRef } : {};
 
@@ -274,6 +280,7 @@ export const Button = ({
                 disabled={!isActive}
                 hitSlop={resolvedHitSlop}
                 onPress={handlePress}
+                onTouchStart={handleTouchStart}
                 {...refProps}
                 {...buttonAttributes}
             >
