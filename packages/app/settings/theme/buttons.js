@@ -123,7 +123,7 @@ export const settingsButtons = {
                 focused:'',
                 active:'',
                 pressed:'text-accent-foreground',
-                disabled:'text-secondary-foreground',
+                disabled:'',
             },
         },
         danger:{
@@ -165,7 +165,7 @@ export const settingsButtons = {
                 focused:'text-foreground',
                 active:'',
                 pressed:'text-accent-foreground',
-                disabled:'',
+                disabled:'text-secondary-foreground',
             }
         },
         ghost:{
