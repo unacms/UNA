@@ -65,7 +65,7 @@ export const settingsButtons = {
         },
         default:{
             container:{
-                base:'web:backdrop-blur shadow-border web:duration-200',
+                base:'web:backdrop-blur web:shadow-border web:duration-200',
                 default:'bg-card/60 border border-card  ',
                 active:'bg-card/60 border-border outline outline-ring web:scale-95 shadow-none',
                 pressed:'',
