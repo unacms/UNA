@@ -11,7 +11,6 @@ import { useRef, useEffect, useMemo } from 'react';
 import ConfirmEmail from 'app/ui/molecules/confirm_email'
 import PageByUrl from 'app/ui/molecules/page-by-url'
 import { registerAll } from 'app/components/registry-init';
-import RedirectElement from 'app/components/elements/redirect'
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
@@ -19,7 +18,7 @@ import { useWindowDimensions, Platform } from 'react-native';
 import { useSetWindowSize } from 'app/context/measure';
 import semver from 'semver';
 import { useTranslation } from 'react-i18next';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'app/ui/molecules/card'
+import { Card, CardHeader, CardTitle, CardContent } from 'app/ui/molecules/card'
 import AnimatedView from 'app/ui/atoms/animated-view';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 

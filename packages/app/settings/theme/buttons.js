@@ -139,7 +139,7 @@ export const settingsButtons = {
             },
             text:{
                 base:'font-medium text-danger-foreground',
-                default:'',
+                default:'text-white',
                 hovered:'',
                 focused:'',
                 active:'',

@@ -267,6 +267,31 @@ const PageNotFound = () => {
         </>
     )
 }
+
+const PageError = ({error, reset}) => {
+        const { t } = useTranslation()
+        return (
+            <View className="mx-auto max-w-full px-2">
+                <View className="m-8 gap-y-4 items-center justify-center mx-auto my-auto py-4 px-8 items-center rounded-2xl bg-muted ">
+                    <View className=" mx-auto m-4 text-muted-foreground ">
+                        <Icon icon="BugOff" width={32} height={32} />
+                    </View>
+                    <Text className="text-center text-lg text-foreground lg:text-xl font-semibold ">
+                        {t('We ran into a problem')}
+                    </Text>
+                    <Text className="text-center text-base text-muted-foreground ">
+                        {t('Something didn’t go as planned. Please try again or reload the page.')}
+                    </Text>
+                    <Text className="text-center text-sm text-muted-foreground ">
+                       {error.digest}{error.message}
+                    </Text>
+
+                     <Button onPress={() => reset()}  variant="default" title="Reload page"></Button>
+                </View>
+            </View>
+    )
+}
+
 const PageNotAllowed = () => {
     const { t } = useTranslation()
     return (
@@ -714,6 +739,7 @@ export const staticDefault = {
     logo: Logo,
     components_about: ComponentsAboutComponent,
     page_not_found: PageNotFound,
+    page_error: PageError,
     page_not_allowed: PageNotAllowed,
     components_comments_empty: ComponentsCommentsEmpty,
     components_content_empty: ComponentsContentEmpty,
