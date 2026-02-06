@@ -155,7 +155,7 @@ export const settingsButtons = {
                 pressed:'bg-accent',
                 hovered:'bg-muted/60',
                 focused:'bg-muted/60',
-                disabled:'',
+                disabled:'opacity-50',
 
             },
             text:{
