@@ -1,235 +1,318 @@
+import React, { useMemo, useCallback, memo } from 'react';
+import { Pressable, View, Row } from 'app/design/view'
+import { Text } from 'app/design/typography'
+import { Icon } from 'app/ui/atoms/icon'
+import { appSetting, isEmoji, FeedbackHaptics, cn } from 'app/lib/util'
+import Tooltip from 'app/ui/atoms/tooltip';
+import Loading from 'app/ui/atoms/loading'
+import { useIsDesktop } from 'app/context/measure';
 
+const BtnCls = appSetting('theme', 'button_styles');
+const BtnClsSize = appSetting('theme', 'button_sizes');
 
-export const settingsButtons = {
-    button_sizes: {
-        default_size: 'base',
-        default_variant: 'default', 
-        xs: {
-            rounded: 'rounded-md',
-            container: 'px-1.5 gap-1 h-6 min-w-6',
-            container_icon_only: 'h-6 w-6',
-            text: 'text-xs leading-6',
-            icon_size: 16,
-            hitSlop: 8,
-        },
-        sm: {
-            rounded: 'rounded-lg ',
-            container: 'px-2 gap-1 h-9 min-w-9 ',
-            container_icon_only: 'h-9 w-9',
-            text: 'text-sm leading-6',
-            icon_size: 20,
-            hitSlop: 6,
-        },
-        base: {
-            rounded: 'rounded-lg',
-            container: 'px-3 gap-2 h-10 min-w-10',
-            container_icon_only: 'h-10 w-10',
-            title_container: ' leading-10 text-base',
-            icon_size: 24,
-            hitSlop: 4,
-        },
-        lg: {
-            rounded: 'rounded-xl',
-            container: 'px-4 gap-2 h-12 min-w-12',
-            container_icon_only: 'h-12 w-12',
-            title_container: ' leading-12 text-base',
-            icon_size: 24,
-            hitSlop: 14,
-        },
-    },
-    button_styles: {
-        group:{
-            container: 'overflow-hidden border-[0.5px] items-center border-border/60',
-            separator: ' bg-border/60 w-px h-full',
-        },
-        primary:{
-            container:{
-                base:'shadow-xs web:duration-200',
-                default:'bg-primary',
-                active:'bg-accent',
-                pressed:'bg-accent',
-                hovered:'bg-primary/90 shadow-md',
-                focused:'bg-primary/80 outline outline-accent-foreground shadow-none',
-                disabled:'bg-primary opacity-50',
+const ICON_ACCESSIBLE_MAP = {
+    'X': 'Close',
+    'ChevronLeft': 'Previous',
+    'ChevronRight': 'Next',
+    'ChevronUp': 'Up',
+    'ChevronDown': 'Down',
+    'Plus': 'Add',
+    'Minus': 'Remove',
+    'Trash': 'Delete',
+    'Trash2': 'Delete',
+    'Edit': 'Edit',
+    'Edit2': 'Edit',
+    'Edit3': 'Edit',
+    'Search': 'Search',
+    'Menu': 'Menu',
+    'MoreVertical': 'More options',
+    'MoreHorizontal': 'More options',
+    'Heart': 'Like',
+    'Star': 'Favorite',
+    'Share': 'Share',
+    'Share2': 'Share',
+    'MessageCircle': 'Comment',
+    'MessageSquare': 'Messages',
+    'Send': 'Send',
+    'Bell': 'Notifications',
+    'Settings': 'Settings',
+    'Home': 'Home',
+    'User': 'Profile',
+    'UserRound': 'Login',
+    'LogIn': 'Login',
+    'LogOut': 'Logout',
+};
 
-            },
-            text:{
-                base:'font-medium text-primary-foreground',
-                default:'',
-                hovered:'',
-                focused:'',
-                active:'',
-                pressed:'',
-                disabled:'',
-            }
-        },
-        default:{
-            container:{
-                base:'web:backdrop-blur web:shadow-border web:duration-200',
-                default:'bg-card/60 border border-card  ',
-                active:'bg-card/60 border-border outline outline-ring web:scale-95 shadow-none',
-                pressed:'',
-                hovered:'bg-card',
-                focused:'border-border',
-                disabled:'opacity-50',
+const getAddon = (addon, isTitle) => {
+    if (!addon) return null;
 
-            },
-            text:{
-                base:'font-medium web:duration-200',
-                default:'text-secondary-foreground',
-                hovered:'text-foreground',
-                focused:'',
-                active:'text-foreground',
-                pressed:'',
-                disabled:'',
-            }
-        },
-        accent:{
-            container:{
-                base:'web:duration-200',
-                default:'bg-accent ',
-                active:'web:ring-2 web:ring-accent web:ring-offset-2 web:outline-none',
-                pressed:'',
-                hovered:'bg-accent/90',
-                focused:'',
-                disabled:'',
+    const isObj = typeof addon === 'object' && addon !== null;
+    const text = isObj ? addon.text : addon;
 
-            },
-            text:{
-                base:'font-medium text-accent-foreground',
-                default:'',
-                hovered:'',
-                focused:'',
-                active:'',
-                pressed:'',
-                disabled:'',
-            }
-        },
-        secondary:{
-            container:{
-                base:'web:duration-200',
-                default:'bg-secondary',
-                active:'',
-                pressed:'',
-                hovered:'bg-secondary/90',
-                focused:'bg-secondary',
-                disabled:'',
+    if (!text) return null;
+    if (isObj && addon.hideZero && text == '0') return null;
 
-            },
-            text:{
-                base:'font-medium',
-                default:'text-secondary-foreground',
-                hovered:'text-foreground',
-                focused:'',
-                active:'',
-                pressed:'',
-                disabled:'',
-            },
-        },
-        danger:{
-            container:{
-                base:'bg-red-600',
-                default:'',
-                active:'opacity-50 shadow-none',
-                pressed:'',
-                hovered:'bg-red-500 shadow',
-                focused:'',
-                disabled:'',
+    const bg = isObj && addon.variant === 'primary' ? 'bg-destructive' : 'bg-muted';
+    const pos = isObj && addon.position === 'bottom' ? 'bottom-0 -end-1' : '-top-2 -end-2';
 
-            },
-            text:{
-                base:'font-medium text-danger-foreground',
-                default:'',
-                hovered:'',
-                focused:'',
-                active:'',
-                pressed:'',
-                disabled:'',
-            }
-        },
-        text:{
-            container:{
-                base:'web:duration-200',
-                default:'',
-                active:'bg-muted',
-                pressed:'bg-accent',
-                hovered:'bg-muted/60',
-                focused:'bg-muted/60',
-                disabled:'',
+    if (!isTitle) {
+        return (
+            <View className={`absolute ${bg} border-2 border-card rounded-full px-1 min-w-6 min-h-6 items-center justify-center ${pos}`}>
+                <Text className="text-white text-xs font-semibold">{text}</Text>
+            </View>
+        );
+    }
 
-            },
-            text:{
-                base:'font-medium ',
-                default:'text-secondary-foreground',
-                hovered:'text-foreground',
-                focused:'text-foreground',
-                active:'',
-                pressed:'text-accent-foreground',
-                disabled:'',
-            }
-        },
-        ghost:{
-            container:{
-                base:'',
-                default:'',
-                active:'',
-                pressed:'',
-                hovered:'',
-                focused:'',
-                disabled:'',
+    return (
+        <View className="flex-1 items-end">
+            <View className={`${bg} rounded-full min-w-5 min-h-5 px-1.5 py-0.5 items-center`}>
+                <Text className="text-white text-xs font-semibold">{text}</Text>
+            </View>
+        </View>
+    );
+};
 
-            },
-            text:{
-                base:'font-medium text-secondary-foreground',
-                default:'',
-                hovered:'',
-                focused:'',
-                active:'',
-                pressed:'',
-                disabled:'',
-            }
-        },
-        link:{
-            container:{
-                base:'web:duration-200',
-                default:'',
-                active:'',
-                pressed:'',
-                hovered:'bg-accent/60',
-                focused:'',
-                disabled:'',
+const ButtonIcon = memo(({ icon, className, size }) => {
+    if (!icon) return null;
 
-            },
-            text:{
-                base:'font-medium text-accent-foreground',
-                default:'',
-                hovered:'',
-                focused:'',
-                active:'',
-                pressed:'',
-                disabled:'',
-            }
-        },
-        outline:{
-            container:{
-                base:'border border-border',
-                default:'',
-                active:'',
-                pressed:'',
-                hovered:'bg-accent/60',
-                focused:'',
-                disabled:'',
+    const renderOne = (one, key) => {
+        if (!one) return null;
+        if (one === "_loading") return <Loading key={key} size="small" />;
 
-            },
-            text:{
-                base:'font-medium ',
-                default:'text-card-foreground',
-                hovered:'text-foreground',
-                focused:'',
-                active:'',
-                pressed:'',
-                disabled:'',
-            }
+        if (React.isValidElement(one)) return <React.Fragment key={key}>{one}</React.Fragment>;
+
+        if (typeof one !== "string") return null;
+
+        if (isEmoji(one)) {
+            return (
+                <Text key={key} className={className}>
+                    {one}
+                </Text>
+            );
         }
-    },
+
+        return <Icon key={key} size={size} className={className} icon={one} />;
+    };
+
+    if (!Array.isArray(icon)) {
+        return renderOne(icon, "icon");
+    }
+
+    return icon.map((one, idx) => renderOne(one, idx));
+});
+
+const getAccessibleName = (alt, tooltip, title, startDecorator, endDecorator) => {
+    // Priority order: explicit alt > tooltip > title > icon name
+    if (alt) return alt;
+    if (tooltip && typeof tooltip === 'string') return tooltip;
+    if (title && typeof title === 'string') return title;
+
+    // For icon-only buttons, derive name from icon
+    const iconName = startDecorator || endDecorator;
+    if (iconName && !title) {
+        if (ICON_ACCESSIBLE_MAP[iconName]) return ICON_ACCESSIBLE_MAP[iconName];
+        // Fallback: convert CamelCase to readable text
+        return iconName.replace(/([A-Z])/g, ' $1').trim();
+    }
+
+    return undefined;
+};
+
+const getStateClasses = (active, pressed, hovered, focused, disabled, variant, type = 'container') => {
+    const classes = BtnCls[variant]?.[type];
+
+    if (disabled) return classes?.disabled || '';
+    if (pressed) return classes?.pressed || '';
+    if (hovered) return classes?.hovered || '';
+    if (active) return classes?.active || '';
+    if (focused) return classes?.focused || '';
+    return classes?.default || '';
+};
+
+const ButtonContent = React.memo(({
+    pressed = false,
+    hovered = false,
+    focused = false,
+    active = false,
+    className,
+    classTextName,
+    variant,
+    align,
+    size,
+    isIconOnly,
+    disabled,
+    startDecorator,
+    endDecorator,
+    isTitle,
+    title,
+    addon,
+    showTitleFromSize,
+    roundingClass,
+    children
+}) => {
+
+    const hasNoIcons = !startDecorator && !endDecorator;
+    const isTitleVisible = hasNoIcons || showTitleFromSize === '';
+    const breakpoint = showTitleFromSize || 'sm';
+    const titleVisibility = cn(!isTitleVisible && `hidden ${breakpoint}:block`);
+
+    const baseContainerClasses = cn(
+        roundingClass,
+        `button-${variant}-${size}`,
+        isIconOnly ? '' : 'overflow-hidden',
+        className,
+        BtnCls[variant]?.container?.base,
+            `justify-${align}`,
+        isIconOnly ? BtnClsSize[size]?.container_icon_only : BtnClsSize[size]?.container,
+    );
+
+    const baseTextClasses = cn(
+        'whitespace-nowrap text-ellipsis overflow-hidden',
+        classTextName,
+        BtnCls[variant]?.text?.base,
+        BtnClsSize[size]?.text,
+    );
+
+    const oButtonAddon = getAddon(addon, isTitle);
+
+    const stateContainer = getStateClasses(active, pressed, hovered, focused, disabled, variant, 'container');
+    const stateText = getStateClasses(active, pressed, hovered, focused, disabled, variant, 'text');
+    const containerClasses = `${baseContainerClasses} ${stateContainer}`;
+    const textClasses = `${baseTextClasses} ${stateText}`;
+
+
+    return (
+        <Row className={`items-center ${containerClasses}`}>
+            <ButtonIcon size={BtnClsSize[size]?.icon_size} icon={startDecorator} className={textClasses} />
+            {isTitle && (
+                <Text className={`${textClasses} ${titleVisibility}`} numberOfLines={1}>
+                    {title}
+                </Text>
+            )}
+            <ButtonIcon size={BtnClsSize[size]?.icon_size} icon={endDecorator} className={textClasses} />
+            {oButtonAddon && (
+                isTitle ? <View className="z-10">{oButtonAddon}</View> : <View className="absolute top-0 right-0 w-full h-full z-20 pointer-events-none" >{oButtonAddon}</View>
+            )}
+            {children}
+        </Row>
+    );
+});
+
+
+export const Button = ({
+    variant = BtnClsSize.default_variant,
+    size = BtnClsSize.default_size,
+    disabled = false,
+    forwardedRef,
+    tooltip = false,
+    onPress,
+    onTouchStart,
+    grouped,
+    title = '',
+    haptics,
+    className = '',
+    classTextName = '',
+    showTitleFromSize = '',
+    pressed = false,
+    startDecorator = '',
+    endDecorator = '',
+    align = 'center',
+    fullWidth = false,
+    addon = '',
+    rounded = false,
+    hitarea = true,
+    hitSlop,
+    alt,
+    role = 'button',
+    children,
+    solid = false,
+    padding,
+}) => {
+    const isTitle = !!title;
+    const isIcon = !!(startDecorator || endDecorator);
+    const isIconOnly = isIcon && !isTitle;
+    const isDesktop = useIsDesktop();
+    const isTooltip = isDesktop && tooltip;
+
+    const isActive = onPress && !disabled;
+
+    const flexClasses =
+        isIconOnly ? "flex-none" :
+            fullWidth ? "flex-auto web:w-full" :
+                isTitle ? "flex-none" : "w-fit";
+
+    const handlePress = (event) => {
+        if (haptics && onPress) FeedbackHaptics(haptics);
+        onPress?.(event);
+    };
+
+     const handleTouchStart = (event) => {
+        if (onTouchStart) FeedbackHaptics(haptics);
+        onTouchStart?.(event);
+    };
+    
+    const accessibleName = getAccessibleName(alt, tooltip, title, startDecorator, endDecorator);
+    const refProps = forwardedRef ? { ref: forwardedRef } : {};
+
+    const buttonAttributes =
+        isActive && accessibleName
+            ? { 'aria-label': accessibleName, alt: accessibleName, role }
+            : isActive
+                ? { role }
+                : {};
+
+    const resolvedHitSlop =
+        hitSlop !== undefined ? hitSlop :
+            hitarea === false ? undefined :
+                { top: BtnClsSize[size].hit_slop, right: BtnClsSize[size].hit_slop, bottom: BtnClsSize[size].hit_slop, left: BtnClsSize[size].hit_slop };
+
+    const hitareaClass = hitarea === false ? '' : `u-action-hitarea u-action-hitarea-${size}`;
+
+
+    const canRound = !grouped && variant !== 'link';
+    const roundingClass = !canRound ? '' :
+        rounded ? 'rounded-full' :
+            BtnClsSize[size]?.rounded ?? '';
+    return (
+        <Tooltip content={tooltip} enabled={isTooltip}>
+            <Pressable
+                className={`${flexClasses} ${hitareaClass} ${roundingClass}`}
+                disabled={!isActive}
+                hitSlop={resolvedHitSlop}
+                onPress={handlePress}
+                onTouchStart={handleTouchStart}
+                {...refProps}
+                {...buttonAttributes}
+            >
+                {(state) => <ButtonContent
+                    className={className}
+                    classTextName={classTextName}
+                    roundingClass={roundingClass}
+                    variant={variant}
+                    align={align}
+                    showTitleFromSize={showTitleFromSize}
+                    size={size}
+                    isIconOnly={isIconOnly}
+                    disabled={disabled}
+                    pressed={pressed}
+                    startDecorator={startDecorator}
+                    endDecorator={endDecorator}
+                    isTitle={isTitle}
+                    title={title}
+                    addon={addon}
+                    active={state?.pressed}
+                    hovered={state?.hovered}
+                    focused={state?.focused}
+                >
+                    {children}
+                </ButtonContent>}
+            </Pressable>
+        </Tooltip>
+    )
 }
+
+export const ButtonRef = React.forwardRef((props, forwardedRef) => {
+    return (
+        <Button {...props} forwardedRef={forwardedRef} />
+    );
+});
