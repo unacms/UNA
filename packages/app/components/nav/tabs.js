@@ -32,6 +32,7 @@ import { useLayoutSettings } from 'app/context/layout-settings';
 import { registerAll } from 'app/components/registry-init';
 import * as WebBrowser from 'expo-web-browser';
 import { getDomainFromUrl } from 'app/lib/util';
+import { useSound } from 'app/lib/hooks/useSound';
 
 enableScreens(appSetting('native', 'enable_screens'));
 
@@ -111,7 +112,7 @@ export default function Tabs() {
 
     registerAll();
 
-
+    const playClick = useSound('click');
     // useTranslation должен вызываться после всех других хуков, чтобы избежать проблем с порядком
     // если i18n не инициализирован, useTranslation может вызывать хуки условно
     const { t } = useTranslation();
@@ -333,6 +334,7 @@ export default function Tabs() {
                                                 }
 
                                             }
+                                            playClick();
                                             FeedbackHaptics('Medium');
                                         },
                                     }}

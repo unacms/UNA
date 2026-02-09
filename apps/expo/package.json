@@ -34,6 +34,7 @@
     "date-fns": "^2.30.0",
     "eslint": "^9.17.0",
     "expo": "^54.0.27",
+    "expo-audio": "^1.1.1",
     "expo-auth-session": "^7.0.8",
     "expo-blur": "~15.0.7",
     "expo-build-properties": "~1.0.9",

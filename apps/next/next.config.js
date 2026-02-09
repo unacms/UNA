@@ -112,6 +112,7 @@ const nextConfig = {
         'semver',
         'react-native-webview',
         'expo',
+        'expo-audio',
         'expo-image-picker',
         'expo-location',
         'expo-camera',
@@ -178,6 +179,11 @@ const nextConfig = {
                 }
             )
         );
+
+        config.module.rules.push({
+            test: /\.(mp3|wav)$/,
+            type: 'asset/resource',
+        });
 
         return config;
     },

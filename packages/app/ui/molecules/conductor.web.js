@@ -56,6 +56,7 @@ import Snackbar from 'app/ui/atoms/snackbar'
 import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
 import { getComponent } from 'app/components/registry';
 import { BlockByName2 } from 'app/components/block'
+import { useSound } from 'app/lib/hooks/useSound';
 
 const conductorTheme = appSetting('theme', 'conductor')
 
@@ -115,11 +116,12 @@ export function Conductor({
     }, [routes, useSectionAsMenu, data.url, cleanUrl])
 
     const initialIndex = useMemo(() => getFoundIndex(), [getFoundIndex])
-
+    const playClick = useSound('click');
     const [index, _setIndex] = useState(initialIndex)
     const [prevIndex, setPrevIndex] = useState(initialIndex)
 
     const setIndex = (newIndex) => {
+        playClick();
         setPrevIndex(index)
         _setIndex(newIndex)
     }
