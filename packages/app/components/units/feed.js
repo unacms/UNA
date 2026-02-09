@@ -71,7 +71,7 @@ function DefaultUnit({ data }) {
         const Unit = getComponent('content-list', data.module);
         const contentElement = data.content.data.map((item, index) => {
             return (
-                <View className="w-[280px]" key={`item${index}_row`}>
+                <View className="w-[320px] gap-x-4" key={`item${index}_row`}>
                     <Unit data={item} module={data.module} unitType={'context_recommendations'} />
                 </View>
             )
