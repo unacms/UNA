@@ -30,7 +30,7 @@ export const settingsInputs = {
         },
     },
     inputs: {
-        default: ' file:text-foreground text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground bg-input border border-border focus-visible:bg-card leading-6 focus-visible:border-ring focus-visible:outline-accent rounded-xl px-3 py-3 flex-auto text-base placeholder-muted-foreground text-foreground  web:duration-200 overflow-hidden',
+        default: ' file:text-foreground text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground bg-input/70 border border-border focus-visible:bg-card leading-6 focus-visible:border-ring focus-visible:outline-accent rounded-xl px-3 py-3 flex-auto text-base placeholder-muted-foreground text-foreground  web:duration-200 overflow-hidden',
        
         multi: 'file:text-foreground text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground bg-input border border-border focus-visible:bg-card leading-5 focus-visible:border-ring focus-visible:outline-accent rounded-xl px-3 py-2 min-h-12 flex-auto text-base placeholder-muted-foreground text-foreground  web:duration-200 overflow-hidden focus-visible:overflow-visible',
         rounded:

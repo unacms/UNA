@@ -45,7 +45,7 @@ function PageContent({data}) {
                             {t('splash_page_login')}
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="px-6">
+                    <CardContent className="px-4">
                         
                         <BlockByName
                             name="system:login_form"

@@ -37,7 +37,7 @@
         /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--white);
         /*content on destructive buttons, destructive surfaces*/
-        --border: var(--neutral-300);
+        --border: var(--neutral-200);
         /*borders, dividers, focus rings*/
         --input: var(--neutral-100);
         /*form inputs*/
@@ -65,12 +65,12 @@
         
 
         /* Box shadow variables for light mode - NativeWind compatible */
-        --shadow-xs: 0px 0.5px 1px 0px rgba(0, 0, 0, 0.1);
-        --shadow-sm: 0px 1px 3px 0px rgba(0, 0, 0, 0.05);
-        --shadow-md: 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
-        --shadow-lg: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
-        --shadow-xl: 0px 20px 25px -5px rgba(0, 0, 0, 0.1);
-        --shadow-2xl: 0px 25px 50px -10px rgba(0, 0, 0, 0.1);
+        --shadow-xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.08);
+        --shadow-sm: 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
+        --shadow-md: 0px 4px 8px 0px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0px 8px 16px 0px rgba(0, 0, 0, 0.08);
+        --shadow-xl: 0px 16px 32px 0px rgba(0, 0, 0, 0.08);
+        --shadow-2xl: 0px 32px 64px 0px rgba(0, 0, 0, 0.08);
 
         /* Shadow Border variables - Light Mode */
         --shadow-border-sm: 0px 0px 0px 1px rgba(0, 0, 0, 0.05), 0px 1px 1px -0.5px rgba(0, 0, 0, 0.06), 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
@@ -104,7 +104,7 @@
         /* #27272a */
         --neutral-900: 24 24 27;
         /* #18181b */
-        --neutral-950: 9 9 11;
+        --neutral-950: 12 12 14;
         /* #09090b */
 
         /* accent scale (blue) - Tailwind CSS blue-50 ... blue-950 */
@@ -197,7 +197,7 @@
         /*content on primary buttons, active states, primary surfaces*/
         --secondary: var(--neutral-800);
         /*background for secondary buttons, secondary surfaces*/
-        --secondary-foreground: var(--neutral-400);
+        --secondary-foreground: var(--neutral-300);
         /*content on secondary buttons, secondary surfaces*/
         --accent: var(--accent-950);
         /*background for accent buttons, accent surfaces*/
@@ -213,7 +213,7 @@
         /*content on destructive buttons, destructive surfaces*/
         --border: var(--neutral-800);
         /*borders, dividers, focus rings*/
-        --input: var(--neutral-950);
+        --input: var(--neutral-800);
         /*form inputs*/
         --ring: var(--accent-600);
         /*focus rings*/

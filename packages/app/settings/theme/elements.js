@@ -57,7 +57,7 @@ export const settingsElements = {
             ' text-foreground leading-none text-xl font-semibold leading-none tracking-tight',
         'u-card-description': ' text-secondary-foreground text-sm lg:text-base text-balance',
         'u-card-content': 'text-card-foreground ',
-        'u-card-footer': 'bg-background/40 border-t border-card p-4 flex text-base text-card-foreground gap-2',
+        'u-card-footer': 'bg-card border-t border-border/70 p-4 flex text-base text-card-foreground gap-2',
     },
     panels: {
         'u-panel-base': ' h-full flex-col ',

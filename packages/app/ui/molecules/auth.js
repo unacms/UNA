@@ -22,7 +22,7 @@ export default function AuthPanel({
 
     const { t } = useTranslation()
     return (
-        <View className="w-full gap-3 sm:gap-4 pt-3 sm:pt-4">
+        <View className="w-full gap-3 sm:gap-4 pt-3 px-2">
             {forgotPasswordLink && (
                 <Link
                     className="mx-auto"
@@ -75,40 +75,28 @@ export default function AuthPanel({
 
             {(showSeparator && (appSetting('auth', 'google') || appSetting('auth', 'github') || appSetting('auth', 'linkedin') || appSetting('auth', 'x') || appSetting('auth', 'passkey') || appSetting('auth', 'saml'))) && (
                 <View 
-                    className="flex-row items-center justify-center w-full mt-px"
+                    className="flex-row items-center justify-center w-full"
                     accessibilityRole="separator"
                     accessibilityLabel={t('splash_page_login3')}
                 >
-                    <View className="flex-col rounded overflow-hidden h-0.5 flex-1 w-full">
+                    
                     <View 
-                        className="flex-1 h-px w-full bg-black/5 dark:bg-black"
+                        className="flex-1 h-px w-full bg-border/70"
                         accessibilityElementsHidden={true}
                         importantForAccessibility="no"
                     />
-                    <View 
-                        className="flex-1 h-px w-full  bg-white dark:bg-white/5"
-                        accessibilityElementsHidden={true}
-                        importantForAccessibility="no"
-                    />
-                    </View>
                     <Text 
                         className="hidden px-2 pb-px rounded-full text-xs leading-none mt-px  text-muted-foreground "
                         accessibilityRole="text"
                     >
                         {t('splash_page_login3')}
                     </Text>
-                    <View className="flex-col rounded overflow-hidden h-0.5 flex-1 w-full">
                     <View 
-                        className="flex-1 h-px w-full bg-black/5 dark:bg-black"
+                        className="flex-1 h-px w-full bg-border/70"
                         accessibilityElementsHidden={true}
                         importantForAccessibility="no"
                     />
-                    <View 
-                        className="flex-1 h-px w-full  bg-white dark:bg-white/5"
-                        accessibilityElementsHidden={true}
-                        importantForAccessibility="no"
-                    />
-                    </View>
+                    
                 </View>
             )}
             <View 
