@@ -88,6 +88,8 @@ export default function (props) {
 }
 
 export function FormError({ errorText, errorLink }) {
+    if (!errorText)
+        return 
     const errorMessage = (
         <View className="items-start mr-auto mt-0.5">
             <View
