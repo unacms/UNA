@@ -364,7 +364,6 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
     useFocusEffect(
         useCallback(() => {
             if (isUseCurrentHeader) {
-                console.log('header1');
                 setHeader({ header: false });
             }
             else {
@@ -444,7 +443,6 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
     }, [currentRoute.pageData]);
 
 
-    console.log("isProfileHeader", isProfileHeader)
     if (true) {//isProfileHeader
         if (currentRoute?.pageData) {// may be need to fix
             Object.assign(tabSceneProps, {

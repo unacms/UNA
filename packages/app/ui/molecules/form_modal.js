@@ -5,6 +5,9 @@ import { ScrollView, View, Row } from 'app/design/view'
 import { useCallback } from 'react'
 import { Keyboard } from 'react-native'
 import { getComponent } from 'app/components/registry';
+import { Platform } from 'react-native'
+
+const isWeb = Platform.OS === 'web';
 
 export default function FormModal({ pageData, setPageData, modalView, url }) {
     const handleModalClose = useCallback(() => {
@@ -25,6 +28,7 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
                 onVisible={!!pageData}
                 title={`${authorData.content[0].data.author_data.display_name}'s post`}
                 padding=""
+                outerClickClose={isWeb}
                 usePadding={true}
             >
                 <Component url={url} isModal={true} layoutName={'post'} data={pageData} blocks={layoutBlocks} />
