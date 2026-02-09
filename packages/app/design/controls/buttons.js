@@ -234,7 +234,7 @@ export const Button = ({
     const isDesktop = useIsDesktop();
     const isTooltip = isDesktop && tooltip;
 
-    const isActive = onPress && !disabled;
+    const isActive = !!onPress && !disabled;
 
     const flexClasses =
         isIconOnly ? "flex-none" :
@@ -246,11 +246,11 @@ export const Button = ({
         onPress?.(event);
     };
 
-     const handleTouchStart = (event) => {
+    const handleTouchStart = (event) => {
         if (onTouchStart) FeedbackHaptics(haptics);
         onTouchStart?.(event);
     };
-    
+
     const accessibleName = getAccessibleName(alt, tooltip, title, startDecorator, endDecorator);
     const refProps = forwardedRef ? { ref: forwardedRef } : {};
 
@@ -273,42 +273,52 @@ export const Button = ({
     const roundingClass = !canRound ? '' :
         rounded ? 'rounded-full' :
             BtnClsSize[size]?.rounded ?? '';
+
+    const isPressable = !!(onPress || onTouchStart);
+    const Cnt = isPressable ? Pressable : View;
+
+    const renderContent = (state = {}) => (
+        <ButtonContent
+            className={className}
+            classTextName={classTextName}
+            roundingClass={roundingClass}
+            variant={variant}
+            align={align}
+            showTitleFromSize={showTitleFromSize}
+            size={size}
+            isIconOnly={isIconOnly}
+            disabled={disabled}
+            pressed={pressed}
+            startDecorator={startDecorator}
+            endDecorator={endDecorator}
+            isTitle={isTitle}
+            title={title}
+            addon={addon}
+            active={!!state.pressed}
+            hovered={!!state.hovered}
+            focused={!!state.focused}
+        >
+            {children}
+        </ButtonContent>
+    );
+
     return (
         <Tooltip content={tooltip} enabled={isTooltip}>
-            <Pressable
+            <Cnt
                 className={`${flexClasses} ${hitareaClass} ${roundingClass}`}
-                disabled={!isActive}
-                hitSlop={resolvedHitSlop}
-                onPress={handlePress}
-                onTouchStart={handleTouchStart}
+                {...(isPressable && {
+                    disabled: !isActive,
+                    hitSlop: resolvedHitSlop,
+                    ...(onTouchStart ? { onTouchStart: handleTouchStart } : {}),
+                    ...(onPress ? { onPress: handlePress } : {}),
+                })}
                 {...refProps}
                 {...buttonAttributes}
             >
-                {(state) => <ButtonContent
-                    className={className}
-                    classTextName={classTextName}
-                    roundingClass={roundingClass}
-                    variant={variant}
-                    align={align}
-                    showTitleFromSize={showTitleFromSize}
-                    size={size}
-                    isIconOnly={isIconOnly}
-                    disabled={disabled}
-                    pressed={pressed}
-                    startDecorator={startDecorator}
-                    endDecorator={endDecorator}
-                    isTitle={isTitle}
-                    title={title}
-                    addon={addon}
-                    active={state?.pressed}
-                    hovered={state?.hovered}
-                    focused={state?.focused}
-                >
-                    {children}
-                </ButtonContent>}
-            </Pressable>
+                {isPressable ? renderContent : renderContent()}
+            </Cnt>
         </Tooltip>
-    )
+    );
 }
 
 export const ButtonRef = React.forwardRef((props, forwardedRef) => {

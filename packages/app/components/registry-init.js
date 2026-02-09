@@ -11,7 +11,6 @@ import { componentsMap as ContentList } from "app/customization/units/content-li
 import { componentsMap as ProfileList} from "app/customization/units/profile-list/_map";
 import { skeletonsMap as Skeletons} from 'app/customization/skeletons/_map'
 
-console.log("Layouts", Layouts)
 export function registerAll() {
     if (!isInited()){
         for (const [name, Component] of Object.entries(FormFields)) {
