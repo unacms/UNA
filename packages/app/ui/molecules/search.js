@@ -7,8 +7,8 @@ import { Pressable, View, Row, ScrollView } from 'app/design/view'
 import {
     Button,
     ButtonRef,
-    InputRef,
-    InputRoundedRef,
+    Input,
+    Input,
     Modal,
 } from 'app/design/controls'
 import Redirect from 'app/ui/atoms/redirect'
@@ -287,7 +287,8 @@ export function ElementSearchData(oProps) {
                         setPopupContent(false)
                     }}
                     trigger={
-                        <InputRoundedRef
+                        <Input
+                            rounded="full"
                             name="search"
                             placeholder={t('Search') + '...'}
                             onKeyPress={(event) => handleKeyPress(event)}

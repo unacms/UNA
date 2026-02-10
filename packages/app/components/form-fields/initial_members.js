@@ -5,7 +5,7 @@ import { useState, useRef, useEffect, useCallback, useContext, useReducer } from
 import { useController, useFormContext } from 'react-hook-form';
 import { fetcher } from 'app/lib/fetcher';
 import Profile from 'app/ui/molecules/profile'
-import { Button, InputRounded, Modal } from 'app/design/controls'
+import { Button, Input, Modal } from 'app/design/controls'
 import Loading from 'app/ui/atoms/loading'
 import { Icon } from 'app/ui/atoms/icon'
 import { useTranslation } from 'react-i18next';
@@ -99,7 +99,8 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
                 {state.selectedUsers && state.selectedUsers.map((item) => <User key={item.id} data={item} onSelect={onRemove} />)}
             </Row>
             <Row className="pb-4 gap-2">
-                <InputRounded
+                <Input
+                    rounded="full"
                     placeholder={"Select users..."}
                     className="px-2 mr-2  w-full"
                     onChangeText={onChangeText}

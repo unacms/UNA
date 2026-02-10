@@ -30,14 +30,16 @@ export const settingsInputs = {
         },
     },
     inputs: {
-        default: ' file:text-foreground text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground bg-input/70 border border-border focus-visible:bg-card leading-6 focus-visible:border-ring focus-visible:outline-accent rounded-xl px-3 py-3 flex-auto text-base placeholder-muted-foreground text-foreground  web:duration-200 overflow-hidden',
-       
-        multi: 'file:text-foreground text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground bg-input border border-border focus-visible:bg-card leading-5 focus-visible:border-ring focus-visible:outline-accent rounded-xl px-3 py-2 min-h-12 flex-auto text-base placeholder-muted-foreground text-foreground  web:duration-200 overflow-hidden focus-visible:overflow-visible',
-        rounded:
-            ' border border-border/60 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/80 rounded-full web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
-        roundedsmall:
-            ' rounded-full border/50 focus:border-border web:border-0 web:ring-1 web:ring-inset web:ring-border/80 px-2 min-h-10 flex-auto  text-base leading-5 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
-        small: ' border border-border rounded-lg web:focus:bg-card px-2 min-h-10 flex-auto  text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
+        rounded:{
+            default: 'rounded-lg',
+            full: 'rounded-full',
+        },
+        size:{
+            default: 'p-3',
+            small: 'px-2 min-h-10',
+        },
+        base: 
+        'text-foreground placeholder:text-muted-foreground bg-input/70 border border-border leading-6 rounded-xl flex-auto text-base placeholder-muted-foreground text-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-card web:focus-visible:border-ring web:focus-visible:outline-accent web:overflow-hidden',
         select: ' pr-10 border border-border rounded-xl bg-input web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
     },
     switcher: {

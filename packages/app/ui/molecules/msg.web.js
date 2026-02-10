@@ -1,6 +1,6 @@
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import { Button, Input, InputRounded, Modal } from 'app/design/controls';
+import { Button, Modal } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 
 import { useState } from 'react';

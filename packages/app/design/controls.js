@@ -4,13 +4,9 @@ export { ButtonsGroup } from 'app/design/controls/button_groups';
 
 export { 
     Input,
-    InputRef,
     InputMulti,
-    InputRounded,
-    InputRoundedRef,
-    InputRoundedSmall,
-    InputSmall,
     TextInputClear,
+    InputWithIcons,
     Hidden,
     PickerStyled,
     PickerStyledRef,

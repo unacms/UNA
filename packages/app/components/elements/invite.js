@@ -1,6 +1,6 @@
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import { Button, Input, InputRounded, Modal } from 'app/design/controls';
+import { Button, Input, Modal } from 'app/design/controls';
 import { fetcher } from 'app/lib/fetcher';
 import { useState } from 'react';
 import { setClipboard } from 'app/lib/util'

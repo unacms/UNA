@@ -4,7 +4,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { memo, useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { appSetting } from 'app/lib/util'
 import UniList from 'app/ui/atoms/unilist'
-import { Button, InputRoundedSmall } from 'app/design/controls'
+import { Button, Input } from 'app/design/controls'
 import Form from 'app/components/elements/form';
 import { Platform } from 'react-native'
 //import use-SWR from "swr";
@@ -514,7 +514,7 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
         handleSearch('')
     }
 
-    const srch = <InputRoundedSmall name="search" placeholder={("Search") + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
+    const srch = <Input rounded="full" size="small" name="search" placeholder={("Search") + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
 
     const header = <Row className=' bg-card px-3 gap-2 web:border-b border-border/60 gap-x-3 h-16'>
         <View className='flex-auto hidden lg:flex'>

@@ -1,6 +1,6 @@
 import Field from './_field';
 import { Text } from 'app/design/typography'
-import { InputRef, Input } from 'app/design/controls'
+import { Input } from 'app/design/controls'
 import { useState, } from 'react';
 import { useFormContext, useController } from 'react-hook-form';
 import { appSetting } from 'app/lib/util'
@@ -93,7 +93,7 @@ export default function FormFieldLocation({ name, value, onChange, ...props }) {
         <Field classes="z-50 @container/input-lr " {...props}>
             <View className="@sm/input-lr:flex-row w-full gap-y-2">
                 <View className="w-full @sm/input-lr:w-3/6">
-                <InputRef
+                <Input
                 placeholder="Start typing your address"
                 value={term}
                 onChangeText={text => {
@@ -103,7 +103,7 @@ export default function FormFieldLocation({ name, value, onChange, ...props }) {
             />
             </View>
              <View className="w-full @sm/input-lr:w-2/6">
-                <InputRef
+                <Input
                     placeholder='Radius, in Km'
                     onChangeText={setRadius}
                 />

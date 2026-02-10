@@ -1,6 +1,6 @@
 import Field from './_field';
 import { Text } from 'app/design/typography'
-import { InputRef } from 'app/design/controls'
+import { Input } from 'app/design/controls'
 import { useState, } from 'react';
 import { useFormContext, useController } from 'react-hook-form';
 import { appSetting } from 'app/lib/util'
@@ -110,7 +110,7 @@ export default function FormFieldLocation({ name, value, onChange, ...props }) {
 
     return (
         <Field classes="z-50" {...props}>
-            <InputRef
+            <Input
                 placeholder="Start typing your address"
                 value={term}
                 onChangeText={text => {

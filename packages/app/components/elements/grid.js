@@ -11,7 +11,7 @@ import React, { useEffect, useState, useMemo, useCallback, useRef, useReducer } 
 import { Theme } from 'app/design/theme';
 import Switch from 'app/ui/atoms/switcher'
 import CheckBox from 'app/ui/atoms/checkbox';
-import { InputSmall } from 'app/design/controls'
+import { Input } from 'app/design/controls'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useTranslation } from 'react-i18next';
 import { stripTags } from 'app/lib/util';
@@ -500,7 +500,7 @@ export default function ElementGrid(props) {
                         </DropdownMenu>
                     }
                     {settings.filters?.search &&
-                        <InputSmall placeholder={t('Search')} name="search" onChangeText={(value) => handleSearch(value)} />
+                        <Input size="small" placeholder={t('Search')} name="search" onChangeText={(value) => handleSearch(value)} />
                     }
                 </Row>
             }
