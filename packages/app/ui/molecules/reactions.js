@@ -24,6 +24,7 @@ import Tooltip from 'app/ui/molecules/tooltip';
 import { isEmoji } from 'app/lib/util';
 import { useWindowSize } from 'app/context/measure';
 import { RemoveScroll } from 'react-remove-scroll';
+import { useSound } from 'app/lib/hooks/useSound';
 
 const getName = (sType, sSystem, sObjectId, sName) => {
     let aName = [sType, sSystem.replace(/_/g, '-'), sObjectId];
@@ -290,7 +291,6 @@ export default function ElementReactions(oProps) {
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both') && !!oCounter && !!oCounter?.items;
     const bShowFull = bShowAction && bShowCounter;
     const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true;
-    const settings = appSetting('feed', 'actions_menu');
 
     const oButtonProps = {
         variant: oProps?.primary ? 'primary' : oProps.params?.button_variant,
@@ -302,7 +302,7 @@ export default function ElementReactions(oProps) {
     };
 
     const [actionsDataState, setActionsDataState] = useState({});
-
+    const playSound = useSound('success');
     const [performedBy, setPerformedBy] = useState();
 
     const [popupVisibleByCpd, setPopupVisibleByCpd] = useState(false);
@@ -318,8 +318,43 @@ export default function ElementReactions(oProps) {
 
     const _getIconAlias = useCallback((sName) => getIconAlias(oParams, oAliases, sName), [oParams, oAliases]);
     const _performAction = useCallback((sAction, aParams, onLoad) => performAction(oProps.system, oProps.object_id, sAction, aParams, onLoad), [oProps.system, oProps.object_id]);
-    const _handleDo = useCallback((sReaction, event) => handleDo(_performAction, actionsDataState, setActionsDataState, sReaction, oParams, event), [_performAction, actionsDataState, setActionsDataState, oParams]);
-    const _handleUndo = useCallback((event) => handleUndo(_performAction, actionsDataState, setActionsDataState, oProps.action.reaction, event), [_performAction, actionsDataState, setActionsDataState, oProps.action.reaction]);
+    const _handleDo = useCallback(
+        (sReaction, event) => {
+            handleDo(
+                _performAction,
+                actionsDataState,
+                setActionsDataState,
+                sReaction,
+                oParams,
+                event
+            );
+
+
+            playSound();
+        },
+        [_performAction, actionsDataState, setActionsDataState, oParams]
+    );
+    const _handleUndo = useCallback(
+        (event) => {
+            handleUndo(
+                _performAction,
+                actionsDataState,
+                setActionsDataState,
+                oProps.action.reaction,
+                event
+            );
+
+
+            playSound();
+        },
+        [
+            _performAction,
+            actionsDataState,
+            setActionsDataState,
+            oProps.action.reaction,
+        ]
+    );
+
     const _handleGetPerformedByCpd = useCallback((event) => handleGetPerformedByCpd(_performAction, setPerformedBy, setTabVisibleByCpd, setPopupVisibleByCpd, bAllowViewVoted, oParams.haptics_type, event), [_performAction, setPerformedBy, setTabVisibleByCpd, setPopupVisibleByCpd, bAllowViewVoted, oParams.haptics_type]);
     const _handleGetPerformedByDvd = useCallback((sReaction, event) => handleGetPerformedByDvd(_performAction, setPerformedBy, setPopupVisibleByDvd, bAllowViewVoted, oParams.haptics_type, sReaction, event), [_performAction, setPerformedBy, setPopupVisibleByDvd, bAllowViewVoted, oParams.haptics_type]);
 
@@ -496,8 +531,8 @@ const ReactionPopover = ({
 
         buttonRef.current.measureInWindow((x, y, width, height) => {
             const popupHeight = 60;
-            const popoverWidth = 300; 
-            const padding = 10; 
+            const popoverWidth = 300;
+            const padding = 10;
             let actY = isWeb ? y : y - 20;
             if (actY + popupHeight >= windowHeight - 64) {
                 actY = y - popupHeight - height

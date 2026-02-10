@@ -1,5 +1,5 @@
 import Link from 'app/ui/atoms/link';
-import { View, Row } from 'app/design/view'
+import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user';
@@ -9,6 +9,8 @@ import { getFriendsCounter } from 'app/customization/functions';
 import { Icon } from 'app/ui/atoms/icon'
 import { useTranslation } from 'react-i18next';
 import { useFooter } from 'app/context/jotai/layout';
+import { useCallback } from 'react';
+import { useSound } from 'app/lib/hooks/useSound';
 
 function isInStandaloneMode() {
     if (window.navigator.standalone) {
@@ -27,6 +29,7 @@ export default function () {
     const iFrCounter = getFriendsCounter(currentUser);
     let pathname = usePathname()
     const footer = useFooter();
+    
 
     if (!currentUser && !appSetting('layout', 'show_tabbar_on_mobile_non_logged')|| !footer)
         return null
@@ -42,6 +45,7 @@ export default function () {
     if (pathname == '/')
         pathname = '/home';
 
+   
     return (
         <View
             className={
@@ -64,6 +68,7 @@ export default function () {
 
 function MenuBottomItem({ link, title, index, badge, icon, isActive, profile, iFrCounter, notifCount }) {
     const { currentUser } = useCurrentUser();
+    const playSound = useSound('click');
     const badgeObj = [
         {
             condition: (link === appSetting('notifications', 'url') || badge == 'notifications') && notifCount > 0, //to remove in 11.25 link === appSetting('notifications', 'url')
@@ -79,12 +84,18 @@ function MenuBottomItem({ link, title, index, badge, icon, isActive, profile, iF
         }
     ].find(item => item.condition)?.value || null;
 
+    const handlePress = useCallback(() => {
+           playSound();
+    }, []);
+
+
     return (
             <Link
                 href={link}
                 noprefetch={link === appSetting('notifications', 'url') ? "false" : "true"}
                 className="w-full"
                 alt={title}
+                 onClick={handlePress}
             >
                 <View className={`justify-between my-auto items-center rounded-xl p-1.5 text-center gap-1 web:hover:bg-muted/60 justify-center ${isActive && 'bg-accent/10'}`}>
                     <Text className={`${isActive ? 'text-label-link' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>
@@ -93,6 +104,7 @@ function MenuBottomItem({ link, title, index, badge, icon, isActive, profile, iF
                     {<Text className={` web:group-hover:text-label-linkhover text-xs tracking-tight leading-none font-medium whitespace-nowrap ${isActive ? 'text-label-link' : 'text-muted-foreground web:group-hover:text-foreground'}`}>{title}</Text>}
                     {badgeObj && <View className={`absolute bg-destructive border-2 border-card rounded-full px-1.5 min-w-6 items-center justify-center  -top-1 left-1/2 -translate-x-1/2 ml-4`}><Text className="text-white text-xs font-medium tracking-tight leading-5 ">{badgeObj.text}</Text></View>}
                 </View>
+                
             </Link>
     );
 }

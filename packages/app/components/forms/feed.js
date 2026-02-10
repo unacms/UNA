@@ -15,6 +15,7 @@ import ProfileSwitcher from 'app/components/elements/profile_switcher'
 import emitter from 'app/context/emitter';
 import { Icon } from 'app/ui/atoms/icon'
 import { Text } from 'app/design/typography';
+import { useSound } from 'app/lib/hooks/useSound';
 
 export default function FormFeed({ data, handleSubmit, exProps, name, response }) {
     const formContext = useFormContext()
@@ -33,6 +34,8 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
 
     const hasText = useMemo(() => stripTags(rawEditorText || '').trim().length > 0, [rawEditorText]);
 
+    const playSound = useSound('success');
+
     function onClose() {
         setShowImage(false)
         exProps?.onClose?.();
@@ -40,6 +43,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
 
     useEffect(() => {
         if (response?.id && response?.id != responseId) {
+            playSound();
             emitter.emit('feed', { action: 'new_content', data: response });
             onClose();
             setResponseId(response?.id)

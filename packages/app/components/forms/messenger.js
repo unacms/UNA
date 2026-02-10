@@ -5,7 +5,6 @@ import { Platform } from 'react-native'
 import { useFormContext } from 'react-hook-form';
 import { FileButton } from 'app/lib/form-helpers';
 
-
 export default function FormMessenger(props) {
     const isWeb = Platform.OS == 'web';
     const initialHeight = 40; // Single line height, grows immediately on second line
@@ -24,7 +23,7 @@ export default function FormMessenger(props) {
         setIsFocused(false)
     }
 
- 
+
 
     if (typeof props.data.inputs['send'] !== 'undefined')
         props.data.inputs['submit'].icon = 'SendHorizontal';
@@ -58,12 +57,14 @@ export default function FormMessenger(props) {
                 {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cf'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['payload'], props.handleSubmit, 'custom')}
-                {getFormFieldByData(props.data.inputs['message'], props.handleSubmit, 'custom', { autofocus: false, form_name: props.name, container_class: 'comments', classes: "flex-1 my-0.5", focus: true, bg: 'transparent', submitOnEnter: true, 
-                    noPadding: true, 
-                    placeholder: 'Message ...',   
+                {getFormFieldByData(props.data.inputs['message'], props.handleSubmit, 'custom', {
+                    autofocus: false, form_name: props.name, container_class: 'comments', classes: "flex-1 my-0.5", focus: true, bg: 'transparent', submitOnEnter: true,
+                    noPadding: true,
+                    placeholder: 'Message ...',
                     initialHeight: 20,
                     maxHeight: 160,
-                    onFocus: setIsFocus, onBlur: setIsBlur })}
+                    onFocus: setIsFocus, onBlur: setIsBlur
+                })}
                 {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['message_id'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['send'], props.handleSubmit, 'custom')}

@@ -25,19 +25,21 @@ const useDaemon = (url, isLoadOnInit = false, isActive = true, pollingInterval =
 
     useEffect(() => {
         // If isLoadOnInit is true, fetch data immediately on mount
-        if (isLoadOnInit && url && isActive) {
-            fetchData();
-        } else {
-            // If isLoadOnInit is false, just start the timeout for the first call
-            timeoutId.current = setTimeout(fetchData, pollingInterval);
-        }
-
-        // Cleanup function to clear the timeout when component unmounts or url changes
-        return () => {
-            if (timeoutId.current) {
-                clearTimeout(timeoutId.current);
+        if (isActive) {
+            if (isLoadOnInit && url) {
+                fetchData();
+            } else {
+                // If isLoadOnInit is false, just start the timeout for the first call
+                timeoutId.current = setTimeout(fetchData, pollingInterval);
             }
-        };
+
+            // Cleanup function to clear the timeout when component unmounts or url changes
+            return () => {
+                if (timeoutId.current) {
+                    clearTimeout(timeoutId.current);
+                }
+            };
+        }
     }, [url, pollingInterval, isActive]);  // Re-run effect when url or pollingInterval changes
 
     useEffect(() => {

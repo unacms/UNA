@@ -9,6 +9,7 @@ import Profile from 'app/ui/molecules/profile'
 import { FileButton } from 'app/lib/form-helpers'
 import { useWindowHeight, useIsDesktop } from 'app/context/measure';
 import emitter from 'app/context/emitter';
+import { useSound } from 'app/lib/hooks/useSound';
 
 export default function FormComments(props) {
     const isWeb = Platform.OS == 'web'
@@ -36,8 +37,11 @@ export default function FormComments(props) {
         // setIsExImage(false)
     }
 
+    const playSound = useSound('success');
+
     useEffect(() => {
         if (formContext.formState.isSubmitted) {
+            playSound();
             formContext.setValue('cmt_text', '');
             emitter.emit(`fld_files_cmt_image`, { action: 'clear' })
         }
