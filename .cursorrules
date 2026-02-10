@@ -20,7 +20,7 @@ NEO is a React Native/Next.js cross-platform application with:
 
 ### 3. Routing Architecture
 - **Native**: Expo Router with file-based routing (`apps/expo/app/`)
-- **Web**: Next.js 15 App Router (`apps/next/app/`)
+- **Web**: Next.js App Router (`apps/next/app/`)
 
 ### 4. UNA CMS API Integration
 - **Backend**: API endpoints provided by UNA CMS
@@ -41,19 +41,8 @@ import { fetcher } from 'app/lib/fetcher';
 - Menu filtering should follow established patterns in `packages/app/lib/util.js`
 - Check both logged/nonlogged state handling for consistency
 
-### 6. Icon System Standards
-- **Web icons**: Must check both `SvgIcons` AND `IconSet` before server fetch
-- **Native icons**: Should follow same resolution order
-- **Standard resolution order**: `SvgIcons` → `IconSet` → XML fallback → Server fetch
-- **Never** add server fetch for standard Lucide icons
-
 ## Code Quality Guidelines
 
-### File Organization
-- **Components**: `packages/app/components/` (kebab-case preferred)
-- **UI atoms/molecules**: `packages/app/ui/` (snake_case legacy, but be consistent within directories)
-- **Business logic**: `packages/app/lib/`
-- **Design system**: `packages/app/design/`
 
 ### Naming Conventions
 - **Components**: PascalCase for React components

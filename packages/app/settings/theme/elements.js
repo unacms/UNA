@@ -7,7 +7,7 @@ export const settingsElements = {
         content_max_width: ' w-full max-w-7xl ',
         content_max_width_nav: ' w-full max-w-screen-2xl xl:border-x-0 xl:border-guide/20 border-dashed  ',
         menu_is_dynamic: false,
-        menu_cnt: ' flex-row flex-none gap-1 ps-3 sm:ps-4 h-14 items-center overflow-x-auto ',
+        menu_cnt: ' flex-row flex-none gap-1 px-3 sm:px-4 h-14 items-center overflow-x-auto ',
         menu_categ_indent: ' pl-12 ',
         topmenu_cnt:
             'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
@@ -68,21 +68,21 @@ export const settingsElements = {
     },
     blocks: {
         'u-block-base':
-            'u-max-width-block sm:rounded-xl ',
+            'u-max-width-block sm:rounded-2xl text-card-foreground',
         'u-block-bg':
-            'bg-card/80 web:shadow-border text-card-foreground overflow-hidden ',
+            'bg-card ',
         'u-block-pad':
-            'p-2 @xl/block:p-2',
+            'p-2 @xl/block:p-4',
         'u-block-header':
-            ' flex-row items-center gap-2 py-1.5 px-2 ',
-        'u-block-icon': 'text-card-foreground',
-        'u-block-name': 'flex flex-col flex-auto gap-y-2 gap-x-4 ',
+            ' flex-row items-center gap-4 p-2',
+        'u-block-icon': 'mb-auto',
+        'u-block-name': 'flex flex-col flex-auto gap-2 ',
         'u-block-title':
             'text-muted-foreground leading-none text-base font-semibold tracking-tight',
         'u-block-description': 'text-muted-foreground text-sm font-medium leading-6',
-        'u-block-content': 'text-card-foreground  ',  
+        'u-block-content': ' ',  
         'u-block-footer':
-            'flex text-card-foreground gap-4 ',
+            'flex text-card-foreground gap-4 pt-3',
         'u-block-actions':
             'flex flex-row text-card-foreground mb-auto gap-2 ',
     },

@@ -45,7 +45,7 @@ export const settingsElements = {
         show_nav_titles: false, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
         sidebar_container: '  h-full px-4 ',
-        sidebar_inner_container: ' p-2 overflow-y-auto flex flex-col bg-card/70 shadow-border rounded-xl ',
+        sidebar_inner_container: ' p-2 overflow-y-auto flex flex-col bg-card rounded-xl ',
         sidebar_title: 'sticky z-10 justify-between items-center h-12 p-2 mb-0.5 z-10',
         sidebar_position: ' z-50 fixed fixed-process ',
         bgrDecorator: true, // Enable/disable decorator background globally for conductor buttons

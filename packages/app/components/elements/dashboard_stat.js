@@ -123,24 +123,24 @@ export default function DashboardStat(props) {
                                 {...currentUser}
                                 url_avatar={currentUser.avatar}
                                 displayType="unit_wo_info"
-                                displaySize="xl"
+                                displaySize="2xl"
                             />
                         </BlockIcon>
                         <BlockName>
                             <BlockTitle>
-                                <Text>{currentUser.display_name}</Text>
+                                <Text className="text-card-foreground text-xl font-semibold">{currentUser.display_name}</Text>
                             </BlockTitle>
                             <BlockDescription>
-                                <View>
+                                
                                     <Badge
-                                        variant="default"
+                                        variant="secondary"
                                         data={{
                                             text: currentUser.membership_name,
                                             icon: currentUser.membership_icon,
                                             icon_url: currentUser.membership_icon_url
                                         }}
                                     />
-                                </View>
+                                
                             </BlockDescription>
                         </BlockName>
                         <BlockActions>
@@ -155,9 +155,9 @@ export default function DashboardStat(props) {
 
                         </BlockActions>
                     </BlockHeader>
-                    <BlockContent>
+                    <BlockContent className="p-2">
                         <ElementDashboardStat {...props} />
-                        <View className={`flex-row flex-wrap ${cd('gap-sm')} mt-4`}>
+                        <View className="flex-row flex-wrap gap-2 mt-4">
                             {langs.length > 1 && (
                                 <View className="w-full max-w-sm flex-1 min-w-[160px]">
                                     <DropdownMenu
@@ -278,10 +278,10 @@ export default function DashboardStat(props) {
                             )}
                         </View>
                     </BlockContent>
-                    <BlockFooter>
+                    <BlockFooter className="p-2">
                         <Link href="/logout">
                         <Button 
-                            variant="outline"
+                            variant="secondary"
                             title={t('Sign out')}
                             startDecorator="LogOut"
                             fullWidth
@@ -351,15 +351,14 @@ function ElementDashboardStat(props) {
                             return (
 
                                 <View
-                                    className=" p-3 lg:p-4 bg-secondary/80 web:hover:bg-secondary rounded-2xl w-full gap-3 flex-1  min-w-48 lg:min-w-64"
+                                    className="px-4 py-3 bg-secondary rounded-xl w-full gap-2 flex-1 min-w-48 lg:min-w-64"
                                     key={index}
                                 ><Link href={item.url.replace("{profile_url_postfix}", currentUser?.url.replace('/view-persons-profile/', ''))}>
-                                        <View className="flex-row w-full h-10 justify-between items-center text-card-foreground ">
+                                        <View className="flex-row w-full h-10 justify-between items-center text-secondary-foreground ">
                                             <Icon
                                                 icon={item.icon}
                                                 width={32}
                                                 height={32}
-
                                             />
 
                                             {item.count > 0 ? (
@@ -414,7 +413,7 @@ function ElementDashboardStat(props) {
                         return (
 
                             <View
-                                className="p-3 lg:p-4 bg-secondary/80 web:hover:bg-secondary rounded-2xl w-full flex-1 min-w-48 lg:min-w-64"
+                                className="px-4 py-3 bg-secondary border border-border rounded-xl w-full flex-1 min-w-48 lg:min-w-64"
                                 key={index}
                             ><Link href={item.url} >
                                     <View className="flex-row w-full h-10 justify-between items-center text-card-foreground">

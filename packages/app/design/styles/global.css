@@ -4,13 +4,14 @@
 
 @layer base {
     .light-theme-vars {
+        --default: var(--neutral-200);
         /*semantic colors*/
         --background: var(--neutral-100);
-        /*main page background*/
+        /*background*/
         --foreground: var(--neutral-950);
         /*main page content*/
         --card: var(--white);
-        /*cards, sidebars, navbars background*/
+        /*surface*/
         --card-foreground: var(--neutral-950);
         /*content on cards, sidebars, navbars*/
         --popover: var(--white);
@@ -22,10 +23,10 @@
         --primary-foreground: var(--white);
         /*priamry content, links, foreground elements*/
         --secondary: var(--neutral-200);
-        /*background for secondary buttons, secondary surfaces*/
+        /*secondary surfaces*/
         --secondary-foreground: var(--neutral-600);
         /*content on secondary buttons, secondary surfaces*/
-        --muted: var(--neutral-200);
+        --muted: var(--neutral-300);
         /*background for ui items, sections, hover states*/
         --muted-foreground: var(--neutral-500);
         /*muted content*/
@@ -86,11 +87,11 @@
         --neutral: 113 113 122;
         --neutral-50: 248 248 250;
         /* #fafafa */
-        --neutral-100: 244 244 247;
+        --neutral-100: 242 242 244;
         /* #f4f4f5 */
-        --neutral-200: 228 228 231;
+        --neutral-200: 232 232 234;
         /* #e4e4e7 */
-        --neutral-300: 212 212 216;
+        --neutral-300: 212 212 214;
         /* #d4d4d8 */
         --neutral-400: 161 161 170;
         /* #a1a1aa */
@@ -177,6 +178,7 @@
 
 
     .dark-theme-vars {
+        --default: var(--neutral-800);
         /*semantic colors - Dark mode*/
 
         --background: var(--neutral-950);
@@ -184,7 +186,7 @@
         --foreground: var(--neutral-50);
         /*main page content*/
         --card: var(--neutral-900);
-        /*cards, sidebars, navbars background*/
+        /*surface*/
         --card-foreground: var(--neutral-300);
         /*content on cards, sidebars, navbars*/
         --popover: var(--neutral-800);
@@ -197,13 +199,13 @@
         /*content on primary buttons, active states, primary surfaces*/
         --secondary: var(--neutral-800);
         /*background for secondary buttons, secondary surfaces*/
-        --secondary-foreground: var(--neutral-300);
+        --secondary-foreground: var(--neutral-400);
         /*content on secondary buttons, secondary surfaces*/
         --accent: var(--accent-950);
         /*background for accent buttons, accent surfaces*/
         --accent-foreground: var(--accent-400);
         /*content on accent buttons, accent surfaces*/
-        --muted: var(--neutral-800);
+        --muted: var(--neutral-700);
         /*background for ui items, sections, hover states*/
         --muted-foreground: var(--neutral-500);
         /*muted content*/

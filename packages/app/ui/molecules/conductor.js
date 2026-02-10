@@ -25,12 +25,12 @@ const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
         return (
 
             <ScrollView horizontal={true} className=" bg-card ">
-                <Row className="pl-2 justify-center" >
+                <Row className="px-3 gap-1 h-14 justify-center" >
                     {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
 
 
                         return (
-                            <View className={`p-1 items-center justify-center ${a?.menu_settings?.class || ''}`}
+                            <View className={` items-center justify-center ${a?.menu_settings?.class || ''}`}
                                 key={`tab-${a.index}`}
                             >
                                 <MenuItemSubmenu

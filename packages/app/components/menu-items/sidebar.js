@@ -7,7 +7,7 @@ import { getComponent } from 'app/components/registry';
 export default function MenuItemSidebar({ title, icon, isActive, addon }) {
     const CounterIndicator = getComponent('molecule', 'counter_indicator')
     return (
-        <Row className={` px-2 py-1.5 items-center web:group rounded-xl ${isActive && 'bg-primary/10 web:hover:bg-muted/60 ' || ' web:hover:bg-muted/60 '}`}>
+        <Row className={` px-2 py-1.5 items-center web:group rounded-xl ${isActive && 'bg-accent web:hover:bg-muted/50 ' || ' web:hover:bg-muted/50 '}`}>
 
             <View className={`h-9 w-9 items-center justify-center flex rounded-full ${isActive
                     ? 'bg-primary text-primary-foreground'
