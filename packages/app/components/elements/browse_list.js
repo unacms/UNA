@@ -171,16 +171,30 @@ export default function Browse(props) {
     if (props.unitType) sSkeleton = [sSkeleton, props.unitType]
     
     const renderItem = useCallback(
-        ({ item, index }) => (
-            <BrowseItem
-                item={item}
-                index={index}
-                data={data}
-                unitMode={unitMode}
-                props={props}
-            />
-        ),
-        [data, unitMode, props]
+        ({ item, index }) => {
+            return isWeb ? (
+                <BrowseItem
+                    key={'item' + item.id}
+                    item={item}
+                    index={index}
+                    numColumns={numColumns}
+                    data={data}
+                    unitMode={unitMode}
+                    props={props}
+                />
+            ) : (
+                <BrowseItem
+                    item={item}
+                    index={index}
+                    numColumns={numColumns}
+                    data={data}
+                    unitMode={unitMode}
+                    props={props}
+                />
+            );
+
+        },
+        [data, unitMode, numColumns, props]
     )
 
     const layout = layoutForList(data.module);

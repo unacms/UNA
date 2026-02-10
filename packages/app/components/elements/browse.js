@@ -206,18 +206,31 @@ export default function Browse(props) {
     if (props?.skeleton) sSkeleton = props?.skeleton
 
     if (props.unitType) sSkeleton = [sSkeleton, props.unitType]
-    
+
     const renderItem = useCallback(
-        ({ item, index }) => (
-            <BrowseItem
-                item={item}
-                index={index}
-                numColumns={numColumns}
-                data={data}
-                unitMode={unitMode}
-                props={props}
-            />
-        ),
+        ({ item, index }) => {
+            return isWeb ? (
+                <BrowseItem
+                    key={'item' + item.id}
+                    item={item}
+                    index={index}
+                    numColumns={numColumns}
+                    data={data}
+                    unitMode={unitMode}
+                    props={props}
+                />
+            ) : (
+                <BrowseItem
+                    item={item}
+                    index={index}
+                    numColumns={numColumns}
+                    data={data}
+                    unitMode={unitMode}
+                    props={props}
+                />
+            );
+
+        },
         [data, unitMode, numColumns, props]
     )
 
@@ -238,7 +251,7 @@ export default function Browse(props) {
             offAdded();
             offDeleted();
         };
-    }, [])   
+    }, [])
 
     useEffect(() => {
         const subscription = emitter.addListener(`page`, (data) => {
@@ -359,9 +372,9 @@ export default function Browse(props) {
     }
 
     const NoContent = getComponent('molecule', 'no_content')
-    
+
     const PreloadComponent = dataItems.length === 0 ? (hasNextPage === false
-        ? <NoContent endpoint={{request_url: data.request_url, params: {} }}/>
+        ? <NoContent endpoint={{ request_url: data.request_url, params: {} }} />
         : (!dataItems.params?.loaded ? Preload : null)
     ) : null;
 
