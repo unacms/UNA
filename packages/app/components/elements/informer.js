@@ -3,7 +3,7 @@ import { View } from 'app/design/view'
 import { useCurrentUser } from 'app/context/user'
 import { stripTags } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
-import React, { useState } from 'react';
+import { useState, Fragment } from 'react';
 import { BlockWrapper } from 'app/components/block-wrapper'
 
 export default function ElementInformer({data, blockWrapperProps}) {
@@ -25,7 +25,7 @@ export default function ElementInformer({data, blockWrapperProps}) {
             <View className="  w-full border-bdr/50 dark:border-bdr-d/50 mx-auto ">
             {currentUser?.informer?.map((item, index) => {
                    if (item.id == 'sys-account-unconfirmed-email'){
-                        return <React.Fragment key={item.id}></React.Fragment>
+                        return <Fragment key={item.id}></Fragment>
                         
                     }
                     if (item.id == 'sys-switch-profile-context' || item.id == 'sys-account-profile-system'){

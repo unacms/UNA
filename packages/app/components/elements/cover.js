@@ -186,15 +186,9 @@ function CoverImage({
     profileDisplaySize,
     is_person,
 }) {
-    if (!profileData?.info || !coverData) {
-        return null
-    }
-
     const [imageUrl, setImageUrl] = useState(
         mode == 'cover' ? coverData.src : profileData.url_avatar
     )
-
-    
 
     const uo = profileData.module + (mode == 'cover' ? '_cover_crop' : '_picture_crop');
     const so = coverData.storage
@@ -406,10 +400,6 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
     const { currentUser } = useCurrentUser()
     const isWeb = Platform.OS === 'web'
 
-    if (!data?.profile) {
-        return null
-    }
-    
     const coverMode =
         appSetting('cover', 'view_by_module', data?.profile?.module) || mode
     const bPerson =
@@ -432,6 +422,7 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
 
     const ContextSelector = getComponent('molecule', 'context_selector')
     const Badges = getComponent('molecule', 'badges')
+
     if (coverMode === 'none') {
         if (isWeb) return null
        
@@ -447,7 +438,20 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
 
     return (
         <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
-            
+            {appSetting('context_selector', 'show_always') ? <Row className={`${TABLET_MODE_FROM}:hidden items-center w-full h-14 px-2 `} >
+
+                <View className={`${TABLET_MODE_FROM}:hidden `}>
+                    <View><ContextSelector data={context} mode="compact" /></View>
+                </View></Row> : <></>}
+            {!isMin && (
+                <CoverImage
+                    mode="cover"
+                    coverData={data?.cover}
+                    profileData={data.profile}
+                    allowEdit={bAllowEdit}
+                    allowSwitch={isAllowSwitch}
+                />
+            )}
             <View
                 className={` ${appSetting(
                     'layout',
@@ -476,7 +480,7 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
                                 className={`font-title tracking-tight text-3xl sm:text-4xl font-bold text-foreground`}
                                 numberOfLines={2}
                             >
-                                {data?.profile?.display_name}
+                                {data.profile.display_name}
                             </Text>
                             <Badges badges={data.badges} size="2xs" />
                         </Row>
@@ -511,7 +515,7 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
                                                 isMin ? '2xl' : '3xl'
                                             }
                                             coverData={data?.cover}
-                                            profileData={data?.profile}
+                                            profileData={data.profile}
                                             allowEdit={bAllowEdit}
                                             allowSwitch={isAllowSwitch}
                                         />
