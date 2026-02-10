@@ -100,7 +100,7 @@ export const PageHeader = ({
     } : {};
     /* animations for hide header */
 
-    const Logo = <Link href="/home" size="lg" aria-label="Home">
+    const Logo = <Link href="/home" aria-label="Home">
         <Pressable className="items-center">
             {appStatic('logo')}
         </Pressable>
@@ -121,7 +121,7 @@ export const PageHeader = ({
         <>
             {isWeb && <View style={{ height: headerHeight }} />}
             <HeaderContainer
-                className={`w-full z-50 bg-card web:shadow-border header-fixed backdrop-blur-xl web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out ${cssClass}`}
+                className={`w-full z-50 bg-card  header-fixed backdrop-blur-xl web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out ${cssClass}`}
                 style={nativeStyle}
                 onLayout={(event) => {
                     const { height } = event.nativeEvent.layout;

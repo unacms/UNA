@@ -40,10 +40,10 @@ export default function Unit(props) {
     function getBase() {
         const isSkeleton = data?.skeleton;
         return (
-            <Card padding="p-1 gap-1">
+            <Card padding="p-1 border border-border">
                 <Redirect ref={redirectdRef} />
                 <Link className="web:group" href={data.url}>
-                    <View className="relative bg-muted aspect-video overflow-hidden rounded-lg w-full">
+                    <View className="relative bg-secondary aspect-video overflow-hidden rounded-lg w-full">
                         <Skeleton className="" rounded='rounded-lg' visible={isSkeleton}>
                             <Image
                                 {...data.cover}

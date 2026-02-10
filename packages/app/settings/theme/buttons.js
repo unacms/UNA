@@ -54,24 +54,24 @@ export const settingsButtons = {
 
             },
             text:{
-                base:'font-medium text-primary-foreground/70',
+                base:'font-medium text-primary-foreground',
                 default:'text-primary-foreground',
                 hovered:'text-primary-foreground',
                 focused:'',
-                active:'text-primary-foreground/70',
-                pressed:'text-primary-foreground/7-',
-                disabled:'text-primary-foreground//70',
+                active:'text-primary-foreground',
+                pressed:'text-primary-foreground',
+                disabled:'text-primary-foreground/50',
             }
         },
         default:{
             container:{
-                base:'  web:duration-200 border border-border/70 shadow-xs',
-                default:' bg-card   ',
-                active:' bg-secondary/50 outline outline-ring  ',
-                pressed:' bg-secondary/50',
-                hovered:' bg-muted/50 ',
-                focused:' bg-secondary ',
-                disabled:'bg-secondary/70 opacity-50',
+                base:'  web:duration-200 border border-border shadow-xs',
+                default:' bg-card/80 backdrop-blur-lg   ',
+                active:' bg-card outline outline-ring  ',
+                pressed:' bg-card',
+                hovered:' bg-card ',
+                focused:' bg-card ',
+                disabled:'bg-secondary opacity-50',
 
             },
             text:{

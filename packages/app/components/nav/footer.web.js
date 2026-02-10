@@ -45,7 +45,7 @@ export default function () {
     return (
         <View
             className={
-                `min-h-16 fixed bottom-0 backdrop-blur-xl left-0 z-30 w-full lg:hidden shadow-[0px_-1px_0px_0px_rgba(0,0,0,0.05)] dark:shadow-[0px_-1px_0px_0px_rgba(255,255,255,0.1] tabbar bg-bgrtabbar dark:bg-bgrtabbar-d ${isInStandaloneMode() ? "pb-4" : ""}`
+                `min-h-16 fixed bottom-0 left-0 z-30 w-full lg:hidden bg-card ${isInStandaloneMode() ? "pb-4" : ""}`
             }
         >
             <View

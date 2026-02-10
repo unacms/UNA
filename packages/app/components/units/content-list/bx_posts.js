@@ -11,8 +11,8 @@ const Units = {};
 Units.Base = function Base({ data }) {
     const isSkeleton = data?.skeleton;
     return (
-        <CardList padding="p-1">
-            <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
+        <CardList className="border border-border" padding="p-1">
+            <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-accent dark:bg-background-d  ">
                 <Skeleton className="" rounded='rounded-lg' visible={isSkeleton}>
                     {data.image && (
                         <Image
@@ -34,7 +34,7 @@ Units.Base = function Base({ data }) {
                     </LinkOrModal>
                 </Skeleton>
                 <Skeleton className="h-16 w-full mt-2" rounded="rounded-lg" visible={isSkeleton}>
-                    <Text numberOfLines={3} className="text-neutral-600 dark:text-neutral-400 mt-2 mb-auto text-xs ">
+                    <Text numberOfLines={3} className="text-secondary-foreground mt-2 mb-auto text-sm ">
                         {data.summary_plain}
                     </Text>
                 </Skeleton>

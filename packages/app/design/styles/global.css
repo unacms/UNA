@@ -189,7 +189,7 @@
         /*surface*/
         --card-foreground: var(--neutral-300);
         /*content on cards, sidebars, navbars*/
-        --popover: var(--neutral-800);
+        --popover: var(--neutral-900);
         /*background for popovers, inputs, tooltips, modals, elevated surfaces*/
         --popover-foreground: var(--neutral-50);
         /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
