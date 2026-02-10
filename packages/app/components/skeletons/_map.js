@@ -6,7 +6,7 @@ const items = Array(5).fill('');
 
 const Default = memo(() => (
     <Card className='flex-auto gap-1' padding="p-1.5">
-        <View className="relative  bg-muted aspect-video rounded-xl w-full"></View>
+        <View className="relative  bg-secondary aspect-video rounded-xl w-full"></View>
         <View className=" p-1.5 flex-auto justify-between gap-1.5">
             <View className=" h-5 w-3/4 bg-muted rounded-full"></View>
             <View className=" h-5 w-1/2 bg-muted rounded-full"></View>
@@ -16,7 +16,7 @@ const Default = memo(() => (
 
 const Persons = memo(() => (
     <Card className='flex-auto' padding="p-1.5 sm:m-1.5">
-        <View className="relative bg-muted aspect-square rounded-xl w-full"></View>
+        <View className="relative bg-secondary aspect-square rounded-xl w-full"></View>
         <View className="p-2 gap-1 flex-auto justify-between">
             <View className=" h-4 w-3/4 bg-muted rounded-full"></View>
             <View className=" h-4 w-1/2 bg-muted rounded-full"></View>

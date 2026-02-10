@@ -3,7 +3,6 @@ import { Text } from 'app/design/typography'
 import { stripTags, appSetting } from 'app/lib/util';
 import { Block as PageBlock, BlockContent, BlockName, BlockActions, BlockHeader, BlockTitle } from 'app/ui/molecules/page-block'
 import Link from 'app/ui/atoms/link'
-import { Button } from 'app/design/controls'
 import { useTranslation } from 'react-i18next'
 
 export function BlockWrapper({ config, block, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, children }) {
@@ -73,13 +72,13 @@ export function BlockWrapper({ config, block, showTitle, showBg, fullWidth, cont
                             <BlockTitle>{stripTags(block.title)}</BlockTitle> 
                         </BlockName>
                         {config?.header_more_url && (<BlockActions>
-                            <Link href={config?.header_more_url}>
-                                <Button
-                                    variant="link"
-                                    size="sm"
-                                    rounded
-                                    title={t(config?.header_more_text || 'View All')}
-                                />
+                            <Link
+                                href={config?.header_more_url}
+                                variant="default"
+                                size="sm"
+                                mode="text"
+                            >
+                                {t(config?.header_more_text || 'View All')}
                             </Link>
                         </BlockActions>)}
                     </BlockHeader>

@@ -7,7 +7,7 @@ export const settingsElements = {
         content_max_width: ' w-full max-w-7xl ',
         content_max_width_nav: ' w-full max-w-screen-2xl xl:border-x-0 xl:border-guide/20 border-dashed  ',
         menu_is_dynamic: false,
-        menu_cnt: ' flex-row flex-none gap-1 px-3 sm:px-4 h-14 items-center overflow-x-auto ',
+        menu_cnt: ' flex-row flex-none gap-1 px-4 sm:px-4 h-14 items-center overflow-x-auto ',
         menu_categ_indent: ' pl-12 ',
         topmenu_cnt:
             'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
@@ -47,9 +47,9 @@ export const settingsElements = {
         header: ' p-3 items-start justify-start border-b border-border/60',
     },
     cards: {
-        'u-card-list': ' u-card-list bg-card sm:shadow-sm text-card-foreground sm:rounded-xl',
+        'u-card-list': ' u-card-list bg-card text-card-foreground sm:rounded-xl',
         'u-card-list-padding': ' p-3 lg:p-4 ',
-        'u-card-base': ' u-card-base bg-card shadow-sm text-card-foreground overflow-hidden rounded-xl',
+        'u-card-base': ' u-card-base bg-card text-card-foreground overflow-hidden rounded-xl',
         'u-card-padding': ' p-3 lg:p-4 ',
         'u-card-header': 'flex gap-1',
         'u-card-icon': 'text-card-foreground px-4 gap-2',
@@ -82,7 +82,7 @@ export const settingsElements = {
         'u-block-description': 'text-muted-foreground text-sm font-medium leading-6',
         'u-block-content': ' ',  
         'u-block-footer':
-            'flex text-card-foreground gap-4 pt-3',
+            'flex text-card-foreground gap-4 pt-2',
         'u-block-actions':
             'flex flex-row text-card-foreground mb-auto gap-2 ',
     },

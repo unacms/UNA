@@ -37,14 +37,14 @@ import { BlockWrapper } from 'app/components/block-wrapper'
 
 function getCounter(num, icon = '', add = '', color = '') {
     if (!num) num = 0
-    let sColor = 'gray'
+    let sColor = 'secondary'
 
     if (num > 0) {
-        sColor = 'green'
+        sColor = 'emerald'
         if (icon == '') icon = 'ArrowBigUp'
     }
     if (num < 0) {
-        sColor = 'red'
+        sColor = 'rose'
         if (icon == '') icon = 'ArrowBigDown'
     }
 
@@ -53,7 +53,7 @@ function getCounter(num, icon = '', add = '', color = '') {
             className={
                 'mb-auto    text-' +
                 sColor +
-                '-800 bg-' +
+                ' bg-' +
                 sColor +
                 '-200 dark:bg-' +
                 sColor +
@@ -157,7 +157,7 @@ export default function DashboardStat(props) {
                     </BlockHeader>
                     <BlockContent className="p-2">
                         <ElementDashboardStat {...props} />
-                        <View className="flex-row flex-wrap gap-2 mt-4">
+                        <View className="flex-row flex-wrap gap-3 mt-4">
                             {langs.length > 1 && (
                                 <View className="w-full max-w-sm flex-1 min-w-[160px]">
                                     <DropdownMenu
@@ -172,8 +172,9 @@ export default function DashboardStat(props) {
                                         }}
                                     >
                                         <Button
-                                            variant="secondary"
+                                            variant="default"
                                             title={t('lang_' + lang)}
+                                            size="lg"
                                             startDecorator="Languages"
                                             fullWidth
                                             align="left"
@@ -197,7 +198,8 @@ export default function DashboardStat(props) {
                                         }}
                                     >
                                         <Button
-                                            variant="secondary"
+                                            variant="default"
+                                            size="lg"
                                             title={t('theme_' + themeName)}
                                             startDecorator="Moon"
                                             fullWidth
@@ -206,22 +208,7 @@ export default function DashboardStat(props) {
                                     </DropdownMenu>
                                 </View>
                             )}
-                            {densityOptions.length > 1 && (
-                                <View className="w-full max-w-sm flex-1 min-w-[160px]">
-                                    <DropdownMenu
-                                        items={densityOptions}
-                                        onSelect={(option) => setDensity(option.id)}
-                                    >
-                                        <Button
-                                            variant="secondary"
-                                            title={currentDensity?.title}
-                                            startDecorator={currentDensity?.icon}
-                                            fullWidth
-                                            align="left"
-                                        />
-                                    </DropdownMenu>
-                                </View>
-                            )}
+                            
 
                             {appSetting('layout', 'avaliable_layouts').length >
                                 1 && (
@@ -241,7 +228,8 @@ export default function DashboardStat(props) {
                                             }}
                                         >
                                             <Button
-                                                variant="secondary"
+                                                variant="default"
+                                                size="lg"
                                                 title={t('format_' + layoutName)}
                                                 startDecorator="Layout"
                                                 fullWidth
@@ -268,7 +256,9 @@ export default function DashboardStat(props) {
                                         }}
                                     >
                                         <Button
-                                            variant="secondary"
+                                            variant="default"
+                                            size="lg"
+                                            startDecorator="Rows2"
                                             title={t(layoutSettings.feed_unit)}
                                             fullWidth
                                             align="left"
@@ -281,11 +271,11 @@ export default function DashboardStat(props) {
                     <BlockFooter className="p-2">
                         <Link href="/logout">
                         <Button 
-                            variant="secondary"
+                            variant="default"
+                            size="lg"
                             title={t('Sign out')}
                             startDecorator="LogOut"
                             fullWidth
-                            size="base"
                         /></Link>
                     </BlockFooter>
                 </Block>
@@ -351,7 +341,7 @@ function ElementDashboardStat(props) {
                             return (
 
                                 <View
-                                    className="px-4 py-3 bg-secondary rounded-xl w-full gap-2 flex-1 min-w-48 lg:min-w-64"
+                                    className="px-4 py-3 bg-card border border-border shadow-xs web:hover:bg-muted/20 rounded-xl w-full gap-2 flex-1 min-w-48 lg:min-w-64"
                                     key={index}
                                 ><Link href={item.url.replace("{profile_url_postfix}", currentUser?.url.replace('/view-persons-profile/', ''))}>
                                         <View className="flex-row w-full h-10 justify-between items-center text-secondary-foreground ">
@@ -413,7 +403,7 @@ function ElementDashboardStat(props) {
                         return (
 
                             <View
-                                className="px-4 py-3 bg-secondary border border-border rounded-xl w-full flex-1 min-w-48 lg:min-w-64"
+                                className="px-4 py-3 bg-card border border-border shadow-xs web:hover:bg-muted/20 rounded-xl w-full flex-1 min-w-48 lg:min-w-64"
                                 key={index}
                             ><Link href={item.url} >
                                     <View className="flex-row w-full h-10 justify-between items-center text-card-foreground">
@@ -422,12 +412,12 @@ function ElementDashboardStat(props) {
                                             width={32}
                                             height={32}
                                         />
-                                        <Text className="flex-none text-3xl font-semibold text-muted-foreground leading-none">
+                                        <Text className="flex-none text-3xl font-semibold text-card-foreground leading-none">
                                             {item.current}
                                         </Text>
                                     </View>
                                     <View className="flex-row w-full justify-between items-center mt-3">
-                                        <Text className="flex-auto text-lg font-semibold text-card-foreground leading-none">
+                                        <Text className="flex-auto text-lg font-semibold text-secondary-foreground leading-none">
                                             {item.title}
                                         </Text>
                                         <Text>
