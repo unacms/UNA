@@ -130,7 +130,7 @@ export default function Gallery({ items, autoscroll }) {
     return (
         <View 
             ref={containerRef}
-            className=' relative p-2  '
+            className='p-2 overflow-hidden'
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
         >

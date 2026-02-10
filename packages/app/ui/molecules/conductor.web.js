@@ -285,11 +285,14 @@ export function Conductor({
         !isDesktop &&
         layoutName === 'navigator' &&
         (currentRoute?.leftbar?.content?.length ?? 0) > 0
+    
+    const isUseCurrentHeader = layoutName === 'profile' && (!isCoverDisabled || !isDesktop);
 
     const headerComponent = (
         <HeaderContainer
             isCover={isCover}
             isCoverDisabled={isCoverDisabled}
+            isUseCurrentHeader={isUseCurrentHeader}
             isHideCover={isHideCover}
             tabBarObj={
                 <>
@@ -322,7 +325,7 @@ export function Conductor({
         />
     )
 
-    const isUseCurrentHeader = layoutName === 'profile' && (!isCoverDisabled || !isDesktop);
+    
 
     const tabRoute = currentRoute.inited ? currentRoute : prevRoute
     const isLeftCol = tabRoute?.leftbar?.content?.length > 0 || layoutName == 'navigator'
@@ -1165,7 +1168,8 @@ const HeaderContainer = ({
     headerSettings,
     isCover,
     isHideCover,
-    isCoverDisabled
+    isCoverDisabled,
+    isUseCurrentHeader
 }) => {
     const [hideDefaultHeaderFrom, setHideDefaultHeaderFrom] = useState(100);
     const [smallCoverHeight, setSmallCoverHeight] = useState(79);
@@ -1201,7 +1205,7 @@ const HeaderContainer = ({
     }, [])
 //hideDefaultHeaderFrom
     return (
-        <View className="z-40">
+        <View className={`z-40 ${isUseCurrentHeader || isDesktop ? 'bg-card': ''}`}>
             <View className={`${conductorTheme.cover_base} cover-1`}
                 style={{
                     marginBottom: !isScrolled ? '0px' : `${(smallCoverHeight+((isCover && !isHideCover) || !isDesktop ? 56: 0))}px`,
@@ -1222,7 +1226,7 @@ const HeaderContainer = ({
                     </View>
                 </View>
             </View>
-            <View className={` header-fixed 77 ${conductorTheme.cover_base} ` + (isScrolled ? 'fixed' : '')}>
+            <View className={` header-fixed ${isUseCurrentHeader || isDesktop ? 'bg-card': ''} 77 ${conductorTheme.cover_base} ` + (isScrolled ? 'fixed' : '')}>
                 <View className={conductorTheme.cover_small}
                     style={{
                         display: isScrolled ? 'flex' : 'none',
