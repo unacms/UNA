@@ -30,7 +30,7 @@ export default function MenuTop({ url, uri }) {
     const [indicatorStyle, setIndicatorStyle] = useState({ 
         translateX: __menuTopIndicatorPersist.translateX, 
         width: __menuTopIndicatorPersist.width, 
-        visible: __menuTopIndicatorPersist.initialized 
+        visible: false
     });
 
     const handleItemLayout = (index, layout) => {
@@ -43,17 +43,29 @@ export default function MenuTop({ url, uri }) {
     };
 
     useEffect(() => {
-        if (activeIndex != null && activeIndex >= 0) {
-            const target = itemLayouts[activeIndex];
-            if (target && typeof target.x === 'number' && typeof target.width === 'number') {
-                setIndicatorStyle({ translateX: target.x, width: target.width, visible: true });
-                // Persist for future remounts
-                __menuTopIndicatorPersist = { initialized: true, translateX: target.x, width: target.width };
+        if (activeIndex == null) {
+            return;
+        }
+        if (activeIndex === -1) {
+            setIndicatorStyle({ translateX: 0, width: 0, visible: false });
+            return;
+        }
+       const target = itemLayouts[activeIndex];
+        if (!(target && typeof target.x === 'number' && typeof target.width === 'number')) {
+            // Keep the previous dimensions but hide the indicator until active tab layout is measured.
+            setIndicatorStyle((prev) => prev.visible ? { ...prev, visible: false } : prev);
+            return;
+        }
+
+        setIndicatorStyle((prev) => {
+            if (prev.translateX === target.x && prev.width === target.width && prev.visible === true) {
+                return prev;
             }
-        }
-        if(activeIndex == -1){
-             setIndicatorStyle({ translateX: 0, width: 0, visible: false });
-        }
+            return { translateX: target.x, width: target.width, visible: true };
+        });
+        // Persist for future remounts
+        __menuTopIndicatorPersist = { initialized: true, translateX: target.x, width: target.width };
+        
     }, [activeIndex, itemLayouts]);
 
     return (

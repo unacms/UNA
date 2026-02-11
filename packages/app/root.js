@@ -5,23 +5,7 @@ import { storageClear } from 'app/lib/util';
 import { useRouter, redirectTo } from 'app/lib/hooks/router'
 import Layouts from 'app/components/layouts';
 import { useSetScrollDirection, useSetScrollValue } from 'app/context/jotai/layout';
-
-/*let Layouts;
-
-if (Platform.OS === 'web') {
-     const dynamic = require('next/dynamic').default;
-     Layouts = dynamic(() => import('app/components/layouts'), { ssr: false });
-} else {
-    Layouts = require('app/components/layouts').default;
-}
-*/
-//const Layouts = React.lazy(() => import('app/components/layouts'));
-//import Layouts from 'app/components/layouts';
-// ################## OLD CODE FOR WEB VERSION
-//const dynamic = require('next/dynamic').default;
-//const Layouts = dynamic(() => import('app/components/layouts'), { ssr: false });
-// ################## OLD CODE FOR NATIVE VERSION
-//import Layouts from 'app/components/layouts';
+import { Loading } from 'app/customization/loading';
 
 
 export function Root(props) {
@@ -70,10 +54,15 @@ export function Root(props) {
     const router = useRouter();
 
   
+    if (currentUser === null) {
+        return <Loading />;
+    }
+
     if (data.redirect){
         redirectTo(router, data.redirect)
         return null
     }
+
     return (
         <Layouts path={props?.path} data={data} uri={data?.uri} url={data?.url} />
     );

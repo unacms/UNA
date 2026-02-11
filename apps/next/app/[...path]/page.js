@@ -2,7 +2,6 @@ import { UNA_URL, UNA_API_KEY, getRemoteSettings } from 'app/config';
 import { cache } from 'react'
 import Root from 'app/root-client'
 import { Suspense } from 'react'
-import { Loading } from 'app/customization/loading'
 import { notFound } from 'next/navigation'
 import { headers } from "next/headers"
 
@@ -202,7 +201,7 @@ export default async function Page(props) {
         }
         
         return (
-            <Suspense fallback={<Loading />}>
+            <Suspense fallback={null}>
                 <Root settings={remote_config.data} path={'home'} data={fallbackData} uri={'/'} url={'/'} code={200} />
             </Suspense>
         );
@@ -220,7 +219,7 @@ export default async function Page(props) {
     }
 
     return (
-        <Suspense fallback={<Loading />}>
+        <Suspense fallback={null}>
             <Root settings={remote_config.data} path={'home'} data={data?.data} uri={data?.data?.uri} url={data?.data?.url} code={data?.code}></Root>
         </Suspense>
     )
