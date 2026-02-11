@@ -151,8 +151,8 @@ export default function (props) {
 
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
-            <Modal id='file-preview2' title="Choose users" onVisible={!!isModal} onClose={() => { setIsModal(false) }}>
-                <SelectUsers isSingle={isSingle} onSave={onSave} requestUrl={'/api.php?r=' + props.ajax_get_suggestions + "&params="} initedData={[]} />
+            <Modal id='file-preview2' title={props.title || "Choose users"} onVisible={!!isModal} onClose={() => { setIsModal(false) }}>
+                <SelectUsers isSingle={isSingle} onSave={onSave} requestUrl={'/api.php?r=' + props.ajax_get_suggestions + (props.ajax_get_suggestions.includes("params[]") ? '' : "&params=")} initedData={[]} />
             </Modal>
             <View className='w-full p-1.5 justify-between items-center flex-row flex-wrap border border-border rounded-xl bg-input/60'>
                 <Row className='gap-2 items-start  flex-wrap flex-1'>
