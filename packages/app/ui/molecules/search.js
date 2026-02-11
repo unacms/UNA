@@ -8,7 +8,6 @@ import {
     Button,
     ButtonRef,
     Input,
-    Input,
     Modal,
 } from 'app/design/controls'
 import Redirect from 'app/ui/atoms/redirect'
@@ -318,7 +317,7 @@ export function ElementSearchData(oProps) {
         return (
             <>
                 <View className="flex-row mb-2">
-                    <InputRef
+                    <Input
                         name="search"
                         autoFocus={true}
                         placeholder={t('Start typing to search...')}
@@ -369,7 +368,7 @@ export function ElementSearchData(oProps) {
                 </View>
             )}
             <View className="flex-row p-1 mb-2">
-                <InputRef
+                <Input
                     name="search"
                     autoFocus={true}
                     placeholder={t('Start typing to search...')}
