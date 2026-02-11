@@ -457,9 +457,11 @@ export default function Browse(props) {
                 <View className={`w-full ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''}`} style={isOneLine ? {} : styles}>
                     {isShowTitleInside && (
                         <Row className={`items-center justify-between ${props.showBg ? '' : 'p-2 '}`}>
-                            <BlockTitle>
+                             <View className="p-2">
+                                <BlockTitle>
                                 {t(props.block.title)}
-                            </BlockTitle>
+                                </BlockTitle>
+                            </View>
                             {!!props.addLink && (
                                 <Link href={props.addLink.url}>
                                     <Button
