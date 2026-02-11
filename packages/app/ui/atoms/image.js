@@ -167,8 +167,8 @@ export default function ElementImage(props) {
             alt={alt}
             sizes={sizes}
             style={style}
-            {...(APP_URL === "http://localhost:3000" ? { unoptimized: true } : {})}
-            unoptimized
+          /*  {...(APP_URL === "http://localhost:3000" ? { unoptimized: true } : {})}
+            unoptimized*/
         />
     ), [rest, src, alt, style, sizes]);
 }
