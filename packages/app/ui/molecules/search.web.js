@@ -337,7 +337,7 @@ export function ElementSearchData(oProps) {
                 </View>
             )}
             <View className="flex-row p-1 mb-2">
-                <InputRef
+                <Input
                     name="search"
                     autoFocus={true}
                     placeholder={t('Start typing to search...')}
