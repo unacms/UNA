@@ -443,15 +443,15 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
     }, [currentRoute.pageData]);
 
 
-    if (isProfileHeader) {//isProfileHeader
+    if (true) {//isProfileHeader
         if (currentRoute?.pageData) {// may be need to fix
             Object.assign(tabSceneProps, {
 
-                ListHeaderComponent: () => <>
+                ListHeaderComponent: () => <View className="w-full">
                     {CoverHeader}
                     {sceneHeader}
                     {filter}
-                </>
+                </View>
             });
         } else {
             if (prevRoute) {

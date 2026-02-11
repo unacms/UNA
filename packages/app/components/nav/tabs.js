@@ -294,6 +294,7 @@ export default function Tabs() {
 
                             if (tab.title == '') {
                                 options.tabBarLabel = () => null;
+                                options.tabBarLabelPosition = 'beside-icon'
                             }
 
                             if (tab.hide == true)

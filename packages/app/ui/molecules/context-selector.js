@@ -57,7 +57,8 @@ function getContextRoot(data, url, uri) {
     if (link) {
         return {
             url: link.url,
-            image: <Icon icon={link.icon} size={20} className="w-9 h-9 items-center justify-center flex-row text-center rounded-full bg-muted flex" />,
+            image: <View className="w-9 h-9 items-center justify-center flex-row text-center rounded-full bg-muted flex">
+                <Icon icon={link.icon} size={20}  /></View>,
             name: link.title,
         }
     }
@@ -172,9 +173,8 @@ export default function ContextSelector({ data, url, uri, mode }) {
     }*/
 
     return (
-        <>
-            {data?.list?.length > 0 || data?.links?.length > 0 ? (
-                <Row className='items-center'>
+        data?.list?.length > 0 || data?.links?.length > 0 ? (
+                <Row className='items-center w-full'>
                     {!!contextRoot.name &&
                         appSetting('context_selector', 'logo') && (
                             <>
@@ -203,19 +203,18 @@ export default function ContextSelector({ data, url, uri, mode }) {
                             </>
                         )}
 
-                    <Row className="items-center gap-2">
-                        <View className="max-w-64">
+                    
+                        <View className="max-w-64 ">
                         {CurrentContext}
                         </View>
-                        <View className="flex-1">
+                        <View className="flex-auto items-start">
                         {DropDown}
                         </View>
-                    </Row>
+                   
                 </Row>
             ) : (
                 CurrentContext
-            )}
-            
-        </>
+            )
+    
     )
 }
