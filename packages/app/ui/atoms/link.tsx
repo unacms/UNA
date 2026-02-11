@@ -75,7 +75,7 @@ export default function ElementLink({
 
     const handleExternalLinkPress = useCallback(async () => {
         await WebBrowser.openBrowserAsync(externalUrl);
-    }, [finalHrefWithDomain]);
+    }, [externalUrl]);
 
     if (!sanitizedHref) {
         return children;

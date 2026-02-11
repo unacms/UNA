@@ -1,9 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { View } from 'react-native';
 import * as TooltipPrimitive from '@rn-primitives/tooltip';
 import { Text } from 'app/design/typography';
 import { appSetting, cn } from 'app/lib/util';
 import { useScrollDirection } from 'app/context/jotai/layout';
+import { useFocusEffect } from 'app/lib/hooks/router';
 
 // Get tooltip configuration from settings
 const tooltipConfig = appSetting('theme', 'tooltip') || {};
@@ -25,6 +26,14 @@ export default function Tooltip({
 }) {
     const scrollDirection = useScrollDirection();
     const triggerRef = useRef(null);
+
+    useFocusEffect(
+        useCallback(() => {
+            return () => {
+                triggerRef.current?.close();
+            };
+        }, [])
+    );
 
     useEffect(() => {
         if (controlledOpen === undefined || !triggerRef.current) return;

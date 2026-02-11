@@ -291,9 +291,10 @@ export default function Browse(props) {
         status === 'success' &&
         data.unit == 'notifications' && !hasNextPage
     ) {
+        
         return (
             <View className="p-8">
-                <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-neutral-500/10 ">
+                <View className="gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8  items-center rounded-2xl  bg-neutral-500/10 ">
                     <Text className="text-center text-base text-muted-foreground ">
                         No notifications
                     </Text>

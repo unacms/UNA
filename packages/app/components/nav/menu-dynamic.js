@@ -63,6 +63,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
                     handleFormModal(oItem, event, setPageData)
                 }
             }}
+            mode="popup"
             variant='nopad'
             items={items.slice(visibleItemsCount).map((aItem, iKey) => ({
                 id: 'menu-' + iKey,
