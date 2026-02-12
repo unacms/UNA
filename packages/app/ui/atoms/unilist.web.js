@@ -23,19 +23,11 @@ export default function UniList(props) {
 
     data = data.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
 
-    const nonZeroItemStyle = { minHeight: 1 };
-
     const itemContent = useCallback((index, data) => {
         const renderedItem = renderItem({ item: data, index });
-
-        // Virtuoso requires measurable item sizes; keep a minimal height for empty renders.
-        if (renderedItem == null || renderedItem === false) {
-            return <View style={nonZeroItemStyle} />;
-        }
-
         return (
-            <View style={nonZeroItemStyle}>
-                {renderedItem}
+            <View className="min-h-px">
+                {renderItem({ item: data, index })}
             </View>
         );
     }, [renderItem]);
