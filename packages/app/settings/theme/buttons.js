@@ -44,7 +44,8 @@ export const settingsButtons = {
         },
         primary:{
             container:{
-                base:' web:duration-200 web:border-0 shadow-sm  ',
+                base:' web:duration-200 shadow-sm  ',
+                base_stroke: 'web:border-0',
                 default:'bg-primary',
                 active:'bg-primary scale-[0.97] ',
                 pressed:'bg-primary/70',
@@ -65,7 +66,8 @@ export const settingsButtons = {
         },
         default:{
             container:{
-                base:'  web:duration-200 web:border-0 shadow-custom web:hover:shadow-custom-hover border border-border',
+                base:'web:duration-200 shadow-custom web:hover:shadow-custom-hover',
+                base_stroke: 'web:border-0 border border-border',
                 default:' bg-card ',
                 active:' bg-card scale-[0.97]  ',
                 pressed:' bg-card',

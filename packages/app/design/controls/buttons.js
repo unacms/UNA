@@ -129,36 +129,6 @@ const getStateClasses = (active, pressed, hovered, focused, disabled, variant, t
     return classes?.default || '';
 };
 
-const getUtilityToken = (token = '') => token.split(':').pop() || token;
-
-const isBorderUtilityToken = (token = '') => {
-    const utility = getUtilityToken(token);
-    if (!utility) return false;
-    if (utility === 'border') return true;
-    if (!utility.startsWith('border-')) return false;
-    if (utility.startsWith('border-collapse') || utility.startsWith('border-spacing')) return false;
-    return true;
-};
-
-const splitOverlayStrokeClasses = (classNames = '') => {
-    const tokens = classNames.split(/\s+/).filter(Boolean);
-    const strokeTokens = [];
-    const containerTokens = [];
-
-    tokens.forEach((token) => {
-        if (isBorderUtilityToken(token)) {
-            strokeTokens.push(token);
-            return;
-        }
-        containerTokens.push(token);
-    });
-
-    return {
-        container: containerTokens.join(' '),
-        stroke: strokeTokens.join(' '),
-    };
-};
-
 const ButtonContent = React.memo(({
     pressed = false,
     hovered = false,
@@ -207,8 +177,9 @@ const ButtonContent = React.memo(({
 
     const stateContainer = getStateClasses(active, pressed, hovered, focused, disabled, variant, 'container');
     const stateText = getStateClasses(active, pressed, hovered, focused, disabled, variant, 'text');
-    const oContainerClasses = `${baseContainerClasses} ${stateContainer}`;
-    const { container: containerClasses, stroke: strokeClasses } = splitOverlayStrokeClasses(oContainerClasses);
+    const containerClasses = `${baseContainerClasses} ${stateContainer}`;
+    const strokeClasses = BtnCls[variant]?.container?.base_stroke;
+
     const hasOverlayStroke = !!strokeClasses;
     const textClasses = `${baseTextClasses} ${stateText}`;
 
