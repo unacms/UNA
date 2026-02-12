@@ -82,6 +82,8 @@
         --shadow-border-lg-hover: 0px 0px 0px 1px rgba(0, 0, 0, 0.08), 0px 2px 4px -1px rgba(0, 0, 0, 0.08), 0px 4px 8px 0px rgba(0, 0, 0, 0.08);
         --shadow-border-xl: 0px 0px 0px 1px rgba(0, 0, 0, 0.05), 0px 4px 8px -2px rgba(0, 0, 0, 0.06), 0px 8px 16px 0px rgba(0, 0, 0, 0.05);
         --shadow-border-xl-hover: 0px 0px 0px 1px rgba(0, 0, 0, 0.08), 0px 4px 8px -2px rgba(0, 0, 0, 0.08), 0px 8px 16px 0px rgba(0, 0, 0, 0.08);
+        --shadow-custom: 0px 0px 0px 1px #0000000f, 0px 1px 2px -1px #0000000f, 0px 2px 4px 0px #0000000a;
+        --shadow-custom-hover: 0px 0px 0px 1px #00000014, 0px 1px 2px -1px #00000014, 0px 2px 4px 0px #0000000f;
 
         /* neutral scale (zinc) - standard Tailwind CSS zinc 50-950 */
         --neutral: 113 113 122;
@@ -257,6 +259,8 @@
         --shadow-border-lg-hover: 0px 0px 0px 1px rgba(255, 255, 255, 0.08), 0px 2px 4px -1px rgba(255, 255, 255, 0.06), 0px 4px 8px 0px rgba(0, 0, 0, 0.2);
         --shadow-border-xl: 0px 0px 0px 1px rgba(255, 255, 255, 0.06), 0px 4px 8px -2px rgba(255, 255, 255, 0.06), 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
         --shadow-border-xl-hover: 0px 0px 0px 1px rgba(255, 255, 255, 0.08), 0px 4px 8px -2px rgba(255, 255, 255, 0.06), 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        --shadow-custom: 0px 0px 0px 1px #ffffff1a, 0px 1px 2px -1px #ffffff14, 0px 2px 4px 0px #00000066;
+        --shadow-custom-hover: 0px 0px 0px 1px #ffffff24, 0px 1px 2px -1px #ffffff1f, 0px 2px 4px 0px #00000080;
 
         --android-background: var(--background);
         --android-foreground: var(--foreground);

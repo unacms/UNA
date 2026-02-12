@@ -187,13 +187,13 @@ function CoverImage({
     is_person,
 }) {
     const [imageUrl, setImageUrl] = useState(
-        mode == 'cover' ? coverData.src : profileData.url_avatar
+        mode == 'cover' ? coverData?.src : profileData?.url_avatar
     )
 
-    const uo = profileData.module + (mode == 'cover' ? '_cover_crop' : '_picture_crop');
-    const so = coverData.storage
+    const uo = (profileData?.module || '') + (mode == 'cover' ? '_cover_crop' : '_picture_crop');
+    const so = coverData?.storage || ''
     const img_trans = ''
-    const c = profileData.info.id
+    const c = profileData?.info?.id || profileData?.id || 0
 
     const handleSwitch = async (id) => {
         const result = await fetcher(
@@ -304,6 +304,7 @@ function CoverImage({
     }
 
     const handleInsertImageFinish = async (uploadInfo) => {
+        if (!profileData?.module || !uploadInfo?.result?.data?.id) return
         const sRequest =
             '/api.php?r=' +
             profileData.module +
@@ -399,16 +400,20 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const isWeb = Platform.OS === 'web'
+    const profileData = data?.profile
+
+    // Cover can render before profile payload arrives on native.
+    if (!profileData) return null
 
     const coverMode =
-        appSetting('cover', 'view_by_module', data?.profile?.module) || mode
+        appSetting('cover', 'view_by_module', profileData?.module) || mode
     const bPerson =
-        data?.profile?.module == 'bx_persons' ||
-            appSetting('cover', 'show_pic_by_module', data?.profile?.module)
+        profileData?.module == 'bx_persons' ||
+            appSetting('cover', 'show_pic_by_module', profileData?.module)
             ? true
             : false
     const bAllowEdit =
-        data.allow_edit && appSetting('cover', 'allow_edit') && isWeb
+        data?.allow_edit && appSetting('cover', 'allow_edit') && isWeb
     const foundItem = currentUser?.informer?.find((item) => {
         return item.id == 'sys-switch-profile-context'
     })
@@ -434,8 +439,6 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
     </>
     }
 
-    const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
-
     return (
         <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
             {appSetting('context_selector', 'show_always') ? <Row className={`${TABLET_MODE_FROM}:hidden items-center w-full h-14 px-2 `} >
@@ -447,7 +450,7 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
                 <CoverImage
                     mode="cover"
                     coverData={data?.cover}
-                    profileData={data.profile}
+                    profileData={profileData}
                     allowEdit={bAllowEdit}
                     allowSwitch={isAllowSwitch}
                 />
@@ -466,7 +469,7 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
                                 mode="picture"
                                 profileDisplaySize={isMin ? 'xl' : '3xl'}
                                 coverData={data?.cover}
-                                profileData={data.profile}
+                                profileData={profileData}
                                 allowEdit={bAllowEdit}
                                 allowSwitch={isAllowSwitch}
                             />
@@ -480,7 +483,7 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
                                 className={`font-title tracking-tight text-3xl sm:text-4xl font-bold text-foreground`}
                                 numberOfLines={2}
                             >
-                                {data.profile.display_name}
+                                {profileData.display_name || profileData.title || ''}
                             </Text>
                             <Badges badges={data.badges} size="2xs" />
                         </Row>
@@ -491,11 +494,11 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
                                 <CoverMenuMeta {...data.meta_menu} />
                             </ScrollView>
                         )}
-                        {!!data.profile.info?.date_start && (
+                        {!!profileData.info?.date_start && (
                             <Text className="  text-muted-foreground text-xs uppercase font-semibold tracking-tight overflow-hidden rounded-md flex-none items-center">
                                 {formatDateInterval(
-                                    data.profile.info?.date_start,
-                                    data.profile.info?.date_end,
+                                    profileData.info?.date_start,
+                                    profileData.info?.date_end,
                                     t
                                 )}
                             </Text>
@@ -515,7 +518,7 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
                                                 isMin ? '2xl' : '3xl'
                                             }
                                             coverData={data?.cover}
-                                            profileData={data.profile}
+                                            profileData={profileData}
                                             allowEdit={bAllowEdit}
                                             allowSwitch={isAllowSwitch}
                                         />

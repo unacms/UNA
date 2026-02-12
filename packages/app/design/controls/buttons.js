@@ -123,10 +123,40 @@ const getStateClasses = (active, pressed, hovered, focused, disabled, variant, t
 
     if (disabled) return classes?.disabled || '';
     if (pressed) return classes?.pressed || '';
-    if (hovered) return classes?.hovered || '';
     if (active) return classes?.active || '';
+    if (hovered) return classes?.hovered || '';
     if (focused) return classes?.focused || '';
     return classes?.default || '';
+};
+
+const getUtilityToken = (token = '') => token.split(':').pop() || token;
+
+const isBorderUtilityToken = (token = '') => {
+    const utility = getUtilityToken(token);
+    if (!utility) return false;
+    if (utility === 'border') return true;
+    if (!utility.startsWith('border-')) return false;
+    if (utility.startsWith('border-collapse') || utility.startsWith('border-spacing')) return false;
+    return true;
+};
+
+const splitOverlayStrokeClasses = (classNames = '') => {
+    const tokens = classNames.split(/\s+/).filter(Boolean);
+    const strokeTokens = [];
+    const containerTokens = [];
+
+    tokens.forEach((token) => {
+        if (isBorderUtilityToken(token)) {
+            strokeTokens.push(token);
+            return;
+        }
+        containerTokens.push(token);
+    });
+
+    return {
+        container: containerTokens.join(' '),
+        stroke: strokeTokens.join(' '),
+    };
 };
 
 const ButtonContent = React.memo(({
@@ -159,7 +189,7 @@ const ButtonContent = React.memo(({
     const baseContainerClasses = cn(
         roundingClass,
         `button-${variant}-${size}`,
-        isIconOnly ? '' : 'overflow-hidden',
+        isIconOnly ? '' : 'web:overflow-hidden',
         className,
         BtnCls[variant]?.container?.base,
             `justify-${align}`,
@@ -177,12 +207,17 @@ const ButtonContent = React.memo(({
 
     const stateContainer = getStateClasses(active, pressed, hovered, focused, disabled, variant, 'container');
     const stateText = getStateClasses(active, pressed, hovered, focused, disabled, variant, 'text');
-    const containerClasses = `${baseContainerClasses} ${stateContainer}`;
+    const oContainerClasses = `${baseContainerClasses} ${stateContainer}`;
+    const { container: containerClasses, stroke: strokeClasses } = splitOverlayStrokeClasses(oContainerClasses);
+    const hasOverlayStroke = !!strokeClasses;
     const textClasses = `${baseTextClasses} ${stateText}`;
 
 
     return (
-        <Row className={`items-center ${containerClasses}`}>
+        <Row className={cn('items-center', hasOverlayStroke && 'relative', containerClasses)}>
+            {hasOverlayStroke && (
+                <View className={cn('absolute inset-0 pointer-events-none overflow-hidden', roundingClass, strokeClasses)} />
+            )}
             <ButtonIcon size={BtnClsSize[size]?.icon_size} icon={startDecorator} className={textClasses} />
             {isTitle && (
                 <Text className={`${textClasses} ${titleVisibility}`} numberOfLines={1}>

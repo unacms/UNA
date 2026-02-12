@@ -29,7 +29,7 @@ export const settingsButtons = {
             hitSlop: 4,
         },
         lg: {
-            rounded: 'rounded-xl',
+            rounded: 'rounded-2xl',
             container: 'px-4 gap-2 min-h-12 min-w-12',
             container_icon_only: 'min-h-12 min-w-12',
             title_container: ' leading-12 text-base',
@@ -39,14 +39,14 @@ export const settingsButtons = {
     },
     button_styles: {
         group:{
-            container: 'overflow-hidden border-[0.5px] items-center border-border/60',
+            container: ' border items-center border-border ',
             separator: ' bg-border/60 w-px h-full',
         },
         primary:{
             container:{
-                base:' web:duration-200',
+                base:' web:duration-200 web:border-0 shadow-sm  ',
                 default:'bg-primary',
-                active:'bg-primary/70',
+                active:'bg-primary scale-[0.97] ',
                 pressed:'bg-primary/70',
                 hovered:'bg-primary ',
                 focused:'bg-primary ',
@@ -65,9 +65,9 @@ export const settingsButtons = {
         },
         default:{
             container:{
-                base:'  web:duration-200 border border-border shadow-xs',
-                default:' bg-card/80 backdrop-blur-lg   ',
-                active:' bg-card outline outline-ring  ',
+                base:'  web:duration-200 web:border-0 shadow-custom web:hover:shadow-custom-hover border border-border',
+                default:' bg-card ',
+                active:' bg-card scale-[0.97]  ',
                 pressed:' bg-card',
                 hovered:' bg-card ',
                 focused:' bg-card ',
@@ -76,7 +76,7 @@ export const settingsButtons = {
             },
             text:{
                 base:'font-medium web:duration-200',
-                default:'text-secondary-foreground',
+                default:'text-card-foreground',
                 hovered:'text-foreground',
                 focused:'',
                 active:'text-foreground',

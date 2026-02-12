@@ -1,7 +1,48 @@
 const merge = require('deepmerge');
 const configCustom = require('app/customization/design/tailwind/theme');
-const isNative = process.env.TAILWIND_TARGET === 'native';
+const nativewindOS = process.env.NATIVEWIND_OS;
+const isNative = nativewindOS === 'ios' || nativewindOS === 'android' || process.env.TAILWIND_TARGET === 'native';
 const { nativewindUIColors } = require('app/design/tailwind/nativewindui-theme');
+
+// Keep web shadows aligned with Tailwind defaults while providing
+// parseable single-shadow values for NativeWind on iOS/Android.
+const boxShadowWeb = {
+    '2xs': '0 1px rgb(0 0 0 / 0.05)',
+    'xs': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+    'sm': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+    DEFAULT: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+    'md': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+    'lg': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+    'xl': '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+    '2xl': '0 25px 50px -12px rgb(0 0 0 / 0.25)',
+    none: '0 0 #0000',
+    'border-sm': 'var(--shadow-border-sm)',
+    'border': 'var(--shadow-border)',
+    'border-lg': 'var(--shadow-border-lg)',
+    'border-xl': 'var(--shadow-border-xl)',
+    'custom': 'var(--shadow-custom)',
+    'custom-hover': 'var(--shadow-custom-hover)',
+};
+
+const boxShadowNative = {
+    '2xs': '0px 1px 1px rgba(0, 0, 0, 0.08)',
+    'xs': '0px 1px 2px rgba(0, 0, 0, 0.08)',
+    'sm': '0px 2px 4px rgba(0, 0, 0, 0.08)',
+    DEFAULT: '0px 3px 6px rgba(0, 0, 0, 0.08)',
+    'md': '0px 4px 8px rgba(0, 0, 0, 0.08)',
+    'lg': '0px 8px 16px rgba(0, 0, 0, 0.08)',
+    'xl': '0px 16px 24px rgba(0, 0, 0, 0.08)',
+    '2xl': '0px 24px 48px rgba(0, 0, 0, 0.08)',
+    none: '0 0 #0000',
+    'border-sm': '0px 1px 2px rgba(0, 0, 0, 0.12)',
+    'border': '0px 2px 4px rgba(0, 0, 0, 0.14)',
+    'border-lg': '0px 4px 8px rgba(0, 0, 0, 0.16)',
+    'border-xl': '0px 8px 16px rgba(0, 0, 0, 0.18)',
+    // NativeWind currently maps one shadow layer only; these approximate
+    // the web stacked border+shadow custom tokens.
+    'custom': '0px 2px 4px rgba(0, 0, 0, 0.08)',
+    'custom-hover': '0px 3px 6px rgba(0, 0, 0, 0.2)',
+};
 
 const colors = {
     neutral: {
@@ -133,17 +174,12 @@ const theme = {
             DEFAULT: nativewindUIColors.border,
         },
       
-        boxShadow: {
-            'xs': 'var(--shadow-xs)',
-            'sm': 'var(--shadow-sm)',
-            'md': 'var(--shadow-md)',
-            'lg': 'var(--shadow-lg)',
-            'xl': 'var(--shadow-xl)',
-            '2xl': 'var(--shadow-2xl)',
-            'border-sm': 'var(--shadow-border-sm)',
-            'border': 'var(--shadow-border)',
-            'border-lg': 'var(--shadow-border-lg)',
-            'border-xl': 'var(--shadow-border-xl)',
+        boxShadow: isNative ? boxShadowNative : boxShadowWeb,
+        elevation: {
+            '2xs': '1',
+            'xs': '2',
+            'custom': '2',
+            'custom-hover': '3',
         },
 
         fontSize: {
