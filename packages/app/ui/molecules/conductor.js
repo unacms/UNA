@@ -443,7 +443,7 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
     }, [currentRoute.pageData]);
 
 
-    if (true) {//isProfileHeader
+    if (isProfileHeader ) {//isProfileHeader need add condition for veawe = coverMode === 'none'
         if (currentRoute?.pageData) {// may be need to fix
             Object.assign(tabSceneProps, {
 
