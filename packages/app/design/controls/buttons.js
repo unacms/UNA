@@ -91,7 +91,7 @@ const ButtonIcon = memo(({ icon, className, size }) => {
             );
         }
 
-        return <Icon key={key} size={size} className={className} icon={one} />;
+        return <Icon key={key} size={size} className={cn(className, "pointer-events-none")} icon={one} />;
     };
 
     if (!Array.isArray(icon)) {
@@ -123,8 +123,8 @@ const getStateClasses = (active, pressed, hovered, focused, disabled, variant, t
 
     if (disabled) return classes?.disabled || '';
     if (pressed) return classes?.pressed || '';
-    if (hovered) return classes?.hovered || '';
     if (active) return classes?.active || '';
+    if (hovered) return classes?.hovered || '';
     if (focused) return classes?.focused || '';
     return classes?.default || '';
 };
