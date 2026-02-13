@@ -65,7 +65,7 @@ function PageContent({ data }) {
                             showSeparator={true}
                         />
                     </CardContent>
-                    <CardFooter className="">
+                    <CardFooter className="sm:px-6">
                         <Row
                             className="mx-auto gap-1 justify-center items-center text-center"
                             accessibilityRole="text"
