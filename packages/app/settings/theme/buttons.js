@@ -29,7 +29,7 @@ export const settingsButtons = {
             hitSlop: 4,
         },
         lg: {
-            rounded: 'rounded-2xl',
+            rounded: 'rounded-xl',
             container: 'px-4 gap-2 min-h-12 min-w-12',
             container_icon_only: 'min-h-12 min-w-12',
             title_container: ' leading-12 text-base',

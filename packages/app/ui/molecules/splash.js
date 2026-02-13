@@ -7,6 +7,7 @@ import {
     CardContent,
     CardFooter,
     CardTitle,
+    CardIcon,
 } from 'app/ui/molecules/card'
 import { appSetting } from 'app/lib/util'
 import { Platform } from 'react-native'
@@ -18,6 +19,7 @@ import AnimatedView from 'app/ui/atoms/animated-view'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import Page from 'app/ui/molecules/page'
+import { Icon } from 'app/ui/atoms/icon'
 /**
  * Renders the login splash screen with adaptive layouts for web and mobile platforms.
  *
@@ -26,27 +28,29 @@ import Page from 'app/ui/molecules/page'
  * @param {object} props - Component properties, including optional login form data.
  */
 
-function PageContent({data}) {
+function PageContent({ data }) {
     const { t } = useTranslation()
     return (
-        <View className="w-full justify-center max-w-lg p-6 sm:p-8 md:p-12 mx-auto">
-            <AnimatedView className="gap-4" direction="up" delay={200}>
+        <View className="w-full justify-center max-w-sm xl:max-w-md mx-auto">
+            <AnimatedView direction="up" delay={200}>
                 <Card
-                    padding="p-0 gap-5 max-w-xl w-full mx-auto "
                     role="form"
                     titleId="login-card-title"
                     aria-describedby="login-card-description"
+                    className="sm:py-6 sm:gap-6"
                 >
-                    <CardHeader className="px-6 pt-5">
-                        <CardTitle id="login-card-title" className="text-center lg:text-start">
-                            {t('login_modal_title')} 
+                    <CardHeader className="items-center sm:px-6">
+                        <CardIcon id="login-card-icon">
+                            <Icon icon="UserRound" width={32} height={32} className="w-6 h-6 sm:w-8 sm:h-8" />
+                        </CardIcon>
+                        <CardTitle id="login-card-title">
+                            {t('login_modal_title')}
                         </CardTitle>
-                        <CardDescription id="login-card-description" className="text-center lg:text-start">
+                        <CardDescription id="login-card-description">
                             {t('splash_page_login')}
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="px-4">
-                        
+                    <CardContent className="sm:px-6">
                         <BlockByName
                             name="system:login_form"
                             contentOnly={true}
@@ -56,18 +60,17 @@ function PageContent({data}) {
                                 button_full_width: true,
                             }}
                         />
-
-                         <AuthPanel
+                        <AuthPanel
                             forgotPasswordLink={true}
                             showSeparator={true}
                         />
                     </CardContent>
-                    <CardFooter>
+                    <CardFooter className="">
                         <Row
                             className="mx-auto gap-1 justify-center items-center text-center"
                             accessibilityRole="text"
                             accessibilityLabel={`${t('splash_page_login2')} ${t(
-                                'splash_page_new_account'
+                                'splash_page_new_account',
                             )}`}
                         >
                             <Text
@@ -86,7 +89,7 @@ function PageContent({data}) {
                             </Link>
                         </Row>
                     </CardFooter>
-                </Card>            
+                </Card>
             </AnimatedView>
         </View>
     )
@@ -95,11 +98,10 @@ function PageContent({data}) {
 export default function Splash(props) {
     const isWeb = Platform.OS == 'web'
     const content = isWeb ? (
-        <View className="flex-col justify-center lg:pt-0 w-full ">
-            <View
-                className={`justify-center w-full mx-auto lg:flex-row ${appSetting(
+        <View className="flex-col justify-center w-full">
+            <View className={`gap-4 sm:gap-6 p-4 lg:p-6 justify-center w-full mx-auto lg:flex-row ${appSetting(
                     'layout',
-                    'max_width_content'
+                    'max_width_content',
                 )}`}
             >
                 {appStatic('splash_text')}
@@ -117,7 +119,7 @@ export default function Splash(props) {
             <View
                 className={`w-full lg:flex-row ${appSetting(
                     'layout',
-                    'max_width_content'
+                    'max_width_content',
                 )}`}
             >
                 {appStatic('splash_text')}
@@ -132,9 +134,5 @@ export default function Splash(props) {
         </View>
     )
 
-    return (
-        <Page>
-            {content}
-        </Page>
-    )
+    return <Page>{content}</Page>
 }

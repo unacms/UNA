@@ -68,6 +68,8 @@ const CardHeader = (props) => <CardSection baseClass="u-card-header" {...props} 
 
 const CardIcon = (props) => <CardSection baseClass="u-card-icon" {...props} />;
 
+const CardActions = (props) => <CardSection baseClass="u-card-actions" {...props} />;
+
 const CardTitle = ({ className = '', padding = '', id, ...props }) => {
     const context = useContext(CardContext);
     const resolvedId = id ?? context?.titleId ?? DEFAULT_TITLE_ID;
@@ -103,4 +105,5 @@ export {
     CardDescription,
     CardContent,
     CardFooter,
+    CardActions,
 };

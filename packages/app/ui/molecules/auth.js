@@ -22,12 +22,12 @@ export default function AuthPanel({
 
     const { t } = useTranslation()
     return (
-        <View className="w-full gap-3 sm:gap-4 pt-3 px-2">
+        <View className="w-full gap-4">
             {forgotPasswordLink && (
                 <Link
-                    className="mx-auto"
+                    className="mx-auto text-sm sm:text-base"
                     variant="plain"
-                    size="md"
+                    
                     href="/forgot-password"
                     haptics="Medium"
                 >
@@ -86,7 +86,7 @@ export default function AuthPanel({
                         importantForAccessibility="no"
                     />
                     <Text 
-                        className="hidden px-2 pb-px rounded-full text-xs leading-none mt-px  text-muted-foreground "
+                        className="hidden px-2 pb-px rounded-full text-xs leading-none mt-px text-muted-foreground "
                         accessibilityRole="text"
                     >
                         {t('splash_page_login3')}

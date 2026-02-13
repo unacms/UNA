@@ -102,30 +102,43 @@ const Logo = ({ mode = 'adaptive' }) => {
 const SplashTextInner = () => {
     const { t } = useTranslation()
     return (
-            <View className="text-center max-w-lg sm:max-w-2xl lg:text-start gap-4 w-full flex-auto mx-auto ">
-                <H1
-                    className="text-center lg:text-start" 
-                    fontFamily='font-title'
-                >
-                    {t('splash_page_title')} {appSetting('config', 'title')}
-                </H1>
-                <Text
-                    accessible={true}
-                    accessibilityRole="text"
-                    className=" text-secondary-foreground text-center lg:text-start text-base sm:text-lg lg:text-xl text-pretty"
-                >
-                    The best place to share your
-                    ideas, find real friends and connect with the community.
-                </Text>
-            </View>
-        
+        <View className="text-center max-w-lg sm:max-w-2xl lg:text-start w-full flex-auto ">
+            <H1 className="text-center lg:text-start sm:pb-6" fontFamily="font-title">
+                {t('splash_page_title')} {appSetting('config', 'title')}
+            </H1>
+            <Text
+                accessible={true}
+                accessibilityRole="text"
+                className=" text-muted-foreground text-center lg:text-start text-base sm:text-lg text-pretty"
+            >
+                Open-source social networking starter kit powered by UNA CMS. Create your own full-stack social media platform with web and native apps.
+            </Text>
+         
+        </View>
     )
 }
 
 const SplashTextComponent = (props) => {
     return isWeb ? (
+        <View className="items-center lg:items-start relative my-auto flex-auto w-full p-4 gap-4 ">
+            <AnimatedView direction="up" className="flex-auto h-64 w-64 ">
+                <SvgFile
+                    src_dark="splash-dark.svg"
+                    src_default="splash-light.svg"
+                    alt="Splash screen illustration"
+                />
+            </AnimatedView>
+            <AnimatedView
+                delay={100}
+                direction="up"
+                className="flex-auto w-full items-center lg:items-start "
+            >
+                <SplashTextInner />
+            </AnimatedView>
+        </View>
+    ) : (
         <View className=" items-center lg:items-start flex-auto p-4 sm:p-8 md:p-12 gap-4 w-full mx-auto">
-            <AnimatedView direction="up" className="flex-auto w-64 h-64 sm:w-80 sm:h-80 ">
+            <AnimatedView direction="up" className="flex-auto w-64 h-64">
                 <SvgFile
                     src_dark="splash-dark.svg"
                     src_default="splash-light.svg"
@@ -140,30 +153,16 @@ const SplashTextComponent = (props) => {
                 <SplashTextInner />
             </AnimatedView>
         </View>
-    ) : (
-        <View className=" items-center lg:items-start flex-auto p-4 sm:p-8 md:p-12 gap-4 w-full mx-auto">
-        <AnimatedView direction="up" className="flex-auto w-64 h-64 sm:w-80 sm:h-80 ">
-            <SvgFile
-                src_dark="splash-dark.svg"
-                src_default="splash-light.svg"
-                alt="Splash screen illustration"
-            />
-        </AnimatedView>
-        <AnimatedView
-            delay={100}
-            direction="up"
-            className="flex-auto w-full "
-        >
-            <SplashTextInner />
-        </AnimatedView>
-    </View>
     )
 }
 
 const JoinTextComponent = (props) => {
     return (
-            <AnimatedView direction="up" className=" w-40 h-40 lg:w-80 lg:h-80 web:duration-300 ">
-                            <SvgFile
+        <AnimatedView
+            direction="up"
+            className=" flex-auto w-1/2 max-w-64 "
+        >
+            <SvgFile
                 src_dark="create-account-dark.svg"
                 src_default="create-account-light.svg"
                 alt="Create account illustration"
@@ -268,27 +267,34 @@ const PageNotFound = () => {
     )
 }
 
-const PageError = ({error, reset}) => {
-        const { t } = useTranslation()
-        return (
-            <View className="mx-auto max-w-full px-2">
-                <View className="m-8 gap-y-4 items-center justify-center mx-auto my-auto py-4 px-8 items-center rounded-2xl bg-muted ">
-                    <View className=" mx-auto m-4 text-muted-foreground ">
-                        <Icon icon="BugOff" width={32} height={32} />
-                    </View>
-                    <Text className="text-center text-lg text-foreground lg:text-xl font-semibold ">
-                        {t('We ran into a problem')}
-                    </Text>
-                    <Text className="text-center text-base text-muted-foreground ">
-                        {t('Something didn’t go as planned. Please try again or reload the page.')}
-                    </Text>
-                    <Text className="text-center text-sm text-muted-foreground ">
-                       {error.digest}{error.message}
-                    </Text>
-
-                     <Button onPress={() => reset()}  variant="default" title="Reload page"></Button>
+const PageError = ({ error, reset }) => {
+    const { t } = useTranslation()
+    return (
+        <View className="mx-auto max-w-full px-2">
+            <View className="m-8 gap-y-4 items-center justify-center mx-auto my-auto py-4 px-8 items-center rounded-2xl bg-muted ">
+                <View className=" mx-auto m-4 text-muted-foreground ">
+                    <Icon icon="BugOff" width={32} height={32} />
                 </View>
+                <Text className="text-center text-lg text-foreground lg:text-xl font-semibold ">
+                    {t('We ran into a problem')}
+                </Text>
+                <Text className="text-center text-base text-muted-foreground ">
+                    {t(
+                        'Something didn’t go as planned. Please try again or reload the page.',
+                    )}
+                </Text>
+                <Text className="text-center text-sm text-muted-foreground ">
+                    {error.digest}
+                    {error.message}
+                </Text>
+
+                <Button
+                    onPress={() => reset()}
+                    variant="default"
+                    title="Reload page"
+                ></Button>
             </View>
+        </View>
     )
 }
 
@@ -350,7 +356,7 @@ export function ComponentsIntro(props) {
     useEffect(() => {
         const fetchData2 = async () => {
             const sResponse2 = await fetcher(
-                '/api.php?r=bx_persons/browse/&params[]={%22params%22:{%22per_page%22:%2212%22,%22start%22:0,%22type%22:%22active%22}}'
+                '/api.php?r=bx_persons/browse/&params[]={%22params%22:{%22per_page%22:%2212%22,%22start%22:0,%22type%22:%22active%22}}',
             )
             setData2(sResponse2.data[0].data.data)
         }
@@ -386,8 +392,6 @@ export function ComponentsIntro(props) {
         </Card>
     )
 }
-
-
 
 const ComponentsLoginContentComponent = (props) => {
     return (

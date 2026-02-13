@@ -12,7 +12,7 @@ export const settingsLinks = {
         },
         md: {
             hitSlop: 4,
-            text: 'text-base rounded-md px-1 py-0.5 underline-offset-2 web:focus-visible:outline-offset-2  ',
+            text: 'text-base rounded-md underline-offset-2 web:focus-visible:outline-offset-2  ',
         },
         lg: {
             hitSlop: 2,

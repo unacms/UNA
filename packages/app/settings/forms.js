@@ -6,7 +6,7 @@ export const settingsForms = {
         optional_text: '', // OLD appSetting('layout', 'form_fields_optional_text')
         mandatory_icon: 'Asterisk', // OLD appSetting('layout', 'form_fields_mandatory_icon')
         auto_ghosts_in_files: true,
-        form_container: 'w-full p-2 gap-4 max-w-2xl mx-auto ',
+        form_container: 'w-full gap-4 max-w-2xl mx-auto ',
         field_padding: ' gap-1 ',
         caption_classes:
             'font-semibold text-sm text-card-foreground',

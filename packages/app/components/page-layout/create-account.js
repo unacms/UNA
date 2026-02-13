@@ -8,6 +8,7 @@ import {
     CardContent,
     CardFooter,
     CardTitle,
+    CardIcon,
 } from 'app/ui/molecules/card'
 import Link from 'app/ui/atoms/link'
 import { Platform } from 'react-native'
@@ -19,31 +20,36 @@ import MenuFooter from 'app/components/nav/menu-footer'
 import AnimatedView from 'app/ui/atoms/animated-view'
 import Page from 'app/ui/molecules/page'
 import Html from 'app/ui/atoms/html';
+import { Icon } from 'app/ui/atoms/icon'
 
 const isWeb = Platform.OS === 'web'
 
 function PageContent({ children }) {
     const { t } = useTranslation()
     return (
-        <View className="w-full justify-center max-w-lg p-6 sm:p-8 md:p-12 mx-auto">
-
-            <AnimatedView className="gap-4" direction="up" delay={200}>
-                <Card padding="p-0 gap-6 max-w-xl w-full mx-auto rounded-3xl">
-                    <CardHeader className="px-6 pt-5">
-                        <CardTitle className="text-center lg:text-start">{t('create_account_page_caption')}</CardTitle>
-
-                        <CardDescription className="text-center lg:text-start">
+        <View className="w-full justify-center max-w-sm xl:max-w-md mx-auto">
+            <AnimatedView direction="up" delay={200}>
+                <Card role="form"
+                    titleId="signup-card-title"
+                    aria-describedby="signup-card-description"
+                    className="sm:py-6 sm:gap-6">
+                    <CardHeader className="items-center sm:px-6">
+                        <CardIcon id="signup-card-icon">
+                            <Icon icon="UserRoundPlus" width={32} height={32} className="w-6 h-6 sm:w-8 sm:h-8" />
+                        </CardIcon>
+                        <CardTitle className="text-center" id="signup-card-title">{t('create_account_page_caption')}</CardTitle>
+                        <CardDescription className="text-center">
                             {t('create_account_page_caption2')}
                         </CardDescription>
 
                     </CardHeader>
-                    <CardContent className="px-6">
-                        <View className="max-w-96 w-full mx-auto">
+                    <CardContent className="sm:px-6">
+                        
                             {children}
                             <AuthPanel showSeparator={true} createAccountLink={false} loginLink={false} />
-                        </View>
+                            <Html customClassName="text-xs text-center text-muted-foreground" data={t('create_account_page_terms')}/>
                     </CardContent>
-                    <CardFooter>
+                    <CardFooter className="sm:px-6">
                         <Row className=" mx-auto gap-1 justify-center items-center text-center">
                             <Text className="text-secondary-foreground text-base ">
                                 {t('create_account_page_already_have')}
@@ -58,7 +64,7 @@ function PageContent({ children }) {
                             </Link>
                         </Row>
                         
-                        <Html customClassName="text-xs text-center" data={t('create_account_page_terms')}/>
+                        
                     </CardFooter>
                 </Card>
 
@@ -93,9 +99,13 @@ export default function PageLayout({ data, blocks }) {
 
     const content = isWeb ? (
         <View className="flex-col justify-center w-full ">
-            <View className={`justify-center w-full mx-auto lg:flex-row border-x-0 border-guide/20 border-dashed divide-x-0 divide-dashed divide-guide/20 ${appSetting('layout', 'max_width_content')}`}>
+             <View className={`gap-4 sm:gap-6 p-4 lg:p-6 justify-center w-full mx-auto lg:flex-row ${appSetting(
+                    'layout',
+                    'max_width_content',
+                )}`}
+            >
 
-                <View className=" text-center lg:text-start items-center lg:items-start flex-auto p-4 sm:p-8 md:p-12 gap-4 w-full mx-auto">
+<View className="items-center lg:items-start relative my-auto flex-auto w-full p-4 gap-4 ">
 
                     {appStatic('join_text')}
                     <H1
@@ -106,10 +116,10 @@ export default function PageLayout({ data, blocks }) {
                             : t('create_account_page_title_request_invite')}
                     </H1>
                     <Text
-                        accessible={true}
-                        accessibilityRole="text"
-                        className=" text-secondary-foreground text-base sm:text-lg lg:text-xl text-pretty"
-                    >
+                accessible={true}
+                accessibilityRole="text"
+                className=" text-muted-foreground text-center lg:text-start text-base sm:text-lg text-pretty"
+            >
                         {isAllowJoin
                             ? t('create_account_page_text')
                             : t('create_account_page_text_request_invite')}
