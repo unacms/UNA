@@ -517,8 +517,10 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
     const srch = <Input rounded="full" size="small" name="search" placeholder={("Search") + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
 
     const header = <Row className=' bg-card px-3 gap-2 web:border-b border-border/60 gap-x-3 h-16'>
-        <View className='flex-auto hidden lg:flex'>
+        <View className='flex-auto hidden lg:flex justify-center'>
+            <View>
             {srch}
+            </View>
         </View>
         {!showSearch && <Row className='lg:hidden flex-auto  items-center '>
             {appSetting('messenger', 'back_button') && getBackButtonWeb()}

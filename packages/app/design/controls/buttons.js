@@ -123,8 +123,8 @@ const getStateClasses = (active, pressed, hovered, focused, disabled, variant, t
 
     if (disabled) return classes?.disabled || '';
     if (pressed) return classes?.pressed || '';
-    if (active) return classes?.active || '';
     if (hovered) return classes?.hovered || '';
+    if (active) return classes?.active || '';
     if (focused) return classes?.focused || '';
     return classes?.default || '';
 };
@@ -185,7 +185,7 @@ const ButtonContent = React.memo(({
 
 
     return (
-        <Row className={cn('items-center', hasOverlayStroke && 'relative', containerClasses)}>
+        <Row className={cn('items-center', containerClasses)}>
             {hasOverlayStroke && (
                 <View className={cn('absolute inset-0 pointer-events-none overflow-hidden', roundingClass, strokeClasses)} />
             )}

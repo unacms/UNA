@@ -18,6 +18,7 @@ import emitter from 'app/context/emitter'
 import { useSetHeader, useScrollValue, defaultHeader } from 'app/context/jotai/layout';
 import { getComponent } from 'app/components/registry';
 import { useFocusEffect }  from 'app/lib/hooks/router'
+import { appSetting } from 'app/lib/util'
 
 const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
     const MenuItemSubmenu = getComponent('menu-item', 'submenu');
@@ -438,12 +439,10 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
     };
 
     const CoverHeader = useMemo(() => {
-
         return <Cover data={currentRoute.pageData?.cover_block} showMoreMenu={false} uri={currentRoute.pageData?.uri} context={currentRoute?.pageData?.context} />
     }, [currentRoute.pageData]);
 
-
-    if (isProfileHeader ) {//isProfileHeader need add condition for veawe = coverMode === 'none'
+    if (isProfileHeader || appSetting('cover', 'view_by_module', currentRoute.pageData?.cover_block?.profile?.module) ) {//isProfileHeader need add condition for veawe = coverMode === 'none'
         if (currentRoute?.pageData) {// may be need to fix
             Object.assign(tabSceneProps, {
 

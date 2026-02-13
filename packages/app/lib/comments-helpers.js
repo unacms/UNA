@@ -104,6 +104,10 @@ export function CommentsBrowse({
 
     //Scroll to item by initial params 
     useEffect(() => {
+        setScrollIndex(scrollToIndex)
+    }, [scrollToIndex]);
+
+    useEffect(() => {
         if (scrollIndex !== false && scrollIndex !== true) {
             scrollToItemByCommentId(scrollIndex);
         }
@@ -113,6 +117,9 @@ export function CommentsBrowse({
         }
     }, [scrollIndex]);
 
+
+
+     
     useEffect(() => {
        
         const sub1 = subscribe('cmts_' + browseParams.module + '_' + browseParams.object_id, 'comment_added', refetch);
