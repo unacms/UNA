@@ -267,7 +267,7 @@ export default function Layout(props) {
                 // disabled: bug in timeline in context infinite scroll  
                 //      el.style.position = 'absolute';
                 //    el.style.bottom = '0';
-                   return;
+                // return; DISABLED BY SCROOL TO END IN http://localhost:3000/view-persons-profile/test-pers AND RIGHT column is hided
             }
 
             // фиксируем
