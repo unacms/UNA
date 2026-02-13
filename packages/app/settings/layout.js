@@ -57,7 +57,7 @@ export const settingsLayout = {
         show_tabbar_on_mobile_non_logged: false,
 
         header: {
-            content: 'items-center justify-between h-14 sm:h-16 px-4 w-full mx-auto',
+            content: 'items-center justify-between h-14 sm:h-16 px-4 sm:px-6 w-full mx-auto',
             content_center: ' hidden flex-auto lg:flex gap-1 items-center justify-center max-w-3xl xl:px-3 ',
         },
         vertical: {
