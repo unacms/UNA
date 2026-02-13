@@ -11,7 +11,6 @@ import Redirect from 'app/ui/atoms/redirect';
 import { storageClear } from 'app/lib/util';
 import { Platform } from 'react-native';
 import Link from 'app/ui/atoms/link';
-import { Block, BlockHeader, BlockContent, BlockFooter, BlockTitle, BlockDescription, BlockIcon, BlockName, BlockActions } from 'app/ui/molecules/page-block'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'app/ui/molecules/card'
 import AnimatedView from 'app/ui/atoms/animated-view';
 

@@ -1,8 +1,12 @@
 import { Sounds } from 'app/customization/sounds';
+import { appSetting } from 'app/lib/util'
 
 const cache = new Map();
+const isSounds = appSetting('layout', 'sounds');
 
 export const playSound = (name) => {
+    if (!isSounds)
+        return;
     try {
         let audio = cache.get(name);
         if (!audio) {

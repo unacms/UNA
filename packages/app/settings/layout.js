@@ -41,6 +41,8 @@ export const settingsLayout = {
         background_image: '', 
         background_image_dark: '', 
 
+        sounds: true,
+
         show_login_modal: 0,
         redirect_on_forbidden: '/home',
         lock_unconfirmed: true,
