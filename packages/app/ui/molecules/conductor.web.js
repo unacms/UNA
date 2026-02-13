@@ -130,7 +130,7 @@ export function Conductor({
         const handlePopState = () => {
             // Получаем текущий URL из браузера
             const currentPath = window.location.pathname.slice(1) // убираем начальный /
-            
+
             // Ищем соответствующий индекс в routes
             const foundIndex = routes.findIndex((item) => {
                 if (useSectionAsMenu) {
@@ -141,7 +141,7 @@ export function Conductor({
                         : '/' + currentPath === item.key || currentPath === item.key
                 }
             })
-            
+
             if (foundIndex !== -1 && foundIndex !== index) {
                 setIndex(foundIndex)
                 if (onChangeRoute) {
@@ -149,10 +149,10 @@ export function Conductor({
                 }
             }
         }
-        
+
         // Подписываемся на событие popstate
         window.addEventListener('popstate', handlePopState)
-        
+
         // Очищаем при размонтировании
         return () => {
             window.removeEventListener('popstate', handlePopState)
@@ -285,7 +285,7 @@ export function Conductor({
         !isDesktop &&
         layoutName === 'navigator' &&
         (currentRoute?.leftbar?.content?.length ?? 0) > 0
-    
+
     const isUseCurrentHeader = layoutName === 'profile' && (!isCoverDisabled || !isDesktop);
 
     const headerComponent = (
@@ -325,7 +325,7 @@ export function Conductor({
         />
     )
 
-    
+
 
     const tabRoute = currentRoute.inited ? currentRoute : prevRoute
     const isLeftCol = tabRoute?.leftbar?.content?.length > 0 || layoutName == 'navigator'
@@ -388,6 +388,7 @@ export function Conductor({
         }
         header={isUseCurrentHeader ? null : headerComponent}
         isUseCurrentHeader={isUseCurrentHeader}
+        onFormChangedValues={onFormChangedValues}
         keyword={keyword}
         ts={ts}
         timestamp={timestamp}
@@ -428,6 +429,7 @@ const TabSceneMainContent = ({
     keyword,
     ts,
     timestamp,
+    onFormChangedValues,
     isUseCurrentHeader
 }) => {
     const isDesktop = useIsDesktop()
@@ -487,8 +489,8 @@ const TabSceneMainContent = ({
 
     useEffect(() => {
         if (pageRoute?.endpoint?.unit !== 'feed')
-            return 
-        
+            return
+
         const sub1 = subscribe('bx_timeline_0', 'added', refetch)
         const sub2 = subscribe('bx_timeline_0', 'deleted', refetch)
 
@@ -604,15 +606,15 @@ const TabSceneMainContent = ({
 
     const PreloadShort = useMemo(
         () => getSkeletonForList(SkeletonForRoute, refetchRef.current.skipToast ? 0 : 5, false, layout, renderItem, paddings),
-        [SkeletonForRoute, refetchRef.current.skipToast, renderItem ]
+        [SkeletonForRoute, refetchRef.current.skipToast, renderItem]
     )
 
     // remove empty blocks
     const dataItemsPageFiltered = dataItemsPage?.filter(item => {
         if (!item) return false;
-        const block = BlockByName2({ 
-            b: item.data, 
-            name: item.block, 
+        const block = BlockByName2({
+            b: item.data,
+            name: item.block,
         });
         return block !== null;
     }) ?? [];
@@ -630,26 +632,33 @@ const TabSceneMainContent = ({
 
     const NoContent = getComponent('molecule', 'no_content')
 
+    const Form = getComponent('element', 'form');
+    const formProps = pageRoute?.endpoint?.filters;
 
     return (
-        <><UniList
-            
-            data={dataItems}
-            endpoint={pageRoute.endpoint}
-            listState={pageRoute?.state}
-            layout={layout}
-            mode={layout == 'w-full' ? 'simple' : ''}
-            storagekey={pageRoute.storageKeyValue}
-            refer={uniRef}
-            route={pageRoute}
-            unit={pageRoute.endpoint?.unit}
-            useWindowScroll={true}
-            onEndReached={handleEndReached}
-            onRefresh={refetch}
-            refreshing={isRefetching}
-            renderItem={renderItem}
+        <>
+            {formProps && <View className=" w-full mt-4 ms-4">
+                <Form {...formProps} key="form" name={formProps.name} onChange={onFormChangedValues} />
+            </View>
+            }
+            <UniList
 
-        />
+                data={dataItems}
+                endpoint={pageRoute.endpoint}
+                listState={pageRoute?.state}
+                layout={layout}
+                mode={layout == 'w-full' ? 'simple' : ''}
+                storagekey={pageRoute.storageKeyValue}
+                refer={uniRef}
+                route={pageRoute}
+                unit={pageRoute.endpoint?.unit}
+                useWindowScroll={true}
+                onEndReached={handleEndReached}
+                onRefresh={refetch}
+                refreshing={isRefetching}
+                renderItem={renderItem}
+
+            />
             {(pageRoute?.endpoint?.request_url && hasNextPage === undefined) && Preload}
             {(pageRoute?.endpoint?.request_url && hasNextPage) && PreloadShort}
             {(pageRoute?.endpoint?.request_url && hasNextPage === false && dataItems.filter((item) => item.type != 'block').length == 0) && <NoContent endpoint={pageRoute?.endpoint} />}
@@ -964,7 +973,7 @@ function ConductorMenu({
 
     const MenuItem = memo(
         ({ item: a, itemRefs, index: index2, visibleItemsCount }) => {
-           
+
             return (
                 <View className={`${a?.menu_settings?.class || ''}`}>
                     <MenuItemSubmenu
@@ -1087,7 +1096,7 @@ const LeftSideBarContainer = ({
     const addButtons = <AddMenu menu={menu} filter="hideInSideBar" />
     const title = layoutName == 'profile' ? '' : t(menuSettings?.name)
     const MenuItemSidebar = getComponent('menu-item', 'sidebar');
-     
+
     return (
         <View
             className={`${layoutName == 'profile'
@@ -1114,7 +1123,7 @@ const LeftSideBarContainer = ({
                                 {routes
                                     .filter((aItem) => aItem.hideInTop != true)
                                     .map((a) => {
-                                        const btn = <MenuItemSidebar addon={getAddon(a.addon)} title={a.title} icon={a.icon || 'Circle'} isActive={a.index === index } />
+                                        const btn = <MenuItemSidebar addon={getAddon(a.addon)} title={a.title} icon={a.icon || 'Circle'} isActive={a.index === index} />
 
                                         if (a?.icon == '*') {
                                             return (
@@ -1152,9 +1161,9 @@ const LeftSideBarContainer = ({
                                     })}
                             </View>
                         )}
-                        
+
                         {children}
-                        
+
                     </View>
                 </View>
             </View>
@@ -1203,12 +1212,12 @@ const HeaderContainer = ({
     const onCoverLayout2 = useCallback((e) => {
         setSmallCoverHeight(e.nativeEvent.layout.height)
     }, [])
-//hideDefaultHeaderFrom
+    //hideDefaultHeaderFrom
     return (
-        <View className={`z-40 ${isUseCurrentHeader || isDesktop ? 'bg-card': ''}`}>
+        <View className={`z-40 ${isUseCurrentHeader || isDesktop ? 'bg-card' : ''}`}>
             <View className={`${conductorTheme.cover_base} cover-1`}
                 style={{
-                    marginBottom: !isScrolled ? '0px' : `${(smallCoverHeight+((isCover && !isHideCover) || !isDesktop ? 56: 0))}px`,
+                    marginBottom: !isScrolled ? '0px' : `${(smallCoverHeight + ((isCover && !isHideCover) || !isDesktop ? 56 : 0))}px`,
                 }}
             >
                 <View>
@@ -1226,7 +1235,7 @@ const HeaderContainer = ({
                     </View>
                 </View>
             </View>
-            <View className={` header-fixed ${isUseCurrentHeader || isDesktop ? 'bg-card': ''} 77 ${conductorTheme.cover_base} ` + (isScrolled ? 'fixed' : '')}>
+            <View className={` header-fixed ${isUseCurrentHeader || isDesktop ? 'bg-card' : ''} 77 ${conductorTheme.cover_base} ` + (isScrolled ? 'fixed' : '')}>
                 <View className={conductorTheme.cover_small}
                     style={{
                         display: isScrolled ? 'flex' : 'none',
