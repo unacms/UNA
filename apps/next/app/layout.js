@@ -13,6 +13,8 @@ import { mainFont } from 'app/design/fonts/fonts-web';
 import { appSetting } from 'app/lib/util';
 import 'app/design/styles/global.css'
 import 'app/customization/design/styles/global.css'
+import 'app/design/styles/global.web.css'
+import 'app/customization/design/styles/global.web.css'
 
 // Suppress shadow* deprecation warnings from third-party libraries (react-native-toast-message)
 // until they update to use boxShadow

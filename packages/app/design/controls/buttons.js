@@ -120,7 +120,6 @@ const getAccessibleName = (alt, tooltip, title, startDecorator, endDecorator) =>
 
 const getStateClasses = (active, pressed, hovered, focused, disabled, variant, type = 'container') => {
     const classes = BtnCls[variant]?.[type];
-
     if (disabled) return classes?.disabled || '';
     if (pressed) return classes?.pressed || '';
     if (active) return classes?.active || '';
