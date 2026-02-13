@@ -637,7 +637,7 @@ const TabSceneMainContent = ({
 
     return (
         <>
-            {formProps && <View className=" w-full mt-4 ms-4">
+            {formProps && <View className=" w-full">
                 <Form {...formProps} key="form" name={formProps.name} onChange={onFormChangedValues} />
             </View>
             }
