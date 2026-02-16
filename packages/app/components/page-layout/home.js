@@ -84,7 +84,6 @@ const defineCells = (blocks, data) => {
 
 
 export default function ({ data, blocks }) {
-   return <Text className="text-pop">zcxzxc zxc</Text>
     /*  return <>
       <Text fontFamily="font-main" className="text-red-500 text-3xl" >The quick brown fox jumps over the lazy dog.  
  Packz my box with five dozen liquor jugs. 
