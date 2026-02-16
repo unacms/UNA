@@ -79,7 +79,7 @@ function DefaultUnit({ data }) {
         return (
             <AnimatedBlock>
                 <CardList className="mb-0.5 sm:mb-3 " padding="p-0.5">
-                    <CardHeader className=" px-4 py-3.5 flex-row items-center justify-between">
+                    <CardHeader className=" px-4 pt-3.5 flex-row items-center justify-between">
                         <CardTitle className="text-secondary-foreground">{t(data.title)}</CardTitle>
                         <Link
                             variant="accentghost"
@@ -93,9 +93,9 @@ function DefaultUnit({ data }) {
                             </Text>
                         </Link>
                     </CardHeader>
-                    <CardContent className=" overflow-hidden rounded-b-xl">
-                        <Scroll horizontal={true} step={300} className='w-full'><Row className="gap-2 pb-3 px-3">{contentElement}</Row></Scroll>
-                    </CardContent>
+                    <View className="overflow-hidden ">
+                        <Scroll horizontal={true} step={300} className='w-full'><Row className="gap-4 p-4">{contentElement}</Row></Scroll>
+                    </View>
 
                 </CardList>
             </AnimatedBlock>
