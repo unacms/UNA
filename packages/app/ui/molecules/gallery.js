@@ -84,7 +84,7 @@ useEffect(() => {
     ).current;
 
     return (
-        <View className=' w-full overflow-hidden' {...panResponder.panHandlers}>
+        <View className='p-2 w-full overflow-hidden' {...panResponder.panHandlers}>
             <Animated.View className='w-full' style={{ transform: [{ translateX: position }], opacity }}>
                 {items[currentIndex]}
             </Animated.View>
