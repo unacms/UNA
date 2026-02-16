@@ -49,14 +49,14 @@ export const settingsElements = {
     cards: {
         'u-card-list': ' u-card-list bg-card text-card-foreground sm:rounded-xl',
         'u-card-list-padding': 'p-4',
-        'u-card-base': 'u-card-base bg-card text-card-foreground gap-4 rounded-xl shadow-custom',
+        'u-card-base': 'u-card-base bg-card text-card-foreground rounded-xl shadow-custom',
         'u-card-padding': 'py-4',
-        'u-card-header': 'px-4 gap-1',
+        'u-card-header': 'px-4',
         'u-card-icon': ' ',
         'u-card-title': 'font-semibold text-base sm:text-lg tracking-tight ',
         'u-card-description': 'text-muted-foreground text-sm sm:text-base text-balance',
         'u-card-actions': ' ',
-        'u-card-content': 'px-4 gap-4',
+        'u-card-content': 'px-4',
         'u-card-footer': 'px-4 gap-1',
     },
     panels: {

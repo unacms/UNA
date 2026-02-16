@@ -30,10 +30,10 @@ export const settingsBadges = {
             // Matches profile_sizes['2xs']: h-5 (20px)
             padding: ' ',
             wide_padding: ' px-1 ',
-            container: ' min-w-4 h-4 overflow-hidden justify-center items-center  ',
+            container: ' min-w-5 h-5 overflow-hidden justify-center items-center  ',
             image_container: ' items-center justify-center rounded overflow-hidden ',
             icon_size: 12,
-            text: ' text-xs leading-4 px-1 py-0.5  ',
+            text: ' text-xs leading-5 px-1 py-0.5  ',
             rounded: ' rounded ',
         },
         xs: {

@@ -41,7 +41,7 @@ function PageContent({ data }) {
                 >
                     <CardHeader className="items-center sm:px-6">
                         <CardIcon id="login-card-icon">
-                            <Icon icon="UserRound" width={32} height={32} className="w-6 h-6 sm:w-8 sm:h-8" />
+                            <Icon icon="UserRoundCheck" width={32} height={32} className="w-6 h-6 sm:w-8 sm:h-8" />
                         </CardIcon>
                         <CardTitle id="login-card-title">
                             {t('login_modal_title')}

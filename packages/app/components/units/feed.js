@@ -114,9 +114,9 @@ function DefaultUnit({ data }) {
             <CardList
                 border="border-y border-x-none sm:border-x"
                 className="gap-y-3 mb-0.5 sm:mb-3"
-                padding="py-3 lg:py-4"
+                padding="py-3 sm:py-4"
             >
-                <Row className="gap-3 flex-auto px-3 lg:px-4">
+                <Row className="gap-3 flex-auto px-3 sm:px-4">
                     <Skeleton visible={isSkeleton} preset='feed_author'>
                         <Author data={data} url={url} t={t} />
                         <View className="flex-none mb-auto hidden">

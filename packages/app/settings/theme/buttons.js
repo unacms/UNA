@@ -7,7 +7,7 @@ export const settingsButtons = {
         xs: {
             rounded: 'rounded-md',
             container: 'px-1.5 gap-1 h-6 min-w-6',
-            container_icon_only: 'h-6 w-6',
+            container_icon_only: 'h-6 w-6 items-center justify-center',
             text: 'text-xs leading-6',
             icon_size: 16,
             hitSlop: 8,

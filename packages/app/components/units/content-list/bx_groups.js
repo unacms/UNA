@@ -40,7 +40,7 @@ export default function Unit(props) {
     function getBase() {
         const isSkeleton = data?.skeleton;
         return (
-            <Card padding="p-1 border border-border">
+            <Card padding="p-1">
                 <Redirect ref={redirectdRef} />
                 <Link className="web:group" href={data.url}>
                     <View className="relative bg-secondary aspect-video overflow-hidden rounded-lg w-full">
@@ -55,7 +55,7 @@ export default function Unit(props) {
                         </Skeleton>
 
                     </View>
-                    <View className="flex-auto  p-2 gap-3">
+                    <View className="flex-auto p-2 gap-3">
                         <View className="h-16 gap-1 justify-between">
                             <Skeleton className="h-5 w-3/4" visible={isSkeleton}>
                                 <Text numberOfLines={2} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-5 font-semibold">

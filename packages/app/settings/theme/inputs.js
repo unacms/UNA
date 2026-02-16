@@ -39,7 +39,7 @@ export const settingsInputs = {
             small: 'px-2 min-h-10',
         },
         base: 
-        'text-foreground placeholder:text-muted-foreground bg-input/70 border border-border leading-6 rounded-xl flex-auto text-base placeholder-muted-foreground text-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-card web:focus-visible:border-ring web:focus-visible:outline-accent web:overflow-hidden',
+        'text-foreground placeholder:text-muted-foreground bg-input/70 border border-border leading-6 rounded-xl flex-auto text-base placeholder-muted-foreground text-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-accent/70 web:focus-visible:border-accent-foreground web:focus-visible:outline-ring/60 web:focus-visible:outline-offset-2 web:focus-visible:outline-4 web:overflow-hidden',
         select: ' pr-10 border border-border rounded-xl bg-input web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
     },
     switcher: {
