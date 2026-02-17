@@ -35,7 +35,7 @@ export default function (props) {
                     {props.checker || props.required ? (
                         <></>
                     ) : (
-                        <Text className="text-sm sm: text-base text-neutral-700 dark:text-neutral-300">
+                        <Text className="text-sm sm: text-base text-muted ">
                             {isShowOptional}
                         </Text>
                     )}

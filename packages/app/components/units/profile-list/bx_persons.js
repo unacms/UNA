@@ -37,7 +37,7 @@ export default function Unit(props) {
                     display_name={data.title}
                 />
                 <View className="flex-row justify-between flex-auto items-center">
-                    <Text numberOfLines={2} className="text-sm  px-1.5 leading-tight font-semibold text-neutral-800 dark:text-neutral-200">
+                    <Text numberOfLines={2} className="text-sm  px-1.5 leading-tight font-semibold text-label-secondary ">
                         {data.title}
                     </Text>
                     <View className="flex-none">{sMeta}</View>

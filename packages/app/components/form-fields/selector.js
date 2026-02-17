@@ -118,7 +118,7 @@ export default function (props) {
 
     const header = <Row className=' w-full justify-between items-center'>
         <View><Button onPress={() => { setIsModal(null) }} variant='outline' rounded startDecorator="X" /></View>
-        <View className='w-full flex-auto items-center justify-center'><Text className="text-neutral-700 dark:text-neutral-200 text-xl font-bold">{'Choose ' + props.caption}</Text></View>
+        <View className='w-full flex-auto items-center justify-center'><Text className="text-muted  text-xl font-bold">{'Choose ' + props.caption}</Text></View>
         <View >
             <Button
                 startDecorator="Check"

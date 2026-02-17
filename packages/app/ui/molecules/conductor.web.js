@@ -998,7 +998,7 @@ function ConductorMenu({
     const MenuItemEx = memo(({ item, index: itemIndex }) => {
         const { title, addon, icon, link, menu_settings, key } = item
         const translatedTitle = (
-            <Text className="text-neutral-600 dark:text-neutral-400 web:hover:text-neutral-800 dark:web:hover:text-neutral-200 leading-6 font-medium text-base">
+            <Text className="text-label-tertiary web:hover:text-label-secondary leading-6 font-medium text-base">
                 {t(title)}
             </Text>
         )
@@ -1332,7 +1332,7 @@ const TabSceneHeader = ({ route, setFilterValue }) => {
         <>
             {counter > 0 && (
                 <View className="mx-4 mb-0 mt-2">
-                    <Text className="text-xl font-bold text-neutral-800  dark:text-neutral-200 ">
+                    <Text className="text-xl font-bold text-label-secondary   ">
                         {route.title} ({counter})
                     </Text>
                 </View>
@@ -1341,7 +1341,7 @@ const TabSceneHeader = ({ route, setFilterValue }) => {
                 <View
                     className={`${conductorTheme.content_max_width} mx-auto w-full pt-3  px-4`}
                 >
-                    <Text className="text-3xl tracking-tight leading-10 font-bold text-neutral-800  dark:text-neutral-200 ">
+                    <Text className="text-3xl tracking-tight leading-10 font-bold text-label-secondary   ">
                         {route.title}
                     </Text>
                 </View>

@@ -67,9 +67,9 @@ export default function ElementConfirmEmail(props) {
                                 </Row>
                                 {inputError && <FormError errorText={t("Code invalid")} />}
                                 <View className="flex-row items-center justify-center w-full">
-                                    <View className="flex-1 h-px w-full bg-neutral-200 dark:bg-neutral-500" />
-                                    <Text className="mx-4 text-xs text-neutral-500 dark:text-neutral-400 font-normal">OR</Text>
-                                    <View className="flex-1 h-px w-full bg-neutral-200 dark:bg-neutral-500" />
+                                    <View className="flex-1 h-px w-full bg-label-secondary dark:bg-muted-foreground" />
+                                    <Text className="mx-4 text-xs text-muted-foreground  font-normal">OR</Text>
+                                    <View className="flex-1 h-px w-full bg-label-secondary dark:bg-muted-foreground" />
                                 </View>
                                 <View className="gap-y-2 w-full">
                                     <Button size="lg" title={t("Resend email")} onPress={pressBack} fullWidth />

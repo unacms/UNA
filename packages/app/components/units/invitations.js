@@ -31,7 +31,7 @@ export default function Unit(props) {
             <CardList padding='p-2' className='mb-2 md:mb-0'>
                 <Link className="context " href={data.url}>
                     <View className="flex-row sm:flex-col p-1">
-                        <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center bg-neutral-500/20">
+                        <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center bg-muted-foreground/20">
                             <Image
                                 {...data.cover}
                                 alt={data.title}
@@ -59,11 +59,11 @@ export default function Unit(props) {
                                         />
                                     </View>
                                     {
-                                        <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
+                                        <Text className="truncate text-xs leading-tight flex-auto text-label-tertiary ">
                                             {friendsLabel}
                                         </Text>
                                     }
-                                    <Text className=" bg-primary/10  rounded-md  px-1.5 py-1 text-xs flex-none items-center font-semibold text-neutral-600 dark:text-neutral-400">
+                                    <Text className=" bg-primary/10  rounded-md  px-1.5 py-1 text-xs flex-none items-center font-semibold text-label-tertiary ">
                                         {data.visibility != "3" ? t('Private') : t('Public')}
                                     </Text>
                                 </Row>
@@ -93,7 +93,7 @@ export default function Unit(props) {
                     display_name={data.title}
                 />
                 <View className="flex-row justify-between flex-auto items-center">
-                    <Text numberOfLines={2} className="text-sm  px-1.5 leading-tight font-semibold text-neutral-800 dark:text-neutral-200">
+                    <Text numberOfLines={2} className="text-sm  px-1.5 leading-tight font-semibold text-label-secondary ">
                         {data.title}
                     </Text>
                     <View className="flex-none">

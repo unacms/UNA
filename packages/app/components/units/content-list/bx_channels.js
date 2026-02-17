@@ -42,7 +42,7 @@ export default function Unit(props) {
             <CardList padding='p-2' >
                 <Link className="web:group " href={data.url}>
                     <View className="flex-row sm:flex-col p-1">
-                        <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center bg-neutral-500/20">
+                        <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center bg-muted-foreground/20">
                             <Image
                                 {...data.cover}
                                 alt={data.title}
@@ -70,7 +70,7 @@ export default function Unit(props) {
 
                                     </View>
                                     {
-                                        <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
+                                        <Text className="truncate text-xs leading-tight flex-auto text-label-tertiary ">
                                             {friendsLabel}
                                         </Text>
                                     }

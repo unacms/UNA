@@ -297,9 +297,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                 <Row className='mb-4 gap-x-4'>
                     <Profile displaySize="base" displayType="unit_wo_info" {...sResponse.data.lot.author_data} />
                     <View>
-                        <Text className="text-neutral-900 dark:text-neutral-100">Participants: {sResponse.data.lot.parts}</Text>
-                        <Text className="text-neutral-900 dark:text-neutral-100">Messages: {sResponse.data.lot.messages}</Text>
-                        <Text className="text-neutral-900 dark:text-neutral-100">Files: {sResponse.data.lot.files}</Text>
+                        <Text className="text-popover-foreground ">Participants: {sResponse.data.lot.parts}</Text>
+                        <Text className="text-popover-foreground ">Messages: {sResponse.data.lot.messages}</Text>
+                        <Text className="text-popover-foreground ">Files: {sResponse.data.lot.files}</Text>
                     </View>
                 </Row>
             </View>)
@@ -559,9 +559,9 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
                     renderItem={({ item, index }) => <ItemConvo selectedIndex={selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />}
                 /></View>
                 : <View className='items-center justify-center w-full h-full'><View className="pt-8">
-                    <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-neutral-500/10 ">
-                        <View className="flex-col mx-auto  text-neutral-800 dark:text-neutral-200 ">
-                            <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
+                    <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-muted-foreground/10 ">
+                        <View className="flex-col mx-auto  text-label-secondary  ">
+                            <Text className="text-center text-lg text-label-secondary  lg:text-xl font-semibold  ">
                                 No conversations found
                             </Text>
                         </View>
@@ -572,7 +572,7 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
             }
         </View>)
 });
-/*bg-neutral-500/10 border-b border-neutral-500/10*/
+
 const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots, showConvo, deleteConvo, leaveConvo, getConvo, editConvo, handleReply, startReached }) => {
     const isWeb = Platform.OS == 'web'
     const setHeader = useSetHeader();
@@ -665,10 +665,10 @@ const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, 
                         <Row className='items-start justify-between max-w-full relative'>
                             <View className=' flex-auto pr-4'>
                                 <Row className='max-w-full '>
-                                    <Text className='text-xs text-neutral-900 dark:text-neutral-50'>Reply to: </Text>
-                                    <Text className='font-semibold text-xs text-neutral-900 dark:text-neutral-50'>{replyItem.author_data.display_name}</Text>
+                                    <Text className='text-xs text-popover-foreground '>Reply to: </Text>
+                                    <Text className='font-semibold text-xs text-popover-foreground '>{replyItem.author_data.display_name}</Text>
                                 </Row>
-                                <Text className='text-sm overflow-hidden text-neutral-900 dark:text-neutral-50' numberOfLines={3}>{linkedText(replyItem.message, "hover:text-label-linkhover")}</Text>
+                                <Text className='text-sm overflow-hidden text-popover-foreground ' numberOfLines={3}>{linkedText(replyItem.message, "hover:text-label-linkhover")}</Text>
                             </View>
                             <View className=" right-0 t-0">
                                 <Button align="start" rounded startDecorator="X" size="xs" variant="outline" onPress={() => handleCancelReply()} />

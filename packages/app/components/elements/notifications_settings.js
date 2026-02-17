@@ -56,7 +56,7 @@ export default function (props, blockWrapperProps) {
             data[activeIndex].items.map((item, index) => {
                 if (item.type == 'header') {
                     return (<Row className='p-2' key={"row" + index}>
-                        <Text className="text-neutral-900 dark:text-neutral-100 text-sm font-semibold">{item.title}</Text>
+                        <Text className="text-popover-foreground  text-sm font-semibold">{item.title}</Text>
                     </Row>)
                 }
                 else {
@@ -66,7 +66,7 @@ export default function (props, blockWrapperProps) {
                                 onValueChange={() => toggleSwitch(item.id, item.value == 1 ? 0 : 1)}
                                 value={item.value == 1 ? true : false}
                             />
-                            <Text className="ml-2 text-neutral-900 dark:text-neutral-100 text-sm">{item.title}</Text>
+                            <Text className="ml-2 text-popover-foreground  text-sm">{item.title}</Text>
                         </Row>
                     )
                 }

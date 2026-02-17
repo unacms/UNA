@@ -12,7 +12,7 @@ export const settingsInputs = {
         container: 'w-full items-center justify-between mt-2',
         value_container:
             'w-36 bg-input border border-border/60 py-2 px-4 text-center rounded-lg justify-between',
-        text_value: 'text-neutral-700 dark:text-neutral-300',
+        text_value: 'text-muted ',
         text_info: '',
         track_height: 4,
         thumb_size: 15,
@@ -95,7 +95,7 @@ export const settingsInputs = {
 
         // Radiobutton circular indicator
         'u-controls-radiobutton-indicator':
-            'h-5 w-5 m-1 rounded-full border-2 border-neutral-500 bg-transparent justify-center items-center ',
+            'h-5 w-5 m-1 rounded-full border-2 border-guide bg-transparent justify-center items-center ',
 
         // Active mark inside checkbox (filled square)
         'u-controls-checkbox-indicator-active':

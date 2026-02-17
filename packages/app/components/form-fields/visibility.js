@@ -119,7 +119,7 @@ export default function (props) {
 
     const modalHeader = <Row className={` w-full items-center justify-:px-4 :pt-4`}>
         <View className='flex-auto absolute left-0 right-0'>
-            <Text className='text-neutral-800 dark:text-neutral-200 text-2xl font-bold tracking-tight text-center '>{selectedItem?.label}</Text>
+            <Text className='text-label-secondary  text-2xl font-bold tracking-tight text-center '>{selectedItem?.label}</Text>
         </View>
         <View >
             <Button variant='secondary' size='base' rounded startDecorator='ArrowLeft' onPress={() => { setIsModalSub(false) }} />
@@ -158,7 +158,7 @@ export default function (props) {
                     onBlur={field.onBlur}
                     defaultValue={props.value}
                 />
-                {!!props.owner_info && <Row className=" h-5.5 items-center text-neutral-600 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400   web:duration-300">
+                {!!props.owner_info && <Row className=" h-5.5 items-center text-label-tertiary web:group-hover:text-label-secondary     web:duration-300">
                     <View className='flex-none mb-auto'>
                         <Profile
                             {...props.owner_info}
@@ -207,19 +207,19 @@ export default function (props) {
             {modalElement}
             <Pressable onPress={() => handleShowModal()}>
                 {props.addElement}
-                <Row className="  flex-none mr-auto gap-x-0.5 px-1 py-1 rounded-lg items-center text-neutral-600 web:dark:group-hover:text-neutral-200 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400 h-6   web:duration-300">
+                <Row className="  flex-none mr-auto gap-x-0.5 px-1 py-1 rounded-lg items-center text-label-tertiary  web:group-hover:text-label-secondary   h-6   web:duration-300">
                     <Icon
                         icon={icon}
                         width={16}
                         height={16}
-                        className={"text-neutral-600"}
+                        className={"text-label-tertiary"}
                     />
-                    <Text className=" leading-5.5 ml-1 whitespace-nowrap text-ellipsis overflow-hidden tracking-tight text-neutral-600 web:group-hover:text-neutral-800 dark:text-neutral-400 web:dark:group-hover:text-neutral-200 font-medium text-sm native:text-sm ">{displayText}</Text>
+                    <Text className=" leading-5.5 ml-1 whitespace-nowrap text-ellipsis overflow-hidden tracking-tight text-label-tertiary web:group-hover:text-label-secondary   font-medium text-sm native:text-sm ">{displayText}</Text>
                     <Icon
                         icon="ChevronDown"
                         width={16}
                         height={16}
-                        className={"text-neutral-600"}
+                        className={"text-label-tertiary"}
                     />
                 </Row>
             </Pressable>

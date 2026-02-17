@@ -68,13 +68,13 @@ Units.Search = function Search({ data }) {
             <View className="flex-auto sm:h-40 flex-col p-2">
                 <Skeleton className="h-6 w-3/4 mt-2" visible={isSkeleton}>
                     <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
-                        <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 web:hover:text-primary leading-tight text-base  font-semibold">
+                        <Text numberOfLines={2} className="text-label-primary tracking-tight  web:hover:text-primary leading-tight text-base  font-semibold">
                             {data.title}
                         </Text>
                     </LinkOrModal>
                 </Skeleton>
                 <Skeleton className="h-16 w-full mt-2" rounded="rounded-lg" visible={isSkeleton}>
-                    <Text numberOfLines={3} className="text-neutral-600 dark:text-neutral-400 mt-2 mb-auto text-xs ">
+                    <Text numberOfLines={3} className="text-label-tertiary  mt-2 mb-auto text-xs ">
                         {data.summary_plain}
                     </Text>
                 </Skeleton>
@@ -110,13 +110,13 @@ Units.Small = function Small({ data }) {
             <View className="flex-auto">
                 <Skeleton className="h-6 w-3/4 mt-1" visible={isSkeleton}>
                     <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
-                        <Text numberOfLines={2} className="text-neutral-800  mb-1 tracking-tight leading-tight dark:text-neutral-200 web:hover:text-primary text-lg font-bold">
+                        <Text numberOfLines={2} className="text-label-secondary  mb-1 tracking-tight leading-tight  web:hover:text-primary text-lg font-bold">
                             {data.title}
                         </Text>
                     </LinkOrModal>
                 </Skeleton>
                 <Skeleton className="h-12 w-full mb-2" rounded="rounded-lg" visible={isSkeleton}>
-                    <Text numberOfLines={2} className="text-neutral-600 mb-2 dark:text-neutral-400 text-sm">
+                    <Text numberOfLines={2} className="text-label-tertiary mb-2  text-sm">
                         {data.summary_plain}
                     </Text>
                 </Skeleton>

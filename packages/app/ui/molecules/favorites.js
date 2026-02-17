@@ -65,10 +65,10 @@ const getSkeleton = () => {
         {[...Array(1, 2, 3)].map( i => 
             <View key={i} className="flex-col p-2 bg-muted  sm:rounded-lg">
                 <View className="animate-pulse flex-row items-center gap-3">
-                    <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
+                    <View className="rounded-full bg-secondary-foreground/20 h-10 w-10"></View>
                     <View className="flex-1 gap-y-1">
-                        <View className="h-4 w-1/2 bg-neutral-600/20 rounded-full"></View>    
-                        <View className="h-3 w-1/3 bg-neutral-600/20 rounded-full"></View>
+                        <View className="h-4 w-1/2 bg-secondary-foreground/20 rounded-full"></View>    
+                        <View className="h-3 w-1/3 bg-secondary-foreground/20 rounded-full"></View>
                     </View>
                 </View>
             </View>
@@ -168,7 +168,7 @@ export default function ElementFavorites(oProps) {
 
         sCounterPopup = (
             <Modal title={t('Favorites')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
-                <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">{sUsers}</View>
+                <View className="p-2 gap-y-4 overflow-y-auto text-muted ">{sUsers}</View>
             </Modal>
         );
     }

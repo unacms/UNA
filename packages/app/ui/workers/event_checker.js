@@ -82,15 +82,15 @@ export default function WorkerEventChecker(oProps) {
                    
                         <Row >
                             <View className={(item.cover ? 'w-4/5' : 'w-full') + ' gap-y-2'}>
-                                <Text className=" text-neutral-900 dark:text-neutral-100 tracking-tight dark:text-neutral-50 web:hover:text-primary leading-tight text-base font-bold">{item.title}</Text>
+                                <Text className=" text-popover-foreground  tracking-tight  web:hover:text-primary leading-tight text-base font-bold">{item.title}</Text>
                                 <Row className='text-center gap-x-2 items-center'>
                                     <Button startDecorator='CalendarCheck' size="xs" />
                                     <Time className=" " ts={item.date_start} />
                                     <Text className=" " >-</Text>
                                     <Time className=" " ts={item.date_end} />
                                 </Row>
-                                {item.location != '' && (<Row className='text-center gap-x-2 items-center'><Button startDecorator='MapPin' size="xs" /><Text className="text-xs text-neutral-700 dark:text-neutral-300">{item.location}</Text></Row>)}
-                                <Text className="text-neutral-700 dark:text-neutral-300" numberOfLines={2}> {stripTags(item.description)}</Text>
+                                {item.location != '' && (<Row className='text-center gap-x-2 items-center'><Button startDecorator='MapPin' size="xs" /><Text className="text-xs text-muted ">{item.location}</Text></Row>)}
+                                <Text className="text-muted " numberOfLines={2}> {stripTags(item.description)}</Text>
                             </View>
                             {item.cover && <View className='w-1/5 mb-auto bg-muted  aspect-video overflow-hidden rounded-xl'>
                                 <Image

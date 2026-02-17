@@ -30,10 +30,10 @@ function Results({ data }) {
 
                                     <View className='w-full items-center justify-center py-1.5 px-2 '>
 
-                                        <Text numberOfLines={10} className="flex-wrap w-full text-neutral-950 dark:text-neutral-50 font-semibold text-sm flex-wrap ">
+                                        <Text numberOfLines={10} className="flex-wrap w-full text-label-primary  font-semibold text-sm flex-wrap ">
                                             {item2.title}
                                         </Text>
-                                        <Text className="font-medium flex-wrap w-full text-neutral-900 dark:text-neutral-100 text-xs flex-wrap">
+                                        <Text className="font-medium flex-wrap w-full text-popover-foreground  text-xs flex-wrap">
                                             {item2.width} ({item2.votes.count} votes)
                                         </Text>
                                     </View>
@@ -92,7 +92,7 @@ export function PollItem({ data, showTitle, onDelete, disabled = false, results_
         
         <View className='w-full p-3 rounded-xl bg-muted/50 gap-1.5'>
         <Row className='items-center justify-between w-full gap-x-2 '>
-            {showTitle && <Text className="text-neutral-950 p-1 rounded-xl dark:text-neutral-50 text-lg tracking-tight font-semibold">{data.title}</Text>}
+            {showTitle && <Text className="text-label-primary p-1 rounded-xl  text-lg tracking-tight font-semibold">{data.title}</Text>}
             {(!data.is_hidden_results && totalVotes > 0) && (
                 
                     <Button
@@ -136,7 +136,7 @@ export default function ElementEntityPoll({ data, blockWrapperProps }) {
                 </View>}
                 {(!!data.image && !data.video) && <View className="w-full aspect-[2/1] rounded-xl overflow-hidden lg:mt-6"><Image {...data.image} alt={data.title} className=" u-cover" view="cover" /></View>}
                 <View className={"mx-auto w-full"}>
-                    <H1 className="font-bold tracking-tight  text-neutral-900 dark:text-neutral-50 ">{data.title}</H1>
+                    <H1 className="font-bold tracking-tight  text-popover-foreground  ">{data.title}</H1>
                 </View>
                 <PollItem data={data} />
             </View>

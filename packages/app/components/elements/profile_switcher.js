@@ -62,10 +62,10 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                                 displaySize="base"
                             />
                             <View className='flex-col'>
-                                <Text className=" text-base p-1.5 flex-auto my-auto font-semibold truncate text-neutral-800 dark:text-neutral-200 web:group-hover:text-neutral-950 web:dark:group-hover:text-white web:duration-300">
+                                <Text className=" text-base p-1.5 flex-auto my-auto font-semibold truncate text-label-secondary  web:group-hover:text-label-primary  web:duration-300">
                                     {currentUser.display_name}
                                 </Text>
-                                <Text className=" text-xs p-1.5 flex-auto my-auto truncate text-neutral-600 dark:text-neutral-400 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 web:duration-300">
+                                <Text className=" text-xs p-1.5 flex-auto my-auto truncate text-label-tertiary  web:group-hover:text-label-secondary  web:duration-300">
                                     {currentUser.membership_name}
                                 </Text></View>
                         </Row>
@@ -87,7 +87,7 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                 <ScrollView>
                     <View className="   flex-col">
                         {!hideTitle && <View className="flex-row items-center  justify-between">
-                            <Text className="text-lg px-1.5 py-2 font-bold text-neutral-800 dark:text-neutral-200 ">
+                            <Text className="text-lg px-1.5 py-2 font-bold text-label-secondary  ">
                                 Your Profiles
                             </Text>
                         </View>
@@ -103,7 +103,7 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                                 
                                 max-w-5xl self-center w-full gap-x-3">
                                         <View className="flex-none ">{profile}</View>
-                                        <Text className='text-sm my-auto flex-auto font-semibold truncate text-neutral-900 dark:text-neutral-100'>{item.display_name}</Text>
+                                        <Text className='text-sm my-auto flex-auto font-semibold truncate text-popover-foreground '>{item.display_name}</Text>
                                         <View className="text-sm bont-semibold flex-none my-auto">
                                             <Button id="menu" startDecorator="RefreshCw" title="Switch" variant='outline' size='sm' onPress={() => handleSwitch(item.id)} />
                                         </View>

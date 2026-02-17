@@ -35,7 +35,7 @@ export function DisplayNameLink({title, url, href, fontSize, actions, inheritCol
 
 function DisplayNameText({ title, fontSize }) {
     return (
-        <Text className={`${fontSize} text-neutral-600 dark:text-neutral-400  truncate tracking-tight`}>
+        <Text className={`${fontSize} text-label-tertiary   truncate tracking-tight`}>
             {title}
         </Text>
     )

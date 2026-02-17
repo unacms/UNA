@@ -195,7 +195,7 @@ export default function ElementChart({ data, blockWrapperProps }) {
     return (
         <BlockWrapper {...blockWrapperProps}>
             <View className='mb-4'>
-                <Text className="text-lg font-bold text-neutral-800 dark:text-neutral-200">{data.title}</Text>
+                <Text className="text-lg font-bold text-label-secondary ">{data.title}</Text>
             </View>
             <View className='max-w-5xl w-full mx-auto'>
                 {CharComponent}

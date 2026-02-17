@@ -461,8 +461,8 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
         button = (
             <Pressable onPress={selectImage} >
                 <View className={w + ' max-w-full items-center justify-center bg-input ' + (isImage ? '' : 'h-32')}>
-                    {!img && (<View ref={drop} className=' text-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'>
-                        <Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>Drag & Drop or browse files...</Text>
+                    {!img && (<View ref={drop} className=' text-muted-foreground/50 text-lg  flex-auto w-full border-border rounded-lg  justify-center  flex-col border border-dashed text-center'>
+                        <Text className='text-muted-foreground/50 text-lg  justify-center  flex-col text-center'>Drag & Drop or browse files...</Text>
                     </View>)}
                     {img != null && (<>
                         {isImage && <ImageRN
@@ -519,7 +519,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
                     isVideo ? (
                         <Video src={img.uri || img.file_url} />
                     ) : (
-                        <View className="h-16 w-16 text-neutral-700 dark:text-neutral-300 items-center justify-center"><Icon icon="File" className="w-9 h-9" size={36} /></View>
+                        <View className="h-16 w-16 text-muted  items-center justify-center"><Icon icon="File" className="w-9 h-9" size={36} /></View>
                     )
 
                 )}

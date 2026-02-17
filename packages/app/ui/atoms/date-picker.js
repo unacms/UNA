@@ -60,7 +60,7 @@ export function MonthCalendar({ date = new Date(), onSelect, selectedDate }) {
                                     >
                                         <Pressable onPress={() => { onSelect(new Date(displayYear, displayMonth - 1, day, selectedDate ? selectedDate.getHours() : 0, selectedDate ? selectedDate.getMinutes() : 0, selectedDate ? selectedDate.getSeconds() : 0)) }}>
                                             <Text
-                                                className={` text-base ${isToday ? 'text-white' : 'text-neutral-700 dark:text-neutral-300'
+                                                className={` text-base ${isToday ? 'text-white' : 'text-muted '
                                                     }`}
                                             >
                                                 {day}
@@ -247,7 +247,7 @@ export default function ({ name, value = '', type, onChange }) {
                     value={`${tValue[0]}`}
 
                 /></View>
-                    <Text className="tracking-tight font-medium text-neutral-800 dark:text-neutral-200">:</Text>
+                    <Text className="tracking-tight font-medium text-label-secondary ">:</Text>
                     <View className='w-5'><Input
                         onChangeText={text => handleChangeTime(text, 59, 'm')}
                         onBlur={handleChangeTime2}
@@ -255,7 +255,7 @@ export default function ({ name, value = '', type, onChange }) {
                         placeholder="HH:mm"
                         maxLength={2}
                         placeholderTextColor="#6b7280"
-                        className='tracking-tight font-medium text-neutral-800 dark:text-neutral-200'
+                        className='tracking-tight font-medium text-label-secondary '
                         value={`${tValue[1]}`}
 
                     /></View></>)}

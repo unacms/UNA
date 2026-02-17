@@ -471,7 +471,7 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
             >
                 {bPerson && (
                     <View className="hidden lg:flex flex-none h-24 justify-end w-min ">
-                        <View className=" flex-auto z-50 rounded-full p-1 flex-none bg-white dark:bg-neutral-900 translate-y-1 -translate-x-1">
+                        <View className=" flex-auto z-50 rounded-full p-1 flex-none bg-white dark:bg-red-500 translate-y-1 -translate-x-1">
                             <CoverImage
                                 is_person={bPerson}
                                 mode="picture"
@@ -519,7 +519,7 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
                                     className={`${isMin ? 'h-24' : 'h-9'
                                         } lg:hidden flex-auto justify-end `}
                                 >
-                                    <View className=" flex-row flex-auto z-50 rounded-full p-1 flex-none bg-white mr-auto dark:bg-neutral-900 translate-y-1 -translate-x-1 ">
+                                    <View className=" flex-row flex-auto z-50 rounded-full p-1 flex-none bg-white mr-auto dark:bg-red-500 translate-y-1 -translate-x-1 ">
                                         <CoverImage
                                             mode="picture"
                                             profileDisplaySize={

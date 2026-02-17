@@ -147,7 +147,7 @@ export default function PageLayout(props) {
                                     <Link href={currentUser.url}>
                                         <View className="flex-row items-center ">
                                         {profile}
-                                        <Text className="my-auto ml-3 text-neutral-800 web:hover:text-neutral-950 dark:text-neutral-200 web:hover:dark:text-neutral-50 text-lg font-semibold ">
+                                        <Text className="my-auto ml-3 text-label-secondary web:hover:text-label-primary  web:hover: text-lg font-semibold ">
                                             {currentUser.display_name}
                                         </Text>
                                         </View>
@@ -336,17 +336,17 @@ function ElementDashboardStat(props) {
                                     <Card rounded=" rounded-2xl " addClassName=" sm:web:hover:scale-105 web:duration-300 w-full p-4 " >
                                         <Row className='space-x-1 w-full justify-between'>
                                             {
-                                                item.count > 0 ? <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 web:group-hover:text-neutral-950 dark:text-neutral-200 web:group-hover:dark:text-white  ">
+                                                item.count > 0 ? <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-label-secondary web:group-hover:text-label-primary    ">
                                                     {item.count}
                                                 </Text> : <View><Link href={item2.link2} emulate={true}><Button variant="outline" startDecorator="Plus" size="sm" rounded /></Link></View>
                                             }
-                                            <View className="flex-none  text-neutral-800 web:group-hover:text-neutral-950 dark:text-neutral-200 web:group-hover:dark:text-white font-semibold ">
+                                            <View className="flex-none  text-label-secondary web:group-hover:text-label-primary   font-semibold ">
                                                 <Icon icon={item2.icon} width={24} height={24} color={colors.default}/>
                                             </View>
                                         </Row>
                                         <Row className="w-full my-auto gap-x-2 ">
                                              
-                                            <Text className=" text-lg flex-auto text-neutral-800 web:group-hover:text-neutral-950 dark:text-neutral-200 web:group-hover:dark:text-white font-semibold ">
+                                            <Text className=" text-lg flex-auto text-label-secondary web:group-hover:text-label-primary   font-semibold ">
                                                 {t(item2.title)}
                                             </Text>
                                             <View className='my-auto' ><Text>{getCounter(item[item2.action], item2.action_icon, '', colors.default)}</Text></View>
@@ -362,17 +362,17 @@ function ElementDashboardStat(props) {
                                 <Link href={item2.link} key={index}>
                                     <Card rounded=" rounded-2xl " addClassName="w-full p-4 web:duration-300 sm:web:hover:scale-105 " margin="a">
                                         <Row className=''>
-                                            <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 web:group-hover:text-neutral-950 dark:text-neutral-200 web:group-hover:dark:text-white  ">
+                                            <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-label-secondary web:group-hover:text-label-primary    ">
                                                 {item.current}
                                             </Text>
-                                            <View className="flex-none  text-neutral-800 web:group-hover:text-neutral-950 dark:text-neutral-200 web:group-hover:dark:text-white font-semibold ">
+                                            <View className="flex-none  text-label-secondary web:group-hover:text-label-primary   font-semibold ">
                                                 <Icon icon={item2.icon} width={24} height={24} color={colors.default}/>
                                             </View>
 
                                         </Row>
                                         <Row className="w-full gap-x-2">
                                           
-                                            <Text className=" text-lg flex-auto text-neutral-800 web:group-hover:text-neutral-950 dark:text-neutral-200 web:group-hover:dark:text-white font-semibold  ">
+                                            <Text className=" text-lg flex-auto text-label-secondary web:group-hover:text-label-primary   font-semibold  ">
                                                 {t(item2.title)}
                                             </Text>
                                             <View className='my-auto' ><Text>{getCounter(item[item2.action], item2.action_icon, '', colors.default)}</Text></View>
@@ -388,7 +388,7 @@ function ElementDashboardStat(props) {
 
             {menu_manage.length > 0 && <Card addClassName='m-2 mb-1 p-2 sm:p-3'>
                 
-                    <Text className="text-xl mx-1 mb-1 text-neutral-800 dark:text-neutral-200 font-semibold">Admin Tools</Text>
+                    <Text className="text-xl mx-1 mb-1 text-label-secondary  font-semibold">Admin Tools</Text>
                 
                 <View className="flex-row flex-wrap ">
                     {menu_manage.map((item2, index) => {
@@ -396,11 +396,11 @@ function ElementDashboardStat(props) {
                             <Link href={item2.link}>
                                 
 
-                                    <Row className="w-full bg-muted  web:hover:bg-muted-h web:dark:hover:bg-muted-dh p-2 rounded-lg my-auto  items-center  text-neutral-600 web:hover:text-neutral-950 dark:text-neutral-400  web:hover:dark:text-white">
+                                    <Row className="w-full bg-muted p-2 rounded-lg my-auto  items-center  text-label-tertiary web:hover:text-label-primary   web:hover:dark:text-white">
                                         <View className="flex-none px-1 font-semibold ">
                                             <Icon icon={item2.icon} width={24} height={24} color={colors.default}/>
                                         </View>
-                                        <Text className="ml-3 sm: text-base flex-auto text-neutral-600 web:hover:text-neutral-950 dark:text-neutral-400 web:hover:dark:text-white  font-medium ">
+                                        <Text className="ml-3 sm: text-base flex-auto text-label-tertiary web:hover:text-label-primary  web:hover:dark:text-white  font-medium ">
                                             {t(item2.title)}
                                         </Text>
 

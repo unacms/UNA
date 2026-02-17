@@ -44,7 +44,7 @@ const CalendarHeader = (dValue, addMonth) => {
     <Row className='w-full justify-between mb-4 items-center mt-2'>
         <Button size="sm" rounded startDecorator="ChevronsLeft" onPress={() => addMonth('y', -1)} />
         <Button size="sm" rounded startDecorator="ChevronLeft" onPress={() => addMonth('m', -1)} />
-        <Text className=" font-medium text-neutral-700 text-lg">{dValue.dt ? formatValueDate(dValue) : 'Select date'}</Text>
+        <Text className=" font-medium text-muted text-lg">{dValue.dt ? formatValueDate(dValue) : 'Select date'}</Text>
         <Button size="sm" rounded startDecorator="ChevronRight" onPress={() => addMonth('m', 1)} />
         <Button size="sm" rounded startDecorator="ChevronsRight" onPress={() => addMonth('y', 1)} />
     </Row>
@@ -110,7 +110,7 @@ export default function ({ name, value = '', type, onChange }) {
                                 textDisabledColor: colors.text,
                                 monthTextColor: colors.text,
                             }}
-                            renderArrow={direction => { return <View className="text-neutral-800 dark:text-neutral-200"><Icon icon={direction == 'left' ? 'ArrowLeft' : 'ArrowRight'} width={24} height={24} /></View> }}
+                            renderArrow={direction => { return <View className="text-label-secondary "><Icon icon={direction == 'left' ? 'ArrowLeft' : 'ArrowRight'} width={24} height={24} /></View> }}
                             initialDate={dValue.dt}
                             customHeader={() => CalendarHeader(dValue, addMonth)}
                             onDayPress={day => {
@@ -122,7 +122,7 @@ export default function ({ name, value = '', type, onChange }) {
                         />}
                         {
                         bIsTime && (<View className='w-full justify-center items-center gap-y-4'><Row className='justify-center items-center w-64 mt-2'>
-                            <Text className=" text-base justify-center items-center text-neutral-900 dark:text-neutral-50"> Time </Text>
+                            <Text className=" text-base justify-center items-center text-popover-foreground "> Time </Text>
                             <View>
                                 <Dropdown
                                     labelField="label"
@@ -132,7 +132,7 @@ export default function ({ name, value = '', type, onChange }) {
                                     data={hours}
                                 />
                             </View>
-                            <Text className=" text-base justify-center items-center text-neutral-900 dark:text-neutral-50"> : </Text>
+                            <Text className=" text-base justify-center items-center text-popover-foreground "> : </Text>
                             <View>
                                 <Dropdown
                                     labelField="label"

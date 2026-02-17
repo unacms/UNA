@@ -256,7 +256,7 @@ export const ItemInfo = memo(({ data, t }) => {
                                         href={item.url}
                                         emulate={true}
                                     >
-                                        <Text className="text-neutral-700 dark:text-neutral-200 text-sm">
+                                        <Text className="text-muted  text-sm">
                                             {' '}
                                             {item.title}
                                         </Text>
@@ -592,7 +592,7 @@ export function SmallUnit({ data }) {
                     </View>
                     <View className="flex-auto flex-col my-auto">
                         <Row className="flex-row gap-2">
-                            <Text className=" text-sm flex-auto font-medium text-neutral-800 dark:text-neutral-200">
+                            <Text className=" text-sm flex-auto font-medium text-label-secondary ">
                                 {data.author_data.display_name}
                             </Text>
                             <Time variant="link" className=" text-xs flex-none leading-5 "
@@ -601,14 +601,14 @@ export function SmallUnit({ data }) {
                             ></Time>
                         </Row>
                         <Text
-                            className="flex-auto text-lg  font-bold text-neutral-800 dark:text-neutral-200 "
+                            className="flex-auto text-lg  font-bold text-label-secondary  "
                             numberOfLines={1}
                         >
                             {data.content.title}
                         </Text>
                         <View className="flex-row w-full items-end content-end">
                             <Text
-                                className="flex-auto mr-2  text-base text-neutral-600 dark:text-neutral-400 "
+                                className="flex-auto mr-2  text-base text-label-tertiary  "
                                 numberOfLines={1}
                             >
                                 {data.plainText}

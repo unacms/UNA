@@ -19,14 +19,14 @@ import { appSetting } from 'app/lib/util'
 
 export const LinkContent = memo(({ url, data }) => (
     <Link href={url}>
-        <Text className="mr-auto bg-primary/20 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
+        <Text className="mr-auto bg-primary/20 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-label-secondary ">
             {data.content?.price
                 ? data.content.price.replace('&#36;', '$')
                 : 'Free'}
         </Text>
         <Text
             numberOfLines={2}
-            className=" text-neutral-950 web:hover:text-primary dark:text-neutral-50 text-lg sm:text-xl tracking-tight font-bold"
+            className=" text-label-primary web:hover:text-primary  text-lg sm:text-xl tracking-tight font-bold"
         >
             {data.content?.title || ''}
         </Text>
@@ -95,7 +95,7 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
                 <Link href={url} className="">
                     <Text
                         numberOfLines={1}
-                        className=" text-neutral-600 dark:text-neutral-400 text-xs uppercase tracking-tight overflow-hidden"
+                        className=" text-label-tertiary  text-xs uppercase tracking-tight overflow-hidden"
                     >
                         {data.content?.date_start && (
                             <>
@@ -117,7 +117,7 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
                     </Text>
                     <Text
                         numberOfLines={2}
-                        className=" text-neutral-950 web:hover:text-primary text-lg sm:text-xl tracking-tight font-bold"
+                        className=" text-label-primary web:hover:text-primary text-lg sm:text-xl tracking-tight font-bold"
                     >
                         {data.content?.title || ''}
                     </Text>
@@ -181,7 +181,7 @@ export const AdView = memo(({ data, styles, url, isCompact }) => {
                 <View>
                     <View>
                         <Text
-                            className="text-neutral-800 dark:text-neutral-200 pb-4 text-base leading-6"
+                            className="text-label-secondary  pb-4 text-base leading-6"
                             numberOfLines={3}
                         >
                             {data.content?.text || ''}
@@ -226,7 +226,7 @@ export const MarketView = memo(({ data, styles, url, isCompact }) => {
 
                     <Text
                         numberOfLines={2}
-                        className=" text-neutral-950 web:hover:text-primary dark:text-neutral-50 text-lg sm:text-xl tracking-tight font-bold"
+                        className=" text-label-primary web:hover:text-primary  text-lg sm:text-xl tracking-tight font-bold"
                     >
                         {data.content?.title || ''}
                     </Text>
@@ -234,7 +234,7 @@ export const MarketView = memo(({ data, styles, url, isCompact }) => {
                 <View>
                     <View>
                         <Text
-                            className="text-neutral-800 dark:text-neutral-200 pb-4 text-base leading-6"
+                            className="text-label-secondary  pb-4 text-base leading-6"
                             numberOfLines={3}
                         >
                             {data.content?.text || ''}
@@ -367,14 +367,14 @@ export const DefaultView = memo(
                             href={item.url}
                         >
                             <Row className="gap-x-2 w-full items-center p-3 bg-muted  rounded-lg mt-1">
-                                <Text className="text-sm text-neutral-700 dark:text-neutral-300">
+                                <Text className="text-sm text-muted ">
                                     <Icon
                                         icon="File"
                                         className="w-6 h-6"
                                         size={24}
                                     />
                                 </Text>
-                                <Text className="text-sm text-neutral-700 dark:text-neutral-300">
+                                <Text className="text-sm text-muted ">
                                     {item.title}
                                 </Text>
                             </Row>

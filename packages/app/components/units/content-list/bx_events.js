@@ -36,7 +36,7 @@ export default function Unit(props) {
             <Redirect ref={redirectdRef} />
             <Link className="web:group" href={data.url}>
                 <View className="flex-row sm:flex-col">
-                    <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-lg overflow-hidden items-center justify-center bg-neutral-500/20">
+                    <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-lg overflow-hidden items-center justify-center bg-muted-foreground/20">
                         <Skeleton className="" rounded='rounded-lg' visible={isSkeleton}>
                             <Image
                                 {...data.cover}
@@ -76,10 +76,10 @@ export default function Unit(props) {
 
                                     </View>
                                     {
-                                        <><Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
+                                        <><Text className="truncate text-xs leading-tight flex-auto text-label-tertiary ">
                                             {friendsLabel}
                                         </Text>
-                                            {friendsLabel == '' && <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
+                                            {friendsLabel == '' && <Text className="truncate text-xs leading-tight flex-auto text-label-tertiary ">
                                                 {friendsLabel1}
                                             </Text>
                                             }
@@ -87,7 +87,7 @@ export default function Unit(props) {
                                     }
                                 </Skeleton>
                                 <Skeleton visible={isSkeleton} className="h-6 w-1/3">
-                                    <Text className=" bg-primary/10  rounded-md  px-1.5 py-1 text-xs flex-none items-center font-semibold text-neutral-600 dark:text-neutral-400">
+                                    <Text className=" bg-primary/10  rounded-md  px-1.5 py-1 text-xs flex-none items-center font-semibold text-label-tertiary ">
                                         {data.visibility != "3" ? (
                                             <>Private</>
                                         ) : (

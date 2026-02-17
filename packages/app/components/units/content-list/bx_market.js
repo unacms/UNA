@@ -72,7 +72,7 @@ export default function Unit(props) {
                                 <Row className="justify-between">
                                     <View className=" gap-y-3 flex-auto">
                                         <Skeleton className="h-6 w-1/4" visible={isSkeleton}>
-                                            <Text className="mr-auto bg-primary/20 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
+                                            <Text className="mr-auto bg-primary/20 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-label-secondary ">
                                                 {data.price_recurring > 0
                                                     ? data.price_recurring +
                                                     "$/" +
@@ -86,7 +86,7 @@ export default function Unit(props) {
                                             <View className="overflow-hidden">
                                                 <Text
                                                     numberOfLines={2}
-                                                    className="text-neutral-950 tracking-tight dark:text-neutral-50 web:hover:text-primary leading-5 text-base font-bold"
+                                                    className="text-label-primary tracking-tight  web:hover:text-primary leading-5 text-base font-bold"
                                                 >
                                                     {data.title}
                                                 </Text>
@@ -109,7 +109,7 @@ export default function Unit(props) {
                                 <Skeleton className="h-6 w-full" visible={isSkeleton}>
                                     <Text
                                         numberOfLines={1}
-                                        className="text-neutral-700 dark:text-neutral-300 mb-auto text-sm"
+                                        className="text-muted  mb-auto text-sm"
                                     >
                                         {data.summary_plain}
                                     </Text>

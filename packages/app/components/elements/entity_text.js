@@ -33,7 +33,7 @@ function Small({ data, showPad }) {
     return (
         <View className="bg-card sm:border-x w-full mx-auto">
             <View className=' bg-primary/10 sm:bg-transparent  rounded-lg flex-col px-2.5 py-2 sm:p-0 mx-4 mb-2 mt-4'>
-                <Text className="font-bold text-neutral-900 dark:text-neutral-50 text-base sm:text-xl ">{data.entry_title}</Text>
+                <Text className="font-bold text-popover-foreground  text-base sm:text-xl ">{data.entry_title}</Text>
                 <ContentMore content={text} numberOfLines={3} numberOfSymbols={360} openSmall={false} customClassName="u-vanilla-html" />
             </View>
         </View>

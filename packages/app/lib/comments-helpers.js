@@ -712,10 +712,10 @@ export function CommentsForm({ form: initialForm, requestUrl, module, objectId, 
                     <Row className='items-start justify-between max-w-full relative'>
                         <View className=' flex-auto pr-4'>
                             <Row className='max-w-full '>
-                                <Text className='text-xs text-neutral-900 dark:text-neutral-50'>Reply to: </Text>
-                                <Text className='font-semibold text-xs text-neutral-900 dark:text-neutral-50'>{ProfileDisplayName(formData.author.display_name)}</Text>
+                                <Text className='text-xs text-popover-foreground '>Reply to: </Text>
+                                <Text className='font-semibold text-xs text-popover-foreground '>{ProfileDisplayName(formData.author.display_name)}</Text>
                             </Row>
-                            <Text className=' text-base overflow-hidden text-neutral-900 dark:text-neutral-50 text-sm' numberOfLines={3}>{formData.parent_id > 0 ? formData.text : ''}</Text>
+                            <Text className=' text-base overflow-hidden text-popover-foreground  text-sm' numberOfLines={3}>{formData.parent_id > 0 ? formData.text : ''}</Text>
                         </View>
                         <View className=" right-0 t-0">
                             <Button align="start" rounded startDecorator="X" size="xs" variant="outline" onPress={() => handleCancel()} />

@@ -180,7 +180,7 @@ export default function MenuAccount({ buttonProps, children }) {
                                                 displaySize="sm"
                                             />
                                         
-                                        <Text className="text-sm leading-8 px-1.5 font-medium text-neutral-700 dark:text-neutral-200 whitespace-nowrap">
+                                        <Text className="text-sm leading-8 px-1.5 font-medium text-muted  whitespace-nowrap">
                                             {item.display_name}
                                         </Text>
                                     </Row>

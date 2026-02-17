@@ -17,8 +17,8 @@ import { useSendData, updateHistoryPageCache } from "../elements/messenger/hooks
 const ListFeed = memo((data)  => {
   const { author_data, message, date, title, count, onPress, isActive } = data || {};
 
-  return <Pressable onPress={(e) => onPress(e, data)} className={ isActive ? ' bg-neutral-500/10' : '' }>
-            <View className="flex-row p-2 sm:px-3 groupweb:duration-200 overflow-hidden m-1 sm:mx-2 rounded-lg web:hover:bg-neutral-500/10 active:opacity-50 active:translate-y-0.5">
+  return <Pressable onPress={(e) => onPress(e, data)} className={ isActive ? ' bg-muted-foreground/10' : '' }>
+            <View className="flex-row p-2 sm:px-3 groupweb:duration-200 overflow-hidden m-1 sm:mx-2 rounded-lg web:hover:bg-muted-foreground/10 active:opacity-50 active:translate-y-0.5">
 
             <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
             <Profile
@@ -30,14 +30,14 @@ const ListFeed = memo((data)  => {
         <View className="flex-auto flex-col my-auto ">
           <View className="flex-row gap-2">
             <Text
-                className="flex-auto text-lg font-bold text-neutral-800 dark:text-neutral-200 web:group-hover:text-neutral-950 web:dark:group-hover:text-neutral-50"
+                className="flex-auto text-lg font-bold text-label-secondary  web:group-hover:text-label-primary"
                 numberOfLines={1}
             > { title } </Text>
-            <Time stylesName="text-neutral-600 dark:text-neutral-400 text-xs whitespace-nowrap truncate min-w-[3rem] text-right" ts={ date }></Time>
+            <Time stylesName="text-label-tertiary  text-xs whitespace-nowrap truncate min-w-[3rem] text-right" ts={ date }></Time>
           </View>
           <View className="flex-row w-full items-end content-end">
             <Text
-              className="flex-auto mr-2  text-sm text-neutral-800 dark:text-neutral-200 web:group-hover:text-neutral-950 web:dark:group-hover:text-neutral-50"
+              className="flex-auto mr-2  text-sm text-label-secondary  web:group-hover:text-label-primary"
               numberOfLines={1}
             >
               { message }
@@ -79,7 +79,7 @@ const ImagesComponent = ({files}) => {
 const MsgFeed = memo(({ item, handlerMenuSelect }) => {
     const { currentUser } = useCurrentUser(),
          { author_data, created, count, files, message, menu, id, reactions } = item,
-         sCommentClass = "bg-neutral-500/10 rounded-tl-none rounded-2xl px-4 u-vanilla-html-small",
+         sCommentClass = "bg-muted-foreground/10 rounded-tl-none rounded-2xl px-4 u-vanilla-html-small",
          { sendMessage } = useSendData();
 
     const [mode, setMode] = useState(''),
@@ -106,7 +106,7 @@ const MsgFeed = memo(({ item, handlerMenuSelect }) => {
                     <View className={sCommentClass + ' py-2'} >
                         <View className="flex-row flex-1 items-center pb-0.5">
                             <Profile {...author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
-                            <Text className="text-neutral-400 dark:text-neutral-600 px-1">·</Text>
+                            <Text className="text-secondary-foreground px-1">·</Text>
                             <Time className="" ts={created}></Time>
                             {
                                 mode === 'edit' && <View className="absolute right-0">
@@ -176,7 +176,7 @@ const MsgFeed = memo(({ item, handlerMenuSelect }) => {
                         </View> }
                     </View>
                 </View>
-                <View className="bg-neutral-50 dark:bg-neutral-900 rounded-full mb-auto p-0.5">
+                <View className="bg-background rounded-full mb-auto p-0.5">
                     <Profile {...author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
                 </View>
             </View>

@@ -37,7 +37,7 @@ export default function FormPost(props) {
     // inputs['title'].type = 'textarea'
     // inputs['title'].height = 12
     // inputs['title'].viewClasses =
-    ' text-2xl lg:text-3xl font-bold my-2 placeholder-neutral-500 text-neutral-900 dark:text-neutral-50 focus:outline-none'
+    ' text-2xl lg:text-3xl font-bold my-2 placeholder-guide text-popover-foreground web:focus:outline-none'
     // inputs['text'].viewClasses = 'dark:focus:bg-red-500'
 
     if (inputs['allow_comments'])
@@ -100,7 +100,7 @@ export default function FormPost(props) {
             </View>
             <View className="flex-col">
                 <View className='w-full flex-wrap my-1 flex-row border rounded-xl border-border   py-1 px-2 items-center'>
-                    <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Add to post</Text>
+                    <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm flex-auto text-label-secondary ">Add to post</Text>
                     <Row className=" justify-center items-center flex-row flex-wrap px-2">
                         {props.data.inputs['pictures'] && (
                             <View className="ml-2">
@@ -164,7 +164,7 @@ export default function FormPost(props) {
                 </ScrollView>
 
                 <View className='w-full my-1 flex-row border rounded-xl border-border  py-1 px-2'>
-                    <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm  text-neutral-800 dark:text-neutral-200">Labels</Text>
+                    <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm  text-label-secondary ">Labels</Text>
                     <Row className=" justify-end items-center flex-auto px-2 ">
                         {getFormFieldByData(
                             inputs['labels'],
@@ -176,7 +176,7 @@ export default function FormPost(props) {
                 </View>
 
                 <View className='w-full my-1 flex-row border rounded-xl border-border  py-1 px-2'>
-                    <Text className="font-semibold px-3 py-1 my-auto text-sm  text-neutral-800 dark:text-neutral-200">Category</Text>
+                    <Text className="font-semibold px-3 py-1 my-auto text-sm  text-label-secondary ">Category</Text>
                     <Row className=" justify-end items-center flex-auto px-2 ">
                         {getFormFieldByData(
                             inputs['cat'],
@@ -188,7 +188,7 @@ export default function FormPost(props) {
                 </View>
 
                 <View className='w-full flex-row my-1  border rounded-xl border-border  py-1 px-2 mb-2'>
-                    <Text className="font-semibold px-3 py-1  my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Allow Comments</Text>
+                    <Text className="font-semibold px-3 py-1  my-auto text-sm flex-auto text-label-secondary ">Allow Comments</Text>
                     <View className=" gap-x-2 px-2 py-0.5 justify-start items-center  ">
                         {getFormFieldByData(
                             inputs['allow_comments'],

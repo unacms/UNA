@@ -63,7 +63,7 @@ export default function defaultUnit(props) {
                                         <Skeleton className="h-8 w-full" rounded="rounded-md" visible={isSkeleton}>
                                             <Text
                                                 numberOfLines={true ? 2 : 6}
-                                                className="text-neutral-700 dark:text-neutral-300 mb-auto text-xs"
+                                                className="text-muted  mb-auto text-xs"
                                             >
                                                 {data.summary_plain}
                                             </Text>

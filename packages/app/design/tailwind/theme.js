@@ -37,21 +37,6 @@ const boxShadowNative = {
 };
 
 const colors = {
-    neutral: {
-        DEFAULT: 'rgba(107,114,128,1)',
-        d: 'rgba(156,163,175,1)',
-        50: 'rgba(249,250,251,1)',
-        100: 'rgba(243,244,246,1)',
-        200: 'rgba(229,231,235,1)',
-        300: 'rgba(209,213,219,1)',
-        400: 'rgba(156,163,175,1)',
-        500: 'rgba(107,114,128,1)',
-        600: 'rgba(75,85,99,1)',
-        700: 'rgba(55,65,81,1)',
-        800: 'rgba(31,41,55,1)',
-        900: 'rgba(17,24,39,1)',
-        950: 'rgba(3,7,18,1)',
-    },
 }
 
 const theme = {
@@ -74,7 +59,6 @@ const theme = {
             // Make `border` (width-only) pick up semantic default color on web and native
             DEFAULT: nativewindUIColors.border,
         },
-      
         boxShadow: isNative ? boxShadowNative : boxShadowWeb,
         elevation: {
             '2xs': '1',
@@ -82,11 +66,9 @@ const theme = {
             'custom': '2',
             'custom-hover': '3',
         },
-
         fontSize: {
             '2xs': ['10px', { lineHeight: '12px' }],
         },
-        
         minWidth: {
             '240': '240px',
         },

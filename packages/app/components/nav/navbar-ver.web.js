@@ -34,7 +34,7 @@ const SidebarBottomToolbar = ({ currentUser, menu_add_items, buttonProps }) => {
                             displayType="unit_wo_info"
                             displaySize="sm"
                         />
-                        <Text className=" text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 ">
+                        <Text className=" text-base flex-auto my-auto font-semibold truncate text-muted  ">
                             {currentUser.display_name}
                         </Text>
                     </Row>
@@ -80,7 +80,7 @@ const SideBar = memo(({ headerSettings, currentUser, uri, url, bSearch, menuPopu
                         appSetting('layout', 'lock_unconfirmed'))) &&
                     (uri == 'home' || isDesktop) && (
                         <Link
-                            className="flex items-center rounded-xl flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-950 web:dark:hover:text-neutral-50 web:duration-300 "
+                            className="flex items-center rounded-xl flex-row active:scale-95 active:opacity-50 text-label-secondary  web:hover:text-label-primary web:duration-300 "
                             href="/home"
                         >
                             {appStatic('logo')}

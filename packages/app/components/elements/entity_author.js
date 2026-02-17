@@ -142,7 +142,7 @@ export default function ElementEntityAuthor({ data, blockWrapperProps }) {
                 {(data.text && false) && (
                     <View className='flex-auto overflow-hidden text-ellipsis w-1/2 lg:w-auto px-4'>
                         <Link href={data.url}>
-                            <Text className=" lg:text-center overflow-hidden text-ellipsis text-lg font-bold font-bold  text-neutral-900 dark:text-neutral-50 overflow" numberOfLines={2}>
+                            <Text className=" lg:text-center overflow-hidden text-ellipsis text-lg font-bold font-bold  text-popover-foreground  overflow" numberOfLines={2}>
                                 {data.text}
                             </Text>
                         </Link>

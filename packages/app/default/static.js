@@ -174,10 +174,10 @@ const JoinTextComponent = (props) => {
 const ComponentsAboutComponent = (props) => {
     return (
         <>
-            <Text className="text-3xl lg:text-4xl xl:text-5xl font-bold text-neutral-800 dark:text-neutral-200">
+            <Text className="text-3xl lg:text-4xl xl:text-5xl font-bold text-label-secondary ">
                 About
             </Text>
-            <Text className="text-lg lg:text-xl xl:text-2xl  text-neutral-600 dark:text-neutral-400">
+            <Text className="text-lg lg:text-xl xl:text-2xl  text-label-tertiary ">
                 The place to connect, share and grow with the community.
             </Text>
         </>
@@ -189,11 +189,11 @@ const ComponentsCommentsEmpty = () => {
     return (
         <>
             <View className="py-4">
-                <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-neutral-500/10 ">
-                    <View className="flex-col mx-auto  text-neutral-800 dark:text-neutral-200 ">
+                <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-muted-foreground/10 ">
+                    <View className="flex-col mx-auto  text-label-secondary  ">
                         <Icon icon="MessageCircle" width={32} height={32} />
                     </View>
-                    <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
+                    <Text className="text-center text-lg text-label-secondary  lg:text-xl font-semibold  ">
                         {t('No comments yet')}
                     </Text>
                     <Text className="text-center text-base text-muted-foreground ">
@@ -209,8 +209,8 @@ const ComponentsCommentsLogin = () => {
     const { t } = useTranslation()
     return (
         <View className="py-2">
-            <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-neutral-500/10 ">
-                <Text className="text-center text-base text-neutral-800 dark:text-neutral-200 ">
+            <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-muted-foreground/10 ">
+                <Text className="text-center text-base text-label-secondary  ">
                     <Link className="text-primary" href="/login">
                         Login
                     </Link>{' '}
@@ -230,11 +230,11 @@ const ComponentsContentEmpty = () => {
     return (
         <>
             <View className="p-2">
-                <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-neutral-500/10 ">
-                    <View className="flex-col mx-auto m-4 text-neutral-800 dark:text-neutral-200 ">
+                <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-muted-foreground/10 ">
+                    <View className="flex-col mx-auto m-4 text-label-secondary  ">
                         <Icon icon="Binoculars" width={32} height={32} />
                     </View>
-                    <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
+                    <Text className="text-center text-lg text-label-secondary  lg:text-xl font-semibold  ">
                         {t('Nothing found')}
                     </Text>
                     <Text className="text-center text-base text-muted-foreground ">
@@ -303,8 +303,8 @@ const PageNotAllowed = () => {
     return (
         <>
             <View className="p-8 mx-auto">
-                <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-neutral-500/10 ">
-                    <View className="flex-col mx-auto m-4 text-neutral-800 dark:text-neutral-200 ">
+                <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-muted-foreground/10 ">
+                    <View className="flex-col mx-auto m-4 text-label-secondary  ">
                         <Icon icon="Binoculars" width={32} height={32} />
                     </View>
                     <Text className="text-center text-lg text-card-foreground lg:text-xl font-semibold  ">
@@ -365,15 +365,15 @@ export function ComponentsIntro(props) {
 
     const CounterText = React.memo(({ data }) => {
         return (
-            <View className="absolute right-0 flex-col bg-gradient-to-r pl-16 from-transparent via-white dark:via-neutral-900 dark:to-neutral-900 to-white h-10 justify-end gap-y-0.5 items-end flex-none my-auto whitespace-nowrap nowrap ">
-                <Text className="font-bold text-neutral-950 leading-5 dark:text-neutral-50 text-3xl font-bold">
+            <View className="absolute right-0 flex-col bg-gradient-to-r pl-16 from-transparent via-white to-white h-10 justify-end gap-y-0.5 items-end flex-none my-auto whitespace-nowrap nowrap ">
+                <Text className="font-bold text-label-primary leading-5  text-3xl font-bold">
                     <AnimatedCounter
                         value={data}
                         duration={1000}
                         startFrom={1}
                     />
                 </Text>
-                <Text className="  text-neutral-500 text-xs ">
+                <Text className="  text-muted-foreground text-xs ">
                     {tp('members', data, true)}
                 </Text>
             </View>
@@ -381,12 +381,12 @@ export function ComponentsIntro(props) {
     })
 
     return (
-        <Card addClassName=" bg-white dark:bg-neutral-900 flex-col gap-y-4 p-4 ">
+        <Card addClassName=" bg-red-500 flex-col gap-y-4 p-4 ">
             <View className="flex-row gap-y-2 overflow-hidden">
                 <ProfilesList data={data2} showEmpty={true} maxCount={12} />
                 <CounterText data={data} />
             </View>
-            <Text className="text-sm  text-neutral-700 dark:text-neutral-300">
+            <Text className="text-sm  text-muted ">
                 {t('Community Intro')}
             </Text>
         </Card>
@@ -408,42 +408,42 @@ const ComponentsLoginContentComponent = (props) => {
                 className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl"
             >
                 <View className="flex-col gap-y-8 flex-auto my-4 ">
-                    <H1 className="text-4xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200 justify-center items-center  ">
+                    <H1 className="text-4xl tracking-tight font-bold text-label-secondary  justify-center items-center  ">
                         Sign in to your account
                     </H1>
                     <View className="flex-col gap-y-4">
                         <View className="flex-row gap-x-4 ">
                             <Icon
-                                className="text-neutral-800 dark:text-neutral-200"
+                                className="text-label-secondary "
                                 icon="UsersRound"
                                 width={24}
                                 height={24}
                             />
-                            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-base font-medium">
+                            <Text className="flex-auto my-auto text-label-secondary  text-base font-medium">
                                 Meet new people
                             </Text>
                         </View>
 
                         <View className="flex-row gap-x-4 ">
                             <Icon
-                                className="text-neutral-800 dark:text-neutral-200"
+                                className="text-label-secondary "
                                 icon="Compass"
                                 width={24}
                                 height={24}
                             />
-                            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-base font-medium">
+                            <Text className="flex-auto my-auto text-label-secondary  text-base font-medium">
                                 Discover cool spaces
                             </Text>
                         </View>
 
                         <View className="flex-row gap-x-4 ">
                             <Icon
-                                className="text-neutral-800 dark:text-neutral-200"
+                                className="text-label-secondary "
                                 icon="Share"
                                 width={24}
                                 height={24}
                             />
-                            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-base font-medium">
+                            <Text className="flex-auto my-auto text-label-secondary  text-base font-medium">
                                 Share your ideas
                             </Text>
                         </View>

@@ -45,7 +45,7 @@ export default function Unit(props) {
                 <Card padding="p-1">
                     <Link className="web:group " href={data.url}>
                         <View className="flex-row sm:flex-col p-1">
-                            <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-lg overflow-hidden items-center justify-center bg-neutral-500/20">
+                            <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-lg overflow-hidden items-center justify-center bg-muted-foreground/20">
                                 <Image
                                     {...data.cover}
                                     alt={data.title}
@@ -132,7 +132,7 @@ export default function Unit(props) {
                             display_name={data.title}
                         /></View>
                     <View className="flex-row justify-between flex-auto items-center">
-                        <Text numberOfLines={2} className="text-sm  px-1.5 leading-tight font-semibold text-neutral-800 dark:text-neutral-200">
+                        <Text numberOfLines={2} className="text-sm  px-1.5 leading-tight font-semibold text-label-secondary ">
                             {data.title}
                         </Text>
                     </View>

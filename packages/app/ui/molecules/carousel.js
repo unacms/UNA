@@ -56,7 +56,7 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr }) => {
         if (w && h && (w > h)) {
             aspect = '';
             if (isWeb) {
-                /*bg-neutral-200  dark:bg-neutral-600*/
+                /*bg-label-secondary  */
                 return (<View className={`${max_image_width} ${aspect} w-full items-start justify-center  rounded-lg  overflow-hidden 003-` + w + '-' + h + '-' + (w > h)}>
                     <View style={{ aspectRatio: aspectStyle }} className='h-full'>
                         <Image2 handleShowImage={handleShowImage} data={data} row={0} index={0} key={0} width={w} height={h} src={data[0].src} type={data[0].type} />
@@ -71,7 +71,7 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr }) => {
             }
 
             return (
-                /*bg-neutral-200  dark:bg-neutral-600*/
+                /*bg-label-secondary  */
                 <View className={`${max_image_width}  ${aspect} w-full items-start justify-center  002`}>
                     <View className='rounded-lg overflow-hidden' style={{ aspectRatio: aspectStyle, width: w, height: h }} >
                         <Image2 handleShowImage={handleShowImage} data={data} row={0} index={0} key={0} src={data[0].src} type={data[0].type} />
@@ -84,7 +84,7 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr }) => {
             h = undefined;
             w = undefined;
             return (
-                /*bg-neutral-200  dark:bg-neutral-600*/
+                /*bg-label-secondary  */
                 <View className={`${max_image_width}  ${aspect} w-full items-center justify-center bg-muted  rounded-lg overflow-hidden`}>
                     <View style={{ aspectRatio: aspectStyle }} className='h-full'>
                         <Image2 handleShowImage={handleShowImage} data={data} row={0} index={0} key={0} width={w} height={h} src={data[0].src} type={data[0].type} />

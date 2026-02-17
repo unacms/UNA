@@ -29,7 +29,7 @@ function BlockItemRenderer({ item, route, sidebar }) {
     return (
         <View className={`${blockProps?.list && !sidebar ? 'lg:h-px overflow-hidden' : ''}`} key={`${route.index}-${item.id}`}>
             <View className="w-full">
-                {blockProps?.showTitle && <Text className="pb-3 sm:pb-4 leading-none text-xl font-bold text-neutral-800 dark:text-neutral-200">{block.title}</Text>}
+                {blockProps?.showTitle && <Text className="pb-3 sm:pb-4 leading-none text-xl font-bold text-label-secondary ">{block.title}</Text>}
                 {content}
             </View>
                  </View>

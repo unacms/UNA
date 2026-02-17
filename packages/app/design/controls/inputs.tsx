@@ -59,7 +59,7 @@ export const InputWithIcons = forwardRef<TextInput, InputWithIconsProps>(
         <Row className="items-center flex-auto">
             {startDecorator && (
                 <View className="absolute left-3.5 h-full items-center justify-center">
-                    <Icon icon={startDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
+                    <Icon icon={startDecorator} size={24} className="text-muted " />
                 </View>
             )}
             <Input
@@ -71,7 +71,7 @@ export const InputWithIcons = forwardRef<TextInput, InputWithIconsProps>(
             />
             {endDecorator && (
                 <View className="absolute right-3 h-full items-center justify-center">
-                    <Icon icon={endDecorator} size={24} className="text-neutral-700 dark:text-neutral-300" />
+                    <Icon icon={endDecorator} size={24} className="text-muted " />
                 </View>
             )}
         </Row>
@@ -129,7 +129,7 @@ export const PickerStyledRef = forwardRef<Picker, PickerStyledRefProps>(
             />
             {isWeb && (
                 <View className="absolute right-3 pointer-events-none">
-                    <Icon icon="ChevronDown" size={20} className="text-neutral-500" />
+                    <Icon icon="ChevronDown" size={20} className="text-muted-foreground" />
                 </View>
             )}
         </View>

@@ -18,13 +18,13 @@ const Embed = memo(function ({ data, size }) {
                     : (data.logo ? <Image view="cover" resizeMode="cover" className="rounded-tl-lg rounded-bl-lg " src={data.logo} /> : <></>)}
             </View>
             <View className='flex-auto my-2 mr-4'>
-                <Text className="text-neutral-900  dark:text-neutral-100 text-base font-bold " numberOfLines={1}>{data.title}</Text>
-                <Text className="text-neutral-900  dark:text-neutral-100 text-sm my-2" numberOfLines={2}>{data.description}</Text>
+                <Text className="text-popover-foreground   text-base font-bold " numberOfLines={1}>{data.title}</Text>
+                <Text className="text-popover-foreground   text-sm my-2" numberOfLines={2}>{data.description}</Text>
                 <Row className='gap-x-2'>
                     {!!data.logo && <View className='h-6 w-6'>
                         <Image view="cover" resizeMode="cover" src={data.logo} />
                     </View>}
-                    <Text className="text-neutral-900 dark:text-neutral-100 text-sm">{data.domain}</Text>
+                    <Text className="text-popover-foreground  text-sm">{data.domain}</Text>
                 </Row>
             </View>
         </Row>

@@ -77,7 +77,7 @@ const HeaderLine = memo(
                     <Text
                         numberOfLines={1}
                         ellipsizeMode="tail"
-                        className="text-3xl leading-10 tracking-tight lg:hidden font-bold text-neutral-800 dark:text-neutral-200 "
+                        className="text-3xl leading-10 tracking-tight lg:hidden font-bold text-label-secondary  "
                     >
                         {title}
                     </Text>

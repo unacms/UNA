@@ -239,11 +239,11 @@ export default function Bluetooth(props) {
         <>
             <View className='pb-4 justify-end items-center mx-auto w-full'>
                 <View className='mb-4'>
-                    <Text className={"text-lg font-bold text-neutral-800 dark:text-neutral-200 "}>{data.result ? 'You are already friends!' : 'Do you want to add a new friend?'}</Text>
+                    <Text className={"text-lg font-bold text-label-secondary  "}>{data.result ? 'You are already friends!' : 'Do you want to add a new friend?'}</Text>
                 </View>
                 <Profile {...data.profile} displayType="unit_wo_info" displaySize="2xl" />
                 <View className='my-4'>
-                    <Text className={"text-lg font-bold text-neutral-800 dark:text-neutral-200 "}>{data.profile.display_name}</Text>
+                    <Text className={"text-lg font-bold text-label-secondary  "}>{data.profile.display_name}</Text>
                 </View>
                 {type == 'info' && !data.result && <Row className='gap-x-4'>
                     <Button variant="primary" onPress={() => setConn(data.profile.id)} title="Add new friend" />
@@ -293,7 +293,7 @@ export default function Bluetooth(props) {
     if (!isEnabled.bt || !isEnabled.gps) {
         return (
             <>
-                <Text className=" text-base font-semibold text-neutral-800 dark:text-neutral-200 ">Activate Bluetooth and Location Services to use proximity friend requests.</Text>
+                <Text className=" text-base font-semibold text-label-secondary  ">Activate Bluetooth and Location Services to use proximity friend requests.</Text>
             </>
         )
     }
@@ -309,7 +309,7 @@ export default function Bluetooth(props) {
                     value={advertising ? true : false}
                     ios_backgroundColor={colors.background}
                 />
-                <Text className=" text-base font-semibold text-neutral-800 dark:text-neutral-200 ">Share  Profile</Text>
+                <Text className=" text-base font-semibold text-label-secondary  ">Share  Profile</Text>
             </Row>
             <Button startDecorator="SquareUser" title="Scan Profile" onPress={() => scan()} />
         </Row>

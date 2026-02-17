@@ -271,7 +271,7 @@ export default function ElementStars(oProps) {
 
         sCounterPopup = (
             <Modal title={t('Likes')} onVisible={popupVisiblePb} onClose={() => {setPopupVisiblePb(false)}}>
-                <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">{sUsers}</View>
+                <View className="p-2 gap-y-4 overflow-y-auto text-muted ">{sUsers}</View>
             </Modal>
         );
     }

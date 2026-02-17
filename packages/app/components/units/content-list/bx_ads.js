@@ -50,7 +50,7 @@ export default function Unit(props) {
                                     className={`flex-auto flex-col ${data.image ? "  " : " "
                                         } gap-y-2 sm:p-2`}
                                 >
-                                    <Text className="mr-auto bg-primary/20 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
+                                    <Text className="mr-auto bg-primary/20 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-label-secondary ">
                                         {data.price > 0
                                             ? data.price + "$"
                                             : "Free"}
@@ -58,14 +58,14 @@ export default function Unit(props) {
                                     {true && (
                                         <Text
                                             numberOfLines={2}
-                                            className="text-neutral-950 tracking-tight dark:text-neutral-50 web:hover:text-primary leading-tight text-base font-bold"
+                                            className="text-label-primary tracking-tight  web:hover:text-primary leading-tight text-base font-bold"
                                         >
                                             {data.title}
                                         </Text>
                                     )}
                                     <Text
                                         numberOfLines={true ? 2 : 6}
-                                        className="text-neutral-700 dark:text-neutral-300 mb-auto text-xs"
+                                        className="text-muted  mb-auto text-xs"
                                     >
                                         {data.summary_plain}
                                     </Text>

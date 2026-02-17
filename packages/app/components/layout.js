@@ -12,7 +12,7 @@ export default function Layout({ data, children, layout }) {
     }
 
     return (
-        <View className={`text-neutral-900 dark:text-neutral-50 w-full h-full flex-1 bg-background`}>
+        <View className={`text-popover-foreground  w-full h-full flex-1 bg-background`}>
             <PageHeader layoutName={layout.layoutName} pageData={data}/>
             {children}
             <BottomSheet />

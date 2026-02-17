@@ -30,9 +30,9 @@ export const settingsElements = {
         item_ver:
             ' px-2 py-1.5 web:group flex h-12 flex-row items-center rounded-lg font-medium web:hover:bg-muted/60 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer',
         item_hor:
-            'flex block web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-neutral-700    web:duration-200 dark:text-neutral-300 outline-none ',
+            'flex block web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-muted    web:duration-200  outline-none ',
         item_np:
-            'flex flex-row web:focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium text-sm text-neutral-700 dark:text-neutral-300 web:dark:hover:text-white web:hover:cursor-pointer',
+            'flex flex-row web:focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium text-sm text-muted  web:dark:hover:text-white web:hover:cursor-pointer',
         item_cnt: 'items-center w-full flex-row',
         item_text: ' text-sm font-medium text-card-foreground px-2',
         item_icon:
