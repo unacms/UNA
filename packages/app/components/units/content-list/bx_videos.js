@@ -14,7 +14,7 @@ export default function defaultUnit(props) {
     return (
         <Card padding="p-1">
             <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
-                <View className="aspect-video rounded-xl overflow-hidden w-full bg-accent dark:bg-background-d">
+                <View className="aspect-video rounded-xl overflow-hidden w-full bg-accent">
                     <Skeleton className="h-full w-full" rounded="rounded-xl" visible={isSkeleton}>
                         <Image
                             {...data.image}

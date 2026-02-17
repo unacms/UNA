@@ -44,7 +44,7 @@ const ListFeed = memo((data)  => {
             </Text>
             <View className="flex-none bg-primary rounded-full my-auto h-min px-1.5">
               { count > 0 && (
-                <Text className="text-xs text-white dark:text-black font-medium">
+                <Text className="text-xs text-card-foreground font-medium">
                   { count }
                 </Text>
               )}

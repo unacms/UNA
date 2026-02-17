@@ -30,15 +30,9 @@ export default function FormPost(props) {
 
     if (inputs['covers']) {
         inputs['covers'].viewClasses =
-            'p-4 border-dashed border-bordercard dark:border-bordercard-d'
+            'p-4 border-dashed border-border'
         inputs['covers'].caption = 'Add cover image'
     }
-
-    // inputs['title'].type = 'textarea'
-    // inputs['title'].height = 12
-    // inputs['title'].viewClasses =
-    ' text-2xl lg:text-3xl font-bold my-2 placeholder-guide text-popover-foreground web:focus:outline-none'
-    // inputs['text'].viewClasses = 'dark:focus:bg-red-500'
 
     if (inputs['allow_comments'])
         inputs['allow_comments'].caption = '';

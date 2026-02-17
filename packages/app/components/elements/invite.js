@@ -28,7 +28,7 @@ export default function ElementInvite({ data, blockWrapperProps }) {
                 </Row>
             </Modal>
             <View className="p-4">
-                <Text className="text-black dark:text-white text-center">You can invite your friends to join. You have {data.remain} invites to share.</Text>
+                <Text className="text-card-foreground text-center">You can invite your friends to join. You have {data.remain} invites to share.</Text>
                 <View className='mx-auto pt-4'>
                     <Button variant="default" size="base" rounded title={"Get invite link"} onPress={() => handleClick()} />
                 </View>

@@ -110,7 +110,7 @@ export default function ThemeCompatibilityTest({ data }) {
                 </View>
 
                 {/* Old System Compatibility Test */}
-                <View className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                <View className="bg-white dark:bg-gray-800 border border-border rounded-lg p-4">
                     <Text className="text-black dark:text-white font-medium">Old System (for comparison)</Text>
                     <Text className="text-green-600 dark:text-green-400 text-sm">
                         ✅ If this text adapts to theme changes, the old system is working!

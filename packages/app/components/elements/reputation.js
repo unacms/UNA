@@ -245,11 +245,11 @@ const getPositionColors = (index) => {
         case 1:
             return 'bg-yellow-500' // Gold for 1st place
         case 2:
-            return 'bg-gray-400 dark:bg-gray-600' // Silver for 2nd place
+            return 'bg-secondary-foreground' // Silver for 2nd place
         case 3:
             return 'bg-amber-600' // Bronze for 3rd place
         default:
-            return 'bg-transparent border border-gray-300 dark:border-gray-600'
+            return 'bg-transparent border border-border'
     }
 }
 
@@ -267,7 +267,7 @@ const getStarColor = (index) => {
 }
 
 const getTextColor = (index) => {
-    return index <= 3 ? 'text-white' : 'text-gray-600 dark:text-gray-400'
+    return index <= 3 ? 'text-white' : 'text-guide'
 }
 
 const StarIcon = ({ color, size = 28 }) => (

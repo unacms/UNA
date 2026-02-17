@@ -103,7 +103,7 @@ Units.Base = function Base({ data }) {
                                 <Text className="text-4xl">
                                     {data.category?.icon}
                                 </Text>
-                                <Text className="text-primary dark:text-primary tracking-tighter text-xs">
+                                <Text className="text-primary tracking-tighter text-xs">
                                     {data.category?.name}
                                 </Text>
                             </View>

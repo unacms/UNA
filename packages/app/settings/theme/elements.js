@@ -32,7 +32,7 @@ export const settingsElements = {
         item_hor:
             'flex block web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-muted    web:duration-200  outline-none ',
         item_np:
-            'flex flex-row web:focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium text-sm text-muted  web:dark:hover:text-white web:hover:cursor-pointer',
+            'flex flex-row web:focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium text-sm text-muted   web:hover:cursor-pointer',
         item_cnt: 'items-center w-full flex-row',
         item_text: ' text-sm font-medium text-card-foreground px-2',
         item_icon:

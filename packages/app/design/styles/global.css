@@ -386,13 +386,13 @@
 
 .u-vanilla-html A,
 .u-vanilla-html .link {
-    color: #2563eb;
+    @apply text-label-link;
     text-decoration: none;
 }
 
 .u-vanilla-html-small A,
 .u-vanilla-html-small .link {
-    color: #2563eb;
+    @apply text-label-link;
     text-decoration: none;
 }
 
@@ -405,12 +405,12 @@
 
 .bx-mention-link,
 .bx-tag {
-    color: rgba(29, 78, 216, 1);
+    @apply text-label-link;
 }
 
 .bx-mention-link:hover {
     text-decoration: underline;
-    background-color: rgba(37, 99, 235, 0.05);
+    background-color: text-label-linkhover;
 }
 
 .u-cover {

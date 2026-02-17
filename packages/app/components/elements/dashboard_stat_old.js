@@ -396,11 +396,11 @@ function ElementDashboardStat(props) {
                             <Link href={item2.link}>
                                 
 
-                                    <Row className="w-full bg-muted p-2 rounded-lg my-auto  items-center  text-label-tertiary web:hover:text-label-primary   web:hover:dark:text-white">
+                                    <Row className="w-full bg-muted p-2 rounded-lg my-auto items-center text-label-tertiary web:hover:text-label-primary  ">
                                         <View className="flex-none px-1 font-semibold ">
                                             <Icon icon={item2.icon} width={24} height={24} color={colors.default}/>
                                         </View>
-                                        <Text className="ml-3 sm: text-base flex-auto text-label-tertiary web:hover:text-label-primary  web:hover:dark:text-white  font-medium ">
+                                        <Text className="ml-3 sm: text-base flex-auto text-label-tertiary web:hover:text-label-primary font-medium ">
                                             {t(item2.title)}
                                         </Text>
 
