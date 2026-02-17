@@ -53,7 +53,7 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                     {children}
                 </Pressable> :
                 <Link href={currentUser.url} emulate={true} >
-                    <Row className={(rounded + " w-full web:group items-center px-0.5 justify-between cursor-pointer web:hover:bg-bgrbutton dark:web:hover:bg-bgrbutton-d " + wrapperClassName).trim()}>
+                    <Row className={(rounded + " w-full web:group items-center px-0.5 justify-between cursor-pointer " + wrapperClassName).trim()}>
                         <Row className='flex-row items-center p-1.5'>
                             <Profile
                                 {...currentUser}
@@ -100,7 +100,7 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                                 <Link href={dUser.url} emulate={true} key={index}>
                                     <View key={'index' + index} className=" p-2 flex-row  
                                 web:group web:duration-200 rounded-lg  
-                                web:hover:bg-bgritem dark:web:hover:bg-bgritem-d
+                                
                                 max-w-5xl self-center w-full gap-x-3">
                                         <View className="flex-none ">{profile}</View>
                                         <Text className='text-sm my-auto flex-auto font-semibold truncate text-neutral-900 dark:text-neutral-100'>{item.display_name}</Text>

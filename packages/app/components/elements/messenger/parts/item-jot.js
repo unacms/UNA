@@ -75,7 +75,7 @@ export default function JotItem({ item, index, handleReply }) {
                 <Profile {...item.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
             </View>
             <View className='flex-auto'>
-                <View className='bg-bgritem dark:bg-bgritem-d rounded-xl px-3 u-vanilla-html-small' >
+                <View className='bg-muted  rounded-xl px-3 u-vanilla-html-small' >
                     <Row className="items-center justify-between gap-1 mb-0.5 pt-2">
                         <Profile 
                             {...item.author_data} 
@@ -107,10 +107,10 @@ export default function JotItem({ item, index, handleReply }) {
 
 
                     ) : <View className="pb-2">
-                        {item.reply > 0 && <View className='   border border-bdr dark:border-bdr-d  rounded-md p-2 my-1  bg-neutral-500/20'>
-                            <Text className="text-xs text-neutral-800 dark:text-neutral-200 font-default">{linkedText(item?.reply_message, "hover:text-linkhover")}</Text>
+                        {item.reply > 0 && <View className='   border border-border   rounded-md p-2 my-1  bg-neutral-500/20'>
+                            <Text className="text-xs text-neutral-800 dark:text-neutral-200 font-default">{linkedText(item?.reply_message, "hover:text-label-linkhover")}</Text>
                         </View>}
-                        <Text className=" text-base text-neutral-800 dark:text-neutral-200 font-default">{linkedText(item?.message, "hover:text-linkhover")}</Text>
+                        <Text className=" text-base text-neutral-800 dark:text-neutral-200 font-default">{linkedText(item?.message, "hover:text-label-linkhover")}</Text>
                         {aImg.length > 0 && <Carousel data={aImg} />}
                     </View>}
                 </View>

@@ -120,7 +120,7 @@ export default function FormFieldLocation({ name, value, onChange, ...props }) {
             />
             {searchError && <Text>Error</Text>}
             {(!selectionMade && locationResults.length > 0) && (
-                <View className="absolute z-50  w-full max-w-md top-14 p-1 z-50 rounded-xl border-bdr dark:border-bdr-d border bg-card backdrop-blur-xl p-1">
+                <View className="absolute z-50  w-full max-w-md top-14 p-1 z-50 rounded-xl border-border  border bg-card backdrop-blur-xl p-1">
                     {locationResults.slice(0, 5).map(item => (
                         <Button
                             key={item.place_id}

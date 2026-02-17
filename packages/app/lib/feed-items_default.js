@@ -71,7 +71,7 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
         <View
             className={
                 isCompact
-                    ? ' flex-row gap-3 2xl:gap-4 mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1'
+                    ? ' flex-row gap-3 2xl:gap-4 mx-4 overflow-hidden rounded-lg border border-borderitem dark:border-borderitem-d bg-muted  p-1'
                     : ' flex-col md:flex-row gap-3 2xl:gap-4 overflow-hidden rounded-lg bg-muted p-1.5'
             }
         >
@@ -145,7 +145,7 @@ export const AdView = memo(({ data, styles, url, isCompact }) => {
     }, [])
 
     return (
-        <View className=" flex-col md:flex-row space-x-2  overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1">
+        <View className=" flex-col md:flex-row space-x-2  overflow-hidden rounded-lg border border-borderitem dark:border-borderitem-d bg-muted  p-1">
             {data.mainImage && (
                 <View className="w-full md:w-1/3  overflow-hidden rounded-xl  ">
                     <View
@@ -195,7 +195,7 @@ export const AdView = memo(({ data, styles, url, isCompact }) => {
 
 export const MarketView = memo(({ data, styles, url, isCompact }) => {
     return (
-        <View className=" flex-col md:flex-row space-x-2  overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1">
+        <View className=" flex-col md:flex-row space-x-2  overflow-hidden rounded-lg border border-borderitem dark:border-borderitem-d bg-muted  p-1">
             {data.mainImage && (
                 <View className="w-full md:w-1/3  ">
                     <View
@@ -366,7 +366,7 @@ export const DefaultView = memo(
                             target="_blank"
                             href={item.url}
                         >
-                            <Row className="gap-x-2 w-full items-center p-3 bg-bgritem dark:bg-bgritem-d rounded-lg mt-1">
+                            <Row className="gap-x-2 w-full items-center p-3 bg-muted  rounded-lg mt-1">
                                 <Text className="text-sm text-neutral-700 dark:text-neutral-300">
                                     <Icon
                                         icon="File"

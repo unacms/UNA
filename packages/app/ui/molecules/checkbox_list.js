@@ -32,7 +32,7 @@ export default function ({ values, selectedValue, setValue, multi = true }) {
                     )
                 })
             }
-                        <View className='flex-row justify-end pt-3 mt-3 border-t border-bdr dark:border-bdr-d'>
+                        <View className='flex-row justify-end pt-3 mt-3 border-t border-border '>
 
             <Button
                 variant="primary"

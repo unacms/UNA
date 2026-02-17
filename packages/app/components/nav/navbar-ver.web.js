@@ -80,7 +80,7 @@ const SideBar = memo(({ headerSettings, currentUser, uri, url, bSearch, menuPopu
                         appSetting('layout', 'lock_unconfirmed'))) &&
                     (uri == 'home' || isDesktop) && (
                         <Link
-                            className="flex items-center web:hover:bg-bgritem web:dark:hover:bg-bgritem-d rounded-xl flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-950 web:dark:hover:text-neutral-50 web:duration-300 "
+                            className="flex items-center rounded-xl flex-row active:scale-95 active:opacity-50 text-neutral-800 dark:text-neutral-200 web:hover:text-neutral-950 web:dark:hover:text-neutral-50 web:duration-300 "
                             href="/home"
                         >
                             {appStatic('logo')}
@@ -133,13 +133,13 @@ export default function (props) {
     return (
         <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
             <Row className='w-full flex-col lg:flex-row-reverse  lg:min-h-screen '>
-                <View className='lg:w-[calc(100%-20rem)] border-x border-bdr dark:border-bdr-d  w-full '>
+                <View className='lg:w-[calc(100%-20rem)] border-x border-border   w-full '>
                     {props.children}
                 </View>
                 <View className='w-80'>
                     <Redirect ref={redirectdRef} />
                     <ScrollView contentContainerStyle={{ width: '100%' }}
-                        className={"dark:border-bdrnavbar-d bg-card border-b border-bdrnavbar lg:bg-transparent lg:border-none lg:shadow-none fixed w-full lg:w-80 top-0 items-start lg:h-screen" + (!headerSettings.header ? ' hidden lg:flex' : '')}>
+                        className={"border-border bg-card border-b  lg:bg-transparent lg:border-none lg:shadow-none fixed w-full lg:w-80 top-0 items-start lg:h-screen" + (!headerSettings.header ? ' hidden lg:flex' : '')}>
                         <View className=' flex-row lg:flex-col  h-16 lg:h-auto items-center lg:items-start' >
                             <View className=' justify-between  lg:h-screen flex-auto '>
                                 <SideBar headerSettings={headerSettings} context={props.context} currentUser={currentUser} url={props.url} uri={props.uri} bSearch={bSearch} showMenu={showMenu} menuPopup={menuPopup} setMenuPopup={setMenuPopup} />

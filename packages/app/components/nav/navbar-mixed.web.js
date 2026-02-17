@@ -114,7 +114,7 @@ export default function (props) {
                         </View>
 
                     </View>}
-                    <View className='flex-auto border-x border-bdr dark:border-bdr-d'>
+                    <View className='flex-auto border-x border-border '>
                         {props.children}
                     </View>
                 </Row>

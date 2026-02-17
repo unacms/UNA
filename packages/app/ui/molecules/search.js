@@ -163,7 +163,7 @@ export function ElementSearchData(oProps) {
                 {[...Array(1, 2, 3)].map((i) => (
                     <View
                         key={i}
-                        className="flex-col mb-2 p-2 bg-bgritem dark:bg-bgritem-d rounded-xl"
+                        className="flex-col mb-2 p-2 bg-muted  rounded-xl"
                     >
                         <View className="animate-pulse flex-row items-center gap-y-1">
                             <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>

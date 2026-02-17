@@ -668,7 +668,7 @@ const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, 
                                     <Text className='text-xs text-neutral-900 dark:text-neutral-50'>Reply to: </Text>
                                     <Text className='font-semibold text-xs text-neutral-900 dark:text-neutral-50'>{replyItem.author_data.display_name}</Text>
                                 </Row>
-                                <Text className='text-sm overflow-hidden text-neutral-900 dark:text-neutral-50' numberOfLines={3}>{linkedText(replyItem.message, "hover:text-linkhover")}</Text>
+                                <Text className='text-sm overflow-hidden text-neutral-900 dark:text-neutral-50' numberOfLines={3}>{linkedText(replyItem.message, "hover:text-label-linkhover")}</Text>
                             </View>
                             <View className=" right-0 t-0">
                                 <Button align="start" rounded startDecorator="X" size="xs" variant="outline" onPress={() => handleCancelReply()} />

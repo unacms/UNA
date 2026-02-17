@@ -396,7 +396,7 @@ function ElementDashboardStat(props) {
                             <Link href={item2.link}>
                                 
 
-                                    <Row className="w-full bg-bgritem dark:bg-bgritem-d web:hover:bg-bgritem-h web:dark:hover:bg-bgritem-dh p-2 rounded-lg my-auto  items-center  text-neutral-600 web:hover:text-neutral-950 dark:text-neutral-400  web:hover:dark:text-white">
+                                    <Row className="w-full bg-muted  web:hover:bg-muted-h web:dark:hover:bg-muted-dh p-2 rounded-lg my-auto  items-center  text-neutral-600 web:hover:text-neutral-950 dark:text-neutral-400  web:hover:dark:text-white">
                                         <View className="flex-none px-1 font-semibold ">
                                             <Icon icon={item2.icon} width={24} height={24} color={colors.default}/>
                                         </View>

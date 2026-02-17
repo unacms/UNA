@@ -232,7 +232,7 @@ export const ItemInfo = memo(({ data, t }) => {
                             setShowContextList(true)
                         }}
                     >
-                        <Text className=" bg-muted px-1.5 leading-5 items-center justify-text-center justify-center h-5 rounded-md text-muted-foreground web:hover:text-linkhover text-xs font-medium">
+                        <Text className=" bg-muted px-1.5 leading-5 items-center justify-text-center justify-center h-5 rounded-md text-muted-foreground web:hover:text-label-linkhover text-xs font-medium">
                             {owners[0].title} + {owners.length - 1}
                         </Text>
                     </Pressable>
@@ -248,7 +248,7 @@ export const ItemInfo = memo(({ data, t }) => {
                         <View className="gap-x-2 mb-2">
                             {owners.map((item, index) => (
                                 <Row
-                                    className="items-center py-1 pl-2 my-1 border border-bdr dark:border-bdr-d rounded-lg web:hover:bg-primary/10 active:bg-primary/20 "
+                                    className="items-center py-1 pl-2 my-1 border border-border  rounded-lg web:hover:bg-primary/10 active:bg-primary/20 "
                                     key={'chk' + index}
                                 >
                                     <Link

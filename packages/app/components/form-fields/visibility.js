@@ -131,7 +131,7 @@ export default function (props) {
     ) : (
         <>
             <RbList values={filteredValues} setValue={handleValueChange} selectedValue={field.value} />
-            <View className='flex-row justify-end pt-3 mt-3 border-t border-bdr dark:border-bdr-d'>
+            <View className='flex-row justify-end pt-3 mt-3 border-t border-border '>
                 <Button title="Done" size="base" variant="primary" onPress={applyVisibility} /></View>
         </>
     );
@@ -207,7 +207,7 @@ export default function (props) {
             {modalElement}
             <Pressable onPress={() => handleShowModal()}>
                 {props.addElement}
-                <Row className="  flex-none mr-auto gap-x-0.5 px-1 py-1 rounded-lg items-center text-neutral-600 web:group-hover:bg-bgritem dark:web:group-hover:bg-bgritem-d web:dark:group-hover:text-neutral-200 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400 h-6   web:duration-300">
+                <Row className="  flex-none mr-auto gap-x-0.5 px-1 py-1 rounded-lg items-center text-neutral-600 web:dark:group-hover:text-neutral-200 web:group-hover:text-neutral-800 web:dark:group-hover:text-neutral-200 dark:text-neutral-400 h-6   web:duration-300">
                     <Icon
                         icon={icon}
                         width={16}

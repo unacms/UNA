@@ -48,7 +48,7 @@ export default function Unit(props) {
                 <View className="flex-col w-full">
                     <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
                         <View className="w-full p-1">
-                            <View className="w-full mb-auto bg-bgritem dark:bg-bgritem-d aspect-video overflow-hidden rounded-xl">
+                            <View className="w-full mb-auto bg-muted  aspect-video overflow-hidden rounded-xl">
                                 <Skeleton className="" rounded='rounded-lg' visible={isSkeleton}>
                                     {cover_raw?.trim() != "" && (
                                         <div
@@ -94,7 +94,7 @@ export default function Unit(props) {
                                         </Skeleton>
                                     </View>
                                     {data.image && (
-                                        <View className="h-14 w-14 aspect-square overflow-hidden border border-bdr dark:border-bdr-d rounded-lg">
+                                        <View className="h-14 w-14 aspect-square overflow-hidden border border-border  rounded-lg">
                                             <Image
                                                 {...data.image}
                                                 alt={data.title}

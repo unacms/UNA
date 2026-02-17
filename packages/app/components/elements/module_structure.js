@@ -199,7 +199,7 @@ export default function ModuleStructure({ data }) {
         return <Card rounded=' rounded-none sm:rounded-2xl  ' margin='mx-2 w-full p-3 sm:p-4 mb-1 sm:mb-4 '>
             <Pressable onPress={() => { getLessonData(item.id, item.parent_id, false) }}>
                 <Row className='w-full'>
-                    {!isEditable && <View className='items-center ml-4 pr-8 mr-8 border-r border-bdr dark:border-bdr-d justify-between'>
+                    {!isEditable && <View className='items-center ml-4 pr-8 mr-8 border-r border-border  justify-between'>
                         {item.pass_status == 'completed' && <View className='h-16 w-16 rounded-full bg-emerald-400 items-center justify-center'><Text className=" text-white text-4xl"><Icon icon={icon} /></Text></View>}
                         {item.pass_status == 'in process' && <CircularProgress classes='h-16 w-16' progressColor="#F87171" percentage={item.pass_percent} />}
                         {item.pass_status == 'not started' && <View className='h-16 w-16 rounded-full bg-gray-500 items-center justify-center'><Text className=" text-white text-4xl"><Icon icon={icon} /></Text></View>}
@@ -370,7 +370,7 @@ function LessonAttach({ lessonData, isEditable, reloadData, courseId, lessonId, 
     const renderAttachment = (item, index) => (
         <Row
             key={`step-${index}`}
-            className={`${index !== 0 ? 'border-t border-bdr dark:border-bdr-d' : ''} py-2 px-2`}
+            className={`${index !== 0 ? 'border-t border-border ' : ''} py-2 px-2`}
         >
             <View className="w-16 justify-center">
                 <Text className="text-neutral-700 dark:text-neutral-300 text-2xl">
@@ -493,7 +493,7 @@ function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, cour
                             <Text className="text-white absolute text-base"  ><Icon icon={icon} /></Text>
                         </View>
                     </View>}
-                    <Row className={`${index != 0 ? 'border-t border-bdr dark:border-bdr-d' : ''} pt-4 flex-1`}>
+                    <Row className={`${index != 0 ? 'border-t border-border ' : ''} pt-4 flex-1`}>
                         <View className='mb-4 aspect-video w-40 mr-5 rounded bg-gray-500' >
                             {item.image?.src && <Image view='cover' alt='' className="rounded" src={item.image?.src} />}
                         </View>

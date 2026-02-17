@@ -38,7 +38,7 @@ function ChkList({ values, value2, addValue2, isMultiple }) {
                 const key = item2.key;
                 return (
                     <Pressable key={`lbl-${index}`} onPress={() => addValue2(item2.value)}>
-                           <Row className='items-center my-1 border border-bdr dark:border-bdr-d rounded-lg' key={'chk' + index}>
+                           <Row className='items-center my-1 border border-border  rounded-lg' key={'chk' + index}>
                             <Cnt
                                 value={key}
                                 status={value2.includes(key) ? 'checked' : 'unchecked'}

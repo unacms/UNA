@@ -938,7 +938,7 @@ export default function RftText({
         >
             {suggestions && suggestions.length > 0 && (
                 <View
-                    className={`absolute max-h-[130px] w-full max-w-md bottom-0 p-1 z-50 rounded-xl border-bdr dark:border-bdr-d border bg-card backdrop-blur-xl p-1`}
+                    className={`absolute max-h-[130px] w-full max-w-md bottom-0 p-1 z-50 rounded-xl border-border  border bg-card backdrop-blur-xl p-1`}
                     style={style}
                 >
                     <ScrollView>

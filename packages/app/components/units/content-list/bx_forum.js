@@ -15,7 +15,7 @@ Units.Search = function Search({ data }) {
     const isSkeleton = data?.skeleton
     return (
         <Card padding="p-1">
-            <View className="  aspect-video flex-none rounded-xl overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
+            <View className="  aspect-video flex-none rounded-xl overflow-hidden mb-auto w-full bg-muted   ">
                 <Skeleton className="h-full w-full" rounded="rounded-xl" visible={isSkeleton}>
                     {data.image && (
                         <Image
@@ -55,7 +55,7 @@ Units.Small = function Small({ data }) {
     const isSkeleton = data?.skeleton
     return (
         <CardList padding='p-2' >
-            <View className="  aspect-video flex-none rounded-xl overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
+            <View className="  aspect-video flex-none rounded-xl overflow-hidden mb-auto w-full bg-muted   ">
                 <Skeleton className="h-full w-full" rounded="rounded-xl" visible={isSkeleton}>
                     {data.image && (
                         <Image
@@ -95,7 +95,7 @@ Units.Base = function Base({ data }) {
     const isSkeleton = data?.skeleton
     return (
         <>
-            <View className="p-2 lg:p-4 mx-auto w-full max-w-4xl border-b border-bdr dark:border-bdr-d">
+            <View className="p-2 lg:p-4 mx-auto w-full max-w-4xl border-b border-border ">
                 <View className="flex-row  gap-x-4  mx-auto w-full">
                     <View className="flex-col gap-y-2 hidden sm:flex w-24 flex-none">
                         <Skeleton className="h-24 w-24" rounded="rounded-xl" visible={isSkeleton}>
@@ -110,7 +110,7 @@ Units.Base = function Base({ data }) {
                         </Skeleton>
                         <Skeleton className="h-8 w-16 mt-auto" visible={isSkeleton}>
                             <Time
-                                stylesName="  text-center bg-bgritem dark:bg-bgritem-d  px-2.5 py-2 mt-auto text-xs rounded-full dark:text-neutral-300 text-neutral-700"
+                                stylesName="  text-center bg-muted   px-2.5 py-2 mt-auto text-xs rounded-full dark:text-neutral-300 text-neutral-700"
                                 ts={data.added}
                             ></Time>
                         </Skeleton>
@@ -124,7 +124,7 @@ Units.Base = function Base({ data }) {
                                     </Skeleton>
                                     <Skeleton className="h-8 w-16 ml-auto" visible={isSkeleton}>
                                         <Time
-                                            stylesName=" my-auto  ml-auto bg-bgritem dark:bg-bgritem-d  px-2.5 py-1 my-auto text-sm rounded-full dark:text-neutral-300 text-neutral-700"
+                                            stylesName=" my-auto  ml-auto bg-muted   px-2.5 py-1 my-auto text-sm rounded-full dark:text-neutral-300 text-neutral-700"
                                             ts={data.added}
                                         ></Time>
                                     </Skeleton>

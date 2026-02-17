@@ -30,7 +30,7 @@ export default function FormPost(props) {
 
     if (inputs['covers']) {
         inputs['covers'].viewClasses =
-            'p-4 border-dashed border-bdrcard dark:border-bdrcard-d'
+            'p-4 border-dashed border-bordercard dark:border-bordercard-d'
         inputs['covers'].caption = 'Add cover image'
     }
 
@@ -99,7 +99,7 @@ export default function FormPost(props) {
                 </View>
             </View>
             <View className="flex-col">
-                <View className='w-full flex-wrap my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d  py-1 px-2 items-center'>
+                <View className='w-full flex-wrap my-1 flex-row border rounded-xl border-border   py-1 px-2 items-center'>
                     <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Add to post</Text>
                     <Row className=" justify-center items-center flex-row flex-wrap px-2">
                         {props.data.inputs['pictures'] && (
@@ -163,7 +163,7 @@ export default function FormPost(props) {
                     </Row>
                 </ScrollView>
 
-                <View className='w-full my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d py-1 px-2'>
+                <View className='w-full my-1 flex-row border rounded-xl border-border  py-1 px-2'>
                     <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm  text-neutral-800 dark:text-neutral-200">Labels</Text>
                     <Row className=" justify-end items-center flex-auto px-2 ">
                         {getFormFieldByData(
@@ -175,7 +175,7 @@ export default function FormPost(props) {
                     </Row>
                 </View>
 
-                <View className='w-full my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d py-1 px-2'>
+                <View className='w-full my-1 flex-row border rounded-xl border-border  py-1 px-2'>
                     <Text className="font-semibold px-3 py-1 my-auto text-sm  text-neutral-800 dark:text-neutral-200">Category</Text>
                     <Row className=" justify-end items-center flex-auto px-2 ">
                         {getFormFieldByData(
@@ -187,7 +187,7 @@ export default function FormPost(props) {
                     </Row>
                 </View>
 
-                <View className='w-full flex-row my-1  border rounded-xl border-bdr dark:border-bdr-d py-1 px-2 mb-2'>
+                <View className='w-full flex-row my-1  border rounded-xl border-border  py-1 px-2 mb-2'>
                     <Text className="font-semibold px-3 py-1  my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Allow Comments</Text>
                     <View className=" gap-x-2 px-2 py-0.5 justify-start items-center  ">
                         {getFormFieldByData(

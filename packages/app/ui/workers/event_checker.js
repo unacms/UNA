@@ -92,7 +92,7 @@ export default function WorkerEventChecker(oProps) {
                                 {item.location != '' && (<Row className='text-center gap-x-2 items-center'><Button startDecorator='MapPin' size="xs" /><Text className="text-xs text-neutral-700 dark:text-neutral-300">{item.location}</Text></Row>)}
                                 <Text className="text-neutral-700 dark:text-neutral-300" numberOfLines={2}> {stripTags(item.description)}</Text>
                             </View>
-                            {item.cover && <View className='w-1/5 mb-auto bg-bgritem dark:bg-bgritem-d aspect-video overflow-hidden rounded-xl'>
+                            {item.cover && <View className='w-1/5 mb-auto bg-muted  aspect-video overflow-hidden rounded-xl'>
                                 <Image
                                     {...item.cover}
                                     view="cover"

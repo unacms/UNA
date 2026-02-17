@@ -449,7 +449,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
         }
         let w = props.name == 'picture' ? 'w-48 h-48 overflow-hidden' : 'w-48 ' + appSetting('cover', 'aspect_ratio');
         if (!props.viewClasses) {
-            w += ' bg-bgrinput dark:bg-bgrinput-d border-bdrinput dark:border-bdrinput-d rounded-xl overflow-hidden'
+            w += ' bg-input border-border rounded-xl overflow-hidden'
         }
         else {
             w += ' ' + props.viewClasses
@@ -460,7 +460,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
 
         button = (
             <Pressable onPress={selectImage} >
-                <View className={w + ' max-w-full items-center justify-center bg-bgrinput dark:bg-bgrinput-d ' + (isImage ? '' : 'h-32')}>
+                <View className={w + ' max-w-full items-center justify-center bg-input ' + (isImage ? '' : 'h-32')}>
                     {!img && (<View ref={drop} className=' text-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'>
                         <Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>Drag & Drop or browse files...</Text>
                     </View>)}
@@ -494,7 +494,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
 
     const sizes = [
         isCover ? "w-full h-[30vh] mb-4 sm:rounded-xl" : "w-25 h-25 mb-3 rounded-lg",
-        "m-px justify-center items-center overflow-hidden bg-bgritem dark:bg-bgritem-d ",
+        "m-px justify-center items-center overflow-hidden bg-muted  ",
     ].join(" ");
 
     const sizes2 = isCover ? '100%' : 100;

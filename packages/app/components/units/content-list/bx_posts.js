@@ -52,7 +52,7 @@ Units.Search = function Search({ data }) {
     const isSkeleton = data?.skeleton;
     return (
         <CardList padding="p-1">
-            <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
+            <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-muted   ">
                 <Skeleton className="h-full w-full" rounded="rounded-lg" visible={isSkeleton}>
                     {data.image && (
                         <Image

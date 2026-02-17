@@ -66,7 +66,7 @@ export default function MenuItemLink(oProps) {
             sContent = (
                 <View className={sClassContent}>
                     {!!sIcon && <Icon icon={sIcon} />}
-                    <Text className=" mx-auto px-2 py-0.5 rounded-full bg-bgritem dark:bg-bgritem-d flex text-sm text-neutral-600 dark:text-neutral-400">{oProps.title}</Text>
+                    <Text className=" mx-auto px-2 py-0.5 rounded-full bg-muted  flex text-sm text-neutral-600 dark:text-neutral-400">{oProps.title}</Text>
                 </View>
             );
     }

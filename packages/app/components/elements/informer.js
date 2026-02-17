@@ -22,7 +22,7 @@ export default function ElementInformer({data, blockWrapperProps}) {
     return (
         <BlockWrapper {...blockWrapperProps}>
             <View className="w-full mx-auto fixed bottom-16 lg:bottom-1 z-50">
-            <View className="  w-full border-bdr/50 dark:border-bdr-d/50 mx-auto ">
+            <View className="  w-full border-border/50 /50 mx-auto ">
             {currentUser?.informer?.map((item, index) => {
                    if (item.id == 'sys-account-unconfirmed-email'){
                         return <Fragment key={item.id}></Fragment>

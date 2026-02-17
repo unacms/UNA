@@ -113,7 +113,7 @@ const getSkeleton = () => {
     return (
         <View className="gap-2">
             {[...Array(1, 2, 3)].map(i =>
-                <View key={i} className="flex-col p-2 bg-bgritem dark:bg-bgritem-d sm:rounded-lg">
+                <View key={i} className="flex-col p-2 bg-muted  sm:rounded-lg">
                     <View className="animate-pulse flex-row items-center gap-3">
                         <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
                         <View className="flex-1 gap-y-1">
@@ -263,7 +263,7 @@ const getCounterCompound = (getIconAlias, handleGetPerformedByCpd, actionsDataSt
         <ButtonCounter {...oButtonProps} fullWidth={false} key="counter" startDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
     ], [
         <Modal key="counter-popup" title={t("Reactions")} onVisible={popupVisibleByCpd} onClose={() => { setPopupVisibleByCpd(false) }}>
-            <View className="relative flex-row border-b border-bdr dark:border-bdr-d ">{aPerformedByMenu}</View>
+            <View className="relative flex-row border-b border-border  ">{aPerformedByMenu}</View>
             <View className="p-2">{aPerformedByUsers}</View>
         </Modal>
     ]

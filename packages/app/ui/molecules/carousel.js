@@ -14,11 +14,11 @@ const Image2 = memo((item) => {
     const handlePress = useCallback(() => item.handleShowImage(item), [item]);
 
     return (
-        <View className={(item.len > 1 ? 'w-1/2' : 'w-full') + ' h-full bg-bgritem dark:bg-bgritem-d '}>
+        <View className={(item.len > 1 ? 'w-1/2' : 'w-full') + ' h-full bg-muted  '}>
             <Pressable style={{ flex: 1, justifyContent: 'center' }} onPress={handlePress} >
                 {item.type == 'image' ? ((item.width && item.height) ?
-                    <Image sizes={LAYOUT_BREAKPOINTS.xl} src={item.src} alt='' height={item.height} width={item.width} className=" u-cover dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " /> :
-                    <Image sizes={LAYOUT_BREAKPOINTS.xl} src={item.src} alt='' view="cover" className=" u-cover dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />
+                    <Image sizes={LAYOUT_BREAKPOINTS.xl} src={item.src} alt='' height={item.height} width={item.width} className=" u-cover   gap-x-1 " /> :
+                    <Image sizes={LAYOUT_BREAKPOINTS.xl} src={item.src} alt='' view="cover" className=" u-cover   gap-x-1 " />
                 ) : <Video cover={true} src={item.src} controls={false} muted={"muted"} autoplay={"autoplay"} />}
 
                 {item.row == 1 && item?.index2 == 1 && item.data.length > 3 && <View className='absolute z-50 w-full h-full text-center items-center justify-center'><Text className='text-5xl lg:text-7xl text-white'>+{item.data.length - 3}</Text></View>}
@@ -85,7 +85,7 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr }) => {
             w = undefined;
             return (
                 /*bg-neutral-200  dark:bg-neutral-600*/
-                <View className={`${max_image_width}  ${aspect} w-full items-center justify-center bg-bgritem dark:bg-bgritem-d rounded-lg overflow-hidden`}>
+                <View className={`${max_image_width}  ${aspect} w-full items-center justify-center bg-muted  rounded-lg overflow-hidden`}>
                     <View style={{ aspectRatio: aspectStyle }} className='h-full'>
                         <Image2 handleShowImage={handleShowImage} data={data} row={0} index={0} key={0} width={w} height={h} src={data[0].src} type={data[0].type} />
                     </View>
@@ -186,7 +186,7 @@ const Carousel = memo(({ data = [] }) => {
                                        contentWidth={300}
                                        contentHeight={150}
                                      >
-                                    <Image view='cover' sizes={LAYOUT_BREAKPOINTS.xl} src={data[currentImageIndex].src} alt='' className=" u-cover  dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />
+                                    <Image view='cover' sizes={LAYOUT_BREAKPOINTS.xl} src={data[currentImageIndex].src} alt='' className=" u-cover    gap-x-1 " />
                                     </ReactNativeZoomableView>
                                 )}
                                 <Row className='absolute w-full -mt-4 top-1/2 items-center justify-between w-full px-4'>

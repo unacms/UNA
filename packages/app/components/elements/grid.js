@@ -543,8 +543,8 @@ export default function ElementGrid(props) {
                 }
             </Row>
         </Row>
-        <View className=''>{/*border border-bdrnavbar dark:border-bdrnavbar-d rounded-xl*/}
-            <Row className='w-full justify-between  py-2 bg-bgritem dark:bg-bgritem-d'>{/* border-b  rounded-t-xl border-bdrnavbar dark:border-bdrnavbar-d*/}
+        <View className=''>
+            <Row className='w-full justify-between  py-2 bg-muted '>
                 {
                     header.map((itemCell, index) => {
                         //getWidth(itemCell.width) 
@@ -578,9 +578,7 @@ export default function ElementGrid(props) {
                 ) : null}
                 renderItem={({ item, index: indexRow }) => {
                     return (
-                        //className={`${getWidth(cellHeader.width)}
-                        //border-b border-bdrnavbar dark:border-bdrnavbar-d
-                        <Row className={` justify-between  ${indexRow % 2 != 0 && 'bg-bgritem dark:bg-bgritem-d'}`}>
+                        <Row className={` justify-between  ${indexRow % 2 != 0 && 'bg-muted '}`}>
                             {header.map((cellHeader, index) => (
                                 <View key={'cell_' + indexRow + '_' + index} style={{ width: getWidth1(cellHeader.width) }} className={`py-1 p-1 xl:p-2 justify-center`}>
                                     <Cell

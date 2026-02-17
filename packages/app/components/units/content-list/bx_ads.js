@@ -73,7 +73,7 @@ export default function Unit(props) {
                             </View>
                         </View>
                     </LinkOrModal>
-                    <View className="border-t border-bdr/50 mx-2.5 dark:border-bdr-d/50 mt-auto  pt-2 pb-2.5 ">
+                    <View className="border-t border-border/50 mx-2.5 /50 mt-auto  pt-2 pb-2.5 ">
                         {sMeta}
                     </View>
                 </View>
