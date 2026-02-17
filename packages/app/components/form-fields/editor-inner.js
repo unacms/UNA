@@ -21,7 +21,7 @@ import { Platform, KeyboardAvoidingView } from 'react-native'
 import { Theme } from 'app/design/theme'
 import { getAlert, stripTags, stripTagsWithLinks } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
-import { appSetting } from 'app/lib/util'
+import { appSetting, cn } from 'app/lib/util'
 import { ThemeName } from 'app/design/theme'
 import emitter from 'app/context/emitter'
 
@@ -932,7 +932,7 @@ export default function RftText({
             onLayout={handleLayout}
             className={`flex-auto ${isToolBar
                 ? ' px-3 py-2 bg-input border border-border web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border flex-auto overflow-hidden shadow-xs placeholder-label-tertiary text-card-foreground web:duration-100 '
-                : (bg == 'transparent' ? '' : inputSettings.multi)
+                : (bg == 'transparent' ? '' : cn(inputSettings.base, inputSettings.rounded.default, inputSettings.size.default))
                 }`}
         >
             {suggestions && suggestions.length > 0 && (
