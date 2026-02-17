@@ -1,5 +1,5 @@
 import Image from "app/ui/atoms/image";
-import { cd, appSetting } from "app/lib/util";
+import { appSetting } from "app/lib/util";
 import { Text } from "app/design/typography";
 import { View, Row } from "app/design/view";
 import { CardList } from 'app/ui/molecules/card'
@@ -43,7 +43,7 @@ export default function Unit(props) {
     const isSkeleton = data?.skeleton;
 
     return (
-        <CardList padding={cd('p-sm')} className='mb-2 md:mb-0'>
+        <CardList padding='p-2' className='mb-2 md:mb-0'>
             <View className="flex-col gap-y-4">
                 <View className="flex-col w-full">
                     <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>

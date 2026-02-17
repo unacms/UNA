@@ -2,7 +2,6 @@ import { View, Row, ScrollView } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import {
-    cd,
     appSetting,
     storageSet,
     storageGet,
@@ -423,7 +422,7 @@ export default function ({ data, blocks }) {
                             sizable={cellsCustomConfig.sizable}
                         />
                         <Panel className={`hidden ${rightBreakpoint}:block ${currentBreakpointName}:w-full`} {...rightPanelProps}>
-                            <View className={`${cd('p-md')} ${cd('gap-lg')} fixed-process`}>
+                            <View className={`p-3 gap-4 fixed-process`}>
                                 {AsideContent}
                             </View>
                         </Panel>

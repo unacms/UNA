@@ -32,7 +32,6 @@ import ApiPerformanceReport from 'app/ui/molecules/api-performance-report'
 import ThemeCompatibilityTest from 'app/ui/molecules/nativewindui'
 import { useDensitySwitcher } from 'app/ui/atoms/density-switcher'
 import { useLayoutSettings } from 'app/context/layout-settings'
-import { cd } from 'app/lib/util'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
 function getCounter(num, icon = '', add = '', color = '') {

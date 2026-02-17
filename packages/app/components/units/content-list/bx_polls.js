@@ -4,7 +4,6 @@ import { appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import { CardList } from 'app/ui/molecules/card'
-import { cd } from 'app/lib/util'
 import LinkOrModal from 'app/ui/molecules/link-or-modal'
 
 export default function defaultUnit(props) {
@@ -19,7 +18,7 @@ export default function defaultUnit(props) {
     )
 
     return (
-        <CardList padding={cd('p-sm')} className='mb-2 md:mb-0'>
+        <CardList padding='p-2' className='mb-2 md:mb-0'>
             <View className="flex-col h-full">
                 <View className="flex-col  h-full w-full">
                     <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>

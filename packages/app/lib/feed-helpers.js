@@ -40,8 +40,7 @@ import Loading from 'app/ui/atoms/loading'
 import * as FeedItems from 'app/lib/feed-items'
 import { Icon } from 'app/ui/atoms/icon'
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger'
-import { useLayoutData } from 'app/context/layout'
-import { stripTags, cd, isWeb } from 'app/lib/util'
+import { stripTags, isWeb } from 'app/lib/util'
 import emitter from 'app/context/emitter';
 
 

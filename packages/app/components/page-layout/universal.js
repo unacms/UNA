@@ -1,6 +1,6 @@
-import { View, ScrollView } from 'app/design/view';
-import { appSetting, getPageWidth, cd } from 'app/lib/util'
-import { useRef, memo, useMemo } from 'react';
+import { View } from 'app/design/view';
+import { appSetting } from 'app/lib/util'
+import { memo, useMemo } from 'react';
 import MenuFooter from 'app/components/nav/menu-footer';
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { Panel, PanelGroup, PanelHandler } from "app/ui/molecules/resizable-panels";
@@ -116,7 +116,7 @@ const PanelCell = memo(({ cell, currentBreakpoint, index, sizable }) => {
     };
     return (hasData(cell?.data) && !isRowLayout(cell, currentBreakpoint)) && (
         <>
-            {(index > 0) && (sizable ? <PanelHandler sizable={sizable} /> : <View className={cd('w-lg', density)} />)}
+            {(index > 0) && (sizable ? <PanelHandler sizable={sizable} /> : <View className='w-4' />)}
             <Panel {...panelProps} >
                 <View className="w-full gap-y-4">
                     {cell.chd}

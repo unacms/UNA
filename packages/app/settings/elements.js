@@ -49,6 +49,7 @@ export const settingsElements = {
         sidebar_title: 'sticky z-10 justify-between items-center h-12 p-2 mb-0.5 z-10',
         sidebar_position: ' z-50 fixed fixed-process ',
         bgrDecorator: true, // Enable/disable decorator background globally for conductor buttons
+        add_menu_native:false,
     },
     entry: {
         default_view: '',

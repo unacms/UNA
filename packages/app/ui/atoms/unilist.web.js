@@ -3,7 +3,6 @@ import { VirtuosoGrid, Virtuoso } from 'react-virtuoso'
 import { View } from 'app/design/view'
 import { View as ReactNativeView } from 'react-native'
 import { useRef, useEffect } from 'react';
-import { cd } from 'app/lib/util'
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useCallback, forwardRef } from 'react';
 import { useBreakpoint } from 'app/context/measure'
@@ -134,7 +133,7 @@ export default function UniList(props) {
 
 
     const ItemComponent = ({ className, ...props }) => (
-        <ReactNativeView className={`${layout || 'w-full'} ${className || cd('mb-md')}`} {...props} />
+        <ReactNativeView className={`${layout || 'w-full'} ${className || 'mb-3'}`} {...props} />
     );
 
     const ListComponent = forwardRef(({ className, ...props }, ref) => {

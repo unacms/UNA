@@ -7,8 +7,9 @@ import {
 import { Pressable, ScrollView, View, ViewRef } from 'app/design/view'
 import { RemoveScroll } from 'react-remove-scroll';
 import { appSetting } from 'app/lib/util';
-import { Theme } from 'app/design/theme';
 import { useIsDesktop, useWindowSize } from 'app/context/measure';
+import emitter from 'app/context/emitter';
+
 const dropdownTheme = appSetting('theme', 'dropdown');
 
 export default function DropdownPopup({
@@ -40,6 +41,20 @@ export default function DropdownPopup({
     const isControlledOutside = typeof onOpenChange === 'function';
     const isRealOpen = isControlledOutside ? open : isOpen;
 
+     useEffect(() => {
+        const subscription = emitter.addListener('link', (data) => {
+            if (data.action == 'pressed') {
+                setIsModalVisible(false);
+                if (onOpenChange) {
+                    onOpenChange(false);
+                }
+            }
+        })
+                               
+        return () => {
+            subscription.remove()
+        }
+    }, [onOpenChange])
 
     useEffect(() => {
         // Add safety checks for modal state

@@ -66,10 +66,10 @@ export async function subscribeOneSignal(currentUser, askPermission = false) {
     }
 }
 
-export function cd(className, density = 'default', section = 'offsets') {
+/*export function cd(className, density = 'default', section = 'offsets') {
     const t = appSetting('theme', section);
     return t[`${className}`]
-}
+}*/
 
 export function normalizeClasses(a) {
     if (!a) return a

@@ -262,14 +262,14 @@ export default function Browse(props) {
         })
 
         const subscription2 = emitter.addListener(`feed`, (data) => {
-            if (data.action == 'remove_content') {
+            if (props.data?.unit == 'feed' && data.action == 'remove_content') {
                 dispatch({ type: 'REMOVE_ITEM', id: data.id })
                 if (refetchRef.current?.prevItems) {
                     refetchRef.current.prevItems = refetchRef.current.prevItems.filter(item => item.id != data.id)
                 }
                 refetchRef.current.skipToast = true
             }
-            if (data.action == 'new_content') {
+            if (props.data?.unit == 'feed' && data.action == 'new_content') {
                 dispatch({ type: 'PREPEND_ITEM', item: data.data })
                 if (refetchRef.current?.prevItems) {
                     refetchRef.current.prevItems = [data.data, ...refetchRef.current.prevItems]
@@ -282,7 +282,7 @@ export default function Browse(props) {
             subscription.remove();
             subscription2.remove()
         }
-    }, [])
+    }, [props.data?.unit])
 
     const dataItems = refetchState.visibleItems
 

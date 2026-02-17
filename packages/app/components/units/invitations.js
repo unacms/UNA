@@ -5,7 +5,6 @@ import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
 import { useState } from 'react';
 import { Button } from 'app/design/controls'
-import { cd } from 'app/lib/util'
 import Image from 'app/ui/atoms/image'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
@@ -29,7 +28,7 @@ export default function Unit(props) {
     // for separate page
     if (props.unitType == 'invitations_in_context') {
         return (
-            <CardList padding={cd('p-sm')} className='mb-2 md:mb-0'>
+            <CardList padding='p-2' className='mb-2 md:mb-0'>
                 <Link className="context " href={data.url}>
                     <View className="flex-row sm:flex-col p-1">
                         <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center bg-neutral-500/20">

@@ -6,7 +6,6 @@ import { Card, CardList } from 'app/ui/molecules/card'
 import Time from "app/ui/atoms/time";
 import { AuthorData } from 'app/lib/common-helpers'
 import { appSetting } from 'app/lib/util'
-import { cd } from 'app/lib/util'
 import LinkOrModal from 'app/ui/molecules/link-or-modal'
 import { Skeleton } from 'app/ui/atoms/skeleton'
 
@@ -55,7 +54,7 @@ Units.Search = function Search({ data }) {
 Units.Small = function Small({ data }) {
     const isSkeleton = data?.skeleton
     return (
-        <CardList padding={cd('p-sm')} >
+        <CardList padding='p-2' >
             <View className="  aspect-video flex-none rounded-xl overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
                 <Skeleton className="h-full w-full" rounded="rounded-xl" visible={isSkeleton}>
                     {data.image && (
