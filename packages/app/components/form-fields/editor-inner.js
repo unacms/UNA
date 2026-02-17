@@ -25,6 +25,7 @@ import { appSetting, cn } from 'app/lib/util'
 import { ThemeName } from 'app/design/theme'
 import emitter from 'app/context/emitter'
 
+
 const inputSettings = appSetting('theme', 'inputs');
 
 export default function RftText({
