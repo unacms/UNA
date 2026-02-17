@@ -1,7 +1,7 @@
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
-import React, { useContext, useState } from 'react';
+import { useState } from 'react';
 import { Button, Modal } from 'app/design/controls'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { SelectUsers } from 'app/components/form-fields/initial_members';

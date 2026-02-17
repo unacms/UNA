@@ -1,6 +1,6 @@
 import { View, Row } from 'app/design/view'
 import { Modal } from 'app/design/controls'
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher';

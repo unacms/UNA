@@ -2,12 +2,11 @@ import Field, { getValidationRules } from './_field';
 import { useController, useFormContext } from 'react-hook-form';
 import { fetcher } from 'app/lib/fetcher';
 import { Button, Modal } from "app/design/controls";
-import { useState, useEffect, useCallback, useContext } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Form from 'app/components/elements/form';
 import useFetchForm from 'app/lib/hooks/fetch'
 import emitter from 'app/context/emitter';
 import { PollItem } from 'app/components/elements/entity_poll';
-import { View } from 'app/design/view'
 
 export default function FormFieldPolls(props) {
     const name = props.name;

@@ -1,16 +1,15 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState } from 'react';
 import Field, { getValidationRules } from './_field';
 import { useFormContext, useController } from 'react-hook-form';
 import { Button, Modal, Hidden } from 'app/design/controls'
 import { getVisibilityValues } from './select';
-import { truncateString, visibilityById } from 'app/lib/util';
+import { visibilityById } from 'app/lib/util';
 import RbList from 'app/ui/molecules/radio_list';
 import ChkList from 'app/ui/molecules/checkbox_list';
 import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile';
-import React from 'react';
 import { Theme } from 'app/design/theme';
 import { useTranslation } from 'react-i18next'
 

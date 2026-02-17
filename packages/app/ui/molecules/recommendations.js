@@ -48,13 +48,6 @@ const setElementVars = (cardData, setCardData, elementData, setElementData, sCon
             oValue = {[sContextKey]: mValue};
         else
             oValue = mValue;
-
-        /*  
-        if(!cardData)
-            setCardData(oValue);
-        else
-            setCardData({...cardData, ...oValue});
-        */
     }
     else {
         if(!elementData)

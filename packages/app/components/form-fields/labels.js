@@ -1,8 +1,8 @@
 import Field from './_field';
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
-import { useState, useEffect , useCallback, useContext } from 'react';
-import { useController, useFormContext } from 'react-hook-form';
+import { useState, useEffect , useCallback } from 'react';
+import { useController } from 'react-hook-form';
 import { Button, Modal } from "app/design/controls";
 import CheckBox from 'app/ui/atoms/checkbox';
 import emitter from 'app/context/emitter';

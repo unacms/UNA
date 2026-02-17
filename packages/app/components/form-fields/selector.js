@@ -1,6 +1,6 @@
 import Field from './_field';
-import { View, Row, Pressable, ScrollView } from 'app/design/view'
-import { useState, useMemo, useCallback, useContext } from 'react';
+import { View, Row, Pressable } from 'app/design/view'
+import { useState, useMemo, useCallback } from 'react';
 import { useController } from 'react-hook-form';
 import { Button, Input, Modal } from "app/design/controls";
 import CheckBox from 'app/ui/atoms/checkbox';
