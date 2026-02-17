@@ -431,11 +431,19 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
     if (coverMode === 'none') {
         if (isWeb) return null
        
-        return <>{appSetting('context_selector', 'show_always') ? <Row className={`${TABLET_MODE_FROM}:hidden items-center w-full px-2 `} >
+        return <>{appSetting('context_selector', 'show_always') ? <Row className={`${TABLET_MODE_FROM}:hidden items-center justify-between w-full px-2 `} >
 
-        <View className={`bg-card/70 w-full`}>
+        <View className={`bg-card/70 flex-1`}>
             <ContextSelector data={context} mode="compact" />
-        </View></Row> : <></>}
+           
+        </View>
+        {!!data?.actions_menu && <View className={`bg-card/70`}>
+         <CoverMenuMore
+                                    {...data.actions_menu}
+                                    uri={uri}
+                                    isSplitMenu={true}
+                                /></View>}
+        </Row> : <></>}
     </>
     }
 

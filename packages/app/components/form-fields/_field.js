@@ -78,7 +78,7 @@ export default function (props) {
             {/*(props.error2 && props.checker.error!='') && <FormError errorText={props.checker.error} />*/}
             {!!props.info && (
                 <View className="label">
-                    <Text className="mt-1 px-1 text-xs sm:text-sm text-neutral-700 dark:text-neutral-300">
+                    <Text className="mt-1 px-1 text-xs text-muted-foreground">
                         {stripTags(props.info)}
                     </Text>
                 </View>
