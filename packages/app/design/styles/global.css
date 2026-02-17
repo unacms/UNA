@@ -63,15 +63,6 @@
         --link-secondary: var(--accent-700);
         --link-tertiary: var(--accent-900);
         /*Link text color on
-        
-
-        /* Box shadow variables for light mode - NativeWind compatible */
-        --shadow-xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.08);
-        --shadow-sm: 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
-        --shadow-md: 0px 4px 8px 0px rgba(0, 0, 0, 0.08);
-        --shadow-lg: 0px 8px 16px 0px rgba(0, 0, 0, 0.08);
-        --shadow-xl: 0px 16px 32px 0px rgba(0, 0, 0, 0.08);
-        --shadow-2xl: 0px 32px 64px 0px rgba(0, 0, 0, 0.08);
 
         /* Shadow Border variables - Light Mode */
         --shadow-border-sm: 0px 0px 0px 1px rgba(0, 0, 0, 0.05), 0px 1px 1px -0.5px rgba(0, 0, 0, 0.06), 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
@@ -147,26 +138,6 @@
         --red: 225 29 72;
         /*rose-600*/
 
-        --android-background: var(--background);
-        --android-foreground: var(--foreground);
-        --android-card: var(--card);
-        --android-card-foreground: var(--card-foreground);
-        --android-popover: var(--popover);
-        --android-popover-foreground: var(--popover-foreground);
-        --android-primary: var(--primary);
-        --android-primary-foreground: var(--primary-foreground);
-        --android-secondary: var(--secondary);
-        --android-secondary-foreground: var(--secondary-foreground);
-        --android-muted: var(--muted);
-        --android-muted-foreground: var(--muted-foreground);
-        --android-accent: var(--accent);
-        --android-accent-foreground: var(--accent-foreground);
-        --android-destructive: var(--destructive);
-        --android-destructive-foreground: var(--destructive-foreground);
-        --android-border: var(--border);
-        --android-input: var(--input);
-        --android-ring: var(--ring);
-
         /* Border Radius Defaults */
         --radius-sm: 0.125rem;
         --radius-default: 0.25rem;
@@ -241,15 +212,6 @@
         --link-tertiary: var(--accent-900);
         /*Link text color on visited*/
 
-
-        /* Box shadow variables for dark mode - more pronounced shadows */
-        --shadow-xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.5);
-        --shadow-sm: 0px 1px 4px 0px rgba(0, 0, 0, 0.5);
-        --shadow-md: 0px 2px 8px 0px rgba(0, 0, 0, 0.3);
-        --shadow-lg: 0px 8px 16px 0px rgba(0, 0, 0, 0.4);
-        --shadow-xl: 0px 20px 25px -5px rgba(0, 0, 0, 0.4);
-        --shadow-2xl: 0px 25px 50px -10px rgba(0, 0, 0, 0.4);
-
         /* Shadow Border variables - Dark Mode */
         --shadow-border-sm: 0px 0px 0px 1px rgba(255, 255, 255, 0.06), 0px 1px 1px -0.5px rgba(255, 255, 255, 0.04), 0px 1px 2px 0px rgba(0, 0, 0, 0.1);
         --shadow-border-sm-hover: 0px 0px 0px 1px rgba(255, 255, 255, 0.08), 0px 1px 1px -0.5px rgba(255, 255, 255, 0.06), 0px 1px 2px 0px rgba(0, 0, 0, 0.2);
@@ -261,26 +223,6 @@
         --shadow-border-xl-hover: 0px 0px 0px 1px rgba(255, 255, 255, 0.08), 0px 4px 8px -2px rgba(255, 255, 255, 0.06), 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
         --shadow-custom: 0px 0px 0px 1px #ffffff1a, 0px 1px 2px -1px #ffffff14, 0px 2px 4px 0px #00000066;
         --shadow-custom-hover: 0px 0px 0px 1px #ffffff24, 0px 1px 2px -1px #ffffff1f, 0px 2px 4px 0px #00000080;
-
-        --android-background: var(--background);
-        --android-foreground: var(--foreground);
-        --android-card: var(--card);
-        --android-card-foreground: var(--card-foreground);
-        --android-popover: var(--popover);
-        --android-popover-foreground: var(--popover-foreground);
-        --android-primary: var(--primary);
-        --android-primary-foreground: var(--primary-foreground);
-        --android-secondary: var(--secondary);
-        --android-secondary-foreground: var(--secondary-foreground);
-        --android-muted: var(--muted);
-        --android-muted-foreground: var(--muted-foreground);
-        --android-accent: var(--accent);
-        --android-accent-foreground: var(--accent-foreground);
-        --android-destructive: var(--destructive);
-        --android-destructive-foreground: var(--destructive-foreground);
-        --android-border: var(--border);
-        --android-input: var(--input);
-        --android-ring: var(--ring);
     }
 
     :root {
