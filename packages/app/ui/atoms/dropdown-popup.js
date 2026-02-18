@@ -44,7 +44,6 @@ export default function DropdownPopup({
      useEffect(() => {
         const subscription = emitter.addListener('link', (data) => {
             if (data.action == 'pressed') {
-                setIsModalVisible(false);
                 if (onOpenChange) {
                     onOpenChange(false);
                 }
