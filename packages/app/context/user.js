@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { isObjectsEqual } from 'app/lib/util'
-
+import { useShallow } from 'zustand/react/shallow';
 export const useCurrentUserStore = create((set, get) => ({
     currentUser: null, // Initial state
 
@@ -30,4 +30,15 @@ export const useCurrentUser = () => {
     const setCurrentUser = useCurrentUserStore((state) => state.setCurrentUser);
 
     return { currentUser, setCurrentUser };
+};
+
+export const useCurrentUserNoCounters = () => {
+    return useCurrentUserStore(
+        useShallow((state) => {
+            const u = state.currentUser;
+            if (!u) return u; 
+            const { counters, notifications, ...brief } = u;
+            return brief;
+        })
+    );
 };

@@ -1,11 +1,10 @@
 import { Row, Pressable } from 'app/design/view'
 import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting } from 'app/lib/util'
 import {
+    appSetting,
     menuItemsByName,
     menuItemsByNameNew,
-    getDataForMenu,
 } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { useTranslation } from 'react-i18next'
@@ -18,12 +17,14 @@ import RadioButton from 'app/ui/atoms/radiobutton'
 import Redirect from 'app/ui/atoms/redirect'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { useIsDesktop } from 'app/context/measure';
+import { useMenuData } from 'app/context/menu-data';
 
 export default function MenuAccount({ buttonProps, children }) {
     const redirectdRef = useRef()
     const { currentUser, setCurrentUser } = useCurrentUser()
-    const [menuData, setMenuData] = useState(false)
-    const [menuData1, setMenuData1] = useState(false)
+    const { menuData: accountMenuData } = useMenuData(appSetting('menu_items', 'objects', 'account'));
+    const { menuData: footerMenuData } = useMenuData(appSetting('menu_items', 'objects', 'footer'));
+    
     const [data, setData] = useState(false)
     const isDesktop = useIsDesktop();
 
@@ -41,30 +42,13 @@ export default function MenuAccount({ buttonProps, children }) {
     }
 
     useEffect(() => {
-        const fetchData = async () => {
-            getDataForMenu(
-                {
-                    object: appSetting('menu_items', 'objects', 'account'),
-                    params: null,
-                },
-                setMenuData
-            )
-            getDataForMenu(
-                {
-                    object: appSetting('menu_items', 'objects', 'footer'),
-                    params: null,
-                },
-                setMenuData1
-            )
-            fetchDataPr()
-        }
-        fetchData()
+        fetchDataPr()
     }, [])
 
     const { t } = useTranslation()
 
     const menu_account_items = appSetting('layout', 'user_remote_config')
-        ? menuItemsByNameNew('menu_post', menuData, currentUser)
+        ? menuItemsByNameNew('menu_post', accountMenuData, currentUser)
         : menuItemsByName(
             '',
             appSetting('menu_items', 'menu_account'),
@@ -72,7 +56,7 @@ export default function MenuAccount({ buttonProps, children }) {
         )
 
     const menu_footer_items = appSetting('layout', 'user_remote_config')
-        ? menuItemsByNameNew('menu_post', menuData1, currentUser)
+        ? menuItemsByNameNew('menu_post', footerMenuData, currentUser)
         : menuItemsByName(
             '',
             appSetting('menu_items', 'menu_footer'),
@@ -100,7 +84,7 @@ export default function MenuAccount({ buttonProps, children }) {
 
     buttonProps = { ...defaultButtonProps, ...(buttonProps || {}) }
 
-    if ((menu_account_items.length == 0 && menuData) || !profile) return <></>
+    if ((menu_account_items.length == 0 && accountMenuData) || !profile) return <></>
 
     const trigger = children || <Button {...buttonProps} />
 
