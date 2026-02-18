@@ -16,13 +16,12 @@ export default function PageLayout({ data }) {
 
         return (
             <Page data={data} processKeyboard={false}>
-                <View className='p-3 sm:p-4  web:duration-300 w-full '>
+                <View className='p-3 sm:p-4 web:duration-300 w-full'>
                     {cells}
                 </View>
+                <View className="flex-1" />
                 <MenuFooter
                     cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
-                    variant="ghost"
-                    size="sm"
                     itemClassName="text-sm p-1"
                 />
             </Page>

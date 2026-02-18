@@ -30,7 +30,7 @@ function PageContent({ children, isLoginPage, title }) {
                 <Card role="form"
                     titleId="login-page-title"
                     aria-describedby="login-card-description"
-                    className="sm:py-6 sm:gap-6"
+                    className="sm:py-6 gap-4 sm:gap-6"
                 >
                     <CardHeader>
                         <CardTitle>{title}</CardTitle>
@@ -47,7 +47,7 @@ function PageContent({ children, isLoginPage, title }) {
                 <Card role="form"
                     titleId="login-page-title"
                     aria-describedby="login-card-description"
-                    className="sm:py-6 sm:gap-6"
+                    className="sm:py-6 gap-4 sm:gap-6"
                 >
                     <CardHeader className="items-center sm:px-6">
                         <CardIcon id="login-card-icon">
@@ -90,46 +90,38 @@ export default function PageLayout({ data, children }) {
     const isWeb = Platform.OS === 'web'
     const isLoginPage = data.uri === 'login'
 
-    const content = isWeb ? (
-        <View
-            className={`flex-col justify-center pt-16 ${TABLET_MODE_FROM}:pt-0 mx-auto w-full web:min-h-[calc(100vh-20rem)] ${getPageWidth(
-                data.uri,
-                data?.config
-            )}`}
-        >
-            <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto">
-                {isLoginPage ? appStatic('components_logincontent') : null}
-                <View className="w-full lg:w-1/2 mx-auto">
-                    <AnimatedView>
-                        <PageContent
-                            isLoginPage={isLoginPage}
-                            title={data.title}
-                        >
-                            {children}
-                        </PageContent>
-                    </AnimatedView>
-                </View>
-            </View>
-            <MenuFooter
-                cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
-                variant="ghost"
-                size="sm"
-                itemClassName="text-sm p-1"
-            />
-        </View>
-    ) : (
-        <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto ">
-            <PageContent isLoginPage={true}>{children}</PageContent>
-            <MenuFooter
-                cntClasses="flex w-full items-center border-t border-border/40 justify-center flex-row flex-wrap gap-4 p-4"
-                variant="ghost"
-                size="sm"
-                itemClassName=""
-            />
-        </View>
-    )
-
     return (
-        <Page data={data}>{content}</Page>
+        <Page data={data}>
+            {isWeb ? (
+                <View
+                    className={`flex-1 flex-col justify-center pt-16 ${TABLET_MODE_FROM}:pt-0 mx-auto w-full`}
+                >
+                    <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto">
+                        {isLoginPage ? appStatic('components_logincontent') : null}
+                        <View className="w-full lg:w-1/2 mx-auto">
+                            <AnimatedView>
+                                <PageContent
+                                    isLoginPage={isLoginPage}
+                                    title={data.title}
+                                >
+                                    {children}
+                                </PageContent>
+                            </AnimatedView>
+                        </View>
+                    </View>
+                </View>
+            ) : (
+                <View className="flex-1">
+                    <PageContent isLoginPage={true}>{children}</PageContent>
+                </View>
+            )}
+            <MenuFooter
+                cntClasses={isWeb
+                    ? 'flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3'
+                    : 'flex w-full items-center border-t border-border/40 justify-center flex-row flex-wrap gap-4 p-4'
+                }
+                itemClassName={isWeb ? 'text-sm p-1' : ''}
+            />
+        </Page>
     )
 }

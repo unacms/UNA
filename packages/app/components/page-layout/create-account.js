@@ -32,7 +32,7 @@ function PageContent({ children }) {
                 <Card role="form"
                     titleId="signup-card-title"
                     aria-describedby="signup-card-description"
-                    className="sm:py-6 sm:gap-6">
+                    className="sm:py-6 gap-4 sm:gap-6">
                     <CardHeader className="items-center sm:px-6">
                         <CardIcon id="signup-card-icon">
                             <Icon icon="UserRoundPlus" width={32} height={32} className="w-6 h-6 sm:w-8 sm:h-8" />
@@ -97,58 +97,47 @@ export default function PageLayout({ data, blocks }) {
         return Block
     }
 
-    const content = isWeb ? (
-        <View className="flex-col justify-center w-full ">
-             <View className={`gap-4 sm:gap-6 p-4 lg:p-6 justify-center w-full mx-auto lg:flex-row ${appSetting(
-                    'layout',
-                    'max_width_content',
-                )}`}
-            >
-
-<View className="items-center lg:items-start relative my-auto flex-auto w-full p-4 gap-4 ">
-
-                    {appStatic('join_text')}
-                    <H1
-                        className="text-4xl sm:text-5xl tracking-tight font-bold text-foreground text-balance"
-                    >
-                        {isAllowJoin
-                            ? t('create_account_page_title')
-                            : t('create_account_page_title_request_invite')}
-                    </H1>
-                    <Text
-                accessible={true}
-                accessibilityRole="text"
-                className=" text-muted-foreground text-center lg:text-start text-base sm:text-lg text-pretty"
-            >
-                        {isAllowJoin
-                            ? t('create_account_page_text')
-                            : t('create_account_page_text_request_invite')}
-                    </Text>
-
-                </View>
-                <PageContent>{Block}</PageContent>
-            </View>
-            <MenuFooter
-                cntClasses="flex w-full items-center border-t border-border/40 justify-center flex-row flex-wrap gap-4 p-4"
-                variant="ghost"
-                size="sm"
-                itemClassName=""
-            />
-        </View>
-    ) : (
-        <View className="w-full flex-col lg:flex-row gap-y-4 mx-auto ">
-
-            <PageContent>{Block}</PageContent>
-            <MenuFooter
-                cntClasses="flex w-full items-center border-t border-border/40 justify-center flex-row flex-wrap gap-4 p-4"
-                variant="ghost"
-                size="sm"
-                itemClassName=""
-            />
-        </View>
-    )
-
     return (
-        <Page data={data}>{content}</Page>
+        <Page data={data}>
+            {isWeb ? (
+                <View className={`flex-1 gap-4 sm:gap-6 p-4 lg:p-6 justify-center w-full mx-auto lg:flex-row ${appSetting(
+                        'layout',
+                        'max_width_content',
+                    )}`}
+                >
+                    <View className="items-center lg:items-start relative my-auto flex-auto w-full p-4 gap-4">
+                        {appStatic('join_text')}
+                        <H1
+                            className="text-4xl sm:text-5xl tracking-tight font-bold text-foreground text-balance"
+                        >
+                            {isAllowJoin
+                                ? t('create_account_page_title')
+                                : t('create_account_page_title_request_invite')}
+                        </H1>
+                        <Text
+                            accessible={true}
+                            accessibilityRole="text"
+                            className="text-muted-foreground text-center lg:text-start text-base sm:text-lg text-pretty"
+                        >
+                            {isAllowJoin
+                                ? t('create_account_page_text')
+                                : t('create_account_page_text_request_invite')}
+                        </Text>
+                    </View>
+                    <PageContent>{Block}</PageContent>
+                </View>
+            ) : (
+                <View className="flex-1">
+                    <PageContent>{Block}</PageContent>
+                </View>
+            )}
+            <MenuFooter
+                cntClasses={isWeb
+                    ? 'flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3'
+                    : 'flex w-full items-center border-t border-border/40 justify-center flex-row flex-wrap gap-4 p-4'
+                }
+                itemClassName={isWeb ? 'text-sm p-1' : ''}
+            />
+        </Page>
     )
 }

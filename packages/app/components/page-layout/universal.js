@@ -133,10 +133,9 @@ export default function PageLayoutUniversal({ data, children, layoutName }) {
             <PageContentUniversal data={data} layoutName={layoutName}>
                 {children}
             </PageContentUniversal>
+            <View className="flex-1" />
             <MenuFooter
                 cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3"
-                variant="ghost"
-                size="sm"
                 itemClassName="text-sm p-1"
             />
         </Page>

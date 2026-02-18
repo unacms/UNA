@@ -8,8 +8,8 @@ import { usePathname } from 'app/lib/hooks/router';
 import { getFriendsCounter } from 'app/customization/functions';
 import { Icon } from 'app/ui/atoms/icon'
 import { useTranslation } from 'react-i18next';
-import { useFooter } from 'app/context/jotai/layout';
-import { useCallback } from 'react';
+import { useFooter, useSetFooterHeight } from 'app/context/jotai/layout';
+import { useCallback, useEffect } from 'react';
 import { useSound } from 'app/lib/hooks/useSound';
 
 function isInStandaloneMode() {
@@ -29,9 +29,19 @@ export default function () {
     const iFrCounter = getFriendsCounter(currentUser);
     let pathname = usePathname()
     const footer = useFooter();
-    
+    const setFooterHeight = useSetFooterHeight();
 
-    if (!currentUser && !appSetting('layout', 'show_tabbar_on_mobile_non_logged')|| !footer)
+    const shouldHide = (!currentUser && !appSetting('layout', 'show_tabbar_on_mobile_non_logged')) || !footer;
+
+    useEffect(() => {
+        // When the tab bar is not rendering (early return), immediately clear the
+        // stored height so Page.minHeight is not incorrectly reduced.
+        if (shouldHide) setFooterHeight(0);
+        // Also clear on unmount so stale values never survive navigation.
+        return () => setFooterHeight(0);
+    }, [shouldHide]);
+
+    if (shouldHide)
         return null
 
     let profile = null
@@ -51,6 +61,7 @@ export default function () {
             className={
                 `min-h-16 fixed bottom-0 left-0 z-30 w-full lg:hidden bg-card ${isInStandaloneMode() ? "pb-4" : ""}`
             }
+            onLayout={(e) => setFooterHeight(e.nativeEvent.layout.height)}
         >
             <View
                 className={`z-50 w-full pb-0 ${isInStandaloneMode() ? "h-12" : "h-16"}`}

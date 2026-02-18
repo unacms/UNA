@@ -239,8 +239,6 @@ export default function MenuAccount({ buttonProps, children }) {
                     menu_footer_items.length > 0 ? (
                         <MenuFooter
                             cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row gap-x-2 gap-y-1 p-2 pb-1 mt-1 max-w-64"
-                            variant="ghost"
-                            size="sm"
                             itemClassName="text-xs p-1 text-nowrap"
                             menu_items={menu_footer_items}
                         />

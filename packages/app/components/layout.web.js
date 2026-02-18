@@ -16,6 +16,7 @@ import { useLayoutSettings } from 'app/context/layout-settings';
 import { useIsDesktop } from 'app/context/measure';
 import PopupModal from 'app/ui/molecules/popup_modal'
 import { PageHeader } from 'app/ui/molecules/page_header';
+import { useFooter } from 'app/context/jotai/layout';
 import Script from 'next/script';
 
 // Глобальный флаг для отслеживания инициализации OneSignal (общий для всех экземпляров компонента)
@@ -348,9 +349,14 @@ export default function Layout(props) {
 
 const Content = React.memo(({ children, currentUser, layoutName, url }) => {
     const externalScripts = appSetting('layout', 'external_scripts') || [];
+    const footer = useFooter();
 
     const isHideHeader = (appSetting('layout', 'hide_header_for_non_logged') && !currentUser) || appSetting('layout', 'hide_header_for_all');
-    const mainClassName = `${(layoutName != 'messenger' && layoutName != 'post' && !isHideHeader) ? ' pb-16 web:lg:pb-0 lg:pb-0 ' : ''} w-full mx-auto`;
+    // Only reserve bottom space when the tab bar is actually rendered.
+    // The tab bar renders for logged-in users (or when show_tabbar_on_mobile_non_logged is set)
+    // and only when the footer atom is truthy. Avoids phantom scroll on auth/guest pages.
+    const showBottomTabBar = footer && (currentUser || appSetting('layout', 'show_tabbar_on_mobile_non_logged'));
+    const mainClassName = `${(layoutName != 'messenger' && layoutName != 'post' && !isHideHeader && showBottomTabBar) ? ' pb-16 web:lg:pb-0 lg:pb-0 ' : ''} w-full mx-auto`;
     return (
         <View className="w-full items-stretch cnt-root mx-auto flex-row " key={url}>
             <main id="main-content" role="main" className={mainClassName}>

@@ -37,7 +37,7 @@ function PageContent({ data }) {
                     role="form"
                     titleId="login-card-title"
                     aria-describedby="login-card-description"
-                    className="sm:py-6 sm:gap-6"
+                    className="sm:py-6 gap-4 sm:gap-6"
                 >
                     <CardHeader className="items-center sm:px-6">
                         <CardIcon id="login-card-icon">
@@ -50,7 +50,7 @@ function PageContent({ data }) {
                             {t('splash_page_login')}
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="sm:px-6">
+                    <CardContent className="sm:px-6 gap-4">
                         <BlockByName
                             name="system:login_form"
                             contentOnly={true}
@@ -97,9 +97,9 @@ function PageContent({ data }) {
 
 export default function Splash(props) {
     const isWeb = Platform.OS == 'web'
-    const content = isWeb ? (
-        <View className="flex-col justify-center w-full">
-            <View className={`gap-4 sm:gap-6 p-4 lg:p-6 justify-center w-full mx-auto lg:flex-row ${appSetting(
+    return (
+        <Page>
+            <View className={`flex-1 gap-4 sm:gap-6 p-4 lg:p-6 justify-center w-full mx-auto lg:flex-row ${appSetting(
                     'layout',
                     'max_width_content',
                 )}`}
@@ -108,31 +108,11 @@ export default function Splash(props) {
                 <PageContent {...props} />
             </View>
             <MenuFooter
-                cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-3 p-3"
-                variant="ghost"
-                size="sm"
-                itemClassName=""
+                cntClasses={isWeb
+                    ? 'flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-3 p-3'
+                    : 'flex w-full items-center border-t border-border/40 justify-center flex-row flex-wrap gap-4 p-4'
+                }
             />
-        </View>
-    ) : (
-        <View className=" w-full ">
-            <View
-                className={`w-full lg:flex-row ${appSetting(
-                    'layout',
-                    'max_width_content',
-                )}`}
-            >
-                {appStatic('splash_text')}
-                <PageContent {...props} />
-            </View>
-            <MenuFooter
-                cntClasses="flex w-full items-center border-t border-border/40 justify-center flex-row flex-wrap gap-4 p-4"
-                variant="ghost"
-                size="sm"
-                itemClassName=""
-            />
-        </View>
+        </Page>
     )
-
-    return <Page>{content}</Page>
 }

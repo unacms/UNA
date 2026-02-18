@@ -43,8 +43,8 @@ export default function Unit(props) {
     const isSkeleton = data?.skeleton;
 
     return (
-        <CardList padding='p-2' className='mb-2 md:mb-0'>
-            <View className="flex-col gap-y-4">
+        <CardList padding='p-1' className='mb-2 md:mb-0'>
+            
                 <View className="flex-col w-full">
                     <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
                         <View className="w-full p-1">
@@ -117,13 +117,13 @@ export default function Unit(props) {
                             </View>
                         </View>
                     </LinkOrModal>
-                    <View className=" mb-auto px-4 pb-3 sm:pt-0">
+                    <View className="p-2">
                         <Skeleton preset="author" visible={isSkeleton}>
                             {sMeta}
                         </Skeleton>
                     </View>
                 </View>
-            </View>
+            
         </CardList>
     );
 }
