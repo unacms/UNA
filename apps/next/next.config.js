@@ -218,6 +218,11 @@ const nextConfig = {
                 protocol: 'https',
                 hostname: 'us-east-1.linodeobjects.com',
                 pathname: '**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'spacenook.app',
+                pathname: '**',
             }
         ],
         // dangerouslyAllowLocalIP: true,

@@ -86,7 +86,7 @@ function PageContentUniversal({ children, data, layoutName }) {
     return (
         <View className='mx-auto w-full u-max-width-block gap-4 p-2 sm:p-4'>
             <PanelRow gap={gap} cell={topCell} currentBreakpoint={currentBreakpoint} />
-            <PanelGroup key={`cells-${uri}-${layoutName}-${sizable ? 'sizable' : 'static'}`} autoSaveId={sizable ? `cells-${uri}-${layoutName}` : undefined} direction="horizontal">
+            <PanelGroup className='gap-x-4' key={`cells-${uri}-${layoutName}-${sizable ? 'sizable' : 'static'}`} autoSaveId={sizable ? `cells-${uri}-${layoutName}` : undefined} direction="horizontal">
                 {midCells.map((cell, i) => {
                     return <PanelCell key={cell.key} sizable={sizable} currentBreakpoint={currentBreakpoint} cell={cell} index={topCell.length > 0 ? i : 0} />
                 })}
@@ -108,7 +108,6 @@ const PanelRow = memo(({ cell, currentBreakpoint, gap }) => {
 })
 
 const PanelCell = memo(({ cell, currentBreakpoint, index, sizable }) => {
-    const { density } = useLayoutSettings();
     const panelProps = {
         ...(cell.defaultSize !== undefined && { defaultSize: cell.defaultSize }),
         ...(cell.minSize !== undefined && { minSize: cell.minSize }),
@@ -127,7 +126,7 @@ const PanelCell = memo(({ cell, currentBreakpoint, index, sizable }) => {
 });
 
 export default function PageLayoutUniversal({ data, children, layoutName }) {
-
+    console.log("datadata", data, layoutName)
     return (
         <Page data={data}>
             <PageContentUniversal data={data} layoutName={layoutName}>
