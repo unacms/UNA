@@ -121,7 +121,7 @@ export const PageHeader = ({
         <>
             {isWeb && <View style={{ height: headerHeight }} />}
             <HeaderContainer
-                className={`w-full z-50 header-fixed backdrop-blur-xl web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out ${cssClass}`}
+                className={`${appSetting('layout', 'header', 'container')} ${cssClass}`}
                 style={nativeStyle}
                 onLayout={(event) => {
                     const { height } = event.nativeEvent.layout;
@@ -131,7 +131,7 @@ export const PageHeader = ({
                 }}
             >
                 {header.header ? header.header : (<>
-                    <Row className={` ${appSetting('layout', 'header', 'content')}`}>
+                    <Row className={appSetting('layout', 'header', 'content')}>
                         <Row className="items-center justify-start flex-1 lg:flex-none gap-x-2">
                             <Row className="items-center justify-start lg:w-80 gap-x-2">
                                 {(isBackButton && (!isWeb || history.length > 2)) && (
