@@ -4,8 +4,6 @@
 
 @layer base {
     .light-theme-vars {
-        --default: var(--neutral-200);
-        /*semantic colors*/
         --background: var(--neutral-100);
         /*background*/
         --foreground: var(--neutral-950);
@@ -38,7 +36,7 @@
         /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--white);
         /*content on destructive buttons, destructive surfaces*/
-        --border: var(--neutral-200);
+        --border: var(--neutral-300);
         /*borders, dividers, focus rings*/
         --input: var(--neutral-100);
         /*form inputs*/
@@ -151,8 +149,6 @@
 
 
     .dark-theme-vars {
-        --default: var(--neutral-800);
-        /*semantic colors - Dark mode*/
 
         --background: var(--neutral-950);
         /*main page background*/
@@ -178,7 +174,7 @@
         /*background for accent buttons, accent surfaces*/
         --accent-foreground: var(--accent-400);
         /*content on accent buttons, accent surfaces*/
-        --muted: var(--neutral-700);
+        --muted: var(--neutral-800);
         /*background for ui items, sections, hover states*/
         --muted-foreground: var(--neutral-500);
         /*muted content*/
@@ -186,7 +182,7 @@
         /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--neutral-950);
         /*content on destructive buttons, destructive surfaces*/
-        --border: var(--neutral-800);
+        --border: var(--neutral-700);
         /*borders, dividers, focus rings*/
         --input: var(--neutral-800);
         /*form inputs*/

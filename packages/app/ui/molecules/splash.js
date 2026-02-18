@@ -31,13 +31,13 @@ import { Icon } from 'app/ui/atoms/icon'
 function PageContent({ data }) {
     const { t } = useTranslation()
     return (
-        <View className="w-full justify-center max-w-sm xl:max-w-md mx-auto">
+        <View className="w-full justify-center max-w-md mx-auto">
             <AnimatedView direction="up" delay={200}>
                 <Card
                     role="form"
                     titleId="login-card-title"
                     aria-describedby="login-card-description"
-                    className="sm:py-6 gap-4 sm:gap-6"
+                    className="py-6 gap-4 sm:gap-6"
                 >
                     <CardHeader className="items-center sm:px-6">
                         <CardIcon id="login-card-icon">
@@ -99,7 +99,7 @@ export default function Splash(props) {
     const isWeb = Platform.OS == 'web'
     return (
         <Page>
-            <View className={`flex-1 gap-4 sm:gap-6 p-4 lg:p-6 justify-center w-full mx-auto lg:flex-row ${appSetting(
+            <View className={`flex-1 gap-4 p-4 justify-center w-full mx-auto lg:flex-row ${appSetting(
                     'layout',
                     'max_width_content',
                 )}`}

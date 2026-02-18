@@ -86,7 +86,7 @@ export default function AuthPanel({
                         importantForAccessibility="no"
                     />
                     <Text 
-                        className="hidden px-2 pb-px rounded-full text-xs leading-none mt-px text-muted-foreground "
+                        className=" px-2 rounded-full text-xs leading-none mt-px text-muted-foreground "
                         accessibilityRole="text"
                     >
                         {t('splash_page_login3')}

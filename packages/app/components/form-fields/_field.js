@@ -100,7 +100,7 @@ export function FormError({ errorText, errorLink }) {
                     borderBottomWidth: 6,
                 }}
             />
-            <Text className="text-destructive text-xs bg-destructive/20 px-1 py-0.5 rounded-xl">
+            <Text className="text-destructive text-xs bg-destructive/20 p-2 rounded-xl">
                 {errorText}
             </Text>
         </View>

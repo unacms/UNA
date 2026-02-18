@@ -43,7 +43,7 @@ function PageContent({ children }) {
                         </CardDescription>
 
                     </CardHeader>
-                    <CardContent className="sm:px-6">
+                    <CardContent className="sm:px-6 gap-4">
                         
                             {children}
                             <AuthPanel showSeparator={true} createAccountLink={false} loginLink={false} />
@@ -100,7 +100,7 @@ export default function PageLayout({ data, blocks }) {
     return (
         <Page data={data}>
             {isWeb ? (
-                <View className={`flex-1 gap-4 sm:gap-6 p-4 lg:p-6 justify-center w-full mx-auto lg:flex-row ${appSetting(
+                <View className={`flex-1 gap-4 sm:gap-6 p-4 justify-center w-full mx-auto lg:flex-row ${appSetting(
                         'layout',
                         'max_width_content',
                     )}`}

@@ -42,7 +42,7 @@ function PageContent({ children, isLoginPage, title }) {
     }
 
     return (
-        <View className="w-full justify-center max-w-lg p-6 sm:p-8 md:p-12 mx-auto">
+        <View className="w-full justify-center max-w-lg p-4 mx-auto">
             <AnimatedView className="gap-4" direction="up" delay={200}>
                 <Card role="form"
                     titleId="login-page-title"

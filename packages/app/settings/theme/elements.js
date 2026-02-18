@@ -72,9 +72,9 @@ export const settingsElements = {
         'u-block-bg':
             'bg-card ',
         'u-block-pad':
-            'p-2 @xl/block:p-4',
+            'p-4 ',
         'u-block-header':
-            ' flex-row items-center gap-4 p-2',
+            ' flex-row items-center gap-4 pb-4',
         'u-block-icon': 'mb-auto',
         'u-block-name': 'flex flex-col flex-auto gap-2 ',
         'u-block-title':

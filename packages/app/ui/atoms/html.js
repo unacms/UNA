@@ -151,7 +151,7 @@ const parseHtmlToReact = (html, parentKey = '0') => {
                         href={hrefMatch[1]}
                         mode="text"
                         className={
-                            'text-primary ' +
+                            'text-accent-foreground ' +
                             (srcClass && srcClass[1]
                                 ? ParseHtmlClasses(
                                       srcClass[1],
