@@ -262,6 +262,7 @@ export default function Browse(props) {
         })
 
         const subscription2 = emitter.addListener(`feed`, (data) => {
+            if (props.data?.unit !== 'feed') return;
             if (data.action == 'remove_content') {
                 dispatch({ type: 'REMOVE_ITEM', id: data.id })
                 if (refetchRef.current?.prevItems) {
