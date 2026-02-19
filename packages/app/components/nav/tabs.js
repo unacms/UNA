@@ -188,6 +188,7 @@ export default function Tabs() {
             marginRight: 0,
             marginLeft: 0,
             paddingRight: 6,
+            paddingBottom: isShowTabs ? 10 : 0,
             paddingLeft: 6,
         },
         tabBarItemStyle: themeSettings.tabBarItemStyle,
@@ -197,12 +198,13 @@ export default function Tabs() {
             top: -4,
             end: -6,
             minWidth: 22,
-            height: 20,
+            height: isShowTabs ? 1 : 0,
             borderRadius: 10,
             justifyContent: 'center',
             alignItems: 'center',
             paddingHorizontal: 4,
             borderWidth: 2,
+           
             borderColor: colors.barsBackground,
         },
         tabBarAllowFontScaling: false,
@@ -277,7 +279,7 @@ export default function Tabs() {
         <>
             <Suggestions />
             <Subscriber />
-            <View className="flex-1">
+            <View className="flex-1 bg-red-500">
                 <View className="w-full z-50"><AsyncWorker /></View>
                 <RouterTabs screenOptions={screenOptions}>
                     {

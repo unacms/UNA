@@ -123,7 +123,7 @@ const TabScene = React.memo(({
     const scrollValue = useScrollValue();
     const NoContent = getComponent('molecule', 'no_content')
 
-    const routeData = route?.endpoint? route.data : [...route.data, ...route.sidebar.content]
+    const routeData = route?.endpoint ? route.data : [...route.data, ...route.sidebar.content]
     return (
         <>
             {(isProfileHeader && scrollValue > 500) && smallHeader}
@@ -237,11 +237,33 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
     }, []);
 
     useEffect(() => {
-
-
         const subscription2 = emitter.addListener('feed', (data) => {
-            if (data.action == 'remove_content' || data.action == 'new_content') {
-                //todo
+            if (data.action == 'remove_content') {
+                setRoutes(prevRoutes => {
+                    const newRoutes = [...prevRoutes];
+                    newRoutes[index] = {
+                        ...newRoutes[index],
+                        data: newRoutes[index].data.filter(item => item.id != data.id)
+                    };
+                    return newRoutes;
+                });
+            }
+            if (data.action == 'new_content') {
+                setRoutes(prevRoutes => {
+                    const newRoutes = [...prevRoutes];
+                    const routeData = newRoutes[index].data;
+                    const lastBlockIndex = routeData.findLastIndex(item => item.type === 'block');
+                    const insertAt = lastBlockIndex + 1;
+                    newRoutes[index] = {
+                        ...newRoutes[index],
+                        data: [
+                            ...routeData.slice(0, insertAt),
+                            data.data,
+                            ...routeData.slice(insertAt)
+                        ]
+                    };
+                    return newRoutes;
+                });
             }
         })
 
