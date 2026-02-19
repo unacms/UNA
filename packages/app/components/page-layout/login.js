@@ -30,7 +30,7 @@ function PageContent({ children, isLoginPage, title }) {
                 <Card role="form"
                     titleId="login-page-title"
                     aria-describedby="login-card-description"
-                    className="sm:py-6 gap-4 sm:gap-6"
+                    className="gap-4 max-w-lg w-full mx-auto"
                 >
                     <CardHeader>
                         <CardTitle>{title}</CardTitle>
@@ -94,11 +94,11 @@ export default function PageLayout({ data, children }) {
         <Page data={data}>
             {isWeb ? (
                 <View
-                    className={`flex-1 flex-col justify-center pt-16 ${TABLET_MODE_FROM}:pt-0 mx-auto w-full`}
+                    className={`flex-1 flex-col justify-center mx-auto w-full`}
                 >
-                    <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto">
+                    <View className="w-full lg:flex-row max-w-7xl p-4 mx-auto my-auto">
                         {isLoginPage ? appStatic('components_logincontent') : null}
-                        <View className="w-full lg:w-1/2 mx-auto">
+                        <View className="w-full mx-auto">
                             <AnimatedView>
                                 <PageContent
                                     isLoginPage={isLoginPage}

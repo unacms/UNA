@@ -68,11 +68,11 @@ export const settingsElements = {
     },
     blocks: {
         'u-block-base':
-            'rounded-2xl text-card-foreground',
+            ' text-card-foreground',
         'u-block-bg':
             'bg-card ',
         'u-block-pad':
-            'p-4 ',
+            'p-4 rounded-2xl ',
         'u-block-header':
             ' flex-row items-center gap-4 pb-4',
         'u-block-icon': 'mb-auto',
