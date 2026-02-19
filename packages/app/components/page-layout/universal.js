@@ -83,14 +83,18 @@ function PageContentUniversal({ children, data, layoutName }) {
         { key: 'cell_right', defaultSize: 25, minSize: 10, breakpoint: 'lg', data: data.elements?.['cell_right'], chd: children.find((c) => c.key === 'cell_right') }
     ] : cells.filter((c) => c.area === 'mid');
 
+    const hasPanelCells = midCells.some(cell => hasData(cell?.data) && !isRowLayout(cell, currentBreakpoint));
+
     return (
-        <View className='mx-auto w-full gap-4 p-2 sm:p-4'>
+        <View className='mx-auto w-full gap-4 p-4'>
             <PanelRow gap={gap} cell={topCell} currentBreakpoint={currentBreakpoint} />
-            <PanelGroup className='gap-x-4' key={`cells-${uri}-${layoutName}-${sizable ? 'sizable' : 'static'}`} autoSaveId={sizable ? `cells-${uri}-${layoutName}` : undefined} direction="horizontal">
-                {midCells.map((cell, i) => {
-                    return <PanelCell key={cell.key} sizable={sizable} currentBreakpoint={currentBreakpoint} cell={cell} index={topCell.length > 0 ? i : 0} />
-                })}
-            </PanelGroup>
+            {hasPanelCells && (
+                <PanelGroup className='gap-x-4' key={`cells-${uri}-${layoutName}-${sizable ? 'sizable' : 'static'}`} autoSaveId={sizable ? `cells-${uri}-${layoutName}` : undefined} direction="horizontal">
+                    {midCells.map((cell, i) => {
+                        return <PanelCell key={cell.key} sizable={sizable} currentBreakpoint={currentBreakpoint} cell={cell} index={topCell.length > 0 ? i : 0} />
+                    })}
+                </PanelGroup>
+            )}
             {midCells.map((cell, i) => {
                 return <PanelRow key={cell.key} gap={gap} currentBreakpoint={currentBreakpoint} cell={cell} />
             })}

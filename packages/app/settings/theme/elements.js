@@ -68,7 +68,7 @@ export const settingsElements = {
     },
     blocks: {
         'u-block-base':
-            'u-max-width-block sm:rounded-2xl text-card-foreground',
+            'rounded-2xl text-card-foreground',
         'u-block-bg':
             'bg-card ',
         'u-block-pad':

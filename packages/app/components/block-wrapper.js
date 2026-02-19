@@ -59,12 +59,12 @@ export function BlockWrapper({ config, block, showTitle, showBg, fullWidth, cont
                 key={block.id}
                 isBg={bIsShowBg}
                 isPad={bIsShowPadding}
-                className={
-                    "w-full mx-auto" +
+                className={[
+                    "w-full mx-auto",
+                    (!fullWidth && !cssClasses.includes("max-w-") ? appSetting('layout', 'max_width_block') : ""),
+                    cssClasses,
+                ].filter(Boolean).join(" ")}
 
-                    (!fullWidth && !cssClasses.includes("max-w-") ? appSetting('layout', 'max_width_block') : "") +
-                    cssClasses
-                }
             >
                 {bIsShowTitle && (
                     <BlockHeader>
