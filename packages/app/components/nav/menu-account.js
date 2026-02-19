@@ -153,7 +153,7 @@ export default function MenuAccount({ buttonProps, children }) {
                             >
                                 <Row
                                     key={index}
-                                    className="items-center justify-between gap-x-3 w-full px-2 py-1.5 h-12 web:hover:bg-muted/60 rounded-lg"
+                                    className="items-center justify-between gap-x-3 w-full px-2 py-1.5 h-12 web:hover:bg-muted/60 rounded-lg group"
                                 >
                                     <Row className="items-center flex-auto">
                                         
@@ -164,7 +164,7 @@ export default function MenuAccount({ buttonProps, children }) {
                                                 displaySize="sm"
                                             />
                                         
-                                        <Text className="text-sm leading-8 px-1.5 font-medium text-muted  whitespace-nowrap">
+                                        <Text className="text-sm leading-8 px-1.5 font-medium text-secondary-foreground web:group-hover:text-foreground whitespace-nowrap">
                                             {item.display_name}
                                         </Text>
                                     </Row>

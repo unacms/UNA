@@ -27,7 +27,7 @@ export const settingsLinks = {
 
     link_styles: {
         // Inherits text color; underline on hover; brief muted flash on press (via ::after pseudo)
-        default: 'text-secondary-foreground web:hover:text-foreground web:hover:underline web:active:no-underline u-link-press web:duration-200',
+        default: 'text-secondary-foreground web:hover:text-foreground u-link-press web:duration-200',
 
         // Muted text; subtle underline on hover; brief muted flash on press
         secondary: 'text-muted-foreground web:hover:text-secondary-foreground web:hover:underline web:active:no-underline u-link-press web:duration-200',
