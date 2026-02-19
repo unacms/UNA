@@ -131,12 +131,8 @@ export default function PageLayout({ data, blocks }) {
                     <PageContent>{Block}</PageContent>
                 </View>
             )}
-            <MenuFooter
-                cntClasses={isWeb
-                    ? 'flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 mt-3'
-                    : 'flex w-full items-center border-t border-border/40 justify-center flex-row flex-wrap gap-4 p-4'
-                }
-                itemClassName={isWeb ? 'text-sm p-1' : ''}
+      <MenuFooter
+                cntClasses='flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-3 p-4 min-h-14'
             />
         </Page>
     )

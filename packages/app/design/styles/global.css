@@ -22,7 +22,7 @@
         /*priamry content, links, foreground elements*/
         --secondary: var(--neutral-200);
         /*secondary surfaces*/
-        --secondary-foreground: var(--neutral-600);
+        --secondary-foreground: var(--neutral-700);
         /*content on secondary buttons, secondary surfaces*/
         --muted: var(--neutral-200);
         /*background for ui items, sections, hover states*/
@@ -152,7 +152,7 @@
 
         --background: var(--neutral-950);
         /*main page background*/
-        --foreground: var(--neutral-50);
+        --foreground: var(--white);
         /*main page content*/
         --card: var(--neutral-900);
         /*surface*/
@@ -168,7 +168,7 @@
         /*content on primary buttons, active states, primary surfaces*/
         --secondary: var(--neutral-800);
         /*background for secondary buttons, secondary surfaces*/
-        --secondary-foreground: var(--neutral-400);
+        --secondary-foreground: var(--neutral-300);
         /*content on secondary buttons, secondary surfaces*/
         --accent: var(--accent-950);
         /*background for accent buttons, accent surfaces*/

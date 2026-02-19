@@ -28,10 +28,10 @@ const OneColumn = memo(() => (
     <View className=" p-2 flex-row gap-x-2 w-full animate-pulse">
         <View className="w-10 h-10 bg-muted-foreground/10 rounded-full flex-none "></View>
         <View className="h-4 w-12 flex-auto mr-8 my-auto rounded-full   bg-muted/60"></View>
-        <View className="py-1.5 px-2 flex-none my-auto rounded-lg border border-border/10  ">
+        <View className="py-1.5 px-2 flex-none my-auto rounded-lg border border-border/60  ">
             <View className="h-4 my-0.5 w-16  rounded-full   bg-muted/60"></View>
         </View>
-        <View className="py-1.5 px-2 flex-none my-auto rounded-lg border border-border/10  ">
+        <View className="py-1.5 px-2 flex-none my-auto rounded-lg border border-border/60  ">
             <View className="h-4 my-0.5 w-4  rounded-full   bg-muted/60"></View>
         </View>
     </View>
@@ -55,7 +55,7 @@ const Notif = memo(() => (
 
 const Forum = memo(() => (
    
-    <View className="flex-col p-2 lg:p-4 border-b border-border  animate-pulse flex-col w-full mx-auto max-w-4xl gap-y-1">
+    <View className="flex-col p-2 lg:p-4 border-b border-border/60  animate-pulse flex-col w-full mx-auto max-w-4xl gap-y-1">
         <View className="flex-row gap-x-2 mb-2 sm:hidden items-center">
             <View className="h-8 w-8 flex-none bg-muted-foreground/50 rounded-full"></View>
             <View className="h-4 w-1/4 flex-none bg-muted-foreground/50 rounded-full"></View>

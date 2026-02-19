@@ -4,7 +4,7 @@ export const settingsBadges = {
     badges: {
         'u-badge-default': ' bg-transparent   ',
         'u-badge-destructive': ' bg-destructive ',
-        'u-badge-outline': ' bg-transparent border border-border  ',
+        'u-badge-outline': ' bg-transparent border border-border/60  ',
         'u-badge-accent': ' bg-accent ',
         'u-badge-secondary': ' bg-secondary ',
         'u-badge-text': ' whitespace-nowrap tracking-tight font-medium ',

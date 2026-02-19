@@ -87,7 +87,7 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
     };
 
     const nameLink = bShowLinks ? (
-        <Link variant="plain" className="flex-row items-center" size="sm" emulate={emulate} haptics="Select" href={oProps.url}>
+        <Link variant="secondary" className="flex-row items-center" size="sm" emulate={emulate} haptics="Select" href={oProps.url}>
             <DisplayNameLink
                 title={oProps.display_name}
                 url={oProps.url}

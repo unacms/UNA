@@ -19,7 +19,7 @@ export default function ElementMsg({ data, msg_type, blockWrapperProps }) {
     }
 
     if (msg_type == 'info') {
-        clsname = "px-4 py-2 sm:px-6 sm:py-4 mb-4 rounded-none lg:rounded-2xl sm:border border-border backgrop-blur web:group web:duration-200 overflow-hidden rounded-2xl  bg-card mx-4";
+        clsname = "px-4 py-2 sm:px-6 sm:py-4 mb-4 rounded-none lg:rounded-2xl sm:border border-border/60 backgrop-blur web:group web:duration-200 overflow-hidden rounded-2xl  bg-card mx-4";
         clsname1 = "text-card-foreground text-center";
     }
 

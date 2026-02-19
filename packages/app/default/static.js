@@ -671,9 +671,8 @@ const ComponentsDummyComponent = (props) => {
 const ComponentsFooter = () => {
     return (
         <MenuFooter
-            cntClasses="flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-2 p-3 "
-            itemClassName="text-sm p-1"
-        />
+        cntClasses='flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-3 p-4 min-h-14'
+    />
     )
 }
 

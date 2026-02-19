@@ -42,7 +42,7 @@ export function LinkCard({ href, icon, title, description, iconColor = 'text-pri
     
     return (
         <Link href={href}>
-            <View className="flex-row items-center gap-4 p-4 rounded-lg border border-border bg-card hover:bg-accent/50 web:transition-colors web:cursor-pointer">
+            <View className="flex-row items-center gap-4 p-4 rounded-lg border border-border/60 bg-card hover:bg-accent/50 web:transition-colors web:cursor-pointer">
                 <View className={`w-12 h-12 rounded-lg ${iconBg} items-center justify-center`}>
                     {mounted ? (
                         <BaseIcon icon={icon} size={24} className={iconColor} />

@@ -30,9 +30,9 @@ const StyledEM = (props) => {
 }
 
 const StyledP = ({ children, className, ...props }) => {
-    className += ' text-foreground '
-    className += props.isfirst === 'true' ? 'mt-0 ' : 'mt-2 '
-    className += props.islast === 'true' ? 'mb-0 ' : 'mb-2 '
+    className += 'text-secondary-foreground'
+    className += props.isfirst === 'true' ? ' mt-0 ' : ' mt-2 '
+    className += props.islast === 'true' ? ' mb-0' : ' mb-2'
 
 
     if (Platform.OS === 'web') {

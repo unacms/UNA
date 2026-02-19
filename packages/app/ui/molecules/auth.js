@@ -25,9 +25,9 @@ export default function AuthPanel({
         <View className="w-full gap-4">
             {forgotPasswordLink && (
                 <Link
-                    className="mx-auto text-sm sm:text-base"
-                    variant="plain"
-                    
+                    className="mx-auto"
+                    variant="accent"
+                    size="sm"
                     href="/forgot-password"
                     haptics="Medium"
                 >

@@ -36,7 +36,7 @@ export default function Unit(props) {
                         </Text>
                     </Link>
                     <View className="mt-auto flex-row gap-x-1.5">
-                        <Text className="font-medium text-label-secondary  text-sm border border-border rounded-full px-2 py-1">Author</Text>
+                        <Text className="font-medium text-label-secondary  text-sm border border-border/60 rounded-full px-2 py-1">Author</Text>
 
                         {data.pay_hourly > 0 && <Text className="font-medium text-label-secondary  text-sm bg-green-200 dark:bg-green-800 rounded-full px-2 py-1">Hourly: {data.pay_hourly}$</Text>}
                         {data.pay_total > 0 && <Text className="font-medium text-label-secondary  text-sm bg-blue-200 dark:bg-blue-800 rounded-full px-2 py-1">Total: {data.pay_total}$</Text>}

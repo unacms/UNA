@@ -71,7 +71,7 @@ function UniPriceCard({ data, onBuy }) {
                             {data.trial.value != 'none' ? 'Trial:' + data.trial.value : ''}
                         </Text>
                     </View>
-                    <View className="flex-col flex gap-4 border-t border-border py-4 mt-4">
+                    <View className="flex-col flex gap-4 border-t border-border/60 py-4 mt-4">
                         {LevelFeatures[LevelName]?.map((inclusion, idx) => (
                             <View key={idx} className="flex-row  items-center gap-3">
                                 <Icon

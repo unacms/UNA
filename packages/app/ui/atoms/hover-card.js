@@ -16,7 +16,7 @@ const HoverCardContent = React.forwardRef(
     <ContentPrimitive
       ref={ref}
       className={cn(
-        'rounded-md border border-border bg-popover p-4 text-popover-foreground shadow-md',
+        'rounded-md border border-border/60 bg-popover p-4 text-popover-foreground shadow-md',
         className
       )}
       {...props}

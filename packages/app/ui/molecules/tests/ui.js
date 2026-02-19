@@ -138,7 +138,7 @@ export default function UIComponents(props) {
                                     <Text className="text-lg font-medium mb-2 text-muted-foreground">Stats Preview</Text>
                                     <HoverCard>
                                         <HoverCardTrigger>
-                                            <View className="px-4 py-2 rounded-md border border-border cursor-pointer">
+                                            <View className="px-4 py-2 rounded-md border border-border/60 cursor-pointer">
                                                 <Text className="font-medium">Project Stats</Text>
                                             </View>
                                         </HoverCardTrigger>
@@ -196,7 +196,7 @@ export default function UIComponents(props) {
                                     <HoverCard>
                                         <HoverCardTrigger>
                                             <View className="inline-flex items-center gap-2 cursor-pointer flex-row">
-                                                <View className="w-10 h-10 rounded-full bg-muted/60 items-center justify-center border border-border/50">
+                                                <View className="w-10 h-10 rounded-full bg-muted/60 items-center justify-center border border-border/60">
                                                     <Icon icon="Ghost" size={20} className="text-muted-foreground" />
                                                 </View>
                                                 <Text className="font-medium text-accent-foreground font-semibold">Strawberry Penguin</Text>
@@ -221,7 +221,7 @@ export default function UIComponents(props) {
                                                         </View>
                                                     </Row>
 
-                                                    <View className="mt-4 pt-3 border-t border-border/50">
+                                                    <View className="mt-4 pt-3 border-t border-border/60">
                                                         <Text className="text-sm font-semibold text-foreground mb-2">
                                                             Want to see real names?
                                                         </Text>

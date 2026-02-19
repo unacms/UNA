@@ -211,7 +211,7 @@ function ReputationSummarySimple({ data }) {
                 </View>
             </View>
             <View className="flex-row gap-3 flex-auto flex-wrap px-2">
-                <View className="flex-1   border border-border rounded-xl px-4 py-3">
+                <View className="flex-1   border border-border/60 rounded-xl px-4 py-3">
                     <Text className="text-sm text-muted-foreground mb-1">
                         Total
                     </Text>
@@ -219,7 +219,7 @@ function ReputationSummarySimple({ data }) {
                         {data.points || 0}
                     </Text>
                 </View>
-                <View className="flex-1  border border-border rounded-xl px-4 py-3">
+                <View className="flex-1  border border-border/60 rounded-xl px-4 py-3">
                     <Text className="text-sm text-muted-foreground mb-1">
                         7 Days
                     </Text>
@@ -227,7 +227,7 @@ function ReputationSummarySimple({ data }) {
                         {data.points_7d || 0}
                     </Text>
                 </View>
-                <View className="flex-1   border border-border rounded-xl px-4 py-3">
+                <View className="flex-1   border border-border/60 rounded-xl px-4 py-3">
                     <Text className="text-sm text-muted-foreground mb-1">
                         30 Days
                     </Text>

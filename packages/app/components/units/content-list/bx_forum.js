@@ -95,7 +95,7 @@ Units.Base = function Base({ data }) {
     const isSkeleton = data?.skeleton
     return (
         <>
-            <View className="p-2 lg:p-4 mx-auto w-full max-w-4xl border-b border-border ">
+            <View className="p-2 lg:p-4 mx-auto w-full max-w-4xl border-b border-border/60 ">
                 <View className="flex-row  gap-x-4  mx-auto w-full">
                     <View className="flex-col gap-y-2 hidden sm:flex w-24 flex-none">
                         <Skeleton className="h-24 w-24" rounded="rounded-xl" visible={isSkeleton}>

@@ -131,7 +131,7 @@ export default function (props) {
     ) : (
         <>
             <RbList values={filteredValues} setValue={handleValueChange} selectedValue={field.value} />
-            <View className='flex-row justify-end pt-3 mt-3 border-t border-border '>
+            <View className='flex-row justify-end pt-3 mt-3 border-t border-border/60 '>
                 <Button title="Done" size="base" variant="primary" onPress={applyVisibility} /></View>
         </>
     );

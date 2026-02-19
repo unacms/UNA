@@ -912,7 +912,7 @@ export default function ApiPerformanceReport() {
                                 <Text className="text-sm text-label-tertiary ">
                                     Concurrency:
                                 </Text>
-                                <Row className="border border-border rounded">
+                                <Row className="border border-border/60 rounded">
                                     <Button
                                         variant="ghost"
                                         size="sm"

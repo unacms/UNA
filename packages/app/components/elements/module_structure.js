@@ -370,7 +370,7 @@ function LessonAttach({ lessonData, isEditable, reloadData, courseId, lessonId, 
     const renderAttachment = (item, index) => (
         <Row
             key={`step-${index}`}
-            className={`${index !== 0 ? 'border-t border-border ' : ''} py-2 px-2`}
+            className={`${index !== 0 ? 'border-t border-border/60 ' : ''} py-2 px-2`}
         >
             <View className="w-16 justify-center">
                 <Text className="text-muted  text-2xl">
@@ -493,7 +493,7 @@ function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, cour
                             <Text className="text-white absolute text-base"  ><Icon icon={icon} /></Text>
                         </View>
                     </View>}
-                    <Row className={`${index != 0 ? 'border-t border-border ' : ''} pt-4 flex-1`}>
+                    <Row className={`${index != 0 ? 'border-t border-border/60 ' : ''} pt-4 flex-1`}>
                         <View className='mb-4 aspect-video w-40 mr-5 rounded bg-gray-500' >
                             {item.image?.src && <Image view='cover' alt='' className="rounded" src={item.image?.src} />}
                         </View>

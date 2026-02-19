@@ -82,7 +82,7 @@ function DefaultUnit({ data }) {
                     <CardHeader className=" px-4 pt-3.5 flex-row items-center justify-between">
                         <CardTitle className="text-secondary-foreground">{t(data.title)}</CardTitle>
                         <Link
-                            variant="accentghost"
+                            variant="accent"
                             size="md"
                             href={data.content.page_url}
                             haptics="Medium"

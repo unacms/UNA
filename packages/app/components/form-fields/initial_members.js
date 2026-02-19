@@ -25,7 +25,7 @@ const User = ({ data, onSelect, type }) => {
     }
     return (
         <Pressable className="" onPress={() => onSelect(data)}>
-            <Row className=" gap-x-2 pl-1 pr-3 h-9 overflow-hidden truncate rounded-full border border-border bg-muted items-center justiy-center">
+            <Row className=" gap-x-2 pl-1 pr-3 h-9 overflow-hidden truncate rounded-full border border-border/60 bg-muted items-center justiy-center">
                 {<Profile displaySize="xs" displayType="unit_wo_info" {...data} showLinks={false} />}
                 <Text className="text-card-foreground web:hover:text-primary text-sm font-semibold tracking-tight truncate">
                     {data.display_name}
@@ -154,7 +154,7 @@ export default function (props) {
             <Modal id='file-preview2' title={props.title || "Choose users"} onVisible={!!isModal} onClose={() => { setIsModal(false) }}>
                 <SelectUsers isSingle={isSingle} onSave={onSave} requestUrl={'/api.php?r=' + props.ajax_get_suggestions + (props.ajax_get_suggestions.includes("params[]") ? '' : "&params=")} initedData={[]} />
             </Modal>
-            <View className='w-full p-1.5 justify-between items-center flex-row flex-wrap border border-border rounded-xl bg-input/60'>
+            <View className='w-full p-1.5 justify-between items-center flex-row flex-wrap border border-border/60 rounded-xl bg-input/60'>
                 <Row className='gap-2 items-start  flex-wrap flex-1'>
                     {selected && selected.map((oItem) => <User type={isSingle ? '' : "multi"} key={oItem.id} data={oItem} onSelect={isSingle ? showSelect : onRemove} />)}
                 </Row>

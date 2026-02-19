@@ -19,7 +19,7 @@ export default function ElementEntityAttachments({ data, blockWrapperProps }) {
     
     const Container = ({ children }) => (
         <View className='p-1 w-1/4'>
-            <View className="aspect-video rounded-lg overflow-hidden border border-border  items-center justify-center">
+            <View className="aspect-video rounded-lg overflow-hidden border border-border/60  items-center justify-center">
                 {children}
             </View>
         </View>

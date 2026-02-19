@@ -67,9 +67,11 @@ export default function ElementLink({
 
     const sizeClass = (() => {
         if (!size) return '';
-        const hitareaClass = hitarea === false ? '' : `web:u-link-hitarea web:u-link-hitarea-${size}`;
+        const hitareaClass = hitarea === false ? '' : `u-link-hitarea u-link-hitarea-${size}`;
         const textSizeClass = ThemeLinkSizes[size]?.text || '';
-        return cn(hitareaClass, textSizeClass);
+        // Variant-specific size classes (e.g. real padding for 'primary' inline-button style)
+        const variantSizeClass = ThemeLinkSizes[size]?.[variant] || '';
+        return cn(hitareaClass, textSizeClass, variantSizeClass);
     })();
 
     const composedClassName = cn(ThemeLinkStyles[variant], sizeClass, className);

@@ -30,7 +30,7 @@ export function SiteTopNav({ isAuthenticated = false }) {
     ]
 
     return (
-        <View className="w-full h-16 px-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <View className="w-full h-16 px-4 border-b border-border/60 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <Row className="h-full max-w-7xl w-full mx-auto items-center justify-between">
                 <Row className="items-center gap-8">
                     <SiteLogo />
@@ -105,7 +105,7 @@ export function SiteSidebar() {
 // Top navigation bar for app (authenticated users - compact)
 export function AppTopNav() {
     return (
-        <View className="h-14 px-4 border-b border-border bg-card">
+        <View className="h-14 px-4 border-b border-border/60 bg-card">
             <Row className="h-full items-center justify-between">
                 <Row className="items-center gap-4">
                     <SiteLogo />
@@ -181,7 +181,7 @@ export function AppSidebar({ expanded = true }) {
                     </Link>
                 ))}
             </View>
-            <View className={expanded ? 'px-2 gap-1 border-t border-border pt-2 mt-2' : 'px-1 gap-1 border-t border-border pt-2 mt-2 items-center'}>
+            <View className={expanded ? 'px-2 gap-1 border-t border-border/60 pt-2 mt-2' : 'px-1 gap-1 border-t border-border/60 pt-2 mt-2 items-center'}>
                 {bottomItems.map((item) => (
                     <Link key={item.href} href={item.href}>
                         <Row className={`${expanded ? 'px-3' : 'px-2 justify-center'} py-2.5 rounded-lg hover:bg-accent items-center gap-3`}>

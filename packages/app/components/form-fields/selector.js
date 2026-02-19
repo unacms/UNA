@@ -38,7 +38,7 @@ function ChkList({ values, value2, addValue2, isMultiple }) {
                 const key = item2.key;
                 return (
                     <Pressable key={`lbl-${index}`} onPress={() => addValue2(item2.value)}>
-                           <Row className='items-center my-1 border border-border  rounded-lg' key={'chk' + index}>
+                           <Row className='items-center my-1 border border-border/60  rounded-lg' key={'chk' + index}>
                             <Cnt
                                 value={key}
                                 status={value2.includes(key) ? 'checked' : 'unchecked'}
@@ -147,7 +147,7 @@ export default function (props) {
             {ModalCnt}
             <Field {...props}>
                 
-                    <View className={`${props.align === 'right' ? 'justify-end' : 'justify-start'} bg-input border border-border/70 rounded-xl w-full flex-auto items-center flex-row flex-wrap p-1 gap-1 min-h-12`}>
+                    <View className={`${props.align === 'right' ? 'justify-end' : 'justify-start'} bg-input border border-border/60 rounded-xl w-full flex-auto items-center flex-row flex-wrap p-1 gap-1 min-h-12`}>
                         {props.align == 'right' && <Button
                             startDecorator={isMultiple ? "Plus" : ""}
                             variant={variant}

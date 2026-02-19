@@ -6,9 +6,9 @@ export default function ElementLang({ data, blockWrapperProps }) {
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <View className="w-full p-2">
+            
                 <Html data={data.content} />
-            </View>
+            
         </BlockWrapper>
     );
 }

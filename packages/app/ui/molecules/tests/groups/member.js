@@ -36,7 +36,7 @@ function CreatePostBox() {
                     <Text className="text-muted-foreground">What's on your mind?</Text>
                 </View>
             </Row>
-            <Row className="mt-3 pt-3 border-t border-border gap-2">
+            <Row className="mt-3 pt-3 border-t border-border/60 gap-2">
                 <Button
                     variant="text"
                     size="sm"

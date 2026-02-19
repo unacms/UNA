@@ -410,7 +410,7 @@ export default function GroupUnauthenticated() {
                 </View>
 
                 {/* Footer */}
-                <View className="border-t border-border py-6 px-4 mt-8">
+                <View className="border-t border-border/60 py-6 px-4 mt-8">
                     <Text className="text-center text-sm text-muted-foreground">
                         © 2025 NEO Platform • This is a mock page for testing group layouts
                     </Text>

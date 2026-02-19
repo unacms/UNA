@@ -94,7 +94,7 @@ export default function Unit(props) {
                                         </Skeleton>
                                     </View>
                                     {data.image && (
-                                        <View className="h-14 w-14 aspect-square overflow-hidden border border-border  rounded-lg">
+                                        <View className="h-14 w-14 aspect-square overflow-hidden border border-border/60  rounded-lg">
                                             <Image
                                                 {...data.image}
                                                 alt={data.title}

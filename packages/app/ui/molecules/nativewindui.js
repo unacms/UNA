@@ -78,7 +78,7 @@ export default function ThemeCompatibilityTest({ data }) {
                 <Text className="text-lg font-semibold text-foreground">Semantic Color Tokens</Text>
 
                 {/* Background/Foreground Test */}
-                <View className="bg-background border border-border rounded-lg p-4">
+                <View className="bg-background border border-border/60 rounded-lg p-4">
                     <Text className="text-foreground font-medium">Background & Foreground</Text>
                     <Text className="text-muted-foreground text-sm">
                         This uses bg-background and text-foreground tokens
@@ -86,7 +86,7 @@ export default function ThemeCompatibilityTest({ data }) {
                 </View>
 
                 {/* Card Test */}
-                <View className="bg-card border border-border rounded-lg p-4">
+                <View className="bg-card border border-border/60 rounded-lg p-4">
                     <Text className="text-card-foreground font-medium">Card Colors</Text>
                     <Text className="text-muted-foreground text-sm">
                         This uses bg-card and text-card-foreground tokens
@@ -94,7 +94,7 @@ export default function ThemeCompatibilityTest({ data }) {
                 </View>
 
                 {/* Muted Test */}
-                <View className="bg-muted border border-border rounded-lg p-4">
+                <View className="bg-muted border border-border/60 rounded-lg p-4">
                     <Text className="text-muted-foreground font-medium">Muted Colors</Text>
                     <Text className="text-muted-foreground text-sm">
                         This uses bg-muted and text-muted-foreground tokens
@@ -102,7 +102,7 @@ export default function ThemeCompatibilityTest({ data }) {
                 </View>
 
                 {/* Destructive Test */}
-                <View className="bg-destructive border border-border rounded-lg p-4">
+                <View className="bg-destructive border border-border/60 rounded-lg p-4">
                     <Text className="text-destructive-foreground font-medium">Destructive Colors</Text>
                     <Text className="text-destructive-foreground text-sm">
                         This uses bg-destructive and text-destructive-foreground tokens
@@ -110,7 +110,7 @@ export default function ThemeCompatibilityTest({ data }) {
                 </View>
 
                 {/* Old System Compatibility Test */}
-                <View className="bg-white dark:bg-gray-800 border border-border rounded-lg p-4">
+                <View className="bg-white dark:bg-gray-800 border border-border/60 rounded-lg p-4">
                     <Text className="text-black dark:text-white font-medium">Old System (for comparison)</Text>
                     <Text className="text-green-600 dark:text-green-400 text-sm">
                         ✅ If this text adapts to theme changes, the old system is working!
@@ -118,7 +118,7 @@ export default function ThemeCompatibilityTest({ data }) {
                 </View>
 
                 {/* Status Indicator */}
-                <View className="bg-card border border-border rounded-lg p-4">
+                <View className="bg-card border border-border/60 rounded-lg p-4">
                     <Text className="text-foreground font-medium">Theme System Status</Text>
                     <Text className="text-foreground text-sm">
                         🔍 <Text className="font-semibold">Watch for color changes</Text> when switching themes above.
@@ -130,7 +130,7 @@ export default function ThemeCompatibilityTest({ data }) {
             </View>
 
             {/* Documentation */}
-            <View className="bg-popover border border-border rounded-lg p-4">
+            <View className="bg-popover border border-border/60 rounded-lg p-4">
                 <Text className="text-popover-foreground font-medium mb-2">About This Test</Text>
                 <Text className="text-muted-foreground text-sm">
                     • This component uses <Text className="font-mono">globals.css</Text> (NativewindUI system)

@@ -90,7 +90,7 @@ export const settingsElements = {
     tables: {
         // Base
         'u-table-base':
-            'w-full border border-border bg-transparent border-collapse overflow-hidden rounded-lg',
+            'w-full border border-border/60 bg-transparent border-collapse overflow-hidden rounded-lg',
         'u-table-header': 'border-border',
         'u-table-body': 'border-border',
         'u-table-footer': 'bg-muted/60 font-medium',

@@ -248,7 +248,7 @@ export const ItemInfo = memo(({ data, t }) => {
                         <View className="gap-x-2 mb-2">
                             {owners.map((item, index) => (
                                 <Row
-                                    className="items-center py-1 pl-2 my-1 border border-border  rounded-lg web:hover:bg-primary/10 active:bg-primary/20 "
+                                    className="items-center py-1 pl-2 my-1 border border-border/60  rounded-lg web:hover:bg-primary/10 active:bg-primary/20 "
                                     key={'chk' + index}
                                 >
                                     <Link
@@ -537,7 +537,7 @@ export const Author = memo(({ data, url, t }) => {
                     href={url}
                     emulate={false}
                     size="xs"
-                    variant="plainghost"
+                    variant="ghost"
                     className="mb-auto"
 
                 >

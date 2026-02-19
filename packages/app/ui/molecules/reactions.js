@@ -263,7 +263,7 @@ const getCounterCompound = (getIconAlias, handleGetPerformedByCpd, actionsDataSt
         <ButtonCounter {...oButtonProps} fullWidth={false} key="counter" startDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
     ], [
         <Modal key="counter-popup" title={t("Reactions")} onVisible={popupVisibleByCpd} onClose={() => { setPopupVisibleByCpd(false) }}>
-            <View className="relative flex-row border-b border-border  ">{aPerformedByMenu}</View>
+            <View className="relative flex-row border-b border-border/60  ">{aPerformedByMenu}</View>
             <View className="p-2">{aPerformedByUsers}</View>
         </Modal>
     ]
@@ -566,7 +566,7 @@ const ReactionPopover = ({
             left: buttonPos.x,
             elevation: 5,
         }}
-        className=" absolute flex-row rounded-full border border-border p-1 bg-popover items-center h-14"
+        className=" absolute flex-row rounded-full border border-border/60 p-1 bg-popover items-center h-14"
     >
         {items.map((item) => {
             const cnt = isEmoji(item.icon) ? (
