@@ -77,7 +77,7 @@ export default function Unit(props) {
     const isSkeleton = data?.skeleton;
 
     return (
-        <CardList className="sm:shadow-custom" padding="p-1">
+        <CardList className="sm:border border-border/60" padding="p-1">
             <Redirect ref={redirectdRef} />
             <Link className="web:group " href={data.url}>
                 <View className="flex-row sm:flex-col gap-1">

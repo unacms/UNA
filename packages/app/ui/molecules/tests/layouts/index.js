@@ -73,7 +73,7 @@ export default function LayoutsTestIndex() {
             </View>
 
             {/* Static info card - no icons needed */}
-            <View className="mt-8 p-4 rounded-lg bg-muted/50 border border-border">
+            <View className="mt-8 p-4 rounded-lg bg-muted/50 border border-border/60">
                 <Text className="font-semibold text-foreground mb-2">About these layouts</Text>
                 <Text className="text-sm text-muted-foreground mb-3">
                     These are isolated experimental layouts using server components with caching enabled.

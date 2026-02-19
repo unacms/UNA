@@ -55,7 +55,7 @@ export default function GroupsTestIndex() {
             </View>
 
             {/* Static info card */}
-            <View className="mt-8 p-4 rounded-lg bg-muted/50 border border-border">
+            <View className="mt-8 p-4 rounded-lg bg-muted/50 border border-border/60">
                 <Text className="font-semibold text-foreground mb-2">About these mocks</Text>
                 <Text className="text-sm text-muted-foreground">
                     These pages demonstrate how group content and actions change based on user authentication

@@ -11,7 +11,7 @@ const Units = {};
 Units.Base = function Base({ data }) {
     const isSkeleton = data?.skeleton;
     return (
-        <CardList className="border border-border" padding="p-1">
+        <CardList className="border border-border/60" padding="p-1">
             <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-accent">
                 <Skeleton className="" rounded='rounded-lg' visible={isSkeleton}>
                     {data.image && (

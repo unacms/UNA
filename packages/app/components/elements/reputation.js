@@ -249,7 +249,7 @@ const getPositionColors = (index) => {
         case 3:
             return 'bg-amber-600' // Bronze for 3rd place
         default:
-            return 'bg-transparent border border-border'
+            return 'bg-transparent border border-border/60'
     }
 }
 

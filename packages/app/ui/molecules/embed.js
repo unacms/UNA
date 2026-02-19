@@ -12,7 +12,7 @@ const Embed = memo(function ({ data, size }) {
         return <Youtube videoId={videoId} url={data.url} size={size}  />
 
     return <Link target='_blank' href={data.url} >
-        <Row className='rounded-lg border border-border'>
+        <Row className='rounded-lg border border-border/60'>
             <View className='aspect-square h-32 m-2 mr-4 '>
                 {(data.image) ? <Image view="cover" resizeMode="cover" className="rounded-tl-lg rounded-bl-lg " src={data.image} />
                     : (data.logo ? <Image view="cover" resizeMode="cover" className="rounded-tl-lg rounded-bl-lg " src={data.logo} /> : <></>)}

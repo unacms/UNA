@@ -67,7 +67,7 @@ export const settingsButtons = {
         default:{
             container:{
                 base:'web:duration-200 shadow-custom web:hover:shadow-custom-hover',
-                base_stroke: 'web:border-0 border border-border',
+                base_stroke: 'web:border-0 border border-border/60',
                 default:' bg-card ',
                 active:' bg-card scale-[0.97]  ',
                 pressed:' bg-card',
@@ -214,7 +214,7 @@ export const settingsButtons = {
         },
         outline:{
             container:{
-                base:'border border-border',
+                base:'border border-border/60',
                 default:'',
                 active:'',
                 pressed:'',
