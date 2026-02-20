@@ -100,7 +100,7 @@ export const PageHeader = ({
     } : {};
     /* animations for hide header */
 
-    const Logo = <Link href="/home" aria-label="Home">
+    const Logo = <Link href="/home" aria-label="Home" variant="plain" size="lg">
         <Pressable className="items-center">
             {appStatic('logo')}
         </Pressable>

@@ -99,7 +99,7 @@ export const CommentsSection = memo(
             <Button variant="link" size="sm" title={t('View more comments...')} />
         )
         return (
-            <View className="border-t border-background -mx-3 lg:-mx-4 px-2 lg:px-3">
+            <View className="border-t border-border/40 px-3 lg:px-4 pb-2.5">
                 <View className="border-t border-card -mx-4  ">
                     {isShowMoreComments && (
                         <View className="px-3 lg:px-4 pt-2 me-auto">
@@ -526,7 +526,7 @@ export const Author = memo(({ data, url, t }) => {
                             <ItemInfo data={data} t={t} />
                         </Row>
                     }
-                    showInfo2={<Badges badges={data.author_badges} size="2xs" />}
+                    showInfo2={<Badges badges={data.author_badges} size="3xs" />}
                     showActions={ActionsElements}
                     hoverCardWrapper={hoverCardWrapper}
                 />
@@ -595,13 +595,13 @@ export function SmallUnit({ data }) {
                             <Text className=" text-sm flex-auto font-medium text-label-secondary ">
                                 {data.author_data.display_name}
                             </Text>
-                            <Time variant="link" className=" text-xs flex-none leading-5 "
+                            <Time variant="link" className="text-xs flex-none leading-5 "
 
                                 ts={data.date}
                             ></Time>
                         </Row>
                         <Text
-                            className="flex-auto text-lg  font-bold text-label-secondary  "
+                            className="flex-auto text-lg font-bold text-label-secondary  "
                             numberOfLines={1}
                         >
                             {data.content.title}

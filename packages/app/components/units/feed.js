@@ -113,8 +113,8 @@ function DefaultUnit({ data }) {
             <FormModal pageData={pageData.data} setPageData={setPageData} modalView='content_page' url={pageData.url2} />
             <CardList
                 border="border-y border-x-none sm:border-x"
-                className="gap-y-3 mb-0.5 sm:mb-3"
-                padding="py-3 sm:py-4"
+                className=" mb-0.5 sm:mb-3"
+                padding="pt-3 sm:pt-4"
             >
                 <Row className="gap-3 flex-auto px-3 sm:px-4">
                     <Skeleton visible={isSkeleton} preset='feed_author'>
@@ -128,13 +128,13 @@ function DefaultUnit({ data }) {
                         </View>
                     </Skeleton>
                 </Row>
-                <View className="flex-auto  px-3 lg:px-4">
+                <View className="flex-auto px-3 pt-3 pb-1.5 sm:px-4">
                     <Skeleton visible={isSkeleton} preset='multitext'>
                         <MainContent url={url} data={data} />
                     </Skeleton>
                 </View>
-                {!!data.menu_counters && <>
-                <Row className=" px-3 lg:px-4">
+                {!!data.menu_counters?.items?.length && <>
+                <Row className="px-2 lg:px-3">
 
                     {appSetting('feed', 'counters_menu') && (
                         <CounterMenu
@@ -142,10 +142,9 @@ function DefaultUnit({ data }) {
                         />
                     )}
                 </Row>
-                <Row className="w-full border-t border-background h-[1px] "/>
                 </>}
 
-                <Row className="gap-3 items-center flex-auto justify-between  px-3 lg:px-4">
+                <Row className="gap-3 items-center flex-auto justify-between border-t border-border/40 px-2 py-2.5 mt-1.5 lg:px-3">
                     <ActionMenu
                         data={data.menu_actions}
                     />
@@ -156,7 +155,7 @@ function DefaultUnit({ data }) {
                     />
                 </Row>
                 {commentsData && (
-                    <View className=" px-3 lg:px-4">
+                    <View className="">
                     <CommentsSection
                         url={url}
                         t={t}

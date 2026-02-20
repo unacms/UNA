@@ -102,7 +102,7 @@ export default function MenuTop({ url, uri }) {
 
 function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
     return (
-        <Link className=" rounded-xl min-w-16 flex-auto relative " href={link} alt={title}>
+        <Link variant="plain" className=" rounded-xl min-w-16 flex-auto relative " href={link} alt={title}>
             <Tooltip content={title}>
                 <View className="flex-auto web:group" key={`menu-${index}`}>
                     <Row

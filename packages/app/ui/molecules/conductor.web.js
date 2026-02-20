@@ -1131,6 +1131,7 @@ const LeftSideBarContainer = ({
                                                     href={a.link}
                                                     key={`lmenu-${a.index}`}
                                                     alt={a.title}
+                                                    variant="plain"
                                                 >
                                                     {btn}
                                                 </Link>

@@ -41,7 +41,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <View className='gap-4 p-2 '>
+            <View className='gap-3'>
                 {inputs}
             </View>
         </BlockWrapper>

@@ -475,7 +475,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                 </View>}
             </Panel>
             <PanelHandler
-                gap="hidden xl:block"
+                gap="hidden lg:block"
                 sizable={cellsCustomConfig.sizable}
             />
             <Panel className=" w-full" {...cellsCustomConfig.cells?.center}>

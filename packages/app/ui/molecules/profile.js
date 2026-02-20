@@ -87,7 +87,7 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
     };
 
     const nameLink = bShowLinks ? (
-        <Link variant="secondary" className="flex-row items-center" size="sm" emulate={emulate} haptics="Select" href={oProps.url}>
+        <Link variant="default" className="flex-row items-center" size="md" emulate={emulate} haptics="Select" href={oProps.url}>
             <DisplayNameLink
                 title={oProps.display_name}
                 url={oProps.url}
@@ -103,7 +103,7 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
 
     return (
         <View className="my-auto">
-            <Row className="items-center gap-1 min-h-5">
+            <Row className="items-center gap-1 h-5">
                 {wrapWithHoverCard(nameLink)}
                 {info2}
                 {actions}

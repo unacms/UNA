@@ -174,7 +174,7 @@ export default function ({ data, blocks }) {
 
     const subHeader = useMemo(() =>
         feedList.length > 1 ? (
-            <ScrollView horizontal={true} className='flex w-full scrollbar-hide ps-2.5 pb-2 pt-1'>
+            <ScrollView horizontal={true} className='flex w-full scrollbar-hide ps-3 py-2'>
                 <Row className={`${feedList.length > 1 ? ' gap-2 ' : ''}`}>
                     {feedList.map((item, index) => (
                         <View key={'row_' + index}>

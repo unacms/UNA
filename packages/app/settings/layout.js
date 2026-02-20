@@ -25,7 +25,7 @@ export const settingsLayout = {
         max_width_block: ' max-w-7xl ',
         home_container: ' w-full 2xl:max-w-screen-2xl web:duration-500 web:border-x-0 web:border-guide/20 web:border-dashed',
         feed_container: ' w-full max-w-3xl sm:p-3 mx-auto ',
-        post_container: ' max-w-3xl w-full flex-1 bg-card shadow-sm text-card-foreground rounded-2xl py-3 sm:py-4 lg:my-4 mx-auto ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
+        post_container: ' max-w-3xl w-full flex-1 bg-card text-card-foreground rounded-2xl py-3 sm:py-4 lg:my-4 mx-auto ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
 
         search: true,
         sidebar_search: true,
@@ -59,7 +59,7 @@ export const settingsLayout = {
 
         header: {
             container: 'bg-card w-full z-50 header-fixed backdrop-blur-xl web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out',
-            content: ' items-center justify-between h-14 sm:h-16 px-4 w-full mx-auto',
+            content: ' items-center justify-between h-14 lg:h-16 px-3 sm:px-4 w-full mx-auto',
             content_center: ' hidden flex-auto lg:flex gap-1 items-center justify-center max-w-3xl xl:px-3 ',
         },
         vertical: {

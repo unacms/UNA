@@ -41,7 +41,7 @@ export const settingsFeed = {
             show_counter: true,
             show_combined: true,
             menu_width: '',
-            button_variant: 'ghost',
+            button_variant: 'text',
             rounded: true,
             button_size: 'xs',
             button_rounded: true,

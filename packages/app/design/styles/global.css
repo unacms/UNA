@@ -10,7 +10,7 @@
         /*main page content*/
         --card: var(--white);
         /*surface*/
-        --card-foreground: var(--neutral-950);
+        --card-foreground: var(--neutral-700);
         /*content on cards, sidebars, navbars*/
         --popover: var(--white);
         /*background for popovers, inputs, tooltips, modals, elevated surfaces*/

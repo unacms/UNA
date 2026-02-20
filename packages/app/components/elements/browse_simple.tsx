@@ -29,17 +29,20 @@ interface BrowseProps {
 }
 
 export default function Browse({ unitMode, data, limit_by, view, autoscroll, blockWrapperProps }: BrowseProps) {
-    const unitType = data.unit === 'mixed' ? 'general-profile-list' : (data.unit || '');
-    const layout = layoutForList(data.module, unitMode);
-    const limitedData = limit_by ? data.data.slice(0, limit_by) : data.data;
+    const normalizedData = data && typeof data === 'object' ? data : {};
+    const sourceItems = Array.isArray(normalizedData.data) ? normalizedData.data : [];
+    const normalizedLimit = typeof limit_by === 'number' && limit_by > 0 ? limit_by : undefined;
+    const unitType = normalizedData.unit === 'mixed' ? 'general-profile-list' : (normalizedData.unit || '');
+    const layout = layoutForList(normalizedData.module, unitMode);
+    const limitedData = normalizedLimit ? sourceItems.slice(0, normalizedLimit) : sourceItems;
 
     const items = limitedData.map((item, index) => {
         const unitProps = {
             unit: unitType,
             mode: unitMode,
-            module: data.module || '',
-            object_id: data.object_id || '',
-            view: data.view || '',
+            module: normalizedData.module || '',
+            object_id: normalizedData.object_id || '',
+            view: normalizedData.view || '',
             data: item
         };
 

@@ -115,7 +115,7 @@ export default function ElementEntityAuthor({ data, blockWrapperProps }) {
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <Row className="justify-between gap-3 p-2">
+            <Row className="justify-between gap-3">
                 <FormModal pageData={pageData} setPageData={setPageData} />
                 <Redirect ref={redirectdRef} />
                 {viewState.view == 'edited' && (<Modal
@@ -136,7 +136,7 @@ export default function ElementEntityAuthor({ data, blockWrapperProps }) {
                 }
 
                 <View className={data.text ? '' : 'flex-auto'}>
-                    <Profile {...data.author_data} displayType="unit" displaySize={isDesktop ? "lg" : "base"} className='hidden lg:flex' showInfo={sInfo} />
+                    <Profile {...data.author_data} displayType="unit" displaySize="base" className='hidden lg:flex' showInfo={sInfo} />
                 </View>
 
                 {(data.text && false) && (

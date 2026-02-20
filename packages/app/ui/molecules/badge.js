@@ -60,16 +60,18 @@ export default function Badge({ data, variant = "default", size = 'sm', rounded 
     }
 
     if (data.badge_url) {
-        // PERSONAL BADGE, SSPECIFIED BY USER
+        // PERSONAL BADGE, SPECIFIED BY USER
+        const imgSize = size && badgeSizes[size]?.icon_size || 14;
+        const containerSize = size && badgeSizes[size]?.container || 'min-w-5 h-5';
+        const roundedSize = size && badgeSizes[size]?.rounded || 'rounded';
         return (
-            <Link size="xs" variant="secondary" href={data.badge_link}><View className={`rounded bg-muted overflow-hidden p-px border border-border/60 w-4 h-4 items-center justify-center ${className}`}>
+            <Link href={data.badge_link}><View className={`${containerSize} ${roundedSize} bg-muted overflow-hidden p-px border border-border items-center justify-center ${className}`}>
             <Image
-                width={14}
-                height={14}
+                width={imgSize}
+                height={imgSize}
                 view="cover"
                 src={data.badge_url}
                 alt={data.badge_url.title_attr}
-                
             /></View></Link>
         );
     } else {
