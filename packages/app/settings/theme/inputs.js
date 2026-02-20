@@ -12,7 +12,7 @@ export const settingsInputs = {
         container: 'w-full items-center justify-between mt-2',
         value_container:
             'w-36 bg-input border border-border/60 py-2 px-4 text-center rounded-lg justify-between',
-        text_value: 'text-muted ',
+        text_value: 'text-muted-foreground ',
         text_info: '',
         track_height: 4,
         thumb_size: 15,
