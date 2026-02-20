@@ -17,7 +17,7 @@ import Cover, { CoverSmall } from 'app/components/elements/cover';
 import emitter from 'app/context/emitter'
 import { useSetHeader, useScrollValue, defaultHeader } from 'app/context/jotai/layout';
 import { getComponent } from 'app/components/registry';
-import { useFocusEffect }  from 'app/lib/hooks/router'
+import { useFocusEffect } from 'app/lib/hooks/router'
 import { appSetting } from 'app/lib/util'
 
 const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
@@ -248,7 +248,7 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
                     return newRoutes;
                 });
             }
-            if (data.action == 'new_content'&& (!currentRoute?.endpoint?.params?.owner_id || Math.abs(currentRoute?.endpoint?.params?.owner_id) == Math.abs(data?.data?.object_privacy_view))) {
+            if (data.action == 'new_content' && (!currentRoute?.endpoint?.params?.owner_id || Math.abs(currentRoute?.endpoint?.params?.owner_id) == Math.abs(data?.data?.object_privacy_view))) {
                 setRoutes(prevRoutes => {
                     const newRoutes = [...prevRoutes];
                     const routeData = newRoutes[index].data;
@@ -368,21 +368,21 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
      }, [index, sceneHeader, setHeader]);
      */
 
-     const isShowFilters = layoutName == 'navigator' && leftSideBarBlocks && leftSideBarBlocks?.length > 0;
-     
-     const sceneHeader = useMemo(
+    const isShowFilters = layoutName == 'navigator' && leftSideBarBlocks && leftSideBarBlocks?.length > 0;
+
+    const sceneHeader = useMemo(
         () => <TabBar routes={routes} index={index} setIndex={setIndex} onChangeRoute={onChangeRoute} />,
         [routes, index, setIndex, onChangeRoute]
     );
 
-     const filter = (isShowFilters) && (<View className="items-start ml-3 mt-2 mb-1">
-         <Button title='Filters' variant="default" size="sm" rounded onPress={showFilters} />
-     </View>)
+    const filter = (isShowFilters) && (<View className="items-start ml-3 mt-2 mb-1">
+        <Button title='Filters' variant="default" size="sm" rounded onPress={showFilters} />
+    </View>)
 
-   /* useEffect(() => {
-        
-    }, [header,sceneHeader, setHeader]);
-*/
+    /* useEffect(() => {
+         
+     }, [header,sceneHeader, setHeader]);
+ */
 
     useFocusEffect(
         useCallback(() => {
@@ -436,7 +436,7 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
         setBottomSheetData(false);
     });
 
-   
+
 
     const isProfileHeader = layoutName === 'profile' && !isCoverDisabled;
 
@@ -451,7 +451,7 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
         onRefresh: onStartRefresh,
         refreshing: isRefreshing,
         route: currentRoute,
-        index:index,    
+        index: index,
         Preload: Preload,
         unitType: unitType,
         unitMode: unitMode,
@@ -464,10 +464,36 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
         return <Cover data={currentRoute.pageData?.cover_block} showMoreMenu={false} uri={currentRoute.pageData?.uri} context={currentRoute?.pageData?.context} />
     }, [currentRoute.pageData]);
 
+    const onFormChangedValues = useCallback((values) => {
+        let filterValues = []
+        for (let key in values) {
+            filterValues.push({
+                name: key,
+                value: Array.isArray(values[key])
+                    ? values[key].join(',')
+                    : values[key],
+            })
+        }
+        setFilterValue(filterValues)
+    }, [])
+
+    const Form = getComponent('element', 'form');
+    const formProps = currentRoute?.endpoint?.filters;
+    if (!!formProps) {
+        Object.assign(tabSceneProps, {
+
+            ListHeaderComponent: () => <View className="w-full">
+                {formProps && <View className=" w-full">
+                    <Form {...formProps} key="form" name={formProps.name} onChange={onFormChangedValues} />
+                </View>
+                }
+
+            </View>
+        });
+    }
     if (isProfileHeader || appSetting('conductor', 'add_menu_native')) {//isProfileHeader need add condition for veawe = coverMode === 'none'
         if (currentRoute?.pageData) {// may be need to fix
             Object.assign(tabSceneProps, {
-
                 ListHeaderComponent: () => <View className="w-full">
                     {CoverHeader}
                     {sceneHeader}
