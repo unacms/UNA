@@ -6,6 +6,7 @@ import { appSetting, isEmoji, FeedbackHaptics, cn } from 'app/lib/util'
 import Tooltip from 'app/ui/atoms/tooltip';
 import Loading from 'app/ui/atoms/loading'
 import { useIsDesktop } from 'app/context/measure';
+import { Platform } from 'react-native';
 
 const BtnCls = appSetting('theme', 'button_styles');
 const BtnClsSize = appSetting('theme', 'button_sizes');
@@ -280,7 +281,15 @@ export const Button = ({
             BtnClsSize[size]?.rounded ?? '';
 
     const isPressable = !!(onPress || onTouchStart);
+    const isWeb = Platform.OS === 'web';
     const Cnt = isPressable ? Pressable : View;
+
+    // Web hover tracking for non-pressable buttons (e.g. dropdown triggers)
+    const [webHovered, setWebHovered] = React.useState(false);
+    const viewHoverProps = isWeb && !isPressable ? {
+        onMouseEnter: () => setWebHovered(true),
+        onMouseLeave: () => setWebHovered(false),
+    } : {};
 
     const renderContent = (state = {}) => (
         <ButtonContent
@@ -300,7 +309,7 @@ export const Button = ({
             title={title}
             addon={addon}
             active={!!state.pressed}
-            hovered={!!state.hovered}
+            hovered={!!state.hovered || webHovered}
             focused={!!state.focused}
         >
             {children}
@@ -310,7 +319,8 @@ export const Button = ({
     return (
         <Tooltip content={tooltip} enabled={isTooltip}>
             <Cnt
-                className={`${flexClasses} ${hitareaClass} ${roundingClass}`}
+                className={`btn-${variant}-${size} ${flexClasses} ${hitareaClass} ${roundingClass}`}
+                {...viewHoverProps}
                 {...(isPressable && {
                     disabled: !isActive,
                     hitSlop: resolvedHitSlop,

@@ -4,6 +4,7 @@ export const settingsElements = {
     conductor: {
         menu: ' w-full items-left justify-center ',
         menu_max_width: ' w-full max-w-7xl ',
+        
         content_max_width: ' w-full max-w-7xl ',
         content_max_width_nav: ' w-full max-w-screen-2xl xl:border-x-0 xl:border-guide/20 border-dashed  ',
         menu_is_dynamic: false,
@@ -21,7 +22,8 @@ export const settingsElements = {
         cover_base: 'w-full',
         cover_content:
             'items-center h-full w-full overflow-hidden justify-between',
-        cover_small: 'max-w-7xl mx-auto flex-row w-full px-3 items-center '
+        cover_small: 'max-w-7xl mx-auto flex-row w-full px-3 items-center ',
+        hide_top_menu_from: 'xl',
     },
     dropdown_menu: {
         content_shadow: ' shadow-lg ',

@@ -98,7 +98,7 @@ export default function PageLayout({ data, children }) {
                 >
                     <View className="w-full lg:flex-row max-w-7xl p-4 mx-auto my-auto">
                         {isLoginPage ? appStatic('components_logincontent') : null}
-                        <View className="w-full mx-auto">
+                        <View className="w-full lg:w-1/2 mx-auto">
                             <AnimatedView>
                                 <PageContent
                                     isLoginPage={isLoginPage}

@@ -547,7 +547,7 @@ export function TopSidebar({
     return (
         <View
             style={styles}
-            className={` ${!omitDefaultBackground ? conductorTheme.menu : ''} ${isHideOnDesktop ? 'lg:hidden' : ''
+            className={` ${!omitDefaultBackground ? conductorTheme.menu : ''} ${isHideOnDesktop ? conductorTheme.hide_top_menu_from + ':hidden' : ''
                 }`}
         >
             <View
@@ -558,7 +558,7 @@ export function TopSidebar({
                     className=" items-center justify-between ">
                     {children}
                     {layout != 'mixed' && (
-                        <Row className="hidden lg:flex cond-buttons-add">
+                        <Row className={`hidden ${conductorTheme.hide_top_menu_from}:flex cond-buttons-add`}>
                             {addButtons}
                         </Row>
                     )}

@@ -354,14 +354,7 @@ export default function Form({
         }));
     }
     const ElementForm = getFormType(name)
-    if ('undefined' !== typeof ElementForm) {
-        inputs = <ElementForm name={name} data={{ ...formBundle?.form, inputs: filteredInputs }} response={formBundle.response} handleSubmit={_handleSubmit} exProps={exProps}></ElementForm>
-        return (
-            <FormProvider {...methods}>
-                {inputs}
-            </FormProvider>
-        )
-    }
+
 
     const defaultFormValues = Object.keys(allFields).reduce((result, key) => {
         const field = filteredInputs?.[key];
@@ -395,6 +388,7 @@ export default function Form({
         return result;
     }, {}) : [];
 
+
     const Element = formBundle.extra ? getComponent('element', String(formBundle.extra.type)) : null;
 
     function stableStringify(obj) {
@@ -403,28 +397,36 @@ export default function Form({
         );
     }
 
-    return (
-        <>
-            {Element && <Element {...formBundle.extra} />}
-            <View className={`${layout !== 'hor' ? appSetting('forms', 'form_container') : 'w-full'} ${exProps?.classes}`}>
-                <FormProvider {...methods}>
-                    <View className={`${layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : 'w-full gap-4'}`}>
-                        {inputs}
-                        {(isAutoChange) && <Row className={`items-center justify-between  ${layout === 'hor' ? ' ' : ' '} `}>
-                            {(stableStringify(defaultFormValues) != stableStringify(currentFormValues)) && <Button
-                                title='Reset Filters'
-                                startDecorator='X'
-                                size='sm'
-                                fullWidth
-                                variant='secondary'
-                                onPress={() => methods.reset()}
-                            />
-                            }
-                        </Row>}
-                    </View>
-                </FormProvider>
-            </View>
-        </>
+    console.log("formBundle.extra", formBundle.extra, Element)
+    if ('undefined' !== typeof ElementForm) {
+        inputs = <ElementForm name={name} data={{ ...formBundle?.form, inputs: filteredInputs }} response={formBundle.response} handleSubmit={_handleSubmit} exProps={exProps}></ElementForm>
+        return (
+            <FormProvider {...methods}>
+                {Element && <Element {...formBundle.extra} />}
+                {inputs}
+            </FormProvider>
+        )
+    }
 
+    return (
+        <View className={`${layout !== 'hor' ? appSetting('forms', 'form_container') : 'w-full'} ${exProps?.classes}`}>
+            {Element && <Element {...formBundle.extra} />}
+            <FormProvider {...methods}>
+                <View className={`${layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : 'w-full gap-4'}`}>
+                    {inputs}
+                    {(isAutoChange) && <Row className={`items-center justify-between  ${layout === 'hor' ? ' ' : ' '} `}>
+                        {(stableStringify(defaultFormValues) != stableStringify(currentFormValues)) && <Button
+                            title='Reset Filters'
+                            startDecorator='X'
+                            size='sm'
+                            fullWidth
+                            variant='secondary'
+                            onPress={() => methods.reset()}
+                        />
+                        }
+                    </Row>}
+                </View>
+            </FormProvider>
+        </View>
     );
 }
