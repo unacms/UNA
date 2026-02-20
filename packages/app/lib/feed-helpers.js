@@ -282,7 +282,7 @@ export const ItemInfo = memo(({ data, t }) => {
 
                     <Icon className="text-muted -mx-0.5 " icon='Dot' size={14} />
 
-                    <Text className="text-muted-foreground font-medium  text-xs leading-4 ">
+                    <Text className="text-muted-foreground font-medium text-xs leading-4 ">
                         {l}
                     </Text>
                 </>
@@ -485,12 +485,11 @@ export const Author = memo(({ data, url, t }) => {
         if (!Element)
             return null
         return (
-            <Row className="items-center" key={`action-${item.cid}-${item.iid}`}>
-                <Icon className="text-muted -mx-0.5 " key="icon" icon='Dot' size={14} />
+            <Row className="" key={`action-${item.cid}-${item.iid}`}>
                 <Element
                     params={{
-                        button_variant: 'link',
-                        button_size: 'sm',
+                        button_variant: 'accent',
+                        button_size: 'xs',
                         hide_icon: true,
                         button_rounded: false,
                     }}
@@ -514,7 +513,7 @@ export const Author = memo(({ data, url, t }) => {
     );
 
     return (
-        <Row className="w-full justify-between items-top">
+        <Row className="w-full justify-between items-top gap-2">
             <View className='flex-auto'>
                 <Profile
                     {...dataIcon}
@@ -536,12 +535,12 @@ export const Author = memo(({ data, url, t }) => {
                 <Link
                     href={url}
                     emulate={false}
-                    size="xs"
-                    variant="ghost"
-                    className="mb-auto"
+                    size="sm"
+                    variant="secondary"
+                    className="mb-auto h-7 leading-7 px-2 "
 
                 >
-                    <Time
+                    <Time className="text-xs font-medium "
                         ts={data.date}
                     />
                 </Link>

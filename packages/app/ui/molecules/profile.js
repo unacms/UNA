@@ -102,14 +102,17 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
     );
 
     return (
-        <View className="my-auto">
+        <Row className="my-auto">
+            <View className="flex-auto">
             <Row className="items-center gap-1 h-5">
                 {wrapWithHoverCard(nameLink)}
                 {info2}
-                {actions}
+                
             </Row>
             {info}
-        </View>
+            </View>
+            {actions}
+        </Row>
     );
 }
 
@@ -191,7 +194,7 @@ function AtomProfile_(oProps) {
     switch (sDisplayType) {
         case 'unit':
             return (
-                <Row className="gap-2 items-center">
+                <Row className="gap-2">
                     <View className="flex-none">
                         <UnitWoInfo oProps={oProps} sSize={sSize} sSizeFontLetter={sSizeFontLetter} emulate={emulate} iSizeWidth={iSizeWidth} bShowLinks={bShowLinks} hoverCardWrapper={hoverCardWrapper} />
                     </View>

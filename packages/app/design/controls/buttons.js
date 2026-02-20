@@ -274,7 +274,7 @@ export const Button = ({
     const hitareaClass = hitarea === false ? '' : `u-action-hitarea u-action-hitarea-${size}`;
 
 
-    const canRound = !grouped && variant !== 'link';
+    const canRound = !grouped ;
     const roundingClass = !canRound ? '' :
         rounded ? 'rounded-full' :
             BtnClsSize[size]?.rounded ?? '';

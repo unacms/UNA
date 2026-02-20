@@ -33,8 +33,8 @@ export default function ElementTime(props) {
 
     const defaultClasses =
         variant === 'link'
-            ? '  text-accent-foreground '
-            : '  text-muted-foreground ';
+            ? ' text-accent-foreground '
+            : '  ';
 
     return (
         <Text
