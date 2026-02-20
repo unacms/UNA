@@ -88,8 +88,8 @@ export const settingsButtons = {
         },
         accent:{
             container:{
-                base:'web:duration-200',
-                default:'bg-accent ',
+                base:'web:duration-200 bg-accent',
+                default:' ',
                 active:'web:ring-2 web:ring-accent web:ring-offset-2 web:outline-none',
                 pressed:'',
                 hovered:'bg-accent/90',
@@ -110,10 +110,10 @@ export const settingsButtons = {
         secondary:{
             container:{
                 base:'web:duration-200',
-                default:'bg-secondary',
+                default:'bg-secondary/60',
                 active:'',
                 pressed:'bg-accent',
-                hovered:'bg-secondary/90',
+                hovered:'bg-secondary',
                 focused:'bg-secondary',
                 disabled:'',
 

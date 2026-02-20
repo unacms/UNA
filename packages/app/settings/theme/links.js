@@ -4,23 +4,23 @@ export const settingsLinks = {
         default_variant: 'default',
         xs: {
             hitSlop: 14,
-            text: 'text-xs rounded-xs',
+            text: 'text-xs rounded-sm',
             // Extra DOM padding for primary variant (inline-button style)
             primary: 'px-1.5 py-px',
         },
         sm: {
             hitSlop: 12,
-            text: 'text-sm rounded-sm',
-            primary: 'px-2.5 py-0.5',
+            text: 'text-sm rounded-md',
+            primary: 'px-2 py-1',
         },
         md: {
             hitSlop: 10,
-            text: 'text-base rounded-md',
+            text: 'text-base rounded-lg',
             primary: 'px-3 py-1',
         },
         lg: {
             hitSlop: 8,
-            text: 'text-lg rounded-lg',
+            text: 'text-lg rounded-xl',
             primary: 'px-4 py-1.5',
         }
     },
@@ -30,7 +30,7 @@ export const settingsLinks = {
         default: 'text-secondary-foreground web:hover:text-foreground u-link-press web:duration-200',
 
         // Muted text; subtle underline on hover; brief muted flash on press
-        secondary: 'text-muted-foreground web:hover:text-secondary-foreground web:hover:underline web:active:no-underline u-link-press web:duration-200',
+        secondary: 'bg-secondary/60 web:hover:bg-secondary text-secondary-foreground web:hover:text-foreground web:duration-200',
 
         // Accent-colored text; underline on hover; brief muted flash on press
         accent: 'text-accent-foreground web:hover:underline web:active:no-underline u-link-press web:duration-200',

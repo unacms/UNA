@@ -36,7 +36,7 @@ export default function ElementEntityAuthor({ data, blockWrapperProps }) {
                     <Row className='items-center gap-x-1 justify-start'>
                         <Text className=" text-center font-medium text-muted-foreground">in</Text>
                         <Profile {...data.entry_context} displayType="unit_wo_info" displaySize="2xs" />
-                        <Text className="text-muted-foreground text-xs  leading-5 text-center font-medium ">{data.entry_context.display_name}</Text>
+                        <Text className="text-muted-foreground text-xs leading-5 text-center font-medium ">{data.entry_context.display_name}</Text>
 
                     </Row>
 
