@@ -131,14 +131,6 @@ const expoConfig = {
                 }
             },
         ],
-        [
-          "onesignal-expo-plugin",
-          {
-            mode: "production",
-            smallIcons:["./assets/images/ic_stat_onesignal_default.png"],
-            largeIcons:["./assets/images/ic_onesignal_large_icon_default.png"]
-          }
-        ],
         /* [
            "react-native-ble-plx",
            {
