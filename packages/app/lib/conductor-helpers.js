@@ -547,7 +547,7 @@ export function TopSidebar({
     return (
         <View
             style={styles}
-            className={` ${!omitDefaultBackground ? conductorTheme.menu : ''} ${isHideOnDesktop ? conductorTheme.hide_top_menu_from + ':hidden' : ''
+            className={`${!omitDefaultBackground ? conductorTheme.menu : ''} ${isHideOnDesktop ? conductorTheme.hide_top_menu_from + ':hidden' : ''
                 }`}
         >
             <View
