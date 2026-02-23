@@ -174,10 +174,10 @@ const JoinTextComponent = (props) => {
 const ComponentsAboutComponent = (props) => {
     return (
         <>
-            <Text className="text-3xl lg:text-4xl xl:text-5xl font-bold text-label-secondary ">
+            <Text className="text-3xl lg:text-4xl xl:text-5xl font-bold text-secondary-foreground ">
                 About
             </Text>
-            <Text className="text-lg lg:text-xl xl:text-2xl  text-label-tertiary ">
+            <Text className="text-lg lg:text-xl xl:text-2xl  text-muted-foreground ">
                 The place to connect, share and grow with the community.
             </Text>
         </>
@@ -190,10 +190,10 @@ const ComponentsCommentsEmpty = () => {
         <>
             <View className="py-4">
                 <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-muted-foreground/10 ">
-                    <View className="flex-col mx-auto  text-label-secondary  ">
+                    <View className="flex-col mx-auto  text-secondary-foreground  ">
                         <Icon icon="MessageCircle" width={32} height={32} />
                     </View>
-                    <Text className="text-center text-lg text-label-secondary  lg:text-xl font-semibold  ">
+                    <Text className="text-center text-lg text-secondary-foreground  lg:text-xl font-semibold  ">
                         {t('No comments yet')}
                     </Text>
                     <Text className="text-center text-base text-muted-foreground ">
@@ -210,7 +210,7 @@ const ComponentsCommentsLogin = () => {
     return (
         <View className="py-2">
             <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-muted-foreground/10 ">
-                <Text className="text-center text-base text-label-secondary  ">
+                <Text className="text-center text-base text-secondary-foreground  ">
                     <Link className="text-primary" href="/login">
                         Login
                     </Link>{' '}
@@ -231,10 +231,10 @@ const ComponentsContentEmpty = () => {
         <>
             <View className="p-2">
                 <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-muted-foreground/10 ">
-                    <View className="flex-col mx-auto m-4 text-label-secondary  ">
+                    <View className="flex-col mx-auto m-4 text-secondary-foreground  ">
                         <Icon icon="Binoculars" width={32} height={32} />
                     </View>
-                    <Text className="text-center text-lg text-label-secondary  lg:text-xl font-semibold  ">
+                    <Text className="text-center text-lg text-secondary-foreground  lg:text-xl font-semibold  ">
                         {t('Nothing found')}
                     </Text>
                     <Text className="text-center text-base text-muted-foreground ">
@@ -304,7 +304,7 @@ const PageNotAllowed = () => {
         <>
             <View className="p-8 mx-auto">
                 <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-muted-foreground/10 ">
-                    <View className="flex-col mx-auto m-4 text-label-secondary  ">
+                    <View className="flex-col mx-auto m-4 text-secondary-foreground  ">
                         <Icon icon="Binoculars" width={32} height={32} />
                     </View>
                     <Text className="text-center text-lg text-card-foreground lg:text-xl font-semibold  ">
@@ -366,7 +366,7 @@ export function ComponentsIntro(props) {
     const CounterText = React.memo(({ data }) => {
         return (
             <View className="absolute right-0 flex-col bg-gradient-to-r pl-16 from-transparent via-white to-white h-10 justify-end gap-y-0.5 items-end flex-none my-auto whitespace-nowrap nowrap ">
-                <Text className="font-bold text-label-primary leading-5  text-3xl font-bold">
+                <Text className="font-bold text-foreground leading-5  text-3xl font-bold">
                     <AnimatedCounter
                         value={data}
                         duration={1000}
@@ -408,42 +408,42 @@ const ComponentsLoginContentComponent = (props) => {
                 className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl"
             >
                 <View className="flex-col gap-y-8 flex-auto my-4 ">
-                    <H1 className="text-4xl tracking-tight font-bold text-label-secondary  justify-center items-center  ">
+                    <H1 className="text-4xl tracking-tight font-bold text-secondary-foreground  justify-center items-center  ">
                         Sign in to your account
                     </H1>
                     <View className="flex-col gap-y-4">
                         <View className="flex-row gap-x-4 ">
                             <Icon
-                                className="text-label-secondary "
+                                className="text-secondary-foreground "
                                 icon="UsersRound"
                                 width={24}
                                 height={24}
                             />
-                            <Text className="flex-auto my-auto text-label-secondary  text-base font-medium">
+                            <Text className="flex-auto my-auto text-secondary-foreground  text-base font-medium">
                                 Meet new people
                             </Text>
                         </View>
 
                         <View className="flex-row gap-x-4 ">
                             <Icon
-                                className="text-label-secondary "
+                                className="text-secondary-foreground "
                                 icon="Compass"
                                 width={24}
                                 height={24}
                             />
-                            <Text className="flex-auto my-auto text-label-secondary  text-base font-medium">
+                            <Text className="flex-auto my-auto text-secondary-foreground  text-base font-medium">
                                 Discover cool spaces
                             </Text>
                         </View>
 
                         <View className="flex-row gap-x-4 ">
                             <Icon
-                                className="text-label-secondary "
+                                className="text-secondary-foreground "
                                 icon="Share"
                                 width={24}
                                 height={24}
                             />
-                            <Text className="flex-auto my-auto text-label-secondary  text-base font-medium">
+                            <Text className="flex-auto my-auto text-secondary-foreground  text-base font-medium">
                                 Share your ideas
                             </Text>
                         </View>

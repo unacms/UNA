@@ -41,7 +41,7 @@ export default function Unit(props) {
 
 
                 <View className="flex-row justify-between flex-auto items-center">
-                    <Text numberOfLines={2} className="text-sm  px-1.5 leading-tight font-semibold text-label-secondary ">
+                    <Text numberOfLines={2} className="text-sm  px-1.5 leading-tight font-semibold text-secondary-foreground ">
                         {data.title}
                     </Text>
 

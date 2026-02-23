@@ -59,11 +59,11 @@ export default function Unit(props) {
                                         />
                                     </View>
                                     {
-                                        <Text className="truncate text-xs leading-tight flex-auto text-label-tertiary ">
+                                        <Text className="truncate text-xs leading-tight flex-auto text-muted-foreground ">
                                             {friendsLabel}
                                         </Text>
                                     }
-                                    <Text className=" bg-primary/10  rounded-md  px-1.5 py-1 text-xs flex-none items-center font-semibold text-label-tertiary ">
+                                    <Text className=" bg-primary/10  rounded-md  px-1.5 py-1 text-xs flex-none items-center font-semibold text-muted-foreground ">
                                         {data.visibility != "3" ? t('Private') : t('Public')}
                                     </Text>
                                 </Row>
@@ -93,7 +93,7 @@ export default function Unit(props) {
                     display_name={data.title}
                 />
                 <View className="flex-row justify-between flex-auto items-center">
-                    <Text numberOfLines={2} className="text-sm  px-1.5 leading-tight font-semibold text-label-secondary ">
+                    <Text numberOfLines={2} className="text-sm  px-1.5 leading-tight font-semibold text-secondary-foreground ">
                         {data.title}
                     </Text>
                     <View className="flex-none">

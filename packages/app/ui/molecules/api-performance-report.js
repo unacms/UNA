@@ -852,10 +852,10 @@ export default function ApiPerformanceReport() {
         <View className="p-4">
             <Row className="justify-between items-center mb-4">
                 <View>
-                    <Text className="text-xl font-semibold text-label-secondary ">
+                    <Text className="text-xl font-semibold text-secondary-foreground ">
                         Enhanced API Performance Report
                     </Text>
-                    <Text className="text-sm text-label-tertiary ">
+                    <Text className="text-sm text-muted-foreground ">
                         Monitor response times with detailed timing analysis
                     </Text>
                 </View>
@@ -893,10 +893,10 @@ export default function ApiPerformanceReport() {
             <View className="mb-4 p-3 bg-background rounded-lg">
                 <Row className="justify-between items-center">
                     <View>
-                        <Text className="text-sm font-semibold text-label-secondary ">
+                        <Text className="text-sm font-semibold text-secondary-foreground ">
                             Test Options
                         </Text>
-                        <Text className="text-xs text-label-tertiary ">
+                        <Text className="text-xs text-muted-foreground ">
                             Configure how tests are executed
                         </Text>
                     </View>
@@ -909,7 +909,7 @@ export default function ApiPerformanceReport() {
                         />
                         {concurrentMode && (
                             <Row className="items-center gap-x-2">
-                                <Text className="text-sm text-label-tertiary ">
+                                <Text className="text-sm text-muted-foreground ">
                                     Concurrency:
                                 </Text>
                                 <Row className="border border-border/60 rounded">
@@ -952,7 +952,7 @@ export default function ApiPerformanceReport() {
             {/* Historical Results */}
             {showHistory && testHistory.length > 0 && (
                 <View className="mb-4">
-                    <Text className="text-lg font-semibold text-label-secondary  mb-2">
+                    <Text className="text-lg font-semibold text-secondary-foreground  mb-2">
                         Test History
                     </Text>
                     <View className="grid gap-2">
@@ -960,10 +960,10 @@ export default function ApiPerformanceReport() {
                             <Card key={index} padding="p-2">
                                 <Row className="justify-between items-center">
                                     <View>
-                                        <Text className="text-sm font-semibold text-label-secondary ">
+                                        <Text className="text-sm font-semibold text-secondary-foreground ">
                                             {new Date(run.timestamp).toLocaleString()}
                                         </Text>
-                                        <Text className="text-xs text-label-tertiary ">
+                                        <Text className="text-xs text-muted-foreground ">
                                             {run.concurrentMode ? 'Concurrent' : 'Sequential'} • {Object.keys(run.results).length} endpoints
                                         </Text>
                                     </View>
@@ -980,12 +980,12 @@ export default function ApiPerformanceReport() {
             {lastRun && (
                 <View className="mb-4 p-3 bg-background rounded-lg">
                     <Row className="justify-between items-center">
-                        <Text className="text-sm text-label-tertiary ">
+                        <Text className="text-sm text-muted-foreground ">
                             Last run: {lastRun.toLocaleString()}
                         </Text>
                         {averageResponseTime > 0 && (
                             <Row className="items-center gap-x-2">
-                                <Text className="text-sm text-label-tertiary ">
+                                <Text className="text-sm text-muted-foreground ">
                                     Average:
                                 </Text>
                                 <Text className={`text-sm font-semibold ${getStatusColor(averageResponseTime)}`}>
@@ -1023,7 +1023,7 @@ export default function ApiPerformanceReport() {
                                                 </Text>
                                             </Row>
                                             
-                                            <Text className="text-sm text-label-tertiary  mb-2">
+                                            <Text className="text-sm text-muted-foreground  mb-2">
                                                 {result.description}
                                             </Text>
                                             
@@ -1033,7 +1033,7 @@ export default function ApiPerformanceReport() {
                                                 </Text>
                                                 
                                                 {!isBaseline && testResults['connection_baseline'] && result.status === 'success' && (
-                                                    <Text className="text-sm text-label-tertiary ">
+                                                    <Text className="text-sm text-muted-foreground ">
                                                         vs baseline: {result.responseTime - testResults['connection_baseline'].responseTime > 0 ? '+' : ''}
                                                         {result.responseTime - testResults['connection_baseline'].responseTime}ms
                                                     </Text>
@@ -1099,21 +1099,21 @@ export default function ApiPerformanceReport() {
                                                         🌐 Network Timing Breakdown:
                                                     </Text>
                                                     <View className="grid grid-cols-2 gap-1 text-xs">
-                                                        <Text className="text-label-tertiary ">
+                                                        <Text className="text-muted-foreground ">
                                                             DNS: {result.timingBreakdown.dnsLookup}ms
                                                         </Text>
-                                                        <Text className="text-label-tertiary ">
+                                                        <Text className="text-muted-foreground ">
                                                             TCP: {result.timingBreakdown.tcpConnect}ms
                                                         </Text>
                                                         {result.timingBreakdown.sslHandshake > 0 && (
-                                                            <Text className="text-label-tertiary ">
+                                                            <Text className="text-muted-foreground ">
                                                                 SSL: {result.timingBreakdown.sslHandshake}ms
                                                             </Text>
                                                         )}
-                                                        <Text className="text-label-tertiary ">
+                                                        <Text className="text-muted-foreground ">
                                                             Server: {result.timingBreakdown.waitingForResponse}ms
                                                         </Text>
-                                                        <Text className="text-label-tertiary ">
+                                                        <Text className="text-muted-foreground ">
                                                             Download: {result.timingBreakdown.contentDownload}ms
                                                         </Text>
                                                     </View>
@@ -1121,7 +1121,7 @@ export default function ApiPerformanceReport() {
                                             )}
                                             
                                             <View className="mt-2 pt-2 border-t border-default">
-                                                <Row className="justify-between text-xs text-label-tertiary ">
+                                                <Row className="justify-between text-xs text-muted-foreground ">
                                                     <Text>Payload: {formatBytes(result.payloadSize)}</Text>
                                                     {result.serverProcessingTime && (
                                                         <Text>Server: {Math.round(result.serverProcessingTime)}ms</Text>
@@ -1140,31 +1140,31 @@ export default function ApiPerformanceReport() {
 
             {Object.keys(testResults).length > 0 && (
                 <View className="mt-4 p-3 bg-red-500 rounded-lg">
-                    <Text className="text-sm font-semibold text-label-secondary  mb-2">
+                    <Text className="text-sm font-semibold text-secondary-foreground  mb-2">
                         Performance Guidelines:
                     </Text>
                     <View className="space-y-1">
                         <Row className="items-center gap-x-2">
                             <Icon icon="CheckCircle" size={14} className="text-green-600 dark:text-green-400" />
-                            <Text className="text-xs text-label-tertiary ">
+                            <Text className="text-xs text-muted-foreground ">
                                 &lt; 200ms - Excellent
                             </Text>
                         </Row>
                         <Row className="items-center gap-x-2">
                             <Icon icon="Clock" size={14} className="text-yellow-600 dark:text-yellow-400" />
-                            <Text className="text-xs text-label-tertiary ">
+                            <Text className="text-xs text-muted-foreground ">
                                 200-500ms - Good
                             </Text>
                         </Row>
                         <Row className="items-center gap-x-2">
                             <Icon icon="AlertTriangle" size={14} className="text-orange-600 dark:text-orange-400" />
-                            <Text className="text-xs text-label-tertiary ">
+                            <Text className="text-xs text-muted-foreground ">
                                 500ms-1s - Slow
                             </Text>
                         </Row>
                         <Row className="items-center gap-x-2">
                             <Icon icon="XCircle" size={14} className="text-red-600 dark:text-red-400" />
-                            <Text className="text-xs text-label-tertiary ">
+                            <Text className="text-xs text-muted-foreground ">
                                 &gt; 1s - Very Slow
                             </Text>
                         </Row>

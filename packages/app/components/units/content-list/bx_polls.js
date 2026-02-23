@@ -51,7 +51,7 @@ export default function defaultUnit(props) {
                                     {true && (
                                         <Text
                                             numberOfLines={2}
-                                            className="text-label-primary tracking-tight  web:hover:text-primary leading-tight text-base font-bold"
+                                            className="text-foreground tracking-tight  web:hover:text-primary leading-tight text-base font-bold"
                                         >
                                             {data.title}
                                         </Text>

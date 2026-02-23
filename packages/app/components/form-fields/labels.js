@@ -90,7 +90,7 @@ export default function (props) {
 
     const header = <Row className=' w-full justify-between items-center'>
         <View><Button onPress={() => { setIsModal(null) }} variant='secondary' rounded startDecorator="ArrowLeft" /></View>
-        <View className='w-full flex-auto items-center justify-center'><Text className="text-label-secondary  text-xl font-bold">{'Choose ' + props.caption}</Text></View>
+        <View className='w-full flex-auto items-center justify-center'><Text className="text-secondary-foreground  text-xl font-bold">{'Choose ' + props.caption}</Text></View>
         <View >
             <Button
                 startDecorator="Check"

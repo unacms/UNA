@@ -19,14 +19,14 @@ import { appSetting } from 'app/lib/util'
 
 export const LinkContent = memo(({ url, data }) => (
     <Link href={url}>
-        <Text className="mr-auto bg-primary/20 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-label-secondary ">
+        <Text className="mr-auto bg-primary/20 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-secondary-foreground ">
             {data.content?.price
                 ? data.content.price.replace('&#36;', '$')
                 : 'Free'}
         </Text>
         <Text
             numberOfLines={2}
-            className=" text-label-primary web:hover:text-primary  text-lg sm:text-xl tracking-tight font-bold"
+            className=" text-foreground web:hover:text-primary  text-lg sm:text-xl tracking-tight font-bold"
         >
             {data.content?.title || ''}
         </Text>
@@ -95,7 +95,7 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
                 <Link href={url} className="">
                     <Text
                         numberOfLines={1}
-                        className=" text-label-tertiary  text-xs uppercase tracking-tight overflow-hidden"
+                        className=" text-muted-foreground  text-xs uppercase tracking-tight overflow-hidden"
                     >
                         {data.content?.date_start && (
                             <>
@@ -117,7 +117,7 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
                     </Text>
                     <Text
                         numberOfLines={2}
-                        className=" text-label-primary web:hover:text-primary text-lg sm:text-xl tracking-tight font-bold"
+                        className=" text-foreground web:hover:text-primary text-lg sm:text-xl tracking-tight font-bold"
                     >
                         {data.content?.title || ''}
                     </Text>
@@ -181,7 +181,7 @@ export const AdView = memo(({ data, styles, url, isCompact }) => {
                 <View>
                     <View>
                         <Text
-                            className="text-label-secondary  pb-4 text-base leading-6"
+                            className="text-secondary-foreground  pb-4 text-base leading-6"
                             numberOfLines={3}
                         >
                             {data.content?.text || ''}
@@ -226,7 +226,7 @@ export const MarketView = memo(({ data, styles, url, isCompact }) => {
 
                     <Text
                         numberOfLines={2}
-                        className=" text-label-primary web:hover:text-primary  text-lg sm:text-xl tracking-tight font-bold"
+                        className=" text-foreground web:hover:text-primary  text-lg sm:text-xl tracking-tight font-bold"
                     >
                         {data.content?.title || ''}
                     </Text>
@@ -234,7 +234,7 @@ export const MarketView = memo(({ data, styles, url, isCompact }) => {
                 <View>
                     <View>
                         <Text
-                            className="text-label-secondary  pb-4 text-base leading-6"
+                            className="text-secondary-foreground  pb-4 text-base leading-6"
                             numberOfLines={3}
                         >
                             {data.content?.text || ''}

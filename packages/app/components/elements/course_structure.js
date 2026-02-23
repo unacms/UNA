@@ -119,7 +119,7 @@ function CourseStructure({ data }) {
                                     {isEditable && <Row className='items-center justify-center gap-x-2'><DropdownMenu items={manageMenu} onSelect={(oItem) => { handleManage(oItem, item.id) }}><Button rounded startDecorator="Cog" size='sm' /></DropdownMenu><DragControl dragHandleProps={dragHandleProps}><Button rounded startDecorator="ArrowsHorizontal" size='sm' /></DragControl></Row>}
                                 </Row>
                                 <View className='h-12'>
-                                    <Text className="text-white text-lg leading-tight tracking-tight font-bold text-label-secondary " numberOfLines={2}>{item.title}</Text>
+                                    <Text className="text-white text-lg leading-tight tracking-tight font-bold text-secondary-foreground " numberOfLines={2}>{item.title}</Text>
                                 </View>
                             </View>
                             <Row className='gap-x-2 items-end mt-4'>

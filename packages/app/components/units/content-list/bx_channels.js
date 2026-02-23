@@ -70,7 +70,7 @@ export default function Unit(props) {
 
                                     </View>
                                     {
-                                        <Text className="truncate text-xs leading-tight flex-auto text-label-tertiary ">
+                                        <Text className="truncate text-xs leading-tight flex-auto text-muted-foreground ">
                                             {friendsLabel}
                                         </Text>
                                     }

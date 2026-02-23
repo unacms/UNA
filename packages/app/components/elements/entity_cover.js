@@ -14,7 +14,7 @@ export default function ({ data, blockWrapperProps, uri }) {
             </View>
             <View className="flex-row flex-wrap ">
                 <View className=" flex-col   flex-auto">
-                    <Text className="text-2xl pt-4 font-bold text-label-secondary ">
+                    <Text className="text-2xl pt-4 font-bold text-secondary-foreground ">
                         {data.fullname || data.space_name}
                     </Text>
 
@@ -29,7 +29,7 @@ export default function ({ data, blockWrapperProps, uri }) {
                 <CoverMenu containerClasses=" hz " size='sm' {...data.actions_menu} uri={uri} />
             </View>
             
-            <Text numberOfLines={3} className='mt-2 text-base text-label-tertiary '>{stripTags(data.description || data.space_desc)}</Text>
+            <Text numberOfLines={3} className='mt-2 text-base text-muted-foreground '>{stripTags(data.description || data.space_desc)}</Text>
             
         </View></BlockWrapper>
     );

@@ -21,14 +21,14 @@ export const settingsProfiles = {
             container: 'w-6 h-6',
             width: 24,
             height: 24,
-            font: 'text-xs leading-5',
+            font: 'text-xs leading-5 font-semibold',
             letter_font: 'text-xs font-semibold',
         },
         sm: {
             container: 'w-8 h-8',
             width: 32,
             height: 32,
-            font: 'text-sm leading-4 tracking-tight font-semibold',
+            font: 'text-sm tracking-tight font-semibold',
             letter_font: 'text-sm font-semibold',
         },
         md: {

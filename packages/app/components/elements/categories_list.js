@@ -13,10 +13,10 @@ export default function CategoriesList({ data, blockWrapperProps }) {
                         <Link key={`menu-${index}`} href={item.url}>
                             <View className="flex-row gap-x-1 border border-border/60  p-1 bg-card rounded-xl m-1">
                                 <Button variant="text" startDecorator="Folder" />
-                                <Text className=" text-base my-auto font-medium text-label-secondary  ">
+                                <Text className=" text-base my-auto font-medium text-secondary-foreground  ">
                                     {item.name}
                                 </Text>
-                                <Text className="ml-auto mr-1 text-sm my-auto font-semibold  rounded-full bg-muted  px-2.5 py-0.5 text-label-secondary  ">
+                                <Text className="ml-auto mr-1 text-sm my-auto font-semibold  rounded-full bg-muted  px-2.5 py-0.5 text-secondary-foreground  ">
                                     {item.num > 0 ? '' + item.num + '' : ''}
                                 </Text>
                             </View>

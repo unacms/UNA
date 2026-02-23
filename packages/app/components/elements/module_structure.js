@@ -157,8 +157,8 @@ export default function ModuleStructure({ data }) {
     let title = lessonId > 0 ? <View className='flex-1 ml-4 sm:ml-0'>
         <Button startDecorator="ArrowLeft" variant="default" title={'Back'} size="sm" rounded onPress={() => { dispatch({ type: 'SET_LESSON_ID', lessonId: null }) }} />
     </View> : <View className='flex-1 ml-4 sm:ml-0'>
-        <Text className="text-xl leading-tight tracking-tight font-bold text-label-secondary ">{lessonData?.title}</Text>
-        <Text className="text-xs text-label-secondary ">{lessonData?.sample} {lessonData?.index}</Text>
+        <Text className="text-xl leading-tight tracking-tight font-bold text-secondary-foreground ">{lessonData?.title}</Text>
+        <Text className="text-xs text-secondary-foreground ">{lessonData?.sample} {lessonData?.index}</Text>
     </View>;
 
 
@@ -208,7 +208,7 @@ export default function ModuleStructure({ data }) {
                     <View className='flex-1'>
                         <View className='my-2 text-xs'><Text>Lesson {index+1}</Text></View>
                         <View className='h-12'>
-                            <Text className="text-lg leading-tight tracking-tight font-bold text-label-secondary " numberOfLines={2}>{item.title}</Text>
+                            <Text className="text-lg leading-tight tracking-tight font-bold text-secondary-foreground " numberOfLines={2}>{item.title}</Text>
                         </View>
                         {(!isEditable && !!item.pass_title) && <Button startDecorator={icon} variant="default" textColor={`text-${textColor}`} bgColor={`bg-${color}`} title={item.pass_status} size="xs" rounded />}
                         {isEditable && <Button variant="default" title={item.pass_progress} size="xs" rounded />}
@@ -378,10 +378,10 @@ function LessonAttach({ lessonData, isEditable, reloadData, courseId, lessonId, 
                 </Text>
             </View>
             <View className="flex-auto justify-center">
-                <Text className="text-lg leading-tight tracking-tight font-bold text-label-secondary " numberOfLines={2}>
+                <Text className="text-lg leading-tight tracking-tight font-bold text-secondary-foreground " numberOfLines={2}>
                     {item.title}
                 </Text>
-                <Text className="leading-tight tracking-tight text-label-secondary ">
+                <Text className="leading-tight tracking-tight text-secondary-foreground ">
                     {item.size}
                 </Text>
             </View>
@@ -499,7 +499,7 @@ function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, cour
                         </View>
                         <View className={`flex-auto`}>
                             <Button variant="default" textColor={`text-white`} bgColor={`bg-` + getColorByType(item.type)} title={item.type} size="xs" rounded />
-                            <Text className="mt-2 text-lg leading-tight tracking-tight font-bold text-label-secondary " numberOfLines={2}>{item.title}</Text>
+                            <Text className="mt-2 text-lg leading-tight tracking-tight font-bold text-secondary-foreground " numberOfLines={2}>{item.title}</Text>
                         </View>
                         <Row className="justify-center items-center gap-x-2">
                             {(!!item.pass_link && !isEditable) && (
@@ -574,7 +574,7 @@ function LessonItem({ lessonItemData, lessonIndex, lessonData, startLessonPart }
                         </View>)
                 })}
             </Row>
-            {!!lessonItemData?.title && <Text className="mb-4  text-base leading-tight tracking-tight font-bold text-label-secondary ">{lessonItemData?.title}</Text>}
+            {!!lessonItemData?.title && <Text className="mb-4  text-base leading-tight tracking-tight font-bold text-secondary-foreground ">{lessonItemData?.title}</Text>}
             {!!lessonItemData?.image && !lessonItemData?.video && <View className="w-full aspect-[2/1] rounded-xl overflow-hidden "><Image {...lessonItemData.image} alt={lessonItemData.title} className=" u-cover" view="cover" /></View>}
             {!!lessonItemData?.video && <View className='w-full aspect-video rounded-xl overflow-hidden '>
                 <Video poster={lessonItemData.video.src_poster} src={lessonItemData.video.src_mp4} cover={true} controls={true} muted={"muted"} />

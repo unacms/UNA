@@ -191,13 +191,13 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                     a.value = (new Date(a.value) / 1000);
                 }
 
-                return <Time stylesName=" text-base text-label-secondary " ts={a.value}></Time>
+                return <Time stylesName=" text-base text-secondary-foreground " ts={a.value}></Time>
 
             case 'select':
                 if (a.value != 0 && a.value != '') {
                     const sel = a?.values?.find(item => item.key.toString() === a.value.toString())
                     return (
-                        <Text className=" text-label-secondary text-base ">
+                        <Text className=" text-secondary-foreground text-base ">
                             {a.values ? (sel ? sel.value : a.values[a.value]) : a.value} {/* {a.values ? (a.values[a.value].value ? a.values[a.value].value : a.values[a.value]) : a.value}*/}
                         </Text>
                     )
@@ -212,13 +212,13 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                 var ageDifMs = Date.now() - birthDate.getTime()
                 var ageDate = new Date(ageDifMs)
                 return (
-                    <Text className=" text-label-secondary text-base ">
+                    <Text className=" text-secondary-foreground text-base ">
                         {(Math.abs(ageDate.getUTCFullYear() - 1970)).toString()}
                     </Text>
                 )
 
             case 'location':
-                return <Text className=" text-label-secondary text-base ">
+                return <Text className=" text-secondary-foreground text-base ">
                     {a.value.location_string}
                 </Text>
 
@@ -234,7 +234,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
 
 
             case 'switcher':
-                return <Text className=" text-label-secondary text-base ">
+                return <Text className=" text-secondary-foreground text-base ">
                     {a.value == 1 ? 'Yes' : 'No'}
                 </Text>
 
@@ -244,13 +244,13 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                         a.value = (new Date(a.value) / 1000);
                     }
 
-                    return <Time stylesName=" text-base text-label-secondary " ts={a.value}></Time>
+                    return <Time stylesName=" text-base text-secondary-foreground " ts={a.value}></Time>
                 }
 
                 if (isUrl(a.value)) {
                     return (
                         <Link href={a.value} target="_blank">
-                            <Text className=" text-label-secondary text-base   whitespace-normal break-words">
+                            <Text className=" text-secondary-foreground text-base   whitespace-normal break-words">
                                 {getHandleForDisplay(a.value)}
                             </Text>
                         </Link>
@@ -258,7 +258,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                 }
 
                 return (
-                    <Text className=" text-label-secondary text-base   whitespace-normal break-words">
+                    <Text className=" text-secondary-foreground text-base   whitespace-normal break-words">
                         {a.value}
                     </Text>
                 )

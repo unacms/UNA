@@ -247,7 +247,7 @@ export default function ({ name, value = '', type, onChange }) {
                     value={`${tValue[0]}`}
 
                 /></View>
-                    <Text className="tracking-tight font-medium text-label-secondary ">:</Text>
+                    <Text className="tracking-tight font-medium text-secondary-foreground ">:</Text>
                     <View className='w-5'><Input
                         onChangeText={text => handleChangeTime(text, 59, 'm')}
                         onBlur={handleChangeTime2}
@@ -255,7 +255,7 @@ export default function ({ name, value = '', type, onChange }) {
                         placeholder="HH:mm"
                         maxLength={2}
                         placeholderTextColor="#6b7280"
-                        className='tracking-tight font-medium text-label-secondary '
+                        className='tracking-tight font-medium text-secondary-foreground '
                         value={`${tValue[1]}`}
 
                     /></View></>)}

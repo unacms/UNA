@@ -153,19 +153,19 @@ const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowC
 const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selected,setTimeStamp,  setShowConfirm, deleteRows, refetch, fetchData, handleBlock }) => {
     switch (cell?.type) {
         case 'time':
-            return <Time ts={cell.data} stylesName={'text-sm text-label-secondary '}></Time>
+            return <Time ts={cell.data} stylesName={'text-sm text-secondary-foreground '}></Time>
         case 'datetime':
-            return <Time ts={cell.data} format='datetime' stylesName={'text-xs text-label-secondary '}></Time>
+            return <Time ts={cell.data} format='datetime' stylesName={'text-xs text-secondary-foreground '}></Time>
         case 'link':
             return <Link href={cell.data.url}><Text className="text-primary">{cell.data.text}</Text></Link>
         case 'text':
-            return <Text className="text-label-secondary  truncate overflow-hidden">{stripTags(cell.value)}</Text>
+            return <Text className="text-secondary-foreground  truncate overflow-hidden">{stripTags(cell.value)}</Text>
         case 'price':
-            return <Text className="text-label-secondary  truncate overflow-hidden">{cell.value.value +' '+ cell.value.currency}</Text>
+            return <Text className="text-secondary-foreground  truncate overflow-hidden">{cell.value.value +' '+ cell.value.currency}</Text>
         case 'period':
-            return <Text className="text-label-secondary  truncate overflow-hidden">{cell.value.period +' '+ cell.value.unit}</Text>
+            return <Text className="text-secondary-foreground  truncate overflow-hidden">{cell.value.period +' '+ cell.value.unit}</Text>
         case 'order':
-            return <Text className="text-label-secondary  text-lg">
+            return <Text className="text-secondary-foreground  text-lg">
                 <Icon icon='MoveVertical' />
             </Text>
         case 'switcher':
@@ -207,7 +207,7 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
             </Row>)
 
     }
-    return <Text className="text-label-secondary ">{JSON.stringify(cell)}</Text>
+    return <Text className="text-secondary-foreground ">{JSON.stringify(cell)}</Text>
 });
 
 
@@ -550,7 +550,7 @@ export default function ElementGrid(props) {
                         //getWidth(itemCell.width) 
                         return (
                             <View key={'header' + index} style={{ width: getWidth1(itemCell.width) }} className={' py-1 p-1 xl:p-2 '}>
-                                <Text className="font-bold text-label-secondary ">{itemCell.title == 'Select' ? '' : itemCell.title}</Text>
+                                <Text className="font-bold text-secondary-foreground ">{itemCell.title == 'Select' ? '' : itemCell.title}</Text>
                             </View>
 
                         );
@@ -559,7 +559,7 @@ export default function ElementGrid(props) {
             </Row>
             {(!dataItems || dataItems.length === 0) && status === 'success' && !hasNextPage && (
                 <View className="items-center pt-4">
-                    <Text className="text-label-secondary ">Nothing to show</Text>
+                    <Text className="text-secondary-foreground ">Nothing to show</Text>
                 </View>
             )}
            

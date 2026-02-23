@@ -15,7 +15,7 @@ export default function ElementConfirm({ handleOk, handleCancel, onVisible, titl
         return (
             <Modal id={'file-preview'} onVisible={onVisible} fullWidth={false} maxWidth={maxWidth} autoHeight={autoHeight}>
                 <View className='gap-y-4'>
-                    <View className='text-center w-full'><Text className="text-center text-base text-label-tertiary  whitespace-pre-line">{title}</Text></View>
+                    <View className='text-center w-full'><Text className="text-center text-base text-muted-foreground  whitespace-pre-line">{title}</Text></View>
                     <Row className='gap-x-4 justify-center'>
                         <Button variant="primary" size="base" title={titleOk} onPress={() => _handleOk()} />
                         <Button variant="default" size="base" title={titleCancel} onPress={() => _handleCancel()} />

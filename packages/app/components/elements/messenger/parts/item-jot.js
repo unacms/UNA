@@ -108,9 +108,9 @@ export default function JotItem({ item, index, handleReply }) {
 
                     ) : <View className="pb-2">
                         {item.reply > 0 && <View className='   border border-border/60   rounded-md p-2 my-1  bg-muted-foreground/20'>
-                            <Text className="text-xs text-label-secondary  font-default">{linkedText(item?.reply_message, "hover:text-label-linkhover")}</Text>
+                            <Text className="text-xs text-secondary-foreground  font-default">{linkedText(item?.reply_message, "hover:text-accent-foreground")}</Text>
                         </View>}
-                        <Text className=" text-base text-label-secondary  font-default">{linkedText(item?.message, "hover:text-label-linkhover")}</Text>
+                        <Text className=" text-base text-secondary-foreground  font-default">{linkedText(item?.message, "hover:text-accent-foreground")}</Text>
                         {aImg.length > 0 && <Carousel data={aImg} />}
                     </View>}
                 </View>

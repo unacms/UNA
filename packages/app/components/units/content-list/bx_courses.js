@@ -76,12 +76,12 @@ export default function Unit(props) {
 
                                         </View>
                                         {
-                                            <Text className="truncate text-xs leading-tight flex-auto text-label-tertiary ">
+                                            <Text className="truncate text-xs leading-tight flex-auto text-muted-foreground ">
                                                 {friendsLabel}
                                             </Text>
                                         }
 
-                                        <Text className=" bg-primary/10  rounded-md  px-1.5 py-1 text-xs flex-none items-center font-semibold text-label-tertiary ">
+                                        <Text className=" bg-primary/10  rounded-md  px-1.5 py-1 text-xs flex-none items-center font-semibold text-muted-foreground ">
                                             {data.visibility != "3" ? (
                                                 <>Private</>
                                             ) : (

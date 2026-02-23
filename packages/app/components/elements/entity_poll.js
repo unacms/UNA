@@ -30,7 +30,7 @@ function Results({ data }) {
 
                                     <View className='w-full items-center justify-center py-1.5 px-2 '>
 
-                                        <Text numberOfLines={10} className="flex-wrap w-full text-label-primary  font-semibold text-sm flex-wrap ">
+                                        <Text numberOfLines={10} className="flex-wrap w-full text-foreground  font-semibold text-sm flex-wrap ">
                                             {item2.title}
                                         </Text>
                                         <Text className="font-medium flex-wrap w-full text-popover-foreground  text-xs flex-wrap">
@@ -92,7 +92,7 @@ export function PollItem({ data, showTitle, onDelete, disabled = false, results_
         
         <View className='w-full p-3 rounded-xl bg-muted/50 gap-1.5'>
         <Row className='items-center justify-between w-full gap-x-2 '>
-            {showTitle && <Text className="text-label-primary p-1 rounded-xl  text-lg tracking-tight font-semibold">{data.title}</Text>}
+            {showTitle && <Text className="text-foreground p-1 rounded-xl  text-lg tracking-tight font-semibold">{data.title}</Text>}
             {(!data.is_hidden_results && totalVotes > 0) && (
                 
                     <Button

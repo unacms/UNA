@@ -39,7 +39,7 @@ function CourseStructure(props) {
                                     <Progress value={item.percent} />
                                     <View className='my-2 text-xs '><Text className="text-white">Module {item.index}</Text></View>
                                     <View className='h-12'>
-                                        <Text className="text-white text-lg leading-tight tracking-tight font-bold text-label-secondary " numberOfLines={2}>{item.title}</Text>
+                                        <Text className="text-white text-lg leading-tight tracking-tight font-bold text-secondary-foreground " numberOfLines={2}>{item.title}</Text>
                                     </View>
                                 </View>
                                 <Row className='gap-x-2 items-end mt-4'>

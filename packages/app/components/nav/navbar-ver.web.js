@@ -80,7 +80,7 @@ const SideBar = memo(({ headerSettings, currentUser, uri, url, bSearch, menuPopu
                         appSetting('layout', 'lock_unconfirmed'))) &&
                     (uri == 'home' || isDesktop) && (
                         <Link
-                            className="flex items-center rounded-xl flex-row active:scale-95 active:opacity-50 text-label-secondary  web:hover:text-label-primary web:duration-300 "
+                            className="flex items-center rounded-xl flex-row active:scale-95 active:opacity-50 text-secondary-foreground  web:hover:text-foreground web:duration-300 "
                             href="/home"
                         >
                             {appStatic('logo')}

@@ -78,7 +78,7 @@ export default function Unit(props) {
                                     </>
                                 </Skeleton>
                                 <Skeleton visible={isSkeleton} className="h-5 w-1/3 border border-card">
-                                    <Text className=" bg-primary/10 rounded-md px-1.5 py-1 text-xs flex-none items-center font-semibold text-label-tertiary ">
+                                    <Text className=" bg-primary/10 rounded-md px-1.5 py-1 text-xs flex-none items-center font-semibold text-muted-foreground ">
                                         {data.visibility == "3" ? t('Public') : t('Private')}
                                     </Text>
                                 </Skeleton>

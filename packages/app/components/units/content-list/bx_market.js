@@ -72,7 +72,7 @@ export default function Unit(props) {
                                 <Row className="justify-between">
                                     <View className=" gap-y-3 flex-auto">
                                         <Skeleton className="h-6 w-1/4" visible={isSkeleton}>
-                                            <Text className="mr-auto bg-primary/20 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-label-secondary ">
+                                            <Text className="mr-auto bg-primary/20 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-secondary-foreground ">
                                                 {data.price_recurring > 0
                                                     ? data.price_recurring +
                                                     "$/" +
@@ -86,7 +86,7 @@ export default function Unit(props) {
                                             <View className="overflow-hidden">
                                                 <Text
                                                     numberOfLines={2}
-                                                    className="text-label-primary tracking-tight  web:hover:text-primary leading-5 text-base font-bold"
+                                                    className="text-foreground tracking-tight  web:hover:text-primary leading-5 text-base font-bold"
                                                 >
                                                     {data.title}
                                                 </Text>

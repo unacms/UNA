@@ -59,7 +59,7 @@ export const GitHubIcon = ({
     color = 'currentColor',
 }) => (
     <Svg
-        className="text-label-secondary "
+        className="text-secondary-foreground "
         width={width}
         height={height}
         viewBox="0 0 16 16"

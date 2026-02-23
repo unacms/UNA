@@ -560,8 +560,8 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
                 /></View>
                 : <View className='items-center justify-center w-full h-full'><View className="pt-8">
                     <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-muted-foreground/10 ">
-                        <View className="flex-col mx-auto  text-label-secondary  ">
-                            <Text className="text-center text-lg text-label-secondary  lg:text-xl font-semibold  ">
+                        <View className="flex-col mx-auto  text-secondary-foreground  ">
+                            <Text className="text-center text-lg text-secondary-foreground  lg:text-xl font-semibold  ">
                                 No conversations found
                             </Text>
                         </View>
@@ -668,7 +668,7 @@ const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, 
                                     <Text className='text-xs text-popover-foreground '>Reply to: </Text>
                                     <Text className='font-semibold text-xs text-popover-foreground '>{replyItem.author_data.display_name}</Text>
                                 </Row>
-                                <Text className='text-sm overflow-hidden text-popover-foreground ' numberOfLines={3}>{linkedText(replyItem.message, "hover:text-label-linkhover")}</Text>
+                                <Text className='text-sm overflow-hidden text-popover-foreground ' numberOfLines={3}>{linkedText(replyItem.message, "hover:text-accent-foreground")}</Text>
                             </View>
                             <View className=" right-0 t-0">
                                 <Button align="start" rounded startDecorator="X" size="xs" variant="outline" onPress={() => handleCancelReply()} />

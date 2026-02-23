@@ -35,7 +35,7 @@ export function DisplayNameLink({title, url, href, fontSize, actions, inheritCol
 
 function DisplayNameText({ title, fontSize }) {
     return (
-        <Text className={`${fontSize} text-label-tertiary   truncate tracking-tight`}>
+        <Text className={`${fontSize} text-muted-foreground`}>
             {title}
         </Text>
     )
@@ -94,7 +94,6 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
                 fontSize={sSizeFont}
                 href={oProps.href}
                 inheritColor
-                inheritTextSize
             />
         </Link>
     ) : (

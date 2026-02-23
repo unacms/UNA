@@ -25,10 +25,10 @@ export default function ElementSearchSections({ blockWrapperProps, data }: Searc
     const EmptyState = (
         <View className="p-2">
             <View className="flex-col gap-y-2 items-center opacity-80 justify-center mx-auto my-auto mb-auto py-4 px-8 h-full rounded-2xl bg-muted-foreground/10">
-                <View className="flex-col mx-auto m-4 text-label-secondary ">
+                <View className="flex-col mx-auto m-4 text-secondary-foreground ">
                     <Icon icon="Binoculars" width={32} height={32} />
                 </View>
-                <Text className="text-center text-lg text-label-secondary  lg:text-xl font-semibold">
+                <Text className="text-center text-lg text-secondary-foreground  lg:text-xl font-semibold">
                     {t('Nothing found')}
                 </Text>
                 <Text className="text-center text-base text-muted-foreground">
@@ -47,7 +47,7 @@ export default function ElementSearchSections({ blockWrapperProps, data }: Searc
                     return (
                         <View key={item.section}>
                             <Row className='items-center justify-between p-2 mb-0.5'>
-                                <Text className=" text-base font-semibold tracking-tight text-label-tertiary  ">{t(item.section_name)}</Text>
+                                <Text className=" text-base font-semibold tracking-tight text-muted-foreground  ">{t(item.section_name)}</Text>
                                 <Link href={`/search-keyword?keyword=test&section=${item.section}`}>
                                     <Button variant='link' size='sm' title={t('View all')} />
                                 </Link>

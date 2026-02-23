@@ -62,10 +62,10 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                                 displaySize="base"
                             />
                             <View className='flex-col'>
-                                <Text className=" text-base p-1.5 flex-auto my-auto font-semibold truncate text-label-secondary  web:group-hover:text-label-primary  web:duration-300">
+                                <Text className=" text-base p-1.5 flex-auto my-auto font-semibold truncate text-secondary-foreground  web:group-hover:text-foreground  web:duration-300">
                                     {currentUser.display_name}
                                 </Text>
-                                <Text className=" text-xs p-1.5 flex-auto my-auto truncate text-label-tertiary  web:group-hover:text-label-secondary  web:duration-300">
+                                <Text className=" text-xs p-1.5 flex-auto my-auto truncate text-muted-foreground  web:group-hover:text-secondary-foreground  web:duration-300">
                                     {currentUser.membership_name}
                                 </Text></View>
                         </Row>
@@ -87,7 +87,7 @@ export default function ProfileSwitcher({ className, rounded = 'rounded-lg', chi
                 <ScrollView>
                     <View className="   flex-col">
                         {!hideTitle && <View className="flex-row items-center  justify-between">
-                            <Text className="text-lg px-1.5 py-2 font-bold text-label-secondary  ">
+                            <Text className="text-lg px-1.5 py-2 font-bold text-secondary-foreground  ">
                                 Your Profiles
                             </Text>
                         </View>

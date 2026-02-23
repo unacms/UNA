@@ -31,13 +31,13 @@ Units.Search = function Search({ data }) {
             <View className="flex-auto sm:h-40 flex-col p-2">
                 <Skeleton className="h-6 w-3/4 mt-2" visible={isSkeleton}>
                     <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
-                        <Text numberOfLines={2} className="text-label-primary tracking-tight  web:hover:text-primary leading-tight text-base  font-semibold">
+                        <Text numberOfLines={2} className="text-foreground tracking-tight  web:hover:text-primary leading-tight text-base  font-semibold">
                             {data.title}
                         </Text>
                     </LinkOrModal>
                 </Skeleton>
                 <Skeleton className="h-16 w-full mt-2" rounded="rounded-lg" visible={isSkeleton}>
-                    <Text numberOfLines={3} className="text-label-tertiary  mt-2 mb-auto text-xs ">
+                    <Text numberOfLines={3} className="text-muted-foreground  mt-2 mb-auto text-xs ">
                         {data.summary_plain}
                     </Text>
                 </Skeleton>
@@ -71,13 +71,13 @@ Units.Small = function Small({ data }) {
             <View className="flex-auto sm:h-40 flex-col p-2">
                 <Skeleton className="h-6 w-3/4 mt-2" visible={isSkeleton}>
                     <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
-                        <Text numberOfLines={2} className="text-label-primary tracking-tight  web:hover:text-primary leading-tight text-base  font-semibold">
+                        <Text numberOfLines={2} className="text-foreground tracking-tight  web:hover:text-primary leading-tight text-base  font-semibold">
                             {data.title}
                         </Text>
                     </LinkOrModal>
                 </Skeleton>
                 <Skeleton className="h-16 w-full mt-2" rounded="rounded-lg" visible={isSkeleton}>
-                    <Text numberOfLines={3} className="text-label-tertiary  mt-2 mb-auto text-xs ">
+                    <Text numberOfLines={3} className="text-muted-foreground  mt-2 mb-auto text-xs ">
                         {data.summary_plain}
                     </Text>
                 </Skeleton>
@@ -136,7 +136,7 @@ Units.Base = function Base({ data }) {
                                         <Skeleton className="h-6 w-3/4 mt-2" visible={isSkeleton}>
                                             <Text
                                                 numberOfLines={3}
-                                                className="text-label-primary tracking-tight  web:hover:text-primary text-base sm:text-lg font-bold"
+                                                className="text-foreground tracking-tight  web:hover:text-primary text-base sm:text-lg font-bold"
                                             >
                                                 {data.title}
                                             </Text>

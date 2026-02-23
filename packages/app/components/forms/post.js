@@ -94,7 +94,7 @@ export default function FormPost(props) {
             </View>
             <View className="flex-col">
                 <View className='w-full flex-wrap my-1 flex-row border rounded-xl border-border   py-1 px-2 items-center'>
-                    <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm flex-auto text-label-secondary ">Add to post</Text>
+                    <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm flex-auto text-secondary-foreground ">Add to post</Text>
                     <Row className=" justify-center items-center flex-row flex-wrap px-2">
                         {props.data.inputs['pictures'] && (
                             <View className="ml-2">
@@ -158,7 +158,7 @@ export default function FormPost(props) {
                 </ScrollView>
 
                 <View className='w-full my-1 flex-row border rounded-xl border-border  py-1 px-2'>
-                    <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm  text-label-secondary ">Labels</Text>
+                    <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm  text-secondary-foreground ">Labels</Text>
                     <Row className=" justify-end items-center flex-auto px-2 ">
                         {getFormFieldByData(
                             inputs['labels'],
@@ -170,7 +170,7 @@ export default function FormPost(props) {
                 </View>
 
                 <View className='w-full my-1 flex-row border rounded-xl border-border  py-1 px-2'>
-                    <Text className="font-semibold px-3 py-1 my-auto text-sm  text-label-secondary ">Category</Text>
+                    <Text className="font-semibold px-3 py-1 my-auto text-sm  text-secondary-foreground ">Category</Text>
                     <Row className=" justify-end items-center flex-auto px-2 ">
                         {getFormFieldByData(
                             inputs['cat'],
@@ -182,7 +182,7 @@ export default function FormPost(props) {
                 </View>
 
                 <View className='w-full flex-row my-1  border rounded-xl border-border  py-1 px-2 mb-2'>
-                    <Text className="font-semibold px-3 py-1  my-auto text-sm flex-auto text-label-secondary ">Allow Comments</Text>
+                    <Text className="font-semibold px-3 py-1  my-auto text-sm flex-auto text-secondary-foreground ">Allow Comments</Text>
                     <View className=" gap-x-2 px-2 py-0.5 justify-start items-center  ">
                         {getFormFieldByData(
                             inputs['allow_comments'],

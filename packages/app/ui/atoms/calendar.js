@@ -110,7 +110,7 @@ export default function ({ name, value = '', type, onChange }) {
                                 textDisabledColor: colors.text,
                                 monthTextColor: colors.text,
                             }}
-                            renderArrow={direction => { return <View className="text-label-secondary "><Icon icon={direction == 'left' ? 'ArrowLeft' : 'ArrowRight'} width={24} height={24} /></View> }}
+                            renderArrow={direction => { return <View className="text-secondary-foreground "><Icon icon={direction == 'left' ? 'ArrowLeft' : 'ArrowRight'} width={24} height={24} /></View> }}
                             initialDate={dValue.dt}
                             customHeader={() => CalendarHeader(dValue, addMonth)}
                             onDayPress={day => {

@@ -25,7 +25,7 @@ const colorMapping = {
     gray: { bg: 'bg-gray-600/20', text: ' text-gray-600 dark:text-gray-400' },
     slate: { bg: 'bg-slate-600/20', text: ' text-slate-600 dark:text-slate-400' },
     zinc: { bg: 'bg-zinc-600/20', text: ' text-zinc-600 dark:text-zinc-400' },
-    neutral: { bg: 'bg-secondary-foreground/20', text: ' text-label-tertiary ' },
+    neutral: { bg: 'bg-secondary-foreground/20', text: ' text-muted-foreground ' },
     stone: { bg: 'bg-stone-600/20', text: ' text-stone-600 dark:text-stone-400' },
     amber: { bg: 'bg-amber-600/20', text: ' text-amber-600 dark:text-amber-400' },
     lime: { bg: 'bg-lime-600/20', text: ' text-lime-600 dark:text-lime-400' },

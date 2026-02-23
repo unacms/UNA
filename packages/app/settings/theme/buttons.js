@@ -80,10 +80,10 @@ export const settingsButtons = {
                 base:'font-medium web:duration-200',
                 default:'text-card-foreground',
                 hovered:'text-foreground',
-                focused:'',
+                focused:'text-foreground',
                 active:'text-foreground',
-                pressed:'',
-                disabled:'',
+                pressed:'text-foreground',
+                disabled:'text-card-foreground/50',
             }
         },
         accent:{
@@ -99,12 +99,12 @@ export const settingsButtons = {
             },
             text:{
                 base:'font-medium text-accent-foreground',
-                default:'',
-                hovered:'',
-                focused:'',
-                active:'',
-                pressed:'',
-                disabled:'',
+                default:'font-medium text-accent-foreground',
+                hovered:'font-medium text-accent-foreground',
+                focused:'font-medium text-accent-foreground',
+                active:'font-medium text-accent-foreground',
+                pressed:'font-medium text-accent-foreground',
+                disabled:'font-medium text-accent-foreground/50',
             }
         },
         secondary:{
@@ -122,10 +122,10 @@ export const settingsButtons = {
                 base:'font-medium',
                 default:'text-secondary-foreground',
                 hovered:'text-foreground',
-                focused:'',
-                active:'',
+                focused:'text-foreground',
+                active:'text-foreground',
                 pressed:'text-accent-foreground',
-                disabled:'',
+                disabled:'text-card-foreground/50',
             },
         },
         danger:{
@@ -227,10 +227,10 @@ export const settingsButtons = {
                 base:'font-medium ',
                 default:'text-card-foreground',
                 hovered:'text-foreground',
-                focused:'',
-                active:'',
-                pressed:'',
-                disabled:'',
+                focused:'text-card-foreground',
+                active:'text-card-foreground',
+                pressed:'text-card-foreground',
+                disabled:'text-card-foreground/50',
             }
         }
     },

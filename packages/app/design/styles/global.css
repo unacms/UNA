@@ -306,7 +306,7 @@
 
 .u-vanilla-html {
     /* @apply prose dark:prose-invert; */
-    @apply text-label-secondary ;
+    @apply text-secondary-foreground ;
     font-size: 16px;
     line-height: 24px;
     max-width: none;
@@ -382,13 +382,13 @@
 
 .u-vanilla-html A,
 .u-vanilla-html .link {
-    @apply text-label-link;
+    @apply text-accent-foreground;
     text-decoration: none;
 }
 
 .u-vanilla-html-small A,
 .u-vanilla-html-small .link {
-    @apply text-label-link;
+    @apply text-accent-foreground;
     text-decoration: none;
 }
 
@@ -401,12 +401,12 @@
 
 .bx-mention-link,
 .bx-tag {
-    @apply text-label-link;
+    @apply text-accent-foreground;
 }
 
 .bx-mention-link:hover {
     text-decoration: underline;
-    background-color: text-label-linkhover;
+    background-color: var(--accent-foreground);
 }
 
 .u-cover {

@@ -27,6 +27,9 @@ export function layoutForList(endpoint, unitMode = '') {
     if (endpoint?.module == 'bx_groups' || endpoint?.request_url?.includes('r=bx_groups'))
         return 'w-full @sm/list:w-1/2 @md/list:w-1/3 @lg/list:w-1/4 p-1.5';
 
+    if (endpoint?.module == 'bx_videos')
+        return 'w-full @sm/list:w-1/2 @lg/list:w-1/3 @xl/list:w-1/4 px-3 pt-3 @sm/list:p-2  ';
+
     if (endpoint?.module == 'bx_persons')
         return 'w-full @sm/list:w-1/3 @md/list:w-1/4 @lg/list:w-1/5 @xl/list:w-1/6 @sm/list:p-2 @md/list:p-2 mb-px @sm/list:m-0 ';
 

@@ -76,10 +76,10 @@ export default function Unit(props) {
 
                                     </View>
                                     {
-                                        <><Text className="truncate text-xs leading-tight flex-auto text-label-tertiary ">
+                                        <><Text className="truncate text-xs leading-tight flex-auto text-muted-foreground ">
                                             {friendsLabel}
                                         </Text>
-                                            {friendsLabel == '' && <Text className="truncate text-xs leading-tight flex-auto text-label-tertiary ">
+                                            {friendsLabel == '' && <Text className="truncate text-xs leading-tight flex-auto text-muted-foreground ">
                                                 {friendsLabel1}
                                             </Text>
                                             }
@@ -87,7 +87,7 @@ export default function Unit(props) {
                                     }
                                 </Skeleton>
                                 <Skeleton visible={isSkeleton} className="h-6 w-1/3">
-                                    <Text className=" bg-primary/10  rounded-md  px-1.5 py-1 text-xs flex-none items-center font-semibold text-label-tertiary ">
+                                    <Text className=" bg-primary/10  rounded-md  px-1.5 py-1 text-xs flex-none items-center font-semibold text-muted-foreground ">
                                         {data.visibility != "3" ? (
                                             <>Private</>
                                         ) : (

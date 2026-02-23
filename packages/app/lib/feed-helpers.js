@@ -219,7 +219,7 @@ export const ItemInfo = memo(({ data, t }) => {
                     <Icon className="text-muted -mx-0.5 " icon='Dot' size={14} />
 
                     <Link href={data.owners[0].url} emulate={true}>
-                        <Text className=" text-secondary-foreground web:hover:text-label-linkhover font-medium text-xs ">
+                        <Text className=" text-secondary-foreground web:hover:text-accent-foreground font-medium text-xs ">
                             {owners[0].title}
                         </Text>
                     </Link>
@@ -232,7 +232,7 @@ export const ItemInfo = memo(({ data, t }) => {
                             setShowContextList(true)
                         }}
                     >
-                        <Text className=" bg-muted px-1.5 leading-5 items-center justify-text-center justify-center h-5 rounded-md text-muted-foreground web:hover:text-label-linkhover text-xs font-medium">
+                        <Text className=" bg-muted px-1.5 leading-5 items-center justify-text-center justify-center h-5 rounded-md text-muted-foreground web:hover:text-accent-foreground text-xs font-medium">
                             {owners[0].title} + {owners.length - 1}
                         </Text>
                     </Pressable>
@@ -591,7 +591,7 @@ export function SmallUnit({ data }) {
                     </View>
                     <View className="flex-auto flex-col my-auto">
                         <Row className="flex-row gap-2">
-                            <Text className=" text-sm flex-auto font-medium text-label-secondary ">
+                            <Text className=" text-sm flex-auto font-medium text-secondary-foreground ">
                                 {data.author_data.display_name}
                             </Text>
                             <Time variant="link" className="text-xs flex-none leading-5 "
@@ -600,14 +600,14 @@ export function SmallUnit({ data }) {
                             ></Time>
                         </Row>
                         <Text
-                            className="flex-auto text-lg font-bold text-label-secondary  "
+                            className="flex-auto text-lg font-bold text-secondary-foreground  "
                             numberOfLines={1}
                         >
                             {data.content.title}
                         </Text>
                         <View className="flex-row w-full items-end content-end">
                             <Text
-                                className="flex-auto mr-2  text-base text-label-tertiary  "
+                                className="flex-auto mr-2  text-base text-muted-foreground  "
                                 numberOfLines={1}
                             >
                                 {data.plainText}
