@@ -32,7 +32,7 @@ function ImageSection({ data }) {
                 sizes='auto'
             />
             {!data?.image?.src && (
-                <Letter title={data.fullname} id={data.author_data.id} />
+                <Letter title={data?.fullname} id={data?.author_data?.id} />
             )}
         </View>
     )
