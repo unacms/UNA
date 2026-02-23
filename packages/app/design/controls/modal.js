@@ -6,7 +6,7 @@ import { appSetting } from 'app/lib/util'
 import { RemoveScroll } from 'react-remove-scroll';
 import { useSafeAreaInsets } from 'app/lib/hooks/router'
 import { useIsDesktop, useActualWindowHeight } from 'app/context/measure';
-import  { Button } from 'app/design/controls/buttons';
+import { Button } from 'app/design/controls/buttons';
 import emitter from 'app/context/emitter';
 
 const isWeb = Platform.OS === 'web';
@@ -59,12 +59,12 @@ export function Modal({
                 onClose();
             }
         })
-                               
+
         return () => {
             subscription.remove()
         }
     }, [onClose])
-    
+
     // Cleanup guard to prevent removeChild errors
     /*useEffect(() => {
         return () => {
@@ -84,7 +84,7 @@ export function Modal({
         };
     }, []);*/
 
-    
+
     const offset = (title ? 64 : isIos ? insets?.bottom + insets?.top : 0);
     const styles = { maxHeight: heightActual - offset }
     const animationType = animation || (isDesktop ? 'fade' : 'slide');
@@ -99,17 +99,17 @@ export function Modal({
 
 
     const handleWebOuterPress = useCallback((event) => {
-       if (isOuterClose) {
-                            onClose()
-                        }
-                        event.stopPropagation();
+        if (isOuterClose) {
+            onClose()
+        }
+        event.stopPropagation();
     }, [isOuterClose, onClose]);
 
     const handleNativeOuterPress = useCallback(() => {
-        emitter.emit('editor', { action: 'blur' }); 
-          if (isOuterClose) {
+        emitter.emit('editor', { action: 'blur' });
+        /*  if (isOuterClose) {
                             onClose()
-                        }
+                        }*/
     }, [isOuterClose, onClose]);
 
     const handleContentPress = useCallback((event) => {
@@ -154,7 +154,7 @@ export function Modal({
                     className={`pointerEvents cursor-default flex justify-end w-full h-full ${modalSettings.fog}`}
                     onPress={handleNativeOuterPress}
                 >
-                    <View style={{ paddingTop: insets?.top }} className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto h-full h-modal ${sClassPosition}`}>
+                    <View style={{ paddingTop: insets?.top, paddingBottom: insets?.bottom }} className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto h-full h-modal ${sClassPosition}`}>
                         <View className={`w-full ${maxWidth}  ${modalSettings.container} `}>
                             <View className={`h-full ${modalSettings.content}`}>
                                 <ModalHeader
