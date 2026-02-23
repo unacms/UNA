@@ -373,7 +373,7 @@ function LessonAttach({ lessonData, isEditable, reloadData, courseId, lessonId, 
             className={`${index !== 0 ? 'border-t border-border/60 ' : ''} py-2 px-2`}
         >
             <View className="w-16 justify-center">
-                <Text className="text-muted  text-2xl">
+                <Text className="text-muted-foreground  text-2xl">
                     <Icon icon={'FileText'} />
                 </Text>
             </View>

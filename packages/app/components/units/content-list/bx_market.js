@@ -109,7 +109,7 @@ export default function Unit(props) {
                                 <Skeleton className="h-6 w-full" visible={isSkeleton}>
                                     <Text
                                         numberOfLines={1}
-                                        className="text-muted  mb-auto text-sm"
+                                        className="text-muted-foreground  mb-auto text-sm"
                                     >
                                         {data.summary_plain}
                                     </Text>

@@ -34,7 +34,7 @@ const SidebarBottomToolbar = ({ currentUser, menu_add_items, buttonProps }) => {
                             displayType="unit_wo_info"
                             displaySize="sm"
                         />
-                        <Text className=" text-base flex-auto my-auto font-semibold truncate text-muted  ">
+                        <Text className=" text-base flex-auto my-auto font-semibold truncate text-muted-foreground  ">
                             {currentUser.display_name}
                         </Text>
                     </Row>

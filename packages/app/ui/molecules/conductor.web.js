@@ -487,6 +487,18 @@ const TabSceneMainContent = ({
         enabled: !!pageRoute?.endpoint?.request_url
     })
 
+    // Controls the skeleton overlay: starts visible, fades out then unmounts when data arrives.
+    // 'visible' → 'fading' → 'gone'. Kept after useInfiniteQuery so hasNextPage is in scope.
+    const [skeletonState, setSkeletonState] = useState('visible')
+    const skeletonTimerRef = useRef(null)
+    useEffect(() => {
+        if (hasNextPage !== undefined && skeletonState === 'visible') {
+            setSkeletonState('fading')
+            skeletonTimerRef.current = setTimeout(() => setSkeletonState('gone'), 200)
+        }
+        return () => { if (skeletonTimerRef.current) clearTimeout(skeletonTimerRef.current) }
+    }, [hasNextPage, skeletonState])
+
     useEffect(() => {
         if (pageRoute?.endpoint?.unit !== 'feed')
             return
@@ -643,25 +655,42 @@ const TabSceneMainContent = ({
                 <Form {...formProps} key="form" name={formProps.name} onChange={onFormChangedValues} />
             </View>
             }
-            <UniList
+            {/* CSS grid so Preload overlays UniList in the same area.
+                Skeleton fades out over 0.2s when data arrives, then unmounts. */}
+            <div style={{display: 'grid', gridTemplateColumns: '1fr'}}>
+                <div style={{gridRow: 1, gridColumn: 1, minWidth: 0}}>
+                    <UniList
 
-                data={dataItems}
-                endpoint={pageRoute.endpoint}
-                listState={pageRoute?.state}
-                layout={layout}
-                mode={layout == 'w-full' ? 'simple' : ''}
-                storagekey={pageRoute.storageKeyValue}
-                refer={uniRef}
-                route={pageRoute}
-                unit={pageRoute.endpoint?.unit}
-                useWindowScroll={true}
-                onEndReached={handleEndReached}
-                onRefresh={refetch}
-                refreshing={isRefetching}
-                renderItem={renderItem}
+                        data={dataItems}
+                        endpoint={pageRoute.endpoint}
+                        listState={pageRoute?.state}
+                        layout={layout}
+                        mode={layout == 'w-full' ? 'simple' : ''}
+                        storagekey={pageRoute.storageKeyValue}
+                        refer={uniRef}
+                        route={pageRoute}
+                        unit={pageRoute.endpoint?.unit}
+                        useWindowScroll={true}
+                        onEndReached={handleEndReached}
+                        onRefresh={refetch}
+                        refreshing={isRefetching}
+                        renderItem={renderItem}
 
-            />
-            {(pageRoute?.endpoint?.request_url && hasNextPage === undefined) && Preload}
+                    />
+                </div>
+                {pageRoute?.endpoint?.request_url && skeletonState !== 'gone' && (
+                    <div style={{
+                        gridRow: 1,
+                        gridColumn: 1,
+                        zIndex: 5,
+                        opacity: skeletonState === 'fading' ? 0 : 1,
+                        pointerEvents: skeletonState !== 'visible' ? 'none' : 'auto',
+                        transition: 'opacity 0.2s ease',
+                    }}>
+                        {Preload}
+                    </div>
+                )}
+            </div>
             {(pageRoute?.endpoint?.request_url && hasNextPage) && PreloadShort}
             {(pageRoute?.endpoint?.request_url && hasNextPage === false && dataItems.filter((item) => item.type != 'block').length == 0) && <NoContent endpoint={pageRoute?.endpoint} />}
 

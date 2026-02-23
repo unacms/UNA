@@ -230,13 +230,13 @@ export default function (props) {
         <>
             {modalElement}
             <Field {...props} error2={formContext.formState.errors[name]}>
-                <View className='flex-row items-center px-2 bg-input/20 border border-border/60 h-12 rounded-xl'>
+                <View className=' bg-input border border-border/60 rounded-xl w-full flex-auto items-center flex-row flex-wrap p-1.5 gap-1 min-h-12'>
                     <Button
                         title={displayText}
                         startDecorator="Globe"
                         variant="default"
-                        size="base"
-                        rounded
+                        size="sm"
+                        className='my-auto'
                         onPress={() => handleShowModal()}
                     />
                 </View>

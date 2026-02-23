@@ -188,18 +188,20 @@ const ComponentsCommentsEmpty = () => {
     const { t } = useTranslation()
     return (
         <>
-            <View className="py-4">
-                <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-muted-foreground/10 ">
-                    <View className="flex-col mx-auto  text-secondary-foreground  ">
-                        <Icon icon="MessageCircle" width={32} height={32} />
+            <View className="p-6 border-t border-border/40">
+                <Row className=" gap-2 mx-auto my-auto  py-4 px-6 rounded-2xl bg-muted/60 ">
+                    <View className="flex-col mx-auto text-muted-foreground  ">
+                        <Icon icon="MessageCircle" width={28} height={28} />
                     </View>
-                    <Text className="text-center text-lg text-secondary-foreground  lg:text-xl font-semibold  ">
+                    <View className="flex-col gap-1">
+                    <Text className="text-lg text-muted-foreground font-semibold ">
                         {t('No comments yet')}
                     </Text>
-                    <Text className="text-center text-base text-muted-foreground ">
+                    <Text className="text-sm text-muted-foreground ">
                         {t('Be the first to share what you think')}
                     </Text>
-                </View>
+                    </View>
+                </Row>
             </View>
         </>
     )
@@ -386,7 +388,7 @@ export function ComponentsIntro(props) {
                 <ProfilesList data={data2} showEmpty={true} maxCount={12} />
                 <CounterText data={data} />
             </View>
-            <Text className="text-sm  text-muted ">
+            <Text className="text-sm  text-muted-foreground ">
                 {t('Community Intro')}
             </Text>
         </Card>

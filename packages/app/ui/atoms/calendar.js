@@ -44,7 +44,7 @@ const CalendarHeader = (dValue, addMonth) => {
     <Row className='w-full justify-between mb-4 items-center mt-2'>
         <Button size="sm" rounded startDecorator="ChevronsLeft" onPress={() => addMonth('y', -1)} />
         <Button size="sm" rounded startDecorator="ChevronLeft" onPress={() => addMonth('m', -1)} />
-        <Text className=" font-medium text-muted text-lg">{dValue.dt ? formatValueDate(dValue) : 'Select date'}</Text>
+        <Text className=" font-medium text-muted-foreground text-lg">{dValue.dt ? formatValueDate(dValue) : 'Select date'}</Text>
         <Button size="sm" rounded startDecorator="ChevronRight" onPress={() => addMonth('m', 1)} />
         <Button size="sm" rounded startDecorator="ChevronsRight" onPress={() => addMonth('y', 1)} />
     </Row>

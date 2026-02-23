@@ -519,7 +519,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
                     isVideo ? (
                         <Video src={img.uri || img.file_url} />
                     ) : (
-                        <View className="h-16 w-16 text-muted  items-center justify-center"><Icon icon="File" className="w-9 h-9" size={36} /></View>
+                        <View className="h-16 w-16 text-muted-foreground  items-center justify-center"><Icon icon="File" className="w-9 h-9" size={36} /></View>
                     )
 
                 )}

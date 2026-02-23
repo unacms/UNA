@@ -144,7 +144,7 @@ Units.Base = function Base({ data }) {
                                         <Skeleton className="h-16 w-full" rounded="rounded-lg" visible={isSkeleton}>
                                             <Text
                                                 numberOfLines={3}
-                                                className="text-muted  mb-auto text-sm"
+                                                className="text-muted-foreground  mb-auto text-sm"
                                             >
                                                 {data.summary_plain}
                                             </Text>

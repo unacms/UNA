@@ -216,7 +216,7 @@ export const ItemInfo = memo(({ data, t }) => {
             owners?.length == 1 ? (
                 <>
 
-                    <Icon className="text-muted -mx-0.5 " icon='Dot' size={14} />
+                    <Icon className="text-muted-foreground -mx-0.5 " icon='Dot' size={14} />
 
                     <Link href={data.owners[0].url} emulate={true}>
                         <Text className=" text-secondary-foreground web:hover:text-accent-foreground font-medium text-xs ">
@@ -226,7 +226,7 @@ export const ItemInfo = memo(({ data, t }) => {
                 </>
             ) : (
                 <>
-                    <Icon className="text-muted -mx-0.5 " icon='Dot' size={14} />
+                    <Icon className="text-muted-foreground -mx-0.5 " icon='Dot' size={14} />
                     <Pressable
                         onPress={() => {
                             setShowContextList(true)
@@ -256,7 +256,7 @@ export const ItemInfo = memo(({ data, t }) => {
                                         href={item.url}
                                         emulate={true}
                                     >
-                                        <Text className="text-muted  text-sm">
+                                        <Text className="text-muted-foreground  text-sm">
                                             {' '}
                                             {item.title}
                                         </Text>
@@ -280,7 +280,7 @@ export const ItemInfo = memo(({ data, t }) => {
             l && (
                 <>
 
-                    <Icon className="text-muted -mx-0.5 " icon='Dot' size={14} />
+                    <Icon className="text-muted-foreground -mx-0.5 " icon='Dot' size={14} />
 
                     <Text className="text-muted-foreground font-medium text-xs leading-4 ">
                         {l}

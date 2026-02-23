@@ -227,7 +227,7 @@ const ElementReports = forwardRef((oProps, ref) => {
     const oButtonProps = {
         variant: oProps?.primary ? 'primary' : (isTextMode ? 'custom' : oProps.params?.button_variant),
         size: isTextMode ? (Platform.OS == 'web' ? 'sm' : 'base') : oProps.params?.button_size,
-        classTextName: Platform.OS == 'web' ? '' : " font-medium text-muted   ",
+        classTextName: Platform.OS == 'web' ? '' : " font-medium text-muted-foreground   ",
         rounded: oProps.params?.button_rounded,
         fullWidth: oProps.params?.button_full_width,
         showTitleFromSize: oProps.params?.button_show_title_from_size,
@@ -315,7 +315,7 @@ const ElementReports = forwardRef((oProps, ref) => {
 
         sCounterPopup = (
             <Modal title={t('Reports')}  onVisible={popupVisiblePerformed} onClose={() => { setPopupVisiblePerformed(false) }}>
-                <View className="p-2 gap-y-4 overflow-y-auto text-muted ">{sUsers}</View>
+                <View className="p-2 gap-y-4 overflow-y-auto text-muted-foreground ">{sUsers}</View>
             </Modal>
         );
     }

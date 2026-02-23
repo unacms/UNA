@@ -208,7 +208,7 @@ export default function ElementScore(oProps) {
 
             sCounterPopup = (
                 <Modal title={t('Upvotes')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
-                    <View className="p-2 gap-y-4 overflow-y-auto text-muted ">{sUsers}</View>
+                    <View className="p-2 gap-y-4 overflow-y-auto text-muted-foreground ">{sUsers}</View>
                 </Modal>
             );
         }

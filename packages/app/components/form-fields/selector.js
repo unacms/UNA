@@ -64,7 +64,7 @@ export default function (props) {
     const { field } = useController({ name, rules, defaultValue });
     const [value2, setValue2] = useState(field.value)
 
-    const variant = props.variant || 'secondary';
+    const variant = props.variant || 'default';
     const size = props.size || 'sm';
 
     const addValue2 = useCallback(
@@ -118,7 +118,7 @@ export default function (props) {
 
     const header = <Row className=' w-full justify-between items-center'>
         <View><Button onPress={() => { setIsModal(null) }} variant='outline' rounded startDecorator="X" /></View>
-        <View className='w-full flex-auto items-center justify-center'><Text className="text-muted  text-xl font-bold">{'Choose ' + props.caption}</Text></View>
+        <View className='w-full flex-auto items-center justify-center'><Text className="text-muted-foreground  text-xl font-bold">{'Choose ' + props.caption}</Text></View>
         <View >
             <Button
                 startDecorator="Check"

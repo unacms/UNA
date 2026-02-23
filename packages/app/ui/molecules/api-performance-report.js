@@ -1095,7 +1095,7 @@ export default function ApiPerformanceReport() {
                                             {/* Detailed Network Timing */}
                                             {result.timingBreakdown && Object.keys(result.timingBreakdown).length > 0 && (
                                                 <View className="mt-3 p-2 bg-background rounded">
-                                                    <Text className="text-sm font-semibold mb-2 text-muted ">
+                                                    <Text className="text-sm font-semibold mb-2 text-muted-foreground ">
                                                         🌐 Network Timing Breakdown:
                                                     </Text>
                                                     <View className="grid grid-cols-2 gap-1 text-xs">

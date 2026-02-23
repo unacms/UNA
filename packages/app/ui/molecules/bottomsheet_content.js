@@ -32,7 +32,7 @@ export default function ElementBottomSheetContent(props) {
         <>
             {title && (
                 <View className=''>
-                    <Text className='text-muted  text-center text-xl font-bold mb-2'>
+                    <Text className='text-muted-foreground  text-center text-xl font-bold mb-2'>
                         {title}
                     </Text>
                 </View>

@@ -168,7 +168,7 @@ export default function ElementFavorites(oProps) {
 
         sCounterPopup = (
             <Modal title={t('Favorites')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
-                <View className="p-2 gap-y-4 overflow-y-auto text-muted ">{sUsers}</View>
+                <View className="p-2 gap-y-4 overflow-y-auto text-muted-foreground ">{sUsers}</View>
             </Modal>
         );
     }

@@ -59,7 +59,7 @@ export const InputWithIcons = forwardRef<TextInput, InputWithIconsProps>(
         <Row className="items-center flex-auto">
             {startDecorator && (
                 <View className="absolute left-3.5 h-full items-center justify-center">
-                    <Icon icon={startDecorator} size={24} className="text-muted " />
+                    <Icon icon={startDecorator} size={24} className="text-muted-foreground " />
                 </View>
             )}
             <Input
@@ -71,7 +71,7 @@ export const InputWithIcons = forwardRef<TextInput, InputWithIconsProps>(
             />
             {endDecorator && (
                 <View className="absolute right-3 h-full items-center justify-center">
-                    <Icon icon={endDecorator} size={24} className="text-muted " />
+                    <Icon icon={endDecorator} size={24} className="text-muted-foreground " />
                 </View>
             )}
         </Row>

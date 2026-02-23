@@ -367,14 +367,14 @@ export const DefaultView = memo(
                             href={item.url}
                         >
                             <Row className="gap-x-2 w-full items-center p-3 bg-muted  rounded-lg mt-1">
-                                <Text className="text-sm text-muted ">
+                                <Text className="text-sm text-muted-foreground ">
                                     <Icon
                                         icon="File"
                                         className="w-6 h-6"
                                         size={24}
                                     />
                                 </Text>
-                                <Text className="text-sm text-muted ">
+                                <Text className="text-sm text-muted-foreground ">
                                     {item.title}
                                 </Text>
                             </Row>

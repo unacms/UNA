@@ -20,6 +20,7 @@ function sanitizeWebTextProps(props) {
         maxFontSizeMultiplier,
         onPress,
         onLongPress,
+        onTextLayout,
         ...domProps
     } = props;
     if (onPress && !domProps.onClick) domProps.onClick = onPress;

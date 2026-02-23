@@ -14,7 +14,7 @@ export const settingsButtons = {
         },
         sm: {
             rounded: 'rounded-lg ',
-            container: 'px-2 gap-1 h-9 min-w-9 ',
+            container: 'px-3 gap-1 h-9 min-w-9 ',
             container_icon_only: 'h-9 w-9',
             text: 'text-sm leading-6',
             icon_size: 20,

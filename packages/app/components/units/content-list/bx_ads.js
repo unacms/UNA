@@ -65,7 +65,7 @@ export default function Unit(props) {
                                     )}
                                     <Text
                                         numberOfLines={true ? 2 : 6}
-                                        className="text-muted  mb-auto text-xs"
+                                        className="text-muted-foreground  mb-auto text-xs"
                                     >
                                         {data.summary_plain}
                                     </Text>

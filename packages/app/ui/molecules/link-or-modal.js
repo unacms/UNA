@@ -5,26 +5,26 @@ import { getPageData } from 'app/lib/util';
 import FormModal from 'app/ui/molecules/form_modal';
 import { Platform } from 'react-native';
 
-export default function LinkModal({ href, children, showInModal = false }) {
+export default function LinkModal({ href, children, showInModal = false, className = '' }) {
     if (!href){
         return children;
     }
     if (!showInModal) {
         return (
-            <Link href={href}>
+            <Link href={href} className={className}>
                 {children}
             </Link>
         );
     }
 
     return (
-        <LinkModal_ href={href}>
+        <LinkModal_ href={href} className={className}>
             {children}
         </LinkModal_>
     );
 }
 
-function LinkModal_({ href, children }) {
+function LinkModal_({ href, children, className = '' }) {
     const [pageData, setPageData] = useState(false);
 
     const handlePress = useCallback(async () => {
@@ -36,7 +36,7 @@ function LinkModal_({ href, children }) {
 
     return (
         <>
-            <Pressable href={href} onPress={(e) => {
+            <Pressable href={href} className={className} onPress={(e) => {
                 if (Platform.OS === "web") e.preventDefault(); 
                 handlePress();
             }}>

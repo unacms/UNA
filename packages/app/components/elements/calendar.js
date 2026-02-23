@@ -39,13 +39,13 @@ const loadCalendar = async (setDynamicCalendar) => {
 const CalendarHeader = (dValue, addMonth) => {
     
     if (dValue.dt == ''){
-        return (<Row className='w-full justify-center mb-4 items-center mt-2'><Text className=" font-medium text-muted text-lg">Select date</Text></Row>)
+        return (<Row className='w-full justify-center mb-4 items-center mt-2'><Text className=" font-medium text-muted-foreground text-lg">Select date</Text></Row>)
     }
 
     return (<Row className='w-full justify-between mb-4 items-center mt-2'>
         <Button size="sm" rounded startDecorator="CaretDoubleLeft" onPress={() => addMonth('y', -1)} />
         <Button size="sm" rounded startDecorator="ChevronLeft" onPress={() => addMonth('m', -1)} />
-        <Text className=" font-medium text-muted text-lg">{formatValueDate(dValue)}</Text>
+        <Text className=" font-medium text-muted-foreground text-lg">{formatValueDate(dValue)}</Text>
         <Button size="sm" rounded startDecorator="ChevronRight" onPress={() => addMonth('m', 1)} />
         <Button size="sm" rounded startDecorator="ChevronsRight" onPress={() => addMonth('y', 1)} />
     </Row>)

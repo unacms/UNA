@@ -89,8 +89,8 @@ export default function WorkerEventChecker(oProps) {
                                     <Text className=" " >-</Text>
                                     <Time className=" " ts={item.date_end} />
                                 </Row>
-                                {item.location != '' && (<Row className='text-center gap-x-2 items-center'><Button startDecorator='MapPin' size="xs" /><Text className="text-xs text-muted ">{item.location}</Text></Row>)}
-                                <Text className="text-muted " numberOfLines={2}> {stripTags(item.description)}</Text>
+                                {item.location != '' && (<Row className='text-center gap-x-2 items-center'><Button startDecorator='MapPin' size="xs" /><Text className="text-xs text-muted-foreground ">{item.location}</Text></Row>)}
+                                <Text className="text-muted-foreground " numberOfLines={2}> {stripTags(item.description)}</Text>
                             </View>
                             {item.cover && <View className='w-1/5 mb-auto bg-muted  aspect-video overflow-hidden rounded-xl'>
                                 <Image
