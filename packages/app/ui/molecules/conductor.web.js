@@ -59,6 +59,7 @@ import { BlockByName2 } from 'app/components/block'
 import { useSound } from 'app/lib/hooks/useSound';
 
 const conductorTheme = appSetting('theme', 'conductor')
+const EMPTY_LIST = []
 
 export function Conductor({
     isCoverDisabled,
@@ -380,6 +381,7 @@ export function Conductor({
 
     const CenterColumnContent = <TabSceneMainContent
         pageRoute={tabRoute}
+        tabIndex={index}
         isCover={isCover}
         headerHeight={
             showFiltersBtn && routes.length > 1
@@ -423,6 +425,7 @@ export function Conductor({
 
 const TabSceneMainContent = ({
     pageRoute,
+    tabIndex,
     header,
     headerHeight,
     skeleton,
@@ -487,17 +490,45 @@ const TabSceneMainContent = ({
         enabled: !!pageRoute?.endpoint?.request_url
     })
 
-    // Controls the skeleton overlay: starts visible, fades out then unmounts when data arrives.
-    // 'visible' → 'fading' → 'gone'. Kept after useInfiniteQuery so hasNextPage is in scope.
-    const [skeletonState, setSkeletonState] = useState('visible')
-    const skeletonTimerRef = useRef(null)
-    useEffect(() => {
-        if (hasNextPage !== undefined && skeletonState === 'visible') {
-            setSkeletonState('fading')
-            skeletonTimerRef.current = setTimeout(() => setSkeletonState('gone'), 200)
+    const [skeletonVisible, setSkeletonVisible] = useState(true)
+    const readyForPaginationRef = useRef(false)
+    const waitingForRouteRef = useRef(false)
+
+    const prevTabIndexRef = useRef(tabIndex)
+    const routeIdentity = `${pageRoute?.endpoint?.request_url}::${pageRoute.link}`
+    const prevRouteIdentityRef = useRef(routeIdentity)
+
+    if (tabIndex !== prevTabIndexRef.current) {
+        prevTabIndexRef.current = tabIndex
+        if (routeIdentity === prevRouteIdentityRef.current) {
+            if (pageRoute?.endpoint?.request_url && !skeletonVisible) {
+                setSkeletonVisible(true)
+                readyForPaginationRef.current = false
+                waitingForRouteRef.current = true
+            }
         }
-        return () => { if (skeletonTimerRef.current) clearTimeout(skeletonTimerRef.current) }
-    }, [hasNextPage, skeletonState])
+    }
+
+    if (routeIdentity !== prevRouteIdentityRef.current) {
+        prevRouteIdentityRef.current = routeIdentity
+        waitingForRouteRef.current = false
+        if (pageRoute?.endpoint?.request_url && !skeletonVisible && hasNextPage === undefined) {
+            setSkeletonVisible(true)
+            readyForPaginationRef.current = false
+        }
+    }
+
+    useEffect(() => {
+        if (waitingForRouteRef.current) return
+        if (hasNextPage !== undefined && skeletonVisible) {
+            setSkeletonVisible(false)
+            const t = setTimeout(() => {
+                readyForPaginationRef.current = true
+                window.dispatchEvent(new Event('scroll'))
+            }, 300)
+            return () => clearTimeout(t)
+        }
+    }, [hasNextPage, skeletonVisible])
 
     useEffect(() => {
         if (pageRoute?.endpoint?.unit !== 'feed')
@@ -519,8 +550,6 @@ const TabSceneMainContent = ({
                 refetch();
             }
         })
-        console.log("pageRoute?.endpoint", pageRoute?.endpoint?.params?.owner_id)
-
         const subscription2 = emitter.addListener('feed', (data) => {
             if (data.action == 'remove_content') {
                 dispatch({ type: 'REMOVE_ITEM', id: data.id })
@@ -552,9 +581,9 @@ const TabSceneMainContent = ({
 
     const handleEndReached = useCallback(
         async (lastItemIndex) => {
-            console.log("hasNextPage", hasNextPage)
+            if (!readyForPaginationRef.current) return
             if (isFetchingNextPage) return
-            if (hasNextPage === false) return
+            if (!hasNextPage) return
             if (lastItemIndex === false) return
             refetchRef.current.skipToast = true
             fetchNextPage()
@@ -623,17 +652,20 @@ const TabSceneMainContent = ({
         [SkeletonForRoute, refetchRef.current.skipToast, renderItem]
     )
 
-    // remove empty blocks
-    const dataItemsPageFiltered = dataItemsPage?.filter(item => {
+    const dataItemsPageFiltered = useMemo(() => dataItemsPage?.filter(item => {
         if (!item) return false;
         const block = BlockByName2({
             b: item.data,
             name: item.block,
         });
         return block !== null;
-    }) ?? [];
+    }) ?? [], [dataItemsPage]);
 
-    const dataItems = isDesktop || !!pageRoute?.endpoint?.request_url ? [...dataItemsPageFiltered, ...refetchState.visibleItems] : [...dataItemsPageFiltered, ...refetchState.visibleItems, ...pageRoute.sidebar.content];
+    const dataItems = useMemo(() => {
+        const base = [...dataItemsPageFiltered, ...refetchState.visibleItems];
+        if (isDesktop || !!pageRoute?.endpoint?.request_url) return base;
+        return [...base, ...pageRoute.sidebar.content];
+    }, [isDesktop, dataItemsPageFiltered, refetchState.visibleItems, pageRoute?.endpoint?.request_url, pageRoute?.sidebar?.content]);
 
     useEffect(() => {
         if (isUseCurrentHeader) {
@@ -655,13 +687,11 @@ const TabSceneMainContent = ({
                 <Form {...formProps} key="form" name={formProps.name} onChange={onFormChangedValues} />
             </View>
             }
-            {/* CSS grid so Preload overlays UniList in the same area.
-                Skeleton fades out over 0.2s when data arrives, then unmounts. */}
             <div style={{display: 'grid', gridTemplateColumns: '1fr'}}>
                 <div style={{gridRow: 1, gridColumn: 1, minWidth: 0}}>
                     <UniList
 
-                        data={dataItems}
+                        data={skeletonVisible ? EMPTY_LIST : dataItems}
                         endpoint={pageRoute.endpoint}
                         listState={pageRoute?.state}
                         layout={layout}
@@ -678,20 +708,20 @@ const TabSceneMainContent = ({
 
                     />
                 </div>
-                {pageRoute?.endpoint?.request_url && skeletonState !== 'gone' && (
+                {pageRoute?.endpoint?.request_url && (
                     <div style={{
                         gridRow: 1,
                         gridColumn: 1,
-                        zIndex: 5,
-                        opacity: skeletonState === 'fading' ? 0 : 1,
-                        pointerEvents: skeletonState !== 'visible' ? 'none' : 'auto',
-                        transition: 'opacity 0.2s ease',
+                        zIndex: skeletonVisible ? 5 : -1,
+                        opacity: skeletonVisible ? 1 : 0,
+                        pointerEvents: skeletonVisible ? 'auto' : 'none',
+                        transition: skeletonVisible ? 'none' : 'opacity 0.2s ease',
                     }}>
                         {Preload}
                     </div>
                 )}
             </div>
-            {(pageRoute?.endpoint?.request_url && hasNextPage) && PreloadShort}
+            {(pageRoute?.endpoint?.request_url && isFetchingNextPage) && PreloadShort}
             {(pageRoute?.endpoint?.request_url && hasNextPage === false && dataItems.filter((item) => item.type != 'block').length == 0) && <NoContent endpoint={pageRoute?.endpoint} />}
 
             <Snackbar

@@ -36,8 +36,8 @@ export default function defaultUnit(props) {
     const stackedMeta = titleLines < 2
 
     return (
-        <Link href={data.url} emulate className="web:group bg-card rounded-xl">
-            <Card padding="p-1" className="bg-card web:hover:bg-accent/20 web:duration-200 web:border-none web:shadow-custom web:hover:shadow-custom-hover">
+        <Link href={data.url} emulate className="web:group">
+            <Card padding="p-2" className="gap-2">
                 <View className="aspect-video rounded-lg overflow-hidden w-full bg-accent">
                     <Skeleton className="h-full w-full" rounded="rounded-xl" visible={isSkeleton}>
                         <Image
@@ -49,8 +49,8 @@ export default function defaultUnit(props) {
                         />
                     </Skeleton>
                 </View>
-                <View className="flex-auto p-2">
-                    <View className="flex-row items-start gap-3">
+                
+                    <View className="flex-row items-start gap-2">
                         <Skeleton
                             visible={isSkeleton}
                             fallback={<View className="h-10 w-10 rounded-full bg-muted" />}
@@ -120,7 +120,7 @@ export default function defaultUnit(props) {
                             </Skeleton>
                         </View>
                     </View>
-                </View>
+                
             </Card>
         </Link>
     )

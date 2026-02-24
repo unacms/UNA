@@ -51,7 +51,7 @@ export const settingsElements = {
     cards: {
         'u-card-list': ' u-card-list bg-card text-card-foreground sm:rounded-xl',
         'u-card-list-padding': 'p-4',
-        'u-card-base': 'u-card-base bg-card text-card-foreground rounded-xl border border-border/60',
+        'u-card-base': 'u-card-base bg-card/60 text-card-foreground rounded-xl web:shadow-custom web:hover:shadow-custom-hover native:border border-border/60 web:hover:bg-card web:hover:scale-[1.01] web:duration-300 web:active:scale-[0.99]',
         'u-card-padding': 'py-4',
         'u-card-header': 'px-4',
         'u-card-icon': ' ',

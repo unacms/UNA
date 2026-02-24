@@ -2,7 +2,7 @@ import Image from 'app/ui/atoms/image'
 import { appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
-import { CardList } from 'app/ui/molecules/card'
+import { CardList, Card } from 'app/ui/molecules/card'
 import { AuthorData } from 'app/lib/common-helpers'
 import LinkOrModal from 'app/ui/molecules/link-or-modal'
 import { Skeleton } from 'app/ui/atoms/skeleton';
@@ -11,7 +11,7 @@ const Units = {};
 Units.Base = function Base({ data }) {
     const isSkeleton = data?.skeleton;
     return (
-        <CardList className="border border-border/60" padding="p-1">
+        <Card padding="p-1">
             <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-accent">
                 <Skeleton className="" rounded='rounded-lg' visible={isSkeleton}>
                     {data.image && (
@@ -44,7 +44,7 @@ Units.Base = function Base({ data }) {
                     </Skeleton>
                 </View>
             </View>
-        </CardList>
+        </Card>
     )
 }
 

@@ -4,13 +4,13 @@ import { View } from 'app/design/view'
 import { View as ReactNativeView } from 'react-native'
 import { useRef, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import { useCallback, forwardRef } from 'react';
+import { useCallback, forwardRef, useMemo } from 'react';
 import { useBreakpoint } from 'app/context/measure'
 import { useSetScrollDirection } from 'app/context/jotai/layout';
 import { paddingForList } from 'app/customization/functions';
 
 export default function UniList(props) {
-    let { useCustomScrollHandler, preloadComponent, isModal, sortable, data, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
+    let { useCustomScrollHandler, preloadComponent, isModal, sortable, data: rawData, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
         onSort, mode, layout, numColumns, keyboardShouldPersistTaps, keyExtractor, useWindowScroll: useWindowScrollProp, height, listState, endpoint, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, isInPanel, paddingTop, ...rest } = props
 
     const uniRef = useRef();
@@ -20,10 +20,9 @@ export default function UniList(props) {
 
     const setScrollDirection = useSetScrollDirection();
 
-    data = data.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
+    const data = useMemo(() => rawData.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i), [rawData]);
 
     const itemContent = useCallback((index, data) => {
-        const renderedItem = renderItem({ item: data, index });
         return (
             <View className="min-h-px">
                 {renderItem({ item: data, index })}
