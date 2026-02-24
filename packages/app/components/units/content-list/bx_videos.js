@@ -14,7 +14,7 @@ export default function defaultUnit({data}) {
     const isSkeleton = data?.skeleton
     const postedTs = data?.date || data?.added || data?.created
 
-    const viewsCount = data?.meta?.items?.find(item => item.name== "views").title
+    const viewsCount = data?.meta?.items?.find(item => item.name== "views")?.title
 
     return (
         <Link href={data.url} emulate className="web:group">
