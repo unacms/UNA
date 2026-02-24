@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useMemo, useLayoutEffect } from "react";
+import React, { useCallback, useState, useEffect, useMemo, useRef  } from "react";
 import { View, ScrollView, Row } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { deepEqual, getUnitModeBySource } from 'app/lib/util';
@@ -123,7 +123,7 @@ const TabScene = React.memo(({
     const scrollValue = useScrollValue();
     const NoContent = getComponent('molecule', 'no_content')
 
-    const routeData = route?.endpoint ? route.data : [...route.data, ...route.sidebar.content]
+    const routeData = route?.endpoint ? route.data : [...(route.data || []), ...(route.sidebar?.content || [])]
     return (
         <>
             {(isProfileHeader && scrollValue > 500) && smallHeader}
@@ -158,7 +158,8 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
     useSectionAsMenu = useSectionAsMenu || false;
     skeleton = skeleton || '';
     unitMode = unitMode || '';
-
+    const isFormInitialized = useRef(false);
+    const routesRef = useRef(null);
     const { currentUser } = useCurrentUser();
 
     const { setBottomSheetData } = useBottomSheetData();
@@ -188,6 +189,8 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
     const setRoutes = /*useCallback(*/(a) => {
         setRoutes1(a);
     }/*, []);*/
+
+    routesRef.current = routes;
 
     const initialIndex = useMemo(() => {
         const idx = routes.findIndex(item => {
@@ -304,6 +307,7 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
 
     useEffect(() => {
         setSnackbarVisible(false);
+        isFormInitialized.current = false;
     }, [index]);
 
     const showNewContent2 = async () => {
@@ -408,24 +412,30 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
         setBottomSheetData({ title: 'Filters', content: <AddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} />, showClose: true, snapPoints: ['60%', '60%'] });
     }, [leftSideBarBlocks, data, onFormSubmit, layoutName]);
 
-    const setFilterValue = (values) => {
+    const setFilterValue = useCallback((values) => {
+        setRoutes(prevRoutes => {
+            const newRoutes = [...prevRoutes];
+            if (!newRoutes[index]?.endpoint?.params) return prevRoutes;
 
-        const newRoutes = [...routes];
-        values.forEach(function (value) {
-            const name = value.name;
-            const val = value.value;
-            if (newRoutes[index].endpoint.params.filters) {
-                newRoutes[index].endpoint.params.filters[name] = val;
-            }
-            else {
-                newRoutes[index].endpoint.params.filters = { [name]: val };
-            }
-        })
-        newRoutes[index].endpoint.finished = false;
-        newRoutes[index].data = [];
-        newRoutes[index].endpoint.params.start = 0;
-        setRoutes(newRoutes);
-    }
+            const filters = {};
+            values.forEach(v => { filters[v.name] = v.value; });
+
+            newRoutes[index] = {
+                ...newRoutes[index],
+                data: [],
+                endpoint: {
+                    ...newRoutes[index].endpoint,
+                    finished: false,
+                    params: {
+                        ...newRoutes[index].endpoint.params,
+                        filters,
+                        start: 0,
+                    },
+                },
+            };
+            return newRoutes;
+        });
+    }, [index])
 
     const onFormSubmit = useCallback((formData, d) => {
         let filterValues = [];
@@ -463,8 +473,13 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
     const CoverHeader = useMemo(() => {
         return <Cover data={currentRoute.pageData?.cover_block} showMoreMenu={false} uri={currentRoute.pageData?.uri} context={currentRoute?.pageData?.context} />
     }, [currentRoute.pageData]);
-
+    
     const onFormChangedValues = useCallback((values) => {
+        if (!isFormInitialized.current) {
+            isFormInitialized.current = true;
+            return;
+        }
+
         let filterValues = []
         for (let key in values) {
             filterValues.push({
@@ -474,23 +489,32 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
                     : values[key],
             })
         }
-        setFilterValue(filterValues)
-    }, [])
+
+        const currentFilters = routesRef.current?.[index]?.endpoint?.params?.filters
+        const newFilters = {}
+        filterValues.forEach(f => { newFilters[f.name] = f.value })
+        if (JSON.stringify(currentFilters) !== JSON.stringify(newFilters)) {
+            setFilterValue(filterValues)
+        }
+    }, [index])
 
     const Form = getComponent('element', 'form');
     const formProps = currentRoute?.endpoint?.filters;
-    if (!!formProps) {
-        Object.assign(tabSceneProps, {
 
-            ListHeaderComponent: () => <View className="w-full">
-                {formProps && <View className=" w-full">
-                    <Form {...formProps} key="form" name={formProps.name} onChange={onFormChangedValues} />
-                </View>
-                }
-
+    const FormHeader = useMemo(() => {
+        if (!formProps) return undefined;
+        return () => (
+            <View className="w-full">
+                <Form {...formProps} key="form" name={formProps.name} onChange={onFormChangedValues} />
             </View>
-        });
-    }
+        );
+    }, [formProps, onFormChangedValues]);
+
+    if (!!formProps) {
+    Object.assign(tabSceneProps, {
+        ListHeaderComponent: FormHeader
+    });
+}
     if (isProfileHeader || appSetting('conductor', 'add_menu_native')) {//isProfileHeader need add condition for veawe = coverMode === 'none'
         if (currentRoute?.pageData) {// may be need to fix
             Object.assign(tabSceneProps, {
