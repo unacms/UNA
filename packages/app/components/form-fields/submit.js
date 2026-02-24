@@ -26,7 +26,6 @@ export default function FormFieldSubmit(props) {
         notFullWidth = false,
         saveOnChanges = false,
         hide_errors = true,
-        ...restFieldProps
     } = props;
 
     const formContext = useFormContext();
@@ -110,6 +109,11 @@ export default function FormFieldSubmit(props) {
         'items-center',
     );
 
+    const serverErrorKeys = errorKeys.filter(
+        key => errors[key]?.type === 'server'
+    );
+
+
     return (
         <Field {...props}>
             <Row className={rowClassName}>
@@ -137,6 +141,11 @@ export default function FormFieldSubmit(props) {
                 onBlur={field.onBlur}
                 defaultValue={value}
             />
+            {serverErrorKeys.length > 0 && (
+                <View className="mt-2">
+                    <FormError errorText="Incorrect info. Please, check your inputs and try again" />
+                </View>
+            )}
             {showErrors && (
                 <View className="mt-2">
                     <FormError errorText="Errors:" />

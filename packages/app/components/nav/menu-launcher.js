@@ -4,7 +4,6 @@ import { appSetting } from 'app/lib/util'
 import { menuItemsByName, menuItemsByNameNew, getDataForMenu, storageSet, storageGet } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useTranslation } from 'react-i18next';
-import { useEffect } from 'react';
 import { useIsDesktop } from 'app/context/measure';
 import { useMenuData } from 'app/context/menu-data';
 
@@ -12,7 +11,7 @@ export default function () {
     const bApps = appSetting('layout', 'apps') ;
 
     const isDesktop = useIsDesktop();
-    const { menuData } = useMenuData(appSetting('menu_items', 'objects', 'add'));
+    const { menuData } = useMenuData(appSetting('menu_items', 'objects', 'launcher'));
 
     const { currentUser } = useCurrentUser();
     const { t } = useTranslation();

@@ -6,7 +6,7 @@ export default function ProfileDisplayNameLink({title, url, href, fontSize, acti
 
     // Always apply text-foreground - on native, Text doesn't inherit color from View/Pressable parents
     // The inheritColor option is removed as it only worked on web via CSS cascade
-    const baseColorClass = ' ';
+    const baseColorClass = 'text-foreground';
     const sizeClass = inheritTextSize ? '' : (fontSize || 'text-sm');
     const composed = `${baseColorClass} ${sizeClass} ${extraTextClass} truncate text-ellipsis font-bold tracking-tight`.trim();
 

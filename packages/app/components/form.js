@@ -188,6 +188,24 @@ export default function Form({
         return { processedInputs: processed, defaultValues: dv };
     }, [formBundle.form?.inputs, auto_focus, name]);
 
+    useEffect(() => {
+        if (!processedInputs) return;
+    
+        Object.entries(processedInputs).forEach(([key, input]) => {
+            if (!input?.error) return;
+            const message = Array.isArray(input.error) ? input.error[0] : input.error;
+            const link = Array.isArray(input.error) ? input.error[1] : null;
+            if (message) {
+                methods.setError(key, {
+                    type: 'server',
+                    message,
+                    ...(link && { link }),
+                });
+            }
+        });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [processedInputs]);
+
     const { csrf_token, ...restDefaultValues } = defaultValues;
     const cacheKey = request?.url + JSON.stringify(restDefaultValues) || false;
 
