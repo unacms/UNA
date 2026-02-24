@@ -9,31 +9,10 @@ import Link from 'app/ui/atoms/link'
 import { Skeleton } from 'app/ui/atoms/skeleton'
 import Time from 'app/ui/atoms/time'
 
-export default function defaultUnit(props) {
-    const data = props.data
+export default function defaultUnit({data}) {
+
     const isSkeleton = data?.skeleton
     const postedTs = data?.date || data?.added || data?.created
-
-    // Default 2 = row meta (compact). 2-line titles are the common case and
-    // never trigger a state update, so they never cause a re-render.
-    // Default 1 (stacked) would always cause a state update for 2-line titles,
-    // producing a visible blink on every card load.
-    //
-    // onLayout fires on View on both native and web (React Native Web).
-    // Guard against height=0: web fires onLayout twice on mount — once before
-    // the browser has laid out (h=0), once after. Skipping h=0 prevents a
-    // spurious 1→2→1 state cycle that produces two render waves.
-    const [titleLines, setTitleLines] = useState(2)
-    const handleTitleLayout = useCallback((e) => {
-        const height = e.nativeEvent.layout.height
-        if (height === 0) return
-        const lines = height > 28 ? 2 : 1
-        setTitleLines(prev => prev === lines ? prev : lines)
-    }, [])
-
-    // stacked: title is 1 line → username and date get their own lines
-    // row: title is 2 lines → username · date share a single line
-    const stackedMeta = titleLines < 2
 
     return (
         <Link href={data.url} emulate className="web:group">
@@ -72,7 +51,7 @@ export default function defaultUnit(props) {
                                     </View>
                                 }
                             >
-                                <View onLayout={handleTitleLayout}>
+                                <View className="h-10 justify-center">
                                     <Text
                                         numberOfLines={2}
                                         className="text-card-foreground web:group-hover:text-accent-foreground leading-tight text-base font-semibold"
@@ -85,22 +64,7 @@ export default function defaultUnit(props) {
                                 visible={isSkeleton}
                                 fallback={<View className="h-4 w-28 rounded-full bg-muted" />}
                             >
-                                {stackedMeta ? (
-                                    <View className="">
-                                        <Profile
-                                            {...data.author_data}
-                                            displayType="unit_text_link"
-                                            displaySize="sm"
-                                        />
-                                        {postedTs && (
-                                            <Time
-                                                stylesName="text-sm text-muted-foreground"
-                                                ts={postedTs}
-                                            />
-                                        )}
-                                    </View>
-                                ) : (
-                                    <Row className="items-center gap-1">
+                               <Row className="items-center gap-1">
                                         <Profile
                                             {...data.author_data}
                                             displayType="unit_text_link"
@@ -116,7 +80,6 @@ export default function defaultUnit(props) {
                                             </>
                                         )}
                                     </Row>
-                                )}
                             </Skeleton>
                         </View>
                     </View>
