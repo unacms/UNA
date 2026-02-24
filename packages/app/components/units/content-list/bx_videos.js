@@ -14,6 +14,8 @@ export default function defaultUnit({data}) {
     const isSkeleton = data?.skeleton
     const postedTs = data?.date || data?.added || data?.created
 
+    const viewsCount = data?.meta?.items?.find(item => item.name== "views").title
+
     return (
         <Link href={data.url} emulate className="web:group">
             <Card padding="p-2" className="gap-2">
@@ -77,6 +79,12 @@ export default function defaultUnit({data}) {
                                                     stylesName="text-sm text-muted-foreground"
                                                     ts={postedTs}
                                                 />
+                                            </>
+                                        )}
+                                        {viewsCount && (
+                                            <>
+                                                <Text className="text-sm text-muted-foreground">·</Text>
+                                                <Text className="text-sm text-muted-foreground">{viewsCount}</Text>
                                             </>
                                         )}
                                     </Row>
