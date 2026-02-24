@@ -487,18 +487,6 @@ const TabSceneMainContent = ({
         enabled: !!pageRoute?.endpoint?.request_url
     })
 
-    // Controls the skeleton overlay: starts visible, fades out then unmounts when data arrives.
-    // 'visible' → 'fading' → 'gone'. Kept after useInfiniteQuery so hasNextPage is in scope.
-    const [skeletonState, setSkeletonState] = useState('visible')
-    const skeletonTimerRef = useRef(null)
-    useEffect(() => {
-        if (hasNextPage !== undefined && skeletonState === 'visible') {
-            setSkeletonState('fading')
-            skeletonTimerRef.current = setTimeout(() => setSkeletonState('gone'), 200)
-        }
-        return () => { if (skeletonTimerRef.current) clearTimeout(skeletonTimerRef.current) }
-    }, [hasNextPage, skeletonState])
-
     useEffect(() => {
         if (pageRoute?.endpoint?.unit !== 'feed')
             return
@@ -655,42 +643,25 @@ const TabSceneMainContent = ({
                 <Form {...formProps} key="form" name={formProps.name} onChange={onFormChangedValues} />
             </View>
             }
-            {/* CSS grid so Preload overlays UniList in the same area.
-                Skeleton fades out over 0.2s when data arrives, then unmounts. */}
-            <div style={{display: 'grid', gridTemplateColumns: '1fr'}}>
-                <div style={{gridRow: 1, gridColumn: 1, minWidth: 0}}>
-                    <UniList
+            <UniList
 
-                        data={dataItems}
-                        endpoint={pageRoute.endpoint}
-                        listState={pageRoute?.state}
-                        layout={layout}
-                        mode={layout == 'w-full' ? 'simple' : ''}
-                        storagekey={pageRoute.storageKeyValue}
-                        refer={uniRef}
-                        route={pageRoute}
-                        unit={pageRoute.endpoint?.unit}
-                        useWindowScroll={true}
-                        onEndReached={handleEndReached}
-                        onRefresh={refetch}
-                        refreshing={isRefetching}
-                        renderItem={renderItem}
+                data={dataItems}
+                endpoint={pageRoute.endpoint}
+                listState={pageRoute?.state}
+                layout={layout}
+                mode={layout == 'w-full' ? 'simple' : ''}
+                storagekey={pageRoute.storageKeyValue}
+                refer={uniRef}
+                route={pageRoute}
+                unit={pageRoute.endpoint?.unit}
+                useWindowScroll={true}
+                onEndReached={handleEndReached}
+                onRefresh={refetch}
+                refreshing={isRefetching}
+                renderItem={renderItem}
 
-                    />
-                </div>
-                {pageRoute?.endpoint?.request_url && skeletonState !== 'gone' && (
-                    <div style={{
-                        gridRow: 1,
-                        gridColumn: 1,
-                        zIndex: 5,
-                        opacity: skeletonState === 'fading' ? 0 : 1,
-                        pointerEvents: skeletonState !== 'visible' ? 'none' : 'auto',
-                        transition: 'opacity 0.2s ease',
-                    }}>
-                        {Preload}
-                    </div>
-                )}
-            </div>
+            />
+            {(pageRoute?.endpoint?.request_url && hasNextPage === undefined) && Preload}
             {(pageRoute?.endpoint?.request_url && hasNextPage) && PreloadShort}
             {(pageRoute?.endpoint?.request_url && hasNextPage === false && dataItems.filter((item) => item.type != 'block').length == 0) && <NoContent endpoint={pageRoute?.endpoint} />}
 
@@ -1029,7 +1000,7 @@ function ConductorMenu({
     const MenuItemEx = memo(({ item, index: itemIndex }) => {
         const { title, addon, icon, link, menu_settings, key } = item
         const translatedTitle = (
-            <Text className="text-muted-foreground web:hover:text-secondary-foreground leading-6 font-medium text-base">
+            <Text className="text-label-tertiary web:hover:text-label-secondary leading-6 font-medium text-base">
                 {t(title)}
             </Text>
         )
@@ -1364,7 +1335,7 @@ const TabSceneHeader = ({ route, setFilterValue }) => {
         <>
             {counter > 0 && (
                 <View className="mx-4 mb-0 mt-2">
-                    <Text className="text-xl font-bold text-secondary-foreground   ">
+                    <Text className="text-xl font-bold text-label-secondary   ">
                         {route.title} ({counter})
                     </Text>
                 </View>
@@ -1373,7 +1344,7 @@ const TabSceneHeader = ({ route, setFilterValue }) => {
                 <View
                     className={`${conductorTheme.content_max_width} mx-auto w-full pt-3  px-4`}
                 >
-                    <Text className="text-3xl tracking-tight leading-10 font-bold text-secondary-foreground   ">
+                    <Text className="text-3xl tracking-tight leading-10 font-bold text-label-secondary   ">
                         {route.title}
                     </Text>
                 </View>

@@ -488,7 +488,7 @@ export const Author = memo(({ data, url, t }) => {
             <Row className="" key={`action-${item.cid}-${item.iid}`}>
                 <Element
                     params={{
-                        button_variant: 'accent',
+                        button_variant: 'text',
                         button_size: 'xs',
                         hide_icon: true,
                         button_rounded: false,
@@ -525,8 +525,8 @@ export const Author = memo(({ data, url, t }) => {
                             <ItemInfo data={data} t={t} />
                         </Row>
                     }
-                    showInfo2={<Badges badges={data.author_badges} size="3xs" />}
-                    showActions={ActionsElements}
+                    showInfo2={<>{ActionsElements}<Badges badges={data.author_badges} size="3xs" /></>}
+
                     hoverCardWrapper={hoverCardWrapper}
                 />
             </View>
