@@ -706,7 +706,7 @@ export function CommentsForm({ form: initialForm, requestUrl, module, objectId, 
     };
     
     return (
-        <View className="lg:rounded-b-2xl max-w-5xl p-4 bg-card " >
+        <View className=" max-w-5xl p-3 sm:p-4 " >
             {
                 formData.parent_id > 0 && (<View className=' rounded-sm border-l-2 border-accent py-1 pl-2 mb-2'>
                     <Row className='items-start justify-between max-w-full relative'>
