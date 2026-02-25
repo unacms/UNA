@@ -38,9 +38,9 @@ export default function defaultUnit({ data }) {
                         <Skeleton
                             visible={isSkeleton}
                             fallback={
-                                <View className="gap-0.5">
-                                    <View className="h-5 w-3/4 rounded-full bg-muted" />
-                                    <View className="h-5 w-1/2 rounded-full bg-muted" />
+                                <View className="gap-1">
+                                    <View className="h-4 w-full rounded-full bg-muted" />
+                                    <View className="h-4 w-2/3 rounded-full bg-muted" />
                                 </View>
                             }
                         >
@@ -55,7 +55,15 @@ export default function defaultUnit({ data }) {
                         </Skeleton>
                         <Skeleton
                             visible={isSkeleton}
-                            fallback={<View className="h-4 w-28 rounded-full bg-muted" />}
+                            fallback={
+                                <Row className="gap-2 mt-0.5">
+                                    <View className="h-9 w-9 rounded-full bg-muted" />
+                                    <View className="gap-1 my-auto flex-auto">
+                                        <View className="h-3.5 w-1/3 rounded-full bg-muted" />
+                                        <View className="h-3.5 w-1/4 rounded-full bg-muted" />
+                                    </View>
+                                </Row>
+                            }
                         >
                             <Row className="items-center gap-2">
                                 <Skeleton

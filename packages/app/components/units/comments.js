@@ -201,7 +201,7 @@ function UnitCommentsDefault(props) {
         <Animated.View style={isSelected ? animatedStyle : {}}>
             <Row className="gap-2">
                 {cells}
-                <View className="w-8 z-50 flex-0 mt-3">
+                <View className="w-10 z-50 flex-0 mt-2.5 p-1">
                     <Profile
                         {...data.author_data}
                         displayType="unit_wo_info"
@@ -213,8 +213,8 @@ function UnitCommentsDefault(props) {
                         <View className="w-0.5 mx-auto top-0.5 -mb-2 rounded-full flex-auto bg-muted"></View>
                     )}
                 </View>
-                <View className="flex-1 flex-col gap-0.5 mt-3">
-                    <View className="bg-muted/60 rounded-xl px-2 py-1.5 ">
+                <View className="flex-1 flex-col gap-1 mt-3">
+                    <View className="bg-muted rounded-xl px-3 py-2 gap-1 ">
                         <View className="flex-row items-center justify-between gap-1 ">
                             <Row>
                                 <Profile
