@@ -77,7 +77,7 @@ export function ContentMore({
 
     // Prepare toggle text
     const toggleText = showFull ? " " : "See more";
-    const toggleHtml = ` <span class="text-foreground text-base  font-semibold web:hover:underline">${toggleText}</span>`;
+    const toggleHtml = ` <span class="text-foreground text-base font-semibold web:hover:underline">${toggleText}</span>`;
 
     let displayContent = showFull ? content : shortHtml;
 

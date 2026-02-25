@@ -18,7 +18,7 @@ export default function defaultUnit({data}) {
 
     return (
         <Link href={data.url} emulate className="web:group">
-            <Card padding="p-2" className="gap-2">
+            <Card padding="p-2" className="gap-2 web:hover:shadow-custom-hover web:hover:bg-card web:duration-300 web:active:bg-accent">
                 <View className="aspect-video rounded-lg overflow-hidden w-full bg-accent">
                     <Skeleton className="h-full w-full" rounded="rounded-xl" visible={isSkeleton}>
                         <Image
@@ -31,32 +31,22 @@ export default function defaultUnit({data}) {
                     </Skeleton>
                 </View>
                 
-                    <View className="flex-row items-start gap-2">
-                        <Skeleton
-                            visible={isSkeleton}
-                            fallback={<View className="h-10 w-10 rounded-full bg-muted" />}
-                        >
-                            <Profile
-                                {...data.author_data}
-                                displayType="unit_wo_info"
-                                displaySize="base"
-                                showInfo={false}
-                            />
-                        </Skeleton>
-                        <View className="flex-1 gap-1">
+                    <View className="flex-row items-start gap-3 px-1">
+                       
+                        <View className="flex-1 gap-2">
                             <Skeleton
                                 visible={isSkeleton}
                                 fallback={
-                                    <View className="gap-1">
+                                    <View className="gap-0.5">
                                         <View className="h-5 w-3/4 rounded-full bg-muted" />
                                         <View className="h-5 w-1/2 rounded-full bg-muted" />
                                     </View>
                                 }
                             >
-                                <View className="h-10 justify-center">
+                                <View className=" h-10 justify-center">
                                     <Text
                                         numberOfLines={2}
-                                        className="text-card-foreground web:group-hover:text-accent-foreground leading-tight text-base font-semibold"
+                                        className="text-card-foreground web:hover:text-foreground leading-tight text-base font-semibold"
                                     >
                                         {data.title}
                                     </Text>
@@ -66,27 +56,44 @@ export default function defaultUnit({data}) {
                                 visible={isSkeleton}
                                 fallback={<View className="h-4 w-28 rounded-full bg-muted" />}
                             >
-                               <Row className="items-center gap-1">
-                                        <Profile
-                                            {...data.author_data}
-                                            displayType="unit_text_link"
-                                            displaySize="sm"
-                                        />
-                                        {postedTs && (
-                                            <>
-                                                <Text className="text-sm text-muted-foreground">·</Text>
-                                                <Time
-                                                    stylesName="text-sm text-muted-foreground"
-                                                    ts={postedTs}
+                               <Row className="items-center gap-2">
+                                                <Skeleton
+                                                visible={isSkeleton}
+                                                fallback={<View className="h-10 w-10 rounded-full bg-muted" />}
+                                            >
+                                                <Profile
+                                                    {...data.author_data}
+                                                    displayType="unit_wo_info"
+                                                    displaySize="sm"
+                                                    showInfo={false}
                                                 />
-                                            </>
-                                        )}
-                                        {viewsCount && (
-                                            <>
-                                                <Text className="text-sm text-muted-foreground">·</Text>
-                                                <Text className="text-sm text-muted-foreground">{viewsCount}</Text>
-                                            </>
-                                        )}
+                                            </Skeleton>
+                                    
+                                        <View className="flex-col">
+                                            <Profile
+                                                {...data.author_data}
+                                                displayType="unit_text_link"
+                                                displaySize="sm"
+                                            />
+                                            <Row className="items-center gap-1">
+                                           
+                                            {postedTs && (
+                                                <>
+                                                    
+                                                    <Time
+                                                        stylesName="text-xs text-muted-foreground"
+                                                        ts={postedTs}
+                                                    />
+                                                </>
+                                            )}
+                                             {viewsCount && (
+                                                <>
+                                                    <Text className="text-xs text-muted-foreground">·</Text>
+                                                    <Text className="text-xs text-muted-foreground">{viewsCount}</Text>
+                                                </>
+                                            )}
+                                            </Row>
+                                        </View>
                                     </Row>
                             </Skeleton>
                         </View>

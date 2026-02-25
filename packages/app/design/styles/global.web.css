@@ -162,7 +162,7 @@ select {
 }
 
 .u-link-press:active::after {
-    background-color: rgb(var(--muted) / 0.7);
+    background-color: rgb(var(--accent) / 0.8);
 }
 
 /* Line clamp utilities for text truncation */

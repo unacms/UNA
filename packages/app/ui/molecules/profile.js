@@ -35,7 +35,7 @@ export function DisplayNameLink({title, url, href, fontSize, actions, inheritCol
 
 function DisplayNameText({ title, fontSize }) {
     return (
-        <Text className={`${fontSize} text-muted-foreground`}>
+        <Text className={`${fontSize}`}>
             {title}
         </Text>
     )
@@ -101,7 +101,7 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
     );
 
     return (
-        <Row className="my-auto">
+        <Row className="my-auto ">
             <View className="flex-auto">
             <Row className="items-center gap-1 h-5">
                 {wrapWithHoverCard(nameLink)}

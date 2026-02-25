@@ -1,7 +1,7 @@
 import { View } from 'app/design/view';
 import Image from 'app/ui/atoms/image';
 import Html from 'app/ui/atoms/html';
-import { Text, H1 } from 'app/design/typography';
+import { Text, H1, H1C } from 'app/design/typography';
 import { appSetting, clearLinks, getYouTubeVideoId } from 'app/lib/util'
 import { ContentMore } from 'app/ui/molecules/contentmore';
 import EntityAttachments from './entity_attachments';
@@ -74,7 +74,7 @@ function Default({ data, showPad, sidebar, block, blockWrapperProps }) {
                 </View>}
                 {(!!data.image && !data.video) && <View className="w-full h-[30vh] mb-4 sm:rounded-xl overflow-hidden"><Image {...data.image} alt={data.title} className=" u-cover" view="cover" /></View>}
                 <View className={`mx-auto w-full ${(showPad == false || sidebar ? '' : ' ')}`}>
-                    {isSmall ? <TextMore tagName='h1' text={data.entry_title} numberOfLines={2} className="font-bold tracking-tight text-foreground"></TextMore> : <H1>{data.entry_title}</H1>}
+                    {isSmall ? <TextMore tagName='h1' text={data.entry_title} numberOfLines={2} className="font-bold tracking-tight text-foreground"></TextMore> : <H1C>{data.entry_title}</H1C>}
                     {isSmall ? <ContentMore showLess={true} content={text} numberOfLines={3} numberOfSymbols={360} openSmall={false} customClassName="u-vanilla-html" /> : <Html data={text} />}
                 </View>
                 <EntityAttachments data={att} />

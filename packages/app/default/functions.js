@@ -34,7 +34,7 @@ export function layoutForList(endpoint, unitMode = '') {
         return 'w-full @sm/list:w-1/3 @md/list:w-1/4 @lg/list:w-1/5 @xl/list:w-1/6 @sm/list:p-2 @md/list:p-2 mb-px @sm/list:m-0 ';
 
    
-    return 'w-full @sm/list:w-1/2 @md/list:w-1/3 @lg/list:w-1/4 @xl/list:w-1/5 px-3 py-1.5 @sm/list:p-2 ';
+    return 'w-full @sm/list:w-1/2 @md/list:w-1/3 @lg/list:w-1/4 px-3 py-1.5 @sm/list:p-2 ';
 }
 
 export function paddingForList(endpoint) {
