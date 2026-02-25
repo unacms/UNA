@@ -50,7 +50,7 @@ export default function ElementFeedItem({ data, isModal, blockWrapperProps }) {
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <View className="px-2 gap-y-2">
+            
                 <Html data={tlContent} />
                 {!!content.embed && <Embed data={content.embed} />}
                 {content.polls_attach.length > 0 && (
@@ -64,14 +64,14 @@ export default function ElementFeedItem({ data, isModal, blockWrapperProps }) {
                 {content_attach.length > 0 && <UnitImages images={content_attach} />}
                 {
                     data.event.menu_actions.items.length > 0 && (<View className=" flex-row items-center ">
-                        <Row className="flex-auto items-center flex-wrap-reverse justify-between gap-2 mt-2">
-                            <ActionMenu data={menu_actions2} />
+                        <View className="flex-auto  gap-2 mt-2 ">
+                            
                             {(!!data.event.menu_counters && appSetting('feed', 'counters_menu')) && <CounterMenu data={data.event.menu_counters} />}
-
-                        </Row>
+                            <ActionMenu data={menu_actions2} />
+                        </View>
                     </View>)
                 }
-            </View>
+            
         </BlockWrapper>
     )
 }

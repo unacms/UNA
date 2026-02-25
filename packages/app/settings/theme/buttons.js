@@ -154,7 +154,7 @@ export const settingsButtons = {
                 base:'web:duration-200',
                 default:'',
                 active:'bg-muted',
-                pressed:'bg-accent',
+                pressed:'bg-accent/60',
                 hovered:'bg-muted/60',
                 focused:'bg-muted/60',
                 disabled:'opacity-50',

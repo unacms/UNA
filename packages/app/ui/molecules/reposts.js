@@ -177,7 +177,7 @@ export default function ElementReposts(oProps) {
             return (
                 <View className={"flex-auto flex-row items-center" + (oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? ' ' : 'me-3') : '')}>
                     {bShowAction && <View key={sObject + '-action'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>}
-                    {bShowCounter && !!sCounterButton && <View key={sObject + '-counter-button'}>{sCounterButton}</View>}
+                    {bShowCounter && !!sCounterButton && <View key={sObject + '-counter-button'} className={oProps.params?.counter_button_class || ''}>{sCounterButton}</View>}
                     {bShowCounter && !!sCounterPopup && <View key={sObject + '-counter-popup'}>{sCounterPopup}</View>}
                 </View>
             );

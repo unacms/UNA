@@ -104,7 +104,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 //value.sidebar || value.leftbar ? false : true
     const aItems = useMemo(() => mainBlocks.map((value) => ({
         id: `block_${value.name}`,
-        data: <View className={'px-4 pt-3.5'}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
+        data: <View className={'px-3 pt-3'}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
     })), [blocks, data, isDesktop]);
 
     const isRightCol = sideBarBlocks.length > 0 && isDesktop

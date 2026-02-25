@@ -146,10 +146,15 @@ export default function ElementComments(oProps) {
         );
     }
 
+    const isCounterOnly = bShowCounter && !bShowAction;
+    const wrapperClass = 'flex-auto' +
+        (isCounterOnly && oProps.params?.counter_button_class ? ' ' + oProps.params.counter_button_class : '') +
+        (oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? ' 0 ' : ' pr-1 pb-2 ') : '') +
+        (bShowFull ? ' mr-1' : '');
     return (
         <View className="flex-auto flex-row items-center ">
             <Redirect ref={redirectdRef} />
-            <View key={sObject + '-action'} className={'flex-auto' +(oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? ' 0 ': '  pr-1 pb-2 ') : '')+ (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>
+            <View key={sObject + '-action'} className={wrapperClass}>{sActionButton}</View>
         </View>
     );
  }

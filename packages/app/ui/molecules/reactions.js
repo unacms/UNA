@@ -503,7 +503,7 @@ export default function ElementReactions(oProps) {
             <View className={"flex-auto flex-row items-center " + (oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? '  ' : 'me-3') : '')} >
                 {bShowAction && !!sActionButton && <View key={sObject + '-action-button'} className={'flex-auto' + (bShowFull && bCounter ? ' mr-2 ' : '')}>{sActionButton}</View>}
                 {bShowAction && !!sActionPopup && <View key={sObject + '-action-popup'}>{sActionPopup}</View>}
-                {bCounter && <View key={sObject + '-counter-button'} className="flex-auto flex-row gap-x-1">{aCounter[0]}</View>}
+                {bCounter && <View key={sObject + '-counter-button'} className={"flex-auto flex-row gap-x-1" + (oProps.params?.counter_button_class ? ' ' + oProps.params.counter_button_class : '')}>{aCounter[0]}</View>}
                 {bShowCounter && !!aCounter && <View key={sObject + '-counter-popup'}>{aCounter[1]}</View>}
             </View>
         ) : null;

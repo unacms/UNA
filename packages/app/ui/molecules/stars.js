@@ -297,7 +297,7 @@ export default function ElementStars(oProps) {
         sResult = (
             <View className="flex-auto flex-row items-center h-full">
                 {bShowAction && <View key={sObject + '-action'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>}
-                {bShowCounter && !!sCounterButton && <View key={sObject + '-counter-button'}>{sCounterButton}</View>}
+                {bShowCounter && !!sCounterButton && <View key={sObject + '-counter-button'} className={oProps.params?.counter_button_class || ''}>{sCounterButton}</View>}
                 {bShowCounter && !!sCounterPopup && <View key={sObject + '-counter-popup'}>{sCounterPopup}</View>}
             </View>
         );

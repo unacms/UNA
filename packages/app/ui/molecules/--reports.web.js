@@ -367,7 +367,7 @@ const ElementReports = forwardRef((oProps, ref) => {
                 <View className={'flex-auto flex-row items-center' + (bShowActionUndo && bShowActionReported ? ' undo' : ' do')}>
                     {bShowAction && !!sActionButton && <View key={sObject + '-action-button'} className={'flex-auto' + (bShowFull ? (isTextMode ? ' mr-4' : ' mr-1') : '')}>{sActionButton}</View>}
                     {bShowAction && !!sActionPopup && <View key={sObject + '-action-popup'}>{sActionPopup}</View>}
-                    {(bShowCounter && !!sCounterButton && !isTextMode) && <View key={sObject + '-counter-button'}>{sCounterButton}</View>}
+                    {(bShowCounter && !!sCounterButton && !isTextMode) && <View key={sObject + '-counter-button'} className={oParams?.counter_button_class || ''}>{sCounterButton}</View>}
                     {bShowCounter && !!sCounterPopup && <View key={sObject + '-counter-popup'}>{sCounterPopup}</View>}
                 </View>
             );

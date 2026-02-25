@@ -41,12 +41,14 @@ export const settingsFeed = {
             show_counter: true,
             show_combined: true,
             menu_width: '',
-            button_variant: 'text',
+            button_variant: 'secondary',
             rounded: true,
             button_size: 'xs',
             button_rounded: true,
             justify_items: 'between',
             no_gap_between_buttons: false,
+            counter_button_class: 'mt-2',
+            menu_item_spacing: 'me-0',
         },
         /*
         FOR COMBINED BUTTONS SHOULD BE SET IN THE FOLLOWING WAY:
