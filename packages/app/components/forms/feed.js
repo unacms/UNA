@@ -89,8 +89,8 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
     const isButtonDisabled = !hasText || ((!isHiddenVisibility && object_privacy_view == '')) ? true : false;
     if (isFormOnly) {
         return (
-            <View className="w-full flex-1">
-                <View className="items-start justify-start sm:p-1 ">
+            <View className="w-full flex-1 gap-2">
+                <View className="items-start justify-start ">
                     <Row className="w-full items-center justify-between gap-x-2">
                         <Row className="gap-1 flex-row flex-auto items-center">
                             <ProfileSwitcher hideTitle={true} listOnly={true}>
@@ -139,8 +139,8 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                     {getFormFieldByData(data.inputs['object_cf'], handleSubmit, 'default')}
                     {getFormFieldByData(data.inputs['owner_id'], handleSubmit, 'default')}
                     {getFormFieldByData(data.inputs['type'], handleSubmit, 'default')}
-                    <View className="justify-between flex-col flex-auto ">
-                        <View className="w-full flex-auto justify-start p-1.5 ">
+                    <View className="justify-between flex-col flex-auto gap-2">
+                        <View className="w-full flex-auto justify-start p-1 ">
                             <View
                                 className="flex-auto "
                                 style={{
@@ -270,7 +270,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                                 {
                                                     disabled: isButtonDisabled,
                                                     noPadding: true,
-                                                    size: 'base',
+                                                    size: 'sm',
                                                     notFullWidth: true,
                                                     icon: "SendHorizontal",
 

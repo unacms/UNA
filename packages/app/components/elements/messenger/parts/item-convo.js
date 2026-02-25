@@ -17,24 +17,24 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
                 <Profile
                     {...participants[0]}
                     displayType="unit_wo_info"
-                    displaySize="lg"
+                    displaySize="base"
                 />
             </View>
             <View className="flex-auto flex-col my-auto ">
                 <Row className="flex-row items-center justify-between gap-1 ">
-                <Text className="flex-auto text-base font-bold text-card-foreground web:group-hover:text-foreground line-clamp-1 truncate " numberOfLines={1}>
+                <Text className="flex-auto text-base leading-5 font-bold text-card-foreground web:group-hover:text-foreground line-clamp-1 truncate " numberOfLines={1}>
                     {names}
                 </Text>
-                <Time ts={item.date}></Time>
+                <Time className="text-sm text-muted-foreground whitespace-nowrap" ts={item.date}></Time>
                 </Row>
                 <Row>
-                    <Text className="flex-auto text-sm text-card-foreground web:group-hover:text-foreground line-clamp-1 truncate " numberOfLines={1}>
+                    <Text className="flex-auto text-sm text-muted-foreground web:group-hover:text-foreground line-clamp-1 truncate " numberOfLines={1}>
                     {item.message}
                 </Text>
                 </Row>
             </View>
             {(item.unread > 0 && selectedIndex != index) && (
-                <View className="flex-none bg-primary rounded-full my-auto h-min min-w-5 min-h-5 items-center justify-center px-1.5">
+                <View className="flex-none bg-primary rounded-full mb-auto mt-1 h-min min-w-5 min-h-5 items-center justify-center px-1.5">
 
                     <Text className="text-xs text-primary-foreground font-semibold">
                         {item.unread}

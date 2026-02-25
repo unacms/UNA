@@ -30,7 +30,7 @@ export function inputByKey(array, value) {
     return array.find(obj => obj['key'] === value);
 }
 
-export function PollButton({ field_name, size = 'base', variant = 'secondary', icon = "ChartBarBig" }) {
+export function PollButton({ field_name, size = 'sm', variant = 'secondary', icon = "ChartBarBig" }) {
     return (
         <Button
             startDecorator={icon}
@@ -43,7 +43,7 @@ export function PollButton({ field_name, size = 'base', variant = 'secondary', i
     );
 }
 
-export function LabelButton({ field_name, size = 'base', variant = 'secondary', icon = "Hash", title, rounded = true }) {
+export function LabelButton({ field_name, size = 'sm', variant = 'secondary', icon = "Hash", title, rounded = true }) {
     return (
         <Button
             startDecorator={icon}
@@ -57,7 +57,7 @@ export function LabelButton({ field_name, size = 'base', variant = 'secondary', 
     );
 }
 
-export function FileButton({ field_name, size = 'base', variant = 'secondary', icon = "Image", rounded = true, tooltip = "Add Files", source = 'library' }) {
+export function FileButton({ field_name, size = 'sm', variant = 'secondary', icon = "Image", rounded = true, tooltip = "Add Files", source = 'library' }) {
     return (
         <Button
             startDecorator={icon}

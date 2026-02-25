@@ -344,7 +344,7 @@ export function Conductor({
             {LeftBarContentBlocks}
         </LeftSideBarContainer> : null
 
-    const RightColumnContent = isRightCol ? <View className=" fixed-process mt-0.5 sm:p-2">
+    const RightColumnContent = isRightCol ? <View className=" fixed-process mt-0.5 sm:p-3">
         {tabRoute?.sidebar?.content.map((item, index) => {
             return (
                 <ItemRenderer
@@ -830,7 +830,7 @@ const TabScene = ({
                 <View
                     className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'
                         } ${layoutName !== 'navigator'
-                            ? 'mt-0.5 sm:p-2'
+                            ? 'mt-0.5 sm:p-3'
                             : (!pageRoute?.endpoint?.request_url ? 'sm:p-4 ' : '')
                         }`}
                 >
@@ -1102,7 +1102,7 @@ const LeftSideBarContainer = ({
     return (
         <View
             className={`${layoutName == 'profile'
-                ? 'mt-0.5 sm:p-2' + ' fixed-process'
+                ? 'mt-0.5 sm:p-3' + ' fixed-process'
                 : appSetting(
                     'conductor',
                     'sidebar_container'

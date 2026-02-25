@@ -14,7 +14,7 @@ export const settingsButtons = {
         },
         sm: {
             rounded: 'rounded-lg ',
-            container: 'px-3 gap-1 h-9 min-w-9 ',
+            container: 'px-2 gap-1 h-9 min-w-9 ',
             container_icon_only: 'h-9 w-9',
             text: 'text-sm leading-6',
             icon_size: 20,
@@ -39,7 +39,7 @@ export const settingsButtons = {
     },
     button_styles: {
         group:{
-            container: ' border items-center border-border ',
+            container: ' border items-center border-border overflow-hidden ',
             separator: ' bg-border/60 w-px h-full',
         },
         primary:{

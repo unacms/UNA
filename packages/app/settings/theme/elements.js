@@ -8,7 +8,7 @@ export const settingsElements = {
         content_max_width: ' w-full max-w-7xl ',
         content_max_width_nav: ' w-full max-w-screen-2xl  ',
         menu_is_dynamic: false,
-        menu_cnt: ' flex-row flex-none gap-1 px-3 sm:px-4 h-14 items-center overflow-x-auto ',
+        menu_cnt: ' flex-row flex-none gap-1 px-3  h-14 items-center overflow-x-auto ',
         menu_categ_indent: ' pl-12 ',
         topmenu_cnt:
             'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
@@ -44,7 +44,7 @@ export const settingsElements = {
     modal: {
         fog: ' bg-background/95  ',
         container:
-        ' bg-card/90 backdrop-blur web:shadow-border sm:rounded-2xl overflow-hidden ',
+        ' bg-card/90 backdrop-blur web:shadow-border md:rounded-2xl overflow-hidden ',
         content: '',
         header: ' p-3 items-start justify-start border-b border-border/60',
     },

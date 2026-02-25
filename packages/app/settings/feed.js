@@ -3,7 +3,7 @@
 export const settingsFeed = {
     feed: {
         feed_container: 'relative flex-auto mx-auto w-full max-w-3xl  ',
-        post_trigger: ' web:active:bg-card/60 web:active:shadow-border-sm border border-card  rounded-full flex-auto lg:bg-card/60 web:backdrop-blur web:lg:hover:bg-card web:duration-200 web:transition-all web:shadow-border justify-center px-2 lg:px-4 web:group',
+        post_trigger: ' web:active:bg-card/60 web:active:shadow-border-sm border border-card  rounded-full flex-auto lg:bg-card/60 web:backdrop-blur web:lg:hover:bg-card web:duration-200 web:transition-all web:shadow-border justify-center px-3 lg:px-4 web:group',
         post_trigger_text: 'font-medium text-base text-muted-foreground web:group-hover:text-foreground web:duration-300 web:transition-colors',
         show_html: false,
         default_feed: 'foryou',
