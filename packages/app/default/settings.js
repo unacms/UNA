@@ -9,12 +9,12 @@ import { settingsHeaderToolbar } from 'app/settings/header_toolbar';
 import { settingsTheme } from 'app/settings/theme';
 import { settingsElements } from 'app/settings/elements';
 import { settingsConfigs } from 'app/settings/configs'; 
-
+import { ImageAllowlistHostnames } from 'app/settings/images_allowlist'; 
 export const settingsDefault = {
     config: {
         una_url: env('UNA_URL'),
         app_url: env('APP_URL'),
-        una_api_key: env('UNA_API_KEY'),
+        una_api_key: env('UNA_API_KEY'),    
         app_origin: env('APP_ORIGIN'),
         native_app_images_url:
             env('APP_URL') == 'http://localhost:3000'
@@ -43,7 +43,8 @@ export const settingsDefault = {
         multitenant: false,
         title: 'Spacenook',
         multitenant_images_proxy: null,// 'http://localhost:3000', // or null to disable
-        use_customizations: true
+        use_customizations: true,
+        image_allowlist_hostnames: ImageAllowlistHostnames,
     },
 
     ...settingsLayout,

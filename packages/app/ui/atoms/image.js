@@ -9,6 +9,16 @@ import { UNA_URL, APP_URL,  MULTITENANT_IMAGES_PROXY } from 'app/config';
 
 export const SolitoImageStyled = SolitoImage
 
+function getHostname(src) {
+    try {
+        return new URL(src).hostname;
+    } catch {
+        return '';
+    }
+}
+
+const passthroughLoader = ({ src }) => src;
+
 function extractStyleWidth(style) {
     if (style) {
         const { width } = StyleSheet.flatten(style);
@@ -141,6 +151,10 @@ export default function ElementImage(props) {
         return updatedSrc;
     }, [src, style, width]);
 
+    const optimize = Platform.OS === 'web' && (
+        src.startsWith('/') || src.startsWith('data:') || src.startsWith('blob:') ||
+        appSetting('config', 'image_allowlist_hostnames').includes(getHostname(src))
+    );
 
     rest = useMemo(() => {
         const updatedRest = { ...rest };
@@ -167,9 +181,7 @@ export default function ElementImage(props) {
             alt={alt}
             sizes={sizes}
             style={style}
-          /*  {...(APP_URL === "http://localhost:3000" ? { unoptimized: true } : {})}
-            unoptimized*/
-
+            {...(!optimize ? { unoptimized: true, loader: passthroughLoader } : {})}
         />
-    ), [rest, src, alt, style, sizes]);
+    ), [rest, src, alt, style, sizes, optimize]);
 }

@@ -2,7 +2,7 @@ const path = require('path'); // Импорт path
 const webpack = require('webpack');
 const { withExpo } = require('@expo/next-adapter')
 const merge = require('deepmerge');
-
+const { ImageRemotePatterns } = require('app/settings/images_allowlist');
 // Импортируем и выполняем копирование ресурсов
 const fs = require('fs');
 // Функция копирования ресурсов
@@ -188,44 +188,7 @@ const nextConfig = {
         return config;
     },
     images: {
-        remotePatterns: [
-            {
-                protocol: 'http',
-                hostname: 'localhost',
-                pathname: '**',
-            },
-            {
-                protocol: 'https',
-                hostname: 'api.neo.so',
-                pathname: '**',
-            },
-            {
-                protocol: 'https',
-                hostname: 'ci.una.io',
-                pathname: '**',
-            },
-            {
-                protocol: 'https',
-                hostname: 'app.una.io',
-                pathname: '**',
-            },
-            {
-                protocol: 'https',
-                hostname: 'anton.una.io',
-                pathname: '**',
-            },
-            {
-                protocol: 'https',
-                hostname: 'us-east-1.linodeobjects.com',
-                pathname: '**',
-            },
-            {
-                protocol: 'https',
-                hostname: 'spacenook.app',
-                pathname: '**',
-            }
-        ],
-        // dangerouslyAllowLocalIP: true,
+        remotePatterns: ImageRemotePatterns,
         disableStaticImages: false
     },
 }
