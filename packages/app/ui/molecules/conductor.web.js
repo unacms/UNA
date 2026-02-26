@@ -380,6 +380,7 @@ export function Conductor({
 
     const CenterColumnContent = <TabSceneMainContent
         pageRoute={tabRoute}
+        isInited={currentRoute.inited}
         isCover={isCover}
         headerHeight={
             showFiltersBtn && routes.length > 1
@@ -420,11 +421,10 @@ export function Conductor({
         </View>
     )
 }
-
 const TabSceneMainContent = ({
     pageRoute,
     header,
-    headerHeight,
+    isInited,
     skeleton,
     keyword,
     ts,
@@ -636,9 +636,13 @@ const TabSceneMainContent = ({
     const Form = getComponent('element', 'form');
     const formProps = pageRoute?.endpoint?.filters;
 
+
+    if ((pageRoute?.endpoint?.request_url && hasNextPage === undefined) || !isInited){
+       return Preload
+    }
     return (
         <>
-            {formProps && <View className=" w-full">
+            {(formProps) && <View className=" w-full">
                 <Form {...formProps} key="form" name={formProps.name} onChange={onFormChangedValues} />
             </View>
             }
@@ -660,10 +664,8 @@ const TabSceneMainContent = ({
                 renderItem={renderItem}
 
             />
-            {(pageRoute?.endpoint?.request_url && hasNextPage === undefined) && Preload}
             {(pageRoute?.endpoint?.request_url && hasNextPage) && PreloadShort}
             {(pageRoute?.endpoint?.request_url && hasNextPage === false && dataItems.filter((item) => item.type != 'block').length == 0) && <NoContent endpoint={pageRoute?.endpoint} />}
-
             <Snackbar
                 visible={refetchState.hasNewData}
                 onPress={() => {
