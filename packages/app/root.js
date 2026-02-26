@@ -1,23 +1,40 @@
 "use client"
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import { storageClear } from 'app/lib/util';
 import { useRouter, redirectTo } from 'app/lib/hooks/router'
 import Layouts from 'app/components/layouts';
 import { useSetScrollDirection, useSetScrollValue } from 'app/context/jotai/layout';
 import { Loading } from 'app/customization/loading';
-
+import emitter from 'app/context/emitter';
+import { Platform } from 'react-native'
 
 export function Root(props) {
     const { currentUser, setCurrentUser } = useCurrentUser();
+    const prevUserIdRef = useRef(currentUser?.id);
+    const router = useRouter();
+
     const data = props?.data;
     // ################## CODE FOR NATIVE VERSION
-    /*useEffect(() => {
+  
+    useEffect(() => {
+        // Пропускаем: первый рендер (prevUserIdRef ещё не трогали)
+        if (prevUserIdRef.current === undefined) {
+            prevUserIdRef.current = currentUser?.id;
+            return;
+        }
+        // Пропускаем: значение не изменилось
+        if (prevUserIdRef.current === currentUser?.id) return;
         
-        if (props.settings)
-            remoteSettings.data = props.settings;
-
-    }, [currentUser?.notifications]);*/
+        prevUserIdRef.current = currentUser?.id;
+        
+        // Релоад только при смене юзера, не при инициализации
+        if (Platform.OS === 'web' && typeof window !== 'undefined') {
+            window.location.reload();
+        } else {
+            emitter.emit('page', { action: 'reload' });
+        }
+    }, [currentUser?.id]);
 
 
     const setScrollDirection = useSetScrollDirection();
@@ -51,7 +68,7 @@ export function Root(props) {
     if (props.code == 404 && !data?.page_status) {
         data.page_status = 404
     }
-    const router = useRouter();
+    
 
   
     if (currentUser === null) {
