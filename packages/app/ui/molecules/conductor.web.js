@@ -507,7 +507,6 @@ const TabSceneMainContent = ({
                 refetch();
             }
         })
-        console.log("pageRoute?.endpoint", pageRoute?.endpoint?.params?.owner_id)
 
         const subscription2 = emitter.addListener('feed', (data) => {
             if (data.action == 'remove_content') {
@@ -1101,12 +1100,9 @@ const LeftSideBarContainer = ({
 
     return (
         <View
-            className={`${layoutName == 'profile'
-                ? 'mt-0.5 sm:p-3' + ' fixed-process'
-                : appSetting(
-                    'conductor',
-                    'sidebar_container'
-                )
+            className={`fixed-process ${layoutName == 'profile'
+                ? 'mt-0.5 sm:p-3' + ' '
+                : appSetting('conductor', 'sidebar_container')
                 }`}
         >
             <View className={`${layoutName == 'profile' ? '' : 'mt-fixed-process'}`}>

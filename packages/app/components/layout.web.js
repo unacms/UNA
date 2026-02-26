@@ -246,8 +246,8 @@ export default function Layout(props) {
         document.querySelectorAll('.fixed-process').forEach(el => {
             const parent = el.parentElement;
             const container = parent?.parentElement;
+            
             if (!parent || !container) return;
-
 
             const elH = el.offsetHeight;
             const containerTopDoc = window.scrollY + container.getBoundingClientRect().top;
@@ -270,7 +270,6 @@ export default function Layout(props) {
                 //    el.style.bottom = '0';
                 // return; DISABLED BY SCROOL TO END IN http://localhost:3000/view-persons-profile/test-pers AND RIGHT column is hided
             }
-
             // фиксируем
             el.classList.add('is-fixed');
             el.style.position = 'fixed';
