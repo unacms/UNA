@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import useDaemon from 'app/lib/hooks/daemon'
-export default function (oProps) {
+import { useAppState } from 'app/lib/hooks/useAppState';
 
+export default function (oProps) {
     const { currentUser, setCurrentUser } = useCurrentUser();
-    const { daemonData, error } = useDaemon("/api.php?r=bx_notifications/get_unread_notifications_num&params[]=", false, currentUser?.id > 0, 10000);
+    const isAppActive = useAppState();
+    const { daemonData, error } = useDaemon("/api.php?r=bx_notifications/get_unread_notifications_num&params[]=", false, currentUser?.id > 0 && isAppActive, 10000);
     useEffect(() => {
         if (currentUser) {
             if (daemonData != null) {

@@ -141,11 +141,11 @@ export default function FormFieldSubmit(props) {
                 onBlur={field.onBlur}
                 defaultValue={value}
             />
-            {serverErrorKeys.length > 0 && (
+            {/*serverErrorKeys.length > 0 && (
                 <View className="mt-2">
                     <FormError errorText="Incorrect info. Please, check your inputs and try again" />
                 </View>
-            )}
+            )*/}
             {showErrors && (
                 <View className="mt-2">
                     <FormError errorText="Errors:" />

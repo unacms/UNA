@@ -2,10 +2,12 @@ import { useEffect, useRef } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import useDaemon from 'app/lib/hooks/daemon'
 import { useSound } from 'app/lib/hooks/useSound';
+import { useAppState } from 'app/lib/hooks/useAppState';
 
 export default function CounterChecker({ }) {
     const { currentUser, setCurrentUser } = useCurrentUser();
-    const isActive = currentUser?.membership != 2;
+    const isAppActive = useAppState();
+    const isActive = (currentUser?.membership != 2) && isAppActive;
     const prevNotRef = useRef(currentUser?.notifications ?? 0);
     const playSound = useSound('notif');
     const { daemonData, error } = useDaemon("/api.php?r=system/profile_info/TemplServiceProfiles", true, isActive, 60000);
