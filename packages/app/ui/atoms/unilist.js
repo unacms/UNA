@@ -15,9 +15,11 @@ export default function UniList(props) {
         data, 
         renderItem, 
         onEndReached, 
+        onStartReached,
         ListFooterComponent, 
         refer, 
         refreshing, 
+        inverted,
         onRefresh, 
         ...rest 
     } = props;
@@ -72,8 +74,8 @@ export default function UniList(props) {
         console.log('onScrollToIndexFailed', info);
     }, []);
 
-    const shouldApplyHeaderOffset = !scrollProps?.inverted && !isModal;
-    const shouldApplyFooterOffset = scrollProps?.inverted && !isModal;
+    const shouldApplyHeaderOffset = !inverted && !isModal;
+    const shouldApplyFooterOffset = inverted && !isModal;
 
     // 🔧 Правильная обработка ListHeaderComponent (может быть функцией или компонентом)
     const enhancedListHeaderComponent = useCallback(() => {
@@ -86,6 +88,9 @@ export default function UniList(props) {
                     typeof ListHeaderComponent === 'function' 
                         ? <ListHeaderComponent /> 
                         : ListHeaderComponent
+                )}
+                {shouldApplyFooterOffset && headerHeight > 0 && inverted && (
+                    <View style={{ height: headerHeight }} />
                 )}
             </>
         );
@@ -100,7 +105,7 @@ export default function UniList(props) {
                         ? <ListFooterComponent /> 
                         : ListFooterComponent
                 )}
-                {shouldApplyFooterOffset && headerHeight > 0 && (
+                {shouldApplyFooterOffset && headerHeight > 0 && !inverted && (
                     <View style={{ height: headerHeight }} />
                 )}
             </>
@@ -139,15 +144,18 @@ export default function UniList(props) {
             keyExtractor={item => item.id}
             renderItem={renderItem}
             onEndReached={onEndReached}
+            onStartReached={onStartReached}
             onScroll={handleScroll}
             scrollEventThrottle={16}
             keyboardShouldPersistTaps="always"
             onScrollToIndexFailed={handleScrollToIndexFailed}
             refreshControl={refreshControl}
-            
+            alignItemsAtEnd={inverted}
+            maintainScrollAtEnd={inverted}
             contentInsetAdjustmentBehavior="never"
             automaticallyAdjustContentInsets={false}
-            
+            onStartReachedThreshold={inverted ? 4 : undefined}
+            initialScrollIndex={inverted && filteredData.length > 0 ? filteredData.length - 1 : undefined}
             {...rest}
         />
     );

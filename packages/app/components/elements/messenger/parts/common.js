@@ -640,11 +640,10 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                 refer={refListJots}
                 {...(Platform.OS !== 'web' ? { inverted: true } : {})}
                 overscan={900}
-                startReached={isWeb ? startReached : null}
-                onEndReached={!isWeb ? startReached : null}
+                onStartReached={startReached}
                 scrollToLastItem={true}
-                data={isWeb ? data : data.slice().reverse()}
-                height={layoutHeightRight}
+                data={data}
+                height={layoutHeightRight - (isSmallScreen ? 0 : 64)}
                 mode="simple"
                 useCustomScrollHandler={isSmallScreen ? true : false}
                 renderItem={({ item, index }) => <ItemJot handleReply={handleReply} item={item} index={index} />}

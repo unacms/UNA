@@ -38,11 +38,11 @@ enableScreens(appSetting('native', 'enable_screens'));
 
 const themeSettings = appSetting('theme', 'native_tabs');
 
-function getBadgeForTab(currentUser, url) {
+function getBadgeForTab(currentUser, tab) {
     const badgeTextSize = appSetting('theme', 'native_tabs', 'badgeTextSize') || 'text-xs';
 
     if (
-        url == appSetting('notifications', 'url') &&
+        (tab.url == appSetting('notifications', 'url') || tab.badge=='notifications') &&
         currentUser?.notifications
     ) {
         return (
@@ -53,7 +53,7 @@ function getBadgeForTab(currentUser, url) {
     }
 
     if (
-        url == appSetting('messenger', 'url') &&
+        tab.url == appSetting('messenger', 'url') &&
         currentUser?.counters?.bx_messenger_new_messages
     ) {
         return (
@@ -198,7 +198,7 @@ export default function Tabs() {
             top: -4,
             end: -6,
             minWidth: 22,
-            height: isShowTabs ? 1 : 0,
+            height: isShowTabs ? 20 : 0,
             borderRadius: 10,
             justifyContent: 'center',
             alignItems: 'center',
@@ -285,7 +285,7 @@ export default function Tabs() {
                     {
                         TabList.map((tab, index) => {
                             const options = {
-                                tabBarBadge: getBadgeForTab(currentUser, tab.url),
+                                tabBarBadge: getBadgeForTab(currentUser, tab),
                                 tabBarBadgeAllowFontScaling: false,
                                 title: t(tab.title),
                                 headerShown: false,
