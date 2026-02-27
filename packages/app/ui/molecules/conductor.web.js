@@ -636,7 +636,6 @@ const TabSceneMainContent = ({
     const Form = getComponent('element', 'form');
     const formProps = pageRoute?.endpoint?.filters;
 
-
     if ((pageRoute?.endpoint?.request_url && hasNextPage === undefined) || !isInited){
        return Preload
     }

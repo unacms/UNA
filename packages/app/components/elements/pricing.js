@@ -1,4 +1,4 @@
-import { View } from 'app/design/view'
+import { ScrollView, View } from 'app/design/view'
 import Tabs from 'app/ui/molecules/tabs'
 import { Modal } from 'app/design/controls';
 import Stripe from 'app/ui/molecules/stripe';
@@ -91,7 +91,9 @@ function ElementPricingPeriod({ data, period, unit, settings }) {
                 )
             })}
             {showModal && <Modal onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
+                <ScrollView className="h-[400px]">
                 <Stripe seller_id={showModal.seller_id} items={showModal.items} />
+                </ScrollView>
             </Modal>}
         </View>
     );
