@@ -8,7 +8,7 @@ export default function CounterChecker({ }) {
     const isActive = currentUser?.membership != 2;
     const prevNotRef = useRef(currentUser?.notifications ?? 0);
     const playSound = useSound('notif');
-    const { daemonData, error } = useDaemon("/api.php?r=system/profile_info/TemplServiceProfiles", true, isActive, 10000);
+    const { daemonData, error } = useDaemon("/api.php?r=system/profile_info/TemplServiceProfiles", true, isActive, 60000);
     useEffect(() => {
         if (currentUser) {
             if (daemonData != null && currentUser?.membership != 2) {// disabled for account profile

@@ -1,4 +1,4 @@
-import { memo, useState, useEffect } from 'react';
+import { memo, useState, useCallback } from 'react';
 import { Platform } from 'react-native';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
@@ -9,7 +9,6 @@ import { getPageData } from 'app/lib/util';
 import {
     CoverMenuMeta,
     CoverMenu,
-    CoverMenuMore,
 } from 'app/components/nav/menu-cover'
 
 const isWeb = Platform.OS === 'web';
@@ -21,11 +20,6 @@ const ProfileCardContent = memo(function ProfileCardContent({ profileData,  page
     const displayName = profileData?.display_name || '';
     const avatarUrl = profileData?.url_avatar;
     const profileUrl = profileData?.url;
-
-    
-
-
-
     return (
             <View className="p-2">
                 <Row className="gap-3 items-start">
@@ -86,17 +80,16 @@ function ProfileHoverCard_({ profileData, children, disabled = false }) {
 
     const [pageData, setPageData] = useState(false);
 
-    useEffect(() => {
-        (async () => {
-            const sResponse = await getPageData(profileData?.url.slice(1), false);
-            if (sResponse.data !== pageData.data) {
+    const handleOpenChange = useCallback((open) => {
+        if (open && !pageData.data) {
+            getPageData(profileData.url.slice(1), false).then((sResponse) => {
                 setPageData({ data: sResponse.data });
-            }
-        })();
-    }, []);
+            });
+        }
+    }, [profileData?.url, pageData.data]);
 
     return (
-        <HoverCard>
+        <HoverCard onOpenChange={handleOpenChange}>
             <HoverCardTrigger>{children}</HoverCardTrigger>
             <HoverCardContent className="w-80 p-0">
                 <ProfileCardContent profileData={profileData} pageData={pageData} />
