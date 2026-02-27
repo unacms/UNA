@@ -59,6 +59,11 @@ export async function subscribeOneSignal(currentUser, askPermission = false) {
             permissionStatus = await OneSignal.Notifications.getPermissionAsync();
         }
 
+        // Method for listening for notification clicks
+        OneSignal.Notifications.addEventListener('click', (event) => {
+            console.log('OneSignal: notification clicked:', event);
+        });
+
         if (permissionStatus) {
             await OneSignal.login(String(currentUser.id));
             await OneSignal.User.addTag("user_hash", String(currentUser.hash));
