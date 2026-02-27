@@ -34,14 +34,9 @@ export async function proxy(request) {
     const isAppleAppSiteAssociation = pathname.startsWith('/.well-known/apple-app-site-association');
     
     if (isAppleAppSiteAssociation) {
-        const filePath = path.join(process.cwd(), 'public', '.well-known', 'apple-app-site-association');
-        if (fs.existsSync(filePath)) {
-            const res = NextResponse.next();
-            res.headers.set('Content-Type', 'application/json');
-            return res;
-        } else {
-            return new NextResponse(null, { status: 404 });
-        }
+        const res = NextResponse.next();
+        res.headers.set('Content-Type', 'application/json');
+        return res;
     }
 
     if (isSourceMap || isWellKnown) {
