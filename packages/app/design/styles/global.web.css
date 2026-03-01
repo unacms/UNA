@@ -41,74 +41,15 @@ select {
     content: "";
     position: absolute;
     inset: -10px;
-    border-radius: 0.375rem;
+    border-radius: var(--u-link-hitarea-radius, 0.375rem);
     /* Nearly invisible bg so hit-testing works without visual change */
     background-color: rgba(0, 0, 0, 0.001);
     pointer-events: auto;
 }
 
-/* xs: ~12–16px text → target ≥44px touch area */
-.u-link-hitarea-xs {
-    --u-link-ghost-inset-x: -3px;
-    --u-link-ghost-inset-y: -2px;
-    --u-link-ghost-radius: 0.25rem;
-}
-.u-link-hitarea-xs::before { inset: -14px; border-radius: 0.25rem; }
-
-/* sm: ~14–20px text → target ≥44px touch area */
-.u-link-hitarea-sm {
-    --u-link-ghost-inset-x: -5px;
-    --u-link-ghost-inset-y: -3px;
-    --u-link-ghost-radius: 0.375rem;
-}
-.u-link-hitarea-sm::before { inset: -12px; border-radius: 0.375rem; }
-
-/* md: ~16–24px text → target ≥44px touch area */
-.u-link-hitarea-md {
-    --u-link-ghost-inset-x: -8px;
-    --u-link-ghost-inset-y: -4px;
-    --u-link-ghost-radius: 0.5rem;
-}
-.u-link-hitarea-md::before { inset: -10px; border-radius: 0.5rem; }
-
-/* lg: ~18–28px text → target ≥44px touch area */
-.u-link-hitarea-lg {
-    --u-link-ghost-inset-x: -10px;
-    --u-link-ghost-inset-y: -6px;
-    --u-link-ghost-radius: 0.625rem;
-}
-.u-link-hitarea-lg::before { inset: -8px; border-radius: 0.625rem; }
-
-/* Generic action (button) hit area */
-.u-action-hitarea::before {
-    content: "";
-    position: absolute;
-    inset: -8px;
-    border-radius: 0.5rem;
-    /* match button rounding */
-}
-
-.u-action-hitarea-xs::before {
-    inset: -8px;
-}
-
-.u-action-hitarea-sm::before {
-    inset: -6px;
-}
-
-.u-action-hitarea-md::before {
-    inset: -4px;
-}
-
-.u-action-hitarea-lg::before {
-    inset: -4px;
-}
-
 /*
  * Ghost link: hover/active background via ::after pseudo-element (web only).
- * The inset/radius are driven by CSS vars set by .u-link-hitarea-{size} above,
- * so the visual bg area matches the hit-area size — no component changes needed.
- * Defaults below apply when no size class is present.
+ * Default vars below; .u-link-hitarea-{size} blocks override when size is set.
  */
 .u-link-ghost {
     position: relative;
@@ -130,11 +71,72 @@ select {
 }
 
 .u-link-ghost:hover::after {
-    background-color: rgb(var(--muted) / 0.8);
+    background-color: rgb(var(--muted) / 0.6);
 }
 
 .u-link-ghost:active::after {
     background-color: rgb(var(--muted));
+}
+
+/* xs: ~12–16px text → target ≥44px touch area */
+.u-link-hitarea-xs {
+    --u-link-ghost-inset-x: -2px;
+    --u-link-ghost-inset-y: -2px;
+    --u-link-ghost-radius: 0.25rem;
+    --u-link-hitarea-radius: 0.25rem;
+}
+.u-link-hitarea-xs::before { inset: -14px; }
+
+/* sm: ~14–20px text → target ≥44px touch area */
+.u-link-hitarea-sm {
+    --u-link-ghost-inset-x: -8px;
+    --u-link-ghost-inset-y: -8px;
+    --u-link-ghost-radius: 0.5rem;
+    --u-link-hitarea-radius: 0.5rem;
+}
+.u-link-hitarea-sm::before { inset: -12px; }
+
+/* md: ~16–24px text → target ≥44px touch area */
+.u-link-hitarea-md {
+    --u-link-ghost-inset-x: -8px;
+    --u-link-ghost-inset-y: -8px;
+    --u-link-ghost-radius: 0.625rem;
+    --u-link-hitarea-radius: 0.625rem;
+}
+.u-link-hitarea-md::before { inset: -10px; }
+
+/* lg: ~18–28px text → target ≥44px touch area */
+.u-link-hitarea-lg {
+    --u-link-ghost-inset-x: -10px;
+    --u-link-ghost-inset-y: -6px;
+    --u-link-ghost-radius: 0.625rem;
+    --u-link-hitarea-radius: 0.625rem;
+}
+.u-link-hitarea-lg::before { inset: -8px; }
+
+/* Generic action (button) hit area */
+.u-action-hitarea::before {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    border-radius: var(--u-action-hitarea-radius, 0.5rem);
+    /* match button rounding */
+}
+
+.u-action-hitarea-xs::before {
+    inset: -8px;
+}
+
+.u-action-hitarea-sm::before {
+    inset: -6px;
+}
+
+.u-action-hitarea-md::before {
+    inset: -4px;
+}
+
+.u-action-hitarea-lg::before {
+    inset: -4px;
 }
 
 /*
@@ -515,6 +517,34 @@ html[theme="dark"]:root {
     :is([class~="rounded-full"], [class*=":rounded-full"]) {
         /* stylelint-disable-next-line property-no-unknown */
         corner-shape: superellipse(var(--neo-corner-superellipse-full-factor, 1));
+    }
+
+    /* Keep pseudo-element rounding visually aligned with smooth corners */
+    .u-link-hitarea::before,
+    .u-link-hitarea-xs::before,
+    .u-link-hitarea-sm::before,
+    .u-link-hitarea-md::before,
+    .u-link-hitarea-lg::before {
+        border-radius: calc(var(--u-link-hitarea-radius, 0.375rem) * var(--neo-corner-superellipse-factor, 2));
+        /* stylelint-disable-next-line property-no-unknown */
+        corner-shape: superellipse(var(--neo-corner-superellipse-factor, 2));
+    }
+
+    .u-link-ghost::after,
+    .u-link-press::after {
+        border-radius: calc(var(--u-link-ghost-radius, 0.375rem) * var(--neo-corner-superellipse-factor, 2));
+        /* stylelint-disable-next-line property-no-unknown */
+        corner-shape: superellipse(var(--neo-corner-superellipse-factor, 2));
+    }
+
+    .u-action-hitarea::before,
+    .u-action-hitarea-xs::before,
+    .u-action-hitarea-sm::before,
+    .u-action-hitarea-md::before,
+    .u-action-hitarea-lg::before {
+        border-radius: calc(var(--u-action-hitarea-radius, 0.5rem) * var(--neo-corner-superellipse-factor, 2));
+        /* stylelint-disable-next-line property-no-unknown */
+        corner-shape: superellipse(var(--neo-corner-superellipse-factor, 2));
     }
 
     /* Ensure focus rings follow the shape */

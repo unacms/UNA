@@ -39,6 +39,6 @@ export const settingsLinks = {
         primary: 'text-accent-foreground bg-accent web:hover:opacity-90 web:active:opacity-80 web:duration-200',
 
         // No DOM padding; muted background appears on hover via ::after pseudo-element
-        ghost: 'text-secondary-foreground web:hover:text-foreground u-link-ghost web:duration-200',
+        ghost: 'text-accent-foreground u-link-ghost web:duration-200',
     }
 }

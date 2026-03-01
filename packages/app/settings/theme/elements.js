@@ -80,9 +80,9 @@ export const settingsElements = {
         'u-block-icon': 'mb-auto',
         'u-block-name': 'flex flex-col flex-auto gap-2 ',
         'u-block-title':
-            'text-muted-foreground leading-none text-base font-semibold tracking-tight',
+            'text-secondary-foreground leading-none text-base font-semibold tracking-tight',
         'u-block-description': 'text-muted-foreground text-sm font-medium leading-6',
-        'u-block-content': ' ',  
+        'u-block-content': 'gap-4 ',  
         'u-block-footer':
             'flex text-card-foreground gap-4 pt-2',
         'u-block-actions':

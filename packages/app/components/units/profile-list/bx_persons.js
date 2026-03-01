@@ -19,16 +19,16 @@ export default function Unit(props) {
                 {...{ ...data?.meta?.items?.[0]?.data, primary: false }}
                 params={{
                     button_full_width: true,
-                    button_variant: 'secondary',
-                    button_size: 'sm',
+                    button_variant: 'default',
+                    button_size: 'xs',
                 }}
             />
         )
     }
     return (
-        <Link href={data.url} emulate={true}>
+        <Link variant='ghost' size='md' href={data.url} emulate={true}>
             <View
-                className=" flex-row px-2 py-1.5 rounded-xl web:active:opacity-90 web:hover:bg-muted/60 items-center "
+                className=" flex-row gap-2 items-center group "
             >
                 <Profile
                     url_avatar={data?.image?.src}
@@ -37,7 +37,7 @@ export default function Unit(props) {
                     display_name={data.title}
                 />
                 <View className="flex-row justify-between flex-auto items-center">
-                    <Text numberOfLines={2} className="text-sm  px-1.5 leading-tight font-semibold text-secondary-foreground ">
+                    <Text numberOfLines={2} className="text-sm leading-tight font-semibold text-card-foreground web:group-hover:text-foreground ">
                         {data.title}
                     </Text>
                     <View className="flex-none">{sMeta}</View>

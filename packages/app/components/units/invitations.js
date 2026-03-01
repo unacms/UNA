@@ -82,25 +82,25 @@ export default function Unit(props) {
     }
 
     return (
-        <Link href={data.url} emulate={true}>
+        <Link variant='ghost' size='md' href={data.url} emulate={true}>
             <View
-                className=" flex-row p-2 rounded-xl web:active:opacity-90 web:hover:bg-muted/60 items-center max-w-4xl mx-auto w-full"
+                className=" flex-row  web:active:opacity-90 gap-2 items-center max-w-4xl mx-auto w-full"
             >
                 <Profile
                     url_avatar={data?.image?.src}
                     displayType="unit_wo_info"
-                    displaySize="sm"
+                    displaySize="md"
                     display_name={data.title}
                 />
                 <View className="flex-row justify-between flex-auto items-center">
-                    <Text numberOfLines={2} className="text-sm  px-1.5 leading-tight font-semibold text-secondary-foreground ">
+                    <Text numberOfLines={2} className="text-sm leading-tight font-semibold text-secondary-foreground ">
                         {data.title}
                     </Text>
                     <View className="flex-none">
-                        <Row className='gap-x-2'>
-                            {!!data.callback_accept && <Button title="Accept" size="sm" variant="secondary" rounded onPress={() => { processInvitation(data.callback_accept) }} />}
-                            {!!data.callback_decline && <Button title="Decline" size="sm" variant="secondary" rounded onPress={() => { processInvitation(data.callback_decline) }} />}
-                            {!!data.redirect_url && <Link href={data.redirect_url}><Button title={data.redirect_title} size="sm" fullWidth variant="secondary" /></Link>}
+                        <Row className='gap-2'>
+                            {!!data.callback_accept && <Button title="Accept" size="xs" variant="primary" rounded onPress={() => { processInvitation(data.callback_accept) }} />}
+                            {!!data.callback_decline && <Button startDecorator="X" size="xs" variant="default" rounded onPress={() => { processInvitation(data.callback_decline) }} />}
+                            {!!data.redirect_url && <Link href={data.redirect_url}><Button title={data.redirect_title} size="xs" fullWidth variant="default" /></Link>}
                         </Row>
                     </View>
                 </View>

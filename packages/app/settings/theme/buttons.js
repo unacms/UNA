@@ -14,7 +14,7 @@ export const settingsButtons = {
         },
         sm: {
             rounded: 'rounded-lg ',
-            container: 'px-2 gap-1 h-9 min-w-9 ',
+            container: 'px-2.5 gap-1 h-9 min-w-9 ',
             container_icon_only: 'h-9 w-9',
             text: 'text-sm leading-6',
             icon_size: 20,
@@ -71,7 +71,7 @@ export const settingsButtons = {
                 default:' bg-card ',
                 active:' bg-card scale-[0.97]  ',
                 pressed:' bg-card',
-                hovered:' bg-card ',
+                hovered:' bg-muted ',
                 focused:' bg-card ',
                 disabled:'bg-secondary opacity-50',
 

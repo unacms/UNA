@@ -74,11 +74,11 @@ export function BlockWrapper({ config, block, showTitle, showBg, fullWidth, cont
                         {config?.header_more_url && (<BlockActions>
                             <Link
                                 href={config?.header_more_url}
-                                variant="default"
+                                variant="ghost"
                                 size="sm"
-                                mode="text"
+                                
                             >
-                                {t(config?.header_more_text || 'View All')}
+                                {t(config?.header_more_text || 'See all')}
                             </Link>
                         </BlockActions>)}
                     </BlockHeader>
