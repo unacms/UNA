@@ -214,7 +214,7 @@ function UnitCommentsDefault(props) {
                     )}
                 </View>
                 <View className="flex-1 flex-col gap-1 mt-3">
-                    <View className="bg-muted/60 rounded-xl px-3 py-2 gap-1 ">
+                    <View className="bg-muted/60 rounded-lg px-2 py-1.5 gap-1 ">
                         <View className="flex-row items-center justify-between gap-1 ">
                             <Row>
                                 <Profile

@@ -134,7 +134,7 @@ function DefaultUnit({ data }) {
                     </Skeleton>
                 </View>
                 {!!data.menu_counters?.items?.length && <>
-                <Row className="px-3  ">
+                <Row className="px-3 lg:px-4">
 
                     {appSetting('feed', 'counters_menu') && (
                         <CounterMenu
@@ -144,7 +144,7 @@ function DefaultUnit({ data }) {
                 </Row>
                 </>}
 
-                <Row className="gap-2 items-center flex-auto justify-between px-3 py-2.5">
+                <Row className="gap-2 items-center flex-auto justify-between px-3 lg:px-4 py-2.5">
                     <ActionMenu
                         data={data.menu_actions}
                     />
