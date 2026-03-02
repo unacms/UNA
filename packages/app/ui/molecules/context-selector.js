@@ -2,13 +2,15 @@ import { View, Row } from 'app/design/view'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
-import { Button, ButtonsGroup } from 'app/design/controls'
+import { Button } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile'
 import { appStatic } from 'app/lib/app-static'
 import { FeedbackHaptics, appSetting } from 'app/lib/util'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next';
+import { getPageData } from 'app/lib/util';
+import emitter from 'app/context/emitter'
 
 const rootUrl = appSetting('context_selector', 'root_url');
 
@@ -78,9 +80,26 @@ function getContextRoot(data, url, uri) {
     }
 }
 
-export default function ContextSelector({ data, url, uri, mode }) {
+export default function ContextSelector({ data:initialData, url, uri, mode }) {
+   
     const [isOpen, setIsOpen] = useState(false);
+    const [data, setContextData] = useState(initialData);
+    console.log("datadatadata", data, url, uri)
     const { t } = useTranslation();
+
+
+    useEffect(() => {
+        const subscription = emitter.addListener(`сonnections`, (data) => {
+            if (data.action == 'changed') {
+                getPageData(url).then(data => {setContextData(data.data.context) })
+            }
+        })
+
+
+        return () => {
+            subscription.remove();
+        }
+    }, [])
 
     if (!data) return null
 

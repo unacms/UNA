@@ -7,10 +7,9 @@ import { storageClear, getAlert, getDataFromCache, storageSet } from 'app/lib/ut
 import { remoteSettings } from 'app/settings/remote';
 import { subscribe } from 'app/ui/atoms/socket';
 import { getRemoteSettings } from 'app/config';
-//import dynamic from 'next/dynamic'
 import { fetcher } from 'app/lib/fetcher';
-import { appSetting, isObjectsEqual } from 'app/lib/util'
-
+import { appSetting } from 'app/lib/util'
+import emitter from 'app/context/emitter'
 
 export default function Subscriber() {
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -46,6 +45,8 @@ export default function Subscriber() {
     }, []);
 
     const onUpdateConnections = useCallback(async (data) => {
+        console.log('onUpdateConnections', data);
+        emitter.emit('сonnections', { action: 'changed' });
         storageClear();
         const oData = JSON.parse(data);
         if (oData?.user)

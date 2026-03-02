@@ -1,5 +1,5 @@
 
-import {componentsMap} from 'app/ui/workers/_map';
+import { componentsMap } from 'app/customization/workers/_map';
 import { appSetting } from 'app/lib/util'
 import { useMemo } from 'react'
 
