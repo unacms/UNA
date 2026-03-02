@@ -12,12 +12,12 @@ export default function PageLayout({ data }) {
     const blockData = BlockDataByName(data, 'bx_messenger:get_main_messenger_page');
 
 
-    useEffect(() => {
+   /* useEffect(() => {
         setFooter(false);
         return () => {
             setFooter(true);
         };
-    }, []);
+    }, []);*/
 
     if (blockData?.content[0]?.data)
         return <Messenger data={blockData.content[0].data} url={data.url} />

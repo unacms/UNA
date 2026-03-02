@@ -434,13 +434,13 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     if (!isWeb || isSmallScreen) {
         return (
-            <View className='web:flex-1 w-full h-full flex-row bg-card'>
+            <View className=' web:h-auto w-full h-full flex-row  bg-card'>
                 {panelsVisible.convos && <View className=' w-full'>
                     {convosComponent}
                 </View>}
                 {panelsVisible.jots && <View className='flex-1 '>
                     <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
-                    <View className={`w-full  ${!isWeb ? 'flex-1' : ''}`} style={{ height: layoutHeightRight }}>
+                    <View className={`w-full  ${!isWeb ? 'flex-1' : ''}`} style={{ height: layoutHeightRight - (isSmallScreen ? 64 : 0)}}>
                         {jotsComponent}
                     </View>
                     <KbAvoidingView>
@@ -643,7 +643,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                 onStartReached={startReached}
                 scrollToLastItem={true}
                 data={data}
-                height={layoutHeightRight - (isSmallScreen ? 0 : 64)}
+                height={layoutHeightRight - (isSmallScreen ? 64 : 64)}
                 mode="simple"
                 useCustomScrollHandler={isSmallScreen ? true : false}
                 renderItem={({ item, index }) => <ItemJot handleReply={handleReply} item={item} index={index} />}
