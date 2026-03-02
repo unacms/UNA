@@ -308,7 +308,7 @@ export function Conductor({
                         pageData={data}
                     />
                     {showFiltersBtn && (
-                        <View className="items-start px-3 sm:px-4 py-2">
+                        <View className="items-start px-3 lg:px-4 py-2">
                             <Button
                                 title="Filters"
                                 variant="default"
@@ -344,7 +344,7 @@ export function Conductor({
             {LeftBarContentBlocks}
         </LeftSideBarContainer> : null
 
-    const RightColumnContent = isRightCol ? <View className=" fixed-process mt-0.5 sm:p-3">
+    const RightColumnContent = isRightCol ? <View className=" fixed-process mt-0.5 sm:m-0 sm:p-3 lg:p-4">
         {tabRoute?.sidebar?.content.map((item, index) => {
             return (
                 <ItemRenderer
@@ -830,7 +830,7 @@ const TabScene = ({
                 <View
                     className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'
                         } ${layoutName !== 'navigator'
-                            ? 'mt-0.5 sm:p-3'
+                            ? 'mt-0.5 sm:m-0 sm:p-3 lg:p-4'
                             : (!pageRoute?.endpoint?.request_url ? 'sm:p-4 ' : '')
                         }`}
                 >
@@ -1102,7 +1102,7 @@ const LeftSideBarContainer = ({
     return (
         <View
             className={`fixed-process ${layoutName == 'profile'
-                ? 'mt-0.5 sm:p-3' + ' '
+                ? 'mt-0.5 sm:m-0 sm:p-3 lg:p-4' + ' '
                 : appSetting('conductor', 'sidebar_container')
                 }`}
         >
@@ -1118,11 +1118,13 @@ const LeftSideBarContainer = ({
                     )}
                     <View className="flex-1 gap-y-2">
                         {layoutName == 'navigator' && routes.length > 1 && (
-                            <View className='w-full gap-0.5'>
+                            <View className='w-full gap-4'>
                                 {routes
                                     .filter((aItem) => aItem.hideInTop != true)
                                     .map((a) => {
-                                        const btn = <MenuItemSidebar addon={getAddon(a.addon)} title={a.title} icon={a.icon || 'Circle'} isActive={a.index === index} />
+                                        const isActive = a.index === index;
+                                        const activeWrapperClassName = isActive ? 'u-link-ghost-active bg-accent web:bg-transparent rounded-lg' : '';
+                                        const btn = <MenuItemSidebar addon={getAddon(a.addon)} title={a.title} icon={a.icon || 'Circle'} isActive={isActive} />
 
                                         if (a?.icon == '*') {
                                             return (
@@ -1130,7 +1132,9 @@ const LeftSideBarContainer = ({
                                                     href={a.link}
                                                     key={`lmenu-${a.index}`}
                                                     alt={a.title}
-                                                    variant="plain"
+                                                    variant="ghost"
+                                                    size="md"
+                                                    className={`group ${activeWrapperClassName}`.trim()}
                                                 >
                                                     {btn}
                                                 </Link>
@@ -1141,6 +1145,9 @@ const LeftSideBarContainer = ({
                                                 href={a.key}
                                                 key={`lmenu-${a.index}`}
                                                 alt={a.title}
+                                                variant="ghost"
+                                                size="md"
+                                                className={`group ${activeWrapperClassName}`.trim()}
                                             >
                                                 <Pressable
                                                     className={

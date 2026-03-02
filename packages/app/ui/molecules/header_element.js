@@ -10,9 +10,11 @@ import MenuAccount from 'app/components/nav/menu-account'
 import MenuLauncher from 'app/components/nav/menu-launcher'
 import { useIsDesktop } from 'app/context/measure';
 import { Platform } from 'react-native'
+import { useRouter } from 'app/lib/hooks/router'
 
 export default function HeaderElement({ mode, url, uri }) {
     const { currentUser } = useCurrentUser();
+    const router = useRouter();
     const bSearch = appSetting('layout', 'search') == true;
     const bNotifs = appSetting('notifications', 'url') ? true : false;
     const isDesktop = useIsDesktop();
@@ -39,6 +41,28 @@ export default function HeaderElement({ mode, url, uri }) {
                             case "account":
                                 return <MenuAccount />
                             case "link":
+                                if (item.href === '{messenger}') {
+                                    const messengerHref = appSetting('messenger', 'url');
+                                    return (
+                                        <Button
+                                            {...(item.props || {})}
+                                            addon={{
+                                                variant: "primary",
+                                                text: currentUser?.counters?.bx_messenger_new_messages,
+                                                hideZero: true,
+                                            }}
+                                            variant={isDesktop ? 'secondary' : 'text'}
+                                            size={isDesktop ? 'base' : 'base'}
+                                            pressed={appSetting('messenger', 'url') === '/' + uri}
+                                            role="link"
+                                            alt={item.alt || item.title || (item.props?.title)}
+                                            onPress={(event) => {
+                                                item.props?.onPress?.(event);
+                                                if (messengerHref) router?.push?.(messengerHref);
+                                            }}
+                                        />
+                                    )
+                                }
                                 return (
                                     <Link 
                                         {...(item.target ? { target: item.target } : {})} 

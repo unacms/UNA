@@ -34,12 +34,12 @@ const Logo = ({ mode = 'adaptive' }) => {
     }
 
     return (
-        <Row className="items-center gap-3 lg:px-0.5">
+        <Row className="items-center gap-3">
             <View className={`${markStyles[mode]}`}>
                 <Svg
                     aria-label="Logo Mark"
-                    width={40}
-                    height={40}
+                    width={36}
+                    height={36}
                     color={theme === 'dark' ? 'white' : 'black'}
                     viewBox="0 0 40 40"
                     xmlns="http://www.w3.org/2000/svg"
@@ -73,8 +73,8 @@ const Logo = ({ mode = 'adaptive' }) => {
             <View className={`${textStyles[mode]}`}>
                 <Svg
                     aria-label="Logo Text"
-                    width={80}
-                    height={40}
+                    width={72}
+                    height={36}
                     viewBox="0 0 68 32"
                     color={theme === 'dark' ? 'white' : 'black'}
                     xmlns="http://www.w3.org/2000/svg"

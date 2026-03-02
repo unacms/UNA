@@ -1,4 +1,4 @@
-import { View, Row, Pressable } from 'app/design/view';
+import { View, Row } from 'app/design/view';
 import { useEffect, memo, useRef } from 'react';
 import { Text } from 'app/design/typography'
 import { Platform, Animated } from 'react-native'
@@ -24,9 +24,7 @@ export const PageHeaderSmall = ({ pageData }) => {
     const HeaderElement = getComponent('molecule', 'header_element');
     return <Row className="w-full justify-between">
         <Link href="/home" size="lg" aria-label="Home">
-            <Pressable className="items-center">
-                {appStatic('logo')}
-            </Pressable>
+            {appStatic('logo')}
         </Link>
         <HeaderElement mode="small" url={pageData?.url} uri={pageData?.uri} />
     </Row>
@@ -100,10 +98,8 @@ export const PageHeader = ({
     } : {};
     /* animations for hide header */
 
-    const Logo = <Link href="/home" aria-label="Home" variant="plain" size="lg">
-        <Pressable className="items-center">
-            {appStatic('logo')}
-        </Pressable>
+    const Logo = <Link href="/home" aria-label="Home" variant="ghost" size="md" className="items-center">
+        {appStatic('logo')}
     </Link>
     /* left element, can be logo, context selecor or title */
     const leftElement = !currentUser ? Logo : (isFullContextSelector ? <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /> : (isShowLogo ? Logo : (

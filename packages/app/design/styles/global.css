@@ -26,7 +26,7 @@
         /*content on secondary buttons, secondary surfaces*/
         --muted: var(--neutral-200);
         /*background for ui items, sections, hover states*/
-        --muted-foreground: var(--neutral-400);
+        --muted-foreground: var(--neutral-500);
         /*muted content*/
         --accent: var(--accent-100);
         /*background for accent buttons, accent surfaces*/

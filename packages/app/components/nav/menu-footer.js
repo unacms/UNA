@@ -10,9 +10,9 @@ function MenuFooterComponent({
     cntClasses,
     btnStyle,
     menu_items,
-    variant = 'ghost',
-    size = 'sm',
-    itemClassName = '',
+    variant,
+    size,
+    itemClassName,
 }) {
 
     const { t } = useTranslation();
@@ -22,7 +22,7 @@ function MenuFooterComponent({
     const visualProps = useMemo(() => {
         const legacy = btnStyle || {};
         return {
-            variant: variant ?? legacy.variant ?? 'ghost',
+            variant: variant ?? legacy.variant ?? 'accent',
             size: size ?? legacy.size ?? 'sm',
             className: itemClassName ?? legacy.className ?? '',
         };

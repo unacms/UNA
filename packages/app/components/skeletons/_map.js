@@ -109,7 +109,7 @@ const PostsSmall = memo(() => (
 
 
 const FeedDefault = memo(() => (
-    <CardList className=" animate-pulse w-full mb-0.5 sm:mb-3">
+    <CardList className=" animate-pulse w-full mb-0.5 sm:mb-3 lg:mb-4">
         
         <View className="flex-row gap-x-2 mb-2">
             <View className="relative flex-row">

@@ -77,16 +77,16 @@ export default function Unit(props) {
     const isSkeleton = data?.skeleton;
 
     return (
-        <CardList className="sm:border border-border/60" padding="p-1">
+        <CardList className="" padding="p-3 sm:p-2">
             <Redirect ref={redirectdRef} />
             <Link className="web:group " href={data.url}>
-                <View className="flex-row sm:flex-col gap-1">
+                <View className="flex-row sm:flex-col gap-3 sm:gap-1">
                     <Skeleton className="h-28 sm:h-auto aspect-square sm:w-full" rounded='rounded-lg' visible={isSkeleton}>
                         <ImageSection data={data} />
                     </Skeleton>
 
                     {!!oMenuItemDelete && <View className="absolute right-1 top-1">{oMenuItemDelete}</View>}
-                    <View className="flex-col p-2 justify-between gap-2 flex-auto ">
+                    <View className="flex-col py-1 sm:p-1 justify-between gap-2 flex-auto ">
                         <View className="gap-2 h-12">
                             <Skeleton className="h-5 w-3/4" visible={isSkeleton}>
                                 <Text numberOfLines={1} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-5 font-semibold">

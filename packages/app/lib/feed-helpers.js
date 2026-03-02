@@ -513,7 +513,7 @@ export const Author = memo(({ data, url, t }) => {
     );
 
     return (
-        <Row className="w-full justify-between items-top gap-2">
+        <Row className="w-full justify-between items-top gap-2 lg:gap-3">
             <View className='flex-auto'>
                 <Profile
                     {...dataIcon}

@@ -78,6 +78,22 @@ select {
     background-color: rgb(var(--muted));
 }
 
+/*
+ * Active ghost state for selected nav/tab items.
+ * Keeps the same pseudo-element shape as regular ghost links.
+ */
+.u-link-ghost-active::after {
+    background-color: rgb(var(--accent));
+}
+
+.u-link-ghost-active:hover::after {
+    background-color: rgb(var(--accent) / 0.6);
+}
+
+.u-link-ghost-active:active::after {
+    background-color: rgb(var(--accent));
+}
+
 /* xs: ~12–16px text → target ≥44px touch area */
 .u-link-hitarea-xs {
     --u-link-ghost-inset-x: -2px;
@@ -89,8 +105,8 @@ select {
 
 /* sm: ~14–20px text → target ≥44px touch area */
 .u-link-hitarea-sm {
-    --u-link-ghost-inset-x: -8px;
-    --u-link-ghost-inset-y: -8px;
+    --u-link-ghost-inset-x: -6px;
+    --u-link-ghost-inset-y: -5px;
     --u-link-ghost-radius: 0.5rem;
     --u-link-hitarea-radius: 0.5rem;
 }
@@ -99,7 +115,7 @@ select {
 /* md: ~16–24px text → target ≥44px touch area */
 .u-link-hitarea-md {
     --u-link-ghost-inset-x: -8px;
-    --u-link-ghost-inset-y: -8px;
+    --u-link-ghost-inset-y: -7px;
     --u-link-ghost-radius: 0.625rem;
     --u-link-hitarea-radius: 0.625rem;
 }
@@ -531,6 +547,7 @@ html[theme="dark"]:root {
     }
 
     .u-link-ghost::after,
+    .u-link-ghost-active::after,
     .u-link-press::after {
         border-radius: calc(var(--u-link-ghost-radius, 0.375rem) * var(--neo-corner-superellipse-factor, 2));
         /* stylelint-disable-next-line property-no-unknown */

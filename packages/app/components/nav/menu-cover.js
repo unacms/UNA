@@ -178,7 +178,7 @@ export function CoverMenuMeta(props) {
                 button_size: props.button_size || 'sm',
                 list_display_size: props.list_display_size || 'sm',
                 list_max_count: props.list_max_count || 3,
-                className: ' min-h-10 flex-row flex-wrap flex-auto items-center',//lg:w-full lg:gap-y-2
+                className: '  flex-row flex-wrap flex-auto items-center',//lg:w-full lg:gap-y-2
                 justify_items: 'start'
             }}
         />

@@ -20,6 +20,7 @@ export default function ElementLink({
     hitarea = true,
     noprefetch,
     onClick,
+    onPress,
     alt,
     ...rest
 }) {
@@ -36,8 +37,8 @@ export default function ElementLink({
         return hrefProp;
     }, [hrefProp]);
 
-    // Ранний выход
-    if (!href) {
+    // Early return for non-emulated links with empty href
+    if (!href && emulate !== true) {
         return children;
     }
 
@@ -47,11 +48,12 @@ export default function ElementLink({
     const accessibleLabel = alt || (typeof children === 'string' ? children : undefined);
 
     const handlePress = useCallback((event) => {
+        if (onPress) onPress(event);
         if (href) {
             router.push(href);
-            event.preventDefault();
+            event?.preventDefault?.();
         }
-    }, [href, router]);
+    }, [href, router, onPress]);
 
     const handleLinkClick = useCallback((event) => {  
         if (onClick) onClick();

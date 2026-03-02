@@ -78,8 +78,8 @@ function DefaultUnit({ data }) {
         })
         return (
             <AnimatedBlock>
-                <CardList className="mb-0.5 sm:mb-3 " padding="p-0.5">
-                    <CardHeader className=" px-3 pt-3 flex-row items-center justify-between">
+                <CardList className="mb-0.5 sm:mb-4 " padding="p-0.5">
+                    <CardHeader className=" px-3 lg:px-4 pt-3 lg:pt-4 flex-row items-center justify-between">
                         <CardTitle className="text-secondary-foreground">{t(data.title)}</CardTitle>
                         <Link
                             variant="accent"
@@ -113,10 +113,10 @@ function DefaultUnit({ data }) {
             <FormModal pageData={pageData.data} setPageData={setPageData} modalView='content_page' url={pageData.url2} />
             <CardList
                 border="border-y border-x-none sm:border-x"
-                className=" mb-0.5 sm:mb-3"
-                padding="pt-3"
+                className=" mb-0.5 sm:mb-3 lg:mb-4"
+                padding="pt-3 lg:pt-4"
             >
-                <Row className="gap-3 flex-auto px-3">
+                <Row className="gap-3 flex-auto px-3 lg:px-4">
                     <Skeleton visible={isSkeleton} preset='feed_author'>
                         <Author data={data} url={url} t={t} />
                         <View className="flex-none mb-auto hidden">
@@ -128,7 +128,7 @@ function DefaultUnit({ data }) {
                         </View>
                     </Skeleton>
                 </Row>
-                <View className="flex-auto px-3 pt-2 ">
+                <View className="flex-auto px-3 lg:px-4 pt-2 lg:pt-3">
                     <Skeleton visible={isSkeleton} preset='multitext'>
                         <MainContent url={url} data={data} />
                     </Skeleton>
