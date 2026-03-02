@@ -30,7 +30,7 @@ const StyledEM = (props) => {
 }
 
 const StyledP = ({ children, className, ...props }) => {
-    className += 'text-secondary-foreground'
+    className += 'text-card-foreground'
     className += props.isfirst === 'true' ? ' mt-0 ' : ' mt-2 '
     className += props.islast === 'true' ? ' mb-0' : ' mb-2'
 
@@ -84,6 +84,16 @@ const tagMapping = {
     ul: UL,
     ol: UL
 }
+
+const getAttributeValue = (attributes, name) => {
+    const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const match = attributes.match(
+        new RegExp(`${escapedName}=(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`)
+    )
+    return match ? (match[1] || match[2] || match[3] || '') : ''
+}
+
+const stripHtmlTags = (value = '') => value.replace(/<[^>]*>/g, '')
 
 const parseHtmlToReact = (html, parentKey = '0') => {
     if (!/<[a-zA-Z0-9]+[^>]*>/.test(html)) {
@@ -143,21 +153,57 @@ const parseHtmlToReact = (html, parentKey = '0') => {
         let srcClass = attributes.match(/class=['"]([^'"]*)['"]/) || attributes.match(/class=([^'"\s>]+)/)
 
         if (normalizedTag === 'a') {
-            const hrefMatch = attributes.match(/href="([^"]+)"/)
-            if (hrefMatch) {
+            const href = getAttributeValue(attributes, 'href')
+            const srcClassString = (srcClass && srcClass[1]) ? srcClass[1] : ''
+            const isMentionLink = /\bbx-mention-link\b/.test(srcClassString)
+            const avatarSrc = getAttributeValue(attributes, 'data-avatar') || getAttributeValue(attributes, 'data-avatar-url')
+            const title = getAttributeValue(attributes, 'title')
+
+            if (href) {
+                const parsedClassName = srcClassString
+                    ? ParseHtmlClasses(srcClassString, 'link')
+                    : ''
+
+                if (isMentionLink && avatarSrc && Platform.OS === 'web') {
+                    const mentionLabel = decodeText(
+                        stripHtmlTags(title || content || '').trim()
+                    )
+
+                    elements.push(
+                        <Link
+                            key={getKey('mention-link')}
+                            href={href}
+                            variant="primary"
+                            className={
+                                'rounded p-px overflow-hidden inline-flex items-center ' +
+                                parsedClassName
+                            }
+                        >
+                            <Row className="items-center gap-1">
+                                <Image
+                                    src={avatarSrc}
+                                    width={14}
+                                    height={14}
+                                    className="rounded-full"
+                                />
+                                <Text className="text-accent-foreground text-sm">
+                                    {mentionLabel}
+                                </Text>
+                            </Row>
+                        </Link>
+                    )
+                    continue
+                }
+
                 elements.push(
                     <Link
                         key={getKey('link')}
-                        href={hrefMatch[1]}
+                        href={href}
+                        variant="primary"
                         mode="text"
                         className={
-                            'text-accent-foreground ' +
-                            (srcClass && srcClass[1]
-                                ? ParseHtmlClasses(
-                                      srcClass[1],
-                                      'link'
-                                  )
-                                : '')
+                            'text-accent-foreground rounded px-0.5 pb-0.5 pt-[1.5px] overflow-hidden' +
+                            parsedClassName
                         }
                     >
                         {parseHtmlToReact(content, getKey('content'))}

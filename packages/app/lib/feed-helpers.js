@@ -96,7 +96,7 @@ export const CommentsSection = memo(
         t,
     }) => {
         const ShowMoreCmts = (
-            <Button variant="text" size="sm" title={t('View more comments...')} />
+            <Button variant="secondary" size="xs" title={t('View more comments...')} />
         )
         return (
             <View className="border-t border-border/40 px-3 lg:px-4 pb-3 lg:pb-4">
@@ -525,7 +525,7 @@ export const Author = memo(({ data, url, t }) => {
                             <ItemInfo data={data} t={t} />
                         </Row>
                     }
-                    showInfo2={<>{ActionsElements}<Badges badges={data.author_badges} size="3xs" /></>}
+                    showInfo2={<>{ActionsElements}<Badges badges={data.author_badges} size="2xs" /></>}
 
                     hoverCardWrapper={hoverCardWrapper}
                 />

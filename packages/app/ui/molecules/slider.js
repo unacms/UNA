@@ -36,7 +36,7 @@ export function Slider(props) {
             <View className={isLeftButtonDisabled() ? 'hidden' : ''}>
                 <Button variant="text" startDecorator='ArrowLeft'  disabled={isLeftButtonDisabled()} onPress={scrollLeft} />
             </View>
-            <ScrollView className='w-80 relative items-center'>
+            <View className='w-80 relative items-center'>
                 <ScrollView onScroll={handleScroll} ref={scrollViewRef} className='relative w-full' contentContainerStyle={{paddingHorizontal: 8}}
                     horizontal
                     showsHorizontalScrollIndicator={false}
@@ -47,7 +47,7 @@ export function Slider(props) {
                 >
                     {props.children}
                 </ScrollView>
-            </ScrollView>
+            </View>
             <View className={isRightButtonDisabled() ? 'hidden' : ''}>
             <View >
                 <Button variant="text" startDecorator='ArrowRight' disabled={isRightButtonDisabled()} onPress={scrollRight}  /></View>

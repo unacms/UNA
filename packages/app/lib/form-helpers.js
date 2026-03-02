@@ -57,7 +57,7 @@ export function LabelButton({ field_name, size = 'sm', variant = 'secondary', ic
     );
 }
 
-export function FileButton({ field_name, size = 'sm', variant = 'secondary', icon = "Image", rounded = true, tooltip = "Add Files", source = 'library' }) {
+export function FileButton({ field_name, size = 'sm', variant = 'secondary', icon = "Image", rounded = false, tooltip = "Add Files", source = 'library' }) {
     return (
         <Button
             startDecorator={icon}
@@ -65,6 +65,7 @@ export function FileButton({ field_name, size = 'sm', variant = 'secondary', ico
             variant={variant}
             rounded ={rounded}
             tooltip={tooltip}
+            
             onPress={() => emitter.emit(`fld_files_${field_name}`, { action: 'add', source: source })}
         />
     );

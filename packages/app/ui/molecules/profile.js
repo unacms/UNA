@@ -49,9 +49,9 @@ function DisplayInfo(oProps) {
 function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, emulate, hoverCardWrapper }) {
     let name = oProps.display_name ? oProps.display_name.substr(0, 1) : ''
     const avatarContent = 
-        <View className={`${sSize} overflow-hidden bg-secondary rounded-full`}>
+        <View className={`${sSize} overflow-hidden bg-secondary rounded-full shadow-custom`}>
             {!oProps.url_avatar && <View className={'h-full items-center justify-center bg-' + getRandomColor(oProps.id) + '-500 uppercase'}>
-                <Text className={sSizeFontLetter + ' text-secondary-foreground '}>{name}</Text>
+                <Text className={sSizeFontLetter + ' text-card '}>{name}</Text>
             </View>}
             {!!oProps.url_avatar && <Image
                 sizes={iSizeWidth + "px"}
@@ -87,7 +87,7 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
     };
 
     const nameLink = bShowLinks ? (
-        <Link variant="default" className="flex-row items-center" size="md" emulate={emulate} haptics="Select" href={oProps.url}>
+        <Link variant="default" className="flex-row items-center" emulate={emulate} haptics="Select" href={oProps.url}>
             <DisplayNameLink
                 title={oProps.display_name}
                 url={oProps.url}

@@ -602,7 +602,21 @@ export default function RftText({
 
     const insertMention = async (user, query) => {
         const html = await editor.getHTML()
-        const mentionLink = `<a class="bx-mention-link data-profile-id=${user.value} ${user.classname || ''}" data-profile-id="${user.value}" href="${user.url}">${user.label.trim()}</a>&shy;`
+        const mentionAvatar =
+            user?.avatar ||
+            user?.url_avatar ||
+            user?.thumb ||
+            user?.thumbnail ||
+            user?.icon ||
+            user?.image?.src ||
+            user?.image ||
+            user?.photo ||
+            ''
+        const safeAvatar = mentionAvatar
+            ? String(mentionAvatar).replace(/"/g, '&quot;')
+            : ''
+        const avatarAttr = safeAvatar ? ` data-avatar="${safeAvatar}"` : ''
+        const mentionLink = `<a class="bx-mention-link data-profile-id=${user.value} ${user.classname || ''}" data-profile-id="${user.value}"${avatarAttr} href="${user.url}">${user.label.trim()}</a>&shy;`
         const replacementStringWithNbsp = mentionLink + '&nbsp;'
         const updatedContent = html.replace(query, replacementStringWithNbsp)
         editor.setContent(updatedContent)
@@ -701,6 +715,7 @@ export default function RftText({
                     ? appSetting('comments', 'submit_comment_on_enter')
                     : enableSubmitOnEnter
                 editor.injectJS(`
+                    (function () {
                     let formName = "${unicFormName}";
                     let lastSelectionRange = null;
                     let mentionVisible = false; 
@@ -709,8 +724,16 @@ export default function RftText({
                         platformOS: '${Platform.OS}'
                     };
                     const editorElement = document.getElementsByClassName("tiptap")[0];
+                    if (!editorElement) {
+                        return true;
+                    }
 
                     ${applyIframeTheme(themeName)}
+
+                    if (editorElement.dataset.neoBindingsAttached === "1") {
+                        return true;
+                    }
+                    editorElement.dataset.neoBindingsAttached = "1";
 
                     document.addEventListener('keydown', function(event) {
                         if (event.key === 'Enter' || event.code === 'Enter') {
@@ -888,7 +911,7 @@ export default function RftText({
 
                     document.addEventListener('paste', (event) => {
                         const activeElement = document.activeElement;
-                        
+
                         if (event.clipboardData.items.length > 0) {
                             for (let item of event.clipboardData.items) {
                                 if (item.kind === 'file') {
@@ -906,7 +929,11 @@ export default function RftText({
                         } else {
                             console.warn("Clipboard items are empty!");
                         }
-                    })`)
+                    })
+                    return true;
+                    })();
+                    true;
+                    `)
             }
         } catch (error) { }
     }

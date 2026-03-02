@@ -4,8 +4,8 @@ import { BlockByName, DataByName } from 'app/components/block';
 import { getBreakpoint } from 'app/lib/util';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
-import { Platform } from 'react-native'
-import { useLocalSearchParams } from 'app/lib/hooks/router'
+import { Keyboard, Platform } from 'react-native'
+import { useLocalSearchParams, useSafeAreaInsets } from 'app/lib/hooks/router'
 import emitter from 'app/context/emitter';
 import { useIsDesktop, useWindowHeight, useBreakpoint } from 'app/context/measure';
 import { appSetting } from 'app/lib/util';
@@ -52,10 +52,13 @@ const defineCells = (blocks, data) => {
 export default function PageLayout({ data, blocks, isModal = false, url }) {
     const isWeb = Platform.OS == 'web';
     const windowHeight = useWindowHeight();
+    const { bottom: safeBottomInset } = useSafeAreaInsets();
     const isDesktop = useIsDesktop();
     const [replyId, setReplyId] = useState(false);
     const [scrollToEnd, setScrollToEnd] = useState(false);
     const [formHeight, setFormHeight] = useState(0);
+    const [keyboardHeight, setKeyboardHeight] = useState(0);
+    const [modalViewportHeight, setModalViewportHeight] = useState(0);
     const [listWidth, setListWidth] = useState(0)
     const currentBreakpoint = useBreakpoint();
     const currentBreakpointName = getBreakpoint(currentBreakpoint)
@@ -72,7 +75,6 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
             if (hash) {
                 // click on reply
                 if (hash.includes('cmt_id=')) {
-                    console.log("notifsnotifs", hash)
                     setReplyId(hash);
                     emitter.emit('editor', { action: 'focus', note: "setReplyId", timeout: 800 });
                     setScrollToEnd(hash.replace('cmt_id=', ''));
@@ -104,7 +106,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 //value.sidebar || value.leftbar ? false : true
     const aItems = useMemo(() => mainBlocks.map((value) => ({
         id: `block_${value.name}`,
-        data: <View className={'px-3 pt-3'}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
+        data: <View className={'px-3 lg:px-4 pt-3'}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
     })), [blocks, data, isDesktop]);
 
     const isRightCol = sideBarBlocks.length > 0 && isDesktop
@@ -115,13 +117,30 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     } : {};
 
     const handleLayout = useCallback((event) => {
-        //if (isWeb)
-            setFormHeight(event.nativeEvent.layout.height)
-    }, []);
+        // On native post pages the form is in normal flow; re-measuring during keyboard
+        // animation can create noisy re-layouts and input jank.
+        if (!isWeb && !isModal) {
+            return
+        }
+        const nextHeight = Math.round(event.nativeEvent.layout.height)
+        setFormHeight((prev) => (prev === nextHeight ? prev : nextHeight))
+    }, [isWeb, isModal]);
 
-    const handleListLayout = (event) => {
-        setListWidth(event.nativeEvent.layout.width - 2)
-    }
+    const handleListLayout = useCallback((event) => {
+        if (!isWeb) {
+            return
+        }
+        const nextWidth = Math.round(event.nativeEvent.layout.width - 2)
+        setListWidth((prev) => (prev === nextWidth ? prev : nextWidth))
+    }, [isWeb])
+
+    const handleModalLayout = useCallback((event) => {
+        if (!isModal) {
+            return
+        }
+        const nextHeight = Math.round(event.nativeEvent.layout.height)
+        setModalViewportHeight((prev) => (prev === nextHeight ? prev : nextHeight))
+    }, [isModal])
 
     const layoutCols =
         !isLeftCol && !isRightCol
@@ -218,15 +237,43 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         };
     }, []);
 
-    const offset2 = 64;
+    useEffect(() => {
+        if (isWeb || !isModal) return;
+
+        const onShow = (event) => {
+            const nextHeight = Math.round(event?.endCoordinates?.height || 0)
+            setKeyboardHeight((prev) =>
+                prev === nextHeight ? prev : nextHeight,
+            )
+        }
+        const onHide = () => {
+            setKeyboardHeight((prev) => (prev === 0 ? prev : 0))
+        }
+
+        const subscriptions = [
+            Keyboard.addListener('keyboardWillShow', onShow),
+            Keyboard.addListener('keyboardDidShow', onShow),
+            Keyboard.addListener('keyboardWillHide', onHide),
+            Keyboard.addListener('keyboardDidHide', onHide),
+        ]
+
+        return () => {
+            subscriptions.forEach((subscription) => subscription.remove())
+        }
+    }, [isModal, isWeb])
+
+    const modalKeyboardLift = Math.max(0, keyboardHeight - safeBottomInset)
+    const modalBaseHeight = modalViewportHeight || windowHeight
+    const modalListHeight = modalBaseHeight - formHeight - modalKeyboardLift
+    const resolvedModalListHeight = modalListHeight > 0 ? modalListHeight : undefined
     if (isModal) {
         return (
-            <View className="w-full justify-between flex-1" >
+            <View onLayout={handleModalLayout} className="w-full justify-between flex-1" >
                 <View className='w-full flex-1 '>
-                    <View style={{ height: windowHeight - offset2 - formHeight }}>
+                    <View style={{ height: resolvedModalListHeight }}>
                         <CommentsBrowse
                             useCustomScrollHandler={true}
-                            height={windowHeight - offset2 - formHeight > 0 ? windowHeight - offset2 - formHeight : undefined}
+                            height={resolvedModalListHeight}
                             scrollToIndex={scrollToEnd}
                             addItems={aItems}
                             isModal={true}
@@ -237,57 +284,28 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         />
                     </View>
                 </View>
-                <KbAvoidingView modalOffset={90}>
-                    <View
-                        onLayout={handleLayout}
-                        className="border-t border-border/60 "
-                    >
-                        <CommentsForm
-                            isModal={isModal}
-                            objectId={commentsData?.content[0]?.browse.data.object_id}
-                            module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
-                            form={commentsData?.content[0]?.form}
-                            requestUrl={commentsData?.content[0]?.url}
-                        />
-                    </View>
-                </KbAvoidingView>
+                <View
+                    onLayout={handleLayout}
+                    style={{
+                        // Keep the composer aligned with keyboard while preserving
+                        // the composer's own bottom padding inside the sheet.
+                        marginBottom: Math.max(
+                            0,
+                            modalKeyboardLift,
+                        ),
+                    }}
+                    className="border-t border-border/60 "
+                >
+                    <CommentsForm
+                        isModal={isModal}
+                        objectId={commentsData?.content[0]?.browse.data.object_id}
+                        module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
+                        form={commentsData?.content[0]?.form}
+                        requestUrl={commentsData?.content[0]?.url}
+                    />
+                </View>
             </View>
         )
-
-       /* else {
-
-            return (
-                <View className="w-full flex-1 ">
-                    <View className="w-full flex-1" >
-                        <CommentsBrowse
-                            useCustomScrollHandler={true}
-                            height={windowHeight > 0 ? windowHeight - 160 : undefined}
-                            scrollToIndex={scrollToEnd}
-                            addItems={aItems}
-                            isModal={true}
-                            browse={commentsData?.content[0]?.browse}
-                            module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
-                            requestUrl={commentsData?.content[0]?.url}
-                            replyId={replyId}
-                        />
-                    </View>
-                    <KbAvoidingView modalOffset={90}>
-                        <View
-                            onLayout={handleLayout}
-                            className="border-t border-border/60"
-                        >
-                            <CommentsForm
-                                isModal={isModal}
-                                objectId={commentsData?.content[0]?.browse.data.object_id}
-                                module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
-                                form={commentsData?.content[0]?.form}
-                                requestUrl={commentsData?.content[0]?.url}
-                            />
-                        </View>
-                    </KbAvoidingView>
-                </View>
-            )
-        }*/
     }
 
     if (!isWeb || !isDesktop || !isMultiColumn) {
@@ -295,7 +313,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         return (
             <View {...viewProps} className={`w-full ${isWeb ? '' : 'h-full'}`}>
                 <View className={`max-w-5xl w-full flex-1 bg-card text-card-foreground lg:rounded-2xl lg:my-4 mx-auto `}>
-                    <View onLayout={handleListLayout} style={{ pointerEvents: 'box-none', marginBottom: formHeight }} className='w-full flex-1 '>
+                    <View onLayout={handleListLayout} style={{ pointerEvents: 'box-none', marginBottom: isWeb ? formHeight : 0 }} className='w-full flex-1 '>
                         <CommentsBrowse
 
                             scrollToIndex={scrollToEnd}
@@ -307,7 +325,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         />
                     </View>
                     <KbAvoidingView>
-                        <View onLayout={handleLayout} style={{ width: listWidth + 5 }} className='-ml-[2px] -mr-[2px] border-background border bg-background web:fixed z-50 web:bottom-0  '>
+                        <View onLayout={handleLayout} style={isWeb ? { width: listWidth + 5 } : undefined} className='-ml-[2px] -mr-[2px] border-background border bg-background web:fixed z-50 web:bottom-0  '>
                             <View className=' lg:mb-4  ml-[1px] '>
                                 <CommentsForm
                                     isModal={isModal}
@@ -364,7 +382,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
             )}
             <Panel {...centerPanelProps} className="mt-0.5 sm:p-2">
                 <View className={`w-full h-full bg-card/80 shadow-sm text-card-foreground rounded-2xl mx-auto `}>
-                    <View onLayout={handleListLayout} style={{ pointerEvents: 'box-none', marginBottom: formHeight }} className='w-full flex-1'>
+                    <View onLayout={handleListLayout} style={{ pointerEvents: 'box-none', marginBottom: isWeb ? formHeight : 0 }} className='w-full flex-1'>
                         <CommentsBrowse
                             scrollToIndex={scrollToEnd}
                             addItems={aItems}
@@ -375,7 +393,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         />
                     </View>
                     <KbAvoidingView>
-                        <View onLayout={handleLayout} style={{ width: listWidth + 5 }} className='-ml-[2px] -mr-[2px] border-background border bg-background web:fixed z-50 web:bottom-0  '>
+                        <View onLayout={handleLayout} style={isWeb ? { width: listWidth + 5 } : undefined} className='-ml-[2px] -mr-[2px] border-background border bg-background web:fixed z-50 web:bottom-0  '>
                             <View className='lg:rounded-b-2xl  lg:mb-4 bg-card shadow-sm ml-[1px] '>
                                 <CommentsForm
                                     objectId={commentsData?.content[0]?.browse.data.object_id}

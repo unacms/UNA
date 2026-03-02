@@ -26,8 +26,6 @@ export async function getData(path, token, origin, headers, callback, params) {
     }
 
     const fetcherArgs = token || origin || headers || callback ? [path, token, '', origin, headers, callback] : path;
-    console.log("fetcherArgs",fetcherArgs)
-   
     const data = await fetcher(fetcherArgs);
 
     return { props: { uri: path.length ? path[0] : 'home', ...data } };
@@ -60,19 +58,43 @@ const Content = ({ pagePath, currentUser, isRoot }) => {
     useEffect(() => {
         if (!(pagePath && pagePath.startsWith('/') && !pagePath.includes('/?url='))) return;
 
+        let isActive = true;
         const fetchPageData = async () => {
             if (pageData?.data?.user?.id && pageData?.data?.user?.id === currentUser?.id && pageData?.data?.user?.confirmed === currentUser?.confirmed)
                 return;
             const { path: pathWithoutQuery, queryString } = parseUrl(pagePath);
             const params = queryString ? JSON.stringify(parseQueryString(queryString)) : null;
-            const data = await getData(pathWithoutQuery, null, null, null, null, params);
-            if (data?.props) {
+            const expectedUserId = currentUser?.id;
+            const maxAttempts = expectedUserId ? 4 : 1;
+
+            for (let attempt = 0; attempt < maxAttempts; attempt++) {
+                const data = await getData(pathWithoutQuery, null, null, null, null, params);
+                if (!isActive || !data?.props) return;
+
+                const responseUserId = data?.props?.data?.user?.id;
+                const isStaleUserResponse =
+                    expectedUserId &&
+                    responseUserId &&
+                    responseUserId !== expectedUserId;
+
+                if (isStaleUserResponse) {
+                    if (attempt < maxAttempts - 1) {
+                        await new Promise((resolve) => setTimeout(resolve, 200));
+                        continue;
+                    }
+                    return;
+                }
+
                 data.props.data['timestamp'] = Date.now();
                 setBottomSheetData(bottomSheetData !== false ? false : bottomSheetData);
                 setPageData(data.props);
+                return;
             }
         };
         fetchPageData();
+        return () => {
+            isActive = false;
+        };
     }, [pagePath, currentUser?.id, currentUser?.confirmed]);
 
 

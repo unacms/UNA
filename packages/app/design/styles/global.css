@@ -176,7 +176,7 @@
         /*content on accent buttons, accent surfaces*/
         --muted: var(--neutral-800);
         /*background for ui items, sections, hover states*/
-        --muted-foreground: var(--neutral-600);
+        --muted-foreground: var(--neutral-500);
         /*muted content*/
         --destructive: var(--red);
         /*background for destructive buttons, destructive surfaces*/

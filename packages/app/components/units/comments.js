@@ -143,7 +143,7 @@ function UnitCommentsDefault(props) {
             cellsArray.push(
                 <View key={`sp-${level}-${i}`} className="w-8">
                     {lvls[i + 1] && (
-                        <View className="mx-auto w-0.5 gap-0.5 -my-2 flex-auto">
+                        <View className="mx-auto w-0.5 gap-0.5 -my-3 left-0.5 flex-auto">
                             <View className="mx-auto w-0.5 flex-auto bg-muted rounded-b-full" />
                             <View className="mx-auto w-0.5 h-0.5 flex-none bg-muted rounded-full" />
                             <View className="mx-auto w-0.5 h-0.5 flex-none bg-muted rounded-full" />
@@ -152,7 +152,7 @@ function UnitCommentsDefault(props) {
                         </View>
                     )}
                     {i === level - 1 && (
-                        <View className=" ml-4 h-8 w-5 border-muted border-l-2 border-b-2 absolute -start-px -top-1 rounded-bl-xl flex-auto" />
+                        <View className=" ml-4 h-8 w-6 border-muted border-l-2 border-b-2 absolute start-px top-0 rounded-bl-lg flex-auto" />
                     )}
                 </View>
             )
@@ -201,7 +201,7 @@ function UnitCommentsDefault(props) {
         <Animated.View style={isSelected ? animatedStyle : {}}>
             <Row className="gap-2">
                 {cells}
-                <View className="w-8 z-50 flex-0 mt-3">
+                <View className="w-9 min-h-9 p-0.5 z-50 flex-0 mt-3">
                     <Profile
                         {...data.author_data}
                         displayType="unit_wo_info"
@@ -210,11 +210,11 @@ function UnitCommentsDefault(props) {
                     />
 
                     {items?.length != 0 && view != 'flat' && (
-                        <View className="w-0.5 mx-auto top-0.5 -mb-2 rounded-full flex-auto bg-muted"></View>
+                        <View className="w-0.5 mx-auto top-0.5 -mb-3 rounded-full flex-auto bg-muted"></View>
                     )}
                 </View>
                 <View className="flex-1 flex-col gap-1 mt-3">
-                    <View className="bg-muted/60 rounded-lg px-2 py-1.5 gap-1 ">
+                    <View className="bg-muted/60 rounded-lg px-2.5 py-2 gap-1 ">
                         <View className="flex-row items-center justify-between gap-1 ">
                             <Row>
                                 <Profile

@@ -36,7 +36,7 @@ export const settingsLinks = {
         accent: 'text-accent-foreground web:hover:underline web:active:no-underline u-link-press web:duration-200',
 
         // Inline-button style: real background + padding (padding added per-size via link_sizes[size].primary)
-        primary: 'text-accent-foreground bg-accent web:hover:opacity-90 web:active:opacity-80 web:duration-200',
+        primary: 'text-accent-foreground bg-accent/90 web:hover:bg-accent web:duration-200',
 
         // No DOM padding; muted background appears on hover via ::after pseudo-element
         ghost: 'text-accent-foreground u-link-ghost web:duration-200',

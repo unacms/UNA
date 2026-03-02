@@ -6,8 +6,8 @@ import { Button } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile'
 import { appStatic } from 'app/lib/app-static'
-import { FeedbackHaptics, appSetting } from 'app/lib/util'
-import { useState, useEffect } from 'react'
+import { FeedbackHaptics, appSetting, isObjectsEqual } from 'app/lib/util'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next';
 import { getPageData } from 'app/lib/util';
 import emitter from 'app/context/emitter'
@@ -57,10 +57,16 @@ function getContextRoot(data, url, uri) {
 
     const link = data.links?.find((item) => item.url?.includes('/' + url))
     if (link) {
+        const linkImage = link.icon
+            ? (
+                <View className="w-9 h-9 items-center justify-center flex-row text-center rounded-full bg-muted flex">
+                    <Icon icon={link.icon} size={20}  />
+                </View>
+            )
+            : appStatic('logo', { mode: 'mark' })
         return {
             url: link.url,
-            image: <View className="w-9 h-9 items-center justify-center flex-row text-center rounded-full bg-muted flex">
-                <Icon icon={link.icon} size={20}  /></View>,
+            image: linkImage,
             name: link.title,
         }
     }
@@ -84,14 +90,37 @@ export default function ContextSelector({ data:initialData, url, uri, mode }) {
    
     const [isOpen, setIsOpen] = useState(false);
     const [data, setContextData] = useState(initialData);
-    console.log("datadatadata", data, url, uri)
+    const isRefreshingRef = useRef(false);
+    const lastRefreshAtRef = useRef(0);
     const { t } = useTranslation();
 
+    const refreshContext = useCallback(async () => {
+        if (!url || isRefreshingRef.current) return
+
+        const now = Date.now()
+        // Collapse burst socket events into one refresh.
+        if (now - lastRefreshAtRef.current < 400) return
+
+        isRefreshingRef.current = true
+        lastRefreshAtRef.current = now
+
+        try {
+            const response = await getPageData(url)
+            const nextContext = response?.data?.context
+            if (nextContext) {
+                setContextData((prev) =>
+                    isObjectsEqual(prev, nextContext) ? prev : nextContext,
+                )
+            }
+        } finally {
+            isRefreshingRef.current = false
+        }
+    }, [url])
 
     useEffect(() => {
         const subscription = emitter.addListener(`сonnections`, (data) => {
             if (data.action == 'changed') {
-                getPageData(url).then(data => {setContextData(data.data.context) })
+                refreshContext()
             }
         })
 
@@ -99,7 +128,15 @@ export default function ContextSelector({ data:initialData, url, uri, mode }) {
         return () => {
             subscription.remove();
         }
-    }, [])
+    }, [refreshContext])
+
+    useEffect(() => {
+        if (initialData) {
+            setContextData((prev) =>
+                isObjectsEqual(prev, initialData) ? prev : initialData,
+            )
+        }
+    }, [initialData])
 
     if (!data) return null
 
