@@ -602,21 +602,7 @@ export default function RftText({
 
     const insertMention = async (user, query) => {
         const html = await editor.getHTML()
-        const mentionAvatar =
-            user?.avatar ||
-            user?.url_avatar ||
-            user?.thumb ||
-            user?.thumbnail ||
-            user?.icon ||
-            user?.image?.src ||
-            user?.image ||
-            user?.photo ||
-            ''
-        const safeAvatar = mentionAvatar
-            ? String(mentionAvatar).replace(/"/g, '&quot;')
-            : ''
-        const avatarAttr = safeAvatar ? ` data-avatar="${safeAvatar}"` : ''
-        const mentionLink = `<a class="bx-mention-link data-profile-id=${user.value} ${user.classname || ''}" data-profile-id="${user.value}"${avatarAttr} href="${user.url}">${user.label.trim()}</a>&shy;`
+        const mentionLink = `<a class="bx-mention-link data-profile-id=${user.value} ${user.classname || ''}" data-profile-id="${user.value}" href="${user.url}">${user.label.trim()}</a>&shy;`
         const replacementStringWithNbsp = mentionLink + '&nbsp;'
         const updatedContent = html.replace(query, replacementStringWithNbsp)
         editor.setContent(updatedContent)
@@ -663,15 +649,6 @@ export default function RftText({
                 if (message.payload >= initialHeight && message.payload <= maxHeight) {
                     setEditorHeight(message.payload)
                 }
-            }
-
-            // TenTap fires content-update after every DOM commit — use it as a
-            // reliable trigger to read the ProseMirror scrollHeight from the
-            // WebView after layout is complete.
-            if (message?.type == 'content-update' && !isWeb && isCommentsEditor) {
-                editor.injectJS(
-                    `(function(){var el=document.querySelector('.ProseMirror');if(el&&el.scrollHeight>0){window.ReactNativeWebView.postMessage(JSON.stringify({type:'height',payload:el.scrollHeight}));}return true;})()`
-                )
             }
 
             if (message?.type == 'focus') {
@@ -724,7 +701,6 @@ export default function RftText({
                     ? appSetting('comments', 'submit_comment_on_enter')
                     : enableSubmitOnEnter
                 editor.injectJS(`
-                    (function () {
                     let formName = "${unicFormName}";
                     let lastSelectionRange = null;
                     let mentionVisible = false; 
@@ -732,24 +708,9 @@ export default function RftText({
                         submitOnEnterEnabled: ${!!submitOnEnter},
                         platformOS: '${Platform.OS}'
                     };
-                    const editorElement =
-                        document.querySelector('.ProseMirror[contenteditable="true"]') ||
-                        document.querySelector('.tiptap[contenteditable="true"]') ||
-                        document.querySelector('[contenteditable="true"].ProseMirror') ||
-                        document.querySelector('[contenteditable="true"]');
-                    if (!editorElement) {
-                        return true;
-                    }
-                    const editorRoot =
-                        editorElement.closest(".tiptap") ||
-                        editorElement;
+                    const editorElement = document.getElementsByClassName("tiptap")[0];
 
                     ${applyIframeTheme(themeName)}
-
-                    if (editorRoot.dataset.neoBindingsAttached === "1") {
-                        return true;
-                    }
-                    editorRoot.dataset.neoBindingsAttached = "1";
 
                     document.addEventListener('keydown', function(event) {
                         if (event.key === 'Enter' || event.code === 'Enter') {
@@ -790,22 +751,25 @@ export default function RftText({
                         }
                     }, true);
 
-                    function sendHeight(h) {
+                    function updateHeight() {
+                        const currentHeight = editorElement.scrollHeight;
                         window.ReactNativeWebView.postMessage(JSON.stringify({
                             type: 'height',
-                            payload: h,
+                            payload: currentHeight,
                         }));
                     }
 
-                    // ResizeObserver fires after layout with real rendered size,
-                    // matching TenTap's own dynamicHeight implementation.
-                    var _neoRO = new ResizeObserver(function(entries) {
-                        for (var i = 0; i < entries.length; i++) {
-                            var h = entries[i].target.getBoundingClientRect().height;
-                            if (h > 0) sendHeight(h);
-                        }
+                    const observer = new MutationObserver(() => {
+                        updateHeight();
                     });
-                    _neoRO.observe(editorElement);
+
+                    
+
+                    observer.observe(editorElement, {
+                        childList: true,
+                        subtree: true,
+                        characterData: false // Don't observe character data changes
+                    });
 
                     editorElement.addEventListener("blur", () => {
                         window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'blur' }));
@@ -813,6 +777,7 @@ export default function RftText({
                         if (selection.rangeCount > 0) {
                             lastSelectionRange = selection.getRangeAt(0).cloneRange();
                         }
+                        updateHeight(true);
                     });
 
                     editorElement.addEventListener("focus", () => {
@@ -822,6 +787,7 @@ export default function RftText({
                             selection.removeAllRanges();
                             selection.addRange(lastSelectionRange);
                         }
+                        updateHeight(true);
                     });
 
                     function getTextBeforeCursor() {
@@ -922,7 +888,7 @@ export default function RftText({
 
                     document.addEventListener('paste', (event) => {
                         const activeElement = document.activeElement;
-
+                        
                         if (event.clipboardData.items.length > 0) {
                             for (let item of event.clipboardData.items) {
                                 if (item.kind === 'file') {
@@ -940,11 +906,7 @@ export default function RftText({
                         } else {
                             console.warn("Clipboard items are empty!");
                         }
-                    })
-                    return true;
-                    })();
-                    true;
-                    `)
+                    })`)
             }
         } catch (error) { }
     }
@@ -965,6 +927,7 @@ export default function RftText({
         style.bottom =
             suggestionsSize[1] - (keywordval[3] > 0 ? keywordval[3] - 24 : 0)
     }
+
     return (
         <View
             onLayout={handleLayout}

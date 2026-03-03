@@ -147,7 +147,7 @@ export default function ({ data, blocks }) {
         <>
             {topBlocks?.map((item, index) => {
                 return (
-                    <View className='mb-0.5 sm:mb-3 lg:mb-4' key={'block_' + index}><BlockByName
+                    <View className='mb-0.5 sm:mb-3' key={'block_' + index}><BlockByName
                         name={item.block}
                         data={data}
                         {...item.block.props}
@@ -174,11 +174,7 @@ export default function ({ data, blocks }) {
 
     const subHeader = useMemo(() =>
         feedList.length > 1 ? (
-            <ScrollView
-                horizontal={true}
-                className='flex w-full scrollbar-hide px-3 lg:px-4 h-14'
-                contentContainerStyle={{ alignItems: 'center' }}
-            >
+            <ScrollView horizontal={true} className='flex w-full scrollbar-hide ps-3 py-2'>
                 <Row className={`${feedList.length > 1 ? ' gap-2 ' : ''}`}>
                     {feedList.map((item, index) => (
                         <View key={'row_' + index}>
@@ -253,13 +249,13 @@ export default function ({ data, blocks }) {
 
     const SideBarContent = (
         <>
-            <View className="">
+            <View>
                 {appSetting('layout', 'show_profile_info') && (
 
-                    <Link href={currentUser.url} emulate={true} variant="ghost" size="md" className="group mb-4">
+                    <Link href={currentUser.url} emulate={true}>
                         <Row
                             className={
-                                'items-center gap-1'
+                                ' rounded-xl web:group items-center gap-1 px-2 py-1.5 mb-0.5 web:hover:bg-muted/60  '
                             }
                         >
 
@@ -296,7 +292,7 @@ export default function ({ data, blocks }) {
                 )}
 
                 {feedList.length > 1 && (
-                    <View className=" pb-3 border-b border-border gap-4">
+                    <View className=" pb-3 border-b border-input gap-y-0.5">
                         {feedList.map((item, index) => {
                             return (
                                 <MenuItemSidebarWithWrapper
@@ -403,7 +399,7 @@ export default function ({ data, blocks }) {
                 {layoutName == 'hor' && isWeb && (
                     <>
                         <Panel className={`hidden ${leftBreakpoint}:block ${currentBreakpointName}:w-full`} {...leftPanelProps}>
-                            <View className=" p-4 fixed-process ">
+                            <View className=" p-3 fixed-process ">
                                 {SideBarContent}
                             </View>
                         </Panel>
@@ -426,7 +422,7 @@ export default function ({ data, blocks }) {
                             sizable={cellsCustomConfig.sizable}
                         />
                         <Panel className={`hidden ${rightBreakpoint}:block ${currentBreakpointName}:w-full`} {...rightPanelProps}>
-                            <View className={`p-4 gap-3 lg:gap-4 fixed-process`}>
+                            <View className={`p-3 gap-4 fixed-process`}>
                                 {AsideContent}
                             </View>
                         </Panel>

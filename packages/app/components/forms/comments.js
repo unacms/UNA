@@ -102,23 +102,26 @@ export default function FormComments(props) {
                 props.handleSubmit,
                 'custom'
             )}
-            <Row className={`w-full gap-2 lg:gap-3 ${shouldGrowFromBottom ? 'items-end' : 'items-start'}`}>
+            <Row className={`w-full gap-x-2 ${shouldGrowFromBottom ? 'items-end' : 'items-start'}`}>
                 {currentUser && (
-                    <View className="h-10 items-center justify-center"> 
+                    <View className="h-11 py-1"> 
                         <Profile
                             {...currentUser}
                             url_avatar={currentUser.avatar}
                             displayType="unit_wo_info"
-                            displaySize="sm"
+                            displaySize="md"
 
                         />
                     </View>
                 )}
                 <View className="flex-auto ">
-                    <View className=" items-stretch bg-muted/60 rounded-2xl flex-auto" >
+                    <View className=" items-stretch bg-input rounded-xl flex-auto" >
                         <View
-                            className={`px-2.5 min-h-10 flex-auto items-center ${shouldGrowFromBottom ? "justify-center" : "justify-start"} ${hasContent ? 'mb-10' : ''}`}
-                           
+                            className={`p-3 min-h-11  flex-auto items-center ${shouldGrowFromBottom ? "justify-end" : "justify-start"} py-3 ${hasContent ? 'mb-11' : ''}`}
+                            style={{
+                                
+                                ...(isWeb && { transition: 'height 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), padding-bottom 0.1s cubic-bezier(0.25, 0.1, 0.25, 1)' })
+                            }}
                         >
                             {getFormFieldByData(
                                 props.data.inputs['cmt_text'],
@@ -140,17 +143,17 @@ export default function FormComments(props) {
                                 }
                             )}
                         </View>
-                        <View className={`flex-row absolute h-10 p-1 bottom-0 ${hasContent ? 'justify-between w-full' : 'justify-end right-0'}`}>
-                            <Row className={'items-center justify-center '}>
-                                <FileButton  field_name='cmt_image' size="xs" icon="Image" source='library' variant='text' />
+                        <View className={`flex-row absolute  bottom-0 ${hasContent ? 'justify-between w-full' : 'justify-end right-0'}`}>
+                            <Row className={'items-center justify-center h-11 p-1 '}>
+                                <FileButton field_name='cmt_image' size="sm" icon="Image" source='library' variant='text' />
                                 {!isWeb && (
-                                  
-                                        <FileButton field_name='cmt_image' size='xs' icon="Camera" source='camera' variant='text' />
-                                   
+                                    <View className="h-full p-1 flex items-center justify-center">
+                                        <FileButton field_name='cmt_image' size='sm' icon="Camera" source='camera' variant='text' />
+                                    </View>
                                 )}
                             </Row>
                             {(hasContent) && (
-                                <View className="">
+                                <View className="p-1">
                                     {getFormFieldByData(
                                         props.data.inputs['cmt_submit'],
                                         handleSubmitWithSanitization,
@@ -163,7 +166,7 @@ export default function FormComments(props) {
                                             icon_only: true,
                                             icon: 'ArrowUp',
                                             title: 'Send',
-                                            size: 'xs',
+                                            size: 'sm',
                                             variant: 'primary',
                                             rounded: true,
                                             alt: 'Post',

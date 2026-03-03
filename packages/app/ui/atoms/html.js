@@ -29,10 +29,8 @@ const StyledEM = (props) => {
     return <EM {...props} />
 }
 
-const makeStyledP = (textSizeClass) => function StyledP({ children, className, ...props }) {
-    // Apply text size + font-main explicitly for native since u-vanilla-html* are plain
-    // CSS classes that NativeWind cannot apply. textSizeClass is 'text-base' or 'text-sm'.
-    className += `${textSizeClass} font-main text-card-foreground`
+const StyledP = ({ children, className, ...props }) => {
+    className += 'text-secondary-foreground'
     className += props.isfirst === 'true' ? ' mt-0 ' : ' mt-2 '
     className += props.islast === 'true' ? ' mb-0' : ' mb-2'
 
@@ -67,13 +65,14 @@ const StyledText = (props) => {
 
 const StyledDiv = (props) => <Div {...props} />
 
-const tagMappingBase = {
+const tagMapping = {
     h1: H1,
     h2: H2,
     h3: H3,
     h4: H4,
     h5: H5,
     h6: H6,
+    p: StyledP,
     strong: StyledStrong,
     b: StyledStrong,
     i: StyledI,
@@ -86,24 +85,12 @@ const tagMappingBase = {
     ol: UL
 }
 
-const getAttributeValue = (attributes, name) => {
-    const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    const match = attributes.match(
-        new RegExp(`${escapedName}=(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`)
-    )
-    return match ? (match[1] || match[2] || match[3] || '') : ''
-}
-
-const stripHtmlTags = (value = '') => value.replace(/<[^>]*>/g, '')
-
-const parseHtmlToReact = (html, parentKey = '0', textSizeClass = 'text-base') => {
+const parseHtmlToReact = (html, parentKey = '0') => {
     if (!/<[a-zA-Z0-9]+[^>]*>/.test(html)) {
         if (Platform.OS === 'web') return html
-        return <Text className={`${textSizeClass} font-main`}>{html}</Text>
+        return <Text>{html}</Text>
     }
 
-    const StyledP = makeStyledP(textSizeClass)
-    const tagMapping = { ...tagMappingBase, p: StyledP }
 
     let childIndex = 0
     const getKey = (tag) => `${parentKey}-${childIndex++}-${tag}`
@@ -137,7 +124,7 @@ const parseHtmlToReact = (html, parentKey = '0', textSizeClass = 'text-base') =>
             if (Platform.OS === 'web') {
                 elements.push(textBefore)
             } else {
-                elements.push(<Text className={`${textSizeClass} font-main`} key={getKey('text-before')}>{textBefore}</Text>)
+                elements.push(<Text key={getKey('text-before')}>{textBefore}</Text>)
             }
         }
 
@@ -156,60 +143,24 @@ const parseHtmlToReact = (html, parentKey = '0', textSizeClass = 'text-base') =>
         let srcClass = attributes.match(/class=['"]([^'"]*)['"]/) || attributes.match(/class=([^'"\s>]+)/)
 
         if (normalizedTag === 'a') {
-            const href = getAttributeValue(attributes, 'href')
-            const srcClassString = (srcClass && srcClass[1]) ? srcClass[1] : ''
-            const isMentionLink = /\bbx-mention-link\b/.test(srcClassString)
-            const avatarSrc = getAttributeValue(attributes, 'data-avatar') || getAttributeValue(attributes, 'data-avatar-url')
-            const title = getAttributeValue(attributes, 'title')
-
-            if (href) {
-                const parsedClassName = srcClassString
-                    ? ParseHtmlClasses(srcClassString, 'link')
-                    : ''
-
-                if (isMentionLink && avatarSrc && Platform.OS === 'web') {
-                    const mentionLabel = decodeText(
-                        stripHtmlTags(title || content || '').trim()
-                    )
-
-                    elements.push(
-                        <Link
-                            key={getKey('mention-link')}
-                            href={href}
-                            variant="primary"
-                            className={
-                                'rounded p-px overflow-hidden inline-flex items-center ' +
-                                parsedClassName
-                            }
-                        >
-                            <Row className="items-center gap-1">
-                                <Image
-                                    src={avatarSrc}
-                                    width={14}
-                                    height={14}
-                                    className="rounded-full"
-                                />
-                                <Text className="text-accent-foreground text-sm">
-                                    {mentionLabel}
-                                </Text>
-                            </Row>
-                        </Link>
-                    )
-                    continue
-                }
-
+            const hrefMatch = attributes.match(/href="([^"]+)"/)
+            if (hrefMatch) {
                 elements.push(
                     <Link
                         key={getKey('link')}
-                        href={href}
-                        variant="primary"
+                        href={hrefMatch[1]}
                         mode="text"
                         className={
-                            'text-accent-foreground rounded px-0.5 pb-0.5 pt-[1.5px] overflow-hidden' +
-                            parsedClassName
+                            'text-accent-foreground ' +
+                            (srcClass && srcClass[1]
+                                ? ParseHtmlClasses(
+                                      srcClass[1],
+                                      'link'
+                                  )
+                                : '')
                         }
                     >
-                        {parseHtmlToReact(content, getKey('content'), textSizeClass)}
+                        {parseHtmlToReact(content, getKey('content'))}
                     </Link>
                 )
             }
@@ -244,7 +195,7 @@ const parseHtmlToReact = (html, parentKey = '0', textSizeClass = 'text-base') =>
                 isfirst="false"
                 islast="false"
             >
-                {parseHtmlToReact(content, getKey('content'), textSizeClass)}
+                {parseHtmlToReact(content, getKey('content'))}
             </Component>
         )
     }
@@ -254,7 +205,7 @@ const parseHtmlToReact = (html, parentKey = '0', textSizeClass = 'text-base') =>
         if (Platform.OS === 'web') {
             elements.push(remainingText)
         } else {
-            elements.push(<Text className={`${textSizeClass} font-main`} key={getKey('end')}>{remainingText}</Text>)
+            elements.push(<Text key={getKey('end')}>{remainingText}</Text>)
         }
     }
 
@@ -271,13 +222,11 @@ const parseHtmlToReact = (html, parentKey = '0', textSizeClass = 'text-base') =>
 
 export default function ElementHtml({ customClassName, data, innerRef }) {
     if (!data) return null
-    const cls = customClassName || 'u-vanilla-html'
-    const textSizeClass = cls.includes('-small') ? 'text-sm' : 'text-base'
     let html = decodeText(data.replace(/\n|\r/g, '').replace(/&nbsp;/g, ' '));
     if (html.trim() != '' && !html.includes('<p')) html = `<p>${html}</p>`
     return (
-        <View className={cls} ref={innerRef}>
-            {parseHtmlToReact(html, '0', textSizeClass)}
+        <View className={`${customClassName || 'u-vanilla-html'}`} ref={innerRef}>
+            {parseHtmlToReact(html)}
         </View>
     )
 }

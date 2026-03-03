@@ -9,8 +9,6 @@ export default function UniList(props) {
     const { 
         preloadComponent, 
         contentContainerStyle: contentContainerStyleProp, 
-        style: styleProp,
-        height,
         ListHeaderComponent, 
         scrollProps, 
         isModal, 
@@ -25,14 +23,6 @@ export default function UniList(props) {
         onRefresh, 
         ...rest 
     } = props;
-    const listStyle = useMemo(() => {
-        if (typeof height === 'number') {
-            if (height <= 0) return styleProp;
-            return styleProp ? [styleProp, { height }] : { height };
-        }
-        return styleProp;
-    }, [height, styleProp]);
-
 
     const scrollY = useRef(0);
     const scrollState = useRef(0);
@@ -145,7 +135,6 @@ export default function UniList(props) {
 
     return (
         <LegendList
-            style={listStyle}
             contentContainerStyle={contentContainerStyleProp}
             ref={refer || uniRef}
             onEndReachedThreshold={4}
