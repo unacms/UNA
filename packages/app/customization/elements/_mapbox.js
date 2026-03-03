@@ -8,6 +8,12 @@ import { useWindowHeight } from 'app/context/measure';
 import { BlockWrapper } from 'app/components/block-wrapper'
 
 //TODO SMALL POINTS + desc
+/*
+extra: {
+        .....
+        "RNMAPBOX_MAPS_DOWNLOAD_TOKEN": process.env.RNMAPBOX_MAPS_DOWNLOAD_TOKEN
+    },
+    */
 //https://blog.logrocket.com/building-custom-maps-react-native-mapbox/
 export default function ElementMapBox({ data, blockWrapperProps }) {
     Mapbox.setAccessToken("sk.eyJ1Ijoicm9tYW5sZXMiLCJhIjoiY204Zm9sMWMzMGJiaTJqcXRvdmpseHBuaiJ9.uajA_y3AmjRkBYgy4i2RdQ");

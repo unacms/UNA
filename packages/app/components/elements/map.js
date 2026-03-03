@@ -1,31 +1,37 @@
-
+import { AppleMaps, GoogleMaps } from 'expo-maps';
+import { Platform } from 'react-native';
 import { View } from 'app/design/view'
-import { useRef } from 'react';
 import { BlockWrapper } from 'app/components/block-wrapper'
-import Mapbox from "@rnmapbox/maps";
 
+// Requires development build (not Expo Go). Android: add apiKey to app.json android.config.googleMaps.apiKey
 export default function ElementMap({ data, height, blockWrapperProps }) {
     if (!data.location?.lat)
         return <></>
 
-    Mapbox.setAccessToken("sk.eyJ1Ijoicm9tYW5sZXMiLCJhIjoiY204Zm9sMWMzMGJiaTJqcXRvdmpseHBuaiJ9.uajA_y3AmjRkBYgy4i2RdQ");
+    const cameraPosition = {
+        coordinates: { latitude: data.location.lat, longitude: data.location.lng },
+        zoom: 14,
+    };
 
-    const mapRef = useRef(null);
+    const mapStyle = { flex: 1 };
 
-    return (
-        <BlockWrapper {...blockWrapperProps}>
-            <View className='w-full aspect-square' style={{ height: height }}>
-                <Mapbox.MapView style={{ flex: 1 }} ref={mapRef} styleURL="mapbox://styles/mapbox/light-v11">
-                    <Mapbox.Camera
-                        zoomLevel={14}
-                        centerCoordinate={[data.location.lng, data.location.lat]}
-                        animationMode="flyTo"
-                        animationDuration={2000}
-                    />
-
-
-                </Mapbox.MapView>
-            </View>
-        </BlockWrapper>
-    );
+    if (Platform.OS === 'ios') {
+        return (
+            <BlockWrapper {...blockWrapperProps}>
+                <View className='w-full aspect-square' style={{ height }}>
+                    <AppleMaps.View style={mapStyle} cameraPosition={cameraPosition} />
+                </View>
+            </BlockWrapper>
+        );
+    }
+    if (Platform.OS === 'android') {
+        return (
+            <BlockWrapper {...blockWrapperProps}>
+                <View className='w-full aspect-square' style={{ height }}>
+                    <GoogleMaps.View style={mapStyle} cameraPosition={cameraPosition} />
+                </View>
+            </BlockWrapper>
+        );
+    }
+    return null;
 }

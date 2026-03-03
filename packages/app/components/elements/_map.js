@@ -28,7 +28,6 @@ import Calendar from './calendar';
 import Grid from './grid';
 import Pricing from './pricing';
 import Chart from './chart';
-import MapBox from './mapbox';
 import MultiPostForm from './multi_post_form';
 import InviteInContext from './invite_in_context';
 import Comments from './comments';
@@ -67,7 +66,6 @@ export const componentsMapDefault = {
     calendar: Calendar,
     comments: Comments,
     form: Form,
-    mapbox: MapBox,
     msg: Msg,
     login: Login,
     redirect: Redirect,

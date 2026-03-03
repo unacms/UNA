@@ -1,26 +1,21 @@
-//import GoogleMapReact from 'google-map-react';
+import GoogleMapReact from 'google-map-react';
 import { appSetting } from 'app/lib/util'
-import Map from 'react-map-gl/mapbox';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import { View } from 'app/design/view'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
 export default function ElementMap({ data, blockWrapperProps }) {
+    const center = { lat: data.location.lat, lng: data.location.lng };
+    const apiKey = appSetting('config', 'api_keys', 'google_maps');
+
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <View className='w-full aspect-square p-2'  >
-                <View className='rounded-lg overflow-hidden w-full aspect-square'>
-                    <Map
-                        style={{ flex: 1 }}
-                        // https://visgl.github.io/react-map-gl/docs/get-started/mapbox-tokens
-                        mapboxAccessToken={appSetting('config', 'api_keys', 'mapbox')}
-                        initialViewState={{
-                            longitude: data.location.lng,
-                            latitude: data.location.lat,
-                            zoom: 14
-                        }}
-
-                        mapStyle="mapbox://styles/mapbox/streets-v9"
+            <View className='w-full aspect-square p-2'>
+                <View className='rounded-lg overflow-hidden w-full aspect-square' style={{ minHeight: 200 }}>
+                    <GoogleMapReact
+                        bootstrapURLKeys={{ key: apiKey }}
+                        defaultCenter={center}
+                        defaultZoom={14}
+                        options={{ mapTypeControl: true, fullscreenControl: true }}
                     />
                 </View>
             </View>

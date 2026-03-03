@@ -33,7 +33,6 @@ export const settingsDefault = {
             google_maps: 'AIzaSyAhrci201-9xXIRAy0kLOHFGppeTk8AHmo',
             open_ai: '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',
             onesignal: 'a36d17c1-693e-40e1-98e9-41a62a9b5e7d',
-            mapbox: 'pk.eyJ1Ijoicm9tYW5sZXMiLCJhIjoiY204Zm9kY3ByMGE4bzJrc2R6Zzg4NW0zMCJ9.Jme_Zudsug5mmqcbjII9cQ',
           
         },
         show_ui: true,
