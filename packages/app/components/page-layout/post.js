@@ -360,7 +360,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
             {isLeftCol && (
                 <>
                     <Panel
-                        className={`hidden ${leftBreakpoint}:block mt-0.5 sm:p-2`}
+                        className={`hidden ${leftBreakpoint}:block mt-0.5 sm:mt-0 sm:p-4`}
                         {...leftPanelProps}
                     >
                         <View className={`fixed-process'}`} >
@@ -380,8 +380,8 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                     />
                 </>
             )}
-            <Panel {...centerPanelProps} className="mt-0.5 sm:p-2">
-                <View className={`w-full h-full bg-card/80 shadow-sm text-card-foreground rounded-2xl mx-auto `}>
+            <Panel {...centerPanelProps} className="mt-0.5 sm:mt-0 sm:p-4">
+                <View className={`w-full h-full bg-card shadow-custom text-card-foreground rounded-xl mx-auto `}>
                     <View onLayout={handleListLayout} style={{ pointerEvents: 'box-none', marginBottom: isWeb ? formHeight : 0 }} className='w-full flex-1'>
                         <CommentsBrowse
                             scrollToIndex={scrollToEnd}
@@ -393,8 +393,8 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         />
                     </View>
                     <KbAvoidingView>
-                        <View onLayout={handleLayout} style={isWeb ? { width: listWidth + 5 } : undefined} className='-ml-[2px] -mr-[2px] border-background border bg-background web:fixed z-50 web:bottom-0  '>
-                            <View className='lg:rounded-b-2xl  lg:mb-4 bg-card shadow-sm ml-[1px] '>
+                        <View onLayout={handleLayout} style={isWeb ? { width: listWidth + 5 } : undefined} className=' mb-4 web:fixed z-50 web:bottom-0 overflow-hidden  '>
+                            <View className='bg-red-500 w-full   '>
                                 <CommentsForm
                                     objectId={commentsData?.content[0]?.browse.data.object_id}
                                     module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
@@ -402,6 +402,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                                     requestUrl={commentsData?.content[0]?.url}
                                 />
                             </View>
+                           
                         </View>
                     </KbAvoidingView>
                 </View>
@@ -413,7 +414,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         sizable={cellsCustomConfig.sizable}
                     />
                     <Panel
-                        className={`hidden ${rightBreakpoint}:block mt-0.5 sm:p-2`}
+                        className={`hidden ${rightBreakpoint}:block mt-0.5 sm:mt-0 sm:p-4`}
                         {...rightPanelProps}
                     >
                         <View className={`fixed-process'}`}>

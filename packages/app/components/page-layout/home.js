@@ -259,7 +259,7 @@ export default function ({ data, blocks }) {
                     <Link href={currentUser.url} emulate={true} variant="ghost" size="md" className="group mb-4">
                         <Row
                             className={
-                                'items-center gap-1 mb-0.5'
+                                'items-center gap-1'
                             }
                         >
 

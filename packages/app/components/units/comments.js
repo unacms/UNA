@@ -214,8 +214,8 @@ function UnitCommentsDefault(props) {
                     )}
                 </View>
                 <View className="flex-1 flex-col gap-1 mt-3">
-                    <View className="bg-muted/60 rounded-lg px-2.5 py-2 gap-1 ">
-                        <View className="flex-row items-center justify-between gap-1 ">
+                    <View className="bg-muted/60 rounded-xl px-2.5 py-2 gap-1 ">
+                        <View className="flex-row items-center gap-2 ">
                             <Row>
                                 <Profile
                                     {...data.author_data}
@@ -254,7 +254,7 @@ function UnitCommentsDefault(props) {
                                 </>
                             )}
 
-                            <Link href={cmtUrl} size="xs" variant="ghost" >
+                            <Link href={cmtUrl} size="sm" variant="default" >
                                 <Time ts={data.cmt_time}></Time>
                             </Link>
                         </View>

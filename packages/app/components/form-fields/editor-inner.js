@@ -665,6 +665,15 @@ export default function RftText({
                 }
             }
 
+            // TenTap fires content-update after every DOM commit — use it as a
+            // reliable trigger to read the ProseMirror scrollHeight from the
+            // WebView after layout is complete.
+            if (message?.type == 'content-update' && !isWeb && isCommentsEditor) {
+                editor.injectJS(
+                    `(function(){var el=document.querySelector('.ProseMirror');if(el&&el.scrollHeight>0){window.ReactNativeWebView.postMessage(JSON.stringify({type:'height',payload:el.scrollHeight}));}return true;})()`
+                )
+            }
+
             if (message?.type == 'focus') {
                 if (onFocus) onFocus()
             }
@@ -723,17 +732,24 @@ export default function RftText({
                         submitOnEnterEnabled: ${!!submitOnEnter},
                         platformOS: '${Platform.OS}'
                     };
-                    const editorElement = document.getElementsByClassName("tiptap")[0];
+                    const editorElement =
+                        document.querySelector('.ProseMirror[contenteditable="true"]') ||
+                        document.querySelector('.tiptap[contenteditable="true"]') ||
+                        document.querySelector('[contenteditable="true"].ProseMirror') ||
+                        document.querySelector('[contenteditable="true"]');
                     if (!editorElement) {
                         return true;
                     }
+                    const editorRoot =
+                        editorElement.closest(".tiptap") ||
+                        editorElement;
 
                     ${applyIframeTheme(themeName)}
 
-                    if (editorElement.dataset.neoBindingsAttached === "1") {
+                    if (editorRoot.dataset.neoBindingsAttached === "1") {
                         return true;
                     }
-                    editorElement.dataset.neoBindingsAttached = "1";
+                    editorRoot.dataset.neoBindingsAttached = "1";
 
                     document.addEventListener('keydown', function(event) {
                         if (event.key === 'Enter' || event.code === 'Enter') {
@@ -774,25 +790,22 @@ export default function RftText({
                         }
                     }, true);
 
-                    function updateHeight() {
-                        const currentHeight = editorElement.scrollHeight;
+                    function sendHeight(h) {
                         window.ReactNativeWebView.postMessage(JSON.stringify({
                             type: 'height',
-                            payload: currentHeight,
+                            payload: h,
                         }));
                     }
 
-                    const observer = new MutationObserver(() => {
-                        updateHeight();
+                    // ResizeObserver fires after layout with real rendered size,
+                    // matching TenTap's own dynamicHeight implementation.
+                    var _neoRO = new ResizeObserver(function(entries) {
+                        for (var i = 0; i < entries.length; i++) {
+                            var h = entries[i].target.getBoundingClientRect().height;
+                            if (h > 0) sendHeight(h);
+                        }
                     });
-
-                    
-
-                    observer.observe(editorElement, {
-                        childList: true,
-                        subtree: true,
-                        characterData: false // Don't observe character data changes
-                    });
+                    _neoRO.observe(editorElement);
 
                     editorElement.addEventListener("blur", () => {
                         window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'blur' }));
@@ -800,7 +813,6 @@ export default function RftText({
                         if (selection.rangeCount > 0) {
                             lastSelectionRange = selection.getRangeAt(0).cloneRange();
                         }
-                        updateHeight(true);
                     });
 
                     editorElement.addEventListener("focus", () => {
@@ -810,7 +822,6 @@ export default function RftText({
                             selection.removeAllRanges();
                             selection.addRange(lastSelectionRange);
                         }
-                        updateHeight(true);
                     });
 
                     function getTextBeforeCursor() {
@@ -954,7 +965,6 @@ export default function RftText({
         style.bottom =
             suggestionsSize[1] - (keywordval[3] > 0 ? keywordval[3] - 24 : 0)
     }
-
     return (
         <View
             onLayout={handleLayout}

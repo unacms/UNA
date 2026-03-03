@@ -21,7 +21,7 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
                 />
             </View>
             <View className="flex-auto flex-col my-auto ">
-                <Row className="flex-row items-center justify-between gap-1 ">
+                <Row className="flex-row items-center gap-1 ">
                 <Text className="flex-auto text-base leading-5 font-bold text-card-foreground web:group-hover:text-foreground line-clamp-1 truncate " numberOfLines={1}>
                     {names}
                 </Text>

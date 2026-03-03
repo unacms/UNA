@@ -312,7 +312,7 @@
     max-width: none;
     word-wrap: break-word;
     font-weight: 400;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
+    font-family: var(--font-main), system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
 }
 
 .u-vanilla-html-small {
@@ -323,7 +323,7 @@
     max-width: none;
     word-wrap: break-word;
     font-weight: 400;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
+    font-family: var(--font-main), system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
 }
 
 .u-vanilla-html :where(p):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
@@ -370,6 +370,7 @@
 .u-vanilla-html h4,
 .u-vanilla-html h5 {
     @apply text-popover-foreground ;
+    font-family: var(--font-title), system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
 }
 
 .u-vanilla-html-small h1,
@@ -378,6 +379,7 @@
 .u-vanilla-html-small h4,
 .u-vanilla-html-small h5 {
     @apply text-popover-foreground ;
+    font-family: var(--font-title), system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
 }
 
 .u-vanilla-html A,

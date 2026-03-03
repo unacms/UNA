@@ -322,7 +322,7 @@ export const DefaultView = memo(
                                 numberOfSymbols={600}
                                 openSmall={false}
                                 showLess={true}
-                                customClassName="u-vanilla-html"
+                                customClassName="u-vanilla-html-small"
                             />
                         )}
 

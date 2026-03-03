@@ -13,7 +13,7 @@ import { BlockWrapper } from 'app/components/block-wrapper'
 export default function ({data, blockWrapperProps}) {
     return (
         <BlockWrapper {...blockWrapperProps}><View className="w-full px-3 sm:px-4">
-            <ContentMore numberOfSymbols={360} showLess={true} content={data.text} numberOfLines={3} openSmall={false} customClassName="u-vanilla-html" />
+            <ContentMore numberOfSymbols={360} showLess={true} content={data.text} numberOfLines={3} openSmall={false} customClassName="u-vanilla-html-small" />
             <Link href={data.link}>
                 <Button size="sm" title="View all comments" variant="link" endDecorator="ChevronRight"/>
             </Link>

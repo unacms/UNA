@@ -102,20 +102,20 @@ export default function FormComments(props) {
                 props.handleSubmit,
                 'custom'
             )}
-            <Row className={`w-full gap-2 ${shouldGrowFromBottom ? 'items-end' : 'items-start'}`}>
+            <Row className={`w-full gap-2 lg:gap-3 ${shouldGrowFromBottom ? 'items-end' : 'items-start'}`}>
                 {currentUser && (
-                    <View className="p-0.5"> 
+                    <View className="h-10 items-center justify-center"> 
                         <Profile
                             {...currentUser}
                             url_avatar={currentUser.avatar}
                             displayType="unit_wo_info"
-                            displaySize="md"
+                            displaySize="sm"
 
                         />
                     </View>
                 )}
                 <View className="flex-auto ">
-                    <View className=" items-stretch bg-muted rounded-lg flex-auto" >
+                    <View className=" items-stretch bg-muted/60 rounded-2xl flex-auto" >
                         <View
                             className={`px-2.5 min-h-10 flex-auto items-center ${shouldGrowFromBottom ? "justify-center" : "justify-start"} ${hasContent ? 'mb-10' : ''}`}
                            
@@ -140,17 +140,17 @@ export default function FormComments(props) {
                                 }
                             )}
                         </View>
-                        <View className={`flex-row absolute bottom-0 ${hasContent ? 'justify-between w-full' : 'justify-end right-0'}`}>
+                        <View className={`flex-row absolute h-10 p-1 bottom-0 ${hasContent ? 'justify-between w-full' : 'justify-end right-0'}`}>
                             <Row className={'items-center justify-center '}>
-                                <FileButton className="p-0.5" field_name='cmt_image' size="sm" icon="Image" source='library' variant='text' />
+                                <FileButton  field_name='cmt_image' size="xs" icon="Image" source='library' variant='text' />
                                 {!isWeb && (
-                                    <View className="h-full p-0.5 flex items-center justify-center">
-                                        <FileButton field_name='cmt_image' size='sm' icon="Camera" source='camera' variant='text' />
-                                    </View>
+                                  
+                                        <FileButton field_name='cmt_image' size='xs' icon="Camera" source='camera' variant='text' />
+                                   
                                 )}
                             </Row>
                             {(hasContent) && (
-                                <View className="p-0.5">
+                                <View className="">
                                     {getFormFieldByData(
                                         props.data.inputs['cmt_submit'],
                                         handleSubmitWithSanitization,
@@ -163,9 +163,9 @@ export default function FormComments(props) {
                                             icon_only: true,
                                             icon: 'ArrowUp',
                                             title: 'Send',
-                                            size: 'sm',
+                                            size: 'xs',
                                             variant: 'primary',
-                                            rounded: false,
+                                            rounded: true,
                                             alt: 'Post',
                                             tooltip: 'Post',
                                         }

@@ -51,7 +51,7 @@ export default function ElementFeedItem({ data, isModal, blockWrapperProps }) {
     return (
         <BlockWrapper {...blockWrapperProps}>
             
-                <Html data={tlContent} />
+                <Html data={tlContent} customClassName="u-vanilla-html-small" />
                 {!!content.embed && <Embed data={content.embed} />}
                 {content.polls_attach.length > 0 && (
                     <View className='w-full'>

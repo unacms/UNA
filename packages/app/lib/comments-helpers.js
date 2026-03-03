@@ -455,7 +455,7 @@ export function CommentsBrowse({
     }
 
     return (
-        <View>
+        <View className="flex-1">
             <UniList
                 mode="simple"
                 isModal={isModal}
@@ -841,10 +841,10 @@ export function CommentsForm({
     }
 
     return (
-        <View className=" max-w-5xl px-3 py-2 sm:px-4 sm:py-3 gap-2 bg-card  ">
+        <View className="  shadow-custom  px-3 lg:px-4 py-3 gap-2 sm:gap-3 mx-auto w-full   ">
             {formData.parent_id > 0 && (
                 <View className="w-full flex-row items-start gap-2">
-                    <View className="w-9 min-h-9 p-0.5 flex-none">
+                    <View className="w-9 min-h-9 flex-none">
                         <Profile
                             {...formData.author}
                             displayType="unit_wo_info"
