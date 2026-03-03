@@ -240,7 +240,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                 <KbAvoidingView modalOffset={90}>
                     <View
                         onLayout={handleLayout}
-                        className="border-t border-border/60 "
+                        className="border-t border-border/60 bg-card"
                     >
                         <CommentsForm
                             isModal={isModal}
