@@ -6,7 +6,7 @@ import { APP_URL } from 'app/config';
 import { View } from 'app/design/view'
 import { Button } from 'app/design/controls';
 
-export default function NativeStripe({ seller_id, items }) {
+export default function NativeStripe({ seller_id, items, payment_type }) {
     const [publishableKey, setPublishableKey] = useState('');
     const [clientSecret, setClientSecret] = useState('');
     const { initPaymentSheet, presentPaymentSheet } = useStripe();
@@ -49,7 +49,7 @@ export default function NativeStripe({ seller_id, items }) {
     useEffect(() => {
         (async () => {
             const session = await performAction('stripe_v3_create_session_api', {
-                type: 'single',
+                type: payment_type,
                 seller_id,
                 items: items.join('&'),
                 return_url: APP_URL,
@@ -86,7 +86,7 @@ export default function NativeStripe({ seller_id, items }) {
     return (
         <View className='p-4'>
             <Button
-                title="Оплатить"
+                title="Pay"
                 onPress={onPayPress}
                 disabled={!clientSecret}
             />

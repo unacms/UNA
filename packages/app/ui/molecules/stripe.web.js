@@ -2,21 +2,21 @@ import * as React from 'react';
 //import {loadStripe} from '@stripe/stripe-js';
 import { loadStripe, setLoadParameters } from '@stripe/stripe-js/pure';
 import {
-  EmbeddedCheckoutProvider,
-  EmbeddedCheckout
+    EmbeddedCheckoutProvider,
+    EmbeddedCheckout
 } from '@stripe/react-stripe-js';
 import { useState, useEffect } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import { APP_URL } from 'app/config';
 
-export default function ElementStripe({seller_id, items}) {
+export default function ElementStripe({ seller_id, items, payment_type }) {
     const sProvider = 'stripe_v3';
     const [publicKey, setPublicKey] = useState('');
     const [clientSecret, setClientSecret] = useState('');
 
     const performAction = async (sAction, aParams, onLoad) => {
         let sParams = '';
-        if(Array.isArray(aParams))
+        if (Array.isArray(aParams))
             sParams = aParams.join('&params[]=');
         else
             sParams = JSON.stringify(aParams);
@@ -24,16 +24,16 @@ export default function ElementStripe({seller_id, items}) {
         const sRequest = '/api.php?r=bx_payment/' + sAction + '&params[]=' + sParams;
 
         const sResponse = await fetcher(sRequest);
-        if(typeof onLoad === 'function')
+        if (typeof onLoad === 'function')
             onLoad(sResponse?.data);
     };
 
     performAction('get_provider_options', [seller_id, sProvider], (oData) => {
-        if(!oData?.name || oData.name != sProvider || !oData?.options)
+        if (!oData?.name || oData.name != sProvider || !oData?.options)
             return;
 
         let sPublicKey = '';
-        switch(parseInt(oData.options.strp_v3_mode.value)) {
+        switch (parseInt(oData.options.strp_v3_mode.value)) {
             case 1:
                 sPublicKey = oData.options.strp_v3_live_pub_key.value;
                 break;
@@ -43,27 +43,27 @@ export default function ElementStripe({seller_id, items}) {
                 break;
         }
 
-        if(!sPublicKey)
+        if (!sPublicKey)
             return;
 
         setPublicKey(sPublicKey);
     });
 
     let stripePromise = null;
-    if(!!publicKey)
+    if (!!publicKey)
         stripePromise = loadStripe(publicKey);
 
     useEffect(() => {
-        performAction('stripe_v3_create_session_api', {type: 'single', seller_id: seller_id, items: items.join('&'), return_url: APP_URL}, (oData) => {
+        performAction('stripe_v3_create_session_api', { type: payment_type, seller_id: seller_id, items: items.join('&'), return_url: APP_URL }, (oData) => {
             setClientSecret(oData.clientSecret)
         });
-      }, [])
+    }, [])
 
 
     return (
         clientSecret &&
-            <EmbeddedCheckoutProvider stripe={stripePromise} options={{clientSecret}}>
-                <EmbeddedCheckout />
-            </EmbeddedCheckoutProvider>
+        <EmbeddedCheckoutProvider stripe={stripePromise} options={{ clientSecret }}>
+            <EmbeddedCheckout />
+        </EmbeddedCheckoutProvider>
     );
 }

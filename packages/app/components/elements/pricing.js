@@ -46,9 +46,9 @@ export default function ElementPricing({ data, blockWrapperProps }) {
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-            {appStatic('components_pricing_header_'+data.settings.object, data.settings)}
+            {appStatic('components_pricing_header_' + data.settings.object, data.settings)}
             <Tabs tabs={preparedTabs} activeTab={preparedTabs[0].key} />
-            {appStatic('components_pricing_footer_'+data.settings.object, data.settings)}
+            {appStatic('components_pricing_footer_' + data.settings.object, data.settings)}
         </BlockWrapper>
     )
 }
@@ -81,7 +81,7 @@ function ElementPricingPeriod({ data, period, unit, settings }) {
     }
 
     return (
-        <View className={`${unit !== 'productlist' ? 'flex-row py-3 ': ''} flex-wrap ` }>
+        <View className={`${unit !== 'productlist' ? 'flex-row py-3 ' : ''} flex-wrap `}>
             <Redirect ref={redirectRef} />
             {filtered.map((item, index) => {
                 const Price = getComponent('unit', 'price');
@@ -92,7 +92,7 @@ function ElementPricingPeriod({ data, period, unit, settings }) {
             })}
             {showModal && <Modal onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
                 <ScrollView className="h-[400px]">
-                <Stripe seller_id={showModal.seller_id} items={showModal.items} />
+                    <Stripe payment_type={showModal.payment_type} seller_id={showModal.seller_id} items={showModal.items} />
                 </ScrollView>
             </Modal>}
         </View>
