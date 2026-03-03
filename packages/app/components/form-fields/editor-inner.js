@@ -24,7 +24,7 @@ import { fetcher } from 'app/lib/fetcher'
 import { appSetting, cn } from 'app/lib/util'
 import { ThemeName } from 'app/design/theme'
 import emitter from 'app/context/emitter'
-
+import { Text } from "app/design/typography";
 
 const inputSettings = appSetting('theme', 'inputs');
 
@@ -193,6 +193,9 @@ export default function RftText({
         font-family: var(--editor-font) !important;
         color: var(--color-text);
         background-color: transparent;
+        box-sizing: border-box;
+        padding: 0 !important;
+        margin: 0 !important;
     }
     .mention-list {
         position: absolute;
@@ -215,6 +218,8 @@ export default function RftText({
     }
 
     ${cssOverrides}
+
+ 
 
     .tiptap, #root > div:nth-of-type(1)  {
         scrollbar-width: none;
@@ -649,6 +654,9 @@ export default function RftText({
                 if (message.payload >= initialHeight && message.payload <= maxHeight) {
                     setEditorHeight(message.payload)
                 }
+                if (message.payload < initialHeight) {
+                    setEditorHeight(initialHeight)
+                }
             }
 
             if (message?.type == 'focus') {
@@ -752,11 +760,15 @@ export default function RftText({
                     }, true);
 
                     function updateHeight() {
-                        const currentHeight = editorElement.scrollHeight;
-                        window.ReactNativeWebView.postMessage(JSON.stringify({
-                            type: 'height',
-                            payload: currentHeight,
-                        }));
+                        requestAnimationFrame(() => {
+                            setTimeout(() => {
+                                const currentHeight = editorElement.scrollHeight;
+                                window.ReactNativeWebView.postMessage(JSON.stringify({
+                                    type: 'height',
+                                    payload: currentHeight,
+                                }));
+                            }, 0);
+                        });
                     }
 
                     const observer = new MutationObserver(() => {
@@ -927,7 +939,6 @@ export default function RftText({
         style.bottom =
             suggestionsSize[1] - (keywordval[3] > 0 ? keywordval[3] - 24 : 0)
     }
-
     return (
         <View
             onLayout={handleLayout}
