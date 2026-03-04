@@ -82,7 +82,7 @@ function MenuBottomItem({ link, title, index, badge, icon, isActive, profile, iF
     const playSound = useSound('click');
     const badgeObj = [
         {
-            condition: (link === appSetting('notifications', 'url') || badge == 'notifications') && notifCount > 0, //to remove in 11.25 link === appSetting('notifications', 'url')
+            condition: (link === appSetting('notifications', 'url') || badge.includes == 'notifications') && notifCount > 0, //to remove in 11.25 link === appSetting('notifications', 'url')
             value: { variant: 'primary', text: notifCount }
         },
         {
@@ -92,6 +92,10 @@ function MenuBottomItem({ link, title, index, badge, icon, isActive, profile, iF
         {
             condition: (link === '/friends' || badge == 'friends') && iFrCounter > 0,
             value: { variant: 'primary', text: iFrCounter }
+        },
+        {
+            condition: (badge == 'notifications, messenger') && currentUser?.counters?.bx_messenger_new_messages+notifCount > 0,
+            value: { variant: 'primary', text: currentUser?.counters?.bx_messenger_new_messages+notifCount }
         }
     ].find(item => item.condition)?.value || null;
 

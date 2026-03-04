@@ -16,6 +16,7 @@ import {
     resolvePanelProps,
 } from 'app/ui/molecules/resizable-panels'
 import { useSetHeader, defaultHeader, useSetFooter } from 'app/context/jotai/layout';
+import { useSafeAreaInsets } from 'app/lib/hooks/router'
 
 const mapLayoutBlocks = (items = []) =>
     items.map(({ source }) => ({
@@ -52,6 +53,7 @@ const defineCells = (blocks, data) => {
 export default function PageLayout({ data, blocks, isModal = false, url }) {
     const isWeb = Platform.OS == 'web';
     const windowHeight = useWindowHeight();
+    const insets = useSafeAreaInsets();
     const isDesktop = useIsDesktop();
     const [replyId, setReplyId] = useState(false);
     const [scrollToEnd, setScrollToEnd] = useState(false);
@@ -218,7 +220,13 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         };
     }, []);
 
-    const offset2 = 64;
+    let offset2 = 64;
+    if (!isWeb) {
+            offset2 = insets.bottom + insets.top;
+            if (Platform.OS == 'ios') {
+                offset2 = insets.bottom + insets.top + 64;
+            }
+        }
     if (isModal) {
         return (
             <View className="w-full justify-between flex-1" >

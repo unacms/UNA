@@ -53,6 +53,16 @@ function getBadgeForTab(currentUser, tab) {
     }
 
     if (
+       tab.badge=='notifications, messenger' &&
+        (currentUser?.counters?.bx_messenger_new_messages+currentUser?.notifications) > 0
+    ) {
+        return (
+            <Text className={`${badgeTextSize} text-white font-medium`}>
+                {currentUser?.counters?.bx_messenger_new_messages+currentUser?.notifications}
+            </Text>
+        )
+    }
+    if (
         tab.url == appSetting('messenger', 'url') &&
         currentUser?.counters?.bx_messenger_new_messages
     ) {

@@ -31,6 +31,7 @@ import {
 } from 'app/ui/molecules/resizable-panels'
 import { useIsDesktop } from 'app/context/measure';
 import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
+import { useSafeAreaInsets } from 'app/lib/hooks/router'
 
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave, addButtons }) {
     const isWeb = Platform.OS == 'web'
@@ -254,6 +255,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }, [isSmallScreen, setConvoId, setPanelsVisible]);
 
     const showConvo = useCallback(() => {
+        console.log("xxxx")
         emitter.emit('editor', { action: 'blur' });
         setPanelsVisible({ convos: true, jots: false })
         if (!isWeb)
@@ -545,13 +547,15 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
     /*useEffect(() => {
         return () => setHeader(defaultHeader);
     }, [setHeader]);*/
-
+    
     return (
         <View className='flex-1 bg-card' style={{ minHeight: layoutHeightLeft }}>
             {(isWeb && !isSmallScreen) && header}
-            {data && data.length > 0 ? <View className=' w-full flex-1'>
+            {data && data.length > 0 ? <View className=' w-full web:flex-1'
+            style={{height:layoutHeightLeft}}
+            >
                 <UniList
-                    height={layoutHeightLeft - 64}
+                  
                     data={data}
                     mode="simple"
                     useCustomScrollHandler={isSmallScreen ? true : false}
@@ -602,9 +606,11 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
     const header = (
         <View className='md:px-0 w-full border-border/60 bg-card border-b h-16 justify-center'>
             <Row className='px-2 lg:px-4 items-center justify-between w-full '>
-                <Row className='items-center justify-start gap-3 flex-auto'>
+                <Row className='items-center justify-start gap-3 flex-1 overflow-hidden'>
                     {isSmallScreen && <BackButton buttonProps={{ variant: "secondary", startDecorator: 'ArrowLeft', rounded: 'rounded' }} callback={showConvo} />}
-                    <Text numberOfLines={1} className="font-bold text-card-foreground text-2xl tracking-tight">{title}</Text>
+                    <View className="overflow-hidden flex-1">
+                    <Text numberOfLines={1} className="font-bold text-card-foreground text-2xl tracking-tight overflow-hidden text-ellipsis">{title}</Text>
+                    </View>
                 </Row>
                 <Row className='items-center gap-x-2'>
                     <View>

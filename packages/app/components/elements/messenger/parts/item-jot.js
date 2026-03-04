@@ -76,13 +76,15 @@ export default function JotItem({ item, index, handleReply }) {
             </View>
             <View className='flex-auto'>
                 <View className='bg-muted  rounded-xl px-3 u-vanilla-html-small' >
-                    <Row className="items-center justify-between gap-1 mb-0.5 pt-2">
+                    <Row className="items-center w-full justify-between gap-1 mb-0.5 pt-2">
                         <View><Profile
                             {...item.author_data}
                             displayType="unit_wo_image"
                         />
                         </View>
-                        <Time className="text-muted-foreground" ts={item.created}></Time>
+                        <View className="">
+                            <Time className="text-muted-foreground" ts={item.created}></Time>
+                        </View>
                     </Row>
                     {viewState.view == 'edited' ? (
                         <Modal

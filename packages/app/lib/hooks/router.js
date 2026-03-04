@@ -14,15 +14,17 @@ export {
 export { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export function goBack(navigation, router, callback) {
-    if (navigation.getState().index === 0) {
-        callback?.();
-    } else {
-        router.back();
+     if (callback){
+        callback(); 
+    }
+    else{
+        if (navigation.getState().index > 0) {
+            router.back();
+        } 
     }
 }
 
 export function redirectTo(router, url) {
-    //router.replace(url);
     router.replace({
         pathname: '/tab0',
         params: { url: url }

@@ -110,7 +110,7 @@ export const settingsMenus = {
             {
                 key: '/tab2',
                 title: 'Messages',
-                url: '/posts-home',
+                url: '/messenger',
                 icon: 'MessageCircleMore',
                 badge: 'messenger'
             },
