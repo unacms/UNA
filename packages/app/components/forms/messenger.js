@@ -7,7 +7,6 @@ import { FileButton } from 'app/lib/form-helpers';
 
 export default function FormMessenger(props) {
     const isWeb = Platform.OS == 'web';
-    const initialHeight = 40; // Single line height, grows immediately on second line
     const formContext = useFormContext();
     const [isExImage, setIsExImage] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
@@ -16,11 +15,6 @@ export default function FormMessenger(props) {
     function setIsFocus() {
         setIsExImage(false)
         setIsFocused(true)
-    }
-
-    function setIsBlur() {
-
-        setIsFocused(false)
     }
 
 
@@ -58,12 +52,19 @@ export default function FormMessenger(props) {
                 {getFormFieldByData(props.data.inputs['cf'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['payload'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['message'], props.handleSubmit, 'custom', {
-                    autofocus: false, form_name: props.name, container_class: 'comments', classes: "flex-1 my-0.5", focus: true, bg: 'transparent', submitOnEnter: true,
-                    noPadding: true,
+                    
+                    form_name: props.name, 
+                    container_class: 'comments', 
+                    classes: 'text-card-foreground tiptap-comments',
+                    autofocus: false, 
+                    bg: 'transparent', 
                     placeholder: 'Message ...',
+                    noPadding: true,
                     initialHeight: 20,
                     maxHeight: 160,
-                    onFocus: setIsFocus, onBlur: setIsBlur
+                    onFocus: setIsFocus,
+                    enableSubmitOnEnter: true,
+                    focus: true, 
                 })}
                 {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['message_id'], props.handleSubmit, 'custom')}

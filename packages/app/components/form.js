@@ -415,7 +415,6 @@ export default function Form({
         );
     }
 
-    console.log("formBundle.extra", formBundle.extra, Element)
     if ('undefined' !== typeof ElementForm) {
         inputs = <ElementForm name={name} data={{ ...formBundle?.form, inputs: filteredInputs }} response={formBundle.response} handleSubmit={_handleSubmit} exProps={exProps}></ElementForm>
         return (
