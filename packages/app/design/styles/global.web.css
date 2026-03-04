@@ -72,7 +72,7 @@ select {
 }
 
 .u-link-ghost:hover::after {
-    background-color: rgb(var(--muted));
+    background-color: rgb(var(--muted) / 0.6);
 }
 
 .u-link-ghost:active::after {

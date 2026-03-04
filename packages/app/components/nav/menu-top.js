@@ -86,7 +86,7 @@ export default function MenuTop({ url, uri }) {
                 );
             })}
             <View 
-                className="rounded-full flex-none bg-ring absolute -bottom-2 left-0 h-[3px]"
+                className="rounded-full flex-none bg-ring absolute -bottom-1.5 left-0 h-[2px]"
                 style={{ 
                     width: indicatorStyle.width,
                     transform: `translateX(${indicatorStyle.translateX}px)`,
@@ -106,14 +106,14 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
             <Tooltip content={title}>
                 <View className="flex-auto web:group" key={`menu-${index}`}>
                     <Row
-                        className={`items-center content-center justify-center min-h-12 min-w-14 p-1 flex-auto flex-wrap rounded-xl web:duration-200 web:group-active:opacity-50 ${isActive
+                        className={`items-center content-center justify-center p-2 flex-auto flex-wrap rounded-lg web:duration-200 web:group-active:opacity-50 ${isActive
                             ? 'bg-transparent text-accent-foreground'
                             : 'text-secondary-foreground web:group-hover:text-foreground web:hover:bg-muted/60 active:bg-accent'
                             }`}
                     >
                         <Icon
                             icon={icon}
-                            className={`${isActive ? "text-accent-foreground h-6 w-6 my-auto items-center justify-center flex" : "text-secondary-foreground web:group-hover:text-foreground h-9 w-9 items-center justify-center flex"}`}
+                            className={`${isActive ? "text-accent-foreground h-7 w-7 my-auto items-center justify-center flex" : "text-secondary-foreground web:group-hover:text-foreground h-9 w-9 items-center justify-center flex"}`}
                         />
                         {isTitle && <Text className={`whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ${isActive ? 'text-accent-foreground' : 'text-secondary-foreground'} text-sm px-2 leading-5`}>{title}</Text>}
                     </Row>
