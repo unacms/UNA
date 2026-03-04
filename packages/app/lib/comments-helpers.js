@@ -667,7 +667,7 @@ export function CommentsForm({ form: initialForm, requestUrl, module, objectId, 
 
 
     useEffect(() => {
-        if (dynamicData?.data?.browse) {
+        if (dynamicData?.data?.browse && dynamicData?.data?.browse?.new?.[0]) {
             emitter.emit(`comment_${module}_${objectId}`, { action: 'new_content', data: dynamicData.data.browse.data.data[0]['i' + dynamicData.data.browse.new[0]] });
             emitter.emit(`comments`, { action: 'new_content', data: dynamicData.data, item: dynamicData.data.browse.data.data[0]['i' + dynamicData.data.browse.new[0]] });
             handleCancel() 

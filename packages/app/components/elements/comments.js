@@ -14,7 +14,7 @@ export default function ({browse, form, url, blockWrapperProps}) {
     const formContent = <View className='border-border border-t border-border/60 mt-12'>
         <CommentsForm 
             handleForm={handleForm} 
-            browse={browse.data.object_id} 
+            objectId={browse?.data?.object_id} 
             module={browse?.data?.module || ''} 
             form={form} 
             requestUrl={url} 
