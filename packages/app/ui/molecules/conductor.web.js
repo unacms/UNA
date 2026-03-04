@@ -1133,7 +1133,7 @@ const LeftSideBarContainer = ({
                                                     key={`lmenu-${a.index}`}
                                                     alt={a.title}
                                                     variant="ghost"
-                                                    size="md"
+                                                    size="lg"   
                                                     className={`group ${activeWrapperClassName}`.trim()}
                                                 >
                                                     {btn}
@@ -1146,7 +1146,7 @@ const LeftSideBarContainer = ({
                                                 key={`lmenu-${a.index}`}
                                                 alt={a.title}
                                                 variant="ghost"
-                                                size="md"
+                                                size="lg"
                                                 className={`group ${activeWrapperClassName}`.trim()}
                                             >
                                                 <Pressable

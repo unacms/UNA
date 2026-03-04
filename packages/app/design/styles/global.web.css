@@ -94,41 +94,109 @@ select {
     background-color: rgb(var(--accent));
 }
 
+/*
+ * Ghost links: focus ring on ::after so it follows the ghost inset area (not the link box).
+ * Outline is disabled for ghost+hitarea; ring is drawn with box-shadow on the ghost shape.
+ */
+.u-link-ghost.u-link-hitarea-xs:focus-visible,
+.u-link-ghost.u-link-hitarea-sm:focus-visible,
+.u-link-ghost.u-link-hitarea-md:focus-visible,
+.u-link-ghost.u-link-hitarea-lg:focus-visible {
+    outline: none;
+}
+
+.u-link-ghost.u-link-hitarea-xs:focus-visible::after,
+.u-link-ghost.u-link-hitarea-sm:focus-visible::after,
+.u-link-ghost.u-link-hitarea-md:focus-visible::after,
+.u-link-ghost.u-link-hitarea-lg:focus-visible::after {
+    box-shadow:
+        0 0 0 var(--u-link-focus-offset) rgb(var(--background)),
+        0 0 0 calc(var(--u-link-focus-offset) + var(--u-link-focus-width)) rgb(var(--ring) / 0.6);
+}
+
+[data-theme="dark"] .u-link-ghost.u-link-hitarea-xs:focus-visible::after,
+[data-theme="dark"] .u-link-ghost.u-link-hitarea-sm:focus-visible::after,
+[data-theme="dark"] .u-link-ghost.u-link-hitarea-md:focus-visible::after,
+[data-theme="dark"] .u-link-ghost.u-link-hitarea-lg:focus-visible::after {
+    box-shadow:
+        0 0 0 var(--u-link-focus-offset) rgb(var(--background)),
+        0 0 0 calc(var(--u-link-focus-offset) + var(--u-link-focus-width)) rgb(var(--ring));
+}
+
+@media (prefers-color-scheme: dark) {
+    :root .u-link-ghost.u-link-hitarea-xs:focus-visible::after,
+    :root .u-link-ghost.u-link-hitarea-sm:focus-visible::after,
+    :root .u-link-ghost.u-link-hitarea-md:focus-visible::after,
+    :root .u-link-ghost.u-link-hitarea-lg:focus-visible::after {
+        box-shadow:
+            0 0 0 var(--u-link-focus-offset) rgb(var(--background)),
+            0 0 0 calc(var(--u-link-focus-offset) + var(--u-link-focus-width)) rgb(var(--ring));
+    }
+}
+
 /* xs: ~12–16px text → target ≥44px touch area */
 .u-link-hitarea-xs {
     --u-link-ghost-inset-x: -2px;
     --u-link-ghost-inset-y: -2px;
-    --u-link-ghost-radius: 0.25rem;
-    --u-link-hitarea-radius: 0.25rem;
+    --u-link-ghost-radius: 0.125rem;
+    --u-link-hitarea-radius: 0.125rem;
+    --u-link-focus-width: 2px;
+    --u-link-focus-offset: 2px;
+    --u-link-focus-radius: var(--u-link-hitarea-radius);
 }
-.u-link-hitarea-xs::before { inset: -14px; }
+.u-link-hitarea-xs::before { inset: -8px; }
+.u-link-hitarea-xs:focus-visible {
+    outline-width: var(--u-link-focus-width);
+    outline-offset: var(--u-link-focus-offset);
+}
 
 /* sm: ~14–20px text → target ≥44px touch area */
 .u-link-hitarea-sm {
-    --u-link-ghost-inset-x: -6px;
-    --u-link-ghost-inset-y: -5px;
-    --u-link-ghost-radius: 0.5rem;
-    --u-link-hitarea-radius: 0.5rem;
+    --u-link-ghost-inset-x: -4px;
+    --u-link-ghost-inset-y: -4px;
+    --u-link-ghost-radius: 0.25rem;
+    --u-link-hitarea-radius: 0.25rem;
+    --u-link-focus-width: 2px;
+    --u-link-focus-offset: 2px;
+    --u-link-focus-radius: var(--u-link-hitarea-radius);
 }
-.u-link-hitarea-sm::before { inset: -12px; }
+.u-link-hitarea-sm::before { inset: -8px; }
+.u-link-hitarea-sm:focus-visible {
+    outline-width: var(--u-link-focus-width);
+    outline-offset: var(--u-link-focus-offset);
+}
 
 /* md: ~16–24px text → target ≥44px touch area */
 .u-link-hitarea-md {
-    --u-link-ghost-inset-x: -8px;
-    --u-link-ghost-inset-y: -7px;
-    --u-link-ghost-radius: 0.625rem;
-    --u-link-hitarea-radius: 0.625rem;
+    --u-link-ghost-inset-x: -6px;
+    --u-link-ghost-inset-y: -6px;
+    --u-link-ghost-radius: 0.375rem;
+    --u-link-hitarea-radius: 0.375rem;
+    --u-link-focus-width: 3px;
+    --u-link-focus-offset: 3px;
+    --u-link-focus-radius: var(--u-link-hitarea-radius);
 }
-.u-link-hitarea-md::before { inset: -10px; }
+.u-link-hitarea-md::before { inset: -8px; }
+.u-link-hitarea-md:focus-visible {
+    outline-width: var(--u-link-focus-width);
+    outline-offset: var(--u-link-focus-offset);
+}
 
 /* lg: ~18–28px text → target ≥44px touch area */
 .u-link-hitarea-lg {
-    --u-link-ghost-inset-x: -10px;
-    --u-link-ghost-inset-y: -6px;
-    --u-link-ghost-radius: 0.625rem;
-    --u-link-hitarea-radius: 0.625rem;
+    --u-link-ghost-inset-x: -8px;
+    --u-link-ghost-inset-y: -8px;
+    --u-link-ghost-radius: 0.5rem;
+    --u-link-hitarea-radius: 0.5rem;
+    --u-link-focus-width: 3px;
+    --u-link-focus-offset: 2px;
+    --u-link-focus-radius: 0.5rem;
 }
 .u-link-hitarea-lg::before { inset: -8px; }
+.u-link-hitarea-lg:focus-visible {
+    outline-width: var(--u-link-focus-width);
+    outline-offset: var(--u-link-focus-offset);
+}
 
 /* Generic action (button) hit area */
 .u-action-hitarea::before {

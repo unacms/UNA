@@ -3,24 +3,24 @@ export const settingsLinks = {
         default_size: 'md',
         default_variant: 'default',
         xs: {
-            hitSlop: 14,
+            hitSlop: 8,
             text: 'text-xs rounded-sm',
             // Extra DOM padding for primary variant (inline-button style)
             primary: 'px-1.5 py-px',
         },
         sm: {
-            hitSlop: 12,
-            text: 'text-sm rounded-md',
+            hitSlop: 8,
+            text: 'text-sm rounded',
             primary: 'px-2 py-1',
         },
         md: {
-            hitSlop: 10,
-            text: 'text-base rounded-lg ',
+            hitSlop: 8,
+            text: 'text-base rounded-md ',
             primary: 'px-3 py-1',
         },
         lg: {
             hitSlop: 8,
-            text: 'text-lg rounded-xl',
+            text: 'text-lg rounded-lg',
             primary: 'px-4 py-1.5',
         }
     },

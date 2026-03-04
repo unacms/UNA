@@ -249,27 +249,24 @@ export default function ({ data, blocks }) {
 
     const SideBarContent = (
         <>
-            <View>
+            
                 {appSetting('layout', 'show_profile_info') && (
-
-                    <Link href={currentUser.url} emulate={true}>
-                        <Row
-                            className={
-                                ' rounded-xl web:group items-center gap-1 px-2 py-1.5 mb-0.5 web:hover:bg-muted/60  '
-                            }
-                        >
+                    
+                    <Link variant='ghost' size='lg' href={currentUser.url} emulate={true} className="mt-2 mb-1 flex-row items-center">
+                      
 
                             <Profile
                                 {...currentUser}
                                 url_avatar={currentUser.avatar}
                                 displayType="unit_wo_info"
                                 displaySize="md"
+                                showLinks={false}
                             />
 
 
                             <Row className="flex-auto items-center justify-between gap-1">
                                 <Row className="items-center gap-1 flex-auto min-w-0">
-                                    <Text className="px-1 text-sm leading-tight font-semibold truncate text-card-foreground web:group-hover:text-foreground ">
+                                    <Text className="px-2 text-sm leading-tight font-semibold truncate text-card-foreground web:group-hover:text-foreground ">
                                         {currentUser.display_name}
                                     </Text>
                                     {currentUser.badges && <Badges badges={currentUser.badges} size="xs" />}
@@ -286,13 +283,13 @@ export default function ({ data, blocks }) {
                                     />
                                 )}
                             </Row>
-                        </Row>
+                        
                     </Link>
 
                 )}
 
                 {feedList.length > 1 && (
-                    <View className=" pb-3 border-b border-input gap-y-0.5">
+                    <View className=" py-3 border-b border-border/60 gap-4">
                         {feedList.map((item, index) => {
                             return (
                                 <MenuItemSidebarWithWrapper
@@ -322,7 +319,7 @@ export default function ({ data, blocks }) {
                         </View>
                     )
                 })}
-            </View>
+            
         </>
     )
 
@@ -399,7 +396,7 @@ export default function ({ data, blocks }) {
                 {layoutName == 'hor' && isWeb && (
                     <>
                         <Panel className={`hidden ${leftBreakpoint}:block ${currentBreakpointName}:w-full`} {...leftPanelProps}>
-                            <View className=" p-3 fixed-process ">
+                            <View className=" p-4 fixed-process  ">
                                 {SideBarContent}
                             </View>
                         </Panel>
@@ -422,7 +419,7 @@ export default function ({ data, blocks }) {
                             sizable={cellsCustomConfig.sizable}
                         />
                         <Panel className={`hidden ${rightBreakpoint}:block ${currentBreakpointName}:w-full`} {...rightPanelProps}>
-                            <View className={`p-3 gap-4 fixed-process`}>
+                            <View className={`p-4 gap-4 fixed-process`}>
                                 {AsideContent}
                             </View>
                         </Panel>

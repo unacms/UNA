@@ -246,6 +246,64 @@ export const MarketView = memo(({ data, styles, url, isCompact }) => {
     )
 })
 
+export const PostsView = memo(({ data, styles, url, isCompact, content_attach, fulltext }) => {
+    const imgs = content_attach
+    return (
+        <View className={isCompact ? 'flex-row-reverse gap-x-3' : 'w-full gap-y-2'}>
+            {data.mainImage && (
+                <View className={isCompact ? 'w-28 flex-none' : 'w-full mb-1'}>
+                    <View
+                        className="w-full aspect-[5/2] rounded-lg overflow-hidden"
+                        style={styles.card_image}
+                    >
+                        <Image
+                            {...data.mainImage}
+                            alt={data.title}
+                            view="cover"
+                            className="u-cover rounded-xl"
+                            sizes={LAYOUT_BREAKPOINTS.md}
+                        />
+                    </View>
+                </View>
+            )}
+            <View className="flex-auto gap-y-1 ">
+                {data.content?.title && (
+                    <LinkOrModal href={url} showInModal={appSetting('browse', 'show_in_modal', data.type)}>
+                        <Text
+                            numberOfLines={isCompact ? 3 : 2}
+                            className="text-card-foreground web:hover:text-foreground text-xl font-bold leading-tight font-title tracking-tight"
+                        >
+                            {data.content.title}
+                        </Text>
+                    </LinkOrModal>
+                )}
+                {data.content?.text ? (
+                    fulltext ? (
+                        <Html data={data.content.text} />
+                    ) : (
+                        <ContentMore
+                            id={'feed-' + data.id}
+                            showLink={!data.mainImage}
+                            content={data.content.text}
+                            numberOfLines={isCompact ? 2 : 4}
+                            numberOfSymbols={400}
+                            openSmall={false}
+                            showLess={true}
+                            customClassName="u-vanilla-html-small"
+                        />
+                    )
+                ) : null}
+                {!!data.content?.embed && (
+                    <View className="rounded-lg overflow-hidden w-full">
+                        <Embed data={typeof data.content.embed !== 'string' ? data.content.embed : { url: data.content.embed }} />
+                    </View>
+                )}
+                {!isCompact && <UnitImages images={imgs} />}
+            </View>
+        </View>
+    )
+})
+
 export const DefaultView = memo(
     ({
         data,

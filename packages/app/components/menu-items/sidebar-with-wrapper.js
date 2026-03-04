@@ -13,11 +13,11 @@ export default function MenuItemSidebarWithWrapper({ link, title, index, icon = 
     const wrapperProps = onPress
         ? {
             ...(isWeb
-                ? { emulate: true, onPress, alt: title, variant: 'ghost', size: 'md' }
+                ? { emulate: true, onPress, alt: title, variant: 'ghost', size: 'lg' }
                 : { onPress }),
             className: `group ${activeWrapperClassName}`.trim(),
         }
-        : { href: finalLink, alt: title, variant: 'ghost', size: 'md', className: `group ${activeWrapperClassName}`.trim() };
+        : { href: finalLink, alt: title, variant: 'ghost', size: 'lg', className: `group ${activeWrapperClassName}`.trim() };
 
     return (
         <Wrapper {...wrapperProps}>

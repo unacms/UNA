@@ -82,7 +82,7 @@ export default function Unit(props) {
     }
 
     return (
-        <Link variant='ghost' size='md' href={data.url} emulate={true}>
+        <Link variant='ghost' size='lg' href={data.url} emulate={true}>
             <View
                 className=" flex-row  web:active:opacity-90 gap-2 items-center max-w-4xl mx-auto w-full"
             >

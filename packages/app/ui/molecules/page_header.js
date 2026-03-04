@@ -98,7 +98,7 @@ export const PageHeader = ({
     } : {};
     /* animations for hide header */
 
-    const Logo = <Link href="/home" aria-label="Home" variant="ghost" size="md" className="items-center">
+    const Logo = <Link href='/home' aria-label="Home" variant='ghost' size='lg' className='items-center'>
         {appStatic('logo')}
     </Link>
     /* left element, can be logo, context selecor or title */
