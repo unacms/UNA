@@ -8,6 +8,7 @@ import { Platform } from 'react-native'
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { useIsDesktop, useWindowHeight } from 'app/context/measure';
 import { BlockWrapper } from 'app/components/block-wrapper'
+import { useSafeAreaInsets } from 'app/lib/hooks/router'
 
 export default function MessengerEl(props) {
     const url = props.url;
@@ -93,6 +94,7 @@ const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeigh
     const isWeb = Platform.OS == 'web'
     const isDesktop = useIsDesktop();
     const layoutHeaderHeight = 64;
+    const insets = useSafeAreaInsets();
     let height = useMemo(() => {
         let heightInit = windowWHeight;
         if (layout == 'ver') {
@@ -105,12 +107,12 @@ const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeigh
             heightInit = windowWHeight - layoutHeaderHeight;
         }
         if (!isDesktop) {
-            heightInit = windowWHeight - 64; // ????????????????????
+            heightInit = windowWHeight - layoutHeaderHeight
         }
         if (!isWeb) {
-            heightInit = windowWHeight - 56;
+            heightInit = windowWHeight - insets.bottom - insets.top;
             if (Platform.OS == 'ios') {
-                heightInit = windowWHeight - 56;
+                heightInit = windowWHeight - insets.bottom - insets.top - 64;
             }
         }
         return heightInit;
