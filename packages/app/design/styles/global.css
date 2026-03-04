@@ -403,7 +403,8 @@
 
 .bx-mention-link,
 .bx-tag {
-    @apply text-accent-foreground;
+    @apply text-primary !important;
+    text-decoration: underline !important;
 }
 
 .bx-mention-link:hover {
