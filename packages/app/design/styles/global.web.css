@@ -41,7 +41,7 @@ select {
     content: "";
     position: absolute;
     inset: -10px;
-    border-radius: var(--u-link-hitarea-radius, 0.375rem);
+    border-radius: 0;
     /* Nearly invisible bg so hit-testing works without visual change */
     background-color: rgba(0, 0, 0, 0.001);
     pointer-events: auto;
@@ -68,10 +68,11 @@ select {
     transition: background-color 0.15s ease;
     z-index: -1;
     pointer-events: none;
+    box-sizing: border-box;
 }
 
 .u-link-ghost:hover::after {
-    background-color: rgb(var(--muted) / 0.6);
+    background-color: rgb(var(--muted));
 }
 
 .u-link-ghost:active::after {
@@ -87,7 +88,7 @@ select {
 }
 
 .u-link-ghost-active:hover::after {
-    background-color: rgb(var(--accent) / 0.6);
+    background-color: rgb(var(--muted) / 0.6);
 }
 
 .u-link-ghost-active:active::after {
@@ -95,8 +96,9 @@ select {
 }
 
 /*
- * Ghost links: focus ring on ::after so it follows the ghost inset area (not the link box).
- * Outline is disabled for ghost+hitarea; ring is drawn with box-shadow on the ghost shape.
+ * Ghost links: focus ring is drawn on ::after (the ghost shape) so the ring
+ * matches where the ghost insets end and uses --u-link-ghost-radius. No outline
+ * on the link so the ring is not oversized.
  */
 .u-link-ghost.u-link-hitarea-xs:focus-visible,
 .u-link-ghost.u-link-hitarea-sm:focus-visible,
@@ -109,18 +111,14 @@ select {
 .u-link-ghost.u-link-hitarea-sm:focus-visible::after,
 .u-link-ghost.u-link-hitarea-md:focus-visible::after,
 .u-link-ghost.u-link-hitarea-lg:focus-visible::after {
-    box-shadow:
-        0 0 0 var(--u-link-focus-offset) rgb(var(--background)),
-        0 0 0 calc(var(--u-link-focus-offset) + var(--u-link-focus-width)) rgb(var(--ring) / 0.6);
+    border: var(--u-link-focus-width) solid rgb(var(--ring) / 0.6);
 }
 
 [data-theme="dark"] .u-link-ghost.u-link-hitarea-xs:focus-visible::after,
 [data-theme="dark"] .u-link-ghost.u-link-hitarea-sm:focus-visible::after,
 [data-theme="dark"] .u-link-ghost.u-link-hitarea-md:focus-visible::after,
 [data-theme="dark"] .u-link-ghost.u-link-hitarea-lg:focus-visible::after {
-    box-shadow:
-        0 0 0 var(--u-link-focus-offset) rgb(var(--background)),
-        0 0 0 calc(var(--u-link-focus-offset) + var(--u-link-focus-width)) rgb(var(--ring));
+    border-color: rgb(var(--ring));
 }
 
 @media (prefers-color-scheme: dark) {
@@ -128,9 +126,7 @@ select {
     :root .u-link-ghost.u-link-hitarea-sm:focus-visible::after,
     :root .u-link-ghost.u-link-hitarea-md:focus-visible::after,
     :root .u-link-ghost.u-link-hitarea-lg:focus-visible::after {
-        box-shadow:
-            0 0 0 var(--u-link-focus-offset) rgb(var(--background)),
-            0 0 0 calc(var(--u-link-focus-offset) + var(--u-link-focus-width)) rgb(var(--ring));
+        border-color: rgb(var(--ring));
     }
 }
 
@@ -139,10 +135,10 @@ select {
     --u-link-ghost-inset-x: -2px;
     --u-link-ghost-inset-y: -2px;
     --u-link-ghost-radius: 0.125rem;
-    --u-link-hitarea-radius: 0.125rem;
     --u-link-focus-width: 2px;
     --u-link-focus-offset: 2px;
-    --u-link-focus-radius: var(--u-link-hitarea-radius);
+    --u-link-focus-offset-ghost: 4px;
+    --u-link-focus-radius: var(--u-link-ghost-radius);
 }
 .u-link-hitarea-xs::before { inset: -8px; }
 .u-link-hitarea-xs:focus-visible {
@@ -155,10 +151,10 @@ select {
     --u-link-ghost-inset-x: -4px;
     --u-link-ghost-inset-y: -4px;
     --u-link-ghost-radius: 0.25rem;
-    --u-link-hitarea-radius: 0.25rem;
     --u-link-focus-width: 2px;
     --u-link-focus-offset: 2px;
-    --u-link-focus-radius: var(--u-link-hitarea-radius);
+    --u-link-focus-offset-ghost: 6px;
+    --u-link-focus-radius: var(--u-link-ghost-radius);
 }
 .u-link-hitarea-sm::before { inset: -8px; }
 .u-link-hitarea-sm:focus-visible {
@@ -171,10 +167,10 @@ select {
     --u-link-ghost-inset-x: -6px;
     --u-link-ghost-inset-y: -6px;
     --u-link-ghost-radius: 0.375rem;
-    --u-link-hitarea-radius: 0.375rem;
     --u-link-focus-width: 3px;
     --u-link-focus-offset: 3px;
-    --u-link-focus-radius: var(--u-link-hitarea-radius);
+    --u-link-focus-offset-ghost: 8px;
+    --u-link-focus-radius: var(--u-link-ghost-radius);
 }
 .u-link-hitarea-md::before { inset: -8px; }
 .u-link-hitarea-md:focus-visible {
@@ -186,11 +182,11 @@ select {
 .u-link-hitarea-lg {
     --u-link-ghost-inset-x: -8px;
     --u-link-ghost-inset-y: -8px;
-    --u-link-ghost-radius: 0.5rem;
-    --u-link-hitarea-radius: 0.5rem;
+    --u-link-ghost-radius: 8px;
     --u-link-focus-width: 3px;
-    --u-link-focus-offset: 2px;
-    --u-link-focus-radius: 0.5rem;
+    --u-link-focus-offset: 0px;
+    --u-link-focus-offset-ghost: 8px;
+    --u-link-focus-radius: var(--u-link-ghost-radius);
 }
 .u-link-hitarea-lg::before { inset: -8px; }
 .u-link-hitarea-lg:focus-visible {
@@ -609,7 +605,7 @@ html[theme="dark"]:root {
     .u-link-hitarea-sm::before,
     .u-link-hitarea-md::before,
     .u-link-hitarea-lg::before {
-        border-radius: calc(var(--u-link-hitarea-radius, 0.375rem) * var(--neo-corner-superellipse-factor, 2));
+        border-radius: 0;
         /* stylelint-disable-next-line property-no-unknown */
         corner-shape: superellipse(var(--neo-corner-superellipse-factor, 2));
     }
