@@ -130,12 +130,12 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
     }
 
     return (
-        <Row className={`${conductorTheme.content_max_width} flex-row items-center justify-between mx-auto h-14`}>
-            {!currentUser && !bPerson ? <PageHeaderSmall /> : <><Row className='items-center' >
+        <Row className={`${conductorTheme.content_max_width} flex-auto items-center justify-between mx-auto h-14`}>
+            {!currentUser && !bPerson ? <PageHeaderSmall /> : <><Row className='items-center flex-1 overflow-hidden' >
                 {(!appSetting('context_selector', 'show_always') || !isWeb) && <View className='mr-2 lg:hidden'>{getCoverBackButton(bPerson)}</View>}
                 {appSetting('context_selector', 'show_always') && !isDesktop ? <View className={`${TABLET_MODE_FROM}:hidden `}>
                     <ContextSelector data={context} mode="compact" />
-                </View> : <>                    <Row className='items-center gap-2'>
+                </View> : <>                    <Row className='items-center gap-2 flex-1 '>
                     {bPerson && (
                         <Profile
                             {...data.profile}
@@ -146,6 +146,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                         {...data.profile}
                         displayType="unit_wo_image"
                         displaySize="lg"
+                        showLinks={false}
                     />
                 </Row>
                     {isAddSelector && (

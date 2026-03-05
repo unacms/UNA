@@ -35,7 +35,7 @@ export function DisplayNameLink({title, url, href, fontSize, actions, inheritCol
 
 function DisplayNameText({ title, fontSize }) {
     return (
-        <Text className={`${fontSize}`}>
+        <Text className={`${fontSize} whitespace-nowrap text-ellipsis overflow-hidden`}>
             {title}
         </Text>
     )
@@ -101,9 +101,9 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
     );
 
     return (
-        <Row className="my-auto ">
-            <View className="flex-auto">
-            <Row className="items-center gap-1 h-5">
+        <Row className="my-auto flex-1">
+            <View className="flex-1">
+            <Row className="items-center gap-1 h-5 flex-1">
                 {wrapWithHoverCard(nameLink)}
                 {info2}
                 
