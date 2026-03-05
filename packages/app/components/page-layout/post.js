@@ -298,7 +298,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         }*/
     }
 
-    if (!isWeb || !isDesktop || !isMultiColumn) {
+    if (!isWeb || !isDesktop ) {
         const newItems = !isWeb || !isDesktop ? aItems.slice(1) : aItems;
         return (
             <View {...viewProps} className={`w-full ${isWeb ? '' : 'h-full'}`}>
@@ -315,7 +315,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         />
                     </View>
                     <KbAvoidingView>
-                        <View onLayout={handleLayout} style={{ width: listWidth + 5 }} className='-ml-[2px] -mr-[2px] border-background border bg-background web:fixed z-50 web:bottom-0  '>
+                        <View onLayout={handleLayout} style={{ width: listWidth + 5 }} className='-ml-[2px] -mr-[2px] bg-card border-background border bg-background web:fixed z-50 web:bottom-0  '>
                             <View className=' lg:mb-4  ml-[1px] '>
                                 <CommentsForm
                                     isModal={isModal}
@@ -344,7 +344,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
             }
             direction="horizontal"
             {...viewProps}
-            className={` ${isMultiColumn ? appSetting('layout', 'max_width_content') + 'mx-auto' : ''} flex-1 w-full h-full sm:min-h-[calc(100vh-16rem)]`}
+            className={` ${isMultiColumn ? appSetting('layout', 'max_width_content') + 'mx-auto' : 'max-w-5xl mx-auto'} flex-1 w-full h-full sm:min-h-[calc(100vh-16rem)]`}
             onLayout={onLayout}
         >
             {isLeftCol && (
