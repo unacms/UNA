@@ -190,11 +190,13 @@ const ButtonContent = React.memo(({
                 <View className={cn('absolute inset-0 pointer-events-none overflow-hidden', roundingClass, strokeClasses)} />
             )}
             <ButtonIcon size={BtnClsSize[size]?.icon_size} icon={startDecorator} className={textClasses.replace("overflow-hidden")} />
+
             {isTitle && (
                 <Text className={`${textClasses} ${titleVisibility}`} numberOfLines={1}>
                     {title}
                 </Text>
             )}
+            
             <ButtonIcon size={BtnClsSize[size]?.icon_size} icon={endDecorator} className={textClasses} />
             {oButtonAddon && (
                 isTitle ? <View className="z-10">{oButtonAddon}</View> : <View className="absolute top-0 right-0 w-full h-full z-20 pointer-events-none" >{oButtonAddon}</View>
