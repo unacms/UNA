@@ -189,7 +189,7 @@ const ButtonContent = React.memo(({
             {hasOverlayStroke && (
                 <View className={cn('absolute inset-0 pointer-events-none overflow-hidden', roundingClass, strokeClasses)} />
             )}
-            <ButtonIcon size={BtnClsSize[size]?.icon_size} icon={startDecorator} className={textClasses} />
+            <ButtonIcon size={BtnClsSize[size]?.icon_size} icon={startDecorator} className={textClasses.replace("overflow-hidden")} />
             {isTitle && (
                 <Text className={`${textClasses} ${titleVisibility}`} numberOfLines={1}>
                     {title}
