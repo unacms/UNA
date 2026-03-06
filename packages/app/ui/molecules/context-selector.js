@@ -84,7 +84,6 @@ export default function ContextSelector({ data:initialData, url, uri, mode }) {
    
     const [isOpen, setIsOpen] = useState(false);
     const [data, setContextData] = useState(initialData);
-    console.log("datadatadata", data, url, uri)
     const { t } = useTranslation();
 
 

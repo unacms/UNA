@@ -114,7 +114,7 @@ const TabScene = React.memo(({
             unitType={unitType}
             unitMode={unitMode}
             route={route}
-            item={{ ...item, feed_type: route?.endpoint?.params?.type }}
+            item={item}
             unit={route?.endpoint?.unit}
             module={route?.endpoint?.module}
         />
@@ -123,7 +123,19 @@ const TabScene = React.memo(({
     const scrollValue = useScrollValue();
     const NoContent = getComponent('molecule', 'no_content')
 
-    const routeData = route?.endpoint ? route.data : [...(route.data || []), ...(route.sidebar?.content || [])]
+    const feedType = route?.endpoint?.params?.type;
+    
+    const routeData = useMemo(() => {
+        const base = route?.endpoint
+            ? route.data
+            : [...(route.data || []), ...(route.sidebar?.content || [])];
+        if (!feedType || !base) return base;
+        return base.map(item =>
+            item.feed_type === feedType ? item : { ...item, feed_type: feedType }
+        );
+    }, [route?.endpoint, route?.data, route?.sidebar?.content, feedType]);
+
+    
     return (
         <>
             {(isProfileHeader && scrollValue > 500) && smallHeader}

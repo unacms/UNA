@@ -131,26 +131,26 @@ export default function UniList(props) {
     }
 
 
-    const ItemComponent = ({ className, ...props }) => (
-        <ReactNativeView className={`${layout || 'w-full'} ${className || 'mb-3'}`} {...props} />
-    );
-
-    const ListComponent = forwardRef(({ className, ...props }, ref) => {
-        return (
+    const ItemComponent = useMemo(() => {
+        const cls = layout || 'w-full';
+        return ({ className, ...props }) => (
+            <ReactNativeView className={`${cls} ${className || 'mb-3'}`} {...props} />
+        );
+    }, [layout]);
+    const ListComponent = useMemo(() =>
+        forwardRef(({ className, ...props }, ref) => (
             <ReactNativeView
                 ref={ref}
                 className={`u-max-width-block w-full mx-auto flex flex-wrap flex-row ${className || ''}`}
                 {...props}
             />
-        );
-    });
-
-    // Style for virtuoso: only pass explicit height when NOT using window scroll, but preserve paddingTop
+        )),
+        []
+    );
+    const FooterComponent = useCallback(() => ListFooterComponent, [ListFooterComponent]);
     const virtuosoStyle = isWindowScroll
         ? (paddingTop ? { paddingTop } : {})
         : style;
-
-
     const commonVirtuosoProps = {
         data,
         useWindowScroll: isWindowScroll,
@@ -158,16 +158,13 @@ export default function UniList(props) {
         ref: refer ? refer : uniRef,
         endReached: onEndReached,
         overscan: props.unit == 'notifications' ? 100 : 900,
+        increaseViewportBy: { top: 3000, bottom: 3000 },
         components: mode != 'simple' ? {
             List: ListComponent,
             Item: ItemComponent,
-            Footer: () => {
-                return ListFooterComponent
-            },
-
+            Footer: FooterComponent,
         } : {
-            Footer: () => ListFooterComponent,
-
+            Footer: FooterComponent,
         },
         ...rest,
     };

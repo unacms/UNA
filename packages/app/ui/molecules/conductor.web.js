@@ -579,7 +579,8 @@ const TabSceneMainContent = ({
             <ItemRenderer
                 unitType={unitType}
                 route={pageRoute}
-                item={{ ...item, feed_type: pageRoute?.endpoint?.params?.type }}
+                item={item}
+                index={index}
                 unit={pageRoute?.endpoint?.unit}
                 module={pageRoute?.endpoint?.module}
             />
@@ -611,16 +612,30 @@ const TabSceneMainContent = ({
     )
 
     // remove empty blocks
-    const dataItemsPageFiltered = dataItemsPage?.filter(item => {
-        if (!item) return false;
-        const block = BlockByName2({
-            b: item.data,
-            name: item.block,
-        });
-        return block !== null;
-    }) ?? [];
+    const dataItemsPageFiltered = useMemo(() => 
+        dataItemsPage?.filter(item => {
+            if (!item) return false;
+            const block = BlockByName2({
+                b: item.data,
+                name: item.block,
+            });
+            return block !== null;
+        }) ?? [],
+        [dataItemsPage]
+    );
 
-    const dataItems = isDesktop || !!pageRoute?.endpoint?.request_url ? [...dataItemsPageFiltered, ...refetchState.visibleItems] : [...dataItemsPageFiltered, ...refetchState.visibleItems, ...pageRoute.sidebar.content];
+    const feedType = pageRoute?.endpoint?.params?.type;
+
+    const dataItems = useMemo(() => {
+        const base = isDesktop || !!pageRoute?.endpoint?.request_url
+            ? [...dataItemsPageFiltered, ...refetchState.visibleItems]
+            : [...dataItemsPageFiltered, ...refetchState.visibleItems, ...pageRoute.sidebar.content];
+    
+        if (!feedType) return base;
+        return base.map(item => 
+            item.feed_type === feedType ? item : { ...item, feed_type: feedType }
+        );
+    }, [dataItemsPageFiltered, refetchState.visibleItems, isDesktop, pageRoute?.endpoint?.request_url, pageRoute?.sidebar?.content, feedType]);
 
     useEffect(() => {
         if (isUseCurrentHeader) {
@@ -639,6 +654,7 @@ const TabSceneMainContent = ({
     if ((pageRoute?.endpoint?.request_url && hasNextPage === undefined) || !isInited){
        return Preload
     }
+    console.log("dataItems", dataItems)
     return (
         <>
             {(formProps) && <View className=" w-full">
