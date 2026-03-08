@@ -6,7 +6,7 @@
 
 ## Table of Contents
 
-- [Project Separation Rules](#project-separation-rules)
+- [Project Structure Rules](#project-structure-rules)
 - [Framework Awareness](#framework-awareness)
 - [Server vs Client Components](#server-vs-client-components)
 - [Component Architecture](#component-architecture)
@@ -16,29 +16,15 @@
 
 ---
 
-## Project Separation Rules
+## Project Structure Rules
 
-### Critical: Main vs Test Apps
-
-The monorepo contains **two distinct ecosystems** that must be kept separate:
+The active monorepo surface is:
 
 ```
-MAIN APPS (Production)          TEST APPS (Experimental)
-├── apps/next                   ├── apps/webtest
-├── apps/expo                   ├── apps/nativetest
-└── packages/app                └── packages/test-components
+apps/next
+apps/expo
+packages/app
 ```
-
-### Rules for Test Apps
-
-When working on `webtest` or `nativetest`:
-
-1. **NEVER import from `packages/app`** - Use `packages/test-components` instead
-2. **NEVER modify files in `apps/next` or `apps/expo`**
-3. **Create new components in `packages/test-components/src/components/`**
-4. **Use different styling systems:**
-   - `webtest`: Tailwind CSS 4 + HeroUI v3
-   - `nativetest`: Tailwind CSS 4 + Uniwind
 
 ### Rules for Main Apps
 
@@ -46,8 +32,8 @@ When working on `next` or `expo`:
 
 1. **Share code through `packages/app`**
 2. **Follow the established component hierarchy** (see Component Architecture)
-3. **Never import from `packages/test-components`**
-4. **Use NativeWind 4 + Tailwind CSS 3.4**
+3. **Keep web and native implementations aligned**
+4. **Use NativeWind 4 + Tailwind CSS 3.4 conventions already established in the repo**
 
 ### Import Verification
 
@@ -58,13 +44,8 @@ Before adding imports, verify the source:
 import { Button } from 'app/ui/atoms/button';
 import { settings } from 'app/settings';
 
-// ✅ CORRECT for test apps
-import { Button } from '@neo/test-components';
-import { tokens } from '@neo/test-components/theme';
-
-// ❌ WRONG - mixing ecosystems
-import { Button } from 'app/ui/atoms/button'; // in webtest
-import { Button } from '@neo/test-components'; // in next/expo
+// ❌ WRONG - bypassing shared app code from feature files
+import { SomeExternalComponent } from 'external-lib';
 ```
 
 ---
@@ -97,7 +78,6 @@ If you're unsure about best practices for the installed version:
 1. **Next.js 16:** Check https://nextjs.org/docs for latest patterns
 2. **Expo 54:** Check https://docs.expo.dev for latest APIs
 3. **React 19:** Check https://react.dev for new patterns
-4. **HeroUI v3:** Check https://v3.heroui.com/docs (for webtest only)
 
 ### React Compiler
 
@@ -259,24 +239,6 @@ packages/app/
    componentsMapDefault['my-component'] = CustomComponent;
    export const componentsMap = componentsMapDefault;
    ```
-
-### Test Components (webtest/nativetest)
-
-For test apps, use `packages/test-components`:
-
-```
-packages/test-components/src/
-├── components/
-│   ├── button/
-│   │   ├── button.tsx        # Web version
-│   │   ├── button.native.tsx # Native version
-│   │   └── index.ts
-│   └── ...
-├── theme/
-│   ├── tokens.ts
-│   └── index.ts
-└── index.ts
-```
 
 ### Cross-Platform Components
 
@@ -506,10 +468,10 @@ Before submitting changes, verify:
 - [ ] Array access uses optional chaining (`array[0]?.prop`)
 - [ ] Object property access handles null/undefined cases
 
-### Project Separation
-- [ ] Changes to test apps don't import from `packages/app`
-- [ ] Changes to main apps don't import from `packages/test-components`
-- [ ] No cross-contamination between ecosystems
+### Project Boundaries
+- [ ] Shared code lives in `packages/app`
+- [ ] App-specific code stays inside `apps/next` or `apps/expo`
+- [ ] No dead or removed app references are introduced
 
 ### Framework Compliance
 - [ ] Using latest patterns for installed Next.js version
@@ -547,7 +509,6 @@ Before submitting changes, verify:
 
 ```bash
 # Check specific app
-cd apps/webtest && npx tsc --noEmit
 cd apps/next && npx tsc --noEmit
 cd apps/expo && npx tsc --noEmit
 ```
@@ -622,10 +583,6 @@ cd apps/expo && npx tsc --noEmit
 import { X } from 'app/...';           // packages/app
 import { Y } from 'lucide-react';      // Web icons
 import { Z } from 'lucide-react-native'; // Native icons
-
-// Test apps
-import { X } from '@neo/test-components';
-import { Y } from '@neo/test-components/theme';
 ```
 
 ### Common Patterns
