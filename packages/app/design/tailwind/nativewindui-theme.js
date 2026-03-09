@@ -99,7 +99,7 @@ const nativewindUIColors = {
         tertiary: withOpacity('link-tertiary'),
     },
    
-    guide: withOpacity('guide'),
+
     
     
     shadow: {

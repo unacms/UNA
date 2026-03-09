@@ -267,7 +267,7 @@ const getStarColor = (index) => {
 }
 
 const getTextColor = (index) => {
-    return index <= 3 ? 'text-white' : 'text-guide'
+    return index <= 3 ? 'text-white' : 'text-muted-foreground'
 }
 
 const StarIcon = ({ color, size = 28 }) => (
