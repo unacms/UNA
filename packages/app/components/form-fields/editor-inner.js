@@ -780,7 +780,7 @@ export default function RftText({
                     observer.observe(editorElement, {
                         childList: true,
                         subtree: true,
-                        characterData: false // Don't observe character data changes
+                        characterData: true // Don't observe character data changes
                     });
 
                     editorElement.addEventListener("blur", () => {
