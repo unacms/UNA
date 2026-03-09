@@ -629,7 +629,7 @@ const TabSceneMainContent = ({
     const dataItems = useMemo(() => {
         const base = isDesktop || !!pageRoute?.endpoint?.request_url
             ? [...dataItemsPageFiltered, ...refetchState.visibleItems]
-            : [...dataItemsPageFiltered, ...refetchState.visibleItems, ...pageRoute.sidebar.content];
+            : [...pageRoute.leftbar.content.filter(item => !item.data?.hidden_on?.includes?.('phone')), ...dataItemsPageFiltered, ...refetchState.visibleItems, ...pageRoute.sidebar.content.filter(item => !item.data?.hidden_on?.includes?.('phone'))];
     
         if (!feedType) return base;
         return base.map(item => 
