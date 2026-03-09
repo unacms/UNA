@@ -1,4 +1,4 @@
-create# NEO Monorepo
+# NEO Monorepo
 
 ⚛️ A unified cross-platform codebase for web and native applications built with **Expo 54**, **Next.js 16**, and **NativeWind 4**.
 
@@ -37,13 +37,10 @@ NEO Monorepo is a unified codebase providing web and native UI applications for 
 neo/
 ├── apps/
 │   ├── next/           # Main web application (Next.js 16)
-│   ├── expo/           # Main native application (Expo 54 / React Native)
-│   ├── webtest/        # Experimental web app (Next.js 16 + HeroUI v3)
-│   └── nativetest/     # Experimental native app (Expo 54 + Uniwind)
+│   └── expo/           # Main native application (Expo 54 / React Native)
 │
 ├── packages/
-│   ├── app/            # Shared application code (components, lib, design)
-│   └── test-components/ # Experimental shared components for test apps
+│   └── app/            # Shared application code (components, lib, design)
 │
 ├── docs/               # Documentation
 ├── crypto-shim/        # Polyfill for crypto module
@@ -58,15 +55,12 @@ neo/
 |-----|---------|------|------------|
 | `apps/next` | **Production web app** - Main web interface for UNA | 3000 | Next.js 16, Tailwind CSS 3, NativeWind |
 | `apps/expo` | **Production native app** - iOS/Android apps | - | Expo 54, React Native 0.81, NativeWind |
-| `apps/webtest` | **Experimental web** - Testing new UI components | 3001 | Next.js 16, Tailwind CSS 4, HeroUI v3 |
-| `apps/nativetest` | **Experimental native** - Testing Uniwind integration | - | Expo 54, React Native 0.81, Uniwind |
 
 ### Packages Explained
 
 | Package | Purpose |
 |---------|---------|
 | `packages/app` | Shared application code: components, hooks, utilities, design system, settings, translations |
-| `packages/test-components` | Experimental shared components for `webtest` and `nativetest` apps |
 
 ---
 
@@ -154,8 +148,6 @@ HTTPS=true
 |---------|-------------|
 | `yarn web` | Start Next.js web app (port 3000) |
 | `yarn native` | Start Expo dev server for native apps |
-| `yarn webtest` | Start experimental web app (port 3001) |
-| `yarn nativetest` | Start experimental native app |
 | `yarn ios` | Run native app on iOS simulator |
 | `yarn android` | Run native app on Android emulator |
 | `yarn ios:device` | Run native app on physical iOS device |
@@ -165,7 +157,6 @@ HTTPS=true
 | Command | Description |
 |---------|-------------|
 | `yarn build` | Build Next.js production bundle |
-| `yarn build:webtest` | Build experimental web app |
 | `yarn analyze` | Analyze bundle size |
 
 ### Production Commands
