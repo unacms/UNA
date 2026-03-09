@@ -342,16 +342,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             fetchItems(selectedConvo.id, true);
     }, [selectedConvo?.id, jots])
 
-    const handleBackButton = () => {
-        if (!panelsVisible.convos) {
-            showConvo()
-        }
-        else {
-            setConvoId(-1);
-            routerExpo.back();
-        }
-    };
-
     const convosComponent = useMemo(() => {
         return <Convos
             isSmallScreen={isSmallScreen}
@@ -569,7 +559,7 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
                                 No conversations found
                             </Text>
                         </View>
-                        <CreateConvoButton variant='secondary' onSave={onSave} onShow={onSave2} />
+                        {addButtons?.length > 0 && <CreateConvoButton variant='secondary' onSave={onSave} onShow={onSave2} />}
                     </View>
                 </View></View>
 

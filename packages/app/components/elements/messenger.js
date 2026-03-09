@@ -64,15 +64,13 @@ export default function MessengerEl(props) {
         setInitedConvoId(data.convo.id)
     }, []);
 
-    const changeMenu = useCallback((index) => {
-        setMenu(prevMenu => ({ ...prevMenu, index: index }));
-        setInitedConvoId(convos.data[0].id)
-    }, []);
-
     const addButtons = useMemo(() => {
+        if (!props.data?.config?.permissions || props.data?.config?.permissions?.create_talk == 1){
         return [
             <CreateConvoButton key="a" onSave={onSave} variant='secondary' />
         ]
+        }
+        return null
     }, []);
 
     const messengerContainer = (menu && convos) && <MessengerContainer
