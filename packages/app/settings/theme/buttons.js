@@ -6,10 +6,10 @@ export const settingsButtons = {
         default_variant: 'default', 
         xs: {
             rounded: 'rounded-md',
-            container: 'px-2 gap-1 h-8 min-w-8',
-            container_icon_only: 'h-8 w-10 items-center justify-center',
-            text: 'text-xs leading-8',
-            icon_size: 20,
+            container: 'px-2 gap-1 h-7 min-w-9',
+            container_icon_only: 'h-7 w-9 items-center justify-center',
+            text: 'text-xs leading-7',
+            icon_size: 16,
             hitSlop: 8,
         },
         sm: {
@@ -196,7 +196,7 @@ export const settingsButtons = {
                 base:'web:duration-200',
                 default:'',
                 active:'bg-accent/60 scale-[0.98] ',
-                pressed:'bg-accent/60 ] ',
+                pressed:'bg-accent/60',
                 hovered:'bg-accent/60',
                 focused:'bg-accent/60',
                 disabled:'',
