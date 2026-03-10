@@ -2,10 +2,10 @@ import { Modal } from 'app/design/controls'
 import { getPageData, getLayoutName, BlockDataByType, BlockDataByName } from 'app/lib/util';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { ScrollView, View, Row } from 'app/design/view'
-import { useCallback } from 'react'
 import { Keyboard } from 'react-native'
 import { getComponent } from 'app/components/registry';
 import { Platform } from 'react-native'
+import { useEffect, useCallback } from 'react'
 
 const isWeb = Platform.OS === 'web';
 
@@ -13,6 +13,29 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
     const handleModalClose = useCallback(() => {
         Keyboard.dismiss()
     }, [])
+
+    const handleClose = useCallback(() => {
+        if (isWeb) {
+            window.history.back();
+        } 
+        setPageData(false);
+    }, [setPageData]);
+
+    useEffect(() => {
+        if (!isWeb || !pageData || !url) return;
+    
+        const normalizedUrl = '/' + url.replace(/^\/+/, '');
+        window.history.pushState({ modal: true }, '', normalizedUrl);
+    
+        const handlePopState = () => {
+            setPageData(false);
+        };
+        window.addEventListener('popstate', handlePopState);
+    
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+        };
+    }, [!!pageData, url]);
 
     if (!pageData)
         return null;
@@ -24,7 +47,7 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
         const { layoutBlocks } = layout;
         return (
             <Modal
-                onClose={() => setPageData(false)}
+                onClose={handleClose}
                 onVisible={!!pageData}
                 title={`${authorData.content[0].data.author_data.display_name}'s post`}
                 padding=""
@@ -60,7 +83,8 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
             padding={isShowHeader ? " p-0 " : " p-0 "}
             transparent={true}
             onRequestClose={handleModalClose}
-            onClose={() => { setPageData(false); }}
+            onClose={handleClose}
+         
         >
             <View className='p-3 flex-auto'>
                 <Container key={pageData.module + (pageData.ts)} className={`flex-1 ${isShowHeader ? '' : 'overflow-visible'}`}>{/*px-3 sm:px-0*/}
@@ -89,7 +113,7 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
 
 export const handleFormModal = async (oItem, event, setPageData, params) => {
     const sResponse = await getFormModal(oItem, params);
-    setPageData({ ...sResponse.data, ts: Date.now() });
+    setPageData({ ...sResponse.data, ts: Date.now(), url:oItem?.link?.replace(/^\/*/, "") + (params ? `&params[]=&params[]=${JSON.stringify({ params })}` : "") });
 }
 
 export const getFormModal = async (oItem, params) => {

@@ -34,7 +34,7 @@ export default function MenuAdd({ buttonProps, children }) {
 
     return (
         <>
-            <FormModal pageData={pageData} setPageData={setPageData} />
+            <FormModal pageData={pageData} setPageData={setPageData} url={pageData?.url} />
             <DropdownMenu
                 onSelect={(oItem, event) => handleFormModal(oItem, event, setPageData)}
                 items={menu_add_items.map(
