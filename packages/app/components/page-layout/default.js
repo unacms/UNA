@@ -5,7 +5,7 @@ import Page from 'app/ui/molecules/page'
 export default function PageLayout({children, data}) {
     return (
         <Page data={data}>
-            <View className='p-4 w-full flex-1'>
+            <View className='w-full flex-1 py-px sm:p-4 gap-px sm:gap-y-4'>
                 {children}
             </View>
             {appStatic('components_footer')}

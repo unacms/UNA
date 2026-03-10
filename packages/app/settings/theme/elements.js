@@ -74,7 +74,7 @@ export const settingsElements = {
         'u-block-bg':
             'bg-card ',
         'u-block-pad':
-            'p-4 rounded-xl ',
+            'p-4 sm:rounded-xl ',
         'u-block-header':
             ' flex-row items-center gap-4 pb-4',
         'u-block-icon': 'mb-auto',
