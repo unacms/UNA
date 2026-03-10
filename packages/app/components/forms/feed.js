@@ -218,7 +218,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                             </View>
                         </View>
                         <View className="">
-                            <View className={`items-center flex-auto w-full gap-x-2 sm:p-1 `}>
+                            <View className={`items-center flex-auto w-full gap-2  `}>
                                 <Row className="gap-x-2 w-full justify-between ">
                                     <Row className="flex-none gap-x-2">
                                         {data.inputs['obfuscate_faces'] && (
