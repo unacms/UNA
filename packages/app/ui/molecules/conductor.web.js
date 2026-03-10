@@ -516,8 +516,9 @@ const TabSceneMainContent = ({
                 }
                 refetchRef.current.skipToast = true
             }
-            if (data.action == 'new_content' && (!pageRoute?.endpoint?.params?.owner_id || Math.abs(pageRoute?.endpoint?.params?.owner_id) == Math.abs(data?.data?.object_privacy_view))) {
-                
+
+            if (data.action == 'new_content' && (!pageRoute?.endpoint?.params?.owner_id || Math.abs(pageRoute?.endpoint?.params?.owner_id) == Math.abs(data?.data?.owner_id))) {
+
                 dispatch({ type: 'PREPEND_ITEM', item: data.data })
                 if (refetchRef.current?.prevItems) {
                     refetchRef.current.prevItems = [data.data, ...refetchRef.current.prevItems]
@@ -654,7 +655,7 @@ const TabSceneMainContent = ({
     if ((pageRoute?.endpoint?.request_url && hasNextPage === undefined) || !isInited){
        return Preload
     }
-    console.log("dataItems", dataItems)
+
     return (
         <>
             {(formProps) && <View className=" w-full">

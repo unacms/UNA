@@ -16,24 +16,32 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
 
     const handleClose = useCallback(() => {
         if (isWeb) {
-            window.history.back();
-        } 
+          //  window.history.replaceState(null, '', previousUrl); // сохранённый ранее
+        }
         setPageData(false);
-    }, [setPageData]);
+    }, []);
 
     useEffect(() => {
-        if (!isWeb || !pageData || !url) return;
+        //if (!isWeb || !pageData || !url) 
+		return;
     
         const normalizedUrl = '/' + url.replace(/^\/+/, '');
+        const previousUrl = window.location.pathname + window.location.search;
+    
         window.history.pushState({ modal: true }, '', normalizedUrl);
     
         const handlePopState = () => {
             setPageData(false);
         };
+    
+      
+    
         window.addEventListener('popstate', handlePopState);
+       
     
         return () => {
             window.removeEventListener('popstate', handlePopState);
+           
         };
     }, [!!pageData, url]);
 

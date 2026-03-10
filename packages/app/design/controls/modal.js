@@ -86,7 +86,7 @@ export function Modal({
 
 
     const offset = (title ? 64 : isIos ? insets?.bottom + insets?.top : 0);
-    const styles = { maxHeight: heightActual - offset }
+    const styles = { maxHeight: heightActual - offset /*-(isDesktop ? 32 : 0)*/ }
     const animationType = animation || (isDesktop ? 'fade' : 'slide');
     const isOuterClose = (onClose !== 'undefined' && outerClickClose !== false);
     const positionClasses = {
