@@ -296,6 +296,10 @@ export default function ({ is_allowed_edit, block_id, content_id, content_module
         );
     }
 
+
+    if (!bAllowEdit && Object.values(data).flat().length == 0){
+        return null
+    }
     return (
         <BlockWrapper {...blockWrapperProps}>
             <View className="w-full overflow-hidden">
@@ -319,6 +323,7 @@ export default function ({ is_allowed_edit, block_id, content_id, content_module
                     <Button variant='text' size='base' rounded startDecorator='Image' onPress={() => { onAdd('image') }} />
                     <Button variant='text' size='base' rounded startDecorator='MapPin' onPress={() => { onAdd('map') }} />
                 </Row>}
+                <View className="-ml-2 -mr-2">
                 <ResponsiveReactGridLayoutM
                     rowHeight={rowHeight}
                     data={data}
@@ -330,6 +335,7 @@ export default function ({ is_allowed_edit, block_id, content_id, content_module
                     getCell={getCell}
                     resizeHandles={["s", "w", "e", "n", "sw", "nw", "se", "ne"]}
                 />
+                </View>
             </View>
         </BlockWrapper>
 

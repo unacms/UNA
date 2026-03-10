@@ -17,15 +17,17 @@ function ItemRenderer_({ route, item, unit, module, unitMode, unitType, sidebar 
 }
 
 export function BlockItemRenderer({ route, item, sidebar }) {
-    const block = BlockByName2({ b: item.data, name: item.block, contentOnly:item?.data?.source == "system:get_create_post_form" });
+    const block = BlockByName2({ 
+        b: item.data, 
+        name: item.block, 
+        contentOnly:item?.data?.source == "system:get_create_post_form",
+        wrapperClassses: `${item?.block?.classes} mb-0.5 sm:mb-3 lg:mb-4 w-full mx-auto u-max-width-block `//${block?.props?.extraProps?.list && !sidebar ? 'lg:h-px overflow-hidden ' : ''}
+    }
+    );
     if (!block) {
         return null;
     }
-    return (
-        <View className={`${item?.block?.classes} mb-0.5 sm:mb-3 lg:mb-4 w-full mx-auto u-max-width-block ${block?.props?.extraProps?.list && !sidebar ? 'lg:h-px overflow-hidden ' : ''}`} key={`${route.index}-${item.id}`}>
-            {block}
-        </View>
-    );
+    return block
 }
 
 export const ItemRenderer = memo(ItemRenderer_);

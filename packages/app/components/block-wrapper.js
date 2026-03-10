@@ -5,7 +5,7 @@ import { Block as PageBlock, BlockContent, BlockName, BlockActions, BlockHeader,
 import Link from 'app/ui/atoms/link'
 import { useTranslation } from 'react-i18next'
 
-export function BlockWrapper({ config, block, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, children }) {
+export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, children }) {
     const { t } = useTranslation()
 
     if (block?.designbox_id == null)
@@ -54,39 +54,41 @@ export function BlockWrapper({ config, block, showTitle, showBg, fullWidth, cont
 
 
     return (
-        <View className="@container/block w-full">
-            <PageBlock
-                key={block.id}
-                isBg={bIsShowBg}
-                isPad={bIsShowPadding}
-                className={[
-                    "w-full mx-auto",
-                    (!fullWidth && !cssClasses.includes("max-w-") ? appSetting('layout', 'max_width_block') : ""),
-                    cssClasses,
-                ].filter(Boolean).join(" ")}
+        <View className={wrapperClassses || 'w-full'}>
+            <View className="@container/block w-full">
+                <PageBlock
+                    key={block.id}
+                    isBg={bIsShowBg}
+                    isPad={bIsShowPadding}
+                    className={[
+                        "w-full mx-auto",
+                        (!fullWidth && !cssClasses.includes("max-w-") ? appSetting('layout', 'max_width_block') : ""),
+                        cssClasses,
+                    ].filter(Boolean).join(" ")}
 
-            >
-                {bIsShowTitle && (
-                    <BlockHeader>
-                        <BlockName>
-                            <BlockTitle>{stripTags(block.title)}</BlockTitle> 
-                        </BlockName>
-                        {config?.header_more_url && (<BlockActions>
-                            <Link
-                                href={config?.header_more_url}
-                                variant="ghost"
-                                size="sm"
-                                
-                            >
-                                {t(config?.header_more_text || 'See all')}
-                            </Link>
-                        </BlockActions>)}
-                    </BlockHeader>
-                )}
-                <BlockContent>
-                    {children}
-                </BlockContent>
-            </PageBlock>
+                >
+                    {bIsShowTitle && (
+                        <BlockHeader>
+                            <BlockName>
+                                <BlockTitle>{stripTags(block.title)}</BlockTitle>
+                            </BlockName>
+                            {config?.header_more_url && (<BlockActions>
+                                <Link
+                                    href={config?.header_more_url}
+                                    variant="ghost"
+                                    size="sm"
+
+                                >
+                                    {t(config?.header_more_text || 'See all')}
+                                </Link>
+                            </BlockActions>)}
+                        </BlockHeader>
+                    )}
+                    <BlockContent>
+                        {children}
+                    </BlockContent>
+                </PageBlock>
+            </View>
         </View>
     );
 }
