@@ -49,7 +49,7 @@ export const settingsElements = {
         header: ' p-3 items-start justify-start border-b border-border/60',
     },
     cards: {
-        'u-card-list': ' u-card-list bg-card text-card-foreground sm:rounded-xl shadow-custom',
+        'u-card-list': ' u-card-list bg-card text-card-foreground sm:rounded-xl ',
         'u-card-list-padding': 'p-4',
         'u-card-base': 'u-card-base bg-card/80 text-card-foreground rounded-xl web:shadow-custom native:border border-border/60 ',
         'u-card-padding': 'py-4',

@@ -133,7 +133,17 @@ const Carousel = memo(({ data = [] }) => {
             setWidth(event.nativeEvent.layout.width);
     }, [width]);
 
-    const offset = useMemo(() => (windowWidthOr > 672 ? 60 : Platform.OS === 'ios' ? 120 : 60), [windowWidthOr]);
+    const previewBounds = useMemo(() => {
+        const widthRatio = windowWidthOr >= 1536 ? 0.62 : windowWidthOr >= 1280 ? 0.68 : windowWidthOr >= 1024 ? 0.76 : 0.92;
+        const heightRatio = Platform.OS === 'ios'
+            ? (windowHeightOr >= 900 ? 0.8 : 0.74)
+            : (windowHeightOr >= 900 ? 0.82 : 0.76);
+
+        const maxWidth = Math.max(Math.min(windowWidthOr * widthRatio, 1100), 0);
+        const maxHeight = Math.max(Math.min(windowHeightOr * heightRatio, windowHeightOr - 56), 0);
+
+        return { maxWidth, maxHeight };
+    }, [windowWidthOr, windowHeightOr]);
 
     useEffect(() => {
         if (currentImageIndex !== false) {
@@ -141,52 +151,45 @@ const Carousel = memo(({ data = [] }) => {
                 data[currentImageIndex].src,
                 (width, height) => {
                     let imageAspectRatio = width / height;
-                    let ww = windowWidthOr > 672 ? 672 : windowWidthOr;
-                    let wh = windowHeightOr - (offset);
+                    let ww = previewBounds.maxWidth;
+                    let wh = previewBounds.maxHeight;
+
+                    if (!ww || !wh) return;
 
                     let newImageWidth, newImageHeight;
                     //  let wh = windowWidthOr * wh1/ww;
                     let windowAspectRatio = ww / wh;
 
-                    if (false) {
-
-                        if (imageAspectRatio > windowAspectRatio) {
-                            newImageWidth = ww;
-                            newImageHeight = ww / imageAspectRatio;
-                        } else {
-                            newImageHeight = wh;
-                            newImageWidth = wh * imageAspectRatio;
-                        }
-                    }
-                    else {
+                    if (imageAspectRatio > windowAspectRatio) {
                         newImageWidth = ww;
-                        newImageHeight = newImageWidth * height / width
+                        newImageHeight = ww / imageAspectRatio;
+                    } else {
+                        newImageHeight = wh;
+                        newImageWidth = wh * imageAspectRatio;
                     }
                     setImageSize2([newImageWidth, newImageHeight]);
                 }
             );
         }
-    }, [currentImageIndex]);
+    }, [currentImageIndex, data, previewBounds.maxWidth, previewBounds.maxHeight]);
 
     return <>
         {currentImageIndex !== false && <Modal padding="" title="Viewer" onVisible={currentImageIndex !== false} onClose={() => { setCurrentImageIndex(false) }} transparent={true} >
             <Row className=' w-full mx-auto items-center justify-center h-full'>
                 {
                     (imageSize2[0] > 0 && data[currentImageIndex].type == 'image') && (
-                        <ScrollView style={{ height: windowHeightOr - offset }}>
-                            <Pressable style={{ width: imageSize2[0], height: imageSize2[1] }} onPress={() => setCurrentImageIndex(false)}>
+                        <ScrollView
+                            style={{ width: '100%', height: previewBounds.maxHeight }}
+                            contentContainerStyle={{ minHeight: previewBounds.maxHeight, alignItems: 'center', justifyContent: 'center' }}
+                        >
+                            <Pressable style={{ width: imageSize2[0], height: imageSize2[1], maxWidth: '100%', alignSelf: 'center', overflow: 'hidden' }} onPress={() => setCurrentImageIndex(false)}>
                                 {currentImageIndex !== false && (
                                        <ReactNativeZoomableView
                                        maxZoom={30}
-                                       // Give these to the zoomable view so it can apply the boundaries around the actual content.
-                                       // Need to make sure the content is actually centered and the width and height are
-                                       // dimensions when it's rendered naturally. Not the intrinsic size.
-                                       // For example, an image with an intrinsic size of 400x200 will be rendered as 300x150 in this case.
-                                       // Therefore, we'll feed the zoomable view the 300x150 size.
-                                       contentWidth={300}
-                                       contentHeight={150}
+                                       contentWidth={imageSize2[0]}
+                                       contentHeight={imageSize2[1]}
                                      >
-                                    <Image view='cover' sizes={LAYOUT_BREAKPOINTS.xl} src={data[currentImageIndex].src} alt='' className=" u-cover    gap-x-1 " />
+                                    <Image width={imageSize2[0]} height={imageSize2[1]} sizes={LAYOUT_BREAKPOINTS.xl} src={data[currentImageIndex].src} alt='' nobg contentFit="contain" />
                                     </ReactNativeZoomableView>
                                 )}
                                 <Row className='absolute w-full -mt-4 top-1/2 items-center justify-between w-full px-4'>

@@ -62,7 +62,7 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <CardList padding="p-3 lg:p-4" className="flex-row gap-2 lg:gap-3">
+            <CardList padding="p-3 lg:p-4" className="flex-row gap-2">
                 
                     <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
                 
@@ -78,9 +78,9 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
                 
 
                 <FormModal key={pageData?.ts} pageData={pageData} setPageData={setPageData} />
-                {menu_add_items.length > 0 && <Row className="gap-2 lg:gap-3 flex-none">
+                {menu_add_items.length > 0 && <Row className="gap-2 flex-none">
                     {menu_add_items.map((item, index) => (
-                        <Button key={item.name} size="base" fullWidth variant="default" rounded iconOnly onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon} />
+                        <Button key={item.name} size="base" fullWidth variant="secondary" rounded iconOnly onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon} />
                     ))}
                 </Row>}
 
