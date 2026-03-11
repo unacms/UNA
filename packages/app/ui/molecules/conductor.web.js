@@ -540,7 +540,6 @@ const TabSceneMainContent = ({
 
     const handleEndReached = useCallback(
         async (lastItemIndex) => {
-            console.log("hasNextPage", hasNextPage)
             if (isFetchingNextPage) return
             if (hasNextPage === false) return
             if (lastItemIndex === false) return
@@ -628,7 +627,7 @@ const TabSceneMainContent = ({
     const feedType = pageRoute?.endpoint?.params?.type;
 
     const dataItems = useMemo(() => {
-        const base = isDesktop || !!pageRoute?.endpoint?.request_url
+        const base = isDesktop 
             ? [...dataItemsPageFiltered, ...refetchState.visibleItems]
             : [...pageRoute.leftbar.content.filter(item => !item.data?.hidden_on?.includes?.('phone')), ...dataItemsPageFiltered, ...refetchState.visibleItems, ...pageRoute.sidebar.content.filter(item => !item.data?.hidden_on?.includes?.('phone'))];
     
