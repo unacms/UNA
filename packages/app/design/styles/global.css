@@ -36,7 +36,7 @@
         /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--white);
         /*content on destructive buttons, destructive surfaces*/
-        --border: var(--neutral-300);
+        --border: var(--neutral-200);
         /*borders, dividers, focus rings*/
         --input: var(--neutral-100);
         /*form inputs*/
@@ -63,14 +63,6 @@
         /*Link text color on
 
         /* Shadow Border variables - Light Mode */
-        --shadow-border-sm: 0px 0px 0px 1px rgba(0, 0, 0, 0.05), 0px 1px 1px -0.5px rgba(0, 0, 0, 0.06), 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
-        --shadow-border-sm-hover: 0px 0px 0px 1px rgba(0, 0, 0, 0.08), 0px 1px 1px -0.5px rgba(0, 0, 0, 0.08), 0px 1px 2px 0px rgba(0, 0, 0, 0.08);
-        --shadow-border: 0px 0px 0px 1px rgba(0, 0, 0, 0.05), 0px 1px 2px -1px rgba(0, 0, 0, 0.06), 0px 2px 4px 0px rgba(0, 0, 0, 0.05);
-        --shadow-border-hover: 0px 0px 0px 1px rgba(0, 0, 0, 0.08), 0px 1px 2px -1px rgba(0, 0, 0, 0.08), 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
-        --shadow-border-lg: 0px 0px 0px 1px rgba(0, 0, 0, 0.05), 0px 2px 4px -1px rgba(0, 0, 0, 0.06), 0px 4px 8px 0px rgba(0, 0, 0, 0.05);
-        --shadow-border-lg-hover: 0px 0px 0px 1px rgba(0, 0, 0, 0.08), 0px 2px 4px -1px rgba(0, 0, 0, 0.08), 0px 4px 8px 0px rgba(0, 0, 0, 0.08);
-        --shadow-border-xl: 0px 0px 0px 1px rgba(0, 0, 0, 0.05), 0px 4px 8px -2px rgba(0, 0, 0, 0.06), 0px 8px 16px 0px rgba(0, 0, 0, 0.05);
-        --shadow-border-xl-hover: 0px 0px 0px 1px rgba(0, 0, 0, 0.08), 0px 4px 8px -2px rgba(0, 0, 0, 0.08), 0px 8px 16px 0px rgba(0, 0, 0, 0.08);
         --shadow-custom: 0px 0px 0px 1px #0000000f, 0px 1px 2px -1px #0000000f, 0px 2px 4px 0px #0000000a;
         --shadow-custom-hover: 0px 0px 0px 1px #00000014, 0px 1px 2px -1px #00000014, 0px 2px 4px 0px #0000000f;
 
@@ -154,7 +146,7 @@
         /*main page background*/
         --foreground: var(--white);
         /*main page content*/
-        --card: var(--neutral-800);
+        --card: var(--neutral-900);
         /*surface*/
         --card-foreground: var(--neutral-200);
         /*content on cards, sidebars, navbars*/
@@ -174,7 +166,7 @@
         /*background for accent buttons, accent surfaces*/
         --accent-foreground: var(--accent-400);
         /*content on accent buttons, accent surfaces*/
-        --muted: var(--neutral-700);
+        --muted: var(--neutral-800);
         /*background for ui items, sections, hover states*/
         --muted-foreground: var(--neutral-500);
         /*muted content*/
@@ -209,15 +201,7 @@
         /*Link text color on visited*/
 
         /* Shadow Border variables - Dark Mode */
-        --shadow-border-sm: 0px 0px 0px 1px rgba(255, 255, 255, 0.06), 0px 1px 1px -0.5px rgba(255, 255, 255, 0.04), 0px 1px 2px 0px rgba(0, 0, 0, 0.1);
-        --shadow-border-sm-hover: 0px 0px 0px 1px rgba(255, 255, 255, 0.08), 0px 1px 1px -0.5px rgba(255, 255, 255, 0.06), 0px 1px 2px 0px rgba(0, 0, 0, 0.2);
-        --shadow-border: 0px 0px 0px 1px rgba(255, 255, 255, 0.06), 0px 1px 2px -1px rgba(255, 255, 255, 0.08), 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
-        --shadow-border-hover: 0px 0px 0px 1px rgba(255, 255, 255, 0.08), 0px 1px 2px -1px rgba(255, 255, 255, 0.086), 0px 3px 6px 0px rgba(0, 0, 0, 0.2);
-        --shadow-border-lg: 0px 0px 0px 1px rgba(255, 255, 255, 0.06), 0px 2px 4px -1px rgba(255, 255, 255, 0.06), 0px 4px 8px 0px rgba(0, 0, 0, 0.1);
-        --shadow-border-lg-hover: 0px 0px 0px 1px rgba(255, 255, 255, 0.08), 0px 2px 4px -1px rgba(255, 255, 255, 0.06), 0px 4px 8px 0px rgba(0, 0, 0, 0.2);
-        --shadow-border-xl: 0px 0px 0px 1px rgba(255, 255, 255, 0.06), 0px 4px 8px -2px rgba(255, 255, 255, 0.06), 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
-        --shadow-border-xl-hover: 0px 0px 0px 1px rgba(255, 255, 255, 0.08), 0px 4px 8px -2px rgba(255, 255, 255, 0.06), 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-        --shadow-custom: 0px 0px 0px 1px #ffffff1a, 0px 1px 2px -1px #ffffff14, 0px 2px 4px 0px #00000066;
+       --shadow-custom: 0px 0px 0px 1px #ffffff1a, 0px 1px 2px -1px #ffffff14, 0px 2px 4px 0px #00000066;
         --shadow-custom-hover: 0px 0px 0px 1px #ffffff24, 0px 1px 2px -1px #ffffff1f, 0px 2px 4px 0px #00000080;
     }
 
@@ -253,57 +237,6 @@
 
 
 @layer utilities {
-    /* ============================================
-     * SHADOW BORDER UTILITIES
-     * Stacked shadows that replace borders for natural depth
-     * Based on: https://jakub.kr/work/shadows
-     * ============================================ */
-
-    /* Small - subtle, for small elements */
-    .shadow-border-sm {
-        box-shadow: var(--shadow-border-sm);
-    }
-
-    .shadow-border-sm:hover {
-        box-shadow: var(--shadow-border-sm-hover);
-    }
-
-    /* Default - standard border replacement */
-    .shadow-border {
-        box-shadow: var(--shadow-border);
-    }
-
-    .shadow-border:hover {
-        box-shadow: var(--shadow-border-hover);
-    }
-
-    /* Large - more prominent depth */
-    .shadow-border-lg {
-        box-shadow: var(--shadow-border-lg);
-    }
-
-    .shadow-border-lg:hover {
-        box-shadow: var(--shadow-border-lg-hover);
-    }
-
-    /* Extra Large - maximum depth */
-    .shadow-border-xl {
-        box-shadow: var(--shadow-border-xl);
-    }
-
-    .shadow-border-xl:hover {
-        box-shadow: var(--shadow-border-xl-hover);
-    }
-
-    /* Transition for smooth hover effects */
-    .shadow-border-sm,
-    .shadow-border,
-    .shadow-border-lg,
-    .shadow-border-xl {
-        transition: box-shadow 150ms ease;
-    }
-}
-
 .u-vanilla-html {
     /* @apply prose dark:prose-invert; */
     @apply text-secondary-foreground ;
@@ -452,4 +385,5 @@
     object-fit: cover;
     transform: translate(-50%, -50%);
     z-index: -1;
+}
 }

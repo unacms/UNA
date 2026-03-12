@@ -86,7 +86,7 @@ export default function MenuTop({ url, uri }) {
                 );
             })}
             <View 
-                className="rounded-full flex-none bg-ring absolute -bottom-1.5 left-0 h-[2px]"
+                className="rounded-full flex-none bg-ring absolute -bottom-2 left-0 h-0.5"
                 style={{ 
                     width: indicatorStyle.width,
                     transform: `translateX(${indicatorStyle.translateX}px)`,
@@ -102,18 +102,18 @@ export default function MenuTop({ url, uri }) {
 
 function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
     return (
-        <Link variant="plain" className=" rounded-xl min-w-16 flex-auto relative " href={link} alt={title}>
+        <Link variant="text" size="lg" className=" min-w-16 flex-auto relative group web:active:scale-95 web:duration-100 " href={link} alt={title}>
             <Tooltip content={title}>
                 <View className="flex-auto web:group" key={`menu-${index}`}>
                     <Row
-                        className={`items-center content-center justify-center p-2 flex-auto flex-wrap rounded-lg web:duration-200 web:group-active:opacity-50 ${isActive
-                            ? 'bg-transparent text-accent-foreground'
-                            : 'text-secondary-foreground web:group-hover:text-foreground web:hover:bg-muted/60 active:bg-accent'
+                        className={`items-center content-center justify-center px-2 h-12 flex-auto flex-wrap rounded-lg  ${isActive
+                            ? 'bg-accent/60 web:hover:bg-accent/80 active:bg-accent text-accent-foreground'
+                            : 'text-secondary-foreground web:group-hover:text-foreground web:hover:bg-muted/60 web:group-focus:bg-muted/60 web:active:bg-muted '
                             }`}
                     >
                         <Icon
                             icon={icon}
-                            className={`${isActive ? "text-accent-foreground h-7 w-7 my-auto items-center justify-center flex" : "text-secondary-foreground web:group-hover:text-foreground h-9 w-9 items-center justify-center flex"}`}
+                            className={`${isActive ? "text-accent-foreground h-9 w-9 my-auto items-center justify-center flex" : "text-secondary-foreground web:group-hover:text-foreground h-9 w-9 items-center justify-center flex"}`}
                         />
                         {isTitle && <Text className={`whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ${isActive ? 'text-accent-foreground' : 'text-secondary-foreground'} text-sm px-2 leading-5`}>{title}</Text>}
                     </Row>

@@ -1159,12 +1159,12 @@ const LeftSideBarContainer = ({
                     )}
                     <View className="flex-1 gap-y-2">
                         {layoutName == 'navigator' && routes.length > 1 && (
-                            <View className='w-full gap-4'>
+                            <View className='w-full gap-3.5'>
                                 {routes
                                     .filter((aItem) => aItem.hideInTop != true)
                                     .map((a) => {
                                         const isActive = a.index === index;
-                                        const activeWrapperClassName = isActive ? 'u-link-ghost-active bg-accent web:bg-transparent rounded-lg' : '';
+                                        const activeWrapperClassName = isActive ? 'u-link-ghost-active  rounded-lg' : '';
                                         const btn = <MenuItemSidebar addon={getAddon(a.addon)} title={a.title} icon={a.icon || 'Circle'} isActive={isActive} />
 
                                         if (a?.icon == '*') {
