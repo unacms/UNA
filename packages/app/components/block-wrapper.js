@@ -48,9 +48,11 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
     if ((content_type == 'browse' || content_type == 'browse_list'))
         contentOnly = true;
 
-    if (contentOnly)
-        return children
-
+    if (contentOnly){
+        return (<View className={wrapperClassses}>
+            {children}
+        </View>)
+    }
 
 
     return (
