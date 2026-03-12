@@ -12,7 +12,6 @@ import { storageClear } from 'app/lib/util';
 import { Platform } from 'react-native';
 import Link from 'app/ui/atoms/link';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'app/ui/molecules/card'
-import AnimatedView from 'app/ui/atoms/animated-view';
 
 export default function ElementConfirmEmail(props) {
     const isWeb = Platform.OS == 'web'
@@ -47,7 +46,7 @@ export default function ElementConfirmEmail(props) {
     return (
         <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto">
             <View className="max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto gap-y-4">
-                <AnimatedView direction="up" delay={300}>
+                <View>
                     <Redirect ref={redirectdRef} />
                     <Card padding="p-6  gap-6">
                         <CardHeader>
@@ -80,7 +79,7 @@ export default function ElementConfirmEmail(props) {
                             </View>
                         </CardContent>
                     </Card>
-                </AnimatedView>
+                </View>
             </View>
         </View>
     );

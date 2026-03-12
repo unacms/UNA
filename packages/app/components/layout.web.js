@@ -200,12 +200,6 @@ export default function Layout(props) {
     }, []);
 
     useEffect(() => {
-
-        let element = document.querySelector('.animated-view');
-        if (element) {
-            element.classList.remove('page-fade-out');
-        }
-
         if (navigator.serviceWorker) {
             navigator.serviceWorker.register('/sw.js');
         }

@@ -678,48 +678,48 @@ const TabSceneMainContent = ({
     return (
         <View className="relative">
             <View className={`transition-opacity duration-500 ease-out ${showContent ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                {(formProps) && <View className=" w-full">
-                    <Form {...formProps} key="form" name={formProps.name} onChange={onFormChangedValues} />
-                </View>
-                }
-                <UniList
+            {(formProps) && <View className=" w-full">
+                <Form {...formProps} key="form" name={formProps.name} onChange={onFormChangedValues} />
+            </View>
+            }
+            <UniList
 
-                    data={dataItems}
-                    endpoint={pageRoute.endpoint}
-                    listState={pageRoute?.state}
-                    layout={layout}
-                    mode={layout == 'w-full' ? 'simple' : ''}
-                    storagekey={pageRoute.storageKeyValue}
-                    refer={uniRef}
-                    route={pageRoute}
-                    unit={pageRoute.endpoint?.unit}
-                    useWindowScroll={true}
-                    onEndReached={handleEndReached}
-                    onRefresh={refetch}
-                    refreshing={isRefetching}
-                    renderItem={renderItem}
+                data={dataItems}
+                endpoint={pageRoute.endpoint}
+                listState={pageRoute?.state}
+                layout={layout}
+                mode={layout == 'w-full' ? 'simple' : ''}
+                storagekey={pageRoute.storageKeyValue}
+                refer={uniRef}
+                route={pageRoute}
+                unit={pageRoute.endpoint?.unit}
+                useWindowScroll={true}
+                onEndReached={handleEndReached}
+                onRefresh={refetch}
+                refreshing={isRefetching}
+                renderItem={renderItem}
 
-                />
-                {(pageRoute?.endpoint?.request_url && hasNextPage) && PreloadShort}
-                {(pageRoute?.endpoint?.request_url && hasNextPage === false && dataItems.filter((item) => item.type != 'block').length == 0) && <NoContent endpoint={pageRoute?.endpoint} />}
-                <Snackbar
-                    visible={refetchState.hasNewData}
-                    onPress={() => {
-                        const latestItems = flattenPagesForUniList(pagesData)
-                        dispatch({ type: 'SET_ITEMS', items: latestItems })
-                        refetchRef.current.prevItems = latestItems
-                        if (uniRef.current) {
-                            uniRef.current.scrollToIndex?.({
-                                index: 0,
-                                align: 'end',
-                                behavior: 'smooth',
-                            })
-                        }
-                    }}
-                    variant="primary"
-                    title="Show New"
-                    size="sm"
-                />
+            />
+            {(pageRoute?.endpoint?.request_url && hasNextPage) && PreloadShort}
+            {(pageRoute?.endpoint?.request_url && hasNextPage === false && dataItems.filter((item) => item.type != 'block').length == 0) && <NoContent endpoint={pageRoute?.endpoint} />}
+            <Snackbar
+                visible={refetchState.hasNewData}
+                onPress={() => {
+                    const latestItems = flattenPagesForUniList(pagesData)
+                    dispatch({ type: 'SET_ITEMS', items: latestItems })
+                    refetchRef.current.prevItems = latestItems
+                    if (uniRef.current) {
+                        uniRef.current.scrollToIndex?.({
+                            index: 0,
+                            align: 'end',
+                            behavior: 'smooth',
+                        })
+                    }
+                }}
+                variant="primary"
+                title="Show New"
+                size="sm"
+            />
             </View>
             <View className={`absolute inset-0 z-10 pointer-events-none transition-opacity duration-500 ease-out ${showContent ? 'opacity-0' : 'opacity-100'}`}>
                 {Preload}

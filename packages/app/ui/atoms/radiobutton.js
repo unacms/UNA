@@ -2,19 +2,26 @@
 import { Text } from 'app/design/typography'
 import { View, Pressable } from 'app/design/view'
 import * as CheckboxPrimitive from '@rn-primitives/checkbox';
+import { isValidElement } from 'react';
 import { appSetting } from 'app/lib/util';
+import { Icon } from 'app/ui/atoms/icon';
 const checkboxTheme = appSetting('theme', 'checkbox');
 
 export default function ({ title, info, onPress, status, value, disabled, icon, rb_obly }) {
 
     const selected = status == 'checked';
+    const resolvedIcon = typeof icon === 'string'
+        ? <Icon icon={icon} width={24} height={24} />
+        : isValidElement(icon)
+            ? icon
+            : null;
     if (rb_obly)
         return <View className=' h-5 w-5 rounded-full border-2 border-border bg-transparent web:group-hover:border-secondary-foreground justify-center items-center m-1'>
             {selected ? <View className="h-2.5 w-2.5 rounded-full bg-primary" /> : null}
         </View>
     return (
         <Pressable disabled={disabled} onPress={onPress} className={`flex-row gap-x-3 ${checkboxTheme['u-controls-checkbox-container']} ${checkboxTheme['u-controls-checkbox-container-bg']} ${disabled ? '' : ' web:hover:bg-background'} `}>
-            {!!icon && <View className={checkboxTheme['u-controls-checkbox-icon']}>{icon}</View>}
+            {!!resolvedIcon && <View className={checkboxTheme['u-controls-checkbox-icon']}>{resolvedIcon}</View>}
             <View className='flex-auto '>
                 <Text className={checkboxTheme['u-controls-checkbox-text']}>{title}</Text>
                 {info && <Text className={checkboxTheme['u-controls-checkbox-text2']}>{info}</Text>}

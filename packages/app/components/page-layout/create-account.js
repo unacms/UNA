@@ -17,7 +17,6 @@ import { useTranslation } from 'react-i18next'
 import AuthPanel from 'app/ui/molecules/auth'
 import { appSetting } from 'app/lib/util'
 import MenuFooter from 'app/components/nav/menu-footer'
-import AnimatedView from 'app/ui/atoms/animated-view'
 import Page from 'app/ui/molecules/page'
 import Html from 'app/ui/atoms/html';
 import { Icon } from 'app/ui/atoms/icon'
@@ -28,7 +27,7 @@ function PageContent({ children }) {
     const { t } = useTranslation()
     return (
         <View className="w-full justify-center max-w-sm xl:max-w-md mx-auto">
-            <AnimatedView direction="up" delay={200}>
+            <View>
                 <Card role="form"
                     titleId="signup-card-title"
                     aria-describedby="signup-card-description"
@@ -69,7 +68,7 @@ function PageContent({ children }) {
                 </Card>
 
 
-            </AnimatedView>
+            </View>
         </View>
     )
 }

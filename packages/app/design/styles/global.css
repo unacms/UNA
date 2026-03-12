@@ -10,11 +10,11 @@
         /*main page content*/
         --card: var(--white);
         /*surface*/
-        --card-foreground: var(--neutral-800);
+        --card-foreground: var(--neutral-900);
         /*content on cards, sidebars, navbars*/
         --popover: var(--white);
         /*background for popovers, inputs, tooltips, modals, elevated surfaces*/
-        --popover-foreground: var(--neutral-800);
+        --popover-foreground: var(--neutral-900);
         /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
         --primary: var(--accent-600);
         /*background for primary buttons, links, active states, focus rings. Use use high-contract background from gray-scale or accent-scale.*/
@@ -22,7 +22,7 @@
         /*priamry content, links, foreground elements*/
         --secondary: var(--neutral-200);
         /*secondary surfaces*/
-        --secondary-foreground: var(--neutral-600);
+        --secondary-foreground: var(--neutral-700);
         /*content on secondary buttons, secondary surfaces*/
         --muted: var(--neutral-200);
         /*background for ui items, sections, hover states*/
@@ -154,7 +154,7 @@
         /*main page background*/
         --foreground: var(--white);
         /*main page content*/
-        --card: var(--neutral-900);
+        --card: var(--neutral-800);
         /*surface*/
         --card-foreground: var(--neutral-200);
         /*content on cards, sidebars, navbars*/
@@ -166,15 +166,15 @@
         /*background for primary buttons, links, active states, focus rings. Use use high-contract background from gray-scale or accent-scale.*/
         --primary-foreground: var(--white);
         /*content on primary buttons, active states, primary surfaces*/
-        --secondary: var(--neutral-800);
+        --secondary: var(--neutral-700);
         /*background for secondary buttons, secondary surfaces*/
-        --secondary-foreground: var(--neutral-400);
+        --secondary-foreground: var(--neutral-300);
         /*content on secondary buttons, secondary surfaces*/
         --accent: var(--accent-950);
         /*background for accent buttons, accent surfaces*/
         --accent-foreground: var(--accent-400);
         /*content on accent buttons, accent surfaces*/
-        --muted: var(--neutral-800);
+        --muted: var(--neutral-700);
         /*background for ui items, sections, hover states*/
         --muted-foreground: var(--neutral-500);
         /*muted content*/

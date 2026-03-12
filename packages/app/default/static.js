@@ -14,7 +14,6 @@ import { tp } from 'app/lib/util'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { ThemeName } from 'app/design/theme'
 import { Platform } from 'react-native'
-import AnimatedView from 'app/ui/atoms/animated-view'
 import SvgFile from 'app/ui/molecules/svg-file'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { appSetting } from 'app/lib/util'
@@ -121,53 +120,42 @@ const SplashTextInner = () => {
 const SplashTextComponent = (props) => {
     return isWeb ? (
         <View className="items-center lg:items-start relative my-auto flex-auto w-full p-4 gap-4 ">
-            <AnimatedView direction="up" className="flex-auto h-64 w-64 ">
+            <View className="flex-auto h-64 w-64">
                 <SvgFile
                     src_dark="splash-dark.svg"
                     src_default="splash-light.svg"
                     alt="Splash screen illustration"
                 />
-            </AnimatedView>
-            <AnimatedView
-                delay={100}
-                direction="up"
-                className="flex-auto w-full items-center lg:items-start "
-            >
+            </View>
+            <View className="flex-auto w-full items-center lg:items-start">
                 <SplashTextInner />
-            </AnimatedView>
+            </View>
         </View>
     ) : (
         <View className=" items-center lg:items-start flex-auto p-4 sm:p-8 md:p-12 gap-4 w-full mx-auto">
-            <AnimatedView direction="up" className="flex-auto w-64 h-64">
+            <View className="flex-auto w-64 h-64">
                 <SvgFile
                     src_dark="splash-dark.svg"
                     src_default="splash-light.svg"
                     alt="Splash screen illustration"
                 />
-            </AnimatedView>
-            <AnimatedView
-                delay={100}
-                direction="up"
-                className="flex-auto w-full "
-            >
+            </View>
+            <View className="flex-auto w-full">
                 <SplashTextInner />
-            </AnimatedView>
+            </View>
         </View>
     )
 }
 
 const JoinTextComponent = (props) => {
     return (
-        <AnimatedView
-            direction="up"
-            className=" flex-auto w-1/2 max-w-64 "
-        >
+        <View className="flex-auto w-1/2 max-w-64">
             <SvgFile
                 src_dark="create-account-dark.svg"
                 src_default="create-account-light.svg"
                 alt="Create account illustration"
             />
-        </AnimatedView>
+        </View>
     )
 }
 
@@ -398,17 +386,14 @@ export function ComponentsIntro(props) {
 const ComponentsLoginContentComponent = (props) => {
     return (
         <View className="hidden my-auto flex-col flex-auto">
-            <AnimatedView className="w-[50%] max-w-80 aspect-square">
+            <View className="w-[50%] max-w-80 aspect-square">
                 <SvgFile
                     src_dark="login-dark.svg"
                     src_default="login-light.svg"
                     alt="Login illustration"
                 />
-            </AnimatedView>
-            <AnimatedView
-                direction="up"
-                className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl"
-            >
+            </View>
+            <View className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">
                 <View className="flex-col gap-y-8 flex-auto my-4 ">
                     <H1 className="text-4xl tracking-tight font-bold text-secondary-foreground  justify-center items-center  ">
                         Sign in to your account
@@ -451,7 +436,7 @@ const ComponentsLoginContentComponent = (props) => {
                         </View>
                     </View>
                 </View>
-            </AnimatedView>
+            </View>
         </View>
     )
 }
