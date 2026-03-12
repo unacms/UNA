@@ -30,6 +30,9 @@ import {
     flattenPagesForUniList,
     isSameItemsForUniList
 } from 'app/lib/conductor-helpers'
+import { getDataForMenu } from 'app/lib/util'
+import { Platform } from 'react-native'
+
 const getWidth1 = (width) => {
     if (!width)
         return undefined;
@@ -39,6 +42,7 @@ const getWidth1 = (width) => {
 
 const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowConfirm, deleteRows, fetchData, handleBlock, refetch }) => {
     const [hide, setHide] = useState(false);
+    const [menuData, setMenuData] = useState(false)
     const redirectRef = useRef();
     const getActionAfter = async (itemAction) => {
 
@@ -46,23 +50,23 @@ const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowC
             setHide(true);
         }*/
         if (itemAction.on_callback == 'hide_row') {
-            deleteRows([itemAction.attr.bx_grid_action_data, id]); 
+            deleteRows([itemAction.attr.bx_grid_action_data, id]);
         }
         if (itemAction.on_callback == 'redirect') {
             redirectRef.current.redirect(itemAction.redirect_url);
         }
 
-       refetch();
+        refetch();
     }
 
     const getAction = async (itemAction, setShowConfirm) => {
         if (itemAction.confirm == '1') {
             setShowConfirm({
                 show: true,
-                cb: async () =>  {
+                cb: async () => {
                     await fetchData(itemAction.name, '&ids[]=' + itemAction.attr.bx_grid_action_data);
                     getActionAfter(itemAction);
-                    
+
                 }
             });
         }
@@ -87,6 +91,9 @@ const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowC
         }
         if (name == 'set_role') {
             return 'UserRoundCog'
+        }
+        if (name == 'actions') {
+            return 'Ellipsis'
         }
         return false;
     };
@@ -125,6 +132,51 @@ const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowC
         );
     }
 
+    const handleMenuManageSelect = async (oItem, event) => {
+        if (oItem.display_type == "callback") {
+             await fetcher(
+                    '/api.php?r='+oItem.data.request_url
+                )
+
+            if (oItem.data.on_callback == 'hide') {
+                setHide(true);
+            }
+        }
+    }
+
+    if (itemAction.type === 'menu') {
+        return (
+            <>
+                {!menuData ? <Button
+                    variant="text"
+                    size="sm"
+                    rounded
+                    startDecorator="Ellipsis"
+                    onPress={() => {
+                        if (Platform.OS === 'web')
+                            setMenuData({
+                                ...itemAction,
+                                items: [{ name: 'loader' }],
+                            })
+                        getDataForMenu(itemAction, setMenuData)
+                    }}
+                /> : <DropdownMenu
+                    mode="popup"
+                    items={menuData.items}
+                    defaultOpen={true}
+                    onSelect={handleMenuManageSelect}
+                >
+                    <Button
+                        variant="text"
+                        size="sm"
+                        rounded
+                        startDecorator="Ellipsis"
+                    />
+                </DropdownMenu>}
+            </>
+        );
+    }
+
     if (itemAction.type === 'object') {
         return (
             <Button
@@ -150,7 +202,7 @@ const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowC
 
 });
 
-const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selected,setTimeStamp,  setShowConfirm, deleteRows, refetch, fetchData, handleBlock }) => {
+const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selected, setTimeStamp, setShowConfirm, deleteRows, refetch, fetchData, handleBlock }) => {
     switch (cell?.type) {
         case 'time':
             return <Time ts={cell.data} stylesName={'text-sm text-secondary-foreground '}></Time>
@@ -161,9 +213,9 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
         case 'text':
             return <Text className="text-secondary-foreground  truncate overflow-hidden">{stripTags(cell.value)}</Text>
         case 'price':
-            return <Text className="text-secondary-foreground  truncate overflow-hidden">{cell.value.value +' '+ cell.value.currency}</Text>
+            return <Text className="text-secondary-foreground  truncate overflow-hidden">{cell.value.value + ' ' + cell.value.currency}</Text>
         case 'period':
-            return <Text className="text-secondary-foreground  truncate overflow-hidden">{cell.value.period +' '+ cell.value.unit}</Text>
+            return <Text className="text-secondary-foreground  truncate overflow-hidden">{cell.value.period + ' ' + cell.value.unit}</Text>
         case 'order':
             return <Text className="text-secondary-foreground  text-lg">
                 <Icon icon='MoveVertical' />
@@ -187,6 +239,7 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
         case 'profile':
             return <Profile {...cell.data} displaySize="sm" />
         case 'actions':
+            console.log("cell.data", cell.data)
             return (<Row className='space-x-2 justify-end'>
                 {cell.data.filter(item => item?.type).map((itemAction, index) => (
                     <ActionButton
@@ -230,16 +283,16 @@ const fetchGridData = async ({ pageParam, settings, selectedFilter, searchValue 
     const start = pageParam?.start || 0;
     let url = "&start=" + start;
     url += '&filter=' + (selectedFilter ? selectedFilter.id + '%23-%23' : '') + searchValue;
-    
+
     let sUrl = '/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=' + settings.object + '&a=display';
     if (settings?.query_append) {
         Object.keys(settings.query_append).forEach((sKey) => {
             sUrl += '&' + sKey + '=' + settings.query_append[sKey];
         });
     }
-    
+
     const fetchedData = await fetcher(sUrl + url);
-    
+
     return {
         data: fetchedData.data?.data || [],
         settings: fetchedData.data?.settings || settings,
@@ -324,13 +377,13 @@ export default function ElementGrid(props) {
             refetchRef.current.isFirstLoad = false
             return
         }
-        
+
         // Обновляем элементы при изменении данных
         dispatch({ type: 'SET_ITEMS', items })
         refetchRef.current.prevItems = items
     }, [pagesData])
 
-    
+
 
 
     const dataItems = refetchState.visibleItems
@@ -341,12 +394,12 @@ export default function ElementGrid(props) {
         idsToRemove.forEach(id => {
             dispatch({ type: 'REMOVE_ITEM', id: id })
         })
-        
+
 
         if (refetchRef.current?.prevItems) {
             refetchRef.current.prevItems = refetchRef.current.prevItems.filter(item => !idsToRemove.includes(item.id))
         }
-        
+
     }, [refetch]);
 
     const handleDeleteSelected = () => {
@@ -413,14 +466,14 @@ export default function ElementGrid(props) {
         // Оптимистичное обновление UI - мутируем напрямую
         const currentItem = dataItems[indexRow];
         if (currentItem?.switcher) {
-            currentItem.switcher.data = oSwitcher[currentItem.switcher.data] ;
+            currentItem.switcher.data = oSwitcher[currentItem.switcher.data];
             if (currentItem.switcher.data == 'active' || currentItem.switcher.data == '1')
                 bChecked = true;
         }
 
         // Отправляем запрос на сервер
         await fetchData('enable', '&ids[]=' + id + (bChecked ? '&checked=1' : ''));
-        
+
         // Обновляем данные с сервера для синхронизации
         refetch();
     }
@@ -562,7 +615,7 @@ export default function ElementGrid(props) {
                     <Text className="text-secondary-foreground ">Nothing to show</Text>
                 </View>
             )}
-           
+
             <UniList
                 height={400}
                 sortable={isSortable}
@@ -573,7 +626,7 @@ export default function ElementGrid(props) {
                 onRefresh={refetch}
                 ListFooterComponent={hasNextPage && isFetchingNextPage ? (
                     <View className="p-4 items-center">
-                       <Loading size="small" />
+                        <Loading size="small" />
                     </View>
                 ) : null}
                 renderItem={({ item, index: indexRow }) => {
