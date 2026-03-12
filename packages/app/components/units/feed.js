@@ -77,7 +77,7 @@ function DefaultUnit({ data }) {
             )
         })
         return (
-            <AnimatedBlock>
+        <AnimatedBlock>
                 <CardList className="mb-0.5 sm:mb-4 " padding="p-0.5">
                     <CardHeader className=" px-3 lg:px-4 pt-3 lg:pt-4 flex-row items-center justify-between">
                         <CardTitle className="text-secondary-foreground">{t(data.title)}</CardTitle>
@@ -113,7 +113,7 @@ function DefaultUnit({ data }) {
             <FormModal pageData={pageData.data} setPageData={setPageData} modalView='content_page' url={pageData.url2} />
             <CardList
                 border="border-y border-x-none sm:border-x"
-                className=" mb-0.5 sm:mb-3 lg:mb-4"
+                className=" mb-0.5 sm:mb-3"
                 padding="pt-3 lg:pt-4"
             >
                 <Row className="gap-3 flex-auto px-3 lg:px-4">
@@ -144,7 +144,7 @@ function DefaultUnit({ data }) {
                 </Row>
                 </>}
 
-                <Row className="gap-2 items-center flex-auto justify-between px-2 lg:px-2 py-2 border-t border-border/40 mt-2">
+                <Row className="gap-2 h-14 items-center flex-auto justify-between px-2 lg:px-2 py-2 border-t border-border/60 mt-2">
                     <ActionMenu
                         data={data.menu_actions}
                     />

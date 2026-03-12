@@ -650,13 +650,34 @@ const TabSceneMainContent = ({
 
     const Form = getComponent('element', 'form');
     const formProps = pageRoute?.endpoint?.filters;
+    const isInitialLoading = (pageRoute?.endpoint?.request_url && hasNextPage === undefined) || !isInited;
+    const [showContent, setShowContent] = useState(!isInitialLoading);
+    const revealTimerRef = useRef(null);
 
-    if ((pageRoute?.endpoint?.request_url && hasNextPage === undefined) || !isInited){
-       return Preload
-    }
+    useEffect(() => {
+        if (revealTimerRef.current) {
+            clearTimeout(revealTimerRef.current);
+        }
+
+        if (isInitialLoading) {
+            setShowContent(false);
+            return;
+        }
+
+        revealTimerRef.current = setTimeout(() => {
+            setShowContent(true);
+        }, 140);
+
+        return () => {
+            if (revealTimerRef.current) {
+                clearTimeout(revealTimerRef.current);
+            }
+        };
+    }, [isInitialLoading, pageRoute?.key]);
 
     return (
-        <>
+        <View className="relative">
+            <View className={`transition-opacity duration-500 ease-out ${showContent ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
             {(formProps) && <View className=" w-full">
                 <Form {...formProps} key="form" name={formProps.name} onChange={onFormChangedValues} />
             </View>
@@ -699,7 +720,11 @@ const TabSceneMainContent = ({
                 title="Show New"
                 size="sm"
             />
-        </>
+            </View>
+            <View className={`absolute inset-0 z-10 pointer-events-none transition-opacity duration-500 ease-out ${showContent ? 'opacity-0' : 'opacity-100'}`}>
+                {Preload}
+            </View>
+        </View>
     )
 };
 
@@ -1134,12 +1159,12 @@ const LeftSideBarContainer = ({
                     )}
                     <View className="flex-1 gap-y-2">
                         {layoutName == 'navigator' && routes.length > 1 && (
-                            <View className='w-full gap-4'>
+                            <View className='w-full gap-3.5'>
                                 {routes
                                     .filter((aItem) => aItem.hideInTop != true)
                                     .map((a) => {
                                         const isActive = a.index === index;
-                                        const activeWrapperClassName = isActive ? 'u-link-ghost-active bg-accent web:bg-transparent rounded-lg' : '';
+                                        const activeWrapperClassName = isActive ? 'u-link-ghost-active  rounded-lg' : '';
                                         const btn = <MenuItemSidebar addon={getAddon(a.addon)} title={a.title} icon={a.icon || 'Circle'} isActive={isActive} />
 
                                         if (a?.icon == '*') {

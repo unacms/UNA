@@ -19,7 +19,6 @@ import { useSetWindowSize } from 'app/context/measure';
 import semver from 'semver';
 import { useTranslation } from 'react-i18next';
 import { Card, CardHeader, CardTitle, CardContent } from 'app/ui/molecules/card'
-import AnimatedView from 'app/ui/atoms/animated-view';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 
 
@@ -56,7 +55,7 @@ export default function Layouts({ path, data }) {
             return (
                 <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto">
                     <View className="max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto gap-y-4">
-                        <AnimatedView direction="up" delay={300}>
+                        <View>
                             <Card padding="p-6  ">
                                 <CardHeader>
                                     <CardTitle>{t("version_incompatible_title")}</CardTitle>
@@ -73,7 +72,7 @@ export default function Layouts({ path, data }) {
                                     </Text>
                                 </CardContent>
                             </Card>
-                        </AnimatedView>
+                        </View>
                     </View>
                 </View>
             )

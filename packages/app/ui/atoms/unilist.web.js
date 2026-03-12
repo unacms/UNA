@@ -2,7 +2,7 @@
 import { VirtuosoGrid, Virtuoso } from 'react-virtuoso'
 import { View } from 'app/design/view'
 import { View as ReactNativeView } from 'react-native'
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useCallback, forwardRef, useMemo } from 'react';
 import { useBreakpoint } from 'app/context/measure'
@@ -21,6 +21,79 @@ export default function UniList(props) {
     const setScrollDirection = useSetScrollDirection();
 
     const data = useMemo(() => rawData.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i), [rawData]);
+    const isGridMode = mode != 'simple' && !sortable;
+    const [isGridReady, setIsGridReady] = useState(!preloadComponent);
+    const [showContent, setShowContent] = useState(!preloadComponent);
+    const revealTimerRef = useRef(null);
+    const lastPreloadRef = useRef(preloadComponent);
+
+    useEffect(() => {
+        if (preloadComponent) {
+            lastPreloadRef.current = preloadComponent;
+        }
+    }, [preloadComponent]);
+
+    useEffect(() => {
+        if (!sortable && mode == 'simple' && !preloadComponent) {
+            setShowContent(true);
+            return;
+        }
+
+        if (!isGridMode) {
+            return;
+        }
+
+        if (preloadComponent) {
+            setIsGridReady(false);
+            setShowContent(false);
+        }
+    }, [isGridMode, mode, sortable, preloadComponent]);
+
+    useEffect(() => {
+        const clearRevealTimer = () => {
+            if (revealTimerRef.current) {
+                clearTimeout(revealTimerRef.current);
+                revealTimerRef.current = null;
+            }
+        };
+
+        const scheduleReveal = () => {
+            revealTimerRef.current = setTimeout(() => {
+                revealTimerRef.current = null;
+                setShowContent(true);
+            }, 140);
+        };
+
+        clearRevealTimer();
+
+        if (!sortable && mode == 'simple') {
+            if (preloadComponent) {
+                setShowContent(false);
+                return clearRevealTimer;
+            }
+
+            scheduleReveal();
+            return clearRevealTimer;
+        }
+
+        if (!isGridMode) {
+            setShowContent(true);
+            return clearRevealTimer;
+        }
+
+        if (preloadComponent || !isGridReady) {
+            setShowContent(false);
+            return clearRevealTimer;
+        }
+
+        if (!lastPreloadRef.current) {
+            setShowContent(true);
+            return clearRevealTimer;
+        }
+
+        scheduleReveal();
+        return clearRevealTimer;
+    }, [isGridMode, mode, sortable, preloadComponent, isGridReady]);
 
     const itemContent = useCallback((index, data) => {
         return (
@@ -151,6 +224,7 @@ export default function UniList(props) {
     const virtuosoStyle = isWindowScroll
         ? (paddingTop ? { paddingTop } : {})
         : style;
+
     const commonVirtuosoProps = {
         data,
         useWindowScroll: isWindowScroll,
@@ -171,9 +245,12 @@ export default function UniList(props) {
 
     // Get dynamic padding based on endpoint/module
     const listPadding = paddingForList(endpoint);
+    const overlayPreload = !sortable
+        ? (preloadComponent || lastPreloadRef.current)
+        : null;
 
     let contentComponent = null
-    if (preloadComponent) {
+    if (preloadComponent && !isGridMode) {
         contentComponent = preloadComponent;
     }
     else {
@@ -186,16 +263,28 @@ export default function UniList(props) {
         if (mode != 'simple' && !sortable) {
             return (
                 <View className="@container/list" style={wrapperStyle}>
-                    <View className={`${data.length ? listPadding : ''}`} style={wrapperStyle}>
+                    <View className={`${data.length ? listPadding : ''} relative`} style={wrapperStyle}>
                         {ListHeaderComponent && ListHeaderComponent()}
-                        <VirtuosoGrid
-                            {...commonVirtuosoProps}
-                            itemContent={itemContent}
-                            //stateChanged={stateChanged}
-                            {...(scrollToLastItem ? { initialTopMostItemIndex: data.length } : {})}
-                            // atBottomStateChange={()=>{console.log("atBottomStateChange"), onEndReached()}}
-                            endReached={() => { onEndReached() }}
-                        />
+                        <View
+                            className={`transition-opacity duration-500 ease-out ${showContent ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                        >
+                            <VirtuosoGrid
+                                {...commonVirtuosoProps}
+                                itemContent={itemContent}
+                                readyStateChanged={(ready) => {
+                                    if (ready) {
+                                        setIsGridReady(true);
+                                    }
+                                }}
+                                {...(scrollToLastItem ? { initialTopMostItemIndex: data.length } : {})}
+                                endReached={() => { onEndReached() }}
+                            />
+                        </View>
+                        {overlayPreload && (
+                            <View className={`absolute inset-0 z-10 pointer-events-none transition-opacity duration-500 ease-out ${showContent ? 'opacity-0' : 'opacity-100'}`}>
+                                {overlayPreload}
+                            </View>
+                        )}
                     </View>
                 </View>
             )
@@ -244,8 +333,11 @@ export default function UniList(props) {
             }
             else {
                 return (
-                    <View className={`${listPadding}`} style={wrapperStyle}>
-                        <View style={wrapperStyle}>
+                    <View className={`${listPadding} relative`} style={wrapperStyle}>
+                        <View
+                            className={`transition-opacity duration-500 ease-out ${showContent ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                            style={wrapperStyle}
+                        >
                             {ListHeaderComponent && ListHeaderComponent()}
                             <Virtuoso
                                 itemContent={itemContent}
@@ -255,6 +347,11 @@ export default function UniList(props) {
                                 endReached={onEndReached}
                             />
                         </View>
+                        {overlayPreload && (
+                            <View className={`absolute inset-0 z-10 pointer-events-none transition-opacity duration-500 ease-out ${showContent ? 'opacity-0' : 'opacity-100'}`}>
+                                {overlayPreload}
+                            </View>
+                        )}
                     </View>
                 )
             }

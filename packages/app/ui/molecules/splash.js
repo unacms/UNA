@@ -15,7 +15,6 @@ import { appStatic } from 'app/lib/app-static'
 import AuthPanel from 'app/ui/molecules/auth'
 import { BlockByName } from 'app/components/block'
 import MenuFooter from 'app/components/nav/menu-footer'
-import AnimatedView from 'app/ui/atoms/animated-view'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import Page from 'app/ui/molecules/page'
@@ -32,7 +31,7 @@ function PageContent({ data }) {
     const { t } = useTranslation()
     return (
         <View className="w-full justify-center max-w-md mx-auto">
-            <AnimatedView direction="up" delay={200}>
+            <View>
                 <Card
                     role="form"
                     titleId="login-card-title"
@@ -90,7 +89,7 @@ function PageContent({ data }) {
                         </Row>
                     </CardFooter>
                 </Card>
-            </AnimatedView>
+            </View>
         </View>
     )
 }

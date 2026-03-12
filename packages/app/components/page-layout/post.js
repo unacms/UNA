@@ -371,7 +371,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                 </>
             )}
             <Panel {...centerPanelProps} className="mt-0.5 sm:p-2">
-                <View className={`w-full h-full bg-card/80 shadow-sm text-card-foreground rounded-2xl mx-auto `}>
+                <View className={`w-full h-full bg-card shadow-sm text-card-foreground rounded-2xl mx-auto `}>
                     <View onLayout={handleListLayout} style={{ pointerEvents: 'box-none', marginBottom: formHeight }} className='w-full flex-1'>
                         <CommentsBrowse
                             scrollToIndex={scrollToEnd}

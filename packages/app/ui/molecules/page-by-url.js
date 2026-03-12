@@ -13,7 +13,6 @@ import { Platform } from 'react-native';
 import Link from 'app/ui/atoms/link';
 import { Block, BlockHeader, BlockContent, BlockFooter, BlockTitle, BlockDescription, BlockIcon, BlockName, BlockActions } from 'app/ui/molecules/page-block'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'app/ui/molecules/card'
-import AnimatedView from 'app/ui/atoms/animated-view';
 import { getPageData, getLayoutName, BlockDataByType, BlockDataByName } from 'app/lib/util';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 import Page from 'app/ui/molecules/page'

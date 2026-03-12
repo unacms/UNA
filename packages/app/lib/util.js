@@ -1183,7 +1183,7 @@ export function visibilityById(visibility, t) {
     const visibilityOptions = {
         2: { icon: 'Lock', text: t('Me only') },
         3: { icon: 'Globe', text: t('Public') },
-        5: { icon: 'Users', text: t('Friends') },
+        5: { icon: 'UsersRound', text: t('Friends') },
         'c': { icon: 'EyeClosed', text: t('Closed') },
         's': { icon: 'Shield', text: t('Secret') },
         6: { icon: 'UserCheck', text: t('Specific Friends...') },

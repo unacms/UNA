@@ -9,7 +9,7 @@ export default function MenuItemSidebarWithWrapper({ link, title, index, icon = 
     const finalLink = link?.includes('{profile}') ? link.replace('{profile}', userUrl || '') : link;
     const isWeb = Platform.OS === 'web';
     const Wrapper = onPress && !isWeb ? Pressable : Link;
-    const activeWrapperClassName = isActive ? 'u-link-ghost-active bg-accent web:bg-transparent rounded-lg' : '';
+    const activeWrapperClassName = isActive ? 'u-link-ghost-active bg-accent/60 web:hover:bg-accent/80 rounded-lg' : '';
     const wrapperProps = onPress
         ? {
             ...(isWeb

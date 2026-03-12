@@ -2,7 +2,7 @@
 
 export const settingsInputs = {
     dropdown: {
-        cnt: ' rounded-2xl overflow-hidden shadow-xl border border-border/60 p-2 bg-popover web:bg-popover/90 backdrop-blur-xl z-50  ',
+        cnt: ' rounded-2xl overflow-hidden shadow-2xl p-2 bg-popover web:bg-popover/90 backdrop-blur-xl z-50  ',
     },
     checkbox_set: {
         container: ' gap-x-2 rounded-xl border border-border/60 bg-input p-1',
@@ -39,7 +39,7 @@ export const settingsInputs = {
             small: 'px-2 leading-5 min-h-10',
         },
         base: 
-        'text-foreground placeholder:text-muted-foreground py-2 bg-input border border-border rounded-xl flex-auto text-base placeholder-muted-foreground text-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-accent/70 web:focus-visible:border-accent-foreground web:focus-visible:outline-ring/60 web:focus-visible:outline-offset-2 web:focus-visible:outline-4 web:overflow-hidden',
+        'text-foreground placeholder:text-muted-foreground py-2 bg-input border border-border rounded-xl flex-auto text-base placeholder-muted-foreground text-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-accent/70 web:focus-visible:border-accent-foreground web:focus-visible:outline-ring/60 web:focus-visible:outline-offset-2 web:focus-visible:outline-2 web:overflow-hidden',
         select: ' pr-10 border border-border rounded-xl bg-input web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
     },
     switcher: {

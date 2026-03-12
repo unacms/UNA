@@ -27,7 +27,7 @@ export const settingsLinks = {
 
     link_styles: {
         // Inherits text color; underline on hover; brief muted flash on press (via ::after pseudo)
-        default: 'text-secondary-foreground web:hover:text-foreground web:duration-200',
+        default: 'text-card-foreground web:hover:text-foreground web:duration-200',
 
         // Muted text; subtle underline on hover; brief muted flash on press
         secondary: 'bg-secondary/60 web:hover:bg-secondary text-secondary-foreground web:hover:text-foreground web:duration-200',

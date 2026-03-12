@@ -8,6 +8,8 @@ export function getSkeletonForList(name, num = 5, isFirst = true, layout, render
 
 
     const trimmed = isFirst ? items : items.slice(0, 2);
+    const skeletonCount = Math.max(0, trimmed.length * num);
+    const listClassName = 'u-max-width-block w-full mx-auto flex flex-wrap flex-row animate-pulse';
 
     if (appSetting('browse', 'new_skeletons') && typeof renderItem === 'function') {
         if (Array.isArray(name)) {
@@ -21,17 +23,15 @@ export function getSkeletonForList(name, num = 5, isFirst = true, layout, render
         const module = list[name] || name;
 
         return (
-            <View className='@container/list '>
-                <View className={`${paddings} overflow-hidden`} >
-                    {trimmed.map((item, index) => (
-                        <View key={'browse_item' + index} className={`flex-row w-full animate-pulse max-w-screen-xl mx-auto `}>
-                            {[...Array(num)].map((_, i) => (
-                                <View key={i} className={layout || 'w-full'}>
-                                    {renderItem({ item: { module: module, skeleton: true }, index: i })}
-                                </View>
-                            ))}
-                        </View>
-                    ))}
+            <View className='@container/list'>
+                <View className={paddings || ''}>
+                    <View className={listClassName}>
+                        {[...Array(skeletonCount)].map((_, index) => (
+                            <View key={'browse_item' + index} className={layout || 'w-full'}>
+                                {renderItem({ item: { module: module, skeleton: true }, index })}
+                            </View>
+                        ))}
+                    </View>
                 </View>
             </View>
         )
@@ -44,12 +44,14 @@ export function getSkeletonForList(name, num = 5, isFirst = true, layout, render
     }
     const Item = getComponent('skeleton', name) || getComponent('skeleton', 'default');
     return (
-        <View>
-            {trimmed.map((item, index) => (
-                <View key={'browse_item' + index} className={`@container/list flex-row w-full animate-pulse max-w-screen-xl mx-auto overflow-x-hidden`}>
-                    {[...Array(num)].map((_, i) => <View key={i} className={layout || 'w-full'}><Item /></View>)}
-                </View>
-            ))}
+        <View className='@container/list'>
+            <View className={listClassName}>
+                {[...Array(skeletonCount)].map((_, index) => (
+                    <View key={'browse_item' + index} className={layout || 'w-full'}>
+                        <Item />
+                    </View>
+                ))}
+            </View>
         </View>
     )
 }

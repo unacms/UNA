@@ -57,14 +57,6 @@ export default function ElementLink({
 
     const handleLinkClick = useCallback((event) => {  
         if (onClick) onClick();
-        
-        if (!target && href !== window.location.pathname + window.location.search) {
-            const element = document.querySelector('.animated-view');
-            if (element) {
-                element.classList.remove('page-fade-in');
-                element.classList.add('page-fade-out');
-            }
-        }
     }, [onClick, target, href]);
 
     const sizeClass = (() => {

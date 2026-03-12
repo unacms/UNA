@@ -15,7 +15,6 @@ import AuthPanel from 'app/ui/molecules/auth'
 import { appSetting, getPageWidth } from 'app/lib/util'
 import Page from 'app/ui/molecules/page'
 import MenuFooter from 'app/components/nav/menu-footer'
-import AnimatedView from 'app/ui/atoms/animated-view'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import { Icon } from 'app/ui/atoms/icon'
@@ -26,7 +25,7 @@ function PageContent({ children, isLoginPage, title }) {
     const { t } = useTranslation()
     if (!isLoginPage) {
         return (
-            <AnimatedView direction="up" delay={300}>
+            <View>
                 <Card role="form"
                     titleId="login-page-title"
                     aria-describedby="login-card-description"
@@ -37,13 +36,13 @@ function PageContent({ children, isLoginPage, title }) {
                     </CardHeader>
                     <CardContent className="gap-4">{children}</CardContent>
                 </Card>
-            </AnimatedView>
+            </View>
         )
     }
 
     return (
         <View className="w-full justify-center max-w-lg p-4 mx-auto">
-            <AnimatedView className="gap-4" direction="up" delay={200}>
+            <View className="gap-4">
                 <Card role="form"
                     titleId="login-page-title"
                     aria-describedby="login-card-description"
@@ -81,7 +80,7 @@ function PageContent({ children, isLoginPage, title }) {
                         </Row>
                     </CardFooter>
                 </Card>
-            </AnimatedView>
+            </View>
         </View>
     )
 }
@@ -99,14 +98,14 @@ export default function PageLayout({ data, children }) {
                     <View className="w-full lg:flex-row max-w-7xl p-4 mx-auto my-auto">
                         {isLoginPage ? appStatic('components_logincontent') : null}
                         <View className="w-full lg:w-1/2 mx-auto">
-                            <AnimatedView>
+                            <View>
                                 <PageContent
                                     isLoginPage={isLoginPage}
                                     title={data.title}
                                 >
                                     {children}
                                 </PageContent>
-                            </AnimatedView>
+                            </View>
                         </View>
                     </View>
                 </View>

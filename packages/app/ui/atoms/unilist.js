@@ -1,6 +1,6 @@
-import { RefreshControl, Platform } from 'react-native';
+import { RefreshControl, Platform, Animated } from 'react-native';
 import { View } from 'app/design/view'
-import { useRef, useCallback, useMemo } from 'react';
+import { useRef, useCallback, useMemo, useEffect, useState } from 'react';
 import { LegendList } from "@legendapp/list";
 import { useSetScrollDirection, useHeaderHeight, useSetScrollValue } from 'app/context/jotai/layout';
 
@@ -44,6 +44,62 @@ export default function UniList(props) {
         data.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i),
         [data]
     );
+    const [showContent, setShowContent] = useState(!preloadComponent);
+    const revealTimerRef = useRef(null);
+    const lastPreloadRef = useRef(preloadComponent);
+    const contentOpacity = useRef(new Animated.Value(preloadComponent ? 0 : 1)).current;
+    const preloadOpacity = useRef(new Animated.Value(preloadComponent ? 1 : 0)).current;
+
+    useEffect(() => {
+        if (preloadComponent) {
+            lastPreloadRef.current = preloadComponent;
+        }
+    }, [preloadComponent]);
+
+    useEffect(() => {
+        if (revealTimerRef.current) {
+            clearTimeout(revealTimerRef.current);
+        }
+
+        if (preloadComponent) {
+            setShowContent(false);
+            contentOpacity.setValue(0);
+            preloadOpacity.setValue(1);
+            return;
+        }
+
+        if (!lastPreloadRef.current) {
+            setShowContent(true);
+            contentOpacity.setValue(1);
+            preloadOpacity.setValue(0);
+            return;
+        }
+
+        setShowContent(false);
+        contentOpacity.setValue(0);
+        preloadOpacity.setValue(1);
+        revealTimerRef.current = setTimeout(() => {
+            setShowContent(true);
+            Animated.parallel([
+                Animated.timing(contentOpacity, {
+                    toValue: 1,
+                    duration: 500,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(preloadOpacity, {
+                    toValue: 0,
+                    duration: 500,
+                    useNativeDriver: true,
+                }),
+            ]).start();
+        }, 140);
+
+        return () => {
+            if (revealTimerRef.current) {
+                clearTimeout(revealTimerRef.current);
+            }
+        };
+    }, [preloadComponent, contentOpacity, preloadOpacity]);
 
     const handleScroll = useCallback((event) => {
         const SCROLL_OFFSET_THRESHOLD = 100;
@@ -124,39 +180,52 @@ export default function UniList(props) {
         [props.url, headerHeight, refreshing, onRefresh]
     );
 
-    if (preloadComponent) {
-        return (
-            <View className="w-full flex-1">
-                <View className="w-full" style={{ height: headerHeight }} />
-                {preloadComponent}
-            </View>
-        );
-    }
+    const overlayPreload = preloadComponent || lastPreloadRef.current;
 
     return (
-        <LegendList
-            contentContainerStyle={contentContainerStyleProp}
-            ref={refer || uniRef}
-            onEndReachedThreshold={4}
-            data={filteredData}
-            ListHeaderComponent={enhancedListHeaderComponent}
-            ListFooterComponent={enhancedListFooterComponent}
-            keyExtractor={item => item.id}
-            renderItem={renderItem}
-            onEndReached={onEndReached}
-            onStartReached={onStartReached}
-            onScroll={handleScroll}
-            scrollEventThrottle={16}
-            keyboardShouldPersistTaps="always"
-            onScrollToIndexFailed={handleScrollToIndexFailed}
-            refreshControl={refreshControl}
-            alignItemsAtEnd={inverted}
-            maintainScrollAtEnd={inverted}
-            contentInsetAdjustmentBehavior="never"
-            automaticallyAdjustContentInsets={false}
-            onStartReachedThreshold={inverted ? 4 : undefined}
-            initialScrollIndex={inverted && filteredData.length > 0 ? filteredData.length - 1 : undefined}
-            {...rest}
-        />
+        <View className="w-full flex-1">
+            <Animated.View style={{ opacity: contentOpacity, flex: 1 }}>
+                <LegendList
+                    contentContainerStyle={contentContainerStyleProp}
+                    ref={refer || uniRef}
+                    onEndReachedThreshold={4}
+                    data={filteredData}
+                    ListHeaderComponent={enhancedListHeaderComponent}
+                    ListFooterComponent={enhancedListFooterComponent}
+                    keyExtractor={item => item.id}
+                    renderItem={renderItem}
+                    onEndReached={onEndReached}
+                    onStartReached={onStartReached}
+                    onScroll={handleScroll}
+                    scrollEventThrottle={16}
+                    keyboardShouldPersistTaps="always"
+                    onScrollToIndexFailed={handleScrollToIndexFailed}
+                    refreshControl={refreshControl}
+                    alignItemsAtEnd={inverted}
+                    maintainScrollAtEnd={inverted}
+                    contentInsetAdjustmentBehavior="never"
+                    automaticallyAdjustContentInsets={false}
+                    onStartReachedThreshold={inverted ? 4 : undefined}
+                    initialScrollIndex={inverted && filteredData.length > 0 ? filteredData.length - 1 : undefined}
+                    {...rest}
+                />
+            </Animated.View>
+            {overlayPreload && (
+                <Animated.View
+                    pointerEvents="none"
+                    style={{
+                        opacity: preloadOpacity,
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0,
+                    }}
+                >
+                    <View className="w-full" style={{ height: headerHeight }} />
+                    {overlayPreload}
+                </Animated.View>
+            )}
+        </View>
     );
 }
