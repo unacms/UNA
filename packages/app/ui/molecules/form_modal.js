@@ -5,28 +5,30 @@ import { ScrollView, View, Row } from 'app/design/view'
 import { Keyboard } from 'react-native'
 import { getComponent } from 'app/components/registry';
 import { Platform } from 'react-native'
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
 
 const isWeb = Platform.OS === 'web';
 
 export default function FormModal({ pageData, setPageData, modalView, url }) {
+    const previousUrlRef = useRef(null);
+
     const handleModalClose = useCallback(() => {
         Keyboard.dismiss()
     }, [])
 
     const handleClose = useCallback(() => {
-        if (isWeb) {
-          //  window.history.replaceState(null, '', previousUrl); // сохранённый ранее
+        if (isWeb && previousUrlRef.current) {
+            window.history.replaceState(null, '', previousUrlRef.current);
         }
         setPageData(false);
     }, []);
 
     useEffect(() => {
-        //if (!isWeb || !pageData || !url) 
-		return;
+        if (!isWeb || !pageData || !url) 
+            return;
     
         const normalizedUrl = '/' + url.replace(/^\/+/, '');
-        const previousUrl = window.location.pathname + window.location.search;
+        previousUrlRef.current = window.location.pathname + window.location.search;
     
         window.history.pushState({ modal: true }, '', normalizedUrl);
     
@@ -34,14 +36,10 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
             setPageData(false);
         };
     
-      
-    
         window.addEventListener('popstate', handlePopState);
        
-    
         return () => {
             window.removeEventListener('popstate', handlePopState);
-           
         };
     }, [!!pageData, url]);
 
