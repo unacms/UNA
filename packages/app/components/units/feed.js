@@ -110,7 +110,7 @@ function DefaultUnit({ data }) {
                     viewState={viewState}
                 />
             )}
-            <FormModal pageData={pageData} setPageData={setPageData} modalView='content_page' url={pageData?.url2} />
+            <FormModal pageData={pageData.data} setPageData={setPageData} modalView='content_page' url={pageData.url2} />
             <CardList
                 border="border-y border-x-none sm:border-x"
                 className=" mb-0.5 sm:mb-3"

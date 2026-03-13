@@ -9,7 +9,7 @@ export default function ElementMap({ data, blockWrapperProps }) {
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <View className='w-full aspect-square p-2'>
+            <View className='w-full aspect-square'>
                 <View className='rounded-lg overflow-hidden w-full aspect-square' style={{ minHeight: 200 }}>
                     <APIProvider apiKey={apiKey}>
                         <Map

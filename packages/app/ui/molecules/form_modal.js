@@ -55,7 +55,7 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
             <Modal
                 onClose={handleClose}
                 onVisible={!!pageData}
-                title={`${authorData.content[0].data.author_data.display_name}'s post`}
+                title={`${authorData?.content?.[0]?.data?.author_data?.display_name}'s post`}
                 padding=""
                 outerClickClose={isWeb}
                 usePadding={true}
