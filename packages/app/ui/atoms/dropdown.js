@@ -6,36 +6,42 @@ import { Modal } from 'app/design/controls'
 import { View, Pressable } from 'app/design/view'
 import { Platform } from 'react-native'
 import { Button } from 'app/design/controls';
-//settings https://www.npmjs.com/package/@react-native-picker/picker#mode
+
+const toScalar = (val) => {
+    if (val === null || val === undefined) return '';
+    if (typeof val === 'object') return String(val?.key ?? val?.value ?? '');
+    return val;
+};
 
 export default function Dropdown(props) {
     const pickerRef = useRef();
 
-    const [showImage, setShowImage] = useState(false)
-    const [selectedVal, setSelectedVal] = useState(props.value? props.value : '');
+    const [selectedVal, setSelectedVal] = useState(toScalar(props.value));
     const { colors } = Theme();
     const isShow = Platform.OS == 'ios'
 
     function handleChange(itemValue, itemIndex) {
-        setSelectedVal(itemValue)
+        setSelectedVal(toScalar(itemValue))
         props.onChange(itemValue);
         if (isShow)
             setShowImage(false);
     }
     let selectedText = '';
     props.data.forEach(function (item) {
-
         if (item[props.valueField] == selectedVal)
             selectedText = item[props.labelField];
     });
+
+    const [showImage, setShowImage] = useState(false)
 
     if (props.open && pickerRef.current){
         pickerRef.current.focus();
     }
 
     useEffect(() => {
-        if (props.value != selectedVal){
-            setSelectedVal(props.value);
+        const scalar = toScalar(props.value);
+        if (scalar != selectedVal){
+            setSelectedVal(scalar);
         }
     }, [props.value]);
 
@@ -48,7 +54,7 @@ export default function Dropdown(props) {
                 handleChange(itemValue, itemIndex)
             }>
                 {props.data.map((item, index) => (
-                    <Picker.Item key={'item-' + index} label={item[props.labelField]} value={item[props.valueField]} />
+                    <Picker.Item key={'item-' + index} label={item[props.labelField]} value={toScalar(item[props.valueField])} />
                 ))}
             </PickerStyledRef>
         );
@@ -63,7 +69,7 @@ export default function Dropdown(props) {
                     handleChange(itemValue, itemIndex)
                 }>
                     {props.data.map((item, index) => (
-                        <Picker.Item key={'item-' + index} label={item[props.labelField]} value={item[props.valueField]} />
+                        <Picker.Item key={'item-' + index} label={item[props.labelField]} value={toScalar(item[props.valueField])} />
                     ))}
                 </PickerStyledIos>
             </Modal>

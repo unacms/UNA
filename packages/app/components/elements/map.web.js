@@ -1,7 +1,7 @@
-import GoogleMapReact from 'google-map-react';
-import { appSetting } from 'app/lib/util'
-import { View } from 'app/design/view'
-import { BlockWrapper } from 'app/components/block-wrapper'
+import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
+import { appSetting } from 'app/lib/util';
+import { View } from 'app/design/view';
+import { BlockWrapper } from 'app/components/block-wrapper';
 
 export default function ElementMap({ data, blockWrapperProps }) {
     const center = { lat: data.location.lat, lng: data.location.lng };
@@ -11,14 +11,18 @@ export default function ElementMap({ data, blockWrapperProps }) {
         <BlockWrapper {...blockWrapperProps}>
             <View className='w-full aspect-square p-2'>
                 <View className='rounded-lg overflow-hidden w-full aspect-square' style={{ minHeight: 200 }}>
-                    <GoogleMapReact
-                        bootstrapURLKeys={{ key: apiKey }}
-                        defaultCenter={center}
-                        defaultZoom={14}
-                        options={{ mapTypeControl: true, fullscreenControl: true }}
-                    />
+                    <APIProvider apiKey={apiKey}>
+                        <Map
+                            defaultCenter={center}
+                            defaultZoom={14}
+                            mapTypeControl={true}
+                            fullscreenControl={true}
+                        >
+                            <Marker position={center} />
+                        </Map>
+                    </APIProvider>
                 </View>
             </View>
         </BlockWrapper>
-    )
+    );
 }
