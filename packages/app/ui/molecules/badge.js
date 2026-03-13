@@ -65,7 +65,7 @@ export default function Badge({ data, variant = "default", size = 'sm', rounded 
         const containerSize = size && badgeSizes[size]?.container || 'min-w-5 h-5';
         const roundedSize = size && badgeSizes[size]?.rounded || 'rounded';
         return (
-            <Link href={data.badge_link}><View className={`${containerSize} ${roundedSize} bg-muted overflow-hidden p-px border border-border items-center justify-center ${className}`}>
+            <Link href={data.badge_link}><View className={`${containerSize} ${roundedSize} bg-muted overflow-hidden shadow-xs dark:shadow-xs-deep items-center justify-center p-[0.5px] ${className}`}>
             <Image
                 width={imgSize}
                 height={imgSize}

@@ -66,7 +66,7 @@ export const settingsButtons = {
         },
         default:{
             container:{
-                base:'web:duration-200 shadow-custom web:hover:shadow-custom-hover',
+                base:'web:duration-200 border border-border shadow-xs dark:shadow-xs-deep',
                 base_stroke: 'web:border-0 border border-border/60',
                 default:' bg-card ',
                 active:' bg-card scale-[0.98]  ',
@@ -154,7 +154,7 @@ export const settingsButtons = {
                 base:'web:duration-200',
                 default:'',
                 active:'bg-muted/60 scale-[0.98] ',
-                pressed:'bg-accent/60',
+                pressed:'web:hover:bg-accent/60',
                 hovered:'bg-muted/60',
                 focused:'bg-muted',
                 disabled:'opacity-50',
@@ -195,17 +195,17 @@ export const settingsButtons = {
             container:{
                 base:'web:duration-200',
                 default:'',
-                active:'bg-accent/60 scale-[0.98] ',
-                pressed:'bg-accent/60',
-                hovered:'bg-accent/60',
-                focused:'bg-accent/60',
+                active:'scale-[0.98] ',
+                pressed:'',
+                hovered:'',
+                focused:'',
                 disabled:'',
 
             },
             text:{
-                base:'font-medium text-accent-foreground',
+                base:'font-medium text-secondary-foreground',
                 default:'',
-                hovered:'text-accent-foreground',
+                hovered:'text-foreground underline',
                 focused:'text-accent-foreground',
                 active:'text-accent-foreground',
                 pressed:'text-accent-foreground',

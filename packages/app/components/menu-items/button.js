@@ -75,7 +75,7 @@ export default function MenuItemButton(oProps) {
 
             let buttonAction = <ButtonAction title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />;
             if (oProps?.list?.length > 0) {
-                buttonAction = <Text className="text-muted-foreground web:hover:text-foreground px-2 text-sm font-medium">{oProps.title}</Text>
+                buttonAction = <Text className="text-secondary-foreground web:hover:text-foreground px-2 text-sm font-medium">{oProps.title}</Text>
             }
 
             if (oProps.mode == 'dropdown-menu') {

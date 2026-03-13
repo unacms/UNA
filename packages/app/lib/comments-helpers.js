@@ -708,7 +708,7 @@ export function CommentsForm({ form: initialForm, requestUrl, module, objectId, 
     return (
         <View className=" max-w-5xl p-3 sm:p-4 " >
             {
-                formData.parent_id > 0 && (<View className=' rounded-sm border-l-2 border-accent py-1 pl-2 mb-2'>
+                formData.parent_id > 0 && (<View className='bg-accent/60 rounded-lg border-accent p-2 mb-2'>
                     <Row className='items-start justify-between max-w-full relative'>
                         <View className=' flex-auto pr-4'>
                             <Row className='max-w-full '>
@@ -718,7 +718,7 @@ export function CommentsForm({ form: initialForm, requestUrl, module, objectId, 
                             <Text className=' text-base overflow-hidden text-popover-foreground  text-sm' numberOfLines={3}>{formData.parent_id > 0 ? formData.text : ''}</Text>
                         </View>
                         <View className=" right-0 t-0">
-                            <Button align="start" rounded startDecorator="X" size="xs" variant="outline" onPress={() => handleCancel()} />
+                            <Button align="start" rounded startDecorator="X" size="xs" variant="default" onPress={() => handleCancel()} />
                         </View>
                     </Row>
                 </View>)

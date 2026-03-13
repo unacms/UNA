@@ -107,7 +107,7 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
                 <View className="flex-auto web:group" key={`menu-${index}`}>
                     <Row
                         className={`items-center content-center justify-center px-2 h-12 flex-auto flex-wrap rounded-lg  ${isActive
-                            ? 'bg-accent/60 web:hover:bg-accent/80 active:bg-accent text-accent-foreground'
+                            ? ' web:hover:bg-accent/60 active:bg-accent text-accent-foreground'
                             : 'text-secondary-foreground web:group-hover:text-foreground web:hover:bg-muted/60 web:group-focus:bg-muted/60 web:active:bg-muted '
                             }`}
                     >

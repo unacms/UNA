@@ -27,10 +27,10 @@ export const settingsLinks = {
 
     link_styles: {
         // Inherits text color; underline on hover; brief muted flash on press (via ::after pseudo)
-        default: 'text-card-foreground web:hover:text-foreground web:duration-200',
+        default: ' text-secondary-foreground web:hover:text-foreground web:duration-200',
 
         // Muted text; subtle underline on hover; brief muted flash on press
-        secondary: 'bg-secondary/60 web:hover:bg-secondary text-secondary-foreground web:hover:text-foreground web:duration-200',
+        secondary: ' font-semibold text-muted-foreground web:hover:text-card-foreground web:hover:underline web:duration-200 transition-all',
 
         // Accent-colored text; underline on hover; brief muted flash on press
         accent: 'text-accent-foreground web:hover:underline web:active:no-underline u-link-press web:duration-200',

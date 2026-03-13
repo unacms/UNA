@@ -46,7 +46,7 @@ function DefaultUnit({ data }) {
         const sResponse = await getPageData(url2, false);
         if (sResponse.data !== pageData.data) {
             setPageData({ data: sResponse.data, url: url, url2: url2 });
-        }
+            }
     }
 
     if (isCommentsModal) {
@@ -110,16 +110,16 @@ function DefaultUnit({ data }) {
                     viewState={viewState}
                 />
             )}
-            <FormModal pageData={pageData.data} setPageData={setPageData} modalView='content_page' url={pageData.url2} />
+            <FormModal pageData={pageData} setPageData={setPageData} modalView='content_page' url={pageData?.url2} />
             <CardList
                 border="border-y border-x-none sm:border-x"
                 className=" mb-0.5 sm:mb-3"
-                padding="pt-3 lg:pt-4"
+                padding="pt-1 sm:pt-2"
             >
-                <Row className="gap-3 flex-auto px-3 lg:px-4">
+                <Row className="gap-3 flex-auto px-1 sm:px-2 ">
                     <Skeleton visible={isSkeleton} preset='feed_author'>
-                        <Author data={data} url={url} t={t} />
-                        <View className="flex-none mb-auto hidden">
+                        <View className=" flex-1 px-2 pt-2 "><Author data={data} url={url} t={t} /></View>
+                        <View className="flex-none mb-auto">
                             <MenuManage
                                 id={data.id}
                                 menu={data?.menu_manage}
@@ -128,7 +128,7 @@ function DefaultUnit({ data }) {
                         </View>
                     </Skeleton>
                 </Row>
-                <View className="flex-auto px-3 lg:px-4 pt-2 lg:pt-3">
+                <View className="flex-auto px-3 sm:px-4 pt-3 sm:pt-4">
                     <Skeleton visible={isSkeleton} preset='multitext'>
                         <MainContent url={url} data={data} />
                     </Skeleton>
@@ -144,15 +144,16 @@ function DefaultUnit({ data }) {
                 </Row>
                 </>}
 
-                <Row className="gap-2 h-14 items-center flex-auto justify-between px-2 lg:px-2 py-2 border-t border-border/60 mt-2">
+                <Row className="gap-2 items-center flex-auto justify-between p-1 sm:p-2 border-t mt-3 border-border/60 ">
                     <ActionMenu
                         data={data.menu_actions}
                     />
+                    <View className="flex-none hidden">
                     <MenuManage
                         id={data.id}
                         menu={data?.menu_manage}
                         setViewState={setViewState}
-                    />
+                    /></View>
                 </Row>
                 {commentsData && (
                     <View className="">

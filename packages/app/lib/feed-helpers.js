@@ -99,8 +99,8 @@ export const CommentsSection = memo(
             <Button variant="secondary" size="xs" title={t('View more comments...')} />
         )
         return (
-            <View className="border-t border-border/40 px-3 lg:px-4 pb-3 lg:pb-4">
-                <View className="border-t border-card ">
+            <View className="border-t border-border/60 px-3 lg:px-4 pb-3 lg:pb-4">
+                
                     {isShowMoreComments && (
                         <View className="pt-2.5 me-auto">
                             {isCommentsModal ? (
@@ -116,7 +116,7 @@ export const CommentsSection = memo(
                             )}
                         </View>
                     )}
-                </View>
+                
                 <CommentsBrowseShort
                     contentUrl={url}
                     browseData={commentsDataInline?.data}
@@ -312,8 +312,8 @@ export const MenuManage = ({ id, menu, setViewState }) => {
                 <Button
                     variant="text"
                     size="sm"
-
                     startDecorator="Ellipsis"
+                    rounded="true"
                     onPress={() => {
                         if (Platform.OS === 'web')
                             setMenuData({
@@ -407,8 +407,8 @@ const MenuManage_ = memo(({ id, menu, setViewState, defaultOpen }) => {
                         <Button
                             variant="text"
                             size="sm"
-                            rounded
                             startDecorator="Ellipsis"
+                            rounded="true"
                         />
                     </DropdownMenu>
                 </View>
@@ -460,7 +460,7 @@ export const VisibilityInfo = memo(({ data }) => {
     const isUser = data.object_privacy_view < 0
 
     return (
-        <View className="gap-1 flex-row items-center min-h-5">
+        <View className="gap-1 flex-row items-center min-h-4">
             {isUser ? (
                 <Profile
                     {...data.author_data}
@@ -470,7 +470,7 @@ export const VisibilityInfo = memo(({ data }) => {
             ) : icon ? (
                 <Icon className="text-muted-foreground " icon={icon} width={14} height={14} />
             ) : null}
-            <Text className="text-muted-foreground text-xs font-semibold leading-5">
+            <Text className="text-muted-foreground text-xs font-semibold leading-4">
                 {isUser ? data.author_data.display_name : text}
             </Text>
         </View>
@@ -504,6 +504,9 @@ export const Author = memo(({ data, url, t }) => {
         data.object_privacy_view < 0 && data.feed_type != 'owner'
             ? data.context_data
             : data.author_data
+    const shouldShowVisibilityInfo =
+        data.feed_type != 'owner' &&
+        (data.object_privacy_view < 0 || !!visibilityById(data.object_privacy_view, t))
 
     // Create a hover card wrapper function that only wraps avatar/name
     const hoverCardWrapper = (content) => (
@@ -512,58 +515,56 @@ export const Author = memo(({ data, url, t }) => {
         </ProfileHoverCard>
     );
 
+    const TimestampLink = isWeb ? (
+        <Link
+            href={url}
+            emulate={false}
+            size="xs"
+            variant="secondary"
+        >
+            <Time ts={data.date} />
+        </Link>
+    ) : (
+        <Link
+            href={url}
+            mode="text"
+            size="xs"
+            variant="secondary"
+            hitSlop={{
+                top: 8,
+                bottom: 8,
+                left: 8,
+                right: 8,
+            }}
+        >
+            <Time variant="link"
+                ts={data.date}
+            />
+        </Link>
+    );
+
     return (
-        <Row className="w-full justify-between items-top gap-2 lg:gap-3">
-            <View className='flex-auto'>
-                <Profile
-                    {...dataIcon}
-                    displayType="unit"
-                    displaySize="base"
-                    showInfo={
-                        <Row className="items-center flex-wrap min-h-5 items-center ">
-                            <VisibilityInfo data={data} />
-                            <ItemInfo data={data} t={t} />
-                        </Row>
-                    }
-                    showInfo2={<>{ActionsElements}<Badges badges={data.author_badges} size="2xs" /></>}
-
-                    hoverCardWrapper={hoverCardWrapper}
-                />
-            </View>
-
-            {isWeb ? (
-                <Link
-                    href={url}
-                    emulate={false}
-                    size="sm"
-                    variant="ghost"
-                    className="mb-auto "
-
-                >
-                    <Time className="text-xs font-medium "
-                        ts={data.date}
-                    />
-                </Link>
-            ) : (
-                <Link
-                    href={url}
-                    mode="text"
-                    size="sm"
-                    variant="secondary"
-                    className="mb-auto"
-                    hitSlop={{
-                        top: 8,
-                        bottom: 8,
-                        left: 8,
-                        right: 8,
-                    }}
-                >
-                    <Time variant="link"
-                        ts={data.date}
-                    />
-                </Link>
-            )}
-        </Row>
+        <View className="flex-auto min-w-0">
+            <Profile
+                {...dataIcon}
+                displayType="unit"
+                displaySize="base"
+                showInfo={
+                    <Row className="items-center flex-wrap min-h-4 gap-0.5">
+                        {TimestampLink}
+                        {shouldShowVisibilityInfo && (
+                            <>
+                                <Icon className="text-muted-foreground -mx-0.5 " icon='Dot' size={12} />
+                                <VisibilityInfo data={data} />
+                            </>
+                        )}
+                        <ItemInfo data={data} t={t} />
+                    </Row>
+                }
+                showInfo2={<>{ActionsElements}<Badges badges={data.author_badges} size="3xs" /></>}
+                hoverCardWrapper={hoverCardWrapper}
+            />
+        </View>
     )
 })
 
@@ -649,13 +650,20 @@ export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit, feed_type }) => {
 
     const onItemEdited = useCallback(
         async (strData) => {
-            const data = JSON.parse(strData)
-            if (data.id.toString() == datas.id.toString()) {
+            const editedData = JSON.parse(strData)
+            const editedId = editedData?.id
+            const currentId = datas?.id
+
+            if (editedId == null || currentId == null) {
+                return
+            }
+
+            if (editedId.toString() == currentId.toString()) {
                 const result = await fetcher(
                     '/api.php?r=' +
                     appSetting('urls', 'feed_item') +
                     '{"params":{"browse":"id","value":' +
-                    data.id +
+                    editedId +
                     '}}'
                 )
                 if (result.data && !isObjectsEqual(result.data, datas))

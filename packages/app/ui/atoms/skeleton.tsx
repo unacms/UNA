@@ -67,7 +67,7 @@ export function Skeleton({
 
         case 'feed_author':
             return (
-                <Row className="flex-row gap-x-2 mb-2 w-full">
+                <Row className="flex-row gap-2 w-full px-2 pt-2">
                     <SkeletonAvatar size="large" />
                     <View className="gap-y-1.5 flex-auto my-auto">
                         <View className="w-full flex-row justify-between">
@@ -87,16 +87,16 @@ export function Skeleton({
             return (
                 <>
                     <View
-                        className={`h-3 my-1 w-full ${commonClasses.rounded}`}
+                        className={`h-3 mb-2 w-full ${commonClasses.rounded}`}
                     />
                     <View
-                        className={`h-3 my-1 w-full ${commonClasses.rounded}`}
+                        className={`h-3 mb-2 w-full ${commonClasses.rounded}`}
                     />
                     <View
-                        className={`h-3 my-1 w-full ${commonClasses.rounded}`}
+                        className={`h-3 mb-2 w-full ${commonClasses.rounded}`}
                     />
                     <View
-                        className={`h-3 my-1 w-3/4 ${commonClasses.rounded}`}
+                        className={`h-3  w-3/4 ${commonClasses.rounded}`}
                     />
                 </>
             )
