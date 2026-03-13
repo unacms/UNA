@@ -15,8 +15,6 @@ import {
     getPageSettings,
 } from 'app/lib/util'
 import { Platform } from 'react-native'
-import { useCurrentUser } from 'app/context/user'
-import { TextHeader } from 'app/ui/molecules/page_header'
 
 const conductorTheme = appSetting('theme', 'conductor')
 
@@ -569,8 +567,10 @@ export function TopSidebar({
 }
 
 export function getAddon(addon) {
-    const show = appSetting('conductor', 'show_nav_counters')
-    return show && (show !== 'primary' || addon?.variant === 'primary') ? addon : null
+    const show = appSetting('conductor', 'show_nav_counters');
+    if (show == 'primary' && addon > 0 )
+        return {variant: 'primary', text: addon}
+    return !!show && addon > 0 ? addon : null
 }
 
 export function Addon({item, index}) {
@@ -583,8 +583,6 @@ export function Addon({item, index}) {
         : item.icon.replace('*', '')
 
     const addon = getAddon(a.addon)
-
-
     if (addon) {
         const addonClasses = addon.variant === 'primary' ? "bg-destructive" : "bg-secondary";
         const addonText = addon.variant === 'primary' ? addon.text : addon;

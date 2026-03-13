@@ -16,7 +16,7 @@ const rootUrl = appSetting('context_selector', 'root_url');
 
 function ListItem({ url, text, icon, isActive }) {
     return (
-        <Link key={url}  href={url}>
+        <Link key={url} href={url}>
             <Row
                 className={`w-full px-2 h-12 gap-2 web:group rounded-xl justify-between items-center ${isActive
                     ? ' bg-primary/10 text-foreground rounded-xl web:hover:bg-muted/60 web:duration-200 '
@@ -60,7 +60,7 @@ function getContextRoot(data, url, uri) {
         return {
             url: link.url,
             image: <View className="w-9 h-9 items-center justify-center flex-row text-center rounded-full bg-muted flex">
-                <Icon icon={link.icon} size={20}  /></View>,
+                <Icon icon={link.icon} size={20} /></View>,
             name: link.title,
         }
     }
@@ -80,8 +80,8 @@ function getContextRoot(data, url, uri) {
     }
 }
 
-export default function ContextSelector({ data:initialData, url, uri, mode }) {
-   
+export default function ContextSelector({ data: initialData, url, uri, mode }) {
+
     const [isOpen, setIsOpen] = useState(false);
     const [data, setContextData] = useState(initialData);
     const { t } = useTranslation();
@@ -90,7 +90,7 @@ export default function ContextSelector({ data:initialData, url, uri, mode }) {
     useEffect(() => {
         const subscription = emitter.addListener(`сonnections`, (data) => {
             if (data.action == 'changed') {
-                getPageData(url).then(data => {setContextData(data.data.context) })
+                getPageData(url).then(data => { setContextData(data.data.context) })
             }
         })
 
@@ -129,39 +129,39 @@ export default function ContextSelector({ data:initialData, url, uri, mode }) {
 
     const isLinkSelected = data.links?.some(item => item.url == contextRoot.url);
 
-    const List =     <View className="flex-col gap-px">
-                    {data.links?.filter(item => (item.hidden != true)).map((item) =>
-                        item.url ? (
-                            <ListItem
-                                key={item.url}
-                                url={item.url}
-                                text={item.title}
-                                icon={item.icon && (item.icon == '{logo}' ? appStatic('logo', { mode: 'mark', }) :
-                                    <Icon
-                                        icon={item.icon}
-                                        size={20}
-                                        className="w-5 h-5"
-                                    />
-                                )}
-                                isActive={contextRoot.url == item.url} />
-
-                        ) : (
-                            <View
-                                key={Math.random()}
-
-                            />
-                        )
-                    )}
-                    {data.list.map((item) =>
-                        <ListItem
-                            key={item.url}
-                            url={item.url}
-                            text={item.display_name}
-                            icon={<Profile {...item} displayType="unit_wo_info" displaySize="sm" />}
-                            isActive={item.id === data.current?.id && !isLinkSelected}
+    const List = <View className="flex-col gap-px">
+        {data.links?.filter(item => (item.hidden != true)).map((item) =>
+            item.url ? (
+                <ListItem
+                    key={item.url}
+                    url={item.url}
+                    text={item.title}
+                    icon={item.icon && (item.icon == '{logo}' ? appStatic('logo', { mode: 'mark', }) :
+                        <Icon
+                            icon={item.icon}
+                            size={20}
+                            className="w-5 h-5"
                         />
                     )}
-                </View>
+                    isActive={contextRoot.url == item.url} />
+
+            ) : (
+                <View
+                    key={Math.random()}
+
+                />
+            )
+        )}
+        {data.list.map((item) =>
+            <ListItem
+                key={item.url}
+                url={item.url}
+                text={item.display_name}
+                icon={<Profile {...item} displayType="unit_wo_info" displaySize="sm" />}
+                isActive={item.id === data.current?.id && !isLinkSelected}
+            />
+        )}
+    </View>
     const DropDown = (
         <DropdownPopup
             trigger={
@@ -171,7 +171,7 @@ export default function ContextSelector({ data:initialData, url, uri, mode }) {
             open={isOpen}
             onOpenChange={handleOpenChange}
         >
-           {List}
+            {List}
         </DropdownPopup>
     )
 
@@ -179,7 +179,7 @@ export default function ContextSelector({ data:initialData, url, uri, mode }) {
         return DropDown
     }
 
-     if (mode === 'list') {
+    if (mode === 'list') {
         return List
     }
 
@@ -192,47 +192,47 @@ export default function ContextSelector({ data:initialData, url, uri, mode }) {
 
     return (
         data?.list?.length > 0 || data?.links?.length > 0 ? (
-                <Row className='items-center w-full'>
-                    {!!contextRoot.name &&
-                        appSetting('context_selector', 'logo') && (
-                            <>
-                                {(() => {
-                                    const isActiveAppRoot = uri === rootUrl
-                                    return (
-                                        <Link href={`/${rootUrl}`} variant="ghost" size="lg" title="Home">
-                                            <Row
-                                                className={` rounded-xl ${isActiveAppRoot
-                                                    ? ' bg-accent/60 text-accent-foreground web:hover:bg-accent'
-                                                    : ' web:hover:bg-muted/60'
-                                                    }`}
-                                            >
-                                                <View className="flex-row rounded-full items-center justify-center">
-                                                    {appStatic('logo', { mode: 'mark', })}
-                                                </View>
-                                            </Row>
-                                        </Link>
-                                    )
-                                })()}
-                                <Icon
-                                    icon="ChevronRight"
-                                    size={20}
-                                    className="w-5 h-5 text-muted-foreground"
-                                />
-                            </>
-                        )}
+            <Row className='items-center w-full gap-x-1'>
+                {!!contextRoot.name &&
+                    appSetting('context_selector', 'logo') && (
+                        <>
+                            {(() => {
+                                const isActiveAppRoot = uri === rootUrl
+                                return (
+                                    <Link href={`/${rootUrl}`} variant="ghost" size="lg" title="Home">
+                                        <Row
+                                            className={` rounded-xl ${isActiveAppRoot
+                                                ? ' bg-accent/60 text-accent-foreground web:hover:bg-accent'
+                                                : ' web:hover:bg-muted/60'
+                                                }`}
+                                        >
+                                            <View className="flex-row rounded-full items-center justify-center">
+                                                {appStatic('logo', { mode: 'mark', })}
+                                            </View>
+                                        </Row>
+                                    </Link>
+                                )
+                            })()}
+                            <Icon
+                                icon="ChevronRight"
+                                size={20}
+                                className="w-5 h-5 text-muted-foreground"
+                            />
+                        </>
+                    )}
 
-                    
-                        <View className="max-w-64 ">
-                        {CurrentContext}
-                        </View>
-                        <View className="flex-auto items-start">
-                        {DropDown}
-                        </View>
-                   
-                </Row>
-            ) : (
-                CurrentContext
-            )
-    
+
+                <View className="max-w-64 ">
+                    {CurrentContext}
+                </View>
+                <View className="flex-auto items-start">
+                    {DropDown}
+                </View>
+
+            </Row>
+        ) : (
+            CurrentContext
+        )
+
     )
 }
