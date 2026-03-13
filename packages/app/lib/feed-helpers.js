@@ -470,7 +470,7 @@ export const VisibilityInfo = memo(({ data }) => {
             ) : icon ? (
                 <Icon className="text-muted-foreground " icon={icon} width={14} height={14} />
             ) : null}
-            <Text className="text-muted-foreground text-xs font-semibold leading-4">
+            <Text className="text-secondary-foreground text-xs font-semibold leading-4">
                 {isUser ? data.author_data.display_name : text}
             </Text>
         </View>

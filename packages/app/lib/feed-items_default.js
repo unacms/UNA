@@ -271,7 +271,7 @@ export const PostsView = memo(({ data, styles, url, isCompact, content_attach, f
                     <LinkOrModal href={url} showInModal={appSetting('browse', 'show_in_modal', data.type)}>
                         <Text
                             numberOfLines={isCompact ? 3 : 2}
-                            className="text-card-foreground web:hover:text-foreground text-xl font-bold leading-tight font-title tracking-tight"
+                            className="text-card-foreground web:hover:text-foreground text-xl font-bold leading-tight font-title"
                         >
                             {data.content.title}
                         </Text>

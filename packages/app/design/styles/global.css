@@ -10,7 +10,7 @@
         /*main page content*/
         --card: var(--white);
         /*surface*/
-        --card-foreground: var(--neutral-900);
+        --card-foreground: var(--neutral-800);
         /*content on cards, sidebars, navbars*/
         --popover: var(--white);
         /*background for popovers, inputs, tooltips, modals, elevated surfaces*/
@@ -22,7 +22,7 @@
         /*priamry content, links, foreground elements*/
         --secondary: var(--neutral-200);
         /*secondary surfaces*/
-        --secondary-foreground: var(--neutral-700);
+        --secondary-foreground: var(--neutral-600);
         /*content on secondary buttons, secondary surfaces*/
         --muted: var(--neutral-200);
         /*background for ui items, sections, hover states*/

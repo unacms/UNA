@@ -55,7 +55,7 @@ export const settingsElements = {
         'u-card-padding': 'py-4',
         'u-card-header': 'px-4',
         'u-card-icon': ' ',
-        'u-card-title': 'font-semibold text-base sm:text-lg tracking-tight text-card-foreground',
+        'u-card-title': 'font-semibold text-base sm:text-lg text-card-foreground',
         'u-card-description': 'text-muted-foreground text-sm sm:text-base text-balance',
         'u-card-actions': ' ',
         'u-card-content': 'px-4',

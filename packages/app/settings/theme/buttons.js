@@ -16,7 +16,7 @@ export const settingsButtons = {
             rounded: 'rounded-lg ',
             container: 'px-2 gap-1 h-9 min-w-9 ',
             container_icon_only: 'h-9 w-9',
-            text: 'text-sm leading-6',
+            text: 'text-sm leading-5',
             icon_size: 20,
             hitSlop: 6,
         },
@@ -71,7 +71,7 @@ export const settingsButtons = {
                 default:' bg-card ',
                 active:' bg-card scale-[0.98]  ',
                 pressed:' bg-card',
-                hovered:' bg-muted/60 ',
+                hovered:' bg-card  ',
                 focused:' bg-card ',
                 disabled:'bg-secondary opacity-50',
 
@@ -161,7 +161,7 @@ export const settingsButtons = {
 
             },
             text:{
-                base:'font-medium ',
+                base:'font-semibold ',
                 default:'text-secondary-foreground',
                 hovered:'text-foreground',
                 focused:'text-foreground',
@@ -203,7 +203,7 @@ export const settingsButtons = {
 
             },
             text:{
-                base:'font-medium text-secondary-foreground',
+                base:'font-semibold text-secondary-foreground',
                 default:'',
                 hovered:'text-foreground underline',
                 focused:'text-accent-foreground',

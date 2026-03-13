@@ -41,7 +41,7 @@ export const settingsElements = {
         image_aspect_ratio: ' aspect-square ', //appSetting('layout', 'carousel_image_aspect')
     },
     conductor: {
-        show_nav_counters: 'primary', // OLD appSetting('layout', 'show_nav_counters')
+        show_nav_counters: true, // OLD appSetting('layout', 'show_nav_counters')
         show_nav_titles: false, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
         sidebar_container: ' xl:px-4 ',
