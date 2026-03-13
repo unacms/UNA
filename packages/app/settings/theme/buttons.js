@@ -88,7 +88,7 @@ export const settingsButtons = {
         },
         accent:{
             container:{
-                base:'web:duration-200 bg-accent',
+                base:'web:duration-200 bg-accent/60',
                 default:' ',
                 active:'web:ring-2 web:ring-accent web:ring-offset-2 web:outline-none',
                 pressed:'',
@@ -98,7 +98,7 @@ export const settingsButtons = {
 
             },
             text:{
-                base:'font-medium text-accent-foreground',
+                base:'font-semibold text-accent-foreground',
                 default:'font-medium text-accent-foreground',
                 hovered:'font-medium text-accent-foreground',
                 focused:'font-medium text-accent-foreground',
