@@ -102,7 +102,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
                                     aItem?.item?.settings?.class
                                 )}
                                 ref={el => (itemRefs?.current ? (itemRefs.current[iKey] = el) : (el = null))} >
-                                <MenuItem item={{ ...aItem, onPress: (event) => handleFormModal(aItem, event, setPageData) }} visibleItemsCount={visibleItemsCount} />
+                                <MenuItem item={{ ...aItem, onPress: (event) => { setPageData('loading'); handleFormModal(aItem, event, setPageData) }}} visibleItemsCount={visibleItemsCount} />
                             </View>
                         })
                     }

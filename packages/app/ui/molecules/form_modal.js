@@ -6,7 +6,7 @@ import { Keyboard } from 'react-native'
 import { getComponent } from 'app/components/registry';
 import { Platform } from 'react-native'
 import { useEffect, useCallback, useRef } from 'react'
-
+import { Loading } from 'app/customization/loading' 
 const isWeb = Platform.OS === 'web';
 
 export default function FormModal({ pageData, setPageData, modalView, url }) {
@@ -55,12 +55,12 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
             <Modal
                 onClose={handleClose}
                 onVisible={!!pageData}
-                title={`${authorData?.content?.[0]?.data?.author_data?.display_name}'s post`}
+                title={!!authorData?.content?.[0]?.data?.author_data?.display_name ? `${authorData?.content?.[0]?.data?.author_data?.display_name}'s post` : ' '}
                 padding=""
                 outerClickClose={isWeb}
                 usePadding={true}
             >
-                <Component url={url} isModal={true} layoutName={'post'} data={pageData} blocks={layoutBlocks} />
+                 <Component url={url} isModal={true} layoutName={'post'} data={pageData} blocks={layoutBlocks} />
             </Modal>
         );
     }
@@ -95,6 +95,9 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
             <View className='p-3 flex-auto'>
                 <Container key={pageData.module + (pageData.ts)} className={`flex-1 ${isShowHeader ? '' : 'overflow-visible'}`}>{/*px-3 sm:px-0*/}
                     {
+                        pageData == 'loading' ? <View className="flex-1 items-center justify-center">
+                            <Loading />
+                        </View> :
                         Object.keys(pageData?.elements || {}).map(key =>
                             Object.keys(pageData.elements[key] || {}).map(key2 => (
                                 <BlockByData

@@ -175,6 +175,7 @@ export default function ElementMenu(oProps) {
             const cntProps = {};
             if (item.noAction) {
                 cntProps.onPress = (event) => {
+                    setPageData('loading');
                     handleFormModal(item, event, setPageData);
                 };
             }

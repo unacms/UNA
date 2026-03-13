@@ -41,12 +41,14 @@ function DefaultUnit({ data }) {
         () => prepareData(data),
         [data]
     )
+
     const showCommentsModal = async (initFormData) => {
         const url2 = (url.startsWith('/') ? url.slice(1) : url) + (initFormData?.cmt_id > 0 ? '#cmt_id=' + initFormData?.cmt_id : '');
+        setPageData({ data: 'loading', url: url, url2: url2 });
         const sResponse = await getPageData(url2, false);
         if (sResponse.data !== pageData.data) {
             setPageData({ data: sResponse.data, url: url, url2: url2 });
-            }
+        }
     }
 
     if (isCommentsModal) {
@@ -77,7 +79,7 @@ function DefaultUnit({ data }) {
             )
         })
         return (
-        <AnimatedBlock>
+            <AnimatedBlock>
                 <CardList className="mb-0.5 sm:mb-4 " padding="p-0.5">
                     <CardHeader className=" px-3 lg:px-4 pt-3 lg:pt-4 flex-row items-center justify-between">
                         <CardTitle className="text-secondary-foreground">{t(data.title)}</CardTitle>
@@ -134,14 +136,14 @@ function DefaultUnit({ data }) {
                     </Skeleton>
                 </View>
                 {!!data.menu_counters?.items?.length && <>
-                <Row className="px-2 lg:px-2">
+                    <Row className="px-2 lg:px-2">
 
-                    {appSetting('feed', 'counters_menu') && (
-                        <CounterMenu
-                            data={data.menu_counters}
-                        />
-                    )}
-                </Row>
+                        {appSetting('feed', 'counters_menu') && (
+                            <CounterMenu
+                                data={data.menu_counters}
+                            />
+                        )}
+                    </Row>
                 </>}
 
                 <Row className="gap-2 items-center flex-auto justify-between p-1 sm:p-2 border-t mt-3 border-border/60 ">
@@ -149,23 +151,23 @@ function DefaultUnit({ data }) {
                         data={data.menu_actions}
                     />
                     <View className="flex-none hidden">
-                    <MenuManage
-                        id={data.id}
-                        menu={data?.menu_manage}
-                        setViewState={setViewState}
-                    /></View>
+                        <MenuManage
+                            id={data.id}
+                            menu={data?.menu_manage}
+                            setViewState={setViewState}
+                        /></View>
                 </Row>
                 {commentsData && (
                     <View className="">
-                    <CommentsSection
-                        url={url}
-                        t={t}
-                        isCommentsModal={isCommentsModal}
-                        showCommentsModal={showCommentsModal}
-                        commentsDataInline={commentsData}
-                        data={data}
-                        isShowMoreComments={isShowMoreComments}
-                    />
+                        <CommentsSection
+                            url={url}
+                            t={t}
+                            isCommentsModal={isCommentsModal}
+                            showCommentsModal={showCommentsModal}
+                            commentsDataInline={commentsData}
+                            data={data}
+                            isShowMoreComments={isShowMoreComments}
+                        />
                     </View>
                 )}
             </CardList>

@@ -43,6 +43,7 @@ function UnitCommentsSearch(props) {
 
     const showCommentsModal = async (initFormData) => {
         const url2 = url;
+        setPageData({ data: 'loading', url: url, url2: url2 });
         const sResponse = await getPageData(url2, false);
         if (sResponse.data !== pageData.data) {
             setPageData({ data: sResponse.data, url: url, url2: url2 });

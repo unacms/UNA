@@ -11,6 +11,8 @@ import { Platform } from 'react-native';
 const BtnCls = appSetting('theme', 'button_styles');
 const BtnClsSize = appSetting('theme', 'button_sizes');
 
+const isWeb = Platform.OS === 'web';
+
 const ICON_ACCESSIBLE_MAP = {
     'X': 'Close',
     'ChevronLeft': 'Previous',
@@ -251,6 +253,9 @@ export const Button = ({
 
     const handlePress = (event) => {
         if (haptics && onPress) FeedbackHaptics(haptics);
+        if (isWeb) {
+            event?.currentTarget?.blur?.();
+        }
         onPress?.(event);
     };
 
@@ -283,7 +288,6 @@ export const Button = ({
             BtnClsSize[size]?.rounded ?? '';
 
     const isPressable = !!(onPress || onTouchStart);
-    const isWeb = Platform.OS === 'web';
     const Cnt = isPressable ? Pressable : View;
 
     // Web hover tracking for non-pressable buttons (e.g. dropdown triggers)

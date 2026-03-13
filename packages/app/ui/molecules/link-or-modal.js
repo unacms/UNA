@@ -28,6 +28,7 @@ function LinkModal_({ href, children, className = '' }) {
     const [pageData, setPageData] = useState(false);
 
     const handlePress = useCallback(async () => {
+        setPageData('loading');
         const sResponse = await getPageData(href, false);
         if (sResponse.data !== pageData) {
             setPageData(sResponse.data);

@@ -17,7 +17,7 @@ import {
 } from 'app/ui/molecules/resizable-panels'
 import { useSetHeader, defaultHeader, useSetFooter } from 'app/context/jotai/layout';
 import { useSafeAreaInsets } from 'app/lib/hooks/router'
-
+import { Loading } from 'app/customization/loading'
 const mapLayoutBlocks = (items = []) =>
     items.map(({ source }) => ({
         name: source,
@@ -97,13 +97,10 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         }
     }, [localUrl]);
 
-
-
     const { leftBarBlocks, sideBarBlocks, centerBlocks } = defineCells(blocks, data);
 
     const mainBlocks = isDesktop && !isModal ? centerBlocks : [...centerBlocks, ...sideBarBlocks, ...leftBarBlocks]
 
-//value.sidebar || value.leftbar ? false : true
     const aItems = useMemo(() => mainBlocks.map((value) => ({
         id: `block_${value.name}`,
         data: <View className={'px-3 pt-3 sm:px-4 sm:pt-4'}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
@@ -235,7 +232,9 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
             <View className="w-full justify-between flex-1" >
                 <View className='w-full flex-1 '>
                     <View style={{ height: windowHeight - offset2 - formHeight }}>
-                        <CommentsBrowse
+                        {data == 'loading' ?
+                            <Loading />
+                        : <CommentsBrowse
                             useCustomScrollHandler={true}
                             height={windowHeight - offset2 - formHeight > 0 ? windowHeight - offset2 - formHeight : undefined}
                             scrollToIndex={scrollToEnd}
@@ -245,7 +244,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                             module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
                             requestUrl={commentsData?.content[0]?.url}
                             replyId={replyId}
-                        />
+                        />}
                     </View>
                 </View>
                 <KbAvoidingView modalOffset={90}>

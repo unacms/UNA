@@ -89,7 +89,7 @@ export default function ElementEntityAuthor({ data, blockWrapperProps }) {
 
     if (data?.menu_manage?.object == 'bx_timeline_menu_item_manage') {
         handleMenuManageSelect = async (oItem, event) => {
-
+            setPageData('loading');
             switch (oItem.name) {
                 case 'item-edit':
                     const oResultEdit = await fetcher(
