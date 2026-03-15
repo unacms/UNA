@@ -6,8 +6,8 @@ export const settingsButtons = {
         default_variant: 'default', 
         xs: {
             rounded: 'rounded-md',
-            container: 'px-2 gap-1 h-7 min-w-9',
-            container_icon_only: 'h-7 w-9 items-center justify-center',
+            container: 'px-2 gap-1 h-7 min-w-7',
+            container_icon_only: 'h-7 w-7 items-center justify-center',
             text: 'text-xs leading-7',
             icon_size: 16,
             hitSlop: 8,
@@ -174,7 +174,7 @@ export const settingsButtons = {
             container:{
                 base:'',
                 default:'',
-                active:'bg-muted scale-[0.98] ',
+                active:' scale-[0.98] ',
                 pressed:'',
                 hovered:'',
                 focused:'',
@@ -182,7 +182,7 @@ export const settingsButtons = {
 
             },
             text:{
-                base:'font-medium text-secondary-foreground',
+                base:'font-semibold text-secondary-foreground',
                 default:'',
                 hovered:'text-foreground',
                 focused:'text-foreground',
@@ -209,6 +209,27 @@ export const settingsButtons = {
                 focused:'text-accent-foreground',
                 active:'text-accent-foreground',
                 pressed:'text-accent-foreground',
+                disabled:'text-accent-foreground/50',
+            }
+        },
+        accentlink:{
+            container:{
+                base:'web:duration-200',
+                default:'',
+                active:'scale-[0.98] ',
+                pressed:'',
+                hovered:'',
+                focused:'',
+                disabled:'',
+
+            },
+            text:{
+                base:'font-semibold text-accent-foreground',
+                default:'',
+                hovered:'text-accent-foreground underline',
+                focused:'text-accent-foreground underline',
+                active:'text-accent-foreground underline',
+                pressed:'text-accent-foreground underline   ',
                 disabled:'text-accent-foreground/50',
             }
         },

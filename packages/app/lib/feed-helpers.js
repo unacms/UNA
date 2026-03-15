@@ -99,7 +99,7 @@ export const CommentsSection = memo(
             <Button variant="secondary" size="xs" title={t('View more comments...')} />
         )
         return (
-            <View className="border-t border-border/60 px-3 lg:px-4 pb-3 lg:pb-4">
+            <View className="border-t border-muted/60 px-3 sm:px-4 py-1 sm:py-2 ">
                 
                     {isShowMoreComments && (
                         <View className="pt-2.5 me-auto">
@@ -280,9 +280,9 @@ export const ItemInfo = memo(({ data, t }) => {
             l && (
                 <>
 
-                    <Icon className="text-muted-foreground -mx-0.5 " icon='Dot' size={14} />
+                    <Icon className="text-secondary-foreground -mx-0.5 " icon='Dot' size={14} />
 
-                    <Text className="text-muted-foreground font-medium text-xs leading-4 ">
+                    <Text className="text-secondary-foreground font-medium text-xs leading-4 ">
                         {l}
                     </Text>
                 </>
@@ -485,13 +485,15 @@ export const Author = memo(({ data, url, t }) => {
         if (!Element)
             return null
         return (
-            <Row className="" key={`action-${item.cid}-${item.iid}`}>
+            <Row className="items-center" key={`action-${item.cid}-${item.iid}`}>
+                <Icon className="text-muted-foreground -ml-0.5 -mr-2  " icon='Dot' size={14} />
                 <Element
                     params={{
-                        button_variant: 'text',
-                        button_size: 'xs',
+                        button_variant: 'accentlink',
+                        button_size: 'sm',
                         hide_icon: true,
                         button_rounded: false,
+                        
                     }}
 
                     {...item}
@@ -561,7 +563,7 @@ export const Author = memo(({ data, url, t }) => {
                         <ItemInfo data={data} t={t} />
                     </Row>
                 }
-                showInfo2={<>{ActionsElements}<Badges badges={data.author_badges} size="3xs" /></>}
+                showInfo2={<><Badges badges={data.author_badges} size="3xs" />{ActionsElements}</>}
                 hoverCardWrapper={hoverCardWrapper}
             />
         </View>

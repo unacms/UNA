@@ -202,7 +202,7 @@ function UnitCommentsDefault(props) {
         <Animated.View style={isSelected ? animatedStyle : {}}>
             <Row className="gap-2">
                 {cells}
-                <View className="w-9 min-h-9 p-0.5 z-50 flex-0 mt-3">
+                <View className="w-9 min-h-9 p-0.5 z-50 flex-0 mt-2">
                     <Profile
                         {...data.author_data}
                         displayType="unit_wo_info"
@@ -214,10 +214,10 @@ function UnitCommentsDefault(props) {
                         <View className="w-0.5 mx-auto top-0.5 -mb-3 rounded-full flex-auto bg-muted"></View>
                     )}
                 </View>
-                <View className="flex-1 flex-col gap-1 mt-3">
-                    <View className="bg-muted/60 rounded-xl px-2.5 py-2 gap-1 ">
-                        <View className="flex-row items-center gap-2 ">
-                            <Row>
+                <View className=" flex-col mt-2 flex-1">
+                    <View className="bg-muted/60 rounded-xl px-2.5 py-2 gap-1 me-auto ">
+                        <View className="flex-row items-center gap-3 justify-between ">
+                            <Row className="gap-2 items-center pr-8">
                                 <Profile
                                     {...data.author_data}
                                     displayType="unit_wo_image"
@@ -240,6 +240,9 @@ function UnitCommentsDefault(props) {
                                             />
                                         </Row>
                                     )}
+                                <Link href={cmtUrl} size="xs" variant="secondary" >
+                                <Time ts={data.cmt_time}></Time>
+                                </Link>
                             </Row>
                             {!!data.cmt_mood && (
                                 <>
@@ -255,9 +258,15 @@ function UnitCommentsDefault(props) {
                                 </>
                             )}
 
-                            <Link href={cmtUrl} size="sm" variant="default" >
-                                <Time ts={data.cmt_time}></Time>
-                            </Link>
+                            <View className="flex-none absolute -end-1.5">
+                            <MenuManage
+                                        id={data.id}
+                                        menu={data?.menu_manage}
+                                        setViewState={setViewState}
+                                        module={props.module}
+                                        cmt_object_id={props.data.cmt_object_id}
+                                        cmt_id={props.data.cmt_id}
+                                    /></View>
                         </View>
                         {view == 'flat' && data.cmt_parent_id > 0 && (
                             <View className="   border border-border/60 rounded-md p-2 my-1">
@@ -311,7 +320,7 @@ function UnitCommentsDefault(props) {
                                                 size="xs"
                                                 rounded
                                                 startDecorator="MessageCircle"
-                                                variant="text"
+                                                variant="link"
                                             />
                                         </Link>
                                     </View>
@@ -322,7 +331,7 @@ function UnitCommentsDefault(props) {
                                         size="xs"
                                         rounded
                                         startDecorator="MessageCircle"
-                                        variant="text"
+                                        variant="link"
                                         onPress={() => handleReply(data)}
                                     />
                                 )
@@ -337,7 +346,7 @@ function UnitCommentsDefault(props) {
                                         show_counter: false,
                                         show_combined: false,
                                         button_size: 'xs',
-                                        button_variant: 'text',
+                                        button_variant: 'link',
                                         button_rounded: true,
                                     }}
                                 />
@@ -352,19 +361,12 @@ function UnitCommentsDefault(props) {
                                             show_counter: true,
                                             show_combined: false,
                                             button_size: 'xs',
-                                            button_variant: 'text',
+                                            button_variant: 'link',
                                             button_rounded: true,
                                         }}
                                     />
 
-                                    <MenuManage
-                                        id={data.id}
-                                        menu={data?.menu_manage}
-                                        setViewState={setViewState}
-                                        module={props.module}
-                                        cmt_object_id={props.data.cmt_object_id}
-                                        cmt_id={props.data.cmt_id}
-                                    />
+                                   
                                 </View>
                             </View>
                         </Row>

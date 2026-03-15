@@ -61,7 +61,7 @@ const getAddon = (addon, isTitle) => {
     if (!isTitle) {
         return (
             <View className={`absolute ${bg} border-2 border-card rounded-full px-1 min-w-6 min-h-6 items-center justify-center ${pos}`}>
-                <Text className="text-accent-foreground text-xs font-semibold">{text}</Text>
+                <Text className="text-card text-xs font-semibold">{text}</Text>
             </View>
         );
     }
@@ -69,7 +69,7 @@ const getAddon = (addon, isTitle) => {
     return (
         <View className="flex-1 items-end">
             <View className={`${bg} rounded-full min-w-5 min-h-5 px-1.5 py-0.5 items-center`}>
-                <Text className="text-accent-foreground text-xs font-semibold">{text}</Text>
+                <Text className="text-card text-xs font-semibold">{text}</Text>
             </View>
         </View>
     );

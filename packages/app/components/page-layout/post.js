@@ -64,9 +64,16 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     const groupRef = useRef(null)
     const setHeader = useSetHeader();
     const setFooter = useSetFooter();
+    const searchParams = useLocalSearchParams();
 
-    const localUrl = isModal ? url : useLocalSearchParams().url;
+    const localUrl = isModal ? url : searchParams?.url;
     const commentsData = useMemo(() => data?.layout_parsed ? data.elements.cell_bottom[0] : DataByName(data, blocks?.comments), [data, blocks?.comments]);
+    const commentsContent = commentsData?.content?.[0];
+    const commentsBrowse = commentsContent?.browse;
+    const commentsModule = commentsBrowse?.data?.module || commentsData?.module;
+    const commentsObjectId = commentsBrowse?.data?.object_id;
+    const commentsForm = commentsContent?.form;
+    const commentsRequestUrl = commentsContent?.url;
 
     useEffect(() => {
         if (localUrl) {
@@ -240,9 +247,9 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                             scrollToIndex={scrollToEnd}
                             addItems={aItems}
                             isModal={true}
-                            browse={commentsData?.content[0]?.browse}
-                            module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
-                            requestUrl={commentsData?.content[0]?.url}
+                            browse={commentsBrowse}
+                            module={commentsModule}
+                            requestUrl={commentsRequestUrl}
                             replyId={replyId}
                         />}
                     </View>
@@ -254,10 +261,10 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                     >
                         <CommentsForm
                             isModal={isModal}
-                            objectId={commentsData?.content[0]?.browse.data.object_id}
-                            module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
-                            form={commentsData?.content[0]?.form}
-                            requestUrl={commentsData?.content[0]?.url}
+                            objectId={commentsObjectId}
+                            module={commentsModule}
+                            form={commentsForm}
+                            requestUrl={commentsRequestUrl}
                         />
                     </View>
                 </KbAvoidingView>
@@ -310,9 +317,9 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
                             scrollToIndex={scrollToEnd}
                             addItems={newItems}
-                            browse={commentsData?.content[0]?.browse}
-                            module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
-                            requestUrl={commentsData?.content[0]?.url}
+                            browse={commentsBrowse}
+                            module={commentsModule}
+                            requestUrl={commentsRequestUrl}
                             replyId={replyId}
                         />
                     </View>
@@ -321,10 +328,10 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                             <View className=' lg:mb-4  ml-[1px] '>
                                 <CommentsForm
                                     isModal={isModal}
-                                    objectId={commentsData?.content[0]?.browse.data.object_id}
-                                    module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
-                                    form={commentsData?.content[0]?.form}
-                                    requestUrl={commentsData?.content[0]?.url}
+                                    objectId={commentsObjectId}
+                                    module={commentsModule}
+                                    form={commentsForm}
+                                    requestUrl={commentsRequestUrl}
                                 />
                             </View>
                         </View>
@@ -378,9 +385,9 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         <CommentsBrowse
                             scrollToIndex={scrollToEnd}
                             addItems={aItems}
-                            browse={commentsData?.content[0]?.browse}
-                            module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
-                            requestUrl={commentsData?.content[0]?.url}
+                            browse={commentsBrowse}
+                            module={commentsModule}
+                            requestUrl={commentsRequestUrl}
                             replyId={replyId}
                         />
                     </View>
@@ -388,10 +395,10 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         <View onLayout={handleLayout} style={{ width: listWidth + 5 }} className='-ml-[2px] -mr-[2px] border-background border bg-background web:fixed z-50 web:bottom-0  '>
                             <View className='lg:rounded-b-2xl  lg:mb-4 bg-card shadow-sm ml-[1px] '>
                                 <CommentsForm
-                                    objectId={commentsData?.content[0]?.browse.data.object_id}
-                                    module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
-                                    form={commentsData?.content[0]?.form}
-                                    requestUrl={commentsData?.content[0]?.url}
+                                    objectId={commentsObjectId}
+                                    module={commentsModule}
+                                    form={commentsForm}
+                                    requestUrl={commentsRequestUrl}
                                 />
                             </View>
                         </View>

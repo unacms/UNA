@@ -5,9 +5,9 @@ import { View } from 'app/design/view';
 import { appSetting } from 'app/lib/util';
 
 export default function Tooltip({children, content, enabled = true}) {
-    if (!enabled) {
-        return children;
-    }
+    const tooltipsEnabled = appSetting('layout', 'tooltips');
+    const shouldRenderTooltip = !!enabled && !!tooltipsEnabled;
+
     const [visible, setVisible] = useState(false);
     const [tooltipStyle, setTooltipStyle] = useState({});
     const tooltipRef = useRef(null);
@@ -37,6 +37,11 @@ export default function Tooltip({children, content, enabled = true}) {
     }, []);
 
     useEffect(() => {
+        if (!shouldRenderTooltip) {
+            setVisible(false);
+            return;
+        }
+
         if (visible && tooltipRef.current && wrapperRef.current) {
             const tooltipElement = tooltipRef.current.getBoundingClientRect();
             const wrapperElement = wrapperRef.current.getBoundingClientRect();
@@ -60,9 +65,9 @@ export default function Tooltip({children, content, enabled = true}) {
 
             setTooltipStyle(newStyles);
         }
-    }, [visible]);
+    }, [visible, shouldRenderTooltip]);
 
-    if (!appSetting('layout', 'tooltips')) {
+    if (!shouldRenderTooltip) {
         return children;
     }
 

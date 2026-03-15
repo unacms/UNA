@@ -228,7 +228,7 @@ select {
 }
 
 .u-action-hitarea-lg::before {
-    inset: -4px;
+    inset: 0px;
 }
 
 /*

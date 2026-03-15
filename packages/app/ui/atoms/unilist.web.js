@@ -10,7 +10,7 @@ import { useSetScrollDirection } from 'app/context/jotai/layout';
 import { paddingForList } from 'app/customization/functions';
 
 export default function UniList(props) {
-    let { useCustomScrollHandler, preloadComponent, isModal, sortable, data: rawData, renderItem, onEndReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
+    let { useCustomScrollHandler, preloadComponent, isModal, sortable, data: rawData, renderItem, onEndReached, onStartReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
         onSort, mode, layout, numColumns, keyboardShouldPersistTaps, keyExtractor, useWindowScroll: useWindowScrollProp, height, listState, endpoint, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, isInPanel, paddingTop, ...rest } = props
 
     const uniRef = useRef();
@@ -230,6 +230,7 @@ export default function UniList(props) {
         useWindowScroll: isWindowScroll,
         style: virtuosoStyle,
         ref: refer ? refer : uniRef,
+        startReached: onStartReached,
         endReached: onEndReached,
         overscan: props.unit == 'notifications' ? 100 : 900,
         increaseViewportBy: { top: 3000, bottom: 3000 },
