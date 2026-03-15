@@ -95,7 +95,7 @@ export const settingsInputs = {
 
         // Radiobutton circular indicator
         'u-controls-radiobutton-indicator':
-            'h-5 w-5 m-1 rounded-full border-2 border-guide bg-transparent justify-center items-center ',
+            'h-5 w-5 m-1 rounded-full border-2 border-border bg-transparent justify-center items-center ',
 
         // Active mark inside checkbox (filled square)
         'u-controls-checkbox-indicator-active':
