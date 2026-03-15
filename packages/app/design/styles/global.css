@@ -26,7 +26,7 @@
         /*content on secondary buttons, secondary surfaces*/
         --muted: var(--neutral-200);
         /*background for ui items, sections, hover states*/
-        --muted-foreground: var(--neutral-500);
+        --muted-foreground: var(--neutral-400);
         /*muted content*/
         --accent: var(--accent-100);
         /*background for accent buttons, accent surfaces*/
@@ -36,14 +36,12 @@
         /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--white);
         /*content on destructive buttons, destructive surfaces*/
-        --border: var(--neutral-200);
+        --border: var(--neutral-300);
         /*borders, dividers, focus rings*/
         --input: var(--neutral-100);
         /*form inputs*/
         --ring: var(--accent-600);
         /*focus rings*/
-        --guide: var(--neutral-500);
-        /*guide color*/
         --label-primary: var(--neutral-950);
         /*Primary text (high emphasis)*/
         --label-secondary: var(--neutral-800);
@@ -160,28 +158,26 @@
         /*content on primary buttons, active states, primary surfaces*/
         --secondary: var(--neutral-700);
         /*background for secondary buttons, secondary surfaces*/
-        --secondary-foreground: var(--neutral-300);
+        --secondary-foreground: var(--neutral-400);
         /*content on secondary buttons, secondary surfaces*/
         --accent: var(--accent-900);
         /*background for accent buttons, accent surfaces*/
-        --accent-foreground: var(--accent-400);
+        --accent-foreground: var(--accent-500);
         /*content on accent buttons, accent surfaces*/
         --muted: var(--neutral-800);
         /*background for ui items, sections, hover states*/
-        --muted-foreground: var(--neutral-500);
+        --muted-foreground: var(--neutral-600);
         /*muted content*/
         --destructive: var(--red);
         /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--neutral-950);
         /*content on destructive buttons, destructive surfaces*/
-        --border: var(--neutral-800);
+        --border: var(--neutral-700);
         /*borders, dividers, focus rings*/
         --input: var(--neutral-800);
         /*form inputs*/
-        --ring: var(--accent-600);
+        --ring: var(--accent-500);
         /*focus rings*/
-        --guide: var(--neutral-600);
-        /*guide color*/
         --label-primary: var(--neutral-50);
         /*Primary text (high emphasis)*/
         --label-secondary: var(--neutral-200);

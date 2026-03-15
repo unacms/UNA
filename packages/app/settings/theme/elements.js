@@ -36,9 +36,9 @@ export const settingsElements = {
         item_np:
             'flex flex-row web:focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium text-sm text-muted-foreground  web:hover:cursor-pointer',
         item_cnt: 'items-center w-full flex-row',
-        item_text: ' text-sm font-medium text-card-foreground web:group-hover:text-foreground px-2',
+        item_text: ' text-sm font-semibold text-secondary-foreground web:group-hover:text-foreground px-2',
         item_icon:
-            'flex items-center w-9 h-9 bg-muted/60 web:group-hover:bg-muted rounded-full justify-center',
+            'flex items-center w-9 h-9 bg-muted web:group-hover:bg-border rounded-full justify-center',
         icon_size: 20, // Default icon size for dropdown menu icons
     },
     modal: {
@@ -46,7 +46,7 @@ export const settingsElements = {
         container:
         ' bg-card backdrop-blur web:shadow-custom md:rounded-2xl overflow-hidden ',
         content: '',
-        header: ' p-3 items-start justify-start border-b border-border/60',
+        header: ' p-3 h-14 items-start justify-start border-b border-border/60',
     },
     cards: {
         'u-card-list': ' u-card-list bg-card shadow-xs dark:shadow-xs-deep text-card-foreground sm:rounded-xl ',
@@ -55,7 +55,7 @@ export const settingsElements = {
         'u-card-padding': 'py-4',
         'u-card-header': 'px-4',
         'u-card-icon': ' ',
-        'u-card-title': 'font-semibold text-base sm:text-lg text-card-foreground',
+        'u-card-title': 'font-semibold text-base tracking-tight text-secondary-foreground',
         'u-card-description': 'text-muted-foreground text-sm sm:text-base text-balance',
         'u-card-actions': ' ',
         'u-card-content': 'px-4',
@@ -70,13 +70,13 @@ export const settingsElements = {
     },
     blocks: {
         'u-block-base':
-            ' text-card-foreground',
+            ' text-card-foreground gap-3',
         'u-block-bg':
             'bg-card shadow-xs dark:shadow-xs-deep ',
         'u-block-pad':
             'px-4 py-3.5 sm:rounded-xl ',
         'u-block-header':
-            ' flex-row items-center gap-4 pb-4',
+            ' flex-row items-center gap-4 ',
         'u-block-icon': 'mb-auto',
         'u-block-name': 'flex flex-col flex-auto gap-2 ',
         'u-block-title':

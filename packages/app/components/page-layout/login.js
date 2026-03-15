@@ -29,7 +29,7 @@ function PageContent({ children, isLoginPage, title }) {
                 <Card role="form"
                     titleId="login-page-title"
                     aria-describedby="login-card-description"
-                    className="gap-4 max-w-lg w-full mx-auto"
+                    className="gap-4 max-w-sm w-full mx-auto"
                 >
                     <CardHeader>
                         <CardTitle>{title}</CardTitle>
@@ -46,7 +46,7 @@ function PageContent({ children, isLoginPage, title }) {
                 <Card role="form"
                     titleId="login-page-title"
                     aria-describedby="login-card-description"
-                    className="sm:py-6 gap-4 sm:gap-6"
+                    className="sm:py-6 gap-4 sm:gap-6 max-w-sm w-full mx-auto"
                 >
                     <CardHeader className="items-center sm:px-6">
                         <CardIcon id="login-card-icon">

@@ -48,7 +48,7 @@ export const settingsFeed = {
             button_rounded: true,
             justify_items: 'between',
             no_gap_between_buttons: false,
-            counter_button_class: 'mt-2',
+            counter_button_class: 'mt-1 sm:mt-2',
             menu_item_spacing: 'me-0',
         },
         /*

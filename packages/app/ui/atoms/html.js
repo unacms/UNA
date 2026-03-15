@@ -31,8 +31,8 @@ const StyledEM = (props) => {
 
 const StyledP = ({ children, className, ...props }) => {
     className += ' text-card-foreground'
-    className += props.isfirst === 'true' ? ' mt-0 ' : ' mt-2 '
-    className += props.islast === 'true' ? ' mb-0' : ' mb-2'
+    className += props.isfirst === 'true' ? ' mt-0 ' : ' mt-1 '
+    className += props.islast === 'true' ? ' mb-0' : ' mb-1'
 
 
     if (Platform.OS === 'web') {

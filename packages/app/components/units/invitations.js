@@ -84,7 +84,7 @@ export default function Unit(props) {
     return (
         <Link variant='ghost' size='lg' href={data.url} emulate={true}>
             <View
-                className=" flex-row  web:active:opacity-90 gap-2 items-center max-w-4xl mx-auto w-full"
+                className=" flex-row gap-2 items-center max-w-4xl mx-auto w-full"
             >
                 <Profile
                     url_avatar={data?.image?.src}
@@ -93,7 +93,7 @@ export default function Unit(props) {
                     display_name={data.title}
                 />
                 <View className="flex-row justify-between flex-auto items-center">
-                    <Text numberOfLines={2} className="text-sm leading-tight font-semibold text-secondary-foreground ">
+                    <Text numberOfLines={2} className="text-sm leading-tight font-semibold text-card-foreground web:group-hover:text-foreground ">
                         {data.title}
                     </Text>
                     <View className="flex-none">

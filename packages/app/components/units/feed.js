@@ -80,24 +80,27 @@ function DefaultUnit({ data }) {
         })
         return (
             <AnimatedBlock>
-                <CardList className="mb-0.5 sm:mb-4 " padding="p-0.5">
-                    <CardHeader className=" px-3 lg:px-4 pt-3 lg:pt-4 flex-row items-center justify-between">
+                <CardList className="mb-0.5 sm:mb-4 " padding="p-0 overflow-hidden">
+                    <CardHeader className=" px-3 lg:px-4 pt-2 sm:pt-3 flex-row items-center justify-between">
                         <CardTitle className="text-secondary-foreground">{t(data.title)}</CardTitle>
-                        <Link
-                            variant="accent"
-                            size="md"
+                        
+                    </CardHeader>
+                    <View className="overflow-hidden px-px ">
+                        <Scroll horizontal={true} step={300} className='w-full'><Row className="gap-3 bg-muted/60 mt-3 p-3">{contentElement}</Row></Scroll>
+                    </View>
+                    <View className="p-2 ">
+                    <Link
+                            variant="primary"
+                            size="sm"
                             href={data.content.page_url}
                             haptics="Medium"
+                            className="text-center w-full"
                         >
                             <Text>
                                 {' '}
                                 {t('View all')}
                             </Text>
-                        </Link>
-                    </CardHeader>
-                    <View className="overflow-hidden ">
-                        <Scroll horizontal={true} step={300} className='w-full'><Row className="gap-4 p-4">{contentElement}</Row></Scroll>
-                    </View>
+                        </Link></View>
 
                 </CardList>
             </AnimatedBlock>
@@ -130,13 +133,13 @@ function DefaultUnit({ data }) {
                         </View>
                     </Skeleton>
                 </Row>
-                <View className="flex-auto px-3 sm:px-4 pt-3 sm:pt-4">
+                <View className="flex-auto px-3 sm:px-4 pt-2 sm:pt-3 ">
                     <Skeleton visible={isSkeleton} preset='multitext'>
                         <MainContent url={url} data={data} />
                     </Skeleton>
                 </View>
                 {!!data.menu_counters?.items?.length && <>
-                    <Row className="px-2 lg:px-2">
+                <Row className="px-1 sm:px-2">
 
                         {appSetting('feed', 'counters_menu') && (
                             <CounterMenu
@@ -146,7 +149,7 @@ function DefaultUnit({ data }) {
                     </Row>
                 </>}
 
-                <Row className="gap-2 items-center flex-auto justify-between p-1 sm:p-2 border-t mt-3 border-border/60 ">
+                <Row className="gap-2 items-center flex-auto justify-between p-1 sm:p-2 border-t mt-1 sm:mt-2 border-muted/60 ">
                     <ActionMenu
                         data={data.menu_actions}
                     />

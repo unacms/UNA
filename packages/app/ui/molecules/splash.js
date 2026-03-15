@@ -36,7 +36,7 @@ function PageContent({ data }) {
                     role="form"
                     titleId="login-card-title"
                     aria-describedby="login-card-description"
-                    className="py-6 gap-4 sm:gap-6"
+                    className="py-6 gap-4 sm:gap-6 max-w-sm w-full mx-auto"
                 >
                     <CardHeader className="items-center sm:px-6">
                         <CardIcon id="login-card-icon">

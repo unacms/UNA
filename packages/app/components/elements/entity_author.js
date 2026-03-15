@@ -27,7 +27,7 @@ export default function ElementEntityAuthor({ data, blockWrapperProps }) {
     const isDesktop = useIsDesktop();
     const sInfo = (
         <Row className='flex-none gap-1 items-center justify-start text-muted-foreground text-sm font-medium leading-5 '>
-            <Time className="text-muted-foreground text-sm leading-5 text-center font-medium " size="xs"
+            <Time className="text-muted-foreground text-xs leading-[18px] text-center font-medium " size="xs"
                 ts={data.entry_date}
             />
             {

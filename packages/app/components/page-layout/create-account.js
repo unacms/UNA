@@ -31,7 +31,7 @@ function PageContent({ children }) {
                 <Card role="form"
                     titleId="signup-card-title"
                     aria-describedby="signup-card-description"
-                    className="sm:py-6 gap-4 sm:gap-6">
+                    className="sm:py-6 gap-4 sm:gap-6 max-w-sm w-full mx-auto">
                     <CardHeader className="items-center sm:px-6">
                         <CardIcon id="signup-card-icon">
                             <Icon icon="UserRoundPlus" width={32} height={32} className="w-6 h-6 sm:w-8 sm:h-8" />

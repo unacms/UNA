@@ -66,12 +66,12 @@ export const settingsButtons = {
         },
         default:{
             container:{
-                base:'web:duration-200 border border-border shadow-xs dark:shadow-xs-deep',
-                base_stroke: 'web:border-0 border border-border/60',
-                default:' bg-card ',
+                base:'web:duration-200 shadow-xs dark:shadow-xs-deep',
+                base_stroke: ' border border-border/60',
+                default:' bg-muted/60 ',
                 active:' bg-card scale-[0.98]  ',
                 pressed:' bg-card',
-                hovered:' bg-card  ',
+                hovered:' bg-muted  ',
                 focused:' bg-card ',
                 disabled:'bg-secondary opacity-50',
 

@@ -460,7 +460,7 @@ export const VisibilityInfo = memo(({ data }) => {
     const isUser = data.object_privacy_view < 0
 
     return (
-        <View className="gap-1 flex-row items-center min-h-4">
+        <View className="gap-1 flex-row items-center ">
             {isUser ? (
                 <Profile
                     {...data.author_data}
@@ -468,9 +468,9 @@ export const VisibilityInfo = memo(({ data }) => {
                     displaySize="2xs"
                 />
             ) : icon ? (
-                <Icon className="text-muted-foreground " icon={icon} width={14} height={14} />
+                <Icon className="text-secondary-foreground py-0.5 " icon={icon} width={14} height={14} />
             ) : null}
-            <Text className="text-secondary-foreground text-xs font-semibold leading-4">
+            <Text className="text-secondary-foreground text-xs font-semibold leading-[18px]">
                 {isUser ? data.author_data.display_name : text}
             </Text>
         </View>
