@@ -100,6 +100,7 @@ export default function (props) {
 
     const subLabelDisplay = selectedSubLabels.length > 3 ? `${selectedSubLabels.slice(0, 3).join(', ')} + ${selectedSubLabels.length - 3} more` : selectedSubLabels.join(', ');
 
+    console.log("selectedSubLabels", selectedSubLabels)
     filteredValues.forEach(item => {
         if (parseInt(item.value, 10) === parseInt(field.value, 10) && [6, 8, 9].includes(parseInt(field.value, 10))) {
             item.info = subLabelDisplay;
@@ -132,7 +133,14 @@ export default function (props) {
         <>
             <RbList values={filteredValues} setValue={handleValueChange} selectedValue={field.value} />
             <View className='flex-row justify-end pt-3 mt-3 border-t border-border/60 '>
-                <Button title="Done" size="base" variant="primary" onPress={applyVisibility} /></View>
+                <Button 
+                    title="Done" 
+                    size="base" 
+                    variant="primary" 
+                    disabled = {[6, 8, 9].includes(parseInt(field.value, 10)) && selectedSubLabels.length == 0}
+                    onPress={applyVisibility} 
+                    />
+            </View>
         </>
     );
 

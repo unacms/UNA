@@ -24,7 +24,7 @@ export default function ({ title, info, onPress, status, value, disabled, icon, 
             {!!resolvedIcon && <View className={checkboxTheme['u-controls-checkbox-icon']}>{resolvedIcon}</View>}
             <View className='flex-auto '>
                 <Text className={checkboxTheme['u-controls-checkbox-text']}>{title}</Text>
-                {info && <Text className={checkboxTheme['u-controls-checkbox-text2']}>{info}</Text>}
+                {!!info && <Text className={checkboxTheme['u-controls-checkbox-text2']}>{info}</Text>}
             </View>
             <CheckboxPrimitive.Root
                 checked={selected}

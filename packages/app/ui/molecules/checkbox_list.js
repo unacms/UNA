@@ -37,6 +37,7 @@ export default function ({ values, selectedValue, setValue, multi = true }) {
             <Button
                 variant="primary"
                 size="base"
+                disabled={value2.length === 0}
                 title="Apply"
                 onPress={() => setValue(value2)
                 }
