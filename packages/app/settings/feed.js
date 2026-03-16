@@ -3,8 +3,8 @@
 export const settingsFeed = {
     feed: {
         feed_container: 'relative flex-auto mx-auto w-full max-w-3xl  ',
-        post_trigger: ' bg-muted/60 rounded-full flex-auto web:hover:bg-muted web:duration-200 px-3 lg:px-4 justify-center group',
-        post_trigger_text: 'font-medium text-base text-secondary-foreground web:group-hover:text-foreground web:duration-200 ',
+        post_trigger: ' bg-muted rounded-full flex-auto web:hover:bg-border web:duration-200 px-3 lg:px-4 justify-center group',
+        post_trigger_text: 'font-medium text-sm text-secondary-foreground web:group-hover:text-foreground web:duration-200 ',
         show_html: false,
         default_feed: 'foryou',
         list: [

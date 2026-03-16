@@ -72,15 +72,15 @@ select {
 }
 
 .u-link-ghost:hover::after {
-    background-color: rgb(var(--muted) / 0.6);
+    background-color: rgb(var(--muted) / 0.8);
 }
 
 .u-link-ghost:focus-visible::after {
-    background-color: rgb(var(--muted) / 0.6);
+    background-color: rgb(var(--muted) / 0.8);
 }
 
 .u-link-ghost:active::after {
-    background-color: rgb(var(--muted));
+    background-color: rgb(var(--border) / 0.8);
 }
 
 /*
@@ -88,11 +88,11 @@ select {
  * Keeps the same pseudo-element shape as regular ghost links.
  */
 .u-link-ghost-active::after {
-    background-color: rgb(var(--accent) / 0.6);
+    background-color: rgb(var(--accent) / 0.8);
 }
 
 .u-link-ghost-active:hover::after {
-    background-color: rgb(var(--accent) / 0.8);
+    background-color: rgb(var(--accent));
 }
 
 .u-link-ghost-active:focus-visible::after {

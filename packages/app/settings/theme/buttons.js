@@ -110,11 +110,11 @@ export const settingsButtons = {
         secondary:{
             container:{
                 base:'web:duration-200',
-                default:'bg-secondary/60',
-                active:'bg-secondary scale-[0.98] ',
+                default:'bg-secondary',
+                active:'bg-border scale-[0.98] ',
                 pressed:'bg-accent',
-                hovered:'bg-secondary',
-                focused:'bg-secondary',
+                hovered:'bg-border',
+                focused:'bg-border',
                 disabled:'',
 
             },
@@ -125,7 +125,7 @@ export const settingsButtons = {
                 focused:'text-foreground',
                 active:'text-foreground',
                 pressed:'text-accent-foreground',
-                disabled:'text-card-foreground/50',
+                disabled:'text-secondary-foreground/50',
             },
         },
         danger:{
@@ -153,19 +153,19 @@ export const settingsButtons = {
             container:{
                 base:'web:duration-200',
                 default:'',
-                active:'bg-muted/60 scale-[0.98] ',
-                pressed:'web:hover:bg-accent/60',
-                hovered:'bg-muted/60',
-                focused:'bg-muted',
+                active:'bg-border/80 scale-[0.98] ',
+                pressed:'web:hover:bg-accent/80',
+                hovered:'bg-muted/80',
+                focused:'bg-muted/80',
                 disabled:'opacity-50',
 
             },
             text:{
-                base:'font-semibold ',
+                base:'font-semibold text-secondary-foreground',
                 default:'text-secondary-foreground',
                 hovered:'text-foreground',
                 focused:'text-foreground',
-                active:'',
+                active:'text-foreground',
                 pressed:'text-accent-foreground',
                 disabled:'text-secondary-foreground',
             }
@@ -183,7 +183,7 @@ export const settingsButtons = {
             },
             text:{
                 base:'font-semibold text-secondary-foreground',
-                default:'',
+                default:' text-secondary-foreground',
                 hovered:'text-foreground',
                 focused:'text-foreground',
                 active:'text-foreground',
@@ -204,7 +204,7 @@ export const settingsButtons = {
             },
             text:{
                 base:'font-semibold text-secondary-foreground',
-                default:'',
+                default:'text-secondary-foreground',
                 hovered:'text-foreground underline',
                 focused:'text-accent-foreground',
                 active:'text-accent-foreground',
@@ -225,7 +225,7 @@ export const settingsButtons = {
             },
             text:{
                 base:'font-semibold text-accent-foreground',
-                default:'',
+                default:'text-accent-foreground',
                 hovered:'text-accent-foreground underline',
                 focused:'text-accent-foreground underline',
                 active:'text-accent-foreground underline',
