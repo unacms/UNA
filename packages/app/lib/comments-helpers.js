@@ -581,9 +581,12 @@ export function parseData(browse, dynamicData) {
 }
 
 export function CommentsForm({ form: initialForm, requestUrl, module, objectId, isModal = false }) {
-
     if (!initialForm?.data?.inputs)
         return <></>
+    return <CommentsFormInner form={initialForm} requestUrl={requestUrl} module={module} objectId={objectId} isModal={isModal} />
+}
+
+function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, isModal = false }) {
 
     const [formData, setFormData] = useState({});
 
