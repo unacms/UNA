@@ -161,7 +161,7 @@ export const settingsButtons = {
 
             },
             text:{
-                base:'font-semibold text-secondary-foreground',
+                base:'font-semibold ',
                 default:'text-secondary-foreground',
                 hovered:'text-foreground',
                 focused:'text-foreground',

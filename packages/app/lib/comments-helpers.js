@@ -706,9 +706,9 @@ export function CommentsForm({ form: initialForm, requestUrl, module, objectId, 
     };
     
     return (
-        <View className=" max-w-5xl p-3 sm:p-4 " >
+        <View className=" max-w-5xl px-3 sm:px-4 py-2 sm:py-3 " >
             {
-                formData.parent_id > 0 && (<View className='bg-accent/60 rounded-lg border-accent p-2 mb-2'>
+                formData.parent_id > 0 && (<View className='bg-accent/60 rounded-xl border border-accent px-2.5 py-2 mb-2'>
                     <Row className='items-start justify-between max-w-full relative'>
                         <View className=' flex-auto pr-4'>
                             <Row className='max-w-full '>
@@ -717,8 +717,8 @@ export function CommentsForm({ form: initialForm, requestUrl, module, objectId, 
                             </Row>
                             <Text className=' text-base overflow-hidden text-popover-foreground  text-sm' numberOfLines={3}>{formData.parent_id > 0 ? formData.text : ''}</Text>
                         </View>
-                        <View className=" right-0 t-0">
-                            <Button align="start" rounded startDecorator="X" size="xs" variant="default" onPress={() => handleCancel()} />
+                        <View className=" -right-1.5 -top-1">
+                            <Button align="start" rounded startDecorator="X" size="xs" variant="text" onPress={() => handleCancel()} />
                         </View>
                     </Row>
                 </View>)
