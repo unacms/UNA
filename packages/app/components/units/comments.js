@@ -229,7 +229,7 @@ function UnitCommentsDefault(props) {
                                 {maxLevel < data.cmt_level &&
                                     appSetting('comments', 'in_reply') &&
                                     parent?.data && (
-                                        <Row className="items-center">
+                                        <Row className="items-center gap-1">
                                             <Text className="text-secondary-foreground -ml-2 text-xs ">
                                                 in reply to
                                             </Text>

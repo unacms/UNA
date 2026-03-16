@@ -102,7 +102,7 @@ export const CommentsSection = memo(
             <View className="border-t border-muted/60 px-1 sm:px-2 py-1 sm:py-2 ">
                 
                     {isShowMoreComments && (
-                        <View className="py-1 me-auto">
+                        <View className="sm:pb-1 me-auto">
                             {isCommentsModal ? (
                                 <Pressable
                                     onPress={() => {
@@ -116,7 +116,7 @@ export const CommentsSection = memo(
                             )}
                         </View>
                     )}
-                <View className="px-1 sm:px-2">
+                <View className="px-2 ">
                 <CommentsBrowseShort
                     contentUrl={url}
                     browseData={commentsDataInline?.data}
