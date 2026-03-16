@@ -258,6 +258,10 @@ export default function Layout(props) {
             el.style.bottom = '';
             if (container.scrollHeight <= elH || y < stickyStart || window.scrollY == 0) return;//|| stickyStart == 0
 
+            // ← ДОБАВИТЬ ЭТУ СТРОКУ:
+if (elH > document.documentElement.scrollHeight - window.innerHeight) return;
+
+
             if (y > stickyEnd + HYST) {
                 // disabled: bug in timeline in context infinite scroll  
                 //      el.style.position = 'absolute';
