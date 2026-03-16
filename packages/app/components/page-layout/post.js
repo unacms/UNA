@@ -228,6 +228,9 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     }, []);
 
     let offset2 = 64;
+    if (isDesktop)
+        offset2 += 32;// offsets in modal web
+
     if (!isWeb) {
             offset2 = insets.bottom + insets.top;
             if (Platform.OS == 'ios') {
