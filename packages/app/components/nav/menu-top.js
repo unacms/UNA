@@ -108,7 +108,7 @@ function MenuTopItem({ link, title, index, icon, isTitle, isActive }) {
                     <Row
                         className={`items-center content-center justify-center px-2 h-12 flex-auto flex-wrap rounded-lg  ${isActive
                             ? ' web:hover:bg-accent/60 active:bg-accent text-accent-foreground'
-                            : 'text-secondary-foreground web:group-hover:text-foreground web:hover:bg-muted/60 web:group-focus:bg-muted/60 web:active:bg-muted '
+                            : 'text-secondary-foreground web:group-hover:text-foreground web:hover:bg-muted/80 web:group-focus:bg-muted/80 web:active:bg-border/80 '
                             }`}
                     >
                         <Icon

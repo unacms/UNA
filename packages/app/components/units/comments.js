@@ -144,7 +144,7 @@ function UnitCommentsDefault(props) {
             cellsArray.push(
                 <View key={`sp-${level}-${i}`} className="w-8">
                     {lvls[i + 1] && (
-                        <View className="mx-auto w-0.5 gap-0.5 -my-3 left-0.5 flex-auto">
+                        <View className="mx-auto w-0.5 gap-0.5 -mt-3  flex-auto">
                             <View className="mx-auto w-0.5 flex-auto bg-muted rounded-b-full" />
                             <View className="mx-auto w-0.5 h-0.5 flex-none bg-muted rounded-full" />
                             <View className="mx-auto w-0.5 h-0.5 flex-none bg-muted rounded-full" />
@@ -153,7 +153,7 @@ function UnitCommentsDefault(props) {
                         </View>
                     )}
                     {i === level - 1 && (
-                        <View className=" ml-4 h-8 w-6 border-muted border-l-2 border-b-2 absolute start-px top-0 rounded-bl-lg flex-auto" />
+                        <View className=" ml-4 -start-px h-6 w-6 border-muted border-l-2 border-b-2 absolute top-0.5 rounded-bl-lg flex-auto" />
                     )}
                 </View>
             )
@@ -202,22 +202,23 @@ function UnitCommentsDefault(props) {
         <Animated.View style={isSelected ? animatedStyle : {}}>
             <Row className="gap-2">
                 {cells}
-                <View className="w-9 min-h-9 p-0.5 z-50 flex-0 mt-2">
+                <View className="w-8 min-h-8 z-50 flex-0 mt-2">
+                    <View className="w-8 h-8 shadow-xs rounded-full">
                     <Profile
                         {...data.author_data}
                         displayType="unit_wo_info"
                         displaySize="sm"
                         showInfo="false"
-                    />
+                    /></View>
 
                     {items?.length != 0 && view != 'flat' && (
-                        <View className="w-0.5 mx-auto top-0.5 -mb-3 rounded-full flex-auto bg-muted"></View>
+                        <View className="w-0.5 mx-auto top-0.5  rounded-full flex-auto bg-muted"></View>
                     )}
                 </View>
                 <View className=" flex-col mt-2 flex-1">
                     <View className="bg-muted/60 rounded-xl px-2.5 py-2 gap-1 me-auto ">
                         <View className="flex-row items-center gap-3 justify-between ">
-                            <Row className="gap-2 items-center pr-8">
+                            <Row className="gap-3 items-center pr-8">
                                 <Profile
                                     {...data.author_data}
                                     displayType="unit_wo_image"
@@ -228,14 +229,14 @@ function UnitCommentsDefault(props) {
                                 {maxLevel < data.cmt_level &&
                                     appSetting('comments', 'in_reply') &&
                                     parent?.data && (
-                                        <Row>
-                                            <Text className="text-muted-foreground px-1 text-sm ">
-                                                · In reply to
+                                        <Row className="items-center">
+                                            <Text className="text-secondary-foreground -ml-2 text-xs ">
+                                                in reply to
                                             </Text>
                                             <Profile
                                                 {...parent.data.author_data}
                                                 displayType="unit_wo_image"
-                                                displaySize="sm"
+                                                displaySize="xs"
                                                 showInfo="false"
                                             />
                                         </Row>

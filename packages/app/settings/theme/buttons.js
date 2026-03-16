@@ -110,11 +110,11 @@ export const settingsButtons = {
         secondary:{
             container:{
                 base:'web:duration-200',
-                default:'bg-secondary',
+                default:'bg-secondary/80',
                 active:'bg-border scale-[0.98] ',
-                pressed:'bg-accent',
-                hovered:'bg-border',
-                focused:'bg-border',
+                pressed:'bg-accent/80',
+                hovered:'bg-border/80',
+                focused:'bg-border/80',
                 disabled:'',
 
             },

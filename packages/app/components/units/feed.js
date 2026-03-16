@@ -86,7 +86,7 @@ function DefaultUnit({ data }) {
                         
                     </CardHeader>
                     <View className="overflow-hidden px-px ">
-                        <Scroll horizontal={true} step={300} className='w-full'><Row className="gap-3 bg-muted/60 mt-3 p-3">{contentElement}</Row></Scroll>
+                        <Scroll horizontal={true} step={300} className='w-full'><Row className="gap-3 bg-background/60 mt-3 p-3">{contentElement}</Row></Scroll>
                     </View>
                     <View className="p-2 ">
                     <Link

@@ -96,13 +96,13 @@ export const CommentsSection = memo(
         t,
     }) => {
         const ShowMoreCmts = (
-            <Button variant="secondary" size="xs" title={t('View more comments...')} />
+            <Button variant="text" size="xs" title={t('View more comments...')} />
         )
         return (
-            <View className="border-t border-muted/60 px-3 sm:px-4 py-1 sm:py-2 ">
+            <View className="border-t border-muted/60 px-1 sm:px-2 py-1 sm:py-2 ">
                 
                     {isShowMoreComments && (
-                        <View className="pt-2.5 me-auto">
+                        <View className="py-1 me-auto">
                             {isCommentsModal ? (
                                 <Pressable
                                     onPress={() => {
@@ -116,13 +116,13 @@ export const CommentsSection = memo(
                             )}
                         </View>
                     )}
-                
+                <View className="px-1 sm:px-2">
                 <CommentsBrowseShort
                     contentUrl={url}
                     browseData={commentsDataInline?.data}
                     module={data?.cmts.module}
                     handleReply={isCommentsModal ? showCommentsModal : 'link'}
-                />
+                /></View>
             </View>
         )
     }
