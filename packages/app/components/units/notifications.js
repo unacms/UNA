@@ -17,7 +17,7 @@ function Unit({ data }) {
     
     return (
         <LinkOrModal href={url} showInModal={data.type ? appSetting('browse', 'show_in_modal', data.type) : false}>
-            <CardList className={`px-2 py-1.5 mt-2 flex-row items-center gap-3 max-w-4xl mx-auto w-full ${!isSkeleton ? 'web:hover:bg-accent/40' : ''} sm:rounded-2xl`}>
+            <CardList className={`px-3 py-2 mt-px sm:mt-2 flex-row items-center gap-3 max-w-4xl mx-auto web:hover:bg-muted/60 w-full ${!isSkeleton ? '' : ''} sm:rounded-2xl`}>
                 <View className="rounded-full flex-none mb-auto " >
                     <Skeleton visible={isSkeleton} className="h-11 w-11">
                         <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
@@ -30,7 +30,7 @@ function Unit({ data }) {
                         </Skeleton>
                     </View>
                     <Skeleton visible={isSkeleton} className="h-3 w-8">
-                        <Time className="text-xs flex-none font-medium text-muted-foreground" ts={data.date} />
+                        <Time className="text-xs flex-none font-medium text-secondary-foreground" ts={data.date} />
                     </Skeleton>
                 </View>
             </CardList>

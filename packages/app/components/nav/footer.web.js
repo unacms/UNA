@@ -116,7 +116,7 @@ function MenuBottomItem({ link, title, index, badge, icon, isActive, profile, iF
                     <Text className={`${isActive ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>
                         {link === appSetting('dashboard', 'url') ? profile : <Icon icon={icon} size={28} />}
                     </Text>
-                    {<Text className={` web:group-hover:text-accent-foreground text-xs tracking-tight leading-none font-medium whitespace-nowrap ${isActive ? 'text-accent-foreground' : 'text-muted-foreground web:group-hover:text-foreground'}`}>{title}</Text>}
+                    {<Text className={` web:group-hover:text-accent-foreground text-xs tracking-tight leading-none font-medium whitespace-nowrap ${isActive ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>{title}</Text>}
                     {badgeObj && <View className={`absolute bg-destructive border-2 border-card rounded-full px-1.5 min-w-6 items-center justify-center  -top-1 left-1/2 -translate-x-1/2 ml-4`}><Text className="text-white text-xs font-medium tracking-tight leading-5 ">{badgeObj.text}</Text></View>}
                 </View>
                 

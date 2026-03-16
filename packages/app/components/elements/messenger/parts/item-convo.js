@@ -28,7 +28,7 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
                 <Time className="text-sm text-muted-foreground whitespace-nowrap" ts={item.date}></Time>
                 </Row>
                 <Row>
-                    <Text className="flex-auto text-sm text-muted-foreground web:group-hover:text-foreground line-clamp-1 truncate " numberOfLines={1}>
+                    <Text className="flex-auto text-sm text-secondary-foreground web:group-hover:text-foreground line-clamp-1 truncate " numberOfLines={1}>
                     {item.message}
                 </Text>
                 </Row>
