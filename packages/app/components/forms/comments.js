@@ -22,11 +22,15 @@ export default function FormComments(props) {
     const maxHeightEditor = isWeb ? 160 : (screenHeight - 300) / 2 // 300 is approximate keyboard height
     const formContext = useFormContext()
     const { currentUser } = useCurrentUser()
-    const isAutoFocus =
-        props.data.inputs['cmt_text']?.value ||
-            props.data.inputs['cmt_text'].autofocus
-            ? true
-            : false
+    let isAutoFocus = false;
+    if (props.data.inputs['cmt_text']?.value){
+        isAutoFocus = true;
+    }
+    if (props.data.inputs['cmt_text'].autofocus){
+        isAutoFocus = props.data.inputs['cmt_text'].autofocus;
+    }
+   
+  
 
     const rawEditorText = formContext.watch('cmt_text')
     const imagesValue = formContext.watch('cmt_image')

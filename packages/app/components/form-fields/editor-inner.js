@@ -347,14 +347,15 @@ export default function RftText({
         `
     }
 
-    useEffect(() => {
+    /*useEffect(() => {
         if (editor && (field?.value == '' || field?.value?.startsWith("<!--INITED-->")) && editor.getHTML() != field.value) {
             setTimeout(() => {
+                console.log("set1")
                 editor.setContent(field.value.replaceAll("<!--INITED-->", ''))
             }, 500);
 
         }
-    }, [field.value])
+    }, [field.value])*/
 
     useEffect(() => {
         if (editor && editor.getHTML() != value) {
@@ -501,6 +502,7 @@ export default function RftText({
         bridgeExtensions: uniqueExtensions,
     })
 
+
     const lastAppliedThemeRef = useRef(null)
 
     useEffect(() => {
@@ -557,6 +559,15 @@ export default function RftText({
             subscription.remove()
         }
     }, [])
+
+    useEffect(() => {
+        if (autofocus) {
+            setTimeout(() => {
+                editor.focus('end')
+            }, 800)
+        }
+
+    }, [autofocus]) 
 
     useEffect(() => {
         if (formContext.formState.isSubmitted && kb_stay_open != true) {
