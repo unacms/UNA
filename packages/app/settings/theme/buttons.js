@@ -174,7 +174,7 @@ export const settingsButtons = {
             container:{
                 base:'',
                 default:'',
-                active:' scale-[0.98] ',
+                active:' web:scale-[0.98] ',
                 pressed:'',
                 hovered:'',
                 focused:'',

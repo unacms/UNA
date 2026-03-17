@@ -54,7 +54,7 @@ function PlainText(props) {
                     setHeight(e.nativeEvent.contentSize.height);
                 }
             }}
-            style={isAutoHeight ? { height, minHeight: minHeightValue, maxHeight:200 } : {}}
+            style={isAutoHeight ? { height:Math.max(height,minHeightValue), minHeight: minHeightValue, maxHeight:200 } : {}}
             /*defaultValue={props.value || props.default_value || ''}*/
             editorProps={{
                 attributes: {
