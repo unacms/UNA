@@ -17,6 +17,7 @@
     "@stripe/react-stripe-js": "^2.4.0",
     "@stripe/stripe-js": "^2.2.2",
     "@tailwindcss/container-queries": "^0.1.1",
+    "@10play/tentap-editor": "1.0.1",
     "@vercel/analytics": "^1.0.1",
     "@vercel/speed-insights": "^1.2.0",
     "@vis.gl/react-google-maps": "^1.7.1",
