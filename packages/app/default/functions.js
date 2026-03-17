@@ -38,8 +38,11 @@ export function layoutForList(endpoint, unitMode = '') {
 }
 
 export function paddingForList(endpoint) {
+
+    if (endpoint?.unit == "notifications")
+        return ' bg-card sm:rounded-xl my-4';
     // Timeline and notifications use no padding (full width items)
-    if (!endpoint || endpoint?.request_url?.includes('bx_timeline') || endpoint?.params?.request_url?.includes('bx_timeline') || endpoint.unit == "notifications")
+    if (!endpoint || endpoint?.request_url?.includes('bx_timeline') || endpoint?.params?.request_url?.includes('bx_timeline'))
         return '';
     // Groups and grid layouts get padding for better spacing
     if (endpoint?.module == 'bx_groups' || endpoint?.request_url?.includes('r=bx_groups'))
