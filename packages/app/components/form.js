@@ -99,7 +99,9 @@ export default function Form({
 
         if (!items?.length) return;
 
-        const formItem = items.find(item => item?.type === 'form');
+        const formItem = items.find(item =>
+            item?.type === 'form' && item.name === formName
+          ) ?? items.find(item => item?.type === 'form');
         const otherItem = items.find(item => item?.type !== 'form');
 
         setFormBundle(prev => {
@@ -126,7 +128,7 @@ export default function Form({
                 response: nextResponse,
             };
         });
-    }, [dynamicData, initedData]);
+    }, [dynamicData, initedData, formName]);
 
     if (onFormEmpty && dynamicData && dynamicData.data?.length == 0) {
         onFormEmpty();
