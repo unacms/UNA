@@ -1,7 +1,7 @@
 import { Pressable, View, Row } from 'app/design/view';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Button } from 'app/design/controls'
-import { memo, useCallback, useEffect, useRef, useState, isValidElement, cloneElement } from 'react'
+import { memo, useCallback, useEffect, useRef, useState, isValidElement, cloneElement, createContext } from 'react'
 import { FeedbackHaptics } from 'app/lib/util';
 import { Keyboard, Alert, Platform } from 'react-native'
 
@@ -12,6 +12,8 @@ import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import emitter from 'app/context/emitter';
 import { getComponent } from 'app/components/registry'
 const menuSettings = appSetting('theme', 'dropdown_menu');
+
+export const DropdownMenuOpenContext = createContext(false);
 
 const variantClassMap = {
     vertical: { item: 'item_ver', container: 'content_ver' },
@@ -54,7 +56,11 @@ function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant, sh
                 
                 open={isOpen}
                 onOpenChange={setIsOpen}
-                trigger={<SafeMenuTrigger>{children}</SafeMenuTrigger>}
+                trigger={
+                    <DropdownMenuOpenContext.Provider value={isOpen}>
+                        <SafeMenuTrigger>{children}</SafeMenuTrigger>
+                    </DropdownMenuOpenContext.Provider>
+                }
             >
                 <View className={menuSettings[classes.container]}>
                     {items.map((item, index) => (

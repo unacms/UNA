@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import {
     Modal as ModalBase,
-    TouchableOpacity,
     Platform
 } from 'react-native';
 import { Pressable, ScrollView, View, ViewRef } from 'app/design/view'
@@ -152,13 +151,14 @@ export default function DropdownPopup({
 
     return (
         <>
-            <TouchableOpacity
+            <Pressable
                 collapsable={false}
                 ref={buttonRef}
                 onPress={() => handleToggle(true)}
+                className="web:active:scale-95 web:duration-100"
             >
                 {trigger}
-            </TouchableOpacity>
+            </Pressable>
 
             {isModalVisible && (
                 <ModalBase

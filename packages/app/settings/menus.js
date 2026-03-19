@@ -96,12 +96,14 @@ export const settingsMenus = {
                 title: 'Events',
                 link: '/events-home',
                 icon: 'Calendar',
-            },
+            }, 
             {
                 name: 'about',
                 title: 'About Us',
                 link: '',
                 icon: 'Info',
+                showTitle: true,
+                chevron: 'ChevronDown',
                 items:[
                     {
                         name: 'events-home',

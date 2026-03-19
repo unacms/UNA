@@ -81,6 +81,8 @@ export default function MenuTop({ url, uri }) {
                             title={t(item.title)}
                             isActive={isActive}
                             items={item.items}
+                            chevron={item.chevron}
+
                         />
                     </View>
                 );
