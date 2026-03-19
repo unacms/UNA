@@ -111,7 +111,7 @@ export const settingsSocialActions = {
         connection_ext: {
             show_action_as_button: true,
             sys_profiles_friends: {
-                icons: { add: 'UserRoundPlus', remove: 'UserRoundMinus' },
+                icons: { add: 'UserRoundPlus', remove: 'UserRoundMinus', default: 'UserRoundCheck' },
             },
             bx_events_fans: {
                 icons: { add: 'LogIn', remove: 'LogOut' },
