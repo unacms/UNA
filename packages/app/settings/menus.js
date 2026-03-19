@@ -97,6 +97,32 @@ export const settingsMenus = {
                 link: '/events-home',
                 icon: 'Calendar',
             },
+            {
+                name: 'about',
+                title: 'About Us',
+                link: '',
+                icon: 'Info',
+                items:[
+                    {
+                        name: 'events-home',
+                        title: 'Events',
+                        link: '/events-home',
+                        icon: 'Calendar',
+                    },
+                    {
+                        name: 'groups-home',
+                        title: 'Groups',
+                        link: '/groups-home',
+                        icon: 'Shapes',
+                    },
+                    {
+                        name: 'videos-home',
+                        title: 'Video',
+                        link: '/videos-home',
+                        icon: 'TvMinimalPlay',
+                    },
+                ]
+            },
         ],
         menu_tabbar_logged: [
             { key: '/tab0', title: 'Home', url: '/home', icon: 'House' },

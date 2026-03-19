@@ -80,6 +80,7 @@ export default function MenuTop({ url, uri }) {
                             isTitle={item.showTitle}
                             title={t(item.title)}
                             isActive={isActive}
+                            items={item.items}
                         />
                     </View>
                 );
