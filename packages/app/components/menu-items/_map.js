@@ -4,6 +4,7 @@ import Element from './element';
 import Callback from './callback';
 import DropdownItem from './dropdown-item';
 import Submenu from './submenu';
+import TopMenu from './topmenu';
 import Sidebar from './sidebar';
 import Unit from './unit';
 import SidebarWithWrapper from './sidebar-with-wrapper';
@@ -19,5 +20,6 @@ export const componentsMapDefault = {
     unit: memo(Unit),
     sidebar_with_wrapper: memo(SidebarWithWrapper),
     submenu: memo(Submenu),
+    topmenu: memo(TopMenu),
 };
 
