@@ -108,6 +108,18 @@ export const settingsSocialActions = {
                 icons: { add: 'LogIn', remove: 'LogOut' },
             },
         },
+        connection_ext: {
+            show_action_as_button: true,
+            sys_profiles_friends: {
+                icons: { add: 'UserRoundPlus', remove: 'UserRoundMinus' },
+            },
+            bx_events_fans: {
+                icons: { add: 'LogIn', remove: 'LogOut' },
+            },
+            bx_groups_fans: {
+                icons: { add: 'LogIn', remove: 'LogOut' },
+            },
+        },
         recommendation: {
             show_action_as_button: true,
         },

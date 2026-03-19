@@ -10,6 +10,7 @@ import Reports from './reports';
 import Reposts from './reposts';    
 import Shares from './shares';  
 import Connections from './connections';    
+import ConnectionsExt from './connections_ext';    
 import ConnectionsMenu from './connections_menu';
 import Recommendation from './recommendations'; 
 import ContextSelector from './context-selector';  
@@ -32,6 +33,7 @@ export const componentsMapDefault = {
     reposts: memo(Reposts),
     shares: memo(Shares),
     connections: memo(Connections),
+    connections_ext: memo(ConnectionsExt),
     connections_menu: memo(ConnectionsMenu),
     recommendation: memo(Recommendation),
     context_selector: ContextSelector,
