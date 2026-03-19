@@ -128,8 +128,7 @@ export const PageHeader = ({
             >
                 {header.header ? header.header : (<>
                     <Row className={appSetting('layout', 'header', 'content')}>
-                        <Row className="items-center justify-start flex-1 lg:flex-none gap-x-2">
-                            <Row className="items-center justify-start lg:w-80 gap-x-2">
+                        <Row className={appSetting('layout', 'header', 'content_left')}>
                                 {(isBackButton && (!isWeb || history.length > 2)) && (
                                     <View className="items-center">
                                         <Button
@@ -145,11 +144,10 @@ export const PageHeader = ({
                                 )}
                                 {leftElement}
                                 {contextSelectorElement}
-                            </Row>
 
                         </Row>
                         {isWeb && <MenuTop url={pageData.url} uri={pageData.uri} />}
-                        <Row className=" items-center justify-end lg:w-80">
+                        <Row className={appSetting('layout', 'header', 'content_right')}>
                             <HeaderElement mode="small" url={pageData?.url} uri={pageData?.uri} />
                             {/*(pageData?.context && pageData?.cover_block?.actions_menu) && <CoverMenu
                                 {...pageData.cover_block.actions_menu}
