@@ -9,7 +9,6 @@ export const settingsHeaderToolbar = {
                 { component: 'add', className: '' },
                 { component: 'notifications', className: 'hidden sm:block' },
                 { component: 'link', href: "{messenger}", className: 'hidden sm:block', title: 'Messages', props: { variant: "secondary", rounded: true, size: "base", startDecorator: "MessageSquare" } },
-                { component: 'menu_navigation', className: 'items-center lg:hidden', native: false, props: { variant: 'secondary', rounded: false, size: 'base', startDecorator: 'Menu', alt: 'Menu' } },
                 { component: 'account', className: 'hidden lg:block' },
             ],
             loggedOut: [
