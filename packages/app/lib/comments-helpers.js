@@ -367,8 +367,10 @@ export function CommentsBrowse({
         }
     }
 
+    console.log("hasNextPage", browseParams.object_id, hasNextPage, isFetchingNextPage)
+
     return (
-        <View>
+        <>
             <UniList
                 mode='simple'
                 isModal={isModal}
@@ -403,7 +405,7 @@ export function CommentsBrowse({
                 ListFooterComponent={
                     (browseParams.object_id && hasNextPage && isFetchingNextPage) ? (
                         <View className=''><Loading /></View>
-                    ) : (!refetchState.visibleItems.length ? appStatic('components_comments_empty') : null)
+                    ) : (!refetchState.visibleItems.length && !refetchRef.current.isFirstLoad ? appStatic('components_comments_empty') : null)
                 }
             />
             {/*!refetchState.visibleItems.length && appStatic('components_comments_empty')*/}
@@ -434,7 +436,7 @@ export function CommentsBrowse({
                 size="sm"
             />
 
-        </View>
+        </>
     )
 }
 
