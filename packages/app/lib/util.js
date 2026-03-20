@@ -270,6 +270,26 @@ function getDateOrderByLocale(tag) {
     return "D M Y";
 }
 
+export function isUrl(str) {
+    if (typeof str !== 'string' || !str.trim()) return false;
+
+    const value = str.trim();
+
+    // 1. Сначала пробуем как есть
+    try {
+        const url = new URL(value);
+        return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch (e) {
+        // 2. Если нет протокола — пробуем добавить https://
+        try {
+            const url = new URL('https://' + value);
+            return url.hostname.includes('.');
+        } catch (e2) {
+            return false;
+        }
+    }
+}
+
 export const formatDate = (
     input,
     t,
