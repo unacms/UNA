@@ -47,7 +47,7 @@ export const settingsButtons = {
                 base:' web:duration-200 shadow-xs dark:shadow-xs-deep ',
                 base_stroke: 'border-[0.5px] border-primary',
                 default:'bg-primary ',
-                active:'bg-primary/60 scale-[0.98] shadow-none  ',
+                active:'bg-primary/60 web:scale-[0.98] shadow-none  ',
                 pressed:'bg-primary/60',
                 hovered:'bg-primary/80 ',
                 focused:'bg-primary ',
@@ -69,7 +69,7 @@ export const settingsButtons = {
                 base:'web:duration-200 shadow-xs dark:shadow-sm-deep ',
                 base_stroke: 'border-[0.5px] border-border  ',
                 default:' bg-white dark:bg-muted  ',
-                active:'bg-muted/80 scale-[0.98]   ',
+                active:'bg-muted/80 web:scale-[0.98]   ',
                 pressed:'bg-muted/80',
                 hovered:'bg-muted/60  ',
                 focused:'bg-muted/80 ',
@@ -111,7 +111,7 @@ export const settingsButtons = {
             container:{
                 base:'web:duration-200',
                 default:'bg-secondary/80',
-                active:'bg-border scale-[0.98] ',
+                active:'bg-border web:scale-[0.98] ',
                 pressed:'bg-accent/80',
                 hovered:'bg-border/80',
                 focused:'bg-border/80',
@@ -132,8 +132,8 @@ export const settingsButtons = {
             container:{
                 base:'bg-red-600',
                 default:'',
-                active:'bg-red-600/90 scale-[0.98] ',
-                pressed:'bg-red-600/90 scale-[0.98] ',
+                active:'bg-red-600/90 web:scale-[0.98] ',
+                pressed:'bg-red-600/90 web:scale-[0.98] ',
                 hovered:'bg-red-500 shadow',
                 focused:'',
                 disabled:'',
@@ -153,7 +153,7 @@ export const settingsButtons = {
             container:{
                 base:'web:duration-200',
                 default:'',
-                active:'bg-border/80 scale-[0.98] ',
+                active:'bg-border/80 web:scale-[0.98] ',
                 pressed:'web:hover:bg-accent/80',
                 hovered:'bg-muted/80',
                 focused:'bg-muted/80',
@@ -195,7 +195,7 @@ export const settingsButtons = {
             container:{
                 base:'web:duration-200',
                 default:'',
-                active:'scale-[0.98] ',
+                active:'web:scale-[0.98] ',
                 pressed:'',
                 hovered:'',
                 focused:'',
@@ -216,7 +216,7 @@ export const settingsButtons = {
             container:{
                 base:'web:duration-200',
                 default:'',
-                active:'scale-[0.98] ',
+                active:'web:scale-[0.98] ',
                 pressed:'',
                 hovered:'',
                 focused:'',
@@ -237,7 +237,7 @@ export const settingsButtons = {
             container:{
                 base:'border border-border/60',
                 default:'',
-                active:'bg-muted/60 scale-[0.98] ',
+                active:'bg-muted/60 web:scale-[0.98] ',
                 pressed:'bg-muted/60',
                 hovered:'bg-muted/60',
                 focused:'bg-muted/60',
