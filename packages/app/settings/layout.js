@@ -62,6 +62,7 @@ export const settingsLayout = {
             content: ' items-center justify-between h-14 lg:h-16 px-3 lg:px-4 w-full mx-auto gap-4',
             content_left: ' items-center justify-start flex-1 lg:flex-none xl:w-80 gap-x-2',
             content_center: ' hidden flex-auto lg:flex gap-2 items-center justify-center max-w-3xl  ',
+            active_item_indicator: 'absolute -bottom-2 left-0 h-0.5 rounded-full flex-none bg-ring',
             content_right: ' items-center justify-end xl:w-80',
         },
         vertical: {

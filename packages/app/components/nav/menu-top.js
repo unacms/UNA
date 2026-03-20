@@ -88,7 +88,7 @@ export default function MenuTop({ url, uri }) {
                 );
             })}
             <View 
-                className="rounded-full flex-none bg-ring absolute -bottom-2 left-0 h-0.5"
+                className={`${appSetting('layout', 'header', 'active_item_indicator')}`}
                 style={{ 
                     width: indicatorStyle.width,
                     transform: `translateX(${indicatorStyle.translateX}px)`,
