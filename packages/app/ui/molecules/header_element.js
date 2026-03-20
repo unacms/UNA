@@ -8,6 +8,7 @@ import NotificationButton from 'app/ui/molecules/notif'
 import MenuAdd from 'app/components/nav/menu-add'
 import MenuAccount from 'app/components/nav/menu-account'
 import MenuLauncher from 'app/components/nav/menu-launcher'
+import MenuHeaderNavigation from 'app/components/nav/menu-header-navigation'
 import { useIsDesktop } from 'app/context/measure';
 import { Platform } from 'react-native'
 import { useRouter } from 'app/lib/hooks/router'
@@ -25,7 +26,7 @@ export default function HeaderElement({ mode, url, uri }) {
         : toolbarConfig?.loggedOut
 
     return (
-        <Row className="justify-end gap-1 lg:gap-2 items-center">
+        <Row className="justify-end gap-2 items-center">
             {itemsToRender?.filter(item => (isWeb ? item.web != false : item.native != false)).map((item, index) => (
                 <View key={index} className={item.className}>
                     {(() => {
@@ -40,6 +41,8 @@ export default function HeaderElement({ mode, url, uri }) {
                                 return bNotifs ? <NotificationButton uri={uri} /> : null
                             case "account":
                                 return <MenuAccount />
+                            case "menu_navigation":
+                                return <MenuHeaderNavigation {...(item.props || {})} />
                             case "link":
                                 if (item.href === '{messenger}') {
                                     const messengerHref = appSetting('messenger', 'url');

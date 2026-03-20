@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { View, Row, Pressable } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
@@ -36,16 +36,23 @@ function MenuTopItem_({ title, icon, isTitle, isActive, isPopup, chevron }) {
                         : ' text-secondary-foreground web:group-hover:text-foreground web:hover:bg-muted/80 web:group-focus:bg-muted/80 web:active:bg-border/80 '
                         }`}
                 >
-                    <Icon
-                        icon={icon}
-                        className={`${isActiveOrOpen ? "text-accent-foreground h-9 w-9 my-auto items-center justify-center flex" : "text-secondary-foreground web:group-hover:text-foreground h-9 w-9 items-center justify-center flex"}`}
-                    />
-                    {isTitle && <Text className={`whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ${isActiveOrOpen ? 'text-accent-foreground' : 'text-secondary-foreground'} text-sm lg:text-base px-2 leading-5`}>{title}</Text>}
-                    
-                    {chevron && <Icon
-                        icon={chevron}
-                        className={`h-4 w-4 items-center justify-center flex transition-transform duration-200 ${isActiveOrOpen ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'} ${isOpen ? 'rotate-180' : ''}`}
-                    />}
+                    {[
+                        <Icon
+                            key="menu-icon"
+                            icon={icon}
+                            className={`${isActiveOrOpen ? "text-accent-foreground h-9 w-9 my-auto items-center justify-center flex" : "text-secondary-foreground web:group-hover:text-foreground h-9 w-9 items-center justify-center flex"}`}
+                        />,
+                        isTitle ? (
+                            <Text key="menu-title" className={`whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ${isActiveOrOpen ? 'text-accent-foreground' : 'text-secondary-foreground'} text-sm lg:text-base px-2 leading-5`}>{title}</Text>
+                        ) : null,
+                        chevron ? (
+                            <Icon
+                                key="menu-chevron"
+                                icon={chevron}
+                                className={`h-4 w-4 items-center justify-center flex transition-transform duration-200 ${isActiveOrOpen ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'} ${isOpen ? 'rotate-180' : ''}`}
+                            />
+                        ) : null,
+                    ]}
                     {/*
                         isPopup && <Icon
                         icon={icon}

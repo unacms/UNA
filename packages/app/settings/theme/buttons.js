@@ -44,14 +44,14 @@ export const settingsButtons = {
         },
         primary:{
             container:{
-                base:' web:duration-200 shadow-sm  ',
-                base_stroke: 'web:border-0',
-                default:'bg-primary',
-                active:'bg-primary scale-[0.98] ',
-                pressed:'bg-primary/70',
-                hovered:'bg-primary ',
+                base:' web:duration-200 shadow-xs dark:shadow-xs-deep ',
+                base_stroke: 'border-[0.5px] border-primary',
+                default:'bg-primary ',
+                active:'bg-primary/60 scale-[0.98] shadow-none  ',
+                pressed:'bg-primary/60',
+                hovered:'bg-primary/80 ',
                 focused:'bg-primary ',
-                disabled:'bg-primary/70 opacity-50',
+                disabled:'bg-primary/50 ',
 
             },
             text:{
@@ -66,14 +66,14 @@ export const settingsButtons = {
         },
         default:{
             container:{
-                base:'web:duration-200 shadow-xs dark:shadow-xs-deep',
-                base_stroke: ' border border-border/60',
-                default:' bg-card ',
-                active:' bg-muted scale-[0.98]  ',
-                pressed:' bg-muted/80',
-                hovered:' bg-muted/80  ',
-                focused:' bg-card ',
-                disabled:'bg-card opacity-50',
+                base:'web:duration-200 shadow-xs dark:shadow-sm-deep ',
+                base_stroke: 'border-[0.5px] border-border  ',
+                default:' bg-white dark:bg-muted  ',
+                active:'bg-muted/80 scale-[0.98]   ',
+                pressed:'bg-muted/80',
+                hovered:'bg-muted/60  ',
+                focused:'bg-muted/80 ',
+                disabled:'bg-muted/50 ',
 
             },
             text:{

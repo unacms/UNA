@@ -59,10 +59,10 @@ export const settingsLayout = {
 
         header: {
             container: 'bg-card w-full z-50 header-fixed web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out lg:shadow-xs',
-            content: ' items-center justify-between h-14 lg:h-16 px-3 lg:px-4 w-full mx-auto',
-            content_left: ' items-center justify-start flex-1 lg:flex-none lg:w-80 gap-x-2',
-            content_center: ' hidden flex-auto lg:flex gap-2 items-center justify-center max-w-3xl xl:px-4 ',
-            content_right: ' items-center justify-end lg:w-80',
+            content: ' items-center justify-between h-14 lg:h-16 px-3 lg:px-4 w-full mx-auto gap-4',
+            content_left: ' items-center justify-start flex-1 lg:flex-none xl:w-80 gap-x-2',
+            content_center: ' hidden flex-auto lg:flex gap-2 items-center justify-center max-w-3xl  ',
+            content_right: ' items-center justify-end xl:w-80',
         },
         vertical: {
             blocks: [

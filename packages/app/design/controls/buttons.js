@@ -298,6 +298,20 @@ export const Button = ({
         onMouseLeave: () => setWebHovered(false),
     } : {};
 
+    // Link-wrapped buttons often omit onPress (the <a> navigates), so we render View
+    // instead of Pressable and never get Pressable's pressed state. Track pointer phase
+    // on web so theme `active` / visual press feedback still applies.
+    const [webPointerPressed, setWebPointerPressed] = React.useState(false);
+    const webPointerProps = isWeb && !isPressable && !disabled ? {
+        onPointerDown: (e) => {
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
+            setWebPointerPressed(true);
+        },
+        onPointerUp: () => setWebPointerPressed(false),
+        onPointerCancel: () => setWebPointerPressed(false),
+        onPointerLeave: () => setWebPointerPressed(false),
+    } : {};
+
     const renderContent = (state = {}) => (
         <ButtonContent
             className={className}
@@ -315,7 +329,7 @@ export const Button = ({
             isTitle={isTitle}
             title={title}
             addon={addon}
-            active={!!state.pressed}
+            active={isPressable ? !!state.pressed : webPointerPressed}
             hovered={!!state.hovered || webHovered}
             focused={!!state.focused}
         >
@@ -328,6 +342,7 @@ export const Button = ({
             <Cnt
                 className={`btn-${variant}-${size} ${flexClasses} ${hitareaClass} ${roundingClass}`}
                 {...viewHoverProps}
+                {...webPointerProps}
                 {...(isPressable && {
                     disabled: !isActive,
                     hitSlop: resolvedHitSlop,

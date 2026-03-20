@@ -108,9 +108,9 @@ const SplashTextInner = () => {
             <Text
                 accessible={true}
                 accessibilityRole="text"
-                className=" text-muted-foreground text-center lg:text-start text-base sm:text-lg text-pretty"
+                className=" text-secondary-foreground text-center lg:text-start text-base sm:text-lg text-pretty"
             >
-                Open-source social networking starter kit powered by UNA CMS. Create your own full-stack social media platform with web and native apps.
+                Social networking platform powered by Spacenook Starter Kit for UNA CMS.
             </Text>
          
         </View>

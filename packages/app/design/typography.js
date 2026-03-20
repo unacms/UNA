@@ -70,7 +70,7 @@ export const H1 = ({ children, className, fontFamily = '', isfirst, islast, ...r
     const spacing = getSpacing('pt-2', 'pb-2', isfirst, islast)
 
     return (
-        <HeadingComponent className={`text-3xl lg:text-4xl tracking-tighter font-semibold text-foreground text-balance ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
+        <HeadingComponent className={`text-3xl lg:text-4xl tracking-tight font-semibold text-foreground text-balance ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
             {children}
         </HeadingComponent>
     )

@@ -98,12 +98,12 @@ export const settingsMenus = {
                 icon: 'Calendar',
             }, 
             {
-                name: 'about',
-                title: 'About Us',
+                name: 'more',
+                title: 'More',
                 link: '',
-                icon: 'Info',
-                showTitle: true,
-                chevron: 'ChevronDown',
+                icon: 'Menu',
+                showTitle: false,
+                chevron: '',
                 items:[
                     {
                         name: 'events-home',
@@ -123,7 +123,54 @@ export const settingsMenus = {
                         link: '/videos-home',
                         icon: 'TvMinimalPlay',
                     },
+                    {
+                        name: 'about',
+                        title: 'About Us',
+                        link: '/about',
+                        icon: 'Info',
+                    },
+                    {
+                        name: 'terms',
+                        title: 'Terms of Service',
+                        link: '/terms',
+                        icon: 'Info',
+                    },
+                    {
+                        name: 'contact',
+                        title: 'Contact Us',
+                        link: '/contact',
+                        icon: 'Mail',
+                    },
+
                 ]
+            },
+        ],
+        /** Header toolbar (mobile web): popup links, same row pattern as navbar dropdown */
+        menu_navigation: [
+            
+            {
+                name: 'about',
+                title: 'About Us',
+                link: '/about',
+                icon: 'Info',
+            },
+            {
+                name: 'terms',
+                title: 'Terms of Service',
+                link: '/terms',
+                icon: 'Handshake',
+            },
+            {
+                name: 'privacy',
+                title: 'Privacy Policy',
+                link: '/privacy',
+                icon: 'ShieldCheck',
+            },
+            {
+                name: 'contact',
+                title: 'Contact Us',
+                link: '/contact',
+                icon: 'Mail',
             },
         ],
         menu_tabbar_logged: [
