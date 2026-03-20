@@ -3,12 +3,11 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import { View, Row } from 'app/design/view'
 import { getComponent } from 'app/components/registry';
-import { FeedbackHaptics, storageSet, appSetting, isNumeric, storageClear } from 'app/lib/util';
+import { FeedbackHaptics, storageSet, appSetting, isNumeric, storageGet, isObjectsEqual } from 'app/lib/util';
 import { Platform } from 'react-native';
 import emitter from 'app/context/emitter';
 import useDebounce from 'app/lib/hooks/debounce'
 import { Button } from 'app/design/controls';
-import { isObjectsEqual } from 'app/lib/util'
 import useFetchForm from 'app/lib/hooks/fetch'
 
 function getFormType(name) {
@@ -99,9 +98,7 @@ export default function Form({
 
         if (!items?.length) return;
 
-        const formItem = items.find(item =>
-            item?.type === 'form' && item.name === formName
-          ) ?? items.find(item => item?.type === 'form');
+        const formItem = items.find(item => item?.type === 'form');
         const otherItem = items.find(item => item?.type !== 'form');
 
         setFormBundle(prev => {
@@ -128,7 +125,7 @@ export default function Form({
                 response: nextResponse,
             };
         });
-    }, [dynamicData, initedData, formName]);
+    }, [dynamicData, initedData]);
 
     if (onFormEmpty && dynamicData && dynamicData.data?.length == 0) {
         onFormEmpty();
@@ -209,7 +206,7 @@ export default function Form({
     }, [processedInputs]);
 
     const { csrf_token, ...restDefaultValues } = defaultValues;
-    const cacheKey = request?.url + JSON.stringify(restDefaultValues) || false;
+    const cacheKey = `${formName}_${request?.url || false}` ;
 
     const onSubmit = async d => {
         FeedbackHaptics('Medium')
@@ -295,39 +292,35 @@ export default function Form({
 
     useEffect(() => {
         if (isAutoChange && onChange && Object.keys(debouncedFields).length > 0) {
+            storageSet('form', cacheKey, debouncedFields, false);
             onChange(debouncedFields);
         }
-    }, [debouncedFields, isAutoChange, onChange]);
+    }, [debouncedFields, isAutoChange, onChange, cacheKey]);
 
+
+    
     useEffect(() => {
-        if (cacheKey && debouncedFields && Object.keys(debouncedFields).length > 0) {
-            //TOFIX AUTOSAVE IN FORMS
-            //storageSet('form', cacheKey, JSON.stringify(debouncedFields), true);
+        if (isAutoChange && onChange) {
+            if (!processedInputs) return
+            const raw = cacheKey ? storageGet('form', cacheKey, false) : false
+            if (raw) {
+                const draft = typeof raw === 'string' ? JSON.parse(raw) : raw
+                const current = methods.getValues();
+                const updates = {};
+
+                const keysWithHtml = Object.keys(processedInputs).filter(
+                    (key) => processedInputs[key].html > 0
+                );
+
+                keysWithHtml.forEach((key) => { // HUCK FOR rtf inputs
+                    if (draft[key] !== undefined) {
+                        // updates[key] = '<!--INITED-->' + draft[key];
+                    }
+                });
+                methods.reset({ ...current, ...draft, ...updates }, { keepDefaultValues: true });
+            }
         }
-    }, [debouncedFields, cacheKey]);
-
-    //TOFIX AUTOSAVE IN FORMS
-    /*
-    useEffect(() => {
-        const raw = cacheKey ? storageGet('form', cacheKey, true) : false
-        if (raw) {
-            const draft = JSON.parse(raw);
-            const current = methods.getValues();
-            const updates = {};
-
-            const keysWithHtml = Object.keys(processedInputs).filter(
-                (key) => processedInputs[key].html > 0
-            );
-
-            keysWithHtml.forEach((key) => { // HUCK FOR rtf inputs
-                if (draft[key] !== undefined) {
-                    updates[key] = '<!--INITED-->' + draft[key];
-                }
-            });
-            methods.reset({ ...current, ...draft, ...updates }, { keepDefaultValues: true });
-        }
-
-    }, []);*/
+    }, [isAutoChange, onChange, cacheKey, processedInputs]);
 
 
     const filteredInputs = useMemo(() => {
