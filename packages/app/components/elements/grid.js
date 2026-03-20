@@ -141,6 +141,9 @@ const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowC
             if (oItem.data.on_callback == 'hide') {
                 setHide(true);
             }
+            if (oItem.data.on_callback == 'hide_row') {
+                deleteRows([oItem.data.id]);
+            }
         }
     }
 
