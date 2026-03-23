@@ -44,14 +44,14 @@ export const settingsElements = {
     modal: {
         fog: ' bg-background/95 ',
         container:
-        ' bg-card backdrop-blur web:shadow-custom md:rounded-2xl overflow-hidden ',
+        ' bg-card backdrop-blur web:shadow-sm md:rounded-2xl overflow-hidden ',
         content: '',
         header: ' p-3 h-14 items-start justify-start border-b border-border/60',
     },
     cards: {
         'u-card-list': ' u-card-list bg-card shadow-xs dark:shadow-xs-deep text-card-foreground sm:rounded-xl ',
         'u-card-list-padding': 'p-4',
-        'u-card-base': 'u-card-base bg-card text-card-foreground rounded-xl shadow-xs dark:shadow-xs-deep ',
+        'u-card-base': 'u-card-base bg-card text-card-foreground rounded-xl shadow-sm ',
         'u-card-padding': 'py-4',
         'u-card-header': 'px-4',
         'u-card-icon': ' ',

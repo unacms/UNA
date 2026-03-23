@@ -1,18 +1,21 @@
 import * as React from 'react';
-import { View, Pressable } from 'react-native';
+import { View, Pressable, Platform } from 'react-native';
 
 const TabsContext = React.createContext({});
 
-function TabsRoot({
-  value,
-  defaultValue,
-  onValueChange,
-  orientation = 'horizontal',
-  activationMode = 'automatic',
-  disabled,
-  children,
-  ...props
-}) {
+const TabsRoot = React.forwardRef(function TabsRoot(
+  {
+    value,
+    defaultValue,
+    onValueChange,
+    orientation = 'horizontal',
+    activationMode = 'automatic',
+    disabled,
+    children,
+    ...props
+  },
+  ref
+) {
   const [stateValue, setStateValue] = React.useState(
     value !== undefined ? value : defaultValue
   );
@@ -37,16 +40,20 @@ function TabsRoot({
 
   return (
     <TabsContext.Provider value={contextValue}>
-      <View {...props}>{children}</View>
+      <View ref={ref} {...props}>
+        {children}
+      </View>
     </TabsContext.Provider>
   );
-}
+});
+TabsRoot.displayName = 'TabsRoot';
 
-function TabsList({ children, ...props }) {
+const TabsList = React.forwardRef(function TabsList({ children, ...props }, ref) {
   const context = React.useContext(TabsContext);
-  
+
   return (
-    <View 
+    <View
+      ref={ref}
       accessibilityRole="tablist"
       aria-orientation={context.orientation}
       {...props}
@@ -54,11 +61,16 @@ function TabsList({ children, ...props }) {
       {children}
     </View>
   );
-}
+});
+TabsList.displayName = 'TabsList';
 
-function TabsTrigger({ value, disabled, children, ...props }) {
+/** Ref on Pressable is required for `measureLayout` + scroll-into-view in `molecules/tabs`. */
+const TabsTrigger = React.forwardRef(function TabsTrigger(
+  { value, disabled, children, ...props },
+  ref
+) {
   const context = React.useContext(TabsContext);
-  
+
   const isSelected = context.value === value;
   const isDisabled = disabled || context.disabled;
 
@@ -70,6 +82,8 @@ function TabsTrigger({ value, disabled, children, ...props }) {
 
   return (
     <Pressable
+      ref={ref}
+      collapsable={Platform.OS === 'android' ? false : undefined}
       onPress={handlePress}
       disabled={isDisabled}
       accessibilityRole="tab"
@@ -84,7 +98,8 @@ function TabsTrigger({ value, disabled, children, ...props }) {
         : children}
     </Pressable>
   );
-}
+});
+TabsTrigger.displayName = 'TabsTrigger';
 
 function TabsContent({ value, forceMount, children, ...props }) {
   const context = React.useContext(TabsContext);

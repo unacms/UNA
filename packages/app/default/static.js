@@ -102,7 +102,7 @@ const Logo = ({ mode = 'adaptive' }) => {
 const SplashTextInner = () => {
     const { t } = useTranslation()
     return (
-        <View className="text-center max-w-lg sm:max-w-2xl lg:text-start w-full flex-auto ">
+        <View className="text-center max-w-3xl lg:text-start w-full flex-auto ">
             <H1 className="text-center lg:text-start sm:pb-6" fontFamily="font-title">
                 {t('splash_page_title')} {appSetting('config', 'title')}
             </H1>
@@ -111,7 +111,7 @@ const SplashTextInner = () => {
                 accessibilityRole="text"
                 className=" text-secondary-foreground text-center lg:text-start text-base sm:text-lg text-pretty"
             >
-                Social networking platform powered by Spacenook Starter Kit for UNA CMS.
+                Social networking platform powered by UNA. Open-source framework, applications and integrated services for independent multi-user networks.
             </Text>
          
         </View>
@@ -120,7 +120,7 @@ const SplashTextInner = () => {
 
 const SplashTextComponent = (props) => {
     return isWeb ? (
-        <View className="items-center lg:items-start relative my-auto flex-auto w-full p-4 gap-4 ">
+        <View className="items-center lg:items-start relative gap-6 my-auto flex-auto w-full ">
             <View className="flex-auto h-64 w-64">
                 <SvgFile
                     src_dark="splash-dark.svg"
@@ -133,7 +133,7 @@ const SplashTextComponent = (props) => {
             </View>
         </View>
     ) : (
-        <View className=" items-center lg:items-start flex-auto p-4 sm:p-8 md:p-12 gap-4 w-full mx-auto">
+        <View className=" items-center lg:items-start flex-auto gap-6 w-full mx-auto">
             <View className="flex-auto w-64 h-64">
                 <SvgFile
                     src_dark="splash-dark.svg"
@@ -155,9 +155,9 @@ const SplashTabsComponent = (props) => {
             key: 'users',
             title: t('Users'),
             content: (
-                <View className="gap-2 py-2">
-                    <Text className="text-muted-foreground text-sm text-center sm:text-left">
-                        Members, roles, and sign-in—invite people and control who can do what.
+                <View className="">
+                    <Text className="text-secondary-foreground text-sm">
+                        Connect with a vibrant community of members. Enjoy a secure sign-in experience, discover meaningful connections, and personalize your profile. Take control of your privacy, manage your roles, and unlock features tailored to your interests—being part of the network gives you a voice and a place to belong.
                     </Text>
                 </View>
             ),
@@ -166,9 +166,9 @@ const SplashTabsComponent = (props) => {
             key: 'groups',
             title: t('Groups'),
             content: (
-                <View className="gap-2 py-2">
-                    <Text className="text-muted-foreground text-sm text-center sm:text-left">
-                        Communities and teams—organize discussions and shared spaces.
+                <View className="">
+                    <Text className="text-secondary-foreground text-sm">
+                        Join or create groups around your passions—collaborate, organize discussions, and build lasting communities. Groups give you focused spaces to connect, share resources, and engage with like-minded people. Whether public, private, or secret, you shape the experience and drive your group's impact.
                     </Text>
                 </View>
             ),
@@ -177,9 +177,42 @@ const SplashTabsComponent = (props) => {
             key: 'events',
             title: t('Events'),
             content: (
-                <View className="gap-2 py-2">
-                    <Text className="text-muted-foreground text-sm text-center sm:text-left">
-                        Gatherings and calendars—promote and attend what matters.
+                <View className="">
+                    <Text className="text-secondary-foreground text-sm text-center sm:text-left">
+                        Never miss out with powerful event tools—explore gatherings, webinars, and meetups tailored to your community. Organize your own events, manage RSVPs, and get calendar reminders. Stay in sync and foster meaningful in-person or virtual connections; every event is an opportunity to grow.
+                    </Text>
+                </View>
+            ),
+        },
+        {
+            key: 'Discussions',
+            title: t('Discussions'),
+            content: (
+                <View className="">
+                    <Text className="text-secondary-foreground text-sm ">
+                        Dive into forums, debates, and trending topics—ask questions, get advice, and share your perspective. Engage respectfully with others and watch your ideas spark new connections. Discussions empower your voice and create a knowledge-rich environment where everyone's contributions matter.
+                    </Text>
+                </View>
+            ),
+        },
+        {
+            key: 'Market',
+            title: t('Market'),
+            content: (
+                <View className="">
+                    <Text className="text-secondary-foreground text-sm ">
+                        Discover a thriving marketplace—buy, sell, or offer your products and services directly to the community. Reach real people you trust, promote your work, and find unique deals relevant to your interests. The Market section empowers you to grow your business or find what you need, all in one place.
+                    </Text>
+                </View>
+            ),
+        },
+        {
+            key: 'Videos',
+            title: t('Videos'),
+            content: (
+                <View className="">
+                    <Text className="text-secondary-foreground text-sm ">
+                        Watch, share, and collaborate on videos and media content. Express yourself creatively, broadcast stories, and learn from others. With built-in tools for sharing, commenting, and organizing collections, Videos becomes your hub for inspiration, entertainment, and professional growth.
                     </Text>
                 </View>
             ),
@@ -187,11 +220,18 @@ const SplashTabsComponent = (props) => {
     ]
 
     return (
-        <View className="w-full mt-8">
+        <View className="w-full">
             <Tabs
                 tabs={splashSectionTabs}
                 activeTab="users"
-                contentClassName="mt-3"
+                tabBarClassName=" border-b border-border/60  py-0.5 flex w-full justify-center lg:justify-start "
+                listWrapperClassName=" mx-auto lg:mx-0 "
+                contentClassName=" py-4 "
+                listClassName=" px-0 "
+                size="md"
+                variant="secondary"
+                
+                hug
             />
         </View>
     )

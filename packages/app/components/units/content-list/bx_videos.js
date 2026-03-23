@@ -19,7 +19,7 @@ export default function defaultUnit({ data }) {
 
     return (
         <LinkOrModal href={data.url} className="web:group" showInModal={appSetting('browse', 'show_in_modal', data.module)}>
-            <Card padding="p-2" className="gap-2 web:hover:shadow-custom-hover web:hover:bg-card web:duration-300 web:active:bg-accent">
+            <Card padding="p-2" className="gap-2 web:hover:shadow-sm web:hover:bg-card web:duration-300 web:active:bg-accent">
                 <View className="aspect-video rounded-lg overflow-hidden w-full">
                     <Skeleton className="h-full w-full" rounded="rounded-lg" visible={isSkeleton}>
                         <Image

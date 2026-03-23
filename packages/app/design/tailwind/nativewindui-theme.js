@@ -122,6 +122,7 @@ const nativewindUIColors = {
     },
     neutral: {
         DEFAULT: withOpacity('neutral'),
+        0: withOpacity('neutral-0'),
         50: withOpacity('neutral-50'),
         100: withOpacity('neutral-100'),
         200: withOpacity('neutral-200'),
@@ -133,6 +134,7 @@ const nativewindUIColors = {
         800: withOpacity('neutral-800'),
         900: withOpacity('neutral-900'),
         950: withOpacity('neutral-950'),
+        1000: withOpacity('neutral-1000'),
     },
 
     // Raw state colors

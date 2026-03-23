@@ -12,7 +12,7 @@ const boxShadowWeb = {
     '2xs': '0 1px rgb(0 0 0 / 0.05)',
     'xs': '0 1px 1px 0 rgb(0 0 0 / 0.05)',
     'xs-deep': '0 1px 1px 0 rgb(0 0 0 / 0.5)',
-    'sm': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+    'sm': '0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05)',
     'sm-deep': '0 1px 3px 0 rgb(0 0 0 / 0.5), 0 1px 2px -1px rgb(0 0 0 / 0.5)',
     'md': '0 4px 6px 0px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
     'md-deep': '0 4px 6px 0px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5)',
@@ -22,8 +22,7 @@ const boxShadowWeb = {
     'xl-deep': '0 16px 24px -4px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5)',
     '2xl': '0 24px 48px -4px rgb(0 0 0 / 0.25)',
     '2xl-deep': '0 24px 48px -4px rgb(0 0 0 / 0.5)',
-    'custom': 'var(--shadow-custom)',
-    'custom-hover': 'var(--shadow-custom-hover)',
+
 };
 
 const boxShadowNative = {
@@ -31,7 +30,7 @@ const boxShadowNative = {
     DEFAULT: '0px 3px 6px rgba(0, 0, 0, 0.08)',
     '2xs': '0px 1px 1px rgba(0, 0, 0, 0.08)',
     'xs': '0px 1px 2px rgba(0, 0, 0, 0.08)',
-    'sm': '0px 2px 4px rgba(0, 0, 0, 0.08)',
+    'sm': '0px 1px 3px rgba(0, 0, 0, 0.05)',
     'md': '0px 4px 8px rgba(0, 0, 0, 0.08)',
     'lg': '0px 8px 16px rgba(0, 0, 0, 0.08)',
     'xl': '0px 16px 24px rgba(0, 0, 0, 0.08)',

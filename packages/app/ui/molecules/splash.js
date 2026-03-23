@@ -36,7 +36,7 @@ function PageContent({ data }) {
                     role="form"
                     titleId="login-card-title"
                     aria-describedby="login-card-description"
-                    className="py-6 gap-4 sm:gap-6 max-w-sm w-full mx-auto"
+                    className="py-6 gap-4 sm:gap-6 max-w-md w-full mx-auto"
                 >
                     <CardHeader className="items-center sm:px-6">
                         <CardIcon id="login-card-icon">
@@ -98,16 +98,16 @@ export default function Splash(props) {
     const isWeb = Platform.OS == 'web'
     return (
         <Page>
-            <View className={`flex-1 gap-4 p-4 justify-center w-full mx-auto ${appSetting(
-                    'layout',
-                    'max_width_content',
-                )}`}
-            >
-                <View className="w-full gap-4 mt-8 lg:flex-row">
-                    {appStatic('splash_text')}
-                    <PageContent {...props} />
+            <View className="flex-1 gap-6 w-full mx-auto">
+                <View className="w-full border-b-0 border-border/60 lg:flex-row">
+                    <View className={`flex-1 lg:flex-row gap-6 p-6 w-full mx-auto ${appSetting( 'layout', 'max_width_content')}`}>
+                        {appStatic('splash_text')}
+                        <PageContent {...props} />
+                    </View>
                 </View>
+                <View className={`flex-1 p-6 w-full mx-auto ${appSetting( 'layout', 'max_width_content')}`}>
                 {appStatic('splash_tabs')}
+                </View>
             </View>
             
             

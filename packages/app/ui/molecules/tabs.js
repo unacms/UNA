@@ -5,12 +5,17 @@ import { Text } from 'app/design/typography';
 import * as TabsPrimitive from 'app/ui/primitives/tabs';
 import { appSetting } from 'app/lib/util';
 import { clsx } from 'clsx';
-import Animated, { 
-    useSharedValue, 
-    useAnimatedStyle, 
+import Animated, {
+    useSharedValue,
+    useAnimatedStyle,
     withTiming,
-    Easing 
+    Easing,
 } from 'react-native-reanimated';
+import {
+    TABS_SELECTION_DURATION_MS,
+    TABS_SCROLL_INTO_VIEW_PADDING_PX,
+    TABS_UNDERLINE_HEIGHT_PX,
+} from 'app/ui/molecules/tabs-selection-constants';
 
 function cn(...inputs) {
     return clsx(inputs);
@@ -18,73 +23,178 @@ function cn(...inputs) {
 
 const tabsTheme = appSetting('theme', 'tabs');
 const tabsSizes = appSetting('theme', 'tabs_sizes');
+const rawTabsVariants = appSetting('theme', 'tabs_variants');
+const tabsVariants =
+    rawTabsVariants && typeof rawTabsVariants === 'object'
+        ? rawTabsVariants
+        : {};
 
 /**
- * Tabs component - Simplified API for rendering tabbed content
- * 
- * @param {Array} tabs - Array of tab objects { key: string, title: string, content: ReactNode }
- * @param {string} activeTab - Initial active tab key
- * @param {boolean} fullWidth - Whether tabs should take full width
- * @param {string} size - Size variant ('sm', 'md', 'lg')
- * @param {string} contentClassName - Additional classes for content area
+ * @param {Array} tabs - { key, title, content }
+ * @param {string} [activeTab]
+ * @param {boolean} [fullWidth]
+ * @param {'default'|'secondary'} [variant]
+ * @param {string} [size] sm | md | lg
+ * @param {string} [contentClassName]
+ * @param {string} [trackClassName]
+ * @param {string} [headerClassName] — classes on `Tabs` root (container)
+ * @param {string} [tabBarClassName] — wrapper around the scroll/header area (e.g. `flex justify-center`, `mb-2`)
+ * @param {string} [listWrapperClassName] — inner box that contains track + list (e.g. `mx-auto` with `hug`)
+ * @param {string} [listClassName] — `TabsList` row only (e.g. `gap-1`, `justify-center`)
+ * @param {string} [triggerClassName] — each tab trigger only (e.g. `mx-1`); does not affect tab panel content
+ * @param {boolean} [rounded] — pill/track/row use `rounded-full`; when false, radii come from `tabs_sizes` (track, row, pill)
+ * @param {boolean} [hug] — triggers only as wide as labels (no equal flex stretch). Combine with `fullWidth={false}` so the strip does not span the parent.
  */
-export default function Tabs({ 
-    tabs, 
-    activeTab, 
-    fullWidth = false, 
-    size, 
-    contentClassName = '' 
+export default function Tabs({
+    tabs,
+    activeTab,
+    fullWidth = false,
+    variant = 'default',
+    rounded = false,
+    hug = false,
+    size,
+    contentClassName = '',
+    trackClassName,
+    headerClassName,
+    tabBarClassName,
+    listWrapperClassName,
+    listClassName,
+    triggerClassName,
 }) {
-    const [currentTab, setCurrentTab] = useState(activeTab || tabs?.[0]?.key);
+    const [currentTab, setCurrentTab] = useState(
+        () => activeTab ?? tabs?.[0]?.key
+    );
     const triggerRefs = useRef({});
-    /** Wrapper around indicator + tab row — measureLayout uses this so the indicator shares the same stacking context as triggers */
     const headerRowLayoutRef = useRef(null);
-    
-    // Indicator animation
-    const indicatorLeft = useSharedValue(0);
-    const indicatorWidth = useSharedValue(0);
+    const scrollViewRef = useRef(null);
+    const scrollXRef = useRef(0);
+    const scrollViewWidthRef = useRef(0);
+    const skipFirstScrollIntoViewRef = useRef(true);
+
+    const selLeft = useSharedValue(0);
+    const selTop = useSharedValue(0);
+    const selWidth = useSharedValue(0);
+    const selHeight = useSharedValue(0);
     const [ready, setReady] = useState(false);
 
     const currentSizeKey = size || tabsSizes?.default_size || 'md';
     const sizeCfg = tabsSizes?.[currentSizeKey] || tabsSizes?.md || {};
+    const variantCfg =
+        tabsVariants[variant] || tabsVariants.default || tabsVariants.secondary;
 
-    // Measure and update indicator position
-    const updateIndicator = useCallback((tabKey) => {
-        const triggerRef = triggerRefs.current[tabKey];
-        const layoutNode = headerRowLayoutRef.current;
-        
-        if (triggerRef && layoutNode) {
-            triggerRef.measureLayout(
-                layoutNode,
-                (x, y, width, height) => {
-                    indicatorLeft.value = withTiming(x, { 
-                        duration: ready ? 200 : 0,
-                        easing: Easing.out(Easing.ease)
-                    });
-                    indicatorWidth.value = withTiming(width, { 
-                        duration: ready ? 200 : 0,
-                        easing: Easing.out(Easing.ease)
-                    });
-                    if (!ready) setReady(true);
-                },
-                () => {} // error callback
-            );
-        }
-    }, [ready]);
+    const radiusTrack = rounded
+        ? 'rounded-full'
+        : sizeCfg.track || 'rounded-xl';
+    const radiusRow = rounded
+        ? 'rounded-full'
+        : sizeCfg.row || 'rounded-xl';
+    const radiusPill = rounded
+        ? 'rounded-full overflow-hidden'
+        : sizeCfg.pill || 'rounded-lg overflow-hidden';
 
-    // Update indicator when tab changes
     useEffect(() => {
-        // Small delay to ensure layout is complete
-        const timer = setTimeout(() => {
-            updateIndicator(currentTab);
-        }, 50);
-        return () => clearTimeout(timer);
-    }, [currentTab, updateIndicator]);
+        if (activeTab !== undefined) setCurrentTab(activeTab);
+    }, [activeTab]);
 
-    const indicatorStyle = useAnimatedStyle(() => ({
-        transform: [{ translateX: indicatorLeft.value }],
-        width: indicatorWidth.value,
-    }), []);
+    const updateIndicator = useCallback(
+        (tabKey) => {
+            const triggerRef = triggerRefs.current[tabKey];
+            const layoutNode = headerRowLayoutRef.current;
+
+            if (triggerRef && layoutNode && variantCfg) {
+                triggerRef.measureLayout(
+                    layoutNode,
+                    (x, y, width, height) => {
+                        const dur = ready ? TABS_SELECTION_DURATION_MS : 0;
+                        const easing = Easing.out(Easing.ease);
+                        let top;
+                        let h;
+                        if (variant === 'secondary') {
+                            top = y + height - TABS_UNDERLINE_HEIGHT_PX;
+                            h = TABS_UNDERLINE_HEIGHT_PX;
+                        } else {
+                            top = y;
+                            h = height;
+                        }
+                        selLeft.value = withTiming(x, { duration: dur, easing });
+                        selTop.value = withTiming(top, { duration: dur, easing });
+                        selWidth.value = withTiming(width, {
+                            duration: dur,
+                            easing,
+                        });
+                        selHeight.value = withTiming(h, { duration: dur, easing });
+                        if (!ready) setReady(true);
+                    },
+                    () => {}
+                );
+            }
+        },
+        [ready, variant]
+    );
+
+    useEffect(() => {
+        const timer = setTimeout(() => updateIndicator(currentTab), 50);
+        return () => clearTimeout(timer);
+    }, [
+        currentTab,
+        updateIndicator,
+        variant,
+        size,
+        fullWidth,
+        rounded,
+        hug,
+        tabs?.length,
+    ]);
+
+    const scrollActiveTabIntoView = useCallback(() => {
+        const trigger = triggerRefs.current[currentTab];
+        const layoutNode = headerRowLayoutRef.current;
+        const scrollView = scrollViewRef.current;
+        if (!trigger || !layoutNode || !scrollView) return;
+
+        const padding = TABS_SCROLL_INTO_VIEW_PADDING_PX;
+        trigger.measureLayout(
+            layoutNode,
+            (x, _y, width, _h) => {
+                const vw = scrollViewWidthRef.current;
+                if (!vw) return;
+                const scrollX = scrollXRef.current;
+                const right = x + width;
+                const viewportRight = scrollX + vw;
+
+                let targetX = scrollX;
+                if (x < scrollX + padding) {
+                    targetX = Math.max(0, x - padding);
+                } else if (right > viewportRight - padding) {
+                    targetX = Math.max(0, right - vw + padding);
+                }
+                if (Math.abs(targetX - scrollX) > 0.5) {
+                    scrollView.scrollTo({ x: targetX, animated: true });
+                }
+            },
+            () => {}
+        );
+    }, [currentTab]);
+
+    useEffect(() => {
+        if (skipFirstScrollIntoViewRef.current) {
+            skipFirstScrollIntoViewRef.current = false;
+            return;
+        }
+        const t = setTimeout(() => scrollActiveTabIntoView(), 50);
+        return () => clearTimeout(t);
+    }, [currentTab, scrollActiveTabIntoView]);
+
+    const selectionStyle = useAnimatedStyle(
+        () => ({
+            position: 'absolute',
+            left: selLeft.value,
+            top: selTop.value,
+            width: selWidth.value,
+            height: selHeight.value,
+        }),
+        []
+    );
 
     const handleTabChange = useCallback((value) => {
         setCurrentTab(value);
@@ -98,85 +208,134 @@ export default function Tabs({
         <TabsPrimitive.Root
             value={currentTab}
             onValueChange={handleTabChange}
-            className={tabsTheme['u-controls-tabs-container']}
+            className={cn(tabsTheme['u-controls-tabs-container'], headerClassName)}
         >
-            <View className="relative">
-                <ScrollView 
-                    horizontal 
+            <View className={cn('relative w-full min-w-0', tabBarClassName)}>
+                <ScrollView
+                    ref={scrollViewRef}
+                    horizontal
                     showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{ flexGrow: fullWidth ? 1 : 0 }}
+                    nestedScrollEnabled
+                    scrollEventThrottle={16}
+                    className="w-full max-w-full"
+                    onLayout={(e) => {
+                        scrollViewWidthRef.current = e.nativeEvent.layout.width;
+                    }}
+                    onScroll={(e) => {
+                        scrollXRef.current = e.nativeEvent.contentOffset.x;
+                    }}
+                    contentContainerStyle={{
+                        flexGrow: 0,
+                        flexDirection: 'row',
+                        alignItems: 'stretch',
+                        ...(hug ? { alignSelf: 'flex-start' } : {}),
+                    }}
                 >
                     <View
                         ref={headerRowLayoutRef}
                         collapsable={Platform.OS === 'android' ? false : undefined}
-                        className="relative web:isolate"
+                        className={cn(
+                            'relative web:isolate min-w-full w-max',
+                            hug && 'self-start',
+                            listWrapperClassName
+                        )}
                     >
                         <View
                             className={cn(
-                                fullWidth
-                                    ? tabsTheme['u-controls-tabs-header-track-full-width']
-                                    : tabsTheme['u-controls-tabs-header-track']
+                                variantCfg.track,
+                                radiusTrack,
+                                trackClassName
                             )}
                         />
-                        {/* Above track (z-0), below tab row */}
-                        <Animated.View 
-                            style={[indicatorStyle, { zIndex: 1 }]}
-                            className={cn(
-                                tabsTheme['u-controls-tabs-header-item-active-indicator'],
-                                sizeCfg.indicator,
-                                'absolute'
-                            )}
+
+                        <Animated.View
+                            style={[selectionStyle, { zIndex: 1 }]}
+                            className={tabsTheme['u-controls-tabs-selection-layer']}
                         >
-                            <View className={cn(
-                                tabsTheme['u-controls-tabs-header-item-active-indicator-inner'],
-                                sizeCfg.indicator_inner
-                            )} />
+                            {variant === 'default' ? (
+                                <View
+                                    className={cn(
+                                        'absolute inset-0',
+                                        radiusPill,
+                                        variantCfg.pill
+                                    )}
+                                />
+                            ) : (
+                                <View
+                                    className={cn(
+                                        'absolute inset-0',
+                                        sizeCfg.indicator_inner,
+                                        variantCfg.line
+                                    )}
+                                />
+                            )}
                         </Animated.View>
 
                         <TabsPrimitive.List
                             className={cn(
-                                fullWidth 
-                                    ? tabsTheme['u-controls-tabs-header-row-full-width'] 
-                                    : tabsTheme['u-controls-tabs-header-row'],
+                                tabsTheme['u-controls-tabs-header-row'],
+                                variantCfg.row,
+                                radiusRow,
                                 sizeCfg.header,
-                                'relative z-[2]'
+                                '!flex-none shrink-0 min-w-0',
+                                hug
+                                    ? 'w-max justify-start self-start'
+                                    : fullWidth
+                                      ? 'w-full min-w-full'
+                                      : 'w-max min-w-full',
+                                'relative z-[2]',
+                                listClassName
                             )}
                         >
-                        {tabs.map((tab) => (
-                            <TabsPrimitive.Trigger
-                                key={tab.key}
-                                value={tab.key}
-                                ref={(node) => {
-                                    if (node) triggerRefs.current[tab.key] = node;
-                                }}
-                                className={cn(
-                                    tabsTheme['u-controls-tabs-header-item'],
-                                    sizeCfg.item,
-                                    'relative z-[3]',
-                                    tab.key === currentTab 
-                                        ? tabsTheme['u-controls-tabs-header-item-active']
-                                        : tabsTheme['u-controls-tabs-header-item-inactive']
-                                )}
-                            >
-                                {({ isSelected }) => (
-                                    <Text 
-                                        className={cn(
-                                            isSelected
-                                                ? cn(tabsTheme['u-controls-tabs-header-item-text-active'], sizeCfg.text_active)
-                                                : cn(tabsTheme['u-controls-tabs-header-item-text'], sizeCfg.text)
-                                        )}
-                                    >
-                                        {tab.title}
-                                    </Text>
-                                )}
-                            </TabsPrimitive.Trigger>
-                        ))}
+                            {tabs.map((tab) => (
+                                <TabsPrimitive.Trigger
+                                    key={tab.key}
+                                    value={tab.key}
+                                    ref={(node) => {
+                                        if (node)
+                                            triggerRefs.current[tab.key] = node;
+                                    }}
+                                    className={cn(
+                                        tabsTheme['u-controls-tabs-header-item'],
+                                        sizeCfg.item,
+                                        radiusPill,
+                                        'shrink-0',
+                                        hug && 'flex-none',
+                                        'relative z-[3]',
+                                        tab.key === currentTab
+                                            ? variantCfg.trigger_active
+                                            : variantCfg.trigger_inactive,
+                                        triggerClassName
+                                    )}
+                                >
+                                    {({ isSelected }) => (
+                                        <Text
+                                            className={cn(
+                                                isSelected
+                                                    ? cn(
+                                                          tabsTheme[
+                                                              'u-controls-tabs-header-item-text-active'
+                                                          ],
+                                                          sizeCfg.text_active
+                                                      )
+                                                    : cn(
+                                                          tabsTheme[
+                                                              'u-controls-tabs-header-item-text'
+                                                          ],
+                                                          sizeCfg.text
+                                                      )
+                                            )}
+                                        >
+                                            {tab.title}
+                                        </Text>
+                                    )}
+                                </TabsPrimitive.Trigger>
+                            ))}
                         </TabsPrimitive.List>
                     </View>
                 </ScrollView>
             </View>
 
-            {/* Tab content */}
             {tabs.map((tab) => (
                 <TabsPrimitive.Content
                     key={tab.key}
@@ -193,6 +352,5 @@ export default function Tabs({
     );
 }
 
-// Also export individual components for more flexible usage
 export { Tabs as TabsSimple } from 'app/ui/atoms/tabs';
 export { Tabs as TabsRoot, TabsList, TabsTrigger, TabsContent } from 'app/ui/atoms/tabs';

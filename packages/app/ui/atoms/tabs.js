@@ -25,18 +25,20 @@ const Tabs = React.forwardRef(({ className, size, ...props }, ref) => {
 });
 Tabs.displayName = 'Tabs';
 
-const TabsList = React.forwardRef(({ className, fullWidth = false, size, ...props }, ref) => {
+const TabsList = React.forwardRef(({ className, fullWidth = false, rounded = false, hug = false, size, ...props }, ref) => {
   const currentSizeKey = size || tabsSizes?.default_size || 'md';
   const sizeCfg = tabsSizes?.[currentSizeKey] || tabsSizes?.md || {};
-  
+  const radiusRow = rounded ? 'rounded-full' : (sizeCfg.row || 'rounded-xl');
+
   return (
     <TabsPrimitive.List
       ref={ref}
       className={cn(
-        fullWidth 
-          ? tabsTheme['u-controls-tabs-header-full-width'] 
-          : tabsTheme['u-controls-tabs-header'],
+        tabsTheme['u-controls-tabs-header'],
+        fullWidth && 'w-full',
+        radiusRow,
         sizeCfg.header,
+        hug && 'justify-start flex-none w-auto self-start',
         className
       )}
       {...props}
@@ -45,16 +47,21 @@ const TabsList = React.forwardRef(({ className, fullWidth = false, size, ...prop
 });
 TabsList.displayName = 'TabsList';
 
-const TabsTrigger = React.forwardRef(({ className, size, children, ...props }, ref) => {
+const TabsTrigger = React.forwardRef(({ className, rounded = false, hug = false, size, children, ...props }, ref) => {
   const currentSizeKey = size || tabsSizes?.default_size || 'md';
   const sizeCfg = tabsSizes?.[currentSizeKey] || tabsSizes?.md || {};
-  
+  const radiusPill = rounded
+    ? 'rounded-full overflow-hidden'
+    : (sizeCfg.pill || 'rounded-lg overflow-hidden');
+
   return (
     <TabsPrimitive.Trigger
       ref={ref}
       className={cn(
         tabsTheme['u-controls-tabs-header-item'],
         sizeCfg.item,
+        radiusPill,
+        hug && 'flex-none shrink-0',
         className
       )}
       {...props}
@@ -64,7 +71,7 @@ const TabsTrigger = React.forwardRef(({ className, size, children, ...props }, r
           isSelected 
             ? tabsTheme['u-controls-tabs-header-item-active']
             : tabsTheme['u-controls-tabs-header-item-inactive'],
-          'flex-1 items-center justify-center rounded-lg'
+          'flex-1 items-center justify-center'
         )}>
           {typeof children === 'function' 
             ? children({ isSelected })

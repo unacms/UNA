@@ -64,36 +64,23 @@
         --link-tertiary: var(--accent-900);
         /*Link text color on
 
-        /* Shadow Border variables - Light Mode */
-        --shadow-custom: 0px 0px 0px 1px #0000000f, 0px 1px 2px -1px #0000000f, 0px 2px 4px 0px #0000000a;
-        --shadow-custom-hover: 0px 0px 0px 1px #00000014, 0px 1px 2px -1px #00000014, 0px 2px 4px 0px #0000000f;
-
+        
         /* neutral scale (zinc) - standard Tailwind CSS zinc 50-950 */
         --neutral: 113 113 122;
-        --neutral-50: 248 248 250;
-        /* #fafafa */
-        --neutral-100: 242 242 244;
-        /* #f4f4f5 */
-        --neutral-200: 232 232 234;
-        /* #e4e4e7 */
-        --neutral-300: 212 212 214;
-        /* #d4d4d8 */
-        --neutral-400: 161 161 170;
-        /* #a1a1aa */
-        --neutral-500: 113 113 122;
-        /* #71717a */
-        --neutral-600: 82 82 91;
-        /* #52525b */
-        --neutral-700: 63 63 70;
-        /* #3f3f46 */
-        --neutral-800: 39 39 42;
-        /* #27272a */
-        --neutral-900: 24 24 27;
-        /* #18181b */
-        --neutral-950: 10 12 14;
-        /* #09090b */
 
-        /* accent scale (blue) - Tailwind CSS blue-50 ... blue-950 */
+        --neutral-50: 250 250 250;
+        --neutral-100: 244 244 245;
+        --neutral-200: 228 228 231;
+        --neutral-300: 212 212 216;
+        --neutral-400: 144 144 144;
+        --neutral-500: 113 113 122;
+        --neutral-600: 82 82 91;
+        --neutral-700: 63 63 70;
+        --neutral-800: 39 39 42;
+        --neutral-900: 24 24 27;
+        --neutral-950: 9 9 11;
+        
+            /* accent scale (blue) - Tailwind CSS blue-50 ... blue-950 */
         --accent-50: 239 246 255;
         /* #eff6ff */
         --accent-100: 219 234 254;
@@ -168,7 +155,7 @@
         /*background for secondary buttons, secondary surfaces*/
         --secondary-foreground: var(--neutral-400);
         /*content on secondary buttons, secondary surfaces*/
-        --accent: var(--accent-900);
+        --accent: var(--accent-950);
         /*background for accent buttons, accent surfaces*/
         --accent-foreground: var(--accent-600);
         /*content on accent buttons, accent surfaces*/
@@ -180,7 +167,7 @@
         /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--neutral-950);
         /*content on destructive buttons, destructive surfaces*/
-        --border: var(--neutral-700);
+        --border: var(--neutral-800);
         /*borders, dividers, focus rings*/
         --input: var(--neutral-800);
         /*form inputs*/
