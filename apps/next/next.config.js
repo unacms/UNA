@@ -128,7 +128,8 @@ const nextConfig = {
         '@stripe/stripe-react-native',
         'react-native-star-rating-widget',
         '@openspacelabs/react-native-zoomable-view',
-        'lucide-react-native'
+        'lucide-react-native',
+        'web-haptics',
     ],
     webpack: (config, { isServer }) => {
         // Добавляем алиасы

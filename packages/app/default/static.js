@@ -148,7 +148,7 @@ const SplashTextComponent = (props) => {
     )
 }
 
-const SplashTabsComponent = (props) => {
+const SplashTabsComponent = ({ onTabChange }) => {
     const { t } = useTranslation()
     const splashSectionTabs = [
         {
@@ -230,7 +230,7 @@ const SplashTabsComponent = (props) => {
                 listClassName=" px-0 "
                 size="md"
                 variant="secondary"
-                
+                onTabChange={onTabChange}
                 hug
             />
         </View>

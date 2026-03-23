@@ -53,6 +53,7 @@ const tabsVariants =
  * @param {string} [listWrapperClassName] — box around track + list + indicator
  * @param {string} [listClassName] — tab row only
  * @param {string} [triggerClassName] — each trigger only; not `TabsContent`
+ * @param {(key: string) => void} [onTabChange] — user selection; not `activeTab` prop sync
  */
 export default function Tabs({
     tabs,
@@ -69,6 +70,7 @@ export default function Tabs({
     listWrapperClassName,
     listClassName,
     triggerClassName,
+    onTabChange,
 }) {
     const [currentTab, setCurrentTab] = useState(
         () => activeTab ?? tabs?.[0]?.key
@@ -103,6 +105,14 @@ export default function Tabs({
     useEffect(() => {
         if (activeTab !== undefined) setCurrentTab(activeTab);
     }, [activeTab]);
+
+    const handleTabChange = useCallback(
+        (value) => {
+            setCurrentTab(value);
+            onTabChange?.(value);
+        },
+        [onTabChange]
+    );
 
     useScrollActiveTabIntoView(currentTab, triggerRefs);
 
@@ -160,7 +170,7 @@ export default function Tabs({
     return (
         <TabsPrimitive.Root
             value={currentTab}
-            onValueChange={setCurrentTab}
+            onValueChange={handleTabChange}
             className={cn(
                 tabsTheme['u-controls-tabs-container'],
                 headerClassName

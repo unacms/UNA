@@ -1,4 +1,3 @@
-import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
 import * as Crypto from 'expo-crypto';
@@ -1028,40 +1027,7 @@ export function mergeDeep(target, ...sources) {
     return mergeDeep(target, ...sources);
 }
 
-export function FeedbackHaptics(type) {
-    if (isWeb) return;
-    //https://docs.expo.dev/versions/latest/sdk/haptics/
-    switch (type) {
-        case 'Success':
-            Haptics.notificationAsync(
-                Haptics.NotificationFeedbackType.Success
-            )
-            break;
-        case 'Error':
-            Haptics.notificationAsync(
-                Haptics.NotificationFeedbackType.Error
-            )
-            break;
-        case 'Warning':
-            Haptics.notificationAsync(
-                Haptics.NotificationFeedbackType.Warning
-            )
-            break;
-        case 'Select':
-            Haptics.selectionAsync();
-            break;
-        case 'Light':
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-            break;
-        case 'Medium':
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
-            break;
-        case 'Heavy':
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
-            break;
-
-    }
-}
+export { FeedbackHaptics } from 'app/lib/feedback-haptics';
 
 function isObject(item) {
     return (item && typeof item === 'object' && !Array.isArray(item));

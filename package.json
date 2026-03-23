@@ -31,7 +31,8 @@
   ],
   "dependencies": {
     "@10play/react-native-web-webview": "^0.0.3",
-    "dotenv-cli": "^11.0.0"
+    "dotenv-cli": "^11.0.0",
+    "web-haptics": "^0.0.6"
   },
   "packageManager": "yarn@1.22.22"
 }

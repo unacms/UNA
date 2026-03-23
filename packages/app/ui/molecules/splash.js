@@ -9,8 +9,10 @@ import {
     CardTitle,
     CardIcon,
 } from 'app/ui/molecules/card'
-import { appSetting } from 'app/lib/util'
+import { appSetting, FeedbackHaptics } from 'app/lib/util'
 import { Platform } from 'react-native'
+import { useCallback } from 'react'
+import { useSound } from 'app/lib/hooks/useSound'
 import { appStatic } from 'app/lib/app-static'
 import AuthPanel from 'app/ui/molecules/auth'
 import { BlockByName } from 'app/components/block'
@@ -96,6 +98,15 @@ function PageContent({ data }) {
 
 export default function Splash(props) {
     const isWeb = Platform.OS == 'web'
+    const playClick = useSound('click')
+    /** Native: `useSound('click')` + expo selection haptic. Web: [web-haptics](https://github.com/lochie/web-haptics) `selection` + synth audio when `layout.sounds` and `layout.web_haptics_sounds` are on (see `feedback-haptics.web.js`); skip `useSound` on web to avoid doubling. */
+    const onSplashTabChange = useCallback(() => {
+        if (!isWeb) {
+            playClick()
+        }
+        FeedbackHaptics('Select')
+    }, [isWeb, playClick])
+
     return (
         <Page>
             <View className="flex-1 gap-6 w-full mx-auto">
@@ -106,7 +117,7 @@ export default function Splash(props) {
                     </View>
                 </View>
                 <View className={`flex-1 p-6 w-full mx-auto ${appSetting( 'layout', 'max_width_content')}`}>
-                {appStatic('splash_tabs')}
+                    {appStatic('splash_tabs', { onTabChange: onSplashTabChange })}
                 </View>
             </View>
             

@@ -44,6 +44,7 @@ const tabsVariants =
  * @param {string} [triggerClassName] — each tab trigger only (e.g. `mx-1`); does not affect tab panel content
  * @param {boolean} [rounded] — pill/track/row use `rounded-full`; when false, radii come from `tabs_sizes` (track, row, pill)
  * @param {boolean} [hug] — triggers only as wide as labels (no equal flex stretch). Combine with `fullWidth={false}` so the strip does not span the parent.
+ * @param {(key: string) => void} [onTabChange] — fired after the user selects a tab (new tab key).
  */
 export default function Tabs({
     tabs,
@@ -60,6 +61,7 @@ export default function Tabs({
     listWrapperClassName,
     listClassName,
     triggerClassName,
+    onTabChange,
 }) {
     const [currentTab, setCurrentTab] = useState(
         () => activeTab ?? tabs?.[0]?.key
@@ -196,9 +198,13 @@ export default function Tabs({
         []
     );
 
-    const handleTabChange = useCallback((value) => {
-        setCurrentTab(value);
-    }, []);
+    const handleTabChange = useCallback(
+        (value) => {
+            setCurrentTab(value);
+            onTabChange?.(value);
+        },
+        [onTabChange]
+    );
 
     if (!tabs || tabs.length === 0) {
         return null;
