@@ -4,6 +4,10 @@
 
 @layer base {
     .light-theme-vars {
+        --default: var(--neutral-200);
+        --default-foreground: var(--neutral-950);
+        --segment: var(--white);
+        --segment-foreground: var(--neutral-900);
         --background: var(--neutral-100);
         /*background*/
         --foreground: var(--neutral-950);
@@ -139,6 +143,10 @@
 
 
     .dark-theme-vars {
+        --default: var(--neutral-800);
+        --default-foreground: var(--neutral-50);
+        --segment: var(--neutral-700);
+        --segment-foreground: var(--neutral-50);
 
         --background: var(--neutral-950);
         /*main page background*/

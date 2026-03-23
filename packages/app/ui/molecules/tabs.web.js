@@ -57,8 +57,16 @@ export default function Tabs({ tabs, activeTab, fullWidth = false, size, content
             className={tabsTheme['u-controls-tabs-container']}
         >
             <View className="relative" ref={headerWrapperRef}>
-            
-                <TabsPrimitive.List ref={listRef} className={`${fullWidth ? tabsTheme['u-controls-tabs-header-full-width'] : tabsTheme['u-controls-tabs-header']}${sizeCfg.header || ''}`}>
+                {/* z-0: track only — list bg was covering the indicator */}
+                <View
+                    className={fullWidth ? tabsTheme['u-controls-tabs-header-track-full-width'] : tabsTheme['u-controls-tabs-header-track']}
+                />
+                {/* z-[1]: above track, below tab row */}
+                <View className={`z-[1] ${tabsTheme['u-controls-tabs-header-item-active-indicator']}${sizeCfg.indicator || ''} ${ready ? 'web:transition-all web:duration-200 web:ease-out' : ''}`}
+                    style={{ left: `${indicatorStyle.left}px`, width: `${indicatorStyle.width}px` }}>
+                    <View className={`${tabsTheme['u-controls-tabs-header-item-active-indicator-inner']}${sizeCfg.indicator_inner || ''}`} />
+                </View>
+                <TabsPrimitive.List ref={listRef} className={`relative z-[2] ${fullWidth ? tabsTheme['u-controls-tabs-header-row-full-width'] : tabsTheme['u-controls-tabs-header-row']}${sizeCfg.header || ''}`}>
                     {tabs.map((tab) => (
                         <TabsPrimitive.Trigger
                             ref={(node) => {
@@ -66,17 +74,12 @@ export default function Tabs({ tabs, activeTab, fullWidth = false, size, content
                             }}
                             key={tab.key}
                             value={tab.key}
-                            className={` ${tabsTheme['u-controls-tabs-header-item']}${sizeCfg.item || ''} ${tab.key === currentTab ? tabsTheme['u-controls-tabs-header-item-active'] : tabsTheme['u-controls-tabs-header-item-inactive']}`}
+                            className={`relative z-[3] ${tabsTheme['u-controls-tabs-header-item']}${sizeCfg.item || ''} ${tab.key === currentTab ? tabsTheme['u-controls-tabs-header-item-active'] : tabsTheme['u-controls-tabs-header-item-inactive']}`}
                         >
                             <Text className={`${tab.key === currentTab ? `${tabsTheme['u-controls-tabs-header-item-text-active']}${sizeCfg.text_active || ''}` : `${tabsTheme['u-controls-tabs-header-item-text']}${sizeCfg.text || ''}`}`}>{tab.title}</Text>
                         </TabsPrimitive.Trigger>
                     ))}
                 </TabsPrimitive.List>
-                <View className={`${tabsTheme['u-controls-tabs-header-item-active-indicator']}${sizeCfg.indicator || ''} ${ready ? 'web:transition-all web:duration-200 web:ease-out' : ''}`}
-                    style={{ left: `${indicatorStyle.left}px`, width: `${indicatorStyle.width}px` }}>
-                        <View className={`${tabsTheme['u-controls-tabs-header-item-active-indicator-inner']}${sizeCfg.indicator_inner || ''}`} />
-                </View>
-               
             </View>
 
             {tabs.map((tab) => (

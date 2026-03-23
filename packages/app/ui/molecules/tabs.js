@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { View, ScrollView, LayoutAnimation, Platform } from 'react-native';
+import { View, ScrollView, Platform } from 'react-native';
 import { Text } from 'app/design/typography';
 import * as TabsPrimitive from 'app/ui/primitives/tabs';
 import { appSetting } from 'app/lib/util';
@@ -37,7 +37,8 @@ export default function Tabs({
 }) {
     const [currentTab, setCurrentTab] = useState(activeTab || tabs?.[0]?.key);
     const triggerRefs = useRef({});
-    const listRef = useRef(null);
+    /** Wrapper around indicator + tab row — measureLayout uses this so the indicator shares the same stacking context as triggers */
+    const headerRowLayoutRef = useRef(null);
     
     // Indicator animation
     const indicatorLeft = useSharedValue(0);
@@ -50,11 +51,11 @@ export default function Tabs({
     // Measure and update indicator position
     const updateIndicator = useCallback((tabKey) => {
         const triggerRef = triggerRefs.current[tabKey];
-        const listNode = listRef.current;
+        const layoutNode = headerRowLayoutRef.current;
         
-        if (triggerRef && listNode) {
+        if (triggerRef && layoutNode) {
             triggerRef.measureLayout(
-                listNode,
+                layoutNode,
                 (x, y, width, height) => {
                     indicatorLeft.value = withTiming(x, { 
                         duration: ready ? 200 : 0,
@@ -100,36 +101,47 @@ export default function Tabs({
             className={tabsTheme['u-controls-tabs-container']}
         >
             <View className="relative">
-                {/* Animated indicator */}
-                <Animated.View 
-                    style={[indicatorStyle]}
-                    className={cn(
-                        tabsTheme['u-controls-tabs-header-item-active-indicator'],
-                        sizeCfg.indicator,
-                        'absolute z-10'
-                    )}
-                >
-                    <View className={cn(
-                        tabsTheme['u-controls-tabs-header-item-active-indicator-inner'],
-                        sizeCfg.indicator_inner
-                    )} />
-                </Animated.View>
-
-                {/* Tabs list */}
                 <ScrollView 
-                    ref={listRef}
                     horizontal 
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={{ flexGrow: fullWidth ? 1 : 0 }}
                 >
-                    <TabsPrimitive.List
-                        className={cn(
-                            fullWidth 
-                                ? tabsTheme['u-controls-tabs-header-full-width'] 
-                                : tabsTheme['u-controls-tabs-header'],
-                            sizeCfg.header
-                        )}
+                    <View
+                        ref={headerRowLayoutRef}
+                        collapsable={Platform.OS === 'android' ? false : undefined}
+                        className="relative web:isolate"
                     >
+                        <View
+                            className={cn(
+                                fullWidth
+                                    ? tabsTheme['u-controls-tabs-header-track-full-width']
+                                    : tabsTheme['u-controls-tabs-header-track']
+                            )}
+                        />
+                        {/* Above track (z-0), below tab row */}
+                        <Animated.View 
+                            style={[indicatorStyle, { zIndex: 1 }]}
+                            className={cn(
+                                tabsTheme['u-controls-tabs-header-item-active-indicator'],
+                                sizeCfg.indicator,
+                                'absolute'
+                            )}
+                        >
+                            <View className={cn(
+                                tabsTheme['u-controls-tabs-header-item-active-indicator-inner'],
+                                sizeCfg.indicator_inner
+                            )} />
+                        </Animated.View>
+
+                        <TabsPrimitive.List
+                            className={cn(
+                                fullWidth 
+                                    ? tabsTheme['u-controls-tabs-header-row-full-width'] 
+                                    : tabsTheme['u-controls-tabs-header-row'],
+                                sizeCfg.header,
+                                'relative z-[2]'
+                            )}
+                        >
                         {tabs.map((tab) => (
                             <TabsPrimitive.Trigger
                                 key={tab.key}
@@ -140,6 +152,7 @@ export default function Tabs({
                                 className={cn(
                                     tabsTheme['u-controls-tabs-header-item'],
                                     sizeCfg.item,
+                                    'relative z-[3]',
                                     tab.key === currentTab 
                                         ? tabsTheme['u-controls-tabs-header-item-active']
                                         : tabsTheme['u-controls-tabs-header-item-inactive']
@@ -158,7 +171,8 @@ export default function Tabs({
                                 )}
                             </TabsPrimitive.Trigger>
                         ))}
-                    </TabsPrimitive.List>
+                        </TabsPrimitive.List>
+                    </View>
                 </ScrollView>
             </View>
 

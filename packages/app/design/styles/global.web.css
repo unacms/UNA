@@ -540,14 +540,16 @@ html[theme="dark"]:root {
 
 
 /* Enhanced scrollbar hiding for tabs and other components */
-.u-controls-tabs-header {
+.u-controls-tabs-header,
+.u-controls-tabs-header-row {
     scrollbar-width: none;
     /* Firefox */
     -ms-overflow-style: none;
     /* IE and Edge */
 }
 
-.u-controls-tabs-header::-webkit-scrollbar {
+.u-controls-tabs-header::-webkit-scrollbar,
+.u-controls-tabs-header-row::-webkit-scrollbar {
     display: none;
     /* Safari and Chrome */
 }

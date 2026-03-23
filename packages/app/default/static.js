@@ -17,6 +17,7 @@ import { Platform } from 'react-native'
 import SvgFile from 'app/ui/molecules/svg-file'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { appSetting } from 'app/lib/util'
+import Tabs from 'app/ui/molecules/tabs'
 const isWeb = Platform.OS === 'web'
 //mode can be 'adaptive', 'full', 'mark', 'text'
 const Logo = ({ mode = 'adaptive' }) => {
@@ -143,6 +144,55 @@ const SplashTextComponent = (props) => {
             <View className="flex-auto w-full">
                 <SplashTextInner />
             </View>
+        </View>
+    )
+}
+
+const SplashTabsComponent = (props) => {
+    const { t } = useTranslation()
+    const splashSectionTabs = [
+        {
+            key: 'users',
+            title: t('Users'),
+            content: (
+                <View className="gap-2 py-2">
+                    <Text className="text-muted-foreground text-sm text-center sm:text-left">
+                        Members, roles, and sign-in—invite people and control who can do what.
+                    </Text>
+                </View>
+            ),
+        },
+        {
+            key: 'groups',
+            title: t('Groups'),
+            content: (
+                <View className="gap-2 py-2">
+                    <Text className="text-muted-foreground text-sm text-center sm:text-left">
+                        Communities and teams—organize discussions and shared spaces.
+                    </Text>
+                </View>
+            ),
+        },
+        {
+            key: 'events',
+            title: t('Events'),
+            content: (
+                <View className="gap-2 py-2">
+                    <Text className="text-muted-foreground text-sm text-center sm:text-left">
+                        Gatherings and calendars—promote and attend what matters.
+                    </Text>
+                </View>
+            ),
+        },
+    ]
+
+    return (
+        <View className="w-full mt-8">
+            <Tabs
+                tabs={splashSectionTabs}
+                activeTab="users"
+                contentClassName="mt-3"
+            />
         </View>
     )
 }
@@ -740,5 +790,6 @@ export const staticDefault = {
     components_fullfooter: ComponentsFullFooter,
     components_logincontent: ComponentsLoginContentComponent,
     splash_text: SplashTextComponent,
+    splash_tabs: SplashTabsComponent,
     join_text: JoinTextComponent,
 }

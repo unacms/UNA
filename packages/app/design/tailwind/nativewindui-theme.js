@@ -43,6 +43,15 @@ const nativewindUIColors = {
     ring: withOpacity('ring'),
     background: withOpacity('background'),
     foreground: withOpacity('foreground'),
+
+    default: {
+        DEFAULT: withOpacity('default'),
+        foreground: withOpacity('default-foreground'),
+    },
+    segment: {
+        DEFAULT: withOpacity('segment'),
+        foreground: withOpacity('segment-foreground'),
+    },
   
     primary: {
         DEFAULT: withOpacity('primary'),

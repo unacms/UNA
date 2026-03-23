@@ -98,15 +98,21 @@ export default function Splash(props) {
     const isWeb = Platform.OS == 'web'
     return (
         <Page>
-            <View className={`flex-1 gap-4 p-4 justify-center w-full mx-auto lg:flex-row ${appSetting(
+            <View className={`flex-1 gap-4 p-4 justify-center w-full mx-auto ${appSetting(
                     'layout',
                     'max_width_content',
                 )}`}
             >
-                {appStatic('splash_text')}
-                <PageContent {...props} />
+                <View className="w-full gap-4 mt-8 lg:flex-row">
+                    {appStatic('splash_text')}
+                    <PageContent {...props} />
+                </View>
+                {appStatic('splash_tabs')}
             </View>
-            <MenuFooter
+            
+            
+            
+                <MenuFooter
                 cntClasses='flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-3 p-4 min-h-14'
             />
         </Page>

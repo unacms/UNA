@@ -7,9 +7,19 @@ export const settingsTabs = {
 
         // Header (use with inline styles or Tailwind plugin for scroll)
         'u-controls-tabs-header':
-            'relative flex flex-1 flex-row flex-nowrap overflow-x-auto bg-muted/40 border border-border/60 rounded-xl overflow-y-hidden  web:scrollbar-none ',
+            'relative flex flex-1 flex-row flex-nowrap overflow-x-auto bg-default rounded-xl overflow-y-hidden  web:scrollbar-none ',
         'u-controls-tabs-header-full-width':
             'relative w-full flex flex-1 flex-row flex-nowrap overflow-x-auto overflow-hidden bg-muted/40 border border-muted rounded-xl web:scrollbar-none ',
+
+        // Track + row split: indicator sits above track, below tab triggers (molecules/tabs)
+        'u-controls-tabs-header-track':
+            'absolute inset-0 z-0 rounded-xl bg-default pointer-events-none',
+        'u-controls-tabs-header-track-full-width':
+            'absolute inset-0 z-0 rounded-xl bg-muted/40 border border-muted pointer-events-none overflow-hidden',
+        'u-controls-tabs-header-row':
+            'relative flex flex-1 flex-row flex-nowrap overflow-x-auto bg-transparent rounded-xl overflow-y-hidden web:scrollbar-none',
+        'u-controls-tabs-header-row-full-width':
+            'relative w-full flex flex-1 flex-row flex-nowrap overflow-x-auto overflow-hidden bg-transparent rounded-xl web:scrollbar-none',
 
         // Header item base (shared styles without hover)
         'u-controls-tabs-header-item':
@@ -20,11 +30,11 @@ export const settingsTabs = {
 
         // Active tab (no hover effect)
         'u-controls-tabs-header-item-active':
-            ' bg-popover shadow-sm web:duration-300 ',
+            ' bg-segment shadow-sm web:duration-300 ',
 
         // Header item text
         'u-controls-tabs-header-item-text':
-            'text-muted-foreground web:group-hover:text-card-foreground font-medium ',
+            'text-secondary-foreground web:group-hover:text-card-foreground font-medium ',
         'u-controls-tabs-header-item-text-active':
             'text-card-foreground font-medium ',
 
@@ -38,7 +48,7 @@ export const settingsTabs = {
             'absolute pointer-events-none web:transition-[left,width] web:duration-200 web:ease-out ',
         
         'u-controls-tabs-header-item-active-indicator-inner':
-            ' h-px -bottom-px bg-ring/50 rounded-full  ',
+            ' h-0.5 bottom-0 bg-ring/50 rounded-full  ',
     },
     tabs_sizes: {
         default_size: 'md',
