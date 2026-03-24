@@ -16,7 +16,6 @@ import {
     resolvePanelProps,
 } from 'app/ui/molecules/resizable-panels'
 import { useSetHeader, defaultHeader, useSetFooter } from 'app/context/jotai/layout';
-import { useSafeAreaInsets } from 'app/lib/hooks/router'
 
 const mapLayoutBlocks = (items = []) =>
     items.map(({ source }) => ({
@@ -53,7 +52,6 @@ const defineCells = (blocks, data) => {
 export default function PageLayout({ data, blocks, isModal = false, url }) {
     const isWeb = Platform.OS == 'web';
     const windowHeight = useWindowHeight();
-    const insets = useSafeAreaInsets();
     const isDesktop = useIsDesktop();
     const [replyId, setReplyId] = useState(false);
     const [scrollToEnd, setScrollToEnd] = useState(false);
@@ -106,7 +104,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 //value.sidebar || value.leftbar ? false : true
     const aItems = useMemo(() => mainBlocks.map((value) => ({
         id: `block_${value.name}`,
-        data: <View className={'px-3 pt-3'}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
+        data: <View className={'px-4 py-2'}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
     })), [blocks, data, isDesktop]);
 
     const isRightCol = sideBarBlocks.length > 0 && isDesktop
@@ -117,7 +115,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     } : {};
 
     const handleLayout = useCallback((event) => {
-        //if (isWeb)
+        if (isWeb)
             setFormHeight(event.nativeEvent.layout.height)
     }, []);
 
@@ -220,49 +218,44 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         };
     }, []);
 
-    let offset2 = 64;
-    if (!isWeb) {
-            offset2 = insets.bottom + insets.top;
-            if (Platform.OS == 'ios') {
-                offset2 = insets.bottom + insets.top + 64;
-            }
-        }
+    const offset2 = 64;
     if (isModal) {
-        return (
-            <View className="w-full justify-between flex-1" >
-                <View className='w-full flex-1 '>
-                    <View style={{ height: windowHeight - offset2 - formHeight }}>
-                        <CommentsBrowse
-                            useCustomScrollHandler={true}
-                            height={windowHeight - offset2 - formHeight > 0 ? windowHeight - offset2 - formHeight : undefined}
-                            scrollToIndex={scrollToEnd}
-                            addItems={aItems}
-                            isModal={true}
-                            browse={commentsData?.content[0]?.browse}
-                            module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
-                            requestUrl={commentsData?.content[0]?.url}
-                            replyId={replyId}
-                        />
+        if (isWeb) {
+            return (
+                <View className="w-full justify-between flex-1" >
+                    <View className='w-full flex-1 '>
+                        <View style={{ height: windowHeight - offset2 - formHeight }}>
+                            <CommentsBrowse
+                                useCustomScrollHandler={true}
+                                height={windowHeight - offset2 - formHeight > 0 ? windowHeight - offset2 - formHeight : undefined}
+                                scrollToIndex={scrollToEnd}
+                                addItems={aItems}
+                                isModal={true}
+                                browse={commentsData?.content[0]?.browse}
+                                module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
+                                requestUrl={commentsData?.content[0]?.url}
+                                replyId={replyId}
+                            />
+                        </View>
                     </View>
+                    <KbAvoidingView modalOffset={90}>
+                        <View
+                            onLayout={handleLayout}
+                            className="border-t border-border/60 "
+                        >
+                            <CommentsForm
+                                isModal={isModal}
+                                objectId={commentsData?.content[0]?.browse.data.object_id}
+                                module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
+                                form={commentsData?.content[0]?.form}
+                                requestUrl={commentsData?.content[0]?.url}
+                            />
+                        </View>
+                    </KbAvoidingView>
                 </View>
-                <KbAvoidingView modalOffset={90}>
-                    <View
-                        onLayout={handleLayout}
-                        className="border-t border-border/60 bg-card"
-                    >
-                        <CommentsForm
-                            isModal={isModal}
-                            objectId={commentsData?.content[0]?.browse.data.object_id}
-                            module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
-                            form={commentsData?.content[0]?.form}
-                            requestUrl={commentsData?.content[0]?.url}
-                        />
-                    </View>
-                </KbAvoidingView>
-            </View>
-        )
-
-       /* else {
+            )
+        }
+        else {
 
             return (
                 <View className="w-full flex-1 ">
@@ -295,14 +288,14 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                     </KbAvoidingView>
                 </View>
             )
-        }*/
+        }
     }
 
-    if (!isWeb || !isDesktop ) {
+    if (!isWeb || !isDesktop || !isMultiColumn) {
         const newItems = !isWeb || !isDesktop ? aItems.slice(1) : aItems;
         return (
             <View {...viewProps} className={`w-full ${isWeb ? '' : 'h-full'}`}>
-                <View className={`max-w-5xl w-full flex-1 bg-card text-card-foreground lg:rounded-2xl lg:my-4 mx-auto `}>
+                <View className={`max-w-4xl w-full flex-1 bg-card shadow-sm text-card-foreground rounded-2xl  lg:my-4 mx-auto `}>
                     <View onLayout={handleListLayout} style={{ pointerEvents: 'box-none', marginBottom: formHeight }} className='w-full flex-1 '>
                         <CommentsBrowse
 
@@ -315,7 +308,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         />
                     </View>
                     <KbAvoidingView>
-                        <View onLayout={handleLayout} style={{ width: listWidth + 5 }} className='-ml-[2px] -mr-[2px] bg-card border-background border bg-background web:fixed z-50 web:bottom-0  '>
+                        <View onLayout={handleLayout} style={{ width: listWidth + 5 }} className='-ml-[2px] -mr-[2px] border-background border bg-background web:fixed z-50 web:bottom-0  '>
                             <View className=' lg:mb-4  ml-[1px] '>
                                 <CommentsForm
                                     isModal={isModal}
@@ -344,7 +337,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
             }
             direction="horizontal"
             {...viewProps}
-            className={` ${isMultiColumn ? appSetting('layout', 'max_width_content') + 'mx-auto' : 'max-w-5xl mx-auto'} flex-1 w-full h-full sm:min-h-[calc(100vh-16rem)]`}
+            className={` ${isMultiColumn ? appSetting('layout', 'max_width_content') + 'mx-auto' : ''} flex-1 w-full h-full sm:min-h-[calc(100vh-16rem)]`}
             onLayout={onLayout}
         >
             {isLeftCol && (
@@ -371,7 +364,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                 </>
             )}
             <Panel {...centerPanelProps} className="mt-0.5 sm:p-2">
-                <View className={`w-full h-full bg-card/80 shadow-sm text-card-foreground rounded-2xl mx-auto `}>
+                <View className={`w-full h-full bg-card/80 shadow-sm text-card-foreground rounded-2xl py-3 sm:py-4 mx-auto `}>
                     <View onLayout={handleListLayout} style={{ pointerEvents: 'box-none', marginBottom: formHeight }} className='w-full flex-1'>
                         <CommentsBrowse
                             scrollToIndex={scrollToEnd}
@@ -384,7 +377,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                     </View>
                     <KbAvoidingView>
                         <View onLayout={handleLayout} style={{ width: listWidth + 5 }} className='-ml-[2px] -mr-[2px] border-background border bg-background web:fixed z-50 web:bottom-0  '>
-                            <View className='lg:rounded-b-2xl  lg:mb-4 bg-card shadow-sm ml-[1px] '>
+                            <View className='lg:rounded-b-2xl px-4 py-3  lg:mb-4 bg-card shadow-sm ml-[1px] '>
                                 <CommentsForm
                                     objectId={commentsData?.content[0]?.browse.data.object_id}
                                     module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
