@@ -241,8 +241,10 @@ export default function Tabs({
                         ref={headerRowLayoutRef}
                         collapsable={Platform.OS === 'android' ? false : undefined}
                         className={cn(
-                            'relative web:isolate min-w-full w-max',
-                            hug && 'self-start',
+                            'relative web:isolate',
+                            hug
+                                ? 'w-max self-start'
+                                : 'min-w-full w-max',
                             listWrapperClassName
                         )}
                     >

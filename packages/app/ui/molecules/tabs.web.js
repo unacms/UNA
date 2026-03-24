@@ -185,8 +185,10 @@ export default function Tabs({
             >
                 <View
                     className={cn(
-                        'relative min-w-full w-max',
-                        hug && 'self-start',
+                        'relative',
+                        hug
+                            ? 'w-max self-start'
+                            : 'min-w-full w-max',
                         listWrapperClassName
                     )}
                     ref={headerWrapperRef}

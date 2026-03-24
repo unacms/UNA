@@ -94,14 +94,7 @@ const nativewindUIColors = {
         DEFAULT: withOpacity('card'),
         foreground: withOpacity('card-foreground'),
     },
-    label: {
-        primary: withOpacity('label-primary'),
-        secondary: withOpacity('label-secondary'),
-        tertiary: withOpacity('label-tertiary'),
-        link: withOpacity('label-link'),
-        linkhover: withOpacity('label-linkhover'),
-        
-    },
+   
     link: {
         primary: withOpacity('link-primary'),
         secondary: withOpacity('link-secondary'),
@@ -135,6 +128,23 @@ const nativewindUIColors = {
         900: withOpacity('neutral-900'),
         950: withOpacity('neutral-950'),
         1000: withOpacity('neutral-1000'),
+    },
+
+    /* Raw base scale: solid base-1…12 + translucent base-a-1…12 (see global.css --base-* / --base-a*) */
+    base: {
+        1: withOpacity('base-1'),
+        2: withOpacity('base-2'),
+        3: withOpacity('base-3'),
+        4: withOpacity('base-4'),
+        5: withOpacity('base-5'),
+        6: withOpacity('base-6'),
+        7: withOpacity('base-7'),
+        8: withOpacity('base-8'),
+        9: withOpacity('base-9'),
+        10: withOpacity('base-10'),
+        11: withOpacity('base-11'),
+        12: withOpacity('base-12'),
+        
     },
 
     // Raw state colors

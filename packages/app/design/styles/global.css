@@ -5,117 +5,153 @@
 @layer base {
     .light-theme-vars {
         --default: var(--neutral-200);
-        --default-foreground: var(--neutral-950);
+        --default-foreground: var(--neutral-900);
         --segment: var(--white);
         --segment-foreground: var(--neutral-900);
+        --surface: var(--white);
+
         --background: var(--neutral-100);
-        /*background*/
         --foreground: var(--neutral-950);
-        /*main page content*/
         --card: var(--white);
-        /*surface*/
         --card-foreground: var(--neutral-800);
-        /*content on cards, sidebars, navbars*/
         --popover: var(--white);
-        /*background for popovers, inputs, tooltips, modals, elevated surfaces*/
         --popover-foreground: var(--neutral-900);
-        /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
         --primary: var(--accent-600);
-        /*background for primary buttons, links, active states, focus rings. Use use high-contract background from gray-scale or accent-scale.*/
         --primary-foreground: var(--white);
-        /*priamry content, links, foreground elements*/
         --secondary: var(--neutral-200);
-        /*secondary surfaces*/
         --secondary-foreground: var(--neutral-600);
-        /*content on secondary buttons, secondary surfaces*/
-        --muted: var(--neutral-200);
-        /*background for ui items, sections, hover states*/
+        --muted: var(--neutral-300);
         --muted-foreground: var(--neutral-400);
-        /*muted content*/
         --accent: var(--accent-100);
-        /*background for accent buttons, accent surfaces*/
         --accent-foreground: var(--accent-600);
-        /*content on accent buttons, accent surfaces*/
         --destructive: var(--red);
-        /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--white);
-        /*content on destructive buttons, destructive surfaces*/
         --border: var(--neutral-300);
-        /*borders, dividers, focus rings*/
         --input: var(--neutral-100);
-        /*form inputs*/
         --ring: var(--accent-600);
-        /*focus rings*/
-        --label-primary: var(--neutral-950);
-        /*Primary text (high emphasis)*/
         --label-secondary: var(--neutral-800);
-        /*Secondary text (medium emphasis)*/
         --label-tertiary: var(--neutral-600);
-        /*Tertiary text (low emphasis)*/
         --label-quaternary: var(--neutral-400);
-        /*Quaternary text (low emphasis)*/
         --label-link: var(--accent-600);
-        /*Link text color*/
         --label-linkhover: var(--accent-800);
-        /*Link text color on hover*/
         --link-primary: var(--accent-500);
-        /*Link text color*/
         --link-secondary: var(--accent-700);
         --link-tertiary: var(--accent-900);
-        /*Link text color on
-
         
-        /* neutral scale (zinc) - standard Tailwind CSS zinc 50-950 */
+        
+        /* neutral scale  */
         --neutral: 113 113 122;
-
         --neutral-50: 250 250 250;
         --neutral-100: 244 244 245;
         --neutral-200: 228 228 231;
         --neutral-300: 212 212 216;
-        --neutral-400: 144 144 144;
-        --neutral-500: 113 113 122;
+        --neutral-400: 161 161 170;
+        --neutral-500: 115 115 115;
         --neutral-600: 82 82 91;
         --neutral-700: 63 63 70;
         --neutral-800: 39 39 42;
         --neutral-900: 24 24 27;
         --neutral-950: 9 9 11;
+
+        /* base colors scale - light  */
+
+        --base-1: 250 250 250;
+        --base-2: 244 244 245;
+        --base-3: 228 228 231;
+        --base-4: 212 212 216;
+        --base-5: 161 161 170;
+        --base-6: 115 115 115;
+        --base-7: 82 82 91;
+        --base-8: 63 63 70;
+        --base-9: 39 39 42;
+        --base-10: 24 24 27;
+        --base-11: 9 9 11;
+
+ 
+
+  /* 
+        .slate {
+            --slate-1-hex: #fcfcfd;
+            --slate-1: 252 252 253;
+            --slate-2-hex: #f9f9fb;
+            --slate-2: 249 249 251;
+            --slate-3-hex: #f0f0f3;
+            --slate-3: 240 240 243;
+            --slate-4-hex: #e8e8ec;
+            --slate-4: 232 232 236; 
+            --slate-5-hex: #e0e1e6;
+            --slate-5: 224 225 230;
+            --slate-6-hex: #d9d9e0;
+            --slate-6: 217 217 224;
+            --slate-7-hex: #cdced6;
+            --slate-7: 205 205 214;
+            --slate-8-hex: #b9bbc6;
+            --slate-8: 185 187 198;
+            --slate-9-hex: #8b8d98;
+            --slate-9: 139 141 152;
+            --slate-10-hex: #80838d;
+            --slate-10: 128 131 141;
+            --slate-11-hex: #60646c;
+            --slate-11: 96 100 108;
+            --slate-12-hex: #1c2024;
+            --slate-12: 28 32 36;
+        }
+
+       
         
-            /* accent scale (blue) - Tailwind CSS blue-50 ... blue-950 */
+
+        .slateDark {
+            --slate-1-hex: #111113;
+            --slate-1: 17 17 19;
+            --slate-2-hex: #18191b;
+            --slate-2: 24 25 27;
+            --slate-3-hex: #212225;
+            --slate-3: 33 34 37;
+            --slate-4-hex: #272a2d;
+            --slate-4: 39 42 45;    
+            --slate-5-hex: #2e3135;
+            --slate-5: 46 49 53;
+            --slate-6-hex: #363a3f;
+            --slate-6: 54 58 63;
+            --slate-7-hex: #43484e;
+            --slate-7: 67 72 78;
+            --slate-8-hex: #5a6169;
+            --slate-8: 90 97 105;
+            --slate-9-hex: #696e77;
+            --slate-9: 105 110 119;
+            --slate-10-hex: #777b84;
+            --slate-10: 119 123 132;
+            --slate-11-hex: #b0b4ba;
+            --slate-11: 176 180 186;
+            --slate-12-hex: #edeef0;
+            --slate-12: 237 238 240;
+        }
+
+       
+         
+   
+*/
+      /* accent scale  */
         --accent-50: 239 246 255;
-        /* #eff6ff */
         --accent-100: 219 234 254;
-        /* #dbeafe */
         --accent-200: 191 219 254;
-        /* #bfdbfe */
         --accent-300: 147 197 253;
-        /* #93c5fd */
         --accent-400: 96 165 250;
-        /* #60a5fa */
         --accent-500: 59 130 246;
-        /* #3b82f6 */
         --accent-600: 37 99 235;
-        /* #2563eb */
         --accent-700: 29 78 216;
-        /* #1d4ed8 */
         --accent-800: 30 64 175;
-        /* #1e40af */
         --accent-900: 30 58 138;
-        /* #1e3a8a */
         --accent-950: 23 37 84;
-        /* #172554 */
 
 
         /* State colors for semantic system */
         --white: 255 255 255;
         --black: 0 0 0;
         --green: 34 197 94;
-        /*green-500*/
         --yellow: 234 179 8;
-        /*yellow-500*/
         --blue: 59 130 246;
-        /*blue-500*/
         --red: 225 29 72;
-        /*rose-600*/
 
         /* Border Radius Defaults */
         --radius-sm: 0.125rem;
@@ -128,72 +164,51 @@
         --radius-full: 9999px;
     }
 
-
     .dark-theme-vars {
         --default: var(--neutral-800);
         --default-foreground: var(--neutral-50);
         --segment: var(--neutral-700);
-        --segment-foreground: var(--neutral-50);
+        --segment-foreground: var(--white800);
+        --surface: var(--neutral-900);
 
         --background: var(--neutral-950);
-        /*main page background*/
         --foreground: var(--white);
-        /*main page content*/
         --card: var(--neutral-900);
-        /*surface*/
-        --card-foreground: var(--neutral-200);
-        /*content on cards, sidebars, navbars*/
+        --card-foreground: var(--neutral-200);      /*content on cards, sidebars, navbars*/
         --popover: var(--neutral-900);
-        /*background for popovers, inputs, tooltips, modals, elevated surfaces*/
         --popover-foreground: var(--neutral-50);
-        /*content on popovers, inputs, tooltips, modals, elevated surfaces*/
         --primary: var(--accent-700);
-        /*background for primary buttons, links, active states, focus rings. Use use high-contract background from gray-scale or accent-scale.*/
         --primary-foreground: var(--white);
-        /*content on primary buttons, active states, primary surfaces*/
         --secondary: var(--neutral-800);
-        /*background for secondary buttons, secondary surfaces*/
         --secondary-foreground: var(--neutral-400);
-        /*content on secondary buttons, secondary surfaces*/
         --accent: var(--accent-950);
-        /*background for accent buttons, accent surfaces*/
         --accent-foreground: var(--accent-600);
-        /*content on accent buttons, accent surfaces*/
         --muted: var(--neutral-800);
-        /*background for ui items, sections, hover states*/
         --muted-foreground: var(--neutral-600);
-        /*muted content*/
         --destructive: var(--red);
-        /*background for destructive buttons, destructive surfaces*/
         --destructive-foreground: var(--neutral-950);
-        /*content on destructive buttons, destructive surfaces*/
-        --border: var(--neutral-800);
-        /*borders, dividers, focus rings*/
+        --border: var(--neutral-700);
         --input: var(--neutral-800);
-        /*form inputs*/
         --ring: var(--accent-600);
-        /*focus rings*/
-        --label-primary: var(--neutral-50);
-        /*Primary text (high emphasis)*/
-        --label-secondary: var(--neutral-200);
-        /*Secondary text (medium emphasis)*/
-        --label-tertiary: var(--neutral-400);
-        /*Tertiary text (low emphasis)*/
-        --label-quaternary: var(--neutral-600);
-        /*Quaternary text (low emphasis)*/
-        --label-link: var(--accent-500);
-        /*Link text color*/
-        --label-linkhover: var(--accent-700);
-        /*Link text color on hover*/
-        --link-primary: var(--accent-500);
-        /*Link text color*/
-        --link-secondary: var(--accent-700);
-        --link-tertiary: var(--accent-900);
-        /*Link text color on visited*/
+       
+/*
 
-        /* Shadow Border variables - Dark Mode */
-       --shadow-custom: 0px 0px 0px 1px #ffffff1a, 0px 1px 2px -1px #ffffff14, 0px 2px 4px 0px #00000066;
-        --shadow-custom-hover: 0px 0px 0px 1px #ffffff24, 0px 1px 2px -1px #ffffff1f, 0px 2px 4px 0px #00000080;
+        --neutral: 113 113 122;
+        --neutral-50: 250 250 250;
+        --neutral-100: 244 244 245;
+        --neutral-200: 228 228 231;
+        --neutral-300: 212 212 216;
+        --neutral-400: 161 161 170;
+        --neutral-500: 115 115 115;
+        --neutral-600: 82 82 91;
+        --neutral-700: 63 63 70;
+        --neutral-800: 39 39 42;
+        --neutral-900: 24 24 27;
+        --neutral-950: 9 9 11;
+        */
+
+        
+
     }
 
     :root {

@@ -43,20 +43,20 @@ export default function Unit(props) {
 
                     </View>
                     <View className="mt-4 flex-row flex-wrap gap-x-2 gap-y-1">
-                        <Text className="font-medium text-secondary-foreground  text-sm bg-label-secondary rounded px-2 py-1">tag</Text>
-                        <Text className="font-medium text-secondary-foreground  text-sm bg-label-secondary rounded px-2 py-1">tag</Text>
-                        <Text className="font-medium text-secondary-foreground  text-sm bg-label-secondary rounded px-2 py-1">tag</Text>
-                        <Text className="font-medium text-secondary-foreground  text-sm bg-label-secondary rounded px-2 py-1">tag</Text>
-                        <Text className="font-medium text-secondary-foreground  text-sm bg-label-secondary rounded px-2 py-1">React</Text>
-                        <Text className="font-medium text-secondary-foreground  text-sm bg-label-secondary rounded px-2 py-1">Node.js</Text>
-                        <Text className="font-medium text-secondary-foreground  text-sm bg-label-secondary rounded px-2 py-1">TypeScript</Text>
-                        <Text className="font-medium text-secondary-foreground  text-sm bg-label-secondary rounded px-2 py-1">Remote</Text>
-                        <Text className="font-medium text-secondary-foreground  text-sm bg-label-secondary rounded px-2 py-1">Full-time</Text>
-                        <Text className="font-medium text-secondary-foreground  text-sm bg-label-secondary rounded px-2 py-1">Senior</Text>
-                        <Text className="font-medium text-secondary-foreground  text-sm bg-label-secondary rounded px-2 py-1">AWS</Text>
-                        <Text className="font-medium text-secondary-foreground  text-sm bg-label-secondary rounded px-2 py-1">Docker</Text>
-                        <Text className="font-medium text-secondary-foreground  text-sm bg-label-secondary rounded px-2 py-1">CI/CD</Text>
-                        <Text className="font-medium text-secondary-foreground  text-sm bg-label-secondary rounded px-2 py-1">Agile</Text>
+                        <Text className="font-medium text-secondary-foreground  text-sm bg-secondary rounded px-2 py-1">tag</Text>
+                        <Text className="font-medium text-secondary-foreground  text-sm bg-secondary rounded px-2 py-1">tag</Text>
+                        <Text className="font-medium text-secondary-foreground  text-sm bg-secondary rounded px-2 py-1">tag</Text>
+                        <Text className="font-medium text-secondary-foreground  text-sm bg-secondary rounded px-2 py-1">tag</Text>
+                        <Text className="font-medium text-secondary-foreground  text-sm bg-secondary rounded px-2 py-1">React</Text>
+                        <Text className="font-medium text-secondary-foreground  text-sm bg-secondary rounded px-2 py-1">Node.js</Text>
+                        <Text className="font-medium text-secondary-foreground  text-sm bg-secondary rounded px-2 py-1">TypeScript</Text>
+                        <Text className="font-medium text-secondary-foreground  text-sm bg-secondary rounded px-2 py-1">Remote</Text>
+                        <Text className="font-medium text-secondary-foreground  text-sm bg-secondary rounded px-2 py-1">Full-time</Text>
+                        <Text className="font-medium text-secondary-foreground  text-sm bg-secondary rounded px-2 py-1">Senior</Text>
+                        <Text className="font-medium text-secondary-foreground  text-sm bg-secondary rounded px-2 py-1">AWS</Text>
+                        <Text className="font-medium text-secondary-foreground  text-sm bg-secondary rounded px-2 py-1">Docker</Text>
+                        <Text className="font-medium text-secondary-foreground  text-sm bg-secondary rounded px-2 py-1">CI/CD</Text>
+                        <Text className="font-medium text-secondary-foreground  text-sm bg-secondary rounded px-2 py-1">Agile</Text>
 
                     </View>
 

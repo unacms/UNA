@@ -220,20 +220,18 @@ const SplashTabsComponent = ({ onTabChange }) => {
     ]
 
     return (
-        <View className="w-full">
+        <Card padding="p-4">
             <Tabs
                 tabs={splashSectionTabs}
                 activeTab="users"
-                tabBarClassName=" border-b border-border/60  py-0.5 flex w-full justify-center lg:justify-start "
                 listWrapperClassName=" mx-auto lg:mx-0 "
-                contentClassName=" py-4 "
-                listClassName=" px-0 "
-                size="md"
-                variant="secondary"
+                contentClassName=" p-1 pt-4 "
+                size="sm"
+                
                 onTabChange={onTabChange}
                 hug
             />
-        </View>
+        </Card>
     )
 }
 

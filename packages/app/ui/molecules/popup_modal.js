@@ -24,9 +24,9 @@ export default function () {
             </View>
             <BlockByUrl url="/api.php?r=system/login_form/TemplServiceLogin" formProps={{ auto_focus: true, hide_errors: true, button_full_width: true }} />
             <View className="flex-row items-center justify-center  w-full">
-                <View className="flex-1 h-px w-full bg-label-secondary dark:bg-muted-foreground" />
+                <View className="flex-1 h-px w-full bg-secondary dark:bg-muted-foreground" />
                 <Text className="mx-4 text-xs text-muted-foreground  font-normal">OR</Text>
-                <View className="flex-1 h-px w-full bg-label-secondary dark:bg-muted-foreground" />
+                <View className="flex-1 h-px w-full bg-secondary dark:bg-muted-foreground" />
             </View>
             <View className="gap-y-2 w-full">
                 <Row className="flex-row gap-y-2 flex-wrap gap-x-2 w-full items-center justify-center"><AuthPanel /></Row>

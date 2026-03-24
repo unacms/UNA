@@ -9,8 +9,8 @@ export default function ({ data, blockWrapperProps, uri }) {
     return (
         <BlockWrapper {...blockWrapperProps}><View className="flex-col p-4 w-full mx-auto bg-card h-min overflow-hidden rounded-2xl shadow-sm">
             <View className="w-28 h-28 overflow-hidden bg-background   rounded-full  ">
-                {!!data.image ? <Image alt={data.fullname} className="rounded-full" view="cover" src={data.image.src} /> : <View><View className="w-[50%] z-20 aspect-square bg-label-secondary   border-4 border-border  mx-auto rounded-full mt-[15%] "></View>
-                    <View className="w-[80%] -translate-y-[5%] aspect-square  bg-label-secondary    mx-auto rounded-t-full  "></View></View>}
+                {!!data.image ? <Image alt={data.fullname} className="rounded-full" view="cover" src={data.image.src} /> : <View><View className="w-[50%] z-20 aspect-square bg-secondary   border-4 border-border  mx-auto rounded-full mt-[15%] "></View>
+                    <View className="w-[80%] -translate-y-[5%] aspect-square  bg-secondary    mx-auto rounded-t-full  "></View></View>}
             </View>
             <View className="flex-row flex-wrap ">
                 <View className=" flex-col   flex-auto">
