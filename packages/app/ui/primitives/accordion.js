@@ -78,7 +78,7 @@ function AccordionHeader({ children, ...props }) {
   return <View {...props}>{children}</View>;
 }
 
-function AccordionTrigger({ children, ...props }) {
+function AccordionTrigger({ children, onPress: onPressFromProps, ...props }) {
   const context = React.useContext(AccordionContext);
   const itemContext = React.useContext(AccordionItemContext);
   
@@ -87,7 +87,8 @@ function AccordionTrigger({ children, ...props }) {
       ? (Array.isArray(context.value) ? context.value : []).includes(itemContext.value)
       : context.value === itemContext.value;
 
-  const handlePress = () => {
+  const handlePress = (event) => {
+    onPressFromProps?.(event);
     if (!itemContext.disabled) {
       context.onValueChange(itemContext.value);
     }

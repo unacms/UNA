@@ -24,6 +24,8 @@ const PRESET_BY_TYPE = {
     Light: 'light',
     Medium: 'medium',
     Heavy: 'heavy',
+    /** Same pattern as [haptics.lochie.me](https://haptics.lochie.me/) “nudge” — `trigger([{ duration: 80, intensity: 0.8 }, { delay: 80, duration: 50, intensity: 0.3 }])` */
+    Nudge: 'nudge',
 };
 
 function shouldPlayWebHapticsSynthAudio() {

@@ -1,17 +1,19 @@
 import * as React from 'react';
-import { Platform, Pressable, View } from 'react-native';
+import { useCallback } from 'react';
+import { Platform, View } from 'react-native';
 import * as AccordionPrimitive from 'app/ui/primitives/accordion';
 import { clsx } from 'clsx';
 import { Icon } from 'app/ui/atoms/icon';
+import { Text } from 'app/design/typography';
+import { appSetting, FeedbackHaptics } from 'app/lib/util';
+import { useSound } from 'app/lib/hooks/useSound';
 
-function cn(...inputs) {
-  return clsx(inputs);
-}
+const accordionTheme = appSetting('theme', 'accordion') ?? {};
 
 const Accordion = React.forwardRef(({ className, ...props }, ref) => (
   <AccordionPrimitive.Root
     ref={ref}
-    className={cn('web:overflow-hidden', className)}
+    className={clsx(accordionTheme.root, className)}
     {...props}
   />
 ));
@@ -20,57 +22,115 @@ Accordion.displayName = AccordionPrimitive.Root.displayName;
 const AccordionItem = React.forwardRef(({ className, ...props }, ref) => (
   <AccordionPrimitive.Item
     ref={ref}
-    className={cn('border-b border-border/60 overflow-hidden', className)}
+    className={clsx(accordionTheme.item, className)}
     {...props}
   />
 ));
 AccordionItem.displayName = AccordionPrimitive.Item.displayName;
 
-const AccordionTrigger = React.forwardRef(
+/**
+ * Title row label — uses theme `accordion.trigger_text`. Pass `className` to override or extend.
+ */
+const AccordionTriggerTitle = React.forwardRef(
   ({ className, children, ...props }, ref) => (
-    <AccordionPrimitive.Header className="flex">
-      <AccordionPrimitive.Trigger
-        ref={ref}
-        className={cn(
-          'flex flex-row items-center justify-between py-4 font-medium transition-all web:hover:underline [&[data-state=open]>svg]:rotate-180',
-          className
-        )}
-        {...props}
-      >
-        {({ isExpanded }) => (
+    <Text
+      ref={ref}
+      className={clsx(accordionTheme.trigger_text, className)}
+      {...props}
+    >
+      {children}
+    </Text>
+  )
+);
+AccordionTriggerTitle.displayName = 'AccordionTriggerTitle';
+
+const AccordionTrigger = React.forwardRef(
+  (
+    {
+      className,
+      titleClassName,
+      title,
+      children,
+      chevronClassName,
+      onPress,
+      /** When false, skips `FeedbackHaptics` + native click sound (web still uses web-haptics only if you call it — here we skip all feedback). */
+      feedback = true,
+      ...props
+    },
+    ref
+  ) => {
+    const isWeb = Platform.OS === 'web';
+    const playClick = useSound('click');
+    /** Native: `click` asset when `layout.sounds`. Web: [web-haptics](https://github.com/lochie/web-haptics) `nudge` + synth when `layout.sounds` + `layout.web_haptics_sounds` (see `feedback-haptics.web.js`); skip `useSound` on web to avoid doubling. */
+    const handlePress = useCallback(
+      (event) => {
+        onPress?.(event);
+        if (!feedback) return;
+        if (!isWeb) {
+          playClick();
+        }
+        FeedbackHaptics('Nudge');
+      },
+      [feedback, isWeb, onPress, playClick]
+    );
+
+    const label =
+      title !== undefined && title !== null ? (
+        <AccordionTriggerTitle className={titleClassName}>
+          {title}
+        </AccordionTriggerTitle>
+      ) : (
+        children
+      );
+
+    return (
+      <AccordionPrimitive.Header className="flex">
+        <AccordionPrimitive.Trigger
+          ref={ref}
+          className={clsx(accordionTheme.trigger, className)}
+          {...props}
+          onPress={handlePress}
+        >
+          {({ isExpanded }) => (
             <>
-            {children}
-            <Icon
+              {label}
+              <Icon
                 icon="ChevronDown"
                 size={18}
-                className={cn(
-                'text-foreground shrink-0 transition-transform duration-200',
-                isExpanded && 'rotate-180'
+                className={clsx(
+                  accordionTheme.chevron,
+                  isExpanded && 'rotate-180',
+                  chevronClassName
                 )}
-            />
+              />
             </>
-        )}
-      </AccordionPrimitive.Trigger>
-    </AccordionPrimitive.Header>
-  )
+          )}
+        </AccordionPrimitive.Trigger>
+      </AccordionPrimitive.Header>
+    );
+  }
 );
 AccordionTrigger.displayName = AccordionPrimitive.Trigger.displayName;
 
-const AccordionContent = React.forwardRef(({ className, children, ...props }, ref) => (
-  <AccordionPrimitive.Content
-    ref={ref}
-    className={cn(
-      'overflow-hidden text-sm transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down',
-      className
-    )}
-    {...props}
-  >
-    <View className={cn('pb-4 pt-0', className)}>
-      {children}
-    </View>
-  </AccordionPrimitive.Content>
-));
+const AccordionContent = React.forwardRef(
+  ({ className, innerClassName, children, ...props }, ref) => (
+    <AccordionPrimitive.Content
+      ref={ref}
+      className={clsx(accordionTheme.content, className)}
+      {...props}
+    >
+      <View className={clsx(accordionTheme.content_inner, innerClassName)}>
+        {children}
+      </View>
+    </AccordionPrimitive.Content>
+  )
+);
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;
 
-export { Accordion, AccordionItem, AccordionTrigger, AccordionContent };
-
+export {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionTriggerTitle,
+  AccordionContent,
+};

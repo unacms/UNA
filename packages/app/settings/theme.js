@@ -5,6 +5,7 @@ import { settingsLinks } from 'app/settings/theme/links';
 import { settingsTabs } from 'app/settings/theme/tabs';
 import { settingsInputs } from 'app/settings/theme/inputs';
 import { settingsElements } from 'app/settings/theme/elements';
+import { settingsAccordion } from 'app/settings/theme/accordion';
 
 export const settingsTheme = {  
     theme: {
@@ -55,6 +56,7 @@ export const settingsTheme = {
         ...settingsLinks,
         ...settingsTabs,
         ...settingsInputs,
-        ...settingsElements,    
+        ...settingsElements,
+        ...settingsAccordion,
     }
 }

@@ -245,6 +245,7 @@ Create Polls to collect feedback, make decisions, and engage your community.    
                 
             />
         </Card>
+        <Card padding="px-4 py-1 mt-6">    
         <Accordion type="multiple" collapsible defaultValue={[]} className="w-full">
                                     {[
                                         {
@@ -340,17 +341,13 @@ Create Polls to collect feedback, make decisions, and engage your community.    
                                         <AccordionItem key={i} value={`section-${i}`}
                                             className={i === arr.length - 1 ? 'border-b-0' : ''}
                                         >
-                                            <AccordionTrigger>
-                                                <Text className="text-lg font-semibold">{item.title}</Text>
-                                            </AccordionTrigger>
-                                            <AccordionContent>
-                                                <View className="pt-4 text-base text-secondary-foreground">
-                                                    {item.desc}
-                                                </View>
-                                            </AccordionContent>
+                                            <AccordionTrigger title={item.title} />
+                                            <AccordionContent>{item.desc}</AccordionContent>
                                         </AccordionItem>
                                     ))}
                                 </Accordion>
+        
+        </Card>
         </>
     )
 }

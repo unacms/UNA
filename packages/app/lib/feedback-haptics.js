@@ -33,6 +33,13 @@ export function FeedbackHaptics(type) {
         case 'Heavy':
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
             break;
+        /** Matches web-haptics `nudge` preset ([web-haptics presets](https://github.com/lochie/web-haptics)): strong tap, pause, softer tap */
+        case 'Nudge':
+            void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            setTimeout(() => {
+                void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            }, 80);
+            break;
         default:
             break;
     }
