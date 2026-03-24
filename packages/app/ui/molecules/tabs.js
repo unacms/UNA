@@ -32,7 +32,7 @@ const tabsVariants =
  * @param {Array} tabs - { key, title, content }
  * @param {string} [activeTab]
  * @param {boolean} [equalWidth] — When true (and `hug` is false), tabs share extra space equally; each tab keeps at least `min-content` width (label + padding), never shrinking below that.
- * @param {boolean} [fullWidth] — @deprecated Use `equalWidth` instead (same behavior).
+ * @param {boolean} [fullWidth] — Deprecated: use `equalWidth` instead (same behavior).
  * @param {'default'|'secondary'} [variant]
  * @param {string} [size] sm | md | lg
  * @param {string} [contentClassName]

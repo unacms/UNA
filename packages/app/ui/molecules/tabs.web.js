@@ -51,7 +51,7 @@ const tabsVariants =
  * @param {string} [headerClassName]
  * @param {boolean} [rounded]
  * @param {boolean} [equalWidth] — When true (and `hug` is false), tabs share extra space equally; each tab keeps at least `min-content` width (label + padding).
- * @param {boolean} [fullWidth] — @deprecated Use `equalWidth` instead.
+ * @param {boolean} [fullWidth] — Deprecated: use `equalWidth` instead.
  * @param {boolean} [hug] — label-width triggers; use with `equalWidth={false}` for a compact strip
  * @param {'scroll'|'collapse'} [overflow] — `scroll` (default) or `collapse` into a "More" menu
  * @param {string} [moreLabel]
