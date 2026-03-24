@@ -71,7 +71,7 @@ export function Modal({
     }, [onClose])
     
     // Cleanup guard to prevent removeChild errors
-    useEffect(() => {
+    /*useEffect(() => {
         return () => {
             // Cleanup function to prevent removeChild errors
             if (isWeb && typeof window !== 'undefined' && document.body) {
@@ -87,7 +87,7 @@ export function Modal({
                 });
             }
         };
-    }, []);
+    }, []);*/
 
     
     const offset = (title ? 64 : isIos ? insets?.bottom + insets?.top : 0);
@@ -120,11 +120,12 @@ export function Modal({
         return (
             <ModalDef visible={onVisible} animationType={animationType} transparent={true}>
                 <Pressable
-                    className={`pointerEvents lg:p-4 cursor-default flex justify-end w-full h-full sm:items-center items-start  ${modalSettings.fog} `}
+                    className={`pointerEvents lg:p-4 cursor-default flex justify-end w-full h-full sm:items-center items-start overflow-hidden ${modalSettings.fog} `}
                     onPress={handleWebOuterPress}
                 >
-                    <View style={{ height: isDesktop ? 'auto' : heightActual }} className={`w-full  ${maxWidth}  left-0 right-0 z-50 w-full mx-auto overflow-hidden ${modalSettings.container} `}>
-                        <RemoveScroll className='flex-1 flex flex-col'>
+                    <RemoveScroll className='flex-1 flex flex-col w-full sm:justify-center '>
+                        <View style={{ height: isDesktop ? 'auto' : heightActual }} className={`w-full  ${maxWidth}  left-0 right-0 z-50 w-full mx-auto overflow-hidden ${modalSettings.container} `}>
+
                             <ModalHeader
                                 title={title}
                                 headerBorder={headerBorder}
@@ -138,8 +139,9 @@ export function Modal({
                                     {children}
                                 </Pressable>
                             </Cnt>
-                        </RemoveScroll>
-                    </View>
+
+                        </View>
+                    </RemoveScroll>
                 </Pressable>
             </ModalDef>
         )
