@@ -66,10 +66,6 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     const localUrl = isModal ? url : useLocalSearchParams().url;
     const commentsData = useMemo(() => data?.layout_parsed ? data.elements.cell_bottom[0] : DataByName(data, blocks?.comments), [data, blocks?.comments]);
 
-    // for modal
-    const offset = isDesktop ? 100 : 60
-    const [height, setHeight] = useState(windowHeight - offset - 100)
-
     useEffect(() => {
         if (localUrl) {
             const hash = localUrl.split('#')[1];
@@ -99,9 +95,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         }
     }, [localUrl]);
 
-    useEffect(() => {
-        setHeight(windowHeight - offset - 100)
-    }, [windowHeight]);
+
 
     const { leftBarBlocks, sideBarBlocks, centerBlocks } = defineCells(blocks, data);
 
@@ -127,14 +121,6 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
     const handleListLayout = (event) => {
         setListWidth(event.nativeEvent.layout.width - 2)
-    }
-
-    const handleLayoutModal = (event) => {
-        const h =
-            windowHeight -
-            offset -
-            event.nativeEvent.layout.height
-        setHeight(h)
     }
 
     const layoutCols =
@@ -232,14 +218,51 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         };
     }, []);
 
+    const offset2 = 64;
     if (isModal) {
-        return (
-            <View className="w-full  flex-1">
-                <View className='w-full flex-1 '>
-                    <View style={{ height: height }}>
+        if (isWeb) {
+            return (
+                <View className="w-full justify-between flex-1" >
+                    <View className='w-full flex-1 '>
+                        <View style={{ height: windowHeight - offset2 - formHeight }}>
+                            <CommentsBrowse
+                                useCustomScrollHandler={true}
+                                height={windowHeight - offset2 - formHeight > 0 ? windowHeight - offset2 - formHeight : undefined}
+                                scrollToIndex={scrollToEnd}
+                                addItems={aItems}
+                                isModal={true}
+                                browse={commentsData?.content[0]?.browse}
+                                module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
+                                requestUrl={commentsData?.content[0]?.url}
+                                replyId={replyId}
+                            />
+                        </View>
+                    </View>
+                    <KbAvoidingView modalOffset={90}>
+                        <View
+                            onLayout={handleLayout}
+                            className="border-t border-border/60 "
+                        >
+                            <CommentsForm
+                                isModal={isModal}
+                                objectId={commentsData?.content[0]?.browse.data.object_id}
+                                module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
+                                form={commentsData?.content[0]?.form}
+                                requestUrl={commentsData?.content[0]?.url}
+                            />
+                        </View>
+                    </KbAvoidingView>
+                </View>
+            )
+        }
+        else {
+
+            return (
+                <View className="w-full flex-1 ">
+                    <View className="w-full flex-1" >
                         <CommentsBrowse
                             useCustomScrollHandler={true}
-                            height={height > 0 ? height : undefined}
+                            height={windowHeight > 0 ? windowHeight - 160 : undefined}
                             scrollToIndex={scrollToEnd}
                             addItems={aItems}
                             isModal={true}
@@ -249,23 +272,23 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                             replyId={replyId}
                         />
                     </View>
+                    <KbAvoidingView modalOffset={90}>
+                        <View
+                            onLayout={handleLayout}
+                            className="border-t border-border/60"
+                        >
+                            <CommentsForm
+                                isModal={isModal}
+                                objectId={commentsData?.content[0]?.browse.data.object_id}
+                                module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
+                                form={commentsData?.content[0]?.form}
+                                requestUrl={commentsData?.content[0]?.url}
+                            />
+                        </View>
+                    </KbAvoidingView>
                 </View>
-                <KbAvoidingView modalOffset={90}>
-                    <View
-                        onLayout={handleLayoutModal}
-                        className="border-t border-border/60"
-                    >
-                        <CommentsForm
-                            isModal={isModal}
-                            objectId={commentsData?.content[0]?.browse.data.object_id}
-                            module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
-                            form={commentsData?.content[0]?.form}
-                            requestUrl={commentsData?.content[0]?.url}
-                        />
-                    </View>
-                </KbAvoidingView>
-            </View>
-        )
+            )
+        }
     }
 
     if (!isWeb || !isDesktop || !isMultiColumn) {
