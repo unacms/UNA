@@ -43,7 +43,7 @@ function DefaultUnit({ data }) {
     )
 
     const showCommentsModal = async (initFormData) => {
-        const url2 = (url.startsWith('/') ? url.slice(1) : url) + (initFormData?.cmt_id > 0 ? '#cmt_id=' + initFormData?.cmt_id : '');
+        const url2 = (url.startsWith('/') ? url.slice(1) : url) + (initFormData?.cmt_id > 0 ? '#cmt_id=' + initFormData?.cmt_id : '#cmts');
         setPageData({ data: 'loading', url: url, url2: url2 });
         const sResponse = await getPageData(url2, false);
         if (sResponse.data !== pageData.data) {

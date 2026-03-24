@@ -66,7 +66,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     const setFooter = useSetFooter();
     const searchParams = useLocalSearchParams();
 
-    const localUrl = isModal ? url : searchParams?.url;
+    const localUrl = isModal ? url : useLocalSearchParams().url;
     const commentsData = useMemo(() => data?.layout_parsed ? data.elements.cell_bottom[0] : DataByName(data, blocks?.comments), [data, blocks?.comments]);
     const commentsContent = commentsData?.content?.[0];
     const commentsBrowse = commentsContent?.browse;
@@ -75,10 +75,13 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     const commentsForm = commentsContent?.form;
     const commentsRequestUrl = commentsContent?.url;
 
+    console.log("localUrl", localUrl)
     useEffect(() => {
         if (localUrl) {
             const hash = localUrl.split('#')[1];
+            console.log("hashpres2", hash)
             if (hash) {
+                console.log("hashpres1")
                 // click on reply
                 if (hash.includes('cmt_id=')) {
                     console.log("notifsnotifs", hash)
@@ -93,6 +96,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         setScrollToEnd(hash.replace('cid=', ''));
                     }
                     else {
+                        console.log("hashpres")
                         // click on comments
                         setScrollToEnd(true);
                         emitter.emit('editor', { action: 'focus', note: "a", timeout: 800 });
@@ -102,7 +106,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
             }
 
         }
-    }, [localUrl]);
+    }, [localUrl, data]);
 
     const { leftBarBlocks, sideBarBlocks, centerBlocks } = defineCells(blocks, data);
 
