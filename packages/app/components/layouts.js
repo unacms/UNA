@@ -138,6 +138,7 @@ function ErrorPage({ type }) {
 }
 
 function PageLayoutContent({ layout, data }) {
+    console.log("datadata", data)
     const { currentUser } = useCurrentUser();
     const { layoutName, layoutBlocks, isCustomLayout } = layout;
 
@@ -185,7 +186,7 @@ function PageLayoutContent({ layout, data }) {
     }
 
     const Splash = getComponent('molecule', 'splash')
-    if (!currentUser && layoutName == 'home')
+    if (!currentUser && layoutName == 'home' && data.layout == 'splash')
         return <Splash data={data} />
 
     if (isCustomLayout && layoutBlocks) {
