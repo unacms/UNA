@@ -17,7 +17,7 @@ import {
 } from 'app/ui/molecules/resizable-panels'
 import { useSetHeader, defaultHeader, useSetFooter } from 'app/context/jotai/layout';
 import { useSafeAreaInsets } from 'app/lib/hooks/router'
-import { Loading } from 'app/customization/loading'
+
 const mapLayoutBlocks = (items = []) =>
     items.map(({ source }) => ({
         name: source,
@@ -64,16 +64,9 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     const groupRef = useRef(null)
     const setHeader = useSetHeader();
     const setFooter = useSetFooter();
-    const searchParams = useLocalSearchParams();
 
-    const localUrl = isModal ? url : searchParams?.url;
+    const localUrl = isModal ? url : useLocalSearchParams().url;
     const commentsData = useMemo(() => data?.layout_parsed ? data.elements.cell_bottom[0] : DataByName(data, blocks?.comments), [data, blocks?.comments]);
-    const commentsContent = commentsData?.content?.[0];
-    const commentsBrowse = commentsContent?.browse;
-    const commentsModule = commentsBrowse?.data?.module || commentsData?.module;
-    const commentsObjectId = commentsBrowse?.data?.object_id;
-    const commentsForm = commentsContent?.form;
-    const commentsRequestUrl = commentsContent?.url;
 
     useEffect(() => {
         if (localUrl) {
@@ -104,13 +97,16 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         }
     }, [localUrl]);
 
+
+
     const { leftBarBlocks, sideBarBlocks, centerBlocks } = defineCells(blocks, data);
 
     const mainBlocks = isDesktop && !isModal ? centerBlocks : [...centerBlocks, ...sideBarBlocks, ...leftBarBlocks]
 
+//value.sidebar || value.leftbar ? false : true
     const aItems = useMemo(() => mainBlocks.map((value) => ({
         id: `block_${value.name}`,
-        data: <View className={'px-3 pt-2.5 sm:px-4 sm:pt-3.5'}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
+        data: <View className={'px-3 pt-3'}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
     })), [blocks, data, isDesktop]);
 
     const isRightCol = sideBarBlocks.length > 0 && isDesktop
@@ -196,10 +192,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         if (isRightCol) {
             layouts.push(rightPanelProps.defaultSize)
         }
-
-        const isValid = layouts.length > 0 && layouts.every(s => typeof s === 'number' && s > 0)
-
-        if (groupRef && isValid) {
+        if (groupRef) {
             groupRef.current?.setLayout(layouts)
         }
     }, [currentBreakpointName, groupRef])
@@ -228,9 +221,6 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     }, []);
 
     let offset2 = 64;
-    if (isDesktop)
-        offset2 += 32;// offsets in modal web
-
     if (!isWeb) {
             offset2 = insets.bottom + insets.top;
             if (Platform.OS == 'ios') {
@@ -242,19 +232,17 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
             <View className="w-full justify-between flex-1" >
                 <View className='w-full flex-1 '>
                     <View style={{ height: windowHeight - offset2 - formHeight }}>
-                        {data == 'loading' ?
-                            <Loading />
-                        : <CommentsBrowse
+                        <CommentsBrowse
                             useCustomScrollHandler={true}
                             height={windowHeight - offset2 - formHeight > 0 ? windowHeight - offset2 - formHeight : undefined}
                             scrollToIndex={scrollToEnd}
                             addItems={aItems}
                             isModal={true}
-                            browse={commentsBrowse}
-                            module={commentsModule}
-                            requestUrl={commentsRequestUrl}
+                            browse={commentsData?.content[0]?.browse}
+                            module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
+                            requestUrl={commentsData?.content[0]?.url}
                             replyId={replyId}
-                        />}
+                        />
                     </View>
                 </View>
                 <KbAvoidingView modalOffset={90}>
@@ -264,10 +252,10 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                     >
                         <CommentsForm
                             isModal={isModal}
-                            objectId={commentsObjectId}
-                            module={commentsModule}
-                            form={commentsForm}
-                            requestUrl={commentsRequestUrl}
+                            objectId={commentsData?.content[0]?.browse.data.object_id}
+                            module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
+                            form={commentsData?.content[0]?.form}
+                            requestUrl={commentsData?.content[0]?.url}
                         />
                     </View>
                 </KbAvoidingView>
@@ -320,9 +308,9 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
                             scrollToIndex={scrollToEnd}
                             addItems={newItems}
-                            browse={commentsBrowse}
-                            module={commentsModule}
-                            requestUrl={commentsRequestUrl}
+                            browse={commentsData?.content[0]?.browse}
+                            module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
+                            requestUrl={commentsData?.content[0]?.url}
                             replyId={replyId}
                         />
                     </View>
@@ -331,10 +319,10 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                             <View className=' lg:mb-4  ml-[1px] '>
                                 <CommentsForm
                                     isModal={isModal}
-                                    objectId={commentsObjectId}
-                                    module={commentsModule}
-                                    form={commentsForm}
-                                    requestUrl={commentsRequestUrl}
+                                    objectId={commentsData?.content[0]?.browse.data.object_id}
+                                    module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
+                                    form={commentsData?.content[0]?.form}
+                                    requestUrl={commentsData?.content[0]?.url}
                                 />
                             </View>
                         </View>
@@ -388,9 +376,9 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         <CommentsBrowse
                             scrollToIndex={scrollToEnd}
                             addItems={aItems}
-                            browse={commentsBrowse}
-                            module={commentsModule}
-                            requestUrl={commentsRequestUrl}
+                            browse={commentsData?.content[0]?.browse}
+                            module={commentsData?.content[0].browse?.data?.module || commentsData?.module}
+                            requestUrl={commentsData?.content[0]?.url}
                             replyId={replyId}
                         />
                     </View>
@@ -398,10 +386,10 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         <View onLayout={handleLayout} style={{ width: listWidth + 5 }} className='-ml-[2px] -mr-[2px] border-background border bg-background web:fixed z-50 web:bottom-0  '>
                             <View className='lg:rounded-b-2xl  lg:mb-4 bg-card shadow-sm ml-[1px] '>
                                 <CommentsForm
-                                    objectId={commentsObjectId}
-                                    module={commentsModule}
-                                    form={commentsForm}
-                                    requestUrl={commentsRequestUrl}
+                                    objectId={commentsData?.content[0]?.browse.data.object_id}
+                                    module={commentsData?.content[0]?.browse?.data?.module || commentsData?.module}
+                                    form={commentsData?.content[0]?.form}
+                                    requestUrl={commentsData?.content[0]?.url}
                                 />
                             </View>
                         </View>
