@@ -37,6 +37,14 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
 
     const icon = getIcon(item, iconSize);
 
+    const itemTextKey = classes?.item_text_key || 'item_text';
+    const itemTextClass =
+        menuSettings[itemTextKey] ?? menuSettings.item_text;
+    const itemCntKey = classes?.item_cnt_key ?? 'item_cnt';
+    const itemCntClass =
+        menuSettings[itemCntKey] ?? menuSettings.item_cnt;
+    const rowClassName = classes?.item_row ?? 'justify-between items-center';
+
     const Wrapper = handleSelect ? Pressable : View;
     const Content = (
         <Wrapper
@@ -44,12 +52,12 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
             key={key}
             onPress={(event) => handleSelect(event, item)}
         >
-            <Row className="justify-between items-center ">
-                <View className={menuSettings.item_cnt}>
+            <Row className={rowClassName}>
+                <View className={itemCntClass}>
                 {(!!icon && !!menuSettings.item_icon) && <View className={menuSettings.item_icon}>{icon}</View>}
                 {!!item?.title &&
                     (typeof item.title === 'string' ? (
-                        <Text className={menuSettings[`item_text`]}>{item.title}</Text>
+                        <Text className={itemTextClass}>{item.title}</Text>
                     ) : (
                         item.title
                     ))

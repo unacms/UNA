@@ -2,6 +2,7 @@ import { Pressable, View, Row } from 'app/design/view';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Button } from 'app/design/controls'
 import { memo, useCallback, useEffect, useRef, useState, isValidElement, cloneElement, createContext } from 'react'
+import { clsx } from 'clsx';
 import { FeedbackHaptics } from 'app/lib/util';
 import { Keyboard, Alert, Platform } from 'react-native'
 
@@ -19,33 +20,81 @@ const variantClassMap = {
     vertical: { item: 'item_ver', container: 'content_ver' },
     horizontal: { item: 'item_hor', container: 'content_hor' },
     nopad: { item: 'item_np', container: 'content_ver' },
+    'tabs-overflow': { container: 'content_ver' },
 };
 
+function resolveTabsOverflowClasses(tabsOverflowSize) {
+    const size =
+        tabsOverflowSize === 'sm'
+            ? 'sm'
+            : tabsOverflowSize === 'lg'
+              ? 'lg'
+              : 'md';
+    return {
+        container: 'content_ver',
+        item: `item_tabs_overflow_${size}`,
+        item_row: 'justify-start items-center w-full',
+        item_cnt_key: 'item_cnt_tabs_overflow',
+        item_text_key: `item_tabs_overflow_text_${size}`,
+    };
+}
 
-function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant, showOnTop, footer }) {
+function DropdownMenuPopup({
+    items,
+    onSelect,
+    children,
+    defaultOpen,
+    variant,
+    showOnTop,
+    footer,
+    tabsOverflowSize,
+    openOnFocus,
+    open: openProp,
+    onOpenChange: onOpenChangeProp,
+    contentClassName: contentClassNameProp,
+}) {
     const DropdownMenuItem = getComponent('menu-item', 'dropdown');
     const redirectdRef = useRef();
-    const [isOpen, setIsOpen] = useState(defaultOpen);
+    const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+    const isControlled = openProp !== undefined;
+    const isOpen = isControlled ? openProp : uncontrolledOpen;
 
-    const classes = variantClassMap[variant] ?? variantClassMap.vertical;
+    const setIsOpen = useCallback(
+        (next) => {
+            if (!isControlled) {
+                setUncontrolledOpen(next);
+            }
+            onOpenChangeProp?.(next);
+        },
+        [isControlled, onOpenChangeProp]
+    );
 
-    const handleSelect = useCallback((event, item) => {
-        setIsOpen(false);
-        onSelect ? onSelect(item) : redirectdRef.current.redirect('' + item.link)
-    }, [onSelect]);
+    const classes =
+        variant === 'tabs-overflow'
+            ? resolveTabsOverflowClasses(tabsOverflowSize)
+            : variantClassMap[variant] ?? variantClassMap.vertical;
+
+    const handleSelect = useCallback(
+        (event, item) => {
+            setIsOpen(false);
+            onSelect
+                ? onSelect(item)
+                : redirectdRef.current.redirect('' + item.link);
+        },
+        [onSelect, setIsOpen]
+    );
 
     useEffect(() => {
         const subscription = emitter.addListener('dynamic_menu', (data) => {
             if (data.action == 'hide') {
                 setIsOpen(false);
             }
-           
-        })
+        });
 
         return () => {
-            subscription.remove()
-        }
-    }, [])
+            subscription.remove();
+        };
+    }, [setIsOpen]);
 
     return (
         <>
@@ -53,7 +102,13 @@ function DropdownMenuPopup({ items, onSelect, children, defaultOpen, variant, sh
             <DropdownPopup
                 showOnTop={showOnTop}
                 minPopupWidth={256}
-                
+                openOnFocus={
+                    openOnFocus ?? variant === 'tabs-overflow'
+                }
+                contentClassName={clsx(
+                    variant === 'tabs-overflow' && 'overflow-visible p-0.5',
+                    contentClassNameProp
+                )}
                 open={isOpen}
                 onOpenChange={setIsOpen}
                 trigger={
@@ -114,19 +169,43 @@ const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData }) => {
 
 });
 
-export default function DropdownMenu({ items, onSelect, children, defaultOpen, mode, title, variant, showOnTop, footer, cancelable = true }) {
+export default function DropdownMenu({
+    items,
+    onSelect,
+    children,
+    defaultOpen,
+    mode,
+    title,
+    variant,
+    showOnTop,
+    footer,
+    cancelable = true,
+    tabsOverflowSize,
+    openOnFocus,
+    open,
+    onOpenChange,
+    contentClassName,
+}) {
     const { setBottomSheetData } = useBottomSheetData();
     const isWeb = Platform.OS === 'web';
 
-    if (isWeb || mode == "popup") {
-        return <DropdownMenuPopup
-            showOnTop={showOnTop}
-            items={items}
-            onSelect={onSelect}
-            children={children}
-            defaultOpen={defaultOpen}
-            footer={footer}
-            variant={variant} />;
+    if (isWeb || mode == 'popup') {
+        return (
+            <DropdownMenuPopup
+                showOnTop={showOnTop}
+                items={items}
+                onSelect={onSelect}
+                children={children}
+                defaultOpen={defaultOpen}
+                footer={footer}
+                variant={variant}
+                tabsOverflowSize={tabsOverflowSize}
+                openOnFocus={openOnFocus}
+                open={open}
+                onOpenChange={onOpenChange}
+                contentClassName={contentClassName}
+            />
+        );
     }
 
     const handlePress = useCallback(() => {

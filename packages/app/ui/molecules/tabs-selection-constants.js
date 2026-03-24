@@ -15,3 +15,6 @@ export const TABS_SELECTION_WEB_EASING = 'cubic-bezier(0.33, 1, 0.68, 1)';
  * Prefer theme `scroll_inset` (matches list `p-*`) so scroll-into-view aligns with the tab strip padding.
  */
 export const TABS_SCROLL_INTO_VIEW_PADDING_PX = 8;
+
+/** Used when computing collapse layout before "More" is measured. */
+export const TABS_DEFAULT_MORE_BUTTON_WIDTH_PX = 52;

@@ -137,7 +137,7 @@ export function ReputationWidget({ data }) {
 
     return (
         <Tabs
-            fullWidth
+            equalWidth
             tabs={preparedTabs}
             size="sm"
             activeTab={reorderedTabs[0]?.url}

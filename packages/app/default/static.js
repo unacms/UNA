@@ -207,30 +207,42 @@ const SplashTabsComponent = ({ onTabChange }) => {
                 </View>
             ),
         },
+        
         {
-            key: 'Videos',
-            title: t('Videos'),
+            key: 'Spaces',
+            title: t('Spaces'),
             content: (
                 <View className="">
                     <Text className="text-secondary-foreground text-sm ">
-                        Watch, share, and collaborate on videos and media content. Express yourself creatively, broadcast stories, and learn from others. With built-in tools for sharing, commenting, and organizing collections, Videos becomes your hub for inspiration, entertainment, and professional growth.
-                    </Text>
+Join Spaces to create and collaborate on shared projects, share resources, and connect with others who share your interests.                    </Text>
                 </View>
             ),
         },
+        {
+            key: 'Polls',
+            title: t('Polls'),
+            content: (
+                <View className="">
+                    <Text className="text-secondary-foreground text-sm ">
+Create Polls to collect feedback, make decisions, and engage your community.                    </Text>
+                </View>
+            ),
+        }
     ]
 
     return (
         <><Card padding="p-4">
             <Tabs
                 tabs={splashSectionTabs}
-                activeTab="users"
-                listWrapperClassName=" mx-auto lg:mx-0 "
-                contentClassName=" p-1 pt-4 "
-                size="sm"
                 
+                activeTab="users"
+                contentClassName=" p-1 pt-4 "
+                tabBarClassName="flex flex-row justify-start"
+                size="sm"
+                equalWidth
+                overflow="collapse"
                 onTabChange={onTabChange}
-                hug
+                
             />
         </Card>
         <Accordion type="multiple" collapsible defaultValue={[]} className="w-full">

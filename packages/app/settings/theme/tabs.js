@@ -47,7 +47,7 @@ export const settingsTabs = {
             row: '',
             trigger_active: ' ',
             trigger_inactive:
-                ' group web:hover:bg-muted/60 web:duration-200',
+                ' group web:hover:bg-muted web:duration-200',
             pill: ' bg-segment shadow-sm',
             line: '',
         },
@@ -57,7 +57,7 @@ export const settingsTabs = {
             row: '',
             trigger_active: ' ',
             trigger_inactive:
-                ' group web:hover:bg-muted web:duration-200',
+                ' group web:hover:bg-muted/60 web:duration-200',
             pill: '',
             line: 'bg-ring',
         },
@@ -70,6 +70,7 @@ export const settingsTabs = {
             header: 'p-1 gap-1',
             /** px — matches horizontal list padding; scroll-into-view uses this so tabs don’t sit flush on the viewport edge */
             scroll_inset: 4,
+            gap_px: 4,
             track: 'rounded-xl',
             row: 'rounded-xl',
             item: ' h-9 px-3 text-sm web:focus-visible:outline-2  ',
@@ -82,6 +83,7 @@ export const settingsTabs = {
         md: {
             header: ' p-1.5 gap-1',
             scroll_inset: 6,
+            gap_px: 4,
             track: 'rounded-xl',
             row: 'rounded-xl',
             item: ' h-10 px-4 text-base web:focus-visible:outline-2 ',
@@ -94,6 +96,7 @@ export const settingsTabs = {
         lg: {
             header: ' p-2 gap-1 ',
             scroll_inset: 8,
+            gap_px: 4,
             track: 'rounded-2xl',
             row: 'rounded-2xl',
             item: ' h-12 px-6 text-lg  web:focus-visible:outline-2',

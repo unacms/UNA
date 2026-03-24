@@ -35,7 +35,21 @@ export const settingsElements = {
             'flex block web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-muted-foreground web:duration-200 outline-none ',
         item_np:
             'flex flex-row web:focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium text-sm text-muted-foreground  web:hover:cursor-pointer',
+        /** Tabs overflow menu — match tab strip item height, padding, hover; text aligned in dropdown-item via item_text_key */
+        item_tabs_overflow_sm:
+            'group flex w-full min-h-9 h-9 px-3 flex-row items-center rounded-lg font-medium text-secondary-foreground web:hover:bg-muted/60 web:duration-200 web:hover:text-foreground web:cursor-pointer web:focus-visible:outline-2',
+        item_tabs_overflow_md:
+            'group flex w-full min-h-10 h-10 px-4 flex-row items-center rounded-lg font-medium text-base text-secondary-foreground web:hover:bg-muted/60 web:duration-200 web:hover:text-foreground web:cursor-pointer web:focus-visible:outline-2',
+        item_tabs_overflow_lg:
+            'group flex w-full min-h-12 h-12 px-6 flex-row items-center rounded-lg font-medium text-lg text-secondary-foreground web:hover:bg-muted/60 web:duration-200 web:hover:text-foreground web:cursor-pointer web:focus-visible:outline-2',
+        item_tabs_overflow_text_sm:
+            'text-left text-sm font-medium text-secondary-foreground web:group-hover:text-foreground whitespace-nowrap',
+        item_tabs_overflow_text_md:
+            'text-left text-base font-medium text-secondary-foreground web:group-hover:text-foreground whitespace-nowrap',
+        item_tabs_overflow_text_lg:
+            'text-left text-lg font-medium text-secondary-foreground web:group-hover:text-foreground whitespace-nowrap',
         item_cnt: 'items-center w-full flex-row',
+        item_cnt_tabs_overflow: 'items-center w-full flex-row justify-start min-w-0 flex-1',
         item_text: ' text-sm font-semibold text-secondary-foreground web:group-hover:text-foreground px-2',
         item_icon:
             'flex items-center w-9 h-9 bg-muted web:group-hover:bg-border rounded-full justify-center',

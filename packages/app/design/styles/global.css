@@ -20,7 +20,7 @@
         --primary-foreground: var(--white);
         --secondary: var(--neutral-200);
         --secondary-foreground: var(--neutral-600);
-        --muted: var(--neutral-300);
+        --muted: var(--neutral-200);
         --muted-foreground: var(--neutral-400);
         --accent: var(--accent-100);
         --accent-foreground: var(--accent-600);
