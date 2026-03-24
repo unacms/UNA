@@ -218,7 +218,10 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         };
     }, []);
 
-    const offset2 = 64;
+    let offset2 = 64;
+    if (isDesktop) {
+        offset2= offset2+32;
+    }
     if (isModal) {
         if (isWeb) {
             return (

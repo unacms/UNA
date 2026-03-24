@@ -117,6 +117,20 @@ export function Modal({
     }, []);
 
 
+    const content = <><ModalHeader
+        title={title}
+        headerBorder={headerBorder}
+        onClose={onClose}
+    />
+        <Cnt style={styles} className={`${padding} flex-auto `}>
+            <Pressable
+                onPress={handleContentPress}
+                className="flex-auto"
+            >
+                {children}
+            </Pressable>
+        </Cnt></>
+
     if (isWeb) {
         return (
             <ModalDef visible={onVisible} animationType={animationType} transparent={true}>
@@ -124,25 +138,21 @@ export function Modal({
                     className={`pointerEvents cursor-default flex justify-end w-full h-full sm:items-center items-start overflow-hidden ${modalSettings.fog} `}
                     onPress={handleWebOuterPress}
                 >
-                    
-                        <View style={{ height: isDesktop || autoHeight ? 'auto' : heightActual }} className={`w-full ${maxWidth} left-0 right-0 z-50 w-full mx-auto overflow-hidden ${modalSettings.container} `}>
+                    {isDesktop ?
                         <RemoveScroll className={`flex-1 flex flex-col w-full sm:justify-center ${autoHeight && 'justify-center'} overflow-hidden`} >
-                            <ModalHeader
-                                title={title}
-                                headerBorder={headerBorder}
-                                onClose={onClose}
-                            />
-                            <Cnt style={styles} className={`${padding} flex-auto `}>
-                                <Pressable
-                                    onPress={handleContentPress}
-                                    className="flex-auto"
-                                >
-                                    {children}
-                                </Pressable>
-                            </Cnt>
+                            <View style={{ height: isDesktop || autoHeight ? 'auto' : heightActual }} className={`w-full ${maxWidth} left-0 right-0 z-50 w-full mx-auto overflow-hidden ${modalSettings.container} `}>
+
+                                {content}
+
+                            </View>
+                        </RemoveScroll>
+                        :
+                        <View style={{ height: isDesktop || autoHeight ? 'auto' : heightActual }} className={`w-full ${maxWidth} left-0 right-0 z-50 w-full mx-auto overflow-hidden ${modalSettings.container} `}>
+                            <RemoveScroll className={`flex-1 flex flex-col w-full sm:justify-center ${autoHeight && 'justify-center'} overflow-hidden`} >
+                                {content}
                             </RemoveScroll>
-                        </View>
-                   
+                        </View>}
+
                 </Pressable>
             </ModalDef>
         )
