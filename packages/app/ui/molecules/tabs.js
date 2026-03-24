@@ -154,7 +154,8 @@ export default function Tabs({
         const scrollView = scrollViewRef.current;
         if (!trigger || !layoutNode || !scrollView) return;
 
-        const padding = TABS_SCROLL_INTO_VIEW_PADDING_PX;
+        const padding =
+            sizeCfg.scroll_inset ?? TABS_SCROLL_INTO_VIEW_PADDING_PX;
         trigger.measureLayout(
             layoutNode,
             (x, _y, width, _h) => {
@@ -176,7 +177,7 @@ export default function Tabs({
             },
             () => {}
         );
-    }, [currentTab]);
+    }, [currentTab, sizeCfg.scroll_inset]);
 
     useEffect(() => {
         if (skipFirstScrollIntoViewRef.current) {
@@ -216,14 +217,29 @@ export default function Tabs({
             onValueChange={handleTabChange}
             className={cn(tabsTheme['u-controls-tabs-container'], headerClassName)}
         >
-            <View className={cn('relative w-full min-w-0', tabBarClassName)}>
+            <View
+                className={cn(
+                    'relative min-w-0 overflow-hidden',
+                    hug ? 'w-max max-w-full self-start' : 'w-full',
+                    tabBarClassName,
+                    radiusTrack
+                )}
+            >
+                {/* Track fills tab bar viewport only — not the wide scroll row */}
+                <View
+                    className={cn(
+                        variantCfg.track,
+                        radiusTrack,
+                        trackClassName
+                    )}
+                />
                 <ScrollView
                     ref={scrollViewRef}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     nestedScrollEnabled
                     scrollEventThrottle={16}
-                    className="w-full max-w-full"
+                    className="relative z-[1] w-full max-w-full"
                     onLayout={(e) => {
                         scrollViewWidthRef.current = e.nativeEvent.layout.width;
                     }}
@@ -248,14 +264,6 @@ export default function Tabs({
                             listWrapperClassName
                         )}
                     >
-                        <View
-                            className={cn(
-                                variantCfg.track,
-                                radiusTrack,
-                                trackClassName
-                            )}
-                        />
-
                         <Animated.View
                             style={[selectionStyle, { zIndex: 1 }]}
                             className={tabsTheme['u-controls-tabs-selection-layer']}

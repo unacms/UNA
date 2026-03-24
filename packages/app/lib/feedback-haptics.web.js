@@ -33,6 +33,49 @@ function shouldPlayWebHapticsSynthAudio() {
     return Boolean(raw);
 }
 
+/**
+ * web-haptics `trigger()` awaits `ensureAudio()` before `playClick()`. That async gap
+ * runs after the browser’s user-gesture window, so the first synth click is often
+ * silent until `AudioContext` is already running. Radix tabs fire `onValueChange` from
+ * `onMouseDown`, which is *after* `pointerdown`, so we kick off `ensureAudio()` on
+ * capture-phase `pointerdown` (still a user gesture) so resume + playback line up.
+ * Keyboard tab activation uses keydown (Enter/Space) without a preceding pointerdown.
+ */
+let webHapticsAudioPrimed = false;
+
+function primeWebHapticsAudioFromUserGesture() {
+    if (webHapticsAudioPrimed) return;
+    if (!shouldPlayWebHapticsSynthAudio()) {
+        webHapticsAudioPrimed = true;
+        return;
+    }
+    const h = getHaptics();
+    if (!h) return;
+    h.setDebug(true);
+    void h.ensureAudio?.();
+    webHapticsAudioPrimed = true;
+}
+
+function installWebHapticsAudioPriming() {
+    if (typeof document === 'undefined') return;
+    document.addEventListener(
+        'pointerdown',
+        primeWebHapticsAudioFromUserGesture,
+        { capture: true, passive: true }
+    );
+    document.addEventListener(
+        'keydown',
+        (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                primeWebHapticsAudioFromUserGesture();
+            }
+        },
+        { capture: true }
+    );
+}
+
+installWebHapticsAudioPriming();
+
 export function FeedbackHaptics(type) {
     if (typeof type !== 'string') return;
     const h = getHaptics();

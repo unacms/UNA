@@ -6,6 +6,7 @@ import { View } from 'app/design/view';
 import { clsx } from 'clsx';
 import {
     TABS_SELECTION_DURATION_MS,
+    TABS_SCROLL_INTO_VIEW_PADDING_PX,
     TABS_UNDERLINE_HEIGHT_PX,
     TABS_SELECTION_WEB_EASING,
 } from 'app/ui/molecules/tabs-selection-constants';
@@ -102,6 +103,9 @@ export default function Tabs({
         ? 'rounded-full overflow-hidden'
         : sizeCfg.pill || 'rounded-lg overflow-hidden';
 
+    const scrollInsetPx =
+        sizeCfg.scroll_inset ?? TABS_SCROLL_INTO_VIEW_PADDING_PX;
+
     useEffect(() => {
         if (activeTab !== undefined) setCurrentTab(activeTab);
     }, [activeTab]);
@@ -177,22 +181,14 @@ export default function Tabs({
             )}
         >
             <View
-                ref={listRef}
                 className={cn(
-                    'w-full min-w-0 overflow-x-auto overflow-y-hidden',
-                    tabBarClassName
+                    'relative min-w-0 overflow-hidden',
+                    hug ? 'w-max max-w-full self-start' : 'w-full',
+                    tabBarClassName,
+                    radiusTrack
                 )}
             >
-                <View
-                    className={cn(
-                        'relative',
-                        hug
-                            ? 'w-max self-start'
-                            : 'min-w-full w-max',
-                        listWrapperClassName
-                    )}
-                    ref={headerWrapperRef}
-                >
+                {/* Track fills tab bar viewport only — scroll row is below */}
                 <View
                     className={cn(
                         variantCfg.track,
@@ -200,7 +196,20 @@ export default function Tabs({
                         trackClassName
                     )}
                 />
-
+                <View
+                    ref={listRef}
+                    className="relative z-[1] w-full min-w-0 overflow-x-auto overflow-y-hidden"
+                >
+                    <View
+                        className={cn(
+                            'relative',
+                            hug
+                                ? 'w-max self-start'
+                                : 'min-w-full w-max',
+                            listWrapperClassName
+                        )}
+                        ref={headerWrapperRef}
+                    >
                 <View
                     className={cn(
                         tabsTheme['u-controls-tabs-selection-layer'],
@@ -257,6 +266,9 @@ export default function Tabs({
                             }}
                             key={tab.key}
                             value={tab.key}
+                            style={{
+                                scrollMarginInline: scrollInsetPx,
+                            }}
                             className={cn(
                                 'relative z-[3]',
                                 tabsTheme['u-controls-tabs-header-item'],
@@ -292,6 +304,7 @@ export default function Tabs({
                         </TabsPrimitive.Trigger>
                     ))}
                 </TabsPrimitive.List>
+                    </View>
                 </View>
             </View>
 
