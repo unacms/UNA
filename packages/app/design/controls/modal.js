@@ -123,9 +123,8 @@ export function Modal({
                     className={`pointerEvents lg:p-4 cursor-default flex justify-end w-full h-full sm:items-center items-start overflow-hidden ${modalSettings.fog} `}
                     onPress={handleWebOuterPress}
                 >
-                    <RemoveScroll className='flex-1 flex flex-col w-full sm:justify-center '>
-                        <View style={{ height: isDesktop ? 'auto' : heightActual }} className={`w-full  ${maxWidth}  left-0 right-0 z-50 w-full mx-auto overflow-hidden ${modalSettings.container} `}>
-
+                    <View style={{ height: isDesktop ? 'auto' : heightActual }} className={`w-full  ${maxWidth}  left-0 right-0 z-50 w-full mx-auto overflow-hidden ${modalSettings.container} `}>
+                        <RemoveScroll className='flex-1 flex flex-col'>
                             <ModalHeader
                                 title={title}
                                 headerBorder={headerBorder}
@@ -139,9 +138,9 @@ export function Modal({
                                     {children}
                                 </Pressable>
                             </Cnt>
-
+                            </RemoveScroll>
                         </View>
-                    </RemoveScroll>
+                   
                 </Pressable>
             </ModalDef>
         )
