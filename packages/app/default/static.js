@@ -18,6 +18,7 @@ import SvgFile from 'app/ui/molecules/svg-file'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { appSetting } from 'app/lib/util'
 import Tabs from 'app/ui/molecules/tabs'
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from 'app/ui/atoms/accordion'
 const isWeb = Platform.OS === 'web'
 //mode can be 'adaptive', 'full', 'mark', 'text'
 const Logo = ({ mode = 'adaptive' }) => {
@@ -220,7 +221,7 @@ const SplashTabsComponent = ({ onTabChange }) => {
     ]
 
     return (
-        <Card padding="p-4">
+        <><Card padding="p-4">
             <Tabs
                 tabs={splashSectionTabs}
                 activeTab="users"
@@ -232,6 +233,113 @@ const SplashTabsComponent = ({ onTabChange }) => {
                 hug
             />
         </Card>
+        <Accordion type="multiple" collapsible defaultValue={[]} className="w-full">
+                                    {[
+                                        {
+                                            title: 'Are people on  real?',
+                                            desc: <View className="gap-y-2">
+                                                <Text>Yes.</Text>
+                                                <Text>Everyone on is a real person, even when names aren’t visible.</Text>
+                                                <View className="ml-4">
+                                                    <Text> • Accounts are created with real names</Text>
+                                                    <Text> • The system monitors signals of real participation over time</Text>
+                                                    <Text> • Users can report accounts they believe are fake or unsafe</Text>
+                                                </View>
+                                                <Text>Not everyone’s name is visible to everyone - but <Text className="font-semibold">everyone is accountable.</Text></Text>
+                                            </View>
+
+                                        },
+                                        {
+                                            title: 'How does name visibility work?',
+                                            desc: <View className="gap-y-2">
+                                                <Text>Names are <Text className="font-semibold">never public by default.</Text></Text>
+                                                <Text>Here’s the exact sequence:</Text>
+                                                <View className="ml-4">
+                                                    <Text> 1. You interact with people using system-generated aliases</Text>
+                                                    <Text> 2. When something resonates, you can show <Text className="font-semibold">respect</Text></Text>
+                                                    <Text> 3. After three mutual respects, you'll be invited to consider <Text className="font-semibold">trust</Text>. Both have to choose it.</Text>
+                                                    <Text> 4. <Text className="font-semibold">Only if trust is mutual</Text> do real names become visible — privately, to each other</Text>
+                                                </View>
+                                                <Text>There is:</Text>
+                                                <View className="ml-4">
+                                                    <Text > • no “reveal” button</Text>
+                                                    <Text> • no forced exposure</Text>
+                                                    <Text> • no accidental name sharing</Text>
+                                                </View>
+                                                <View className="" >
+                                                    <Text className="font-semibold">Names appear only after mutual trust.</Text>
+                                                    <Text className="font-semibold">This never happens by accident.</Text>
+                                                </View>
+                                            </View>
+
+                                        },
+                                        {
+                                            title: 'Can someone stalk me?',
+                                            desc: <View className="gap-y-2">
+                                                <Text> is designed specifically to make stalking difficult.</Text>
+                                                <Text>Key protections:</Text>
+                                                <View className="ml-4">
+                                                    <Text> • No browsing strangers’ histories</Text>
+                                                    <Text> • No way to force name visibility</Text>
+                                                    <Text> • Aliases change on every post and look different to each person</Text>
+                                                </View>
+                                                <Text>If someone makes you uncomfortable:</Text>
+                                                <View className="ml-4">
+                                                    <Text> • You can mute them silently</Text>
+                                                    <Text> • They are not notified</Text>
+                                                    <Text> • Escalation doesn’t occur</Text>
+                                                    <Text> • Your visibility to them does not increase</Text>
+                                                </View>
+                                                <Text>In short: <Text className="font-semibold">attention cannot be weaponized on .</Text></Text>
+                                            </View>
+
+                                        },
+                                        {
+                                            title: 'What if I regret trusting someone?',
+                                            desc: <View className="gap-y-2">
+                                                <Text>Trust is <Text className="font-semibold">reversible</Text>.</Text>
+                                                <Text>If you remove trust:</Text>
+                                                <View className="ml-4">
+                                                    <Text> • Name visibility is removed</Text>
+                                                    <Text> • The relationship returns to its prior state</Text>
+                                                    <Text> • The other person is not alerted</Text>
+                                                </View>
+                                                <Text>Trust is meant to feel safe to try — not risky to undo.</Text>
+
+                                            </View>
+
+                                        },
+                                        {
+                                            title: 'Is this anonymity?',
+                                            desc: <View className="gap-y-2">
+                                                <Text>No.</Text>
+                                                <Text> is not anonymous — it’s <Text className="font-semibold">selectively visible.</Text></Text>
+                                                <Text>That difference matters:</Text>
+                                                <View className="ml-4">
+                                                    <Text> • Anonymity removes accountability</Text>
+                                                    <Text> • Selective visibility preserves accountability while reducing pressure</Text>
+                                                </View>
+                                                <Text>This is what allows honesty <Text className="font-semibold">without</Text> chaos.</Text>
+
+                                            </View>
+
+                                        }
+                                    ].map((item, i, arr) => (
+                                        <AccordionItem key={i} value={`section-${i}`}
+                                            className={i === arr.length - 1 ? 'border-b-0' : ''}
+                                        >
+                                            <AccordionTrigger>
+                                                <Text className="text-lg font-semibold">{item.title}</Text>
+                                            </AccordionTrigger>
+                                            <AccordionContent>
+                                                <View className="pt-4 text-base text-secondary-foreground">
+                                                    {item.desc}
+                                                </View>
+                                            </AccordionContent>
+                                        </AccordionItem>
+                                    ))}
+                                </Accordion>
+        </>
     )
 }
 
