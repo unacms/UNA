@@ -1,15 +1,18 @@
 'use client'
 
 import { IconSet } from 'app/customization/icons';
+import { getAnimatedIconComponent } from 'app/customization/animated-icons-registry';
 import { findIconFromRemote, appSetting } from 'app/lib/util'
 import { Theme } from 'app/design/theme';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { Platform } from 'react-native';
 import SvgIcons from 'app/customization/icons-svg';
 import { SvgXml } from 'react-native-svg';
 import { cssInterop } from 'nativewind';
+import { parseIconSceneClasses } from 'app/ui/atoms/animated-icons/parse-icon-scene-classes';
 
 export function Icon(props) {
-    const { icon, className, color, size, strokeWidth, ...rest } = props
+    const { icon, className, color, size, strokeWidth, animated, selected, hovered, pressed, active, ...rest } = props
     const { colors } = Theme();
     let isXmlSvg = false;
 
@@ -23,6 +26,48 @@ export function Icon(props) {
     const processedIcon = findIconFromRemote(icon);
 
     const InlineIcon = SvgIcons[icon];
+
+    const { scenes, cleanedClassName } =
+        animated && typeof icon === 'string'
+            ? parseIconSceneClasses(className)
+            : { scenes: {}, cleanedClassName: className };
+
+    const [hoveredLocal, setHoveredLocal] = useState(false);
+    const hoveredMerged = hovered !== undefined && hovered !== null ? hovered : hoveredLocal;
+    const attachWebHoverForDraw =
+        animated &&
+        scenes.draw &&
+        (hovered === undefined || hovered === null) &&
+        Platform.OS === 'web';
+    const hoverHandlers = attachWebHoverForDraw
+        ? {
+              onMouseEnter: () => setHoveredLocal(true),
+              onMouseLeave: () => setHoveredLocal(false),
+          }
+        : {};
+
+    if (animated && typeof icon === 'string' && !isXmlSvg && !InlineIcon) {
+        const AnimatedIcon = getAnimatedIconComponent(processedIcon);
+        if (AnimatedIcon) {
+            return (
+                <AnimatedIcon
+                    color={color}
+                    size={size}
+                    width={props.width}
+                    height={props.height}
+                    strokeWidth={_strokeWidth}
+                    className={cleanedClassName}
+                    active={active !== undefined && active !== null ? active : selected}
+                    selected={selected}
+                    hovered={hoveredMerged}
+                    pressed={pressed}
+                    scenes={scenes}
+                    {...hoverHandlers}
+                    {...rest}
+                />
+            );
+        }
+    }
 
     //const IconComponent = useMemo(() => IconSet[processedIcon], [processedIcon]);
 
@@ -53,7 +98,7 @@ export function Icon(props) {
         return <InlineIcon width={props.width || size} height={props.height || size} color={color} />;
 
     if (isXmlSvg)
-        return <SvgXml xml={icon} width={props.width || size} height={props.height || size} color={color}/>
+        return <SvgXml xml={icon} width={props.width || size} height={props.height || size} color={color} />
 
     if (!IconComponent) {
         console.log('Icon not found:', processedIcon);
@@ -65,7 +110,7 @@ export function Icon(props) {
             color={color || colors.default}
             size={size}
             strokeWidth={_strokeWidth}
-            className={className}
+            className={cleanedClassName}
             {...rest}
         />
     );

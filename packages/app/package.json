@@ -6,6 +6,7 @@
     "build": "echo 'No build step required'"
   },
   "dependencies": {
+    "@legendapp/motion": "^2.5.3",
     "clsx": "^2.0.0",
     "crypto": "file:../../crypto-shim",
     "solito": "4.3.0"

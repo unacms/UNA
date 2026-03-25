@@ -299,8 +299,8 @@ export default function Tabs() {
                                 tabBarBadgeAllowFontScaling: false,
                                 title: t(tab.title),
                                 headerShown: false,
-                                tabBarIcon: ({ color }) => (
-                                    (tab.url == appSetting('dashboard', 'url') && profile) ? <View className="h-full ">{profile}</View> : <View className="h-full"><Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} /></View>
+                                tabBarIcon: ({ color, focused }) => (
+                                    (tab.url == appSetting('dashboard', 'url') && profile) ? <View className="h-full ">{profile}</View> : <View className="h-full"><Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} animated active={focused} className="icon-scene-fill" /></View>
                                 )
                             };
 

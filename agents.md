@@ -6,6 +6,10 @@
 
 ## Table of Contents
 
+- [NEO project summary](#neo-project-summary)
+- [Installed agent skills](#installed-agent-skills)
+- [Skill precedence (NEO vs generic guidance)](#skill-precedence-neo-vs-generic-guidance)
+- [Customization and fork branches](#customization-and-fork-branches)
 - [Project Structure Rules](#project-structure-rules)
 - [Framework Awareness](#framework-awareness)
 - [Server vs Client Components](#server-vs-client-components)
@@ -13,6 +17,60 @@
 - [Styling Guidelines](#styling-guidelines)
 - [UNA CMS API Integration](#una-cms-api-integration)
 - [Code Quality Checklist](#code-quality-checklist)
+
+---
+
+## NEO project summary
+
+NEO is a **Yarn workspaces monorepo** with **Turborepo** ([`turbo.json`](turbo.json)): shared application code lives in [`packages/app`](packages/app), the web app in [`apps/next`](apps/next) (Next.js 16, App Router), and the native app in [`apps/expo`](apps/expo) (Expo 54, React Native). Styling uses **NativeWind 4** and **Tailwind CSS 3.4** with semantic design tokens from settings—see [readme.md](readme.md) for versions, scripts (`yarn web`, `yarn native`), and setup.
+
+**Product integration** (see also [.cursorrules](.cursorrules)): the frontend targets **UNA CMS** APIs (not a generic REST backend). Use [`app/lib/fetcher`](packages/app/lib/fetcher.js) for requests, follow `/api.php?r=module/action/Template` patterns, respect proxy/env configuration for web vs native, and use **Pusher** where real-time updates are required. Authentication and menus follow existing `currentUser` and [`app/lib/util`](packages/app/lib/util.js) patterns. **Routing**: Expo Router under `apps/expo/app/`, Next.js App Router under `apps/next/app/`.
+
+**Backend contract for UNA developers** ([docs/una-api-best-practices.md](docs/una-api-best-practices.md)): blocks and services must tolerate **guest (non-logged-in) users**—guard user/profile access, avoid PHP fatals, and return **JSON** for NEO. A fatal or HTML error page on a block breaks page JSON parsing and can blank the whole screen.
+
+**How installed skills help**: Vercel-oriented skills add React/Next performance guidance, cache/PPR notes, Turborepo usage, UI/accessibility audits, deploy automation, browser automation, and Expo/native UI patterns. They **do not** replace NEO-specific rules above when the two conflict—see [Skill precedence](#skill-precedence-neo-vs-generic-guidance).
+
+---
+
+## Installed agent skills
+
+Skills are installed with the [Vercel Agent Skills](https://vercel.com/docs/agent-resources/skills) workflow (`npx skills add <owner/repo>`, optionally `--skill <id>`). **Canonical copy:** [`.agents/skills/`](.agents/skills/) at the repo root (one directory per skill, typically with `SKILL.md`). The CLI also writes **`skills-lock.json`** at the repo root (version pins/hashes for reproducibility) and **symlinks** under `.claude/skills/`, `.trae/skills/`, `.windsurf/skills/`, etc., pointing at `.agents/skills/`. Commit **`.agents/`**, **`skills-lock.json`**, and agent symlink trees you care about so the team shares the same capabilities; they are not ignored by default.
+
+**CLI note:** the `skills` package uses **different `--skill` ids** than some GitHub folder names—for `vercel-labs/agent-skills`, use ids such as `vercel-react-best-practices`, `vercel-composition-patterns`, and `vercel-react-native-skills` (not always the short folder names). Run `npx skills add <owner/repo>` interactively or check the CLI’s “Available skills” list if a flag fails.
+
+| Skill (install id / folder) | Source repo | Use when |
+|----------------------------|-------------|----------|
+| `vercel-react-best-practices` | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) | React/Next performance, bundles, rerenders, server/client data patterns |
+| `vercel-composition-patterns` | same | Compound components, reducing boolean prop sprawl, scalable component APIs |
+| `vercel-react-native-skills` | same | React Native / Expo performance, lists, navigation, images, gestures |
+| `web-design-guidelines` | same | Auditing web UI for a11y, UX, forms, motion—map suggestions to **design tokens** where applicable |
+| `deploy-to-vercel` | same | Deploy flows and Vercel-oriented deployment tasks |
+| `next-best-practices` | [vercel-labs/next-skills](https://github.com/vercel-labs/next-skills) | Next.js app patterns, bundling, fonts, hydration, async |
+| `next-cache-components` | same | Cache Components / `use cache` / PPR-oriented guidance |
+| `next-upgrade` | same | Next.js upgrade assistance (CLI may flag **higher codegen risk**—review changes) |
+| `turborepo` | [vercel/turborepo](https://github.com/vercel/turborepo) | Task graph, caching, CI, monorepo boundaries |
+| `agent-browser` | [vercel-labs/agent-browser](https://github.com/vercel-labs/agent-browser) | Browser automation / debugging workflows tied to that toolchain |
+| `building-native-ui` | [expo/skills](https://github.com/expo/skills) | Expo Router native UI patterns (tabs, media, controls)—complements shared `packages/app` code |
+
+**Extra skills from `vercel-labs/agent-browser`:** installing that repo without `--skill` currently pulls **all** bundled skills: `agent-browser`, plus `dogfood`, `electron`, `slack`, and `vercel-sandbox`. Review their `SKILL.md` files and the CLI security summary before use; remove individual directories under `.agents/skills/` only if you intentionally want to drop them (and re-run `npx skills add` as needed).
+
+---
+
+## Skill precedence (NEO vs generic guidance)
+
+1. **UNA integration** — Always use [`fetcher`](packages/app/lib/fetcher.js), correct `/api.php?r=...` endpoints, env/proxy rules, and expectations in [docs/una-api-best-practices.md](docs/una-api-best-practices.md). Generic Next/React skills may assume arbitrary APIs.
+2. **Cross-platform** — Shared UI and logic belong in `packages/app`; keep [`icon.js`](packages/app/ui/atoms/icon.js) / [`icon.web.js`](packages/app/ui/atoms/icon.web.js) and other platform splits consistent with [.cursorrules](.cursorrules).
+3. **Design system** — Prefer semantic tokens and existing components over hardcoded colors or ad hoc Tailwind from generic “design audit” outputs.
+4. **React Compiler** — This repo targets Next.js 16 with React Compiler; follow [Framework Awareness](#framework-awareness) here. Skills that push blanket `memo`/`useCallback` should be applied only when justified (profiling or clear benefit).
+5. **Server vs client** — Default to Server Components per this document; skills suggesting client-only patterns must be weighed against NEO’s architecture.
+
+---
+
+## Customization and fork branches
+
+**Extension point for derivative work:** [`packages/app/customization/resources/agents.md`](packages/app/customization/resources/agents.md) and [`packages/app/customization/resources/claude.md`](packages/app/customization/resources/claude.md) **reference** this file and [`claude.md`](claude.md) at the repo root and hold **per-project** notes (client UNA setup, deployment, team conventions). See [`packages/app/customization/resources/README.md`](packages/app/customization/resources/README.md) for the full workflow.
+
+**Merge hygiene:** On the **upstream** monorepo, keep those customization files **small** so they seldom conflict. In **branch or fork projects** that track upstream, **prefer changing only files under `packages/app/customization/`** (including `resources/`) instead of editing root `agents.md` / `claude.md` or default files under `packages/app/` when a customization hook exists—so upstream merges stay straightforward.
 
 ---
 

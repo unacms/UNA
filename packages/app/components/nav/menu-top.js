@@ -82,7 +82,8 @@ export default function MenuTop({ url, uri }) {
                             isActive={isActive}
                             items={item.items}
                             chevron={item.chevron}
-
+                            animated={item.animated}
+                            addClassName={item.addClassName}
                         />
                     </View>
                 );

@@ -58,7 +58,14 @@ export const settingsMenus = {
             'item-repost': 'RotateCw',
         },
         menu_navbar: [
-            { name: 'home', title: 'Home', link: '/', icon: 'House' },
+            {
+                name: 'home',
+                title: 'Home',
+                link: '/',
+                icon: 'House',
+                animated: true,
+                addClassName: 'icon-scene-fill web:hover:icon-scene-draw',
+            },
             {
                 name: 'friends',
                 title: 'Friends',

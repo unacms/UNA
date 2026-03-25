@@ -7,6 +7,7 @@
     "@gorhom/bottom-sheet": "^5.1.2",
     "@hello-pangea/dnd": "^17.0.0",
     "@legendapp/list": "^2.0.16",
+    "@legendapp/motion": "^2.5.3",
     "@native-html/iframe-plugin": "^2.6.1",
     "@openspacelabs/react-native-zoomable-view": "^2.1.6",
     "@react-native-assets/slider": "^7.0.6",

@@ -1,11 +1,14 @@
 'use client'
 
 import { useEffect, useState, memo, useMemo } from 'react';
+import { Platform } from 'react-native';
 import { storageGet, storageSet, findIconFromRemote, appSetting } from 'app/lib/util'
 import SvgIcons from  'app/customization/icons-svg';
+import { getAnimatedIconComponent } from 'app/customization/animated-icons-registry';
+import { parseIconSceneClasses } from 'app/ui/atoms/animated-icons/parse-icon-scene-classes';
 
 export const Icon = memo(function Icon(props) {
-    const { icon: origIcon, className, width, height, color, size, strokeWidth, fill, ...rest } = props;
+    const { icon: origIcon, className, width, height, color, size, strokeWidth, fill, animated, selected, hovered, pressed, active, ...rest } = props;
     const isXmlSvg = origIcon?.startsWith('<svg');
     const icon = findIconFromRemote(origIcon);
     const _strokeWidth = strokeWidth || appSetting('layout', 'default_icon_stroke_width');
@@ -18,9 +21,30 @@ export const Icon = memo(function Icon(props) {
     const [currentIcon, setCurrentIcon] = useState('');
     const InlineIcon = SvgIcons[icon];
 
+    const AnimatedIcon =
+        animated && typeof origIcon === 'string' && !isXmlSvg && !InlineIcon ? getAnimatedIconComponent(icon) : null;
 
+    const { scenes, cleanedClassName } =
+        animated && typeof origIcon === 'string'
+            ? parseIconSceneClasses(className)
+            : { scenes: {}, cleanedClassName: className };
+
+    const [hoveredLocal, setHoveredLocal] = useState(false);
+    const hoveredMerged = hovered !== undefined && hovered !== null ? hovered : hoveredLocal;
+    const attachWebHoverForDraw =
+        animated &&
+        scenes.draw &&
+        (hovered === undefined || hovered === null) &&
+        Platform.OS === 'web';
+    const hoverHandlers = attachWebHoverForDraw
+        ? {
+              onMouseEnter: () => setHoveredLocal(true),
+              onMouseLeave: () => setHoveredLocal(false),
+          }
+        : {};
 
     useEffect(() => {
+        if (AnimatedIcon) return;
         // Skip if we have an inline icon or XML SVG
         if (InlineIcon || isXmlSvg) return;
         
@@ -54,7 +78,27 @@ export const Icon = memo(function Icon(props) {
         };
 
         fetchIcon();
-    }, [icon, key, InlineIcon, isXmlSvg, width, height, size, fill, _strokeWidth]);
+    }, [icon, key, InlineIcon, isXmlSvg, width, height, size, fill, _strokeWidth, AnimatedIcon]);
+
+    if (AnimatedIcon) {
+        return (
+            <AnimatedIcon
+                color={color}
+                size={size}
+                width={width}
+                height={height}
+                strokeWidth={_strokeWidth}
+                className={cleanedClassName}
+                active={active !== undefined && active !== null ? active : selected}
+                selected={selected}
+                hovered={hoveredMerged}
+                pressed={pressed}
+                scenes={scenes}
+                {...hoverHandlers}
+                {...rest}
+            />
+        );
+    }
 
     if (!currentIcon) {
         if (InlineIcon){
@@ -68,14 +112,14 @@ export const Icon = memo(function Icon(props) {
                 /<svg(\s[^>]*)?>/i,
                 `<svg$1 width="${width || size}" height="${height || size}">`
             );
-            return <span style={{color:color, display: 'flex'}} className={className} {...rest} dangerouslySetInnerHTML={{ __html: result }} />;
+            return <span style={{color:color, display: 'flex'}} className={cleanedClassName} {...rest} dangerouslySetInnerHTML={{ __html: result }} />;
         }
         return null; // Возвращаем null, если иконка не загружена
         
     }
 
     return (
-        <span style={{color:color, display: 'flex'}}  className={className} {...rest} dangerouslySetInnerHTML={{ __html: currentIcon }} />
+        <span style={{color:color, display: 'flex'}}  className={cleanedClassName} {...rest} dangerouslySetInnerHTML={{ __html: currentIcon }} />
     );
 });
 
