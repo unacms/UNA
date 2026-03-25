@@ -86,7 +86,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                 if (hash.includes('cmt_id=')) {
                     console.log("notifsnotifs", hash)
                     setReplyId(hash);
-                    emitter.emit('editor', { action: 'focus', note: "setReplyId", timeout: 800 });
+                    emitter.emit('editor', { action: 'focus', note: "setReplyId", timeout: 2000 });
                     setScrollToEnd(hash.replace('cmt_id=', ''));
                 }
                 else {
@@ -99,7 +99,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         console.log("hashpres")
                         // click on comments
                         setScrollToEnd(true);
-                        emitter.emit('editor', { action: 'focus' });
+                        emitter.emit('editor', { action: 'focus', note: "a", timeout: 2000 });
                     }
 
                 }

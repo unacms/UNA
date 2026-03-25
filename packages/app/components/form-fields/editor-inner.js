@@ -547,7 +547,7 @@ export default function RftText({
                 if (data.timeout) {
                     setTimeout(() => {
                         editor.focus('end')
-                    }, 800)
+                    }, data.timeout)
                 } else {
                     editor.focus('end')
                 }
