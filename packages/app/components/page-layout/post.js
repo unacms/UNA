@@ -99,7 +99,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         console.log("hashpres")
                         // click on comments
                         setScrollToEnd(true);
-                       // emitter.emit('editor', { action: 'focus' });
+                        emitter.emit('editor', { action: 'focus' });
                     }
 
                 }
