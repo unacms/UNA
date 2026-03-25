@@ -19,6 +19,11 @@ import {
     TABS_SCROLL_INTO_VIEW_PADDING_PX,
     TABS_UNDERLINE_HEIGHT_PX,
 } from 'app/ui/molecules/tabs-selection-constants';
+import { tabsDebug } from 'app/ui/molecules/tabs-debug';
+
+/** Native: avoid synchronous layout+setState during the same commit as Fabric layout (use `useEffect` + rAF batching). Web: keep `useLayoutEffect` to avoid pill flicker. */
+const useIsomorphicLayoutEffect =
+    Platform.OS === 'web' ? useLayoutEffect : useEffect;
 
 const tabsTheme = appSetting('theme', 'tabs');
 const tabsSizes = appSetting('theme', 'tabs_sizes');
@@ -79,6 +84,7 @@ function normalizeRnLayout(layout) {
  * @param {'scroll'|'collapse'} [overflow] — `scroll`: horizontal scroll (default). `collapse`: overflow tabs move into a "More" menu.
  * @param {string} [moreLabel] — label for the overflow trigger (default: translated "More").
  * @param {(key: string) => void} [onTabChange] — fired after the user selects a tab (new tab key).
+ * @param {boolean} [disableScrollIntoView] — When true, skip horizontal scroll-to-active-tab after selection (useful on native if scroll fights layout).
  */
 export default function Tabs({
     tabs,
@@ -99,9 +105,17 @@ export default function Tabs({
     listClassName,
     triggerClassName,
     onTabChange,
+    disableScrollIntoView = false,
 }) {
     /** `fullWidth` is deprecated — same as `equalWidth` (first wins if both are set). */
     const useEqualWidth = equalWidth ?? fullWidth ?? false;
+    /**
+     * Native horizontal scroll: the absolute pill + onLayout→setState sync can hang Fabric after tab
+     * changes even when React only re-renders twice (see __NEO_TABS_DEBUG__). Rely on trigger active styles only.
+     * Collapse / web keep the selection layer.
+     */
+    const nativeScrollSkipIndicator =
+        Platform.OS !== 'web' && overflow === 'scroll';
     const { t } = useTranslation();
     const resolvedMoreLabel = moreLabel ?? t('More');
     const [currentTab, setCurrentTab] = useState(
@@ -113,6 +127,18 @@ export default function Tabs({
 
     const onTabChangeRef = useRef(onTabChange);
     onTabChangeRef.current = onTabChange;
+
+    const renderDiagRef = useRef(0);
+    if (__DEV__ && globalThis.__NEO_TABS_DEBUG__) {
+        renderDiagRef.current += 1;
+        tabsDebug('render', {
+            n: renderDiagRef.current,
+            currentTab,
+            overflow,
+            disableScrollIntoView,
+            nativeScrollSkipIndicator,
+        });
+    }
 
     /** Layout of `TabsPrimitive.List` relative to the header row (same coords as the selection layer). */
     const listLayoutRef = useRef({ x: 0, y: 0, width: 0, height: 0 });
@@ -211,6 +237,7 @@ export default function Tabs({
     }, [activeTab]);
 
     const syncIndicatorLayout = useCallback(() => {
+        if (nativeScrollSkipIndicator) return;
         if (!variantCfgRef.current) return;
         const tabKey = currentTabRef.current;
         const list = listLayoutRef.current;
@@ -268,19 +295,57 @@ export default function Tabs({
             triggerL.width,
             triggerL.height
         );
-    }, [variant, overflow, collapseLayout.visibleCount]);
+    }, [
+        variant,
+        overflow,
+        collapseLayout.visibleCount,
+        nativeScrollSkipIndicator,
+    ]);
 
     const syncIndicatorLayoutRef = useRef(syncIndicatorLayout);
     syncIndicatorLayoutRef.current = syncIndicatorLayout;
+
+    /** Coalesce native indicator sync to one rAF — avoids layout↔setState reentrancy on Fabric when many triggers fire onLayout after a selection change. */
+    const indicatorRafRef = useRef(null);
+    const indicatorSyncPendingRef = useRef(false);
+
+    const scheduleIndicatorSync = useCallback((source) => {
+        if (nativeScrollSkipIndicator) return;
+        tabsDebug('schedule', { source });
+        const flush = () => {
+            indicatorRafRef.current = null;
+            indicatorSyncPendingRef.current = false;
+            tabsDebug('syncFlush', { source });
+            syncIndicatorLayoutRef.current();
+        };
+        if (Platform.OS === 'web') {
+            flush();
+            return;
+        }
+        if (indicatorSyncPendingRef.current) return;
+        indicatorSyncPendingRef.current = true;
+        indicatorRafRef.current = requestAnimationFrame(flush);
+    }, [nativeScrollSkipIndicator]);
+
+    useEffect(
+        () => () => {
+            if (indicatorRafRef.current != null) {
+                cancelAnimationFrame(indicatorRafRef.current);
+                indicatorRafRef.current = null;
+            }
+            indicatorSyncPendingRef.current = false;
+        },
+        []
+    );
 
     const onListLayout = useCallback(
         (e) => {
             const layout = normalizeRnLayout(e.nativeEvent.layout);
             if (isRnLayoutUnchanged(listLayoutRef.current, layout)) return;
             listLayoutRef.current = layout;
-            syncIndicatorLayoutRef.current();
+            if (!nativeScrollSkipIndicator) scheduleIndicatorSync('list');
         },
-        []
+        [scheduleIndicatorSync, nativeScrollSkipIndicator]
     );
 
     const onTriggerLayout = useCallback(
@@ -289,23 +354,33 @@ export default function Tabs({
             const prev = triggerLayoutsRef.current[tabKey];
             if (isRnLayoutUnchanged(prev, layout)) return;
             triggerLayoutsRef.current[tabKey] = layout;
-            syncIndicatorLayoutRef.current();
+            if (!nativeScrollSkipIndicator)
+                scheduleIndicatorSync(`trigger:${tabKey}`);
         },
-        []
+        [scheduleIndicatorSync, nativeScrollSkipIndicator]
     );
 
     const onMoreLayoutForTabs = useCallback(
         (e) => {
             collapseLayout.onMoreLayout(e);
-            syncIndicatorLayoutRef.current();
+            if (!nativeScrollSkipIndicator) scheduleIndicatorSync('more');
         },
-        [collapseLayout.onMoreLayout]
+        [
+            collapseLayout.onMoreLayout,
+            scheduleIndicatorSync,
+            nativeScrollSkipIndicator,
+        ]
     );
 
-    /** Only when the selected tab changes — not when `syncIndicatorLayout` identity flips (e.g. unstable theme refs), or every render can re-enter layout+setState. */
-    useLayoutEffect(() => {
+    /**
+     * Tab selection must always run sync (not merged into the rAF queue with onLayout), or we can skip
+     * positioning when `pending` was set by a stale layout pass before styles update.
+     */
+    useIsomorphicLayoutEffect(() => {
+        if (nativeScrollSkipIndicator) return;
+        tabsDebug('syncImmediate', { reason: 'currentTab' });
         syncIndicatorLayoutRef.current();
-    }, [currentTab]);
+    }, [currentTab, nativeScrollSkipIndicator]);
 
     const scrollActiveTabIntoView = useCallback(() => {
         if (overflow === 'collapse') return;
@@ -340,13 +415,19 @@ export default function Tabs({
 
     useEffect(() => {
         if (overflow === 'collapse') return;
+        if (disableScrollIntoView) return;
         if (skipFirstScrollIntoViewRef.current) {
             skipFirstScrollIntoViewRef.current = false;
             return;
         }
         const timer = setTimeout(() => scrollActiveTabIntoView(), 50);
         return () => clearTimeout(timer);
-    }, [currentTab, scrollActiveTabIntoView, overflow]);
+    }, [
+        currentTab,
+        scrollActiveTabIntoView,
+        overflow,
+        disableScrollIntoView,
+    ]);
 
     /** Theme `u-controls-tabs-selection-layer`: absolute + pointer-events-none + z-1 */
     const selectionStyle = useMemo(
@@ -363,8 +444,11 @@ export default function Tabs({
 
     /** Stable identity for `TabsPrimitive.Root` — unstable parent `onTabChange` must not recreate context every render. */
     const handleTabChange = useCallback((value) => {
+        tabsDebug('press', { from: currentTabRef.current, to: value });
         setCurrentTab(value);
-        onTabChangeRef.current?.(value);
+        /** Defer sound/haptics so they do not run in the same sync stack as the press → commit (reduces native stalls). */
+        const cb = onTabChangeRef.current;
+        if (cb) queueMicrotask(() => cb(value));
     }, []);
 
     const handleOverflowMenuSelect = useCallback(
@@ -481,7 +565,7 @@ export default function Tabs({
                 ))}
             </View>
 
-            {selectionLayer}
+            {!nativeScrollSkipIndicator && selectionLayer}
 
             <TabsPrimitive.List
                 onLayout={onListLayout}
@@ -759,7 +843,7 @@ export default function Tabs({
                                 listWrapperClassName
                             )}
                         >
-                            {selectionLayer}
+                            {!nativeScrollSkipIndicator && selectionLayer}
 
                             <TabsPrimitive.List
                                 onLayout={onListLayout}

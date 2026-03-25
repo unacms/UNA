@@ -2,7 +2,7 @@
 
 import { forwardRef, useEffect, useRef } from 'react';
 import { Animated, Easing, Platform } from 'react-native';
-import Svg, { Path, Rect } from 'react-native-svg';
+import Svg, { G, Path, Rect } from 'react-native-svg';
 import { View } from 'app/design/view';
 
 const PathStripDomInvalid = forwardRef(function PathStripDomInvalid(props, ref) {

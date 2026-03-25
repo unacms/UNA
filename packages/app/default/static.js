@@ -244,7 +244,7 @@ Create Polls to collect feedback, make decisions, and engage your community.    
                 equalWidth
                 overflow={isWeb ? 'collapse' : 'scroll'}
                 onTabChange={onTabChange}
-                
+                disableScrollIntoView={!isWeb}
             />
         </Card>
         <Card padding="px-4 py-1 mt-6">    

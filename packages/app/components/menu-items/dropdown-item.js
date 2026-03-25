@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { Platform } from 'react-native';
 import { Pressable, View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { Icon } from 'app/ui/atoms/icon';
@@ -5,7 +7,7 @@ import { isEmoji, appSetting } from 'app/lib/util';
 import Link from 'app/ui/atoms/link'
 const menuSettings = appSetting('theme', 'dropdown_menu');
 
-const getIcon = (oItem, iconSize = 20) => {
+const getIcon = (oItem, iconSize = 20, rowHovered) => {
     if (!oItem?.icon) return null;
 
     const className = [oItem?.class_item_icon, oItem?.addClassName]
@@ -23,6 +25,7 @@ const getIcon = (oItem, iconSize = 20) => {
                 size={oItem?.icon_size || iconSize}
                 animated={useAnimated}
                 active={useAnimated ? oItem.selected : undefined}
+                hovered={useAnimated && Platform.OS === 'web' ? rowHovered : undefined}
             />
         );
     }
@@ -31,6 +34,14 @@ const getIcon = (oItem, iconSize = 20) => {
 export default function DropdownMenuItem({ item, index, link, handleSelect, classes, counter, handleCounter, mode }) {
     const key = item.id ?? index;
     const iconSize = menuSettings.icon_size || 16;
+    const [rowHovered, setRowHovered] = useState(false);
+    const rowHoverProps =
+        item.animated && Platform.OS === 'web'
+            ? {
+                  onMouseEnter: () => setRowHovered(true),
+                  onMouseLeave: () => setRowHovered(false),
+              }
+            : {};
 
     if (typeof item.title !== 'string') {
         return item.noAction ? <Pressable onPress={(event) => handleSelect(event, item)}>{item.title}</Pressable> : item.title;
@@ -40,7 +51,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
         return <View key={key}>{item.title}</View>;
     }
 
-    const icon = getIcon(item, iconSize);
+    const icon = getIcon(item, iconSize, rowHovered);
 
     const itemTextKey = classes?.item_text_key || 'item_text';
     const itemTextClass =
@@ -53,9 +64,10 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
     const Wrapper = handleSelect ? Pressable : View;
     const Content = (
         <Wrapper
-            className={menuSettings[classes?.item || 'item_ver'] + (item.selected && ' bg-primary/10 text-foreground')}
+            className={`group ${menuSettings[classes?.item || 'item_ver']}${item.selected ? ' bg-primary/10 text-foreground' : ''}`}
             key={key}
             onPress={(event) => handleSelect(event, item)}
+            {...rowHoverProps}
         >
             <Row className={rowClassName}>
                 <View className={itemCntClass}>

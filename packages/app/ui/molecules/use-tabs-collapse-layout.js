@@ -83,10 +83,11 @@ export function useTabsCollapseLayout({
     const { width: windowWidth } = useWindowDimensions();
 
     useEffect(() => {
+        if (overflow !== 'collapse') return;
         setContainerWidth(0);
         setTabWidths([]);
         setMoreWidth(0);
-    }, [tabKeys, tabCount]);
+    }, [overflow, tabKeys, tabCount]);
 
     useEffect(() => {
         return () => {
