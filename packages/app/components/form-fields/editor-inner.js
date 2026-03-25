@@ -495,7 +495,7 @@ export default function RftText({
 
     const editor = useEditorBridge({
         autofocus: autofocus,
-        avoidIosKeyboard: true,
+        avoidIosKeyboard: isWeb ? false : autofocus,
         dynamicHeight: false, //!!! true not work in IOS if true
         theme: customEditorTheme,
         initialContent: field.value,
@@ -566,7 +566,7 @@ export default function RftText({
     useEffect(() => {
         if (autofocus) {
             setTimeout(() => {
-             //   editor.focus('end')
+                editor.focus('end')
             }, 800)
         }
 

@@ -6,18 +6,37 @@ import { useState, useEffect } from 'react';
 import  RftText from 'app/components/form-fields/editor-inner';
 import { Platform } from 'react-native'
 import { View } from 'app/design/view'
+import emitter from 'app/context/emitter';
 
 const isWeb = Platform.OS === 'web';
 
 export default function FormFieldText(props) {
+    const [kbKey, setKbKey] = useState(0);
     const formContext = useFormContext();
+
+    useEffect(() => {
+        if (!isWeb) return;
+        const sub = emitter.addListener('editor', (data) => {
+            if (data.action === 'focus') {
+                const trigger = () => setKbKey(k => k + 1); // remount → autoFocus
+                data.timeout ? setTimeout(trigger, data.timeout) : trigger();
+            }
+        });
+        return () => sub.remove();
+      }, []);
+      
+
     return (
         <Field {...props} error2={formContext.formState.errors[props.name]}>
             {props.html == 1 || props.html == 2 || props.html == 3 ? <>
                 <RftText {...props} />
                
             </> : <PlainText {...props} />}
-             {(isWeb && props.autofocus)&& <View className="absolute w-[1px] h-[1px]"><TextInputClear autoFocus={true}/></View>}
+            {isWeb && (props.autofocus || kbKey > 0) && (
+  <View className="absolute w-[1px] h-[1px]">
+      <TextInputClear key={kbKey} autoFocus={true} />
+  </View>
+)}
         </Field>
     );
 }
