@@ -138,7 +138,6 @@ function ErrorPage({ type }) {
 }
 
 function PageLayoutContent({ layout, data }) {
-    console.log("datadata", data)
     const { currentUser } = useCurrentUser();
     const { layoutName, layoutBlocks, isCustomLayout } = layout;
 

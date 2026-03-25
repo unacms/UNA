@@ -367,8 +367,6 @@ export function CommentsBrowse({
         }
     }
 
-    console.log("hasNextPage", browseParams.object_id, hasNextPage, isFetchingNextPage)
-
     return (
         <>
             <UniList
@@ -604,6 +602,7 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
     useEffect(() => {
         const subscription = emitter.addListener(`comment_${module}_${objectId}`, (data) => {
             if (data.action == 'reply_comment') {
+                console.log("reply_comment", data)
                 setFormData({
                     text: stripTags(data.data.cmt_text),
                     parent_id: data.data.cmt_id,
@@ -614,12 +613,19 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
             }
         })
 
+        const subscription2 = emitter.addListener(`comment`, (data) => {
+            if (data.action == 'send') {
+                setFormData({})
+            }
+        })
+
         return () => {
             subscription.remove();
-
+            subscription2.remove();
         }
     }, [])
 
+    console.log("formData", formData)
 
     useEffect(() => {
        

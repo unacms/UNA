@@ -22,7 +22,7 @@ export default function FormComments(props) {
     const maxHeightEditor = isWeb ? 160 : (screenHeight - 300) / 2 // 300 is approximate keyboard height
     const formContext = useFormContext()
     const { currentUser } = useCurrentUser()
-    let isAutoFocus = true;
+    let isAutoFocus = false;
     if (props.data.inputs['cmt_text']?.value){
         isAutoFocus = true;
     }
@@ -47,6 +47,7 @@ export default function FormComments(props) {
         if (formContext.formState.isSubmitted) {
             playSound();
             formContext.setValue('cmt_text', '');
+            emitter.emit(`comment`, { action: 'send'})
             emitter.emit(`editor`, { action: 'set_content', value: '' })
             emitter.emit(`fld_files_cmt_image`, { action: 'clear' })
             

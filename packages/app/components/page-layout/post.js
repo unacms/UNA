@@ -75,16 +75,14 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     const commentsForm = commentsContent?.form;
     const commentsRequestUrl = commentsContent?.url;
 
-    console.log("localUrl", localUrl)
+    
+
     useEffect(() => {
         if (localUrl) {
             const hash = localUrl.split('#')[1];
-            console.log("hashpres2", hash)
             if (hash) {
-                console.log("hashpres1")
                 // click on reply
                 if (hash.includes('cmt_id=')) {
-                    console.log("notifsnotifs", hash)
                     setReplyId(hash);
                     emitter.emit('editor', { action: 'focus', note: "setReplyId", timeout: 800 });
                     setScrollToEnd(hash.replace('cmt_id=', ''));
@@ -96,7 +94,6 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         setScrollToEnd(hash.replace('cid=', ''));
                     }
                     else {
-                        console.log("hashpres")
                         // click on comments
                         setScrollToEnd(true);
                         emitter.emit('editor', { action: 'focus', note: "a", timeout: 800 });
@@ -107,6 +104,21 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
         }
     }, [localUrl, data]);
+
+
+    useEffect(() => {
+
+
+        const subscription2 = emitter.addListener(`comment`, (data) => {
+            if (data.action == 'send') {
+                setReplyId(false)
+            }
+        })
+
+        return () => {
+            subscription2.remove();
+        }
+    }, [])
 
     const { leftBarBlocks, sideBarBlocks, centerBlocks } = defineCells(blocks, data);
 
