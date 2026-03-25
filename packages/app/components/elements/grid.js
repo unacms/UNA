@@ -133,16 +133,23 @@ const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowC
     }
 
     const handleMenuManageSelect = async (oItem, event) => {
-        if (oItem.display_type == "callback") {
-             await fetcher(
-                    '/api.php?r='+oItem.data.request_url
-                )
+        if (oItem.display_type === "callback") {
+            const handleCallback = async () => {
+                await fetcher('/api.php?r=' + oItem.data.request_url);
+                if (oItem.data.on_callback === 'hide') {
+                    setHide(true);
+                } else if (oItem.data.on_callback === 'hide_row') {
+                    deleteRows([oItem.data.id]);
+                }
+            };
 
-            if (oItem.data.on_callback == 'hide') {
-                setHide(true);
-            }
-            if (oItem.data.on_callback == 'hide_row') {
-                deleteRows([oItem.data.id]);
+            if (oItem.data.confirm == 1) {
+                setShowConfirm({
+                    show: true,
+                    cb: handleCallback
+                });
+            } else {
+                await handleCallback();
             }
         }
     }
