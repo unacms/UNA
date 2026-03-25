@@ -185,7 +185,7 @@ function PageLayoutContent({ layout, data }) {
     }
 
     const Splash = getComponent('molecule', 'splash')
-    if (!currentUser && layoutName == 'home' && data.layout == 'splash')
+    if (!currentUser && layoutName == 'home' && (data.layout == 'splash' || appSetting('layout', 'use_splash_page')))
         return <Splash data={data} />
 
     if (isCustomLayout && layoutBlocks) {
