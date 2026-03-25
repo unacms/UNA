@@ -94,15 +94,26 @@ const AccordionTrigger = React.forwardRef(
           {({ isExpanded }) => (
             <>
               {label}
-              <Icon
-                icon="ChevronDown"
-                size={18}
-                className={clsx(
-                  accordionTheme.chevron,
-                  isExpanded && 'rotate-180',
-                  chevronClassName
-                )}
-              />
+              <View
+                className={
+                  accordionTheme.chevron_container ??
+                  'shrink-0 transition-transform duration-200'
+                }
+                style={{
+                    transform: [
+                        { rotate: isExpanded ? '180deg' : '0deg' },
+                    ],
+                }}
+              >
+                <Icon
+                  icon="ChevronDown"
+                  size={18}
+                  className={clsx(
+                      accordionTheme.chevron,
+                      chevronClassName
+                  )}
+                />
+              </View>
             </>
           )}
         </AccordionPrimitive.Trigger>

@@ -8,6 +8,12 @@ import {
 import { useWindowDimensions } from 'react-native';
 import { TABS_DEFAULT_MORE_BUTTON_WIDTH_PX } from 'app/ui/molecules/tabs-selection-constants';
 
+const WIDTH_EPS = 0.5;
+
+function isWidthUnchanged(prev, next) {
+    return Math.abs((prev ?? 0) - (next ?? 0)) < WIDTH_EPS;
+}
+
 /**
  * How many tabs fit in a row before the "More" control, given measured widths.
  * @param {number} containerWidth — inner width available for the tab row (after list horizontal padding)
@@ -53,12 +59,14 @@ export function computeVisibleTabCount(
  * @param {Array<{ key: string }>} tabs
  * @param {number} [gapPx] — from `tabs_sizes[*].gap_px`
  * @param {number} [contentPaddingHorizontal] — subtract this from raw row viewport width (both sides total of list horizontal padding: 2 × scroll_inset)
+ * @param {boolean} [equalWidth] — When true, tab packing uses a uniform width (max measured) so it matches `flex-1` equal columns; the ghost row otherwise measures intrinsic widths that do not match the real row and can thrash `visibleCount`.
  */
 export function useTabsCollapseLayout({
     overflow,
     tabs,
     gapPx,
     contentPaddingHorizontal = 0,
+    equalWidth = false,
 }) {
     const tabCount = tabs?.length ?? 0;
     const tabKeys = useMemo(
@@ -93,7 +101,9 @@ export function useTabsCollapseLayout({
         (e) => {
             const raw = e.nativeEvent.layout.width;
             const inner = Math.max(0, raw - (contentPaddingHorizontal || 0));
-            setContainerWidth(inner);
+            setContainerWidth((prev) =>
+                isWidthUnchanged(prev, inner) ? prev : inner
+            );
         },
         [contentPaddingHorizontal]
     );
@@ -119,7 +129,9 @@ export function useTabsCollapseLayout({
                     0,
                     cr.width - (contentPaddingHorizontal || 0)
                 );
-                setContainerWidth(inner);
+                setContainerWidth((prev) =>
+                    isWidthUnchanged(prev, inner) ? prev : inner
+                );
             });
             ro.observe(node);
             resizeObserverRef.current = ro;
@@ -138,7 +150,9 @@ export function useTabsCollapseLayout({
                     0,
                     w - (contentPaddingHorizontal || 0)
                 );
-                setContainerWidth(inner);
+                setContainerWidth((prev) =>
+                    isWidthUnchanged(prev, inner) ? prev : inner
+                );
             });
         });
         return () => cancelAnimationFrame(id);
@@ -147,28 +161,45 @@ export function useTabsCollapseLayout({
     const onTabLayout = useCallback(
         (index) => (e) => {
             const w = e.nativeEvent.layout.width;
-            setTabWidths((prev) =>
-                Array.from({ length: tabCount }, (_, i) =>
-                    i === index ? w : prev[i] ?? 0
-                )
-            );
+            setTabWidths((prev) => {
+                const prevWidth = prev[index] ?? 0;
+                if (prev.length >= tabCount && isWidthUnchanged(prevWidth, w)) {
+                    return prev;
+                }
+
+                const next =
+                    prev.length === tabCount
+                        ? prev.slice()
+                        : Array.from(
+                              { length: tabCount },
+                              (_, i) => prev[i] ?? 0
+                          );
+                next[index] = w;
+                return next;
+            });
         },
         [tabCount]
     );
 
     const onMoreLayout = useCallback((e) => {
-        setMoreWidth(e.nativeEvent.layout.width);
+        const width = e.nativeEvent.layout.width;
+        setMoreWidth((prev) => (isWidthUnchanged(prev, width) ? prev : width));
     }, []);
 
     const visibleCount = useMemo(() => {
         if (overflow !== 'collapse' || tabCount === 0) return tabCount;
         if (!containerWidth || containerWidth <= 0) return tabCount;
 
-        const w = tabWidths.slice(0, tabCount);
+        let w = tabWidths.slice(0, tabCount);
         const allMeasured =
             w.length >= tabCount &&
             w.slice(0, tabCount).every((x) => typeof x === 'number' && x > 0);
         if (!allMeasured) return tabCount;
+
+        if (equalWidth) {
+            const maxTab = Math.max(...w, 1);
+            w = Array.from({ length: tabCount }, () => maxTab);
+        }
 
         return computeVisibleTabCount(
             containerWidth,
@@ -183,14 +214,8 @@ export function useTabsCollapseLayout({
         tabWidths,
         moreWidth,
         gapPx,
+        equalWidth,
     ]);
-
-    useEffect(() => {
-        if (overflow !== 'collapse') return;
-        if (tabCount > 0 && visibleCount === tabCount) {
-            setMoreWidth(0);
-        }
-    }, [overflow, visibleCount, tabCount]);
 
     const visibleTabs = useMemo(
         () => (tabs ?? []).slice(0, visibleCount),

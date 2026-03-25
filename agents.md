@@ -15,6 +15,7 @@
 - [Server vs Client Components](#server-vs-client-components)
 - [Component Architecture](#component-architecture)
 - [Styling Guidelines](#styling-guidelines)
+- [Animated icons (NEO)](#animated-icons-neo)
 - [UNA CMS API Integration](#una-cms-api-integration)
 - [Code Quality Checklist](#code-quality-checklist)
 
@@ -60,7 +61,7 @@ Skills are installed with the [Vercel Agent Skills](https://vercel.com/docs/agen
 ## Skill precedence (NEO vs generic guidance)
 
 1. **UNA integration** — Always use [`fetcher`](packages/app/lib/fetcher.js), correct `/api.php?r=...` endpoints, env/proxy rules, and expectations in the [`una-api` skill](.agents/skills/una-api/SKILL.md). Generic Next/React skills may assume arbitrary APIs.
-2. **Cross-platform** — Shared UI and logic belong in `packages/app`; keep [`icon.js`](packages/app/ui/atoms/icon.js) / [`icon.web.js`](packages/app/ui/atoms/icon.web.js) and other platform splits consistent with [.cursorrules](.cursorrules).
+2. **Cross-platform** — Shared UI and logic belong in `packages/app`; keep [`icon.js`](packages/app/ui/atoms/icon.js) / [`icon.web.js`](packages/app/ui/atoms/icon.web.js) and other platform splits consistent with [.cursorrules](.cursorrules). For **animated** Lucide icons (registry, scenes, SVG constraints), follow [animated-icons.md](animated-icons.md).
 3. **Design system** — Prefer semantic tokens and existing components over hardcoded colors or ad hoc Tailwind from generic “design audit” outputs.
 4. **React Compiler** — This repo targets Next.js 16 with React Compiler; follow [Framework Awareness](#framework-awareness) here. Skills that push blanket `memo`/`useCallback` should be applied only when justified (profiling or clear benefit).
 5. **Server vs client** — Default to Server Components per this document; skills suggesting client-only patterns must be weighed against NEO’s architecture.
@@ -428,6 +429,12 @@ feed: {
 ```
 
 **Note:** Semantic tokens work perfectly in NativeWind - ensure they're applied to the correct element type.
+
+---
+
+## Animated icons (NEO)
+
+NEO supports optional **animated** Lucide icons (filled/active states, web hover “draw” scenes, etc.) via a small registry and scene classes on `Icon`. **Do not** guess the wiring: read **[animated-icons.md](animated-icons.md)** for registry keys, `icon-scene-*` classes, fork customization, and implementation pitfalls (especially **web + react-native-svg**).
 
 ---
 

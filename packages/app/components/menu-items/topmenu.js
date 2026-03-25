@@ -65,11 +65,20 @@ function MenuTopItem_({ title, icon, isTitle, isActive, isPopup, chevron, animat
                             <Text key="menu-title" className={`whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ${isActiveOrOpen ? 'text-accent-foreground' : 'text-secondary-foreground'} text-sm lg:text-base px-2 leading-5`}>{title}</Text>
                         ) : null,
                         chevron ? (
-                            <Icon
+                            <View
                                 key="menu-chevron"
-                                icon={chevron}
-                                className={`h-4 w-4 items-center justify-center flex transition-transform duration-200 ${isActiveOrOpen ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'} ${isOpen ? 'rotate-180' : ''}`}
-                            />
+                                className="h-4 w-4 items-center justify-center flex shrink-0 transition-transform duration-200"
+                                style={{
+                                    transform: [
+                                        { rotate: isOpen ? '180deg' : '0deg' },
+                                    ],
+                                }}
+                            >
+                                <Icon
+                                    icon={chevron}
+                                    className={`h-4 w-4 ${isActiveOrOpen ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}
+                                />
+                            </View>
                         ) : null,
                     ]}
                     {/*

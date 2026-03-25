@@ -2,10 +2,8 @@
 
 import { forwardRef, useEffect, useRef } from 'react';
 import { Animated, Easing, Platform } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg, { G, Path } from 'react-native-svg';
 import { View } from 'app/design/view';
-
-const DOOR_PATH_LENGTH = 22;
 
 /**
  * RN Animated injects `collapsable={false}` into animated components; that must not reach web `<path>`
@@ -19,22 +17,40 @@ PathStripDomInvalid.displayName = 'PathStripDomInvalid';
 
 const AnimatedPath = Animated.createAnimatedComponent(PathStripDomInvalid);
 
-/** Props that must not reach DOM nodes (RN / Animated may inject these; web rejects some on `<path>`). */
+/**
+ * RN Animated may inject invalid props into `<g>` on web — strip before DOM.
+ */
+const GStripDomInvalid = forwardRef(function GStripDomInvalid(props, ref) {
+    const { collapsable: _collapsable, onLayout: _onLayout, ...rest } = props;
+    return <G ref={ref} {...rest} />;
+});
+GStripDomInvalid.displayName = 'GStripDomInvalid';
+
+const AnimatedG = Animated.createAnimatedComponent(GStripDomInvalid);
+
 function omitUnsafeViewProps(rest) {
     if (!rest || typeof rest !== 'object') return {};
     const { onLayout: _onLayout, collapsable: _collapsable, ...safe } = rest;
     return safe;
 }
 
+/** Closed ring path equivalent to `<circle cx="12" cy="12" r="10" />` (Lucide outer ring). */
+const CIRCLE_RING_D =
+    'M12 2a10 10 0 1 1 0 20a10 10 0 1 1 0-20';
+
 /**
- * Animated House — scenes: fill, draw (lucide-style door path), morph/smoke/custom* reserved for future.
- * Paths use RN Animated (not Legend MotionSvg) so web `<path>` never receives `onLayout`.
- *
- * Stroke/fill default to `currentColor` so Tailwind `text-*` on `className` matches static Lucide icons.
- * Pass an explicit `color` prop only when a caller needs a fixed tint (e.g. tab bar `color` from navigation).
- * Scene-specific tints can still be set inside this file when needed.
+ * Needle path from lucide-react-native `compass.js` (v0.563) — stroke-only inner “diamond”.
+ * Hover `draw` scene rotates this path (same role as the door stroke in `house.js`).
  */
-export function AnimatedHouse({
+const NEEDLE_D =
+    'm16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z';
+
+/**
+ * Animated Compass — same scene model as `AnimatedHouse`:
+ * - `fill`: when active, semitransparent fill on the outer ring (`fillOpacity` 0.18) + stroke → duotone.
+ * - `draw` (web): hover rising-edge spins the needle path (stroke) 0→360°; leave resets like house door dash.
+ */
+export function AnimatedCompass({
     size = 24,
     width,
     height,
@@ -49,7 +65,6 @@ export function AnimatedHouse({
     ...rest
 }) {
     const dim = width ?? height ?? size ?? 24;
-    /** Explicit `color` (e.g. tab bar) wins; otherwise inherit `text-*` from the outer `className` View. */
     const c = color ?? 'currentColor';
     const svgColorStyle = color != null && color !== '' ? { color } : { color: 'inherit' };
     const sw = strokeWidthProp ?? 2;
@@ -63,7 +78,7 @@ export function AnimatedHouse({
 
     const scaleAnim = useRef(new Animated.Value(1)).current;
     const fillOpacityAnim = useRef(new Animated.Value(0)).current;
-    const doorDashAnim = useRef(new Animated.Value(0)).current;
+    const rotateDeg = useRef(new Animated.Value(0)).current;
 
     let sceneScale = 1;
     if (pressed) sceneScale = 0.9;
@@ -90,11 +105,11 @@ export function AnimatedHouse({
     useEffect(() => {
         if (!isWeb || !scenes.draw) return;
         if (hovered && !prevHoveredRef.current) {
-            doorDashAnim.setValue(DOOR_PATH_LENGTH);
-            Animated.timing(doorDashAnim, {
-                toValue: 0,
-                duration: 1000,
-                easing: Easing.out(Easing.cubic),
+            rotateDeg.setValue(0);
+            Animated.spring(rotateDeg, {
+                toValue: 180,
+                friction: 1,
+                tension: 5,
                 useNativeDriver: false,
             }).start();
             prevHoveredRef.current = true;
@@ -102,12 +117,9 @@ export function AnimatedHouse({
         }
         if (!hovered) {
             prevHoveredRef.current = false;
-            doorDashAnim.setValue(0);
+            rotateDeg.setValue(0);
         }
-    }, [hovered, isWeb, scenes.draw, doorDashAnim]);
-
-    const doorDashArray =
-        isWeb && scenes.draw ? `${DOOR_PATH_LENGTH} ${DOOR_PATH_LENGTH}` : undefined;
+    }, [hovered, isWeb, scenes.draw, rotateDeg]);
 
     return (
         <View className={className} style={{ width: dim, height: dim }} {...viewProps}>
@@ -125,8 +137,9 @@ export function AnimatedHouse({
                     fill="none"
                     style={svgColorStyle}
                 >
+                    {/** Outer ring: same pattern as house body — stroke + animated fill for active duotone. */}
                     <AnimatedPath
-                        d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                        d={CIRCLE_RING_D}
                         stroke={c}
                         strokeWidth={sw}
                         strokeLinecap="round"
@@ -134,16 +147,24 @@ export function AnimatedHouse({
                         fill={c}
                         fillOpacity={fillOpacityAnim}
                     />
-                    <AnimatedPath
-                        d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"
-                        stroke={c}
-                        strokeWidth={sw}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        fill="none"
-                        strokeDasharray={doorDashArray}
-                        strokeDashoffset={isWeb && scenes.draw ? doorDashAnim : 0}
-                    />
+                    {/**
+                     * Needle (stroke): rotate around (12,12) without originX/Y — web `prepare()` would set
+                     * kebab `transform-origin` (React 19 warns). Matrix: T(12,12) · R(θ) · T(-12,-12).
+                     */}
+                    <G translateX={12} translateY={12}>
+                        <AnimatedG rotation={rotateDeg}>
+                            <G translateX={-12} translateY={-12}>
+                                <AnimatedPath
+                                    d={NEEDLE_D}
+                                    stroke={c}
+                                    strokeWidth={sw}
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    fill="none"
+                                />
+                            </G>
+                        </AnimatedG>
+                    </G>
                 </Svg>
             </Animated.View>
         </View>

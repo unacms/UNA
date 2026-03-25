@@ -1,11 +1,12 @@
-import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import {
-    View,
-    ScrollView,
-    Platform,
-    LayoutAnimation,
-    UIManager,
-} from 'react-native';
+    useState,
+    useRef,
+    useCallback,
+    useEffect,
+    useLayoutEffect,
+    useMemo,
+} from 'react';
+import { View, ScrollView, Platform } from 'react-native';
 import { Text } from 'app/design/typography';
 import * as TabsPrimitive from 'app/ui/primitives/tabs';
 import { appSetting } from 'app/lib/util';
@@ -15,7 +16,6 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { Icon } from 'app/ui/atoms/icon';
 import { useTabsCollapseLayout } from 'app/ui/molecules/use-tabs-collapse-layout';
 import {
-    TABS_SELECTION_DURATION_MS,
     TABS_SCROLL_INTO_VIEW_PADDING_PX,
     TABS_UNDERLINE_HEIGHT_PX,
 } from 'app/ui/molecules/tabs-selection-constants';
@@ -27,6 +27,38 @@ const tabsVariants =
     rawTabsVariants && typeof rawTabsVariants === 'object'
         ? rawTabsVariants
         : {};
+
+/** RN layout often repeats with tiny float noise; always creating new objects in `onLayout` → `setState` re-renders forever. */
+const LAYOUT_EPS = 0.5;
+
+function isRnLayoutUnchanged(prev, next) {
+    if (!prev || !next) return false;
+    return (
+        Math.abs(prev.x - next.x) < LAYOUT_EPS &&
+        Math.abs(prev.y - next.y) < LAYOUT_EPS &&
+        Math.abs(prev.width - next.width) < LAYOUT_EPS &&
+        Math.abs(prev.height - next.height) < LAYOUT_EPS
+    );
+}
+
+function isIndicatorUnchanged(prev, next) {
+    return (
+        Math.abs(prev.left - next.left) < LAYOUT_EPS &&
+        Math.abs(prev.top - next.top) < LAYOUT_EPS &&
+        Math.abs(prev.width - next.width) < LAYOUT_EPS &&
+        Math.abs(prev.height - next.height) < LAYOUT_EPS
+    );
+}
+
+/** Whole pixels — avoids subpixel layout ↔ indicator sync loops on Fabric. */
+function normalizeRnLayout(layout) {
+    return {
+        x: Math.round(layout.x),
+        y: Math.round(layout.y),
+        width: Math.round(layout.width),
+        height: Math.round(layout.height),
+    };
+}
 
 /**
  * @param {Array} tabs - { key, title, content }
@@ -75,39 +107,37 @@ export default function Tabs({
     const [currentTab, setCurrentTab] = useState(
         () => activeTab ?? tabs?.[0]?.key
     );
-    const triggerRefs = useRef({});
+    /** Parent often passes a new `tabs` array each render; never key `useCallback`/`useLayoutEffect` off that reference. */
+    const tabsRef = useRef(tabs);
+    tabsRef.current = tabs;
+
+    /** Layout of `TabsPrimitive.List` relative to the header row (same coords as the selection layer). */
+    const listLayoutRef = useRef({ x: 0, y: 0, width: 0, height: 0 });
+    /** Per-tab `Pressable` layout relative to the list — avoids `measureLayout`, which can hang on Fabric. */
+    const triggerLayoutsRef = useRef({});
+    /** "More" row view — `onLayout` is not relative to the tab list (Dropdown wraps the trigger). */
+    const moreViewRef = useRef(null);
+    const currentTabRef = useRef(currentTab);
+    currentTabRef.current = currentTab;
+
     const headerRowLayoutRef = useRef(null);
     const scrollViewRef = useRef(null);
     const scrollXRef = useRef(0);
     const scrollViewWidthRef = useRef(0);
     const skipFirstScrollIntoViewRef = useRef(true);
 
-    /**
-     * Plain layout state (no RN/Reanimated Animated values in styles): NativeWind/css-interop
-     * can traverse animated style objects and trigger Reanimated strict "reading .value during render".
-     */
     const [indicatorLayout, setIndicatorLayout] = useState({
         left: 0,
         top: 0,
         width: 0,
         height: 0,
     });
-    /** First measure: no LayoutAnimation; after that animate tab changes. */
-    const readyForAnimationRef = useRef(false);
-
-    useEffect(() => {
-        if (
-            Platform.OS === 'android' &&
-            typeof UIManager.setLayoutAnimationEnabledExperimental === 'function'
-        ) {
-            UIManager.setLayoutAnimationEnabledExperimental(true);
-        }
-    }, []);
-
     const currentSizeKey = size || tabsSizes?.default_size || 'md';
     const sizeCfg = tabsSizes?.[currentSizeKey] || tabsSizes?.md || {};
     const variantCfg =
         tabsVariants[variant] || tabsVariants.default || tabsVariants.secondary;
+    const variantCfgRef = useRef(variantCfg);
+    variantCfgRef.current = variantCfg;
 
     /** Secondary uses a bottom line, not a pill — rounding on outer track/row clips the indicator. */
     const radiusTrack =
@@ -135,8 +165,8 @@ export default function Tabs({
         gapPx,
         contentPaddingHorizontal:
             overflow === 'collapse' ? listHorizontalPad : 0,
+        equalWidth: useEqualWidth && !hug,
     });
-    const moreRef = useRef(null);
     /** After picking a tab from the "More" menu, skip auto-reopen (effect would see overflow active and open again). */
     const moreMenuDismissAfterMenuSelectRef = useRef(false);
 
@@ -153,7 +183,16 @@ export default function Tabs({
             return;
         }
         if (collapseLayout.isActiveInOverflow(currentTab)) {
-            setMoreMenuOpen(true);
+            /**
+             * Native `DropdownMenu` uses a full-screen `Modal` + backdrop. Auto-opening it here made the
+             * whole screen non-interactive (and could fight layout) whenever the active tab lived in overflow.
+             * Web keeps open-on-overflow for keyboard/focus parity.
+             */
+            if (Platform.OS === 'web') {
+                setMoreMenuOpen(true);
+            } else {
+                setMoreMenuOpen(false);
+            }
         } else {
             setMoreMenuOpen(false);
         }
@@ -168,119 +207,132 @@ export default function Tabs({
         if (activeTab !== undefined) setCurrentTab(activeTab);
     }, [activeTab]);
 
-    const updateIndicator = useCallback(
-        (tabKey) => {
-            const layoutNode = headerRowLayoutRef.current;
-            if (!layoutNode || !variantCfg) return;
+    const syncIndicatorLayout = useCallback(() => {
+        if (!variantCfgRef.current) return;
+        const tabKey = currentTabRef.current;
+        const list = listLayoutRef.current;
 
-            const dur = readyForAnimationRef.current
-                ? TABS_SELECTION_DURATION_MS
-                : 0;
-            const applyMeasure = (x, y, width, height) => {
-                let top;
-                let h;
-                if (variant === 'secondary') {
-                    top = y + height - TABS_UNDERLINE_HEIGHT_PX;
-                    h = TABS_UNDERLINE_HEIGHT_PX;
-                } else {
-                    top = y;
-                    h = height;
-                }
-                if (dur > 0) {
-                    LayoutAnimation.configureNext(
-                        LayoutAnimation.create(
-                            dur,
-                            LayoutAnimation.Types.easeInEaseOut,
-                            LayoutAnimation.Properties.opacity
-                        )
-                    );
-                }
-                setIndicatorLayout({
-                    left: x,
+        const applyFromRect = (leftInHeader, topInHeader, width, height) => {
+            const l = Math.round(leftInHeader);
+            const t0 = Math.round(topInHeader);
+            const w = Math.round(width);
+            const rawH = Math.round(height);
+            let top;
+            let h;
+            if (variant === 'secondary') {
+                top = t0 + rawH - TABS_UNDERLINE_HEIGHT_PX;
+                h = TABS_UNDERLINE_HEIGHT_PX;
+            } else {
+                top = t0;
+                h = rawH;
+            }
+            setIndicatorLayout((prev) => {
+                const next = {
+                    left: l,
                     top,
-                    width,
+                    width: w,
                     height: h,
+                };
+                return isIndicatorUnchanged(prev, next) ? prev : next;
+            });
+        };
+
+        if (overflow === 'collapse' && tabKey) {
+            const idx = (tabsRef.current ?? []).findIndex((t) => t.key === tabKey);
+            const inOverflow = idx >= 0 && idx >= collapseLayout.visibleCount;
+            if (inOverflow) {
+                const headerNode = headerRowLayoutRef.current;
+                const moreNode = moreViewRef.current;
+                if (!headerNode || !moreNode) return;
+                /** Window-space rects — avoids `measureLayout` (Fabric) and wrong parent in onLayout (Dropdown wraps trigger). */
+                moreNode.measureInWindow((mx, my, mw, mh) => {
+                    headerNode.measureInWindow((hx, hy) => {
+                        applyFromRect(mx - hx, my - hy, mw, mh);
+                    });
                 });
-                if (!readyForAnimationRef.current) {
-                    readyForAnimationRef.current = true;
-                }
-            };
-
-            if (overflow === 'collapse' && tabKey) {
-                const idx = (tabs ?? []).findIndex((t) => t.key === tabKey);
-                const inOverflow =
-                    idx >= 0 && idx >= collapseLayout.visibleCount;
-                if (inOverflow) {
-                    const moreNode = moreRef.current;
-                    if (moreNode) {
-                        moreNode.measureLayout(
-                            layoutNode,
-                            applyMeasure,
-                            () => {}
-                        );
-                        return;
-                    }
-                }
+                return;
             }
+        }
 
-            const triggerRef = triggerRefs.current[tabKey];
-            if (triggerRef) {
-                triggerRef.measureLayout(
-                    layoutNode,
-                    applyMeasure,
-                    () => {}
-                );
-            }
+        if (!list || list.width <= 0) return;
+
+        const triggerL = triggerLayoutsRef.current[tabKey];
+        if (!triggerL) return;
+
+        applyFromRect(
+            list.x + triggerL.x,
+            list.y + triggerL.y,
+            triggerL.width,
+            triggerL.height
+        );
+    }, [variant, overflow, collapseLayout.visibleCount]);
+
+    const syncIndicatorLayoutRef = useRef(syncIndicatorLayout);
+    syncIndicatorLayoutRef.current = syncIndicatorLayout;
+
+    const onListLayout = useCallback(
+        (e) => {
+            const layout = normalizeRnLayout(e.nativeEvent.layout);
+            if (isRnLayoutUnchanged(listLayoutRef.current, layout)) return;
+            listLayoutRef.current = layout;
+            syncIndicatorLayoutRef.current();
         },
-        [variant, variantCfg, overflow, tabs, collapseLayout.visibleCount]
+        []
     );
 
-    useEffect(() => {
-        const timer = setTimeout(() => updateIndicator(currentTab), 50);
-        return () => clearTimeout(timer);
-    }, [
-        currentTab,
-        updateIndicator,
-        variant,
-        size,
-        useEqualWidth,
-        rounded,
-        hug,
-        overflow,
-        collapseLayout.visibleCount,
-        tabs?.length,
-    ]);
+    const onTriggerLayout = useCallback(
+        (tabKey) => (e) => {
+            const layout = normalizeRnLayout(e.nativeEvent.layout);
+            const prev = triggerLayoutsRef.current[tabKey];
+            if (isRnLayoutUnchanged(prev, layout)) return;
+            triggerLayoutsRef.current[tabKey] = layout;
+            syncIndicatorLayoutRef.current();
+        },
+        []
+    );
+
+    const onMoreLayoutForTabs = useCallback(
+        (e) => {
+            collapseLayout.onMoreLayout(e);
+            syncIndicatorLayoutRef.current();
+        },
+        [collapseLayout.onMoreLayout]
+    );
+
+    /** Only when the selected tab changes — not when `syncIndicatorLayout` identity flips (e.g. unstable theme refs), or every render can re-enter layout+setState. */
+    useLayoutEffect(() => {
+        syncIndicatorLayoutRef.current();
+    }, [currentTab]);
 
     const scrollActiveTabIntoView = useCallback(() => {
         if (overflow === 'collapse') return;
-        const trigger = triggerRefs.current[currentTab];
-        const layoutNode = headerRowLayoutRef.current;
+        const triggerL = triggerLayoutsRef.current[currentTab];
+        const list = listLayoutRef.current;
         const scrollView = scrollViewRef.current;
-        if (!trigger || !layoutNode || !scrollView) return;
+        if (!triggerL || !list || !scrollView) return;
 
         const padding =
             sizeCfg.scroll_inset ?? TABS_SCROLL_INTO_VIEW_PADDING_PX;
-        trigger.measureLayout(
-            layoutNode,
-            (x, _y, width, _h) => {
-                const vw = scrollViewWidthRef.current;
-                if (!vw) return;
-                const scrollX = scrollXRef.current;
-                const right = x + width;
-                const viewportRight = scrollX + vw;
+        const vw = scrollViewWidthRef.current;
+        if (!vw) return;
+        const scrollX = scrollXRef.current;
+        const absX = list.x + triggerL.x;
+        const width = triggerL.width;
+        const right = absX + width;
+        const viewportRight = scrollX + vw;
 
-                let targetX = scrollX;
-                if (x < scrollX + padding) {
-                    targetX = Math.max(0, x - padding);
-                } else if (right > viewportRight - padding) {
-                    targetX = Math.max(0, right - vw + padding);
-                }
-                if (Math.abs(targetX - scrollX) > 0.5) {
-                    scrollView.scrollTo({ x: targetX, animated: true });
-                }
-            },
-            () => {}
-        );
+        let targetX = scrollX;
+        if (absX < scrollX + padding) {
+            targetX = Math.max(0, absX - padding);
+        } else if (right > viewportRight - padding) {
+            targetX = Math.max(0, right - vw + padding);
+        }
+        if (Math.abs(targetX - scrollX) > 0.5) {
+            scrollView.scrollTo({
+                x: targetX,
+                animated: Platform.OS === 'web',
+            });
+        }
     }, [currentTab, sizeCfg.scroll_inset, overflow]);
 
     useEffect(() => {
@@ -302,7 +354,6 @@ export default function Tabs({
             width: indicatorLayout.width,
             height: indicatorLayout.height,
             zIndex: 1,
-            pointerEvents: 'none',
         }),
         [indicatorLayout]
     );
@@ -366,6 +417,31 @@ export default function Tabs({
             )}
         />
     );
+    const selectionLayer = (
+        <View
+            style={selectionStyle}
+            pointerEvents="none"
+            collapsable={false}
+        >
+            {variant === 'default' ? (
+                <View
+                    className={clsx(
+                        'absolute inset-0',
+                        radiusPill,
+                        variantCfg.pill
+                    )}
+                />
+            ) : (
+                <View
+                    className={clsx(
+                        'absolute inset-0',
+                        sizeCfg.indicator_inner,
+                        variantCfg.line
+                    )}
+                />
+            )}
+        </View>
+    );
 
     const collapseListInner = (
         <>
@@ -375,7 +451,8 @@ export default function Tabs({
                     variantCfg.row,
                     radiusRow,
                     sizeCfg.header,
-                    'flex flex-row flex-nowrap !flex-none shrink-0 min-w-0'
+                    'flex flex-row flex-nowrap !flex-none shrink-0 min-w-0',
+                    useEqualWidth && !hug && 'w-full'
                 )}
                 style={{
                     position: 'absolute',
@@ -394,7 +471,8 @@ export default function Tabs({
                             tabsTheme['u-controls-tabs-header-item'],
                             sizeCfg.item,
                             radiusPill,
-                            'shrink-0 flex-none flex-row'
+                            tabStretch,
+                            'flex-row'
                         )}
                     >
                         <Text className={clsx(sizeCfg.text)}>{tab.title}</Text>
@@ -402,27 +480,10 @@ export default function Tabs({
                 ))}
             </View>
 
-            <View style={selectionStyle} collapsable={false}>
-                {variant === 'default' ? (
-                    <View
-                        className={clsx(
-                            'absolute inset-0',
-                            radiusPill,
-                            variantCfg.pill
-                        )}
-                    />
-                ) : (
-                    <View
-                        className={clsx(
-                            'absolute inset-0',
-                            sizeCfg.indicator_inner,
-                            variantCfg.line
-                        )}
-                    />
-                )}
-            </View>
+            {selectionLayer}
 
             <TabsPrimitive.List
+                onLayout={onListLayout}
                 className={clsx(
                     tabsTheme['u-controls-tabs-header-row'],
                     variantCfg.row,
@@ -447,10 +508,7 @@ export default function Tabs({
                     <TabsPrimitive.Trigger
                         key={tab.key}
                         value={tab.key}
-                        ref={(node) => {
-                            if (node)
-                                triggerRefs.current[tab.key] = node;
-                        }}
+                        onLayout={onTriggerLayout(tab.key)}
                         className={clsx(
                             tabsTheme['u-controls-tabs-header-item'],
                             sizeCfg.item,
@@ -491,14 +549,15 @@ export default function Tabs({
                         mode="popup"
                         variant="tabs-overflow"
                         tabsOverflowSize={currentSizeKey}
+                        openOnFocus={Platform.OS === 'web'}
                         open={moreMenuOpen}
                         onOpenChange={setMoreMenuOpen}
                         items={overflowMenuItems}
                         onSelect={handleOverflowMenuSelect}
                     >
                         <View
-                            ref={moreRef}
-                            onLayout={collapseLayout.onMoreLayout}
+                            ref={moreViewRef}
+                            onLayout={onMoreLayoutForTabs}
                             collapsable={
                                 Platform.OS === 'android'
                                     ? false
@@ -562,10 +621,7 @@ export default function Tabs({
                     <TabsPrimitive.Trigger
                         key={tab.key}
                         value={tab.key}
-                        ref={(node) => {
-                            if (node)
-                                triggerRefs.current[tab.key] = node;
-                        }}
+                        onLayout={onTriggerLayout(tab.key)}
                         className="sr-only absolute h-px w-px overflow-hidden opacity-0 pointer-events-none"
                         accessibilityElementsHidden
                         importantForAccessibility="no-hide-descendants"
@@ -701,27 +757,10 @@ export default function Tabs({
                                 listWrapperClassName
                             )}
                         >
-                            <View style={selectionStyle} collapsable={false}>
-                                {variant === 'default' ? (
-                                    <View
-                                        className={clsx(
-                                            'absolute inset-0',
-                                            radiusPill,
-                                            variantCfg.pill
-                                        )}
-                                    />
-                                ) : (
-                                    <View
-                                        className={clsx(
-                                            'absolute inset-0',
-                                            sizeCfg.indicator_inner,
-                                            variantCfg.line
-                                        )}
-                                    />
-                                )}
-                            </View>
+                            {selectionLayer}
 
                             <TabsPrimitive.List
+                                onLayout={onListLayout}
                                 className={clsx(
                                     tabsTheme['u-controls-tabs-header-row'],
                                     variantCfg.row,
@@ -741,11 +780,7 @@ export default function Tabs({
                                     <TabsPrimitive.Trigger
                                         key={tab.key}
                                         value={tab.key}
-                                        ref={(node) => {
-                                            if (node)
-                                                triggerRefs.current[tab.key] =
-                                                    node;
-                                        }}
+                                        onLayout={onTriggerLayout(tab.key)}
                                         className={clsx(
                                             tabsTheme[
                                                 'u-controls-tabs-header-item'

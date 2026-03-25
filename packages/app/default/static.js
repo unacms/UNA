@@ -6,7 +6,7 @@ import Link from 'app/ui/atoms/link'
 import { Icon } from 'app/ui/atoms/icon'
 import Card from 'app/ui/molecules/card'
 import { fetcher } from 'app/lib/fetcher'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import React from 'react'
 import { Animated } from 'react-native'
 import { useTranslation } from 'react-i18next'
@@ -151,7 +151,9 @@ const SplashTextComponent = (props) => {
 
 const SplashTabsComponent = ({ onTabChange }) => {
     const { t } = useTranslation()
-    const splashSectionTabs = [
+    /** Stable `tabs` reference across Splash re-renders — avoids Tabs collapse/sync effects re-firing every parent paint. */
+    const splashSectionTabs = useMemo(
+        () => [
         {
             key: 'users',
             title: t('Users'),
@@ -228,7 +230,9 @@ Create Polls to collect feedback, make decisions, and engage your community.    
                 </View>
             ),
         }
-    ]
+        ],
+        [t]
+    )
 
     return (
         <><Card padding="p-4">
@@ -240,7 +244,7 @@ Create Polls to collect feedback, make decisions, and engage your community.    
                 tabBarClassName="flex flex-row justify-start"
                 size="sm"
                 equalWidth
-                overflow="collapse"
+                overflow={isWeb ? 'collapse' : 'scroll'}
                 onTabChange={onTabChange}
                 
             />

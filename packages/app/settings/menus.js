@@ -79,12 +79,16 @@ export const settingsMenus = {
                 link: '/explore',
                 icon: 'Compass',
                 logged: false,
+                animated: true,
+                addClassName: 'icon-scene-fill web:hover:icon-scene-draw',
             },
             {
                 name: 'videos-home',
                 title: 'Video',
                 link: '/videos-home',
                 icon: 'TvMinimalPlay',
+                animated: true,
+                addClassName: 'icon-scene-fill web:hover:icon-scene-draw',
             },
             {
                 name: 'products-home',
@@ -129,6 +133,8 @@ export const settingsMenus = {
                         title: 'Video',
                         link: '/videos-home',
                         icon: 'TvMinimalPlay',
+                        animated: true,
+                        addClassName: 'icon-scene-fill web:hover:icon-scene-draw',
                     },
                     {
                         name: 'about',

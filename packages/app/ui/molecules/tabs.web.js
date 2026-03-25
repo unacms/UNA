@@ -135,6 +135,7 @@ export default function Tabs({
         gapPx,
         contentPaddingHorizontal:
             overflow === 'collapse' ? listHorizontalPad : 0,
+        equalWidth: useEqualWidth && !hug,
     });
 
     /** Sync "More" menu open state when an overflow tab is active (keyboard arrows) or close when back on-strip. */
@@ -426,7 +427,8 @@ export default function Tabs({
                     variantCfg.row,
                     radiusRow,
                     sizeCfg.header,
-                    'flex flex-row flex-nowrap !flex-none shrink-0 min-w-0'
+                    'flex flex-row flex-nowrap !flex-none shrink-0 min-w-0',
+                    useEqualWidth && !hug && 'w-full'
                 )}
                 style={{
                     position: 'absolute',
@@ -445,7 +447,8 @@ export default function Tabs({
                             tabsTheme['u-controls-tabs-header-item'],
                             sizeCfg.item,
                             radiusPill,
-                            'shrink-0 flex-none flex-row'
+                            tabStretch,
+                            'flex-row'
                         )}
                     >
                         <Text className={clsx(sizeCfg.text)}>{tab.title}</Text>
