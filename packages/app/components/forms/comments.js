@@ -47,7 +47,9 @@ export default function FormComments(props) {
         if (formContext.formState.isSubmitted) {
             playSound();
             formContext.setValue('cmt_text', '');
+            emitter.emit(`editor`, { action: 'set_content', value: '' })
             emitter.emit(`fld_files_cmt_image`, { action: 'clear' })
+            
         }
     }, [formContext.formState.isSubmitted, formContext]);
 

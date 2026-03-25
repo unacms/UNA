@@ -346,7 +346,7 @@ export default function RftText({
         }
         `
     }
-
+    //TODO FIX ONE SIDE REPLY/ ANOTHER NOT CLEAR TEXT AFTER POST
     /*useEffect(() => {
         if (editor && (field?.value == '' || field?.value?.startsWith("<!--INITED-->")) && editor.getHTML() != field.value) {
             setTimeout(() => {
@@ -551,6 +551,9 @@ export default function RftText({
                 } else {
                     editor.focus('end')
                 }
+            }
+            if (data.action == 'set_content') {
+                editor.setContent(data.value)
             }
         })
 
