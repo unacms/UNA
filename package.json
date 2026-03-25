@@ -9,11 +9,13 @@
     "@types/react": "~19.1.0",
     "eslint": "^9.17.0",
     "lerna-update-wizard": "^1.1.2",
+    "patch-package": "^8.0.1",
     "turbo": "^2.5.8",
     "typescript": "^5.7.2"
   },
   "scripts": {
     "preinstall": "node scripts/merge-package-customization.js",
+    "postinstall": "patch-package",
     "native": "cd apps/expo && dotenv -e ../../.env.local -- expo start --clear",
     "ios": "cd apps/expo && dotenv -e ../../.env.local -- yarn ios",
     "ios:device": "cd apps/expo && dotenv -e ../../.env.local -- npx expo run:ios --device",

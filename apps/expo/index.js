@@ -2,6 +2,14 @@
 //import {enableLatestRenderer} from 'react-native-maps';
 //enableLatestRenderer();
 
+/**
+ * NativeWind / react-native-css-interop wraps views with Reanimated merge paths that
+ * can trip strict "reading .value during render" warnings (third-party, not app tabs).
+ * Disable strict-only logs; see https://docs.swmansion.com/react-native-reanimated/docs/debugging/logger-configuration
+ */
+import { configureReanimatedLogger } from 'react-native-reanimated';
+configureReanimatedLogger({ strict: false });
+
 import 'react-native-get-random-values';
 import 'react-native-url-polyfill/auto';
 import { StatusBar, Platform } from 'react-native';

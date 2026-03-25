@@ -1,5 +1,11 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
-import { View, ScrollView, Platform } from 'react-native';
+import {
+    View,
+    ScrollView,
+    Platform,
+    LayoutAnimation,
+    UIManager,
+} from 'react-native';
 import { Text } from 'app/design/typography';
 import * as TabsPrimitive from 'app/ui/primitives/tabs';
 import { appSetting } from 'app/lib/util';
@@ -8,12 +14,6 @@ import { useTranslation } from 'react-i18next';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { Icon } from 'app/ui/atoms/icon';
 import { useTabsCollapseLayout } from 'app/ui/molecules/use-tabs-collapse-layout';
-import Animated, {
-    useSharedValue,
-    useAnimatedStyle,
-    withTiming,
-    Easing,
-} from 'react-native-reanimated';
 import {
     TABS_SELECTION_DURATION_MS,
     TABS_SCROLL_INTO_VIEW_PADDING_PX,
@@ -82,11 +82,27 @@ export default function Tabs({
     const scrollViewWidthRef = useRef(0);
     const skipFirstScrollIntoViewRef = useRef(true);
 
-    const selLeft = useSharedValue(0);
-    const selTop = useSharedValue(0);
-    const selWidth = useSharedValue(0);
-    const selHeight = useSharedValue(0);
-    const [ready, setReady] = useState(false);
+    /**
+     * Plain layout state (no RN/Reanimated Animated values in styles): NativeWind/css-interop
+     * can traverse animated style objects and trigger Reanimated strict "reading .value during render".
+     */
+    const [indicatorLayout, setIndicatorLayout] = useState({
+        left: 0,
+        top: 0,
+        width: 0,
+        height: 0,
+    });
+    /** First measure: no LayoutAnimation; after that animate tab changes. */
+    const readyForAnimationRef = useRef(false);
+
+    useEffect(() => {
+        if (
+            Platform.OS === 'android' &&
+            typeof UIManager.setLayoutAnimationEnabledExperimental === 'function'
+        ) {
+            UIManager.setLayoutAnimationEnabledExperimental(true);
+        }
+    }, []);
 
     const currentSizeKey = size || tabsSizes?.default_size || 'md';
     const sizeCfg = tabsSizes?.[currentSizeKey] || tabsSizes?.md || {};
@@ -157,8 +173,9 @@ export default function Tabs({
             const layoutNode = headerRowLayoutRef.current;
             if (!layoutNode || !variantCfg) return;
 
-            const dur = ready ? TABS_SELECTION_DURATION_MS : 0;
-            const easing = Easing.out(Easing.ease);
+            const dur = readyForAnimationRef.current
+                ? TABS_SELECTION_DURATION_MS
+                : 0;
             const applyMeasure = (x, y, width, height) => {
                 let top;
                 let h;
@@ -169,14 +186,24 @@ export default function Tabs({
                     top = y;
                     h = height;
                 }
-                selLeft.value = withTiming(x, { duration: dur, easing });
-                selTop.value = withTiming(top, { duration: dur, easing });
-                selWidth.value = withTiming(width, {
-                    duration: dur,
-                    easing,
+                if (dur > 0) {
+                    LayoutAnimation.configureNext(
+                        LayoutAnimation.create(
+                            dur,
+                            LayoutAnimation.Types.easeInEaseOut,
+                            LayoutAnimation.Properties.opacity
+                        )
+                    );
+                }
+                setIndicatorLayout({
+                    left: x,
+                    top,
+                    width,
+                    height: h,
                 });
-                selHeight.value = withTiming(h, { duration: dur, easing });
-                if (!ready) setReady(true);
+                if (!readyForAnimationRef.current) {
+                    readyForAnimationRef.current = true;
+                }
             };
 
             if (overflow === 'collapse' && tabKey) {
@@ -205,7 +232,7 @@ export default function Tabs({
                 );
             }
         },
-        [ready, variant, variantCfg, overflow, tabs, collapseLayout.visibleCount]
+        [variant, variantCfg, overflow, tabs, collapseLayout.visibleCount]
     );
 
     useEffect(() => {
@@ -266,15 +293,18 @@ export default function Tabs({
         return () => clearTimeout(timer);
     }, [currentTab, scrollActiveTabIntoView, overflow]);
 
-    const selectionStyle = useAnimatedStyle(
+    /** Theme `u-controls-tabs-selection-layer`: absolute + pointer-events-none + z-1 */
+    const selectionStyle = useMemo(
         () => ({
             position: 'absolute',
-            left: selLeft.value,
-            top: selTop.value,
-            width: selWidth.value,
-            height: selHeight.value,
+            left: indicatorLayout.left,
+            top: indicatorLayout.top,
+            width: indicatorLayout.width,
+            height: indicatorLayout.height,
+            zIndex: 1,
+            pointerEvents: 'none',
         }),
-        []
+        [indicatorLayout]
     );
 
     const handleTabChange = useCallback(
@@ -372,10 +402,7 @@ export default function Tabs({
                 ))}
             </View>
 
-            <Animated.View
-                style={[selectionStyle, { zIndex: 1 }]}
-                className={tabsTheme['u-controls-tabs-selection-layer']}
-            >
+            <View style={selectionStyle} collapsable={false}>
                 {variant === 'default' ? (
                     <View
                         className={clsx(
@@ -393,7 +420,7 @@ export default function Tabs({
                         )}
                     />
                 )}
-            </Animated.View>
+            </View>
 
             <TabsPrimitive.List
                 className={clsx(
@@ -674,12 +701,7 @@ export default function Tabs({
                                 listWrapperClassName
                             )}
                         >
-                            <Animated.View
-                                style={[selectionStyle, { zIndex: 1 }]}
-                                className={
-                                    tabsTheme['u-controls-tabs-selection-layer']
-                                }
-                            >
+                            <View style={selectionStyle} collapsable={false}>
                                 {variant === 'default' ? (
                                     <View
                                         className={clsx(
@@ -697,7 +719,7 @@ export default function Tabs({
                                         )}
                                     />
                                 )}
-                            </Animated.View>
+                            </View>
 
                             <TabsPrimitive.List
                                 className={clsx(
