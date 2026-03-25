@@ -42,7 +42,6 @@ neo/
 ├── packages/
 │   └── app/            # Shared application code (components, lib, design)
 │
-├── docs/               # Documentation
 ├── crypto-shim/        # Polyfill for crypto module
 ├── package.json        # Root workspace configuration
 ├── turbo.json          # Turborepo configuration
@@ -564,7 +563,7 @@ NEO uses a hybrid routing strategy:
 - **Web (Next.js):** App Router in `apps/next/app/`
 - **Cross-platform navigation:** `solito` for shared navigation patterns
 
-For detailed routing documentation, see [docs/routing.md](./docs/routing.md).
+Agent and UNA integration guidance (including routing context) lives in [`agents.md`](./agents.md) at the repo root and in the [`una-api` skill](.agents/skills/una-api/SKILL.md).
 
 ---
 
