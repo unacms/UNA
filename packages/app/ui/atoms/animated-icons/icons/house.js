@@ -1,18 +1,28 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { forwardRef, useEffect, useRef } from 'react';
 import { Animated, Easing, Platform } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { View } from 'app/design/view';
 
 const DOOR_PATH_LENGTH = 22;
 
-const AnimatedPath = Animated.createAnimatedComponent(Path);
+/**
+ * RN Animated injects `collapsable={false}` into animated components; that must not reach web `<path>`
+ * (React 19 warns). Strip it in the leaf so it runs after Animated merges props.
+ */
+const PathStripDomInvalid = forwardRef(function PathStripDomInvalid(props, ref) {
+    const { collapsable: _collapsable, onLayout: _onLayout, ...rest } = props;
+    return <Path ref={ref} {...rest} />;
+});
+PathStripDomInvalid.displayName = 'PathStripDomInvalid';
 
-/** Props that must not reach DOM nodes (Legend Motion also injects onLayout on motion paths). */
+const AnimatedPath = Animated.createAnimatedComponent(PathStripDomInvalid);
+
+/** Props that must not reach DOM nodes (RN / Animated may inject these; web rejects some on `<path>`). */
 function omitUnsafeViewProps(rest) {
     if (!rest || typeof rest !== 'object') return {};
-    const { onLayout: _onLayout, ...safe } = rest;
+    const { onLayout: _onLayout, collapsable: _collapsable, ...safe } = rest;
     return safe;
 }
 
