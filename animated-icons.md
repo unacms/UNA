@@ -30,6 +30,8 @@ export const animatedIconRegistry = {
 
 If a name is missing from the registry, `Icon` falls back to the normal (non-animated) Lucide path.
 
+**Default registry keys (upstream NEO):** `House`, `Compass`, `TvMinimalPlay`, `Store`, `Shapes`, `Calendar`, `Info`, `Mail` (see [`packages/app/default/animated-icons-registry.js`](packages/app/default/animated-icons-registry.js)).
+
 ## Enabling animation in menus / UI
 
 - Set **`animated: true`** on the item (e.g. in [`packages/app/settings/menus.js`](packages/app/settings/menus.js) or tab config) where the row passes props into `Icon`.

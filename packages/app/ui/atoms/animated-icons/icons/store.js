@@ -2,15 +2,9 @@
 
 import { forwardRef, useEffect, useRef } from 'react';
 import { Animated, Easing, Platform } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg, { G, Path } from 'react-native-svg';
 import { View } from 'app/design/view';
 
-const DOOR_PATH_LENGTH = 22;
-
-/**
- * RN Animated injects `collapsable={false}` into animated components; that must not reach web `<path>`
- * (React 19 warns). Strip it in the leaf so it runs after Animated merges props.
- */
 const PathStripDomInvalid = forwardRef(function PathStripDomInvalid(props, ref) {
     const { collapsable: _collapsable, onLayout: _onLayout, ...rest } = props;
     return <Path ref={ref} {...rest} />;
@@ -19,22 +13,32 @@ PathStripDomInvalid.displayName = 'PathStripDomInvalid';
 
 const AnimatedPath = Animated.createAnimatedComponent(PathStripDomInvalid);
 
-/** Props that must not reach DOM nodes (RN / Animated may inject these; web rejects some on `<path>`). */
+const GStripDomInvalid = forwardRef(function GStripDomInvalid(props, ref) {
+    const { collapsable: _collapsable, onLayout: _onLayout, ...rest } = props;
+    return <G ref={ref} {...rest} />;
+});
+GStripDomInvalid.displayName = 'GStripDomInvalid';
+
+const AnimatedG = Animated.createAnimatedComponent(GStripDomInvalid);
+
 function omitUnsafeViewProps(rest) {
     if (!rest || typeof rest !== 'object') return {};
     const { onLayout: _onLayout, collapsable: _collapsable, ...safe } = rest;
     return safe;
 }
 
+/** lucide-react-native `store.js` v0.563 */
+const DOOR_D = 'M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5';
+const AWNING_D =
+    'M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244';
+const BASE_D = 'M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05';
+
+const SEGMENT_MS = 250;
+
 /**
- * Animated House — scenes: fill, draw (lucide-style door path), morph/smoke/custom* reserved for future.
- * Paths use RN Animated (not Legend MotionSvg) so web `<path>` never receives `onLayout`.
- *
- * Stroke/fill default to `currentColor` so Tailwind `text-*` on `className` matches static Lucide icons.
- * Pass an explicit `color` prop only when a caller needs a fixed tint (e.g. tab bar `color` from navigation).
- * Scene-specific tints can still be set inside this file when needed.
+ * Animated Store — awning `translateY` wiggle on web `draw`; active fill on awning + base.
  */
-export function AnimatedHouse({
+export function AnimatedStore({
     size = 24,
     width,
     height,
@@ -49,7 +53,6 @@ export function AnimatedHouse({
     ...rest
 }) {
     const dim = width ?? height ?? size ?? 24;
-    /** Explicit `color` (e.g. tab bar) wins; otherwise inherit `text-*` from the outer `className` View. */
     const c = color ?? 'currentColor';
     const svgColorStyle = color != null && color !== '' ? { color } : { color: 'inherit' };
     const sw = strokeWidthProp ?? 2;
@@ -63,7 +66,7 @@ export function AnimatedHouse({
 
     const scaleAnim = useRef(new Animated.Value(1)).current;
     const fillOpacityAnim = useRef(new Animated.Value(0)).current;
-    const doorDashAnim = useRef(new Animated.Value(0)).current;
+    const awningTy = useRef(new Animated.Value(0)).current;
 
     let sceneScale = 1;
     if (pressed) sceneScale = 0.9;
@@ -90,24 +93,42 @@ export function AnimatedHouse({
     useEffect(() => {
         if (!isWeb || !scenes.draw) return;
         if (hovered && !prevHoveredRef.current) {
-            doorDashAnim.setValue(DOOR_PATH_LENGTH);
-            Animated.timing(doorDashAnim, {
-                toValue: 0,
-                duration: 1000,
-                easing: Easing.out(Easing.cubic),
-                useNativeDriver: false,
-            }).start();
             prevHoveredRef.current = true;
+            awningTy.setValue(0);
+            Animated.sequence([
+                Animated.timing(awningTy, {
+                    toValue: -1.1,
+                    duration: SEGMENT_MS,
+                    easing: Easing.out(Easing.cubic),
+                    useNativeDriver: false,
+                }),
+                Animated.timing(awningTy, {
+                    toValue: 0,
+                    duration: SEGMENT_MS,
+                    easing: Easing.out(Easing.cubic),
+                    useNativeDriver: false,
+                }),
+                Animated.timing(awningTy, {
+                    toValue: -1.1,
+                    duration: SEGMENT_MS,
+                    easing: Easing.out(Easing.cubic),
+                    useNativeDriver: false,
+                }),
+                Animated.timing(awningTy, {
+                    toValue: 0,
+                    duration: SEGMENT_MS,
+                    easing: Easing.out(Easing.cubic),
+                    useNativeDriver: false,
+                }),
+            ]).start();
             return;
         }
         if (!hovered) {
             prevHoveredRef.current = false;
-            doorDashAnim.setValue(0);
+            awningTy.stopAnimation();
+            awningTy.setValue(0);
         }
-    }, [hovered, isWeb, scenes.draw, doorDashAnim]);
-
-    const doorDashArray =
-        isWeb && scenes.draw ? `${DOOR_PATH_LENGTH} ${DOOR_PATH_LENGTH}` : undefined;
+    }, [hovered, isWeb, scenes.draw, awningTy]);
 
     return (
         <View className={className} style={{ width: dim, height: dim }} {...viewProps}>
@@ -125,24 +146,37 @@ export function AnimatedHouse({
                     fill="none"
                     style={svgColorStyle}
                 >
+                    <Path
+                        d={DOOR_D}
+                        stroke={c}
+                        strokeWidth={sw}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        fill="none"
+                    />
+                    <AnimatedG
+                        style={{
+                            transform: [{ translateY: awningTy }],
+                        }}
+                    >
+                        <AnimatedPath
+                            d={AWNING_D}
+                            stroke={c}
+                            strokeWidth={sw}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            fill={c}
+                            fillOpacity={fillOpacityAnim}
+                        />
+                    </AnimatedG>
                     <AnimatedPath
-                        d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                        d={BASE_D}
                         stroke={c}
                         strokeWidth={sw}
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         fill={c}
                         fillOpacity={fillOpacityAnim}
-                    />
-                    <AnimatedPath
-                        d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"
-                        stroke={c}
-                        strokeWidth={sw}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        fill="none"
-                        strokeDasharray={doorDashArray}
-                        strokeDashoffset={isWeb && scenes.draw ? doorDashAnim : 0}
                     />
                 </Svg>
             </Animated.View>

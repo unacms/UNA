@@ -2,15 +2,9 @@
 
 import { forwardRef, useEffect, useRef } from 'react';
 import { Animated, Easing, Platform } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg, { Circle, Path } from 'react-native-svg';
 import { View } from 'app/design/view';
 
-const DOOR_PATH_LENGTH = 22;
-
-/**
- * RN Animated injects `collapsable={false}` into animated components; that must not reach web `<path>`
- * (React 19 warns). Strip it in the leaf so it runs after Animated merges props.
- */
 const PathStripDomInvalid = forwardRef(function PathStripDomInvalid(props, ref) {
     const { collapsable: _collapsable, onLayout: _onLayout, ...rest } = props;
     return <Path ref={ref} {...rest} />;
@@ -19,22 +13,33 @@ PathStripDomInvalid.displayName = 'PathStripDomInvalid';
 
 const AnimatedPath = Animated.createAnimatedComponent(PathStripDomInvalid);
 
-/** Props that must not reach DOM nodes (RN / Animated may inject these; web rejects some on `<path>`). */
+const CircleStripDomInvalid = forwardRef(function CircleStripDomInvalid(props, ref) {
+    const { collapsable: _collapsable, onLayout: _onLayout, ...rest } = props;
+    return <Circle ref={ref} {...rest} />;
+});
+CircleStripDomInvalid.displayName = 'CircleStripDomInvalid';
+
+const AnimatedCircle = Animated.createAnimatedComponent(CircleStripDomInvalid);
+
 function omitUnsafeViewProps(rest) {
     if (!rest || typeof rest !== 'object') return {};
     const { onLayout: _onLayout, collapsable: _collapsable, ...safe } = rest;
     return safe;
 }
 
+/** lucide-react-native `info.js` v0.563 */
+const STEM_D = 'M12 16v-4';
+const DOT_D = 'M12 8h.01';
+
+/** Vertical stem length for stroke-dash draw. */
+const STEM_LEN = 4;
+
+const SEGMENT_MS = 250;
+
 /**
- * Animated House — scenes: fill, draw (lucide-style door path), morph/smoke/custom* reserved for future.
- * Paths use RN Animated (not Legend MotionSvg) so web `<path>` never receives `onLayout`.
- *
- * Stroke/fill default to `currentColor` so Tailwind `text-*` on `className` matches static Lucide icons.
- * Pass an explicit `color` prop only when a caller needs a fixed tint (e.g. tab bar `color` from navigation).
- * Scene-specific tints can still be set inside this file when needed.
+ * Animated Info — stem stroke-dash draw on `draw`; active duotone on circle.
  */
-export function AnimatedHouse({
+export function AnimatedInfo({
     size = 24,
     width,
     height,
@@ -49,7 +54,6 @@ export function AnimatedHouse({
     ...rest
 }) {
     const dim = width ?? height ?? size ?? 24;
-    /** Explicit `color` (e.g. tab bar) wins; otherwise inherit `text-*` from the outer `className` View. */
     const c = color ?? 'currentColor';
     const svgColorStyle = color != null && color !== '' ? { color } : { color: 'inherit' };
     const sw = strokeWidthProp ?? 2;
@@ -63,7 +67,7 @@ export function AnimatedHouse({
 
     const scaleAnim = useRef(new Animated.Value(1)).current;
     const fillOpacityAnim = useRef(new Animated.Value(0)).current;
-    const doorDashAnim = useRef(new Animated.Value(0)).current;
+    const stemDashAnim = useRef(new Animated.Value(0)).current;
 
     let sceneScale = 1;
     if (pressed) sceneScale = 0.9;
@@ -90,24 +94,24 @@ export function AnimatedHouse({
     useEffect(() => {
         if (!isWeb || !scenes.draw) return;
         if (hovered && !prevHoveredRef.current) {
-            doorDashAnim.setValue(DOOR_PATH_LENGTH);
-            Animated.timing(doorDashAnim, {
+            prevHoveredRef.current = true;
+            stemDashAnim.setValue(STEM_LEN);
+            Animated.timing(stemDashAnim, {
                 toValue: 0,
                 duration: 1000,
                 easing: Easing.out(Easing.cubic),
                 useNativeDriver: false,
             }).start();
-            prevHoveredRef.current = true;
             return;
         }
         if (!hovered) {
             prevHoveredRef.current = false;
-            doorDashAnim.setValue(0);
+            stemDashAnim.setValue(0);
         }
-    }, [hovered, isWeb, scenes.draw, doorDashAnim]);
+    }, [hovered, isWeb, scenes.draw, stemDashAnim]);
 
-    const doorDashArray =
-        isWeb && scenes.draw ? `${DOOR_PATH_LENGTH} ${DOOR_PATH_LENGTH}` : undefined;
+    const stemDashArray =
+        isWeb && scenes.draw ? `${STEM_LEN} ${STEM_LEN}` : undefined;
 
     return (
         <View className={className} style={{ width: dim, height: dim }} {...viewProps}>
@@ -125,24 +129,32 @@ export function AnimatedHouse({
                     fill="none"
                     style={svgColorStyle}
                 >
-                    <AnimatedPath
-                        d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                    <AnimatedCircle
+                        cx="12"
+                        cy="12"
+                        r="10"
                         stroke={c}
                         strokeWidth={sw}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
                         fill={c}
                         fillOpacity={fillOpacityAnim}
                     />
                     <AnimatedPath
-                        d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"
+                        d={STEM_D}
                         stroke={c}
                         strokeWidth={sw}
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         fill="none"
-                        strokeDasharray={doorDashArray}
-                        strokeDashoffset={isWeb && scenes.draw ? doorDashAnim : 0}
+                        strokeDasharray={stemDashArray}
+                        strokeDashoffset={isWeb && scenes.draw ? stemDashAnim : 0}
+                    />
+                    <Path
+                        d={DOT_D}
+                        stroke={c}
+                        strokeWidth={sw}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        fill="none"
                     />
                 </Svg>
             </Animated.View>

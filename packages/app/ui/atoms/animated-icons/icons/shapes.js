@@ -2,13 +2,9 @@
 
 import { forwardRef, useEffect, useRef } from 'react';
 import { Animated, Easing, Platform } from 'react-native';
-import Svg, { G, Path } from 'react-native-svg';
+import Svg, { Circle, G, Path, Rect } from 'react-native-svg';
 import { View } from 'app/design/view';
 
-/**
- * RN Animated injects `collapsable={false}` into animated components; that must not reach web `<path>`
- * (React 19 warns). Strip it in the leaf so it runs after Animated merges props.
- */
 const PathStripDomInvalid = forwardRef(function PathStripDomInvalid(props, ref) {
     const { collapsable: _collapsable, onLayout: _onLayout, ...rest } = props;
     return <Path ref={ref} {...rest} />;
@@ -17,9 +13,22 @@ PathStripDomInvalid.displayName = 'PathStripDomInvalid';
 
 const AnimatedPath = Animated.createAnimatedComponent(PathStripDomInvalid);
 
-/**
- * RN Animated may inject invalid props into `<g>` on web — strip before DOM.
- */
+const RectStripDomInvalid = forwardRef(function RectStripDomInvalid(props, ref) {
+    const { collapsable: _collapsable, onLayout: _onLayout, ...rest } = props;
+    return <Rect ref={ref} {...rest} />;
+});
+RectStripDomInvalid.displayName = 'RectStripDomInvalid';
+
+const AnimatedRect = Animated.createAnimatedComponent(RectStripDomInvalid);
+
+const CircleStripDomInvalid = forwardRef(function CircleStripDomInvalid(props, ref) {
+    const { collapsable: _collapsable, onLayout: _onLayout, ...rest } = props;
+    return <Circle ref={ref} {...rest} />;
+});
+CircleStripDomInvalid.displayName = 'CircleStripDomInvalid';
+
+const AnimatedCircle = Animated.createAnimatedComponent(CircleStripDomInvalid);
+
 const GStripDomInvalid = forwardRef(function GStripDomInvalid(props, ref) {
     const { collapsable: _collapsable, onLayout: _onLayout, ...rest } = props;
     return <G ref={ref} {...rest} />;
@@ -34,23 +43,20 @@ function omitUnsafeViewProps(rest) {
     return safe;
 }
 
-/** Closed ring path equivalent to `<circle cx="12" cy="12" r="10" />` (Lucide outer ring). */
-const CIRCLE_RING_D =
-    'M12 2a10 10 0 1 1 0 20a10 10 0 1 1 0-20';
+/** lucide-react-native `shapes.js` v0.563 */
+const TRIANGLE_D =
+    'M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z';
+
+/** Triangle visual center for rotation (no originX/Y on web). */
+const TRI_PIVOT_X = 12;
+const TRI_PIVOT_Y = 7;
+
+const SEGMENT_MS = 250;
 
 /**
- * Needle path from lucide-react-native `compass.js` (v0.563) — stroke-only inner “diamond”.
- * Hover `draw` scene rotates this path (same role as the door stroke in `house.js`).
+ * Animated Shapes — triangle rotation wobble on `draw`; active fill on triangle, rect, circle.
  */
-const NEEDLE_D =
-    'm16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z';
-
-/**
- * Animated Compass — same scene model as `AnimatedHouse`:
- * - `fill`: when active, semitransparent fill on the outer ring (`fillOpacity` 0.18) + stroke → duotone.
- * - `draw` (web): hover rising-edge spins the needle path (stroke) 0→360°; leave resets like house door dash.
- */
-export function AnimatedCompass({
+export function AnimatedShapes({
     size = 24,
     width,
     height,
@@ -79,9 +85,9 @@ export function AnimatedCompass({
     const scaleAnim = useRef(new Animated.Value(1)).current;
     const fillOpacityAnim = useRef(new Animated.Value(0)).current;
     const rotateDeg = useRef(new Animated.Value(0)).current;
-    const needleRotate = rotateDeg.interpolate({
-        inputRange: [0, 180],
-        outputRange: ['0deg', '180deg'],
+    const triRotate = rotateDeg.interpolate({
+        inputRange: [-12, 0, 12],
+        outputRange: ['-12deg', '0deg', '12deg'],
     });
 
     let sceneScale = 1;
@@ -109,18 +115,39 @@ export function AnimatedCompass({
     useEffect(() => {
         if (!isWeb || !scenes.draw) return;
         if (hovered && !prevHoveredRef.current) {
-            rotateDeg.setValue(0);
-            Animated.spring(rotateDeg, {
-                toValue: 180,
-                friction: 1,
-                tension: 5,
-                useNativeDriver: false,
-            }).start();
             prevHoveredRef.current = true;
+            rotateDeg.setValue(0);
+            Animated.sequence([
+                Animated.timing(rotateDeg, {
+                    toValue: 12,
+                    duration: SEGMENT_MS,
+                    easing: Easing.out(Easing.cubic),
+                    useNativeDriver: false,
+                }),
+                Animated.timing(rotateDeg, {
+                    toValue: -10,
+                    duration: SEGMENT_MS,
+                    easing: Easing.out(Easing.cubic),
+                    useNativeDriver: false,
+                }),
+                Animated.timing(rotateDeg, {
+                    toValue: 8,
+                    duration: SEGMENT_MS,
+                    easing: Easing.out(Easing.cubic),
+                    useNativeDriver: false,
+                }),
+                Animated.timing(rotateDeg, {
+                    toValue: 0,
+                    duration: SEGMENT_MS,
+                    easing: Easing.out(Easing.cubic),
+                    useNativeDriver: false,
+                }),
+            ]).start();
             return;
         }
         if (!hovered) {
             prevHoveredRef.current = false;
+            rotateDeg.stopAnimation();
             rotateDeg.setValue(0);
         }
     }, [hovered, isWeb, scenes.draw, rotateDeg]);
@@ -141,9 +168,31 @@ export function AnimatedCompass({
                     fill="none"
                     style={svgColorStyle}
                 >
-                    {/** Outer ring: same pattern as house body — stroke + animated fill for active duotone. */}
-                    <AnimatedPath
-                        d={CIRCLE_RING_D}
+                    <G transform={`translate(${TRI_PIVOT_X}, ${TRI_PIVOT_Y})`}>
+                        <AnimatedG
+                            style={{
+                                transform: [{ rotate: triRotate }],
+                            }}
+                        >
+                            <G transform={`translate(${-TRI_PIVOT_X}, ${-TRI_PIVOT_Y})`}>
+                                <AnimatedPath
+                                    d={TRIANGLE_D}
+                                    stroke={c}
+                                    strokeWidth={sw}
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    fill={c}
+                                    fillOpacity={fillOpacityAnim}
+                                />
+                            </G>
+                        </AnimatedG>
+                    </G>
+                    <AnimatedRect
+                        x="3"
+                        y="14"
+                        width="7"
+                        height="7"
+                        rx="1"
                         stroke={c}
                         strokeWidth={sw}
                         strokeLinecap="round"
@@ -151,29 +200,15 @@ export function AnimatedCompass({
                         fill={c}
                         fillOpacity={fillOpacityAnim}
                     />
-                    {/**
-                     * Needle (stroke): rotate around (12,12) via T · R · T⁻¹.
-                     * Do not use `translateX` / `rotation` on `<G>` — web `prepare()` still forwards them to
-                     * the DOM `<g>` (React 19 warns). Use `transform` strings + `style.transform` on AnimatedG.
-                     */}
-                    <G transform="translate(12, 12)">
-                        <AnimatedG
-                            style={{
-                                transform: [{ rotate: needleRotate }],
-                            }}
-                        >
-                            <G transform="translate(-12, -12)">
-                                <AnimatedPath
-                                    d={NEEDLE_D}
-                                    stroke={c}
-                                    strokeWidth={sw}
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    fill="none"
-                                />
-                            </G>
-                        </AnimatedG>
-                    </G>
+                    <AnimatedCircle
+                        cx="17.5"
+                        cy="17.5"
+                        r="3.5"
+                        stroke={c}
+                        strokeWidth={sw}
+                        fill={c}
+                        fillOpacity={fillOpacityAnim}
+                    />
                 </Svg>
             </Animated.View>
         </View>

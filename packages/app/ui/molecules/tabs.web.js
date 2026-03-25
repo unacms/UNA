@@ -168,13 +168,13 @@ export default function Tabs({
         if (activeTab !== undefined) setCurrentTab(activeTab);
     }, [activeTab]);
 
-    const handleTabChange = useCallback(
-        (value) => {
-            setCurrentTab(value);
-            onTabChange?.(value);
-        },
-        [onTabChange]
-    );
+    const onTabChangeRef = useRef(onTabChange);
+    onTabChangeRef.current = onTabChange;
+
+    const handleTabChange = useCallback((value) => {
+        setCurrentTab(value);
+        onTabChangeRef.current?.(value);
+    }, []);
 
     const handleOverflowMenuSelect = useCallback(
         (item) => {

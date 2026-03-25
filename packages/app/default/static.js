@@ -238,8 +238,6 @@ Create Polls to collect feedback, make decisions, and engage your community.    
         <><Card padding="p-4">
             <Tabs
                 tabs={splashSectionTabs}
-                
-                activeTab="users"
                 contentClassName=" p-1 pt-4 "
                 tabBarClassName="flex flex-row justify-start"
                 size="sm"

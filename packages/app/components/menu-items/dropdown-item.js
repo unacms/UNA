@@ -8,16 +8,21 @@ const menuSettings = appSetting('theme', 'dropdown_menu');
 const getIcon = (oItem, iconSize = 20) => {
     if (!oItem?.icon) return null;
 
-    const className = oItem?.class_item_icon;
+    const className = [oItem?.class_item_icon, oItem?.addClassName]
+        .filter(Boolean)
+        .join(' ');
 
     if (isEmoji(oItem.icon)) {
         return <Text className={className}>{oItem.icon}</Text>;
     } else {
+        const useAnimated = oItem.animated === true;
         return (
             <Icon
                 className={className}
                 icon={oItem.icon}
                 size={oItem?.icon_size || iconSize}
+                animated={useAnimated}
+                active={useAnimated ? oItem.selected : undefined}
             />
         );
     }

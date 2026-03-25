@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { createAudioPlayer } from 'expo-audio';
 import { Sounds } from 'app/customization/sounds';
 import { appSetting } from 'app/lib/util'
@@ -25,7 +26,10 @@ export const playSound = (name) => {
     }
 };
 
-export const useSound = (name) => () => playSound(name);
+/** Stable callback per `name` — callers use it in `useCallback` deps without churning parent `onChange` handlers. */
+export function useSound(name) {
+    return useCallback(() => playSound(name), [name]);
+}
 
 export const initAudio = async () => {
     // если нужно: await setAudioModeAsync({ playsInSilentMode: true });

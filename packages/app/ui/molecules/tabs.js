@@ -111,6 +111,9 @@ export default function Tabs({
     const tabsRef = useRef(tabs);
     tabsRef.current = tabs;
 
+    const onTabChangeRef = useRef(onTabChange);
+    onTabChangeRef.current = onTabChange;
+
     /** Layout of `TabsPrimitive.List` relative to the header row (same coords as the selection layer). */
     const listLayoutRef = useRef({ x: 0, y: 0, width: 0, height: 0 });
     /** Per-tab `Pressable` layout relative to the list — avoids `measureLayout`, which can hang on Fabric. */
@@ -358,13 +361,11 @@ export default function Tabs({
         [indicatorLayout]
     );
 
-    const handleTabChange = useCallback(
-        (value) => {
-            setCurrentTab(value);
-            onTabChange?.(value);
-        },
-        [onTabChange]
-    );
+    /** Stable identity for `TabsPrimitive.Root` — unstable parent `onTabChange` must not recreate context every render. */
+    const handleTabChange = useCallback((value) => {
+        setCurrentTab(value);
+        onTabChangeRef.current?.(value);
+    }, []);
 
     const handleOverflowMenuSelect = useCallback(
         (item) => {
@@ -727,6 +728,7 @@ export default function Tabs({
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         nestedScrollEnabled
+                        keyboardShouldPersistTaps="handled"
                         scrollEventThrottle={16}
                         className="relative z-[1] w-full max-w-full"
                         onLayout={(e) => {

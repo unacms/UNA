@@ -73,15 +73,15 @@ export function AnimatedTvMinimalPlay({
 
     let sceneScale = 1;
     if (pressed) sceneScale = 0.9;
-    else if (hovered) sceneScale = 1.1;
+    else if (hovered) sceneScale = 1.15;
     else if (isActive) sceneScale = 1.1;
 
     useEffect(() => {
         Animated.spring(scaleAnim, {
             toValue: sceneScale,
             useNativeDriver: true,
-            friction: 6,
-            tension: 380,
+            friction: 4,
+            tension: 100,
         }).start();
     }, [sceneScale, scaleAnim]);
 

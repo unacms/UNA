@@ -95,18 +95,24 @@ export const settingsMenus = {
                 title: 'Market',
                 link: '/products-home',
                 icon: 'Store',
+                animated: true,
+                addClassName: 'icon-scene-fill web:hover:icon-scene-draw',
             },
             {
                 name: 'groups-home',
                 title: 'Groups',
                 link: '/groups-home',
                 icon: 'Shapes',
+                animated: true,
+                addClassName: 'icon-scene-fill web:hover:icon-scene-draw',
             },
             {
                 name: 'events-home',
                 title: 'Events',
                 link: '/events-home',
                 icon: 'Calendar',
+                animated: true,
+                addClassName: 'icon-scene-fill web:hover:icon-scene-draw',
             }, 
             {
                 name: 'more',
@@ -121,12 +127,16 @@ export const settingsMenus = {
                         title: 'Events',
                         link: '/events-home',
                         icon: 'Calendar',
+                        animated: true,
+                        addClassName: 'icon-scene-fill web:hover:icon-scene-draw',
                     },
                     {
                         name: 'groups-home',
                         title: 'Groups',
                         link: '/groups-home',
                         icon: 'Shapes',
+                        animated: true,
+                        addClassName: 'icon-scene-fill web:hover:icon-scene-draw',
                     },
                     {
                         name: 'videos-home',
@@ -141,6 +151,8 @@ export const settingsMenus = {
                         title: 'About Us',
                         link: '/about',
                         icon: 'Info',
+                        animated: true,
+                        addClassName: 'icon-scene-fill web:hover:icon-scene-draw',
                     },
                     {
                         name: 'terms',
@@ -153,6 +165,8 @@ export const settingsMenus = {
                         title: 'Contact Us',
                         link: '/contact',
                         icon: 'Mail',
+                        animated: true,
+                        addClassName: 'icon-scene-fill web:hover:icon-scene-draw',
                     },
 
                 ]
@@ -166,6 +180,8 @@ export const settingsMenus = {
                 title: 'About Us',
                 link: '/about',
                 icon: 'Info',
+                animated: true,
+                addClassName: 'icon-scene-fill web:hover:icon-scene-draw',
             },
             {
                 name: 'terms',
@@ -184,6 +200,8 @@ export const settingsMenus = {
                 title: 'Contact Us',
                 link: '/contact',
                 icon: 'Mail',
+                animated: true,
+                addClassName: 'icon-scene-fill web:hover:icon-scene-draw',
             },
         ],
         menu_tabbar_logged: [
