@@ -566,7 +566,7 @@ export default function RftText({
     useEffect(() => {
         if (autofocus) {
             setTimeout(() => {
-                editor.focus('end')
+             //   editor.focus('end')
             }, 800)
         }
 
