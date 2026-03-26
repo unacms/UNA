@@ -59,7 +59,7 @@ export function Modal({
         if (!isIosWeb || !window.visualViewport) return;
         const update = () => {
             if (!fogRef.current) return;
-            fogRef.current.style.transform = `translateY(${window.visualViewport.offsetTop}px)`;
+            fogRef.current.style.marginTop = `${window.visualViewport.offsetTop}px`;
         };
         window.visualViewport.addEventListener('resize', update);
         window.visualViewport.addEventListener('scroll', update);
@@ -152,7 +152,7 @@ export function Modal({
             <ModalDef visible={onVisible} animationType={animationType} transparent={true}>
                 <Pressable
                     ref={fogRef}
-                    style={!isDesktop && isIosWeb ? { transition: 'transform 0.25s ease-out' } : undefined}
+                    style={!isDesktop && isIosWeb ? { transition: 'margin-top 0.25s ease-out' } : undefined}
                     className={`pointerEvents cursor-default flex justify-start w-full h-full sm:items-center items-start overflow-hidden ${modalSettings.fog} `}/* justify-start for post form small web */
                     onPress={handleWebOuterPress}
                 >
