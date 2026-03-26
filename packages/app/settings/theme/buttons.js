@@ -110,11 +110,11 @@ export const settingsButtons = {
         secondary:{
             container:{
                 base:'web:duration-200',
-                default:'bg-secondary/80',
+                default:'bg-secondary/60 ',
                 active:'bg-border web:scale-[0.98] ',
-                pressed:'bg-accent/80',
-                hovered:'bg-border/80',
-                focused:'bg-border/80',
+                pressed:' bg-accent ',
+                hovered:' bg-secondary',
+                focused:' bg-secondary',
                 disabled:'',
 
             },
@@ -153,10 +153,10 @@ export const settingsButtons = {
             container:{
                 base:'web:duration-200',
                 default:'',
-                active:'bg-border/80 web:scale-[0.98] ',
-                pressed:'web:hover:bg-accent/80',
-                hovered:'bg-muted/80',
-                focused:'bg-muted/80',
+                active:' bg-muted web:scale-[0.98] ',
+                pressed:' bg-accent ',
+                hovered:' bg-muted/60 ',
+                focused:' bg-muted/60 ',
                 disabled:'opacity-50',
 
             },
