@@ -152,7 +152,7 @@ export function Modal({
             <ModalDef visible={onVisible} animationType={animationType} transparent={true}>
                 <Pressable
                     ref={fogRef}
-                    style={!isDesktop && isIosWeb ? { transition: 'margin-top 0.25s ease-out' } : undefined}
+                    style={undefined}
                     className={`pointerEvents cursor-default flex justify-start w-full h-full sm:items-center items-start overflow-hidden ${modalSettings.fog} `}/* justify-start for post form small web */
                     onPress={handleWebOuterPress}
                 >
