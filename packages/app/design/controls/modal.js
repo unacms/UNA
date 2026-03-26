@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { Modal as ModalDef, Platform } from 'react-native'
 import { Pressable, View, ScrollView, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
@@ -10,6 +10,7 @@ import { Button } from 'app/design/controls/buttons';
 import emitter from 'app/context/emitter';
 
 const isWeb = Platform.OS === 'web';
+const isIosWeb = isWeb && typeof navigator !== 'undefined' && /iP(hone|od|ad)/.test(navigator.userAgent);
 
 const modalSettings = appSetting('theme', 'modal');
 
@@ -50,8 +51,23 @@ export function Modal({
 }) {
     const isIos = Platform.OS === 'ios';
     const isDesktop = useIsDesktop();
-    const { height: heightActual, offsetTop: viewportOffsetTop } = useActualWindowHeight();
+    const heightActual = useActualWindowHeight();
     const insets = useSafeAreaInsets();
+    const fogRef = useRef(null);
+
+    useEffect(() => {
+        if (!isIosWeb || !window.visualViewport) return;
+        const update = () => {
+            if (!fogRef.current) return;
+            fogRef.current.style.transform = `translateY(${window.visualViewport.offsetTop}px)`;
+        };
+        window.visualViewport.addEventListener('resize', update);
+        window.visualViewport.addEventListener('scroll', update);
+        return () => {
+            window.visualViewport.removeEventListener('resize', update);
+            window.visualViewport.removeEventListener('scroll', update);
+        };
+    }, []);
 
     useEffect(() => {
         const subscription = emitter.addListener('link', (data) => {
@@ -135,7 +151,8 @@ export function Modal({
         return (
             <ModalDef visible={onVisible} animationType={animationType} transparent={true}>
                 <Pressable
-                    style={!isDesktop ? { transform: `translateY(${viewportOffsetTop}px)`, transition: 'transform 0.25s ease-out' } : undefined}
+                    ref={fogRef}
+                    style={!isDesktop && isIosWeb ? { transition: 'transform 0.25s ease-out' } : undefined}
                     className={`pointerEvents cursor-default flex justify-start w-full h-full sm:items-center items-start overflow-hidden ${modalSettings.fog} `}/* justify-start for post form small web */
                     onPress={handleWebOuterPress}
                 >

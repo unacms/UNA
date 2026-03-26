@@ -43,7 +43,6 @@ export const useActualWindowHeight = () => {
     const isWeb = Platform.OS === 'web';
     const fallbackHeight = useWindowHeight();
     const [actualHeight, setActualHeight] = useState(fallbackHeight);
-    const [offsetTop, setOffsetTop] = useState(0);
 
     useEffect(() => {
         if (!isWeb || !window.visualViewport) {
@@ -51,21 +50,14 @@ export const useActualWindowHeight = () => {
             return;
         }
 
-        const update = () => {
-            setActualHeight(Math.round(window.visualViewport.height));
-            setOffsetTop(Math.round(window.visualViewport.offsetTop));
-        };
+        const update = () => setActualHeight(Math.round(window.visualViewport.height));
         update();
 
         window.visualViewport.addEventListener('resize', update);
-        window.visualViewport.addEventListener('scroll', update);
-        return () => {
-            window.visualViewport.removeEventListener('resize', update);
-            window.visualViewport.removeEventListener('scroll', update);
-        };
+        return () => window.visualViewport.removeEventListener('resize', update);
     }, [isWeb, fallbackHeight]);
 
-    return { height: actualHeight, offsetTop };
+    return actualHeight;
 };
 
 export const useBreakpoint = () => useMeasureStore((s) => s.currentBreakpoint);
