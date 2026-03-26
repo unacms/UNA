@@ -53,7 +53,7 @@ export const settingsInputs = {
         // Track
         'u-controls-switcher-track': 'rounded-full',
         'u-controls-switcher-track-base': 'w-12 p-0.5 ',
-        'u-controls-switcher-track-sm': 'w-10  p-0.5',
+        'u-controls-switcher-track-sm': 'w-8  p-0.5',
 
         // Thumb
         'u-controls-switcher-thumb':
@@ -63,7 +63,7 @@ export const settingsInputs = {
 
         // Active Thumb Position
         'u-controls-switcher-thumb-active-base': 'translate-x-4',
-        'u-controls-switcher-thumb-active-sm': 'translate-x-3',
+        'u-controls-switcher-thumb-active-sm': 'translate-x-4',
 
         // Track Colors
         'u-controls-switcher-track-col':
