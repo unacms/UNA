@@ -50,7 +50,7 @@ export function Modal({
 }) {
     const isIos = Platform.OS === 'ios';
     const isDesktop = useIsDesktop();
-    const heightActual = useActualWindowHeight();
+    const { height: heightActual, offsetTop: viewportOffsetTop } = useActualWindowHeight();
     const insets = useSafeAreaInsets();
 
     useEffect(() => {
@@ -135,16 +135,14 @@ export function Modal({
         return (
             <ModalDef visible={onVisible} animationType={animationType} transparent={true}>
                 <Pressable
-                    className={`pointerEvents cursor-default bg-red-500 flex justify-start w-full h-full sm:items-center items-start overflow-hidden ${modalSettings.fog} `}/* justify-start for post form small web */
+                    style={!isDesktop && viewportOffsetTop ? { transform: `translateY(${viewportOffsetTop}px)` } : undefined}
+                    className={`pointerEvents cursor-default flex justify-start w-full h-full sm:items-center items-start overflow-hidden ${modalSettings.fog} `}/* justify-start for post form small web */
                     onPress={handleWebOuterPress}
-                    style={{ height: isDesktop || autoHeight ? 'auto' : heightActual }}
                 >
                     {isDesktop ?
                         <RemoveScroll className={`flex-1 flex flex-col w-full sm:justify-center ${autoHeight && 'justify-center'} overflow-hidden`} >
                             <View style={{ height: isDesktop || autoHeight ? 'auto' : heightActual }} className={`w-full ${maxWidth} left-0 right-0 z-50 w-full mx-auto overflow-hidden ${modalSettings.container} `}>
-
                                 {content}
-
                             </View>
                         </RemoveScroll>
                         :
