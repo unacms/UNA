@@ -149,7 +149,7 @@ export function Modal({
                         :
                         <View style={{ height: isDesktop || autoHeight ? 'auto' : heightActual }} className={`w-full ${maxWidth} left-0 right-0 z-50 w-full mx-auto overflow-hidden ${modalSettings.container} `}>
                             <RemoveScroll className={`flex-1 flex flex-col w-full sm:justify-center ${autoHeight && 'justify-center'} overflow-hidden`} >
-                                {content}
+                                <Text>{heightActual}</Text>{content}
                             </RemoveScroll>
                         </View>}
 
