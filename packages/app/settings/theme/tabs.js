@@ -15,14 +15,14 @@ export const settingsTabs = {
 
         // Header item base (shared)
         'u-controls-tabs-header-item':
-            'inline-flex flex-auto justify-center items-center whitespace-nowrap font-medium truncate disabled:pointer-events-none disabled:opacity-50 ',
+            'inline-flex flex-auto justify-center items-center whitespace-nowrap font-medium truncate web:disabled:pointer-events-none web:disabled:opacity-50 ',
 
         // Atoms TabsTrigger: static active surface (no animated pill)
         'u-controls-tabs-header-item-active':
-            ' bg-segment shadow-sm web:duration-300 ',
+            ' bg-segment web:shadow-sm web:duration-300 ',
 
         'u-controls-tabs-header-item-inactive':
-            ' group web:hover:bg-muted web:duration-500',
+            ' web:group web:hover:bg-muted web:duration-500',
 
         // Header item text
         'u-controls-tabs-header-item-text':
@@ -47,7 +47,7 @@ export const settingsTabs = {
             row: '',
             trigger_active: ' ',
             trigger_inactive:
-                ' group web:hover:bg-muted web:duration-200',
+                ' web:group web:hover:bg-muted web:duration-200',
             pill: ' bg-segment shadow-sm',
             line: '',
         },
