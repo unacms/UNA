@@ -135,8 +135,9 @@ export function Modal({
         return (
             <ModalDef visible={onVisible} animationType={animationType} transparent={true}>
                 <Pressable
-                    className={`pointerEvents cursor-default flex justify-start w-full h-full sm:items-center items-start overflow-hidden ${modalSettings.fog} `}/* justify-start for post form small web */
+                    className={`pointerEvents cursor-default bg-red-500 flex justify-start w-full h-full sm:items-center items-start overflow-hidden ${modalSettings.fog} `}/* justify-start for post form small web */
                     onPress={handleWebOuterPress}
+                    style={{ height: isDesktop || autoHeight ? 'auto' : heightActual }}
                 >
                     {isDesktop ?
                         <RemoveScroll className={`flex-1 flex flex-col w-full sm:justify-center ${autoHeight && 'justify-center'} overflow-hidden`} >
@@ -149,7 +150,7 @@ export function Modal({
                         :
                         <View style={{ height: isDesktop || autoHeight ? 'auto' : heightActual }} className={`w-full ${maxWidth} left-0 right-0 z-50 w-full mx-auto overflow-hidden ${modalSettings.container} `}>
                             <RemoveScroll className={`flex-1 flex flex-col w-full sm:justify-center ${autoHeight && 'justify-center'} overflow-hidden`} >
-                                <Text>{heightActual}</Text>{content}
+                                {content}
                             </RemoveScroll>
                         </View>}
 
