@@ -1,21 +1,27 @@
 import { View, Row } from 'app/design/view'
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import { Platform } from 'react-native'
 import { useFormContext } from 'react-hook-form';
 import { FileButton } from 'app/lib/form-helpers';
+import { useSound } from 'app/lib/hooks/useSound';
+import emitter from 'app/context/emitter';
 
 export default function FormMessenger(props) {
     const isWeb = Platform.OS == 'web';
     const formContext = useFormContext();
-    const [isExImage, setIsExImage] = useState(false);
-    const [isFocused, setIsFocused] = useState(false);
     const imagesValue = formContext.watch('files');
 
-    function setIsFocus() {
-        setIsExImage(false)
-        setIsFocused(true)
-    }
+    const playSound = useSound('success');
+
+    useEffect(() => {
+            if (formContext.formState.isSubmitted) {
+                playSound();
+                formContext.setValue('message', '');
+                emitter.emit(`editor`, { action: 'set_content', value: '' })
+                emitter.emit(`files`, { action: 'clear' })  
+            }
+        }, [formContext.formState.isSubmitted, formContext]);
 
 
 
@@ -62,7 +68,7 @@ export default function FormMessenger(props) {
                     noPadding: true,
                     initialHeight: 20,
                     maxHeight: 160,
-                    onFocus: setIsFocus,
+                  
                     enableSubmitOnEnter: true,
                     focus: true, 
                 })}
