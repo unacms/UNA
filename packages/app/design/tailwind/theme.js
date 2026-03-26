@@ -10,11 +10,13 @@ const boxShadowWeb = {
     none: '0 0 #0000',
     DEFAULT: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
     '2xs': '0 1px rgb(0 0 0 / 0.05)',
-    'xs': '0 1px 1px 0 rgb(0 0 0 / 0.05)',
-    'xs-deep': '0 1px 1px 0 rgb(0 0 0 / 0.5)',
-    'sm': '0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05)',
-    'sm-deep': '0 1px 3px 0 rgb(0 0 0 / 0.5), 0 1px 2px -1px rgb(0 0 0 / 0.5)',
-    'md': '0 4px 6px 0px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+    'xs': '0 3px 6px -2px rgb(0 0 0 / 0.02), 0 1px 1px rgb(0 0 0 / 0.04)',
+    'xs-deep': '0 3px 6px -2px rgb(0 0 0 / 0.04), 0 1px 1px rgb(0 0 0 / 0.08)',
+    
+    'sm':      '0 4px 9px -3px rgb(0 0 0 / 0.02), 0 2px 2px rgb(0 0 0 / 0.04)',
+    'sm-deep': '0 4px 9px -3px rgb(0 0 0 / 0.04), 0 2px 2px rgb(0 0 0 / 0.08)',
+
+    'md': '0 4px 6px 0px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
     'md-deep': '0 4px 6px 0px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5)',
     'lg': '0 8px 16px -2px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
     'lg-deep': '0 8px 16px -2px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5)',

@@ -44,13 +44,13 @@ export const settingsButtons = {
         },
         primary:{
             container:{
-                base:' web:duration-200 shadow-xs dark:shadow-xs-deep ',
-                base_stroke: 'border-[0.5px] border-primary',
-                default:'bg-primary ',
-                active:'bg-primary/60 web:scale-[0.98] shadow-none  ',
+                base:' web:duration-200 border backdrop-blur  ',
+                base_stroke: 'border border-white/10 inset-0',
+                default:'bg-primary/80 shadow-xs dark:shadow-xs-deep border-black/5 dark:border-black/80 ',
+                active:'bg-primary web:scale-[0.98] shadow-none  ',
                 pressed:'bg-primary/60',
-                hovered:'bg-primary/80 ',
-                focused:'bg-primary ',
+                hovered:'bg-primary/80 shadow-md dark:shadow-md-deep border-primary/60 dark:border-black/80 ',
+                focused:'bg-primary shadow-xs dark:shadow-xs-deep border-primary/60 dark:border-black/80 ',
                 disabled:'bg-primary/50 ',
 
             },
@@ -66,19 +66,19 @@ export const settingsButtons = {
         },
         default:{
             container:{
-                base:'web:duration-200 shadow-xs dark:shadow-sm-deep ',
-                base_stroke: 'border-[0.5px] border-border  ',
-                default:' bg-white dark:bg-muted  ',
-                active:'bg-muted/80 web:scale-[0.98]   ',
-                pressed:'bg-muted/80',
-                hovered:'bg-muted/60  ',
-                focused:'bg-muted/80 ',
-                disabled:'bg-muted/50 ',
+                base:'web:duration-200 border backdrop-blur  ',
+                base_stroke: 'border border-white/95 dark:border-white/5 inset-0 ',
+                default:' bg-popover/60 shadow-xs dark:shadow-xs-deep border-border/60 dark:border-black/40 ',
+                active:' bg-muted/60 web:scale-[0.98] shadow-xs dark:shadow-xs-deep border-border/60 dark:border-black/60   ',
+                pressed:'bg-muted/80 ',
+                hovered:' bg-popover shadow-md dark:shadow-md-deep border-border/80 dark:border-black/80 ',
+                focused:' bg-popover shadow-xs dark:shadow-xs-deep border-border/60 dark:border-black/80 ',
+                disabled:'bg-popover/20 ',
 
             },
             text:{
                 base:'font-semibold web:duration-200',
-                default:'text-card-foreground',
+                default:'text-secondary-foreground',
                 hovered:'text-foreground',
                 focused:'text-foreground',
                 active:'text-foreground',

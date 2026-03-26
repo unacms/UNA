@@ -190,7 +190,7 @@ const ButtonContent = React.memo(({
     return (
         <Row className={cn('items-center', containerClasses)}>
             {hasOverlayStroke && (
-                <View className={cn('absolute inset-0 pointer-events-none overflow-hidden', roundingClass, strokeClasses)} />
+                <View className={cn('absolute  pointer-events-none overflow-hidden', roundingClass, strokeClasses)} />
             )}
             <ButtonIcon size={BtnClsSize[size]?.icon_size} icon={startDecorator} className={textClasses.replace("overflow-hidden")} />
 

@@ -60,7 +60,7 @@ export const settingsLayout = {
         show_tabbar_on_mobile_non_logged: false,
 
         header: {
-            container: 'bg-card w-full z-50 header-fixed web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out lg:shadow-xs',
+            container: ' w-full z-50 header-fixed web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out lg:shadow-xs',
             content: ' items-center justify-between h-14 lg:h-16 px-4 lg:px-6 w-full mx-auto gap-4',
             content_left: ' items-center justify-start flex-1 lg:flex-none xl:w-80 gap-x-2',
             content_center: ' hidden flex-auto lg:flex gap-2 items-center justify-center max-w-3xl  ',
