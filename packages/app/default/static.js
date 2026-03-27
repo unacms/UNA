@@ -35,13 +35,13 @@ const Logo = ({ mode = 'adaptive' }) => {
     }
 
     return (
-        <Row className="items-center gap-3">
+        <Row className="items-center gap-3 text-secondary-foreground hover:text-foreground">
             <View className={`${markStyles[mode]}`}>
                 <Svg
                     aria-label="Logo Mark"
                     width={36}
                     height={36}
-                    color={theme === 'dark' ? 'white' : 'black'}
+                    color={theme === 'dark' ? 'currentColor' : 'currentColor'}
                     viewBox="0 0 40 40"
                     xmlns="http://www.w3.org/2000/svg"
                 >
@@ -77,7 +77,7 @@ const Logo = ({ mode = 'adaptive' }) => {
                     width={72}
                     height={36}
                     viewBox="0 0 68 32"
-                    color={theme === 'dark' ? 'white' : 'black'}
+                    color={theme === 'dark' ? 'currentColor' : 'currentColor'}
                     xmlns="http://www.w3.org/2000/svg"
                 >
                     <Path
