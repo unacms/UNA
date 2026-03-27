@@ -7,6 +7,8 @@ import { getComponent } from 'app/components/registry';
 import { Platform } from 'react-native'
 import { useEffect, useCallback, useRef } from 'react'
 import { Loading } from 'app/customization/loading' 
+import { getModalPostTitle } from 'app/customization/functions'
+
 const isWeb = Platform.OS === 'web';
 
 export default function FormModal({ pageData, setPageData, modalView, url }) {
@@ -55,7 +57,7 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
             <Modal
                 onClose={handleClose}
                 onVisible={!!pageData}
-                title={!!authorData?.content?.[0]?.data?.author_data?.display_name ? `${authorData?.content?.[0]?.data?.author_data?.display_name}'s post` : ' '}
+                title={getModalPostTitle(authorData)}
                 padding=""
                 outerClickClose={isWeb}
                 usePadding={true}

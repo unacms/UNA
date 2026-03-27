@@ -15,6 +15,10 @@ export function getFriendsCounter(currentUser) {
     return currentUser?.counters?.bx_persons_friend_requests
 }
 
+export function getModalPostTitle(authorData) {
+    return !!authorData?.content?.[0]?.data?.author_data?.display_name ? `${authorData?.content?.[0]?.data?.author_data?.display_name}'s post` : ' '
+}
+
 export function layoutForList(endpoint, unitMode = '') {
     if (unitMode == 'search'){
         if (endpoint =='bx_timeline' || endpoint.includes('_cmts')){
