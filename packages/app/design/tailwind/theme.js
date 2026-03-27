@@ -8,37 +8,61 @@ const { nativewindUIColors } = require('app/design/tailwind/nativewindui-theme')
 // parseable single-shadow values for NativeWind on iOS/Android.
 const boxShadowWeb = {
     none: '0 0 #0000',
-    DEFAULT: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-    '2xs': '0 1px rgb(0 0 0 / 0.05)',
-    'xs': '0 1px 1px 0 rgb(0 0 0 / 0.05)',
-    'xs-deep': '0 1px 1px 0 rgb(0 0 0 / 0.5)',
-    'sm': '0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05)',
-    'sm-deep': '0 1px 3px 0 rgb(0 0 0 / 0.5), 0 1px 2px -1px rgb(0 0 0 / 0.5)',
-    'md': '0 4px 6px 0px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-    'md-deep': '0 4px 6px 0px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5)',
-    'lg': '0 8px 16px -2px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-    'lg-deep': '0 8px 16px -2px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5)',
-    'xl': '0 16px 24px -4px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
-    'xl-deep': '0 16px 24px -4px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5)',
-    '2xl': '0 24px 48px -4px rgb(0 0 0 / 0.25)',
-    '2xl-deep': '0 24px 48px -4px rgb(0 0 0 / 0.5)',
+
+    '2xs': '0 1px rgb(0 0 0 / 0.02)',
+    '2xs-deep': '0 1px rgb(0 0 0 / 0.08)',
+
+    'xs': '0 1px 2px rgb(0 0 0 / 0.03',
+    'xs-deep': '0 1px 2px rgb(0 0 0 / 0.12)',
+
+    'sm':      '0 1px 3px rgb(0 0 0 / 0.04)',
+    'sm-deep': '0 1px 3px rgb(0 0 0 / 0.16)',
+
+    DEFAULT: '0 3px 6px 0 rgb(0 0 0 / 0.06)',
+    'deep': '0 3px 6px 0 rgb(0 0 0 / 0.24)',
+
+    'md': '0 4px 6px rgb(0 0 0 / 0.08)',
+    'md-deep': '0 4px 6px rgb(0 0 0 / 0.32)',
+
+    'lg': '0 8px 16px rgb(0 0 0 / 0.1)',
+    'lg-deep': '0 8px 16px rgb(0 0 0 / 0.4)',
+
+    'xl': '0 16px 24px rgb(0 0 0 / 0.12)',
+    'xl-deep': '0 16px 24px rgb(0 0 0 / 0.48)',
+
+    '2xl': '0 24px 48px rgb(0 0 0 / 0.16)',
+    '2xl-deep': '0 24px 48px rgb(0 0 0 / 0.56)',
 
 };
 
 const boxShadowNative = {
     none: '0 0 #0000',
-    DEFAULT: '0px 3px 6px rgba(0, 0, 0, 0.08)',
-    '2xs': '0px 1px 1px rgba(0, 0, 0, 0.08)',
-    'xs': '0px 1px 2px rgba(0, 0, 0, 0.08)',
-    'sm': '0px 1px 3px rgba(0, 0, 0, 0.05)',
-    'md': '0px 4px 8px rgba(0, 0, 0, 0.08)',
-    'lg': '0px 8px 16px rgba(0, 0, 0, 0.08)',
-    'xl': '0px 16px 24px rgba(0, 0, 0, 0.08)',
-    '2xl': '0px 24px 48px rgba(0, 0, 0, 0.08)',
-    // NativeWind currently maps one shadow layer only; these approximate
-    // the web stacked border+shadow custom tokens.
-    'custom': '0px 2px 4px rgba(0, 0, 0, 0.08)',
-    'custom-hover': '0px 3px 6px rgba(0, 0, 0, 0.2)',
+
+    DEFAULT: '0 3px 6px 0 rgb(0 0 0 / 0.02)',
+    'deep': '0 3px 6px 0 rgb(0 0 0 / 0.08)',
+
+    '2xs': '0 1px rgb(0 0 0 / 0.04)',
+    '2xs-deep': '0 1px rgb(0 0 0 / 0.08)',
+
+    'xs': '0 1px 2px rgb(0 0 0 / 0.06',
+    'xs-deep': '0 1px 2px rgb(0 0 0 / 0.12)',
+
+    'sm':      '0 1px 3px rgb(0 0 0 / 0.08)',
+    'sm-deep': '0 1px 3px rgb(0 0 0 / 0.16),',
+
+    'md': '0 4px 6px rgb(0 0 0 / 0.1)',
+    'md-deep': '0 4px 6px rgb(0 0 0 / 0.16)',
+
+    'lg': '0 8px 16px rgb(0 0 0 / 0.12)',
+    'lg-deep': '0 8px 16px rgb(0 0 0 / 0.2)',
+
+    'xl': '0 16px 24px rgb(0 0 0 / 0.16)',
+    'xl-deep': '0 16px 24px rgb(0 0 0 / 0.24)',
+
+    '2xl': '0 24px 48px rgb(0 0 0 / 0.24)',
+    '2xl-deep': '0 24px 48px rgb(0 0 0 / 0.32)',
+
+  
 };
 
 const colors = {

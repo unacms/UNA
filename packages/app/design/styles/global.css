@@ -4,24 +4,18 @@
 
 @layer base {
     .light-theme-vars {
-        --default: var(--neutral-200);
-        --default-foreground: var(--neutral-900);
-        --segment: var(--white);
-        --segment-foreground: var(--neutral-900);
-        --surface: var(--white);
-
         --background: var(--neutral-100);
         --foreground: var(--neutral-950);
         --card: var(--white);
-        --card-foreground: var(--neutral-800);
+        --card-foreground: var(--neutral-900);
         --popover: var(--white);
         --popover-foreground: var(--neutral-900);
         --primary: var(--accent-600);
         --primary-foreground: var(--white);
         --secondary: var(--neutral-200);
-        --secondary-foreground: var(--neutral-600);
+        --secondary-foreground: var(--neutral-700);
         --muted: var(--neutral-200);
-        --muted-foreground: var(--neutral-400);
+        --muted-foreground: var(--neutral-500);
         --accent: var(--accent-100);
         --accent-foreground: var(--accent-600);
         --destructive: var(--red);
@@ -29,17 +23,8 @@
         --border: var(--neutral-300);
         --input: var(--neutral-100);
         --ring: var(--accent-600);
-        --label-secondary: var(--neutral-800);
-        --label-tertiary: var(--neutral-600);
-        --label-quaternary: var(--neutral-400);
-        --label-link: var(--accent-600);
-        --label-linkhover: var(--accent-800);
-        --link-primary: var(--accent-500);
-        --link-secondary: var(--accent-700);
-        --link-tertiary: var(--accent-900);
-        
-        
-        /* neutral scale  */
+
+        /* base scale  */
         --neutral: 113 113 122;
         --neutral-50: 250 250 250;
         --neutral-100: 244 244 245;
@@ -53,85 +38,7 @@
         --neutral-900: 24 24 27;
         --neutral-950: 9 9 11;
 
-        /* base colors scale - light  */
-
-        --base-1: 250 250 250;
-        --base-2: 244 244 245;
-        --base-3: 228 228 231;
-        --base-4: 212 212 216;
-        --base-5: 161 161 170;
-        --base-6: 115 115 115;
-        --base-7: 82 82 91;
-        --base-8: 63 63 70;
-        --base-9: 39 39 42;
-        --base-10: 24 24 27;
-        --base-11: 9 9 11;
-
- 
-
-  /* 
-        .slate {
-            --slate-1-hex: #fcfcfd;
-            --slate-1: 252 252 253;
-            --slate-2-hex: #f9f9fb;
-            --slate-2: 249 249 251;
-            --slate-3-hex: #f0f0f3;
-            --slate-3: 240 240 243;
-            --slate-4-hex: #e8e8ec;
-            --slate-4: 232 232 236; 
-            --slate-5-hex: #e0e1e6;
-            --slate-5: 224 225 230;
-            --slate-6-hex: #d9d9e0;
-            --slate-6: 217 217 224;
-            --slate-7-hex: #cdced6;
-            --slate-7: 205 205 214;
-            --slate-8-hex: #b9bbc6;
-            --slate-8: 185 187 198;
-            --slate-9-hex: #8b8d98;
-            --slate-9: 139 141 152;
-            --slate-10-hex: #80838d;
-            --slate-10: 128 131 141;
-            --slate-11-hex: #60646c;
-            --slate-11: 96 100 108;
-            --slate-12-hex: #1c2024;
-            --slate-12: 28 32 36;
-        }
-
-       
-        
-
-        .slateDark {
-            --slate-1-hex: #111113;
-            --slate-1: 17 17 19;
-            --slate-2-hex: #18191b;
-            --slate-2: 24 25 27;
-            --slate-3-hex: #212225;
-            --slate-3: 33 34 37;
-            --slate-4-hex: #272a2d;
-            --slate-4: 39 42 45;    
-            --slate-5-hex: #2e3135;
-            --slate-5: 46 49 53;
-            --slate-6-hex: #363a3f;
-            --slate-6: 54 58 63;
-            --slate-7-hex: #43484e;
-            --slate-7: 67 72 78;
-            --slate-8-hex: #5a6169;
-            --slate-8: 90 97 105;
-            --slate-9-hex: #696e77;
-            --slate-9: 105 110 119;
-            --slate-10-hex: #777b84;
-            --slate-10: 119 123 132;
-            --slate-11-hex: #b0b4ba;
-            --slate-11: 176 180 186;
-            --slate-12-hex: #edeef0;
-            --slate-12: 237 238 240;
-        }
-
-       
-         
-   
-*/
-      /* accent scale  */
+        /* accent scale  */
         --accent-50: 239 246 255;
         --accent-100: 219 234 254;
         --accent-200: 191 219 254;
@@ -143,7 +50,6 @@
         --accent-800: 30 64 175;
         --accent-900: 30 58 138;
         --accent-950: 23 37 84;
-
 
         /* State colors for semantic system */
         --white: 255 255 255;
@@ -165,17 +71,13 @@
     }
 
     .dark-theme-vars {
-        --default: var(--neutral-800);
-        --default-foreground: var(--neutral-50);
-        --segment: var(--neutral-700);
-        --segment-foreground: var(--white800);
-        --surface: var(--neutral-900);
-
         --background: var(--neutral-950);
         --foreground: var(--white);
         --card: var(--neutral-900);
-        --card-foreground: var(--neutral-200);      /*content on cards, sidebars, navbars*/
-        --popover: var(--neutral-900);
+        --card-foreground: var(
+            --neutral-200
+        ); /*content on cards, sidebars, navbars*/
+        --popover: var(--neutral-800);
         --popover-foreground: var(--neutral-50);
         --primary: var(--accent-700);
         --primary-foreground: var(--white);
@@ -187,28 +89,9 @@
         --muted-foreground: var(--neutral-600);
         --destructive: var(--red);
         --destructive-foreground: var(--neutral-950);
-        --border: var(--neutral-700);
+        --border: var(--neutral-800);
         --input: var(--neutral-800);
         --ring: var(--accent-600);
-       
-/*
-
-        --neutral: 113 113 122;
-        --neutral-50: 250 250 250;
-        --neutral-100: 244 244 245;
-        --neutral-200: 228 228 231;
-        --neutral-300: 212 212 216;
-        --neutral-400: 161 161 170;
-        --neutral-500: 115 115 115;
-        --neutral-600: 82 82 91;
-        --neutral-700: 63 63 70;
-        --neutral-800: 39 39 42;
-        --neutral-900: 24 24 27;
-        --neutral-950: 9 9 11;
-        */
-
-        
-
     }
 
     :root {
@@ -225,14 +108,13 @@
     }
 
     /* Manual dark mode override (for controlled dark mode) */
-    [data-theme="dark"] {
+    [data-theme='dark'] {
         @apply dark-theme-vars;
     }
 
-    [data-theme="light"] {
+    [data-theme='light'] {
         @apply light-theme-vars;
     }
-
 }
 
 @layer components {
@@ -241,155 +123,190 @@
     }
 }
 
-
 @layer utilities {
-.u-vanilla-html {
-    /* @apply prose dark:prose-invert; */
-    @apply text-secondary-foreground ;
-    font-size: 16px;
-    line-height: 24px;
-    max-width: none;
-    word-wrap: break-word;
-    font-weight: 400;
-    font-family: var(--font-main), system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
-}
+    .u-vanilla-html {
+        /* @apply prose dark:prose-invert; */
+        @apply text-secondary-foreground;
+        font-size: 16px;
+        line-height: 24px;
+        max-width: none;
+        word-wrap: break-word;
+        font-weight: 400;
+        font-family:
+            var(--font-main),
+            system-ui,
+            -apple-system,
+            BlinkMacSystemFont,
+            '.SFNSText-Regular',
+            sans-serif;
+    }
 
-.u-vanilla-html-small {
-    /* @apply prose dark:prose-invert; */
-    @apply text-card-foreground;
-    font-size: 14px;
-    line-height: 20px;
-    max-width: none;
-    word-wrap: break-word;
-    font-weight: 400;
-    font-family: var(--font-main), system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
-}
+    .u-vanilla-html-small {
+        /* @apply prose dark:prose-invert; */
+        @apply text-card-foreground;
+        font-size: 14px;
+        line-height: 20px;
+        max-width: none;
+        word-wrap: break-word;
+        font-weight: 400;
+        font-family:
+            var(--font-main),
+            system-ui,
+            -apple-system,
+            BlinkMacSystemFont,
+            '.SFNSText-Regular',
+            sans-serif;
+    }
 
-.u-vanilla-html :where(p):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-    margin-top: 12px !important;
-    margin-bottom: 12px !important;
-}
+    .u-vanilla-html
+        :where(p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+        margin-top: 12px !important;
+        margin-bottom: 12px !important;
+    }
 
-.u-vanilla-html-small :where(p):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-    margin-top: 8px !important;
-    margin-bottom: 8px !important;
-}
+    .u-vanilla-html-small
+        :where(p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+        margin-top: 8px !important;
+        margin-bottom: 8px !important;
+    }
 
-.u-vanilla-html ul {
-    @apply list-disc pl-5 my-2;
-}
+    .u-vanilla-html ul {
+        @apply list-disc pl-5 my-2;
+    }
 
-.u-vanilla-html li {
-    @apply mb-1.5;
-}
+    .u-vanilla-html li {
+        @apply mb-1.5;
+    }
 
-.u-vanilla-html div> :where(:first-child):not(:where([class~="not-prose"] *)),
-.u-vanilla-html> :where(:first-child):not(:where([class~="not-prose"] *)) {
-    margin-top: 0 !important;
-}
+    .u-vanilla-html
+        div
+        > :where(:first-child):not(:where([class~='not-prose'] *)),
+    .u-vanilla-html > :where(:first-child):not(:where([class~='not-prose'] *)) {
+        margin-top: 0 !important;
+    }
 
-.u-vanilla-html div> :where(:last-child):not(:where([class~="not-prose"] *)),
-.u-vanilla-html> :where(:last-child):not(:where([class~="not-prose"] *)) {
-    margin-bottom: 0 !important;
-}
+    .u-vanilla-html
+        div
+        > :where(:last-child):not(:where([class~='not-prose'] *)),
+    .u-vanilla-html > :where(:last-child):not(:where([class~='not-prose'] *)) {
+        margin-bottom: 0 !important;
+    }
 
-.u-vanilla-html-small div> :where(:first-child):not(:where([class~="not-prose"] *)),
-.u-vanilla-html-small> :where(:first-child):not(:where([class~="not-prose"] *)) {
-    margin-top: 0 !important;
-}
+    .u-vanilla-html-small
+        div
+        > :where(:first-child):not(:where([class~='not-prose'] *)),
+    .u-vanilla-html-small
+        > :where(:first-child):not(:where([class~='not-prose'] *)) {
+        margin-top: 0 !important;
+    }
 
-.u-vanilla-html-small div> :where(:last-child):not(:where([class~="not-prose"] *)),
-.u-vanilla-html-small> :where(:last-child):not(:where([class~="not-prose"] *)) {
-    margin-bottom: 0 !important;
-}
+    .u-vanilla-html-small
+        div
+        > :where(:last-child):not(:where([class~='not-prose'] *)),
+    .u-vanilla-html-small
+        > :where(:last-child):not(:where([class~='not-prose'] *)) {
+        margin-bottom: 0 !important;
+    }
 
-.u-vanilla-html h1,
-.u-vanilla-html h2,
-.u-vanilla-html h3,
-.u-vanilla-html h4,
-.u-vanilla-html h5 {
-    @apply text-popover-foreground ;
-    font-family: var(--font-title), system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
-}
+    .u-vanilla-html h1,
+    .u-vanilla-html h2,
+    .u-vanilla-html h3,
+    .u-vanilla-html h4,
+    .u-vanilla-html h5 {
+        @apply text-popover-foreground;
+        font-family:
+            var(--font-title),
+            system-ui,
+            -apple-system,
+            BlinkMacSystemFont,
+            '.SFNSText-Regular',
+            sans-serif;
+    }
 
-.u-vanilla-html-small h1,
-.u-vanilla-html-small h2,
-.u-vanilla-html-small h3,
-.u-vanilla-html-small h4,
-.u-vanilla-html-small h5 {
-    @apply text-popover-foreground ;
-    font-family: var(--font-title), system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular", sans-serif;
-}
+    .u-vanilla-html-small h1,
+    .u-vanilla-html-small h2,
+    .u-vanilla-html-small h3,
+    .u-vanilla-html-small h4,
+    .u-vanilla-html-small h5 {
+        @apply text-popover-foreground;
+        font-family:
+            var(--font-title),
+            system-ui,
+            -apple-system,
+            BlinkMacSystemFont,
+            '.SFNSText-Regular',
+            sans-serif;
+    }
 
-.u-vanilla-html A,
-.u-vanilla-html .link {
-    @apply text-accent-foreground;
-    text-decoration: none;
-}
+    .u-vanilla-html A,
+    .u-vanilla-html .link {
+        @apply text-accent-foreground;
+        text-decoration: none;
+    }
 
-.u-vanilla-html-small A,
-.u-vanilla-html-small .link {
-    @apply text-accent-foreground;
-    text-decoration: none;
-}
+    .u-vanilla-html-small A,
+    .u-vanilla-html-small .link {
+        @apply text-accent-foreground;
+        text-decoration: none;
+    }
 
-.u-vanilla-html A:hover,
-.u-vanilla-html .link:hover,
-.u-vanilla-html-small A:hover,
-.u-vanilla-html-small .link:hover {
-    text-decoration: underline;
-}
+    .u-vanilla-html A:hover,
+    .u-vanilla-html .link:hover,
+    .u-vanilla-html-small A:hover,
+    .u-vanilla-html-small .link:hover {
+        text-decoration: underline;
+    }
 
-.bx-mention-link,
-.bx-tag {
-    @apply text-primary !important;
-    text-decoration: underline !important;
-}
+    .bx-mention-link,
+    .bx-tag {
+        @apply text-primary !important;
+        text-decoration: underline !important;
+    }
 
-.bx-mention-link:hover {
-    text-decoration: underline;
-    background-color: var(--accent-foreground);
-}
+    .bx-mention-link:hover {
+        text-decoration: underline;
+        background-color: var(--accent-foreground);
+    }
 
-.u-cover {
-    object-fit: cover !important;
-}
+    .u-cover {
+        object-fit: cover !important;
+    }
 
-.item-overlap {
-    position: absolute !important;
-    z-index: 0;
-    top: -10000px;
-    left: -10000px;
-}
+    .item-overlap {
+        position: absolute !important;
+        z-index: 0;
+        top: -10000px;
+        left: -10000px;
+    }
 
-.block {
-    min-height: 1px !important;
-}
+    .block {
+        min-height: 1px !important;
+    }
 
-.bx-embeded-image {
-    display: none;
-}
+    .bx-embeded-image {
+        display: none;
+    }
 
-.tiptap-default {
-    scrollbar-width: none;
-    font-size: 16px;
-    line-height: 24px;
-}
+    .tiptap-default {
+        scrollbar-width: none;
+        font-size: 16px;
+        line-height: 24px;
+    }
 
-.tiptap-comments {
-    scrollbar-width: none;
-    font-size: 14px;
-    line-height: 20px;
-}
+    .tiptap-comments {
+        scrollbar-width: none;
+        font-size: 14px;
+        line-height: 20px;
+    }
 
-.background-video {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transform: translate(-50%, -50%);
-    z-index: -1;
-}
+    .background-video {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform: translate(-50%, -50%);
+        z-index: -1;
+    }
 }

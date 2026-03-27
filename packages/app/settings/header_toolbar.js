@@ -12,9 +12,11 @@ export const settingsHeaderToolbar = {
                 { component: 'account', className: 'hidden lg:block' },
             ],
             loggedOut: [
-                { component: 'link', className: 'items-center hidden sm:block', href: "/login", title: 'Log In', props: { variant: "secondary", rounded: false, size: "base", title: 'Log In' } },
+                { component: 'link', className: 'items-center sm:hidden', href: "/login", title: 'Log In', props: { variant: "default", rounded: true, size: "base", startDecorator: "UserRound"} },
+                { component: 'link', className: 'items-center hidden sm:block', href: "/login", title: 'Log In', props: { variant: "default", rounded: false, size: "base", title: 'Log In' } },
                 { component: 'link', className: 'items-center hidden sm:block', href: "/create-account", title: 'Sign Up', props: { variant: "primary", rounded: false, size: "base", title: 'Sign Up' } },
-                { component: 'menu_navigation', className: 'items-center lg:hidden', native: false, props: { variant: 'secondary', rounded: false, size: 'base', startDecorator: 'Menu', alt: 'Menu' } },
+                { component: 'menu_navigation', className: 'items-center sm:hidden', native: false, props: { variant: 'default', rounded: true, size: 'base', startDecorator: 'Menu', alt: 'Menu' } },
+                { component: 'menu_navigation', className: 'items-center hidden sm:block lg:hidden', native: false, props: { variant: 'default', rounded: false, size: 'base', startDecorator: 'Menu', alt: 'Menu' } },
             ],
         },
         mixed: {

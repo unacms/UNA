@@ -19,7 +19,7 @@ export const settingsTabs = {
 
         // Atoms TabsTrigger: static active surface (no animated pill)
         'u-controls-tabs-header-item-active':
-            ' bg-segment web:shadow-sm web:duration-300 ',
+            ' bg-popover web:shadow-sm web:duration-300 ',
 
         'u-controls-tabs-header-item-inactive':
             ' web:group web:hover:bg-muted web:duration-500',
@@ -43,12 +43,12 @@ export const settingsTabs = {
     tabs_variants: {
         default: {
             track:
-                'absolute inset-0 z-0 bg-default/60 pointer-events-none',
+                'absolute inset-0 z-0 bg-muted/40 pointer-events-none',
             row: '',
             trigger_active: ' ',
             trigger_inactive:
                 ' web:group web:hover:bg-muted web:duration-200',
-            pill: ' bg-segment shadow-sm',
+            pill: ' bg-popover shadow-sm',
             line: '',
         },
         secondary: {

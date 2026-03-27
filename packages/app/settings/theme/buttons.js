@@ -21,7 +21,7 @@ export const settingsButtons = {
             hitSlop: 6,
         },
         base: {
-            rounded: 'rounded-lg',
+            rounded: 'rounded-xl',
             container: 'px-3 gap-2 min-h-10 min-w-10',
             container_icon_only: 'min-h-10 min-w-10',
             title_container: ' leading-10 text-base',
@@ -44,14 +44,14 @@ export const settingsButtons = {
         },
         primary:{
             container:{
-                base:' web:duration-200 shadow-xs dark:shadow-xs-deep ',
-                base_stroke: 'border-[0.5px] border-primary',
-                default:'bg-primary ',
-                active:'bg-primary/60 web:scale-[0.98] shadow-none  ',
-                pressed:'bg-primary/60',
-                hovered:'bg-primary/80 ',
-                focused:'bg-primary ',
-                disabled:'bg-primary/50 ',
+                base:'web:duration-200 ring-1 ring-primary/80 dark:ring-primary/10  backdrop-blur  ',
+                base_stroke: 'border border-white/20 dark:border-white/10 inset-0 ',
+                default:' bg-primary/90 shadow-md dark:shadow-deep  ',
+                active:' bg-primary/80 web:scale-[0.98] shadow-xs dark:shadow-xs-deep border-border/60 dark:border-black/60   ',
+                pressed:'bg-primary/70 ',
+                hovered:' bg-primary/80 shadow-md dark:shadow-md-deep border-primary/60 dark:border-black/60 ',
+                focused:' bg-primary/80 shadow-md dark:shadow-md-deep border-primary/60 dark:border-black/60 ',
+                disabled:' bg-primary/50 shadow-sm dark:shadow-sm-deep border-primary/60 dark:border-black/40 opacity-50 ',
 
             },
             text:{
@@ -66,19 +66,19 @@ export const settingsButtons = {
         },
         default:{
             container:{
-                base:'web:duration-200 shadow-xs dark:shadow-sm-deep ',
-                base_stroke: 'border-[0.5px] border-border  ',
-                default:' bg-white dark:bg-muted  ',
-                active:'bg-muted/80 web:scale-[0.98]   ',
-                pressed:'bg-muted/80',
-                hovered:'bg-muted/60  ',
-                focused:'bg-muted/80 ',
-                disabled:'bg-muted/50 ',
+                base:'web:duration-200 ring-1 ring-black/5 dark:ring-black/10  backdrop-blur  ',
+                base_stroke: 'border border-white/60 dark:border-white/5 inset-0 ',
+                default:' bg-popover/60 dark:bg-border/60 shadow dark:shadow-deep  ',
+                active:' bg-muted/60 web:scale-[0.98] shadow-xs dark:shadow-xs-deep border-border/60 dark:border-black/60   ',
+                pressed:'bg-muted/80 ',
+                hovered:' bg-popover/80 dark:bg-border/80 shadow-md dark:shadow-md-deep border-border/80 dark:border-black/60 ',
+                focused:' bg-popover/80 dark:bg-border/80 shadow-md dark:shadow-md-deep border-border/80 dark:border-black/60 ',
+                disabled:' bg-popover/60 dark:bg-border/60 shadow-sm dark:shadow-sm-deep border-border/60 dark:border-black/40 opacity-50 ',
 
             },
             text:{
                 base:'font-semibold web:duration-200',
-                default:'text-card-foreground',
+                default:'text-secondary-foreground',
                 hovered:'text-foreground',
                 focused:'text-foreground',
                 active:'text-foreground',
