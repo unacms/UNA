@@ -1,6 +1,6 @@
 import { useRef, useEffect, useCallback } from 'react';
 import { Platform } from 'react-native';
-import { useSetScrollDirection } from 'app/context/jotai/layout';
+import { useSetScrollDirection, useSetScrollValue } from 'app/context/jotai/layout';
 
 const SCROLL_OFFSET_THRESHOLD = 100;
 
@@ -8,6 +8,7 @@ export function useScroll() {
     const scrollY = useRef(0);
     const scrollState = useRef(0);
     const setScrollDirection = useSetScrollDirection();
+    const setScrollValue = useSetScrollValue();
     const isWeb = Platform.OS === 'web';
     
     const handleNativeScroll = useCallback((event) => {
@@ -30,9 +31,10 @@ export function useScroll() {
             setScrollDirection(newScrollState);
             scrollState.current = newScrollState;
         }
-        
+
         scrollY.current = currentScrollY;
-    }, [setScrollDirection]);
+        setScrollValue(currentScrollY);
+    }, [setScrollDirection, setScrollValue]);
     
     // Эффект для веба
     useEffect(() => {
@@ -58,16 +60,19 @@ export function useScroll() {
                 setScrollDirection(newScrollState);
                 scrollState.current = newScrollState;
             }
-            
+
             scrollY.current = currentScrollY;
+            setScrollValue(currentScrollY);
         };
-        
+
+        handleWindowScroll();
+
         window.addEventListener('scroll', handleWindowScroll, { passive: true });
-        
+
         return () => {
             window.removeEventListener('scroll', handleWindowScroll);
         };
-    }, [isWeb, setScrollDirection]);
+    }, [isWeb, setScrollDirection, setScrollValue]);
     
     return {
         onScroll: isWeb ? undefined : handleNativeScroll
