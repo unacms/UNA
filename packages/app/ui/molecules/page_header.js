@@ -83,7 +83,7 @@ export const PageHeader = ({
     useEffect(() => {
         if (!isWeb && isCollapsibleHeader && headerHeight > 0) {
             Animated.timing(headerTranslateY, {
-                toValue: scrollDirection === 1 ? -headerHeight : 0,
+                toValue: scrollDirection === 1 ? -2*headerHeight : 0,
                 duration: 300,
                 useNativeDriver: true,
             }).start();

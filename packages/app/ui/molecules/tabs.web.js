@@ -54,7 +54,9 @@ const tabsVariants =
  * @param {boolean} [fullWidth] — Deprecated: use `equalWidth` instead.
  * @param {boolean} [hug] — label-width triggers; use with `equalWidth={false}` for a compact strip
  * @param {'scroll'|'collapse'} [overflow] — `scroll` (default) or `collapse` into a "More" menu
- * @param {string} [moreLabel]
+ * @param {string} [moreMenuTitle] — label for the overflow trigger (default: translated "More"). Pass `""` for icon-only.
+ * @param {string} [moreLabel] — alias for `moreMenuTitle` (deprecated)
+ * @param {string} [moreMenuIcon] — Lucide icon name for the overflow trigger (default: `ChevronDown`)
  * @param {string} [tabBarClassName] — With `overflow="scroll"`, outer tab bar; with `overflow="collapse"`, the full-width measure row — use `flex flex-row justify-center` to center a `hug` strip in the parent.
  * @param {string} [listWrapperClassName] — box around track + list + indicator
  * @param {string} [listClassName] — tab row only
@@ -70,7 +72,9 @@ export default function Tabs({
     rounded = false,
     hug = false,
     overflow = 'scroll',
+    moreMenuTitle,
     moreLabel,
+    moreMenuIcon = 'ChevronDown',
     size,
     contentClassName = '',
     trackClassName,
@@ -84,7 +88,7 @@ export default function Tabs({
     /** `fullWidth` is deprecated — same as `equalWidth` (first wins if both are set). */
     const useEqualWidth = equalWidth ?? fullWidth ?? false;
     const { t } = useTranslation();
-    const resolvedMoreLabel = moreLabel ?? t('More');
+    const resolvedMoreMenuTitle = moreMenuTitle ?? moreLabel ?? t('More');
 
     const [currentTab, setCurrentTab] = useState(
         () => activeTab ?? tabs?.[0]?.key
@@ -545,27 +549,29 @@ export default function Tabs({
                                     triggerClassName
                                 )}
                             >
-                                <Text
-                                    className={clsx(
-                                        moreIsActive
-                                            ? clsx(
-                                                  tabsTheme[
-                                                      'u-controls-tabs-header-item-text-active'
-                                                  ],
-                                                  sizeCfg.text_active
-                                              )
-                                            : clsx(
-                                                  tabsTheme[
-                                                      'u-controls-tabs-header-item-text'
-                                                  ],
-                                                  sizeCfg.text
-                                              )
-                                    )}
-                                >
-                                    {resolvedMoreLabel}
-                                </Text>
+                                {resolvedMoreMenuTitle ? (
+                                    <Text
+                                        className={clsx(
+                                            moreIsActive
+                                                ? clsx(
+                                                      tabsTheme[
+                                                          'u-controls-tabs-header-item-text-active'
+                                                      ],
+                                                      sizeCfg.text_active
+                                                  )
+                                                : clsx(
+                                                      tabsTheme[
+                                                          'u-controls-tabs-header-item-text'
+                                                      ],
+                                                      sizeCfg.text
+                                                  )
+                                        )}
+                                    >
+                                        {resolvedMoreMenuTitle}
+                                    </Text>
+                                ) : null}
                                 <Icon
-                                    icon="ChevronDown"
+                                    icon={moreMenuIcon}
                                     size={moreIconSize}
                                     className={clsx(
                                         moreIsActive

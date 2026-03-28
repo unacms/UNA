@@ -44,19 +44,19 @@ export const settingsButtons = {
         },
         primary:{
             container:{
-                base:'web:duration-200 ring-1 ring-primary/80 dark:ring-primary/10  backdrop-blur  ',
-                base_stroke: 'border border-white/20 dark:border-white/10 inset-0 ',
-                default:' bg-primary/90 shadow-md dark:shadow-deep  ',
-                active:' bg-primary/80 web:scale-[0.98] shadow-xs dark:shadow-xs-deep border-border/60 dark:border-black/60   ',
-                pressed:'bg-primary/70 ',
-                hovered:' bg-primary/80 shadow-md dark:shadow-md-deep border-primary/60 dark:border-black/60 ',
-                focused:' bg-primary/80 shadow-md dark:shadow-md-deep border-primary/60 dark:border-black/60 ',
+                base:'web:duration-200  backdrop-blur  ',
+                base_stroke: 'border border-white/20 dark:border-white/20 inset-0 ',
+                default:' bg-primary/80 shadow dark:shadow-deep  ',
+                active:' bg-primary/60 web:scale-[0.98] shadow-xs dark:shadow-xs-deep border-border/60 dark:border-black/60   ',
+                pressed:'bg-primary/60 ',
+                hovered:' bg-primary shadow-md dark:shadow-md-deep border-primary/60 dark:border-black/60 ',
+                focused:' bg-primary shadow-md dark:shadow-md-deep border-primary/60 dark:border-black/60 ',
                 disabled:' bg-primary/50 shadow-sm dark:shadow-sm-deep border-primary/60 dark:border-black/40 opacity-50 ',
 
             },
             text:{
-                base:'font-semibold ',
-                default:'text-primary-foreground',
+                base:'font-semibold web:duration-200',
+                default:'text-primary-foreground/90',
                 hovered:'text-primary-foreground',
                 focused:'text-primary-foreground',
                 active:'text-primary-foreground',
@@ -66,12 +66,12 @@ export const settingsButtons = {
         },
         default:{
             container:{
-                base:'web:duration-200 ring-1 ring-black/5 dark:ring-black/10  backdrop-blur  ',
-                base_stroke: 'border border-white/60 dark:border-white/5 inset-0 ',
-                default:' bg-popover/60 dark:bg-border/60 shadow dark:shadow-deep  ',
-                active:' bg-muted/60 web:scale-[0.98] shadow-xs dark:shadow-xs-deep border-border/60 dark:border-black/60   ',
+                base:'web:duration-200  backdrop-blur  ',
+                base_stroke: 'border border-white/80 dark:border-none inset-0 ',
+                default:' bg-popover/60 shadow-sm  dark:shadow-sm-deep border border-border/60 dark:bg-border/40  ',
+                active:' bg-muted/60 web:scale-[0.98] shadow-xs dark:shadow-xs-deep border-border/60 border border-border/60 dark:bg-border/40    ',
                 pressed:'bg-muted/80 ',
-                hovered:' bg-popover/80 dark:bg-border/80 shadow-md dark:shadow-md-deep border-border/80 dark:border-black/60 ',
+                hovered:' bg-popover/80 dark:bg-border/80 shadow border border-border/60 shadow dark:shadow-md-deep  ',
                 focused:' bg-popover/80 dark:bg-border/80 shadow-md dark:shadow-md-deep border-border/80 dark:border-black/60 ',
                 disabled:' bg-popover/60 dark:bg-border/60 shadow-sm dark:shadow-sm-deep border-border/60 dark:border-black/40 opacity-50 ',
 

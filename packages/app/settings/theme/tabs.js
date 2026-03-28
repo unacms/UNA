@@ -47,8 +47,8 @@ export const settingsTabs = {
             row: '',
             trigger_active: ' ',
             trigger_inactive:
-                ' web:group web:hover:bg-muted web:duration-200',
-            pill: ' bg-popover shadow-sm',
+                ' web:group web:hover:bg-muted/60 web:duration-200',
+            pill: ' bg-popover/60 shadow-sm border border-white/60 dark:border-border/60 inset-0',
             line: '',
         },
         secondary: {

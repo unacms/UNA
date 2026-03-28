@@ -10,7 +10,7 @@
         --card-foreground: var(--neutral-900);
         --popover: var(--white);
         --popover-foreground: var(--neutral-900);
-        --primary: var(--accent-600);
+        --primary: var(--accent-700);
         --primary-foreground: var(--white);
         --secondary: var(--neutral-200);
         --secondary-foreground: var(--neutral-700);
@@ -90,7 +90,7 @@
         --destructive: var(--red);
         --destructive-foreground: var(--neutral-950);
         --border: var(--neutral-800);
-        --input: var(--neutral-800);
+        --input: var(--neutral-950);
         --ring: var(--accent-600);
     }
 

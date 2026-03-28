@@ -241,7 +241,9 @@ Create Polls to collect feedback, make decisions, and engage your community.    
                 contentClassName=" p-1 pt-4 "
                 tabBarClassName="flex flex-row justify-start"
                 size="sm"
-                equalWidth
+                //equalWidth
+                moreMenuTitle=""
+                moreMenuIcon="EllipsisVertical"
                 overflow={isWeb ? 'collapse' : 'scroll'}
                 onTabChange={onTabChange}
                 disableScrollIntoView={!isWeb}
