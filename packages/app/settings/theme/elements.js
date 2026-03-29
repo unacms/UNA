@@ -2,7 +2,7 @@
 
 export const settingsElements = {
     conductor: {
-        menu: ' w-full items-left justify-center ',
+        menu: ' w-full items-left justify-center bg-background ',
         menu_max_width: ' w-full max-w-7xl ',
         
         content_max_width: ' w-full max-w-7xl ',
@@ -65,7 +65,7 @@ export const settingsElements = {
     cards: {
         'u-card-list': ' u-card-list bg-card shadow-xs dark:shadow-xs-deep text-card-foreground sm:rounded-xl ',
         'u-card-list-padding': 'p-4',
-        'u-card-base': 'u-card-base bg-card/60 text-card-foreground rounded-2xl shadow border border-white/60 dark:border-white/5 inset-0',
+        'u-card-base': 'u-card-base bg-card/60 text-card-foreground rounded-2xl shadow-sm border border-white/60 dark:border-white/5 inset-0',
         'u-card-padding': 'py-4',
         'u-card-header': 'px-4',
         'u-card-icon': ' ',

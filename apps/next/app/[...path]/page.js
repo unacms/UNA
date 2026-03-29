@@ -111,8 +111,8 @@ export const viewport = {
     maximumScale: 1, // Prevent iOS auto-zoom on input focus
     viewportFit: 'cover',
     themeColor: [
-        { media: '(prefers-color-scheme: light)', color: 'rgba(255,255,255,0)' },
-        { media: '(prefers-color-scheme: dark)', color: 'rgba(0,0,0,0)' },
+        { media: '(prefers-color-scheme: light)', color: 'rgb(244,244,245)' },
+        { media: '(prefers-color-scheme: dark)', color: 'rgb(9,9,11)' },
     ],
 }
 

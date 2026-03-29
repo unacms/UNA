@@ -43,12 +43,12 @@ export const settingsTabs = {
     tabs_variants: {
         default: {
             track:
-                'absolute inset-0 z-0 bg-muted/40 pointer-events-none',
+                'absolute inset-0 z-0 bg-muted/60 pointer-events-none',
             row: '',
             trigger_active: ' ',
             trigger_inactive:
                 ' web:group web:hover:bg-muted/60 web:duration-200',
-            pill: ' bg-popover/60 shadow-sm border border-white/60 dark:border-border/60 inset-0',
+            pill: ' bg-popover/60 shadow-sm border border-white/60 dark:border-border/20 inset-0',
             line: '',
         },
         secondary: {
@@ -67,7 +67,7 @@ export const settingsTabs = {
     tabs_sizes: {
         default_size: 'md',
         sm: {
-            header: 'p-1 gap-1',
+            header: 'p-0.5 gap-0.5',
             /** px — matches horizontal list padding; scroll-into-view uses this so tabs don’t sit flush on the viewport edge */
             scroll_inset: 4,
             gap_px: 4,

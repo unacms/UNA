@@ -1,0 +1,208 @@
+import { memo, useCallback, useEffect, useMemo } from 'react';
+import { Platform } from 'react-native';
+import { View, Row } from 'app/design/view';
+import { Text } from 'app/design/typography';
+import { FeedbackHaptics, appSetting, getMenuSettings } from 'app/lib/util';
+import { useCurrentUser } from 'app/context/user';
+import { appStatic } from 'app/lib/app-static';
+import Link from 'app/ui/atoms/link';
+import { useRouter } from 'app/lib/hooks/router';
+import { useIsDesktop } from 'app/context/measure';
+import { Button } from 'app/design/controls';
+import { getComponent } from 'app/components/registry';
+import {
+    defaultHeader,
+    useHeader,
+    useHeaderHeight,
+    useScrollDirection,
+    useSetHeader,
+    useSetHeaderHeight,
+    useSetScrollDirection,
+} from 'app/context/jotai/layout';
+import MenuTop from 'app/components/nav/menu-top';
+
+export const TextHeader = memo(({ text }) => {
+    return (
+        <Text className="font-bold truncate leading-12 lg:px-2 text-card-foreground text-2xl tracking-tight">
+            {text}
+        </Text>
+    );
+});
+
+export const PageHeaderSmall = ({ pageData }) => {
+    const HeaderElement = getComponent('molecule', 'header_element');
+    return (
+        <Row className="w-full justify-between">
+            <Link href="/home" size="lg" aria-label="Home">
+                {appStatic('logo')}
+            </Link>
+            <HeaderElement mode="small" url={pageData?.url} uri={pageData?.uri} />
+        </Row>
+    );
+};
+
+export function usePageHeaderBase(pageData, { resetHeaderOnRoute = false } = {}) {
+    const { currentUser } = useCurrentUser();
+    const router = useRouter();
+    const header = useHeader();
+    const setHeader = useSetHeader();
+    const scrollDirection = useScrollDirection();
+    const setScrollDirection = useSetScrollDirection();
+    const setHeaderHeightAtom = useSetHeaderHeight();
+    const headerHeight = useHeaderHeight();
+
+    const isWeb = Platform.OS === 'web';
+    const isDesktop = useIsDesktop();
+    const isHome = pageData?.uri === 'home';
+    const isCollapsibleHeader = appSetting('native', 'collapsible_header') && !isDesktop;
+    const isContextSelector = !!pageData?.context;
+    const isFullContextSelector = appSetting('context_selector', 'show_always');
+    const isShowLogo = isDesktop || (!isWeb && !currentUser) || isHome;
+    const isBackButton = header.backButton;
+
+    const menuSettings = getMenuSettings(
+        pageData?.menu?.object,
+        pageData?.menu?.config,
+        pageData?.menu
+    );
+
+    useEffect(() => {
+        setScrollDirection(0);
+        if (resetHeaderOnRoute && isWeb) {
+            setHeader(defaultHeader);
+        }
+    }, [
+        isDesktop,
+        isWeb,
+        pageData?.uri,
+        pageData?.url,
+        resetHeaderOnRoute,
+        setHeader,
+        setScrollDirection,
+    ]);
+
+    useEffect(() => {
+        if (header.header === false && headerHeight !== 0) {
+            setHeaderHeightAtom(0);
+        }
+    }, [header.header, headerHeight, setHeaderHeightAtom]);
+
+    const pageTitle = useMemo(() => {
+        let nextTitle = pageData?.name;
+
+        if (menuSettings.name) {
+            nextTitle = menuSettings.name;
+        }
+        if (header.title) {
+            nextTitle = header.title;
+        }
+
+        return (nextTitle || '').replace('__notification__', '');
+    }, [header.title, menuSettings.name, pageData?.name]);
+
+    const onHeaderLayout = useCallback((event) => {
+        const { height } = event.nativeEvent.layout;
+        if (height !== headerHeight) {
+            setHeaderHeightAtom(height);
+        }
+    }, [headerHeight, setHeaderHeightAtom]);
+
+    return {
+        currentUser,
+        header,
+        headerHeight,
+        isBackButton,
+        isCollapsibleHeader,
+        isContextSelector,
+        isFullContextSelector,
+        isShowLogo,
+        isWeb,
+        onHeaderLayout,
+        pageTitle,
+        router,
+        scrollDirection,
+    };
+}
+
+export const PageHeaderBody = memo(({
+    contentClassName,
+    currentUser,
+    header,
+    isBackButton,
+    isContextSelector,
+    isFullContextSelector,
+    isShowLogo,
+    isWeb,
+    mode = 'flow',
+    pageData,
+    pageTitle,
+    router,
+}) => {
+    const ContextSelector = getComponent('molecule', 'context_selector');
+    const HeaderElement = getComponent('molecule', 'header_element');
+
+    const Logo = (
+        <Link href="/home" aria-label="Home" variant="ghost" size="lg" className="items-center">
+            {appStatic('logo')}
+        </Link>
+    );
+
+    const leftElement = !currentUser ? (
+        Logo
+    ) : isFullContextSelector ? (
+        <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />
+    ) : isShowLogo ? (
+        Logo
+    ) : (
+        <TextHeader text={pageTitle} />
+    );
+
+    const contextSelectorElement =
+        isContextSelector && !isFullContextSelector ? (
+            <ContextSelector
+                url={pageData?.url}
+                uri={pageData?.uri}
+                data={pageData?.context}
+                mode="min"
+            />
+        ) : null;
+
+    const explicitHeader = mode === 'fixed'
+        ? (header.fixedHeader ?? header.header)
+        : header.header;
+
+    if (explicitHeader) {
+        return explicitHeader;
+    }
+
+    return (
+        <>
+            <Row className={contentClassName}>
+                <Row className={appSetting('layout', 'header', 'content_left')}>
+                    {(isBackButton &&
+                        (!isWeb || (typeof history !== 'undefined' && history.length > 2))) && (
+                        <View className="items-center">
+                            <Button
+                                variant="text"
+                                rounded
+                                onPress={() => {
+                                    FeedbackHaptics('Medium');
+                                    router ? router.back() : history.back();
+                                }}
+                                startDecorator="ArrowLeft"
+                                size="base"
+                            />
+                        </View>
+                    )}
+                    {leftElement}
+                    {contextSelectorElement}
+                </Row>
+                {isWeb && <MenuTop url={pageData?.url} uri={pageData?.uri} />}
+                <Row className={appSetting('layout', 'header', 'content_right')}>
+                    <HeaderElement mode="small" url={pageData?.url} uri={pageData?.uri} />
+                </Row>
+            </Row>
+            {header.subHeader}
+        </>
+    );
+});

@@ -35,7 +35,7 @@ const Logo = ({ mode = 'adaptive' }) => {
     }
 
     return (
-        <Row className="items-center gap-3 text-secondary-foreground hover:text-foreground">
+        <Row className="items-center gap-3 text-foreground">
             <View className={`${markStyles[mode]}`}>
                 <Svg
                     aria-label="Logo Mark"

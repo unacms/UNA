@@ -3,6 +3,7 @@ import { View } from 'app/design/view'
 import { useRef, useCallback, useMemo, useEffect, useState } from 'react';
 import { LegendList } from "@legendapp/list";
 import { useSetScrollDirection, useHeaderHeight, useSetScrollValue } from 'app/context/jotai/layout';
+import { nextScrollDirectionFromDelta } from 'app/lib/scroll-navigation-state';
 
 export default function UniList(props) {
     const uniRef = useRef();
@@ -26,6 +27,7 @@ export default function UniList(props) {
 
     const scrollY = useRef(0);
     const scrollState = useRef(0);
+    const accDir = useRef(0);
     const setScrollDirection = useSetScrollDirection();
     const setScrollValue = useSetScrollValue();
 
@@ -102,26 +104,14 @@ export default function UniList(props) {
     }, [preloadComponent, contentOpacity, preloadOpacity]);
 
     const handleScroll = useCallback((event) => {
-        const SCROLL_OFFSET_THRESHOLD = 100;
         const currentScrollY = event.nativeEvent.contentOffset.y;
         setScrollValue(currentScrollY);
         const previousScrollY = scrollY.current;
 
-        let newScrollState;
-
-        if (currentScrollY < SCROLL_OFFSET_THRESHOLD) {
-            newScrollState = 0;
-        } else if (currentScrollY > previousScrollY && currentScrollY > 0) {
-            newScrollState = 1;
-        } else if (currentScrollY < previousScrollY) {
-            newScrollState = -1;
-        } else {
-            newScrollState = scrollState.current;
-        }
-
-        if (newScrollState !== scrollState.current) {
-            setScrollDirection(newScrollState);
-            scrollState.current = newScrollState;
+        const next = nextScrollDirectionFromDelta(previousScrollY, currentScrollY, accDir);
+        if (next !== null && next !== scrollState.current) {
+            scrollState.current = next;
+            setScrollDirection(next);
         }
         scrollY.current = currentScrollY;
     }, [setScrollDirection, setScrollValue]);

@@ -323,6 +323,22 @@ body {
     font-family: var(--font-main, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
 }
 
+html[data-fixed-header-safe-area="true"]::before,
+body[data-fixed-header-safe-area="true"]::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: env(safe-area-inset-top);
+    background: var(--fixed-header-safe-area-bg, rgb(var(--card)));
+    border-bottom: 1px solid var(--fixed-header-safe-area-border, rgb(var(--border) / 0.6));
+    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(24px);
+    pointer-events: none;
+    z-index: 49;
+}
+
 
 html,
 body,

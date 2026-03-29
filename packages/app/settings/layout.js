@@ -61,7 +61,14 @@ export const settingsLayout = {
 
         header: {
             container: ' w-full z-50 header-fixed web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out ',
-            content: ' items-center justify-between h-14 lg:h-16 lg:bg-card/60 lg:backdrop-blur-xl lg:border-b border-white/60 dark:border-white/5 inset-0 lg:shadow-sm px-4 lg:px-6 w-full mx-auto gap-4',
+            content: ' items-center justify-between h-14 lg:h-16 bg-background lg:bg-card lg:border-b border-white/60 dark:border-white/5 inset-0 lg:shadow-sm px-4 lg:px-6 w-full mx-auto gap-4',
+            /** Mobile web (max-lg): extra classes when the scroll-up “pinned” fixed bar is visible — background, border, blur. Merged on the header row after `content`. */
+            content_pinned_fixed:
+                ' bg-background border-b border-border/40 dark:border-black backdrop-blur-xl ',
+            /** CSS color value for the top safe-area fill while the fixed mobile-web header is visible. */
+            safe_area_fill: 'rgb(var(--background))',
+            /** CSS color value for the fixed-header safe-area bottom border while visible. */
+            safe_area_border: 'transparent',
             content_left: ' items-center justify-start flex-1 lg:flex-none xl:w-80 gap-x-2',
             content_center: ' hidden flex-auto lg:flex gap-2 items-center justify-center max-w-3xl  ',
             active_item_indicator: 'absolute -bottom-2 left-0 h-0.5 rounded-full flex-none bg-ring',

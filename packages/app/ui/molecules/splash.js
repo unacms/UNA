@@ -110,7 +110,7 @@ export default function Splash(props) {
     return (
         <Page>
             <View className="flex-1 gap-6 w-full mx-auto">
-                <View className="w-full border-b-0 border-border/60 lg:flex-row">
+                <View className="w-full border-b border-border/60 lg:flex-row">
                     <View className={`flex-1 lg:flex-row gap-6 lg:p-6 p-4 w-full mx-auto ${appSetting( 'layout', 'max_width_content')}`}>
                         {appStatic('splash_text')}
                         <PageContent {...props} />

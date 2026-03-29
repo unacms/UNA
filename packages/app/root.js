@@ -8,11 +8,13 @@ import { useSetScrollDirection, useSetScrollValue } from 'app/context/jotai/layo
 import { Loading } from 'app/customization/loading';
 import emitter from 'app/context/emitter';
 import { Platform } from 'react-native'
+import { useWindowScrollNavigationSync } from 'app/lib/hooks/use-window-scroll-navigation-sync';
 
 export function Root(props) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const prevUserIdRef = useRef(currentUser?.id);
     const router = useRouter();
+    useWindowScrollNavigationSync();
 
     const data = props?.data;
     // ################## CODE FOR NATIVE VERSION
@@ -43,7 +45,11 @@ export function Root(props) {
     useEffect(() => {
         // Сброс scroll состояния при смене данных страницы
         setScrollDirection(0);
-        setScrollValue(0);
+        if (Platform.OS === 'web' && typeof window !== 'undefined') {
+            setScrollValue(window.scrollY || document.documentElement.scrollTop || 0);
+        } else {
+            setScrollValue(0);
+        }
     }, [props?.path, props?.data?.url, setScrollDirection, setScrollValue]);
 
     useEffect(() => {

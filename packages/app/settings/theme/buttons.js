@@ -45,7 +45,7 @@ export const settingsButtons = {
         primary:{
             container:{
                 base:'web:duration-200  backdrop-blur  ',
-                base_stroke: 'border border-white/20 dark:border-white/20 inset-0 ',
+                base_stroke: 'border border-white/20 dark:border-white/10 inset-0 ',
                 default:' bg-primary/80 shadow dark:shadow-deep  ',
                 active:' bg-primary/60 web:scale-[0.98] shadow-xs dark:shadow-xs-deep border-border/60 dark:border-black/60   ',
                 pressed:'bg-primary/60 ',
@@ -67,18 +67,18 @@ export const settingsButtons = {
         default:{
             container:{
                 base:'web:duration-200  backdrop-blur  ',
-                base_stroke: 'border border-white/80 dark:border-none inset-0 ',
-                default:' bg-popover/60 shadow-sm  dark:shadow-sm-deep border border-border/60 dark:bg-border/40  ',
-                active:' bg-muted/60 web:scale-[0.98] shadow-xs dark:shadow-xs-deep border-border/60 border border-border/60 dark:bg-border/40    ',
-                pressed:'bg-muted/80 ',
-                hovered:' bg-popover/80 dark:bg-border/80 shadow border border-border/60 shadow dark:shadow-md-deep  ',
-                focused:' bg-popover/80 dark:bg-border/80 shadow-md dark:shadow-md-deep border-border/80 dark:border-black/60 ',
+                base_stroke: 'border border-white dark:border-transparent inset-0 ',
+                default:' bg-popover/60 shadow-sm dark:shadow-sm-deep border border-border/60   ',
+                active:' bg-popover/40 web:scale-[0.98] shadow-xs dark:shadow-xs-deep border-border/60 border border-border/60 dark:bg-border/40    ',
+                pressed:'bg-popover/40 ',
+                hovered:' bg-popover/80 shadow border border-border/60 shadow dark:shadow-md-deep  ',
+                focused:' bg-popover/80 shadow-sm dark:shadow-sm-deep border-border/60 dark:border-black/60 ',
                 disabled:' bg-popover/60 dark:bg-border/60 shadow-sm dark:shadow-sm-deep border-border/60 dark:border-black/40 opacity-50 ',
 
             },
             text:{
                 base:'font-semibold web:duration-200',
-                default:'text-secondary-foreground',
+                default:'text-foreground',
                 hovered:'text-foreground',
                 focused:'text-foreground',
                 active:'text-foreground',

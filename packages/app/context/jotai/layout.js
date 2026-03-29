@@ -1,6 +1,12 @@
 import { atom, useSetAtom, useAtomValue } from 'jotai';
 
-export const defaultHeader = { header: null, subHeader: null, backButton: false, title: false };
+export const defaultHeader = {
+    header: null,
+    fixedHeader: null,
+    subHeader: null,
+    backButton: false,
+    title: false,
+};
 // Atoms
 export const headerAtom = atom(defaultHeader);
 export const footerAtom = atom(true);
