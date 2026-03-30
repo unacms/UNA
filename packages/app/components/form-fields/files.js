@@ -442,7 +442,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
     };
     let button = <Button startDecorator={props.icon ? props.icon : sIcon} tooltip={t("Add " + props.name)} title={props.title ? props.title : sTitle} size={props.size ? props.size : "base"} variant={props.variant ? props.variant : "text"} rounded={props.rounded ? props.rounded : false} onPress={selectImage} />
 
-    if (!bMultiple) {
+    if (!bMultiple || props.useSingle) {
         let img = imagesList && imagesList.length > 0 ? imagesList[0] : null;
         if (!img && props.useUrl) {
             img = { file_url: props.value, file_type: "image/jpeg" };
@@ -461,11 +461,11 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
         button = (
             <Pressable onPress={selectImage} >
                 <View className={w + ' native:max-w-full items-center justify-center bg-input ' + (isImage ? '' : 'h-32')}>
-                    {!img && (<View ref={drop} className=' text-muted-foreground/50 text-lg  flex-auto w-full border-border rounded-lg  justify-center  flex-col border border-dashed text-center'>
-                        <Text className='text-muted-foreground/50 text-lg  justify-center  flex-col text-center'>Drag & Drop or browse files...</Text>
+                      {(!img || !img?.file_url) && (<View ref={drop} className=' text-muted-foreground/50 text-lg  flex-auto w-full border-border rounded-lg  justify-center  flex-col border border-dashed text-center'>
+                        <Text className='text-muted-foreground/50 text-lg  justify-center  flex-col text-center'>{props?.placeholder || 'Drag & Drop or browse files...'}</Text>
                     </View>)}
                     {img != null && (<>
-                        {isImage && <ImageRN
+                        {(isImage && (img.uri || img.file_url)) && <ImageRN
                             source={{ uri: img.uri || img.file_url }}
                             style={{ width: '100%', height: '100%', opacity: isPreload ? 0.5 : 1 }}
                             resizeMode="cover"

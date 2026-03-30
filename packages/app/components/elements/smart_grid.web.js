@@ -11,6 +11,7 @@ import { appSetting } from 'app/lib/util'
 import { WidthProvider, Responsive } from "react-grid-layout";
 import { getComponent } from 'app/components/registry';
 import { BlockWrapper } from 'app/components/block-wrapper'
+import { useTranslation } from 'react-i18next'
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -37,7 +38,7 @@ const ResponsiveReactGridLayoutM = memo(({ data, bAllowEdit, rowHeight, breakpoi
 
 export default function ({ is_allowed_edit, block_id, content_id, content_module, data: inited_data, blockWrapperProps }) {
     const Map = getComponent('element', 'map');
-
+    const { t } = useTranslation()
     const bAllowEdit = is_allowed_edit;
     const blockId = block_id;
     const contentId = content_id;
@@ -157,11 +158,12 @@ export default function ({ is_allowed_edit, block_id, content_id, content_module
                 value: addType.content,
                 storage_object: 'sys_images_editor',
                 images_transcoder: 'sys_images_editor',
-                multiple: false,
+                multiple: true,
                 uploaders: [
-                    "sys_cmts_html5"
+                    "sys_html5"
                 ],
                 useUrl: true,
+                useSingle: true,
                 ext_allow: "jpg,jpeg,jpe,gif,png,webp",
                 ext_deny: "",
                 caption: '',
@@ -200,11 +202,19 @@ export default function ({ is_allowed_edit, block_id, content_id, content_module
     }
 
     const onFormSubmit = async (formData, d) => {
+        console.log("formData, d", d, formData)
         let updatedData = {};
         let content_data = '';
         let content = d.content;
         if (addType.type === 'map') {
             content = d;
+        }
+        if (addType.type === 'image') {
+           
+            const a = await fetcher('/api.php?r=system/get_page_block_image_data/TemplServicePages&params[]=' + d.content);
+            console.log("dsfsdf", a)
+            content_data = a.data;
+
         }
         if (addType.type === 'link') {
             const a = await fetcher('/api.php?r=' + appSetting("urls", "embeds_new") + d.content);
@@ -243,9 +253,10 @@ export default function ({ is_allowed_edit, block_id, content_id, content_module
 
     function getCell(block, bAllowEdit) {
         let blockContent;
+        console.log("blockblock", block)
         switch (block.type) {
             case "image":
-                blockContent = <><Image view='cover' className=" u-cover " alt='' src={block.content} /></>
+                blockContent = <><Image view='cover' className=" u-cover " alt='' src={block?.content_data?.src} /></>
                 break;
             case "text":
                 blockContent = <View className="py-2 px-4 items-start justify-start h-full"><Text className='text-lg'>{block.content}</Text></View>;
@@ -297,8 +308,14 @@ export default function ({ is_allowed_edit, block_id, content_id, content_module
     }
 
 
-    if (!bAllowEdit && Object.values(data).flat().length == 0){
+    if (!bAllowEdit && Object.values(data).flat().length == 0) {
         return null
+    }
+    const input = form?.data?.inputs?.find(item => item?.type === "files");
+
+    if (input) {
+        input.placeholder = t("Add image");
+        //input.previewPlaceHolder = true;
     }
     return (
         <BlockWrapper {...blockWrapperProps}>
@@ -324,17 +341,17 @@ export default function ({ is_allowed_edit, block_id, content_id, content_module
                     <Button variant='text' size='base' rounded startDecorator='MapPin' onPress={() => { onAdd('map') }} />
                 </Row>}
                 <View className="-ml-2 -mr-2">
-                <ResponsiveReactGridLayoutM
-                    rowHeight={rowHeight}
-                    data={data}
-                    bAllowEdit={bAllowEdit}
-                    breakpoint={breakpoint}
-                    onBreakpointChange={onBreakpointChange}
-                    onResize={onResize}
-                    onDrag={onDrag}
-                    getCell={getCell}
-                    resizeHandles={["s", "w", "e", "n", "sw", "nw", "se", "ne"]}
-                />
+                    <ResponsiveReactGridLayoutM
+                        rowHeight={rowHeight}
+                        data={data}
+                        bAllowEdit={bAllowEdit}
+                        breakpoint={breakpoint}
+                        onBreakpointChange={onBreakpointChange}
+                        onResize={onResize}
+                        onDrag={onDrag}
+                        getCell={getCell}
+                        resizeHandles={["s", "w", "e", "n", "sw", "nw", "se", "ne"]}
+                    />
                 </View>
             </View>
         </BlockWrapper>
