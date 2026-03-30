@@ -46,6 +46,25 @@ export function Icon(props) {
           }
         : {};
 
+        const IconComponent = useMemo(() => {
+            const IconComponent2 = IconSet[processedIcon];
+    
+            if (IconComponent2){
+                IconComponent2.displayName = processedIcon;
+                return cssInterop(IconComponent2, {
+                    className: {
+                        target: 'style',
+                        nativeStyleToProp: {
+                            color: true,
+                            width: true,
+                            height: true,
+                        },
+                    },
+                });
+            }
+            return null;
+        }, [processedIcon]);
+
     if (animated && typeof icon === 'string' && !isXmlSvg && !InlineIcon) {
         const AnimatedIcon = getAnimatedIconComponent(processedIcon);
         if (AnimatedIcon) {
@@ -71,24 +90,7 @@ export function Icon(props) {
 
     //const IconComponent = useMemo(() => IconSet[processedIcon], [processedIcon]);
 
-    const IconComponent = useMemo(() => {
-        const IconComponent2 = IconSet[processedIcon];
-
-        if (IconComponent2){
-            IconComponent2.displayName = processedIcon;
-            return cssInterop(IconComponent2, {
-                className: {
-                    target: 'style',
-                    nativeStyleToProp: {
-                        color: true,
-                        width: true,
-                        height: true,
-                    },
-                },
-            });
-        }
-        return null;
-    }, [processedIcon]);
+    
 
 
     if (!icon)
