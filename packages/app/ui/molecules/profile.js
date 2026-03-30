@@ -35,7 +35,7 @@ export function DisplayNameLink({title, url, href, fontSize, actions, inheritCol
 
 function DisplayNameText({ title, fontSize }) {
     return (
-        <Text className={`${fontSize} whitespace-nowrap text-ellipsis overflow-hidden`}>
+        <Text className={`${fontSize} whitespace-nowrap text-ellipsis overflow-hidden text-foreground web:hover:text-accent-foreground`}>
             {title}
         </Text>
     )
@@ -93,7 +93,6 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
                 url={oProps.url}
                 fontSize={sSizeFont}
                 href={oProps.href}
-                inheritColor
             />
         </Link>
     ) : (
