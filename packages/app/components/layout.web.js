@@ -108,7 +108,7 @@ const MemoizedContent = React.memo(({ currentUser, pageLayoutName, layoutName, d
     }
 
     return (
-        <View className="w-full flex-1">
+        <View className="w-full flex-1 bg-background">
             <Suggestions />
             <AsyncWorker />
             <PageHeader layoutName={layoutName} pageLayoutName={pageLayoutName} pageData={data} />

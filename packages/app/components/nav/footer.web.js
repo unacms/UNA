@@ -9,7 +9,7 @@ import { getFriendsCounter } from 'app/customization/functions';
 import { Icon } from 'app/ui/atoms/icon'
 import { useTranslation } from 'react-i18next';
 import { useFooter, useSetFooterHeight } from 'app/context/jotai/layout';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSound } from 'app/lib/hooks/useSound';
 
 function isInStandaloneMode() {
@@ -49,7 +49,7 @@ export default function () {
         let dUser = Object.assign({}, currentUser);
         dUser.url_avatar = dUser.avatar
         dUser.url = appSetting('dashboard', 'url')
-        profile = <View className="w-7 h-7"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>
+        profile = <View className="w-6 h-6"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>
     }
 
     if (pathname == '/')
@@ -59,7 +59,7 @@ export default function () {
     return (
         <View
             className={
-                `min-h-16 fixed bottom-0 left-0 z-30 w-full lg:hidden bg-card ${isInStandaloneMode() ? "pb-4" : ""}`
+                `min-h-16 fixed bottom-0 left-0 z-30 border-t border-black/5 dark:border-black/20 w-full lg:hidden bg-card ${isInStandaloneMode() ? "pb-4" : ""}`
             }
             onLayout={(e) => setFooterHeight(e.nativeEvent.layout.height)}
         >
@@ -69,7 +69,7 @@ export default function () {
                 <Row className="flex-auto items-center flex-row w-full px-1 gap-1">
                     {TabList.filter(item => !item.hide).map((tab, index) => {
                         const isActive = appSetting('messenger', 'url') === tab.url ? pathname.includes(tab.url) : pathname === tab.url;
-                        return <MenuBottomItem key={`bmi-${index}`} notifCount={notifCount} iFrCounter={iFrCounter} profile={profile} link={tab.url} badge={tab.badge} index={index} icon={tab.icon} title={t(tab.title)} isActive={isActive} />
+                        return <MenuBottomItem key={`bmi-${index}`} notifCount={notifCount} iFrCounter={iFrCounter} profile={profile} link={tab.url} badge={tab.badge} index={index} icon={tab.icon} title={t(tab.title)} isActive={isActive} animated={tab.animated} addClassName={tab.addClassName} />
                     })}
                 </Row>
             </View>
@@ -77,9 +77,11 @@ export default function () {
     );
 }
 
-function MenuBottomItem({ link, title, index, badge, icon, isActive, profile, iFrCounter, notifCount }) {
+function MenuBottomItem({ link, title, index, badge, icon, isActive, profile, iFrCounter, notifCount, animated, addClassName }) {
     const { currentUser } = useCurrentUser();
     const playSound = useSound('click');
+    const useAnimatedIcon = animated === true;
+    const [groupHovered, setGroupHovered] = useState(false);
     const badgeObj = [
         {
             condition: (link === appSetting('notifications', 'url') || badge == 'notifications') && notifCount > 0, //to remove in 11.25 link === appSetting('notifications', 'url')
@@ -102,20 +104,28 @@ function MenuBottomItem({ link, title, index, badge, icon, isActive, profile, iF
     const handlePress = useCallback(() => {
            playSound();
     }, []);
+    const baseIconClassName = isActive
+        ? 'text-accent-foreground'
+        : 'text-secondary-foreground web:group-hover:text-foreground';
+    const iconClassName = addClassName ? `${baseIconClassName} ${addClassName}` : baseIconClassName;
 
 
     return (
             <Link
                 href={link}
                 noprefetch={link === appSetting('notifications', 'url') ? "false" : "true"}
-                className="w-full"
+                className="group w-full"
                 alt={title}
                  onClick={handlePress}
             >
-                <View className={`justify-between my-auto items-center rounded-xl p-1.5 text-center gap-1 web:hover:bg-muted/60 justify-center ${isActive && 'bg-accent/10'}`}>
-                    <Text className={`${isActive ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>
-                        {link === appSetting('dashboard', 'url') ? profile : <Icon icon={icon} size={28} />}
-                    </Text>
+                <View
+                    className={`justify-between my-auto items-center rounded-xl p-1.5 text-center gap-1.5 web:hover:bg-muted/60 justify-center ${isActive && 'bg-accent/10'}`}
+                    onMouseEnter={useAnimatedIcon ? () => setGroupHovered(true) : undefined}
+                    onMouseLeave={useAnimatedIcon ? () => setGroupHovered(false) : undefined}
+                >
+                    <View className="items-center justify-center">
+                        {link === appSetting('dashboard', 'url') ? profile : <Icon icon={icon} size={24} animated={useAnimatedIcon} active={useAnimatedIcon ? isActive : undefined} hovered={useAnimatedIcon ? groupHovered : undefined} className={iconClassName} />}
+                    </View>
                     {<Text className={` web:group-hover:text-accent-foreground text-xs tracking-tight leading-none font-medium whitespace-nowrap ${isActive ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>{title}</Text>}
                     {badgeObj && <View className={`absolute bg-destructive border-2 border-card rounded-full px-1.5 min-w-6 items-center justify-center  -top-1 left-1/2 -translate-x-1/2 ml-4`}><Text className="text-white text-xs font-medium tracking-tight leading-5 ">{badgeObj.text}</Text></View>}
                 </View>

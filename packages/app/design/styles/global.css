@@ -4,6 +4,7 @@
 
 @layer base {
     .light-theme-vars {
+        --default: var(--white);
         --background: var(--neutral-100);
         --foreground: var(--neutral-950);
         --card: var(--white);
@@ -71,6 +72,7 @@
     }
 
     .dark-theme-vars {
+        --default: var(--neutral-900);
         --background: var(--neutral-950);
         --foreground: var(--white);
         --card: var(--neutral-900);

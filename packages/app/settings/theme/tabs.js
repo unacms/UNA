@@ -26,9 +26,9 @@ export const settingsTabs = {
 
         // Header item text
         'u-controls-tabs-header-item-text':
-            'text-secondary-foreground web:group-hover:text-foreground font-medium ',
+            'native:text-secondary-foreground font-medium ',
         'u-controls-tabs-header-item-text-active':
-            'text-card-foreground font-medium ',
+            'native:text-foreground font-medium ',
 
         // Tab content
         'u-controls-tabs-tab-content': 'w-full',
@@ -43,12 +43,12 @@ export const settingsTabs = {
     tabs_variants: {
         default: {
             track:
-                'absolute inset-0 z-0 bg-muted/60 pointer-events-none',
+                'absolute inset-0 z-0 bg-background border border-muted/60 pointer-events-none',
             row: '',
-            trigger_active: ' ',
+            trigger_active: ' border border-transparent inset-0 ',
             trigger_inactive:
-                ' web:group web:hover:bg-muted/60 web:duration-200',
-            pill: ' bg-popover/60 shadow-sm border border-white/60 dark:border-border/20 inset-0',
+                ' web:group text-secondary-foreground web:hover:text-foreground web:hover:bg-muted/60 border border-transparent web:hover:border-background inset-0 ',
+            pill: ' bg-popover/80 shadow-sm border border-popover/80 inset-px',
             line: '',
         },
         secondary: {
@@ -57,7 +57,7 @@ export const settingsTabs = {
             row: '',
             trigger_active: ' ',
             trigger_inactive:
-                ' group web:hover:bg-muted/60 web:duration-200',
+                ' web:group web:hover:bg-muted/60 web:duration-200',
             pill: '',
             line: 'bg-ring',
         },
@@ -67,15 +67,15 @@ export const settingsTabs = {
     tabs_sizes: {
         default_size: 'md',
         sm: {
-            header: 'p-0.5 gap-0.5',
+            header: ' p-px ',
             /** px — matches horizontal list padding; scroll-into-view uses this so tabs don’t sit flush on the viewport edge */
             scroll_inset: 4,
             gap_px: 4,
             track: 'rounded-xl',
             row: 'rounded-xl',
-            item: ' h-9 px-3 text-sm web:focus-visible:outline-2  ',
+            item: ' h-9 px-2 text-sm web:focus-visible:outline-2  ',
             pill: 'rounded-lg overflow-hidden',
-            indicator_pad: ' px-3 ',
+            indicator_pad: ' px-2 ',
             indicator_inner: 'rounded-full h-0.5 mt-1 ',
             text: ' text-sm whitespace-nowrap  ',
             text_active: ' text-sm whitespace-nowrap  ',
@@ -86,9 +86,9 @@ export const settingsTabs = {
             gap_px: 4,
             track: 'rounded-xl',
             row: 'rounded-xl',
-            item: ' h-10 px-4 text-base web:focus-visible:outline-2 ',
+            item: ' h-10 px-3 text-base web:focus-visible:outline-2 ',
             pill: 'rounded-lg overflow-hidden',
-            indicator_pad: ' px-4   ',
+            indicator_pad: ' px-3   ',
             indicator_inner: 'rounded-full h-[3px] mt-1.5 ',
             text: ' text-base ',
             text_active: ' text-base ',
@@ -99,9 +99,9 @@ export const settingsTabs = {
             gap_px: 4,
             track: 'rounded-2xl',
             row: 'rounded-2xl',
-            item: ' h-12 px-6 text-lg  web:focus-visible:outline-2',
+            item: ' h-12 px-4 text-lg  web:focus-visible:outline-2',
             pill: 'rounded-xl overflow-hidden',
-            indicator_pad: ' px-6 ',
+            indicator_pad: ' px-4 ',
             indicator_inner: 'rounded-full h-1 mt-2',
             text: ' text-lg ',
             text_active: ' text-lg ',
