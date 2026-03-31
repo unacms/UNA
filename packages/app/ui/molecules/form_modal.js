@@ -8,6 +8,7 @@ import { Platform } from 'react-native'
 import { useEffect, useCallback, useRef } from 'react'
 import { Loading } from 'app/customization/loading' 
 import { getModalPostTitle } from 'app/customization/functions'
+import { appSetting } from 'app/lib/util';
 
 const isWeb = Platform.OS === 'web';
 
@@ -62,7 +63,7 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
                 outerClickClose={isWeb}
                 usePadding={true}
             >
-                 <Component url={url} isModal={true} layoutName={'post'} data={pageData} blocks={layoutBlocks} />
+                 <Component url={url} isModal={true} layoutName={'post'} data={pageData} blocks={layoutBlocks || appSetting('layouts', pageData.uri)?.blocks} />
             </Modal>
         );
     }
