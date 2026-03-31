@@ -32,7 +32,7 @@
         --neutral-200: 228 228 231;
         --neutral-300: 212 212 216;
         --neutral-400: 161 161 170;
-        --neutral-500: 115 115 115;
+        --neutral-500: 113 113 122;
         --neutral-600: 82 82 91;
         --neutral-700: 63 63 70;
         --neutral-800: 39 39 42;
@@ -88,7 +88,7 @@
         --accent: var(--accent-950);
         --accent-foreground: var(--accent-600);
         --muted: var(--neutral-800);
-        --muted-foreground: var(--neutral-600);
+        --muted-foreground: var(--neutral-500);
         --destructive: var(--red);
         --destructive-foreground: var(--neutral-950);
         --border: var(--neutral-700);

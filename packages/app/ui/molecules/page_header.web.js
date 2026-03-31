@@ -12,20 +12,30 @@ import {
     usePageHeaderBase,
 } from 'app/ui/molecules/page_header-shared';
 
-/** Delay before the fixed mobile-web header fades in on scroll-up. */
-const FIXED_BAR_ENTER_DELAY_MS = 500;
-/** Tailwind transition utilities for the fixed mobile-web header fade/transform. */
-const FIXED_BAR_TRANSITION_CLASS = 'web:duration-300 web:ease-in-out ';
-/** Keep this close to the transition duration above so unmount waits for fade-out. */
-const FIXED_BAR_FADE_MS = 320;
+const DEFAULT_ENTER_TRANSITION = 'web:duration-300 web:ease-out';
+const DEFAULT_ENTER_TRANSLATE = 'web:-translate-y-full';
+const DEFAULT_DISMISS_TRANSITION = 'web:duration-300 web:ease-in-out';
+const DEFAULT_DISMISS_TRANSLATE = '';
+const DEFAULT_DISMISS_MS = 500;
 
 export { PageHeaderSmall, TextHeader };
 
-function clearTimer(timerRef) {
-    if (timerRef.current) {
-        clearTimeout(timerRef.current);
-        timerRef.current = null;
+function clearTimer(ref) {
+    if (ref.current) {
+        clearTimeout(ref.current);
+        ref.current = null;
     }
+}
+
+function cancelFrame(ref) {
+    if (ref.current) {
+        cancelAnimationFrame(ref.current);
+        ref.current = null;
+    }
+}
+
+function s(key) {
+    return appSetting('layout', 'header', key) || '';
 }
 
 export const PageHeader = ({ pageData }) => {
@@ -40,139 +50,201 @@ export const PageHeader = ({ pageData }) => {
 
     const scrollY = useScrollValue();
     const setScrollValue = useSetScrollValue();
-    const usesFixedOverlayHeader = isCollapsibleHeader;
-    const pastRevealThreshold =
-        usesFixedOverlayHeader && headerHeight > 0 && scrollY >= headerHeight;
+    const isMobileCollapsible = isCollapsibleHeader;
 
-    const [isFixedMounted, setIsFixedMounted] = useState(false);
-    const [isEntering, setIsEntering] = useState(false);
+    const enterTransition = s('fixed_enter_transition') || DEFAULT_ENTER_TRANSITION;
+    const enterTranslate = typeof appSetting('layout', 'header', 'fixed_enter_translate') === 'string'
+        ? appSetting('layout', 'header', 'fixed_enter_translate')
+        : DEFAULT_ENTER_TRANSLATE;
+    const dismissTransition = s('fixed_dismiss_transition') || DEFAULT_DISMISS_TRANSITION;
+    const dismissTranslate = typeof appSetting('layout', 'header', 'fixed_dismiss_translate') === 'string'
+        ? appSetting('layout', 'header', 'fixed_dismiss_translate')
+        : DEFAULT_DISMISS_TRANSLATE;
+    const dismissMs = Number.isFinite(Number(appSetting('layout', 'header', 'fixed_dismiss_ms')))
+        ? Number(appSetting('layout', 'header', 'fixed_dismiss_ms'))
+        : DEFAULT_DISMISS_MS;
+
+    const floatingSurface = s('floating_surface');
+    const floatingSurfaceDown = s('floating_surface_scroll_down');
+    const floatingSurfaceUp = s('floating_surface_scroll_up');
+    const floatingContentInitial = s('floating_content_initial') || ' opacity-100 ';
+    const floatingContentDown = s('floating_content_scroll_down');
+    const floatingContentUp = s('floating_content_scroll_up');
+
+    const hasScrolledPastHeader =
+        isMobileCollapsible && headerHeight > 0 && scrollY >= headerHeight;
+
+    const [isSurfaceMounted, setIsSurfaceMounted] = useState(false);
+    const [isOpening, setIsOpening] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
-    const enterTimerRef = useRef(null);
     const closeTimerRef = useRef(null);
+    const openFrameRef = useRef(null);
 
     useLayoutEffect(() => {
         const currentScrollY = window.scrollY ?? 0;
         setScrollValue(currentScrollY);
-        clearTimer(enterTimerRef);
         clearTimer(closeTimerRef);
-        setIsFixedMounted(usesFixedOverlayHeader && currentScrollY <= 0);
-        setIsEntering(false);
+        cancelFrame(openFrameRef);
+        setIsSurfaceMounted(false);
+        setIsOpening(false);
         setIsClosing(false);
-    }, [usesFixedOverlayHeader, pageData?.uri, pageData?.url, setScrollValue]);
+    }, [isMobileCollapsible, pageData?.uri, pageData?.url, setScrollValue]);
 
     useEffect(() => () => {
-        clearTimer(enterTimerRef);
         clearTimer(closeTimerRef);
+        cancelFrame(openFrameRef);
     }, []);
 
     useEffect(() => {
-        if (!usesFixedOverlayHeader || !pastRevealThreshold || scrollDirection !== -1 || isFixedMounted) {
+        if (!isMobileCollapsible || !hasScrolledPastHeader || scrollDirection !== -1 || isSurfaceMounted) {
             return;
         }
 
         clearTimer(closeTimerRef);
-        clearTimer(enterTimerRef);
-        setIsFixedMounted(true);
+        setIsSurfaceMounted(true);
+        setIsOpening(true);
         setIsClosing(false);
-        setIsEntering(true);
-        enterTimerRef.current = setTimeout(() => {
-            enterTimerRef.current = null;
-            setIsEntering(false);
-        }, FIXED_BAR_ENTER_DELAY_MS);
-    }, [isFixedMounted, pastRevealThreshold, scrollDirection, usesFixedOverlayHeader]);
+        openFrameRef.current = requestAnimationFrame(() => {
+            openFrameRef.current = null;
+            setIsOpening(false);
+        });
+    }, [hasScrolledPastHeader, isMobileCollapsible, isSurfaceMounted, scrollDirection]);
 
     useEffect(() => {
-        if (!usesFixedOverlayHeader || !isFixedMounted || isClosing || scrollDirection !== 1) {
+        if (!isMobileCollapsible || !isSurfaceMounted || isClosing || scrollDirection !== 1) {
             return;
         }
 
-        clearTimer(enterTimerRef);
         clearTimer(closeTimerRef);
-        setIsEntering(false);
+        cancelFrame(openFrameRef);
+        setIsOpening(false);
         setIsClosing(true);
         closeTimerRef.current = setTimeout(() => {
             closeTimerRef.current = null;
             setIsClosing(false);
-            setIsFixedMounted(false);
-        }, FIXED_BAR_FADE_MS);
-    }, [isClosing, isFixedMounted, scrollDirection, usesFixedOverlayHeader]);
+            setIsSurfaceMounted(false);
+        }, dismissMs);
+    }, [dismissMs, isClosing, isMobileCollapsible, isSurfaceMounted, scrollDirection]);
 
     useEffect(() => {
-        if (!usesFixedOverlayHeader || !isClosing || scrollDirection === 1) {
+        if (!isMobileCollapsible || !isClosing || scrollDirection === 1) {
             return;
         }
 
         clearTimer(closeTimerRef);
         setIsClosing(false);
-    }, [isClosing, scrollDirection, usesFixedOverlayHeader]);
+    }, [isClosing, isMobileCollapsible, scrollDirection]);
+
+    useEffect(() => {
+        if (!isMobileCollapsible || !isSurfaceMounted || isClosing || scrollY > 0) {
+            return;
+        }
+
+        setIsSurfaceMounted(false);
+        setIsOpening(false);
+    }, [isClosing, isMobileCollapsible, isSurfaceMounted, scrollY]);
 
     if (header.header === false) {
         return null;
     }
 
-    const showFixedHeader = isFixedMounted && !isClosing;
-    const shouldRenderFixedLayer = usesFixedOverlayHeader && (isFixedMounted || isClosing);
-    const fixedHeaderOpacity = isClosing ? 0 : (isEntering ? 0 : 1);
-    const allowPointerEvents = showFixedHeader && !isEntering;
-    const headerContainerBaseClass = appSetting('layout', 'header', 'container')
+    const shouldRenderSurface = isMobileCollapsible && (isSurfaceMounted || isClosing);
+    const flowHeaderEnteringViewport =
+        isMobileCollapsible && isSurfaceMounted && headerHeight > 0 && scrollY < headerHeight;
+    const surfaceOpacity = isClosing
+        ? 0
+        : flowHeaderEnteringViewport
+            ? Math.max(0, Math.min(1, scrollY / headerHeight))
+            : 1;
+
+    const containerBase = (s('container') || '')
         .replace('header-fixed', '')
         .replace('web:fixed', '')
         .replace('web:top-0', '')
         .replace('web:transition-transform', '')
         .replace('web:duration-300', '')
         .replace('web:ease-in-out', '');
-    const fixedHeaderClass =
+    const fixedShell =
         ' header-fixed web:fixed web:top-0 web:left-0 web:right-0 web:z-50 -mt-[env(safe-area-inset-top)] pt-[env(safe-area-inset-top)] ';
-    const flowTransitionClass =
-        ` web:transition-[transform,opacity,background-color,border-color] ${FIXED_BAR_TRANSITION_CLASS} `;
-    const flowHeaderContainerClassName = usesFixedOverlayHeader
-        ? `${headerContainerBaseClass} web:relative web:top-auto web:translate-y-0 ${flowTransitionClass}`
-        : `${headerContainerBaseClass} ${fixedHeaderClass} ${isCollapsibleHeader && scrollDirection === 1 ? 'web:-translate-y-full' : 'web:translate-y-0'} ${flowTransitionClass}`;
-    const fixedHeaderContainerClassName = `${headerContainerBaseClass} ${fixedHeaderClass} web:translate-y-0 ${flowTransitionClass}`;
-    const flowHeaderContentClassName = usesFixedOverlayHeader
-        ? `${appSetting('layout', 'header', 'content')} `
-        : appSetting('layout', 'header', 'content');
-    const fixedHeaderContentClassName = appSetting('layout', 'header', 'content_pinned_fixed')
-        || ' bg-card border-b border-border/60 backdrop-blur-xl shadow-sm ';
-    const headerContainerStyle = shouldRenderFixedLayer ? { opacity: fixedHeaderOpacity } : undefined;
-    const headerPointerEvents = usesFixedOverlayHeader && shouldRenderFixedLayer && !allowPointerEvents
-        ? 'none'
-        : 'auto';
-    const flowHeaderStyle = usesFixedOverlayHeader && shouldRenderFixedLayer
-        ? { visibility: 'hidden' }
-        : undefined;
-    const showFixedDesktopSpacer = !usesFixedOverlayHeader;
+    const contentClass = s('content') || '';
+    const initialSurfaceClass = s('initial_surface') || '';
 
-    return (
-        <>
-            {showFixedDesktopSpacer && (
-                <View aria-hidden="true" style={{ height: headerHeight }} />
-            )}
-            <View
-                className={flowHeaderContainerClassName}
-                aria-hidden={usesFixedOverlayHeader && shouldRenderFixedLayer ? 'true' : undefined}
-                style={flowHeaderStyle}
-                onLayout={onHeaderLayout}
-            >
-                <PageHeaderBody
-                    {...headerState}
-                    contentClassName={flowHeaderContentClassName}
-                    pageData={pageData}
-                />
-            </View>
-            {usesFixedOverlayHeader && shouldRenderFixedLayer && (
+    const scrollContentClass = scrollDirection === 1
+        ? floatingContentDown
+        : scrollDirection === -1
+            ? floatingContentUp
+            : floatingContentInitial;
+    const scrollSurfaceClass = scrollDirection === 1
+        ? floatingSurfaceDown
+        : scrollDirection === -1
+            ? floatingSurfaceUp
+            : '';
+
+    if (!isMobileCollapsible) {
+        const desktopSpacer = true;
+        const desktopTranslate = isCollapsibleHeader && scrollDirection === 1
+            ? 'web:-translate-y-full'
+            : 'web:translate-y-0';
+        return (
+            <>
+                {desktopSpacer && (
+                    <View aria-hidden="true" style={{ height: headerHeight }} />
+                )}
                 <View
-                    className={fixedHeaderContainerClassName}
-                    style={headerContainerStyle}
-                    pointerEvents={headerPointerEvents}
+                    className={`${containerBase} ${fixedShell} ${desktopTranslate}`}
+                    onLayout={onHeaderLayout}
                 >
                     <PageHeaderBody
                         {...headerState}
-                        contentClassName={`${appSetting('layout', 'header', 'content')} ${fixedHeaderContentClassName}`}
+                        contentClassName={contentClass}
                         pageData={pageData}
                     />
                 </View>
+            </>
+        );
+    }
+
+    const surfaceTranslateClass = isClosing
+        ? dismissTranslate
+        : isOpening
+            ? enterTranslate
+            : 'web:translate-y-0';
+    const surfaceTransitionClass = isClosing
+        ? `web:transition-[transform,opacity] ${dismissTransition}`
+        : isOpening
+            ? `web:transition-transform ${enterTransition}`
+            : '';
+
+    return (
+        <>
+            {/* Initial surface: relative, in-flow, surface-only (no interactive content) */}
+            <View
+                className={`${containerBase} web:relative web:top-auto web:translate-y-0 ${contentClass} ${initialSurfaceClass}`}
+                onLayout={onHeaderLayout}
+                aria-hidden="true"
+            />
+
+            {/* Floating surface: fixed bg/border/blur, mounted on scroll */}
+            {shouldRenderSurface && (
+                <View
+                    className={`${containerBase} ${fixedShell} ${surfaceTranslateClass} ${surfaceTransitionClass} ${contentClass} ${floatingSurface} ${scrollSurfaceClass}`}
+                    style={{ opacity: surfaceOpacity }}
+                    pointerEvents="none"
+                    aria-hidden="true"
+                />
             )}
+
+            {/* Content layer: always mounted, fixed, on top of both surfaces */}
+            <View
+                className={`${containerBase} ${fixedShell} web:translate-y-0 web:transition-opacity web:duration-300 web:ease-in-out ${scrollContentClass}`}
+                pointerEvents={scrollDirection === 1 ? 'none' : 'auto'}
+            >
+                <PageHeaderBody
+                    {...headerState}
+                    contentClassName={contentClass}
+                    pageData={pageData}
+                />
+            </View>
         </>
     );
 };

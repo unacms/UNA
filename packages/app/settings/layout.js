@@ -61,10 +61,31 @@ export const settingsLayout = {
 
         header: {
             container: ' w-full z-50 header-fixed web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out ',
-            content: ' bg-card items-center lg:border-b justify-between h-14 lg:h-16 backdrop-blur-xl shadow-sm border-white/80 dark:border-white/5 inset-0 px-4 w-full mx-auto gap-4',
-            /** Mobile web extra classes when the scroll-up “pinned” fixed bar is visible — background, border, blur. Merged on the header row after `content`. */
-            content_pinned_fixed:
-                '  shadow-lg bg-card border-white/80 dark:border-white/10 inset-0 top-0 ',
+            content: '  items-center lg:border-b justify-between h-14 lg:h-16  px-3 lg:px-4 w-full mx-auto gap-4',
+            /** Initial surface: background / border styling for the in-flow relative header. */
+            initial_surface: ' bg-default ',
+            /** Floating surface sublayer: background / border / blur when the fixed overlay is active. */
+            floating_surface: '  bg-default shadow-sm border-b border-white/80 dark:border-white/10 ',
+            /** Extra classes appended to the floating surface on scroll-down. */
+            floating_surface_scroll_down: ' opacity-0 ',
+            /** Extra classes appended to the floating surface on scroll-up. */
+            floating_surface_scroll_up: ' opacity-100 ',
+            /** Classes for the always-fixed content layer at rest (top of page). */
+            floating_content_initial: ' opacity-100 ',
+            /** Extra classes for the content layer on scroll-down. */
+            floating_content_scroll_down: ' hidden ',
+            /** Extra classes for the content layer on scroll-up. */
+            floating_content_scroll_up: ' opacity-100 ',
+            /** Floating surface: transition when it slides/fades in on scroll-up. */
+            fixed_enter_transition: 'web:duration-500 web:ease-out',
+            /** Floating surface: translate class applied before reveal. Set empty to disable slide-in. */
+            fixed_enter_translate: 'web:-translate-y-full',
+            /** Floating surface: transition when it fades/slides out on scroll-down. */
+            fixed_dismiss_transition: 'web:duration-300 web:ease-in-out',
+            /** Floating surface: translate class applied while dismissing. Set empty to disable slide-up. */
+            fixed_dismiss_translate: '',
+            /** Floating surface: unmount delay in ms after dismiss starts. */
+            fixed_dismiss_ms: 500,
             content_left: ' items-center justify-start flex-1 lg:flex-none xl:w-80 gap-x-2',
             content_center: ' hidden flex-auto lg:flex gap-2 items-center justify-center max-w-3xl  ',
             active_item_indicator: 'absolute -bottom-2 left-0 h-0.5 rounded-full flex-none bg-ring/80',
