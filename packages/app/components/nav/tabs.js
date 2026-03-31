@@ -156,6 +156,7 @@ export default function Tabs() {
     const notificationUrl = appSetting('notifications', 'url');
     const TabList = useMemo(() => currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged'), [currentUser?.id]);
 
+    const tabsSessionKey = currentUser?.id ? `user-${currentUser.id}-${currentUser.confirmed}` : 'user-guest';
 
     const preloadDelay = appSetting('native', 'lazy_tabs_preload_delay');
     const [lazyLoadTabs, setLazyLoadTabs] = useState(true);
@@ -289,18 +290,19 @@ export default function Tabs() {
         <>
             <Suggestions />
             <Subscriber />
-            <View className="flex-1 bg-red-500">
+            <View className="flex-1">
                 <View className="w-full z-50"><AsyncWorker /></View>
-                <RouterTabs screenOptions={screenOptions}>
+                <RouterTabs key={tabsSessionKey} screenOptions={screenOptions}>
                     {
                         TabList.map((tab, index) => {
+                            const useAnimatedIcon = tab.animated === true;
                             const options = {
                                 tabBarBadge: getBadgeForTab(currentUser, tab),
                                 tabBarBadgeAllowFontScaling: false,
                                 title: t(tab.title),
                                 headerShown: false,
                                 tabBarIcon: ({ color, focused }) => (
-                                    (tab.url == appSetting('dashboard', 'url') && profile) ? <View className="h-full ">{profile}</View> : <View className="h-full"><Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} animated active={focused} className="icon-scene-fill" /></View>
+                                    (tab.url == appSetting('dashboard', 'url') && profile) ? <View className="h-full ">{profile}</View> : <View className="h-full"><Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} animated={useAnimatedIcon} active={useAnimatedIcon ? focused : undefined} className={tab.addClassName} /></View>
                                 )
                             };
 

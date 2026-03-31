@@ -162,7 +162,7 @@ const ButtonContent = React.memo(({
     const baseContainerClasses = cn(
         roundingClass,
         `button-${variant}-${size}`,
-        isIconOnly ? '' : 'web:overflow-hidden',
+        isIconOnly ? '' : 'overflow-hidden',
         className,
         BtnCls[variant]?.container?.base,
             `justify-${align}`,
