@@ -94,7 +94,7 @@ export function CoverMenu(props) {
                 button_variant: 'secondary',
                 button_size: size,
                 button_rounded: false,
-                button_full_width: props?.params.button_full_width ?? false,
+                button_full_width: props?.params?.button_full_width ?? false,
                 className: 'flex-wrap',
                 isFixedCount: true,
             }}
