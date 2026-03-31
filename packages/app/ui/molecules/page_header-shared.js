@@ -133,7 +133,6 @@ export const PageHeaderBody = memo(({
     isFullContextSelector,
     isShowLogo,
     isWeb,
-    mode = 'flow',
     pageData,
     pageTitle,
     router,
@@ -142,7 +141,7 @@ export const PageHeaderBody = memo(({
     const HeaderElement = getComponent('molecule', 'header_element');
 
     const Logo = (
-        <Link href="/home" aria-label="Home" variant="ghost" size="lg" className="items-center">
+        <Link href="/home" aria-label="Home" size="md" className="items-center">
             {appStatic('logo')}
         </Link>
     );
@@ -167,12 +166,8 @@ export const PageHeaderBody = memo(({
             />
         ) : null;
 
-    const explicitHeader = mode === 'fixed'
-        ? (header.fixedHeader ?? header.header)
-        : header.header;
-
-    if (explicitHeader) {
-        return explicitHeader;
+    if (header.header) {
+        return header.header;
     }
 
     return (

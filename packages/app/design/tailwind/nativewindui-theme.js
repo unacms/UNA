@@ -74,10 +74,6 @@ const nativewindUIColors = {
     accent: {
         DEFAULT: withOpacity('accent'),
         foreground: withOpacity('accent-foreground'),
-    },
-    popover: {
-        DEFAULT: withOpacity('popover'),
-        foreground: withOpacity('popover-foreground'),
         50: withOpacity('accent-50'),
         100: withOpacity('accent-100'),
         200: withOpacity('accent-200'),
@@ -89,6 +85,11 @@ const nativewindUIColors = {
         800: withOpacity('accent-800'),
         900: withOpacity('accent-900'),
         950: withOpacity('accent-950'),
+    },
+    popover: {
+        DEFAULT: withOpacity('popover'),
+        foreground: withOpacity('popover-foreground'),
+       
     },
     card: {
         DEFAULT: withOpacity('card'),
@@ -130,22 +131,7 @@ const nativewindUIColors = {
         1000: withOpacity('neutral-1000'),
     },
 
-    /* Raw base scale: solid base-1…12 + translucent base-a-1…12 (see global.css --base-* / --base-a*) */
-    base: {
-        1: withOpacity('base-1'),
-        2: withOpacity('base-2'),
-        3: withOpacity('base-3'),
-        4: withOpacity('base-4'),
-        5: withOpacity('base-5'),
-        6: withOpacity('base-6'),
-        7: withOpacity('base-7'),
-        8: withOpacity('base-8'),
-        9: withOpacity('base-9'),
-        10: withOpacity('base-10'),
-        11: withOpacity('base-11'),
-        12: withOpacity('base-12'),
-        
-    },
+   
 
     // Raw state colors
     green: withOpacity('green'),

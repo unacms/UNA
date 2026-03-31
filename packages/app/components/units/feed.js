@@ -119,11 +119,11 @@ function DefaultUnit({ data }) {
             <CardList
                 border="border-y border-x-none sm:border-x"
                 className=" mb-0.5 sm:mb-3"
-                padding="pt-1 sm:pt-2"
+                padding="pt-2"
             >
-                <Row className="gap-3 flex-auto px-1 sm:px-2 ">
+                <Row className="gap-3 flex-auto px-2  ">
                     <Skeleton visible={isSkeleton} preset='feed_author'>
-                        <View className=" flex-1 px-2 pt-2 "><Author data={data} url={url} t={t} /></View>
+                        <View className=" flex-1 px-2  "><Author data={data} url={url} t={t} /></View>
                         <View className="flex-none mb-auto">
                             <MenuManage
                                 id={data.id}
@@ -133,13 +133,13 @@ function DefaultUnit({ data }) {
                         </View>
                     </Skeleton>
                 </Row>
-                <View className="flex-auto px-3 sm:px-4 pt-2 sm:pt-3 ">
+                <View className="flex-auto px-4 pt-3 ">
                     <Skeleton visible={isSkeleton} preset='multitext'>
                         <MainContent url={url} data={data} />
                     </Skeleton>
                 </View>
                 {!!data.menu_counters?.items?.length && <>
-                <Row className="px-1 sm:px-2">
+                <Row className="px-2">
 
                         {appSetting('feed', 'counters_menu') && (
                             <CounterMenu
@@ -149,7 +149,7 @@ function DefaultUnit({ data }) {
                     </Row>
                 </>}
 
-                <Row className="gap-2 items-center flex-auto justify-between p-1 sm:p-2 border-t mt-1 sm:mt-2 border-muted/60 ">
+                <Row className="gap-2 items-center flex-auto justify-between p-2 border-t mt-2 border-border/20 ">
                     <ActionMenu
                         data={data.menu_actions}
                     />

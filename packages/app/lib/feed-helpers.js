@@ -99,7 +99,7 @@ export const CommentsSection = memo(
             <Button variant="text" size="xs" title={t('View more comments...')} />
         )
         return (
-            <View className="border-t border-muted/60 px-1 sm:px-2 py-1 sm:py-2 ">
+            <View className="border-t border-border/20 p-2 ">
                 
                     {isShowMoreComments && (
                         <View className="sm:pb-1 me-auto">

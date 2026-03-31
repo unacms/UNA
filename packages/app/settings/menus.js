@@ -71,6 +71,8 @@ export const settingsMenus = {
                 title: 'Friends',
                 link: '/friends',
                 icon: 'UsersRound',
+                animated: true,
+                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
                 nonlogged: false,
             },
             {
@@ -207,27 +209,40 @@ export const settingsMenus = {
             },
         ],
         menu_tabbar_logged: [
-            { key: '/tab0', title: 'Home', url: '/home', icon: 'House' },
+            {
+                key: '/tab0',
+                title: 'Home',
+                url: '/home',
+                icon: 'House',
+                animated: true,
+                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
+            },
             {
                 key: '/tab1',
                 title: 'Friends',
                 url: '/friends',
                 icon: 'UsersRound',
-                badge: 'friends'
+                badge: 'friends',
+                animated: true,
+                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
             },
             {
                 key: '/tab2',
                 title: 'Messages',
                 url: '/messenger',
                 icon: 'MessageCircleMore',
-                badge: 'messenger'
+                badge: 'messenger',
+                animated: true,
+                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
             },
             {
                 key: '/tab3',
                 title: 'Notifications',
                 url: '/notifications-view',
                 icon: 'Bell',
-                badge: 'notifications'
+                badge: 'notifications',
+                animated: true,
+                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
             },
             {
                 key: '/tab4',
@@ -238,14 +253,30 @@ export const settingsMenus = {
         ],
 
         menu_tabbar_non_logged: [
-            { key: '/tab0', title: 'Home', url: '/home', icon: 'House' },
+            {
+                key: '/tab0',
+                title: 'Home',
+                url: '/home',
+                icon: 'House',
+                animated: true,
+                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
+            },
             {
                 key: '/tab1',
                 title: 'Explore',
                 url: '/explore',
                 icon: 'Compass',
+                animated: true,
+                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
             },
-            { key: '/tab2', title: 'About', url: '/about', icon: 'Info' },
+            {
+                key: '/tab2',
+                title: 'About',
+                url: '/about',
+                icon: 'Info',
+                animated: true,
+                addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
+            },
             {
                 key: '/tab3',
                 title: 'Contact',

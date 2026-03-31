@@ -12,10 +12,21 @@ import {
     usePageHeaderBase,
 } from 'app/ui/molecules/page_header-shared';
 
+/** Delay before the fixed mobile-web header fades in on scroll-up. */
+const FIXED_BAR_ENTER_DELAY_MS = 500;
+/** Tailwind transition utilities for the fixed mobile-web header fade/transform. */
+const FIXED_BAR_TRANSITION_CLASS = 'web:duration-300 web:ease-in-out ';
+/** Keep this close to the transition duration above so unmount waits for fade-out. */
 const FIXED_BAR_FADE_MS = 320;
-const FIXED_BAR_TOP_MERGE_FADE_RANGE = 32;
 
 export { PageHeaderSmall, TextHeader };
+
+function clearTimer(timerRef) {
+    if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+    }
+}
 
 export const PageHeader = ({ pageData }) => {
     const headerState = usePageHeaderBase(pageData, { resetHeaderOnRoute: true });
@@ -29,130 +40,80 @@ export const PageHeader = ({ pageData }) => {
 
     const scrollY = useScrollValue();
     const setScrollValue = useSetScrollValue();
-    const flowMobileHeader = isCollapsibleHeader;
-    const pinned = flowMobileHeader && headerHeight > 0 && scrollY >= headerHeight;
+    const usesFixedOverlayHeader = isCollapsibleHeader;
+    const pastRevealThreshold =
+        usesFixedOverlayHeader && headerHeight > 0 && scrollY >= headerHeight;
 
-    const [fixedBarOpen, setFixedBarOpen] = useState(false);
-    const [fadeOutActive, setFadeOutActive] = useState(false);
-    const [fixedBarEnter, setFixedBarEnter] = useState(false);
-    const dismissingFixedBarRef = useRef(false);
+    const [isFixedMounted, setIsFixedMounted] = useState(false);
+    const [isEntering, setIsEntering] = useState(false);
+    const [isClosing, setIsClosing] = useState(false);
+    const enterTimerRef = useRef(null);
+    const closeTimerRef = useRef(null);
 
     useLayoutEffect(() => {
-        setScrollValue(window.scrollY ?? 0);
-    }, [pageData?.url, setScrollValue]);
+        const currentScrollY = window.scrollY ?? 0;
+        setScrollValue(currentScrollY);
+        clearTimer(enterTimerRef);
+        clearTimer(closeTimerRef);
+        setIsFixedMounted(usesFixedOverlayHeader && currentScrollY <= 0);
+        setIsEntering(false);
+        setIsClosing(false);
+    }, [usesFixedOverlayHeader, pageData?.uri, pageData?.url, setScrollValue]);
 
-    useEffect(() => {
-        setFixedBarOpen(false);
-        setFadeOutActive(false);
-        setFixedBarEnter(false);
-        dismissingFixedBarRef.current = false;
-    }, [pageData?.uri, pageData?.url]);
-
-    useEffect(() => {
-        return () => {
-            dismissingFixedBarRef.current = false;
-        };
+    useEffect(() => () => {
+        clearTimer(enterTimerRef);
+        clearTimer(closeTimerRef);
     }, []);
 
     useEffect(() => {
-        if (!flowMobileHeader || !pinned || scrollDirection !== -1 || fixedBarOpen) {
+        if (!usesFixedOverlayHeader || !pastRevealThreshold || scrollDirection !== -1 || isFixedMounted) {
             return;
         }
 
-        setFixedBarOpen(true);
-        setFadeOutActive(false);
-        dismissingFixedBarRef.current = false;
-        setFixedBarEnter(true);
-    }, [fixedBarOpen, flowMobileHeader, pinned, scrollDirection]);
+        clearTimer(closeTimerRef);
+        clearTimer(enterTimerRef);
+        setIsFixedMounted(true);
+        setIsClosing(false);
+        setIsEntering(true);
+        enterTimerRef.current = setTimeout(() => {
+            enterTimerRef.current = null;
+            setIsEntering(false);
+        }, FIXED_BAR_ENTER_DELAY_MS);
+    }, [isFixedMounted, pastRevealThreshold, scrollDirection, usesFixedOverlayHeader]);
 
     useEffect(() => {
-        if (!fixedBarEnter) {
+        if (!usesFixedOverlayHeader || !isFixedMounted || isClosing || scrollDirection !== 1) {
             return;
         }
 
-        let raf2 = 0;
-        const raf1 = requestAnimationFrame(() => {
-            raf2 = requestAnimationFrame(() => setFixedBarEnter(false));
-        });
-
-        return () => {
-            cancelAnimationFrame(raf1);
-            if (raf2) {
-                cancelAnimationFrame(raf2);
-            }
-        };
-    }, [fixedBarEnter]);
-
-    useEffect(() => {
-        if (!flowMobileHeader) {
-            setFixedBarOpen(false);
-            setFadeOutActive(false);
-            setFixedBarEnter(false);
-            dismissingFixedBarRef.current = false;
-            return;
-        }
-        if (scrollY > 0) {
-            return;
-        }
-
-        setFixedBarOpen(false);
-        setFadeOutActive(false);
-        setFixedBarEnter(false);
-        dismissingFixedBarRef.current = false;
-    }, [flowMobileHeader, scrollY]);
-
-    useEffect(() => {
-        if (!flowMobileHeader || !fixedBarOpen) {
-            return;
-        }
-        if (scrollDirection !== 1) {
-            return;
-        }
-        if (dismissingFixedBarRef.current) {
-            return;
-        }
-
-        dismissingFixedBarRef.current = true;
-        setFadeOutActive(true);
-        const timeoutId = setTimeout(() => {
-            setFixedBarOpen(false);
-            setFadeOutActive(false);
-            dismissingFixedBarRef.current = false;
+        clearTimer(enterTimerRef);
+        clearTimer(closeTimerRef);
+        setIsEntering(false);
+        setIsClosing(true);
+        closeTimerRef.current = setTimeout(() => {
+            closeTimerRef.current = null;
+            setIsClosing(false);
+            setIsFixedMounted(false);
         }, FIXED_BAR_FADE_MS);
-
-        return () => clearTimeout(timeoutId);
-    }, [fixedBarOpen, flowMobileHeader, scrollDirection]);
+    }, [isClosing, isFixedMounted, scrollDirection, usesFixedOverlayHeader]);
 
     useEffect(() => {
-        if (!flowMobileHeader || !fadeOutActive) {
-            return;
-        }
-        if (scrollDirection === 1) {
+        if (!usesFixedOverlayHeader || !isClosing || scrollDirection === 1) {
             return;
         }
 
-        setFadeOutActive(false);
-        dismissingFixedBarRef.current = false;
-    }, [fadeOutActive, flowMobileHeader, scrollDirection]);
+        clearTimer(closeTimerRef);
+        setIsClosing(false);
+    }, [isClosing, scrollDirection, usesFixedOverlayHeader]);
 
     if (header.header === false) {
         return null;
     }
 
-    const showFixedSolid = fixedBarOpen && !fadeOutActive;
-    const showFixedLayer = flowMobileHeader && (fixedBarOpen || fadeOutActive);
-    const topMergeFadeOpacity =
-        showFixedSolid
-            ? Math.max(
-                0,
-                Math.min(
-                    1,
-                    scrollY / FIXED_BAR_TOP_MERGE_FADE_RANGE
-                )
-            )
-            : 1;
-    const headerOpacity = fadeOutActive ? 0 : (fixedBarEnter ? 0 : topMergeFadeOpacity);
-    const allowPointerEvents = showFixedSolid && headerOpacity > 0.98;
+    const showFixedHeader = isFixedMounted && !isClosing;
+    const shouldRenderFixedLayer = usesFixedOverlayHeader && (isFixedMounted || isClosing);
+    const fixedHeaderOpacity = isClosing ? 0 : (isEntering ? 0 : 1);
+    const allowPointerEvents = showFixedHeader && !isEntering;
     const headerContainerBaseClass = appSetting('layout', 'header', 'container')
         .replace('header-fixed', '')
         .replace('web:fixed', '')
@@ -163,56 +124,24 @@ export const PageHeader = ({ pageData }) => {
     const fixedHeaderClass =
         ' header-fixed web:fixed web:top-0 web:left-0 web:right-0 web:z-50 -mt-[env(safe-area-inset-top)] pt-[env(safe-area-inset-top)] ';
     const flowTransitionClass =
-        ' web:transition-[transform,opacity,background-color,border-color] web:duration-300 web:ease-in-out ';
-    const flowHeaderContainerClassName = flowMobileHeader
+        ` web:transition-[transform,opacity,background-color,border-color] ${FIXED_BAR_TRANSITION_CLASS} `;
+    const flowHeaderContainerClassName = usesFixedOverlayHeader
         ? `${headerContainerBaseClass} web:relative web:top-auto web:translate-y-0 ${flowTransitionClass}`
         : `${headerContainerBaseClass} ${fixedHeaderClass} ${isCollapsibleHeader && scrollDirection === 1 ? 'web:-translate-y-full' : 'web:translate-y-0'} ${flowTransitionClass}`;
     const fixedHeaderContainerClassName = `${headerContainerBaseClass} ${fixedHeaderClass} web:translate-y-0 ${flowTransitionClass}`;
-    const flowHeaderContentClassName = flowMobileHeader
-        ? `${appSetting('layout', 'header', 'content')} max-lg:bg-transparent max-lg:border-transparent max-lg:shadow-none max-lg:backdrop-blur-none`
+    const flowHeaderContentClassName = usesFixedOverlayHeader
+        ? `${appSetting('layout', 'header', 'content')} `
         : appSetting('layout', 'header', 'content');
     const fixedHeaderContentClassName = appSetting('layout', 'header', 'content_pinned_fixed')
-        || ' max-lg:bg-card max-lg:border-b max-lg:border-border/60 max-lg:backdrop-blur-xl max-lg:shadow-sm ';
-    const fixedHeaderSafeAreaFill =
-        appSetting('layout', 'header', 'safe_area_fill') || 'rgb(var(--card))';
-    const fixedHeaderSafeAreaBorder =
-        appSetting('layout', 'header', 'safe_area_border') || 'rgb(var(--border) / 0.6)';
-    const headerContainerStyle = showFixedLayer ? { opacity: headerOpacity } : undefined;
-    const headerPointerEvents = flowMobileHeader && showFixedLayer && !allowPointerEvents
+        || ' bg-card border-b border-border/60 backdrop-blur-xl shadow-sm ';
+    const headerContainerStyle = shouldRenderFixedLayer ? { opacity: fixedHeaderOpacity } : undefined;
+    const headerPointerEvents = usesFixedOverlayHeader && shouldRenderFixedLayer && !allowPointerEvents
         ? 'none'
         : 'auto';
-    const showFixedDesktopSpacer = !flowMobileHeader;
-
-    useLayoutEffect(() => {
-        const body = document.body;
-        const root = document.documentElement;
-        if (!body || !root) {
-            return;
-        }
-
-        body.style.setProperty('--fixed-header-safe-area-bg', fixedHeaderSafeAreaFill);
-        body.style.setProperty('--fixed-header-safe-area-border', fixedHeaderSafeAreaBorder);
-        root.style.setProperty('--fixed-header-safe-area-bg', fixedHeaderSafeAreaFill);
-        root.style.setProperty('--fixed-header-safe-area-border', fixedHeaderSafeAreaBorder);
-
-        if (flowMobileHeader && showFixedLayer) {
-            body.dataset.fixedHeaderSafeArea = 'true';
-            root.dataset.fixedHeaderSafeArea = 'true';
-        } else {
-            delete body.dataset.fixedHeaderSafeArea;
-            delete root.dataset.fixedHeaderSafeArea;
-        }
-
-        return () => {
-            delete body.dataset.fixedHeaderSafeArea;
-            delete root.dataset.fixedHeaderSafeArea;
-        };
-    }, [
-        fixedHeaderSafeAreaBorder,
-        fixedHeaderSafeAreaFill,
-        flowMobileHeader,
-        showFixedLayer,
-    ]);
+    const flowHeaderStyle = usesFixedOverlayHeader && shouldRenderFixedLayer
+        ? { visibility: 'hidden' }
+        : undefined;
+    const showFixedDesktopSpacer = !usesFixedOverlayHeader;
 
     return (
         <>
@@ -221,17 +150,17 @@ export const PageHeader = ({ pageData }) => {
             )}
             <View
                 className={flowHeaderContainerClassName}
-                aria-hidden={flowMobileHeader && showFixedLayer ? 'true' : undefined}
+                aria-hidden={usesFixedOverlayHeader && shouldRenderFixedLayer ? 'true' : undefined}
+                style={flowHeaderStyle}
                 onLayout={onHeaderLayout}
             >
                 <PageHeaderBody
                     {...headerState}
                     contentClassName={flowHeaderContentClassName}
-                    mode="flow"
                     pageData={pageData}
                 />
             </View>
-            {flowMobileHeader && showFixedLayer && (
+            {usesFixedOverlayHeader && shouldRenderFixedLayer && (
                 <View
                     className={fixedHeaderContainerClassName}
                     style={headerContainerStyle}
@@ -240,7 +169,6 @@ export const PageHeader = ({ pageData }) => {
                     <PageHeaderBody
                         {...headerState}
                         contentClassName={`${appSetting('layout', 'header', 'content')} ${fixedHeaderContentClassName}`}
-                        mode="fixed"
                         pageData={pageData}
                     />
                 </View>
