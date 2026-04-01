@@ -12,8 +12,8 @@ import {
     usePageHeaderBase,
 } from 'app/ui/molecules/page_header-shared';
 
-/** Slide + fade duration (ms); dismiss unmount waits slightly longer so the exit transition finishes. */
-const FIXED_BAR_MOTION_MS = 320;
+/** Matches `web:duration-300` (must be a static class for Tailwind JIT). Dismiss unmount waits for transition end. */
+const FIXED_BAR_MOTION_MS = 300;
 const FIXED_BAR_DISMISS_MS = FIXED_BAR_MOTION_MS + 80;
 /** Flow row (in-flow placeholder) transition when not using overlay. */
 const FIXED_BAR_TRANSITION_CLASS = 'web:duration-300 web:ease-in-out ';
@@ -139,7 +139,8 @@ export const PageHeader = ({ pageData }) => {
         isClosing || isEntering
             ? 'web:-translate-y-full web:opacity-0'
             : 'web:translate-y-0 web:opacity-100';
-    const fixedHeaderMotionTransition = `web:transition-[transform,opacity] web:duration-[${FIXED_BAR_MOTION_MS}ms] web:ease-in-out`;
+    const fixedHeaderMotionTransition =
+        'web:transition-[transform,opacity] web:duration-300 web:ease-in-out';
     const fixedHeaderContainerClassName = `${headerContainerBaseClass} ${fixedHeaderClass} ${fixedHeaderMotionClass} ${fixedHeaderMotionTransition}`;
     const flowHeaderContentClassName = usesFixedOverlayHeader
         ? `${appSetting('layout', 'header', 'content')} `
