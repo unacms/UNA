@@ -350,8 +350,13 @@ export const PageHeader = ({ pageData }) => {
                 />
             )}
 
+            {/*
+             * No key toggle between fixed / in-flow: same subtree keeps focus, menus, and avoids remount churn.
+             * Positioning + safe-area use class-only updates on this wrapper; route changes reset state above.
+             * If iOS Safari shows wrong safe-area/stacking when switching modes, prefer a route-level key
+             * (e.g. pageData?.uri) or a dual-layer render — not a key tied to scroll-driven chrome.
+             */}
             <View
-                key={useFixedInteractiveChrome ? 'header-fixed' : 'header-in-flow'}
                 className={useFixedInteractiveChrome ? fixedInteractiveClassName : inFlowInteractiveClassName}
                 onLayout={onHeaderLayout}
                 pointerEvents={
