@@ -16,10 +16,8 @@ export const settingsDefault = {
         app_url: env('APP_URL'),
         una_api_key: env('UNA_API_KEY'),    
         app_origin: env('APP_ORIGIN'),
-        native_app_images_url:
-            env('APP_URL') == 'http://localhost:3000'
-                ? 'https://neo.so'
-                : 'https://neo.so',
+        native_app_images_url:'https://neo.so',
+          
         noprefetch: false,
         debug: true,
         use_proxy_web: true,

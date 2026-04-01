@@ -10,6 +10,8 @@ import useDebounce from 'app/lib/hooks/debounce'
 import { Button } from 'app/design/controls';
 import useFetchForm from 'app/lib/hooks/fetch'
 
+const isWeb = Platform.OS === 'web';
+
 function getFormType(name) {
     return getComponent('form', String(name))
 }
@@ -253,7 +255,7 @@ export default function Form({
     }, [_handleSubmit]);
 
     useEffect(() => {
-        if (Platform.OS === 'web') {
+        if (isWeb) {
             window.addEventListener('keyup', handleKeyUp);
             return () => {
                 window.removeEventListener('keyup', handleKeyUp);
@@ -433,7 +435,16 @@ export default function Form({
                             size='sm'
                             fullWidth
                             variant='secondary'
-                            onPress={() => methods.reset()}
+                            onPress={() => {
+                                if (isWeb) {
+                                    const url = new URL(window.location.href);
+                                    if (url.searchParams.has('filters')) {
+                                        url.searchParams.delete('filters');
+                                        window.location.replace(`${url.pathname}${url.search}${url.hash}`);
+                                    }
+                                }
+                                methods.reset();
+                            }}
                         />
                         }
                     </Row>}
