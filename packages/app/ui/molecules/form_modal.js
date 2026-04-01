@@ -54,6 +54,9 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
         const Component = getComponent('layout', 'post');
         const layout = getLayoutName(pageData, 'item');
         const { layoutBlocks } = layout;
+
+        const layoutBlocks1 = pageData== 'loading' ? layoutBlocks : (layoutBlocks  || appSetting('layouts', pageData?.uri)?.blocks);
+       
         return (
             <Modal
                 onClose={handleClose}
@@ -63,7 +66,7 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
                 outerClickClose={isWeb}
                 usePadding={true}
             >
-                 <Component url={url} isModal={true} layoutName={'post'} data={pageData} blocks={layoutBlocks || appSetting('layouts', pageData.uri)?.blocks} />
+                 <Component url={url} isModal={true} layoutName={'post'} data={pageData} blocks={layoutBlocks1} />
             </Modal>
         );
     }
