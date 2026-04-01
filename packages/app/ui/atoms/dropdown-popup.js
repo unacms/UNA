@@ -177,7 +177,6 @@ export default function DropdownPopup({
         >
             <ScrollView
                 showsVerticalScrollIndicator={false}
-                className="overflow-visible web:overflow-visible"
             >
                 {children}
             </ScrollView>
