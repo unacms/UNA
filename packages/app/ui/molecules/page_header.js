@@ -10,23 +10,9 @@ import {
 
 export { PageHeaderSmall, TextHeader };
 
-/** Cached so we do not `require` the web implementation on every render. */
-let PageHeaderWebModule;
-function getPageHeaderWeb() {
-    if (!PageHeaderWebModule) {
-        PageHeaderWebModule = require('app/ui/molecules/page_header.web').PageHeader;
-    }
-    return PageHeaderWebModule;
-}
-
-function nativeCollapseDurationMs() {
-    const v = Number(appSetting('layout', 'header', 'native_collapse_animation_ms'));
-    return Number.isFinite(v) && v > 0 ? v : 300;
-}
-
 export const PageHeader = ({ pageData }) => {
     if (Platform.OS === 'web') {
-        const PageHeaderWeb = getPageHeaderWeb();
+        const { PageHeader: PageHeaderWeb } = require('app/ui/molecules/page_header.web');
         return <PageHeaderWeb pageData={pageData} />;
     }
 
@@ -48,7 +34,7 @@ export const PageHeader = ({ pageData }) => {
 
         Animated.timing(headerTranslateY, {
             toValue: scrollDirection === 1 ? -2 * headerHeight : 0,
-            duration: nativeCollapseDurationMs(),
+            duration: 300,
             useNativeDriver: true,
         }).start();
     }, [headerHeight, headerTranslateY, isCollapsibleHeader, scrollDirection]);

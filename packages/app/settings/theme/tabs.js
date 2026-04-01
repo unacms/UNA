@@ -28,7 +28,7 @@ export const settingsTabs = {
         'u-controls-tabs-header-item-text':
             'native:text-secondary-foreground font-medium ',
         'u-controls-tabs-header-item-text-active':
-            'native:text-foreground font-medium ',
+            'text-foreground font-medium ',
 
         // Tab content
         'u-controls-tabs-tab-content': 'w-full',
