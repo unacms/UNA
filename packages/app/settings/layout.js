@@ -60,32 +60,53 @@ export const settingsLayout = {
         show_tabbar_on_mobile_non_logged: false,
 
         header: {
-            container: ' w-full z-50 header-fixed web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out ',
-            content: '  items-center lg:border-b justify-between h-14 lg:h-16  px-3 lg:px-4 w-full mx-auto gap-4',
-            /** Initial surface: background / border styling for the in-flow relative header. */
+            /**
+             * Native (`page_header.js`): uses `container`, `content`, `content_left`, `content_center`, `content_right`, `active_item_indicator`, `native_collapse_animation_ms`.
+             * Web mobile collapsible (`page_header.web.js`): also uses `initial_surface`, `floating_*`, `fixed_*`, `fixed_reveal_*`.
+             */
+            /** Base width/z-index; `page_header.web` strips fixed/transition tokens and applies `fixed_layer` for fixed rows. */
+            container: ' w-full bg-card z-50 header-fixed web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out ',
+            /** Native only: `Animated.timing` duration (ms) when translating the collapsible header. Web timing uses `fixed_*_ms` / transitions. */
+            native_collapse_animation_ms: 300,
+            /** Row layout for `PageHeaderBody` (height, padding, flex). */
+            content: '  items-center justify-between h-14 lg:h-16 px-3 lg:px-4 w-full mx-auto gap-4',
+            /** Background on the in-flow header row (`fixed_reveal_on: scroll_up` default). Scrolls with the page until floating chrome mounts. */
             initial_surface: ' bg-default ',
-            /** Floating surface sublayer: background / border / blur when the fixed overlay is active. */
-            floating_surface: '  bg-default shadow-sm border-b border-white/80 dark:border-white/10 ',
-            /** Extra classes appended to the floating surface on scroll-down. */
-            floating_surface_scroll_down: ' opacity-0 ',
-            /** Extra classes appended to the floating surface on scroll-up. */
-            floating_surface_scroll_up: ' opacity-100 ',
-            /** Classes for the always-fixed content layer at rest (top of page). */
+            /** Decorative fixed layer behind controls when floating chrome is mounted (pointer-events none). Opacity is driven in JS. */
+            floating_surface: ' bg-default shadow-sm border-b border-white/80 dark:border-white/10 ',
+            /** Used only when the interactive row is fixed: `scrollDirection` 0 (near top band in scroll sync). */
             floating_content_initial: ' opacity-100 ',
-            /** Extra classes for the content layer on scroll-down. */
-            floating_content_scroll_down: ' hidden ',
-            /** Extra classes for the content layer on scroll-up. */
-            floating_content_scroll_up: ' opacity-100 ',
-            /** Floating surface: transition when it slides/fades in on scroll-up. */
+            /** Used only when fixed: scroll direction matches `fixed_reveal_on` (bar should show). */
+            floating_content_visible: ' opacity-100 ',
+            /** Used only when fixed: scroll direction is the dismiss direction (bar hidden). */
+            floating_content_hidden: ' hidden ',
+            /**
+             * `scroll_up` (default): in-flow header + controls scroll away together; after passing the header, fixed floating chrome + fixed controls appear on scroll-up and dismiss on scroll-down; at scrollY 0, back to in-flow.
+             * `scroll_down`: interactive row stays fixed (with spacer) like a classic sticky header; floating surface follows scroll-down mount rules.
+             */
+            fixed_reveal_on: 'scroll_up',
+            /**
+             * When `fixed_reveal_on` is `scroll_up`: extra upward scroll distance (px) after a scroll-up gesture
+             * before mounting fixed chrome. Dampens iOS rubber-band / bounce at the bottom from toggling mount.
+             */
+            fixed_reveal_scroll_threshold_px: 100,
+            /** Fixed positioning + safe-area shell for fixed rows (web). */
+            fixed_layer:
+                ' header-fixed web:fixed web:left-0 web:right-0 web:top-0 web:z-50 -mt-[env(safe-area-inset-top)] pt-[env(safe-area-inset-top)] ',
+            /** Floating background: transform/opacity while entering (after mount). */
             fixed_enter_transition: 'web:duration-500 web:ease-out',
-            /** Floating surface: translate class applied before reveal. Set empty to disable slide-in. */
+            /** Starting translate for enter; empty string disables slide-in. */
             fixed_enter_translate: 'web:-translate-y-full',
-            /** Floating surface: transition when it fades/slides out on scroll-down. */
+            /** How long `isOpening` lasts so the enter transition can run (ms). Match `fixed_enter_transition` duration. */
+            fixed_enter_ms: 500,
+            /** Floating background: transform/opacity while dismissing. */
             fixed_dismiss_transition: 'web:duration-300 web:ease-in-out',
-            /** Floating surface: translate class applied while dismissing. Set empty to disable slide-up. */
             fixed_dismiss_translate: '',
-            /** Floating surface: unmount delay in ms after dismiss starts. */
+            /** Unmount delay after dismiss starts; set ≥ longest dismiss transition. */
             fixed_dismiss_ms: 500,
+            /** Transition on the fixed `PageHeaderBody` wrapper (enter settle + scroll-driven hide). Include transform + opacity. */
+            fixed_content_transition:
+                'web:transition-[transform,opacity] web:duration-300 web:ease-in-out',
             content_left: ' items-center justify-start flex-1 lg:flex-none xl:w-80 gap-x-2',
             content_center: ' hidden flex-auto lg:flex gap-2 items-center justify-center max-w-3xl  ',
             active_item_indicator: 'absolute -bottom-2 left-0 h-0.5 rounded-full flex-none bg-ring/80',

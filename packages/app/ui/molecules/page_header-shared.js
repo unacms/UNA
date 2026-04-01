@@ -100,12 +100,11 @@ export function usePageHeaderBase(pageData, { resetHeaderOnRoute = false } = {})
         return (nextTitle || '').replace('__notification__', '');
     }, [header.title, menuSettings.name, pageData?.name]);
 
+    /** Functional update keeps the callback stable (avoids layout churn from identity changes) and skips writes when height is unchanged. */
     const onHeaderLayout = useCallback((event) => {
         const { height } = event.nativeEvent.layout;
-        if (height !== headerHeight) {
-            setHeaderHeightAtom(height);
-        }
-    }, [headerHeight, setHeaderHeightAtom]);
+        setHeaderHeightAtom((prev) => (prev === height ? prev : height));
+    }, [setHeaderHeightAtom]);
 
     return {
         currentUser,
