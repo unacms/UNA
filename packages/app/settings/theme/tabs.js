@@ -67,7 +67,7 @@ export const settingsTabs = {
     tabs_sizes: {
         default_size: 'md',
         sm: {
-            header: ' p-px ',
+            header: ' p-1 ',
             /** px — matches horizontal list padding; scroll-into-view uses this so tabs don’t sit flush on the viewport edge */
             scroll_inset: 4,
             gap_px: 4,
