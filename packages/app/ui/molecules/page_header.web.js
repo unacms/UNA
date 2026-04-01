@@ -12,12 +12,11 @@ import {
     usePageHeaderBase,
 } from 'app/ui/molecules/page_header-shared';
 
-/** Delay before the fixed mobile-web header fades in on scroll-up. */
-const FIXED_BAR_ENTER_DELAY_MS = 500;
-/** Tailwind transition utilities for the fixed mobile-web header fade/transform. */
+/** Matches `web:duration-300` (must be a static class for Tailwind JIT). Dismiss unmount waits for transition end. */
+const FIXED_BAR_MOTION_MS = 300;
+const FIXED_BAR_DISMISS_MS = FIXED_BAR_MOTION_MS + 80;
+/** Flow row (in-flow placeholder) transition when not using overlay. */
 const FIXED_BAR_TRANSITION_CLASS = 'web:duration-300 web:ease-in-out ';
-/** Keep this close to the transition duration above so unmount waits for fade-out. */
-const FIXED_BAR_FADE_MS = 320;
 
 export { PageHeaderSmall, TextHeader };
 
@@ -25,6 +24,13 @@ function clearTimer(timerRef) {
     if (timerRef.current) {
         clearTimeout(timerRef.current);
         timerRef.current = null;
+    }
+}
+
+function clearEnterFrame(frameRef) {
+    if (frameRef.current != null) {
+        cancelAnimationFrame(frameRef.current);
+        frameRef.current = null;
     }
 }
 
@@ -47,13 +53,13 @@ export const PageHeader = ({ pageData }) => {
     const [isFixedMounted, setIsFixedMounted] = useState(false);
     const [isEntering, setIsEntering] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
-    const enterTimerRef = useRef(null);
+    const enterFrameRef = useRef(null);
     const closeTimerRef = useRef(null);
 
     useLayoutEffect(() => {
         const currentScrollY = window.scrollY ?? 0;
         setScrollValue(currentScrollY);
-        clearTimer(enterTimerRef);
+        clearEnterFrame(enterFrameRef);
         clearTimer(closeTimerRef);
         setIsFixedMounted(usesFixedOverlayHeader && currentScrollY <= 0);
         setIsEntering(false);
@@ -61,7 +67,7 @@ export const PageHeader = ({ pageData }) => {
     }, [usesFixedOverlayHeader, pageData?.uri, pageData?.url, setScrollValue]);
 
     useEffect(() => () => {
-        clearTimer(enterTimerRef);
+        clearEnterFrame(enterFrameRef);
         clearTimer(closeTimerRef);
     }, []);
 
@@ -71,14 +77,16 @@ export const PageHeader = ({ pageData }) => {
         }
 
         clearTimer(closeTimerRef);
-        clearTimer(enterTimerRef);
+        clearEnterFrame(enterFrameRef);
         setIsFixedMounted(true);
         setIsClosing(false);
         setIsEntering(true);
-        enterTimerRef.current = setTimeout(() => {
-            enterTimerRef.current = null;
-            setIsEntering(false);
-        }, FIXED_BAR_ENTER_DELAY_MS);
+        enterFrameRef.current = requestAnimationFrame(() => {
+            enterFrameRef.current = requestAnimationFrame(() => {
+                enterFrameRef.current = null;
+                setIsEntering(false);
+            });
+        });
     }, [isFixedMounted, pastRevealThreshold, scrollDirection, usesFixedOverlayHeader]);
 
     useEffect(() => {
@@ -86,7 +94,7 @@ export const PageHeader = ({ pageData }) => {
             return;
         }
 
-        clearTimer(enterTimerRef);
+        clearEnterFrame(enterFrameRef);
         clearTimer(closeTimerRef);
         setIsEntering(false);
         setIsClosing(true);
@@ -94,7 +102,7 @@ export const PageHeader = ({ pageData }) => {
             closeTimerRef.current = null;
             setIsClosing(false);
             setIsFixedMounted(false);
-        }, FIXED_BAR_FADE_MS);
+        }, FIXED_BAR_DISMISS_MS);
     }, [isClosing, isFixedMounted, scrollDirection, usesFixedOverlayHeader]);
 
     useEffect(() => {
@@ -112,7 +120,6 @@ export const PageHeader = ({ pageData }) => {
 
     const showFixedHeader = isFixedMounted && !isClosing;
     const shouldRenderFixedLayer = usesFixedOverlayHeader && (isFixedMounted || isClosing);
-    const fixedHeaderOpacity = isClosing ? 0 : (isEntering ? 0 : 1);
     const allowPointerEvents = showFixedHeader && !isEntering;
     const headerContainerBaseClass = appSetting('layout', 'header', 'container')
         .replace('header-fixed', '')
@@ -128,13 +135,18 @@ export const PageHeader = ({ pageData }) => {
     const flowHeaderContainerClassName = usesFixedOverlayHeader
         ? `${headerContainerBaseClass} web:relative web:top-auto web:translate-y-0 ${flowTransitionClass}`
         : `${headerContainerBaseClass} ${fixedHeaderClass} ${isCollapsibleHeader && scrollDirection === 1 ? 'web:-translate-y-full' : 'web:translate-y-0'} ${flowTransitionClass}`;
-    const fixedHeaderContainerClassName = `${headerContainerBaseClass} ${fixedHeaderClass} web:translate-y-0 ${flowTransitionClass}`;
+    const fixedHeaderMotionClass =
+        isClosing || isEntering
+            ? 'web:-translate-y-full web:opacity-0'
+            : 'web:translate-y-0 web:opacity-100';
+    const fixedHeaderMotionTransition =
+        'web:transition-[transform,opacity] web:duration-300 web:ease-in-out';
+    const fixedHeaderContainerClassName = `${headerContainerBaseClass} ${fixedHeaderClass} ${fixedHeaderMotionClass} ${fixedHeaderMotionTransition}`;
     const flowHeaderContentClassName = usesFixedOverlayHeader
         ? `${appSetting('layout', 'header', 'content')} `
         : appSetting('layout', 'header', 'content');
     const fixedHeaderContentClassName = appSetting('layout', 'header', 'content_pinned_fixed')
         || ' bg-card border-b border-border/60 backdrop-blur-xl shadow-sm ';
-    const headerContainerStyle = shouldRenderFixedLayer ? { opacity: fixedHeaderOpacity } : undefined;
     const headerPointerEvents = usesFixedOverlayHeader && shouldRenderFixedLayer && !allowPointerEvents
         ? 'none'
         : 'auto';
@@ -163,7 +175,6 @@ export const PageHeader = ({ pageData }) => {
             {usesFixedOverlayHeader && shouldRenderFixedLayer && (
                 <View
                     className={fixedHeaderContainerClassName}
-                    style={headerContainerStyle}
                     pointerEvents={headerPointerEvents}
                 >
                     <PageHeaderBody

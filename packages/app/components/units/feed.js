@@ -80,7 +80,7 @@ function DefaultUnit({ data }) {
         })
         return (
             <AnimatedBlock>
-                <CardList className="mb-0.5 sm:mb-4 " padding="p-0 overflow-hidden">
+                <CardList className="mb-0.5 sm:mb-4" padding="py-2 overflow-hidden">
                     <CardHeader className=" px-3 lg:px-4 pt-2 sm:pt-3 flex-row items-center justify-between">
                         <CardTitle className="text-secondary-foreground">{t(data.title)}</CardTitle>
                         
@@ -118,12 +118,13 @@ function DefaultUnit({ data }) {
             <FormModal pageData={pageData.data} setPageData={setPageData} modalView='content_page' url={pageData.url2} />
             <CardList
                 border="border-y border-x-none sm:border-x"
-                className=" mb-0.5 sm:mb-3"
-                padding="pt-2"
+                className="mb-0.5 sm:mb-3"
+                padding="p-0"
+               
             >
-                <Row className="gap-3 flex-auto px-2  ">
+                <Row className="gap-3 px-3 py-2.5 lg:px-4 lg:py-3.5 flex-auto">
                     <Skeleton visible={isSkeleton} preset='feed_author'>
-                        <View className=" flex-1 px-2  "><Author data={data} url={url} t={t} /></View>
+                        <Author data={data} url={url} t={t} />
                         <View className="flex-none mb-auto">
                             <MenuManage
                                 id={data.id}
@@ -133,23 +134,23 @@ function DefaultUnit({ data }) {
                         </View>
                     </Skeleton>
                 </Row>
-                <View className="flex-auto px-4 pt-3 ">
+                <View className="flex-auto px-3 lg:px-4 ">
                     <Skeleton visible={isSkeleton} preset='multitext'>
                         <MainContent url={url} data={data} />
                     </Skeleton>
                 </View>
                 {!!data.menu_counters?.items?.length && <>
-                <Row className="px-2">
-
+                
+                    <View className="flex-auto px-1 lg:px-2 ">
                         {appSetting('feed', 'counters_menu') && (
                             <CounterMenu
                                 data={data.menu_counters}
                             />
                         )}
-                    </Row>
+                    </View>
                 </>}
 
-                <Row className="gap-2 items-center flex-auto justify-between p-2 border-t mt-2 border-border/20 ">
+                <Row className="gap-2 items-center flex-auto justify-between p-1 lg:p-2 border-t mt-2 border-border/20 ">
                     <ActionMenu
                         data={data.menu_actions}
                     />

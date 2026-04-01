@@ -67,7 +67,7 @@ export function Skeleton({
 
         case 'feed_author':
             return (
-                <Row className="flex-row gap-2 w-full px-2 pt-2">
+                <Row className="flex-row gap-2 w-full">
                     <SkeletonAvatar size="large" />
                     <View className="gap-y-1.5 flex-auto my-auto">
                         <View className="w-full flex-row justify-between">
