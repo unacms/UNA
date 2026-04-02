@@ -24,13 +24,13 @@ const boxShadowWeb = {
     'md': '0 4px 6px rgb(0 0 0 / 0.08)',
     'md-deep': '0 4px 6px rgb(0 0 0 / 0.32)',
 
-    'lg': '0 8px 16px rgb(0 0 0 / 0.1)',
+    'lg': '0 8px 16px rgb(0 0 0 / 0.08)',
     'lg-deep': '0 8px 16px rgb(0 0 0 / 0.4)',
 
-    'xl': '0 16px 24px rgb(0 0 0 / 0.12)',
+    'xl': '0 16px 24px rgb(0 0 0 / 0.08)',
     'xl-deep': '0 16px 24px rgb(0 0 0 / 0.48)',
 
-    '2xl': '0 24px 48px rgb(0 0 0 / 0.16)',
+    '2xl': '0 24px 48px rgb(0 0 0 / 0.08)',
     '2xl-deep': '0 24px 48px rgb(0 0 0 / 0.56)',
 
 };

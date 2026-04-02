@@ -12,7 +12,7 @@ Units.Base = function Base({ data }) {
     const isSkeleton = data?.skeleton;
     return (
         <Card padding="p-1">
-            <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-accent">
+            <View className="  aspect-video flex-none rounded-xl overflow-hidden mb-auto w-full bg-accent">
                 <Skeleton className="" rounded='rounded-lg' visible={isSkeleton}>
                     {data.image && (
                         <Image
@@ -52,7 +52,7 @@ Units.Search = function Search({ data }) {
     const isSkeleton = data?.skeleton;
     return (
         <CardList padding="p-1">
-            <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-muted   ">
+            <View className="  aspect-video flex-none rounded-xl overflow-hidden mb-auto w-full bg-muted   ">
                 <Skeleton className="h-full w-full" rounded="rounded-lg" visible={isSkeleton}>
                     {data.image && (
                         <Image
