@@ -25,8 +25,10 @@ export function goBack(navigation, router, callback) {
 }
 
 export function redirectTo(router, url) {
+    const normalizedUrl = url?.startsWith('/') ? url : `/${url}`;
+
     router.replace({
         pathname: '/tab0',
-        params: { url: url }
+        params: { url: normalizedUrl }
     })
 }

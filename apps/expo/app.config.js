@@ -50,6 +50,7 @@ const expoConfig = {
     },
     "android": {
         "package": "com.neo.so",
+        "softwareKeyboardLayoutMode": "resize",
         "permissions": [
             "android.permission.ACCESS_NETWORK_STATE",
             "android.permission.CAMERA",
