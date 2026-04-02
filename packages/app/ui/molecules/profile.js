@@ -66,7 +66,7 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
     ;
 
     // Build the linked avatar
-    const linkedAvatar = oProps.url && bShowLinks 
+    const linkedAvatar = oProps.url && bShowLinks && !hoverCardWrapper
         ? <Link emulate={emulate} href={oProps.url}>{avatarContent}</Link> 
         : avatarContent;
 
@@ -86,7 +86,8 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
         return content;
     };
 
-    const nameLink = bShowLinks ? (
+    const nameLink = bShowLinks  ? (
+        oProps.url != 'javascript:' ? (
         <Link variant="default" className="flex-row items-center" emulate={emulate} haptics="Select" href={oProps.url}>
             <DisplayNameLink
                 title={oProps.display_name}
@@ -94,7 +95,12 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
                 fontSize={sSizeFont}
                 href={oProps.href}
             />
-        </Link>
+        </Link>): <DisplayNameLink
+                title={oProps.display_name}
+                url={oProps.url}
+                fontSize={sSizeFont}
+                href={oProps.href}
+            />
     ) : (
         <DisplayNameText title={oProps.display_name} fontSize={sSizeFont} />
     );
