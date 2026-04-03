@@ -273,7 +273,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         />}
                     </View>
                 </View>
-                <KbAvoidingView modalOffset={90}>
+                <KbAvoidingView modalOffset={insets.top+56}>{/*was 90 56=14*4 modal header*/}
                     <View
                         onLayout={handleLayout}
                         className="border-t border-border/60 bg-card"
