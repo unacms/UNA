@@ -28,7 +28,7 @@ export default function Unit(props) {
     return (
         <Link variant='ghost' size='lg' href={data.url} emulate={true}>
             <View
-                className=" flex-row gap-2 items-center group "
+                className=" flex-row gap-2 items-center web:group "
             >
                 <Profile
                     url_avatar={data?.image?.src}

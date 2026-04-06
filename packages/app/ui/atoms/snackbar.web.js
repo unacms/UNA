@@ -165,7 +165,7 @@ export default function Snackbar({
                     ${containerClasses}
                     ${translateClass}
                     ${opacityClass}
-                    transition-all duration-300 ease-out
+                     duration-300 ease-out
                     pointer-events-auto
                     ${className || ''}
                 `}
