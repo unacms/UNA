@@ -36,7 +36,7 @@ export const PanelHandler = memo(({ gap, sizable, className = '', style }) => {
 
     const gapClass = gap && gap.includes(' ') ? gap : gap ? `w-${gap}` : 'w-1';
 
-    const defaultClasses = `${gapClass} group transition-all web:duration-200 justify-center items-center flex`;
+    const defaultClasses = `${gapClass} web:group web:duration-200 justify-center items-center flex`;
     const finalClasses = `${defaultClasses} ${className} ${densityClass}`;
 
     return sizable ? (
