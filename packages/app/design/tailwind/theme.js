@@ -12,7 +12,7 @@ const boxShadowWeb = {
     '2xs': '0 1px rgb(0 0 0 / 0.02)',
     '2xs-deep': '0 1px rgb(0 0 0 / 0.08)',
 
-    'xs': '0 1px 2px rgb(0 0 0 / 0.03',
+    'xs': '0 1px 2px rgb(0 0 0 / 0.03)',
     'xs-deep': '0 1px 2px rgb(0 0 0 / 0.12)',
 
     'sm':      '0 1px 3px rgb(0 0 0 / 0.04)',
