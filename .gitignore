@@ -91,3 +91,4 @@ storybook-static
 # Vercel skills CLI may emit IDE-specific symlinks; not used in this repo
 .trae/
 .windsurf/
+yarn.lock
