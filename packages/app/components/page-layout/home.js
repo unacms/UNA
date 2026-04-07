@@ -396,7 +396,7 @@ export default function ({ data, blocks }) {
                 {layoutName == 'hor' && isWeb && (
                     <>
                         <Panel className={`hidden ${leftBreakpoint}:block ${currentBreakpointName}:w-full`} {...leftPanelProps}>
-                            <View className=" p-4 fixed-process  ">
+                            <View className=" py-4 px-1 fixed-process  ">
                                 {SideBarContent}
                             </View>
                         </Panel>
@@ -419,7 +419,7 @@ export default function ({ data, blocks }) {
                             sizable={cellsCustomConfig.sizable}
                         />
                         <Panel className={`hidden ${rightBreakpoint}:block ${currentBreakpointName}:w-full`} {...rightPanelProps}>
-                            <View className={`p-4 gap-4 fixed-process`}>
+                            <View className={`py-4 gap-4 fixed-process`}>
                                 {AsideContent}
                             </View>
                         </Panel>

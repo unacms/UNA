@@ -1,6 +1,7 @@
 import { Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
 import * as Crypto from 'expo-crypto';
+import { md5Sync } from 'app/lib/md5-string';
 import pako from 'pako';
 import { useTranslation } from 'react-i18next';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -519,8 +520,7 @@ function decompress(data) {
 }
 
 export function md5(str) {
-    //stringMd5(str); from react-native-quick-md5
-    return Crypto.randomUUID();
+    return md5Sync(String(str ?? ''));
 }
 export async function md52(str) {
     return await Crypto.digestStringAsync(

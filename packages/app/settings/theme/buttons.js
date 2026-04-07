@@ -45,7 +45,6 @@ export const settingsButtons = {
         primary:{
             container:{
                 base:'web:duration-200 backdrop-blur',
-                base_stroke: 'border border-white/10 inset-0 ',
                 default:' bg-primary/80 shadow dark:shadow-deep  ',
                 active:' bg-primary/60 web:scale-[0.98] shadow-xs dark:shadow-xs-deep border-border/60 dark:border-black/60   ',
                 pressed:'bg-primary/60 ',
@@ -67,7 +66,6 @@ export const settingsButtons = {
         default:{
             container:{
                 base:'web:duration-200  backdrop-blur  ',
-                base_stroke: 'border border-popover dark:border-transparent inset-0 ',
                 default:' bg-popover/60 border border-border/60 shadow-sm dark:shadow-sm-deep  ',
                 active:' bg-popover/40 web:scale-[0.98] shadow-xs dark:shadow-xs-deep border-border/60 border border-border/60 dark:bg-border/40    ',
                 pressed:'bg-popover/40 ',
@@ -110,7 +108,7 @@ export const settingsButtons = {
         secondary:{
             container:{
                 base:'web:duration-200',
-                default:'bg-secondary/60 ',
+                default:'bg-secondary/80 web:backdrop-blur ',
                 active:'bg-border web:scale-[0.98] ',
                 pressed:' bg-accent ',
                 hovered:' bg-secondary',

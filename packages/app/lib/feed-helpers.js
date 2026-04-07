@@ -102,7 +102,7 @@ export const CommentsSection = memo(
             <View className="border-t border-border/40 p-1 lg:p-2 ">
                 
                     {isShowMoreComments && (
-                        <View className="sm:pb-1 me-auto">
+                        <View className="p-0.5 me-auto">
                             {isCommentsModal ? (
                                 <Pressable
                                     onPress={() => {

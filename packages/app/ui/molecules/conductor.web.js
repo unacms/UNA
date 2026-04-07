@@ -43,7 +43,7 @@ import {
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal'
 import emitter from 'app/context/emitter'
 import Cover, { CoverSmall } from 'app/components/elements/cover'
-import { CoverMenuMore, CoverMenu } from 'app/components/nav/menu-cover'
+import { CoverMenuMore } from 'app/components/nav/menu-cover'
 import {
     Panel,
     PanelGroup,
@@ -294,10 +294,12 @@ export function Conductor({
             isCoverDisabled={isCoverDisabled}
             isUseCurrentHeader={isUseCurrentHeader}
             isHideCover={isHideCover}
-            tabBarObj={
+            renderTabBar={(isCoverCollapsed) => (
                 <>
                     <TabBar
                         isHideCover={isHideCover}
+                        isCover={isCover}
+                        isCoverCollapsed={isCoverCollapsed}
                         menu={menu}
                         routes={routes}
                         layoutName={layoutName}
@@ -319,7 +321,7 @@ export function Conductor({
                         </View>
                     )}
                 </>
-            }
+            )}
             headerSettings={headerSettings}
             pageData={data}
         />
@@ -344,7 +346,7 @@ export function Conductor({
             {LeftBarContentBlocks}
         </LeftSideBarContainer> : null
 
-    const RightColumnContent = isRightCol ? <View className=" fixed-process mt-0.5 sm:m-0 sm:p-3 lg:p-4">
+    const RightColumnContent = isRightCol ? <View className=" fixed-process pt-0.5 sm:m-0 sm:py-3 lg:py-4">
         {tabRoute?.sidebar?.content.map((item, index) => {
             return (
                 <ItemRenderer
@@ -871,7 +873,7 @@ const TabScene = ({
                 <View
                     className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'
                         } ${layoutName !== 'navigator'
-                            ? 'mt-0.5 sm:m-0 sm:p-3 lg:p-4'
+                            ? 'pt-0.5 sm:m-0 sm:py-3 lg:py-4'
                             : (!pageRoute?.endpoint?.request_url ? 'sm:p-4 ' : '')
                         }`}
                 >
@@ -1143,7 +1145,7 @@ const LeftSideBarContainer = ({
     return (
         <View
             className={`fixed-process ${layoutName == 'profile'
-                ? 'mt-0.5 sm:m-0 sm:p-3 lg:p-4' + ' '
+                ? 'pt-0.5 sm:m-0 sm:py-3 lg:py-4' + ' '
                 : appSetting('conductor', 'sidebar_container')
                 }`}
         >
@@ -1220,7 +1222,7 @@ const LeftSideBarContainer = ({
 }
 
 const HeaderContainer = ({
-    tabBarObj,
+    renderTabBar,
     pageData,
     headerSettings,
     isCover,
@@ -1263,7 +1265,7 @@ const HeaderContainer = ({
     //hideDefaultHeaderFrom
     return (
         <View className={`z-40 ${isUseCurrentHeader || isDesktop ? 'bg-card' : ''}`}>
-            <View className={`${conductorTheme.cover_base} cover-1`}
+            <View className={`${conductorTheme.cover_base}`}
                 style={{
                     marginBottom: !isScrolled ? '0px' : `${(smallCoverHeight + ((isCover && !isHideCover) || !isDesktop ? 56 : 0))}px`,
                 }}
@@ -1283,7 +1285,7 @@ const HeaderContainer = ({
                     </View>
                 </View>
             </View>
-            <View className={` header-fixed ${isUseCurrentHeader || isDesktop ? 'bg-card' : ''} 77 ${conductorTheme.cover_base} ` + (isScrolled ? 'fixed' : '')}>
+            <View className={` header-fixed ${isUseCurrentHeader || isDesktop ? 'bg-card' : ' '} ${conductorTheme.cover_base} ` + (isScrolled ? 'fixed' : '')}>
                 <View className={conductorTheme.cover_small}
                     style={{
                         display: isScrolled ? 'flex' : 'none',
@@ -1298,7 +1300,9 @@ const HeaderContainer = ({
                         </View>
                     )}
                 </View>
-                <View onLayout={onCoverLayout2}>{tabBarObj}</View>
+                <View onLayout={onCoverLayout2}>
+                    {renderTabBar(isScrolled)}
+                </View>
             </View>
         </View>
     )
@@ -1313,10 +1317,20 @@ const TabBar = ({
     setIndex,
     onChangeRoute,
     omitDefaultBackground = false,
+    isHideCover,
+    isCover,
+    isCoverCollapsed = false,
 }) => {
     const { t } = useTranslation()
     const { layoutName: layout } = useLayoutSettings()
+    const isDesktop = useIsDesktop()
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
+    const showMoreMenuInTabBar =
+        !!appSetting('cover', 'more_menu_in_navbar', pageData?.module) &&
+        !(
+            isCoverCollapsed &&
+            ((isCover && !isHideCover) || !isDesktop)
+        )
     if (routes.length > 0) {
         const addButtons = <AddMenu menu={menu} filter="hideInTopBar" />
         return (
@@ -1327,7 +1341,7 @@ const TabBar = ({
                 layout={layout}
                 title={t(menuSettings?.name)}
             >
-                <View className="flex-1 h-14">
+                <View className="flex-1 h-16 justify-center">
                     {routes.length > 1 && <ConductorMenu
                         routes={routes}
                         index={index}
@@ -1337,26 +1351,17 @@ const TabBar = ({
                     />}
                 </View>
                 {!!pageData.cover_block?.actions_menu && (
-                    <Row className="hidden lg:block items-center mx-3 ">
-                        {!!appSetting(
-                            'cover',
-                            'more_menu_in_navbar',
-                            pageData?.module
-                        ) && (
-                                <Row className="gap-2">
-                                    <CoverMenu
-                                        {...pageData.cover_block.actions_menu}
-                                        uri={pageData.uri}
-                                        isSplitMenu={true}
-                                        containerClasses="gap-2 "
-                                    />
-                                    <CoverMenuMore
-                                        {...pageData.cover_block.actions_menu}
-                                        uri={pageData.uri}
-                                        isSplitMenu={true}
-                                    />
-                                </Row>
-                            )}
+                    <Row className="hidden lg:block items-center ">
+                        {showMoreMenuInTabBar && (
+                            <Row className="gap-2">
+                                <CoverMenuMore
+                                    {...pageData.cover_block.actions_menu}
+                                    uri={pageData.uri}
+                                    isSplitMenu={true}
+                                    containerClasses="gap-2 "
+                                />
+                            </Row>
+                        )}
                     </Row>
                 )}
             </TopSidebar>

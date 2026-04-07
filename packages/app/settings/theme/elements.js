@@ -2,13 +2,13 @@
 
 export const settingsElements = {
     conductor: {
-        menu: ' w-full items-left justify-center bg-default ',
-        menu_max_width: ' w-full max-w-7xl ',
+        menu: ' w-full items-left justify-center ',
+        menu_max_width: ' w-full max-w-7xl px-3 lg:px-4 ',
         
         content_max_width: ' w-full max-w-7xl ',
         content_max_width_nav: ' w-full max-w-screen-2xl  ',
         menu_is_dynamic: false,
-        menu_cnt: ' flex-row flex-none gap-0.5 sm:gap-1 px-3 lg:px-4 h-14 items-center overflow-x-auto ',
+        menu_cnt: ' flex-row flex-none gap-0.5 sm:gap-1 h-14 items-center overflow-x-auto ',
         menu_categ_indent: ' pl-12 ',
         topmenu_cnt:
             'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
@@ -19,10 +19,10 @@ export const settingsElements = {
         topmenu_button_size: 'base',
         topmenu_button_pressed: true,
         left_menu_cnt: '  ',
-        cover_base: 'w-full',
+        cover_base: 'w-full ',
         cover_content:
             'items-center h-full w-full overflow-hidden justify-between',
-        cover_small: 'max-w-7xl mx-auto flex-row w-full px-3 items-center ',
+        cover_small: 'max-w-7xl mx-auto flex-row w-full px-3 lg:px-4 items-center ',
         hide_top_menu_from: 'xl',
     },
     dropdown_menu: {
@@ -64,7 +64,7 @@ export const settingsElements = {
     },
     cards: {
         'u-card-list': ' u-card-list bg-card shadow-xs dark:shadow-xs-deep text-card-foreground sm:rounded-xl ',
-        'u-card-list-padding': ' px-3 py-2.5 lg:px-4 lg:py-3.5 ',
+        'u-card-list-padding': ' p-3 lg:p-4 ',
         'u-card-base': 'u-card-base bg-card/80 text-card-foreground rounded-2xl shadow border border-card inset-0',
         'u-card-padding': 'py-4',
         'u-card-header': 'px-4',
@@ -80,7 +80,7 @@ export const settingsElements = {
         'u-panel-handler': 'relative w-0 web:before:absolute web:before:inset-y-0 web:before:-left-0.5 web:before:-right-0.5 web:before:bg-transparent web:before:hover:bg-accent web:before:active:bg-accent/50 web:before:duration-200 ',
         'u-panel-line':
             'absolute w-px h-full bg-border/0 web:group-hover:bg-primary/50 active:bg-primary/50 rounded-full left-1/2 top-0 -translate-x-1/2',
-        'u-panel-group': ' h-full flex',
+        'u-panel-group': ' h-full flex px-3 lg:px-4 gap-3',
     },
     blocks: {
         'u-block-base':

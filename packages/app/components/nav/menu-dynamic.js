@@ -87,7 +87,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
             <FormModal pageData={pageData} setPageData={setPageData} />
             <Container
                 contentContainerStyle={{ alignItems: 'center' }}
-                className={isWeb ? (containerClasses ? containerClasses.trim() + ' overflow-visible gap-x-2' : 'overflow-visible gap-x-2') : (containerClasses ? containerClasses.trim() + ' overflow-visible gap-x-2' : 'overflow-visible gap-x-2')}
+                className={isWeb ? (containerClasses ? containerClasses.trim() + ' overflow-visible gap-2' : 'overflow-visible gap-2') : (containerClasses ? containerClasses.trim() + ' overflow-visible gap-2' : 'overflow-visible gap-2')}
                 horizontal={true}
                 onLayout={handleLayout}
             >

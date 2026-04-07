@@ -181,17 +181,13 @@ const ButtonContent = React.memo(({
     const stateContainer = getStateClasses(active, pressed, hovered, focused, disabled, variant, 'container');
     const stateText = getStateClasses(active, pressed, hovered, focused, disabled, variant, 'text');
     const containerClasses = `${baseContainerClasses} ${stateContainer}`;
-    const strokeClasses = BtnCls[variant]?.container?.base_stroke;
-
-    const hasOverlayStroke = !!strokeClasses;
+   
     const textClasses = `${baseTextClasses} ${stateText}`;
 
 
     return (
         <Row className={cn('items-center', containerClasses)}>
-            {hasOverlayStroke && (
-                <View className={cn('absolute  pointer-events-none overflow-hidden', roundingClass, strokeClasses)} />
-            )}
+            
             <ButtonIcon size={BtnClsSize[size]?.icon_size} icon={startDecorator} className={textClasses.replace("overflow-hidden")} />
 
             {isTitle && (

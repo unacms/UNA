@@ -553,7 +553,7 @@ export function TopSidebar({
                     }`}
             >
                 <Row
-                    className=" items-center justify-between ">
+                    className="items-center justify-between">
                     {children}
                     {layout != 'mixed' && (
                         <Row className={`hidden ${conductorTheme.hide_top_menu_from}:flex cond-buttons-add`}>

@@ -143,7 +143,7 @@ export function CoverMenuMore(props) {
     });
 
    
-    const buttonVariant = isDesktop ? 'secondary' : 'text'
+    const buttonVariant = isDesktop ? 'secondary' : 'secondary'
     const buttonSize = isDesktop ? 'base' : 'base'
 
     return (

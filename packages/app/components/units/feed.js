@@ -122,7 +122,7 @@ function DefaultUnit({ data }) {
                 padding="p-0"
                
             >
-                <Row className="gap-3 px-3 py-2.5 lg:px-4 lg:py-3.5 flex-auto">
+                <Row className="gap-3 p-3 lg:p-4 flex-auto">
                     <Skeleton visible={isSkeleton} preset='feed_author'>
                         <Author data={data} url={url} t={t} />
                         <View className="flex-none mb-auto">
@@ -134,7 +134,7 @@ function DefaultUnit({ data }) {
                         </View>
                     </Skeleton>
                 </Row>
-                <View className="flex-auto px-3 lg:px-4 ">
+                <View className="flex-auto px-3.5 lg:px-4 ">
                     <Skeleton visible={isSkeleton} preset='multitext'>
                         <MainContent url={url} data={data} />
                     </Skeleton>
@@ -150,7 +150,7 @@ function DefaultUnit({ data }) {
                     </View>
                 </>}
 
-                <Row className="gap-2 items-center flex-auto justify-between p-1 lg:p-2 border-t mt-2 border-border/40 ">
+                <Row className="gap-2 items-center flex-auto justify-between p-1.5 lg:p-2.5  ">
                     <ActionMenu
                         data={data.menu_actions}
                     />
