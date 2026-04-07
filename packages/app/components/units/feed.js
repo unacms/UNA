@@ -150,7 +150,7 @@ function DefaultUnit({ data }) {
                     </View>
                 </>}
 
-                <Row className="gap-2 items-center flex-auto justify-between p-1 lg:p-2 border-t mt-2 border-border/20 ">
+                <Row className="gap-2 items-center flex-auto justify-between p-1 lg:p-2 border-t mt-2 border-border/40 ">
                     <ActionMenu
                         data={data.menu_actions}
                     />
