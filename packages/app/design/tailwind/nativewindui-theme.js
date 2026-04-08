@@ -56,6 +56,7 @@ const nativewindUIColors = {
     primary: {
         DEFAULT: withOpacity('primary'),
         foreground: withOpacity('primary-foreground'),
+        hover: withOpacity('primary-hover'),
     },
    
     secondary: {
@@ -141,9 +142,7 @@ const nativewindUIColors = {
 
 // NativewindUI theme extension
 const nativewindUITheme = {
-    borderWidth: {
-        hairline: hairlineWidth(),
-    },
+    
     colors: nativewindUIColors,
 };
 

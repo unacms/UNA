@@ -176,9 +176,9 @@ export function CoverMenuMeta(props) {
             params={{
                 button_variant: 'secondary',
                 button_size: props.button_size || 'sm',
-                list_display_size: props.list_display_size || 'sm',
+                list_display_size: props.list_display_size || 'md',
                 list_max_count: props.list_max_count || 3,
-                className: '  flex-row flex-wrap flex-auto items-center',//lg:w-full lg:gap-y-2
+                className: ' gap-2 flex-wrap flex-auto items-center',//lg:w-full lg:gap-y-2
                 justify_items: 'start'
             }}
         />

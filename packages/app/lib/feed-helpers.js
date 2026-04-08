@@ -489,7 +489,7 @@ export const Author = memo(({ data, url, t }) => {
                 <Icon className="text-muted-foreground -ml-0.5 -mr-2  " icon='Dot' size={14} />
                 <Element
                     params={{
-                        button_variant: 'accentlink',
+                        button_variant: 'link',
                         button_size: 'sm',
                         hide_icon: true,
                         button_rounded: false,

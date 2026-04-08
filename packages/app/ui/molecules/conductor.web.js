@@ -1341,7 +1341,7 @@ const TabBar = ({
                 layout={layout}
                 title={t(menuSettings?.name)}
             >
-                <View className="flex-1 h-16 justify-center">
+                
                     {routes.length > 1 && <ConductorMenu
                         routes={routes}
                         index={index}
@@ -1349,7 +1349,7 @@ const TabBar = ({
                         setIndex={setIndex}
                         onChangeRoute={onChangeRoute}
                     />}
-                </View>
+                
                 {!!pageData.cover_block?.actions_menu && (
                     <Row className="hidden lg:block items-center ">
                         {showMoreMenuInTabBar && (

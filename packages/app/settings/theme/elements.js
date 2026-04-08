@@ -8,8 +8,8 @@ export const settingsElements = {
         content_max_width: ' w-full max-w-7xl ',
         content_max_width_nav: ' w-full max-w-screen-2xl  ',
         menu_is_dynamic: false,
-        menu_cnt: ' flex-row flex-none gap-0.5 sm:gap-1 h-14 items-center overflow-x-auto ',
-        menu_categ_indent: ' pl-12 ',
+        menu_cnt: ' flex-row flex-none gap-0.5 sm:gap-1 h-14 lg:h-16 items-center overflow-x-auto ',
+        menu_categ_indent: ' pl-8 ',
         topmenu_cnt:
             'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
         topmenu_button_variant: 'secondary',
@@ -80,7 +80,7 @@ export const settingsElements = {
         'u-panel-handler': 'relative w-0 web:before:absolute web:before:inset-y-0 web:before:-left-0.5 web:before:-right-0.5 web:before:bg-transparent web:before:hover:bg-accent web:before:active:bg-accent/50 web:before:duration-200 ',
         'u-panel-line':
             'absolute w-px h-full bg-border/0 web:group-hover:bg-primary/50 active:bg-primary/50 rounded-full left-1/2 top-0 -translate-x-1/2',
-        'u-panel-group': ' h-full flex px-3 lg:px-4 gap-3',
+        'u-panel-group': ' h-full flex sm:px-3 lg:px-4 gap-3',
     },
     blocks: {
         'u-block-base':

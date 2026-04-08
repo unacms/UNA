@@ -67,9 +67,9 @@ export const settingsProfiles = {
             letter_font: 'text-3xl font-semibold',
         },
         '3xl': {
-            container: 'w-36 h-36',
-            width: 144,
-            height: 144,
+            container: 'w-40 h-40',
+            width: 160,
+            height: 160,
             font: 'text-2xl font-semibold',
             letter_font: 'text-5xl font-semibold',
         },

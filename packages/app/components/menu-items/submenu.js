@@ -10,7 +10,7 @@ export default function MenuItemSubmenu({ icon, title, pressed, disabled, addon,
     const isDesktop = useIsDesktop();
     const size = isDesktop ? 'base' : 'sm';
     const rounded = !isDesktop;
-    //TODO FOR ANDREW
+    //YATODO
     /*
      <Pressable className='mr-1'  onPress={onPress}>
                            text

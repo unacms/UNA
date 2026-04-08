@@ -14,7 +14,7 @@ export const settingsButtons = {
         },
         sm: {
             rounded: 'rounded-lg ',
-            container: 'px-2 gap-1 h-9 min-w-9 ',
+            container: 'px-2.5 gap-1 h-9 min-w-9 ',
             container_icon_only: 'h-9 w-9',
             text: 'text-sm leading-5',
             icon_size: 20,
@@ -45,17 +45,17 @@ export const settingsButtons = {
         primary:{
             container:{
                 base:'web:duration-200 backdrop-blur',
-                default:' bg-primary/80 shadow dark:shadow-deep  ',
-                active:' bg-primary/60 web:scale-[0.98] shadow-xs dark:shadow-xs-deep border-border/60 dark:border-black/60   ',
-                pressed:'bg-primary/60 ',
-                hovered:' bg-primary shadow-md dark:shadow-md-deep border-primary/60 dark:border-black/60 ',
-                focused:' bg-primary shadow-md dark:shadow-md-deep border-primary/60 dark:border-black/60 ',
-                disabled:' bg-primary/50 shadow-sm dark:shadow-sm-deep border-primary/60 dark:border-black/40 opacity-50 ',
+                default:' bg-primary  ',
+                active:' bg-primary-hover web:scale-[0.98]    ',
+                pressed:' bg-primary  ',
+                hovered:' bg-primary-hover ',
+                focused:' bg-primary ',
+                disabled:' bg-primary/50 ',
 
             },
             text:{
                 base:'font-semibold web:duration-200',
-                default:'text-primary-foreground/90',
+                default:'text-primary-foreground',
                 hovered:'text-primary-foreground',
                 focused:'text-primary-foreground',
                 active:'text-primary-foreground',
@@ -210,27 +210,7 @@ export const settingsButtons = {
                 disabled:'text-accent-foreground/50',
             }
         },
-        accentlink:{
-            container:{
-                base:'web:duration-200',
-                default:'',
-                active:'web:scale-[0.98] ',
-                pressed:'',
-                hovered:'',
-                focused:'',
-                disabled:'',
-
-            },
-            text:{
-                base:'font-semibold ',
-                default:'text-accent-foreground',
-                hovered:'text-accent-foreground underline',
-                focused:'text-accent-foreground underline',
-                active:'text-accent-foreground underline',
-                pressed:'text-accent-foreground underline   ',
-                disabled:'text-accent-foreground/50',
-            }
-        },
+        
         outline:{
             container:{
                 base:'border ',
