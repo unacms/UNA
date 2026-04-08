@@ -43,7 +43,7 @@ import {
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal'
 import emitter from 'app/context/emitter'
 import Cover, { CoverSmall } from 'app/components/elements/cover'
-import { CoverMenuMore } from 'app/components/nav/menu-cover'
+import { CoverMenuMore, CoverMenu } from 'app/components/nav/menu-cover'
 import {
     Panel,
     PanelGroup,
@@ -294,12 +294,10 @@ export function Conductor({
             isCoverDisabled={isCoverDisabled}
             isUseCurrentHeader={isUseCurrentHeader}
             isHideCover={isHideCover}
-            renderTabBar={(isCoverCollapsed) => (
+            tabBarObj={
                 <>
                     <TabBar
                         isHideCover={isHideCover}
-                        isCover={isCover}
-                        isCoverCollapsed={isCoverCollapsed}
                         menu={menu}
                         routes={routes}
                         layoutName={layoutName}
@@ -321,7 +319,7 @@ export function Conductor({
                         </View>
                     )}
                 </>
-            )}
+            }
             headerSettings={headerSettings}
             pageData={data}
         />
@@ -346,7 +344,7 @@ export function Conductor({
             {LeftBarContentBlocks}
         </LeftSideBarContainer> : null
 
-    const RightColumnContent = isRightCol ? <View className=" fixed-process pt-0.5 sm:m-0 sm:py-3 lg:py-4">
+    const RightColumnContent = isRightCol ? <View className=" fixed-process mt-0.5 sm:m-0 sm:p-3 lg:p-4">
         {tabRoute?.sidebar?.content.map((item, index) => {
             return (
                 <ItemRenderer
@@ -614,7 +612,7 @@ const TabSceneMainContent = ({
     )
 
     // remove empty blocks
-    const dataItemsPageFiltered = useMemo(() => 
+    const dataItemsPageFiltered = useMemo(() =>
         dataItemsPage?.filter(item => {
             if (!item) return false;
             const block = BlockByName2({
@@ -629,12 +627,12 @@ const TabSceneMainContent = ({
     const feedType = pageRoute?.endpoint?.params?.type;
 
     const dataItems = useMemo(() => {
-        const base = isDesktop 
+        const base = isDesktop
             ? [...dataItemsPageFiltered, ...refetchState.visibleItems]
             : [...pageRoute.leftbar.content.filter(item => !item.data?.hidden_on?.includes?.('phone')), ...dataItemsPageFiltered, ...refetchState.visibleItems, ...pageRoute.sidebar.content.filter(item => !item.data?.hidden_on?.includes?.('phone'))];
-    
+
         if (!feedType) return base;
-        return base.map(item => 
+        return base.map(item =>
             item.feed_type === feedType ? item : { ...item, feed_type: feedType }
         );
     }, [dataItemsPageFiltered, refetchState.visibleItems, isDesktop, pageRoute?.endpoint?.request_url, pageRoute?.sidebar?.content, feedType]);
@@ -680,48 +678,48 @@ const TabSceneMainContent = ({
     return (
         <View className="relative">
             <View className={`transition-opacity duration-500 ease-out ${showContent ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-            {(formProps) && <View className=" w-full">
-                <Form {...formProps} key="form" name={formProps.name} onChange={onFormChangedValues} />
-            </View>
-            }
-            <UniList
+                {(formProps) && <View className=" w-full">
+                    <Form {...formProps} key="form" name={formProps.name} onChange={onFormChangedValues} />
+                </View>
+                }
+                <UniList
 
-                data={dataItems}
-                endpoint={pageRoute.endpoint}
-                listState={pageRoute?.state}
-                layout={layout}
-                mode={layout == 'w-full' ? 'simple' : ''}
-                storagekey={pageRoute.storageKeyValue}
-                refer={uniRef}
-                route={pageRoute}
-                unit={pageRoute.endpoint?.unit}
-                useWindowScroll={true}
-                onEndReached={handleEndReached}
-                onRefresh={refetch}
-                refreshing={isRefetching}
-                renderItem={renderItem}
+                    data={dataItems}
+                    endpoint={pageRoute.endpoint}
+                    listState={pageRoute?.state}
+                    layout={layout}
+                    mode={layout == 'w-full' ? 'simple' : ''}
+                    storagekey={pageRoute.storageKeyValue}
+                    refer={uniRef}
+                    route={pageRoute}
+                    unit={pageRoute.endpoint?.unit}
+                    useWindowScroll={true}
+                    onEndReached={handleEndReached}
+                    onRefresh={refetch}
+                    refreshing={isRefetching}
+                    renderItem={renderItem}
 
-            />
-            {(pageRoute?.endpoint?.request_url && hasNextPage) && PreloadShort}
-            {(pageRoute?.endpoint?.request_url && hasNextPage === false && dataItems.filter((item) => item.type != 'block').length == 0) && <NoContent endpoint={pageRoute?.endpoint} />}
-            <Snackbar
-                visible={refetchState.hasNewData}
-                onPress={() => {
-                    const latestItems = flattenPagesForUniList(pagesData)
-                    dispatch({ type: 'SET_ITEMS', items: latestItems })
-                    refetchRef.current.prevItems = latestItems
-                    if (uniRef.current) {
-                        uniRef.current.scrollToIndex?.({
-                            index: 0,
-                            align: 'end',
-                            behavior: 'smooth',
-                        })
-                    }
-                }}
-                variant="primary"
-                title="Show New"
-                size="sm"
-            />
+                />
+                {(pageRoute?.endpoint?.request_url && hasNextPage) && PreloadShort}
+                {(pageRoute?.endpoint?.request_url && hasNextPage === false && dataItems.filter((item) => item.type != 'block').length == 0) && <NoContent endpoint={pageRoute?.endpoint} />}
+                <Snackbar
+                    visible={refetchState.hasNewData}
+                    onPress={() => {
+                        const latestItems = flattenPagesForUniList(pagesData)
+                        dispatch({ type: 'SET_ITEMS', items: latestItems })
+                        refetchRef.current.prevItems = latestItems
+                        if (uniRef.current) {
+                            uniRef.current.scrollToIndex?.({
+                                index: 0,
+                                align: 'end',
+                                behavior: 'smooth',
+                            })
+                        }
+                    }}
+                    variant="primary"
+                    title="Show New"
+                    size="sm"
+                />
             </View>
             <View className={`absolute inset-0 z-10 pointer-events-none transition-opacity duration-500 ease-out ${showContent ? 'opacity-0' : 'opacity-100'}`}>
                 {Preload}
@@ -873,7 +871,7 @@ const TabScene = ({
                 <View
                     className={`${isRightCol ? 'flex-auto' : 'w-full mx-auto'
                         } ${layoutName !== 'navigator'
-                            ? 'pt-0.5 sm:m-0 sm:py-3 lg:py-4'
+                            ? 'mt-0.5 sm:m-0 sm:p-3 lg:p-4'
                             : (!pageRoute?.endpoint?.request_url ? 'sm:p-4 ' : '')
                         }`}
                 >
@@ -1019,6 +1017,7 @@ function ConductorMenu({
     const MenuItem = memo(
         ({ item: a, itemRefs, index: index2, visibleItemsCount }) => {
 
+            if (a?.item?.id === 'hidden') return null;
             return (
                 <View className={`${a?.menu_settings?.class || ''}`}>
                     <MenuItemSubmenu
@@ -1145,7 +1144,7 @@ const LeftSideBarContainer = ({
     return (
         <View
             className={`fixed-process ${layoutName == 'profile'
-                ? 'pt-0.5 sm:m-0 sm:py-3 lg:py-4' + ' '
+                ? 'mt-0.5 sm:m-0 sm:p-3 lg:p-4' + ' '
                 : appSetting('conductor', 'sidebar_container')
                 }`}
         >
@@ -1176,7 +1175,7 @@ const LeftSideBarContainer = ({
                                                     key={`lmenu-${a.index}`}
                                                     alt={a.title}
                                                     variant="ghost"
-                                                    size="lg"   
+                                                    size="lg"
                                                     className={`group ${activeWrapperClassName}`.trim()}
                                                 >
                                                     {btn}
@@ -1222,7 +1221,7 @@ const LeftSideBarContainer = ({
 }
 
 const HeaderContainer = ({
-    renderTabBar,
+    tabBarObj,
     pageData,
     headerSettings,
     isCover,
@@ -1265,7 +1264,7 @@ const HeaderContainer = ({
     //hideDefaultHeaderFrom
     return (
         <View className={`z-40 ${isUseCurrentHeader || isDesktop ? 'bg-card' : ''}`}>
-            <View className={`${conductorTheme.cover_base}`}
+            <View className={`${conductorTheme.cover_base} cover-1`}
                 style={{
                     marginBottom: !isScrolled ? '0px' : `${(smallCoverHeight + ((isCover && !isHideCover) || !isDesktop ? 56 : 0))}px`,
                 }}
@@ -1285,7 +1284,7 @@ const HeaderContainer = ({
                     </View>
                 </View>
             </View>
-            <View className={` header-fixed ${isUseCurrentHeader || isDesktop ? 'bg-card' : ' '} ${conductorTheme.cover_base} ` + (isScrolled ? 'fixed' : '')}>
+            <View className={` header-fixed ${isUseCurrentHeader || isDesktop ? 'bg-card' : ''} 77 ${conductorTheme.cover_base} ` + (isScrolled ? 'fixed' : '')}>
                 <View className={conductorTheme.cover_small}
                     style={{
                         display: isScrolled ? 'flex' : 'none',
@@ -1300,9 +1299,7 @@ const HeaderContainer = ({
                         </View>
                     )}
                 </View>
-                <View onLayout={onCoverLayout2}>
-                    {renderTabBar(isScrolled)}
-                </View>
+                <View onLayout={onCoverLayout2}>{tabBarObj}</View>
             </View>
         </View>
     )
@@ -1317,20 +1314,10 @@ const TabBar = ({
     setIndex,
     onChangeRoute,
     omitDefaultBackground = false,
-    isHideCover,
-    isCover,
-    isCoverCollapsed = false,
 }) => {
     const { t } = useTranslation()
     const { layoutName: layout } = useLayoutSettings()
-    const isDesktop = useIsDesktop()
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
-    const showMoreMenuInTabBar =
-        !!appSetting('cover', 'more_menu_in_navbar', pageData?.module) &&
-        !(
-            isCoverCollapsed &&
-            ((isCover && !isHideCover) || !isDesktop)
-        )
     if (routes.length > 0) {
         const addButtons = <AddMenu menu={menu} filter="hideInTopBar" />
         return (
@@ -1341,7 +1328,7 @@ const TabBar = ({
                 layout={layout}
                 title={t(menuSettings?.name)}
             >
-                
+                <View className="flex-1 h-14">
                     {routes.length > 1 && <ConductorMenu
                         routes={routes}
                         index={index}
@@ -1349,19 +1336,22 @@ const TabBar = ({
                         setIndex={setIndex}
                         onChangeRoute={onChangeRoute}
                     />}
-                
+                </View>
                 {!!pageData.cover_block?.actions_menu && (
-                    <Row className="hidden lg:block items-center ">
-                        {showMoreMenuInTabBar && (
-                            <Row className="gap-2">
-                                <CoverMenuMore
-                                    {...pageData.cover_block.actions_menu}
-                                    uri={pageData.uri}
-                                    isSplitMenu={true}
-                                    containerClasses="gap-2 "
-                                />
-                            </Row>
-                        )}
+                    <Row className="hidden lg:block items-center mx-3 ">
+                        <Row className="gap-2">
+                            <CoverMenu
+                                {...pageData.cover_block.actions_menu}
+                                uri={pageData.uri}
+                                isSplitMenu={true}
+                                containerClasses="gap-2 "
+                            />
+                            <CoverMenuMore
+                                {...pageData.cover_block.actions_menu}
+                                uri={pageData.uri}
+                                isSplitMenu={true}
+                            />
+                        </Row>
                     </Row>
                 )}
             </TopSidebar>

@@ -36,7 +36,7 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
         const base = pageData.menu?.items?.length ? cloneObject(pageData.menu) : { items: [] };
         const isNamePresent = base.items.some(item => item.link === pageData.url);
         if (!isNamePresent) {
-            base.items.push({ id: 'h1', name: uri, title: '', link: pageData.url , hideInTop: true});
+            base.items.push({ id: 'hidden', name: uri, title: '', link: pageData.url });
         }
         if (!base.config) {
             base.title = base.title ?? '';

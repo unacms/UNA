@@ -25,16 +25,7 @@ export const settingsElements = {
         show_pic_by_module: {
             bx_spaces: true,
         },
-        more_menu_in_navbar: {
-            bx_spaces: true,
-            bx_persons: true,
-        },
-        /** When true, `CoverSmall` omits `CoverMenu` (persistent / “actions menu” row) below `tablet_mode_from` so only `CoverMenuMore` appears beside the profile — swap still applies inside `CoverMenuMore` via `useIsDesktop`. */
-        hide_cover_menu_on_narrow: false,
-        /** `displaySize` for `Profile` `unit_wo_info` (avatar only) in `CoverSmall`. See `theme.profile_sizes`. */
-        small_cover_avatar_display_size: 'base',
-        /** `displaySize` for `Profile` `unit_wo_image` (display name text only) in `CoverSmall`; controls name typography via `profile_sizes[size].font`. */
-        small_cover_name_display_size: '2xl',
+        
     },
     comments: {
         hide_sort: false, //OLD appSetting('layout', 'hide_comments_sort')
