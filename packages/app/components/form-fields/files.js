@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import Field, { getValidationRules } from './_field';
 import { View, ViewRef, Row, Pressable } from 'app/design/view'
 import * as ImagePicker from 'expo-image-picker';
-import { manipulateAsync, SaveFormat } from 'app/lib/image-manipulator'
+import { ImageManipulator, SaveFormat } from 'app/lib/image-manipulator'
 import { Button } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import { genRnd, appSetting } from 'app/lib/util';
@@ -43,7 +43,7 @@ export default function (props) {
     const isAutoGhosts = appSetting('forms', 'auto_ghosts_in_files')
 
     const url = useMemo(() => {
-        return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&obfuscate_faces=' + obfuscateFaces + '&&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (bMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
+        return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&obfuscate_faces=' + obfuscateFaces + '&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (bMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
     }, [props, obfuscateFaces]);
 
 
@@ -169,25 +169,24 @@ export default function (props) {
             const isImage = i?.mimeType?.includes('image/');
             if (isImage) {
                 ImageNative.getSize(uri, async (width, height) => {
-                    let manipulatedWidth = 1600;
-                    let manipulatedHeight = 1600;
+                    let manipulatedWidth = 2000;
+                    let manipulatedHeight = 2000;
 
                     if (width > manipulatedWidth || height > manipulatedHeight) {
-                        console.log("width", width)
                         if (width > height) {
                             manipulatedHeight = Math.round((height * manipulatedWidth) / width);
                         } else {
                             manipulatedWidth = Math.round((width * manipulatedHeight) / height);
                         }
 
-                        if (manipulateAsync) {
-                            const resizedPhoto = await manipulateAsync(
-                                uri,
-                                [{ resize: { width: manipulatedWidth, height: manipulatedHeight } }], // Изменение ширины до 800 пикселей; высота будет рассчитана автоматически
-                                { compress: 0.4, format: SaveFormat.JPEG }
-                            );
-                            uri = resizedPhoto.uri;
-                        }
+                        const context = ImageManipulator.manipulate(uri);
+                        context.resize({ width: manipulatedWidth, height: manipulatedHeight });
+                        const renderedImage = await context.renderAsync();
+                        const resizedPhoto = await renderedImage.saveAsync({
+                            format: SaveFormat.WEBP,
+                        });
+                        uri = resizedPhoto.uri;
+
                     }
 
                     uploadImage(
@@ -380,7 +379,7 @@ export default function (props) {
             {!props.hide_button && <View>
                 <ActionButton uploadImages={uploadImages} imagesList={imageSource.images} props={props} bMultiple={bMultiple} selectImage={selectImage} handleDelete={handleDeleteSingle} />
             </View>}
-            {!props.previewPlaceHolder && <Row className='flex-wrap '>{GhostsList(imageSource.images, bMultiple, handleDelete, props)}</Row>}
+            {!!props.hide_button && <Row className='flex-wrap'>{GhostsList(imageSource.images, bMultiple, handleDelete, props)}</Row>}
         </Field>
     );
 }
