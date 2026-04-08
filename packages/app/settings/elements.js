@@ -48,6 +48,7 @@ export const settingsElements = {
         sidebar_position: ' z-50 fixed fixed-process ',
         bgrDecorator: true, // Enable/disable decorator background globally for conductor buttons
         add_menu_native:false,
+        more_menu_container: 'hidden lg:block items-center mx-3'
     },
     entry: {
         default_view: '',

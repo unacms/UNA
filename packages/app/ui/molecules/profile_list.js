@@ -1,6 +1,8 @@
 import { View, Row } from 'app/design/view'
 import Profile from 'app/ui/molecules/profile';
-import { memo } from 'react'
+import {
+    appSetting
+} from 'app/lib/util'
 
 function fillArrayToLength(arr, maxCount, defaultValue) {
     while (arr.length < maxCount) {

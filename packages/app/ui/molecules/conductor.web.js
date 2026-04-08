@@ -1338,7 +1338,7 @@ const TabBar = ({
                     />}
                 </View>
                 {!!pageData.cover_block?.actions_menu && (
-                    <Row className="hidden lg:block items-center mx-3 ">
+                    <Row className={appSetting('conductor', 'more_menu_container')}>
                         <Row className="gap-2">
                             <CoverMenu
                                 {...pageData.cover_block.actions_menu}
