@@ -1,5 +1,5 @@
 import { View, Row } from 'app/design/view'
-import Profile, { getProfileSize } from 'app/ui/molecules/profile';
+import Profile from 'app/ui/molecules/profile';
 import { memo } from 'react'
 
 function fillArrayToLength(arr, maxCount, defaultValue) {
@@ -12,7 +12,7 @@ function fillArrayToLength(arr, maxCount, defaultValue) {
   export default function ProfilesList ({maxCount, showEmpty, data, displaySize="base"}) {
 
     // Get size from settings (same source as Profile component)
-    const sizeConfig = getProfileSize(displaySize);
+    const sizeConfig = appSetting('theme', 'profile_sizes', displaySize);
     const sSize = sizeConfig.container;
 
     if (data?.length > maxCount){
