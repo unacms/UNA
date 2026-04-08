@@ -31,8 +31,11 @@ export default function () {
     const footer = useFooter();
     const setFooterHeight = useSetFooterHeight();
 
-    const shouldHide = (!currentUser && !appSetting('layout', 'show_tabbar_on_mobile_non_logged')) || !footer;
-
+    const hideForGuest = !currentUser && !appSetting('layout', 'show_tabbar_on_mobile_non_logged');
+    const isFooterEnabled = Boolean(footer);
+    const lockUnconfirmed = appSetting('layout', 'lock_unconfirmed') && !currentUser?.confirmed;
+    const shouldHide = lockUnconfirmed || hideForGuest || !isFooterEnabled;
+    
     useEffect(() => {
         // When the tab bar is not rendering (early return), immediately clear the
         // stored height so Page.minHeight is not incorrectly reduced.
@@ -108,7 +111,6 @@ function MenuBottomItem({ link, title, index, badge, icon, isActive, profile, iF
         ? 'text-accent-foreground'
         : 'text-secondary-foreground web:group-hover:text-foreground';
     const iconClassName = addClassName ? `${baseIconClassName} ${addClassName}` : baseIconClassName;
-
 
     return (
             <Link

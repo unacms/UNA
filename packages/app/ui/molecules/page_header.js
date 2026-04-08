@@ -1,20 +1,16 @@
 import { useEffect, useRef } from 'react';
-import { Animated, Platform, View } from 'react-native';
+import { Animated, View } from 'react-native';
 import { appSetting } from 'app/lib/util';
 import {
     PageHeaderBody,
     PageHeaderSmall,
     TextHeader,
     usePageHeaderBase,
-} from 'app/ui/molecules/page_header-shared';
+} from 'app/ui/molecules/page_header_parts';
 
 export { PageHeaderSmall, TextHeader };
 
 export const PageHeader = ({ pageData }) => {
-    if (Platform.OS === 'web') {
-        const { PageHeader: PageHeaderWeb } = require('app/ui/molecules/page_header.web');
-        return <PageHeaderWeb pageData={pageData} />;
-    }
 
     const headerState = usePageHeaderBase(pageData);
     const {

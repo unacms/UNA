@@ -146,7 +146,7 @@ export const PageHeaderBody = memo(({
         </Link>
     );
 
-    const leftElement = !currentUser ? (
+    const leftElement = (!currentUser || (appSetting('layout', 'lock_unconfirmed') && !currentUser?.confirmed)) ? (
         Logo
     ) : isFullContextSelector ? (
         <ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} />
