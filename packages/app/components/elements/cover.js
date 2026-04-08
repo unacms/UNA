@@ -57,7 +57,7 @@ const BackButton = ({ isPerson }) => {
 function GetCoverBackButton({ isPerson }) {
     const isWeb = Platform.OS === 'web'
     const isDesktop = useIsDesktop();
-    const buttonVariant = isDesktop ? 'secondary' : 'text'
+    const buttonVariant = isDesktop ? 'secondary' : 'secondary'
     const buttonSize = isDesktop ? 'base' : 'base'
     if (!isWeb) return <BackButton isPerson={isPerson} />
     if (history.length > 2) {
@@ -129,23 +129,28 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
         })
     }
 
+    const smallCoverAvatarSize =
+        appSetting('cover', 'small_cover_avatar_display_size') || 'base'
+    const smallCoverNameSize =
+        appSetting('cover', 'small_cover_name_display_size') || '2xl'
+
     return (
         <Row className={`${conductorTheme.content_max_width} flex-auto items-center justify-between mx-auto h-14`}>
             {!currentUser && !bPerson ? <PageHeaderSmall /> : <><Row className='items-center flex-1 overflow-hidden' >
                 {(!appSetting('context_selector', 'show_always') || !isWeb) && <View className='mr-2 lg:hidden'>{getCoverBackButton(bPerson)}</View>}
                 {appSetting('context_selector', 'show_always') && !isDesktop ? <View className={`${TABLET_MODE_FROM}:hidden `}>
                     <ContextSelector data={context} mode="compact" />
-                </View> : <>                    <Row className='items-center gap-2 flex-1 '>
+                </View> : <>                    <Row className='items-center gap-3 flex-1 '>
                     {bPerson && (
                         <Profile
                             {...data.profile}
                             displayType="unit_wo_info"
-                            displaySize="base"
+                            displaySize={smallCoverAvatarSize}
                         />)}
                     <Profile
                         {...data.profile}
                         displayType="unit_wo_image"
-                        displaySize="lg"
+                        displaySize={smallCoverNameSize}
                         showLinks={false}
                     />
                 </Row>
@@ -159,7 +164,9 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
             </Row>
                 <View className="flex-none items-end ">
                     <Row className="w-full justify-between">
-                        {!showMoreMenu && (
+                        {!showMoreMenu &&
+                            (!appSetting('cover', 'hide_cover_menu_on_narrow') ||
+                                isDesktop) && (
                             <>
                                 <CoverMenu {...menu} uri={uri} isSplitMenu={true} />
                             </>
@@ -323,11 +330,11 @@ function CoverImage({
         const isCover = !!imageUrl
         return (
             <View
-                className={`duration-300 bg-primary lg:rounded-b-lg lg:pt-3 lg:px-3 w-full ${appSetting(
+                className={`web:duration-300 bg-accent/50 lg:rounded-b-xl p-3 w-full ${appSetting(
                     'layout',
                     'max_width_content'
                 )} mx-auto overflow-hidden ${isCover
-                    ? ` h-[30vh] sm:${appSetting('cover', 'aspect_ratio')}`
+                    ? ` h-[36vh] sm:${appSetting('cover', 'aspect_ratio')}`
                     : 'pb-32'
                     }`}
             >
@@ -345,7 +352,7 @@ function CoverImage({
                         <Loading />
                     </View>
                 )}
-                <Row className="py-2 px-3 justify-end gap-2 ">
+                <Row className=" justify-end gap-2 ">
                     {allowSwitch && (
                         <Button
                             rounded
@@ -382,7 +389,7 @@ function CoverImage({
                     displaySize={profileDisplaySize}
                 />
                 {allowEdit && (
-                    <View className=" bg-card rounded-full absolute bottom-2.5 right-0">
+                    <View className=" bg-card rounded-full absolute bottom-0 right-0 p-1">
                         <Button
                             rounded
                             size="sm"
@@ -449,7 +456,7 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
     }
 
     return (
-        <View className={`w-full mx-auto ${appSetting('layout', 'max_width')}`}>
+        <View className={` mx-auto ${appSetting('layout', 'max_width')}`}>
             {appSetting('context_selector', 'show_always') ? <Row className={`${TABLET_MODE_FROM}:hidden items-center w-full h-14 px-2 `} >
 
                 <View className={`${TABLET_MODE_FROM}:hidden `}>
@@ -468,11 +475,11 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
                 className={` ${appSetting(
                     'layout',
                     'max_width_content'
-                )} lg:flex-row gap-y-3 gap-x-3 mx-auto w-full lg:items-end p-3  `}
+                )} lg:flex-row gap-3 mx-auto w-full lg:items-end p-2 lg:p-3 items-center `}
             >
                 {bPerson && (
-                    <View className="hidden lg:flex flex-none h-24 justify-end w-min ">
-                        <View className=" flex-auto z-50 rounded-full p-1 flex-none bg-white dark:bg-background translate-y-1 -translate-x-1">
+                    <View className="hidden lg:flex flex-none h-20 justify-end w-min ">
+                        <View className=" flex-auto z-50 rounded-full p-1 flex-none bg-card">
                             <CoverImage
                                 is_person={bPerson}
                                 mode="picture"
@@ -485,11 +492,11 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
                         </View>
                     </View>
                 )}
-                <View className={`flex-auto gap-2 sm:gap-3 ${bPerson ? 'lg:flex-row flex-col-reverse' : 'flex-row'}`}>
-                    <View className="flex-col flex-auto gap-2 ">
-                        <Row className=" gap-2 flex-auto items-center min-h-12">
+                <View className={`flex-auto gap-2 w-full sm:gap-3 ${bPerson ? 'lg:flex-row flex-col-reverse' : 'flex-row'}`}>
+                    <View className="flex-col flex-auto gap-2 p-1 ">
+                        <Row className="gap-2 flex-auto items-center min-h-10 px-0.5">
                             <Text
-                                className={`font-title tracking-tight text-3xl sm:text-4xl font-bold text-foreground`}
+                                className={`font-title tracking-tight text-3xl font-bold text-foreground`}
                                 numberOfLines={2}
                             >
                                 {profileData.display_name || profileData.title || ''}
@@ -534,20 +541,22 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
                                     </View>
                                 </View>
                             )}
-                            <View
-                                className={`gap-2 web:flex-row`}
-                            >
+                            <View className="gap-2 web:flex-row">
                                 <CoverMenu
                                     {...data.actions_menu}
                                     uri={uri}
                                     isSplitMenu={true}
                                     containerClasses="gap-2 lg:gap-3"
                                 />
-                                <CoverMenuMore
-                                    {...data.actions_menu}
-                                    uri={uri}
-                                    isSplitMenu={true}
-                                />
+                                <View
+                                    className='lg:hidden'
+                                >
+                                    <CoverMenuMore
+                                        {...data.actions_menu}
+                                        uri={uri}
+                                        isSplitMenu={true}
+                                    />
+                                </View>
                             </View>
                         </View>
                     </View>
