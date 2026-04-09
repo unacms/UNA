@@ -134,12 +134,12 @@ export default function ElementImage(props) {
         let updatedSrc = src;
 
         if (src.includes('.svg') && Platform.OS !== 'web') {
-            updatedSrc = updatedSrc.replace('.svg', '.png');
+           // updatedSrc = updatedSrc.replace('.svg', '.png');
         }
 
 
 
-        if (Platform.OS !== 'web') {
+        if (Platform.OS !== 'web' && !src.includes('.svg')) {
             const imageWidth = extractStyleWidth(style) || width;
             let w = normalizeWidth(imageWidth);
             if (w > 256)
