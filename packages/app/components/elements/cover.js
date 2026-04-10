@@ -196,6 +196,7 @@ function CoverImage({
     const [imageUrl, setImageUrl] = useState(
         mode == 'cover' ? coverData?.src : profileData?.url_avatar
     )
+    const [isUploading, setIsUploading] = useState(false)
 
     const uo = (profileData?.module || '') + (mode == 'cover' ? '_cover_crop' : '_picture_crop');
     const so = coverData?.storage || ''
@@ -235,6 +236,7 @@ function CoverImage({
             for (const i of result.assets) {
                 let uri = i.uri
                 ImageNative.getSize(uri, async (width, height) => {
+                    setIsUploading(true)
                     if (mode == 'cover') {
                         uri = await prepareImageForUpload({
                             uri,
@@ -243,7 +245,7 @@ function CoverImage({
                             fileSizeBytes: i?.fileSize,
                             maxWidth: 2000,
                             maxHeight: 2000,
-                            webpOverMb: 4,
+                            webpOverMb: 40,
                         })
                     }
                     if (mode == 'picture') {
@@ -254,7 +256,7 @@ function CoverImage({
                             fileSizeBytes: i?.fileSize,
                             cropToSquare: true,
                             squareSize: 500,
-                            webpOverMb: 4,
+                            webpOverMb: 40,
                         })
                     
                     }
@@ -272,18 +274,22 @@ function CoverImage({
     }
 
     const handleInsertImageFinish = async (uploadInfo) => {
-        if (!profileData?.module || !uploadInfo?.result?.data?.id) return
-        const sRequest =
-            '/api.php?r=' +
-            profileData.module +
-            '/update_image/&params[]=' +
-            uploadInfo.extraVar.mode +
-            '&params[]=' +
-            c +
-            '&params[]=' +
-            uploadInfo.result.data.id
-        const sResponse = await fetcher(sRequest)
-        setImageUrl(sResponse.data)
+        try {
+            if (!profileData?.module || !uploadInfo?.result?.data?.id) return
+            const sRequest =
+                '/api.php?r=' +
+                profileData.module +
+                '/update_image/&params[]=' +
+                uploadInfo.extraVar.mode +
+                '&params[]=' +
+                c +
+                '&params[]=' +
+                uploadInfo.result.data.id
+            const sResponse = await fetcher(sRequest)
+            setImageUrl(sResponse.data)
+        } finally {
+            setIsUploading(false)
+        }
     }
 
     if (mode == 'cover') {
@@ -307,8 +313,8 @@ function CoverImage({
                         src={imageUrl}
                     />
                 )}
-                {imageUrl?.includes('data:') && (
-                    <View className="h-full w-full opacity-50 bg-card w-full justify-center">
+                {(imageUrl?.includes('data:') || isUploading) && (
+                    <View className="absolute inset-0 h-full w-full opacity-60 bg-card justify-center items-center">
                         <Loading />
                     </View>
                 )}
@@ -329,6 +335,7 @@ function CoverImage({
                             variant="secondary"
                             size="sm"
                             startDecorator="Camera"
+                            disabled={isUploading}
                             onPress={() => handleUpload(mode)}
                         />
                     )}
@@ -342,12 +349,19 @@ function CoverImage({
     if (mode == 'picture') {
         return (
             <>
-                <Profile
-                    {...profileData}
-                    url_avatar={imageUrl}
-                    displayType="unit_wo_info"
-                    displaySize={profileDisplaySize}
-                />
+                <View>
+                    <Profile
+                        {...profileData}
+                        url_avatar={imageUrl}
+                        displayType="unit_wo_info"
+                        displaySize={profileDisplaySize}
+                    />
+                    {isUploading && (
+                        <View className="absolute inset-0 rounded-full bg-card/60 items-center justify-center">
+                            <Loading />
+                        </View>
+                    )}
+                </View>
                 {allowEdit && (
                     <View className=" bg-card rounded-full absolute bottom-0 right-0 p-1">
                         <Button
@@ -355,6 +369,7 @@ function CoverImage({
                             size="sm"
                             variant="default"
                             startDecorator="Camera"
+                            disabled={isUploading}
                             onPress={() => handleUpload(mode)}
                         />
                     </View>
