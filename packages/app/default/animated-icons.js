@@ -28,7 +28,3 @@ export const animatedIconRegistry = {
     MessageCircleMore: AnimatedMessageCircleMore,
     UsersRound: AnimatedUsersRound,
 };
-
-export function getAnimatedIconComponent(name) {
-    return animatedIconRegistry[name] ?? null;
-}
