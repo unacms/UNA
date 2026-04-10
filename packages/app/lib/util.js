@@ -14,6 +14,7 @@ import { LogLevel, OneSignal } from 'react-native-onesignal';
 import { isComponent } from 'app/components/registry';
 import { clsx } from 'clsx';
 import * as RNLocalize from "react-native-localize";
+import { ImageManipulator, SaveFormat } from 'app/lib/image-manipulator';
 
 const nativeCache = [];
 export const isWeb = Platform.OS === 'web'
@@ -1112,6 +1113,95 @@ export const uploadImageFile = async (file, fetchUrl, calback, extraVar) => {
     }
 }
 
+export const getUploadSizeMb = async ({ file, uri, fileSizeBytes }) => {
+    if (typeof fileSizeBytes === 'number' && fileSizeBytes > 0) {
+        return fileSizeBytes / (1024 * 1024);
+    }
+
+    if (file && typeof file.size === 'number') {
+        return file.size / (1024 * 1024);
+    }
+
+    if (uri && Platform.OS === 'web') {
+        try {
+            const response = await fetch(uri);
+            const blob = await response.blob();
+            return (blob?.size || 0) / (1024 * 1024);
+        } catch {
+            return 0;
+        }
+    }
+
+    return 0;
+}
+
+export const prepareImageForUpload = async ({
+    uri,
+    width,
+    height,
+    fileSizeBytes,
+    maxWidth,
+    maxHeight,
+    cropToSquare = false,
+    squareSize,
+    webpOverMb = 4,
+}) => {
+    const originalSizeMb = await getUploadSizeMb({ uri, fileSizeBytes });
+    const shouldConvertToWebp = originalSizeMb > webpOverMb;
+    const context = ImageManipulator.manipulate(uri);
+    let hasActions = false;
+
+    if (
+        typeof width === 'number' &&
+        typeof height === 'number' &&
+        typeof maxWidth === 'number' &&
+        typeof maxHeight === 'number' &&
+        (width > maxWidth || height > maxHeight)
+    ) {
+        let resizeWidth = maxWidth;
+        let resizeHeight = maxHeight;
+
+        if (width > height) {
+            resizeHeight = Math.round((height * resizeWidth) / width);
+        } else {
+            resizeWidth = Math.round((width * resizeHeight) / height);
+        }
+
+        context.resize({ width: resizeWidth, height: resizeHeight });
+        hasActions = true;
+    }
+
+    if (cropToSquare && typeof width === 'number' && typeof height === 'number') {
+        let squareSide = width;
+        if (width !== height) {
+            squareSide = width > height ? height : width;
+            context.crop({
+                width: squareSide,
+                height: squareSide,
+                originX: 0,
+                originY: 0,
+            });
+            hasActions = true;
+        }
+
+        if (typeof squareSize === 'number' && squareSide > squareSize) {
+            context.resize({ width: squareSize, height: squareSize });
+            hasActions = true;
+        }
+    }
+
+    if (!hasActions && !shouldConvertToWebp) {
+        return uri;
+    }
+
+    const renderedImage = await context.renderAsync();
+    const processedImage = await renderedImage.saveAsync({
+        ...(shouldConvertToWebp ? { format: SaveFormat.WEBP } : {}),
+    });
+
+    return processedImage.uri;
+}
+
 export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
     const formData = new FormData();
     if (isWeb) {
@@ -1132,6 +1222,9 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
         }
         urltoFile(uri, genRnd(8) + '.' + fileExt, fileType)
             .then(async function (file) {
+                const sizeMb = await getUploadSizeMb({ file, uri });
+                console.log('upload file size:', (sizeMb * 1024 * 1024).toFixed(0), 'bytes', sizeMb.toFixed(2), 'MB');
+
                 formData.append("file", file);
                 const result = await fetcher([fetchUrl, null, formData]);
                 if (result?.data?.link) {
@@ -1475,4 +1568,3 @@ export function isShowCover(cover, currentUser, url) {
 
     return false;
 }
-

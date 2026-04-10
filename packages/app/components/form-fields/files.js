@@ -2,10 +2,9 @@ import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import Field, { getValidationRules } from './_field';
 import { View, ViewRef, Row, Pressable } from 'app/design/view'
 import * as ImagePicker from 'expo-image-picker';
-import { ImageManipulator, SaveFormat } from 'app/lib/image-manipulator'
 import { Button } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
-import { genRnd, appSetting } from 'app/lib/util';
+import { genRnd, appSetting, prepareImageForUpload } from 'app/lib/util';
 import * as DocumentPicker from 'expo-document-picker';
 import { fetcher } from 'app/lib/fetcher';
 import { useFormContext, useController } from 'react-hook-form';
@@ -169,25 +168,15 @@ export default function (props) {
             const isImage = i?.mimeType?.includes('image/');
             if (isImage) {
                 ImageNative.getSize(uri, async (width, height) => {
-                    let manipulatedWidth = 2000;
-                    let manipulatedHeight = 2000;
-
-                    if (width > manipulatedWidth || height > manipulatedHeight) {
-                        if (width > height) {
-                            manipulatedHeight = Math.round((height * manipulatedWidth) / width);
-                        } else {
-                            manipulatedWidth = Math.round((width * manipulatedHeight) / height);
-                        }
-
-                        const context = ImageManipulator.manipulate(uri);
-                        context.resize({ width: manipulatedWidth, height: manipulatedHeight });
-                        const renderedImage = await context.renderAsync();
-                        const resizedPhoto = await renderedImage.saveAsync({
-                            format: SaveFormat.WEBP,
-                        });
-                        uri = resizedPhoto.uri;
-
-                    }
+                    uri = await prepareImageForUpload({
+                        uri,
+                        width,
+                        height,
+                        fileSizeBytes: i?.fileSize,
+                        maxWidth: 2000,
+                        maxHeight: 2000,
+                        webpOverMb: 4,
+                    });
 
                     uploadImage(
                         uri,

@@ -3,13 +3,12 @@ import { View, Row, ScrollView } from 'app/design/view'
 import Image from 'app/ui/atoms/image'
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
-import { appSetting, formatDateInterval, cloneObject, uploadImage, md5, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { appSetting, formatDateInterval, cloneObject, uploadImage, md5, LAYOUT_BREAKPOINTS, prepareImageForUpload } from 'app/lib/util'
 import Profile from 'app/ui/molecules/profile'
 import * as ImagePicker from 'expo-image-picker'
 
 import { genRnd } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
-import { ImageManipulator, SaveFormat } from 'app/lib/image-manipulator'
 import { Image as ImageNative } from 'react-native'
 import { useCurrentUser } from 'app/context/user'
 import {
@@ -237,71 +236,26 @@ function CoverImage({
                 let uri = i.uri
                 ImageNative.getSize(uri, async (width, height) => {
                     if (mode == 'cover') {
-                        let manipulatedWidth = 2000
-                        let manipulatedHeight = 2000
-
-                        if (
-                            width > manipulatedWidth ||
-                            height > manipulatedHeight
-                        ) {
-                            if (width > height) {
-                                manipulatedHeight = Math.round(
-                                    (height * manipulatedWidth) / width
-                                )
-                            } else {
-                                manipulatedWidth = Math.round(
-                                    (width * manipulatedHeight) / height
-                                )
-                            }
-
-                            
-                        const context = ImageManipulator.manipulate(uri)
-                        context.resize({ width: manipulatedWidth, height: manipulatedHeight })
-                        const renderedImage = await context.renderAsync()
-                        const resizedPhoto = await renderedImage.saveAsync({
-                            format: SaveFormat.WEBP
+                        uri = await prepareImageForUpload({
+                            uri,
+                            width,
+                            height,
+                            fileSizeBytes: i?.fileSize,
+                            maxWidth: 2000,
+                            maxHeight: 2000,
+                            webpOverMb: 4,
                         })
-                        uri = resizedPhoto.uri
-                            
-                        }
                     }
                     if (mode == 'picture') {
-                        let s = width
-
-                        let originX = 0
-                        let originY = 0
-                        let acts = []
-                        if (width != height) {
-                            if (width > height) {
-                                s = height
-                                originX = (width - height) / 2
-                            } else {
-                                s = width
-                                originY = (height - width) / 2
-                            }
-                            acts.push({
-                                crop: {
-                                    width: s,
-                                    height: s,
-                                    originX: 0,
-                                    originY: 0,
-                                },
-                            })
-                        }
-                        if (s > 500) {
-                            acts.push({ resize: { width: 500, height: 500 } })
-                        }
-
-                        const context = ImageManipulator.manipulate(uri)
-                        acts.forEach((action) => {
-                            if (action.crop) context.crop(action.crop)
-                            if (action.resize) context.resize(action.resize)
+                        uri = await prepareImageForUpload({
+                            uri,
+                            width,
+                            height,
+                            fileSizeBytes: i?.fileSize,
+                            cropToSquare: true,
+                            squareSize: 500,
+                            webpOverMb: 4,
                         })
-                        const renderedImage = await context.renderAsync()
-                        const resizedPhoto = await renderedImage.saveAsync({
-                            format: SaveFormat.WEBP
-                        })
-                        uri = resizedPhoto.uri
                     
                     }
                     const hash = md5(uri)
