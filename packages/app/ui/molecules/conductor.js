@@ -532,7 +532,7 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
             Object.assign(tabSceneProps, {
                 ListHeaderComponent: () => <View className="w-full">
                     {CoverHeader}
-                    {sceneHeader}
+                    {isUseCurrentHeader ? sceneHeader : null}
                     {filter}
                 </View>
             });
