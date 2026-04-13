@@ -4,6 +4,7 @@ import { IconSet as IconMap } from 'app/customization/icons';
 import { Theme } from 'app/design/theme';
 import { useMemo } from 'react';
 import { cssInterop } from 'nativewind';
+import { SvgXml } from 'react-native-svg';
 
 export function IconFromSet({ icon, size, _strokeWidth, color, cleanedClassName, rest }) {
     const { colors } = Theme();
@@ -39,4 +40,8 @@ export function IconFromSet({ icon, size, _strokeWidth, color, cleanedClassName,
             {...rest}
         />
     );
+}
+
+export function XmlIcon({ origIcon, width, height, size, color, cleanedClassName, rest }) {
+    return <SvgXml xml={origIcon} width={width || size} height={height || size} color={color} />;
 }

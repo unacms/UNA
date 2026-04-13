@@ -1,7 +1,6 @@
 'use client'
 
-import { SvgXml } from 'react-native-svg';
-import { IconFromSet } from 'app/ui/atoms/iconset';
+import { IconFromSet, XmlIcon } from 'app/ui/atoms/iconset';
 import { useState } from 'react';
 import { Platform } from 'react-native';
 import { findIconFromRemote, appSetting } from 'app/lib/util';
@@ -89,28 +88,9 @@ export function InlineIcon({ InlineIcon: C, width, height, size, color }) {
     return <C width={width || size} height={height || size} color={color} />;
 }
 
-export function XmlIcon({ origIcon, width, height, size, color, cleanedClassName, rest }) {
-    if (Platform.OS === 'web') {
-        const result = origIcon
-            .replace(/\swidth="[^"]*"/i, '')
-            .replace(/\sheight="[^"]*"/i, '')
-            .replace(/<svg(\s[^>]*)?>/i, `<svg$1 width="${width || size}" height="${height || size}">`);
-        return (
-            <span
-                style={{ color, display: 'flex' }}
-                className={cleanedClassName}
-                {...rest}
-                dangerouslySetInnerHTML={{ __html: result }}
-            />
-        );
-    }
-    return <SvgXml xml={origIcon} width={width || size} height={height || size} color={color} />;
-}
-
 function getAnimatedIcon(name) {
     return animatedIcons?.[name] ?? null;
 }
-
 
 function useIconCore({ icon: origIcon, className, width, height, color, size, strokeWidth, animated, active, selected, hovered, pressed, ...rest }) {
     const isXmlSvg = typeof origIcon === 'string' && origIcon.startsWith('<svg');

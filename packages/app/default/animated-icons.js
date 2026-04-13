@@ -14,7 +14,7 @@ import { AnimatedMessageCircleMore } from 'app/ui/atoms/animated-icons/icons/mes
 import { AnimatedUsersRound } from 'app/ui/atoms/animated-icons/icons/users-round';
 
 /** Keys must match resolved Lucide icon names (e.g. after findIconFromRemote). */
-export const animatedIconRegistry = {
+export const animatedIcons = {
     House: AnimatedHouse,
     Compass: AnimatedCompass,
     TvMinimalPlay: AnimatedTvMinimalPlay,

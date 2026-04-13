@@ -49,3 +49,20 @@ export function IconFromSet({ icon, isXmlSvg, InlineIcon, AnimatedIconComponent,
         />
     );
 }
+
+export function XmlIcon({ origIcon, width, height, size, color, cleanedClassName, rest }) {
+
+    const result = origIcon
+        .replace(/\swidth="[^"]*"/i, '')
+        .replace(/\sheight="[^"]*"/i, '')
+        .replace(/<svg(\s[^>]*)?>/i, `<svg$1 width="${width || size}" height="${height || size}">`);
+    return (
+        <span
+            style={{ color, display: 'flex' }}
+            className={cleanedClassName}
+            {...rest}
+            dangerouslySetInnerHTML={{ __html: result }}
+        />
+    );
+
+}
