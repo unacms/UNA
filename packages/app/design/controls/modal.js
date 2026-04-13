@@ -11,7 +11,13 @@ import emitter from 'app/context/emitter';
 
 const isWeb = Platform.OS === 'web';
 const isIosWeb = isWeb && typeof navigator !== 'undefined' && /iP(hone|od|ad)/.test(navigator.userAgent);
-
+const isIPadWeb =
+  isWeb &&
+  typeof navigator !== 'undefined' &&
+  (
+    /iPad/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+  );
 const modalSettings = appSetting('theme', 'modal');
 
 function ModalHeader({ title, headerBorder, onClose }) {
@@ -59,13 +65,25 @@ export function Modal({
         if (!isIosWeb || !window.visualViewport) return;
         const update = () => {
             if (!fogRef.current) return;
-            fogRef.current.style.marginTop = `${window.visualViewport.offsetTop}px`;
+            const vv = window.visualViewport;
+            const offsetTop = vv?.offsetTop ?? 0;
+            if (isIPadWeb) {
+                fogRef.current.style.marginTop = `${offsetTop}px`;
+                fogRef.current.style.height = `${vv.height}px`;
+            } else {
+                fogRef.current.style.marginTop = `${offsetTop}px`;
+                fogRef.current.style.height = '';
+            }
         };
         window.visualViewport.addEventListener('resize', update);
         window.visualViewport.addEventListener('scroll', update);
         return () => {
             window.visualViewport.removeEventListener('resize', update);
             window.visualViewport.removeEventListener('scroll', update);
+            if (fogRef.current) {
+                fogRef.current.style.marginTop = '';
+                fogRef.current.style.height = '';
+            }
         };
     }, []);
 
@@ -156,9 +174,11 @@ export function Modal({
                     className={`pointerEvents cursor-default flex justify-start w-full h-full sm:items-center items-start overflow-hidden ${modalSettings.fog} `}/* justify-start for post form small web */
                     onPress={handleWebOuterPress}
                 >
-                     <RemoveScroll className={`flex-1 flex flex-col w-full sm:justify-center ${autoHeight && 'justify-center'} overflow-hidden`} >
-                            <View style={{ height: isDesktop || autoHeight ? 'auto' : heightActual }} className={`w-full ${maxWidth} left-0 right-0 z-50 w-full mx-auto overflow-hidden ${modalSettings.container} `}>
+                     <RemoveScroll className={`flex-1  flex flex-col w-full sm:justify-center ${autoHeight && 'justify-center'} overflow-hidden`} >
+                            <View style={{ height: (isDesktop && !isIPadWeb) || autoHeight ? 'auto' : heightActual }} className={`w-full ${maxWidth} left-0 right-0 z-50 w-full mx-auto overflow-hidden ${modalSettings.container} `}>
+                           
                                 {content}
+                               
                             </View>
                         </RemoveScroll>
 
