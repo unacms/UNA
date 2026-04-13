@@ -29,6 +29,6 @@ export function redirectTo(router, url) {
 
     router.replace({
         pathname: '/tab0',
-        params: { url: normalizedUrl }
+        params: { url: normalizedUrl, refresh: Date.now() }
     })
 }

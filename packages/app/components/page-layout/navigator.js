@@ -33,8 +33,11 @@ export default function PageLayout(props) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const { layoutName: layout } = useLayoutSettings();
     const leftSideBar = layout != 'hor' ? false : true
-    const menu = useMemo(() => getMenu(props, layout), [leftSideBar]);
-    const isNamePresent = menu.items.some(item => item.name === props.data.uri);
+    let menu = useMemo(() => getMenu(props, layout), [leftSideBar]);
+    if (!menu.items)
+        menu = {items: []}
+    console.log("menumenu", menu)
+    const isNamePresent = menu?.items?.some(item => item.name === props.data.uri);
     if (!isNamePresent){
         menu.items.push({id:-1, name: props.uri, title:'', link: props.data.url, hideInTop: true});
     }

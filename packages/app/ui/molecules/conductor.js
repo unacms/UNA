@@ -263,7 +263,7 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
                     return newRoutes;
                 });
             }
-            if (data.action == 'new_content' && (!currentRoute?.endpoint?.params?.owner_id || Math.abs(currentRoute?.endpoint?.params?.owner_id) == Math.abs(data?.data?.object_privacy_view))) {
+            if (data.action == 'new_content' && (!currentRoute?.endpoint?.params?.owner_id || Math.abs(currentRoute?.endpoint?.params?.owner_id) == Math.abs(data?.data?.owner_id))) {
                 setRoutes(prevRoutes => {
                     const newRoutes = [...prevRoutes];
                     const routeData = newRoutes[index].data;
