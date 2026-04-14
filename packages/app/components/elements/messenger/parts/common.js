@@ -1,7 +1,7 @@
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
-import { memo, useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { memo, useState, useEffect, useRef, useCallback, useMemo,  } from 'react';
 import { appSetting } from 'app/lib/util'
 import UniList from 'app/ui/atoms/unilist'
 import { Button, Input } from 'app/design/controls'
@@ -24,6 +24,7 @@ import { getBackButtonWeb } from 'app/lib/common-helpers'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import BackButton from 'app/components/nav/back';
 import emitter from 'app/context/emitter';
+import { useFocusEffect } from 'app/lib/hooks/router'
 import {
     Panel,
     PanelGroup,
@@ -530,13 +531,15 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
     </Row>
 
     useEffect(() => {
+        if (!isWeb) return;
         setHeader(isSmallScreen ? { header: header } : defaultHeader);
     }, [isSmallScreen, setHeader, header]);
 
-
-    /*useEffect(() => {
-        return () => setHeader(defaultHeader);
-    }, [setHeader]);*/
+    useFocusEffect(useCallback(() => {
+        if (isWeb) return;
+        setHeader(isSmallScreen ? { header: header } : defaultHeader);
+ 
+    }, [isSmallScreen, setHeader, header]));
     
     return (
         <View className='flex-1 bg-card' style={{ minHeight: layoutHeightLeft }}>
@@ -620,13 +623,14 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
     )
 
     useEffect(() => {
+        if (!isWeb) return;
         setHeader(isSmallScreen ? { header: header } : defaultHeader);
     }, [isSmallScreen, setHeader, header]);
 
-
-    /*useEffect(() => {
-        return () => setHeader(defaultHeader);
-    }, [setHeader]);*/
+    useFocusEffect(useCallback(() => {
+        if (isWeb) return;
+        setHeader(isSmallScreen ? { header: header } : defaultHeader);
+    }, [isSmallScreen, setHeader, header]));
 
     return (<>
         {(isWeb && !isSmallScreen) && header}

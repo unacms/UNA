@@ -12,13 +12,15 @@ import { useWindowScrollNavigationSync } from 'app/lib/hooks/use-window-scroll-n
 
 export function Root(props) {
     const { currentUser, setCurrentUser } = useCurrentUser();
+
     const prevUserIdRef = useRef(currentUser?.id);
     const router = useRouter();
     useWindowScrollNavigationSync();
 
     const data = props?.data;
+    const redirectUrl = data?.redirect;
     // ################## CODE FOR NATIVE VERSION
-  
+
     useEffect(() => {
         // Пропускаем: первый рендер (prevUserIdRef ещё не трогали)
         if (prevUserIdRef.current === undefined) {
@@ -27,9 +29,9 @@ export function Root(props) {
         }
         // Пропускаем: значение не изменилось
         if (prevUserIdRef.current === currentUser?.id) return;
-        
+
         prevUserIdRef.current = currentUser?.id;
-        
+
         // Релоад только при смене юзера, не при инициализации
         if (Platform.OS === 'web' && typeof window !== 'undefined') {
             window.location.reload();
@@ -41,7 +43,7 @@ export function Root(props) {
 
     const setScrollDirection = useSetScrollDirection();
     const setScrollValue = useSetScrollValue();
-    
+
     useEffect(() => {
         // Сброс scroll состояния при смене данных страницы
         setScrollDirection(0);
@@ -74,16 +76,21 @@ export function Root(props) {
     if (props.code == 404 && !data?.page_status) {
         data.page_status = 404
     }
-    
 
-  
+
+
     if (currentUser === null) {
         return <Loading />;
     }
 
-    if (data.redirect){
-        redirectTo(router, data.redirect)
-        return null
+    useEffect(() => {
+        if (redirectUrl) {
+            redirectTo(router, redirectUrl);
+        }
+    }, [redirectUrl]);
+
+    if (data.redirect) {
+        return null; // или <Loading />, пока происходит редирект
     }
 
     return (
