@@ -77,17 +77,16 @@ export function Root(props) {
         data.page_status = 404
     }
 
-
-
-    if (currentUser === null) {
-        return <Loading />;
-    }
-
     useEffect(() => {
         if (redirectUrl) {
             redirectTo(router, redirectUrl);
         }
     }, [redirectUrl]);
+
+
+    if (currentUser === null) {
+        return <Loading />;
+    }
 
     if (data.redirect) {
         return null; // или <Loading />, пока происходит редирект
