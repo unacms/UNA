@@ -2,17 +2,17 @@
 
 export const settingsBadges = {
     badges: {
-        'u-badge-default': ' bg-transparent   ',
-        'u-badge-destructive': ' bg-destructive ',
-        'u-badge-outline': ' bg-transparent border border-border/60  ',
-        'u-badge-accent': ' bg-accent ',
-        'u-badge-secondary': ' bg-secondary ',
-        'u-badge-text': ' whitespace-nowrap tracking-tight font-medium ',
-        'u-badge-default-text': ' text-primary ',
-        'u-badge-destructive-text': ' text-destructive-foreground ',
-        'u-badge-outline-text': ' text-card-foreground ',
-        'u-badge-accent-text': ' text-accent-foreground ',
-        'u-badge-secondary-text': ' text-secondary-foreground ',
+        'u-badge-default': ' bg-transparent flex items-center justify-center  ',
+        'u-badge-destructive': ' bg-destructive flex items-center justify-center ',
+        'u-badge-outline': ' bg-transparent border border-border/60 flex items-center justify-center ',
+        'u-badge-accent': ' bg-accent flex items-center justify-center',
+        'u-badge-secondary': ' bg-secondary flex items-center justify-center ',
+        'u-badge-text': ' whitespace-nowrap tracking-tight font-medium flex items-center justify-center ',
+        'u-badge-default-text': ' text-primary flex items-center justify-center ',
+        'u-badge-destructive-text': ' text-destructive-foreground flex items-center justify-center ',
+        'u-badge-outline-text': ' text-card-foreground flex items-center justify-center ',
+        'u-badge-accent-text': ' text-accent-foreground flex items-center justify-center ',
+        'u-badge-secondary-text': ' text-secondary-foreground flex items-center justify-center ',
     },
     badge_sizes: {
         default_size: 'sm',
