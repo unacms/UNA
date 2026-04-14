@@ -487,17 +487,27 @@ const TabSceneMainContent = ({
         enabled: !!pageRoute?.endpoint?.request_url
     })
 
+     const test = () => {
+       console.log('added')
+       
+    }
+
+    const test1 = () => {
+        console.log('deleted')
+       
+    }
+
     useEffect(() => {
         if (pageRoute?.endpoint?.unit !== 'feed')
             return
-
-        const sub1 = subscribe('bx_timeline_0', 'added', refetch)
-        const sub2 = subscribe('bx_timeline_0', 'deleted', refetch)
+        // DISABLED BY https://linear.app/unainc/issue/WEA-1139
+        /*const sub1 = subscribe('bx_timeline_0', 'added', test)
+        const sub2 = subscribe('bx_timeline_0', 'deleted', test1)
 
         return () => {
             sub1();
             sub2();
-        };
+        };*/
     }, [])
 
     useEffect(() => {
