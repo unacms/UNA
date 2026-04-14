@@ -77,7 +77,8 @@ const expoConfig = {
             "android.permission.WAKE_LOCK",
             "android.permission.RECEIVE_BOOT_COMPLETED",
             "com.google.android.c2dm.permission.RECEIVE",
-            "android.permission.SCHEDULE_EXACT_ALARM"
+            "android.permission.SCHEDULE_EXACT_ALARM",
+            "android.permission.POST_NOTIFICATIONS"
         ],
         "adaptiveIcon": {
             "foregroundImage": "./assets/images/adaptive-icon.png",
