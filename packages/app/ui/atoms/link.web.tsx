@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Pressable } from 'app/design/view'
 import { useRouter } from 'app/lib/hooks/router'
 import { useCallback, useMemo } from 'react';
-import { appSetting, cn } from 'app/lib/util'
+import { appSetting, cn, sanitazeUrl } from 'app/lib/util'
 
 
 // Variants and sizes from theme
@@ -18,6 +18,7 @@ export default function ElementLink({
     children,
     className = '',
     hitarea = true,
+    asExternal,
     noprefetch,
     onClick,
     onPress,
@@ -25,24 +26,15 @@ export default function ElementLink({
     ...rest
 }) {
 
-    const href = useMemo(() => {
-        if (!hrefProp ||
-            hrefProp === 'javascript:' ||
-            hrefProp === '/javascript:') {
-            return '';
-        }
-        if (hrefProp === '/home') {
-            return '/';
-        }
-        return hrefProp;
-    }, [hrefProp]);
+    const router = useRouter();
+    const href = sanitazeUrl(hrefProp);
 
     // Early return for non-emulated links with empty href
     if (!href && emulate !== true) {
         return children;
     }
 
-    const router = useRouter();
+    
 
     // Convert alt to aria-label (alt is not valid for <a> elements)
     const accessibleLabel = alt || (typeof children === 'string' ? children : undefined);

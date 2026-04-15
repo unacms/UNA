@@ -44,9 +44,9 @@ export const settingsButtons = {
         },
         primary:{
             container:{
-                base:'web:duration-200 backdrop-blur',
+                base:'backdrop-blur',
                 default:' bg-primary  ',
-                active:' bg-primary-hover web:scale-[0.98]    ',
+                active:' bg-primary-hover ',
                 pressed:' bg-primary  ',
                 hovered:' bg-primary-hover ',
                 focused:' bg-primary ',
@@ -54,7 +54,7 @@ export const settingsButtons = {
 
             },
             text:{
-                base:'font-semibold web:duration-200',
+                base:'font-semibold',
                 default:'text-primary-foreground',
                 hovered:'text-primary-foreground',
                 focused:'text-primary-foreground',
@@ -65,9 +65,9 @@ export const settingsButtons = {
         },
         default:{
             container:{
-                base:'web:duration-200  backdrop-blur  ',
+                base:'backdrop-blur  ',
                 default:' bg-popover/60 border border-border/60 shadow-sm dark:shadow-sm-deep  ',
-                active:' bg-popover/40 web:scale-[0.98] shadow-xs dark:shadow-xs-deep border-border/60 border border-border/60 dark:bg-border/40    ',
+                active:' bg-popover/40 shadow-xs dark:shadow-xs-deep border-border/60 border border-border/60 dark:bg-border/40 ',
                 pressed:'bg-popover/40 ',
                 hovered:' bg-popover/80 shadow border border-border/60 shadow dark:shadow-md-deep  ',
                 focused:' bg-popover/80 shadow-sm dark:shadow-sm-deep border-border/60 dark:border-black/60 ',
@@ -75,7 +75,7 @@ export const settingsButtons = {
 
             },
             text:{
-                base:'font-semibold web:duration-200',
+                base:'font-semibold',
                 default:'text-foreground',
                 hovered:'text-foreground',
                 focused:'text-foreground',
@@ -86,7 +86,7 @@ export const settingsButtons = {
         },
         accent:{
             container:{
-                base:'web:duration-200 ',
+                base:' ',
                 default:'bg-accent/60 ',
                 active:'web:ring-2 web:ring-accent web:ring-offset-2 web:outline-none',
                 pressed:'bg-accent/60',
@@ -107,9 +107,9 @@ export const settingsButtons = {
         },
         secondary:{
             container:{
-                base:'web:duration-200',
+                base:'',
                 default:'bg-secondary/80 web:backdrop-blur ',
-                active:'bg-border web:scale-[0.98] ',
+                active:'bg-border ',
                 pressed:' bg-accent ',
                 hovered:' bg-secondary',
                 focused:' bg-secondary',
@@ -130,8 +130,8 @@ export const settingsButtons = {
             container:{
                 base:'bg-destructive',
                 default:'',
-                active:'bg-red-600/90 web:scale-[0.98] ',
-                pressed:'bg-red-600/90 web:scale-[0.98] ',
+                active:'bg-red-600/90 ',
+                pressed:'bg-red-600/90 ',
                 hovered:'bg-red-500 shadow',
                 focused:'',
                 disabled:'',
@@ -149,10 +149,10 @@ export const settingsButtons = {
         },
         text:{
             container:{
-                base:'web:duration-200',
+                base:'',
                 default:'',
-                active:' bg-muted web:scale-[0.98] ',
-                pressed:' bg-accent/60 web:hover:bg-accent ',
+                active:' bg-muted ',
+                pressed:' bg-accent/60 ',
                 hovered:' bg-muted/60 ',
                 focused:' bg-muted/60 ',
                 disabled:'opacity-50',
@@ -172,7 +172,7 @@ export const settingsButtons = {
             container:{
                 base:'',
                 default:'',
-                active:' web:scale-[0.98] ',
+                active:' ',
                 pressed:'',
                 hovered:'',
                 focused:'',
@@ -191,9 +191,9 @@ export const settingsButtons = {
         },
         link:{
             container:{
-                base:'web:duration-200',
+                base:'',
                 default:'',
-                active:'web:scale-[0.98] ',
+                active:' ',
                 pressed:'',
                 hovered:'',
                 focused:'',
@@ -215,7 +215,7 @@ export const settingsButtons = {
             container:{
                 base:'border ',
                 default:'border-border/60',
-                active:'bg-muted/60 web:scale-[0.98] ',
+                active:'bg-muted/60 ',
                 pressed:'bg-muted/60',
                 hovered:'bg-muted/60',
                 focused:'bg-muted/60',

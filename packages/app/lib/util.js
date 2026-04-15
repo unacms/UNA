@@ -15,6 +15,7 @@ import { isComponent } from 'app/components/registry';
 import { clsx } from 'clsx';
 import * as RNLocalize from "react-native-localize";
 import { ImageManipulator, SaveFormat } from 'app/lib/image-manipulator';
+import * as WebBrowser from 'expo-web-browser';
 
 const nativeCache = [];
 export const isWeb = Platform.OS === 'web'
@@ -1582,4 +1583,54 @@ export function isShowCover(cover, currentUser, url) {
         return true;
 
     return false;
+}
+
+
+export const openExternalLink = async (finalHref) => {
+    console.log("finalHref1", finalHref)
+    await WebBrowser.openBrowserAsync(finalHref);
+};
+
+export function sanitazeUrl(url) {
+    if (typeof url !== 'string') {
+        return '';
+    }
+
+    const sanitizedHref = url.trim();
+    if (!sanitizedHref) {
+        return '';
+    }
+
+    if (sanitizedHref === '/home') {
+        return '/';
+    }
+
+    if (/^\/?javascript:/i.test(sanitizedHref)) {
+        return '';
+    }
+
+    let finalHref = sanitizedHref;
+
+
+    if (/^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(finalHref)) {
+        if (!finalHref.includes('://')) {
+            return finalHref;
+        }
+
+    }
+    const domain = getDomainFromUrl(finalHref);
+    const rootUrl = appSetting('config', 'native_app_images_url');
+    if (domain && domain === rootUrl) {
+        finalHref = finalHref.replace(domain, '');
+    }
+    if (domain && domain !== rootUrl)
+        return finalHref;
+
+    return finalHref.startsWith('/') ? finalHref : `/${finalHref}`;
+}
+
+export function isExternalUrl(url) {
+    const rootUrl = appSetting('config', 'native_app_images_url');
+    const domain = getDomainFromUrl(url);
+    return domain && domain !== rootUrl;
 }

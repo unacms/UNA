@@ -1,9 +1,8 @@
 import { Pressable } from 'app/design/view';
 import { useGlobalSearchParams, Link } from 'app/lib/hooks/router'
-import { FeedbackHaptics } from 'app/lib/util';
+import { FeedbackHaptics, isExternalUrl, openExternalLink } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
-import { appSetting, getDomainFromUrl, cn } from 'app/lib/util';
-import * as WebBrowser from 'expo-web-browser';
+import { appSetting, sanitazeUrl, cn } from 'app/lib/util';
 import { useMemo, useCallback } from 'react';
 import { Text } from 'app/design/typography'
 import { Platform } from 'react-native'
@@ -31,7 +30,6 @@ export default function ElementLink({
 }) {
 
     const glob = useGlobalSearchParams();
-
     const { currentUser } = useCurrentUser();
 
     const handlePress = useCallback(() => {
@@ -45,18 +43,8 @@ export default function ElementLink({
             : appSetting('menu_items', 'menu_tabbar_non_logged');
     }, [currentUser?.id]);
 
-    const invalidHrefs = ['javascript:', '/javascript:', undefined, null];
-    const sanitizedHref = invalidHrefs.includes(href) ? '' : href;
-
-    let finalHref = sanitizedHref;
-    if (!finalHref.includes('/')) {
-        finalHref = `/${finalHref}`;
-    }
-    const domain = getDomainFromUrl(finalHref);
-    const rootUrl = appSetting('config', 'native_app_images_url');
-
-    const externalUrl = finalHref;
-    finalHref = finalHref.replace(domain, '');
+   
+    const finalHref = sanitazeUrl(href);
 
     const index = (() => {
         const match = TabList.find((item) => finalHref.includes(item.url));
@@ -73,13 +61,6 @@ export default function ElementLink({
         };
     }, [target, finalHref, index, glob.name]);
 
-    const handleExternalLinkPress = useCallback(async () => {
-        await WebBrowser.openBrowserAsync(externalUrl);
-    }, [externalUrl]);
-
-    if (!sanitizedHref) {
-        return children;
-    }
 
     const sizeClass = (() => {
         if (!size) return '';
@@ -108,56 +89,44 @@ export default function ElementLink({
     };
 
     const accessibleLabel = alt || (typeof children === 'string' ? children : undefined);
-    // open external links in browser
-    if (domain && domain !== rootUrl || asExternal === true) {
-        const content = isTextContent(children) ? (
-            <Text className={composedClassName} style={{ pointerEvents: 'none' }}>{children}</Text>
-        ) : children;
+    const isTextMode = mode === 'text';
+    const isPlainMode = mode === 'plain';
+    const isExternal = isExternalUrl(finalHref) || asExternal === true;
 
-        if (mode === 'text') {
-            return (
-                <Text
-                    onPress={handleExternalLinkPress}
-                    className={composedClassName}
-                    aria-label={accessibleLabel}
-                    accessibilityLabel={accessibleLabel}
-                >
-                    {children}
-                </Text>
-            );
-        }
+    const content = isTextContent(children) ? (
+        <Text className={composedClassName}>{children}</Text>
+    ) : children;
+
+    // open external links in browser
+    if (isExternal) {
+        const Cnt = isTextMode ? Text : Pressable;
+
         return (
-            <Pressable
-                onPress={handleExternalLinkPress}
+            <Cnt
+                onPress={() => openExternalLink(finalHref)}
                 className={composedClassName}
                 aria-label={accessibleLabel}
                 accessibilityLabel={accessibleLabel}
             >
+                {isTextMode ? children : content}
+            </Cnt>
+        );
+    }
+
+    const renderInnerContent = () => {
+        if (isPlainMode) return content;
+        if (isTextMode) return <Text className={composedClassName}>{children}</Text>;
+
+        return (
+            <Pressable
+                hitSlop={resolvedHitSlop}
+                onPress={handlePress}
+                className={composedClassName}
+            >
                 {content}
             </Pressable>
         );
-    }
-
-    if (mode === 'text') {
-        return (
-            <Link
-                push
-                href={p}
-                asChild
-                aria-label={accessibleLabel}
-                accessibilityLabel={accessibleLabel}
-                {...rest}
-            >
-                <Text className={composedClassName}>{children}</Text>
-            </Link>
-        );
-    }
-
-    // For non-text mode, wrap string/number children in Text with variant classes applied
-    // style.pointerEvents="none" allows touches to pass through to parent Pressable
-    const content = isTextContent(children) ? (
-        <Text className={composedClassName} style={{ pointerEvents: 'none' }}>{children}</Text>
-    ) : children;
+    };
 
     return (
         <Link
@@ -168,13 +137,7 @@ export default function ElementLink({
             accessibilityLabel={accessibleLabel}
             {...rest}
         >
-            <Pressable
-                hitSlop={resolvedHitSlop}
-                onPress={handlePress}
-                className={composedClassName}
-            >
-                {content}
-            </Pressable>
+            {renderInnerContent()}
         </Link>
     );
 }

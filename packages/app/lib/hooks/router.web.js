@@ -3,6 +3,9 @@ export {
     usePathname
 } from 'next/navigation';
 
+
+export { default as Link } from 'next/link'
+
 export function useGlobalSearchParams() {
     return null;
 }

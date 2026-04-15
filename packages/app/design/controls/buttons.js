@@ -1,8 +1,10 @@
-import React, { useMemo, useCallback, memo } from 'react';
-import { Pressable, View, Row } from 'app/design/view'
+import React, { memo } from 'react';
+import { Pressable, View } from 'app/design/view'
+import { Motion } from '@legendapp/motion'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
-import { appSetting, isEmoji, FeedbackHaptics, cn } from 'app/lib/util'
+import Link from 'app/ui/atoms/link'
+import { appSetting, isEmoji, FeedbackHaptics, cn, sanitazeUrl, isExternalUrl, openExternalLink } from 'app/lib/util'
 import Tooltip from 'app/ui/atoms/tooltip';
 import Loading from 'app/ui/atoms/loading'
 import { useIsDesktop } from 'app/context/measure';
@@ -12,6 +14,8 @@ const BtnCls = appSetting('theme', 'button_styles');
 const BtnClsSize = appSetting('theme', 'button_sizes');
 
 const isWeb = Platform.OS === 'web';
+
+const springTransition = { type: 'spring', damping: 24, stiffness: 360 };
 
 const ICON_ACCESSIBLE_MAP = {
     'X': 'Close',
@@ -133,10 +137,13 @@ const getStateClasses = (active, pressed, hovered, focused, disabled, variant, t
 };
 
 const ButtonContent = React.memo(({
+    as: Cmp = View,
+    cntProps = {},
     pressed = false,
     hovered = false,
     focused = false,
     active = false,
+    fullWidth = false,
     className,
     classTextName,
     variant,
@@ -153,6 +160,7 @@ const ButtonContent = React.memo(({
     roundingClass,
     children
 }) => {
+    const { className: cntClassName, ...restCntProps } = cntProps;
 
     const hasNoIcons = !startDecorator && !endDecorator;
     const isTitleVisible = hasNoIcons || showTitleFromSize === '';
@@ -160,12 +168,13 @@ const ButtonContent = React.memo(({
     const titleVisibility = cn(!isTitleVisible && `hidden ${breakpoint}:block`);
 
     const baseContainerClasses = cn(
+        'flex-row items-center',
+        cntClassName,
         roundingClass,
-        `button-${variant}-${size}`,
-        isIconOnly ? '' : 'overflow-hidden',
+        //isIconOnly ? '' : 'overflow-hidden',
         className,
         BtnCls[variant]?.container?.base,
-            `justify-${align}`,
+        `justify-${align}`,
         isIconOnly ? BtnClsSize[size]?.container_icon_only : BtnClsSize[size]?.container,
     );
 
@@ -180,14 +189,12 @@ const ButtonContent = React.memo(({
 
     const stateContainer = getStateClasses(active, pressed, hovered, focused, disabled, variant, 'container');
     const stateText = getStateClasses(active, pressed, hovered, focused, disabled, variant, 'text');
-    const containerClasses = `${baseContainerClasses} ${stateContainer}`;
-   
+    const containerClasses = cn(baseContainerClasses, stateContainer);
     const textClasses = `${baseTextClasses} ${stateText}`;
+    const highlightBackground = 'rgba(255,255,255,1)';
 
-
-    return (
-        <Row className={cn('items-center', containerClasses)}>
-            
+    const buttonElement = (
+        <Cmp className={containerClasses} {...restCntProps}>
             <ButtonIcon size={BtnClsSize[size]?.icon_size} icon={startDecorator} className={textClasses.replace("overflow-hidden")} />
 
             {isTitle && (
@@ -195,13 +202,37 @@ const ButtonContent = React.memo(({
                     {title}
                 </Text>
             )}
-            
+
             <ButtonIcon size={BtnClsSize[size]?.icon_size} icon={endDecorator} className={textClasses} />
             {oButtonAddon && (
-                isTitle ? <View className="z-10">{oButtonAddon}</View> : <View className="absolute top-0 right-0 w-full h-full z-20 pointer-events-none" >{oButtonAddon}</View>
+                isTitle ? <View className="z-10">{oButtonAddon}</View> : <View className="absolute top-0 right-0 w-full h-full z-20 pointer-events-none">{oButtonAddon}</View>
             )}
             {children}
-        </Row>
+
+            <Motion.View
+                className={cn('absolute inset-0 pointer-events-none z-10', roundingClass)}
+                animate={{ opacity: active ? 1 : 0 }}
+                transition={springTransition}
+                style={{  position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    left: 0,
+                    pointerEvents: 'none',
+                    zIndex: 10,
+                    backgroundColor: highlightBackground }}
+            />
+        </Cmp>
+    );
+
+    return (
+        <Motion.View
+            animate={{ scale: active ? 0.95 : 1 }}
+            transition={springTransition}
+            style={fullWidth ? undefined : { alignSelf: 'flex-start' }}
+        >
+            {buttonElement}
+        </Motion.View>
     );
 });
 
@@ -232,8 +263,6 @@ export const Button = ({
     alt,
     role = 'button',
     children,
-    solid = false,
-    padding,
 }) => {
     const isTitle = !!title;
     const isIcon = !!(startDecorator || endDecorator);
@@ -244,9 +273,9 @@ export const Button = ({
     const isActive = !!onPress && !disabled;
 
     const flexClasses =
-        isIconOnly ? "flex-none" :
-            fullWidth ? "flex-auto web:w-full" :
-                isTitle ? "flex-none" : "w-fit";
+        fullWidth ? "flex-auto web:w-full" :
+            isIconOnly ? "flex-none " :
+                isTitle ? "flex-none w-fit" : "w-fit";
 
     const handlePress = (event) => {
         if (haptics && onPress) FeedbackHaptics(haptics);
@@ -278,8 +307,7 @@ export const Button = ({
 
     const hitareaClass = hitarea === false ? '' : `u-action-hitarea u-action-hitarea-${size}`;
 
-
-    const canRound = !grouped ;
+    const canRound = !grouped;
     const roundingClass = !canRound ? '' :
         rounded ? 'rounded-full' :
             BtnClsSize[size]?.rounded ?? '';
@@ -287,29 +315,53 @@ export const Button = ({
     const isPressable = !!(onPress || onTouchStart);
     const Cnt = isPressable ? Pressable : View;
 
-    // Web hover tracking for non-pressable buttons (e.g. dropdown triggers)
-    const [webHovered, setWebHovered] = React.useState(false);
-    const viewHoverProps = isWeb && !isPressable ? {
-        onMouseEnter: () => setWebHovered(true),
-        onMouseLeave: () => setWebHovered(false),
-    } : {};
-
-    // Link-wrapped buttons often omit onPress (the <a> navigates), so we render View
-    // instead of Pressable and never get Pressable's pressed state. Track pointer phase
-    // on web so theme `active` / visual press feedback still applies.
+    const [isPressed, setIsPressed] = React.useState(false);
+    const [isFocused, setIsFocused] = React.useState(false);
+    const [isHovered, setIsHovered] = React.useState(false);
     const [webPointerPressed, setWebPointerPressed] = React.useState(false);
-    const webPointerProps = isWeb && !isPressable && !disabled ? {
-        onPointerDown: (e) => {
-            if (e.pointerType === 'mouse' && e.button !== 0) return;
-            setWebPointerPressed(true);
-        },
-        onPointerUp: () => setWebPointerPressed(false),
-        onPointerCancel: () => setWebPointerPressed(false),
-        onPointerLeave: () => setWebPointerPressed(false),
-    } : {};
 
-    const renderContent = (state = {}) => (
+    const effectivePressed = isPressable ? isPressed : webPointerPressed;
+
+    const cntProps = {
+        className: `btn-${variant}-${size} ${flexClasses} ${hitareaClass}`,
+
+        ...(isPressable ? {
+            disabled: isPressable ? !isActive : disabled,
+            hitSlop: resolvedHitSlop,
+            onPressIn: () => setIsPressed(true),
+            onPressOut: () => setIsPressed(false),
+            onFocus: () => setIsFocused(true),
+            onBlur: () => setIsFocused(false),
+            ...(isWeb ? {
+                onMouseEnter: () => setIsHovered(true),
+                onMouseLeave: () => setIsHovered(false),
+            } : {}),
+            ...(onTouchStart ? { onTouchStart: handleTouchStart } : {}),
+            ...(onPress ? { onPress: handlePress } : {}),
+        } : {
+            ...(isWeb ? {
+                onMouseEnter: () => setIsHovered(true),
+                onMouseLeave: () => setIsHovered(false),
+            } : {}),
+            ...(!disabled && isWeb ? {
+                onPointerDown: (e) => {
+                    if (e.pointerType === 'mouse' && e.button !== 0) return;
+                    setWebPointerPressed(true);
+                },
+                onPointerUp: () => setWebPointerPressed(false),
+                onPointerCancel: () => setWebPointerPressed(false),
+                onPointerLeave: () => setWebPointerPressed(false),
+            } : {}),
+        }),
+
+        ...refProps,
+        ...buttonAttributes,
+    };
+
+    const content = (
         <ButtonContent
+            as={Cnt}
+            cntProps={cntProps}
             className={className}
             classTextName={classTextName}
             roundingClass={roundingClass}
@@ -325,9 +377,10 @@ export const Button = ({
             isTitle={isTitle}
             title={title}
             addon={addon}
-            active={isPressable ? !!state.pressed : webPointerPressed}
-            hovered={!!state.hovered || webHovered}
-            focused={!!state.focused}
+            active={effectivePressed}
+            hovered={isHovered}
+            focused={isFocused}
+            fullWidth={fullWidth}
         >
             {children}
         </ButtonContent>
@@ -335,21 +388,7 @@ export const Button = ({
 
     return (
         <Tooltip content={tooltip} enabled={isTooltip}>
-            <Cnt
-                className={`btn-${variant}-${size} ${flexClasses} ${hitareaClass} ${roundingClass}`}
-                {...viewHoverProps}
-                {...webPointerProps}
-                {...(isPressable && {
-                    disabled: !isActive,
-                    hitSlop: resolvedHitSlop,
-                    ...(onTouchStart ? { onTouchStart: handleTouchStart } : {}),
-                    ...(onPress ? { onPress: handlePress } : {}),
-                })}
-                {...refProps}
-                {...buttonAttributes}
-            >
-                {isPressable ? renderContent : renderContent()}
-            </Cnt>
+            {content}
         </Tooltip>
     );
 }
@@ -359,3 +398,28 @@ export const ButtonRef = React.forwardRef((props, forwardedRef) => {
         <Button {...props} forwardedRef={forwardedRef} />
     );
 });
+
+export const ButtonLink = ({
+    href = '',
+    target = '',
+    asExternal = false,
+    ...props
+}) => {
+    const finalHref = sanitazeUrl(href);
+    const isExternal = isExternalUrl(finalHref) || asExternal === true;
+
+    if (isExternal) {
+        return (
+            <Button
+                {...props}
+                onPress={() => openExternalLink(finalHref)}
+            />
+        );
+    }
+
+    return (
+        <Link href={href} target={target} asExternal={asExternal} mode="plain">
+            <Button {...props} />
+        </Link>
+    );
+};
