@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Block as PageBlock, BlockContent, BlockName, BlockActions, BlockHeader, BlockTitle } from 'app/ui/molecules/page-block'
 import Link from 'app/ui/atoms/link'
 import { useTranslation } from 'react-i18next'
-import { Button, Modal } from 'app/design/controls'
+import { Button, ButtonLink, Modal } from 'app/design/controls'
 
 export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, children }) {
     const { t } = useTranslation()
@@ -95,7 +95,7 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                                     {t(config?.header_more_text || 'See all')}
                                 </Link>
                             </BlockActions>)}
-                            {(block.help && isHelpLink) && <Link href={pureHelp} target="_blank" ><Button title="Help" startDecorator='LifeBuoy' variant="text"/></Link>}
+                            {(block.help && isHelpLink) && <ButtonLink href={pureHelp} target="_blank" title="Help" startDecorator='LifeBuoy' variant="text"/>}
                             {(block.help && !isHelpLink) && <Button onPress={() => setShowHelp(true)} title="Help" startDecorator='LifeBuoy' variant="text"/>}
                         </BlockHeader>
                     )}

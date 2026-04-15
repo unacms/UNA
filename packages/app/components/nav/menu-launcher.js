@@ -8,7 +8,7 @@ import { useIsDesktop } from 'app/context/measure';
 import { useMenuData } from 'app/context/menu-data';
 
 export default function () {
-    const bApps = appSetting('layout', 'apps') ;
+    const bApps = appSetting('layout', 'apps');
 
     const isDesktop = useIsDesktop();
     const { menuData } = useMenuData(appSetting('menu_items', 'objects', 'launcher'));
@@ -19,29 +19,28 @@ export default function () {
     const buttonSize = isDesktop ? 'base' : 'base'
 
     const menu_launcher_items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', menuData, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_launcher'), currentUser);
-    
+
     if (!bApps)
-         return <></>;
+        return <></>;
     if ((menu_launcher_items.length == 0) && menuData)
         return <></>;
 
     return (
-     
-            <DropdownMenu items={menu_launcher_items.map((item, index) => ({
-                id: 'menu-' + index,
+        <DropdownMenu
+            items={menu_launcher_items.map((item, index) => ({
+                id: `menu-${index}`,
                 link: '/' + item.link,
                 title: t(item.title),
                 icon: item.icon,
             }))}
-            >
-                <ButtonRef
-                    tooltip="All Apps"
-                    rounded
-                    alt={t("All Apps")}
-                    startDecorator={bApps === true ? "LayoutGrid" : bApps}
-                    variant={buttonVariant}
-                    size={buttonSize}
-                />
-            </DropdownMenu>
+            buttonProps={{
+                tooltip: 'All Apps',
+                rounded: true,
+                alt: t('All Apps'),
+                startDecorator: bApps === true ? 'LayoutGrid' : bApps,
+                variant: buttonVariant,
+                size: buttonSize,
+            }}
+        />
     );
 }

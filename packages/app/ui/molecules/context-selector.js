@@ -164,9 +164,14 @@ export default function ContextSelector({ data: initialData, url, uri, mode }) {
     </View>
     const DropDown = (
         <DropdownPopup
-            trigger={
-                <Button iconOnly startDecorator="ChevronsUpDown" variant="text" size="base" rounded />
-            }
+            buttonProps={{
+                iconOnly: true,
+                startDecorator: "ChevronsUpDown",
+                variant: "text",
+                size: "base",
+                rounded: true,
+            }}
+
             minPopupWidth={360}
             open={isOpen}
             onOpenChange={handleOpenChange}

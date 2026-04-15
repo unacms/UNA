@@ -86,7 +86,7 @@ export default function MenuAccount({ buttonProps, children }) {
 
     if ((menu_account_items.length == 0 && accountMenuData) || !profile) return <></>
 
-    const trigger = children || <Button {...buttonProps} />
+    const isButton = !children
 
     let profileList =
         data?.profiles
@@ -228,8 +228,9 @@ export default function MenuAccount({ buttonProps, children }) {
                         />
                     ) : null
                 }
+                buttonProps={isButton ? buttonProps : undefined}
             >
-                {trigger}
+                {!isButton && children}
             </DropdownMenu>
         </>
     )

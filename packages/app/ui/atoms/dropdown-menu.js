@@ -44,6 +44,7 @@ function DropdownMenuPopup({
     onSelect,
     children,
     defaultOpen,
+    buttonProps,
     variant,
     showOnTop,
     footer,
@@ -95,11 +96,11 @@ function DropdownMenuPopup({
             subscription.remove();
         };
     }, [setIsOpen]);
-
     return (
         <>
             <Redirect ref={redirectdRef} />
             <DropdownPopup
+                buttonProps={buttonProps}
                 showOnTop={showOnTop}
                 minPopupWidth={256}
                 openOnFocus={
@@ -183,6 +184,7 @@ export default function DropdownMenu({
     tabsOverflowSize,
     openOnFocus,
     open,
+    buttonProps,
     onOpenChange,
     contentClassName,
 }) {
@@ -204,6 +206,7 @@ export default function DropdownMenu({
                 open={open}
                 onOpenChange={onOpenChange}
                 contentClassName={contentClassName}
+                buttonProps={buttonProps}
             />
         );
     }
@@ -241,6 +244,11 @@ export default function DropdownMenu({
             handlePress()
     }, []);
 
+    if (buttonProps) {
+        return (
+            <Button {...buttonProps} onPress={handlePress}/>
+        );
+    }
     return (
         <Pressable onPress={handlePress}>{children}</Pressable>
     );

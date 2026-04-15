@@ -1,6 +1,6 @@
 import Link from 'app/ui/atoms/link'
 import { View, Row } from 'app/design/view'
-import { Button } from 'app/design/controls'
+import { Button, ButtonLink } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import { appSetting } from 'app/lib/util'
 import Search from 'app/ui/molecules/search'
@@ -67,12 +67,10 @@ export default function HeaderElement({ mode, url, uri }) {
                                     )
                                 }
                                 return (
-                                    <Link 
+                                    
+                                        <ButtonLink {...(item.props || {})}
                                         {...(item.target ? { target: item.target } : {})} 
                                         href={item.href == '{messenger}' ? appSetting('messenger', 'url') : item.href}
-                                        alt={item.alt || item.title || (item.props?.title)}
-                                    >
-                                        <Button {...(item.props || {})}
                                             {...(item.href === '{messenger}'
                                                 ? {
                                                     addon: {
@@ -90,7 +88,7 @@ export default function HeaderElement({ mode, url, uri }) {
 
                                                 })}
                                         />
-                                    </Link>
+                                    
                                 )
                             default:
                                 return null

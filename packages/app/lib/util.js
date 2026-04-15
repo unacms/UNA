@@ -1634,3 +1634,13 @@ export function isExternalUrl(url) {
     const domain = getDomainFromUrl(url);
     return domain && domain !== rootUrl;
 }
+
+export const roundedClassToRadius = (roundedClass = '') => {
+    const c = roundedClass.trim();
+    if (c === 'rounded-full') return 9999;
+    if (c === 'rounded-md') return 6;
+    if (c === 'rounded-lg') return 8;
+    if (c === 'rounded-xl') return 12;
+    
+    return 0;
+  };

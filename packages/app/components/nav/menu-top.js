@@ -68,7 +68,7 @@ export default function MenuTop({ url, uri }) {
     const MenuTopItem = getComponent('menu-item', 'topmenu');
 
     return (
-        <Row className={`${appSetting('layout', 'header', 'content_center')} relative`}>
+        <Row className={`${appSetting('layout', 'header', 'content_center')}`}>
             {menu_navbar_items.map((item, index) => {
                 const isActive = index === activeIndex;
                 return (

@@ -13,7 +13,7 @@ import PageByUrl from 'app/ui/molecules/page-by-url'
 import { registerAll } from 'app/components/registry-init';
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
-import { Button } from 'app/design/controls'
+import { Button, ButtonLink } from 'app/design/controls'
 import { useWindowDimensions, Platform } from 'react-native';
 import { useSetWindowSize } from 'app/context/measure';
 import semver from 'semver';
@@ -169,7 +169,7 @@ function PageLayoutContent({ layout, data }) {
                     <Text className='text-card-foreground text-base font-semibold text-center'>Create a profile...</Text>
                     <Row className='gap-x-3'>
                         {currentUser.menu.items.map(item => {
-                            return (<Link href={item.link} key={item.name}><Button title={item.title} startDecorator={item.icon} /></Link>);
+                            return (<ButtonLink href={item.link} key={item.name} title={item.title} startDecorator={item.icon} />);
                         })}
                     </Row>
                 </Card>

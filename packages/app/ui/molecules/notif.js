@@ -65,13 +65,8 @@ export default function ({ buttonProps, children, tooltip, fullWidth, uri }) {
             open={ntfsOpen}
             minPopupWidth={360}
             onOpenChange={handleNotificationsToggle}
-            trigger={
-                children || (
-                    <View key="ddp-trigger3">
-                        <Button {...buttonProps} />
-                    </View>
-                )
-            }
+            buttonProps={children ? undefined : buttonProps}
+            trigger={children ? children : undefined}
         >
             {ntfsOpen && (
                 <View key="ddp-content" className="gap-1">

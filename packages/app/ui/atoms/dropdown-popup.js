@@ -9,10 +9,11 @@ import { RemoveScroll } from 'react-remove-scroll';
 import { appSetting } from 'app/lib/util';
 import { useIsDesktop, useWindowSize } from 'app/context/measure';
 import emitter from 'app/context/emitter';
-
+import { Button, ButtonRef } from 'app/design/controls'
 const dropdownTheme = appSetting('theme', 'dropdown');
 
 export default function DropdownPopup({
+    buttonProps,
     children,
     open,
     onOpenChange,
@@ -46,7 +47,7 @@ export default function DropdownPopup({
         open !== undefined && typeof onOpenChange === 'function';
     const isRealOpen = isControlledOutside ? open : isOpen;
 
-     useEffect(() => {
+    useEffect(() => {
         const subscription = emitter.addListener('link', (data) => {
             if (data.action == 'pressed') {
                 if (onOpenChange) {
@@ -54,7 +55,7 @@ export default function DropdownPopup({
                 }
             }
         })
-                               
+
         return () => {
             subscription.remove()
         }
@@ -67,7 +68,7 @@ export default function DropdownPopup({
             if (!isModalVisible) {
                 setIsModalVisible(true);
             }
-           
+
         } else {
             setIsModalVisible(false);
         }
@@ -182,10 +183,13 @@ export default function DropdownPopup({
             </ScrollView>
         </View>
     );
+    const isButton = !!buttonProps
+    const Cnt = isButton ? ButtonRef : Pressable;
 
     return (
         <>
-            <Pressable
+            <Cnt
+                {...buttonProps}
                 collapsable={false}
                 ref={buttonRef}
                 onPress={() => handleToggle(true)}
@@ -199,10 +203,10 @@ export default function DropdownPopup({
                         ? () => handleToggle(true)
                         : undefined
                 }
-                className="web:active:scale-95 web:duration-100"
+                className={isButton ? "" : "rounded-xl web:active:scale-95 web:duration-100"}
             >
-                {trigger}
-            </Pressable>
+                {!isButton && trigger}
+            </Cnt>
 
             {isModalVisible && (
                 <ModalBase

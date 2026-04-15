@@ -6,6 +6,7 @@ import {
 import { forwardRef } from 'react'
 import { cssInterop } from 'nativewind'
 import { cn } from 'app/lib/util'
+import { Motion } from '@legendapp/motion'
 
 const defaultInterop = { className: 'style' }
 
@@ -24,6 +25,8 @@ export const interopRender = (displayName, render, interopConfig = defaultIntero
 export const View = interopComponent(RNView, 'View')
 export const Pressable = interopComponent(RNPressable, 'Pressable')
 export const ScrollView = interopComponent(RNScrollView, 'ScrollView')
+export const MotionView = interopComponent(Motion.View, 'MotionView');
+
 export const Row = interopRender(
     'Row',
     ({ children, className, ...props }, ref) => (

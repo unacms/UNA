@@ -15,6 +15,7 @@ export default function ElementLink({
     target,
     variant = 'default',
     size,
+    mode,
     children,
     className = '',
     hitarea = true,
@@ -77,6 +78,19 @@ export default function ElementLink({
     }
 
     const isPrefetch = false;//noprefetch || href == '/logout' || href == 'logout' || appSetting('config', 'noprefetch') ? false : true;
+
+    if (mode === 'plain') {
+        return <Link
+                target={target}
+                href={href}
+                className={className}
+                prefetch={isPrefetch}
+               
+              
+            >
+                {children}
+            </Link>
+    }
 
     return (
         <Link

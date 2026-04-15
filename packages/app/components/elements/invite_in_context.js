@@ -1,11 +1,11 @@
 import { View, Row } from 'app/design/view';
-import { Button, Input } from 'app/design/controls';
+import { ButtonLink, Input } from 'app/design/controls';
 import { fetcher } from 'app/lib/fetcher';
 import { useState, useEffect } from 'react'
 import Profile from 'app/ui/molecules/profile'
 import { Text } from 'app/design/typography'
 import Card, { CardTitle } from 'app/ui/molecules/card'
-import Link from 'app/ui/atoms/link'
+
 import { BlockWrapper } from 'app/components/block-wrapper'
 
 export default function InviteInContext({ blockWrapperProps }) {
@@ -34,7 +34,7 @@ export default function InviteInContext({ blockWrapperProps }) {
                     <View>
                         <CardTitle>You're joining:</CardTitle>
                         <View className='w-full mt-4 justify-between sm:flex-row gap-y-3'><Profile {...res.data} displayType="unit" size="lg" />
-                            <Link href={res.data.url}><Button variant="primary" size="base" title='Continue' /></Link>
+                            <ButtonLink href={res.data.url} variant="primary" size="base" title='Continue' />
                         </View>
                     </View>
                 </Card>

@@ -1,7 +1,6 @@
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import Tabs from 'app/ui/molecules/tabs'
-import { Button, Modal } from 'app/design/controls';
+import { ButtonLink } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import {
     Card,
@@ -89,7 +88,7 @@ function UniPriceCard({ data, onBuy }) {
             </CardHeader>
             <CardFooter>
                 {currentUser ? <Button variant="primary" title={firstNonEmpty.title} onPress={() => { onBuy(firstNonEmpty) }} /> :
-                <Link href="/create-account"><Button variant="primary" title='Create  account' /></Link>}
+                <ButtonLink href="/create-account" variant="primary" title='Create  account' />}
             </CardFooter>
         </Card>
     )

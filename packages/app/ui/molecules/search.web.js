@@ -53,24 +53,26 @@ export default function ElementSearch(oProps) {
                 setBottomSheetData={setBottomSheetData}
             />
         ) : (
-            <Pressable key="ddp-trigger" onPress={handleOpenPopupDefault}>
-                <ButtonRef
-                    title={oProps.title === undefined ? '' : oProps.title}
-                    startDecorator={
-                        oParams?.trigger?.icon
-                            ? oParams?.trigger.icon
-                            : 'Search'
-                    }
-                    rounded
-                    tooltip={
-                        oProps.tooltip === undefined ? 'Search' : oProps.tooltip
-                    }
-                    {...(oParams?.trigger &&
-                        (({ onPress, ...rest }) => rest)(oParams.trigger))}
-                    variant={buttonVariant}
-                    size={buttonSize}
-                />
-            </Pressable>
+
+            <ButtonRef
+                key="ddp-trigger"
+                title={oProps.title === undefined ? '' : oProps.title}
+                startDecorator={
+                    oParams?.trigger?.icon
+                        ? oParams?.trigger.icon
+                        : 'Search'
+                }
+                rounded
+                tooltip={
+                    oProps.tooltip === undefined ? 'Search' : oProps.tooltip
+                }
+                {...(oParams?.trigger &&
+                    (({ onPress, ...rest }) => rest)(oParams.trigger))}
+                variant={buttonVariant}
+                size={buttonSize}
+                onPress={handleOpenPopupDefault}
+            />
+
         )
 
     if (oProps.children) {
@@ -233,7 +235,7 @@ export function ElementSearchData(oProps) {
 
         const sResponse = await fetcher(
             '/api.php?r=system/get_data_search_api/TemplServices&params=' +
-                JSON.stringify(aParams)
+            JSON.stringify(aParams)
         )
         if (!sResponse?.data) {
             handleSetPopupContent('aa')

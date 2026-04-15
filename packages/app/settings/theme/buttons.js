@@ -38,6 +38,12 @@ export const settingsButtons = {
         },
     },
     button_styles: {
+        motion:{
+            springTransition: { type: 'spring', damping: 24, stiffness: 360 },
+            highlightBackgroundlight: 'rgba(255,255,255,0.5)',
+            highlightBackgrounddark: 'rgba(0,0,0,0.5)',
+            scale: 0.95,
+        },
         group:{
             container: ' border items-center border-border overflow-hidden ',
             separator: ' bg-border/60 w-px h-full',

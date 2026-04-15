@@ -27,7 +27,7 @@ import Badges from 'app/ui/molecules/badges'
 import { useBreakpoint, useWindowSize, useIsDesktop, useWindowHeight, useWindowWidth } from 'app/context/measure';
 import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
 import { useFocusEffect }  from 'app/lib/hooks/router'
-import { Button } from 'app/design/controls'
+import { Button, ButtonLink } from 'app/design/controls'
 
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
@@ -83,6 +83,28 @@ const defineCells = (blocks, data) => {
 
 
 export default function ({ data, blocks }) {
+    return <>
+    <View className='mt-24'>
+    <Button onPress={() => {
+        console.log('onPress')
+    }} title="Button" variant="primary" startDecorator='Plus'></Button>
+
+<Button onPress={() => {
+        console.log('onPress')
+    }} variant="primary" startDecorator='Plus'></Button>
+    <Button onPress={() => {
+        console.log('onPress')
+    }} variant="primary" startDecorator='Minus' rounded></Button>
+    <Button  title="NoButton" variant="primary" startDecorator='Plus'></Button>
+     <ButtonLink  fullWidth href='/about' title="ButtonLink" variant="primary" startDecorator='Plus'></ButtonLink>
+     <ButtonLink   href='https://www.google.com' target='_blank' title="ButtonLink google" variant="primary" ></ButtonLink>
+
+
+    
+
+     <Link href='https://www.google.com' target='_blank'>google</Link>
+     </View>
+    </>  
     /*  return <>
       <Text fontFamily="font-main" className="text-red-500 text-3xl" >The quick brown fox jumps over the lazy dog.  
  Packz my box with five dozen liquor jugs. 

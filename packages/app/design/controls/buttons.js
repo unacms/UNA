@@ -1,21 +1,22 @@
 import React, { memo } from 'react';
-import { Pressable, View } from 'app/design/view'
-import { Motion } from '@legendapp/motion'
+import { Pressable, View, MotionView } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Link from 'app/ui/atoms/link'
-import { appSetting, isEmoji, FeedbackHaptics, cn, sanitazeUrl, isExternalUrl, openExternalLink } from 'app/lib/util'
+import { appSetting, isEmoji, FeedbackHaptics, cn, sanitazeUrl, isExternalUrl, openExternalLink, roundedClassToRadius } from 'app/lib/util'
 import Tooltip from 'app/ui/atoms/tooltip';
 import Loading from 'app/ui/atoms/loading'
 import { useIsDesktop } from 'app/context/measure';
 import { Platform } from 'react-native';
+import { ThemeName } from 'app/design/theme';
+
 
 const BtnCls = appSetting('theme', 'button_styles');
 const BtnClsSize = appSetting('theme', 'button_sizes');
 
 const isWeb = Platform.OS === 'web';
 
-const springTransition = { type: 'spring', damping: 24, stiffness: 360 };
+const springTransition = BtnCls.motion.springTransition;
 
 const ICON_ACCESSIBLE_MAP = {
     'X': 'Close',
@@ -161,7 +162,7 @@ const ButtonContent = React.memo(({
     children
 }) => {
     const { className: cntClassName, ...restCntProps } = cntProps;
-
+    const themeName = ThemeName();
     const hasNoIcons = !startDecorator && !endDecorator;
     const isTitleVisible = hasNoIcons || showTitleFromSize === '';
     const breakpoint = showTitleFromSize || 'sm';
@@ -191,10 +192,14 @@ const ButtonContent = React.memo(({
     const stateText = getStateClasses(active, pressed, hovered, focused, disabled, variant, 'text');
     const containerClasses = cn(baseContainerClasses, stateContainer);
     const textClasses = `${baseTextClasses} ${stateText}`;
-    const highlightBackground = 'rgba(255,255,255,1)';
+    const highlightBackground = BtnCls.motion['highlightBackground' + themeName];
 
     const buttonElement = (
-        <Cmp className={containerClasses} {...restCntProps}>
+        <Cmp
+            className={containerClasses}
+            {...restCntProps}
+
+        >
             <ButtonIcon size={BtnClsSize[size]?.icon_size} icon={startDecorator} className={textClasses.replace("overflow-hidden")} />
 
             {isTitle && (
@@ -209,30 +214,25 @@ const ButtonContent = React.memo(({
             )}
             {children}
 
-            <Motion.View
-                className={cn('absolute inset-0 pointer-events-none z-10', roundingClass)}
+            <MotionView
+                className={`absolute inset-0 pointer-events-none z-10 ${roundingClass}`}
                 animate={{ opacity: active ? 1 : 0 }}
                 transition={springTransition}
-                style={{  position: 'absolute',
-                    top: 0,
-                    right: 0,
-                    bottom: 0,
-                    left: 0,
-                    pointerEvents: 'none',
-                    zIndex: 10,
-                    backgroundColor: highlightBackground }}
+                style={{ backgroundColor: highlightBackground }}
             />
         </Cmp>
     );
 
     return (
-        <Motion.View
-            animate={{ scale: active ? 0.95 : 1 }}
+        <MotionView
+
+            className={fullWidth ? 'w-full' : 'self-start'}
+            animate={{ scale: active ? BtnCls.motion.scale : 1 }}
             transition={springTransition}
-            style={fullWidth ? undefined : { alignSelf: 'flex-start' }}
+
         >
             {buttonElement}
-        </Motion.View>
+        </MotionView>
     );
 });
 
@@ -403,6 +403,7 @@ export const ButtonLink = ({
     href = '',
     target = '',
     asExternal = false,
+    size = BtnClsSize.default_size,
     ...props
 }) => {
     const finalHref = sanitazeUrl(href);
@@ -418,8 +419,14 @@ export const ButtonLink = ({
     }
 
     return (
-        <Link href={href} target={target} asExternal={asExternal} mode="plain">
-            <Button {...props} />
+        <Link
+            href={href}
+            target={target}
+            asExternal={asExternal}
+            mode="plain"
+            className={`u-action-hitarea u-action-hitarea-${size} ${BtnClsSize[size]?.rounded} block`}
+        >
+            <Button {...props} hitarea={false} size={size} />
         </Link>
     );
 };

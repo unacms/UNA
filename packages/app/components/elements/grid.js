@@ -5,7 +5,7 @@ import Link from 'app/ui/atoms/link';
 import Time from 'app/ui/atoms/time';
 import Profile from 'app/ui/molecules/profile';
 import Confirm from 'app/ui/molecules/confirm';
-import { Button } from 'app/design/controls'
+import { Button, ButtonLink } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher';
 import React, { useEffect, useState, useMemo, useCallback, useRef, useReducer } from 'react';
 import { Theme } from 'app/design/theme';
@@ -115,9 +115,9 @@ const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowC
 
     if (itemAction.type === 'link') {
         return (
-            <Link key={index} href={itemAction.url}>
-                <Button {...commonProps} />
-            </Link>
+         
+                <ButtonLink key={index} href={itemAction.url}{...commonProps} />
+            
         );
     }
 
@@ -577,7 +577,7 @@ export default function ElementGrid(props) {
                         return <MultiAdd key={`btn-${item.name}`} handleUpdate={handleUpdate} setBottomSheetData={setBottomSheetData} data={item} />
                     }
                     if (item.type == 'link') {
-                        return <Link key={`btn-${item.name}`} href={item.link || item.url}><Button size="sm" title={item.title} showTitleFromSize='sm' /></Link>
+                        return <ButtonLink key={`btn-${item.name}`} href={item.link || item.url} size="sm" title={item.title} showTitleFromSize='sm' />
                     }
                 })}
 

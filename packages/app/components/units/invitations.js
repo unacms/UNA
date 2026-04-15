@@ -4,7 +4,7 @@ import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
 import { useState } from 'react';
-import { Button } from 'app/design/controls'
+import { ButtonLink } from 'app/design/controls'
 import Image from 'app/ui/atoms/image'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
@@ -72,7 +72,7 @@ export default function Unit(props) {
 
                                 {!!data.callback_accept && <Button title="Accept" size="sm" fullWidth variant="primary" onPress={() => { processInvitation(data.callback_accept) }} />}
                                 {!!data.callback_decline && <Button title="Decline" size="sm" fullWidth variant="secondary" onPress={() => { processInvitation(data.callback_decline) }} />}
-                                {!!data.redirect_url && <Link href={data.redirect_url}><Button title={data.redirect_title} size="sm" fullWidth variant="secondary" /></Link>}
+                                {!!data.redirect_url && <ButtonLink href={data.redirect_url} title={data.redirect_title} size="sm" fullWidth variant="secondary" />}
                             </View>
                         </View>
                     </View>

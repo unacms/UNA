@@ -49,10 +49,9 @@ export default function MenuAdd({ buttonProps, children }) {
                         )
                     }
                 )}
+                buttonProps={children ? undefined : buttonProps}
             >
-                {!!children ? children : <Button
-                    {...buttonProps}
-                />}
+                {!!children && children}
             </DropdownMenu>
         </>
     );
