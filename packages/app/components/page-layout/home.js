@@ -288,7 +288,7 @@ export default function ({ data, blocks }) {
                 height: `calc(100vh - ${headerHeight}px)`,
                 width: sideBarWidth,
             }}
-            className="flex-auto p-4 gap-1 fixed overflow-scroll justify-between"
+            className="flex-auto p-4 gap-1 fixed overflow-scroll "
         >
             
                 {appSetting('layout', 'show_profile_info') && (
@@ -305,7 +305,7 @@ export default function ({ data, blocks }) {
                             />
 
 
-                            <Row className="flex-auto items-center justify-between gap-1">
+                            <Row className="flex-auto items-center gap-1">
                                 <Row className="items-center gap-1 flex-auto min-w-0">
                                     <Text className="px-2 text-sm leading-tight font-semibold truncate text-card-foreground web:group-hover:text-foreground ">
                                         {currentUser.display_name}
@@ -330,7 +330,7 @@ export default function ({ data, blocks }) {
                 )}
 
                 {feedList.length > 1 && (
-                    <View className=" py-3 border-b border-border/60 gap-4">
+                    <View className=" py-3 border-b border-border/60 gap-4  ">
                         {feedList.map((item, index) => {
                             return (
                                 <MenuItemSidebarWithWrapper

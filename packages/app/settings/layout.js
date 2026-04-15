@@ -65,10 +65,10 @@ export const settingsLayout = {
             /** Mobile web extra classes when the scroll-up “pinned” fixed bar is visible — background, border, blur. Merged on the header row after `content`. */
             content_pinned_fixed:
                 '  shadow-lg bg-card border-white/80 dark:border-white/10 inset-0 top-0 ',
-            content_left: ' items-center flex-1 w-full max-w-96 px-3 sm:px-4 gap-2',
+            content_left: ' items-center flex-none  2xl:w-full max-w-96 px-3 sm:px-4 gap-2',
             content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-3xl px-4 ',
             active_item_indicator: 'absolute -bottom-2 left-0 h-0.5 rounded-full flex-none bg-ring/80',
-            content_right: ' items-center flex-1 justify-end w-full max-w-96 px-3 sm:px-4 gap-2',
+            content_right: ' items-center flex-none justify-end 2xl:w-full max-w-96 px-3 sm:px-4 gap-2',
         },
         vertical: {
             blocks: [
