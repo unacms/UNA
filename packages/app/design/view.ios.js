@@ -5,6 +5,7 @@ import {
 } from 'react-native'
 import { forwardRef } from 'react'
 import { cssInterop } from 'nativewind'
+import { Motion } from '@legendapp/motion'
 
 const iosContinuousCurveStyle = { borderCurve: 'continuous' }
 
@@ -31,6 +32,13 @@ const ScrollViewBase = forwardRef(({ style, ...props }, ref) => (
 ))
 ScrollViewBase.displayName = 'ScrollView'
 export const ScrollView = cssInterop(ScrollViewBase, { className: 'style' })
+
+// MotionView
+const MotionViewBase = forwardRef(({ style, ...props }, ref) => (
+  <Motion.View ref={ref} style={withIOSCurve(style)} {...props} />
+))
+MotionViewBase.displayName = 'MotionView'
+export const MotionView = cssInterop(MotionViewBase, { className: 'style' })
 
 // Row (flex-row + iOS curve)
 const RowBase = forwardRef(({ children, className, style, ...props }, ref) => (

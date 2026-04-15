@@ -139,20 +139,21 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                 {(!appSetting('context_selector', 'show_always') || !isWeb) && <View className='mr-2 lg:hidden'>{getCoverBackButton(bPerson)}</View>}
                 {appSetting('context_selector', 'show_always') && !isDesktop ? <View className={`${TABLET_MODE_FROM}:hidden `}>
                     <ContextSelector data={context} mode="compact" />
-                </View> : <>                    <Row className='items-center gap-3 flex-1 '>
-                    {bPerson && (
+                </View> : <>
+                    <Row className='items-center gap-3 flex-1 '>
+                        {bPerson && (
+                            <Profile
+                                {...data.profile}
+                                displayType="unit_wo_info"
+                                displaySize={smallCoverAvatarSize}
+                            />)}
                         <Profile
                             {...data.profile}
-                            displayType="unit_wo_info"
-                            displaySize={smallCoverAvatarSize}
-                        />)}
-                    <Profile
-                        {...data.profile}
-                        displayType="unit_wo_image"
-                        displaySize={smallCoverNameSize}
-                        showLinks={false}
-                    />
-                </Row>
+                            displayType="unit_wo_image"
+                            displaySize={smallCoverNameSize}
+                            showLinks={false}
+                        />
+                    </Row>
                     {isAddSelector && (
                         <View className={`${TABLET_MODE_FROM}:hidden `}>
                             <ContextSelector data={context} mode="min" />
