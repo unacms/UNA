@@ -357,7 +357,7 @@ function CoverImage({
                         displaySize={profileDisplaySize}
                     />
                     {isUploading && (
-                        <View className="absolute inset-0 rounded-full bg-card/60 items-center justify-center">
+                        <View className="absolute inset-0 rounded-full bg-card/80 items-center justify-center">
                             <Loading />
                         </View>
                     )}

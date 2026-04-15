@@ -12,6 +12,7 @@ import {
     QueryClient,
     QueryClientProvider,
 } from '@tanstack/react-query'
+import { Provider as JotaiProvider } from 'jotai'
 
 //import RNScreenshotPrevent, { addListener } from 'react-native-screenshot-prevent';
 import i18n from 'i18next';
@@ -129,6 +130,7 @@ const AppLayout = React.memo(() => {
     return (
         <ThemeProvider value={theme} >
             <StatusBar backgroundColor={colors.barsBackground} translucent={true} />
+                <JotaiProvider>
                 <QueryClientProvider client={queryClient}>
                     <SafeAreaView edges={['left', 'right']} style={containerStyle}>
                         
@@ -136,6 +138,7 @@ const AppLayout = React.memo(() => {
                         <PortalHost />
                     </SafeAreaView>
                 </QueryClientProvider>
+                </JotaiProvider>
         </ThemeProvider>
     );
 });

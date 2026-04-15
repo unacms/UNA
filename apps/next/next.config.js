@@ -138,6 +138,7 @@ const nextConfig = {
             'react-native': 'react-native-web',
             'react-native-webview': tenPlayWebviewPath,
             'react-native-webview$': tenPlayWebviewPath,
+            'jotai': path.resolve(workspaceRoot, 'node_modules/jotai'),
             'crypto': 'expo-crypto',
             'react-native-svg': path.resolve(__dirname, 'node_modules/react-native-svg'),
             'react-native/Libraries/Utilities/codegenNativeComponent': tenPlayWebviewShimPath,

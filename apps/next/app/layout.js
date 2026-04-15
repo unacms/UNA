@@ -2,6 +2,7 @@
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Provider as JotaiProvider } from 'jotai'
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { resources } from 'app/customization/translation';
@@ -62,12 +63,14 @@ export default function RootLayout({ children }) {
     return (
         <html lang={langCode} className={`${fontVars} ${mainFont.className}`}>
             <body className={appSetting('layout', 'body')}>
-                <QueryClientProvider client={queryClient}>
-                    <Analytics />
-                    <SpeedInsights />
+                <JotaiProvider>
+                    <QueryClientProvider client={queryClient}>
+                        <Analytics />
+                        <SpeedInsights />
                         {children}
-                    <Subscriber />
-                </QueryClientProvider>
+                        <Subscriber />
+                    </QueryClientProvider>
+                </JotaiProvider>
             </body>
         </html>
     )

@@ -63,9 +63,9 @@ export const settingsElements = {
         header: ' p-3 h-14 items-start justify-start border-b border-border/60',
     },
     cards: {
-        'u-card-list': ' u-card-list bg-card shadow-xs dark:shadow-xs-deep text-card-foreground sm:rounded-xl ',
+        'u-card-list': ' u-card-list bg-card/80 shadow-xs dark:shadow-xs-deep border border-border/50 inset-0 text-card-foreground sm:rounded-xl ',
         'u-card-list-padding': ' p-3 lg:p-4 ',
-        'u-card-base': 'u-card-base bg-card/80 text-card-foreground rounded-2xl shadow border border-card inset-0',
+        'u-card-base': 'u-card-base bg-card/80 text-card-foreground rounded-2xl shadow-xs border border-border/50 inset-0',
         'u-card-padding': 'py-4',
         'u-card-header': 'px-4',
         'u-card-icon': ' ',
@@ -80,21 +80,21 @@ export const settingsElements = {
         'u-panel-handler': 'relative w-0 web:before:absolute web:before:inset-y-0 web:before:-left-0.5 web:before:-right-0.5 web:before:bg-transparent web:before:hover:bg-accent web:before:active:bg-accent/50 web:before:duration-200 ',
         'u-panel-line':
             'absolute w-px h-full bg-border/0 web:group-hover:bg-primary/50 active:bg-primary/50 rounded-full left-1/2 top-0 -translate-x-1/2',
-        'u-panel-group': ' h-full flex sm:px-3 lg:px-4 gap-3',
+        'u-panel-group': ' h-full flex ',
     },
     blocks: {
         'u-block-base':
-            ' text-card-foreground gap-3',
+            ' text-card-foreground gap-4',
         'u-block-bg':
-            'bg-card shadow-xs dark:shadow-xs-deep ',
+            'bg-card/80 shadow-xs dark:shadow-xs-deep border border-border/50  ',
         'u-block-pad':
-            'px-4 py-3.5 sm:rounded-xl ',
+            'p-4 sm:rounded-xl ',
         'u-block-header':
             ' flex-row items-center gap-4 ',
         'u-block-icon': 'mb-auto',
         'u-block-name': 'flex flex-col flex-auto gap-2 ',
         'u-block-title':
-            'text-secondary-foreground leading-none text-base font-semibold tracking-tight',
+            'text-secondary-foreground leading-none text-lg font-semibold tracking-tight',
         'u-block-description': 'text-muted-foreground text-sm font-medium leading-6',
         'u-block-content': 'gap-4 ',  
         'u-block-footer':

@@ -23,8 +23,8 @@ export const settingsLayout = {
         max_width: ' w-full ',
         max_width_content: ' w-full max-w-7xl ',
         max_width_block: ' max-w-7xl ',
-        home_container: ' w-full 2xl:max-w-screen-2xl ',
-        feed_container: ' w-full max-w-3xl sm:py-4 mx-auto ',
+        home_container: ' w-full 3xl:max-w-9xl ',
+        feed_container: ' w-full max-w-3xl sm:p-4 mx-auto ',
         post_container: ' max-w-3xl w-full flex-1 bg-card text-card-foreground rounded-2xl py-3 sm:py-4 lg:my-4 mx-auto ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
 
         search: true,
@@ -61,14 +61,14 @@ export const settingsLayout = {
 
         header: {
             container: 'bg-card w-full z-50 header-fixed web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out ',
-            content: ' items-center lg:border-b justify-between h-14 lg:h-16 backdrop-blur-xl shadow-sm border-white/80 dark:border-white/5 inset-0 px-3 lg:px-4 w-full mx-auto gap-4',
+            content: ' items-center lg:border-b justify-between h-14 lg:h-16 backdrop-blur-xl shadow-sm border-border/60 inset-0 w-full mx-auto',
             /** Mobile web extra classes when the scroll-up “pinned” fixed bar is visible — background, border, blur. Merged on the header row after `content`. */
             content_pinned_fixed:
                 '  shadow-lg bg-card border-white/80 dark:border-white/10 inset-0 top-0 ',
-            content_left: ' items-center justify-start flex-1 lg:flex-none xl:w-80 gap-x-2',
-            content_center: ' hidden flex-auto lg:flex gap-2 items-center justify-center max-w-3xl  ',
+            content_left: ' items-center flex-1 w-full max-w-96 px-3 sm:px-4 gap-2',
+            content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-3xl px-4 ',
             active_item_indicator: 'absolute -bottom-2 left-0 h-0.5 rounded-full flex-none bg-ring/80',
-            content_right: ' items-center justify-end xl:w-80',
+            content_right: ' items-center flex-1 justify-end w-full max-w-96 px-3 sm:px-4 gap-2',
         },
         vertical: {
             blocks: [
@@ -93,7 +93,7 @@ export const settingsLayout = {
             max_width: '',
         },
         home: {
-            adjustable: true,
+            adjustable: false,
             sizable: false,
             cells: {
                 left: {
