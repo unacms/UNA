@@ -80,7 +80,7 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
                 <FormModal key={pageData?.ts} pageData={pageData} setPageData={setPageData} />
                 {menu_add_items.length > 0 && <Row className="gap-2 flex-none">
                     {menu_add_items.map((item, index) => (
-                        <Button key={item.name} size="base"  variant="secondary" rounded iconOnly onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon} />
+                        <Button key={item.name} size="base" variant="secondary" rounded iconOnly onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon} />
                     ))}
                 </Row>}
 

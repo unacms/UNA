@@ -83,6 +83,7 @@ const defineCells = (blocks, data) => {
 
 
 export default function ({ data, blocks }) {
+  
   /*  return <>
     <View className='mt-24'>
     <Button onPress={() => {

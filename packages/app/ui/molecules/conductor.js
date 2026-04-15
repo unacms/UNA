@@ -19,6 +19,11 @@ import { useSetHeader, useScrollValue, defaultHeader } from 'app/context/jotai/l
 import { getComponent } from 'app/components/registry';
 import { useFocusEffect } from 'app/lib/hooks/router'
 import { appSetting } from 'app/lib/util'
+import {
+    getSkeletonByEndPoint,
+    layoutForList,
+    paddingForList
+} from 'app/customization/functions'
 
 const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
     const MenuItemSubmenu = getComponent('menu-item', 'submenu');
@@ -87,10 +92,11 @@ const AddBlocks = React.memo(({
 
 const TabScene = React.memo(({
     route,
+    hasNextPage,
+    isFetchingNextPage,
+    skeleton,
     ListHeaderComponent,
     isProfileHeader,
-    unitType,
-    Preload,
     unitMode,
     fetchNextPage,
     onRefresh,
@@ -98,16 +104,29 @@ const TabScene = React.memo(({
     smallHeader,
     numColumns
 }) => {
+    console.log('route', route.data, route.endpoint?.params?.start);
 
-
-    const handleEndReached = useCallback(
+   /* const handleEndReached = useCallback(
+        console.log('handleEndReached', route?.endpoint?.params),
         async (lastItemIndex) => {
             if (!route?.endpoint || route?.endpoint?.params?.start === 0 || refreshing || route?.endpoint?.finished)
                 return;
             fetchNextPage()
         },
         [route?.endpoint, route?.endpoint?.params?.start, route?.endpoint?.finished, fetchNextPage, refreshing]
-    )
+    )*/
+        const handleEndReached = useCallback(
+            
+            async (lastItemIndex) => {
+                console.log('handleEndReached', isFetchingNextPage, hasNextPage, route.data, route.endpoint?.params?.start);
+                
+                if (isFetchingNextPage) return
+                if (hasNextPage === false) return
+                if (lastItemIndex === false) return
+                fetchNextPage()
+            },
+            [refreshing, isFetchingNextPage, hasNextPage]
+        )
 
     const renderItem = useCallback(({ item, index }) => (
         <ItemRenderer
@@ -119,6 +138,30 @@ const TabScene = React.memo(({
             module={route?.endpoint?.module}
         />
     ), [unitType, unitMode, route]);
+
+    const SkeletonForRoute = useMemo(() => {
+        const a = getSkeletonByEndPoint(route)
+        if (a) return a
+        const baseSkeleton =
+            skeleton ||
+            route?.endpoint?.module ||
+            route?.endpoint?.unit
+        return unitType ? [baseSkeleton, unitType] : baseSkeleton
+    }, [skeleton, route, unitType])
+    
+    const unitType = useMemo(() => {
+        return getUnitModeBySource(route?.endpoint);
+    }, [route?.endpoint?.request_url]); // Dependency on route.endpoint.request_url
+    
+    
+    
+    const layout = layoutForList(route?.endpoint);
+    const paddings = paddingForList(route?.endpoint);
+    
+    const Preload = useMemo(
+        () => getSkeletonForList(SkeletonForRoute, 1, true, layout, renderItem, paddings),
+        [SkeletonForRoute, renderItem]
+    )
 
     const scrollValue = useScrollValue();
     const NoContent = getComponent('molecule', 'no_content')
@@ -298,10 +341,11 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
 
     const {
         fetchNextPage,
-        hasNextPage
+        hasNextPage,
+        isFetchingNextPage
     } = useInfiniteQuery({
         queryKey: qKey,
-        queryFn: ({ pageParam }) => parseData(routes, index, setRoutes),
+        queryFn: ({ pageParam }) => parseData(routesRef.current, index, setRoutes),
         getNextPageParam: (lastPage, pages) => {
             if (lastPage?.data?.length > 0) {
                 return lastPage?.endpoint;
@@ -363,13 +407,35 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
         fetchAndUpdateData(routes, index, setRoutes);
     }, [index]);
 
-    const onStartRefresh = useCallback(async () => {
+    /*const onStartRefresh = useCallback(async () => {
         setRoutes(prevRoutes => {
             const updatedRoutes = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);;
             return [...prevRoutes.slice(0, index), updatedRoutes[index], ...prevRoutes.slice(index + 1)];
         });
         setIsRefreshing(true);
-    }, [initedTabs, index]);
+    }, [initedTabs, index]);*/
+    const onStartRefresh = useCallback(() => {
+        setRoutes((prevRoutes) =>
+          prevRoutes.map((route) => {
+            if (route.index !== index) return route;
+            return {
+              ...route,
+              data: (route.data || []).filter((item) => item.type === 'block'),
+              endpoint: route.endpoint
+                ? {
+                    ...route.endpoint,
+                    finished: false,
+                    params: {
+                      ...route.endpoint.params,
+                      start: 0,
+                    },
+                  }
+                : route.endpoint,
+            };
+          })
+        );
+        setIsRefreshing(true);
+      }, [index]);
 
     useEffect(() => {
         if (isRefreshing) {
@@ -412,14 +478,15 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
     );
 
 
-    const Preload = useMemo(() => {
+   /* const Preload = useMemo(() => {
         return getSkeletonForList(skeleton !== '' ? skeleton : (data.module ? data.module : data.unit), numColumns);
     }, [skeleton, data.module, data.unit]);
+*/
 
-    const unitType = useMemo(() => {
-        return getUnitModeBySource(currentRoute?.endpoint);
-    }, [currentRoute?.endpoint?.request_url]); // Dependency on route.endpoint.request_url
 
+
+    
+    
     const showFilters = useCallback(() => {
         setBottomSheetData({ title: 'Filters', content: <AddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} />, showClose: true, snapPoints: ['60%', '60%'] });
     }, [leftSideBarBlocks, data, onFormSubmit, layoutName]);
@@ -469,17 +536,18 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
     </View>
 
     const tabSceneProps = {
+        skeleton: skeleton,
         numColumns: numColumns,
         onRefresh: onStartRefresh,
         refreshing: isRefreshing,
         route: currentRoute,
         index: index,
-        Preload: Preload,
-        unitType: unitType,
         unitMode: unitMode,
         fetchNextPage: fetchNextPage,
         isProfileHeader: isProfileHeader,
-        smallHeader: smallSceneHeader
+        smallHeader: smallSceneHeader,
+        hasNextPage:hasNextPage,
+        isFetchingNextPage:isFetchingNextPage
     };
 
     const CoverHeader = useMemo(() => {
