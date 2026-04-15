@@ -83,7 +83,7 @@ const defineCells = (blocks, data) => {
 
 
 export default function ({ data, blocks }) {
-    return <>
+  /*  return <>
     <View className='mt-24'>
     <Button onPress={() => {
         console.log('onPress')
@@ -104,7 +104,7 @@ export default function ({ data, blocks }) {
 
      <Link href='https://www.google.com' target='_blank'>google</Link>
      </View>
-    </>  
+    </>  */
     /*  return <>
       <Text fontFamily="font-main" className="text-red-500 text-3xl" >The quick brown fox jumps over the lazy dog.  
  Packz my box with five dozen liquor jugs. 
