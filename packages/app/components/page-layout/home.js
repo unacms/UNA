@@ -25,10 +25,9 @@ import { useLayoutSettings } from 'app/context/layout-settings'
 import Badge from 'app/ui/molecules/badge'
 import Badges from 'app/ui/molecules/badges'
 import { useBreakpoint, useWindowSize, useIsDesktop, useWindowHeight, useWindowWidth } from 'app/context/measure';
-import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
+import { useSetHeader, useHeaderHeight, defaultHeader } from 'app/context/jotai/layout';
 import { useFocusEffect }  from 'app/lib/hooks/router'
 import { Button, ButtonLink } from 'app/design/controls'
-
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
 const getTimelineBlock = (name, timelineBlocks) => {
@@ -142,6 +141,9 @@ export default function ({ data, blocks }) {
     const { layoutName, layoutSettings } = useLayoutSettings();
 
     const setHeader = useSetHeader();
+    const headerHeight = useHeaderHeight();
+    const [sideBarWidth, setSideBarWidth] = useState(undefined);
+    const [asideWidth, setAsideWidth] = useState(undefined);
 
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
@@ -158,6 +160,16 @@ export default function ({ data, blocks }) {
         storageSet('feed:type', '', mode, true)
         setFeedType(mode)
     }
+
+    const handleSideBarLayout = useCallback(({ nativeEvent: { layout } }) => {
+        const nextWidth = layout?.width;
+        setSideBarWidth(prevWidth => (prevWidth === nextWidth ? prevWidth : nextWidth));
+    }, []);
+
+    const handleAsideLayout = useCallback(({ nativeEvent: { layout } }) => {
+        const nextWidth = layout?.width;
+        setAsideWidth(prevWidth => (prevWidth === nextWidth ? prevWidth : nextWidth));
+    }, []);
 
     const { sideBarBlocks, navBarBlocks, topBlocks, centerBlocks, timelineBlocks } = defineCells(blocks, data);
 
@@ -271,11 +283,18 @@ export default function ({ data, blocks }) {
     )
 
     const SideBarContent = (
-        <>
+        <View
+            style={{
+                top: headerHeight,
+                height: `calc(100vh - ${headerHeight}px)`,
+                width: sideBarWidth,
+            }}
+            className="flex-auto p-4 gap-1 fixed overflow-scroll "
+        >
             
                 {appSetting('layout', 'show_profile_info') && (
                     
-                    <Link variant='ghost' size='lg' href={currentUser.url} emulate={true} className="mt-2 mb-1 flex-row items-center">
+                    <Link variant='ghost' size='lg' href={currentUser.url} emulate={true} className="mt-2 flex-row items-center">
                       
 
                             <Profile
@@ -287,7 +306,7 @@ export default function ({ data, blocks }) {
                             />
 
 
-                            <Row className="flex-auto items-center justify-between gap-1">
+                            <Row className="flex-auto items-center gap-1">
                                 <Row className="items-center gap-1 flex-auto min-w-0">
                                     <Text className="px-2 text-sm leading-tight font-semibold truncate text-card-foreground web:group-hover:text-foreground ">
                                         {currentUser.display_name}
@@ -312,7 +331,7 @@ export default function ({ data, blocks }) {
                 )}
 
                 {feedList.length > 1 && (
-                    <View className=" py-3 border-b border-border/60 gap-4">
+                    <View className=" py-3 border-b border-border/60 gap-4  ">
                         {feedList.map((item, index) => {
                             return (
                                 <MenuItemSidebarWithWrapper
@@ -343,7 +362,20 @@ export default function ({ data, blocks }) {
                     )
                 })}
             
-        </>
+        </View>
+    )
+
+    const AsidePanelContent = (
+        <View
+            style={{
+                top: headerHeight,
+                height: `calc(100vh - ${headerHeight}px)`,
+                width: asideWidth,
+            }}
+            className="fixed overflow-scroll p-4 gap-4"
+        >
+            {AsideContent}
+        </View>
     )
 
     const cellsCustomConfig = useMemo(() => {
@@ -418,8 +450,8 @@ export default function ({ data, blocks }) {
             >
                 {layoutName == 'hor' && isWeb && (
                     <>
-                        <Panel className={`hidden ${leftBreakpoint}:block ${currentBreakpointName}:w-full`} {...leftPanelProps}>
-                            <View className=" py-4 px-1 fixed-process  ">
+                        <Panel className={`hidden ${leftBreakpoint}:block ${currentBreakpointName}:w-full `} {...leftPanelProps}>
+                            <View onLayout={handleSideBarLayout} className="flex-auto h-full w-full max-w-96">
                                 {SideBarContent}
                             </View>
                         </Panel>
@@ -442,8 +474,8 @@ export default function ({ data, blocks }) {
                             sizable={cellsCustomConfig.sizable}
                         />
                         <Panel className={`hidden ${rightBreakpoint}:block ${currentBreakpointName}:w-full`} {...rightPanelProps}>
-                            <View className={`py-4 gap-4 fixed-process`}>
-                                {AsideContent}
+                            <View onLayout={handleAsideLayout} className="flex-auto h-full w-full">
+                                {AsidePanelContent}
                             </View>
                         </Panel>
                     </>

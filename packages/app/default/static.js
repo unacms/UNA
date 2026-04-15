@@ -35,12 +35,12 @@ const Logo = ({ mode = 'adaptive' }) => {
     }
 
     return (
-        <Row className="items-center gap-3 p-0.5 text-foreground web:hover:animate-pulse">
+        <Row className="items-center gap-3 text-foreground web:hover:animate-pulse">
             <View className={`${markStyles[mode]}`}>
                 <Svg
                     aria-label="Logo Mark"
-                    width={36}
-                    height={36}
+                    width={40}
+                    height={40}
                     color={theme === 'dark' ? 'currentColor' : 'currentColor'}
                     viewBox="0 0 40 40"
                     xmlns="http://www.w3.org/2000/svg"
@@ -867,7 +867,7 @@ const ComponentsDummyComponent = (props) => {
 const ComponentsFooter = () => {
     return (
         <MenuFooter
-        cntClasses='flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-3 p-4 min-h-14'
+        cntClasses='flex w-full border-t border-border/60  flex-row flex-wrap gap-3 py-3 px-0.5 min-h-14'
     />
     )
 }

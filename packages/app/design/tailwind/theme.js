@@ -78,8 +78,13 @@ const theme = {
             'lg': '64rem',
             'xl': '80rem',
             '2xl': '96rem',
+            '3xl': '120rem',
             
         },
+        screens: {
+            '3xl': '120rem',
+        },
+   
         colors: {
             ...colors,
             ...nativewindUIColors,
@@ -103,6 +108,8 @@ const theme = {
         },
         maxWidth: {
             '8xl': '1440px',
+            '9xl': '1536px',
+            '10xl': '1920px',
         },
         fontFamily: {
             main: ['var(--font-main)'],

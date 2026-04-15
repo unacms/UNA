@@ -40,7 +40,7 @@ select {
 .u-link-hitarea-lg::before {
     content: "";
     position: absolute;
-    inset: -6px -8px -6px -8px;
+    inset: -8px -8px -8px -8px;
     border-radius: 0;
     /* Nearly invisible bg so hit-testing works without visual change */
     background-color: rgba(0, 0, 0, 0.001);
@@ -80,7 +80,7 @@ select {
 }
 
 .u-link-ghost:active::after {
-    background-color: rgb(var(--border) / 0.8);
+    background-color: rgb(var(--muted));
 }
 
 /*
@@ -178,7 +178,7 @@ select {
 .u-link-hitarea-md {
     --u-link-ghost-inset-x: -6px;
     --u-link-ghost-inset-y: -6px;
-    --u-link-ghost-radius: 0.375rem;
+    --u-link-ghost-radius: 0.5rem;
     --u-link-focus-width: 2px;
     --u-link-focus-offset: 2px;
     --u-link-focus-offset-ghost: 8px;
@@ -193,14 +193,14 @@ select {
 /* lg: ~18–28px text → target ≥44px touch area */
 .u-link-hitarea-lg {
     --u-link-ghost-inset-x: -8px;
-    --u-link-ghost-inset-y: -6px;
-    --u-link-ghost-radius: 8px;
+    --u-link-ghost-inset-y: -8px;
+    --u-link-ghost-radius: 0.75rem;
     --u-link-focus-width: 2px;
     --u-link-focus-offset: 2px;
     --u-link-focus-offset-ghost: 2px;
     --u-link-focus-radius: var(--u-link-ghost-radius);
 }
-.u-link-hitarea-lg::before { inset: -6px -8px -6px -8px; }
+.u-link-hitarea-lg::before { inset: -8px -8px -8px -8px; }
 .u-link-hitarea-lg:focus-visible {
     outline-width: var(--u-link-focus-width);
     outline-offset: var(--u-link-focus-offset);
