@@ -43,6 +43,7 @@ export const settingsConfigs = {
     notifications: {
         url: '/notifications-view', 
         count_in_title: true, 
+        show_plain_text: true,
     },
     messenger: {
         url: '/messenger', 

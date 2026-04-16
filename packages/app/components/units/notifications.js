@@ -6,7 +6,8 @@ import Profile from 'app/ui/molecules/profile';
 import Html from 'app/ui/atoms/html';
 import { Skeleton } from 'app/ui/atoms/skeleton';
 import LinkOrModal from 'app/ui/molecules/link-or-modal'
-import { appSetting } from 'app/lib/util'
+import { appSetting, stripTags } from 'app/lib/util'
+import { Text } from 'app/design/typography';
 
 function Unit({ data }) {
     const isSkeleton = data?.skeleton;
@@ -14,9 +15,9 @@ function Unit({ data }) {
         (data?.content?.entry_url_api ? data?.content?.entry_url_api?.replace('{bx_url_root}', '') :
             data?.content?.entry_url?.replace('{bx_url_root}', ''));
     const content_parsed = (data?.content_parsed?.site || data?.content_parsed || '').replace('&#8230;', '...');
-    
+    const isShowPlainText = appSetting('notifications', 'show_plain_text');
     return (
-        <LinkOrModal href={url} showInModal={data.type ? appSetting('browse', 'show_in_modal', data.type) : false}>
+       
             <View className={`px-3 py-2 mt-px sm:mt-2 flex-row items-center gap-3 max-w-4xl mx-auto web:hover:bg-muted/60 w-full ${!isSkeleton ? '' : ''} sm:rounded-2xl`}>
                 <View className="rounded-full flex-none mb-auto " >
                     <Skeleton visible={isSkeleton} className="h-11 w-11">
@@ -26,7 +27,9 @@ function Unit({ data }) {
                 <View className="flex-auto my-auto gap-1 ">
                     <View className='flex-auto'>
                         <Skeleton visible={isSkeleton} className="h-3 w-full">
-                            <Html data={content_parsed} customClassName="u-vanilla-html-small leading-tight line-clamp-2 " />
+                            {isShowPlainText ? <Text className='text-secondary-foreground leading-tight line-clamp-2'>{stripTags(content_parsed)}</Text> :
+                                <Html data={content_parsed} customClassName="u-vanilla-html-small leading-tight line-clamp-2 " />
+                            }
                         </Skeleton>
                     </View>
                     <Skeleton visible={isSkeleton} className="h-3 w-8">
@@ -34,7 +37,7 @@ function Unit({ data }) {
                     </Skeleton>
                 </View>
             </View>
-        </LinkOrModal>
+      
     );
 }
 
