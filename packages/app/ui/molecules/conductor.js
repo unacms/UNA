@@ -110,7 +110,6 @@ const TabScene = React.memo(({
     refreshing,
     numColumns
 }) => {
-    console.log('route', route.data, route.endpoint?.params?.start);
 
    /* const handleEndReached = useCallback(
         console.log('handleEndReached', route?.endpoint?.params),
@@ -124,7 +123,6 @@ const TabScene = React.memo(({
         const handleEndReached = useCallback(
             
             async (lastItemIndex) => {
-                console.log('handleEndReached', isFetchingNextPage, hasNextPage, route.data, route.endpoint?.params?.start);
                 
                 if (isFetchingNextPage) return
                 if (hasNextPage === false) return
@@ -614,8 +612,6 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
         }
     }
 
-
-    console.log('tabSceneProps', tabSceneProps);
     return (
         <View className="w-full h-full ">
             <View className="w-full flex-1 ">
