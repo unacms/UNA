@@ -89,19 +89,25 @@ const AddBlocks = React.memo(({
         }
     </>
 });
-
+const TabSceneHeader = React.memo(({
+    isProfileHeader
+    ,smallHeader
+}) => {
+    const scrollValue = useScrollValue();
+    if (isProfileHeader && scrollValue > 500)
+        return smallHeader;
+    return null;
+})
 const TabScene = React.memo(({
     route,
     hasNextPage,
     isFetchingNextPage,
     skeleton,
     ListHeaderComponent,
-    isProfileHeader,
     unitMode,
     fetchNextPage,
     onRefresh,
     refreshing,
-    smallHeader,
     numColumns
 }) => {
     console.log('route', route.data, route.endpoint?.params?.start);
@@ -163,7 +169,7 @@ const TabScene = React.memo(({
         [SkeletonForRoute, renderItem]
     )
 
-    const scrollValue = useScrollValue();
+    //
     const NoContent = getComponent('molecule', 'no_content')
 
     const feedType = route?.endpoint?.params?.type;
@@ -180,12 +186,8 @@ const TabScene = React.memo(({
 
     
     return (
-        <>
-            {(isProfileHeader && scrollValue > 500) && smallHeader}
-
             <UniList
                 ListHeaderComponent={typeof ListHeaderComponent === 'function' ? ListHeaderComponent : ListHeaderComponent ? () => ListHeaderComponent : undefined}
-
                 index={route.index}
                 data={routeData}
                 route={route}
@@ -202,8 +204,7 @@ const TabScene = React.memo(({
                 onRefresh={onRefresh}
                 refreshing={refreshing}
                 onEndReached={handleEndReached}
-            /></>
-
+            />
     )
 });
 
@@ -524,9 +525,6 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
         setFilterValue(filterValues);
         setBottomSheetData(false);
     });
-
-
-
     const isProfileHeader = layoutName === 'profile' && !isCoverDisabled;
 
     const smallSceneHeader = <View className="w-full">
@@ -544,8 +542,6 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
         index: index,
         unitMode: unitMode,
         fetchNextPage: fetchNextPage,
-        isProfileHeader: isProfileHeader,
-        smallHeader: smallSceneHeader,
         hasNextPage:hasNextPage,
         isFetchingNextPage:isFetchingNextPage
     };
@@ -618,10 +614,13 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
         }
     }
 
+
+    console.log('tabSceneProps', tabSceneProps);
     return (
         <View className="w-full h-full ">
             <View className="w-full flex-1 ">
                 <Snackbar visible={snackbarVisible} onPress={showNewContent2} onDismiss={() => setSnackbarVisible(false)} variant="primary" title="Show New Posts" size="sm" />
+                <TabSceneHeader isProfileHeader={isProfileHeader} smallHeader={smallSceneHeader} />
                 <TabScene {...tabSceneProps} />
             </View>
         </View>
