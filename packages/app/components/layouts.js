@@ -20,7 +20,7 @@ import semver from 'semver';
 import { useTranslation } from 'react-i18next';
 import { Card, CardHeader, CardTitle, CardContent } from 'app/ui/molecules/card'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
-
+import {FormModalHost} from 'app/ui/molecules/form_modal';
 
 function WindowSizeSync() {
     const { width, height } = useWindowDimensions();
@@ -84,6 +84,7 @@ export default function Layouts({ path, data }) {
         <Layout layout={layout} data={data}>
             <PageLayoutContent layout={layout} path={path} data={data} />
             <WindowSizeSync />
+            <FormModalHost/>
             {isVersionInfo && <View className="fixed bottom-16 left-5"><DropdownPopup
                 open={true}
                 minPopupWidth={320}
@@ -109,8 +110,6 @@ export default function Layouts({ path, data }) {
                         {t("version_warning_text3")}
                     </Text>
                 </View>
-
-
             </DropdownPopup></View>}
         </Layout>
     )

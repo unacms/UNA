@@ -26,15 +26,14 @@ import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { getComponent } from 'app/components/registry'
 import Scroll from 'app/ui/molecules/scroll'
 import Link from 'app/ui/atoms/link'
-import { getPageData } from 'app/lib/util';
-import FormModal from 'app/ui/molecules/form_modal';
+import { useOpenModalByUrl } from 'app/context/jotai/modal';
 import { Skeleton } from 'app/ui/atoms/skeleton';
 
 function DefaultUnit({ data }) {
     const isSkeleton = data?.skeleton;
     const { t } = useTranslation()
-    const [pageData, setPageData] = useState(false);
     const [viewState, setViewState] = useState({ view: '' })
+    const openModalByUrl = useOpenModalByUrl();
 
     const isCommentsModal = appSetting('browse', 'show_in_modal', 'bx_timeline') // && isWeb
     const { url, commentsData, isShowMoreComments } = useMemo(
@@ -42,13 +41,9 @@ function DefaultUnit({ data }) {
         [data]
     )
 
-    const showCommentsModal = async (initFormData) => {
+    const showCommentsModal = (initFormData) => {
         const url2 = (url.startsWith('/') ? url.slice(1) : url) + (initFormData?.cmt_id > 0 ? '#cmt_id=' + initFormData?.cmt_id : '#cmts');
-        setPageData({ data: 'loading', url: url, url2: url2 });
-        const sResponse = await getPageData(url2, false);
-        if (sResponse.data !== pageData.data) {
-            setPageData({ data: sResponse.data, url: url, url2: url2 });
-        }
+        openModalByUrl(url2);
     }
 
     if (isCommentsModal) {
@@ -115,7 +110,6 @@ function DefaultUnit({ data }) {
                     viewState={viewState}
                 />
             )}
-            <FormModal pageData={pageData.data} setPageData={setPageData} modalView='content_page' url={pageData.url2} />
             <CardList
                 border="border-y border-x-none sm:border-x"
                 className="mb-0.5 sm:mb-3"

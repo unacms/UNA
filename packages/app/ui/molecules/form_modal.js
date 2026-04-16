@@ -6,9 +6,11 @@ import { Keyboard } from 'react-native'
 import { getComponent } from 'app/components/registry';
 import { Platform } from 'react-native'
 import { useEffect, useCallback, useRef } from 'react'
-import { Loading } from 'app/customization/loading' 
+import { Loading } from 'app/customization/loading'
 import { getModalPostTitle } from 'app/customization/functions'
 import { appSetting } from 'app/lib/util';
+import { useModal, useCloseModal } from 'app/context/jotai/modal';
+
 
 const isWeb = Platform.OS === 'web';
 
@@ -27,20 +29,20 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
     }, []);
 
     useEffect(() => {
-        if (!isWeb || !pageData || !url) 
+        if (!isWeb || !pageData || !url)
             return;
-    
+
         const normalizedUrl = '/' + url.replace(/^\/+/, '');
         previousUrlRef.current = window.location.pathname + window.location.search;
-    
+
         window.history.pushState({ modal: true }, '', normalizedUrl);
-    
+
         const handlePopState = () => {
             setPageData(false);
         };
-    
+
         window.addEventListener('popstate', handlePopState);
-       
+
         return () => {
             window.removeEventListener('popstate', handlePopState);
         };
@@ -55,8 +57,8 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
         const layout = getLayoutName(pageData, 'item');
         const { layoutBlocks } = layout;
 
-        const layoutBlocks1 = pageData== 'loading' ? layoutBlocks : (layoutBlocks  || appSetting('layouts', pageData?.uri)?.blocks);
-       
+        const layoutBlocks1 = pageData == 'loading' ? layoutBlocks : (layoutBlocks || appSetting('layouts', pageData?.uri)?.blocks);
+
         return (
             <Modal
                 onClose={handleClose}
@@ -66,7 +68,7 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
                 outerClickClose={isWeb}
                 usePadding={true}
             >
-                 <Component url={url} isModal={true} layoutName={'post'} data={pageData} blocks={layoutBlocks1} />
+                <Component url={url} isModal={true} layoutName={'post'} data={pageData} blocks={layoutBlocks1} />
             </Modal>
         );
     }
@@ -74,8 +76,8 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
     const isShowHeader = pageData.module != "bx_timeline";
     const Container = isShowHeader ? ScrollView : View;
 
-    let modalWidth = 'max-w-3xl';
-    Object.keys(pageData?.elements || {}).forEach(key => {
+    const modalWidth = 'max-w-3xl';
+    /*Object.keys(pageData?.elements || {}).forEach(key => {
         Object.keys(pageData.elements[key] || {}).forEach(key2 => {
             const value = pageData.elements[key][key2]?.content[0];
 
@@ -83,20 +85,20 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
                 modalWidth = 'max-w-3xl';
             }
         });
-    });
-    
+    });*/
+
     return (
         <Modal
             maxWidth={modalWidth}
-            scrollable={pageData?.module=='bx_timeline' ? false: true}
+            scrollable={pageData?.module == 'bx_timeline' ? false : true}
             title={isShowHeader ? pageData.title : null}
             onVisible={!!pageData}
             {...(isShowHeader && { onClose: () => { setPageData(false); handleModalClose() } })}
-            padding={isShowHeader ? " p-0 " : " p-0 "}
+            //padding={isShowHeader ? " p-0 " : " p-0 "}
             transparent={true}
             onRequestClose={handleModalClose}
             onClose={handleClose}
-         
+
         >
             <View className='p-3 flex-auto'>
                 <Container key={pageData.module + (pageData.ts)} className={`flex-1 ${isShowHeader ? '' : 'overflow-visible'}`}>{/*px-3 sm:px-0*/}
@@ -104,21 +106,21 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
                         pageData == 'loading' ? <View className="flex-1 items-center justify-center">
                             <Loading />
                         </View> :
-                        Object.keys(pageData?.elements || {}).map(key =>
-                            Object.keys(pageData.elements[key] || {}).map(key2 => (
-                                <BlockByData
-                                    key={`${key}-${key2}`}
-                                    onFormEmpty={() => { setPageData(false) }}
-                                    block={pageData.elements[key][key2]}
-                                    exProps={{
-                                        onClose: () => { setPageData(false); },
-                                        resetOnSubmit: true,
-                                        formOnly: true,
-                                        classes: 'p-3 sm:p-4'
-                                    }}
-                                />
-                            ))
-                        )
+                            Object.keys(pageData?.elements || {}).map(key =>
+                                Object.keys(pageData.elements[key] || {}).map(key2 => (
+                                    <BlockByData
+                                        key={`${key}-${key2}`}
+                                        onFormEmpty={() => { setPageData(false) }}
+                                        block={pageData.elements[key][key2]}
+                                        exProps={{
+                                            onClose: () => { setPageData(false); },
+                                            resetOnSubmit: true,
+                                            formOnly: true,
+                                            classes: 'p-3 sm:p-4'
+                                        }}
+                                    />
+                                ))
+                            )
                     }
                 </Container>
             </View>
@@ -126,9 +128,23 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
     )
 }
 
+
+export const FormModalHost = () => {
+    const modal = useModal();
+    const closeModal = useCloseModal();
+    return (
+        <FormModal
+            modalView="content_page"
+            pageData={modal.visible ? modal.pageData : false}
+            setPageData={(v) => { if (!v) closeModal(); }}
+            url={modal.url}
+        />
+    );
+}
+
 export const handleFormModal = async (oItem, event, setPageData, params) => {
     const sResponse = await getFormModal(oItem, params);
-    setPageData({ ...sResponse.data, ts: Date.now(), url:oItem?.link?.replace(/^\/*/, "") + (params ? `&params[]=&params[]=${JSON.stringify({ params })}` : "") });
+    setPageData({ ...sResponse.data, ts: Date.now(), url: oItem?.link?.replace(/^\/*/, "") + (params ? `&params[]=&params[]=${JSON.stringify({ params })}` : "") });
 }
 
 export const getFormModal = async (oItem, params) => {

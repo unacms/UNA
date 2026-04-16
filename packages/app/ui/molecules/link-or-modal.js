@@ -4,8 +4,10 @@ import { useState, useCallback } from 'react';
 import { getPageData } from 'app/lib/util';
 import FormModal from 'app/ui/molecules/form_modal';
 import { Platform } from 'react-native';
+import { useOpenModalByUrl } from 'app/context/jotai/modal';
 
 export default function LinkModal({ href, children, showInModal = false, className = '' }) {
+    const openModalByUrl = useOpenModalByUrl();
     if (!href){
         return children;
     }
@@ -18,33 +20,11 @@ export default function LinkModal({ href, children, showInModal = false, classNa
     }
 
     return (
-        <LinkModal_ href={href} className={className}>
+        <Pressable href={href} className={className} onPress={(e) => {
+            if (Platform.OS === "web") e.preventDefault(); 
+             openModalByUrl(href);
+        }}>
             {children}
-        </LinkModal_>
+        </Pressable>
     );
 }
-
-function LinkModal_({ href, children, className = '' }) {
-    const [pageData, setPageData] = useState(false);
-
-    const handlePress = useCallback(async () => {
-        setPageData('loading');
-        const sResponse = await getPageData(href, false);
-        if (sResponse.data !== pageData) {
-            setPageData(sResponse.data);
-        }
-    }, [href, getPageData, pageData]);
-
-    return (
-        <>
-            <Pressable href={href} className={className} onPress={(e) => {
-                if (Platform.OS === "web") e.preventDefault(); 
-                handlePress();
-            }}>
-                {children}
-            </Pressable>
-            <FormModal modalView='content_page' pageData={pageData} setPageData={setPageData} url={href} />
-        </>
-    );
-
-}   
