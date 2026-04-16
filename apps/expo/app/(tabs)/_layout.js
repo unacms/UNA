@@ -119,11 +119,7 @@ const AppLayout = React.memo(() => {
     const { colors } = theme;
 
     const containerStyle = useMemo(() => ({
-        width: '100%',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        height: '100%',
+        flex: 1,
         backgroundColor: colors.safeAreaBackground || colors.barsBackground,
     }), [colors.safeAreaBackground, colors.barsBackground]);
 

@@ -7,7 +7,7 @@ import { Theme, ThemeName } from 'app/design/theme';
 import { useColorScheme } from 'react-native';
 import { DarkTheme, DefaultTheme } from "@react-navigation/native";
 import Profile from 'app/ui/molecules/profile';
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next';
 //import BottomSheetDataContext from 'app/context/bottomsheet';
 import { FeedbackHaptics, getPageData, subscribeOneSignal } from 'app/lib/util';
@@ -152,14 +152,12 @@ export default function Tabs() {
     }, [themeName, defColorScheme]);
     const iconWidth = 24;
     const iconHeight = 24;
+    const shouldDetachInactiveScreens = Platform.OS !== 'ios';
     const isShowTabs = currentUser || appSetting('native', 'show_tabs_non_logged')
     const notificationUrl = appSetting('notifications', 'url');
     const TabList = useMemo(() => currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged'), [currentUser?.id]);
 
     const tabsSessionKey = currentUser?.id ? `user-${currentUser.id}-${currentUser.confirmed}` : 'user-guest';
-
-    const preloadDelay = appSetting('native', 'lazy_tabs_preload_delay');
-    const [lazyLoadTabs, setLazyLoadTabs] = useState(true);
 
     const profile = useMemo(() => {
         if (currentUser) {
@@ -177,23 +175,12 @@ export default function Tabs() {
 
     const tabsHeight = Platform.OS == 'ios' ? 52 : 56;
 
-    // Добавить useEffect для отложенной загрузки
-    useEffect(() => {
-        if (preloadDelay > 0 && lazyLoadTabs) {
-            const timer = setTimeout(() => {
-                setLazyLoadTabs(false);
-            }, preloadDelay);
-
-            return () => clearTimeout(timer);
-        }
-    }, [preloadDelay, lazyLoadTabs]);
-
 
     const screenOptions = useMemo(() => ({
         tabBarStyle: {
             backgroundColor: colors.barsBackground,
             height: isShowTabs ? tabsHeight : 0,
-            opacity: isShowTabs ? 1 : 0,
+            display: isShowTabs ? 'flex' : 'none',
             elevation: 0,
             boxShadow: 'none',
             marginRight: 0,
@@ -222,11 +209,12 @@ export default function Tabs() {
         tabBarInactiveTintColor: colors.barsColor,
         tabBarActiveTintColor: colors.primary,
         tabBarActiveBackgroundColor: colors.primaryBg,
-        freezeOnBlur: true,
         unmountOnBlur: false,
-        // ЕДИНАЯ ЛОГИКА: для всех пользователей
-        lazy: lazyLoadTabs,
-    }), [colors, isShowTabs, currentUser?.id, lazyLoadTabs]);
+        lazy: true,
+        sceneStyle: {
+            backgroundColor: colors.background || colors.safeAreaBackground || colors.barsBackground,
+        },
+    }), [colors, isShowTabs, currentUser?.id]);
 
     // DEEP LINKING
 
@@ -292,10 +280,11 @@ export default function Tabs() {
             <Subscriber />
             <View className="flex-1">
                 <View className="w-full z-50"><AsyncWorker /></View>
-                <RouterTabs key={tabsSessionKey} screenOptions={screenOptions}>
+                <RouterTabs key={tabsSessionKey} detachInactiveScreens={shouldDetachInactiveScreens} screenOptions={screenOptions}>
                     {
                         TabList.map((tab, index) => {
                             const useAnimatedIcon = tab.animated === true;
+                            const tabRouteName = `tab${index}/index`;
                             const options = {
                                 tabBarBadge: getBadgeForTab(currentUser, tab),
                                 tabBarBadgeAllowFontScaling: false,
@@ -317,19 +306,15 @@ export default function Tabs() {
                             return (
                                 <RouterTabs.Screen
                                     key={`tab${index}`}
-                                    name={`tab${index}`}
+                                    name={tabRouteName}
                                     initialParams={{ url2: tab.url, name: `tab${index}` }}
                                     listeners={{
                                         tabPress: async (e) => {
-
-                                            let a = e.target.split('-');
-                                            let tabData = TabList[a[0].replace('tab', '')];
-
-                                            const isExternalLink = tabData.url && (tabData.url.startsWith('http://') || tabData.url.startsWith('https://'));
+                                            const isExternalLink = tab.url && (tab.url.startsWith('http://') || tab.url.startsWith('https://'));
 
                                             if (isExternalLink) {
                                                 e.preventDefault(); 
-                                                await WebBrowser.openBrowserAsync(tabData.url);
+                                                await WebBrowser.openBrowserAsync(tab.url);
                                                 FeedbackHaptics('Medium');
                                                 return;
                                             }
@@ -338,9 +323,7 @@ export default function Tabs() {
                                                 setLayoutData(getAlert('list:move_to_top', true));
                                             }
                                             if (e.type == 'tabPress') {
-                                                let a = e.target.split('-');
-                                                let d = TabList[a[0].replace('tab', '')];
-                                                if (d.url == notificationUrl) {
+                                                if (tab.url == notificationUrl) {
                                                     clearNotif()
                                                     setCurrentUser({
                                                         notifications: 0,
