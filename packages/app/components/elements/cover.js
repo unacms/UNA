@@ -246,7 +246,7 @@ function CoverImage({
                             fileSizeBytes: i?.fileSize,
                             maxWidth: 2000,
                             maxHeight: 2000,
-                            webpOverMb: 40,
+                            webpOverMb: 4,
                         })
                     }
                     if (mode == 'picture') {
@@ -257,7 +257,7 @@ function CoverImage({
                             fileSizeBytes: i?.fileSize,
                             cropToSquare: true,
                             squareSize: 500,
-                            webpOverMb: 40,
+                            webpOverMb: 4,
                         })
 
                     }
