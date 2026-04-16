@@ -17,7 +17,7 @@ function Unit({ data }) {
     const content_parsed = (data?.content_parsed?.site || data?.content_parsed || '').replace('&#8230;', '...');
     const isShowPlainText = appSetting('notifications', 'show_plain_text');
     return (
-       
+        <LinkOrModal href={url} showInModal={data.type ? appSetting('browse', 'show_in_modal', data.type) : false}>
             <View className={`px-3 py-2 mt-px sm:mt-2 flex-row items-center gap-3 max-w-4xl mx-auto web:hover:bg-muted/60 w-full ${!isSkeleton ? '' : ''} sm:rounded-2xl`}>
                 <View className="rounded-full flex-none mb-auto " >
                     <Skeleton visible={isSkeleton} className="h-11 w-11">
@@ -37,7 +37,7 @@ function Unit({ data }) {
                     </Skeleton>
                 </View>
             </View>
-      
+        </LinkOrModal>
     );
 }
 
