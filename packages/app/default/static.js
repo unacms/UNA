@@ -19,6 +19,7 @@ import MenuFooter from 'app/components/nav/menu-footer'
 import { appSetting } from 'app/lib/util'
 import Tabs from 'app/ui/molecules/tabs'
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from 'app/ui/atoms/accordion'
+import NodeFlow from 'app/ui/atoms/node-flow'
 const isWeb = Platform.OS === 'web'
 //mode can be 'adaptive', 'full', 'mark', 'text'
 const Logo = ({ mode = 'adaptive' }) => {
@@ -149,6 +150,157 @@ const SplashTextComponent = (props) => {
     )
 }
 
+/**
+ * Sample `NodeFlow` for the splash screen — three-step "Connect → Discover → Engage"
+ * visual that uses Lucide icons already covered by the animated-icon registry.
+ *
+ * Demonstrates the React-Flow-style edges API: a single edge runs from the
+ * right side of the first node, *through the center of the second node*, to
+ * the left side of the third node, with arrows at the visible midpoint of
+ * each segment. Renders horizontally on `lg+` and switches to a vertical
+ * stack (top→bottom) on smaller viewports.
+ *
+ * Step copy lives **outside** the NodeFlow as plain DOM-flow `Text` blocks
+ * (no `label` prop on the nodes). Alignment trick: the surrounding
+ * container is sized to `count * gap`; the `NodeFlow` (which is
+ * `(count - 1) * gap + nodeSize` wide / tall) is centered inside it; the
+ * text track uses `count` × `flex-1` blocks of the same total size, so each
+ * block's center lands exactly on its corresponding node's center —
+ * regardless of `gap` / `nodeSize`. See the math in the inline comment.
+ *
+ * Branch / fork projects can swap the look by registering an alternate
+ * variant in `app/customization/node-flow-variants.js` and passing
+ * `variant="..."` here, or by overriding this whole component in
+ * `app/customization/static.js`.
+ */
+const SplashNodeFlowComponent = () => {
+    const { t } = useTranslation()
+    /** Nodes intentionally have no `label` — text is rendered separately below / next to the flow. */
+    const flowNodes = [
+        { id: 'connect', icon: 'UsersRound', animated: true, active: true },
+        { id: 'discover', icon: 'Compass', animated: true },
+        { id: 'engage', icon: 'MessageCircleMore', animated: true },
+    ]
+    const stepTexts = [
+        {
+            title: t('Connect'),
+            desc: t('Find people who share your interests and start meaningful conversations.'),
+        },
+        {
+            title: t('Discover'),
+            desc: t('Explore communities, events and content tailored to you.'),
+        },
+        {
+            title: t('Engage'),
+            desc: t('Share ideas, give feedback, and build relationships that last.'),
+        },
+    ]
+    /**
+     * Both line and segment-midpoint arrows tint to `text-border` because
+     * the className lives on the outer NodeFlow View — the SVG inherits
+     * its color via `style={{ color: 'inherit' }}` and `currentColor`
+     * resolves to it for both the line stroke and the marker glyphs.
+     */
+    const edgesHorizontal = [
+        {
+            source: 'connect', sourceHandle: 'right',
+            target: 'engage', targetHandle: 'left',
+            via: [{ node: 'discover', handle: 'center' }],
+            arrowsAtSegmentMidpoints: { size: 14 },
+            animation: 'none',
+        },
+    ]
+    const edgesVertical = [
+        {
+            source: 'connect', sourceHandle: 'bottom',
+            target: 'engage', targetHandle: 'top',
+            via: [{ node: 'discover', handle: 'center' }],
+            arrowsAtSegmentMidpoints: { size: 14 },
+            animation: 'none',
+        },
+    ]
+
+    /**
+     * Alignment math (count = 3): the outer container is `count * gap` along
+     * the main axis, while NodeFlow itself is `(count - 1) * gap + nodeSize`.
+     * Centering NodeFlow leaves a `(gap - nodeSize) / 2` margin, so node
+     * centers in container coords sit at `gap/2 + i*gap`. A row of `count`
+     * `flex-1` text blocks splits the same container into equal slices of
+     * width `gap`, whose centers are also `gap/2 + i*gap`. Perfect alignment
+     * regardless of `gap` / `nodeSize` values.
+     *
+     * Horizontal layout has a fixed total width of 48rem (768px) — both the
+     * graphic and the text track. Vertical layout has a fixed total height
+     * of 40rem (640px) for the graphic; the text track keeps a responsive
+     * width via `flex-1`.
+     */
+    const H_TOTAL = 860   // 48rem
+    const V_TOTAL = 360   // 40rem
+    const H_NODE_SIZE = 64
+    const V_NODE_SIZE = 56
+    const H_GAP = H_TOTAL / 3
+    const V_GAP = V_TOTAL / 3
+
+    return (
+        <View className="w-full items-center lg:items-start">
+            <View
+                className="hidden lg:flex flex-col items-center mx-auto"
+                style={{ width: H_TOTAL }}
+            >
+                <NodeFlow
+                    className="text-border"
+                    nodes={flowNodes}
+                    edges={edgesHorizontal}
+                    nodeSize={H_NODE_SIZE}
+                    gap={H_GAP}
+                    waveAmplitude={16}
+                />
+                <View className="flex-row mt-6 w-full">
+                    {stepTexts.map((s, i) => (
+                        <View key={i} className="flex-1 items-center px-3">
+                            <Text className="font-semibold text-base text-foreground text-center">
+                                {s.title}
+                            </Text>
+                            <Text className="text-sm text-muted-foreground text-center mt-1">
+                                {s.desc}
+                            </Text>
+                        </View>
+                    ))}
+                </View>
+            </View>
+
+            <View
+                className="flex lg:hidden flex-row gap-4 w-full mx-auto max-w-md"
+                style={{ height: V_TOTAL }}
+            >
+                <View className="justify-center">
+                    <NodeFlow
+                        className="text-border"
+                        orientation="vertical"
+                        nodes={flowNodes}
+                        edges={edgesVertical}
+                        nodeSize={V_NODE_SIZE}
+                        gap={V_GAP}
+                        waveAmplitude={16}
+                    />
+                </View>
+                <View className="flex-col flex-1">
+                    {stepTexts.map((s, i) => (
+                        <View key={i} className="flex-1 justify-center">
+                            <Text className="font-semibold text-base text-foreground">
+                                {s.title}
+                            </Text>
+                            <Text className="text-sm text-muted-foreground mt-1">
+                                {s.desc}
+                            </Text>
+                        </View>
+                    ))}
+                </View>
+            </View>
+        </View>
+    )
+}
+
 const SplashTabsComponent = ({ onTabChange }) => {
     const { t } = useTranslation()
     /** Stable `tabs` reference across Splash re-renders — avoids Tabs collapse/sync effects re-firing every parent paint. */
@@ -249,7 +401,7 @@ Create Polls to collect feedback, make decisions, and engage your community.    
                 disableScrollIntoView={!isWeb}
             />
         </Card>
-        <Card padding="px-4 py-1 mt-6">    
+        <Card padding="px-4 ">    
         <Accordion type="multiple" collapsible defaultValue={[]} className="w-full">
                                     {[
                                         {
@@ -949,6 +1101,7 @@ export const staticDefault = {
     components_fullfooter: ComponentsFullFooter,
     components_logincontent: ComponentsLoginContentComponent,
     splash_text: SplashTextComponent,
+    splash_node_flow: SplashNodeFlowComponent,
     splash_tabs: SplashTabsComponent,
     join_text: JoinTextComponent,
 }

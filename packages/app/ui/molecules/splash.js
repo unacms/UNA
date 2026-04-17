@@ -112,11 +112,17 @@ export default function Splash(props) {
             <View className="flex-1 gap-6 w-full mx-auto">
                 <View className="w-full border-b border-border/60 lg:flex-row">
                     <View className={`flex-1 lg:flex-row gap-6 lg:p-6 p-4 w-full mx-auto ${appSetting( 'layout', 'max_width_content')}`}>
-                        {appStatic('splash_text')}
+                        <View className="flex-1 gap-6 items-center lg:items-start">
+                            {appStatic('splash_text')}
+                            
+                        </View>
                         <PageContent {...props} />
                     </View>
                 </View>
-                <View className={`flex-1 lg:p-6 p-4 w-full mx-auto ${appSetting( 'layout', 'max_width_content')}`}>
+                
+                <View className={`flex-1 lg:p-6 p-4 gap-12 w-full mx-auto ${appSetting( 'layout', 'max_width_content')}`}>
+                    {appStatic('splash_node_flow')}
+                   
                     {appStatic('splash_tabs', { onTabChange: onSplashTabChange })}
                 </View>
             </View>
