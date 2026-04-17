@@ -1348,20 +1348,26 @@ const TabBar = ({
                     />}
                 </View>
                 {!!pageData.cover_block?.actions_menu && (
-                    <Row className={appSetting('conductor', 'more_menu_container')}>
-                        <Row className="gap-2">
-                            <CoverMenu
-                                {...pageData.cover_block.actions_menu}
-                                uri={pageData.uri}
-                                isSplitMenu={true}
-                                containerClasses="gap-2 "
-                            />
-                            <CoverMenuMore
-                                {...pageData.cover_block.actions_menu}
-                                uri={pageData.uri}
-                                isSplitMenu={true}
-                            />
-                        </Row>
+                    <Row className="hidden lg:block items-center mx-3 ">
+                        {!!appSetting(
+                            'cover',
+                            'more_menu_in_navbar',
+                            pageData?.module
+                        ) && (
+                                <Row className="gap-2">
+                                    <CoverMenu
+                                        {...pageData.cover_block.actions_menu}
+                                        uri={pageData.uri}
+                                        isSplitMenu={true}
+                                        containerClasses="gap-2 "
+                                    />
+                                    <CoverMenuMore
+                                        {...pageData.cover_block.actions_menu}
+                                        uri={pageData.uri}
+                                        isSplitMenu={true}
+                                    />
+                                </Row>
+                            )}
                     </Row>
                 )}
             </TopSidebar>
