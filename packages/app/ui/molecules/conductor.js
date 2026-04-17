@@ -281,7 +281,7 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
     }, []);
 
     useEffect(() => {
-        if (!currentRoute?.endpoint?.unit == 'feed')
+        if (currentRoute?.endpoint?.unit !== 'feed')
             return;
 
         const sub1 = subscribe('bx_timeline_0', 'added', setIsRevalidate);

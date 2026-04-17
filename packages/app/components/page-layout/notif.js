@@ -1,6 +1,6 @@
 import {BlockByName} from 'app/components/block';
 import { clearNotif } from 'app/lib/util'
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useCurrentUser } from 'app/context/user'
 import { View } from 'app/design/view'
 import Snackbar from 'app/ui/atoms/snackbar';
@@ -19,9 +19,11 @@ export default function PageLayout(props) {
         });
     }, [])
 
-    if (currentUser?.notificationsTs != timeStamp.nts){
-        setTimeStamp({ts:Date.now(), nts: currentUser?.notificationsTs});   
-    }
+    useEffect(() => {
+        if (currentUser?.notificationsTs != timeStamp.nts) {
+            setTimeStamp({ts: Date.now(), nts: currentUser?.notificationsTs});
+        }
+    }, [currentUser?.notificationsTs]);
 
     useEffect(() => {
         if (currentUser){

@@ -4,46 +4,53 @@ import { fetcher } from 'app/lib/fetcher';
 const useDaemon = (url, isLoadOnInit = false, isActive = true, pollingInterval = 60000) => {
     const [daemonData, setDaemonData] = useState(null);
     const [error, setError] = useState(null);
-    const timeoutId = useRef(null);  // Use ref to store the timeout ID
-
-    // Function to fetch data
-    const fetchData = async () => {
-        try {
-            const sResponse = await fetcher(url);
-            if (daemonData !== sResponse.data) {
-                setDaemonData(sResponse.data);
-            }
-        } catch (e) {
-            setError(e);
-        }
-
-        // Schedule the next fetch only if isActive is true
-        if (isActive && url) {
-            timeoutId.current = setTimeout(fetchData, pollingInterval);
-        }
-    };
+    const timeoutId = useRef(null);
 
     useEffect(() => {
-        // If isLoadOnInit is true, fetch data immediately on mount
-        if (isActive) {
-            if (isLoadOnInit && url) {
-                fetchData();
-            } else {
-                // If isLoadOnInit is false, just start the timeout for the first call
+        if (!isActive || !url) return;
+
+        let cancelled = false;
+
+        const fetchData = async () => {
+            try {
+                const sResponse = await fetcher(url);
+                if (!cancelled) {
+                    setDaemonData(prev => {
+                        if (prev === sResponse.data) return prev;
+                        if (typeof prev === 'object' && typeof sResponse.data === 'object'
+                            && JSON.stringify(prev) === JSON.stringify(sResponse.data)) {
+                            return prev;
+                        }
+                        return sResponse.data;
+                    });
+                }
+            } catch (e) {
+                if (!cancelled) {
+                    setError(e);
+                }
+            }
+
+            if (!cancelled) {
                 timeoutId.current = setTimeout(fetchData, pollingInterval);
             }
+        };
 
-            // Cleanup function to clear the timeout when component unmounts or url changes
-            return () => {
-                if (timeoutId.current) {
-                    clearTimeout(timeoutId.current);
-                }
-            };
+        if (isLoadOnInit) {
+            fetchData();
+        } else {
+            timeoutId.current = setTimeout(fetchData, pollingInterval);
         }
-    }, [url, pollingInterval, isActive]);  // Re-run effect when url or pollingInterval changes
+
+        return () => {
+            cancelled = true;
+            if (timeoutId.current) {
+                clearTimeout(timeoutId.current);
+            }
+        };
+    }, [url, pollingInterval, isActive, isLoadOnInit]);
 
     useEffect(() => {
-        setDaemonData(null);  // Reset data when URL changes
+        setDaemonData(null);
     }, [url]);
 
     return { daemonData, error, daemonUrl: url };

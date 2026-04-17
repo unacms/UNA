@@ -175,14 +175,18 @@ export const PageHeaderBody = memo(({
             <Row className={contentClassName}>
                 <Row className={appSetting('layout', 'header', 'content_left')}>
                     {(isBackButton &&
-                        (!isWeb || (typeof history !== 'undefined' && history.length > 2))) && (
+                        (!isWeb || typeof isBackButton === 'function' || (typeof history !== 'undefined' && history.length > 2))) && (
                         <View className="items-center">
                             <Button
                                 variant="text"
                                 rounded
                                 onPress={() => {
                                     FeedbackHaptics('Medium');
-                                    router ? router.back() : history.back();
+                                    if (typeof isBackButton === 'function') {
+                                        isBackButton();
+                                    } else {
+                                        router ? router.back() : history.back();
+                                    }
                                 }}
                                 startDecorator="ArrowLeft"
                                 size="base"
@@ -194,7 +198,7 @@ export const PageHeaderBody = memo(({
                 </Row>
                 {isWeb && <MenuTop url={pageData?.url} uri={pageData?.uri} />}
                 <Row className={appSetting('layout', 'header', 'content_right')}>
-                    <HeaderElement mode="small" url={pageData?.url} uri={pageData?.uri} />
+                    {header.headerActions ?? <HeaderElement mode="small" url={pageData?.url} uri={pageData?.uri} />}
                 </Row>
             </Row>
             {header.subHeader}

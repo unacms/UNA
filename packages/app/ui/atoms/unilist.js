@@ -155,8 +155,10 @@ export default function UniList(props) {
             maintainScrollAtEnd={inverted}
             contentInsetAdjustmentBehavior="never"
             automaticallyAdjustContentInsets={false}
-            onStartReachedThreshold={inverted ? 4 : undefined}
+            onStartReachedThreshold={inverted ? 1 : undefined}
             initialScrollIndex={inverted && filteredData.length > 0 ? filteredData.length - 1 : undefined}
+            recycleItems={!inverted}
+            drawDistance={inverted ? 500 : 350}
             {...rest}
         />
     );

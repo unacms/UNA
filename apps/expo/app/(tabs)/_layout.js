@@ -129,7 +129,6 @@ const AppLayout = React.memo(() => {
                 <JotaiProvider>
                 <QueryClientProvider client={queryClient}>
                     <SafeAreaView edges={['left', 'right']} style={containerStyle}>
-                        
                         <Tabs />
                         <PortalHost />
                     </SafeAreaView>

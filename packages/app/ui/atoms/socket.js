@@ -10,6 +10,8 @@ const pusherInstance = new Pusher(conf.key, {
     cluster: '',
 });
 
+const bindingCounts = new Map();
+
 export function subscribe(channel_name, event_name, cb) {
     if (!pusherInstance) return () => { };
 
@@ -17,6 +19,16 @@ export function subscribe(channel_name, event_name, cb) {
     if (!channel) channel = pusherInstance.subscribe(channel_name);
 
     channel.bind(event_name, cb);
+    bindingCounts.set(channel_name, (bindingCounts.get(channel_name) || 0) + 1);
 
-    return () => channel.unbind(event_name, cb);  // ✅ Добавить возврат функции отписки
+    return () => {
+        channel.unbind(event_name, cb);
+        const count = (bindingCounts.get(channel_name) || 1) - 1;
+        if (count <= 0) {
+            bindingCounts.delete(channel_name);
+            pusherInstance.unsubscribe(channel_name);
+        } else {
+            bindingCounts.set(channel_name, count);
+        }
+    };
 }

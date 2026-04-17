@@ -42,7 +42,7 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
     const { t } = useTranslation();
     const initialState = {
         suggestedUsers: [],
-        selectedUsers: initedData,
+        selectedUsers: Array.isArray(initedData) ? initedData : [],
         showLoading: false,
         searchText: ''
     };

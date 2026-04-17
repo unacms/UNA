@@ -1,37 +1,34 @@
 "use client"
 import { Platform } from 'react-native'
 import React, { useEffect, useRef } from 'react';
-import { View, Row, Pressable, ScrollView } from 'app/design/view'
+import { View } from 'app/design/view'
 import { Animated } from 'react-native';
 import Svg, { G, Circle } from 'react-native-svg';
 
-export function Loading() {
+function RotatingIcon() {
+    const spinValue = useRef(new Animated.Value(0)).current;
 
-    const RotatingIcon = () => {
-        const spinValue = useRef(new Animated.Value(0)).current;
+    useEffect(() => {
+        const animation = Animated.loop(
+            Animated.timing(spinValue, {
+                toValue: 1,
+                duration: 2000,
+                useNativeDriver: true,
+            })
+        );
+        animation.start();
+        return () => animation.stop();
+    }, [spinValue]);
 
-        useEffect(() => {
-            Animated.loop(
-                Animated.timing(
-                    spinValue,
-                    {
-                        toValue: 1,
-                        duration: 2000,
-                        useNativeDriver: true
-                    }
-                )
-            ).start();
-        }, []);
+    const spin = spinValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['0deg', '360deg'],
+    });
 
-        const spin = spinValue.interpolate({
-            inputRange: [0, 1],
-            outputRange: ['0deg', '360deg']
-        });
-
-        return (
-            <Animated.View style={{ transform: [{ rotate: spin }] }}>
-                <Svg fill="#2563eb" opacity="0.5" width="64" height="128" viewBox="0 0 24 24">
-                    <G>
+    return (
+        <Animated.View style={{ transform: [{ rotate: spin }] }}>
+            <Svg fill="#2563eb" opacity="0.5" width="64" height="128" viewBox="0 0 24 24">
+                <G>
                     <Circle cx="12" cy="3" r="1"/>
                     <Circle cx="16.50" cy="4.21" r="1"/>
                     <Circle cx="7.50" cy="4.21" r="1"/>
@@ -44,24 +41,26 @@ export function Loading() {
                     <Circle cx="16.50" cy="19.79" r="1"/>
                     <Circle cx="7.50" cy="19.79" r="1"/>
                     <Circle cx="12" cy="21" r="1"/>
-                    </G>
-                </Svg>
-            </Animated.View>
-        );
-    };
+                </G>
+            </Svg>
+        </Animated.View>
+    );
+}
 
-    const isWeb = Platform.OS == 'web';
-
-    if (isWeb) {
-        return <div style={{
-            width: '100px', height: '100vh', display: 'flex', margin: '0px auto', justifyContent: 'center',
-        }}><img src="/loader.svg" alt="Loading indicator" /></div>
-    }
-    else {
+export function Loading() {
+    if (Platform.OS === 'web') {
         return (
-            <View className='w-full h-full items-center flex-1 justify-center'>
-                <RotatingIcon />
-            </View>
-        )
+            <div style={{
+                width: '100px', height: '100vh', display: 'flex', margin: '0px auto', justifyContent: 'center',
+            }}>
+                <img src="/loader.svg" alt="Loading indicator" />
+            </div>
+        );
     }
+
+    return (
+        <View className='w-full h-full items-center flex-1 justify-center'>
+            <RotatingIcon />
+        </View>
+    );
 }

@@ -47,6 +47,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [formHeight, setFormHeight] = useState(0);
     const [showMsg, setShowMsg] = useState(false);
     const refListJots = useRef();
+    const isFetchingJots = useRef(false);
+    const hasMoreJots = useRef(true);
+    const jotsPaginationRef = useRef(null);
     const selectedConvoIndex = convos?.data && convoId ? convos.data.findIndex(item => item.id === convoId) : -1;
     const selectedConvo = convos?.data ? convos.data[selectedConvoIndex] : false;
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -97,24 +100,40 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         }
     }, [searchValue]);
 
-    const fetchItems = async (convoId, isAddJots) => {
+    const fetchItems = useCallback(async (targetConvoId, isAddJots) => {
+        if (isAddJots && (isFetchingJots.current || !hasMoreJots.current)) return;
+
+        const params = jotsPaginationRef.current;
         let start = 0;
 
-        if (jots?.data?.params?.limit && isAddJots)
-            start = jots?.data?.params?.start + jots?.data?.params?.limit;
+        if (params?.limit && isAddJots)
+            start = (params.start ?? 0) + params.limit;
 
-        let request_url = '/api.php?r=bx_messenger/get_convo_messages/Services&params=' + JSON.stringify({ lot: convoId, jot: 0, start: start });
-        const sResponse = await fetcher(request_url);
+        isFetchingJots.current = true;
+        try {
+            let request_url = '/api.php?r=bx_messenger/get_convo_messages/Services&params=' + JSON.stringify({ lot: targetConvoId, jot: 0, start: start });
+            const sResponse = await fetcher(request_url);
 
-        setJots(prevJots => ({
-            ...prevJots,
-            data: {
-                params: sResponse.data.params,
-                jots: prevJots && isAddJots ? [...sResponse.data.jots, ...prevJots?.data?.jots] : sResponse.data.jots
-            },
-            index: prevJots && isAddJots ? prevJots.index : 0
-        }));
-    }
+            const newJots = sResponse.data?.jots ?? [];
+            if (isAddJots && newJots.length === 0) {
+                hasMoreJots.current = false;
+                return;
+            }
+
+            jotsPaginationRef.current = sResponse.data.params;
+
+            setJots(prevJots => ({
+                ...prevJots,
+                data: {
+                    params: sResponse.data.params,
+                    jots: prevJots && isAddJots ? [...newJots, ...prevJots?.data?.jots] : newJots
+                },
+                index: prevJots && isAddJots ? prevJots.index : 0
+            }));
+        } finally {
+            isFetchingJots.current = false;
+        }
+    }, [])
 
 
 
@@ -139,7 +158,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
         const sub1 = subscribe('bx_messenger', 'convo_' + selectedConvo.id, onNewMessage);
         const sub2 = subscribe('bx_messenger', 'profile_' + currentUser.id, onCheckConvos);
-        setJots(false)
+        hasMoreJots.current = true;
+        jotsPaginationRef.current = null;
+        setJots(false);
         fetchItems(selectedConvo.id, false);
         updateState();
 
@@ -256,7 +277,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }, [isSmallScreen, setConvoId, setPanelsVisible]);
 
     const showConvo = useCallback(() => {
-        console.log("xxxx")
         emitter.emit('editor', { action: 'blur' });
         setPanelsVisible({ convos: true, jots: false })
         if (!isWeb)
@@ -341,7 +361,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const handleStartReached = useCallback(() => {
         if (selectedConvo)
             fetchItems(selectedConvo.id, true);
-    }, [selectedConvo?.id, jots])
+    }, [selectedConvo?.id])
 
     const convosComponent = useMemo(() => {
         return <Convos
@@ -509,26 +529,28 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
 
     const srch = <Input rounded="full" size="small" name="search" placeholder={("Search") + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
 
-    const header = <Row className=' bg-card px-3 gap-2 web:border-b border-border/60 gap-x-3 h-16'>
-        <View className='flex-auto hidden lg:flex justify-center'>
-            <View>
-            {srch}
+    const header = useMemo(() => (
+        <Row className=' bg-card px-3 gap-2 web:border-b border-border/60 gap-x-3 h-16'>
+            <View className='flex-auto hidden lg:flex justify-center'>
+                <View>
+                {srch}
+                </View>
             </View>
-        </View>
-        {!showSearch && <Row className='lg:hidden flex-auto  items-center '>
-            {appSetting('messenger', 'back_button') && getBackButtonWeb()}
-            <Text className={`lg:hidden font-bold truncate flex-1  leading-12 lg:px-2 text-card-foreground text-2xl tracking-tight font-main`}>Messenger</Text>
-        </Row>}
-        {showSearch && <Row className='lg:hidden flex-auto  items-center '>
-            {srch}
-        </Row>}
-        <Row className='my-auto'>
-            <View className='lg:hidden mr-1 lg:mr-0 '>
-                <Button size="base" startDecorator="Search" variant="secondary" rounded onPress={() => handleSearch2()} />
-            </View>
-            {addButtons}
+            {!showSearch && <Row className='lg:hidden flex-auto  items-center '>
+                {appSetting('messenger', 'back_button') && getBackButtonWeb()}
+                <Text className={`lg:hidden font-bold truncate flex-1  leading-12 lg:px-2 text-card-foreground text-2xl tracking-tight font-main`}>Messenger</Text>
+            </Row>}
+            {showSearch && <Row className='lg:hidden flex-auto  items-center '>
+                {srch}
+            </Row>}
+            <Row className='my-auto'>
+                <View className='lg:hidden mr-1 lg:mr-0 '>
+                    <Button size="base" startDecorator="Search" variant="secondary" rounded onPress={() => handleSearch2()} />
+                </View>
+                {addButtons}
+            </Row>
         </Row>
-    </Row>
+    ), [showSearch, searchValue, addButtons]);
 
     useEffect(() => {
         if (!isWeb) return;
@@ -538,7 +560,7 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
     useFocusEffect(useCallback(() => {
         if (isWeb) return;
         setHeader(isSmallScreen ? { header: header } : defaultHeader);
- 
+        return () => setHeader(defaultHeader);
     }, [isSmallScreen, setHeader, header]));
     
     return (
@@ -596,7 +618,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
     };
 
 
-    const header = (
+    const header = useMemo(() => (
         <View className='md:px-0 w-full border-border/60 bg-card border-b h-16 justify-center'>
             <Row className='px-2 lg:px-4 items-center justify-between w-full '>
                 <Row className='items-center justify-start gap-3 flex-1 overflow-hidden'>
@@ -620,7 +642,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                 </Row>
             </Row>
         </View>
-    )
+    ), [isSmallScreen, title, showConvo]);
 
     useEffect(() => {
         if (!isWeb) return;
@@ -630,6 +652,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
     useFocusEffect(useCallback(() => {
         if (isWeb) return;
         setHeader(isSmallScreen ? { header: header } : defaultHeader);
+        return () => setHeader(defaultHeader);
     }, [isSmallScreen, setHeader, header]));
 
     return (<>

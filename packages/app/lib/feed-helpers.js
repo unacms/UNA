@@ -1,10 +1,12 @@
 import Image from 'app/ui/atoms/image'
+
 import Link from 'app/ui/atoms/link'
 import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
 import ProfileHoverCard from 'app/ui/molecules/profile-hover-card'
 import {
     memo,
+    useMemo,
     useState,
     useEffect,
     useCallback,
@@ -632,19 +634,18 @@ export function SmallUnit({ data }) {
 }
 
 export const UnitFeed = ({ data, mode, DefaultUnit, SmallUnit, feed_type }) => {
-    data.mainImage = null
-    if (data?.content?.images) {
-        data.mainImage = data?.content?.images?.length > 0 ? data.content.images[0] : null
-    }
-    data.comments = null
-    if (data?.cmts?.data?.length > 0) {
-        data.comments =
-            data.cmts.data[0][Object.keys(data.cmts.data[0])[0]].data
-    }
+    const enrichedData = useMemo(() => {
+        const mainImage = data?.content?.images?.length > 0 ? data.content.images[0] : null;
+        const comments = data?.cmts?.data?.length > 0
+            ? data.cmts.data[0][Object.keys(data.cmts.data[0])[0]].data
+            : null;
+        return { ...data, mainImage, comments, showMore: true };
+    }, [data?.id]);
+
     const sKey = `feed_${data.id}_${data.feed_type}`
-    data.showMore = true
+
     const dataCache = getDataFromCache('li:data', sKey)
-    const [datas, setDatas] = useState(dataCache ? dataCache.data : data)
+    const [datas, setDatas] = useState(dataCache ? dataCache.data : enrichedData)
 
     useEffect(() => {
         storageSet('li:data', sKey, { data: datas, ts: Date.now() })
