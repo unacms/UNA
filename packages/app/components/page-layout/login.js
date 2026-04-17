@@ -12,14 +12,12 @@ import {
 import { Platform } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
 import AuthPanel from 'app/ui/molecules/auth'
-import { appSetting, getPageWidth } from 'app/lib/util'
 import Page from 'app/ui/molecules/page'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import { Icon } from 'app/ui/atoms/icon'
 
-const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
 function PageContent({ children, isLoginPage, title }) {
     const { t } = useTranslation()
@@ -59,10 +57,10 @@ function PageContent({ children, isLoginPage, title }) {
                         <CardDescription id="login-card-description">{t('login_page_text')}</CardDescription>
                     </CardHeader>
                     <CardContent className="sm:px-6 gap-4">
-                        
+
                         {children}
                         <AuthPanel showSeparator={true} forgotPasswordLink={true} />
-                        
+
                     </CardContent>
                     <CardFooter className="sm:px-6">
                         <Row className=" mx-auto gap-1 justify-center items-center text-center">
@@ -114,7 +112,7 @@ export default function PageLayout({ data, children }) {
                     <PageContent isLoginPage={true}>{children}</PageContent>
                 </View>
             )}
-          <MenuFooter
+            <MenuFooter
                 cntClasses='flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-3 p-4 min-h-14'
             />
         </Page>

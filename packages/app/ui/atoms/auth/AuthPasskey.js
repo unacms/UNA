@@ -10,18 +10,13 @@ export default function AuthPasskey({ button }) {
 
     return (
         <View className='flex-1 min-w-200'>
-            {button ? (
-                <Pressable onPress={handlePasskeyLogin}>{button}</Pressable>
-            ) : (
-                <Button 
-                    onPress={handlePasskeyLogin} 
-                    title="Use Passkey"
-                    startDecorator="KeySquare" // Changed to string
-                    fullWidth
-                                         size="base"
-                />
-            )}
-            {/* {error && <FormError errorText={error} />} */}
+            <Button
+                onPress={handlePasskeyLogin}
+                title="Use Passkey"
+                startDecorator="KeySquare" // Changed to string
+                fullWidth
+                size="base"
+            />
         </View>
     );
 } 

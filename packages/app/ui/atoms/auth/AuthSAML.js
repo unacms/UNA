@@ -10,18 +10,13 @@ export default function AuthSAML({ button }) {
 
     return (
         <View className='flex-1 min-w-200'>
-            {button ? (
-                <Pressable onPress={handleSAMLLogin}>{button}</Pressable>
-            ) : (
-                <Button 
-                    onPress={handleSAMLLogin} 
-                    title="Use SAML SSO"
-                    startDecorator="Lock" // Changed to string
-                                         fullWidth
-                    size="base"
-                />
-            )}
-            {/* {error && <FormError errorText={error} />} */}
+            <Button
+                onPress={handleSAMLLogin}
+                title="Use SAML SSO"
+                startDecorator="Lock" // Changed to string
+                fullWidth
+                size="base"
+            />
         </View>
     );
 } 

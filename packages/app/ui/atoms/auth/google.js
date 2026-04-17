@@ -16,7 +16,7 @@ import { useRouter, redirectTo } from 'app/lib/hooks/router'
 
 WebBrowser.maybeCompleteAuthSession();
 
-export default function AuthGoogle({ button }) {
+export default function AuthGoogle({ }) {
     const { t } = useTranslation()
     const googleSettings = appSetting('auth', 'google')
     const redirectRef = useRef();
@@ -85,14 +85,14 @@ export default function AuthGoogle({ button }) {
 
         <View className="w-full">
             <Redirect ref={redirectRef} />
-            {button ? <Pressable onPress={() => promptAsync({ useProxy: true })}>{button}</Pressable> : <Button
+            <Button
                 disabled={!request}
                 title={t("Continue with Google")}
                 onPress={() => promptAsync({ useProxy: true })}
                 fullWidth
-                                 size="lg"
+                size="lg"
                 startDecorator="Google"
-            />}
+            />
             {error && <FormError errorText={error} />}
         </View>
 

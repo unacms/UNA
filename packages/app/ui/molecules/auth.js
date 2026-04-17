@@ -12,8 +12,6 @@ import { Text } from 'app/design/typography'
 import { useTranslation } from 'react-i18next'
 
 export default function AuthPanel({
-    googleButton,
-    className,
     showSeparator = false,
     forgotPasswordLink = false,
     createAccountLink = false,
@@ -35,10 +33,10 @@ export default function AuthPanel({
                 </Link>
             )}
             {createAccountLink && (
-                <Row 
+                <Row
                     className="text-center flex-none mx-auto text-sm items-center text-muted-foreground gap-1"
                 >
-                    <Text 
+                    <Text
                         className="text-muted-foreground"
                         accessibilityRole="text"
                     >
@@ -57,8 +55,8 @@ export default function AuthPanel({
             )}
 
             {loginLink && (
-                <Link 
-                    href="/login" 
+                <Link
+                    href="/login"
                     haptics="Medium"
 
                 >
@@ -74,50 +72,42 @@ export default function AuthPanel({
             )}
 
             {(showSeparator && (appSetting('auth', 'google') || appSetting('auth', 'github') || appSetting('auth', 'linkedin') || appSetting('auth', 'x') || appSetting('auth', 'passkey') || appSetting('auth', 'saml'))) && (
-                <View 
+                <View
                     className="flex-row items-center justify-center w-full"
                     accessibilityRole="separator"
                     accessibilityLabel={t('splash_page_login3')}
                 >
-                    
-                    <View 
+
+                    <View
                         className="flex-1 h-px w-full bg-border/70"
                         accessibilityElementsHidden={true}
                         importantForAccessibility="no"
                     />
-                    <Text 
+                    <Text
                         className=" px-2 rounded-full text-xs leading-none mt-px text-muted-foreground "
                         accessibilityRole="text"
                     >
                         {t('splash_page_login3')}
                     </Text>
-                    <View 
+                    <View
                         className="flex-1 h-px w-full bg-border/70"
                         accessibilityElementsHidden={true}
                         importantForAccessibility="no"
                     />
-                    
+
                 </View>
             )}
-            <View 
+            <View
                 className="web:flex-row web:flex-wrap gap-x-2 gap-y-2 w-full"
                 accessibilityRole="group"
                 accessibilityLabel="Alternative sign-in methods"
             >
                 {appSetting('auth', 'google') && <AuthGoogle />}
-                {appSetting('auth', 'github') && (
-                    <AuthGitHub button={googleButton} />
-                )}
-                {appSetting('auth', 'linkedin') && (
-                    <AuthLinkedIn button={googleButton} />
-                )}
-                {appSetting('auth', 'x') && <AuthX button={googleButton} />}
-                {appSetting('auth', 'passkey') && (
-                    <AuthPasskey button={googleButton} />
-                )}
-                {appSetting('auth', 'saml') && (
-                    <AuthSAML button={googleButton} />
-                )}
+                {appSetting('auth', 'github') && <AuthGitHub />}
+                {appSetting('auth', 'linkedin') && <AuthLinkedIn />}
+                {appSetting('auth', 'x') && <AuthX />}
+                {appSetting('auth', 'passkey') && <AuthPasskey />}
+                {appSetting('auth', 'saml') && <AuthSAML />}
             </View>
         </View>
     )

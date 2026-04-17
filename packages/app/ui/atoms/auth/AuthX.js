@@ -12,10 +12,7 @@ export default function AuthX({ button }) {
 
     return (
         <View className='flex-1 min-w-200'>
-            {button ? (
-                <Pressable onPress={handleXLogin}>{button}</Pressable>
-            ) : (
-                <Button 
+            <Button 
                     onPress={handleXLogin} 
                     title="Continue with X"
                     startDecorator="XIcon" // Changed to string
@@ -23,8 +20,6 @@ export default function AuthX({ button }) {
                     fullWidth
                                          size="base"
                 />
-            )}
-            {/* {error && <FormError errorText={error} />} */}
         </View>
     );
 } 
