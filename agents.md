@@ -436,6 +436,10 @@ feed: {
 
 NEO supports optional **animated** Lucide icons (filled/active states, web hover “draw” scenes, etc.) via a small registry and scene classes on `Icon`. **Do not** guess the wiring: read **[animated-icons.md](animated-icons.md)** for registry keys, `icon-scene-*` classes, fork customization, and implementation pitfalls (especially **web + react-native-svg**).
 
+## NodeFlow graphic (animated icon-flow visuals)
+
+For "icons connected by a wavy line" graphics (onboarding, pipelines, integration explainers — horizontal or vertical), use the cross-platform [`NodeFlow`](packages/app/ui/atoms/node-flow/README.md) atom. Built on the same `react-native-svg` + RN `Animated` stack as the animated icons (no Skia/Lottie). Variants follow the same registry pattern as animated icons: defaults in [`packages/app/default/node-flow-variants.js`](packages/app/default/node-flow-variants.js), branch overrides in [`packages/app/customization/node-flow-variants.js`](packages/app/customization/node-flow-variants.js). On web, prefer `next/dynamic(() => import('app/ui/atoms/node-flow'), { ssr: false })` at call sites to keep route bundles lean.
+
 ---
 
 ## UNA CMS API Integration
