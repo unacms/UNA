@@ -4,7 +4,7 @@ import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
 import { useState } from 'react';
-import { ButtonLink } from 'app/design/controls'
+import { ButtonLink, Button } from 'app/design/controls'
 import Image from 'app/ui/atoms/image'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
