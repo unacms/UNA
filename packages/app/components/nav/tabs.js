@@ -42,7 +42,7 @@ function getBadgeForTab(currentUser, tab) {
     const badgeTextSize = appSetting('theme', 'native_tabs', 'badgeTextSize') || 'text-xs';
 
     if (
-        (tab.url == appSetting('notifications', 'url') || tab.badge=='notifications') &&
+        (tab.url == appSetting('notifications', 'url') || tab.badge == 'notifications') &&
         currentUser?.notifications
     ) {
         return (
@@ -53,12 +53,12 @@ function getBadgeForTab(currentUser, tab) {
     }
 
     if (
-       tab.badge=='notifications, messenger' &&
-        (currentUser?.counters?.bx_messenger_new_messages+currentUser?.notifications) > 0
+        tab.badge == 'notifications, messenger' &&
+        (currentUser?.counters?.bx_messenger_new_messages + currentUser?.notifications) > 0
     ) {
         return (
             <Text className={`${badgeTextSize} text-white font-medium`}>
-                {currentUser?.counters?.bx_messenger_new_messages+currentUser?.notifications}
+                {currentUser?.counters?.bx_messenger_new_messages + currentUser?.notifications}
             </Text>
         )
     }
@@ -159,13 +159,6 @@ export default function Tabs() {
 
     const tabsSessionKey = currentUser?.id ? `user-${currentUser.id}-${currentUser.confirmed}` : 'user-guest';
 
-    const profile = useMemo(() => {
-        if (currentUser) {
-            const dUser = { ...currentUser, url_avatar: currentUser?.avatar, url: '/dashboard' };
-            return <View className=" rounded-full "><Profile {...dUser} showLinks={false} displayType="unit_wo_info" displaySize="xs" /></View>;
-        }
-        return null;
-    }, [currentUser?.id, currentUser?.avatar]);
 
     useEffect(() => {
         if (themeName != 'auto') {
@@ -202,7 +195,7 @@ export default function Tabs() {
             alignItems: 'center',
             paddingHorizontal: 4,
             borderWidth: 2,
-           
+
             borderColor: colors.barsBackground,
         },
         tabBarAllowFontScaling: false,
@@ -285,13 +278,27 @@ export default function Tabs() {
                         TabList.map((tab, index) => {
                             const useAnimatedIcon = tab.animated === true;
                             const tabRouteName = `tab${index}/index`;
+                            const tabUrl = tab.url === '{profile}' ? currentUser?.url : tab.url
                             const options = {
                                 tabBarBadge: getBadgeForTab(currentUser, tab),
                                 tabBarBadgeAllowFontScaling: false,
                                 title: t(tab.title),
                                 headerShown: false,
                                 tabBarIcon: ({ color, focused }) => (
-                                    (tab.url == appSetting('dashboard', 'url') && profile) ? <View className="h-full ">{profile}</View> : <View className="h-full"><Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} animated={useAnimatedIcon} active={useAnimatedIcon ? focused : undefined} className={tab.addClassName} /></View>
+                                    ((tabUrl == appSetting('dashboard', 'url') || tab.icon == 'dashboard')) ? <View className="h-full ">
+                                        <View className=" rounded-full ">
+                                            <Profile
+                                                {...currentUser}
+                                                url_avatar={currentUser?.avatar}
+                                                url={tabUrl}
+                                                showLinks={false}
+                                                displayType="unit_wo_info"
+                                                displaySize="xs" />
+                                        </View>
+                                    </View> :
+                                        <View className="h-full">
+                                            <Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} animated={useAnimatedIcon} active={useAnimatedIcon ? focused : undefined} className={tab.addClassName} />
+                                        </View>
                                 )
                             };
 
@@ -307,14 +314,14 @@ export default function Tabs() {
                                 <RouterTabs.Screen
                                     key={`tab${index}`}
                                     name={tabRouteName}
-                                    initialParams={{ url2: tab.url, name: `tab${index}` }}
+                                    initialParams={{ url2: tabUrl, name: `tab${index}` }}
                                     listeners={{
                                         tabPress: async (e) => {
-                                            const isExternalLink = tab.url && (tab.url.startsWith('http://') || tab.url.startsWith('https://'));
+                                            const isExternalLink = tabUrl && (tabUrl.startsWith('http://') || tabUrl.startsWith('https://'));
 
                                             if (isExternalLink) {
-                                                e.preventDefault(); 
-                                                await WebBrowser.openBrowserAsync(tab.url);
+                                                e.preventDefault();
+                                                await WebBrowser.openBrowserAsync(tabUrl);
                                                 FeedbackHaptics('Medium');
                                                 return;
                                             }
@@ -323,7 +330,7 @@ export default function Tabs() {
                                                 setLayoutData(getAlert('list:move_to_top', true));
                                             }
                                             if (e.type == 'tabPress') {
-                                                if (tab.url == notificationUrl) {
+                                                if (tabUrl == notificationUrl) {
                                                     clearNotif()
                                                     setCurrentUser({
                                                         notifications: 0,

@@ -38,14 +38,20 @@ export function Screen(params) {
     const { currentUser } = useCurrentUser();
     let _path = local.url;
     let isRoot = false;
+  
     // BOTTOM TABS NAVIGATION
     if (!_path || _path.includes('/tab')) {
         const tabListKey = currentUser ? 'menu_tabbar_logged' : 'menu_tabbar_non_logged';
         const tabList = appSetting('menu_items', tabListKey);
         const item = tabList.find((item) => item.key === pathname);
         _path = item ? item.url : null;
+        if (_path === '{profile}') {
+            _path = currentUser?.url;
+        }
+        
         isRoot = true;
     }
+
     return <Content key={_path+local.refresh} pagePath={_path} currentUser={currentUser} isRoot={isRoot} />
 
 

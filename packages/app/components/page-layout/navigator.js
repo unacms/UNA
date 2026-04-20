@@ -36,14 +36,13 @@ export default function PageLayout(props) {
     let menu = useMemo(() => getMenu(props, layout), [leftSideBar]);
     if (!menu.items)
         menu = {items: []}
-    console.log("menumenu", menu)
     const isNamePresent = menu?.items?.some(item => item.name === props.data.uri);
     if (!isNamePresent){
         menu.items.push({id:-1, name: props.uri, title:'', link: props.data.url, hideInTop: true});
     }
 
     useEffect(() => {
-        if (appSetting('notifications', 'url') === '/' + props.data.url){
+        if (appSetting('notifications', 'url') === '/' + props?.data?.url){
             clearNotif();
             setCurrentUser({
                 notifications: 0,

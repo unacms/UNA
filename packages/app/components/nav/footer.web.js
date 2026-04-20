@@ -47,14 +47,6 @@ export default function () {
     if (shouldHide)
         return null
 
-    let profile = null
-    if (currentUser) {
-        let dUser = Object.assign({}, currentUser);
-        dUser.url_avatar = dUser.avatar
-        dUser.url = appSetting('dashboard', 'url')
-        profile = <View className="w-6 h-6"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>
-    }
-
     if (pathname == '/')
         pathname = '/home';
 
@@ -72,7 +64,7 @@ export default function () {
                 <Row className="flex-auto items-center flex-row w-full px-1 gap-1">
                     {TabList.filter(item => !item.hide).map((tab, index) => {
                         const isActive = appSetting('messenger', 'url') === tab.url ? pathname.includes(tab.url) : pathname === tab.url;
-                        return <MenuBottomItem key={`bmi-${index}`} notifCount={notifCount} iFrCounter={iFrCounter} profile={profile} link={tab.url} badge={tab.badge} index={index} icon={tab.icon} title={t(tab.title)} isActive={isActive} animated={tab.animated} addClassName={tab.addClassName} />
+                        return <MenuBottomItem key={`bmi-${index}`} notifCount={notifCount} iFrCounter={iFrCounter} link={tab.url} badge={tab.badge} index={index} icon={tab.icon} title={t(tab.title)} isActive={isActive} animated={tab.animated} addClassName={tab.addClassName} />
                     })}
                 </Row>
             </View>
@@ -80,7 +72,7 @@ export default function () {
     );
 }
 
-function MenuBottomItem({ link, title, index, badge, icon, isActive, profile, iFrCounter, notifCount, animated, addClassName }) {
+function MenuBottomItem({ link, title, badge, icon, isActive, iFrCounter, notifCount, animated, addClassName }) {
     const { currentUser } = useCurrentUser();
     const playSound = useSound('click');
     const useAnimatedIcon = animated === true;
@@ -112,10 +104,13 @@ function MenuBottomItem({ link, title, index, badge, icon, isActive, profile, iF
         : 'text-secondary-foreground web:group-hover:text-foreground';
     const iconClassName = addClassName ? `${baseIconClassName} ${addClassName}` : baseIconClassName;
 
+    const link1 =  link === '{profile}' ? currentUser?.url : link
+
+
     return (
             <Link
-                href={link}
-                noprefetch={link === appSetting('notifications', 'url') ? "false" : "true"}
+                href={link1}
+                noprefetch={link1 === appSetting('notifications', 'url') ? "false" : "true"}
                 className="group w-full"
                 alt={title}
                  onClick={handlePress}
@@ -126,7 +121,11 @@ function MenuBottomItem({ link, title, index, badge, icon, isActive, profile, iF
                     onMouseLeave={useAnimatedIcon ? () => setGroupHovered(false) : undefined}
                 >
                     <View className="items-center justify-center">
-                        {link === appSetting('dashboard', 'url') ? profile : <Icon icon={icon} size={24} animated={useAnimatedIcon} active={useAnimatedIcon ? isActive : undefined} hovered={useAnimatedIcon ? groupHovered : undefined} className={iconClassName} />}
+                        {
+                            link === appSetting('dashboard', 'url') || icon=='dashboard' 
+                            ? <View className="w-6 h-6"><Profile  {...currentUser} url_avatar = {currentUser.avatar} url={link1} displayType="unit_wo_info" displaySize="xs" /></View> : 
+                            <Icon icon={icon} size={24} animated={useAnimatedIcon} active={useAnimatedIcon ? isActive : undefined} hovered={useAnimatedIcon ? groupHovered : undefined} className={iconClassName} />
+                        }
                     </View>
                     {<Text className={` web:group-hover:text-accent-foreground text-xs tracking-tight leading-none font-medium whitespace-nowrap ${isActive ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>{title}</Text>}
                     {badgeObj && <View className={`absolute bg-destructive border-2 border-card rounded-full px-1.5 min-w-6 items-center justify-center  -top-1 left-1/2 -translate-x-1/2 ml-4`}><Text className="text-white text-xs font-medium tracking-tight leading-5 ">{badgeObj.text}</Text></View>}
