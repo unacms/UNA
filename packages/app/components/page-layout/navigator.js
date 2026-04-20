@@ -43,7 +43,7 @@ export default function PageLayout(props) {
     }
 
     useEffect(() => {
-        if (appSetting('notifications', 'url') === '/' + props.uri){
+        if (appSetting('notifications', 'url') === '/' + props.data.url){
             clearNotif();
             setCurrentUser({
                 notifications: 0,
