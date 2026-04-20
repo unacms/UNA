@@ -111,9 +111,9 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
         data.profile.module == context.list[0].module
     const ContextSelector = getComponent('molecule', 'context_selector')
 
-    if (isDesktop && isAddSelector) {
+    /*if (isDesktop && isAddSelector) {
         return null
-    }
+    }*/
 
     if (coverMode === 'none' && isDesktop) {
         return null
@@ -162,7 +162,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                 </>
                 }
             </Row>
-                <View className="flex-none items-end ">
+                <View className="flex-none items-end bg-red-500">
                     <Row className="w-full justify-between">
                         {!showMoreMenu &&
                             (!appSetting('cover', 'hide_cover_menu_on_narrow') ||
@@ -525,7 +525,15 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
                                     containerClasses="gap-2 lg:gap-3"
                                 />
                                 <View
-                                    className='lg:hidden'
+                                    className={
+                                        appSetting(
+                                            'cover',
+                                            'more_menu_in_navbar',
+                                            data?.profile?.module
+                                        )
+                                            ? 'lg:hidden'
+                                            : ''
+                                    }
                                 >
                                     <CoverMenuMore
                                         {...data.actions_menu}
