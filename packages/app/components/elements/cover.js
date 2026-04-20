@@ -162,7 +162,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                 </>
                 }
             </Row>
-                <View className="flex-none items-end bg-red-500">
+                <View className="flex-none items-end">
                     <Row className="w-full justify-between">
                         {!showMoreMenu &&
                             (!appSetting('cover', 'hide_cover_menu_on_narrow') ||
