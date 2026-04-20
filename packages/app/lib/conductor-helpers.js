@@ -201,9 +201,9 @@ export function fillTabs(
                 }*/
             }
         } else {
-            let contentAndEndpoint = processUrl(data, blocks)
-            i.sidebar = contentAndEndpoint.sidebar
-            i.leftbar = contentAndEndpoint.leftbar
+            //let contentAndEndpoint = processUrl(data, blocks)
+            i.sidebar = {}
+            i.leftbar = {}
             i.link = item.link
             i.hideInTop = item.hideInTop
             i.item = item
