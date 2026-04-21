@@ -112,6 +112,7 @@ export default function ElementEntityAuthor({ data, blockWrapperProps }) {
     }
 
     const menuOptions = handleMenuManageSelect ? { onSelect: (oItem, event) => handleMenuManageSelect(oItem, event, setPageData) } : {};
+    return <></>
     return (
         <BlockWrapper {...blockWrapperProps}>
             <Row className="justify-between gap-3">

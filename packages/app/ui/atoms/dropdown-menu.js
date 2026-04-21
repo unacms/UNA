@@ -5,13 +5,15 @@ import { memo, useCallback, useEffect, useRef, useState, isValidElement, cloneEl
 import { clsx } from 'clsx';
 import { FeedbackHaptics } from 'app/lib/util';
 import { Keyboard, Alert, Platform } from 'react-native'
-
+import { appStatic } from 'app/lib/app-static'
 import Redirect from 'app/ui/atoms/redirect';
 import { isEmoji, appSetting } from 'app/lib/util';
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import emitter from 'app/context/emitter';
 import { getComponent } from 'app/components/registry'
+import { useOpenModalByUrl, useOpenModalWithContent  } from 'app/context/jotai/modal';
+
 const menuSettings = appSetting('theme', 'dropdown_menu');
 
 export const DropdownMenuOpenContext = createContext(false);
@@ -59,6 +61,8 @@ function DropdownMenuPopup({
     const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
     const isControlled = openProp !== undefined;
     const isOpen = isControlled ? openProp : uncontrolledOpen;
+    const openModalByUrl = useOpenModalByUrl();
+    const openModalWithContent = useOpenModalWithContent();
 
     const setIsOpen = useCallback(
         (next) => {
@@ -77,10 +81,14 @@ function DropdownMenuPopup({
 
     const handleSelect = useCallback(
         (event, item) => {
+            console.log("item", item)
             setIsOpen(false);
             onSelect
                 ? onSelect(item)
-                : redirectdRef.current.redirect('' + item.link);
+                : item.target == 'modal' ? (item.content ? openModalWithContent({
+                    title: item.title,
+                    content: appStatic(item.content),
+                  }) : openModalByUrl(item.link)) : redirectdRef.current.redirect('' + item.link);
         },
         [onSelect, setIsOpen]
     );

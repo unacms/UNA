@@ -209,13 +209,15 @@ export default function MenuAccount({ buttonProps, children }) {
                     }
                     return {
                         id: 'menu-' + index,
-                        link: item.link.includes('://')
+                        link: item.link?.includes('://')
                             ? item.link
-                            : item.link.startsWith('/')
+                            : item.link?.startsWith('/')
                                 ? item.link
                                 : '/' + item.link,
                         title: sTitle,
                         type: sType,
+                        target: item.target,
+                        content: item.content,
                         icon: item.icon,
                     }
                 })}

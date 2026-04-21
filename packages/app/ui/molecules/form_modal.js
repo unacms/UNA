@@ -132,6 +132,20 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
 export const FormModalHost = () => {
     const modal = useModal();
     const closeModal = useCloseModal();
+    if (modal.visible && modal.mode === 'content') {
+        return (
+            <Modal
+                onVisible={true}
+                onClose={closeModal}
+                title={modal.title}
+                scrollable={true}
+                transparent={true}
+                outerClickClose={isWeb}
+            >
+                <View className="p-3 sm:p-4">{modal.content}</View>
+            </Modal>
+        );
+    }
     return (
         <FormModal
             modalView="content_page"
