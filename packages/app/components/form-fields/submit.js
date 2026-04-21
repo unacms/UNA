@@ -60,8 +60,8 @@ export default function FormFieldSubmit(props) {
     const showErrors =
         errorKeys.length > 0 && !hide_errors && !formProps.hide_errors;
 
-    let fb = formProps.button_full_width || props.button_full_width || !isDesktop
-
+    //let fb = formProps.button_full_width || props.button_full_width || !isDesktop
+    const fullWidth = !notFullWidth;// ? false : (formProps.button_full_width || props.button_full_width);
     useEffect(() => {
         const subscription = emitter.addListener(`form_${form_name}`, (data) => {
             if (data.action == 'submited') {
@@ -80,15 +80,15 @@ export default function FormFieldSubmit(props) {
         }
     }, [])
 
-    if (notFullWidth) {
+   /* if (notFullWidth) {
         fb = false;
-    }
+    }*/
     // Prepare button properties
     const buttonProps = {
         variant,
         rounded,
         size,
-        fullWidth: fb
+        fullWidth: fullWidth
     };
 
     const buttonHandlers = Platform.select({
@@ -117,15 +117,15 @@ export default function FormFieldSubmit(props) {
     return (
         <Field {...props}>
             <Row className={rowClassName}>
-                <Button
+                <View className="w-full @sm/block:w-auto">
+                    <Button
                     title={!icon_only ? value : ''}
                     startDecorator={isSumbitting ? <Loading size="small" color="#fff"/> : icon}
                     {...buttonProps}
                     {...buttonHandlers}
                     disabled={isSumbitting || disabled}
-                    
-                    //pressed={isSumbitting}
                 />
+                </View>
                 {saveOnChanges && (
                     <Button
                         {...buttonProps}
@@ -134,6 +134,7 @@ export default function FormFieldSubmit(props) {
                         title="Reset"
                     />
                 )}
+                
             </Row>
             <Hidden
                 name={name}

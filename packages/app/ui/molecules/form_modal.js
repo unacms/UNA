@@ -100,7 +100,7 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
             onClose={handleClose}
 
         >
-            <View className='p-3 flex-auto'>
+            <View className='flex-auto'>{/*p-3*/}
                 <Container key={pageData.module + (pageData.ts)} className={`flex-1 ${isShowHeader ? '' : 'overflow-visible'}`}>{/*px-3 sm:px-0*/}
                     {
                         pageData == 'loading' ? <View className="flex-1 items-center justify-center">

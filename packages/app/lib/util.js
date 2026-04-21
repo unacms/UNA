@@ -51,7 +51,7 @@ export function isObjectsEqual(obj, obj2) {
 
 export async function subscribeOneSignal(currentUser, askPermission = false) {
     if (!isWeb) {
-        OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+        OneSignal.Debug.setLogLevel(LogLevel.None);
         OneSignal.initialize(appSetting('config', 'api_keys', 'onesignal'));
                 
         if (Platform.OS === "android") {
@@ -61,37 +61,32 @@ export async function subscribeOneSignal(currentUser, askPermission = false) {
         }
 
         let permissionStatus = await OneSignal.Notifications.getPermissionAsync();
-        console.log("OneSignal permission status before request:", permissionStatus);
+        //console.log("OneSignal permission status before request:", permissionStatus);
 
         if (!permissionStatus && askPermission) {
             await OneSignal.Notifications.requestPermission(true);
             permissionStatus = await OneSignal.Notifications.getPermissionAsync();
-            console.log("OneSignal permission status after request:", permissionStatus);
+            //console.log("OneSignal permission status after request:", permissionStatus);
         }
 
         if (permissionStatus) {
-            console.log("OneSignal data:", {
+            /*console.log("OneSignal data:", {
                 id: await OneSignal.User.getOnesignalId(),
                 token: await OneSignal.User.pushSubscription.getTokenAsync(),
                 optedIn: await OneSignal.User.pushSubscription.getOptedInAsync(),
                 permission: permissionStatus
-            });
+            });*/
 
             await OneSignal.login(String(currentUser.id));
             await OneSignal.User.addTag("user_hash", String(currentUser.hash));
         }    
 
         // Method for listening for notification clicks
-        OneSignal.Notifications.addEventListener('click', (event) => {
+        /*OneSignal.Notifications.addEventListener('click', (event) => {
             console.log('OneSignal: notification clicked:', event);
-        });
+        });*/
     }
 }
-
-/*export function cd(className, density = 'default', section = 'offsets') {
-    const t = appSetting('theme', section);
-    return t[`${className}`]
-}*/
 
 export function normalizeClasses(a) {
     if (!a) return a
