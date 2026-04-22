@@ -24,11 +24,11 @@ export function goBack(navigation, router, callback) {
     }
 }
 
-export function redirectTo(router, url) {
+export function redirectTo(router, url, tabname = '/tab0') {
     const normalizedUrl = url?.startsWith('/') ? url : `/${url}`;
 
     router.replace({
-        pathname: '/tab0',
+        pathname: tabname,
         params: { url: normalizedUrl, refresh: Date.now() }
     })
 }

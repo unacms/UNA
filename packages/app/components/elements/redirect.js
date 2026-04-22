@@ -1,16 +1,17 @@
-import { useRouter, redirectTo } from 'app/lib/hooks/router'
+import { useRouter, usePathname, redirectTo } from 'app/lib/hooks/router'
 import { useEffect } from 'react';
-import { BlockWrapper } from 'app/components/block-wrapper'
 
 export default function ElementRedirect({data, blockWrapperProps}) {
     const router = useRouter();
+    const pathname = usePathname();
     const uri = data?.uri === '/' || !data?.uri ? '/home' : data.uri;
     const timeout = data?.timeout;
     useEffect(() => {
+        const currentTab = '/' + (pathname.split('/')[1] || 'tab0');
         if (timeout) {
-            setTimeout(() => redirectTo(router, uri), timeout);
+            setTimeout(() => redirectTo(router, uri, currentTab), timeout);
         } else {
-            redirectTo(router, uri);
+            redirectTo(router, uri, currentTab);
         }
     }, [uri, timeout]);
 
