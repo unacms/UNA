@@ -731,6 +731,10 @@ export default function RftText({
                         platformOS: '${Platform.OS}'
                     };
                     const editorElement = document.getElementsByClassName("tiptap")[0];
+                    editorElement.setAttribute('autocomplete', 'off');
+                    editorElement.setAttribute('autocorrect', 'off');
+                    editorElement.setAttribute('autocapitalize', 'off');
+                    editorElement.setAttribute('spellcheck', 'false');
 
                     ${applyIframeTheme(themeName)}
 
@@ -1016,6 +1020,10 @@ export default function RftText({
                                 } ${classes || ''}`,
                             style: `font-family: ${editorFontFamily}; color: ${editorTextColor};`,
                         },
+                        autocomplete: 'off',
+                        autocorrect: 'off',
+                        autocapitalize: 'off',
+                        spellcheck: 'false',
                     }}
                     onDebouncedUpdate={(editor) => {
                         // ... existing code ...
