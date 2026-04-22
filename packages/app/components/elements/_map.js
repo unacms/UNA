@@ -41,7 +41,6 @@ import ProfileList from './profiles_list';
 import { ReputationSummary, ReputationWidget, ReputationLeaderboard, ReputationLevels, ReputationHistory, ReputationActions } from './reputation';
 import SearchSections from './search_sections';
 import StripeConnect from './stripe_connect';
-import ApiPerformance from './api_performance';
 
 export const componentsMapDefault = {
     messenger_main_page: Messenger,
@@ -94,6 +93,5 @@ export const componentsMapDefault = {
     get_block_contacts_messenger: ProfileContacts,
     get_create_post_form: MultiPostForm,
     simple_list: SimpleList,
-    stripe_connect: StripeConnect,
-    api_performance: ApiPerformance
+    stripe_connect: StripeConnect
 };

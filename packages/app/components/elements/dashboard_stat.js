@@ -28,7 +28,6 @@ import { storageSet, storageClear, storageGet } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
 import { Theme } from 'app/design/theme'
 import DasbordStatOld from 'app/components/elements/dashboard_stat_old'
-import ApiPerformanceReport from 'app/ui/molecules/api-performance-report'
 import ThemeCompatibilityTest from 'app/ui/molecules/nativewindui'
 import { useDensitySwitcher } from 'app/ui/atoms/density-switcher'
 import { useLayoutSettings } from 'app/context/layout-settings'
@@ -288,7 +287,6 @@ function ElementDashboardStat(props) {
     const { t } = useTranslation()
     const [data, setData] = useState(props.data)
     const { currentUser, setCurrentUser } = useCurrentUser()
-    const [showApiPerformance, setShowApiPerformance] = useState(false)
     const [showThemeTest, setShowThemeTest] = useState(false)
     useEffect(() => {
         const fetchData = async () => {
@@ -305,20 +303,6 @@ function ElementDashboardStat(props) {
     const filtredData = menu || data.modules.filter((item) => list.includes(item.key))
     return (
         <>
-            <Modal
-                id="api-performance-modal"
-                title="API Performance Report"
-                onVisible={!!showApiPerformance}
-                onClose={() => setShowApiPerformance(false)}
-                maxWidth="max-w-3xl"
-                maxHeight="max-h-[90vh]"
-                scrollable={true}
-            >
-                <ScrollView className="max-h-[70vh] p-4">
-                    <ApiPerformanceReport />
-                </ScrollView>
-            </Modal>
-
             <Modal
                 id="theme-test-modal"
                 title="Theme Compatibility Test"
@@ -438,34 +422,19 @@ function ElementDashboardStat(props) {
 
                 <View className="my-6 grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
                     {currentUser?.id && (
-                        <>
-                            <View className=" w-full min-w-[160px]  ">
-                                <Button
-                                    variant="secondary"
-                                    align="left"
-                                    size="sm"
-                                    fullWidth
-                                    title={t('API Performance')}
-                                    startDecorator="Activity"
-                                    onPress={() =>
-                                        setShowApiPerformance(true)
-                                    }
-                                />
-                            </View>
-                            <View className=" w-full min-w-[160px]  ">
-                                <Button
-                                    variant="secondary"
-                                    align="left"
-                                    size="sm"
-                                    fullWidth
-                                    title="Theme Test"
-                                    startDecorator="Palette"
-                                    onPress={() =>
-                                        setShowThemeTest(true)
-                                    }
-                                />
-                            </View>
-                        </>
+                        <View className=" w-full min-w-[160px]  ">
+                            <Button
+                                variant="secondary"
+                                align="left"
+                                size="sm"
+                                fullWidth
+                                title="Theme Test"
+                                startDecorator="Palette"
+                                onPress={() =>
+                                    setShowThemeTest(true)
+                                }
+                            />
+                        </View>
                     )}
                     {data.manage.items.map((item2, index) => {
                         return (
