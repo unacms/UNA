@@ -560,7 +560,7 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
     useFocusEffect(useCallback(() => {
         if (isWeb) return;
         setHeader(isSmallScreen ? { header: header } : defaultHeader);
-        return () => setHeader(defaultHeader);
+        //return () => setHeader(defaultHeader);
     }, [isSmallScreen, setHeader, header]));
     
     return (
@@ -652,7 +652,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
     useFocusEffect(useCallback(() => {
         if (isWeb) return;
         setHeader(isSmallScreen ? { header: header } : defaultHeader);
-        return () => setHeader(defaultHeader);
+        //return () => setHeader(defaultHeader);
     }, [isSmallScreen, setHeader, header]));
 
     return (<>

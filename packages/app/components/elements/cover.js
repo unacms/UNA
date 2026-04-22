@@ -472,7 +472,7 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
                     <View className="flex-col flex-auto gap-2 p-1 ">
                         <Row className="gap-2 flex-auto items-center min-h-10 px-0.5">
                             <Text
-                                className={`font-title tracking-tight text-3xl font-bold text-foreground`}
+                                className={`flex-1 min-w-0 tracking-tight text-3xl font-bold text-foreground`}
                                 numberOfLines={2}
                             >
                                 {profileData.display_name || profileData.title || ''}
