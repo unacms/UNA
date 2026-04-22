@@ -9,7 +9,7 @@ import { appSetting} from 'app/lib/util';
 const panelTheme = appSetting('theme', 'panels');
 
 function createPanelComponent({ baseClass, Component = PanelDef, role, ariaLevel }) {
-    return function PanelSubComponent({ className = '', density, ...props }) {
+    return function PanelSubComponent({ className = '', ...props }) {
         // PanelGroup needs overflow: hidden for proper layout containment
         // Panels can have overflow: visible to allow sticky children
         const styleProps = baseClass === 'u-panel-group' 
@@ -31,13 +31,11 @@ function createPanelComponent({ baseClass, Component = PanelDef, role, ariaLevel
 }
 
 export const PanelHandler = memo(({ gap, sizable, className = '', style }) => {
-    const { density: effectiveDensity } = useLayoutSettings();
-    const densityClass = panelTheme[`u-panel-handler-${effectiveDensity}`] ;
-
+    
     const gapClass = gap && gap.includes(' ') ? gap : gap ? `w-${gap}` : 'w-1';
 
     const defaultClasses = `${gapClass} web:group web:duration-200 justify-center items-center flex`;
-    const finalClasses = `${defaultClasses} ${className} ${densityClass}`;
+    const finalClasses = `${defaultClasses} ${className}`;
 
     return sizable ? (
         <PanelResizeHandle 

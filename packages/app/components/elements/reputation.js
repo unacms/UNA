@@ -146,7 +146,6 @@ export function ReputationWidget({ data }) {
 }
 
 function ReputationSummarySimple({ data }) {
-    const { density } = useLayoutSettings()
     const [isModal, setIsModal] = useState(false)
     const [isModal2, setIsModal2] = useState(false)
     return (

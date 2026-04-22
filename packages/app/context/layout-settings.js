@@ -74,12 +74,6 @@ export const useLayoutSettings = () => {
         }, []
     );
 
-    const setDensity = useCallback(
-        async (value) => {
-            await useLayoutSettingsStore.getState().updateLayoutSettings({ density: value });
-        }, []
-    );
-
     const getDefaultLangCode = () => {
         const langs = appSetting('layout', 'avaliable_langs');
         try {
@@ -115,8 +109,8 @@ export const useLayoutSettings = () => {
         }
     }, [hydrated]);
 
-    const { density, name: layoutName, theme: themeName, lang } = layoutSettings ?? {};
+    const { name: layoutName, theme: themeName, lang } = layoutSettings ?? {};
     const langCode = lang != 'auto' ? lang : getDefaultLangCode();
 
-    return { layoutSettings, setLayoutSettings, updateLayoutSettings, hydrated, density, layoutName, themeName, setThemeName, setLayoutName, setDensity, setLang, lang, langCode };
+    return { layoutSettings, setLayoutSettings, updateLayoutSettings, hydrated, layoutName, themeName, setThemeName, setLayoutName, setLang, lang, langCode };
 };

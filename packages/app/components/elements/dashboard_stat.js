@@ -29,7 +29,6 @@ import { fetcher } from 'app/lib/fetcher'
 import { Theme } from 'app/design/theme'
 import DasbordStatOld from 'app/components/elements/dashboard_stat_old'
 import ThemeCompatibilityTest from 'app/ui/molecules/nativewindui'
-import { useDensitySwitcher } from 'app/ui/atoms/density-switcher'
 import { useLayoutSettings } from 'app/context/layout-settings'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
@@ -97,11 +96,9 @@ export default function DashboardStat(props) {
         lang,
         setLang,
         langCode,
-        setDensity,
     } = useLayoutSettings()
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
-    const { currentDensity, densityOptions } = useDensitySwitcher()
     const langs = appSetting('layout', 'avaliable_langs')
     let profile = null
     if (currentUser) {
