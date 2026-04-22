@@ -61,8 +61,8 @@ export const useLayoutSettings = () => {
     const setThemeName = useCallback(
         async (value) => {
             if (!isWeb) {
-                if (value == 'auto') value = null
-                Appearance.setColorScheme(value)
+                const nativeValue = value == 'auto' ? null : value;
+                Appearance.setColorScheme(nativeValue);
             }
             await useLayoutSettingsStore.getState().updateLayoutSettings({ theme: value });
         }, []
@@ -71,6 +71,12 @@ export const useLayoutSettings = () => {
     const setLayoutName = useCallback(
         async (value) => {
             await useLayoutSettingsStore.getState().updateLayoutSettings({ name: value });
+        }, []
+    );
+
+    const setDensity = useCallback(
+        async (value) => {
+            await useLayoutSettingsStore.getState().updateLayoutSettings({ density: value });
         }, []
     );
 
@@ -109,8 +115,8 @@ export const useLayoutSettings = () => {
         }
     }, [hydrated]);
 
-    const { name: layoutName, theme: themeName, lang } = layoutSettings ?? {};
+    const { density, name: layoutName, theme: themeName, lang } = layoutSettings ?? {};
     const langCode = lang != 'auto' ? lang : getDefaultLangCode();
 
-    return { layoutSettings, setLayoutSettings, updateLayoutSettings, hydrated, layoutName, themeName, setThemeName, setLayoutName, setLang, lang, langCode };
+    return { layoutSettings, setLayoutSettings, updateLayoutSettings, hydrated, density, layoutName, themeName, setThemeName, setLayoutName, setDensity, setLang, lang, langCode };
 };
