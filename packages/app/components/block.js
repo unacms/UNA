@@ -138,7 +138,7 @@ export function DataByName(data, name) {
 
 function StaticBlock_(name, rest) {
     const blockNameString = (typeof name === 'string') ? name : name?.name;
-
+    
     if (blockNameString?.includes('static')) {
         if (typeof name === 'object') {
             return <StaticBlock {...name} {...rest} />;
@@ -148,20 +148,21 @@ function StaticBlock_(name, rest) {
     }
 }
 
-export function StaticBlock({ name, showBg, showTitle, showPadding, title }) {
+export function StaticBlock({ name, showBg, showTitle, showPadding, title, wrapperClassses }) {
     const block = { designbox_id: 0, id: name, title: title };
     return (
-        <BlockWrapper block={block} showBg={showBg} showTitle={showTitle} showPadding={showPadding}>
+        <BlockWrapper block={block} showBg={showBg} showTitle={showTitle} showPadding={showPadding} wrapperClassses={wrapperClassses}>
             {appStatic('components_' + name.replace('static:', ''))}
         </BlockWrapper>
     );
 }
 
 export default function Block(props) {
+   
     const block = props.block;
 
     const { name: extraPropsName, key, ...extraPropsRest } = props?.extraProps ?? {};
-    const staticBlock = StaticBlock_(extraPropsName, extraPropsRest)
+    const staticBlock = StaticBlock_(extraPropsName, {...extraPropsRest, wrapperClassses: props.wrapperClassses})
     if (staticBlock) {
         return staticBlock
     }
@@ -180,7 +181,6 @@ export default function Block(props) {
         showPadding: props.showPadding,
         wrapperClassses: props.wrapperClassses,
     };
-
     const blockContent = BlockContent({
         blockWrapperProps,
         data: block.content,
