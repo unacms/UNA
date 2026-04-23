@@ -496,8 +496,8 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
                             </Text>
                         )}
                     </View>
-                    <View className="flex-row flex-wrap items-end  justify-between gap-x-2 gap-y-2">
-                        <View className="flex-row sm:items-end flex-auto flex-wrap gap-3 lg:ml-auto">
+                    <View className="flex-1 justify-end gap-x-2 gap-y-2">
+                        <View className="flex-row sm:items-end flex-1 flex-wrap gap-3 lg:ml-auto">
                             {bPerson && (
                                 <View
                                     className={`${isMin ? 'h-24' : 'h-9'
