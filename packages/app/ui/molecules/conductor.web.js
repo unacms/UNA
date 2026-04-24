@@ -526,9 +526,7 @@ const TabSceneMainContent = ({
                 }
                 refetchRef.current.skipToast = true
             }
-
-            if (data.action == 'new_content' && (!pageRoute?.endpoint?.params?.owner_id || Math.abs(pageRoute?.endpoint?.params?.owner_id) == Math.abs(data?.data?.owner_id))) {
-
+            if (data.action == 'new_content' && (!pageRoute?.endpoint?.params?.owner_id || (Math.abs(pageRoute?.endpoint?.params?.owner_id) == Math.abs(data?.data?.owner_id) || Math.abs(pageRoute?.endpoint?.params?.owner_id) == Math.abs(data?.data?.object_privacy_view)))) {
                 dispatch({ type: 'PREPEND_ITEM', item: data.data })
                 if (refetchRef.current?.prevItems) {
                     refetchRef.current.prevItems = [data.data, ...refetchRef.current.prevItems]
