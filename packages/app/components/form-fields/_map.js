@@ -43,6 +43,7 @@ export const componentsMapDefault = {
     hidden: Hidden,
     password: Password,
     submit: Submit,
+    button: Submit,
     switcher: Switcher,
     checkbox: Switcher,
     text: TextField,
