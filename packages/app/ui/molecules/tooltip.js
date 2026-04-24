@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import { View } from 'react-native';
 import * as TooltipPrimitive from '@rn-primitives/tooltip';
 import { Text } from 'app/design/typography';
@@ -26,10 +26,13 @@ export default function Tooltip({
 }) {
     const scrollDirection = useScrollDirection();
     const triggerRef = useRef(null);
+    const [isFocused, setIsFocused] = useState(true);
 
     useFocusEffect(
         useCallback(() => {
+            setIsFocused(true);
             return () => {
+                setIsFocused(false);
                 triggerRef.current?.close();
             };
         }, [])
@@ -84,7 +87,7 @@ export default function Tooltip({
                     align={align}
                     alignOffset={alignOffset}
                     avoidCollisions={true}
-                    forceMount={controlledOpen ? true : undefined}
+                    forceMount={(controlledOpen && isFocused) ? true : undefined}
                     className={cn(
                         'bg-foreground px-4 py-2 ios:-mt-12 rounded-lg shadow-lg',
                         tooltipConfig['tooltip-content'],

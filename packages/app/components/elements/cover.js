@@ -415,7 +415,7 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
     if (coverMode === 'none') {
         if (isWeb) return null
 
-        return <>{appSetting('context_selector', 'show_always') ? <Row className={`${TABLET_MODE_FROM}:hidden items-center  bg-card  justify-between w-full px-4 h-14`} >
+        return <>{appSetting('context_selector', 'show_always') ? <Row className={`web:${TABLET_MODE_FROM}:hidden items-center  bg-card  justify-between w-full px-4 h-14`} >
 
             <View className={`flex-1 justify-center`}>
                 <ContextSelector data={context} mode="compact" />

@@ -1582,7 +1582,6 @@ export function isShowCover(cover, currentUser, url) {
 
 
 export const openExternalLink = async (finalHref) => {
-    console.log("finalHref1", finalHref)
     await WebBrowser.openBrowserAsync(finalHref);
 };
 
@@ -1596,7 +1595,7 @@ export function sanitazeUrl(url) {
         return '';
     }
 
-    if (sanitizedHref === '/home') {
+    if (sanitizedHref === '/home' && isWeb) {
         return '/';
     }
 
