@@ -126,16 +126,16 @@ export default function DashboardStat(props) {
                                 <Text className="text-card-foreground text-xl font-semibold">{currentUser.display_name}</Text>
                             </BlockTitle>
                             <BlockDescription>
-                                
-                                    <Badge
-                                        variant="secondary"
-                                        data={{
-                                            text: currentUser.membership_name,
-                                            icon: currentUser.membership_icon,
-                                            icon_url: currentUser.membership_icon_url
-                                        }}
-                                    />
-                                
+
+                                <Badge
+                                    variant="secondary"
+                                    data={{
+                                        text: currentUser.membership_name,
+                                        icon: currentUser.membership_icon,
+                                        icon_url: currentUser.membership_icon_url
+                                    }}
+                                />
+
                             </BlockDescription>
                         </BlockName>
                         <BlockActions>
@@ -203,7 +203,7 @@ export default function DashboardStat(props) {
                                     </DropdownMenu>
                                 </View>
                             )}
-                            
+
 
                             {appSetting('layout', 'avaliable_layouts').length >
                                 1 && (
@@ -265,13 +265,13 @@ export default function DashboardStat(props) {
                     </BlockContent>
                     <BlockFooter className="p-2">
                         <Link href="/logout">
-                        <Button 
-                            variant="default"
-                            size="lg"
-                            title={t('Sign out')}
-                            startDecorator="LogOut"
-                            fullWidth
-                        /></Link>
+                            <Button
+                                variant="default"
+                                size="lg"
+                                title={t('Sign out')}
+                                startDecorator="LogOut"
+                                fullWidth
+                            /></Link>
                     </BlockFooter>
                 </Block>
             </ScrollView>
@@ -318,12 +318,16 @@ function ElementDashboardStat(props) {
                 {filtredData.map((item, index) => {
                     if (item) {
                         if (item?.type != 'growth') {
+                            let link = item.url.replace("{profile_url_postfix}", currentUser?.url.replace('/view-persons-profile/', ''));
+                            if (!link.startsWith('/')) {
+                                link = '/' + link;
+                            }
                             return (
 
                                 <View
                                     className="px-4 py-3 bg-card border border-border/60 shadow-xs web:hover:bg-muted/20 rounded-xl w-full gap-2 flex-1 min-w-48 lg:min-w-64"
                                     key={index}
-                                ><Link href={item.url.replace("{profile_url_postfix}", currentUser?.url.replace('/view-persons-profile/', ''))}>
+                                ><Link href={link}>
                                         <View className="flex-row w-full h-10 justify-between items-center text-secondary-foreground ">
                                             <Icon
                                                 icon={item.icon}
