@@ -90,7 +90,7 @@ export function Modal({
     useEffect(() => {
         const subscription = emitter.addListener('link', (data) => {
             if (data.action == 'pressed') {
-                onClose();
+                onClose?.()
             }
         })
 

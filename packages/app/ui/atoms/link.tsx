@@ -34,7 +34,9 @@ export default function ElementLink({
 
     const handlePress = useCallback(() => {
         if (haptics) FeedbackHaptics(haptics);
-        if (isIos) emitter.emit('link', { action: 'pressed' });
+        setTimeout(() => {
+            if (isIos) emitter.emit('link', { action: 'pressed' });
+        }, 350);
     }, [haptics]);
 
     const TabList = useMemo(() => {
