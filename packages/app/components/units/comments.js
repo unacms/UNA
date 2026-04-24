@@ -242,7 +242,7 @@ function UnitCommentsDefault(props) {
                                         </Row>
                                     )}
                                 <Link href={cmtUrl} size="xs" variant="secondary" >
-                                <Time ts={data.cmt_time}></Time>
+                                    <Time ts={data.cmt_time} className="text-secondary-foreground"></Time>
                                 </Link>
                             </Row>
                             {!!data.cmt_mood && (
