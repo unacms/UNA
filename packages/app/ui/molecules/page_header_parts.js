@@ -193,7 +193,7 @@ export const PageHeaderBody = memo(({
                             />
                         </View>
                     )}
-                    {leftElement}
+                    <View>{leftElement}</View>
                     {contextSelectorElement}
                 </Row>
                 {isWeb && <MenuTop url={pageData?.url} uri={pageData?.uri} />}

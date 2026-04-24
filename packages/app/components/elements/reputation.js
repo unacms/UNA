@@ -364,13 +364,18 @@ export function ReputationLeaderboard({ data }) {
                                     )}
                                 </View>
                             )}
-                            <View>
+                           
+                                <Row className="items-center gap-2">
                             <Profile
                                 {...item.unit}
-                                displayType="unit"
+                                displayType="unit_wo_info"
                                 displaySize="sm"
                             />
-                            </View>
+                            <Text className="text-sm text-muted-foreground">
+                              {item.unit.display_name}
+                            </Text>
+                            </Row>
+                           
                         </Row>
                         <View>
                         <Text className=" text-base font-bold text-muted-foreground">
