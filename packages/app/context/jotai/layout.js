@@ -1,4 +1,6 @@
 import { atom, useSetAtom, useAtomValue } from 'jotai';
+import { Platform } from 'react-native'
+const isWeb = Platform.OS == 'web'
 
 export const defaultHeader = {
     header: null,
@@ -19,7 +21,8 @@ export const footerHeightAtom = atom(0);
 export const setHeaderAtom = atom(null, (get, set, value) => {
     const next = typeof value === 'function' ? value(get(headerAtom)) : value;
     set(headerAtom, next);
-    set(headerHeightAtom, 0);
+    if (!isWeb)
+        set(headerHeightAtom, 0);
 });
 
 // Custom hooks
