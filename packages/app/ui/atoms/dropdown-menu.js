@@ -5,7 +5,6 @@ import { memo, useCallback, useEffect, useRef, useState, isValidElement, cloneEl
 import { clsx } from 'clsx';
 import { FeedbackHaptics } from 'app/lib/util';
 import { Keyboard, Alert, Platform } from 'react-native'
-import { appStatic } from 'app/lib/app-static'
 import Redirect from 'app/ui/atoms/redirect';
 import { isEmoji, appSetting } from 'app/lib/util';
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger';
@@ -55,6 +54,7 @@ function DropdownMenuPopup({
     open: openProp,
     onOpenChange: onOpenChangeProp,
     contentClassName: contentClassNameProp,
+    resolveContent,
 }) {
     const DropdownMenuItem = getComponent('menu-item', 'dropdown');
     const redirectdRef = useRef();
@@ -87,10 +87,10 @@ function DropdownMenuPopup({
                 ? onSelect(item)
                 : item.target == 'modal' ? (item.content ? openModalWithContent({
                     title: item.title,
-                    content: appStatic(item.content),
+                    content: resolveContent ? resolveContent(item.content, item) : item.content,
                   }) : openModalByUrl(item.link)) : redirectdRef.current.redirect('' + item.link);
         },
-        [onSelect, setIsOpen]
+        [onSelect, setIsOpen, resolveContent]
     );
 
     useEffect(() => {
@@ -195,6 +195,7 @@ export default function DropdownMenu({
     buttonProps,
     onOpenChange,
     contentClassName,
+    resolveContent,
 }) {
     const { setBottomSheetData } = useBottomSheetData();
     const isWeb = Platform.OS === 'web';
@@ -214,6 +215,7 @@ export default function DropdownMenu({
                 open={open}
                 onOpenChange={onOpenChange}
                 contentClassName={contentClassName}
+                resolveContent={resolveContent}
                 buttonProps={buttonProps}
             />
         );

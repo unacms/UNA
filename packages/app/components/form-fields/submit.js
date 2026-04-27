@@ -117,7 +117,7 @@ export default function FormFieldSubmit(props) {
     return (
         <Field {...props}>
             <Row className={rowClassName}>
-                <View className="w-full @sm/block:w-auto">
+                <View className={icon_only ? '' : `w-full @sm/block:w-auto`}>
                     <Button
                     title={!icon_only ? value : ''}
                     startDecorator={isSumbitting ? <Loading size="small" color="#fff"/> : icon}

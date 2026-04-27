@@ -14,8 +14,16 @@ export const scrollValueAtom = atom(0);
 export const headerHeightAtom = atom(0);
 export const footerHeightAtom = atom(0);
 
+// Write-only atom: setting header always resets header height to 0
+// so stale layout values from a previous screen/header don't leak through.
+export const setHeaderAtom = atom(null, (get, set, value) => {
+    const next = typeof value === 'function' ? value(get(headerAtom)) : value;
+    set(headerAtom, next);
+    set(headerHeightAtom, 0);
+});
+
 // Custom hooks
-export const useSetHeader = () => useSetAtom(headerAtom);
+export const useSetHeader = () => useSetAtom(setHeaderAtom);
 export const useHeader = () => useAtomValue(headerAtom);
 
 export const useSetFooter = () => useSetAtom(footerAtom);

@@ -18,6 +18,7 @@ import Redirect from 'app/ui/atoms/redirect'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { useIsDesktop } from 'app/context/measure';
 import { useMenuData } from 'app/context/menu-data';
+import { appStatic } from 'app/lib/app-static';
 
 export default function MenuAccount({ buttonProps, children }) {
     const redirectdRef = useRef()
@@ -231,6 +232,7 @@ export default function MenuAccount({ buttonProps, children }) {
                     ) : null
                 }
                 buttonProps={isButton ? buttonProps : undefined}
+                resolveContent={(contentKey) => appStatic(contentKey)}
             >
                 {!isButton && children}
             </DropdownMenu>

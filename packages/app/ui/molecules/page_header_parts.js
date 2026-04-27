@@ -81,12 +81,6 @@ export function usePageHeaderBase(pageData, { resetHeaderOnRoute = false } = {})
         setScrollDirection,
     ]);
 
-    useEffect(() => {
-        if (header.header === false && headerHeight !== 0) {
-            setHeaderHeightAtom(0);
-        }
-    }, [header.header, headerHeight, setHeaderHeightAtom]);
-
     const pageTitle = useMemo(() => {
         let nextTitle = pageData?.name;
 
