@@ -239,4 +239,292 @@ export const settingsButtons = {
             }
         }
     },
+     /*
+     * NeoButton theme — single tree, SwiftUI-aligned API.
+     *
+     * Mirrors SwiftUI's Button axes:
+     *   role          → Button(role:)        (default | cancel | close | confirm | destructive)
+     *   style         → .buttonStyle()       (plain | bordered | borderedProminent
+     *                                          | borderless | link | glass | glassProminent)
+     *   controlSize   → .controlSize()       (mini | small | regular | large | xlarge)
+     *   borderShape   → .buttonBorderShape() (capsule | rectangle | roundedRectangle | circle)
+     *   tint          → .tint()              (CSS color)
+     *
+     * Any leaf can be a scope-keyed object resolved at runtime by
+     * `useResolvedNeoButton`. Supported scope keys (most-specific wins):
+     *   default · light/dark · web/ios/android/native · touch/mouse · sm/md/lg/xl/2xl
+     * plus controlSize keys (mini/small/regular/large/xlarge) inside per-size slots
+     * such as `borderShapes.roundedRectangle`.
+     *
+     * The legacy `neo_button_sizes` / `neo_button_styles` keys are gone — the
+     * only consumer was `NeoButton` itself, which now reads `neo_button`.
+     */
+    neo_button: {
+        defaults: {
+            // Used when no `style` prop, no `<NeoButtonStyleProvider>` parent,
+            // and no role.defaultStyle apply. See `resolveStyle()` in the
+            // resolver for the full precedence chain.
+            style: 'bordered',
+            controlSize: 'regular',
+            borderShape: 'roundedRectangle',
+            role: 'default',
+            imagePlacement: 'leading',
+            align: 'center',
+            width: 'auto',
+            focusRing: { default: 'never', web: 'auto' },
+            pressAnimation: true,
+            // Behavioral flags. The resolver gates event handlers on these so
+            // web-only hover code does not run on native, etc.
+            behaviors: {
+                hover:          { default: false, web: true,  mouse: true },
+                focusRing:      { default: false, web: true },
+                pressAnimation: { default: true },
+                longPress:      { default: true },
+            },
+        },
+
+        // controlSize → height / paddingX / font / icon / hitSlop / labelGap.
+        // iOS HIG-style minimum is 44pt; web/mouse trims a few pixels because
+        // pointers don't need finger-sized targets.
+        controlSizes: {
+            mini:    { height: 28, paddingX: 8,  font: 'text-xs',   icon: 14, hitSlop: 8, labelGap: 4 },
+            small:   { height: 32, paddingX: 10, font: 'text-sm',   icon: 16, hitSlop: 6, labelGap: 6 },
+            regular: {
+                default: { height: 44, paddingX: 14, font: 'text-base', icon: 20, hitSlop: 4, labelGap: 8 },
+                web:     { height: 40, paddingX: 12 },
+                mouse:   { height: 38, paddingX: 12 },
+            },
+            large: {
+                default: { height: 52, paddingX: 18, font: 'text-base', icon: 22, hitSlop: 0, labelGap: 10 },
+                web:     { height: 44 },
+            },
+            xlarge:  { height: 64, paddingX: 24, font: 'text-lg',   icon: 24, hitSlop: 0, labelGap: 12 },
+        },
+
+        // borderShape → rounding strategy. roundedRectangle scales with
+        // controlSize; the others are fixed.
+        borderShapes: {
+            capsule:   { rounded: 'rounded-full' },
+            rectangle: { rounded: 'rounded-none' },
+            roundedRectangle: {
+                rounded: {
+                    default: 'rounded-xl',
+                    mini:    'rounded-md',
+                    small:   'rounded-lg',
+                    large:   'rounded-2xl',
+                    xlarge:  'rounded-2xl',
+                },
+            },
+            circle:    { rounded: 'rounded-full', aspectSquare: true },
+        },
+
+        // SwiftUI roles. `defaultStyle` is used when no `style` prop is
+        // passed and no parent provider sets one (e.g. `role="confirm"` →
+        // borderedProminent). `defaultImage` is used when no `image` is
+        // passed (e.g. role="close" → 'X').
+        roles: {
+            default:     {},
+            cancel:      { textClass: 'text-secondary-foreground' },
+            close:       { textClass: 'text-secondary-foreground', defaultImage: 'X' },
+            confirm:     { defaultStyle: 'borderedProminent' },
+            destructive: {
+                tint: 'rgb(var(--destructive))',
+                textClass: { default: 'text-destructive', borderedProminent: 'text-destructive-foreground' },
+            },
+        },
+
+        // Per-style visual recipes. Same slot/state shape as before
+        // (container/text + base/default/hovered/focused/pressed/active/
+        // pressedToggle/disabled), now scoped under `styles[name]`.
+        styles: {
+            plain: {
+                container: {
+                    default: '',
+                    hovered: '',
+                    focused: '',
+                    pressed: 'opacity-80',
+                    active: '',
+                    pressedToggle: 'bg-muted/60',
+                    disabled: 'opacity-50',
+                },
+                text: {
+                    base: 'font-medium',
+                    default: 'text-foreground',
+                    hovered: 'text-foreground',
+                    focused: 'text-foreground',
+                    pressed: 'text-foreground',
+                    active: 'text-foreground',
+                    pressedToggle: 'text-foreground',
+                    disabled: 'text-muted-foreground',
+                },
+            },
+
+            // SwiftUI .bordered — neutral fill, no shadow.
+            // Definition is just the background colour — keeps the surface
+            // perfectly flat (the inset/border-via-shadow stack is reserved
+            // for the glass family).
+            bordered: {
+                container: {
+                    default: 'bg-secondary/50',
+                    hovered: 'bg-secondary',
+                    focused: 'bg-secondary',
+                    pressed: 'bg-secondary',
+                    active: 'bg-secondary',
+                    pressedToggle: 'bg-secondary',
+                    disabled: 'bg-secondary/40 opacity-60',
+                },
+                text: {
+                    base: 'font-medium',
+                    default: 'text-foreground',
+                    hovered: 'text-foreground',
+                    focused: 'text-foreground',
+                    pressed: 'text-foreground',
+                    active: 'text-foreground',
+                    pressedToggle: 'text-foreground',
+                    disabled: 'text-muted-foreground',
+                },
+            },
+
+            // SwiftUI .borderedProminent — primary action, flat fill.
+            // No shadow — the only signal is the primary background colour
+            // and the press background swap.
+            borderedProminent: {
+                container: {
+                    default: 'bg-primary',
+                    hovered: 'bg-primary-hover',
+                    focused: 'bg-primary',
+                    pressed: 'bg-primary/90',
+                    active: 'bg-primary-hover',
+                    pressedToggle: 'bg-primary-hover',
+                    disabled: 'bg-primary/50',
+                },
+                text: {
+                    base: 'font-semibold',
+                    default: 'text-primary-foreground',
+                    hovered: 'text-primary-foreground',
+                    focused: 'text-primary-foreground',
+                    pressed: 'text-primary-foreground',
+                    active: 'text-primary-foreground',
+                    pressedToggle: 'text-primary-foreground',
+                    disabled: 'text-primary-foreground/60',
+                },
+            },
+
+            // SwiftUI .borderless — text-like with hover wash on web.
+            borderless: {
+                container: {
+                    default: '',
+                    hovered: 'bg-muted/60',
+                    focused: 'bg-muted/60',
+                    pressed: 'bg-muted',
+                    active: 'bg-muted/80',
+                    pressedToggle: 'bg-muted',
+                    disabled: 'opacity-50',
+                },
+                text: {
+                    base: 'font-medium',
+                    default: 'text-secondary-foreground',
+                    hovered: 'text-foreground',
+                    focused: 'text-foreground',
+                    pressed: 'text-foreground',
+                    active: 'text-foreground',
+                    pressedToggle: 'text-foreground',
+                    disabled: 'text-muted-foreground',
+                },
+            },
+
+            // SwiftUI has no link style; we provide one that matches a web
+            // text link (no fill, hover-underline on web).
+            link: {
+                container: { default: '', disabled: 'opacity-50' },
+                text: {
+                    base: 'font-medium',
+                    default: 'text-primary',
+                    hovered: 'text-primary web:underline',
+                    focused: 'text-primary web:underline',
+                    pressed: 'text-primary/80',
+                    active: 'text-primary/80',
+                    pressedToggle: 'text-primary web:underline',
+                    disabled: 'text-primary/50',
+                },
+            },
+
+            // SwiftUI .glass (iOS 26+). Web fallback uses backdrop-blur.
+            // shadow-btn-glass carries border + inner highlight + wide soft
+            // ambient drop. shadow-btn-glass-pressed shrinks the drop.
+            glass: {
+                container: {
+                    base: 'web:backdrop-blur-md shadow-btn-glass dark:shadow-btn-glass-deep',
+                    default: 'bg-white/10 dark:bg-white/5',
+                    hovered: 'bg-white/15 dark:bg-white/10',
+                    focused: 'bg-white/15 dark:bg-white/10',
+                    pressed: 'bg-white/20 dark:bg-white/15 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
+                    active: 'bg-white/15 dark:bg-white/10',
+                    pressedToggle: 'bg-white/20 dark:bg-white/15 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
+                    disabled: 'opacity-50',
+                },
+                text: {
+                    base: 'font-medium',
+                    default: 'text-foreground',
+                    hovered: 'text-foreground',
+                    focused: 'text-foreground',
+                    pressed: 'text-foreground',
+                    active: 'text-foreground',
+                    pressedToggle: 'text-foreground',
+                    disabled: 'text-muted-foreground',
+                },
+            },
+
+            // SwiftUI .glassProminent — same lift as glass, primary tint.
+            glassProminent: {
+                container: {
+                    base: 'web:backdrop-blur-md shadow-btn-glass dark:shadow-btn-glass-deep',
+                    default: 'bg-accent/60',
+                    hovered: 'bg-accent/80',
+                    focused: 'bg-accent/70',
+                    pressed: 'bg-accent shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
+                    active: 'bg-accent/80',
+                    pressedToggle: 'bg-accent shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
+                    disabled: 'opacity-50',
+                },
+                text: {
+                    base: 'font-semibold',
+                    default: 'text-accent-foreground',
+                    hovered: 'text-accent-foreground',
+                    focused: 'text-accent-foreground',
+                    pressed: 'text-accent-foreground',
+                    active: 'text-accent-foreground',
+                    pressedToggle: 'text-accent-foreground',
+                    disabled: 'text-accent-foreground/60',
+                },
+            },
+
+        },
+
+        // Per-style transitions. Each style picks one of:
+        //   { type: 'scale',   from, to, spring }   — MotionView wraps the button
+        //   { type: 'shadow' }                      — no wrapper; press class swap only
+        //   { type: 'opacity', duration }           — MotionView with opacity animate
+        //   false / null                            — no transition at all
+        // `default` is the fallback for any style that does not declare its own.
+        transitions: {
+            default: {
+                press: { type: 'scale', from: 1, to: 0.97, spring: { damping: 24, stiffness: 360 } },
+                hover: { type: 'opacity', duration: 120 },
+                appear: null,
+            },
+            glass:          { press: { type: 'shadow' },                                              hover: { type: 'opacity', duration: 200 } },
+            glassProminent: { press: { type: 'shadow' },                                              hover: { type: 'opacity', duration: 200 } },
+            plain:          { press: false,                                                            hover: false },
+            link:           { press: false,                                                            hover: false },
+            borderless:     { press: { type: 'scale', from: 1, to: 0.98, spring: { damping: 28, stiffness: 380 } }, hover: { type: 'opacity', duration: 120 } },
+        },
+
+        // Highlight overlay used for press feedback inside the container.
+        // Matches the pre-rebuild MotionView highlight behaviour.
+        motion: {
+            highlightBackgroundlight: 'rgba(255,255,255,0.5)',
+            highlightBackgrounddark:  'rgba(0,0,0,0.5)',
+        },
+    },
 }

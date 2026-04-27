@@ -232,6 +232,102 @@ select {
 }
 
 /*
+ * NeoButton — isolated pseudo-element utilities.
+ * Kept separate from `u-action-hitarea-*` and `u-link-*` so the new component
+ * can evolve without breaking existing buttons/links.
+ *
+ *  .u-neo-btn-hitarea[-{size}]  — extended press/hover hit area via ::before,
+ *                                  inset depends on size; corner radius is
+ *                                  themed via --u-neo-btn-hitarea-radius and,
+ *                                  inside the superellipse @supports block,
+ *                                  multiplied by --neo-corner-superellipse-factor
+ *                                  so it visually matches the smoothed
+ *                                  container corners on supporting browsers.
+ *  .u-neo-btn-ring              — focus ring on :focus-visible; uses
+ *                                  border-radius: inherit + corner-shape:
+ *                                  inherit so the outline follows the parent
+ *                                  (incl. the global superellipse multiplier).
+ *
+ * Note: the per-variant button surface (the "border via shadow" + inner
+ * highlight + drop) is now provided by the `shadow-btn-*` Tailwind tokens
+ * defined in `packages/app/design/tailwind/theme.js`. They live on the
+ * container element directly (not on a pseudo) so they apply on both web
+ * and native via NativeWind's `boxShadow` mapping, automatically pick up
+ * the container's actual rounding/corner-shape, and avoid the iOS smooth
+ * corner regression that `border` styles cause.
+ */
+.u-neo-btn-hitarea,
+.u-neo-btn-hitarea-xs,
+.u-neo-btn-hitarea-sm,
+.u-neo-btn-hitarea-md,
+.u-neo-btn-hitarea-lg {
+    position: relative;
+    z-index: 0;
+}
+
+.u-neo-btn-hitarea::before,
+.u-neo-btn-hitarea-xs::before,
+.u-neo-btn-hitarea-sm::before,
+.u-neo-btn-hitarea-md::before,
+.u-neo-btn-hitarea-lg::before {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    border-radius: var(--u-neo-btn-hitarea-radius, 0.75rem);
+    background-color: rgba(0, 0, 0, 0.001);
+    pointer-events: auto;
+    z-index: -1;
+}
+
+.u-neo-btn-hitarea-xs::before { inset: -8px; }
+.u-neo-btn-hitarea-sm::before { inset: -6px; }
+.u-neo-btn-hitarea-md::before { inset: -4px; }
+.u-neo-btn-hitarea-lg::before { inset: 0; }
+
+/*
+ * The button surface itself already has its own `border-radius` and
+ * (inside @supports) `corner-shape` set by the Tailwind `rounded-*`
+ * class — so we MUST NOT redeclare either of those on `:focus-visible`.
+ * Doing so (e.g. `border-radius: inherit`) would override the rounded
+ * class while focused and the outline would render as a square. We only
+ * declare the outline itself; the browser draws it following whatever
+ * border-radius / corner-shape the element already carries.
+ */
+.u-neo-btn-ring:focus-visible {
+    outline: 2px solid rgb(var(--ring) / 0.85);
+    outline-offset: 2px;
+}
+
+.u-neo-btn-ring-never:focus-visible {
+    outline: none;
+}
+
+/*
+ * Superellipse alignment for the hit-area pseudo only. When the browser
+ * supports `corner-shape: superellipse()`, the global rule above
+ * multiplies every `--radius-*` by `--neo-corner-superellipse-factor`
+ * and applies the corner shape to the container. The hit-area pseudo
+ * carries its own radius var (because its inset is negative), so we
+ * multiply it by the same factor here and add the matching corner-shape
+ * so its outline visually matches the container.
+ *
+ * Note: the focus ring is intentionally NOT touched in this block — the
+ * element it sits on already has the right shape from its own Tailwind
+ * `rounded-*` class.
+ */
+@supports (corner-shape: superellipse(1)) {
+    .u-neo-btn-hitarea::before,
+    .u-neo-btn-hitarea-xs::before,
+    .u-neo-btn-hitarea-sm::before,
+    .u-neo-btn-hitarea-md::before,
+    .u-neo-btn-hitarea-lg::before {
+        border-radius: calc(var(--u-neo-btn-hitarea-radius, 0.75rem) * var(--neo-corner-superellipse-factor, 2));
+        /* stylelint-disable-next-line property-no-unknown */
+        corner-shape: superellipse(var(--neo-corner-superellipse-factor, 2));
+    }
+}
+
+/*
  * Press feedback: active-only background via ::after pseudo-element (web only).
  * Used by default / secondary / accent variants — no hover background, only
  * a brief muted flash on click. Reuses the same CSS vars as ghost for sizing.

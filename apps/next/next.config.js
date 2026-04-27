@@ -79,6 +79,7 @@ const nextConfig = {
     // once that gets fixed, set this back to true
     reactStrictMode: false,
     poweredByHeader: false,
+    allowedDevOrigins: ['yasko.local', 'bs-local.com'],
     /*experimental: {
       forceSwcTransforms: true,
       // scrollRestoration: true,

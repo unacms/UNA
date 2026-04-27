@@ -12,8 +12,8 @@
         --popover: var(--white);
         --popover-foreground: var(--neutral-900);
         --primary: var(--accent-500);
-        --primary-hover: var(--accent-700);
-        --primary-foreground: var(--white);
+        --primary-hover: var(--accent-600);
+        --primary-foreground: var(--neutral-50);
         --secondary: var(--neutral-200);
         --secondary-foreground: var(--neutral-700);
         --muted: var(--neutral-200);
@@ -75,15 +75,13 @@
     .dark-theme-vars {
         --default: var(--neutral-900);
         --background: var(--neutral-950);
-        --foreground: var(--white);
+        --foreground: var(--neutral-50);
         --card: var(--neutral-900);
-        --card-foreground: var(
-            --neutral-200
-        ); /*content on cards, sidebars, navbars*/
-        --popover: var(--neutral-700);
+        --card-foreground: var(--neutral-100);
+        --popover: var(--neutral-800);
         --popover-foreground: var(--neutral-50);
         --primary: var(--accent-600);
-        --primary-foreground: var(--white);
+        --primary-foreground: var(--neutral-50);
         --secondary: var(--neutral-800);
         --secondary-foreground: var(--neutral-400);
         --accent: var(--accent-950);

@@ -21,3 +21,8 @@ export {
     ButtonMenuCounterDefault, 
     ButtonMenuCounterText 
 } from 'app/design/controls/button_menus';
+
+export {
+    NeoButton, NeoButtonRef, NeoButtonLink,
+    NeoButtonStyleProvider, NeoControlSizeProvider,
+} from 'app/design/controls/neo-button';
