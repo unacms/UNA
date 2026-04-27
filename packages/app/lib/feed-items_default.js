@@ -266,7 +266,7 @@ export const PostsView = memo(({ data, styles, url, isCompact, content_attach, f
                     </View>
                 </View>
             )}
-            <View className="flex-auto gap-y-1 ">
+            <View className="flex-auto gap-y-1 min-w-0">
                 {data.content?.title && (
                     <LinkOrModal href={url} showInModal={appSetting('browse', 'show_in_modal', data.type)}>
                         <Text
@@ -355,7 +355,7 @@ export const DefaultView = memo(
                 )}
 
                 {bIsTimelineContent && (
-                    <View>
+                    <View className="min-w-0 max-w-full">
                         {fulltext ? (
                             <Html
                                 data={

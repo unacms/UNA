@@ -1,8 +1,8 @@
 import { ActivityIndicator } from 'react-native';
-import { Theme } from 'app/design/theme';
+import { useTheme } from 'app/design/theme';
 
 export default function ElementLoading({size, color}) {
-    const { colors } = Theme();
+    const { colors } = useTheme();
     return (
         <ActivityIndicator color={color ? color : colors.primary}  aria-label="Loading" size={size? size :"large"}   />
     )

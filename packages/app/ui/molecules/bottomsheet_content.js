@@ -6,7 +6,7 @@ import { Text } from 'app/design/typography';
 import { Modal } from 'app/design/controls'
 import { BottomSheetModalProvider, BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView, BottomSheetFooter, BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
 import { StyleSheet } from "react-native";
-import { Theme } from 'app/design/theme';
+import { useTheme } from 'app/design/theme';
 import { Platform } from 'react-native'
 import { useIsDesktop, useWindowHeight } from 'app/context/measure';
 
@@ -102,7 +102,7 @@ export default function ElementBottomSheetContent(props) {
 function BottomSheet2(props) {
     const { bottomSheetData, setBottomSheetData } = useBottomSheetData();
     const isWeb = Platform.OS === 'web';
-    const { colors } = Theme();
+    const { colors } = useTheme();
     const bottomSheetModalRef = useRef(null);
     const snapPoints = useMemo(() => (props.snapPoints ? props.snapPoints : ['50%', '90%']), []);
     const handleSheetChanges = useCallback((index) => {

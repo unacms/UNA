@@ -19,7 +19,7 @@ import { storageSet, storageClear, storageGet } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher';
 //import Bluetooth from 'app/ui/molecules/bluetooth'
 import { useBottomSheetData } from 'app/context/bottomsheet';
-import { Theme } from 'app/design/theme';
+import { useTheme } from 'app/design/theme';
 
 function getCounter(num, icon = '', add = '', color = '') {
     
@@ -306,7 +306,7 @@ export default function PageLayout(props) {
 
 function ElementDashboardStat(props) {
     
-    const { colors } = Theme();
+    const { colors } = useTheme();
     const { t } = useTranslation();
     const [data, setData] = useState(props.data);
     let { currentUser, setCurrentUser } = useCurrentUser()

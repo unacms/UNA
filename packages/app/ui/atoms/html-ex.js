@@ -7,7 +7,7 @@ import RenderHtml, {
 } from 'react-native-render-html'
 import { mergeDeep } from 'app/lib/util';
 import { appSetting, md5, absoluteApiUrl, getDomainFromUrl } from 'app/lib/util'
-import { Theme } from 'app/design/theme';
+import { useTheme } from 'app/design/theme';
 import { useState } from 'react';
 import Video from 'app/ui/atoms/video';
 import * as WebBrowser from 'expo-web-browser';
@@ -182,7 +182,7 @@ logToReactNative('aaa')
 export default function ElementHtml(props) {
     const glob = useGlobalSearchParams();
     const routerExpo = useRouter();
-    const { colors } = Theme();
+    const { colors } = useTheme();
     const [iframeH, setIframeH] = useState({});
     const { width, height } = useWindowSize();
     let customClassName = props.customClassName ? props.customClassName : '';

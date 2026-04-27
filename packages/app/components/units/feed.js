@@ -128,7 +128,7 @@ function DefaultUnit({ data }) {
                         </View>
                     </Skeleton>
                 </Row>
-                <View className="flex-auto px-3.5 lg:px-4 ">
+                <View className="flex-auto min-w-0 px-3.5 lg:px-4 ">
                     <Skeleton visible={isSkeleton} preset='multitext'>
                         <MainContent url={url} data={data} />
                     </Skeleton>

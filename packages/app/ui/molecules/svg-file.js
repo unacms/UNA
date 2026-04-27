@@ -2,12 +2,12 @@ import { SvgXml } from 'react-native-svg';
 import { useEffect, useState } from 'react';
 import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util';
-import { ThemeName } from 'app/design/theme';
+import { useThemeName } from 'app/design/theme';
 
 export default function ({ src_dark, src_default, width, height }) {
     const [xml, setXml] = useState(null);
     const [error, setError] = useState(null);
-    const theme = ThemeName();
+    const theme = useThemeName();
     const src = theme === 'dark' && src_dark ? src_dark : src_default;
 
     useEffect(() => {

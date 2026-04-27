@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { View } from 'app/design/view';
-import { ThemeName } from 'app/design/theme';
 import { usePathname } from 'app/lib/hooks/router';
 import { useCurrentUser } from 'app/context/user';
 
@@ -8,7 +7,7 @@ import { useCurrentUser } from 'app/context/user';
 
 function BackgroundComponent({ }) {
     return <></>
-   /* const theme = ThemeName();
+   /* const theme = useThemeName();
     const pathname = usePathname();
     const { currentUser } = useCurrentUser();
     const background = getBackground(pathname, currentUser);   

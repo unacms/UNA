@@ -1,7 +1,7 @@
 import { PickerStyledRef, PickerStyledIos } from 'app/design/controls'
 import { Picker } from '@react-native-picker/picker';
 import { useState, useRef, useEffect } from 'react'
-import { Theme } from 'app/design/theme';
+import { useTheme } from 'app/design/theme';
 import { Modal } from 'app/design/controls'
 import { View, Pressable } from 'app/design/view'
 import { Platform } from 'react-native'
@@ -17,7 +17,7 @@ export default function Dropdown(props) {
     const pickerRef = useRef();
 
     const [selectedVal, setSelectedVal] = useState(toScalar(props.value));
-    const { colors } = Theme();
+    const { colors } = useTheme();
     const isShow = Platform.OS == 'ios'
 
     function handleChange(itemValue, itemIndex) {

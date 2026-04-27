@@ -7,10 +7,10 @@ import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
 import NfcManager, { Ndef, NfcTech, } from 'react-native-nfc-manager';
 import Profile from 'app/ui/molecules/profile';
-import { Theme } from 'app/design/theme';
+import { useTheme } from 'app/design/theme';
 
 export default function Nfc(props) {
-    const { colors } = Theme();
+    const { colors } = useTheme();
     let { currentUser, setCurrentUser } = useCurrentUser();
     const [showModal, setShowModal] = useState(false);
     const [hasNfc, setHasNFC] = useState(null);

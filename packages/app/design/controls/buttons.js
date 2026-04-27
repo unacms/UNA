@@ -8,7 +8,7 @@ import Tooltip from 'app/ui/atoms/tooltip';
 import Loading from 'app/ui/atoms/loading'
 import { useIsDesktop } from 'app/context/measure';
 import { Platform } from 'react-native';
-import { ThemeName } from 'app/design/theme';
+import { useThemeName } from 'app/design/theme';
 
 
 const BtnCls = appSetting('theme', 'button_styles');
@@ -162,7 +162,7 @@ const ButtonContent = React.memo(({
     children
 }) => {
     const { className: cntClassName, ...restCntProps } = cntProps;
-    const themeName = ThemeName();
+    const themeName = useThemeName();
     const hasNoIcons = !startDecorator && !endDecorator;
     const isTitleVisible = hasNoIcons || showTitleFromSize === '';
     const breakpoint = showTitleFromSize || 'sm';

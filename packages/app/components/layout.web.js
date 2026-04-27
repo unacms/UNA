@@ -10,7 +10,7 @@ import BottomSheet from 'app/ui/molecules/bottomsheet_content';
 import { appSetting, storageClear, storageGet, decodeText } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
 import OneSignal from 'react-onesignal';
-import { ThemeName } from 'app/design/theme';
+import { useThemeName } from 'app/design/theme';
 import { useTranslation } from 'react-i18next'
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { useIsDesktop } from 'app/context/measure';
@@ -138,7 +138,7 @@ export default function Layout(props) {
     const uri = data.uri;
     const { layoutName } = layout;
     const isDesktop = useIsDesktop();
-    const theme = ThemeName();
+    const theme = useThemeName();
 
     // Set theme attributes - must be in useEffect for SSR compatibility
     useEffect(() => {

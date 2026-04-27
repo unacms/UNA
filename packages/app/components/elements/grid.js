@@ -8,7 +8,6 @@ import Confirm from 'app/ui/molecules/confirm';
 import { Button, ButtonLink } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher';
 import React, { useEffect, useState, useMemo, useCallback, useRef, useReducer } from 'react';
-import { Theme } from 'app/design/theme';
 import Switch from 'app/ui/atoms/switcher'
 import CheckBox from 'app/ui/atoms/checkbox';
 import { Input } from 'app/design/controls'
