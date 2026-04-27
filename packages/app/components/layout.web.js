@@ -147,21 +147,6 @@ export default function Layout(props) {
         root.setAttribute('data-theme', theme);
     }, [theme]);
 
-    // Listen for system dark mode changes - must be in useEffect for SSR compatibility
-    useEffect(() => {
-        const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        const handleChange = (e) => {
-            const newColorScheme = e.matches ? "dark" : "light";
-            const root = document.documentElement;
-            root.setAttribute('theme', newColorScheme);
-            root.setAttribute('data-theme', newColorScheme);
-        };
-        darkModeMediaQuery.addEventListener('change', handleChange);
-        return () => {
-            darkModeMediaQuery.removeEventListener('change', handleChange);
-        };
-    }, []);
-
     const handlePageShow = useCallback((event) => {
         storageClear();
     }, []);
