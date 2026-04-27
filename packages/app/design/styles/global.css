@@ -132,7 +132,10 @@
         @apply text-secondary-foreground;
         font-size: 16px;
         line-height: 24px;
-        max-width: none;
+        max-width: 100%;
+        min-width: 0;
+        overflow-wrap: anywhere;
+        word-break: break-word;
         word-wrap: break-word;
         font-weight: 400;
         font-family:
@@ -149,7 +152,10 @@
         @apply text-card-foreground;
         font-size: 14px;
         line-height: 20px;
-        max-width: none;
+        max-width: 100%;
+        min-width: 0;
+        overflow-wrap: anywhere;
+        word-break: break-word;
         word-wrap: break-word;
         font-weight: 400;
         font-family:
@@ -244,12 +250,16 @@
     .u-vanilla-html A,
     .u-vanilla-html .link {
         @apply text-accent-foreground;
+        overflow-wrap: anywhere;
+        word-break: break-word;
         text-decoration: none;
     }
 
     .u-vanilla-html-small A,
     .u-vanilla-html-small .link {
         @apply text-accent-foreground;
+        overflow-wrap: anywhere;
+        word-break: break-word;
         text-decoration: none;
     }
 

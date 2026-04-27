@@ -215,8 +215,8 @@ function UnitCommentsDefault(props) {
                         <View className="w-0.5 mx-auto top-0.5  rounded-full flex-auto bg-muted"></View>
                     )}
                 </View>
-                <View className=" flex-col mt-2 flex-1">
-                    <View className="bg-muted/50 rounded-xl px-2.5 py-2 gap-1 me-auto ">
+                <View className=" flex-col mt-2 flex-1 min-w-0">
+                    <View className="bg-muted/50 rounded-xl px-2.5 py-2 gap-1 me-auto min-w-0 max-w-full">
                         <View className="flex-row items-center gap-3 justify-between ">
                             <Row className="gap-3 items-center pr-8">
                                 <Profile
@@ -288,7 +288,7 @@ function UnitCommentsDefault(props) {
                                 />
                             </View>
                         )}
-                        <View className="">
+                        <View className="min-w-0 max-w-full">
                             <ContentMore
                                     content={data.cmt_text}
                                     numberOfLines={3}
