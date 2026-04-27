@@ -3,14 +3,14 @@ import { Text } from 'app/design/typography'
 import { useController, useFormContext } from 'react-hook-form';
 import React, { useState, useEffect, useCallback } from 'react';
 import { RangeSlider } from '@react-native-assets/slider'
-import { Theme, ThemeName } from 'app/design/theme';
+import { useThemeName } from 'app/design/theme';
 import { View, Row, ScrollView } from 'app/design/view'
 import { appSetting } from 'app/lib/util';
 
 const themeSettings = appSetting('theme', 'doublerange');
 
 export default function FormFieldText(props) {
-    const themeName = ThemeName();
+    const themeName = useThemeName();
     let formContext = useFormContext();
 
 

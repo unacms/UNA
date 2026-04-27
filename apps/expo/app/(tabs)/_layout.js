@@ -1,7 +1,6 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Tabs from 'app/components/nav/tabs';
 import React, { useMemo } from 'react';
-import { Theme, ThemeName } from 'app/design/theme'
 import { ThemeProvider } from "@react-navigation/native";
 import { useColorScheme } from 'react-native';
 import { DarkTheme, DefaultTheme } from "@react-navigation/native";
@@ -91,7 +90,7 @@ const AppLayout = React.memo(() => {
         }
     }, [langCode]);
     
-    // Вычисляем тему вручную, чтобы избежать повторных вызовов хуков через Theme()
+    // Вычисляем тему вручную, чтобы избежать повторных вызовов хуков через useTheme()
     const actualThemeName = useMemo(() => {
         return themeName != 'auto' ? themeName : scheme;
     }, [themeName, scheme]);

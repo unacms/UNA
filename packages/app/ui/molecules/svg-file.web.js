@@ -1,9 +1,9 @@
 import { appSetting } from 'app/lib/util';
-import { ThemeName } from 'app/design/theme';
+import { useThemeName } from 'app/design/theme';
 import { getBaseUrl } from 'app/config';
 
 export default function ({src_web, src_dark, src_default, ...props}) {
-    const theme = ThemeName();
+    const theme = useThemeName();
     const src = theme === 'dark' && src_dark ? src_dark : src_default; 
 
     if (!src) {

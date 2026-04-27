@@ -18,11 +18,10 @@ import {
 } from '@10play/tentap-editor'
 import { useFilesData } from 'app/context/files'
 import { Platform, KeyboardAvoidingView } from 'react-native'
-import { Theme } from 'app/design/theme'
+import { useTheme, useThemeName } from 'app/design/theme'
 import { getAlert, stripTags, stripTagsWithLinks } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
 import { appSetting, cn } from 'app/lib/util'
-import { ThemeName } from 'app/design/theme'
 import emitter from 'app/context/emitter'
 import { Text } from "app/design/typography";
 
@@ -81,7 +80,7 @@ export default function RftText({
     const suggestionsHeight = 130
     const { filesData, setFilesData } = useFilesData()
     const { field } = useController({ name, rules: {}, defaultValue: value })
-    const { colors } = Theme()
+    const { colors } = useTheme()
     const formContext = useFormContext()
 
     const [suggestions, setSuggestions] = useState([])
@@ -109,7 +108,7 @@ export default function RftText({
     // Match published feed font (Inter via --font-main) so the editor looks identical to posts.
     const editorFontFamily =
         'var(--font-main, "Inter", "Inter Variable", "InterVariable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif)'
-    const themeName = ThemeName() || 'light'
+    const themeName = useThemeName() || 'light'
     const editorPalette = {
         light: {
             text: 'rgba(30, 40, 55, 1)',
@@ -464,7 +463,7 @@ export default function RftText({
     }
 
     const customEditorTheme =
-        ThemeName() === 'dark'
+        themeName === 'dark'
             ? {
                 ...darkEditorTheme,
                 toolbar: {

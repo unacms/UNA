@@ -30,7 +30,7 @@ function subscribeToWebSystemTheme(onStoreChange) {
     return () => mediaQuery.removeListener(onStoreChange);
 }
 
-export function Theme() {
+export function useTheme() {
 
     const lightTheme = appSetting('theme', 'light');
     const CustomLightTheme = {
@@ -50,7 +50,7 @@ export function Theme() {
         },
     };
 
-    return ThemeName() === 'dark' ? CustomDarkTheme : CustomLightTheme;
+    return useThemeName() === 'dark' ? CustomDarkTheme : CustomLightTheme;
 }
 
 export function useResolvedThemeName() {
@@ -66,7 +66,10 @@ export function useResolvedThemeName() {
     return (themeName && themeName !== 'auto') ? themeName : (systemThemeName || 'light');
 }
 
-export function ThemeName() {
+export function useThemeName() {
     return useResolvedThemeName();
 }
+
+export const Theme = useTheme;
+export const ThemeName = useThemeName;
 

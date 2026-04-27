@@ -3,7 +3,6 @@ import { View } from 'app/design/view';
 import { Icon } from 'app/ui/atoms/icon';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
-import { Theme, ThemeName } from 'app/design/theme';
 import { useColorScheme } from 'react-native';
 import { DarkTheme, DefaultTheme } from "@react-navigation/native";
 import Profile from 'app/ui/molecules/profile';
@@ -126,7 +125,7 @@ export default function Tabs() {
     // useTranslation должен вызываться после всех других хуков, чтобы избежать проблем с порядком
     // если i18n не инициализирован, useTranslation может вызывать хуки условно
     const { t } = useTranslation();
-    // Используем useColorScheme напрямую, чтобы избежать повторного вызова useLayoutSettings через Theme()
+    // Используем useColorScheme напрямую, чтобы избежать повторного вызова useLayoutSettings через useTheme()
     const defColorScheme = useColorScheme();
     // Вычисляем тему через useMemo, чтобы избежать повторных вычислений и гарантировать стабильный порядок хуков
     const { colors } = useMemo(() => {

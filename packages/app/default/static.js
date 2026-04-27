@@ -12,7 +12,7 @@ import { Animated } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { tp } from 'app/lib/util'
 import ProfilesList from 'app/ui/molecules/profile_list'
-import { ThemeName } from 'app/design/theme'
+import { useThemeName } from 'app/design/theme'
 import { Platform } from 'react-native'
 import SvgFile from 'app/ui/molecules/svg-file'
 import MenuFooter from 'app/components/nav/menu-footer'
@@ -23,7 +23,7 @@ import NodeFlow from 'app/ui/atoms/node-flow'
 const isWeb = Platform.OS === 'web'
 //mode can be 'adaptive', 'full', 'mark', 'text'
 const Logo = ({ mode = 'adaptive' }) => {
-    const theme = ThemeName()
+    const theme = useThemeName()
 
     const textStyles = {
         adaptive: ' hidden sm:block  ',
@@ -123,12 +123,16 @@ const SplashTextInner = () => {
 const SplashTextComponent = (props) => {
     return isWeb ? (
         <View className="items-center lg:items-start relative gap-6 my-auto flex-auto w-full ">
-            <View className="flex-auto h-64 w-64">
+
+            <View className="relative flex-auto h-40 w-64 opacity-80">
+            <View className=" absolute bg-primary-500/20 blur-3xl h-48 w-64 rounded-full -bottom-10 "></View>
+
                 <SvgFile
                     src_dark="splash-dark.svg"
                     src_default="splash-light.svg"
                     alt="Splash screen illustration"
                 />
+
             </View>
             <View className="flex-auto w-full items-center lg:items-start">
                 <SplashTextInner />

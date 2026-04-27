@@ -5,7 +5,7 @@ import { Modal } from 'app/design/controls'
 import { Button } from 'app/design/controls';
 import { Text } from 'app/design/typography';
 import { Icon } from 'app/ui/atoms/icon';
-import { Theme } from 'app/design/theme';
+import { useTheme } from 'app/design/theme';
 
 const formatValueDate = (v) => {
     if (v.dt){
@@ -53,7 +53,7 @@ const CalendarHeader = (dValue, addMonth) => {
 const generateValues = range => Array.from({ length: range }, (_, i) => ({ label: i.toString().padStart(2, '0'), value: i.toString().padStart(2, '0') }));
 
 export default function ({ name, value = '', type, onChange }) {
-    const { colors } = Theme();
+    const { colors } = useTheme();
     const bIsTime = type === 'datetime';
     const [showModal, setShowModal] = useState(false);
     const [DynamicCalendar, setDynamicCalendar] = useState(null);

@@ -26,7 +26,7 @@ import i18n from 'i18next'
 import { Appearance, Platform } from 'react-native'
 import { storageSet, storageClear, storageGet } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
-import { Theme } from 'app/design/theme'
+import { useTheme } from 'app/design/theme'
 import DasbordStatOld from 'app/components/elements/dashboard_stat_old'
 import ThemeCompatibilityTest from 'app/ui/molecules/nativewindui'
 import { useLayoutSettings } from 'app/context/layout-settings'
@@ -280,7 +280,7 @@ export default function DashboardStat(props) {
 }
 
 function ElementDashboardStat(props) {
-    const { colors } = Theme()
+    const { colors } = useTheme()
     const { t } = useTranslation()
     const [data, setData] = useState(props.data)
     const { currentUser, setCurrentUser } = useCurrentUser()

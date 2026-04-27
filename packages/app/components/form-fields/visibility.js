@@ -10,7 +10,7 @@ import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile';
-import { Theme } from 'app/design/theme';
+import { useTheme } from 'app/design/theme';
 import { useTranslation } from 'react-i18next'
 
 export default function (props) {
@@ -31,7 +31,7 @@ export default function (props) {
     );
 
 
-    const { colors } = Theme();
+    const { colors } = useTheme();
 
     const handleValueChange = (val) => {
         field.onChange(val);

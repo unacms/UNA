@@ -16,13 +16,16 @@ export const scrollValueAtom = atom(0);
 export const headerHeightAtom = atom(0);
 export const footerHeightAtom = atom(0);
 
-// Write-only atom: setting header always resets header height to 0
-// so stale layout values from a previous screen/header don't leak through.
+// Write-only atom: keep the last measured height while a visible header is
+// being replaced. On web, the DOM may not emit another layout event if the
+// header content is effectively the same, so clearing here can leave content
+// tucked under the fixed header after HMR/theme/layout updates.
 export const setHeaderAtom = atom(null, (get, set, value) => {
     const next = typeof value === 'function' ? value(get(headerAtom)) : value;
     set(headerAtom, next);
-    if (!isWeb)
+    if (!isWeb || next?.header === false) {
         set(headerHeightAtom, 0);
+    }
 });
 
 // Custom hooks

@@ -1,13 +1,13 @@
 'use client';
 
 import { IconSet as IconMap } from 'app/customization/icons';
-import { Theme } from 'app/design/theme';
+import { useTheme } from 'app/design/theme';
 import { useMemo } from 'react';
 import { cssInterop } from 'nativewind';
 import { SvgXml } from 'react-native-svg';
 
 export function IconFromSet({ icon, width, height, size, _strokeWidth, color, cleanedClassName, rest }) {
-    const { colors } = Theme();
+    const { colors } = useTheme();
     const resolvedWidth = width || size;
     const resolvedHeight = height || size;
     const resolvedSize = size || (resolvedWidth && resolvedWidth === resolvedHeight ? resolvedWidth : undefined);
