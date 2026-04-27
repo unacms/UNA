@@ -731,6 +731,7 @@ export default function RftText({
                         platformOS: '${Platform.OS}'
                     };
                     const editorElement = document.getElementsByClassName("tiptap")[0];
+                    const useParagraphBreakOnShiftEnter = ${isCommentsEditor ? 'true' : 'false'};
                     editorElement.setAttribute('autocomplete', 'off');
                     editorElement.setAttribute('autocorrect', 'off');
                     editorElement.setAttribute('autocapitalize', 'off');
@@ -748,6 +749,14 @@ export default function RftText({
                             }
                             
                             const isModKeyPressed = event.metaKey || event.ctrlKey;
+
+                            if (event.shiftKey && useParagraphBreakOnShiftEnter) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                insertParagraphBreak();
+                                syncHeightAfterParagraphBreak();
+                                return false;
+                            }
 
                             if (editorConfig.submitOnEnterEnabled) {
                                 if (isModKeyPressed) {
@@ -776,6 +785,18 @@ export default function RftText({
                             return false;
                         }
                     }, true);
+
+                    function insertParagraphBreak() {
+                        editorElement.focus();
+                        document.execCommand('insertParagraph', false, null);
+                    }
+
+                    function syncHeightAfterParagraphBreak() {
+                        requestAnimationFrame(() => {
+                            updateHeight();
+                            setTimeout(updateHeight, 0);
+                        });
+                    }
 
                     function updateHeight() {
                         requestAnimationFrame(() => {

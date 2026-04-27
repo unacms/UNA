@@ -17,6 +17,10 @@ export default function ({src_web, src_dark, src_default, ...props}) {
         : appSetting('config', 'native_app_images_url');
 
     return (
-        <img {...props} src={baseUrl + '/svg/' + src}/>
+        <img
+            key={src}
+            {...props}
+            src={baseUrl + '/svg/' + src}
+        />
     );
 } 
