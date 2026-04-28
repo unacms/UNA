@@ -9,7 +9,7 @@ export default function CategoriesList({ data, blockWrapperProps }) {
         <BlockWrapper {...blockWrapperProps}>
             <View className=" w-full flex-row flex-wrap">
                 {data.map((item, index) => (
-                    <View className='w-full lg:w-1/3 sm:w-1/2'>
+                    <View className='w-full '>
                         <Link key={`menu-${index}`} href={item.url}>
                             <View className="flex-row gap-x-1 border border-border/60  p-1 bg-card rounded-xl m-1">
                                 <Button variant="text" startDecorator="Folder" />

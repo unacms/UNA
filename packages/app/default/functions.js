@@ -15,10 +15,6 @@ export function getFriendsCounter(currentUser) {
     return currentUser?.counters?.bx_persons_friend_requests
 }
 
-export function getModalPostTitle(authorData) {
-    return !!authorData?.content?.[0]?.data?.author_data?.display_name ? `${authorData?.content?.[0]?.data?.author_data?.display_name}'s post` : ' '
-}
-
 export function layoutForList(endpoint, unitMode = '') {
     if (unitMode == 'search'){
         if (endpoint =='bx_timeline' || endpoint.includes('_cmts')){
@@ -27,6 +23,9 @@ export function layoutForList(endpoint, unitMode = '') {
     }
     if (!endpoint || endpoint?.request_url?.includes('bx_timeline') || endpoint?.params?.request_url?.includes('bx_timeline') || endpoint.unit == "notifications")
         return 'w-full';
+
+    if (endpoint?.module == 'bx_forum' || endpoint?.request_url?.includes('r=bx_forum'))
+         return 'w-full';
 
     if (endpoint?.module == 'bx_groups' || endpoint?.request_url?.includes('r=bx_groups'))
         return 'w-full @sm/list:w-1/2 @md/list:w-1/3 @lg/list:w-1/4 p-1.5';
@@ -44,7 +43,7 @@ export function layoutForList(endpoint, unitMode = '') {
 export function paddingForList(endpoint) {
 
     if (endpoint?.unit == "notifications")
-        return ' bg-card sm:rounded-xl web:my-4';
+        return ' bg-card sm:rounded-xl my-4';
     // Timeline and notifications use no padding (full width items)
     if (!endpoint || endpoint?.request_url?.includes('bx_timeline') || endpoint?.params?.request_url?.includes('bx_timeline'))
         return '';
