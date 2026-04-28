@@ -6,6 +6,7 @@ import { Loading } from 'app/customization/loading'
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
 import { useLocalSearchParams } from 'app/lib/hooks/router'
+import { ensureTabHistory, pushTabHistory } from 'app/lib/tab-history';
 import * as SplashScreen from 'expo-splash-screen';
 
 export async function getData(path, token, origin, headers, callback, params) {
@@ -52,16 +53,27 @@ export function Screen(params) {
         isRoot = true;
     }
 
-    return <Content key={_path+local.refresh} pagePath={_path} currentUser={currentUser} isRoot={isRoot} />
+    return <Content key={_path+local.refresh} pagePath={_path} currentUser={currentUser} tabKey={pathname} isRoot={isRoot} />
 
 
 }
 
-const Content = ({ pagePath, currentUser, isRoot }) => {
+const Content = ({ pagePath, currentUser, tabKey, isRoot }) => {
 
 
     const [pageData, setPageData] = useState(null);
     const { bottomSheetData, setBottomSheetData } = useBottomSheetData();
+
+    useEffect(() => {
+        if (!tabKey) return;
+        ensureTabHistory(tabKey, currentUser, pagePath);
+    }, [tabKey, currentUser?.id, currentUser?.url, pagePath]);
+
+    useEffect(() => {
+        if (!tabKey || !pagePath) return;
+        pushTabHistory(tabKey, pagePath, currentUser);
+    }, [tabKey, pagePath, currentUser?.id, currentUser?.url]);
+
     useEffect(() => {
         if (!(pagePath && pagePath.startsWith('/') && !pagePath.includes('/?url='))) return;
 

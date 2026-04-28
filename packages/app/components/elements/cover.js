@@ -20,18 +20,26 @@ import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import Loading from 'app/ui/atoms/loading'
 import { Platform } from 'react-native'
-import { useRouter, useNavigation, goBack } from 'app/lib/hooks/router'
+import { usePathname, useRouter } from 'app/lib/hooks/router'
 import { getComponent } from 'app/components/registry'
 import { useIsDesktop } from 'app/context/measure';
 import { PageHeaderSmall } from 'app/ui/molecules/page_header';
+import { canGoBackInTab, navigateBackInTab } from 'app/lib/tab-history';
 const conductorTheme = appSetting('theme', 'conductor')
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
 const BackButton = ({ isPerson }) => {
     const router = useRouter()
-    const navigation = useNavigation()
+    const pathname = usePathname()
+    const { currentUser } = useCurrentUser()
+    const currentTab = '/' + (pathname?.split('/')[1] || 'tab0')
+    const hasTabBack = canGoBackInTab(currentTab)
 
-    return isPerson && navigation.getState().index == 0 ? (
+    const handleBackPress = () => {
+        navigateBackInTab(router, currentTab, currentUser)
+    }
+
+    return isPerson && !hasTabBack ? (
         <Link href={appSetting('cover', 'back_button_url_for_profile')}>
             <Button
                 variant="default"
@@ -47,7 +55,7 @@ const BackButton = ({ isPerson }) => {
             rounded={true}
             startDecorator="ArrowLeft"
             onPress={() => {
-                goBack(navigation, router)
+                handleBackPress()
             }}
         />
     )
