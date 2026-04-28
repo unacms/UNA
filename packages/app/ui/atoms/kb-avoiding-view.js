@@ -35,7 +35,7 @@ export default function KbAvoidingView({children, className, modalOffset}) {
         <KeyboardAvoidingView 
             className={className}
             behavior={"padding"}
-            keyboardVerticalOffset={(modalOffset +( (Platform.OS === "ios" ? 20 : 0))) || (Platform.OS === "ios" ? 60 : 30)}
+            keyboardVerticalOffset={(modalOffset +( (Platform.OS === "ios" ? 0 : 0))) || (Platform.OS === "ios" ? 60 : 30)}
         >
             {children}
         </KeyboardAvoidingView>
