@@ -142,7 +142,7 @@ export const FormModalHost = () => {
                 transparent={true}
                 outerClickClose={isWeb}
             >
-                <View className="p-3 sm:p-4">{modal.content}</View>
+                <View >{modal.content}</View>
             </Modal>
         );
     }
