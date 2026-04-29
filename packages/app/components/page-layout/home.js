@@ -85,7 +85,7 @@ const defineCells = (blocks, data) => {
 
 export default function ({ data, blocks }) {
   
-    return  <>
+ /*   return  <>
    
     <NeoButton style="bordered" label="Save" image="Save" onPress={() => {}} />
          <NeoButton style="bordered" width="fill" align="start" controlSize="large" onPress={() => {}}>
@@ -98,7 +98,7 @@ export default function ({ data, blocks }) {
                                     <Icon icon="ChevronRight" size={20} className="text-muted-foreground" />
                                 </Row>
                             </NeoButton>
-        </>
+        </>*/
   /*  return <>
     <View className='mt-24'>
     <Button onPress={() => {
