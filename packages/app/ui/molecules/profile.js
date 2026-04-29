@@ -107,8 +107,8 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
 
     return (
         <Row className="my-auto flex-1 ">
-            <View className="flex-1 gap-0.5">
-                <Row className="items-center gap-1 min-h-0">
+            <View className="flex-1">
+                <Row className="items-center gap-2 min-h-0">
                     {wrapWithHoverCard(nameLink)}
                     {info2}
 

@@ -10,7 +10,7 @@ const badgeSizes = appSetting('theme', 'badge_sizes');
 
 const colorMapping = {
     // Exact color names to Tailwind classes
-    emerald: { bg: 'bg-emerald-600/20', text: 'text-emerald-700 dark:text-emerald-400' },
+    emerald: { bg: 'bg-emerald-600/20 border-emerald-600/10 border shadow ', text: 'text-emerald-700 dark:text-emerald-400' },
     purple: { bg: 'bg-purple-600/20', text: ' text-purple-600 dark:text-purple-400' },
     red: { bg: 'bg-red-600/20', text: ' text-red-600 dark:text-red-400' },
     blue: { bg: 'bg-blue-600/20', text: ' text-blue-600 dark:text-blue-400' },
