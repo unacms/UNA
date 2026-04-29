@@ -34,17 +34,17 @@ export const settingsBadges = {
             image_container: ' items-center justify-center rounded overflow-hidden ',
             icon_size: 14,
             text: ' text-xs leading-5 px-0.5 py-0.5  ',
-            rounded: ' rounded ',
+            rounded: ' rounded-md ',
         },
         xs: {
             // Matches profile_sizes['xs']: h-6 (24px)
             padding: ' ',
-            wide_padding: ' px-1 ',
-            container: ' min-w-6 h-6 overflow-hidden justify-center items-center ',
+            wide_padding: ' px-2 ',
+            container: ' min-w-6 h-6 gap-0.5 overflow-hidden justify-center items-center ',
             image_container: ' items-center justify-center rounded overflow-hidden ',
             icon_size: 16,
-            text: ' text-xs leading-6 px-1  ',
-            rounded: ' rounded-md ',
+            text: ' text-xs leading-6 px-0.5 ',
+            rounded: ' rounded-full ',
         },
         sm: {
             // Matches profile_sizes['sm']: h-8 (32px)
