@@ -64,6 +64,10 @@ export default function (props) {
 }
 
 export function getVisibilityValues(valuesIn){
+    if (valuesIn == null) {
+        return [];
+    }
+
     let values = [];
     if (!Array.isArray(valuesIn)){
         values = Object.keys(valuesIn).map(function (key) {

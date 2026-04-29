@@ -283,9 +283,10 @@ export default function Form({
 
     useEffect(() => {
         if (formBundle?.form?.updated)
-            emitter.emit(`form_${name}`, { action: 'received' })
+            emitter.emit(`form_${name}`, { action: 'received', data: dynamicData.data })
 
     }, [formBundle?.form?.updated]);
+
 
 
     const { watch } = methods;

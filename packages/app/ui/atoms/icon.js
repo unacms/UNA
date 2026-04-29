@@ -8,6 +8,8 @@ import SvgIcons from 'app/customization/icons-svg';
 import { animatedIcons } from 'app/customization/animated-icons';
 
 const hasValue = (v) => v !== undefined && v !== null;
+const isValidLucideIconName = (icon) =>
+    typeof icon === 'string' && /^[A-Z][A-Za-z0-9]*$/.test(icon);
 
 export function Icon(props) {
     const { fill, ...rest } = props;
@@ -16,6 +18,7 @@ export function Icon(props) {
     if (iconProps.iconType === 'animated') return <AnimatedIcon {...iconProps} />;
     if (iconProps.iconType === 'inline') return <InlineIcon {...iconProps} />;
     if (iconProps.iconType === 'xml') return <XmlIcon {...iconProps} />;
+    if (!isValidLucideIconName(iconProps.icon)) return null;
     return <IconFromSet {...iconProps} fill={fill} />;
 }
 
