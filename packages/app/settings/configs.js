@@ -11,7 +11,7 @@ export const settingsConfigs = {
         onesignal_request_on_load: true,
         check_version: 'optional', // variants: [no, required, optional]
         collapsible_header: true,
-        
+        backbutton_in_header: false,
         scroll_to_top_button: true,
     },
     urls: {

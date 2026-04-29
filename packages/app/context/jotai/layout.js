@@ -24,7 +24,7 @@ export const setHeaderAtom = atom(null, (get, set, value) => {
     const next = typeof value === 'function' ? value(get(headerAtom)) : value;
     set(headerAtom, next);
     if (!isWeb || next?.header === false) {
-        set(headerHeightAtom, 0);
+        //set(headerHeightAtom, 0); disabled by https://linear.app/unainc/issue/CRD-418 need to check it deeply
     }
 });
 

@@ -27,7 +27,9 @@ import Badges from 'app/ui/molecules/badges'
 import { useBreakpoint, useWindowSize, useIsDesktop, useWindowHeight, useWindowWidth } from 'app/context/measure';
 import { useSetHeader, useHeaderHeight, defaultHeader } from 'app/context/jotai/layout';
 import { useFocusEffect }  from 'app/lib/hooks/router'
-import { Button, ButtonLink } from 'app/design/controls'
+import { Button, ButtonLink, NeoButton } from 'app/design/controls'
+import { Icon } from 'app/ui/atoms/icon';
+
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
 const getTimelineBlock = (name, timelineBlocks) => {
@@ -83,6 +85,20 @@ const defineCells = (blocks, data) => {
 
 export default function ({ data, blocks }) {
   
+    return  <>
+   
+    <NeoButton style="bordered" label="Save" image="Save" onPress={() => {}} />
+         <NeoButton style="bordered" width="fill" align="start" controlSize="large" onPress={() => {}}>
+                                <Row className="flex-row items-center gap-3 flex-1 w-full">
+                                    <Icon icon="FileText" size={22} className="text-foreground" />
+                                    <View className="flex-1">
+                                        <Text className="text-foreground font-medium">Untitled.md</Text>
+                                        <Text className="text-muted-foreground text-xs">Edited 5 minutes ago</Text>
+                                    </View>
+                                    <Icon icon="ChevronRight" size={20} className="text-muted-foreground" />
+                                </Row>
+                            </NeoButton>
+        </>
   /*  return <>
     <View className='mt-24'>
     <Button onPress={() => {

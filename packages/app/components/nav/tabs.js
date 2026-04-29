@@ -32,6 +32,7 @@ import { registerAll } from 'app/components/registry-init';
 import * as WebBrowser from 'expo-web-browser';
 import { getDomainFromUrl } from 'app/lib/util';
 import { useSound } from 'app/lib/hooks/useSound';
+import { resetTabHistory } from 'app/lib/tab-history';
 
 enableScreens(appSetting('native', 'enable_screens'));
 
@@ -325,8 +326,21 @@ export default function Tabs() {
                                                 return;
                                             }
 
-                                            if (pathname == `/tab${index}`) {
+                                            const tabKey = `/tab${index}`;
+                                            if (pathname?.startsWith(tabKey)) {
+                                                e.preventDefault?.();
+                                                e.stopPropagation?.();
+
                                                 setLayoutData(getAlert('list:move_to_top', true));
+
+                                                resetTabHistory(tabKey, currentUser, tabUrl);
+
+                                                router.replace({
+                                                    pathname: tabKey,
+                                                    params: { url: tabUrl, refresh: Date.now() },
+                                                });
+
+                                                return;
                                             }
                                             if (e.type == 'tabPress') {
                                                 if (tabUrl == notificationUrl) {

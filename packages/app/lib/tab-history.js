@@ -95,3 +95,13 @@ export function navigateBackInTab(router, tabKey, currentUser) {
         params: { url: rootUrl, refresh: Date.now() },
     });
 }
+
+export function resetTabHistory(tabKey, currentUser, initialUrl) {
+    if (!tabKey) return;
+    const rootUrl = getTabRoot(tabKey, currentUser);
+    tabHistoryState.byTab[tabKey] = [rootUrl];
+    if (initialUrl && initialUrl !== rootUrl) {
+        tabHistoryState.byTab[tabKey].push(initialUrl);
+    }
+    logTabHistory('reset', tabKey, { rootUrl, initialUrl });
+}
