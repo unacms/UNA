@@ -24,6 +24,7 @@ import Membership from './membership';
 import Lang from './lang';
 import Invite from './invite';
 import Map from './map';
+import Menu from './menu';
 import Calendar from './calendar';
 import Grid from './grid';
 import Pricing from './pricing';
@@ -62,6 +63,7 @@ export const componentsMapDefault = {
     pricing: Pricing,
     invite: Invite,
     map: Map,
+    menu: Menu,
     calendar: Calendar,
     comments: Comments,
     form: Form,

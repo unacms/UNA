@@ -6,9 +6,7 @@ export default function ElementLang({ data, blockWrapperProps }) {
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-            
-                <Html data={data.content} />
-            
+            <Html data={data.content} />
         </BlockWrapper>
     );
 }
