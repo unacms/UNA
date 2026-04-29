@@ -349,6 +349,7 @@ export function useResolvedNeoButton(props = {}) {
         const iconSize = sizeCfg.icon ?? 20;
         const hitSlop = sizeCfg.hitSlop ?? 4;
         const labelGap = sizeCfg.labelGap ?? 8;
+        const contentInsets = sizeCfg.contentInsets ?? {};
 
         // 4) Resolve borderShape (controlSize is in ctx so per-size rounded
         //    overrides like roundedRectangle.rounded.{mini|large|...} apply).
@@ -415,7 +416,7 @@ export function useResolvedNeoButton(props = {}) {
             // Resolved axes
             style, controlSize, borderShape, role, imagePlacement, align, width,
             // Sizing
-            height, paddingX, fontCls, iconSize, hitSlop, labelGap, rounded, aspectSquare,
+            height, paddingX, fontCls, iconSize, hitSlop, labelGap, contentInsets, rounded, aspectSquare,
             // Slot resolvers (call with current state)
             containerCls, textCls,
             // Behaviour

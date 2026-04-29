@@ -143,8 +143,8 @@ export function CoverMenuMore(props) {
     });
 
    
-    const buttonVariant = isDesktop ? 'secondary' : 'secondary'
-    const buttonSize = isDesktop ? 'base' : 'base'
+    const buttonStyle = isDesktop ? 'glass' : 'glass'
+    const buttonSize = isDesktop ? 'regular' : 'regular'
 
     return (
         <Menu
@@ -156,10 +156,11 @@ export function CoverMenuMore(props) {
                 showVertical:props?.params?.showVertical ?? false,
                 show_action: true,
                 show_counter: true,
-                button_rounded: true,
                 show_combined: true,
-                button_variant: buttonVariant,
+                button_style: buttonStyle,
                 button_size: buttonSize,
+                button_primary_style: 'glassProminent',
+                button_border_shape: 'roundedRectangle',
                 button_full_width: props?.params?.button_full_width ?? false,
                 className: 'flex-wrap justify-end gap-x-2',
                 isFixedCount: true,
@@ -174,11 +175,13 @@ export function CoverMenuMeta(props) {
             {...props}
             displayType="mixed"
             params={{
-                button_variant: 'secondary',
-                button_size: props.button_size || 'sm',
-                list_display_size: props.list_display_size || 'md',
+                button_style: 'bordered',
+                button_size: props.button_size || 'small',
+                button_border_shape: 'capsule',
+                
+                list_display_size: props.list_display_size || 'xs',
                 list_max_count: props.list_max_count || 3,
-                className: ' gap-2 flex-wrap flex-auto items-center',//lg:w-full lg:gap-y-2
+                className: ' gap-2 flex-wrap flex-auto items-center',
                 justify_items: 'start'
             }}
         />

@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback, useEffect } from 'react';
 import { appSetting, getAlert } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { View } from 'app/design/view'
-import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
+import { ButtonMenuActionDefault, ButtonMenuActionText, NeoButton } from 'app/design/controls';
 import { Modal } from 'app/design/controls'
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { useTranslation } from 'react-i18next';
@@ -134,6 +134,30 @@ export default function ElementConnections(oProps) {
     if (oIcons && !!oIcons[sAction] && oButtonProps.hide_icon !== true)
         oButtonProps.startDecorator = oIcons[sAction];
 
+    const renderActionButton = (extraProps = {}) => {
+        const actionIcon = oButtonProps.hide_icon === true ? '' : oIcons?.[sAction];
+
+        if (oProps.params?.button_style) {
+            const neoButtonStyle = oProps.primary
+                ? (oProps.params?.button_primary_style || oProps.params.button_style)
+                : oProps.params.button_style;
+
+            return (
+                <NeoButton
+                    label={sTitle}
+                    image={actionIcon}
+                    style={neoButtonStyle}
+                    controlSize={oProps.params?.button_size}
+                    borderShape={oProps.params?.button_border_shape}
+                    width={oProps.params?.button_full_width ? 'fill' : 'auto'}
+                    {...extraProps}
+                />
+            );
+        }
+
+        return <ButtonAction title={sTitle} {...oButtonProps} {...extraProps} />;
+    };
+
     if (oProps.mode == 'dropdown-menu') {
         return <>
             <DropdownMenuItem
@@ -151,7 +175,7 @@ export default function ElementConnections(oProps) {
 
         return (
             <>
-                <ButtonAction title={sTitle} onPress={(event) => _handleDo(sAction, event)} {...oButtonProps} />
+                {renderActionButton({ onPress: (event) => _handleDo(sAction, event) })}
                 {modalContent && <Modal title={t("Questionnaire")} onVisible={modalContent} onClose={_handleCloseModal}>
                     <View className='px-4'>
                         <BlockByData onFormEmpty={_handleFormSubmittedAndValid} block={modalContent} />

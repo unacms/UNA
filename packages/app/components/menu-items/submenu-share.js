@@ -1,6 +1,6 @@
 import { Share } from 'react-native';
 import { fetcher } from 'app/lib/fetcher';
-import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls'
+import { ButtonMenuActionDefault, ButtonMenuActionText, NeoButton } from 'app/design/controls'
 import { Pressable } from 'app/design/view'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { setClipboard } from 'app/lib/util'
@@ -88,6 +88,10 @@ export default function MenuItemSubmenuShare(oProps) {
     });
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
+    const isPrimary = oProps.primary === true || oProps.primary === 1 || oProps.primary === "1";
+    const neoButtonStyle = isPrimary
+        ? (oProps.params?.button_primary_style || oProps.params?.button_style)
+        : oProps.params?.button_style;
 
     if (aSubmenuItems.length === 1) {
         return <></>
@@ -98,7 +102,18 @@ export default function MenuItemSubmenuShare(oProps) {
             <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
             <Pressable className={"flex-auto" + (oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? '  px-0 ' : '  pr-2 ') : '')} onPress={(event) => { event.preventDefault() }}>
                 <DropdownMenu items={aSubmenuItems} onSelect={handleMenuManageSelect}>
-                    <ButtonAction {...oButtonProps} title={oProps?.title ? oProps.title : ''} startDecorator={oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''} />
+                    {oProps.params?.button_style ? (
+                        <NeoButton
+                            label={oProps?.title ? oProps.title : ''}
+                            image={oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''}
+                            style={neoButtonStyle}
+                            controlSize={oProps.params?.button_size}
+                            borderShape={oProps.params?.button_border_shape}
+                            width={oProps.params?.button_full_width ? 'fill' : 'auto'}
+                        />
+                    ) : (
+                        <ButtonAction {...oButtonProps} title={oProps?.title ? oProps.title : ''} startDecorator={oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''} />
+                    )}
                 </DropdownMenu>
             </Pressable>
         </>

@@ -2,11 +2,15 @@ import { appSetting } from 'app/lib/util'
 import { Button } from 'app/design/controls/buttons';
 import { ButtonsGroup, NeoButtonsGroup } from 'app/design/controls/button_groups';
 
-export function ButtonMenuGroupItem({ variant, ...rest }) {
+const LEGACY_BUTTON_SIZES = new Set(['xs', 'sm', 'base', 'lg']);
+const safeLegacySize = (size, fallback = 'sm') => LEGACY_BUTTON_SIZES.has(size) ? size : fallback;
+
+export function ButtonMenuGroupItem({ variant, size, ...rest }) {
     return (
         <Button
             grouped={true}
             variant='text'
+            size={safeLegacySize(size, 'sm')}
             {...rest}
         />
     );
@@ -25,7 +29,7 @@ export function ButtonsGroupMenu(props) {
         <ButtonsGroup
             fullWidth={true}
             variant={variant ?? appSetting('layout', 'button_style_for_actions')}
-            size={size}
+            size={safeLegacySize(size, 'xs')}
             rounded={rounded}
             {...rest}
         >
@@ -46,7 +50,7 @@ function ButtonMenuAction({
     return (
         <Button
             variant={variant ?? appSetting('layout', 'button_style_for_actions')}
-            size={size}
+            size={safeLegacySize(size)}
             rounded={rounded}
             pressed={pressed}
             disabled={disabled}
@@ -69,7 +73,7 @@ function ButtonMenuCounter(props) {
 
     return <Button
         variant={variant ?? appSetting('layout', 'button_style_for_actions')}
-        size={size}
+        size={safeLegacySize(size)}
         rounded={rounded}
         pressed={pressed}
         disabled={disabled}

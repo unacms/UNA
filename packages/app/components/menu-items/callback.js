@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
+import { ButtonMenuActionDefault, ButtonMenuActionText, NeoButton } from 'app/design/controls';
 import { View } from 'app/design/view';
 import { fetcher } from 'app/lib/fetcher';
 import Submenu from './submenu'
@@ -147,10 +147,28 @@ export default function MenuItemButton(oProps) {
                 /></>
             }
             else{
+                const isPrimary = oProps.primary === true || oProps.primary === 1 || oProps.primary === "1";
+                const neoButtonStyle = isPrimary
+                    ? (oProps.params?.button_primary_style || oProps.params?.button_style)
+                    : oProps.params?.button_style;
+                const buttonAction = oProps.params?.button_style ? (
+                    <NeoButton
+                        label={buttonProps.title}
+                        image={sButtonIcon}
+                        style={neoButtonStyle}
+                        controlSize={oProps.params?.button_size}
+                        borderShape={oProps.params?.button_border_shape}
+                        width={oProps.params?.button_full_width ? 'fill' : 'auto'}
+                        onPress={(event) => handleClick(event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps)}
+                    />
+                ) : (
+                    <ButtonAction onPress={(event) => handleClick(event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps)} title={buttonProps.title} startDecorator={sButtonIcon} {...oButtonProps} />
+                );
+
                 sContent = (
                     <View className="flex-auto">
                         <Redirect ref={redirectdRef} />
-                        <ButtonAction onPress={(event) => handleClick(event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps)} title={buttonProps.title} startDecorator={sButtonIcon} {...oButtonProps} />
+                        {buttonAction}
                     </View>
                 );
             }

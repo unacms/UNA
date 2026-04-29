@@ -205,7 +205,7 @@ export const NeoButton = (props) => {
         onLongPress,
 
         // Layout
-        width, align,
+        width, align, contentInsets,
         showTitleFromSize = '',
 
         // Accessibility / web
@@ -329,18 +329,25 @@ export const NeoButton = (props) => {
 
     // Styles where `tint` repaints the surface as a fully opaque fill
     // (and the text inherits the prominent foreground colour, not the tint).
-    // Mirrors SwiftUI: `.borderedProminent` and `.glassProminent` both treat
-    // `.tint(.color)` as the new fill.
+    // Mirrors SwiftUI's simple split: prominent styles use tint as fill;
+    // non-prominent styles use tint for the label/image accent.
     const tintFillsSurface =
         resolved.tint && (resolved.style === 'borderedProminent' || resolved.style === 'glassProminent');
+
+    const resolvedContentInsets = typeof contentInsets === 'string'
+        ? resolved.contentInsets?.[contentInsets]
+        : contentInsets;
+    const defaultPaddingX = isIconOnly ? 0 : resolved.paddingX;
+    const paddingLeft = resolvedContentInsets?.left ?? resolvedContentInsets?.start ?? resolvedContentInsets?.x ?? defaultPaddingX;
+    const paddingRight = resolvedContentInsets?.right ?? resolvedContentInsets?.end ?? resolvedContentInsets?.x ?? defaultPaddingX;
 
     const containerStyle = {
         height: resolved.aspectSquare ? resolved.height : undefined,
         minHeight: resolved.aspectSquare ? undefined : resolved.height,
         width: resolved.aspectSquare ? resolved.height : undefined,
         minWidth: resolved.aspectSquare ? undefined : resolved.height,
-        paddingLeft: isIconOnly ? 0 : resolved.paddingX,
-        paddingRight: isIconOnly ? 0 : resolved.paddingX,
+        paddingLeft,
+        paddingRight,
         ...(tintFillsSurface ? { backgroundColor: resolved.tint } : {}),
     };
 

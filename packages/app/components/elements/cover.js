@@ -6,7 +6,7 @@ import { Button } from 'app/design/controls'
 import { appSetting, formatDateInterval, cloneObject, uploadImage, md5, LAYOUT_BREAKPOINTS, prepareImageForUpload } from 'app/lib/util'
 import Profile from 'app/ui/molecules/profile'
 import * as ImagePicker from 'expo-image-picker'
-
+import { NeoButton } from 'app/design/controls/neo-button'
 import { genRnd } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
 import { Image as ImageNative } from 'react-native'
@@ -70,11 +70,12 @@ function GetCoverBackButton({ isPerson }) {
     if (history.length > 2) {
         return (
             <View className="lg:hidden">
-                <Button
-                    rounded={true}
-                    size={buttonSize}
-                    variant={buttonVariant}
-                    startDecorator="ArrowLeft"
+           
+                <NeoButton
+                    image="ArrowLeft"
+                    style="bordered"
+                    controlSize="regular"
+                    borderShape="circle"
                     onPress={() => history.back()}
                 />
             </View>
@@ -83,12 +84,12 @@ function GetCoverBackButton({ isPerson }) {
         return (
             <View className="lg:hidden ">
                 <Link href="/">
-                    <Button
-                        rounded={true}
-                        size={buttonSize}
-                        variant={buttonVariant}
-                        startDecorator="ArrowLeft"
-                    />
+                <NeoButton
+                    image="ArrowLeft"
+                    style="bordered"
+                    controlSize="regular"
+                    borderShape="circle"
+                />
                 </Link>
             </View>
         )
@@ -241,7 +242,7 @@ function CoverImage({
             quality: 1,
             allowsMultipleSelection: false,
         })
-        if (!result.cancelled) {
+        if (!result.canceled && Array.isArray(result.assets)) {
             for (const i of result.assets) {
                 let uri = i.uri
                 ImageNative.getSize(uri, async (width, height) => {
@@ -339,17 +340,18 @@ function CoverImage({
                         />
                     )}
                     {allowEdit && (
-                        <Button
-                            rounded
-                            variant="secondary"
-                            size="sm"
-                            startDecorator="Camera"
+                        <NeoButton
+                            image="Camera"
+                            label="Edit Cover"
+                            style="bordered"
+                            controlSize="regular"
+                            borderShape="capsule"
                             disabled={isUploading}
                             onPress={() => handleUpload(mode)}
                         />
                     )}
                 </Row>
-                <View className="absolute lg:hidden top-2 left-3 z-50 ">
+                <View className="absolute lg:hidden top-3 left-3 z-50 ">
                     {getCoverBackButton(is_person)}
                 </View>
             </View>
@@ -372,12 +374,12 @@ function CoverImage({
                     )}
                 </View>
                 {allowEdit && (
-                    <View className=" bg-card rounded-full absolute bottom-0 right-0 p-1">
-                        <Button
-                            rounded
-                            size="sm"
-                            variant="default"
-                            startDecorator="Camera"
+                    <View className="  absolute bottom-1 rounded-full p-1 bg-card right-1 ">
+                        <NeoButton
+                            image="Camera"
+                            style="glass"
+                            controlSize="regular"
+                            borderShape="circle"
                             disabled={isUploading}
                             onPress={() => handleUpload(mode)}
                         />
@@ -459,11 +461,11 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
                 className={` ${appSetting(
                     'layout',
                     'max_width_content'
-                )} lg:flex-row gap-3 mx-auto w-full lg:items-end p-2 lg:p-3 items-center `}
+                )} lg:flex-row gap-4 mx-auto w-full p-3 sm:p-4 `}
             >
                 {bPerson && (
-                    <View className="hidden lg:flex flex-none h-20 justify-end w-min ">
-                        <View className=" flex-auto z-50 rounded-full p-1 flex-none bg-card">
+                    <View className="hidden lg:flex flex-none h-24 justify-end w-min ">
+                        <View className=" flex-auto z-50 rounded-full p-1 flex-none bg-card -m-1">
                             <CoverImage
                                 is_person={bPerson}
                                 mode="picture"
@@ -477,10 +479,10 @@ export default function Cover({ data, mode, uri, showMoreMenu, pageData, context
                     </View>
                 )}
                 <View className={`flex-auto gap-2 w-full sm:gap-3 ${bPerson ? 'lg:flex-row flex-col-reverse' : 'flex-row'}`}>
-                    <View className="flex-col flex-auto gap-2 p-1 ">
-                        <Row className="gap-2 flex-auto items-center min-h-10 px-0.5">
+                    <View className="flex-col flex-none gap-3 p-1 ">
+                        <Row className="gap-2 flex-none items-center min-h-10 px-0.5">
                             <Text
-                                className={`flex-1 min-w-0 tracking-tight text-3xl font-bold text-foreground`}
+                                className={` min-w-0 tracking-tight text-2xl sm:text-3xl font-semibold text-foreground`}
                                 numberOfLines={2}
                             >
                                 {profileData.display_name || profileData.title || ''}

@@ -1292,7 +1292,7 @@ const HeaderContainer = ({
                     </View>
                 </View>
             </View>
-            <View className={` header-fixed ${isUseCurrentHeader || isDesktop ? 'bg-card' : ''} 77 ${conductorTheme.cover_base} ` + (isScrolled ? 'fixed' : '')}>
+            <View className={`header-fixed ${isScrolled ? 'bg-card' : ''} ${conductorTheme.cover_base} ` + (isScrolled ? 'fixed' : '')}>
                 <View className={conductorTheme.cover_small}
                     style={{
                         display: isScrolled ? 'flex' : 'none',

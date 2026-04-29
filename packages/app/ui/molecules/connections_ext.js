@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback, useEffect } from 'react';
 import { appSetting, getAlert } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { View } from 'app/design/view'
-import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
+import { ButtonMenuActionDefault, ButtonMenuActionText, NeoButton } from 'app/design/controls';
 import { Modal } from 'app/design/controls'
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { useTranslation } from 'react-i18next';
@@ -60,6 +60,30 @@ export default function ElementConnections({
     if (!!icons[elementData.name] && buttonProps.hide_icon !== true)
         buttonProps.startDecorator = icons[elementData.name];
 
+    const renderActionButton = (extraProps = {}) => {
+        const actionIcon = buttonProps.hide_icon === true ? '' : icons[elementData.name];
+
+        if (initial_params?.button_style) {
+            const neoButtonStyle = primary
+                ? (initial_params?.button_primary_style || initial_params.button_style)
+                : initial_params.button_style;
+
+            return (
+                <NeoButton
+                    label={elementData.title}
+                    image={actionIcon}
+                    style={neoButtonStyle}
+                    controlSize={initial_params?.button_size}
+                    borderShape={initial_params?.button_border_shape}
+                    width={initial_params?.button_full_width ? 'fill' : 'auto'}
+                    {...extraProps}
+                />
+            );
+        }
+
+        return <ButtonAction title={elementData.title} {...buttonProps} {...extraProps} />;
+    };
+
     const _handleRequset = async (action, event) => {
         const paramsDefault = { o: object, iid: item_id, cid: content_id, a: action, r: 'object' };
         const response = await fetcher('/api.php?r=system/perform/TemplServiceConnections&params[]=' + JSON.stringify(paramsDefault));
@@ -108,10 +132,12 @@ export default function ElementConnections({
                         onSelect={(item) => { _handleRequset(item.name) }}
 
                     >
-                        <ButtonAction title={elementData.title}  {...buttonProps} />
+                        {renderActionButton()}
                     </DropdownMenu>
                     :
-                    <ButtonAction title={elementData.title} onPress={(event) => _handleRequset(elementData.name, event)} {...buttonProps} />
+                    (
+                        renderActionButton({ onPress: (event) => _handleRequset(elementData.name, event) })
+                    )
                 }
                 {modalContent && <Modal title={t("Questionnaire")} onVisible={modalContent} onClose={_handleCloseModal}>
                     <View className='px-4'>

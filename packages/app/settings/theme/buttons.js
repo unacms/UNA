@@ -287,18 +287,18 @@ export const settingsButtons = {
         // iOS HIG-style minimum is 44pt; web/mouse trims a few pixels because
         // pointers don't need finger-sized targets.
         controlSizes: {
-            mini:    { height: 28, paddingX: 8,  font: 'text-xs',   icon: 14, hitSlop: 8, labelGap: 4 },
-            small:   { height: 32, paddingX: 10, font: 'text-sm',   icon: 16, hitSlop: 6, labelGap: 6 },
+            mini:    { height: 28, paddingX: 8,  font: 'text-xs',   icon: 14, hitSlop: 8, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
+            small:   { height: 32, paddingX: 12, font: 'text-sm',   icon: 16, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 4 } } },
             regular: {
-                default: { height: 44, paddingX: 14, font: 'text-base', icon: 20, hitSlop: 4, labelGap: 8 },
-                web:     { height: 40, paddingX: 12 },
-                mouse:   { height: 38, paddingX: 12 },
+                default: { height: 44, paddingX: 16, font: 'text-base', icon: 20, hitSlop: 4, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
+                web:     { height: 44, paddingX: 16 },
+                mouse:   { height: 36, paddingX: 16 },
             },
             large: {
-                default: { height: 52, paddingX: 18, font: 'text-base', icon: 22, hitSlop: 0, labelGap: 10 },
+                default: { height: 52, paddingX: 18, font: 'text-base', icon: 22, hitSlop: 0, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
                 web:     { height: 44 },
             },
-            xlarge:  { height: 64, paddingX: 24, font: 'text-lg',   icon: 24, hitSlop: 0, labelGap: 12 },
+            xlarge:  { height: 64, paddingX: 24, font: 'text-lg',   icon: 24, hitSlop: 0, labelGap: 12, contentInsets: { mediaLeading: { left: 8 } } },
         },
 
         // borderShape → rounding strategy. roundedRectangle scales with
@@ -475,27 +475,27 @@ export const settingsButtons = {
                 },
             },
 
-            // SwiftUI .glassProminent — same lift as glass, primary tint.
+            // SwiftUI .glassProminent — primary action colour with glass lift.
             glassProminent: {
                 container: {
-                    base: 'web:backdrop-blur-md shadow-btn-glass dark:shadow-btn-glass-deep',
-                    default: 'bg-accent/60',
-                    hovered: 'bg-accent/80',
-                    focused: 'bg-accent/70',
-                    pressed: 'bg-accent shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
-                    active: 'bg-accent/80',
-                    pressedToggle: 'bg-accent shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
-                    disabled: 'opacity-50',
+                    base: 'web:backdrop-blur-md shadow-btn-glass-prominent dark:shadow-btn-glass-prominent-deep',
+                    default: 'bg-primary',
+                    hovered: 'bg-primary-hover',
+                    focused: 'bg-primary',
+                    pressed: 'bg-primary/90 shadow-btn-glass-prominent-pressed dark:shadow-btn-glass-prominent-pressed-deep',
+                    active: 'bg-primary-hover',
+                    pressedToggle: 'bg-primary-hover shadow-btn-glass-prominent-pressed dark:shadow-btn-glass-prominent-pressed-deep',
+                    disabled: 'bg-primary/50 opacity-60',
                 },
                 text: {
                     base: 'font-semibold',
-                    default: 'text-accent-foreground',
-                    hovered: 'text-accent-foreground',
-                    focused: 'text-accent-foreground',
-                    pressed: 'text-accent-foreground',
-                    active: 'text-accent-foreground',
-                    pressedToggle: 'text-accent-foreground',
-                    disabled: 'text-accent-foreground/60',
+                    default: 'text-primary-foreground',
+                    hovered: 'text-primary-foreground',
+                    focused: 'text-primary-foreground',
+                    pressed: 'text-primary-foreground',
+                    active: 'text-primary-foreground',
+                    pressedToggle: 'text-primary-foreground',
+                    disabled: 'text-primary-foreground/60',
                 },
             },
 

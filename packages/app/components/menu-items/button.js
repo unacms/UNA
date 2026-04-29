@@ -1,5 +1,5 @@
 import Link from 'app/ui/atoms/link'
-import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
+import { ButtonMenuActionDefault, ButtonMenuActionText, NeoButton } from 'app/design/controls';
 import { View, Row, Pressable } from 'app/design/view';
 import React from 'react';
 import Submenu from './submenu'
@@ -72,10 +72,46 @@ export default function MenuItemButton(oProps) {
             if (isTextMode)
                 sButtonIcon = '';
 
+            const isPrimary = oProps.primary === true || oProps.primary === 1 || oProps.primary === "1";
+            const neoButtonStyle = isPrimary
+                ? (oProps.params?.button_primary_style || oProps.params?.button_style)
+                : oProps.params?.button_style;
+            const hasList = oProps?.list?.length > 0;
+            const listDisplay = hasList ? (
+                <ProfilesList
+                    data={oProps.list}
+                    showEmpty={false}
+                    maxCount={oProps.params?.list_max_count || 3}
+                    displaySize={oProps.params?.list_display_size || "sm"}
+                />
+            ) : null;
 
-            let buttonAction = <ButtonAction title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />;
-            if (oProps?.list?.length > 0) {
-                buttonAction = <Text className="text-secondary-foreground web:hover:text-foreground px-2 text-sm font-medium">{oProps.title}</Text>
+            let buttonAction = oProps.params?.button_style ? (
+                <NeoButton
+                    label={oProps.title}
+                    image={sButtonIcon}
+                    style={neoButtonStyle}
+                    controlSize={oProps.params?.button_size}
+                    borderShape={oProps.params?.button_border_shape}
+                    width={oProps.params?.button_full_width ? 'fill' : 'auto'}
+                />
+            ) : (
+                <ButtonAction title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />
+            );
+            if (hasList) {
+                buttonAction = oProps.params?.button_style ? (
+                    <NeoButton
+                        label={oProps.title}
+                        image={listDisplay}
+                        style={neoButtonStyle}
+                        controlSize={oProps.params?.button_size}
+                        borderShape={oProps.params?.button_border_shape}
+                        width={oProps.params?.button_full_width ? 'fill' : 'auto'}
+                        contentInsets={oProps.params?.button_image_inset || 'mediaLeading'}
+                    />
+                ) : (
+                    <Text className="text-secondary-foreground web:hover:text-foreground px-2 text-sm font-medium">{oProps.title}</Text>
+                )
             }
 
             if (oProps.mode == 'dropdown-menu') {
@@ -94,7 +130,7 @@ export default function MenuItemButton(oProps) {
                 sContent = (
                     <Row className={bShowVertical ? "flex-col flex-auto items-stretch" : "flex-auto items-center"}>
 
-                        {(oProps.list && oProps.list.length > 0) && <ProfilesList data={oProps.list} showEmpty={false} maxCount={oProps.params?.list_max_count || 3} displaySize={oProps.params?.list_display_size || "sm"} />}
+                        {hasList && !oProps.params?.button_style && listDisplay}
                         {oProps?.link ?
                             (!oProps.noAction ?
                                 <Link emulate={true} href={oProps.link[0] === '/' ? oProps.link : (oProps?.link?.includes("://") ? oProps.link : '/' + oProps.link)}>
@@ -103,7 +139,7 @@ export default function MenuItemButton(oProps) {
                                 : (!oProps.onPress ? buttonAction : React.cloneElement(buttonAction, { onPress: oProps.onPress }))
                             )
                             :
-                            React.cloneElement(buttonAction, { onPress: handleClick })
+                            (oProps.params?.onclick ? React.cloneElement(buttonAction, { onPress: handleClick }) : buttonAction)
                         }
 
                     </Row>
@@ -116,7 +152,7 @@ export default function MenuItemButton(oProps) {
     }
 
     return (
-        <View className={'menu-item flex-auto  ' + (bShowVertical ? ' w-full ' : ' flex-row ')}>
+        <View className={'menu-item flex-auto' + (bShowVertical ? ' w-full ' : ' flex-row ')}>
             {sContent}
         </View>
     );

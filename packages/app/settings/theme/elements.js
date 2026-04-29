@@ -21,7 +21,7 @@ export const settingsElements = {
         left_menu_cnt: '  ',
         cover_base: 'w-full ',
         cover_content:
-            'items-center h-full w-full overflow-hidden justify-between',
+            'items-center h-full w-full justify-between',
         cover_small: 'max-w-7xl mx-auto flex-row w-full px-3 lg:px-4 items-center ',
         hide_top_menu_from: 'xl',
     },

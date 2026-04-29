@@ -2,7 +2,7 @@
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { View } from 'app/design/view'
-import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonsGroupMenu, ButtonMenuGroupItem } from 'app/design/controls';
+import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonsGroupMenu, ButtonMenuGroupItem, NeoButton } from 'app/design/controls';
 import { getComponent } from 'app/components/registry'
 
 const performAction = async (sSystem, iObjectId, sAction, aParams, onLoad) => {
@@ -80,7 +80,26 @@ export default function ElementFeatures(oProps) {
         />;
     }
 
-    let aButtonsGroup = [<ButtonAction key="action" title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? _handleDo : () => { }} pressed={bShowActionUndo && bShowActionFeatured} disabled={bShowActionDisabled} {...oButtonProps} />];
+    const neoButtonStyle = oProps?.primary
+        ? (oProps.params?.button_primary_style || oProps.params?.button_style)
+        : oProps.params?.button_style;
+
+    let aButtonsGroup = [oProps.params?.button_style ? (
+        <NeoButton
+            key="action"
+            label={bShowActionLabel ? sTitle : ''}
+            image={oButtonProps.startDecorator}
+            style={neoButtonStyle}
+            controlSize={oProps.params?.button_size}
+            borderShape={oProps.params?.button_border_shape}
+            width={oProps.params?.button_full_width ? 'fill' : 'auto'}
+            selected={bShowActionUndo && bShowActionFeatured}
+            disabled={bShowActionDisabled}
+            onPress={!bShowActionDisabled ? _handleDo : () => { }}
+        />
+    ) : (
+        <ButtonAction key="action" title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? _handleDo : () => { }} pressed={bShowActionUndo && bShowActionFeatured} disabled={bShowActionDisabled} {...oButtonProps} />
+    )];
 
     return (
         <View>

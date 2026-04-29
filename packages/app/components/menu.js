@@ -3,7 +3,7 @@ import { appSetting, menuItemsByName } from 'app/lib/util';
 import { getComponent } from 'app/components/registry';
 import { useCurrentUser } from 'app/context/user'
 import { useMemo, useState, memo } from "react";
-import { Button } from 'app/design/controls';
+import { Button, NeoButton } from 'app/design/controls';
 import DynamicMenu from 'app/components/nav/menu-dynamic';
 import { Platform } from 'react-native'
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
@@ -11,12 +11,21 @@ import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 const ButtonEx = memo(({ visibleItemsCount, params }) => {
     return (
         <View key="btn" className="">
-            <Button
-                size={params.button_size}
-                variant={params.button_variant || 'default'}
-                startDecorator="Ellipsis"
-                rounded={params.button_rounded}
-            />
+            {params.button_style ? (
+                <NeoButton
+                    image="Ellipsis"
+                    style={params.button_style}
+                    controlSize={params.button_size}
+                    borderShape={params.button_border_shape}
+                />
+            ) : (
+                <Button
+                    size={params.button_size}
+                    variant={params.button_variant || 'default'}
+                    startDecorator="Ellipsis"
+                    rounded={params.button_rounded}
+                />
+            )}
         </View>
     );
 });
@@ -187,7 +196,7 @@ export default function ElementMenu(oProps) {
             } else if (oProps?.params?.button_full_width === true) {
                 spacingClass = ' flex-1 ';
             } else {
-                const defaultSpacing = isLast ? ' me-0 ' : ' me-2 ';
+                const defaultSpacing = isLast ? ' me-0 ' : ' me-0 ';
                 spacingClass = oProps?.params?.menu_item_spacing != null ? ` ${oProps.params.menu_item_spacing} ` : defaultSpacing;
             }
 
