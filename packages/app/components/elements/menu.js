@@ -50,7 +50,10 @@ export default function ElementMenu({ data, blockWrapperProps, url }) {
         items.map((item, index) => {
             const indexPath = parentIndexPath ? `${parentIndexPath}-${index}` : String(index);
             const itemId = getItemId(item, indexPath);
-            const itemPath = String(item?.url || item?.link || '');
+            const itemPath = (() => {
+                const p = String(item?.url || item?.link || '');
+                return p ? (p.startsWith('/') ? p : `/${p}`) : '';
+              })();
             const itemPathComparable = itemPath.replace(/^\/+/, '');
             const isActive = Boolean(itemPathComparable && itemPathComparable === currentPathComparable);
             const children = item?.subitems || [];
