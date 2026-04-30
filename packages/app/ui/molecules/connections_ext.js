@@ -124,7 +124,7 @@ export default function ElementConnections({
     else {
         return (
             <>
-                {elementData.actions.length > 0 ?
+                {elementData.actions.length > 0 ? (
                     <DropdownMenu
                         mode="popup"
                         items={elementData.actions}
@@ -134,11 +134,9 @@ export default function ElementConnections({
                     >
                         {renderActionButton()}
                     </DropdownMenu>
-                    :
-                    (
-                        renderActionButton({ onPress: (event) => _handleRequset(elementData.name, event) })
-                    )
-                }
+                ) : (
+                    renderActionButton({ onPress: (event) => _handleRequset(elementData.name, event) })
+                )}
                 {modalContent && <Modal title={t("Questionnaire")} onVisible={modalContent} onClose={_handleCloseModal}>
                     <View className='px-4'>
                         <BlockByData onFormEmpty={_handleFormSubmittedAndValid} block={modalContent} />

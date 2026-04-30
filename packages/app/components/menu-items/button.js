@@ -152,7 +152,7 @@ export default function MenuItemButton(oProps) {
     }
 
     return (
-        <View className={'menu-item flex-auto' + (bShowVertical ? ' w-full ' : ' flex-row ')}>
+        <View className={`menu-item flex-auto ${bShowVertical ? 'w-full' : 'flex-row'}`}>
             {sContent}
         </View>
     );
