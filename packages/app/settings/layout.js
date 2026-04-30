@@ -144,6 +144,65 @@ export const settingsLayout = {
                 },
             },
         },
+        wiki: {
+            adjustable: false,
+            sizable: true,
+            cells: {
+                left: {
+                    defaultSize: 25, 
+                    minSize: 25, 
+                    maxSize: 25,
+                    breakpoint: 'xl',
+                    responsive: {
+                       
+                        '2xl':{
+                            defaultSize: 25,
+                            minSize: 25,
+                            maxSize: 25,
+                            
+                        }
+                    }
+                },
+                center: { 
+                    defaultSize: 65, 
+                    minSize: 65, 
+                    maxSize: 65,
+                    responsive: {
+                        'xl':{
+                            defaultSize: 50,
+                            minSize: 50,
+                            maxSize: 50,
+                        },
+                        '2xl':{
+                            defaultSize: 50,
+                            minSize: 50,
+                            maxSize: 50,
+                            
+                        }
+                    }
+                },
+                right: {
+                    defaultSize: 35,
+                    minSize: 35,
+                    maxSize: 35,
+                    breakpoint: 'lg',
+                    responsive: {
+                        'xl':{
+                            defaultSize: 25,
+                            minSize: 25,
+                            maxSize: 25,
+                            
+                        },
+                        '2xl':{
+                            defaultSize: 25,
+                            minSize: 25,
+                            maxSize: 25,
+                            
+                        }
+                    }
+                },
+            },
+        },
         messenger: {
             adjustable: true,
             sizable: true,

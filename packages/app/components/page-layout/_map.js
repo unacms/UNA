@@ -10,6 +10,7 @@ import PageCustomNotif from 'app/components/page-layout/notif';
 import PageCustomCreateAccount from 'app/components/page-layout/create-account';
 import PageCustomLogin from 'app/components/page-layout/login';
 import PageUniversal from 'app/components/page-layout/universal';
+import PageWiki from 'app/components/page-layout/wiki';
 
 export const componentsMapDefault = {
     'default': PageLayoutDefault,
@@ -25,6 +26,7 @@ export const componentsMapDefault = {
     'notif': PageCustomNotif,
     'create-account': PageCustomCreateAccount,
     'login': PageCustomLogin,
+    'layout_1_column_wiki': PageWiki,
     'layout_top_area_bar_right': PageUniversal,
     'layout_topbottom_area_bar_left': PageUniversal,
     'layout_topbottom_area_bar_right': PageUniversal,

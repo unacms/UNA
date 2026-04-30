@@ -98,7 +98,7 @@ function PageContentUniversal({ children, data, layoutName }) {
             {midCells.map((cell, i) => {
                 return <PanelRow key={cell.key} gap={gap} currentBreakpoint={currentBreakpoint} cell={cell} />
             })}
-            {bottomCell.data.length > 0 && <PanelRow gap={gap} cell={bottomCell} currentBreakpoint={currentBreakpoint} />}
+            {bottomCell?.data?.length > 0 && <PanelRow gap={gap} cell={bottomCell} currentBreakpoint={currentBreakpoint} />}
         </View>
     )
 }
