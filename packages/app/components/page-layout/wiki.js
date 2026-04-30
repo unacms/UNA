@@ -1,6 +1,6 @@
 import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
     Card,
     CardHeader,
@@ -10,7 +10,7 @@ import {
 } from 'app/ui/molecules/card'
 import { Platform } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
-import { appSetting, getBreakpoint } from 'app/lib/util'
+import { appSetting, getBreakpoint, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import AuthPanel from 'app/ui/molecules/auth'
 import Page from 'app/ui/molecules/page'
 import MenuFooter from 'app/components/nav/menu-footer'
@@ -22,12 +22,18 @@ import {
     PanelHandler,
     resolvePanelProps
 } from 'app/ui/molecules/resizable-panels'
-import { useBreakpoint } from 'app/context/measure'
+import { useBreakpoint, useIsDesktop } from 'app/context/measure'
 import { BlockWrapper } from 'app/components/block-wrapper'
+import DropdownPopup from 'app/ui/atoms/dropdown-popup'
+import { useFocusEffect } from 'app/lib/hooks/router'
+import { defaultHeader, useSetHeader } from 'app/context/jotai/layout'
+import { Button } from 'app/design/controls'
 
 function PageContentWiki({ children }) {
     const { t } = useTranslation()
     const isWeb = Platform.OS === 'web'
+    const isDesktop = useIsDesktop()
+    const setHeader = useSetHeader()
     const childList = React.Children.toArray(children)
     const [tocItems, setTocItems] = useState([])
     const centerContentRef = useRef(null)
@@ -68,6 +74,11 @@ function PageContentWiki({ children }) {
         ...rightBase
     } = cells.right ?? {}
     const rightPanelProps = resolvePanelProps(rightBase, rightResponsive, currentBreakpointName)
+    const leftBreakpointMinWidth = LAYOUT_BREAKPOINTS[leftBreakpoint] ?? Number.POSITIVE_INFINITY
+    const rightBreakpointMinWidth = LAYOUT_BREAKPOINTS[rightBreakpoint] ?? Number.POSITIVE_INFINITY
+    const showMobileLeftPanel = currentBreakpoint < leftBreakpointMinWidth
+    const showMobileRightPanel = currentBreakpoint < rightBreakpointMinWidth
+    const showBothMobilePanels = showMobileLeftPanel && showMobileRightPanel && tocItems.length >= 2
     const handleTocPress = (id) => {
         if (!isWeb || !id) {
             return
@@ -194,6 +205,87 @@ function PageContentWiki({ children }) {
         </BlockWrapper>
 
     )
+    const mobileHeaderControls = useMemo(() => {
+        if (!showMobileLeftPanel && !(showMobileRightPanel && tocItems.length >= 2)) {
+            return null
+        }
+
+        return (
+            <View className="w-full px-2 py-2 bg-card">
+                <View className="flex-row flex-wrap gap-2">
+                    {showMobileLeftPanel && (
+                        <View className={`${showBothMobilePanels ? 'flex-1 min-w-[48%]' : 'w-full'}`}>
+                            <DropdownPopup
+                                minPopupWidth={220}
+                                contentClasses="rounded-xl border border-border/60 bg-card shadow-md"
+                                trigger={(
+                                    <Button
+                                        title={t('Navigation')}
+                                        variant="outline"
+                                        size="sm"
+                                        fullWidth
+                                        startDecorator="Menu"
+                                       
+                                        className="rounded-xl"
+                                    />
+                                )}
+                            >
+                                <View className="p-1">
+                                    {leftContent}
+                                </View>
+                            </DropdownPopup>
+                        </View>
+                    )}
+
+                    {showMobileRightPanel && tocItems.length >= 2 && (
+                        <View className={`${showBothMobilePanels ? 'flex-1 min-w-[48%]' : 'w-full'}`}>
+                            <DropdownPopup
+                                minPopupWidth={220}
+                                contentClasses="rounded-xl border border-border/60 bg-card shadow-md"
+                                trigger={(
+                                    <Button
+                                        title={t('On this page')}
+                                        variant="outline"
+                                        size="sm"
+                                        fullWidth
+                                        startDecorator="ScrollText"
+                                        className="rounded-xl"
+                                    />
+                                )}
+                            >
+                                <View className="p-3">
+                                    <View className="gap-2">
+                                        {tocItems.map((item) => (
+                                            <Row key={`mobile-toc-${item.id}`} className={`items-center gap-2 ${item.level === 3 ? 'pl-4' : ''}`}>
+                                                <Icon name={item.level === 2 ? 'List' : 'Minus'} size={14} className="text-muted-foreground" />
+                                                <Pressable
+                                                    onPress={() => handleTocPress(item.id)}
+                                                    className="py-0.5"
+                                                >
+                                                    <Text className="text-sm leading-tight text-secondary-foreground">
+                                                        {item.text}
+                                                    </Text>
+                                                </Pressable>
+                                            </Row>
+                                        ))}
+                                    </View>
+                                </View>
+                            </DropdownPopup>
+                        </View>
+                    )}
+                </View>
+            </View>
+        )
+    }, [showMobileLeftPanel, showMobileRightPanel, showBothMobilePanels, tocItems, t, leftContent])
+
+
+
+    useEffect(() => {
+        if (isWeb){
+            console.log("mobileHeaderControls");
+            setHeader(isDesktop ? defaultHeader : { subHeader: mobileHeaderControls });
+    }
+    }, [isDesktop, mobileHeaderControls, setHeader]);
 
     return (
         <View className="mx-auto w-full max-w-screen-2xl p-2 sm:p-4 md:p-6">
