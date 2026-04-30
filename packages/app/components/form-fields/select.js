@@ -53,6 +53,8 @@ export default function (props) {
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
            <Dropdown 
+                disabled={props?.attrs?.readonly == 'readonly' || props?.attrs?.disabled == 'disabled' || props.type == "value"}
+                
                 labelField="label"
                 valueField="value"
                 onChange={setValueF}
