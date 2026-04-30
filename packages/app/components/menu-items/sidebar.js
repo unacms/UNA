@@ -4,7 +4,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import { isEmoji } from 'app/lib/util';
 import { getComponent } from 'app/components/registry';
 
-export default function MenuItemSidebar({ title, icon, isActive, addon }) {
+export default function MenuItemSidebar({ title, icon, isActive, addon, iconEnd }) {
     const CounterIndicator = getComponent('molecule', 'counter_indicator')
     return (
         <Row className="items-center">
@@ -16,7 +16,13 @@ export default function MenuItemSidebar({ title, icon, isActive, addon }) {
                 {isEmoji(icon) ? <Text>{icon}</Text> : <Icon icon={icon} size="20" className={`${isActive ? 'text-primary-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`} />}
             </View>
 
-            <Text className={` px-2 text-sm leading-tight font-semibold  ${isActive && 'text-foreground' || 'text-secondary-foreground web:group-hover:text-foreground'}`}>{title}</Text>
+            <Text className={`flex-1 px-2 text-sm leading-tight font-semibold  ${isActive && 'text-foreground' || 'text-secondary-foreground web:group-hover:text-foreground'}`}>{title}</Text>
+            {!!iconEnd && <View className={`ml-auto h-9 w-9 items-center justify-center flex rounded-full ${isActive
+                    ? ' text-primary-foreground'
+                    : 'text-secondary-foreground '
+                }`}>
+                {isEmoji(iconEnd) ? <Text>{iconEnd}</Text> : <Icon icon={iconEnd} size="20" className={`${isActive ? 'text-primary-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`} />}
+            </View>}
             <CounterIndicator addon={addon} isTitle={true} />
         </Row>
     )

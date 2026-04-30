@@ -32,7 +32,8 @@ function PageContentWiki({ children }) {
     const [tocItems, setTocItems] = useState([])
     const centerContentRef = useRef(null)
 
-    const centerChildren = childList[0] ? [childList[0]] : []
+    const centerChild = childList[0] || null
+    const centerChildren = centerChild ? [centerChild] : []
     const leftChildren = childList.length > 2
         ? [childList[1], ...childList.slice(3)]
         : childList.slice(1)
@@ -141,8 +142,20 @@ function PageContentWiki({ children }) {
             })
             .filter(Boolean)
 
-        setTocItems(items)
-    }, [isWeb, centerChildren])
+        setTocItems((prev) => {
+            if (
+                prev.length === items.length &&
+                prev.every((prevItem, i) =>
+                    prevItem.id === items[i]?.id &&
+                    prevItem.text === items[i]?.text &&
+                    prevItem.level === items[i]?.level
+                )
+            ) {
+                return prev
+            }
+            return items
+        })
+    }, [isWeb, centerChild])
 
     const leftContent = (
         <View className="flex-auto w-full  p-2 sm:p-3">
