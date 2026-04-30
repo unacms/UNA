@@ -186,7 +186,7 @@ export default function RftText({
     }
     .is-editor-empty:first-child::before {
         float: none !important;
-        position: absolute;
+        position: fixed;
     }
     .ProseMirror, .tiptap, .ProseMirror p, .tiptap p, .ProseMirror *, .tiptap * {
         font-family: var(--editor-font) !important;
