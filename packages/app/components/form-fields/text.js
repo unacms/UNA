@@ -29,7 +29,7 @@ export default function FormFieldText(props) {
             {name.includes("phone") || props.type == "phone" ? <PhoneInput
                 autoFocus={props.auto_focus}
                 name={name}
-                readOnly={props?.attrs?.readonly == 'readonly'}
+                readOnly={props?.attrs?.readonly == 'readonly' || props?.attrs?.disabled == 'disabled'}
                 placeholderTextColor="#6b7280"
                 value={String(field.value)}
                 ariaLabel={props.caption}
@@ -48,7 +48,7 @@ export default function FormFieldText(props) {
 
                 autoFocus={props.auto_focus}
                 name={name}
-                readOnly={props?.attrs?.readonly == 'readonly' || props.type == "value"}
+                readOnly={props?.attrs?.readonly == 'readonly' || props?.attrs?.disabled == 'disabled' || props.type == "value"}
                 placeholder={placeholder}
                 placeholderTextColor="#6b7280"
                 onChangeText={field.onChange}
