@@ -247,11 +247,11 @@ function UnitCommentsDefault(props) {
                             </Row>
                             {!!data.cmt_mood && (
                                 <>
-                                    <View>
-                                        <View className="text-muted-foreground -mx-0.5 ">
+                                    
+                                        <View className="text-muted-foreground">
                                             <Icon icon='Dot' size={14} />
                                         </View>
-                                    </View>
+                                    
                                     <StarsView
                                         rating={data.cmt_mood}
                                         starSize={20}
