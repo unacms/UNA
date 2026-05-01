@@ -143,7 +143,7 @@ function AtomProfile_(oProps) {
         : (oProps.display_type ? oProps.display_type : 'unit')
 
     //--- the profile image size
-    const sDisplaySize = oProps.displaySize ? oProps.displaySize : 'lg'
+    const sDisplaySize = oProps.displaySize ? oProps.displaySize : 'base'
 
     // Get size from settings with fallback
     const sizeConfig = appSetting('theme', 'profile_sizes', sDisplaySize)

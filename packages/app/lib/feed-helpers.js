@@ -228,7 +228,7 @@ export const ItemInfo = memo(({ data, t }) => {
                 </>
             ) : (
                 <>
-                    <Icon className="text-muted-foreground -mx-0.5 " icon='Dot' size={14} />
+                    <Icon className="text-muted-foreground -mx-0.5" icon='Dot' size={14} />
                     <Pressable
                         onPress={() => {
                             setShowContextList(true)
@@ -558,7 +558,7 @@ export const Author = memo(({ data, url, t }) => {
                         {TimestampLink}
                         {shouldShowVisibilityInfo && (
                             <>
-                                <Icon className="text-muted-foreground -mx-0.5 " icon='Dot' size={12} />
+                                <Icon className="text-muted-foreground -mx-0.5" icon='Dot' size={12} />
                                 <VisibilityInfo data={data} />
                             </>
                         )}
