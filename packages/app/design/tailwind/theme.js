@@ -60,6 +60,11 @@ const boxShadowBtn = {
     'btn-focus-deep':  '0 0 0 2px rgb(var(--ring) / 0.95)',
 };
 
+const boxShadowAvatar = {
+    avatar: 'inset 0 0 0 1px rgb(0 0 0 / 0.02)',
+    'avatar-deep': 'inset 0 0 0 1px rgb(255 255 255 / 0.02)',
+};
+
 const boxShadowWeb = {
     none: '0 0 #0000',
 
@@ -87,6 +92,7 @@ const boxShadowWeb = {
     '2xl': '0 24px 48px rgb(0 0 0 / 0.08)',
     '2xl-deep': '0 24px 48px rgb(0 0 0 / 0.56)',
 
+    ...boxShadowAvatar,
     ...boxShadowBtn,
 };
 
@@ -117,6 +123,7 @@ const boxShadowNative = {
     '2xl': '0 24px 48px rgb(0 0 0 / 0.24)',
     '2xl-deep': '0 24px 48px rgb(0 0 0 / 0.32)',
 
+    ...boxShadowAvatar,
     ...boxShadowBtn,
 };
 

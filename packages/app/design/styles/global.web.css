@@ -14,12 +14,12 @@ select {
 }
 
 [data-theme="dark"] *:focus-visible {
-    outline-color: rgb(var(--ring));
+    outline-color: rgb(var(--ring) / 0.8);
 }
 
 @media (prefers-color-scheme: dark) {
     :root *:focus-visible {
-        outline-color: rgb(var(--ring));
+        outline-color: rgb(var(--ring) / 0.8);
     }
 }
 
@@ -40,7 +40,7 @@ select {
 .u-link-hitarea-lg::before {
     content: "";
     position: absolute;
-    inset: -8px -8px -8px -8px;
+    inset: -6px -8px -6px -8px;
     border-radius: 0;
     /* Nearly invisible bg so hit-testing works without visual change */
     background-color: rgba(0, 0, 0, 0.001);
@@ -72,11 +72,11 @@ select {
 }
 
 .u-link-ghost:hover::after {
-    background-color: rgb(var(--muted) / 0.8);
+    background-color: rgb(var(--muted) / 0.6);
 }
 
 .u-link-ghost:focus-visible::after {
-    background-color: rgb(var(--muted) / 0.8);
+    background-color: rgb(var(--muted) / 0.6);
 }
 
 .u-link-ghost:active::after {
@@ -88,7 +88,7 @@ select {
  * Keeps the same pseudo-element shape as regular ghost links.
  */
 .u-link-ghost-active::after {
-    background-color: rgb(var(--accent) / 0.8);
+    background-color: rgb(var(--accent) / 0.6);
 }
 
 .u-link-ghost-active:hover::after {
@@ -96,7 +96,7 @@ select {
 }
 
 .u-link-ghost-active:focus-visible::after {
-    background-color: rgb(var(--accent) / 0.8);
+    background-color: rgb(var(--accent) / 0.6);
 }
 
 .u-link-ghost-active:active::after {
@@ -130,7 +130,7 @@ select {
 [data-theme="dark"] .u-link-ghost.u-link-hitarea-sm:focus-visible::after,
 [data-theme="dark"] .u-link-ghost.u-link-hitarea-md:focus-visible::after,
 [data-theme="dark"] .u-link-ghost.u-link-hitarea-lg:focus-visible::after {
-    border-color: rgb(var(--ring));
+    border-color: rgb(var(--ring) / 0.8);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -138,7 +138,7 @@ select {
     :root .u-link-ghost.u-link-hitarea-sm:focus-visible::after,
     :root .u-link-ghost.u-link-hitarea-md:focus-visible::after,
     :root .u-link-ghost.u-link-hitarea-lg:focus-visible::after {
-        border-color: rgb(var(--ring));
+        border-color: rgb(var(--ring) / 0.8);
     }
 }
 
@@ -193,11 +193,11 @@ select {
 /* lg: ~18–28px text → target ≥44px touch area */
 .u-link-hitarea-lg {
     --u-link-ghost-inset-x: -8px;
-    --u-link-ghost-inset-y: -8px;
+    --u-link-ghost-inset-y: -6px;
     --u-link-ghost-radius: 0.75rem;
     --u-link-focus-width: 2px;
-    --u-link-focus-offset: 2px;
-    --u-link-focus-offset-ghost: 2px;
+    --u-link-focus-offset: 1px;
+    --u-link-focus-offset-ghost: 1px;
     --u-link-focus-radius: var(--u-link-ghost-radius);
 }
 .u-link-hitarea-lg::before { inset: -8px -8px -8px -8px; }
@@ -294,8 +294,8 @@ select {
  * border-radius / corner-shape the element already carries.
  */
 .u-neo-btn-ring:focus-visible {
-    outline: 3px solid rgb(var(--ring) / 0.6);
-    outline-offset: 2px;
+    outline: 2px solid rgb(var(--ring) / 0.8);
+    outline-offset: 1px;
 }
 
 .u-neo-btn-link:focus-visible {
@@ -303,8 +303,8 @@ select {
 }
 
 .u-neo-btn-link:focus-visible .u-neo-btn-ring {
-    outline: 3px solid rgb(var(--ring) / 0.6);
-    outline-offset: 2px;
+    outline: 2px solid rgb(var(--ring) / 0.8);
+    outline-offset: 1px;
 }
 
 .u-neo-btn-ring-never:focus-visible {

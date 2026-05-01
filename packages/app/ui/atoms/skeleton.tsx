@@ -21,7 +21,7 @@ type SkeletonProps = {
 }
 
 const SkeletonAvatar = ({ size }: { size: 'small' | 'large' }) => {
-    const sizeClass = size === 'small' ? 'h-6 w-6' : 'h-10 w-10'
+    const sizeClass = size === 'small' ? 'h-6 w-6' : 'h-11 w-11'
 
     return (
         <View className={`${sizeClass} aspect-square ${commonClasses.avatar}`}>
