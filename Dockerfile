@@ -25,3 +25,5 @@ RUN corepack enable yarn \
   && apt-get update \
   && apt-get install -y tini \
   && rm -rf /var/lib/apt/lists/*
+
+EXPOSE 3000
