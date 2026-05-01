@@ -200,6 +200,7 @@ export const NeoButton = (props) => {
         disabled = false,
         loading = false,
         selected = false,
+        interactive = false,
         haptics,
         onPress,
         onLongPress,
@@ -256,6 +257,7 @@ export const NeoButton = (props) => {
     const isIconOnly = hasImage && !isTitle && !isCustomChildren;
 
     const isPressable = !!(onPress || onLongPress || href);
+    const isInteractive = !disabled && (isPressable || interactive);
     const isActive = isPressable && !disabled;
     const isPressedToggle = !!selected;
 
@@ -310,7 +312,7 @@ export const NeoButton = (props) => {
     /* ------------------- container / text classes ----------------------- */
 
     const containerCls = cn(
-        'flex-row items-center',
+        'flex-row items-center web:transition-[background-color,box-shadow,opacity] web:duration-200 web:ease-out',
         resolved.rounded,
         resolved.aspectSquare ? 'aspect-square' : '',
         `justify-${resolved.align}`,
@@ -364,11 +366,29 @@ export const NeoButton = (props) => {
 
     const ringClass = !resolved.behaviors.focusRing
         ? 'u-neo-btn-ring-never'
-        : (isPressable ? 'u-neo-btn-ring' : '');
+        : (isInteractive ? 'u-neo-btn-ring' : '');
 
     /* ----------------------------- surface ------------------------------ */
 
     const Cnt = isPressable ? Pressable : View;
+
+    const hoverHandlers = resolved.behaviors.hover && isInteractive ? {
+        onMouseEnter: () => setIsHovered(true),
+        onMouseLeave: () => {
+            setIsHovered(false);
+            setIsPressed(false);
+        },
+    } : {};
+
+    const pointerPressHandlers = !isPressable && isInteractive && isWeb ? {
+        onPointerDown: (event) => {
+            if (event.pointerType === 'mouse' && event.button !== 0) return;
+            setIsPressed(true);
+        },
+        onPointerUp: () => setIsPressed(false),
+        onPointerCancel: () => setIsPressed(false),
+        onPointerLeave: () => setIsPressed(false),
+    } : {};
 
     const cntProps = {
         className: cn(
@@ -385,13 +405,13 @@ export const NeoButton = (props) => {
             onPressOut: () => setIsPressed(false),
             onFocus: () => setIsFocused(true),
             onBlur: () => setIsFocused(false),
-            ...(resolved.behaviors.hover ? {
-                onMouseEnter: () => setIsHovered(true),
-                onMouseLeave: () => setIsHovered(false),
-            } : {}),
+            ...hoverHandlers,
             ...(onPress ? { onPress: handlePress } : {}),
             ...(onLongPress && resolved.behaviors.longPress ? { onLongPress: handleLongPress } : {}),
-        } : {}),
+        } : {
+            ...hoverHandlers,
+            ...pointerPressHandlers,
+        }),
         ...refProps,
         ...buttonAttributes,
         ...rest,
@@ -483,8 +503,8 @@ export const NeoButtonLink = ({
     }
 
     return (
-        <Link href={href} target={target} asExternal={asExternal} mode="plain" className="block">
-            <NeoButton {...props} hitarea={false} />
+        <Link href={href} target={target} asExternal={asExternal} mode="plain" className="u-neo-btn-link block">
+            <NeoButton {...props} hitarea={false} interactive />
         </Link>
     );
 };

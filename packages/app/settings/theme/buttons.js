@@ -276,7 +276,7 @@ export const settingsButtons = {
             // Behavioral flags. The resolver gates event handlers on these so
             // web-only hover code does not run on native, etc.
             behaviors: {
-                hover:          { default: false, web: true,  mouse: true },
+                hover:          { default: false, mouse: true },
                 focusRing:      { default: false, web: true },
                 pressAnimation: { default: true },
                 longPress:      { default: true },
@@ -455,23 +455,23 @@ export const settingsButtons = {
             glass: {
                 container: {
                     base: 'web:backdrop-blur-md shadow-btn-glass dark:shadow-btn-glass-deep',
-                    default: 'bg-white/10 dark:bg-white/5',
-                    hovered: 'bg-white/15 dark:bg-white/10',
-                    focused: 'bg-white/15 dark:bg-white/10',
-                    pressed: 'bg-white/20 dark:bg-white/15 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
-                    active: 'bg-white/15 dark:bg-white/10',
-                    pressedToggle: 'bg-white/20 dark:bg-white/15 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
-                    disabled: 'opacity-50',
+                    default: 'bg-white/10 ',
+                    hovered: 'bg-muted/60 ',
+                    focused: 'bg-white/10',
+                    pressed: 'bg-muted/60 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
+                    active: 'bg-muted/60',
+                    pressedToggle: 'bg-card/20 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
+                    disabled: 'bg-white/10 opacity-60',
                 },
                 text: {
                     base: 'font-medium',
-                    default: 'text-foreground',
+                    default: 'text-card-foreground',
                     hovered: 'text-foreground',
-                    focused: 'text-foreground',
+                    focused: 'text-card-foreground',
                     pressed: 'text-foreground',
                     active: 'text-foreground',
                     pressedToggle: 'text-foreground',
-                    disabled: 'text-muted-foreground',
+                    disabled: 'text-card-foreground/60',
                 },
             },
 
@@ -479,13 +479,13 @@ export const settingsButtons = {
             glassProminent: {
                 container: {
                     base: 'web:backdrop-blur-md shadow-btn-glass-prominent dark:shadow-btn-glass-prominent-deep',
-                    default: 'bg-primary',
+                    default: 'bg-primary/90',
                     hovered: 'bg-primary-hover',
                     focused: 'bg-primary',
-                    pressed: 'bg-primary/90 shadow-btn-glass-prominent-pressed dark:shadow-btn-glass-prominent-pressed-deep',
+                    pressed: 'bg-primary-hover shadow-btn-glass-prominent-pressed dark:shadow-btn-glass-prominent-pressed-deep',
                     active: 'bg-primary-hover',
                     pressedToggle: 'bg-primary-hover shadow-btn-glass-prominent-pressed dark:shadow-btn-glass-prominent-pressed-deep',
-                    disabled: 'bg-primary/50 opacity-60',
+                    disabled: 'bg-primary/90 opacity-60',
                 },
                 text: {
                     base: 'font-semibold',
@@ -509,12 +509,17 @@ export const settingsButtons = {
         // `default` is the fallback for any style that does not declare its own.
         transitions: {
             default: {
-                press: { type: 'scale', from: 1, to: 0.97, spring: { damping: 24, stiffness: 360 } },
+                press: {
+                    type: 'scale',
+                    from: 1,
+                    to: { default: 1.1, mouse: 0.98, touch: 1.1 },
+                    spring: { damping: 24, stiffness: 360 },
+                },
                 hover: { type: 'opacity', duration: 120 },
                 appear: null,
             },
-            glass:          { press: { type: 'shadow' },                                              hover: { type: 'opacity', duration: 200 } },
-            glassProminent: { press: { type: 'shadow' },                                              hover: { type: 'opacity', duration: 200 } },
+            glass:          { press: { type: 'scale', from: 1, to: { default: 1.1, mouse: 0.98, touch: 1.1 }, spring: { damping: 24, stiffness: 360 } }, hover: { type: 'opacity', duration: 200 } },
+            glassProminent: { press: { type: 'scale', from: 1, to: { default: 1.1, mouse: 0.98, touch: 1.1 }, spring: { damping: 24, stiffness: 360 } }, hover: { type: 'opacity', duration: 200 } },
             plain:          { press: false,                                                            hover: false },
             link:           { press: false,                                                            hover: false },
             borderless:     { press: { type: 'scale', from: 1, to: 0.98, spring: { damping: 28, stiffness: 380 } }, hover: { type: 'opacity', duration: 120 } },
