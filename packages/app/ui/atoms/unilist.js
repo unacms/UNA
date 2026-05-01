@@ -134,7 +134,6 @@ export default function UniList(props) {
     }
 
     return (
-        
         <LegendList
             contentContainerStyle={contentContainerStyleProp}
             ref={refer || uniRef}
@@ -157,7 +156,6 @@ export default function UniList(props) {
             automaticallyAdjustContentInsets={false}
             onStartReachedThreshold={inverted ? 1 : undefined}
             initialScrollIndex={inverted && filteredData.length > 0 ? filteredData.length - 1 : undefined}
-            recycleItems={!inverted}
             drawDistance={inverted ? 500 : 350}
             {...rest}
         />
