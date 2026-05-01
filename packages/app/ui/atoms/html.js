@@ -65,6 +65,25 @@ const StyledText = (props) => {
 
 const StyledDiv = (props) => <Div {...props} />
 
+const StyledPre = ({ children, className = '', ...props }) => {
+    const preClassName = `my-2 rounded-md bg-muted p-3 ${className}`.trim()
+
+    if (Platform.OS === 'web') {
+        const WebPre = 'pre'
+        return (
+            <WebPre {...props} className={preClassName}>
+                {children}
+            </WebPre>
+        )
+    }
+
+    return (
+        <View {...props} className={preClassName}>
+            <Text className="font-mono text-sm text-foreground">{children}</Text>
+        </View>
+    )
+}
+
 const tagMapping = {
     h1: H1,
     h2: H2,
@@ -78,6 +97,7 @@ const tagMapping = {
     i: StyledI,
     em: StyledEM,
     code: Code,
+    pre: StyledPre,
     div: StyledDiv,
     li: StyledLi,
     span: StyledText,
@@ -173,12 +193,11 @@ const parseHtmlToReact = (html, parentKey = '0') => {
             const srcMatch = attributes.match(/src=['"]?([^'"\s>]+)['"]?/)
             if (srcMatch && srcMatch[1]) {
                 elements.push(
-                    <Image
+                    <View className="w-full aspect-video"><Image
                         key={getKey('image')}
                         src={srcMatch[1]}
-                        width={100}
-                        height={100}
-                    />
+                        view="cover"
+                    /></View>
                 )
             }
             continue
@@ -222,7 +241,19 @@ const parseHtmlToReact = (html, parentKey = '0') => {
 
 export default function ElementHtml({ customClassName, data, innerRef }) {
     if (!data) return null
-    let html = decodeText(data.replace(/\n|\r/g, '').replace(/&nbsp;/g, ' '));
+    const preBlocks = []
+    const withProtectedPre = data.replace(
+        /<pre\b[^>]*>[\s\S]*?<\/pre>/gi,
+        (match) => {
+            const token = `__PRE_BLOCK_${preBlocks.length}__`
+            preBlocks.push(match)
+            return token
+        }
+    )
+    let html = decodeText(withProtectedPre.replace(/\n|\r/g, '').replace(/&nbsp;/g, ' '))
+    preBlocks.forEach((block, index) => {
+        html = html.replace(`__PRE_BLOCK_${index}__`, block)
+    })
     if (html.trim() != '' && !html.includes('<p')) html = `<p>${html}</p>`
     return (
         <View className={`min-w-0 max-w-full ${customClassName || 'u-vanilla-html'}`} ref={innerRef}>
