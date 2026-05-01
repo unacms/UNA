@@ -50,7 +50,7 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
     let name = oProps.display_name ? oProps.display_name.substr(0, 1) : ''
     const avatarContent =
         <View className={`${sSize} overflow-hidden bg-muted rounded-full `}>
-            {!oProps.url_avatar && <View className={'h-full items-center justify-center bg-' + (oProps.id? getRandomColor(oProps.id)+'-500': 'muted') + ' uppercase'}>
+            {!oProps.url_avatar && <View className={'h-full items-center justify-center bg-' + (oProps.id? getRandomColor(oProps.id)+'-500': 'primary/50') + ' uppercase'}>
                 <Text className={sSizeFontLetter + ' text-card '}>{name}</Text>
             </View>}
             {!!oProps.url_avatar && <Image
@@ -62,6 +62,10 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
                 alt={oProps.display_name}
             />
             }
+            <View
+                pointerEvents="none"
+                className="absolute inset-0 rounded-full shadow-avatar dark:shadow-avatar-deep"
+            />
         </View>
         ;
 

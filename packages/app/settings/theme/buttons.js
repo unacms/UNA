@@ -22,11 +22,11 @@ export const settingsButtons = {
         },
         base: {
             rounded: 'rounded-xl',
-            container: 'px-3 gap-2 min-h-10 min-w-10',
-            container_icon_only: 'min-h-10 min-w-10',
-            title_container: ' leading-10 text-base',
+            container: 'px-3 gap-2 min-h-11 min-w-11',
+            container_icon_only: 'min-h-11 min-w-11',
+            title_container: ' leading-11 text-base',
             icon_size: 24,
-            hitSlop: 4,
+            hitSlop: 2,
         },
         lg: {
             rounded: 'rounded-xl',
@@ -292,7 +292,7 @@ export const settingsButtons = {
             regular: {
                 default: { height: 44, paddingX: 16, font: 'text-base', icon: 20, hitSlop: 4, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
                 web:     { height: 44, paddingX: 16 },
-                mouse:   { height: 40, paddingX: 16 },
+                mouse:   { height: 44, paddingX: 16 },
             },
             large: {
                 default: { height: 52, paddingX: 18, font: 'text-base', icon: 22, hitSlop: 0, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
