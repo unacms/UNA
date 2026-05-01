@@ -218,7 +218,7 @@ export const ItemInfo = memo(({ data, t }) => {
             owners?.length == 1 ? (
                 <>
 
-                    <Icon className="text-muted-foreground -mx-0.5 " icon='Dot' size={14} />
+                    <Icon className="text-muted-foreground" icon='Dot' size={14} />
 
                     <Link href={data.owners[0].url} emulate={true}>
                         <Text className=" text-secondary-foreground web:hover:text-accent-foreground font-medium text-xs ">
@@ -228,7 +228,7 @@ export const ItemInfo = memo(({ data, t }) => {
                 </>
             ) : (
                 <>
-                    <Icon className="text-muted-foreground -mx-0.5 " icon='Dot' size={14} />
+                    <Icon className="text-muted-foreground" icon='Dot' size={14} />
                     <Pressable
                         onPress={() => {
                             setShowContextList(true)
@@ -282,9 +282,9 @@ export const ItemInfo = memo(({ data, t }) => {
             l && (
                 <>
 
-                    <Icon className="text-secondary-foreground -mx-0.5 " icon='Dot' size={14} />
+                    <Icon className="text-muted-foreground" icon='Dot' size={14} />
 
-                    <Text className="text-secondary-foreground font-medium text-xs leading-4 ">
+                    <Text className="text-secondary-foreground font-semibold tracking-tight text-xs leading-5 ">
                         {l}
                     </Text>
                 </>
@@ -472,7 +472,7 @@ export const VisibilityInfo = memo(({ data }) => {
             ) : icon ? (
                 <Icon className="text-secondary-foreground py-0.5 " icon={icon} width={14} height={14} />
             ) : null}
-            <Text className="text-secondary-foreground text-xs font-semibold leading-[18px]">
+            <Text className="text-secondary-foreground text-xs font-semibold tracking-tight leading-5">
                 {isUser ? data.author_data.display_name : text}
             </Text>
         </View>
@@ -554,11 +554,11 @@ export const Author = memo(({ data, url, t }) => {
                 displayType="unit"
                 displaySize="base"
                 showInfo={
-                    <Row className="items-center flex-wrap min-h-4 gap-0.5">
+                    <Row className="items-center flex-wrap min-h-5">
                         {TimestampLink}
                         {shouldShowVisibilityInfo && (
                             <>
-                                <Icon className="text-muted-foreground -mx-0.5 " icon='Dot' size={12} />
+                                <Icon className="text-muted-foreground" icon='Dot' size={14} />
                                 <VisibilityInfo data={data} />
                             </>
                         )}

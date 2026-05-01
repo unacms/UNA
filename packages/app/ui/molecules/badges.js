@@ -1,7 +1,7 @@
 import { Row } from 'app/design/view'
 import Badge from 'app/ui/molecules/badge';
 
-export default function ({ badges, size = '' }) {
+export default function ({ badges, size = 'sm' }) {
 
     if (!badges)
         return null

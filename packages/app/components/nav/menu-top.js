@@ -88,6 +88,17 @@ export default function MenuTop({ url, uri }) {
                     </View>
                 );
             })}
+                        <View className={`${appSetting('layout', 'header', 'active_item_indicator_bg')}`} 
+                        
+                        style={{ 
+                            width: indicatorStyle.width,
+                            transform: `translateX(${indicatorStyle.translateX}px)`,
+                            opacity: indicatorStyle.visible ? 1 : 0,
+                            pointerEvents: 'none',
+                            transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out'
+                        }}
+                        />
+
             <View 
                 className={`${appSetting('layout', 'header', 'active_item_indicator')}`}
                 style={{ 
@@ -98,6 +109,8 @@ export default function MenuTop({ url, uri }) {
                     transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out'
                 }}
             />
+                
+            
         </Row>
 
     )

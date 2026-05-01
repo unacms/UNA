@@ -1,6 +1,6 @@
 import Link from 'app/ui/atoms/link'
 import { View, Row } from 'app/design/view'
-import { Button, ButtonLink } from 'app/design/controls'
+import { Button, ButtonLink, NeoButtonLink } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import { appSetting } from 'app/lib/util'
 import Search from 'app/ui/molecules/search'
@@ -44,6 +44,16 @@ export default function HeaderElement({ mode, url, uri }) {
                             case "menu_navigation":
                                 return <MenuHeaderNavigation {...(item.props || {})} />
                             case "link":
+                                if (item.props?.neoButton) {
+                                    const { neoButton, ...neoButtonProps } = item.props;
+                                    return (
+                                        <NeoButtonLink
+                                            {...neoButtonProps}
+                                            {...(item.target ? { target: item.target } : {})}
+                                            href={item.href == '{messenger}' ? appSetting('messenger', 'url') : item.href}
+                                        />
+                                    )
+                                }
                                 if (item.href === '{messenger}') {
                                     const messengerHref = appSetting('messenger', 'url');
                                     return (

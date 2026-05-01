@@ -5,13 +5,12 @@ export const settingsLinks = {
         xs: {
             hitSlop: 8,
             text: 'text-xs rounded-sm font-semibold',
-            // Extra DOM padding for primary variant (inline-button style)
-            primary: 'px-1.5 py-px',
+            primary: 'p-1',
         },
         sm: {
             hitSlop: 8,
             text: 'text-sm leading-5 rounded-lg font-semibold',
-            primary: 'p-2 ',
+            primary: 'p-1.5 ',
         },
         md: {
             hitSlop: 8,
@@ -30,7 +29,7 @@ export const settingsLinks = {
         default: ' text-foreground web:hover:text-foreground web:duration-200 ',
 
         // Muted text; subtle underline on hover; brief muted flash on press
-        secondary: ' font-semibold text-secondary-foreground web:hover:text-card-foreground web:hover:underline web:duration-200 ',
+        secondary: ' font-semibold text-secondary-foreground web:hover:text-foreground web:hover:underline web:duration-200 ',
 
         // Accent-colored text; underline on hover; brief muted flash on press
         accent: 'text-accent-foreground web:hover:underline web:active:no-underline u-link-press web:duration-200 ',

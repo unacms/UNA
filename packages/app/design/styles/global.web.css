@@ -294,7 +294,16 @@ select {
  * border-radius / corner-shape the element already carries.
  */
 .u-neo-btn-ring:focus-visible {
-    outline: 2px solid rgb(var(--ring) / 0.85);
+    outline: 3px solid rgb(var(--ring) / 0.6);
+    outline-offset: 2px;
+}
+
+.u-neo-btn-link:focus-visible {
+    outline: none;
+}
+
+.u-neo-btn-link:focus-visible .u-neo-btn-ring {
+    outline: 3px solid rgb(var(--ring) / 0.6);
     outline-offset: 2px;
 }
 
