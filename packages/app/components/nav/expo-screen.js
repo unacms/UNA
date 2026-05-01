@@ -106,5 +106,5 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot }) => {
     return pageData?.data ? (
 
         <Root path={pagePath} data={pageData.data} uri={pageData.data.uri} />
-    ) : <Loading />;
+    ) : <></>;
 };
