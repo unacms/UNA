@@ -292,7 +292,7 @@ export const settingsButtons = {
             regular: {
                 default: { height: 44, paddingX: 16, font: 'text-base', icon: 20, hitSlop: 4, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
                 web:     { height: 44, paddingX: 16 },
-                mouse:   { height: 36, paddingX: 16 },
+                mouse:   { height: 40, paddingX: 16 },
             },
             large: {
                 default: { height: 52, paddingX: 18, font: 'text-base', icon: 22, hitSlop: 0, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
