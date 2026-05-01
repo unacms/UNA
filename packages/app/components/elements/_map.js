@@ -25,6 +25,7 @@ import Lang from './lang';
 import Invite from './invite';
 import Map from './map';
 import Menu from './menu';
+import MenuWiki from './menu_wiki';
 import Deploy from './deploy';
 import Calendar from './calendar';
 import Grid from './grid';
@@ -65,6 +66,7 @@ export const componentsMapDefault = {
     invite: Invite,
     map: Map,
     menu: Menu,
+    menu_wiki: MenuWiki,
     deploy: Deploy,
     calendar: Calendar,
     comments: Comments,

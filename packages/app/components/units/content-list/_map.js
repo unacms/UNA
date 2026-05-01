@@ -14,6 +14,7 @@ import UnitCourses from './bx_courses';
 import UnitJob from './bx_jobs';
 import UnitVideos from './bx_videos';
 import UnitPoll from './bx_polls';
+import UnitProject from './bx_projects';
 export const componentsMapDefault = {
     'bx_groups': memo(UnitGroup),
     'bx_spaces': memo(UnitSpace),
@@ -29,6 +30,7 @@ export const componentsMapDefault = {
     'bx_videos': memo(UnitVideos),
     'bx_jobs': memo(UnitJob),
     'bx_polls': memo(UnitPoll),
+    'bx_projects': memo(UnitProject),
     'default': memo(UnitDefault),
     
 };
