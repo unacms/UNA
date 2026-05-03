@@ -153,6 +153,10 @@ function PageLayoutContent({ layout, data }) {
     }, [layoutName]);
 
     const componentKey = useMemo(() => {
+        if (layoutName === 'wiki') {
+            return `layout-${layoutName}`;
+        }
+
         return `layout-${layoutName}-${data.uri || data.url || ''}-${data?.timestamp || ''}`;
     }, [layoutName, data.uri, data.url, data?.timestamp]);
 

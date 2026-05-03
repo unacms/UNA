@@ -339,8 +339,10 @@ const Content = React.memo(({ children, currentUser, layoutName, url }) => {
     // and only when the footer atom is truthy. Avoids phantom scroll on auth/guest pages.
     const showBottomTabBar = footer && (currentUser || appSetting('layout', 'show_tabbar_on_mobile_non_logged'));
     const mainClassName = `${(layoutName != 'messenger' && layoutName != 'post' && !isHideHeader && showBottomTabBar) ? ' pb-16 web:lg:pb-0 lg:pb-0 ' : ''} w-full mx-auto`;
+    const contentKey = layoutName === 'wiki' ? 'wiki' : url;
+
     return (
-        <View className="w-full items-stretch cnt-root mx-auto flex-row " key={url}>
+        <View className="w-full items-stretch cnt-root mx-auto flex-row " key={contentKey}>
             <main id="main-content" role="main" className={mainClassName}>
                 <Informer />
                 {children}

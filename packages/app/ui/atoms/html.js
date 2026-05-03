@@ -84,6 +84,64 @@ const StyledPre = ({ children, className = '', ...props }) => {
     )
 }
 
+const StyledTable = ({ children, className = '', ...props }) => {
+    const tableClassName = `my-3 w-full border-collapse text-sm ${className}`.trim()
+
+    if (Platform.OS === 'web') {
+        const WebTable = 'table'
+        return <WebTable {...props} className={tableClassName}>{children}</WebTable>
+    }
+
+    return <View {...props} className={`my-3 w-full overflow-hidden rounded-lg border border-border ${className}`}>{children}</View>
+}
+
+const StyledTHead = ({ children, ...props }) => {
+    if (Platform.OS === 'web') {
+        const WebTHead = 'thead'
+        return <WebTHead {...props}>{children}</WebTHead>
+    }
+
+    return <View {...props} className="bg-muted">{children}</View>
+}
+
+const StyledTBody = ({ children, ...props }) => {
+    if (Platform.OS === 'web') {
+        const WebTBody = 'tbody'
+        return <WebTBody {...props}>{children}</WebTBody>
+    }
+
+    return <View {...props}>{children}</View>
+}
+
+const StyledTR = ({ children, ...props }) => {
+    if (Platform.OS === 'web') {
+        const WebTR = 'tr'
+        return <WebTR {...props}>{children}</WebTR>
+    }
+
+    return <Row {...props} className="border-t border-border first:border-t-0">{children}</Row>
+}
+
+const StyledTableCell = ({ children, header = false, className = '', ...props }) => {
+    const cellClassName = `border border-border px-3 py-2 text-left align-top ${header ? 'font-semibold text-foreground' : 'text-card-foreground'} ${className}`.trim()
+
+    if (Platform.OS === 'web') {
+        const WebCell = header ? 'th' : 'td'
+        return <WebCell {...props} className={cellClassName}>{children}</WebCell>
+    }
+
+    return (
+        <View {...props} className={`flex-1 px-3 py-2 ${className}`}>
+            <Text className={header ? 'font-semibold text-foreground' : 'text-card-foreground'}>
+                {children}
+            </Text>
+        </View>
+    )
+}
+
+const StyledTH = (props) => <StyledTableCell {...props} header />
+const StyledTD = (props) => <StyledTableCell {...props} />
+
 const tagMapping = {
     h1: H1,
     h2: H2,
@@ -102,8 +160,122 @@ const tagMapping = {
     li: StyledLi,
     span: StyledText,
     ul: UL,
-    ol: UL
+    ol: UL,
+    table: StyledTable,
+    thead: StyledTHead,
+    tbody: StyledTBody,
+    tr: StyledTR,
+    th: StyledTH,
+    td: StyledTD
 }
+
+const isMarkdownTableRow = (line = '') => {
+    const trimmed = line.trim()
+    return trimmed.startsWith('|') && trimmed.endsWith('|') && trimmed.slice(1, -1).includes('|')
+}
+
+const isMarkdownTableSeparator = (line = '') => {
+    const trimmed = line.trim()
+    if (!isMarkdownTableRow(trimmed)) return false
+
+    return trimmed
+        .slice(1, -1)
+        .split('|')
+        .every((cell) => /^:?-{3,}:?$/.test(cell.trim()))
+}
+
+const parseMarkdownTableRow = (line = '') => (
+    line
+        .trim()
+        .replace(/^\|/, '')
+        .replace(/\|$/, '')
+        .split('|')
+        .map((cell) => cell.trim())
+)
+
+const escapeHtml = (value = '') => (
+    value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+)
+
+const markdownTableToHtml = (lines) => {
+    const header = parseMarkdownTableRow(lines[0])
+    const rows = lines.slice(2).map(parseMarkdownTableRow)
+
+    return [
+        '<table>',
+        '<thead><tr>',
+        header.map((cell) => `<th>${escapeHtml(cell)}</th>`).join(''),
+        '</tr></thead>',
+        '<tbody>',
+        rows.map((row) => `<tr>${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join(''),
+        '</tbody>',
+        '</table>',
+    ].join('')
+}
+
+const convertMarkdownTables = (html) => {
+    const lines = html.split(/\r?\n/)
+    const output = []
+    let i = 0
+
+    while (i < lines.length) {
+        const line = lines[i]
+        const separatorIndex = (() => {
+            let index = i + 1
+            while (index < lines.length && lines[index].trim() === '') index += 1
+            return index
+        })()
+
+        if (
+            isMarkdownTableRow(line) &&
+            separatorIndex < lines.length &&
+            isMarkdownTableSeparator(lines[separatorIndex])
+        ) {
+            const tableLines = [line, lines[separatorIndex]]
+            i = separatorIndex + 1
+
+            while (i < lines.length) {
+                if (lines[i].trim() === '') {
+                    i += 1
+                    continue
+                }
+
+                if (!isMarkdownTableRow(lines[i])) break
+                tableLines.push(lines[i])
+                i += 1
+            }
+
+            output.push(markdownTableToHtml(tableLines))
+            continue
+        }
+
+        output.push(line)
+        i += 1
+    }
+
+    return output.join('\n')
+}
+
+const normalizeHtml = (html) => {
+    let normalized = html
+    let previous
+
+    do {
+        previous = normalized
+        normalized = normalized.replace(/<\/(ul|ol)>\s*<\/li>/gi, '</li></$1>')
+    } while (normalized !== previous)
+
+    return convertMarkdownTables(normalized)
+}
+
+const hasBlockHtml = (html) => (
+    /<(p|div|ul|ol|li|h[1-6]|pre|blockquote|table|thead|tbody|tr)\b/i.test(html)
+)
 
 const parseHtmlToReact = (html, parentKey = '0') => {
     if (!/<[a-zA-Z0-9]+[^>]*>/.test(html)) {
@@ -250,11 +422,12 @@ export default function ElementHtml({ customClassName, data, innerRef }) {
             return token
         }
     )
-    let html = decodeText(withProtectedPre.replace(/\n|\r/g, '').replace(/&nbsp;/g, ' '))
+    let html = normalizeHtml(decodeText(withProtectedPre).replace(/&nbsp;/g, ' '))
     preBlocks.forEach((block, index) => {
         html = html.replace(`__PRE_BLOCK_${index}__`, block)
     })
-    if (html.trim() != '' && !html.includes('<p')) html = `<p>${html}</p>`
+    html = html.replace(/\n|\r/g, '')
+    if (html.trim() != '' && !hasBlockHtml(html)) html = `<p>${html}</p>`
     return (
         <View className={`min-w-0 max-w-full ${customClassName || 'u-vanilla-html'}`} ref={innerRef}>
             {parseHtmlToReact(html)}

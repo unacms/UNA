@@ -282,13 +282,12 @@ function PageContentWiki({ children }) {
 
     useEffect(() => {
         if (isWeb){
-            console.log("mobileHeaderControls");
             setHeader(isDesktop ? defaultHeader : { subHeader: mobileHeaderControls });
     }
     }, [isDesktop, mobileHeaderControls, setHeader]);
 
     return (
-        <View className="mx-auto w-full max-w-screen-2xl p-2 sm:p-4 md:p-6">
+        <View className="mx-auto w-full max-w-8xl">
             <PanelGroup
                 ref={groupRef}
                 key={`cells-wiki${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
@@ -302,7 +301,7 @@ function PageContentWiki({ children }) {
                 </Panel>
                 <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
                 <Panel className={`native:w-full ${currentBreakpointName}:w-full`} {...centerPanelProps}>
-                    <View ref={centerContentRef} className={` min-w-0 gap-3`}>
+                    <View ref={centerContentRef} className={` min-w-0 p-4 gap-3`}>
                         {centerChildren}
                     </View>
                 </Panel>
