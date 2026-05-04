@@ -24,7 +24,7 @@ export default function Unit(props) {
                 <View className="relative bg-secondary aspect-video overflow-hidden rounded-lg w-full">
                     <Skeleton className="" rounded='rounded-lg' visible={isSkeleton}>
                         <Image
-                            {...data.cover}
+                            {...data.image}
                             alt={data.title}
                             view="cover"
                             className="absolute u-cover"
@@ -37,6 +37,11 @@ export default function Unit(props) {
                         <Skeleton className="h-5 w-3/4" visible={isSkeleton}>
                             <Text numberOfLines={2} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-5 font-semibold">
                                 {data.title}
+                            </Text>
+                        </Skeleton>
+                        <Skeleton className="h-5 w-3/4" visible={isSkeleton}>
+                            <Text numberOfLines={2} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-5 font-semibold">
+                                {data.domain}
                             </Text>
                         </Skeleton>
                     </View>

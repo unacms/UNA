@@ -375,7 +375,7 @@ export default function Browse(props) {
 
     const NoContent = getComponent('molecule', 'no_content')
 
-    const PreloadComponent = dataItems.length === 0 ? (hasNextPage === false
+    const PreloadComponent = !data?.hide_empty_msg && dataItems.length === 0 ? (hasNextPage === false
         ? <NoContent endpoint={{ request_url: data.request_url, params: {} }} />
         : (!dataItems.params?.loaded ? Preload : null)
     ) : null;
