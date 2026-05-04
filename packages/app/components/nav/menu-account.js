@@ -143,6 +143,7 @@ export default function MenuAccount({ buttonProps, children }) {
         <>
             <Redirect ref={redirectdRef} />
             <DropdownMenu
+            mode='popup'
                 items={updatedMenu.map((item, index) => {
                     let sTitle = t(item.title)
                     let sType = ''

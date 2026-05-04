@@ -206,12 +206,12 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             let offset = 0;
             if (selectedConvo.unread > 0)
                 offset = selectedConvo.unread - 1;
-            if (isWeb /*&& selectedConvo.unread > 0*/) {
+            //if (isWeb /*&& selectedConvo.unread > 0*/) {
                 setTimeout(() => {
                     if (refListJots?.current)
                         refListJots.current.scrollToIndex({ animated: false, align: "end", behavior: "smooth", index: 9999999999 });
                 }, 100);
-            }
+           // }
         }
     }
 

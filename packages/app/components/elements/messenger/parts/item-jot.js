@@ -75,13 +75,13 @@ export default function JotItem({ item, index, handleReply }) {
                 <Profile {...item.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
             </View>
             <View className='flex-auto'>
-                <View className='bg-muted  rounded-xl px-3 u-vanilla-html-small' >
+                <View className='bg-muted  rounded-xl px-3 l' >
                     <Row className="items-center w-full justify-between gap-1 mb-0.5 pt-2">
-                        <View><Profile
+                        <Profile
                             {...item.author_data}
                             displayType="unit_wo_image"
                         />
-                        </View>
+                        
                         <View className="">
                             <Time className="text-muted-foreground" ts={item.created}></Time>
                         </View>

@@ -85,11 +85,11 @@ export function Root(props) {
 
 
     if (currentUser === null) {
-        return <Loading />;
+        return null; 
     }
 
     if (data.redirect) {
-        return null; // или <Loading />, пока происходит редирект
+        return null; 
     }
 
     return (

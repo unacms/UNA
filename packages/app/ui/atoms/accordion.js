@@ -93,29 +93,34 @@ const AccordionTrigger = React.forwardRef(
                 >
                     {({ isExpanded }) => (
                         <>
-                            <View style={{ flex: 1, flexShrink: 1 }}>
+                            <View className="min-w-0 flex-1">
                                 {label}
                             </View>
-                            <View
-                                className={
-                                    accordionTheme.chevron_container ??
-                                    'shrink-0 transition-transform duration-200'
-                                }
-                                style={{
-                                    marginLeft: 8,
-                                    transform: [
-                                        { rotate: isExpanded ? '180deg' : '0deg' },
-                                    ],
-                                }}
-                            >
-                                <Icon
-                                    icon="ChevronDown"
-                                    size={18}
-                                    className={clsx(
-                                        accordionTheme.chevron,
-                                        chevronClassName
-                                    )}
-                                />
+                            <View className="ml-2 shrink-0">
+                                <View
+                                    className={
+                                        accordionTheme.chevron_container ??
+                                        'transition-transform duration-200'
+                                    }
+                                    style={{
+                                        transform: [
+                                            {
+                                                rotate: isExpanded
+                                                    ? '180deg'
+                                                    : '0deg',
+                                            },
+                                        ],
+                                    }}
+                                >
+                                    <Icon
+                                        icon="ChevronDown"
+                                        size={18}
+                                        className={clsx(
+                                            accordionTheme.chevron,
+                                            chevronClassName
+                                        )}
+                                    />
+                                </View>
                             </View>
                         </>
                     )}

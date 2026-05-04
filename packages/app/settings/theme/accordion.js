@@ -5,7 +5,8 @@
 export const settingsAccordion = {
     accordion: {
         root: 'web:overflow-hidden',
-        item: 'border-b border-border/60 overflow-hidden web:group',
+        /** `overflow-hidden` only on web — on iOS it clips the chevron row when the title wraps (transform + RN layout). */
+        item: 'border-b border-border/60 web:overflow-hidden web:group',
         trigger:
             'flex flex-row items-center justify-between py-4 font-medium',
         /** Applied by `AccordionTriggerTitle` and when `AccordionTrigger` receives a string `title` prop */
