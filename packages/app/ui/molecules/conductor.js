@@ -336,7 +336,16 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
     }, [isRevalidate]);
 
 
-    const bEnabled = (currentRoute?.endpoint?.params?.start == 0 || currentRoute.data.length < currentRoute?.endpoint?.params?.per_page) && !isRefreshing;
+    const bEnabled = Boolean(
+        currentRoute?.inited &&
+            currentRoute?.endpoint &&
+            currentRoute.endpoint.request_url &&
+            !currentRoute.endpoint.finished &&
+            (currentRoute.endpoint.params?.start == 0 ||
+                currentRoute.data.length <
+                    (currentRoute.endpoint.params?.per_page ?? Number.POSITIVE_INFINITY)) &&
+            !isRefreshing
+    );
 
     const {
         fetchNextPage,
@@ -354,11 +363,11 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
         },
         enabled: false//routes[index]?.data?.length == 0
     });
+
     useEffect(() => {
-        if (bEnabled) {
-            fetchNextPage();
-        }
-    }, [bEnabled, currentRoute.data.length]);
+        if (!bEnabled || hasNextPage === false || isFetchingNextPage) return;
+        fetchNextPage();
+    }, [bEnabled, currentRoute.data.length, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     useEffect(() => {
         setSnackbarVisible(false);

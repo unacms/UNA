@@ -50,8 +50,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const isFetchingJots = useRef(false);
     const hasMoreJots = useRef(true);
     const jotsPaginationRef = useRef(null);
-    const selectedConvoIndex = convos?.data && convoId ? convos.data.findIndex(item => item.id === convoId) : -1;
-    const selectedConvo = convos?.data ? convos.data[selectedConvoIndex] : false;
+    const [convosData, setConvosData] = useState(convos?.data || []);
+    const selectedConvoIndex = convosData && convoId ? convosData.findIndex(item => item.id === convoId) : -1;
+    const selectedConvo = convosData ? convosData[selectedConvoIndex] : false;
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [searchValue, setSearchValue] = useState('');
     const [replyItem, setReplyItem] = useState(false);
@@ -99,6 +100,10 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             setConvoId(convos.data[0].id);
         }
     }, [searchValue]);
+
+    useEffect(() => {
+        setConvosData(convos?.data || []);
+    }, [convos?.data]);
 
     const fetchItems = useCallback(async (targetConvoId, isAddJots) => {
         if (isAddJots && (isFetchingJots.current || !hasMoreJots.current)) return;
@@ -178,10 +183,10 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
 
     useEffect(() => {
-        if (convoId == '' && convos?.data?.length > 0) {
-            setConvoId(convos?.data[0]?.id);
+        if (convoId == '' && convosData?.length > 0) {
+            setConvoId(convosData[0]?.id);
         }
-    }, [convos]);
+    }, [convosData]);
 
 
     useEffect(() => {
@@ -220,6 +225,22 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
             if (jotUpdated.action == 'added') {
                 if (jotUpdated.data.jots) {
+                    const latestJot = jotUpdated.data.jots[jotUpdated.data.jots.length - 1];
+                    if (latestJot) {
+                        setConvosData(prevConvos => {
+                            const nextConvos = [...prevConvos];
+                            const targetIndex = nextConvos.findIndex(convo => convo.id == convoId);
+                            if (targetIndex === -1) return prevConvos;
+
+                            const targetConvo = nextConvos[targetIndex];
+                            nextConvos[targetIndex] = {
+                                ...targetConvo,
+                                message: latestJot.message ?? targetConvo.message,
+                                date: latestJot.created ?? targetConvo.date,
+                            };
+                            return nextConvos;
+                        });
+                    }
                     setJots(prevJots => ({
                         ...prevJots,
                         data: {
@@ -367,7 +388,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         return <Convos
             isSmallScreen={isSmallScreen}
             layoutHeightLeft={layoutHeightLeft}
-            data={convos?.data}
+            data={convosData}
             selectedConvoIndex={selectedConvoIndex}
             changeConvo={changeConvo}
             handleSearch={handleSearch}
@@ -378,7 +399,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }, [
         panelsVisible.convos,
         layoutHeightLeft,
-        convos?.data?.length,
+        convosData,
         selectedConvoIndex,
         changeConvo,
         handleSearch,

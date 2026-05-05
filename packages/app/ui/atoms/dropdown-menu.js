@@ -143,18 +143,35 @@ function DropdownMenuPopup({
     );
 }
 
-const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData }) => {
+const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveContent }) => {
+    const openModalByUrl = useOpenModalByUrl();
+    const openModalWithContent = useOpenModalWithContent();
     const DropdownMenuItem = getComponent('menu-item', 'dropdown');
     const redirectdRef = useRef();
     const handlePressMenu = useCallback(
         (item) => (event) => {
-            FeedbackHaptics('Medium');
-            setBottomSheetData(false);
-            console.log('Menu item selected:', item);
-            onSelect ? onSelect(item, event) : redirectdRef.current.redirect('' + item.link)
+          FeedbackHaptics('Medium');
+          setBottomSheetData(false);
+          if (onSelect) {
+            onSelect(item, event);
+            return;
+          }
+          if (item?.target === 'modal') {
+            if (item?.content) {
+              openModalWithContent({
+                title: item.title,
+                content: resolveContent ? resolveContent(item.content, item) : item.content
+
+              });
+            } else {
+              openModalByUrl(item.link);
+            }
+            return;
+          }
+          redirectdRef.current.redirect('' + item.link);
         },
-        [onSelect, setBottomSheetData]
-    );
+        [onSelect, setBottomSheetData, openModalByUrl, openModalWithContent]
+      );
 
     const classes = variantClassMap.vertical;
 
@@ -224,7 +241,7 @@ export default function DropdownMenu({
     const handlePress = useCallback(() => {
         if (mode != "alert") {
             FeedbackHaptics('Medium')
-            setBottomSheetData({ showClose: false, snapPoints: ['10%', '50%'], content: <MenuBottomSheet items={items} onSelect={onSelect} setBottomSheetData={setBottomSheetData} /> });
+            setBottomSheetData({ showClose: false, snapPoints: ['10%', '50%'], content: <MenuBottomSheet  resolveContent={resolveContent} items={items} onSelect={onSelect} setBottomSheetData={setBottomSheetData} /> });
             Keyboard.dismiss();
         }
         else {

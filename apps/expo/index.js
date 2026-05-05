@@ -50,7 +50,7 @@ export function App() {
 	const customScreenDelay = Constants.expoConfig?.splash?.timeout || 0;
 
 	const [showSplashScreen, setShowSplashScreen] = useState(customScreenDelay > 0);
-	useEffect(() => {
+	/*useEffect(() => {
 		const prepareApp = async () => {
 
 				await SplashScreen.hideAsync();
@@ -60,7 +60,7 @@ export function App() {
 
 		};
 		prepareApp();
-	}, []);
+	}, []);*/
 
 	const ctx = useMemo(() => require.context('./app'), []);
 

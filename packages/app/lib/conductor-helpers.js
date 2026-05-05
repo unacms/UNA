@@ -243,7 +243,12 @@ export async function parseData(routes, index, setRoutes, newData) {
         currentRoute.endpoint &&
         !currentRoute.endpoint.finished
     ) {
-        let params = { ...currentRoute.endpoint.params }
+        const prevFinished = currentRoute.endpoint.finished
+        const endpoint = {
+            ...currentRoute.endpoint,
+            params: { ...currentRoute.endpoint.params },
+        }
+        let params = { ...endpoint.params }
         const sRequest =
             currentRoute.endpoint.request_url + JSON.stringify({ params })
 
@@ -256,8 +261,7 @@ export async function parseData(routes, index, setRoutes, newData) {
         if (params?.per_page && zeroRes) {
             finished = true
         }
-        let isFinished = currentRoute.endpoint.finished !== finished
-        let endpoint = currentRoute.endpoint
+        const isFinished = prevFinished !== finished
 
         endpoint.finished = finished
 
@@ -287,7 +291,7 @@ export async function parseData(routes, index, setRoutes, newData) {
         }
         return { data: newData, endpoint: endpoint }
     }
-    return { data: [], endpoint: currentRoute.endpoint }
+    return { data: [], endpoint: currentRoute?.endpoint }
 }
 
 export async function fetchAndUpdateData(routes, index, setRoutes) {
