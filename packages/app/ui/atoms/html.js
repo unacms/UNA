@@ -174,6 +174,13 @@ const isMarkdownTableRow = (line = '') => {
     return trimmed.startsWith('|') && trimmed.endsWith('|') && trimmed.slice(1, -1).includes('|')
 }
 
+const getMarkdownTableRowStart = (line = '') => {
+    const firstPipe = line.indexOf('|')
+    if (firstPipe === -1) return -1
+
+    return isMarkdownTableRow(line.slice(firstPipe)) ? firstPipe : -1
+}
+
 const isMarkdownTableSeparator = (line = '') => {
     const trimmed = line.trim()
     if (!isMarkdownTableRow(trimmed)) return false
@@ -225,6 +232,8 @@ const convertMarkdownTables = (html) => {
 
     while (i < lines.length) {
         const line = lines[i]
+        const rowStart = getMarkdownTableRowStart(line)
+        const tableHeaderLine = rowStart >= 0 ? line.slice(rowStart) : line
         const separatorIndex = (() => {
             let index = i + 1
             while (index < lines.length && lines[index].trim() === '') index += 1
@@ -232,11 +241,12 @@ const convertMarkdownTables = (html) => {
         })()
 
         if (
-            isMarkdownTableRow(line) &&
+            isMarkdownTableRow(tableHeaderLine) &&
             separatorIndex < lines.length &&
             isMarkdownTableSeparator(lines[separatorIndex])
         ) {
-            const tableLines = [line, lines[separatorIndex]]
+            const leadingText = rowStart > 0 ? line.slice(0, rowStart).trim() : ''
+            const tableLines = [tableHeaderLine, lines[separatorIndex]]
             i = separatorIndex + 1
 
             while (i < lines.length) {
@@ -250,6 +260,9 @@ const convertMarkdownTables = (html) => {
                 i += 1
             }
 
+            if (leadingText) {
+                output.push(leadingText)
+            }
             output.push(markdownTableToHtml(tableLines))
             continue
         }
@@ -261,144 +274,176 @@ const convertMarkdownTables = (html) => {
     return output.join('\n')
 }
 
-const normalizeHtml = (html) => {
-    let normalized = html
-    let previous
-
-    do {
-        previous = normalized
-        normalized = normalized.replace(/<\/(ul|ol)>\s*<\/li>/gi, '</li></$1>')
-    } while (normalized !== previous)
-
-    return convertMarkdownTables(normalized)
-}
+const normalizeHtml = (html) => convertMarkdownTables(html)
 
 const hasBlockHtml = (html) => (
     /<(p|div|ul|ol|li|h[1-6]|pre|blockquote|table|thead|tbody|tr)\b/i.test(html)
 )
 
-const parseHtmlToReact = (html, parentKey = '0') => {
-    if (!/<[a-zA-Z0-9]+[^>]*>/.test(html)) {
-        if (Platform.OS === 'web') return html
-        return <Text>{html}</Text>
+const keyedChildren = (children) => React.Children.toArray(children)
+
+const renderTextNode = (key, content) => {
+    if (Platform.OS === 'web') {
+        const WebSpan = 'span'
+        return <WebSpan key={key} className="font-main">{content}</WebSpan>
     }
 
+    return <Text key={key}>{content}</Text>
+}
 
-    let childIndex = 0
-    const getKey = (tag) => `${parentKey}-${childIndex++}-${tag}`
-    const elements = []
+const VOID_TAGS = new Set([
+    'br', 'hr', 'img', 'input', 'meta', 'link',
+    'wbr', 'area', 'base', 'col', 'embed', 'param', 'source', 'track',
+])
 
-    html = html.replace(
-        /<br\s*\/?>/gi,
-        (_, index) => `<br key="${getKey('br')}"></br>`
-    )
+// Tags that auto-close a previous open sibling of the same type (HTML spec)
+const AUTO_CLOSE_SIBLINGS = {
+    li: new Set(['li']),
+    p: new Set(['p', 'div', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'pre', 'blockquote', 'table']),
+    tr: new Set(['tr']),
+    td: new Set(['td', 'th']),
+    th: new Set(['td', 'th']),
+    thead: new Set(['tbody', 'tfoot']),
+    tbody: new Set(['thead', 'tfoot']),
+}
 
-
-
-    html = html.replace(
-        /<img\s*([^>]*)\/?>/gi,
-        (match, attributes, index) => {
-            return `<customimg ${attributes} key="${getKey('img')}"></customimg>`
-        }
-    )
-
-    const mainTagRegex = /<([a-zA-Z0-9]+)([^>]*)>(.*?)<\/\1>/gis
+const tokenizeHtml = (html) => {
+    const tokens = []
+    const tagRegex = /<(\/)?\s*([a-zA-Z][a-zA-Z0-9]*)((?:\s[^>]*)?)\s*(\/)?>/g
     let lastIndex = 0
-    let match
+    let m
+    while ((m = tagRegex.exec(html)) !== null) {
+        if (m.index > lastIndex) {
+            tokens.push({ type: 'text', value: html.slice(lastIndex, m.index) })
+        }
+        const slash = m[1]
+        const tag = m[2].toLowerCase()
+        const attrs = m[3] || ''
+        const selfSlash = m[4]
 
-    while ((match = mainTagRegex.exec(html)) !== null) {
-        const [fullMatch, tag, attributes, content] = match
-        const normalizedTag = tag.toLowerCase()
-        const textBefore = html.slice(lastIndex, match.index)
-        lastIndex = mainTagRegex.lastIndex
+        if (slash === '/') {
+            tokens.push({ type: 'close', tag })
+        } else if (selfSlash === '/' || VOID_TAGS.has(tag)) {
+            tokens.push({ type: 'void', tag, attrs })
+        } else {
+            tokens.push({ type: 'open', tag, attrs })
+        }
+        lastIndex = tagRegex.lastIndex
+    }
+    if (lastIndex < html.length) {
+        tokens.push({ type: 'text', value: html.slice(lastIndex) })
+    }
+    return tokens
+}
 
-        if (textBefore) {
-            if (Platform.OS === 'web') {
-                elements.push(textBefore)
-            } else {
-                elements.push(<Text key={getKey('text-before')}>{textBefore}</Text>)
+const buildHtmlTree = (tokens) => {
+    const root = { type: 'element', tag: 'root', attrs: '', children: [] }
+    const stack = [root]
+    const top = () => stack[stack.length - 1]
+
+    for (const t of tokens) {
+        if (t.type === 'text') {
+            if (t.value) top().children.push({ type: 'text', value: t.value })
+        } else if (t.type === 'void') {
+            top().children.push({ type: 'void', tag: t.tag, attrs: t.attrs })
+        } else if (t.type === 'open') {
+            const closers = AUTO_CLOSE_SIBLINGS[t.tag]
+            if (closers && closers.has(top().tag)) {
+                stack.pop()
+            }
+            const node = { type: 'element', tag: t.tag, attrs: t.attrs, children: [] }
+            top().children.push(node)
+            stack.push(node)
+        } else if (t.type === 'close') {
+            let foundIdx = -1
+            for (let i = stack.length - 1; i > 0; i--) {
+                if (stack[i].tag === t.tag) {
+                    foundIdx = i
+                    break
+                }
+            }
+            if (foundIdx > 0) {
+                stack.length = foundIdx
             }
         }
+    }
+    return root
+}
 
-        if (normalizedTag === 'br') {
+const matchAttr = (attrs, name) => {
+    const re = new RegExp(`${name}=['"]([^'"]*)['"]`, 'i')
+    const re2 = new RegExp(`${name}=([^'"\\s>]+)`, 'i')
+    const m = attrs.match(re) || attrs.match(re2)
+    return m ? m[1] : ''
+}
+
+const renderTreeNode = (node, key) => {
+    if (node.type === 'text') {
+        return renderTextNode(key, node.value)
+    }
+
+    if (node.type === 'void') {
+        if (node.tag === 'br') {
             if (Platform.OS === 'web') {
                 const WebDiv = 'div'
-                elements.push(<WebDiv key={getKey('br')}></WebDiv>)
+                return <WebDiv key={key}></WebDiv>
             }
-            else {
-                elements.push(<P key={getKey('br')}></P>)
-            }
-
-            continue
+            return <P key={key}></P>
         }
-
-        let srcClass = attributes.match(/class=['"]([^'"]*)['"]/) || attributes.match(/class=([^'"\s>]+)/)
-
-        if (normalizedTag === 'a') {
-            const hrefMatch = attributes.match(/href="([^"]+)"/)
-            if (hrefMatch) {
-                elements.push(
-                    <Link
-                        key={getKey('link')}
-                        href={hrefMatch[1]}
-                        mode="text"
-                        className={
-                            'text-accent-foreground ' +
-                            (srcClass && srcClass[1]
-                                ? ParseHtmlClasses(
-                                      srcClass[1],
-                                      'link'
-                                  )
-                                : '')
-                        }
-                    >
-                        {parseHtmlToReact(content, getKey('content'))}
-                    </Link>
+        if (node.tag === 'img') {
+            const src = matchAttr(node.attrs, 'src')
+            if (src) {
+                return (
+                    <View key={key} className="w-full aspect-video">
+                        <Image src={src} view="cover" />
+                    </View>
                 )
             }
-            continue
+            return null
         }
-
-        const Component = tagMapping[normalizedTag] || StyledText
-
-        if (tag === 'customimg') {
-            const srcMatch = attributes.match(/src=['"]?([^'"\s>]+)['"]?/)
-            if (srcMatch && srcMatch[1]) {
-                elements.push(
-                    <View className="w-full aspect-video"><Image
-                        key={getKey('image')}
-                        src={srcMatch[1]}
-                        view="cover"
-                    /></View>
-                )
-            }
-            continue
-        }
-
-        elements.push(
-            <Component
-                key={getKey(tag)}
-                className={
-                    srcClass && srcClass[1]
-                        ? ParseHtmlClasses(srcClass[1], 'text')
-                        : ''
-                }
-                isfirst="false"
-                islast="false"
-            >
-                {parseHtmlToReact(content, getKey('content'))}
-            </Component>
-        )
+        return null
     }
 
-    const remainingText = html.slice(lastIndex)
-    if (remainingText) {
-        if (Platform.OS === 'web') {
-            elements.push(remainingText)
-        } else {
-            elements.push(<Text key={getKey('end')}>{remainingText}</Text>)
+    const className = matchAttr(node.attrs, 'class')
+    const childElements = renderChildren(node.children, key)
+
+    if (node.tag === 'a') {
+        const href = matchAttr(node.attrs, 'href')
+        if (href) {
+            return (
+                <Link
+                    key={key}
+                    href={href}
+                    mode="text"
+                    className={
+                        'text-accent-foreground ' +
+                        (className ? ParseHtmlClasses(className, 'link') : '')
+                    }
+                >
+                    {childElements}
+                </Link>
+            )
         }
+        return <React.Fragment key={key}>{childElements}</React.Fragment>
     }
+
+    const Component = tagMapping[node.tag] || StyledText
+    return (
+        <Component
+            key={key}
+            className={className ? ParseHtmlClasses(className, 'text') : ''}
+            isfirst="false"
+            islast="false"
+        >
+            {childElements}
+        </Component>
+    )
+}
+
+const renderChildren = (children, parentKey) => {
+    const elements = children
+        .map((child, i) => renderTreeNode(child, `${parentKey}-${i}-${child.tag || 'text'}`))
+        .filter((el) => el !== null && el !== undefined)
 
     if (elements.length > 0 && elements.every(React.isValidElement)) {
         elements[0] = React.cloneElement(elements[0], { isfirst: 'true' })
@@ -409,6 +454,17 @@ const parseHtmlToReact = (html, parentKey = '0') => {
     }
 
     return elements
+}
+
+const parseHtmlToReact = (html, parentKey = '0') => {
+    if (!html) return []
+    if (!/<[a-zA-Z0-9]+[^>]*>/.test(html)) {
+        return [renderTextNode(`${parentKey}-text`, html)]
+    }
+
+    const tokens = tokenizeHtml(html)
+    const tree = buildHtmlTree(tokens)
+    return renderChildren(tree.children, parentKey)
 }
 
 export default function ElementHtml({ customClassName, data, innerRef }) {
@@ -428,9 +484,10 @@ export default function ElementHtml({ customClassName, data, innerRef }) {
     })
     html = html.replace(/\n|\r/g, '')
     if (html.trim() != '' && !hasBlockHtml(html)) html = `<p>${html}</p>`
+
     return (
         <View className={`min-w-0 max-w-full ${customClassName || 'u-vanilla-html'}`} ref={innerRef}>
-            {parseHtmlToReact(html)}
+            {keyedChildren(parseHtmlToReact(html))}
         </View>
     )
 }
