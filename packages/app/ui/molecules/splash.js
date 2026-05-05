@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import Page from 'app/ui/molecules/page'
 import { Icon } from 'app/ui/atoms/icon'
+import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 /**
  * Renders the login splash screen with adaptive layouts for web and mobile platforms.
  *
@@ -52,6 +53,7 @@ function PageContent({ data }) {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="sm:px-6 gap-4">
+                        <KbAvoidingView>
                         <BlockByName
                             name="system:login_form"
                             contentOnly={true}
@@ -61,6 +63,7 @@ function PageContent({ data }) {
                                 button_full_width: true,
                             }}
                         />
+                        </KbAvoidingView>
                         <AuthPanel
                             forgotPasswordLink={true}
                             showSeparator={true}
@@ -108,7 +111,7 @@ export default function Splash(props) {
     }, [isWeb, playClick])
 
     return (
-        <Page>
+        <Page processKeyboard={false}>
             <View className="flex-1 gap-6 w-full mx-auto">
                 <View className="w-full border-b border-border/60 lg:flex-row">
                     <View className={`flex-1 lg:flex-row gap-6 lg:p-6 p-4 w-full mx-auto ${appSetting( 'layout', 'max_width_content')}`}>

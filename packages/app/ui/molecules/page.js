@@ -29,6 +29,7 @@ export default function Page({ children, data, page_width, processKeyboard=true 
             className={(page_width || getPageWidth(data?.uri, data?.config)) + ' mx-auto w-full'}
             style={isWeb ? { display: 'flex', flexDirection: 'column', minHeight: `calc(100vh - ${headerHeightFromAtom}px - ${footerHeightFromAtom}px)` } : undefined}
             keyboardShouldPersistTaps="always"
+            keyboardAwareBottomOffset={Platform.OS === 'ios' ? 120 : 64}
             keyboardDismissMode="on-drag"
             onScroll={onScroll}   
         >
