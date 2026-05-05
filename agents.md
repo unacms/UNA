@@ -675,3 +675,471 @@ async function getData() {
 }
 ```
 
+# NeoButton
+
+A SwiftUI-faithful Button for NEO. The API mirrors SwiftUI's
+`Button` axes (`role`, `buttonStyle`, `controlSize`, `buttonBorderShape`,
+`tint`) so the future `appearance="native"` switch can pass values
+straight through to `@expo/ui/swift-ui` `Button` + modifiers
+([SwiftUI Button reference](https://exploreswiftui.com/library/button),
+[`PrimitiveButtonStyle`](https://developer.apple.com/documentation/swiftui/primitivebuttonstyle)).
+
+- Component: [`packages/app/design/controls/neo-button.js`](neo-button.js)
+- Resolver: [`packages/app/design/controls/neo-button-resolver.js`](neo-button-resolver.js)
+- Theme: `neo_button` in [`packages/app/settings/theme/buttons.js`](../../settings/theme/buttons.js)
+- Shadow tokens: [`packages/app/design/tailwind/theme.js`](../tailwind/theme.js)
+- Web pseudo-elements: [`packages/app/design/styles/global.web.css`](../styles/global.web.css)
+- Live playground: open `/playground` (route at
+  [`apps/next/app/playground/page.js`](../../../../apps/next/app/playground/page.js),
+  page-layout at
+  [`packages/app/components/page-layout/playground.js`](../../components/page-layout/playground.js))
+
+```js
+import {
+    NeoButton, NeoButtonRef, NeoButtonLink,
+    NeoButtonStyleProvider, NeoControlSizeProvider,
+} from 'app/design/controls';
+```
+
+---
+
+## At a glance
+
+```jsx
+// SwiftUI: Button("Save", systemImage: "tray.and.arrow.down") { save() }
+//   .buttonStyle(.borderedProminent).controlSize(.large)
+<NeoButton
+    label="Save"
+    image="Save"
+    style="borderedProminent"
+    controlSize="large"
+    onPress={save}
+/>
+
+// Trailing image
+<NeoButton label="Continue" image="ArrowRight" imagePlacement="trailing" />
+
+// Custom layout (HStack-equivalent) via children
+<NeoButton style="bordered" width="fill" align="start" onPress={open}>
+    <Row className="flex-row items-center gap-3 flex-1">
+        <Avatar src={...} />
+        <Text className="text-foreground">{name}</Text>
+        <View className="flex-1" />
+        <Icon icon="ChevronRight" size={20} />
+    </Row>
+</NeoButton>
+
+// Provider-based defaults (mirrors .buttonStyle / .controlSize at a parent)
+<NeoButtonStyleProvider style="glass">
+  <NeoControlSizeProvider size="large">
+      <NeoButton label="Inherits glass + large" />
+  </NeoControlSizeProvider>
+</NeoButtonStyleProvider>
+```
+
+---
+
+## Props
+
+### Identity
+
+| Prop                | Type | Default | Notes |
+|---------------------|------|---------|-------|
+| `role`              | `'default' \| 'cancel' \| 'close' \| 'confirm' \| 'destructive'` | `'default'` | Maps 1:1 to SwiftUI `Button(role:)`. `confirm` defaults to `borderedProminent` when no `style` is set. `close` provides a default `X` image. `destructive` tints text red on non-prominent styles. |
+| `style`             | `'plain' \| 'bordered' \| 'borderedProminent' \| 'borderless' \| 'link' \| 'glass' \| 'glassProminent'` | `'bordered'` | Maps to SwiftUI `.buttonStyle()`. Precedence: explicit prop → nearest `<NeoButtonStyleProvider>` → role's `defaultStyle` → `defaults.style` (`bordered`). SwiftUI's `.automatic` is intentionally not exposed — it added an indirection without giving real context-awareness; the same effect is achieved by setting a provider near the relevant subtree. |
+| `controlSize`       | `'mini' \| 'small' \| 'regular' \| 'large' \| 'xlarge'` | `'regular'` | Maps to SwiftUI `.controlSize()`. `xlarge` is SwiftUI's `.extraLarge`. |
+| `borderShape`       | `'capsule' \| 'rectangle' \| 'roundedRectangle' \| 'circle'` | `'roundedRectangle'` | Maps to SwiftUI `.buttonBorderShape()`. `roundedRectangle` rounding scales with `controlSize`. |
+| `tint`              | `string` | — | CSS color. Maps to SwiftUI `.tint()`. Applied as inline style — works on both web and native. |
+
+### Content (SwiftUI Label model)
+
+| Prop              | Type                          | Default     | Notes |
+|-------------------|-------------------------------|-------------|-------|
+| `label` / `title` | `string`                      | —           | Button text. `title` is a legacy alias. |
+| `loadingLabel`    | `string`                      | —           | Optional text to show while `loading=true`. Replaces `label` for the duration. Removes the need for `label={loading ? 'Saving…' : 'Save'}` ternaries at call sites. |
+| `image`           | `string \| ReactElement`      | —           | Icon name (resolved via [`Icon`](../../ui/atoms/icon.js)) or React element. Single image only — for multi-image content, pass `children`. |
+| `systemImage`     | `string`                      | —           | Alias of `image` to match SwiftUI's `Button(_:systemImage:)` signature. |
+| `imagePlacement`  | `'leading' \| 'trailing'`     | `'leading'` | Mirrors SwiftUI `Label`'s default leading position; `'trailing'` flips it. |
+| `children`        | `ReactNode`                   | —           | When provided, replaces the `label`/`image` renderer entirely. Use for HStack-equivalent custom content (avatar + name + chevron, etc.). |
+
+### State / behaviour
+
+| Prop          | Type                       | Default | Notes |
+|---------------|----------------------------|---------|-------|
+| `disabled`    | `boolean`                  | `false` | Adds `aria-disabled`. |
+| `loading`     | `boolean`                  | `false` | Replaces `image` with a spinner; label stays. |
+| `selected`    | `boolean`                  | `false` | Sticky toggle (Bold-in-editor / open-popout). Adds `aria-pressed`. SwiftUI has no equivalent; rendered with the `pressedToggle` slot state. |
+| `onPress`     | `(e) => void`              | —       | When provided, the button is pressable. |
+| `onLongPress` | `(e) => void`              | —       | Gated by `behaviors.longPress` from the resolver (always on by default). |
+| `haptics`     | `'Light' \| 'Medium' \| …` | —       | Forwarded to `FeedbackHaptics`. |
+
+### Layout
+
+| Prop               | Type                                                   | Default     | Notes |
+|--------------------|--------------------------------------------------------|-------------|-------|
+| `width`            | `'compact' \| 'fit' \| 'fill' \| 'auto'`               | `'auto'`    | `fill` → `w-full`. Other values are reserved for compositional sizing (e.g. wrapping in a `<NeoControlSizeProvider>` at a parent that sizes itself). |
+| `align`            | `'start' \| 'center' \| 'end' \| 'between'`            | `'center'`  | `justify-{align}` on the surface. Most useful with `width="fill"`. |
+| `showTitleFromSize`| `'' \| 'sm' \| 'md' \| 'lg' \| 'xl'`                   | `''`        | Reserved (currently informational); will be wired through the resolver to hide the label below a breakpoint. |
+
+### Accessibility / web ergonomics
+
+| Prop                  | Type                          | Default  | Notes |
+|-----------------------|-------------------------------|----------|-------|
+| `accessibilityLabel`  | `string`                      | —        | Highest-priority accessible name. `alt` is also accepted as a legacy alias. |
+| `tooltip`             | `string \| ReactNode`         | `false`  | Shown only on desktop (where `useNeoEnv().isDesktop === true`). |
+| `hitarea`             | `boolean`                     | `true`   | Toggles the `.u-neo-btn-hitarea-*` pseudo-element extension. |
+| `hitSlop`             | `number \| EdgeInsets`        | size     | Overrides the per-controlSize `hitSlop`. |
+| `focusRing`           | `'auto' \| 'never'`           | env      | Default is `auto` on web, `never` on native (driven by the resolver). |
+| `pressAnimation`      | `boolean`                     | env      | When `false`, skips the press transition wrapper entirely (no `transform: scale(1)` on the wrapper at rest). |
+| `transition`          | `NeoButtonTransition \| false`| style    | Overrides the per-style transition. See [Transitions](#transitions). |
+
+### Style escape hatches
+
+| Prop            | Type                                                                                       | Notes |
+|-----------------|--------------------------------------------------------------------------------------------|-------|
+| `className`     | `string`                                                                                   | Container additions. |
+| `textClassName` | `string`                                                                                   | Text additions. |
+| `classNames`    | `{ root?, container?, text?, image?, surface?, ring? }`                                     | Granular per-slot overrides. Always appended last so they win for additive classes. |
+
+### Misc
+
+| Prop            | Type   | Notes |
+|-----------------|--------|-------|
+| `forwardedRef`  | `Ref`  | Use [`NeoButtonRef`](#neobuttonref) for the standard `forwardRef` shape. |
+| `href`          | `string` | Accepted but ignored — use [`NeoButtonLink`](#neobuttonlink) for navigation. |
+
+---
+
+## controlSize ladder
+
+Per iOS HIG-style targets ([SwiftUI button sizing](https://exploreswiftui.com/library/button)).
+Heights apply unless overridden by the resolver per scope:
+
+| controlSize | Default height | Web/mouse override | Default font  | Default icon | hitSlop | labelGap |
+|-------------|----------------|--------------------|---------------|--------------|---------|----------|
+| `mini`      | 28             | 28                 | `text-xs`     | 14           | 8       | 4        |
+| `small`     | 32             | 32                 | `text-sm`     | 16           | 6       | 6        |
+| `regular`   | 44             | 40 (web) / 38 (mouse) | `text-base` | 20         | 4       | 8        |
+| `large`     | 52             | 44 (web)            | `text-base`  | 22           | 0       | 10       |
+| `xlarge`    | 64             | 64                 | `text-lg`     | 24           | 0       | 12       |
+
+The web/mouse trims live in
+[`packages/app/settings/theme/buttons.js`](../../settings/theme/buttons.js)
+under `neo_button.controlSizes` as scope-keyed objects, e.g.:
+
+```js
+controlSizes: {
+  regular: {
+    default: { height: 44, paddingX: 14, /* … */ },
+    web:     { height: 40, paddingX: 12 },
+    mouse:   { height: 38, paddingX: 12 },
+  },
+}
+```
+
+---
+
+## borderShape
+
+| Shape              | Rounding                               | SwiftUI map         |
+|--------------------|----------------------------------------|---------------------|
+| `capsule`          | `rounded-full`                         | `.capsule`          |
+| `rectangle`        | `rounded-none`                         | `.rectangle`        |
+| `roundedRectangle` | `rounded-{md\|lg\|xl\|2xl}` per controlSize | `.roundedRectangle` |
+| `circle`           | `rounded-full` + `aspect-square`       | `.circle`           |
+
+Per-controlSize rounding for `roundedRectangle` is itself a scope-keyed object:
+
+```js
+roundedRectangle: {
+  rounded: {
+    default: 'rounded-xl',
+    mini:    'rounded-md',
+    small:   'rounded-lg',
+    large:   'rounded-2xl',
+    xlarge:  'rounded-2xl',
+  },
+}
+```
+
+---
+
+## Roles
+
+| Role          | Default style (when no `style` set) | Default image | Tint               | Text class                                            |
+|---------------|-------------------------------------|---------------|--------------------|-------------------------------------------------------|
+| `default`     | —                                   | —             | —                  | (style default)                                       |
+| `cancel`      | —                                   | —             | —                  | `text-secondary-foreground`                           |
+| `close`       | —                                   | `X`           | —                  | `text-secondary-foreground`                           |
+| `confirm`     | `borderedProminent`                 | —             | —                  | (style default)                                       |
+| `destructive` | —                                   | —             | `rgb(var(--destructive))` | `text-destructive` (or `text-destructive-foreground` on `borderedProminent`) |
+
+---
+
+## Styles
+
+Defined in `neo_button.styles` with the same slot/state shape as before
+(`container` + `text` slots, each with `base`, `default`, `hovered`,
+`focused`, `pressed`, `active`, `pressedToggle`, `disabled` states).
+The "border", inner highlights, and lift come from the
+[`shadow-btn-*`](../tailwind/theme.js) tokens — never from `border` styles
+(see [Surface definition](#surface-definition--shadows-not-borders)).
+
+| NeoButton style    | SwiftUI `.buttonStyle()`        | iOS availability | Notes |
+|--------------------|---------------------------------|------------------|-------|
+| `plain`            | `.plain`                        | iOS 13+          | No surface; opacity flicker on press. |
+| `bordered`         | `.bordered`                     | iOS 15+          | Neutral flat fill, no shadow. Default style. |
+| `borderedProminent`| `.borderedProminent`            | iOS 15+          | Primary action, flat fill. `tint` repaints the surface. |
+| `borderless`       | `.borderless`                   | iOS 13+          | Text-like with hover wash on web. |
+| `link`             | (closest: `.borderless`)        | —                | Web text-link feel; no equivalent on iOS. |
+| `glass`            | `.glass`                        | iOS 26+          | Wide soft ambient drop on default; drop shrinks on press. Web fallback uses `backdrop-blur`. |
+| `glassProminent`   | `.glassProminent`               | iOS 26+          | Same lift as glass, primary tint. With a `tint` prop, the surface is fully repainted (matches the iOS primary glass / "blue 600 CTA" look). |
+
+---
+
+## Transitions
+
+Each style declares its own per-state transition under
+`neo_button.transitions[style]`. The fallback is
+`neo_button.transitions.default`. A per-instance `transition` prop overrides.
+
+```js
+transitions: {
+  default:        { press: { type: 'scale', from: 1, to: 0.97, spring: { damping: 24, stiffness: 360 } },
+                    hover: { type: 'opacity', duration: 120 } },
+  glass:          { press: { type: 'shadow' },                                 hover: { type: 'opacity', duration: 200 } },
+  glassProminent: { press: { type: 'shadow' },                                 hover: { type: 'opacity', duration: 200 } },
+  plain:          { press: false, hover: false },
+  link:           { press: false, hover: false },
+  borderless:     { press: { type: 'scale', from: 1, to: 0.98, spring: { damping: 28, stiffness: 380 } } },
+}
+```
+
+| `press.type` | What happens |
+|--------------|--------------|
+| `'scale'`    | Wraps the button in a `MotionView` that animates `scale: from → to` with the spring. Default for filled/bordered/borderless. |
+| `'shadow'`   | No wrapper. Press feedback comes from the `pressed` state class swapping `shadow-btn-glass` → `shadow-btn-glass-pressed`. Used by glass / glassProminent so the lift visibly settles toward the surface without a competing scale. |
+| `'opacity'`  | Wraps in `MotionView` and animates opacity. Useful for hover or overlay buttons. |
+| `false` / `null` | No wrapper at all — also removes the `transform: scale(1)` you'd otherwise see on the wrapper at rest. |
+
+---
+
+## Surface definition — shadows, not borders
+
+The button's "border", inner highlights, and lift are all rendered with
+`box-shadow` rather than `border` styles. This avoids three problems:
+
+1. **iOS smooth corners.** A `border` style and `corner-shape: superellipse()`
+   do not co-exist cleanly on native; `overflow: hidden` workarounds clip the
+   wrong shape.
+2. **Layout drift.** A 1px `border` adds 2px to the box, shifting alignment
+   inside grids/groups differently between web and native.
+3. **Dark-mode legibility.** A single border colour rarely reads correctly in
+   both themes; paired `*-deep` tokens give a per-mode tuned stack.
+
+The shadow tokens live in
+[`packages/app/design/tailwind/theme.js`](../tailwind/theme.js) and are
+identical for web (`boxShadowWeb`) and native (`boxShadowNative`). React Native
+0.81+ supports `boxShadow` natively, including stacked + inset shadows, so
+NativeWind maps the same string both ways.
+
+| Token                                | Recipe                                                                                                  | Used by |
+|--------------------------------------|---------------------------------------------------------------------------------------------------------|---------|
+| `shadow-btn-glass` / `-deep`         | inner highlights + thin outer ring + wide soft ambient drop                                              | `glass`, `glassProminent` (default) |
+| `shadow-btn-glass-pressed` / `-deep` | same border + highlights, drop shrinks (no inset darken — avoids fighting the press transition)          | `glass`, `glassProminent` (pressed) |
+| `shadow-btn-outline` / `-deep`       | single 1px outer ring, no fill, no lift                                                                  | reserved — opt-in via `classNames.container` |
+| `shadow-btn-focus` / `-deep`         | 2px ring at `--ring`                                                                                     | reserved cross-platform fallback for surfaces that can't use `outline` |
+
+`bordered` and `borderedProminent` are intentionally **flat** — no shadow. Their visual identity is the background colour alone. If you want the bordered styles to gain a subtle ring or lift, add it via `classNames.container` per call site, or fork a project-specific style in `neo_button.styles`.
+
+---
+
+## Web pseudo-elements
+
+Two utilities, isolated under their own class names so they cannot affect the
+existing `Button` / link styles:
+
+- `.u-neo-btn-hitarea[-{xs|sm|md|lg}]::before` — extended press/hover hit
+  area without changing layout.
+- `.u-neo-btn-ring:focus-visible` — controlled focus ring that uses
+  `border-radius: inherit` (and `corner-shape: inherit` inside the
+  superellipse `@supports` block) so it follows the container exactly.
+  `.u-neo-btn-ring-never:focus-visible` suppresses it.
+
+---
+
+## Resolver and scope precedence
+
+Any leaf in the `neo_button` tree can be a scope-keyed object. The resolver
+([`packages/app/design/controls/neo-button-resolver.js`](neo-button-resolver.js))
+walks scopes in this order, deep-merging the result of each step on top of the
+previous one:
+
+1. `default`
+2. theme (`light` / `dark`)
+3. platform (`native` first when applicable, then specific: `web` / `ios` / `android`)
+4. pointer (`touch` / `mouse`)
+5. breakpoint (smallest applicable to current, so larger overrides smaller — like Tailwind: `sm` → `md` → `lg` → `xl` → `2xl`)
+6. controlSize (`mini` / `small` / `regular` / `large` / `xlarge`) — for leaves that vary per size
+
+```mermaid
+flowchart LR
+  Inputs["Props + ContextProviders"] --> Hook["useResolvedNeoButton(props)"]
+  Env["Platform.OS\nuseBreakpoint()\nusePointerCapability()\nuseColorScheme()"] --> Hook
+  Settings["appSetting('theme','neo_button')"] --> Hook
+  Hook --> Resolved["Flat config:\ncontainerCls/textCls slot resolvers,\nheight/paddingX/font/icon,\ntransition, behaviors, nativeMapping"]
+```
+
+Worked example:
+
+```js
+neo_button.controlSizes.regular = {
+  default: { height: 44, paddingX: 14, font: 'text-base', icon: 20, hitSlop: 4, labelGap: 8 },
+  web:     { height: 40, paddingX: 12 },
+  mouse:   { height: 38, paddingX: 12 },
+}
+```
+
+For a desktop browser at `lg`:
+
+- ctx = `{ platform: 'web', pointer: 'mouse', breakpoint: 'lg', theme: 'light', controlSize: 'regular' }`
+- start: `{ height: 44, paddingX: 14, font: 'text-base', icon: 20, hitSlop: 4, labelGap: 8 }`
+- merge `web`: `{ height: 40, paddingX: 12, … }`
+- merge `mouse`: `{ height: 38, paddingX: 12, … }`
+- → resolved height **38px**, paddingX **12px**
+
+The resolver also returns a `behaviors` object (`{ hover, focusRing, pressAnimation, longPress }`).
+The renderer uses this to gate event handlers — e.g. `onMouseEnter` is only
+attached when `behaviors.hover` is true, so web-only handlers don't run on
+native.
+
+---
+
+## Providers (environment-style)
+
+Mirror SwiftUI's `.buttonStyle()` / `.controlSize()` modifiers applied at a
+parent.
+
+```jsx
+<NeoButtonStyleProvider style="glass">
+  <NeoControlSizeProvider size="large">
+      <NeoButton label="Inherits glass + large" />
+      <NeoButton label="Override → bordered" style="bordered" />
+  </NeoControlSizeProvider>
+</NeoButtonStyleProvider>
+```
+
+`NeoButton` reads these via `useNeoButtonStyle()` / `useNeoControlSize()` and
+applies them only when the per-instance prop is omitted.
+
+---
+
+## SwiftUI / Expo UI mapping
+
+The resolver returns a `nativeMapping` object that the future
+`appearance="native"` switch will pass through to `@expo/ui/swift-ui`:
+
+```ts
+nativeMapping: {
+  buttonStyle:       'plain' | 'bordered' | 'borderedProminent' | 'borderless'
+                   | 'glass' | 'glassProminent',
+  controlSize:       'mini' | 'small' | 'regular' | 'large' | 'extraLarge',
+  buttonBorderShape: 'capsule' | 'rectangle' | 'roundedRectangle' | 'circle',
+  role?:             'cancel' | 'close' | 'confirm' | 'destructive',
+  tint?:             string,
+  systemImage?:      string,
+  disabled:          boolean,
+}
+```
+
+| NeoButton                           | SwiftUI / `@expo/ui` |
+|-------------------------------------|----------------------|
+| `<NeoButton label image onPress>`   | `Button("Save", systemImage: "...") { ... }` |
+| `role`                              | `Button(role: .cancel \| .close \| .confirm \| .destructive)` |
+| `style`                             | `.buttonStyle(.plain \| .bordered \| .borderedProminent \| .borderless \| .glass \| .glassProminent)` |
+| `controlSize`                       | `.controlSize(.mini \| .small \| .regular \| .large \| .extraLarge)` |
+| `borderShape`                       | `.buttonBorderShape(.capsule \| .rectangle \| .roundedRectangle \| .circle)` |
+| `tint`                              | `.tint(Color)` |
+| `image` / `systemImage`             | `Button(_:systemImage:)` |
+| `imagePlacement="trailing"`         | custom `Label` with `HStack { Text; Image }` |
+| `children` (custom layout)          | `Button { /* arbitrary view */ }` |
+| `<NeoButtonStyleProvider>`          | `.buttonStyle(...)` applied at a parent |
+| `<NeoControlSizeProvider>`          | `.controlSize(...)` applied at a parent |
+| `transition`                        | `.contentTransition(...)` / custom `.animation()` |
+
+`classNames.*`, hover handlers, and other web-only escape hatches are
+silently dropped on the native path.
+
+---
+
+## Compound APIs
+
+### `NeoButtonRef`
+
+Standard `React.forwardRef` wrapper.
+
+```jsx
+const ref = useRef(null);
+<NeoButtonRef ref={ref} label="Focus me" onPress={() => ref.current?.focus()} />
+```
+
+### `NeoButtonLink`
+
+Navigates via [`app/ui/atoms/link`](../../ui/atoms/link.js) for in-app routes
+and `openExternalLink` for external `href`s. All other props are forwarded to
+`NeoButton`.
+
+```jsx
+<NeoButtonLink href="/settings" label="Settings" image="Settings" />
+```
+
+### `__neoButtonInternals`
+
+Exported for tests / future native renderer wiring:
+
+- `renderLabel(...)` — Label(title:image:) renderer
+- `PressTransition` — per-style transition wrapper
+- `NeoImage` — image source resolver
+- `getAccessibleName(...)` — accessible-name derivation
+
+---
+
+## Migrating from the previous NeoButton
+
+The old API is gone — there is no compat layer. Callers that used the
+previous `NeoButton` should remap as follows:
+
+| Old prop                         | New prop                                              |
+|----------------------------------|-------------------------------------------------------|
+| `variant`                        | `style` (note: `'filled'` → `'borderedProminent'`, `'tinted'` → `'bordered'`, `'outline'` → `'bordered'` + `borderShape`/`tint`, `'soft'` → `'bordered'`, `'ghost'` → `'borderless'`) |
+| `size` (`xs` / `sm` / `md` / `lg`) | `controlSize` (`mini` / `small` / `regular` / `large`); add `xlarge` if you need it |
+| `rounded` (boolean / token)      | `borderShape` (`true` → `'capsule'`, `false`/`'none'` → `'rectangle'`; `'sm/md/lg/xl/2xl'` → `'roundedRectangle'` and rely on per-size rounding) |
+| `prominence: 'primary'`          | `style="borderedProminent"` (or wrap in `NeoButtonStyleProvider style="borderedProminent"`) |
+| `pressed`                        | `selected`                                            |
+| `fullWidth`                      | `width="fill"`                                        |
+| `startDecorator`                 | `image` (`imagePlacement="leading"` is the default)   |
+| `endDecorator`                   | `image` + `imagePlacement="trailing"`                 |
+| `leadingDecorator`               | merge into `image` (single image only); for multiple use `children` |
+| `trailingDecorator`              | merge into `image` + `imagePlacement="trailing"`; for multiple use `children` |
+| `addon`                          | render into `children`                                |
+| `alt`                            | `accessibilityLabel`                                  |
+| `tint` / `tintOpacity` / `tintTargets` | `tint` only — opacity / targets are baked into the per-style recipe; per-instance opacity tweaks now go through `classNames.container` |
+| `tooltip` / `disabled` / `loading` / `haptics` / `onPress` / `onLongPress` / `onTouchStart` / `forwardedRef` / `hitarea` / `hitSlop` / `focusRing` / `pressAnimation` / `className` / `textClassName` / `classNames` | unchanged (modulo `textClassName` replacing `classTextName`, and `accessibilityLabel` replacing `alt`) |
+
+The legacy `Button` / `ButtonRef` / `ButtonLink` / `ButtonsGroupMenu` /
+`ButtonMenuAction*` exports in
+[`packages/app/design/controls/buttons.js`](buttons.js) and
+[`packages/app/design/controls/button_menus.js`](button_menus.js) are not
+modified; production consumers keep working. Migrate them to `NeoButton`
+gradually.
+
+---
+
+## Playground
+
+Open `/playground` to see every axis live (resolver env strip, style /
+controlSize / borderShape / role matrices, custom-children layouts,
+NeoButtonStyleProvider / NeoControlSizeProvider cascades, per-style
+transitions, tint, focus ring, classNames overrides). The playground file
+([`packages/app/components/page-layout/playground.js`](../../components/page-layout/playground.js))
+doubles as the canonical usage example — copy patterns from there directly.

@@ -1,0 +1,554 @@
+/**
+ * NeoButton playground page-layout.
+ *
+ * Mounted at `/playground` via [`apps/next/app/playground/page.js`](apps/next/app/playground/page.js).
+ * Self-contained, dev-only. Safe to delete with the route once the new
+ * NeoButton component is approved.
+ *
+ * The page renders every SwiftUI Button axis: roles, styles, controlSize
+ * ladder (mini → xlarge with px values), borderShape (capsule / rectangle /
+ * roundedRectangle / circle), imagePlacement, custom-children layout,
+ * NeoButtonStyleProvider / NeoControlSizeProvider cascades, per-style
+ * transition behavior, and a "resolved config" debug strip showing the
+ * exact env the resolver picked up (platform / pointer / breakpoint / theme).
+ */
+
+import React from 'react';
+import { ScrollView, View, Row } from 'app/design/view';
+import { Text } from 'app/design/typography';
+import Page from 'app/ui/molecules/page';
+import {
+    NeoButton, NeoButtonRef,
+    NeoButtonStyleProvider, NeoControlSizeProvider,
+    useResolvedNeoButton, usePointerCapability,
+    resolveScoped,
+} from 'app/design/controls/neo-button';
+import { Icon } from 'app/ui/atoms/icon';
+import { appSetting } from 'app/lib/util';
+
+const STYLES = [
+    'plain', 'bordered', 'borderedProminent',
+    'borderless', 'link', 'glass', 'glassProminent',
+];
+
+const CONTROL_SIZES = [
+    { id: 'mini', height: 28 },
+    { id: 'small', height: 32 },
+    { id: 'regular', height: 44 },
+    { id: 'large', height: 52 },
+    { id: 'xlarge', height: 64 },
+];
+
+const BORDER_SHAPES = ['capsule', 'rectangle', 'roundedRectangle', 'circle'];
+
+const ROLES = ['default', 'cancel', 'close', 'confirm', 'destructive'];
+
+function Section({ title, hint, children }) {
+    return (
+        <View className="mb-8 gap-3">
+            <View className="gap-1">
+                <Text className="text-lg font-semibold text-foreground">{title}</Text>
+                {hint ? <Text className="text-xs text-muted-foreground">{hint}</Text> : null}
+            </View>
+            <View className="flex-row flex-wrap gap-3 items-center">{children}</View>
+        </View>
+    );
+}
+
+function Stack({ children }) {
+    return <View className="w-full gap-2">{children}</View>;
+}
+
+/* ---------------------- Sizes resolver chart -------------------------- */
+
+// Synthetic resolver contexts. The chart runs `resolveScoped` against each
+// of these so you can see how `neo_button.controlSizes` flattens for every
+// platform / pointer combination side-by-side, without having to actually
+// open the page on a phone or resize the window.
+const SCOPE_MATRIX = [
+    { id: 'default',       label: 'default',         platform: '',        pointer: '' },
+    { id: 'web-mouse',     label: 'web · mouse',     platform: 'web',     pointer: 'mouse' },
+    { id: 'web-touch',     label: 'web · touch',     platform: 'web',     pointer: 'touch' },
+    { id: 'ios',           label: 'ios · touch',     platform: 'ios',     pointer: 'touch' },
+    { id: 'android',       label: 'android · touch', platform: 'android', pointer: 'touch' },
+];
+
+const SIZE_FIELDS = [
+    { key: 'height',   label: 'h' },
+    { key: 'paddingX', label: 'pad' },
+    { key: 'font',     label: 'font' },
+    { key: 'icon',     label: 'icon' },
+    { key: 'hitSlop',  label: 'slop' },
+    { key: 'labelGap', label: 'gap' },
+];
+
+function ScopeBadge({ label }) {
+    return (
+        <Text className="font-mono text-xs text-muted-foreground">{label}</Text>
+    );
+}
+
+function Cell({ children, head = false, mono = true, dim = false }) {
+    return (
+        <View className="px-2 py-1 min-w-12 border-b border-border/40">
+            <Text
+                className={[
+                    head ? 'text-xs font-semibold text-foreground' : (mono ? 'font-mono text-xs' : 'text-xs'),
+                    dim ? 'text-muted-foreground' : 'text-foreground',
+                ].join(' ')}
+            >
+                {children}
+            </Text>
+        </View>
+    );
+}
+
+function SizesResolverChart() {
+    const tree = appSetting('theme', 'neo_button');
+    const controlSizes = tree?.controlSizes || {};
+    const shapesTree = tree?.borderShapes || {};
+    const sizeIds = ['mini', 'small', 'regular', 'large', 'xlarge'];
+
+    return (
+        <View className="mb-8 gap-3">
+            <View className="gap-1">
+                <Text className="text-lg font-semibold text-foreground">
+                    Sizes resolver chart
+                </Text>
+                <Text className="text-xs text-muted-foreground">
+                    `neo_button.controlSizes` flattened by `resolveScoped()` for every platform/pointer combination.
+                    Cells with the same value across all rows mean the size is unscoped at that field.
+                    Mismatched cells highlight where the resolver picked up a per-platform / per-pointer override.
+                </Text>
+            </View>
+
+            {sizeIds.map((sizeId) => {
+                const raw = controlSizes[sizeId];
+                if (!raw) return null;
+
+                // Build one resolved row per scope.
+                const rows = SCOPE_MATRIX.map((scope) => {
+                    const ctx = {
+                        platform: scope.platform || undefined,
+                        pointer:  scope.pointer  || undefined,
+                        breakpoint: '',
+                        theme: 'light',
+                        controlSize: sizeId,
+                    };
+                    const resolved = resolveScoped(raw, ctx) || {};
+                    // Per-controlSize roundedRectangle override
+                    const rrShape = shapesTree?.roundedRectangle?.rounded;
+                    const rounded = typeof rrShape === 'string'
+                        ? rrShape
+                        : (resolveScoped(rrShape, ctx) || rrShape?.default);
+                    return { scope, resolved, rounded };
+                });
+
+                // Detect which cells differ from the `default` row so we can
+                // visually highlight overrides.
+                const baseRow = rows[0].resolved;
+                const baseRounded = rows[0].rounded;
+                const isOverride = (row, key) =>
+                    row.scope.id !== 'default' && JSON.stringify(row.resolved[key]) !== JSON.stringify(baseRow[key]);
+                const isRoundedOverride = (row) =>
+                    row.scope.id !== 'default' && row.rounded !== baseRounded;
+
+                return (
+                    <View key={sizeId} className="rounded-xl border border-border/60 overflow-hidden">
+                        <Row className="flex-row items-center justify-between px-3 py-2 bg-muted/40">
+                            <Text className="text-sm font-semibold text-foreground">
+                                controlSize: <Text className="font-mono">{sizeId}</Text>
+                            </Text>
+                            <ScopeBadge label={`borderShape.roundedRectangle → ${baseRounded}`} />
+                        </Row>
+
+                        {/* Header row */}
+                        <Row className="flex-row">
+                            <Cell head>scope</Cell>
+                            {SIZE_FIELDS.map((f) => (
+                                <Cell key={f.key} head>{f.label}</Cell>
+                            ))}
+                            <Cell head>rounded</Cell>
+                        </Row>
+
+                        {/* Data rows */}
+                        {rows.map(({ scope, resolved, rounded }) => (
+                            <Row key={scope.id} className="flex-row">
+                                <Cell mono dim={scope.id === 'default'}>
+                                    {scope.label}
+                                </Cell>
+                                {SIZE_FIELDS.map((f) => {
+                                    const v = resolved[f.key];
+                                    const display = v === undefined || v === null ? '—' :
+                                        (typeof v === 'object' ? JSON.stringify(v) : String(v));
+                                    return (
+                                        <Cell
+                                            key={f.key}
+                                            mono
+                                            dim={!isOverride({ scope, resolved }, f.key)}
+                                        >
+                                            {display}
+                                        </Cell>
+                                    );
+                                })}
+                                <Cell mono dim={!isRoundedOverride({ scope, rounded })}>
+                                    {rounded || '—'}
+                                </Cell>
+                            </Row>
+                        ))}
+                    </View>
+                );
+            })}
+        </View>
+    );
+}
+
+/**
+ * Debug strip — calls the resolver hook directly so we can show what the
+ * environment looks like for the current device.
+ */
+function ResolvedDebug() {
+    const resolved = useResolvedNeoButton({});
+    const pointer = usePointerCapability();
+    const env = resolved.env;
+    return (
+        <View className="mb-8 p-4 rounded-xl bg-muted/40 gap-1">
+            <Text className="text-sm font-semibold text-foreground">
+                Resolver env (this device)
+            </Text>
+            <Text className="text-xs text-muted-foreground">
+                platform: <Text className="font-mono text-foreground">{env.platform}</Text>
+                {' · '}
+                pointer: <Text className="font-mono text-foreground">{pointer}</Text>
+                {' · '}
+                breakpoint: <Text className="font-mono text-foreground">{env.breakpoint || '(below sm)'}</Text>
+                {' · '}
+                theme: <Text className="font-mono text-foreground">{env.theme}</Text>
+            </Text>
+            <Text className="text-xs text-muted-foreground">
+                default `regular` height resolved to:{' '}
+                <Text className="font-mono text-foreground">{resolved.height}px</Text>
+                {' · '}paddingX: <Text className="font-mono text-foreground">{resolved.paddingX}px</Text>
+                {' · '}icon: <Text className="font-mono text-foreground">{resolved.iconSize}px</Text>
+            </Text>
+            <Text className="text-xs text-muted-foreground">
+                native mapping: <Text className="font-mono text-foreground">{JSON.stringify(resolved.nativeMapping)}</Text>
+            </Text>
+        </View>
+    );
+}
+
+export default function PageLayoutPlayground({ data, children }) {
+    const [boldOn, setBoldOn] = React.useState(false);
+    const [italicOn, setItalicOn] = React.useState(false);
+    const [menuOpen, setMenuOpen] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
+    const buttonRef = React.useRef(null);
+
+    return (
+        <Page data={data || { uri: 'playground' }}>
+            <ScrollView className="flex-1 bg-background">
+                <View className="p-6 gap-2 max-w-5xl mx-auto w-full">
+                    <Text className="text-2xl font-semibold text-foreground">
+                        NeoButton playground (SwiftUI API)
+                    </Text>
+                    <Text className="text-sm text-muted-foreground">
+                        Open at /playground. Edit this file to experiment:
+                        packages/app/components/page-layout/playground.js
+                    </Text>
+                </View>
+
+                <View className="px-6 pb-12 max-w-5xl mx-auto w-full">
+
+                    <ResolvedDebug />
+
+                    <SizesResolverChart />
+
+                    <Section
+                        title="Styles (regular)"
+                        hint="One per SwiftUI .buttonStyle() value. The default style (when no `style` prop is set) is `bordered`; pass a `<NeoButtonStyleProvider>` to override the default for descendants."
+                    >
+                        {STYLES.map((s) => (
+                            <NeoButton key={s} style={s} label={s} onPress={() => {}} />
+                        ))}
+                    </Section>
+
+                    <Section
+                        title="controlSize ladder"
+                        hint="iOS HIG-style targets: mini 28 / small 32 / regular 44 / large 52 / xlarge 64. Web/mouse trims a few px on regular and large via the resolver."
+                    >
+                        {CONTROL_SIZES.map((s) => (
+                            <NeoButton
+                                key={s.id}
+                                style="borderedProminent"
+                                controlSize={s.id}
+                                label={`${s.id} (${s.height}px)`}
+                                onPress={() => {}}
+                            />
+                        ))}
+                    </Section>
+
+                    <Section
+                        title="controlSize × style matrix"
+                        hint="Per-style at every controlSize, so you can eyeball the ladder."
+                    >
+                        <Stack>
+                            {STYLES.map((s) => (
+                                <Row key={s} className="flex-row flex-wrap items-center gap-2">
+                                    <Text className="w-40 text-sm text-muted-foreground">{s}</Text>
+                                    {CONTROL_SIZES.map((cs) => (
+                                        <NeoButton
+                                            key={`${s}-${cs.id}`}
+                                            style={s}
+                                            controlSize={cs.id}
+                                            label={cs.id}
+                                            onPress={() => {}}
+                                        />
+                                    ))}
+                                </Row>
+                            ))}
+                        </Stack>
+                    </Section>
+
+                    <Section
+                        title="borderShape"
+                        hint="capsule (pill), rectangle (square corners), roundedRectangle (per-controlSize), circle (square aspect, full-rounded)."
+                    >
+                        {BORDER_SHAPES.map((shape) => (
+                            <NeoButton
+                                key={shape}
+                                style="borderedProminent"
+                                borderShape={shape}
+                                label={shape === 'circle' ? '' : shape}
+                                image={shape === 'circle' ? 'Plus' : undefined}
+                                onPress={() => {}}
+                            />
+                        ))}
+                    </Section>
+
+                    <Section
+                        title="Roles"
+                        hint="SwiftUI Button(role:). `confirm` defaults to borderedProminent. `destructive` tints text red on non-prominent styles."
+                    >
+                        {ROLES.map((r) => (
+                            <NeoButton
+                                key={r}
+                                role={r}
+                                label={r}
+                                onPress={() => {}}
+                            />
+                        ))}
+                        <NeoButton role="destructive" style="borderedProminent" label="destructive prominent" onPress={() => {}} />
+                        <NeoButton role="close" onPress={() => {}} />
+                    </Section>
+
+                    <Section
+                        title="image + imagePlacement"
+                        hint="SwiftUI Label(title:image:). Single image only — for multi-image / custom layouts, use children (next section)."
+                    >
+                        <NeoButton style="bordered" label="Save" image="Save" onPress={() => {}} />
+                        <NeoButton style="bordered" label="Continue" image="ArrowRight" imagePlacement="trailing" onPress={() => {}} />
+                        <NeoButton style="bordered" image="Search" onPress={() => {}} />
+                    </Section>
+
+                    <Section
+                        title="Custom children (HStack-equivalent)"
+                        hint="When children are provided, they replace the label/image renderer entirely. This is how you build profile-pic + name + chevron rows in SwiftUI too."
+                    >
+                        <Stack>
+                            <NeoButton style="bordered" width="fill" align="start" controlSize="large" onPress={() => {}}>
+                                <Row className="flex-row items-center gap-3 flex-1">
+                                    <View className="w-8 h-8 rounded-full bg-primary items-center justify-center">
+                                        <Text className="text-primary-foreground font-semibold">YK</Text>
+                                    </View>
+                                    <Text className="text-foreground font-medium">Yasko Kunchev</Text>
+                                    <View className="flex-1" />
+                                    <Icon icon="ChevronRight" size={20} className="text-muted-foreground" />
+                                </Row>
+                            </NeoButton>
+                            <NeoButton style="bordered" width="fill" align="start" controlSize="large" onPress={() => {}}>
+                                <Row className="flex-row items-center gap-3 flex-1">
+                                    <Icon icon="FileText" size={22} className="text-foreground" />
+                                    <View className="flex-1">
+                                        <Text className="text-foreground font-medium">Untitled.md</Text>
+                                        <Text className="text-muted-foreground text-xs">Edited 5 minutes ago</Text>
+                                    </View>
+                                    <Icon icon="ChevronRight" size={20} className="text-muted-foreground" />
+                                </Row>
+                            </NeoButton>
+                        </Stack>
+                    </Section>
+
+                    <Section
+                        title="Toggle (selected)"
+                        hint="`selected` gives the sticky pressedToggle state + aria-pressed (Bold-in-editor, opened menu)."
+                    >
+                        <NeoButton
+                            style="borderless"
+                            controlSize="small"
+                            image="Bold"
+                            selected={boldOn}
+                            accessibilityLabel="Bold"
+                            onPress={() => setBoldOn((x) => !x)}
+                        />
+                        <NeoButton
+                            style="borderless"
+                            controlSize="small"
+                            image="Italic"
+                            selected={italicOn}
+                            accessibilityLabel="Italic"
+                            onPress={() => setItalicOn((x) => !x)}
+                        />
+                        <NeoButton
+                            style="bordered"
+                            label="Options"
+                            image={menuOpen ? 'ChevronUp' : 'ChevronDown'}
+                            imagePlacement="trailing"
+                            selected={menuOpen}
+                            onPress={() => setMenuOpen((x) => !x)}
+                        />
+                    </Section>
+
+                    <Section
+                        title="Loading"
+                        hint="Replaces the image with a spinner; rest of the label stays put."
+                    >
+                        <NeoButton
+                            style="borderedProminent"
+                            label="Save"
+                            loadingLabel="Saving…"
+                            image="Save"
+                            loading={loading}
+                            onPress={() => {
+                                setLoading(true);
+                                setTimeout(() => setLoading(false), 1500);
+                            }}
+                        />
+                    </Section>
+
+                    <Section
+                        title="Tint"
+                        hint="SwiftUI .tint() analog. Inline style on the surface for borderedProminent (replaces bg); recolours text/image elsewhere."
+                    >
+                        <NeoButton style="bordered" tint="#ff6347" label="Tomato" image="Heart" />
+                        <NeoButton style="borderedProminent" tint="#ff6347" label="Tomato" image="Heart" />
+                        <NeoButton style="glassProminent" tint="#0a84ff" label="iOS primary" image="Heart" />
+                        <NeoButton style="glassProminent" tint="#34c759" label="Confirm" image="Check" />
+                        <NeoButton style="borderless" tint="#ff6347" label="Tomato" />
+                        <NeoButton style="link" tint="#ff6347" label="Tomato" />
+                        <NeoButton role="destructive" style="bordered" label="Delete" image="Trash" />
+                    </Section>
+
+                    <Section
+                        title="width / align"
+                        hint="`width=fill` adds w-full; align maps to justify-{start|center|end|between}."
+                    >
+                        <Stack>
+                            <NeoButton style="bordered" width="fill" align="start" label="Start" image="UserRound" />
+                            <NeoButton style="bordered" width="fill" align="center" label="Center" image="UserRound" />
+                            <NeoButton style="bordered" width="fill" align="end" label="End" image="ChevronRight" imagePlacement="trailing" />
+                            <NeoButton style="bordered" width="fill" align="between" label="Between" image="UserRound">
+                                <Row className="flex-row items-center justify-between flex-1">
+                                    <Row className="flex-row items-center gap-2">
+                                        <Icon icon="UserRound" size={20} className="text-foreground" />
+                                        <Text className="text-foreground font-medium">Between</Text>
+                                    </Row>
+                                    <Icon icon="ChevronRight" size={20} className="text-muted-foreground" />
+                                </Row>
+                            </NeoButton>
+                        </Stack>
+                    </Section>
+
+                    <Section
+                        title="NeoButtonStyleProvider cascade"
+                        hint="Mirrors SwiftUI's .buttonStyle() applied at a parent. All descendants without an explicit `style` prop inherit the provider's style."
+                    >
+                        <NeoButtonStyleProvider style="glass">
+                            <NeoButton label="Inherits glass" />
+                            <NeoButton label="Override → bordered" style="bordered" />
+                            <NeoButton label="Inherits glass" image="Star" />
+                        </NeoButtonStyleProvider>
+                    </Section>
+
+                    <Section
+                        title="NeoControlSizeProvider cascade"
+                        hint="Mirrors SwiftUI's .controlSize() applied at a parent."
+                    >
+                        <NeoControlSizeProvider size="large">
+                            <NeoButton style="borderedProminent" label="Large via provider" />
+                            <NeoButton style="bordered" label="Large via provider" />
+                            <NeoButton style="bordered" controlSize="mini" label="Override → mini" />
+                        </NeoControlSizeProvider>
+                    </Section>
+
+                    <Section
+                        title="Per-style transitions"
+                        hint="Each style declares its own press transition. Glass uses shadow shrink (no scale). Plain/link have no transition. Bordered/Prominent use the default scale spring."
+                    >
+                        <NeoButton style="borderedProminent" label="Scale (default)" onPress={() => {}} />
+                        <NeoButton style="glass" label="Shadow shrink" onPress={() => {}} />
+                        <NeoButton style="plain" label="No transition" onPress={() => {}} />
+                        <NeoButton style="link" label="No transition" onPress={() => {}} />
+                        <NeoButton
+                            style="bordered"
+                            label="Override: opacity"
+                            transition={{ press: { type: 'opacity', from: 1, to: 0.6, duration: 80 } }}
+                            onPress={() => {}}
+                        />
+                        <NeoButton
+                            style="bordered"
+                            label="Override: none"
+                            transition={{ press: false }}
+                            onPress={() => {}}
+                        />
+                    </Section>
+
+                    <Section title="Disabled (every style)">
+                        {STYLES.map((s) => (
+                            <NeoButton key={s} style={s} label={s} disabled onPress={() => {}} />
+                        ))}
+                    </Section>
+
+                    <Section
+                        title="Focus ring"
+                        hint="Tab to focus. Default is on for web, off for native. Override per-instance with focusRing='auto' | 'never'."
+                    >
+                        <NeoButton style="borderedProminent" label="Auto ring" onPress={() => {}} />
+                        <NeoButton style="borderedProminent" label="No ring" focusRing="never" onPress={() => {}} />
+                    </Section>
+
+                    <Section
+                        title="classNames overrides"
+                        hint="Per-slot escape hatch (root / container / text / image / surface / ring)."
+                    >
+                        <NeoButton
+                            style="bordered"
+                            label="Custom text colour"
+                            classNames={{ text: 'text-pink-600 italic' }}
+                        />
+                        <NeoButton
+                            style="bordered"
+                            label="Wide"
+                            image="Star"
+                            classNames={{ container: 'px-8', image: 'text-yellow-500' }}
+                        />
+                    </Section>
+
+                    <Section
+                        title="Forwarded ref"
+                        hint="NeoButtonRef forwards the ref to the underlying Pressable."
+                    >
+                        <NeoButtonRef
+                            ref={buttonRef}
+                            style="borderedProminent"
+                            label="Click then focus me"
+                            onPress={() => buttonRef.current?.focus?.()}
+                        />
+                    </Section>
+
+                    {children}
+                </View>
+            </ScrollView>
+        </Page>
+    );
+}
