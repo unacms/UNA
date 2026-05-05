@@ -1,17 +1,8 @@
 import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import {
-    Card,
-    CardHeader,
-    CardDescription,
-    CardContent,
-    CardTitle,
-} from 'app/ui/molecules/card'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Platform } from 'react-native'
-import { appStatic } from 'app/lib/app-static'
 import { appSetting, getBreakpoint, LAYOUT_BREAKPOINTS } from 'app/lib/util'
-import AuthPanel from 'app/ui/molecules/auth'
 import Page from 'app/ui/molecules/page'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
@@ -25,26 +16,229 @@ import {
 import { useBreakpoint, useIsDesktop } from 'app/context/measure'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
-import { useFocusEffect } from 'app/lib/hooks/router'
 import { defaultHeader, useSetHeader } from 'app/context/jotai/layout'
 import { Button } from 'app/design/controls'
+import Html from 'app/ui/atoms/html'
+import { useGlobalSearchParams, usePathname } from 'app/lib/hooks/router'
+import { isEmoji } from 'app/lib/util'
+import { getPageData } from 'app/lib/util'
 
-function PageContentWiki({ children }) {
+
+const isWeb = Platform.OS === 'web';
+
+const depthClassNameMap = {
+    0: '',
+    1: 'pl-4',
+    2: 'pl-8',
+    3: 'pl-12',
+};
+
+const getDepthClassName = (depth) => depthClassNameMap[depth] || '';
+const getItemId = (item, indexPath) => String(item?.id || item?.name || item?.url || item?.link || indexPath);
+const hasItemPath = (item) => Boolean(String(item?.url || item?.link || ''));
+const normalizePathComparable = (path) => String(path || '')
+    .replace(/^https?:\/\/[^/]+/i, '')
+    .split(/[?#]/)[0]
+    .replace(/^\/+|\/+$/g, '');
+
+const getItemPath = (item) => {
+    const p = String(item?.url || item?.link || '');
+    return p ? (p.startsWith('/') ? p : `/${p}`) : '';
+};
+
+const getRouteParam = (value) => Array.isArray(value) ? value[0] : value;
+
+function useCurrentPathComparable() {
+    const pathname = usePathname();
+    const params = useGlobalSearchParams();
+    return normalizePathComparable(getRouteParam(params?.url) || pathname);
+}
+
+function buildExpandedMapForPath(items = [], currentPathComparable, parentIndexPath = '') {
+    const map = {};
+
+    items.forEach((item, index) => {
+        const indexPath = parentIndexPath ? `${parentIndexPath}-${index}` : String(index);
+        const itemId = getItemId(item, indexPath);
+        const children = item?.subitems || [];
+
+        if (!children.length) return;
+
+        if (hasActiveDescendant(item, currentPathComparable)) {
+            map[itemId] = true;
+        }
+
+        Object.assign(map, buildExpandedMapForPath(children, currentPathComparable, indexPath));
+    });
+
+    return map;
+}
+
+function hasActiveDescendant(item, currentPathComparable) {
+    const itemPath = String(item?.url || item?.link || '');
+    const itemPathComparable = normalizePathComparable(itemPath);
+    if (itemPathComparable && itemPathComparable === currentPathComparable) return true;
+    const children = item?.subitems || [];
+    return children.some((child) => hasActiveDescendant(child, currentPathComparable));
+}
+
+function WikiMenuItem({ title, icon, isActive, iconEnd }) {
+    const iconClassName = isActive
+        ? 'text-foreground'
+        : 'text-secondary-foreground web:group-hover:text-foreground'
+    const iconBackgroundClassName = isActive
+        ? ' '
+        : ' '
+
+    return (
+        <Row className="min-h-8 items-center gap-2">
+            <View className={`h-6 w-6 shrink-0 items-center justify-center rounded-full ${iconBackgroundClassName}`}>
+                {isEmoji(icon) ? (
+                    <Text className="text-xs leading-none">{icon}</Text>
+                ) : (
+                    <Icon icon={icon} size={15} className={iconClassName} />
+                )}
+            </View>
+
+            <Text className={`min-w-0 flex-1 text-sm leading-snug font-medium ${isActive ? 'text-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>
+                {title}
+            </Text>
+
+            {!!iconEnd && (
+                <View className="ml-auto h-6 w-6 shrink-0 items-center justify-center rounded-full">
+                    {isEmoji(iconEnd) ? (
+                        <Text className="text-xs leading-none text-secondary-foreground">{iconEnd}</Text>
+                    ) : (
+                        <Icon icon={iconEnd} size={15} className="text-secondary-foreground web:group-hover:text-foreground" />
+                    )}
+                </View>
+            )}
+        </Row>
+    )
+}
+
+function ActiveBranchExpander({ items, setExpandedMap }) {
+    const currentPathComparable = useCurrentPathComparable();
+
+    useEffect(() => {
+        const activeExpandedMap = buildExpandedMapForPath(items, currentPathComparable);
+        const activeExpandedIds = Object.keys(activeExpandedMap);
+
+        if (!activeExpandedIds.length) return;
+
+        setExpandedMap((prev) => {
+            let hasChanges = false;
+            const next = { ...prev };
+
+            activeExpandedIds.forEach((id) => {
+                if (!next[id]) {
+                    next[id] = true;
+                    hasChanges = true;
+                }
+            });
+
+            return hasChanges ? next : prev;
+        });
+    }, [currentPathComparable, items, setExpandedMap]);
+
+    return null;
+}
+
+function MenuWiki({ setPageData, data, url }) {
+    const currentPathComparable = useCurrentPathComparable();
+    const initialPathComparable = normalizePathComparable(url);
+    const topLevelItems = data?.content?.items || [];
+    const [expandedMap, setExpandedMap] = useState(() => buildExpandedMapForPath(topLevelItems, initialPathComparable));
+
+    const toggleExpanded = (id) => {
+        setExpandedMap((prev) => ({ ...prev, [id]: !prev[id] }));
+    };
+
+    const handleMenuPress = async (itemPath) => {
+        if (isWeb) {
+            const currentPath = window.location.pathname
+            if (currentPath !== itemPath) {
+                window.history.pushState({}, '', itemPath)
+            }
+        }
+        try {
+            const sResponse = await getPageData(itemPath, false)
+            setPageData({ data: sResponse.data, url: itemPath })
+        } catch (error) {
+            console.error('Failed to load wiki page:', error)
+        }
+    };
+
+
+
+    const renderItems = (items = [], depth = 0, parentIndexPath = '') =>
+        items.map((item, index) => {
+            const indexPath = parentIndexPath ? `${parentIndexPath}-${index}` : String(index);
+            const itemId = getItemId(item, indexPath);
+            const itemPath = getItemPath(item);
+            const children = item?.subitems || [];
+            const hasChildren = children.length > 0;
+            const isExpanded = Boolean(expandedMap[itemId]);
+            const depthClassName = getDepthClassName(depth);
+            const title = item?.title || item?.name;
+            const icon = item?.icon || 'Circle';
+            const canNavigate = hasItemPath(item);
+            const itemPathComparable = normalizePathComparable(itemPath);
+            const isActive = Boolean(itemPathComparable && itemPathComparable === currentPathComparable);
+            const activeWrapperClassName = isActive ? 'bg-accent/60 rounded-lg' : '';
+
+            const pressHandler = canNavigate
+                ? () => handleMenuPress(itemPath)
+                : hasChildren
+                    ? () => toggleExpanded(itemId)
+                    : undefined;
+            const showChevron = !canNavigate && hasChildren;
+            const menuIsActive = canNavigate ? isActive : false;
+            const menuIconEnd = showChevron ? (isExpanded ? 'ChevronDown' : 'ChevronRight') : null;
+
+            return (
+                <View key={`lmenu-${itemId}`} className={`w-full ${depthClassName}`}>
+                    <Pressable
+                        className={`web:group flex-1 rounded-lg ${canNavigate ? activeWrapperClassName : ''}`}
+                        onPress={pressHandler}
+                    >
+                        <WikiMenuItem
+                            title={title}
+                            icon={icon}
+                            isActive={menuIsActive}
+                            iconEnd={menuIconEnd}
+                        />
+                    </Pressable>
+                    {hasChildren && isExpanded && (
+                        <View className="mt-1.5 gap-1.5">
+                            {renderItems(children, depth + 1, indexPath)}
+                        </View>
+                    )}
+                </View>
+            );
+        });
+
+    return (
+        <>
+            <ActiveBranchExpander items={topLevelItems} setExpandedMap={setExpandedMap} />
+            <View className='w-full gap-1.5'>
+                {renderItems(topLevelItems)}
+            </View>
+        </>
+    );
+}
+
+function PageContentWiki({ data, url }) {
     const { t } = useTranslation()
     const isWeb = Platform.OS === 'web'
     const isDesktop = useIsDesktop()
     const setHeader = useSetHeader()
-    const childList = React.Children.toArray(children)
+    const pathname = usePathname()
+    const params = useGlobalSearchParams()
+    const initialUrl = getRouteParam(params?.url) || url || pathname
     const [tocItems, setTocItems] = useState([])
     const centerContentRef = useRef(null)
-
-    const centerChild = childList[0] || null
-    const centerChildren = centerChild ? [centerChild] : []
-    const leftChildren = childList.length > 2
-        ? [childList[1], ...childList.slice(3)]
-        : childList.slice(1)
-
-
+    const [pageData, setPageData] = useState({ data, url: initialUrl })
 
     const cellsCustomConfig = useMemo(() => {
         return appSetting('layouts', 'wiki') || appSetting('layouts', 'cols-l-c-r')
@@ -109,6 +303,8 @@ function PageContentWiki({ children }) {
         }
     }, [currentBreakpointName, isWeb, leftPanelProps.defaultSize, centerPanelProps.defaultSize, rightPanelProps.defaultSize])
 
+    const centerHtmlContent = pageData?.data?.elements?.cell_center?.[0]?.content?.[0]?.data?.content
+
     useEffect(() => {
         if (!isWeb) {
             setTocItems([])
@@ -124,29 +320,32 @@ function PageContentWiki({ children }) {
         const seenIds = new Map()
         const headings = Array.from(root.querySelectorAll('h2, h3'))
         const items = headings
-            .map((heading) => {
+            .map((heading, index) => {
                 const text = heading.textContent?.trim()
                 if (!text) {
                     return null
                 }
 
-                const baseId = text
+                const textBaseId = text
                     .toLowerCase()
                     .replace(/[^\w\s-]/g, '')
                     .trim()
                     .replace(/\s+/g, '-')
 
-                const safeBaseId = baseId || 'section'
-                const count = seenIds.get(safeBaseId) || 0
-                seenIds.set(safeBaseId, count + 1)
-                const id = count === 0 ? safeBaseId : `${safeBaseId}-${count + 1}`
+                const headingBaseId = String(heading.id || '').trim()
+                const preferredBaseId = headingBaseId || textBaseId || 'section'
+                const count = seenIds.get(preferredBaseId) || 0
+                const uniqueId = count === 0 ? preferredBaseId : `${preferredBaseId}-${count + 1}`
+                seenIds.set(preferredBaseId, count + 1)
 
-                if (!heading.id) {
-                    heading.id = id
+                // Force unique id for React keys and reliable hash navigation.
+                if (heading.id !== uniqueId) {
+                    heading.id = uniqueId
                 }
 
                 return {
-                    id: heading.id,
+                    id: uniqueId,
+                    key: `${uniqueId}-${index}`,
                     text,
                     level: Number(heading.tagName.slice(1))
                 }
@@ -158,6 +357,7 @@ function PageContentWiki({ children }) {
                 prev.length === items.length &&
                 prev.every((prevItem, i) =>
                     prevItem.id === items[i]?.id &&
+                    prevItem.key === items[i]?.key &&
                     prevItem.text === items[i]?.text &&
                     prevItem.level === items[i]?.level
                 )
@@ -166,45 +366,8 @@ function PageContentWiki({ children }) {
             }
             return items
         })
-    }, [isWeb, centerChild])
+    }, [isWeb, centerHtmlContent])
 
-    const leftContent = (
-        <View className="flex-auto w-full  p-2 sm:p-3">
-            <View className="gap-3">
-                {leftChildren}
-            </View>
-        </View>
-    )
-
-    const rightContent = (
-        <BlockWrapper
-            showTitle={true}
-            block={{
-                id: 'wiki-toc',
-                title: t('On this page'),
-                designbox_id: 14
-            }}
-        >
-            <View className="gap-2">
-                {tocItems.length >= 2 && (
-                    tocItems.map((item) => (
-                        <Row key={item.id} className={`items-center gap-2 ${item.level === 3 ? 'pl-4' : ''}`}>
-                            <Icon name={item.level === 2 ? 'List' : 'Minus'} size={14} className="text-muted-foreground" />
-                            <Pressable
-                                onPress={() => handleTocPress(item.id)}
-                                className="py-0.5"
-                            >
-                                <Text className="text-sm leading-tight   text-secondary-foreground web:group-hover:text-foreground">
-                                    {item.text}
-                                </Text>
-                            </Pressable>
-                        </Row>
-                    ))
-                )}
-            </View>
-        </BlockWrapper>
-
-    )
     const mobileHeaderControls = useMemo(() => {
         if (!showMobileLeftPanel && !(showMobileRightPanel && tocItems.length >= 2)) {
             return null
@@ -216,7 +379,7 @@ function PageContentWiki({ children }) {
                     {showMobileLeftPanel && (
                         <View className={`${showBothMobilePanels ? 'flex-1 min-w-[48%]' : 'w-full'}`}>
                             <DropdownPopup
-                                minPopupWidth={220}
+                                minPopupWidth={256}
                                 contentClasses="rounded-xl border border-border/60 bg-card shadow-md"
                                 trigger={(
                                     <Button
@@ -225,22 +388,21 @@ function PageContentWiki({ children }) {
                                         size="sm"
                                         fullWidth
                                         startDecorator="Menu"
-                                       
+
                                         className="rounded-xl"
                                     />
                                 )}
                             >
                                 <View className="p-1">
-                                    {leftContent}
+                                    <MenuWiki setPageData={setPageData} data={data?.elements?.cell_left[0]?.content[0]?.data} url={pageData.url} />
                                 </View>
                             </DropdownPopup>
                         </View>
                     )}
-
                     {showMobileRightPanel && tocItems.length >= 2 && (
                         <View className={`${showBothMobilePanels ? 'flex-1 min-w-[48%]' : 'w-full'}`}>
                             <DropdownPopup
-                                minPopupWidth={220}
+                                minPopupWidth={256}
                                 contentClasses="rounded-xl border border-border/60 bg-card shadow-md"
                                 trigger={(
                                     <Button
@@ -256,7 +418,7 @@ function PageContentWiki({ children }) {
                                 <View className="p-3">
                                     <View className="gap-2">
                                         {tocItems.map((item) => (
-                                            <Row key={`mobile-toc-${item.id}`} className={`items-center gap-2 ${item.level === 3 ? 'pl-4' : ''}`}>
+                                            <Row key={`mobile-toc-${item.key}`} className={`items-center gap-2 ${item.level === 3 ? 'pl-4' : ''}`}>
                                                 <Icon name={item.level === 2 ? 'List' : 'Minus'} size={14} className="text-muted-foreground" />
                                                 <Pressable
                                                     onPress={() => handleTocPress(item.id)}
@@ -276,14 +438,12 @@ function PageContentWiki({ children }) {
                 </View>
             </View>
         )
-    }, [showMobileLeftPanel, showMobileRightPanel, showBothMobilePanels, tocItems, t, leftContent])
-
-
+    }, [showMobileLeftPanel, showMobileRightPanel, showBothMobilePanels, tocItems, t])
 
     useEffect(() => {
-        if (isWeb){
+        if (isWeb) {
             setHeader(isDesktop ? defaultHeader : { subHeader: mobileHeaderControls });
-    }
+        }
     }, [isDesktop, mobileHeaderControls, setHeader]);
 
     return (
@@ -297,30 +457,59 @@ function PageContentWiki({ children }) {
                 onLayout={onLayout}
             >
                 <Panel className={`hidden ${leftBreakpoint}:block ${currentBreakpointName}:w-full`} {...leftPanelProps}>
-                    {leftContent}
+                    <View className="flex-auto w-full  p-2 sm:p-3">
+                        <View className="gap-3">
+                            <BlockWrapper block={{ designbox_id: 11, id: 'wiki-toc', title: 'Pages Menu' }}  >
+                                <MenuWiki setPageData={setPageData} data={data?.elements?.cell_left[0]?.content[0]?.data} url={pageData.url} />
+                            </BlockWrapper>
+
+                        </View>
+                    </View>
                 </Panel>
                 <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
                 <Panel className={`native:w-full ${currentBreakpointName}:w-full`} {...centerPanelProps}>
                     <View ref={centerContentRef} className={` min-w-0 p-4 gap-3`}>
-                        {centerChildren}
+                        <Html data={pageData?.data?.elements?.cell_center[0]?.content[0]?.data?.content} />
                     </View>
                 </Panel>
-
                 <PanelHandler gap={`hidden ${rightBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
                 <Panel className={`hidden ${rightBreakpoint}:block ${currentBreakpointName}:w-full`} {...rightPanelProps}>
-                    {rightContent}
+                    <BlockWrapper
+                        showTitle={true}
+                        block={{
+                            id: 'wiki-toc',
+                            title: t('On this page'),
+                            designbox_id: 14
+                        }}
+                    >
+                        <View className="gap-2">
+                            {tocItems.length >= 2 && (
+                                tocItems.map((item) => (
+                                    <Row key={`desktop-toc-${item.key}`} className={`items-center gap-2 ${item.level === 3 ? 'pl-4' : ''}`}>
+                                        <Icon name={item.level === 2 ? 'List' : 'Minus'} size={14} className="text-muted-foreground" />
+                                        <Pressable
+                                            onPress={() => handleTocPress(item.id)}
+                                            className="py-0.5"
+                                        >
+                                            <Text className="text-sm leading-tight   text-secondary-foreground web:group-hover:text-foreground">
+                                                {item.text}
+                                            </Text>
+                                        </Pressable>
+                                    </Row>
+                                ))
+                            )}
+                        </View>
+                    </BlockWrapper>
                 </Panel>
             </PanelGroup>
         </View>
     )
 }
 
-export default function PageLayoutWiki({ data, children }) {
+export default function PageLayoutWiki({ data }) {
     return (
         <Page data={data}>
-            <PageContentWiki>
-                {children}
-            </PageContentWiki>
+            <PageContentWiki data={data} />
             <View className="flex-1" />
             <MenuFooter
                 cntClasses='flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-3 p-4 min-h-14'

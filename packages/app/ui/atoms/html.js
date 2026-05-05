@@ -37,20 +37,23 @@ const StyledP = ({ children, className, ...props }) => {
 
     if (Platform.OS === 'web') {
         const WebDiv = 'div'
-        return <WebDiv {...props} className={`${className} `} >{children}</WebDiv>
+        return <WebDiv {...props} className={`${className}`} >{children}</WebDiv>
     }
     return <P className={className} {...props}>{children}</P>
 }
 
-const StyledLi = ({ children, ...props }) => {
+const StyledLi = ({ children, className, ...props }) => {
+    
+    className += ' text-card-foreground'
+
     if (Platform.OS === 'web') {
         const WebLi = 'li'
-        return <WebLi {...props}>{children}</WebLi>
+        return <WebLi {...props} className={`${className}`}>{children}</WebLi>
     }
     return (
         <Row {...props} className={`mb-1 ml-4 flex-row items-start`}>
-            <Text className="mr-2 text-foreground">•</Text>
-            <Text className="flex-1 text-foreground">{children}</Text>
+            <Text className="mr-2 text-card-foreground">•</Text>
+            <Text className="flex-1 text-card-foreground">{children}</Text>
         </Row>
     )
 }
