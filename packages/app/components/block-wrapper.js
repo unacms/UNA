@@ -2,10 +2,11 @@ import { View } from 'app/design/view'
 import Html from 'app/ui/atoms/html'
 import { stripTags, appSetting, isUrl } from 'app/lib/util';
 import { useState } from 'react';
-import { Block as PageBlock, BlockContent, BlockName, BlockActions, BlockHeader, BlockTitle } from 'app/ui/molecules/page-block'
+import { Block as PageBlock, BlockContent, BlockName, BlockActions, BlockHeader, BlockTitle, BlockDescription, BlockIcon } from 'app/ui/molecules/page-block'
 import Link from 'app/ui/atoms/link'
 import { useTranslation } from 'react-i18next'
 import { Button, ButtonLink, Modal } from 'app/design/controls'
+import { Icon } from 'app/ui/atoms/icon'
 
 export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, children }) {
     const { t } = useTranslation()
@@ -50,19 +51,19 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
     if ((content_type == 'browse' || content_type == 'browse_list'))
         contentOnly = true;
 
-    if (contentOnly){
+    if (contentOnly) {
         return (<View className={wrapperClassses}>
             {children}
         </View>)
     }
     const pureHelp = stripTags(block.help);
-    if (pureHelp){
+    if (pureHelp) {
         bIsShowTitle = true;
     }
 
     const isHelpLink = isUrl(pureHelp)
     const isHelp = !!block.help
-    
+
 
     return (
         <View className={wrapperClassses || 'w-full'}>
@@ -83,9 +84,14 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                 >
                     {bIsShowTitle && (
                         <BlockHeader>
+                            {!!block.icon && <BlockIcon>
+                                <Icon icon={block.icon} className={`h-4 w-4`} />
+                            </BlockIcon>}
                             <BlockName>
                                 <BlockTitle>{stripTags(block.title)}</BlockTitle>
+                                {!!block.description && <BlockDescription>{block.description}</BlockDescription>}
                             </BlockName>
+
                             {config?.header_more_url && (<BlockActions>
                                 <Link
                                     href={config?.header_more_url}
@@ -96,8 +102,8 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                                     {t(config?.header_more_text || 'See all')}
                                 </Link>
                             </BlockActions>)}
-                            {(isHelp && isHelpLink) && <ButtonLink href={pureHelp} target="_blank" title="Help" startDecorator='LifeBuoy' variant="text"/>}
-                            {(isHelp && !isHelpLink) && <Button onPress={() => setShowHelp(true)} title="Help" startDecorator='LifeBuoy' variant="text"/>}
+                            {(isHelp && isHelpLink) && <ButtonLink href={pureHelp} target="_blank" title="Help" startDecorator='LifeBuoy' variant="text" />}
+                            {(isHelp && !isHelpLink) && <Button onPress={() => setShowHelp(true)} title="Help" startDecorator='LifeBuoy' variant="text" />}
                         </BlockHeader>
                     )}
                     <BlockContent>
