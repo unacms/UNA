@@ -74,7 +74,7 @@ Reference these guidelines when:
 - `ui-menus` - Use native context menus
 - `ui-native-modals` - Use native modals when possible
 - `ui-measure-views` - Use onLayout, not measure()
-- `ui-styling` - Use StyleSheet.create or Nativewind
+- `ui-styling` - Use StyleSheet.create or Uniwind (`className` / Tailwind on RN); do not use NativeWind-only APIs (`cssInterop`, `remapProps`)
 
 ### 5. State Management (MEDIUM)
 

@@ -11,6 +11,8 @@ description: >
 
 Uniwind replaces NativeWind with better performance and stability. It requires **Tailwind CSS 4** and uses CSS-based theming instead of JS config.
 
+**NEO monorepo:** Upstream has **already migrated** to Uniwind. Use this skill for other apps, long-lived forks still on NativeWind, or when auditing a migration; see root [`uniwind.md`](../../../uniwind.md) for this repo’s checklist.
+
 ## Pre-Migration Checklist
 
 Before starting, read the project's existing config files to understand the current setup:

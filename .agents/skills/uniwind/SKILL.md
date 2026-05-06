@@ -22,6 +22,8 @@ description: >
 
 If user has lower version, recommend updating to 1.6.0+ for best experience.
 
+**NEO monorepo:** Native app styling is **Uniwind** (Tailwind v4), not NativeWind. Stack notes live in the repo root [`uniwind.md`](../../../uniwind.md). The mentions of NativeWind below are for **migration**, compatibility (`rem` base), or comparisons—not the current NEO default.
+
 Uniwind brings Tailwind CSS v4 to React Native. All core React Native components support the `className` prop out of the box. Styles are compiled at build time — no runtime overhead.
 
 ## Critical Rules
@@ -36,7 +38,7 @@ Uniwind brings Tailwind CSS v4 to React Native. All core React Native components
 8. **Font families: single font only** — React Native doesn't support fallbacks. Use `--font-sans: 'Roboto-Regular'` not `'Roboto', sans-serif`.
 9. **All theme variants must define the same set of CSS variables** — If `light` defines `--color-primary`, then `dark` and every custom theme must too. Mismatched variables cause runtime errors.
 10. **`accent-` prefix is REQUIRED for non-style color props** — This is crucial. Props like `color` (Button, ActivityIndicator), `tintColor` (Image), `thumbColor` (Switch), `placeholderTextColor` (TextInput) are NOT part of the `style` object. You MUST use the corresponding `{propName}ClassName` prop with `accent-` prefixed classes. Example: `<ActivityIndicator colorClassName="accent-blue-500" />` NOT `<ActivityIndicator className="text-blue-500" />`. Regular Tailwind color classes (like `text-blue-500`) only work on `className` (which maps to `style`). For non-style color props, always use `accent-`.
-11. **rem default is 16px** — NativeWind used 14px. Set `polyfills: { rem: 14 }` in metro config if migrating.
+11. **rem default is 16px** — When migrating from NativeWind (which used 14px), set `polyfills: { rem: 14 }` in Metro; NEO keeps this for spacing parity unless intentionally changed.
 12. **`cssEntryFile` must be a relative path string** — Use `'./global.css'` not `path.resolve(__dirname, 'global.css')`.
 13. **Deduplicate with `cn()` when mixing custom CSS classes and Tailwind** — Uniwind does NOT auto-deduplicate. If a custom CSS class (`.card { padding: 16px }`) and a Tailwind utility (`p-6`) set the same property, both apply with unpredictable results. Always wrap with `cn('card', 'p-6')` when there's overlap.
 
