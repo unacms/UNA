@@ -1,4 +1,5 @@
 'use client';
+import { nativeDriver } from 'app/lib/animation';
 
 import { forwardRef, useEffect, useRef } from 'react';
 import { Animated, Easing, Platform } from 'react-native';
@@ -70,7 +71,7 @@ export function AnimatedBell({
     useEffect(() => {
         Animated.spring(scaleAnim, {
             toValue: sceneScale,
-            useNativeDriver: true,
+            useNativeDriver: nativeDriver,
             friction: 4,
             tension: 100,
         }).start();
@@ -95,25 +96,25 @@ export function AnimatedBell({
                     toValue: -10,
                     duration: SHAKE_SEGMENT_MS,
                     easing: Easing.inOut(Easing.quad),
-                    useNativeDriver: true,
+                    useNativeDriver: nativeDriver,
                 }),
                 Animated.timing(shakeAnim, {
                     toValue: 10,
                     duration: SHAKE_SEGMENT_MS,
                     easing: Easing.inOut(Easing.quad),
-                    useNativeDriver: true,
+                    useNativeDriver: nativeDriver,
                 }),
                 Animated.timing(shakeAnim, {
                     toValue: -10,
                     duration: SHAKE_SEGMENT_MS,
                     easing: Easing.inOut(Easing.quad),
-                    useNativeDriver: true,
+                    useNativeDriver: nativeDriver,
                 }),
                 Animated.timing(shakeAnim, {
                     toValue: 0,
                     duration: SHAKE_SEGMENT_MS,
                     easing: Easing.inOut(Easing.quad),
-                    useNativeDriver: true,
+                    useNativeDriver: nativeDriver,
                 }),
             ]).start();
             return;

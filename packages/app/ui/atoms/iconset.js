@@ -3,30 +3,20 @@
 import { IconSet as IconMap } from 'app/customization/icons';
 import { useTheme } from 'app/design/theme';
 import { useMemo } from 'react';
-import { cssInterop } from 'nativewind';
+import { useResolveClassNames } from 'uniwind';
 import { SvgXml } from 'react-native-svg';
 
 export function IconFromSet({ icon, width, height, size, _strokeWidth, color, cleanedClassName, rest }) {
     const { colors } = useTheme();
+    const resolvedClassStyle = useResolveClassNames(cleanedClassName || '');
+    const { color: classColor, width: classWidth, height: classHeight, ...styleFromClassName } = resolvedClassStyle || {};
+    const { style: restStyle, ...restWithoutStyle } = rest || {};
     const resolvedWidth = width || size;
     const resolvedHeight = height || size;
     const resolvedSize = size || (resolvedWidth && resolvedWidth === resolvedHeight ? resolvedWidth : undefined);
 
     const IconComponent = useMemo(() => {
-        const IconComponent2 = IconMap[icon];
-        if (!IconComponent2) return null;
-
-        IconComponent2.displayName = icon;
-        return cssInterop(IconComponent2, {
-            className: {
-                target: 'style',
-                nativeStyleToProp: {
-                    color: true,
-                    width: true,
-                    height: true,
-                },
-            },
-        });
+        return IconMap[icon] || null;
     }, [icon]);
 
     if (!IconComponent) {
@@ -36,13 +26,13 @@ export function IconFromSet({ icon, width, height, size, _strokeWidth, color, cl
 
     return (
         <IconComponent
-            color={color || colors.default}
-            width={resolvedWidth}
-            height={resolvedHeight}
+            color={color || classColor || colors.default}
+            width={resolvedWidth || classWidth}
+            height={resolvedHeight || classHeight}
             size={resolvedSize}
             strokeWidth={_strokeWidth}
-            className={cleanedClassName}
-            {...rest}
+            style={[styleFromClassName, restStyle].filter(Boolean)}
+            {...restWithoutStyle}
         />
     );
 }

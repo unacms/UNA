@@ -37,15 +37,14 @@ export const PanelHandler = memo(({ gap, sizable, className = '', style }) => {
     const defaultClasses = `${gapClass} web:group web:duration-200 justify-center items-center flex`;
     const finalClasses = `${defaultClasses} ${className}`;
 
-    return sizable ? (
+    return (
         <PanelResizeHandle 
             className={`${panelTheme['u-panel-handler']} ${finalClasses}`}
+            disabled={!sizable}
             style={style}
         >
-            <View className={panelTheme['u-panel-line']} />
+            {sizable && <View className={panelTheme['u-panel-line']} />}
         </PanelResizeHandle>
-    ) : (
-        <View className={finalClasses} style={style} />
     );
 });
 

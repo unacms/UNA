@@ -26,6 +26,12 @@
       "sourceType": "github",
       "computedHash": "9c6ee7f028f409be8ba695dd9a6493c7de9a3802ee538ee905baaceea419aba9"
     },
+    "migrate-nativewind-to-uniwind": {
+      "source": "uni-stack/uniwind",
+      "sourceType": "github",
+      "skillPath": "skills/migrate-nativewind-to-uniwind/SKILL.md",
+      "computedHash": "d3570bc395e5c9f12eddf4fcb613d92e7f4b1fbdb5692b20309fa87b70ff0718"
+    },
     "next-best-practices": {
       "source": "vercel-labs/next-skills",
       "sourceType": "github",
@@ -55,6 +61,12 @@
       "source": "neo/monorepo",
       "sourceType": "local",
       "computedHash": ""
+    },
+    "uniwind": {
+      "source": "uni-stack/uniwind",
+      "sourceType": "github",
+      "skillPath": "skills/uniwind/SKILL.md",
+      "computedHash": "1f452c3d1b5d23cef56b56b5627057d473bedab74158074ea4b019613c00162f"
     },
     "vercel-composition-patterns": {
       "source": "vercel-labs/agent-skills",

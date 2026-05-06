@@ -1,4 +1,5 @@
 'use client';
+import { nativeDriver } from 'app/lib/animation';
 
 import { forwardRef, useEffect, useRef } from 'react';
 import { Animated, Easing, Platform } from 'react-native';
@@ -71,7 +72,7 @@ export function AnimatedMessageCircleMore({
     useEffect(() => {
         Animated.spring(scaleAnim, {
             toValue: sceneScale,
-            useNativeDriver: true,
+            useNativeDriver: nativeDriver,
             friction: 4,
             tension: 100,
         }).start();

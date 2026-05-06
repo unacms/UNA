@@ -55,7 +55,8 @@ export function usePageHeaderBase(pageData, { resetHeaderOnRoute = false } = {})
     const isWeb = Platform.OS === 'web';
     const isDesktop = useIsDesktop();
     const isHome = pageData?.uri === 'home';
-    const isCollapsibleHeader = appSetting('native', 'collapsible_header') && !isDesktop;
+    const isCollapsibleHeader =
+        appSetting('native', 'collapsible_header') && !isDesktop;
     const isContextSelector = !!pageData?.context;
     const isFullContextSelector = appSetting('context_selector', 'show_always');
     const isShowLogo = isDesktop || (!isWeb && !currentUser) || isHome;
@@ -101,6 +102,15 @@ export function usePageHeaderBase(pageData, { resetHeaderOnRoute = false } = {})
             setHeaderHeightAtom(height);
         }
     }, [headerHeight, setHeaderHeightAtom]);
+
+    useEffect(() => {
+        if (!isWeb) return;
+
+        const nextHeaderHeight = isDesktop ? 64 : 56;
+        if (headerHeight !== nextHeaderHeight) {
+            setHeaderHeightAtom(nextHeaderHeight);
+        }
+    }, [headerHeight, isDesktop, isWeb, setHeaderHeightAtom]);
 
     return {
         currentUser,

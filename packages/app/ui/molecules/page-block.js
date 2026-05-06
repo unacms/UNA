@@ -25,7 +25,7 @@ function createBlockComponent({
                     ${baseClass} 
                     ${isBg && baseClass == 'u-block-base' ? blockTheme['u-block-bg'] : ''} 
                     ${isPad ? blockTheme['u-block-pad'] : ''} 
-                    ${animate ? 'animate-in fade-in duration-500' : ''}
+                    ${animate ? 'animate-in fade-in duration-100' : ''}
                     ${blockTheme[baseClass]} ${className}`}
                 role={role}
                 aria-level={ariaLevel}

@@ -4,7 +4,7 @@ import type { TextInput } from 'react-native';
 import { View, Row } from 'app/design/view'
 import { Icon } from 'app/ui/atoms/icon'
 import { appSetting } from 'app/lib/util'
-import { Picker as PickerDef } from '@react-native-picker/picker';
+import { Picker as PickerDef, type PickerProps } from '@react-native-picker/picker';
 
 const inputSettings = appSetting('theme', 'inputs');
 const isWeb = Platform.OS === 'web';
@@ -112,16 +112,17 @@ interface PickerStyledRefProps extends PickerProps {
 }
 
 const PickerStyles = inputSettings.select;
+const Picker = PickerDef as any;
 
 export const PickerStyled = ({ className, ...props }: CustomPickerProps) => (
-    <PickerDef className={PickerStyles} {...props} />
+    <Picker className={PickerStyles} {...props} />
 );
 PickerStyled.displayName = 'PickerStyled';
 
-export const PickerStyledRef = forwardRef<Picker, PickerStyledRefProps>(
+export const PickerStyledRef = forwardRef<any, PickerStyledRefProps>(
     ({ classes, className, ...props }, ref) => (
         <View className={` ${isWeb ? 'flex-auto items-center flex-row' : ''} `}>
-            <PickerDef 
+            <Picker 
                 ref={ref} 
                 className={`${classes ? classes : PickerStyles} w-full`} 
                 {...props}
@@ -138,5 +139,5 @@ export const PickerStyledRef = forwardRef<Picker, PickerStyledRefProps>(
 
 
 export const PickerStyledIos = ({ className, ...props }: CustomPickerProps) => (
-    <PickerDef className={PickerStyles} {...props} />
+    <Picker className={PickerStyles} {...props} />
 );

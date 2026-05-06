@@ -10,7 +10,6 @@ import { appSetting as setting, UNA_URL, APP_URL } from 'app/config';
 import { remoteSettings } from 'app/settings/remote';
 import { parse as flatted_parse, stringify as flatted_stringify } from 'flatted';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LogLevel, OneSignal } from 'react-native-onesignal';
 import { isComponent } from 'app/components/registry';
 import { clsx } from 'clsx';
 import * as RNLocalize from "react-native-localize";
@@ -50,42 +49,42 @@ export function isObjectsEqual(obj, obj2) {
 }
 
 export async function subscribeOneSignal(currentUser, askPermission = false) {
-    if (!isWeb) {
-        OneSignal.Debug.setLogLevel(LogLevel.None);
-        OneSignal.initialize(appSetting('config', 'api_keys', 'onesignal'));
-                
-        if (Platform.OS === "android") {
-            // TODO: better solution would be to ask user if they want to receive notifications 
-            // and only then request permissions, instead of delay.
-            await new Promise(resolve => setTimeout(resolve, 15000));
-        }
+    if (isWeb) return;
+    const { LogLevel, OneSignal } = await import('react-native-onesignal');
+    OneSignal.Debug.setLogLevel(LogLevel.None);
+    OneSignal.initialize(appSetting('config', 'api_keys', 'onesignal'));
 
-        let permissionStatus = await OneSignal.Notifications.getPermissionAsync();
-        //console.log("OneSignal permission status before request:", permissionStatus);
-
-        if (!permissionStatus && askPermission) {
-            await OneSignal.Notifications.requestPermission(true);
-            permissionStatus = await OneSignal.Notifications.getPermissionAsync();
-            //console.log("OneSignal permission status after request:", permissionStatus);
-        }
-
-        if (permissionStatus) {
-            /*console.log("OneSignal data:", {
-                id: await OneSignal.User.getOnesignalId(),
-                token: await OneSignal.User.pushSubscription.getTokenAsync(),
-                optedIn: await OneSignal.User.pushSubscription.getOptedInAsync(),
-                permission: permissionStatus
-            });*/
-
-            await OneSignal.login(String(currentUser.id));
-            await OneSignal.User.addTag("user_hash", String(currentUser.hash));
-        }    
-
-        // Method for listening for notification clicks
-        /*OneSignal.Notifications.addEventListener('click', (event) => {
-            console.log('OneSignal: notification clicked:', event);
-        });*/
+    if (Platform.OS === "android") {
+        // TODO: better solution would be to ask user if they want to receive notifications
+        // and only then request permissions, instead of delay.
+        await new Promise(resolve => setTimeout(resolve, 15000));
     }
+
+    let permissionStatus = await OneSignal.Notifications.getPermissionAsync();
+    //console.log("OneSignal permission status before request:", permissionStatus);
+
+    if (!permissionStatus && askPermission) {
+        await OneSignal.Notifications.requestPermission(true);
+        permissionStatus = await OneSignal.Notifications.getPermissionAsync();
+        //console.log("OneSignal permission status after request:", permissionStatus);
+    }
+
+    if (permissionStatus) {
+        /*console.log("OneSignal data:", {
+            id: await OneSignal.User.getOnesignalId(),
+            token: await OneSignal.User.pushSubscription.getTokenAsync(),
+            optedIn: await OneSignal.User.pushSubscription.getOptedInAsync(),
+            permission: permissionStatus
+        });*/
+
+        await OneSignal.login(String(currentUser.id));
+        await OneSignal.User.addTag("user_hash", String(currentUser.hash));
+    }
+
+    // Method for listening for notification clicks
+    /*OneSignal.Notifications.addEventListener('click', (event) => {
+        console.log('OneSignal: notification clicked:', event);
+    });*/
 }
 
 export function normalizeClasses(a) {

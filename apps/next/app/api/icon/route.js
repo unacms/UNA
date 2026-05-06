@@ -17,7 +17,7 @@ export async function GET(request) {
         const size        = searchParams.get("size");
         const width       = searchParams.get("width");
         const height      = searchParams.get("height");
-        const strokeWidth = searchParams.get("strokeWidth");
+       // const strokeWidth = searchParams.get("strokeWidth");
         const fill        = searchParams.get("fill");
 
         const iconProps = {
@@ -25,7 +25,7 @@ export async function GET(request) {
             ...(size        && { size:        Number(size) }),
             ...(width       && { width:       Number(width) }),
             ...(height      && { height:      Number(height) }),
-            ...(strokeWidth && { strokeWidth: Number(strokeWidth) }),
+         //   ...(strokeWidth && { strokeWidth: Number(strokeWidth) }),
             ...(fill        && { fill }),
         };
 

@@ -35,6 +35,7 @@ import { getRemoteSettings } from 'app/config';
 import { StatusBar } from 'react-native';
 import { LogLevel, OneSignal } from 'react-native-onesignal';
 import { useLayoutSettings } from 'app/context/layout-settings';
+import { Uniwind } from 'uniwind';
 
 
 const queryClient = new QueryClient({
@@ -94,6 +95,10 @@ const AppLayout = React.memo(() => {
     const actualThemeName = useMemo(() => {
         return themeName != 'auto' ? themeName : scheme;
     }, [themeName, scheme]);
+
+    useEffect(() => {
+        Uniwind.setTheme(themeName != 'auto' ? themeName : 'system');
+    }, [themeName]);
     
     const theme = useMemo(() => {
         const lightTheme = appSetting('theme', 'light');

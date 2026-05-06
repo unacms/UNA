@@ -2,11 +2,7 @@
 //import {enableLatestRenderer} from 'react-native-maps';
 //enableLatestRenderer();
 
-/**
- * NativeWind / react-native-css-interop wraps views with Reanimated merge paths that
- * can trip strict "reading .value during render" warnings (third-party, not app tabs).
- * Disable strict-only logs; see https://docs.swmansion.com/react-native-reanimated/docs/debugging/logger-configuration
- */
+
 import { configureReanimatedLogger } from 'react-native-reanimated';
 configureReanimatedLogger({ strict: false });
 
@@ -15,19 +11,6 @@ import 'react-native-url-polyfill/auto';
 import { StatusBar, Platform } from 'react-native';
 //import 'expo-router/entry';
 import * as SplashScreen from 'expo-splash-screen';
-
-// Suppress NativeWind shadow* deprecation warning until NativeWind v4 fixes it internally
-// NativeWind v4.2.1 converts Tailwind shadow classes to deprecated shadow* props
-if (__DEV__) {
-    const originalWarn = console.warn;
-    console.warn = (...args) => {
-        const message = args[0]?.toString() || '';
-        if (message.includes('"shadow*" style props are deprecated. Use "boxShadow".')) {
-            return; // Suppress this specific warning
-        }
-        originalWarn(...args);
-    };
-}
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { registerRootComponent } from "expo";
 import { ExpoRoot } from "expo-router";
@@ -40,8 +23,16 @@ import { useColorScheme } from 'react-native';
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+console.log('[INDEX] View $$typeof:', View?.$$typeof?.toString());
+console.log('[INDEX] View length (params):', View?.length);
+console.log('[INDEX] View prototype:', Object.getOwnPropertyNames(View?.prototype || {}));
 
-SplashScreen.preventAutoHideAsync();
+SplashScreen.hideAsync();
+
+import { Uniwind } from 'uniwind';
+console.log('[INDEX] Uniwind themes:', Uniwind.themes);
+console.log('[INDEX] Uniwind currentTheme:', Uniwind.currentTheme);
+console.log('[INDEX] Uniwind ref id:', Uniwind === global.__UniwindRef ? 'SAME' : (global.__UniwindRef = Uniwind, 'NEW'));
 
 // Must be exported or Fast Refresh won't update the context
 export function App() {

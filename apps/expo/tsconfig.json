@@ -7,7 +7,7 @@
   "include": [
     "app/**/*.ts",
     "app/**/*.tsx",
-    "nativewind-env.d.ts"
+    "uniwind-types.d.ts"
   ],
   "references": []
 }

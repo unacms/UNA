@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import { View } from 'app/design/view'
 import { Animated } from 'react-native';
 import Svg, { G, Circle } from 'react-native-svg';
+import { nativeDriver } from 'app/lib/animation'
 
 function RotatingIcon() {
     const spinValue = useRef(new Animated.Value(0)).current;
@@ -13,7 +14,7 @@ function RotatingIcon() {
             Animated.timing(spinValue, {
                 toValue: 1,
                 duration: 2000,
-                useNativeDriver: true,
+                useNativeDriver: nativeDriver,
             })
         );
         animation.start();

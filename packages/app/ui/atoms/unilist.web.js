@@ -166,12 +166,12 @@ export default function UniList(props) {
     const ItemComponent = useMemo(() => {
         const cls = layout || 'w-full';
         return ({ className, ...props }) => (
-            <ReactNativeView className={`${cls} ${className || 'mb-3'}`} {...props} />
+            <div className={`${cls} ${className || 'mb-3'}`} {...props} />
         );
     }, [layout]);
     const ListComponent = useMemo(() =>
         forwardRef(({ className, ...props }, ref) => (
-            <ReactNativeView
+            <div
                 ref={ref}
                 className={`u-max-width-block w-full mx-auto flex flex-wrap flex-row ${className || ''}`}
                 {...props}

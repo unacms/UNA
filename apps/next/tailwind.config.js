@@ -1,5 +1,13 @@
 const { theme } = require('app/design/tailwind/theme')
+const plugin = require('tailwindcss/plugin')
 /** @type {import('tailwindcss').Config} */
+
+const platformVariants = plugin(({ addVariant }) => {
+  addVariant('web', '&')
+  addVariant('native', '@media not all')
+  addVariant('ios', '@media not all')
+  addVariant('android', '@media not all')
+})
 
 module.exports = {
   content: [
@@ -16,8 +24,6 @@ module.exports = {
   },
   darkMode: ['class', '[theme="dark"]'],
   important: 'html',
-  presets: [require("nativewind/preset")],
-   plugins: [require("@tailwindcss/container-queries"), require("tailwindcss-animate")],
+   plugins: [platformVariants, require("@tailwindcss/container-queries"), require("tailwindcss-animate")],
   future: {hoverOnlyWhenSupported: true}
 }
-

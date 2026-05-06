@@ -13,22 +13,18 @@ import {
 } from 'app/ui/molecules/page-block'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Row, Pressable, ScrollView } from 'app/design/view'
+import { View, Row, ScrollView } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { Button, Modal } from 'app/design/controls'
+import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
 import ProfileSwitcher from 'app/components/elements/profile_switcher'
 import { appSetting } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
-import i18n from 'i18next'
-import { Appearance, Platform } from 'react-native'
-import { storageSet, storageClear, storageGet } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
 import { useTheme } from 'app/design/theme'
 import DasbordStatOld from 'app/components/elements/dashboard_stat_old'
-import ThemeCompatibilityTest from 'app/ui/molecules/nativewindui'
 import { useLayoutSettings } from 'app/context/layout-settings'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
@@ -283,8 +279,7 @@ function ElementDashboardStat(props) {
     const { colors } = useTheme()
     const { t } = useTranslation()
     const [data, setData] = useState(props.data)
-    const { currentUser, setCurrentUser } = useCurrentUser()
-    const [showThemeTest, setShowThemeTest] = useState(false)
+    const { currentUser } = useCurrentUser()
     useEffect(() => {
         const fetchData = async () => {
             const sResponse = await fetcher(
@@ -300,20 +295,6 @@ function ElementDashboardStat(props) {
     const filtredData = menu || data.modules.filter((item) => list.includes(item.key))
     return (
         <>
-            <Modal
-                id="theme-test-modal"
-                title="Theme Compatibility Test"
-                onVisible={!!showThemeTest}
-                onClose={() => setShowThemeTest(false)}
-                maxWidth="max-w-3xl"
-                maxHeight="max-h-[90vh]"
-                scrollable={true}
-            >
-                <ScrollView className="max-h-[70vh]">
-                    <ThemeCompatibilityTest />
-                </ScrollView>
-            </Modal>
-
             <Row className="flex-wrap gap-3">
                 {filtredData.map((item, index) => {
                     if (item) {
@@ -422,21 +403,6 @@ function ElementDashboardStat(props) {
             {data.manage.items.length > 0 && (
 
                 <View className="my-6 grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-                    {currentUser?.id && (
-                        <View className=" w-full min-w-[160px]  ">
-                            <Button
-                                variant="secondary"
-                                align="left"
-                                size="sm"
-                                fullWidth
-                                title="Theme Test"
-                                startDecorator="Palette"
-                                onPress={() =>
-                                    setShowThemeTest(true)
-                                }
-                            />
-                        </View>
-                    )}
                     {data.manage.items.map((item2, index) => {
                         return (
                             <View

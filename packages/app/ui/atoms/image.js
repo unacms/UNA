@@ -1,6 +1,6 @@
 import { SolitoImage } from 'solito/image'
 import { Platform, StyleSheet, PixelRatio, Dimensions } from 'react-native';
-import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util';
+import { appSetting, cn, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { useMemo } from 'react';
 import { UNA_URL, APP_URL, MULTITENANT_IMAGES_PROXY } from 'app/config';
 //import SvgFile from 'app/ui/molecules/svg-file';
@@ -23,6 +23,7 @@ function getHostname(src) {
 }
 
 const passthroughLoader = ({ src }) => src;
+const sizeClassPattern = /^(?:web:)?(?:w-|h-|size-|aspect-)/
 
 function extractStyleWidth(style) {
     if (style) {
@@ -32,6 +33,11 @@ function extractStyleWidth(style) {
             return width;
         }
     }
+}
+
+function hasSizeClass(className) {
+    return typeof className === 'string'
+        && className.split(/\s+/).some((token) => sizeClassPattern.test(token));
 }
 
 const config = {
@@ -159,15 +165,35 @@ export default function ElementImage(props) {
         return updatedRest;
     }, [rest.view, height, width, rest.pref_height, rest.pref_width, rest]);
 
-    return useMemo(() => (
-        <SolitoImageStyled
-            onError={(e) => console.log('!!!!Image loading error:', e, src)}
-            {...rest}
-            src={src}
-            alt={alt}
-            sizes={sizes}
-            style={style}
-            {...(!optimize ? { unoptimized: true, loader: passthroughLoader } : {})}
-        />
-    ), [rest, src, alt, style, sizes, optimize]);
+    return useMemo(() => {
+        const imageProps = {
+            onError: (e) => console.log('!!!!Image loading error:', e, src),
+            ...rest,
+            src,
+            alt,
+            sizes,
+            ...(!optimize ? { unoptimized: true, loader: passthroughLoader } : {}),
+        };
+
+        if (Platform.OS === 'web' && rest.fill === 'fill') {
+            const { className, ...fillImageProps } = imageProps;
+            const wrapperSizeClass = hasSizeClass(className) ? '' : 'w-full h-full';
+
+            return (
+                <span className={cn('relative block overflow-hidden', wrapperSizeClass, className)} style={style}>
+                    <SolitoImageStyled
+                        {...fillImageProps}
+                        className={className}
+                    />
+                </span>
+            );
+        }
+
+        return (
+            <SolitoImageStyled
+                {...imageProps}
+                style={style}
+            />
+        );
+    }, [rest, src, alt, style, sizes, optimize]);
 }

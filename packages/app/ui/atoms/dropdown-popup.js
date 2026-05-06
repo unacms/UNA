@@ -74,43 +74,57 @@ export default function DropdownPopup({
         }
     }, [isRealOpen, isModalVisible]);
 
-    const updateButtonPosition = () => {
-        if (!buttonRef.current?.measureInWindow) return;
-        buttonRef.current.measureInWindow((x, y, width, height) => {
+    const measureElement = useCallback((node, callback) => {
+        if (!node) return false;
 
-            setTimeout(() => {
-                if (contentRef.current?.measureInWindow) {
-                    contentRef.current.measureInWindow((_, __, popupWidth, effectivePopupHeight) => {
-                        // Calculate horizontal position
-                        let left = x;
-                        if (x + popupWidth > windowWidth - 16) {
-                            left = windowWidth - popupWidth - 16;
-                        }
-                        if (left < 16) left = 16;
+        if (node.measureInWindow) {
+            node.measureInWindow(callback);
+            return true;
+        }
 
-                        // Calculate vertical position
-                        let top = y + height + (isWeb || isIos ? 8 : 36);
+        if (isWeb && node.getBoundingClientRect) {
+            const rect = node.getBoundingClientRect();
+            callback(rect.left, rect.top, rect.width, rect.height);
+            return true;
+        }
 
-                        if (showOnTop) {
-                            top = y - effectivePopupHeight - 8;
-                        } else if (top + effectivePopupHeight > windowHeight - 16 && y - effectivePopupHeight - 8 > 16) {
-                            top = y - effectivePopupHeight - 8;
-                        }
-                        if (top == 0)
-                            top = 1
+        return false;
+    }, [isWeb]);
 
-                        setButtonPos({
-                            x: left,
-                            y: top,
-                            width,
-                            height,
-                            maxHeight: windowHeight - top - 16
-                        });
-                    });
+    const updateButtonPosition = useCallback(() => {
+        if (!measureElement(buttonRef.current, (x, y, width, height) => {
+            requestAnimationFrame(() => {
+                const popupWidth = Math.min(Math.max(minPopupWidth, width), windowWidth - 32);
+                const preferredTop = y + height + (isWeb || isIos ? 8 : 36);
+                const roomBelow = windowHeight - preferredTop - 16;
+                const roomAbove = y - 24;
+                const shouldOpenAbove = showOnTop || (roomBelow < 240 && roomAbove > roomBelow);
+
+                let left = x;
+                if (x + popupWidth > windowWidth - 16) {
+                    left = windowWidth - popupWidth - 16;
                 }
-            }, 100);
-        });
-    };
+                if (left < 16) left = 16;
+
+                let top = shouldOpenAbove ? 16 : preferredTop;
+                let maxHeight = shouldOpenAbove ? Math.max(120, roomAbove) : Math.max(120, roomBelow);
+
+                if (top == 0) top = 1;
+                if (shouldOpenAbove) {
+                    top = Math.max(16, y - Math.min(maxHeight, windowHeight - 32) - 8);
+                    maxHeight = Math.max(120, y - top - 8);
+                }
+
+                setButtonPos({
+                    x: left,
+                    y: top,
+                    width,
+                    height,
+                    maxHeight
+                });
+            });
+        })) return;
+    }, [isIos, isWeb, measureElement, minPopupWidth, showOnTop, windowHeight, windowWidth]);
 
     const handleToggle = useCallback(
         (bOpen) => {
@@ -132,7 +146,7 @@ export default function DropdownPopup({
                     window.removeEventListener('resize', updateButtonPosition);
             }
         }
-    }, [isRealOpen, windowWidth, showOnTop]);
+    }, [isRealOpen, updateButtonPosition]);
 
     /** Reposition when any scrollable ancestor scrolls (menu stays anchored to trigger). */
     useEffect(() => {
@@ -140,7 +154,7 @@ export default function DropdownPopup({
         const onScroll = () => updateButtonPosition();
         window.addEventListener('scroll', onScroll, true);
         return () => window.removeEventListener('scroll', onScroll, true);
-    }, [isWeb, isRealOpen]);
+    }, [isWeb, isRealOpen, updateButtonPosition]);
 
     // Escape closes (web)
     useEffect(() => {

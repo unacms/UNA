@@ -252,7 +252,7 @@ select {
  * highlight + drop) is now provided by the `shadow-btn-*` Tailwind tokens
  * defined in `packages/app/design/tailwind/theme.js`. They live on the
  * container element directly (not on a pseudo) so they apply on both web
- * and native via NativeWind's `boxShadow` mapping, automatically pick up
+ * and native via className `boxShadow` mapping, automatically pick up
  * the container's actual rounding/corner-shape, and avoid the iOS smooth
  * corner regression that `border` styles cause.
  */
@@ -412,7 +412,7 @@ html {
     -webkit-text-size-adjust: 100%;
     height: 100%;
     overflow-y: scroll;
-    min-height: calc(100% + env(safe-area-inset-top));
+    min-height: 100%;
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 

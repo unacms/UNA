@@ -27,7 +27,7 @@ export default function ElementLink({
     hitarea = true,
     alt,
     ...rest 
-}) {
+}: any) {
 
     const glob = useGlobalSearchParams();
     const { currentUser } = useCurrentUser();
@@ -49,7 +49,7 @@ export default function ElementLink({
     const finalHref = sanitazeUrl(href);
 
     const index = (() => {
-        const match = TabList.find((item) => finalHref.includes(item.url));
+        const match = TabList.find((item: any) => finalHref.includes(item.url));
         return match ? TabList.indexOf(match) : -1;
     })();
 
@@ -83,7 +83,7 @@ export default function ElementLink({
     const composedClassName = cn(ThemeLinkStyles[variant], sizeClass, className);
 
     // Helper to check if children are all text-like (strings/numbers) including arrays
-    const isTextContent = (child) => {
+    const isTextContent = (child: any) => {
         if (child === null || child === undefined) return true;
         if (typeof child === 'string' || typeof child === 'number') return true;
         if (Array.isArray(child)) return child.every(isTextContent);

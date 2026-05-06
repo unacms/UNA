@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { Animated, PanResponder, Dimensions } from 'react-native';
 import { View } from 'app/design/view';
 import { Button } from "app/design/controls";
+import { nativeDriver } from 'app/lib/animation';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -18,12 +19,12 @@ export default function Gallery({ items, autoscroll }) {
             Animated.timing(position, {
                 toValue: direction * -screenWidth,
                 duration: 200,
-                useNativeDriver: true,
+                useNativeDriver: nativeDriver,
             }),
             Animated.timing(opacity, {
                 toValue: 0,
                 duration: 200,
-                useNativeDriver: true,
+                useNativeDriver: nativeDriver,
             }),
         ]).start(() => {
             setCurrentIndex(newIndex);
@@ -32,12 +33,12 @@ export default function Gallery({ items, autoscroll }) {
                 Animated.timing(position, {
                     toValue: 0,
                     duration: 200,
-                    useNativeDriver: true,
+                    useNativeDriver: nativeDriver,
                 }),
                 Animated.timing(opacity, {
                     toValue: 1,
                     duration: 200,
-                    useNativeDriver: true,
+                    useNativeDriver: nativeDriver,
                 }),
             ]).start();
         });

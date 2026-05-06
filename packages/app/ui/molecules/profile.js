@@ -49,7 +49,7 @@ function DisplayInfo(oProps) {
 function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, emulate, hoverCardWrapper }) {
     let name = oProps.display_name ? oProps.display_name.substr(0, 1) : ''
     const avatarContent =
-        <View className={`${sSize} overflow-hidden bg-muted rounded-full `}>
+        <View className={`${sSize} relative overflow-hidden bg-muted rounded-full `}>
             {!oProps.url_avatar && <View className={'h-full items-center justify-center bg-' + (oProps.id? getRandomColor(oProps.id)+'-500': 'primary/50') + ' uppercase'}>
                 <Text className={sSizeFontLetter + ' text-card '}>{name}</Text>
             </View>}

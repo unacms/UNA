@@ -4,28 +4,28 @@ import {
     Pressable as RNPressable
 } from 'react-native'
 import { forwardRef } from 'react'
-import { cssInterop } from 'nativewind'
+import { withUniwind } from 'uniwind'
 import { cn } from 'app/lib/util'
 import { Motion } from '@legendapp/motion'
 
-const defaultInterop = { className: 'style' }
-
-export const interopComponent = (Component, displayName, interopConfig = defaultInterop) => {
+export const interopComponent = (Component, displayName) => {
+    /** @type {any} */
     const Base = forwardRef((props, ref) => <Component ref={ref} {...props} />)
     Base.displayName = displayName
-    return cssInterop(Base, interopConfig)
+    return Base
 }
 
-export const interopRender = (displayName, render, interopConfig = defaultInterop) => {
+export const interopRender = (displayName, render) => {
+    /** @type {any} */
     const Base = forwardRef(render)
     Base.displayName = displayName
-    return cssInterop(Base, interopConfig)
+    return Base
 }
 
 export const View = interopComponent(RNView, 'View')
 export const Pressable = interopComponent(RNPressable, 'Pressable')
 export const ScrollView = interopComponent(RNScrollView, 'ScrollView')
-export const MotionView = interopComponent(Motion.View, 'MotionView');
+export const MotionView = withUniwind(Motion.View)
 
 export const Row = interopRender(
     'Row',

@@ -90,8 +90,6 @@ const nextConfig = {
         'react-native',
         'react-native-web',
         'solito',
-        'nativewind',
-        "react-native-css-interop",
         '@expo/html-elements',
         'react-native-gesture-handler',
         '@react-native-clipboard/clipboard',

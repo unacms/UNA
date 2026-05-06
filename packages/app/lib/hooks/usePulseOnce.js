@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { AccessibilityInfo, Animated } from 'react-native';
+import { nativeDriver } from 'app/lib/animation';
 
 /**
  * Parameters:
@@ -26,8 +27,8 @@ export function usePulseOne({
         const down = Math.max(1, Math.floor(pulseDurationMs / 2));
         const up = Math.max(1, pulseDurationMs - down);
         return Animated.sequence([
-            Animated.timing(opacity, { toValue: minOpacity, duration: down, useNativeDriver: true }),
-            Animated.timing(opacity, { toValue: 1, duration: up, useNativeDriver: true }),
+            Animated.timing(opacity, { toValue: minOpacity, duration: down, useNativeDriver: nativeDriver }),
+            Animated.timing(opacity, { toValue: 1, duration: up, useNativeDriver: nativeDriver }),
         ]);
     }, [opacity, pulseDurationMs, minOpacity]);
 
