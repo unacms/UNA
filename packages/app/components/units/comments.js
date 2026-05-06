@@ -202,7 +202,7 @@ function UnitCommentsDefault(props) {
         <Animated.View style={isSelected ? animatedStyle : {}}>
             <Row className="gap-2">
                 {cells}
-                <View className="w-8 min-h-8 z-50 flex-0 mt-2">
+                <View className="w-8 min-h-8 z-50 mt-2">
                     <View className="w-8 h-8 shadow-xs rounded-full">
                     <Profile
                         {...data.author_data}

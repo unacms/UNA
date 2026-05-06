@@ -215,7 +215,7 @@ const getCounterCompound = (getIconAlias, handleGetPerformedByCpd, actionsDataSt
         if (performedBy == undefined || performedBy[aItem.name] == undefined || performedBy[aItem.name].length == 0)
             return;
 
-        let sClass = 'flex-0 flex mx-1 flex-row w-min top-px';
+        let sClass = ' flex mx-1 flex-row w-min top-px';
         if (aItem.name == sSelected)
             sClass += ' border-b-2 border-primary ';
 
