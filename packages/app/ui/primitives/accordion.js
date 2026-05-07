@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Pressable } from 'react-native';
+import { View, Pressable } from 'app/design/view'
 
 const AccordionContext = React.createContext({});
 const AccordionItemContext = React.createContext({});
