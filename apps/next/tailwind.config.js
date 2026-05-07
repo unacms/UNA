@@ -1,29 +1,11 @@
-const { theme } = require('app/design/tailwind/theme')
-const plugin = require('tailwindcss/plugin')
-/** @type {import('tailwindcss').Config} */
-
-const platformVariants = plugin(({ addVariant }) => {
-  addVariant('web', '&')
-  addVariant('native', '@media not all')
-  addVariant('ios', '@media not all')
-  addVariant('android', '@media not all')
-})
+/**
+ * Tailwind v4: `theme` from `app/design/tailwind/theme.js` (deepmerge includes
+ * `app/customization/design/tailwind/theme.js`). Loaded via @config from `global.css`.
+ */
+const { theme } = require('app/design/tailwind/theme');
 
 module.exports = {
-  content: [
-    './pages/**/*.{js,jsx,ts,tsx}',
-    './app/**/*.{js,jsx,ts,tsx}',
-    '../../packages/app/**/*.{js,jsx,ts,tsx}',
-    // Exclude node_modules by being specific about package paths
-  ],
-  safelist: [
-    
-  ],
-  theme: {
-    ...theme,
-  },
-  darkMode: ['class', '[theme="dark"]'],
-  important: 'html',
-   plugins: [platformVariants, require("@tailwindcss/container-queries"), require("tailwindcss-animate")],
-  future: {hoverOnlyWhenSupported: true}
-}
+    darkMode: ['class', '[theme="dark"]'],
+    important: 'html',
+    theme,
+};

@@ -1,3 +1,7 @@
+/**
+ * Merged Tailwind `theme.extend` for legacy JS config (`apps/next/tailwind.config.js`, loaded via @config from global.css).
+ * Design tokens for utilities also live in CSS: neo-tw-theme-inline.css + global.css @layer base.
+ */
 const merge = require('deepmerge');
 const configCustom = require('app/customization/design/tailwind/theme');
 const nativewindOS = process.env.NATIVEWIND_OS;
@@ -132,17 +136,6 @@ const colors = {
 
 const theme = {
     extend: {
-        containers: {
-            '2xs': '16rem',
-            'xs': '20rem',
-            'sm': '40rem',
-            'md': '48rem',
-            'lg': '64rem',
-            'xl': '80rem',
-            '2xl': '96rem',
-            '3xl': '120rem',
-            
-        },
         screens: {
             '3xl': '120rem',
         },
@@ -184,6 +177,7 @@ const theme = {
         },
         borderRadius: {
             none: '0px',
+            xs: 'var(--radius-xs)',
             sm: 'var(--radius-sm)',
             DEFAULT: 'var(--radius-default)',
             md: 'var(--radius-md)',
@@ -191,6 +185,7 @@ const theme = {
             xl: 'var(--radius-xl)',
             '2xl': 'var(--radius-2xl)',
             '3xl': 'var(--radius-3xl)',
+            '4xl': 'var(--radius-4xl)',
             full: 'var(--radius-full)',
         },
         // NOTE: Do not redefine fontSize again below. Keep all font sizes in the single block above.

@@ -250,7 +250,8 @@ select {
  *
  * Note: the per-variant button surface (the "border via shadow" + inner
  * highlight + drop) is now provided by the `shadow-btn-*` Tailwind tokens
- * defined in `packages/app/design/tailwind/theme.js`. They live on the
+ * defined in `packages/app/design/styles/global.css` (@layer base) and `@theme inline`.
+ * Legacy JS extensions remain in `packages/app/design/tailwind/theme.js`. They live on the
  * container element directly (not on a pseudo) so they apply on both web
  * and native via className `boxShadow` mapping, automatically pick up
  * the container's actual rounding/corner-shape, and avoid the iOS smooth
@@ -314,7 +315,7 @@ select {
 /*
  * Superellipse alignment for the hit-area pseudo only. When the browser
  * supports `corner-shape: superellipse()`, the global rule above
- * multiplies every `--radius-*` by `--neo-corner-superellipse-factor`
+ * multiplies every `--neo-radius-*` by `--neo-corner-superellipse-factor`
  * and applies the corner shape to the container. The hit-area pseudo
  * carries its own radius var (because its inset is negative), so we
  * multiply it by the same factor here and add the matching corner-shape
@@ -662,23 +663,25 @@ html[theme="dark"]:root {
 @supports (corner-shape: superellipse(1)) {
     :root,
     html {
-        --radius-sm: calc(0.125rem * var(--neo-corner-superellipse-factor, 2)) !important;
-        --radius-default: calc(0.25rem * var(--neo-corner-superellipse-factor, 2)) !important;
-        --radius-md: calc(0.375rem * var(--neo-corner-superellipse-factor, 2)) !important;
-        --radius-lg: calc(0.5rem * var(--neo-corner-superellipse-factor, 2)) !important;
-        --radius-xl: calc(0.75rem * var(--neo-corner-superellipse-factor, 2)) !important;
-        --radius-2xl: calc(1rem * var(--neo-corner-superellipse-factor, 2)) !important;
-        --radius-3xl: calc(1.5rem * var(--neo-corner-superellipse-factor, 2)) !important;
-        --radius-full: calc(9999px * var(--neo-corner-superellipse-full-factor, 1)) !important;
+        --neo-radius-xs: calc(0.125rem * var(--neo-corner-superellipse-factor, 2)) !important;
+        --neo-radius-sm: calc(0.125rem * var(--neo-corner-superellipse-factor, 2)) !important;
+        --neo-radius-default: calc(0.25rem * var(--neo-corner-superellipse-factor, 2)) !important;
+        --neo-radius-md: calc(0.375rem * var(--neo-corner-superellipse-factor, 2)) !important;
+        --neo-radius-lg: calc(0.5rem * var(--neo-corner-superellipse-factor, 2)) !important;
+        --neo-radius-xl: calc(0.75rem * var(--neo-corner-superellipse-factor, 2)) !important;
+        --neo-radius-2xl: calc(1rem * var(--neo-corner-superellipse-factor, 2)) !important;
+        --neo-radius-3xl: calc(1.5rem * var(--neo-corner-superellipse-factor, 2)) !important;
+        --neo-radius-4xl: calc(2rem * var(--neo-corner-superellipse-factor, 2)) !important;
+        --neo-radius-full: calc(9999px * var(--neo-corner-superellipse-full-factor, 1)) !important;
     }
 
     /* Apply superellipse shape to any element with a rounded class */
-    :is([class~="rounded"], [class~="rounded-sm"], [class~="rounded-md"],
+    :is([class~="rounded"], [class~="rounded-xs"], [class~="rounded-sm"], [class~="rounded-md"],
         [class~="rounded-lg"], [class~="rounded-xl"], [class~="rounded-2xl"],
-        [class~="rounded-3xl"],
-        [class*=":rounded"], [class*=":rounded-sm"], [class*=":rounded-md"],
+        [class~="rounded-3xl"], [class~="rounded-4xl"],
+        [class*=":rounded"], [class*=":rounded-xs"], [class*=":rounded-sm"], [class*=":rounded-md"],
         [class*=":rounded-lg"], [class*=":rounded-xl"], [class*=":rounded-2xl"],
-        [class*=":rounded-3xl"]) {
+        [class*=":rounded-3xl"], [class*=":rounded-4xl"]) {
         /* stylelint-disable-next-line property-no-unknown */
         corner-shape: superellipse(var(--neo-corner-superellipse-factor, 2));
     }
@@ -721,12 +724,14 @@ html[theme="dark"]:root {
     /* Ensure focus rings follow the shape */
     :is([class~="rounded-none"], [class*=":rounded-none"],
         [class~="rounded"], [class$=":rounded"], [class*=":rounded "],
+        [class~="rounded-xs"], [class*=":rounded-xs"],
         [class~="rounded-sm"], [class*=":rounded-sm"],
         [class~="rounded-md"], [class*=":rounded-md"],
         [class~="rounded-lg"], [class*=":rounded-lg"],
         [class~="rounded-xl"], [class*=":rounded-xl"],
         [class~="rounded-2xl"], [class*=":rounded-2xl"],
         [class~="rounded-3xl"], [class*=":rounded-3xl"],
+        [class~="rounded-4xl"], [class*=":rounded-4xl"],
         [class~="rounded-full"], [class*=":rounded-full"]):focus-visible {
         outline-style: solid;
     }

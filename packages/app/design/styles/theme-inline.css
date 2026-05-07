@@ -1,0 +1,118 @@
+/*
+ * Single source for Tailwind v4 `@theme inline` (Next imports this from global.css; Expo from global.combined.css).
+ */
+@theme inline {
+    /* Web: --font-* from next/font on <html>. V4 max-w-* uses --container-*; do not reuse old v3 `containers` sizes here. */
+    --breakpoint-3xl: 120rem;
+
+    --color-border: rgb(var(--border));
+    --color-input: rgb(var(--input));
+    --color-ring: rgb(var(--ring));
+    --color-background: rgb(var(--background));
+    --color-foreground: rgb(var(--foreground));
+    --color-default: rgb(var(--default));
+    --color-default-foreground: rgb(var(--default-foreground));
+    --color-segment: rgb(var(--segment));
+    --color-segment-foreground: rgb(var(--segment-foreground));
+    --color-card: rgb(var(--card));
+    --color-card-foreground: rgb(var(--card-foreground));
+    --color-popover: rgb(var(--popover));
+    --color-popover-foreground: rgb(var(--popover-foreground));
+    --color-primary: rgb(var(--primary));
+    --color-primary-hover: rgb(var(--primary-hover));
+    --color-primary-foreground: rgb(var(--primary-foreground));
+    --color-secondary: rgb(var(--secondary));
+    --color-secondary-foreground: rgb(var(--secondary-foreground));
+    --color-muted: rgb(var(--muted));
+    --color-muted-foreground: rgb(var(--muted-foreground));
+    --color-accent: rgb(var(--accent));
+    --color-accent-foreground: rgb(var(--accent-foreground));
+    --color-accent-50: rgb(var(--accent-50));
+    --color-accent-100: rgb(var(--accent-100));
+    --color-accent-200: rgb(var(--accent-200));
+    --color-accent-300: rgb(var(--accent-300));
+    --color-accent-400: rgb(var(--accent-400));
+    --color-accent-500: rgb(var(--accent-500));
+    --color-accent-600: rgb(var(--accent-600));
+    --color-accent-700: rgb(var(--accent-700));
+    --color-accent-800: rgb(var(--accent-800));
+    --color-accent-900: rgb(var(--accent-900));
+    --color-accent-950: rgb(var(--accent-950));
+    --color-destructive: rgb(var(--destructive));
+    --color-destructive-foreground: rgb(var(--destructive-foreground));
+    --color-neutral: rgb(var(--neutral));
+    --color-neutral-0: rgb(var(--neutral-0));
+    --color-neutral-50: rgb(var(--neutral-50));
+    --color-neutral-100: rgb(var(--neutral-100));
+    --color-neutral-200: rgb(var(--neutral-200));
+    --color-neutral-300: rgb(var(--neutral-300));
+    --color-neutral-400: rgb(var(--neutral-400));
+    --color-neutral-500: rgb(var(--neutral-500));
+    --color-neutral-600: rgb(var(--neutral-600));
+    --color-neutral-700: rgb(var(--neutral-700));
+    --color-neutral-800: rgb(var(--neutral-800));
+    --color-neutral-900: rgb(var(--neutral-900));
+    --color-neutral-950: rgb(var(--neutral-950));
+    --color-neutral-1000: rgb(var(--neutral-1000));
+    --color-link-primary: rgb(var(--link-primary));
+    --color-link-secondary: rgb(var(--link-secondary));
+    --color-link-tertiary: rgb(var(--link-tertiary));
+    --color-shadow: rgb(var(--shadow));
+    --color-shadow-xs: rgb(var(--shadow-xs));
+    --color-shadow-sm: rgb(var(--shadow-sm));
+    --color-shadow-md: rgb(var(--shadow-md));
+    --color-shadow-lg: rgb(var(--shadow-lg));
+    --color-shadow-xl: rgb(var(--shadow-xl));
+    --color-shadow-2xl: rgb(var(--shadow-2xl));
+    --color-white: rgb(var(--white));
+    --color-black: rgb(var(--black));
+    --color-green: rgb(var(--green));
+    --color-yellow: rgb(var(--yellow));
+    --color-blue: rgb(var(--blue));
+    --color-red: rgb(var(--red));
+
+    --radius-xs: var(--neo-radius-xs);
+    --radius-sm: var(--neo-radius-sm);
+    --radius-md: var(--neo-radius-md);
+    --radius-lg: var(--neo-radius-lg);
+    --radius-xl: var(--neo-radius-xl);
+    --radius-2xl: var(--neo-radius-2xl);
+    --radius-3xl: var(--neo-radius-3xl);
+    --radius-4xl: var(--neo-radius-4xl);
+    --radius-full: var(--neo-radius-full);
+    --radius-default: var(--neo-radius-default);
+    --radius: var(--neo-radius-default);
+
+    --text-2xs: 10px;
+    --text-2xs--line-height: 12px;
+
+    --shadow-none: 0 0 #0000;
+    --shadow-2xs: 0 1px rgb(0 0 0 / 0.04);
+    --shadow-2xs-deep: 0 1px rgb(0 0 0 / 0.08);
+    --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.06);
+    --shadow-xs-deep: 0 1px 2px rgb(0 0 0 / 0.12);
+    --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.08);
+    --shadow-sm-deep: 0 1px 3px rgb(0 0 0 / 0.16);
+    --shadow-md: 0 4px 6px rgb(0 0 0 / 0.1);
+    --shadow-md-deep: 0 4px 6px rgb(0 0 0 / 0.16);
+    --shadow-lg: 0 8px 16px rgb(0 0 0 / 0.12);
+    --shadow-lg-deep: 0 8px 16px rgb(0 0 0 / 0.2);
+    --shadow-xl: 0 16px 24px rgb(0 0 0 / 0.16);
+    --shadow-xl-deep: 0 16px 24px rgb(0 0 0 / 0.24);
+    --shadow-2xl: 0 24px 48px rgb(0 0 0 / 0.24);
+    --shadow-2xl-deep: 0 24px 48px rgb(0 0 0 / 0.32);
+    --shadow-avatar: inset 0 0 0 1px rgb(0 0 0 / 0.02);
+    --shadow-avatar-deep: inset 0 0 0 1px rgb(255 255 255 / 0.02);
+    --shadow-btn-outline: 0 0 0 1px rgb(0 0 0 / 0.10);
+    --shadow-btn-outline-deep: 0 0 0 1px rgb(255 255 255 / 0.10);
+    --shadow-btn-glass: inset 0 0 0 1px rgb(255 255 255 / 0.30), inset 0 1px 0 0 rgb(255 255 255 / 0.40), 0 0 0 1px rgb(0 0 0 / 0.05), 0 4px 8px -2px rgb(0 0 0 / 0.06), 0 16px 32px -8px rgb(0 0 0 / 0.10);
+    --shadow-btn-glass-deep: inset 0 0 0 1px rgb(255 255 255 / 0.06), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.40), 0 4px 8px -2px rgb(0 0 0 / 0.30), 0 16px 32px -8px rgb(0 0 0 / 0.50);
+    --shadow-btn-glass-pressed: inset 0 0 0 1px rgb(255 255 255 / 0.30), inset 0 1px 0 0 rgb(255 255 255 / 0.40), 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 4px -1px rgb(0 0 0 / 0.06);
+    --shadow-btn-glass-pressed-deep: inset 0 0 0 1px rgb(255 255 255 / 0.06), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.40), 0 2px 4px -1px rgb(0 0 0 / 0.30);
+    --shadow-btn-glass-prominent: 0 -1px 0 0 rgb(255 255 255 / 0.20), 0 1px 1px 0 rgb(0 0 0 / 0.16), 0 0 0 1px rgb(59 130 246), 0 4px 8px -2px rgb(0 0 0 / 0.10), 0 16px 32px -8px rgb(0 0 0 / 0.16);
+    --shadow-btn-glass-prominent-deep: inset 0 0 0 1px rgb(255 255 255 / 0.08), 0 0 0 1px rgb(0 0 0 / 0.24), 0 0 0 1px rgb(0 0 0 / 0.40), 0 4px 8px -2px rgb(0 0 0 / 0.36), 0 16px 32px -8px rgb(0 0 0 / 0.56);
+    --shadow-btn-glass-prominent-pressed: inset 0 1px 0 0 rgb(255 255 255 / 0.16), inset 0 -1px 0 0 rgb(0 0 0 / 0.10), 0 0 0 1px rgb(59 130 246 / 0.60), 0 2px 4px -1px rgb(0 0 0 / 0.10);
+    --shadow-btn-glass-prominent-pressed-deep: inset 0 1px 0 0 rgb(255 255 255 / 0.06), inset 0 -1px 0 0 rgb(0 0 0 / 0.28), 0 0 0 1px rgb(37 99 235 / 0.70), 0 2px 4px -1px rgb(0 0 0 / 0.36);
+    --shadow-btn-focus: 0 0 0 2px rgb(37 99 235 / 0.85);
+    --shadow-btn-focus-deep: 0 0 0 2px rgb(59 130 246 / 0.95);
+}

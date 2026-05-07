@@ -1,0 +1,11 @@
+/* Shared Tailwind v4 utilities — imported by Next (global.css) and Expo (global.combined.css). */
+
+@utility u-max-width-block {
+    max-width: 80rem;
+}
+
+@utility border {
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--color-border);
+}

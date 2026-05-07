@@ -169,6 +169,7 @@ const sanitizeWebProps = (props) => {
         onResponderTerminate,
         onResponderTerminationRequest,
         onShouldBlockNativeResponder,
+        keyboardAwareBottomOffset,
         pointerEvents,
         style,
         ...domProps
