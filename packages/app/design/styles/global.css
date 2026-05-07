@@ -12,6 +12,20 @@
 @custom-variant android (@media not all);
 
 /*
+ * Light variant — counterpart to dark, needed by shared `@variant light` tokens.
+ */
+@custom-variant light {
+    &:where(.light, .light *, [theme='light'], [theme='light'] *, [data-theme='light'], [data-theme='light'] *) {
+        @slot;
+    }
+    @media (prefers-color-scheme: light) {
+        &:where(:not([data-theme='dark']):not([data-theme='dark'] *):not([theme='dark']):not([theme='dark'] *):not(.dark):not(.dark *)) {
+            @slot;
+        }
+    }
+}
+
+/*
  * Dark variant — html gets theme + data-theme from layout.web.js; keep .dark for compatibility with legacy darkMode: 'class'.
  *
  * Block form so the same `@variant dark { ... }` invocation (including the one

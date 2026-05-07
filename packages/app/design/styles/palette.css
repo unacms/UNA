@@ -49,41 +49,43 @@
         --blue: 59 130 246;
         --red: 225 29 72;
 
-        /* Semantic — light defaults */
-        --default: var(--white);
-        --default-foreground: var(--neutral-950);
-        --background: var(--neutral-100);
-        --foreground: var(--neutral-950);
-        --card: var(--white);
-        --card-foreground: var(--neutral-900);
-        --popover: var(--white);
-        --popover-foreground: var(--neutral-900);
-        --primary: var(--accent-500);
-        --primary-hover: var(--accent-600);
-        --primary-foreground: var(--neutral-50);
-        --secondary: var(--neutral-200);
-        --secondary-foreground: var(--neutral-600);
-        --muted: var(--neutral-200);
-        --muted-foreground: var(--neutral-400);
-        --accent: var(--accent-100);
-        --accent-foreground: var(--accent-600);
-        --destructive: var(--red);
-        --destructive-foreground: var(--white);
-        --border: var(--neutral-300);
-        --input: var(--neutral-100);
-        --ring: var(--accent-600);
-        --segment: var(--neutral-200);
-        --segment-foreground: var(--neutral-700);
-        --link-primary: var(--primary);
-        --link-secondary: var(--secondary-foreground);
-        --link-tertiary: var(--muted-foreground);
-        --shadow: var(--neutral-950);
-        --shadow-xs: var(--neutral-950);
-        --shadow-sm: var(--neutral-950);
-        --shadow-md: var(--neutral-950);
-        --shadow-lg: var(--neutral-950);
-        --shadow-xl: var(--neutral-950);
-        --shadow-2xl: var(--neutral-950);
+        /* Semantic — explicit light/dark variants for Uniwind parity */
+        @variant light {
+            --default: var(--white);
+            --default-foreground: var(--neutral-950);
+            --background: var(--neutral-100);
+            --foreground: var(--neutral-950);
+            --card: var(--white);
+            --card-foreground: var(--neutral-900);
+            --popover: var(--white);
+            --popover-foreground: var(--neutral-900);
+            --primary: var(--accent-500);
+            --primary-hover: var(--accent-600);
+            --primary-foreground: var(--neutral-50);
+            --secondary: var(--neutral-200);
+            --secondary-foreground: var(--neutral-600);
+            --muted: var(--neutral-200);
+            --muted-foreground: var(--neutral-400);
+            --accent: var(--accent-100);
+            --accent-foreground: var(--accent-600);
+            --destructive: var(--red);
+            --destructive-foreground: var(--white);
+            --border: var(--neutral-300);
+            --input: var(--neutral-100);
+            --ring: var(--accent-600);
+            --segment: var(--neutral-200);
+            --segment-foreground: var(--neutral-700);
+            --link-primary: var(--primary);
+            --link-secondary: var(--secondary-foreground);
+            --link-tertiary: var(--muted-foreground);
+            --shadow: var(--neutral-950);
+            --shadow-xs: var(--neutral-950);
+            --shadow-sm: var(--neutral-950);
+            --shadow-md: var(--neutral-950);
+            --shadow-lg: var(--neutral-950);
+            --shadow-xl: var(--neutral-950);
+            --shadow-2xl: var(--neutral-950);
+        }
 
         /* Semantic — dark overrides */
         @variant dark {
