@@ -1,6 +1,6 @@
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { ButtonLink } from 'app/design/controls';
+import { Button, ButtonLink } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import {
     Card,
