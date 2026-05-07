@@ -1,6 +1,6 @@
 /**
  * Merged Tailwind `theme.extend` for legacy JS config (`apps/next/tailwind.config.js`, loaded via @config from global.css).
- * Design tokens for utilities also live in CSS: neo-tw-theme-inline.css + global.css @layer base.
+ * Design tokens for utilities also live in CSS: design/styles/theme.css + design/styles/palette.css.
  */
 const merge = require('deepmerge');
 const configCustom = require('app/customization/design/tailwind/theme');

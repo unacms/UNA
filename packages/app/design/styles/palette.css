@@ -1,0 +1,126 @@
+/*
+ * Color tokens — single source for both Next and Expo.
+ *
+ * Two halves in one `:root` block:
+ *   1. Raw palette (`--neutral-*`, `--accent-*`, named colors). Always-on.
+ *   2. Semantic tokens (`--default`, `--background`, `--card`, `--shadow*`, ...) —
+ *      light is the implicit default; dark applies via `@variant dark`.
+ *
+ * On Expo Uniwind ships a built-in `dark` variant tied to `Uniwind.setTheme()`.
+ * On Next see `@custom-variant dark` in packages/app/design/styles/global.css —
+ * it expands to selectors for `[data-theme='dark'] / .dark / [theme='dark']`
+ * AND a `@media (prefers-color-scheme: dark)` block (with `:not([data-theme='light'])`
+ * guards so an explicit light attribute always wins over system dark).
+ */
+@layer base {
+    :root {
+        /* Raw palette */
+        --neutral: 113 113 122;
+        --neutral-0: 255 255 255;
+        --neutral-50: 250 250 252;
+        --neutral-100: 244 244 245;
+        --neutral-200: 228 228 231;
+        --neutral-300: 212 212 216;
+        --neutral-400: 161 161 170;
+        --neutral-500: 113 113 122;
+        --neutral-600: 82 82 91;
+        --neutral-700: 63 63 70;
+        --neutral-800: 39 39 42;
+        --neutral-900: 24 24 27;
+        --neutral-950: 12 12 14;
+        --neutral-1000: 0 0 0;
+
+        --accent-50: 239 246 255;
+        --accent-100: 219 234 254;
+        --accent-200: 191 219 254;
+        --accent-300: 147 197 253;
+        --accent-400: 96 165 250;
+        --accent-500: 59 130 246;
+        --accent-600: 37 99 235;
+        --accent-700: 29 78 216;
+        --accent-800: 30 64 175;
+        --accent-900: 30 58 138;
+        --accent-950: 23 37 84;
+
+        --white: 255 255 255;
+        --black: 0 0 0;
+        --green: 34 197 94;
+        --yellow: 234 179 8;
+        --blue: 59 130 246;
+        --red: 225 29 72;
+
+        /* Semantic — light defaults */
+        --default: var(--white);
+        --default-foreground: var(--neutral-950);
+        --background: var(--neutral-100);
+        --foreground: var(--neutral-950);
+        --card: var(--white);
+        --card-foreground: var(--neutral-900);
+        --popover: var(--white);
+        --popover-foreground: var(--neutral-900);
+        --primary: var(--accent-500);
+        --primary-hover: var(--accent-600);
+        --primary-foreground: var(--neutral-50);
+        --secondary: var(--neutral-200);
+        --secondary-foreground: var(--neutral-600);
+        --muted: var(--neutral-200);
+        --muted-foreground: var(--neutral-400);
+        --accent: var(--accent-100);
+        --accent-foreground: var(--accent-600);
+        --destructive: var(--red);
+        --destructive-foreground: var(--white);
+        --border: var(--neutral-300);
+        --input: var(--neutral-100);
+        --ring: var(--accent-600);
+        --segment: var(--neutral-200);
+        --segment-foreground: var(--neutral-700);
+        --link-primary: var(--primary);
+        --link-secondary: var(--secondary-foreground);
+        --link-tertiary: var(--muted-foreground);
+        --shadow: var(--neutral-950);
+        --shadow-xs: var(--neutral-950);
+        --shadow-sm: var(--neutral-950);
+        --shadow-md: var(--neutral-950);
+        --shadow-lg: var(--neutral-950);
+        --shadow-xl: var(--neutral-950);
+        --shadow-2xl: var(--neutral-950);
+
+        /* Semantic — dark overrides */
+        @variant dark {
+            --default: var(--neutral-900);
+            --default-foreground: var(--neutral-50);
+            --background: var(--neutral-950);
+            --foreground: var(--neutral-50);
+            --card: var(--neutral-900);
+            --card-foreground: var(--neutral-100);
+            --popover: var(--neutral-800);
+            --popover-foreground: var(--neutral-50);
+            --primary: var(--accent-600);
+            --primary-hover: var(--accent-500);
+            --primary-foreground: var(--neutral-50);
+            --secondary: var(--neutral-800);
+            --secondary-foreground: var(--neutral-400);
+            --accent: var(--accent-950);
+            --accent-foreground: var(--accent-500);
+            --muted: var(--neutral-800);
+            --muted-foreground: var(--neutral-500);
+            --destructive: var(--red);
+            --destructive-foreground: var(--neutral-950);
+            --border: var(--neutral-800);
+            --input: var(--neutral-950);
+            --ring: var(--accent-500);
+            --segment: var(--neutral-800);
+            --segment-foreground: var(--neutral-200);
+            --link-primary: var(--primary);
+            --link-secondary: var(--secondary-foreground);
+            --link-tertiary: var(--muted-foreground);
+            --shadow: var(--black);
+            --shadow-xs: var(--black);
+            --shadow-sm: var(--black);
+            --shadow-md: var(--black);
+            --shadow-lg: var(--black);
+            --shadow-xl: var(--black);
+            --shadow-2xl: var(--black);
+        }
+    }
+}

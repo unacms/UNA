@@ -1,0 +1,235 @@
+/* Shared Tailwind v4 utilities — imported by Next (global.css) and Expo (global.combined.css). */
+
+@utility u-max-width-block {
+    max-width: 80rem;
+}
+
+@utility border {
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--color-border);
+}
+
+/*
+ * `.u-vanilla-html` / `.u-vanilla-html-small` — wrappers for UNA-rendered HTML
+ * (and free-form text blocks) that need a consistent typography baseline.
+ *
+ * Cross-platform notes:
+ * - On web the rules cascade to descendants (paragraphs, headings, links, ...).
+ * - On native React Native does NOT cascade text styles from View to Text. The
+ *   matching `<StyledP>` / `<StyledLi>` / `<H1>` components in app/ui/atoms/html.js
+ *   re-apply colors/sizes per element, and app/ui/atoms/html-ex.js maps the
+ *   className to fontSize/lineHeight in JS. The class on a `<View>` therefore
+ *   mostly contributes container constraints (`max-width`, `min-width`) on RN,
+ *   which is still useful and matches the inline `min-w-0 max-w-full` already
+ *   applied at the root.
+ * - Web-only CSS (multi-value font-family, overflow-wrap/word-break) is gated
+ *   under `@variant web` so Uniwind doesn't try to translate it to RN styles.
+ *
+ * Per-tag styling (`.u-vanilla-html h1`, `.u-vanilla-html ul`, links, first/last-child
+ * margin resets, etc.) is web-only by nature and lives in
+ * `packages/app/design/styles/global.css`.
+ */
+@layer utilities {
+    .u-vanilla-html {
+        @apply text-secondary-foreground;
+        font-size: 16px;
+        line-height: 24px;
+        max-width: 100%;
+        min-width: 0;
+        font-weight: 400;
+        font-family: var(--font-main);
+
+        @variant web {
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            word-wrap: break-word;
+            font-family:
+                var(--font-main),
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                '.SFNSText-Regular',
+                sans-serif;
+        }
+    }
+
+    .u-vanilla-html-small {
+        @apply text-card-foreground;
+        font-size: 14px;
+        line-height: 20px;
+        max-width: 100%;
+        min-width: 0;
+        font-weight: 400;
+        font-family: var(--font-main);
+
+        @variant web {
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            word-wrap: break-word;
+            font-family:
+                var(--font-main),
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                '.SFNSText-Regular',
+                sans-serif;
+        }
+    }
+
+    .u-vanilla-html
+        :where(p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+        margin-top: 12px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .u-vanilla-html-small
+        :where(p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+        margin-top: 8px !important;
+        margin-bottom: 8px !important;
+    }
+
+    .u-vanilla-html ul {
+        @apply list-disc pl-5 my-2;
+    }
+
+    .u-vanilla-html li {
+        @apply mb-1.5;
+    }
+
+    .u-vanilla-html
+        div
+        > :where(:first-child):not(:where([class~='not-prose'] *)),
+    .u-vanilla-html > :where(:first-child):not(:where([class~='not-prose'] *)) {
+        margin-top: 0 !important;
+    }
+
+    .u-vanilla-html
+        div
+        > :where(:last-child):not(:where([class~='not-prose'] *)),
+    .u-vanilla-html > :where(:last-child):not(:where([class~='not-prose'] *)) {
+        margin-bottom: 0 !important;
+    }
+
+    .u-vanilla-html-small
+        div
+        > :where(:first-child):not(:where([class~='not-prose'] *)),
+    .u-vanilla-html-small
+        > :where(:first-child):not(:where([class~='not-prose'] *)) {
+        margin-top: 0 !important;
+    }
+
+    .u-vanilla-html-small
+        div
+        > :where(:last-child):not(:where([class~='not-prose'] *)),
+    .u-vanilla-html-small
+        > :where(:last-child):not(:where([class~='not-prose'] *)) {
+        margin-bottom: 0 !important;
+    }
+
+    .u-vanilla-html h1,
+    .u-vanilla-html h2,
+    .u-vanilla-html h3,
+    .u-vanilla-html h4,
+    .u-vanilla-html h5 {
+        @apply text-popover-foreground;
+        font-family:
+            var(--font-title),
+            system-ui,
+            -apple-system,
+            BlinkMacSystemFont,
+            '.SFNSText-Regular',
+            sans-serif;
+    }
+
+    .u-vanilla-html-small h1,
+    .u-vanilla-html-small h2,
+    .u-vanilla-html-small h3,
+    .u-vanilla-html-small h4,
+    .u-vanilla-html-small h5 {
+        @apply text-popover-foreground;
+        font-family:
+            var(--font-title),
+            system-ui,
+            -apple-system,
+            BlinkMacSystemFont,
+            '.SFNSText-Regular',
+            sans-serif;
+    }
+
+    .u-vanilla-html A,
+    .u-vanilla-html .link {
+        @apply text-accent-foreground;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        text-decoration: none;
+    }
+
+    .u-vanilla-html-small A,
+    .u-vanilla-html-small .link {
+        @apply text-accent-foreground;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        text-decoration: none;
+    }
+
+    .u-vanilla-html A:hover,
+    .u-vanilla-html .link:hover,
+    .u-vanilla-html-small A:hover,
+    .u-vanilla-html-small .link:hover {
+        text-decoration: underline;
+    }
+
+    .bx-mention-link,
+    .bx-tag {
+        color: rgb(var(--primary)) !important;
+        text-decoration: underline !important;
+    }
+
+    .bx-mention-link:hover {
+        text-decoration: underline;
+        background-color: var(--accent-foreground);
+    }
+
+    .u-cover {
+        object-fit: cover !important;
+    }
+
+    .item-overlap {
+        position: absolute !important;
+        z-index: 0;
+        top: -10000px;
+        left: -10000px;
+    }
+
+    .block {
+        min-height: 1px !important;
+    }
+
+    .bx-embeded-image {
+        display: none;
+    }
+
+    .tiptap-default {
+        scrollbar-width: none;
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    .tiptap-comments {
+        scrollbar-width: none;
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .background-video {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform: translate(-50%, -50%);
+        z-index: -1;
+    }
+}

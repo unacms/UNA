@@ -23,16 +23,7 @@ import { useColorScheme } from 'react-native';
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-console.log('[INDEX] View $$typeof:', View?.$$typeof?.toString());
-console.log('[INDEX] View length (params):', View?.length);
-console.log('[INDEX] View prototype:', Object.getOwnPropertyNames(View?.prototype || {}));
-
-SplashScreen.hideAsync();
-
-import { Uniwind } from 'uniwind';
-console.log('[INDEX] Uniwind themes:', Uniwind.themes);
-console.log('[INDEX] Uniwind currentTheme:', Uniwind.currentTheme);
-console.log('[INDEX] Uniwind ref id:', Uniwind === global.__UniwindRef ? 'SAME' : (global.__UniwindRef = Uniwind, 'NEW'));
+SplashScreen.preventAutoHideAsync();
 
 // Must be exported or Fast Refresh won't update the context
 export function App() {

@@ -1,9 +1,37 @@
 @import 'tailwindcss';
 @import 'uniwind';
 
-@import '../../packages/app/design/styles/global.css';
+/*
+ * Shared partials (canonical sources in packages/app/design/styles/).
+ * Edit the partial files — not the inlined copies that used to live here.
+ * Per CSS spec all `@import` must precede any other rules.
+ */
+@import '../../packages/app/design/styles/theme.css';
+@import '../../packages/app/design/styles/utilities.css';
+@import '../../packages/app/design/styles/palette.css';
 @import '../../packages/app/customization/design/styles/global.css';
-@import '../../packages/app/design/styles/global.native.css';
 
 @source './app';
 @source '../../packages/app';
+
+/*
+ * Expo/Uniwind-only @theme inline additions:
+ *   - fonts come from RN System (web uses next/font on <html>)
+ *   - --container-* are NEO-specific (Tailwind v4 defaults differ)
+ *   - --breakpoint-3xl matches the legacy `screens.3xl` from theme.js
+ */
+@theme inline {
+    --font-main: System;
+    --font-title: System;
+    --font-sans: System;
+
+    --breakpoint-3xl: 120rem;
+    --container-2xs: 16rem;
+    --container-xs: 20rem;
+    --container-sm: 40rem;
+    --container-md: 48rem;
+    --container-lg: 64rem;
+    --container-xl: 80rem;
+    --container-2xl: 96rem;
+    --container-3xl: 120rem;
+}
