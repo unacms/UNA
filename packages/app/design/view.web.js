@@ -190,6 +190,30 @@ const sanitizeWebProps = (props) => {
     return domProps
 }
 
+/** Props consumed by @legendapp/motion — must not land on the outer DOM wrapper */
+const MOTION_PROP_KEYS = new Set([
+    'animate',
+    'animateProps',
+    'initial',
+    'initialProps',
+    'exit',
+    'transition',
+    'transformOrigin',
+    'whileTap',
+    'whileHover',
+    'onAnimationComplete',
+])
+
+const splitMotionProps = (props) => {
+    const motion = {}
+    const rest = {}
+    for (const key of Object.keys(props)) {
+        if (MOTION_PROP_KEYS.has(key)) motion[key] = props[key]
+        else rest[key] = props[key]
+    }
+    return [motion, rest]
+}
+
 export const interopComponent = (Component, displayName, baseClassName = 'flex flex-col relative') => {
     /** @type {any} */
     const Base = forwardRef(({ className, onLayout, ...props }, ref) => {
@@ -271,7 +295,32 @@ export const ScrollView = interopRender(
         )
     }
 )
-export const MotionView = Motion.View
+export const MotionView = interopRender(
+    'MotionView',
+    ({ className, onLayout, style, children, ...props }, ref) => {
+        const layoutRef = useWebLayout(ref, onLayout)
+        const [motionProps, restProps] = splitMotionProps(props)
+        const domProps = sanitizeWebProps(restProps)
+        const motionStyle = normalizeWebStyle(style)
+        return (
+            <div
+                ref={layoutRef}
+                className={cn(getBaseClassName(className, 'flex flex-col relative'), className)}
+                {...domProps}
+            >
+                <Motion.View
+                    style={[
+                        { flex: 1, minWidth: 0, minHeight: 0, alignSelf: 'stretch' },
+                        motionStyle,
+                    ]}
+                    {...motionProps}
+                >
+                    {children}
+                </Motion.View>
+            </div>
+        )
+    }
+)
 
 export const Row = interopRender(
     'Row',
