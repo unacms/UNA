@@ -223,6 +223,7 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
     const [menuState, setMenuState] = useState(menu);
     const [isRevalidate, setIsRevalidate] = useState(false);
     const [snackbarVisible, setSnackbarVisible] = useState(false);
+    const [refreshRequested, setRefreshRequested] = useState(false);
 
     const setHeader = useSetHeader();
 
@@ -443,14 +444,32 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
           })
         );
         setIsRefreshing(true);
+        setRefreshRequested(true);
       }, [index]);
 
     useEffect(() => {
-        if (isRefreshing) {
-            queryClient.removeQueries(qKey);
-            setIsRefreshing(false);
+        if (!refreshRequested) {
+            return;
         }
-    }, [isRefreshing, queryClient, qKey]);
+
+        let isMounted = true;
+        const runRefresh = async () => {
+            try {
+                queryClient.removeQueries({ queryKey: qKey });
+                await fetchNextPage();
+            } finally {
+                if (isMounted) {
+                    setIsRefreshing(false);
+                    setRefreshRequested(false);
+                }
+            }
+        };
+
+        runRefresh();
+        return () => {
+            isMounted = false;
+        };
+    }, [refreshRequested, queryClient, qKey, fetchNextPage]);
 
     const isUseCurrentHeader = layoutName === 'profile';
     /* useLayoutEffect(() => {

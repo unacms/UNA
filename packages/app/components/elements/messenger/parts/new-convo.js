@@ -30,11 +30,16 @@ export default function CreateConvo({ onSave, initedData = [], convoId }) {
 
     return (
         <>
-            {!loading && <SelectUsers onlyOnce={false} onSave={handleSave} requestUrl={'/api.php?r=bx_messenger/search_users/Services&params='} initedData={initedData} />}
-            {loading && <View className='w-full pt-8 items-center'><Loading /><Text className="pt-8 text-base text-muted-foreground  animate-pulse  font-medium">Creating new conversation, please wait...</Text></View>}
             <Row>
                 <FormError errorText={message} />
             </Row>
+            {!loading && <SelectUsers onlyOnce={false} onSave={handleSave} requestUrl={'/api.php?r=bx_messenger/search_users/Services&params='} initedData={initedData} />}
+            {loading && <View className='w-full pt-8 items-center'>
+                <Loading />
+                <Text className="pt-8 text-base text-muted-foreground  animate-pulse  font-medium">Creating new conversation, please wait...</Text>
+            </View>
+            }
+
         </>
     )
 };
