@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Animated, View } from 'react-native';
+import { nativeDriver } from 'app/lib/animation';
 import { appSetting } from 'app/lib/util';
 import {
     PageHeaderBody,
@@ -31,7 +32,7 @@ export const PageHeader = ({ pageData }) => {
         Animated.timing(headerTranslateY, {
             toValue: scrollDirection === 1 ? -2 * headerHeight : 0,
             duration: 300,
-            useNativeDriver: true,
+            useNativeDriver: nativeDriver,
         }).start();
     }, [headerHeight, headerTranslateY, isCollapsibleHeader, scrollDirection]);
 
