@@ -1,8 +1,5 @@
 @import 'tailwindcss';
 
-/* Legacy JS theme merge (includes customization/design/tailwind/theme.js) — paths relative to this file */
-@config '../../../../apps/next/tailwind.config.js';
-
 /*
  * Platform variants — same behavior as the old tailwind.config.js plugin (web: identity, native/ios/android: never match on web).
  */
