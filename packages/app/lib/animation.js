@@ -1,3 +1,6 @@
 import { Platform } from 'react-native'
 
-export const nativeDriver = Platform.OS !== 'web'
+const isBrowserRuntime = typeof document !== 'undefined'
+const isWebRuntime = Platform.OS === 'web' || process.env.EXPO_OS === 'web' || isBrowserRuntime
+
+export const nativeDriver = !isWebRuntime

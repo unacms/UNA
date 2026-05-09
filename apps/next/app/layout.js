@@ -17,19 +17,6 @@ import 'app/customization/design/styles/global.css'
 import 'app/design/styles/global.web.css'
 import 'app/customization/design/styles/global.web.css'
 
-// Suppress shadow* deprecation warnings from third-party libraries (react-native-toast-message)
-// until they update to use boxShadow
-if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
-    const originalWarn = console.warn;
-    console.warn = (...args) => {
-        const message = args[0]?.toString() || '';
-        if (message.includes('"shadow*" style props are deprecated. Use "boxShadow".')) {
-            return; // Suppress this specific warning
-        }
-        originalWarn(...args);
-    };
-}
-
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {

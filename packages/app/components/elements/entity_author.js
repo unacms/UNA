@@ -112,7 +112,6 @@ export default function ElementEntityAuthor({ data, blockWrapperProps }) {
     }
 
     const menuOptions = handleMenuManageSelect ? { onSelect: (oItem, event) => handleMenuManageSelect(oItem, event, setPageData) } : {};
-    return <></>
     return (
         <BlockWrapper {...blockWrapperProps}>
             <Row className="justify-between gap-3">
@@ -142,7 +141,7 @@ export default function ElementEntityAuthor({ data, blockWrapperProps }) {
                 {(data.text && false) && (
                     <View className='flex-auto overflow-hidden text-ellipsis w-1/2 lg:w-auto px-4'>
                         <Link href={data.url}>
-                            <Text className=" lg:text-center overflow-hidden text-ellipsis text-lg font-bold font-bold  text-popover-foreground  overflow" numberOfLines={2}>
+                            <Text className=" lg:text-center overflow-hidden text-ellipsis text-lg font-bold text-popover-foreground overflow" numberOfLines={2}>
                                 {data.text}
                             </Text>
                         </Link>

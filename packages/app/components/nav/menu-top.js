@@ -69,10 +69,33 @@ export default function MenuTop({ url, uri }) {
 
     return (
         <Row className={`${appSetting('layout', 'header', 'content_center')}`}>
+            <View
+                className={`${appSetting('layout', 'header', 'active_item_indicator_bg')}`}
+                style={{
+                    width: indicatorStyle.width,
+                    transform: `translateX(${indicatorStyle.translateX}px)`,
+                    opacity: indicatorStyle.visible ? 1 : 0,
+                    pointerEvents: 'none',
+                    zIndex: 0,
+                    transition: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out'
+                }}
+            />
+
+            <View
+                className={`${appSetting('layout', 'header', 'active_item_indicator')}`}
+                style={{
+                    width: indicatorStyle.width,
+                    transform: `translateX(${indicatorStyle.translateX}px)`,
+                    opacity: indicatorStyle.visible ? 1 : 0,
+                    pointerEvents: 'none',
+                    zIndex: 0,
+                    transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), width 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out'
+                }}
+            />
             {menu_navbar_items.map((item, index) => {
                 const isActive = index === activeIndex;
                 return (
-                    <View key={`wrap-${index}`} onLayout={(e) => handleItemLayout(index, e?.nativeEvent?.layout)} className="flex-auto relative">
+                    <View key={`wrap-${index}`} onLayout={(e) => handleItemLayout(index, e?.nativeEvent?.layout)} className="flex-auto relative z-10">
                         <MenuTopItem
                             index={index}
                             link={item.link}
@@ -88,29 +111,6 @@ export default function MenuTop({ url, uri }) {
                     </View>
                 );
             })}
-                        <View className={`${appSetting('layout', 'header', 'active_item_indicator_bg')}`} 
-                        
-                        style={{ 
-                            width: indicatorStyle.width,
-                            transform: `translateX(${indicatorStyle.translateX}px)`,
-                            opacity: indicatorStyle.visible ? 1 : 0,
-                            pointerEvents: 'none',
-                            transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out'
-                        }}
-                        />
-
-            <View 
-                className={`${appSetting('layout', 'header', 'active_item_indicator')}`}
-                style={{ 
-                    width: indicatorStyle.width,
-                    transform: `translateX(${indicatorStyle.translateX}px)`,
-                    opacity: indicatorStyle.visible ? 1 : 0,
-                    pointerEvents: 'none',
-                    transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out'
-                }}
-            />
-                
-            
         </Row>
 
     )

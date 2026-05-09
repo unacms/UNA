@@ -151,6 +151,7 @@ const sanitizeWebProps = (props) => {
         nativeID,
         onLayout,
         onPress,
+        onKeyDown,
         onPressIn,
         onPressOut,
         onLongPress,
@@ -172,12 +173,28 @@ const sanitizeWebProps = (props) => {
         keyboardAwareBottomOffset,
         pointerEvents,
         style,
+        disabled,
         ...domProps
     } = props || {}
 
     if (accessibilityRole && !domProps.role) domProps.role = accessibilityRole
     if (accessibilityLabel && !domProps['aria-label']) domProps['aria-label'] = accessibilityLabel
-    if (onPress && !domProps.onClick) domProps.onClick = onPress
+    if (onPress) {
+        if (!domProps.onClick && !disabled) domProps.onClick = onPress
+        if (!domProps.role) domProps.role = 'button'
+        if (domProps.tabIndex == null) domProps.tabIndex = disabled ? -1 : 0
+        if (disabled && domProps['aria-disabled'] == null) domProps['aria-disabled'] = true
+        domProps.onKeyDown = (event) => {
+            onKeyDown?.(event)
+            if (disabled || event.defaultPrevented) return
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault()
+                onPress(event)
+            }
+        }
+    } else if (onKeyDown) {
+        domProps.onKeyDown = onKeyDown
+    }
     if (nativeID && !domProps.id) domProps.id = nativeID
 
     const webStyle = normalizeWebStyle(style)

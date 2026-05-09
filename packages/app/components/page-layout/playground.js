@@ -26,23 +26,6 @@ import {
 import { Icon } from 'app/ui/atoms/icon';
 import { appSetting } from 'app/lib/util';
 
-const STYLES = [
-    'plain', 'bordered', 'borderedProminent',
-    'borderless', 'link', 'glass', 'glassProminent',
-];
-
-const CONTROL_SIZES = [
-    { id: 'mini', height: 28 },
-    { id: 'small', height: 32 },
-    { id: 'regular', height: 44 },
-    { id: 'large', height: 52 },
-    { id: 'xlarge', height: 64 },
-];
-
-const BORDER_SHAPES = ['capsule', 'rectangle', 'roundedRectangle', 'circle'];
-
-const ROLES = ['default', 'cancel', 'close', 'confirm', 'destructive'];
-
 function Section({ title, hint, children }) {
     return (
         <View className="mb-8 gap-3">
@@ -265,104 +248,85 @@ export default function PageLayoutPlayground({ data, children }) {
                     <SizesResolverChart />
 
                     <Section
-                        title="Styles (regular)"
-                        hint="One per SwiftUI .buttonStyle() value. The default style (when no `style` prop is set) is `bordered`; pass a `<NeoButtonStyleProvider>` to override the default for descendants."
+                        title="Primary Actions"
+                        hint="Common footer and form actions. Hold the mouse down on desktop to inspect the default press scale."
                     >
-                        {STYLES.map((s) => (
-                            <NeoButton key={s} style={s} label={s} onPress={() => {}} />
-                        ))}
+                        <NeoButton style="borderedProminent" label="Publish" image="Send" onPress={() => {}} />
+                        <NeoButton style="bordered" label="Save draft" image="Save" onPress={() => {}} />
+                        <NeoButton style="borderless" label="Preview" image="Eye" onPress={() => {}} />
+                        <NeoButton style="plain" label="Cancel" role="cancel" onPress={() => {}} />
                     </Section>
 
                     <Section
-                        title="controlSize ladder"
-                        hint="iOS HIG-style targets: mini 28 / small 32 / regular 44 / large 52 / xlarge 64. Web/mouse trims a few px on regular and large via the resolver."
+                        title="Style Recipes"
+                        hint="Every SwiftUI-style recipe as a complete button instance, with press handlers so transition behavior is visible."
                     >
-                        {CONTROL_SIZES.map((s) => (
-                            <NeoButton
-                                key={s.id}
-                                style="borderedProminent"
-                                controlSize={s.id}
-                                label={`${s.id} (${s.height}px)`}
-                                onPress={() => {}}
-                            />
-                        ))}
+                        <NeoButton style="plain" label="Plain" image="PenLine" onPress={() => {}} />
+                        <NeoButton style="bordered" label="Bordered" image="Settings" onPress={() => {}} />
+                        <NeoButton style="borderedProminent" label="Prominent" image="Check" onPress={() => {}} />
+                        <NeoButton style="borderless" label="Borderless" image="Sparkles" onPress={() => {}} />
+                        <NeoButton style="link" label="Open details" image="ExternalLink" imagePlacement="trailing" onPress={() => {}} />
+                        <NeoButton style="glass" label="Glass" image="Layers" onPress={() => {}} />
+                        <NeoButton style="glassProminent" label="Glass CTA" image="Rocket" onPress={() => {}} />
                     </Section>
 
                     <Section
-                        title="controlSize × style matrix"
-                        hint="Per-style at every controlSize, so you can eyeball the ladder."
+                        title="Control Sizes"
+                        hint="Use small controls for toolbars, regular for most actions, and large/xlarge for high-emphasis rows or onboarding."
                     >
-                        <Stack>
-                            {STYLES.map((s) => (
-                                <Row key={s} className="flex-row flex-wrap items-center gap-2">
-                                    <Text className="w-40 text-sm text-muted-foreground">{s}</Text>
-                                    {CONTROL_SIZES.map((cs) => (
-                                        <NeoButton
-                                            key={`${s}-${cs.id}`}
-                                            style={s}
-                                            controlSize={cs.id}
-                                            label={cs.id}
-                                            onPress={() => {}}
-                                        />
-                                    ))}
-                                </Row>
-                            ))}
-                        </Stack>
+                        <NeoButton style="bordered" controlSize="mini" label="Mini" image="Plus" onPress={() => {}} />
+                        <NeoButton style="bordered" controlSize="small" label="Small" image="Plus" onPress={() => {}} />
+                        <NeoButton style="borderedProminent" controlSize="regular" label="Regular" image="Plus" onPress={() => {}} />
+                        <NeoButton style="borderedProminent" controlSize="large" label="Large action" image="Plus" onPress={() => {}} />
+                        <NeoButton style="glassProminent" controlSize="xlarge" label="Get started" image="ArrowRight" imagePlacement="trailing" onPress={() => {}} />
                     </Section>
 
                     <Section
-                        title="borderShape"
-                        hint="capsule (pill), rectangle (square corners), roundedRectangle (per-controlSize), circle (square aspect, full-rounded)."
+                        title="Shapes"
+                        hint="Border shape is independent from style, so shape examples use realistic icon or action copy."
                     >
-                        {BORDER_SHAPES.map((shape) => (
-                            <NeoButton
-                                key={shape}
-                                style="borderedProminent"
-                                borderShape={shape}
-                                label={shape === 'circle' ? '' : shape}
-                                image={shape === 'circle' ? 'Plus' : undefined}
-                                onPress={() => {}}
-                            />
-                        ))}
+                        <NeoButton style="borderedProminent" borderShape="capsule" label="Follow" image="UserPlus" onPress={() => {}} />
+                        <NeoButton style="bordered" borderShape="roundedRectangle" label="Duplicate" image="Copy" onPress={() => {}} />
+                        <NeoButton style="bordered" borderShape="rectangle" label="Grid cell" image="Square" onPress={() => {}} />
+                        <NeoButton style="borderedProminent" borderShape="circle" image="Plus" accessibilityLabel="Create" onPress={() => {}} />
                     </Section>
 
                     <Section
                         title="Roles"
-                        hint="SwiftUI Button(role:). `confirm` defaults to borderedProminent. `destructive` tints text red on non-prominent styles."
+                        hint="SwiftUI Button(role:). `confirm` defaults to prominent; `destructive` tints safe secondary actions red unless you choose a prominent style."
                     >
-                        {ROLES.map((r) => (
-                            <NeoButton
-                                key={r}
-                                role={r}
-                                label={r}
-                                onPress={() => {}}
-                            />
-                        ))}
-                        <NeoButton role="destructive" style="borderedProminent" label="destructive prominent" onPress={() => {}} />
-                        <NeoButton role="close" onPress={() => {}} />
+                        <NeoButton role="default" label="Default" image="Circle" onPress={() => {}} />
+                        <NeoButton role="cancel" label="Cancel" onPress={() => {}} />
+                        <NeoButton role="confirm" label="Confirm" image="Check" onPress={() => {}} />
+                        <NeoButton role="close" accessibilityLabel="Close panel" onPress={() => {}} />
+                        <NeoButton role="destructive" style="bordered" label="Delete" image="Trash" onPress={() => {}} />
+                        <NeoButton role="destructive" style="borderedProminent" label="Delete forever" image="Trash2" onPress={() => {}} />
                     </Section>
 
                     <Section
-                        title="image + imagePlacement"
-                        hint="SwiftUI Label(title:image:). Single image only — for multi-image / custom layouts, use children (next section)."
+                        title="Icon Placement"
+                        hint="SwiftUI Label(title:image:) defaults to leading image placement; trailing is useful for forward navigation."
                     >
-                        <NeoButton style="bordered" label="Save" image="Save" onPress={() => {}} />
+                        <NeoButton style="bordered" label="Save changes" image="Save" onPress={() => {}} />
                         <NeoButton style="bordered" label="Continue" image="ArrowRight" imagePlacement="trailing" onPress={() => {}} />
-                        <NeoButton style="bordered" image="Search" onPress={() => {}} />
+                        <NeoButton style="bordered" image="Search" accessibilityLabel="Search" onPress={() => {}} />
+                        <NeoButton style="borderedProminent" label="Upload file" image="Upload" onPress={() => {}} />
                     </Section>
 
                     <Section
-                        title="Custom children (HStack-equivalent)"
-                        hint="When children are provided, they replace the label/image renderer entirely. This is how you build profile-pic + name + chevron rows in SwiftUI too."
+                        title="List Rows"
+                        hint="Children replace label/image rendering, which is the right path for rows with avatar, metadata, badges, and chevrons."
                     >
                         <Stack>
                             <NeoButton style="bordered" width="fill" align="start" controlSize="large" onPress={() => {}}>
                                 <Row className="flex-row items-center gap-3 flex-1">
-                                    <View className="w-8 h-8 rounded-full bg-primary items-center justify-center">
+                                    <View className="w-9 h-9 rounded-full bg-primary items-center justify-center">
                                         <Text className="text-primary-foreground font-semibold">YK</Text>
                                     </View>
-                                    <Text className="text-foreground font-medium">Yasko Kunchev</Text>
-                                    <View className="flex-1" />
+                                    <View className="flex-1">
+                                        <Text className="text-foreground font-medium">Yasko Kunchev</Text>
+                                        <Text className="text-muted-foreground text-xs">View profile and account settings</Text>
+                                    </View>
                                     <Icon icon="ChevronRight" size={20} className="text-muted-foreground" />
                                 </Row>
                             </NeoButton>
@@ -370,9 +334,10 @@ export default function PageLayoutPlayground({ data, children }) {
                                 <Row className="flex-row items-center gap-3 flex-1">
                                     <Icon icon="FileText" size={22} className="text-foreground" />
                                     <View className="flex-1">
-                                        <Text className="text-foreground font-medium">Untitled.md</Text>
-                                        <Text className="text-muted-foreground text-xs">Edited 5 minutes ago</Text>
+                                        <Text className="text-foreground font-medium">Product brief.md</Text>
+                                        <Text className="text-muted-foreground text-xs">Edited 5 minutes ago · Markdown</Text>
                                     </View>
+                                    <Text className="text-xs text-muted-foreground">12 KB</Text>
                                     <Icon icon="ChevronRight" size={20} className="text-muted-foreground" />
                                 </Row>
                             </NeoButton>
@@ -430,13 +395,13 @@ export default function PageLayoutPlayground({ data, children }) {
                         title="Tint"
                         hint="SwiftUI .tint() analog. Inline style on the surface for borderedProminent (replaces bg); recolours text/image elsewhere."
                     >
-                        <NeoButton style="bordered" tint="#ff6347" label="Tomato" image="Heart" />
-                        <NeoButton style="borderedProminent" tint="#ff6347" label="Tomato" image="Heart" />
-                        <NeoButton style="glassProminent" tint="#0a84ff" label="iOS primary" image="Heart" />
-                        <NeoButton style="glassProminent" tint="#34c759" label="Confirm" image="Check" />
-                        <NeoButton style="borderless" tint="#ff6347" label="Tomato" />
-                        <NeoButton style="link" tint="#ff6347" label="Tomato" />
-                        <NeoButton role="destructive" style="bordered" label="Delete" image="Trash" />
+                        <NeoButton style="bordered" tint="#ff6347" label="Favorite" image="Heart" onPress={() => {}} />
+                        <NeoButton style="borderedProminent" tint="#ff6347" label="Boost post" image="Megaphone" onPress={() => {}} />
+                        <NeoButton style="glassProminent" tint="#0a84ff" label="iOS primary" image="Heart" onPress={() => {}} />
+                        <NeoButton style="glassProminent" tint="#34c759" label="Approve" image="Check" onPress={() => {}} />
+                        <NeoButton style="borderless" tint="#ff6347" label="Report" image="Flag" onPress={() => {}} />
+                        <NeoButton style="link" tint="#ff6347" label="Learn more" image="ExternalLink" imagePlacement="trailing" onPress={() => {}} />
+                        <NeoButton role="destructive" style="bordered" label="Delete" image="Trash" onPress={() => {}} />
                     </Section>
 
                     <Section
@@ -444,14 +409,14 @@ export default function PageLayoutPlayground({ data, children }) {
                         hint="`width=fill` adds w-full; align maps to justify-{start|center|end|between}."
                     >
                         <Stack>
-                            <NeoButton style="bordered" width="fill" align="start" label="Start" image="UserRound" />
-                            <NeoButton style="bordered" width="fill" align="center" label="Center" image="UserRound" />
-                            <NeoButton style="bordered" width="fill" align="end" label="End" image="ChevronRight" imagePlacement="trailing" />
-                            <NeoButton style="bordered" width="fill" align="between" label="Between" image="UserRound">
+                            <NeoButton style="bordered" width="fill" align="start" label="Left aligned" image="AlignLeft" onPress={() => {}} />
+                            <NeoButton style="bordered" width="fill" align="center" label="Centered action" image="CircleDot" onPress={() => {}} />
+                            <NeoButton style="bordered" width="fill" align="end" label="Right aligned" image="ChevronRight" imagePlacement="trailing" onPress={() => {}} />
+                            <NeoButton style="bordered" width="fill" align="between" onPress={() => {}}>
                                 <Row className="flex-row items-center justify-between flex-1">
                                     <Row className="flex-row items-center gap-2">
                                         <Icon icon="UserRound" size={20} className="text-foreground" />
-                                        <Text className="text-foreground font-medium">Between</Text>
+                                        <Text className="text-foreground font-medium">Account</Text>
                                     </Row>
                                     <Icon icon="ChevronRight" size={20} className="text-muted-foreground" />
                                 </Row>
@@ -464,9 +429,9 @@ export default function PageLayoutPlayground({ data, children }) {
                         hint="Mirrors SwiftUI's .buttonStyle() applied at a parent. All descendants without an explicit `style` prop inherit the provider's style."
                     >
                         <NeoButtonStyleProvider style="glass">
-                            <NeoButton label="Inherits glass" />
-                            <NeoButton label="Override → bordered" style="bordered" />
-                            <NeoButton label="Inherits glass" image="Star" />
+                            <NeoButton label="Inherits glass" image="Sparkles" onPress={() => {}} />
+                            <NeoButton label="Override to bordered" image="Settings" style="bordered" onPress={() => {}} />
+                            <NeoButton label="Also glass" image="Star" onPress={() => {}} />
                         </NeoButtonStyleProvider>
                     </Section>
 
@@ -475,20 +440,21 @@ export default function PageLayoutPlayground({ data, children }) {
                         hint="Mirrors SwiftUI's .controlSize() applied at a parent."
                     >
                         <NeoControlSizeProvider size="large">
-                            <NeoButton style="borderedProminent" label="Large via provider" />
-                            <NeoButton style="bordered" label="Large via provider" />
-                            <NeoButton style="bordered" controlSize="mini" label="Override → mini" />
+                            <NeoButton style="borderedProminent" label="Large primary" image="Check" onPress={() => {}} />
+                            <NeoButton style="bordered" label="Large secondary" image="MessageCircle" onPress={() => {}} />
+                            <NeoButton style="bordered" controlSize="mini" label="Mini override" image="Plus" onPress={() => {}} />
                         </NeoControlSizeProvider>
                     </Section>
 
                     <Section
                         title="Per-style transitions"
-                        hint="Each style declares its own press transition. Glass uses shadow shrink (no scale). Plain/link have no transition. Bordered/Prominent use the default scale spring."
+                        hint="Each example is pressable. Hold down on desktop to compare the default scale spring, opacity override, and disabled transition."
                     >
-                        <NeoButton style="borderedProminent" label="Scale (default)" onPress={() => {}} />
-                        <NeoButton style="glass" label="Shadow shrink" onPress={() => {}} />
+                        <NeoButton style="bordered" label="Default scale" image="MousePointerClick" onPress={() => {}} />
+                        <NeoButton style="borderedProminent" label="Prominent scale" image="MousePointerClick" onPress={() => {}} />
+                        <NeoButton style="glass" label="Glass scale" image="Layers" onPress={() => {}} />
                         <NeoButton style="plain" label="No transition" onPress={() => {}} />
-                        <NeoButton style="link" label="No transition" onPress={() => {}} />
+                        <NeoButton style="link" label="Link, no transition" onPress={() => {}} />
                         <NeoButton
                             style="bordered"
                             label="Override: opacity"
@@ -503,10 +469,17 @@ export default function PageLayoutPlayground({ data, children }) {
                         />
                     </Section>
 
-                    <Section title="Disabled (every style)">
-                        {STYLES.map((s) => (
-                            <NeoButton key={s} style={s} label={s} disabled onPress={() => {}} />
-                        ))}
+                    <Section
+                        title="Disabled States"
+                        hint="Disabled buttons still show their role, style, tint, and label treatment without accepting press events."
+                    >
+                        <NeoButton style="plain" label="Plain" disabled onPress={() => {}} />
+                        <NeoButton style="bordered" label="Save draft" image="Save" disabled onPress={() => {}} />
+                        <NeoButton style="borderedProminent" label="Publish" image="Send" disabled onPress={() => {}} />
+                        <NeoButton style="borderless" label="Preview" image="Eye" disabled onPress={() => {}} />
+                        <NeoButton style="link" label="Open details" disabled onPress={() => {}} />
+                        <NeoButton style="glass" label="Glass" image="Layers" disabled onPress={() => {}} />
+                        <NeoButton style="glassProminent" label="Glass CTA" image="Rocket" disabled onPress={() => {}} />
                     </Section>
 
                     <Section
@@ -524,12 +497,14 @@ export default function PageLayoutPlayground({ data, children }) {
                         <NeoButton
                             style="bordered"
                             label="Custom text colour"
+                            onPress={() => {}}
                             classNames={{ text: 'text-pink-600 italic' }}
                         />
                         <NeoButton
                             style="bordered"
                             label="Wide"
                             image="Star"
+                            onPress={() => {}}
                             classNames={{ container: 'px-8', image: 'text-yellow-500' }}
                         />
                     </Section>

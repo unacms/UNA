@@ -165,6 +165,9 @@ const nextConfig = {
         // Используем NormalModuleReplacementPlugin для принудительной замены
         config.plugins = config.plugins || [];
         config.plugins.push(
+            new webpack.DefinePlugin({
+                'process.env.EXPO_OS': JSON.stringify('web'),
+            }),
             new webpack.NormalModuleReplacementPlugin(
                 /^react-native-webview$/,
                 (resource) => {

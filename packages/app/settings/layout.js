@@ -60,8 +60,8 @@ export const settingsLayout = {
                 '  shadow-lg bg-card border-white/80 dark:border-white/10 inset-0 top-0 ',
             content_left: ' items-center flex-none  2xl:w-full max-w-96 px-3 sm:px-4 gap-2',
             content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-3xl px-4 ',
-            active_item_indicator: 'absolute -bottom-2 left-0 h-0.5 rounded-full flex-none bg-ring/80',
-            active_item_indicator_bg: 'absolute -bottom-2 left-0 h-1 w-full blur-lg overflow-hidden rounded-full flex-none bg-ring/80',
+            active_item_indicator: 'absolute bottom-0 left-0 h-0.5 rounded-full flex-none bg-ring',
+            active_item_indicator_bg: 'absolute bottom-2 left-0 h-12 w-full overflow-hidden rounded-xl flex-none bg-accent',
 
             content_right: ' items-center flex-none justify-end 2xl:w-full max-w-96 px-3 sm:px-4 gap-2',
         },

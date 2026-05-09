@@ -8,33 +8,43 @@ export default function ScrollControl({ horisontal, children, step, initialValue
     const scrollViewRef = useRef(null);
     const [offset, setOffset] = useState({ offset: 0, contentWidth: 0, scrollViewWidth: 0 });
 
+    const scrollToX = useCallback((x, animated = true) => {
+        const node = scrollViewRef.current;
+        if (!node?.scrollTo) return;
+
+        if ('scrollLeft' in node) {
+            node.scrollTo({
+                left: x,
+                behavior: animated ? 'smooth' : 'auto',
+            });
+            return;
+        }
+
+        node.scrollTo({
+            x,
+            animated,
+        });
+    }, []);
+
     useEffect(() => {
         if (scrollViewRef.current) {
             if (initialValue > 0) {
-                scrollViewRef.current.scrollTo({
-                    x: initialValue,
-                    animated: true,
-                });
+                scrollToX(initialValue, true);
             }
             else {
-                scrollViewRef.current.scrollTo({
-                    x: 1,
-                    animated: false,
-                });
+                scrollToX(1, false);
 
-                scrollViewRef.current.scrollTo({
-                    x: 0,
-                    animated: false,
-                });
+                scrollToX(0, false);
             }
         }
-    }, []);
+    }, [initialValue, scrollToX]);
 
     const handleScroll = (event) => {
-
-        const offsetX = event.nativeEvent.contentOffset.x;
-        const contentWidth = event.nativeEvent.contentSize.width;
-        const scrollViewWidth = event.nativeEvent.layoutMeasurement.width;
+        const nativeEvent = event.nativeEvent;
+        const scrollTarget = event.currentTarget;
+        const offsetX = nativeEvent?.contentOffset?.x ?? scrollTarget?.scrollLeft ?? 0;
+        const contentWidth = nativeEvent?.contentSize?.width ?? scrollTarget?.scrollWidth ?? 0;
+        const scrollViewWidth = nativeEvent?.layoutMeasurement?.width ?? scrollTarget?.clientWidth ?? 0;
         setOffset(prevOffset => {
             if (prevOffset.offset !== offsetX || prevOffset.contentWidth !== contentWidth || prevOffset.scrollViewWidth !== scrollViewWidth) {
                 return { offset: offsetX, contentWidth, scrollViewWidth };
@@ -44,22 +54,12 @@ export default function ScrollControl({ horisontal, children, step, initialValue
     };
 
     const scrollUp = useCallback(() => {
-        if (scrollViewRef.current) {
-            scrollViewRef.current.scrollTo({
-                x: Math.max(0, offset.offset - step),
-                animated: true,
-            });
-        }
-    }, [offset.offset, step]);
+        scrollToX(Math.max(0, offset.offset - step), true);
+    }, [offset.offset, scrollToX, step]);
 
     const scrollDown = useCallback(() => {
-        if (scrollViewRef.current) {
-            scrollViewRef.current.scrollTo({
-                x: Math.min(offset.offset + step, offset.contentWidth - offset.scrollViewWidth),
-                animated: true,
-            });
-        }
-    }, [offset.offset, offset.contentWidth, offset.scrollViewWidth, step]);
+        scrollToX(Math.min(offset.offset + step, offset.contentWidth - offset.scrollViewWidth), true);
+    }, [offset.offset, offset.contentWidth, offset.scrollViewWidth, scrollToX, step]);
 
     return (
         <View className='w-full'>

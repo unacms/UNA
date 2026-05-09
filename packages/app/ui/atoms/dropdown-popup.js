@@ -4,7 +4,7 @@ import {
     Modal as ModalBase,
     Platform
 } from 'react-native';
-import { Pressable, ScrollView, View, ViewRef } from 'app/design/view'
+import { Pressable, ScrollView, View } from 'app/design/view'
 import { RemoveScroll } from 'react-remove-scroll';
 import { appSetting } from 'app/lib/util';
 import { useIsDesktop, useWindowSize } from 'app/context/measure';
@@ -192,6 +192,8 @@ export default function DropdownPopup({
         >
             <ScrollView
                 showsVerticalScrollIndicator={false}
+                tabIndex={isWeb ? -1 : undefined}
+                className="web:outline-none"
             >
                 {children}
             </ScrollView>

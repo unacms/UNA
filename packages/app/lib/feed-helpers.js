@@ -495,7 +495,6 @@ export const Author = memo(({ data, url, t }) => {
                         button_size: 'sm',
                         hide_icon: true,
                         button_rounded: false,
-                        
                     }}
 
                     {...item}

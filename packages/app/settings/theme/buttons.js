@@ -287,18 +287,18 @@ export const settingsButtons = {
         // iOS HIG-style minimum is 44pt; web/mouse trims a few pixels because
         // pointers don't need finger-sized targets.
         controlSizes: {
-            mini:    { height: 28, paddingX: 8,  font: 'text-xs',   icon: 14, hitSlop: 8, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
-            small:   { height: 32, paddingX: 12, font: 'text-sm',   icon: 16, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 4 } } },
+            mini:    { height: 28, paddingX: 8,  font: 'text-xs', icon: 16, hitSlop: 10, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
+            small:   { height: 36, paddingX: 12, font: 'text-sm', icon: 20, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 6 } } },
             regular: {
-                default: { height: 44, paddingX: 16, font: 'text-base', icon: 20, hitSlop: 4, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
+                default: { height: 44, paddingX: 16, font: 'text-base', icon: 24, hitSlop: 4, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
                 web:     { height: 44, paddingX: 16 },
                 mouse:   { height: 44, paddingX: 16 },
             },
             large: {
-                default: { height: 52, paddingX: 18, font: 'text-base', icon: 22, hitSlop: 0, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
-                web:     { height: 44 },
+                default: { height: 52, paddingX: 20, font: 'text-lg', icon: 28, hitSlop: 0, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
+                web:     { height: 52 },
             },
-            xlarge:  { height: 64, paddingX: 24, font: 'text-lg',   icon: 24, hitSlop: 0, labelGap: 12, contentInsets: { mediaLeading: { left: 8 } } },
+            xlarge:  { height: 60, paddingX: 24, font: 'text-lg',   icon: 32, hitSlop: 0, labelGap: 12, contentInsets: { mediaLeading: { left: 8 } } },
         },
 
         // borderShape → rounding strategy. roundedRectangle scales with
@@ -311,8 +311,8 @@ export const settingsButtons = {
                     default: 'rounded-xl',
                     mini:    'rounded-md',
                     small:   'rounded-lg',
-                    large:   'rounded-2xl',
-                    xlarge:  'rounded-2xl',
+                    large:   'rounded-xl',
+                    xlarge:  'rounded-xl',
                 },
             },
             circle:    { rounded: 'rounded-full', aspectSquare: true },
@@ -342,10 +342,10 @@ export const settingsButtons = {
                     default: '',
                     hovered: '',
                     focused: '',
-                    pressed: 'opacity-80',
+                    pressed: '',
                     active: '',
-                    pressedToggle: 'bg-muted/60',
-                    disabled: 'opacity-50',
+                    pressedToggle: '',
+                    disabled: '',
                 },
                 text: {
                     base: 'font-medium',
@@ -365,13 +365,13 @@ export const settingsButtons = {
             // for the glass family).
             bordered: {
                 container: {
-                    default: 'bg-secondary/50',
+                    default: 'bg-secondary/60',
                     hovered: 'bg-secondary',
                     focused: 'bg-secondary',
                     pressed: 'bg-secondary',
                     active: 'bg-secondary',
                     pressedToggle: 'bg-secondary',
-                    disabled: 'bg-secondary/40 opacity-60',
+                    disabled: 'bg-secondary opacity-60',
                 },
                 text: {
                     base: 'font-medium',
@@ -390,13 +390,13 @@ export const settingsButtons = {
             // and the press background swap.
             borderedProminent: {
                 container: {
-                    default: 'bg-primary',
-                    hovered: 'bg-primary-hover',
+                    default: 'bg-primary/80',
+                    hovered: 'bg-primary',
                     focused: 'bg-primary',
-                    pressed: 'bg-primary/90',
+                    pressed: 'bg-primary',
                     active: 'bg-primary-hover',
                     pressedToggle: 'bg-primary-hover',
-                    disabled: 'bg-primary/50',
+                    disabled: 'bg-primary opacity-60',
                 },
                 text: {
                     base: 'font-semibold',
@@ -479,7 +479,7 @@ export const settingsButtons = {
             glassProminent: {
                 container: {
                     base: 'web:backdrop-blur-md shadow-btn-glass-prominent dark:shadow-btn-glass-prominent-deep',
-                    default: 'bg-primary/90',
+                    default: 'bg-primary/80',
                     hovered: 'bg-primary-hover',
                     focused: 'bg-primary',
                     pressed: 'bg-primary-hover shadow-btn-glass-prominent-pressed dark:shadow-btn-glass-prominent-pressed-deep',
@@ -502,9 +502,9 @@ export const settingsButtons = {
         },
 
         // Per-style transitions. Each style picks one of:
-        //   { type: 'scale',   from, to, spring }   — MotionView wraps the button
+        //   { type: 'scale',   from, to, spring }   — CSS transform on web, MotionView on native
         //   { type: 'shadow' }                      — no wrapper; press class swap only
-        //   { type: 'opacity', duration }           — MotionView with opacity animate
+        //   { type: 'opacity', duration }           — CSS opacity on web, MotionView on native
         //   false / null                            — no transition at all
         // `default` is the fallback for any style that does not declare its own.
         transitions: {

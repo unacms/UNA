@@ -59,7 +59,8 @@ import {
     resolveScoped,
 } from 'app/design/controls/neo-button-resolver';
 
-const isWeb = Platform.OS === 'web';
+const isBrowserRuntime = typeof document !== 'undefined';
+const isWeb = Platform.OS === 'web' || process.env.EXPO_OS === 'web' || isBrowserRuntime;
 
 const ICON_ACCESSIBLE_MAP = {
     X: 'Close', ChevronLeft: 'Previous', ChevronRight: 'Next',
@@ -153,6 +154,16 @@ function renderLabel({
 
 /* -------------------- transition wrapper (per style) ---------------------- */
 
+const getWebTransition = (press, property) => {
+    const duration = press?.duration ?? (press?.spring ? 140 : 120);
+    return {
+        transitionProperty: property,
+        transitionDuration: `${duration}ms`,
+        transitionTimingFunction: 'cubic-bezier(0.2, 0, 0, 1)',
+        willChange: property,
+    };
+};
+
 function PressTransition({ active, transition, children, className }) {
     const press = transition?.press;
 
@@ -163,6 +174,20 @@ function PressTransition({ active, transition, children, className }) {
     }
 
     if (press.type === 'opacity') {
+        if (isWeb) {
+            return (
+                <View
+                    className={className}
+                    style={{
+                        opacity: active ? (press.to ?? 0.85) : (press.from ?? 1),
+                        ...getWebTransition(press, 'opacity'),
+                    }}
+                >
+                    {children}
+                </View>
+            );
+        }
+
         return (
             <MotionView
                 className={className}
@@ -175,6 +200,21 @@ function PressTransition({ active, transition, children, className }) {
     }
 
     // Default: 'scale'.
+    if (isWeb) {
+        const scale = active ? (press.to ?? 0.97) : (press.from ?? 1);
+        return (
+            <View
+                className={className}
+                style={{
+                    transform: `scale(${scale})`,
+                    ...getWebTransition(press, 'transform'),
+                }}
+            >
+                {children}
+            </View>
+        );
+    }
+
     return (
         <MotionView
             className={className}
@@ -183,6 +223,34 @@ function PressTransition({ active, transition, children, className }) {
         >
             {children}
         </MotionView>
+    );
+}
+
+function PressHighlight({ active, rounded, color }) {
+    const className = cn('absolute inset-0 pointer-events-none z-10', rounded);
+
+    if (isWeb) {
+        return (
+            <View
+                className={className}
+                style={{
+                    backgroundColor: color,
+                    opacity: active ? 0.18 : 0,
+                    transitionProperty: 'opacity',
+                    transitionDuration: '120ms',
+                    transitionTimingFunction: 'ease-out',
+                }}
+            />
+        );
+    }
+
+    return (
+        <MotionView
+            className={className}
+            animate={{ opacity: active ? 0.18 : 0 }}
+            transition={{ duration: 0.12 }}
+            style={{ backgroundColor: color }}
+        />
     );
 }
 
@@ -448,11 +516,10 @@ export const NeoButton = (props) => {
             {labelContent}
             {/* press highlight overlay (visual feedback, runs in addition to
                 the per-style transition) */}
-            <MotionView
-                className={cn('absolute inset-0 pointer-events-none z-10', resolved.rounded)}
-                animate={{ opacity: isPressed ? 0.18 : 0 }}
-                transition={{ duration: 0.12 }}
-                style={{ backgroundColor: resolved.highlightBg }}
+            <PressHighlight
+                active={isPressed}
+                rounded={resolved.rounded}
+                color={resolved.highlightBg}
             />
         </Cnt>
     );
