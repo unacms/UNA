@@ -317,9 +317,7 @@ export default function ElementGrid(props) {
     const { setBottomSheetData } = useBottomSheetData();
     const data = props.data;
     let settings = data.settings;
-    if (!data.header)
-        return <></>
-    const header = data.header.filter((item) => (item?.name != 'reports'))
+    const header = (data.header || []).filter((item) => (item?.name != 'reports'))
     const isSortable = header.find((item) => item?.name == 'order');
     const [refetchState, dispatch] = useReducer(refetchUniListReducer, {
         visibleItems: [],
@@ -527,6 +525,9 @@ export default function ElementGrid(props) {
     }, [settings.filters?.filter1]);
 
 
+    if (!data.header)
+        return <></>
+
     const actionsBulk = Object.values(data.actions.bulk);
     const actionsIndependent = Object.values(data.actions.independent);
 
@@ -585,7 +586,7 @@ export default function ElementGrid(props) {
                         return <Button key={item.name} startDecorator="Trash" size="sm" showTitleFromSize='sm' title={t("Delete selected")} disabled={selected.length == 0} onPress={() => { handleDeleteSelected() }} />
                     }
                     if (item.name == 'stripe_v3') {
-                        return <Button size="sm" title={t("Checkout with Stripe")} showTitleFromSize='sm' disabled={selected.length == 0} onPress={() => { handleActionBlockPayment('stripe_v3') }} />
+                        return <Button key={item.name} size="sm" title={t("Checkout with Stripe")} showTitleFromSize='sm' disabled={selected.length == 0} onPress={() => { handleActionBlockPayment('stripe_v3') }} />
                     }
                 })}
 

@@ -147,11 +147,11 @@ function SizesResolverChart() {
 
                         {/* Header row */}
                         <Row className="flex-row">
-                            <Cell head>scope</Cell>
+                            <Cell head><Text>scope</Text></Cell>
                             {SIZE_FIELDS.map((f) => (
                                 <Cell key={f.key} head>{f.label}</Cell>
                             ))}
-                            <Cell head>rounded</Cell>
+                            <Cell head><Text>rounded</Text></Cell>
                         </Row>
 
                         {/* Data rows */}

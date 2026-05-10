@@ -462,12 +462,12 @@ export default function ({ data, blocks }) {
                 key={`cells-home${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
                 autoSaveId={cellsCustomConfig.sizable ? `cells-home` : undefined}
                 direction="horizontal"
-                className={`${appSetting('layout', 'home_container')} mx-auto flex-auto relative flex-row`}
+                className={`${appSetting('layout', 'home_container')} mx-auto flex-auto min-w-0 relative flex-row`}
                 onLayout={onLayout}
             >
                 {layoutName == 'hor' && isWeb && (
                     <>
-                        <Panel className={`hidden ${leftBreakpoint}:block ${currentBreakpointName}:w-full `} {...leftPanelProps}>
+                        <Panel className={`hidden ${leftBreakpoint}:block sm:w-full `} {...leftPanelProps}>
                             <View onLayout={handleSideBarLayout} className="flex-auto h-full w-full max-w-96">
                                 {SideBarContent}
                             </View>
@@ -478,8 +478,8 @@ export default function ({ data, blocks }) {
                         />
                     </>
                 )}
-                <Panel className={`native:w-full ${currentBreakpointName}:w-full`} {...centerPanelProps}>
-                    <View className={`${appSetting('layout', 'feed_container')}`}>
+                <Panel className="w-full min-w-0 native:w-full" {...centerPanelProps}>
+                    <View className={`${appSetting('layout', 'feed_container')} min-w-0`}>
                         {FeedContent}
                     </View>
                 </Panel>

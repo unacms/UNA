@@ -63,9 +63,9 @@ export const settingsElements = {
         header: ' p-3 h-14 items-start justify-start border-b border-border/60',
     },
     cards: {
-        'u-card-list': ' u-card-list bg-card/80 shadow-xs dark:shadow-xs-deep border border-border/50 inset-0 text-card-foreground sm:rounded-xl ',
+        'u-card-list': ' u-card-list bg-card shadow-card-outline dark:shadow-card-outline-deep sm:rounded-xl ',
         'u-card-list-padding': ' p-3 lg:p-4 ',
-        'u-card-base': 'u-card-base bg-card/80 text-card-foreground rounded-2xl shadow-xs border border-border/50 inset-0',
+        'u-card-base': 'u-card-base bg-card/80 text-card-foreground rounded-2xl shadow-card-outline dark:shadow-card-outline-deep ',
         'u-card-padding': 'py-4',
         'u-card-header': 'px-4',
         'u-card-icon': ' ',
@@ -86,7 +86,7 @@ export const settingsElements = {
         'u-block-base':
             ' text-card-foreground gap-4',
         'u-block-bg':
-            'bg-card/80 shadow-xs dark:shadow-xs-deep border border-border/50  ',
+            'bg-card/80 shadow-card-outline dark:shadow-card-outline-deep ',
         'u-block-pad':
             'p-4 sm:rounded-xl ',
         'u-block-header':

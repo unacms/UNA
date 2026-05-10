@@ -44,6 +44,8 @@ export const settingsConfigs = {
         url: '/notifications-view', 
         count_in_title: true, 
         show_plain_text: true,
+        onesignal_prompt_delay_ms: 2 * 60 * 1000,
+        onesignal_request_on_load: true,
     },
     messenger: {
         url: '/messenger', 

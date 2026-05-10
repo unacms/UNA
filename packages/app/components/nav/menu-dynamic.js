@@ -78,16 +78,14 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
         </DropdownMenu>
     )
 
-    // return <View className='bg-red-500 h-4 w-4'></View>
 
-    const Container = isWeb ? Row : ScrollView;
 
     return (
         <>
             <FormModal pageData={pageData} setPageData={setPageData} />
-            <Container
-                contentContainerStyle={{ alignItems: 'center' }}
-                className={isWeb ? (containerClasses ? containerClasses.trim() + ' overflow-visible gap-2' : 'overflow-visible gap-2') : (containerClasses ? containerClasses.trim() + ' overflow-visible gap-2' : 'overflow-visible gap-2')}
+            <View
+               
+                className=" gap-2 ml-auto flex-row"
                 horizontal={true}
                 onLayout={handleLayout}
             >
@@ -108,7 +106,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
                     }
                 </View>
                 {!isButtonOutside && ExMenu}
-            </Container>
+            </View>
             {isButtonOutside && ExMenu}
         </>
     );

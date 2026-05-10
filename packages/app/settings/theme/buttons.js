@@ -390,8 +390,8 @@ export const settingsButtons = {
             // and the press background swap.
             borderedProminent: {
                 container: {
-                    default: 'bg-primary/80',
-                    hovered: 'bg-primary',
+                    default: 'bg-primary',
+                    hovered: 'bg-primary-hover',
                     focused: 'bg-primary',
                     pressed: 'bg-primary',
                     active: 'bg-primary-hover',
@@ -455,13 +455,13 @@ export const settingsButtons = {
             glass: {
                 container: {
                     base: 'web:backdrop-blur-md shadow-btn-glass dark:shadow-btn-glass-deep',
-                    default: 'bg-white/10 ',
-                    hovered: 'bg-muted/60 ',
-                    focused: 'bg-white/10',
-                    pressed: 'bg-muted/60 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
-                    active: 'bg-muted/60',
-                    pressedToggle: 'bg-card/20 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
-                    disabled: 'bg-white/10 opacity-60',
+                    default: ' bg-card/20 ',
+                    hovered: ' bg-muted/60 ',
+                    focused: ' bg-muted/60',
+                    pressed:  'bg-muted/60 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
+                    active: 'bg-muted/60 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
+                    pressedToggle: 'bg-muted/20 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
+                    disabled: 'bg-card/20 opacity-60',
                 },
                 text: {
                     base: 'font-medium',
@@ -479,7 +479,7 @@ export const settingsButtons = {
             glassProminent: {
                 container: {
                     base: 'web:backdrop-blur-md shadow-btn-glass-prominent dark:shadow-btn-glass-prominent-deep',
-                    default: 'bg-primary/80',
+                    default: 'bg-primary',
                     hovered: 'bg-primary-hover',
                     focused: 'bg-primary',
                     pressed: 'bg-primary-hover shadow-btn-glass-prominent-pressed dark:shadow-btn-glass-prominent-pressed-deep',

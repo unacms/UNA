@@ -11,9 +11,7 @@ const styles = StyleSheet.create({
     },
 });
 
-export default function ElementVideo({ src, controls, cover, autoplay, muted }) {
-    if (!src) return null;
-    
+function ElementVideoPlayer({ src, controls, cover, autoplay, muted }) {
     const player = useVideoPlayer(src, player => {
         player.muted = muted ? true : false;
         player.loop = autoplay ? true : false;
@@ -25,4 +23,10 @@ export default function ElementVideo({ src, controls, cover, autoplay, muted }) 
             <VideoView style={styles.video} player={player} allowsFullscreen allowsPictureInPicture />
         </View>
     )
+}
+
+export default function ElementVideo(props) {
+    if (!props.src) return null;
+
+    return <ElementVideoPlayer {...props} />;
 }

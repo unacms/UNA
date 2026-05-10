@@ -71,7 +71,8 @@ function UnitCommentsDefault(props) {
 
     const level = props.level || 0
     const lvls = props.lvls || []
-    let data = props.data
+    const hasData = !!props.data
+    let data = props.data || {}
     const items = props.items
     const view = props.view
     let files = props.files
@@ -79,7 +80,8 @@ function UnitCommentsDefault(props) {
     const parent = props.parent
 
     const module = props.module;
-    const objectId = props.data.cmt_object_id;
+    const objectId = data.cmt_object_id;
+    const commentId = data.cmt_id;
 
     const cmtUrl = data.cmt_url
 
@@ -108,34 +110,32 @@ function UnitCommentsDefault(props) {
 
     const { animatedStyle } = usePulseOne({ pulseDurationMs: 500, pulses: 3, autoStart: true, minOpacity: 0.2 });
 
-    if (!data) return null
-
-    const { data: dynamicData, error } = useFetchForm(
-        '/api.php?r=' +
+    const editFormUrl = hasData
+        ? '/api.php?r=' +
         appSetting('urls', 'cmts') +
         '/&params[]={"module":"' +
         props.module +
         '","object_id":' +
-        props.data.cmt_object_id +
+        objectId +
         ',"action":"edit","id":' +
-        props.data.cmt_id +
-        '}',
-        postData
-    )
-
-    if (dynamicData?.data?.browse?.data?.data[0]['i' + props.data.cmt_id]) {
-        data =
-            dynamicData?.data?.browse?.data?.data[0]['i' + props.data.cmt_id]
-                .data
-        files =
-            dynamicData?.data?.browse?.data?.data[0]['i' + props.data.cmt_id]
-                .files
-    }
+        commentId +
+        '}'
+        : ''
+    const { data: dynamicData, error } = useFetchForm(editFormUrl, postData)
 
     const onFormSubmit = useCallback((formData) => {
         setViewState({ view: '' })
         setPostData(formData)
     }, [])
+
+    if (hasData && dynamicData?.data?.browse?.data?.data[0]['i' + commentId]) {
+        data =
+            dynamicData?.data?.browse?.data?.data[0]['i' + commentId]
+                .data
+        files =
+            dynamicData?.data?.browse?.data?.data[0]['i' + commentId]
+                .files
+    }
 
     const cells = useMemo(() => {
         const cellsArray = []
@@ -153,7 +153,7 @@ function UnitCommentsDefault(props) {
                         </View>
                     )}
                     {i === level - 1 && (
-                        <View className=" ml-4 -start-px h-6 w-6 border-muted border-l-2 border-b-2 absolute top-0.5 rounded-bl-lg flex-auto" />
+                        <View className=" ml-4 -inset-s-px h-6 w-6 border-muted border-l-2 border-b-2 absolute top-0.5 rounded-bl-lg flex-auto" />
                     )}
                 </View>
             )
@@ -171,6 +171,8 @@ function UnitCommentsDefault(props) {
             })),
         [files]
     )
+
+    if (!hasData) return null
 
     if (viewState.view == 'deleted') return <></>
 
@@ -259,14 +261,14 @@ function UnitCommentsDefault(props) {
                                 </>
                             )}
 
-                            <View className="flex-none absolute -end-1.5">
+                            <View className="flex-none absolute -inset-e-1.5">
                             <MenuManage
                                         id={data.id}
                                         menu={data?.menu_manage}
                                         setViewState={setViewState}
                                         module={props.module}
-                                        cmt_object_id={props.data.cmt_object_id}
-                                        cmt_id={props.data.cmt_id}
+                                        cmt_object_id={objectId}
+                                        cmt_id={commentId}
                                     /></View>
                         </View>
                         {view == 'flat' && data.cmt_parent_id > 0 && (

@@ -54,10 +54,9 @@ export const settingsLayout = {
 
         header: {
             container: ' w-full z-50 header-fixed web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out ',
-            content: ' items-center bg-card/80 justify-between h-14 lg:h-16 backdrop-blur-xl overflow-hidden shadow-sm border-border/60 inset-0 w-full mx-auto',
-            /** Mobile web extra classes when the scroll-up “pinned” fixed bar is visible — background, border, blur. Merged on the header row after `content`. */
-            content_pinned_fixed:
-                '  shadow-lg bg-card border-white/80 dark:border-white/10 inset-0 top-0 ',
+            content: ' items-center bg-card justify-between h-16 overflow-hidden  w-full mx-auto',
+            /** Mobile web extra classes when the scroll-up pinned fixed bar is visible — background, border, blur. Merged on the header row after `content`. */
+            content_pinned_fixed: '  bg-card/80  ',
             content_left: ' items-center flex-none  2xl:w-full max-w-96 px-3 sm:px-4 gap-2',
             content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-3xl px-4 ',
             active_item_indicator: 'absolute bottom-0 left-0 h-0.5 rounded-full flex-none bg-ring',

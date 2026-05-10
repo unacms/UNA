@@ -72,6 +72,7 @@ const AddBlocks = React.memo(({
 
     let leftSideBarBlocksObj = leftSideBarBlocks.map((block) => {
         return <BlockByName
+            key={block}
             data={data}
             name={block}
             onFormSubmit={onFormSubmit}

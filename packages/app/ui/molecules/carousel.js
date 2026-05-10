@@ -113,9 +113,7 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr }) => {
     )
 }, (prevProps, nextProps) => prevProps.data2 === nextProps.data2);
 
-const Carousel = memo(({ data = [] }) => {
-    if (!data.length) return null;
-
+function CarouselContent({ data }) {
     const [currentImageIndex, setCurrentImageIndex] = useState(false);
     const [imageSize, setImageSize] = useState([0, 0]);
     const [imageSize2, setImageSize2] = useState([0, 0]);
@@ -216,6 +214,12 @@ const Carousel = memo(({ data = [] }) => {
         </View>
 
     </>
+}
+
+const Carousel = memo(({ data = [] }) => {
+    if (!data.length) return null;
+
+    return <CarouselContent data={data} />;
 });
 
 export default Carousel;

@@ -17,6 +17,19 @@ const getBrowserLocale = () => {
     };
 };
 
+const browserLanguage = typeof navigator === 'undefined'
+    ? 'en-US'
+    : navigator.language || 'en-US';
+
+const browserNumberFormatter = typeof Intl === 'undefined'
+    ? null
+    : new Intl.NumberFormat(browserLanguage);
+
+const browserDateTimeFormatter = typeof Intl === 'undefined'
+    ? null
+    : new Intl.DateTimeFormat(browserLanguage, { hour: 'numeric' });
+
+
 export const getLocales = () => [getBrowserLocale()];
 
 export const findBestLanguageTag = (languageTags) => {
@@ -37,7 +50,7 @@ export const getNumberFormatSettings = () => {
     }
 
     // Get real browser number format
-    const formatter = new Intl.NumberFormat(navigator.language);
+    const formatter = browserNumberFormatter;
     const parts = formatter.formatToParts(1234.5);
 
     return {
@@ -47,9 +60,8 @@ export const getNumberFormatSettings = () => {
 };
 
 export const uses24HourClock = () => {
-    if (typeof navigator === 'undefined' || typeof Intl === 'undefined') return false;
-    const locale = navigator.language || 'en-US';
-    const formatter = new Intl.DateTimeFormat(locale, { hour: 'numeric' });
+    if (!browserDateTimeFormatter) return false;
+    const formatter = browserDateTimeFormatter;
     const parts = formatter.formatToParts(new Date(2020, 0, 1, 13));
     return !parts.some(part => part.type === 'dayPeriod');
 };

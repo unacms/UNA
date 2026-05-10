@@ -87,9 +87,6 @@ const MsgFeed = memo(({ item, handlerMenuSelect }) => {
 
     const handlerClearGhost = useCallback((id) => Services.clearGhost({ id }), []);
 
-    if (!created)
-        return (<View></View>);
-
     useEffect(() => {
         if (mode === 'edit')
             (async() => await Services.getForm({ action: mode, id })
@@ -98,6 +95,9 @@ const MsgFeed = memo(({ item, handlerMenuSelect }) => {
             ();
 
     }, [mode]);
+
+    if (!created)
+        return (<View></View>);
 
     return (
         <View className='w-full pt-3 '>

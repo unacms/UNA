@@ -33,11 +33,11 @@ export default function FormFieldMultiField(props) {
         }));
     }
 
-    const AddNew = () => {
+    const addNew = () => {
         setValues(prev => [...prev, { 'id': -Date.now(), value: '' }]);
     };
 
-    const Delete = (id) => {
+    const deleteValue = (id) => {
         setValues(prev => prev.filter(item => item.id !== id));
     };
 
@@ -60,8 +60,8 @@ export default function FormFieldMultiField(props) {
 
                             />
 
-                            {index >= minCount && <View className='pl-2'><Button variant="secondary" onPress={() => Delete(value.id)} size="lg" startDecorator="X" /></View>}
-                            {index == minCount - 1 && <View className='pl-2'><Button variant="secondary" onPress={AddNew} size="lg" startDecorator="Plus" /></View>}
+                            {index >= minCount && <View className='pl-2'><Button variant="secondary" onPress={() => deleteValue(value.id)} size="lg" startDecorator="X" /></View>}
+                            {index == minCount - 1 && <View className='pl-2'><Button variant="secondary" onPress={addNew} size="lg" startDecorator="Plus" /></View>}
 
                         </Row>
                     )

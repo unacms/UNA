@@ -144,10 +144,6 @@ function PageLayoutContent({ layout, data }) {
         item => item.id === "sys-account-profile-system"
     );
 
-    if (data?.page_status === 404 || data?.page_status === 403) {
-        return <ErrorPage type={data?.page_status} />;
-    }
-
     const Component = useMemo(() => {
         return getComponent('layout', layoutName);
     }, [layoutName]);
@@ -159,6 +155,10 @@ function PageLayoutContent({ layout, data }) {
 
         return `layout-${layoutName}-${data.uri || data.url || ''}-${data?.timestamp || ''}`;
     }, [layoutName, data.uri, data.url, data?.timestamp]);
+
+    if (data?.page_status === 404 || data?.page_status === 403) {
+        return <ErrorPage type={data?.page_status} />;
+    }
 
     if (currentUser && !currentUser.confirmed && appSetting('layout', 'lock_unconfirmed')) {
         return <ConfirmEmail url={data.url} />;

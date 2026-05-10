@@ -9,7 +9,7 @@ import { useCurrentUser } from 'app/context/user'
 import BottomSheet from 'app/ui/molecules/bottomsheet_content';
 import { appSetting, storageClear, storageGet, decodeText } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
-import OneSignal from 'react-onesignal';
+import { scheduleOneSignalSubscription } from 'app/lib/one-signal';
 import { useThemeName } from 'app/design/theme';
 import { useTranslation } from 'react-i18next'
 import { useLayoutSettings } from 'app/context/layout-settings';
@@ -19,81 +19,17 @@ import { PageHeader } from 'app/ui/molecules/page_header';
 import { useFooter } from 'app/context/jotai/layout';
 import Script from 'next/script';
 
-// Глобальный флаг для отслеживания инициализации OneSignal (общий для всех экземпляров компонента)
-let oneSignalInitialized = false;
-let oneSignalInitPromise = null;
-
-async function runOneSignal() {
-    const ONESIGNAL_KEY = appSetting('config', 'api_keys', 'onesignal');
-    const isLocalhost = window.location.hostname === 'localhost';
-    if (!isLocalhost && ONESIGNAL_KEY && !appSetting('config', 'onesignal_web_disable')) {
-        // Если уже инициализирован, выходим
-        if (oneSignalInitialized) {
-            return;
-        }
-
-        // Если есть активный промис инициализации, ждем его
-        if (oneSignalInitPromise) {
-            await oneSignalInitPromise;
-            return;
-        }
-
-        // Проверяем состояние OneSignal SDK
-        if (window.OneSignal && (window.OneSignal.isInitialized || window.OneSignal._isInitialized)) {
-            oneSignalInitialized = true;
-            return;
-        }
-
-        // Создаем промис инициализации для предотвращения параллельных вызовов
-        oneSignalInitPromise = (async () => {
-            try {
-                console.log('OneSignal: Starting initialization');
-                await OneSignal.init({ appId: ONESIGNAL_KEY, allowLocalhostAsSecureOrigin: true });
-                oneSignalInitialized = true;
-                OneSignal.Slidedown.promptPush();
-            } catch (error) {
-                // Обрабатываем различные варианты ошибок "already initialized"
-                const errorMessage = error?.message || error?.toString() || '';
-                if (errorMessage.includes('already initialized') ||
-                    errorMessage.includes('SDK already initialized')) {
-                    oneSignalInitialized = true;
-                    console.log('OneSignal: Already initialized, skipping');
-                } else {
-                    console.error('OneSignal initialization error:', error);
-                }
-            } finally {
-                oneSignalInitPromise = null;
-            }
-        })();
-
-        await oneSignalInitPromise;
-    }
-}
-
-
 const MemoizedContent = React.memo(({ currentUser, pageLayoutName, layoutName, data, children, blocks }) => {
     const [isModal, setIsModal] = useState(false);
     const { t } = useTranslation()
     useEffect(() => {
         if (currentUser === false && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'login','home',  'forgot-password', 'confirm-email'].includes(data.uri)) {
-
-            setTimeout(() => {
+            const timeoutId = setTimeout(() => {
                 setIsModal(true)
             }, appSetting('layout', 'show_login_modal'));
+            return () => clearTimeout(timeoutId);
         }
     }, [currentUser]);
-
-    const ModalPopup = ({ }) => {
-        let p = {
-            blocks: blocks,
-            data: data,
-        }
-        if (!isModal)
-            return <></>
-        return (<Modal title={t('login_modal_title')} onVisible={isModal} onClose={() => handleCloseModal()}>
-            <PopupModal />
-        </Modal>);
-    };
 
     const handleCloseModal = () => {
         //storageSet('layout:modal', '', true, true);
@@ -115,7 +51,11 @@ const MemoizedContent = React.memo(({ currentUser, pageLayoutName, layoutName, d
             <Content layoutName={layoutName} children={children} currentUser={currentUser} url={data?.url} />
             <Footer />
             <BottomSheet />
-            <ModalPopup />
+            {isModal && (
+                <Modal title={t('login_modal_title')} onVisible={isModal} onClose={() => handleCloseModal()}>
+                    <PopupModal />
+                </Modal>
+            )}
         </View>
     );
 
@@ -165,6 +105,10 @@ export default function Layout(props) {
     }, [handlePageShow]);
 
     useEffect(() => {
+        if (!currentUser?.id) {
+            return;
+        }
+
         const addLinkTag = (rel, href, crossOrigin) => {
             const exists = document.querySelector(`link[rel="${rel}"][href="${href}"]`);
             if (exists) return;
@@ -180,9 +124,10 @@ export default function Layout(props) {
         addLinkTag('preconnect', 'https://cdn.onesignal.com', 'anonymous');
         addLinkTag('dns-prefetch', 'https://onesignal.com');
 
-        runOneSignal();
-
-    }, []);
+        return scheduleOneSignalSubscription(currentUser, {
+            askPermission: appSetting('notifications', 'onesignal_request_on_load') ?? appSetting('native', 'onesignal_request_on_load'),
+        });
+    }, [currentUser?.id]);
 
     useEffect(() => {
         if (navigator.serviceWorker) {
@@ -304,9 +249,6 @@ if (elH > document.documentElement.scrollHeight - window.innerHeight) return;
 
     }, [currentUser?.notifications]);
 
-    if (data?.empty)
-        return <>{children}</>
-
     const themeSuffix = theme === 'dark' ? '_dark' : '';
     const stylesBgImage = {
         backgroundAttachment: 'fixed',
@@ -326,6 +268,10 @@ if (elH > document.documentElement.scrollHeight - window.innerHeight) return;
         applyStyles(stylesBgImage);
         applyStyles(stylesBg);
     }, [stylesBgImage, stylesBg]);
+
+    if (data?.empty)
+        return <>{children}</>
+
     return <MemoizedContent pageLayoutName={pageLayoutName} blocks={blocks} currentUser={currentUser} layoutName={layoutName} data={data} children={children} uri={uri} />
 }
 

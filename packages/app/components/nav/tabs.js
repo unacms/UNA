@@ -9,7 +9,8 @@ import Profile from 'app/ui/molecules/profile';
 import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next';
 //import BottomSheetDataContext from 'app/context/bottomsheet';
-import { FeedbackHaptics, getPageData, subscribeOneSignal } from 'app/lib/util';
+import { FeedbackHaptics, getPageData } from 'app/lib/util';
+import { scheduleOneSignalSubscription } from 'app/lib/one-signal';
 import * as Linking from 'expo-linking';
 import { parseUrl } from 'app/lib/util'
 import { clearNotif } from 'app/lib/util'
@@ -244,7 +245,9 @@ export default function Tabs() {
 
     useEffect(() => {
         if (currentUser) {
-            subscribeOneSignal(currentUser, appSetting('native', 'onesignal_request_on_load'));
+            return scheduleOneSignalSubscription(currentUser, {
+                askPermission: appSetting('notifications', 'onesignal_request_on_load') ?? appSetting('native', 'onesignal_request_on_load'),
+            });
         }
     }, [currentUser?.id]);
 

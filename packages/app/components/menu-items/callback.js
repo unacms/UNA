@@ -159,6 +159,7 @@ export default function MenuItemButton(oProps) {
                         controlSize={oProps.params?.button_size}
                         borderShape={oProps.params?.button_border_shape}
                         width={oProps.params?.button_full_width ? 'fill' : 'auto'}
+                        contentInsets={oProps.params?.button_content_insets}
                         onPress={(event) => handleClick(event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps)}
                     />
                 ) : (

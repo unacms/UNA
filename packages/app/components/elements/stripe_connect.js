@@ -14,9 +14,7 @@ export default function NotificationBanner({ data, blockWrapperProps }) {
 
     const secretRef = useRef(null);
     const { currentUser } = useCurrentUser();
-    if (!currentUser) {
-        return null; 
-    }
+    const containerRef = useRef(null);
 
     const heights = {
         payments: 'h-96',
@@ -38,9 +36,9 @@ export default function NotificationBanner({ data, blockWrapperProps }) {
     const appearance = { variables: { colorPrimary: '#228403' } }
     const collectionOptions = { fields: 'eventually_due', futureRequirements: 'include' }
     const onNotificationsChange = handleNotificationsChange
-    const containerRef = useRef(null);
-
     useEffect(() => {
+        if (!currentUser || !containerRef.current) return;
+
         const connectInstance = loadConnectAndInitialize({
             publishableKey,
             fetchClientSecret,
@@ -54,7 +52,11 @@ export default function NotificationBanner({ data, blockWrapperProps }) {
         return () => {
             if (banner.remove) banner.remove();
         };
-    }, [currentUser.id]);
+    }, [currentUser?.id]);
+
+    if (!currentUser) {
+        return null; 
+    }
 
     return (
         <BlockWrapper {...blockWrapperProps}>

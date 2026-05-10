@@ -9,10 +9,10 @@ export default function ElementRedirect({data, blockWrapperProps}) {
     useEffect(() => {
         const currentTab = '/' + (pathname.split('/')[1] || 'tab0');
         if (timeout) {
-            setTimeout(() => redirectTo(router, uri, currentTab), timeout);
-        } else {
-            redirectTo(router, uri, currentTab);
+            const timeoutId = setTimeout(() => redirectTo(router, uri, currentTab), timeout);
+            return () => clearTimeout(timeoutId);
         }
+        redirectTo(router, uri, currentTab);
     }, [uri, timeout]);
 
     return timeout ? null : null;

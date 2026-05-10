@@ -13,8 +13,10 @@ let cachedData = {};
 
 async function getCachedData(props) {
      //AFTER REACT 19 UPDATE NEED REMOVE DOUBLE CALLS
-    const params = await props.params
-    const search_params = await props.searchParams
+    const [params, search_params] = await Promise.all([
+        props.params,
+        props.searchParams,
+    ])
 
     // Generate a unique key for each `props` input to store cache separately for each set of `props`
     const cacheKey = JSON.stringify({ params, search_params });
@@ -51,12 +53,9 @@ const getData = cache(async (params, search_params) => {
     let hdrs = await headers();
     let cookieString = search_params.cookieString;    
 
-    const opts = {
-        headers: {
-            cookie: cookieString,
-            authorization: 'Bearer ' + (hdrs?.get("x-tenant-una-key") ?? UNA_API_KEY),
-        },
-        cache: 'no-store'
+    const fetchHeaders = {
+        cookie: cookieString,
+        authorization: 'Bearer ' + (hdrs?.get("x-tenant-una-key") ?? UNA_API_KEY),
     };
     
     let l = hdrs?.get("x-tenant-una-url") ?? UNA_URL;
@@ -82,7 +81,10 @@ const getData = cache(async (params, search_params) => {
     console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', searchParams, l);
     let res;
     try {
-        res = await fetch(l, opts)
+        res = await fetch(l, {
+            headers: fetchHeaders,
+            cache: 'no-store',
+        })
     } catch (error) {
         console.error('Server fetch failed (network/connection):', error);
         return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: 503 };

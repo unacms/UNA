@@ -115,14 +115,6 @@ export default function UniList(props) {
 
     }, [itemContent]);
 
-    if (props.no_scroll) {
-        return <View>
-            {data.map((item, index) => {
-                return renderItem({ item: item, index });
-            })}
-        </View>;
-    }
-
     const normalizedHeight = (() => {
         if (typeof height === 'number') {
             return height > 0 ? `${height}px` : undefined;
@@ -202,6 +194,14 @@ export default function UniList(props) {
         },
         ...rest,
     };
+
+    if (props.no_scroll) {
+        return <View>
+            {data.map((item, index) => {
+                return renderItem({ item: item, index });
+            })}
+        </View>;
+    }
 
     // Get dynamic padding based on endpoint/module
     const listPadding = paddingForList(endpoint);

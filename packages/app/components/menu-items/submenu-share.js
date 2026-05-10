@@ -110,6 +110,7 @@ export default function MenuItemSubmenuShare(oProps) {
                             controlSize={oProps.params?.button_size}
                             borderShape={oProps.params?.button_border_shape}
                             width={oProps.params?.button_full_width ? 'fill' : 'auto'}
+                            contentInsets={oProps.params?.button_content_insets}
                         />
                     ) : (
                         <ButtonAction {...oButtonProps} title={oProps?.title ? oProps.title : ''} startDecorator={oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''} />

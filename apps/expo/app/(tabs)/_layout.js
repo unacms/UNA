@@ -33,7 +33,6 @@ if (!i18n.isInitialized) {
 import { remoteSettings } from 'app/settings/remote';
 import { getRemoteSettings } from 'app/config';
 import { StatusBar } from 'react-native';
-import { LogLevel, OneSignal } from 'react-native-onesignal';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { Uniwind } from 'uniwind';
 
@@ -92,9 +91,7 @@ const AppLayout = React.memo(() => {
     }, [langCode]);
     
     // Вычисляем тему вручную, чтобы избежать повторных вызовов хуков через useTheme()
-    const actualThemeName = useMemo(() => {
-        return themeName != 'auto' ? themeName : scheme;
-    }, [themeName, scheme]);
+    const actualThemeName = themeName != 'auto' ? themeName : scheme;
 
     useEffect(() => {
         Uniwind.setTheme(themeName != 'auto' ? themeName : 'system');

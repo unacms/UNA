@@ -1,8 +1,7 @@
-"use server";
-
 import { renderToString } from "react-dom/server.browser";
 import * as Icons from "lucide-react";
 
+// react-doctor-disable-next-line react-doctor/server-auth-actions
 export async function GET(request) {
     try {
         const { searchParams } = new URL(request.url);

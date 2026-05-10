@@ -1,4 +1,4 @@
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import Menu from 'app/components/menu'
 import { useState } from 'react'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
@@ -14,12 +14,12 @@ export function CoverMenuSmall(props) {
                 setNtfsOpen(bOpen)
             }}
             minPopupWidth={320}
-            trigger={<Button
+            trigger={<NeoButton
                 key="btn"
-                variant="text"
-                size="base"
-                rounded
-                startDecorator="Ellipsis"
+                image="Ellipsis"
+                style="plain"
+                controlSize="regular"
+                borderShape="circle"
             />}
         >
 
@@ -29,8 +29,10 @@ export function CoverMenuSmall(props) {
                 displayType="button"
                 params={{
                     showVertical: true,
-                    button_variant: 'text',
-                    button_rounded: false,
+                    button_style: 'plain',
+                    button_size: 'small',
+                    button_border_shape: 'capsule',
+                    button_content_insets: { x: 0 },
                     button_full_width: false,
                 }}
             />
@@ -40,7 +42,7 @@ export function CoverMenuSmall(props) {
 }
 
 export function CoverMenu(props) {
-    let size = props.size || 'base'
+    let size = props.size || 'regular'
 
     const isSplitMenu = props.isSplitMenu;
 
@@ -91,9 +93,10 @@ export function CoverMenu(props) {
                 show_action: true,
                 show_counter: true,
                 show_combined: true,
-                button_variant: 'secondary',
+                button_style: 'bordered',
+                button_primary_style: 'borderedProminent',
+                button_border_shape: 'capsule',
                 button_size: size,
-                button_rounded: false,
                 button_full_width: props?.params?.button_full_width ?? false,
                 className: 'flex-wrap',
                 isFixedCount: true,
@@ -160,9 +163,9 @@ export function CoverMenuMore(props) {
                 button_style: buttonStyle,
                 button_size: buttonSize,
                 button_primary_style: 'glassProminent',
-                button_border_shape: 'roundedRectangle',
+                button_border_shape: 'capsule',
                 button_full_width: props?.params?.button_full_width ?? false,
-                className: 'flex-wrap justify-end gap-x-2',
+                className: '  gap-2  ',
                 isFixedCount: true,
             }}
         />
@@ -175,13 +178,17 @@ export function CoverMenuMeta(props) {
             {...props}
             displayType="mixed"
             params={{
-                button_style: 'bordered',
+                button_style: 'plain',
                 button_size: props.button_size || 'small',
                 button_border_shape: 'capsule',
+                button_content_insets: { x: 0 },
                 
                 list_display_size: props.list_display_size || 'xs',
                 list_max_count: props.list_max_count || 3,
-                className: ' gap-2 flex-wrap flex-auto items-center',
+                list_className: 'hidden sm:flex',
+                menu_item_separator: 'dot',
+                menu_item_separator_class: 'h-1 w-1 rounded-full bg-muted-foreground/60',
+                className: ' gap-3 flex-wrap flex-auto items-center',
                 justify_items: 'start'
             }}
         />

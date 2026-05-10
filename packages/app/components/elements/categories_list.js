@@ -9,8 +9,8 @@ export default function CategoriesList({ data, blockWrapperProps }) {
         <BlockWrapper {...blockWrapperProps}>
             <View className=" w-full flex-row flex-wrap">
                 {data.map((item, index) => (
-                    <View className='w-full '>
-                        <Link key={`menu-${index}`} href={item.url}>
+                    <View key={item.id || item.name || item.url || `menu-${index}`} className='w-full '>
+                        <Link href={item.url}>
                             <View className="flex-row gap-x-1 border border-border/60  p-1 bg-card rounded-xl m-1">
                                 <Button variant="text" startDecorator="Folder" />
                                 <Text className=" text-base my-auto font-medium text-secondary-foreground  ">

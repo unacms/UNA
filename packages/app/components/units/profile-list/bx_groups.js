@@ -12,12 +12,11 @@ export default function Unit(props) {
     let data = props.data
 
     const { cardData } = useCardData()
+    const [state, setState] = useState(false);
 
     if (!!cardData?.hidden) return
 
     let sMeta = <></>
-
-    const [state, setState] = useState(false);
 
     const processInvitation = async (request_url) => {
         await fetcher(request_url);

@@ -66,7 +66,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     const setFooter = useSetFooter();
     const searchParams = useLocalSearchParams();
 
-    const localUrl = isModal ? url : useLocalSearchParams().url;
+    const localUrl = isModal ? url : searchParams.url;
     const commentsData = useMemo(() => data?.layout_parsed ? data.elements.cell_bottom[0] : DataByName(data, blocks?.comments), [data, blocks?.comments]);
     const commentsContent = commentsData?.content?.[0];
     const commentsBrowse = commentsContent?.browse;

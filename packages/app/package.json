@@ -11,5 +11,10 @@
     "crypto": "file:../../crypto-shim",
     "solito": "4.3.0"
   },
+  "peerDependencies": {
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0",
+    "react-native": ">=0.81.0"
+  },
   "sideEffects": false
 }

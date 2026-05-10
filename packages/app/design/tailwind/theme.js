@@ -8,45 +8,15 @@ const nativewindOS = process.env.NATIVEWIND_OS;
 const isNative = nativewindOS === 'ios' || nativewindOS === 'android' || process.env.TAILWIND_TARGET === 'native';
 const { nativewindUIColors } = require('app/design/tailwind/nativewindui-theme');
 
-// Keep web shadows aligned with Tailwind defaults while providing
-// parseable single-shadow values for NativeWind on iOS/Android.
 
-//
-// The `btn-*` family below uses stacked shadows (incl. inset) to define
-// button surfaces *without* a `border` style. This avoids the well-known
-// problems with mixing borders and rounded corners on:
-//   - Native iOS — borders break the smooth (superellipse) corner rendering;
-//     `overflow: hidden` workarounds clip the wrong shape.
-//   - Cross-platform — borders add layout px and shift the box model
-//     differently on web vs native.
-//   - Dark mode — a single border colour rarely reads correctly across both
-//     themes; the `*-deep` variants give us a second tuned stack.
-//
-// React Native 0.81 supports `boxShadow` natively, including stacked + inset
-// shadows, so the same strings work on web and native via NativeWind.
-//
-// Currently only the `glass` family is in active use. The `bordered` /
-// `borderedProminent` styles are intentionally flat (no shadow) per the
-// design call, and `outline` / `focus` tokens are kept around as
-// cross-platform fallbacks for places that can't rely on `border` /
-// `outline` CSS (e.g. inside RN where outlines aren't supported).
 const boxShadowBtn = {
-    // Pure outline replacement — single 1px ring, no fill, no lift.
-    // Reserved for "outline-only" surfaces that need a 1px ring without
-    // pulling in a real CSS `border`. Not currently used by any built-in
-    // style; available via `classNames.container = 'shadow-btn-outline …'`.
+    'card-outline':       'inset 0 0 0 1px rgb(255 255 255 / 0.30), inset 0 1px 0 0 rgb(255 255 255 / 0.40), 0 0 0 1px rgb(0 0 0 / 0.05), 0 4px 8px -2px rgb(0 0 0 / 0.06), 0 16px 32px -8px rgb(0 0 0 / 0.10)',
+    'card-outline-deep':  'inset 0 0 0 1px rgb(255 255 255 / 0.06), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.40), 0 4px 8px -2px rgb(0 0 0 / 0.30), 0 16px 32px -8px rgb(0 0 0 / 0.50)',
+
     'btn-outline':      '0 0 0 1px rgb(0 0 0 / 0.10)',
     'btn-outline-deep': '0 0 0 1px rgb(255 255 255 / 0.10)',
-
-    // Glass surface — inner highlights + thin outer ring + a wide soft
-    // ambient drop so the surface reads as floating above the page.
-    // Tuned for neutral/translucent glass surfaces.
     'btn-glass':       'inset 0 0 0 1px rgb(255 255 255 / 0.30), inset 0 1px 0 0 rgb(255 255 255 / 0.40), 0 0 0 1px rgb(0 0 0 / 0.05), 0 4px 8px -2px rgb(0 0 0 / 0.06), 0 16px 32px -8px rgb(0 0 0 / 0.10)',
     'btn-glass-deep':  'inset 0 0 0 1px rgb(255 255 255 / 0.06), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.40), 0 4px 8px -2px rgb(0 0 0 / 0.30), 0 16px 32px -8px rgb(0 0 0 / 0.50)',
-
-    // Glass pressed — keep the same border/highlight stack but shrink the
-    // ambient drop so the button visually settles closer to the surface.
-    // No inset darkening (it conflicts with the press scale animation).
     'btn-glass-pressed':      'inset 0 0 0 1px rgb(255 255 255 / 0.30), inset 0 1px 0 0 rgb(255 255 255 / 0.40), 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 4px -1px rgb(0 0 0 / 0.06)',
     'btn-glass-pressed-deep': 'inset 0 0 0 1px rgb(255 255 255 / 0.06), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.40), 0 2px 4px -1px rgb(0 0 0 / 0.30)',
 

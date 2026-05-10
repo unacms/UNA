@@ -524,7 +524,7 @@ function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, cour
       <DragContext onSort={handleStepsSort} renderItem={renderStep}>
         {steps.map((item, index) => {
                             return (
-                                <DragItem data={item} index={index} renderItem={renderStep} isDragEnabled={isEditable} />
+                                <DragItem key={item.id || item.name || item.title || `step-${index}`} data={item} index={index} renderItem={renderStep} isDragEnabled={isEditable} />
                             )
                         })
 
@@ -575,7 +575,7 @@ function LessonItem({ lessonItemData, lessonIndex, lessonData, startLessonPart }
                 })}
             </Row>
             {!!lessonItemData?.title && <Text className="mb-4  text-base leading-tight tracking-tight font-bold text-secondary-foreground ">{lessonItemData?.title}</Text>}
-            {!!lessonItemData?.image && !lessonItemData?.video && <View className="w-full aspect-[2/1] rounded-xl overflow-hidden "><Image {...lessonItemData.image} alt={lessonItemData.title} className=" u-cover" view="cover" /></View>}
+            {!!lessonItemData?.image && !lessonItemData?.video && <View className="w-full aspect-2/1 rounded-xl overflow-hidden "><Image {...lessonItemData.image} alt={lessonItemData.title} className=" u-cover" view="cover" /></View>}
             {!!lessonItemData?.video && <View className='w-full aspect-video rounded-xl overflow-hidden '>
                 <Video poster={lessonItemData.video.src_poster} src={lessonItemData.video.src_mp4} cover={true} controls={true} muted={"muted"} />
             </View>}

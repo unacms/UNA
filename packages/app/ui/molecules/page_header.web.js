@@ -103,6 +103,7 @@ export const PageHeader = ({ pageData }) => {
             setIsClosing(false);
             setIsFixedMounted(false);
         }, FIXED_BAR_DISMISS_MS);
+        return () => clearTimer(closeTimerRef);
     }, [isClosing, isFixedMounted, scrollDirection, usesFixedOverlayHeader]);
 
     useEffect(() => {
@@ -122,12 +123,6 @@ export const PageHeader = ({ pageData }) => {
     const shouldRenderFixedLayer = usesFixedOverlayHeader && (isFixedMounted || isClosing);
     const allowPointerEvents = showFixedHeader && !isEntering;
     const headerContainerBaseClass = appSetting('layout', 'header', 'container')
-        .replace('header-fixed', '')
-        .replace('web:fixed', '')
-        .replace('web:top-0', '')
-        .replace('web:transition-transform', '')
-        .replace('web:duration-300', '')
-        .replace('web:ease-in-out', '');
     const fixedHeaderClass =
         ' header-fixed web:fixed web:top-0 web:left-0 web:right-0 web:z-50 -mt-[env(safe-area-inset-top)] pt-[env(safe-area-inset-top)] ';
     const flowTransitionClass =

@@ -2,7 +2,7 @@ import { View, ViewRef, Pressable } from 'app/design/view'
 import { appSetting, menuItemsByName } from 'app/lib/util';
 import { getComponent } from 'app/components/registry';
 import { useCurrentUser } from 'app/context/user'
-import { useMemo, useState, memo } from "react";
+import { Fragment, useMemo, useState, memo } from "react";
 import { Button, NeoButton } from 'app/design/controls';
 import DynamicMenu from 'app/components/nav/menu-dynamic';
 import { Platform } from 'react-native'
@@ -105,15 +105,11 @@ export default function ElementMenu(oProps) {
     //--- show menu's content only
     const bShowContent = oParams.showContent === 'true';
 
-	if (!oProps.items){
-	    return;
-	}
-
     //--- use iconset if available
     let iconset = { ...appSetting('menu_items', 'iconset'), ...appSetting('menu_items', oProps.object, 'iconset') };
     if (iconset) oParams.iconset = iconset;
 
-    const sortedItems = [...oProps.items].sort((a, b) => {
+    const sortedItems = [...(oProps.items || [])].sort((a, b) => {
         
         const pa = (a.primary === true || a.primary === 1) ? 1 : 0;
         const pb = (b.primary === true || b.primary === 1) ? 1 : 0;
@@ -152,6 +148,10 @@ export default function ElementMenu(oProps) {
             return true;
         });
     }, [bAutoFilter, oProps.object, sortedItems, currentUser, bShowMatched, sDisplayType, sShowSelected, aExcept, aExceptTitle]);
+
+	if (!oProps.items){
+	    return;
+	}
 
     if (!oProps?.items?.length)
         return [];
@@ -201,9 +201,17 @@ export default function ElementMenu(oProps) {
             }
 
             return (
-                <View key={`menu${originalIndex}`} className={` ${spacingClass} ${sAlignItems === 'stretch' ? 'flex-auto' : ''}  `}>
-                    <Wrapper {...cntProps}>{element}</Wrapper>
-                </View>
+                <Fragment key={`menu${originalIndex}-group`}>
+                    <View key={`menu${originalIndex}`} className={` ${spacingClass} ${sAlignItems === 'stretch' ? 'flex-auto' : ''}  `}>
+                        <Wrapper {...cntProps}>{element}</Wrapper>
+                    </View>
+                    {!isLast && oProps?.params?.menu_item_separator === 'dot' ? (
+                        <View
+                            key={`menu${originalIndex}-separator`}
+                            className={oProps?.params?.menu_item_separator_class || 'h-1 w-1 rounded-full bg-muted-foreground/60'}
+                        />
+                    ) : null}
+                </Fragment>
             );
         });
 

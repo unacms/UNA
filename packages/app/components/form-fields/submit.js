@@ -63,12 +63,13 @@ export default function FormFieldSubmit(props) {
     //let fb = formProps.button_full_width || props.button_full_width || !isDesktop
     const fullWidth = !notFullWidth;// ? false : (formProps.button_full_width || props.button_full_width);
     useEffect(() => {
+        let timeoutId;
         const subscription = emitter.addListener(`form_${form_name}`, (data) => {
             if (data.action == 'submited') {
                 setIsSumbitting(true);
             }
             if (data.action == 'received') {
-                setTimeout(() => {
+                timeoutId = setTimeout(() => {
 					 setIsSumbitting(false);
 				}, 1000);
                
@@ -76,6 +77,7 @@ export default function FormFieldSubmit(props) {
         })
 
         return () => {
+            if (timeoutId) clearTimeout(timeoutId);
             subscription.remove()
         }
     }, [])

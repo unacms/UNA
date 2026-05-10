@@ -295,7 +295,7 @@ export default function Browse(props) {
         
         return (
             <View className="p-8 mt-8">
-                <View className="gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8  items-center rounded-2xl  bg-muted-foreground/10 ">
+                <View className="gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 rounded-2xl  bg-muted-foreground/10 ">
                     <Text className="text-center text-base text-muted-foreground ">
                         No notifications
                     </Text>
@@ -316,6 +316,7 @@ export default function Browse(props) {
 
         const items = limitedItems.map((item, index) => (
             <Unit
+                key={item.id || item.name || item.url || `gallery-${index}`}
                 unit={data.unit ? data.unit : ''}
                 mode={unitMode}
                 module={data.module ? data.module : ''}

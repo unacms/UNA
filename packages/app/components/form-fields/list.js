@@ -15,7 +15,7 @@ export default function FormFieldMultiField(props) {
     const minCount = params.minCount || 1;
     const maxCount = params.maxCount || 10;
 
-    const CreateEmpty = () => {
+    const createEmpty = () => {
         const keys = (params.fields || []).map(f => f.name);
         return keys.reduce((acc, key) => {
             acc[key] = '';
@@ -25,7 +25,7 @@ export default function FormFieldMultiField(props) {
 
     const initedValue = props.value ? (strToObj(props.value) || []).filter(obj =>
         Object.values(obj).some(val => val !== '')
-    ) : [CreateEmpty()];
+    ) : [createEmpty()];
 
     const [values, setValues] = useState(initedValue);
     const formContext = useFormContext();
@@ -35,11 +35,11 @@ export default function FormFieldMultiField(props) {
     }, [props.name, values]);
 
 
-    const AddNew = () => {
-        setValues(prev => [...prev, CreateEmpty()]);
+    const addNew = () => {
+        setValues(prev => [...prev, createEmpty()]);
     };
 
-    const Delete = (index) => {
+    const deleteValue = (index) => {
         setValues(prev => {
             const newValues = [...prev];
             newValues.splice(index, 1);
@@ -74,8 +74,8 @@ export default function FormFieldMultiField(props) {
 
                                 />)
                             })}
-                            {index >= minCount && <View><Button variant="secondary" onPress={() => Delete(index)} size="lg" startDecorator="X" /></View>}
-                            {(index == 0 && values.length <maxCount ) && <View><Button variant="secondary" onPress={AddNew} size="lg" startDecorator="Plus" /></View>}
+                            {index >= minCount && <View><Button variant="secondary" onPress={() => deleteValue(index)} size="lg" startDecorator="X" /></View>}
+                            {(index == 0 && values.length <maxCount ) && <View><Button variant="secondary" onPress={addNew} size="lg" startDecorator="Plus" /></View>}
                           
                         </Row>
                     )

@@ -9,7 +9,7 @@ export default function CourseStructure({ blockWrapperProps, data }) {
         {
             data.map((item) => {
                 return (
-                    <Card rounded=' rounded-none sm:rounded-2xl  ' margin=' max-w-screen-lg mx-auto w-full p-3 sm:p-4 mb-1 sm:mb-4 '>
+                    <Card key={item.id || item.link || item.title} rounded=' rounded-none sm:rounded-2xl  ' margin=' max-w-screen-lg mx-auto w-full p-3 sm:p-4 mb-1 sm:mb-4 '>
                         <Link href={item.link}>
                             <View>
                             <Text>{item.title}</Text>

@@ -8,6 +8,38 @@ import Video from 'app/ui/atoms/video';
 import { FeedbackHaptics } from 'app/lib/util';
 import { BlockWrapper } from 'app/components/block-wrapper'
 
+const AttachmentContainer = ({ children }) => (
+    <View className='p-1 w-1/4'>
+        <View className="aspect-video rounded-lg overflow-hidden border border-border/60  items-center justify-center">
+            {children}
+        </View>
+    </View>
+);
+
+const LinkItem = ({ data }) => (
+    <AttachmentContainer>
+        <Link href={data.url}>
+            <Text>{data.file_name}</Text>
+        </Link>
+    </AttachmentContainer>
+);
+
+const ImageItem = ({ data, handleShowImage }) => (
+    <AttachmentContainer>
+        <Pressable className="w-full h-full" onPress={() => handleShowImage([data.src, 'image'])}>
+            <Image sizes="160px" src={data.src} alt='' view="cover" />
+        </Pressable>
+    </AttachmentContainer>
+);
+
+const VideoItem = ({ data, handleShowImage }) => (
+    <AttachmentContainer>
+        <Pressable className="w-full h-full" onPress={() => handleShowImage([data.src, 'video'])}>
+            <Video src={data.src} />
+        </Pressable>
+    </AttachmentContainer>
+);
+
 export default function ElementEntityAttachments({ data, blockWrapperProps }) {
 
     const [showImage, setShowImage] = useState(false);
@@ -17,38 +49,6 @@ export default function ElementEntityAttachments({ data, blockWrapperProps }) {
         setShowImage(img);
     } 
     
-    const Container = ({ children }) => (
-        <View className='p-1 w-1/4'>
-            <View className="aspect-video rounded-lg overflow-hidden border border-border/60  items-center justify-center">
-                {children}
-            </View>
-        </View>
-    );
-    
-    const LinkItem = ({ data }) => (
-        <Container>
-            <Link href={data.url}>
-                <Text>{data.file_name}</Text>
-            </Link>
-        </Container>
-    );
-    
-    const ImageItem = ({ data, handleShowImage }) => (
-        <Container>
-            <Pressable className="w-full h-full" onPress={() => handleShowImage([data.src, 'image'])}>
-                <Image sizes="160px" src={data.src} alt='' view="cover" />
-            </Pressable>
-        </Container>
-    );
-    
-    const VideoItem = ({ data, handleShowImage }) => (
-        <Container>
-            <Pressable className="w-full h-full" onPress={() => handleShowImage([data.src, 'video'])}>
-                <Video src={data.src} />
-            </Pressable>
-        </Container>
-    );
-
     const aImages = data.map((item, index) => {
         switch(item.type) {
             case 'image':

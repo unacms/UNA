@@ -217,27 +217,6 @@ export default function DropdownMenu({
     const { setBottomSheetData } = useBottomSheetData();
     const isWeb = Platform.OS === 'web';
 
-    if (isWeb || mode == 'popup') {
-        return (
-            <DropdownMenuPopup
-                showOnTop={showOnTop}
-                items={items}
-                onSelect={onSelect}
-                children={children}
-                defaultOpen={defaultOpen}
-                footer={footer}
-                variant={variant}
-                tabsOverflowSize={tabsOverflowSize}
-                openOnFocus={openOnFocus}
-                open={open}
-                onOpenChange={onOpenChange}
-                contentClassName={contentClassName}
-                resolveContent={resolveContent}
-                buttonProps={buttonProps}
-            />
-        );
-    }
-
     const handlePress = useCallback(() => {
         if (mode != "alert") {
             FeedbackHaptics('Medium')
@@ -270,6 +249,27 @@ export default function DropdownMenu({
         if (defaultOpen)
             handlePress()
     }, []);
+
+    if (isWeb || mode == 'popup') {
+        return (
+            <DropdownMenuPopup
+                showOnTop={showOnTop}
+                items={items}
+                onSelect={onSelect}
+                children={children}
+                defaultOpen={defaultOpen}
+                footer={footer}
+                variant={variant}
+                tabsOverflowSize={tabsOverflowSize}
+                openOnFocus={openOnFocus}
+                open={open}
+                onOpenChange={onOpenChange}
+                contentClassName={contentClassName}
+                resolveContent={resolveContent}
+                buttonProps={buttonProps}
+            />
+        );
+    }
 
     if (buttonProps) {
         return (

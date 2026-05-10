@@ -1,6 +1,6 @@
-import { Platform } from 'react-native'
+import { NativeModules, Platform } from 'react-native'
 
 const isBrowserRuntime = typeof document !== 'undefined'
 const isWebRuntime = Platform.OS === 'web' || process.env.EXPO_OS === 'web' || isBrowserRuntime
 
-export const nativeDriver = !isWebRuntime
+export const nativeDriver = !isWebRuntime && !!NativeModules?.NativeAnimatedModule

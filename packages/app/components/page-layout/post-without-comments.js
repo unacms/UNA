@@ -5,6 +5,7 @@ import { stripTags } from 'app/lib/util';
 import { Dimensions } from 'react-native';
 import Card from 'app/ui/molecules/card'
 import { useIsDesktop } from 'app/context/measure';
+import { Text } from 'app/design/typography';
 export default function PageLayout(props) {
 
 
@@ -79,7 +80,7 @@ export default function PageLayout(props) {
         <View className="lg:py-4">
             <Card>
                 <Row><View ref={viewCntRef} style ={{marginBottom: isStycky ? sizes.formHeight + 16: 16, heightx:sizes.otherHeight}} className='  w-full '>
-                TODO:
+                <Text>TODO:</Text>
                 </View>
                 </Row>
                 <View ref={viewFormRef} style={{width:sizes.formWidth}} onLayout={handleLayout} className={isStycky? ' fixed bottom-16 lg:bottom-0 w-full' : ' w-full'} > 

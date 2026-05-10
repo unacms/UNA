@@ -30,13 +30,6 @@ export default function ElementLink({
     const router = useRouter();
     const href = sanitazeUrl(hrefProp);
 
-    // Early return for non-emulated links with empty href
-    if (!href && emulate !== true) {
-        return children;
-    }
-
-    
-
     // Convert alt to aria-label (alt is not valid for <a> elements)
     const accessibleLabel = alt || (typeof children === 'string' ? children : undefined);
 
@@ -62,6 +55,11 @@ export default function ElementLink({
     })();
 
     const composedClassName = cn(ThemeLinkStyles[variant], sizeClass, className);
+
+    // Early return for non-emulated links with empty href
+    if (!href && emulate !== true) {
+        return children;
+    }
 
     if (emulate === true){
         return (

@@ -30,10 +30,10 @@ function Results({ data }) {
 
                                     <View className='w-full items-center justify-center py-1.5 px-2 '>
 
-                                        <Text numberOfLines={10} className="flex-wrap w-full text-foreground  font-semibold text-sm flex-wrap ">
+                                        <Text numberOfLines={10} className="flex-wrap w-full text-foreground  font-semibold text-sm ">
                                             {item2.title}
                                         </Text>
-                                        <Text className="font-medium flex-wrap w-full text-popover-foreground  text-xs flex-wrap">
+                                        <Text className="font-medium flex-wrap w-full text-popover-foreground  text-xs">
                                             {item2.width} ({item2.votes.count} votes)
                                         </Text>
                                     </View>
@@ -74,7 +74,7 @@ export function PollItem({ data, showTitle, onDelete, disabled = false, results_
 
     const [state, dispatch] = useReducer(reducer, initialState);
 
-    const Vote = async (value, results_url) => {
+    const vote = async (value, results_url) => {
         dispatch({ type: 'VOTE', value: value });
 
         const sRequest = `/api.php?r=system/do/TemplVoteServices&params[]={"s":"${data.object}","o":${value},"value":1}`;
@@ -115,7 +115,7 @@ export function PollItem({ data, showTitle, onDelete, disabled = false, results_
                         status={item2.id == state.value ? 'checked' : 'unchecked'}
                         title={item2.title}
                         disabled={state.isVoted || disabled}
-                        onPress={() => Vote(item2.id, results_url)}
+                        onPress={() => vote(item2.id, results_url)}
                     />
                 </Row>
             ))}
@@ -134,7 +134,7 @@ export default function ElementEntityPoll({ data, blockWrapperProps }) {
                 {(videoId) && <View className='w-full aspect-video rounded-xl overflow-hidden lg:mt-6'>
                     <Youtube videoId={videoId} size={3} />
                 </View>}
-                {(!!data.image && !data.video) && <View className="w-full aspect-[2/1] rounded-xl overflow-hidden lg:mt-6"><Image {...data.image} alt={data.title} className=" u-cover" view="cover" /></View>}
+                {(!!data.image && !data.video) && <View className="w-full aspect-2/1 rounded-xl overflow-hidden lg:mt-6"><Image {...data.image} alt={data.title} className=" u-cover" view="cover" /></View>}
                 <View className={"mx-auto w-full"}>
                     <H1 className="font-bold tracking-tight  text-popover-foreground  ">{data.title}</H1>
                 </View>

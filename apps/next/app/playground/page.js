@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * /playground — dev-only route for trying out the new NeoButton component.
  *
@@ -16,6 +14,11 @@
 
 import { Suspense } from 'react';
 import Root from 'app/root-client';
+
+export const metadata = {
+    title: 'NeoButton playground',
+    description: 'Development playground for trying out the NeoButton component.',
+};
 
 const data = {
     uri: 'playground',

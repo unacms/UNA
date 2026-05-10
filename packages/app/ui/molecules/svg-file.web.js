@@ -21,6 +21,7 @@ export default function ({src_web, src_dark, src_default, ...props}) {
             key={src}
             {...props}
             src={baseUrl + '/svg/' + src}
+            alt={props.alt || ''}
         />
     );
 } 

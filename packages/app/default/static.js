@@ -124,8 +124,7 @@ const SplashTextComponent = (props) => {
     return isWeb ? (
         <View className="items-center lg:items-start relative gap-6 my-auto flex-auto w-full ">
 
-            <View className="relative flex-auto h-40 w-64 opacity-80">
-            <View className=" absolute bg-primary-500/20 blur-3xl h-48 w-64 rounded-full -bottom-10 "></View>
+            <View className="relative flex-auto h-64 w-64">
 
                 <SvgFile
                     src_dark="splash-dark.svg"
@@ -564,14 +563,14 @@ const ComponentsCommentsLogin = () => {
     const { t } = useTranslation()
     return (
         <View className="py-2">
-            <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-muted-foreground/10 ">
+            <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8 rounded-2xl  bg-muted-foreground/10 ">
                 <Text className="text-center text-base text-secondary-foreground  ">
                     <Link className="text-primary" href="/login">
-                        Login
+                        <Text className="text-primary">Login</Text>
                     </Link>{' '}
                     or{' '}
                     <Link className="text-primary" href="/create-account">
-                        create an account
+                        <Text className="text-primary">create an account</Text>
                     </Link>{' '}
                     to comment
                 </Text>
@@ -585,7 +584,7 @@ const ComponentsContentEmpty = () => {
     return (
         <>
             <View className="p-2">
-                <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-muted-foreground/10 ">
+                <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full rounded-2xl  bg-muted-foreground/10 ">
                     <View className="flex-col mx-auto m-4 text-secondary-foreground  ">
                         <Icon icon="Binoculars" width={32} height={32} />
                     </View>
@@ -606,7 +605,7 @@ const PageNotFound = () => {
     return (
         <>
             <View className="p-8 mx-auto">
-                <View className="flex-col gap-2 items-center justify-center mx-auto my-auto py-4 px-8 h-full items-center rounded-2xl bg-muted ">
+                <View className="flex-col gap-2 items-center justify-center mx-auto my-auto py-4 px-8 h-full rounded-2xl bg-muted ">
                     <View className="flex-col mx-auto m-4 text-muted-foreground ">
                         <Icon icon="Binoculars" width={32} height={32} />
                     </View>
@@ -626,7 +625,7 @@ const PageError = ({ error, reset }) => {
     const { t } = useTranslation()
     return (
         <View className="mx-auto max-w-full px-2">
-            <View className="m-8 gap-y-4 items-center justify-center mx-auto my-auto py-4 px-8 items-center rounded-2xl bg-muted ">
+            <View className="m-8 gap-y-4 items-center justify-center mx-auto my-auto py-4 px-8 rounded-2xl bg-muted ">
                 <View className=" mx-auto m-4 text-muted-foreground ">
                     <Icon icon="BugOff" width={32} height={32} />
                 </View>
@@ -658,7 +657,7 @@ const PageNotAllowed = () => {
     return (
         <>
             <View className="p-8 mx-auto">
-                <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-muted-foreground/10 ">
+                <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full rounded-2xl  bg-muted-foreground/10 ">
                     <View className="flex-col mx-auto m-4 text-secondary-foreground  ">
                         <Icon icon="Binoculars" width={32} height={32} />
                     </View>
@@ -674,30 +673,31 @@ const PageNotAllowed = () => {
     )
 }
 
+const AnimatedCounter = ({ value, duration }) => {
+    const animatedValue = useState(new Animated.Value(1))[0]
+    const [displayValue, setDisplayValue] = useState(1)
+
+    useEffect(() => {
+        Animated.timing(animatedValue, {
+            toValue: value,
+            duration: duration,
+            useNativeDriver: false,
+        }).start()
+
+        const listener = animatedValue.addListener(({ value }) => {
+            setDisplayValue(Math.round(value))
+        })
+
+        return () => {
+            animatedValue.removeListener(listener)
+        }
+    }, [value])
+
+    return <Animated.Text>{displayValue}</Animated.Text>
+}
+
 export function ComponentsIntro(props) {
     const { t } = useTranslation()
-    const AnimatedCounter = ({ value, duration }) => {
-        const animatedValue = useState(new Animated.Value(1))[0]
-        const [displayValue, setDisplayValue] = useState(1)
-
-        useEffect(() => {
-            Animated.timing(animatedValue, {
-                toValue: value,
-                duration: duration,
-                useNativeDriver: false,
-            }).start()
-
-            const listener = animatedValue.addListener(({ value }) => {
-                setDisplayValue(Math.round(value))
-            })
-
-            return () => {
-                animatedValue.removeListener(listener)
-            }
-        }, [value])
-
-        return <Animated.Text>{displayValue}</Animated.Text>
-    }
     const [data, setData] = useState(1)
     const [data2, setData2] = useState([])
     useEffect(() => {
@@ -720,8 +720,8 @@ export function ComponentsIntro(props) {
 
     const CounterText = React.memo(({ data }) => {
         return (
-            <View className="absolute right-0 flex-col bg-gradient-to-r pl-16 from-transparent via-white to-white h-10 justify-end gap-y-0.5 items-end flex-none my-auto whitespace-nowrap nowrap ">
-                <Text className="font-bold text-foreground leading-5  text-3xl font-bold">
+            <View className="absolute right-0 flex-col bg-linear-to-r pl-16 from-transparent via-white to-white h-10 justify-end gap-y-0.5 items-end flex-none my-auto whitespace-nowrap nowrap ">
+                <Text className="font-bold text-foreground leading-5  text-3xl">
                     <AnimatedCounter
                         value={data}
                         duration={1000}

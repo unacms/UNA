@@ -3,7 +3,7 @@ import { fetcher } from 'app/lib/fetcher';
 import * as Crypto from 'expo-crypto';
 import { md5Sync } from 'app/lib/md5-string';
 import pako from 'pako';
-import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { decode } from 'html-entities';
 import { appSetting as setting, UNA_URL, APP_URL } from 'app/config';
@@ -930,11 +930,10 @@ function getPlural(key, count) {
 }
 
 export function tp(key, count, isHideData = false) {
-    const { t: _t } = useTranslation();
     let ct = count;
     if (isHideData)
         ct = '';
-    return _t(getPlural(key, count), { count: ct });
+    return i18n.t(getPlural(key, count), { count: ct });
 }
 
 export function linkify2(text, excluded = []) {

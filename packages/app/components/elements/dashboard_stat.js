@@ -80,8 +80,11 @@ function getCounter(num, icon = '', add = '', color = '') {
 }
 
 export default function DashboardStat(props) {
-    if (!appSetting('layout', 'user_remote_config'))
-        return <DasbordStatOld {...props} />
+    const useRemoteConfig = appSetting('layout', 'user_remote_config')
+    return useRemoteConfig ? <DashboardStatRemote {...props} /> : <DasbordStatOld {...props} />
+}
+
+function DashboardStatRemote(props) {
     const {
         layoutSettings,
         updateLayoutSettings,

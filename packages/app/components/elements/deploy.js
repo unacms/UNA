@@ -54,7 +54,7 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
             <Row className="gap-x-2 items-center">
                 {blockData.text && <Text className="text-sm text-destructive">{blockData.text}</Text>}
                 {blockData?.buttons.map((item, index) => {
-                    return <Button title={item.title} variant={index == 0 ? 'primary' : 'default'} onPress={() => handleOpenDeployForm(item)} />
+                    return <Button key={item.id || item.name || item.title || `deploy-button-${index}`} title={item.title} variant={index == 0 ? 'primary' : 'default'} onPress={() => handleOpenDeployForm(item)} />
                 })}
             </Row>
             {!!blockData?.containers?.length && (

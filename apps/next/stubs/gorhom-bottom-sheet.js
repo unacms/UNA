@@ -7,20 +7,19 @@
  */
 
 import { View, ScrollView } from 'react-native';
-import React, { forwardRef } from 'react';
 
 // Noop function
 const noop = () => {};
 
 // Mock BottomSheetModal
-export const BottomSheetModal = forwardRef(({ children }, ref) => {
+export const BottomSheetModal = () => {
     return null;
-});
+};
 
 // Mock BottomSheet
-export const BottomSheet = forwardRef(({ children }, ref) => {
+export const BottomSheet = () => {
     return null;
-});
+};
 
 // Mock BottomSheetModalProvider - just render children
 export const BottomSheetModalProvider = ({ children }) => children;

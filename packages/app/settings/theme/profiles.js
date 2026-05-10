@@ -60,9 +60,9 @@ export const settingsProfiles = {
             letter_font: 'text-2xl font-semibold',
         },
         '2xl': {
-            container: 'w-20 h-20',
-            width: 80,
-            height: 80,
+            container: 'w-24 h-24',
+            width: 96,
+            height: 96,
             font: 'text-xl font-semibold',
             letter_font: 'text-3xl font-semibold',
         },

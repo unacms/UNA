@@ -92,9 +92,8 @@ function getImageSizes() {
     return parts.join(', ');
 }
 
-export default function ElementImage(props) {
+function ElementImageResolved(props) {
     let { width, height, alt = "", src = '', style, source, nobg, sizes = LAYOUT_BREAKPOINTS.lg, ...rest } = props; // remove width & height
-    if (!src) return null;
 
     const isAbsoluteHttp = /^https?:\/\//i.test(src);
     const isBlob = src.startsWith("blob:");
@@ -196,4 +195,10 @@ export default function ElementImage(props) {
             />
         );
     }, [rest, src, alt, style, sizes, optimize]);
+}
+
+export default function ElementImage(props) {
+    if (!props.src) return null;
+
+    return <ElementImageResolved {...props} />;
 }

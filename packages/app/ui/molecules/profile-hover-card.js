@@ -78,6 +78,10 @@ function ProfileHoverCard_({ profileData, children, disabled = false }) {
         return children;
     }
 
+    return <ProfileHoverCardContent profileData={profileData}>{children}</ProfileHoverCardContent>;
+}
+
+function ProfileHoverCardContent({ profileData, children }) {
     const [pageData, setPageData] = useState(false);
 
     const handleOpenChange = useCallback((open) => {

@@ -78,12 +78,14 @@ export default function MenuItemButton(oProps) {
                 : oProps.params?.button_style;
             const hasList = oProps?.list?.length > 0;
             const listDisplay = hasList ? (
-                <ProfilesList
-                    data={oProps.list}
-                    showEmpty={false}
-                    maxCount={oProps.params?.list_max_count || 3}
-                    displaySize={oProps.params?.list_display_size || "sm"}
-                />
+                <View className={oProps.params?.list_className || ''}>
+                    <ProfilesList
+                        data={oProps.list}
+                        showEmpty={false}
+                        maxCount={oProps.params?.list_max_count || 3}
+                        displaySize={oProps.params?.list_display_size || "sm"}
+                    />
+                </View>
             ) : null;
 
             let buttonAction = oProps.params?.button_style ? (
@@ -94,6 +96,7 @@ export default function MenuItemButton(oProps) {
                     controlSize={oProps.params?.button_size}
                     borderShape={oProps.params?.button_border_shape}
                     width={oProps.params?.button_full_width ? 'fill' : 'auto'}
+                    contentInsets={oProps.params?.button_content_insets}
                 />
             ) : (
                 <ButtonAction title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />
@@ -107,7 +110,7 @@ export default function MenuItemButton(oProps) {
                         controlSize={oProps.params?.button_size}
                         borderShape={oProps.params?.button_border_shape}
                         width={oProps.params?.button_full_width ? 'fill' : 'auto'}
-                        contentInsets={oProps.params?.button_image_inset || 'mediaLeading'}
+                        contentInsets={oProps.params?.button_content_insets || oProps.params?.button_image_inset || 'mediaLeading'}
                     />
                 ) : (
                     <Text className="text-secondary-foreground web:hover:text-foreground px-2 text-sm font-medium">{oProps.title}</Text>

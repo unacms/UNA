@@ -102,8 +102,8 @@ export default function WorkerEventChecker(oProps) {
                             </View>}
                         </Row>
                         <Row className='justify-between pt-4'>
-                            <Button onPress={() => CheckInEvent(item.id, item.url)} title='Check In' size="base" variant="primary" />
-                            <Button title='Ignore' size="base" onPress={() => ForgotEvent(item.id)} />
+                            <Button onPress={() => checkInEvent(item.id, item.url)} title='Check In' size="base" variant="primary" />
+                            <Button title='Ignore' size="base" onPress={() => forgotEvent(item.id)} />
                         </Row>
 
                 </View>
@@ -112,7 +112,7 @@ export default function WorkerEventChecker(oProps) {
         }
     }, [event]);
 
-    const ForgotEvent = async (eventId) => {
+    const forgotEvent = async (eventId) => {
         forgottedEvents.push(eventId)
 
         if (!currentUser.settings) {
@@ -134,10 +134,10 @@ export default function WorkerEventChecker(oProps) {
         await fetcher(request_url);
     };
 
-    const CheckInEvent = async (eventId, eventUrl) => {
+    const checkInEvent = async (eventId, eventUrl) => {
         let request_url = '/api.php?r=bx_events/check_in/&params[]=' + eventId;
         await fetcher(request_url);
-        await ForgotEvent(eventId);
+        await forgotEvent(eventId);
         // redirectdRef.current.redirect(eventUrl);
     };
 

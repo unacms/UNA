@@ -55,7 +55,7 @@ function UnitWoInfo({ oProps, sSize, sSizeFontLetter, iSizeWidth, bShowLinks, em
             </View>}
             {!!oProps.url_avatar && <Image
                 sizes={iSizeWidth + "px"}
-                className={sSize + " z-50"}
+                className={sSize}
                 view="cover"
                 width={iSizeWidth}
                 src={oProps.url_avatar}

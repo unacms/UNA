@@ -3,10 +3,10 @@ import { getComponent } from 'app/components/registry';
 import { useMemo } from "react";
 
 export default function MenuItemElement(oProps) {
-    if (!oProps?.data?.type) return;
-
+    const type = oProps?.data?.type;
     const bShowVertical = oProps?.params?.showVertical === true;
-    const Element = useMemo(() => getComponent('molecule', String(oProps.data.type)), [oProps.data.type]);
+    const Element = useMemo(() => type ? getComponent('molecule', String(type)) : null, [type]);
+    if (!type) return;
     if (!Element) return;
 
     oProps.data.params = {

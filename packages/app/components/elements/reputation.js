@@ -30,7 +30,7 @@ export function ReputationActions({ data, blockWrapperProps }) {
             <Table className="w-full">
                 <TableHeader>
                     <TableRow>
-                        <TableHead className="flex-[3]">
+                        <TableHead className="flex-3">
                             <TableHeaderText>Action</TableHeaderText>
                         </TableHead>
                         <TableHead className="flex-1 justify-center">
@@ -44,7 +44,7 @@ export function ReputationActions({ data, blockWrapperProps }) {
                 <TableBody>
                     {data.map((item, index) => (
                         <TableRow key={index}>
-                            <TableCell className="flex-[3]">
+                            <TableCell className="flex-3">
                                 <TableCellText>
                                     {item.unit} {item.action}
                                 </TableCellText>
@@ -308,12 +308,10 @@ export function ReputationLeaderboard({ data }) {
         setProfilesList(res.data.profiles)
     }, [])
 
-    const searchForm = formProps
-        ? useMemo(
-            () => renderForm(formProps, onFormChange),
-            [formProps, onFormChange]
-        )
-        : null
+    const searchForm = useMemo(
+        () => formProps ? renderForm(formProps, onFormChange) : null,
+        [formProps, onFormChange]
+    )
 
     return (
         <>
@@ -398,7 +396,7 @@ export function ReputationHistory({ data }) {
                     <TableHead className="flex-1">
                         <TableHeaderText>Date</TableHeaderText>
                     </TableHead>
-                    <TableHead className="flex-[3]">
+                    <TableHead className="flex-3">
                         <TableHeaderText>Action</TableHeaderText>
                     </TableHead>
                     <TableHead className="flex-1 ">
@@ -416,7 +414,7 @@ export function ReputationHistory({ data }) {
                                 format="datetime"
                             />
                         </TableCell>
-                        <TableCell className="flex-[3]">
+                        <TableCell className="flex-3">
                             <TableCellText>
                                 {item.unit} {item.action}
                             </TableCellText>

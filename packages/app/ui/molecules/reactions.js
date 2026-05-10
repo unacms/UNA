@@ -127,9 +127,7 @@ const getSkeleton = () => {
     );
 };
 
-const getCounterDivided = (getIconAlias, handleGetPerformedByDvd, actionsDataState, performedBy, popupVisibleByDvd, setPopupVisibleByDvd, bShowCombined, oParams, oCounter, oButtonProps) => {
-    const { t } = useTranslation();
-
+const getCounterDivided = (t, getIconAlias, handleGetPerformedByDvd, actionsDataState, performedBy, popupVisibleByDvd, setPopupVisibleByDvd, bShowCombined, oParams, oCounter, oButtonProps) => {
     let aButtons = [];
     let aPopups = [];
 
@@ -174,9 +172,7 @@ const getCounterDivided = (getIconAlias, handleGetPerformedByDvd, actionsDataSta
     return [aButtons, aPopups];
 };
 
-const getCounterCompound = (getIconAlias, handleGetPerformedByCpd, actionsDataState, performedBy, popupVisibleByCpd, setPopupVisibleByCpd, tabVisibleByCpd, setTabVisibleByCpd, bShowCombined, oParams, oCounter, oButtonProps) => {
-    const { t } = useTranslation();
-
+const getCounterCompound = (t, getIconAlias, handleGetPerformedByCpd, actionsDataState, performedBy, popupVisibleByCpd, setPopupVisibleByCpd, tabVisibleByCpd, setTabVisibleByCpd, bShowCombined, oParams, oCounter, oButtonProps) => {
     let iTotal = 0;
     let sSelected = tabVisibleByCpd;
     const aCounter = Object.keys(oCounter.items).map(function (iKey) {
@@ -453,8 +449,8 @@ export default function ElementReactions(oProps) {
     //--- show counter
     const sShowCounterStyle = oParams?.show_counter_style || 'compound';
 
-    const _getCounterDivided = useCallback(() => getCounterDivided(_getIconAlias, _handleGetPerformedByDvd, actionsDataState, performedBy, popupVisibleByDvd, setPopupVisibleByDvd, bShowCombined, oParams, oCounter, oButtonProps), [_getIconAlias, _handleGetPerformedByDvd, actionsDataState, performedBy, popupVisibleByDvd, setPopupVisibleByDvd, bShowCombined, oParams, oCounter, oButtonProps]);
-    const _getCounterCompound = useCallback(() => getCounterCompound(_getIconAlias, _handleGetPerformedByCpd, actionsDataState, performedBy, popupVisibleByCpd, setPopupVisibleByCpd, tabVisibleByCpd, setTabVisibleByCpd, bShowCombined, oParams, oCounter, oButtonProps), [_getIconAlias, _handleGetPerformedByCpd, actionsDataState, performedBy, popupVisibleByCpd, setPopupVisibleByCpd, tabVisibleByCpd, setTabVisibleByCpd, bShowCombined, oParams, oCounter, oButtonProps]);
+    const _getCounterDivided = useCallback(() => getCounterDivided(t, _getIconAlias, _handleGetPerformedByDvd, actionsDataState, performedBy, popupVisibleByDvd, setPopupVisibleByDvd, bShowCombined, oParams, oCounter, oButtonProps), [t, _getIconAlias, _handleGetPerformedByDvd, actionsDataState, performedBy, popupVisibleByDvd, setPopupVisibleByDvd, bShowCombined, oParams, oCounter, oButtonProps]);
+    const _getCounterCompound = useCallback(() => getCounterCompound(t, _getIconAlias, _handleGetPerformedByCpd, actionsDataState, performedBy, popupVisibleByCpd, setPopupVisibleByCpd, tabVisibleByCpd, setTabVisibleByCpd, bShowCombined, oParams, oCounter, oButtonProps), [t, _getIconAlias, _handleGetPerformedByCpd, actionsDataState, performedBy, popupVisibleByCpd, setPopupVisibleByCpd, tabVisibleByCpd, setTabVisibleByCpd, bShowCombined, oParams, oCounter, oButtonProps]);
 
     let aCounter = [];
     if (bShowCounter && oCounter?.items != undefined)
