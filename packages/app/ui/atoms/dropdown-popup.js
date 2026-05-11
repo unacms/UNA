@@ -220,7 +220,7 @@ export default function DropdownPopup({
                         ? () => handleToggle(true)
                         : undefined
                 }
-                className={isButton ? "" : "rounded-xl web:active:scale-95 web:duration-100"}
+                className={isButton ? "" : "rounded-xl flex-auto web:active:scale-95 web:duration-100"}
             >
                 {!isButton && trigger}
             </Cnt>

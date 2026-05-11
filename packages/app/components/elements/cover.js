@@ -154,7 +154,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                 <PageHeaderSmall />
             ) : (
                 <>
-                    <View className="items-center flex-row gap-2">
+                    <View className="items-center w-full flex-row gap-2">
                         {(!appSetting('context_selector', 'show_always') ||
                             !isWeb) && (
                             <View className="flex-row flex-none lg:hidden">
@@ -163,7 +163,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                         )}
                         {appSetting('context_selector', 'show_always') &&
                         !isDesktop ? (
-                            <View className={`${TABLET_MODE_FROM}:hidden `}>
+                            <View className="lg:hidden w-full">
                                 <ContextSelector
                                     data={context}
                                     mode="compact"

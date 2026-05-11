@@ -16,7 +16,7 @@ export default function MenuTopItem({ link, title, index, icon, isTitle, isActiv
         >
             <MenuTopItem_ title={title} icon={icon} isTitle={isTitle} isActive={isActive} isPopup={true} chevron={chevron} animated={animated} addClassName={addClassName} />
         </DropdownMenu>
-        : <Link variant="text" size="lg" className=" min-w-16 flex-auto relative web:group web:active:scale-95 web:duration-100 " href={link} alt={title}>
+        : <Link variant="text" size="lg" className=" min-w-16 w-full flex-auto relative web:group web:active:scale-95 web:duration-100 " href={link} alt={title}>
             <MenuTopItem_ title={title} icon={icon} isTitle={isTitle} isActive={isActive} isPopup={false} chevron={chevron} animated={animated} addClassName={addClassName} />
         </Link>
 
