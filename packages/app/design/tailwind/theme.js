@@ -8,30 +8,33 @@ const nativewindOS = process.env.NATIVEWIND_OS;
 const isNative = nativewindOS === 'ios' || nativewindOS === 'android' || process.env.TAILWIND_TARGET === 'native';
 const { nativewindUIColors } = require('app/design/tailwind/nativewindui-theme');
 
+const neoShadow = (name) => `var(--neo-shadow-${name})`;
 
 const boxShadowBtn = {
-    'card-outline':       'inset 0 0 0 1px rgb(255 255 255 / 0.30), inset 0 1px 0 0 rgb(255 255 255 / 0.40), 0 0 0 1px rgb(0 0 0 / 0.05), 0 4px 8px -2px rgb(0 0 0 / 0.06), 0 16px 32px -8px rgb(0 0 0 / 0.10)',
-    'card-outline-deep':  'inset 0 0 0 1px rgb(255 255 255 / 0.06), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.40), 0 4px 8px -2px rgb(0 0 0 / 0.30), 0 16px 32px -8px rgb(0 0 0 / 0.50)',
+    // Override `--neo-shadow-*` in customization CSS; keep Tailwind utility
+    // names stable so downstream projects do not need to redefine classes.
+    'card-outline':       neoShadow('card-outline'),
+    'card-outline-deep':  neoShadow('card-outline-deep'),
 
-    'btn-outline':      '0 0 0 1px rgb(0 0 0 / 0.10)',
-    'btn-outline-deep': '0 0 0 1px rgb(255 255 255 / 0.10)',
-    'btn-glass':       'inset 0 0 0 1px rgb(255 255 255 / 0.30), inset 0 1px 0 0 rgb(255 255 255 / 0.40), 0 0 0 1px rgb(0 0 0 / 0.05), 0 4px 8px -2px rgb(0 0 0 / 0.06), 0 16px 32px -8px rgb(0 0 0 / 0.10)',
-    'btn-glass-deep':  'inset 0 0 0 1px rgb(255 255 255 / 0.06), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.40), 0 4px 8px -2px rgb(0 0 0 / 0.30), 0 16px 32px -8px rgb(0 0 0 / 0.50)',
-    'btn-glass-pressed':      'inset 0 0 0 1px rgb(255 255 255 / 0.30), inset 0 1px 0 0 rgb(255 255 255 / 0.40), 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 4px -1px rgb(0 0 0 / 0.06)',
-    'btn-glass-pressed-deep': 'inset 0 0 0 1px rgb(255 255 255 / 0.06), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.40), 0 2px 4px -1px rgb(0 0 0 / 0.30)',
+    'btn-outline':      neoShadow('btn-outline'),
+    'btn-outline-deep': neoShadow('btn-outline-deep'),
+    'btn-glass':       neoShadow('btn-glass'),
+    'btn-glass-deep':  neoShadow('btn-glass-deep'),
+    'btn-glass-pressed':      neoShadow('btn-glass-pressed'),
+    'btn-glass-pressed-deep': neoShadow('btn-glass-pressed-deep'),
 
     // Prominent glass sits on an opaque primary fill, so the edge needs to
     // stay in the primary colour family. Avoid a full white inset ring: it
     // makes the lower edge look lighter than the fill and busy on blue.
-    'btn-glass-prominent':      ' 0 -1px 0 0 rgb(255 255 255 / 0.20), 0 1px 1px 0 rgb(0 0 0 / 0.16), 0 0 0 1px rgb(var(--primary)), 0 4px 8px -2px rgb(0 0 0 / 0.10), 0 16px 32px -8px rgb(0 0 0 / 0.16)',
-    'btn-glass-prominent-deep': ' inset 0 0 0 1px rgb(255 255 255 / 0.08),  0 0 0 1px rgb(0 0 0 / 0.24), 0 0 0 1px rgb(0 0 0 / 0.40), 0 4px 8px -2px rgb(0 0 0 / 0.36), 0 16px 32px -8px rgb(0 0 0 / 0.56)',
-    'btn-glass-prominent-pressed':      'inset 0 1px 0 0 rgb(255 255 255 / 0.16), inset 0 -1px 0 0 rgb(0 0 0 / 0.10), 0 0 0 1px rgb(var(--primary) / 0.60), 0 2px 4px -1px rgb(0 0 0 / 0.10)',
-    'btn-glass-prominent-pressed-deep': 'inset 0 1px 0 0 rgb(255 255 255 / 0.06), inset 0 -1px 0 0 rgb(0 0 0 / 0.28), 0 0 0 1px rgb(var(--primary) / 0.70), 0 2px 4px -1px rgb(0 0 0 / 0.36)',
+    'btn-glass-prominent':      neoShadow('btn-glass-prominent'),
+    'btn-glass-prominent-deep': neoShadow('btn-glass-prominent-deep'),
+    'btn-glass-prominent-pressed':      neoShadow('btn-glass-prominent-pressed'),
+    'btn-glass-prominent-pressed-deep': neoShadow('btn-glass-prominent-pressed-deep'),
 
     // Focus ring drawn as shadow when an outline cannot be used (rare —
     // pseudo-element ring is preferred; this is the cross-platform fallback).
-    'btn-focus':       '0 0 0 2px rgb(var(--ring) / 0.85)',
-    'btn-focus-deep':  '0 0 0 2px rgb(var(--ring) / 0.95)',
+    'btn-focus':       neoShadow('btn-focus'),
+    'btn-focus-deep':  neoShadow('btn-focus-deep'),
 };
 
 const boxShadowAvatar = {

@@ -107,28 +107,31 @@
     --shadow-2xl-deep: 0 24px 48px rgb(0 0 0 / 0.32);
     --shadow-avatar: inset 0 0 0 1px rgb(0 0 0 / 0.02);
     --shadow-avatar-deep: inset 0 0 0 1px rgb(255 255 255 / 0.02);
-    --shadow-card-outline: inset 0 0 0 1px rgb(255 255 255 / 0.5), inset 0 1px 0 0 rgb(255 255 255 / 0.8), 0 0 0 1px rgb(0 0 0 / 0.025), 0 2px 4px -1px rgb(0 0 0 / 0.05), 0 8px 16px -4px rgb(0 0 0 / 0.05);
-    --shadow-card-outline-deep: inset 0 0 0 1px rgb(255 255 255 / 0.025), inset 0 1px 0 0 rgb(255 255 255 / 0.025), 0 0 0 1px rgb(0 0 0 / 0.50), 0 4px 8px -2px rgb(0 0 0 / 0.5);
-    --shadow-btn-outline: 0 0 0 1px rgb(0 0 0 / 0.10);
-    --shadow-btn-outline-deep: 0 0 0 1px rgb(255 255 255 / 0.10);
-    --shadow-btn-glass: inset 0 0 0 1px rgb(255 255 255 / 0.30), inset 0 1px 0 0 rgb(255 255 255 / 0.40), 0 0 0 1px rgb(0 0 0 / 0.05), 0 4px 8px -2px rgb(0 0 0 / 0.06), 0 16px 32px -8px rgb(0 0 0 / 0.10);
-    --shadow-btn-glass-deep: inset 0 0 0 1px rgb(255 255 255 / 0.06), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.40), 0 4px 8px -2px rgb(0 0 0 / 0.30), 0 16px 32px -8px rgb(0 0 0 / 0.50);
-    --shadow-btn-glass-pressed: inset 0 0 0 1px rgb(255 255 255 / 0.30), inset 0 1px 0 0 rgb(255 255 255 / 0.40), 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 4px -1px rgb(0 0 0 / 0.06);
-    --shadow-btn-glass-pressed-deep: inset 0 0 0 1px rgb(255 255 255 / 0.06), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.40), 0 2px 4px -1px rgb(0 0 0 / 0.30);
-    --shadow-btn-glass-prominent: 0 -1px 0 0 rgb(255 255 255 / 0.20), 0 1px 1px 0 rgb(0 0 0 / 0.16), 0 0 0 1px rgb(59 130 246), 0 4px 8px -2px rgb(0 0 0 / 0.10), 0 16px 32px -8px rgb(0 0 0 / 0.16);
-    --shadow-btn-glass-prominent-deep: inset 0 0 0 1px rgb(255 255 255 / 0.08), 0 0 0 1px rgb(0 0 0 / 0.24), 0 0 0 1px rgb(0 0 0 / 0.40), 0 4px 8px -2px rgb(0 0 0 / 0.36), 0 16px 32px -8px rgb(0 0 0 / 0.56);
-    --shadow-btn-glass-prominent-pressed: inset 0 1px 0 0 rgb(255 255 255 / 0.16), inset 0 -1px 0 0 rgb(0 0 0 / 0.10), 0 0 0 1px rgb(59 130 246 / 0.60), 0 2px 4px -1px rgb(0 0 0 / 0.10);
-    --shadow-btn-glass-prominent-pressed-deep: inset 0 1px 0 0 rgb(255 255 255 / 0.06), inset 0 -1px 0 0 rgb(0 0 0 / 0.28), 0 0 0 1px rgb(37 99 235 / 0.70), 0 2px 4px -1px rgb(0 0 0 / 0.36);
-    --shadow-btn-focus: 0 0 0 2px rgb(37 99 235 / 0.85);
-    --shadow-btn-focus-deep: 0 0 0 2px rgb(59 130 246 / 0.95);
+    --shadow-card-outline: var(--neo-shadow-card-outline);
+    --shadow-card-outline-deep: var(--neo-shadow-card-outline-deep);
+    --shadow-btn-outline: var(--neo-shadow-btn-outline);
+    --shadow-btn-outline-deep: var(--neo-shadow-btn-outline-deep);
+    --shadow-btn-glass: var(--neo-shadow-btn-glass);
+    --shadow-btn-glass-deep: var(--neo-shadow-btn-glass-deep);
+    --shadow-btn-glass-pressed: var(--neo-shadow-btn-glass-pressed);
+    --shadow-btn-glass-pressed-deep: var(--neo-shadow-btn-glass-pressed-deep);
+    --shadow-btn-glass-prominent: var(--neo-shadow-btn-glass-prominent);
+    --shadow-btn-glass-prominent-deep: var(--neo-shadow-btn-glass-prominent-deep);
+    --shadow-btn-glass-prominent-pressed: var(--neo-shadow-btn-glass-prominent-pressed);
+    --shadow-btn-glass-prominent-pressed-deep: var(--neo-shadow-btn-glass-prominent-pressed-deep);
+    --shadow-btn-focus: var(--neo-shadow-btn-focus);
+    --shadow-btn-focus-deep: var(--neo-shadow-btn-focus-deep);
 }
 
 /*
- * Runtime radius lengths.
+ * Runtime radius lengths and component shadows.
  * Tailwind v4 resolves theme literals into fixed `border-radius` in utilities;
  * linking `@theme` --radius-* → `var(--neo-radius-*)` (above) keeps these
  * runtime overrides working — see global.web.css for the iOS-style
  * superellipse corner override.
+ *
+ * Downstream projects should override `--neo-shadow-*` variables from
+ * customization CSS instead of redefining generated Tailwind utilities.
  */
 @layer base {
     :root,
@@ -143,5 +146,20 @@
         --neo-radius-3xl: 1.5rem;
         --neo-radius-4xl: 2rem;
         --neo-radius-full: 9999px;
+
+        --neo-shadow-card-outline: inset 0 0 0 1px rgb(255 255 255 / 0.5), inset 0 1px 0 0 rgb(255 255 255 / 0.8), 0 0 0 1px rgb(0 0 0 / 0.025), 0 2px 4px -1px rgb(0 0 0 / 0.05), 0 8px 16px -4px rgb(0 0 0 / 0.05);
+        --neo-shadow-card-outline-deep: inset 0 0 0 1px rgb(255 255 255 / 0.025), inset 0 1px 0 0 rgb(255 255 255 / 0.025), 0 0 0 1px rgb(0 0 0 / 0.50), 0 4px 8px -2px rgb(0 0 0 / 0.5);
+        --neo-shadow-btn-outline: 0 0 0 1px rgb(0 0 0 / 0.10);
+        --neo-shadow-btn-outline-deep: 0 0 0 1px rgb(255 255 255 / 0.10);
+        --neo-shadow-btn-glass: inset 0 0 0 1px rgb(255 255 255 / 0.30), inset 0 1px 0 0 rgb(255 255 255 / 0.40), 0 0 0 1px rgb(0 0 0 / 0.05), 0 4px 8px -2px rgb(0 0 0 / 0.06), 0 16px 32px -8px rgb(0 0 0 / 0.10);
+        --neo-shadow-btn-glass-deep: inset 0 0 0 1px rgb(255 255 255 / 0.06), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.40), 0 4px 8px -2px rgb(0 0 0 / 0.30), 0 16px 32px -8px rgb(0 0 0 / 0.50);
+        --neo-shadow-btn-glass-pressed: inset 0 0 0 1px rgb(255 255 255 / 0.30), inset 0 1px 0 0 rgb(255 255 255 / 0.40), 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 4px -1px rgb(0 0 0 / 0.06);
+        --neo-shadow-btn-glass-pressed-deep: inset 0 0 0 1px rgb(255 255 255 / 0.06), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.40), 0 2px 4px -1px rgb(0 0 0 / 0.30);
+        --neo-shadow-btn-glass-prominent: 0 -1px 0 0 rgb(255 255 255 / 0.20), 0 1px 1px 0 rgb(0 0 0 / 0.16), 0 0 0 1px rgb(var(--ring)), 0 4px 8px -2px rgb(0 0 0 / 0.10), 0 16px 32px -8px rgb(0 0 0 / 0.16);
+        --neo-shadow-btn-glass-prominent-deep: inset 0 0 0 1px rgb(255 255 255 / 0.08), 0 0 0 1px rgb(0 0 0 / 0.24), 0 0 0 1px rgb(0 0 0 / 0.40), 0 4px 8px -2px rgb(0 0 0 / 0.36), 0 16px 32px -8px rgb(0 0 0 / 0.56);
+        --neo-shadow-btn-glass-prominent-pressed: inset 0 1px 0 0 rgb(255 255 255 / 0.16), inset 0 -1px 0 0 rgb(0 0 0 / 0.10), 0 0 0 1px rgb(var(--ring) / 0.60), 0 2px 4px -1px rgb(0 0 0 / 0.10);
+        --neo-shadow-btn-glass-prominent-pressed-deep: inset 0 1px 0 0 rgb(255 255 255 / 0.06), inset 0 -1px 0 0 rgb(0 0 0 / 0.28), 0 0 0 1px rgb(var(--primary) / 0.70), 0 2px 4px -1px rgb(0 0 0 / 0.36);
+        --neo-shadow-btn-focus: 0 0 0 2px rgb(var(--primary) / 0.85);
+        --neo-shadow-btn-focus-deep: 0 0 0 2px rgb(var(--ring) / 0.95);
     }
 }
