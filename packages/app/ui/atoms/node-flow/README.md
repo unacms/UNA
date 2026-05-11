@@ -13,9 +13,9 @@ import NodeFlow from 'app/ui/atoms/node-flow';
 
 <NodeFlow
     nodes={[
-        { icon: 'UsersRound', label: 'Connect', active: true, animated: true },
-        { icon: 'Compass',    label: 'Discover', animated: true },
-        { icon: 'MessageCircleMore', label: 'Engage', animated: true },
+        { icon: 'UsersRound', label: 'Connect' },
+        { icon: 'Compass',    label: 'Discover' },
+        { icon: 'MessageCircleMore', label: 'Engage' },
     ]}
 />
 ```
@@ -124,9 +124,8 @@ type NodeSpec = {
     id?: string | number;     // referenced by edges; defaults to the array index
     icon: string;             // Lucide name resolved via app/ui/atoms/icon (e.g. 'UsersRound')
     label?: string;
-    active?: boolean;         // forwarded to Icon (drives animated-icon "fill" scenes)
+    active?: boolean;         // forwarded to Icon
     selected?: boolean;       // alias understood by Icon
-    animated?: boolean;       // when true, Icon uses the animated-icons registry
     key?: string | number;
     className?: string;       // bubble override
     iconClassName?: string;   // per-node icon class override
@@ -134,7 +133,7 @@ type NodeSpec = {
 };
 ```
 
-Use **PascalCase Lucide names** (e.g. `UsersRound`, `Compass`, `MessageCircleMore`) so they resolve through the existing animated-icon registry — see `[packages/app/default/animated-icons.js](../../../default/animated-icons.js)`.
+Use **PascalCase Lucide names** (e.g. `UsersRound`, `Compass`, `MessageCircleMore`) so they resolve through the regular app icon path.
 
 ## Container props
 

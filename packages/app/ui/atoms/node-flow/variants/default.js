@@ -62,9 +62,9 @@ const TRAVELER_ARROW_D = 'M -5 -4 L 6 0 L -5 4 Z';
  * ```jsx
  * <NodeFlow
  *   nodes={[
- *     { icon: 'UsersRound', label: 'Connect', active: true, animated: true },
- *     { icon: 'Compass',    label: 'Discover', animated: true },
- *     { icon: 'MessageCircleMore', label: 'Engage', animated: true },
+ *     { icon: 'UsersRound', label: 'Connect' },
+ *     { icon: 'Compass',    label: 'Discover' },
+ *     { icon: 'MessageCircleMore', label: 'Engage' },
  *   ]}
  *   animation="flow"
  * />
@@ -219,7 +219,7 @@ export function NodeFlowDefault({
                     <View
                         key={node.key ?? node.id ?? i}
                         className={cn(
-                            'absolute items-center justify-center rounded-full bg-card border-2 border-border',
+                            'absolute items-center justify-center rounded-full bg-card border border-border  shadow-card-outline dark:shadow-card-outline-deep',
                             node.className,
                         )}
                         style={{ left, top, width: nodeSize, height: nodeSize }}
@@ -228,10 +228,9 @@ export function NodeFlowDefault({
                         <Icon
                             icon={node.icon}
                             size={iconSize}
-                            animated={!!node.animated}
                             active={!!node.active}
                             selected={!!node.selected}
-                            className={cn('text-foreground', iconClassName, node.iconClassName)}
+                            className={cn('text-secondary-foreground', iconClassName, node.iconClassName)}
                         />
                         {node.label ? (
                             /**

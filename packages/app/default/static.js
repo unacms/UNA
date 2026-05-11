@@ -155,7 +155,7 @@ const SplashTextComponent = (props) => {
 
 /**
  * Sample `NodeFlow` for the splash screen — three-step "Connect → Discover → Engage"
- * visual that uses Lucide icons already covered by the animated-icon registry.
+ * visual that uses the same regular Lucide icons as the rest of the app.
  *
  * Demonstrates the React-Flow-style edges API: a single edge runs from the
  * right side of the first node, *through the center of the second node*, to
@@ -180,9 +180,9 @@ const SplashNodeFlowComponent = () => {
     const { t } = useTranslation()
     /** Nodes intentionally have no `label` — text is rendered separately below / next to the flow. */
     const flowNodes = [
-        { id: 'connect', icon: 'UsersRound', animated: true, active: true },
-        { id: 'discover', icon: 'Compass', animated: true },
-        { id: 'engage', icon: 'MessageCircleMore', animated: true },
+        { id: 'connect', icon: 'UsersRound' },
+        { id: 'discover', icon: 'Compass' },
+        { id: 'engage', icon: 'MessageCircleMore' },
     ]
     const stepTexts = [
         {
@@ -251,7 +251,7 @@ const SplashNodeFlowComponent = () => {
                 style={{ width: H_TOTAL }}
             >
                 <NodeFlow
-                    className="text-border"
+                    className="text-secondary"
                     nodes={flowNodes}
                     edges={edgesHorizontal}
                     nodeSize={H_NODE_SIZE}
