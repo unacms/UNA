@@ -9,7 +9,7 @@ import { RemoveScroll } from 'react-remove-scroll';
 import { appSetting } from 'app/lib/util';
 import { useIsDesktop, useWindowSize } from 'app/context/measure';
 import emitter from 'app/context/emitter';
-import { Button, ButtonRef } from 'app/design/controls'
+import { Button, ButtonRef, NeoButtonRef } from 'app/design/controls'
 const dropdownTheme = appSetting('theme', 'dropdown');
 
 export default function DropdownPopup({
@@ -200,12 +200,13 @@ export default function DropdownPopup({
         </View>
     );
     const isButton = !!buttonProps
-    const Cnt = isButton ? ButtonRef : Pressable;
+    const { neoButton, ...resolvedButtonProps } = buttonProps || {};
+    const Cnt = isButton ? (neoButton ? NeoButtonRef : ButtonRef) : Pressable;
 
     return (
         <>
             <Cnt
-                {...buttonProps}
+                {...resolvedButtonProps}
                 collapsable={false}
                 ref={buttonRef}
                 onPress={() => handleToggle(true)}

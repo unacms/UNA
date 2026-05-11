@@ -85,6 +85,36 @@ const getAccessibleName = (accessibilityLabel, tooltip, label, image) => {
     return undefined;
 };
 
+const getAddon = (addon, hasLabel) => {
+    if (!addon) return null;
+
+    const isObj = typeof addon === 'object' && addon !== null;
+    const text = isObj ? addon.text : addon;
+
+    if (!text) return null;
+    if (isObj && addon.hideZero && text == '0') return null;
+
+    const bg = isObj && addon.variant === 'primary' ? 'bg-destructive' : 'bg-accent';
+    const textColor = isObj && addon.variant === 'primary' ? 'text-destructive-foreground' : 'text-accent-foreground';
+    const pos = isObj && addon.position === 'bottom' ? 'bottom-0 -end-1' : '-top-2 -end-2';
+
+    if (!hasLabel) {
+        return (
+            <View className={`absolute ${bg} border-2 border-card rounded-full px-1 min-w-6 min-h-6 items-center justify-center ${pos}`}>
+                <Text className={`${textColor} text-xs font-semibold`}>{text}</Text>
+            </View>
+        );
+    }
+
+    return (
+        <View className="flex-1 items-center flex-row">
+            <View className={`${bg} rounded-full min-w-5 min-h-5 px-1.5 py-0.5 border border-card/80 items-center`}>
+                <Text className={`${textColor} text-xs font-semibold`}>{text}</Text>
+            </View>
+        </View>
+    );
+};
+
 /* --------------------------- image / label render -------------------------- */
 
 const NeoImage = memo(function NeoImage({ source, size, color, className }) {
@@ -268,6 +298,7 @@ export const NeoButton = (props) => {
         disabled = false,
         loading = false,
         selected = false,
+        addon = '',
         interactive = false,
         haptics,
         onPress,
@@ -510,10 +541,14 @@ export const NeoButton = (props) => {
             classNames,
             loading,
         });
+    const addonContent = getAddon(addon, isTitle);
 
     const buttonElement = (
         <Cnt {...cntProps} className={cn(cntProps.className, containerCls)}>
             {labelContent}
+            {addonContent && (
+                isTitle ? <View className="z-10">{addonContent}</View> : <View className="absolute top-0 right-0 w-full h-full z-20 pointer-events-none">{addonContent}</View>
+            )}
             {/* press highlight overlay (visual feedback, runs in addition to
                 the per-style transition) */}
             <PressHighlight

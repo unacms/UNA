@@ -38,7 +38,7 @@ export default function HeaderElement({ mode, url, uri }) {
                             case "add":
                                 return <MenuAdd />
                             case "notifications":
-                                return bNotifs ? <NotificationButton uri={uri} /> : null
+                                return bNotifs ? <NotificationButton uri={uri} buttonProps={item.props} /> : null
                             case "account":
                                 return <MenuAccount />
                             case "menu_navigation":
@@ -46,11 +46,22 @@ export default function HeaderElement({ mode, url, uri }) {
                             case "link":
                                 if (item.props?.neoButton) {
                                     const { neoButton, ...neoButtonProps } = item.props;
+                                    const isMessenger = item.href === '{messenger}';
                                     return (
                                         <NeoButtonLink
                                             {...neoButtonProps}
                                             {...(item.target ? { target: item.target } : {})}
-                                            href={item.href == '{messenger}' ? appSetting('messenger', 'url') : item.href}
+                                            href={isMessenger ? appSetting('messenger', 'url') : item.href}
+                                            {...(isMessenger
+                                                ? {
+                                                    addon: {
+                                                        variant: "primary",
+                                                        text: currentUser?.counters?.bx_messenger_new_messages,
+                                                        hideZero: true,
+                                                    },
+                                                    selected: appSetting('messenger', 'url') === '/' + uri,
+                                                }
+                                                : {})}
                                         />
                                     )
                                 }

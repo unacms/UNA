@@ -1,6 +1,6 @@
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
-import { Button } from 'app/design/controls'
+import { Button, NeoButton } from 'app/design/controls'
 import { useState, useMemo } from 'react'
 import { appSetting, clearNotif } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
@@ -39,7 +39,15 @@ export default function ({ buttonProps, children, tooltip, fullWidth, uri }) {
         )
     }, [notifCount, notificationHeight])
 
-    const defaultButtonProps = {
+    const isNeoButton = buttonProps?.neoButton === true;
+    const defaultButtonProps = isNeoButton ? {
+        style: isDesktop ? 'glass' : 'borderless',
+        tooltip: tooltip || 'Notifications',
+        controlSize: 'regular',
+        borderShape: 'circle',
+        image: 'Bell',
+        accessibilityLabel: 'Notifications',
+    } : {
         variant: isDesktop ? 'secondary' : 'text',
         tooltip: tooltip || 'Notifications',
         rounded: true,
@@ -50,6 +58,8 @@ export default function ({ buttonProps, children, tooltip, fullWidth, uri }) {
     buttonProps = { ...defaultButtonProps, ...(buttonProps || {}) }
 
     buttonProps.addon = { variant: 'primary', text: notifCount, hideZero: true }
+    const { neoButton, ...renderButtonProps } = buttonProps;
+    const ButtonComponent = neoButton ? NeoButton : Button;
 
     const handleNotificationsToggle = async (bOpen) => {
         clearNotif()
@@ -61,7 +71,7 @@ export default function ({ buttonProps, children, tooltip, fullWidth, uri }) {
     }
 
     const dropdown = (
-        appSetting('notifications', 'url') === '/' + uri ? <Button {...buttonProps} pressed={true} /> : <DropdownPopup
+        appSetting('notifications', 'url') === '/' + uri ? <ButtonComponent {...renderButtonProps} {...(neoButton ? { selected: true } : { pressed: true })} /> : <DropdownPopup
             open={ntfsOpen}
             minPopupWidth={360}
             onOpenChange={handleNotificationsToggle}

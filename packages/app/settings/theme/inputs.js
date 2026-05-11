@@ -51,9 +51,10 @@ export const settingsInputs = {
         'u-controls-switcher-text': 'text-card-foreground text-base flex-1 ',
 
         // Track
-        'u-controls-switcher-track': 'rounded-full',
-        'u-controls-switcher-track-base': 'w-12 p-0.5 ',
-        'u-controls-switcher-track-sm': 'w-8  p-0.5',
+        'u-controls-switcher-track': 'flex-row items-center rounded-full shrink-0',
+        'u-controls-switcher-track-base': 'h-6 w-12 p-0.5 ',
+        'u-controls-switcher-track-sm': 'h-5 w-8  p-0.5',
+        'u-controls-switcher-track-disabled': 'opacity-50',
 
         // Thumb
         'u-controls-switcher-thumb':
