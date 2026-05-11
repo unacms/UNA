@@ -497,14 +497,14 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             key={`cells-messenger-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
             autoSaveId={cellsCustomConfig.sizable ? `cells-messenger` : undefined}
             direction="horizontal"
-            className={`${appSetting('layout', 'max_width')} mx-auto w-full flex-auto relative flex-row`}
+            className={`${appSetting('layout', 'max_width')} mx-auto w-full min-w-0 flex-auto relative flex-row`}
 
         >
             <Panel
-                className={`block`}
+                className={`block min-w-0`}
                 {...cellsCustomConfig.cells?.left}
             >
-                {panelsVisible.convos && <View className='w-full'>
+                {panelsVisible.convos && <View className='w-full min-w-0 overflow-hidden'>
                     {convosComponent}
                 </View>}
             </Panel>
@@ -512,7 +512,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                 gap="hidden lg:block"
                 sizable={cellsCustomConfig.sizable}
             />
-            <Panel className=" w-full" {...cellsCustomConfig.cells?.center}>
+            <Panel className=" w-full min-w-0" {...cellsCustomConfig.cells?.center}>
                 {panelsVisible.jots && <View className='flex-1  border-border/60 lg:border-l bg-card'>
                     <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
                     <View className={`w-full ${!isWeb ? 'flex-1' : ''}`} style={{ height: layoutHeightRight }}>
@@ -585,9 +585,9 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
     }, [isSmallScreen, setHeader, header]));
     
     return (
-        <View className='flex-1 bg-card' style={{ minHeight: layoutHeightLeft }}>
+        <View className='flex-1 min-w-0 bg-card' style={{ minHeight: layoutHeightLeft }}>
             {(isWeb && !isSmallScreen) && header}
-            {data && data.length > 0 ? <View className=' w-full web:flex-1'
+            {data && data.length > 0 ? <View className=' w-full min-w-0 overflow-hidden web:flex-1'
             style={{height:layoutHeightLeft}}
             >
                 <UniList
