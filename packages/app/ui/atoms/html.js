@@ -8,6 +8,8 @@ import { Text, H1, H2, H3, H4, H5, H6 } from 'app/design/typography'
 import { decodeText } from 'app/lib/util'
 import { ParseHtmlClasses } from 'app/customization/functions';
 
+const isWeb = Platform.OS === 'web'
+
 const StyledStrong = (props) => {
     if (Platform.OS === 'web') {
         return <strong {...props} />
@@ -489,7 +491,7 @@ export default function ElementHtml({ customClassName, data, innerRef }) {
     if (html.trim() != '' && !hasBlockHtml(html)) html = `<p>${html}</p>`
 
     return (
-        <View className={`min-w-0 max-w-full ${customClassName || 'u-vanilla-html'}`} ref={innerRef}>
+        <View className={`min-w-0 max-w-full ${customClassName || (isWeb ? 'u-vanilla-html' : '')}`} ref={innerRef}>
             {keyedChildren(parseHtmlToReact(html))}
         </View>
     )

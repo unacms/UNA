@@ -54,6 +54,7 @@ export function CreateConvoButton({ onSave, onShow, size = 'small', variant = 's
     }
 
     const onSaveHandler = (data) => {
+        setShowModal(false);
         setBottomSheetData(false);
         onSave(data);
     }

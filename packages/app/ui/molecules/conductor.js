@@ -633,7 +633,7 @@ export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 8
 
                     ListHeaderComponent: () => <>
                         <Cover data={prevRoute.pageData?.cover_block} showMoreMenu={false} uri={prevRoute.pageData?.uri} context={prevRoute?.pageData?.context} />
-                        {sceneHeader}
+                        {isUseCurrentHeader ? sceneHeader : null}
                         {filter}
                     </>
                 });
