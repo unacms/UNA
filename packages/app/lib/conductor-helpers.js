@@ -579,14 +579,14 @@ export function getAddon(addon) {
 
 export function Addon({item, index}) {
     let addonContent = null;
-    const settings = getPageSettings(item?.config, item.key);
+    const settings = getPageSettings(item?.config, item?.key);
     let icon = !item.ident
         ? settings?.icon
             ? settings?.icon
             : item?.icon.replace('*', '')
         : item.icon.replace('*', '')
 
-    const addon = getAddon(a.addon)
+    const addon = getAddon(item?.addon)
     if (addon) {
         const addonClasses = addon.variant === 'primary' ? "bg-destructive" : "bg-secondary";
         const addonText = addon.variant === 'primary' ? addon.text : addon;

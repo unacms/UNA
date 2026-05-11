@@ -154,7 +154,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                 <PageHeaderSmall />
             ) : (
                 <>
-                    <View className="items-center flex-row gap-2 overflow-hidden">
+                    <View className="items-center flex-row gap-2">
                         {(!appSetting('context_selector', 'show_always') ||
                             !isWeb) && (
                             <View className="flex-row flex-none lg:hidden">

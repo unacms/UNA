@@ -8,7 +8,7 @@ export const settingsElements = {
         content_max_width: ' w-full max-w-7xl ',
         content_max_width_nav: ' w-full max-w-screen-2xl  ',
         menu_is_dynamic: false,
-        menu_cnt: ' flex-row flex-none gap-0.5 h-14 items-center overflow-x-auto ',
+        menu_cnt: ' flex-row flex-none gap-1 h-14 items-center overflow-x-auto ',
         menu_categ_indent: ' pl-8 ',
         topmenu_cnt:
             'w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex p',
