@@ -155,11 +155,11 @@
         --neo-shadow-btn-glass-deep: inset 0 0 0 1px rgb(255 255 255 / 0.06), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.40), 0 4px 8px -2px rgb(0 0 0 / 0.30), 0 16px 32px -8px rgb(0 0 0 / 0.50);
         --neo-shadow-btn-glass-pressed: inset 0 0 0 1px rgb(255 255 255 / 0.30), inset 0 1px 0 0 rgb(255 255 255 / 0.40), 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 4px -1px rgb(0 0 0 / 0.06);
         --neo-shadow-btn-glass-pressed-deep: inset 0 0 0 1px rgb(255 255 255 / 0.06), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.40), 0 2px 4px -1px rgb(0 0 0 / 0.30);
-        --neo-shadow-btn-glass-prominent: 0 -1px 0 0 rgb(255 255 255 / 0.20), 0 1px 1px 0 rgb(0 0 0 / 0.16), 0 0 0 1px rgb(var(--ring)), 0 4px 8px -2px rgb(0 0 0 / 0.10), 0 16px 32px -8px rgb(0 0 0 / 0.16);
+        --neo-shadow-btn-glass-prominent: 0 -1px 0 0 rgb(255 255 255 / 0.20), 0 1px 1px 0 rgb(0 0 0 / 0.16), 0 0 0 1px var(--color-ring), 0 4px 8px -2px rgb(0 0 0 / 0.10), 0 16px 32px -8px rgb(0 0 0 / 0.16);
         --neo-shadow-btn-glass-prominent-deep: inset 0 0 0 1px rgb(255 255 255 / 0.08), 0 0 0 1px rgb(0 0 0 / 0.24), 0 0 0 1px rgb(0 0 0 / 0.40), 0 4px 8px -2px rgb(0 0 0 / 0.36), 0 16px 32px -8px rgb(0 0 0 / 0.56);
-        --neo-shadow-btn-glass-prominent-pressed: inset 0 1px 0 0 rgb(255 255 255 / 0.16), inset 0 -1px 0 0 rgb(0 0 0 / 0.10), 0 0 0 1px rgb(var(--ring) / 0.60), 0 2px 4px -1px rgb(0 0 0 / 0.10);
-        --neo-shadow-btn-glass-prominent-pressed-deep: inset 0 1px 0 0 rgb(255 255 255 / 0.06), inset 0 -1px 0 0 rgb(0 0 0 / 0.28), 0 0 0 1px rgb(var(--primary) / 0.70), 0 2px 4px -1px rgb(0 0 0 / 0.36);
-        --neo-shadow-btn-focus: 0 0 0 2px rgb(var(--primary) / 0.85);
-        --neo-shadow-btn-focus-deep: 0 0 0 2px rgb(var(--ring) / 0.95);
+        --neo-shadow-btn-glass-prominent-pressed: inset 0 1px 0 0 rgb(255 255 255 / 0.16), inset 0 -1px 0 0 rgb(0 0 0 / 0.10), 0 0 0 1px var(--color-ring), 0 2px 4px -1px rgb(0 0 0 / 0.10);
+        --neo-shadow-btn-glass-prominent-pressed-deep: inset 0 1px 0 0 rgb(255 255 255 / 0.06), inset 0 -1px 0 0 rgb(0 0 0 / 0.28), 0 0 0 1px var(--color-primary), 0 2px 4px -1px rgb(0 0 0 / 0.36);
+        --neo-shadow-btn-focus: 0 0 0 2px var(--color-primary);
+        --neo-shadow-btn-focus-deep: 0 0 0 2px var(--color-ring);
     }
 }

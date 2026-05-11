@@ -17,6 +17,7 @@ import { Provider as JotaiProvider } from 'jotai'
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { resources } from 'app/customization/translation';
+import '../../global.combined.css';
 
 // Инициализируем i18n синхронно до первого рендера, чтобы useTranslation всегда работал стабильно
 if (!i18n.isInitialized) {

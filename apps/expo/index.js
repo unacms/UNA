@@ -18,7 +18,6 @@ import { useState, useEffect, useMemo } from 'react'
 import InitialScreen from './initial_screen'
 import Constants from 'expo-constants';
 import { View } from 'react-native';
-import "./global.combined.css";
 import { useColorScheme } from 'react-native';
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from 'react-native-safe-area-context';

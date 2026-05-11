@@ -283,7 +283,6 @@ export async function parseData(routes, index, setRoutes, newData) {
                 setRoutes,
                 index,
                 {},
-                routes,
                 false,
                 false,
                 null
@@ -325,7 +324,6 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
             setRoutes,
             index,
             blocks,
-            routes,
             contentAndEndpoint.sidebar,
             contentAndEndpoint.leftbar,
             sResponse.data
@@ -364,7 +362,6 @@ export async function getDataForRoute(routes, index, setRoutes) {
             setRoutes,
             index,
             blocks,
-            routes,
             contentAndEndpoint.sidebar,
             contentAndEndpoint.leftbar,
             sResponse.data
@@ -378,57 +375,56 @@ export function addMoreData(
     setRoutes,
     index,
     blocks,
-    routes,
     sidebar = false,
     leftbar = false,
     pageData = null
 ) {
-    let hasChanged = false
+    setRoutes((prevRoutes) => {
+        let hasChanged = false
 
-    const updatedRoutes = routes.map((route) => {
-        if (route.index !== index) {
-            return route
-        }
+        const updatedRoutes = prevRoutes.map((route) => {
+            if (route.index !== index) {
+                return route
+            }
 
-        hasChanged = true
+            hasChanged = true
 
-        const updatedRoute = {
-            ...route,
-            endpoint,
-            inited: true,
-            data: route.data.concat(newItems),
-        }
+            const updatedRoute = {
+                ...route,
+                endpoint,
+                inited: true,
+                data: (route.data || []).concat(newItems || []),
+            }
 
-        if (blocks && !route.blocks) {
-            updatedRoute.blocks = blocks
-        }
+            if (blocks && !route.blocks) {
+                updatedRoute.blocks = blocks
+            }
 
-        if (pageData && !route.pageData) {
-            updatedRoute.pageData = pageData
-        }
+            if (pageData && !route.pageData) {
+                updatedRoute.pageData = pageData
+            }
 
-        if (pageData?.config && !route.config) {
-            updatedRoute.config = pageData?.config
-        }
+            if (pageData?.config && !route.config) {
+                updatedRoute.config = pageData?.config
+            }
 
-        if (sidebar) {
-            updatedRoute.sidebar = sidebar
-        }
-        if (leftbar) {
-            updatedRoute.leftbar = leftbar
-        }
+            if (sidebar) {
+                updatedRoute.sidebar = sidebar
+            }
+            if (leftbar) {
+                updatedRoute.leftbar = leftbar
+            }
 
-        /*storageSet('ul:data', updatedRoute.storageKeyValue, {
-            data: updatedRoute.data,
-            endpoint: updatedRoute.endpoint,
-        })*/
+            /*storageSet('ul:data', updatedRoute.storageKeyValue, {
+                data: updatedRoute.data,
+                endpoint: updatedRoute.endpoint,
+            })*/
 
-        return updatedRoute
+            return updatedRoute
+        })
+
+        return hasChanged ? updatedRoutes : prevRoutes
     })
-
-    if (hasChanged) {
-        setRoutes(updatedRoutes)
-    }
 }
 
 export function getContent(data, block) {

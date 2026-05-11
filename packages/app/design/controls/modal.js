@@ -12,12 +12,12 @@ import emitter from 'app/context/emitter';
 const isWeb = Platform.OS === 'web';
 const isIosWeb = isWeb && typeof navigator !== 'undefined' && /iP(hone|od|ad)/.test(navigator.userAgent);
 const isIPadWeb =
-  isWeb &&
-  typeof navigator !== 'undefined' &&
-  (
-    /iPad/.test(navigator.userAgent) ||
-    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
-  );
+    isWeb &&
+    typeof navigator !== 'undefined' &&
+    (
+        /iPad/.test(navigator.userAgent) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+    );
 const modalSettings = appSetting('theme', 'modal');
 
 function ModalHeader({ title, headerBorder, onClose }) {
@@ -27,8 +27,11 @@ function ModalHeader({ title, headerBorder, onClose }) {
     return (
         <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header}`}>
             {(title && type === 'string') && (
-                <View className='flex-auto absolute left-0 right-0'>
-                    <Text className='text-xl text-center leading-9 font-bold text-card-foreground'>{title}</Text>
+                <View className='flex-1 px-1 '>
+                    <Text className='text-xl text-center leading-9 font-bold text-card-foreground'
+                        numberOfLines={1}
+                        ellipsizeMode='tail'
+                    >{title}</Text>
                 </View>
             )}
             {(title && type !== 'string') && (title)}
@@ -174,14 +177,13 @@ export function Modal({
                     className={`pointerEvents cursor-default flex justify-start w-full h-full sm:items-center items-start overflow-hidden ${modalSettings.fog} `}/* justify-start for post form small web */
                     onPress={handleWebOuterPress}
                 >
-                     <RemoveScroll className={`flex-1  flex flex-col w-full sm:justify-center ${autoHeight && 'justify-center'} overflow-hidden`} >
-                            <View style={{ height: (isDesktop && !isIPadWeb) || autoHeight ? 'auto' : heightActual }} className={`w-full ${maxWidth} left-0 right-0 z-50 w-full mx-auto overflow-hidden ${modalSettings.container} `}>
-                           
-                                {content}
-                               
-                            </View>
-                        </RemoveScroll>
+                    <RemoveScroll className={`flex-1  flex flex-col w-full sm:justify-center ${autoHeight && 'justify-center'} overflow-hidden`} >
+                        <View style={{ height: (isDesktop && !isIPadWeb) || autoHeight ? 'auto' : heightActual }} className={`w-full ${maxWidth} left-0 right-0 z-50 w-full mx-auto overflow-hidden ${modalSettings.container} `}>
 
+                            {content}
+
+                        </View>
+                    </RemoveScroll>
                 </Pressable>
             </ModalDef>
         )
@@ -193,9 +195,9 @@ export function Modal({
                     className={`pointerEvents cursor-default flex justify-end w-full h-full ${modalSettings.fog}`}
                     onPress={handleNativeOuterPress}
                 >
-                    <View style={{ paddingTop: insets?.top, paddingBottom: insets?.bottom }} className={`flex-row ${autoHeight ? 'items-center ': ''} justify-center  left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto h-full h-modal ${sClassPosition}`}>
-                        <View className={`w-full ${maxWidth}  ${modalSettings.container}  ${autoHeight ? 'rounded-2xl ': ''}`}>
-                            <View className={`${autoHeight ? '': 'h-full'} ${modalSettings.content}`}>
+                    <View style={{ paddingTop: insets?.top, paddingBottom: insets?.bottom }} className={`flex-row ${autoHeight ? 'items-center ' : ''} justify-center  left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto h-full h-modal ${sClassPosition}`}>
+                        <View className={`w-full ${maxWidth}  ${modalSettings.container}  ${autoHeight ? 'rounded-2xl ' : ''}`}>
+                            <View className={`${autoHeight ? '' : 'h-full'} ${modalSettings.content}`}>
                                 <ModalHeader
                                     title={title}
                                     headerBorder={headerBorder}
