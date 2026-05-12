@@ -10,8 +10,8 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
     const participants = item.participants.filter(p => p.id != currentUser.id);
     const names = participants.map(p => p.display_name).join(', ');
     //memo(
-    const Item = ({ item, index, changeConvo, selectedIndex }) => (<Pressable onPress={() => changeConvo(item)}>
-        <Row className={(selectedIndex == index ? ' bg-primary/10 ' : '') + ' gap-3 px-3 py-2'} >
+    const Item = ({ item, index, changeConvo, selectedIndex }) => (<Pressable className="w-full min-w-0 overflow-hidden" onPress={() => changeConvo(item)}>
+        <Row className={(selectedIndex == index ? ' bg-primary/10 ' : '') + 'w-full min-w-0 overflow-hidden gap-3 px-3 py-2'} >
             
             <View className=" rounded-full flex-none bg-secondary mb-auto">
                 <Profile
@@ -20,18 +20,18 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
                     displaySize="base"
                 />
             </View>
-            <View className="flex-auto flex-col my-auto ">
-                <Row className="flex-row items-center gap-1 ">
-                <Text className="flex-auto text-base leading-5 font-bold text-card-foreground web:group-hover:text-foreground line-clamp-1 truncate " numberOfLines={1}>
+            <View className="flex-1 min-w-0 flex-col my-auto ">
+                <Row className="flex-row items-center gap-1 min-w-0">
+                <Text className="block flex-1 min-w-0 text-base leading-5 font-bold text-card-foreground web:group-hover:text-foreground line-clamp-1 truncate overflow-hidden max-w-full" numberOfLines={1}>
                     {names}
                 </Text>
                 <Time className="text-sm text-muted-foreground whitespace-nowrap" ts={item.date}></Time>
                 </Row>
-                <Row>
-                    <Text className="flex-auto text-sm text-secondary-foreground web:group-hover:text-foreground line-clamp-1 truncate " numberOfLines={1}>
+                <View className="min-w-0">
+                    <Text className="block text-sm text-secondary-foreground web:group-hover:text-foreground line-clamp-1 truncate overflow-hidden max-w-full" numberOfLines={1}>
                     {item.message}
                 </Text>
-                </Row>
+                </View>
             </View>
             {(item.unread > 0 && selectedIndex != index) && (
                 <View className="flex-none bg-primary rounded-full mb-auto mt-1 h-min min-w-5 min-h-5 items-center justify-center px-1.5">
