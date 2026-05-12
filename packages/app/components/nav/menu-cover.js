@@ -155,6 +155,7 @@ export function CoverMenuMore(props) {
             displayType="button"
             autoSize={props.autoSize ?? true}
             containerClasses={props.containerClasses}
+            allowZeroPersistant={props.allowZeroPersistant}
             params={{
                 showVertical:props?.params?.showVertical ?? false,
                 show_action: true,

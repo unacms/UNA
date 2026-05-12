@@ -6,12 +6,12 @@ import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 import { useIsDesktop } from 'app/context/measure';
 import { cn } from 'app/lib/util'
 
-export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, ButtonEx, containerClasses, items, menuClasses, menuExClasses, isButtonOutside, offsetWidth = 50, persistent = 0 }) {
+export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, ButtonEx, allowZeroPersistant = false, items, menuClasses, menuExClasses, isButtonOutside, offsetWidth = 50, persistent = 0 }) {
     const isDesktop = useIsDesktop();
     const isWeb = Platform.OS == 'web'
     const itemRefs = useRef([]);
     const itemRefsMore = useRef();
-    const [visibleItemsCount, setVisibleItemsCount] = useState(isFixedCount ? Math.min(persistent, isDesktop ? persistent : 1) : items.length);
+    const [visibleItemsCount, setVisibleItemsCount] = useState(isFixedCount ? Math.min(persistent, isDesktop ? persistent : (allowZeroPersistant ? 0 : 1)) : items.length);
     const [width, setWidth] = useState(0);
     const [pageData, setPageData] = useState(false);
     const isDynamicMenu = true;//windowWidth > LAYOUT_BREAKPOINTS.sm;

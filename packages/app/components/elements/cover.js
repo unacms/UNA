@@ -148,13 +148,13 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
 
     return (
         <View
-            className={`${conductorTheme.menu_max_width} `}
+            className={`${conductorTheme.menu_max_width} flex-row`}
         >
             {!currentUser && !bPerson ? (
                 <PageHeaderSmall />
             ) : (
                 <>
-                    <View className="items-center w-full flex-row gap-2 h-14">
+                    <View className="flex-1 items-center flex-row gap-2 h-14">
                         {(!appSetting('context_selector', 'show_always') ||
                             !isWeb) && (
                                 <View className="flex-row flex-none lg:hidden">
@@ -163,7 +163,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                             )}
                         {appSetting('context_selector', 'show_always') &&
                             !isDesktop ? (
-                            <View className="lg:hidden w-full">
+                            <View className="lg:hidden">
                                 <ContextSelector
                                     data={context}
                                     mode="compact"
@@ -199,7 +199,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                             </>
                         )}
                     </View>
-                    <View className="flex-none flex-row items-center justify-end h-14">
+                    <View className=" items-center justify-center h-14">
                         <Row className="w-full justify-between">
                             {!showMoreMenu &&
                                 (!appSetting(
@@ -219,6 +219,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                                 <CoverMenuMore
                                     {...menu}
                                     uri={uri}
+                                    allowZeroPersistant = {!isDesktop}
                                     isSplitMenu={!showMoreMenu}
                                 />
                             </>
@@ -498,7 +499,7 @@ export default function Cover({
     }
 
     return (
-        <View className={` mx-auto ${appSetting('layout', 'max_width')}`}>
+        <View className={`mx-auto ${appSetting('layout', 'max_width')}`}>
             {appSetting('context_selector', 'show_always') ? (
                 <Row
                     className={`${TABLET_MODE_FROM}:hidden items-center w-full h-14 px-2 `}
@@ -543,9 +544,9 @@ export default function Cover({
                     </View>
                 )}
                 <View
-                    className={`flex gap-2 w-full sm:gap-3 ${bPerson ? 'lg:flex-row flex-col-reverse' : 'flex-row'}`}
+                    className={`flex w-full sm:gap-3 ${bPerson ? 'lg:flex-row flex-col-reverse' : 'lg:flex-row flex-col-reverse'}`}
                 >
-                    <View className="flex-col flex-none gap-1 ">
+                    <View className="flex-none gap-1 ">
                         {isDesktop && <Row className="gap-2 flex-none items-center min-h-10 px-0.5">
                             <Text
                                 className={` min-w-0 tracking-tight text-2xl sm:text-3xl font-bold text-foreground`}
@@ -622,7 +623,7 @@ export default function Cover({
                     </View>
 
                 </View>
-                {!isDesktop && <View className="gap-4 flex-row justify-start flex-auto">
+                {!isDesktop && <Row className="justify-start flex-auto mt-1">
                     <CoverMenu
                         {...data.actions_menu}
                         uri={uri}
@@ -634,7 +635,7 @@ export default function Cover({
                         uri={uri}
                         isSplitMenu={true}
                     />
-                </View>}
+                </Row>}
             </View>
         </View>
     )

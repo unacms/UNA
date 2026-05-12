@@ -207,8 +207,7 @@ const TabScene = React.memo(({
     )
 });
 
-export function Conductor({ isCoverDisabled, ts, header, defaultHeaderHeight = 88, smallHeader, minHeaderHeight, isHideDefaultHeader, leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
-    minHeaderHeight = minHeaderHeight || 100;
+export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
     isHideDefaultHeader = isHideDefaultHeader || false;
     useSectionAsMenu = useSectionAsMenu || false;
     skeleton = skeleton || '';
