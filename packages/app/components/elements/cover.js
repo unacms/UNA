@@ -114,7 +114,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
 
     const bPerson =
         data?.profile?.module == 'bx_persons' ||
-        appSetting('cover', 'show_pic_by_module', data?.profile?.module)
+            appSetting('cover', 'show_pic_by_module', data?.profile?.module)
             ? true
             : false
     const coverMode =
@@ -157,12 +157,12 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                     <View className="items-center w-full flex-row gap-2 h-14">
                         {(!appSetting('context_selector', 'show_always') ||
                             !isWeb) && (
-                            <View className="flex-row flex-none lg:hidden">
-                                {getCoverBackButton(bPerson)}
-                            </View>
-                        )}
+                                <View className="flex-row flex-none lg:hidden">
+                                    {getCoverBackButton(bPerson)}
+                                </View>
+                            )}
                         {appSetting('context_selector', 'show_always') &&
-                        !isDesktop ? (
+                            !isDesktop ? (
                             <View className="lg:hidden w-full">
                                 <ContextSelector
                                     data={context}
@@ -255,7 +255,7 @@ function CoverImage({
     const handleSwitch = async (id) => {
         const result = await fetcher(
             '/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' +
-                id,
+            id,
         )
         location.reload()
     }
@@ -347,9 +347,8 @@ function CoverImage({
                 className={` bg-accent/50 lg:rounded-b-xl w-full ${appSetting(
                     'layout',
                     'max_width_content',
-                )} mx-auto overflow-hidden ${
-                    isCover ? `${appSetting('cover', 'aspect_ratio')}` : 'pb-32'
-                }`}
+                )} mx-auto overflow-hidden ${isCover ? `${appSetting('cover', 'aspect_ratio')}` : 'pb-32'
+                    }`}
             >
                 {isCover && (
                     <Image
@@ -436,6 +435,7 @@ export default function Cover({
 }) {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
+    const isDesktop = useIsDesktop()
     const isWeb = Platform.OS === 'web'
     const profileData = data?.profile
 
@@ -446,7 +446,7 @@ export default function Cover({
         appSetting('cover', 'view_by_module', profileData?.module) || mode
     const bPerson =
         profileData?.module == 'bx_persons' ||
-        appSetting('cover', 'show_pic_by_module', profileData?.module)
+            appSetting('cover', 'show_pic_by_module', profileData?.module)
             ? true
             : false
     const bAllowEdit =
@@ -525,7 +525,7 @@ export default function Cover({
                 className={` ${appSetting(
                     'layout',
                     'max_width_content',
-                )} lg:flex-row gap-4 mx-auto w-full p-3 sm:p-4 `}
+                )} lg:flex-row  mx-auto w-full p-3 sm:p-4 `}
             >
                 {bPerson && (
                     <View className="hidden lg:flex flex-none h-24 w-40 justify-end">
@@ -546,7 +546,7 @@ export default function Cover({
                     className={`flex gap-2 w-full sm:gap-3 ${bPerson ? 'lg:flex-row flex-col-reverse' : 'flex-row'}`}
                 >
                     <View className="flex-col flex-none gap-1 ">
-                        <Row className="gap-2 flex-none items-center min-h-10 px-0.5">
+                        {isDesktop && <Row className="gap-2 flex-none items-center min-h-10 px-0.5">
                             <Text
                                 className={` min-w-0 tracking-tight text-2xl sm:text-3xl font-bold text-foreground`}
                                 numberOfLines={2}
@@ -556,7 +556,7 @@ export default function Cover({
                                     ''}
                             </Text>
                             <Badges badges={data.badges} size="xs" />
-                        </Row>
+                        </Row>}
                         {isWeb ? (
                             <CoverMenuMeta {...data.meta_menu} />
                         ) : (
@@ -575,12 +575,11 @@ export default function Cover({
                         )}
                     </View>
 
-                    <View className="flex-row w-full flex-wrap gap-2 justify-between">
+                    <View className="flex-row w-full flex-wrap gap-2 lg:justify-between justify-start">
                         {bPerson && (
                             <View
-                                className={`${
-                                    isMin ? 'h-24' : 'h-11'
-                                } lg:hidden flex-none justify-end `}
+                                className={`${isMin ? 'h-24' : 'h-11'
+                                    } lg:hidden flex-none justify-end `}
                             >
                                 <View className=" flex-row  rounded-full p-1 flex-none bg-card mr-auto ">
                                     <CoverImage
@@ -596,7 +595,7 @@ export default function Cover({
                                 </View>
                             </View>
                         )}
-                        <View className="gap-4 flex-row justify-end flex-auto">
+                        {isDesktop && <View className="gap-4 flex-row justify-end flex-auto">
                             <CoverMenu
                                 {...data.actions_menu}
                                 uri={uri}
@@ -608,9 +607,34 @@ export default function Cover({
                                 uri={uri}
                                 isSplitMenu={true}
                             />
-                        </View>
+                        </View>}
+                        {!isDesktop && <Row className="gap-2 flex-none items-center min-h-10 px-0.5">
+                            <Text
+                                className={` min-w-0 tracking-tight text-2xl sm:text-3xl font-bold text-foreground`}
+                                numberOfLines={2}
+                            >
+                                {profileData.display_name ||
+                                    profileData.title ||
+                                    ''}
+                            </Text>
+                            <Badges badges={data.badges} size="xs" />
+                        </Row>}
                     </View>
+
                 </View>
+                {!isDesktop && <View className="gap-4 flex-row justify-start flex-auto">
+                    <CoverMenu
+                        {...data.actions_menu}
+                        uri={uri}
+                        isSplitMenu={true}
+                    />
+
+                    <CoverMenuMore
+                        {...data.actions_menu}
+                        uri={uri}
+                        isSplitMenu={true}
+                    />
+                </View>}
             </View>
         </View>
     )

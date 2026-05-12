@@ -90,13 +90,13 @@ export default function ElementMenu(oProps) {
     //--- show vertical
     const bShowVertical = oProps?.params?.showVertical === true;
 
-    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : ' flex-row  ';
+    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : ' flex-row gap-x-2 ';
     const oParams = oProps?.params || {};
 
 
     //--- horizontal menu items alignment
     const sAlignItems = oProps.alignItems || oParams.justify_items || 'between';
-    sClassName += `justify-${sAlignItems}`;
+    sClassName += `justify-${sAlignItems} `;
 
     if (isWeb) {
         sClassName += ' ';
