@@ -121,6 +121,7 @@ const sanitizeWebProps = (props) => {
         accessibilityState,
         accessibilityValue,
         accessibilityActions,
+        accessibilityDisabled,
         importantForAccessibility,
         accessible,
         collapsable,

@@ -3,7 +3,8 @@ import { useCurrentUser } from 'app/context/user'
 import { menuItemsByName, appSetting } from 'app/lib/util'
 import { useTranslation } from 'react-i18next'
 import { getComponent } from 'app/components/registry';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { Platform } from 'react-native';
 
 // Persist indicator state across remounts (web/native)
 let __menuTopIndicatorPersist = { initialized: false, translateX: 0, width: 0 };
@@ -24,11 +25,20 @@ export default function MenuTop({ url, uri }) {
 
     // Track measured layouts for each tab item
     const [itemLayouts, setItemLayouts] = useState({});
+    const [containerLayout, setContainerLayout] = useState({ x: 0, measured: false });
     const [indicatorStyle, setIndicatorStyle] = useState({ 
         translateX: __menuTopIndicatorPersist.translateX, 
         width: __menuTopIndicatorPersist.width, 
         visible: false
     });
+
+    const handleContainerLayout = (layout) => {
+        const x = layout?.x || 0;
+        setContainerLayout((prev) => {
+            if (prev.measured && prev.x === x) return prev;
+            return { x, measured: true };
+        });
+    };
 
     const handleItemLayout = (index, layout) => {
         setItemLayouts((prev) => {
@@ -53,22 +63,33 @@ export default function MenuTop({ url, uri }) {
             setIndicatorStyle((prev) => prev.visible ? { ...prev, visible: false } : prev);
             return;
         }
+        if (Platform.OS === 'web' && !containerLayout.measured) {
+            setIndicatorStyle((prev) => prev.visible ? { ...prev, visible: false } : prev);
+            return;
+        }
+
+        const translateX = Platform.OS === 'web'
+            ? target.x - containerLayout.x
+            : target.x;
 
         setIndicatorStyle((prev) => {
-            if (prev.translateX === target.x && prev.width === target.width && prev.visible === true) {
+            if (prev.translateX === translateX && prev.width === target.width && prev.visible === true) {
                 return prev;
             }
-            return { translateX: target.x, width: target.width, visible: true };
+            return { translateX, width: target.width, visible: true };
         });
         // Persist for future remounts
-        __menuTopIndicatorPersist = { initialized: true, translateX: target.x, width: target.width };
+        __menuTopIndicatorPersist = { initialized: true, translateX, width: target.width };
         
-    }, [activeIndex, itemLayouts]);
+    }, [activeIndex, itemLayouts, containerLayout]);
 
     const MenuTopItem = getComponent('menu-item', 'topmenu');
 
     return (
-        <Row className={`${appSetting('layout', 'header', 'content_center')}`}>
+        <Row
+            className={`${appSetting('layout', 'header', 'content_center')} relative`}
+            onLayout={(e) => handleContainerLayout(e?.nativeEvent?.layout)}
+        >
             <View
                 className={`${appSetting('layout', 'header', 'active_item_indicator_bg')}`}
                 style={{
