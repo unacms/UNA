@@ -621,7 +621,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         if (currentRoute?.pageData) {// may be need to fix
             Object.assign(tabSceneProps, {
                 ListHeaderComponent: () => <View className="w-full">
-                    {CoverHeader}
+                    {(appSetting('native', 'collapsible_header') || isProfileHeader) && CoverHeader}
                     {isUseCurrentHeader ? sceneHeader : null}
                     {filter}
                 </View>
@@ -644,6 +644,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         <View className="w-full h-full ">
             <View className="w-full flex-1 ">
                 <Snackbar visible={snackbarVisible} onPress={showNewContent2} onDismiss={() => setSnackbarVisible(false)} variant="primary" title="Show New Posts" size="sm" />
+                {(!appSetting('native', 'collapsible_header') && !isProfileHeader) && CoverHeader}
                 <TabSceneHeader isProfileHeader={isProfileHeader} smallHeader={smallSceneHeader} />
                 <TabScene {...tabSceneProps} />
             </View>

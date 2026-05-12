@@ -161,43 +161,35 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                                     {getCoverBackButton(bPerson)}
                                 </View>
                             )}
-                        {appSetting('context_selector', 'show_always') &&
-                            !isDesktop ? (
-                            <View className="lg:hidden">
-                                <ContextSelector
-                                    data={context}
-                                    mode="compact"
-                                />
-                            </View>
-                        ) : (
-                            <>
-                                <View className="items-center flex-row flex-none gap-2 ">
-                                    {bPerson && (
-                                        <Profile
-                                            {...data.profile}
-                                            displayType="unit_wo_info"
-                                            displaySize={smallCoverAvatarSize}
-                                        />
-                                    )}
+
+                        <>
+                            <View className="items-center flex-row flex-none gap-2 ">
+                                {bPerson && (
                                     <Profile
                                         {...data.profile}
-                                        displayType="unit_wo_image"
-                                        displaySize={smallCoverNameSize}
-                                        showLinks={false}
+                                        displayType="unit_wo_info"
+                                        displaySize={smallCoverAvatarSize}
+                                    />
+                                )}
+                                <Profile
+                                    {...data.profile}
+                                    displayType="unit_wo_image"
+                                    displaySize={smallCoverNameSize}
+                                    showLinks={false}
+                                />
+                            </View>
+                            {isAddSelector && (
+                                <View
+                                    className={`${TABLET_MODE_FROM}:hidden `}
+                                >
+                                    <ContextSelector
+                                        data={context}
+                                        mode="min"
                                     />
                                 </View>
-                                {isAddSelector && (
-                                    <View
-                                        className={`${TABLET_MODE_FROM}:hidden `}
-                                    >
-                                        <ContextSelector
-                                            data={context}
-                                            mode="min"
-                                        />
-                                    </View>
-                                )}
-                            </>
-                        )}
+                            )}
+                        </>
+
                     </View>
                     <View className=" items-center justify-center h-14">
                         <Row className="w-full justify-between">
@@ -219,7 +211,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                                 <CoverMenuMore
                                     {...menu}
                                     uri={uri}
-                                    allowZeroPersistant = {!isDesktop}
+                                    allowZeroPersistant={!isDesktop}
                                     isSplitMenu={!showMoreMenu}
                                 />
                             </>
