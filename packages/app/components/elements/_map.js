@@ -43,6 +43,7 @@ import ProfileList from './profiles_list';
 import { ReputationSummary, ReputationWidget, ReputationLeaderboard, ReputationLevels, ReputationHistory, ReputationActions } from './reputation';
 import SearchSections from './search_sections';
 import StripeConnect from './stripe_connect';
+import Bundles from './bundles';
 
 export const componentsMapDefault = {
     messenger_main_page: Messenger,
@@ -55,6 +56,7 @@ export const componentsMapDefault = {
     reputation_actions: ReputationActions,
     reputation_widget: ReputationWidget,
     chart: Chart,
+    bundles: Bundles,
     membership: Membership,
     comment_content:CommentContent,
     browse: Browse,
