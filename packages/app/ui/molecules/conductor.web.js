@@ -1271,7 +1271,7 @@ const HeaderContainer = ({
     }, [])
     //hideDefaultHeaderFrom
     return (
-        <View className={`z-40 ${isUseCurrentHeader || isDesktop ? 'bg-card' : ''}`}>
+        <View className={`z-40 ${isUseCurrentHeader || isDesktop ? ' ' : ''}`}>
             <View className={`${conductorTheme.cover_base} cover-1`}
                 style={{
                     marginBottom: !isScrolled ? '0px' : `${(smallCoverHeight + ((isCover && !isHideCover) || !isDesktop ? 56 : 0))}px`,
@@ -1292,7 +1292,7 @@ const HeaderContainer = ({
                     </View>
                 </View>
             </View>
-            <View className={`header-fixed ${isScrolled ? 'bg-card' : ''} ${conductorTheme.cover_base} ` + (isScrolled ? 'fixed' : '')}>
+            <View className={`header-fixed ${isScrolled ? '' : ''} ${conductorTheme.cover_base} ` + (isScrolled ? 'fixed' : '')}>
                 <View className={conductorTheme.cover_small}
                     style={{
                         display: isScrolled ? 'flex' : 'none',
@@ -1346,7 +1346,7 @@ const TabBar = ({
                     />}
                 </View>
                 {!!pageData.cover_block?.actions_menu && (
-                    <Row className="hidden lg:block items-center mx-3 ">
+                    <Row className={conductorTheme.more_menu_container}>
                         {!!appSetting(
                             'cover',
                             'more_menu_in_navbar',

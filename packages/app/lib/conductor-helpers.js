@@ -552,15 +552,14 @@ export function TopSidebar({
                 className={`${isHideOnDesktop ? '' : 'mx-auto'} w-full ${conductorTheme.menu_max_width
                     }`}
             >
-                <Row
-                    className="items-center justify-between">
+                
                     {children}
                     {layout != 'mixed' && (
                         <Row className={`hidden ${conductorTheme.hide_top_menu_from}:flex cond-buttons-add`}>
                             {addButtons}
                         </Row>
                     )}
-                </Row>
+                
             </View>
         </View>
     )

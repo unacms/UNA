@@ -3,9 +3,9 @@
 export const settingsElements = {
     conductor: {
         menu: ' w-full items-left justify-center ',
-        menu_max_width: ' w-full max-w-7xl px-3 lg:px-4 ',
+        menu_max_width: ' w-full max-w-7xl px-3 lg:px-4 mx-auto',
         
-        content_max_width: ' w-full max-w-7xl ',
+        content_max_width: ' w-full max-w-7xl mx-auto ',
         content_max_width_nav: ' w-full max-w-screen-2xl  ',
         menu_is_dynamic: false,
         menu_cnt: ' flex-row flex-none gap-1 h-14 items-center overflow-x-auto ',

@@ -148,13 +148,13 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
 
     return (
         <View
-            className={`${conductorTheme.content_max_width} flex-row flex-auto items-center justify-between mx-auto h-14`}
+            className={`${conductorTheme.menu_max_width} `}
         >
             {!currentUser && !bPerson ? (
                 <PageHeaderSmall />
             ) : (
                 <>
-                    <View className="items-center w-full flex-row gap-2">
+                    <View className="items-center w-full flex-row gap-2 h-14">
                         {(!appSetting('context_selector', 'show_always') ||
                             !isWeb) && (
                             <View className="flex-row flex-none lg:hidden">
@@ -199,7 +199,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                             </>
                         )}
                     </View>
-                    <View className="flex-none items-end">
+                    <View className="flex-none flex-row items-center justify-end h-14">
                         <Row className="w-full justify-between">
                             {!showMoreMenu &&
                                 (!appSetting(
