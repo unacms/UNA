@@ -87,7 +87,7 @@ export default function MenuTop({ url, uri }) {
 
     return (
         <Row
-            className={`${appSetting('layout', 'header', 'content_center')}`}
+            className={`${appSetting('layout', 'header', 'content_center')} relative`}
             onLayout={(e) => handleContainerLayout(e?.nativeEvent?.layout)}
         >
             <View
