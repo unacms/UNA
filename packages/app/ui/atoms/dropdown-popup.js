@@ -33,6 +33,7 @@ export default function DropdownPopup({
     const contentRef = useRef(null);
     const [buttonPos, setButtonPos] = useState({ triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false });
     const [popupHeight, setPopupHeight] = useState(0);
+    const [popupRenderedWidth, setPopupRenderedWidth] = useState(0);
     const { width: windowWidth, height: windowHeight } = useWindowSize();
     const isWeb = useMemo(() => Platform.OS === 'web', []);
     const isIos = useMemo(() => Platform.OS == 'ios', []);
@@ -106,22 +107,15 @@ export default function DropdownPopup({
             }
             measureRetryRef.current = 0;
 
-            const popupWidth = Math.min(Math.max(minPopupWidth, width), windowWidth - 32);
             const roomBelow = windowHeight - (y + height) - 16;
             const roomAbove = y - 24;
             const shouldOpenAbove = showOnTop || (roomBelow < 240 && roomAbove > roomBelow);
             const maxHeight = Math.max(120, shouldOpenAbove ? roomAbove : roomBelow);
 
-            let left = x;
-            if (x + popupWidth > windowWidth - 16) {
-                left = windowWidth - popupWidth - 16;
-            }
-            if (left < 16) left = 16;
-
             setButtonPos({
                 triggerY: y,
                 triggerHeight: height,
-                x: left,
+                x,
                 width,
                 height,
                 maxHeight,
@@ -153,6 +147,7 @@ export default function DropdownPopup({
             measureRetryRef.current = 0;
             setButtonPos({ triggerY: 0, triggerHeight: 0, x: 0, width: 0, height: 0, maxHeight: 0, shouldOpenAbove: false });
             setPopupHeight(0);
+            setPopupRenderedWidth(0);
         }
     }, [isRealOpen, updateButtonPosition]);
 
@@ -190,8 +185,17 @@ export default function DropdownPopup({
     // For "above" we also need to know the popup's own height (measured via
     // onLayout) to anchor it at `triggerTop - popupHeight - gap`. For "below"
     // we don't need it at all (popup is anchored at `triggerBottom + gap`).
-    const popupMeasured = !buttonPos.shouldOpenAbove || popupHeight > 0;
+    const popupMeasured = (!buttonPos.shouldOpenAbove || popupHeight > 0) && popupRenderedWidth > 0;
     const hasMeasured = triggerMeasured && popupMeasured;
+
+    // Clamp left so the popup never overflows the screen edges, using the real
+    // rendered width once onLayout has fired (falls back to minPopupWidth before).
+    const effectivePopupWidth = popupRenderedWidth > 0 ? popupRenderedWidth : minPopupWidth;
+    let finalLeft = buttonPos.x;
+    if (finalLeft + effectivePopupWidth > windowWidth - 16) {
+        finalLeft = windowWidth - effectivePopupWidth - 16;
+    }
+    if (finalLeft < 16) finalLeft = 16;
 
     // Tweak these two constants if the gap looks off. They are intentionally
     // asymmetric — on native (especially Android) the "below" anchor often
@@ -205,8 +209,12 @@ export default function DropdownPopup({
 
     const handleContentLayout = (e) => {
         const h = Math.round(e.nativeEvent.layout.height);
+        const w = Math.round(e.nativeEvent.layout.width);
         if (h && h !== popupHeight) {
             setPopupHeight(h);
+        }
+        if (w && w !== popupRenderedWidth) {
+            setPopupRenderedWidth(w);
         }
     };
 
@@ -218,7 +226,7 @@ export default function DropdownPopup({
             style={{
                 position: 'absolute',
                 top: popupTop,
-                left: buttonPos.x,
+                left: finalLeft,
                 opacity: hasMeasured ? 1 : 0,
                 visibility: hasMeasured ? 'visible' : 'hidden',
                 elevation: 5,

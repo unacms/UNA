@@ -183,7 +183,6 @@ const TabScene = React.memo(({
         );
     }, [route?.endpoint, route?.data, route?.sidebar?.content, feedType]);
 
-    
     return (
             <UniList
                 ListHeaderComponent={typeof ListHeaderComponent === 'function' ? ListHeaderComponent : ListHeaderComponent ? () => ListHeaderComponent : undefined}
@@ -273,6 +272,12 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     const queryClient = useQueryClient();
 
     const numColumns = 1;
+
+    // On remount, TanStack Query can still report hasNextPage=false from a prior
+    // visit, which blocks the first fetchNextPage. Clear cache so fetch runs.
+    useEffect(() => {
+        queryClient.removeQueries({ queryKey: qKey });
+    }, []);
 
     useEffect(() => {
         if (currentRoute.cached) {

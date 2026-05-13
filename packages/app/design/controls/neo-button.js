@@ -547,7 +547,7 @@ export const NeoButton = (props) => {
         <Cnt {...cntProps} className={cn(cntProps.className, containerCls)}>
             {labelContent}
             {addonContent && (
-                isTitle ? <View className="z-10">{addonContent}</View> : <View className="absolute top-0 right-0 w-full h-full z-20 pointer-events-none">{addonContent}</View>
+                isTitle ? <View className="z-10 ml-1">{addonContent}</View> : <View className="absolute top-0 right-0 w-full h-full z-20 pointer-events-none">{addonContent}</View>
             )}
             {/* press highlight overlay (visual feedback, runs in addition to
                 the per-style transition) */}

@@ -124,7 +124,6 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
         context.list[0] &&
         data.profile.module == context.list[0].module
     const ContextSelector = getComponent('molecule', 'context_selector')
-
     /*if (isDesktop && isAddSelector) {
         return null
     }*/
@@ -163,7 +162,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                             )}
 
                         <>
-                            <View className="items-center flex-row flex-none gap-2 ">
+                            {(bPerson || coverMode !== 'none') && <View className="items-center flex-row flex-none gap-2 ">
                                 {bPerson && (
                                     <Profile
                                         {...data.profile}
@@ -171,20 +170,21 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                                         displaySize={smallCoverAvatarSize}
                                     />
                                 )}
+                                {(coverMode !== 'none') && (
                                 <Profile
                                     {...data.profile}
                                     displayType="unit_wo_image"
                                     displaySize={smallCoverNameSize}
                                     showLinks={false}
-                                />
-                            </View>
+                                />) }
+                            </View>    }
                             {isAddSelector && (
                                 <View
                                     className={`${TABLET_MODE_FROM}:hidden `}
                                 >
                                     <ContextSelector
                                         data={context}
-                                        mode="min"
+                                        mode={coverMode !== 'none' ? "min" : "full"}
                                     />
                                 </View>
                             )}
@@ -457,7 +457,7 @@ export default function Cover({
     }
 
     const isMin = coverMode === 'min'
-
+ 
     const ContextSelector = getComponent('molecule', 'context_selector')
     const Badges = getComponent('molecule', 'badges')
 
@@ -536,7 +536,7 @@ export default function Cover({
                     </View>
                 )}
                 <View
-                    className={`flex w-full sm:gap-3 ${bPerson ? 'lg:flex-row flex-col-reverse' : 'lg:flex-row flex-col-reverse'}`}
+                    className={`flex flex-1 sm:gap-3 ${bPerson ? 'lg:flex-row flex-col-reverse' : 'lg:flex-row flex-col-reverse'}`}
                 >
                     <View className="flex-none gap-1 ">
                         {isDesktop && <Row className="gap-2 flex-none items-center min-h-10 px-0.5">
@@ -568,7 +568,7 @@ export default function Cover({
                         )}
                     </View>
 
-                    <View className="flex-row w-full flex-wrap gap-2 lg:justify-between justify-start">
+                    <View className="flex-row flex-1 flex-wrap gap-2 lg:justify-between justify-start">
                         {bPerson && (
                             <View
                                 className={`${isMin ? 'h-24' : 'h-11'
@@ -588,13 +588,12 @@ export default function Cover({
                                 </View>
                             </View>
                         )}
-                        {isDesktop && <View className="gap-4 flex-row justify-end flex-auto">
+                        {isDesktop && <View className="gap-4 flex-row justify-end ml-auto">
                             <CoverMenu
                                 {...data.actions_menu}
                                 uri={uri}
                                 isSplitMenu={true}
                             />
-
                             <CoverMenuMore
                                 {...data.actions_menu}
                                 uri={uri}
