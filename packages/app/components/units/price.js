@@ -12,6 +12,7 @@ import {
 import { useCurrentUser } from 'app/context/user';
 import Link from 'app/ui/atoms/link'
 import { useTranslation } from 'react-i18next'
+import Html from "app/ui/atoms/html";
 
 function getPriceParts(data)
 {
@@ -61,7 +62,7 @@ function UniPriceCard({ data, onBuy }) {
         <Card className=" w-full text-left max-w-sm justify-between"  >
             <CardHeader>
                 <CardTitle>{LevelName}</CardTitle>
-                <CardDescription>{LevelDescriptions[LevelName]}</CardDescription>
+                <CardDescription>{data.description.value ? <View className="py-3"><Html data={data.description.value}/></View> :  LevelDescriptions[LevelName]}</CardDescription>
                 <View>
                     <View className=" flex-row items-end gap-4">
                         <Text className="text-5xl font-semibold text-foreground">{t(data.price.value.currency)} {priceParts.price}</Text>
@@ -71,7 +72,7 @@ function UniPriceCard({ data, onBuy }) {
                         </Text>
                     </View>
                     <View className="flex-col flex gap-4 border-t border-border/60 py-4 mt-4">
-                        {LevelFeatures[LevelName]?.map((inclusion, idx) => (
+                    {data.details.value ? <View className="py-3"><Html data={data.details.value}/></View> : LevelFeatures[LevelName]?.map((inclusion, idx) => (
                             <View key={idx} className="flex-row  items-center gap-3">
                                 <Icon
                                     icon={inclusion.icon}
