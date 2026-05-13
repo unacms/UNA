@@ -65,6 +65,76 @@
         --neo-corner-superellipse-factor: 2;
         --neo-corner-superellipse-full-factor: 1;
     }
+
+    /*
+     * Web `View` interop (`view.web.js` → `neo-v`): RN-style flex column reset.
+     * Lives in `base` so Tailwind utilities on the same node win over flex/display/position.
+     * `:where()` keeps specificity at 0 so authored utilities still override when needed.
+     */
+     .neo-v{
+        align-content: flex-start;
+        align-items: stretch;
+        box-sizing: border-box;
+        display: flex;
+        flex-basis: auto;
+        flex-direction: column;
+        flex-shrink: 0;
+        list-style: none;
+        margin: 0px;
+        min-height: 0px;
+        min-width: 0px;
+        padding: 0px;
+        position: relative;
+        text-decoration: none;
+        z-index: 0;
+    }
+    .neo-p{
+        align-content: flex-start;
+        align-items: stretch;
+        box-sizing: border-box;
+        display: flex;
+        flex-basis: auto;
+        flex-direction: column;
+        flex-shrink: 0;
+        list-style: none;
+        margin: 0px;
+        min-height: 0px;
+        min-width: 0px;
+        padding: 0px;
+        position: relative;
+        text-decoration: none;
+        z-index: 0;
+        touch-action: manipulation;
+        cursor: pointer;
+    }
+    .neo-sh {
+        display: flex;
+        min-width: 0;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+    .neo-sv {
+        display: flex;
+        min-height: 0;
+        flex-direction: column;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+     /* Web `ScrollView` inner content — horizontal (view.web.js). */
+    .neo-sh-с {
+        display: flex;
+        min-height: 0;
+        flex-direction: row;
+        flex-wrap: nowrap;
+    }
+    /* Web `ScrollView` inner content — vertical (view.web.js). */
+    .neo-sv-с {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+    }
 }
 
 /*

@@ -547,7 +547,7 @@ export const Author = memo(({ data, url, t }) => {
     );
 
     return (
-        <View className="flex-auto min-w-0">
+        <View className="flex-auto">
             <Profile
                 {...dataIcon}
                 displayType="unit"

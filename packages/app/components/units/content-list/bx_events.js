@@ -47,7 +47,7 @@ export default function Unit(props) {
                             />
                         </Skeleton>
                     </View>
-                    <View className="flex-col p-3  flex-auto items-between justify-between ">
+                    <View className="p-3 flex-auto items-between justify-between ">
                         <View>
                             <Skeleton visible={isSkeleton} className="h-3 w-1/2">
                                 {data.date_start && (

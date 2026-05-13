@@ -11,7 +11,7 @@ export default function ({ data, blockWrapperProps, uri }) {
             {!!data.cover && <View className="w-full h-28 ">
                 <Image alt={data.fullname} className="rounded-full" view="cover" src={data.cover.src} />
             </View>}
-            <View className="flex-col p-4 w-full mx-auto bg-card h-min overflow-hidden rounded-2xl shadow-sm">
+            <View className="p-4 w-full mx-auto bg-card h-min overflow-hidden rounded-2xl shadow-sm">
                 {!!data.image && <View className="w-28 h-28 overflow-hidden bg-background   rounded-full  "><Image alt={data.fullname} className="rounded-full" view="cover" src={data.image.src} /></View>}
                 <View className="flex-row flex-wrap ">
                     <View className=" flex-auto">

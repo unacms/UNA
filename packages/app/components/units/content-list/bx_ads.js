@@ -19,14 +19,14 @@ export default function Unit(props) {
     return (
 
         <CardList padding='p-2' >
-            <View className="flex-col h-full">
-                <View className="flex-col  h-full w-full">
+            <View className="h-full">
+                <View className="h-full w-full">
                     <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
                         <View
                             className={
                                 data.image
                                     ? "flex-row-reverse sm:flex-col w-full p-3 sm:p-1 gap-x-2"
-                                    : "flex-col w-full p-3  sm:p-1 "
+                                    : "w-full p-3 sm:p-1 "
                             }
                         >
                             <View
@@ -45,9 +45,9 @@ export default function Unit(props) {
                                     sizes='auto'
                                 />
                             </View>
-                            <View className="flex-auto flex-col sm:h-24 mb-auto">
+                            <View className="flex-auto sm:h-24 mb-auto">
                                 <View
-                                    className={`flex-auto flex-col ${data.image ? "  " : " "
+                                    className={`flex-auto ${data.image ? "  " : " "
                                         } gap-y-2 sm:p-2`}
                                 >
                                     <Text className="mr-auto bg-primary/20 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-secondary-foreground ">

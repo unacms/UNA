@@ -41,7 +41,7 @@ export default function Unit(props) {
                             />
 
                         </View>
-                        <View className="flex-col p-3  flex-auto items-between justify-between ">
+                        <View className="p-3  flex-auto items-between justify-between ">
                             <View>
                             <Text numberOfLines={2} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-tight font-semibold">
 

@@ -491,7 +491,7 @@ export default function ElementHtml({ customClassName, data, innerRef }) {
     if (html.trim() != '' && !hasBlockHtml(html)) html = `<p>${html}</p>`
 
     return (
-        <View className={`min-w-0 max-w-full ${customClassName || (isWeb ? 'u-vanilla-html' : '')}`} ref={innerRef}>
+        <View className={`max-w-full ${customClassName || (isWeb ? 'u-vanilla-html' : '')}`} ref={innerRef}>
             {keyedChildren(parseHtmlToReact(html))}
         </View>
     )

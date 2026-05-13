@@ -86,7 +86,7 @@ export default function Unit(props) {
                     </Skeleton>
 
                     {!!oMenuItemDelete && <View className="absolute right-1 top-1">{oMenuItemDelete}</View>}
-                    <View className="flex-col py-1 sm:p-1 justify-between gap-2 flex-auto ">
+                    <View className="py-1 sm:p-1 justify-between gap-2 flex-auto ">
                         <View className="gap-2 h-12">
                             <Skeleton className="h-5 w-3/4" visible={isSkeleton}>
                                 <Text numberOfLines={1} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-5 font-semibold">

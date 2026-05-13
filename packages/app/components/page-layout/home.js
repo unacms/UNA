@@ -324,7 +324,7 @@ export default function ({ data, blocks }) {
 
 
                             <Row className="flex-auto items-center gap-1">
-                                <Row className="items-center gap-1 flex-auto min-w-0">
+                                <Row className="items-center gap-1 flex-auto">
                                     <Text className="px-2 text-sm leading-tight font-semibold truncate text-card-foreground web:group-hover:text-foreground ">
                                         {currentUser.display_name}
                                     </Text>
@@ -462,7 +462,7 @@ export default function ({ data, blocks }) {
                 key={`cells-home${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
                 autoSaveId={cellsCustomConfig.sizable ? `cells-home` : undefined}
                 direction="horizontal"
-                className={`${appSetting('layout', 'home_container')} mx-auto flex-auto min-w-0 relative flex-row`}
+                className={`${appSetting('layout', 'home_container')} mx-auto flex-auto flex-row`}
                 onLayout={onLayout}
             >
                 {layoutName == 'hor' && isWeb && (
@@ -479,7 +479,7 @@ export default function ({ data, blocks }) {
                     </>
                 )}
                 <Panel className="w-full min-w-0 native:w-full" {...centerPanelProps}>
-                    <View className={`${appSetting('layout', 'feed_container')} min-w-0`}>
+                    <View className={`${appSetting('layout', 'feed_container')}`}>
                         {FeedContent}
                     </View>
                 </Panel>

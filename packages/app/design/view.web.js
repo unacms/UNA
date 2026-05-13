@@ -81,34 +81,6 @@ const normalizeWebStyle = (style) => {
     return Object.assign({}, ...style.filter(Boolean))
 }
 
-const displayUtilityPattern = /^(web:)?(hidden|block|inline-block|inline|flex|inline-flex|grid|inline-grid)$/
-const nonFlexDisplayUtilityPattern = /^(web:)?(hidden|block|inline-block|inline|grid|inline-grid)$/
-const flexDirectionUtilityPattern = /^(web:)?(flex-row|flex-row-reverse|flex-col|flex-col-reverse)$/
-const flexDisplayUtilityPattern = /^(web:)?(flex|inline-flex)$/
-
-const positionUtilityPattern = /^(web:)?(absolute|fixed|relative|static|sticky)$/
-const getBaseClassName = (className, baseClassName) => {
-    const isFlexColumnPreset =
-        baseClassName === 'flex flex-col' || baseClassName === 'flex flex-col relative'
-    if (!isFlexColumnPreset) return baseClassName
-    const tokens = typeof className === 'string' ? className.split(/\s+/).filter(Boolean) : []
-    const hasDisplay = tokens.some((token) => displayUtilityPattern.test(token))
-    const hasNonFlexDisplay = tokens.some((token) => nonFlexDisplayUtilityPattern.test(token))
-    const hasDirection = tokens.some((token) => flexDirectionUtilityPattern.test(token))
-    const hasFlexDisplay = tokens.some((token) => flexDisplayUtilityPattern.test(token))
-    const hasAbsoluteOrFixed = tokens.some((token) => /^(web:)?(absolute|fixed)$/.test(token))
-    const hasAnyPosition = tokens.some((token) => positionUtilityPattern.test(token))
-    const defaults = []
-    if (!hasDisplay) defaults.push('flex')
-    if (!hasNonFlexDisplay && !hasDirection && (!hasDisplay || hasFlexDisplay)) {
-        defaults.push('flex-col')
-    }
-    // relative only when position is not explicitly set
-    if (baseClassName.includes('relative') && !hasAbsoluteOrFixed && !hasAnyPosition) {
-        defaults.push('relative')
-    }
-    return defaults.join(' ')
-}
 
 const sanitizeWebProps = (props) => {
     const {
@@ -233,13 +205,13 @@ const splitMotionProps = (props) => {
     return [motion, rest]
 }
 
-export const interopComponent = (Component, displayName, baseClassName = 'flex flex-col relative') => {
+export const interopComponent = (Component, displayName, baseClassName = 'neo-v') => {
     /** @type {any} */
     const Base = forwardRef(({ className, onLayout, ...props }, ref) => {
         const layoutRef = useWebLayout(ref, onLayout)
 
         return (
-            <Component ref={layoutRef} className={cn(getBaseClassName(className, baseClassName), className)} {...sanitizeWebProps(props)} />
+            <Component ref={layoutRef} className={cn(baseClassName, className)} {...sanitizeWebProps(props)} />
         )
     })
     Base.displayName = displayName
@@ -254,6 +226,7 @@ export const interopRender = (displayName, render) => {
 }
 
 export const View = interopComponent('div', 'View')
+
 export const Pressable = interopRender(
     'Pressable',
     ({ className, onLayout, ...props }, ref) => {
@@ -262,7 +235,7 @@ export const Pressable = interopRender(
         return (
             <div
                 ref={layoutRef}
-                className={cn(getBaseClassName(className, 'flex flex-col'), 'cursor-pointer', className)}
+                className={cn('neo-p', className)}
                 {...sanitizeWebProps(props)}
             />
         )
@@ -287,9 +260,7 @@ export const ScrollView = interopRender(
         const domProps = sanitizeWebProps(rest)
         const innerStyle = normalizeWebStyle(contentContainerStyle)
         const outerClass = cn(
-            horizontal
-                ? 'flex min-w-0 flex-row flex-nowrap overflow-x-auto overflow-y-hidden'
-                : 'flex min-h-0 flex-col overflow-x-hidden overflow-y-auto',
+            horizontal ? 'neo-sh' : 'neo-sv',
             scrollEnabled === false && 'overflow-hidden',
             className
         )
@@ -301,11 +272,7 @@ export const ScrollView = interopRender(
                 {...domProps}
             >
                 <div
-                    className={
-                        horizontal
-                            ? 'flex min-h-0 flex-row flex-nowrap'
-                            : 'flex min-w-0 flex-col'
-                    }
+                    className={horizontal ? 'neo-sh-с' : 'neo-sv-с'}
                     style={innerStyle}
                 >
                     {children}
@@ -324,7 +291,7 @@ export const MotionView = interopRender(
         return (
             <div
                 ref={layoutRef}
-                className={cn(getBaseClassName(className, 'flex flex-col relative'), className)}
+                className={cn('neo-v', className)}
                 {...domProps}
             >
                 <Motion.View
@@ -349,7 +316,7 @@ export const Row = interopRender(
         return (
             <div
                 ref={layoutRef}
-                className={cn('flex flex-row', className)}
+                className={cn('neo-v flex-row', className)}
                 {...sanitizeWebProps(props)}
             >
                 {children}

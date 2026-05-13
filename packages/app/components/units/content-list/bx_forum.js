@@ -115,9 +115,9 @@ Units.Base = function Base({ data }) {
                             ></Time>
                         </Skeleton>
                     </View>
-                    <View className="flex-col gap-y-3 flex-auto ">
+                    <View className="gap-y-3 flex-auto ">
                         <View className="flex-row gap-x-4">
-                            <View className="flex-col gap-y-2 flex-auto">
+                            <View className="gap-y-2 flex-auto">
                                 <View className="sm:hidden flex-row items-center justify-between w-full">
                                     <Skeleton className="h-6 w-32" visible={isSkeleton}>
                                         <AuthorData authorData={{ ...data.author_data, displaySize: 'sm' }} />
@@ -131,7 +131,7 @@ Units.Base = function Base({ data }) {
                                 </View>
                                 <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
                                     <View
-                                        className={`flex-auto flex-col gap-y-2`}
+                                        className={`flex-auto gap-y-2`}
                                     >
                                         <Skeleton className="h-6 w-3/4 mt-2" visible={isSkeleton}>
                                             <Text

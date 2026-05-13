@@ -468,11 +468,11 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     if (!isWeb || isSmallScreen) {
         return (
-            <View className=' web:h-auto w-full min-w-0 h-full flex-row  bg-card'>
-                {panelsVisible.convos && <View className=' w-full min-w-0 overflow-hidden'>
+            <View className=' web:h-auto w-full  h-full flex-row  bg-card'>
+                {panelsVisible.convos && <View className=' w-full  overflow-hidden'>
                     {convosComponent}
                 </View>}
-                {panelsVisible.jots && <View className='flex-1 min-w-0 '>
+                {panelsVisible.jots && <View className='flex-1  '>
                     <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
                     <View className={`w-full  ${!isWeb ? 'flex-1' : ''}`} style={{ height: layoutHeightRight - (isSmallScreen ? 64 : 0)}}>
                         {jotsComponent}
@@ -504,7 +504,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                 className={`block min-w-0`}
                 {...cellsCustomConfig.cells?.left}
             >
-                {panelsVisible.convos && <View className='w-full min-w-0 overflow-hidden'>
+                {panelsVisible.convos && <View className='w-full  overflow-hidden'>
                     {convosComponent}
                 </View>}
             </Panel>
@@ -585,9 +585,9 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
     }, [isSmallScreen, setHeader, header]));
     
     return (
-        <View className='flex-1 min-w-0 bg-card' style={{ minHeight: layoutHeightLeft }}>
+        <View className='flex-1 bg-card' style={{ minHeight: layoutHeightLeft }}>
             {(isWeb && !isSmallScreen) && header}
-            {data && data.length > 0 ? <View className=' w-full min-w-0 overflow-hidden web:flex-1'
+            {data && data.length > 0 ? <View className=' w-full overflow-hidden web:flex-1'
             style={{height:layoutHeightLeft}}
             >
                 <UniList
@@ -599,9 +599,9 @@ const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, 
                     renderItem={({ item, index }) => <ItemConvo selectedIndex={selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />}
                 /></View>
                 : <View className='items-center justify-center w-full h-full'><View className="pt-8">
-                    <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-muted-foreground/10 ">
-                        <View className="flex-col mx-auto  text-secondary-foreground  ">
-                            <Text className="text-center text-lg text-secondary-foreground  lg:text-xl font-semibold  ">
+                    <View className="gap-y-2 items-center opacity-80 justify-center mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-muted-foreground/10 ">
+                        <View className="mx-auto text-secondary-foreground  ">
+                            <Text className="text-center text-lg text-secondary-foreground lg:text-xl font-semibold  ">
                                 No conversations found
                             </Text>
                         </View>

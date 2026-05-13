@@ -23,14 +23,14 @@ export default function defaultUnit(props) {
                 margin=" m-1 sm:m-2 sm:mt-0"
                 rounded="rounded-2xl"
             >
-                <View className="flex-col h-full">
+                <View className="h-full">
                     <View className="flex-col  h-full w-full">
                         <Link href={data.url}>
                             <View
                                 className={
                                     data.image
                                         ? 'flex-row-reverse sm:flex-col w-full p-3 sm:p-1 gap-x-2'
-                                        : 'flex-col w-full p-3  sm:p-1 '
+                                        : 'w-full p-3  sm:p-1 '
                                 }
                             >
                                 <View

@@ -91,7 +91,7 @@ export default function PageLayout({ data, children }) {
         <Page data={data}>
             {isWeb ? (
                 <View
-                    className={`flex-1 flex-col justify-center mx-auto w-full`}
+                    className={`flex-1 justify-center mx-auto w-full`}
                 >
                     <View className="w-full lg:flex-row max-w-7xl p-4 mx-auto my-auto">
                         {isLoginPage ? appStatic('components_logincontent') : null}

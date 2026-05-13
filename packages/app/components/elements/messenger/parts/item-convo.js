@@ -10,8 +10,8 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
     const participants = item.participants.filter(p => p.id != currentUser.id);
     const names = participants.map(p => p.display_name).join(', ');
     //memo(
-    const Item = ({ item, index, changeConvo, selectedIndex }) => (<Pressable className="w-full min-w-0 overflow-hidden" onPress={() => changeConvo(item)}>
-        <Row className={(selectedIndex == index ? ' bg-primary/10 ' : '') + 'w-full min-w-0 overflow-hidden gap-3 px-3 py-2'} >
+    const Item = ({ item, index, changeConvo, selectedIndex }) => (<Pressable className="w-full overflow-hidden" onPress={() => changeConvo(item)}>
+        <Row className={(selectedIndex == index ? ' bg-primary/10 ' : '') + 'w-full overflow-hidden gap-3 px-3 py-2'} >
             
             <View className=" rounded-full flex-none bg-secondary mb-auto">
                 <Profile
@@ -20,14 +20,14 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
                     displaySize="base"
                 />
             </View>
-            <View className="flex-1 min-w-0 flex-col my-auto ">
-                <Row className="flex-row items-center gap-1 min-w-0">
+            <View className="flex-1 my-auto ">
+                <Row className="items-center gap-1 ">
                 <Text className="block flex-1 min-w-0 text-base leading-5 font-bold text-card-foreground web:group-hover:text-foreground line-clamp-1 truncate overflow-hidden max-w-full" numberOfLines={1}>
                     {names}
                 </Text>
                 <Time className="text-sm text-muted-foreground whitespace-nowrap" ts={item.date}></Time>
                 </Row>
-                <View className="min-w-0">
+                <View className="">
                     <Text className="block text-sm text-secondary-foreground web:group-hover:text-foreground line-clamp-1 truncate overflow-hidden max-w-full" numberOfLines={1}>
                     {item.message}
                 </Text>

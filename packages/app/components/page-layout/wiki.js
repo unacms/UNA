@@ -453,11 +453,11 @@ function PageContentWiki({ data, url }) {
                 key={`cells-wiki${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
                 autoSaveId={cellsCustomConfig.sizable ? `cells-wiki` : undefined}
                 direction="horizontal"
-                className={` mx-auto flex-auto relative flex-row`}
+                className={`mx-auto flex-auto relative flex-row`}
                 onLayout={onLayout}
             >
                 <Panel className={`hidden ${leftBreakpoint}:block ${currentBreakpointName}:w-full`} {...leftPanelProps}>
-                    <View className="flex-auto w-full  p-2 sm:p-3">
+                    <View className="flex-auto w-full p-2 sm:p-3">
                         <View className="gap-3">
                             <BlockWrapper block={{ designbox_id: 11, id: 'wiki-toc', title: 'Pages Menu' }}  >
                                 <MenuWiki setPageData={setPageData} data={data?.elements?.cell_left[0]?.content[0]?.data} url={pageData.url} />
@@ -468,7 +468,7 @@ function PageContentWiki({ data, url }) {
                 </Panel>
                 <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
                 <Panel className={`native:w-full ${currentBreakpointName}:w-full`} {...centerPanelProps}>
-                    <View ref={centerContentRef} className={` min-w-0 p-4 gap-3`}>
+                    <View ref={centerContentRef} className={`p-4 gap-3`}>
                         <Html data={pageData?.data?.elements?.cell_center[0]?.content[0]?.data?.content} />
                     </View>
                 </Panel>

@@ -139,7 +139,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                     {getFormFieldByData(data.inputs['object_cf'], handleSubmit, 'default')}
                     {getFormFieldByData(data.inputs['owner_id'], handleSubmit, 'default')}
                     {getFormFieldByData(data.inputs['type'], handleSubmit, 'default')}
-                    <View className="justify-between flex-col flex-auto gap-2">
+                    <View className="justify-between flex-auto gap-2">
                         <View className="w-full flex-auto justify-start p-1 ">
                             <View
                                 className="flex-auto "

@@ -584,8 +584,8 @@ const ComponentsContentEmpty = () => {
     return (
         <>
             <View className="p-2">
-                <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full rounded-2xl  bg-muted-foreground/10 ">
-                    <View className="flex-col mx-auto m-4 text-secondary-foreground  ">
+                <View className="gap-y-2 items-center opacity-80 justify-center mx-auto my-auto mb-auto py-4 px-8 h-full rounded-2xl  bg-muted-foreground/10 ">
+                    <View className="mx-auto m-4 text-secondary-foreground">
                         <Icon icon="Binoculars" width={32} height={32} />
                     </View>
                     <Text className="text-center text-lg text-secondary-foreground  lg:text-xl font-semibold  ">
@@ -605,8 +605,8 @@ const PageNotFound = () => {
     return (
         <>
             <View className="p-8 mx-auto">
-                <View className="flex-col gap-2 items-center justify-center mx-auto my-auto py-4 px-8 h-full rounded-2xl bg-muted ">
-                    <View className="flex-col mx-auto m-4 text-muted-foreground ">
+                <View className="gap-2 items-center justify-center mx-auto my-auto py-4 px-8 h-full rounded-2xl bg-muted ">
+                    <View className="mx-auto m-4 text-muted-foreground ">
                         <Icon icon="Binoculars" width={32} height={32} />
                     </View>
                     <Text className="text-center text-lg text-foreground lg:text-xl font-semibold ">
@@ -657,8 +657,8 @@ const PageNotAllowed = () => {
     return (
         <>
             <View className="p-8 mx-auto">
-                <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full rounded-2xl  bg-muted-foreground/10 ">
-                    <View className="flex-col mx-auto m-4 text-secondary-foreground  ">
+                <View className="gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full rounded-2xl  bg-muted-foreground/10 ">
+                    <View className="mx-auto m-4 text-secondary-foreground  ">
                         <Icon icon="Binoculars" width={32} height={32} />
                     </View>
                     <Text className="text-center text-lg text-card-foreground lg:text-xl font-semibold  ">
@@ -750,7 +750,7 @@ export function ComponentsIntro(props) {
 
 const ComponentsLoginContentComponent = (props) => {
     return (
-        <View className="hidden my-auto flex-col flex-auto">
+        <View className="hidden my-auto flex-auto">
             <View className="w-[50%] max-w-80 aspect-square">
                 <SvgFile
                     src_dark="login-dark.svg"
@@ -759,11 +759,11 @@ const ComponentsLoginContentComponent = (props) => {
                 />
             </View>
             <View className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">
-                <View className="flex-col gap-y-8 flex-auto my-4 ">
+                <View className="gap-y-8 flex-auto my-4 ">
                     <H1 className="text-4xl tracking-tight font-bold text-secondary-foreground  justify-center items-center  ">
                         Sign in to your account
                     </H1>
-                    <View className="flex-col gap-y-4">
+                    <View className="gap-y-4">
                         <View className="flex-row gap-x-4 ">
                             <Icon
                                 className="text-secondary-foreground "

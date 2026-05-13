@@ -105,8 +105,8 @@ export function ContentMore({
     displayContent += linkContent;
 
     return (
-        <View className="min-w-0 max-w-full">
-            <Pressable className="min-w-0 max-w-full" onPress={showButton ? handleToggle : undefined}>
+        <View className=" max-w-full">
+            <Pressable className="max-w-full" onPress={showButton ? handleToggle : undefined}>
                 <HtmlMemo 
                     data={displayContent}
                     customClassName={customClassName}

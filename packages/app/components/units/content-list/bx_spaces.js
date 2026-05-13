@@ -56,7 +56,7 @@ export default function Unit(props) {
 
                             </View>
                             {!!oMenuItemDelete && <View className="absolute right-2 top-2">{oMenuItemDelete}</View>}
-                            <View className="flex-col p-2 flex-auto items-between justify-between ">
+                            <View className="p-2 flex-auto items-between justify-between ">
                                 <View>
                                     <Row className="items-center gap-2">
                                         {bShowProfilePic && (

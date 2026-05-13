@@ -93,7 +93,7 @@ const AccordionTrigger = React.forwardRef(
                 >
                     {({ isExpanded }) => (
                         <>
-                            <View className="min-w-0 flex-1">
+                            <View className="flex-1">
                                 {label}
                             </View>
                             <View className="ml-2 shrink-0">

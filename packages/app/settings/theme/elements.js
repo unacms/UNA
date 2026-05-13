@@ -49,7 +49,7 @@ export const settingsElements = {
         item_tabs_overflow_text_lg:
             'text-left text-lg font-medium text-secondary-foreground web:group-hover:text-foreground whitespace-nowrap',
         item_cnt: 'items-center w-full flex-row',
-        item_cnt_tabs_overflow: 'items-center w-full flex-row justify-start min-w-0 flex-1',
+        item_cnt_tabs_overflow: 'items-center w-full flex-row justify-start flex-1',
         item_text: ' text-sm font-semibold text-secondary-foreground web:group-hover:text-foreground px-2',
         item_icon:
             'flex items-center w-9 h-9 bg-muted web:group-hover:bg-border rounded-full justify-center',
