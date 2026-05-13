@@ -16,6 +16,8 @@ const isIos = Platform.OS === 'ios';
 export default function ElementLink({
     href = '',
     target,
+    /** When set (e.g. `/tab0`), native navigation uses this tab segment instead of inferring from the tab bar or current tab. */
+    tabPath,
     haptics,
     children,
     asExternal,
@@ -35,7 +37,7 @@ export default function ElementLink({
     const handlePress = useCallback(() => {
         if (haptics) FeedbackHaptics(haptics);
         setTimeout(() => {
-            if (isIos) emitter.emit('link', { action: 'pressed' });
+            emitter.emit('link', { action: 'pressed' });
         }, 350);
     }, [haptics]);
 
@@ -57,11 +59,16 @@ export default function ElementLink({
         if (target) {
             return finalHref;
         }
+        const pathname = tabPath
+            ? tabPath
+            : index !== -1
+              ? `/tab${index}`
+              : `/${glob.name}`;
         return {
-            pathname: index !== -1 ? `/tab${index}` : `/${glob.name}`,
+            pathname,
             params: { url: finalHref },
         };
-    }, [target, finalHref, index, glob.name]);
+    }, [target, finalHref, index, glob.name, tabPath]);
 
 
     const sizeClass = (() => {

@@ -13,6 +13,7 @@ export default function ElementLink({
     href: hrefProp,
     emulate,
     target,
+    tabPath: _tabPath,
     variant = 'default',
     size,
     mode,

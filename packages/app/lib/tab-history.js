@@ -96,6 +96,10 @@ export function navigateBackInTab(router, tabKey, currentUser) {
     });
 }
 
+export function resetAllTabHistory() {
+    tabHistoryState.byTab = {};
+}
+
 export function resetTabHistory(tabKey, currentUser, initialUrl) {
     if (!tabKey) return;
     const rootUrl = getTabRoot(tabKey, currentUser);

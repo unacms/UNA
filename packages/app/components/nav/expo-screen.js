@@ -53,7 +53,8 @@ export function Screen(params) {
         isRoot = true;
     }
 
-    return <Content key={_path+local.refresh} pagePath={_path} currentUser={currentUser} tabKey={pathname} isRoot={isRoot} />
+    const userKey = currentUser?.id ?? 'guest';
+    return <Content key={`${_path}__${userKey}__${local.refresh ?? ''}`} pagePath={_path} currentUser={currentUser} tabKey={pathname} isRoot={isRoot} />
 
 
 }

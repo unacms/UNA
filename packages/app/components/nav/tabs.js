@@ -33,7 +33,7 @@ import { registerAll } from 'app/components/registry-init';
 import * as WebBrowser from 'expo-web-browser';
 import { getDomainFromUrl } from 'app/lib/util';
 import { useSound } from 'app/lib/hooks/useSound';
-import { resetTabHistory } from 'app/lib/tab-history';
+import { resetTabHistory, resetAllTabHistory } from 'app/lib/tab-history';
 
 enableScreens(appSetting('native', 'enable_screens'));
 
@@ -160,6 +160,9 @@ export default function Tabs() {
 
     const tabsSessionKey = currentUser?.id ? `user-${currentUser.id}-${currentUser.confirmed}` : 'user-guest';
 
+    useEffect(() => {
+        resetAllTabHistory();
+    }, [tabsSessionKey]);
 
     useEffect(() => {
         if (themeName != 'auto') {
