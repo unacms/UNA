@@ -49,11 +49,11 @@ export const settingsBadges = {
         sm: {
             // Matches profile_sizes['sm']: h-8 (32px)
             padding: ' px-1 ',
-            wide_padding: ' px-2 ',
+            wide_padding: ' px-3 ',
             container: ' min-w-8 h-8 gap-1 justify-center items-center  ',
             image_container: ' items-center justify-center ',
             icon_size: 20,
-            text: ' text-sm leading-8  ',
+            text: ' text-sm leading-8 px-1 ',
             rounded: ' rounded-lg ',
         },
         md: {
