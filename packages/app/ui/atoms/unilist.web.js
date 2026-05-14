@@ -165,7 +165,7 @@ export default function UniList(props) {
         forwardRef(({ className, ...props }, ref) => (
             <div
                 ref={ref}
-                className={`u-max-width-block w-full mx-auto justify-center flex flex-wrap flex-row ${className || ''}`}
+                className={`u-max-width-block w-full mx-auto flex flex-wrap flex-row ${className || ''}`}
                 {...props}
             />
         )),
