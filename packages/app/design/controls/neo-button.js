@@ -599,13 +599,17 @@ export const NeoButtonLink = ({
 }) => {
     const finalHref = sanitazeUrl(href);
     const isExternal = isExternalUrl(finalHref) || asExternal === true;
+    const linkClassName = cn(
+        'u-neo-btn-link block',
+        props.width === 'fill' ? 'w-full' : '',
+    );
 
     if (isExternal) {
         return <NeoButton {...props} onPress={() => openExternalLink(finalHref)} />;
     }
 
     return (
-        <Link href={href} target={target} asExternal={asExternal} mode="plain" className="u-neo-btn-link block">
+        <Link href={href} target={target} asExternal={asExternal} mode="plain" className={linkClassName}>
             <NeoButton {...props} hitarea={false} interactive />
         </Link>
     );
