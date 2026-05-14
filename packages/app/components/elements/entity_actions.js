@@ -8,9 +8,9 @@ export default function ElementEntityActions({ data, blockWrapperProps }) {
             <View className="w-full">
                 <Menu
                     {...data}
-                    displayType="element"
+                   // displayType="element"
                     alignItems="start"
-                    showMatched={true}
+                   // showMatched={true}
                     autoSize={true}
                     autoFilter={false}
                     params={{

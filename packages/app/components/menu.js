@@ -2,7 +2,7 @@ import { View, ViewRef, Pressable } from 'app/design/view'
 import { appSetting, menuItemsByName } from 'app/lib/util';
 import { getComponent } from 'app/components/registry';
 import { useCurrentUser } from 'app/context/user'
-import { Fragment, useMemo, useState, memo } from "react";
+import { useMemo, useState, memo } from "react";
 import { Button, NeoButton } from 'app/design/controls';
 import DynamicMenu from 'app/components/nav/menu-dynamic';
 import { Platform } from 'react-native'
@@ -90,13 +90,13 @@ export default function ElementMenu(oProps) {
     //--- show vertical
     const bShowVertical = oProps?.params?.showVertical === true;
 
-    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : ' flex-row gap-x-2 ';
+    sClassName += bShowVertical ? ' flex-col items-center gap-y-2 w-full ' : ' flex-row  ';
     const oParams = oProps?.params || {};
 
 
     //--- horizontal menu items alignment
     const sAlignItems = oProps.alignItems || oParams.justify_items || 'between';
-    sClassName += `justify-${sAlignItems} `;
+    sClassName += `justify-${sAlignItems}`;
 
     if (isWeb) {
         sClassName += ' ';
@@ -105,11 +105,15 @@ export default function ElementMenu(oProps) {
     //--- show menu's content only
     const bShowContent = oParams.showContent === 'true';
 
+	if (!oProps.items){
+	    return;
+	}
+
     //--- use iconset if available
     let iconset = { ...appSetting('menu_items', 'iconset'), ...appSetting('menu_items', oProps.object, 'iconset') };
     if (iconset) oParams.iconset = iconset;
 
-    const sortedItems = [...(oProps.items || [])].sort((a, b) => {
+    const sortedItems = [...oProps.items].sort((a, b) => {
         
         const pa = (a.primary === true || a.primary === 1) ? 1 : 0;
         const pb = (b.primary === true || b.primary === 1) ? 1 : 0;
@@ -138,7 +142,11 @@ export default function ElementMenu(oProps) {
             }
 
             // Check if the `display_type` of the item is supported by `componentsMap`
-            const sDisplayTypeItem = aItem.display_type ? aItem.display_type : sDisplayType;
+            const sDisplayTypeItem = aItem.display_type ? aItem.display_type : (aItem.link ? 'button' : sDisplayType);
+
+            if (sDisplayTypeItem == 'button') {
+                aItem.display_type='button';
+            }
 
             if (!getComponent('menu-item', sDisplayTypeItem)) {
                 return false;
@@ -148,10 +156,6 @@ export default function ElementMenu(oProps) {
             return true;
         });
     }, [bAutoFilter, oProps.object, sortedItems, currentUser, bShowMatched, sDisplayType, sShowSelected, aExcept, aExceptTitle]);
-
-	if (!oProps.items){
-	    return;
-	}
 
     if (!oProps?.items?.length)
         return [];
@@ -201,17 +205,9 @@ export default function ElementMenu(oProps) {
             }
 
             return (
-                <Fragment key={`menu${originalIndex}-group`}>
-                    <View key={`menu${originalIndex}`} className={` ${spacingClass} ${sAlignItems === 'stretch' ? 'flex-auto' : ''}  `}>
-                        <Wrapper {...cntProps}>{element}</Wrapper>
-                    </View>
-                    {!isLast && oProps?.params?.menu_item_separator === 'dot' ? (
-                        <View
-                            key={`menu${originalIndex}-separator`}
-                            className={oProps?.params?.menu_item_separator_class || 'h-1 w-1 rounded-full bg-muted-foreground/60'}
-                        />
-                    ) : null}
-                </Fragment>
+                <View key={`menu${originalIndex}`} className={` ${spacingClass} ${sAlignItems === 'stretch' ? 'flex-auto' : ''}  `}>
+                    <Wrapper {...cntProps}>{element}</Wrapper>
+                </View>
             );
         });
 
@@ -243,7 +239,6 @@ export default function ElementMenu(oProps) {
                 sDisplayType={sDisplayType} params={oProps.params} />
         }}
         isFixedCount={oProps?.params?.isFixedCount}
-        allowZeroPersistant={oProps.allowZeroPersistant}
         persistent={oProps.persistent}
         containerClasses={oProps.containerClasses || "w-full "}
         items={filteredItems}
