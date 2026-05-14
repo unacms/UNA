@@ -8,11 +8,10 @@ import { BottomSheetModalProvider, BottomSheetBackdrop, BottomSheetModal, Bottom
 import { StyleSheet } from "react-native";
 import { useTheme } from 'app/design/theme';
 import { Platform } from 'react-native'
-import { useIsDesktop, useWindowHeight } from 'app/context/measure';
+import { useWindowHeight } from 'app/context/measure';
 
 export default function ElementBottomSheetContent(props) {
     const { bottomSheetData, setBottomSheetData } = useBottomSheetData();
-    const isDesktop = useIsDesktop();
     const {
         isListView = false,
         showClose = true,
@@ -64,7 +63,7 @@ export default function ElementBottomSheetContent(props) {
     const windowHeight = useWindowHeight();
     if (!bottomSheetData) return null;
 
-    if (isDesktop || bottomSheetData.modal) {
+    if (bottomSheetData.modal) {
         return (
             <Modal
                 title={bottomSheetData.title}
