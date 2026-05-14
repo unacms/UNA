@@ -84,7 +84,7 @@ export default function Badge({ data, variant = "default", size = 'sm', rounded 
         const hasBoth = hasIcon && hasText || hasImage && hasText;
 
         // Build base classes; default padding/rounding only if size not provided
-        const baseClasses = `items-center flex-row self-start web:inline-flex`;
+        const baseClasses = `items-center flex-row web:inline-flex`;
 
         // Container sizing and padding from size map
         const containerSize = size && badgeSizes[size]?.container || '';
