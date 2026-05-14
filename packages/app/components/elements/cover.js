@@ -119,6 +119,11 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
             : false
     const coverMode =
         appSetting('cover', 'view_by_module', data?.profile?.module) || mode
+
+    const coverModeSmall =
+        appSetting('cover', 'view_by_module_small', data?.profile?.module) || mode
+
+
     const isAddSelector =
         context &&
         context.list[0] &&
@@ -128,7 +133,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
         return null
     }*/
 
-    if (coverMode === 'none' && isDesktop) {
+    if ((coverMode === 'none' || coverModeSmall === 'none') && isDesktop) {
         return null
     }
 
@@ -171,13 +176,13 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                                     />
                                 )}
                                 {(coverMode !== 'none') && (
-                                <Profile
-                                    {...data.profile}
-                                    displayType="unit_wo_image"
-                                    displaySize={smallCoverNameSize}
-                                    showLinks={false}
-                                />) }
-                            </View>    }
+                                    <Profile
+                                        {...data.profile}
+                                        displayType="unit_wo_image"
+                                        displaySize={smallCoverNameSize}
+                                        showLinks={false}
+                                    />)}
+                            </View>}
                             {isAddSelector && (
                                 <View
                                     className={`${TABLET_MODE_FROM}:hidden `}
@@ -457,7 +462,7 @@ export default function Cover({
     }
 
     const isMin = coverMode === 'min'
- 
+
     const ContextSelector = getComponent('molecule', 'context_selector')
     const Badges = getComponent('molecule', 'badges')
 
@@ -518,7 +523,7 @@ export default function Cover({
                 className={` ${appSetting(
                     'layout',
                     'max_width_content',
-                )} lg:flex-row  mx-auto w-full p-3 sm:p-4 `}
+                )} lg:flex-row  mx-auto w-full p-3 sm:p-4 gap-x-3 `}
             >
                 {bPerson && (
                     <View className="hidden lg:flex flex-none h-24 w-40 justify-end">

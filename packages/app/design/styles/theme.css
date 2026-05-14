@@ -126,6 +126,10 @@
     --shadow-btn-glass-prominent-pressed-deep: var(--neo-shadow-btn-glass-prominent-pressed-deep);
     --shadow-btn-focus: var(--neo-shadow-btn-focus);
     --shadow-btn-focus-deep: var(--neo-shadow-btn-focus-deep);
+
+    --container-8xl: 1440px;
+    --container-9xl: 1536px;
+    --container-10xl: 1920px;
 }
 
 /*

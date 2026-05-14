@@ -134,11 +134,6 @@ const theme = {
         minWidth: {
             '240': '240px',
         },
-        maxWidth: {
-            '8xl': '1440px',
-            '9xl': '1536px',
-            '10xl': '1920px',
-        },
         fontFamily: {
             main: ['var(--font-main)'],
             title: ['var(--font-title)'],
