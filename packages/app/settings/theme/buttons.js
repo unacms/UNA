@@ -374,7 +374,7 @@ export const settingsButtons = {
                     disabled: 'bg-secondary opacity-60',
                 },
                 text: {
-                    base: 'font-medium',
+                    base: 'font-semibold tracking-tight',
                     default: 'text-foreground',
                     hovered: 'text-foreground',
                     focused: 'text-foreground',
@@ -399,7 +399,7 @@ export const settingsButtons = {
                     disabled: 'bg-primary opacity-60',
                 },
                 text: {
-                    base: 'font-semibold',
+                    base: 'font-semibold tracking-tight',
                     default: 'text-primary-foreground',
                     hovered: 'text-primary-foreground',
                     focused: 'text-primary-foreground',
@@ -422,7 +422,7 @@ export const settingsButtons = {
                     disabled: 'opacity-50',
                 },
                 text: {
-                    base: 'font-medium',
+                    base: 'font-semibold tracking-tight',
                     default: 'text-secondary-foreground',
                     hovered: 'text-foreground',
                     focused: 'text-foreground',
@@ -438,7 +438,7 @@ export const settingsButtons = {
             link: {
                 container: { default: '', disabled: 'opacity-50' },
                 text: {
-                    base: 'font-medium',
+                    base: 'font-semibold tracking-tight',
                     default: 'text-primary',
                     hovered: 'text-primary web:underline',
                     focused: 'text-primary web:underline',
@@ -464,8 +464,8 @@ export const settingsButtons = {
                     disabled: 'bg-card/20 opacity-60',
                 },
                 text: {
-                    base: 'font-medium',
-                    default: 'text-card-foreground',
+                    base: 'font-semibold tracking-tight',
+                    default: 'text-secondary-foreground',
                     hovered: 'text-foreground',
                     focused: 'text-card-foreground',
                     pressed: 'text-foreground',
@@ -488,7 +488,7 @@ export const settingsButtons = {
                     disabled: 'bg-primary/90 opacity-60',
                 },
                 text: {
-                    base: 'font-semibold',
+                    base: 'font-semibold tracking-tight',
                     default: 'text-primary-foreground',
                     hovered: 'text-primary-foreground',
                     focused: 'text-primary-foreground',
