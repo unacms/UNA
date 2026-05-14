@@ -8,8 +8,13 @@
  * override radii at runtime — e.g. for the iOS-style superellipse corners).
  */
 @theme inline {
-    /* Web: --font-* from next/font on <html>. V4 max-w-* uses --container-*; do not reuse old v3 `containers` sizes here. */
+    /* Web: --font-* from next/font on <html>. V4 max-w-* uses --container-*; keep NEO list query sizes under list-* so max-w-sm/md/etc. stay unchanged. */
     --breakpoint-3xl: 120rem;
+    --container-list-xs: 32rem;
+    --container-list-sm: 40rem;
+    --container-list-md: 48rem;
+    --container-list-lg: 64rem;
+    --container-list-xl: 80rem;
     --color-border: rgb(var(--border));
     --color-input: rgb(var(--input));
     --color-ring: rgb(var(--ring));

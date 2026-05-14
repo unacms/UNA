@@ -20,28 +20,33 @@ export function getModalPostTitle(authorData) {
 }
 
 export function layoutForList(endpoint, unitMode = '') {
+    const moduleName = typeof endpoint === 'string' ? endpoint : endpoint?.module;
+    const requestUrl = typeof endpoint === 'string' ? endpoint : endpoint?.request_url;
+    const paramsRequestUrl = endpoint?.params?.request_url;
+    const unitName = typeof endpoint === 'string' ? '' : endpoint?.unit;
+
     if (unitMode == 'search'){
-        if (endpoint =='bx_timeline' || endpoint.includes('_cmts')){
-             return 'w-full @lg/list:w-1/2 ';
+        if (moduleName == 'bx_timeline' || requestUrl?.includes('_cmts')){
+             return 'w-full @list-lg/list:w-1/2 ';
         }
     }
-    if (!endpoint || endpoint?.request_url?.includes('bx_timeline') || endpoint?.params?.request_url?.includes('bx_timeline') || endpoint.unit == "notifications")
+    if (!endpoint || requestUrl?.includes('bx_timeline') || paramsRequestUrl?.includes('bx_timeline') || unitName == "notifications")
         return 'w-full';
 
-    if (endpoint?.module == 'bx_forum' || endpoint?.request_url?.includes('r=bx_forum'))
+    if (moduleName == 'bx_forum' || requestUrl?.includes('r=bx_forum'))
          return 'w-full';
 
-    if (endpoint?.module == 'bx_groups' || endpoint?.request_url?.includes('r=bx_groups'))
-        return 'w-full @sm/list:w-1/2 @md/list:w-1/3 @lg/list:w-1/4 p-1.5';
+    if (moduleName == 'bx_groups' || requestUrl?.includes('r=bx_groups'))
+        return 'w-full @list-sm/list:w-1/2 @list-md/list:w-1/3 @list-lg/list:w-1/4 p-1.5';
 
-    if (endpoint?.module == 'bx_videos')
-        return 'w-full @sm/list:w-1/2 @lg/list:w-1/3 @xl/list:w-1/4 px-3 pt-3 @sm/list:p-2  ';
+    if (moduleName == 'bx_videos')
+        return 'w-full @list-sm/list:w-1/2 @list-lg/list:w-1/3 @list-xl/list:w-1/4 px-3 pt-3 @list-sm/list:p-2  ';
 
-    if (endpoint?.module == 'bx_persons')
-        return 'w-full @sm/list:w-1/3 @md/list:w-1/4 @lg/list:w-1/5 @xl/list:w-1/6 @sm/list:p-2 @md/list:p-2 mt-px @sm/list:m-0 ';
+    if (moduleName == 'bx_persons')
+        return 'w-full @list-sm/list:w-1/2 @list-md/list:w-1/3 @list-lg/list:w-1/4  @list-xl/list:w-1/5 @list-sm/list:p-2 @list-md/list:p-2 mt-px @list-sm/list:m-0 ';
 
    
-    return 'w-full min-w-72 @sm/list:w-1/3 @md/list:w-1/4 @lg/list:w-1/5 @xl/list:w-1/6 @sm/list:p-2 @md/list:p-2 mt-px @sm/list:m-0';
+    return 'w-full @list-sm/list:w-1/2 @list-md/list:w-1/3 @list-lg/list:w-1/4  @list-xl/list:w-1/4  @list-sm/list:p-2 @list-md/list:p-2 mt-px @list-sm/list:m-0';
 }
 
 export function paddingForList(endpoint) {
@@ -53,10 +58,10 @@ export function paddingForList(endpoint) {
         return '';
     // Groups and grid layouts get padding for better spacing
     if (endpoint?.module == 'bx_groups' || endpoint?.request_url?.includes('r=bx_groups'))
-        return 'm-1.5 @md/list:m-1.5';
+        return 'm-1.5 @list-md/list:m-1.5';
 
     // Default padding for grid-based content lists
-    return ' @sm/list:m-1 @lg/list:m-2';
+    return ' @list-sm/list:m-1 @list-lg/list:m-2';
 }
 
 
