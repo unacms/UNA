@@ -289,7 +289,7 @@ const Content = React.memo(({ children, currentUser, layoutName, url }) => {
 
     return (
         <View className="w-full items-stretch cnt-root mx-auto flex-row " key={contentKey}>
-            <main id="main-content" role="main" className={mainClassName}>
+            <main id="main-content" className={mainClassName}>
                 <Informer />
                 {children}
             </main>
