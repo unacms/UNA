@@ -41,8 +41,8 @@ export default function ElementBundles({ data, blockWrapperProps, url }) {
         <BlockWrapper {...blockWrapperProps}>
             <Row className=" gap-3 flex-wrap justify-center">
                 {
-                    data.map(item => {
-                        return <ElementBundle data={item} />
+                    data.map((item, index) => {
+                        return <ElementBundle key={item.id || item.name || item.title || index} data={item} />
                     })
                 }
             </Row>

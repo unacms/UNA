@@ -105,15 +105,11 @@ export default function ElementMenu(oProps) {
     //--- show menu's content only
     const bShowContent = oParams.showContent === 'true';
 
-	if (!oProps.items){
-	    return;
-	}
-
     //--- use iconset if available
     let iconset = { ...appSetting('menu_items', 'iconset'), ...appSetting('menu_items', oProps.object, 'iconset') };
     if (iconset) oParams.iconset = iconset;
 
-    const sortedItems = [...oProps.items].sort((a, b) => {
+    const sortedItems = [...(oProps.items || [])].sort((a, b) => {
         
         const pa = (a.primary === true || a.primary === 1) ? 1 : 0;
         const pb = (b.primary === true || b.primary === 1) ? 1 : 0;
@@ -156,6 +152,10 @@ export default function ElementMenu(oProps) {
             return true;
         });
     }, [bAutoFilter, oProps.object, sortedItems, currentUser, bShowMatched, sDisplayType, sShowSelected, aExcept, aExceptTitle]);
+
+	if (!oProps.items){
+	    return;
+	}
 
     if (!oProps?.items?.length)
         return [];
