@@ -1326,6 +1326,8 @@ const TabBar = ({
     const { t } = useTranslation()
     const { layoutName: layout } = useLayoutSettings()
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
+    const isDesktop = useIsDesktop()
+
     if (routes.length > 0) {
         const addButtons = <AddMenu menu={menu} filter="hideInTopBar" />
         return (
@@ -1336,6 +1338,7 @@ const TabBar = ({
                 layout={layout}
                 title={t(menuSettings?.name)}
             >
+                <Row className="px-3">
                 <View className="flex-1 h-14">
                     {routes.length > 1 && <ConductorMenu
                         routes={routes}
@@ -1347,7 +1350,7 @@ const TabBar = ({
                 </View>
                 {!!pageData.cover_block?.actions_menu && (
                     <Row className={conductorTheme.more_menu_container}>
-                        {!!appSetting(
+                        {isDesktop && !!appSetting(
                             'cover',
                             'more_menu_in_navbar',
                             pageData?.module
@@ -1368,6 +1371,7 @@ const TabBar = ({
                             )}
                     </Row>
                 )}
+                </Row>
             </TopSidebar>
         )
     }

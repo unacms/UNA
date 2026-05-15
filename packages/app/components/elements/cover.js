@@ -593,7 +593,11 @@ export default function Cover({
                                 </View>
                             </View>
                         )}
-                        {isDesktop && <View className="gap-4 flex-row justify-end ml-auto">
+                        {(isDesktop && !appSetting(
+                            'cover',
+                            'more_menu_in_navbar',
+                            pageData?.module
+                        ))  && <View className="gap-4 flex-row justify-end ml-auto">
                             <CoverMenu
                                 {...data.actions_menu}
                                 uri={uri}
@@ -619,7 +623,7 @@ export default function Cover({
                     </View>
 
                 </View>
-                {!isDesktop && <Row className="justify-start flex-auto mt-1">
+                {!isDesktop && <Row className="justify-start  mt-1">
                     <CoverMenu
                         {...data.actions_menu}
                         uri={uri}
