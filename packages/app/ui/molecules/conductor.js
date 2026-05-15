@@ -224,6 +224,8 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     const [snackbarVisible, setSnackbarVisible] = useState(false);
     const [refreshRequested, setRefreshRequested] = useState(false);
 
+
+    
     const setHeader = useSetHeader();
 
 
@@ -235,14 +237,13 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         }
     }, [menu, menuState, initedTabs, setRoutes, data]);
 
-    /*useEffect(() => {
-        setRoutes(initedTabs);
-    }, [data]);*/
-
-
     const setRoutes = /*useCallback(*/(a) => {
         setRoutes1(a);
     }/*, []);*/
+
+    useEffect(() => {
+        setRoutes(initedTabs);
+    }, [initedTabs]);
 
     routesRef.current = routes;
 
@@ -578,8 +579,11 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     };
 
     const CoverHeader = useMemo(() => {
+        console.log('currentRoute.pageData0', currentRoute.pageData);
         return <Cover data={currentRoute.pageData?.cover_block} showMoreMenu={false} uri={currentRoute.pageData?.uri} context={currentRoute?.pageData?.context} />
     }, [currentRoute.pageData]);
+
+    console.log('currentRoute.pageData', currentRoute.pageData);
     
     const onFormChangedValues = useCallback((values) => {
         if (!isFormInitialized.current) {

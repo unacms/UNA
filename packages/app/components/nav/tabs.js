@@ -33,7 +33,7 @@ import { registerAll } from 'app/components/registry-init';
 import * as WebBrowser from 'expo-web-browser';
 import { getDomainFromUrl } from 'app/lib/util';
 import { useSound } from 'app/lib/hooks/useSound';
-import { resetTabHistory, resetAllTabHistory } from 'app/lib/tab-history';
+import { resetTabHistory } from 'app/lib/tab-history';
 
 enableScreens(appSetting('native', 'enable_screens'));
 
@@ -156,13 +156,15 @@ export default function Tabs() {
     const shouldDetachInactiveScreens = Platform.OS !== 'ios';
     const isShowTabs = currentUser || appSetting('native', 'show_tabs_non_logged')
     const notificationUrl = appSetting('notifications', 'url');
-    const TabList = useMemo(() => currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged'), [currentUser?.id]);
+    const TabList = useMemo(
+        () => (currentUser?.id ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged')),
+        [currentUser?.id]
+    );
 
-    const tabsSessionKey = currentUser?.id ? `user-${currentUser.id}-${currentUser.confirmed}` : 'user-guest';
+    const tabsSessionKey = currentUser?.id
+        ? `user-${currentUser.id}-${currentUser.confirmed}`
+        : 'user-guest';
 
-    useEffect(() => {
-        resetAllTabHistory();
-    }, [tabsSessionKey]);
 
     useEffect(() => {
         if (themeName != 'auto') {
@@ -316,11 +318,12 @@ export default function Tabs() {
                             if (tab.hide == true)
                                 options.href = null;
 
+
                             return (
                                 <RouterTabs.Screen
                                     key={`tab${index}`}
                                     name={tabRouteName}
-                                    initialParams={{ url2: tabUrl, name: `tab${index}` }}
+                                    initialParams={{ url: tabUrl, name: `tab${index}` }}
                                     listeners={{
                                         tabPress: async (e) => {
                                             const isExternalLink = tabUrl && (tabUrl.startsWith('http://') || tabUrl.startsWith('https://'));
@@ -348,6 +351,13 @@ export default function Tabs() {
 
                                                 return;
                                             }
+
+                                            if (tabUrl) {
+                                                setTimeout(() => {
+                                                    router.setParams({ url: tabUrl, name: `tab${index}` });
+                                                }, 0);
+                                            }
+
                                             if (e.type == 'tabPress') {
                                                 if (tabUrl == notificationUrl) {
                                                     clearNotif()
