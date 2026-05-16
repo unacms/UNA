@@ -328,9 +328,10 @@ export function Conductor({
 
 
     const tabRoute = currentRoute.inited ? currentRoute : prevRoute
+    const tabRouteSidebarContent = tabRoute?.sidebar?.content ?? []
     const isLeftCol = tabRoute?.leftbar?.content?.length > 0 || layoutName == 'navigator'
-    const isRightCol = tabRoute?.sidebar?.content?.length > 0 || tabRoute?.blocks?.browse_sidebar
-    const sidebarUnitType = tabRoute.blocks?.browse_sidebar?.unitType || 'default'
+    const isRightCol = tabRouteSidebarContent.length > 0 || tabRoute?.blocks?.browse_sidebar
+    const sidebarUnitType = tabRoute?.blocks?.browse_sidebar?.unitType || 'default'
 
     const LeftColumnContent = isLeftCol ?
         <LeftSideBarContainer
@@ -345,7 +346,7 @@ export function Conductor({
         </LeftSideBarContainer> : null
 
     const RightColumnContent = isRightCol ? <View className=" fixed-process mt-0.5 sm:m-0 sm:p-3 lg:p-4">
-        {tabRoute?.sidebar?.content.map((item, index) => {
+        {tabRouteSidebarContent.map((item, index) => {
             return (
                 <ItemRenderer
                     key={`${tabRoute?.index}-${item.id}`}
@@ -635,15 +636,18 @@ const TabSceneMainContent = ({
     const feedType = pageRoute?.endpoint?.params?.type;
 
     const dataItems = useMemo(() => {
+        const leftbarContent = pageRoute?.leftbar?.content ?? [];
+        const sidebarContent = pageRoute?.sidebar?.content ?? [];
+        const visibleItems = refetchState.visibleItems ?? [];
         const base = isDesktop
-            ? [...dataItemsPageFiltered, ...refetchState.visibleItems]
-            : [...pageRoute.leftbar.content.filter(item => !item.data?.hidden_on?.includes?.('phone')), ...dataItemsPageFiltered, ...refetchState.visibleItems, ...pageRoute.sidebar.content.filter(item => !item.data?.hidden_on?.includes?.('phone'))];
+            ? [...dataItemsPageFiltered, ...visibleItems]
+            : [...leftbarContent.filter(item => !item.data?.hidden_on?.includes?.('phone')), ...dataItemsPageFiltered, ...visibleItems, ...sidebarContent.filter(item => !item.data?.hidden_on?.includes?.('phone'))];
 
         if (!feedType) return base;
         return base.map(item =>
             item.feed_type === feedType ? item : { ...item, feed_type: feedType }
         );
-    }, [dataItemsPageFiltered, refetchState.visibleItems, isDesktop, pageRoute?.endpoint?.request_url, pageRoute?.sidebar?.content, feedType]);
+    }, [dataItemsPageFiltered, refetchState.visibleItems, isDesktop, pageRoute?.endpoint?.request_url, pageRoute?.leftbar?.content, pageRoute?.sidebar?.content, feedType]);
 
     useEffect(() => {
         if (isUseCurrentHeader) {

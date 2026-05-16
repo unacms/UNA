@@ -23,7 +23,6 @@ import { useGlobalSearchParams, usePathname } from 'app/lib/hooks/router'
 import { isEmoji } from 'app/lib/util'
 import { getPageData } from 'app/lib/util'
 
-
 const isWeb = Platform.OS === 'web';
 
 const depthClassNameMap = {
@@ -447,7 +446,7 @@ function PageContentWiki({ data, url }) {
     }, [isDesktop, mobileHeaderControls, setHeader]);
 
     return (
-        <View className="mx-auto w-full max-w-8xl">
+        <View className={`${appSetting('layout', 'max_width')}`}>
             <PanelGroup
                 ref={groupRef}
                 key={`cells-wiki${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
@@ -457,7 +456,7 @@ function PageContentWiki({ data, url }) {
                 onLayout={onLayout}
             >
                 <Panel className={`hidden ${leftBreakpoint}:block ${currentBreakpointName}:w-full`} {...leftPanelProps}>
-                    <View className="flex-auto w-full p-2 sm:p-3">
+                    <View className={appSetting('conductor', 'sidebar_container')}>
                         <View className="gap-3">
                             <BlockWrapper block={{ designbox_id: 11, id: 'wiki-toc', title: 'Pages Menu' }}  >
                                 <MenuWiki setPageData={setPageData} data={data?.elements?.cell_left[0]?.content[0]?.data} url={pageData.url} />
@@ -468,7 +467,7 @@ function PageContentWiki({ data, url }) {
                 </Panel>
                 <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
                 <Panel className={`native:w-full ${currentBreakpointName}:w-full`} {...centerPanelProps}>
-                    <View ref={centerContentRef} className={`p-4 gap-3`}>
+                    <View ref={centerContentRef} className={`p-4 sm:p-6 xl:p-8 gap-3`}>
                         <Html data={pageData?.data?.elements?.cell_center[0]?.content[0]?.data?.content} />
                     </View>
                 </Panel>
