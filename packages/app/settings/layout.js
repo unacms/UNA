@@ -16,6 +16,7 @@ export const settingsLayout = {
         max_width: ' w-full ',
         max_width_content: ' w-full max-w-7xl ',
         max_width_block: ' max-w-7xl ',
+        padding_content: ' @list-sm/list:m-1 @list-lg/list:m-2',
         home_container: ' w-full max-w-9xl ',
         feed_container: ' w-full max-w-3xl sm:p-4 mx-auto ',
         post_container: ' max-w-3xl w-full flex-1 bg-card text-card-foreground rounded-2xl py-3 sm:py-4 lg:my-4 mx-auto ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
