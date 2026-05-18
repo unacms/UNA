@@ -24,7 +24,7 @@ import MenuTop from 'app/components/nav/menu-top';
 
 export const TextHeader = memo(({ text }) => {
     return (
-        <Text className="font-bold truncate leading-12 lg:px-2 text-card-foreground text-2xl tracking-tight">
+        <Text className="font-bold truncate leading-12 text-card-foreground text-2xl tracking-tight">
             {text}
         </Text>
     );

@@ -1,6 +1,5 @@
 import { forwardRef, useCallback, useEffect, useRef } from 'react'
 import { cn } from 'app/lib/util'
-import { Motion } from '@legendapp/motion'
 
 const assignRef = (ref, value) => {
     if (typeof ref === 'function') {
@@ -181,7 +180,7 @@ const sanitizeWebProps = (props) => {
     return domProps
 }
 
-/** Props consumed by @legendapp/motion — must not land on the outer DOM wrapper */
+/** Motion-style props consumed by the web CSS transition shim. */
 const MOTION_PROP_KEYS = new Set([
     'animate',
     'animateProps',
@@ -203,6 +202,44 @@ const splitMotionProps = (props) => {
         else rest[key] = props[key]
     }
     return [motion, rest]
+}
+
+const toCssDuration = (transition) => {
+    const duration = transition?.duration ?? transition?.default?.duration
+    if (typeof duration !== 'number') return '120ms'
+    return `${duration > 10 ? duration : duration * 1000}ms`
+}
+
+const getAnimatedWebStyle = (motionProps) => {
+    const animate = motionProps?.animate || {}
+    const transform = []
+    const style = {
+        transitionProperty: 'transform, opacity',
+        transitionDuration: toCssDuration(motionProps?.transition),
+        transitionTimingFunction: 'cubic-bezier(0.2, 0, 0, 1)',
+    }
+
+    if (animate.opacity !== undefined) {
+        style.opacity = animate.opacity
+    }
+    if (animate.scale !== undefined) {
+        transform.push(`scale(${animate.scale})`)
+    }
+    if (animate.x !== undefined) {
+        transform.push(`translateX(${typeof animate.x === 'number' ? `${animate.x}px` : animate.x})`)
+    }
+    if (animate.y !== undefined) {
+        transform.push(`translateY(${typeof animate.y === 'number' ? `${animate.y}px` : animate.y})`)
+    }
+    if (animate.rotate !== undefined) {
+        transform.push(`rotate(${typeof animate.rotate === 'number' ? `${animate.rotate}deg` : animate.rotate})`)
+    }
+
+    if (transform.length) {
+        style.transform = transform.join(' ')
+    }
+
+    return style
 }
 
 export const interopComponent = (Component, displayName, baseClassName = 'neo-v') => {
@@ -288,21 +325,19 @@ export const MotionView = interopRender(
         const [motionProps, restProps] = splitMotionProps(props)
         const domProps = sanitizeWebProps(restProps)
         const motionStyle = normalizeWebStyle(style)
+        const animatedStyle = getAnimatedWebStyle(motionProps)
         return (
             <div
                 ref={layoutRef}
                 className={cn('neo-v', className)}
                 {...domProps}
+                style={{
+                    ...domProps.style,
+                    ...motionStyle,
+                    ...animatedStyle,
+                }}
             >
-                <Motion.View
-                    style={[
-                        { flex: 1, minWidth: 0, minHeight: 0, alignSelf: 'stretch' },
-                        motionStyle,
-                    ]}
-                    {...motionProps}
-                >
-                    {children}
-                </Motion.View>
+                {children}
             </div>
         )
     }

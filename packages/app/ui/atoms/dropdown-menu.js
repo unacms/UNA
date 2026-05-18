@@ -195,48 +195,18 @@ const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveCont
 
 });
 
-export default function DropdownMenu({
+function DropdownMenuNative({
     items,
     onSelect,
     children,
     defaultOpen,
     mode,
     title,
-    variant,
-    showOnTop,
-    footer,
     cancelable = true,
-    tabsOverflowSize,
-    openOnFocus,
-    open,
-    buttonProps,
-    onOpenChange,
-    contentClassName,
     resolveContent,
+    buttonProps,
 }) {
     const { setBottomSheetData } = useBottomSheetData();
-    const isWeb = Platform.OS === 'web';
-
-    if (isWeb || mode == 'popup') {
-        return (
-            <DropdownMenuPopup
-                showOnTop={showOnTop}
-                items={items}
-                onSelect={onSelect}
-                children={children}
-                defaultOpen={defaultOpen}
-                footer={footer}
-                variant={variant}
-                tabsOverflowSize={tabsOverflowSize}
-                openOnFocus={openOnFocus}
-                open={open}
-                onOpenChange={onOpenChange}
-                contentClassName={contentClassName}
-                resolveContent={resolveContent}
-                buttonProps={buttonProps}
-            />
-        );
-    }
 
     const handlePress = useCallback(() => {
         if (mode != "alert") {
@@ -264,12 +234,12 @@ export default function DropdownMenu({
                 { cancelable: cancelable }
             );
         }
-    }, [setBottomSheetData, items, onSelect]);
+    }, [cancelable, items, mode, onSelect, resolveContent, setBottomSheetData, title]);
 
     useEffect(() => {
         if (defaultOpen)
             handlePress()
-    }, []);
+    }, [defaultOpen, handlePress]);
 
     if (buttonProps) {
         return (
@@ -278,5 +248,62 @@ export default function DropdownMenu({
     }
     return (
         <Pressable onPress={handlePress}>{children}</Pressable>
+    );
+}
+
+export default function DropdownMenu({
+    items,
+    onSelect,
+    children,
+    defaultOpen,
+    mode,
+    title,
+    variant,
+    showOnTop,
+    footer,
+    cancelable = true,
+    tabsOverflowSize,
+    openOnFocus,
+    open,
+    buttonProps,
+    onOpenChange,
+    contentClassName,
+    resolveContent,
+}) {
+    const isWeb = Platform.OS === 'web';
+
+    if (isWeb || mode == 'popup') {
+        return (
+            <DropdownMenuPopup
+                showOnTop={showOnTop}
+                items={items}
+                onSelect={onSelect}
+                children={children}
+                defaultOpen={defaultOpen}
+                footer={footer}
+                variant={variant}
+                tabsOverflowSize={tabsOverflowSize}
+                openOnFocus={openOnFocus}
+                open={open}
+                onOpenChange={onOpenChange}
+                contentClassName={contentClassName}
+                resolveContent={resolveContent}
+                buttonProps={buttonProps}
+            />
+        );
+    }
+
+    return (
+        <DropdownMenuNative
+            items={items}
+            onSelect={onSelect}
+            children={children}
+            defaultOpen={defaultOpen}
+            mode={mode}
+            title={title}
+            cancelable={cancelable}
+            resolveContent={resolveContent}
+            buttonProps={buttonProps}
+        />
     );
 }

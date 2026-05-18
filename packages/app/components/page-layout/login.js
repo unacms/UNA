@@ -24,16 +24,7 @@ function PageContent({ children, isLoginPage, title }) {
     if (!isLoginPage) {
         return (
             <View>
-                <Card role="form"
-                    titleId="login-page-title"
-                    aria-describedby="login-card-description"
-                    className="gap-4 max-w-sm w-full mx-auto"
-                >
-                    <CardHeader>
-                        <CardTitle>{title}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="gap-4">{children}</CardContent>
-                </Card>
+               {children}
             </View>
         )
     }
@@ -90,23 +81,19 @@ export default function PageLayout({ data, children }) {
     return (
         <Page data={data}>
             {isWeb ? (
-                <View
-                    className={`flex-1 justify-center mx-auto w-full`}
-                >
-                    <View className="w-full lg:flex-row max-w-7xl p-4 mx-auto my-auto">
+                    <View className="w-full lg:flex-row max-w-7xl p-4 lg:p-6 mx-auto my-auto">
                         {isLoginPage ? appStatic('components_logincontent') : null}
                         <View className="w-full lg:w-1/2 mx-auto">
-                            <View>
+                            
                                 <PageContent
                                     isLoginPage={isLoginPage}
                                     title={data.title}
                                 >
                                     {children}
                                 </PageContent>
-                            </View>
+                           
                         </View>
                     </View>
-                </View>
             ) : (
                 <View className="flex-1">
                     <PageContent isLoginPage={true}>{children}</PageContent>

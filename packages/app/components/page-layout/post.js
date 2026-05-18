@@ -18,11 +18,21 @@ import {
 import { useSetHeader, defaultHeader, useSetFooter } from 'app/context/jotai/layout';
 import { useSafeAreaInsets } from 'app/lib/hooks/router'
 import { Loading } from 'app/customization/loading'
-const mapLayoutBlocks = (items = []) =>
-    items.map(({ source }) => ({
+const mapLayoutBlocks = (items) =>
+    (Array.isArray(items) ? items : []).map(({ source }) => ({
         name: source,
         block: { name: source },
     }));
+
+const getCommentsData = (data, blocks) => {
+    const bottomCell = data?.elements?.cell_bottom;
+
+    if (data?.layout_parsed && Array.isArray(bottomCell) && bottomCell.length > 0) {
+        return bottomCell[0];
+    }
+
+    return DataByName(data, blocks?.comments);
+};
 
 const defineCells = (blocks, data) => {
     if (data?.layout_parsed) {
@@ -67,7 +77,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     const searchParams = useLocalSearchParams();
 
     const localUrl = isModal ? url : searchParams.url;
-    const commentsData = useMemo(() => data?.layout_parsed ? data.elements.cell_bottom[0] : DataByName(data, blocks?.comments), [data, blocks?.comments]);
+    const commentsData = useMemo(() => getCommentsData(data, blocks), [data, blocks?.comments]);
     const commentsContent = commentsData?.content?.[0];
     const commentsBrowse = commentsContent?.browse;
     const commentsModule = commentsBrowse?.data?.module || commentsData?.module;

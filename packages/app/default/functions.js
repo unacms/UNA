@@ -2,6 +2,7 @@ import { fetcher } from 'app/lib/fetcher'
 import { updateRouteDataForConnection } from 'app/lib/util'
 import { getComponent } from 'app/components/registry';
 import { View } from 'app/design/view'
+import { settingsLayout } from 'app/settings/layout'
 
 export function ProfileDisplayName(title) {
     return title;
@@ -61,7 +62,7 @@ export function paddingForList(endpoint) {
         return 'm-1.5 @list-md/list:m-1.5';
 
     // Default padding for grid-based content lists
-    return ' @list-sm/list:m-1 @list-lg/list:m-2';
+    return settingsLayout.layout.padding_content;
 }
 
 

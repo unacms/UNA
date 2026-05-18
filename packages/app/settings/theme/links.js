@@ -10,7 +10,7 @@ export const settingsLinks = {
         sm: {
             hitSlop: 8,
             text: 'text-sm leading-5 rounded-lg font-semibold',
-            primary: 'p-1.5 ',
+            primary: ' ',
         },
         md: {
             hitSlop: 8,

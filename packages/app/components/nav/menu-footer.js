@@ -2,9 +2,39 @@ import { View } from 'app/design/view'
 import { appSetting, menuItemsByName, menuItemsByNameNew } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
 import { useMemo, memo } from 'react';
-import Link from 'app/ui/atoms/link'
+import { NeoButtonLink } from 'app/design/controls'
 import { useCurrentUserNoCounters } from 'app/context/user';
 import { useMenuData } from 'app/context/menu-data';
+
+const linkVariantToNeoStyle = {
+    default: 'plain',
+    secondary: 'borderless',
+    accent: 'link',
+    primary: 'borderedProminent',
+    ghost: 'borderless',
+};
+
+const linkSizeToNeoControlSize = {
+    xs: 'mini',
+    sm: 'small',
+    md: 'regular',
+    base: 'regular',
+    lg: 'large',
+};
+
+const normalizeFooterHref = (href = '') => {
+    const value = typeof href === 'string' ? href.trim() : '';
+    if (!value) return '';
+    if (
+        value.startsWith('/') ||
+        value.startsWith('#') ||
+        value.startsWith('//') ||
+        /^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(value)
+    ) {
+        return value;
+    }
+    return `/${value}`;
+};
 
 function MenuFooterComponent({
     cntClasses,
@@ -21,10 +51,13 @@ function MenuFooterComponent({
 
     const visualProps = useMemo(() => {
         const legacy = btnStyle || {};
+        const legacyVariant = variant ?? legacy.variant ?? 'accent';
+        const legacySize = size ?? legacy.size ?? 'sm';
         return {
-            variant: variant ?? legacy.variant ?? 'accent',
-            size: size ?? legacy.size ?? 'sm',
-            className: itemClassName ?? legacy.className ?? '',
+            style: legacy.style ?? linkVariantToNeoStyle[legacyVariant] ?? 'link',
+            controlSize: legacy.controlSize ?? linkSizeToNeoControlSize[legacySize] ?? 'small',
+            className: legacy.containerClassName ?? '',
+            textClassName: itemClassName ?? legacy.textClassName ?? legacy.className ?? '',
         };
     }, [btnStyle, variant, size, itemClassName]);
   
@@ -41,15 +74,15 @@ function MenuFooterComponent({
     return (
         <View className={cntClasses}>
             {menu_launcher_items.map((item, index) => (
-                <Link
-                    href={`/${item.link}`}
+                <NeoButtonLink
+                    href={normalizeFooterHref(item.link)}
                     key={item.link || index}
-                    variant={visualProps.variant}
-                    size={visualProps.size}
+                    label={t(item.title)}
+                    style={visualProps.style}
+                    controlSize={visualProps.controlSize}
                     className={visualProps.className}
-                >
-                    {t(item.title)}
-                </Link>
+                    textClassName={visualProps.textClassName}
+                />
             ))}
         </View>
     );

@@ -55,14 +55,6 @@ function PlainText(props) {
             }}
             style={isAutoHeight ? { height:Math.max(height,minHeightValue), minHeight: minHeightValue, maxHeight:200 } : {}}
             /*defaultValue={props.value || props.default_value || ''}*/
-            editorProps={{
-                attributes: {
-                    class: `prose-mirror ${props.classes} ${ (props.form_name === 'feed_edit' || props.form_name === 'feed' || props.container_class !== 'comments') ? 'tiptap-default' : ''} `,
-                },
-            }}
-            onDebouncedUpdate={(editor) => {
-                // ... existing code ...
-            }}
         />
     );
 

@@ -78,7 +78,7 @@ export const resourcesDefault = {
             "feed_type_bx_polls": "added a Poll",
 
             "splash_page_title": "Welcome to",
-            "splash_page_text": "Use your email and password to sign in",
+            "splash_page_text": "NEO is the open-source networking organiser. Connect with your friends and communities. Communicate, collaborate and build your own network.",
             "splash_page_account": "Don't have an account?",
             "splash_page_fp": "Forgot password?",
             "splash_page_new_account": 'Sign up',
@@ -107,7 +107,6 @@ export const resourcesDefault = {
             "login_modal_new_account": 'Create new account',
             "login_modal_heading": 'Login to see more',
             "login_modal_subheading": 'Enter your email and password to login',
-            "login_modal_rp": 'Forgot password?',
 
             "version_incompatible_title": "Incompatible Version",
             "version_incompatible_text1": "This app (v. {{version}}) requires a newer server version to function properly.",

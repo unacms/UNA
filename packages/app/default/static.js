@@ -6,7 +6,7 @@ import Link from 'app/ui/atoms/link'
 import { Icon } from 'app/ui/atoms/icon'
 import Card from 'app/ui/molecules/card'
 import { fetcher } from 'app/lib/fetcher'
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import React from 'react'
 import { Animated } from 'react-native'
 import { useTranslation } from 'react-i18next'
@@ -17,9 +17,6 @@ import { Platform } from 'react-native'
 import SvgFile from 'app/ui/molecules/svg-file'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { appSetting } from 'app/lib/util'
-import Tabs from 'app/ui/molecules/tabs'
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from 'app/ui/atoms/accordion'
-import NodeFlow from 'app/ui/atoms/node-flow'
 const isWeb = Platform.OS === 'web'
 //mode can be 'adaptive', 'full', 'mark', 'text'
 const Logo = ({ mode = 'adaptive' }) => {
@@ -113,7 +110,7 @@ const SplashTextInner = () => {
                 accessibilityRole="text"
                 className=" text-secondary-foreground text-center lg:text-start text-base sm:text-lg text-pretty"
             >
-                Social networking platform powered by UNA. Open-source framework, applications and integrated services for independent multi-user networks.
+                {t('splash_page_text')}
             </Text>
          
         </View>
@@ -153,363 +150,7 @@ const SplashTextComponent = (props) => {
     )
 }
 
-/**
- * Sample `NodeFlow` for the splash screen — three-step "Connect → Discover → Engage"
- * visual that uses the same regular Lucide icons as the rest of the app.
- *
- * Demonstrates the React-Flow-style edges API: a single edge runs from the
- * right side of the first node, *through the center of the second node*, to
- * the left side of the third node, with arrows at the visible midpoint of
- * each segment. Renders horizontally on `lg+` and switches to a vertical
- * stack (top→bottom) on smaller viewports.
- *
- * Step copy lives **outside** the NodeFlow as plain DOM-flow `Text` blocks
- * (no `label` prop on the nodes). Alignment trick: the surrounding
- * container is sized to `count * gap`; the `NodeFlow` (which is
- * `(count - 1) * gap + nodeSize` wide / tall) is centered inside it; the
- * text track uses `count` × `flex-1` blocks of the same total size, so each
- * block's center lands exactly on its corresponding node's center —
- * regardless of `gap` / `nodeSize`. See the math in the inline comment.
- *
- * Branch / fork projects can swap the look by registering an alternate
- * variant in `app/customization/node-flow-variants.js` and passing
- * `variant="..."` here, or by overriding this whole component in
- * `app/customization/static.js`.
- */
-const SplashNodeFlowComponent = () => {
-    const { t } = useTranslation()
-    /** Nodes intentionally have no `label` — text is rendered separately below / next to the flow. */
-    const flowNodes = [
-        { id: 'connect', icon: 'UsersRound' },
-        { id: 'discover', icon: 'Compass' },
-        { id: 'engage', icon: 'MessageCircleMore' },
-    ]
-    const stepTexts = [
-        {
-            title: t('Connect'),
-            desc: t('Find people who share your interests and start meaningful conversations.'),
-        },
-        {
-            title: t('Discover'),
-            desc: t('Explore communities, events and content tailored to you.'),
-        },
-        {
-            title: t('Engage'),
-            desc: t('Share ideas, give feedback, and build relationships that last.'),
-        },
-    ]
-    /**
-     * Both line and segment-midpoint arrows tint to `text-border` because
-     * the className lives on the outer NodeFlow View — the SVG inherits
-     * its color via `style={{ color: 'inherit' }}` and `currentColor`
-     * resolves to it for both the line stroke and the marker glyphs.
-     */
-    const edgesHorizontal = [
-        {
-            source: 'connect', sourceHandle: 'right',
-            target: 'engage', targetHandle: 'left',
-            via: [{ node: 'discover', handle: 'center' }],
-            arrowsAtSegmentMidpoints: { size: 14 },
-            animation: 'none',
-        },
-    ]
-    const edgesVertical = [
-        {
-            source: 'connect', sourceHandle: 'bottom',
-            target: 'engage', targetHandle: 'top',
-            via: [{ node: 'discover', handle: 'center' }],
-            arrowsAtSegmentMidpoints: { size: 14 },
-            animation: 'none',
-        },
-    ]
 
-    /**
-     * Alignment math (count = 3): the outer container is `count * gap` along
-     * the main axis, while NodeFlow itself is `(count - 1) * gap + nodeSize`.
-     * Centering NodeFlow leaves a `(gap - nodeSize) / 2` margin, so node
-     * centers in container coords sit at `gap/2 + i*gap`. A row of `count`
-     * `flex-1` text blocks splits the same container into equal slices of
-     * width `gap`, whose centers are also `gap/2 + i*gap`. Perfect alignment
-     * regardless of `gap` / `nodeSize` values.
-     *
-     * Horizontal layout has a fixed total width of 48rem (768px) — both the
-     * graphic and the text track. Vertical layout has a fixed total height
-     * of 40rem (640px) for the graphic; the text track keeps a responsive
-     * width via `flex-1`.
-     */
-    const H_TOTAL = 860   // 48rem
-    const V_TOTAL = 360   // 40rem
-    const H_NODE_SIZE = 64
-    const V_NODE_SIZE = 56
-    const H_GAP = H_TOTAL / 3
-    const V_GAP = V_TOTAL / 3
-
-    return (
-        <View className="w-full items-center lg:items-start">
-            <View
-                className="hidden lg:flex flex-col items-center mx-auto"
-                style={{ width: H_TOTAL }}
-            >
-                <NodeFlow
-                    className="text-secondary"
-                    nodes={flowNodes}
-                    edges={edgesHorizontal}
-                    nodeSize={H_NODE_SIZE}
-                    gap={H_GAP}
-                    waveAmplitude={16}
-                />
-                <View className="flex-row mt-6 w-full">
-                    {stepTexts.map((s, i) => (
-                        <View key={i} className="flex-1 items-center px-3">
-                            <Text className="font-semibold text-base text-foreground text-center">
-                                {s.title}
-                            </Text>
-                            <Text className="text-sm text-muted-foreground text-center mt-1">
-                                {s.desc}
-                            </Text>
-                        </View>
-                    ))}
-                </View>
-            </View>
-
-            <View
-                className="flex lg:hidden flex-row gap-4 w-full mx-auto max-w-md"
-                style={{ height: V_TOTAL }}
-            >
-                <View className="justify-center">
-                    <NodeFlow
-                        className="text-border"
-                        orientation="vertical"
-                        nodes={flowNodes}
-                        edges={edgesVertical}
-                        nodeSize={V_NODE_SIZE}
-                        gap={V_GAP}
-                        waveAmplitude={16}
-                    />
-                </View>
-                <View className="flex-col flex-1">
-                    {stepTexts.map((s, i) => (
-                        <View key={i} className="flex-1 justify-center">
-                            <Text className="font-semibold text-base text-foreground">
-                                {s.title}
-                            </Text>
-                            <Text className="text-sm text-muted-foreground mt-1">
-                                {s.desc}
-                            </Text>
-                        </View>
-                    ))}
-                </View>
-            </View>
-        </View>
-    )
-}
-
-const SplashTabsComponent = ({ onTabChange }) => {
-    const { t } = useTranslation()
-    /** Stable `tabs` reference across Splash re-renders — avoids Tabs collapse/sync effects re-firing every parent paint. */
-    const splashSectionTabs = useMemo(
-        () => [
-        {
-            key: 'users',
-            title: t('Users'),
-            content: (
-                <View className="">
-                    <Text className="text-secondary-foreground text-sm">
-                        Connect with a vibrant community of members. Enjoy a secure sign-in experience, discover meaningful connections, and personalize your profile. Take control of your privacy, manage your roles, and unlock features tailored to your interests—being part of the network gives you a voice and a place to belong.
-                    </Text>
-                </View>
-            ),
-        },
-        {
-            key: 'groups',
-            title: t('Groups'),
-            content: (
-                <View className="">
-                    <Text className="text-secondary-foreground text-sm">
-                        Join or create groups around your passions—collaborate, organize discussions, and build lasting communities. Groups give you focused spaces to connect, share resources, and engage with like-minded people. Whether public, private, or secret, you shape the experience and drive your group's impact.
-                    </Text>
-                </View>
-            ),
-        },
-        {
-            key: 'events',
-            title: t('Events'),
-            content: (
-                <View className="">
-                    <Text className="text-secondary-foreground text-sm text-center sm:text-left">
-                        Never miss out with powerful event tools—explore gatherings, webinars, and meetups tailored to your community. Organize your own events, manage RSVPs, and get calendar reminders. Stay in sync and foster meaningful in-person or virtual connections; every event is an opportunity to grow.
-                    </Text>
-                </View>
-            ),
-        },
-        {
-            key: 'Discussions',
-            title: t('Discussions'),
-            content: (
-                <View className="">
-                    <Text className="text-secondary-foreground text-sm ">
-                        Dive into forums, debates, and trending topics—ask questions, get advice, and share your perspective. Engage respectfully with others and watch your ideas spark new connections. Discussions empower your voice and create a knowledge-rich environment where everyone's contributions matter.
-                    </Text>
-                </View>
-            ),
-        },
-        {
-            key: 'Market',
-            title: t('Market'),
-            content: (
-                <View className="">
-                    <Text className="text-secondary-foreground text-sm ">
-                        Discover a thriving marketplace—buy, sell, or offer your products and services directly to the community. Reach real people you trust, promote your work, and find unique deals relevant to your interests. The Market section empowers you to grow your business or find what you need, all in one place.
-                    </Text>
-                </View>
-            ),
-        },
-        
-        {
-            key: 'Spaces',
-            title: t('Spaces'),
-            content: (
-                <View className="">
-                    <Text className="text-secondary-foreground text-sm ">
-Join Spaces to create and collaborate on shared projects, share resources, and connect with others who share your interests.                    </Text>
-                </View>
-            ),
-        },
-        {
-            key: 'Polls',
-            title: t('Polls'),
-            content: (
-                <View className="">
-                    <Text className="text-secondary-foreground text-sm ">
-Create Polls to collect feedback, make decisions, and engage your community.                    </Text>
-                </View>
-            ),
-        }
-        ],
-        [t]
-    )
-
-    return (
-        <><Card padding="p-4">
-            <Tabs
-                tabs={splashSectionTabs}
-                contentClassName=" p-1 pt-4 "
-                tabBarClassName="flex flex-row justify-start"
-                size="sm"
-                //equalWidth
-                moreMenuTitle=""
-                moreMenuIcon="EllipsisVertical"
-                overflow={isWeb ? 'collapse' : 'scroll'}
-                onTabChange={onTabChange}
-                disableScrollIntoView={!isWeb}
-            />
-        </Card>
-        <Card padding="px-4 ">    
-        <Accordion type="multiple" collapsible defaultValue={[]} className="w-full">
-                                    {[
-                                        {
-                                            title: 'Are people on  real?',
-                                            desc: <View className="gap-y-2">
-                                                <Text>Yes.</Text>
-                                                <Text>Everyone on is a real person, even when names aren’t visible.</Text>
-                                                <View className="ml-4">
-                                                    <Text> • Accounts are created with real names</Text>
-                                                    <Text> • The system monitors signals of real participation over time</Text>
-                                                    <Text> • Users can report accounts they believe are fake or unsafe</Text>
-                                                </View>
-                                                <Text>Not everyone’s name is visible to everyone - but <Text className="font-semibold">everyone is accountable.</Text></Text>
-                                            </View>
-
-                                        },
-                                        {
-                                            title: 'How does name visibility work?',
-                                            desc: <View className="gap-y-2">
-                                                <Text>Names are <Text className="font-semibold">never public by default.</Text></Text>
-                                                <Text>Here’s the exact sequence:</Text>
-                                                <View className="ml-4">
-                                                    <Text> 1. You interact with people using system-generated aliases</Text>
-                                                    <Text> 2. When something resonates, you can show <Text className="font-semibold">respect</Text></Text>
-                                                    <Text> 3. After three mutual respects, you'll be invited to consider <Text className="font-semibold">trust</Text>. Both have to choose it.</Text>
-                                                    <Text> 4. <Text className="font-semibold">Only if trust is mutual</Text> do real names become visible — privately, to each other</Text>
-                                                </View>
-                                                <Text>There is:</Text>
-                                                <View className="ml-4">
-                                                    <Text > • no “reveal” button</Text>
-                                                    <Text> • no forced exposure</Text>
-                                                    <Text> • no accidental name sharing</Text>
-                                                </View>
-                                                <View className="" >
-                                                    <Text className="font-semibold">Names appear only after mutual trust.</Text>
-                                                    <Text className="font-semibold">This never happens by accident.</Text>
-                                                </View>
-                                            </View>
-
-                                        },
-                                        {
-                                            title: 'Can someone stalk me?',
-                                            desc: <View className="gap-y-2">
-                                                <Text> is designed specifically to make stalking difficult.</Text>
-                                                <Text>Key protections:</Text>
-                                                <View className="ml-4">
-                                                    <Text> • No browsing strangers’ histories</Text>
-                                                    <Text> • No way to force name visibility</Text>
-                                                    <Text> • Aliases change on every post and look different to each person</Text>
-                                                </View>
-                                                <Text>If someone makes you uncomfortable:</Text>
-                                                <View className="ml-4">
-                                                    <Text> • You can mute them silently</Text>
-                                                    <Text> • They are not notified</Text>
-                                                    <Text> • Escalation doesn’t occur</Text>
-                                                    <Text> • Your visibility to them does not increase</Text>
-                                                </View>
-                                                <Text>In short: <Text className="font-semibold">attention cannot be weaponized on .</Text></Text>
-                                            </View>
-
-                                        },
-                                        {
-                                            title: 'What if I regret trusting someone?',
-                                            desc: <View className="gap-y-2">
-                                                <Text>Trust is <Text className="font-semibold">reversible</Text>.</Text>
-                                                <Text>If you remove trust:</Text>
-                                                <View className="ml-4">
-                                                    <Text> • Name visibility is removed</Text>
-                                                    <Text> • The relationship returns to its prior state</Text>
-                                                    <Text> • The other person is not alerted</Text>
-                                                </View>
-                                                <Text>Trust is meant to feel safe to try — not risky to undo.</Text>
-
-                                            </View>
-
-                                        },
-                                        {
-                                            title: 'Is this anonymity?',
-                                            desc: <View className="gap-y-2">
-                                                <Text>No.</Text>
-                                                <Text> is not anonymous — it’s <Text className="font-semibold">selectively visible.</Text></Text>
-                                                <Text>That difference matters:</Text>
-                                                <View className="ml-4">
-                                                    <Text> • Anonymity removes accountability</Text>
-                                                    <Text> • Selective visibility preserves accountability while reducing pressure</Text>
-                                                </View>
-                                                <Text>This is what allows honesty <Text className="font-semibold">without</Text> chaos.</Text>
-
-                                            </View>
-
-                                        }
-                                    ].map((item, i, arr) => (
-                                        <AccordionItem key={i} value={`section-${i}`}
-                                            className={i === arr.length - 1 ? 'border-b-0' : ''}
-                                        >
-                                            <AccordionTrigger title={item.title} />
-                                            <AccordionContent>{item.desc}</AccordionContent>
-                                        </AccordionItem>
-                                    ))}
-                                </Accordion>
-        
-        </Card>
-        </>
-    )
-}
 
 const JoinTextComponent = (props) => {
     return (
@@ -1023,7 +664,7 @@ const ComponentsDummyComponent = (props) => {
 const ComponentsFooter = () => {
     return (
         <MenuFooter
-        cntClasses='flex w-full border-t border-border/60  flex-row flex-wrap gap-3 py-3 px-0.5 min-h-14'
+        cntClasses='flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap p-4 lg:p-6 min-h-14'
     />
     )
 }
@@ -1105,7 +746,5 @@ export const staticDefault = {
     components_fullfooter: ComponentsFullFooter,
     components_logincontent: ComponentsLoginContentComponent,
     splash_text: SplashTextComponent,
-    splash_node_flow: SplashNodeFlowComponent,
-    splash_tabs: SplashTabsComponent,
     join_text: JoinTextComponent,
 }

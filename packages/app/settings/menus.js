@@ -327,5 +327,6 @@ export const settingsMenus = {
             { title: 'Terms', link: '/terms', icon: 'HelpCircle' },
             { title: 'Contact', link: '/contact', icon: 'Mail' },
         ],
+        
     },
 }
