@@ -148,7 +148,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
     const smallCoverAvatarSize =
         appSetting('cover', 'small_cover_avatar_display_size') || 'base'
     const smallCoverNameSize =
-        appSetting('cover', 'small_cover_name_display_size') || '2xl'
+        appSetting('cover', 'small_cover_name_display_size') || (isDesktop ? '2xl' : 'lg')
 
     return (
         <View
@@ -158,7 +158,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                 <PageHeaderSmall />
             ) : (
                 <>
-                    <View className="flex-1 items-center flex-row gap-2 h-14">
+                    <View className="flex-1 ps-2 shrink items-center flex-row gap-2 h-14 overflow-hidden">
                         {(!appSetting('context_selector', 'show_always') ||
                             !isWeb) && (
                                 <View className="flex-row flex-none lg:hidden">
@@ -167,22 +167,29 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                             )}
 
                         <>
-                            {(bPerson || coverMode !== 'none') && <View className="items-center flex-row flex-none gap-2 ">
-                                {bPerson && (
-                                    <Profile
-                                        {...data.profile}
-                                        displayType="unit_wo_info"
-                                        displaySize={smallCoverAvatarSize}
-                                    />
-                                )}
-                                {(coverMode !== 'none') && (
-                                    <Profile
-                                        {...data.profile}
-                                        displayType="unit_wo_image"
-                                        displaySize={smallCoverNameSize}
-                                        showLinks={false}
-                                    />)}
-                            </View>}
+                            {(bPerson || coverMode !== 'none') && (
+                                <View className="items-center flex-row flex-1 shrink gap-2 overflow-hidden">
+                                    {bPerson && (
+                                        <View className="flex-none shrink-0">
+                                            <Profile
+                                                {...data.profile}
+                                                displayType="unit_wo_info"
+                                                displaySize={'sm'}
+                                            />
+                                        </View>
+                                    )}
+                                    {(coverMode !== 'none') && (
+                                        <View className="flex-1 shrink overflow-hidden ">
+                                            <Profile
+                                                {...data.profile}
+                                                displayType="unit_wo_image"
+                                                displaySize={smallCoverNameSize}
+                                                showLinks={false}
+                                            />
+                                        </View>
+                                    )}
+                                </View>
+                            )}
                             {isAddSelector && (
                                 <View
                                     className={`${TABLET_MODE_FROM}:hidden `}
@@ -196,7 +203,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                         </>
 
                     </View>
-                    <View className=" items-center justify-center h-14">
+                    <View className=" items-center justify-center h-14 pe-2">
                         <Row className="w-full justify-between">
                             {!showMoreMenu &&
                                 (!appSetting(
