@@ -1,4 +1,4 @@
-import { UNA_URL, UNA_API_KEY, getRemoteSettings } from 'app/config';
+import { UNA_URL, UNA_API_KEY, getRemoteSettings, appSetting } from 'app/config';
 import { cache } from 'react'
 import Root from 'app/root-client'
 import { Suspense } from 'react'
@@ -6,10 +6,47 @@ import { notFound } from 'next/navigation'
 import { headers } from "next/headers"
 
 const SITE_TITLE = 'NEO';
+// Settings use the historical misspelling; keep this key aligned with settings/layout.js.
+const AVAILABLE_LANGS_SETTING_KEY = 'avaliable_langs';
 
 let remote_config = { hash: null, data: null };
 //export const runtime = 'edge'
 let cachedData = {};
+
+const getCookieValue = (cookieString = '', name) => {
+    return cookieString
+        .split(';')
+        .map((part) => part.trim())
+        .find((part) => part.startsWith(name + '='))
+        ?.split('=')
+        .slice(1)
+        .join('=') || '';
+};
+
+const decodeCookieValue = (value = '') => {
+    try {
+        return decodeURIComponent(value);
+    } catch {
+        return '';
+    }
+};
+
+const normalizeLangCode = (value = '') => String(value)
+    .toLowerCase()
+    .split(/[-_]/)[0];
+
+const resolveLangFromAcceptLanguage = (acceptLanguage = '') => {
+    const configuredLangs = appSetting('layout', AVAILABLE_LANGS_SETTING_KEY);
+    const supportedLangs = Array.isArray(configuredLangs)
+        ? configuredLangs.filter((lang) => lang && lang !== 'auto')
+        : ['en'];
+    const requestedLangs = acceptLanguage
+        .split(',')
+        .map((part) => normalizeLangCode(part.split(';')[0]?.trim()))
+        .filter(Boolean);
+
+    return requestedLangs.find((lang) => supportedLangs.includes(lang)) || supportedLangs[0] || 'en';
+};
 
 async function getCachedData(props) {
      //AFTER REACT 19 UPDATE NEED REMOVE DOUBLE CALLS
@@ -60,6 +97,14 @@ const getData = cache(async (params, search_params) => {
     
     let l = hdrs?.get("x-tenant-una-url") ?? UNA_URL;
     l += '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
+    const langMode = decodeCookieValue(getCookieValue(cookieString, 'neo_lang'));
+    const cookieLangCode = decodeCookieValue(getCookieValue(cookieString, 'neo_lang_code'));
+    const langCode = cookieLangCode || (langMode && langMode !== 'auto'
+        ? langMode
+        : resolveLangFromAcceptLanguage(hdrs?.get('accept-language') || ''));
+    if (langCode) {
+        l += '&lang=' + encodeURIComponent(langCode);
+    }
     let searchParams = JSON.parse(JSON.stringify(search_params));
 
     delete searchParams.cookieString;

@@ -9,6 +9,8 @@ import { useLayoutSettings } from 'app/context/layout-settings';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 
 export const MENU_FOOTER_CLASSES = 'flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-1 p-4 min-h-16';
+// Settings use the historical misspelling; keep this key aligned with settings/layout.js.
+const AVAILABLE_LANGS_SETTING_KEY = 'avaliable_langs';
 const FOOTER_THEME_ITEMS = [
     { id: 'auto', title: 'Auto', icon: 'Eclipse' },
     { id: 'light', title: 'Light', icon: 'Sun' },
@@ -43,6 +45,12 @@ const normalizeFooterHref = (href = '') => {
         return value;
     }
     return `/${value}`;
+};
+
+const resolveFooterLang = (langs, lang, langCode) => {
+    if (lang && langs.includes(lang)) return lang;
+    if (langCode && langs.includes(langCode)) return langCode;
+    return langs[0] || '';
 };
 
 const menuFooterSkeletonWidths = ['w-12', 'w-12', 'w-12', 'w-12', 'w-12'];
@@ -95,6 +103,43 @@ function FooterThemeSwitcher({ visualProps }) {
     );
 }
 
+function FooterLanguageSwitcher({ visualProps }) {
+    const { t } = useTranslation();
+    const { lang, langCode, setLang } = useLayoutSettings();
+    const configuredLangs = appSetting('layout', AVAILABLE_LANGS_SETTING_KEY);
+    const langs = Array.isArray(configuredLangs) ? configuredLangs : [];
+    const currentLang = resolveFooterLang(langs, lang, langCode);
+
+    const items = useMemo(() => (
+        langs.map((language) => ({
+            key: language,
+            id: language,
+            name: language,
+            title: t('lang_' + language),
+            icon: 'Languages',
+            selected: currentLang === language,
+        }))
+    ), [currentLang, langs, t]);
+
+    if (langs.length <= 1 || !currentLang) return null;
+
+    return (
+        <DropdownMenu
+            items={items}
+            onSelect={(item) => setLang(item.id)}
+        >
+            <NeoButton
+                label={t('lang_' + currentLang)}
+                image="Languages"
+                style={visualProps.style}
+                controlSize={visualProps.controlSize}
+                className={visualProps.className}
+                textClassName={visualProps.textClassName}
+            />
+        </DropdownMenu>
+    );
+}
+
 function MenuFooterComponent({
     cntClasses = MENU_FOOTER_CLASSES,
     btnStyle,
@@ -106,10 +151,13 @@ function MenuFooterComponent({
 
     const { t } = useTranslation();
     const currentUser = useCurrentUserNoCounters();
+    const { hydrated } = useLayoutSettings();
     const usesRemoteFooter = !menu_items && appSetting('layout', 'user_remote_config');
     const showThemeSwitcher = appSetting('dashboard', 'switch_theme');
+    const configuredLangs = appSetting('layout', AVAILABLE_LANGS_SETTING_KEY);
+    const showLanguageSwitcher = hydrated && Array.isArray(configuredLangs) && configuredLangs.length > 1;
     const { menuData, isFetched, isLoading } = useMenuData(
-        menu_items ? null : appSetting('menu_items', 'objects', 'footer')
+        (menu_items || !hydrated) ? null : appSetting('menu_items', 'objects', 'footer')
     );
 
     const visualProps = useMemo(() => {
@@ -131,15 +179,16 @@ function MenuFooterComponent({
             : menuItemsByName('', appSetting('menu_items', 'menu_footer'), currentUser))
     ), [menu_items, usesRemoteFooter, menuData, currentUser]);
 
-    if (usesRemoteFooter && (isLoading || !isFetched)) {
+    if (usesRemoteFooter && (!hydrated || isLoading || !isFetched)) {
         return (
             <MenuFooterSkeleton cntClasses={cntClasses}>
+                {showLanguageSwitcher ? <FooterLanguageSwitcher visualProps={visualProps} /> : null}
                 {showThemeSwitcher ? <FooterThemeSwitcher visualProps={visualProps} /> : null}
             </MenuFooterSkeleton>
         );
     }
 
-    if (menu_launcher_items.length === 0 && menuData && !showThemeSwitcher)
+    if (menu_launcher_items.length === 0 && menuData && !showThemeSwitcher && !showLanguageSwitcher)
         return null;
 
     return (
@@ -155,6 +204,7 @@ function MenuFooterComponent({
                     textClassName={visualProps.textClassName}
                 />
             ))}
+            {showLanguageSwitcher ? <FooterLanguageSwitcher visualProps={visualProps} /> : null}
             {showThemeSwitcher ? <FooterThemeSwitcher visualProps={visualProps} /> : null}
         </View>
     );

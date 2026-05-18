@@ -5,7 +5,7 @@ import { appSetting } from 'app/lib/util';
 import { useTheme, useThemeName } from 'app/design/theme';
 import { useResolveClassNames } from 'uniwind';
 
-export default function ({ src_dark, src_default, width, height, colorize = false, className = '', color }) {
+export default function ({ src_dark, src_default, width, height, colorize = false, className = '', color, alt = '', accessibilityLabel, style, ...props }) {
     const [xml, setXml] = useState(null);
     const [error, setError] = useState(null);
     const theme = useThemeName();
@@ -75,6 +75,10 @@ export default function ({ src_dark, src_default, width, height, colorize = fals
             width={width}
             height={height}
             color={resolvedColor}
+            accessibilityLabel={accessibilityLabel || alt || undefined}
+            accessibilityRole={(alt || accessibilityLabel) ? 'image' : undefined}
+            style={style}
+            {...props}
         />
     ) : (
         <Text className="text-gray-500 text-xs">Loading SVG...</Text>

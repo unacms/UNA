@@ -4,13 +4,96 @@ import { useCallback, useEffect } from 'react';
 import { asyncStorageGet, asyncStorageSet } from 'app/lib/util';
 import { appSetting } from 'app/lib/util'
 import { Appearance, Platform } from 'react-native'
-//import * as RNLocalize from "react-native-localize";
+import * as RNLocalize from "react-native-localize";
 import { fetcher } from 'app/lib/fetcher'
 import i18n from 'i18next'
+import emitter from 'app/context/emitter';
 
 const STORAGE_KEY = 'layout-settings';
+const LANG_MODE_COOKIE = 'neo_lang';
+const LANG_CODE_COOKIE = 'neo_lang_code';
+// Settings use the historical misspelling; keep this key aligned with settings/layout.js.
+const AVAILABLE_LANGS_SETTING_KEY = 'avaliable_langs';
 
 const DEFAULT_LAYOUT_SETTINGS = appSetting('layout', 'defaults')
+
+const normalizeLangCode = (value) => String(value || '')
+    .toLowerCase()
+    .split(/[-_]/)[0];
+
+const getDefaultLangCode = () => {
+    const langs = appSetting('layout', AVAILABLE_LANGS_SETTING_KEY);
+    const supportedLangs = Array.isArray(langs)
+        ? langs.filter((lang) => lang && lang !== 'auto')
+        : [];
+    const fallback = supportedLangs[0] || 'en';
+
+    try {
+        const localeCodes = Platform.OS === 'web'
+            ? (typeof navigator !== 'undefined'
+                ? [
+                    typeof Intl !== 'undefined' ? Intl.DateTimeFormat().resolvedOptions().locale : '',
+                    ...(navigator.languages || []),
+                    navigator.language,
+                ].filter(Boolean)
+                : [])
+            : RNLocalize.getLocales().map((locale) => locale.languageTag || locale.languageCode);
+
+        const matchedLang = localeCodes
+            .map(normalizeLangCode)
+            .find((langCode) => supportedLangs.includes(langCode));
+
+        return matchedLang || fallback;
+    } catch (e) {
+        console.warn('Failed to get locales:', e);
+        return fallback;
+    }
+};
+
+const resolveLangCode = (value) => value && value != 'auto' ? value : getDefaultLangCode();
+
+const getCookieValue = (name) => {
+    if (Platform.OS !== 'web' || typeof document === 'undefined') return '';
+    return document.cookie
+        .split('; ')
+        .find((row) => row.startsWith(name + '='))
+        ?.split('=')
+        .slice(1)
+        .join('=') || '';
+};
+
+const decodeCookieValue = (value = '') => {
+    try {
+        return decodeURIComponent(value);
+    } catch {
+        return '';
+    }
+};
+
+const setCookieValue = (name, value) => {
+    if (Platform.OS !== 'web' || typeof document === 'undefined') return;
+    document.cookie = `${name}=${encodeURIComponent(value || '')}; path=/; max-age=31536000; SameSite=Lax`;
+};
+
+const syncLanguageCookies = (mode, langCode) => {
+    setCookieValue(LANG_MODE_COOKIE, mode || 'auto');
+    setCookieValue(LANG_CODE_COOKIE, langCode);
+};
+
+const syncRemoteLang = async (langCode) => {
+    await fetcher(
+        '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=home&lang=' +
+        encodeURIComponent(langCode)
+    );
+};
+
+const syncAutoLangCookies = (langCode) => {
+    if (Platform.OS !== 'web') return;
+    const currentCookieLang = decodeCookieValue(getCookieValue(LANG_CODE_COOKIE));
+    if (currentCookieLang === langCode) return;
+
+    syncLanguageCookies('auto', langCode);
+};
 
 export const useLayoutSettingsStore = create((set, get) => ({
     layoutSettings: DEFAULT_LAYOUT_SETTINGS,
@@ -32,9 +115,19 @@ export const useLayoutSettingsStore = create((set, get) => ({
         try {
             const raw = await asyncStorageGet(STORAGE_KEY);
             const parsed = raw ? JSON.parse(raw) : DEFAULT_LAYOUT_SETTINGS;
+            const resolvedLangCode = resolveLangCode(parsed?.lang);
+            await i18n.changeLanguage(resolvedLangCode);
             set({ layoutSettings: parsed, hydrated: true });
+            if (parsed?.lang === 'auto') {
+                syncAutoLangCookies(resolvedLangCode);
+            } else {
+                syncLanguageCookies(parsed?.lang, resolvedLangCode);
+            }
         } catch (e) {
             console.error('Hydratation error layoutSettings:', e);
+            const fallbackLangCode = resolveLangCode(DEFAULT_LAYOUT_SETTINGS?.lang);
+            await i18n.changeLanguage(fallbackLangCode);
+            syncLanguageCookies(DEFAULT_LAYOUT_SETTINGS?.lang, fallbackLangCode);
             set({ layoutSettings: DEFAULT_LAYOUT_SETTINGS, hydrated: true });
         }
     },
@@ -65,7 +158,7 @@ export const useLayoutSettings = () => {
                 Appearance.setColorScheme(nativeValue);
             }
             await useLayoutSettingsStore.getState().updateLayoutSettings({ theme: value });
-        }, []
+        }, [isWeb]
     );
 
     const setLayoutName = useCallback(
@@ -80,33 +173,25 @@ export const useLayoutSettings = () => {
         }, []
     );
 
-    const getDefaultLangCode = () => {
-        const langs = appSetting('layout', 'avaliable_langs');
-        try {
-            // todo need fix for server
-            //const locales = navigator && typeof navigator !== 'undefined' ? RNLocalize.getLocales() : [];
-            //const langCode = locales?.[0]?.languageCode;
-            //return langs.includes(langCode) ? langCode : 'en';
-            return 'en';
-        } catch (e) {
-            console.warn('Failed to get locales:', e);
-            return 'en';
-        }
-    };
-
     const setLang = useCallback(
         async (value) => {
-            let v2 = value;
-            if (value == 'auto') {
-                v2 = getDefaultLangCode();
-            }
-            i18n.changeLanguage(v2)
-            await fetcher(
-                '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=home&lang=' +
-                v2
-            )
+            const v2 = resolveLangCode(value);
+            await i18n.changeLanguage(v2)
             await useLayoutSettingsStore.getState().updateLayoutSettings({ lang: value });
-        }, []
+            syncLanguageCookies(value, v2);
+
+            try {
+                await syncRemoteLang(v2)
+            } catch (e) {
+                console.warn('Failed to update remote language:', e);
+            }
+
+            if (isWeb && typeof window !== 'undefined') {
+                window.location.reload();
+            } else {
+                emitter.emit('page', { action: 'reload' });
+            }
+        }, [isWeb]
     );
 
     useEffect(() => {
@@ -116,7 +201,7 @@ export const useLayoutSettings = () => {
     }, [hydrated]);
 
     const { density, name: layoutName, theme: themeName, lang } = layoutSettings ?? {};
-    const langCode = lang != 'auto' ? lang : getDefaultLangCode();
+    const langCode = resolveLangCode(lang);
 
     return { layoutSettings, setLayoutSettings, updateLayoutSettings, hydrated, density, layoutName, themeName, setThemeName, setLayoutName, setDensity, setLang, lang, langCode };
 };
