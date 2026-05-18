@@ -488,14 +488,14 @@ const TabSceneMainContent = ({
         enabled: !!pageRoute?.endpoint?.request_url
     })
 
-     const test = () => {
-       console.log('added')
-       
+    const test = () => {
+        console.log('added')
+
     }
 
     const test1 = () => {
         console.log('deleted')
-       
+
     }
 
     useEffect(() => {
@@ -1342,39 +1342,39 @@ const TabBar = ({
                 layout={layout}
                 title={t(menuSettings?.name)}
             >
-                <Row className="px-3">
-                <View className="flex-1 h-14">
-                    {routes.length > 1 && <ConductorMenu
-                        routes={routes}
-                        index={index}
-                        t={t}
-                        setIndex={setIndex}
-                        onChangeRoute={onChangeRoute}
-                    />}
-                </View>
-                {!!pageData.cover_block?.actions_menu && (
-                    <Row className={conductorTheme.more_menu_container}>
-                        {isDesktop && !!appSetting(
-                            'cover',
-                            'more_menu_in_navbar',
-                            pageData?.module
-                        ) && (
-                                <Row className="gap-2">
-                                    <CoverMenu
-                                        {...pageData.cover_block.actions_menu}
-                                        uri={pageData.uri}
-                                        isSplitMenu={true}
-                                        containerClasses="gap-2 "
-                                    />
-                                    <CoverMenuMore
-                                        {...pageData.cover_block.actions_menu}
-                                        uri={pageData.uri}
-                                        isSplitMenu={true}
-                                    />
-                                </Row>
-                            )}
-                    </Row>
-                )}
+                <Row className="px-3 w-full">
+                    <View className="flex-1 h-14">
+                        {routes.length > 1 && <ConductorMenu
+                            routes={routes}
+                            index={index}
+                            t={t}
+                            setIndex={setIndex}
+                            onChangeRoute={onChangeRoute}
+                        />}
+                    </View>
+                    {!!pageData.cover_block?.actions_menu && (
+                        <Row className={conductorTheme.more_menu_container}>
+                            {isDesktop && !!appSetting(
+                                'cover',
+                                'more_menu_in_navbar',
+                                pageData?.module
+                            ) && (
+                                    <Row className="gap-2">
+                                        <CoverMenu
+                                            {...pageData.cover_block.actions_menu}
+                                            uri={pageData.uri}
+                                            isSplitMenu={true}
+                                            containerClasses="gap-2 "
+                                        />
+                                        <CoverMenuMore
+                                            {...pageData.cover_block.actions_menu}
+                                            uri={pageData.uri}
+                                            isSplitMenu={true}
+                                        />
+                                    </Row>
+                                )}
+                        </Row>
+                    )}
                 </Row>
             </TopSidebar>
         )
