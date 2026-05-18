@@ -5,7 +5,7 @@ const tabHistoryState = {
 };
 
 function logTabHistory(action, tabKey, payload = {}) {
-    if (typeof __DEV__ !== 'undefined' && __DEV__) {
+   /* if (typeof __DEV__ !== 'undefined' && __DEV__) {
         const stack = tabHistoryState.byTab[tabKey] || [];
         console.log('[tab-history]', action, {
             tabKey,
@@ -13,7 +13,7 @@ function logTabHistory(action, tabKey, payload = {}) {
             top: stack[stack.length - 1],
             ...payload,
         });
-    }
+    }*/
 }
 
 function getTabIndex(tabKey = '/tab0') {

@@ -579,11 +579,8 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     };
 
     const CoverHeader = useMemo(() => {
-        console.log('currentRoute.pageData0', currentRoute.pageData);
         return <Cover data={currentRoute.pageData?.cover_block} showMoreMenu={false} uri={currentRoute.pageData?.uri} context={currentRoute?.pageData?.context} />
     }, [currentRoute.pageData]);
-
-    console.log('currentRoute.pageData', currentRoute.pageData);
     
     const onFormChangedValues = useCallback((values) => {
         if (!isFormInitialized.current) {

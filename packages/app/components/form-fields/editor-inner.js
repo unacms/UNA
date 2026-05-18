@@ -23,7 +23,8 @@ import { getAlert, stripTags, stripTagsWithLinks } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
 import { appSetting, cn } from 'app/lib/util'
 import emitter from 'app/context/emitter'
-import { Text } from "app/design/typography";
+import { TextInput } from 'react-native'
+
 
 const inputSettings = appSetting('theme', 'inputs');
 
@@ -82,6 +83,7 @@ export default function RftText({
     const { field } = useController({ name, rules: {}, defaultValue: value })
     const { colors } = useTheme()
     const formContext = useFormContext()
+    const [inputKey, setInputKey] = useState(0);
 
     const [suggestions, setSuggestions] = useState([])
     const [keywordval, setKeyword] = useState(['', ''])
@@ -492,6 +494,8 @@ export default function RftText({
         return true;
     });
 
+
+
     const editor = useEditorBridge({
         autofocus: autofocus,
         avoidIosKeyboard: isWeb ? false : autofocus,
@@ -500,7 +504,6 @@ export default function RftText({
         initialContent: field.value,
         bridgeExtensions: uniqueExtensions,
     })
-
 
     const lastAppliedThemeRef = useRef(null)
 
@@ -531,6 +534,11 @@ export default function RftText({
         }
     }, [editor, placeholder])
 
+    const openKeyboard = () => {
+        setInputKey(k => k + 1); // пересоздаём TextInput
+    };
+
+
     useEffect(() => {
         const subscription = emitter.addListener('editor', (data) => {
             if (data.action == 'blur') {
@@ -543,13 +551,11 @@ export default function RftText({
                 }
             }
             if (data.action == 'focus') {
-                if (data.timeout) {
-                    setTimeout(() => {
-                        editor.focus('end')
-                    }, data.timeout)
+                /*if (data.timeout) {
+                    openKeyboard()
                 } else {
                     editor.focus('end')
-                }
+                }*/ openKeyboard(data.timeout);
             }
             if (data.action == 'set_content') {
                 editor.setContent(data.value)
@@ -562,14 +568,6 @@ export default function RftText({
         }
     }, [])
 
-    useEffect(() => {
-        if (autofocus) {
-            setTimeout(() => {
-                editor.focus('end')
-            }, 800)
-        }
-
-    }, [autofocus]) 
 
     useEffect(() => {
         if (formContext.formState.isSubmitted && kb_stay_open != true) {
@@ -1069,6 +1067,19 @@ export default function RftText({
                     </KeyboardAvoidingView>
                 </>
             )}
+            <TextInput
+                key={inputKey}
+                autoFocus={inputKey > 0}
+                onFocus={() => {
+                    // Keyboard открыта! Передаём IME в WebView
+                    setTimeout(() => {
+                        editor.focus();
+                    }, 50);
+
+                }}
+                style={{ position: 'absolute', width: 0, height: 0, opacity: 0 }}
+                pointerEvents="none"
+            />
         </View>
     )
 }
