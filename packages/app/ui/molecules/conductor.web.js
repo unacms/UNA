@@ -1342,7 +1342,7 @@ const TabBar = ({
                 layout={layout}
                 title={t(menuSettings?.name)}
             >
-                <Row className="px-3 w-full">
+                <Row className="px-2 lg:px-0 w-full">
                     <View className="flex-1 h-14">
                         {routes.length > 1 && <ConductorMenu
                             routes={routes}
