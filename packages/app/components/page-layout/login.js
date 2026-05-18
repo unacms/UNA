@@ -99,9 +99,7 @@ export default function PageLayout({ data, children }) {
                     <PageContent isLoginPage={true}>{children}</PageContent>
                 </View>
             )}
-            <MenuFooter
-                cntClasses='flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap gap-3 p-4 min-h-14'
-            />
+            <MenuFooter />
         </Page>
     )
 }

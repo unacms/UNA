@@ -130,9 +130,7 @@ export default function PageLayout({ data, blocks }) {
                     <PageContent>{Block}</PageContent>
                 </View>
             )}
-      <MenuFooter
-                cntClasses='flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap p-4 lg:p-6 min-h-14'
-            />
+            <MenuFooter />
         </Page>
     )
 }

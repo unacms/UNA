@@ -1374,7 +1374,8 @@ export async function getDataForMenu(menu, callback) {
     const data = await fetcher(
         '/api.php?r=system/get_menu/TemplServices&params[]={"object":"' + menu?.object + '","params":' + JSON.stringify(menu?.params) + '}'
     )
-    callback(data.data)
+    callback?.(data.data)
+    return data.data
 }
 
 export function findIconFromRemote(s) {

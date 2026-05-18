@@ -121,11 +121,13 @@ const SplashTextComponent = (props) => {
     return isWeb ? (
         <View className="items-center lg:items-start relative gap-6 my-auto flex-auto w-full ">
 
-            <View className="relative flex-auto h-64 w-64">
+            <View className="relative flex-auto h-48 w-48">
 
                 <SvgFile
                     src_dark="splash-dark.svg"
                     src_default="splash-light.svg"
+                    colorize
+                    className="text-secondary-foreground"
                     alt="Splash screen illustration"
                 />
 
@@ -140,6 +142,8 @@ const SplashTextComponent = (props) => {
                 <SvgFile
                     src_dark="splash-dark.svg"
                     src_default="splash-light.svg"
+                    colorize
+                    className="text-secondary-foreground"
                     alt="Splash screen illustration"
                 />
             </View>
@@ -663,9 +667,7 @@ const ComponentsDummyComponent = (props) => {
 
 const ComponentsFooter = () => {
     return (
-        <MenuFooter
-        cntClasses='flex w-full items-center border-t border-border/60 justify-center flex-row flex-wrap p-4 lg:p-6 min-h-14'
-    />
+        <MenuFooter />
     )
 }
 

@@ -1,14 +1,23 @@
 import { SvgXml } from 'react-native-svg';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util';
-import { useThemeName } from 'app/design/theme';
+import { useTheme, useThemeName } from 'app/design/theme';
+import { useResolveClassNames } from 'uniwind';
 
-export default function ({ src_dark, src_default, width, height }) {
+export default function ({ src_dark, src_default, width, height, colorize = false, className = '', color }) {
     const [xml, setXml] = useState(null);
     const [error, setError] = useState(null);
     const theme = useThemeName();
+    const { colors } = useTheme();
+    const resolvedClassStyle = useResolveClassNames(className || '');
+    const resolvedColor = color || resolvedClassStyle?.color || colors.default;
     const src = theme === 'dark' && src_dark ? src_dark : src_default;
+    const renderedXml = useMemo(() => {
+        if (!xml) return null;
+        if (!colorize || !resolvedColor) return xml;
+        return xml.replace(/currentColor/g, resolvedColor);
+    }, [colorize, resolvedColor, xml]);
 
     useEffect(() => {
         if (!src) {
@@ -59,5 +68,15 @@ export default function ({ src_dark, src_default, width, height }) {
         return <Text className="text-red-500 text-xs">SVG Error: {error}</Text>;
     }
 
-    return xml ? <SvgXml key={src} xml={xml} width={width} height={height} /> : <Text className="text-gray-500 text-xs">Loading SVG...</Text>;
+    return renderedXml ? (
+        <SvgXml
+            key={`${src}-${resolvedColor || ''}`}
+            xml={renderedXml}
+            width={width}
+            height={height}
+            color={resolvedColor}
+        />
+    ) : (
+        <Text className="text-gray-500 text-xs">Loading SVG...</Text>
+    );
 };

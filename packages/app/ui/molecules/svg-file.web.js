@@ -2,7 +2,7 @@ import { appSetting } from 'app/lib/util';
 import { useThemeName } from 'app/design/theme';
 import { getBaseUrl } from 'app/config';
 
-export default function ({src_web, src_dark, src_default, ...props}) {
+export default function ({src_web, src_dark, src_default, colorize = false, className = '', style, alt = '', ...props}) {
     const theme = useThemeName();
     const src = theme === 'dark' && src_dark ? src_dark : src_default; 
 
@@ -16,12 +16,42 @@ export default function ({src_web, src_dark, src_default, ...props}) {
         ? getBaseUrl()
         : appSetting('config', 'native_app_images_url');
 
+    const url = baseUrl + '/svg/' + src;
+    if (colorize) {
+        return (
+            <span
+                key={src}
+                {...props}
+                aria-label={alt || undefined}
+                className={className}
+                role={alt ? 'img' : 'presentation'}
+                style={{
+                    display: 'block',
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: 'currentColor',
+                    maskImage: `url("${url}")`,
+                    maskPosition: 'center',
+                    maskRepeat: 'no-repeat',
+                    maskSize: 'contain',
+                    WebkitMaskImage: `url("${url}")`,
+                    WebkitMaskPosition: 'center',
+                    WebkitMaskRepeat: 'no-repeat',
+                    WebkitMaskSize: 'contain',
+                    ...style,
+                }}
+            />
+        );
+    }
+
     return (
         <img
             key={src}
             {...props}
-            src={baseUrl + '/svg/' + src}
-            alt={props.alt || ''}
+            className={className}
+            src={url}
+            alt={alt}
+            style={style}
         />
     );
 } 
