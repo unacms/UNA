@@ -294,7 +294,7 @@ export default function Tabs() {
                                 headerShown: false,
                                 tabBarIcon: ({ color, focused }) => (
                                     ((tabUrl == appSetting('dashboard', 'url') || tab.icon == 'dashboard')) ? <View className="h-full ">
-                                        <View className=" rounded-full ">
+                                        <View className=" rounded-full " key={currentUser.id}>
                                             <Profile
                                                 {...currentUser}
                                                 url_avatar={currentUser?.avatar}
@@ -302,6 +302,7 @@ export default function Tabs() {
                                                 showLinks={false}
                                                 displayType="unit_wo_info"
                                                 displaySize="xs" />
+                                               
                                         </View>
                                     </View> :
                                         <View className="h-full">

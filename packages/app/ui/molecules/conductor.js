@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useMemo, useRef  } from "react";
+import React, { useCallback, useState, useEffect, useMemo, useRef } from "react";
 import { View, ScrollView, Row } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { deepEqual, getUnitModeBySource } from 'app/lib/util';
@@ -92,10 +92,10 @@ const AddBlocks = React.memo(({
 });
 const TabSceneHeader = React.memo(({
     isProfileHeader
-    ,smallHeader
+    , smallHeader
 }) => {
     const scrollValue = useScrollValue();
-    if (isProfileHeader && scrollValue > 500)
+    if ((isProfileHeader && scrollValue > 500) || !appSetting('native', 'collapsible_header'))
         return smallHeader;
     return null;
 })
@@ -112,26 +112,26 @@ const TabScene = React.memo(({
     numColumns
 }) => {
 
-   /* const handleEndReached = useCallback(
-        console.log('handleEndReached', route?.endpoint?.params),
+    /* const handleEndReached = useCallback(
+         console.log('handleEndReached', route?.endpoint?.params),
+         async (lastItemIndex) => {
+             if (!route?.endpoint || route?.endpoint?.params?.start === 0 || refreshing || route?.endpoint?.finished)
+                 return;
+             fetchNextPage()
+         },
+         [route?.endpoint, route?.endpoint?.params?.start, route?.endpoint?.finished, fetchNextPage, refreshing]
+     )*/
+    const handleEndReached = useCallback(
+
         async (lastItemIndex) => {
-            if (!route?.endpoint || route?.endpoint?.params?.start === 0 || refreshing || route?.endpoint?.finished)
-                return;
+
+            if (isFetchingNextPage) return
+            if (hasNextPage === false) return
+            if (lastItemIndex === false) return
             fetchNextPage()
         },
-        [route?.endpoint, route?.endpoint?.params?.start, route?.endpoint?.finished, fetchNextPage, refreshing]
-    )*/
-        const handleEndReached = useCallback(
-            
-            async (lastItemIndex) => {
-                
-                if (isFetchingNextPage) return
-                if (hasNextPage === false) return
-                if (lastItemIndex === false) return
-                fetchNextPage()
-            },
-            [refreshing, isFetchingNextPage, hasNextPage]
-        )
+        [refreshing, isFetchingNextPage, hasNextPage]
+    )
 
     const renderItem = useCallback(({ item, index }) => (
         <ItemRenderer
@@ -153,16 +153,16 @@ const TabScene = React.memo(({
             route?.endpoint?.unit
         return unitType ? [baseSkeleton, unitType] : baseSkeleton
     }, [skeleton, route, unitType])
-    
+
     const unitType = useMemo(() => {
         return getUnitModeBySource(route?.endpoint);
     }, [route?.endpoint?.request_url]); // Dependency on route.endpoint.request_url
-    
-    
-    
+
+
+
     const layout = layoutForList(route?.endpoint);
     const paddings = paddingForList(route?.endpoint);
-    
+
     const Preload = useMemo(
         () => getSkeletonForList(SkeletonForRoute, 1, true, layout, renderItem, paddings),
         [SkeletonForRoute, renderItem]
@@ -172,7 +172,7 @@ const TabScene = React.memo(({
     const NoContent = getComponent('molecule', 'no_content')
 
     const feedType = route?.endpoint?.params?.type;
-    
+
     const routeData = useMemo(() => {
         const base = route?.endpoint
             ? route.data
@@ -184,25 +184,25 @@ const TabScene = React.memo(({
     }, [route?.endpoint, route?.data, route?.sidebar?.content, feedType]);
 
     return (
-            <UniList
-                ListHeaderComponent={typeof ListHeaderComponent === 'function' ? ListHeaderComponent : ListHeaderComponent ? () => ListHeaderComponent : undefined}
-                index={route.index}
-                data={routeData}
-                route={route}
-                unit={route.endpoint?.unit}
-                renderItem={renderItem}
-                ListFooterComponent={
-                    (route?.endpoint?.request_url ? (route?.endpoint?.finished ? (route.data.length == 0 ? <NoContent endpoint={route?.endpoint} /> : <></>) : Preload) : <></>)
-                }
-                maxToRenderPerBatch={5}
-                initialNumToRender={5}
-                numColumns={numColumns}
-                mode="simple"
-                url={route?.endpoint?.request_url}
-                onRefresh={onRefresh}
-                refreshing={refreshing}
-                onEndReached={handleEndReached}
-            />
+        <UniList
+            ListHeaderComponent={typeof ListHeaderComponent === 'function' ? ListHeaderComponent : ListHeaderComponent ? () => ListHeaderComponent : undefined}
+            index={route.index}
+            data={routeData}
+            route={route}
+            unit={route.endpoint?.unit}
+            renderItem={renderItem}
+            ListFooterComponent={
+                (route?.endpoint?.request_url ? (route?.endpoint?.finished ? (route.data.length == 0 ? <NoContent endpoint={route?.endpoint} /> : <></>) : Preload) : <></>)
+            }
+            maxToRenderPerBatch={5}
+            initialNumToRender={5}
+            numColumns={numColumns}
+            mode="simple"
+            url={route?.endpoint?.request_url}
+            onRefresh={onRefresh}
+            refreshing={refreshing}
+            onEndReached={handleEndReached}
+        />
     )
 });
 
@@ -225,7 +225,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     const [refreshRequested, setRefreshRequested] = useState(false);
 
 
-    
+
     const setHeader = useSetHeader();
 
 
@@ -267,8 +267,17 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     };
 
 
-    const currentRoute = useMemo(() => routes.find((item) => item.index === index), [routes, index]);
+    /*const currentRoute = useMemo(() => routes.find((item) => item.index === index), [routes, index]);
     const prevRoute = useMemo(() => routes.find((item) => item.index === prevIndex), [routes, prevIndex]);;
+    */
+    const prevRoute = useMemo(
+        () => routes.find((item) => item.index === prevIndex),
+        [routes, prevIndex]
+      );
+      const currentRoute = useMemo(() => {
+        const route = routes.find((item) => item.index === index);
+        return route?.inited ? route : (prevRoute ?? route);
+      }, [routes, index, prevRoute]);
     const qKey = useMemo(() => [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)], [currentRoute, index, keyword]);
     const queryClient = useQueryClient();
 
@@ -345,13 +354,13 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
     const bEnabled = Boolean(
         currentRoute?.inited &&
-            currentRoute?.endpoint &&
-            currentRoute.endpoint.request_url &&
-            !currentRoute.endpoint.finished &&
-            (currentRoute.endpoint.params?.start == 0 ||
-                currentRoute.data.length <
-                    (currentRoute.endpoint.params?.per_page ?? Number.POSITIVE_INFINITY)) &&
-            !isRefreshing
+        currentRoute?.endpoint &&
+        currentRoute.endpoint.request_url &&
+        !currentRoute.endpoint.finished &&
+        (currentRoute.endpoint.params?.start == 0 ||
+            currentRoute.data.length <
+            (currentRoute.endpoint.params?.per_page ?? Number.POSITIVE_INFINITY)) &&
+        !isRefreshing
     );
 
     const {
@@ -422,36 +431,29 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         fetchAndUpdateData(routes, index, setRoutes);
     }, [index]);
 
-    /*const onStartRefresh = useCallback(async () => {
-        setRoutes(prevRoutes => {
-            const updatedRoutes = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);;
-            return [...prevRoutes.slice(0, index), updatedRoutes[index], ...prevRoutes.slice(index + 1)];
-        });
-        setIsRefreshing(true);
-    }, [initedTabs, index]);*/
     const onStartRefresh = useCallback(() => {
         setRoutes((prevRoutes) =>
-          prevRoutes.map((route) => {
-            if (route.index !== index) return route;
-            return {
-              ...route,
-              data: (route.data || []).filter((item) => item.type === 'block'),
-              endpoint: route.endpoint
-                ? {
-                    ...route.endpoint,
-                    finished: false,
-                    params: {
-                      ...route.endpoint.params,
-                      start: 0,
-                    },
-                  }
-                : route.endpoint,
-            };
-          })
+            prevRoutes.map((route) => {
+                if (route.index !== index) return route;
+                return {
+                    ...route,
+                    data: (route.data || []).filter((item) => item.type === 'block'),
+                    endpoint: route.endpoint
+                        ? {
+                            ...route.endpoint,
+                            finished: false,
+                            params: {
+                                ...route.endpoint.params,
+                                start: 0,
+                            },
+                        }
+                        : route.endpoint,
+                };
+            })
         );
         setIsRefreshing(true);
         setRefreshRequested(true);
-      }, [index]);
+    }, [index]);
 
     useEffect(() => {
         if (!refreshRequested) {
@@ -511,15 +513,15 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     );
 
 
-   /* const Preload = useMemo(() => {
-        return getSkeletonForList(skeleton !== '' ? skeleton : (data.module ? data.module : data.unit), numColumns);
-    }, [skeleton, data.module, data.unit]);
-*/
+    /* const Preload = useMemo(() => {
+         return getSkeletonForList(skeleton !== '' ? skeleton : (data.module ? data.module : data.unit), numColumns);
+     }, [skeleton, data.module, data.unit]);
+ */
 
 
 
-    
-    
+
+
     const showFilters = useCallback(() => {
         setBottomSheetData({ title: 'Filters', content: <AddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} />, showClose: true, snapPoints: ['60%', '60%'] });
     }, [leftSideBarBlocks, data, onFormSubmit, layoutName]);
@@ -559,8 +561,22 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     });
     const isProfileHeader = layoutName === 'profile' && !isCoverDisabled;
 
-    const smallSceneHeader = <View className="w-full">
-        <CoverSmall showMoreMenu={true} context={currentRoute?.pageData?.context} data={currentRoute.pageData?.cover_block} />
+
+    const CoverHeader = useMemo(() => {
+        return <Cover
+            data={currentRoute?.pageData?.cover_block}
+            showMoreMenu={false}
+            uri={currentRoute?.pageData?.uri}
+            context={currentRoute?.pageData?.context}
+        />
+    }, [currentRoute?.pageData]);
+
+    const smallSceneHeader = !appSetting('native', 'collapsible_header') ? <View className="w-full">
+        {CoverHeader}
+        {sceneHeader}
+
+    </View> : <View className="w-full">
+        <CoverSmall showMoreMenu={true} context={currentRoute?.pageData?.context} data={currentRoute?.pageData?.cover_block} />
         {sceneHeader}
         {filter}
     </View>
@@ -574,14 +590,12 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         index: index,
         unitMode: unitMode,
         fetchNextPage: fetchNextPage,
-        hasNextPage:hasNextPage,
-        isFetchingNextPage:isFetchingNextPage
+        hasNextPage: hasNextPage,
+        isFetchingNextPage: isFetchingNextPage
     };
 
-    const CoverHeader = useMemo(() => {
-        return <Cover data={currentRoute.pageData?.cover_block} showMoreMenu={false} uri={currentRoute.pageData?.uri} context={currentRoute?.pageData?.context} />
-    }, [currentRoute.pageData]);
-    
+
+
     const onFormChangedValues = useCallback((values) => {
         if (!isFormInitialized.current) {
             isFormInitialized.current = true;
@@ -619,30 +633,19 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     }, [formProps, onFormChangedValues]);
 
     if (!!formProps) {
-    Object.assign(tabSceneProps, {
-        ListHeaderComponent: FormHeader
-    });
-}
+        Object.assign(tabSceneProps, {
+            ListHeaderComponent: FormHeader
+        });
+    }
     if (isProfileHeader || appSetting('conductor', 'add_menu_native')) {//isProfileHeader need add condition for veawe = coverMode === 'none'
         if (currentRoute?.pageData) {// may be need to fix
             Object.assign(tabSceneProps, {
                 ListHeaderComponent: () => <View className="w-full">
                     {(appSetting('native', 'collapsible_header') || isProfileHeader) && CoverHeader}
-                    {isUseCurrentHeader ? sceneHeader : null}
+                    {isUseCurrentHeader && appSetting('native', 'collapsible_header') ? sceneHeader : null}
                     {filter}
                 </View>
             });
-        } else {
-            if (prevRoute) {
-                Object.assign(tabSceneProps, {
-
-                    ListHeaderComponent: () => <>
-                        <Cover data={prevRoute.pageData?.cover_block} showMoreMenu={false} uri={prevRoute.pageData?.uri} context={prevRoute?.pageData?.context} />
-                        {isUseCurrentHeader ? sceneHeader : null}
-                        {filter}
-                    </>
-                });
-            }
         }
     }
 
@@ -650,8 +653,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         <View className="w-full h-full ">
             <View className="w-full flex-1 ">
                 <Snackbar visible={snackbarVisible} onPress={showNewContent2} onDismiss={() => setSnackbarVisible(false)} variant="primary" title="Show New Posts" size="sm" />
-                {(!appSetting('native', 'collapsible_header') && !isProfileHeader) && CoverHeader}
-                <TabSceneHeader isProfileHeader={isProfileHeader} smallHeader={smallSceneHeader} />
+                <TabSceneHeader isProfileHeader={true} smallHeader={smallSceneHeader} />
                 <TabScene {...tabSceneProps} />
             </View>
         </View>
