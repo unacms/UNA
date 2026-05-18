@@ -409,7 +409,7 @@ export const ButtonLink = ({
     const finalHref = sanitazeUrl(href);
     const isExternal = isExternalUrl(finalHref) || asExternal === true;
 
-    if (isExternal) {
+    if (isExternal && !isWeb) {
         return (
             <Button
                 {...props}

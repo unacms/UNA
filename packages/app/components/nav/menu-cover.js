@@ -186,7 +186,7 @@ export function CoverMenuMeta(props) {
                 
                 list_display_size: props.list_display_size || 'xs',
                 list_max_count: props.list_max_count || 3,
-                list_className: 'hidden sm:flex',
+                list_className: '',
                 menu_item_separator: 'dot',
                 menu_item_separator_class: 'h-1 w-1 rounded-full bg-muted-foreground/60',
                 className: ' gap-3 flex-wrap flex-auto items-center',

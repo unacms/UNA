@@ -609,10 +609,10 @@ export default function Cover({
                                 isSplitMenu={true}
                             />
                         </View>}
-                        {!isDesktop && <Row className="gap-2 flex-none items-center min-h-10 px-0.5">
+                            {!isDesktop && <Row className="gap-2 flex-1 min-w-0 items-center min-h-10 px-0.5 overflow-hidden">
                             <Text
-                                className={` min-w-0 tracking-tight text-2xl sm:text-3xl font-bold text-foreground`}
-                                numberOfLines={2}
+                                className="min-w-0 flex-1 truncate tracking-tight text-xl sm:text-3xl font-bold text-foreground"
+                                numberOfLines={1}
                             >
                                 {profileData.display_name ||
                                     profileData.title ||
