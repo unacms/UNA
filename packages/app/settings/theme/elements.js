@@ -88,7 +88,7 @@ export const settingsElements = {
         'u-block-bg':
             'bg-card/80 shadow-card-outline dark:shadow-card-outline-deep ',
         'u-block-pad':
-            'p-4 sm:rounded-xl ',
+            'p-4 lg:p-6 sm:rounded-xl ',
         'u-block-header':
             ' flex-row items-center gap-4 ',
         'u-block-icon': 'mb-auto',
@@ -101,6 +101,8 @@ export const settingsElements = {
             'flex text-card-foreground gap-4 pt-2',
         'u-block-actions':
             'flex flex-row text-card-foreground mb-auto gap-2 ',
+        'u-block-animate':
+            'animate-in fade-in slide-in-from-top-2 duration-200',
     },
    
     tables: {

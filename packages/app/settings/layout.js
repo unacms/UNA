@@ -14,7 +14,8 @@ export const settingsLayout = {
         avaliable_langs: ['auto', 'en', 'ru'],
         screen: ' w-full  ',
         max_width: ' w-full ',
-        max_width_content: ' w-full max-w-7xl ',
+        max_width_content: 'w-full max-w-7xl',
+        max_width_landing: 'w-full max-w-7xl border-x border-border/60 border-dashed',
         max_width_block: ' max-w-7xl ',
         padding_content: ' @list-sm/list:m-1 @list-lg/list:m-2',
         home_container: ' w-full max-w-9xl ',
@@ -54,16 +55,15 @@ export const settingsLayout = {
         show_tabbar_on_mobile_non_logged: false,
 
         header: {
-            container: ' w-full z-50 header-fixed web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out ',
-            content: ' items-center bg-card justify-between h-16 overflow-hidden  w-full mx-auto',
+            container: ' w-full z-50 header-fixed web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out bg-background/60 backdrop-blur-lg shadow-card-outline dark:shadow-card-outline-deep',
+            content: ' items-center justify-between h-16  w-full mx-auto',
             /** Mobile web extra classes when the scroll-up pinned fixed bar is visible — background, border, blur. Merged on the header row after `content`. */
-            content_pinned_fixed: '  bg-card/80  ',
-            content_left: ' items-center flex-none  2xl:w-full max-w-96 px-3 sm:px-4 gap-2',
+            content_pinned_fixed: '    ',
+            content_left: ' items-center flex-none  2xl:w-full max-w-96 px-4 lg:px-6 gap-2',
             content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-3xl px-4 ',
             active_item_indicator: 'absolute -bottom-2 left-0 h-0.5 rounded-full flex-none bg-ring',
             active_item_indicator_bg: 'absolute bottom-0 left-0 h-12 w-full overflow-hidden rounded-xl flex-none bg-accent',
-
-            content_right: ' items-center flex-none justify-end 2xl:w-full max-w-96 px-3 sm:px-4 gap-2',
+            content_right: ' items-center flex-none justify-end 2xl:w-full max-w-96 px-4 lg:px-6 gap-2',
         },
         vertical: {
             blocks: [

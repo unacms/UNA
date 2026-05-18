@@ -38,7 +38,7 @@ export const settingsDefault = {
         min_server_version: '15.0.0',
         stable_server_version: '15.x.x',
         multitenant: false,
-        title: 'Spacenook',
+        title: 'NEO',
         multitenant_images_proxy: null,// 'http://localhost:3000', // or null to disable
         use_customizations: true,
         image_allowlist_hostnames: ImageAllowlistHostnames,
