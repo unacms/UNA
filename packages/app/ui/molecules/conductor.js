@@ -559,7 +559,10 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         setFilterValue(filterValues);
         setBottomSheetData(false);
     });
-    const isProfileHeader = layoutName === 'profile' && !isCoverDisabled;
+
+    const coverMode =  appSetting('cover', 'view_by_module', currentRoute?.pageData?.cover_block?.profile?.module)
+
+    const isProfileHeader = layoutName === 'profile' && !isCoverDisabled && coverMode !== 'none';
 
 
     const CoverHeader = useMemo(() => {
@@ -638,7 +641,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         });
     }
     if (isProfileHeader || appSetting('conductor', 'add_menu_native')) {//isProfileHeader need add condition for veawe = coverMode === 'none'
-      /*  if (currentRoute?.pageData) {// may be need to fix
+        if (currentRoute?.pageData) {// may be need to fix
             Object.assign(tabSceneProps, {
                 ListHeaderComponent: () => <View className="w-full">
                     {(appSetting('native', 'collapsible_header') || isProfileHeader) && CoverHeader}
@@ -646,7 +649,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
                     {filter}
                 </View>
             });
-        }*/
+        }
     }
 
     return (
