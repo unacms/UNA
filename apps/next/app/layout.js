@@ -7,6 +7,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { resources } from 'app/customization/translation';
 import { useEffect, useMemo } from 'react'
+import { useWebScrollRestore } from 'app/lib/hooks/use-web-scroll-restore';
 import Subscriber from 'app/ui/molecules/subscriber';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { fontVars } from 'app/customization/design/fonts/fonts-web';
@@ -21,7 +22,7 @@ const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
             staleTime: 60 * 1000,
-            gcTime: 3 * 60 * 1000, // ✅ Уменьшить до 3 минут
+            cacheTime: 3 * 60 * 1000,
             refetchOnWindowFocus: false,
         },
     },
@@ -29,6 +30,7 @@ const queryClient = new QueryClient({
 
 export default function RootLayout({ children }) {
     const { langCode } = useLayoutSettings();
+    useWebScrollRestore();
 
     // Initialize i18n in useEffect to avoid setState during render
     useEffect(() => {

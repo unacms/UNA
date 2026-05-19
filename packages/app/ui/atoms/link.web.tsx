@@ -2,7 +2,9 @@ import Link from 'next/link'
 import { Pressable } from 'app/design/view'
 import { useRouter } from 'app/lib/hooks/router'
 import { useCallback, useMemo } from 'react';
+import { usePathname } from 'next/navigation';
 import { appSetting, cn, sanitazeUrl } from 'app/lib/util'
+import { getWebScrollKey, writeWebScroll } from 'app/lib/web-scroll-session.web'
 
 
 // Variants and sizes from theme
@@ -29,22 +31,36 @@ export default function ElementLink({
 }) {
 
     const router = useRouter();
+    const pathname = usePathname();
     const href = sanitazeUrl(hrefProp);
 
     // Convert alt to aria-label (alt is not valid for <a> elements)
     const accessibleLabel = alt || (typeof children === 'string' ? children : undefined);
 
+    /** Persist scroll for the page being left (current URL), restored when user returns. */
+    const saveScrollForCurrentPage = useCallback(() => {
+        if (typeof window === 'undefined') {
+            return;
+        }
+        writeWebScroll(
+            getWebScrollKey(pathname, window.location.search),
+            window.scrollY || document.documentElement.scrollTop || 0
+        );
+    }, [pathname]);
+
     const handlePress = useCallback((event) => {
         if (onPress) onPress(event);
         if (href) {
-            router.push(href);
+            saveScrollForCurrentPage();
+            router.push(href, { scroll: false });
             event?.preventDefault?.();
         }
-    }, [href, router, onPress]);
+    }, [href, router, onPress, saveScrollForCurrentPage]);
 
-    const handleLinkClick = useCallback((event) => {  
-        if (onClick) onClick();
-    }, [onClick, target, href]);
+    const handleLinkClick = useCallback((event) => {
+        saveScrollForCurrentPage();
+        if (onClick) onClick(event);
+    }, [onClick, saveScrollForCurrentPage]);
 
     const sizeClass = (() => {
         if (!size) return '';
@@ -84,8 +100,7 @@ export default function ElementLink({
                 href={href}
                 className={className}
                 prefetch={isPrefetch}
-               
-              
+                scroll={false}
             >
                 {children}
             </Link>
@@ -98,6 +113,7 @@ export default function ElementLink({
             {...rest}
             className={composedClassName}
             prefetch={isPrefetch}
+            scroll={false}
             onClick={handleLinkClick}
             aria-label={accessibleLabel}
         >

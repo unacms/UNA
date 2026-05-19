@@ -51,7 +51,7 @@
 
         /* Semantic — explicit light/dark variants for Uniwind parity */
         @variant light {
-            --default: var(--white);
+            --default: var(--neutral-100);
             --default-foreground: var(--neutral-950);
             --background: var(--neutral-100);
             --foreground: var(--neutral-950);
@@ -89,7 +89,7 @@
 
         /* Semantic — dark overrides */
         @variant dark {
-            --default: var(--neutral-900);
+            --default: var(--neutral-950);
             --default-foreground: var(--neutral-50);
             --background: var(--neutral-950);
             --foreground: var(--neutral-50);

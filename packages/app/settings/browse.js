@@ -4,6 +4,8 @@ export const settingsBrowse = {
     browse: {
         new_skeletons : true,
         stale_time: 30000,
+        /** Keep inactive browse-tab query data warm while switching conductor modules */
+        gc_time: 30 * 60 * 1000,
         per_line: [/* only for images for now*/ 
             { width: 1280, count: 4 },
             { width: 1024, count: 4 },

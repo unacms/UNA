@@ -1,5 +1,9 @@
-import { registerComponent, isInited } from 'app/components/registry';
-import { createLazyComponent } from 'app/components/registry-lazy';
+import {
+    registerComponent,
+    registerLazyLoader,
+    isInited,
+    markRegistryInitialized,
+} from 'app/components/registry';
 
 import { componentsMap as FormFields } from 'app/customization/form-fields/_map';
 import { formFieldLazyLoaders } from 'app/components/form-fields/_map.lazy';
@@ -23,32 +27,32 @@ function registerSyncMap(type, map) {
     }
 }
 
-function registerLazyMap(type, loaders) {
+function registerLazyLoaders(type, loaders) {
     for (const [name, loader] of Object.entries(loaders)) {
-        if (loader) {
-            registerComponent(type, name, createLazyComponent(loader));
-        }
+        registerLazyLoader(type, name, loader);
     }
 }
 
 export function registerAll() {
     if (!isInited()) {
         registerSyncMap('form-field', FormFields);
-        registerLazyMap('form-field', formFieldLazyLoaders);
+        registerLazyLoaders('form-field', formFieldLazyLoaders);
 
         registerSyncMap('element', Elements);
-        registerLazyMap('element', elementLazyLoaders);
+        registerLazyLoaders('element', elementLazyLoaders);
 
         registerSyncMap('molecule', Molecules);
         registerSyncMap('form', Forms);
 
         registerSyncMap('layout', Layouts);
-        registerLazyMap('layout', layoutLazyLoaders);
+        registerLazyLoaders('layout', layoutLazyLoaders);
 
         registerSyncMap('menu-item', MenuItems);
         registerSyncMap('unit', Units);
         registerSyncMap('content-list', ContentList);
         registerSyncMap('profile-list', ProfileList);
         registerSyncMap('skeleton', Skeletons);
+
+        markRegistryInitialized();
     }
 }

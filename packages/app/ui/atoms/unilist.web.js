@@ -7,15 +7,42 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useCallback, forwardRef, useMemo } from 'react';
 import { useBreakpoint } from 'app/context/measure'
 import { paddingForList } from 'app/customization/functions';
+import {
+    readVirtuosoState,
+    writeVirtuosoState,
+    scheduleWebScrollRestore,
+} from 'app/lib/web-scroll-session.web';
 
 export default function UniList(props) {
     let { useCustomScrollHandler, preloadComponent, isModal, sortable, data: rawData, renderItem, onEndReached, onStartReached, maxToRenderPerBatch, initialNumToRender, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
-        onSort, mode, layout, numColumns, keyboardShouldPersistTaps, keyExtractor, useWindowScroll: useWindowScrollProp, height, listState, endpoint, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, isInPanel, paddingTop, ...rest } = props
+        onSort, mode, layout, numColumns, keyboardShouldPersistTaps, keyExtractor, useWindowScroll: useWindowScrollProp, height, listState, endpoint, viewParams, topItemCount, scrollToLastItem, refreshing, onRefresh, isInPanel, paddingTop, storagekey, rangeChanged: rangeChangedProp, stateChanged: _stateChangedProp, ...rest } = props
 
     const uniRef = useRef();
     const currentBreakpoint = useBreakpoint();
 
     const data = useMemo(() => rawData.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i), [rawData]);
+
+    const virtuosoRestoreState = useMemo(() => {
+        if (listState?.ranges) {
+            return listState;
+        }
+        if (storagekey) {
+            return readVirtuosoState(storagekey);
+        }
+        return null;
+    }, [listState, storagekey]);
+
+    const listRef = refer ?? uniRef;
+
+    const persistVirtuosoState = useCallback(() => {
+        if (!storagekey || !listRef?.current?.getState) {
+            return;
+        }
+        listRef.current.getState((state) => {
+            writeVirtuosoState(storagekey, state);
+        });
+    }, [storagekey, listRef]);
+
     const isGridMode = mode != 'simple' && !sortable;
     const [isGridReady, setIsGridReady] = useState(!preloadComponent);
     const [showContent, setShowContent] = useState(!preloadComponent);
@@ -147,6 +174,18 @@ export default function UniList(props) {
     // Always use window scroll if no height is resolved to prevent zero-sized element errors
     const isWindowScroll = hasResolvedHeight ? shouldUseWindowScroll : true;
 
+    useEffect(() => {
+        if (showContent && isWindowScroll) {
+            scheduleWebScrollRestore();
+        }
+    }, [showContent, isWindowScroll]);
+
+    useEffect(() => {
+        return () => {
+            persistVirtuosoState();
+        };
+    }, [persistVirtuosoState]);
+
     // Only set height style if we have a valid height AND we're not using window scroll
     // This prevents virtuoso from receiving conflicting signals
     let style = (normalizedHeight && !isWindowScroll) ? { height: normalizedHeight } : {};
@@ -180,7 +219,11 @@ export default function UniList(props) {
         data,
         useWindowScroll: isWindowScroll,
         style: virtuosoStyle,
-        ref: refer ? refer : uniRef,
+        ref: listRef,
+        rangeChanged: (range) => {
+            persistVirtuosoState();
+            rangeChangedProp?.(range);
+        },
         startReached: onStartReached,
         endReached: onEndReached,
         overscan: props.unit == 'notifications' ? 100 : 900,
@@ -302,7 +345,7 @@ export default function UniList(props) {
                             <Virtuoso
                                 itemContent={itemContent}
                                 {...commonVirtuosoProps}
-                                {...(listState?.ranges && { restoreStateFrom: listState })}
+                                {...(virtuosoRestoreState?.ranges && { restoreStateFrom: virtuosoRestoreState })}
                                 {...(scrollToLastItem && { initialTopMostItemIndex: data.length })}
                                 endReached={onEndReached}
                             />

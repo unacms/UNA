@@ -15,6 +15,7 @@ import ProfilesList from 'app/ui/molecules/profile_list'
 import { useThemeName } from 'app/design/theme'
 import { Platform } from 'react-native'
 import SvgFile from 'app/ui/molecules/svg-file'
+import SplashIllustration from 'app/ui/molecules/splash-illustration'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { appSetting } from 'app/lib/util'
 const isWeb = Platform.OS === 'web'
@@ -123,13 +124,7 @@ const SplashTextComponent = (props) => {
 
             <View className="relative flex-auto h-48 w-48">
 
-                <SvgFile
-                    src_dark="splash-dark.svg"
-                    src_default="splash-light.svg"
-                    colorize
-                    className="text-secondary-foreground"
-                    alt="Splash screen illustration"
-                />
+                <SplashIllustration />
 
             </View>
             <View className="flex-auto w-full items-center lg:items-start">
@@ -139,13 +134,7 @@ const SplashTextComponent = (props) => {
     ) : (
         <View className=" items-center lg:items-start flex-auto gap-6 w-full mx-auto">
             <View className="flex-auto w-64 h-64">
-                <SvgFile
-                    src_dark="splash-dark.svg"
-                    src_default="splash-light.svg"
-                    colorize
-                    className="text-secondary-foreground"
-                    alt="Splash screen illustration"
-                />
+                <SplashIllustration />
             </View>
             <View className="flex-auto w-full">
                 <SplashTextInner />

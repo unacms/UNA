@@ -19,13 +19,15 @@ import {
     isSameItemsForUniList,
     flattenPagesForUniList,
     fetchUniListData,
+    getBrowseInfiniteQueryKey,
+    getCachedUniListItems,
     Addon,
     getAddon
 } from 'app/lib/conductor-helpers'
 import { ItemRenderer } from 'app/components/item-renderer'
 import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
 import { BlockByName } from 'app/components/block'
 import { useTranslation } from 'react-i18next'
@@ -119,6 +121,20 @@ export function Conductor({
     const playClick = useSound('click');
     const [index, _setIndex] = useState(initialIndex)
     const [prevIndex, setPrevIndex] = useState(initialIndex)
+    const [mountedTabIndices, setMountedTabIndices] = useState(
+        () => new Set([initialIndex])
+    )
+
+    useEffect(() => {
+        setMountedTabIndices((prev) => {
+            if (prev.has(index)) {
+                return prev
+            }
+            const next = new Set(prev)
+            next.add(index)
+            return next
+        })
+    }, [index])
 
     const setIndex = (newIndex) => {
         playClick();
@@ -379,23 +395,42 @@ export function Conductor({
         </View>
     </View> : null
 
-    const CenterColumnContent = <TabSceneMainContent
-        pageRoute={tabRoute}
-        isInited={currentRoute.inited}
-        isCover={isCover}
-        headerHeight={
-            showFiltersBtn && routes.length > 1
-                ? defaultHeaderHeight + 52
-                : defaultHeaderHeight
-        }
-        header={isUseCurrentHeader ? null : headerComponent}
-        isUseCurrentHeader={isUseCurrentHeader}
-        onFormChangedValues={onFormChangedValues}
-        keyword={keyword}
-        ts={ts}
-        timestamp={timestamp}
-        skeleton={skeleton}
-    />
+    const CenterColumnContent = (
+        <View className="w-full">
+            {routes.map((route) => {
+                if (!mountedTabIndices.has(route.index)) {
+                    return null
+                }
+                const isActive = route.index === index
+                return (
+                    <View
+                        key={route.link ?? route.key ?? route.index}
+                        className={isActive ? 'w-full' : 'hidden'}
+                        aria-hidden={!isActive}
+                    >
+                        <TabSceneMainContent
+                            pageRoute={route}
+                            isInited={route.inited}
+                            isActive={isActive}
+                            isCover={isCover}
+                            headerHeight={
+                                showFiltersBtn && routes.length > 1
+                                    ? defaultHeaderHeight + 52
+                                    : defaultHeaderHeight
+                            }
+                            header={isUseCurrentHeader ? null : headerComponent}
+                            isUseCurrentHeader={isUseCurrentHeader}
+                            onFormChangedValues={onFormChangedValues}
+                            keyword={keyword}
+                            ts={ts}
+                            timestamp={timestamp}
+                            skeleton={skeleton}
+                        />
+                    </View>
+                )
+            })}
+        </View>
+    )
 
     return (
         <View className="w-full h-full" scrollEnabled={false}>
@@ -426,6 +461,7 @@ const TabSceneMainContent = ({
     pageRoute,
     header,
     isInited,
+    isActive = true,
     skeleton,
     keyword,
     ts,
@@ -437,6 +473,7 @@ const TabSceneMainContent = ({
     const pageData = pageRoute.pageData
     const uniRef = useRef()
     const dataItemsPage = pageRoute?.data;
+    const queryClient = useQueryClient()
 
     const setHeader = useSetHeader();
 
@@ -445,24 +482,37 @@ const TabSceneMainContent = ({
         return type === 'default' ? getUnitType(pageRoute) : type
     }, [pageRoute?.endpoint, pageRoute?.blocks])
 
-    const [refetchState, dispatch] = useReducer(refetchUniListReducer, {
-        visibleItems: [],
-        hasNewData: false
-    })
-    const refetchRef = useRef({
-        skipToast: false,
-        isFirstLoad: true,
-        prevItems: []
-    })
+    const qKey = useMemo(
+        () => getBrowseInfiniteQueryKey(pageRoute, { keyword, ts, timestamp }),
+        [
+            pageRoute?.endpoint?.request_url,
+            pageRoute?.link,
+            keyword,
+            pageRoute?.endpoint?.params?.filters,
+            ts,
+            timestamp,
+        ]
+    )
 
-    const qKey = [
-        pageRoute?.endpoint?.request_url,
-        pageRoute.link,
-        keyword,
-        JSON.stringify(pageRoute?.endpoint?.params?.filters),
-        ts,
-        timestamp
-    ]
+    const [refetchState, dispatch] = useReducer(refetchUniListReducer, () => {
+        const items = getCachedUniListItems(queryClient, qKey)
+        return {
+            visibleItems: items,
+            hasNewData: false,
+        }
+    })
+    const refetchRef = useRef(null)
+    if (!refetchRef.current) {
+        const items = getCachedUniListItems(queryClient, qKey)
+        refetchRef.current = {
+            skipToast: false,
+            isFirstLoad: items.length === 0,
+            prevItems: items,
+        }
+    }
+
+    const browseStaleTime = appSetting('browse', 'stale_time')
+    const browseGcTime = appSetting('browse', 'gc_time')
 
     const {
         data: pagesData,
@@ -470,7 +520,8 @@ const TabSceneMainContent = ({
         hasNextPage,
         isFetchingNextPage,
         refetch,
-        isRefetching
+        isRefetching,
+        isLoading,
     } = useInfiniteQuery({
         queryKey: qKey,
         queryFn: ({ pageParam }) => fetchUniListData({
@@ -482,10 +533,11 @@ const TabSceneMainContent = ({
         getNextPageParam: (lastPage) => {
             return (lastPage?.data.length > 0 && lastPage?.cursor) ? { ...lastPage?.params, start: lastPage?.cursor } : undefined
         },
-        staleTime: appSetting('browse', 'stale_time'),
-        refetchOnWindowFocus: true,
-        refetchOnReconnect: true,
-        enabled: !!pageRoute?.endpoint?.request_url
+        staleTime: browseStaleTime,
+        cacheTime: browseGcTime,
+        refetchOnWindowFocus: isActive,
+        refetchOnReconnect: isActive,
+        enabled: isActive && !!pageRoute?.endpoint?.request_url,
     })
 
     const test = () => {
@@ -513,13 +565,17 @@ const TabSceneMainContent = ({
 
     useEffect(() => {
         const subscription = emitter.addListener(`page`, (data) => {
-            if (data.action == 'reload') {
-                refetchRef.current.skipToast = true
-                refetch();
+            if (!isActive || data.action != 'reload') {
+                return
             }
+            refetchRef.current.skipToast = true
+            refetch();
         })
 
         const subscription2 = emitter.addListener('feed', (data) => {
+            if (!isActive) {
+                return
+            }
             if (data.action == 'remove_content') {
                 dispatch({ type: 'REMOVE_ITEM', id: data.id })
                 if (refetchRef.current?.prevItems) {
@@ -540,11 +596,16 @@ const TabSceneMainContent = ({
             subscription.remove();
             subscription2.remove()
         }
-    }, [])
+    }, [isActive, pageRoute?.endpoint?.params?.owner_id, refetch])
 
     useEffect(() => {
-        refetchRef.current.skipToast = true
-    }, [qKey])
+        const items = getCachedUniListItems(queryClient, qKey)
+        refetchRef.current = {
+            skipToast: true,
+            isFirstLoad: items.length === 0,
+            prevItems: items,
+        }
+    }, [qKey, queryClient])
 
 
     const handleEndReached = useCallback(
@@ -662,8 +723,14 @@ const TabSceneMainContent = ({
 
     const Form = getComponent('element', 'form');
     const formProps = pageRoute?.endpoint?.filters;
-    const isInitialLoading = (pageRoute?.endpoint?.request_url && hasNextPage === undefined) || !isInited;
-    const [showContent, setShowContent] = useState(!isInitialLoading);
+    const hasVisibleListItems = (refetchState?.visibleItems?.length ?? 0) > 0
+    const isAwaitingFirstListPage =
+        !!pageRoute?.endpoint?.request_url && hasNextPage === undefined
+    const isInitialLoading =
+        !hasVisibleListItems &&
+        !!pageRoute?.endpoint?.request_url &&
+        (isAwaitingFirstListPage || isLoading || !isInited)
+    const [showContent, setShowContent] = useState(!isInitialLoading)
     const revealTimerRef = useRef(null);
 
     useEffect(() => {
@@ -715,7 +782,7 @@ const TabSceneMainContent = ({
                 {(pageRoute?.endpoint?.request_url && hasNextPage) && PreloadShort}
                 {(pageRoute?.endpoint?.request_url && hasNextPage === false && dataItems.filter((item) => item.type != 'block').length == 0) && <NoContent endpoint={pageRoute?.endpoint} />}
                 <Snackbar
-                    visible={refetchState.hasNewData}
+                    visible={refetchState?.hasNewData ?? false}
                     onPress={() => {
                         const latestItems = flattenPagesForUniList(pagesData)
                         dispatch({ type: 'SET_ITEMS', items: latestItems })
@@ -733,7 +800,9 @@ const TabSceneMainContent = ({
                     size="sm"
                 />
             </View>
-            <View className={`absolute inset-0 z-10 pointer-events-none transition-opacity duration-500 ease-out ${showContent ? 'opacity-0' : 'opacity-100'}`}>
+            <View
+                className={`absolute inset-0 z-10 min-h-[50vh] pointer-events-none transition-opacity duration-500 ease-out ${showContent ? 'opacity-0' : 'opacity-100'}`}
+            >
                 {Preload}
             </View>
         </View>
@@ -851,9 +920,26 @@ const TabScene = ({
         }
     }, [currentBreakpointName, pageRoute])
 
+    const pageRouteKey = pageRoute?.key ?? pageRoute?.link ?? '';
+    const prevPageRouteKeyRef = useRef(null);
+    const skipNextScrollToTopRef = useRef(true);
+
     useEffect(() => {
+        if (!pageRouteKey) {
+            return;
+        }
+        // Skip first run per mount so back/forward and session restore keep feed scroll.
+        if (skipNextScrollToTopRef.current) {
+            skipNextScrollToTopRef.current = false;
+            prevPageRouteKeyRef.current = pageRouteKey;
+            return;
+        }
+        if (prevPageRouteKeyRef.current === pageRouteKey) {
+            return;
+        }
+        prevPageRouteKeyRef.current = pageRouteKey;
         window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-    }, [pageRoute])
+    }, [pageRouteKey]);
 
     return (
         <PanelGroup

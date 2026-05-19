@@ -88,38 +88,61 @@ export async function fetchUniListData({ pageParam, requestUrl, defaultParams })
 }
 
 export const refetchUniListReducer = (state, action) => {
+    const items = state?.visibleItems ?? []
     switch (action.type) {
         case 'SET_ITEMS':
             return {
-                visibleItems: action.items,
+                visibleItems: action.items ?? [],
                 hasNewData: false
             }
         case 'PREPEND_ITEM':
             return {
-                ...state,
-                visibleItems: [action.item, ...state.visibleItems]
+                visibleItems: [action.item, ...items],
+                hasNewData: state?.hasNewData ?? false
             }
         case 'APPEND_ITEM':
             return {
-                ...state,
-                visibleItems: [...state.visibleItems, action.item]
+                visibleItems: [...items, action.item],
+                hasNewData: state?.hasNewData ?? false
             }
         case 'REMOVE_ITEM':
             return {
-                ...state,
-                visibleItems: state.visibleItems.filter(item => item.id != action.id)
+                visibleItems: items.filter((item) => item.id != action.id),
+                hasNewData: state?.hasNewData ?? false
             }
         case 'SHOW_NEW_DATA':
             return {
-                ...state,
+                visibleItems: items,
                 hasNewData: true
             }
         default:
-            return state
+            return {
+                visibleItems: items,
+                hasNewData: state?.hasNewData ?? false
+            }
     }
 }
 
 export const flattenPagesForUniList = (pagesData) => (pagesData?.pages ?? []).flatMap((p) => p.data ?? [])
+
+export function getBrowseInfiniteQueryKey(pageRoute, { keyword = '', ts, timestamp } = {}) {
+    return [
+        pageRoute?.endpoint?.request_url,
+        pageRoute?.link,
+        keyword,
+        JSON.stringify(pageRoute?.endpoint?.params?.filters),
+        ts,
+        timestamp,
+    ]
+}
+
+export function getCachedUniListItems(queryClient, queryKey) {
+    if (!queryClient || !queryKey?.[0]) {
+        return []
+    }
+    const cached = flattenPagesForUniList(queryClient.getQueryData(queryKey))
+    return Array.isArray(cached) ? cached : []
+}
 
 export const isSameItemsForUniList = (a, b) => {
     if (a.length !== b.length) return false
@@ -295,78 +318,46 @@ export async function parseData(routes, index, setRoutes, newData) {
 
 export async function fetchAndUpdateData(routes, index, setRoutes) {
     const currentRoute = routes.find((item) => item.index === index)
-    if (!currentRoute.inited) {
-        let link = currentRoute.link
-        if (currentRoute.link.includes('?')) {
-            const urlObj = parseUrl(currentRoute.link) 
-
-            let obj = parseQueryString(urlObj.queryString)
-            link =
-                urlObj.path.replace('/', '') +
-                '&params[]=&params[]=' +
-                JSON.stringify(obj)
-        }
-
-        const sResponse = await fetcher(
-            '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' +
-            link
-        )
-
-        const settings = getPageSettings(sResponse.data?.config, getURI(currentRoute.link));
-
-        const blocks = settings?.blocks || getBlocksFromData(sResponse.data)
-
-        const contentAndEndpoint = processUrl(sResponse.data, settings?.blocks)
-
-        addMoreData(
-            contentAndEndpoint.content,
-            contentAndEndpoint.endpoint,
-            setRoutes,
-            index,
-            blocks,
-            contentAndEndpoint.sidebar,
-            contentAndEndpoint.leftbar,
-            sResponse.data
-        )
+    if (!currentRoute || currentRoute.inited) {
+        return
     }
+    let link = currentRoute.link
+    if (currentRoute.link.includes('?')) {
+        const urlObj = parseUrl(currentRoute.link)
+
+        let obj = parseQueryString(urlObj.queryString)
+        link =
+            urlObj.path.replace('/', '') +
+            '&params[]=&params[]=' +
+            JSON.stringify(obj)
+    }
+
+    const sResponse = await fetcher(
+        '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' +
+        link
+    )
+
+    const pageData = sResponse?.data
+    const settings = getPageSettings(pageData?.config, getURI(currentRoute.link))
+
+    const blocks = settings?.blocks || getBlocksFromData(pageData)
+
+    const contentAndEndpoint = processUrl(pageData, settings?.blocks)
+
+    addMoreData(
+        contentAndEndpoint.content,
+        contentAndEndpoint.endpoint,
+        setRoutes,
+        index,
+        blocks,
+        contentAndEndpoint.sidebar,
+        contentAndEndpoint.leftbar,
+        pageData
+    )
 }
 /* new logic */
 export async function getDataForRoute(routes, index, setRoutes) {
-    const currentRoute = routes.find((item) => item.index === index)
-    if (!currentRoute.inited) {
-        let link = currentRoute.link
-        if (currentRoute.link.includes('?')) {
-            const urlObj = parseUrl(currentRoute.link) 
-
-            let obj = parseQueryString(urlObj.queryString)
-            link =
-                urlObj.path.replace('/', '') +
-                '&params[]=&params[]=' +
-                JSON.stringify(obj)
-        }
-
-        const sResponse = await fetcher(
-            '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' +
-            link
-        )
-
-        const settings = getPageSettings(sResponse.data?.config, getURI(currentRoute.link));
-
-        const blocks = settings?.blocks || getBlocksFromData(sResponse.data)
-
-        const contentAndEndpoint = processUrl(sResponse.data, settings?.blocks)
-
-        addMoreData(
-            contentAndEndpoint.content,
-            contentAndEndpoint.endpoint,
-            setRoutes,
-            index,
-            blocks,
-            contentAndEndpoint.sidebar,
-            contentAndEndpoint.leftbar,
-            sResponse.data
-        )
-    }
+    return fetchAndUpdateData(routes, index, setRoutes)
 }
 
 export function addMoreData(
@@ -481,7 +472,17 @@ function mapLayoutBlocks(items = []) {
     return { content: content, endpoint: endpoint?.content?.[0].data }
 }
 
+const EMPTY_PROCESS_URL_RESULT = {
+    content: [],
+    endpoint: null,
+    sidebar: { endpoint: null, content: [] },
+    leftbar: { endpoint: null, content: [] },
+}
+
 function processParsedUrl(data, blocks) {
+    if (!data?.elements) {
+        return EMPTY_PROCESS_URL_RESULT
+    }
     const cellCenter = mapLayoutBlocks(data.elements.cell_center);
     const cellRight = mapLayoutBlocks(data.elements.cell_right);
     const cellLeft = mapLayoutBlocks(data.elements.cell_left);
@@ -494,6 +495,9 @@ function processParsedUrl(data, blocks) {
 }
 
 export function processUrl(data, blocks) {
+    if (!data) {
+        return EMPTY_PROCESS_URL_RESULT
+    }
     if (data.layout_parsed){
         const a = processParsedUrl(data, blocks);
         return a;
