@@ -1334,6 +1334,7 @@ const TabBar = ({
 
     if (routes.length > 0) {
         const addButtons = <AddMenu menu={menu} filter="hideInTopBar" />
+        const isShowSecondLine = (routes.length > 1 || !!pageData.cover_block?.actions_menu)
         return (
             <TopSidebar
                 layoutName={layoutName}
@@ -1342,7 +1343,7 @@ const TabBar = ({
                 layout={layout}
                 title={t(menuSettings?.name)}
             >
-                <Row className="px-2 lg:px-0 w-full">
+                 {isShowSecondLine && <Row className="px-2 lg:px-0 w-full">
                     <View className="flex-1 h-14">
                         {routes.length > 1 && <ConductorMenu
                             routes={routes}
@@ -1375,7 +1376,7 @@ const TabBar = ({
                                 )}
                         </Row>
                     )}
-                </Row>
+                </Row>}
             </TopSidebar>
         )
     }

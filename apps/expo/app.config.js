@@ -61,7 +61,6 @@ const expoConfig = {
             "android.permission.RECORD_AUDIO",
             "android.permission.WAKE_LOCK",
             "android.permission.ACCESS_WIFI_STATE",
-            "android.permission.FOREGROUND_SERVICE",
             "android.permission.ACCESS_FINE_LOCATION",
             "android.permission.ACCESS_COARSE_LOCATION",
             "android.permission.ACCESS_BACKGROUND_LOCATION",

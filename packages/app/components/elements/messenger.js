@@ -67,7 +67,7 @@ export default function MessengerEl(props) {
     const addButtons = useMemo(() => {
         if (!props.data?.config?.permissions || props.data?.config?.permissions?.create_talk == 1){
         return [
-            <CreateConvoButton key="a" onSave={onSave} variant='secondary' />
+            <CreateConvoButton key="a" onSave={onSave} variant='text' />
         ]
         }
         return null
@@ -88,7 +88,7 @@ export default function MessengerEl(props) {
     return messengerContainer;
 }
 
-const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeight, layout, fetchConvos, defaultConvoId, onSave, addButtons }) => {
+const MessengerContainer = memo(({ convos, selectedMenu, url, data, pageData, windowWHeight, layout, fetchConvos, defaultConvoId, onSave, addButtons }) => {
     const isWeb = Platform.OS == 'web'
     const isDesktop = useIsDesktop();
     const layoutHeaderHeight = 64;
@@ -118,7 +118,7 @@ const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeigh
 
     return (
         <BlockWrapper >
-            <Messenger addButtons={addButtons} onSave={onSave} fetchConvos={fetchConvos} layoutHeight={height} {...data} url={url} selectedMenu={selectedMenu} convos={convos} defaultConvoId={defaultConvoId} />
+            <Messenger pageData={pageData} addButtons={addButtons} onSave={onSave} fetchConvos={fetchConvos} layoutHeight={height} {...data} url={url} selectedMenu={selectedMenu} convos={convos} defaultConvoId={defaultConvoId} />
         </BlockWrapper>
     );
 });
