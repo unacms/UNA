@@ -4,8 +4,6 @@ import Root from 'app/root-client'
 import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { headers } from "next/headers"
-import SplashLcpPreload from '../splash-lcp-preload'
-import { shouldPreloadSplashLcp } from '../splash-lcp-utils'
 
 const SITE_TITLE = 'NEO';
 // Settings use the historical misspelling; keep this key aligned with settings/layout.js.
@@ -250,12 +248,9 @@ export default async function Page(props) {
         }
         
         return (
-            <>
-                <SplashLcpPreload />
-                <Suspense fallback={null}>
-                    <Root settings={remote_config.data} path={'home'} data={fallbackData} uri={'/'} url={'/'} code={200} />
-                </Suspense>
-            </>
+            <Suspense fallback={null}>
+                <Root settings={remote_config.data} path={'home'} data={fallbackData} uri={'/'} url={'/'} code={200} />
+            </Suspense>
         );
     }
     
@@ -270,15 +265,9 @@ export default async function Page(props) {
         notFound(props)
     }
 
-    const pageData = data?.data;
-    const preloadSplashLcp = shouldPreloadSplashLcp(pageData, isHomePage);
-
     return (
-        <>
-            {preloadSplashLcp ? <SplashLcpPreload /> : null}
-            <Suspense fallback={null}>
-                <Root settings={remote_config.data} path={'home'} data={pageData} uri={pageData?.uri} url={pageData?.url} code={data?.code}></Root>
-            </Suspense>
-        </>
+        <Suspense fallback={null}>
+            <Root settings={remote_config.data} path={'home'} data={data?.data} uri={data?.data?.uri} url={data?.data?.url} code={data?.code}></Root>
+        </Suspense>
     )
 }

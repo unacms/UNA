@@ -50,7 +50,7 @@ export default function Unit(props) {
                                     {...data.cover}
                                     alt={data.title}
                                     view="cover"
-                                    className="absolute u-cover rounded-lg"
+                                    className="absolute u-cover rounded-xl"
                                     sizes='auto'
                                 />
 

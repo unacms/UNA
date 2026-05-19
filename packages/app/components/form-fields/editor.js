@@ -2,21 +2,21 @@
 import Field, { getValidationRules } from './_field';
 import { useController, useFormContext } from 'react-hook-form';
 import { InputMulti, TextInputClear } from 'app/design/controls'
-import { useState, useEffect, lazy, Suspense } from 'react';
-import { Loading } from 'app/customization/loading'
+import { useState, useEffect } from 'react';
+import  RftText from 'app/components/form-fields/editor-inner';
+import { Platform } from 'react-native'
 
-const RftText = lazy(() => import('app/components/form-fields/editor-inner'));
+const isWeb = Platform.OS === 'web';
 
 export default function FormFieldText(props) {
     const formContext = useFormContext();      
 
     return (
         <Field {...props} error2={formContext.formState.errors[props.name]}>
-            {props.html == 1 || props.html == 2 || props.html == 3 ? (
-                <Suspense fallback={<Loading />}>
-                    <RftText {...props} />
-                </Suspense>
-            ) : <PlainText {...props} />}
+            {props.html == 1 || props.html == 2 || props.html == 3 ? <>
+                <RftText {...props} />
+
+            </> : <PlainText {...props} />}
         </Field>
     );
 }

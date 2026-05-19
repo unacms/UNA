@@ -28,7 +28,7 @@ function ImageSection({ data }) {
                 src={data?.image?.src}
                 alt={data.title}
                 view="cover"
-                className="absolute u-cover rounded-lg"
+                className="absolute u-cover rounded-xl"
                 sizes='auto'
             />
             {!data?.image?.src && (

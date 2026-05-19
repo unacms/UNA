@@ -32,10 +32,9 @@ import {
 } from 'app/ui/molecules/resizable-panels'
 import { useIsDesktop } from 'app/context/measure';
 import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
-import { getComponent } from 'app/components/registry';
 import { useSafeAreaInsets } from 'app/lib/hooks/router'
 
-export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, pageData, onSave, addButtons }) {
+export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave, addButtons }) {
     const isWeb = Platform.OS == 'web'
     const { setBottomSheetData } = useBottomSheetData();
     const [convoId, setConvoId] = useState(defaultConvoId);
@@ -387,7 +386,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     const convosComponent = useMemo(() => {
         return <Convos
-            pageData={pageData}
             isSmallScreen={isSmallScreen}
             layoutHeightLeft={layoutHeightLeft}
             data={convosData}
@@ -536,7 +534,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     )
 }
 
-const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, changeConvo, onSave, searchValue, handleSearch, addButtons, isSmallScreen }) => {
+const Convos = memo(({ layoutHeightLeft, data, selectedConvoIndex, changeConvo, onSave, searchValue, handleSearch, addButtons, isSmallScreen }) => {
     const isWeb = Platform.OS == 'web'
     const [showSearch, setShowSearch] = useState(false);
 
@@ -550,26 +548,25 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
         handleSearch('')
     }
 
-    console.log("pageData", pageData)
     const srch = <Input  size="small" name="search" placeholder={("Search") + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
-    const ContextSelector = getComponent('molecule', 'context_selector');
+
     const header = useMemo(() => (
-        <Row className={appSetting('layout', 'header', 'content')}>
+        <Row className=' bg-card px-3 gap-2 web:border-b border-border/60 gap-x-3 h-16'>
             <View className='flex-1 hidden lg:flex justify-center items-center'>
                 <View className=' w-full h-12 items-start justify-center'>
                 {srch}
                 </View>
             </View>
-            {!showSearch && <Row className={appSetting('layout', 'header', 'content_left')+' lg:hidden'}>
+            {!showSearch && <Row className='lg:hidden flex-auto  items-center '>
                 {appSetting('messenger', 'back_button') && getBackButtonWeb()}
-                { appSetting('context_selector', 'show_always') ? <><ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /></>:  <Text className={`lg:hidden font-bold truncate flex-1  leading-12 lg:px-2 text-card-foreground text-2xl tracking-tight font-main`}>Messenger</Text>}
+                <Text className={`lg:hidden font-bold truncate flex-1  leading-12 lg:px-2 text-card-foreground text-2xl tracking-tight font-main`}>Messenger</Text>
             </Row>}
-            {showSearch && <Row className={appSetting('layout', 'header', 'content_left')+' lg:hidden'}>
+            {showSearch && <Row className='lg:hidden flex-auto  items-center '>
                 {srch}
             </Row>}
             <Row className='my-auto'>
                 <View className='lg:hidden mr-1 lg:mr-0 '>
-                    <Button size="base" startDecorator="Search" variant="text" rounded onPress={() => handleSearch2()} />
+                    <Button size="base" startDecorator="Search" variant="secondary" rounded onPress={() => handleSearch2()} />
                 </View>
                 {addButtons}
             </Row>
@@ -643,10 +640,10 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
 
     const header = useMemo(() => (
-
-            <Row className={appSetting('layout', 'header', 'content')}>
-                <Row className={appSetting('layout', 'header', 'content_left')+' lg:hidden'}>
-                    {isSmallScreen && <BackButton buttonProps={{ variant: "text", startDecorator: 'ArrowLeft', rounded: 'rounded' }} callback={showConvo} />}
+        <View className='md:px-0 w-full border-border/60 bg-card border-b h-16 justify-center'>
+            <Row className='px-2 lg:px-4 items-center justify-between w-full '>
+                <Row className='items-center justify-start gap-3 flex-1 overflow-hidden'>
+                    {isSmallScreen && <BackButton buttonProps={{ variant: "secondary", startDecorator: 'ArrowLeft', rounded: 'rounded' }} callback={showConvo} />}
                     <View className="overflow-hidden flex-1">
                     <Text numberOfLines={1} className="font-bold text-card-foreground text-2xl tracking-tight overflow-hidden text-ellipsis">{title}</Text>
                     </View>
@@ -655,7 +652,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                     <View>
                         <DropdownMenu onSelect={(oItem) => { handleManage(oItem) }} items={menuItems}>
                             <Button
-                                variant="text"
+                                variant="secondary"
                                 size="base"
                                 rounded
 
@@ -665,7 +662,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                     </View>
                 </Row>
             </Row>
-        
+        </View>
     ), [isSmallScreen, title, showConvo]);
 
     useEffect(() => {

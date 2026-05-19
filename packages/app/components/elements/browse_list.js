@@ -111,8 +111,7 @@ export default function Browse(props) {
         hasNextPage,
         isFetchingNextPage,
         refetch,
-        isRefetching,
-        isLoading,
+        isRefetching
     } = useInfiniteQuery({
         queryKey: qKey,
         //queryFn: fetchData,
@@ -124,7 +123,6 @@ export default function Browse(props) {
 
         getNextPageParam: (lastPage) => lastPage?.data.length > 0 ? { ...lastPage?.params, start: lastPage?.params.start + lastPage?.params.per_page } : undefined,
         staleTime: appSetting('browse', 'stale_time'),
-        cacheTime: appSetting('browse', 'gc_time'),
         refetchOnWindowFocus: updateMode != 'none',
         refetchOnReconnect: updateMode != 'none',
     })
@@ -270,13 +268,10 @@ export default function Browse(props) {
 
     const NoContent = getComponent('molecule', 'no_content')
 
-    const PreloadComponent = !data?.hide_empty_msg && dataItems.length === 0
-        ? (hasNextPage === false && !isLoading
-            ? <NoContent endpoint={{ request_url: data.request_url, params: {} }} />
-            : (isLoading || hasNextPage === undefined)
-                ? Preload
-                : null)
-        : null;
+    const PreloadComponent = !data?.hide_empty_msg && dataItems.length === 0 ? (hasNextPage === false
+        ? <NoContent endpoint={{request_url: data.request_url, params: {} }}/>
+        : (!dataItems.params?.loaded ? Preload : null)
+    ) : null;
 
     const uniListProps = {
         preloadComponent: PreloadComponent,

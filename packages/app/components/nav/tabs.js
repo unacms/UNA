@@ -121,9 +121,7 @@ export default function Tabs() {
     const router = useRouter();
     const pathname = usePathname();
 
-    useMemo(() => {
-        registerAll();
-    }, []);
+    registerAll();
 
     const playClick = useSound('click');
     // useTranslation должен вызываться после всех других хуков, чтобы избежать проблем с порядком

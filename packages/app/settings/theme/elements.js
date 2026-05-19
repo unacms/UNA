@@ -3,7 +3,7 @@
 export const settingsElements = {
     conductor: {
         menu: ' w-full items-left justify-center ',
-        menu_max_width: ' w-full max-w-7xl mx-auto',
+        menu_max_width: ' w-full max-w-7xl px-3 lg:px-4 mx-auto',
         
         content_max_width: ' w-full max-w-7xl mx-auto ',
         content_max_width_nav: ' w-full max-w-screen-2xl  ',

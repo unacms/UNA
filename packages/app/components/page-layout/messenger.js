@@ -20,7 +20,7 @@ export default function PageLayout({ data }) {
     }, []);*/
 
     if (blockData?.content[0]?.data)
-        return <Messenger pageData={data} data={blockData.content[0].data} url={data.url} />
+        return <Messenger data={blockData.content[0].data} url={data.url} />
     else {
         const cells = Object.keys(data.elements).map((key) => (
             <Cell key={key} uri={data?.uri} url={data.url} blocks={data.elements[key]} />

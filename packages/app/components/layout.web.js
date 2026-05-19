@@ -1,11 +1,9 @@
 import React, { useEffect, useCallback, useState } from 'react';
-import dynamic from 'next/dynamic';
 import Footer from 'app/customization/nav/footer';
 import { Modal } from 'app/design/controls'
 import Informer from 'app/components/elements/informer';
+import Suggestions from 'app/ui/molecules/suggestions';
 import AsyncWorker from 'app/ui/molecules/async_worker';
-
-const Suggestions = dynamic(() => import('app/ui/molecules/suggestions'), { ssr: false });
 import { View } from 'app/design/view';
 import { useCurrentUser } from 'app/context/user'
 import BottomSheet from 'app/ui/molecules/bottomsheet_content';

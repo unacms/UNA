@@ -260,7 +260,7 @@ export const PostsView = memo(({ data, styles, url, isCompact, content_attach, f
                             {...data.mainImage}
                             alt={data.title}
                             view="cover"
-                            className="u-cover rounded-lg"
+                            className="u-cover rounded-xl"
                             sizes={LAYOUT_BREAKPOINTS.md}
                         />
                     </View>
@@ -336,7 +336,7 @@ export const DefaultView = memo(
                                 {...data.mainImage}
                                 alt={data.title}
                                 view="cover"
-                                className=" u-cover rounded-lg "
+                                className=" u-cover rounded-xl "
                                 sizes={LAYOUT_BREAKPOINTS.md}
                             />
                         </View>
@@ -472,7 +472,7 @@ export const PollView = memo(
                                     {...data.mainImage}
                                     alt={data.title}
                                     view="cover"
-                                    className=" u-cover rounded-lg "
+                                    className=" u-cover rounded-xl "
                                     sizes={LAYOUT_BREAKPOINTS.md}
                                 />
                             </View>

@@ -33,11 +33,9 @@ function WindowSizeSync() {
 export default function Layouts({ path, data }) {
     const uri = data?.uri
     const url = data?.url
-
-    // Run once per mount; sync maps only — lazy wrappers materialize on first getComponent.
-    useMemo(() => {
+    const isWeb = Platform.OS === 'web';
+    if (isWeb)
         registerAll();
-    }, []);
 
     const { currentUser } = useCurrentUser();
 
