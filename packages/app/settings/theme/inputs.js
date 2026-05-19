@@ -63,8 +63,7 @@ export const settingsInputs = {
         'u-controls-switcher-thumb-sm': 'h-3 w-3  shadow-xs',
 
         // Active Thumb Position
-        'u-controls-switcher-thumb-active-base': 'translate-x-4',
-        'u-controls-switcher-thumb-active-sm': 'translate-x-4',
+       
 
         // Track Colors
         'u-controls-switcher-track-col':

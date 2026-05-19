@@ -7,9 +7,10 @@ import { useAppState } from 'app/lib/hooks/useAppState';
 export default function CounterChecker({ }) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const isAppActive = useAppState();
-    const isActive = (currentUser?.membership != 2) && isAppActive;
+    const isActive = (!!currentUser &&currentUser?.membership != 2) && isAppActive;
     const prevNotRef = useRef(currentUser?.notifications ?? 0);
     const playSound = useSound('notif');
+    console.log('CounterChecker', isActive, currentUser);
     const { daemonData, error } = useDaemon("/api.php?r=system/profile_info/TemplServiceProfiles", true, isActive, 60000);
 
     useEffect(() => {

@@ -638,7 +638,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         });
     }
     if (isProfileHeader || appSetting('conductor', 'add_menu_native')) {//isProfileHeader need add condition for veawe = coverMode === 'none'
-        if (currentRoute?.pageData) {// may be need to fix
+      /*  if (currentRoute?.pageData) {// may be need to fix
             Object.assign(tabSceneProps, {
                 ListHeaderComponent: () => <View className="w-full">
                     {(appSetting('native', 'collapsible_header') || isProfileHeader) && CoverHeader}
@@ -646,7 +646,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
                     {filter}
                 </View>
             });
-        }
+        }*/
     }
 
     return (
