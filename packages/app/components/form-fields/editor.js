@@ -3,10 +3,7 @@ import Field, { getValidationRules } from './_field';
 import { useController, useFormContext } from 'react-hook-form';
 import { InputMulti, TextInputClear } from 'app/design/controls'
 import { useState, useEffect } from 'react';
-import  RftText from 'app/components/form-fields/editor-inner';
-import { Platform } from 'react-native'
-
-const isWeb = Platform.OS === 'web';
+import RftText from './editor-rft-text';
 
 export default function FormFieldText(props) {
     const formContext = useFormContext();      
