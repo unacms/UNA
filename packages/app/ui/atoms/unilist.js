@@ -1,4 +1,3 @@
-import { RefreshControl, Platform } from 'react-native';
 import { View } from 'app/design/view'
 import { useRef, useCallback, useMemo } from 'react';
 import { LegendList } from "@legendapp/list";
@@ -21,11 +20,15 @@ export default function UniList(props) {
         refreshing, 
         inverted,
         onRefresh, 
+        url,
+        refreshControl: _refreshControl,
+        progressViewOffset: _progressViewOffset,
         ...rest 
     } = props;
 
     const scrollY = useRef(0);
     const scrollState = useRef(0);
+    const pullRefreshArmed = useRef(true);
     const setScrollDirection = useSetScrollDirection();
     const setScrollValue = useSetScrollValue();
 
@@ -67,8 +70,24 @@ export default function UniList(props) {
             setScrollDirection(newScrollState);
             scrollState.current = newScrollState;
         }
+
+        if (
+            url &&
+            onRefresh &&
+            !inverted &&
+            !refreshing &&
+            pullRefreshArmed.current &&
+            currentScrollY < -64
+        ) {
+            pullRefreshArmed.current = false;
+            onRefresh();
+        }
+        if (currentScrollY >= 0) {
+            pullRefreshArmed.current = true;
+        }
+
         scrollY.current = currentScrollY;
-    }, [setScrollDirection, setScrollValue]);
+    }, [setScrollDirection, setScrollValue, url, onRefresh, inverted, refreshing]);
 
     const handleScrollToIndexFailed = useCallback((info) => {
         console.log('onScrollToIndexFailed', info);
@@ -77,7 +96,6 @@ export default function UniList(props) {
     const shouldApplyHeaderOffset = !inverted && !isModal;
     const shouldApplyFooterOffset = inverted && !isModal;
 
-    // ?? Правильная обработка ListHeaderComponent (может быть функцией или компонентом)
     const enhancedListHeaderComponent = useCallback(() => {
         return (
             <>
@@ -94,8 +112,7 @@ export default function UniList(props) {
                 )}
             </>
         );
-    }, [shouldApplyHeaderOffset, headerHeight, ListHeaderComponent]);
-
+    }, [shouldApplyHeaderOffset, headerHeight, ListHeaderComponent, shouldApplyFooterOffset, inverted]);
 
     const enhancedListFooterComponent = useCallback(() => {
         return (
@@ -110,19 +127,7 @@ export default function UniList(props) {
                 )}
             </>
         );
-    }, [shouldApplyFooterOffset, headerHeight, ListFooterComponent]);
-
-    const refreshControl = useMemo(() => 
-        props.url ? (
-            <RefreshControl 
-                progressViewOffset={headerHeight || 100} 
-                size="large" 
-                refreshing={refreshing} 
-                onRefresh={onRefresh} 
-            />
-        ) : null,
-        [props.url, headerHeight, refreshing, onRefresh]
-    );
+    }, [shouldApplyFooterOffset, headerHeight, ListFooterComponent, inverted]);
 
     if (preloadComponent) {
         return (
@@ -135,6 +140,7 @@ export default function UniList(props) {
 
     return (
         <LegendList
+            key={url || undefined}
             contentContainerStyle={contentContainerStyleProp}
             ref={refer || uniRef}
             onEndReachedThreshold={1}
@@ -149,7 +155,6 @@ export default function UniList(props) {
             scrollEventThrottle={16}
             keyboardShouldPersistTaps="always"
             onScrollToIndexFailed={handleScrollToIndexFailed}
-            refreshControl={refreshControl}
             alignItemsAtEnd={inverted}
             maintainScrollAtEnd={inverted}
             contentInsetAdjustmentBehavior="never"
