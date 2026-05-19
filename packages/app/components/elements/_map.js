@@ -1,6 +1,3 @@
-import Browse from './browse';
-import BrowseSimple from './browse_simple';
-import BrowseList from './browse_list';
 import Form from './form';
 import Msg from './msg';
 import Login from './login';
@@ -17,59 +14,22 @@ import CategoriesList from './categories_list';
 import FeedItem from './feed_item';
 import ProfileSwitcher from './profile_switcher';
 import DashboardStat from './dashboard_stat';
-import SmartGrid from './smart_grid';
 import ProfileContacts from './contacts';
 import SimpleList from './simple_list';
 import Membership from './membership';
 import Lang from './lang';
-import Invite from './invite';
-import Map from './map';
 import Menu from './menu';
-import Deploy from './deploy';
-import Calendar from './calendar';
-import Grid from './grid';
-import Pricing from './pricing';
-import Chart from './chart';
-import MultiPostForm from './multi_post_form';
 import InviteInContext from './invite_in_context';
-import Comments from './comments';
 import CommentContent from './comment_content';
 import NotificationsSettings from './notifications_settings';
-import CourseStructure from './course_structure';
-import ModuleStructure from './module_structure';
-import EditCourseContent from './edit_course_content';
-import Messenger from './messenger';
-import ProfileList from './profiles_list';
-import { ReputationSummary, ReputationWidget, ReputationLeaderboard, ReputationLevels, ReputationHistory, ReputationActions } from './reputation';
-import SearchSections from './search_sections';
-import StripeConnect from './stripe_connect';
-import Bundles from './bundles';
 
+export { elementLazyLoaders } from './_map.lazy';
+
+/** Sync element registry — keep feed, forms, entity blocks, and other hot paths here. */
 export const componentsMapDefault = {
-    messenger_main_page: Messenger,
     invite_in_context: InviteInContext,
-    search_sections: SearchSections,
-    reputation_summary: ReputationSummary,
-    reputation_leaderboard: ReputationLeaderboard,
-    reputation_levels: ReputationLevels,
-    reputation_history: ReputationHistory,
-    reputation_actions: ReputationActions,
-    reputation_widget: ReputationWidget,
-    chart: Chart,
-    bundles: Bundles,
     membership: Membership,
-    comment_content:CommentContent,
-    browse: Browse,
-    browse_simple: BrowseSimple,
-    browse_list: BrowseList,
-    grid: Grid,
-    pricing: Pricing,
-    invite: Invite,
-    map: Map,
-    menu: Menu,
-    deploy: Deploy,
-    calendar: Calendar,
-    comments: Comments,
+    comment_content: CommentContent,
     form: Form,
     msg: Msg,
     login: Login,
@@ -83,21 +43,15 @@ export const componentsMapDefault = {
     entity_cover: EntityCover,
     profile_menu: ProfileMenu,
     profile_switcher: ProfileSwitcher,
-    bento_grid: SmartGrid,
     feed_item: FeedItem,
     notifications_settings: NotificationsSettings,
     dashboard_stat: DashboardStat,
     categories_list: CategoriesList,
-    course_structure: CourseStructure,
-    edit_course_content: EditCourseContent,
-    module_structure: ModuleStructure,
     lang: Lang,
-    profiles_list: ProfileList,
     raw: Lang,
     html: Lang,
     custom: Lang,
     get_block_contacts_messenger: ProfileContacts,
-    get_create_post_form: MultiPostForm,
     simple_list: SimpleList,
-    stripe_connect: StripeConnect
+    menu: Menu,
 };

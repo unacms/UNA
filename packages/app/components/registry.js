@@ -9,14 +9,11 @@ export function registerComponent(type, name, component) {
 }
 
 export function getComponent(type, name) {
-    const a = registry[type][name];
-    if (!a){
-    }
-    return a;
+    return registry[type]?.[name];
 }
 
 export function isComponent(type, name) {
-    return !!registry[type][name];
+    return !!registry[type]?.[name];
 }
 
 export function getRegisteredComponents() {

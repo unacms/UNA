@@ -33,9 +33,7 @@ function WindowSizeSync() {
 export default function Layouts({ path, data }) {
     const uri = data?.uri
     const url = data?.url
-    const isWeb = Platform.OS === 'web';
-    if (isWeb)
-        registerAll();
+    registerAll();
 
     const { currentUser } = useCurrentUser();
 

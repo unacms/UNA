@@ -6,7 +6,7 @@
  *   - components are registered (`registerAll()`),
  *   - the page-layout is dispatched via the registry by `data.layout`
  *     (we registered `'playground'` in
- *     `packages/app/components/page-layout/_map.js`).
+ *     `packages/app/components/page-layout/_map.lazy.js`, dev only).
  *
  * Lives at the file-based path `/playground` (more specific than
  * `[...path].js`, so it wins). Safe to delete with the page-layout file
