@@ -25,6 +25,70 @@ import {
     paddingForList
 } from 'app/customization/functions'
 
+const TabSceneHeader = React.memo(function TabSceneHeader2({
+    headerMode,
+    coverBlock,
+    pageUri,
+    pageContext,
+    sceneHeader,
+    filter,
+}) {
+    const scrollValue = useScrollValue();
+    const coverHeader = useMemo(
+        () => (
+            <Cover
+                data={coverBlock}
+                showMoreMenu={false}
+                uri={pageUri}
+                context={pageContext}
+            />
+        ),
+        [coverBlock, pageUri, pageContext]
+    );
+    const coverHeaderSmall = useMemo(
+        () => (
+            <CoverSmall showMoreMenu context={pageContext} data={coverBlock} />
+        ),
+        [coverBlock, pageContext]
+    );
+    if (headerMode === 'dynamic') {
+        if (scrollValue > 500) {
+            return (
+                <View className="w-full">
+                    {coverHeaderSmall}
+                    {sceneHeader}
+                    {filter}
+                </View>
+            );
+        }
+        return (
+            <View className="w-full">
+                {coverHeader}
+                {sceneHeader}
+                {filter}
+            </View>
+        );
+    }
+    if (headerMode === 'small') {
+        return (
+            <View className="w-full">
+                {coverHeader}
+                {sceneHeader}
+                {filter}
+            </View>
+        );
+    }
+    if (headerMode === 'none') {
+        return (
+            <View className="w-full">
+                {sceneHeader}
+                {filter}
+            </View>
+        );
+    }
+    return null;
+});
+
 const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
     const MenuItemSubmenu = getComponent('menu-item', 'submenu');
     if (routes.length > 1) {
@@ -90,15 +154,7 @@ const AddBlocks = React.memo(({
         }
     </>
 });
-const TabSceneHeader = React.memo(({
-    isProfileHeader
-    , smallHeader
-}) => {
-    const scrollValue = useScrollValue();
-    if ((isProfileHeader && scrollValue > 500) || !appSetting('native', 'collapsible_header'))
-        return smallHeader;
-    return null;
-})
+
 const TabScene = React.memo(({
     route,
     hasNextPage,
@@ -112,15 +168,6 @@ const TabScene = React.memo(({
     numColumns
 }) => {
 
-    /* const handleEndReached = useCallback(
-         console.log('handleEndReached', route?.endpoint?.params),
-         async (lastItemIndex) => {
-             if (!route?.endpoint || route?.endpoint?.params?.start === 0 || refreshing || route?.endpoint?.finished)
-                 return;
-             fetchNextPage()
-         },
-         [route?.endpoint, route?.endpoint?.params?.start, route?.endpoint?.finished, fetchNextPage, refreshing]
-     )*/
     const handleEndReached = useCallback(
 
         async (lastItemIndex) => {
@@ -273,11 +320,11 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     const prevRoute = useMemo(
         () => routes.find((item) => item.index === prevIndex),
         [routes, prevIndex]
-      );
-      const currentRoute = useMemo(() => {
+    );
+    const currentRoute = useMemo(() => {
         const route = routes.find((item) => item.index === index);
         return route?.inited ? route : (prevRoute ?? route);
-      }, [routes, index, prevRoute]);
+    }, [routes, index, prevRoute]);
     const qKey = useMemo(() => [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)], [currentRoute, index, keyword]);
     const queryClient = useQueryClient();
 
@@ -479,11 +526,6 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         };
     }, [refreshRequested, queryClient, qKey, fetchNextPage]);
 
-    const isUseCurrentHeader = layoutName === 'profile';
-    /* useLayoutEffect(() => {
-         setHeader({subHeader: sceneHeader});
-     }, [index, sceneHeader, setHeader]);
-     */
 
     const isShowFilters = layoutName == 'navigator' && leftSideBarBlocks && leftSideBarBlocks?.length > 0;
 
@@ -491,40 +533,6 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         () => <TabBar routes={routes} index={index} setIndex={setIndex} onChangeRoute={onChangeRoute} />,
         [routes, index, setIndex, onChangeRoute]
     );
-
-    const filter = (isShowFilters) && (<View className="items-start ml-3 mt-2 mb-1">
-        <Button title='Filters' variant="default" size="sm" rounded onPress={showFilters} />
-    </View>)
-
-    /* useEffect(() => {
-         
-     }, [header,sceneHeader, setHeader]);
- */
-
-    useFocusEffect(
-        useCallback(() => {
-            if (isUseCurrentHeader) {
-                setHeader({ header: false });
-            }
-            else {
-                setHeader({ subHeader: sceneHeader });
-            }
-        }, [header, isUseCurrentHeader, sceneHeader, setHeader])
-    );
-
-
-    /* const Preload = useMemo(() => {
-         return getSkeletonForList(skeleton !== '' ? skeleton : (data.module ? data.module : data.unit), numColumns);
-     }, [skeleton, data.module, data.unit]);
- */
-
-
-
-
-
-    const showFilters = useCallback(() => {
-        setBottomSheetData({ title: 'Filters', content: <AddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} />, showClose: true, snapPoints: ['60%', '60%'] });
-    }, [leftSideBarBlocks, data, onFormSubmit, layoutName]);
 
     const setFilterValue = useCallback((values) => {
         setRoutes(prevRoutes => {
@@ -560,29 +568,65 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         setBottomSheetData(false);
     });
 
-    const coverMode =  appSetting('cover', 'view_by_module', currentRoute?.pageData?.cover_block?.profile?.module)
+    const showFilters = useCallback(() => {
+        setBottomSheetData({ title: 'Filters', content: <AddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} />, showClose: true, snapPoints: ['60%', '60%'] });
+    }, [leftSideBarBlocks, data, onFormSubmit, layoutName]);
 
-    const isProfileHeader = layoutName === 'profile' && !isCoverDisabled && coverMode !== 'none';
+    const filter = useMemo(
+        () =>
+            isShowFilters ? (
+                <View className="items-start ml-3 mt-2 mb-1">
+                    <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />
+                </View>
+            ) : null,
+        [isShowFilters, showFilters]
+    );
 
+    const coverMode = appSetting(
+        'cover',
+        'view_by_module',
+        currentRoute?.pageData?.cover_block?.profile?.module
+    );
 
-    const CoverHeader = useMemo(() => {
-        return <Cover
-            data={currentRoute?.pageData?.cover_block}
-            showMoreMenu={false}
-            uri={currentRoute?.pageData?.uri}
-            context={currentRoute?.pageData?.context}
-        />
-    }, [currentRoute?.pageData]);
+    const isProfileLayout = layoutName === 'profile';
+    const hasDynamicCover = isProfileLayout && !isCoverDisabled && coverMode !== 'none';
+    const headerMode = !isProfileLayout
+        ? 'none'      // settings on weave
+        : hasDynamicCover
+            ? 'dynamic' // person profile
+            : 'small';    // group on weave profile
 
-    const smallSceneHeader = !appSetting('native', 'collapsible_header') ? <View className="w-full">
-        {CoverHeader}
-        {sceneHeader}
+    const useLocalHeader =
+        headerMode === 'dynamic' ||
+        (headerMode === 'small' && !appSetting('native', 'collapsible_header'));
 
-    </View> : <View className="w-full">
-        <CoverSmall showMoreMenu={true} context={currentRoute?.pageData?.context} data={currentRoute?.pageData?.cover_block} />
-        {sceneHeader}
-        {filter}
-    </View>
+    const coverBlock = currentRoute?.pageData?.cover_block;
+    const pageUri = currentRoute?.pageData?.uri;
+    const pageContext = currentRoute?.pageData?.context;
+
+    const sceneHeaderComp = useMemo(
+        () => (
+            <TabSceneHeader
+                headerMode={headerMode}
+                coverBlock={coverBlock}
+                pageUri={pageUri}
+                pageContext={pageContext}
+                sceneHeader={sceneHeader}
+                filter={filter}
+            />
+        ),
+        [headerMode, coverBlock, pageUri, pageContext, sceneHeader, filter]
+    );
+    useFocusEffect(
+        useCallback(() => {
+            if (useLocalHeader) {
+                setHeader({ header: false });
+            }
+            else {
+                setHeader({ subHeader: sceneHeaderComp });
+            }
+        }, [sceneHeaderComp, useLocalHeader, setHeader])
+    );
 
     const tabSceneProps = {
         skeleton: skeleton,
@@ -596,8 +640,6 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         hasNextPage: hasNextPage,
         isFetchingNextPage: isFetchingNextPage
     };
-
-
 
     const onFormChangedValues = useCallback((values) => {
         if (!isFormInitialized.current) {
@@ -640,23 +682,12 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
             ListHeaderComponent: FormHeader
         });
     }
-    if (isProfileHeader || appSetting('conductor', 'add_menu_native')) {//isProfileHeader need add condition for veawe = coverMode === 'none'
-        if (currentRoute?.pageData) {// may be need to fix
-            Object.assign(tabSceneProps, {
-                ListHeaderComponent: () => <View className="w-full">
-                    {(appSetting('native', 'collapsible_header') || isProfileHeader) && CoverHeader}
-                    {isUseCurrentHeader && appSetting('native', 'collapsible_header') ? sceneHeader : null}
-                    {filter}
-                </View>
-            });
-        }
-    }
 
     return (
         <View className="w-full h-full ">
             <View className="w-full flex-1 ">
                 <Snackbar visible={snackbarVisible} onPress={showNewContent2} onDismiss={() => setSnackbarVisible(false)} variant="primary" title="Show New Posts" size="sm" />
-                <TabSceneHeader isProfileHeader={true} smallHeader={smallSceneHeader} />
+                {useLocalHeader && sceneHeaderComp}
                 <TabScene {...tabSceneProps} />
             </View>
         </View>

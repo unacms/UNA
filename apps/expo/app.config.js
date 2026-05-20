@@ -126,6 +126,14 @@ const expoConfig = {
             }
         ],
         ["expo-video", {"supportsBackgroundPlayback": false, "supportsPictureInPicture": false}],
+        [
+            "expo-audio",
+            {
+                "microphonePermission": false,
+                "recordAudioAndroid": false,
+            },
+        ],
+        "./plugins/with-expo-audio-no-foreground-services.js",
         // ["@stripe/stripe-react-native", {"merchantIdentifier": "merchantIdentifier","enableGooglePay": true}],
         ["expo-build-properties", 
             {

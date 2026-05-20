@@ -20,7 +20,7 @@ function ElementVideoPlayer({ src, controls, cover, autoplay, muted }) {
 
     return (
         <View className="aspect-video" >
-            <VideoView style={styles.video} player={player} allowsFullscreen allowsPictureInPicture />
+            <VideoView style={styles.video} player={player} allowsFullscreen allowsPictureInPicture={false} />
         </View>
     )
 }

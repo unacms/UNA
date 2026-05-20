@@ -560,7 +560,7 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
                 {srch}
                 </View>
             </View>
-            {!showSearch && <Row className={appSetting('layout', 'header', 'content_left')+' lg:hidden'}>
+            {!showSearch && <Row className={appSetting('layout', 'header', 'content_left')+' lg:hidden '}>
                 {appSetting('messenger', 'back_button') && getBackButtonWeb()}
                 { appSetting('context_selector', 'show_always') ? <><ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /></>:  <Text className={`lg:hidden font-bold truncate flex-1  leading-12 lg:px-2 text-card-foreground text-2xl tracking-tight font-main`}>Messenger</Text>}
             </Row>}

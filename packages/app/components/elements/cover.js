@@ -548,7 +548,7 @@ export default function Cover({
                     </View>
                 )}
                 <View
-                    className={`flex flex-1 sm:gap-3 ${bPerson ? 'lg:flex-row flex-col-reverse' : 'lg:flex-row flex-col-reverse'}`}
+                    className={`flex web:flex-1 sm:gap-3 ${bPerson ? 'lg:flex-row flex-col-reverse' : 'lg:flex-row flex-col-reverse'}`}
                 >
                     <View className="flex-none gap-1 ">
                         {isDesktop && <Row className="gap-2 flex-none items-center min-h-10 px-0.5">
@@ -580,7 +580,7 @@ export default function Cover({
                         )}
                     </View>
 
-                    <View className="flex-row flex-1 flex-wrap gap-2 lg:justify-between justify-start">
+                    <View className="flex-row web:flex-1 flex-wrap gap-2 lg:justify-between justify-start">
                         {bPerson && (
                             <View
                                 className={`${isMin ? 'h-24' : 'h-11'

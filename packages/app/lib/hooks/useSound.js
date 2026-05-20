@@ -1,14 +1,19 @@
 import { useCallback } from 'react';
-import { createAudioPlayer } from 'expo-audio';
+import { createAudioPlayer, setAudioModeAsync } from 'expo-audio';
 import { Sounds } from 'app/customization/sounds';
 import { appSetting } from 'app/lib/util'
 
 const cache = new Map();
 const isSounds = appSetting('layout', 'sounds');
+let audioModeReady = false;
 
 export const playSound = (name) => {
     if (!isSounds)
         return;
+    if (!audioModeReady) {
+        audioModeReady = true;
+        initAudio().catch(() => {});
+    }
     try {
         const source = Sounds[name];
         if (!source) return;
@@ -32,5 +37,9 @@ export function useSound(name) {
 }
 
 export const initAudio = async () => {
-    // если нужно: await setAudioModeAsync({ playsInSilentMode: true });
+    await setAudioModeAsync({
+        playsInSilentMode: true,
+        shouldPlayInBackground: false,
+        interruptionMode: 'mixWithOthers',
+    });
 };

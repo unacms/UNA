@@ -11,7 +11,8 @@ import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import emitter from 'app/context/emitter';
 import { getComponent } from 'app/components/registry'
-import { useOpenModalByUrl, useOpenModalWithContent  } from 'app/context/jotai/modal';
+import { useOpenModalByUrl, useOpenModalWithContent } from 'app/context/jotai/modal';
+import { sanitazeUrl, openExternalLink, isWeb } from 'app/lib/util';
 
 const menuSettings = appSetting('theme', 'dropdown_menu');
 
@@ -29,8 +30,8 @@ function resolveTabsOverflowClasses(tabsOverflowSize) {
         tabsOverflowSize === 'sm'
             ? 'sm'
             : tabsOverflowSize === 'lg'
-              ? 'lg'
-              : 'md';
+                ? 'lg'
+                : 'md';
     return {
         container: 'content_ver',
         item: `item_tabs_overflow_${size}`,
@@ -88,7 +89,7 @@ function DropdownMenuPopup({
                 : item.target == 'modal' ? (item.content ? openModalWithContent({
                     title: item.title,
                     content: resolveContent ? resolveContent(item.content, item) : item.content,
-                  }) : openModalByUrl(item.link)) : redirectdRef.current.redirect('' + item.link);
+                }) : openModalByUrl(item.link)) : redirectdRef.current.redirect('' + item.link);
         },
         [onSelect, setIsOpen, resolveContent]
     );
@@ -150,44 +151,51 @@ const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveCont
     const redirectdRef = useRef();
     const handlePressMenu = useCallback(
         (item) => (event) => {
-          FeedbackHaptics('Medium');
-          setBottomSheetData(false);
-          if (onSelect) {
-            onSelect(item, event);
-            return;
-          }
-          if (item?.target === 'modal') {
-            if (item?.content) {
-              openModalWithContent({
-                title: item.title,
-                content: resolveContent ? resolveContent(item.content, item) : item.content
-
-              });
-            } else {
-              openModalByUrl(item.link);
+            FeedbackHaptics('Medium');
+            setBottomSheetData(false);
+            if (onSelect) {
+                onSelect(item, event);
+                return;
             }
-            return;
-          }
-          redirectdRef.current.redirect('' + item.link);
+            console.log("item", item)
+            if (item?.target === 'modal') {
+                if (item?.content) {
+                    openModalWithContent({
+                        title: item.title,
+                        content: resolveContent ? resolveContent(item.content, item) : item.content
+
+                    });
+                } else {
+                    openModalByUrl(item.link);
+                }
+                return;
+            }
+            if (item?.target === '_blank' || item?.target === 'blank') {
+                const url = sanitazeUrl(item.link);
+                if (!url) return;
+                openExternalLink(url);
+                return;
+            }
+            redirectdRef.current.redirect('' + item.link);
         },
         [onSelect, setBottomSheetData, openModalByUrl, openModalWithContent]
-      );
+    );
 
     const classes = variantClassMap.vertical;
 
     return (
         <View className='w-full mt-0 mb-2'>
-             <Redirect ref={redirectdRef} />
+            <Redirect ref={redirectdRef} />
             {items.map((item, index) => (
                 <View key={item.id} className={' ' + (index != items.length - 1 ? 'py-2 border-b border-border/60  ' : 'py-2 ')}>
                     <DropdownMenuItem
-                    mode="bottomsheet"
-                    key={item.id ?? index}
-                    index={index}
-                    item={item}
-                    handleSelect={handlePressMenu(item)}
-                    classes={classes}
-                />
+                        mode="bottomsheet"
+                        key={item.id ?? index}
+                        index={index}
+                        item={item}
+                        handleSelect={handlePressMenu(item)}
+                        classes={classes}
+                    />
                 </View>
             ))}
         </View>
@@ -211,7 +219,7 @@ function DropdownMenuNative({
     const handlePress = useCallback(() => {
         if (mode != "alert") {
             FeedbackHaptics('Medium')
-            setBottomSheetData({ showClose: false, snapPoints: ['10%', '50%'], content: <MenuBottomSheet  resolveContent={resolveContent} items={items} onSelect={onSelect} setBottomSheetData={setBottomSheetData} /> });
+            setBottomSheetData({ showClose: false, snapPoints: ['10%', '50%'], content: <MenuBottomSheet resolveContent={resolveContent} items={items} onSelect={onSelect} setBottomSheetData={setBottomSheetData} /> });
             Keyboard.dismiss();
         }
         else {
@@ -221,7 +229,7 @@ function DropdownMenuNative({
                     onSelect(item);
                 }
             }));
-            if (cancelable){
+            if (cancelable) {
                 alertOptions.push({
                     text: "Cancel",
                     style: "cancel"
@@ -243,7 +251,7 @@ function DropdownMenuNative({
 
     if (buttonProps) {
         return (
-            <Button {...buttonProps} onPress={handlePress}/>
+            <Button {...buttonProps} onPress={handlePress} />
         );
     }
     return (
