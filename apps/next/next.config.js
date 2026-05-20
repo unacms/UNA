@@ -35,6 +35,19 @@ function copyCustomizationResources() {
 
         console.log(`✓ Customization: ${copiedCount} files copied to public/static/`);
     }
+
+    // Client projects reference /static/* in metadata; copy repo defaults when
+    // customization/resources/web does not supply overrides.
+    const staticDefaults = [
+        { src: path.resolve(__dirname, 'public/manifest.json'), dest: 'manifest.json' },
+        { src: path.resolve(__dirname, 'public/favicon.svg'), dest: 'favicon.svg' },
+    ];
+    staticDefaults.forEach(({ src, dest }) => {
+        const destPath = path.join(staticDest, dest);
+        if (!fs.existsSync(destPath) && fs.existsSync(src)) {
+            fs.copyFileSync(src, destPath);
+        }
+    });
 }
 
 // Вызываем копирование ПЕРЕД импортом конфига

@@ -390,7 +390,7 @@ export const componentsMap = componentsMapDefault;
 
 | Asset Type | Location |
 |------------|----------|
-| Favicon | `apps/next/public/static/favicon.ico` |
+| Favicon | `apps/next/public/static/favicon.svg` (or `.ico` via customization) |
 | Manifest | `apps/next/public/static/manifest.json` |
 | SVG Images | `apps/next/public/svg/local/` |
 | App Icons | `apps/expo/assets/` |
