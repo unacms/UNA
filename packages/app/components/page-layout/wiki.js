@@ -90,16 +90,16 @@ function WikiMenuItem({ title, icon, isActive, iconEnd }) {
         : ' '
 
     return (
-        <Row className="min-h-8 items-center gap-2">
-            <View className={`h-6 w-6 shrink-0 items-center justify-center rounded-full ${iconBackgroundClassName}`}>
+        <Row className="min-h-8 px-2 items-center gap-2">
+            <View className={`h-4 w-4 shrink-0 items-center justify-center rounded-full ${iconBackgroundClassName}`}>
                 {isEmoji(icon) ? (
                     <Text className="text-xs leading-none">{icon}</Text>
                 ) : (
-                    <Icon icon={icon} size={15} className={iconClassName} />
+                    <Icon icon={icon} size={16} className={iconClassName} />
                 )}
             </View>
 
-            <Text className={`min-w-0 flex-1 text-sm leading-snug font-medium ${isActive ? 'text-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>
+            <Text className={` flex-1 text-sm leading-4 font-medium ${isActive ? 'text-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>
                 {title}
             </Text>
 

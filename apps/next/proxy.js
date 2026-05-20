@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 
 export const config = {
-    matcher: ["/((?!sw.js|logo192.png|loader.svg|favicon.ico|_vercel).*)"],
+    matcher: ["/((?!sw.js|logo192.png|loader.svg|favicon.ico|favicon.svg|manifest.json|static/|_vercel).*)"],
     //runtime: 'experimental-edge',
 };
 

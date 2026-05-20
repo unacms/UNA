@@ -177,7 +177,7 @@ export async function generateMetadata(props) {
         description: description,
         manifest: isClientProject ? '/static/manifest.json' : '/manifest.json',
         icons: {
-            icon: isClientProject ? '/static/favicon.ico' : '/favicon.ico',
+            icon: isClientProject ? '/static/favicon.svg' : '/favicon.svg',
         },
         other: {
             'mobile-web-app-capable': 'yes',
