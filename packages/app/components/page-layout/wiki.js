@@ -143,7 +143,8 @@ function ActiveBranchExpander({ items, setExpandedMap }) {
     return null;
 }
 
-function MenuWiki({ setPageData, data, url }) {
+function MenuWiki({ setPageData, block, url }) {
+    const data = block.content[0].data;
     const currentPathComparable = useCurrentPathComparable();
     const initialPathComparable = normalizePathComparable(url);
     const topLevelItems = data?.content?.items || [];
@@ -303,6 +304,7 @@ function PageContentWiki({ data, url }) {
     }, [currentBreakpointName, isWeb, leftPanelProps.defaultSize, centerPanelProps.defaultSize, rightPanelProps.defaultSize])
 
     const centerHtmlContent = pageData?.data?.elements?.cell_center?.[0]?.content?.[0]?.data?.content
+    const leftMenu = pageData?.data?.elements?.cell_left?.[0]
 
     useEffect(() => {
         if (!isWeb) {
@@ -393,7 +395,7 @@ function PageContentWiki({ data, url }) {
                                 )}
                             >
                                 <View className="p-1">
-                                    <MenuWiki setPageData={setPageData} data={data?.elements?.cell_left[0]?.content[0]?.data} url={pageData.url} />
+                                    <MenuWiki setPageData={setPageData} block={leftMenu} url={pageData.url} />
                                 </View>
                             </DropdownPopup>
                         </View>
@@ -458,17 +460,16 @@ function PageContentWiki({ data, url }) {
                 <Panel className={`hidden ${leftBreakpoint}:block ${currentBreakpointName}:w-full`} {...leftPanelProps}>
                     <View className={appSetting('conductor', 'sidebar_container')}>
                         <View className="gap-3">
-                            <BlockWrapper block={{ designbox_id: 11, id: 'wiki-toc', title: 'Pages Menu' }}  >
-                                <MenuWiki setPageData={setPageData} data={data?.elements?.cell_left[0]?.content[0]?.data} url={pageData.url} />
+                            <BlockWrapper block={{ designbox_id: leftMenu.designbox_id, id: 'wiki-toc', title: leftMenu.title }}  >
+                                <MenuWiki setPageData={setPageData} block={leftMenu} url={pageData.url} />
                             </BlockWrapper>
-
                         </View>
                     </View>
                 </Panel>
                 <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
                 <Panel className={`native:w-full ${currentBreakpointName}:w-full`} {...centerPanelProps}>
                     <View ref={centerContentRef} className={`p-4 sm:p-6 xl:p-8 gap-3`}>
-                        <Html data={pageData?.data?.elements?.cell_center[0]?.content[0]?.data?.content} />
+                        <Html data={centerHtmlContent} />
                     </View>
                 </Panel>
                 <PanelHandler gap={`hidden ${rightBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
