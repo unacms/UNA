@@ -220,6 +220,7 @@ export default function MenuAccount({ buttonProps, children }) {
                         target: item.target,
                         content: item.content,
                         icon: item.icon,
+                        className: item.className
                     }
                 })}
                 footer={

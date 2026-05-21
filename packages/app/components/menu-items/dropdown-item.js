@@ -31,7 +31,7 @@ const getIcon = (oItem, iconSize = 20, rowHovered) => {
     }
 };
 
-export default function DropdownMenuItem({ item, index, link, handleSelect, classes, counter, handleCounter, mode }) {
+export default function DropdownMenuItem({ item, index, link, handleSelect, classes, className,  counter, handleCounter, mode }) {
     const key = item.id ?? index;
     const iconSize = menuSettings.icon_size || 16;
     const [rowHovered, setRowHovered] = useState(false);
@@ -64,7 +64,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
     const Wrapper = handleSelect ? Pressable : View;
     const Content = (
         <Wrapper
-            className={`group ${menuSettings[classes?.item || 'item_ver']}${item.selected ? ' bg-primary/10 text-foreground' : ''}`}
+            className={`web:group ${className} ${menuSettings[classes?.item || 'item_ver']}${item.selected ? ' bg-primary/10 text-foreground' : ''}`}
             key={key}
             onPress={(event) => handleSelect(event, item)}
             {...rowHoverProps}

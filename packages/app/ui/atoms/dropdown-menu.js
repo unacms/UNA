@@ -128,15 +128,17 @@ function DropdownMenuPopup({
                 }
             >
                 <View className={menuSettings[classes.container]}>
-                    {items.map((item, index) => (
+                    {items.map((item, index) => {
+                        return (
                         <DropdownMenuItem
                             key={item.id ?? index}
                             index={index}
                             item={item}
                             handleSelect={handleSelect}
-                            classes={classes}
+                            classes={`${classes}`}
+                            className = {`${item.className}`}
                         />
-                    ))}
+                    )})}
                 </View>
                 {footer}
             </DropdownPopup>
@@ -188,14 +190,7 @@ const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveCont
             <Redirect ref={redirectdRef} />
             {items.map((item, index) => (
                 <View key={item.id} className={' ' + (index != items.length - 1 ? 'py-2 border-b border-border/60  ' : 'py-2 ')}>
-                    <DropdownMenuItem
-                        mode="bottomsheet"
-                        key={item.id ?? index}
-                        index={index}
-                        item={item}
-                        handleSelect={handlePressMenu(item)}
-                        classes={classes}
-                    />
+                   
                 </View>
             ))}
         </View>

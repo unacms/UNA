@@ -42,22 +42,13 @@ const BackButton = ({ isPerson }) => {
     const { currentUser } = useCurrentUser()
     const currentTab = '/' + (pathname?.split('/')[1] || 'tab0')
     const hasTabBack = canGoBackInTab(currentTab)
-
+    
     const handleBackPress = () => {
         navigateBackInTab(router, currentTab, currentUser)
     }
 
-    return isPerson && !hasTabBack ? (
-        <Link href={appSetting('cover', 'back_button_url_for_profile')}>
-            <Button
-                variant="default"
-                size="sm"
-                rounded={true}
-                startDecorator="ArrowLeft"
-            />
-        </Link>
-    ) : (
-        <Button
+    if (hasTabBack){
+        return <Button
             variant="default"
             size="sm"
             rounded={true}
@@ -66,7 +57,7 @@ const BackButton = ({ isPerson }) => {
                 handleBackPress()
             }}
         />
-    )
+    }
 }
 
 function GetCoverBackButton({ isPerson }) {
