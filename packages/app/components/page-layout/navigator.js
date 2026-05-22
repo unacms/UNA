@@ -1,64 +1,83 @@
 import { DataByName } from 'app/components/block'
 import { Conductor } from 'app/ui/molecules/conductor';
-import { useMemo} from 'react';
+import { useMemo } from 'react';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { useEffect } from 'react';
-import { appSetting, clearNotif } from 'app/lib/util';
+import { appSetting, clearNotif, cloneObject } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user'
 
-function getMenu(props, layout) {
-    let menu = Object.assign({}, props.data.menu);;
-    let categories = DataByName(props.data, props.blocks?.categories);
-    let menuItems = [];
-    if (categories && layout == 'hor'){
-        menuItems  = categories?.content[0]?.data
-            .map((obj, index) => {
-            const key = Object.keys(obj)[0];
-            return {
-                id: index + menu.items.length,
-                name: obj.url,
-                title: obj.name + ' (' + obj.num + ')',
-                link: obj.url.replace('/',''),
-                icon: obj.icon,
-                ident: 1,
-                hideInTop: false
-            }
-        }); 
-        menu.items = [...menu.items, ...menuItems];
+
+function removeBlockFromData(dataOrig, blockName) {
+    if (!blockName || !dataOrig?.elements) return dataOrig;
+    const data = cloneObject(dataOrig);
+    const name = blockName.toString();
+    for (const cell of Object.values(data.elements)) {
+        if (!cell || typeof cell !== 'object') continue;
+        for (const key in cell) {
+            if (cell[key]?.source === name) delete cell[key];
+        }
     }
-    return menu;
+    return data;
+}
+
+function getMenuAndData(props, layout) {
+    let menu = Object.assign({}, props.data.menu);
+    if (!menu.items) menu.items = [];
+    let data = props.data;
+    const categoriesConfig = props.blocks?.categories;
+    const categories = DataByName(props.data, categoriesConfig);
+    if (categoriesConfig && categories && layout === 'hor') {
+        // 1. строим menu items из categories
+        const menuItems = categories?.content[0]?.data?.map((obj, index) => ({
+            id: index + menu.items.length,
+            name: obj.url,
+            title: obj.name + ' (' + obj.num + ')',
+            link: obj.url.replace('/', ''),
+            icon: obj.icon,
+            ident: 1,
+            hideInTop: false,
+        })) ?? [];
+        menu.items = [...menu.items, ...menuItems];
+        // 2. убираем блок из data
+        data = removeBlockFromData(props.data, categoriesConfig.name);
+    }
+    return { menu, data };
 }
 
 export default function PageLayout(props) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const { layoutName: layout } = useLayoutSettings();
-    const leftSideBar = layout != 'hor' ? false : true
-    let menu = useMemo(() => getMenu(props, layout), [leftSideBar]);
-    if (!menu.items)
-        menu = {items: []}
+    const { menu: menuData, data: pageData } = useMemo(
+        () => getMenuAndData(props, layout),
+        [props.data, props.blocks, layout]
+    );
+
+    let menu = menuData;
+    if (!menu?.items) menu = { items: [] };
+
     const isNamePresent = menu?.items?.some(item => item.name === props.data.uri);
-    if (!isNamePresent){
-        menu.items.push({id:-1, name: props.uri, title:'', link: props.data.url, hideInTop: true});
+    if (!isNamePresent) {
+        menu.items.push({ id: -1, name: props.uri, title: '', link: props.data.url, hideInTop: true });
     }
 
     useEffect(() => {
-        if (appSetting('notifications', 'url') === '/' + props?.data?.url){
+        if (appSetting('notifications', 'url') === '/' + props?.data?.url) {
             clearNotif();
             setCurrentUser({
                 notifications: 0,
-                notificationsTs:Date.now()
+                notificationsTs: Date.now()
             });
         }
 
     }, [])
 
     return (
-        <Conductor 
+        <Conductor
             layoutName={props.layoutName}
-            isHideDefaultHeader={false} 
-            menu={menu} 
+            isHideDefaultHeader={false}
+            menu={menu}
             ts={props.data.ts}
-            data={props.data} 
+            data={pageData}
             blocks={props.blocks}
             useSectionAsMenu={false}
         />
