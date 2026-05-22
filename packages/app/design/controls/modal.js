@@ -195,8 +195,8 @@ export function Modal({
                     className={`pointerEvents cursor-default flex justify-end w-full h-full ${modalSettings.fog}`}
                     onPress={handleNativeOuterPress}
                 >
-                    <View style={{ paddingTop: insets?.top, paddingBottom: insets?.bottom }} className={`flex-row ${autoHeight ? 'items-center ' : ''} justify-center  left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto h-full h-modal ${sClassPosition}`}>
-                        <View className={`w-full ${maxWidth}  ${modalSettings.container}  ${autoHeight ? 'rounded-2xl ' : ''}`}>
+                    <View style={{ paddingTop: insets?.top, paddingBottom: insets?.bottom }} className={`flex-row ${autoHeight ? ' items-center  ' : sClassPosition} justify-center   left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto h-full h-modal`}>
+                        <View className={`w-full  ${maxWidth}  ${modalSettings.container}  ${autoHeight ? 'rounded-2xl ' : ''}`}>
                             <View className={`${autoHeight ? '' : 'h-full'} ${modalSettings.content}`}>
                                 <ModalHeader
                                     title={title}

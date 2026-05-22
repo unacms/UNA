@@ -189,8 +189,15 @@ const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveCont
         <View className='w-full mt-0 mb-2'>
             <Redirect ref={redirectdRef} />
             {items.map((item, index) => (
-                <View key={item.id} className={' ' + (index != items.length - 1 ? 'py-2 border-b border-border/60  ' : 'py-2 ')}>
-                   
+                <View key={item.id} className={item.className +' '+ (index != items.length - 1 ? 'py-2 border-b border-border/60  ' : 'py-2 ')}>
+                    <DropdownMenuItem
+                        mode="bottomsheet"
+                        key={item.id ?? index}
+                        index={index}
+                        item={item}
+                        handleSelect={handlePressMenu(item)}
+                        classes={classes}
+                    />
                 </View>
             ))}
         </View>

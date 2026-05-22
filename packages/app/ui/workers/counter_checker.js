@@ -10,14 +10,13 @@ export default function CounterChecker({ }) {
     const isActive = (!!currentUser &&currentUser?.membership != 2) && isAppActive;
     const prevNotRef = useRef(currentUser?.notifications ?? 0);
     const playSound = useSound('notif');
-    console.log('CounterChecker', isActive, currentUser);
     const { daemonData, error } = useDaemon("/api.php?r=system/profile_info/TemplServiceProfiles", true, isActive, 60000);
 
     useEffect(() => {
-        if (currentUser && daemonData != null && currentUser?.membership != 2) {
-            setCurrentUser(daemonData);
-        }
-    }, [daemonData, currentUser?.id]);
+        if (!currentUser?.id || !daemonData || currentUser.membership === 2) return;
+        if (daemonData.id != null && daemonData.id !== currentUser.id) return;
+        setCurrentUser(daemonData);
+      }, [daemonData, currentUser?.id]);
 
 
     useEffect(() => {
