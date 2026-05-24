@@ -15,7 +15,7 @@ export const settingsTabs = {
 
         // Header item base (shared)
         'u-controls-tabs-header-item':
-            'inline-flex flex-auto justify-center items-center whitespace-nowrap font-medium truncate web:disabled:pointer-events-none web:disabled:opacity-50 ',
+            'inline-flex flex-auto justify-center items-center whitespace-nowrap font-medium truncate web:cursor-pointer web:disabled:pointer-events-none web:disabled:opacity-50 ',
 
         // Atoms TabsTrigger: static active surface (no animated pill)
         'u-controls-tabs-header-item-active':
