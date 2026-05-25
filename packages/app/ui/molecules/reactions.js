@@ -26,6 +26,8 @@ import { useWindowSize } from 'app/context/measure';
 import { RemoveScroll } from 'react-remove-scroll';
 import { useSound } from 'app/lib/hooks/useSound';
 
+const bWeb = Platform.OS === 'web';
+
 const getName = (sType, sSystem, sObjectId, sName) => {
     let aName = [sType, sSystem.replace(/_/g, '-'), sObjectId];
     if (sName)
@@ -35,7 +37,7 @@ const getName = (sType, sSystem, sObjectId, sName) => {
 };
 
 const getIconAlias = (oParams, oAliases, sName) => {
-    const sKey = Platform.OS === 'web' ? 'web' : 'native';
+    const sKey = bWeb ? 'web' : 'native';
     const sType = sName != 'default' ? oParams['icon_type_' + sKey] : 'svg';
     return oAliases[sKey][sName] && oAliases[sKey][sName][sType];
 };
@@ -268,7 +270,7 @@ const getCounterCompound = (t, getIconAlias, handleGetPerformedByCpd, actionsDat
 
 export default function ElementReactions(oProps) {
     const { t } = useTranslation();
-    const bWeb = Platform.OS === 'web';
+    
     const oSettings = appSetting('social_actions', 'reaction');
 
     const oParams = { ...oSettings, ...oProps.params };
@@ -408,41 +410,36 @@ export default function ElementReactions(oProps) {
                     id: oItem.id ? oItem.id : oItem.name,
                     name: oItem.name,
                     icon: _getIconAlias(oItem.name),
-                    class_item: ' transition active:scale-150web:duration-300 active:-translate-y-4  ',
+                    class_item: ' transition web:active:scale-150 web:duration-300 web:active:-translate-y-4  ',
                     class_item_icon: ' text-3xl ',
                     tooltip: oParams.t ? oParams.t[oItem.name] : '', //TODO: oParams.t[oItem.name] for Roman use provided Tooltips in popup menus
                 };
             });
-            if (false) {
-                sActionButton = oItems.length > 1 ? (
-                    <Pressable key="action" onPress={(event) => { event.preventDefault() }}>
-                        <DropdownMenu variant="horizontal" items={aItems} onSelect={(oItem, event) => { _handleDo(oItem.name, event) }}>
-                            <ButtonAction variant={bShowCombined ? 'group-item' : false} startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} disabled={bShowActionDisabled} {...oButtonProps} />
-                        </DropdownMenu>
-                    </Pressable>
-                ) : (
-                    <ButtonAction key="action" variant={bShowCombined ? 'group-item' : false} startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={(event) => { _handleDo(aItems[0].name, event) }} disabled={bShowActionDisabled} {...oButtonProps} />
-                );
-            }
-            else {
+            const aReactionItems = oItems.map(oItem => {
+                return {
+                    id: oItem.id,
+                    name: oItem.name,
+                    icon: _getIconAlias(oItem.name),
+                    title: t('rvote_' + oItem.name + '_title')
+                };
+            });
 
-                const aReactionItems = oItems.map(oItem => {
-                    return {
-                        id: oItem.id,
-                        name: oItem.name,
-                        icon: _getIconAlias(oItem.name),
-                        title: t('rvote_' + oItem.name + '_title')
-                    };
-                });
-
-                sActionButton = sActionButton = oItems.length > 1 ? (
-                    <ReactionPopover key="action" type="modal" showPopupType="onPress" items={aReactionItems} onTap={(item) => { _handleDo(item.name) }} disabled={bShowActionDisabled} asChild={true} childRefProp="forwardedRef">
-                        <ButtonAction startDecorator={_getIconAlias(sReaction)} disabled={bShowActionDisabled} title={bShowActionLabel ? sTitle : false} {...oButtonProps} />
-                    </ReactionPopover>
-                ) : (
-                    <ButtonAction key="action" startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} onPress={() => { _handleDo(aItems[0].name) }} disabled={bShowActionDisabled} {...oButtonProps} />
-                );
-            }
+            sActionButton = sActionButton = oItems.length > 1 ? (
+                <ReactionPopover 
+                    key="action" 
+                    type="modal" 
+                    showPopupType="onPress" 
+                    items={aReactionItems} 
+                    onTap={(item) => { _handleDo(item.name) }} 
+                    disabled={bShowActionDisabled} 
+                    asChild={!bWeb} 
+                    childRefProp="forwardedRef"
+                >
+                    <ButtonAction startDecorator={_getIconAlias(sReaction)} disabled={bShowActionDisabled} title={bShowActionLabel ? sTitle : false} {...oButtonProps} />
+                </ReactionPopover>
+            ) : (
+                <ButtonAction key="action" startDecorator={_getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} onPress={() => { _handleDo(aItems[0].name) }} disabled={bShowActionDisabled} {...oButtonProps} />
+            );
         }
     }
 
@@ -516,7 +513,7 @@ const ReactionPopover = ({
     asChild = false,
     childRefProp = 'ref',
 }) => {
-    const isWeb = Platform.OS === 'web';
+  
     const { width: windowWidth, height: windowHeight } = useWindowSize();
     const [modalVisible, setModalVisible] = useState(false);
     const [buttonPos, setButtonPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
@@ -529,7 +526,7 @@ const ReactionPopover = ({
             const popupHeight = 60;
             const popoverWidth = 300;
             const padding = 10;
-            let actY = isWeb ? y : y - 20;
+            let actY = bWeb ? y : y - 20;
             if (actY + popupHeight >= windowHeight - 64) {
                 actY = y - popupHeight - height
             }
@@ -577,7 +574,7 @@ const ReactionPopover = ({
                     key={item.id}
                     onPress={() => handleSelect(item)}
                 >
-                    {isWeb ? <Tooltip content={item.title}>{cnt}</Tooltip> : cnt}
+                    {bWeb ? <Tooltip content={item.title}>{cnt}</Tooltip> : cnt}
                 </TouchableOpacity>
             )
         })}
@@ -591,7 +588,7 @@ const ReactionPopover = ({
     >
         <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
             <View className="flex-1 bg-transparent">
-                {isWeb ? <RemoveScroll>{ReactionContent}</RemoveScroll> : ReactionContent}
+                {bWeb ? <RemoveScroll>{ReactionContent}</RemoveScroll> : ReactionContent}
             </View>
         </TouchableWithoutFeedback>
     </ModalBase> : null
