@@ -64,6 +64,7 @@ function GetCoverBackButton({ isPerson }) {
     const isWeb = Platform.OS === 'web'
     const isDesktop = useIsDesktop()
     const buttonVariant = isDesktop ? 'glass' : 'glass'
+    if (isWeb) return <></>
     if (!isWeb) return <BackButton isPerson={isPerson} />
     if (history.length > 2) {
         return (
@@ -591,7 +592,7 @@ export default function Cover({
                                 </View>
                             </View>
                         )}
-                        {(isDesktop)  && <View className="gap-4 flex-row justify-end ml-auto">
+                        {(isDesktop)  && <View className="gap-2 flex-row justify-end ml-auto">
                             <CoverMenu
                                 {...data.actions_menu}
                                 uri={uri}
