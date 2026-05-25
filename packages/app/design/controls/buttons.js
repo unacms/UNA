@@ -226,7 +226,7 @@ const ButtonContent = React.memo(({
     return (
         <MotionView
 
-            className={fullWidth ? 'w-full' : 'self-start'}
+            className={fullWidth ? 'w-full' : ''}
             animate={{ scale: active ? BtnCls.motion.scale : 1 }}
             transition={springTransition}
 

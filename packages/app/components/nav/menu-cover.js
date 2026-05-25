@@ -98,7 +98,7 @@ export function CoverMenu(props) {
                 button_border_shape: 'capsule',
                 button_size: size,
                 button_full_width: props?.params?.button_full_width ?? false,
-                className: 'flex-wrap',
+                className: 'flex-wrap gap-x-2',
                 isFixedCount: true,
             }}
         /></View>
