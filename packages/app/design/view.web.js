@@ -80,6 +80,12 @@ const normalizeWebStyle = (style) => {
     return Object.assign({}, ...style.filter(Boolean))
 }
 
+const isEditableKeyTarget = (target) => {
+    if (!target || typeof target.closest !== 'function') return false
+    return !!target.closest(
+        'input, textarea, select, [contenteditable="true"], [contenteditable=""]'
+    )
+}
 
 const sanitizeWebProps = (props) => {
     const {
@@ -159,6 +165,7 @@ const sanitizeWebProps = (props) => {
         domProps.onKeyDown = (event) => {
             onKeyDown?.(event)
             if (disabled || event.defaultPrevented) return
+            if (isEditableKeyTarget(event.target)) return
             if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault()
                 onPress(event)

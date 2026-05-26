@@ -3,7 +3,7 @@ import { Pressable } from 'app/design/view'
 import { useRouter } from 'app/lib/hooks/router'
 import { useCallback, useMemo } from 'react';
 import { appSetting, cn, sanitazeUrl } from 'app/lib/util'
-
+import emitter from 'app/context/emitter';
 
 // Variants and sizes from theme
 const ThemeLinkSizes = appSetting('theme', 'link_sizes');
@@ -40,9 +40,11 @@ export default function ElementLink({
             router.push(href);
             event?.preventDefault?.();
         }
+        emitter.emit('link', { action: 'pressed' });
     }, [href, router, onPress]);
 
     const handleLinkClick = useCallback((event) => {  
+        emitter.emit('link', { action: 'pressed' });
         if (onClick) onClick();
     }, [onClick, target, href]);
 
@@ -84,8 +86,7 @@ export default function ElementLink({
                 href={href}
                 className={className}
                 prefetch={isPrefetch}
-               
-              
+                onClick={handleLinkClick}
             >
                 {children}
             </Link>

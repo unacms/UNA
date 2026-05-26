@@ -44,6 +44,7 @@ import { ReputationSummary, ReputationWidget, ReputationLeaderboard, ReputationL
 import SearchSections from './search_sections';
 import StripeConnect from './stripe_connect';
 import Bundles from './bundles';
+import Logout from './logout';
 
 export const componentsMapDefault = {
     messenger_main_page: Messenger,
@@ -68,6 +69,7 @@ export const componentsMapDefault = {
     map: Map,
     menu: Menu,
     deploy: Deploy,
+    logout: Logout,
     calendar: Calendar,
     comments: Comments,
     form: Form,

@@ -21,16 +21,30 @@ import { getComponent } from 'app/components/registry';
  * 
  */
 
-export function DisplayNameLink({ title, url, href, fontSize, actions, inheritColor, inheritTextSize, textClassName }) {
+export function DisplayNameLink({ 
+    title, 
+    url, 
+    href, 
+    fontSize, 
+    actions, 
+    inheritColor, 
+    inheritTextSize, 
+    textClassName,
+    link_variant,
+    link_className,
+    link_emulate,
+    link_haptics,
+    link_href,
+}) {
     const ProfileLink = getComponent('molecule', 'profile_link')
-    return <ProfileLink
-        title={title}
-        url={url}
-        href={href}
-        fontSize={fontSize}
-        actions={actions}
-        options={{ inheritColor, inheritTextSize, textClassName }}
-    />
+    const result = ProfileLink({ title, url, href, fontSize, actions, options: { inheritColor, inheritTextSize, textClassName } })
+    const link_content = Array.isArray(result) ? result[0] : result;
+    const add_content = Array.isArray(result) ? result[1] : null;
+
+    const linkCtr = link_href? <Link variant={link_variant} className={link_className} emulate={link_emulate} haptics={link_haptics} href={link_href}>{link_content}</Link> : link_content;
+    const addCtr = add_content ? add_content : null;
+
+    return addCtr ? <Row className="items-center gap-1">{linkCtr}{addCtr}</Row> : linkCtr;
 }
 
 function DisplayNameText({ title, fontSize }) {
@@ -92,14 +106,19 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
 
     const nameLink = bShowLinks ? (
         oProps.url != 'javascript:' && oProps.url != '/javascript:' ? (
-            <Link variant="default" className="flex-row items-center" emulate={emulate} haptics="Select" href={oProps.url}>
+            
                 <DisplayNameLink
                     title={oProps.display_name}
                     url={oProps.url}
                     fontSize={sSizeFont}
                     href={oProps.href}
+                    link_variant="default" 
+                    link_className="flex-row items-center" 
+                    link_emulate={emulate} 
+                    link_haptics="Select" 
+                    link_href={oProps.url}
                 />
-            </Link>) : <DisplayNameLink
+            ) : <DisplayNameLink
             title={oProps.display_name}
             url={oProps.url}
             fontSize={sSizeFont}
