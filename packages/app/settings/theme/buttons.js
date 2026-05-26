@@ -72,12 +72,12 @@ export const settingsButtons = {
         default:{
             container:{
                 base:'backdrop-blur  ',
-                default:' bg-popover/60 border border-border/60 shadow-sm dark:shadow-sm-deep  ',
-                active:' bg-popover/40 shadow-xs dark:shadow-xs-deep border-border/60 border border-border/60 dark:bg-border/40 ',
+                default:' bg-popover/60 shadow-btn-outline dark:shadow-btn-outline-deep  ',
+                active:' bg-popover/40 shadow-btn-outline dark:shadow-btn-outline-deep ',
                 pressed:'bg-popover/40 ',
-                hovered:' bg-popover/80 shadow border border-border/60 shadow dark:shadow-md-deep  ',
-                focused:' bg-popover/80 shadow-sm dark:shadow-sm-deep border-border/60 dark:border-black/60 ',
-                disabled:' bg-popover/60 dark:bg-border/60 shadow-sm dark:shadow-sm-deep border-border/60 dark:border-black/40 opacity-50 ',
+                hovered:' bg-popover/80 shadow-btn-outline dark:shadow-btn-outline-deep ',
+                focused:' bg-popover/80 shadow-btn-outline dark:shadow-btn-outline-deep ',
+                disabled:' bg-popover/60 dark:bg-border/60 shadow-btn-outline dark:shadow-btn-outline-deep opacity-50 ',
 
             },
             text:{
@@ -455,7 +455,7 @@ export const settingsButtons = {
             glass: {
                 container: {
                     base: 'web:backdrop-blur-md shadow-btn-glass dark:shadow-btn-glass-deep',
-                    default: ' bg-card/20 ',
+                    default: ' bg-card/60 ',
                     hovered: ' bg-muted/60 ',
                     focused: ' bg-muted/60',
                     pressed:  'bg-muted/60 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',

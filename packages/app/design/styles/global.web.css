@@ -1,9 +1,9 @@
 /* Global outline color only (no width). Components control size/offset. */
 *:focus-visible {
     outline-color: rgb(var(--ring) / 0.8);
-    outline-style: auto;
+    outline-style: auto;    
     outline-offset: 2px;
-    outline-width: 2px;
+    outline-width: 3px;
 }
 
 select {
@@ -71,11 +71,11 @@ select {
 }
 
 .u-link-ghost:hover::after {
-    background-color: rgb(var(--muted) / 0.6);
+    background-color: rgb(var(--muted) / 0.8);
 }
 
 .u-link-ghost:focus-visible::after {
-    background-color: rgb(var(--muted) / 0.6);
+    background-color: rgb(var(--muted) / 0.8);
 }
 
 .u-link-ghost:active::after {
@@ -87,7 +87,7 @@ select {
  * Keeps the same pseudo-element shape as regular ghost links.
  */
 .u-link-ghost-active::after {
-    background-color: rgb(var(--accent) / 0.6);
+    background-color: rgb(var(--accent) / 0.8);
 }
 
 .u-link-ghost-active:hover::after {
@@ -95,7 +95,7 @@ select {
 }
 
 .u-link-ghost-active:focus-visible::after {
-    background-color: rgb(var(--accent) / 0.6);
+    background-color: rgb(var(--accent) / 0.8);
 }
 
 .u-link-ghost-active:active::after {
@@ -294,8 +294,8 @@ select {
  * border-radius / corner-shape the element already carries.
  */
 .u-neo-btn-ring:focus-visible {
-    outline: 2px solid rgb(var(--ring) / 0.8);
-    outline-offset: 1px;
+    outline: 3px solid rgb(var(--ring) / 0.8);
+    outline-offset: 2px;
 }
 
 .u-neo-btn-link:focus-visible {
@@ -303,8 +303,8 @@ select {
 }
 
 .u-neo-btn-link:focus-visible .u-neo-btn-ring {
-    outline: 2px solid rgb(var(--ring) / 0.8);
-    outline-offset: 1px;
+    outline: 3px solid rgb(var(--ring) / 0.8);
+    outline-offset: 2px;
 }
 
 .u-neo-btn-ring-never:focus-visible {

@@ -156,10 +156,10 @@
         --neo-radius-4xl: 2rem;
         --neo-radius-full: 9999px;
 
-        --neo-shadow-card-outline: inset 0 0 0 1px rgb(255 255 255 / 0.5), inset 0 1px 0 0 rgb(255 255 255 / 0.8), 0 0 0 1px rgb(0 0 0 / 0.025), 0 2px 4px -1px rgb(0 0 0 / 0.05), 0 8px 16px -4px rgb(0 0 0 / 0.05);
-        --neo-shadow-card-outline-deep: inset 0 0 0 1px rgb(255 255 255 / 0.025), inset 0 1px 0 0 rgb(255 255 255 / 0.025), 0 0 0 1px rgb(0 0 0 / 0.50), 0 4px 8px -2px rgb(0 0 0 / 0.5);
-        --neo-shadow-btn-outline: 0 0 0 1px rgb(0 0 0 / 0.10);
-        --neo-shadow-btn-outline-deep: 0 0 0 1px rgb(255 255 255 / 0.10);
+        --neo-shadow-card-outline: inset 0 0 0 1px rgb(255 255 255 / 0.5), inset 0 1px 0 0 rgb(255 255 255 / 0.8), 0 0 0 1px rgb(0 0 0 / 0.025), 0 2px 4px -1px rgb(0 0 0 / 0.05), 0 8px 16px -4px rgb(0 0 0 / 0.025);
+        --neo-shadow-card-outline-deep: inset 0 0 0 1px rgb(255 255 255 / 0.025), inset 0 1px 0 0 rgb(255 255 255 / 0.025), 0 0 0 1px rgb(0 0 0 / 0.5), 0 4px 8px -2px rgb(0 0 0 / 0.25);
+        --neo-shadow-btn-outline: inset 0 0 0 1px rgb(255 255 255 / 0.5), inset 0 1px 0 0 rgb(255 255 255 / 1), 0 1px 0 0 rgb(0 0 0 / 0.05), 0 0 0 1px rgb(0 0 0 / 0.05),  0 4px 16px -4px rgb(0 0 0 / 0.1);
+        --neo-shadow-btn-outline-deep: inset 0 0 0 1px rgb(255 255 255 / 0.025), inset 0 1px 0 0 rgb(255 255 255 / 0.05), 0 1px 0 0 rgb(0 0 0 / 0.5), 0 0 0 1px rgb(0 0 0 / 0.25), 0 4px 16px -4px rgb(0 0 0 / 0.25);
         --neo-shadow-btn-glass: inset 0 0 0 1px rgb(255 255 255 / 0.30), inset 0 1px 0 0 rgb(255 255 255 / 0.40), 0 0 0 1px rgb(0 0 0 / 0.05), 0 4px 8px -2px rgb(0 0 0 / 0.06), 0 16px 32px -8px rgb(0 0 0 / 0.10);
         --neo-shadow-btn-glass-deep: inset 0 0 0 1px rgb(255 255 255 / 0.06), inset 0 1px 0 0 rgb(255 255 255 / 0.10), 0 0 0 1px rgb(0 0 0 / 0.40), 0 4px 8px -2px rgb(0 0 0 / 0.30), 0 16px 32px -8px rgb(0 0 0 / 0.50);
         --neo-shadow-btn-glass-pressed: inset 0 0 0 1px rgb(255 255 255 / 0.30), inset 0 1px 0 0 rgb(255 255 255 / 0.40), 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 4px -1px rgb(0 0 0 / 0.06);
