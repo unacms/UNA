@@ -39,27 +39,20 @@ export default function ({ buttonProps, children, tooltip, fullWidth, uri }) {
         )
     }, [notifCount, notificationHeight])
 
-    const isNeoButton = buttonProps?.neoButton === true;
-    const defaultButtonProps = isNeoButton ? {
+    const defaultButtonProps = {
         style: isDesktop ? 'glass' : 'borderless',
         tooltip: tooltip || 'Notifications',
         controlSize: 'regular',
         borderShape: 'circle',
         image: 'Bell',
         accessibilityLabel: 'Notifications',
-    } : {
-        variant: isDesktop ? 'secondary' : 'text',
-        tooltip: tooltip || 'Notifications',
-        rounded: true,
-        startDecorator: 'Bell',
-        size: isDesktop ? 'base' : 'base',
     }
 
     buttonProps = { ...defaultButtonProps, ...(buttonProps || {}) }
 
     buttonProps.addon = { variant: 'primary', text: notifCount, hideZero: true }
-    const { neoButton, ...renderButtonProps } = buttonProps;
-    const ButtonComponent = neoButton ? NeoButton : Button;
+    const { neoButton: _neoButton, ...renderButtonProps } = buttonProps;
+    const ButtonComponent = NeoButton;
 
     const handleNotificationsToggle = async (bOpen) => {
         clearNotif()
@@ -71,11 +64,11 @@ export default function ({ buttonProps, children, tooltip, fullWidth, uri }) {
     }
 
     const dropdown = (
-        appSetting('notifications', 'url') === '/' + uri ? <ButtonComponent {...renderButtonProps} {...(neoButton ? { selected: true } : { pressed: true })} /> : <DropdownPopup
+        appSetting('notifications', 'url') === '/' + uri ? <ButtonComponent {...renderButtonProps} selected /> : <DropdownPopup
             open={ntfsOpen}
             minPopupWidth={360}
             onOpenChange={handleNotificationsToggle}
-            buttonProps={children ? undefined : buttonProps}
+            buttonProps={children ? undefined : renderButtonProps}
             trigger={children ? children : undefined}
         >
             {ntfsOpen && (

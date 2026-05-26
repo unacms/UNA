@@ -725,7 +725,7 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
                             </Row>
                             <Text className=' text-base overflow-hidden text-popover-foreground  text-sm' numberOfLines={3}>{formData.parent_id > 0 ? formData.text : ''}</Text>
                         </View>
-                        <View className=" -right-1.5 -top-1">
+                        <View className=" -right-1 -top-1">
                             <Button align="start" rounded startDecorator="X" size="xs" variant="text" onPress={() => handleCancel()} />
                         </View>
                     </Row>

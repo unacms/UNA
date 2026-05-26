@@ -99,10 +99,10 @@ export default function Tooltip({
                         <View
                             className={cn(
                                 'absolute w-3 h-3 bg-foreground rotate-45',
-                                side === 'bottom' && '-top-1.5 self-center',
-                                side === 'top' && '-bottom-1.5 self-center',
-                                side === 'left' && '-right-1.5 self-center',
-                                side === 'right' && '-left-1.5 self-center',
+                                side === 'bottom' && '-top-1 self-center',
+                                side === 'top' && '-bottom-1 self-center',
+                                side === 'left' && '-right-1 self-center',
+                                side === 'right' && '-left-1 self-center',
                                 arrowClassName
                             )}
                         />

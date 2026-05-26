@@ -2,7 +2,7 @@
 
 export const settingsInputs = {
     dropdown: {
-        cnt: ' rounded-xl overflow-hidden shadow-2xl dark:shadow-2xl-deep p-2 bg-popover web:bg-popover/90 backdrop-blur-xl z-50  ',
+        cnt: ' rounded-xl overflow-hidden shadow-2xl dark:shadow-2xl-deep p-2 bg-card/60 shadow-card-outline dark:shadow-card-outline-deep backdrop-blur-xl z-50  ',
     },
     checkbox_set: {
         container: ' gap-x-2 rounded-xl border border-border/60 bg-input p-1',
@@ -35,8 +35,8 @@ export const settingsInputs = {
             full: 'rounded-full',
         },
         size:{
-            default: 'px-3  leading-5 min-h-12',
-            small: 'px-2 leading-5 min-h-10',
+            default: 'px-3  leading-5 min-h-11',
+            small: 'px-2 leading-5 min-h-9',
         },
         base: 
         'text-card-foreground placeholder:text-muted-foreground py-2 bg-input/60 shadow-btn-outline dark:shadow-btn-outline-deep rounded-xl flex-auto text-base placeholder-muted-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-card web:focus-visible:border-ring web:overflow-hidden',

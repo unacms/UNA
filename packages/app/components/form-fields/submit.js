@@ -13,6 +13,10 @@ const SIZE_TO_CONTROL = {
     lg: 'large',
 };
 
+/** Full-width in narrow form containers; hug content when the form is wider (matches legacy Button). */
+const RESPONSIVE_SUBMIT_WIDTH = 'w-full @sm/block:w-auto flex-auto web:w-full';
+const RESPONSIVE_SUBMIT_CONTAINER = 'w-full @sm/block:w-auto';
+
 export default function FormFieldSubmit(props) {
     const {
         name,
@@ -89,10 +93,14 @@ export default function FormFieldSubmit(props) {
         'items-center',
     );
 
+    const responsiveButtonClassNames = fullWidth && !icon_only
+        ? { root: RESPONSIVE_SUBMIT_WIDTH, container: RESPONSIVE_SUBMIT_CONTAINER }
+        : undefined;
+
     return (
         <Field {...props}>
             <Row className={rowClassName}>
-                <View className={icon_only ? '' : 'w-full @sm/block:w-auto'}>
+                <View className={icon_only ? '' : RESPONSIVE_SUBMIT_CONTAINER}>
                     <NeoButton
                         label={icon_only ? undefined : value}
                         image={icon}
@@ -100,7 +108,8 @@ export default function FormFieldSubmit(props) {
                         style="glassProminent"
                         controlSize={controlSize}
                         borderShape={borderShape}
-                        width={fullWidth ? 'fill' : 'auto'}
+                        width="auto"
+                        classNames={responsiveButtonClassNames}
                         onPress={handlePress}
                         disabled={isSumbitting || disabled}
                     />
@@ -111,7 +120,8 @@ export default function FormFieldSubmit(props) {
                         style="bordered"
                         controlSize={controlSize}
                         borderShape={borderShape}
-                        width={fullWidth ? 'fill' : 'auto'}
+                        width="auto"
+                        classNames={responsiveButtonClassNames}
                         onPress={handleReset}
                     />
                 )}

@@ -23,11 +23,11 @@ export default function MenuAdd({ buttonProps, children }) {
         return <></>;
     
     const defaultButtonProps = {
-        variant: isDesktop ? 'secondary' : 'text',
-        rounded: 'rounded',
-        startDecorator: 'Plus',
+        style: isDesktop ? 'bordered' : 'borderless',
+        borderShape: 'circle',
+        image: 'Plus',
         tooltip: 'Create',
-        size: isDesktop ? 'base' : 'base',
+        controlSize: 'regular',
     }
 
     buttonProps = { ...defaultButtonProps, ...(buttonProps || {}) };

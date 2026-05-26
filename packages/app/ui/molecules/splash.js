@@ -35,7 +35,7 @@ function PageContent({ data }) {
 
     return (
         <View className="w-full max-w-md ">
-            <View className="sm:py-6 gap-4 sm:gap-6 max-w-md w-full mx-auto">
+            <View className="sm:py-6 gap-4 sm:gap-6 max-w-sm w-full mx-auto">
                 <KbAvoidingView>
                     <BlockByName
                         name={isShowCreateAccount ? "system:login_form" : "system:login_form_only"}

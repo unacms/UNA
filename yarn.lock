@@ -7521,15 +7521,15 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
-lucide-react-native@^0.563.0:
-  version "0.563.0"
-  resolved "https://registry.yarnpkg.com/lucide-react-native/-/lucide-react-native-0.563.0.tgz#7241f52f51b510ec21c74eb9c80760a0a53e08ab"
-  integrity sha512-q4tYoAMorTqv+UXRYc0MyiEAOF+4Bu73zxD63EDrnGCFL+xuj+imBm3E2rIKRmME0heVHlK+98fsi8wbL92LNQ==
+lucide-react-native@1.16.0:
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/lucide-react-native/-/lucide-react-native-1.16.0.tgz#e9eacd020f1841efdb60bc5927a9b34757db4951"
+  integrity sha512-clxA22OvrNUHB2tQQEvURN8KJ5/vbUV/6GSctU1aCoFlJmDwNrdo8xxNTG535tu7iOATZCth6R2AW1kbva+g6A==
 
-lucide-react@^0.525.0:
-  version "0.525.0"
-  resolved "https://registry.yarnpkg.com/lucide-react/-/lucide-react-0.525.0.tgz#5f7bcecd65e4f9b2b5b6b5d295e3376df032d5e3"
-  integrity sha512-Tm1txJ2OkymCGkvwoHt33Y2JpN5xucVq1slHcgE6Lk0WjDfjgKWor5CdVER8U6DvcfMwh4M8XxmpTiyzfmfDYQ==
+lucide-react@1.16.0:
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/lucide-react/-/lucide-react-1.16.0.tgz#8c19a757982ed28e28afd0da9a950d3152e4b7e5"
+  integrity sha512-dYwyPzb4MEKpGUmNYk3WKWPnMrHs3FKM+q94kAnJrcDIqqn1hq2xY8scaS2ovsOCM5D51ey2gaRG3PBb1vgoYQ==
 
 magic-string@^0.30.21:
   version "0.30.21"

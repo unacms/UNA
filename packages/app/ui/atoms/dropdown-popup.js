@@ -9,8 +9,12 @@ import { RemoveScroll } from 'react-remove-scroll';
 import { appSetting } from 'app/lib/util';
 import { useIsDesktop, useWindowSize } from 'app/context/measure';
 import emitter from 'app/context/emitter';
-import { Button, ButtonRef, NeoButtonRef } from 'app/design/controls'
+import { ButtonRef, NeoButtonRef } from 'app/design/controls'
+
 const dropdownTheme = appSetting('theme', 'dropdown');
+
+const isLegacyButtonProps = (props) =>
+    props?.legacyButton === true || props?.variant != null;
 
 export default function DropdownPopup({
     buttonProps,
@@ -246,31 +250,46 @@ export default function DropdownPopup({
             </ScrollView>
         </View>
     );
-    const isButton = !!buttonProps
-    const { neoButton, ...resolvedButtonProps } = buttonProps || {};
-    const Cnt = isButton ? (neoButton ? NeoButtonRef : ButtonRef) : Pressable;
+    const openTrigger = () => handleToggle(true);
+    const triggerFocusProps = {
+        onFocus: openOnFocus && !isWeb ? openTrigger : undefined,
+        onFocusCapture: openOnFocus && isWeb ? openTrigger : undefined,
+    };
+
+    const legacyButton = buttonProps && isLegacyButtonProps(buttonProps);
+    const { legacyButton: _legacy, neoButton: _neo, ...neoButtonProps } = buttonProps || {};
 
     return (
         <>
-            <Cnt
-                {...resolvedButtonProps}
-                collapsable={false}
-                ref={buttonRef}
-                onPress={() => handleToggle(true)}
-                onFocus={
-                    openOnFocus && !isWeb
-                        ? () => handleToggle(true)
-                        : undefined
-                }
-                onFocusCapture={
-                    openOnFocus && isWeb
-                        ? () => handleToggle(true)
-                        : undefined
-                }
-                className={isButton ? "" : "rounded-xl web:active:scale-95 web:duration-100"}
-            >
-                {!isButton && trigger}
-            </Cnt>
+            {buttonProps ? (
+                legacyButton ? (
+                    <ButtonRef
+                        {...buttonProps}
+                        collapsable={false}
+                        ref={buttonRef}
+                        onPress={openTrigger}
+                        {...triggerFocusProps}
+                    />
+                ) : (
+                    <NeoButtonRef
+                        {...neoButtonProps}
+                        collapsable={false}
+                        ref={buttonRef}
+                        onPress={openTrigger}
+                        {...triggerFocusProps}
+                    />
+                )
+            ) : (
+                <Pressable
+                    collapsable={false}
+                    ref={buttonRef}
+                    onPress={openTrigger}
+                    {...triggerFocusProps}
+                    className="rounded-xl web:active:scale-95 web:duration-100"
+                >
+                    {trigger}
+                </Pressable>
+            )}
 
             {isModalVisible && (
                 <ModalBase
