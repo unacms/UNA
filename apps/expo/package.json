@@ -61,7 +61,7 @@
     "html-entities": "^2.4.0",
     "i18next": "^23.5.1",
     "jotai": "^2.16.0",
-    "lucide-react-native": "^0.563.0",
+    "lucide-react-native": "1.16.0",
     "onesignal-expo-plugin": "^2.0.4",
     "pako": "^2.1.0",
     "pusher-js": "8.4.0",
