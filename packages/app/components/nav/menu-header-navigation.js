@@ -1,5 +1,4 @@
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
-import { Button } from 'app/design/controls'
 import { menuItemsByName, appSetting } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { useTranslation } from 'react-i18next'
@@ -20,24 +19,25 @@ export default function MenuHeaderNavigation(props) {
     }
 
     const {
-        variant = 'secondary',
         rounded = false,
-        size = 'base',
         startDecorator = 'Menu',
         alt = 'Menu',
-        ...rest
+        tooltip,
     } = props
 
     return (
-        <DropdownMenu mode="popup" items={items} defaultOpen={false}>
-            <Button
-                variant={variant}
-                rounded={rounded}
-                size={size}
-                startDecorator={startDecorator}
-                alt={alt}
-                {...rest}
-            />
-        </DropdownMenu>
+        <DropdownMenu
+            mode="popup"
+            items={items}
+            defaultOpen={false}
+            buttonProps={{
+                image: startDecorator,
+                style: 'borderless',
+                borderShape: rounded ? 'circle' : 'roundedRectangle',
+                controlSize: 'regular',
+                accessibilityLabel: alt,
+                tooltip: tooltip ?? alt,
+            }}
+        />
     )
 }

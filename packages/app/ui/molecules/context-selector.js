@@ -165,11 +165,10 @@ export default function ContextSelector({ data: initialData, url, uri, mode }) {
     const DropDown = (
         <DropdownPopup
             buttonProps={{
-                iconOnly: true,
-                startDecorator: "ChevronsUpDown",
-                variant: "text",
-                size: "base",
-                rounded: true,
+                image: 'ChevronsUpDown',
+                style: 'borderless',
+                controlSize: 'regular',
+                borderShape: 'circle',
             }}
 
             minPopupWidth={360}

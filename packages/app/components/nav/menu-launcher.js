@@ -1,4 +1,3 @@
-import { ButtonRef } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import { appSetting } from 'app/lib/util'
 import { menuItemsByName, menuItemsByNameNew, getDataForMenu, storageSet, storageGet } from 'app/lib/util'
@@ -15,8 +14,6 @@ export default function () {
 
     const { currentUser } = useCurrentUser();
     const { t } = useTranslation();
-    const buttonVariant = isDesktop ? 'secondary' : 'text'
-    const buttonSize = isDesktop ? 'base' : 'base'
 
     const menu_launcher_items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', menuData, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_launcher'), currentUser);
 
@@ -35,11 +32,11 @@ export default function () {
             }))}
             buttonProps={{
                 tooltip: 'All Apps',
-                rounded: true,
-                alt: t('All Apps'),
-                startDecorator: bApps === true ? 'LayoutGrid' : bApps,
-                variant: buttonVariant,
-                size: buttonSize,
+                borderShape: 'circle',
+                accessibilityLabel: t('All Apps'),
+                image: bApps === true ? 'LayoutGrid' : bApps,
+                style: isDesktop ? 'bordered' : 'borderless',
+                controlSize: 'regular',
             }}
         />
     );

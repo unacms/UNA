@@ -1,4 +1,3 @@
-import { NeoButton } from 'app/design/controls'
 import Menu from 'app/components/menu'
 import { useState } from 'react'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
@@ -14,13 +13,12 @@ export function CoverMenuSmall(props) {
                 setNtfsOpen(bOpen)
             }}
             minPopupWidth={320}
-            trigger={<NeoButton
-                key="btn"
-                image="Ellipsis"
-                style="plain"
-                controlSize="regular"
-                borderShape="circle"
-            />}
+            buttonProps={{
+                image: 'Ellipsis',
+                style: 'plain',
+                controlSize: 'regular',
+                borderShape: 'circle',
+            }}
         >
 
             <Menu

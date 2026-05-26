@@ -122,9 +122,11 @@ function DropdownMenuPopup({
                 open={isOpen}
                 onOpenChange={setIsOpen}
                 trigger={
-                    <DropdownMenuOpenContext.Provider value={isOpen}>
-                        <SafeMenuTrigger>{children}</SafeMenuTrigger>
-                    </DropdownMenuOpenContext.Provider>
+                    buttonProps ? undefined : (
+                        <DropdownMenuOpenContext.Provider value={isOpen}>
+                            <SafeMenuTrigger>{children}</SafeMenuTrigger>
+                        </DropdownMenuOpenContext.Provider>
+                    )
                 }
             >
                 <View className={menuSettings[classes.container]}>

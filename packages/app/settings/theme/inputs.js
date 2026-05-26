@@ -2,7 +2,7 @@
 
 export const settingsInputs = {
     dropdown: {
-        cnt: ' rounded-xl overflow-hidden shadow-2xl dark:shadow-2xl-deep p-2 bg-popover web:bg-popover/90 backdrop-blur-xl z-50  ',
+        cnt: ' rounded-xl overflow-hidden shadow-2xl dark:shadow-2xl-deep p-2 bg-card/60 shadow-card-outline dark:shadow-card-outline-deep backdrop-blur-xl z-50  ',
     },
     checkbox_set: {
         container: ' gap-x-2 rounded-xl border border-border/60 bg-input p-1',
