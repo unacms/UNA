@@ -293,7 +293,7 @@ const renderTextNode = (key, content) => {
         return <WebSpan key={key} className="font-main">{content}</WebSpan>
     }
 
-    return <Text key={key}>{content}</Text>
+    return <Text key={key} className="text-card-foreground">{content}</Text>
 }
 
 const VOID_TAGS = new Set([
