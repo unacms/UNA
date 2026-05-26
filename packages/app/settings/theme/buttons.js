@@ -73,9 +73,9 @@ export const settingsButtons = {
             container:{
                 base:'backdrop-blur  ',
                 default:' bg-popover/60 shadow-btn-outline dark:shadow-btn-outline-deep  ',
-                active:' bg-popover/40 shadow-btn-outline dark:shadow-btn-outline-deep ',
-                pressed:'bg-popover/40 ',
-                hovered:' bg-popover/80 shadow-btn-outline dark:shadow-btn-outline-deep ',
+                active:' bg-emerald-500 shadow-btn-outline dark:shadow-btn-outline-deep ',
+                pressed:'bg-red-500 ',
+                hovered:' bg-popover shadow-btn-outline dark:shadow-btn-outline-deep ',
                 focused:' bg-popover/80 shadow-btn-outline dark:shadow-btn-outline-deep ',
                 disabled:' bg-popover/60 dark:bg-border/60 shadow-btn-outline dark:shadow-btn-outline-deep opacity-50 ',
 

@@ -3,13 +3,12 @@ import * as WebBrowser from 'expo-web-browser';
 import { useAuthRequest } from 'expo-auth-session/providers/google';
 import { useAutoDiscovery } from 'expo-auth-session';  // <-- вот здесь
 import { makeRedirectUri, ResponseType } from 'expo-auth-session';
-import { Button, Modal } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import { useRef, useEffect, useState } from 'react';
 import { appSetting } from 'app/lib/util'
 import { useTranslation } from 'react-i18next'
 import { fetcher } from 'app/lib/fetcher';
 import Redirect from 'app/ui/atoms/redirect'
-import { Pressable } from 'app/design/view';
 import { FormError } from 'app/components/form-fields/_field';
 import { View } from 'app/design/view'
 import { useRouter, redirectTo } from 'app/lib/hooks/router'
@@ -85,13 +84,14 @@ export default function AuthGoogle({ }) {
 
         <View className="w-full">
             <Redirect ref={redirectRef} />
-            <Button
+            <NeoButton
                 disabled={!request}
-                title={t("Continue with Google")}
+                label={t("Continue with Google")}
                 onPress={() => promptAsync({ useProxy: true })}
-                fullWidth
-                size="lg"
-                startDecorator="Google"
+                width="fill"
+                controlSize="regular"
+                style="glass"
+                image="Google"
             />
             {error && <FormError errorText={error} />}
         </View>

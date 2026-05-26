@@ -1,17 +1,19 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import Field, { FormError } from './_field';
 import { useController, useFormContext } from 'react-hook-form';
-import { Button, Hidden } from 'app/design/controls';
+import { NeoButton, Hidden } from 'app/design/controls';
 import { View, Row } from 'app/design/view';
-import { Platform } from 'react-native';
 import { appSetting, cn } from 'app/lib/util';
-import { useIsDesktop } from 'app/context/measure';
 import emitter from 'app/context/emitter';
-import { useEffect } from 'react';
-import Loading from 'app/ui/atoms/loading';
+
+const SIZE_TO_CONTROL = {
+    xs: 'mini',
+    sm: 'small',
+    base: 'regular',
+    lg: 'large',
+};
 
 export default function FormFieldSubmit(props) {
-    // Destructure props with default values
     const {
         name,
         value,
@@ -19,10 +21,9 @@ export default function FormFieldSubmit(props) {
         handleSubmit,
         disabled = false,
         icon_only = false,
-        variant = 'primary',
         rounded = false,
         icon,
-        size = 'lg',
+        size = 'base',
         notFullWidth = false,
         saveOnChanges = false,
         hide_errors = true,
@@ -30,15 +31,11 @@ export default function FormFieldSubmit(props) {
 
     const formContext = useFormContext();
     const { formState } = formContext;
-    const isDesktop = useIsDesktop();
     const [isSumbitting, setIsSumbitting] = useState(false);
-    // Initialize controller for form field
     const { field } = useController({ name, rules: {}, defaultValue: value });
 
-    // Get form-specific settings
     const formProps = appSetting('forms', form_name) || {};
 
-    // Memoize handlers to prevent unnecessary re-renders
     const handlePress = useCallback(async () => {
         if (formState.isSubmitting || disabled) return;
         handleSubmit();
@@ -54,14 +51,19 @@ export default function FormFieldSubmit(props) {
         handleSubmit();
     }, [formContext, handleSubmit]);
 
-    // Prepare error display
     const errors = formState.errors;
     const errorKeys = Object.keys(errors);
     const showErrors =
         errorKeys.length > 0 && !hide_errors && !formProps.hide_errors;
 
-    //let fb = formProps.button_full_width || props.button_full_width || !isDesktop
-    const fullWidth = !notFullWidth;// ? false : (formProps.button_full_width || props.button_full_width);
+    const fullWidth = !notFullWidth;
+    const controlSize = SIZE_TO_CONTROL[size] || 'regular';
+    const borderShape = icon_only && rounded
+        ? 'circle'
+        : rounded
+            ? 'capsule'
+            : 'roundedRectangle';
+
     useEffect(() => {
         let timeoutId;
         const subscription = emitter.addListener(`form_${form_name}`, (data) => {
@@ -70,73 +72,49 @@ export default function FormFieldSubmit(props) {
             }
             if (data.action == 'received') {
                 timeoutId = setTimeout(() => {
-					 setIsSumbitting(false);
-				}, 1000);
-               
+                    setIsSumbitting(false);
+                }, 1000);
             }
-        })
+        });
 
         return () => {
             if (timeoutId) clearTimeout(timeoutId);
-            subscription.remove()
-        }
-    }, [])
+            subscription.remove();
+        };
+    }, [form_name]);
 
-   /* if (notFullWidth) {
-        fb = false;
-    }*/
-    // Prepare button properties
-    const buttonProps = {
-        variant,
-        rounded,
-        size,
-        fullWidth: fullWidth
-    };
-
-    const buttonHandlers = Platform.select({
-        web: { onPress: handlePress },
-        default: { onTouchStart: handlePress },
-    });
-
-    const resetHandlers = Platform.select({
-        web: { onPress: handleReset },
-        default: { onTouchStart: handleReset },
-    });
-
-    // Prepare row className
     const rowClassName = cn(
         formProps.button_hide_on_small || props.button_hide_on_small ? 'hidden sm:flex' : '',
         'gap-x-2',
-        '',
         'items-center',
     );
-
-    const serverErrorKeys = errorKeys.filter(
-        key => errors[key]?.type === 'server'
-    );
-
 
     return (
         <Field {...props}>
             <Row className={rowClassName}>
-                <View className={icon_only ? '' : `w-full @sm/block:w-auto`}>
-                    <Button
-                    title={!icon_only ? value : ''}
-                    startDecorator={isSumbitting ? <Loading size="small" color="#fff"/> : icon}
-                    {...buttonProps}
-                    {...buttonHandlers}
-                    disabled={isSumbitting || disabled}
-                />
+                <View className={icon_only ? '' : 'w-full @sm/block:w-auto'}>
+                    <NeoButton
+                        label={icon_only ? undefined : value}
+                        image={icon}
+                        loading={isSumbitting}
+                        style="glassProminent"
+                        controlSize={controlSize}
+                        borderShape={borderShape}
+                        width={fullWidth ? 'fill' : 'auto'}
+                        onPress={handlePress}
+                        disabled={isSumbitting || disabled}
+                    />
                 </View>
                 {saveOnChanges && (
-                    <Button
-                        {...buttonProps}
-                        {...resetHandlers}
-                        variant="default"
-                        title="Reset"
+                    <NeoButton
+                        label="Reset"
+                        style="bordered"
+                        controlSize={controlSize}
+                        borderShape={borderShape}
+                        width={fullWidth ? 'fill' : 'auto'}
+                        onPress={handleReset}
                     />
                 )}
-                
             </Row>
             <Hidden
                 name={name}
@@ -144,11 +122,6 @@ export default function FormFieldSubmit(props) {
                 onBlur={field.onBlur}
                 defaultValue={value}
             />
-            {/*serverErrorKeys.length > 0 && (
-                <View className="mt-2">
-                    <FormError errorText="Incorrect info. Please, check your inputs and try again" />
-                </View>
-            )*/}
             {showErrors && (
                 <View className="mt-2">
                     <FormError errorText="Errors:" />

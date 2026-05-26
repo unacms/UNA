@@ -84,11 +84,11 @@ export const settingsElements = {
     },
     blocks: {
         'u-block-base':
-            ' text-card-foreground gap-4',
+            ' text-card-foreground gap-4 lg:gap-5',
         'u-block-bg':
             'bg-card/80 shadow-card-outline dark:shadow-card-outline-deep ',
         'u-block-pad':
-            'p-4 lg:p-6 sm:rounded-xl ',
+            'p-4 lg:p-5 sm:rounded-xl ',
         'u-block-header':
             ' flex-row items-center gap-4 ',
         'u-block-icon': 'mb-auto',

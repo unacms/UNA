@@ -412,6 +412,7 @@ export const NeoButton = (props) => {
 
     const containerCls = cn(
         'flex-row items-center web:transition-[background-color,box-shadow,opacity] web:duration-200 web:ease-out',
+        isInteractive && 'web:cursor-pointer',
         resolved.rounded,
         resolved.aspectSquare ? 'aspect-square' : '',
         `justify-${resolved.align}`,
@@ -469,7 +470,11 @@ export const NeoButton = (props) => {
 
     /* ----------------------------- surface ------------------------------ */
 
-    const Cnt = isPressable ? Pressable : View;
+    // Web Pressable does not surface onPressIn/Out to the DOM (see view.web.js).
+    // Use View + pointer handlers for press visuals; onPress maps to onClick there.
+    // Native keeps RN Pressable for press-in/out, hitSlop, and long-press.
+    const useNativePressable = isPressable && !isWeb;
+    const Cnt = useNativePressable ? Pressable : View;
 
     const hoverHandlers = resolved.behaviors.hover && isInteractive ? {
         onMouseEnter: () => setIsHovered(true),
@@ -479,8 +484,9 @@ export const NeoButton = (props) => {
         },
     } : {};
 
-    const pointerPressHandlers = !isPressable && isInteractive && isWeb ? {
+    const pointerPressHandlers = isInteractive && isWeb ? {
         onPointerDown: (event) => {
+            if (disabled) return;
             if (event.pointerType === 'mouse' && event.button !== 0) return;
             setIsPressed(true);
         },
@@ -497,7 +503,7 @@ export const NeoButton = (props) => {
             classNames?.ring,
         ),
         style: containerStyle,
-        ...(isPressable ? {
+        ...(useNativePressable ? {
             disabled: !isActive,
             hitSlop: resolvedHitSlop,
             onPressIn: () => setIsPressed(true),
@@ -510,6 +516,12 @@ export const NeoButton = (props) => {
         } : {
             ...hoverHandlers,
             ...pointerPressHandlers,
+            ...(isPressable ? {
+                disabled: !isActive,
+                onFocus: () => setIsFocused(true),
+                onBlur: () => setIsFocused(false),
+                ...(onPress ? { onPress: handlePress } : {}),
+            } : {}),
         }),
         ...refProps,
         ...buttonAttributes,
