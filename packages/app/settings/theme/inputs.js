@@ -35,8 +35,8 @@ export const settingsInputs = {
             full: 'rounded-full',
         },
         size:{
-            default: 'px-3  leading-5 min-h-12',
-            small: 'px-2 leading-5 min-h-10',
+            default: 'px-3  leading-5 min-h-11',
+            small: 'px-2 leading-5 min-h-9',
         },
         base: 
         'text-card-foreground placeholder:text-muted-foreground py-2 bg-input/60 shadow-btn-outline dark:shadow-btn-outline-deep rounded-xl flex-auto text-base placeholder-muted-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-card web:focus-visible:border-ring web:overflow-hidden',

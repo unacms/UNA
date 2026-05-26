@@ -177,19 +177,19 @@ export default function Tooltip({
         let positionClass;
         switch (placement) {
             case 'bottom':
-                positionClass = '-top-1.5 left-1/2 -translate-x-1/2';
+                positionClass = '-top-1 left-1/2 -translate-x-1/2';
                 break;
             case 'top':
-                positionClass = '-bottom-1.5 left-1/2 -translate-x-1/2';
+                positionClass = '-bottom-1 left-1/2 -translate-x-1/2';
                 break;
             case 'left':
-                positionClass = '-right-1.5 top-1/2 -translate-y-1/2';
+                positionClass = '-right-1 top-1/2 -translate-y-1/2';
                 break;
             case 'right':
-                positionClass = '-left-1.5 top-1/2 -translate-y-1/2';
+                positionClass = '-left-1 top-1/2 -translate-y-1/2';
                 break;
             default:
-                positionClass = '-bottom-1.5 left-1/2 -translate-x-1/2';
+                positionClass = '-bottom-1 left-1/2 -translate-x-1/2';
         }
         
         return cn(baseClasses, positionClass, arrowClassName);

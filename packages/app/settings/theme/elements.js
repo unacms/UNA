@@ -94,7 +94,7 @@ export const settingsElements = {
         'u-block-icon': 'mb-auto',
         'u-block-name': 'flex flex-col flex-auto gap-2 ',
         'u-block-title':
-            'text-secondary-foreground leading-none text-lg font-semibold tracking-tight',
+            'text-secondary-foreground leading-5  text-lg font-semibold tracking-tight',
         'u-block-description': 'text-muted-foreground text-sm font-medium leading-6',
         'u-block-content': 'gap-4 ',  
         'u-block-footer':
@@ -137,9 +137,9 @@ export const settingsElements = {
         'tooltip-arrow': 'absolute w-3 h-3 bg-foreground rotate-45',
         
         // Arrow positions per placement
-        'tooltip-arrow-bottom': '-top-1.5 left-1/2 -translate-x-1/2',   // tooltip below trigger
-        'tooltip-arrow-top': '-bottom-1.5 left-1/2 -translate-x-1/2',   // tooltip above trigger
-        'tooltip-arrow-left': '-right-1.5 top-1/2 -translate-y-1/2',    // tooltip left of trigger
-        'tooltip-arrow-right': '-left-1.5 top-1/2 -translate-y-1/2',    // tooltip right of trigger
+        'tooltip-arrow-bottom': '-top-1 left-1/2 -translate-x-1/2',   // tooltip below trigger
+        'tooltip-arrow-top': '-bottom-1 left-1/2 -translate-x-1/2',   // tooltip above trigger
+        'tooltip-arrow-left': '-right-1 top-1/2 -translate-y-1/2',    // tooltip left of trigger
+        'tooltip-arrow-right': '-left-1 top-1/2 -translate-y-1/2',    // tooltip right of trigger
     }, 
 }
