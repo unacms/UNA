@@ -17,6 +17,6 @@ export default function ElementLogout({data}) {
         redirectTo(router, uri, currentTab);
     }, [uri, timeout]);
 
-    return <View className="flex-1 items-center justify-center"><Text className="text-center text-foreground">Loggin out...</Text></View>;
+    return <View className="flex-1 items-center justify-center"><Text className="text-center text-foreground">Logging out...</Text></View>;
 
 }

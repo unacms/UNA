@@ -324,7 +324,7 @@ export function CommentsBrowse({
     }
     const title = t(module + '_title') === module + '_title' ? t(commentsTitle) : t(module + '_title');
 
-    const header = browseParams.total_count > 0 ? (
+    const header = browseParams.total_count > 0 && false ? (
         <Row className={'flex-row ' + (classesBrowse ? classesBrowse : `px-3 pt-3 sm:px-4 justify-between items-center mt-3 border-t border-muted/60`)}>
             <Text className='flex-auto text-base font-semibold text-secondary-foreground'>{title} ({browseParams.total_count})</Text>
             {!appSetting('comments', 'hide_sort') && <View className="ml-4">
