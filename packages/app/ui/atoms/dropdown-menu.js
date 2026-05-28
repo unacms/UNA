@@ -56,6 +56,7 @@ function DropdownMenuPopup({
     onOpenChange: onOpenChangeProp,
     contentClassName: contentClassNameProp,
     resolveContent,
+    triggerAccessibilityLabel,
 }) {
     const DropdownMenuItem = getComponent('menu-item', 'dropdown');
     const redirectdRef = useRef();
@@ -110,6 +111,7 @@ function DropdownMenuPopup({
             <Redirect ref={redirectdRef} />
             <DropdownPopup
                 buttonProps={buttonProps}
+                triggerAccessibilityLabel={triggerAccessibilityLabel}
                 showOnTop={showOnTop}
                 minPopupWidth={256}
                 openOnFocus={
@@ -216,6 +218,7 @@ function DropdownMenuNative({
     cancelable = true,
     resolveContent,
     buttonProps,
+    triggerAccessibilityLabel,
 }) {
     const { setBottomSheetData } = useBottomSheetData();
 
@@ -259,7 +262,13 @@ function DropdownMenuNative({
         );
     }   
     return (
-        <Pressable onPress={handlePress}>{children}</Pressable>
+        <Pressable
+            onPress={handlePress}
+            accessibilityRole="button"
+            accessibilityLabel={triggerAccessibilityLabel}
+        >
+            {children}
+        </Pressable>
     );
 }
 
@@ -281,6 +290,7 @@ export default function DropdownMenu({
     onOpenChange,
     contentClassName,
     resolveContent,
+    triggerAccessibilityLabel,
 }) {
     const isWeb = Platform.OS === 'web';
 
@@ -301,6 +311,7 @@ export default function DropdownMenu({
                 contentClassName={contentClassName}
                 resolveContent={resolveContent}
                 buttonProps={buttonProps}
+                triggerAccessibilityLabel={triggerAccessibilityLabel}
             />
         );
     }
@@ -316,6 +327,7 @@ export default function DropdownMenu({
             cancelable={cancelable}
             resolveContent={resolveContent}
             buttonProps={buttonProps}
+            triggerAccessibilityLabel={triggerAccessibilityLabel}
         />
     );
 }

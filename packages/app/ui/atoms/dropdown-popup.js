@@ -31,6 +31,8 @@ export default function DropdownPopup({
     openOnFocus = false,
     /** Merged after `contentClasses` (e.g. `overflow-visible` so focus rings are not clipped). */
     contentClassName = '',
+    /** Accessible name for custom trigger wrappers (when `buttonProps` is omitted). */
+    triggerAccessibilityLabel,
 }) {
     const buttonRef = useRef(null);
     const isDesktop = useIsDesktop();
@@ -285,6 +287,10 @@ export default function DropdownPopup({
                     ref={buttonRef}
                     onPress={openTrigger}
                     {...triggerFocusProps}
+                    accessibilityRole="button"
+                    accessibilityLabel={triggerAccessibilityLabel}
+                    aria-haspopup="menu"
+                    aria-expanded={isRealOpen}
                     className="rounded-xl web:active:scale-95 web:duration-100"
                 >
                     {trigger}

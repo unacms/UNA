@@ -2,7 +2,7 @@ import { View } from 'app/design/view'
 import { appSetting, menuItemsByName, menuItemsByNameNew } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
 import { useMemo, memo } from 'react';
-import { NeoButton, NeoButtonLink } from 'app/design/controls'
+import { NeoButtonLink } from 'app/design/controls'
 import { useCurrentUserNoCounters } from 'app/context/user';
 import { useMenuData } from 'app/context/menu-data';
 import { useLayoutSettings } from 'app/context/layout-settings';
@@ -85,21 +85,22 @@ function FooterThemeSwitcher({ visualProps }) {
         }))
     ), [currentThemeName, t]);
     const currentThemeItem = FOOTER_THEME_ITEMS.find((theme) => theme.id === currentThemeName) ?? FOOTER_THEME_ITEMS[0];
+    const themeLabel = t(currentThemeItem.title);
 
     return (
         <DropdownMenu
             items={items}
             onSelect={(item) => setThemeName(item.id)}
-        >
-            <NeoButton
-                label={t(currentThemeItem.title)}
-                image={currentThemeItem.icon}
-                style={visualProps.style}
-                controlSize={visualProps.controlSize}
-                className={visualProps.className}
-                textClassName={visualProps.textClassName}
-            />
-        </DropdownMenu>
+            buttonProps={{
+                label: themeLabel,
+                image: currentThemeItem.icon,
+                accessibilityLabel: themeLabel,
+                style: visualProps.style,
+                controlSize: visualProps.controlSize,
+                className: visualProps.className,
+                textClassName: visualProps.textClassName,
+            }}
+        />
     );
 }
 
@@ -123,20 +124,22 @@ function FooterLanguageSwitcher({ visualProps }) {
 
     if (langs.length <= 1 || !currentLang) return null;
 
+    const langLabel = t('lang_' + currentLang);
+
     return (
         <DropdownMenu
             items={items}
             onSelect={(item) => setLang(item.id)}
-        >
-            <NeoButton
-                label={t('lang_' + currentLang)}
-                image="Languages"
-                style={visualProps.style}
-                controlSize={visualProps.controlSize}
-                className={visualProps.className}
-                textClassName={visualProps.textClassName}
-            />
-        </DropdownMenu>
+            buttonProps={{
+                label: langLabel,
+                image: 'Languages',
+                accessibilityLabel: langLabel,
+                style: visualProps.style,
+                controlSize: visualProps.controlSize,
+                className: visualProps.className,
+                textClassName: visualProps.textClassName,
+            }}
+        />
     );
 }
 
