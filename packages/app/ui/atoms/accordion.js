@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useCallback } from 'react';
-import { Platform, View } from 'react-native';
+import { Platform } from 'react-native';
+import { View } from 'app/design/view';
 import * as AccordionPrimitive from 'app/ui/primitives/accordion';
 import { clsx } from 'clsx';
 import { Icon } from 'app/ui/atoms/icon';
