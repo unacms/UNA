@@ -150,7 +150,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                 <PageHeaderSmall />
             ) : (
                 <>
-                    <View className="flex-1 ps-2 shrink items-center flex-row gap-2 h-14 overflow-hidden">
+                    <View className="flex-1 shrink items-center flex-row gap-2 h-14 ">
                         {(!appSetting('context_selector', 'show_always') ||
                             !isWeb) && (
                                 <View className="flex-row flex-none lg:hidden">
@@ -160,7 +160,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
 
                         <>
                             {(bPerson || coverMode !== 'none') && (
-                                <View className="items-center flex-row flex-1 shrink gap-2 overflow-hidden">
+                                <View className="items-center flex-row flex-1 shrink gap-2 ">
                                     {bPerson && (
                                         <View className="flex-none shrink-0">
                                             <Profile
@@ -184,7 +184,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                             )}
                             {isAddSelector && (
                                 <View
-                                    className={`${TABLET_MODE_FROM}:hidden `}
+                                    className={`${TABLET_MODE_FROM}:hidden w-full `}
                                 >
                                     <ContextSelector
                                         data={context}
@@ -195,7 +195,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                         </>
 
                     </View>
-                    <View className=" items-center justify-center h-14 pe-2">
+                    <View className=" items-center justify-center h-14">
                         <Row className="w-full justify-between">
                             {!showMoreMenu &&
                                 (!appSetting(
@@ -472,7 +472,7 @@ export default function Cover({
             <>
                 {appSetting('context_selector', 'show_always') ? (
                     <Row
-                        className={`web:${TABLET_MODE_FROM}:hidden items-center  bg-card  justify-between w-full px-4 h-14`}
+                        className={`web:${TABLET_MODE_FROM}:hidden items-center bg-card justify-between w-full px-3 h-14`}
                     >
                         <View className={`flex-1 justify-center`}>
                             <ContextSelector data={context} mode="compact" />
