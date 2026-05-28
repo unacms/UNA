@@ -1,10 +1,11 @@
 import { View } from 'app/design/view'
-import { useRef, useCallback, useMemo } from 'react';
+import { useRef, useCallback, useMemo, useEffect } from 'react';
 import { LegendList } from "@legendapp/list";
 import { useSetScrollDirection, useHeaderHeight, useSetScrollValue } from 'app/context/jotai/layout';
+import { getListScrollOffset, setListScrollOffset } from 'app/lib/tab-page-cache';
 
 export default function UniList(props) {
-    const uniRef = useRef();
+    const uniRef = useRef(null);
     const { 
         preloadComponent, 
         contentContainerStyle: contentContainerStyleProp, 
@@ -89,6 +90,34 @@ export default function UniList(props) {
         scrollY.current = currentScrollY;
     }, [setScrollDirection, setScrollValue, url, onRefresh, inverted, refreshing]);
 
+    useEffect(() => {
+        return () => {
+            if (url) {
+                setListScrollOffset(url, scrollY.current);
+            }
+        };
+    }, [url]);
+
+    const restoreScrollOffset = useCallback((node) => {
+        if (!node?.scrollToOffset || !url) {
+            return;
+        }
+        const offset = getListScrollOffset(url);
+        if (offset > 0) {
+            node.scrollToOffset({ offset, animated: false });
+        }
+    }, [url]);
+
+    const setListRef = useCallback((node) => {
+        uniRef.current = node;
+        if (typeof refer === 'function') {
+            refer(node);
+        } else if (refer) {
+            refer.current = node;
+        }
+        restoreScrollOffset(node);
+    }, [refer, restoreScrollOffset]);
+
     const handleScrollToIndexFailed = useCallback((info) => {
         console.log('onScrollToIndexFailed', info);
     }, []);
@@ -142,7 +171,7 @@ export default function UniList(props) {
         <LegendList
             key={url || undefined}
             contentContainerStyle={contentContainerStyleProp}
-            ref={refer || uniRef}
+            ref={setListRef}
             onEndReachedThreshold={1}
             data={filteredData}
             ListHeaderComponent={enhancedListHeaderComponent}

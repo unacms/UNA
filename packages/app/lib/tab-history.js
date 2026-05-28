@@ -84,7 +84,7 @@ export function navigateBackInTab(router, tabKey, currentUser) {
         const prevUrl = popTabHistory(tabKey, currentUser);
         router.replace({
             pathname: tabKey,
-            params: { url: prevUrl, refresh: Date.now() },
+            params: { url: prevUrl },
         });
         return;
     }
@@ -92,7 +92,7 @@ export function navigateBackInTab(router, tabKey, currentUser) {
     const rootUrl = getTabRoot(tabKey, currentUser);
     router.replace({
         pathname: tabKey,
-        params: { url: rootUrl, refresh: Date.now() },
+        params: { url: rootUrl },
     });
 }
 

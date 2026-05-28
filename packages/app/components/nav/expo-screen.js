@@ -7,6 +7,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
 import { useLocalSearchParams } from 'app/lib/hooks/router'
 import { ensureTabHistory, pushTabHistory } from 'app/lib/tab-history';
+import { getCachedPageData, setCachedPageData } from 'app/lib/tab-page-cache';
 import * as SplashScreen from 'expo-splash-screen';
 
 export async function getData(path, token, origin, headers, callback, params) {
@@ -54,12 +55,22 @@ export function Screen(params) {
     }
 
     const userKey = currentUser?.id ?? 'guest';
-    return <Content key={`${_path}__${userKey}__${local.refresh ?? ''}`} pagePath={_path} currentUser={currentUser} tabKey={pathname} isRoot={isRoot} />
+    // Stable key per tab — no remount on in-tab navigation. Shell refresh uses refreshToken (redirectTo), not key.
+    return (
+        <Content
+            key={`${pathname}__${userKey}`}
+            pagePath={_path}
+            currentUser={currentUser}
+            tabKey={pathname}
+            isRoot={isRoot}
+            refreshToken={local.refresh}
+        />
+    );
 
 
 }
 
-const Content = ({ pagePath, currentUser, tabKey, isRoot }) => {
+const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken }) => {
 
 
     const [pageData, setPageData] = useState(null);
@@ -78,20 +89,33 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot }) => {
     useEffect(() => {
         if (!(pagePath && pagePath.startsWith('/') && !pagePath.includes('/?url='))) return;
 
-        const fetchPageData = async () => {
-            if (pageData?.data?.user?.id && pageData?.data?.user?.id === currentUser?.id && pageData?.data?.user?.confirmed === currentUser?.confirmed)
+        const forceShellRefresh = Boolean(refreshToken);
+        if (!forceShellRefresh) {
+            const cached = getCachedPageData(tabKey, pagePath);
+            if (cached) {
+                setPageData(cached);
                 return;
+            }
+        }
+
+        const fetchPageData = async () => {
             const { path: pathWithoutQuery, queryString } = parseUrl(pagePath);
             const params = queryString ? JSON.stringify(parseQueryString(queryString)) : null;
             const data = await getData(pathWithoutQuery, null, null, null, null, params);
             if (data?.props) {
-                data.props.data['timestamp'] = Date.now();
+                if (forceShellRefresh) {
+                    data.props.data.timestamp = Date.now();
+                } else {
+                    const existing = getCachedPageData(tabKey, pagePath);
+                    data.props.data.timestamp = existing?.data?.timestamp ?? Date.now();
+                }
+                setCachedPageData(tabKey, pagePath, data.props);
                 setBottomSheetData(bottomSheetData !== false ? false : bottomSheetData);
                 setPageData(data.props);
             }
         };
         fetchPageData();
-    }, [pagePath, currentUser?.id, currentUser?.confirmed]);
+    }, [pagePath, currentUser?.id, currentUser?.confirmed, tabKey, refreshToken]);
 
 
     useEffect(() => {

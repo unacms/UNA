@@ -20,6 +20,11 @@ import { getComponent } from 'app/components/registry';
 import { useFocusEffect } from 'app/lib/hooks/router'
 import { appSetting } from 'app/lib/util'
 import {
+    getCachedConductorState,
+    setCachedConductorState,
+    setListScrollOffset,
+} from 'app/lib/tab-page-cache';
+import {
     getSkeletonByEndPoint,
     layoutForList,
     paddingForList
@@ -264,8 +269,10 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
     const { setBottomSheetData } = useBottomSheetData();
     const initedTabs = useMemo(() => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu), [menu, data, blocks, currentUser, useSectionAsMenu]);;
+    const conductorCacheKey = `${layoutName}:${data?.url ?? ''}`;
+    const cachedConductor = getCachedConductorState(layoutName, data?.url);
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const [routes, setRoutes1] = useState(initedTabs);
+    const [routes, setRoutes1] = useState(cachedConductor?.routes ?? initedTabs);
     const [menuState, setMenuState] = useState(menu);
     const [isRevalidate, setIsRevalidate] = useState(false);
     const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -288,13 +295,12 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         setRoutes1(a);
     }/*, []);*/
 
-    useEffect(() => {
-        setRoutes(initedTabs);
-    }, [initedTabs]);
-
     routesRef.current = routes;
 
     const initialIndex = useMemo(() => {
+        if (typeof cachedConductor?.index === 'number') {
+            return cachedConductor.index;
+        }
         const idx = routes.findIndex(item => {
             if (useSectionAsMenu) {
                 return data.url === item.key;
@@ -307,6 +313,24 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
     const [index, _setIndex] = useState(initialIndex);
     const [prevIndex, setPrevIndex] = useState(initialIndex);
+    const indexRef = useRef(initialIndex);
+
+    useEffect(() => {
+        indexRef.current = index;
+    }, [index]);
+
+    // Persist list state only on unmount — avoid read/write cycle with useState cache bootstrap.
+    useEffect(() => {
+        return () => {
+            if (!data?.url || !routesRef.current?.some((route) => route.inited)) {
+                return;
+            }
+            setCachedConductorState(layoutName, data.url, {
+                routes: routesRef.current,
+                index: indexRef.current,
+            });
+        };
+    }, [conductorCacheKey, layoutName, data?.url]);
 
     const setIndex = (newIndex) => {
         setPrevIndex(index);
@@ -321,20 +345,33 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         () => routes.find((item) => item.index === prevIndex),
         [routes, prevIndex]
     );
+    // Selected tab route (may still be loading — fetch logic must not use the fallback below).
+    const activeRoute = useMemo(
+        () => routes.find((item) => item.index === index),
+        [routes, index]
+    );
     const currentRoute = useMemo(() => {
-        const route = routes.find((item) => item.index === index);
-        return route?.inited ? route : (prevRoute ?? route);
-    }, [routes, index, prevRoute]);
-    const qKey = useMemo(() => [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)], [currentRoute, index, keyword]);
+        return activeRoute?.inited ? activeRoute : (prevRoute ?? activeRoute);
+    }, [activeRoute, prevRoute]);
+    // Query key follows the selected tab only after fetchAndUpdateData inits it — not prevRoute's endpoint.
+    const qKey = useMemo(
+        () => [
+            activeRoute?.inited ? activeRoute?.endpoint?.request_url : null,
+            index,
+            keyword,
+            JSON.stringify(activeRoute?.inited ? activeRoute?.endpoint?.params?.filters : undefined),
+        ],
+        [activeRoute, index, keyword]
+    );
     const queryClient = useQueryClient();
 
     const numColumns = 1;
 
-    // On remount, TanStack Query can still report hasNextPage=false from a prior
-    // visit, which blocks the first fetchNextPage. Clear cache so fetch runs.
+    // Drop cached hasNextPage=false when the selected tab changes so the first fetch is not blocked.
     useEffect(() => {
+        if (!activeRoute?.inited) return;
         queryClient.removeQueries({ queryKey: qKey });
-    }, []);
+    }, [index, activeRoute?.inited, qKey, queryClient]);
 
     useEffect(() => {
         if (currentRoute.cached) {
@@ -399,14 +436,15 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     }, [isRevalidate]);
 
 
+    // Gate fetches on the selected tab once inited — not on prevRoute while the new tab is loading.
     const bEnabled = Boolean(
-        currentRoute?.inited &&
-        currentRoute?.endpoint &&
-        currentRoute.endpoint.request_url &&
-        !currentRoute.endpoint.finished &&
-        (currentRoute.endpoint.params?.start == 0 ||
-            currentRoute.data.length <
-            (currentRoute.endpoint.params?.per_page ?? Number.POSITIVE_INFINITY)) &&
+        activeRoute?.inited &&
+        activeRoute?.endpoint &&
+        activeRoute.endpoint.request_url &&
+        !activeRoute.endpoint.finished &&
+        (activeRoute.endpoint.params?.start == 0 ||
+            activeRoute.data.length <
+            (activeRoute.endpoint.params?.per_page ?? Number.POSITIVE_INFINITY)) &&
         !isRefreshing
     );
 
@@ -428,9 +466,10 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     });
 
     useEffect(() => {
-        if (!bEnabled || hasNextPage === false || isFetchingNextPage) return;
+        // Do not check hasNextPage===false here — a premature empty page marks false and blocks the real first fetch.
+        if (!bEnabled || isFetchingNextPage) return;
         fetchNextPage();
-    }, [bEnabled, currentRoute.data.length, hasNextPage, isFetchingNextPage, fetchNextPage]);
+    }, [bEnabled, activeRoute?.data?.length, isFetchingNextPage, fetchNextPage]);
 
     useEffect(() => {
         setSnackbarVisible(false);
@@ -479,6 +518,10 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     }, [index]);
 
     const onStartRefresh = useCallback(() => {
+        const requestUrl = activeRoute?.endpoint?.request_url;
+        if (requestUrl) {
+            setListScrollOffset(requestUrl, 0);
+        }
         setRoutes((prevRoutes) =>
             prevRoutes.map((route) => {
                 if (route.index !== index) return route;
@@ -500,7 +543,16 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         );
         setIsRefreshing(true);
         setRefreshRequested(true);
-    }, [index]);
+    }, [index, activeRoute?.endpoint?.request_url]);
+
+    useEffect(() => {
+        const subscription = emitter.addListener('list', (payload) => {
+            if (payload?.action === 'refresh') {
+                onStartRefresh();
+            }
+        });
+        return () => subscription.remove();
+    }, [onStartRefresh]);
 
     useEffect(() => {
         if (!refreshRequested) {

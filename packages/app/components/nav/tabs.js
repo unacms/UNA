@@ -33,7 +33,8 @@ import { registerAll } from 'app/components/registry-init';
 import * as WebBrowser from 'expo-web-browser';
 import { getDomainFromUrl } from 'app/lib/util';
 import { useSound } from 'app/lib/hooks/useSound';
-import { resetTabHistory } from 'app/lib/tab-history';
+import { canGoBackInTab, popTabHistory } from 'app/lib/tab-history';
+import emitter from 'app/context/emitter';
 
 enableScreens(appSetting('native', 'enable_screens'));
 
@@ -343,20 +344,19 @@ export default function Tabs() {
 
                                                 setLayoutData(getAlert('list:move_to_top', true));
 
-                                                resetTabHistory(tabKey, currentUser, tabUrl);
+                                                if (canGoBackInTab(tabKey)) {
+                                                    const prevUrl = popTabHistory(tabKey, currentUser);
+                                                    router.replace({
+                                                        pathname: tabKey,
+                                                        params: { url: prevUrl },
+                                                    });
+                                                } else {
+                                                    emitter.emit('list', { action: 'refresh' });
+                                                }
 
-                                                router.replace({
-                                                    pathname: tabKey,
-                                                    params: { url: tabUrl, refresh: Date.now() },
-                                                });
-
+                                                playClick();
+                                                FeedbackHaptics('Medium');
                                                 return;
-                                            }
-
-                                            if (tabUrl) {
-                                                setTimeout(() => {
-                                                    router.setParams({ url: tabUrl, name: `tab${index}` });
-                                                }, 0);
                                             }
 
                                             if (e.type == 'tabPress') {

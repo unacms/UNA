@@ -285,6 +285,16 @@ export default function Browse(props) {
         }
     }, [])
 
+    useEffect(() => {
+        const subscription = emitter.addListener('list', (payload) => {
+            if (payload?.action === 'refresh') {
+                refetchRef.current.skipToast = true;
+                refetch();
+            }
+        });
+        return () => subscription.remove();
+    }, [refetch]);
+
     const dataItems = refetchState.visibleItems
 
     if (
