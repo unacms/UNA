@@ -11,6 +11,7 @@ export default function MenuTopItem({ link, title, index, icon, isTitle, isActiv
     return items?.length > 0 ?
         <DropdownMenu
             mode="popup"
+            triggerAccessibilityLabel={title}
             items={items}
             defaultOpen={false}
         >

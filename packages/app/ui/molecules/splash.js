@@ -58,10 +58,6 @@ function PageContent({ data }) {
             {isShowCreateAccount && <View className="sm:px-6 ">
                 <Row
                     className="mx-auto gap-1 justify-center items-center text-center"
-                    accessibilityRole="text"
-                    accessibilityLabel={`${t('splash_page_login2')} ${t(
-                        'splash_page_new_account',
-                    )}`}
                 >
                     <Text
                         className="text-secondary-foreground text-base"
