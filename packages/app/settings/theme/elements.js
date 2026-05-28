@@ -88,7 +88,7 @@ export const settingsElements = {
         'u-block-bg':
             'bg-card/80 shadow-card-outline dark:shadow-card-outline-deep ',
         'u-block-pad':
-            'p-4 lg:p-5 rounded-xl ',
+            'p-4 lg:p-5 sm:rounded-xl ',
         'u-block-header':
             ' flex-row items-center gap-4 ',
         'u-block-icon': 'mb-auto',

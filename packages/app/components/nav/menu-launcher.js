@@ -35,7 +35,7 @@ export default function () {
                 borderShape: 'circle',
                 accessibilityLabel: t('All Apps'),
                 image: bApps === true ? 'LayoutGrid' : bApps,
-                style: isDesktop ? 'bordered' : 'borderless',
+                style: isDesktop ? 'glass' : 'borderless',
                 controlSize: 'regular',
             }}
         />

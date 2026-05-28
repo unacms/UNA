@@ -1,6 +1,6 @@
 import Link from 'app/ui/atoms/link'
 import { View, Row } from 'app/design/view'
-import { Button, ButtonLink, NeoButtonLink } from 'app/design/controls'
+import { NeoButton , ButtonLink, NeoButtonLink } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import { appSetting } from 'app/lib/util'
 import Search from 'app/ui/molecules/search'
@@ -65,10 +65,11 @@ export default function HeaderElement({ mode, url, uri }) {
                                         />
                                     )
                                 }
+
                                 if (item.href === '{messenger}') {
                                     const messengerHref = appSetting('messenger', 'url');
                                     return (
-                                        <Button
+                                        <NeoButton
                                             {...(item.props || {})}
                                             addon={{
                                                 variant: "primary",
@@ -76,9 +77,13 @@ export default function HeaderElement({ mode, url, uri }) {
                                                 hideZero: true,
                                             }}
                                             variant={isDesktop ? 'secondary' : 'text'}
+                                            controlSize = 'regular'
+                                            borderShape = 'circle'
+                                            image = 'MessageSquare'
                                             size={isDesktop ? 'base' : 'base'}
                                             pressed={appSetting('messenger', 'url') === '/' + uri}
                                             role="link"
+                                            style = {isDesktop ? 'glass' : 'borderless'}
                                             alt={item.alt || item.title || (item.props?.title)}
                                             onPress={(event) => {
                                                 item.props?.onPress?.(event);

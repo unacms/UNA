@@ -31,9 +31,9 @@ function MenuTopItem_({ title, icon, isTitle, isActive, isPopup, chevron, animat
     const rowHoverProps =
         useAnimatedIcon && Platform.OS === 'web'
             ? {
-                  onMouseEnter: () => setGroupHovered(true),
-                  onMouseLeave: () => setGroupHovered(false),
-              }
+                onMouseEnter: () => setGroupHovered(true),
+                onMouseLeave: () => setGroupHovered(false),
+            }
             : {};
     const baseIconClass = isActiveOrOpen
         ? 'text-accent-foreground h-9 w-9 my-auto items-center justify-center flex'
@@ -43,52 +43,46 @@ function MenuTopItem_({ title, icon, isTitle, isActive, isPopup, chevron, animat
     return (
 
         <Tooltip content={title}>
-            
-                <Row
-                    className={`items-center content-center justify-center px-2 h-12 min-w-16 flex-auto flex-wrap rounded-xl  ${isActiveOrOpen
-                        ? ' web:hover:bg-accent/60 active:bg-accent text-accent-foreground'
-                        : ' text-secondary-foreground web:group-hover:text-foreground web:hover:bg-muted/60 web:group-focus:bg-muted/60 web:active:bg-muted '
-                        }`}
-                    {...rowHoverProps}
-                >
-                    {[
-                        <Icon
-                            key="menu-icon"
-                            icon={icon}
-                            animated={useAnimatedIcon}
-                            active={useAnimatedIcon ? isActiveOrOpen : undefined}
-                            size={useAnimatedIcon ? 24 : undefined}
-                            className={menuIconClassName}
-                            hovered={useAnimatedIcon && Platform.OS === 'web' ? groupHovered : undefined}
-                        />,
-                        isTitle ? (
-                            <Text key="menu-title" className={`whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ${isActiveOrOpen ? 'text-accent-foreground' : 'text-secondary-foreground'} text-sm lg:text-base px-2 leading-5`}>{title}</Text>
-                        ) : null,
-                        chevron ? (
-                            <View
-                                key="menu-chevron"
-                                className="h-4 w-4 items-center justify-center flex shrink-0 transition-transform duration-200"
-                                style={{
-                                    transform: [
-                                        { rotate: isOpen ? '180deg' : '0deg' },
-                                    ],
-                                }}
-                            >
-                                <Icon
-                                    icon={chevron}
-                                    className={`h-4 w-4 ${isActiveOrOpen ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}
-                                />
-                            </View>
-                        ) : null,
-                    ]}
-                    {/*
-                        isPopup && <Icon
+            <Row
+                className={`items-center content-center justify-center px-2 h-12 min-w-16 flex-auto flex-wrap rounded-xl  ${isActiveOrOpen
+                    ? ' web:hover:bg-accent/60 active:bg-accent text-accent-foreground'
+                    : ' text-secondary-foreground web:group-hover:text-foreground web:hover:bg-muted/60 web:group-focus:bg-muted/60 web:active:bg-muted '
+                    }`}
+                {...rowHoverProps}
+            >
+                {[
+                    <Icon
+                        key="menu-icon"
                         icon={icon}
-                        className={`${isActive ? "text-accent-foreground h-9 w-9 my-auto items-center justify-center flex" : "text-secondary-foreground web:group-hover:text-foreground h-9 w-9 items-center justify-center flex"}`}
-                    />
-                    */}
-                </Row>
-            
+                        animated={useAnimatedIcon}
+                        active={useAnimatedIcon ? isActiveOrOpen : undefined}
+                        size={useAnimatedIcon ? 24 : undefined}
+                        className={menuIconClassName}
+                        hovered={useAnimatedIcon && Platform.OS === 'web' ? groupHovered : undefined}
+                    />,
+                    isTitle ? (
+                        <Text key="menu-title" className={`whitespace-nowrap text-ellipsis overflow-hidden tracking-tight font-medium ${isActiveOrOpen ? 'text-accent-foreground' : 'text-secondary-foreground'} text-sm lg:text-base px-2 leading-5`}>{title}</Text>
+                    ) : null,
+                    chevron ? (
+                        <View
+                            key="menu-chevron"
+                            className="h-4 w-4 items-center justify-center flex shrink-0 transition-transform duration-200"
+                            style={{
+                                transform: [
+                                    { rotate: isOpen ? '180deg' : '0deg' },
+                                ],
+                            }}
+                        >
+                            <Icon
+                                icon={chevron}
+                                className={`h-4 w-4 ${isActiveOrOpen ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}
+                            />
+                        </View>
+                    ) : null,
+                ]}
+
+            </Row>
+
         </Tooltip>
 
     )

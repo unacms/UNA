@@ -1,6 +1,6 @@
 import { Pressable, View, Row } from 'app/design/view';
 import { useBottomSheetData } from 'app/context/bottomsheet';
-import { Button } from 'app/design/controls'
+import { Button, NeoButton } from 'app/design/controls'
 import { memo, useCallback, useEffect, useRef, useState, isValidElement, cloneElement, createContext } from 'react'
 import { clsx } from 'clsx';
 import { FeedbackHaptics } from 'app/lib/util';
@@ -161,7 +161,6 @@ const MenuBottomSheet = memo(({ items, onSelect, setBottomSheetData, resolveCont
                 onSelect(item, event);
                 return;
             }
-            console.log("item", item)
             if (item?.target === 'modal') {
                 if (item?.content) {
                     openModalWithContent({
@@ -254,10 +253,11 @@ function DropdownMenuNative({
     }, [defaultOpen, handlePress]);
 
     if (buttonProps) {
+        const ButtonComponent = buttonProps.useNeoButton ? NeoButton : Button;
         return (
-            <Button {...buttonProps} onPress={handlePress} />
+            <ButtonComponent {...buttonProps} onPress={handlePress} />
         );
-    }
+    }   
     return (
         <Pressable onPress={handlePress}>{children}</Pressable>
     );

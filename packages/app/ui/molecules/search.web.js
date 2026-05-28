@@ -14,6 +14,7 @@ import { Pressable, View, Row, ScrollView } from 'app/design/view'
 import {
     Button,
     ButtonRef,
+    NeoButtonRef,
     Input,
     Modal,
 } from 'app/design/controls'
@@ -54,10 +55,15 @@ export default function ElementSearch(oProps) {
             />
         ) : (
 
-            <ButtonRef
+            <NeoButtonRef
                 key="ddp-trigger"
                 title={oProps.title === undefined ? '' : oProps.title}
                 startDecorator={
+                    oParams?.trigger?.icon
+                        ? oParams?.trigger.icon
+                        : 'Search'
+                }
+                image={
                     oParams?.trigger?.icon
                         ? oParams?.trigger.icon
                         : 'Search'
@@ -69,6 +75,10 @@ export default function ElementSearch(oProps) {
                 {...(oParams?.trigger &&
                     (({ onPress, ...rest }) => rest)(oParams.trigger))}
                 variant={buttonVariant}
+                style ={isDesktop ? 'glass' : 'borderless'}
+      
+                controlSize= 'regular'
+                borderShape= 'circle'
                 size={buttonSize}
                 onPress={handleOpenPopupDefault}
             />

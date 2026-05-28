@@ -36,17 +36,24 @@ function PageContent({ data }) {
     return (
         <View className="w-full max-w-md ">
             <View className="sm:py-6 gap-4 sm:gap-6 max-w-sm w-full mx-auto">
-                <KbAvoidingView>
-                    <BlockByName
-                        name={isShowCreateAccount ? "system:login_form" : "system:login_form_only"}
-                        data={data}
-                        formProps={{
-                            hide_errors: true,
-                            button_full_width: true,
-                        }}
-                    />
-                </KbAvoidingView>
-                <AuthPanel forgotPasswordLink={true} showSeparator={true} />
+                <Card role="form"
+                    titleId="login-page-title"
+                    aria-describedby="login-card-description"
+                    className="sm:py-6 gap-4 sm:gap-6 max-w-sm w-full mx-auto"
+                >
+                    <CardContent className="sm:px-6 gap-4">
+                        <BlockByName
+                            name={isShowCreateAccount ? "system:login_form" : "system:login_form_only"}
+                            data={data}
+                            formProps={{
+                                hide_errors: true,
+                                button_full_width: true,
+                            }}
+                        />
+                        <AuthPanel forgotPasswordLink={true} showSeparator={true} />
+                    </CardContent>
+                </Card>
+
             </View>
             {isShowCreateAccount && <View className="sm:px-6 ">
                 <Row
@@ -84,7 +91,6 @@ export default function Splash(props) {
                 {appStatic('splash_text')}
                 <PageContent {...props} />
             </View>
-
             <MenuFooter />
         </Page>
     )

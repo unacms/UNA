@@ -23,7 +23,7 @@ export default function MenuAdd({ buttonProps, children }) {
         return <></>;
     
     const defaultButtonProps = {
-        style: isDesktop ? 'bordered' : 'borderless',
+        style: isDesktop ? 'glass' : 'borderless',
         borderShape: 'circle',
         image: 'Plus',
         tooltip: 'Create',

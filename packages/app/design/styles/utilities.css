@@ -10,6 +10,17 @@
     border-color: var(--color-border);
 }
 
+@source inline("line-clamp-3 line-clamp-4 line-clamp-5 line-clamp-6");
+@source inline("xl:block native:hidden web:hidden md:hidden lg:hidden xl:hidden");
+@source inline("bg-emerald-600 bg-fuchsia-600 bg-orange-500 bg-teal-500 bg-rose-500");
+@source inline("bg-green-200 bg-green-500 bg-red-200 bg-red-400 bg-red-500");
+@source inline("bg-gray-300 bg-gray-400 bg-gray-600 bg-yellow-500 bg-yellow-600");
+@source inline("bg-sky-400 bg-sky-500 bg-indigo-400 bg-indigo-500 bg-purple-500 bg-pink-500");
+@source inline("dark:bg-green-950 dark:bg-red-950");
+@source inline("text-green-800 text-green-600 text-green-200 text-red-800 text-red-600 text-red-200 text-red-400");
+@source inline("text-gray-800 text-gray-600 text-gray-200");
+@source inline("dark:text-green-200 dark:text-green-400 dark:text-red-200 dark:text-red-400 dark:text-gray-200 dark:text-gray-400");
+
 /*
  * `.u-vanilla-html` / `.u-vanilla-html-small` — wrappers for UNA-rendered HTML
  * (and free-form text blocks) that need a consistent typography baseline.

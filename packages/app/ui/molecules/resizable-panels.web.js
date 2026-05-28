@@ -13,7 +13,7 @@ function createPanelComponent({ baseClass, Component = PanelDef, role, ariaLevel
         // PanelGroup needs overflow: hidden for proper layout containment
         // Panels can have overflow: visible to allow sticky children
         const styleProps = baseClass === 'u-panel-group' 
-            ? { style: { overflow: 'hidden' } }
+            ? { style: { overflow: 'visible' } }
             : baseClass === 'u-panel-base'
             ? { style: { overflow: 'visible' } }
             : {};
