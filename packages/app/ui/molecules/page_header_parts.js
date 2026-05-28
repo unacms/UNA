@@ -104,7 +104,7 @@ export function usePageHeaderBase(pageData, { resetHeaderOnRoute = false } = {})
     }, [headerHeight, setHeaderHeightAtom]);
 
     useEffect(() => {
-        if (!isWeb || isDesktop) return;
+        if (!isWeb || !isDesktop) return;
 
         const nextHeaderHeight = isDesktop ? 64 : 56;
         if (headerHeight !== nextHeaderHeight) {

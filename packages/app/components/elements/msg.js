@@ -1,4 +1,5 @@
 import { Text } from 'app/design/typography'
+import Html from 'app/ui/atoms/html';
 import { View } from 'app/design/view'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
@@ -26,7 +27,7 @@ export default function ElementMsg({ data, msg_type, blockWrapperProps }) {
     return (
         <BlockWrapper {...blockWrapperProps}>
             <View className={clsname}>
-                <Text className={clsname1}>{data}</Text>
+                <Html className={clsname1} data={data}/>
             </View>
         </BlockWrapper>
     );
