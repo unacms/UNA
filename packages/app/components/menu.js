@@ -200,8 +200,7 @@ export default function ElementMenu(oProps) {
             } else if (oProps?.params?.button_full_width === true) {
                 spacingClass = ' flex-1 ';
             } else {
-                const defaultSpacing = isLast ? ' me-0 ' : ' me-0 ';
-                spacingClass = oProps?.params?.menu_item_spacing != null ? ` ${oProps.params.menu_item_spacing} ` : defaultSpacing;
+                spacingClass = oProps?.params?.menu_item_spacing != null ? ` ${oProps.params.menu_item_spacing} ` : '';
             }
 
             return (
