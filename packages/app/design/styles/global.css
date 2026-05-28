@@ -46,7 +46,6 @@
 }
 
 /* Content scanning — Next app + shared package */
-@source '../../../../apps/next/**/*.{js,jsx,ts,tsx}';
 @source '../../**/*.{js,jsx,ts,tsx}';
 
 /* Shared design tokens — Tailwind v4 `@theme inline` map + runtime radius lengths. */
