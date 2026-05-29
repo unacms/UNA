@@ -8,15 +8,35 @@ import { cache } from 'react'
 import { UNA_URL, UNA_API_KEY } from 'app/config';
 import { cookies } from 'next/headers'
 
-export const getData = cache(async (props) => {
+const SITE_TITLE = 'NEO';
+// Mirror the resilience tuning used by getRemoteSettings() in packages/app/config.js
+// so a slow/stalled backend degrades gracefully instead of hard-crashing the 404 page.
+const FETCH_TIMEOUT_MS = 3500;
+const MAX_ATTEMPTS = 3;
+const BASE_RETRY_DELAY_MS = 300;
+
+// Guest-safe 404 payload so the page still renders when the backend is unreachable.
+const buildFallbackData = () => ({
+    data: {
+        title: SITE_TITLE,
+        description: SITE_TITLE,
+        uri: 'home',
+        url: '/',
+        page_name: 'home',
+        page_type: 'home',
+        logged: 0,
+        blocks: {},
+        page_status: 404,
+    },
+    code: 404,
+});
+
+export const getData = cache(async () => {
 
     const cookieStore = await cookies()
-    let c = cookieStore.getAll();
-    let cookieString = '';
-    
-    c.map(function (item) {
-        cookieString += item.name + '=' + encodeURIComponent(item.value) + '; '
-    });
+    const cookieString = cookieStore.getAll()
+        .map((item) => item.name + '=' + encodeURIComponent(item.value))
+        .join('; ');
 
     const opts = {
         headers: {
@@ -25,14 +45,36 @@ export const getData = cache(async (props) => {
         },
         cache: 'no-store'
     };
-    let l = UNA_URL + '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + 'home';
-    
+    const l = UNA_URL + '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + 'home';
 
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+        try {
+            const res = await fetch(l, { ...opts, signal: controller.signal });
+            const b = await res.json();
+            // Backend returned something unexpected (no data envelope) — fall back.
+            if (!b || typeof b.data === 'undefined' || b.data === null) {
+                return buildFallbackData();
+            }
+            b.data.page_status = 404;
+            if (typeof b.code === 'undefined') {
+                b.code = 404;
+            }
+            return b;
+        } catch (error) {
+            if (attempt < MAX_ATTEMPTS) {
+                await new Promise((resolve) => setTimeout(resolve, BASE_RETRY_DELAY_MS * attempt));
+                continue;
+            }
+            console.error('not-found getData fetch failed after retries:', error);
+            return buildFallbackData();
+        } finally {
+            clearTimeout(timeout);
+        }
+    }
 
-    const res = await fetch(l, opts)
-    let b = await res.json();
-    b.data.page_status = 404
-    return  b;
+    return buildFallbackData();
 });
 
 export default async function NotFound() {

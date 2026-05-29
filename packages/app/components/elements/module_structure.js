@@ -180,7 +180,7 @@ export default function ModuleStructure({ data }) {
         let textColor = ""
         let color = "emerald-400";
         if (item.pass_status == "in process") {
-            icon = "HourglassSimple";
+            icon = "Hourglass";
             color = "red-400";
             textColor = "white"
         }
@@ -216,7 +216,7 @@ export default function ModuleStructure({ data }) {
                     <Row className='items-center justify-center gap-x-2'>
                         {(!isEditable && !!item.pass_title) && <Button endDecorator="ArrowRight" variant="default" title={item.pass_title} size="sm" rounded onPress={() => { getLessonData(item.id, item.parent_id, true) }} />}
                         {isEditable && <>
-                            <DropdownMenu items={manageMenu} onSelect={(oItem) => { handleManage(oItem, item.id) }}><Button rounded startDecorator="Cog" size='sm' /></DropdownMenu><DragControl dragHandleProps={dragHandleProps}><Button rounded startDecorator="ArrowsVertical" size='sm' /></DragControl>
+                            <DropdownMenu items={manageMenu} onSelect={(oItem) => { handleManage(oItem, item.id) }}><Button rounded startDecorator="Cog" size='sm' /></DropdownMenu><DragControl dragHandleProps={dragHandleProps}><Button rounded startDecorator="ArrowUpDown" size='sm' /></DragControl>
                             </>}
                     </Row>
                 </Row>
@@ -276,7 +276,7 @@ const getColorByTypeLesson = (item, index, passing, byIndex = false) => {
     if (byIndex === index) return ['#F87171', 'RotateCw', 'bg-emerald-400', mainColor]
     if (item.passed) return ['#34D399', 'Check', 'bg-emerald-400', 'bg-emerald-400']
     if (!item.passed && item.pass_link != '' && byIndex === false) return ['#F87171', 'RotateCw', 'bg-emerald-400', mainColor]
-    return ['#9CA3AF', 'HourglassSimple', mainColor, mainColor]
+    return ['#9CA3AF', 'Hourglass', mainColor, mainColor]
 };
 
 function EditLesson({ formData, handleUpdate, lessonData: initedLessonData, courseId, lessonId, moduleId, gridData, dispatch }) {
@@ -387,7 +387,7 @@ function LessonAttach({ lessonData, isEditable, reloadData, courseId, lessonId, 
             </View>
             <Row className="justify-center items-start gap-x-2">
                 <Link href={item.download_link}>
-                    <Button startDecorator="DownloadSimple" variant="outline" title="Download" size="sm" />
+                    <Button startDecorator="Download" variant="outline" title="Download" size="sm" />
                 </Link>
                 {isEditable && (
                     <>
@@ -509,7 +509,7 @@ function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, cour
                                 <>
                                     <Button startDecorator="Trash" variant="outline" size="sm" onPress={() => deleteStep(item.id)} />
                                     <Button startDecorator="Pencil" variant="outline" size="sm" onPress={() => editStep(actionEdit)} />
-                                    <DragControl dragHandleProps={dragHandleProps}><Button  variant="outline" startDecorator="ArrowsVertical" size='sm' /></DragControl>
+                                    <DragControl dragHandleProps={dragHandleProps}><Button  variant="outline" startDecorator="ArrowUpDown" size='sm' /></DragControl>
                                 </>
                             )}
                         </Row>

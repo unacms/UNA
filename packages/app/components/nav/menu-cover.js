@@ -188,7 +188,7 @@ export function CoverMenuMeta(props) {
                 menu_item_separator: 'dot',
                 menu_item_separator_class: 'h-1 w-1 rounded-full bg-muted-foreground/60',
                 className: ' gap-3 flex-wrap flex-auto items-center',
-                justify_items: 'start'
+                justify_items: 'center'
             }}
         />
     )

@@ -90,7 +90,7 @@ function CourseStructure({ data }) {
             let colorButton = "emerald-400";
             let colorButtonText = "emerald-400";
             if (item.status == "in process") {
-                icon = "HourglassSimple";
+                icon = "Hourglass";
                 color = "red-400";
                 colorButton = "white";
                 colorButtonText = "red-400";
@@ -116,7 +116,7 @@ function CourseStructure({ data }) {
 
                                 <Row className='justify-between'>
                                     <View className='my-2 text-xs '><Text className="text-white">Module {item.index}</Text></View>
-                                    {isEditable && <Row className='items-center justify-center gap-x-2'><DropdownMenu items={manageMenu} onSelect={(oItem) => { handleManage(oItem, item.id) }}><Button rounded startDecorator="Cog" size='sm' /></DropdownMenu><DragControl dragHandleProps={dragHandleProps}><Button rounded startDecorator="ArrowsHorizontal" size='sm' /></DragControl></Row>}
+                                    {isEditable && <Row className='items-center justify-center gap-x-2'><DropdownMenu items={manageMenu} onSelect={(oItem) => { handleManage(oItem, item.id) }}><Button rounded startDecorator="Cog" size='sm' /></DropdownMenu><DragControl dragHandleProps={dragHandleProps}><Button rounded startDecorator="ArrowLeftRight" size='sm' /></DragControl></Row>}
                                 </Row>
                                 <View className='h-12'>
                                     <Text className="text-white text-lg leading-tight tracking-tight font-bold text-secondary-foreground " numberOfLines={2}>{item.title}</Text>

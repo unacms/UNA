@@ -55,9 +55,8 @@ export const settingsLayout = {
         show_tabbar_on_mobile_non_logged: false,
 
         header: {
-            container: ' w-full z-50 header-fixed web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out bg-card backdrop-blur-lg shadow-card-outline dark:shadow-card-outline-deep',
-            content: ' items-center justify-between h-16  w-full mx-auto',
-            /** Mobile web extra classes when the scroll-up pinned fixed bar is visible — background, border, blur. Merged on the header row after `content`. */
+            container: ' w-full z-50 header-fixed web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out shadow-card-outline dark:shadow-card-outline-deep',
+            content: ' items-center justify-between h-16 bg-card w-full mx-auto',
             content_pinned_fixed: '    ',
             content_left: ' items-center flex-none  2xl:w-full max-w-96 px-3 lg:px-4 gap-2',
             content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-3xl px-4 ',

@@ -1281,7 +1281,7 @@ const HeaderContainer = ({
                     marginBottom: !isScrolled ? '0px' : `${(smallCoverHeight + ((isCover && !isHideCover) || !isDesktop ? 56 : 0))}px`,
                 }}
             >
-                <View>
+                
                     <View className={conductorTheme.cover_content}>
                         {isCover && !isHideCover && (
                             <View className="w-full" onLayout={onCoverLayout1}>
@@ -1294,7 +1294,7 @@ const HeaderContainer = ({
                             </View>
                         )}
                     </View>
-                </View>
+                
             </View>
             <View className={`header-fixed ${isScrolled ? '' : ''} ${conductorTheme.cover_base} ` + (isScrolled ? 'fixed' : '')}>
                 <View className={conductorTheme.cover_small}

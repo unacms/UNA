@@ -80,7 +80,7 @@ function GetCoverBackButton({ isPerson }) {
         )
     } else {
         return (
-            <View className="lg:hidden ">
+            <View className="lg:hidden">
                 <Link href="/">
                     <NeoButton
                         image="ArrowLeft"
@@ -153,9 +153,9 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                     <View className="flex-1 shrink items-center flex-row gap-2 h-14 ">
                         {(!appSetting('context_selector', 'show_always') ||
                             !isWeb) && (
-                                <View className="flex-row flex-none lg:hidden">
+                                <>
                                     {getCoverBackButton(bPerson)}
-                                </View>
+                                </>
                             )}
 
                         <>
@@ -522,10 +522,10 @@ export default function Cover({
                 className={` ${appSetting(
                     'layout',
                     'max_width_content',
-                )} lg:flex-row  mx-auto w-full p-3 sm:p-4 gap-x-3 `}
+                )} lg:flex-row mx-auto w-full p-3 sm:p-4 gap-3 lg:gap-4 z-50`}
             >
                 {bPerson && (
-                    <View className="hidden lg:flex flex-none h-24 w-40 justify-end">
+                    <View className="hidden lg:flex flex-none h-24 w-42 justify-end">
                         <View className=" rounded-full p-1 absolute bottom-0 flex-none bg-card ">
                             <CoverImage
                                 is_person={bPerson}
@@ -542,8 +542,8 @@ export default function Cover({
                 <View
                     className={`flex web:flex-1 sm:gap-3 ${bPerson ? 'lg:flex-row flex-col-reverse' : 'lg:flex-row flex-col-reverse'}`}
                 >
-                    <View className="flex-none gap-1 ">
-                        {isDesktop && <Row className="gap-2 flex-none items-center min-h-10 px-0.5">
+                    <View className="flex-none ">
+                        {isDesktop && <Row className="gap-2 flex-none items-center min-h-12">
                             <Text
                                 className={` min-w-0 tracking-tight text-2xl sm:text-3xl font-bold text-foreground`}
                                 numberOfLines={2}

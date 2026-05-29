@@ -34,27 +34,25 @@ function PageContent({ data }) {
     const isShowCreateAccount = BlockDataByName(data, 'system:login_form');
 
     return (
-        <View className="w-full max-w-md ">
-            <View className="sm:py-6 gap-4 sm:gap-6 max-w-sm w-full mx-auto">
-                <Card role="form"
-                    titleId="login-page-title"
-                    aria-describedby="login-card-description"
-                    className="sm:py-6 gap-4 sm:gap-6 max-w-sm w-full mx-auto"
-                >
-                    <CardContent className="sm:px-6 gap-4">
-                        <BlockByName
-                            name={isShowCreateAccount ? "system:login_form" : "system:login_form_only"}
-                            data={data}
-                            formProps={{
-                                hide_errors: true,
-                                button_full_width: true,
-                            }}
-                        />
-                        <AuthPanel forgotPasswordLink={true} showSeparator={true} />
-                    </CardContent>
-                </Card>
+        <View className="w-full max-w-md gap-4 sm:gap-6">
+            <Card role="form"
+                titleId="login-page-title"
+                aria-describedby="login-card-description"
+                className="sm:py-6 gap-4 sm:gap-6 max-w-sm w-full mx-auto rounded-2xl"
+            >
+                <CardContent className="sm:px-6 gap-4">
+                    <BlockByName
+                        name={isShowCreateAccount ? "system:login_form" : "system:login_form_only"}
+                        data={data}
+                        formProps={{
+                            hide_errors: true,
+                            button_full_width: true,
+                        }}
+                    />
+                    <AuthPanel forgotPasswordLink={true} showSeparator={true} />
+                </CardContent>
+            </Card>
 
-            </View>
             {isShowCreateAccount && <View className="sm:px-6 ">
                 <Row
                     className="mx-auto gap-1 justify-center items-center text-center"
