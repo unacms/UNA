@@ -40,7 +40,7 @@ export const settingsBadges = {
             // Matches profile_sizes['xs']: h-6 (24px)
             padding: ' ',
             wide_padding: ' px-2 ',
-            container: ' min-w-6 h-6 gap-0.5 overflow-hidden justify-center items-center ',
+            container: ' min-w-5 h-5 gap-0.5 overflow-hidden justify-center items-center ',
             image_container: ' items-center justify-center rounded overflow-hidden ',
             icon_size: 14,
             text: ' text-xs leading-6 px-0.5  ',

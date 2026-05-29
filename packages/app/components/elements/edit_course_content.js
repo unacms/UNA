@@ -19,7 +19,7 @@ function CourseStructure(props) {
                 let colorButton = "emerald-400";
                 let colorButtonText = "emerald-400";
                 if (item.status == "in process") {
-                    icon = "HourglassSimple";
+                    icon = "Hourglass";
                     color = "red-400";
                     colorButton = "white";
                     colorButtonText = "red-400";

@@ -58,7 +58,7 @@ export default function (props) {
                 <View className="absolute right-0 top-0 mb-1">
                     <Button
                         onPress={props.handleSubmit}
-                        startDecorator="ArrowClockwise"
+                        startDecorator="RotateCw"
                         variant="primary"
                         size="xs"
                         rounded

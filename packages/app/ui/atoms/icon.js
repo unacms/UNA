@@ -87,8 +87,8 @@ function parseIconSceneClasses(className) {
     return { scenes, cleanedClassName };
 }
 
-export function InlineIcon({ InlineIcon: C, width, height, size, color }) {
-    return <C width={width || size} height={height || size} color={color} />;
+export function InlineIcon({ InlineIcon: C, width, height, size, color, _strokeWidth, cleanedClassName }) {
+    return <C width={width || size} height={height || size} color={color} strokeWidth={_strokeWidth} className={cleanedClassName} />;
 }
 
 function getAnimatedIcon(name) {

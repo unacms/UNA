@@ -291,7 +291,7 @@ export default function DropdownPopup({
                     accessibilityLabel={triggerAccessibilityLabel}
                     aria-haspopup="menu"
                     aria-expanded={isRealOpen}
-                    className="rounded-xl web:active:scale-95 web:duration-100"
+                    className=" web:active:scale-95 web:duration-100"
                 >
                     {trigger}
                 </Pressable>

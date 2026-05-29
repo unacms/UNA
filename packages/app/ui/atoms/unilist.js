@@ -5,7 +5,6 @@ import { useSetScrollDirection, useHeaderHeight, useSetScrollValue } from 'app/c
 import { getListScrollOffset, setListScrollOffset } from 'app/lib/tab-page-cache';
 
 export default function UniList(props) {
-    const uniRef = useRef(null);
     const { 
         preloadComponent, 
         contentContainerStyle: contentContainerStyleProp, 
@@ -109,7 +108,6 @@ export default function UniList(props) {
     }, [url]);
 
     const setListRef = useCallback((node) => {
-        uniRef.current = node;
         if (typeof refer === 'function') {
             refer(node);
         } else if (refer) {

@@ -1275,13 +1275,13 @@ const HeaderContainer = ({
     }, [])
     //hideDefaultHeaderFrom
     return (
-        <View className={`z-40 ${isUseCurrentHeader || isDesktop ? ' ' : ''}`}>
-            <View className={`${conductorTheme.cover_base} cover-1`}
+        <View className={`z-40 ${conductorTheme.cover_base} ${isUseCurrentHeader || isDesktop ? ' ' : ''}`}>
+            <View className={`w-full cover-1`}
                 style={{
                     marginBottom: !isScrolled ? '0px' : `${(smallCoverHeight + ((isCover && !isHideCover) || !isDesktop ? 56 : 0))}px`,
                 }}
             >
-                <View>
+                
                     <View className={conductorTheme.cover_content}>
                         {isCover && !isHideCover && (
                             <View className="w-full" onLayout={onCoverLayout1}>
@@ -1294,9 +1294,9 @@ const HeaderContainer = ({
                             </View>
                         )}
                     </View>
-                </View>
+                
             </View>
-            <View className={`header-fixed ${isScrolled ? '' : ''} ${conductorTheme.cover_base} ` + (isScrolled ? 'fixed' : '')}>
+            <View className={`header-fixed w-full ${isScrolled ? conductorTheme.cover_base : ''} ` + (isScrolled ? 'fixed' : '')}>
                 <View className={conductorTheme.cover_small}
                     style={{
                         display: isScrolled ? 'flex' : 'none',

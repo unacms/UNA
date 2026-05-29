@@ -100,7 +100,7 @@ const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
         return (
 
             <ScrollView horizontal={true} className=" bg-card ">
-                <Row className="px-3 gap-1 h-14 justify-center" >
+                <Row className="px-3 gap-2 h-14 justify-center" >
                     {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
 
 

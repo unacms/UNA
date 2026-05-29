@@ -33,7 +33,7 @@ export const TextHeader = memo(({ text }) => {
 export const PageHeaderSmall = ({ pageData }) => {
     const HeaderElement = getComponent('molecule', 'header_element');
     return (
-        <Row className="w-full justify-between">
+        <Row className="w-full justify-between gap-2">
             <Link href="/home" size="lg" aria-label="Home">
                 {appStatic('logo')}
             </Link>

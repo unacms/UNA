@@ -1,4 +1,14 @@
-import dynamicIconImports from 'lucide-react/dynamicIconImports.mjs';
+// Single JSON module of every Lucide icon's node geometry (kebab-keyed), loaded
+// once at module init. This replaces lucide-react/dynamicIconImports.mjs, whose
+// ~1,960 dynamic import() entries forced webpack to wire up a lazy chunk per icon
+// (16–18s route compiles) just to serve one icon per request.
+import iconNodes from 'lucide-static/icon-nodes.json';
+// icon-nodes.json holds the 1,711 canonical icons; dynamicIconImports also
+// accepted ~249 deprecated v0 aliases (e.g. alert-circle → circle-alert). This
+// map (generated from dynamicIconImports) preserves those so renamed names that
+// the backend/settings still reference don't start 404-ing. Regenerate on a
+// Lucide major upgrade.
+import iconAliases from './icon-aliases.json';
 
 /** Map PascalCase Lucide export names to dynamicIconImports keys (e.g. Share2 → share-2). */
 function iconNameToImportKey(name) {
@@ -59,13 +69,8 @@ export async function GET(request) {
             return new Response('', { status: 404 });
         }
 
-        const loader = dynamicIconImports[iconNameToImportKey(iconName)];
-        if (!loader) {
-            return new Response('', { status: 404 });
-        }
-
-        const mod = await loader();
-        const iconNode = mod.__iconNode;
+        const key = iconNameToImportKey(iconName);
+        const iconNode = iconNodes[key] || iconNodes[iconAliases[key]];
         if (!iconNode) {
             return new Response('', { status: 404 });
         }

@@ -19,10 +19,10 @@ export const settingsElements = {
         topmenu_button_size: 'base',
         topmenu_button_pressed: true,
         left_menu_cnt: '  ',
-        cover_base: 'w-full bg-card',
+        cover_base: 'w-full bg-card ',
         cover_content:
             'items-center h-full w-full justify-between',
-        cover_small: 'max-w-7xl mx-auto flex-row w-full lg:px-4 items-center ',
+        cover_small: 'max-w-7xl mx-auto flex-row w-full items-center ',
         hide_top_menu_from: 'xl',
     },
     dropdown_menu: {

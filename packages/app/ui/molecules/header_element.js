@@ -70,20 +70,17 @@ export default function HeaderElement({ mode, url, uri }) {
                                     const messengerHref = appSetting('messenger', 'url');
                                     return (
                                         <NeoButton
-                                            {...(item.props || {})}
                                             addon={{
                                                 variant: "primary",
                                                 text: currentUser?.counters?.bx_messenger_new_messages,
                                                 hideZero: true,
                                             }}
-                                            variant={isDesktop ? 'secondary' : 'text'}
-                                            controlSize = 'regular'
-                                            borderShape = 'circle'
-                                            image = 'MessageSquare'
-                                            size={isDesktop ? 'base' : 'base'}
-                                            pressed={appSetting('messenger', 'url') === '/' + uri}
+                                            controlSize="regular"
+                                            borderShape="circle"
+                                            image="MessageSquare"
+                                            selected={appSetting('messenger', 'url') === '/' + uri}
                                             role="link"
-                                            style = {isDesktop ? 'glass' : 'borderless'}
+                                            style={isDesktop ? 'glass' : 'borderless'}
                                             alt={item.alt || item.title || (item.props?.title)}
                                             onPress={(event) => {
                                                 item.props?.onPress?.(event);
