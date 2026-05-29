@@ -19,13 +19,16 @@ import {
     isSameItemsForUniList,
     flattenPagesForUniList,
     fetchUniListData,
+    prependItemToUniListQueryCache,
+    removeItemFromUniListQueryCache,
+    matchesFeedOwnerFilter,
     Addon,
     getAddon
 } from 'app/lib/conductor-helpers'
 import { ItemRenderer } from 'app/components/item-renderer'
 import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
 import { BlockByName } from 'app/components/block'
 import { useTranslation } from 'react-i18next'
@@ -454,6 +457,9 @@ const TabSceneMainContent = ({
         isFirstLoad: true,
         prevItems: []
     })
+    const queryClient = useQueryClient()
+    const pageRouteRef = useRef(pageRoute)
+    const qKeyRef = useRef(null)
 
     const qKey = [
         pageRoute?.endpoint?.request_url,
@@ -463,6 +469,11 @@ const TabSceneMainContent = ({
         ts,
         timestamp
     ]
+
+    useEffect(() => {
+        pageRouteRef.current = pageRoute
+        qKeyRef.current = qKey
+    }, [pageRoute, qKey])
 
     const {
         data: pagesData,
@@ -515,19 +526,30 @@ const TabSceneMainContent = ({
         const subscription = emitter.addListener(`page`, (data) => {
             if (data.action == 'reload') {
                 refetchRef.current.skipToast = true
-                refetch();
+                refetch()
             }
         })
 
         const subscription2 = emitter.addListener('feed', (data) => {
+            const route = pageRouteRef.current
+            const cacheKey = qKeyRef.current
+
             if (data.action == 'remove_content') {
+                removeItemFromUniListQueryCache(queryClient, cacheKey, data.id)
                 dispatch({ type: 'REMOVE_ITEM', id: data.id })
                 if (refetchRef.current?.prevItems) {
-                    refetchRef.current.prevItems = refetchRef.current.prevItems.filter(item => item.id != data.id)
+                    refetchRef.current.prevItems = refetchRef.current.prevItems.filter(
+                        (item) => item.id != data.id
+                    )
                 }
                 refetchRef.current.skipToast = true
             }
-            if (data.action == 'new_content' && (!pageRoute?.endpoint?.params?.owner_id || (Math.abs(pageRoute?.endpoint?.params?.owner_id) == Math.abs(data?.data?.owner_id) || Math.abs(pageRoute?.endpoint?.params?.owner_id) == Math.abs(data?.data?.object_privacy_view)))) {
+
+            if (
+                data.action == 'new_content' &&
+                matchesFeedOwnerFilter(route, data?.data)
+            ) {
+                prependItemToUniListQueryCache(queryClient, cacheKey, data.data)
                 dispatch({ type: 'PREPEND_ITEM', item: data.data })
                 if (refetchRef.current?.prevItems) {
                     refetchRef.current.prevItems = [data.data, ...refetchRef.current.prevItems]
@@ -537,10 +559,10 @@ const TabSceneMainContent = ({
         })
 
         return () => {
-            subscription.remove();
+            subscription.remove()
             subscription2.remove()
         }
-    }, [])
+    }, [queryClient, refetch])
 
     useEffect(() => {
         refetchRef.current.skipToast = true
@@ -639,6 +661,8 @@ const TabSceneMainContent = ({
         const leftbarContent = pageRoute?.leftbar?.content ?? [];
         const sidebarContent = pageRoute?.sidebar?.content ?? [];
         const visibleItems = refetchState.visibleItems ?? [];
+
+
         const base = isDesktop
             ? [...dataItemsPageFiltered, ...visibleItems]
             : [...leftbarContent.filter(item => !item.data?.hidden_on?.includes?.('phone')), ...dataItemsPageFiltered, ...visibleItems, ...sidebarContent.filter(item => !item.data?.hidden_on?.includes?.('phone'))];
@@ -648,6 +672,9 @@ const TabSceneMainContent = ({
             item.feed_type === feedType ? item : { ...item, feed_type: feedType }
         );
     }, [dataItemsPageFiltered, refetchState.visibleItems, isDesktop, pageRoute?.endpoint?.request_url, pageRoute?.leftbar?.content, pageRoute?.sidebar?.content, feedType]);
+
+
+    console.log('dataItems', dataItems);
 
     useEffect(() => {
         if (isUseCurrentHeader) {

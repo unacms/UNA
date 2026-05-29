@@ -121,6 +121,57 @@ export const refetchUniListReducer = (state, action) => {
 
 export const flattenPagesForUniList = (pagesData) => (pagesData?.pages ?? []).flatMap((p) => p.data ?? [])
 
+export const prependItemToUniListQueryCache = (queryClient, queryKey, item) => {
+    if (!item?.id || !queryClient) return
+
+    queryClient.setQueryData(queryKey, (old) => {
+        if (!old?.pages?.length) return old
+
+        const exists = old.pages.some((page) =>
+            (page.data ?? []).some((i) => i.id == item.id)
+        )
+        if (exists) return old
+
+        const [firstPage, ...restPages] = old.pages
+        return {
+            ...old,
+            pages: [
+                {
+                    ...firstPage,
+                    data: [item, ...(firstPage.data ?? [])],
+                },
+                ...restPages,
+            ],
+        }
+    })
+}
+
+export const removeItemFromUniListQueryCache = (queryClient, queryKey, id) => {
+    if (id == null || !queryClient) return
+
+    queryClient.setQueryData(queryKey, (old) => {
+        if (!old?.pages?.length) return old
+
+        return {
+            ...old,
+            pages: old.pages.map((page) => ({
+                ...page,
+                data: (page.data ?? []).filter((item) => item.id != id),
+            })),
+        }
+    })
+}
+
+export const matchesFeedOwnerFilter = (pageRoute, item) => {
+    const ownerId = pageRoute?.endpoint?.params?.owner_id
+    if (!ownerId) return true
+
+    return (
+        Math.abs(ownerId) == Math.abs(item?.owner_id) ||
+        Math.abs(ownerId) == Math.abs(item?.object_privacy_view)
+    )
+}
+
 export const isSameItemsForUniList = (a, b) => {
     if (a.length !== b.length) return false
     for (let i = 0; i < a.length; i++) {

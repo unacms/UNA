@@ -1,7 +1,7 @@
 import { Text } from 'app/design/typography'
-import Html from 'app/ui/atoms/html';
 import { View } from 'app/design/view'
 import { BlockWrapper } from 'app/components/block-wrapper'
+import Html from 'app/ui/atoms/html';
 
 export default function ElementMsg({ data, msg_type, blockWrapperProps }) {
     if (!data.length)
