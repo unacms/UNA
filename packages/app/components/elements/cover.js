@@ -166,7 +166,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                                             <Profile
                                                 {...data.profile}
                                                 displayType="unit_wo_info"
-                                                displaySize={'sm'}
+                                                displaySize={'base'}
                                             />
                                         </View>
                                     )}
@@ -522,7 +522,7 @@ export default function Cover({
                 className={` ${appSetting(
                     'layout',
                     'max_width_content',
-                )} lg:flex-row mx-auto w-full p-3 sm:p-4 gap-3 lg:gap-4 z-50`}
+                )} lg:flex-row mx-auto w-full px-3 pb-3 sm:p-4 gap-3 lg:gap-4 z-50`}
             >
                 {bPerson && (
                     <View className="hidden lg:flex flex-none h-24 w-42 justify-end">
@@ -604,7 +604,7 @@ export default function Cover({
                                 isSplitMenu={true}
                             />
                         </View>}
-                            {!isDesktop && <Row className="gap-2 flex-1 min-w-0 items-center min-h-10 px-0.5 overflow-hidden">
+                            {!isDesktop && <Row className="gap-2 flex-none min-w-0 items-center min-h-10">
                             <Text
                                 className="min-w-0 flex-1 truncate tracking-tight text-xl sm:text-3xl font-bold text-foreground"
                                 numberOfLines={1}

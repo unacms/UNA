@@ -4,22 +4,22 @@ export const settingsLinks = {
         default_variant: 'default',
         xs: {
             hitSlop: 8,
-            text: 'text-xs rounded-sm font-semibold',
+            text: 'text-xs font-medium rounded-sm',
             primary: 'p-1',
         },
         sm: {
             hitSlop: 8,
-            text: 'text-sm leading-5 rounded-lg font-semibold',
-            primary: ' ',
+            text: 'text-sm font-medium rounded-md',
+            primary: ' p-1.5',
         },
         md: {
             hitSlop: 8,
-            text: 'text-base leading-6 rounded-lg font-semibold',
+            text: 'text-base font-medium rounded-md',
             primary: 'p-2',
         },
         lg: {
             hitSlop: 8,
-            text: 'text-lg leading-6 rounded-xl font-semibold',
+            text: 'text-lg font-medium rounded-xl',
             primary: 'p-3',
         }
     },
