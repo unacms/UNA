@@ -4,6 +4,46 @@ import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { useIsDesktop } from 'app/context/measure';
 import { View } from 'app/design/view';
 
+// UNA's persons actions menu can return both the adaptive friends connection
+// (`profile-friends` — renders "Add friend", then "Friends"/"Unfriend" once
+// connected) and a redundant explicit `profile-friend-add` ("Add friend"). For a
+// non-friend they render identically, producing a duplicate button. We keep the
+// adaptive connection and drop the redundant one. Add pairs here if more surface.
+const REDUNDANT_ACTION_WHEN_PRESENT = {
+    'profile-friend-add': 'profile-friends',
+};
+
+function dropRedundantActions(items, alsoPresentNames = []) {
+    const list = Array.isArray(items) ? items : [];
+    const present = new Set([...alsoPresentNames, ...list.map((aItem) => aItem.name)]);
+    return list.filter((aItem) => {
+        const requiredSibling = REDUNDANT_ACTION_WHEN_PRESENT[aItem.name];
+        return !(requiredSibling && present.has(requiredSibling));
+    });
+}
+
+// Partition cover action items into the standalone buttons shown OUTSIDE the "…" menu
+// and the OVERFLOW that collapses inside it.
+//
+// Source of truth is the per-item `persistent` flag (Option A): any item flagged
+// `persistent` renders outside, everything else collapses. When the backend sets no
+// per-item flags, fall back to the menu-level `persistent` count so the first N items
+// still surface outside (keeps the cover usable until the backend marks items).
+// Redundant actions (see above) are dropped from each partition.
+function splitPersistentItems(items, persistentCount) {
+    const list = Array.isArray(items) ? items : [];
+    const hasFlags = list.some((aItem) => aItem.persistent);
+    const outsideRaw = hasFlags
+        ? list.filter((aItem) => aItem.persistent)
+        : list.slice(0, Math.max(0, Number(persistentCount) || 0));
+    const overflowRaw = hasFlags
+        ? list.filter((aItem) => !aItem.persistent)
+        : list.slice(Math.max(0, Number(persistentCount) || 0));
+    const outside = dropRedundantActions(outsideRaw);
+    const overflow = dropRedundantActions(overflowRaw, outside.map((aItem) => aItem.name));
+    return { outside, overflow };
+}
+
 export function CoverMenuSmall(props) {
     const [ntfsOpen, setNtfsOpen] = useState(false)
     return (
@@ -47,14 +87,7 @@ export function CoverMenu(props) {
     let propsCopy = { ...props } // Create a copy of the array
 
     if (isSplitMenu) {
-        propsCopy.items = propsCopy.items.filter((aItem) => {
-            if (aItem.persistent) {
-                return true // Exclude this item from the new array
-            } else {
-                
-                return false // Include this item in the new array
-            }
-        })
+        propsCopy.items = splitPersistentItems(propsCopy.items, props.persistent).outside
     } else {
         propsCopy.items = propsCopy.items.filter((aItem) => {
             if (aItem.name != props.uri) {
@@ -110,14 +143,7 @@ export function CoverMenuMore(props) {
     let propsCopy = { ...props } // Create a copy of the array
 
     if (isSplitMenu) {
-        propsCopy.items = propsCopy.items.filter((aItem) => {
-            if (aItem.persistent) {
-                return false // Exclude this item from the new array
-            } else {
-                
-                return true // Include this item in the new array
-            }
-        })
+        propsCopy.items = splitPersistentItems(propsCopy.items, props.persistent).overflow
     } else {
         propsCopy.items = propsCopy.items.filter((aItem) => {
             if (aItem.name != props.uri) {
@@ -153,7 +179,10 @@ export function CoverMenuMore(props) {
             displayType="button"
             autoSize={props.autoSize ?? true}
             containerClasses={props.containerClasses}
-            allowZeroPersistant={props.allowZeroPersistant}
+            // In split mode the sibling CoverMenu renders the persistent buttons, so the
+            // "more" menu is pure overflow: collapse every (non-persistent) item into "…",
+            // 0 inline, consistently on desktop and mobile.
+            allowZeroPersistant={isSplitMenu ? true : props.allowZeroPersistant}
             params={{
                 showVertical:props?.params?.showVertical ?? false,
                 show_action: true,

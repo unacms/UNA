@@ -239,6 +239,7 @@ export default function ElementMenu(oProps) {
         }}
         isFixedCount={oProps?.params?.isFixedCount}
         persistent={oProps.persistent}
+        allowZeroPersistant={oProps.allowZeroPersistant}
         containerClasses={oProps.containerClasses || "w-full "}
         items={filteredItems}
         menuClasses={sClassName}

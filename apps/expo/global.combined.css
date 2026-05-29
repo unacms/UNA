@@ -35,3 +35,25 @@
     --container-2xl: 96rem;
     --container-3xl: 120rem;
 }
+
+/*
+ * Native (Uniwind) shadow overrides.
+ *
+ * Uniwind cannot serialize `rgb(var(--primary) / <alpha>)` inside a box-shadow:
+ * applying an alpha divider to a var() color channel produces an invalid
+ * runtime expression ("Failed to serialize ... --neo-shadow-btn-glass-prominent").
+ * Literal channels with alpha (e.g. `rgb(37 99 235 / 0.8)`) serialize fine.
+ *
+ * Web keeps the themeable form in theme.css; here we override ONLY the two
+ * affected glass-prominent shadows with the default `--primary` channels
+ * (37 99 235 = --accent-600). Forks that re-brand `--primary` should mirror
+ * these channels for native.
+ *
+ * Declared unlayered so it always wins over the `@layer base` definition in
+ * theme.css (unlayered custom properties beat layered ones in the cascade).
+ */
+:root,
+:host {
+    --neo-shadow-btn-glass-prominent: 0 1px 0 0 rgb(255 255 255 / 0.15), inset 0 0 0 1px rgb(255 255 255 / 0.15), 0 0 0 0.5px rgb(37 99 235 / 0.8), 0 0px 0 1px rgb(37 99 235 / 0.25), 0 2px 4px -1px rgb(0 0 0 / 0.10), 0 8px 16px -4px rgb(0 0 0 / 0.10);
+    --neo-shadow-btn-glass-prominent-deep: inset 0 1px 0 0 rgb(255 255 255 / 0.15), inset 0 0 0 1px rgb(255 255 255 / 0.15), 0 0 0 0.5px rgb(37 99 235 / 0.8), 0 0px 0 1px rgb(0 0 0 / 1), 0 2px 4px -1px rgb(0 0 0 / 0.25), 0 8px 16px -4px rgb(0 0 0 / 0.25);
+}

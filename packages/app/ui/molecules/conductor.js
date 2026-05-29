@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useEffect, useMemo, useRef } from "react";
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, interpolate } from 'react-native-reanimated';
 import { View, ScrollView, Row } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { deepEqual, getUnitModeBySource } from 'app/lib/util';
@@ -30,6 +31,75 @@ import {
     paddingForList
 } from 'app/customization/functions'
 
+// Scroll offset at which the full cover finishes crossfading into the small cover.
+const COVER_SWITCH_THRESHOLD = 500;
+// Matches the web crossfade/collapse duration in conductor.web.js.
+const COVER_SWITCH_DURATION = 300;
+
+/**
+ * Native counterpart to the web cover crossfade: blends the full cover into the
+ * small cover and animates the container height so the tabs/filter below glide
+ * up instead of jumping. `progress` is the ground-truth state (0 = full, 1 =
+ * small); height and opacities are derived from it.
+ */
+const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
+    coverHeader,
+    coverHeaderSmall,
+    sceneHeader,
+    filter,
+}) {
+    const scrollValue = useScrollValue();
+    const showSmall = scrollValue > COVER_SWITCH_THRESHOLD;
+
+    const [fullHeight, setFullHeight] = useState(0);
+    const [smallHeight, setSmallHeight] = useState(0);
+    const measured = fullHeight > 0 && smallHeight > 0;
+
+    const progress = useSharedValue(showSmall ? 1 : 0);
+
+    useEffect(() => {
+        progress.set(withTiming(showSmall ? 1 : 0, { duration: COVER_SWITCH_DURATION }));
+    }, [showSmall, progress]);
+
+    const containerStyle = useAnimatedStyle(() => {
+        if (!measured) return {};
+        return { height: interpolate(progress.get(), [0, 1], [fullHeight, smallHeight]) };
+    }, [measured, fullHeight, smallHeight]);
+
+    const fullStyle = useAnimatedStyle(() => ({ opacity: 1 - progress.get() }));
+    const smallStyle = useAnimatedStyle(() => ({ opacity: progress.get() }));
+
+    const onFullLayout = useCallback((e) => {
+        setFullHeight(e.nativeEvent.layout.height);
+    }, []);
+    const onSmallLayout = useCallback((e) => {
+        setSmallHeight(e.nativeEvent.layout.height);
+    }, []);
+
+    return (
+        <View className="w-full">
+            <Animated.View style={[{ width: '100%', overflow: 'hidden' }, containerStyle]}>
+                <Animated.View
+                    style={[measured ? { position: 'absolute', top: 0, left: 0, right: 0 } : { width: '100%' }, fullStyle]}
+                    pointerEvents={showSmall ? 'none' : 'auto'}
+                    onLayout={onFullLayout}
+                >
+                    {coverHeader}
+                </Animated.View>
+                <Animated.View
+                    style={[{ position: 'absolute', top: 0, left: 0, right: 0 }, smallStyle]}
+                    pointerEvents={showSmall ? 'auto' : 'none'}
+                    onLayout={onSmallLayout}
+                >
+                    {coverHeaderSmall}
+                </Animated.View>
+            </Animated.View>
+            {sceneHeader}
+            {filter}
+        </View>
+    );
+});
+
 const TabSceneHeader = React.memo(function TabSceneHeader2({
     headerMode,
     coverBlock,
@@ -38,7 +108,6 @@ const TabSceneHeader = React.memo(function TabSceneHeader2({
     sceneHeader,
     filter,
 }) {
-    const scrollValue = useScrollValue();
     const coverHeader = useMemo(
         () => (
             <Cover
@@ -57,21 +126,13 @@ const TabSceneHeader = React.memo(function TabSceneHeader2({
         [coverBlock, pageContext]
     );
     if (headerMode === 'dynamic') {
-        if (scrollValue > 500) {
-            return (
-                <View className="w-full">
-                    {coverHeaderSmall}
-                    {sceneHeader}
-                    {filter}
-                </View>
-            );
-        }
         return (
-            <View className="w-full">
-                {coverHeader}
-                {sceneHeader}
-                {filter}
-            </View>
+            <DynamicCoverHeader
+                coverHeader={coverHeader}
+                coverHeaderSmall={coverHeaderSmall}
+                sceneHeader={sceneHeader}
+                filter={filter}
+            />
         );
     }
     if (headerMode === 'small') {

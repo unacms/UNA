@@ -11,7 +11,10 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
     const isWeb = Platform.OS == 'web'
     const itemRefs = useRef([]);
     const itemRefsMore = useRef();
-    const [visibleItemsCount, setVisibleItemsCount] = useState(isFixedCount ? Math.min(persistent, isDesktop ? persistent : (allowZeroPersistant ? 0 : 1)) : items.length);
+    // `allowZeroPersistant` wins on every viewport so a "more" menu paired with a
+    // sibling that renders the persistent buttons can collapse fully (0 inline).
+    // Otherwise desktop shows the full persistent count inline and mobile caps at 1.
+    const [visibleItemsCount, setVisibleItemsCount] = useState(isFixedCount ? Math.min(persistent, allowZeroPersistant ? 0 : (isDesktop ? persistent : 1)) : items.length);
     const [width, setWidth] = useState(0);
     const [pageData, setPageData] = useState(false);
     const isDynamicMenu = true;//windowWidth > LAYOUT_BREAKPOINTS.sm;

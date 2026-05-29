@@ -1272,12 +1272,16 @@ const HeaderContainer = ({
     const [smallCoverHeight, setSmallCoverHeight] = useState(79);
     const isDesktop = useIsDesktop()
     const [isScrolled, setIsScrolled] = useState(isCoverDisabled)
+    // Keeps the small cover mounted through its exit animation when scrolling back up.
+    const [isSmallCoverMounted, setIsSmallCoverMounted] = useState(isCoverDisabled)
+    // Measured height of the small cover so it can collapse smoothly on exit (tabs follow).
+    const [smallCoverInnerHeight, setSmallCoverInnerHeight] = useState(0)
     const uri = pageData?.uri
 
     const handleScroll = useCallback(() => {
         requestAnimationFrame(() => {
             const currentScrollY = window.scrollY;
-            setIsScrolled(currentScrollY > (hideDefaultHeaderFrom - smallCoverHeight - 20))
+            setIsScrolled(currentScrollY > (hideDefaultHeaderFrom - smallCoverHeight - 10))
         })
     }, [hideDefaultHeaderFrom, smallCoverHeight])
 
@@ -1293,6 +1297,16 @@ const HeaderContainer = ({
         }
     }, [handleScroll, isCover])
 
+    useEffect(() => {
+        if (isScrolled) {
+            setIsSmallCoverMounted(true)
+            return
+        }
+        // Delay unmount so the exit animation can play before display:none.
+        const timer = setTimeout(() => setIsSmallCoverMounted(false), 300)
+        return () => clearTimeout(timer)
+    }, [isScrolled])
+
     const onCoverLayout1 = useCallback((e) => {
         setHideDefaultHeaderFrom(e.nativeEvent.layout.height)
     }, [])
@@ -1300,12 +1314,20 @@ const HeaderContainer = ({
     const onCoverLayout2 = useCallback((e) => {
         setSmallCoverHeight(e.nativeEvent.layout.height)
     }, [])
+
+    const onSmallCoverLayout = useCallback((e) => {
+        setSmallCoverInnerHeight(e.nativeEvent.layout.height)
+    }, [])
     //hideDefaultHeaderFrom
     return (
         <View className={`z-40 ${conductorTheme.cover_base} ${isUseCurrentHeader || isDesktop ? ' ' : ''}`}>
             <View className={`w-full cover-1`}
                 style={{
-                    marginBottom: !isScrolled ? '0px' : `${(smallCoverHeight + ((isCover && !isHideCover) || !isDesktop ? 56 : 0))}px`,
+                    // When scrolled, header-fixed (small cover + tab bar) leaves normal flow,
+                    // so reserve its full height here: tab bar (smallCoverHeight) plus the
+                    // measured small cover (smallCoverInnerHeight) when it's shown. Replaces the
+                    // previous hardcoded 56px approximation of the small cover height.
+                    marginBottom: !isScrolled ? '0px' : `${(smallCoverHeight + ((isCover && !isHideCover) || !isDesktop ? smallCoverInnerHeight : 0))}px`,
                 }}
             >
                 
@@ -1324,19 +1346,27 @@ const HeaderContainer = ({
                 
             </View>
             <View className={`header-fixed w-full ${isScrolled ? conductorTheme.cover_base : ''} ` + (isScrolled ? 'fixed' : '')}>
-                <View className={conductorTheme.cover_small}
+                <View className={`${conductorTheme.cover_small} ${isScrolled ? 'animate-in fade-in slide-in-from-top-2 duration-300 ease-out' : ''}`}
                     style={{
-                        display: isScrolled ? 'flex' : 'none',
+                        display: isSmallCoverMounted ? 'flex' : 'none',
+                   
+                        maxHeight: isScrolled ? smallCoverInnerHeight || undefined : 0,
+                        opacity: isScrolled ? 1 : 0,
+                        transitionProperty: 'max-height, opacity',
+                        transitionDuration: '300ms',
+                        transitionTimingFunction: 'ease-out',
                     }}
                 >
-                    {((isCover && !isHideCover) || !isDesktop) && (
-                        <View className="w-full">
-                            <CoverSmall
-                                context={pageData.context}
-                                data={pageData.cover_block}
-                            />
-                        </View>
-                    )}
+                    <View className="w-full" onLayout={onSmallCoverLayout}>
+                        {((isCover && !isHideCover) || !isDesktop) && (
+                            <View className="w-full">
+                                <CoverSmall
+                                    context={pageData.context}
+                                    data={pageData.cover_block}
+                                />
+                            </View>
+                        )}
+                    </View>
                 </View>
                 <View onLayout={onCoverLayout2}>{tabBarObj}</View>
             </View>
