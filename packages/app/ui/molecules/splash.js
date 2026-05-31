@@ -40,7 +40,7 @@ function PageContent({ data }) {
                 aria-describedby="login-card-description"
                 className="sm:py-6 gap-4 sm:gap-6 max-w-sm w-full mx-auto rounded-2xl"
             >
-                <CardContent className="sm:px-6 gap-4">
+                <CardContent className=" gap-4">
                     <BlockByName
                         name={isShowCreateAccount ? "system:login_form" : "system:login_form_only"}
                         data={data}

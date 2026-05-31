@@ -337,7 +337,7 @@ export function CommentsBrowse({
                     </DropdownMenu>
                 </Pressable>
             </View>}
-        </Row>) : <Text>&nbsp;</Text>;
+        </Row>) : <></>;
 
     const extra = (addItems || []).filter(i => i.id !== 'block_comments-empty');
 
@@ -714,7 +714,7 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
     };
     
     return (
-        <View className=" max-w-5xl px-3 sm:px-4 py-2 sm:py-3 " >
+        <View className=" px-3 sm:px-4 " >
             {
                 formData.parent_id > 0 && (<View className='bg-accent/60 rounded-xl border border-accent px-2.5 py-2 mb-2'>
                     <Row className='items-start justify-between max-w-full relative'>
@@ -723,7 +723,7 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
                                 <Text className='text-xs text-popover-foreground '>Reply to: </Text>
                                 <Text className='font-semibold text-xs text-popover-foreground '>{ProfileDisplayName(formData.author.display_name)}</Text>
                             </Row>
-                            <Text className=' text-base overflow-hidden text-popover-foreground  text-sm' numberOfLines={3}>{formData.parent_id > 0 ? formData.text : ''}</Text>
+                            <Text className=' text-sm overflow-hidden text-popover-foreground ' numberOfLines={3}>{formData.parent_id > 0 ? formData.text : ''}</Text>
                         </View>
                         <View className=" -right-1 -top-1">
                             <Button align="start" rounded startDecorator="X" size="xs" variant="text" onPress={() => handleCancel()} />

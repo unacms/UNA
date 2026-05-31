@@ -206,7 +206,12 @@ const nextConfig = {
     },
     images: {
         remotePatterns: ImageRemotePatterns,
-        disableStaticImages: false
+        disableStaticImages: false,
+        // Keep optimized variants warm so browse grids don't re-hit the optimizer on every visit.
+        minimumCacheTTL: 60 * 60 * 24,
+        // Card thumbnails never need 3840w; dropping the top sizes avoids expensive optimizer failures.
+        deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+        imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     },
 }
 const withBundleAnalyzer = require('@next/bundle-analyzer')({

@@ -357,6 +357,7 @@ export default function Browse(props) {
                     sidebar={props.sidebar}
                     object_id={data.object_id ? data.object_id : ''}
                     view={data.view ? data.view : ''}
+                    listIndex={index}
                     {...props}
                     data={item}
                 />);
@@ -370,6 +371,7 @@ export default function Browse(props) {
                         sidebar={props.sidebar}
                         object_id={data.object_id ? data.object_id : ''}
                         view={data.view ? data.view : ''}
+                        listIndex={index}
                         {...props}
                         data={item}
                     />

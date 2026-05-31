@@ -205,7 +205,7 @@ function UnitCommentsDefault(props) {
             <Row className="gap-2">
                 {cells}
                 <View className="w-8 min-h-8 z-50 mt-2">
-                    <View className="w-8 h-8 shadow-xs rounded-full">
+                    <View className="w-8 my-0.5 shadow-xs rounded-full">
                     <Profile
                         {...data.author_data}
                         displayType="unit_wo_info"
@@ -218,7 +218,7 @@ function UnitCommentsDefault(props) {
                     )}
                 </View>
                 <View className=" flex-col mt-2 flex-1">
-                    <View className="bg-muted/50 rounded-xl px-2.5 py-2 gap-1 me-auto max-w-full">
+                    <View className="bg-muted/60 rounded-xl px-2.5 py-2 gap-1 me-auto max-w-full">
                         <View className="flex-row items-center gap-3 justify-between ">
                             <Row className="gap-3 items-center pr-8">
                                 <Profile

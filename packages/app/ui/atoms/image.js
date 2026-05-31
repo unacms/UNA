@@ -1,7 +1,9 @@
+'use client';
+
 import { SolitoImage } from 'solito/image'
 import { Platform, StyleSheet, PixelRatio, Dimensions } from 'react-native';
 import { appSetting, cn, LAYOUT_BREAKPOINTS } from 'app/lib/util';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import { UNA_URL, APP_URL, MULTITENANT_IMAGES_PROXY } from 'app/config';
 //import SvgFile from 'app/ui/molecules/svg-file';
 //import { Image as ImageRN } from 'react-native';
@@ -14,6 +16,10 @@ const SIZES_BY_BREAKPOINT = {
     [LAYOUT_BREAKPOINTS.md]: "(max-width:768px) 100vw, 500px",
 };
 
+/** Post detail / modal hero — max-w-3xl (768px) column; 1280w covers 2x DPR. */
+export const POST_ENTRY_COVER_SIZES = '(max-width: 768px) 100vw, 768px';
+export const POST_ENTRY_COVER_WIDTH_CAP = 1280;
+
 function getHostname(src) {
     try {
         return new URL(src).hostname;
@@ -23,6 +29,13 @@ function getHostname(src) {
 }
 
 const passthroughLoader = ({ src }) => src;
+
+function createOptimizedLoader(maxWidth) {
+    return ({ src, width, quality }) => {
+        const w = maxWidth ? Math.min(width, maxWidth) : width;
+        return `/_next/image?url=${encodeURIComponent(src)}&w=${w}&q=${quality ?? 75}`;
+    };
+}
 const sizeClassPattern = /^(?:web:)?(?:w-|h-|size-|aspect-)/
 
 function extractStyleWidth(style) {
@@ -87,13 +100,26 @@ function getImageSizes() {
     });
 
     const last = sorted[sorted.length - 1];
-    parts.push(`${Math.floor(100 / last.count)}vw`);
+    // Pixel cap for desktop grid slots (~4 cols). Stops lazy cards from requesting 3840w variants.
+    parts.push(`${Math.max(256, Math.floor(1280 / last.count))}px`);
 
     return parts.join(', ');
 }
 
 function ElementImageResolved(props) {
-    let { width, height, alt = "", src = '', style, source, nobg, sizes = LAYOUT_BREAKPOINTS.lg, ...rest } = props; // remove width & height
+    let {
+        width,
+        height,
+        alt = "",
+        src = '',
+        style,
+        source,
+        nobg,
+        sizes = LAYOUT_BREAKPOINTS.lg,
+        optimizedWidthCap,
+        key: _ignoredKey,
+        ...rest
+    } = props; // remove width & height
 
     const isAbsoluteHttp = /^https?:\/\//i.test(src);
     const isBlob = src.startsWith("blob:");
@@ -117,21 +143,22 @@ function ElementImageResolved(props) {
 
     sizes = SIZES_BY_BREAKPOINT[sizes] ?? sizes ?? "(max-width:768px) 100vw, 500px";
 
-    style = useMemo(() => {
+    const resolvedStyle = useMemo(() => {
         if (nobg) return {};
 
         if (Platform.OS !== 'web') {
             return { ...style, backgroundColor: appSetting('layout', 'background_image_color') };
-        } 
+        }
+
+        return style;
     }, [nobg, style]);
 
     const nativeImagesUrl = appSetting('config', 'native_app_images_url') || APP_URL;
 
-    src = useMemo(() => {
+    const resolvedSrc = useMemo(() => {
         let updatedSrc = src;
 
         if (Platform.OS !== 'web' && !src.includes('.svg')) {
-            
             if (nativeImagesUrl) {
                 const screenWidth = Dimensions.get('screen').width;
                 const imageWidth = extractStyleWidth(style) || width || screenWidth;
@@ -141,21 +168,36 @@ function ElementImageResolved(props) {
         }
 
         return updatedSrc;
-    }, [src, style, width]);
+    }, [src, style, width, nativeImagesUrl]);
 
-    const optimize = Platform.OS === 'web' && (
-        src.startsWith('/') || src.startsWith('data:') || src.startsWith('blob:') ||
-        appSetting('config', 'image_allowlist_hostnames').includes(getHostname(src))
+    const canOptimize = Platform.OS === 'web' && (
+        resolvedSrc.startsWith('/') || resolvedSrc.startsWith('data:') || resolvedSrc.startsWith('blob:') ||
+        appSetting('config', 'image_allowlist_hostnames').includes(getHostname(resolvedSrc))
     );
 
-    rest = useMemo(() => {
+    const [failedAttempts, setFailedAttempts] = useState(0);
+
+    useEffect(() => {
+        setFailedAttempts(0);
+    }, [resolvedSrc]);
+
+    const handleError = useCallback(() => {
+        setFailedAttempts((attempts) => attempts + 1);
+    }, []);
+
+    const useOptimized = canOptimize && failedAttempts === 0;
+
+    const loader = useMemo(
+        () => (useOptimized ? createOptimizedLoader(optimizedWidthCap ?? 1920) : passthroughLoader),
+        [useOptimized, optimizedWidthCap]
+    );
+
+    const imageRest = useMemo(() => {
         const updatedRest = { ...rest };
 
         if (rest.view === "cover") {
             updatedRest.fill = 'fill';
-            //if (Platform.OS !== 'web') {
             updatedRest.contentFit = "cover";
-            //}
         } else {
             updatedRest.height = rest.pref_height || height;
             updatedRest.width = rest.pref_width || width;
@@ -164,37 +206,38 @@ function ElementImageResolved(props) {
         return updatedRest;
     }, [rest.view, height, width, rest.pref_height, rest.pref_width, rest]);
 
-    return useMemo(() => {
-        const imageProps = {
-            onError: (e) => console.log('!!!!Image loading error:', e, src),
-            ...rest,
-            src,
-            alt,
-            sizes,
-            ...(!optimize ? { unoptimized: true, loader: passthroughLoader } : {}),
-        };
+    const imageProps = {
+        onError: handleError,
+        ...imageRest,
+        src: resolvedSrc,
+        alt,
+        sizes,
+        ...(useOptimized ? { loader } : { unoptimized: true, loader: passthroughLoader }),
+    };
+    const imageKey = `${resolvedSrc}-${failedAttempts}`;
 
-        if (Platform.OS === 'web' && rest.fill === 'fill') {
-            const { className, ...fillImageProps } = imageProps;
-            const wrapperSizeClass = hasSizeClass(className) ? '' : 'w-full h-full';
-
-            return (
-                <span className={cn('relative block overflow-hidden', wrapperSizeClass, className)} style={style}>
-                    <SolitoImageStyled
-                        {...fillImageProps}
-                        className={className}
-                    />
-                </span>
-            );
-        }
+    if (Platform.OS === 'web' && imageRest.fill === 'fill') {
+        const { className, ...fillImageProps } = imageProps;
+        const wrapperSizeClass = hasSizeClass(className) ? '' : 'w-full h-full';
 
         return (
-            <SolitoImageStyled
-                {...imageProps}
-                style={style}
-            />
+            <span className={cn('relative block overflow-hidden', wrapperSizeClass, className)} style={resolvedStyle}>
+                <SolitoImageStyled
+                    key={imageKey}
+                    {...fillImageProps}
+                    className={className}
+                />
+            </span>
         );
-    }, [rest, src, alt, style, sizes, optimize]);
+    }
+
+    return (
+        <SolitoImageStyled
+            key={imageKey}
+            {...imageProps}
+            style={resolvedStyle}
+        />
+    );
 }
 
 export default function ElementImage(props) {

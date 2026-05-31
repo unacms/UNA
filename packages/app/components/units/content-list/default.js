@@ -72,7 +72,7 @@ export default function defaultUnit(props) {
                                 </View>
                             </View>
                         
-                        <View className="border-t border-border/60 mx-2.5 /50 mt-auto  pt-2 pb-2.5 ">
+                        <View className="border-t border-border/60 mx-2.5 mt-auto pt-2 pb-2.5 ">
                             <Skeleton preset="author" visible={isSkeleton}>
                                 {sMeta}
                             </Skeleton>

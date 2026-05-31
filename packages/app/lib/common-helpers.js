@@ -53,6 +53,7 @@ export const BrowseItem = memo(({ item, index, numColumns, data, unitMode, props
             sidebar={props.sidebar}
             object_id={data.object_id ? data.object_id : ''}
             view={data.view ? data.view : ''}
+            listIndex={index}
             {...props}
             data={item}
         />

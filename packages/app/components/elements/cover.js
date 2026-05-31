@@ -341,7 +341,8 @@ function CoverImage({
                 className={` bg-accent/50 lg:rounded-b-xl w-full ${appSetting(
                     'layout',
                     'max_width_content',
-                )} mx-auto overflow-hidden ${isCover ? `${appSetting('cover', 'aspect_ratio')}` : 'pb-32'
+                )} mx-auto gap-2 flex-1
+                  overflow-hidden ${isCover ? `${appSetting('cover', 'aspect_ratio')}` : 'pb-32'
                     }`}
             >
                 {isCover && (
@@ -384,6 +385,7 @@ function CoverImage({
                     {getCoverBackButton(is_person)}
                 </View>
             </View>
+            
         )
     }
     if (mode == 'picture') {

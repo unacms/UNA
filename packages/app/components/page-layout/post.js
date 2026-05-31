@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { View } from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
-import { getBreakpoint } from 'app/lib/util';
+import { getBreakpoint, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import { Platform } from 'react-native'
@@ -9,6 +9,7 @@ import { useLocalSearchParams } from 'app/lib/hooks/router'
 import emitter from 'app/context/emitter';
 import { useIsDesktop, useWindowHeight, useBreakpoint } from 'app/context/measure';
 import { appSetting } from 'app/lib/util';
+import { Card } from 'app/ui/molecules/card';
 import {
     Panel,
     PanelGroup,
@@ -71,6 +72,8 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     const [listWidth, setListWidth] = useState(0)
     const currentBreakpoint = useBreakpoint();
     const currentBreakpointName = getBreakpoint(currentBreakpoint)
+    const isLgUp = currentBreakpoint >= LAYOUT_BREAKPOINTS.lg;
+    const isFormFixed = isWeb && !isLgUp;
     const groupRef = useRef(null)
     const setHeader = useSetHeader();
     const setFooter = useSetFooter();
@@ -136,7 +139,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
     const aItems = useMemo(() => mainBlocks.map((value) => ({
         id: `block_${value.name}`,
-        data: <View className={'px-3 pt-2.5 sm:px-4 sm:pt-3.5'}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
+        data: <View className={'px-3 sm:px-4 pb-3 sm:pb-4 lg:pb-5 '}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
     })), [blocks, data, isDesktop]);
 
     const isRightCol = sideBarBlocks.length > 0 && isDesktop
@@ -265,7 +268,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         }
     if (isModal) {
         return (
-            <View className="w-full justify-between flex-1" >
+            <View className="w-full justify-between flex-1 pt-4" >
                 <View className='w-full flex-1 '>
                     <View style={{ height: windowHeight - offset2 - formHeight }}>
                         {data == 'loading' ?
@@ -286,7 +289,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                 <KbAvoidingView modalOffset={insets.top+56}>{/*was 90 56=14*4 modal header*/}
                     <View
                         onLayout={handleLayout}
-                        className="border-t border-border/60 bg-card"
+                        className="bg-linear-to-b from-card/0 to-card backdrop-blur pb-3   "
                     >
                         <CommentsForm
                             isModal={isModal}
@@ -341,7 +344,11 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         return (
             <View {...viewProps} className={`w-full ${isWeb ? '' : 'h-full'}`}>
                 <View className={`max-w-5xl w-full flex-1 bg-card text-card-foreground lg:rounded-2xl lg:my-4 mx-auto `}>
-                    <View onLayout={handleListLayout} style={{ pointerEvents: 'box-none'}} className='w-full flex-1'>
+                    <View
+                        onLayout={handleListLayout}
+                        style={{ pointerEvents: 'box-none', ...(isFormFixed ? { marginBottom: formHeight } : null) }}
+                        className="w-full flex-1"
+                    >
                         <CommentsBrowse
 
                             scrollToIndex={scrollToEnd}
@@ -353,8 +360,12 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         />
                     </View>
                     <KbAvoidingView>
-                        <View onLayout={handleLayout} style={{ width: listWidth + 5 }} className='-ml-[2px] -mr-[2px] bg-card border-background border bg-background web:fixed z-50 web:bottom-0  '>
-                            <View className=' lg:mb-4  ml-[1px] '>
+                        <View
+                            onLayout={handleLayout}
+                            style={isFormFixed && listWidth ? { width: listWidth + 5 } : undefined}
+                            className="bg-linear-to-b from-card/0 to-card backdrop-blur pb-3 web:fixed web:bottom-0 web:z-50 lg:static lg:z-auto lg:w-full"
+                        >
+                            <View className="lg:mb-4 ml-px">
                                 <CommentsForm
                                     isModal={isModal}
                                     objectId={commentsObjectId}
@@ -382,17 +393,17 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
             }
             direction="horizontal"
             {...viewProps}
-            className={` ${isMultiColumn ? appSetting('layout', 'max_width_content') + 'mx-auto' : 'max-w-5xl mx-auto'} flex-1 w-full h-full sm:min-h-[calc(100vh-16rem)]`}
+            className={` ${appSetting('layout', 'max_width_content')} ${isMultiColumn ? appSetting('layout', 'panel_group_content') : 'max-w-7xl w-full mx-auto flex-1 h-full sm:min-h-[calc(100vh-16rem)]'} `}
             onLayout={onLayout}
         >
             {isLeftCol && (
                 <>
                     <Panel
-                        className={`hidden ${leftBreakpoint}:block mt-0.5 sm:p-2`}
+                        className={`hidden ${leftBreakpoint}:block `}
                         {...leftPanelProps}
                     >
-                        <View className={`fixed-process'}`} >
-                            <View className='fixed-process w-96 hidden sm:flex gap-y-3 '>
+                        <View className="w-full">
+                            <View className="fixed-process w-full hidden sm:flex gap-y-3">
                                 {
                                     leftBarBlocks.map(([key, value]) => {
                                         return (
@@ -408,9 +419,13 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                     />
                 </>
             )}
-            <Panel {...centerPanelProps} className="mt-0.5 sm:p-2">
-                <View className={`w-full h-full bg-card/80 shadow-sm text-card-foreground rounded-2xl mx-auto `}>
-                    <View onLayout={handleListLayout} style={{ pointerEvents: 'box-none', marginBottom: formHeight }} className='w-full flex-1'>
+            <Panel {...centerPanelProps} className="sm:p-2 ">
+                <Card className={`w-full mx-auto `}>
+                    <View
+                        onLayout={handleListLayout}
+                        style={{ pointerEvents: 'box-none', ...(isFormFixed ? { marginBottom: formHeight } : null) }}
+                        className="w-full flex-1"
+                    >
                         <CommentsBrowse
                             scrollToIndex={scrollToEnd}
                             addItems={aItems}
@@ -421,18 +436,20 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         />
                     </View>
                     <KbAvoidingView>
-                        <View onLayout={handleLayout} style={{ width: listWidth + 5 }} className='-ml-[2px] -mr-[2px] border-background border bg-background web:fixed z-50 web:bottom-0  '>
-                            <View className='lg:rounded-b-2xl  lg:mb-4 bg-card shadow-sm ml-[1px] '>
+                        <View
+                            onLayout={handleLayout}
+                            style={isFormFixed && listWidth ? { width: listWidth + 5 } : undefined}
+                            className="w-full max-lg:web:fixed max-lg:web:bottom-0 max-lg:z-50 lg:static "
+                        >
                                 <CommentsForm
                                     objectId={commentsObjectId}
                                     module={commentsModule}
                                     form={commentsForm}
                                     requestUrl={commentsRequestUrl}
                                 />
-                            </View>
                         </View>
                     </KbAvoidingView>
-                </View>
+                </Card>
             </Panel>
             {isRightCol && (
                 <>
@@ -441,11 +458,11 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         sizable={cellsCustomConfig.sizable}
                     />
                     <Panel
-                        className={`hidden ${rightBreakpoint}:block mt-0.5 sm:p-2`}
+                        className={`hidden ${rightBreakpoint}:block`}
                         {...rightPanelProps}
                     >
-                        <View className={`fixed-process'}`}>
-                            <View className='fixed-process w-96 hidden sm:flex gap-y-3 '>
+                        <View className="w-full">
+                            <View className="fixed-process w-full hidden sm:flex gap-3 sm:p-2">
                                 {
                                     sideBarBlocks.map((value) => {
                                         return (

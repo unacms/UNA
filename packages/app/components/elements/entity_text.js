@@ -1,5 +1,5 @@
 import { View } from 'app/design/view';
-import Image from 'app/ui/atoms/image';
+import Image, { POST_ENTRY_COVER_SIZES, POST_ENTRY_COVER_WIDTH_CAP } from 'app/ui/atoms/image';
 import Html from 'app/ui/atoms/html';
 import { Text, H1, H1C } from 'app/design/typography';
 import { appSetting, clearLinks, getYouTubeVideoId } from 'app/lib/util'
@@ -72,7 +72,18 @@ function Default({ data, showPad, sidebar, block, blockWrapperProps }) {
                 {(videoId) && <View className='w-full aspect-video rounded-xl overflow-hidden mb-3'>
                     <Youtube videoId={videoId} size={3} />
                 </View>}
-                {(!!data.image && !data.video) && <View className="w-full h-[30vh] mb-4 sm:rounded-xl overflow-hidden"><Image {...data.image} alt={data.title} className=" u-cover" view="cover" /></View>}
+                {(!!data.image && !data.video) && (
+                    <View className="w-full h-[30vh] mb-4 sm:rounded-xl overflow-hidden">
+                        <Image
+                            {...data.image}
+                            alt={data.title}
+                            className="u-cover"
+                            view="cover"
+                            sizes={POST_ENTRY_COVER_SIZES}
+                            optimizedWidthCap={POST_ENTRY_COVER_WIDTH_CAP}
+                        />
+                    </View>
+                )}
                 <View className={`mx-auto w-full ${(showPad == false || sidebar ? '' : ' ')}`}>
                     {isSmall ? <TextMore tagName='h1' text={data.entry_title} numberOfLines={2} className="font-bold tracking-tight text-foreground"></TextMore> : <H1C>{data.entry_title}</H1C>}
                     {isSmall ? <ContentMore showLess={true} content={text} numberOfLines={3} numberOfSymbols={360} openSmall={false} customClassName="u-vanilla-html" /> : <Html data={text} />}

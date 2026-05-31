@@ -455,19 +455,14 @@ body,
     z-index: 99999 !important;
 }
 
-/* Fixed Process Improvements */
+/* Fixed Process — sticky sidebar columns (see layout.web.js handleScroll) */
 .fixed-process {
     position: relative;
-    transition: width 0.1s ease-in-out;
 }
 
-.fixed-process.fixed {
+.fixed-process.is-fixed {
     position: fixed;
     z-index: 10;
-}
-
-/* Ensure fixed-process elements don't overflow their containers */
-.fixed-process.fixed {
     max-width: 100%;
     box-sizing: border-box;
 }

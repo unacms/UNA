@@ -8,8 +8,9 @@ import LinkOrModal from 'app/ui/molecules/link-or-modal'
 import { Skeleton } from 'app/ui/atoms/skeleton';
 const Units = {};
 
-Units.Base = function Base({ data }) {
+Units.Base = function Base({ data, listIndex }) {
     const isSkeleton = data?.skeleton;
+    const isLcpCandidate = listIndex === 0;
     return (
         <Card padding="p-1">
             <View className="  aspect-video flex-none rounded-xl overflow-hidden mb-auto w-full bg-accent">
@@ -21,6 +22,8 @@ Units.Base = function Base({ data }) {
                             view="cover"
                             className="u-cover"
                             sizes='auto'
+                            optimizedWidthCap={640}
+                            priority={isLcpCandidate}
                         />
                     )}
                 </Skeleton>
@@ -48,8 +51,9 @@ Units.Base = function Base({ data }) {
     )
 }
 
-Units.Search = function Search({ data }) {
+Units.Search = function Search({ data, listIndex }) {
     const isSkeleton = data?.skeleton;
+    const isLcpCandidate = listIndex === 0;
     return (
         <CardList padding="p-1">
             <View className="  aspect-video flex-none rounded-xl overflow-hidden mb-auto w-full bg-muted   ">
@@ -61,6 +65,8 @@ Units.Search = function Search({ data }) {
                             view="cover"
                             className="u-cover"
                             sizes='auto'
+                            optimizedWidthCap={640}
+                            priority={isLcpCandidate}
                         />
                     )}
                 </Skeleton>
@@ -88,8 +94,9 @@ Units.Search = function Search({ data }) {
     )
 }
 
-Units.Small = function Small({ data }) {
+Units.Small = function Small({ data, listIndex }) {
     const isSkeleton = data?.skeleton;
+    const isLcpCandidate = listIndex === 0;
     return (
         <CardList padding="p-1">
             {(data.image || isSkeleton) && (
@@ -102,6 +109,8 @@ Units.Small = function Small({ data }) {
                                 view="cover"
                                 className="u-cover"
                                 sizes='auto'
+                                optimizedWidthCap={640}
+                                priority={isLcpCandidate}
                             />
                         )}
                     </Skeleton>
@@ -133,5 +142,5 @@ Units.Small = function Small({ data }) {
 export default function BxPosts(props) {
     const unitTypes = appSetting('browse', 'unit_by_mode_' + props.module) || appSetting('browse', 'unit_by_mode_default');
     const Component = Units[unitTypes[props.unitType] || 'Base'];
-    return <Component data={props.data} />;
+    return <Component data={props.data} listIndex={props.listIndex} />;
 }

@@ -41,7 +41,7 @@ export default function FormPost(props) {
     const authorName = <Text className="font-semibold text-card-foreground">{currentUser.display_name}</Text>;
 
     return (
-        <View className="w-full max-w-3xl p-3 sm:p-4 mx-auto">
+        <View className="w-full p-4">
             {getHiddenFields(inputs, handleSubmit)}
 
             <View>

@@ -162,6 +162,15 @@ export default function Layout(props) {
         return sum;
     }
 
+    function clearFixedProcess(el) {
+        el.classList.remove('is-fixed');
+        el.style.position = '';
+        el.style.top = '';
+        el.style.bottom = '';
+        el.style.width = '';
+        el.style.left = '';
+    }
+
     function handleScroll() {
         const TOP_OFFSET = getTopOffset();
         const HYST = 8;
@@ -170,7 +179,7 @@ export default function Layout(props) {
         document.querySelectorAll('.fixed-process').forEach(el => {
             const parent = el.parentElement;
             const container = parent?.parentElement;
-            
+
             if (!parent || !container) return;
 
             const elH = el.offsetHeight;
@@ -181,41 +190,48 @@ export default function Layout(props) {
             const stickyEnd = containerBottomDoc - elH - TOP_OFFSET;
             const y = window.scrollY;
 
-            // сброс по умолчанию
-            el.classList.remove('is-fixed');
-            el.style.position = '';
-            el.style.top = '';
-            el.style.bottom = '';
-            if (container.scrollHeight <= elH || y < stickyStart || window.scrollY == 0) return;//|| stickyStart == 0
+            const shouldStick =
+                container.scrollHeight > elH &&
+                y > 0 &&
+                y >= stickyStart &&
+                elH <= document.documentElement.scrollHeight - window.innerHeight;
 
-            // ← ДОБАВИТЬ ЭТУ СТРОКУ:
-if (elH > document.documentElement.scrollHeight - window.innerHeight) return;
-
+            if (!shouldStick) {
+                clearFixedProcess(el);
+                return;
+            }
 
             if (y > stickyEnd + HYST) {
-                // disabled: bug in timeline in context infinite scroll  
-                //      el.style.position = 'absolute';
-                //    el.style.bottom = '0';
-                // return; DISABLED BY SCROOL TO END IN http://localhost:3000/view-persons-profile/test-pers AND RIGHT column is hided
+                // disabled: bug in timeline in context infinite scroll
+                // el.style.position = 'absolute';
+                // el.style.bottom = '0';
+                // return; DISABLED BY SCROOL TO END IN profile timeline + right column hide
             }
-            // фиксируем
-            el.classList.add('is-fixed');
-            el.style.position = 'fixed';
-            if (parent.offsetWidth > 0) el.style.width = `${parent.offsetWidth}px`;
 
+            const parentWidth = parent.offsetWidth;
+            const targetWidth = parentWidth > 0 ? `${parentWidth}px` : '';
+            const targetLeft = `${parent.getBoundingClientRect().left}px`;
+
+            let targetTop;
             if (elH <= avail) {
-                // помещается во viewport
-                el.style.top = `${TOP_OFFSET}px`;
+                targetTop = `${TOP_OFFSET}px`;
             } else {
-                // прокручиваем внутри viewport
                 const overflow = elH - avail;
                 const progress = Math.min(Math.max(y - stickyStart, 0), overflow);
-                el.style.top = `${TOP_OFFSET - progress}px`;
+                targetTop = `${TOP_OFFSET - progress}px`;
             }
+
+            el.classList.add('is-fixed');
+            el.style.position = 'fixed';
+            if (targetWidth) el.style.width = targetWidth;
+            el.style.left = targetLeft;
+            el.style.top = targetTop;
+            el.style.bottom = '';
         });
     }
 
     useEffect(() => {
+        handleScroll();
         window.addEventListener('scroll', handleScroll);
         window.addEventListener('resize_panel', handleScroll);
 
