@@ -59,7 +59,7 @@ export default function Browse({ unitMode, data, limit_by, view, autoscroll, blo
         view === BrowseSimpleView.Galery ? (
             <Galery autoscroll={autoscroll} items={items} />
         ) : view === BrowseSimpleView.Row ? (
-            <Row className="@container/list overflow-hidden">{items}</Row>
+            <Row className="@container/list -mx-2 -my-2 overflow-x-scroll">{items}</Row>
         ) : (
             items
         )

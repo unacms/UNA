@@ -125,7 +125,7 @@ export function Modal({
     const offset = (title ? 64 : isIos ? insets?.bottom + insets?.top : 0);
     const styles = { maxHeight: heightActual - offset - (isDesktop ? 32 : 0) }
     const animationType = animation || (isDesktop ? 'fade' : 'slide');
-    const isOuterClose = (onClose !== 'undefined' && outerClickClose !== false);
+    const isOuterClose = (typeof onClose === 'function' && outerClickClose !== false);
     const positionClasses = {
         'top': 'items-start py-8 px-4',
         'bottom': 'items-end py-8 px-4',
@@ -137,7 +137,7 @@ export function Modal({
 
     const handleWebOuterPress = useCallback((event) => {
         if (isOuterClose) {
-            onClose()
+            onClose?.()
         }
         event.stopPropagation();
     }, [isOuterClose, onClose]);

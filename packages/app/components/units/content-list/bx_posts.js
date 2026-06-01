@@ -13,14 +13,14 @@ Units.Base = function Base({ data, listIndex }) {
     const isLcpCandidate = listIndex === 0;
     return (
         <Card padding="p-1">
-            <View className="  aspect-video flex-none rounded-xl overflow-hidden mb-auto w-full bg-accent">
+            <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-accent">
                 <Skeleton className="" rounded='rounded-lg' visible={isSkeleton}>
                     {data.image && (
                         <Image
                             {...data.image}
                             alt={data.title}
-                            view="cover"
-                            className="u-cover"
+                            
+                            className="u-cover aspect-video"
                             sizes='auto'
                             optimizedWidthCap={640}
                             priority={isLcpCandidate}
@@ -28,7 +28,7 @@ Units.Base = function Base({ data, listIndex }) {
                     )}
                 </Skeleton>
             </View>
-            <View className="flex-auto sm:h-40 flex-col p-2">
+            <View className="flex-auto h-40 flex-col p-2 pt-3">
                 <Skeleton className="h-6 w-3/4 mt-2" visible={isSkeleton}>
                     <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
                         <Text numberOfLines={2} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-tight font-semibold">
@@ -56,7 +56,7 @@ Units.Search = function Search({ data, listIndex }) {
     const isLcpCandidate = listIndex === 0;
     return (
         <CardList padding="p-1">
-            <View className="  aspect-video flex-none rounded-xl overflow-hidden mb-auto w-full bg-muted   ">
+            <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-muted   ">
                 <Skeleton className="h-full w-full" rounded="rounded-lg" visible={isSkeleton}>
                     {data.image && (
                         <Image
@@ -71,7 +71,7 @@ Units.Search = function Search({ data, listIndex }) {
                     )}
                 </Skeleton>
             </View>
-            <View className="flex-auto sm:h-40 flex-col p-2">
+            <View className="flex-auto h-40 flex-col p-2 lg:p-3">
                 <Skeleton className="h-6 w-3/4 mt-2" visible={isSkeleton}>
                     <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
                         <Text numberOfLines={2} className="text-foreground tracking-tight  web:hover:text-primary leading-tight text-base  font-semibold">

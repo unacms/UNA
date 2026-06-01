@@ -133,6 +133,7 @@ export default function (props) {
     const ModalCnt = <Modal
         title={header}
         onVisible={isModal}
+        onClose={() => setIsModal(false)}
         transparent={true}
         headerBorder={true}
         scrollable={true}

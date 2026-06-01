@@ -3,9 +3,8 @@ import Html from 'app/ui/atoms/html'
 import { stripTags, appSetting, isUrl } from 'app/lib/util';
 import { useState } from 'react';
 import { Block as PageBlock, BlockContent, BlockName, BlockActions, BlockHeader, BlockTitle, BlockDescription, BlockIcon } from 'app/ui/molecules/page-block'
-import Link from 'app/ui/atoms/link'
 import { useTranslation } from 'react-i18next'
-import { Button, ButtonLink, Modal } from 'app/design/controls'
+import { Button, ButtonLink, Modal, NeoButtonLink } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon'
 
 export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, children }) {
@@ -84,23 +83,23 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                 >
                     {bIsShowTitle && (
                         <BlockHeader>
-                            {!!block.icon && <BlockIcon>
-                                <Icon icon={block.icon} className={`h-4 w-4`} />
+                             {!!block.icon && <BlockIcon>
+                                <Icon icon={block.icon} size={24}/>
                             </BlockIcon>}
                             <BlockName>
+                           
                                 <BlockTitle>{stripTags(block.title)}</BlockTitle>
                                 {!!block.description && <BlockDescription>{block.description}</BlockDescription>}
                             </BlockName>
 
                             {config?.header_more_url && (<BlockActions>
-                                <Link
+                                <NeoButtonLink
                                     href={config?.header_more_url}
-                                    variant="ghost"
-                                    size="sm"
-
-                                >
-                                    {t(config?.header_more_text || 'See all')}
-                                </Link>
+                                    label={t(config?.header_more_text || 'See all')}
+                                    style="bordered"
+                                    borderShape="roundedRectangle"
+                                    controlSize="mini"
+                                />
                             </BlockActions>)}
                             {(isHelp && isHelpLink) && <ButtonLink href={pureHelp} target="_blank" title="Help" startDecorator='LifeBuoy' variant="text" />}
                             {(isHelp && !isHelpLink) && <Button onPress={() => setShowHelp(true)} title="Help" startDecorator='LifeBuoy' variant="text" />}

@@ -85,14 +85,14 @@ useEffect(() => {
     ).current;
 
     return (
-        <View className=' w-full overflow-hidden' {...panResponder.panHandlers}>
-            <Animated.View className='w-full p-8' style={{ transform: [{ translateX: position }], opacity }}>
+        <View className=' w-full overflow-hidden py-2 px-0.5 -my-2 ' {...panResponder.panHandlers}>
+            <Animated.View className='flex-1 p-8' style={{ transform: [{ translateX: position }], opacity }}>
                 {items[currentIndex]}
             </Animated.View>
-            <View className='absolute top-1/4 left-0'>
+            <View className='absolute top-1/4 left-2'>
                 <Button variant="secondary" rounded size="xs" onPress={goLeft} startDecorator="ArrowLeft" />
             </View>
-            <View className='absolute top-1/4 right-0'>
+            <View className='absolute top-1/4 right-2'>
                 <Button variant="secondary" rounded size="xs" onPress={goRight} startDecorator="ArrowRight" />
             </View>
         </View>

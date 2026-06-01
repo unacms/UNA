@@ -65,7 +65,7 @@ export const settingsElements = {
     cards: {
         'u-card-list': ' u-card-list bg-card shadow-card-outline dark:shadow-card-outline-deep sm:rounded-xl ',
         'u-card-list-padding': ' p-3 lg:p-4 ',
-        'u-card-base': 'u-card-base bg-card text-card-foreground rounded-2xl shadow-card-outline dark:shadow-card-outline-deep ',
+        'u-card-base': 'u-card-base bg-card text-card-foreground rounded-xl shadow-card-outline dark:shadow-card-outline-deep ',
         'u-card-padding': 'py-3 sm:py-4 ',
         'u-card-header': 'px-4',
         'u-card-icon': ' ',
@@ -84,23 +84,23 @@ export const settingsElements = {
     },
     blocks: {
         'u-block-base':
-            ' text-card-foreground gap-4 lg:gap-5',
+            ' text-card-foreground gap-3 sm:gap-4',
         'u-block-bg':
-            'bg-card/80 shadow-card-outline dark:shadow-card-outline-deep ',
+            ' bg-card/80 shadow-card-outline dark:shadow-card-outline-deep ',
         'u-block-pad':
-            'p-4 lg:p-5 sm:rounded-2xl ',
+            ' p-3 sm:p-4 sm:rounded-2xl',
         'u-block-header':
-            ' flex-row items-center gap-4 ',
-        'u-block-icon': 'mb-auto',
-        'u-block-name': 'flex flex-col flex-auto gap-2 ',
+            ' flex-row items-center gap-3 justify-center ',
+        'u-block-icon': ' items-center justify-center h-11 w-11 bg-muted/60 rounded-xl text-card-foreground flex-none',
+        'u-block-name': ' flex-auto ',
         'u-block-title':
-            'text-secondary-foreground leading-5  text-lg font-semibold tracking-tight',
-        'u-block-description': 'text-muted-foreground text-sm font-medium leading-6',
+            'text-card-foreground leading-6 text-lg font-bold tracking-tight',
+        'u-block-description': 'text-muted-foreground text-sm font-medium leading-5',
         'u-block-content': 'gap-4 ',  
         'u-block-footer':
             'flex text-card-foreground gap-4 pt-2',
         'u-block-actions':
-            'flex flex-row text-card-foreground mb-auto gap-2 ',
+            'flex flex-row text-card-foreground gap-2 mb-auto ',
         'u-block-animate':
             'animate-in fade-in slide-in-from-top-2 duration-200',
     },

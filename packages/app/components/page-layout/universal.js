@@ -105,7 +105,7 @@ function PageContentUniversal({ children, data, layoutName }) {
 
 const PanelRow = memo(({ cell, currentBreakpoint, gap }) => {
     return (hasData(cell?.data) && isRowLayout(cell, currentBreakpoint)) && (
-        <View className={`w-full gap-y-${gap} `}>
+        <View className={`w-full gap-y-0.5 sm:gap-y-3 lg:gap-y-4 mt-0.5 `}>
             {cell.chd}
         </View>
     );
@@ -121,7 +121,7 @@ const PanelCell = memo(({ cell, currentBreakpoint, index, sizable }) => {
         <>
             {(index > 0) && (sizable ? <PanelHandler sizable={sizable} /> : <View className='w-4' />)}
             <Panel {...panelProps} >
-                <View className="w-full gap-y-4">
+                <View className="w-full gap-3 lg:gap-4">
                     {cell.chd}
                 </View>
             </Panel>
