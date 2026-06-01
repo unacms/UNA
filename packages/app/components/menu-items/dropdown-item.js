@@ -44,7 +44,10 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
             : {};
 
     if (typeof item.title !== 'string') {
-        return item.noAction ? <Pressable onPress={(event) => handleSelect(event, item)}>{item.title}</Pressable> : item.title;
+        if (item.noAction && typeof handleSelect === 'function') {
+            return <Pressable onPress={(event) => handleSelect(event, item)}>{item.title}</Pressable>;
+        }
+        return item.title;
     }
 
     if (item.type === 'separator') {
@@ -62,11 +65,15 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
     const rowClassName = classes?.item_row ?? 'justify-between items-center';
 
     const Wrapper = handleSelect ? Pressable : View;
+    const pressProps =
+        typeof handleSelect === 'function'
+            ? { onPress: (event) => handleSelect(event, item) }
+            : {};
     const Content = (
         <Wrapper
             className={`web:group ${className} ${menuSettings[classes?.item || 'item_ver']}${item.selected ? ' bg-primary/10 text-foreground' : ''}`}
             key={key}
-            onPress={(event) => handleSelect(event, item)}
+            {...pressProps}
             {...rowHoverProps}
         >
             <Row className={rowClassName}>
@@ -80,7 +87,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
                     ))
                 }
                 </View>
-                {!!counter && (
+                {!!counter && typeof handleCounter === 'function' && (
                     <Pressable className='mr-1'  onPress={(event) => handleCounter(event, item)}>
                         <Text className={menuSettings.item_text}>{counter}</Text>
                     </Pressable>

@@ -65,14 +65,21 @@ export default function Badge({ data, variant = "default", size = 'sm', rounded 
         const containerSize = size && badgeSizes[size]?.container || 'min-w-5 h-5';
         const roundedSize = size && badgeSizes[size]?.rounded || 'rounded';
         return (
-            <Link href={data.badge_link}><View className={`${containerSize} ${roundedSize} bg-muted overflow-hidden shadow-xs dark:shadow-xs-deep items-center justify-center p-[0.5px] ${className}`}>
-            <Image
-                width={imgSize}
-                height={imgSize}
-                view="cover"
-                src={data.badge_url}
-                alt={data.badge_url.title_attr}
-            /></View></Link>
+            <Link href={data.badge_link}>
+                <View className={`${containerSize} ${roundedSize} relative overflow-hidden bg-muted items-center justify-center ${className}`}>
+                    <Image
+                        width={imgSize}
+                        height={imgSize}
+                        view="cover"
+                        src={data.badge_url}
+                        alt={data.badge_url.title_attr}
+                    />
+                    <View
+                        pointerEvents="none"
+                        className={`absolute inset-0 ${roundedSize} shadow-xs dark:shadow-xs-deep`}
+                    />
+                </View>
+            </Link>
         );
     } else {
         data.icon = data.icon || 'CheckMark';

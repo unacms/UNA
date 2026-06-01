@@ -290,7 +290,7 @@ export const settingsButtons = {
             mini:    { height: 28, paddingX: 8,  font: 'text-xs', icon: 16, hitSlop: 10, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
             small:   { height: 36, paddingX: 12, font: 'text-sm', icon: 20, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 6 } } },
             regular: {
-                default: { height: 44, paddingX: 16, font: 'text-base', icon: 24, hitSlop: 4, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
+                default: { height: 44, paddingX: 12, font: 'text-base', icon: 20, hitSlop: 4, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
                 web:     { height: 44, paddingX: 16 },
                 mouse:   { height: 44, paddingX: 16 },
             },

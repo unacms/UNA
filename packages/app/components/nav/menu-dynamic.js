@@ -72,7 +72,24 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
                 id: 'menu-' + iKey,
                 link: aItem.link,
                 noAction: aItem.noAction,
-                title: <MenuItemEx key={name + 'menuex' + iKey} item={aItem} index={iKey + visibleItemsCount} />,
+                title: (
+                    <MenuItemEx
+                        key={name + 'menuex' + iKey}
+                        item={{
+                            ...aItem,
+                            onPress: (event) => {
+                                if (aItem.noAction) {
+                                    handleFormModal(aItem, event, setPageData);
+                                    return;
+                                }
+                                if (aItem.params?.onclick) {
+                                    aItem.params.onclick(event, aItem);
+                                }
+                            },
+                        }}
+                        index={iKey + visibleItemsCount}
+                    />
+                ),
                 indicator: aItem.addon,
             }))
             }

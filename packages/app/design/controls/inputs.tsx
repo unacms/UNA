@@ -111,22 +111,31 @@ interface PickerStyledRefProps extends PickerProps {
     className?: string;
 }
 
-const PickerStyles = inputSettings.select;
+const pickerSurfaceClass = `${inputSettings.select} ${inputSettings.rounded.default} ${inputSettings.size.default}`;
 const Picker = PickerDef as any;
 
-export const PickerStyled = ({ className, ...props }: CustomPickerProps) => (
-    <Picker className={PickerStyles} {...props} />
+const getPickerStyleProps = (style: any) =>
+    (isIos || style)
+        ? { style: [isIos && { borderCurve: 'continuous' }, style].filter(Boolean) }
+        : {};
+
+export const PickerStyled = ({ className, style, ...props }: CustomPickerProps) => (
+    <Picker
+        className={`${pickerSurfaceClass} ${className || ''}`}
+        {...getPickerStyleProps(style)}
+        {...props}
+    />
 );
 PickerStyled.displayName = 'PickerStyled';
 
 export const PickerStyledRef = forwardRef<any, PickerStyledRefProps>(
-    ({ classes, className, ...props }, ref) => (
+    ({ classes, className, style, ...props }, ref) => (
         <View className={` ${isWeb ? 'flex-auto items-center flex-row' : ''} `}>
             <Picker 
                 ref={ref} 
-                className={`${classes ? classes : PickerStyles} w-full`} 
+                className={`${classes ? classes : pickerSurfaceClass} ${className || ''} w-full`}
+                {...getPickerStyleProps(style)}
                 {...props}
-                {...(isWeb ? { style: {} } : {})}
             />
             {isWeb && (
                 <View className="absolute right-3 pointer-events-none">
@@ -138,6 +147,10 @@ export const PickerStyledRef = forwardRef<any, PickerStyledRefProps>(
 );
 
 
-export const PickerStyledIos = ({ className, ...props }: CustomPickerProps) => (
-    <Picker className={PickerStyles} {...props} />
+export const PickerStyledIos = ({ className, style, ...props }: CustomPickerProps) => (
+    <Picker
+        className={`${pickerSurfaceClass} ${className || ''}`}
+        {...getPickerStyleProps(style)}
+        {...props}
+    />
 );

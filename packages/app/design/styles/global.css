@@ -61,7 +61,7 @@
 /* Next-only base vars (web superellipse runtime hooks consumed by global.web.css). */
 @layer base {
     :root {
-        --neo-corner-superellipse-factor: 2;
+        --neo-corner-superellipse-factor: 1.6;
         --neo-corner-superellipse-full-factor: 1;
     }
 

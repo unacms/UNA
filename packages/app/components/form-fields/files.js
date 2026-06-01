@@ -461,8 +461,8 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
                             alt=""
                         />}
                         {isPreload && <View className={`w-full h-full absolute top-8`}><Loading className="absolute" /></View>}
-                        <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
-                            <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" align="start" title="" rounded size="xs" />
+                        <View className='absolute top-1 right-1 w-7 h-7 text-center mx-auto'>
+                            <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" title="" rounded size="xs" />
                         </View>
                     </>)
                     }
@@ -514,7 +514,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
 
                 {isPreload && <View className={`w-full h-full absolute top-8`}><Loading className="absolute" /></View>}
 
-                <View className="absolute top-1 right-1 w-6.5 text-center mx-auto">
+                <View className="absolute top-1 right-1 w-7 h-7 text-center mx-auto">
                     <Button
                         onPress={() => handleDelete(img.file_id)}
                         variant="default"

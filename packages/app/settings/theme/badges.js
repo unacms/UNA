@@ -30,21 +30,21 @@ export const settingsBadges = {
             // Matches profile_sizes['2xs']: h-5 (20px)
             padding: ' ',
             wide_padding: ' px-1 ',
-            container: ' min-w-5 h-5 overflow-hidden justify-center items-center  ',
+            container: ' min-w-5 h-5 gap-0.5 overflow-hidden justify-center items-center  ',
             image_container: ' items-center justify-center rounded overflow-hidden ',
             icon_size: 14,
-            text: ' text-xs leading-5 px-0.5 py-0.5  ',
+            text: ' text-xs leading-5 px-0.5  ',
             rounded: ' rounded-md ',
         },
         xs: {
             // Matches profile_sizes['xs']: h-6 (24px)
             padding: ' ',
-            wide_padding: ' px-2 ',
-            container: ' min-w-6 h-6 gap-0.5 overflow-hidden justify-center items-center ',
+            wide_padding: ' px-1.5 ',
+            container: ' min-w-6 h-6 gap-1 overflow-hidden justify-center items-center ',
             image_container: ' items-center justify-center rounded overflow-hidden ',
-            icon_size: 14,
+            icon_size: 16,
             text: ' text-xs leading-6 px-0.5  ',
-            rounded: ' rounded-full ',
+            rounded: ' rounded-lg ',
         },
         sm: {
             // Matches profile_sizes['sm']: h-8 (32px)

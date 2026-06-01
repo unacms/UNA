@@ -226,7 +226,7 @@ function UnitCommentsDefault(props) {
                                     displayType="unit_wo_image"
                                     displaySize="sm"
                                     showInfo="false"
-                                    showInfo2={<Badges badges={data.author_badges} size="3xs" />}
+                                    showInfo2={<Badges badges={data.author_badges} size="2xs" />}
                                 />
                                 {maxLevel < data.cmt_level &&
                                     appSetting('comments', 'in_reply') &&

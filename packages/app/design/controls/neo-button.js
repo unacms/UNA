@@ -147,12 +147,22 @@ const NeoImage = memo(function NeoImage({ source, size, color, className }) {
 function renderLabel({
     label, image, imagePlacement,
     iconSize, labelGap, fontCls, textCls, tintColor, classNames, loading,
+    spreadContent,
 }) {
     const effectiveImage = loading ? '_loading' : image;
     if (!label && !effectiveImage) return null;
 
+    const spreadTrailing =
+        spreadContent && imagePlacement === 'trailing' && !!effectiveImage && !!label;
+
     return (
-        <Row className="flex-row items-center" style={{ columnGap: labelGap }}>
+        <Row
+            className={cn(
+                'flex-row items-center min-w-0',
+                spreadTrailing && 'flex-1 w-full justify-between',
+            )}
+            style={spreadTrailing ? undefined : { columnGap: labelGap }}
+        >
             {imagePlacement === 'leading' && effectiveImage ? (
                 <NeoImage
                     source={effectiveImage}
@@ -552,6 +562,7 @@ export const NeoButton = (props) => {
             tintColor,
             classNames,
             loading,
+            spreadContent: resolved.align === 'between',
         });
     const addonContent = getAddon(addon, isTitle);
 

@@ -98,8 +98,8 @@
     --shadow-none: 0 0 #0000;
     --shadow-2xs: 0 1px rgb(0 0 0 / 0.04);
     --shadow-2xs-deep: 0 1px rgb(0 0 0 / 0.08);
-    --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.06);
-    --shadow-xs-deep: 0 1px 2px rgb(0 0 0 / 0.12);
+    --shadow-xs: 0 1px 2px -1px inset rgb(0 0 0 / 0.25);
+    --shadow-xs-deep: 0 1px 2px -1px inset rgb(0 0 0 / 0.5);
     --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.08);
     --shadow-sm-deep: 0 1px 3px rgb(0 0 0 / 0.16);
     --shadow-md: 0 4px 6px rgb(0 0 0 / 0.1);

@@ -564,7 +564,7 @@ export const Author = memo(({ data, url, t }) => {
                         <ItemInfo data={data} t={t} />
                     </Row>
                 }
-                showInfo2={<><Badges badges={data.author_badges} size="xs" />{ActionsElements}</>}
+                showInfo2={<><Badges badges={data.author_badges} size="2xs" />{ActionsElements}</>}
                 hoverCardWrapper={hoverCardWrapper}
             />
         </View>

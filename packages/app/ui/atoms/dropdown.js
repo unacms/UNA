@@ -48,8 +48,8 @@ export default function Dropdown(props) {
 
     if (!isShow){
         return (
-            <PickerStyledRef className={Platform.OS == 'web' ? ' h-10' : 'h-16'} 
-            style={{ borderRadius:10, color:colors.default  }}
+            <PickerStyledRef
+            style={Platform.OS === 'web' ? undefined : { color: colors.default }}
             disabled={props?.disabled}
            
                 selectedValue={selectedVal}

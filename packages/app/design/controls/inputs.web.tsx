@@ -189,7 +189,8 @@ export const Hidden = forwardRef<any, CustomInputProps>(
 );
 Hidden.displayName = 'Hidden';
 
-const PickerStyles = inputSettings.select;
+/** Same surface tokens as `Input` (rounded + size) so selects match text fields and superellipse. */
+const pickerSurfaceClass = `${inputSettings.select} ${inputSettings.rounded.default} ${inputSettings.size.default}`;
 
 const optionFromChild = (child: any, index: number) => {
     if (!child) return null;
@@ -203,7 +204,7 @@ const optionFromChild = (child: any, index: number) => {
 
 export const PickerStyled = ({ className, children, selectedValue, value, onValueChange, onChange, ...props }: PickerProps) => (
     <select
-        className={`${PickerStyles} ${className || ''}`}
+        className={`${pickerSurfaceClass} ${className || ''}`}
         value={selectedValue ?? value}
         onChange={(event) => {
             onChange?.(event);
@@ -221,7 +222,7 @@ export const PickerStyledRef = forwardRef<any, PickerProps>(
         <View className={` ${isWeb ? 'flex-auto items-center flex-row' : ''} `}>
             <select
                 ref={ref}
-                className={`${classes ? classes : PickerStyles} ${className || ''} w-full`}
+                className={`${classes ? classes : pickerSurfaceClass} ${className || ''} w-full`}
                 value={selectedValue ?? value}
                 onChange={(event) => {
                     onChange?.(event);

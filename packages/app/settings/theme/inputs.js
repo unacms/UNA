@@ -31,7 +31,7 @@ export const settingsInputs = {
     },
     inputs: {
         rounded:{
-            default: 'rounded-lg',
+            default: 'rounded-xl',
             full: 'rounded-full',
         },
         size:{
@@ -39,8 +39,8 @@ export const settingsInputs = {
             small: 'px-2 leading-5 min-h-9',
         },
         base: 
-        'text-card-foreground placeholder:text-muted-foreground py-2 bg-input/60 shadow-btn-outline dark:shadow-btn-outline-deep rounded-xl flex-auto text-base placeholder-muted-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-card web:focus-visible:border-ring web:overflow-hidden',
-        select: ' pr-10 border border-border rounded-xl bg-input web:focus:bg-card px-3 min-h-12 flex-auto  text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
+        'text-card-foreground placeholder:text-muted-foreground py-2 bg-input/60 shadow-btn-outline dark:shadow-btn-outline-deep flex-auto text-base placeholder-muted-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-card web:focus-visible:border-ring web:overflow-hidden',
+        select: ' pr-10 bg-input/60 shadow-btn-outline min-h-11 dark:shadow-btn-outline-deep web:focus:bg-card px-3 flex-auto text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
     },
     switcher: {
         // Container
