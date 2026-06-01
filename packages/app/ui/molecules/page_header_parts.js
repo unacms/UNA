@@ -57,7 +57,7 @@ export function usePageHeaderBase(pageData, { resetHeaderOnRoute = false } = {})
     const isHome = pageData?.uri === 'home';
     const isCollapsibleHeader =
         appSetting('native', 'collapsible_header') && !isDesktop;
-    const isContextSelector = !!pageData?.context;
+    const isContextSelector = !!pageData?.context && (appSetting('context_selector', 'show_always') || pageData?.context?.current?.id);
     const isFullContextSelector = appSetting('context_selector', 'show_always');
     const isShowLogo = isDesktop || (!isWeb && !currentUser) || isHome;
     const isBackButton = header.backButton;

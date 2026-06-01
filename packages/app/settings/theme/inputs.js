@@ -91,7 +91,7 @@ export const settingsInputs = {
 
         // Checkbox square indicator
         'u-controls-checkbox-indicator':
-            'h-5 w-5 rounded border-2 border-muted-foreground bg-transparent justify-center items-center ',
+            'shrink-0 h-5 w-5 rounded border-1 border-border bg-transparent justify-center items-center',
 
         // Radiobutton circular indicator
         'u-controls-radiobutton-indicator':

@@ -137,9 +137,9 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
     const mainBlocks = isDesktop && !isModal ? centerBlocks : [...centerBlocks, ...sideBarBlocks, ...leftBarBlocks]
 
-    const aItems = useMemo(() => mainBlocks.map((value) => ({
+    const aItems = useMemo(() => mainBlocks.map((value, index) => ({
         id: `block_${value.name}`,
-        data: <View className={'px-3 sm:px-4 pb-3 sm:pb-4 lg:pb-5 '}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
+        data: <View className={'px-3 sm:px-4 pb-3 sm:pb-4 lg:pb-5 bg-card ' + (index != 0 ? 'pt-4 lg:pt-0' : '')}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
     })), [blocks, data, isDesktop]);
 
     const isRightCol = sideBarBlocks.length > 0 && isDesktop
@@ -239,7 +239,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     useEffect(() => {
         if (!isModal) {
             if (!isDesktop) {
-                setHeader({ subHeader: aItems[0].data, backButton: true, title: data.title });
+                setHeader({ subHeader: aItems[0].data, backButton: true, title: data.module == 'bx_timeline' ? 'Update ' : 'Post' });
             }
             else {
                 setHeader(defaultHeader);
