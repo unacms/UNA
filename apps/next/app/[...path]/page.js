@@ -9,17 +9,9 @@ const SITE_TITLE = 'NEO';
 // Settings use the historical misspelling; keep this key aligned with settings/layout.js.
 const AVAILABLE_LANGS_SETTING_KEY = 'avaliable_langs';
 
-// Resilience tuning (mirrors getRemoteSettings() in packages/app/config.js and not-found.js):
-// a short per-attempt timeout fails fast instead of waiting undici's 10s default
-// connectTimeout, then retries with linear backoff before degrading gracefully.
-const FETCH_TIMEOUT_MS = 3500;
-const MAX_ATTEMPTS = 3;
-const BASE_RETRY_DELAY_MS = 300;
-
-const buildErrorData = (code) => ({ data: { title: SITE_TITLE, description: SITE_TITLE }, code });
-
 let remote_config = { hash: null, data: null };
 //export const runtime = 'edge'
+let cachedData = {};
 
 const getCookieValue = (cookieString = '', name) => {
     return cookieString
@@ -57,23 +49,33 @@ const resolveLangFromAcceptLanguage = (acceptLanguage = '') => {
 };
 
 async function getCachedData(props) {
+     //AFTER REACT 19 UPDATE NEED REMOVE DOUBLE CALLS
     const [params, search_params] = await Promise.all([
         props.params,
         props.searchParams,
     ])
 
-    // Key the request-scoped cache on a stable primitive. generateMetadata() and the
-    // Page component run in the same request but receive distinct props objects, so
-    // passing the objects straight to React cache() never deduped (Object.is miss) and
-    // both calls hit the backend. Stringifying gives both callers an identical key, so
-    // React cache() collapses them into a single fetch per request.
+    // Generate a unique key for each `props` input to store cache separately for each set of `props`
     const cacheKey = JSON.stringify({ params, search_params });
-    return getData(cacheKey);
+    const currentTime = Date.now();
+
+    // Check if data is in cache and if it's still valid (not older than 1 second)
+    if (cachedData[cacheKey] && (currentTime - cachedData[cacheKey].timestamp < 1000)) {
+        return cachedData[cacheKey].data;
+    }
+
+    // If not cached or expired, fetch new data and store it in cache with a timestamp
+    const data = await getData(params, search_params);
+    cachedData[cacheKey] = {
+        data,
+        timestamp: currentTime,
+    };
+
+    return data;
 }
 
 
-const getData = cache(async (cacheKey) => {
-    const { params, search_params } = JSON.parse(cacheKey);
+const getData = cache(async (params, search_params) => {
     let path = params.path.join('/');
     
     // Ранняя проверка для статических файлов - до любых логов и запросов к UNA
@@ -82,7 +84,7 @@ const getData = cache(async (cacheKey) => {
     
     if (isStaticFile || path.startsWith('_next/') || path.startsWith('static/')) {
         // Возвращаем 404 без логирования и запросов к UNA
-        return buildErrorData(404);
+        return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: 404 };
     }
     
     let hdrs = await headers();
@@ -122,51 +124,31 @@ const getData = cache(async (cacheKey) => {
     }
 
     console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', searchParams, l);
-
-    let lastError = null;
-    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-        try {
-            const res = await fetch(l, {
-                headers: fetchHeaders,
-                cache: 'no-store',
-                signal: controller.signal,
-            });
-
-            // Keep the abort timer active across the body read so a slow/stalled
-            // response body is bounded too — not just the connection/headers phase.
-            const resClone = res.clone();
-            try {
-                return await res.json();
-            } catch (parseError) {
-                // A timeout abort during the body read is a transient/network-class
-                // failure (retryable). A fully-received but malformed body is not.
-                if (controller.signal.aborted) {
-                    throw parseError;
-                }
-                const text = await resClone.text().catch(() => '');
-                console.error('!-------------------------! JSON error:', text);
-                return buildErrorData(500);
-            }
-        } catch (error) {
-            // Network/connection error or per-attempt timeout abort (connect, headers,
-            // or body read) — retry with backoff.
-            lastError = error;
-            if (attempt < MAX_ATTEMPTS) {
-                await new Promise((resolve) => setTimeout(resolve, BASE_RETRY_DELAY_MS * attempt));
-                continue;
-            }
-            console.error('Server fetch failed (network/connection or timeout) after retries:', error);
-            return buildErrorData(503);
-        } finally {
-            clearTimeout(timeout);
-        }
+    let res;
+    try {
+        res = await fetch(l, {
+            headers: fetchHeaders,
+            cache: 'no-store',
+        })
+    } catch (error) {
+        console.error('Server fetch failed (network/connection):', error);
+        return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: 503 };
     }
 
-    // Defensive: loop should always return above.
-    console.error('Server fetch exhausted attempts:', lastError);
-    return buildErrorData(503);
+   /* if (!res.ok) {
+        const body = await res.text().catch(() => '');
+        console.error('Server fetch failed (http):', res.status, body);
+        return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: res.status };
+    }*/
+
+    const resClone = res.clone();
+    try {
+        return await res.json();
+    } catch (error) {
+        const text = await resClone.text();
+        console.error("!-------------------------! JSON error:", text);
+        return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: 500 };
+    }
 });
 
 
