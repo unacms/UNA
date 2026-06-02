@@ -2,15 +2,18 @@ import { Conductor } from 'app/ui/molecules/conductor';
 import { useState, useEffect, useMemo, memo } from 'react';
 import { appSetting, getBlocksFromData, cloneObject, getPageData } from 'app/lib/util';
 import { useLayoutData } from 'app/context/layout';
-import { processBlocks } from 'app/lib/conductor-helpers';
+import { useRouter, redirectTo } from 'app/lib/hooks/router'
 
 const ConductorMemo = memo(Conductor, (prev, next) => prev.ts === next.ts);
 
 export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
     const { layoutData } = useLayoutData();
     const [pageData, setPageData] = useState(data);
-
+    const router = useRouter();
     useEffect(() => {
+        if (layoutData && layoutData?.type == 'сonnections:action' && layoutData?.data?.data?.redirect) {
+            redirectTo(router, layoutData?.data?.data?.redirect);
+        }
         if (layoutData && layoutData?.type == 'сonnections:action' && layoutData?.data?.reload) {
             (async () => {
                 if (layoutData?.data?.object?.initiator == pageData?.cover_block?.profile?.id || layoutData?.data?.object?.content == pageData?.cover_block?.profile?.id || !layoutData?.data?.object?.content) {

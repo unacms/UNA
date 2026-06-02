@@ -673,9 +673,6 @@ const TabSceneMainContent = ({
         );
     }, [dataItemsPageFiltered, refetchState.visibleItems, isDesktop, pageRoute?.endpoint?.request_url, pageRoute?.leftbar?.content, pageRoute?.sidebar?.content, feedType]);
 
-
-    console.log('dataItems', dataItems);
-
     useEffect(() => {
         if (isUseCurrentHeader) {
             setHeader(isDesktop ? defaultHeader : { header: false });

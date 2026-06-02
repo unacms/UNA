@@ -45,7 +45,6 @@ export default function Subscriber() {
     }, []);
 
     const onUpdateConnections = useCallback(async (data) => {
-        console.log('onUpdateConnections', data);
         emitter.emit('сonnections', { action: 'changed' });
         storageClear();
         const oData = JSON.parse(data);
