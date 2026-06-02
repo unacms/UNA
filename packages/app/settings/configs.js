@@ -13,6 +13,8 @@ export const settingsConfigs = {
         collapsible_header: true,
         backbutton_in_header: false,
         scroll_to_top_button: true,
+         // Paths not stored in tab back-stack (repeat tab tap / header back). String prefix or { prefix }, { regex } on path without query.
+        tab_history_exclude: [],
     },
     urls: {
         embeds: '/oembed.php?html=1&a=get_link&l=',

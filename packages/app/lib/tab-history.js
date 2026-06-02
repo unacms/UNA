@@ -34,6 +34,24 @@ function getTabRootUrl(tabKey, currentUser) {
     return tab.url || '/home';
 }
 
+function tabHistoryPath(url) {
+    if (!url) return '';
+    const path = String(url).split('?')[0];
+    return (path === '/' || path === '') ? '/home' : path;
+}
+
+export function isTabHistoryExcluded(url) {
+    if (!url) return true;
+    const path = tabHistoryPath(url);
+    const rules = appSetting('native', 'tab_history_exclude') || [];
+    return rules.some((rule) => {
+        if (typeof rule === 'string') return url === rule || path === rule || url.startsWith(rule) || path.startsWith(rule);
+        if (rule?.prefix) return url.startsWith(rule.prefix) || path.startsWith(rule.prefix);
+        if (rule?.regex) { try { return new RegExp(rule.regex).test(path); } catch { return false; } }
+        return false;
+    });
+}
+
 export function ensureTabHistory(tabKey, currentUser, initialUrl) {
     if (!tabHistoryState.byTab[tabKey]) {
         const root = getTabRootUrl(tabKey, currentUser);
@@ -58,7 +76,13 @@ export function pushTabHistory(tabKey, url, currentUser) {
 }
 
 export function canGoBackInTab(tabKey) {
-    return (tabHistoryState.byTab[tabKey]?.length || 0) > 1;
+    console.log("tabHistoryState.byTab[tabKey]", tabHistoryState.byTab[tabKey], tabKey);
+    const stack = tabHistoryState.byTab[tabKey];
+    if (!stack || stack.length <= 1) return false;
+    for (let i = stack.length - 2; i >= 0; i--) {
+        if (!isTabHistoryExcluded(stack[i])) return true;
+    }
+    return false;
 }
 
 export function popTabHistory(tabKey, currentUser) {
@@ -67,6 +91,9 @@ export function popTabHistory(tabKey, currentUser) {
     if (stack.length > 1) {
         const removed = stack.pop();
         logTabHistory('pop', tabKey, { removed });
+    }
+    while (stack.length > 1 && isTabHistoryExcluded(stack[stack.length - 1])) {
+        stack.pop();
     }
     return stack[stack.length - 1];
 }
