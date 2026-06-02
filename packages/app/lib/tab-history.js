@@ -76,7 +76,6 @@ export function pushTabHistory(tabKey, url, currentUser) {
 }
 
 export function canGoBackInTab(tabKey) {
-    console.log("tabHistoryState.byTab[tabKey]", tabHistoryState.byTab[tabKey], tabKey);
     const stack = tabHistoryState.byTab[tabKey];
     if (!stack || stack.length <= 1) return false;
     for (let i = stack.length - 2; i >= 0; i--) {
