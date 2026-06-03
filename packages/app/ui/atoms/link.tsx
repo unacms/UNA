@@ -21,6 +21,7 @@ export default function ElementLink({
     haptics,
     children,
     asExternal,
+    onPress,
     mode,
     variant = 'default',
     size,
@@ -34,9 +35,10 @@ export default function ElementLink({
     const glob = useGlobalSearchParams();
     const { currentUser } = useCurrentUser();
 
-    const handlePress = useCallback(() => {
+    const handlePress = useCallback((e) => {
         if (haptics) FeedbackHaptics(haptics);
         emitter.emit('link', { action: 'pressed' });
+        onPress?.(e); 
     }, [haptics]);
 
     const TabList = useMemo(() => {
