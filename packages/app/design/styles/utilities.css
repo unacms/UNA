@@ -11,7 +11,7 @@
 }
 
 @source inline("line-clamp-3 line-clamp-4 line-clamp-5 line-clamp-6");
-@source inline("xl:block native:hidden web:hidden md:hidden lg:hidden xl:hidden");
+@source inline("xl:block native:hidden web:hidden md:hidden lg:hidden xl:hidden md:block lg:block sm:block");
 @source inline("bg-emerald-600 bg-fuchsia-600 bg-orange-500 bg-teal-500 bg-rose-500");
 @source inline("bg-green-200 bg-green-500 bg-red-200 bg-red-400 bg-red-500");
 @source inline("bg-gray-300 bg-gray-400 bg-gray-600 bg-yellow-500 bg-yellow-600");
