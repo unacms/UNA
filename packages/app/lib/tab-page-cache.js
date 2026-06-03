@@ -39,3 +39,9 @@ export function setListScrollOffset(url, offset) {
     if (!url) return;
     scrollOffsetCache.set(url, offset);
 }
+
+export function clearAllPageCache() {
+    pageDataCache.clear();
+    conductorCache.clear();
+    scrollOffsetCache.clear();
+}

@@ -42,7 +42,13 @@ export function Screen(params) {
     let isRoot = false;
   
     // BOTTOM TABS NAVIGATION
-    if (!_path || _path.includes('/tab')) {
+    // Also detect a stale URL from the other user context (e.g. guest's /safety still
+    // held by Expo Router after login). Recompute it from the current context's menu.
+    const otherTabListKey = currentUser ? 'menu_tabbar_non_logged' : 'menu_tabbar_logged';
+    const otherMenuItem = (appSetting('menu_items', otherTabListKey) || []).find((item) => item.key === pathname);
+    const isStaleContextUrl = !!otherMenuItem?.url && _path === otherMenuItem.url;
+
+    if (!_path || _path.includes('/tab') || isStaleContextUrl) {
         const tabListKey = currentUser ? 'menu_tabbar_logged' : 'menu_tabbar_non_logged';
         const tabList = appSetting('menu_items', tabListKey);
         const item = tabList.find((item) => item.key === pathname);

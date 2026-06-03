@@ -33,7 +33,8 @@ import { registerAll } from 'app/components/registry-init';
 import * as WebBrowser from 'expo-web-browser';
 import { getDomainFromUrl } from 'app/lib/util';
 import { useSound } from 'app/lib/hooks/useSound';
-import { canGoBackInTab, popTabHistory } from 'app/lib/tab-history';
+import { canGoBackInTab, popTabHistory, resetAllTabHistory } from 'app/lib/tab-history';
+import { clearAllPageCache } from 'app/lib/tab-page-cache';
 import emitter from 'app/context/emitter';
 
 enableScreens(appSetting('native', 'enable_screens'));
@@ -246,6 +247,11 @@ export default function Tabs() {
             };
         }
 
+    }, [currentUser?.id]);
+
+    useEffect(() => {
+        resetAllTabHistory();
+        clearAllPageCache();
     }, [currentUser?.id]);
     // DEEP LINKING
 
