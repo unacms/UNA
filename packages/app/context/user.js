@@ -1,6 +1,36 @@
 import { create } from 'zustand';
+import { Platform } from 'react-native';
 import { isObjectsEqual } from 'app/lib/util'
 import { useShallow } from 'zustand/react/shallow';
+
+/**
+ * Web: page JSON from the server is enough to render guest UI before Zustand is seeded.
+ * Logged-in pages still wait for currentUser (seeded on the client from data.user).
+ */
+export function isWebAuthReady(pageData, currentUser) {
+    if (currentUser !== null) {
+        return true;
+    }
+    if (Platform.OS !== 'web' || pageData == null) {
+        return false;
+    }
+    return !pageData.user;
+}
+
+/**
+ * Web-only: seed the global store from page props (call from useLayoutEffect in Root).
+ * No-op on native (tabs bootstrap keeps currentUser === null).
+ */
+export function seedCurrentUserFromPageData(pageData) {
+    if (Platform.OS !== 'web' || pageData == null || typeof window === 'undefined') {
+        return;
+    }
+    if (useCurrentUserStore.getState().currentUser !== null) {
+        return;
+    }
+    useCurrentUserStore.getState().setCurrentUser(pageData.user ? pageData.user : false);
+}
+
 export const useCurrentUserStore = create((set, get) => ({
     currentUser: null, // Initial state
 

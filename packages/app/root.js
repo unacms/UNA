@@ -1,6 +1,6 @@
 "use client"
-import { useEffect, useRef } from 'react';
-import { useCurrentUser } from 'app/context/user';
+import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useCurrentUser, seedCurrentUserFromPageData, isWebAuthReady } from 'app/context/user';
 import { storageClear } from 'app/lib/util';
 import { useRouter, redirectTo } from 'app/lib/hooks/router'
 import Layouts from 'app/components/layouts';
@@ -19,6 +19,11 @@ export function Root(props) {
 
     const data = props?.data;
     const redirectUrl = data?.redirect;
+
+    // Seed Zustand before paint; must not run setState during render (Subscriber et al. subscribe to the store).
+    useLayoutEffect(() => {
+        seedCurrentUserFromPageData(data);
+    }, [data]);
     // ################## CODE FOR NATIVE VERSION
 
     useEffect(() => {
@@ -84,8 +89,8 @@ export function Root(props) {
     }, [redirectUrl]);
 
 
-    if (currentUser === null) {
-        return null; 
+    if (!isWebAuthReady(data, currentUser)) {
+        return null;
     }
 
     if (data.redirect) {

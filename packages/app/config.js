@@ -26,7 +26,12 @@ export function getBaseUrl() {
         return `${window.location.protocol}//${window.location.host}`;
     }
 
-    // Server-side
+    // Server-side / SSR (shared bundle has no next/headers — prefer configured app URL)
+    const appUrl = typeof APP_URL === 'string' ? APP_URL.replace(/\/$/, '') : '';
+    if (appUrl) {
+        return appUrl;
+    }
+
     try {
         const h = headers();
         const host = h.get("host") || "localhost:3000";

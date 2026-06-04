@@ -1,6 +1,4 @@
-import { appSetting } from 'app/lib/util';
 import { useThemeName } from 'app/design/theme';
-import { getBaseUrl } from 'app/config';
 
 export default function ({src_web, src_dark, src_default, colorize = false, className = '', style, alt = '', ...props}) {
     const theme = useThemeName();
@@ -11,12 +9,8 @@ export default function ({src_web, src_dark, src_default, colorize = false, clas
         return null;
     }
 
-    // For web, always use the current domain to support preview deployments
-    const baseUrl = typeof window !== 'undefined' 
-        ? getBaseUrl()
-        : appSetting('config', 'native_app_images_url');
-
-    const url = baseUrl + '/svg/' + src;
+    // Root-relative path: identical on SSR and client (resolves to the page origin in the browser).
+    const url = `/svg/${src}`;
     if (colorize) {
         return (
             <span

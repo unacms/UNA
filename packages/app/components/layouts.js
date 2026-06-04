@@ -1,6 +1,6 @@
 "use client"
 import Layout from 'app/components/layout';
-import { useCurrentUser } from 'app/context/user'
+import { useCurrentUser, isWebAuthReady } from 'app/context/user'
 import { getComponent } from 'app/components/registry';
 import { appSetting, getLayoutName } from 'app/lib/util'
 import Cell from 'app/components/cell';
@@ -183,7 +183,7 @@ function PageLayoutContent({ layout, data }) {
         }
     }
 
-    if (!Component || currentUser === null) {
+    if (!Component || !isWebAuthReady(data, currentUser)) {
         return null;
     }
 

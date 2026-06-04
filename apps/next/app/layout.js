@@ -27,23 +27,25 @@ const queryClient = new QueryClient({
     },
 });
 
+// Sync init so SSR splash/login copy matches hydration (useEffect-only init leaves t() as raw keys on the server).
+if (!i18n.isInitialized) {
+    i18n.use(initReactI18next).init({
+        compatibilityJSON: 'v3',
+        resources: resources,
+        lng: 'en',
+        fallbackLng: 'en',
+        interpolation: {
+            escapeValue: false,
+        },
+    });
+}
+
 export default function RootLayout({ children }) {
     const { langCode } = useLayoutSettings();
 
-    // Initialize i18n in useEffect to avoid setState during render
     useEffect(() => {
-        if (!i18n.isInitialized) {
-            i18n
-                .use(initReactI18next)
-                .init({
-                    compatibilityJSON: 'v3',
-                    resources: resources,
-                    lng: langCode, // default language
-                    fallbackLng: 'en',
-                    interpolation: {
-                        escapeValue: false
-                    }
-                });
+        if (i18n.isInitialized && langCode && i18n.language !== langCode) {
+            i18n.changeLanguage(langCode);
         }
     }, [langCode]);
 
