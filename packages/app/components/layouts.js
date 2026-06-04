@@ -138,7 +138,7 @@ function ErrorPage({ type }) {
 
 function PageLayoutContent({ layout, data }) {
     const { currentUser } = useCurrentUser();
-    const { layoutName, layoutBlocks, isCustomLayout } = layout;
+    const { layoutName, layoutBlocks, isCustomLayout, columnLayout = '' } = layout;
 
     const hasProfileInformer = currentUser?.informer?.some(
         item => item.id === "sys-account-profile-system"
@@ -193,7 +193,7 @@ function PageLayoutContent({ layout, data }) {
 
     if (isCustomLayout && layoutBlocks) {
         return (
-            <Component key={componentKey} layoutName={layoutName} data={data} blocks={layoutBlocks} />
+            <Component key={componentKey} layoutName={layoutName} columnLayout={columnLayout} data={data} blocks={layoutBlocks} />
         );
     }
 
@@ -206,7 +206,7 @@ function PageLayoutContent({ layout, data }) {
     ));
 
     return (
-        <Component key={componentKey} layoutName={layoutName} data={data}>
+        <Component key={componentKey} layoutName={layoutName} columnLayout={columnLayout} data={data}>
             {cells}
         </Component>
     );

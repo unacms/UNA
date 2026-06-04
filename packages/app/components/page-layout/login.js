@@ -17,17 +17,15 @@ import MenuFooter from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import { Icon } from 'app/ui/atoms/icon'
+import { getUnaPageLayoutClasses } from 'app/lib/util'
 
+const LOGIN_FULL_WIDTH = {
+    shell: 'w-full max-w-7xl p-4 lg:p-6 mx-auto my-auto',
+    content: 'w-full mx-auto',
+}
 
-function PageContent({ children, isLoginPage, title }) {
+function PageContent({ children }) {
     const { t } = useTranslation()
-    if (!isLoginPage) {
-        return (
-            <View>
-               {children}
-            </View>
-        )
-    }
 
     return (
         <View className="w-full justify-center max-w-lg p-4 mx-auto">
@@ -74,29 +72,25 @@ function PageContent({ children, isLoginPage, title }) {
     )
 }
 
-export default function PageLayout({ data, children }) {
+export default function PageLayout({ data, children, columnLayout = '' }) {
     const isWeb = Platform.OS === 'web'
-    const isLoginPage = data.uri === 'login'
+    const unaLayout = getUnaPageLayoutClasses(columnLayout) ?? LOGIN_FULL_WIDTH
+    const showLoginAside = columnLayout === 'layout_1_column_half'
 
     return (
         <Page data={data}>
             {isWeb ? (
-                    <View className="w-full lg:flex-row max-w-7xl p-4 lg:p-6 mx-auto my-auto">
-                        {isLoginPage ? appStatic('components_logincontent') : null}
-                        <View className="w-full lg:w-1/2 mx-auto">
-                            
-                                <PageContent
-                                    isLoginPage={isLoginPage}
-                                    title={data.title}
-                                >
+                    <View className={unaLayout.shell}>
+                        {showLoginAside ? appStatic('components_logincontent') : null}
+                        <View className={unaLayout.content}>
+                                <PageContent>
                                     {children}
                                 </PageContent>
-                           
                         </View>
                     </View>
             ) : (
                 <View className="flex-1">
-                    <PageContent isLoginPage={true}>{children}</PageContent>
+                    <PageContent>{children}</PageContent>
                 </View>
             )}
             <MenuFooter />

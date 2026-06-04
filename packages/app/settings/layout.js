@@ -18,6 +18,17 @@ export const settingsLayout = {
         panel_group_content: '  sm:p-2 mx-auto flex-1 ',
         max_width_landing: 'w-full max-w-7xl border-x border-border/60 border-dashed',
         max_width_block: ' max-w-7xl ',
+        /** UNA page layout keys → shell/content classNames (default.js, login columnLayout). Add keys as you wire more UNA layouts. */
+        page_layouts: {
+            layout_1_column_thin: {
+                shell: 'w-full max-w-7xl  p-4 lg:p-6 mx-auto my-auto justify-center',
+                content: 'w-full max-w-md mx-auto',
+            },
+            layout_1_column_half: {
+                shell: 'w-full lg:flex-row sm:px-4 lg:px-6 mx-auto my-auto ',
+                content: 'w-full max-w-4xl p-4 lg:p-6 xl:p-12 lg:border-x border-border/60 border-dashed mx-auto',
+            },
+        },
         padding_content: ' @list-sm/list:m-1 @list-lg/list:m-2',
         home_container: ' w-full max-w-9xl ',
         feed_container: ' w-full max-w-3xl sm:p-4 mx-auto ',

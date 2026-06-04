@@ -330,9 +330,9 @@ select {
     .u-neo-btn-hitarea-sm::before,
     .u-neo-btn-hitarea-md::before,
     .u-neo-btn-hitarea-lg::before {
-        border-radius: calc(var(--u-neo-btn-hitarea-radius, 0.75rem) * var(--neo-corner-superellipse-factor, 2));
+        border-radius: calc(var(--u-neo-btn-hitarea-radius, 0.75rem) * var(--neo-corner-superellipse-factor, 1.6));
         /* stylelint-disable-next-line property-no-unknown */
-        corner-shape: superellipse(var(--neo-corner-superellipse-factor, 2));
+        corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1.6));
     }
 }
 
@@ -657,15 +657,15 @@ html[theme="dark"]:root {
 @supports (corner-shape: superellipse(1)) {
     :root,
     html {
-        --neo-radius-xs: calc(0.125rem * var(--neo-corner-superellipse-factor, 2)) !important;
-        --neo-radius-sm: calc(0.125rem * var(--neo-corner-superellipse-factor, 2)) !important;
-        --neo-radius-default: calc(0.25rem * var(--neo-corner-superellipse-factor, 2)) !important;
-        --neo-radius-md: calc(0.375rem * var(--neo-corner-superellipse-factor, 2)) !important;
-        --neo-radius-lg: calc(0.5rem * var(--neo-corner-superellipse-factor, 2)) !important;
-        --neo-radius-xl: calc(0.75rem * var(--neo-corner-superellipse-factor, 2)) !important;
-        --neo-radius-2xl: calc(1rem * var(--neo-corner-superellipse-factor, 2)) !important;
-        --neo-radius-3xl: calc(1.5rem * var(--neo-corner-superellipse-factor, 2)) !important;
-        --neo-radius-4xl: calc(2rem * var(--neo-corner-superellipse-factor, 2)) !important;
+        --neo-radius-xs: calc(0.125rem * var(--neo-corner-superellipse-factor, 1.6)) !important;
+        --neo-radius-sm: calc(0.125rem * var(--neo-corner-superellipse-factor, 1.6)) !important;
+        --neo-radius-default: calc(0.25rem * var(--neo-corner-superellipse-factor, 1.6)) !important;
+        --neo-radius-md: calc(0.375rem * var(--neo-corner-superellipse-factor, 1.6)) !important;
+        --neo-radius-lg: calc(0.5rem * var(--neo-corner-superellipse-factor, 1.6)) !important;
+        --neo-radius-xl: calc(0.75rem * var(--neo-corner-superellipse-factor, 1.6)) !important;
+        --neo-radius-2xl: calc(1rem * var(--neo-corner-superellipse-factor, 1.6)) !important;
+        --neo-radius-3xl: calc(1.5rem * var(--neo-corner-superellipse-factor, 1.6)) !important;
+        --neo-radius-4xl: calc(2rem * var(--neo-corner-superellipse-factor, 1.6)) !important;
         --neo-radius-full: calc(9999px * var(--neo-corner-superellipse-full-factor, 1)) !important;
     }
 
@@ -677,7 +677,7 @@ html[theme="dark"]:root {
         [class*=":rounded-lg"], [class*=":rounded-xl"], [class*=":rounded-2xl"],
         [class*=":rounded-3xl"], [class*=":rounded-4xl"]) {
         /* stylelint-disable-next-line property-no-unknown */
-        corner-shape: superellipse(var(--neo-corner-superellipse-factor, 2));
+        corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1.6));
     }
 
     /* Full rounding uses full factor */
@@ -694,15 +694,15 @@ html[theme="dark"]:root {
     .u-link-hitarea-lg::before {
         border-radius: 0;
         /* stylelint-disable-next-line property-no-unknown */
-        corner-shape: superellipse(var(--neo-corner-superellipse-factor, 2));
+        corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1.6));
     }
 
     .u-link-ghost::after,
     .u-link-ghost-active::after,
     .u-link-press::after {
-        border-radius: calc(var(--u-link-ghost-shape-radius, var(--u-link-ghost-radius, 0.375rem)) * var(--neo-corner-superellipse-factor, 2));
+        border-radius: calc(var(--u-link-ghost-shape-radius, var(--u-link-ghost-radius, 0.375rem)) * var(--neo-corner-superellipse-factor, 1.6));
         /* stylelint-disable-next-line property-no-unknown */
-        corner-shape: superellipse(var(--neo-corner-superellipse-factor, 2));
+        corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1.6));
     }
 
     .u-action-hitarea::before,
@@ -710,9 +710,9 @@ html[theme="dark"]:root {
     .u-action-hitarea-sm::before,
     .u-action-hitarea-md::before,
     .u-action-hitarea-lg::before {
-        border-radius: calc(var(--u-action-hitarea-radius, 0.5rem) * var(--neo-corner-superellipse-factor, 2));
+        border-radius: calc(var(--u-action-hitarea-radius, 0.5rem) * var(--neo-corner-superellipse-factor, 1.6));
         /* stylelint-disable-next-line property-no-unknown */
-        corner-shape: superellipse(var(--neo-corner-superellipse-factor, 2));
+        corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1.6));
     }
 
     /* Ensure focus rings follow the shape */

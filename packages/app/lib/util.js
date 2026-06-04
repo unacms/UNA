@@ -549,6 +549,15 @@ export function getPageWidth(uri, config) {
     return appSetting('layout', 'max_width');
 }
 
+/** UNA `page_layouts` entry from settings (shell + content classNames), or null if unknown. */
+export function getUnaPageLayoutClasses(layoutKey) {
+    if (!layoutKey) {
+        return null;
+    }
+    const pageLayouts = appSetting('layout', 'page_layouts') || {};
+    return pageLayouts[layoutKey] ?? null;
+}
+
 export function getAlert(type, data) {
     /*
     сonnections:action
@@ -587,13 +596,22 @@ export function getBlocksFromData(data) {
 
 export function getLayoutName(data, uri) {
     if (data?.page_status) {
-        return { layoutName: 'default', layoutBlocks: '', isCustomLayout: false };
+        return { layoutName: 'default', layoutBlocks: '', isCustomLayout: false, columnLayout: '' };
     }
 
-    const { layout: customLayout = '', blocks: customBlocks = '' } = getPageSettings(data?.config, uri) || {};
+    const pageSettings = getPageSettings(data?.config, uri) || {};
+    const customLayout = pageSettings.layout || '';
+    const customBlocks = pageSettings.blocks || '';
     const isCustom = Boolean(customLayout);
 
     const checks = [
+        {
+            cond: uri === 'login',
+            name: 'login',
+            blocks: customBlocks,
+            custom: true,
+            columnLayout: getUnaPageLayoutClasses(customLayout) ? customLayout : '',
+        },
         {
             cond: isCustom,
             name: customLayout,
@@ -607,11 +625,6 @@ export function getLayoutName(data, uri) {
         {
             cond: uri === 'home',
             name: 'home',
-            custom: true,
-        },
-        {
-            cond: uri === 'login',
-            name: 'login',
             custom: true,
         },
         {
@@ -630,13 +643,13 @@ export function getLayoutName(data, uri) {
         },
     ];
 
-    for (const { cond, name, blocks = customBlocks, custom = isCustom } of checks) {
+    for (const { cond, name, blocks = customBlocks, custom = isCustom, columnLayout = '' } of checks) {
         if (cond) {
-            return { layoutName: name, layoutBlocks: blocks, isCustomLayout: custom };
+            return { layoutName: name, layoutBlocks: blocks, isCustomLayout: custom, columnLayout };
         }
     }
 
-    return { layoutName: 'default', layoutBlocks: customBlocks, isCustomLayout: isCustom };
+    return { layoutName: 'default', layoutBlocks: customBlocks, isCustomLayout: isCustom, columnLayout: '' };
 }
 
 export function getHeaderSettings(uri, isDesktop, layout, config) {
