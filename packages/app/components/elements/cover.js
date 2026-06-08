@@ -605,7 +605,7 @@ export default function Cover({
                         </View>}
                             {!isDesktop && <Row className="gap-2 flex-none min-w-0 items-center min-h-10">
                             <Text
-                                className="min-w-0 flex-1 truncate tracking-tight text-xl sm:text-3xl font-bold text-foreground"
+                                className="min-w-0 truncate tracking-tight text-xl sm:text-3xl font-bold text-foreground"
                                 numberOfLines={1}
                             >
                                 {profileData.display_name ||
