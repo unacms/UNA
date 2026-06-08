@@ -17,11 +17,12 @@ function createBlockComponent({
         className = '',
         isBg,
         isPad,
+        isRoundedAll,
         ...props
     }) {
         return (
             <Component
-                className={`${baseClass} ${isBg && baseClass == 'u-block-base' ? blockTheme['u-block-bg'] : ''} ${isPad ? blockTheme['u-block-pad'] : ''} ${animate ? blockTheme['u-block-animate'] || '' : ''} ${blockTheme[baseClass] || ''} ${className}`}
+                className={`${baseClass} ${isRoundedAll && baseClass == 'u-block-base' ? blockTheme['u-block-rounded-all'] : blockTheme['u-block-rounded']} ${isBg && baseClass == 'u-block-base' ? blockTheme['u-block-bg'] : ''} ${isPad ? blockTheme['u-block-pad'] : ''} ${animate ? blockTheme['u-block-animate'] || '' : ''} ${blockTheme[baseClass] || ''} ${className}`}
                 role={role}
                 aria-level={ariaLevel}
                 {...props}

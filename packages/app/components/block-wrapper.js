@@ -74,6 +74,7 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                     key={block.id}
                     isBg={bIsShowBg}
                     isPad={bIsShowPadding}
+                    isRoundedAll={config.rounded}
                     className={[
                         "w-full mx-auto",
                         (!fullWidth && !cssClasses.includes("max-w-") ? appSetting('layout', 'max_width_block') : ""),
