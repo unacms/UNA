@@ -7,6 +7,7 @@ import { Loading } from 'app/customization/loading'
 import { cache } from 'react'
 import { UNA_URL, UNA_API_KEY } from 'app/config';
 import { cookies } from 'next/headers'
+import { appSetting } from 'app/config';
 
 const SITE_TITLE = appSetting('config', 'title');;
 // Mirror the resilience tuning used by getRemoteSettings() in packages/app/config.js
