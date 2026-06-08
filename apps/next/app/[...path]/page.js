@@ -5,7 +5,7 @@ import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { headers } from "next/headers"
 
-const SITE_TITLE = 'NEO';
+const SITE_TITLE = appSetting('config', 'title');;
 // Settings use the historical misspelling; keep this key aligned with settings/layout.js.
 const AVAILABLE_LANGS_SETTING_KEY = 'avaliable_langs';
 

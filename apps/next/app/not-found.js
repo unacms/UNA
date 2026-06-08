@@ -8,7 +8,7 @@ import { cache } from 'react'
 import { UNA_URL, UNA_API_KEY } from 'app/config';
 import { cookies } from 'next/headers'
 
-const SITE_TITLE = 'NEO';
+const SITE_TITLE = appSetting('config', 'title');;
 // Mirror the resilience tuning used by getRemoteSettings() in packages/app/config.js
 // so a slow/stalled backend degrades gracefully instead of hard-crashing the 404 page.
 const FETCH_TIMEOUT_MS = 3500;
