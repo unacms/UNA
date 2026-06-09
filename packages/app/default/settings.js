@@ -22,6 +22,7 @@ export const settingsDefault = {
         debug: true,
         use_proxy_web: true,
         use_proxy_native: false,
+        fetch_timeout_ms: 10000,
         sockets: {
             host: 'ci.una.io',
             port: '443',

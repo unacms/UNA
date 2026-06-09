@@ -3,7 +3,8 @@ import i18n from 'i18next';
 import { appSetting, UNA_URL, APP_URL, APP_ORIGIN, MULTITENANT } from 'app/config';
 
 const USE_PROXY_WEB = appSetting('config', 'use_proxy_web'); 
-const USE_PROXY_NATIVE = appSetting('config', 'use_proxy_native'); 
+const USE_PROXY_NATIVE = appSetting('config', 'use_proxy_native');
+const FETCH_TIMEOUT_MS = appSetting('config', 'fetch_timeout_ms') || 15000;
 
 export async function fetcher (mixed, useProxy = false) {
     let prefix = UNA_URL;
@@ -29,7 +30,7 @@ export async function fetcher (mixed, useProxy = false) {
     return r;
 }
 
-export async function fetcherRaw (host, mixed) {
+export async function fetcherRaw(host, mixed) {
     let path, token, data, origin, headers, callback;
 
     if (Array.isArray(mixed)){
@@ -58,20 +59,30 @@ export async function fetcherRaw (host, mixed) {
     // perform fetch
     const lang = i18n.language;
 
-    return fetch(host + path + "&lang=" + lang, {
-        method: data ? 'POST' : 'GET',
-        body: data ? data : null,
-        headers: headers,
-        cache: 'no-store',
-        credentials: 'include' // Set to true on UNA side - Access-Control-Allow-Credentials
-    })
-    .then(async (r) => {
+    const url = host + path + "&lang=" + lang;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
+    try {
+        const r = await fetch(url, {
+            method: data ? 'POST' : 'GET',
+            body: data ? data : null,
+            headers: headers,
+            cache: 'no-store',
+            credentials: 'include', // Set to true on UNA side - Access-Control-Allow-Credentials
+            signal: controller.signal,
+        });
         if (callback)
             callback(r);
         return r;
-    })
-    .catch((error) => {
-        console.error("Api call error: ",error,host + path + "&lang=" + lang);
+    } catch (error) {
+        if (error?.name === 'AbortError') {
+            console.error('Api call timeout:', FETCH_TIMEOUT_MS, url);
+            throw new Error('Timeout');
+        }
+        console.error('Api call error: ', error, url);
         throw error;
-    });
+    } finally {
+        clearTimeout(timer);
+    }
 }

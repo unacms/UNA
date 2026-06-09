@@ -297,6 +297,18 @@ const PageError = ({ error, reset }) => {
     )
 }
 
+const BootstrapOffline = ({ onRetry }) => {
+    const { t } = useTranslation()
+    return (
+        <View className="flex-1 items-center justify-center bg-background p-6 gap-4">
+            <Text className="text-center text-base text-foreground">
+                {t('No internet connection')}
+            </Text>
+            {onRetry ? <Button title={t('Retry')} onPress={onRetry} /> : null}
+        </View>
+    )
+}
+
 const PageNotAllowed = () => {
     const { t } = useTranslation()
     return (
@@ -517,11 +529,14 @@ const ComponentsFullFooter = () => {
     )
 }
 
+export { BootstrapOffline }
+
 export const staticDefault = {
     logo: Logo,
     components_about: ComponentsAboutComponent,
     page_not_found: PageNotFound,
     page_error: PageError,
+    bootstrap_offline: BootstrapOffline,
     page_not_allowed: PageNotAllowed,
     components_comments_empty: ComponentsCommentsEmpty,
     components_content_empty: ComponentsContentEmpty,

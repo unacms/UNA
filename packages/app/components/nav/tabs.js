@@ -6,7 +6,7 @@ import { appSetting } from 'app/lib/util'
 import { useColorScheme } from 'react-native';
 import { DarkTheme, DefaultTheme } from "@react-navigation/native";
 import Profile from 'app/ui/molecules/profile';
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 //import BottomSheetDataContext from 'app/context/bottomsheet';
 import { FeedbackHaptics, getPageData } from 'app/lib/util';
@@ -24,6 +24,7 @@ import fonts from 'app/customization/design/fonts/fonts';
 import { Platform } from 'react-native'
 import { Appearance } from 'react-native';
 import { Text } from 'app/design/typography'
+import { staticComponents } from 'app/customization/static';
 //import VersionCheck from 'react-native-version-check';
 import { Alert } from 'react-native';
 import { useLayoutData } from 'app/context/layout';
@@ -36,6 +37,7 @@ import { useSound } from 'app/lib/hooks/useSound';
 import { canGoBackInTab, popTabHistory, resetAllTabHistory } from 'app/lib/tab-history';
 import { clearAllPageCache } from 'app/lib/tab-page-cache';
 import emitter from 'app/context/emitter';
+import { useBottomSheetData } from 'app/context/bottomsheet';
 
 enableScreens(appSetting('native', 'enable_screens'));
 
@@ -117,12 +119,13 @@ function processUrl(url, router, currentUser, TabList) {
 
 export default function Tabs() {
     const { currentUser, setCurrentUser } = useCurrentUser();
+    const [bootstrapError, setBootstrapError] = useState(false);
     const { setLayoutData } = useLayoutData()
     const { themeName } = useLayoutSettings();
     const [fontsLoaded] = useFonts(fonts);
     const router = useRouter();
     const pathname = usePathname();
-
+    const { setBottomSheetData } = useBottomSheetData();
     registerAll();
 
     const playClick = useSound('click');
@@ -266,20 +269,34 @@ export default function Tabs() {
 
 
     useEffect(() => {
-        const fetchPageData = async () => {
-            const data = await getPageData('home');
-            setCurrentUser(data.data.user);
-        }
-        if (currentUser === null) {
-            fetchPageData();
-        }
+        if (currentUser !== null || bootstrapError) return;
 
-    }, [currentUser]);
+        let cancelled = false;
+        (async () => {
+            try {
+                const data = await getPageData('home');
+                if (!cancelled) setCurrentUser(data.data.user ?? false);
+            } catch {
+                if (!cancelled) setBootstrapError(true);
+            }
+        })();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [currentUser, bootstrapError, setCurrentUser]);
 
     // Условный рендеринг: все хуки должны вызываться до этого места
     // Используем условный рендеринг в JSX вместо раннего return
-    if (!fontsLoaded || currentUser === null) {
+    if (!fontsLoaded || (currentUser === null && !bootstrapError)) {
         return null;
+    }
+
+    if (bootstrapError) {
+        const OfflineScreen = staticComponents.bootstrap_offline;
+        return OfflineScreen
+            ? <OfflineScreen onRetry={() => setBootstrapError(false)} />
+            : null;
     }
 
     return (
@@ -335,7 +352,7 @@ export default function Tabs() {
                                     listeners={{
                                         tabPress: async (e) => {
                                             const isExternalLink = tabUrl && (tabUrl.startsWith('http://') || tabUrl.startsWith('https://'));
-
+                                            setBottomSheetData(null);
                                             if (isExternalLink) {
                                                 e.preventDefault();
                                                 await WebBrowser.openBrowserAsync(tabUrl);

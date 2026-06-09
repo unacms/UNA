@@ -328,6 +328,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     const routesRef = useRef(null);
     const { currentUser } = useCurrentUser();
 
+
     const { setBottomSheetData } = useBottomSheetData();
     const initedTabs = useMemo(() => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu), [menu, data, blocks, currentUser, useSectionAsMenu]);;
     const conductorCacheKey = `${layoutName}:${data?.url ?? ''}`;
@@ -713,7 +714,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         headerMode === 'dynamic' ||
         (headerMode === 'small' && !appSetting('native', 'collapsible_header'));
 
-    const coverBlock = currentRoute?.pageData?.cover_block;
+    const coverBlock = data?.cover_block;
     const pageUri = currentRoute?.pageData?.uri;
     const pageContext = currentRoute?.pageData?.context;
 
