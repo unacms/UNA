@@ -30,28 +30,13 @@ function PageContent({ children }) {
     return (
         <View className="w-full justify-center max-w-lg p-4 mx-auto">
             <View className="gap-4">
-                <Card role="form"
-                    titleId="login-page-title"
-                    aria-describedby="login-card-description"
-                    className="sm:py-6 gap-4 sm:gap-6 max-w-sm w-full mx-auto"
-                >
-                    <CardHeader className="items-center sm:px-6">
-                        <CardIcon id="login-card-icon">
-                            <Icon icon="UserRound" width={32} height={32} className="w-6 h-6 sm:w-8 sm:h-8" />
-                        </CardIcon>
-                        <CardTitle className="text-center lg:text-start">
-                            {t('login_page_title')}
-                        </CardTitle>
-
-                        <CardDescription id="login-card-description">{t('login_page_text')}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="sm:px-6 gap-4">
+                
 
                         {children}
                         <AuthPanel showSeparator={true} forgotPasswordLink={true} />
 
-                    </CardContent>
-                    <CardFooter className="sm:px-6">
+                    
+                    
                         <Row className=" mx-auto gap-1 justify-center items-center text-center">
                             <Text className="text-base text-secondary-foreground">
                                 {t('splash_page_login2')}
@@ -65,8 +50,7 @@ function PageContent({ children }) {
                                 {t('splash_page_new_account')}
                             </Link>
                         </Row>
-                    </CardFooter>
-                </Card>
+                    
             </View>
         </View>
     )

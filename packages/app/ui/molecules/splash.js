@@ -35,13 +35,7 @@ function PageContent({ data }) {
 
     return (
         <View className="w-full max-w-md gap-4 sm:gap-6">
-            <Card role="form"
-                titleId="login-page-title"
-                aria-describedby="login-card-description"
-                className="lg:py-6 lg:px-2 sm:px-2 lg:rounded-3xl gap-4 sm:gap-6 max-w-sm w-full mx-auto"
-                
-            >
-                <CardContent className=" gap-4">
+            
                     <BlockByName
                         name={isShowCreateAccount ? "system:login_form" : "system:login_form_only"}
                         data={data}
@@ -51,8 +45,8 @@ function PageContent({ data }) {
                         }}
                     />
                     <AuthPanel forgotPasswordLink={true} showSeparator={true} />
-                </CardContent>
-            </Card>
+               
+         
 
             {isShowCreateAccount && <View className="sm:px-6 ">
                 <Row
