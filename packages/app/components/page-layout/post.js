@@ -289,7 +289,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                 <KbAvoidingView modalOffset={insets.top+56}>{/*was 90 56=14*4 modal header*/}
                     <View
                         onLayout={handleLayout}
-                        className="bg-linear-to-b from-card/0 to-card backdrop-blur pb-3   "
+                        className=" mb-4   "
                     >
                         <CommentsForm
                             isModal={isModal}

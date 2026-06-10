@@ -124,7 +124,7 @@ export const PageHeader = ({ pageData }) => {
     const allowPointerEvents = showFixedHeader && !isEntering;
     const headerContainerBaseClass = appSetting('layout', 'header', 'container')
     const fixedHeaderClass =
-        ' header-fixed web:fixed web:top-0 web:left-0 web:right-0 web:z-50 -mt-[env(safe-area-inset-top)] pt-[env(safe-area-inset-top)] ';
+        ' header-fixed web:fixed web:top-0 web:left-0 web:right-0 web:z-50  ';
     const flowTransitionClass =
         ` web:transition-[transform,opacity,background-color,border-color] ${FIXED_BAR_TRANSITION_CLASS} `;
     const flowHeaderContainerClassName = usesFixedOverlayHeader
