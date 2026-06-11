@@ -60,8 +60,29 @@ export const useActualWindowHeight = () => {
     return actualHeight;
 };
 
+// SSR always renders as desktop (window width is 0 on the server, see `isDesktop` above).
+// On web the first client render must return the same value as SSR, otherwise components
+// branching on `useIsDesktop()` (e.g. PageHeader's collapsible header) produce hydration
+// mismatches — which in Next 16 / React 19.2 dev can cascade into
+// "RangeError: Maximum call stack size exceeded" during hydration recovery.
+let didHydrate = Platform.OS !== 'web';
+const useHydrated = () => {
+    const [hydrated, setHydrated] = useState(didHydrate);
+    useEffect(() => {
+        if (!hydrated) {
+            didHydrate = true;
+            setHydrated(true);
+        }
+    }, [hydrated]);
+    return hydrated;
+};
+
 export const useBreakpoint = () => useMeasureStore((s) => s.currentBreakpoint);
-export const useIsDesktop = () => useMeasureStore((s) => s.isDesktop);
+export const useIsDesktop = () => {
+    const isDesktop = useMeasureStore((s) => s.isDesktop);
+    const hydrated = useHydrated();
+    return hydrated ? isDesktop : true;
+};
 export const useWindowSize = () => useMeasureStore((s) => ({ width: s.windowWidth, height: s.windowHeight }));
 export const useWindowHeight = () => useMeasureStore((s) => (s.windowHeight));
 export const useWindowWidth = () => useMeasureStore((s) => (s.windowWidth));

@@ -365,13 +365,13 @@ export const settingsButtons = {
             // for the glass family).
             bordered: {
                 container: {
-                    default: 'bg-muted/60',
-                    hovered: 'bg-muted',
-                    focused: 'bg-muted',
-                    pressed: 'bg-muted',
-                    active: 'bg-muted',
-                    pressedToggle: 'bg-muted/60',
-                    disabled: 'bg-muted opacity-60',
+                    default: 'bg-muted/60 backdrop-blur',
+                    hovered: 'bg-muted backdrop-blur',
+                    focused: 'bg-muted backdrop-blur',
+                    pressed: 'bg-muted backdrop-blur',
+                    active: 'bg-muted backdrop-blur',
+                    pressedToggle: 'bg-muted/60 backdrop-blur',
+                    disabled: 'bg-muted opacity-60 backdrop-blur',
                 },
                 text: {
                     base: 'font-medium tracking-tight',

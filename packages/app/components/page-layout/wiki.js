@@ -17,7 +17,6 @@ import { useBreakpoint, useIsDesktop } from 'app/context/measure'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { defaultHeader, useSetHeader } from 'app/context/jotai/layout'
-import { Button } from 'app/design/controls'
 import Html from 'app/ui/atoms/html'
 import { useGlobalSearchParams, usePathname } from 'app/lib/hooks/router'
 import { isEmoji } from 'app/lib/util'
@@ -86,20 +85,20 @@ function WikiMenuItem({ title, icon, isActive, iconEnd }) {
         ? 'text-foreground'
         : 'text-secondary-foreground web:group-hover:text-foreground'
     const iconBackgroundClassName = isActive
-        ? ' '
-        : ' '
+        ? ' text-accent-foreground '
+        : ' text-secondary-foreground '
 
     return (
-        <Row className="min-h-8 px-2 items-center gap-2">
+        <Row className="min-h-9 px-2 items-center gap-2">
             <View className={`h-4 w-4 shrink-0 items-center justify-center rounded-full ${iconBackgroundClassName}`}>
                 {isEmoji(icon) ? (
                     <Text className="text-xs leading-none">{icon}</Text>
                 ) : (
-                    <Icon icon={icon} size={16} className={iconClassName} />
+                    <Icon icon={icon} size={20} className={iconClassName} />
                 )}
             </View>
 
-            <Text className={` flex-1 text-sm leading-4 font-medium ${isActive ? 'text-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>
+            <Text className={` flex-1 text-sm leading-4 font-medium ${isActive ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>
                 {title}
             </Text>
 
@@ -185,7 +184,8 @@ function MenuWiki({ setPageData, block, url }) {
             const canNavigate = hasItemPath(item);
             const itemPathComparable = normalizePathComparable(itemPath);
             const isActive = Boolean(itemPathComparable && itemPathComparable === currentPathComparable);
-            const activeWrapperClassName = isActive ? 'bg-accent/60 rounded-lg' : '';
+            const menuIsActive = canNavigate ? isActive : false;
+            const activeWrapperClassName = menuIsActive ? 'bg-accent/60 rounded-lg web:hover:bg-accent/90' : ' web:hover:bg-muted/60';
 
             const pressHandler = canNavigate
                 ? () => handleMenuPress(itemPath)
@@ -193,13 +193,12 @@ function MenuWiki({ setPageData, block, url }) {
                     ? () => toggleExpanded(itemId)
                     : undefined;
             const showChevron = !canNavigate && hasChildren;
-            const menuIsActive = canNavigate ? isActive : false;
             const menuIconEnd = showChevron ? (isExpanded ? 'ChevronDown' : 'ChevronRight') : null;
 
             return (
                 <View key={`lmenu-${itemId}`} className={`w-full ${depthClassName}`}>
                     <Pressable
-                        className={`web:group flex-1 rounded-lg ${canNavigate ? activeWrapperClassName : ''}`}
+                        className={`web:group flex-1 rounded-lg ${activeWrapperClassName}`}
                         onPress={pressHandler}
                     >
                         <WikiMenuItem
@@ -210,7 +209,7 @@ function MenuWiki({ setPageData, block, url }) {
                         />
                     </Pressable>
                     {hasChildren && isExpanded && (
-                        <View className="mt-1.5 gap-1.5">
+                        <View className="mt-1 gap-1">
                             {renderItems(children, depth + 1, indexPath)}
                         </View>
                     )}
@@ -375,24 +374,21 @@ function PageContentWiki({ data, url }) {
         }
 
         return (
-            <View className="w-full px-2 py-2 bg-card">
+            <View className="w-full py-2 ">
                 <View className="flex-row flex-wrap gap-2">
                     {showMobileLeftPanel && (
-                        <View className={`${showBothMobilePanels ? 'flex-1 min-w-[48%]' : 'w-full'}`}>
+                        <View className={`${showBothMobilePanels ? 'flex-1' : 'w-full'}`}>
                             <DropdownPopup
                                 minPopupWidth={256}
-                                contentClasses="rounded-xl border border-border/60 bg-card shadow-md"
-                                trigger={(
-                                    <Button
-                                        title={t('Navigation')}
-                                        variant="outline"
-                                        size="sm"
-                                        fullWidth
-                                        startDecorator="Menu"
-
-                                        className="rounded-xl"
-                                    />
-                                )}
+                                contentClasses="rounded-xl border border-popover mt-2 bg-popover/60 backdrop-blur shadow-md"
+                                buttonProps={{
+                                    label: t('Navigation'),
+                                    style: 'glass',
+                                    controlSize: 'small',
+                                    width: 'fill',
+                                    image: 'Menu',
+                                    borderShape: 'capsule',
+                                }}
                             >
                                 <View className="p-1">
                                     <MenuWiki setPageData={setPageData} block={leftMenu} url={pageData.url} />
@@ -401,31 +397,29 @@ function PageContentWiki({ data, url }) {
                         </View>
                     )}
                     {showMobileRightPanel && tocItems.length >= 2 && (
-                        <View className={`${showBothMobilePanels ? 'flex-1 min-w-[48%]' : 'w-full'}`}>
+                        <View className={`${showBothMobilePanels ? 'flex-1' : 'w-full'}`}>
                             <DropdownPopup
                                 minPopupWidth={256}
-                                contentClasses="rounded-xl border border-border/60 bg-card shadow-md"
-                                trigger={(
-                                    <Button
-                                        title={t('On this page')}
-                                        variant="outline"
-                                        size="sm"
-                                        fullWidth
-                                        startDecorator="ScrollText"
-                                        className="rounded-xl"
-                                    />
-                                )}
+                                contentClasses="rounded-xl border border-popover mt-2 bg-popover/60 backdrop-blur shadow-md"
+                                buttonProps={{
+                                    label: t('On this page'),
+                                    style: 'glass',
+                                    controlSize: 'small',
+                                    width: 'fill',
+                                    image: 'ScrollText',
+                                    borderShape: 'capsule',
+                                }}
                             >
-                                <View className="p-3">
+                                <View className="p-1">
                                     <View className="gap-2">
                                         {tocItems.map((item) => (
                                             <Row key={`mobile-toc-${item.key}`} className={`items-center gap-2 ${item.level === 3 ? 'pl-4' : ''}`}>
                                                 <Icon name={item.level === 2 ? 'List' : 'Minus'} size={14} className="text-muted-foreground" />
                                                 <Pressable
                                                     onPress={() => handleTocPress(item.id)}
-                                                    className="py-0.5"
+                                                    className="min-h-9 text-secondary-foreground flex-1 justify-center px-2 rounded-lg web:hover:bg-muted/60 web:hover:text-accent-foreground"
                                                 >
-                                                    <Text className="text-sm leading-tight text-secondary-foreground">
+                                                    <Text className="text-sm leading-tight native:text-secondary-foreground">
                                                         {item.text}
                                                     </Text>
                                                 </Pressable>
