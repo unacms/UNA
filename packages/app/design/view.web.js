@@ -294,6 +294,7 @@ export const ScrollView = interopRender(
             onLayout,
             horizontal,
             contentContainerStyle,
+            contentContainerClassName,
             scrollEnabled = true,
             onScroll,
             ...rest
@@ -316,7 +317,7 @@ export const ScrollView = interopRender(
                 {...domProps}
             >
                 <div
-                    className={horizontal ? 'neo-sh-с' : 'neo-sv-с'}
+                    className={cn(horizontal ? 'neo-sh-с' : 'neo-sv-с', contentContainerClassName)}
                     style={innerStyle}
                 >
                     {children}

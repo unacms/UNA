@@ -19,10 +19,12 @@ export default function MenuHeaderNavigation(props) {
     }
 
     const {
+        neoButton: _neoButton,
         rounded = false,
         startDecorator = 'Menu',
         alt = 'Menu',
         tooltip,
+        ...neoButtonProps
     } = props
 
     return (
@@ -37,6 +39,7 @@ export default function MenuHeaderNavigation(props) {
                 controlSize: 'regular',
                 accessibilityLabel: alt,
                 tooltip: tooltip ?? alt,
+                ...neoButtonProps,
             }}
         />
     )

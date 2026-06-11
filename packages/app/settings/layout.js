@@ -1,5 +1,3 @@
-
-
 export const settingsLayout = {
     layout: {
         body: ' bg-default ',
@@ -25,8 +23,8 @@ export const settingsLayout = {
                 content: 'w-full max-w-md mx-auto',
             },
             layout_1_column_half: {
-                shell: 'w-full lg:flex-row sm:px-4 lg:px-6 mx-auto my-auto ',
-                content: 'w-full max-w-4xl p-4 lg:p-6 xl:p-12 lg:border-x border-border/60 border-dashed mx-auto',
+                shell: 'w-full lg:flex-row p-4 lg:p-6 mx-auto my-auto ',
+                content: 'w-full max-w-4xl lg:p-3 rounded-3xl lg:border border-border/60 border-dashed mx-auto',
             },
         },
         padding_content: ' @list-sm/list:m-1 @list-lg/list:m-2',

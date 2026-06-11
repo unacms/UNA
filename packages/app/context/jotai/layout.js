@@ -13,7 +13,15 @@ export const headerAtom = atom(defaultHeader);
 export const footerAtom = atom(true);
 export const scrollDirectionAtom = atom(0);
 export const scrollValueAtom = atom(0);
-export const headerHeightAtom = atom(0);
+/**
+ * Standard fixed-header height on web (matches header `h-16` / `h-14 + pt-2` themes).
+ * On web the real height is only known after hydration (onLayout / desktop effect),
+ * so seed the atom with this value. If it started at 0 instead, the SSR paint
+ * would render page content under the fixed header (no spacer, minHeight 100vh +
+ * `my-auto` centering) and then jump down once hydration measures the header.
+ */
+export const DEFAULT_HEADER_HEIGHT = 64;
+export const headerHeightAtom = atom(isWeb ? DEFAULT_HEADER_HEIGHT : 0);
 export const footerHeightAtom = atom(0);
 
 // Write-only atom: keep the last measured height while a visible header is

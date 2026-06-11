@@ -89,7 +89,7 @@ function WikiMenuItem({ title, icon, isActive, iconEnd }) {
         : ' text-secondary-foreground '
 
     return (
-        <Row className="min-h-9 px-2 items-center gap-2">
+        <Row className="min-h-9 px-3 items-center gap-3">
             <View className={`h-4 w-4 shrink-0 items-center justify-center rounded-full ${iconBackgroundClassName}`}>
                 {isEmoji(icon) ? (
                     <Text className="text-xs leading-none">{icon}</Text>
