@@ -1,5 +1,5 @@
 {
-  "name": "solito-expo-router",
+  "name": "neo",
   "private": true,
   "workspaces": [
     "apps/*",
@@ -27,7 +27,7 @@
     "prod2": "cd apps/next && dotenv -e ../../.env.local -- yarn start",
     "prod:pm2": "cd apps/next && dotenv -e ../../.env.local -- yarn start:pm2",
     "analyze": "cd apps/next && cross-env ANALYZE=true yarn build",
-    "clean": "rm -rf ./node_modules && rm -rf ./apps/expo/node_modules && rm -rf ./apps/next/node_modules && rm -rf ./packages/app/node_modules && rm -rf ./apps/docs/node_modules"
+    "clean": "rm -rf ./node_modules ./apps/expo/node_modules ./apps/next/node_modules ./packages/app/node_modules"
   },
   "nohoist": [
     "**/expo-router",

@@ -324,7 +324,7 @@ export default function PageLayoutPlayground({ data, children }) {
                                         <Text className="text-primary-foreground font-semibold">YK</Text>
                                     </View>
                                     <View className="flex-1">
-                                        <Text className="text-foreground font-medium">Yasko Kunchev</Text>
+                                        <Text className="text-foreground font-medium">Alex Johnson</Text>
                                         <Text className="text-muted-foreground text-xs">View profile and account settings</Text>
                                     </View>
                                     <Icon icon="ChevronRight" size={20} className="text-muted-foreground" />

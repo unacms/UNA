@@ -16,22 +16,6 @@
       "sourceType": "github",
       "computedHash": "d2b5bcc7c09fdb649129ffc7dd7b647ec1b155736974b974292675afd588cb39"
     },
-    "dogfood": {
-      "source": "vercel-labs/agent-browser",
-      "sourceType": "github",
-      "computedHash": "055e73cddeec68e7eb75eab0c3f8490415384f72e98ac05405821427ed0e74b1"
-    },
-    "electron": {
-      "source": "vercel-labs/agent-browser",
-      "sourceType": "github",
-      "computedHash": "9c6ee7f028f409be8ba695dd9a6493c7de9a3802ee538ee905baaceea419aba9"
-    },
-    "migrate-nativewind-to-uniwind": {
-      "source": "uni-stack/uniwind",
-      "sourceType": "github",
-      "skillPath": "skills/migrate-nativewind-to-uniwind/SKILL.md",
-      "computedHash": "d3570bc395e5c9f12eddf4fcb613d92e7f4b1fbdb5692b20309fa87b70ff0718"
-    },
     "next-best-practices": {
       "source": "vercel-labs/next-skills",
       "sourceType": "github",
@@ -47,10 +31,10 @@
       "sourceType": "github",
       "computedHash": "be6bbf6ab1dc2cc6f2505cea52d497920c04f5b532c0846ee201f6029b803fb0"
     },
-    "slack": {
-      "source": "vercel-labs/agent-browser",
-      "sourceType": "github",
-      "computedHash": "187f9b0c41e418377a16ccb535e5aa04d55c482dae9a82da41755c6f5ee268f6"
+    "react-doctor": {
+      "source": "neo/monorepo",
+      "sourceType": "local",
+      "computedHash": ""
     },
     "turborepo": {
       "source": "vercel/turborepo",
@@ -82,11 +66,6 @@
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
       "computedHash": "2e9088a7333666d8c2833b8ff58bd51b955501c42b4c7244f72b4cbf22dafcc4"
-    },
-    "vercel-sandbox": {
-      "source": "vercel-labs/agent-browser",
-      "sourceType": "github",
-      "computedHash": "18664220dc6dc14b824b0b2de59fd43c1ae745cd0d0dbd663db27c741da1577b"
     },
     "web-design-guidelines": {
       "source": "vercel-labs/agent-skills",

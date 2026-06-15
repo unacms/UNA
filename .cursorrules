@@ -1,114 +1,68 @@
 # NEO Project Cursor Rules
 
-This file contains context and rules for AI assistants working on the NEO project to ensure consistency and quality.
+Concise rules for AI assistants working on the NEO monorepo. The canonical, detailed guide is [AGENTS.md](AGENTS.md) — read it for project structure, framework versions, styling, customization workflow, skills, and checklists.
 
 ## Project Overview
 
-NEO is a React Native/Next.js cross-platform application with:
-- **Native app**: React Native with Expo 
-- **Web app**: Next.js 
-- Yarn package manager (lockfile: yarn.lock)
-
+NEO is a cross-platform UNA CMS frontend:
+- **Native app**: React Native with Expo (`apps/expo`), styled with Uniwind (Tailwind CSS v4 syntax)
+- **Web app**: Next.js App Router (`apps/next`), styled with Tailwind CSS 4
+- **Shared code**: `packages/app` (components, lib, design system, settings)
+- Yarn workspaces + Turborepo; lockfile: `yarn.lock`
 
 ## Critical Rules
 
-### 1. Maintain Platform Consistency
-- **Web** and **Native** implementations should follow the same patterns
+### 1. Platform Consistency
+- Web and Native implementations should follow the same patterns
 - When fixing issues on one platform, check if the same issue exists on the other
 - Icon handling, theming, and component behavior should be consistent across platforms
+- On native, text styles do NOT cascade from View/Pressable to Text — apply text classes directly to `Text` (see AGENTS.md)
 
-
-### 3. Routing Architecture
+### 2. Routing
 - **Native**: Expo Router with file-based routing (`apps/expo/app/`)
 - **Web**: Next.js App Router (`apps/next/app/`)
 
-### 4. UNA CMS API Integration
-- **Backend**: API endpoints provided by UNA CMS
-- **Integration patterns**:
-  - Use the `fetcher` function from `app/lib/fetcher` for all UNA API calls
-  - Follow UNA's endpoint structure: `/api.php?r=module/action/Template&params[]=JSON`
-  - Handle proxy routing automatically (web vs native configurations)
-  - Use Bearer token authentication for server-side calls
-  - Real-time updates via Pusher WebSocket subscriptions
+### 3. UNA CMS API Integration
+- Use the `fetcher` function from `app/lib/fetcher` for all UNA API calls
+- Follow UNA's endpoint structure: `/api.php?r=module/action/Template&params[]=JSON`
+- Handle proxy routing automatically (web vs native configurations)
+- Use Bearer token authentication for server-side calls
+- Real-time updates via Pusher WebSocket subscriptions
 
-**UNA API Examples:**
 ```javascript
 import { fetcher } from 'app/lib/fetcher';
 
+const data = await fetcher('/api.php?r=module/action/Template&params[]=JSON');
+```
 
-### 5. Authentication Patterns
+See the `una-api` skill (`.agents/skills/una-api/SKILL.md`) for backend contracts (guest-safe blocks, JSON responses).
+
+### 4. Authentication
 - Use existing `currentUser` patterns for authentication checks
-- Menu filtering should follow established patterns in `packages/app/lib/util.js`
-- Check both logged/nonlogged state handling for consistency
+- Menu filtering follows established patterns in `packages/app/lib/util.js`
+- Check both logged/non-logged state handling for consistency
 
-## Code Quality Guidelines
-
-
-### Naming Conventions
-- **Components**: PascalCase for React components
-- **Files**: Follow existing patterns in each directory
-- **Props**: camelCase
-- **CSS classes**: Use Tailwind utility classes, prefer theme variables
-
-
-
-## Common Patterns to Follow
-
-
-## Investigation Checklist
-
-When debugging or implementing features, always check:
-
-- [ ] Does this work consistently on both web and native?
-- [ ] Are we following existing patterns in the codebase?
-- [ ] Is the design system being used correctly?
-- [ ] Is authentication handling consistent?
-- [ ] Are icons being resolved properly on both platforms?
-- [ ] Are UNA API calls using the `fetcher` function correctly?
-- [ ] Do API calls follow UNA's endpoint structure?
-- [ ] Are real-time updates using Pusher WebSocket subscriptions properly?
-- [ ] Is responsive design working across all screen sizes?
+### 5. Customization Layer
+- Defaults live in `packages/app/default/` and default `_map.js` files — do not modify them in branch/fork projects
+- Overrides belong under `packages/app/customization/` (settings, translations, icons, component maps, config)
 
 ## Red Flags - Always Investigate
 
 - Different implementations between web and native for the same feature
 - Missing icons on one platform but working on another
-- Hardcoded colors instead of theme tokens
-- Complex authentication logic that could be simplified
+- Hardcoded colors instead of semantic design tokens
 - Direct fetch() calls bypassing the `fetcher` function
 - Incorrect UNA endpoint patterns (not following `/api.php?r=module/action/Template`)
-- Missing Pusher WebSocket subscriptions for real-time features
-- Hardcoded UNA_URL instead of using proxy configurations
+- Hardcoded UNA_URL instead of using proxy/env configuration
 - Direct Tailwind usage where design system components exist
 - Missing responsive breakpoints for mobile/desktop differences
 
-## Performance Guidelines
-
-### Bundle Optimization
-- Use `dynamic` imports for heavy components on web
-- Leverage React.memo for expensive renders
-- Use proper key props for list items
-- Optimize images with Next.js Image component
-
-### Memory Management
-- Clean up subscriptions in useEffect cleanup
-- Use useMemo and useCallback appropriately
-- Avoid memory leaks in WebSocket connections
-
 ## Before Making Changes
 
-1. **Search existing code** for similar patterns
+1. **Search existing code** for similar patterns and components
 2. **Test on both platforms** if making shared changes
 3. **Follow existing conventions** in the same directory/module
-4. **Use appropriate theme system** (semantic tokens for new, custom for existing)
-7. **Verify responsive behavior** across screen sizes
-9. **Check authentication flow** if user-dependent features
+4. **Use semantic design tokens**, not hardcoded values
+5. **Run `npx tsc --noEmit`** in the affected app before finishing
 
-## Success Criteria
-
-- Cross-platform consistency maintained
-- Modern design system tokens utilized appropriately
-- Performance optimized for both web and native
-- Code quality improved incrementally
-- Patterns established and followed consistently
-- Responsive design working seamlessly
+For everything else (component hierarchy, Server vs Client Components, React Compiler notes, animated icons, NeoButton, skill precedence), defer to [AGENTS.md](AGENTS.md).

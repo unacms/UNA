@@ -35,7 +35,7 @@ export default function ElementLink({
     const glob = useGlobalSearchParams();
     const { currentUser } = useCurrentUser();
 
-    const handlePress = useCallback((e) => {
+    const handlePress = useCallback((e: any) => {
         if (haptics) FeedbackHaptics(haptics);
         emitter.emit('link', { action: 'pressed' });
         onPress?.(e); 

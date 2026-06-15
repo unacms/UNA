@@ -9,28 +9,28 @@ Use animated icons for nav items, tabs, or buttons where `Icon` is called with `
 ## End-to-end flow
 
 1. **`Icon`** receives `animated`, `className`, and interaction props (`active`, `selected`, `hovered`, `pressed`). When `animated` is true and the icon resolves to a **string** Lucide name, it looks up a component from the registry (see below).
-2. **Scene classes** in `className` are parsed by [`packages/app/ui/atoms/animated-icons/parse-icon-scene-classes.js`](packages/app/ui/atoms/animated-icons/parse-icon-scene-classes.js). Tokens like `icon-scene-fill` and `icon-scene-draw` are turned into a `scenes` object and **stripped** from the class string passed to the animated component.
+2. **Scene classes** in `className` are parsed by `parseIconSceneClasses` in [`packages/app/ui/atoms/icon.js`](packages/app/ui/atoms/icon.js). Tokens like `icon-scene-fill` and `icon-scene-draw` are turned into a `scenes` object and **stripped** from the class string passed to the animated component.
 3. **Web-only hover for draw:** If `scenes.draw` is set and `hovered` is not controlled from the parent, `Icon` attaches `onMouseEnter` / `onMouseLeave` on web so hover-driven animations run without a parent tracking hover.
 4. The animated component receives `scenes`, `active` (often from route/selection), and merged `hovered`.
 
 ## Registry (required)
 
-- **Default map:** [`packages/app/default/animated-icons-registry.js`](packages/app/default/animated-icons-registry.js) — export `animatedIconRegistry` keyed by **Lucide component names** as returned after `findIconFromRemote` (e.g. `House`, `Compass`). Add new entries here for upstream NEO.
-- **Forks / custom apps:** extend via [`packages/app/customization/animated-icons-registry.js`](packages/app/customization/animated-icons-registry.js) by spreading `animatedIconRegistryDefault` and adding or overriding keys. **Do not** edit the customization file in the main upstream repo unless the project is a fork.
+- **Default map:** [`packages/app/default/animated-icons.js`](packages/app/default/animated-icons.js) — exports `animatedIcons` keyed by **Lucide component names** as returned after `findIconFromRemote` (e.g. `House`, `Compass`). Add new entries here for upstream NEO.
+- **Forks / custom apps:** extend via [`packages/app/customization/animated-icons.js`](packages/app/customization/animated-icons.js) by spreading the default `animatedIcons` and adding or overriding keys. **Do not** edit the customization file in the main upstream repo unless the project is a fork.
 
 ```javascript
-import { animatedIconRegistry as animatedIconRegistryDefault } from 'app/default/animated-icons-registry';
+import { animatedIcons as animatedIconsDefault } from 'app/default/animated-icons';
 import { AnimatedMyIcon } from 'app/ui/atoms/animated-icons/icons/my-icon';
 
-export const animatedIconRegistry = {
-    ...animatedIconRegistryDefault,
+export const animatedIcons = {
+    ...animatedIconsDefault,
     MyIcon: AnimatedMyIcon,
 };
 ```
 
 If a name is missing from the registry, `Icon` falls back to the normal (non-animated) Lucide path.
 
-**Default registry keys (upstream NEO):** `House`, `Compass`, `TvMinimalPlay`, `Store`, `Shapes`, `Calendar`, `Info`, `Mail`, `Menu` (see [`packages/app/default/animated-icons-registry.js`](packages/app/default/animated-icons-registry.js)).
+**Default registry keys (upstream NEO):** `House`, `Compass`, `TvMinimalPlay`, `Store`, `Shapes`, `Calendar`, `Bell`, `Info`, `Mail`, `Menu`, `MessageCircleMore`, `UsersRound` (see [`packages/app/default/animated-icons.js`](packages/app/default/animated-icons.js)).
 
 ## Enabling animation in menus / UI
 
@@ -39,7 +39,7 @@ If a name is missing from the registry, `Icon` falls back to the normal (non-ani
   `icon-scene-fill web:hover:icon-scene-draw`  
   — **fill** for active/selected duotone-style treatment, **draw** for hover path / motion on web (`web:hover:` limits the variant to web).
 
-Scene names supported by the parser: `fill`, `draw`, `morph`, `smoke`, `custom1`–`custom6` (see `parse-icon-scene-classes.js`).
+Scene names supported by the parser: `fill`, `draw`, `morph`, `smoke`, `custom1`–`custom6` (see `parseIconSceneClasses` in `packages/app/ui/atoms/icon.js`).
 
 ## Implementing a new `Animated*` component
 
@@ -65,4 +65,4 @@ Guidelines:
 - [ ] New icon tested on **web** and **native** (or native-only features gated with `Platform.OS`).
 - [ ] No `measureLayout` / layout thrash introduced from the icon itself (icons should stay self-contained).
 
-For general icon and styling rules, see [agents.md](agents.md) (Styling Guidelines, cross-platform components).
+For general icon and styling rules, see [AGENTS.md](AGENTS.md) (Styling Guidelines, cross-platform components).
