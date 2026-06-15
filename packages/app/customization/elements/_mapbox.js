@@ -6,7 +6,7 @@ import Link from 'app/ui/atoms/link'
 import Mapbox from "@rnmapbox/maps";
 import { useWindowHeight } from 'app/context/measure';
 import { BlockWrapper } from 'app/components/block-wrapper'
-
+import { appSetting } from 'app/lib/util';
 //TODO SMALL POINTS + desc
 /*
 extra: {
@@ -16,7 +16,7 @@ extra: {
     */
 //https://blog.logrocket.com/building-custom-maps-react-native-mapbox/
 export default function ElementMapBox({ data, blockWrapperProps }) {
-    Mapbox.setAccessToken("sk.eyJ1Ijoicm9tYW5sZXMiLCJhIjoiY204Zm9sMWMzMGJiaTJqcXRvdmpseHBuaiJ9.uajA_y3AmjRkBYgy4i2RdQ");
+    Mapbox.setAccessToken(appSetting('config', 'api_keys', 'mapbox'));
     const mapRef = useRef(null);
     const [selectedlayers, setSelectedLayers] = useState(['incarcerees']);
     const [popupInfo, setPopupInfo] = useState(null);

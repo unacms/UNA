@@ -85,7 +85,7 @@ const expoConfig = {
         },
         "config": {
             "googleMaps": {
-                "apiKey": "AIzaSyAhrci201-9xXIRAy0kLOHFGppeTk8AHmo"
+                "apiKey": process.env.GOOGLE_MAPS_API_KEY
             }
         },
         "intentFilters": [
@@ -104,7 +104,7 @@ const expoConfig = {
     },
     extra: {
         "eas": {
-        "projectId": "bac2e536-829a-48e2-8cef-6d251eb32326"
+        "projectId": process.env.EAS_PROJECT_ID
         },
         "UNA_URL": process.env.UNA_URL,
         "API_PROXY_URL": process.env.API_PROXY_URL,

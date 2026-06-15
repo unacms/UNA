@@ -29,10 +29,10 @@ export const settingsDefault = {
             key: 'app-key',
         },
         api_keys: {
-            google_maps: 'AIzaSyAhrci201-9xXIRAy0kLOHFGppeTk8AHmo',
-            open_ai: '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',
-            onesignal: 'a36d17c1-693e-40e1-98e9-41a62a9b5e7d',
-          
+            google_maps: env('GOOGLE_MAPS_API_KEY'),
+            open_ai: env('GOOGLE_MAPS_API_KEY'),
+            onesignal: env('ONE_SIGNAL_API_KEY'),
+            mapbox: env('RNMAPBOX_MAPS_DOWNLOAD_TOKEN'),
         },
         show_ui: true,
         app_version: '15.0.0',

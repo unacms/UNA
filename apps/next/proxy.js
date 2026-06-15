@@ -18,8 +18,7 @@ async function setTenantHeaders(response, tenant) {
 
 async function resolveTenant(hostnameWithPort) {
     const hostname = hostnameWithPort.split(':')[0];
-    const domain = await getDomainByHostname(hostname); // return {'id': 'aaa', 'unaUrl': 'http://hihi.com/unatest', 'unaApiKey': 'WqFfru3U3FYFssjaU+Tf2!vsHkRtP!xYqP7/,4YmgG?c?YB9', 'revision': 1};
-    // console.log('Resolved tenant for hostname', hostname, ':', domain);
+    const domain = await getDomainByHostname(hostname); 
     return domain;
 }
 

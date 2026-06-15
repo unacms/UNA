@@ -1,5 +1,7 @@
 
 
+import { env } from 'app/lib/env'
+
 export const settingsElements = {
     context_selector: {
         default_item: '',
@@ -85,8 +87,7 @@ export const settingsElements = {
     auth: {
         enabled: true,
         google: {
-            web_client_id:
-                '398453829790-egj0o9mm2mq9rua8umq6jcvedtl9cgfu.apps.googleusercontent.com',
+            web_client_id: env('GOOGLE_WEB_CLIENT_ID'),
             ios_client_id: '',
             android_client_id: '',
         },
