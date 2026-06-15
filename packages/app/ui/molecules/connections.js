@@ -40,7 +40,7 @@ const performAction = async (setLayoutData, sO, iIid, iCid, sKey, sAction, aPara
     if (isReload)
         storageClear();
 
-    setLayoutData(getAlert('сonnections:action', { object: sO, time: Date.now(), action: aParams, data: oResponse?.data, key: sKey, reload: isReload }));
+    setLayoutData(getAlert('connections:action', { object: sO, time: Date.now(), action: aParams, data: oResponse?.data, key: sKey, reload: isReload }));
 };
 
 const handleDo = (performAction, fOnDo, sAction, oEvent) => {
@@ -116,7 +116,7 @@ export default function ElementConnections(oProps) {
     const _handleFormSubmittedAndValid = useCallback(() => handleFormSubmittedAndValid(_handleDo, _handleCloseModal), []);
 
     useEffect(() => {
-        if (layoutData && layoutData?.type == 'сonnections:action' && layoutData?.data.key == sKey) {
+        if (layoutData && layoutData?.type == 'connections:action' && layoutData?.data.key == sKey) {
             _handleOnDo(layoutData.data.data)
         }
     }, [layoutData?.data?.time]);

@@ -45,12 +45,12 @@ export default function Subscriber() {
     }, []);
 
     const onUpdateConnections = useCallback(async (data) => {
-        emitter.emit('сonnections', { action: 'changed' });
+        emitter.emit('connections', { action: 'changed' });
         storageClear();
         const oData = JSON.parse(data);
         if (oData?.user)
             setCurrentUser(oData.user);
-            setLayoutData(getAlert('сonnections:action', { object: oData, time: Date.now(), reload: true }));
+            setLayoutData(getAlert('connections:action', { object: oData, time: Date.now(), reload: true }));
     }, []);
 
     const onItemEdited = useCallback(async (strData) => {

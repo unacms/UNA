@@ -560,7 +560,7 @@ export function getUnaPageLayoutClasses(layoutKey) {
 
 export function getAlert(type, data) {
     /*
-    сonnections:action
+    connections:action
     */
     return { type: type, data: data };
 }
@@ -1502,7 +1502,7 @@ export function filterContent(dataOrig, needed) {
 }
 
 export const updateRouteDataForConnection = (endpoint, actions, object, currentRoute, layoutData, routes, index, setRoutes) => {
-    if (currentRoute.endpoint?.request_url.includes(endpoint) && layoutData && layoutData.data && (layoutData?.type === 'сonnections:action' && actions.includes(layoutData?.data?.action?.a) && layoutData?.data?.action?.o === object)) {
+    if (currentRoute.endpoint?.request_url.includes(endpoint) && layoutData && layoutData.data && (layoutData?.type === 'connections:action' && actions.includes(layoutData?.data?.action?.a) && layoutData?.data?.action?.o === object)) {
         let clonedData = currentRoute.data;
         let cid = Array.isArray(layoutData?.data?.action?.cid) ? layoutData?.data?.action?.cid[0] : layoutData?.data?.action?.cid
         const data = clonedData.filter(item => item.id !== cid);

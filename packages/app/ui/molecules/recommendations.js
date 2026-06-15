@@ -68,7 +68,7 @@ const performAction = async (setLayoutData, sO, iIid, iCid, sKey, sAction, aPara
         onLoad(oResponse?.data);
 
     storageClear();
-    setLayoutData(getAlert('сonnections:action', {object: sO, time:Date.now(), action: aParams, data: oResponse?.data, key: sKey} ));
+    setLayoutData(getAlert('connections:action', {object: sO, time:Date.now(), action: aParams, data: oResponse?.data, key: sKey} ));
 };
 
 const handleDo = (performAction, setElementVars, t, sO, fOnDone, sAction, oEvent) => {

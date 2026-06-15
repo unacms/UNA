@@ -122,7 +122,7 @@
         overflow-y: auto;
     }
      /* Web `ScrollView` inner content — horizontal (view.web.js). */
-    .neo-sh-с {
+    .neo-sh-c {
         display: flex;
         min-height: 0;
         flex-direction: row;

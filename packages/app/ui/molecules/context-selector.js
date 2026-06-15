@@ -86,14 +86,12 @@ export default function ContextSelector({ data: initialData, url, uri, mode }) {
     const [data, setContextData] = useState(initialData);
     const { t } = useTranslation();
 
-
     useEffect(() => {
-        const subscription = emitter.addListener(`сonnections`, (data) => {
+        const subscription = emitter.addListener(`connections`, (data) => {
             if (data.action == 'changed') {
                 getPageData(url).then(data => { setContextData(data.data.context) })
             }
         })
-
 
         return () => {
             subscription.remove();
@@ -110,7 +108,6 @@ export default function ContextSelector({ data: initialData, url, uri, mode }) {
         }
         setIsOpen(open)
     }
-
 
     const CurrentContext = (
         <Link size="lg" href={contextRoot.url} title={t("Context Home")}>
