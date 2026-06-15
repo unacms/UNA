@@ -150,7 +150,7 @@ export const PageHeaderBody = memo(({
     const canShowBackButton = isWeb
         ? (isBackButton &&
             (typeof isBackButton === 'function' || (typeof history !== 'undefined' && history.length > 2)))
-        : ((typeof isBackButton === 'function' || canGoBackInTab(currentTab))) && appSetting('native', 'backbutton_in_header');
+        : ((typeof isBackButton === 'function' || canGoBackInTab(currentTab))) && (appSetting('native', 'backbutton_in_header') ||  appSetting('native', 'backbutton_in_header_path')?.includes(pageData.uri));
     const onBackPress = () => {
         FeedbackHaptics('Medium');
         if (typeof isBackButton === 'function') {

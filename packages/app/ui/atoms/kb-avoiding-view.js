@@ -1,6 +1,6 @@
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Platform } from 'react-native'
-import { KeyboardAwareScrollView, KeyboardAvoidingView } from "react-native-keyboard-controller";
+import { KeyboardAwareScrollView, KeyboardAvoidingView, KeyboardProvider } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated from "react-native-reanimated";
 
@@ -40,6 +40,34 @@ export default function KbAvoidingView({children, className, modalOffset}) {
             {children}
         </KeyboardAvoidingView>
     )
+}
+
+export function ModalKeyboardProvider({ children }) {
+    return <KeyboardProvider>{children}</KeyboardProvider>;
+}
+
+export function ModalKbAwareScroll({
+    children,
+    style,
+    className,
+    bottomOffset = 24,
+    keyboardShouldPersistTaps = "handled",
+    onScroll,
+}) {
+    return (
+        <KeyboardAwareScrollView
+            ScrollViewComponent={Animated.ScrollView}
+            className={className}
+            style={style}
+            onScroll={onScroll}
+            keyboardShouldPersistTaps={keyboardShouldPersistTaps}
+            contentContainerStyle={{ flexGrow: 1 }}
+            bottomOffset={bottomOffset}
+            enabled={true}
+        >
+            {children}
+        </KeyboardAwareScrollView>
+    );
 }
 
 export function KbAvoidingViewScroll({ children, onScroll, paddingTop = 0 }) {

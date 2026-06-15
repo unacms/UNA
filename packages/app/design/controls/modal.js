@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'app/lib/hooks/router'
 import { useIsDesktop, useActualWindowHeight } from 'app/context/measure';
 import { Button } from 'app/design/controls/buttons';
 import emitter from 'app/context/emitter';
+import { ModalKbAwareScroll } from 'app/ui/atoms/kb-avoiding-view';
 
 const isWeb = Platform.OS === 'web';
 const isIosWeb = isWeb && typeof navigator !== 'undefined' && /iP(hone|od|ad)/.test(navigator.userAgent);
@@ -132,7 +133,8 @@ export function Modal({
         'center': 'sm:items-center items-start ',
     };
     const sClassPosition = positionClasses[position] || positionClasses['center'];
-    const Cnt = scrollable ? ScrollView : View
+    const Cnt = scrollable ? (isWeb ? ScrollView : ModalKbAwareScroll) : View
+    const modalBottomOffset = 24 + (isIos ? (insets?.bottom ?? 0) : 0)
 
 
     const handleWebOuterPress = useCallback((event) => {
@@ -203,7 +205,7 @@ export function Modal({
                                     headerBorder={headerBorder}
                                     onClose={onClose}
                                 />
-                                <Cnt style={styles} className={`${padding} flex-auto `}>
+                                <Cnt style={styles} className={`${padding} flex-auto `} {...(scrollable ? { bottomOffset: modalBottomOffset } : {})}>
                                     {children}
                                 </Cnt>
                             </View>

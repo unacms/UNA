@@ -1,5 +1,6 @@
 import { View } from 'app/design/view'
 import { useRef, useCallback, useMemo, useEffect } from 'react';
+import { RefreshControl } from 'react-native';
 import { LegendList } from "@legendapp/list";
 import { useSetScrollDirection, useHeaderHeight, useSetScrollValue } from 'app/context/jotai/layout';
 import { getListScrollOffset, setListScrollOffset } from 'app/lib/tab-page-cache';
@@ -21,14 +22,13 @@ export default function UniList(props) {
         inverted,
         onRefresh, 
         url,
-        refreshControl: _refreshControl,
-        progressViewOffset: _progressViewOffset,
+        refreshControl: refreshControlProp,
+        progressViewOffset: progressViewOffsetProp,
         ...rest 
     } = props;
 
     const scrollY = useRef(0);
     const scrollState = useRef(0);
-    const pullRefreshArmed = useRef(true);
     const setScrollDirection = useSetScrollDirection();
     const setScrollValue = useSetScrollValue();
 
@@ -71,23 +71,8 @@ export default function UniList(props) {
             scrollState.current = newScrollState;
         }
 
-        if (
-            url &&
-            onRefresh &&
-            !inverted &&
-            !refreshing &&
-            pullRefreshArmed.current &&
-            currentScrollY < -64
-        ) {
-            pullRefreshArmed.current = false;
-            onRefresh();
-        }
-        if (currentScrollY >= 0) {
-            pullRefreshArmed.current = true;
-        }
-
         scrollY.current = currentScrollY;
-    }, [setScrollDirection, setScrollValue, url, onRefresh, inverted, refreshing]);
+    }, [setScrollDirection, setScrollValue]);
 
     useEffect(() => {
         return () => {
@@ -119,6 +104,26 @@ export default function UniList(props) {
     const handleScrollToIndexFailed = useCallback((info) => {
         console.log('onScrollToIndexFailed', info);
     }, []);
+
+    const progressViewOffset = typeof progressViewOffsetProp === 'number'
+        ? progressViewOffsetProp
+        : headerHeight;
+
+    const refreshControl = useMemo(() => {
+        if (refreshControlProp) {
+            return refreshControlProp;
+        }
+        if (!onRefresh || inverted) {
+            return undefined;
+        }
+        return (
+            <RefreshControl
+                refreshing={!!refreshing}
+                onRefresh={onRefresh}
+                progressViewOffset={progressViewOffset}
+            />
+        );
+    }, [refreshControlProp, onRefresh, inverted, refreshing, progressViewOffset]);
 
     const shouldApplyHeaderOffset = !inverted && !isModal;
     const shouldApplyFooterOffset = inverted && !isModal;
@@ -182,6 +187,7 @@ export default function UniList(props) {
             scrollEventThrottle={16}
             keyboardShouldPersistTaps="always"
             onScrollToIndexFailed={handleScrollToIndexFailed}
+            refreshControl={refreshControl}
             alignItemsAtEnd={inverted}
             maintainScrollAtEnd={inverted}
             contentInsetAdjustmentBehavior="never"

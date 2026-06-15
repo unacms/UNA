@@ -1,6 +1,18 @@
-import { KeyboardAvoidingView } from 'react-native'
+import { KeyboardAvoidingView, ScrollView } from 'react-native'
 import { Platform } from 'react-native'
 import React from 'react';
+
+export function ModalKeyboardProvider({ children }) {
+    return <>{children}</>;
+}
+
+export const ModalKbAwareScroll = React.forwardRef(({ children, ...rest }, ref) => {
+    return (
+        <ScrollView ref={ref} {...rest}>
+            {children}
+        </ScrollView>
+    );
+});
 
 export default function KbAvoidingView(props) {
     let { children, ...rest } = props
