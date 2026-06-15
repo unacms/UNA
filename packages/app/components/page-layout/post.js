@@ -363,7 +363,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         <View
                             onLayout={handleLayout}
                             style={isFormFixed && listWidth ? { width: listWidth + 5 } : undefined}
-                            className="bg-linear-to-b from-card/0 to-card backdrop-blur pb-3 web:fixed web:bottom-0 web:z-50 lg:static lg:z-auto lg:w-full"
+                            className="bg-card  pb-3 web:fixed web:bottom-0 web:z-50 lg:static lg:z-auto lg:w-full"
                         >
                             <View className="lg:mb-4 ml-px">
                                 <CommentsForm

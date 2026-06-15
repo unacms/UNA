@@ -50,10 +50,15 @@ export default function ElementLink({
    
     const finalHref = sanitazeUrl(href);
 
-    const index = (() => {
-        const match = TabList.find((item: any) => finalHref.includes(item.url));
-        return match ? TabList.indexOf(match) : -1;
-    })();
+    // Match against tab urls + transpile_urls so in-app links route to the same
+    // tab as deep links (see processUrl in components/nav/tabs.js).
+    const LinksForTabs = useMemo(() => {
+        const baseLinks = TabList.map((item: any, i: number) => ({ url: item.url, index: i }));
+        const additional = appSetting('menu_items', 'transpile_urls') || [];
+        return [...baseLinks, ...additional];
+    }, [TabList]);
+
+    const index = LinksForTabs.find((item: any) => finalHref.includes(item.url))?.index ?? -1;
 
     const p = useMemo(() => {
         if (target) {

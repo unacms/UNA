@@ -1018,6 +1018,7 @@ export default function RftText({
             >
                 <RichText
                     exclusivelyUseCustomOnMessage={false}
+                    hideKeyboardAccessoryView={true}
                     style={{
                         backgroundColor: 'transparent',
                         color: editorTextColor,
@@ -1070,6 +1071,10 @@ export default function RftText({
             <TextInput
                 key={inputKey}
                 autoFocus={inputKey > 0}
+                textContentType="none"
+                autoComplete="off"
+                autoCorrect={false}
+                spellCheck={false}
                 onFocus={() => {
                     // Keyboard открыта! Передаём IME в WebView
                     setTimeout(() => {
