@@ -54,7 +54,7 @@ export default function FormFieldLocation({ name, value, onChange, ...props }) {
             formContext?.unregister(name + '_street');
             formContext?.unregister(name + '_street_number');
             
-            // Опционально: вызываем onChange с пустыми значениями
+            // Optionally call onChange with empty values
             onChange?.({
                 location_string: '',
                 lat: '',

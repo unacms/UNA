@@ -7,7 +7,7 @@ export const Platform = {
   select: (options) => options.web ?? options.default,
 };
 
-// Error classes для expo-auth-session и других модулей
+// Error classes for expo-auth-session and other modules
 export class CodedError extends Error {
   constructor(code, message) {
     super(message);
@@ -24,17 +24,17 @@ export class UnavailabilityError extends Error {
   }
 }
 
-// Permission hooks для expo-location и других модулей
+// Permission hooks for expo-location and other modules
 export const PermissionStatus = {
   GRANTED: 'granted',
   UNDETERMINED: 'undetermined',
   DENIED: 'denied',
 };
 
-// Создает hook для разрешений (возвращает заглушку для веба)
+// Creates a permissions hook (web stub)
 export const createPermissionHook = (permissionMethod) => {
   return () => {
-    // На вебе возвращаем granted по умолчанию
+    // On web return granted by default
     return [
       { status: PermissionStatus.GRANTED, granted: true },
       async () => ({ status: PermissionStatus.GRANTED, granted: true }),
@@ -52,7 +52,7 @@ export const EventEmitter = class EventEmitter {
   emit() {}
 };
 
-// Базовый класс для нативных модулей (заглушка для веба)
+// Base class for native modules (web stub)
 export class NativeModule {
   constructor() {}
 }
@@ -61,7 +61,7 @@ export const requireNativeViewManager = () => () => null;
 export const requireNativeModule = () => ({});
 export const requireOptionalNativeModule = () => null;
 
-// UUID generator заглушка
+// UUID generator stub
 export const uuid = {
   v4: () => {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -72,9 +72,9 @@ export const uuid = {
   }
 };
 
-// Заглушка для устаревшего API registerWebModule
+// Stub for legacy registerWebModule API
 export const registerWebModule = () => {
-  // Пустая реализация для обратной совместимости
+  // No-op for backward compatibility
   return null;
 };
 
@@ -84,7 +84,7 @@ export default {
   UnavailabilityError,
   NativeModulesProxy,
   EventEmitter,
-  NativeModule,  // ← Добавить
+  NativeModule,  // ← add
   requireNativeViewManager,
   requireNativeModule,
   requireOptionalNativeModule,

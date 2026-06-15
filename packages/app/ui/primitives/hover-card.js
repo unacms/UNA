@@ -41,13 +41,13 @@ const TriggerWrapper = React.memo(function TriggerWrapper({
     onPress,
     triggerMode,
 }) {
-    // Определяем, какие обработчики использовать
-    // По умолчанию (undefined): hover на вебе, click на нативных
+    // Choose which handlers to use
+    // Default (undefined): hover on web, click on native
     const useHover = triggerMode === 'hover' || triggerMode === 'both' || (triggerMode === undefined && isWeb);
     const useClick = triggerMode === 'click' || triggerMode === 'both' || (triggerMode === undefined && !isWeb);
     
     if (isWeb) {
-        // На вебе: если нужен клик, используем Pressable, иначе View
+        // On web: Pressable when click is needed, otherwise View
         if (useClick) {
             return (
                 <Pressable 
@@ -58,7 +58,7 @@ const TriggerWrapper = React.memo(function TriggerWrapper({
                 </Pressable>
             );
         }
-        // Только hover на вебе
+        // Hover only on web
         return (
             <View 
                 {...(useHover ? { onMouseEnter, onMouseLeave } : {})}
@@ -67,11 +67,11 @@ const TriggerWrapper = React.memo(function TriggerWrapper({
             </View>
         );
     }
-    // На нативных платформах используем Pressable только если нужен клик
+    // On native: Pressable only when click is needed
     if (useClick) {
         return <Pressable onPress={onPress}>{children}</Pressable>;
     }
-    // Если только hover на нативных - просто View (hover не работает на нативных)
+    // Hover-only on native — plain View (hover does not work on native)
     return <View>{children}</View>;
 });
 
@@ -99,7 +99,7 @@ const HoverCard = React.memo(function HoverCard({
     defaultOpen = false,
     onOpenChange,
     openDelay = 1000, // 1 second delay to avoid accidental triggers
-    triggerMode, // 'hover' | 'click' | 'both' | undefined (по умолчанию - текущее поведение)
+    triggerMode, // 'hover' | 'click' | 'both' | undefined (default — current behavior)
 }) {
     const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
     const openTimerRef = React.useRef(null);

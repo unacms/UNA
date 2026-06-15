@@ -356,7 +356,7 @@ export default function ElementHtml(props) {
                             el.style.webkitUserSelect = 'text';
                         });
                     });
-                    true; // Для работы на Android
+                    true; // Required on Android
                 `,
             }}
             renderersProps={{
@@ -385,8 +385,8 @@ export default function ElementHtml(props) {
                 allowFontScaling: false,
                 style: {
                     userSelect: 'text',
-                    WebkitUserSelect: 'text',  // Для Safari на iOS
-                    WebkitTouchCallout: 'default' // Показывает стандартное меню копирования
+                    WebkitUserSelect: 'text',  // Safari on iOS
+                    WebkitTouchCallout: 'default' // Standard copy menu
                 }
             }} 
             contentWidth={width}

@@ -6,7 +6,6 @@ import { Button } from 'app/design/controls';
 export default function AuthX({ button }) {
     // Placeholder logic
     const handleXLogin = () => {
-        console.log("X login clicked");
         // Actual X login logic will go here
     };
 

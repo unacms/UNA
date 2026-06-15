@@ -9,7 +9,7 @@ const ElementRedirect = (props, ref) => {
     const gspRef = useRef(gsp);
     const isMountedRef = useRef(true);
 
-    // Обновляем refs при изменении router и gsp
+    // Update refs when router or gsp changes
     useEffect(() => {
         routerRef.current = router;
         gspRef.current = gsp;
@@ -21,9 +21,9 @@ const ElementRedirect = (props, ref) => {
         };
     }, []);
 
-    // Создаем стабильную функцию redirect
+    // Stable redirect function
     const redirectFn = useCallback((sUrl) => {
-        // Проверяем монтирование
+        // Check mount state
         if (!isMountedRef.current) {
             return;
         }
@@ -42,14 +42,14 @@ const ElementRedirect = (props, ref) => {
 
             currentRouter.push(target);
         } catch (error) {
-            // Игнорируем ошибки навигации при размонтировании
+            // Ignore navigation errors on unmount
             if (isMountedRef.current) {
                 console.warn('Redirect error:', error);
             }
         }
     }, []);
 
-    // Присваиваем функцию напрямую в ref без useImperativeHandle
+    // Assign function directly to ref without useImperativeHandle
     useEffect(() => {
         if (!ref) return;
 

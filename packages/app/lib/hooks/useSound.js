@@ -24,10 +24,10 @@ export const playSound = (name) => {
             cache.set(name, player);
         }
 
-        player.seekTo(0); // важно: expo-audio не сбрасывает позицию само :contentReference[oaicite:2]{index=2}
+        player.seekTo(0); // important: expo-audio does not reset position on its own
         player.play();
     } catch (e) {
-        // не валим апп
+        // don't crash the app
     }
 };
 

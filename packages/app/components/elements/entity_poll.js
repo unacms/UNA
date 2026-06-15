@@ -79,7 +79,6 @@ export function PollItem({ data, showTitle, onDelete, disabled = false, results_
 
         const sRequest = `/api.php?r=system/do/TemplVoteServices&params[]={"s":"${data.object}","o":${value},"value":1}`;
         await fetcher(sRequest);
-        console.log("results_url")
         const sRequest1 = `${results_url}/&params[]=${data.id}`;
         const sResponse1 = await fetcher(sRequest1);
         if (sResponse1.data)

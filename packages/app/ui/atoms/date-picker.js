@@ -118,11 +118,11 @@ const CalendarHeader = ({ value, addMonth, setDatePart }) => {
 const formatDateTime = (dateString) => {
     const [datePart, timePart] = dateString.replace('Z', '').split(' ');
 
-    // Разбиваем компоненты даты и времени
+    // Split date and time components
     const [year, month, day] = datePart.split('-').map(Number);
     const [hours, minutes, seconds] = timePart ? timePart.split(':').map(Number) : [0, 0, 0];
 
-    // Создаем объект Date (месяцы в JavaScript отсчитываются от 0)
+    // Create Date object (JavaScript months are 0-based)
     return new Date(year, month - 1, day, hours, minutes, seconds);
 }
 

@@ -27,7 +27,7 @@ function getMenuAndData(props, layout) {
     const categoriesConfig = props.blocks?.categories;
     const categories = DataByName(props.data, categoriesConfig);
     if (categoriesConfig && categories && layout === 'hor') {
-        // 1. строим menu items из categories
+        // 1. build menu items from categories
         const menuItems = categories?.content[0]?.data?.map((obj, index) => ({
             id: index + menu.items.length,
             name: obj.url,
@@ -38,7 +38,7 @@ function getMenuAndData(props, layout) {
             hideInTop: false,
         })) ?? [];
         menu.items = [...menu.items, ...menuItems];
-        // 2. убираем блок из data
+        // 2. remove block from data
         data = removeBlockFromData(props.data, categoriesConfig.name);
     }
     return { menu, data };

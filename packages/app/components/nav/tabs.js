@@ -129,12 +129,12 @@ export default function Tabs() {
     registerAll();
 
     const playClick = useSound('click');
-    // useTranslation должен вызываться после всех других хуков, чтобы избежать проблем с порядком
-    // если i18n не инициализирован, useTranslation может вызывать хуки условно
+    // useTranslation must run after all other hooks to avoid hook-order issues
+    // if i18n is not initialized, useTranslation may call hooks conditionally
     const { t } = useTranslation();
-    // Используем useColorScheme напрямую, чтобы избежать повторного вызова useLayoutSettings через useTheme()
+    // Use useColorScheme directly to avoid calling useLayoutSettings again via useTheme()
     const defColorScheme = useColorScheme();
-    // Вычисляем тему через useMemo, чтобы избежать повторных вычислений и гарантировать стабильный порядок хуков
+    // Compute theme via useMemo to avoid repeated work and keep hook order stable
     const { colors } = useMemo(() => {
         const actualThemeName = themeName != 'auto' ? themeName : defColorScheme;
         const lightTheme = appSetting('theme', 'light');
@@ -286,8 +286,8 @@ export default function Tabs() {
         };
     }, [currentUser, bootstrapError, setCurrentUser]);
 
-    // Условный рендеринг: все хуки должны вызываться до этого места
-    // Используем условный рендеринг в JSX вместо раннего return
+    // Conditional render: all hooks must run before this point
+    // Use conditional rendering in JSX instead of early return
     if (!fontsLoaded || (currentUser === null && !bootstrapError)) {
         return null;
     }

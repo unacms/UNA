@@ -39,7 +39,6 @@ export default function ({ src_dark, src_default, width, height, colorize = fals
 
         fetch(url, { signal: controller.signal })
             .then(res => {
-                console.log('SvgFile: Response status:', res.status);
                 if (!res.ok) {
                     throw new Error(`HTTP ${res.status}`);
                 }
@@ -47,7 +46,6 @@ export default function ({ src_dark, src_default, width, height, colorize = fals
             })
             .then(xmlText => {
                 if (ignoreResponse) return;
-                console.log('SvgFile: Successfully loaded SVG, length:', xmlText.length);
                 setXml(xmlText);
                 setError(null);
             })

@@ -54,7 +54,7 @@ export default function Gallery({ items, autoscroll }) {
         animateToIndex(nextIndex, 1);
     };
 
-// Автоскролл
+// Auto-scroll
 useEffect(() => {
     if (!autoscroll || isPaused || items.length <= 1) return;
     

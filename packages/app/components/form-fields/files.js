@@ -83,8 +83,8 @@ export default function (props) {
         }
         if (imageSource.images) {
             const fileIds = imageSource.images
-                .filter(item => item.file_id !== undefined) // Оставляем только элементы с file_id
-                .map(item => item.file_id) // Извлекаем file_id
+                .filter(item => item.file_id !== undefined) // Keep only items with file_id
+                .map(item => item.file_id) // Extract file_id
                 .join(',');
             if (name == 'covers') {
                 formContext.setValue('thumb', fileIds)
@@ -134,15 +134,15 @@ export default function (props) {
         setImageSource(prev => {
             const existingImages = prev?.images || [];
 
-            // Создаём Map из новых изображений по hash
+            // Build Map from new images by hash
             const newImagesMap = new Map(newImages.map(img => [img.hash, img]));
 
-            // Заменяем или сохраняем старые изображения
+            // Replace or keep existing images
             const mergedImages = existingImages.map(img =>
                 newImagesMap.has(img.hash) ? newImagesMap.get(img.hash) : img
             );
 
-            // Добавляем только те newImages, которых ещё нет в existingImages
+            // Add only newImages not already in existingImages
             const existingHashes = new Set(existingImages.map(img => img.hash));
             const newOnlyImages = newImages.filter(img => !existingHashes.has(img.hash));
 

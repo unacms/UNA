@@ -100,7 +100,6 @@ export default function (props) {
 
     const subLabelDisplay = selectedSubLabels.length > 3 ? `${selectedSubLabels.slice(0, 3).join(', ')} + ${selectedSubLabels.length - 3} more` : selectedSubLabels.join(', ');
 
-    console.log("selectedSubLabels", selectedSubLabels)
     filteredValues.forEach(item => {
         if (parseInt(item.value, 10) === parseInt(field.value, 10) && [6, 8, 9].includes(parseInt(field.value, 10))) {
             item.info = subLabelDisplay;

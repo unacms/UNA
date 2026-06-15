@@ -11,7 +11,7 @@ const isWeb = Platform.OS === 'web';
 const isIos = Platform.OS === 'ios';
 
 export const InputRounded = {
-    full: 'full',        // ключ = значению
+    full: 'full',        // key equals value
     default: 'default',
 } as const;
 

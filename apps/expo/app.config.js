@@ -148,14 +148,6 @@ const expoConfig = {
                 }
             },
         ],
-        /* [
-           "react-native-ble-plx",
-           {
-             "isBackgroundEnabled": true,
-             "modes": ["peripheral", "central"],
-             "bluetoothAlwaysPermission": "Allow $(PRODUCT_NAME) to connect to bluetooth devices"
-           }
-         ],*/
     ],
 };
 
@@ -173,7 +165,5 @@ if (typeof (expoConfigCustom.android?.intentFilters) !== 'undefined')
 
 if (typeof (expoConfigCustom.plugins) !== 'undefined')
     expoConfig.plugins = [];
-
-//console.log("merge(expoConfig, expoConfigCustom)", merge(expoConfig, expoConfigCustom))
 
 module.exports = merge(expoConfig, expoConfigCustom);

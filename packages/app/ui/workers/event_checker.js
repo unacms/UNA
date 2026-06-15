@@ -14,7 +14,6 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 const getGeo = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
-        console.log('Permission to access location was denied');
         return;
     }
     return await Location.getCurrentPositionAsync({})

@@ -25,8 +25,8 @@ const uniwindResolveRequest = config.resolver?.resolveRequest;
 config.resolver = {
   ...config.resolver,
   resolveRequest: (context, moduleName, platform) => {
-    // Если запрос идёт ИЗНУТРИ uniwind — пускаем через родной Metro,
-    // обходя uniwind-резолвер. Это разрывает цикл
+    // If the request comes from inside uniwind — route through native Metro,
+    // bypassing the uniwind resolver. Breaks the cycle.
     // react-native -> uniwind/components -> react-native -> ...
     if (isUniwindInternal(context.originModulePath)) {
       return resolve(context, moduleName, platform);

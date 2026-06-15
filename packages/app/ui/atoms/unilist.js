@@ -101,8 +101,7 @@ export default function UniList(props) {
         restoreScrollOffset(node);
     }, [refer, restoreScrollOffset]);
 
-    const handleScrollToIndexFailed = useCallback((info) => {
-        console.log('onScrollToIndexFailed', info);
+    const handleScrollToIndexFailed = useCallback(() => {
     }, []);
 
     const progressViewOffset = typeof progressViewOffsetProp === 'number'

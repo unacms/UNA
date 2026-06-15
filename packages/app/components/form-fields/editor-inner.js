@@ -520,8 +520,8 @@ export default function RftText({
 
     useEffect(() => {
         if (editor && placeholder) {
-            // Баг в TenTap Editor: setPlaceholder() не обновляет DOM в iframe
-            // Используем CSS injection как единственное рабочее решение
+            // TenTap Editor bug: setPlaceholder() does not update the DOM in the iframe
+            // CSS injection is the only working workaround
             const t = setTimeout(() => {
                 editor.injectCSS(`
                 .tiptap.ProseMirror p.is-editor-empty:first-child::before {
@@ -535,7 +535,7 @@ export default function RftText({
     }, [editor, placeholder])
 
     const openKeyboard = () => {
-        setInputKey(k => k + 1); // пересоздаём TextInput
+        setInputKey(k => k + 1); // recreate TextInput
     };
 
 
@@ -1076,7 +1076,7 @@ export default function RftText({
                 autoCorrect={false}
                 spellCheck={false}
                 onFocus={() => {
-                    // Keyboard открыта! Передаём IME в WebView
+                    // Keyboard is open — forward IME to WebView
                     setTimeout(() => {
                         editor.focus();
                     }, 50);

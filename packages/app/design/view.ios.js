@@ -9,7 +9,7 @@ import { Motion } from '@legendapp/motion'
 
 const iosContinuousCurveStyle = { borderCurve: 'continuous' }
 
-// аккуратно склеиваем style (поддерживает object/array/undefined)
+// Merge style carefully (supports object/array/undefined)
 const withIOSCurve = (style) => [iosContinuousCurveStyle, style].filter(Boolean)
 
 // View

@@ -1,7 +1,7 @@
 
 import * as WebBrowser from 'expo-web-browser';
 import { useAuthRequest } from 'expo-auth-session/providers/google';
-import { useAutoDiscovery } from 'expo-auth-session';  // <-- вот здесь
+import { useAutoDiscovery } from 'expo-auth-session';  // <-- here
 import { makeRedirectUri, ResponseType } from 'expo-auth-session';
 import { NeoButton } from 'app/design/controls'
 import { useRef, useEffect, useState } from 'react';
@@ -59,7 +59,6 @@ export default function AuthGoogle({ }) {
     useEffect(() => {
         const fetchData = async (user) => {
             const result = await fetcher('/api.php?r=bx_googlecon/handle/&params[]=' + JSON.stringify(user));
-            console.log("result", result?.data[0]?.data)
             if (result?.data[0]?.data?.uri)
                 redirectTo(router, result.data[0].data.uri);
 

@@ -286,12 +286,12 @@ export function isUrl(str) {
 
     const value = str.trim();
 
-    // 1. Сначала пробуем как есть
+    // 1. Try as-is first
     try {
         const url = new URL(value);
         return url.protocol === 'http:' || url.protocol === 'https:';
     } catch (e) {
-        // 2. Если нет протокола — пробуем добавить https://
+        // 2. If no protocol — try adding https://
         try {
             const url = new URL('https://' + value);
             return url.hostname.includes('.');
@@ -307,12 +307,12 @@ export const formatDate = (
     {
         inFuture = false,
         inPast = false,
-        locale,                     // 'en-US' (не используется для универсальности)
+        locale,                     // 'en-US' (not used for universality)
         month = 'short',            // 'numeric' | '2-digit' | 'short' | 'long' | ...
         showTime = false,
         showDate = true,
-        hour12,                     // true/false | undefined (оставит поведение локали)
-        timeZone,                   // fex 'UTC' (не используется для универсальности)
+        hour12,                     // true/false | undefined (keeps locale default behavior)
+        timeZone,                   // e.g. 'UTC' (not used for universality)
         yearPolicy = 'auto',        // 'auto' | 'always' | 'never'
     } = {}
 ) => {
@@ -337,7 +337,7 @@ export const formatDate = (
         if (absSec < 60)
             return t('Now');
 
-        // Универсальное форматирование относительного времени (одинаковое везде)
+        // Universal relative time formatting (same everywhere)
         const min = Math.round(sec / 60);
         if (Math.abs(min) < 60) {
             return `${Math.abs(min)}m`;
@@ -368,7 +368,7 @@ export const formatDate = (
     });
 };
 
-// Универсальная функция форматирования даты (одинаковый результат везде)
+// Universal date formatting function (same result everywhere)
 function formatDateUniversal(date, {
     showDate,
     showTime,
@@ -377,7 +377,7 @@ function formatDateUniversal(date, {
     nowYear,
     hour12,
     rel,
-    localeTag, // добавили
+    localeTag, // added
 }) {
     const parts = [];
 
@@ -386,7 +386,7 @@ function formatDateUniversal(date, {
         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const monthLongNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-        const dayStr = String(date.getDate()); // можно padStart(2,'0') если хочешь 2-digit
+        const dayStr = String(date.getDate()); // can use padStart(2,'0') for 2-digit
         const monthIndex = date.getMonth();
 
         let monthStr;
@@ -401,13 +401,13 @@ function formatDateUniversal(date, {
 
         const tokens = { D: dayStr, M: monthStr, Y: needYear ? yearStr : "" };
 
-        // порядок + пунктуация
+        // order + punctuation
         const pattern = getDateOrderByLocale(localeTag); // "M D, Y" etc
         const dateText = pattern
             .replace(/\bD\b/g, tokens.D)
             .replace(/\bM\b/g, tokens.M)
             .replace(/\bY\b/g, tokens.Y)
-            // подчистим лишнюю пунктуацию/пробелы, если год скрыт
+            // trim extra punctuation/spaces when year is hidden
             .replace(/\s+,/g, ",")
             .replace(/,\s*$/g, "")
             .replace(/\s+/g, " ")
@@ -510,7 +510,6 @@ function compress(data) {
         const binaryString = Array.from(compressed, byte => String.fromCharCode(byte)).join('');
         return btoa(binaryString);
     } catch (error) {
-        console.log('!!!-Compression error:', data, error);
         return null;
     }
 }
@@ -525,7 +524,6 @@ function decompress(data) {
         }
         return flatted_parse(pako.inflate(bytes, { to: 'string' }));
     } catch (error) {
-        console.log('!!!-Decompression error:', error, error);
         return null;
     }
 }
@@ -773,19 +771,19 @@ export function truncateHTML(html, maxLength, maxLines = null) {
     let lineCount = 0;
     let truncated = '';
 
-    // Регулярное выражение для поиска тегов и текстовых фрагментов
+    // Regex to find tags and text fragments
     const tagOrTextRegex = /<\/?([a-z][a-z0-9]*)\b[^>]*>|[^<]+/gi;
     let match;
 
-    // Стек для отслеживания открытых тегов
+    // Stack to track open tags
     const tags = [];
 
-    // Идем по HTML и обрезаем текстовый контент до maxLength или maxLines
+    // Walk HTML and truncate text content to maxLength or maxLines
     while ((match = tagOrTextRegex.exec(html))) {
         const part = match[0];
 
         if (part[0] === '<') {
-            // Если это тег, проверяем открывающий или закрывающий
+            // If this is a tag, check whether it is opening or closing
             const tagName = match[1].toLowerCase();
             const isClosingTag = part[1] === '/';
 
@@ -806,11 +804,11 @@ export function truncateHTML(html, maxLength, maxLines = null) {
                 }
             }
 
-            // Добавляем тег к результату, но не увеличиваем счетчик текста
+            // Append tag to result without incrementing text counter
             truncated += part;
         } else {
-            // Это текстовая часть
-            // Проверяем наличие явных переносов строк в тексте
+            // Text fragment
+            // Check for explicit line breaks in text
             const textLines = part.split(/\r\n|\r|\n/);
             let textPartTruncated = '';
 
@@ -842,7 +840,7 @@ export function truncateHTML(html, maxLength, maxLines = null) {
         }
     }
 
-    // Закрываем все незакрытые теги
+    // Close all unclosed tags
     while (tags.length) {
         truncated += `</${tags.pop()}>`;
     }
@@ -1230,23 +1228,20 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
         let fileType = '';
         let fileExt = '';
         if (uri.startsWith('data:')) {
-            // Для data URI
-            fileType = uri.split(';')[0].split(':')[1]; // MIME-тип
-            fileExt = fileType.split('/')[1]; // Расширение
+            // For data URI
+            fileType = uri.split(';')[0].split(':')[1]; // MIME type
+            fileExt = fileType.split('/')[1]; // extension
             if (fileExt == 'svg+xml') {
                 fileExt = 'svg';
             }
 
         } else {
-            const fileName = uri.split('/').pop(); // Имя файла
-            fileExt = fileName.split('.').pop(); // Расширение
-            fileType = `image/${fileExt}`; // MIME-тип
+            const fileName = uri.split('/').pop(); // file name
+            fileExt = fileName.split('.').pop(); // extension
+            fileType = `image/${fileExt}`; // MIME type
         }
         urltoFile(uri, genRnd(8) + '.' + fileExt, fileType)
             .then(async function (file) {
-                const sizeMb = await getUploadSizeMb({ file, uri });
-                console.log('upload file size:', (sizeMb * 1024 * 1024).toFixed(0), 'bytes', sizeMb.toFixed(2), 'MB');
-
                 formData.append("file", file);
                 const result = await fetcher([fetchUrl, null, formData]);
                 if (result?.data?.link) {
@@ -1299,12 +1294,12 @@ export function visibilityById(visibility, t) {
 export function strToObj(s) {
     try {
         const jsonReadyString = s
-            .replace(/\s*([{}[\],:])\s*/g, '$1') // Убираем пробелы вокруг {}, [], :, ,
-            .replace(/([{,])([a-zA-Z0-9_]+)\s*:/g, '$1"$2":') // Оборачиваем ключи в двойные кавычки
-            .replace(/'/g, '"') // Заменяем одинарные кавычки на двойные
-            .replace(/,\s*}/g, '}') // Убираем конечные запятые перед }
-            .replace(/,\s*]/g, ']') // Убираем конечные запятые перед ]
-            .trim(); // Убираем пробелы в начале и конце строки
+            .replace(/\s*([{}[\],:])\s*/g, '$1') // Remove spaces around {}, [], :, ,
+            .replace(/([{,])([a-zA-Z0-9_]+)\s*:/g, '$1"$2":') // Wrap keys in double quotes
+            .replace(/'/g, '"') // Replace single quotes with double quotes
+            .replace(/,\s*}/g, '}') // Remove trailing commas before }
+            .replace(/,\s*]/g, ']') // Remove trailing commas before ]
+            .trim(); // Trim leading/trailing whitespace
         const a = JSON.parse(jsonReadyString);
         return a
     } catch (error) {

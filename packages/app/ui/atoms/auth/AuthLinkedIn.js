@@ -4,7 +4,6 @@ import { Button } from 'app/design/controls';
 
 export default function AuthLinkedIn({ button }) {
     const handleLinkedInLogin = () => {
-        console.log("LinkedIn login clicked");
         // Actual LinkedIn login logic will go here
     };
 

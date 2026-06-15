@@ -30,7 +30,6 @@ export default function MenuItemSubmenuShare(oProps) {
                 const sResponse = await fetcher('/api.php?r=bx_timeline/repost/&params=' + JSON.stringify(Object.values(oItem.data)));
                 if (sResponse?.data) {
                     const sMsg = sResponse.data?.message ? sResponse.data?.message : 'Post shared successfully.';
-                    console.log("sMsg", sMsg)
                     setShowMsg(sMsg);
                 }
                 break;
@@ -61,7 +60,6 @@ export default function MenuItemSubmenuShare(oProps) {
                             break;
                     }
                 } catch (error) {
-                    console.log(error.message);
                 }
                 break;
         }

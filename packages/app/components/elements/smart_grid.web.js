@@ -202,7 +202,6 @@ export default function ({ is_allowed_edit, block_id, content_id, content_module
     }
 
     const onFormSubmit = async (formData, d) => {
-        console.log("formData, d", d, formData)
         let updatedData = {};
         let content_data = '';
         let content = d.content;
@@ -212,7 +211,6 @@ export default function ({ is_allowed_edit, block_id, content_id, content_module
         if (addType.type === 'image') {
            
             const a = await fetcher('/api.php?r=system/get_page_block_image_data/TemplServicePages&params[]=' + d.content);
-            console.log("dsfsdf", a)
             content_data = a.data;
 
         }
@@ -253,7 +251,6 @@ export default function ({ is_allowed_edit, block_id, content_id, content_module
 
     function getCell(block, bAllowEdit) {
         let blockContent;
-        console.log("blockblock", block)
         switch (block.type) {
             case "image":
                 blockContent = <><Image view='cover' className=" u-cover " alt='' src={block?.content_data?.src} /></>

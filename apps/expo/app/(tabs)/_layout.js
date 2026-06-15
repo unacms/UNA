@@ -20,12 +20,12 @@ import { initReactI18next } from 'react-i18next';
 import { resources } from 'app/customization/translation';
 import '../../global.combined.css';
 
-// Инициализируем i18n синхронно до первого рендера, чтобы useTranslation всегда работал стабильно
+// Initialize i18n synchronously before first render so useTranslation stays stable
 if (!i18n.isInitialized) {
     i18n.use(initReactI18next).init({
         compatibilityJSON: 'v3',
         resources: resources,
-        lng: 'en', // начальный язык, будет обновлен в useEffect
+        lng: 'en', // initial language, updated in useEffect
         fallbackLng: 'en',
         interpolation: {
             escapeValue: false
@@ -42,8 +42,8 @@ import { Uniwind } from 'uniwind';
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            staleTime: 60 * 1000,        // 1 минута
-            gcTime: 3 * 60 * 1000,       // 3 минуты (очистка неактивных данных)
+            staleTime: 60 * 1000,        // 1 minute
+            gcTime: 3 * 60 * 1000,       // 3 minutes (evict inactive cache)
             refetchOnWindowFocus: false,
         },
     },
@@ -56,8 +56,8 @@ const AppLayout = React.memo(() => {
         RNScreenshotPrevent.enableSecureView();
     }*/
 
-    // Вызываем все хуки в начале компонента в стабильном порядке
-    // Вызываем useLayoutSettings только один раз, чтобы избежать нарушения порядка хуков
+    // Call all hooks at the top in a stable order
+    // Call useLayoutSettings only once to avoid hook-order violations
     const { langCode, themeName } = useLayoutSettings();
     const scheme = useColorScheme();
 
@@ -86,13 +86,13 @@ const AppLayout = React.memo(() => {
     }, []);
 
     useEffect(() => {
-        // i18n уже инициализирован синхронно, просто обновляем язык
+        // i18n is already initialized synchronously — just update language
         if (i18n.isInitialized && langCode) {
             i18n.changeLanguage(langCode);
         }
     }, [langCode]);
 
-    // Вычисляем тему вручную, чтобы избежать повторных вызовов хуков через useTheme()
+    // Compute theme manually to avoid extra hook calls via useTheme()
     const actualThemeName = themeName != 'auto' ? themeName : scheme;
 
     useEffect(() => {

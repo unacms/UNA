@@ -83,7 +83,6 @@ function DropdownMenuPopup({
 
     const handleSelect = useCallback(
         (event, item) => {
-            console.log("item", item)
             setIsOpen(false);
             onSelect
                 ? onSelect(item)

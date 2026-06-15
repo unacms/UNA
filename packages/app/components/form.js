@@ -84,7 +84,7 @@ export default function Form({
 
         if (!dynamicData) {
 
-            // Нет динамических данных – возвращаемся к исходным
+            // No dynamic data — revert to original
             setFormBundle(prev => ({
                 ...prev,
                 form: initedData,
@@ -111,7 +111,7 @@ export default function Form({
             const nextResponse = formItem?.response ?? prev.response;
             const nextExtra = otherItem ?? prev.extra;
 
-            // Опциональная оптимизация — не дёргать setState, если реально ничего не изменилось
+            // Optional: skip setState when nothing actually changed
             const isSameForm = isObjectsEqual(prev.form, nextForm);
             const isSameExtra = isObjectsEqual(prev.extra, nextExtra);
             const isSameResponse = prev.response === nextResponse;
@@ -149,7 +149,7 @@ export default function Form({
             const src = inputs[key];
             if (!src) continue;
 
-            // создаём копию, НЕ мутируем оригинал
+            // Copy — do NOT mutate the original
             const input = { ...src };
 
             // switcher/checkbox: false > value = 0
@@ -160,7 +160,7 @@ export default function Form({
                 input.value = 0;
             }
 
-            // autofocus только на первое text/textarea поле
+            // autofocus only the first text/textarea field
             if (input.type === 'text' || input.type === 'textarea') {
                 if (isAutofocusEnabledForForm) {
                     input.auto_focus = true;

@@ -28,8 +28,6 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
 
     useEffect(() => {
         const subscription = emitter.addListener(`form_bx_projects`, (data) => {
-            console.log("data", data);
-            
             if (data.action == 'received' && data.data.reload) {
                 handleCloseDeployForm();
             }

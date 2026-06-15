@@ -9,20 +9,20 @@ import { Text } from 'app/design/typography';
 import { Button } from 'app/design/controls';
 import * as SplashScreen from 'expo-splash-screen';
 
-/** Не блокируем UI по первому offline-сигналу (iOS часто шлёт ложный offline при resume). */
+/** Don't block UI on the first offline signal (iOS often sends a false offline on resume). */
 const OFFLINE_DEBOUNCE_MS = 1500;
-/** Повторная проверка сразу после возврата из фона. */
+/** Re-check immediately after returning from background. */
 const RESUME_RECHECK_MS = 500;
 
 function isOnline(state) {
     if (!state || state.isConnected === false) return false;
-    // iOS: isInternetReachable ненадёжен при background → foreground (null/false на живой сети).
+    // iOS: isInternetReachable is unreliable on background → foreground (null/false on a live network).
     if (Platform.OS !== 'ios' && state.isInternetReachable === false) return false;
     return true;
 }
 
 export function NetworkStatus({ children }) {
-    /** null = ещё не было первого ответа NetInfo (не показываем ни табы, ни ложный офлайн) */
+    /** null = no first NetInfo response yet (show neither tabs nor false offline) */
     const [blocked, setBlocked] = useState(null);
 
     const splashHidden = useRef(false);

@@ -11,8 +11,8 @@ export default function ElementSimpleList({ onFormEmpty, data, blockWrapperProps
         let power = 0;
 
         while (n > 0) {
-            if (n & 1) powers.push(power + 1); // если последний бит = 1
-            n >>= 1; // сдвигаем вправо
+            if (n & 1) powers.push(power + 1); // if last bit is 1
+            n >>= 1; // shift right
             power++;
         }
 

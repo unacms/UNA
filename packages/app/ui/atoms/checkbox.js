@@ -17,7 +17,7 @@ export default function CheckBox2({ title, onPress, status, value, icon, margin 
                 <Text className={checkboxTheme['u-controls-checkbox-text']}>{title}</Text>
             </View>
 
-            {/* Визуальный квадрат — DOM + Tailwind */}
+            {/* Visual square — DOM + Tailwind */}
             <View className={checkboxTheme['u-controls-checkbox-indicator']}>
                 <CheckboxPrimitive.Root
                     checked={selected}

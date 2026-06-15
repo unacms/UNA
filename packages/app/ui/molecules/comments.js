@@ -9,7 +9,7 @@ import  { useLayoutData } from 'app/context/layout'
 
 const getName = (type, system, object_id, sName) => {
     let aName = [type, system.replace(/_/g, '-'), object_id];
-    if (sName) aName.push(sName);  // Упростили проверку на sName
+    if (sName) aName.push(sName);  // Simplified sName check
     return aName.join('-');
 };
 

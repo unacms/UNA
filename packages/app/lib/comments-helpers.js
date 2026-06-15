@@ -150,18 +150,18 @@ export function CommentsBrowse({
                 //MANY BE NEED TO IMPROVE
 
                 const newItem = data.data;
-                // Используем ref, так как он содержит актуальный список внутри замыкания useEffect
+                // Use ref — it holds the current list inside the useEffect closure
                 const items = refetchRef.current.prevItems || [];
 
-                // Определяем ID родителя (предполагаем, что он в data.cmt_parent_id)
+                // Parent ID (assumed to be in data.cmt_parent_id)
                 const parentId = newItem.data?.cmt_parent_id || newItem.cmt_parent_id || 0;
                 let insertIndex = 0;
 
                 if (parentId == 0) {
-                    // Корневой комментарий
-                    // Если нужно в начало (новые сверху):
+                    // Root comment
+                    // To prepend (newest on top):
                     insertIndex = browseParams.order_way == 'asc' ? items.length : 0;
-                    // Если нужно в конец (старые сверху): insertIndex = items.length;
+                    // To append (oldest on top): insertIndex = items.length;
 
                     newItem.level = 0;
                 } else {
@@ -295,7 +295,7 @@ export function CommentsBrowse({
             return
         }
 
-        // Если order_way изменился, перезагружаем данные
+        // Reload data when order_way changes
         if (!refetchRef.current.isFirstLoad || browseParams.order_way !== baseParams.order_way) {
             refetchRef.current.skipToast = true
             refetchRef.current.isFirstLoad = true
@@ -417,7 +417,7 @@ export function CommentsBrowse({
                     refetchRef.current.prevItems = latestItems
 
 
-                    // сюда можно добавить скролл к нужному месту TODO
+                    // TODO: scroll to the right place here
                     if (flashListRef.current) {
                         flashListRef.current.scrollToIndex?.({
                             index: latestItems.length - 1,
@@ -459,7 +459,7 @@ function buildFlatListFromTree(items, viewMode) {
             lvls[level] = last_child_in != item.id
             item.lvls = lvls.slice()
 
-            // parent пока оставим как есть — позже можно оптимизировать
+            // Keep parent as-is for now — can optimize later
             item.parent = result.filter(
                 (item2) => item2.data.cmt_id == item.data.cmt_parent_id
             )[0]
@@ -647,7 +647,7 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
                     }
                 }
                 
-                // Обновляем состояние формы правильным способом
+                // Update form state the correct way
                 setForm(prevForm => ({
                     ...prevForm,
                     data: {

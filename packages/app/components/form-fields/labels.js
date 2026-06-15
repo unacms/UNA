@@ -39,7 +39,6 @@ export default function (props) {
 
     useEffect(() => {
         const subscription = emitter.addListener(`fld_labels_${name}`, (data) => {
-            console.log('fld_polls', data);
             if (data.action == 'add') {
                 setIsModal(true)
             }

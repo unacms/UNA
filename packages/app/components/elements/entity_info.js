@@ -53,12 +53,12 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
 
             const value = str.trim();
 
-            // 1. Сначала пробуем как есть
+            // 1. Try as-is first
             try {
                 const url = new URL(value);
                 return url.protocol === 'http:' || url.protocol === 'https:';
             } catch (e) {
-                // 2. Если нет протокола — пробуем добавить https://
+                // 2. If no protocol — try adding https://
                 try {
                     const url = new URL('https://' + value);
                     return url.hostname.includes('.');
@@ -144,7 +144,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                     return slug ? `@${slug}` : original;
                 }
 
-                // Facebook → slug (обычно /pageusername)
+                // Facebook → slug (usually /pageusername)
                 if (isFacebook) {
                     const slug = getSlug(firstSegment);
                     return slug ?? original;
@@ -152,7 +152,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
 
                 // YouTube
                 if (isYouTube) {
-                    // youtu.be/VIDEO_ID → считаем ссылкой на видео
+                    // youtu.be/VIDEO_ID → treat as video link
                     if (hostname === 'youtu.be') {
                         return original;
                     }
@@ -165,7 +165,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                         return slug ? `@${slug}` : original;
                     }
 
-                    // /channel/UCxxxx  /user/Name  /c/CustomName → slug без @
+                    // /channel/UCxxxx  /user/Name  /c/CustomName → slug without @
                     if (
                         (first === 'channel' || first === 'user' || first === 'c') &&
                         second
@@ -174,7 +174,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                         return slug ?? original;
                     }
 
-                    // /watch, /shorts, /live и прочие видео-ссылки → как есть
+                    // /watch, /shorts, /live and other video URLs → as-is
                     return original;
                 }
 

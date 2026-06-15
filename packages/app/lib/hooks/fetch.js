@@ -6,7 +6,7 @@ export default function useFetchForm(url, postData) {
     const error = null;
 
     useEffect(() => {
-        if (!postData) return; // Не делать запрос, если нет данных
+        if (!postData) return; // Skip request when there is no data
 
         const fetchData = async () => {
             const response = await fetcher([url, '', postData]);

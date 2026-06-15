@@ -18,7 +18,6 @@ if (!global.redis && MULTITENANT) {
     try {
       if (redis) {
         await redis.connect();
-        console.log("✅ Redis connected");
       }
     } catch (err) {
       console.error("❌ Redis connection failed:", err);

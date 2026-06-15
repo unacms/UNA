@@ -248,7 +248,6 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
         case 'profile':
             return <Profile {...cell.data} displaySize="sm" />
         case 'actions':
-            console.log("cell.data", cell.data)
             return (<Row className='space-x-2 justify-end'>
                 {cell.data.filter(item => item?.type).map((itemAction, index) => (
                     <ActionButton
@@ -385,7 +384,7 @@ export default function ElementGrid(props) {
             return
         }
 
-        // Обновляем элементы при изменении данных
+        // Update items when data changes
         dispatch({ type: 'SET_ITEMS', items })
         refetchRef.current.prevItems = items
     }, [pagesData])
@@ -470,7 +469,7 @@ export default function ElementGrid(props) {
         let bChecked = false;
         const oSwitcher = { active: 'hidden', hidden: 'active', 0: '1', 1: '0' };
 
-        // Оптимистичное обновление UI - мутируем напрямую
+        // Optimistic UI update — mutate in place
         const currentItem = dataItems[indexRow];
         if (currentItem?.switcher) {
             currentItem.switcher.data = oSwitcher[currentItem.switcher.data];
@@ -478,10 +477,10 @@ export default function ElementGrid(props) {
                 bChecked = true;
         }
 
-        // Отправляем запрос на сервер
+        // Send request to server
         await fetchData('enable', '&ids[]=' + id + (bChecked ? '&checked=1' : ''));
 
-        // Обновляем данные с сервера для синхронизации
+        // Sync from server response
         refetch();
     }
     const setSelection = (data) => {

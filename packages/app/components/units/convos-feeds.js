@@ -90,7 +90,7 @@ const MsgFeed = memo(({ item, handlerMenuSelect }) => {
     useEffect(() => {
         if (mode === 'edit')
             (async () => await Services.getForm({ action: mode, id })
-                .catch((e) => { console.log(e.toString()) })
+                .catch(() => {})
                 .then((data) => setFormData(data)))
                 ();
 

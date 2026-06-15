@@ -1,4 +1,4 @@
-/** Next.js Image remotePatterns — hostname allowlist для next/image */
+/** Next.js Image remotePatterns — hostname allowlist for next/image */
 const ImageRemotePatternsDefault = [
     { protocol: 'http', hostname: 'localhost', pathname: '/**' },
     { protocol: 'https', hostname: 'api.neo.so', pathname: '/**' },

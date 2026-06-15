@@ -6,9 +6,7 @@ import { View } from 'app/design/view'
 import { Loading } from 'app/customization/loading'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
-const handleNotificationsChange = ({ total, actionRequired }) => {
-    console.log('Всего уведомлений:', total, 'Требуют действия:', actionRequired);
-};
+const handleNotificationsChange = () => {};
 
 export default function NotificationBanner({ data, blockWrapperProps }) {
 

@@ -20,7 +20,6 @@ export function IconFromSet({ icon, width, height, size, _strokeWidth, color, cl
     }, [icon]);
 
     if (!IconComponent) {
-        console.log('Icon not found:', icon);
         return null;
     }
 

@@ -280,7 +280,6 @@ const getColorByTypeLesson = (item, index, passing, byIndex = false) => {
 };
 
 function EditLesson({ formData, handleUpdate, lessonData: initedLessonData, courseId, lessonId, moduleId, gridData, dispatch }) {
-    console.log("gridDatagridData", gridData)
     const [viewType, setViewType] = useState(0);
     const [lessonData, setLessonData] = useState(initedLessonData);
     const content = { content: formData, designbox_id: 0 };
@@ -431,7 +430,6 @@ const showAddForm = async (url) => {
 
 
 function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, courseId, lessonId, moduleId, addParams, dispatch, gridData  }) {
-    console.log("gridData2", gridData);
     const steps = lessonData.steps;
     const [formData, setFormData] = useState(null);
 
@@ -441,7 +439,6 @@ function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, cour
     }
 
     const editStep = async (actionEdit) => {
-        console.log("itemitem", actionEdit)
         const fetchedData = await fetcher("/api.php?r=" + actionEdit.callback);
         setFormData({ content: fetchedData.data, designbox_id: 0, title: "Edit" })
         
@@ -463,7 +460,6 @@ function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, cour
     };
 
     const handleStepsSort = async (result) => {
-        console.log("stepssteps", steps);
         if (!result.destination) return;
         const updatedData = [...lessonData.steps];
         const [removed] = updatedData.splice(result.source.index, 1);
@@ -474,7 +470,6 @@ function LessonSteps({ lessonData, startLessonPart, isEditable, reloadData, cour
         };
 
     const renderStep = (index, item, dragHandleProps) => {
-        console.log("gridData22", gridData, item);
         const actionEdit = gridData?.data?.data?.find(item2 => item2.id == item.id).actions.data.find(item2 => item2.name == 'edit')
 
         const [color, icon, color2, color3] = getColorByTypeLesson(item, index, lessonData.passing);

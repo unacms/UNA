@@ -74,8 +74,8 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
     }
 
     const isShowHeader = pageData.module != "bx_timeline";
-    // Поля формы должны лежать напрямую внутри aware-scroll модалки (без вложенного ScrollView),
-    // иначе клавиатура поднимает криво/не доскролливает к инпуту.
+    // Form fields must sit directly inside the aware-scroll modal (no nested ScrollView),
+    // otherwise the keyboard shifts layout incorrectly and won't scroll to the input.
     const Container = View;
 
     const modalWidth = 'max-w-3xl';

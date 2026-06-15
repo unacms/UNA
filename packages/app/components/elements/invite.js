@@ -11,7 +11,6 @@ export default function ElementInvite({ data, blockWrapperProps }) {
     const [showModal, setShowModal] = useState(false);
     const handleClick = async () => {
         const sResponse = await fetcher('/api.php?r=' + data.request_url);
-        console.log(sResponse)
         setShowModal(sResponse.data.link)
     }
 

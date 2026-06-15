@@ -29,7 +29,6 @@ const handleDo = async (url, event) => {
                 break;
         }
     } catch (error) {
-        console.log(error.message);
     }
 };
 

@@ -4,7 +4,7 @@ import { Button, Modal } from 'app/design/controls'
 import { Text } from 'app/design/typography'
 
 export default function ScrollControl({ horisontal, children, step, initialValue, leftButton, rightButton, title }) {
-    // Используем ref для доступа к ScrollView
+    // Use ref to access ScrollView
     const scrollViewRef = useRef(null);
     const [offset, setOffset] = useState({ offset: 0, contentWidth: 0, scrollViewWidth: 0 });
 

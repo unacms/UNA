@@ -4,7 +4,6 @@ import { Button } from 'app/design/controls';
 
 export default function AuthSAML({ button }) {
     const handleSAMLLogin = () => {
-        console.log("SAML login clicked");
         // Actual SAML login logic will go here
     };
 

@@ -131,10 +131,10 @@ export function Conductor({
 
     useEffect(() => {
         const handlePopState = () => {
-            // Получаем текущий URL из браузера
-            const currentPath = window.location.pathname.slice(1) // убираем начальный /
+            // Get current URL from the browser
+            const currentPath = window.location.pathname.slice(1) // strip leading /
 
-            // Ищем соответствующий индекс в routes
+            // Find matching index in routes
             const foundIndex = routes.findIndex((item) => {
                 if (useSectionAsMenu) {
                     return currentPath === item.key || '/' + currentPath === item.key
@@ -153,10 +153,10 @@ export function Conductor({
             }
         }
 
-        // Подписываемся на событие popstate
+        // Subscribe to popstate
         window.addEventListener('popstate', handlePopState)
 
-        // Очищаем при размонтировании
+        // Cleanup on unmount
         return () => {
             window.removeEventListener('popstate', handlePopState)
         }
@@ -498,16 +498,6 @@ const TabSceneMainContent = ({
         refetchOnReconnect: true,
         enabled: !!pageRoute?.endpoint?.request_url
     })
-
-    const test = () => {
-        console.log('added')
-
-    }
-
-    const test1 = () => {
-        console.log('deleted')
-
-    }
 
     useEffect(() => {
         if (pageRoute?.endpoint?.unit !== 'feed')

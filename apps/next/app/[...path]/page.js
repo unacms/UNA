@@ -78,12 +78,12 @@ async function getCachedData(props) {
 const getData = cache(async (params, search_params) => {
     let path = params.path.join('/');
     
-    // Ранняя проверка для статических файлов - до любых логов и запросов к UNA
+    // Early check for static files — before any logs or UNA requests
     const staticFileExtensions = ['.map', '.js', '.css', '.json', '.png', '.jpg', '.svg', '.ico', '.woff', '.woff2', '.ttf'];
     const isStaticFile = staticFileExtensions.some(ext => path.endsWith(ext));
     
     if (isStaticFile || path.startsWith('_next/') || path.startsWith('static/')) {
-        // Возвращаем 404 без логирования и запросов к UNA
+        // Return 404 without logging or UNA requests
         return { data: { title: SITE_TITLE, description: SITE_TITLE }, code: 404 };
     }
     
@@ -123,7 +123,6 @@ const getData = cache(async (params, search_params) => {
         l = l + '&params[]=' + sBlocks + '&params[]=' + JSON.stringify(searchParams);
     }
 
-    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', searchParams, l);
     let res;
     try {
         res = await fetch(l, {
@@ -214,7 +213,7 @@ export default async function Page(props) {
     
     const data = await getCachedData(props);
     
-    // Если это 404 для статических файлов - сразу notFound
+    // Static file 404 — call notFound immediately
     if (data?.code === 404 && !isHomePage) {
         notFound();
     }

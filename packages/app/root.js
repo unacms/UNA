@@ -27,17 +27,17 @@ export function Root(props) {
     // ################## CODE FOR NATIVE VERSION
 
     useEffect(() => {
-        // Пропускаем: первый рендер (prevUserIdRef ещё не трогали)
+        // Skip: first render (prevUserIdRef not set yet)
         if (prevUserIdRef.current === undefined) {
             prevUserIdRef.current = currentUser?.id;
             return;
         }
-        // Пропускаем: значение не изменилось
+        // Skip: value unchanged
         if (prevUserIdRef.current === currentUser?.id) return;
 
         prevUserIdRef.current = currentUser?.id;
 
-        // Релоад только при смене юзера, не при инициализации
+        // Reload only on user change, not on initial load
         if (Platform.OS === 'web' && typeof window !== 'undefined') {
             window.location.reload();
         } else {
@@ -50,7 +50,7 @@ export function Root(props) {
     const setScrollValue = useSetScrollValue();
 
     useEffect(() => {
-        // Сброс scroll состояния при смене данных страницы
+        // Reset scroll state when page data changes
         setScrollDirection(0);
         if (Platform.OS === 'web' && typeof window !== 'undefined') {
             setScrollValue(window.scrollY || document.documentElement.scrollTop || 0);

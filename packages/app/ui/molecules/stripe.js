@@ -40,12 +40,12 @@ export default function NativeStripe({ seller_id, items, payment_type }) {
         if (!publishableKey) return;
         initStripe({
             publishableKey,
-            merchantIdentifier: 'merchant.your.id', // при необходимости
-            urlScheme: 'your-url-scheme',           // для 3DS/банковских редиректов
+            merchantIdentifier: 'merchant.your.id', // if needed
+            urlScheme: 'your-url-scheme',           // for 3DS/bank redirects
         });
     }, [publishableKey]);
 
-    // 3) Создаём сессию и получаем clientSecret
+    // 3) Create session and get clientSecret
     useEffect(() => {
         (async () => {
             const session = await performAction('stripe_v3_create_session_api', {
@@ -60,7 +60,7 @@ export default function NativeStripe({ seller_id, items, payment_type }) {
         })();
     }, [seller_id, items]);
 
-    // 4) Инициализируем PaymentSheet
+    // 4) Initialize PaymentSheet
     useEffect(() => {
         if (!clientSecret) return;
         (async () => {

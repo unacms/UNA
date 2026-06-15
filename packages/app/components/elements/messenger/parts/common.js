@@ -550,7 +550,6 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
         handleSearch('')
     }
 
-    console.log("pageData", pageData)
     const srch = <Input  size="small" name="search" placeholder={("Search") + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
     const ContextSelector = getComponent('molecule', 'context_selector');
     const header = useMemo(() => (

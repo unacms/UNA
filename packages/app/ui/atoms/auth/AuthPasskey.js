@@ -4,7 +4,6 @@ import { Button } from 'app/design/controls';
 
 export default function AuthPasskey({ button }) {
     const handlePasskeyLogin = () => {
-        console.log("Passkey login clicked");
         // Actual Passkey login logic will go here
     };
 
