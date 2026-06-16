@@ -93,11 +93,12 @@ export const settingsElements = {
         'u-block-rounded-all': ' rounded-2xl',
         'u-block-header':
             ' flex-row items-center gap-3 justify-center ',
-        'u-block-icon': ' items-center justify-center h-11 w-11 bg-muted/60 rounded-xl text-card-foreground flex-none',
-        'u-block-name': ' flex-auto ',
+        'u-block-icon': ' items-center justify-center text-card-foreground flex-none',
+        'u-block-icon-size': 20, // Default icon size for block header icons
+        'u-block-name': ' flex-auto gap-1 ',
         'u-block-title':
             'text-card-foreground leading-6 text-lg font-bold tracking-tight',
-        'u-block-description': 'text-muted-foreground text-sm font-medium leading-5',
+        'u-block-description': 'text-muted-foreground text-sm font-medium leading-5 px-px',
         'u-block-content': 'gap-4 ',  
         'u-block-footer':
             'flex text-card-foreground gap-4 pt-2',

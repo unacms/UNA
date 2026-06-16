@@ -24,6 +24,10 @@ export default function MenuHeaderNavigation(props) {
         startDecorator = 'Menu',
         alt = 'Menu',
         tooltip,
+        // Legacy Button props from header_toolbar — must not reach DropdownPopup
+        // or isLegacyButtonProps() picks Button (startDecorator) over NeoButton (image).
+        variant: _variant,
+        size: _size,
         ...neoButtonProps
     } = props
 
@@ -33,13 +37,15 @@ export default function MenuHeaderNavigation(props) {
             items={items}
             defaultOpen={false}
             buttonProps={{
-                image: startDecorator,
-                style: 'borderless',
-                borderShape: rounded ? 'circle' : 'roundedRectangle',
-                controlSize: 'regular',
-                accessibilityLabel: alt,
-                tooltip: tooltip ?? alt,
                 ...neoButtonProps,
+                image: neoButtonProps.image ?? startDecorator,
+                style: neoButtonProps.style ?? 'glass',
+                borderShape:
+                    neoButtonProps.borderShape ??
+                    (rounded ? 'circle' : 'roundedRectangle'),
+                controlSize: neoButtonProps.controlSize ?? 'regular',
+                accessibilityLabel: neoButtonProps.accessibilityLabel ?? alt,
+                tooltip: tooltip ?? neoButtonProps.tooltip ?? alt,
             }}
         />
     )

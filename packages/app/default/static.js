@@ -12,7 +12,7 @@ import { Animated } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { tp } from 'app/lib/util'
 import ProfilesList from 'app/ui/molecules/profile_list'
-import { useThemeName } from 'app/design/theme'
+import { useTheme } from 'app/design/theme'
 import { Platform } from 'react-native'
 import SvgFile from 'app/ui/molecules/svg-file'
 import MenuFooter from 'app/components/nav/menu-footer'
@@ -20,7 +20,12 @@ import { appSetting } from 'app/lib/util'
 const isWeb = Platform.OS === 'web'
 //mode can be 'adaptive', 'full', 'mark', 'text'
 const Logo = ({ mode = 'adaptive' }) => {
-    const theme = useThemeName()
+    // Resolve a concrete color (like IconFromSet) instead of relying on
+    // `currentColor` inheritance — react-native-svg does not inherit a parent
+    // View's text color, so on first render `currentColor` falls back to the
+    // theme primary (blue) until the subtree re-renders.
+    const { colors } = useTheme()
+    const logoColor = colors.default
 
     const textStyles = {
         adaptive: ' hidden sm:block  ',
@@ -33,13 +38,13 @@ const Logo = ({ mode = 'adaptive' }) => {
     }
 
     return (
-        <Row className="items-center gap-3 text-foreground web:hover:animate-pulse">
+        <Row className="items-center gap-3 p-0.5 text-foreground web:hover:animate-pulse">
             <View className={`${markStyles[mode]}`}>
                 <Svg
                     aria-label="Logo Mark"
-                    width={44}
-                    height={44}
-                    color={theme === 'dark' ? 'currentColor' : 'currentColor'}
+                    width={40}
+                    height={40}
+                    color={logoColor}
                     viewBox="0 0 40 40"
                     xmlns="http://www.w3.org/2000/svg"
                 >
@@ -75,7 +80,7 @@ const Logo = ({ mode = 'adaptive' }) => {
                     width={72}
                     height={36}
                     viewBox="0 0 68 32"
-                    color={theme === 'dark' ? 'currentColor' : 'currentColor'}
+                    color={logoColor}
                     xmlns="http://www.w3.org/2000/svg"
                 >
                     <Path

@@ -18,7 +18,6 @@ function EmbedImage({ src, className = '', imageClassName = '' }) {
             {!!src && !hasError && (
                 <Image
                     view="cover"
-                    resizeMode="cover"
                     className={imageClassName}
                     src={src}
                     onError={() => setHasError(true)}

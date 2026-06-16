@@ -78,11 +78,11 @@ const nextConfig = {
     /*experimental: {
       ppr: true,
     },*/
-    staleTimes: {
-        dynamic: 0,
-        static: 180,
-    },
     experimental: {
+        staleTimes: {
+            dynamic: 0,
+            static: 180,
+        },
     },
     // reanimated (and thus, Moti) doesn't work with strict mode currently...
     // https://github.com/nandorojo/moti/issues/224

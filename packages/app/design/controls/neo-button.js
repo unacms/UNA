@@ -298,8 +298,8 @@ function PressHighlight({ active, rounded, color }) {
 
 export const NeoButton = (props) => {
     const {
-        // SwiftUI core
-        role, style, controlSize, borderShape, tint,
+        // SwiftUI core (`buttonStyle` avoids RN `Link` clobbering `style` on native)
+        role, style, buttonStyle, controlSize, borderShape, tint,
 
         // Content
         label, loadingLabel, title, image, systemImage, imagePlacement,
@@ -342,7 +342,7 @@ export const NeoButton = (props) => {
     } = props;
 
     const resolved = useResolvedNeoButton({
-        role, style, controlSize, borderShape, tint, transition,
+        role, style, buttonStyle, controlSize, borderShape, tint, transition,
         focusRing, pressAnimation,
         image: image ?? systemImage,
         systemImage,
@@ -618,6 +618,7 @@ export const NeoButtonLink = ({
     href = '',
     target = '',
     asExternal = false,
+    style,
     ...props
 }) => {
     const finalHref = sanitazeUrl(href);
@@ -626,14 +627,15 @@ export const NeoButtonLink = ({
         'u-neo-btn-link block',
         props.width === 'fill' ? 'w-full' : '',
     );
+    const neoProps = { ...props, buttonStyle: style, hitarea: false, interactive: true };
 
     if (isExternal) {
-        return <NeoButton {...props} onPress={() => openExternalLink(finalHref)} />;
+        return <NeoButton {...neoProps} onPress={() => openExternalLink(finalHref)} />;
     }
 
     return (
         <Link href={href} target={target} asExternal={asExternal} mode="plain" className={linkClassName}>
-            <NeoButton {...props} hitarea={false} interactive />
+            <NeoButton {...neoProps} />
         </Link>
     );
 };
