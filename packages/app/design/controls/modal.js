@@ -49,6 +49,7 @@ export function Modal({
     animation,
     position = 'center',
     onClose,
+    onRequestClose,
     outerClickClose = true,
     onVisible,
     title,
@@ -155,6 +156,10 @@ export function Modal({
         event.stopPropagation();
     }, []);
 
+    const handleRequestClose = useCallback(() => {
+        (onRequestClose ?? onClose)?.();
+    }, [onRequestClose, onClose]);
+
 
     const content = <><ModalHeader
         title={title}
@@ -172,7 +177,7 @@ export function Modal({
 
     if (isWeb) {
         return (
-            <ModalDef visible={onVisible} animationType={animationType} transparent={true}>
+            <ModalDef visible={onVisible} animationType={animationType} transparent={true} onRequestClose={handleRequestClose}>
                 <Pressable
                     ref={fogRef}
                     style={undefined}
@@ -192,7 +197,7 @@ export function Modal({
     }
     else {
         return (
-            <ModalDef visible={onVisible} animationType={animationType} transparent={isWeb}>
+            <ModalDef visible={onVisible} animationType={animationType} transparent={isWeb} onRequestClose={handleRequestClose}>
                 <Pressable
                     className={`pointerEvents cursor-default flex justify-end w-full h-full ${modalSettings.fog}`}
                     onPress={handleNativeOuterPress}

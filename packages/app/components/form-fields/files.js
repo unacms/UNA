@@ -19,6 +19,7 @@ import Video from 'app/ui/atoms/video';
 import Msg from 'app/ui/molecules/msg';
 import { useTranslation } from 'react-i18next'
 import emitter from 'app/context/emitter';
+import { CaptionForFileInput } from 'app/customization/functions';
 
 export default function (props) {
     
@@ -456,7 +457,9 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
             <Pressable onPress={selectImage} >
                 <View className={w + ' native:max-w-full items-center justify-center bg-input ' + (isImage ? '' : 'h-32')}>
                       {(!img || !img?.file_url) && (<View ref={drop} className=' text-muted-foreground/50 text-lg  flex-auto w-full border-border rounded-lg  justify-center  flex-col border border-dashed text-center'>
-                        <Text className='text-muted-foreground/50 text-lg justify-center flex-col text-center'>{props?.placeholder || 'Drag & Drop or browse files...'}</Text>
+                        <Text className='text-muted-foreground/50 text-lg justify-center flex-col text-center'>
+                            {props?.placeholder || CaptionForFileInput(props)}
+                        </Text>
                     </View>)}
                     {img != null && (<>
                         {(isImage && (img.uri || img.file_url)) && <ImageRN

@@ -28,6 +28,11 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
         setPageData(false);
     }, []);
 
+    const handleRequestClose = useCallback(() => {
+        handleModalClose();
+        handleClose();
+    }, [handleModalClose, handleClose]);
+
     useEffect(() => {
         if (!isWeb || !pageData || !url)
             return;
@@ -98,7 +103,7 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
             {...(isShowHeader && { onClose: () => { setPageData(false); handleModalClose() } })}
             //padding={isShowHeader ? " p-0 " : " p-0 "}
             transparent={true}
-            onRequestClose={handleModalClose}
+            onRequestClose={handleRequestClose}
             onClose={handleClose}
 
         >

@@ -8,6 +8,10 @@ export function ProfileDisplayName(title) {
     return title;
 }
 
+export function CaptionForFileInput(props) {
+    return 'Drag & Drop or browse files...';
+}
+
 export function ParseHtmlClasses(className, tag) {
     return className;
 }
