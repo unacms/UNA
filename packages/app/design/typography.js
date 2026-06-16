@@ -69,10 +69,10 @@ export const Text = ({
  */
 export const H1 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }) => {
     const HeadingComponent = isWeb ? 'h1' : NativeText
-    const spacing = getSpacing('pt-0', 'pb-4', isfirst, islast)
+    const spacing = getSpacing('pt-8', 'pb-6', isfirst, islast)
 
     return (
-        <HeadingComponent {...noScale} className={`text-3xl lg:text-4xl tracking-tight font-bold text-foreground text-balance ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
+        <HeadingComponent {...noScale} className={`text-4xl lg:text-5xl tracking-tight font-semibold text-foreground text-balance ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
             {children}
         </HeadingComponent>
     )
@@ -91,18 +91,18 @@ export const H1C = ({ children, className, fontFamily = '', isfirst, islast, ...
 
 export const H2 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }) => {
     const HeadingComponent = isWeb ? 'h2' : NativeText
-    const spacing = getSpacing('pt-2', 'pb-2', isfirst, islast)
+    const spacing = getSpacing('pt-6', 'pb-4', isfirst, islast)
 
     return (
-        <HeadingComponent {...noScale} className={`text-xl xl:text-2xl font-bold tracking-tight text-foreground ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
-            {children}
+        <HeadingComponent {...noScale} className={`text-2xl font-semibold tracking-tight text-foreground ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
+           {children}
         </HeadingComponent>
     )
 }
 
 export const H3 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }) => {
     const HeadingComponent = isWeb ? 'h3' : NativeText
-    const spacing = getSpacing('pt-2', 'pb-2', isfirst, islast)
+    const spacing = getSpacing('pt-4', 'pb-2', isfirst, islast)
 
     return (
         <HeadingComponent {...noScale} className={`text-lg lg:text-xl font-bold tracking-tight text-foreground ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
@@ -113,7 +113,7 @@ export const H3 = ({ children, className, fontFamily = '', isfirst, islast, ...r
 
 export const H4 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }) => {
     const HeadingComponent = isWeb ? 'h4' : NativeText
-    const spacing = isfirst !== undefined ? getSpacing('pt-2', 'pb-2', isfirst, islast) : ''
+    const spacing = isfirst !== undefined ? getSpacing('pt-2', 'pb-1', isfirst, islast) : ''
 
     return (
         <HeadingComponent {...noScale} className={`text-base lg:text-lg font-semibold tracking-tight text-foreground ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
@@ -124,7 +124,7 @@ export const H4 = ({ children, className, fontFamily = '', isfirst, islast, ...r
 
 export const H5 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }) => {
     const HeadingComponent = isWeb ? 'h5' : NativeText
-    const spacing = isfirst !== undefined ? getSpacing('pt-3', 'pb-1', isfirst, islast) : ''
+    const spacing = isfirst !== undefined ? getSpacing('pt-2', 'pb-1', isfirst, islast) : ''
 
     return (
         <HeadingComponent {...noScale} className={`text-lg sm:text-xl font-semibold tracking-tight text-foreground ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>

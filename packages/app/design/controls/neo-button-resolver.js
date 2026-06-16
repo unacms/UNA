@@ -298,8 +298,20 @@ function resolveSlot(slotMap, state, ctx) {
  * `automatic`, etc.), we fall back to `bordered` so the button still
  * renders something usable instead of going completely unstyled.
  */
+function normalizeStyleProp(value) {
+    // React Native `Link`/`Pressable` also use a `style` prop (object/array).
+    // When `NeoButtonLink` is rendered with `asChild`, that layout `style` can
+    // overwrite the SwiftUI-style string — ignore non-strings here.
+    return typeof value === 'string' ? value : undefined;
+}
+
 function resolveStyle({ propStyle, providerStyle, defaultsStyle, roleConfig, stylesTree }) {
-    const candidate = propStyle ?? providerStyle ?? roleConfig?.defaultStyle ?? defaultsStyle ?? FALLBACK_STYLE;
+    const candidate =
+        normalizeStyleProp(propStyle)
+        ?? normalizeStyleProp(providerStyle)
+        ?? roleConfig?.defaultStyle
+        ?? defaultsStyle
+        ?? FALLBACK_STYLE;
     if (stylesTree?.[candidate]) return candidate;
     return FALLBACK_STYLE;
 }
@@ -331,7 +343,7 @@ export function useResolvedNeoButton(props = {}) {
 
         const roleConfig = rolesTree[role] || {};
         const style = resolveStyle({
-            propStyle: props.style,
+            propStyle: normalizeStyleProp(props.buttonStyle) ?? normalizeStyleProp(props.style),
             providerStyle,
             defaultsStyle: defaults.style,
             roleConfig,

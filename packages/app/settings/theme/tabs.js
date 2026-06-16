@@ -7,7 +7,7 @@ export const settingsTabs = {
 
         // Atoms: scrollable tab list (single header row)
         'u-controls-tabs-header':
-            'relative flex flex-1 flex-row flex-nowrap overflow-x-auto bg-default overflow-y-hidden web:scrollbar-none ',
+            'relative flex flex-1 flex-row flex-nowrap overflow-x-auto bg-background overflow-y-hidden web:scrollbar-none ',
 
         // Shared structural class for scrollbar hiding (molecules variant rows include this)
         'u-controls-tabs-header-row':

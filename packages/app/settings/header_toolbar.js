@@ -15,8 +15,8 @@ export const settingsHeaderToolbar = {
                 { component: 'link', className: 'items-center sm:hidden', href: "/login", title: 'Log In', props: { neoButton: true, style: "glass", controlSize: "regular", borderShape: "circle", image: "UserRound", accessibilityLabel: "Log In" } },
                 { component: 'link', className: 'items-center hidden sm:block', href: "/login", title: 'Log In', props: { neoButton: true, style: "glass", controlSize: "regular", borderShape: "roundedRectangle", title: 'Log In' } },
                 { component: 'link', className: 'items-center hidden sm:block', href: "/create-account", title: 'Sign Up', props: { neoButton: true, style: "glassProminent", controlSize: "regular", borderShape: "roundedRectangle", title: 'Sign Up' } },
-                { component: 'menu_navigation', className: 'items-center sm:hidden', native: false, props: { variant: 'default', rounded: true, size: 'base', startDecorator: 'Menu', alt: 'Menu' } },
-                { component: 'menu_navigation', className: 'items-center hidden sm:block lg:hidden', native: false, props: { variant: 'default', rounded: false, size: 'base', startDecorator: 'Menu', alt: 'Menu' } },
+                { component: 'menu_navigation', className: 'items-center sm:hidden', native: false, props: { style: 'glass', controlSize: 'regular', borderShape: 'circle', image: 'Menu', accessibilityLabel: 'Menu' } },
+                { component: 'menu_navigation', className: 'items-center hidden sm:block lg:hidden', native: false, props: { style: 'glass', controlSize: 'regular', borderShape: 'roundedRectangle', image: 'Menu', accessibilityLabel: 'Menu' } },
             ],
         },
         mixed: {

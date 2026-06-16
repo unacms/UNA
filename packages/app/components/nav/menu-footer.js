@@ -23,6 +23,7 @@ const linkVariantToNeoStyle = {
     accent: 'link',
     primary: 'borderedProminent',
     ghost: 'borderless',
+    link: 'link',
 };
 
 const linkSizeToNeoControlSize = {

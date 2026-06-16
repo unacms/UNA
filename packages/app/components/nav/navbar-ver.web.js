@@ -133,7 +133,7 @@ export default function (props) {
     return (
         <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
             <Row className='w-full flex-col lg:flex-row-reverse  lg:min-h-screen '>
-                <View className='web:lg:w-[calc(100%-20rem)] border-x border-border   w-full '>
+                <View className='web:lg:flex-1 web:lg:min-w-0 border-x border-border w-full'>
                     {props.children}
                 </View>
                 <View className='w-80'>

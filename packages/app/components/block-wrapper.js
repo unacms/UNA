@@ -84,12 +84,13 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                 >
                     {bIsShowTitle && (
                         <BlockHeader>
-                             {!!block.icon && <BlockIcon>
-                                <Icon icon={block.icon} size={24}/>
-                            </BlockIcon>}
+                             
                             <BlockName>
-                           
-                                <BlockTitle>{stripTags(block.title)}</BlockTitle>
+                                <View className="flex-row items-center gap-2">
+                            {!!block.icon && <BlockIcon>
+                                <Icon icon={block.icon} size={appSetting('theme', 'blocks')['u-block-icon-size']}/>
+                            </BlockIcon>}
+                                <BlockTitle>{stripTags(block.title)}</BlockTitle></View>
                                 {!!block.description && <BlockDescription>{block.description}</BlockDescription>}
                             </BlockName>
 

@@ -20,8 +20,6 @@
     --color-ring: rgb(var(--ring));
     --color-background: rgb(var(--background));
     --color-foreground: rgb(var(--foreground));
-    --color-default: rgb(var(--default));
-    --color-default-foreground: rgb(var(--default-foreground));
     --color-segment: rgb(var(--segment));
     --color-segment-foreground: rgb(var(--segment-foreground));
     --color-card: rgb(var(--card));

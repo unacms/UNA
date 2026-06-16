@@ -1,6 +1,6 @@
 export const settingsLayout = {
     layout: {
-        body: ' bg-default ',
+        body: ' bg-background ',
         defaults: {
             name: 'hor',
             theme: 'auto',
@@ -23,8 +23,8 @@ export const settingsLayout = {
                 content: 'w-full max-w-md mx-auto',
             },
             layout_1_column_half: {
-                shell: 'w-full lg:flex-row p-4 lg:p-6 mx-auto my-auto ',
-                content: 'w-full max-w-4xl lg:p-3 rounded-3xl lg:border border-border/60 border-dashed mx-auto',
+                shell: 'w-full lg:flex-row px-4 lg:px-6 py-8 lg:py-12 mx-auto my-auto ',
+                content: 'w-full max-w-2xl mx-auto',
             },
         },
         padding_content: ' @list-sm/list:m-1 @list-lg/list:m-2',
@@ -66,7 +66,7 @@ export const settingsLayout = {
 
         header: {
             container: ' w-full z-50 header-fixed web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out shadow-card-outline dark:shadow-card-outline-deep',
-            content: ' items-center justify-between h-16 bg-card w-full mx-auto',
+            content: ' items-center justify-between h-16 bg-linear-to-b from-card to-card/10 backdrop-blur-lg w-full mx-auto',
             content_pinned_fixed: '    ',
             content_left: ' items-center flex-none  2xl:w-full max-w-96 px-3 lg:px-4 gap-2',
             content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-3xl px-4 ',

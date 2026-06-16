@@ -51,8 +51,6 @@
 
         /* Semantic — explicit light/dark variants for Uniwind parity */
         @variant light {
-            --default: var(--white);
-            --default-foreground: var(--neutral-950);
             --background: var(--neutral-100);
             --foreground: var(--neutral-950);
             --card: var(--white);
@@ -89,10 +87,8 @@
 
         /* Semantic — dark overrides */
         @variant dark {
-            --default: var(--neutral-900);
-            --default-foreground: var(--neutral-50);
             --background: var(--neutral-950);
-            --foreground: var(--neutral-50);
+            --foreground: var(--neutral-100);
             --card: var(--neutral-900);
             --card-foreground: var(--neutral-100);
             --popover: var(--neutral-800);
@@ -101,7 +97,7 @@
             --primary-hover: var(--accent-500);
             --primary-foreground: var(--neutral-50);
             --secondary: var(--neutral-800);
-            --secondary-foreground: var(--neutral-400);
+            --secondary-foreground: var(--neutral-300);
             --accent: var(--accent-950);
             --accent-foreground: var(--accent-500);
             --muted: var(--neutral-800);

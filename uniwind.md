@@ -153,7 +153,7 @@ Also verify:
 - Native text colors are applied directly to `Text`, not inherited from parent `View` or `Pressable`.
 - Dynamic class names used by native screens are explicit enough for Tailwind CSS 4 scanning, or are represented by static mapping objects.
 - Native shadow tokens do not depend on CSS variable colors inside `box-shadow`; use static native-safe color values or platform-specific classes.
-- Web-only arbitrary values like `w-[calc(100%-20rem)]` are not present in files scanned by Uniwind; move those to web styles or web-only class names that native does not scan.
+- Web-only arbitrary width utilities that use `calc()` with mixed `%` and length units are not present in files scanned by Uniwind; move those to web-only styles or web-only modules that native does not scan.
 
 ## Known Non-Blocking Noise
 

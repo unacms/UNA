@@ -1,5 +1,6 @@
 
 import * as WebBrowser from 'expo-web-browser';
+import { Platform } from 'react-native';
 import { useAuthRequest } from 'expo-auth-session/providers/google';
 import { useAutoDiscovery } from 'expo-auth-session';  // <-- here
 import { makeRedirectUri, ResponseType } from 'expo-auth-session';
@@ -16,8 +17,27 @@ import { useRouter, redirectTo } from 'app/lib/hooks/router'
 WebBrowser.maybeCompleteAuthSession();
 
 export default function AuthGoogle({ }) {
+    const googleSettings = appSetting('auth', 'google') || {}
+
+    // The platform-specific client id must be configured (e.g. via the
+    // GOOGLE_WEB_CLIENT_ID env var on web), otherwise expo-auth-session's
+    // invariantClientId throws during render and crashes the whole page.
+    // Bail out before any hooks run when it isn't set so the button is simply
+    // hidden instead of breaking the auth panel.
+    const platformClientId = Platform.select({
+        ios: googleSettings.ios_client_id,
+        android: googleSettings.android_client_id,
+        default: googleSettings.web_client_id,
+    });
+    if (!platformClientId) {
+        return null;
+    }
+
+    return <AuthGoogleButton googleSettings={googleSettings} />;
+}
+
+function AuthGoogleButton({ googleSettings }) {
     const { t } = useTranslation()
-    const googleSettings = appSetting('auth', 'google')
     const redirectRef = useRef();
     const [error, setError] = useState(false);
     const router = useRouter();
