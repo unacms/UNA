@@ -44,9 +44,12 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
             : {};
 
     if (typeof item.title !== 'string') {
-        if (item.noAction && typeof handleSelect === 'function') {
+       /* if (item.noAction && typeof handleSelect === 'function') {
             return <Pressable onPress={(event) => handleSelect(event, item)}>{item.title}</Pressable>;
-        }
+        }*/
+            if (typeof item.title !== 'string') {
+                return item.title;  // без внешнего Pressable — onPress уже внутри MenuItemEx
+            }
         return item.title;
     }
 

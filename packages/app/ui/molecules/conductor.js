@@ -328,6 +328,8 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     const routesRef = useRef(null);
     const { currentUser } = useCurrentUser();
 
+    console.log('datadatadata', data);
+
 
     const { setBottomSheetData } = useBottomSheetData();
     const initedTabs = useMemo(() => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu), [menu, data, blocks, currentUser, useSectionAsMenu]);;
@@ -716,8 +718,9 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
     const coverBlock = data?.cover_block;
     const pageUri = currentRoute?.pageData?.uri;
-    const pageContext = currentRoute?.pageData?.context;
+    const pageContext = data?.context //currentRoute?.pageData?.context;
 
+    console.log("pageContext3", pageContext)
     const sceneHeaderComp = useMemo(
         () => (
             <TabSceneHeader

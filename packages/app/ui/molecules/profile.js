@@ -44,7 +44,12 @@ export function DisplayNameLink({
     const linkCtr = link_href? <Link variant={link_variant} className={link_className} emulate={link_emulate} haptics={link_haptics} href={link_href}>{link_content}</Link> : link_content;
     const addCtr = add_content ? add_content : null;
 
-    return addCtr ? <Row className="items-center gap-1">{linkCtr}{addCtr}</Row> : linkCtr;
+    return addCtr ? (
+        <Row className="shrink min-w-0 flex-wrap items-center gap-1">
+            <View className="shrink min-w-0">{linkCtr}</View>
+            <View className="shrink-0">{addCtr}</View>
+        </Row>
+    ) : linkCtr;
 }
 
 function DisplayNameText({ title, fontSize }) {
@@ -113,7 +118,7 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
                     fontSize={sSizeFont}
                     href={oProps.href}
                     link_variant="default" 
-                    link_className="flex-row items-center" 
+                    link_className="flex flex-row items-center shrink min-w-0 overflow-hidden" 
                     link_emulate={emulate} 
                     link_haptics="Select" 
                     link_href={oProps.url}
@@ -129,9 +134,9 @@ function UnitWoImage({ oProps, bShowLinks, emulate, info, sSizeFont, actions, in
     );
 
     return (
-        <Row className="my-auto flex-1 items-center">
-            <View className="flex-1 gap-0.5">
-                <Row className="items-center gap-2 min-h-[22px]">
+        <Row className="my-auto flex-1 min-w-0 items-center">
+            <View className="flex-1 min-w-0 gap-0.5">
+                <Row className="flex-1 min-w-0 items-center gap-2 min-h-[22px]">
                     {wrapWithHoverCard(nameLink)}
                     {info2}
                 </Row>
@@ -196,11 +201,11 @@ function AtomProfile_(oProps) {
     switch (sDisplayType) {
         case 'unit':
             return (
-                <Row className="gap-2 items-center flex-1">
+                <Row className="gap-2 items-center flex-1 min-w-0">
                     <View className="flex-none">
                         <UnitWoInfo oProps={oProps} sSize={sSize} sSizeFontLetter={sSizeFontLetter} emulate={emulate} iSizeWidth={iSizeWidth} bShowLinks={bShowLinks} hoverCardWrapper={hoverCardWrapper} />
                     </View>
-                    <View className="flex-auto">
+                    <View className="flex-auto min-w-0">
                         <UnitWoImage oProps={oProps} sSizeFont={sSizeFont} bShowLinks={bShowLinks} emulate={emulate} info={sShowInfo} info2={sShowInfo2} actions={oProps.showActions} hoverCardWrapper={hoverCardWrapper} />
                     </View>
                 </Row>
