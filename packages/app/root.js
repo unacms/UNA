@@ -65,6 +65,10 @@ export function Root(props) {
                 setCurrentUser(data.user);
                 storageClear();
             }
+            if (currentUser?.current_context && currentUser?.current_context != data.user.current_context) {
+                setCurrentUser(data.user);
+                storageClear();
+            }
             if (currentUser && currentUser?.informer != data.user.informer) {
                 setCurrentUser({
                     informer: data.user.informer,

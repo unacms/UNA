@@ -26,10 +26,12 @@ export default function Subscriber() {
 
         const sub1 = subscribe('sys_connections_' + currentUser?.id, 'changed', onUpdateConnections);
         const sub2 = subscribe('bx_timeline_0', 'edited', onItemEdited);
-        
+        const sub3 = subscribe('profile_' + currentUser?.id, 'changed', onUpdateProfile);
+
         return () => {
             sub1();
             sub2();
+            sub3();
         };
 
     }, [currentUser?.id])
@@ -44,13 +46,19 @@ export default function Subscriber() {
         remoteSettings.data = await getRemoteSettings();
     }, []);
 
+    const onUpdateProfile = useCallback(async (data) => {
+        emitter.emit('profile', { action: 'changed', data: data });
+        setCurrentUser(JSON.parse(data));
+    }, []);
+
     const onUpdateConnections = useCallback(async (data) => {
         emitter.emit('connections', { action: 'changed' });
         storageClear();
         const oData = JSON.parse(data);
-        if (oData?.user)
+        if (oData?.user){
             setCurrentUser(oData.user);
             setLayoutData(getAlert('connections:action', { object: oData, time: Date.now(), reload: true }));
+        }
     }, []);
 
     const onItemEdited = useCallback(async (strData) => {

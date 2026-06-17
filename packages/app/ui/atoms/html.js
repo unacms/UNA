@@ -5,30 +5,32 @@ import { P, Strong, I, EM, Div, UL, Code } from '@expo/html-elements'
 import { Platform } from 'react-native'
 import Link from 'app/ui/atoms/link'
 import { Text, H1, H2, H3, H4, H5, H6 } from 'app/design/typography'
-import { decodeText } from 'app/lib/util'
+import { decodeText, appSetting  } from 'app/lib/util'
 import { ParseHtmlClasses } from 'app/customization/functions';
 
 const isWeb = Platform.OS === 'web'
+const noScale = isWeb  || appSetting('native', 'allow_font_scaling')? {} : { allowFontScaling: false }
+
 
 const StyledStrong = (props) => {
     if (Platform.OS === 'web') {
         return <strong {...props} />
     }
-    return <Strong {...props} />
+    return <Strong {...noScale} {...props} />
 }
 
 const StyledI = (props) => {
     if (Platform.OS === 'web') {
         return <i {...props} />
     }
-    return <I {...props} />
+    return <I {...noScale} {...props} />
 }
 
 const StyledEM = (props) => {
     if (Platform.OS === 'web') {
         return <em {...props} />
     }
-    return <EM {...props} />
+    return <EM {...noScale} {...props} />
 }
 
 const StyledP = ({ children, className, ...props }) => {
@@ -41,7 +43,7 @@ const StyledP = ({ children, className, ...props }) => {
         const WebDiv = 'div'
         return <WebDiv {...props} className={`${className}`} >{children}</WebDiv>
     }
-    return <P className={className} {...props}>{children}</P>
+    return <P {...noScale} className={className} {...props}>{children}</P>
 }
 
 const StyledLi = ({ children, className, ...props }) => {
@@ -287,6 +289,32 @@ const hasBlockHtml = (html) => (
 
 const keyedChildren = (children) => React.Children.toArray(children)
 
+// UNA CMS can emit nested <a> tags (e.g. channel mention wrapping a keyword link).
+// HTML forbids anchor descendants; unwrap inner links and keep the outer href.
+const flattenNestedAnchorsInTree = (children, insideAnchor = false) => {
+    const result = []
+    for (const child of children) {
+        if (child.type === 'element' && child.tag === 'a') {
+            if (insideAnchor) {
+                result.push(...flattenNestedAnchorsInTree(child.children, true))
+            } else {
+                result.push({
+                    ...child,
+                    children: flattenNestedAnchorsInTree(child.children, true),
+                })
+            }
+        } else if (child.type === 'element') {
+            result.push({
+                ...child,
+                children: flattenNestedAnchorsInTree(child.children, insideAnchor),
+            })
+        } else {
+            result.push(child)
+        }
+    }
+    return result
+}
+
 const renderTextNode = (key, content) => {
     if (Platform.OS === 'web') {
         const WebSpan = 'span'
@@ -380,32 +408,6 @@ const matchAttr = (attrs, name) => {
     const re2 = new RegExp(`${name}=([^'"\\s>]+)`, 'i')
     const m = attrs.match(re) || attrs.match(re2)
     return m ? m[1] : ''
-}
-
-// UNA CMS can emit nested <a> tags (e.g. channel mention wrapping a keyword link).
-// HTML forbids anchor descendants; unwrap inner links and keep the outer href.
-const flattenNestedAnchorsInTree = (children, insideAnchor = false) => {
-    const result = []
-    for (const child of children) {
-        if (child.type === 'element' && child.tag === 'a') {
-            if (insideAnchor) {
-                result.push(...flattenNestedAnchorsInTree(child.children, true))
-            } else {
-                result.push({
-                    ...child,
-                    children: flattenNestedAnchorsInTree(child.children, true),
-                })
-            }
-        } else if (child.type === 'element') {
-            result.push({
-                ...child,
-                children: flattenNestedAnchorsInTree(child.children, insideAnchor),
-            })
-        } else {
-            result.push(child)
-        }
-    }
-    return result
 }
 
 const renderTreeNode = (node, key) => {

@@ -5,10 +5,12 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 import { useIsDesktop } from 'app/context/measure';
 import { cn } from 'app/lib/util'
+import { useBottomSheetData } from 'app/context/bottomsheet';
+const isWeb = Platform.OS == 'web'
 
 export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, ButtonEx, allowZeroPersistant = false, items, menuClasses, menuExClasses, isButtonOutside, offsetWidth = 50, persistent = 0 }) {
     const isDesktop = useIsDesktop();
-    const isWeb = Platform.OS == 'web'
+    
     const itemRefs = useRef([]);
     const itemRefsMore = useRef();
     // `allowZeroPersistant` wins on every viewport so a "more" menu paired with a
@@ -18,7 +20,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
     const [width, setWidth] = useState(0);
     const [pageData, setPageData] = useState(false);
     const isDynamicMenu = true;//windowWidth > LAYOUT_BREAKPOINTS.sm;
-
+    const { setBottomSheetData } = useBottomSheetData();
     useEffect(() => {
         if (!isFixedCount && itemRefs.current.length > 0) {
             const menuWidth = width;
@@ -66,7 +68,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
                     handleFormModal(oItem, event, setPageData)
                 }
             }}
-            mode="popup"
+            mode={isWeb ? "popup" : ""}
             variant='nopad'
             items={items.slice(visibleItemsCount).map((aItem, iKey) => ({
                 id: 'menu-' + iKey,
@@ -79,6 +81,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
                             ...aItem,
                             onPress: (event) => {
                                 if (aItem.noAction) {
+                                   
                                     handleFormModal(aItem, event, setPageData);
                                     return;
                                 }

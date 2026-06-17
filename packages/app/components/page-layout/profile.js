@@ -1,25 +1,29 @@
 import { Conductor } from 'app/ui/molecules/conductor';
-import { useState, useEffect, useMemo, memo } from 'react';
+import { useState, useEffect, useMemo, memo, useCallback } from 'react';
 import { appSetting, getBlocksFromData, cloneObject, getPageData } from 'app/lib/util';
 import { useLayoutData } from 'app/context/layout';
-import { useRouter, redirectTo } from 'app/lib/hooks/router'
-
+import { useRouter, redirectTo, useFocusEffect } from 'app/lib/hooks/router'
+import { useCurrentUser } from 'app/context/user';
 const ConductorMemo = memo(Conductor, (prev, next) => prev.ts === next.ts);
 
 export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
-    const { layoutData } = useLayoutData();
+    const { layoutData, setLayoutData } = useLayoutData();
     const [pageData, setPageData] = useState(data);
+    const { currentUser, setCurrentUser } = useCurrentUser();
+
     const router = useRouter();
     useEffect(() => {
-        if (layoutData && layoutData?.type == 'сonnections:action' && layoutData?.data?.data?.redirect) {
+        
+        if (layoutData && layoutData?.type == 'connections:action' && layoutData?.data?.data?.redirect) {
+            setLayoutData(null);
             redirectTo(router, layoutData?.data?.data?.redirect);
         }
-        if (layoutData && layoutData?.type == 'сonnections:action' && layoutData?.data?.reload) {
+        if (layoutData && layoutData?.type == 'connections:action' && layoutData?.data?.reload ) {
             (async () => {
                 if (layoutData?.data?.object?.initiator == pageData?.cover_block?.profile?.id || layoutData?.data?.object?.content == pageData?.cover_block?.profile?.id || !layoutData?.data?.object?.content) {
+                    setLayoutData(null);
                     const sResponse = await getPageData(pageData.url);
                     if (sResponse.data != pageData) {
-
                         setPageData(sResponse.data);
                     }
                 }
@@ -30,6 +34,19 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
     useEffect(() => {
         if (pageData?.ts !== data?.ts) setPageData(data);
     }, [data?.ts]);
+
+    useFocusEffect(
+        useCallback(() => {
+            (async () => {
+                if (currentUser?.current_context && currentUser?.current_context != pageData?.user?.current_context) {
+                    const sResponse = await getPageData(pageData.url);
+                    if (sResponse.data != pageData) {
+                        setPageData(sResponse.data);
+                    }
+                }
+            })();
+        }, [currentUser?.current_context])
+    );
 
     if (!pageData.menu.items) {
         pageData.menu.items = [];

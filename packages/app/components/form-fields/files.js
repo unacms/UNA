@@ -436,7 +436,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
         if (!img && props.useUrl) {
             img = { file_url: props.value, file_type: "image/jpeg" };
         }
-        let w = 'web:w-full native:w-48 ' + appSetting('cover', 'aspect_ratio');
+        let w = 'web:w-full ' + appSetting('cover', 'aspect_ratio');
 
         if (props.name == 'picture')
             w = 'w-48 h-48 overflow-hidden';
