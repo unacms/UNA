@@ -30,18 +30,16 @@ export default function MenuAccount({ buttonProps, children }) {
     const profileFetchRef = useRef(null)
     const isDesktop = useIsDesktop();
 
-    const fetchDataPr = async () => {
+    const fetchDataPr = () => {
         if (profileFetchRef.current) {
             return profileFetchRef.current
         }
 
-        profileFetchRef.current = fetcher(
+        const promise = fetcher(
             '/api.php?r=system/account_profile_switcher/TemplServiceProfiles'
         )
             .then((sResponse) => {
-                if (
-                    sResponse?.data?.[0]?.data
-                ) {
+                if (sResponse?.data?.[0]?.data) {
                     setData(sResponse.data[0].data)
                 }
             })
@@ -52,7 +50,8 @@ export default function MenuAccount({ buttonProps, children }) {
                 profileFetchRef.current = null
             })
 
-        return profileFetchRef.current
+        profileFetchRef.current = promise
+        return promise
     }
 
     const handleMenuOpenChange = (open) => {

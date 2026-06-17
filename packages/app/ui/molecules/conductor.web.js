@@ -883,8 +883,7 @@ const TabScene = ({
                 }`}
 
             direction="horizontal"
-            className={layoutName == 'navigator' ? '' : ''}
-            style={{ height: 'auto', minHeight: 0 }}
+            className={(layoutName == 'navigator' ? '' : '') + ' h-full'}
             onLayout={onLayout}
         >
             {isLeftCol && (
@@ -1003,9 +1002,10 @@ const AddMenu = ({ menu, filter }) => {
                             style="glass"
                             controlSize="regular"
                             borderShape="circle"
-                            onPress={() =>
-                                handleFormModal(button, event, setPageData)
-                            }
+                            onPress={() => {
+                                setPageData('loading')
+                                handleFormModal(button, null, setPageData)
+                            }}
                         />
                     )
                     btn =
