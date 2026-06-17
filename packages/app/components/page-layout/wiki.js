@@ -2,7 +2,7 @@ import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Platform } from 'react-native'
-import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { appSetting, getBreakpoint, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import Page from 'app/ui/molecules/page'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
@@ -13,7 +13,7 @@ import {
     PanelHandler,
     resolvePanelProps
 } from 'app/ui/molecules/resizable-panels'
-import { useBreakpoint, useIsDesktop, useBreakpointName } from 'app/context/measure'
+import { useBreakpoint, useIsDesktop } from 'app/context/measure'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { defaultHeader, useSetHeader } from 'app/context/jotai/layout'
@@ -245,7 +245,7 @@ function PageContentWiki({ data, url }) {
     const groupRef = useRef(null)
     const currentBreakpoint = useBreakpoint()
     const { cells = {} } = cellsCustomConfig || {}
-    const currentBreakpointName = useBreakpointName()
+    const currentBreakpointName = getBreakpoint(currentBreakpoint)
 
     const {
         breakpoint: leftBreakpoint = 'lg',
@@ -452,7 +452,7 @@ function PageContentWiki({ data, url }) {
                 onLayout={onLayout}
             >
                 <Panel className={`hidden ${leftBreakpoint}:block ${currentBreakpointName}:w-full`} {...leftPanelProps}>
-                    <View className={appSetting('conductor', 'sidebar_container')}>
+                    <View className={`fixed-process fixed-process-clamp p-4 ${appSetting('conductor', 'sidebar_container')}`}>
                         <View className="gap-3">
                             <BlockWrapper block={{ designbox_id: leftMenu.designbox_id, id: 'wiki-toc', title: leftMenu.title }}  >
                                 <MenuWiki setPageData={setPageData} block={leftMenu} url={pageData.url} />
@@ -468,32 +468,34 @@ function PageContentWiki({ data, url }) {
                 </Panel>
                 <PanelHandler gap={`hidden ${rightBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
                 <Panel className={`hidden ${rightBreakpoint}:block ${currentBreakpointName}:w-full`} {...rightPanelProps}>
-                    <BlockWrapper
-                        showTitle={true}
-                        block={{
-                            id: 'wiki-toc',
-                            title: t('On this page'),
-                            designbox_id: 14
-                        }}
-                    >
-                        <View className="gap-2">
-                            {tocItems.length >= 2 && (
-                                tocItems.map((item) => (
-                                    <Row key={`desktop-toc-${item.key}`} className={`items-center gap-2 ${item.level === 3 ? 'pl-4' : ''}`}>
-                                        <Icon name={item.level === 2 ? 'List' : 'Minus'} size={14} className="text-muted-foreground" />
-                                        <Pressable
-                                            onPress={() => handleTocPress(item.id)}
-                                            className="py-0.5"
-                                        >
-                                            <Text className="text-sm leading-tight   text-secondary-foreground web:group-hover:text-foreground">
-                                                {item.text}
-                                            </Text>
-                                        </Pressable>
-                                    </Row>
-                                ))
-                            )}
-                        </View>
-                    </BlockWrapper>
+                    <View className="fixed-process fixed-process-clamp">
+                        <BlockWrapper
+                            showTitle={true}
+                            block={{
+                                id: 'wiki-toc',
+                                title: t('On this page'),
+                                designbox_id: 14
+                            }}
+                        >
+                            <View className="gap-2">
+                                {tocItems.length >= 2 && (
+                                    tocItems.map((item) => (
+                                        <Row key={`desktop-toc-${item.key}`} className={`items-center gap-2 ${item.level === 3 ? 'pl-4' : ''}`}>
+                                            <Icon name={item.level === 2 ? 'List' : 'Minus'} size={14} className="text-muted-foreground" />
+                                            <Pressable
+                                                onPress={() => handleTocPress(item.id)}
+                                                className="py-0.5"
+                                            >
+                                                <Text className="text-sm leading-tight   text-secondary-foreground web:group-hover:text-foreground">
+                                                    {item.text}
+                                                </Text>
+                                            </Pressable>
+                                        </Row>
+                                    ))
+                                )}
+                            </View>
+                        </BlockWrapper>
+                    </View>
                 </Panel>
             </PanelGroup>
         </View>
