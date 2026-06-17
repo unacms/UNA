@@ -4,8 +4,14 @@ import { View } from 'app/design/view';
 import { BlockWrapper } from 'app/components/block-wrapper';
 
 export default function ElementMap({ data, blockWrapperProps }) {
-    const center = { lat: data.location.lat, lng: data.location.lng };
     const apiKey = appSetting('config', 'api_keys', 'google_maps');
+
+    // Without a location or a configured API key the map would render a broken,
+    // watermarked tile and emit ApiProjectMapError, so skip rendering instead.
+    if (!data.location?.lat || !apiKey)
+        return null;
+
+    const center = { lat: data.location.lat, lng: data.location.lng };
 
     return (
         <BlockWrapper {...blockWrapperProps}>

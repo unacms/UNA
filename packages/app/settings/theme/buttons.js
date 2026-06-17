@@ -349,7 +349,7 @@ export const settingsButtons = {
                 },
                 text: {
                     base: 'font-medium',
-                    default: 'text-foreground',
+                    default: 'text-card-foreground',
                     hovered: 'text-foreground',
                     focused: 'text-foreground',
                     pressed: 'text-foreground',
@@ -375,7 +375,7 @@ export const settingsButtons = {
                 },
                 text: {
                     base: 'font-medium tracking-tight',
-                    default: 'text-secondary-foreground',
+                    default: 'text-card-foreground',
                     hovered: 'text-foreground',
                     focused: 'text-foreground',
                     pressed: 'text-foreground',
@@ -423,7 +423,7 @@ export const settingsButtons = {
                 },
                 text: {
                     base: 'font-medium tracking-tight',
-                    default: 'text-secondary-foreground',
+                    default: 'text-card-foreground',
                     hovered: 'text-foreground',
                     focused: 'text-foreground',
                     pressed: 'text-foreground',

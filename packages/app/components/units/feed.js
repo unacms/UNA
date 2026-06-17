@@ -9,6 +9,7 @@ import {
     ActionMenu,
     CounterMenu,
     Author,
+    AuthorActions,
     UnitFeed,
     SmallUnit,
     prepareData,
@@ -119,13 +120,14 @@ function DefaultUnit({ data }) {
                 <Row className="gap-3 p-3 lg:p-4 flex-auto">
                     <Skeleton visible={isSkeleton} preset='feed_author'>
                         <Author data={data} url={url} t={t} />
-                        <View className="flex-none mb-auto">
+                        <Row className="flex-none mb-auto items-center gap-1">
+                            <AuthorActions data={data} />
                             <MenuManage
                                 id={data.id}
                                 menu={data?.menu_manage}
                                 setViewState={setViewState}
                             />
-                        </View>
+                        </Row>
                     </Skeleton>
                 </Row>
                 <View className="flex-auto px-3.5 lg:px-4 ">

@@ -480,28 +480,31 @@ export const VisibilityInfo = memo(({ data }) => {
     )
 })
 
-export const Author = memo(({ data, url, t }) => {
-    const Badges = getComponent('molecule', 'badges')
-    const ActionsElements = data.author_actions?.map((item, index) => {
+export const AuthorActions = memo(({ data }) => {
+    if (!data.author_actions?.length) return null
+
+    return data.author_actions.map((item) => {
         const Element = getComponent('molecule', String(item.type))
         if (!Element)
             return null
         return (
-            <Row className="items-center" key={`action-${item.cid}-${item.iid}`}>
-                <Icon className="text-muted-foreground -ml-0.5 -mr-2  " icon='Dot' size={14} />
-                <Element
-                    params={{
-                        button_variant: 'link',
-                        button_size: 'sm',
-                        hide_icon: true,
-                        button_rounded: false,
-                    }}
-
-                    {...item}
-                />
-            </Row>
+            <Element
+                key={`action-${item.cid}-${item.iid}`}
+                params={{
+                    button_style: 'link',
+                    button_size: 'small',
+                    button_border_shape: 'capsule',
+                    hide_icon: true,
+               
+                }}
+                {...item}
+            />
         )
     })
+})
+
+export const Author = memo(({ data, url, t }) => {
+    const Badges = getComponent('molecule', 'badges')
 
     const dataIcon =
         data.object_privacy_view < 0 && data.feed_type != 'owner'
@@ -564,7 +567,7 @@ export const Author = memo(({ data, url, t }) => {
                         <ItemInfo data={data} t={t} />
                     </Row>
                 }
-                showInfo2={<><Badges badges={data.author_badges} size="2xs" />{ActionsElements}</>}
+                showInfo2={<Badges badges={data.author_badges} size="2xs" />}
                 hoverCardWrapper={hoverCardWrapper}
             />
         </View>
