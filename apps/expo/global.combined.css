@@ -17,23 +17,20 @@
 /*
  * Expo/Uniwind-only @theme inline additions:
  *   - fonts come from RN System (web uses next/font on <html>)
- *   - --container-* are NEO-specific (Tailwind v4 defaults differ)
  *   - --breakpoint-3xl matches the legacy `screens.3xl` from theme.js
+ *
+ * NOTE: do NOT override the Tailwind v4 --container-* scale here. Web keeps the
+ * defaults (theme.css moves NEO list sizes under --container-list-*), so the
+ * native max-w-sm/md/lg/xl/2xl/3xl must use the same defaults — otherwise
+ * max-w-* resolves to breakpoint-sized values on native and stops constraining
+ * width on tablets/iPad. Shared --container-8xl/9xl/10xl and --container-list-*
+ * come from the imported theme.css above.
  */
 @theme inline {
     --font-main: System;
     --font-title: System;
     --font-sans: System;
-
     --breakpoint-3xl: 120rem;
-    --container-2xs: 16rem;
-    --container-xs: 20rem;
-    --container-sm: 40rem;
-    --container-md: 48rem;
-    --container-lg: 64rem;
-    --container-xl: 80rem;
-    --container-2xl: 96rem;
-    --container-3xl: 120rem;
 }
 
 /*
