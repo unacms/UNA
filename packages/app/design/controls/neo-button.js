@@ -146,7 +146,7 @@ const NeoImage = memo(function NeoImage({ source, size, color, className }) {
  */
 function renderLabel({
     label, image, imagePlacement,
-    iconSize, labelGap, fontCls, textCls, tintColor, classNames, loading,
+    iconSize, labelGap, labelGapCls, fontCls, textCls, tintColor, classNames, loading,
     spreadContent,
 }) {
     const effectiveImage = loading ? '_loading' : image;
@@ -155,13 +155,18 @@ function renderLabel({
     const spreadTrailing =
         spreadContent && imagePlacement === 'trailing' && !!effectiveImage && !!label;
 
+    // Prefer the gap utility class; fall back to inline columnGap if the
+    // resolved value isn't mapped. `spreadTrailing` uses justify-between (no gap).
+    const useGapClass = !spreadTrailing && !!labelGapCls;
+
     return (
         <Row
             className={cn(
                 'flex-row items-center min-w-0',
                 spreadTrailing && 'flex-1 w-full justify-between',
+                useGapClass && labelGapCls,
             )}
-            style={spreadTrailing ? undefined : { columnGap: labelGap }}
+            style={(spreadTrailing || useGapClass) ? undefined : { columnGap: labelGap }}
         >
             {imagePlacement === 'leading' && effectiveImage ? (
                 <NeoImage
@@ -411,12 +416,40 @@ export const NeoButton = (props) => {
           }
         : {};
 
+    // hitSlop (theme `neo_button.controlSizes`) is the single source of truth.
+    // Native applies it to the RN Pressable via this prop; web mirrors it with
+    // the `hit-area-*` utility class (see `hitAreaClass` below) — RN has no
+    // `::before`, so the two platforms diverge in mechanism but not in value.
     const resolvedHitSlop = hitSlop !== undefined
         ? hitSlop
         : (hitarea === false ? undefined : {
             top: resolved.hitSlop, right: resolved.hitSlop,
             bottom: resolved.hitSlop, left: resolved.hitSlop,
         });
+
+    /* --------------------------- sizing / padding ----------------------- */
+
+    // Sizing comes from utility classes (theme numbers → classes in the
+    // resolver). When a value isn't mapped we fall back to inline styles so
+    // nothing silently breaks.
+    const sizeClass = resolved.heightCls ?? '';
+    const needsSizeFallback = !resolved.heightCls;
+
+    const resolvedContentInsets = typeof contentInsets === 'string'
+        ? resolved.contentInsets?.[contentInsets]
+        : contentInsets;
+    // contentInsets (when present) override padding per-side via inline style so
+    // asymmetric media insets still work; the common case uses the px-* class.
+    const insetLeft = resolvedContentInsets?.left ?? resolvedContentInsets?.start ?? resolvedContentInsets?.x;
+    const insetRight = resolvedContentInsets?.right ?? resolvedContentInsets?.end ?? resolvedContentInsets?.x;
+    const paddingClass = isIconOnly ? 'px-0' : (resolved.paddingXCls ?? '');
+    const needsPaddingFallback = !isIconOnly && !resolved.paddingXCls;
+
+    // Web-only hit-area utility (RN uses the hitSlop prop instead). See the
+    // `hit-area-*` @utility in global.css.
+    const hitAreaClass = (hitarea !== false && isPressable && isWeb)
+        ? (resolved.hitAreaCls ?? '')
+        : '';
 
     /* ------------------- container / text classes ----------------------- */
 
@@ -425,6 +458,8 @@ export const NeoButton = (props) => {
         isInteractive && 'web:cursor-pointer',
         resolved.rounded,
         resolved.aspectSquare ? 'aspect-square' : '',
+        sizeClass,
+        paddingClass,
         `justify-${resolved.align}`,
         resolved.containerCls(stateKey),
         resolved.width === 'fill' ? 'w-full' : '',
@@ -446,33 +481,22 @@ export const NeoButton = (props) => {
     const tintFillsSurface =
         resolved.tint && (resolved.style === 'borderedProminent' || resolved.style === 'glassProminent');
 
-    const resolvedContentInsets = typeof contentInsets === 'string'
-        ? resolved.contentInsets?.[contentInsets]
-        : contentInsets;
-    const defaultPaddingX = isIconOnly ? 0 : resolved.paddingX;
-    const paddingLeft = resolvedContentInsets?.left ?? resolvedContentInsets?.start ?? resolvedContentInsets?.x ?? defaultPaddingX;
-    const paddingRight = resolvedContentInsets?.right ?? resolvedContentInsets?.end ?? resolvedContentInsets?.x ?? defaultPaddingX;
-
+    // Only the values that have no utility-class equivalent remain inline:
+    // unmapped size/padding fallbacks, asymmetric contentInsets overrides, and
+    // the arbitrary `tint` colour.
     const containerStyle = {
-        height: resolved.aspectSquare ? resolved.height : undefined,
-        minHeight: resolved.aspectSquare ? undefined : resolved.height,
-        width: resolved.aspectSquare ? resolved.height : undefined,
-        minWidth: resolved.aspectSquare ? undefined : resolved.height,
-        paddingLeft,
-        paddingRight,
-        ...(tintFillsSurface ? { backgroundColor: resolved.tint } : {}),
+        ...(needsSizeFallback
+            ? (resolved.aspectSquare
+                ? { height: resolved.height, width: resolved.height }
+                : { minHeight: resolved.height, minWidth: resolved.height })
+            : null),
+        ...(needsPaddingFallback ? { paddingLeft: resolved.paddingX, paddingRight: resolved.paddingX } : null),
+        ...(insetLeft != null ? { paddingLeft: insetLeft } : null),
+        ...(insetRight != null ? { paddingRight: insetRight } : null),
+        ...(tintFillsSurface ? { backgroundColor: resolved.tint } : null),
     };
 
     /* --------------------------- web ergonomics ------------------------- */
-
-    const hitareaSizeClass =
-        resolved.height >= 56 ? 'lg' :
-        resolved.height >= 44 ? 'md' :
-        resolved.height >= 36 ? 'sm' : 'xs';
-
-    const hitareaClass = (hitarea !== false && isPressable)
-        ? `u-neo-btn-hitarea u-neo-btn-hitarea-${hitareaSizeClass}`
-        : '';
 
     const ringClass = !resolved.behaviors.focusRing
         ? 'u-neo-btn-ring-never'
@@ -508,7 +532,7 @@ export const NeoButton = (props) => {
     const cntProps = {
         className: cn(
             `neo-btn neo-btn-${resolved.style} neo-btn-${resolved.controlSize}`,
-            hitareaClass,
+            hitAreaClass,
             ringClass,
             classNames?.ring,
         ),
@@ -557,6 +581,7 @@ export const NeoButton = (props) => {
             imagePlacement: effectivePlacement,
             iconSize: resolved.iconSize,
             labelGap: resolved.labelGap,
+            labelGapCls: resolved.labelGapCls,
             fontCls: resolved.fontCls,
             textCls,
             tintColor,
@@ -623,15 +648,25 @@ export const NeoButtonLink = ({
 }) => {
     const finalHref = sanitazeUrl(href);
     const isExternal = isExternalUrl(finalHref) || asExternal === true;
+
+    // For an internal link the actual click target is the <a> wrapper, not the
+    // inner (non-pressable) NeoButton — so the hit area must live on the anchor.
+    // Resolve it from the same control size the button uses (hitSlop depends
+    // only on controlSize + env scope). External links render a pressable
+    // NeoButton directly, which draws its own hit area.
+    const { hitAreaCls } = useResolvedNeoButton({ controlSize: props.controlSize });
+
+    if (isExternal) {
+        const neoProps = { ...props, buttonStyle: style, interactive: true };
+        return <NeoButton {...neoProps} onPress={() => openExternalLink(finalHref)} />;
+    }
+
     const linkClassName = cn(
         'u-neo-btn-link block',
+        hitAreaCls,
         props.width === 'fill' ? 'w-full' : '',
     );
     const neoProps = { ...props, buttonStyle: style, hitarea: false, interactive: true };
-
-    if (isExternal) {
-        return <NeoButton {...neoProps} onPress={() => openExternalLink(finalHref)} />;
-    }
 
     return (
         <Link href={href} target={target} asExternal={asExternal} mode="plain" className={linkClassName}>

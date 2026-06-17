@@ -290,9 +290,9 @@ export const settingsButtons = {
             mini:    { height: 28, paddingX: 8,  font: 'text-sm', icon: 16, hitSlop: 10, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
             small:   { height: 36, paddingX: 12, font: 'text-sm', icon: 20, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 6 } } },
             regular: {
-                default: { height: 44, paddingX: 12, font: 'text-base', icon: 20, hitSlop: 4, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
+                default: { height: 44, paddingX: 12, font: 'text-base', icon: 20, hitSlop: 2, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
                 web:     { height: 44, paddingX: 12 },
-                mouse:   { height: 44, paddingX: 12 },
+                mouse:   { height: 40, paddingX: 12, font: 'text-sm', icon: 20, hitSlop: 4, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
             },
             large: {
                 default: { height: 52, paddingX: 20, font: 'text-lg', icon: 28, hitSlop: 0, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
@@ -308,7 +308,7 @@ export const settingsButtons = {
             rectangle: { rounded: 'rounded-none' },
             roundedRectangle: {
                 rounded: {
-                    default: 'rounded-xl',
+                    default: 'rounded-lg',
                     mini:    'rounded-md',
                     small:   'rounded-lg',
                     large:   'rounded-xl',
@@ -455,23 +455,23 @@ export const settingsButtons = {
             glass: {
                 container: {
                     base: 'web:backdrop-blur-md shadow-btn-glass dark:shadow-btn-glass-deep',
-                    default: ' bg-card/60 ',
-                    hovered: ' bg-muted/60 ',
-                    focused: ' bg-muted/60',
-                    pressed:  'bg-muted/60 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
-                    active: 'bg-muted/60 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
+                    default: ' bg-muted/60 ',
+                    hovered: ' bg-muted ',
+                    focused: ' bg-muted',
+                    pressed:  'bg-muted shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
+                    active: 'bg-muted shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
                     pressedToggle: 'bg-muted/20 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
-                    disabled: 'bg-card/20 opacity-60',
+                    disabled: 'bg-muted opacity-50',
                 },
                 text: {
                     base: 'font-medium tracking-tight',
-                    default: 'text-secondary-foreground',
+                    default: 'text-card-foreground',
                     hovered: 'text-foreground',
-                    focused: 'text-card-foreground',
+                    focused: 'text-foreground',
                     pressed: 'text-foreground',
                     active: 'text-foreground',
                     pressedToggle: 'text-foreground',
-                    disabled: 'text-card-foreground/60',
+                    disabled: 'text-card-foreground opacity-50',
                 },
             },
 

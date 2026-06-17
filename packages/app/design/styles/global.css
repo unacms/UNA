@@ -58,6 +58,36 @@
 
 @plugin 'tailwindcss-animate';
 
+/*
+ * Hit area (web only) — expand a control's clickable region without affecting
+ * layout, via a transparent `::before` overlay. Same technique as bazza.dev's
+ * `hit-area` utility (https://bazza.dev/craft/2026/hit-area).
+ *
+ * `hit-area-{n}` extends the hit area by `n` * 1px on every side. NeoButton
+ * emits the value resolved from its `hitSlop` (theme `neo_button.controlSizes`)
+ * so web and native share one source of truth: native passes `hitSlop` to the
+ * RN Pressable, web applies the matching `hit-area-*` class here. React Native
+ * has no pseudo-elements, so this utility is intentionally web-only and lives
+ * in the Next-only `global.css` (not the shared `utilities.css`).
+ *
+ * The corner radius is purely cosmetic on an invisible overlay, so — unlike the
+ * focus ring — it does not need the superellipse corner-shape treatment.
+ */
+@utility hit-area-* {
+    position: relative;
+    z-index: 0;
+
+    &::before {
+        content: "";
+        position: absolute;
+        inset: calc(--value(integer) * -1px);
+        border-radius: var(--u-neo-btn-hitarea-radius, 0.75rem);
+        background-color: rgba(0, 0, 0, 0.001);
+        pointer-events: auto;
+        z-index: -1;
+    }
+}
+
 /* Next-only base vars (web superellipse runtime hooks consumed by global.web.css). */
 @layer base {
     :root {

@@ -54,6 +54,61 @@ const SCOPE_KEYS = new Set([
     ...THEME_KEYS, ...PLATFORM_KEYS, ...POINTER_KEYS, ...BP_KEYS, ...SIZE_KEYS,
 ]);
 
+/* --------------------- numeric → utility-class maps ----------------------- *
+ * NeoButton sizing lives as NUMBERS in `neo_button.controlSizes` (the single
+ * source of truth). The renderer prefers utility classes over inline styles,
+ * so we translate those numbers into STATIC Tailwind/Uniwind class strings
+ * here — the same way the resolver already returns `rounded` / `fontCls`.
+ *
+ * The literals must stay static so Tailwind v4 (web) and Uniwind (native)
+ * `@source` scanning emits them. A value missing from a map resolves to
+ * `undefined`, and the renderer falls back to an inline style for that prop so
+ * nothing silently breaks. Spacing scale: 1 unit = 0.25rem = 4px
+ * (so 44px → 11, 12px → px-3, 8px gap → gap-x-2, etc.).
+ */
+const MIN_SIZE_CLASS = {
+    28: 'min-h-7 min-w-7',
+    36: 'min-h-9 min-w-9',
+    40: 'min-h-10 min-w-10',
+    44: 'min-h-11 min-w-11',
+    52: 'min-h-13 min-w-13',
+    60: 'min-h-15 min-w-15',
+};
+const FIXED_SIZE_CLASS = {
+    28: 'h-7 w-7',
+    36: 'h-9 w-9',
+    40: 'h-10 w-10',
+    44: 'h-11 w-11',
+    52: 'h-13 w-13',
+    60: 'h-15 w-15',
+};
+const PADDING_X_CLASS = {
+    0: 'px-0',
+    8: 'px-2',
+    12: 'px-3',
+    20: 'px-5',
+    24: 'px-6',
+};
+const LABEL_GAP_CLASS = {
+    0: 'gap-x-0',
+    4: 'gap-x-1',
+    6: 'gap-x-1.5',
+    8: 'gap-x-2',
+    10: 'gap-x-2.5',
+    12: 'gap-x-3',
+};
+// Web-only: maps `hitSlop` (px) → `hit-area-*` utility (see global.css).
+// `0` → no class (native still receives hitSlop={0} via the prop).
+const HIT_AREA_CLASS = {
+    0: '',
+    2: 'hit-area-2',
+    4: 'hit-area-4',
+    6: 'hit-area-6',
+    8: 'hit-area-8',
+    10: 'hit-area-10',
+    14: 'hit-area-14',
+};
+
 const isPlainObject = (v) =>
     !!v && typeof v === 'object' && !Array.isArray(v) && !React.isValidElement(v);
 
@@ -369,6 +424,15 @@ export function useResolvedNeoButton(props = {}) {
         const rounded = shapeCfg.rounded ?? 'rounded-xl';
         const aspectSquare = !!shapeCfg.aspectSquare;
 
+        // 4b) Translate the numeric sizing into utility classes (preferred over
+        //     inline styles by the renderer). `undefined` ⇒ renderer inline
+        //     fallback. `heightCls` uses fixed h/w for aspect-square shapes
+        //     (circle), min-h/min-w otherwise.
+        const heightCls = (aspectSquare ? FIXED_SIZE_CLASS : MIN_SIZE_CLASS)[height];
+        const paddingXCls = PADDING_X_CLASS[paddingX];
+        const labelGapCls = LABEL_GAP_CLASS[labelGap];
+        const hitAreaCls = HIT_AREA_CLASS[hitSlop];
+
         // 5) Resolve style slot maps. State is computed by the renderer; we
         //    return resolver functions so the renderer can call them per
         //    state without re-resolving the whole tree.
@@ -427,8 +491,9 @@ export function useResolvedNeoButton(props = {}) {
         return {
             // Resolved axes
             style, controlSize, borderShape, role, imagePlacement, align, width,
-            // Sizing
+            // Sizing (numbers = source of truth; *Cls = preferred utility classes)
             height, paddingX, fontCls, iconSize, hitSlop, labelGap, contentInsets, rounded, aspectSquare,
+            heightCls, paddingXCls, labelGapCls, hitAreaCls,
             // Slot resolvers (call with current state)
             containerCls, textCls,
             // Behaviour

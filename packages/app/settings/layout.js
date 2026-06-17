@@ -65,13 +65,13 @@ export const settingsLayout = {
         show_tabbar_on_mobile_non_logged: false,
 
         header: {
-            container: ' w-full z-50 header-fixed web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out shadow-card-outline dark:shadow-card-outline-deep',
-            content: ' items-center justify-between h-16 bg-linear-to-b from-card to-card/10 backdrop-blur-lg w-full mx-auto',
+            container: ' w-full z-50 header-fixed web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out shadow',
+            content: ' items-center justify-between h-14 bg-card w-full mx-auto',
             content_pinned_fixed: '    ',
             content_left: ' items-center flex-none  2xl:w-full max-w-96 px-3 lg:px-4 gap-2',
             content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-3xl px-4 ',
-            active_item_indicator: 'absolute -bottom-2 left-0 h-0.5 rounded-full flex-none bg-ring',
-            active_item_indicator_bg: 'absolute bottom-0 left-0 h-12 w-full overflow-hidden rounded-xl flex-none bg-accent',
+            active_item_indicator: 'absolute -bottom-1 left-0 h-0.5 rounded-full flex-none bg-ring',
+            active_item_indicator_bg: 'absolute bottom-0 left-0 h-12 w-full overflow-hidden rounded-lg flex-none',
             content_right: ' items-center flex-none justify-end 2xl:w-full max-w-96 px-3 lg:px-4 gap-2',
         },
         vertical: {

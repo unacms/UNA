@@ -31,11 +31,11 @@ export const settingsInputs = {
     },
     inputs: {
         rounded:{
-            default: 'rounded-xl',
+            default: 'rounded-lg',
             full: 'rounded-full',
         },
         size:{
-            default: 'px-3  leading-5 min-h-11',
+            default: 'px-3 leading-5 min-h-11',
             small: 'px-2 leading-5 min-h-9',
         },
         base: 
