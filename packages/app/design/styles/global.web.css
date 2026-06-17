@@ -193,7 +193,7 @@ select {
 .u-link-hitarea-lg {
     --u-link-ghost-inset-x: -8px;
     --u-link-ghost-inset-y: -6px;
-    --u-link-ghost-radius: 0.75rem;
+    --u-link-ghost-radius: 0.5rem;
     --u-link-focus-width: 2px;
     --u-link-focus-offset: 1px;
     --u-link-focus-offset-ghost: 1px;
@@ -356,15 +356,15 @@ html {
     /* Prevent text size change on orientation change https://gist.github.com/tfausak/2222823#file-ios-8-web-app-html-L138 */
     -webkit-text-size-adjust: 100%;
     height: 100%;
-    overflow-y: scroll;
+    /* Single scroll container — avoid a second scrollbar on body */
+    overflow-y: auto;
     min-height: 100%;
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 body {
     display: flex;
-    /* Allows you to scroll below the viewport; default value is visible */
-    overflow-y: auto;
+    overflow-y: visible;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: neutralscale;

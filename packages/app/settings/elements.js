@@ -12,7 +12,7 @@ export const settingsElements = {
     },
     cover: {
         use_background: true, 
-        aspect_ratio: 'aspect-3/1', 
+        aspect_ratio: 'aspect-4/1', 
         allow_edit: true, 
         allow_switch: true, 
         fixed: false, 
@@ -44,8 +44,8 @@ export const settingsElements = {
         show_nav_counters: true, // OLD appSetting('layout', 'show_nav_counters')
         show_nav_titles: false, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
-        sidebar_container: ' xl:px-4 ',
-        sidebar_inner_container: ' p-4 gap-4 overflow-y-auto flex flex-col bg-card shadow-xs dark:shadow-xs-deep rounded-xl mt-4',
+        sidebar_container: '  ',
+        sidebar_inner_container: ' xl:mx-4 p-4 gap-4 overflow-y-auto flex flex-col bg-card shadow-card-outline dark:shadow-card-outline-deep rounded-xl mt-4',
         sidebar_title: 'sticky h-10 justify-between items-center z-10',
         sidebar_position: ' z-50 fixed fixed-process ',
         bgrDecorator: true, // Enable/disable decorator background globally for conductor buttons

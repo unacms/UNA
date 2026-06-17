@@ -11,8 +11,9 @@ export default function MenuItemSubmenu({ menuItem, isPrimary }) {
                 ...menuItem.data,
                 primary: isPrimary,
                 params: {
+                    ...menuItem.data?.params,
                     button_rounded: menuItem.data?.params?.button_rounded || false,
-                    button_full_width: menuItem.data?.params?.button_full_width || true,
+                    button_full_width: menuItem.data?.params?.button_full_width ?? true,
                     only_icon: menuItem.data?.params?.only_icon || false,
                     on_done: (sAction, oData) => {
                         // Handle action completion

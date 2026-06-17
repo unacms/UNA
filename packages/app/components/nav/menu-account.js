@@ -10,7 +10,7 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { useTranslation } from 'react-i18next'
 import Profile from 'app/ui/molecules/profile'
 import ProfileSwitcher from 'app/components/elements/profile_switcher'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { Text } from 'app/design/typography'
 import { fetcher } from 'app/lib/fetcher'
 import RadioButton from 'app/ui/atoms/radiobutton'
@@ -27,24 +27,39 @@ export default function MenuAccount({ buttonProps, children }) {
     const { menuData: footerMenuData } = useMenuData(appSetting('menu_items', 'objects', 'footer'));
     
     const [data, setData] = useState(false)
+    const profileFetchRef = useRef(null)
     const isDesktop = useIsDesktop();
 
     const fetchDataPr = async () => {
-        const sResponse = await fetcher(
+        if (profileFetchRef.current) {
+            return profileFetchRef.current
+        }
+
+        profileFetchRef.current = fetcher(
             '/api.php?r=system/account_profile_switcher/TemplServiceProfiles'
         )
-        if (
-            sResponse &&
-            sResponse.data &&
-            sResponse.data[0] &&
-            sResponse.data[0].data
-        )
-            setData(sResponse.data[0].data)
+            .then((sResponse) => {
+                if (
+                    sResponse?.data?.[0]?.data
+                ) {
+                    setData(sResponse.data[0].data)
+                }
+            })
+            .catch(() => {
+                // Timeout/network — account menu still works without profile list
+            })
+            .finally(() => {
+                profileFetchRef.current = null
+            })
+
+        return profileFetchRef.current
     }
 
-    useEffect(() => {
-        fetchDataPr()
-    }, [])
+    const handleMenuOpenChange = (open) => {
+        if (open && !data) {
+            fetchDataPr()
+        }
+    }
 
     const { t } = useTranslation()
 
@@ -143,6 +158,7 @@ export default function MenuAccount({ buttonProps, children }) {
         <>
             <Redirect ref={redirectdRef} />
             <DropdownMenu
+                onOpenChange={handleMenuOpenChange}
                 items={updatedMenu.map((item, index) => {
                     let sTitle = t(item.title)
                     let sType = ''

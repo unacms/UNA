@@ -6,7 +6,6 @@ import {
     storageSet,
     storageGet,
     asyncStorageSet,
-    getBreakpoint
 } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { useTranslation } from 'react-i18next'
@@ -24,7 +23,7 @@ import {
 import { useLayoutSettings } from 'app/context/layout-settings'
 import Badge from 'app/ui/molecules/badge'
 import Badges from 'app/ui/molecules/badges'
-import { useBreakpoint, useWindowSize, useIsDesktop, useWindowHeight, useWindowWidth } from 'app/context/measure';
+import { useBreakpoint, useWindowSize, useIsDesktop, useWindowHeight, useWindowWidth, useBreakpointName } from 'app/context/measure';
 import { useSetHeader, useHeaderHeight, defaultHeader } from 'app/context/jotai/layout';
 import { useFocusEffect }  from 'app/lib/hooks/router'
 import { Button, ButtonLink, NeoButton } from 'app/design/controls'
@@ -401,7 +400,7 @@ export default function ({ data, blocks }) {
     const groupRef = useRef(null);
     const currentBreakpoint = useBreakpoint();
     const { cells = {} } = cellsCustomConfig || {};
-    const currentBreakpointName = getBreakpoint(currentBreakpoint);
+    const currentBreakpointName = useBreakpointName();
 
     // LEFT
     const {

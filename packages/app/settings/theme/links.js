@@ -19,7 +19,7 @@ export const settingsLinks = {
         },
         lg: {
             hitSlop: 8,
-            text: 'text-lg font-medium rounded-xl',
+            text: 'text-lg font-medium rounded-lg',
             primary: 'p-3',
         }
     },

@@ -338,7 +338,7 @@ function CoverImage({
         const isCover = !!imageUrl
         return (
             <View
-                className={` bg-accent/50 lg:rounded-b-xl w-full ${appSetting(
+                className={` bg-accent/50 lg:rounded-xl w-full ${appSetting(
                     'layout',
                     'max_width_content',
                 )} mx-auto gap-2 flex-1
@@ -521,7 +521,7 @@ export default function Cover({
                 className={` ${appSetting(
                     'layout',
                     'max_width_content',
-                )} lg:flex-row mx-auto w-full px-3 pb-3 sm:p-4 gap-3 lg:gap-4 z-50`}
+                )} lg:flex-row mx-auto w-full p-3 gap-1 lg:gap-4 z-50`}
             >
                 {bPerson && (
                     <View className="hidden lg:flex flex-none h-24 w-42 justify-end">

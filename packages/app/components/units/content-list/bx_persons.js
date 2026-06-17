@@ -28,7 +28,7 @@ function ImageSection({ data }) {
                 src={data?.image?.src}
                 alt={data.title}
                 view="cover"
-                className="absolute u-cover rounded-xl"
+                className="absolute u-cover rounded-lg"
                 sizes='auto'
             />
             {!data?.image?.src && (
@@ -85,7 +85,7 @@ export default function Unit(props) {
                         <ImageSection data={data} />
                     </Skeleton>
 
-                    {!!oMenuItemDelete && <View className="absolute right-1 top-1">{oMenuItemDelete}</View>}
+                    {!!oMenuItemDelete && <View className="absolute right-1 top-1 z-10 shrink-0">{oMenuItemDelete}</View>}
                     <View className="py-1 sm:p-1 justify-between gap-2 flex-auto ">
                         <View className="gap-2 h-12">
                             <Skeleton className="h-5 w-3/4" visible={isSkeleton}>

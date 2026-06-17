@@ -9,7 +9,6 @@ import {
     getURI,
     getMenuSettings,
     isObjectsEqual,
-    getBreakpoint,
 } from 'app/lib/util'
 import {
     fillTabs,
@@ -26,7 +25,7 @@ import {
     getAddon
 } from 'app/lib/conductor-helpers'
 import { ItemRenderer } from 'app/components/item-renderer'
-import { Button } from 'app/design/controls'
+import { Button, NeoButton } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
@@ -54,9 +53,9 @@ import {
     resolvePanelProps,
 } from 'app/ui/molecules/resizable-panels'
 import { useLayoutSettings } from 'app/context/layout-settings'
-import { useIsDesktop, useBreakpoint } from 'app/context/measure'
+import { useIsDesktop, useBreakpointName } from 'app/context/measure'
 import Snackbar from 'app/ui/atoms/snackbar'
-import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
+import { useSetHeader, defaultHeader, useHeaderHeight } from 'app/context/jotai/layout';
 import { getComponent } from 'app/components/registry';
 import { BlockByName2 } from 'app/components/block'
 import { useSound } from 'app/lib/hooks/useSound';
@@ -82,6 +81,7 @@ export function Conductor({
     const { layoutName: tmplLayout } = useLayoutSettings()
     const cleanUrl = data.url.split('?')[0]
     const isDesktop = useIsDesktop()
+    const pageHeaderHeight = useHeaderHeight()
 
     const coverMode = appSetting(
         'cover',
@@ -401,13 +401,17 @@ export function Conductor({
     />
 
     return (
-        <View className="w-full h-full" scrollEnabled={false}>
+        <View
+            className="w-full h-full"
+            scrollEnabled={false}
+            style={{ minHeight: `calc(100dvh - ${pageHeaderHeight}px)` }}
+        >
             {(isUseCurrentHeader || isDesktop) && headerComponent}
             <View
                 className={`${layoutName === 'profile'
                     ? conductorTheme.content_max_width
                     : conductorTheme.content_max_width_nav
-                    } mx-auto  min-h-screen ${tmplLayout == 'mixed' ? 'mt-12' : ''
+                    } mx-auto ${tmplLayout == 'mixed' ? 'mt-12' : ''
                     }`}
             >
                 <TabSceneHeader
@@ -703,7 +707,9 @@ const TabSceneMainContent = ({
 
     return (
         <View className="relative">
-            <View className={`transition-opacity duration-500 ease-out ${showContent ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+            <View
+                className={`transition-opacity duration-500 ease-out ${showContent ? 'opacity-100' : 'opacity-0 pointer-events-none'} ${!showContent ? 'absolute inset-x-0 top-0 h-0 overflow-hidden' : ''}`}
+            >
                 {(formProps) && <View className=" w-full">
                     <Form {...formProps} key="form" name={formProps.name} onChange={onFormChangedValues} />
                 </View>
@@ -747,9 +753,11 @@ const TabSceneMainContent = ({
                     size="sm"
                 />
             </View>
-            <View className={`absolute inset-0 z-10 pointer-events-none transition-opacity duration-500 ease-out ${showContent ? 'opacity-0' : 'opacity-100'}`}>
-                {Preload}
-            </View>
+            {!showContent ? (
+                <View className="pointer-events-none transition-opacity duration-500 ease-out opacity-100">
+                    {Preload}
+                </View>
+            ) : null}
         </View>
     )
 };
@@ -763,8 +771,7 @@ const TabScene = ({
 }) => {
     const pageData = pageRoute.pageData
 
-    const currentBreakpoint = useBreakpoint()
-    const currentBreakpointName = getBreakpoint(currentBreakpoint)
+    const currentBreakpointName = useBreakpointName()
 
     const isRightCol = !!rightColumnContent
     const isLeftCol = !!leftColumnContent
@@ -876,7 +883,8 @@ const TabScene = ({
                 }`}
 
             direction="horizontal"
-            className={(layoutName == 'navigator' ? '' : '') + ' h-full'}
+            className={layoutName == 'navigator' ? '' : ''}
+            style={{ height: 'auto', minHeight: 0 }}
             onLayout={onLayout}
         >
             {isLeftCol && (
@@ -989,12 +997,12 @@ const AddMenu = ({ menu, filter }) => {
                     )
                 else {
                     btn = (
-                        <Button
-                            title={t(button.title)}
-                            startDecorator={button.icon}
-                            rounded
-                            size="base"
-                            variant="secondary"
+                        <NeoButton
+                            label={t(button.title)}
+                            image={button.icon}
+                            style="glass"
+                            controlSize="regular"
+                            borderShape="circle"
                             onPress={() =>
                                 handleFormModal(button, event, setPageData)
                             }
@@ -1186,7 +1194,7 @@ const LeftSideBarContainer = ({
                     )}
                     <View className="flex-1 gap-y-2">
                         {layoutName == 'navigator' && routes.length > 1 && (
-                            <View className='w-full gap-3.5'>
+                            <View className='w-full gap-3.5 -my-0.5'>
                                 {routes
                                     .filter((aItem) => aItem.hideInTop != true)
                                     .map((a) => {
@@ -1318,8 +1326,9 @@ const HeaderContainer = ({
                 }}
             >
                 
-                    <View className={conductorTheme.cover_content}>
+                    
                         {isCover && !isHideCover && (
+                            <View className={conductorTheme.cover_content}>
                             <View className="w-full" onLayout={onCoverLayout1}>
                                 <Cover
                                     data={pageData.cover_block}
@@ -1328,8 +1337,9 @@ const HeaderContainer = ({
                                     context={pageData.context}
                                 />
                             </View>
+                            </View>
                         )}
-                    </View>
+                  
                 
             </View>
             <View className={`header-fixed w-full ${isScrolled ? conductorTheme.cover_base : ''} ` + (isScrolled ? 'fixed' : '')}>

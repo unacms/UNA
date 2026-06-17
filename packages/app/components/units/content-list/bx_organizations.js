@@ -28,7 +28,7 @@ function ImageSection({ data }) {
                 src={data?.image?.src}
                 alt={data.title}
                 view="cover"
-                className="absolute u-cover rounded-xl"
+                className="absolute u-cover rounded-lg"
                 sizes='auto'
             />
             {!data?.image?.src && (
@@ -83,7 +83,7 @@ export default function Unit(props) {
                 >
                    
                     <ImageSection data={data} />
-                     {!!oMenuItemDelete && <View className="absolute right-1 top-1">{oMenuItemDelete}</View>}
+                     {!!oMenuItemDelete && <View className="absolute right-1 top-1 z-10 shrink-0">{oMenuItemDelete}</View>}
                     <View className="flex-col pl-4 my-auto sm:p-2 flex-auto ">
                         <View className="sm:h-12 gap-1">
                         <Text numberOfLines={1} className=" text-card-foreground leading-6 tracking-tight web:hover:text-foreground web:hover:underline font-semibold">

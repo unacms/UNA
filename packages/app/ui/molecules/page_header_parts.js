@@ -12,7 +12,6 @@ import { Button } from 'app/design/controls';
 import { getComponent } from 'app/components/registry';
 import { canGoBackInTab, navigateBackInTab } from 'app/lib/tab-history';
 import {
-    DEFAULT_HEADER_HEIGHT,
     defaultHeader,
     useHeader,
     useHeaderHeight,
@@ -99,19 +98,8 @@ export function usePageHeaderBase(pageData, { resetHeaderOnRoute = false } = {})
 
     const onHeaderLayout = useCallback((event) => {
         const { height } = event.nativeEvent.layout;
-        if (height !== headerHeight) {
-            setHeaderHeightAtom(height);
-        }
-    }, [headerHeight, setHeaderHeightAtom]);
-
-    useEffect(() => {
-        if (!isWeb || !isDesktop) return;
-
-        const nextHeaderHeight = isDesktop ? DEFAULT_HEADER_HEIGHT : 56;
-        if (headerHeight !== nextHeaderHeight) {
-            setHeaderHeightAtom(nextHeaderHeight);
-        }
-    }, [headerHeight, isDesktop, isWeb, setHeaderHeightAtom]);
+        setHeaderHeightAtom((prev) => (prev === height ? prev : height));
+    }, [setHeaderHeightAtom]);
 
     return {
         currentUser,

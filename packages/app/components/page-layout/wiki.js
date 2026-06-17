@@ -2,7 +2,7 @@ import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Platform } from 'react-native'
-import { appSetting, getBreakpoint, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import Page from 'app/ui/molecules/page'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
@@ -13,7 +13,7 @@ import {
     PanelHandler,
     resolvePanelProps
 } from 'app/ui/molecules/resizable-panels'
-import { useBreakpoint, useIsDesktop } from 'app/context/measure'
+import { useBreakpoint, useIsDesktop, useBreakpointName } from 'app/context/measure'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { defaultHeader, useSetHeader } from 'app/context/jotai/layout'
@@ -245,7 +245,7 @@ function PageContentWiki({ data, url }) {
     const groupRef = useRef(null)
     const currentBreakpoint = useBreakpoint()
     const { cells = {} } = cellsCustomConfig || {}
-    const currentBreakpointName = getBreakpoint(currentBreakpoint)
+    const currentBreakpointName = useBreakpointName()
 
     const {
         breakpoint: leftBreakpoint = 'lg',

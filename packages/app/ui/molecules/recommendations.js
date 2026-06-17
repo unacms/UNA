@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { appSetting, getAlert} from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { useCardData } from 'app/context/card';
-import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
+import { ButtonMenuActionDefault, ButtonMenuActionText, NeoButton } from 'app/design/controls';
 import { useLayoutData } from 'app/context/layout'
 import { storageClear } from 'app/lib/util'
 
@@ -162,6 +162,21 @@ export default function ElementRecommendations(oProps) {
             }
             
             break;
+    }
+
+    if (oProps.params?.button_style) {
+        return (
+            <NeoButton
+                label={sTitle}
+                image={sIcon}
+                style={oProps.params.button_style}
+                controlSize={oProps.params?.button_size}
+                borderShape={oProps.params?.button_border_shape}
+                width={oProps.params?.button_full_width ? 'fill' : 'auto'}
+                onPress={(event) => _handleDo(sAction, event)}
+                disabled={bDisabled}
+            />
+        );
     }
 
     return (

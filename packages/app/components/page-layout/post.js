@@ -1,13 +1,13 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { View } from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
-import { getBreakpoint, LAYOUT_BREAKPOINTS } from 'app/lib/util';
+import { LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
 import { Platform } from 'react-native'
 import { useLocalSearchParams } from 'app/lib/hooks/router'
 import emitter from 'app/context/emitter';
-import { useIsDesktop, useWindowHeight, useBreakpoint } from 'app/context/measure';
+import { useIsDesktop, useWindowHeight, useBreakpoint, useBreakpointName } from 'app/context/measure';
 import { appSetting } from 'app/lib/util';
 import { Card } from 'app/ui/molecules/card';
 import {
@@ -71,7 +71,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
     const [formHeight, setFormHeight] = useState(0);
     const [listWidth, setListWidth] = useState(0)
     const currentBreakpoint = useBreakpoint();
-    const currentBreakpointName = getBreakpoint(currentBreakpoint)
+    const currentBreakpointName = useBreakpointName()
     const isLgUp = currentBreakpoint >= LAYOUT_BREAKPOINTS.lg;
     const isFormFixed = isWeb && !isLgUp;
     const groupRef = useRef(null)

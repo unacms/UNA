@@ -382,6 +382,32 @@ const matchAttr = (attrs, name) => {
     return m ? m[1] : ''
 }
 
+// UNA CMS can emit nested <a> tags (e.g. channel mention wrapping a keyword link).
+// HTML forbids anchor descendants; unwrap inner links and keep the outer href.
+const flattenNestedAnchorsInTree = (children, insideAnchor = false) => {
+    const result = []
+    for (const child of children) {
+        if (child.type === 'element' && child.tag === 'a') {
+            if (insideAnchor) {
+                result.push(...flattenNestedAnchorsInTree(child.children, true))
+            } else {
+                result.push({
+                    ...child,
+                    children: flattenNestedAnchorsInTree(child.children, true),
+                })
+            }
+        } else if (child.type === 'element') {
+            result.push({
+                ...child,
+                children: flattenNestedAnchorsInTree(child.children, insideAnchor),
+            })
+        } else {
+            result.push(child)
+        }
+    }
+    return result
+}
+
 const renderTreeNode = (node, key) => {
     if (node.type === 'text') {
         return renderTextNode(key, node.value)
@@ -469,7 +495,8 @@ const parseHtmlToReact = (html, parentKey = '0') => {
 
     const tokens = tokenizeHtml(html)
     const tree = buildHtmlTree(tokens)
-    return renderChildren(tree.children, parentKey)
+    const sanitizedChildren = flattenNestedAnchorsInTree(tree.children)
+    return renderChildren(sanitizedChildren, parentKey)
 }
 
 export default function ElementHtml({ customClassName, data, innerRef }) {

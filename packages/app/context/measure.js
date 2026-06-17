@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { Dimensions } from 'react-native';
-import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util';
+import { appSetting, getBreakpoint, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { useState, useEffect } from 'react';
 import { Platform } from 'react-native'
 const DESKTOP_KEY = appSetting('layout', 'tablet_mode_from') || 'lg';
@@ -78,6 +78,13 @@ const useHydrated = () => {
 };
 
 export const useBreakpoint = () => useMeasureStore((s) => s.currentBreakpoint);
+// SSR and the first client render use width 0 (see initW). Responsive panel props
+// must match that snapshot until hydration, or react-resizable-panels mismatches.
+export const useBreakpointName = () => {
+    const currentBreakpoint = useMeasureStore((s) => s.currentBreakpoint);
+    const hydrated = useHydrated();
+    return getBreakpoint(hydrated ? currentBreakpoint : 0);
+};
 export const useIsDesktop = () => {
     const isDesktop = useMeasureStore((s) => s.isDesktop);
     const hydrated = useHydrated();

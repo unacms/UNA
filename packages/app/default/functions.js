@@ -46,12 +46,15 @@ export function layoutForList(endpoint, unitMode = '') {
 
     if (moduleName == 'bx_videos')
         return 'w-full @list-sm/list:w-1/2 @list-lg/list:w-1/3 @list-xl/list:w-1/4 px-3 pt-3 @list-sm/list:p-2  ';
+    
+    if (moduleName == 'bx_posts')
+        return ' w-full px-3 pt-3  @list-sm/list:w-1/2 @list-md/list:w-1/3 @list-lg/list:w-1/4  @list-xl/list:w-1/5 @list-sm/list:p-2 @list-sm/list:m-0 ';
 
     if (moduleName == 'bx_persons')
         return 'w-full @list-sm/list:w-1/2 @list-md/list:w-1/3 @list-lg/list:w-1/4  @list-xl/list:w-1/5 @list-sm/list:p-2 @list-md/list:p-2 mt-px @list-sm/list:m-0 ';
 
    
-    return 'w-1/2 @list-sm/list:w-1/2 @list-md/list:w-1/3 @list-lg/list:w-1/4 @list-xl/list:w-1/4 @list-sm/list:p-2 @list-md/list:p-2 p-2 ';
+    return 'w-full @list-sm/list:w-1/2 @list-md/list:w-1/3 @list-lg/list:w-1/4 @list-xl/list:w-1/4 @list-sm/list:p-2 @list-md/list:p-2 ';
 }
 
 export function paddingForList(endpoint) {
@@ -242,7 +245,19 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
             oMenuItemDelete = {
                 ...oMenuItemDelete,
 
-                data: { ...oMenuItemDelete.data, title: '', params: { ...oMenuItemDelete.data.params, button_full_width: false, button_rounded: true, only_icon: true } }
+                data: {
+                    ...oMenuItemDelete.data,
+                    title: '',
+                    params: {
+                        ...oMenuItemDelete.data.params,
+                        button_full_width: false,
+                        button_rounded: true,
+                        only_icon: true,
+                        button_style: 'glass',
+                        button_border_shape: 'circle',
+                        button_size: 'regular',
+                    },
+                },
             };
             oMenuItemDelete = <MenuItem menuItem={oMenuItemDelete} isPrimary={false}/>
         }

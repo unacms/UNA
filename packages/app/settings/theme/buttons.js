@@ -114,22 +114,22 @@ export const settingsButtons = {
         secondary:{
             container:{
                 base:'',
-                default:'bg-secondary/80 web:backdrop-blur ',
-                active:'bg-border ',
-                pressed:' bg-accent ',
-                hovered:' bg-secondary',
-                focused:' bg-secondary',
-                disabled:'',
+                default:'bg-muted/60 ',
+                active:' bg-muted ',
+                pressed:' bg-muted ',
+                hovered:' bg-muted ',
+                focused:' bg-muted ',
+                disabled:' bg-muted/60',
 
             },
             text:{
-                base:'font-medium',
-                default:'text-secondary-foreground',
+                base:'font-semibold',
+                default:'text-card-foreground',
                 hovered:'text-foreground',
                 focused:'text-foreground',
                 active:'text-foreground',
-                pressed:'text-accent-foreground',
-                disabled:'text-secondary-foreground/50',
+                pressed:'text-foreground',
+                disabled:'text-muted-foreground',
             },
         },
         danger:{
