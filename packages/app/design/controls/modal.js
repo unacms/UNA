@@ -65,6 +65,7 @@ export function Modal({
     const heightActual = useActualWindowHeight();
     const insets = useSafeAreaInsets();
     const fogRef = useRef(null);
+    const scrollRef = useRef(null);
 
     useEffect(() => {
         if (!isIosWeb || !window.visualViewport) return;
@@ -160,13 +161,97 @@ export function Modal({
         (onRequestClose ?? onClose)?.();
     }, [onRequestClose, onClose]);
 
+    useEffect(() => {
+        if (!isWeb || !scrollable || !onVisible) return;
+
+        const normalizeWheelDelta = (deltaY, deltaMode = 0) => {
+            if (deltaMode === 1) return deltaY * 16;
+            if (deltaMode === 2) return deltaY * (window.innerHeight || 0);
+            return deltaY;
+        };
+
+        const scrollModalBy = (deltaY, deltaMode = 0) => {
+            const scrollEl = scrollRef.current;
+            if (!scrollEl || scrollEl.scrollHeight <= scrollEl.clientHeight) return;
+            scrollEl.scrollTop += normalizeWheelDelta(deltaY, deltaMode);
+        };
+
+        const isEditorIframeMessage = (event) => {
+            const source = event.source;
+            if (!source || source === window) return false;
+            return Array.from(document.querySelectorAll('iframe')).some(
+                (iframe) => iframe.contentWindow === source
+            );
+        };
+
+        const onWheel = (event) => {
+            const scrollEl = scrollRef.current;
+            if (!scrollEl || scrollEl.scrollHeight <= scrollEl.clientHeight) return;
+
+            const fog = fogRef.current;
+            if (!fog || !fog.contains(event.target)) return;
+
+            const target = event.target;
+
+            // TenTap iframe forwards wheel via postMessage — skip to avoid double scroll.
+            if (target instanceof HTMLIFrameElement && scrollEl.contains(target)) {
+                return;
+            }
+
+            if (target instanceof Node && scrollEl.contains(target)) return;
+
+            let el = target instanceof Node ? target : null;
+            while (el && el !== fog) {
+                if (el !== scrollEl) {
+                    const { overflowY } = window.getComputedStyle(el);
+                    if (
+                        (overflowY === 'auto' || overflowY === 'scroll') &&
+                        el.scrollHeight > el.clientHeight
+                    ) {
+                        return;
+                    }
+                }
+                el = el.parentElement;
+            }
+
+            event.preventDefault();
+            scrollModalBy(event.deltaY, event.deltaMode);
+        };
+
+        const onMessage = (event) => {
+            if (!isEditorIframeMessage(event)) return;
+
+            let data = event.data;
+            if (typeof data === 'string') {
+                try {
+                    data = JSON.parse(data);
+                } catch {
+                    return;
+                }
+            }
+            if (data?.type !== 'neo-modal-wheel') return;
+
+            scrollModalBy(data.deltaY, data.deltaMode);
+        };
+
+        document.addEventListener('wheel', onWheel, { passive: false, capture: true });
+        window.addEventListener('message', onMessage);
+        return () => {
+            document.removeEventListener('wheel', onWheel, { capture: true });
+            window.removeEventListener('message', onMessage);
+        };
+    }, [scrollable, onVisible]);
 
     const content = <><ModalHeader
         title={title}
         headerBorder={headerBorder}
         onClose={onClose}
     />
-        <Cnt style={styles} className={`${padding} flex-auto `}>
+        <Cnt
+            ref={scrollable && isWeb ? scrollRef : undefined}
+            style={styles}
+            className={`${padding} flex-auto `}
+        >
             <Pressable
                 onPress={handleContentPress}
                 className="flex-auto"

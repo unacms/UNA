@@ -255,29 +255,21 @@ export default function RftText({
     }
 
     const wheelEventForwarder = `
-        // Forward wheel events to parent to allow modal scrolling
-        window.addEventListener('wheel', function(e) {
-            if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
-                // For React Native WebView
-                window.ReactNativeWebView.postMessage(JSON.stringify({
-                    type: 'wheel',
-                    deltaY: e.deltaY,
-                    deltaX: e.deltaX
-                }));
-            } else if (window.parent !== window) {
-                // For web iframe - forward to parent
+        (function() {
+            if (window.__neoModalWheelBound) return;
+            window.__neoModalWheelBound = true;
+            window.addEventListener('wheel', function(e) {
+                if (window.parent === window) return;
                 e.preventDefault();
-                const parentEvent = new WheelEvent('wheel', {
-                    deltaX: e.deltaX,
+                e.stopPropagation();
+                window.parent.postMessage(JSON.stringify({
+                    type: 'neo-modal-wheel',
                     deltaY: e.deltaY,
-                    deltaZ: e.deltaZ,
+                    deltaX: e.deltaX,
                     deltaMode: e.deltaMode,
-                    bubbles: true,
-                    cancelable: true
-                });
-                window.parent.document.dispatchEvent(parentEvent);
-            }
-        }, { passive: false });
+                }), '*');
+            }, { passive: false, capture: true });
+        })();
     `
 
     const applyIframeTheme = (mode) => {
@@ -512,10 +504,7 @@ export default function RftText({
         if (lastAppliedThemeRef.current === themeName) return
         lastAppliedThemeRef.current = themeName
         editor.injectJS(applyIframeTheme(themeName))
-        // Inject wheel event forwarder on web to allow modal scrolling
-        if (isWeb) {
-            editor.injectJS(wheelEventForwarder)
-        }
+        // Wheel forwarder is injected once on editor-ready (iframe must be loaded).
     }, [editor, themeName])
 
     useEffect(() => {
@@ -716,6 +705,9 @@ export default function RftText({
             }
 
             if (message?.type == 'editor-ready') {
+                if (isWeb) {
+                    editor.injectJS(wheelEventForwarder)
+                }
                 const submitOnEnter = isCommentsEditor
                     ? appSetting('comments', 'submit_comment_on_enter')
                     : enableSubmitOnEnter
