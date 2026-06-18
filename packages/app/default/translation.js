@@ -85,6 +85,7 @@ export const resourcesDefault = {
             "splash_page_login": 'Sign in to continue',
             "splash_page_login2": 'Don’t have an account?',
             "splash_page_login3": 'OR',
+            "google_auth_portless_hint": 'Google Sign-In does not work on .localhost URLs. Open http://localhost:3000 (yarn web2) or https://neo.so to test Google login.',
             "splash_page_rp": 'Forgot password?',
              
             "create_account_page_title": "Time to join!",

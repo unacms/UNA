@@ -979,7 +979,7 @@ export default function RftText({
         <View
             onLayout={handleLayout}
             className={`flex-auto ${isToolBar
-                ? ' px-3 py-2 bg-input border border-border/60 web:border-0 web:ring-1 web:ring-inset web:ring-border rounded-xl focus:bg-card focus:ring-border flex-auto overflow-hidden shadow-xs placeholder-muted-foreground text-card-foreground web:duration-100 '
+                ? ' px-3 py-2 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg focus:bg-card focus:ring-border flex-auto overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-100 '
                 : (bg == 'transparent' ? '' : cn(inputSettings.base, inputSettings.rounded.default, inputSettings.size.default))
                 }`}
         >

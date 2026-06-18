@@ -2,19 +2,29 @@
 import * as WebBrowser from 'expo-web-browser';
 import { Platform } from 'react-native';
 import { useAuthRequest } from 'expo-auth-session/providers/google';
-import { useAutoDiscovery } from 'expo-auth-session';  // <-- here
 import { makeRedirectUri, ResponseType } from 'expo-auth-session';
 import { NeoButton } from 'app/design/controls'
 import { useRef, useEffect, useState } from 'react';
-import { appSetting } from 'app/lib/util'
+import { appSetting, storageClear, getPageData } from 'app/lib/util'
+import { useCurrentUser } from 'app/context/user'
 import { useTranslation } from 'react-i18next'
 import { fetcher } from 'app/lib/fetcher';
 import Redirect from 'app/ui/atoms/redirect'
 import { FormError } from 'app/components/form-fields/_field';
 import { View } from 'app/design/view'
+import { Text } from 'app/design/typography'
 import { useRouter, redirectTo } from 'app/lib/hooks/router'
 
 WebBrowser.maybeCompleteAuthSession();
+
+/** Google Web OAuth only allows localhost/127.0.0.1 or public TLDs — not *.localhost (Portless). */
+function isGoogleOAuthWebOriginAllowed() {
+    if (typeof window === 'undefined') return true
+    const host = window.location.hostname
+    if (host === 'localhost' || host === '127.0.0.1') return true
+    if (host.endsWith('.localhost') || host.endsWith('.local')) return false
+    return true
+}
 
 export default function AuthGoogle({ }) {
     const googleSettings = appSetting('auth', 'google') || {}
@@ -36,11 +46,33 @@ export default function AuthGoogle({ }) {
     return <AuthGoogleButton googleSettings={googleSettings} />;
 }
 
+function redirectUriFromApiResult(result) {
+    const items = Array.isArray(result?.data) ? result.data : [];
+    const redirectItem = items.find((item) => item?.type === 'redirect');
+    return redirectItem?.data?.uri ?? result?.data?.[0]?.data?.uri;
+}
+
+function errorMessageFromApiResult(result) {
+    const items = Array.isArray(result?.data) ? result.data : [];
+    const msgItem = items.find((item) => item?.type === 'msg');
+    return msgItem?.data;
+}
+
 function AuthGoogleButton({ googleSettings }) {
     const { t } = useTranslation()
     const redirectRef = useRef();
-    const [error, setError] = useState(false);
+    const [error, setError] = useState('');
     const router = useRouter();
+    const { setCurrentUser } = useCurrentUser();
+    const isWeb = Platform.OS === 'web';
+    // Defer hostname check until after mount — SSR has no window, so reading it during render causes hydration mismatch.
+    const [portlessBlocked, setPortlessBlocked] = useState(false);
+
+    useEffect(() => {
+        if (isWeb) {
+            setPortlessBlocked(!isGoogleOAuthWebOriginAllowed());
+        }
+    }, [isWeb]);
 
     async function fetchUserInfo(accessToken) {
         try {
@@ -55,63 +87,98 @@ function AuthGoogleButton({ googleSettings }) {
         }
     }
 
-    const discovery = {
-        authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
-        tokenEndpoint: 'https://oauth2.googleapis.com/token',
-    };
+    // Must match Authorized JavaScript origins + redirect URIs in Google Cloud (public TLD or localhost only).
+    const redirectUri = makeRedirectUri();
 
-    const redirectUri = makeRedirectUri({
-        useProxy: true,
+    const [request, response, promptAsync] = useAuthRequest({
+        clientId: googleSettings.web_client_id,
+        iosClientId: googleSettings.ios_client_id,
+        androidClientId: googleSettings.android_client_id,
+        redirectUri,
+        // Implicit token flow in the browser — Google Web clients cannot exchange codes
+        // without client_secret, which must never ship to the client bundle.
+        responseType: ResponseType.Token,
+        usePKCE: false,
+        scopes: ['profile', 'email'],
     });
 
-    const [request, response, promptAsync] = useAuthRequest(
-        {
-            clientId: googleSettings.web_client_id,
-            iosClientId: googleSettings.ios_client_id,
-            androidClientId: googleSettings.android_client_id,
-            redirectUri,
-            responseType: ResponseType.Token,
-            scopes: ['profile', 'email'],
-        },
-        discovery
-    );
-
     useEffect(() => {
-        const fetchData = async (user) => {
+        const completeSignIn = async (user) => {
             const result = await fetcher('/api.php?r=bx_googlecon/handle/&params[]=' + JSON.stringify(user));
-            if (result?.data[0]?.data?.uri)
-                redirectTo(router, result.data[0].data.uri);
+            const uri = redirectUriFromApiResult(result);
+            const errorMsg = errorMessageFromApiResult(result);
 
-            if (result?.data[0]?.type == 'msg')
-                setError(result.data[0].data);
+            if (errorMsg && !uri) {
+                setError(String(errorMsg));
+                return;
+            }
 
+            storageClear();
+
+            const pagePath = uri
+                ? (uri.startsWith('/') ? uri.slice(1) : uri)
+                : 'home';
+            const target = uri || '/home';
+
+            if (isWeb) {
+                // Full navigation reloads page JSON and seeds currentUser from the server.
+                redirectTo(router, target);
+                return;
+            }
+
+            try {
+                const page = await getPageData(pagePath);
+                if (page?.data?.user) {
+                    setCurrentUser(page.data.user);
+                }
+            } catch (err) {
+                console.error('Google auth: failed to refresh session', err);
+            }
+
+            redirectRef.current?.redirect?.(target);
         };
+
         if (response?.type === 'success') {
-            const accessToken = response.authentication.accessToken
-            fetchUserInfo(accessToken).then(user => {
-
-                fetchData(user)
+            const accessToken =
+                response.authentication?.accessToken ??
+                response.params?.access_token;
+            if (!accessToken) return;
+            fetchUserInfo(accessToken).then((user) => {
+                if (user) completeSignIn(user);
             });
-
-
+        } else if (response?.type === 'error') {
+            setError(
+                String(
+                    response.error?.message ||
+                    response.params?.error_description ||
+                    response.errorCode ||
+                    ''
+                )
+            );
         }
 
-    }, [response]);
+    }, [response, router, setCurrentUser, isWeb]);
 
 
     return (
 
         <View className="w-full">
             <Redirect ref={redirectRef} />
-            <NeoButton
-                disabled={!request}
-                label={t("Continue with Google")}
-                onPress={() => promptAsync({ useProxy: true })}
-                width="fill"
-                controlSize="regular"
-                style="glass"
-                image="Google"
-            />
+            {portlessBlocked ? (
+                <Text className="text-xs text-center text-muted-foreground text-pretty">
+                    {t('google_auth_portless_hint')}
+                </Text>
+            ) : (
+                <NeoButton
+                    disabled={!request}
+                    label={t("Continue with Google")}
+                    onPress={() => promptAsync()}
+                    width="fill"
+                    controlSize="regular"
+                    style="glass"
+                    image="Google"
+                />
+            )}
             {error && <FormError errorText={error} />}
         </View>
 

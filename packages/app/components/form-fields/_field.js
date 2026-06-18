@@ -28,7 +28,7 @@ export default function (props) {
     const captionElement = (
         <View className=" gap-y-1 z-10">
             <Text className=" text-secondary-foreground block px-0.5 w-full ">
-                <Row className="items-center gap-x-1">
+                <Row className="items-center gap-0.5">
                     <Text className={appSetting('forms', 'caption_classes')}>
                         {caption}
                     </Text>
@@ -40,8 +40,8 @@ export default function (props) {
                         </Text>
                     )}
                     {!!mandatoryIcon && (props.checker || props.required) ? (
-                        <Text className="text-red-600 h-4 w-4">
-                            <Icon icon={mandatoryIcon} size={16} />
+                        <Text className="text-destructive mb-auto leading-5">
+                            <Icon icon={mandatoryIcon} size={12} />
                         </Text>
                     ) : (
                         <></>

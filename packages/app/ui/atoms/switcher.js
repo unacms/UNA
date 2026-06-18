@@ -19,7 +19,7 @@ export default function Switch({ value, disabled, onValueChange, size = 'base' }
             className={`${switcherTheme['u-controls-switcher-track']} ${switcherTheme['u-controls-switcher-track-' + size]} ${value ? switcherTheme['u-controls-switcher-track-active-col'] : switcherTheme['u-controls-switcher-track-col']} ${disabled ? switcherTheme['u-controls-switcher-track-disabled'] : ''}`}
         >
             <View
-                className={`${switcherTheme['u-controls-switcher-thumb']} ${switcherTheme['u-controls-switcher-thumb-' + size]} ${value ? 'ml-auto' : ''}`}
+                className={`${switcherTheme['u-controls-switcher-thumb']} ${switcherTheme['u-controls-switcher-thumb-' + size]} ${value ? switcherTheme['u-controls-switcher-thumb-active-' + size] : ''}`}
             />
         </Pressable>
     );

@@ -113,6 +113,7 @@ const expoConfig = {
         "HOST": process.env.HOST,
         "PORT": process.env.PORT,
         "APP_URL": process.env.APP_URL,
+        "GOOGLE_WEB_CLIENT_ID": process.env.GOOGLE_WEB_CLIENT_ID,
         "EXPO_OS": "native",
     },
     plugins: [

@@ -237,7 +237,7 @@ export default function (props) {
         <>
             {modalElement}
             <Field {...props} error2={formContext.formState.errors[name]}>
-                <View className=' bg-input/60 shadow-btn-outline dark:shadow-btn-outline-deep rounded-xl w-full flex-auto items-center flex-row flex-wrap p-1.5 gap-1 min-h-12'>
+                <View className=' bg-input/60 shadow-btn-outline dark:shadow-btn-outline-deep rounded-lg w-full flex-auto items-center flex-row flex-wrap p-1 gap-1 min-h-11'>
                     <Button
                         title={displayText}
                         startDecorator="Globe"

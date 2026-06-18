@@ -30,6 +30,32 @@ export async function fetcher (mixed, useProxy = false) {
     return r;
 }
 
+async function fetcherRawOnce(url, { data, headers, callback }) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
+    try {
+        const r = await fetch(url, {
+            method: data ? 'POST' : 'GET',
+            body: data ? data : null,
+            headers: headers,
+            cache: 'no-store',
+            credentials: 'include', // Set to true on UNA side - Access-Control-Allow-Credentials
+            signal: controller.signal,
+        });
+        if (callback)
+            callback(r);
+        return r;
+    } catch (error) {
+        if (error?.name === 'AbortError') {
+            throw new Error('Timeout');
+        }
+        throw error;
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
 export async function fetcherRaw(host, mixed) {
     let path, token, data, origin, headers, callback;
 
@@ -60,29 +86,27 @@ export async function fetcherRaw(host, mixed) {
     const lang = i18n.language;
 
     const url = host + path + "&lang=" + lang;
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    const maxAttempts = data ? 1 : 3;
+    const baseDelayMs = 300;
+    let lastError = null;
 
-    try {
-        const r = await fetch(url, {
-            method: data ? 'POST' : 'GET',
-            body: data ? data : null,
-            headers: headers,
-            cache: 'no-store',
-            credentials: 'include', // Set to true on UNA side - Access-Control-Allow-Credentials
-            signal: controller.signal,
-        });
-        if (callback)
-            callback(r);
-        return r;
-    } catch (error) {
-        if (error?.name === 'AbortError') {
-            console.error('Api call timeout:', FETCH_TIMEOUT_MS, url);
-            throw new Error('Timeout');
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+            return await fetcherRawOnce(url, { data, headers, callback });
+        } catch (error) {
+            lastError = error;
+            const isRetriable = error?.message === 'Timeout' || error?.name === 'TypeError';
+            if (!isRetriable || attempt >= maxAttempts) {
+                if (error?.message === 'Timeout') {
+                    console.error('Api call timeout:', FETCH_TIMEOUT_MS, url);
+                } else {
+                    console.error('Api call error: ', error, url);
+                }
+                throw error;
+            }
+            await new Promise((resolve) => setTimeout(resolve, baseDelayMs * attempt));
         }
-        console.error('Api call error: ', error, url);
-        throw error;
-    } finally {
-        clearTimeout(timer);
     }
+
+    throw lastError;
 }

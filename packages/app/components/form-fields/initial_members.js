@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, useReducer } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { fetcher } from 'app/lib/fetcher';
 import Profile from 'app/ui/molecules/profile'
-import { Button, Input, Modal } from 'app/design/controls'
+import { Button, NeoButton, Input, Modal } from 'app/design/controls'
 import Loading from 'app/ui/atoms/loading'
 import { Icon } from 'app/ui/atoms/icon'
 import { useTranslation } from 'react-i18next';
@@ -14,9 +14,9 @@ const User = ({ data, onSelect, type }) => {
     if (type !== 'multi'){
         return (
             <Pressable className="" onPress={() => onSelect(data)}>
-                <Row className=" gap-x-2 pl-1 pr-3 h-9 overflow-hidden truncate  items-center justiy-center">
+                <Row className="  p-1.5 h-9 overflow-hidden truncate bg-muted rounded-full items-center justiy-center">
                     {<Profile displaySize="xs" displayType="unit_wo_info" {...data} showLinks={false} />}
-                    <Text className="text-card-foreground web:hover:text-primary text-sm font-semibold tracking-tight truncate">
+                    <Text className="text-card-foreground web:hover:text-primary text-sm px-1.5 font-semibold tracking-tight truncate">
                         {data.display_name}
                     </Text>
                 </Row>
@@ -25,12 +25,12 @@ const User = ({ data, onSelect, type }) => {
     }
     return (
         <Pressable className="" onPress={() => onSelect(data)}>
-            <Row className=" gap-x-2 pl-1 pr-3 h-9 overflow-hidden truncate rounded-full border border-border/60 bg-muted items-center justiy-center">
+            <Row className=" p-1.5 h-9 overflow-hidden truncate rounded-full shadow-btn-outline dark:shadow-btn-outline-deep bg-card items-center justiy-center">
                 {<Profile displaySize="xs" displayType="unit_wo_info" {...data} showLinks={false} />}
-                <Text className="text-card-foreground web:hover:text-primary text-sm font-semibold tracking-tight truncate">
+                <Text className="text-card-foreground px-1.5 web:hover:text-primary text-sm font-semibold tracking-tight truncate">
                     {data.display_name}
                 </Text>
-                <Text className="text-card-foreground"><Icon icon="X" size={20} /></Text>
+                <Text className="text-card-foreground rounded-full bg-muted p-0.5 my-auto h-6 w-6 items-center justify-center"><Icon icon="X" size={20} /></Text>
             </Row>
         </Pressable>
     );
@@ -153,17 +153,18 @@ export default function (props) {
             <Modal id='file-preview2' title={props.title || "Choose users"} onVisible={!!isModal} onClose={() => { setIsModal(false) }}>
                 <SelectUsers isSingle={isSingle} onSave={onSave} requestUrl={'/api.php?r=' + props.ajax_get_suggestions + (props.ajax_get_suggestions.includes("params[]") ? '' : "&params=")} initedData={[]} />
             </Modal>
-            <View className='w-full p-1.5 justify-between items-center flex-row flex-wrap border border-border/60 rounded-xl bg-input/60'>
-                <Row className='gap-2 items-start  flex-wrap flex-1'>
+            <Row className='w-full px-1.5 py-1 items-center justify-between flex-wrap shadow-input-outline dark:shadow-input-outline-deep rounded-lg bg-input/60'>
+                <Row className='gap-2 items-center flex-wrap my-auto flex-1'>
                     {selected && selected.map((oItem) => <User type={isSingle ? '' : "multi"} key={oItem.id} data={oItem} onSelect={isSingle ? showSelect : onRemove} />)}
                 </Row>
-                <Button
-                    startDecorator={isSingle ? 'RefreshCw' : 'Plus'}
-                    variant="default"
-                    size="sm"
+                <NeoButton
+                    image={isSingle ? 'RefreshCw' : 'Plus'}
+                    style="borderless"
+                    controlSize="small"
+                    accessibilityLabel={isSingle ? 'Change' : 'Add'}
                     onPress={() => showSelect()}
                 />
-            </View>
+            </Row>
         </Field>
     );
 }

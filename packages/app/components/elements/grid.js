@@ -605,8 +605,8 @@ export default function ElementGrid(props) {
                 }
             </Row>
         </Row>
-        <View className=''>
-            <Row className='w-full justify-between  py-2 bg-muted '>
+        <View className='border border-border/60 rounded-lg'>
+            <Row className='w-full justify-between py-2 border-b border-border/60'>
                 {
                     header.map((itemCell, index) => {
                         //getWidth(itemCell.width) 
@@ -640,7 +640,7 @@ export default function ElementGrid(props) {
                 ) : null}
                 renderItem={({ item, index: indexRow }) => {
                     return (
-                        <Row className={` justify-between  ${indexRow % 2 != 0 && 'bg-muted '}`}>
+                        <Row className={` justify-between border-b border-border/60 web:hover:bg-muted/40 ${indexRow % 2 != 0 && ' '}`}>
                             {header.map((cellHeader, index) => (
                                 <View key={'cell_' + indexRow + '_' + index} style={{ width: getWidth1(cellHeader.width) }} className={`py-1 p-1 xl:p-2 justify-center`}>
                                     <Cell

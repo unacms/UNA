@@ -1,10 +1,9 @@
 import { View, Row, Pressable } from 'app/design/view'
 import Dropdown from 'app/ui/atoms/dropdown'
 import { useState, useReducer, useMemo, useCallback, useEffect } from 'react';
-import { Modal } from 'app/design/controls'
-import { Button, NeoButton } from 'app/design/controls';
+import { Modal, Button, InputWithIcons } from 'app/design/controls'
 import { Text } from 'app/design/typography';
-import { TextInput as Input } from 'react-native'
+import { TextInput as Input, Platform } from 'react-native'
 import { formatDate } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
 const years = [];
@@ -234,17 +233,24 @@ export default function ({ name, value = '', type, onChange }) {
                     </View>
                 </View>
             </Modal>
-            <Row className='gap-3 shadow-btn-outline dark:shadow-btn-outline-deep text-secondary-foreground rounded-xl bg-input items-center'>
-                <NeoButton
-                    label={dValue ? formatDate(dValue, t, { yearPolicy: 'always', month: 'numeric' }) : 'Select date'}
-                    style="borderless"
-                    controlSize="regular"
-                    image="Calendar"
-                    imagePlacement="trailing"
-                    width="fill"
-                    align="between"
-                    onPress={() => { setShowModal(true) }}
-                />
+            <Row className='gap-3 items-center flex-auto'>
+                <Pressable
+                    className="flex-auto"
+                    onPress={() => setShowModal(true)}
+                    accessibilityRole="button"
+                    accessibilityLabel={dValue ? formatDate(dValue, t, { yearPolicy: 'always', month: 'numeric' }) : 'Select date'}
+                >
+                    <InputWithIcons
+                        value={dValue ? formatDate(dValue, t, { yearPolicy: 'always', month: 'numeric' }) : ''}
+                        placeholder="Select date"
+                        rounded="default"
+                        readOnly
+                        editable={Platform.OS === 'web' ? undefined : false}
+                        pointerEvents="none"
+                        {...(Platform.OS !== 'web' ? { showSoftInputOnFocus: false } : {})}
+                        endDecorator="Calendar"
+                    />
+                </Pressable>
                 {bIsTime && (<><View className='w-5'><Input
                     onChangeText={text => handleChangeTime(text, 23, 'h')}
                     onBlur={handleChangeTime2}

@@ -89,7 +89,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
     const isButtonDisabled = !hasText || ((!isHiddenVisibility && object_privacy_view == '')) ? true : false;
     if (isFormOnly) {
         return (
-            <View className="w-full flex-1 gap-2 min-h-[250px]">
+            <View className="w-full flex-1 gap-2">
                 <View className="items-start justify-start ">
                     <Row className="w-full items-center justify-between gap-x-2">
                         <Row className="gap-1 flex-row flex-auto items-center">
@@ -161,7 +161,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                         linkify: true,
                                         autofocus: Date.now(),
                                         classes: 'flex-auto',
-                                        initialHeight: 120,
+                                        initialHeight: 160,
                                         maxHeight: screenHeight / 2 - 80 ,
                                     }
                                 )}

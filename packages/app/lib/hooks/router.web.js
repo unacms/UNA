@@ -38,6 +38,8 @@ export function useLocalSearchParams() {
 }
 
 
-export function redirectTo(router, url){
-    document.location = url
+export function redirectTo(router, url) {
+    if (!url) return;
+    const normalized = url.startsWith('/') || url.startsWith('http') ? url : `/${url}`;
+    window.location.assign(normalized);
 }

@@ -1,3 +1,4 @@
+import { Platform } from 'react-native'
 import { View, Row } from 'app/design/view'
 import AuthGoogle from 'app/ui/atoms/auth/google'
 import AuthGitHub from 'app/ui/atoms/auth/AuthGitHub'
@@ -10,6 +11,16 @@ import Link from 'app/ui/atoms/link'
 import { Button } from 'app/design/controls'
 import { Text } from 'app/design/typography'
 import { useTranslation } from 'react-i18next'
+
+function hasGoogleAuth() {
+    const google = appSetting('auth', 'google')
+    if (!google || typeof google !== 'object') return false
+    return Platform.select({
+        ios: google.ios_client_id,
+        android: google.android_client_id,
+        default: google.web_client_id,
+    })
+}
 
 export default function AuthPanel({
     showSeparator = false,
@@ -71,7 +82,7 @@ export default function AuthPanel({
                 </Link>
             )}
 
-            {(showSeparator && (appSetting('auth', 'google') || appSetting('auth', 'github') || appSetting('auth', 'linkedin') || appSetting('auth', 'x') || appSetting('auth', 'passkey') || appSetting('auth', 'saml'))) && (
+            {(showSeparator && (hasGoogleAuth() || appSetting('auth', 'github') || appSetting('auth', 'linkedin') || appSetting('auth', 'x') || appSetting('auth', 'passkey') || appSetting('auth', 'saml'))) && (
                 <View
                     className="flex-row items-center justify-center w-full"
                     accessibilityRole="separator"
@@ -102,7 +113,7 @@ export default function AuthPanel({
                 accessibilityRole="group"
                 accessibilityLabel="Alternative sign-in methods"
             >
-                {appSetting('auth', 'google') && <AuthGoogle />}
+                {hasGoogleAuth() && <AuthGoogle />}
                 {appSetting('auth', 'github') && <AuthGitHub />}
                 {appSetting('auth', 'linkedin') && <AuthLinkedIn />}
                 {appSetting('auth', 'x') && <AuthX />}

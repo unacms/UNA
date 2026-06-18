@@ -1,5 +1,5 @@
 import { Text } from 'app/design/typography'
-import { View } from 'app/design/view'
+import { View, Pressable } from 'app/design/view'
 import * as CheckboxPrimitive from '@rn-primitives/checkbox'
 import { appSetting } from 'app/lib/util'
 
@@ -9,7 +9,10 @@ export default function CheckBox2({ title, onPress, status, value, icon, margin 
     const selected = status === 'checked'
 
     return (
-        <View
+        <Pressable
+            onPress={onPress}
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: selected }}
             className={`${icon ? 'flex-row gap-x-3' : 'flex-row-reverse'} ${isBackground ? checkboxTheme['u-controls-checkbox-container-bg'] : ''} ${margin} ${checkboxTheme['u-controls-checkbox-container']}`}
         >
             {!!icon && <View className="w-8">{icon}</View>}
@@ -17,11 +20,10 @@ export default function CheckBox2({ title, onPress, status, value, icon, margin 
                 <Text className={checkboxTheme['u-controls-checkbox-text']}>{title}</Text>
             </View>
 
-            {/* Visual square — DOM + Tailwind */}
-            <View className={checkboxTheme['u-controls-checkbox-indicator']}>
+            {/* Visual square — toggled by the Pressable container above */}
+            <View className={checkboxTheme['u-controls-checkbox-indicator']} pointerEvents="none">
                 <CheckboxPrimitive.Root
                     checked={selected}
-                    onCheckedChange={onPress}
                     style={{ width: '100%', height: '100%' }}
                 >
                     <CheckboxPrimitive.Indicator>
@@ -29,6 +31,6 @@ export default function CheckBox2({ title, onPress, status, value, icon, margin 
                     </CheckboxPrimitive.Indicator>
                 </CheckboxPrimitive.Root>
             </View>
-        </View>
+        </Pressable>
     )
 }

@@ -1192,7 +1192,7 @@ const LeftSideBarContainer = ({
                             <Row>{addButtons}</Row>
                         </Row>
                     )}
-                    <View className="flex-1 gap-y-2">
+                    <View className="flex-1 gap-4">
                         {layoutName == 'navigator' && routes.length > 1 && (
                             <View className='w-full gap-3.5 -my-0.5'>
                                 {routes

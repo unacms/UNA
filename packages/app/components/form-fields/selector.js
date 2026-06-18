@@ -148,7 +148,7 @@ export default function (props) {
             {ModalCnt}
             <Field {...props}>
                 
-                    <View className={`${props.align === 'right' ? 'justify-end' : 'justify-start'} bg-input border border-border/60 rounded-xl w-full flex-auto items-center flex-row flex-wrap p-1 gap-1 min-h-12`}>
+                    <View className={`${props.align === 'right' ? 'justify-end' : 'justify-start'} bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg w-full flex-auto items-center flex-row flex-wrap p-1 gap-1 min-h-11`}>
                         {props.align == 'right' && <Button
                             startDecorator={isMultiple ? "Plus" : ""}
                             variant={variant}
