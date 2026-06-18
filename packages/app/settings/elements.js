@@ -98,6 +98,7 @@ export const settingsElements = {
         saml: false,
     },
     editor: {
+        engine: 'enriched',//enriched || tentap
         toolbar: {
             padding: 1, // Padding for toolbar buttons in pixels
             colors: {

@@ -69,6 +69,14 @@ const tenPlayWebviewShimPath = require('fs').existsSync(tenPlayWebviewLocalPath)
 
 const reanimatedPath = path.resolve(__dirname, 'node_modules/react-native-reanimated');
 
+// Реальный @tiptap/react (используется веб-сборкой react-native-enriched-html).
+// Подключается отдельным alias, чтобы шим '@tiptap/react' не вызывал сам себя.
+const tiptapReactLocalPath = path.resolve(__dirname, 'node_modules/@tiptap/react/dist/index.js');
+const tiptapReactRootPath = path.resolve(workspaceRoot, 'node_modules/@tiptap/react/dist/index.js');
+const tiptapReactRealPath = fs.existsSync(tiptapReactLocalPath)
+    ? tiptapReactLocalPath
+    : tiptapReactRootPath;
+
 const nextConfig = {
     typescript: {
         ignoreBuildErrors: true,
@@ -134,6 +142,7 @@ const nextConfig = {
         '@expo/metro-runtime',
         'i18next',
         'react-i18next',
+        'react-native-enriched-html',
         'react-native-localize',
         'victory-native',
         '@stripe/stripe-react-native',
@@ -156,6 +165,10 @@ const nextConfig = {
             'react-native/Libraries/Utilities/codegenNativeComponent$': tenPlayWebviewShimPath,
             'react-native-reanimated': reanimatedPath,  // <-- Pin version 3.10.1
             'react-native-localize': path.resolve(__dirname, 'stubs/react-native-localize.js'),
+            // Шим форсит immediatelyRender:false (см. shims/tiptap-react.js).
+            // '$' — точное совпадение, поэтому '@tiptap/react/menus' и пр. не трогаем.
+            '@tiptap/react$': path.resolve(__dirname, 'shims/tiptap-react.js'),
+            '@tiptap-react-real$': tiptapReactRealPath,
         };
 
         // Add fallback for codegenNativeComponent
