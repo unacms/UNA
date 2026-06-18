@@ -1,11 +1,53 @@
 import { View, Row, Pressable } from 'app/design/view'
 import Dropdown from 'app/ui/atoms/dropdown'
+import { Icon } from 'app/ui/atoms/icon'
 import { useState, useReducer, useMemo, useCallback, useEffect } from 'react';
-import { Modal, Button, InputWithIcons } from 'app/design/controls'
+import { Modal, Button, InputWithIcons, TextInputClear } from 'app/design/controls'
 import { Text } from 'app/design/typography';
-import { TextInput as Input, Platform } from 'react-native'
+import { Platform } from 'react-native'
 import { formatDate } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
+
+const timeInputKeyboard = Platform.OS === 'web'
+    ? { type: 'text', inputMode: 'numeric' }
+    : { keyboardType: 'numeric' };
+
+function TimeSpinField({ value, onChangeText, onBlur, onStep, label }) {
+    return (
+        <View className="h-9 shrink-0 flex-row items-stretch rounded-md">
+            <TextInputClear
+                onChangeText={onChangeText}
+                onBlur={onBlur}
+                placeholder="00"
+                className="h-full w-8 shrink-0 px-1 text-center text-sm font-medium tracking-tight leading-none text-secondary-foreground bg-transparent border-0 outline-none shadow-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 web:focus:shadow-none web:focus-visible:shadow-none"
+                maxLength={2}
+                placeholderTextColor="#6b7280"
+                value={value}
+                accessibilityLabel={label}
+                {...timeInputKeyboard}
+            />
+            <View className="w-5 shrink-0 bg-muted/30">
+                <Pressable
+                    className="flex-1 items-center justify-center web:hover:bg-muted web:active:bg-muted"
+                    onPress={() => onStep(1)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Increase ${label}`}
+                >
+                    <Icon icon="ChevronUp" size={14} className="text-muted-foreground" />
+                </Pressable>
+                <Pressable
+                    className="flex-1 items-center justify-center web:hover:bg-muted web:active:bg-muted"
+                    onPress={() => onStep(-1)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Decrease ${label}`}
+                >
+                    <Icon icon="ChevronDown" size={14} className="text-muted-foreground" />
+                </Pressable>
+            </View>
+        </View>
+    );
+}
+
 const years = [];
 for (let y = 1900; y <= 2100; y++) {
     years.push({ value: y });
@@ -195,23 +237,32 @@ export default function ({ name, value = '', type, onChange }) {
 
     };
 
-    const handleChangeTime2 = () => {
-        if (dValue){
+    const applyTimeValues = (hours, minutes, pad = false) => {
+        const nextHours = pad ? String(hours).padStart(2, '0') : String(hours);
+        const nextMinutes = pad ? String(minutes).padStart(2, '0') : String(minutes);
+        settValue([nextHours, nextMinutes]);
+        if (dValue) {
             setdValue(prev => {
                 const d = new Date(prev.getTime());
-                d.setMinutes(tValue[1]);
-                d.setHours(tValue[0]);
+                d.setHours(parseInt(nextHours, 10) || 0);
+                d.setMinutes(parseInt(nextMinutes, 10) || 0);
                 return d;
             });
-
-            settValue(prev => {
-                const j = [...prev];
-                j[1] = String(prev[1]).padStart(2, '0');
-                j[0] = String(prev[0]).padStart(2, '0');;
-
-                return j;
-            });
         }
+    };
+
+    const adjustTime = (part, delta) => {
+        const index = part === 'h' ? 0 : 1;
+        const max = part === 'h' ? 23 : 59;
+        let num = parseInt(tValue[index] || '0', 10);
+        if (Number.isNaN(num)) num = 0;
+        num = (num + delta + max + 1) % (max + 1);
+        if (part === 'h') applyTimeValues(num, tValue[1], true);
+        else applyTimeValues(tValue[0], num, true);
+    };
+
+    const handleChangeTime2 = () => {
+        if (dValue) applyTimeValues(tValue[0], tValue[1], true);
     };
 
     const onSelectDate = (value) => {
@@ -233,9 +284,9 @@ export default function ({ name, value = '', type, onChange }) {
                     </View>
                 </View>
             </Modal>
-            <Row className='gap-3 items-center flex-auto'>
+            <Row className="w-full flex-nowrap items-center gap-3">
                 <Pressable
-                    className="flex-auto"
+                    className="min-w-0 flex-1"
                     onPress={() => setShowModal(true)}
                     accessibilityRole="button"
                     accessibilityLabel={dValue ? formatDate(dValue, t, { yearPolicy: 'always', month: 'numeric' }) : 'Select date'}
@@ -251,29 +302,28 @@ export default function ({ name, value = '', type, onChange }) {
                         endDecorator="Calendar"
                     />
                 </Pressable>
-                {bIsTime && (<><View className='w-5'><Input
-                    onChangeText={text => handleChangeTime(text, 23, 'h')}
-                    onBlur={handleChangeTime2}
-                    keyboardType="numeric"
-                    placeholder="HH:mm"
-                    className='tracking-tight font-medium text-secondary-foreground'
-                    maxLength={2}
-                    placeholderTextColor="#6b7280"
-                    value={`${tValue[0]}`}
 
-                /></View>
-                    <Text className="tracking-tight font-medium text-secondary-foreground ">:</Text>
-                    <View className='w-5'><Input
-                        onChangeText={text => handleChangeTime(text, 59, 'm')}
-                        onBlur={handleChangeTime2}
-                        keyboardType="numeric"
-                        placeholder="HH:mm"
-                        maxLength={2}
-                        placeholderTextColor="#6b7280"
-                        className='tracking-tight font-medium text-secondary-foreground '
-                        value={`${tValue[1]}`}
-
-                    /></View></>)}
+                {bIsTime && (
+                    <Row className="h-11 w-auto shrink-0 flex-none items-center gap-1 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg px-1.5">
+                        <TimeSpinField
+                            value={tValue[0]}
+                            onChangeText={text => handleChangeTime(text, 23, 'h')}
+                            onBlur={handleChangeTime2}
+                            onStep={delta => adjustTime('h', delta)}
+                            label="hours"
+                        />
+                        <View className="h-9 w-2 shrink-0 items-center justify-center">
+                            <Text className="text-sm font-medium tracking-tight text-secondary-foreground">:</Text>
+                        </View>
+                        <TimeSpinField
+                            value={tValue[1]}
+                            onChangeText={text => handleChangeTime(text, 59, 'm')}
+                            onBlur={handleChangeTime2}
+                            onStep={delta => adjustTime('m', delta)}
+                            label="minutes"
+                        />
+                    </Row>
+                )}
             </Row>
         </>
     );

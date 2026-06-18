@@ -86,9 +86,15 @@ const sanitizeInputProps = ({
     caretHidden,
     contextMenuHidden,
     rejectResponderTermination,
+    accessibilityLabel,
+    accessibilityRole,
+    accessibilityHint,
     ...props
 }: CustomInputProps) => {
     const domProps = { ...props };
+    if (accessibilityLabel && !domProps['aria-label']) domProps['aria-label'] = accessibilityLabel;
+    if (accessibilityRole && !domProps.role) domProps.role = accessibilityRole;
+    if (accessibilityHint && !domProps['aria-description']) domProps['aria-description'] = accessibilityHint;
     if (editable === false) domProps.disabled = true;
     if (keyboardType === 'email-address') domProps.type = 'email';
     if (keyboardType === 'numeric' || keyboardType === 'number-pad') domProps.type = 'number';
