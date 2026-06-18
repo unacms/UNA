@@ -455,7 +455,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
 
         button = (
             <Pressable onPress={selectImage} >
-                <View className={w + ' native:max-w-full items-center justify-center bg-input ' + (isImage ? '' : 'h-32')}>
+                <View className={w + ' native:max-w-full items-center justify-center bg-input ' + (isImage ? '' : '')}>
                       {(!img || !img?.file_url) && (<View ref={drop} className=' text-muted-foreground/50 text-lg  flex-auto w-full border-border rounded-lg  justify-center  flex-col border border-dashed text-center'>
                         <Text className='text-muted-foreground/50 text-lg justify-center flex-col text-center'>
                             {props?.placeholder || CaptionForFileInput(props)}
