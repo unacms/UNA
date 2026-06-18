@@ -133,6 +133,9 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
     // CoverMenu can surface persistent buttons (Option A). Previously this forced
     // persistent:0 on every item, which made the split inert in the small cover.
     let menu = cloneObject(data.actions_menu)
+    if (menu.persistent > 1) {
+        menu.persistent = 1
+    }
 
     const smallCoverAvatarSize =
         appSetting('cover', 'small_cover_avatar_display_size') || 'base'
