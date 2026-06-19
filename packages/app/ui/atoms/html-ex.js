@@ -249,7 +249,11 @@ export default function ElementHtml(props) {
             marginBottom: 0,
 
         },
-        'bx-menthion-link': {
+        'bx-mention-link': {
+            color: colors.primary,
+            textDecorationLine: 'none',
+        },
+        'bx-tag': {
             color: colors.primary,
             textDecorationLine: 'none',
         },

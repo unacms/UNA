@@ -17,13 +17,14 @@ import {
     PlaceholderBridge,
 } from '@10play/tentap-editor'
 import { useFilesData } from 'app/context/files'
+import { useCurrentUser } from 'app/context/user'
 import { Platform, KeyboardAvoidingView } from 'react-native'
 import { useTheme, useThemeName } from 'app/design/theme'
 import { getAlert, stripTags, stripTagsWithLinks } from 'app/lib/util'
-import { fetcher } from 'app/lib/fetcher'
 import { appSetting, cn } from 'app/lib/util'
 import emitter from 'app/context/emitter'
 import { TextInput } from 'react-native'
+import { useMentionSuggestions } from './use-mention-suggestions'
 
 
 const inputSettings = appSetting('theme', 'inputs');
@@ -83,9 +84,9 @@ export default function RftText({
     const { field } = useController({ name, rules: {}, defaultValue: value })
     const { colors } = useTheme()
     const formContext = useFormContext()
+    const { currentUser } = useCurrentUser()
     const [inputKey, setInputKey] = useState(0);
 
-    const [suggestions, setSuggestions] = useState([])
     const [keywordval, setKeyword] = useState(['', ''])
     const [editorHeight, setEditorHeight] = useState(initialHeight)
     const [isEnter, setIsEnter] = useState(false)
@@ -101,6 +102,15 @@ export default function RftText({
     if (object_privacy_view)
         url1 += '&object_privacy_view=' + object_privacy_view
     if (object_id) url1 += '&cid=' + object_id
+
+    // Robust, race-free mention suggestions (debounced + stale-response guarded),
+    // seeded from the user's recent mentions on the bare trigger.
+    const { suggestions, setSuggestions, recordMention } = useMentionSuggestions({
+        url: url1,
+        term: keywordval[0],
+        indicator: keywordval[1],
+        userId: currentUser?.id,
+    })
 
     const isCommentsEditor = container_class === 'comments'
     // Comments use 14px (text-sm), other editors use 16px (text-base)
@@ -300,28 +310,6 @@ export default function RftText({
 
     // Get the editor settings for toolbar configuration
     const editorSettings = appSetting('editor', 'toolbar')
-
-    useEffect(() => {
-        if (keywordval[1] === '') return
-
-        const fetchData = async () => {
-            const url =
-                url1 +
-                `&symbol=${keywordval[1] === '#' ? '%23' : '%40'}&term=${keywordval[0]
-                }`
-            const result = await fetcher(url)
-            const p = result
-                .map((k, index) => ({
-                    ...k,
-                    index,
-                    ...(index === 0 && { selected: true }),
-                }))
-                .slice(0, 4)
-            setSuggestions(p)
-        }
-
-        fetchData()
-    }, [keywordval])
 
     let customCodeBlockCSS = buildEditorCSS(themeName)
     if (isPlainText) {
@@ -611,6 +599,7 @@ export default function RftText({
         const replacementStringWithNbsp = mentionLink + '&nbsp;'
         const updatedContent = html.replace(query, replacementStringWithNbsp)
         editor.setContent(updatedContent)
+        recordMention(user)
         setSuggestions([])
     }
 

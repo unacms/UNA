@@ -89,7 +89,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
     const isButtonDisabled = !hasText || ((!isHiddenVisibility && object_privacy_view == '')) ? true : false;
     if (isFormOnly) {
         return (
-            <View className="w-full flex-1 gap-2">
+            <View className="w-full flex-1 gap-3">
                 <View className="items-start justify-start ">
                     <Row className="w-full items-center justify-between gap-x-2">
                         <Row className="gap-1 flex-row flex-auto items-center">
@@ -140,7 +140,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                     {getFormFieldByData(data.inputs['owner_id'], handleSubmit, 'default')}
                     {getFormFieldByData(data.inputs['type'], handleSubmit, 'default')}
                     <View className="justify-between flex-auto gap-2">
-                        <View className="w-full flex-auto justify-start p-1 ">
+                        <View className="w-full flex-auto justify-start ">
                             <View
                                 className="flex-auto "
                                 style={{

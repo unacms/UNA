@@ -1,4 +1,4 @@
-import { Root } from 'app/root'
+import Root from 'app/root-client'
 import { Suspense } from 'react'
 import { Loading } from 'app/customization/loading'
 // CSS imports removed - already imported in root layout.js

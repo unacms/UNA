@@ -101,57 +101,67 @@ export const settingsLayout = {
             sizable: false,
             cells: {
                 left: {
-                    defaultSize: 25, 
-                    minSize: 25, 
+                    defaultSize: 0,
+                    minSize: 0,
                     maxSize: 25,
                     breakpoint: 'xl',
                     responsive: {
-                       
-                        '2xl':{
+                        xl: {
                             defaultSize: 25,
                             minSize: 25,
                             maxSize: 25,
-                            
-                        }
-                    }
+                        },
+                        '2xl': {
+                            defaultSize: 25,
+                            minSize: 25,
+                            maxSize: 25,
+                        },
+                    },
                 },
-                center: { 
-                    defaultSize: 65, 
-                    minSize: 65, 
-                    maxSize: 65,
+                center: {
+                    defaultSize: 100,
+                    minSize: 50,
+                    maxSize: 100,
                     responsive: {
-                        'xl':{
+                        lg: {
+                            defaultSize: 65,
+                            minSize: 65,
+                            maxSize: 65,
+                        },
+                        xl: {
                             defaultSize: 50,
                             minSize: 50,
                             maxSize: 50,
                         },
-                        '2xl':{
+                        '2xl': {
                             defaultSize: 50,
                             minSize: 50,
                             maxSize: 50,
-                            
-                        }
-                    }
+                        },
+                    },
                 },
                 right: {
-                    defaultSize: 35,
-                    minSize: 35,
+                    defaultSize: 0,
+                    minSize: 0,
                     maxSize: 35,
                     breakpoint: 'lg',
                     responsive: {
-                        'xl':{
-                            defaultSize: 25,
-                            minSize: 25,
-                            maxSize: 25,
-                            
+                        lg: {
+                            defaultSize: 35,
+                            minSize: 35,
+                            maxSize: 35,
                         },
-                        '2xl':{
+                        xl: {
                             defaultSize: 25,
                             minSize: 25,
                             maxSize: 25,
-                            
-                        }
-                    }
+                        },
+                        '2xl': {
+                            defaultSize: 25,
+                            minSize: 25,
+                            maxSize: 25,
+                        },
+                    },
                 },
             },
         },
@@ -160,57 +170,67 @@ export const settingsLayout = {
             sizable: true,
             cells: {
                 left: {
-                    defaultSize: 25, 
-                    minSize: 25, 
+                    defaultSize: 0,
+                    minSize: 0,
                     maxSize: 25,
                     breakpoint: 'xl',
                     responsive: {
-                       
-                        '2xl':{
+                        xl: {
                             defaultSize: 25,
                             minSize: 25,
                             maxSize: 25,
-                            
-                        }
-                    }
+                        },
+                        '2xl': {
+                            defaultSize: 25,
+                            minSize: 25,
+                            maxSize: 25,
+                        },
+                    },
                 },
-                center: { 
-                    defaultSize: 65, 
-                    minSize: 65, 
-                    maxSize: 65,
+                center: {
+                    defaultSize: 100,
+                    minSize: 50,
+                    maxSize: 100,
                     responsive: {
-                        'xl':{
+                        lg: {
+                            defaultSize: 65,
+                            minSize: 65,
+                            maxSize: 65,
+                        },
+                        xl: {
                             defaultSize: 50,
                             minSize: 50,
                             maxSize: 50,
                         },
-                        '2xl':{
+                        '2xl': {
                             defaultSize: 50,
                             minSize: 50,
                             maxSize: 50,
-                            
-                        }
-                    }
+                        },
+                    },
                 },
                 right: {
-                    defaultSize: 35,
-                    minSize: 35,
+                    defaultSize: 0,
+                    minSize: 0,
                     maxSize: 35,
                     breakpoint: 'lg',
                     responsive: {
-                        'xl':{
-                            defaultSize: 25,
-                            minSize: 25,
-                            maxSize: 25,
-                            
+                        lg: {
+                            defaultSize: 35,
+                            minSize: 35,
+                            maxSize: 35,
                         },
-                        '2xl':{
+                        xl: {
                             defaultSize: 25,
                             minSize: 25,
                             maxSize: 25,
-                            
-                        }
-                    }
+                        },
+                        '2xl': {
+                            defaultSize: 25,
+                            minSize: 25,
+                            maxSize: 25,
+                        },
+                    },
                 },
             },
         },

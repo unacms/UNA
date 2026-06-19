@@ -11,6 +11,18 @@ import { ParseHtmlClasses } from 'app/customization/functions';
 const isWeb = Platform.OS === 'web'
 const noScale = isWeb  || appSetting('native', 'allow_font_scaling')? {} : { allowFontScaling: false }
 
+// Mentions/tags. On web they keep their `bx-mention-link` / `bx-tag` class and are
+// styled by the .bx-mention-link CSS (utilities.css). On native there's no CSS, so we
+// apply the same semantic tokens here via className (configurable in settings).
+const MENTION_RENDER_CLASS = appSetting('editor', 'mention', 'render_class') || 'text-accent-foreground bg-accent/60 rounded px-1'
+const isMentionClass = (cls = '') => /\b(bx-mention-link|bx-tag)\b/.test(cls)
+const getNodeText = (node) => {
+    if (!node) return ''
+    if (node.type === 'text') return node.value || ''
+    if (Array.isArray(node.children)) return node.children.map(getNodeText).join('')
+    return ''
+}
+
 
 const StyledStrong = (props) => {
     if (Platform.OS === 'web') {
@@ -443,6 +455,22 @@ const renderTreeNode = (node, key) => {
     if (node.tag === 'a') {
         const href = matchAttr(node.attrs, 'href')
         if (href) {
+            // Native: mentions/tags need explicit styling (no CSS). Render the text
+            // directly so the mention color/background isn't overridden by the inner
+            // text node's `text-card-foreground`. Web keeps the class for the CSS.
+            if (!isWeb && isMentionClass(className)) {
+                return (
+                    <Link
+                        key={key}
+                        href={href}
+                        mode="text"
+                        haptics="Select"
+                        className={MENTION_RENDER_CLASS}
+                    >
+                        {getNodeText(node)}
+                    </Link>
+                )
+            }
             return (
                 <Link
                     key={key}

@@ -1,5 +1,5 @@
 import { Row, Pressable } from 'app/design/view'
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import { useState, useEffect, useMemo } from 'react'
 import { menuItemsByNameNew, cloneObject, appSetting, storageGet, storageSet } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
@@ -80,7 +80,7 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
                 <FormModal key={pageData?.ts} pageData={pageData} setPageData={setPageData} />
                 {menu_add_items.length > 0 && <Row className="gap-2 flex-none">
                     {menu_add_items.map((item, index) => (
-                        <Button key={item.name} size="base" variant="secondary" rounded iconOnly onPress={() => handleFormModal(item, null, setPageData, data.params)} startDecorator={item.icon} />
+                        <NeoButton key={item.name} style="bordered" borderShape="circle" controlSize="regular" onPress={() => handleFormModal(item, null, setPageData, data.params)} image={item.icon} />
                     ))}
                 </Row>}
 

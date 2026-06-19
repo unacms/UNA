@@ -99,6 +99,25 @@ export const settingsElements = {
     },
     editor: {
         engine: 'enriched',//enriched || tentap
+        mention: {
+            // Background-prefetched seed for the bare "@" suggestion list (cold start,
+            // before the user has any local mention history). Set `prefetch_connections`
+            // to false to disable. `connections_url` may be a single URL string or an
+            // array of sources merged in order; `{user_id}` is replaced with the
+            // logged-in profile id. Defaults (when omitted) are friends + recommendations.
+            prefetch_connections: true,
+            connections_url: [
+                '/api.php?r=system/browse_friends/TemplServiceProfiles&params[]={user_id}&params[]=',
+                '/api.php?r=system/browse_recommendations_friends/TemplServiceProfiles&params[]={user_id}&params[]=',
+            ],
+            // Mention styling. `render_class` styles mentions in rendered posts/comments
+            // on NATIVE (web posts mirror these tokens via the .bx-mention-link CSS in
+            // utilities.css). `editor_color` / `editor_background` are raw color values for
+            // the in-editor mention node (EnrichedTextInput htmlStyle, web + native).
+            render_class: 'text-accent-foreground bg-accent/60 rounded px-1',
+            editor_color: { light: 'rgba(37, 99, 235, 1)', dark: 'rgba(59, 130, 246, 1)' },
+            editor_background: { light: 'rgba(191, 219, 254, 0.6)', dark: 'rgba(30, 58, 138, 0.5)' },
+        },
         toolbar: {
             padding: 1, // Padding for toolbar buttons in pixels
             colors: {

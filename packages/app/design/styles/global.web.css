@@ -22,6 +22,17 @@ select {
     }
 }
 
+/* The enriched editor (Tiptap/ProseMirror) gets its focus affordance from its
+ * container. Suppress the global focus-visible outline on the editable element
+ * itself — otherwise it shows up as a stray blue line under the current line
+ * whenever the browser's focus-visible heuristic kicks in (e.g. after typing). */
+.ProseMirror:focus,
+.ProseMirror:focus-visible,
+.tiptap:focus,
+.tiptap:focus-visible {
+    outline: none !important;
+}
+
 /* Generic web link hit area via pseudo-element; size variants below */
 .u-link-hitarea,
 .u-link-hitarea-xs,

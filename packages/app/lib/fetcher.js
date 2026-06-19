@@ -6,7 +6,7 @@ const USE_PROXY_WEB = appSetting('config', 'use_proxy_web');
 const USE_PROXY_NATIVE = appSetting('config', 'use_proxy_native');
 const FETCH_TIMEOUT_MS = appSetting('config', 'fetch_timeout_ms') || 15000;
 
-export async function fetcher (mixed, useProxy = false) {
+export async function fetcher (mixed, useProxy = false, fetchOptions = {}) {
     let prefix = UNA_URL;
     if ((Platform.OS === 'web'  && USE_PROXY_WEB) || useProxy){
         const webBaseUrl = typeof window !== 'undefined' ? window.location.origin : APP_URL;
@@ -17,7 +17,7 @@ export async function fetcher (mixed, useProxy = false) {
         prefix =  APP_URL + "/api";
     }
 
-    const r = await fetcherRaw(prefix, mixed).then(async (r) => {
+    const r = await fetcherRaw(prefix, mixed, fetchOptions).then(async (r) => {
         let a;
         try {
             a = await r.json();
@@ -30,9 +30,18 @@ export async function fetcher (mixed, useProxy = false) {
     return r;
 }
 
-async function fetcherRawOnce(url, { data, headers, callback }) {
+async function fetcherRawOnce(url, { data, headers, callback, signal, timeoutMs }) {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    const timeout = timeoutMs ?? FETCH_TIMEOUT_MS;
+    const onExternalAbort = () => controller.abort();
+    if (signal?.aborted) {
+        const err = new Error('Aborted');
+        err.name = 'AbortError';
+        err.aborted = true;
+        throw err;
+    }
+    signal?.addEventListener('abort', onExternalAbort);
+    const timer = setTimeout(() => controller.abort(), timeout);
 
     try {
         const r = await fetch(url, {
@@ -48,15 +57,22 @@ async function fetcherRawOnce(url, { data, headers, callback }) {
         return r;
     } catch (error) {
         if (error?.name === 'AbortError') {
+            if (signal?.aborted) {
+                const err = new Error('Aborted');
+                err.name = 'AbortError';
+                err.aborted = true;
+                throw err;
+            }
             throw new Error('Timeout');
         }
         throw error;
     } finally {
         clearTimeout(timer);
+        signal?.removeEventListener('abort', onExternalAbort);
     }
 }
 
-export async function fetcherRaw(host, mixed) {
+export async function fetcherRaw(host, mixed, fetchOptions = {}) {
     let path, token, data, origin, headers, callback;
 
     if (Array.isArray(mixed)){
@@ -86,21 +102,38 @@ export async function fetcherRaw(host, mixed) {
     const lang = i18n.language;
 
     const url = host + path + "&lang=" + lang;
-    const maxAttempts = data ? 1 : 3;
+    const {
+        signal,
+        timeoutMs,
+        maxAttempts: maxAttemptsOverride,
+        silent = false,
+    } = fetchOptions;
+    const maxAttempts = maxAttemptsOverride ?? (data ? 1 : 3);
     const baseDelayMs = 300;
     let lastError = null;
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        if (signal?.aborted) {
+            const err = new Error('Aborted');
+            err.name = 'AbortError';
+            err.aborted = true;
+            throw err;
+        }
         try {
-            return await fetcherRawOnce(url, { data, headers, callback });
+            return await fetcherRawOnce(url, { data, headers, callback, signal, timeoutMs });
         } catch (error) {
             lastError = error;
+            if (error?.aborted) {
+                throw error;
+            }
             const isRetriable = error?.message === 'Timeout' || error?.name === 'TypeError';
             if (!isRetriable || attempt >= maxAttempts) {
-                if (error?.message === 'Timeout') {
-                    console.error('Api call timeout:', FETCH_TIMEOUT_MS, url);
-                } else {
-                    console.error('Api call error: ', error, url);
+                if (!silent) {
+                    if (error?.message === 'Timeout') {
+                        console.error('Api call timeout:', timeoutMs ?? FETCH_TIMEOUT_MS, url);
+                    } else {
+                        console.error('Api call error: ', error, url);
+                    }
                 }
                 throw error;
             }
