@@ -4,6 +4,8 @@ import { appSetting } from 'app/lib/util';
 import { Icon } from 'app/ui/atoms/icon'
 import Image from 'app/ui/atoms/image';
 import Link from 'app/ui/atoms/link'
+import { useTheme } from 'app/design/theme'
+import { useResolveClassNames } from 'uniwind'
 
 const badgeTheme = appSetting('theme', 'badges');
 const badgeSizes = appSetting('theme', 'badge_sizes');
@@ -33,6 +35,34 @@ const colorMapping = {
     violet: { bg: 'bg-violet-600/20', text: ' text-violet-700 dark:text-violet-300' },
     fuchsia: { bg: 'bg-fuchsia-600/20', text: ' text-fuchsia-700 dark:text-fuchsia-300' },
 };
+
+const isTruthyFlag = (value) => value === true || value === 1 || value === '1'
+
+// Icon ignores layout/font utilities; pass only text-* tokens so Uniwind can
+// resolve a stroke color on native (otherwise Icon falls back to colors.default ≈ black).
+const extractTextColorClasses = (className = '') =>
+    className
+        .trim()
+        .split(/\s+/)
+        .filter((token) => token.startsWith('text-') || token.startsWith('dark:text-'))
+        .join(' ')
+
+const rawColorValue = (color) => {
+    if (!color || typeof color !== 'string') return null
+    const value = color.trim()
+    if (/^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(value)) return value
+    if (/^rgba?\(/i.test(value)) return value
+    return null
+}
+
+function BadgeIcon({ icon, size, textColorClass, rawColor }) {
+    const { colors } = useTheme()
+    const iconColorClass = extractTextColorClasses(textColorClass) || 'text-primary'
+    const resolved = useResolveClassNames(iconColorClass)
+    const color = rawColorValue(rawColor) || resolved?.color || colors.primary
+
+    return <Icon icon={icon} size={size} className={iconColorClass} color={color} />
+}
 
 export default function Badge({ data, variant = "default", size = 'sm', rounded = false, children, className = '' }) {
     // Handle case where children are passed instead of data object
@@ -84,43 +114,61 @@ export default function Badge({ data, variant = "default", size = 'sm', rounded 
     } else {
         data.icon = data.icon || 'CheckMark';
 
-        // Check what to display based on is_icon_only setting
-        const hasIcon = !!data.icon && isNaN(data.icon); // Always show icon if it exists
-        const hasImage = !!data.icon_url;
-        const hasText = data.text && !data.is_icon_only; // Only show text if not icon-only mode
-        const hasBoth = hasIcon && hasText || hasImage && hasText;
+        const isIconOnly = isTruthyFlag(data.is_icon_only) || isTruthyFlag(data.icon_only)
+        const hasIcon = !!data.icon && isNaN(data.icon)
+        const hasImage = !!data.icon_url
+        const hasText = data.text && !isIconOnly
+        const hasBoth = hasIcon && hasText || hasImage && hasText
+        const sizeSize = size && badgeSizes[size]?.icon_size || 14
+
+        // Apply theme or data.color for text/icon color
+        const mappedColor = data.color && colorMapping[data?.color?.toLowerCase().split("-")[0]]
+        let backgroundClass, textColorClass
+        if (mappedColor) {
+            backgroundClass = mappedColor.bg
+            textColorClass = mappedColor.text || 'text-white'
+        } else {
+            backgroundClass = badgeTheme['u-badge-' + variant]
+            textColorClass = badgeTheme['u-badge-' + variant + '-text'] || badgeTheme['u-badge-text-' + variant] || ''
+        }
+
+        // UNA icon-only badges: show the icon/image alone, no pill background.
+        if (isIconOnly && (hasIcon || hasImage)) {
+            const iconOnlyContent = hasIcon ? (
+                <BadgeIcon icon={data.icon} size={sizeSize} textColorClass={textColorClass} rawColor={data.color} />
+            ) : (
+                <Image
+                    width={sizeSize}
+                    height={sizeSize}
+                    src={data.icon_url}
+                />
+            )
+            const href = data.badge_link || data.link
+            if (href) {
+                return (
+                    <Link href={href} className={className}>
+                        {iconOnlyContent}
+                    </Link>
+                )
+            }
+            return (
+                <View className={`items-center justify-center ${className}`}>
+                    {iconOnlyContent}
+                </View>
+            )
+        }
 
         // Build base classes; default padding/rounding only if size not provided
-        const baseClasses = `items-center flex-row web:inline-flex`;
-
-        // Container sizing and padding from size map
-        const containerSize = size && badgeSizes[size]?.container || '';
-        const roundedSize = size && badgeSizes[size]?.rounded || 'rounded-md ';
-        const sizeSize = size && badgeSizes[size]?.icon_size || 14
-        const pad = size && ((hasText || hasBoth) ? badgeSizes[size]?.wide_padding : badgeSizes[size]?.padding) || '';
-        const containerClasses = `${baseClasses} ${containerSize} ${pad}`.trim();
-        const defaultPadNoSize = !size ? 'px-1' : '';
-
-        // Apply theme or data.color for background using color mapping
-        const mappedColor = data.color && colorMapping[data?.color?.toLowerCase().split("-")[0]];
-
-        let backgroundClass, textColorClass;
-
-        if (mappedColor) {
-            backgroundClass = mappedColor.bg;
-            textColorClass = mappedColor.text || 'text-white';
-        } else {
-            // Fallback to theme settings
-            backgroundClass = badgeTheme['u-badge-' + variant];
-            const variantTextClass = badgeTheme['u-badge-' + variant + '-text'] || badgeTheme['u-badge-text-' + variant] || '';
-            textColorClass = variantTextClass;
-        }
+        const baseClasses = `items-center flex-row web:inline-flex`
+        const containerSize = size && badgeSizes[size]?.container || ''
+        const roundedSize = size && badgeSizes[size]?.rounded || 'rounded-md '
+        const pad = size && ((hasText || hasBoth) ? badgeSizes[size]?.wide_padding : badgeSizes[size]?.padding) || ''
+        const containerClasses = `${baseClasses} ${containerSize} ${pad}`.trim()
+        const defaultPadNoSize = !size ? 'px-1' : ''
 
         return (
             <View className={`${containerClasses} ${backgroundClass} ${defaultPadNoSize} ${rounded ? (typeof rounded === 'string' ? rounded : 'rounded-full') : roundedSize} ${className}`}>
-                {hasIcon && <Text className={`${badgeTheme['u-badge-text']} ${textColorClass}`}>
-                    <Icon icon={data.icon} size={sizeSize} />
-                </Text>}
+                {hasIcon && <BadgeIcon icon={data.icon} size={sizeSize} textColorClass={textColorClass} rawColor={data.color} />}
                 {hasImage && (
                     <View className={`${size && badgeSizes[size]?.image_container || ''}`}>
                         <Image

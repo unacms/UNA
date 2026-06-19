@@ -110,13 +110,12 @@ export const settingsElements = {
                 '/api.php?r=system/browse_friends/TemplServiceProfiles&params[]={user_id}&params[]=',
                 '/api.php?r=system/browse_recommendations_friends/TemplServiceProfiles&params[]={user_id}&params[]=',
             ],
-            // Mention styling. `render_class` styles mentions in rendered posts/comments
-            // on NATIVE (web posts mirror these tokens via the .bx-mention-link CSS in
-            // utilities.css). `editor_color` / `editor_background` are raw color values for
-            // the in-editor mention node (EnrichedTextInput htmlStyle, web + native).
-            render_class: 'text-accent-foreground bg-accent/60 rounded px-1',
+            // Mention styling — rendered as a plain colored link (no background/padding).
+            // `render_class` styles mentions in rendered posts/comments on NATIVE (web posts
+            // mirror this via the .bx-mention-link CSS in utilities.css). `editor_color` is
+            // the in-editor mention text color (EnrichedTextInput htmlStyle, web + native).
+            render_class: 'text-accent-foreground',
             editor_color: { light: 'rgba(37, 99, 235, 1)', dark: 'rgba(59, 130, 246, 1)' },
-            editor_background: { light: 'rgba(191, 219, 254, 0.6)', dark: 'rgba(30, 58, 138, 0.5)' },
         },
         toolbar: {
             padding: 1, // Padding for toolbar buttons in pixels

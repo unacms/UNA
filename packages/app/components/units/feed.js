@@ -117,7 +117,7 @@ function DefaultUnit({ data }) {
                 padding="p-0"
                
             >
-                <Row className="gap-3 p-3 lg:p-4 flex-auto">
+                <Row className="gap-3 p-3 lg:pt-4 lg:px-4 flex-auto">
                     <Skeleton visible={isSkeleton} preset='feed_author'>
                         <Author data={data} url={url} t={t} />
                         <Row className="flex-none mb-auto items-center gap-1">

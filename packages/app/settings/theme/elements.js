@@ -64,7 +64,7 @@ export const settingsElements = {
     },
     cards: {
         'u-card-list': ' u-card-list bg-card shadow-card-outline dark:shadow-card-outline-deep sm:rounded-xl ',
-        'u-card-list-padding': 'p-4 sm:rounded-xl',
+        'u-card-list-padding': 'p-3 lg:p-4 sm:rounded-xl',
         'u-card-base': 'u-card-base  rounded-xl bg-card text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
         'u-card-padding': 'py-4 ',
         'u-card-header': 'px-4',

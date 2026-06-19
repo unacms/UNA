@@ -42,7 +42,7 @@ export const settingsProfiles = {
             container: 'w-10 h-10',
             width: 40,
             height: 40,
-            font: 'text-sm leading-5 web:hover:underline',
+            font: 'text-[15px] leading-5 web:hover:underline',
             letter_font: 'text-lg font-semibold',
         },
         lg: {

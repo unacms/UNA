@@ -18,7 +18,9 @@ export function mentionsToUnaLinks(html) {
         const profileId = attr(attrs, 'data-profile-id')
         const href = attr(attrs, 'href')
         const cls = indicator === '#' ? 'bx-tag' : 'bx-mention-link'
-        const text = inner.trim()
+        // Store the name without the leading indicator; renderers add it back.
+        let text = inner.trim()
+        if (text.startsWith(indicator)) text = text.slice(indicator.length)
         const idAttr = profileId ? ` data-profile-id="${profileId}"` : ''
         const hrefAttr = href ? ` href="${href}"` : ''
         return `<a class="${cls}"${idAttr}${hrefAttr}>${text}</a>`
@@ -34,10 +36,14 @@ export function unaLinksToMentions(html) {
         const indicator = /\bbx-tag\b/.test(cls) ? '#' : '@'
         const profileId = attr(attrs, 'data-profile-id')
         const href = attr(attrs, 'href')
-        const text = inner.trim()
+        let name = inner.trim()
+        if (name.startsWith(indicator)) name = name.slice(indicator.length)
+        // Display the indicator (e.g. "@Name") in both the text attr and the inner
+        // content so the editor and the EnrichedText renderer show it consistently.
+        const display = `${indicator}${name}`
         const idAttr = profileId ? ` data-profile-id="${profileId}"` : ''
         const hrefAttr = href ? ` href="${href}"` : ''
         // двойные кавычки обязательны для корректного парсинга (issue #404)
-        return `<mention indicator="${indicator}" text="${indicator}${text}"${idAttr}${hrefAttr}>${text}</mention>`
+        return `<mention indicator="${indicator}" text="${display}"${idAttr}${hrefAttr}>${display}</mention>`
     })
 }

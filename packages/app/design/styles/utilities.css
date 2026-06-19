@@ -195,15 +195,11 @@
     .bx-tag {
         color: rgb(var(--accent-foreground)) !important;
         text-decoration: none !important;
-        background-color: rgb(var(--accent) / 0.6) !important;
-        padding: 2px 4px;
-        border-radius: 4px;
     }
 
     .bx-mention-link:hover,
     .bx-tag:hover {
         text-decoration: underline !important;
-        background-color: rgb(var(--accent) / 0.9) !important;
         color: rgb(var(--accent-foreground)) !important;
     }
 
