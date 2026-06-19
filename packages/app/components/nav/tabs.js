@@ -34,7 +34,7 @@ import { registerAll } from 'app/components/registry-init';
 import * as WebBrowser from 'expo-web-browser';
 import { getDomainFromUrl } from 'app/lib/util';
 import { useSound } from 'app/lib/hooks/useSound';
-import { canGoBackInTab, popTabHistory, resetAllTabHistory } from 'app/lib/tab-history';
+import { canGoBackInTab, navigateBackInTab, resetAllTabHistory } from 'app/lib/tab-history';
 import { clearAllPageCache } from 'app/lib/tab-page-cache';
 import emitter from 'app/context/emitter';
 import { useBottomSheetData } from 'app/context/bottomsheet';
@@ -368,11 +368,7 @@ export default function Tabs() {
                                                 setLayoutData(getAlert('list:move_to_top', true));
 
                                                 if (canGoBackInTab(tabKey)) {
-                                                    const prevUrl = popTabHistory(tabKey, currentUser);
-                                                    router.replace({
-                                                        pathname: tabKey,
-                                                        params: { url: prevUrl },
-                                                    });
+                                                    navigateBackInTab(router, tabKey, currentUser);
                                                 } else {
                                                     emitter.emit('list', { action: 'refresh' });
                                                 }

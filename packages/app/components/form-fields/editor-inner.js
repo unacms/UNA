@@ -113,10 +113,9 @@ export default function RftText({
     })
 
     const isCommentsEditor = container_class === 'comments'
-    // Comments use 14px (text-sm), other editors use 16px (text-base)
-    // iOS zoom prevention is handled by viewport maximumScale=1
-    const editorFontSize = isCommentsEditor ? '14px' : '16px'
-    const editorLineHeight = isCommentsEditor ? '20px' : '24px'
+    // text-base (16px) — inputs below 16px trigger mobile web zoom on focus
+    const editorFontSize = '16px'
+    const editorLineHeight = '24px'
     // Match published feed font (Inter via --font-main) so the editor looks identical to posts.
     const editorFontFamily =
         'var(--font-main, "Inter", "Inter Variable", "InterVariable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif)'
@@ -207,6 +206,12 @@ export default function RftText({
         box-sizing: border-box;
         padding: 0 !important;
         margin: 0 !important;
+    }
+    .ProseMirror, .tiptap {
+        cursor: text;
+    }
+    .ProseMirror a, .tiptap a {
+        cursor: pointer;
     }
     .mention-list {
         position: absolute;
@@ -993,9 +998,12 @@ export default function RftText({
 
             <Pressable
                 style={{ height: editorHeight }}
-                onPress={(event) => {
-                    isWeb ? '' : event.stopPropagation();
-                }}
+                className={isWeb ? 'web:cursor-text' : undefined}
+                {...(!isWeb && {
+                    onPress: (event) => {
+                        event.stopPropagation()
+                    },
+                })}
             >
                 <RichText
                     exclusivelyUseCustomOnMessage={false}

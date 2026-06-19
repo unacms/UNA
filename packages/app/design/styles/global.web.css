@@ -33,6 +33,17 @@ select {
     outline: none !important;
 }
 
+/* Rich text editors — I-beam over editable surface; pointer on links inside. */
+.eti-editor,
+.eti-editor .ProseMirror,
+.eti-editor .tiptap {
+    cursor: text;
+}
+
+.eti-editor a {
+    cursor: pointer;
+}
+
 /* Generic web link hit area via pseudo-element; size variants below */
 .u-link-hitarea,
 .u-link-hitarea-xs,

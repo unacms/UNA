@@ -714,7 +714,7 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
     };
     
     return (
-        <View className=" px-3 sm:px-4 " >
+        <View className=" px-3 " >
             {
                 formData.parent_id > 0 && (<View className='bg-accent/60 rounded-xl border border-accent px-2.5 py-2 mb-2'>
                     <Row className='items-start justify-between max-w-full relative'>

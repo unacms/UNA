@@ -254,7 +254,7 @@ export function Modal({
         >
             <Pressable
                 onPress={handleContentPress}
-                className="flex-auto"
+                className="flex-auto web:cursor-default"
             >
                 {children}
             </Pressable>

@@ -1,5 +1,5 @@
 import { Root } from 'app/root'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useLayoutEffect } from 'react'
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, parseUrl, parseQueryString, getURI, getPageSettings } from 'app/lib/util'
 import { Loading } from 'app/customization/loading'
@@ -34,11 +34,16 @@ export async function getData(path, token, origin, headers, callback, params) {
     return { props: { uri: path.length ? path[0] : 'home', ...data } };
 }
 
+function routeParam(value) {
+    if (value == null) return value;
+    return Array.isArray(value) ? value[0] : value;
+}
+
 export function Screen(params) {
     const local = useLocalSearchParams();
     const pathname = params.tabname;
     const { currentUser } = useCurrentUser();
-    let _path = local.url;
+    let _path = routeParam(local.url);
     let isRoot = false;
   
     // BOTTOM TABS NAVIGATION
@@ -91,6 +96,21 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken }) => {
         if (!tabKey || !pagePath) return;
         pushTabHistory(tabKey, pagePath, currentUser);
     }, [tabKey, pagePath, currentUser?.id, currentUser?.url]);
+
+    // Apply cached page synchronously when the in-tab URL changes (e.g. profile back).
+    useLayoutEffect(() => {
+        if (!tabKey || !pagePath || refreshToken) return;
+        const cached = getCachedPageData(tabKey, pagePath);
+        if (cached) {
+            setPageData(cached);
+            return;
+        }
+        setPageData((prev) => {
+            const prevUrl = prev?.data?.url;
+            if (!prevUrl || prevUrl === pagePath) return prev;
+            return null;
+        });
+    }, [tabKey, pagePath, refreshToken]);
 
     useEffect(() => {
         if (!(pagePath && pagePath.startsWith('/') && !pagePath.includes('/?url='))) return;

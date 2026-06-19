@@ -363,7 +363,7 @@ export default function RftTextEnriched({
     return (
         <View
             ref={containerRef}
-            className={`flex-auto ${isToolBar
+            className={`flex-auto web:cursor-text ${isToolBar
                 ? ' px-3 py-2 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg flex-auto overflow-hidden text-card-foreground '
                 : (bg == 'transparent' ? '' : cn(inputSettings.base, inputSettings.rounded.default, inputSettings.size.default))
                 }`}
@@ -422,7 +422,7 @@ export default function RftTextEnriched({
                     minHeight: initialHeight,
                     maxHeight,
                     color: editorTextColor,
-                    fontSize: isCommentsEditor ? 14 : 16,
+                    fontSize: 16,
                     backgroundColor: 'transparent',
                 }}
                 onChangeHtml={onChangeHtml}

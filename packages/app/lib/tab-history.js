@@ -1,4 +1,34 @@
+import { InteractionManager, Platform } from 'react-native';
+import emitter from 'app/context/emitter';
 import { appSetting } from 'app/lib/util';
+import { useBottomSheetStore } from 'app/context/bottomsheet';
+
+const NAV_DEFER_MS = Platform.OS === 'web' ? 0 : 120;
+
+export function dismissNavigationOverlays() {
+    useBottomSheetStore.getState().setBottomSheetData(null);
+    emitter.emit('link', { action: 'pressed' });
+    emitter.emit('dynamic_menu', { action: 'hide' });
+    emitter.emit('editor', { action: 'blur' });
+}
+
+function runAfterOverlayDismiss(callback) {
+    if (NAV_DEFER_MS === 0) {
+        callback();
+        return;
+    }
+    InteractionManager.runAfterInteractions(() => {
+        requestAnimationFrame(() => {
+            setTimeout(callback, NAV_DEFER_MS);
+        });
+    });
+}
+
+/** Resolve `/tabN` from expo-router pathname (e.g. `/tab0`, `/tab0/index`). */
+export function getTabKeyFromPathname(pathname) {
+    const match = String(pathname || '').match(/\/(tab\d+)(?:\/|$)/);
+    return match ? `/${match[1]}` : '/tab0';
+}
 
 const tabHistoryState = {
     byTab: {},
@@ -106,19 +136,22 @@ export function navigateBackInTab(router, tabKey, currentUser) {
         return;
     }
 
-    if (canGoBackInTab(tabKey)) {
-        const prevUrl = popTabHistory(tabKey, currentUser);
-        router.replace({
-            pathname: tabKey,
-            params: { url: prevUrl },
-        });
+    const normalizedTabKey = getTabKeyFromPathname(tabKey);
+    const targetUrl = canGoBackInTab(normalizedTabKey)
+        ? popTabHistory(normalizedTabKey, currentUser)
+        : getTabRoot(normalizedTabKey, currentUser);
+
+    if (!targetUrl) {
         return;
     }
 
-    const rootUrl = getTabRoot(tabKey, currentUser);
-    router.replace({
-        pathname: tabKey,
-        params: { url: rootUrl },
+    dismissNavigationOverlays();
+
+    runAfterOverlayDismiss(() => {
+        router.replace({
+            pathname: normalizedTabKey,
+            params: { url: targetUrl },
+        });
     });
 }
 

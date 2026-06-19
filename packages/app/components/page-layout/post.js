@@ -139,7 +139,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
     const aItems = useMemo(() => mainBlocks.map((value, index) => ({
         id: `block_${value.name}`,
-        data: <View className={'px-3 sm:px-4 pb-3 sm:pb-4 lg:pb-5 bg-card ' + (index != 0 ? 'pt-4 lg:pt-0' : '')}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
+        data: <View className={'p-3 sm:px-4 pt-0 ' + (index != 0 ? 'pt-4 lg:pt-0' : '')}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
     })), [blocks, data, isDesktop]);
 
     const isRightCol = sideBarBlocks.length > 0 && isDesktop
@@ -256,19 +256,19 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         };
     }, []);
 
-    let offset2 = 64;
+    let offset2 = 80;
     if (isDesktop)
         offset2 += 32;// offsets in modal web
 
     if (!isWeb) {
             offset2 = insets.bottom + insets.top;
             if (Platform.OS == 'ios') {
-                offset2 = insets.bottom + insets.top + 64;
+                offset2 = insets.bottom + insets.top + 80;
             }
         }
     if (isModal) {
         return (
-            <View className="w-full justify-between flex-1 pt-4" >
+            <View className="w-full justify-between flex-1 pt-3" >
                 <View className='w-full flex-1 '>
                     <View style={{ height: windowHeight - offset2 - formHeight }}>
                         {data == 'loading' ?
@@ -289,7 +289,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                 <KbAvoidingView modalOffset={insets.top+56}>{/*was 90 56=14*4 modal header*/}
                     <View
                         onLayout={handleLayout}
-                        className=" mb-4  bg-card "
+                        className=" mb-4 bg-card "
                     >
                         <CommentsForm
                             isModal={isModal}

@@ -100,6 +100,7 @@ const HoverCard = React.memo(function HoverCard({
     onOpenChange,
     openDelay = 1000, // 1 second delay to avoid accidental triggers
     triggerMode, // 'hover' | 'click' | 'both' | undefined (default — current behavior)
+    maxPopupWidth,
 }) {
     const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
     const openTimerRef = React.useRef(null);
@@ -260,8 +261,10 @@ const HoverCard = React.memo(function HoverCard({
             open={isOpen}
             onOpenChange={handleDropdownOpenChange}
             trigger={trigger}
-            minPopupWidth={320}
+            minPopupWidth={maxPopupWidth ? Math.min(320, maxPopupWidth) : 320}
+            maxPopupWidth={maxPopupWidth}
             hoverMode={true}
+            contentClassName={contentClassName}
         >
             {content}
         </DropdownPopup>

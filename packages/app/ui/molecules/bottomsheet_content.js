@@ -12,6 +12,8 @@ import { useWindowHeight } from 'app/context/measure';
 
 export default function ElementBottomSheetContent(props) {
     const { bottomSheetData, setBottomSheetData } = useBottomSheetData();
+    const [keepMounted, setKeepMounted] = useState(false);
+    const isOpen = Boolean(bottomSheetData);
     const {
         isListView = false,
         showClose = true,
@@ -23,9 +25,19 @@ export default function ElementBottomSheetContent(props) {
         onClose: onCloseCallback
     } = bottomSheetData || {};
 
+    useEffect(() => {
+        if (isOpen) {
+            setKeepMounted(true);
+        }
+    }, [isOpen]);
+
+    const handleSheetFullyDismissed = useCallback(() => {
+        setKeepMounted(false);
+    }, []);
+
     const onClose = useCallback(() => {
         setBottomSheetData(null);
-    }, []);
+    }, [setBottomSheetData]);
 
     const bottomSheetHeader = useMemo(() => (
         <>
@@ -53,17 +65,18 @@ export default function ElementBottomSheetContent(props) {
     ), [content, footer]);
 
     const bottomSheetProps = useMemo(() => ({
-        isShow: !!bottomSheetData,
+        isShow: isOpen,
         blocking: false,
         snapPoints,
         isListView,
         header: bottomSheetHeader,
-    }), [snapPoints, isListView, bottomSheetHeader, showClose]);
+        onFullyDismissed: handleSheetFullyDismissed,
+    }), [snapPoints, isListView, bottomSheetHeader, isOpen, handleSheetFullyDismissed]);
 
     const windowHeight = useWindowHeight();
-    if (!bottomSheetData) return null;
+    if (!isOpen && !keepMounted) return null;
 
-    if (bottomSheetData.modal) {
+    if (bottomSheetData?.modal) {
         return (
             <Modal
                 title={bottomSheetData.title}
@@ -90,7 +103,7 @@ export default function ElementBottomSheetContent(props) {
 
         <BottomSheet2 {...bottomSheetProps} header={bottomSheetHeader}>
             <View className="mx-auto w-full flex-1 flex-auto py-2 web:h-full z-50">
-                {contentView}
+                {isOpen ? contentView : null}
             </View>
 
         </BottomSheet2>
@@ -125,7 +138,7 @@ function BottomSheet2(props) {
     useEffect(() => {
         // Debounce rapid state changes to prevent removeChild errors
         const timer = setTimeout(() => {
-            if (!props.children) {
+            if (!props.isShow) {
                 bottomSheetModalRef.current?.close();
             }
             else {
@@ -135,12 +148,13 @@ function BottomSheet2(props) {
         }, 100); // Small delay to prevent rapid changes
         
         return () => clearTimeout(timer);
-    }, [props.children]);
+    }, [props.isShow]);
 
 
     const handleDismiss = useCallback(() => {
         setBottomSheetData(null);
-    }, [setBottomSheetData]);
+        props.onFullyDismissed?.();
+    }, [setBottomSheetData, props.onFullyDismissed]);
 
     const renderBackdrop = useCallback(
         (props) => (

@@ -1,16 +1,13 @@
-import { Row, Pressable } from 'app/design/view'
+import { Row, View } from 'app/design/view'
 import { NeoButton } from 'app/design/controls'
 import { useState, useEffect, useMemo } from 'react'
-import { menuItemsByNameNew, cloneObject, appSetting, storageGet, storageSet } from 'app/lib/util'
+import { menuItemsByNameNew, cloneObject } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
 import { CardList } from 'app/ui/molecules/card'
 import { useTranslation } from 'react-i18next'
 import FormModal, { handleFormModal, getFormModal } from 'app/ui/molecules/form_modal';
-import { Text, H2 } from 'app/design/typography'
-import { View } from 'app/design/view'
 import { BlockWrapper } from 'app/components/block-wrapper'
-import Tooltip from 'app/ui/molecules/tooltip'
 
 export default function MultiPostForm({ data, blockWrapperProps }) {
     const { currentUser } = useCurrentUser();
@@ -62,20 +59,19 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <CardList className="flex-row gap-2">
-                
+            <CardList className="flex-row items-center gap-2 min-w-0">
+                <View className="flex-none">
                     <Profile {...profileData} displaySize="base" displayType="unit_wo_info" />
-                
-                
-                    <Pressable 
-                        className={appSetting('feed', 'post_trigger')}
-                        onPress={handleTriggerPress}
-                    >
-                        <Text className={appSetting('feed', 'post_trigger_text')}>
-                            {t('Create new ') + firstForm.title.toLowerCase()}
-                        </Text>
-                    </Pressable>
-                
+                </View>
+                <NeoButton
+                    style="bordered"
+                    borderShape="capsule"
+                    controlSize="regular"
+                    classNames={{ root: 'flex-1 min-w-0', container: 'w-full min-w-0' }}
+                    align="start"
+                    label={t('Create new ') + firstForm.title.toLowerCase()}
+                    onPress={handleTriggerPress}
+                />
 
                 <FormModal key={pageData?.ts} pageData={pageData} setPageData={setPageData} />
                 {menu_add_items.length > 0 && <Row className="gap-2 flex-none">

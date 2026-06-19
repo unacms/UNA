@@ -14,13 +14,21 @@ export {
 export { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export function goBack(navigation, router, callback) {
-     if (callback){
-        callback(); 
+    if (callback) {
+        callback();
+        return;
     }
-    else{
-        if (navigation.getState().index > 0) {
+
+    const canPopStack =
+        navigation?.getState?.()?.index > 0 ||
+        navigation?.canGoBack?.();
+
+    if (canPopStack) {
+        if (navigation?.canGoBack?.()) {
+            navigation.goBack();
+        } else {
             router.back();
-        } 
+        }
     }
 }
 

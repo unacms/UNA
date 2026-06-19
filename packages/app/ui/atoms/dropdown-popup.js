@@ -23,6 +23,8 @@ export default function DropdownPopup({
     onOpenChange,
     trigger,
     minPopupWidth = 256,
+    /** Caps popup width (px). Inline style wins over Tailwind max-w-* on the popup shell. */
+    maxPopupWidth,
     defaultOpen = false,
     showOnTop = false,
     contentClasses = dropdownTheme?.cnt,
@@ -194,9 +196,15 @@ export default function DropdownPopup({
     const popupMeasured = (!buttonPos.shouldOpenAbove || popupHeight > 0) && popupRenderedWidth > 0;
     const hasMeasured = triggerMeasured && popupMeasured;
 
+    const cappedPopupWidth = maxPopupWidth
+        ? Math.min(maxPopupWidth, windowWidth - 32)
+        : windowWidth - 32;
+
     // Clamp left so the popup never overflows the screen edges, using the real
     // rendered width once onLayout has fired (falls back to minPopupWidth before).
-    const effectivePopupWidth = popupRenderedWidth > 0 ? popupRenderedWidth : minPopupWidth;
+    const effectivePopupWidth = popupRenderedWidth > 0
+        ? Math.min(popupRenderedWidth, cappedPopupWidth)
+        : (maxPopupWidth ? cappedPopupWidth : minPopupWidth);
     let finalLeft = buttonPos.x;
     if (finalLeft + effectivePopupWidth > windowWidth - 16) {
         finalLeft = windowWidth - effectivePopupWidth - 16;
@@ -236,8 +244,9 @@ export default function DropdownPopup({
                 opacity: hasMeasured ? 1 : 0,
                 visibility: hasMeasured ? 'visible' : 'hidden',
                 elevation: 5,
-                minWidth: minPopupWidth,
-                maxWidth: windowWidth - 32,
+                minWidth: maxPopupWidth ? Math.min(minPopupWidth, cappedPopupWidth) : minPopupWidth,
+                maxWidth: cappedPopupWidth,
+                ...(maxPopupWidth ? { width: cappedPopupWidth } : {}),
                 maxHeight: buttonPos.maxHeight,
                 zIndex: 1000,
             }}
@@ -246,7 +255,8 @@ export default function DropdownPopup({
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 tabIndex={isWeb ? -1 : undefined}
-                className="web:outline-none"
+                className={clsx('web:outline-none', maxPopupWidth && 'w-full min-w-0 max-w-full')}
+                contentContainerClassName={maxPopupWidth ? 'w-full min-w-0' : undefined}
             >
                 {children}
             </ScrollView>

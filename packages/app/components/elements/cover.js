@@ -32,7 +32,8 @@ import { usePathname, useRouter } from 'app/lib/hooks/router'
 import { getComponent } from 'app/components/registry'
 import { useIsDesktop } from 'app/context/measure'
 import { PageHeaderSmall } from 'app/ui/molecules/page_header'
-import { canGoBackInTab, navigateBackInTab } from 'app/lib/tab-history'
+import { canGoBackInTab, getTabKeyFromPathname, navigateBackInTab } from 'app/lib/tab-history'
+import { FeedbackHaptics } from 'app/lib/util'
 const conductorTheme = appSetting('theme', 'conductor')
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
@@ -40,10 +41,11 @@ const BackButton = ({ isPerson }) => {
     const router = useRouter()
     const pathname = usePathname()
     const { currentUser } = useCurrentUser()
-    const currentTab = '/' + (pathname?.split('/')[1] || 'tab0')
+    const currentTab = getTabKeyFromPathname(pathname)
     const hasTabBack = canGoBackInTab(currentTab)
-    
+
     const handleBackPress = () => {
+        FeedbackHaptics('Medium')
         navigateBackInTab(router, currentTab, currentUser)
     }
 

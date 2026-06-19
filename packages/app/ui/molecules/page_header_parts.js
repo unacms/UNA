@@ -10,7 +10,7 @@ import { usePathname, useRouter } from 'app/lib/hooks/router';
 import { useIsDesktop } from 'app/context/measure';
 import { Button } from 'app/design/controls';
 import { getComponent } from 'app/components/registry';
-import { canGoBackInTab, navigateBackInTab } from 'app/lib/tab-history';
+import { canGoBackInTab, getTabKeyFromPathname, navigateBackInTab } from 'app/lib/tab-history';
 import {
     defaultHeader,
     useHeader,
@@ -134,7 +134,7 @@ export const PageHeaderBody = memo(({
     const ContextSelector = getComponent('molecule', 'context_selector');
     const HeaderElement = getComponent('molecule', 'header_element');
     const pathname = usePathname();
-    const currentTab = '/' + (pathname?.split('/')[1] || 'tab0');
+    const currentTab = getTabKeyFromPathname(pathname);
     const canShowBackButton = isWeb
         ? (isBackButton &&
             (typeof isBackButton === 'function' || (typeof history !== 'undefined' && history.length > 2)))

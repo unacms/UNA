@@ -10,6 +10,7 @@ import { Loading } from 'app/customization/loading'
 import { getModalPostTitle } from 'app/customization/functions'
 import { appSetting } from 'app/lib/util';
 import { useModal, useCloseModal } from 'app/context/jotai/modal';
+import emitter from 'app/context/emitter';
 
 
 const isWeb = Platform.OS === 'web';
@@ -139,6 +140,14 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
 export const FormModalHost = () => {
     const modal = useModal();
     const closeModal = useCloseModal();
+
+    useEffect(() => {
+        const subscription = emitter.addListener('link', () => {
+            closeModal();
+        });
+        return () => subscription.remove();
+    }, [closeModal]);
+
     if (modal.visible && modal.mode === 'content') {
         return (
             <Modal

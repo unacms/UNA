@@ -521,31 +521,19 @@ export const Author = memo(({ data, url, t }) => {
         </ProfileHoverCard>
     );
 
-    const TimestampLink = isWeb ? (
+    const TimestampLink = (
         <Link
             href={url}
-            emulate={false}
+            {...(isWeb
+                ? { emulate: false }
+                : {
+                      mode: 'text',
+                      hitSlop: { top: 8, bottom: 8, left: 8, right: 8 },
+                  })}
             size="xs"
             variant="secondary"
         >
-            <Time ts={data.date} />
-        </Link>
-    ) : (
-        <Link
-            href={url}
-            mode="text"
-            size="xs"
-            variant="secondary"
-            hitSlop={{
-                top: 8,
-                bottom: 8,
-                left: 8,
-                right: 8,
-            }}
-        >
-            <Time variant="link"
-                ts={data.date}
-            />
+            <Time ts={data.date} className="text-secondary-foreground" />
         </Link>
     );
 

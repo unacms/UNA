@@ -273,14 +273,16 @@ export const View = interopComponent('div', 'View')
 
 export const Pressable = interopRender(
     'Pressable',
-    ({ className, onLayout, ...props }, ref) => {
+    ({ className, onLayout, onPress, ...props }, ref) => {
         const layoutRef = useWebLayout(ref, onLayout)
+        const hasCursorClass =
+            typeof className === 'string' && /(?:^|\s)(?:web:)?cursor-/.test(className)
 
         return (
             <div
                 ref={layoutRef}
-                className={cn('neo-p', className)}
-                {...sanitizeWebProps(props)}
+                className={cn('neo-p', onPress && !hasCursorClass && 'web:cursor-pointer', className)}
+                {...sanitizeWebProps({ ...props, onPress })}
             />
         )
     }

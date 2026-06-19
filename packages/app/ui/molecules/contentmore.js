@@ -77,7 +77,7 @@ export function ContentMore({
 
     // Prepare toggle text
     const toggleText = showFull ? " " : "See more";
-    const toggleHtml = ` <span class="text-foreground text-sm font-semibold web:hover:underline">${toggleText}</span>`;
+    const toggleHtml = ` <span class="text-foreground text-sm font-semibold web:hover:underline web:cursor-pointer">${toggleText}</span>`;
 
     let displayContent = showFull ? content : shortHtml;
 
@@ -104,16 +104,24 @@ export function ContentMore({
 
     displayContent += linkContent;
 
+    const html = (
+        <HtmlMemo
+            data={displayContent}
+            customClassName={customClassName}
+            lineClamp={null} // Manual truncation used for inline toggle
+            innerRef={contentRef}
+        />
+    );
+
     return (
         <View className=" max-w-full">
-            <Pressable className="max-w-full" onPress={showButton ? handleToggle : undefined}>
-                <HtmlMemo 
-                    data={displayContent}
-                    customClassName={customClassName}
-                    lineClamp={null} // Manual truncation used for inline toggle
-                    innerRef={contentRef}
-                />
-            </Pressable>
+            {showButton ? (
+                <Pressable className="max-w-full web:cursor-default" onPress={handleToggle}>
+                    {html}
+                </Pressable>
+            ) : (
+                <View className="max-w-full">{html}</View>
+            )}
         </View>
     );
 }

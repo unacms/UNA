@@ -21,8 +21,8 @@ const ProfileCardContent = memo(function ProfileCardContent({ profileData,  page
     const avatarUrl = profileData?.url_avatar;
     const profileUrl = profileData?.url;
     return (
-            <View className="p-2">
-                <Row className="gap-3 items-start">
+            <View className="w-full min-w-0 max-w-full p-2">
+                <Row className="w-full min-w-0 gap-3 items-start">
                     <View className="flex-none">
                         <Profile
                             {...profileData}
@@ -33,13 +33,13 @@ const ProfileCardContent = memo(function ProfileCardContent({ profileData,  page
                             showLinks={false}
                         />
                     </View>
-                    <View className="flex-1 gap-1">
+                    <View className="flex-1 min-w-0 gap-1">
                         <Link href={profileUrl} emulate={true}>
                             <Text className="text-base font-bold text-foreground web:hover:text-primary">
                                 {displayName}
                             </Text>
                         </Link>
-                        <Text className='text-xs text-secondary-foreground' numberOfLines={2}>{pageData?.data?.description}</Text>
+                        <Text className="block w-full min-w-0 text-xs text-secondary-foreground wrap-break-word" numberOfLines={2}>{pageData?.data?.description}</Text>
                     </View>
                 </Row>
                 <View className="mt-2 gap-y-2">
@@ -93,9 +93,9 @@ function ProfileHoverCardContent({ profileData, children }) {
     }, [profileData?.url, pageData.data]);
 
     return (
-        <HoverCard onOpenChange={handleOpenChange}>
+        <HoverCard onOpenChange={handleOpenChange} maxPopupWidth={384}>
             <HoverCardTrigger>{children}</HoverCardTrigger>
-            <HoverCardContent className="w-80 p-0">
+            <HoverCardContent className="w-full max-w-sm p-0 overflow-hidden">
                 <ProfileCardContent profileData={profileData} pageData={pageData} />
             </HoverCardContent>
         </HoverCard>

@@ -111,7 +111,7 @@ export default function FormComments(props) {
             )}
             <Row className={`w-full gap-2 ${shouldGrowFromBottom ? 'items-end' : 'items-start'}`}>
                 {currentUser && (
-                     <View className=" bg-muted/60 rounded-full w-9 h-9 p-0.5 -mx-0.5 shadow-btn-glass dark:shadow-btn-glass-deep">
+                     <View className=" bg-card rounded-full w-10 h-10 p-1 shadow-btn-glass dark:shadow-btn-glass-deep">
                         <Profile
                             {...currentUser}
                             url_avatar={currentUser.avatar}
@@ -122,7 +122,7 @@ export default function FormComments(props) {
                     </View>
                 )}
                 <View className="flex-auto ">
-                    <View className=" items-stretch bg-input rounded-xl flex-auto shadow-btn-glass dark:shadow-btn-glass-deep" >
+                    <View className=" items-stretch bg-input/60 rounded-lg flex-auto shadow-input-outline dark:shadow-input-outline-deep" >
                         <View
                             className={`py-2 px-2.5 flex-auto items-center ${shouldGrowFromBottom ? "justify-end" : "justify-start"} ${hasContent ? 'mb-8' : ''}`}
                             style={{

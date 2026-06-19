@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect, useMemo, useRef } from "react";
-import Animated, { useSharedValue, useAnimatedStyle, withTiming, interpolate } from 'react-native-reanimated';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, interpolate, cancelAnimation } from 'react-native-reanimated';
 import { View, ScrollView, Row } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { deepEqual, getUnitModeBySource } from 'app/lib/util';
@@ -59,6 +59,9 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
 
     useEffect(() => {
         progress.set(withTiming(showSmall ? 1 : 0, { duration: COVER_SWITCH_DURATION }));
+        return () => {
+            cancelAnimation(progress);
+        };
     }, [showSmall, progress]);
 
     const containerStyle = useAnimatedStyle(() => {
@@ -734,10 +737,12 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         useCallback(() => {
             if (useLocalHeader) {
                 setHeader({ header: false });
-            }
-            else {
+            } else {
                 setHeader({ subHeader: sceneHeaderComp });
             }
+            return () => {
+                setHeader(defaultHeader);
+            };
         }, [sceneHeaderComp, useLocalHeader, setHeader])
     );
 
