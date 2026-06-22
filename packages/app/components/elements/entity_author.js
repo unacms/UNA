@@ -1,6 +1,5 @@
 import { getAlert } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
-import { Button } from 'app/design/controls';
 import { View, Row } from 'app/design/view';
 import Time from 'app/ui/atoms/time';
 import Profile from 'app/ui/molecules/profile';
@@ -114,7 +113,7 @@ export default function ElementEntityAuthor({ data, blockWrapperProps }) {
     const menuOptions = handleMenuManageSelect ? { onSelect: (oItem, event) => handleMenuManageSelect(oItem, event, setPageData) } : {};
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <Row className="justify-between gap-3">
+            <Row className="justify-between gap-2">
                 <FormModal pageData={pageData} setPageData={setPageData} />
                 <Redirect ref={redirectdRef} />
                 {viewState.view == 'edited' && (<Modal
@@ -150,9 +149,18 @@ export default function ElementEntityAuthor({ data, blockWrapperProps }) {
                 }
                 <View>
                     {aMenuManageItems.length > 0 &&
-                        <DropdownMenu mode="popup" items={aMenuManageItems} {...menuOptions}>
-                            <Button variant="text" rounded="true" startDecorator="Ellipsis" size="base" />
-                        </DropdownMenu>
+                        <DropdownMenu
+                            mode="popup"
+                            items={aMenuManageItems}
+                            {...menuOptions}
+                            buttonProps={{
+                                image: 'Ellipsis',
+                                style: 'borderless',
+                                borderShape: 'circle',
+                                controlSize: 'regular',
+                                accessibilityLabel: 'More options',
+                            }}
+                        />
                     }
                 </View>
             </Row>

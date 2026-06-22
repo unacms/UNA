@@ -42,7 +42,7 @@ export default function ({ buttonProps, children, tooltip, fullWidth, uri }) {
     const defaultButtonProps = {
         style: isDesktop ? 'glass' : 'borderless',
         tooltip: tooltip || 'Notifications',
-        controlSize: 'regular',
+        controlSize: isDesktop ? 'regular' : 'small',
         borderShape: 'circle',
         image: 'Bell',
         accessibilityLabel: 'Notifications',

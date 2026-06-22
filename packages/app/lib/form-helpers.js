@@ -1,7 +1,7 @@
 
 import { getComponent } from 'app/components/registry';
 import { Text } from 'app/design/typography'
-import { Button } from "app/design/controls";
+import { Button, NeoButton } from "app/design/controls";
 import emitter from 'app/context/emitter';
 
 export function getFormFieldByData(inputData, handleSubmit, format, externalProps) {
@@ -58,16 +58,47 @@ export function LabelButton({ field_name, size = 'sm', variant = 'secondary', ic
     );
 }
 
-export function FileButton({ field_name, size = 'sm', variant = 'secondary', icon = "Image", rounded = true, tooltip = "Add Files", source = 'library' }) {
+const LEGACY_SIZE_TO_CONTROL = {
+    xs: 'mini',
+    sm: 'small',
+    base: 'regular',
+    md: 'regular',
+    lg: 'large',
+};
+
+const LEGACY_VARIANT_TO_STYLE = {
+    text: 'borderless',
+    link: 'borderless',
+    secondary: 'bordered',
+    outline: 'bordered',
+    default: 'bordered',
+};
+
+export function FileButton({
+    field_name,
+    size = 'sm',
+    variant,
+    style: neoStyle,
+    controlSize,
+    icon = "Image",
+    rounded = true,
+    tooltip = "Add Files",
+    source = 'library',
+    ...rest
+}) {
+    const resolvedStyle =
+        neoStyle ?? (variant ? LEGACY_VARIANT_TO_STYLE[variant] : undefined) ?? 'borderless';
+    const resolvedControlSize = controlSize ?? LEGACY_SIZE_TO_CONTROL[size] ?? 'regular';
+
     return (
-        <Button
-            startDecorator={icon}
-            size={size}
-            variant={variant}
-            rounded ={rounded}
+        <NeoButton
+            image={icon}
+            style={resolvedStyle}
+            controlSize={resolvedControlSize}
+            borderShape={rounded ? 'circle' : 'roundedRectangle'}
             tooltip={tooltip}
-            
             onPress={() => emitter.emit(`fld_files_${field_name}`, { action: 'add', source: source })}
+            {...rest}
         />
     );
 }

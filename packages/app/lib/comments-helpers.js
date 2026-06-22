@@ -34,7 +34,9 @@ export function CommentsBrowse({
     replyId,
     hideActions = false,
     scrollToIndex = false,
-    isModal = false
+    isModal = false,
+    marginBottom = 0,
+    useCustomScrollHandler,
 }) {
     const UnitComments = getComponent('unit', 'comments');
     const { t } = useTranslation();
@@ -367,13 +369,32 @@ export function CommentsBrowse({
         }
     }
 
+    const renderListFooter = useCallback(() => (
+        <>
+            {(browseParams.object_id && hasNextPage && isFetchingNextPage) ? (
+                <View className=''><Loading /></View>
+            ) : (!refetchState.visibleItems.length && !refetchRef.current.isFirstLoad ? appStatic('components_comments_empty') : null)}
+            {marginBottom > 0 ? <View style={{ height: marginBottom }} /> : null}
+        </>
+    ), [
+        browseParams.object_id,
+        hasNextPage,
+        isFetchingNextPage,
+        refetchState.visibleItems.length,
+        marginBottom,
+    ]);
+
     return (
         <>
+            <View className="flex-1 w-full">
             <UniList
                 mode='simple'
                 isModal={isModal}
+                useCustomScrollHandler={useCustomScrollHandler}
                 useWindowScroll={!isModal}
                 height={height > 0 ? height : undefined}
+                style={{ flex: 1 }}
+                contentContainerStyle={marginBottom > 0 ? { paddingBottom: marginBottom } : undefined}
                 data={dataOut}
                 refer={flashListRef}
                 onRefresh={refetch}
@@ -400,12 +421,9 @@ export function CommentsBrowse({
                     )
                 }}
                 onEndReached={handleEndReached}
-                ListFooterComponent={
-                    (browseParams.object_id && hasNextPage && isFetchingNextPage) ? (
-                        <View className=''><Loading /></View>
-                    ) : (!refetchState.visibleItems.length && !refetchRef.current.isFirstLoad ? appStatic('components_comments_empty') : null)
-                }
+                ListFooterComponent={renderListFooter}
             />
+            </View>
             {/*!refetchState.visibleItems.length && appStatic('components_comments_empty')*/}
             <Snackbar
                 visible={refetchState.hasNewData}
@@ -714,7 +732,7 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
     };
     
     return (
-        <View className=" px-3 " >
+        <View className=" p-1.5 sm:p-2.5 " >
             {
                 formData.parent_id > 0 && (<View className='bg-accent/60 rounded-xl border border-accent px-2.5 py-2 mb-2'>
                     <Row className='items-start justify-between max-w-full relative'>

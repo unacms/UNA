@@ -6,7 +6,7 @@ import { appSetting } from 'app/lib/util'
 import { RemoveScroll } from 'react-remove-scroll';
 import { useSafeAreaInsets } from 'app/lib/hooks/router'
 import { useIsDesktop, useActualWindowHeight } from 'app/context/measure';
-import { Button } from 'app/design/controls/buttons';
+import { NeoButton } from 'app/design/controls/neo-button';
 import emitter from 'app/context/emitter';
 import { ModalKbAwareScroll } from 'app/ui/atoms/kb-avoiding-view';
 
@@ -28,8 +28,8 @@ function ModalHeader({ title, headerBorder, onClose }) {
     return (
         <Row className={`items-center justify-${align} ${headerBorder && modalSettings.header}`}>
             {(title && type === 'string') && (
-                <View className='flex-1 px-1 '>
-                    <Text className='text-xl text-center leading-9 font-bold text-card-foreground'
+                <View className='flex-1 px-16  absolute left-0 right-0 top-0 bottom-0 justify-center items-center'>
+                    <Text className='text-xl text-center h-14 leading-14 font-bold text-card-foreground'
                         numberOfLines={1}
                         ellipsizeMode='tail'
                     >{title}</Text>
@@ -37,8 +37,8 @@ function ModalHeader({ title, headerBorder, onClose }) {
             )}
             {(title && type !== 'string') && (title)}
             {(onClose && type === 'string') && (
-                <View className='ml-auto'>
-                    <Button variant='secondary' size='sm' rounded startDecorator='X' onPress={onClose} />
+                <View className='absolute right-3 top-0 bottom-0 justify-center items-center'>
+                    <NeoButton style="bordered" controlSize="regular" borderShape="circle" image="X" accessibilityLabel="Close" onPress={onClose} />
                 </View>
             )}
         </Row>
@@ -125,8 +125,8 @@ export function Modal({
     }, []);*/
 
 
-    const offset = (title ? 64 : isIos ? insets?.bottom + insets?.top : 0);
-    const styles = { maxHeight: heightActual - offset - (isDesktop ? 32 : 0) }
+    const offset = (title ? 56 : isIos ? insets?.bottom + insets?.top : 0);
+    const styles = { maxHeight: heightActual - offset - (isDesktop ? 0 : 0) }
     const animationType = animation || (isDesktop ? 'fade' : 'slide');
     const isOuterClose = (typeof onClose === 'function' && outerClickClose !== false);
     const positionClasses = {

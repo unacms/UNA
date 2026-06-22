@@ -49,11 +49,15 @@ export default function HeaderElement({ mode, url, uri }) {
                                     const isMessenger = item.href === '{messenger}';
                                     return (
                                         <NeoButtonLink
+                                            style={isDesktop ? 'glass' : 'borderless'}
+                                            controlSize={isDesktop ? 'regular' : 'small'}
+                                            borderShape="circle"
                                             {...neoButtonProps}
                                             {...(item.target ? { target: item.target } : {})}
                                             href={isMessenger ? appSetting('messenger', 'url') : item.href}
                                             {...(isMessenger
                                                 ? {
+                                                    image: neoButtonProps.image ?? 'MessageSquare',
                                                     addon: {
                                                         variant: "primary",
                                                         text: currentUser?.counters?.bx_messenger_new_messages,
@@ -75,12 +79,12 @@ export default function HeaderElement({ mode, url, uri }) {
                                                 text: currentUser?.counters?.bx_messenger_new_messages,
                                                 hideZero: true,
                                             }}
-                                            controlSize="regular"
+                                            style={isDesktop ? 'glass' : 'borderless'}
+                                            controlSize={isDesktop ? 'regular' : 'small'}
                                             borderShape="circle"
                                             image="MessageSquare"
                                             selected={appSetting('messenger', 'url') === '/' + uri}
                                             role="link"
-                                            style={isDesktop ? 'glass' : 'borderless'}
                                             alt={item.alt || item.title || (item.props?.title)}
                                             onPress={(event) => {
                                                 item.props?.onPress?.(event);
@@ -90,7 +94,6 @@ export default function HeaderElement({ mode, url, uri }) {
                                     )
                                 }
                                 return (
-                                    
                                         <ButtonLink {...(item.props || {})}
                                         {...(item.target ? { target: item.target } : {})} 
                                         href={item.href == '{messenger}' ? appSetting('messenger', 'url') : item.href}

@@ -292,7 +292,7 @@ export const settingsButtons = {
             regular: {
                 default: { height: 44, paddingX: 12, font: 'text-base', icon: 20, hitSlop: 2, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
                 web:     { height: 44, paddingX: 12 },
-                mouse:   { height: 40, paddingX: 12, font: 'text-sm', icon: 20, hitSlop: 4, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
+                mouse:   { height: 44, paddingX: 12, font: 'text-sm', icon: 20, hitSlop: 2, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
             },
             large: {
                 default: { height: 52, paddingX: 20, font: 'text-lg', icon: 28, hitSlop: 0, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
@@ -337,6 +337,7 @@ export const settingsButtons = {
         // (container/text + base/default/hovered/focused/pressed/active/
         // pressedToggle/disabled), now scoped under `styles[name]`.
         styles: {
+            // SwiftUI .plain — label only; no fill, hover wash, or press tint.
             plain: {
                 container: {
                     default: '',
@@ -350,11 +351,11 @@ export const settingsButtons = {
                 text: {
                     base: 'font-medium',
                     default: 'text-card-foreground',
-                    hovered: 'text-foreground',
-                    focused: 'text-foreground',
-                    pressed: 'text-foreground',
-                    active: 'text-foreground',
-                    pressedToggle: 'text-foreground',
+                    hovered: 'text-card-foreground',
+                    focused: 'text-card-foreground',
+                    pressed: 'text-card-foreground',
+                    active: 'text-card-foreground',
+                    pressedToggle: 'text-card-foreground',
                     disabled: 'text-muted-foreground',
                 },
             },
@@ -455,7 +456,7 @@ export const settingsButtons = {
             glass: {
                 container: {
                     base: 'web:backdrop-blur-md shadow-btn-glass dark:shadow-btn-glass-deep',
-                    default: ' bg-muted/60 ',
+                    default: ' bg-card/60 ',
                     hovered: ' bg-muted ',
                     focused: ' bg-muted',
                     pressed:  'bg-muted shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',

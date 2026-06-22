@@ -5,11 +5,10 @@ import { Text } from 'app/design/typography';
 import { FeedbackHaptics, appSetting, getMenuSettings } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
 import { appStatic } from 'app/lib/app-static';
-import Link from 'app/ui/atoms/link';
 import { usePathname, useRouter } from 'app/lib/hooks/router';
-import { useIsDesktop } from 'app/context/measure';
-import { Button } from 'app/design/controls';
 import { getComponent } from 'app/components/registry';
+import { useIsDesktop } from 'app/context/measure';
+import { Button, NeoButtonLink } from 'app/design/controls';
 import { canGoBackInTab, getTabKeyFromPathname, navigateBackInTab } from 'app/lib/tab-history';
 import {
     defaultHeader,
@@ -34,9 +33,9 @@ export const PageHeaderSmall = ({ pageData }) => {
     const HeaderElement = getComponent('molecule', 'header_element');
     return (
         <Row className="w-full justify-between gap-2">
-            <Link href="/home" size="lg" aria-label="Home">
+            <NeoButtonLink href="/home" accessibilityLabel="Home" style="borderless" className="items-center">
                 {appStatic('logo')}
-            </Link>
+            </NeoButtonLink>
             <HeaderElement mode="small" url={pageData?.url} uri={pageData?.uri} />
         </Row>
     );
@@ -164,9 +163,9 @@ export const PageHeaderBody = memo(({
     );
 
     const Logo = (
-        <Link href="/home" aria-label="Home" size="md" className="items-center">
+        <NeoButtonLink href="/home" accessibilityLabel="Home" style="plain" className="items-center !px-0">
             {appStatic('logo')}
-        </Link>
+        </NeoButtonLink>
     );
 
     const leftElement = (!currentUser || (appSetting('layout', 'lock_unconfirmed') && !currentUser?.confirmed)) ? (

@@ -65,8 +65,8 @@ export const settingsLayout = {
         show_tabbar_on_mobile_non_logged: false,
 
         header: {
-            container: ' w-full z-50 header-fixed web:fixed native:absolute web:top-0 web:transition-transform web:duration-300 web:ease-in-out shadow',
-            content: ' items-center justify-between h-14 bg-card w-full mx-auto',
+            container: ' w-full z-50 header-fixed web:fixed native:absolute bg-card web:top-0 web:transition-transform web:duration-300 web:ease-in-out',
+            content: ' items-center justify-between h-14 w-full mx-auto',
             content_pinned_fixed: '    ',
             content_left: ' items-center flex-none  2xl:w-full max-w-96 px-3 lg:px-4 gap-2',
             content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-3xl px-4 ',

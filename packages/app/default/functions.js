@@ -21,7 +21,7 @@ export function getFriendsCounter(currentUser) {
 }
 
 export function getModalPostTitle(authorData) {
-    return !!authorData?.content?.[0]?.data?.author_data?.display_name ? `${authorData?.content?.[0]?.data?.author_data?.display_name}'s post` : ' '
+    return !!authorData?.content?.[0]?.data?.author_data?.display_name ? `${authorData?.content?.[0]?.data?.author_data?.display_name}'s Post` : ' '
 }
 
 export function layoutForList(endpoint, unitMode = '') {

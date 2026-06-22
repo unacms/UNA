@@ -36,7 +36,7 @@ export default function () {
                 accessibilityLabel: t('All Apps'),
                 image: bApps === true ? 'LayoutGrid' : bApps,
                 style: isDesktop ? 'glass' : 'borderless',
-                controlSize: 'regular',
+                controlSize: isDesktop ? 'regular' : 'small',
             }}
         />
     );

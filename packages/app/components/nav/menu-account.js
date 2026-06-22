@@ -84,17 +84,17 @@ export default function MenuAccount({ buttonProps, children }) {
         dUser.url_avatar = dUser.avatar
         dUser.url = ''
         profile = (
-            <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
+            <Profile {...dUser} displayType="unit_wo_info" displaySize={isDesktop ? 'sm' : 'md'} />
         )
     }
 
     const defaultButtonProps = {
         tooltip: t('Dashboard'),
-        variant: isDesktop ? 'secondary' : 'text',
-        rounded: true,
-        padding: '0px',
-        startDecorator: profile,
-        size: isDesktop ? 'base' : 'base',
+        style: isDesktop ? 'glass' : 'borderless',
+        controlSize: isDesktop ? 'regular' : 'small',
+        borderShape: 'circle',
+        accessibilityLabel: t('Dashboard'),
+        children: profile,
     }
 
     buttonProps = { ...defaultButtonProps, ...(buttonProps || {}) }

@@ -72,7 +72,7 @@ export default function ElementEntityAttachments({ data, blockWrapperProps }) {
                     {showImage && showImage[1] == 'video' && <Video className="w-full h-full" src={showImage[0]}  ></Video>}
                 </View>
             </Modal>
-            <Row className="relative  flex-wrap lg:p-4 p-2 sm:my-0 bg-card  w-full mx-auto max-w-4xl">
+            <Row className="relative flex-wrap lg:p-4 p-2 sm:my-0 bg-card  w-full mx-auto max-w-4xl">
                 {aImages}
             </Row>
         </BlockWrapper>

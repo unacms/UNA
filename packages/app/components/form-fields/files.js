@@ -369,7 +369,7 @@ export default function (props) {
             {!props.hide_button && <View>
                 <ActionButton uploadImages={uploadImages} imagesList={imageSource.images} props={props} bMultiple={bMultiple} selectImage={selectImage} handleDelete={handleDeleteSingle} />
             </View>}
-            {!!props.hide_button && <Row className='flex-wrap'>{GhostsList(imageSource.images, bMultiple, handleDelete, props)}</Row>}
+            {!!props.hide_button && <Row className='flex-wrap gap-1'>{GhostsList(imageSource.images, bMultiple, handleDelete, props)}</Row>}
         </Field>
     );
 }
@@ -490,8 +490,8 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
     const isCover = props.preview === "cover";
 
     const sizes = [
-        isCover ? "w-full h-[30vh] mb-4 sm:rounded-xl" : "w-25 h-25 mb-3 rounded-lg",
-        "m-px justify-center items-center overflow-hidden bg-muted  ",
+        isCover ? "w-full h-[30vh] mb-4 sm:rounded-xl" : "w-20 h-20 mt-2 mr-2 rounded-lg",
+        " justify-center items-center overflow-hidden bg-muted  ",
     ].join(" ");
 
     const sizes2 = isCover ? '100%' : 100;

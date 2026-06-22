@@ -1107,7 +1107,7 @@ function ConductorMenu({
                 className={' ' + menu_settings?.class ?? ''}
                 onPress={handlePress}
             >
-                <Row className="web:hover:cursor-pointer justify-between flex flex-row h-10 items-center px-3 text-base rounded-xl web:hover:bg-muted items-center ">
+                <Row className="web:hover:cursor-pointer justify-between flex flex-row h-10 px-3 text-base rounded-xl web:hover:bg-muted items-center ">
                     {translatedTitle}
                     {addonContent}
                 </Row>

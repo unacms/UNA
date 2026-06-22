@@ -60,7 +60,7 @@ export const settingsElements = {
         container:
         ' bg-card backdrop-blur web:shadow-sm md:rounded-2xl overflow-hidden ',
         content: '',
-        header: ' p-3 min-h-14 items-start justify-start border-b border-border/60',
+        header: ' px-3 py-2 min-h-14 items-start justify-start border-b border-border/60 ',
     },
     cards: {
         'u-card-list': ' u-card-list bg-card shadow-card-outline dark:shadow-card-outline-deep sm:rounded-xl ',

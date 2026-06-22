@@ -310,6 +310,11 @@ const SWIFTUI_BUTTON_STYLE = {
 
 const FALLBACK_STYLE = 'bordered';
 
+// SwiftUI .plain / .link — no hover wash or press fill (see `styles.plain` /
+// `styles.link` container slots). Global `behaviors.hover` is still mouse-
+// scoped, so we opt these styles out explicitly.
+const STYLES_WITHOUT_HOVER = new Set(['plain', 'link']);
+
 const SWIFTUI_CONTROL_SIZE = {
     mini: 'mini',
     small: 'small',
@@ -459,7 +464,8 @@ export function useResolvedNeoButton(props = {}) {
         // 7) Behaviors.
         const behaviorsTree = defaults.behaviors || {};
         const behaviors = {
-            hover:          !!resolveScoped(behaviorsTree.hover, ctx),
+            hover:          !STYLES_WITHOUT_HOVER.has(style)
+                && !!resolveScoped(behaviorsTree.hover, ctx),
             focusRing:      props.focusRing
                 ? props.focusRing !== 'never'
                 : resolveScoped(defaults.focusRing, ctx) !== 'never',
@@ -510,7 +516,7 @@ export function useResolvedNeoButton(props = {}) {
         };
     }, [
         env, providerStyle, providerSize, tree,
-        props.role, props.style, props.controlSize, props.borderShape,
+        props.role, props.style, props.buttonStyle, props.controlSize, props.borderShape,
         props.imagePlacement, props.align, props.width,
         props.tint, props.transition, props.focusRing, props.pressAnimation,
         props.disabled, props.image, props.systemImage,

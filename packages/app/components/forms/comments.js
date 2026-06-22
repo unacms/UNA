@@ -10,6 +10,7 @@ import { FileButton } from 'app/lib/form-helpers'
 import { useWindowHeight, useIsDesktop } from 'app/context/measure';
 import emitter from 'app/context/emitter';
 import { useSound } from 'app/lib/hooks/useSound';
+import { NeoButton } from 'app/design/controls';
 
 export default function FormComments(props) {
     const isWeb = Platform.OS == 'web'
@@ -71,9 +72,8 @@ export default function FormComments(props) {
     };
 
     props.data.inputs['cmt_submit'].hide_errors = true
-
-    props.data.inputs['cmt_submit'].icon = 'SendHorizontal'
-    props.data.inputs['cmt_submit'].variant = 'primary'
+    props.data.inputs['cmt_submit'].icon = 'ArrowUp'
+    props.data.inputs['cmt_submit'].style = 'bordered'
     props.data.inputs['cmt_submit'].rounded = 'true'
     props.data.inputs['cmt_submit'].icon_only = true
     props.data.inputs['cmt_image'].rounded = 'true'
@@ -109,22 +109,12 @@ export default function FormComments(props) {
                 props.handleSubmit,
                 'custom'
             )}
-            <Row className={`w-full gap-2 ${shouldGrowFromBottom ? 'items-end' : 'items-start'}`}>
-                {currentUser && (
-                     <View className=" bg-card rounded-full w-10 h-10 p-1 shadow-btn-glass dark:shadow-btn-glass-deep">
-                        <Profile
-                            {...currentUser}
-                            url_avatar={currentUser.avatar}
-                            displayType="unit_wo_info"
-                            displaySize="sm"
-
-                        />
-                    </View>
-                )}
+            <Row className={`w-full gap-1 bg-card flex-auto shadow-btn-glass dark:shadow-btn-glass-deep ${shouldGrowFromBottom ? 'items-end' : 'items-start'} ${hasContent ? 'rounded-2xl' : 'rounded-full'}`}>
+               
                 <View className="flex-auto ">
-                    <View className=" items-stretch bg-input/60 rounded-lg flex-auto shadow-input-outline dark:shadow-input-outline-deep" >
+                    <View className=" items-stretch " >
                         <View
-                            className={`py-2 px-2.5 flex-auto items-center ${shouldGrowFromBottom ? "justify-end" : "justify-start"} ${hasContent ? 'mb-8' : ''}`}
+                            className={`px-2 min-h-11 py-2 flex-auto items-center ${shouldGrowFromBottom ? "justify-center" : "justify-start"} ${hasContent ? 'mb-10' : 'ms-10'}`}
                             style={{
                                 
                                 ...(isWeb && { transition: 'height 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), padding-bottom 0.1s cubic-bezier(0.25, 0.1, 0.25, 1)' })
@@ -150,13 +140,33 @@ export default function FormComments(props) {
                                 }
                             )}
                         </View>
-                        <View className={`flex-row absolute  bottom-0 ${hasContent ? 'justify-between w-full' : 'justify-end right-0'}`}>
+                        {currentUser && (
+                            <View className="absolute bottom-0 left-0">
+                    <NeoButton
+                        style="glass"
+                        borderShape="circle"
+                        controlSize="small"
+                        hitarea={false}
+                        className="m-1"
+                        accessibilityLabel={currentUser.display_name}
+                    >
+                        <Profile
+                            {...currentUser}
+                            url_avatar={currentUser.avatar}
+                            displayType="unit_wo_info"
+                            displaySize="sm"
+                        />
+                    </NeoButton>
+                    </View>
+                )}
+                        <View className={`flex-row absolute bottom-0 ${hasContent ? 'justify-end w-full' : 'justify-end right-0'}`}>
+                            
+                          
                             <Row className={'items-center justify-center gap-1 p-1'}>
-                                <FileButton field_name='cmt_image' size="xs" icon="Image" source='library' variant='text' />
+                                <FileButton style="borderless" field_name='cmt_image' size="sm" icon="Image" source='library' />
                                 {!isWeb && (
-                                    <View className="h-full p-1 flex items-center justify-center">
-                                        <FileButton field_name='cmt_image' size='xs' icon="Camera" source='camera' variant='text' />
-                                    </View>
+                                        <FileButton field_name='cmt_image' style="borderless" size='sm' icon="Camera" source='camera' />
+                                    
                                 )}
                             </Row>
                             {(hasContent) && (
@@ -173,8 +183,8 @@ export default function FormComments(props) {
                                             icon_only: true,
                                             icon: 'ArrowUp',
                                             title: 'Send',
-                                            size: 'xs',
-                                            variant: 'primary',
+                                            size: 'sm',
+                                            style: 'glassProminent',
                                             rounded: true,
                                             alt: 'Post',
                                             tooltip: 'Post',

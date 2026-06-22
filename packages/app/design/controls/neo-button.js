@@ -599,11 +599,13 @@ export const NeoButton = (props) => {
             )}
             {/* press highlight overlay (visual feedback, runs in addition to
                 the per-style transition) */}
-            <PressHighlight
-                active={isPressed}
-                rounded={resolved.rounded}
-                color={resolved.highlightBg}
-            />
+            {(resolved.style !== 'plain' && resolved.style !== 'link') ? (
+                <PressHighlight
+                    active={isPressed}
+                    rounded={resolved.rounded}
+                    color={resolved.highlightBg}
+                />
+            ) : null}
         </Cnt>
     );
 

@@ -1,4 +1,3 @@
-import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import { menuItemsByName, appSetting, menuItemsByNameNew } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
@@ -27,7 +26,7 @@ export default function MenuAdd({ buttonProps, children }) {
         borderShape: 'circle',
         image: 'Plus',
         tooltip: 'Create',
-        controlSize: 'regular',
+        controlSize: isDesktop ? 'regular' : 'small',
     }
 
     buttonProps = { ...defaultButtonProps, ...(buttonProps || {}) };

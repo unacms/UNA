@@ -162,8 +162,8 @@
         --neo-shadow-input-outline-deep: inset 0 0 0 1px rgb(255 255 255 / 0.05), inset 0 1px 0 0 rgb(255 255 255 / 0.05), 0 1px 0 0 rgb(0 0 0 / 0.5), 0 0 0 1px rgb(0 0 0 / 0.25), 0 4px 16px -4px rgb(0 0 0 / 0.25);
         --neo-shadow-btn-outline: inset 0 0 0 1px rgb(255 255 255 / 0.5), inset 0 1px 0 0 rgb(255 255 255 / 1), 0 1px 0 0 rgb(0 0 0 / 0.05), 0 0 0 1px rgb(0 0 0 / 0.1),  0 4px 16px -4px rgb(0 0 0 / 0.1);
         --neo-shadow-btn-outline-deep: inset 0 0 0 1px rgb(255 255 255 / 0.05), inset 0 1px 0 0 rgb(255 255 255 / 0.05), 0 1px 0 0 rgb(0 0 0 / 0.5), 0 0 0 1px rgb(0 0 0 / 0.25), 0 4px 16px -4px rgb(0 0 0 / 0.25);
-        --neo-shadow-btn-glass: inset 0 0 0 1px rgb(255 255 255 / 0.50), inset 0 1px 0 0 rgb(255 255 255 / 0.5), 0 0 0 0.5px rgb(0 0 0 / 0.15), 0 2px 4px -1px rgb(0 0 0 / 0.05), 0 8px 16px -4px rgb(0 0 0 / 0.15);
-        --neo-shadow-btn-glass-deep: inset 0 1px 0 0 rgb(255 255 255 / 0.05), inset 0 0 0 1px rgb(255 255 255 / 0.05), 0 0 0 0.5px rgb(0 0 0 / 0.15), 0 2px 4px -1px rgb(0 0 0 / 0.25), 0 8px 16px -4px rgb(0 0 0 / 0.25);
+        --neo-shadow-btn-glass: inset 0 0 0 1px rgb(255 255 255 / 0.5), inset 0 1px 0 0 rgb(255 255 255 / 0.5), 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 8px -1px rgb(0 0 0 / 0.05), 0 8px 24px -4px rgb(0 0 0 / 0.2);
+        --neo-shadow-btn-glass-deep: inset 0 1px 0 0 rgb(255 255 255 / 0.05), inset 0 0 0 1px rgb(255 255 255 / 0.05), 0 0 0 1px rgb(0 0 0 / 0.15), 0 2px 8px -1px rgb(0 0 0 / 0.25), 0 8px 24px -4px rgb(0 0 0 / 0.5);
         --neo-shadow-btn-glass-pressed: inset 0 0 0 1px rgb(255 255 255 / 0.50), inset 0 1px 0 0 rgb(255 255 255 / 0.50), 0 0 0 0.5px rgb(0 0 0 / 0.15), 0 2px 4px -1px rgb(0 0 0 / 0.1);
         --neo-shadow-btn-glass-pressed-deep: inset 0 0 0 1px rgb(255 255 255 / 0.05), inset 0 1px 0 0 rgb(255 255 255 / 0.05), 0 0 0 1px rgb(0 0 0 / 0.25), 0 2px 4px -1px rgb(0 0 0 / 0.5);
         --neo-shadow-btn-glass-prominent: inset 0 1px 0 0 rgb(255 255 255 / 0.15), inset 0 0 0 1px rgb(255 255 255 / 0.15), 0 0 0 0.5px rgb(var(--primary) / 0.9), 0 2px 4px -1px rgb(0 0 0 / 0.25), 0 8px 16px -4px rgb(0 0 0 / 0.1);

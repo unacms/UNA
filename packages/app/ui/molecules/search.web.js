@@ -66,7 +66,7 @@ export default function ElementSearch(oProps) {
                 {...(oParams?.trigger &&
                     (({ onPress, ...rest }) => rest)(oParams.trigger))}
                 style={isDesktop ? 'glass' : 'borderless'}
-                controlSize="regular"
+                controlSize={isDesktop ? 'regular' : 'small'}
                 borderShape="circle"
                 onPress={handleOpenPopupDefault}
             />

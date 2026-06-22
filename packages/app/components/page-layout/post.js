@@ -139,7 +139,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
 
     const aItems = useMemo(() => mainBlocks.map((value, index) => ({
         id: `block_${value.name}`,
-        data: <View className={'p-3 sm:px-4 pt-0 ' + (index != 0 ? 'pt-4 lg:pt-0' : '')}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
+        data: <View className={'p-3 sm:px-4 ' + (index != 0 ? 'pt-0' : 'pt-3')}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
     })), [blocks, data, isDesktop]);
 
     const isRightCol = sideBarBlocks.length > 0 && isDesktop
@@ -256,9 +256,9 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         };
     }, []);
 
-    let offset2 = 80;
+    let offset2 = 56;
     if (isDesktop)
-        offset2 += 32;// offsets in modal web
+        offset2 += 0;// offsets in modal web
 
     if (!isWeb) {
             offset2 = insets.bottom + insets.top;
@@ -268,14 +268,13 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
         }
     if (isModal) {
         return (
-            <View className="w-full justify-between flex-1 pt-3" >
-                <View className='w-full flex-1 '>
-                    <View style={{ height: windowHeight - offset2 - formHeight }}>
+            <View className="w-full flex-1 relative" >
+                <View className="flex-1 w-full">
                         {data == 'loading' ?
                             <Loading />
                         : <CommentsBrowse
                             useCustomScrollHandler={true}
-                            height={windowHeight - offset2 - formHeight > 0 ? windowHeight - offset2 - formHeight : undefined}
+                            height={windowHeight - offset2 > 0 ? windowHeight - offset2 : undefined}
                             scrollToIndex={scrollToEnd}
                             addItems={aItems}
                             isModal={true}
@@ -283,13 +282,15 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                             module={commentsModule}
                             requestUrl={commentsRequestUrl}
                             replyId={replyId}
+                            marginBottom={formHeight}
                         />}
-                    </View>
                 </View>
-                <KbAvoidingView modalOffset={insets.top+56}>{/*was 90 56=14*4 modal header*/}
+
+                <KbAvoidingView className="absolute bottom-0 left-0 right-0 z-10" modalOffset={insets.top+24}>{/*was 90 56=14*4 modal header*/}
                     <View
                         onLayout={handleLayout}
-                        className=" mb-4 bg-card "
+                        className="  "
+                        style={{ paddingBottom: insets.bottom }}
                     >
                         <CommentsForm
                             isModal={isModal}
@@ -363,9 +364,9 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                         <View
                             onLayout={handleLayout}
                             style={isFormFixed && listWidth ? { width: listWidth + 5 } : undefined}
-                            className="bg-card  pb-3 web:fixed web:bottom-0 web:z-50 lg:static lg:z-auto lg:w-full"
+                            className="bg-linear-to-t from-card to-transparent web:fixed web:bottom-0 web:z-50 lg:static lg:z-auto lg:w-full"
                         >
-                            <View className="lg:mb-4 ml-px">
+                            
                                 <CommentsForm
                                     isModal={isModal}
                                     objectId={commentsObjectId}
@@ -373,7 +374,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                                     form={commentsForm}
                                     requestUrl={commentsRequestUrl}
                                 />
-                            </View>
+                            
                         </View>
                     </KbAvoidingView>
                 </View>
@@ -420,7 +421,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                 </>
             )}
             <Panel {...centerPanelProps} className="sm:p-2 ">
-                <Card className={`w-full mx-auto `}>
+                <Card padding="pt-1" className={`w-full mx-auto `}>
                     <View
                         onLayout={handleListLayout}
                         style={{ pointerEvents: 'box-none', ...(isFormFixed ? { marginBottom: formHeight } : null) }}

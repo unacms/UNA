@@ -46,7 +46,7 @@ export const Text = ({
     children,
     className,
     fontFamily = '',
-    numberOfLines,
+    numberOfLines = undefined,
     ...rest
 }) => {
     const baseClassName = className || '  '

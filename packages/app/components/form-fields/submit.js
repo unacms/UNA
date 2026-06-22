@@ -17,6 +17,13 @@ const SIZE_TO_CONTROL = {
 const RESPONSIVE_SUBMIT_WIDTH = 'w-full @sm/block:w-auto flex-auto web:w-full';
 const RESPONSIVE_SUBMIT_CONTAINER = 'w-full @sm/block:w-auto';
 
+const VARIANT_TO_STYLE = {
+    primary: 'borderedProminent',
+    secondary: 'bordered',
+    outline: 'bordered',
+    default: 'glassProminent',
+};
+
 export default function FormFieldSubmit(props) {
     const {
         name,
@@ -28,6 +35,10 @@ export default function FormFieldSubmit(props) {
         rounded = false,
         icon,
         size = 'base',
+        variant,
+        style: neoStyle,
+        alt,
+        tooltip,
         notFullWidth = false,
         saveOnChanges = false,
         hide_errors = true,
@@ -62,6 +73,8 @@ export default function FormFieldSubmit(props) {
 
     const fullWidth = !notFullWidth;
     const controlSize = SIZE_TO_CONTROL[size] || 'regular';
+    const buttonStyle =
+        neoStyle ?? (variant ? VARIANT_TO_STYLE[variant] : undefined) ?? 'glassProminent';
     const borderShape = icon_only && rounded
         ? 'circle'
         : rounded
@@ -105,10 +118,12 @@ export default function FormFieldSubmit(props) {
                         label={icon_only ? undefined : value}
                         image={icon}
                         loading={isSumbitting}
-                        style="glassProminent"
+                        style={buttonStyle}
                         controlSize={controlSize}
                         borderShape={borderShape}
                         width="auto"
+                        alt={alt}
+                        tooltip={tooltip}
                         classNames={responsiveButtonClassNames}
                         onPress={handlePress}
                         disabled={isSumbitting || disabled}

@@ -171,7 +171,12 @@ export default function UniList(props) {
         )),
         []
     );
-    const FooterComponent = useCallback(() => ListFooterComponent, [ListFooterComponent]);
+    const FooterComponent = useCallback(() => {
+        if (!ListFooterComponent) return null;
+        return typeof ListFooterComponent === 'function'
+            ? <ListFooterComponent />
+            : ListFooterComponent;
+    }, [ListFooterComponent]);
     const virtuosoStyle = isWindowScroll
         ? (paddingTop ? { paddingTop } : {})
         : style;

@@ -6,7 +6,7 @@ import { Text } from 'app/design/typography'
 import { Pressable, View, Row, ScrollView } from 'app/design/view'
 import {
     Button,
-    ButtonRef,
+    NeoButtonRef,
     Input,
     Modal,
 } from 'app/design/controls'
@@ -29,9 +29,6 @@ export default function ElementSearch(oProps) {
     const oParams = oProps?.params ? oProps.params : {}
     const [showModal, setShowModal] = useState(false)
 
-    const buttonVariant = isDesktop ? 'secondary' : 'text'
-    const buttonSize = isDesktop ? 'base' : 'base'
-
     const handleOpenPopupDefault = () => {
         if (oParams?.trigger?.onPress) {
             oParams.trigger.onPress()
@@ -47,24 +44,24 @@ export default function ElementSearch(oProps) {
                 setBottomSheetData={setBottomSheetData}
             />
         ) : (
-            <Pressable key="ddp-trigger" onPress={handleOpenPopupDefault}>
-                <ButtonRef
-                    title={oProps.title === undefined ? '' : oProps.title}
-                    startDecorator={
-                        oParams?.trigger?.icon
-                            ? oParams?.trigger.icon
-                            : 'Search'
-                    }
-                    rounded
-                    tooltip={
-                        oProps.tooltip === undefined ? 'Search' : oProps.tooltip
-                    }
-                    {...(oParams?.trigger &&
-                        (({ onPress, ...rest }) => rest)(oParams.trigger))}
-                    variant={buttonVariant}
-                    size={buttonSize}
-                />
-            </Pressable>
+            <NeoButtonRef
+                key="ddp-trigger"
+                title={oProps.title === undefined ? '' : oProps.title}
+                image={
+                    oParams?.trigger?.icon
+                        ? oParams?.trigger.icon
+                        : 'Search'
+                }
+                tooltip={
+                    oProps.tooltip === undefined ? 'Search' : oProps.tooltip
+                }
+                {...(oParams?.trigger &&
+                    (({ onPress, ...rest }) => rest)(oParams.trigger))}
+                style={isDesktop ? 'glass' : 'borderless'}
+                controlSize={isDesktop ? 'regular' : 'small'}
+                borderShape="circle"
+                onPress={handleOpenPopupDefault}
+            />
         )
 
     if (oProps.children) {
