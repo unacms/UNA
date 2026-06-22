@@ -31,7 +31,7 @@ import {
     PanelHandler,
 } from 'app/ui/molecules/resizable-panels'
 import { useIsDesktop } from 'app/context/measure';
-import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
+import { useSetHeader, defaultHeader, useSetHeaderHeight } from 'app/context/jotai/layout';
 import { getComponent } from 'app/components/registry';
 import { useSafeAreaInsets } from 'app/lib/hooks/router'
 
@@ -57,7 +57,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [searchValue, setSearchValue] = useState('');
     const [replyItem, setReplyItem] = useState(false);
-
+  
 
 
     const layoutHeightLeft = layoutHeight;
@@ -541,7 +541,7 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
     const [showSearch, setShowSearch] = useState(false);
 
     const setHeader = useSetHeader();
-
+    const setHeaderHeightAtom = useSetHeaderHeight();
     function handleSearch2() {
         setShowSearch(!showSearch)
     }
@@ -553,16 +553,16 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
     const srch = <Input  size="small" name="search" placeholder={("Search") + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
     const ContextSelector = getComponent('molecule', 'context_selector');
     const header = useMemo(() => (
-        <Row className={appSetting('layout', 'header', 'content')}>
+        <Row className={' '+appSetting('layout', 'header', 'content')}>
             <View className='flex-1 hidden lg:flex justify-center items-center'>
                 <View className=' w-full h-12 items-start justify-center'>
                 {srch}
                 </View>
             </View>
-            {!showSearch && <Row className={appSetting('layout', 'header', 'content_left')+' lg:hidden '}>
+            {!showSearch && <View className='flex-1'><Row className={appSetting('layout', 'header', 'content_left')+' lg:hidden '}>
                 {appSetting('messenger', 'back_button') && getBackButtonWeb()}
                 { appSetting('context_selector', 'show_always') ? <><ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /></>:  <Text className={`lg:hidden font-bold truncate flex-1  leading-12 lg:px-2 text-card-foreground text-2xl tracking-tight font-main`}>Messenger</Text>}
-            </Row>}
+            </Row></View>}
             {showSearch && <Row className={appSetting('layout', 'header', 'content_left')+' lg:hidden'}>
                 {srch}
             </Row>}
@@ -582,6 +582,8 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
 
     useFocusEffect(useCallback(() => {
         if (isWeb) return;
+
+        setHeaderHeightAtom(32)
         setHeader(isSmallScreen ? { header: header } : defaultHeader);
         //return () => setHeader(defaultHeader);
     }, [isSmallScreen, setHeader, header]));

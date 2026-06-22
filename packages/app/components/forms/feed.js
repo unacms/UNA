@@ -4,6 +4,7 @@ import { useState, useRef, useMemo, useEffect } from 'react'
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
 import { Platform } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
 import { stripTags } from 'app/lib/util'
@@ -25,9 +26,15 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
     const [responseId, setResponseId] = useState(0)
 
     const isWeb = Platform.OS === 'web'
+    const isIos = Platform.OS === 'ios'
     const scrollViewRef = useRef(null)
     const screenHeight = useWindowHeight();
+    const insets = useSafeAreaInsets();
     const { currentUser } = useCurrentUser();
+
+    // iOS: расстояние от верха экрана до KbAvoidingView = safe area + паддинг модалки (16) + шапка формы (~48) + gap (12).
+    // Android окно ресайзится само, оставляем прежний рабочий offset.
+    const modalOffset = isIos ? insets.top + 76 : 60;
 
     const rawEditorText = formContext.watch('text');
     const object_privacy_view = formContext.watch('object_privacy_view');
@@ -134,7 +141,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                         />
                     </Row>
                 </View>
-                <KbAvoidingView className="flex-auto" modalOffset={60}>
+                <KbAvoidingView className="flex-auto" modalOffset={modalOffset}>
                     {getFormFieldByData(data.inputs['action'], handleSubmit, 'default')}
                     {getFormFieldByData(data.inputs['object_cf'], handleSubmit, 'default')}
                     {getFormFieldByData(data.inputs['owner_id'], handleSubmit, 'default')}
@@ -217,7 +224,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                 )}
                             </View>
                         </View>
-                        <View className="">
+                        <View className="pb-0">
                             <View className={`items-center flex-auto w-full gap-2  `}>
                                 <Row className="gap-x-2 w-full justify-between ">
                                     <Row className="flex-none gap-x-2">

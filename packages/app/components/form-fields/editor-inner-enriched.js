@@ -149,11 +149,21 @@ export default function RftTextEnriched({
         const sub = emitter.addListener('editor', (data) => {
             if (!editorRef.current) return
             if (data.action === 'blur') {
-                data.timeout
+              /*  data.timeout
                     ? setTimeout(() => editorRef.current?.blur(), data.timeout)
-                    : editorRef.current.blur()
+                    : editorRef.current.blur()*/
             }
-            if (data.action === 'focus') editorRef.current.focus()
+            if (data.action === 'focus') {
+                if (isWeb) {
+                    editorRef.current.focus()
+                } else {
+                    // iOS: after the keyboard is dismissed the native input can keep a
+                    // stale first-responder state, so a plain focus() no-ops. Blur first
+                    // to clear it, then focus to reliably re-summon the keyboard.
+                  //  editorRef.current.blur?.()
+                  //  setTimeout(() => editorRef.current?.focus(), 50)
+                }
+            }
             if (data.action === 'set_content') {
                 lastSetValue.current = data.value
                 editorRef.current.setValue(unaLinksToMentions(data.value || ''))
