@@ -14,7 +14,7 @@ function EmbedImage({ src, className = '', imageClassName = '' }) {
     }, [src]);
 
     return (
-        <View className={`overflow-hidden bg-muted ${className}`}>
+        <View className={`overflow-hidden bg-muted/60 ${className}`}>
             {!!src && !hasError && (
                 <Image
                     view="cover"
@@ -35,13 +35,13 @@ const Embed = memo(function ({ data, size }) {
     return <Link target='_blank' href={data.url} >
         <Row className='rounded-lg border border-border/60'>
             <EmbedImage
-                className="aspect-square h-32 m-2 mr-4 rounded-tl-lg rounded-bl-lg"
+                className="aspect-square h-32 mr-4 "
                 imageClassName="rounded-tl-lg rounded-bl-lg"
                 src={data.image || data.logo}
             />
             <View className='flex-auto my-2 mr-4'>
-                <Text className="text-popover-foreground   text-base font-bold " numberOfLines={1}>{data.title}</Text>
-                <Text className="text-popover-foreground   text-sm my-2" numberOfLines={2}>{data.description}</Text>
+                <Text className="text-popover-foreground text-base font-bold " numberOfLines={1}>{data.title}</Text>
+                <Text className="text-popover-foreground text-sm my-2" numberOfLines={2}>{data.description}</Text>
                 <Row className='gap-x-2'>
                     {!!data.logo && <EmbedImage className="h-6 w-6" src={data.logo} />}
                     <Text className="text-popover-foreground  text-sm">{data.domain}</Text>

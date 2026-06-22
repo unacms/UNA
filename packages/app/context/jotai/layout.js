@@ -13,6 +13,8 @@ export const headerAtom = atom(defaultHeader);
 export const footerAtom = atom(true);
 export const scrollDirectionAtom = atom(0);
 export const scrollValueAtom = atom(0);
+/** Scroll offset at which the native profile cover finishes collapsing (see conductor.js). */
+export const COVER_COLLAPSE_SCROLL = 500;
 /**
  * SSR/hydration seed for headerHeightAtom on web only.
  * After mount, PageHeader `onLayout` replaces this with the measured height.

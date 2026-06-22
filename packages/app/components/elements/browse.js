@@ -440,7 +440,7 @@ export default function Browse(props) {
         data: dataItems,
         unit: data.unit,
         height: isWeb ? (props?.isInPanel ? windowHeight - 64 : props?.height) : props?.height,
-        url: props?.url,
+        url: data.request_url || props?.url,
         contentContainerStyle: props?.contentContainerStyle,
         isInPanel: props?.isInPanel,
         maxToRenderPerBatch: 10,

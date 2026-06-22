@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { View, Row, ScrollView } from 'app/design/view'
 import Image from 'app/ui/atoms/image'
 import { Text } from 'app/design/typography'
-import { Button } from 'app/design/controls'
 import {
     appSetting,
     formatDateInterval,
@@ -17,7 +16,7 @@ import * as ImagePicker from 'expo-image-picker'
 import { NeoButton } from 'app/design/controls/neo-button'
 import { genRnd } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
-import { Image as ImageNative } from 'react-native'
+import { Image as ImageNative, Platform } from 'react-native'
 import { useCurrentUser } from 'app/context/user'
 import {
     CoverMenuMeta,
@@ -27,7 +26,6 @@ import {
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
 import Loading from 'app/ui/atoms/loading'
-import { Platform } from 'react-native'
 import { usePathname, useRouter } from 'app/lib/hooks/router'
 import { getComponent } from 'app/components/registry'
 import { useIsDesktop } from 'app/context/measure'
@@ -37,67 +35,38 @@ import { FeedbackHaptics } from 'app/lib/util'
 const conductorTheme = appSetting('theme', 'conductor')
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
-const BackButton = ({ isPerson }) => {
+/** Tab back for profile cover — shared by floating (full) and inline (small) placements. */
+function ProfileCoverBackButton() {
     const router = useRouter()
     const pathname = usePathname()
     const { currentUser } = useCurrentUser()
     const currentTab = getTabKeyFromPathname(pathname)
-    const hasTabBack = canGoBackInTab(currentTab)
 
-    const handleBackPress = () => {
-        FeedbackHaptics('Medium')
-        navigateBackInTab(router, currentTab, currentUser)
+    if (!canGoBackInTab(currentTab)) {
+        return null
     }
 
-    if (hasTabBack){
-        return <Button
-            variant="default"
-            size="sm"
-            rounded={true}
-            startDecorator="ArrowLeft"
+    return (
+        <NeoButton
+            image="ArrowLeft"
+            style="glass"
+            controlSize="regular"
+            borderShape="circle"
             onPress={() => {
-                handleBackPress()
+                FeedbackHaptics('Medium')
+                navigateBackInTab(router, currentTab, currentUser)
             }}
         />
-    }
+    )
 }
 
-function GetCoverBackButton({ isPerson }) {
-    const isWeb = Platform.OS === 'web'
-    const isDesktop = useIsDesktop()
-    const buttonVariant = isDesktop ? 'glass' : 'glass'
-    if (isWeb) return <></>
-    if (!isWeb) return <BackButton isPerson={isPerson} />
-    if (history.length > 2) {
-        return (
-            <View className="lg:hidden">
-                <NeoButton
-                    image="ArrowLeft"
-                    style={buttonVariant}
-                    controlSize="regular"
-                    borderShape="circle"
-                    onPress={() => history.back()}
-                />
-            </View>
-        )
-    } else {
-        return (
-            <View className="lg:hidden">
-                <Link href="/">
-                    <NeoButton
-                        image="ArrowLeft"
-                        style={buttonVariant}
-                        controlSize="regular"
-                        borderShape="circle"
-                    />
-                </Link>
-            </View>
-        )
-    }
-}
-
-function getCoverBackButton(is_person) {
-    return <GetCoverBackButton isPerson={is_person} />
+/** Full-cover only: floated above the banner (see conductor.js). Not used in CoverSmall. */
+export function CoverBackButton() {
+    return (
+        <View className="absolute top-1.5 left-3 z-50">
+            <ProfileCoverBackButton />
+        </View>
+    )
 }
 
 export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
@@ -152,19 +121,14 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                 <PageHeaderSmall />
             ) : (
                 <>
-                    <View className="flex-1 shrink items-center flex-row gap-2 h-14 ">
-                        {(!appSetting('context_selector', 'show_always') ||
-                            !isWeb) && (
-                                <>
-                                    {getCoverBackButton(bPerson)}
-                                </>
-                            )}
+                    <View className="flex-1 shrink items-center flex-row gap-2 min-h-14 py-1.5">
+                        <ProfileCoverBackButton />
 
                         <>
                             {(bPerson || coverMode !== 'none') && (
-                                <View className="items-center flex-row flex-1 shrink gap-2 ">
+                                <View className="items-center flex-row gap-2 justify-center">
                                     {bPerson && (
-                                        <View className="flex-none shrink-0">
+                                        <View className="flex-none shrink-0 justify-center">
                                             <Profile
                                                 {...data.profile}
                                                 displayType="unit_wo_info"
@@ -173,7 +137,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                                         </View>
                                     )}
                                     {(coverMode !== 'none') && (
-                                        <View className="flex-1 shrink overflow-hidden ">
+                                        <View className="flex-auto justify-center shrink overflow-hidden ">
                                             <Profile
                                                 {...data.profile}
                                                 displayType="unit_wo_image"
@@ -197,7 +161,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                         </>
 
                     </View>
-                    <View className=" items-center justify-center h-14">
+                    <View className="items-start justify-center min-h-14 ">
                         <Row className="w-full justify-between">
                             {!showMoreMenu &&
                                 (!appSetting(
@@ -386,9 +350,6 @@ function CoverImage({
                         />
                     )}
                 </Row>
-                <View className="absolute lg:hidden top-3 left-3 z-50 ">
-                    {getCoverBackButton(is_person)}
-                </View>
             </View>
             
         )

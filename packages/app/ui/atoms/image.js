@@ -143,6 +143,10 @@ function ElementImageResolved(props) {
 
     sizes = SIZES_BY_BREAKPOINT[sizes] ?? sizes ?? "(max-width:768px) 100vw, 500px";
 
+    const styleWidth = useMemo(() => extractStyleWidth(style), [
+        style == null ? null : StyleSheet.flatten(style)?.width,
+    ]);
+
     const resolvedStyle = useMemo(() => {
         if (nobg) return {};
 
@@ -155,20 +159,34 @@ function ElementImageResolved(props) {
 
     const nativeImagesUrl = appSetting('config', 'native_app_images_url') || APP_URL;
 
-    const resolvedSrc = useMemo(() => {
-        let updatedSrc = src;
-
-        if (Platform.OS !== 'web' && !src.includes('.svg')) {
-            if (nativeImagesUrl) {
-                const screenWidth = Dimensions.get('screen').width;
-                const imageWidth = extractStyleWidth(style) || width || screenWidth;
-                const w = normalizeWidth(imageWidth);
-                updatedSrc = nativeImagesUrl + "/_next/image?url=" + encodeURIComponent(src) + "&w=" + w + "&q=75";
-            }
+    const nativeOptimizedSrc = useMemo(() => {
+        if (Platform.OS === 'web' || !src || src.includes('.svg') || !nativeImagesUrl) {
+            return null;
         }
 
-        return updatedSrc;
-    }, [src, style, width, nativeImagesUrl]);
+        const layoutWidth =
+            (typeof width === 'number' && width > 0 ? width : null) ??
+            styleWidth ??
+            Dimensions.get('screen').width;
+        const w = normalizeWidth(layoutWidth);
+        return `${nativeImagesUrl}/_next/image?url=${encodeURIComponent(src)}&w=${w}&q=75`;
+    }, [src, width, styleWidth, nativeImagesUrl]);
+
+    const [nativeSrcMode, setNativeSrcMode] = useState('optimized');
+
+    useEffect(() => {
+        setNativeSrcMode('optimized');
+    }, [src, nativeOptimizedSrc]);
+
+    const resolvedSrc = useMemo(() => {
+        if (Platform.OS !== 'web') {
+            if (nativeSrcMode === 'direct' || !nativeOptimizedSrc) {
+                return src;
+            }
+            return nativeOptimizedSrc;
+        }
+        return src;
+    }, [src, nativeSrcMode, nativeOptimizedSrc]);
 
     const canOptimize = Platform.OS === 'web' && (
         resolvedSrc.startsWith('/') || resolvedSrc.startsWith('data:') || resolvedSrc.startsWith('blob:') ||
@@ -182,7 +200,11 @@ function ElementImageResolved(props) {
     }, [resolvedSrc]);
 
     const handleError = useCallback(() => {
-        setFailedAttempts((attempts) => attempts + 1);
+        if (Platform.OS !== 'web') {
+            setNativeSrcMode((mode) => (mode === 'optimized' ? 'direct' : mode));
+            return;
+        }
+        setFailedAttempts((attempts) => (attempts < 1 ? attempts + 1 : attempts));
     }, []);
 
     const useOptimized = canOptimize && failedAttempts === 0;
@@ -203,8 +225,13 @@ function ElementImageResolved(props) {
             updatedRest.width = rest.pref_width || width;
         }
 
+        if (Platform.OS !== 'web') {
+            updatedRest.cachePolicy = rest.cachePolicy ?? 'memory-disk';
+            updatedRest.recyclingKey = rest.recyclingKey ?? src;
+        }
+
         return updatedRest;
-    }, [rest.view, height, width, rest.pref_height, rest.pref_width, rest]);
+    }, [rest.view, height, width, rest.pref_height, rest.pref_width, rest.cachePolicy, rest.recyclingKey, src]);
 
     const imageProps = {
         onError: handleError,
@@ -214,7 +241,9 @@ function ElementImageResolved(props) {
         sizes,
         ...(useOptimized ? { loader } : { unoptimized: true, loader: passthroughLoader }),
     };
-    const imageKey = `${resolvedSrc}-${failedAttempts}`;
+    const imageKey = Platform.OS === 'web'
+        ? `${resolvedSrc}-${failedAttempts}`
+        : `${src}-${nativeSrcMode}`;
 
     if (Platform.OS === 'web' && imageRest.fill === 'fill') {
         const { className, ...fillImageProps } = imageProps;

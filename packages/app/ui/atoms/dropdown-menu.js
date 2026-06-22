@@ -18,6 +18,12 @@ const menuSettings = appSetting('theme', 'dropdown_menu');
 
 export const DropdownMenuOpenContext = createContext(false);
 
+// Mirrors the web trigger logic in dropdown-popup.js: legacy buttonProps drive
+// the classic `Button` (variant-based), otherwise we render `NeoButton`
+// (style/borderShape/image-based) so triggers look identical on both platforms.
+const isLegacyButtonProps = (props) =>
+    props?.legacyButton === true || props?.variant != null;
+
 const variantClassMap = {
     vertical: { item: 'item_ver', container: 'content_ver' },
     horizontal: { item: 'item_hor', container: 'content_hor' },
@@ -255,10 +261,13 @@ function DropdownMenuNative({
     }, [defaultOpen, handlePress]);
 
     if (buttonProps) {
-        const ButtonComponent = buttonProps.useNeoButton ? NeoButton : Button;
-        return (
-            <ButtonComponent {...buttonProps} onPress={handlePress} />
-        );
+        const useLegacyButton =
+            buttonProps.useNeoButton === false || isLegacyButtonProps(buttonProps);
+        if (useLegacyButton) {
+            return <Button {...buttonProps} onPress={handlePress} />;
+        }
+        const { legacyButton: _legacy, neoButton: _neo, useNeoButton: _useNeo, ...neoButtonProps } = buttonProps;
+        return <NeoButton {...neoButtonProps} onPress={handlePress} />;
     }   
     return (
         <Pressable

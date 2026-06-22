@@ -1,5 +1,5 @@
 import { Root } from 'app/root'
-import { useState, useEffect, useLayoutEffect } from 'react'
+import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, parseUrl, parseQueryString, getURI, getPageSettings } from 'app/lib/util'
 import { Loading } from 'app/customization/loading'
@@ -103,13 +103,7 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken }) => {
         const cached = getCachedPageData(tabKey, pagePath);
         if (cached) {
             setPageData(cached);
-            return;
         }
-        setPageData((prev) => {
-            const prevUrl = prev?.data?.url;
-            if (!prevUrl || prevUrl === pagePath) return prev;
-            return null;
-        });
     }, [tabKey, pagePath, refreshToken]);
 
     useEffect(() => {
@@ -144,15 +138,14 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken }) => {
     }, [pagePath, currentUser?.id, currentUser?.confirmed, tabKey, refreshToken]);
 
 
+    const splashHiddenRef = useRef(false);
     useEffect(() => {
-        const prepareApp = async () => {
-            if (pageData?.data) {
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                await SplashScreen.hideAsync();
-            }
-        };
-
-        prepareApp();
+        if (!pageData?.data || splashHiddenRef.current) return;
+        splashHiddenRef.current = true;
+        const timer = setTimeout(() => {
+            SplashScreen.hideAsync().catch(() => {});
+        }, 1000);
+        return () => clearTimeout(timer);
     }, [pageData?.data]);
     return pageData?.data ? (
 

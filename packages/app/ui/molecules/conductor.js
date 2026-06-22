@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useState, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, interpolate, cancelAnimation } from 'react-native-reanimated';
 import { View, ScrollView, Row } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
@@ -14,12 +14,13 @@ import { fetcher } from 'app/lib/fetcher';
 import Snackbar from 'app/ui/atoms/snackbar';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByName } from 'app/components/block';
-import Cover, { CoverSmall } from 'app/components/elements/cover';
+import Cover, { CoverSmall, CoverBackButton } from 'app/components/elements/cover';
 import emitter from 'app/context/emitter'
-import { useSetHeader, useScrollValue, defaultHeader } from 'app/context/jotai/layout';
+import { useSetHeader, useScrollValue, defaultHeader, COVER_COLLAPSE_SCROLL } from 'app/context/jotai/layout';
+import { Platform } from 'react-native';
 import { getComponent } from 'app/components/registry';
-import { useFocusEffect } from 'app/lib/hooks/router'
-import { appSetting } from 'app/lib/util'
+import { useFocusEffect } from 'app/lib/hooks/router';
+import { appSetting } from 'app/lib/util';
 import {
     getCachedConductorState,
     setCachedConductorState,
@@ -29,10 +30,10 @@ import {
     getSkeletonByEndPoint,
     layoutForList,
     paddingForList
-} from 'app/customization/functions'
+} from 'app/customization/functions';
 
 // Scroll offset at which the full cover finishes crossfading into the small cover.
-const COVER_SWITCH_THRESHOLD = 500;
+const COVER_SWITCH_THRESHOLD = COVER_COLLAPSE_SCROLL;
 // Matches the web crossfade/collapse duration in conductor.web.js.
 const COVER_SWITCH_DURATION = 300;
 
@@ -80,7 +81,8 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
     }, []);
 
     return (
-        <View className="w-full">
+        <View className="w-full relative ">
+            {Platform.OS !== 'web' && !showSmall && <CoverBackButton />}
             <Animated.View style={[{ width: '100%', overflow: 'hidden' }, containerStyle]}>
                 <Animated.View
                     style={[measured ? { position: 'absolute', top: 0, left: 0, right: 0 } : { width: '100%' }, fullStyle]}
@@ -140,7 +142,8 @@ const TabSceneHeader = React.memo(function TabSceneHeader2({
     }
     if (headerMode === 'small') {
         return (
-            <View className="w-full">
+            <View className="w-full relative">
+                {Platform.OS !== 'web' && <CoverBackButton />}
                 {coverHeader}
                 {sceneHeader}
                 {filter}
@@ -345,8 +348,6 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
 
     const setHeader = useSetHeader();
-
-
 
     useEffect(() => {
         if (!deepEqual(menu, menuState)) {

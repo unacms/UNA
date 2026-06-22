@@ -253,14 +253,14 @@ export const PostsView = memo(({ data, styles, url, isCompact, content_attach, f
             {data.mainImage && (
                 <View className={isCompact ? 'w-28 flex-none' : 'w-full mb-1'}>
                     <View
-                        className="w-full aspect-[5/2] rounded-lg overflow-hidden"
+                        className="w-full aspect-5/2 rounded-lg overflow-hidden"
                         style={styles.card_image}
                     >
                         <Image
                             {...data.mainImage}
                             alt={data.title}
                             view="cover"
-                            className="u-cover rounded-xl"
+                            className="u-cover "
                             sizes={LAYOUT_BREAKPOINTS.md}
                         />
                     </View>
@@ -336,7 +336,7 @@ export const DefaultView = memo(
                                 {...data.mainImage}
                                 alt={data.title}
                                 view="cover"
-                                className=" u-cover rounded-xl "
+                                className=" u-cover rounded-lg overflow-hidden"
                                 sizes={LAYOUT_BREAKPOINTS.md}
                             />
                         </View>
@@ -472,7 +472,7 @@ export const PollView = memo(
                                     {...data.mainImage}
                                     alt={data.title}
                                     view="cover"
-                                    className=" u-cover rounded-xl "
+                                    className=" u-cover rounded-lg overflow-hidden"
                                     sizes={LAYOUT_BREAKPOINTS.md}
                                 />
                             </View>

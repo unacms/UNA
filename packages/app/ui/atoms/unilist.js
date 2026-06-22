@@ -4,6 +4,62 @@ import { RefreshControl } from 'react-native';
 import { LegendList } from "@legendapp/list";
 import { useSetScrollDirection, useHeaderHeight, useSetScrollValue } from 'app/context/jotai/layout';
 import { getListScrollOffset, setListScrollOffset } from 'app/lib/tab-page-cache';
+import { useFocusEffect } from 'app/lib/hooks/router';
+
+const ESTIMATED_ITEM_SIZE_BY_UNIT = {
+    feed: 140,
+    notifications: 64,
+};
+
+function resolveEstimatedItemSize(unit, explicitSize) {
+    if (typeof explicitSize === 'number' && explicitSize > 0) {
+        return explicitSize;
+    }
+    if (unit && ESTIMATED_ITEM_SIZE_BY_UNIT[unit]) {
+        return ESTIMATED_ITEM_SIZE_BY_UNIT[unit];
+    }
+    return 100;
+}
+
+function estimateItemSize(unit, item, fallback) {
+    if (!item || typeof item !== 'object') {
+        return fallback;
+    }
+
+    if (item.type === 'block') {
+        return 160;
+    }
+
+    if (unit === 'notifications') {
+        return 64;
+    }
+
+    if (unit === 'feed') {
+        const content = item.content;
+        const hasImage =
+            item.mainImage ||
+            (content?.images?.length > 0) ||
+            (content?.images_attach?.length > 0);
+        const hasVideo = content?.videos_attach?.length > 0;
+        const hasEmbed = !!content?.embed;
+
+        if (hasVideo || hasEmbed) {
+            return 360;
+        }
+        if (hasImage) {
+            return 420;
+        }
+        if (content?.title && content?.text) {
+            return 180;
+        }
+        if (content?.text) {
+            return 140;
+        }
+        return 120;
+    }
+
+    return fallback;
+}
 
 export default function UniList(props) {
     const { 
@@ -22,6 +78,8 @@ export default function UniList(props) {
         inverted,
         onRefresh, 
         url,
+        unit,
+        estimatedItemSize: estimatedItemSizeProp,
         refreshControl: refreshControlProp,
         progressViewOffset: progressViewOffsetProp,
         ...rest 
@@ -29,29 +87,80 @@ export default function UniList(props) {
 
     const scrollY = useRef(0);
     const scrollState = useRef(0);
+    const isFocusedRef = useRef(true);
+    const lastPublishedScrollRef = useRef(0);
+    const listHeaderInsetRef = useRef(0);
     const setScrollDirection = useSetScrollDirection();
     const setScrollValue = useSetScrollValue();
 
     const headerHeightFromAtom = useHeaderHeight();
-    
+
+    // Lock list header inset after first measurement so collapsible header
+    // animations do not resize the spacer and retrigger LegendList layout loops.
     const headerHeight = useMemo(() => {
-        if (typeof headerHeightFromAtom === 'number') {
-            return headerHeightFromAtom;
+        const measured =
+            typeof headerHeightFromAtom === 'number'
+                ? headerHeightFromAtom
+                : typeof scrollProps?.headerHeight === 'number'
+                    ? scrollProps.headerHeight
+                    : 0;
+
+        if (measured > 0) {
+            listHeaderInsetRef.current = measured;
         }
-        return typeof scrollProps?.headerHeight === 'number' 
-            ? scrollProps.headerHeight 
-            : 0;
+
+        return listHeaderInsetRef.current > 0 ? listHeaderInsetRef.current : measured;
     }, [headerHeightFromAtom, scrollProps?.headerHeight]);
-    
+
     const filteredData = useMemo(() => 
         data.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i),
         [data]
     );
 
+    const initialScrollOffset = useMemo(
+        () => (url ? getListScrollOffset(url) : 0),
+        [url]
+    );
+
+    const estimatedItemSize = useMemo(
+        () => resolveEstimatedItemSize(unit, estimatedItemSizeProp),
+        [unit, estimatedItemSizeProp]
+    );
+
+    const getEstimatedItemSize = useCallback(
+        (_index, item) => estimateItemSize(unit, item, estimatedItemSize),
+        [unit, estimatedItemSize]
+    );
+
+    useFocusEffect(
+        useCallback(() => {
+            isFocusedRef.current = true;
+            setScrollDirection(0);
+            scrollState.current = 0;
+            if (scrollY.current >= 0) {
+                lastPublishedScrollRef.current = Math.round(scrollY.current);
+                setScrollValue(lastPublishedScrollRef.current);
+            }
+            return () => {
+                isFocusedRef.current = false;
+            };
+        }, [setScrollDirection, setScrollValue])
+    );
+
     const handleScroll = useCallback((event) => {
+        if (!isFocusedRef.current) {
+            return;
+        }
+
         const SCROLL_OFFSET_THRESHOLD = 100;
         const currentScrollY = event.nativeEvent.contentOffset.y;
-        setScrollValue(currentScrollY);
+        const roundedScrollY = Math.round(currentScrollY);
+
+        if (roundedScrollY !== lastPublishedScrollRef.current) {
+            lastPublishedScrollRef.current = roundedScrollY;
+            setScrollValue(roundedScrollY);
+        }
+
         const previousScrollY = scrollY.current;
 
         let newScrollState;
@@ -75,21 +184,15 @@ export default function UniList(props) {
     }, [setScrollDirection, setScrollValue]);
 
     useEffect(() => {
+        listHeaderInsetRef.current = 0;
+    }, [url]);
+
+    useEffect(() => {
         return () => {
             if (url) {
                 setListScrollOffset(url, scrollY.current);
             }
         };
-    }, [url]);
-
-    const restoreScrollOffset = useCallback((node) => {
-        if (!node?.scrollToOffset || !url) {
-            return;
-        }
-        const offset = getListScrollOffset(url);
-        if (offset > 0) {
-            node.scrollToOffset({ offset, animated: false });
-        }
     }, [url]);
 
     const setListRef = useCallback((node) => {
@@ -98,8 +201,7 @@ export default function UniList(props) {
         } else if (refer) {
             refer.current = node;
         }
-        restoreScrollOffset(node);
-    }, [refer, restoreScrollOffset]);
+    }, [refer]);
 
     const handleScrollToIndexFailed = useCallback(() => {
     }, []);
@@ -193,7 +295,10 @@ export default function UniList(props) {
             automaticallyAdjustContentInsets={false}
             onStartReachedThreshold={inverted ? 1 : undefined}
             initialScrollIndex={inverted && filteredData.length > 0 ? filteredData.length - 1 : undefined}
-            drawDistance={inverted ? 500 : 350}
+            initialScrollOffset={initialScrollOffset > 0 ? initialScrollOffset : undefined}
+            estimatedItemSize={estimatedItemSize}
+            getEstimatedItemSize={getEstimatedItemSize}
+            drawDistance={inverted ? 400 : 250}
             {...rest}
         />
     );

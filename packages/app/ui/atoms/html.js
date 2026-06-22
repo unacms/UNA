@@ -9,7 +9,7 @@ import { decodeText, appSetting, isExternalUrl, openExternalLink } from 'app/lib
 import { ParseHtmlClasses } from 'app/customization/functions';
 import { useThemeName } from 'app/design/theme'
 import { useRouter, useGlobalSearchParams } from 'app/lib/hooks/router'
-import { unaLinksToMentions } from 'app/components/form-fields/editor-mention-html'
+import { unaLinksToMentions, linkifyHtml, normalizeLinkHref } from 'app/components/form-fields/editor-mention-html'
 
 // Native-only: the enriched-html display component is Tiptap-based on web and must
 // not load/execute during web/SSR. The require only runs on native.
@@ -496,7 +496,7 @@ const renderTreeNode = (node, key) => {
             return (
                 <Link
                     key={key}
-                    href={href}
+                    href={isMention ? href : normalizeLinkHref(href)}
                     mode="text"
                     className={
                         'text-accent-foreground ' +
@@ -567,8 +567,11 @@ function EnrichedHtmlNative({ html, customClassName, innerRef }) {
     const textColor = isDark ? 'rgba(225, 230, 240, 1)' : 'rgba(30, 40, 55, 1)'
     const isSmall = customClassName === 'u-vanilla-html-small'
 
-    const navigate = useCallback((url) => {
-        if (!url) return
+    const navigate = useCallback((rawUrl) => {
+        if (!rawUrl) return
+        // Native auto-links store bare hrefs (e.g. "example.com"); add a scheme so
+        // they open in the browser instead of being treated as an in-app route.
+        const url = normalizeLinkHref(rawUrl)
         if (isExternalUrl(url)) {
             openExternalLink(url)
             return
@@ -583,7 +586,7 @@ function EnrichedHtmlNative({ html, customClassName, innerRef }) {
     // so it falls back to blue-on-yellow. Key it per indicator to apply our colors.
     const mentionStyle = { color: mentionColor, backgroundColor: mentionBackground, textDecorationLine: 'none' }
     const htmlStyle = {
-        a: { color: mentionColor },
+        a: { color: mentionColor, textDecorationLine: 'none' },
         mention: { '@': mentionStyle, '#': mentionStyle },
     }
 
@@ -618,6 +621,9 @@ export default function ElementHtml({ customClassName, data, innerRef }) {
         html = html.replace(`__PRE_BLOCK_${index}__`, block)
     })
     html = html.replace(/\n|\r/g, '')
+    // Make plain-text URLs/emails clickable (covers legacy content and platforms
+    // where the editor didn't auto-link). Skips text already inside anchors/mentions/code.
+    html = linkifyHtml(html)
     if (html.trim() != '' && !hasBlockHtml(html)) html = `<p>${html}</p>`
 
     // Native + enriched engine: render via the library's native display component

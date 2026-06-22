@@ -14,7 +14,7 @@ import Profile from 'app/ui/molecules/profile'
 import Badges from 'app/ui/molecules/badges'
 import { getAlert, stripTagsWithLinks, appSetting, cn } from 'app/lib/util'
 import emitter from 'app/context/emitter'
-import { mentionsToUnaLinks, unaLinksToMentions } from './editor-mention-html'
+import { mentionsToUnaLinks, unaLinksToMentions, linkifyHtml } from './editor-mention-html'
 import { useMentionSuggestions } from './use-mention-suggestions'
 
 const MENTION_TYPE_LABELS = {
@@ -265,7 +265,10 @@ export default function RftTextEnriched({
     // ---- HTML -> react-hook-form ----
     const onChangeHtml = useCallback((e) => {
         const raw = e?.nativeEvent?.value ?? ''
-        const value = mentionsToUnaLinks(raw)
+        // Convert mentions to UNA links, then auto-link any plain URLs/emails the
+        // editor didn't catch itself (web has the library's autolink disabled), so
+        // saved content has real <a> links on every platform.
+        const value = linkifyHtml(mentionsToUnaLinks(raw))
         if (onFocus && value) onFocus()
         if (isPlainText) {
             field.onChange(stripTagsWithLinks(value, ['a', 'p', 'br', 'span']))
@@ -329,7 +332,9 @@ export default function RftTextEnriched({
             mentionCfg.editor_color?.[themeKey] || (isDark ? mentionColors.dark : mentionColors.light)
         const backgroundColor = mentionCfg.editor_background?.[themeKey] || 'transparent'
         return {
-            a: { color },
+            // No underline on links/mentions/tags — color alone marks them (the
+            // library default underlines <a>, so override it explicitly).
+            a: { color, textDecorationLine: 'none' },
             mention: { color, backgroundColor, textDecorationLine: 'none' },
         }
     }, [themeName])

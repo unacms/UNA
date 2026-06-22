@@ -1,30 +1,21 @@
-import { InteractionManager, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import emitter from 'app/context/emitter';
 import { appSetting } from 'app/lib/util';
 import { useBottomSheetStore } from 'app/context/bottomsheet';
 
-const NAV_DEFER_MS = Platform.OS === 'web' ? 0 : 120;
+const OVERLAY_DISMISS_MS = Platform.OS === 'web' ? 0 : 120;
 
 export function dismissNavigationOverlays() {
-    useBottomSheetStore.getState().setBottomSheetData(null);
+    const hadBottomSheet = !!useBottomSheetStore.getState().bottomSheetData;
+    if (hadBottomSheet) {
+        useBottomSheetStore.getState().setBottomSheetData(null);
+    }
     emitter.emit('link', { action: 'pressed' });
     emitter.emit('dynamic_menu', { action: 'hide' });
     emitter.emit('editor', { action: 'blur' });
+    return hadBottomSheet;
 }
 
-function runAfterOverlayDismiss(callback) {
-    if (NAV_DEFER_MS === 0) {
-        callback();
-        return;
-    }
-    InteractionManager.runAfterInteractions(() => {
-        requestAnimationFrame(() => {
-            setTimeout(callback, NAV_DEFER_MS);
-        });
-    });
-}
-
-/** Resolve `/tabN` from expo-router pathname (e.g. `/tab0`, `/tab0/index`). */
 export function getTabKeyFromPathname(pathname) {
     const match = String(pathname || '').match(/\/(tab\d+)(?:\/|$)/);
     return match ? `/${match[1]}` : '/tab0';
@@ -33,18 +24,6 @@ export function getTabKeyFromPathname(pathname) {
 const tabHistoryState = {
     byTab: {},
 };
-
-function logTabHistory(action, tabKey, payload = {}) {
-   /* if (typeof __DEV__ !== 'undefined' && __DEV__) {
-        const stack = tabHistoryState.byTab[tabKey] || [];
-        console.log('[tab-history]', action, {
-            tabKey,
-            stackLength: stack.length,
-            top: stack[stack.length - 1],
-            ...payload,
-        });
-    }*/
-}
 
 function getTabIndex(tabKey = '/tab0') {
     const match = String(tabKey).match(/^\/tab(\d+)$/);
@@ -89,7 +68,6 @@ export function ensureTabHistory(tabKey, currentUser, initialUrl) {
         if (initialUrl && initialUrl !== root) {
             tabHistoryState.byTab[tabKey].push(initialUrl);
         }
-        logTabHistory('ensure', tabKey, { initialUrl, root });
     }
 }
 
@@ -101,7 +79,6 @@ export function pushTabHistory(tabKey, url, currentUser) {
     const stack = tabHistoryState.byTab[tabKey];
     if (stack[stack.length - 1] !== url) {
         stack.push(url);
-        logTabHistory('push', tabKey, { url });
     }
 }
 
@@ -118,8 +95,7 @@ export function popTabHistory(tabKey, currentUser) {
     ensureTabHistory(tabKey, currentUser);
     const stack = tabHistoryState.byTab[tabKey];
     if (stack.length > 1) {
-        const removed = stack.pop();
-        logTabHistory('pop', tabKey, { removed });
+        stack.pop();
     }
     while (stack.length > 1 && isTabHistoryExcluded(stack[stack.length - 1])) {
         stack.pop();
@@ -131,6 +107,7 @@ export function getTabRoot(tabKey, currentUser) {
     return getTabRootUrl(tabKey, currentUser);
 }
 
+/** Swap in-tab URL to the previous history entry (cached feed, etc.) — no stack pop. */
 export function navigateBackInTab(router, tabKey, currentUser) {
     if (!router || !tabKey) {
         return;
@@ -145,14 +122,21 @@ export function navigateBackInTab(router, tabKey, currentUser) {
         return;
     }
 
-    dismissNavigationOverlays();
+    const hadOverlay = dismissNavigationOverlays();
+    const tabIndex = getTabIndex(normalizedTabKey);
 
-    runAfterOverlayDismiss(() => {
+    const navigate = () => {
         router.replace({
             pathname: normalizedTabKey,
-            params: { url: targetUrl },
+            params: { url: targetUrl, name: `tab${tabIndex}` },
         });
-    });
+    };
+
+    if (hadOverlay && OVERLAY_DISMISS_MS > 0) {
+        setTimeout(navigate, OVERLAY_DISMISS_MS);
+    } else {
+        navigate();
+    }
 }
 
 export function resetAllTabHistory() {
@@ -166,5 +150,4 @@ export function resetTabHistory(tabKey, currentUser, initialUrl) {
     if (initialUrl && initialUrl !== rootUrl) {
         tabHistoryState.byTab[tabKey].push(initialUrl);
     }
-    logTabHistory('reset', tabKey, { rootUrl, initialUrl });
 }
