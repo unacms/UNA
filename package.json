@@ -153,7 +153,7 @@
     "bower": "^1.8.14",
     "npm-run-all": "^4.1.5",
     "rollup": "^4.62.2",
-    "tailwindcss": "^3.4.17",
+    "tailwindcss": "^4.3.1",
     "uglify-js": "^3.19.3"
   }
 }
