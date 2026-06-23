@@ -1,11 +1,7 @@
 import * as React from 'react';
 import { View } from 'react-native';
 import { HoverCard as HoverCardPrimitive, HoverCardTrigger as TriggerPrimitive, HoverCardContent as ContentPrimitive } from 'app/ui/primitives/hover-card';
-import { clsx } from 'clsx';
-
-function cn(...inputs) {
-  return clsx(inputs);
-}
+import { cn } from 'app/lib/util';
 
 const HoverCard = HoverCardPrimitive;
 

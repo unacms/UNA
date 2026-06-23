@@ -2,12 +2,7 @@ import * as React from 'react';
 import { View } from 'react-native';
 import * as TabsPrimitive from 'app/ui/primitives/tabs';
 import { Text } from 'app/design/typography';
-import { clsx } from 'clsx';
-import { appSetting } from 'app/lib/util';
-
-function cn(...inputs) {
-  return clsx(inputs);
-}
+import { appSetting, cn } from 'app/lib/util';
 
 const tabsTheme = appSetting('theme', 'tabs');
 const tabsSizes = appSetting('theme', 'tabs_sizes');

@@ -75,7 +75,7 @@ export default function JotItem({ item, index, handleReply }) {
                 <Profile {...item.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
             
             <View className='flex-auto'>
-                <View className='bg-muted  rounded-xl px-3 l' >
+                <View className='bg-muted/60 rounded-xl px-3 ' >
                     <Row className="items-center w-full justify-between gap-1 mb-0.5 pt-2">
                         <Profile
                             {...item.author_data}
@@ -83,7 +83,7 @@ export default function JotItem({ item, index, handleReply }) {
                         />
                         
                         <View className="">
-                            <Time className="text-muted-foreground" ts={item.created}></Time>
+                            <Time className="text-muted-foreground text-sm" ts={item.created}></Time>
                         </View>
                     </Row>
                     {viewState.view == 'edited' ? (

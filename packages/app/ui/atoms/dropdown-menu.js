@@ -2,7 +2,7 @@ import { Pressable, View, Row } from 'app/design/view';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Button, NeoButton } from 'app/design/controls'
 import { memo, useCallback, useEffect, useRef, useState, isValidElement, cloneElement, createContext } from 'react'
-import { clsx } from 'clsx';
+import { cn } from 'app/lib/util';
 import { FeedbackHaptics } from 'app/lib/util';
 import { Keyboard, Alert, Platform } from 'react-native'
 import Redirect from 'app/ui/atoms/redirect';
@@ -122,7 +122,7 @@ function DropdownMenuPopup({
                 openOnFocus={
                     openOnFocus ?? variant === 'tabs-overflow'
                 }
-                contentClassName={clsx(
+                contentClassName={cn(
                     variant === 'tabs-overflow' && 'overflow-visible p-0.5',
                     contentClassNameProp
                 )}

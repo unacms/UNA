@@ -19,7 +19,7 @@ export default function PageLayout({ children, data, layoutName }) {
 
     return (
         <Page data={data}>
-            <View className="w-full flex-1 sm:p-4 gap-px sm:gap-y-4">
+            <View className="w-full flex-1">
                 {children}
             </View>
             {appStatic('components_footer')}

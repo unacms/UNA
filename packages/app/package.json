@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@legendapp/motion": "^2.5.3",
-    "clsx": "^2.0.0",
+    "cnfast": "^0.0.8",
     "crypto": "file:../../crypto-shim",
     "solito": "4.3.0"
   },

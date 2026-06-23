@@ -10,7 +10,7 @@ import { View, ScrollView, Platform } from 'react-native';
 import { Text } from 'app/design/typography';
 import * as TabsPrimitive from 'app/ui/primitives/tabs';
 import { appSetting } from 'app/lib/util';
-import { clsx } from 'clsx';
+import { cn } from 'app/lib/util';
 import { useTranslation } from 'react-i18next';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { Icon } from 'app/ui/atoms/icon';
@@ -483,7 +483,7 @@ export default function Tabs({
         useEqualWidth && !hug
             ? /* min-w-min: never shrink below label + horizontal padding (min-w-0 was eating padding on long titles) */
               'flex-1 min-w-min basis-0 justify-center'
-            : clsx('shrink-0 flex-none');
+            : cn('shrink-0 flex-none');
     const moreTriggerEndAlign =
         collapseLayout.overflowTabs.length > 0 &&
         !(useEqualWidth && !hug);
@@ -499,7 +499,7 @@ export default function Tabs({
 
     const trackView = (
         <View
-            className={clsx(
+            className={cn(
                 variantCfg.track,
                 radiusTrack,
                 trackClassName
@@ -514,7 +514,7 @@ export default function Tabs({
         >
             {variant === 'default' ? (
                 <View
-                    className={clsx(
+                    className={cn(
                         'absolute inset-0',
                         radiusPill,
                         variantCfg.pill
@@ -522,7 +522,7 @@ export default function Tabs({
                 />
             ) : (
                 <View
-                    className={clsx(
+                    className={cn(
                         'absolute inset-0',
                         sizeCfg.indicator_inner,
                         variantCfg.line
@@ -535,7 +535,7 @@ export default function Tabs({
     const collapseListInner = (
         <>
             <View
-                className={clsx(
+                className={cn(
                     tabsTheme['u-controls-tabs-header-row'],
                     variantCfg.row,
                     radiusRow,
@@ -556,7 +556,7 @@ export default function Tabs({
                     <View
                         key={`tab-measure-${tab.key}`}
                         onLayout={collapseLayout.onTabLayout(i)}
-                        className={clsx(
+                        className={cn(
                             tabsTheme['u-controls-tabs-header-item'],
                             sizeCfg.item,
                             radiusPill,
@@ -564,7 +564,7 @@ export default function Tabs({
                             'flex-row'
                         )}
                     >
-                        <Text className={clsx(sizeCfg.text)}>{tab.title}</Text>
+                        <Text className={cn(sizeCfg.text)}>{tab.title}</Text>
                     </View>
                 ))}
             </View>
@@ -573,7 +573,7 @@ export default function Tabs({
 
             <TabsPrimitive.List
                 onLayout={onListLayout}
-                className={clsx(
+                className={cn(
                     tabsTheme['u-controls-tabs-header-row'],
                     variantCfg.row,
                     radiusRow,
@@ -598,7 +598,7 @@ export default function Tabs({
                         key={tab.key}
                         value={tab.key}
                         onLayout={onTriggerLayout(tab.key)}
-                        className={clsx(
+                        className={cn(
                             tabsTheme['u-controls-tabs-header-item'],
                             sizeCfg.item,
                             radiusPill,
@@ -612,15 +612,15 @@ export default function Tabs({
                     >
                         {({ isSelected }) => (
                             <Text
-                                className={clsx(
+                                className={cn(
                                     isSelected
-                                        ? clsx(
+                                        ? cn(
                                               tabsTheme[
                                                   'u-controls-tabs-header-item-text-active'
                                               ],
                                               sizeCfg.text_active
                                           )
-                                        : clsx(
+                                        : cn(
                                               tabsTheme[
                                                   'u-controls-tabs-header-item-text'
                                               ],
@@ -652,7 +652,7 @@ export default function Tabs({
                                     ? false
                                     : undefined
                             }
-                            className={clsx(
+                            className={cn(
                                 tabsTheme['u-controls-tabs-header-item'],
                                 sizeCfg.item,
                                 radiusPill,
@@ -667,15 +667,15 @@ export default function Tabs({
                         >
                             {resolvedMoreMenuTitle ? (
                                 <Text
-                                    className={clsx(
+                                    className={cn(
                                         moreIsActive
-                                            ? clsx(
+                                            ? cn(
                                                   tabsTheme[
                                                       'u-controls-tabs-header-item-text-active'
                                                   ],
                                                   sizeCfg.text_active
                                               )
-                                            : clsx(
+                                            : cn(
                                                   tabsTheme[
                                                       'u-controls-tabs-header-item-text'
                                                   ],
@@ -689,15 +689,15 @@ export default function Tabs({
                             <Icon
                                 icon={moreMenuIcon}
                                 size={moreIconSize}
-                                className={clsx(
+                                className={cn(
                                     moreIsActive
-                                        ? clsx(
+                                        ? cn(
                                               tabsTheme[
                                                   'u-controls-tabs-header-item-text-active'
                                               ],
                                               sizeCfg.text_active
                                           )
-                                        : clsx(
+                                        : cn(
                                               tabsTheme[
                                                   'u-controls-tabs-header-item-text'
                                               ],
@@ -719,15 +719,15 @@ export default function Tabs({
                     >
                         {({ isSelected }) => (
                             <Text
-                                className={clsx(
+                                className={cn(
                                     isSelected
-                                        ? clsx(
+                                        ? cn(
                                               tabsTheme[
                                                   'u-controls-tabs-header-item-text-active'
                                               ],
                                               sizeCfg.text_active
                                           )
-                                        : clsx(
+                                        : cn(
                                               tabsTheme[
                                                   'u-controls-tabs-header-item-text'
                                               ],
@@ -748,10 +748,10 @@ export default function Tabs({
         <TabsPrimitive.Root
             value={currentTab}
             onValueChange={handleTabChange}
-            className={clsx(tabsTheme['u-controls-tabs-container'], headerClassName)}
+            className={cn(tabsTheme['u-controls-tabs-container'], headerClassName)}
         >
             <View
-                className={clsx(
+                className={cn(
                     'relative min-w-0 overflow-hidden',
                     tabBarWidthClass,
                     overflow !== 'collapse' && tabBarClassName,
@@ -766,14 +766,14 @@ export default function Tabs({
                             collapseLayout.setContainerRef(node);
                         }}
                         onLayout={collapseLayout.onContainerLayout}
-                        className={clsx(
+                        className={cn(
                             'relative z-[1] w-full min-w-0',
                             tabBarClassName
                         )}
                     >
                         {collapseHugStrip ? (
                             <View
-                                className={clsx(
+                                className={cn(
                                     'relative min-w-0 overflow-hidden',
                                     'w-max max-w-full self-start',
                                     radiusTrack
@@ -787,7 +787,7 @@ export default function Tabs({
                                             ? false
                                             : undefined
                                     }
-                                    className={clsx(
+                                    className={cn(
                                         'relative web:isolate min-w-0 w-full',
                                         listWrapperClassName
                                     )}
@@ -803,7 +803,7 @@ export default function Tabs({
                                         ? false
                                         : undefined
                                 }
-                                className={clsx(
+                                className={cn(
                                     'relative web:isolate min-w-0 w-full',
                                     listWrapperClassName
                                 )}
@@ -841,7 +841,7 @@ export default function Tabs({
                             collapsable={
                                 Platform.OS === 'android' ? false : undefined
                             }
-                            className={clsx(
+                            className={cn(
                                 'relative web:isolate',
                                 hug
                                     ? 'w-max self-start'
@@ -853,7 +853,7 @@ export default function Tabs({
 
                             <TabsPrimitive.List
                                 onLayout={onListLayout}
-                                className={clsx(
+                                className={cn(
                                     tabsTheme['u-controls-tabs-header-row'],
                                     variantCfg.row,
                                     radiusRow,
@@ -873,7 +873,7 @@ export default function Tabs({
                                         key={tab.key}
                                         value={tab.key}
                                         onLayout={onTriggerLayout(tab.key)}
-                                        className={clsx(
+                                        className={cn(
                                             tabsTheme[
                                                 'u-controls-tabs-header-item'
                                             ],
@@ -889,15 +889,15 @@ export default function Tabs({
                                     >
                                         {({ isSelected }) => (
                                             <Text
-                                                className={clsx(
+                                                className={cn(
                                                     isSelected
-                                                        ? clsx(
+                                                        ? cn(
                                                               tabsTheme[
                                                                   'u-controls-tabs-header-item-text-active'
                                                               ],
                                                               sizeCfg.text_active
                                                           )
-                                                        : clsx(
+                                                        : cn(
                                                               tabsTheme[
                                                                   'u-controls-tabs-header-item-text'
                                                               ],
@@ -920,7 +920,7 @@ export default function Tabs({
                 <TabsPrimitive.Content
                     key={tab.key}
                     value={tab.key}
-                    className={clsx(
+                    className={cn(
                         tabsTheme['u-controls-tabs-tab-content'],
                         contentClassName
                     )}

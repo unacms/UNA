@@ -11,10 +11,11 @@ import { remoteSettings } from 'app/settings/remote';
 import { parse as flatted_parse, stringify as flatted_stringify } from 'flatted';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { isComponent } from 'app/components/registry';
-import { clsx } from 'clsx';
 import * as RNLocalize from "react-native-localize";
 import { ImageManipulator, SaveFormat } from 'app/lib/image-manipulator';
 import * as WebBrowser from 'expo-web-browser';
+
+export { cn } from 'cnfast';
 
 const nativeCache = [];
 export const isWeb = Platform.OS === 'web'
@@ -38,10 +39,6 @@ export function getBreakpoint(width) {
 
 export function appSetting(section, name, path) {
     return setting(section, name, path, remoteSettings.data);
-}
-
-export function cn(...classes) {
-    return clsx(classes);
 }
 
 export function isObjectsEqual(obj, obj2) {

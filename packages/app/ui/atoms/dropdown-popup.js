@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
-import { clsx } from 'clsx';
+import { cn } from 'app/lib/util';
 import {
     Modal as ModalBase,
     Platform
@@ -250,12 +250,12 @@ export default function DropdownPopup({
                 maxHeight: buttonPos.maxHeight,
                 zIndex: 1000,
             }}
-            className={clsx(contentClasses, contentClassName)}
+            className={cn(contentClasses, contentClassName)}
         >
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 tabIndex={isWeb ? -1 : undefined}
-                className={clsx('web:outline-none', maxPopupWidth && 'w-full min-w-0 max-w-full')}
+                className={cn('web:outline-none', maxPopupWidth && 'w-full min-w-0 max-w-full')}
                 contentContainerClassName={maxPopupWidth ? 'w-full min-w-0' : undefined}
             >
                 {children}

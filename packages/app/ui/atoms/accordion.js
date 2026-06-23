@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { Platform } from 'react-native';
 import { View } from 'app/design/view';
 import * as AccordionPrimitive from 'app/ui/primitives/accordion';
-import { clsx } from 'clsx';
+import { cn } from 'app/lib/util';
 import { Icon } from 'app/ui/atoms/icon';
 import { Text } from 'app/design/typography';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
@@ -14,7 +14,7 @@ const accordionTheme = appSetting('theme', 'accordion') ?? {};
 const Accordion = React.forwardRef(({ className, ...props }, ref) => (
     <AccordionPrimitive.Root
         ref={ref}
-        className={clsx(accordionTheme.root, className)}
+        className={cn(accordionTheme.root, className)}
         {...props}
     />
 ));
@@ -23,7 +23,7 @@ Accordion.displayName = AccordionPrimitive.Root.displayName;
 const AccordionItem = React.forwardRef(({ className, ...props }, ref) => (
     <AccordionPrimitive.Item
         ref={ref}
-        className={clsx(accordionTheme.item, className)}
+        className={cn(accordionTheme.item, className)}
         {...props}
     />
 ));
@@ -36,7 +36,7 @@ const AccordionTriggerTitle = React.forwardRef(
     ({ className, children, ...props }, ref) => (
         <Text
             ref={ref}
-            className={clsx(accordionTheme.trigger_text, className)}
+            className={cn(accordionTheme.trigger_text, className)}
             {...props}
         >
             {children}
@@ -88,7 +88,7 @@ const AccordionTrigger = React.forwardRef(
             <AccordionPrimitive.Header className="flex">
                 <AccordionPrimitive.Trigger
                     ref={ref}
-                    className={clsx(accordionTheme.trigger, className)}
+                    className={cn(accordionTheme.trigger, className)}
                     {...props}
                     onPress={handlePress}
                 >
@@ -116,7 +116,7 @@ const AccordionTrigger = React.forwardRef(
                                     <Icon
                                         icon="ChevronDown"
                                         size={18}
-                                        className={clsx(
+                                        className={cn(
                                             accordionTheme.chevron,
                                             chevronClassName
                                         )}
@@ -136,10 +136,10 @@ const AccordionContent = React.forwardRef(
     ({ className, innerClassName, children, ...props }, ref) => (
         <AccordionPrimitive.Content
             ref={ref}
-            className={clsx(accordionTheme.content, className)}
+            className={cn(accordionTheme.content, className)}
             {...props}
         >
-            <View className={clsx(accordionTheme.content_inner, innerClassName)}>
+            <View className={cn(accordionTheme.content_inner, innerClassName)}>
                 {children}
             </View>
         </AccordionPrimitive.Content>
