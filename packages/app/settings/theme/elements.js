@@ -86,7 +86,7 @@ export const settingsElements = {
         'u-block-base':
             ' text-card-foreground gap-3 sm:gap-4',
         'u-block-bg':
-            ' bg-card/80 shadow-card-outline dark:shadow-card-outline-deep ',
+            ' bg-card/60 shadow-card-outline dark:shadow-card-outline-deep ',
         'u-block-pad':
             ' p-4',
         'u-block-rounded': ' sm:rounded-2xl',
@@ -103,7 +103,7 @@ export const settingsElements = {
         'u-block-footer':
             'flex text-card-foreground gap-4 pt-2',
         'u-block-actions':
-            'flex flex-row text-card-foreground gap-2 mb-auto ',
+            'flex flex-row text-card-foreground gap-2 -mx-1.5 -my-1 ',
         'u-block-animate':
             'animate-in fade-in slide-in-from-top-2 duration-200',
     },

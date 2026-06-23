@@ -16,6 +16,11 @@ import { getAlert, stripTagsWithLinks, appSetting, cn } from 'app/lib/util'
 import emitter from 'app/context/emitter'
 import { mentionsToUnaLinks, unaLinksToMentions, linkifyHtml } from './editor-mention-html'
 import { useMentionSuggestions } from './use-mention-suggestions'
+import {
+    getTiptapEditorFromContainer,
+    isCommentEditorEnterKey,
+    isCommentEditorNewlineEnter,
+} from 'app/lib/comment-editor-keyboard'
 
 const MENTION_TYPE_LABELS = {
     bx_persons: 'People',
@@ -239,39 +244,6 @@ export default function RftTextEnriched({
         return () => node.removeEventListener('mousedown', onMouseDown)
     }, [isWeb, suggestions.length > 0])
 
-    // ---- web: drive the dropdown from the keyboard without leaking keys to the editor ----
-    // Captured before ProseMirror so Enter selects the mention instead of inserting a
-    // newline (the editor's keymap runs its own split-block command, which a late
-    // preventDefault via onKeyPress cannot stop), and arrows navigate the list instead
-    // of moving the caret.
-    useEffect(() => {
-        if (!isWeb) return
-        const node = containerRef.current
-        if (!node?.addEventListener) return
-        const onKeyDownCapture = (e) => {
-            const h = handlersRef.current
-            if (!h?.suggestions?.length) return
-            switch (e.key) {
-                case 'Enter': {
-                    e.preventDefault(); e.stopPropagation()
-                    const sel = h.suggestions.find((x) => x.selected) || h.suggestions[0]
-                    if (sel) h.insertMention(sel)
-                    break
-                }
-                case 'ArrowDown':
-                    e.preventDefault(); e.stopPropagation(); h.moveSelected('down'); break
-                case 'ArrowUp':
-                    e.preventDefault(); e.stopPropagation(); h.moveSelected('up'); break
-                case 'Escape':
-                    e.preventDefault(); e.stopPropagation(); h.close(); break
-                default:
-                    break
-            }
-        }
-        node.addEventListener('keydown', onKeyDownCapture, true)
-        return () => node.removeEventListener('keydown', onKeyDownCapture, true)
-    }, [isWeb, mounted])
-
     // ---- HTML -> react-hook-form ----
     const onChangeHtml = useCallback((e) => {
         const raw = e?.nativeEvent?.value ?? ''
@@ -301,11 +273,18 @@ export default function RftTextEnriched({
 
     // ---- submit on enter ----
     const submitOnEnter = isCommentsEditor
-        ? appSetting('comments', 'submit_comment_on_enter')
+        ? (enableSubmitOnEnter || appSetting('comments', 'submit_comment_on_enter'))
         : enableSubmitOnEnter
 
     const onSubmitEditing = useCallback(() => {
+        // Comment composers use newline mode + explicit Enter routing.
+        if (isCommentsEditor && submitOnEnter) return
         if (onEnterSubmit) onEnterSubmit()
+    }, [isCommentsEditor, submitOnEnter, onEnterSubmit])
+
+    const onEnterSubmitRef = useRef(onEnterSubmit)
+    useEffect(() => {
+        onEnterSubmitRef.current = onEnterSubmit
     }, [onEnterSubmit])
 
     // ---- mention navigation in dropdown ----
@@ -320,10 +299,23 @@ export default function RftTextEnriched({
     }
 
     const onKeyPress = useCallback((e) => {
-        // Web drives the dropdown via a capture-phase listener (see effect above)
-        // so it can stop the editor's own Enter/arrow handling.
+        const nativeEvent = e?.nativeEvent
+        const key = nativeEvent?.key
+
+        // Native comment editor: newline mode inserts breaks; route submit vs newline.
+        if (!isWeb && submitOnEnter && isCommentsEditor && isCommentEditorEnterKey(nativeEvent)) {
+            if (isCommentEditorNewlineEnter(nativeEvent)) return
+            if (suggestions.length) {
+                const sel = suggestions.find((x) => x.selected) || suggestions[0]
+                if (sel) insertMention(sel)
+                return
+            }
+            onEnterSubmitRef.current?.()
+            return
+        }
+
+        // Web: mention + Enter routing handled on the TipTap surface (see effect below).
         if (isWeb) return
-        const key = e?.nativeEvent?.key
         if (!suggestions.length) return
         if (key === 'ArrowDown') moveSelected('down')
         else if (key === 'ArrowUp') moveSelected('up')
@@ -331,7 +323,92 @@ export default function RftTextEnriched({
             const sel = suggestions.find((x) => x.selected) || suggestions[0]
             if (sel) insertMention(sel)
         }
-    }, [isWeb, suggestions, insertMention])
+    }, [isWeb, submitOnEnter, isCommentsEditor, suggestions, insertMention])
+
+    // Web: capture Enter on TipTap (splitBlock for Shift/Option; submit otherwise).
+    useEffect(() => {
+        if (!isWeb || !mounted) return
+
+        let dom = null
+        let onKeyDownCapture = null
+        let cancelled = false
+        let intervalId = null
+
+        const stopKey = (event) => {
+            event.preventDefault()
+            event.stopImmediatePropagation()
+        }
+
+        const detach = () => {
+            if (dom && onKeyDownCapture) {
+                dom.removeEventListener('keydown', onKeyDownCapture, true)
+            }
+            dom = null
+            onKeyDownCapture = null
+        }
+
+        const attach = () => {
+            const editor = getTiptapEditorFromContainer(containerRef.current)
+            if (!editor?.view?.dom || editor.isDestroyed) return false
+
+            detach()
+            dom = editor.view.dom
+
+            onKeyDownCapture = (event) => {
+                const h = handlersRef.current
+
+                if (h?.suggestions?.length) {
+                    switch (event.key) {
+                        case 'Enter':
+                            if (isCommentEditorNewlineEnter(event)) break
+                            stopKey(event)
+                            const sel = h.suggestions.find((x) => x.selected) || h.suggestions[0]
+                            if (sel) h.insertMention(sel)
+                            return
+                        case 'ArrowDown':
+                            stopKey(event)
+                            h.moveSelected('down')
+                            return
+                        case 'ArrowUp':
+                            stopKey(event)
+                            h.moveSelected('up')
+                            return
+                        case 'Escape':
+                            stopKey(event)
+                            h.close()
+                            return
+                        default:
+                            break
+                    }
+                }
+
+                if (!submitOnEnter || !isCommentsEditor || !isCommentEditorEnterKey(event)) return
+
+                stopKey(event)
+                if (isCommentEditorNewlineEnter(event)) {
+                    editor.chain().focus().splitBlock().run()
+                } else {
+                    onEnterSubmitRef.current?.()
+                }
+            }
+
+            dom.addEventListener('keydown', onKeyDownCapture, true)
+            return true
+        }
+
+        if (!attach()) {
+            intervalId = setInterval(() => {
+                if (cancelled) return
+                if (attach()) clearInterval(intervalId)
+            }, 50)
+        }
+
+        return () => {
+            cancelled = true
+            if (intervalId) clearInterval(intervalId)
+            detach()
+        }
+    }, [isWeb, mounted, submitOnEnter, isCommentsEditor])
 
     // ---- стили (htmlStyle) из темы ----
     const htmlStyle = useMemo(() => {
@@ -432,7 +509,13 @@ export default function RftTextEnriched({
                 autoCapitalize="none"
                 mentionIndicators={['@', '#']}
                 htmlStyle={htmlStyle}
-                submitBehavior={submitOnEnter ? 'submit' : 'newline'}
+                submitBehavior={
+                    submitOnEnter && isCommentsEditor
+                        ? 'newline'
+                        : submitOnEnter
+                            ? 'submit'
+                            : 'newline'
+                }
                 style={{
                     minHeight: initialHeight,
                     maxHeight,

@@ -34,7 +34,7 @@ export const settingsElements = {
         count_in_feed: 3, //OLD appSetting('layout', 'comments_count_in_feed')
         mentions: true, //OLD appSetting('layout', 'comments_mentions')
         in_reply: true, //OLD appSetting('layout', 'show_in_reply_comments')
-        submit_comment_on_enter: false,
+        submit_comment_on_enter: true,
     },
     carousel: {
         image_width: '', //appSetting('layout', 'carousel_image_width')

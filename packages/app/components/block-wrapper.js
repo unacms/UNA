@@ -100,7 +100,7 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                                     label={t(config?.header_more_text || 'See all')}
                                     style="link"
                                     borderShape="roundedRectangle"
-                                    controlSize="mini"
+                                    controlSize="small"
                                 />
                             </BlockActions>)}
                             {(isHelp && isHelpLink) && <ButtonLink href={pureHelp} target="_blank" title="Help" startDecorator='LifeBuoy' variant="text" />}

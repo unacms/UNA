@@ -3,14 +3,13 @@ import { useEffect, useMemo } from 'react'
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import { Platform } from 'react-native'
 import { useFormContext } from 'react-hook-form'
-import { stripTags, removeEmptyTags } from 'app/lib/util'
+import { editorHtmlHasContent, removeEmptyTags } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
 import { FileButton } from 'app/lib/form-helpers'
 import { useWindowHeight, useIsDesktop } from 'app/context/measure';
 import emitter from 'app/context/emitter';
 import { useSound } from 'app/lib/hooks/useSound';
-import { NeoButton } from 'app/design/controls';
 
 export default function FormComments(props) {
     const isWeb = Platform.OS == 'web'
@@ -36,7 +35,15 @@ export default function FormComments(props) {
     const rawEditorText = formContext.watch('cmt_text')
     const imagesValue = formContext.watch('cmt_image')
 
-    const hasText = useMemo(() => stripTags(rawEditorText || '').trim().length > 0, [rawEditorText]);
+    const hasText = useMemo(
+        () => editorHtmlHasContent(rawEditorText),
+        [rawEditorText]
+    );
+
+    const hasSubmittableText = useMemo(() => {
+        const sanitized = removeEmptyTags(rawEditorText || '')
+        return sanitized.trim().length > 0
+    }, [rawEditorText]);
 
     function setIsFocus() {
         // setIsExImage(false)
@@ -56,19 +63,16 @@ export default function FormComments(props) {
     }, [formContext.formState.isSubmitted, formContext]);
 
     const handleSubmitWithSanitization = () => {
-        let sanitizedHtml = formContext.getValues('cmt_text');
-        sanitizedHtml = removeEmptyTags(sanitizedHtml);
+        let sanitizedHtml = removeEmptyTags(formContext.getValues('cmt_text') || '');
+        const images = formContext.getValues('cmt_image');
+        if (!sanitizedHtml.trim() && !images) return;
 
         formContext.setValue('cmt_text', sanitizedHtml, { shouldValidate: true, shouldDirty: true });
         props.handleSubmit();
     };
 
     const handleEditorEnterSubmit = () => {
-        const currentText = formContext.getValues('cmt_text');
-        const currentHasText = stripTags(currentText || '').trim().length > 0;
-        if (currentHasText) {
-            handleSubmitWithSanitization();
-        }
+        handleSubmitWithSanitization();
     };
 
     props.data.inputs['cmt_submit'].hide_errors = true
@@ -109,7 +113,7 @@ export default function FormComments(props) {
                 props.handleSubmit,
                 'custom'
             )}
-            <Row className={`w-full gap-1 bg-card flex-auto shadow-btn-glass dark:shadow-btn-glass-deep ${shouldGrowFromBottom ? 'items-end' : 'items-start'} ${hasContent ? 'rounded-2xl' : 'rounded-full'}`}>
+            <Row className={`w-full gap-1 bg-card/90 backdrop-blur-lg flex-auto shadow-btn-glass dark:shadow-btn-glass-deep ${shouldGrowFromBottom ? 'items-end' : 'items-start'} ${hasContent ? 'rounded-2xl' : 'rounded-full'}`}>
                
                 <View className="flex-auto ">
                     <View className=" items-stretch " >
@@ -168,7 +172,7 @@ export default function FormComments(props) {
                                         handleSubmitWithSanitization,
                                         'custom',
                                         {
-                                            disabled: !hasText && !imagesValue,
+                                            disabled: !hasSubmittableText && !imagesValue,
                                             className: 'w-full h-full',
                                             notFullWidth: true,
                                             noPadding: true,

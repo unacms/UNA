@@ -703,7 +703,7 @@ export default function RftText({
                     editor.injectJS(wheelEventForwarder)
                 }
                 const submitOnEnter = isCommentsEditor
-                    ? appSetting('comments', 'submit_comment_on_enter')
+                    ? (enableSubmitOnEnter || appSetting('comments', 'submit_comment_on_enter'))
                     : enableSubmitOnEnter
                 editor.injectJS(`
                     let formName = "${unicFormName}";
@@ -731,9 +731,7 @@ export default function RftText({
                                 return false; 
                             }
                             
-                            const isModKeyPressed = event.metaKey || event.ctrlKey;
-
-                            if (event.shiftKey && useParagraphBreakOnShiftEnter) {
+                            if ((event.shiftKey || event.altKey) && useParagraphBreakOnShiftEnter) {
                                 event.preventDefault();
                                 event.stopPropagation();
                                 insertParagraphBreak();
@@ -742,21 +740,18 @@ export default function RftText({
                             }
 
                             if (editorConfig.submitOnEnterEnabled) {
-                                if (isModKeyPressed) {
-                                    window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'requestNewline' }));
-                                } else {
-                                    event.preventDefault();
-                                    event.stopPropagation();
-                                    window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'requestSubmit' }));
-                                    return false;
-                                }
-                            } else {
-                                if (isModKeyPressed) {
-                                    event.preventDefault();
-                                    event.stopPropagation();
-                                    window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'requestSubmit' }));
-                                    return false;
-                                }
+                                event.preventDefault();
+                                event.stopPropagation();
+                                window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'requestSubmit' }));
+                                return false;
+                            }
+
+                            const isModKeyPressed = event.metaKey || event.ctrlKey;
+                            if (isModKeyPressed) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'requestSubmit' }));
+                                return false;
                             }
                         } else if (event.key === 'Tab' && mentionVisible) {
                             event.preventDefault();

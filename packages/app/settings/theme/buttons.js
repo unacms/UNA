@@ -437,16 +437,22 @@ export const settingsButtons = {
             // SwiftUI has no link style; we provide one that matches a web
             // text link (no fill, hover-underline on web).
             link: {
-                container: { default: '', disabled: 'opacity-50' },
+                container: { default: '', 
+                            hovered: 'bg-muted/60',
+                            focused: 'bg-muted/60',
+                            pressed: 'bg-muted/60',
+                            active: 'bg-muted/60',
+                            pressedToggle: 'bg-muted/60',
+                            disabled: 'opacity-50' },
                 text: {
-                    base: 'font-medium tracking-tight',
-                    default: 'text-accent-foreground',
-                    hovered: 'text-accent-foreground web:underline',
-                    focused: 'text-accent-foreground web:underline',
-                    pressed: 'text-accent-foreground/80',
-                    active: 'text-accent-foreground/80',
-                    pressedToggle: 'text-accent-foreground web:underline',
-                    disabled: 'text-accent-foreground/50',
+                    base: 'font-medium tracking-tight text-accent-foreground',
+                    default: ' ',
+                    hovered: ' ',
+                    focused: ' ',
+                    pressed: '',
+                    active: '',
+                    pressedToggle: 'underline',
+                    disabled: 'opacity-50',
                 },
             },
 
@@ -522,7 +528,7 @@ export const settingsButtons = {
             glass:          { press: { type: 'scale', from: 1, to: { default: 1.1, mouse: 0.98, touch: 1.1 }, spring: { damping: 24, stiffness: 360 } }, hover: { type: 'opacity', duration: 200 } },
             glassProminent: { press: { type: 'scale', from: 1, to: { default: 1.1, mouse: 0.98, touch: 1.1 }, spring: { damping: 24, stiffness: 360 } }, hover: { type: 'opacity', duration: 200 } },
             plain:          { press: false,                                                            hover: false },
-            link:           { press: false,                                                            hover: false },
+            link:           { press: false, hover: { type: 'opacity', duration: 120 } },
             borderless:     { press: { type: 'scale', from: 1, to: 0.98, spring: { damping: 28, stiffness: 380 } }, hover: { type: 'opacity', duration: 120 } },
         },
 

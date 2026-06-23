@@ -310,10 +310,9 @@ const SWIFTUI_BUTTON_STYLE = {
 
 const FALLBACK_STYLE = 'bordered';
 
-// SwiftUI .plain / .link — no hover wash or press fill (see `styles.plain` /
-// `styles.link` container slots). Global `behaviors.hover` is still mouse-
-// scoped, so we opt these styles out explicitly.
-const STYLES_WITHOUT_HOVER = new Set(['plain', 'link']);
+// SwiftUI .plain — no hover wash (see `styles.plain` container slots). `link`
+// uses theme `container.hovered` on web; do not list it here.
+const STYLES_WITHOUT_HOVER = new Set(['plain']);
 
 const SWIFTUI_CONTROL_SIZE = {
     mini: 'mini',

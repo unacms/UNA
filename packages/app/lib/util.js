@@ -1066,6 +1066,36 @@ export function stripTags(s) {
     return s;
 }
 
+/**
+ * True when rich-editor HTML has visible text or user-created line breaks.
+ * Ignores TipTap/enriched empty states: one <br>, trailing ProseMirror <br>, empty <p>.
+ */
+export function editorHtmlHasContent(html) {
+    if (!html || typeof html !== 'string') return false
+    if (stripTags(html).trim().length > 0) return true
+
+    const inner = html
+        .replace(/^<html>/i, '')
+        .replace(/<\/html>$/i, '')
+        .trim()
+        .replace(/<br[^>]*\bProseMirror-trailingBreak\b[^>]*>/gi, '')
+
+    const emptyParagraphRegex = /<p[^>]*>(?:\s|&nbsp;|<br[^>]*\/?>)*<\/p>/gi
+    const emptyParagraphs = inner.match(emptyParagraphRegex) || []
+    if (emptyParagraphs.length > 1) return true
+
+    const withoutEmptyPs = inner.replace(emptyParagraphRegex, '').trim()
+    const standaloneBrCount = (withoutEmptyPs.match(/<br\b/gi) || []).length
+    if (standaloneBrCount > 1) return true
+
+    // Single <br> with no other markup is the normalized empty document — not content.
+    if (standaloneBrCount === 1 && !withoutEmptyPs.replace(/<br\b[^>]*\/?>/gi, '').trim()) {
+        return false
+    }
+
+    return withoutEmptyPs.length > 0
+}
+
 /*export function stripTagsWithLinks(s) {
     if (s)
         return String(s).replace(/<(?!\/?(a|p|br)(?=>|\s.*>))\/?.*?>/ig, '').replace(/\s+/g, ' ');
