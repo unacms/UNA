@@ -114,7 +114,7 @@ export default function FormComments(props) {
                 <View className="flex-auto ">
                     <View className=" items-stretch " >
                         <View
-                            className={`px-2 min-h-11 py-2 flex-auto items-center ${shouldGrowFromBottom ? "justify-center" : "justify-start"} ${hasContent ? 'mb-10' : 'ms-10'}`}
+                            className={`p-2.5 min-h-11 flex-auto items-center ${shouldGrowFromBottom ? "justify-center" : "justify-start"} ${hasContent ? 'mb-10' : 'ms-10'}`}
                             style={{
                                 
                                 ...(isWeb && { transition: 'height 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), padding-bottom 0.1s cubic-bezier(0.25, 0.1, 0.25, 1)' })
@@ -141,36 +141,28 @@ export default function FormComments(props) {
                             )}
                         </View>
                         {currentUser && (
-                            <View className="absolute bottom-0 left-0">
-                    <NeoButton
-                        style="glass"
-                        borderShape="circle"
-                        controlSize="small"
-                        hitarea={false}
-                        className="m-1"
-                        accessibilityLabel={currentUser.display_name}
-                    >
+                            <View className="absolute flex bottom-1.5 left-1.5 items-center justify-center">
+                   
                         <Profile
                             {...currentUser}
                             url_avatar={currentUser.avatar}
                             displayType="unit_wo_info"
                             displaySize="sm"
                         />
-                    </NeoButton>
+                   
                     </View>
                 )}
-                        <View className={`flex-row absolute bottom-0 ${hasContent ? 'justify-end w-full' : 'justify-end right-0'}`}>
+                        <View className="flex-row absolute bottom-1.5 right-1.5 ">
                             
                           
-                            <Row className={'items-center justify-center gap-1 p-1'}>
+                            <Row className={'items-center justify-center gap-2'}>
                                 <FileButton style="borderless" field_name='cmt_image' size="sm" icon="Image" source='library' />
                                 {!isWeb && (
                                         <FileButton field_name='cmt_image' style="borderless" size='sm' icon="Camera" source='camera' />
                                     
                                 )}
-                            </Row>
-                            {(hasContent) && (
-                                <View className="p-1">
+                                {(hasContent) && (
+                                <View className="">
                                     {getFormFieldByData(
                                         props.data.inputs['cmt_submit'],
                                         handleSubmitWithSanitization,
@@ -192,6 +184,8 @@ export default function FormComments(props) {
                                     )}
                                 </View>
                             )}
+                            </Row>
+                            
                         </View>
                     </View>
                 </View>

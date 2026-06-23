@@ -153,7 +153,7 @@ function UnitCommentsDefault(props) {
                         </View>
                     )}
                     {i === level - 1 && (
-                        <View className=" ml-4 -inset-s-px h-6 w-6 border-muted border-l-2 border-b-2 absolute top-0.5 rounded-bl-lg flex-auto" />
+                        <View className=" ml-4 -inset-s-px h-7 w-6 border-muted mt-px border-l-2 border-b-2 absolute top-0 rounded-bl-lg flex-auto" />
                     )}
                 </View>
             )
@@ -204,7 +204,7 @@ function UnitCommentsDefault(props) {
         <Animated.View style={isSelected ? animatedStyle : {}}>
             <Row className="gap-2">
                 {cells}
-                <View className="w-8 min-h-8 z-50 mt-2">
+                <View className="w-8 min-h-8 z-50 mt-2.5">
                     <View className="w-8 my-0.5 shadow-xs rounded-full">
                     <Profile
                         {...data.author_data}
@@ -218,7 +218,7 @@ function UnitCommentsDefault(props) {
                     )}
                 </View>
                 <View className=" flex-col mt-2 flex-1">
-                    <View className="bg-muted/60 rounded-xl px-2.5 py-1.5 gap-0.5 me-auto max-w-full">
+                    <View className="bg-muted/60 rounded-xl py-2.5 px-3 gap-0.5 me-auto max-w-full">
                         <View className="flex-row items-center gap-3 justify-between ">
                             <Row className="gap-3 items-center pr-8">
                                 <Profile

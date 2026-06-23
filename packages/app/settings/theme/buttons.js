@@ -287,18 +287,18 @@ export const settingsButtons = {
         // iOS HIG-style minimum is 44pt; web/mouse trims a few pixels because
         // pointers don't need finger-sized targets.
         controlSizes: {
-            mini:    { height: 28, paddingX: 8,  font: 'text-sm', icon: 16, hitSlop: 10, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
-            small:   { height: 36, paddingX: 12, font: 'text-sm', icon: 20, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 6 } } },
+            mini:    { height: 24, paddingX: 8,  font: 'text-sm', icon: 16, hitSlop: 10, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
+            small:   { height: 32, paddingX: 12, font: 'text-sm', icon: 20, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 6 } } },
             regular: {
-                default: { height: 44, paddingX: 12, font: 'text-base', icon: 20, hitSlop: 2, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
-                web:     { height: 44, paddingX: 12 },
-                mouse:   { height: 44, paddingX: 12, font: 'text-sm', icon: 20, hitSlop: 2, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
+                default: { height: 40, paddingX: 12, font: 'text-base', icon: 20, hitSlop: 2, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
+                web:     { height: 40, paddingX: 12 },
+                mouse:   { height: 40, paddingX: 12, font: 'text-sm', icon: 20, hitSlop: 2, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
             },
             large: {
-                default: { height: 52, paddingX: 20, font: 'text-lg', icon: 28, hitSlop: 0, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
-                web:     { height: 52 },
+                default: { height: 48, paddingX: 20, font: 'text-lg', icon: 28, hitSlop: 0, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
+                web:     { height: 48 },
             },
-            xlarge:  { height: 60, paddingX: 24, font: 'text-lg',   icon: 32, hitSlop: 0, labelGap: 12, contentInsets: { mediaLeading: { left: 8 } } },
+            xlarge:  { height: 56, paddingX: 24, font: 'text-lg',   icon: 32, hitSlop: 0, labelGap: 12, contentInsets: { mediaLeading: { left: 8 } } },
         },
 
         // borderShape → rounding strategy. roundedRectangle scales with

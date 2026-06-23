@@ -39,9 +39,9 @@ export const settingsProfiles = {
             letter_font: 'text-base font-semibold',
         },
         base: {
-            container: 'w-11 h-11',
-            width: 44,
-            height: 44,
+            container: 'w-10 h-10',
+            width: 40,
+            height: 40,
             font: 'text-[15px] leading-5 web:hover:underline',
             letter_font: 'text-lg font-semibold',
         },

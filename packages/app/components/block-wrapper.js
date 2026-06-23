@@ -98,7 +98,7 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                                 <NeoButtonLink
                                     href={config?.header_more_url}
                                     label={t(config?.header_more_text || 'See all')}
-                                    style="bordered"
+                                    style="link"
                                     borderShape="roundedRectangle"
                                     controlSize="mini"
                                 />
