@@ -28,8 +28,10 @@ export default function ElementBottomSheetContent(props) {
     useEffect(() => {
         if (isOpen) {
             setKeepMounted(true);
+        } else if (!bottomSheetData) {
+            setKeepMounted(false);
         }
-    }, [isOpen]);
+    }, [isOpen, bottomSheetData]);
 
     const handleSheetFullyDismissed = useCallback(() => {
         setKeepMounted(false);

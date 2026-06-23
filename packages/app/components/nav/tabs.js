@@ -38,6 +38,7 @@ import { canGoBackInTab, navigateBackInTab, resetAllTabHistory } from 'app/lib/t
 import { clearAllPageCache } from 'app/lib/tab-page-cache';
 import emitter from 'app/context/emitter';
 import { useBottomSheetData } from 'app/context/bottomsheet';
+import BottomSheet from 'app/ui/molecules/bottomsheet_content';
 
 enableScreens(appSetting('native', 'enable_screens'));
 
@@ -370,7 +371,7 @@ export default function Tabs() {
                                                 if (canGoBackInTab(tabKey)) {
                                                     navigateBackInTab(router, tabKey, currentUser);
                                                 } else {
-                                                    emitter.emit('list', { action: 'refresh' });
+                                                    emitter.emit('conductor', { action: 'reset_to_first' });
                                                 }
 
                                                 playClick();
@@ -398,6 +399,7 @@ export default function Tabs() {
                         })
                     }
                 </RouterTabs>
+                <BottomSheet />
             </View>
         </>
     )

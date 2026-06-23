@@ -37,7 +37,7 @@ import { getRemoteSettings } from 'app/config';
 import { StatusBar } from 'react-native';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { Uniwind } from 'uniwind';
-
+import { Platform } from 'react-native';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -132,7 +132,7 @@ const AppLayout = React.memo(() => {
             <JotaiProvider>
                 <NetworkStatus >
                     <QueryClientProvider client={queryClient}>
-                        <SafeAreaView edges={['left', 'right']} style={containerStyle}>
+                        <SafeAreaView edges={Platform.OS === 'android' ? ['top', 'bottom', 'left', 'right'] : ['left', 'right']} style={containerStyle}>
                             <Tabs />
                             <PortalHost />
                         </SafeAreaView>

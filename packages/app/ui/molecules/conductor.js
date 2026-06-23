@@ -360,7 +360,6 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     }/*, []);*/
 
     routesRef.current = routes;
-
     const initialIndex = useMemo(() => {
         if (typeof cachedConductor?.index === 'number') {
             return cachedConductor.index;
@@ -617,6 +616,20 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         });
         return () => subscription.remove();
     }, [onStartRefresh]);
+
+    useEffect(() => {
+        const subscription = emitter.addListener('conductor', (payload) => {
+            if (payload?.action !== 'reset_to_first') return;
+
+            if (indexRef.current !== 0) {
+                setIndex(0);
+                return;
+            }
+
+            onStartRefresh();
+        });
+        return () => subscription.remove();
+    }, [setIndex, onStartRefresh]);
 
     useEffect(() => {
         if (!refreshRequested) {
