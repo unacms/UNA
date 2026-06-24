@@ -1414,7 +1414,7 @@ const TabBar = ({
                                 'more_menu_in_navbar',
                                 pageData?.module
                             ) && (
-                                    <Row className="gap-2">
+                                    <Row className="items-center">
                                         <CoverMenu
                                             {...pageData.cover_block.actions_menu}
                                             uri={pageData.uri}
