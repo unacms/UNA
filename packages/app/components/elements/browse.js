@@ -469,7 +469,7 @@ export default function Browse(props) {
         <BlockWrapper {...props.blockWrapperProps}>
             <View className={`w-full ${isOneLine ? '' : 'h-full'}`}>
                 <View className="w-full" ></View>
-                <View className={`w-full ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''}`} style={isOneLine ? {} : styles}>
+                <View className={`w-full ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''} ${blockTheme['u-block-rounded-all']}`} style={isOneLine ? {} : styles}>
                     {isShowTitleInside && (
                         <Row className={`items-center justify-between ${props.showBg ? '' : 'p-2 '}`}>
                              <View className="p-2">
@@ -501,7 +501,9 @@ export default function Browse(props) {
                         </Row>
                     )}
                     {isDesktop && filterElement}
+                    <View className="w-full">
                     {contentElement}
+                    </View>
                 </View>
                 <Snackbar
                     visible={refetchState.hasNewData}
