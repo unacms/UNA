@@ -384,6 +384,26 @@ export function CommentsBrowse({
         marginBottom,
     ]);
 
+    const renderItem = useCallback(({ item, index }) => {
+        if (item.id.toString().includes('block')) {
+            return item.data;
+        }
+        return (
+            <View className="px-3 sm:px-4" key={index}>
+                <UnitComments
+                    selectedId={scrollToIndex}
+                    hideActions={hideActions}
+                    replyId={replyId}
+                    module={browseParams.module}
+                    {...item}
+                    view={viewMode}
+                    max_level={browseParams.max_level}
+                    isNewComment={false}
+                />
+            </View>
+        );
+    }, [scrollToIndex, hideActions, replyId, browseParams.module, browseParams.max_level, viewMode]);
+
     return (
         <>
             <View className="flex-1 w-full">
@@ -399,27 +419,7 @@ export function CommentsBrowse({
                 refer={flashListRef}
                 onRefresh={refetch}
                 refreshing={isRefetching}
-                renderItem={({ item, index }) => {
-
-                    if (item.id.toString().includes('block')) {
-                        return item.data;
-                    }
-
-                    return (
-                        <View className="px-3 sm:px-4" key={index}>
-                            <UnitComments
-                                selectedId={scrollToIndex}
-                                hideActions={hideActions}
-                                replyId={replyId}
-                                module={browseParams.module}
-                                {...item}
-                                view={viewMode}
-                                max_level={browseParams.max_level}
-                                isNewComment={false}//todo
-                            />
-                        </View>
-                    )
-                }}
+                renderItem={renderItem}
                 onEndReached={handleEndReached}
                 ListFooterComponent={renderListFooter}
             />

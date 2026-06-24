@@ -62,7 +62,9 @@ export function Modal({
 }) {
     const isIos = Platform.OS === 'ios';
     const isDesktop = useIsDesktop();
-    const heightActual = useActualWindowHeight();
+    const { height: heightActual1, isKeyboardOpen } = useActualWindowHeight();
+
+    const heightActual = isKeyboardOpen ? heightActual1 + 96 : heightActual1;
     const insets = useSafeAreaInsets();
     const fogRef = useRef(null);
     const scrollRef = useRef(null);
@@ -249,7 +251,7 @@ export function Modal({
     />
         <Cnt
             ref={scrollable && isWeb ? scrollRef : undefined}
-            style={styles}
+            
             className={`${padding} flex-auto `}
         >
             <Pressable
@@ -270,8 +272,8 @@ export function Modal({
                     onPress={handleWebOuterPress}
                 >
                     <RemoveScroll className={`flex-1  flex flex-col w-full sm:justify-center ${autoHeight && 'justify-center'} overflow-hidden`} >
-                        <View style={{ height: (isDesktop && !isIPadWeb) || autoHeight ? 'auto' : heightActual }} className={`w-full ${maxWidth} left-0 right-0 z-50 w-full mx-auto overflow-hidden ${modalSettings.container} `}>
-
+                        <View style={{paddingBottom: isKeyboardOpen ? 96 : 0, height: (isDesktop && !isIPadWeb) || autoHeight ? 'auto' : heightActual }} className={`w-full ${maxWidth} left-0 right-0 z-50 w-full mx-auto ${modalSettings.container} `}>
+                       
                             {content}
 
                         </View>

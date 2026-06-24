@@ -43,22 +43,26 @@ export const useActualWindowHeight = () => {
     const isWeb = Platform.OS === 'web';
     const fallbackHeight = useWindowHeight();
     const [actualHeight, setActualHeight] = useState(fallbackHeight);
-
+    const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
     useEffect(() => {
         if (!isWeb || !window.visualViewport) {
             setActualHeight(fallbackHeight);
+            setIsKeyboardOpen(false);
             return;
         }
-
-        const update = () => setActualHeight(Math.round(window.visualViewport.height));
+        const update = () => {
+            const vpHeight = Math.round(window.visualViewport.height);
+            const kbOpen = window.innerHeight - vpHeight > 150;
+            setActualHeight(vpHeight);
+            setIsKeyboardOpen(kbOpen);
+        };
         update();
-
         window.visualViewport.addEventListener('resize', update);
         return () => window.visualViewport.removeEventListener('resize', update);
     }, [isWeb, fallbackHeight]);
-
-    return actualHeight;
+    return { height: actualHeight, isKeyboardOpen };
 };
+
 
 // SSR always renders as desktop (window width is 0 on the server, see `isDesktop` above).
 // On web the first client render must return the same value as SSR, otherwise components
