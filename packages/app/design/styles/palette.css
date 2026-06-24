@@ -93,8 +93,8 @@
             --card-foreground: var(--neutral-200);
             --popover: var(--neutral-800);
             --popover-foreground: var(--neutral-50);
-            --primary: var(--accent-500);
-            --primary-hover: var(--accent-600);
+            --primary: var(--accent-600);
+            --primary-hover: var(--accent-500);
             --primary-foreground: var(--neutral-50);
             --secondary: var(--neutral-800);
             --secondary-foreground: var(--neutral-400);
