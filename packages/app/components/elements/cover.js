@@ -207,7 +207,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                     </View>
                     {!menusInNavbar && (
                         <View className=" items-center justify-center h-14">
-                            <Row className="w-full justify-between gap-2">
+                            <Row className="w-full justify-between ">
                                 {!showMoreMenu &&
                                     (!appSetting(
                                         'cover',
@@ -611,7 +611,7 @@ export default function Cover({
                             </View>
                         )}
                         {isDesktop && !menusInNavbar && (
-                            <View className="gap-2 flex-row justify-end ml-auto">
+                            <View className=" flex-row justify-end ml-auto">
                                 <CoverMenu
                                     {...data.actions_menu}
                                     uri={uri}
