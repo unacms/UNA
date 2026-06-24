@@ -287,18 +287,15 @@ export const settingsButtons = {
         // iOS HIG-style minimum is 44pt; web/mouse trims a few pixels because
         // pointers don't need finger-sized targets.
         controlSizes: {
-            mini:    { height: 24, paddingX: 8,  font: 'text-sm', icon: 16, hitSlop: 10, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
-            small:   { height: 32, paddingX: 12, font: 'text-sm', icon: 20, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 6 } } },
+            mini:    { height: 28, paddingX: 6,  font: 'text-sm leading-7', icon: 16, hitSlop: 10, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
+            small:   { height: 32, paddingX: 8, font: 'text-sm leading-8', icon: 20, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 6 } } },
             regular: {
-                default: { height: 40, paddingX: 12, font: 'text-base', icon: 20, hitSlop: 2, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
-                web:     { height: 40, paddingX: 12 },
-                mouse:   { height: 40, paddingX: 12, font: 'text-sm', icon: 20, hitSlop: 2, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
+                default: { height: 36, paddingX: 12, font: 'text-base leading-9', icon: 20, hitSlop: 2, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
+               // web:     { height: 36, paddingX: 12 },
+               // mouse:   { height: 36, paddingX: 12, font: 'text-sm', icon: 20, hitSlop: 2, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
             },
-            large: {
-                default: { height: 48, paddingX: 20, font: 'text-lg', icon: 28, hitSlop: 0, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
-                web:     { height: 48 },
-            },
-            xlarge:  { height: 56, paddingX: 24, font: 'text-lg',   icon: 32, hitSlop: 0, labelGap: 12, contentInsets: { mediaLeading: { left: 8 } } },
+            large:  { height: 40, paddingX: 16, font: 'text-lg leading-10', icon: 28, hitSlop: 0, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
+            xlarge:  { height: 48, paddingX: 24, font: 'text-lg leading-12',   icon: 32, hitSlop: 0, labelGap: 12, contentInsets: { mediaLeading: { left: 8 } } },
         },
 
         // borderShape → rounding strategy. roundedRectangle scales with
@@ -463,22 +460,22 @@ export const settingsButtons = {
                 container: {
                     base: 'web:backdrop-blur-md shadow-btn-glass dark:shadow-btn-glass-deep',
                     default: ' bg-card/60 ',
-                    hovered: ' bg-muted ',
-                    focused: ' bg-muted',
+                    hovered: ' bg-muted/60 ',
+                    focused: ' bg-muted/60',
                     pressed:  'bg-muted shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
-                    active: 'bg-muted shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
-                    pressedToggle: 'bg-muted/20 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
-                    disabled: 'bg-muted opacity-50',
+                    active: 'bg-muted/60 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
+                    pressedToggle: 'bg-muted/60 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
+                    disabled: 'bg-muted/60',
                 },
                 text: {
-                    base: 'font-medium tracking-tight',
+                    base: 'font-medium',
                     default: 'text-card-foreground',
                     hovered: 'text-foreground',
                     focused: 'text-foreground',
                     pressed: 'text-foreground',
                     active: 'text-foreground',
                     pressedToggle: 'text-foreground',
-                    disabled: 'text-card-foreground opacity-50',
+                    disabled: 'text-muted-foreground',
                 },
             },
 
@@ -488,11 +485,11 @@ export const settingsButtons = {
                     base: 'web:backdrop-blur-md shadow-btn-glass-prominent dark:shadow-btn-glass-prominent-deep',
                     default: 'bg-primary',
                     hovered: 'bg-primary-hover',
-                    focused: 'bg-primary',
+                    focused: 'bg-primary-hover',
                     pressed: 'bg-primary-hover shadow-btn-glass-prominent-pressed dark:shadow-btn-glass-prominent-pressed-deep',
                     active: 'bg-primary-hover',
                     pressedToggle: 'bg-primary-hover shadow-btn-glass-prominent-pressed dark:shadow-btn-glass-prominent-pressed-deep',
-                    disabled: 'bg-primary/90 opacity-60',
+                    disabled: 'bg-primary-hover',
                 },
                 text: {
                     base: 'font-medium tracking-tight',
