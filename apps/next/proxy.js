@@ -151,16 +151,10 @@ export async function proxy(request) {
             q = '?r=q&q=' + b.q + '&t=' + b.t;
         }*/
 
-        if (!unaUrl) {
-            return new NextResponse('UNA_URL is not configured. Add UNA_URL to .env.local at the repo root.', { status: 503 });
-        }
-
         // Rewrite the request to the UNA backend URL, replacing a local
         // `/api/` prefix with the UNA path and forwarding the modified headers.
-        const upstreamPath = request.nextUrl.pathname.replace(/^\/api/, '') || '/';
-        const rewriteUrl = new URL(upstreamPath + q, unaUrl);
-
-        return NextResponse.rewrite(rewriteUrl, {
+        return NextResponse.rewrite(unaUrl + request.nextUrl.pathname.replace('/api/','/') + q,
+        {
             request: {
                 headers: tmpHeaders,
             },
