@@ -108,7 +108,7 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
             <FormModal pageData={pageData} setPageData={setPageData} />
             <View
                
-                className="flex-row gap-2"
+                className="flex-row items-center gap-2"
                 horizontal={true}
                 onLayout={handleLayout}
             >

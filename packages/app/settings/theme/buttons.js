@@ -287,8 +287,8 @@ export const settingsButtons = {
         // iOS HIG-style minimum is 44pt; web/mouse trims a few pixels because
         // pointers don't need finger-sized targets.
         controlSizes: {
-            mini:    { height: 28, paddingX: 6,  font: 'text-sm leading-7', icon: 16, hitSlop: 10, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
-            small:   { height: 32, paddingX: 8, font: 'text-sm leading-8', icon: 20, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 6 } } },
+            mini:    { height: 28, paddingX: 8,  font: 'text-sm leading-7', icon: 16, hitSlop: 10, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
+            small:   { height: 32, paddingX: 10, font: 'text-sm leading-8', icon: 20, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 6 } } },
             regular: {
                 default: { height: 36, paddingX: 12, font: 'text-sm leading-9', icon: 20, hitSlop: 2, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
                // web:     { height: 36, paddingX: 12 },
@@ -366,7 +366,7 @@ export const settingsButtons = {
                     default: 'bg-muted/60 backdrop-blur',
                     hovered: 'bg-muted backdrop-blur',
                     focused: 'bg-muted backdrop-blur',
-                    pressed: 'bg-muted backdrop-blur',
+                    pressed: 'bg-accent/60 backdrop-blur',
                     active: 'bg-muted backdrop-blur',
                     pressedToggle: 'bg-muted/60 backdrop-blur',
                     disabled: 'bg-muted opacity-60 backdrop-blur',
@@ -376,7 +376,7 @@ export const settingsButtons = {
                     default: 'text-card-foreground',
                     hovered: 'text-foreground',
                     focused: 'text-foreground',
-                    pressed: 'text-foreground',
+                    pressed: 'text-accent-foreground',
                     active: 'text-foreground',
                     pressedToggle: 'text-foreground',
                     disabled: 'text-muted-foreground',
