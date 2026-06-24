@@ -1,32 +1,23 @@
-import { View, Row, Pressable } from 'app/design/view'
-import Link from 'app/ui/atoms/link'
-import { Text } from 'app/design/typography'
-import { Icon } from 'app/ui/atoms/icon'
-import { isEmoji, appSetting } from 'app/lib/util';
 import { useIsDesktop } from 'app/context/measure';
-import { Button, Modal } from 'app/design/controls'
+import { NeoButtonLink } from 'app/design/controls'
 
 export default function MenuItemSubmenu({ icon, title, pressed, disabled, addon, onPress }) {
     const isDesktop = useIsDesktop();
-    const size = isDesktop ? 'base' : 'sm';
-    const rounded = !isDesktop;
-    //YATODO
-    /*
-     <Pressable className='mr-1'  onPress={onPress}>
-                           text
-                        </Pressable>
-                        */
+    const controlSize = isDesktop ? 'regular' : 'small';
+    const borderShape = isDesktop ? 'roundedRectangle' : 'capsule';
+
     return (
-        <Button
-            startDecorator={icon}
-            title={title}
-            variant={pressed ? 'accent' : 'text'}
-            rounded={rounded}
-            pressed={pressed}
+        <NeoButtonLink
+            label={title}
+            image={icon}
+            style={pressed ? 'bordered' : 'borderless'}
+            selected={pressed}
+            selectedState="pressed"
+            controlSize={controlSize}
+            borderShape={borderShape}
             disabled={disabled}
-            size={size}
-            haptics="Medium"
             addon={addon}
+            haptics="Medium"
             onPress={onPress}
         />
     )

@@ -313,6 +313,7 @@ export const NeoButton = (props) => {
         disabled = false,
         loading = false,
         selected = false,
+        selectedState = 'pressedToggle',
         addon = '',
         interactive = false,
         haptics,
@@ -386,7 +387,7 @@ export const NeoButton = (props) => {
 
     const stateKey =
         disabled ? 'disabled' :
-        isPressedToggle ? 'pressedToggle' :
+        isPressedToggle ? selectedState :
         isPressed ? 'pressed' :
         isHovered ? 'hovered' :
         isFocused ? 'focused' :

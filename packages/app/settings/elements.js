@@ -27,6 +27,9 @@ export const settingsElements = {
         show_pic_by_module: {
             bx_spaces: true,
         },
+        more_menu_in_navbar: {
+            bx_groups: true,
+        }
         
     },
     comments: {

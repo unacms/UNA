@@ -37,6 +37,10 @@ import { FeedbackHaptics } from 'app/lib/util'
 const conductorTheme = appSetting('theme', 'conductor')
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
 
+function isCoverActionsMenuInNavbar(module, isDesktop) {
+    return isDesktop && !!appSetting('cover', 'more_menu_in_navbar', module)
+}
+
 const BackButton = ({ isPerson }) => {
     const router = useRouter()
     const pathname = usePathname()
@@ -143,6 +147,10 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
         appSetting('cover', 'small_cover_avatar_display_size') || 'base'
     const smallCoverNameSize =
         appSetting('cover', 'small_cover_name_display_size') || (isDesktop ? '2xl' : 'lg')
+    const menusInNavbar = isCoverActionsMenuInNavbar(
+        data?.profile?.module,
+        isDesktop,
+    )
 
     return (
         <View
@@ -197,32 +205,34 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                         </>
 
                     </View>
-                    <View className=" items-center justify-center h-14">
-                        <Row className="w-full justify-between">
-                            {!showMoreMenu &&
-                                (!appSetting(
-                                    'cover',
-                                    'hide_cover_menu_on_narrow',
-                                ) ||
-                                    isDesktop) && (
-                                    <>
-                                        <CoverMenu
-                                            {...menu}
-                                            uri={uri}
-                                            isSplitMenu={true}
-                                        />
-                                    </>
-                                )}
-                            <>
-                                <CoverMenuMore
-                                    {...menu}
-                                    uri={uri}
-                                    allowZeroPersistant={!isDesktop}
-                                    isSplitMenu={!showMoreMenu}
-                                />
-                            </>
-                        </Row>
-                    </View>
+                    {!menusInNavbar && (
+                        <View className=" items-center justify-center h-14">
+                            <Row className="w-full justify-between gap-2">
+                                {!showMoreMenu &&
+                                    (!appSetting(
+                                        'cover',
+                                        'hide_cover_menu_on_narrow',
+                                    ) ||
+                                        isDesktop) && (
+                                        <>
+                                            <CoverMenu
+                                                {...menu}
+                                                uri={uri}
+                                                isSplitMenu={true}
+                                            />
+                                        </>
+                                    )}
+                                <>
+                                    <CoverMenuMore
+                                        {...menu}
+                                        uri={uri}
+                                        allowZeroPersistant={!isDesktop}
+                                        isSplitMenu={!showMoreMenu}
+                                    />
+                                </>
+                            </Row>
+                        </View>
+                    )}
                 </>
             )}
         </View>
@@ -465,6 +475,10 @@ export default function Cover({
     }
 
     const isMin = coverMode === 'min'
+    const menusInNavbar = isCoverActionsMenuInNavbar(
+        profileData?.module,
+        isDesktop,
+    )
 
     const ContextSelector = getComponent('molecule', 'context_selector')
     const Badges = getComponent('molecule', 'badges')
@@ -481,7 +495,7 @@ export default function Cover({
                         <View className={`flex-1 justify-center`}>
                             <ContextSelector data={context} mode="compact" />
                         </View>
-                        {!!data?.actions_menu && (
+                        {!!data?.actions_menu && !menusInNavbar && (
                             <View className={`bg-card/70`}>
                                 <CoverMenuMore
                                     {...data.actions_menu}
@@ -526,7 +540,7 @@ export default function Cover({
                 className={` ${appSetting(
                     'layout',
                     'max_width_content',
-                )} lg:flex-row mx-auto w-full p-3 gap-1 lg:gap-4 z-50`}
+                )} lg:flex-row mx-auto w-full p-3 gap-3 lg:gap-4 z-50`}
             >
                 {bPerson && (
                     <View className="hidden lg:flex flex-none h-24 w-42 justify-end">
@@ -596,18 +610,20 @@ export default function Cover({
                                 </View>
                             </View>
                         )}
-                        {(isDesktop)  && <View className="gap-2 flex-row justify-end ml-auto">
-                            <CoverMenu
-                                {...data.actions_menu}
-                                uri={uri}
-                                isSplitMenu={true}
-                            />
-                            <CoverMenuMore
-                                {...data.actions_menu}
-                                uri={uri}
-                                isSplitMenu={true}
-                            />
-                        </View>}
+                        {isDesktop && !menusInNavbar && (
+                            <View className="gap-2 flex-row justify-end ml-auto">
+                                <CoverMenu
+                                    {...data.actions_menu}
+                                    uri={uri}
+                                    isSplitMenu={true}
+                                />
+                                <CoverMenuMore
+                                    {...data.actions_menu}
+                                    uri={uri}
+                                    isSplitMenu={true}
+                                />
+                            </View>
+                        )}
                             {!isDesktop && <Row className="gap-2 flex-none min-w-0 items-center min-h-10">
                             <Text
                                 className="min-w-0 truncate tracking-tight text-xl sm:text-3xl font-bold text-foreground"
@@ -622,19 +638,21 @@ export default function Cover({
                     </View>
 
                 </View>
-                {!isDesktop && <Row className="justify-start mt-1 w-full">
-                    <CoverMenu
-                        {...data.actions_menu}
-                        uri={uri}
-                        isSplitMenu={true}
-                    />
+                {!isDesktop && !menusInNavbar && (
+                    <Row className="justify-between items-center">
+                        <CoverMenu
+                            {...data.actions_menu}
+                            uri={uri}
+                            isSplitMenu={true}
+                        />
 
-                    <CoverMenuMore
-                        {...data.actions_menu}
-                        uri={uri}
-                        isSplitMenu={true}
-                    />
-                </Row>}
+                        <CoverMenuMore
+                            {...data.actions_menu}
+                            uri={uri}
+                            isSplitMenu={true}
+                        />
+                    </Row>
+                )}
             </View>
         </View>
     )

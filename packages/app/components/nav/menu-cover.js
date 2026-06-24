@@ -80,8 +80,7 @@ export function CoverMenuSmall(props) {
 }
 
 export function CoverMenu(props) {
-    let size = props.size || 'regular'
-
+    const isDesktop = useIsDesktop();
     const isSplitMenu = props.isSplitMenu;
 
     let propsCopy = { ...props } // Create a copy of the array
@@ -113,8 +112,11 @@ export function CoverMenu(props) {
         return aItem;
     });
 
+    const buttonStyle = isDesktop ? 'bordered' : 'glass'
+    const buttonSize = props.size || (isDesktop ? 'regular' : 'regular')
+
     return (
-        <View><Menu
+        <Menu
             {...propsCopy}
             displayType="button"
             autoSize={!isSplitMenu}
@@ -124,15 +126,15 @@ export function CoverMenu(props) {
                 show_action: true,
                 show_counter: true,
                 show_combined: true,
-                button_style: 'bordered',
-                button_primary_style: 'borderedProminent',
+                button_style: buttonStyle,
+                button_size: buttonSize,
+                button_primary_style: buttonStyle == 'bordered' ? 'borderedProminent' : 'glassProminent',
                 button_border_shape: 'capsule',
-                button_size: size,
                 button_full_width: props?.params?.button_full_width ?? false,
-                className: 'flex-wrap gap-x-2',
+                className: 'flex-wrap gap-x-2 my-auto ',
                 isFixedCount: true,
             }}
-        /></View>
+        />
     )
 }
 
@@ -170,7 +172,7 @@ export function CoverMenuMore(props) {
     });
 
    
-    const buttonStyle = isDesktop ? 'glass' : 'glass'
+    const buttonStyle = isDesktop ? 'bordered' : 'glass'
     const buttonSize = isDesktop ? 'regular' : 'regular'
 
     return (
@@ -190,7 +192,7 @@ export function CoverMenuMore(props) {
                 show_combined: true,
                 button_style: buttonStyle,
                 button_size: buttonSize,
-                button_primary_style: 'glassProminent',
+                button_primary_style: buttonStyle == 'bordered' ? 'borderedProminent' : 'glassProminent',
                 button_border_shape: 'capsule',
                 button_full_width: props?.params?.button_full_width ?? false,
                 className: '  gap-2  ',

@@ -1398,7 +1398,7 @@ const TabBar = ({
                 title={t(menuSettings?.name)}
             >
                  {isShowSecondLine && <Row className="px-0 w-full">
-                    <View className="flex-1 h-14">
+                    <View className="flex-1 h-12 lg:h-14">
                         {routes.length > 1 && <ConductorMenu
                             routes={routes}
                             index={index}
