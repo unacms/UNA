@@ -191,7 +191,7 @@ const ComponentsCommentsEmpty = () => {
     return (
         <>
             <View className="p-6 border-t border-border/40">
-                <Row className=" gap-2 mx-auto my-auto  py-4 px-6 rounded-2xl bg-muted/60 ">
+                <Row className=" gap-2 mx-auto my-auto  py-4 px-6 rounded-2xl bg-muted/50 ">
                     <View className="flex-col mx-auto text-muted-foreground  ">
                         <Icon icon="MessageCircle" width={28} height={28} />
                     </View>

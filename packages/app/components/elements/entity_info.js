@@ -8,6 +8,8 @@ import ProfilesList from 'app/ui/molecules/profile_list'
 import Link from 'app/ui/atoms/link'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
+const INFO_ICON_SIZE = 20
+
 export default function ElementEntityInfo({ data, blockWrapperProps }) {
     const defaultIcon = appSetting('entry', 'default_info_icon');
     const inputs = Object.keys(data.inputs).map(function (key) {
@@ -17,12 +19,15 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
             if (a.type) {
                 let value = getValue(a);
                 if (value) {
+                    const icon = getIcon(a)
                     return (
-                        <View className={(a.type != 'textarea' ? 'flex-row items-center ' : '') + " gap-2"} key={a.name}>
-                            <Row className="items-center ">
-                                <View className="text-secondary-foreground overflow-hidden items-center justify-center w-6 h-6">{getIcon(a)}</View>
-                                <View className={`${defaultIcon ? "ml-2" : ''} `}>
-                                    <Text className="font-bold text-base text-card-foreground ">
+                        <View className={(a.type != 'textarea' ? 'flex-row items-center flex-wrap web:hover:bg-muted/50 -mx-2 -my-2 px-2 py-2 rounded-lg ' : '') + " gap-2"} key={a.name}>
+                            <Row className="items-center gap-2">
+                                {icon ? (
+                                    <View className="text-secondary-foreground overflow-hidden items-center justify-center w-5 h-5">{icon}</View>
+                                ) : null}
+                                <View>
+                                    <Text className="font-bold text-sm text-card-foreground ">
                                         {a.caption}
                                     </Text>
                                 </View>
@@ -41,7 +46,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <View className='gap-3'>
+            <View className='gap-3 lg:gap-4'>
                 {inputs}
             </View>
         </BlockWrapper>
@@ -191,13 +196,13 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                     a.value = (new Date(a.value) / 1000);
                 }
 
-                return <Time stylesName=" text-base text-secondary-foreground " ts={a.value}></Time>
+                return <Time stylesName=" text-sm text-secondary-foreground " ts={a.value}></Time>
 
             case 'select':
                 if (a.value != 0 && a.value != '') {
                     const sel = a?.values?.find(item => item.key.toString() === a.value.toString())
                     return (
-                        <Text className=" text-secondary-foreground text-base ">
+                        <Text className=" text-secondary-foreground text-sm ">
                             {a.values ? (sel ? sel.value : a.values[a.value]) : a.value} {/* {a.values ? (a.values[a.value].value ? a.values[a.value].value : a.values[a.value]) : a.value}*/}
                         </Text>
                     )
@@ -205,20 +210,20 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                 return false
 
             case 'textarea':
-                return <Html data={a.values ? a.values[a.value] : a.value} />
+                return <Html data={a.values ? a.values[a.value] : a.value} customClassName="u-vanilla-html-small" />
 
             case 'datepicker':
                 var birthDate = new Date(a.value)
                 var ageDifMs = Date.now() - birthDate.getTime()
                 var ageDate = new Date(ageDifMs)
                 return (
-                    <Text className=" text-secondary-foreground text-base ">
+                    <Text className=" text-secondary-foreground text-sm ">
                         {(Math.abs(ageDate.getUTCFullYear() - 1970)).toString()}
                     </Text>
                 )
 
             case 'location':
-                return <Text className=" text-secondary-foreground text-base ">
+                return <Text className=" text-secondary-foreground text-sm ">
                     {a.value.location_string}
                 </Text>
 
@@ -250,7 +255,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                 if (isUrl(a.value)) {
                     return (
                         <Link href={a.value} target="_blank">
-                            <Text className=" text-secondary-foreground text-base   whitespace-normal break-words">
+                            <Text className=" text-secondary-foreground text-sm whitespace-normal wrap-break-words">
                                 {getHandleForDisplay(a.value)}
                             </Text>
                         </Link>
@@ -258,7 +263,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                 }
 
                 return (
-                    <Text className=" text-secondary-foreground text-base   whitespace-normal break-words">
+                    <Text className=" text-secondary-foreground text-sm whitespace-normal wrap-break-words">
                         {a.value}
                     </Text>
                 )
@@ -266,21 +271,106 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
     }
 
     function getIcon(a) {
+        const infoIcon = (icon) => <Icon icon={icon} size={INFO_ICON_SIZE} />
+
         if (a.icon) {
-            return <Icon  icon={a.icon.charAt(0).toUpperCase() + a.icon.slice(1)} />
+            return infoIcon(a.icon.charAt(0).toUpperCase() + a.icon.slice(1))
         }
         switch (a.name) {
             case 'gender':
-                return <Icon icon="VenusAndMars" />
+                return infoIcon('VenusAndMars')
 
             case 'birthday':
-                return <Icon icon="Cake" />
+                return infoIcon('Cake')
 
             case 'fullname':
-                return <Icon icon="FileBadge2" />
+            case 'first_name':
+            case 'last_name':
+            case 'name':
+                return infoIcon('Signature')
+
+            case 'description':
+                return infoIcon('Shapes')
+
+            case 'friends_count':
+            case 'initial_members':
+                return infoIcon('Users')
+
+            case 'followers_count':
+                return infoIcon('UserPlus')
+
+            case 'profile_last_active':
+                return infoIcon('Clock')
+
+            case 'location':
+            case 'city':
+                return infoIcon('MapPin')
+
+            case 'email':
+                return infoIcon('Mail')
+
+            case 'phone':
+                return infoIcon('Phone')
+
+            case 'website':
+            case 'country':
+                return infoIcon('Globe')
+
+            case 'added':
+                return infoIcon('CirclePlus')
+
+            case 'changed':
+            case 'updated':
+                return infoIcon('CircleCheck')
+
+            case 'cat':
+                return infoIcon('Folder')
+
+            case 'labels':
+                return infoIcon('Tags')
+
+            case 'stickers':
+                return infoIcon('Tag')
+
+            case 'type':
+                return infoIcon('Shapes')
+
+            case 'priority':
+                return infoIcon('Flag')
+
+            case 'estimate':
+                return infoIcon('Hash')
+
+            case 'state':
+                return infoIcon('CircleDot')
+
+            case 'tasks_list':
+                return infoIcon('ListTodo')
+
+            case 'gh_issue_url':
+                return infoIcon('GitBranch')
+
+            case 'views':
+                return infoIcon('Eye')
+
+            case 'space_name':
+                return infoIcon('Boxes')
+
+            case 'start':
+            case 'start_date':
+            case 'period_start':
+                return infoIcon('Calendar')
+
+            case 'end':
+            case 'end_date':
+            case 'period_end':
+                return infoIcon('CalendarCheck')
+
+            case 'price':
+                return infoIcon('DollarSign')
 
             default:
-                return defaultIcon ? <Icon icon={defaultIcon} /> : <></>
+                return defaultIcon ? infoIcon(defaultIcon) : null
         }
     }
 }

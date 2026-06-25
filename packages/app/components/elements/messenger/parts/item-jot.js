@@ -75,7 +75,7 @@ export default function JotItem({ item, index, handleReply }) {
                 <Profile {...item.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
             
             <View className='flex-auto'>
-                <View className='bg-muted/60 rounded-xl px-3 ' >
+                <View className='bg-muted/50 rounded-xl px-3 ' >
                     <Row className="items-center w-full justify-between gap-1 mb-0.5 pt-2">
                         <Profile
                             {...item.author_data}
@@ -112,7 +112,7 @@ export default function JotItem({ item, index, handleReply }) {
                         {item.reply > 0 && <View className='   border border-border/60   rounded-md p-2 my-1  bg-muted-foreground/20'>
                             <Text className="text-xs text-secondary-foreground  font-default">{linkedText(item?.reply_message, "hover:text-accent-foreground")}</Text>
                         </View>}
-                        <Text className=" text-base text-secondary-foreground  font-default">{linkedText(item?.message, "hover:text-accent-foreground")}</Text>
+                        <Text className=" text-sm text-secondary-foreground">{linkedText(item?.message, "hover:text-accent-foreground")}</Text>
                         {aImg.length > 0 && <Carousel data={aImg} />}
                     </View>}
                 </View>

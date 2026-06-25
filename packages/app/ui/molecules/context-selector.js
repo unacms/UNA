@@ -19,15 +19,15 @@ function ListItem({ url, text, icon, isActive }) {
         <Link key={url} href={url}>
             <Row
                 className={`w-full px-2 h-12 gap-2 web:group rounded-xl justify-between items-center ${isActive
-                    ? ' bg-primary/10 text-foreground rounded-xl web:hover:bg-muted/60 web:duration-200 '
-                    : ' web:hover:bg-muted/60 web:duration-200 '
+                    ? ' bg-primary/10 text-foreground rounded-xl web:hover:bg-muted/50 web:duration-200 '
+                    : ' web:hover:bg-muted/50 web:duration-200 '
                     }`}
             >
                 <Row className="items-center flex-auto gap-2 text-card-foreground web:hover:text-foreground ">
                     <View
                         className={`items-center w-9 h-9 justify-center ${isActive
                             ? ' bg-primary text-primary-foreground  '
-                            : ' bg-muted/60 web:group-hover:bg-secondary/80 web:duration-200 '
+                            : ' bg-muted/50 web:group-hover:bg-secondary/80 web:duration-200 '
                             } rounded-full`}
                     >
                         {icon}
@@ -204,7 +204,7 @@ export default function ContextSelector({ data: initialData, url, uri, mode }) {
                                         <Row
                                             className={` rounded-xl ${isActiveAppRoot
                                                 ? ' bg-accent/60 text-accent-foreground web:hover:bg-accent'
-                                                : ' web:hover:bg-muted/60'
+                                                : ' web:hover:bg-muted/50'
                                                 }`}
                                         >
                                             <View className="flex-row rounded-full items-center justify-center">

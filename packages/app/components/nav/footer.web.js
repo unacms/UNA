@@ -116,7 +116,7 @@ function MenuBottomItem({ link, title, badge, icon, isActive, iFrCounter, notifC
                  onClick={handlePress}
             >
                 <View
-                    className={`justify-between my-auto items-center rounded-xl p-1.5 text-center gap-1.5 web:hover:bg-muted/60 ${isActive && 'bg-accent/60'}`}
+                    className={`justify-between my-auto items-center rounded-xl p-1.5 text-center gap-1.5 web:hover:bg-muted/50 ${isActive && 'bg-accent/60'}`}
                     onMouseEnter={useAnimatedIcon ? () => setGroupHovered(true) : undefined}
                     onMouseLeave={useAnimatedIcon ? () => setGroupHovered(false) : undefined}
                 >

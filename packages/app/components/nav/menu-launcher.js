@@ -35,8 +35,8 @@ export default function () {
                 borderShape: 'circle',
                 accessibilityLabel: t('All Apps'),
                 image: bApps === true ? 'LayoutGrid' : bApps,
-                style: isDesktop ? 'glass' : 'borderless',
-                controlSize: isDesktop ? 'regular' : 'small',
+                style: isDesktop ? 'bordered' : 'borderless',
+                controlSize: isDesktop ? 'large' : 'regular',
             }}
         />
     );

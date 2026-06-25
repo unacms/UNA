@@ -30,18 +30,18 @@ export const settingsElements = {
         content_ver: '',
         content_hor: 'flex-row  ',
         item_ver:
-            ' web:group px-2 py-1.5 web:group flex h-12 flex-row items-center rounded-lg font-medium web:hover:bg-muted/60 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer ',
+            ' web:group px-2 py-1.5 web:group flex h-12 flex-row items-center rounded-lg font-medium web:hover:bg-muted/50 text-card-foreground web:hover:text-foreground web:hover:cursor-pointer ',
         item_hor:
             'flex block web:dark:hover:text-white rounded-full web:hover:cursor-pointer text-muted-foreground web:duration-200 outline-none ',
         item_np:
             'flex flex-row web:focus:outline-none items-center justify-between px-1 py-0.5 rounded-lg font-medium text-sm text-muted-foreground  web:hover:cursor-pointer',
         /** Tabs overflow menu — match tab strip item height, padding, hover; text aligned in dropdown-item via item_text_key */
         item_tabs_overflow_sm:
-            'group flex w-full min-h-9 h-9 px-3 flex-row items-center rounded-lg font-medium text-secondary-foreground web:hover:bg-muted/60 web:duration-200 web:hover:text-foreground web:cursor-pointer web:focus-visible:outline-2',
+            'group flex w-full min-h-9 h-9 px-3 flex-row items-center rounded-lg font-medium text-secondary-foreground web:hover:bg-muted/50 web:duration-200 web:hover:text-foreground web:cursor-pointer web:focus-visible:outline-2',
         item_tabs_overflow_md:
-            'group flex w-full min-h-10 h-10 px-4 flex-row items-center rounded-lg font-medium text-base text-secondary-foreground web:hover:bg-muted/60 web:duration-200 web:hover:text-foreground web:cursor-pointer web:focus-visible:outline-2',
+            'group flex w-full min-h-10 h-10 px-4 flex-row items-center rounded-lg font-medium text-base text-secondary-foreground web:hover:bg-muted/50 web:duration-200 web:hover:text-foreground web:cursor-pointer web:focus-visible:outline-2',
         item_tabs_overflow_lg:
-            'group flex w-full min-h-12 h-12 px-6 flex-row items-center rounded-lg font-medium text-lg text-secondary-foreground web:hover:bg-muted/60 web:duration-200 web:hover:text-foreground web:cursor-pointer web:focus-visible:outline-2',
+            'group flex w-full min-h-12 h-12 px-6 flex-row items-center rounded-lg font-medium text-lg text-secondary-foreground web:hover:bg-muted/50 web:duration-200 web:hover:text-foreground web:cursor-pointer web:focus-visible:outline-2',
         item_tabs_overflow_text_sm:
             'text-left text-sm font-medium text-secondary-foreground web:group-hover:text-foreground whitespace-nowrap',
         item_tabs_overflow_text_md:
@@ -52,7 +52,7 @@ export const settingsElements = {
         item_cnt_tabs_overflow: 'items-center w-full flex-row justify-start flex-1',
         item_text: ' text-sm font-semibold text-secondary-foreground web:group-hover:text-foreground px-2',
         item_icon:
-            'flex items-center w-9 h-9 bg-muted web:group-hover:bg-border rounded-full justify-center',
+            'flex items-center w-9 h-9 bg-muted/50 web:group-hover:bg-border rounded-full justify-center',
         icon_size: 20, // Default icon size for dropdown menu icons
     },
     modal: {
@@ -97,7 +97,7 @@ export const settingsElements = {
         'u-block-icon-size': 20, // Default icon size for block header icons
         'u-block-name': ' flex-auto gap-1 ',
         'u-block-title':
-            'text-card-foreground leading-6 text-lg font-bold tracking-tight',
+            'text-card-foreground leading-6 text-lg lg:text-xl font-bold tracking-tight',
         'u-block-description': 'text-muted-foreground text-sm font-medium leading-5 px-px',
         'u-block-content': 'gap-4 ',  
         'u-block-footer':
@@ -114,9 +114,9 @@ export const settingsElements = {
             'w-full border border-border/60 bg-transparent border-collapse overflow-hidden rounded-lg',
         'u-table-header': 'border-border',
         'u-table-body': 'border-border',
-        'u-table-footer': 'bg-muted/60 font-medium',
+        'u-table-footer': 'bg-muted/50 font-medium',
         'u-table-row':
-            'flex overflow-hidden flex-row border-border border-b web:transition-colors web:hover:bg-muted/60 web:data-[state=selected]:bg-muted',
+            'flex overflow-hidden flex-row border-border border-b web:transition-colors web:hover:bg-muted/50 web:data-[state=selected]:bg-muted',
         'u-table-head':
             'text-muted-foreground text-left justify-center font-medium flex-1 h-12 px-4 text-sm',
         'u-table-cell':

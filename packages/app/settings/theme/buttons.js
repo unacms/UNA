@@ -114,12 +114,12 @@ export const settingsButtons = {
         secondary:{
             container:{
                 base:'',
-                default:'bg-muted/60 ',
+                default:'bg-muted/50 ',
                 active:' bg-muted ',
                 pressed:' bg-muted ',
                 hovered:' bg-muted ',
                 focused:' bg-muted ',
-                disabled:' bg-muted/60',
+                disabled:' bg-muted/50',
 
             },
             text:{
@@ -159,8 +159,8 @@ export const settingsButtons = {
                 default:'',
                 active:' bg-muted ',
                 pressed:' bg-accent/60 ',
-                hovered:' bg-muted/60 ',
-                focused:' bg-muted/60 ',
+                hovered:' bg-muted/50 ',
+                focused:' bg-muted/50 ',
                 disabled:'opacity-50',
 
             },
@@ -221,10 +221,10 @@ export const settingsButtons = {
             container:{
                 base:'border ',
                 default:'border-border/60',
-                active:'bg-muted/60 ',
-                pressed:'bg-muted/60',
-                hovered:'bg-muted/60',
-                focused:'bg-muted/60',
+                active:'bg-muted/50 ',
+                pressed:'bg-muted/50',
+                hovered:'bg-muted/50',
+                focused:'bg-muted/50',
                 disabled:'opacity-50',
 
             },
@@ -294,8 +294,8 @@ export const settingsButtons = {
                // web:     { height: 36, paddingX: 12 },
                // mouse:   { height: 36, paddingX: 12, font: 'text-sm', icon: 20, hitSlop: 2, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
             },
-            large:  { height: 40, paddingX: 16, font: 'text-lg leading-10', icon: 28, hitSlop: 0, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
-            xlarge:  { height: 48, paddingX: 24, font: 'text-lg leading-12',   icon: 32, hitSlop: 0, labelGap: 12, contentInsets: { mediaLeading: { left: 8 } } },
+            large:  { height: 40, paddingX: 16, font: 'text-lg leading-10', icon: 24, hitSlop: 0, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
+            xlarge:  { height: 48, paddingX: 24, font: 'text-lg leading-12', icon: 28, hitSlop: 0, labelGap: 12, contentInsets: { mediaLeading: { left: 8 } } },
         },
 
         // borderShape → rounding strategy. roundedRectangle scales with
@@ -363,22 +363,22 @@ export const settingsButtons = {
             // for the glass family).
             bordered: {
                 container: {
-                    default: 'bg-muted/60 backdrop-blur',
+                    default: 'bg-muted/50 backdrop-blur',
                     hovered: 'bg-muted backdrop-blur',
                     focused: 'bg-muted backdrop-blur',
                     pressed: 'bg-accent/60 backdrop-blur',
                     active: 'bg-muted backdrop-blur',
-                    pressedToggle: 'bg-muted/60 backdrop-blur',
+                    pressedToggle: 'bg-accent/60 backdrop-blur',
                     disabled: 'bg-muted opacity-60 backdrop-blur',
                 },
                 text: {
                     base: 'font-medium tracking-tight',
-                    default: 'text-card-foreground',
+                    default: 'text-secondary-foreground',
                     hovered: 'text-foreground',
                     focused: 'text-foreground',
                     pressed: 'text-accent-foreground',
                     active: 'text-foreground',
-                    pressedToggle: 'text-foreground',
+                    pressedToggle: 'text-accent-foreground',
                     disabled: 'text-muted-foreground',
                 },
             },
@@ -412,8 +412,8 @@ export const settingsButtons = {
             borderless: {
                 container: {
                     default: '',
-                    hovered: 'bg-muted/60',
-                    focused: 'bg-muted/60',
+                    hovered: 'bg-muted/50',
+                    focused: 'bg-muted/50',
                     pressed: 'bg-muted',
                     active: 'bg-muted/80',
                     pressedToggle: 'bg-muted',
@@ -435,11 +435,11 @@ export const settingsButtons = {
             // text link (no fill, hover-underline on web).
             link: {
                 container: { default: '', 
-                            hovered: 'bg-muted/60',
-                            focused: 'bg-muted/60',
-                            pressed: 'bg-muted/60',
-                            active: 'bg-muted/60',
-                            pressedToggle: 'bg-muted/60',
+                            hovered: 'bg-muted/50',
+                            focused: 'bg-muted/50',
+                            pressed: 'bg-muted/50',
+                            active: 'bg-muted/50',
+                            pressedToggle: 'bg-muted/50',
                             disabled: 'opacity-50' },
                 text: {
                     base: 'font-medium tracking-tight text-accent-foreground',
@@ -460,12 +460,12 @@ export const settingsButtons = {
                 container: {
                     base: 'web:backdrop-blur-md shadow-btn-glass dark:shadow-btn-glass-deep',
                     default: ' bg-card/60 ',
-                    hovered: ' bg-muted/60 ',
-                    focused: ' bg-muted/60',
+                    hovered: ' bg-muted/50 ',
+                    focused: ' bg-muted/50',
                     pressed:  'bg-muted shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
-                    active: 'bg-muted/60 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
-                    pressedToggle: 'bg-muted/60 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
-                    disabled: 'bg-muted/60',
+                    active: 'bg-muted/50 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
+                    pressedToggle: 'bg-muted/50 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
+                    disabled: 'bg-muted/50',
                 },
                 text: {
                     base: 'font-medium',

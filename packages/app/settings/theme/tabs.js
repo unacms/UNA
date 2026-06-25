@@ -47,7 +47,7 @@ export const settingsTabs = {
             row: '',
             trigger_active: ' border border-transparent inset-0 ',
             trigger_inactive:
-                ' web:group text-secondary-foreground web:hover:text-foreground web:hover:bg-muted/60 border border-transparent web:hover:border-background inset-0 ',
+                ' web:group text-secondary-foreground web:hover:text-foreground web:hover:bg-muted/50 border border-transparent web:hover:border-background inset-0 ',
             pill: ' bg-popover/80 shadow-sm border border-popover/80 inset-px',
             line: '',
         },
@@ -57,7 +57,7 @@ export const settingsTabs = {
             row: '',
             trigger_active: ' ',
             trigger_inactive:
-                ' web:group web:hover:bg-muted/60 web:duration-200',
+                ' web:group web:hover:bg-muted/50 web:duration-200',
             pill: '',
             line: 'bg-ring',
         },

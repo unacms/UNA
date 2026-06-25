@@ -1,14 +1,14 @@
 import { Pressable, View, Row } from 'app/design/view';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Button, NeoButton } from 'app/design/controls'
-import { memo, useCallback, useEffect, useRef, useState, isValidElement, cloneElement, createContext } from 'react'
+import { memo, useCallback, useEffect, useRef, useState, isValidElement, cloneElement } from 'react'
 import { cn } from 'app/lib/util';
 import { FeedbackHaptics } from 'app/lib/util';
 import { Keyboard, Alert, Platform } from 'react-native'
 import Redirect from 'app/ui/atoms/redirect';
 import { isEmoji, appSetting } from 'app/lib/util';
 import { SafeMenuTrigger } from 'app/ui/atoms/safe-menu-trigger';
-import DropdownPopup from 'app/ui/atoms/dropdown-popup'
+import DropdownPopup, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-popup'
 import emitter from 'app/context/emitter';
 import { getComponent } from 'app/components/registry'
 import { useOpenModalByUrl, useOpenModalWithContent } from 'app/context/jotai/modal';
@@ -16,7 +16,7 @@ import { sanitazeUrl, openExternalLink, isWeb } from 'app/lib/util';
 
 const menuSettings = appSetting('theme', 'dropdown_menu');
 
-export const DropdownMenuOpenContext = createContext(false);
+export { DropdownMenuOpenContext };
 
 // Mirrors the web trigger logic in dropdown-popup.js: legacy buttonProps drive
 // the classic `Button` (variant-based), otherwise we render `NeoButton`
@@ -130,9 +130,7 @@ function DropdownMenuPopup({
                 onOpenChange={setIsOpen}
                 trigger={
                     buttonProps ? undefined : (
-                        <DropdownMenuOpenContext.Provider value={isOpen}>
-                            <SafeMenuTrigger>{children}</SafeMenuTrigger>
-                        </DropdownMenuOpenContext.Provider>
+                        <SafeMenuTrigger>{children}</SafeMenuTrigger>
                     )
                 }
             >

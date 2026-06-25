@@ -14,7 +14,7 @@ function EmbedImage({ src, className = '', imageClassName = '' }) {
     }, [src]);
 
     return (
-        <View className={`overflow-hidden bg-muted/60 ${className}`}>
+        <View className={`overflow-hidden bg-muted/50 ${className}`}>
             {!!src && !hasError && (
                 <Image
                     view="cover"

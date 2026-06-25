@@ -16,7 +16,7 @@ export default function ElementMsg(props) {
         <Modal id={'file-preview'} onVisible={props.onVisible} >
             <View className='gap-4'>
 
-                <Row className='gap-4 min-h-24 justify-center items-center w-full bg-muted/60 rounded-lg p-4 text-card-foreground'>
+                <Row className='gap-4 min-h-24 justify-center items-center w-full bg-muted/50 rounded-lg p-4 text-card-foreground'>
                     <Icon icon="Info" size={24} />
                     <Text className=" text-base text-card-foreground">{props.title}</Text>
                 </Row>

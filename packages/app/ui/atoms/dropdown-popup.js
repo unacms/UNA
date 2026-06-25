@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import { useState, useRef, useEffect, useMemo, useCallback, createContext } from 'react';
 import { cn } from 'app/lib/util';
 import {
     Modal as ModalBase,
@@ -12,6 +12,9 @@ import emitter from 'app/context/emitter';
 import { ButtonRef, NeoButtonRef } from 'app/design/controls'
 
 const dropdownTheme = appSetting('theme', 'dropdown');
+
+/** Open state for menu triggers (NeoButton `selected` / topmenu chevron). */
+export const DropdownMenuOpenContext = createContext(false);
 
 const isLegacyButtonProps = (props) =>
     props?.legacyButton === true || props?.variant != null;
@@ -288,23 +291,26 @@ export default function DropdownPopup({
                         collapsable={false}
                         ref={buttonRef}
                         onPress={openTrigger}
+                        selected={isRealOpen}
                         {...triggerFocusProps}
                     />
                 )
             ) : (
-                <Pressable
-                    collapsable={false}
-                    ref={buttonRef}
-                    onPress={openTrigger}
-                    {...triggerFocusProps}
-                    accessibilityRole="button"
-                    accessibilityLabel={triggerAccessibilityLabel}
-                    aria-haspopup="menu"
-                    aria-expanded={isRealOpen}
-                    className=" web:active:scale-95 web:duration-100"
-                >
-                    {trigger}
-                </Pressable>
+                <DropdownMenuOpenContext.Provider value={isRealOpen}>
+                    <Pressable
+                        collapsable={false}
+                        ref={buttonRef}
+                        onPress={openTrigger}
+                        {...triggerFocusProps}
+                        accessibilityRole="button"
+                        accessibilityLabel={triggerAccessibilityLabel}
+                        aria-haspopup="menu"
+                        aria-expanded={isRealOpen}
+                        className=" web:active:scale-95 web:duration-100"
+                    >
+                        {trigger}
+                    </Pressable>
+                </DropdownMenuOpenContext.Provider>
             )}
 
             {isModalVisible && (

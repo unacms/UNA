@@ -62,7 +62,7 @@
             --primary-foreground: var(--neutral-50);
             --secondary: var(--neutral-200);
             --secondary-foreground: var(--neutral-600);
-            --muted: var(--neutral-200);
+            --muted: var(--neutral-300);
             --muted-foreground: var(--neutral-400);
             --accent: var(--accent-100);
             --accent-foreground: var(--accent-600);
@@ -100,7 +100,7 @@
             --secondary-foreground: var(--neutral-400);
             --accent: var(--accent-950);
             --accent-foreground: var(--accent-500);
-            --muted: var(--neutral-800);
+            --muted: var(--neutral-700);
             --muted-foreground: var(--neutral-500);
             --destructive: var(--red);
             --destructive-foreground: var(--neutral-950);

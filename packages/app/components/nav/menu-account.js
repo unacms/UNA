@@ -169,7 +169,7 @@ export default function MenuAccount({ buttonProps, children }) {
                             >
                                 <Row
                                     key={index}
-                                    className="items-center justify-between gap-x-3 w-full px-2 py-1.5 h-12 web:hover:bg-muted/60 rounded-lg web:group"
+                                    className="items-center justify-between gap-x-3 w-full px-2 py-1.5 h-12 web:hover:bg-muted/50 rounded-lg web:group"
                                 >
                                     <Row className="items-center flex-auto">
                                         

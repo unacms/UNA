@@ -2,13 +2,15 @@ import { View, ViewRef, Pressable } from 'app/design/view'
 import { appSetting, menuItemsByName } from 'app/lib/util';
 import { getComponent } from 'app/components/registry';
 import { useCurrentUser } from 'app/context/user'
-import { useMemo, useState, memo } from "react";
+import { useMemo, useState, memo, useContext } from "react";
 import { Button, NeoButton } from 'app/design/controls';
 import DynamicMenu from 'app/components/nav/menu-dynamic';
+import { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu';
 import { Platform } from 'react-native'
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 
 const ButtonEx = memo(({ visibleItemsCount, params }) => {
+    const isOpen = useContext(DropdownMenuOpenContext) ?? false;
     return (
         <View key="btn" className="">
             {params.button_style ? (
@@ -17,6 +19,10 @@ const ButtonEx = memo(({ visibleItemsCount, params }) => {
                     style={params.button_style}
                     controlSize={params.button_size}
                     borderShape={params.button_border_shape}
+                    // Parent DropdownPopup Pressable owns onPress; interactive
+                    // enables hover/focus visuals on the NeoButton surface.
+                    interactive
+                    selected={isOpen}
                 />
             ) : (
                 <Button

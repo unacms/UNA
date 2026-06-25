@@ -89,7 +89,7 @@ export function PollItem({ data, showTitle, onDelete, disabled = false, results_
 
     return (
         
-        <View className='w-full p-3 rounded-xl bg-muted/60 gap-1.5'>
+        <View className='w-full p-3 rounded-xl bg-muted/50 gap-1.5'>
         <Row className='items-center justify-between w-full gap-x-2 flex-wrap '>
             {showTitle && <Text className="text-foreground p-1 rounded-xl  text-lg tracking-tight font-semibold">{data.title}</Text>}
             {(!data.is_hidden_results && totalVotes > 0) && (

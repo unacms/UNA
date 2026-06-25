@@ -185,7 +185,7 @@ function MenuWiki({ setPageData, block, url }) {
             const itemPathComparable = normalizePathComparable(itemPath);
             const isActive = Boolean(itemPathComparable && itemPathComparable === currentPathComparable);
             const menuIsActive = canNavigate ? isActive : false;
-            const activeWrapperClassName = menuIsActive ? 'bg-accent/60 rounded-lg web:hover:bg-accent/90' : ' web:hover:bg-muted/60';
+            const activeWrapperClassName = menuIsActive ? 'bg-accent/60 rounded-lg web:hover:bg-accent/90' : ' web:hover:bg-muted/50';
 
             const pressHandler = canNavigate
                 ? () => handleMenuPress(itemPath)
@@ -417,7 +417,7 @@ function PageContentWiki({ data, url }) {
                                                 <Icon name={item.level === 2 ? 'List' : 'Minus'} size={14} className="text-muted-foreground" />
                                                 <Pressable
                                                     onPress={() => handleTocPress(item.id)}
-                                                    className="min-h-9 text-secondary-foreground flex-1 justify-center px-2 rounded-lg web:hover:bg-muted/60 web:hover:text-accent-foreground"
+                                                    className="min-h-9 text-secondary-foreground flex-1 justify-center px-2 rounded-lg web:hover:bg-muted/50 web:hover:text-accent-foreground"
                                                 >
                                                     <Text className="text-sm leading-tight native:text-secondary-foreground">
                                                         {item.text}

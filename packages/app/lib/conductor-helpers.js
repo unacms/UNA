@@ -522,20 +522,32 @@ function processContent(acc, b) {
 }
 
 function mapLayoutBlocks(items = []) {
-    const content = items.filter(item => (item?.content?.[0].type !== 'browse' && item?.content?.[0].type !== 'browse_list')).map(block => ({
-        data: block,
-        id: `block-${block?.id}`,
-        type: 'block',
-        block: { name: block?.source },
-    }));
-    const endpoint = items.find(item => (item?.content?.[0].type === 'browse' || item?.content?.[0].type === 'browse_list'));
-    return { content: content, endpoint: endpoint?.content?.[0].data }
+    const list = Array.isArray(items) ? items : []
+    const getFirstContentType = (item) => item?.content?.[0]?.type
+
+    const content = list
+        .filter(item => {
+            const type = getFirstContentType(item)
+            return type && type !== 'browse' && type !== 'browse_list'
+        })
+        .map(block => ({
+            data: block,
+            id: `block-${block?.id}`,
+            type: 'block',
+            block: { name: block?.source },
+        }))
+    const endpoint = list.find(item => {
+        const type = getFirstContentType(item)
+        return type === 'browse' || type === 'browse_list'
+    })
+    return { content, endpoint: endpoint?.content?.[0]?.data }
 }
 
 function processParsedUrl(data, blocks) {
-    const cellCenter = mapLayoutBlocks(data.elements.cell_center);
-    const cellRight = mapLayoutBlocks(data.elements.cell_right);
-    const cellLeft = mapLayoutBlocks(data.elements.cell_left);
+    const elements = data?.elements || {}
+    const cellCenter = mapLayoutBlocks(elements.cell_center)
+    const cellRight = mapLayoutBlocks(elements.cell_right)
+    const cellLeft = mapLayoutBlocks(elements.cell_left)
     return {
         content: cellCenter.content,
         endpoint: cellCenter.endpoint,
