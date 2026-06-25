@@ -69,10 +69,10 @@ export const Text = ({
  */
 export const H1 = ({ children, className, fontFamily = '', isfirst, islast, ...rest }) => {
     const HeadingComponent = isWeb ? 'h1' : NativeText
-    const spacing = getSpacing('pt-8', 'pb-6', isfirst, islast)
+    const spacing = getSpacing('pt-0', 'pb-0', isfirst, islast)
 
     return (
-        <HeadingComponent {...noScale} className={`text-4xl lg:text-5xl tracking-tight font-semibold text-foreground text-balance ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
+        <HeadingComponent {...noScale} className={`text-4xl xl:text-5xl tracking-tight leading-tight font-bold text-foreground text-balance ${spacing} ${className || ''} ${fontFamily || 'font-title'}`} {...(isWeb ? sanitizeWebTextProps(rest) : rest)}>
             {children}
         </HeadingComponent>
     )
