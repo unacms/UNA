@@ -18,7 +18,7 @@ import LinkOrModal from 'app/ui/molecules/link-or-modal'
 import { appSetting } from 'app/lib/util'
 
 export const LinkContent = memo(({ url, data }) => (
-    <Link href={url}>
+    <LinkOrModal href={url} showInModal={appSetting('browse', 'show_in_modal', data.type)} className=" ">
         <Text className="mr-auto bg-primary/20 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-secondary-foreground ">
             {data.content?.price
                 ? data.content.price.replace('&#36;', '$')
@@ -30,7 +30,7 @@ export const LinkContent = memo(({ url, data }) => (
         >
             {data.content?.title || ''}
         </Text>
-    </Link>
+    </LinkOrModal>
 ))
 
 export const UnitImages = memo(({ images }) => {
@@ -92,7 +92,7 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
                 </View>
             )}
             <View className="flex-auto my-auto flex-col">
-                <Link href={url} className="">
+               <LinkOrModal href={url} showInModal={appSetting('browse', 'show_in_modal', data.type)} className=" ">
                     <Text
                         numberOfLines={1}
                         className=" text-muted-foreground  text-xs uppercase tracking-tight overflow-hidden"
@@ -121,7 +121,7 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
                     >
                         {data.content?.title || ''}
                     </Text>
-                </Link>
+                </LinkOrModal>
 
                 <Text
                     className="text-card-foreground text-base leading-6"
@@ -213,7 +213,7 @@ export const MarketView = memo(({ data, styles, url, isCompact }) => {
                 </View>
             )}
             <View className="flex-auto p-2 my-auto flex-col    ">
-                <Link href={url} className="">
+                <LinkOrModal href={url} showInModal={appSetting('browse', 'show_in_modal', data.type)} className=" ">
                     <Text className="mr-auto bg-primary/20 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-white">
                         {(data.content?.price_recurring || 0) > 0
                             ? (data.content?.price_recurring || 0) +
@@ -230,7 +230,7 @@ export const MarketView = memo(({ data, styles, url, isCompact }) => {
                     >
                         {data.content?.title || ''}
                     </Text>
-                </Link>
+                </LinkOrModal>
                 <View>
                     <View>
                         <Text

@@ -362,8 +362,9 @@ export default function Browse(props) {
                     data={item}
                 />);
             }
+            const margin = appSetting('browse', 'margin');
             return (
-                <View key={`item${index}`} className={`mb-3  ${data.unit !== 'feed' ? (isOneLine ? ' p-2 w-1/' + numColumns : 'w-full') : ''}`}>
+                <View key={`item${index}`} className={`${margin} ${data.unit !== 'feed' ? (isOneLine ? ' p-2 w-1/' + numColumns : 'w-full') : ''}`}>
                     <Unit
                         unit={data.unit ? data.unit : ''}
                         mode={unitMode}
