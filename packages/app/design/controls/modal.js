@@ -251,7 +251,7 @@ export function Modal({
     />
         <Cnt
             ref={scrollable && isWeb ? scrollRef : undefined}
-            
+            style={!isDesktop && isWeb ? {} : styles}
             className={`${padding} flex-auto `}
         >
             <Pressable

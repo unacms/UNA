@@ -4,9 +4,9 @@ import { BlockWrapper } from 'app/components/block-wrapper';
 import BrowseSimple from 'app/components/elements/browse_simple';
 import { getComponent } from 'app/components/registry';
 
-const NoContent = getComponent('molecule', 'no_content');
-
 export default function ElementTasksTimers({ data, blockWrapperProps }) {
+    const NoContent = getComponent('molecule', 'no_content');
+    
     const sections = Array.isArray(data) ? data : [];
     const hasTimers = sections.some((section) => section?.timers?.length > 0);
 
