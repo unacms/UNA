@@ -45,6 +45,9 @@ import SearchSections from './search_sections';
 import StripeConnect from './stripe_connect';
 import Bundles from './bundles';
 import Logout from './logout';
+import TasksMenu from './tasks_menu';
+import TasksTimers from './tasks_timers';
+
 
 export const componentsMapDefault = {
     messenger_main_page: Messenger,
@@ -56,6 +59,8 @@ export const componentsMapDefault = {
     reputation_history: ReputationHistory,
     reputation_actions: ReputationActions,
     reputation_widget: ReputationWidget,
+    tasks_menu: TasksMenu,
+    tasks_timers: TasksTimers,
     chart: Chart,
     bundles: Bundles,
     membership: Membership,

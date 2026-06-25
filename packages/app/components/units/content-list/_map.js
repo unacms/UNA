@@ -15,6 +15,7 @@ import UnitJob from './bx_jobs';
 import UnitVideos from './bx_videos';
 import UnitPoll from './bx_polls';
 import UnitProject from './bx_projects';
+import UnitTasksTimer from './bx_tasks_timer';
 export const componentsMapDefault = {
     'bx_groups': memo(UnitGroup),
     'bx_spaces': memo(UnitSpace),
@@ -31,6 +32,7 @@ export const componentsMapDefault = {
     'bx_jobs': memo(UnitJob),
     'bx_polls': memo(UnitPoll),
     'bx_projects': memo(UnitProject),
+    'bx_tasks_timer': memo(UnitTasksTimer),
     'default': memo(UnitDefault),
     
 };

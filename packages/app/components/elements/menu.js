@@ -17,11 +17,16 @@ export default function ElementMenu({ data, blockWrapperProps, url }) {
     };
     const getDepthClassName = (depth) => depthClassNameMap[depth] || '';
     const getItemId = (item, indexPath) => String(item?.id || item?.name || item?.url || item?.link || indexPath);
-    const hasItemPath = (item) => Boolean(String(item?.url || item?.link || ''));
+    const hasItemPath = (item) => {
+        const path = String(item?.url || item?.link || '');
+        return Boolean(path && path !== 'javascript:void(0)');
+    };
     const hasActiveDescendant = (item) => {
         const itemPath = String(item?.url || item?.link || '');
-        const itemPathComparable = itemPath.replace(/^\/+/, '');
-        if (itemPathComparable && itemPathComparable === currentPathComparable) return true;
+        if (itemPath && itemPath !== 'javascript:void(0)') {
+            const itemPathComparable = itemPath.replace(/^\/+/, '');
+            if (itemPathComparable && itemPathComparable === currentPathComparable) return true;
+        }
         const children = item?.subitems || [];
         return children.some((child) => hasActiveDescendant(child));
     };
@@ -52,7 +57,8 @@ export default function ElementMenu({ data, blockWrapperProps, url }) {
             const itemId = getItemId(item, indexPath);
             const itemPath = (() => {
                 const p = String(item?.url || item?.link || '');
-                return p ? (p.startsWith('/') ? p : `/${p}`) : '';
+                if (!p || p === 'javascript:void(0)') return '';
+                return p.startsWith('/') ? p : `/${p}`;
               })();
             const itemPathComparable = itemPath.replace(/^\/+/, '');
             const isActive = Boolean(itemPathComparable && itemPathComparable === currentPathComparable);
