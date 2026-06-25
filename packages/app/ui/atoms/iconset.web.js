@@ -21,6 +21,11 @@ export function IconFromSet({ icon, isXmlSvg, InlineIcon, AnimatedIconComponent,
     const resolvedWidth = width || size || 24;
     const resolvedHeight = height || size || 24;
     const { style: restStyle, ...restWithoutStyle } = rest;
+    const hasTextColorClass = /\b(?:dark:)?text-/.test(cleanedClassName || '');
+    // Inherit fill from CSS `color` when text-* utilities are set. Resolving theme
+    // tokens to inline backgroundColor in JS can differ between SSR and hydration
+    // (default vs customization palette), causing hydration mismatches.
+    const maskFill = hasTextColorClass ? 'currentColor' : (color || 'currentColor');
 
     return (
         <span
@@ -31,7 +36,7 @@ export function IconFromSet({ icon, isXmlSvg, InlineIcon, AnimatedIconComponent,
                 height: resolvedHeight + 'px',
                 minWidth: resolvedWidth + 'px',
                 minHeight: resolvedHeight + 'px',
-                backgroundColor: color || 'currentColor',
+                backgroundColor: maskFill,
                 maskImage: `url(${maskUrl})`,
                 WebkitMaskImage: `url(${maskUrl})`,
                 maskSize: 'contain',
