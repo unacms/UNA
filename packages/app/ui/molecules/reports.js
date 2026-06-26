@@ -6,7 +6,7 @@ import { useCurrentUser } from 'app/context/user';
 import { useActionsData } from 'app/context/actions';
 import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
-import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
+import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal, NeoButton } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile';
 import { subscribe } from 'app/ui/atoms/socket';
 import Dropdown from 'app/ui/atoms/dropdown'
@@ -238,17 +238,48 @@ const ElementReports = forwardRef((oProps, ref) => {
 
     const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 
+    const renderActionButton = (extraProps = {}) => {
+        if (oProps.params?.button_style) {
+            const neoButtonStyle = oProps?.primary
+                ? (oProps.params?.button_primary_style || oProps.params?.button_style)
+                : oProps.params?.button_style;
+
+            return (
+                <NeoButton
+                    key="action"
+                    label={bShowActionLabel ? sTitle : ''}
+                    image={sIcon}
+                    style={neoButtonStyle}
+                    controlSize={oProps.params?.button_size}
+                    borderShape={oProps.params?.button_border_shape}
+                    width={oProps.params?.button_full_width ? 'fill' : 'auto'}
+                    selected={bShowActionUndo && bShowActionReported}
+                    {...extraProps}
+                />
+            );
+        }
+
+        return (
+            <ButtonAction
+                key="action"
+                startDecorator={sIcon}
+                title={bShowActionLabel ? sTitle : false}
+                {...oButtonProps}
+                {...extraProps}
+            />
+        );
+    };
+
     let sActionButton = undefined;
     let sActionPopup = undefined;
     if (bShowActionUndo && bShowActionReported) {
-        sActionButton = (
-            <ButtonAction key="action" startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={_handleUndo} {...oButtonProps} />
-        );
+        sActionButton = renderActionButton({ onPress: _handleUndo });
     }
     else {
-        sActionButton = (
-            <ButtonAction key="action" startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? _handleGetDo : () => { }} disabled={bShowActionDisabled} {...oButtonProps} />
-        );
+        sActionButton = renderActionButton({
+            onPress: !bShowActionDisabled ? _handleGetDo : () => { },
+            disabled: bShowActionDisabled,
+        });
 
         sActionPopup = (
             <Modal title={t('Report')} onVisible={popupVisibleDo} onClose={() => { setPopupVisibleDo(false) }}>
@@ -341,6 +372,17 @@ const ElementReports = forwardRef((oProps, ref) => {
     }
     else {
         if (bShowCombined) {
+            if (oProps.params?.button_style) {
+                return (
+                    <View className={(bShowActionUndo && bShowActionReported ? ' undo' : ' do') + ' flex-row items-center gap-2'}>
+                        {sActionButton}
+                        {!!sCounterButton && sCounterButton}
+                        {sActionPopup}
+                        {sCounterPopup}
+                    </View>
+                );
+            }
+
             let aButtonsGroup = [sActionButton];
             if (!!sCounterButton)
                 aButtonsGroup.push(sCounterButton);

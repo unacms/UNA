@@ -209,7 +209,7 @@ export function CoverMenuMeta(props) {
             displayType="mixed"
             params={{
                 button_style: 'plain',
-                button_size: props.button_size || 'small',
+                button_size: props.button_size || 'regular',
                 button_border_shape: 'capsule',
                 button_content_insets: { x: 0 },
                 
@@ -218,7 +218,7 @@ export function CoverMenuMeta(props) {
                 list_className: '',
                 menu_item_separator: 'dot',
                 menu_item_separator_class: 'h-1 w-1 rounded-full bg-muted-foreground/60',
-                className: ' gap-3 flex-wrap flex-auto items-center',
+                className: ' gap-3 flex-wrap',
                 justify_items: 'start'
             }}
         />

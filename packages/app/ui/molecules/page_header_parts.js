@@ -8,7 +8,7 @@ import { appStatic } from 'app/lib/app-static';
 import { usePathname, useRouter } from 'app/lib/hooks/router';
 import { getComponent } from 'app/components/registry';
 import { useIsDesktop } from 'app/context/measure';
-import { Button, NeoButtonLink } from 'app/design/controls';
+import { NeoButton, NeoButtonLink } from 'app/design/controls';
 import { canGoBackInTab, getTabKeyFromPathname, navigateBackInTab } from 'app/lib/tab-history';
 import {
     defaultHeader,
@@ -133,6 +133,7 @@ export const PageHeaderBody = memo(({
     const ContextSelector = getComponent('molecule', 'context_selector');
     const HeaderElement = getComponent('molecule', 'header_element');
     const pathname = usePathname();
+    const isDesktop = useIsDesktop();
     const currentTab = getTabKeyFromPathname(pathname);
     const canShowBackButton = isWeb
         ? (isBackButton &&
@@ -152,18 +153,18 @@ export const PageHeaderBody = memo(({
     };
     const BackButtonElement = ({ className = 'items-center' }) => (
         <View className={className}>
-            <Button
-                variant="text"
-                rounded
+            <NeoButton
+                image="ArrowLeft"
+                style={isDesktop ? 'bordered' : 'glass'}
+                controlSize="regular"
+                accessibilityLabel="Back"
                 onPress={onBackPress}
-                startDecorator="ArrowLeft"
-                size="base"
             />
         </View>
     );
 
     const Logo = (
-        <NeoButtonLink href="/home" accessibilityLabel="Home" style="plain" className="items-center !px-0">
+        <NeoButtonLink href="/home" accessibilityLabel="Home" style="plain" className="items-center !p-1">
             {appStatic('logo')}
         </NeoButtonLink>
     );

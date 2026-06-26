@@ -544,7 +544,7 @@ export default function Cover({
             >
                 {bPerson && (
                     <View className="hidden lg:flex flex-none h-24 w-42 justify-end">
-                        <View className=" rounded-full p-1 absolute bottom-0 flex-none bg-card ">
+                        <View className=" rounded-full p-1 absolute -bottom-1 flex-none bg-card ">
                             <CoverImage
                                 is_person={bPerson}
                                 mode="picture"
@@ -560,8 +560,8 @@ export default function Cover({
                 <View
                     className={`flex web:flex-1 sm:gap-3 ${bPerson ? 'lg:flex-row flex-col-reverse' : 'lg:flex-row flex-col-reverse'}`}
                 >
-                    <View className="flex-none ">
-                        {isDesktop && <Row className="gap-2 flex-none items-center min-h-12">
+                    <View className="flex-none gap-1 ">
+                        {isDesktop && <Row className="gap-2 items-center min-h-14">
                             <Text
                                 className={` min-w-0 tracking-tight text-2xl sm:text-3xl font-bold text-foreground`}
                                 numberOfLines={2}
@@ -590,7 +590,7 @@ export default function Cover({
                         )}
                     </View>
 
-                    <View className="flex-row web:flex-1 flex-wrap gap-2 lg:justify-between justify-start">
+                    <View className="flex-row web:flex-auto lg:items-end lg:justify-end gap-2 ">
                         {bPerson && (
                             <View
                                 className={`${isMin ? 'h-24' : 'h-11'
@@ -611,7 +611,7 @@ export default function Cover({
                             </View>
                         )}
                         {isDesktop && !menusInNavbar && (
-                            <View className=" flex-row justify-end ml-auto">
+                            <View className=" flex-row justify-end ml-auto ">
                                 <CoverMenu
                                     {...data.actions_menu}
                                     uri={uri}

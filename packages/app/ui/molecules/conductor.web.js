@@ -1316,7 +1316,7 @@ const HeaderContainer = ({
     //hideDefaultHeaderFrom
     return (
         <View className={`z-40 ${conductorTheme.cover_base} ${isUseCurrentHeader || isDesktop ? ' ' : ''}`}>
-            <View className={`w-full cover-1`}
+            <View className={`w-full cover-1 border-b border-border/50`}
                 style={{
                     // When scrolled, header-fixed (small cover + tab bar) leaves normal flow,
                     // so reserve its full height here: tab bar (smallCoverHeight) plus the

@@ -22,7 +22,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                     const icon = getIcon(a)
                     return (
                         <View className={(a.type != 'textarea' ? 'flex-row items-center flex-wrap web:hover:bg-muted/50 -mx-2 -my-2 px-2 py-2 rounded-lg ' : '') + " gap-2"} key={a.name}>
-                            <Row className="items-center gap-2">
+                            <Row className="items-center gap-2 flex-none">
                                 {icon ? (
                                     <View className="text-secondary-foreground overflow-hidden items-center justify-center w-5 h-5">{icon}</View>
                                 ) : null}
@@ -32,7 +32,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                                     </Text>
                                 </View>
                             </Row>
-                            <View className="flex-1">
+                            <View className=" flex-auto">
                                 {getValue(a)}
                             </View>
                         </View>
