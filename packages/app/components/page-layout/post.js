@@ -282,13 +282,13 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
                             module={commentsModule}
                             requestUrl={commentsRequestUrl}
                             replyId={replyId}
-                           
+                            marginBottom={formHeight}
                         />}
                 </View>
 
                 <KbAvoidingView className="absolute bottom-0 left-0 right-0 z-10" modalOffset={insets.top+24}>{/*was 90 56=14*4 modal header*/}
                     <View
-                      
+                        onLayout={handleLayout}
                         className="  "
                         style={{ paddingBottom: insets.bottom }}
                     >
