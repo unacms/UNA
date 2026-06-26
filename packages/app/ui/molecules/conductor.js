@@ -32,7 +32,7 @@ import {
 } from 'app/customization/functions'
 
 // Scroll offset at which the full cover finishes crossfading into the small cover.
-const COVER_SWITCH_THRESHOLD = 500;
+const COVER_SWITCH_THRESHOLD = 100;
 // Matches the web crossfade/collapse duration in conductor.web.js.
 const COVER_SWITCH_DURATION = 300;
 
@@ -59,9 +59,7 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
 
     useEffect(() => {
         progress.set(withTiming(showSmall ? 1 : 0, { duration: COVER_SWITCH_DURATION }));
-        return () => {
-            cancelAnimation(progress);
-        };
+        
     }, [showSmall, progress]);
 
     const containerStyle = useAnimatedStyle(() => {

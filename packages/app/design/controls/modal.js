@@ -285,7 +285,7 @@ export function Modal({
     else {
         return (
             <ModalDef visible={onVisible} animationType={animationType} transparent={isWeb} onRequestClose={handleRequestClose}>
-                <Pressable
+                <View
                     className={`pointerEvents cursor-default flex justify-end w-full h-full ${modalSettings.fog}`}
                     onPress={handleNativeOuterPress}
                 >
@@ -303,7 +303,7 @@ export function Modal({
                             </View>
                         </View>
                     </View>
-                </Pressable>
+                </View>
             </ModalDef>
         );
     }

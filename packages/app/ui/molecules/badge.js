@@ -58,8 +58,13 @@ const rawColorValue = (color) => {
 function BadgeIcon({ icon, size, textColorClass, rawColor }) {
     const { colors } = useTheme()
     const iconColorClass = extractTextColorClasses(textColorClass) || 'text-primary'
+    const hasTextColorClass = /\b(?:dark:)?text-/.test(iconColorClass)
     const resolved = useResolveClassNames(iconColorClass)
-    const color = rawColorValue(rawColor) || resolved?.color || colors.primary
+    // Web SSR: resolving text-* to inline color can fall back to primary and mismatch hydration.
+    // Inline Lucide icons inherit stroke via currentColor + className (see iconset.web.js).
+    const color = hasTextColorClass
+        ? 'currentColor'
+        : (rawColorValue(rawColor) || resolved?.color || colors.primary)
 
     return <Icon icon={icon} size={size} className={iconColorClass} color={color} />
 }
