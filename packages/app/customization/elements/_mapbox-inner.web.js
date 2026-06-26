@@ -1,14 +1,14 @@
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Link from 'app/ui/atoms/link'
-import Map, { Source, Layer, Popup } from 'react-map-gl/mapbox';
-import 'mapbox-gl/dist/mapbox-gl.css';
+//import Map, { Source, Layer, Popup } from 'react-map-gl/mapbox';
+//import 'mapbox-gl/dist/mapbox-gl.css';
 import { appSetting } from 'app/lib/util'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
 export default function ElementMapBox({ selectedlayers, dataSources, viewport, mapRef, popupInfo, onMapClick, infoFields, blockWrapperProps }) {
-
-    return (
+    return <></>
+   /* return (
         <BlockWrapper {...blockWrapperProps}>
             <Map
                 ref={mapRef}
@@ -61,5 +61,5 @@ export default function ElementMapBox({ selectedlayers, dataSources, viewport, m
                 )}
             </Map>
         </BlockWrapper>
-    )
+    )*/
 }

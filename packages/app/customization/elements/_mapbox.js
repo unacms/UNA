@@ -3,7 +3,7 @@ import { View, Row } from 'app/design/view'
 import { useState, useRef, useCallback } from 'react';
 import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
-import Mapbox from "@rnmapbox/maps";
+//import Mapbox from "@rnmapbox/maps";
 import { useWindowHeight } from 'app/context/measure';
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { appSetting } from 'app/lib/util';
@@ -16,7 +16,8 @@ extra: {
     */
 //https://blog.logrocket.com/building-custom-maps-react-native-mapbox/
 export default function ElementMapBox({ data, blockWrapperProps }) {
-    Mapbox.setAccessToken(appSetting('config', 'api_keys', 'mapbox'));
+    return <></>
+    /*Mapbox.setAccessToken(appSetting('config', 'api_keys', 'mapbox'));
     const mapRef = useRef(null);
     const [selectedlayers, setSelectedLayers] = useState(['incarcerees']);
     const [popupInfo, setPopupInfo] = useState(null);
@@ -195,5 +196,5 @@ export default function ElementMapBox({ data, blockWrapperProps }) {
             </View>
         </View>
 </BlockWrapper>
-    )
+    )*/
 }

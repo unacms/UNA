@@ -29,7 +29,6 @@
     "react": "19.1.4",
     "react-dom": "19.1.4",
     "react-grid-layout": "^1.4.4",
-    "react-map-gl": "^8.1.0",
     "react-moveable": "^0.54.1",
     "react-native-svg": "15.2.0",
     "react-onesignal": "3.0.1",
