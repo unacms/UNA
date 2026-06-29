@@ -29,10 +29,11 @@ export const footerHeightAtom = atom(0);
 // header content is effectively the same, so clearing here can leave content
 // tucked under the fixed header after HMR/theme/layout updates.
 export const setHeaderAtom = atom(null, (get, set, value) => {
-    const next = typeof value === 'function' ? value(get(headerAtom)) : value;
+    const prev = get(headerAtom);
+    const next = typeof value === 'function' ? value(prev) : value;
     set(headerAtom, next);
-    if (!isWeb && next?.header === false) {
-        set(headerHeightAtom, 0); //disabled by https://linear.app/unainc/issue/CRD-418 need to check it deeply
+    if (!isWeb && (next?.header === false || next?.subHeader !== prev?.subHeader || next?.header !== prev?.header)) {
+        set(headerHeightAtom, 0);
     }
 });
 

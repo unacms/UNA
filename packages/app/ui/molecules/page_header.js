@@ -18,7 +18,8 @@ export const PageHeader = ({ pageData }) => {
         header,
         headerHeight,
         isCollapsibleHeader,
-        onHeaderLayout,
+        onMainHeaderLayout,
+        onSubHeaderLayout,
         scrollDirection,
     } = headerState;
 
@@ -52,7 +53,6 @@ export const PageHeader = ({ pageData }) => {
             className={appSetting('layout', 'header', 'container')}
             style={headerContainerStyle}
             pointerEvents={isCollapsibleHeader && scrollDirection === 1 ? 'none' : 'auto'}
-            onLayout={onHeaderLayout}
         >
             <PageHeaderBody
                 {...headerState}

@@ -82,6 +82,7 @@ export default function UniList(props) {
         estimatedItemSize: estimatedItemSizeProp,
         refreshControl: refreshControlProp,
         progressViewOffset: progressViewOffsetProp,
+        skipHeaderOffset,
         ...rest 
     } = props;
 
@@ -89,27 +90,19 @@ export default function UniList(props) {
     const scrollState = useRef(0);
     const isFocusedRef = useRef(true);
     const lastPublishedScrollRef = useRef(0);
-    const listHeaderInsetRef = useRef(0);
     const setScrollDirection = useSetScrollDirection();
     const setScrollValue = useSetScrollValue();
 
     const headerHeightFromAtom = useHeaderHeight();
 
-    // Lock list header inset after first measurement so collapsible header
-    // animations do not resize the spacer and retrigger LegendList layout loops.
     const headerHeight = useMemo(() => {
-        const measured =
-            typeof headerHeightFromAtom === 'number'
-                ? headerHeightFromAtom
-                : typeof scrollProps?.headerHeight === 'number'
-                    ? scrollProps.headerHeight
-                    : 0;
-
-        if (measured > 0) {
-            listHeaderInsetRef.current = measured;
+        if (typeof headerHeightFromAtom === 'number') {
+            return headerHeightFromAtom;
         }
-
-        return listHeaderInsetRef.current > 0 ? listHeaderInsetRef.current : measured;
+        if (typeof scrollProps?.headerHeight === 'number') {
+            return scrollProps.headerHeight;
+        }
+        return 0;
     }, [headerHeightFromAtom, scrollProps?.headerHeight]);
 
     const filteredData = useMemo(() => 
@@ -184,10 +177,6 @@ export default function UniList(props) {
     }, [setScrollDirection, setScrollValue]);
 
     useEffect(() => {
-        listHeaderInsetRef.current = 0;
-    }, [url]);
-
-    useEffect(() => {
         return () => {
             if (url) {
                 setListScrollOffset(url, scrollY.current);
@@ -226,10 +215,11 @@ export default function UniList(props) {
         );
     }, [refreshControlProp, onRefresh, inverted, refreshing, progressViewOffset]);
 
-    const shouldApplyHeaderOffset = !inverted && !isModal;
+    const shouldApplyHeaderOffset = !inverted && !isModal && !skipHeaderOffset;
     const shouldApplyFooterOffset = inverted && !isModal;
 
     const enhancedListHeaderComponent = useCallback(() => {
+        console.log('headerHeight', headerHeight);
         return (
             <>
                 {shouldApplyHeaderOffset && headerHeight > 0 && (
@@ -245,7 +235,7 @@ export default function UniList(props) {
                 )}
             </>
         );
-    }, [shouldApplyHeaderOffset, headerHeight, ListHeaderComponent, shouldApplyFooterOffset, inverted]);
+    }, [shouldApplyHeaderOffset, headerHeight, ListHeaderComponent, shouldApplyFooterOffset, inverted, skipHeaderOffset]);
 
     const enhancedListFooterComponent = useCallback(() => {
         return (

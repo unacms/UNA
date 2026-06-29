@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Platform } from 'react-native';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
@@ -100,6 +100,39 @@ export function usePageHeaderBase(pageData, { resetHeaderOnRoute = false } = {})
         setHeaderHeightAtom((prev) => (prev === height ? prev : height));
     }, [setHeaderHeightAtom]);
 
+    const mainHeaderHeightRef = useRef(0);
+    const subHeaderHeightRef = useRef(0);
+
+    const syncHeaderHeight = useCallback(() => {
+        if (header.header === false) {
+            setHeaderHeightAtom(0);
+            return;
+        }
+        const total = mainHeaderHeightRef.current + (header.subHeader ? subHeaderHeightRef.current : 0);
+        setHeaderHeightAtom((prev) => (prev === total ? prev : total));
+    }, [header.header, header.subHeader, setHeaderHeightAtom]);
+
+    const onMainHeaderLayout = useCallback((event) => {
+        mainHeaderHeightRef.current = event.nativeEvent.layout.height;
+        syncHeaderHeight();
+    }, [syncHeaderHeight]);
+
+    const onSubHeaderLayout = useCallback((event) => {
+        subHeaderHeightRef.current = event.nativeEvent.layout.height;
+        syncHeaderHeight();
+    }, [syncHeaderHeight]);
+
+    useEffect(() => {
+        if (header.header === false) {
+            setHeaderHeightAtom(0);
+            return;
+        }
+        if (!header.subHeader) {
+            subHeaderHeightRef.current = 0;
+        }
+        syncHeaderHeight();
+    }, [header.header, header.subHeader, setHeaderHeightAtom, syncHeaderHeight]);
+
     return {
         currentUser,
         header,
@@ -111,6 +144,8 @@ export function usePageHeaderBase(pageData, { resetHeaderOnRoute = false } = {})
         isShowLogo,
         isWeb,
         onHeaderLayout,
+        onMainHeaderLayout,
+        onSubHeaderLayout,
         pageTitle,
         router,
         scrollDirection,
@@ -126,6 +161,8 @@ export const PageHeaderBody = memo(({
     isFullContextSelector,
     isShowLogo,
     isWeb,
+    onMainHeaderLayout,
+    onSubHeaderLayout,
     pageData,
     pageTitle,
     router,
@@ -192,18 +229,24 @@ export const PageHeaderBody = memo(({
     if (header.header) {
         if (!isWeb && canShowBackButton) {
             return (
-                <Row className={contentClassName}>
-                    <BackButtonElement className="items-center mr-2" />
-                    <View className="flex-1">{header.header}</View>
-                </Row>
+                <View onLayout={onMainHeaderLayout}>
+                    <Row className={contentClassName}>
+                        <BackButtonElement className="items-center mr-2" />
+                        <View className="flex-1">{header.header}</View>
+                    </Row>
+                </View>
             );
         }
-        return header.header;
+        return (
+            <View onLayout={onMainHeaderLayout}>
+                {header.header}
+            </View>
+        );
     }
 
     return (
         <>
-            <Row className={contentClassName}>
+            <Row className={contentClassName} onLayout={onMainHeaderLayout}>
                 <Row className={appSetting('layout', 'header', 'content_left')}>
                     {canShowBackButton && (
                         <BackButtonElement />
@@ -216,7 +259,11 @@ export const PageHeaderBody = memo(({
                     {header.headerActions ?? <HeaderElement mode="small" url={pageData?.url} uri={pageData?.uri} />}
                 </Row>
             </Row>
-            {header.subHeader}
+            {header.subHeader ? (
+                <View onLayout={onSubHeaderLayout}>
+                    {header.subHeader}
+                </View>
+            ) : null}
         </>
     );
 });

@@ -256,7 +256,7 @@ export default function Tabs() {
     useEffect(() => {
         resetAllTabHistory();
         clearAllPageCache();
-    }, [currentUser?.id]);
+    }, [currentUser?.id, currentUser?.confirmed]);
     // DEEP LINKING
 
     useEffect(() => {

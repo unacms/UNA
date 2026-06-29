@@ -65,7 +65,9 @@ export function Screen(params) {
         isRoot = true;
     }
 
-    const userKey = currentUser?.id ?? 'guest';
+    const userKey = currentUser?.id
+    ? `${currentUser.id}-${currentUser.confirmed}`
+    : 'guest';
     // Stable key per tab — no remount on in-tab navigation. Shell refresh uses refreshToken (redirectTo), not key.
     return (
         <Content
@@ -100,18 +102,18 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken }) => {
     // Apply cached page synchronously when the in-tab URL changes (e.g. profile back).
     useLayoutEffect(() => {
         if (!tabKey || !pagePath || refreshToken) return;
-        const cached = getCachedPageData(tabKey, pagePath);
+        const cached = getCachedPageData(tabKey, pagePath, currentUser?.id, currentUser?.confirmed);
         if (cached) {
             setPageData(cached);
         }
-    }, [tabKey, pagePath, refreshToken]);
+    }, [tabKey, pagePath, refreshToken, currentUser?.id, currentUser?.confirmed]);
 
     useEffect(() => {
         if (!(pagePath && pagePath.startsWith('/') && !pagePath.includes('/?url='))) return;
 
         const forceShellRefresh = Boolean(refreshToken);
         if (!forceShellRefresh) {
-            const cached = getCachedPageData(tabKey, pagePath);
+            const cached = getCachedPageData(tabKey, pagePath, currentUser?.id, currentUser?.confirmed);
             if (cached) {
                 setPageData(cached);
                 return;
@@ -126,10 +128,10 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken }) => {
                 if (forceShellRefresh) {
                     data.props.data.timestamp = Date.now();
                 } else {
-                    const existing = getCachedPageData(tabKey, pagePath);
+                    const existing = getCachedPageData(tabKey, pagePath, currentUser?.id, currentUser?.confirmed);
                     data.props.data.timestamp = existing?.data?.timestamp ?? Date.now();
                 }
-                setCachedPageData(tabKey, pagePath, data.props);
+                setCachedPageData(tabKey, pagePath, data.props, currentUser?.id, currentUser?.confirmed);
                 setBottomSheetData(bottomSheetData !== false ? false : bottomSheetData);
                 setPageData(data.props);
             }

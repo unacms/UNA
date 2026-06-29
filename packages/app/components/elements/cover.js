@@ -518,11 +518,12 @@ export default function Cover({
                 <Row
                     className={`${TABLET_MODE_FROM}:hidden items-center w-full h-14 px-2 `}
                 >
-                    <View className={`${TABLET_MODE_FROM}:hidden `}>
-                        <View>
+                    <View className={`${TABLET_MODE_FROM}:hidden flex-1`}>
+                        <View className="flex-1 justify-center ">
                             <ContextSelector data={context} mode="compact" />
                         </View>
                     </View>
+                    <View className="w-12 h-12 "></View>
                 </Row>
             ) : (
                 <></>

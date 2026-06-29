@@ -16,7 +16,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByName } from 'app/components/block';
 import Cover, { CoverSmall } from 'app/components/elements/cover';
 import emitter from 'app/context/emitter'
-import { useSetHeader, useScrollValue, defaultHeader } from 'app/context/jotai/layout';
+import { useSetHeader, useScrollValue, defaultHeader, useSetHeaderHeight, useHeaderHeight } from 'app/context/jotai/layout';
 import { getComponent } from 'app/components/registry';
 import { useFocusEffect } from 'app/lib/hooks/router'
 import { appSetting } from 'app/lib/util'
@@ -232,7 +232,8 @@ const TabScene = React.memo(({
     fetchNextPage,
     onRefresh,
     refreshing,
-    numColumns
+    numColumns,
+    skipHeaderOffset,
 }) => {
 
     const handleEndReached = useCallback(
@@ -316,6 +317,7 @@ const TabScene = React.memo(({
             onRefresh={onRefresh}
             refreshing={refreshing}
             onEndReached={handleEndReached}
+            skipHeaderOffset={skipHeaderOffset}
         />
     )
 });
@@ -340,11 +342,9 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     const [snackbarVisible, setSnackbarVisible] = useState(false);
     const [refreshRequested, setRefreshRequested] = useState(false);
 
-
-
     const setHeader = useSetHeader();
-
-
+    const setHeaderHeight = useSetHeaderHeight();
+    const headerHeight = useHeaderHeight();
 
     useEffect(() => {
         if (!deepEqual(menu, menuState)) {
@@ -747,14 +747,18 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     useFocusEffect(
         useCallback(() => {
             if (useLocalHeader) {
+                console.log('useLocalHeader', false);
                 setHeader({ header: false });
+                setHeaderHeight(0);
             } else {
+                console.log('useLocalHeader', sceneHeaderComp);
                 setHeader({ subHeader: sceneHeaderComp });
             }
+            console.log('headerHeight', headerHeight);
             return () => {
                 setHeader(defaultHeader);
             };
-        }, [sceneHeaderComp, useLocalHeader, setHeader])
+        }, [sceneHeaderComp, useLocalHeader, setHeader, setHeaderHeight])
     );
 
     const tabSceneProps = {
@@ -767,7 +771,8 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         unitMode: unitMode,
         fetchNextPage: fetchNextPage,
         hasNextPage: hasNextPage,
-        isFetchingNextPage: isFetchingNextPage
+        isFetchingNextPage: isFetchingNextPage,
+        skipHeaderOffset: useLocalHeader,
     };
 
     const onFormChangedValues = useCallback((values) => {
