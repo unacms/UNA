@@ -32,7 +32,12 @@ export const setHeaderAtom = atom(null, (get, set, value) => {
     const prev = get(headerAtom);
     const next = typeof value === 'function' ? value(prev) : value;
     set(headerAtom, next);
-    if (!isWeb && (next?.header === false || next?.subHeader !== prev?.subHeader || next?.header !== prev?.header)) {
+    const hadSubHeader = !!prev?.subHeader;
+    const hasSubHeader = !!next?.subHeader;
+    if (
+        !isWeb &&
+        (next?.header === false || next?.header !== prev?.header || hadSubHeader !== hasSubHeader)
+    ) {
         set(headerHeightAtom, 0);
     }
 });

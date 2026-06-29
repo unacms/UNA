@@ -156,7 +156,7 @@ const TabSceneHeader = React.memo(function TabSceneHeader2({
     return null;
 });
 
-const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
+const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute, routesRef }) => {
     const MenuItemSubmenu = getComponent('menu-item', 'submenu');
     if (routes.length > 1) {
         return (
@@ -179,7 +179,7 @@ const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute }) => {
                                         setIndex(a.index)
 
                                         if (onChangeRoute) {
-                                            onChangeRoute(a)
+                                            onChangeRoute(routesRef?.current?.[a.index] ?? a)
                                         }
                                     }}
                                     item={a}
@@ -656,9 +656,42 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
     const isShowFilters = layoutName == 'navigator' && leftSideBarBlocks && leftSideBarBlocks?.length > 0;
 
+    const tabBarMetaKey = useMemo(
+        () =>
+            routes
+                .map(
+                    (r) =>
+                        `${r.index}:${r.title}:${r.hideInTop ?? ''}:${r.key ?? ''}:${r.item?.disabled ?? ''}`
+                )
+                .join('|'),
+        [routes]
+    );
+
+    const tabBarRoutes = useMemo(
+        () =>
+            routes.map(({ index: routeIndex, title, hideInTop, menu_settings, addon, item, key }) => ({
+                index: routeIndex,
+                title,
+                hideInTop,
+                menu_settings,
+                addon,
+                item,
+                key,
+            })),
+        [tabBarMetaKey]
+    );
+
     const sceneHeader = useMemo(
-        () => <TabBar routes={routes} index={index} setIndex={setIndex} onChangeRoute={onChangeRoute} />,
-        [routes, index, setIndex, onChangeRoute]
+        () => (
+            <TabBar
+                routes={tabBarRoutes}
+                routesRef={routesRef}
+                index={index}
+                setIndex={setIndex}
+                onChangeRoute={onChangeRoute}
+            />
+        ),
+        [tabBarRoutes, index, setIndex, onChangeRoute]
     );
 
     const setFilterValue = useCallback((values) => {
@@ -744,6 +777,10 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         ),
         [headerMode, coverBlock, pageUri, pageContext, sceneHeader, filter]
     );
+
+    const subHeaderRef = useRef(sceneHeaderComp);
+    subHeaderRef.current = sceneHeaderComp;
+
     useFocusEffect(
         useCallback(() => {
             if (useLocalHeader) {
@@ -751,15 +788,21 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
                 setHeader({ header: false });
                 setHeaderHeight(0);
             } else {
-                console.log('useLocalHeader', sceneHeaderComp);
-                setHeader({ subHeader: sceneHeaderComp });
+                console.log('useLocalHeader', subHeaderRef.current);
+                setHeader({ subHeader: subHeaderRef.current });
             }
             console.log('headerHeight', headerHeight);
             return () => {
                 setHeader(defaultHeader);
             };
-        }, [sceneHeaderComp, useLocalHeader, setHeader, setHeaderHeight])
+        }, [useLocalHeader, setHeader, setHeaderHeight])
     );
+
+    useEffect(() => {
+        if (!useLocalHeader) {
+            setHeader({ subHeader: sceneHeaderComp });
+        }
+    }, [useLocalHeader, sceneHeaderComp, setHeader]);
 
     const tabSceneProps = {
         skeleton: skeleton,
