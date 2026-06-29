@@ -2,7 +2,7 @@ import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Platform } from 'react-native'
-import { appSetting, getBreakpoint, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import Page from 'app/ui/molecules/page'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
@@ -13,7 +13,7 @@ import {
     PanelHandler,
     resolvePanelProps
 } from 'app/ui/molecules/resizable-panels'
-import { useBreakpoint, useIsDesktop } from 'app/context/measure'
+import { useBreakpoint, useBreakpointName, useIsDesktop } from 'app/context/measure'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { defaultHeader, useSetHeader } from 'app/context/jotai/layout'
@@ -166,7 +166,7 @@ function MenuWiki({ setPageData, block, url }) {
         } catch (error) {
             console.error('Failed to load wiki page:', error)
         }
-    };
+    }
 
 
 
@@ -244,8 +244,8 @@ function PageContentWiki({ data, url }) {
     }, [])
     const groupRef = useRef(null)
     const currentBreakpoint = useBreakpoint()
+    const currentBreakpointName = useBreakpointName()
     const { cells = {} } = cellsCustomConfig || {}
-    const currentBreakpointName = getBreakpoint(currentBreakpoint)
 
     const {
         breakpoint: leftBreakpoint = 'lg',
@@ -362,7 +362,7 @@ function PageContentWiki({ data, url }) {
                     prevItem.level === items[i]?.level
                 )
             ) {
-                return prev
+                return prev;
             }
             return items
         })
@@ -446,7 +446,6 @@ function PageContentWiki({ data, url }) {
             <PanelGroup
                 ref={groupRef}
                 key={`cells-wiki${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
-                autoSaveId={cellsCustomConfig.sizable ? `cells-wiki` : undefined}
                 direction="horizontal"
                 className={`mx-auto flex-auto relative flex-row`}
                 onLayout={onLayout}

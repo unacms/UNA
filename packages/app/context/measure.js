@@ -1,10 +1,13 @@
 import { create } from 'zustand';
 import { Dimensions } from 'react-native';
 import { appSetting, getBreakpoint, LAYOUT_BREAKPOINTS } from 'app/lib/util';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
 import { Platform } from 'react-native'
 const DESKTOP_KEY = appSetting('layout', 'tablet_mode_from') || 'lg';
 const DESKTOP_FROM = LAYOUT_BREAKPOINTS[DESKTOP_KEY] ?? LAYOUT_BREAKPOINTS.lg;
+// SSR has no viewport; assume 2xl so responsive panel configs (e.g. wiki side columns
+// with defaultSize: 0 until xl) resolve to desktop sizes on the first render.
+const SSR_LAYOUT_BREAKPOINT = LAYOUT_BREAKPOINTS['2xl'] ?? DESKTOP_FROM;
 const BP_VALUES_DESC = Object.values(LAYOUT_BREAKPOINTS).sort((a, b) => b - a);
 
 const getBP = (w) => {
@@ -72,7 +75,7 @@ export const useActualWindowHeight = () => {
 let didHydrate = Platform.OS !== 'web';
 const useHydrated = () => {
     const [hydrated, setHydrated] = useState(didHydrate);
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!hydrated) {
             didHydrate = true;
             setHydrated(true);
@@ -82,12 +85,11 @@ const useHydrated = () => {
 };
 
 export const useBreakpoint = () => useMeasureStore((s) => s.currentBreakpoint);
-// SSR and the first client render use width 0 (see initW). Responsive panel props
-// must match that snapshot until hydration, or react-resizable-panels mismatches.
+// SSR and the first client render share the same snapshot until hydration.
 export const useBreakpointName = () => {
     const currentBreakpoint = useMeasureStore((s) => s.currentBreakpoint);
     const hydrated = useHydrated();
-    return getBreakpoint(hydrated ? currentBreakpoint : 0);
+    return getBreakpoint(hydrated ? currentBreakpoint : SSR_LAYOUT_BREAKPOINT);
 };
 export const useIsDesktop = () => {
     const isDesktop = useMeasureStore((s) => s.isDesktop);
