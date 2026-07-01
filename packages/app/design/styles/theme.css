@@ -156,7 +156,7 @@
         --neo-radius-4xl: 2rem;
         --neo-radius-full: 9999px;
 
-        --neo-shadow-card-outline: inset 0 0 0 1px rgb(255 255 255 / 0.5), inset 0 1px 0 0 rgb(255 255 255 / 1), 0 0 0 1px rgb(0 0 0 / 0.0), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 8px 16px -8px rgb(0 0 0 / 0.1);
+        --neo-shadow-card-outline: inset 0 0 0 1px rgb(255 255 255 / 0.5), inset 0 1px 0 0 rgb(255 255 255 / 1), 0 0 0 1px rgb(0 0 0 / 0.025), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 8px 16px -8px rgb(0 0 0 / 0.1);
         --neo-shadow-card-outline-deep: inset 0 0 0 1px rgb(255 255 255 / 0.025), inset 0 1px 0 0 rgb(255 255 255 / 0.025), 0 2px 4px -2px rgb(0 0 0 / 0.5), 0 8px 16px -8px rgb(0 0 0 / 0.5);
         --neo-shadow-input-outline: inset 0 0 0 1px rgb(255 255 255 / 0.5), inset 0 1px 0 0 rgb(255 255 255 / 1), 0 0 0 1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 8px 16px -8px rgb(0 0 0 / 0.1);
         --neo-shadow-input-outline-deep: inset 0 0 0 1px rgb(255 255 255 / 0.025), inset 0 1px 0 0 rgb(255 255 255 / 0.025), 0 0 0 1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.5);
