@@ -8,7 +8,8 @@ import { appStatic } from 'app/lib/app-static';
 import { usePathname, useRouter } from 'app/lib/hooks/router';
 import { getComponent } from 'app/components/registry';
 import { useIsDesktop } from 'app/context/measure';
-import { NeoButton, NeoButtonLink } from 'app/design/controls';
+import { NeoButton } from 'app/design/controls';
+import Link from 'app/ui/atoms/link';
 import { canGoBackInTab, getTabKeyFromPathname, navigateBackInTab } from 'app/lib/tab-history';
 import {
     defaultHeader,
@@ -33,9 +34,9 @@ export const PageHeaderSmall = ({ pageData }) => {
     const HeaderElement = getComponent('molecule', 'header_element');
     return (
         <Row className="w-full justify-between gap-2">
-            <NeoButtonLink href="/home" accessibilityLabel="Home" style="borderless" className="items-center">
+            <Link href="/home" alt="Home" className="items-center">
                 {appStatic('logo')}
-            </NeoButtonLink>
+            </Link>
             <HeaderElement mode="small" url={pageData?.url} uri={pageData?.uri} />
         </Row>
     );
@@ -201,9 +202,9 @@ export const PageHeaderBody = memo(({
     );
 
     const Logo = (
-        <NeoButtonLink href="/home" accessibilityLabel="Home" style="plain" className="items-center !p-1">
+        <Link href="/home" alt="Home">
             {appStatic('logo')}
-        </NeoButtonLink>
+        </Link>
     );
 
     const leftElement = (!currentUser || (appSetting('layout', 'lock_unconfirmed') && !currentUser?.confirmed)) ? (

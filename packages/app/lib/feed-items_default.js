@@ -71,7 +71,7 @@ export const GroupView = memo(({ data, styles, url, isCompact }) => {
         <View
             className={
                 isCompact
-                    ? ' flex-row gap-3 2xl:gap-4 mx-4 overflow-hidden rounded-lg border border-border/60 bg-muted  p-1'
+                    ? ' flex-row gap-3 2xl:gap-4 mx-4 overflow-hidden rounded-lg bg-muted/50  p-1'
                     : ' flex-col md:flex-row gap-3 2xl:gap-4 overflow-hidden rounded-lg bg-muted p-1.5'
             }
         >
@@ -145,7 +145,7 @@ export const AdView = memo(({ data, styles, url, isCompact }) => {
     }, [])
 
     return (
-        <View className=" flex-col md:flex-row space-x-2 overflow-hidden rounded-lg border border-border/60 bg-muted  p-1">
+        <View className=" flex-col md:flex-row space-x-2 overflow-hidden rounded-lg bg-muted/50  p-1">
             {data.mainImage && (
                 <View className="w-full md:w-1/3 overflow-hidden rounded-xl">
                     <View
@@ -195,7 +195,7 @@ export const AdView = memo(({ data, styles, url, isCompact }) => {
 
 export const MarketView = memo(({ data, styles, url, isCompact }) => {
     return (
-        <View className=" flex-col md:flex-row space-x-2  overflow-hidden rounded-lg border border-border/60 bg-muted p-1">
+        <View className=" flex-col md:flex-row space-x-2  overflow-hidden rounded-lg bg-muted/50 p-1">
             {data.mainImage && (
                 <View className="w-full md:w-1/3  ">
                     <View

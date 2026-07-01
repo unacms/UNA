@@ -1,7 +1,8 @@
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
-import { menuItemsByName, appSetting } from 'app/lib/util'
+import { menuItemsByName, appSetting, getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { useTranslation } from 'react-i18next'
+import { useIsDesktop } from 'app/context/measure';
 
 /**
  * Mobile-web header nav: icon trigger opens the same style of popup menu as
@@ -10,6 +11,7 @@ import { useTranslation } from 'react-i18next'
 export default function MenuHeaderNavigation(props) {
     const { currentUser } = useCurrentUser()
     const { t } = useTranslation()
+    const isDesktop = useIsDesktop()
     const source = appSetting('menu_items', 'menu_navigation')
     const resolved = menuItemsByName('main_menu', source, currentUser)
     const items = resolved.map((item) => ({ ...item, title: t(item.title) }))
@@ -37,13 +39,12 @@ export default function MenuHeaderNavigation(props) {
             items={items}
             defaultOpen={false}
             buttonProps={{
+                ...getHeaderToolbarNeoButtonDefaults(isDesktop),
                 ...neoButtonProps,
                 image: neoButtonProps.image ?? startDecorator,
-                style: neoButtonProps.style ?? 'glass',
                 borderShape:
                     neoButtonProps.borderShape ??
                     (rounded ? 'circle' : 'roundedRectangle'),
-                controlSize: neoButtonProps.controlSize ?? 'regular',
                 accessibilityLabel: neoButtonProps.accessibilityLabel ?? alt,
                 tooltip: tooltip ?? neoButtonProps.tooltip ?? alt,
             }}

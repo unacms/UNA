@@ -41,6 +41,17 @@ export function appSetting(section, name, path) {
     return setting(section, name, path, remoteSettings.data);
 }
 
+/** Header toolbar NeoButton defaults from `header_toolbar.neoButton` settings (desktop/mobile). */
+export function getHeaderToolbarNeoButtonDefaults(isDesktop) {
+    const config = appSetting('header_toolbar', 'neoButton') || {};
+    const platform = isDesktop ? 'desktop' : 'mobile';
+    const platformConfig = config[platform] || {};
+    return {
+        style: platformConfig.style ?? (isDesktop ? 'bordered' : 'borderless'),
+        controlSize: platformConfig.controlSize ?? 'regular',
+    };
+}
+
 export function isObjectsEqual(obj, obj2) {
     return flatted_stringify(obj) == flatted_stringify(obj2)
 }

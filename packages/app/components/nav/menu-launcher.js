@@ -1,12 +1,12 @@
 import { useCurrentUser } from 'app/context/user'
-import { appSetting } from 'app/lib/util'
+import { appSetting, getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
 import { menuItemsByName, menuItemsByNameNew, getDataForMenu, storageSet, storageGet } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useTranslation } from 'react-i18next';
 import { useIsDesktop } from 'app/context/measure';
 import { useMenuData } from 'app/context/menu-data';
 
-export default function () {
+export default function MenuLauncher({ buttonProps }) {
     const bApps = appSetting('layout', 'apps');
 
     const isDesktop = useIsDesktop();
@@ -35,8 +35,8 @@ export default function () {
                 borderShape: 'circle',
                 accessibilityLabel: t('All Apps'),
                 image: bApps === true ? 'LayoutGrid' : bApps,
-                style: isDesktop ? 'bordered' : 'borderless',
-                controlSize: isDesktop ? 'large' : 'regular',
+                ...getHeaderToolbarNeoButtonDefaults(isDesktop),
+                ...(buttonProps || {}),
             }}
         />
     );

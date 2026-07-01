@@ -5,6 +5,7 @@ import {
     appSetting,
     menuItemsByName,
     menuItemsByNameNew,
+    getHeaderToolbarNeoButtonDefaults,
 } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { useTranslation } from 'react-i18next'
@@ -89,9 +90,8 @@ export default function MenuAccount({ buttonProps, children }) {
     }
 
     const defaultButtonProps = {
+        ...getHeaderToolbarNeoButtonDefaults(isDesktop),
         tooltip: t('Dashboard'),
-        style: isDesktop ? 'glass' : 'borderless',
-        controlSize: isDesktop ? 'regular' : 'small',
         borderShape: 'circle',
         accessibilityLabel: t('Dashboard'),
         children: profile,

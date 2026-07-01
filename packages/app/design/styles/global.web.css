@@ -93,15 +93,15 @@ select {
 }
 
 .u-link-ghost:hover::after {
-    background-color: rgb(var(--muted) / 0.8);
+    background-color: rgb(var(--muted) / 0.5);
 }
 
 .u-link-ghost:focus-visible::after {
-    background-color: rgb(var(--muted) / 0.8);
+    background-color: rgb(var(--muted) / 0.5);
 }
 
 .u-link-ghost:active::after {
-    background-color: rgb(var(--muted));
+    background-color: rgb(var(--muted) / 0.8);
 }
 
 /*
@@ -384,7 +384,7 @@ html {
     scrollbar-gutter: stable;
     /* Always paint a track/thumb in the gutter (Firefox); see ::-webkit-scrollbar below */
     scrollbar-width: thin;
-    scrollbar-color: rgb(var(--border)) rgb(var(--muted) / 0.45);
+    scrollbar-color: rgb(var(--border)) rgb(var(--muted) / 0.5);
     min-height: 100%;
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
@@ -395,7 +395,7 @@ html::-webkit-scrollbar {
 }
 
 html::-webkit-scrollbar-track {
-    background-color: rgb(var(--muted) / 0.45);
+    background-color: rgb(var(--muted) / 0.5);
 }
 
 html::-webkit-scrollbar-thumb {

@@ -76,7 +76,7 @@ export default function MultiPostForm({ data, blockWrapperProps }) {
                 <FormModal key={pageData?.ts} pageData={pageData} setPageData={setPageData} />
                 {menu_add_items.length > 0 && <Row className="gap-2 flex-none">
                     {menu_add_items.map((item, index) => (
-                        <NeoButton key={item.name} style="borderless" borderShape="roundedRectangle" controlSize="regular" classNames={{ root: 'h-10 w-10', container: 'h-10 w-10' }} onPress={() => handleFormModal(item, null, setPageData, data.params)} image={item.icon} />
+                        <NeoButton key={item.name} style="borderless" borderShape="roundedRectangle" controlSize="regular" onPress={() => handleFormModal(item, null, setPageData, data.params)} image={item.icon} />
                     ))}
                 </Row>}
 

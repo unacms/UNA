@@ -2,7 +2,7 @@ import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import { Button, NeoButton } from 'app/design/controls'
 import { useState, useMemo } from 'react'
-import { appSetting, clearNotif } from 'app/lib/util'
+import { appSetting, clearNotif, getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { useTranslation } from 'react-i18next'
@@ -40,9 +40,8 @@ export default function ({ buttonProps, children, tooltip, fullWidth, uri }) {
     }, [notifCount, notificationHeight])
 
     const defaultButtonProps = {
-        style: isDesktop ? 'glass' : 'borderless',
+        ...getHeaderToolbarNeoButtonDefaults(isDesktop),
         tooltip: tooltip || 'Notifications',
-        controlSize: isDesktop ? 'regular' : 'small',
         borderShape: 'circle',
         image: 'Bell',
         accessibilityLabel: 'Notifications',

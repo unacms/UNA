@@ -2,7 +2,7 @@ import Link from 'app/ui/atoms/link'
 import { View, Row } from 'app/design/view'
 import { NeoButton , ButtonLink, NeoButtonLink } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting } from 'app/lib/util'
+import { appSetting, getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
 import Search from 'app/ui/molecules/search'
 import NotificationButton from 'app/ui/molecules/notif'
 import MenuAdd from 'app/components/nav/menu-add'
@@ -20,6 +20,7 @@ export default function HeaderElement({ mode, url, uri }) {
     const bNotifs = appSetting('notifications', 'url') ? true : false;
     const isDesktop = useIsDesktop();
     const isWeb = Platform.OS == 'web'
+    const toolbarNeoButtonDefaults = getHeaderToolbarNeoButtonDefaults(isDesktop);
     const toolbarConfig = appSetting('header_toolbar', 'hor')
     const itemsToRender = currentUser
         ? toolbarConfig?.loggedIn
@@ -34,13 +35,13 @@ export default function HeaderElement({ mode, url, uri }) {
                             case "search":
                                 return bSearch ? <Search /> : null
                             case "launcher":
-                                return <MenuLauncher />
+                                return <MenuLauncher buttonProps={item.props} />
                             case "add":
-                                return <MenuAdd />
+                                return <MenuAdd buttonProps={item.props} />
                             case "notifications":
                                 return bNotifs ? <NotificationButton uri={uri} buttonProps={item.props} /> : null
                             case "account":
-                                return <MenuAccount />
+                                return <MenuAccount buttonProps={item.props} />
                             case "menu_navigation":
                                 return <MenuHeaderNavigation {...(item.props || {})} />
                             case "link":
@@ -49,8 +50,7 @@ export default function HeaderElement({ mode, url, uri }) {
                                     const isMessenger = item.href === '{messenger}';
                                     return (
                                         <NeoButtonLink
-                                            style={isDesktop ? 'glass' : 'borderless'}
-                                            controlSize={isDesktop ? 'regular' : 'small'}
+                                            {...toolbarNeoButtonDefaults}
                                             borderShape="circle"
                                             {...neoButtonProps}
                                             {...(item.target ? { target: item.target } : {})}
@@ -74,13 +74,12 @@ export default function HeaderElement({ mode, url, uri }) {
                                     const messengerHref = appSetting('messenger', 'url');
                                     return (
                                         <NeoButton
+                                            {...toolbarNeoButtonDefaults}
                                             addon={{
                                                 variant: "primary",
                                                 text: currentUser?.counters?.bx_messenger_new_messages,
                                                 hideZero: true,
                                             }}
-                                            style={isDesktop ? 'glass' : 'borderless'}
-                                            controlSize={isDesktop ? 'regular' : 'small'}
                                             borderShape="circle"
                                             image="MessageSquare"
                                             selected={appSetting('messenger', 'url') === '/' + uri}

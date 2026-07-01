@@ -290,11 +290,11 @@ export const settingsButtons = {
             mini:    { height: 28, paddingX: 8,  font: 'text-sm leading-7', icon: 16, hitSlop: 10, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
             small:   { height: 32, paddingX: 10, font: 'text-sm leading-8', icon: 20, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 6 } } },
             regular: {
-                default: { height: 36, paddingX: 12, font: 'text-sm leading-9', icon: 20, hitSlop: 2, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
+                default: { height: 36, paddingX: 12, font: 'text-sm leading-9', icon: 20, hitSlop: 4, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
                // web:     { height: 36, paddingX: 12 },
                // mouse:   { height: 36, paddingX: 12, font: 'text-sm', icon: 20, hitSlop: 2, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
             },
-            large:  { height: 40, paddingX: 16, font: 'text-lg leading-10', icon: 24, hitSlop: 0, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
+            large:  { height: 40, paddingX: 16, font: 'text-lg leading-10', icon: 24, hitSlop: 2, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
             xlarge:  { height: 48, paddingX: 24, font: 'text-lg leading-12', icon: 28, hitSlop: 0, labelGap: 12, contentInsets: { mediaLeading: { left: 8 } } },
         },
 

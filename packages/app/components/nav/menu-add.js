@@ -1,5 +1,5 @@
 import { useCurrentUser } from 'app/context/user'
-import { menuItemsByName, appSetting, menuItemsByNameNew } from 'app/lib/util'
+import { menuItemsByName, appSetting, menuItemsByNameNew, getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useState } from 'react';
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
@@ -22,11 +22,10 @@ export default function MenuAdd({ buttonProps, children }) {
         return <></>;
     
     const defaultButtonProps = {
-        style: isDesktop ? 'glass' : 'borderless',
+        ...getHeaderToolbarNeoButtonDefaults(isDesktop),
         borderShape: 'circle',
         image: 'Plus',
         tooltip: 'Create',
-        controlSize: isDesktop ? 'regular' : 'small',
     }
 
     buttonProps = { ...defaultButtonProps, ...(buttonProps || {}) };

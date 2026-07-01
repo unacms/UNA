@@ -7,7 +7,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Icon } from 'app/ui/atoms/icon'
-import { appSetting } from 'app/lib/util'
+import { appSetting, getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
 import { Text } from 'app/design/typography'
 import { Pressable, View, Row, ScrollView } from 'app/design/view'
@@ -43,6 +43,8 @@ export default function ElementSearch(oProps) {
         setShowModal(true)
     }
 
+    const toolbarNeoButtonDefaults = getHeaderToolbarNeoButtonDefaults(isDesktop);
+
     let sResult =
         sType == 'input' ? (
             <ElementSearchData
@@ -63,10 +65,9 @@ export default function ElementSearch(oProps) {
                 tooltip={
                     oProps.tooltip === undefined ? 'Search' : oProps.tooltip
                 }
+                {...toolbarNeoButtonDefaults}
                 {...(oParams?.trigger &&
                     (({ onPress, ...rest }) => rest)(oParams.trigger))}
-                style={isDesktop ? 'glass' : 'borderless'}
-                controlSize={isDesktop ? 'regular' : 'small'}
                 borderShape="circle"
                 onPress={handleOpenPopupDefault}
             />
