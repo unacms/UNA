@@ -63,7 +63,7 @@ export const settingsElements = {
         header: ' px-3 py-2 min-h-14 items-start justify-start border-b border-border/60 ',
     },
     cards: {
-        'u-card-list': ' u-card-list bg-card shadow-card-outline dark:shadow-card-outline-deep sm:rounded-xl ',
+        'u-card-list': ' u-card-list bg-card/50 shadow-card-outline dark:shadow-card-outline-deep sm:rounded-xl ',
         'u-card-list-padding': 'p-3 lg:p-4 sm:rounded-xl',
         'u-card-base': 'u-card-base  rounded-xl bg-card text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
         'u-card-padding': 'py-4 ',
@@ -86,7 +86,7 @@ export const settingsElements = {
         'u-block-base':
             ' text-card-foreground gap-3 sm:gap-4',
         'u-block-bg':
-            ' bg-card/60 shadow-card-outline dark:shadow-card-outline-deep ',
+            ' bg-card/50 shadow-card-outline dark:shadow-card-outline-deep ',
         'u-block-pad':
             ' p-4',
         'u-block-rounded': ' sm:rounded-2xl',

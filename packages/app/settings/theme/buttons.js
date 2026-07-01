@@ -459,9 +459,9 @@ export const settingsButtons = {
             glass: {
                 container: {
                     base: 'web:backdrop-blur-md shadow-btn-glass dark:shadow-btn-glass-deep',
-                    default: ' bg-card/60 ',
-                    hovered: ' bg-muted/50 ',
-                    focused: ' bg-muted/50',
+                    default: ' bg-popover/50 ',
+                    hovered: ' bg-muted ',
+                    focused: ' bg-muted',
                     pressed:  'bg-muted shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
                     active: 'bg-muted/50 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
                     pressedToggle: 'bg-muted/50 shadow-btn-glass-pressed dark:shadow-btn-glass-pressed-deep',
