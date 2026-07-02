@@ -31,10 +31,6 @@ const boxShadowBtn = {
     'btn-glass-prominent-pressed':      neoShadow('btn-glass-prominent-pressed'),
     'btn-glass-prominent-pressed-deep': neoShadow('btn-glass-prominent-pressed-deep'),
 
-    // Focus ring drawn as shadow when an outline cannot be used (rare —
-    // pseudo-element ring is preferred; this is the cross-platform fallback).
-    'btn-focus':       neoShadow('btn-focus'),
-    'btn-focus-deep':  neoShadow('btn-focus-deep'),
 };
 
 const boxShadowAvatar = {

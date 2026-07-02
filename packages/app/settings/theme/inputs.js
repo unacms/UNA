@@ -2,10 +2,10 @@
 
 export const settingsInputs = {
     dropdown: {
-        cnt: ' rounded-xl overflow-hidden p-2 bg-popover/50 shadow-card-outline dark:shadow-card-outline-deep backdrop-blur-xl z-50  ',
+        cnt: ' rounded-xl overflow-hidden p-2 bg-card shadow-btn-glass dark:shadow-btn-glass-deep backdrop-blur-xl z-50  ',
     },
     checkbox_set: {
-        container: ' gap-x-2 rounded-lg shadow-input-outline dark:shadow-input-outline-deep bg-input/50 p-1',
+        container: ' gap-x-2 rounded-lg shadow-input-outline dark:shadow-input-outline-deep bg-input/60 p-1',
     },
     
     doublerange: {
@@ -39,8 +39,8 @@ export const settingsInputs = {
             small: 'px-2 leading-5 min-h-9',
         },
         base: 
-        'text-card-foreground placeholder:text-muted-foreground py-2 bg-input/50 shadow-input-outline dark:shadow-input-outline-deep flex-auto text-base placeholder-muted-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-card web:focus-visible:border-ring web:overflow-hidden',
-        select: ' pr-10 bg-input/50 shadow-input-outline min-h-11 dark:shadow-input-outline-deep web:focus:bg-card px-3 flex-auto text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
+        'text-card-foreground placeholder:text-muted-foreground py-2 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep flex-auto text-base placeholder-muted-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-card web:focus-visible:border-ring web:overflow-hidden',
+        select: ' pr-10 bg-input/60 shadow-input-outline min-h-11 dark:shadow-input-outline-deep web:focus:bg-card px-3 flex-auto text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
     },
     switcher: {
         // Container
@@ -52,13 +52,13 @@ export const settingsInputs = {
 
         // Track
         'u-controls-switcher-track': 'flex-row items-center rounded-full shrink-0',
-        'u-controls-switcher-track-base': 'h-7 w-14 px-[3px] ',
+        'u-controls-switcher-track-base': 'h-7 w-14 px-1 ',
         'u-controls-switcher-track-sm': 'h-5 w-8 px-0.5',
         'u-controls-switcher-track-disabled': 'opacity-50',
 
         // Thumb
         'u-controls-switcher-thumb':
-            'rounded-full bg-popover/60 shadow-btn-outline dark:shadow-btn-outline-deep web:transition-transform web:duration-200',
+            'rounded-full bg-popover/80 shadow-btn-outline dark:shadow-btn-outline-deep web:transition-transform web:duration-200',
         'u-controls-switcher-thumb-base': 'h-5 w-7 ',
         'u-controls-switcher-thumb-sm': 'h-3 w-3  ',
 
@@ -68,8 +68,8 @@ export const settingsInputs = {
 
         // Track Colors
         'u-controls-switcher-track-col':
-            ' bg-muted border border-border/60 ',
-        'u-controls-switcher-track-active-col': 'bg-accent border border-accent-foreground/60 ',
+            ' bg-muted  ',
+        'u-controls-switcher-track-active-col': 'bg-primary ',
     },
     checkbox: {
         // Container
