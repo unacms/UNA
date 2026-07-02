@@ -54,7 +54,7 @@ export function DisplayNameLink({
 
 function DisplayNameText({ title, fontSize }) {
     return (
-        <Text className={`${fontSize} whitespace-nowrap text-ellipsis overflow-hidden tracking-tight text-card-foreground web:hover:text-foreground`}>
+        <Text numberOfLines={1} className={`${fontSize} flex-1 whitespace-nowrap text-ellipsis overflow-hidden tracking-tight text-card-foreground web:hover:text-foreground`}>
             {title}
         </Text>
     )

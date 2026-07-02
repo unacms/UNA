@@ -3,11 +3,23 @@ import Menu from 'app/components/menu';
 import { BlockWrapper } from 'app/components/block-wrapper'
 
 export default function ElementEntityActions({ data, blockWrapperProps }) {
+    
+
+    const menuData = {
+        ...data,
+        items: (data.items || []).filter(
+            (item) =>
+                !item.name?.startsWith('edit-') &&
+                //!item.name?.startsWith('report') &&
+                !item.name?.startsWith('delete-')
+        ),
+    };
+
     return (
         <BlockWrapper {...blockWrapperProps}>
             <View className="w-full">
                 <Menu
-                    {...data}
+                    {...menuData}
                    // displayType="element"
                     alignItems="start"
                    // showMatched={true}

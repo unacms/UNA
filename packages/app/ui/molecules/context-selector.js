@@ -110,14 +110,14 @@ export default function ContextSelector({ data: initialData, url, uri, mode }) {
     }
 
     const CurrentContext = (
-        <Link size="lg" href={contextRoot.url} title={t("Context Home")}>
-            <Row className="items-center gap-2 py-0.5 ">
+        <Link size="lg" className="flex-1" href={contextRoot.url} title={t("Context Home")}>
+            <Row className="items-center gap-2 py-0.5 flex-1">
                 <View className='rounded-full items-center justify-center web:duration-200 text-card-foreground web:hover:text-foreground'>
                     {contextRoot.image}
                 </View>
                 {!!contextRoot.name && (
-                    <Text className="text-base font-semibold tracking-tight truncate text-card-foreground  web:hover:text-foreground">
-                        {contextRoot.name}
+                    <Text numberOfLines={1} className="text-base  flex-1 font-semibold tracking-tight truncate text-card-foreground  web:hover:text-foreground">
+                        {contextRoot.name} 
                     </Text>
                 )}
             </Row>
@@ -223,13 +223,12 @@ export default function ContextSelector({ data: initialData, url, uri, mode }) {
                     )}
 
 
-                <View className="max-w-64 ">
+                <View className="max-w-64 flex-1 overflow-hidden">
                     {CurrentContext}
                 </View>
-                <View className="flex-auto items-start">
+                <View className="">
                     {DropDown}
                 </View>
-
             </Row>
         ) : (
             CurrentContext

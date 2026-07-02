@@ -63,8 +63,9 @@ function BadgeIcon({ icon, size, textColorClass, rawColor }) {
     // Web SSR: resolving text-* to inline color can fall back to primary and mismatch hydration.
     // Inline Lucide icons inherit stroke via currentColor + className (see iconset.web.js).
     const color = hasTextColorClass
-        ? 'currentColor'
+        ? ''
         : (rawColorValue(rawColor) || resolved?.color || colors.primary)
+
 
     return <Icon icon={icon} size={size} className={iconColorClass} color={color} />
 }
