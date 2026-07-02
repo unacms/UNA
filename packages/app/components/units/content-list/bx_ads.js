@@ -25,7 +25,7 @@ export default function Unit(props) {
                         <View
                             className={
                                 data.image
-                                    ? "flex-row-reverse sm:flex-col w-full p-3 sm:p-1 gap-x-2"
+                                    ? "flex-row-reverse sm:flex-col w-full p-3 sm:p-1 gap-2"
                                     : "w-full p-3 sm:p-1 "
                             }
                         >
@@ -34,7 +34,7 @@ export default function Unit(props) {
                                     (!data.image
                                         ? "hidden sm:block "
                                         : "") +
-                                    " aspect-square h-full sm:aspect-video rounded-lg sm:rounded-xl overflow-hidden w-1/4  sm:w-full"
+                                    " aspect-square h-full sm:aspect-video rounded-lg overflow-hidden w-1/4 sm:w-full"
                                 }
                             >
                                 <Image
@@ -45,12 +45,9 @@ export default function Unit(props) {
                                     sizes='auto'
                                 />
                             </View>
-                            <View className="flex-auto sm:h-24 mb-auto">
-                                <View
-                                    className={`flex-auto ${data.image ? "  " : " "
-                                        } gap-y-2 sm:p-2`}
-                                >
-                                    <Text className="mr-auto bg-primary/20 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-secondary-foreground ">
+                            <View className="flex-auto sm:h-24 gap-2 mb-auto">
+                                
+                                    <Text className="mr-auto bg-accent text-sm rounded-lg font-semibold px-2 py-1 flex-none text-accent-foreground ">
                                         {data.price > 0
                                             ? data.price + "$"
                                             : "Free"}
@@ -69,11 +66,11 @@ export default function Unit(props) {
                                     >
                                         {data.summary_plain}
                                     </Text>
-                                </View>
+                                
                             </View>
                         </View>
                     </LinkOrModal>
-                    <View className="border-t border-border/60 mx-2.5 /50 mt-auto  pt-2 pb-2.5 ">
+                    <View className="border-t border-border/50 mt-auto pt-2 ">
                         {sMeta}
                     </View>
                 </View>

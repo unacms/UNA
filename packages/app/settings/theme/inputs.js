@@ -74,7 +74,7 @@ export const settingsInputs = {
     checkbox: {
         // Container
         'u-controls-checkbox-container':
-            'items-center px-2.5 h-9 rounded-md w-full gap-2',
+            'items-start px-2.5 py-2 rounded-md w-full gap-2',
 
         // Hover & Active backgrounds (optional — Web-only)
         'u-controls-checkbox-container-bg':
@@ -82,7 +82,7 @@ export const settingsInputs = {
 
         // Text labels
         'u-controls-checkbox-text':
-            'text-secondary-foreground text-sm leading-5 font-medium',
+            'text-secondary-foreground text-sm leading-5 font-medium text-wrap',
         'u-controls-checkbox-text2':
             'text-muted-foreground text-sm leading-5',
 

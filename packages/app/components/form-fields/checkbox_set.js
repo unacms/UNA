@@ -42,7 +42,7 @@ export default function FormFieldCheckboxSet(props) {
             {values.map((item2, index) => {
                 const status = value.includes(String(item2.id)) ? 'checked' : 'unchecked';
                 return (
-                    <Row className='items-center flex-wrap' key={'chk' + index}>
+                    <Row className='items-center flex-wrap w-full' key={'chk' + index}>
                         <CheckBox
                             value={value.includes(String(item2.id))}
                             status={status}
