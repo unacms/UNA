@@ -110,14 +110,14 @@ export default function ContextSelector({ data: initialData, url, uri, mode }) {
     }
 
     const CurrentContext = (
-        <Link size="lg" className="flex-1" href={contextRoot.url} title={t("Context Home")}>
-            <Row className="items-center gap-2 py-0.5 flex-1">
-                <View className='rounded-full items-center justify-center web:duration-200 text-card-foreground web:hover:text-foreground'>
+        <Link size="lg" className="min-w-0 shrink overflow-hidden" href={contextRoot.url} title={t("Context Home")}>
+            <Row className="items-center gap-2 py-0.5 min-w-0">
+                <View className="shrink-0 rounded-full items-center justify-center web:duration-200 text-card-foreground web:hover:text-foreground">
                     {contextRoot.image}
                 </View>
                 {!!contextRoot.name && (
-                    <Text numberOfLines={1} className="text-base  flex-1 font-semibold tracking-tight truncate text-card-foreground  web:hover:text-foreground">
-                        {contextRoot.name} 
+                    <Text numberOfLines={1} className="min-w-0 shrink text-base font-semibold tracking-tight truncate text-card-foreground web:hover:text-foreground">
+                        {contextRoot.name}
                     </Text>
                 )}
             </Row>
@@ -193,7 +193,7 @@ export default function ContextSelector({ data: initialData, url, uri, mode }) {
 
     return (
         data?.list?.length > 0 || data?.links?.length > 0 ? (
-            <Row className='items-center w-full gap-x-1'>
+            <Row className="items-center gap-x-1 min-w-0">
                 {!!contextRoot.name &&
                     appSetting('context_selector', 'logo') && (
                         <>
@@ -217,18 +217,17 @@ export default function ContextSelector({ data: initialData, url, uri, mode }) {
                             <Icon
                                 icon="ChevronRight"
                                 size={20}
-                                className="w-5 h-5 text-muted-foreground"
+                                className="w-5 h-5 shrink-0 text-muted-foreground"
                             />
                         </>
                     )}
 
-
-                <View className="max-w-64 flex-1 overflow-hidden">
+                <Row className="items-center gap-x-0.5 min-w-0 max-w-64">
                     {CurrentContext}
-                </View>
-                <View className="">
-                    {DropDown}
-                </View>
+                    <View className="shrink-0">
+                        {DropDown}
+                    </View>
+                </Row>
             </Row>
         ) : (
             CurrentContext

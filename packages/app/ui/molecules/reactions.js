@@ -3,7 +3,7 @@ import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { useCurrentUser } from 'app/context/user';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
-import { View, Pressable } from 'app/design/view';
+import { View, Row } from 'app/design/view';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Profile from 'app/ui/molecules/profile';
 import { subscribe } from 'app/ui/atoms/socket';
@@ -236,7 +236,7 @@ const getCounterCompound = (t, getIconAlias, handleGetPerformedByCpd, actionsDat
         if (performedBy && performedBy[aItem.name]) {
             aUsers = performedBy[aItem.name].map(aUser => {
                 return (
-                    <View key={aUser.id}><Profile {...aUser} /></View>
+                    <Row key={aUser.id}><Profile {...aUser} /></Row>
                 );
             });
         }

@@ -248,11 +248,11 @@ export const PageHeaderBody = memo(({
     return (
         <>
             <Row className={contentClassName} onLayout={onMainHeaderLayout}>
-                <Row className={appSetting('layout', 'header', 'content_left')}>
+                <Row className={ appSetting('layout', 'header', 'content_left')}>
                     {canShowBackButton && (
                         <BackButtonElement />
                     )}
-                    <View>{leftElement}</View>
+                    <View className="flex-1">{leftElement}</View>
                     {contextSelectorElement}
                 </Row>
                 {isWeb && <MenuTop url={pageData?.url} uri={pageData?.uri} />}

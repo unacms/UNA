@@ -165,6 +165,27 @@ export function getDomainFromUrl(url) {
 
 }
 
+function normalizeHostname(hostname) {
+    if (!hostname) return '';
+    return hostname.toLowerCase().replace(/^www\./, '');
+}
+
+export function getHostnameFromUrl(url) {
+    if (!url || typeof url !== 'string') return '';
+
+    if (url.startsWith('/') && !url.startsWith('//')) return '';
+
+    try {
+        const withProtocol = /^https?:\/\//i.test(url) ? url : `https://${url}`;
+        return normalizeHostname(new URL(withProtocol).hostname);
+    } catch {
+        const domain = getDomainFromUrl(url);
+        if (!domain) return '';
+        const host = domain.replace(/^https?:\/\//, '').split('/')[0];
+        return normalizeHostname(host);
+    }
+}
+
 export async function setClipboard(str) {
     if (!isWeb) {
         Clipboard.setString(str);
@@ -1657,21 +1678,30 @@ export function sanitazeUrl(url) {
         }
 
     }
-    const domain = getDomainFromUrl(finalHref);
-    const rootUrl = appSetting('config', 'native_app_images_url');
-    if (domain && domain === rootUrl) {
-        finalHref = finalHref.replace(domain, '');
-    }
-    if (domain && domain !== rootUrl)
+    const host = getHostnameFromUrl(finalHref);
+    const rootHost = getHostnameFromUrl(appSetting('config', 'native_app_images_url'));
+
+    if (host && host === rootHost) {
+        try {
+            const withProtocol = /^https?:\/\//i.test(finalHref) ? finalHref : `https://${finalHref}`;
+            const parsed = new URL(withProtocol);
+            finalHref = parsed.pathname + parsed.search + parsed.hash;
+        } catch {
+            finalHref = finalHref.replace(/^https?:\/\/[^/]+/, '');
+        }
+    } else if (host && host !== rootHost) {
         return finalHref;
+    }
 
     return finalHref.startsWith('/') ? finalHref : `/${finalHref}`;
 }
 
 export function isExternalUrl(url) {
-    const rootUrl = appSetting('config', 'native_app_images_url');
-    const domain = getDomainFromUrl(url);
-    return domain && domain !== rootUrl;
+    const host = getHostnameFromUrl(url);
+    if (!host) return false;
+
+    const rootHost = getHostnameFromUrl(appSetting('config', 'native_app_images_url'));
+    return host !== rootHost;
 }
 
 export const roundedClassToRadius = (roundedClass = '') => {

@@ -6,7 +6,7 @@ import RenderHtml, {
     HTMLElementModel,
 } from 'react-native-render-html'
 import { mergeDeep } from 'app/lib/util';
-import { appSetting, md5, absoluteApiUrl, getDomainFromUrl } from 'app/lib/util'
+import { appSetting, md5, absoluteApiUrl, isExternalUrl, sanitazeUrl } from 'app/lib/util'
 import { useTheme } from 'app/design/theme';
 import { useState } from 'react';
 import Video from 'app/ui/atoms/video';
@@ -324,15 +324,12 @@ export default function ElementHtml(props) {
     data = addClassesToP(data);
 
     const onPress = async (event, url, htmlAttribs, target) => {
-        const rootUrl = appSetting('config', 'native_app_images_url');// MAY BE NEED TO CHANGE
-        const domain = getDomainFromUrl(url);
-
-        if (domain !== '' && domain !== rootUrl) {
-            let result = await WebBrowser.openBrowserAsync(url);
+        if (isExternalUrl(url)) {
+            await WebBrowser.openBrowserAsync(url);
         } else {
             routerExpo.push({
                 pathname: '/' + glob.name,
-                params: { url: '/' + url.replace(rootUrl+'/', '') }
+                params: { url: sanitazeUrl(url) }
             });
         }
     };
