@@ -97,9 +97,14 @@ export const InputMulti = forwardRef<TextInput, InputMultiProps>(
 );
 
 export const Hidden = forwardRef<TextInput, CustomInputProps>(
-    ({ ...props }, ref) => (
-        <TextInputDef className={'hidden'} ref={ref} {...props} />
-    )
+    (props, ref) => {
+        // Native: do not mount a display:none TextInput — Yoga relayout on keyboard
+        // focus can SIGABRT (react-native#52349). Form values use useController.
+        if (!isWeb) {
+            return null;
+        }
+        return <TextInputDef className="hidden" ref={ref} {...props} />;
+    }
 );
 
 interface CustomPickerProps extends PickerProps {

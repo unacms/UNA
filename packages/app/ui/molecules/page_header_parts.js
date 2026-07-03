@@ -247,18 +247,23 @@ export const PageHeaderBody = memo(({
 
     return (
         <>
-            <Row className={contentClassName} onLayout={onMainHeaderLayout}>
-                <Row className={ appSetting('layout', 'header', 'content_left')}>
-                    {canShowBackButton && (
-                        <BackButtonElement />
-                    )}
-                    <View className="flex-1">{leftElement}</View>
-                    {contextSelectorElement}
-                </Row>
+            <Row className={' ' + contentClassName} onLayout={onMainHeaderLayout}>
+                <View className={' ' + appSetting('layout', 'header', 'content_left')}>
+                    <Row className='flex-none '>
+                        {canShowBackButton && (
+                            <BackButtonElement />
+                        )}
+                        
+                        <View className=" min-w-0 ">{leftElement}</View>
+                        {contextSelectorElement}
+                    </Row>
+                </View>
                 {isWeb && <MenuTop url={pageData?.url} uri={pageData?.uri} />}
-                <Row className={appSetting('layout', 'header', 'content_right')}>
+                <View className={' ' + appSetting('layout', 'header', 'content_right')}>
+                <Row className='w-full'>
                     {header.headerActions ?? <HeaderElement mode="small" url={pageData?.url} uri={pageData?.uri} />}
                 </Row>
+                </View>
             </Row>
             {header.subHeader ? (
                 <View onLayout={onSubHeaderLayout}>

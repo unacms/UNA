@@ -109,15 +109,23 @@ export default function ContextSelector({ data: initialData, url, uri, mode }) {
         setIsOpen(open)
     }
 
+    const isLogoOnly = !contextRoot.name
+
     const CurrentContext = (
-        <Link size="lg" className="flex-1" href={contextRoot.url} title={t("Context Home")}>
-            <Row className="items-center gap-2 py-0.5 flex-1">
-                <View className='rounded-full items-center justify-center web:duration-200 text-card-foreground web:hover:text-foreground'>
+        <Link
+            size={isLogoOnly ? undefined : 'lg'}
+            hitarea={!isLogoOnly}
+            className="web:flex-1 native:shrink-0 min-w-0"
+            href={contextRoot.url}
+            title={t("Context Home")}
+        >
+            <Row className="items-center gap-2 py-0.5 min-w-0">
+                <View className="shrink-0 w-9 h-9 items-center justify-center overflow-hidden web:duration-200 text-card-foreground web:hover:text-foreground">
                     {contextRoot.image}
                 </View>
                 {!!contextRoot.name && (
-                    <Text numberOfLines={1} className="text-base  flex-1 font-semibold tracking-tight truncate text-card-foreground  web:hover:text-foreground">
-                        {contextRoot.name} 
+                    <Text numberOfLines={1} className="text-base web:flex-1 native:flex-none font-semibold tracking-tight truncate max-w-56 text-card-foreground web:hover:text-foreground">
+                        {contextRoot.name}
                     </Text>
                 )}
             </Row>
@@ -193,7 +201,7 @@ export default function ContextSelector({ data: initialData, url, uri, mode }) {
 
     return (
         data?.list?.length > 0 || data?.links?.length > 0 ? (
-            <Row className='items-center w-full gap-x-1'>
+            <Row className="items-center min-w-0 gap-2 ">
                 {!!contextRoot.name &&
                     appSetting('context_selector', 'logo') && (
                         <>
@@ -202,7 +210,7 @@ export default function ContextSelector({ data: initialData, url, uri, mode }) {
                                 return (
                                     <Link href={`/${rootUrl}`} variant="ghost" size="lg" title="Home">
                                         <Row
-                                            className={` rounded-xl ${isActiveAppRoot
+                                            className={`shrink-0 rounded-xl ${isActiveAppRoot
                                                 ? ' bg-accent/60 text-accent-foreground web:hover:bg-accent'
                                                 : ' web:hover:bg-muted/50'
                                                 }`}
@@ -217,19 +225,16 @@ export default function ContextSelector({ data: initialData, url, uri, mode }) {
                             <Icon
                                 icon="ChevronRight"
                                 size={20}
-                                className="w-5 h-5 text-muted-foreground"
+                                className="w-5 h-5 shrink-0 text-muted-foreground"
                             />
                         </>
                     )}
 
-
-                {/* web:flex-1 native:flex-auto — Yoga collapses flex-basis:0 items to zero
-                    width inside intrinsically-sized parents (web keeps content width via
-                    min-width:auto), which hid the logo/current context on native. */}
-                <View className="max-w-64 web:flex-1 native:flex-none overflow-hidden">
+                <View className="shrink min-w-0">
                     {CurrentContext}
                 </View>
-                <View className="">
+
+                <View className="shrink-0">
                     {DropDown}
                 </View>
             </Row>
