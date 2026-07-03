@@ -19,6 +19,7 @@ import emitter from 'app/context/emitter'
 import { useSetHeader, useScrollValue, useListMaxScrollOffset, useSetCoverScrollCompensation, defaultHeader, useSetHeaderHeight } from 'app/context/jotai/layout';
 import { getComponent } from 'app/components/registry';
 import { useFocusEffect } from 'app/lib/hooks/router'
+import { useIsFocused } from '@react-navigation/native';
 import { appSetting } from 'app/lib/util'
 import {
     getCachedConductorState,
@@ -405,6 +406,12 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
     const setHeader = useSetHeader();
     const setHeaderHeight = useSetHeaderHeight();
+    // Tab screens stay mounted when blurred (see tabs.js) — every write to the
+    // shared header atom and every global emitter command must be gated on
+    // focus, otherwise a background conductor clobbers the visible submenu.
+    const isFocused = useIsFocused();
+    const isFocusedRef = useRef(isFocused);
+    isFocusedRef.current = isFocused;
 
     useEffect(() => {
         if (!deepEqual(menu, menuState)) {
@@ -453,10 +460,12 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         };
     }, [conductorCacheKey, layoutName, data?.url]);
 
-    const setIndex = (newIndex) => {
-        setPrevIndex(index);
+    // Stable identity: setIndex feeds the sceneHeader memo — recreating it every
+    // render would recompute the submenu (and rewrite the header atom) on each render.
+    const setIndex = useCallback((newIndex) => {
+        setPrevIndex(indexRef.current);
         _setIndex(newIndex);
-    };
+    }, []);
 
 
     /*const currentRoute = useMemo(() => routes.find((item) => item.index === index), [routes, index]);
@@ -668,6 +677,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
     useEffect(() => {
         const subscription = emitter.addListener('list', (payload) => {
+            if (!isFocusedRef.current) return;
             if (payload?.action === 'refresh') {
                 onStartRefresh();
             }
@@ -677,6 +687,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
     useEffect(() => {
         const subscription = emitter.addListener('conductor', (payload) => {
+            if (!isFocusedRef.current) return;
             if (payload?.action !== 'reset_to_first') return;
 
             if (indexRef.current !== 0) {
@@ -786,7 +797,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         };
         setFilterValue(filterValues);
         setBottomSheetData(false);
-    });
+    }, [setFilterValue, setBottomSheetData]);
 
     const showFilters = useCallback(() => {
         setBottomSheetData({ title: 'Filters', content: <AddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} />, showClose: true, snapPoints: ['60%', '60%'] });
@@ -857,10 +868,12 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     );
 
     useEffect(() => {
-        if (!useLocalHeader) {
+        // Only the focused screen may update the shared subHeader; on refocus
+        // the useFocusEffect above restores it from subHeaderRef.
+        if (!useLocalHeader && isFocused) {
             setHeader({ subHeader: sceneHeaderComp });
         }
-    }, [useLocalHeader, sceneHeaderComp, setHeader]);
+    }, [useLocalHeader, isFocused, sceneHeaderComp, setHeader]);
 
     const tabSceneProps = {
         skeleton: skeleton,
