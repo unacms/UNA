@@ -132,6 +132,13 @@ const expoConfig = {
             },
         ],
         "./plugins/with-expo-audio-no-foreground-services.js",
+        [
+            "expo-image-picker",
+            {
+                photosPermission: "Application accesses your photo library so you can choose photos and videos for your profile, posts, and messages.",
+                cameraPermission: "Application uses the camera to take photos for your profile and posts, and for video during calls—for example, a profile picture or a video call.",
+            },
+        ],
         // ["@stripe/stripe-react-native", {"merchantIdentifier": "merchantIdentifier","enableGooglePay": true}],
         ["expo-build-properties", 
             {

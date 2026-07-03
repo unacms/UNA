@@ -160,7 +160,7 @@ export default function Tabs() {
     const iconWidth = 24;
     const iconHeight = 24;
     const shouldDetachInactiveScreens = Platform.OS !== 'ios';
-    const isShowTabs = currentUser || appSetting('native', 'show_tabs_non_logged')
+    const isShowTabs = (currentUser && currentUser.confirmed) || appSetting('native', 'show_tabs_non_logged')
     const notificationUrl = appSetting('notifications', 'url');
     const TabList = useMemo(
         () => (currentUser?.id ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged')),

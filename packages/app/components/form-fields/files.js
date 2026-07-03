@@ -11,8 +11,7 @@ import { useFormContext, useController } from 'react-hook-form';
 import { uploadImage, md5 } from 'app/lib/util';
 import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
-import { Image as ImageNative, Alert, Platform } from 'react-native';
-import { Camera } from "expo-camera";
+import { Image as ImageNative, Alert, Linking, Platform } from 'react-native';
 import { useFilesData } from 'app/context/files';
 import { Image as ImageRN } from 'react-native';
 import Video from 'app/ui/atoms/video';
@@ -20,6 +19,69 @@ import Msg from 'app/ui/molecules/msg';
 import { useTranslation } from 'react-i18next'
 import emitter from 'app/context/emitter';
 import { CaptionForFileInput } from 'app/customization/functions';
+
+function showPermissionAlert(type, canAskAgain) {
+    const isCamera = type === 'camera';
+    const title = isCamera ? 'Camera access' : 'Photo library access';
+    const message = canAskAgain === false
+        ? 'Permission was denied. Enable it in Settings to upload media.'
+        : 'Permission is required to upload media.';
+
+    const buttons = [{ text: 'Cancel', style: 'cancel' }];
+
+    if (canAskAgain === false || Platform.OS === 'ios') {
+        buttons.push({
+            text: 'Open Settings',
+            onPress: () => Linking.openSettings(),
+        });
+    }
+
+    Alert.alert(title, message, buttons, { cancelable: true });
+}
+
+function resolvePickerSource(source, fallback = 'library') {
+    if (source === 'camera' || source === 'library') {
+        return source;
+    }
+    return fallback;
+}
+
+function isMediaField(extDeny, extAllow) {
+    if (extDeny === '' || extAllow === 'mp3,m4a,m4b,wma,wav,3gp') {
+        return true;
+    }
+    if (extDeny?.length && !'jpg,jpeg,jpe,gif,png,svg,webp'.split(',').some((s) => extDeny.split(',').includes(s))) {
+        return true;
+    }
+    return false;
+}
+
+function resolveNativeMediaTypes(mediaTypes) {
+    const hasImages = mediaTypes.includes('images');
+    const hasVideos = mediaTypes.includes('videos');
+
+    if (hasImages && hasVideos) {
+        return ImagePicker.MediaTypeOptions.All;
+    }
+    if (hasVideos) {
+        return ImagePicker.MediaTypeOptions.Videos;
+    }
+    return ImagePicker.MediaTypeOptions.Images;
+}
+
+function getImagePickerOptions(mediaTypes, bMultiple) {
+    const options = {
+        mediaTypes: Platform.OS === 'web' ? mediaTypes : resolveNativeMediaTypes(mediaTypes),
+        quality: 1,
+        allowsMultipleSelection: Boolean(bMultiple),
+    };
+
+    if (Platform.OS === 'ios') {
+        options.UIImagePickerPreferredAssetRepresentationMode = 'current';
+    }
+
+    return options;
+}
 
 export default function (props) {
     
@@ -43,7 +105,7 @@ export default function (props) {
     const isAutoGhosts = appSetting('forms', 'auto_ghosts_in_files')
 
     const url = useMemo(() => {
-        return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&obfuscate_faces=' + obfuscateFaces + '&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (bMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
+        return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&obfuscate_faces=' + obfuscateFaces + '&uo=' + (props.uploaders?.[0] ?? '') + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (bMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
     }, [props, obfuscateFaces]);
 
 
@@ -60,23 +122,6 @@ export default function (props) {
             }
         }
     }, [filesData]);
-
-    useEffect(() => {
-        if (hasPermissionLibrary) {
-            const subscription = emitter.addListener(`fld_files_${name}`, (data) => {
-                if (data.action == 'add') {
-                    selectImage(data.source)
-                }
-                if (data.action == 'clear') {
-                     setImageSource({ images: [] });
-                }
-               
-            })
-            return () => {
-                subscription.remove()
-            }
-        }
-    }, [hasPermissionLibrary])
 
     useEffect(() => {
         if (props.previewPlaceHolder) {
@@ -224,85 +269,46 @@ export default function (props) {
         return k;
     }
 
-    const selectImage = useCallback(async (source) => {
-        let bIsMedia = props.ext_deny == '' || props.ext_allow == 'mp3,m4a,m4b,wma,wav,3gp' ? true : false;
-        if (!bIsMedia && props.ext_deny.length && !'jpg,jpeg,jpe,gif,png,svg,webp'.split(',').filter((s) => ~props.ext_deny.split(',').indexOf(s)).length)
-            bIsMedia = true;
-
-        if (Platform.OS !== 'web' && bIsMedia) {
-            const { status } = await Camera.requestCameraPermissionsAsync();
-            if (status === "granted") {
-                selectImage1(source, bIsMedia)
-            }
-            else {
-                Alert.alert(
-                    "Upload Photo",
-                    "Gallery permissions are needed",
-                    [
-                        {
-                            text: "Cancel",
-                            style: "cancel"
-                        }
-                    ],
-                    { cancelable: true }
-
-
-                )
-            }
-        }
-        else {
-            selectImage1('library', bIsMedia)
-        }
-    }, [props.ext_deny, props.ext_allow, props.source, imageSource, url, hasPermissionCamera, hasPermissionLibrary]);
-
-
     const selectImage1 = useCallback(async (type, bIsMedia) => {
+        const extAllow = props.ext_allow ?? '';
+
         if (bIsMedia) {
-
             let mediaTypes = ['images', 'videos'];
-            if (props.ext_allow.includes('jpg') && !props.ext_allow.includes('mp4'))
+            if (extAllow.includes('jpg') && !extAllow.includes('mp4')) {
                 mediaTypes = ['images'];
-            if (props.ext_allow.includes('mp4') && !props.ext_allow.includes('mp4'))
+            } else if (extAllow.includes('mp4') && !extAllow.includes('jpg')) {
                 mediaTypes = ['videos'];
+            }
 
-            let result = null
+            let result = null;
+
             if (type != 'camera') {
-
-                if (!hasPermissionLibrary) {
-                    const { status2 } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-                    if (status2 !== 'granted') {
-                        Alert.alert('Permission to access lib is required!');
+                if (!hasPermissionLibrary?.granted) {
+                    const permission = await requestPermissionLibrary();
+                    if (!permission?.granted) {
+                        showPermissionAlert('library', permission?.canAskAgain);
                         return;
                     }
                 }
 
-                result = await ImagePicker.launchImageLibraryAsync({
-                    mediaTypes: mediaTypes,
-                    quality: 1,
-                    UIImagePickerPreferredAssetRepresentationMode: 'current',
-                    allowsMultipleSelection: bMultiple,
-                });
-            }
-            else {
-
-                if (!hasPermissionCamera) {
+                result = await ImagePicker.launchImageLibraryAsync(
+                    getImagePickerOptions(mediaTypes, bMultiple)
+                );
+            } else {
+                if (!hasPermissionCamera?.granted) {
                     const permission = await requestPermissionCamera();
-                    if (!permission.granted) {
-                        Alert.alert('Camera access is required to use this feature.');
+                    if (!permission?.granted) {
+                        showPermissionAlert('camera', permission?.canAskAgain);
                         return;
                     }
                 }
 
-                result = await ImagePicker.launchCameraAsync({
-                    mediaTypes: mediaTypes,
-                    quality: 1,
-                    UIImagePickerPreferredAssetRepresentationMode: 'current',
-                    allowsMultipleSelection: bMultiple,
-                });
+                result = await ImagePicker.launchCameraAsync(
+                    getImagePickerOptions(mediaTypes, bMultiple)
+                );
             }
 
-            if (!result.canceled) {
-
+            if (!result?.canceled && result?.assets?.length) {
                 const goodAssets = result.assets.filter(
                     asset => !asset.uri.startsWith('data:application/octet-stream')
                 );
@@ -312,11 +318,10 @@ export default function (props) {
                 let k = await uploadImages(goodAssets);
                 setImageSourceN(k, bMultiple);
             }
-        }
-        else {
+        } else {
             try {
                 const result = await DocumentPicker.getDocumentAsync({
-                    type: '*/*', // This allows all file types
+                    type: '*/*',
                     multiple: true
                 });
 
@@ -328,7 +333,74 @@ export default function (props) {
                 console.error('Error picking document:', err);
             }
         }
-    }, [props.ext_deny, props.ext_allow, imageSource, url, hasPermissionCamera, hasPermissionLibrary]);
+    }, [props.ext_allow, bMultiple, hasPermissionCamera, hasPermissionLibrary, requestPermissionCamera, requestPermissionLibrary]);
+
+    const selectImage = useCallback(async (source) => {
+        try {
+            const extAllow = props.ext_allow ?? '';
+            const extDeny = props.ext_deny ?? '';
+            const type = resolvePickerSource(source, props.source ?? 'library');
+            const bIsMedia = isMediaField(extDeny, extAllow) || type === 'library' || type === 'camera';
+
+            console.log('[files] selectImage', {
+                name,
+                type,
+                bIsMedia,
+                ext_deny: extDeny,
+                ext_allow: extAllow,
+                granted: hasPermissionLibrary?.granted,
+            });
+
+            if (Platform.OS === 'web' || !bIsMedia) {
+                await selectImage1(type, bIsMedia);
+                return;
+            }
+
+            if (type === 'camera') {
+                if (typeof requestPermissionCamera !== 'function') {
+                    throw new Error('requestPermissionCamera is not available');
+                }
+                const permission = hasPermissionCamera?.granted
+                    ? hasPermissionCamera
+                    : await requestPermissionCamera();
+                if (permission?.granted) {
+                    await selectImage1('camera', bIsMedia);
+                } else {
+                    showPermissionAlert('camera', permission?.canAskAgain);
+                }
+                return;
+            }
+
+            if (typeof requestPermissionLibrary !== 'function') {
+                throw new Error('requestPermissionLibrary is not available');
+            }
+            const permission = hasPermissionLibrary?.granted
+                ? hasPermissionLibrary
+                : await requestPermissionLibrary();
+            if (permission?.granted) {
+                await selectImage1('library', bIsMedia);
+            } else {
+                showPermissionAlert('library', permission?.canAskAgain);
+            }
+        } catch (err) {
+            console.error('[files] selectImage failed:', err);
+            Alert.alert('Upload error', err?.message ?? 'Could not open media picker.');
+        }
+    }, [name, props.ext_deny, props.ext_allow, props.source, hasPermissionCamera, hasPermissionLibrary, requestPermissionCamera, requestPermissionLibrary, selectImage1]);
+
+    useEffect(() => {
+        const subscription = emitter.addListener(`fld_files_${name}`, (data) => {
+            if (data.action == 'add') {
+                selectImage(data.source);
+            }
+            if (data.action == 'clear') {
+                setImageSource({ images: [] });
+            }
+        });
+        return () => {
+            subscription.remove();
+        };
+    }, [name, selectImage]);
 
     const handleDelete = useCallback(async (id) => {
         setImageSource(prev => ({
@@ -429,7 +501,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
             }
         }
     };
-    let button = <Button startDecorator={props.icon ? props.icon : sIcon} tooltip={t("Add " + props.name)} title={props.title ? props.title : sTitle} size={props.size ? props.size : "base"} variant={props.variant ? props.variant : "text"} rounded={props.rounded ? props.rounded : false} onPress={selectImage} />
+    let button = <Button startDecorator={props.icon ? props.icon : sIcon} tooltip={t("Add " + props.name)} title={props.title ? props.title : sTitle} size={props.size ? props.size : "base"} variant={props.variant ? props.variant : "text"} rounded={props.rounded ? props.rounded : false} onPress={() => selectImage(props.source ?? 'library')} />
 
     if (!bMultiple || props.useSingle) {
         let img = imagesList && imagesList.length > 0 ? imagesList[0] : null;
@@ -454,7 +526,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
         const isPreload = img?.preload;
 
         button = (
-            <Pressable onPress={selectImage} >
+            <Pressable onPress={() => selectImage(props.source ?? 'library')} >
                 <View className={w + ' native:max-w-full items-center justify-center bg-input ' + (isImage ? '' : '')}>
                       {(!img || !img?.file_url) && (<View ref={drop} className=' text-muted-foreground/50 text-lg  flex-auto w-full border-border rounded-lg  justify-center  flex-col border border-dashed text-center'>
                         <Text className='text-muted-foreground/50 text-lg justify-center flex-col text-center'>
@@ -550,6 +622,6 @@ function ButtonCover({ imageSource, selectImage }) {
         startDecorator={img?.preload ? "_loading" : "Image"}
         variant="outline"
         size="xs"
-        onPress={selectImage}
+        onPress={() => selectImage('library')}
     />
 }
