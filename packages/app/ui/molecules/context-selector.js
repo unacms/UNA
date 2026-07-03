@@ -50,7 +50,9 @@ function getContextRoot(data, url, uri) {
     if (uri == rootUrl || !data.current?.id) {
         return {
             url: '/' + rootUrl,
-            image: appStatic('logo', { mode: appSetting('context_selector', 'logo_mode') }),
+            image: <View className="w-9 h-9 items-center justify-center rounded-full bg-muted">
+                {appStatic('logo', { mode: appSetting('context_selector', 'logo_mode') })}
+            </View>,
             name: false,
         }
     }

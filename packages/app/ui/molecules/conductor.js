@@ -16,7 +16,7 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByName } from 'app/components/block';
 import Cover, { CoverSmall } from 'app/components/elements/cover';
 import emitter from 'app/context/emitter'
-import { useSetHeader, useScrollValue, defaultHeader, useSetHeaderHeight, useHeaderHeight } from 'app/context/jotai/layout';
+import { useSetHeader, useScrollValue, useListMaxScrollOffset, useSetCoverScrollCompensation, defaultHeader, useSetHeaderHeight } from 'app/context/jotai/layout';
 import { getComponent } from 'app/components/registry';
 import { useFocusEffect } from 'app/lib/hooks/router'
 import { appSetting } from 'app/lib/util'
@@ -49,7 +49,12 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
     filter,
 }) {
     const scrollValue = useScrollValue();
-    const showSmall = scrollValue > COVER_SWITCH_THRESHOLD;
+    const maxScrollOffset = useListMaxScrollOffset();
+    const setCoverScrollCompensation = useSetCoverScrollCompensation();
+    const prevScrollRef = useRef(scrollValue);
+    // Whether the list currently has compensating bottom padding (see unilist.js).
+    const compensatedRef = useRef(false);
+    const [showSmall, setShowSmall] = useState(false);
 
     const [fullHeight, setFullHeight] = useState(0);
     const [smallHeight, setSmallHeight] = useState(0);
@@ -58,8 +63,64 @@ const DynamicCoverHeader = React.memo(function DynamicCoverHeader({
     const progress = useSharedValue(showSmall ? 1 : 0);
 
     useEffect(() => {
+        // Global scrollDirection is forced to 0 below 100px (see unilist.js),
+        // so track the direction locally from scrollValue deltas.
+        const delta = scrollValue - prevScrollRef.current;
+        prevScrollRef.current = scrollValue;
+
+        // Collapsing the cover grows the list viewport by heightGain, which
+        // shrinks maxScrollOffset and can clamp the scroll offset — the toggle
+        // then feeds back into itself and the cover oscillates. On short lists
+        // we neutralize this with compensating bottom padding (see unilist.js);
+        // on long lists no padding is applied, so add the gain back to compare
+        // against a value stable across collapse/expand.
+        const heightGain = measured ? fullHeight - smallHeight : 0;
+        const expandedMax =
+            maxScrollOffset + (showSmall && !compensatedRef.current ? heightGain : 0);
+        // Long list: even after collapsing, the offset cannot be clamped below
+        // the switch threshold, so the symmetric threshold rule is stable.
+        const isLongList = expandedMax - heightGain > COVER_SWITCH_THRESHOLD + 50;
+
+        const expand = () => {
+            setShowSmall(false);
+            compensatedRef.current = false;
+            setCoverScrollCompensation(0);
+        };
+
+        if (showSmall) {
+            if (isLongList) {
+                if (scrollValue <= COVER_SWITCH_THRESHOLD) expand();
+            } else if (scrollValue < -5 || (scrollValue <= 5 && delta < 0)) {
+                // Deliberate pull-down past the top (iOS bounce) or an upward
+                // scroll reaching the top (Android) expands the cover back.
+                expand();
+            }
+            return;
+        }
+
+        if (isLongList) {
+            if (scrollValue > COVER_SWITCH_THRESHOLD) setShowSmall(true);
+            return;
+        }
+
+        // Short list: collapse on a downward scroll and add compensating bottom
+        // padding so the list keeps its scroll range and the cover can always be
+        // expanded back. Skip barely scrollable lists where rubber-banding would
+        // settle inside the expand zone and cause flicker.
+        if (measured && delta > 0 && scrollValue > 0 && maxScrollOffset > 30) {
+            setShowSmall(true);
+            compensatedRef.current = true;
+            setCoverScrollCompensation(heightGain);
+        }
+    }, [scrollValue, maxScrollOffset, fullHeight, smallHeight, measured, showSmall, setCoverScrollCompensation]);
+
+    // Never leave stale padding behind when the header unmounts (tab/page change).
+    useEffect(() => {
+        return () => setCoverScrollCompensation(0);
+    }, [setCoverScrollCompensation]);
+
+    useEffect(() => {
         progress.set(withTiming(showSmall ? 1 : 0, { duration: COVER_SWITCH_DURATION }));
-        
     }, [showSmall, progress]);
 
     const containerStyle = useAnimatedStyle(() => {
@@ -344,7 +405,6 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
     const setHeader = useSetHeader();
     const setHeaderHeight = useSetHeaderHeight();
-    const headerHeight = useHeaderHeight();
 
     useEffect(() => {
         if (!deepEqual(menu, menuState)) {
@@ -767,6 +827,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     const sceneHeaderComp = useMemo(
         () => (
             <TabSceneHeader
+                key={index}
                 headerMode={headerMode}
                 coverBlock={coverBlock}
                 pageUri={pageUri}
@@ -775,7 +836,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
                 filter={filter}
             />
         ),
-        [headerMode, coverBlock, pageUri, pageContext, sceneHeader, filter]
+        [headerMode, coverBlock, pageUri, pageContext, sceneHeader, filter, index]
     );
 
     const subHeaderRef = useRef(sceneHeaderComp);
@@ -784,14 +845,11 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     useFocusEffect(
         useCallback(() => {
             if (useLocalHeader) {
-                console.log('useLocalHeader', false);
                 setHeader({ header: false });
                 setHeaderHeight(0);
             } else {
-                console.log('useLocalHeader', subHeaderRef.current);
                 setHeader({ subHeader: subHeaderRef.current });
             }
-            console.log('headerHeight', headerHeight);
             return () => {
                 setHeader(defaultHeader);
             };

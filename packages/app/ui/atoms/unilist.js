@@ -2,7 +2,7 @@ import { View } from 'app/design/view'
 import { useRef, useCallback, useMemo, useEffect } from 'react';
 import { RefreshControl } from 'react-native';
 import { LegendList } from "@legendapp/list";
-import { useSetScrollDirection, useHeaderHeight, useSetScrollValue } from 'app/context/jotai/layout';
+import { useSetScrollDirection, useHeaderHeight, useSetScrollValue, useSetListMaxScrollOffset, useCoverScrollCompensation } from 'app/context/jotai/layout';
 import { getListScrollOffset, setListScrollOffset } from 'app/lib/tab-page-cache';
 import { useFocusEffect } from 'app/lib/hooks/router';
 
@@ -92,6 +92,10 @@ export default function UniList(props) {
     const lastPublishedScrollRef = useRef(0);
     const setScrollDirection = useSetScrollDirection();
     const setScrollValue = useSetScrollValue();
+    const setListMaxScrollOffset = useSetListMaxScrollOffset();
+    // Bottom padding applied while the profile cover is collapsed on a short
+    // list, so the scroll range does not shrink (see conductor.js).
+    const coverScrollCompensation = useCoverScrollCompensation();
 
     const headerHeightFromAtom = useHeaderHeight();
 
@@ -145,9 +149,14 @@ export default function UniList(props) {
             return;
         }
 
+        const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
         const SCROLL_OFFSET_THRESHOLD = 100;
-        const currentScrollY = event.nativeEvent.contentOffset.y;
+        const currentScrollY = contentOffset.y;
         const roundedScrollY = Math.round(currentScrollY);
+
+        setListMaxScrollOffset(
+            Math.max(0, contentSize.height - layoutMeasurement.height)
+        );
 
         if (roundedScrollY !== lastPublishedScrollRef.current) {
             lastPublishedScrollRef.current = roundedScrollY;
@@ -174,7 +183,7 @@ export default function UniList(props) {
         }
 
         scrollY.current = currentScrollY;
-    }, [setScrollDirection, setScrollValue]);
+    }, [setScrollDirection, setScrollValue, setListMaxScrollOffset]);
 
     useEffect(() => {
         return () => {
@@ -219,7 +228,6 @@ export default function UniList(props) {
     const shouldApplyFooterOffset = inverted && !isModal;
 
     const enhancedListHeaderComponent = useCallback(() => {
-        console.log('headerHeight', headerHeight);
         return (
             <>
                 {shouldApplyHeaderOffset && headerHeight > 0 && (
@@ -237,6 +245,9 @@ export default function UniList(props) {
         );
     }, [shouldApplyHeaderOffset, headerHeight, ListHeaderComponent, shouldApplyFooterOffset, inverted, skipHeaderOffset]);
 
+    const shouldApplyCoverCompensation =
+        skipHeaderOffset && !inverted && !isModal && coverScrollCompensation > 0;
+
     const enhancedListFooterComponent = useCallback(() => {
         return (
             <>
@@ -248,9 +259,12 @@ export default function UniList(props) {
                 {shouldApplyFooterOffset && headerHeight > 0 && !inverted && (
                     <View style={{ height: headerHeight }} />
                 )}
+                {shouldApplyCoverCompensation && (
+                    <View style={{ height: coverScrollCompensation }} />
+                )}
             </>
         );
-    }, [shouldApplyFooterOffset, headerHeight, ListFooterComponent, inverted]);
+    }, [shouldApplyFooterOffset, headerHeight, ListFooterComponent, inverted, shouldApplyCoverCompensation, coverScrollCompensation]);
 
     if (preloadComponent) {
         return (

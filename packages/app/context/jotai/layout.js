@@ -13,6 +13,15 @@ export const headerAtom = atom(defaultHeader);
 export const footerAtom = atom(true);
 export const scrollDirectionAtom = atom(0);
 export const scrollValueAtom = atom(0);
+/** Max scroll offset the active list can reach (content height − viewport). */
+export const listMaxScrollOffsetAtom = atom(0);
+/**
+ * Extra bottom padding for the active list while the profile cover is
+ * collapsed on a short list (see conductor.js). Keeps the scroll range equal
+ * to the expanded-cover state so the list stays scrollable and the cover can
+ * always be expanded back.
+ */
+export const coverScrollCompensationAtom = atom(0);
 /** Scroll offset at which the native profile cover finishes collapsing (see conductor.js). */
 export const COVER_COLLAPSE_SCROLL = 500;
 /**
@@ -55,6 +64,12 @@ export const useScrollDirection = () => useAtomValue(scrollDirectionAtom);
 
 export const useSetScrollValue = () => useSetAtom(scrollValueAtom);
 export const useScrollValue = () => useAtomValue(scrollValueAtom);
+
+export const useSetListMaxScrollOffset = () => useSetAtom(listMaxScrollOffsetAtom);
+export const useListMaxScrollOffset = () => useAtomValue(listMaxScrollOffsetAtom);
+
+export const useSetCoverScrollCompensation = () => useSetAtom(coverScrollCompensationAtom);
+export const useCoverScrollCompensation = () => useAtomValue(coverScrollCompensationAtom);
 
 export const useSetHeaderHeight = () => useSetAtom(headerHeightAtom);
 export const useHeaderHeight = () => useAtomValue(headerHeightAtom);
