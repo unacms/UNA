@@ -47,7 +47,8 @@ import Bundles from './bundles';
 import Logout from './logout';
 import TasksMenu from './tasks_menu';
 import TasksTimers from './tasks_timers';
-
+import TasksList from './tasks_list';
+import TaskTimer from './task_timer';
 
 export const componentsMapDefault = {
     messenger_main_page: Messenger,
@@ -61,6 +62,8 @@ export const componentsMapDefault = {
     reputation_widget: ReputationWidget,
     tasks_menu: TasksMenu,
     tasks_timers: TasksTimers,
+    tasks_list: TasksList,
+    task_timer: TaskTimer,
     chart: Chart,
     bundles: Bundles,
     membership: Membership,

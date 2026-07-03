@@ -418,6 +418,13 @@ export default function ElementGrid(props) {
         });
     };
 
+    const handleCalculateSelected = async () => {
+        const a = await fetchData('calculate', '&' + selected.map(id => `ids[]=${id}`).join('&'))
+        console.log(a);
+    };
+
+    
+
     const handleActionBlock = async (data) => {
 
         if (data.type == 'modal') {
@@ -581,6 +588,9 @@ export default function ElementGrid(props) {
                 })}
 
                 {actionsBulk.map((item, index) => {
+                    if (item.name == 'calculate') {
+                        return <Button key={item.name}  size="sm" showTitleFromSize='sm' title={t("Calculate")} disabled={selected.length == 0} onPress={() => { handleCalculateSelected() }} />
+                    }
                     if (item.name == 'delete') {
                         return <Button key={item.name} startDecorator="Trash" size="sm" showTitleFromSize='sm' title={t("Delete selected")} disabled={selected.length == 0} onPress={() => { handleDeleteSelected() }} />
                     }

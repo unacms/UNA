@@ -198,7 +198,12 @@ function UnitCommentsDefault(props) {
         )
 
 
-    const Badges = getComponent('molecule', 'badges')
+    const Badges = getComponent('molecule', 'badges');
+
+
+    const isShowReply = data?.menu_actions?.items?.find(
+        (x) => x.name === 'item-reply'
+    )
 
     return (
         <Animated.View style={isSelected ? animatedStyle : {}}>
@@ -313,7 +318,7 @@ function UnitCommentsDefault(props) {
                     </View>
                     {(viewState.view != 'edited' && !data.disabled) && (
                         <Row className="gap-1">
-                            {!!currentUser && (
+                            {(!!currentUser && isShowReply) && (
                                 props.handleReply === 'link' ? (
                                     <View>
                                         <Link href={`${props.contentUrl}#cmt_id=${data.cmt_id}`}>
