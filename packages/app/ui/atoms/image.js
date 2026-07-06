@@ -28,6 +28,29 @@ function getHostname(src) {
     }
 }
 
+/** Next.js remotePatterns hostname syntax: * = one label, ** = any subdomain prefix. */
+function matchHostnamePattern(pattern, hostname) {
+    if (!pattern || !hostname) return false;
+    if (pattern === hostname) return true;
+    if (!pattern.includes('*')) return false;
+
+    const regexSource = pattern
+        .split('.')
+        .map((segment) => {
+            if (segment === '**') return '([^.]+\\.)*';
+            if (segment === '*') return '[^.]+';
+            return segment.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        })
+        .join('\\.');
+
+    return new RegExp(`^${regexSource}$`).test(hostname);
+}
+
+function isHostnameInImageAllowlist(hostname) {
+    const patterns = appSetting('config', 'image_allowlist_hostnames') || [];
+    return patterns.some((pattern) => matchHostnamePattern(pattern, hostname));
+}
+
 const passthroughLoader = ({ src }) => src;
 
 function createOptimizedLoader(maxWidth) {
@@ -190,7 +213,7 @@ function ElementImageResolved(props) {
 
     const canOptimize = Platform.OS === 'web' && (
         resolvedSrc.startsWith('/') || resolvedSrc.startsWith('data:') || resolvedSrc.startsWith('blob:') ||
-        appSetting('config', 'image_allowlist_hostnames').includes(getHostname(resolvedSrc))
+        isHostnameInImageAllowlist(getHostname(resolvedSrc))
     );
 
     const [failedAttempts, setFailedAttempts] = useState(0);
