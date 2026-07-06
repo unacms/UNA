@@ -10,14 +10,20 @@ const custom = require('app/customization/config/images_allowlist');
 const ImageRemotePatternsCustom = custom.ImageRemotePatterns || [];
 
 const normalizeRemotePattern = (pattern) => {
-    if (!pattern?.pathname || pattern.pathname.startsWith('/')) {
+    if (!pattern?.pathname) {
         return pattern;
     }
 
-    return {
-        ...pattern,
-        pathname: `/${pattern.pathname}`,
-    };
+    let pathname = pattern.pathname;
+    if (!pathname.startsWith('/')) {
+        pathname = pathname === '**' ? '/**' : `/${pathname}`;
+    }
+
+    if (pathname === pattern.pathname) {
+        return pattern;
+    }
+
+    return { ...pattern, pathname };
 };
 
 const seen = new Set();

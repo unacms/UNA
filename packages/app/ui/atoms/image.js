@@ -28,22 +28,24 @@ function getHostname(src) {
     }
 }
 
-/** Next.js remotePatterns hostname syntax: * = one label, ** = any subdomain prefix. */
+/** Next.js remotePatterns hostname syntax (aligned with picomatch). */
 function matchHostnamePattern(pattern, hostname) {
     if (!pattern || !hostname) return false;
     if (pattern === hostname) return true;
+
+    // **.example.com — one or more subdomain labels before the suffix
+    if (pattern.startsWith('**.')) {
+        const suffix = pattern.slice(3);
+        return hostname.endsWith('.' + suffix);
+    }
+
     if (!pattern.includes('*')) return false;
 
-    const regexSource = pattern
-        .split('.')
-        .map((segment) => {
-            if (segment === '**') return '([^.]+\\.)*';
-            if (segment === '*') return '[^.]+';
-            return segment.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        })
-        .join('\\.');
+    const patternLabels = pattern.split('.');
+    const hostLabels = hostname.split('.');
+    if (hostLabels.length !== patternLabels.length) return false;
 
-    return new RegExp(`^${regexSource}$`).test(hostname);
+    return patternLabels.every((label, index) => label === '*' || label === hostLabels[index]);
 }
 
 function isHostnameInImageAllowlist(hostname) {
