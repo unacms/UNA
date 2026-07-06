@@ -218,7 +218,7 @@ export default function DropdownPopup({
     // asymmetric — on native (especially Android) the "below" anchor often
     // needs more breathing room than the "above" one because of trigger
     // pressables / hit-slop / shadow rendering.
-    const triggerGapBelow = isWeb ? 0: 32;
+    const triggerGapBelow = isWeb || isIos ? 8: 32;
     const triggerGapAbove = isWeb ? 0: 0;
     const popupTop = buttonPos.shouldOpenAbove
         ? Math.max(8, buttonPos.triggerY - popupHeight - triggerGapAbove)
