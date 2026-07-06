@@ -71,7 +71,7 @@ export const settingsButtons = {
         },
         default:{
             container:{
-                base:'backdrop-blur  ',
+                base:' border  border-border ',
                 default:' bg-popover/60 shadow-btn-outline dark:shadow-btn-outline-deep  ',
                 active:' bg-emerald-500 shadow-btn-outline dark:shadow-btn-outline-deep ',
                 pressed:'bg-red-500 ',

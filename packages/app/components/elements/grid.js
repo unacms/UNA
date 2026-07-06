@@ -5,6 +5,7 @@ import Link from 'app/ui/atoms/link';
 import Time from 'app/ui/atoms/time';
 import Profile from 'app/ui/molecules/profile';
 import Confirm from 'app/ui/molecules/confirm';
+import Msg from 'app/ui/molecules/msg';
 import { Button, ButtonLink } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher';
 import React, { useEffect, useState, useMemo, useCallback, useRef, useReducer } from 'react';
@@ -328,6 +329,7 @@ export default function ElementGrid(props) {
     })
     const [selected, setSelected] = useState([]);
     const [showConfirm, setShowConfirm] = useState({ show: false, cb: null });
+    const [calculateMsg, setCalculateMsg] = useState(false);
     const [selectedFilter, setSelectedFilter] = useState('');
     const [searchValue, setSearchValue] = useState('');
     const [timeStamp, setTimeStamp] = useState(Date.now());
@@ -419,8 +421,16 @@ export default function ElementGrid(props) {
     };
 
     const handleCalculateSelected = async () => {
-        const a = await fetchData('calculate', '&' + selected.map(id => `ids[]=${id}`).join('&'))
-        console.log(a);
+        const response = await fetchData('calculate', '&' + selected.map(id => `ids[]=${id}`).join('&'));
+        const content = Array.isArray(response?.data) ? response.data : [];
+        const msgItem = content.find((item) => item?.type === 'msg');
+        if (!msgItem?.data) return;
+
+        const raw = msgItem.data;
+        const text = "Calculated time: " + raw.total_f;
+        if (!text) return;
+
+        setCalculateMsg(text);
     };
 
     
@@ -560,6 +570,12 @@ export default function ElementGrid(props) {
 
 
         <Confirm onVisible={showConfirm.show} title={t("Are you sure?")} handleCancel={() => setShowConfirm({ show: false, cb: null })} handleOk={() => { setShowConfirm({ show: false, cb: null }); showConfirm.cb(); }} />
+        <Msg
+            onVisible={calculateMsg}
+            title={calculateMsg}
+            text={calculateMsg}
+            handleOk={() => setCalculateMsg(false)}
+        />
         <Row className='xl:justify-between mt-2 mb-4 '>
             {Object.keys(settings.filters).length > 0 &&
                 <Row className="gap-x-2 ">

@@ -20,6 +20,7 @@ import HeaderElement from './header_element';
 import CounterIndicator from './counter-indicator'; 
 import ProfileLink from './profile-link'; 
 import NoContent from './no-content'; 
+import { TaskTimer } from './task-timer';
 
 export const componentsMapDefault = {
     likes: memo(Likes),
@@ -42,6 +43,7 @@ export const componentsMapDefault = {
     header_element: HeaderElement,
     counter_indicator: CounterIndicator,
     profile_link: ProfileLink,
-    no_content: NoContent
+    no_content: NoContent,
+    task_timer: TaskTimer,
 };
 

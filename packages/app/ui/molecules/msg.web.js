@@ -3,9 +3,6 @@ import { View, Row } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 
-import { useState } from 'react';
-
-
 export default function ElementMsg(props) {
 
     const handleOk = async () => {

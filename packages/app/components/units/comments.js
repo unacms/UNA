@@ -29,7 +29,7 @@ import FormModal from 'app/ui/molecules/form_modal';
 
 export default function UnitComments(props) {
     const UnitView = props.mode == 'search' ? UnitCommentsSearch : UnitCommentsDefault
-    return <UnitView {...props}/>
+    return <UnitView {...props} />
 }
 
 function UnitCommentsSearch(props) {
@@ -39,7 +39,7 @@ function UnitCommentsSearch(props) {
     const keys = Object.keys(props.data);
     const url = props?.data[keys[0]].data.cmt_url;
 
-    const isCommentsModal = appSetting('browse', 'show_in_modal', module) 
+    const isCommentsModal = appSetting('browse', 'show_in_modal', module)
 
     const showCommentsModal = async (initFormData) => {
         const url2 = url;
@@ -49,15 +49,15 @@ function UnitCommentsSearch(props) {
             setPageData({ data: sResponse.data, url: url, url2: url2 });
         }
     }
-   
+
     return (
         <>
             <FormModal pageData={pageData.data} setPageData={setPageData} modalView='content_page' url={pageData.url2} />
             <CardList
-                    border="border-y border-x-none sm:border-x"
-                    className="mb-0.5 sm:mb-3"
-                >
-                    <UnitCommentsDefault contentUrl={url} handleReply = {isCommentsModal ? showCommentsModal : 'link'} {...props.data[keys[0]]}/>
+                border="border-y border-x-none sm:border-x"
+                className="mb-0.5 sm:mb-3"
+            >
+                <UnitCommentsDefault contentUrl={url} handleReply={isCommentsModal ? showCommentsModal : 'link'} {...props.data[keys[0]]} />
             </CardList>
         </>
     )
@@ -211,12 +211,12 @@ function UnitCommentsDefault(props) {
                 {cells}
                 <View className="w-8 min-h-8 z-50 mt-2.5">
                     <View className="w-8 my-0.5 shadow-xs rounded-full">
-                    <Profile
-                        {...data.author_data}
-                        displayType="unit_wo_info"
-                        displaySize="sm"
-                        showInfo="false"
-                    /></View>
+                        <Profile
+                            {...data.author_data}
+                            displayType="unit_wo_info"
+                            displaySize="sm"
+                            showInfo="false"
+                        /></View>
 
                     {items?.length != 0 && view != 'flat' && (
                         <View className="w-0.5 mx-auto top-0.5  rounded-full flex-auto bg-muted"></View>
@@ -254,11 +254,11 @@ function UnitCommentsDefault(props) {
                             </Row>
                             {!!data.cmt_mood && (
                                 <>
-                                    
-                                        <View className="text-muted-foreground">
-                                            <Icon icon='Dot' size={14} />
-                                        </View>
-                                    
+
+                                    <View className="text-muted-foreground">
+                                        <Icon icon='Dot' size={14} />
+                                    </View>
+
                                     <StarsView
                                         rating={data.cmt_mood}
                                         starSize={20}
@@ -267,14 +267,14 @@ function UnitCommentsDefault(props) {
                             )}
 
                             <View className="flex-none absolute -inset-e-1">
-                            <MenuManage
-                                        id={data.id}
-                                        menu={data?.menu_manage}
-                                        setViewState={setViewState}
-                                        module={props.module}
-                                        cmt_object_id={objectId}
-                                        cmt_id={commentId}
-                                    /></View>
+                                <MenuManage
+                                    id={data.id}
+                                    menu={data?.menu_manage}
+                                    setViewState={setViewState}
+                                    module={props.module}
+                                    cmt_object_id={objectId}
+                                    cmt_id={commentId}
+                                /></View>
                         </View>
                         {view == 'flat' && data.cmt_parent_id > 0 && (
                             <View className="   border border-border/60 rounded-md p-2 my-1">
@@ -297,13 +297,13 @@ function UnitCommentsDefault(props) {
                         )}
                         <View className="max-w-full">
                             <ContentMore
-                                    content={data.cmt_text}
-                                    numberOfLines={3}
-                                    numberOfSymbols={360}
-                                    openSmall={false}
-                                    showLess={true}
-                                    customClassName="u-vanilla-html-small"
-                                />
+                                content={data.cmt_text}
+                                numberOfLines={3}
+                                numberOfSymbols={360}
+                                openSmall={false}
+                                showLess={true}
+                                customClassName="u-vanilla-html-small"
+                            />
                             {!!data.embed && (
                                 <View>
                                     <Embed data={data.embed} size="small" />
@@ -345,7 +345,7 @@ function UnitCommentsDefault(props) {
                                 )
                             )}
                             <View className="flex-row flex-auto gap-1 ">
-                                <Menu
+                                {data.menu_actions?.items?.length > 0 && <Menu
                                     {...data.menu_actions}
                                     displayType="element"
                                     showMatched={true}
@@ -357,10 +357,10 @@ function UnitCommentsDefault(props) {
                                         button_variant: 'link',
                                         button_rounded: true,
                                     }}
-                                />
+                                />}
 
                                 <View className="ml-auto flex-row items-center gap-1">
-                                    <Menu
+                                    {data.menu_actions?.items?.length > 0 && <Menu
                                         {...data.menu_actions}
                                         displayType="element"
                                         showMatched={true}
@@ -372,9 +372,7 @@ function UnitCommentsDefault(props) {
                                             button_variant: 'link',
                                             button_rounded: true,
                                         }}
-                                    />
-
-                                   
+                                    />}
                                 </View>
                             </View>
                         </Row>
@@ -534,7 +532,7 @@ const MenuManage_ = memo(
             aMenuManageItems?.length > 0 && (
                 <>
                     <DropdownMenu
-                        mode = "popup"
+                        mode="popup"
                         defaultOpen={defaultOpen}
                         items={aMenuManageItems.map((aItem) => {
                             return {

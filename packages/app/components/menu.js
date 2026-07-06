@@ -36,16 +36,16 @@ const ButtonEx = memo(({ visibleItemsCount, params }) => {
     );
 });
 
-const MenuItemEx = memo(({ item, index, sDisplayType, params }) => {
+const MenuItemEx = memo(({ object,item, index, sDisplayType, params }) => {
     const ItemType =  getComponent('menu-item', String(item.display_type ? item.display_type : sDisplayType));
     const newButtonVariant = params?.button_variant === 'none' ? '' : params?.button_variant;
     return (
-        <ItemType mode="dropdown-menu" key={item.id ? item.id : item.name} {...item} params={{ ...params, button_variant: newButtonVariant, button_size: 'sm' }} />
+        <ItemType object={object} mode="dropdown-menu" key={item.id ? item.id : item.name} {...item} params={{ ...params, button_variant: newButtonVariant, button_size: 'sm' }} />
     )
 });
 
 
-const MenuItem = memo(({ item, itemRefs, index, visibleItemsCount, params, bShowVertical, sAlignItems, isUseStaticWidth, isWeb, sDisplayType }) => {
+const MenuItem = memo(({ object, item, itemRefs, index, visibleItemsCount, params, bShowVertical, sAlignItems, isUseStaticWidth, isWeb, sDisplayType }) => {
     const ItemType = getComponent('menu-item', String(item.display_type ? item.display_type : sDisplayType));
 
     const isLastVisible = typeof visibleItemsCount === 'number' ? index >= (visibleItemsCount - 1) : false;
@@ -60,7 +60,7 @@ const MenuItem = memo(({ item, itemRefs, index, visibleItemsCount, params, bShow
 
     return (
         <View className={` ${spacingClass} ${sAlignItems == 'stretch' ? 'flex-auto' : ''} `}>
-            <ItemType key={item.id ? item.id : item.name} {...item} params={params} />
+            <ItemType object={object} key={item.id ? item.id : item.name} {...item} params={params} />
         </View>
     )
 });
@@ -184,7 +184,7 @@ export default function ElementMenu(oProps) {
         const preparedItems = filteredItems
             .map((item, originalIndex) => {
                 const ItemType = getComponent('menu-item', item.display_type || sDisplayType);
-                const element = <ItemType key={item.id ? item.id : item.name} {...item} params={oProps.params} />
+                const element = <ItemType object={oProps.object} key={item.id ? item.id : item.name} {...item} params={oProps.params} />
                 return { item, element, originalIndex };
             })
             .filter(({ element }) => element != null);
@@ -231,11 +231,12 @@ export default function ElementMenu(oProps) {
 
     return <DynamicMenu
         name="menu"
+        object={oProps.object}
         ButtonEx={({ visibleItemsCount }) => <ButtonEx visibleItemsCount={visibleItemsCount} params={oProps.params} />}
-        MenuItemEx={({ item, index }) => <MenuItemEx item={item} index={index} sDisplayType={sDisplayType} params={oProps.params} />}
+        MenuItemEx={({ item, index }) => <MenuItemEx object={oProps.object} item={item} index={index} sDisplayType={sDisplayType} params={oProps.params} />}
         MenuItem={({ item, itemRefs, visibleItemsCount, index }) => {
 
-            return <MenuItem item={item} index={index} visibleItemsCount={visibleItemsCount}
+            return <MenuItem object={oProps.object} item={item} index={index} visibleItemsCount={visibleItemsCount}
                 bShowVertical={bShowVertical}
                 isWeb={isWeb}
                 itemRefs={itemRefs}

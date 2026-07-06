@@ -1,20 +1,52 @@
-import { View } from 'app/design/view';
+import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { BlockWrapper } from 'app/components/block-wrapper';
 import BrowseSimple from 'app/components/elements/browse_simple';
+import { Button } from 'app/design/controls';
 import { getComponent } from 'app/components/registry';
+import { fetcher } from 'app/lib/fetcher';
+import emitter from 'app/context/emitter';
+
+function getSections(data) {
+    if (Array.isArray(data?.sections)) return data.sections;
+    if (Array.isArray(data)) return data;
+    return [];
+}
+
+async function runGlobalAction(item) {
+    const requestUrl = item?.data?.request_url;
+    if (!requestUrl) return;
+
+    await fetcher('/api.php?r=' + requestUrl);
+    emitter.emit('page', { action: 'reload' });
+}
 
 export default function ElementTasksTimers({ data, blockWrapperProps }) {
     const NoContent = getComponent('molecule', 'no_content');
-    
-    const sections = Array.isArray(data) ? data : [];
+
+    const sections = getSections(data);
+    const globalActions = data?.actions?.items || [];
     const hasTimers = sections.some((section) => section?.timers?.length > 0);
 
     return (
         <BlockWrapper {...blockWrapperProps}>
             <View className="w-full gap-6">
+                {globalActions.length > 0 ? (
+                    <Row className="flex-wrap items-center justify-end gap-2 px-2">
+                        {globalActions.map((item) => (
+                            <Button
+                                key={item.name}
+                                size="sm"
+                                variant="default"
+                                title={item.title || item.name}
+                                onPress={() => runGlobalAction(item)}
+                            />
+                        ))}
+                    </Row>
+                ) : null}
+
                 {!hasTimers ? (
-                    <NoContent endpoint={{ request_url: data.request_url, params: {} }} />
+                    <NoContent endpoint={{ request_url: data?.request_url, params: {} }} />
                 ) : (
                     sections.map((section, sectionIndex) => {
                         const timers = section?.timers || [];

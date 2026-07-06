@@ -3,7 +3,6 @@ import Menu from 'app/components/menu';
 import { BlockWrapper } from 'app/components/block-wrapper'
 
 export default function ElementEntityActions({ data, blockWrapperProps }) {
-    
 
     const menuData = {
         ...data,
@@ -29,7 +28,7 @@ export default function ElementEntityActions({ data, blockWrapperProps }) {
                         className: 'gap-x-2',
                         button_variant: 'default',
                         button_size: 'sm',
-                        button_rounded: true,
+                        button_rounded: false,
                         button_full_width: false, show_action: true, show_counter: true, show_combined: true
                     }}
                 />
