@@ -7,6 +7,7 @@ import { Text } from 'app/design/typography';
 import { Platform } from 'react-native'
 import { formatDate } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
+import * as RNLocalize from 'react-native-localize';
 
 const timeInputKeyboard = Platform.OS === 'web'
     ? { type: 'text', inputMode: 'numeric' }
@@ -186,6 +187,12 @@ export default function ({ name, value = '', type, onChange }) {
 
     const bIsTime = type === 'datetime';
     const { t } = useTranslation();
+    const dateDisplayOpts = useMemo(() => {
+        const tag = RNLocalize.getLocales()?.[0]?.languageTag || 'en-US';
+        return tag.toLowerCase().startsWith('en-us')
+            ? { yearPolicy: 'always', month: 'short' }
+            : { yearPolicy: 'always', month: 'numeric' };
+    }, []);
     const [showModal, setShowModal] = useState(false);
     const initValue = formatDateTime(value);
     const [dValue, setdValue] = useState(value ? initValue : null);
@@ -289,10 +296,10 @@ export default function ({ name, value = '', type, onChange }) {
                     className="min-w-0 flex-1"
                     onPress={() => setShowModal(true)}
                     accessibilityRole="button"
-                    accessibilityLabel={dValue ? formatDate(dValue, t, { yearPolicy: 'always', month: 'numeric' }) : 'Select date'}
+                    accessibilityLabel={dValue ? formatDate(dValue, t, dateDisplayOpts) : 'Select date'}
                 >
                     <InputWithIcons
-                        value={dValue ? formatDate(dValue, t, { yearPolicy: 'always', month: 'numeric' }) : ''}
+                        value={dValue ? formatDate(dValue, t, dateDisplayOpts) : ''}
                         placeholder="Select date"
                         rounded="default"
                         readOnly
