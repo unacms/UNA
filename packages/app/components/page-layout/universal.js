@@ -86,10 +86,10 @@ function PageContentUniversal({ children, data, layoutName }) {
     const hasPanelCells = midCells.some(cell => hasData(cell?.data) && !isRowLayout(cell, currentBreakpoint));
 
     return (
-        <View className={`mx-auto py-px sm:p-4 gap-px sm:gap-y-3 ${appSetting('layout', 'max_width_content')}`}>
+        <View className={`mx-auto ${appSetting('layout', 'max_width_content')}`}>
             <PanelRow gap={gap} cell={topCell} currentBreakpoint={currentBreakpoint} />
             {hasPanelCells && (
-                <PanelGroup className='gap-x-4' key={`cells-${uri}-${layoutName}-${sizable ? 'sizable' : 'static'}`} autoSaveId={sizable ? `cells-${uri}-${layoutName}` : undefined} direction="horizontal">
+                <PanelGroup key={`cells-${uri}-${layoutName}-${sizable ? 'sizable' : 'static'}`} autoSaveId={sizable ? `cells-${uri}-${layoutName}` : undefined} direction="horizontal">
                     {midCells.map((cell, i) => {
                         return <PanelCell key={cell.key} sizable={sizable} currentBreakpoint={currentBreakpoint} cell={cell} index={topCell.length > 0 ? i : 0} />
                     })}
@@ -121,7 +121,7 @@ const PanelCell = memo(({ cell, currentBreakpoint, index, sizable }) => {
         <>
             {(index > 0) && (sizable ? <PanelHandler sizable={sizable} /> : <View className='w-4' />)}
             <Panel {...panelProps} >
-                <View className="w-full gap-3 lg:gap-4">
+                <View className="w-full gap-3 lg:gap-4 lg:p-4">
                     {cell.chd}
                 </View>
             </Panel>
