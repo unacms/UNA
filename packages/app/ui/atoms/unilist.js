@@ -268,7 +268,7 @@ export default function UniList(props) {
 
     if (preloadComponent) {
         return (
-            <View className="w-full flex-1">
+            <View className="w-full">
                 <View className="w-full" style={{ height: headerHeight }} />
                 {preloadComponent}
             </View>
