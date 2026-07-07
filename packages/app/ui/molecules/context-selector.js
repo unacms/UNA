@@ -120,7 +120,7 @@ export default function ContextSelector({ data: initialData, url, uri, mode }) {
             title={t("Context Home")}
         >
             <Row className="items-center gap-2 py-0.5 min-w-0">
-                <View className="shrink-0 w-9 h-9 items-center justify-center overflow-hidden web:duration-200 text-card-foreground web:hover:text-foreground">
+                <View className="shrink-0 native:w-9 h-9 items-center justify-center overflow-hidden web:duration-200 text-card-foreground web:hover:text-foreground">
                     {contextRoot.image}
                 </View>
                 {!!contextRoot.name && (
