@@ -67,7 +67,7 @@ function getContextRoot(data, url, uri) {
 
 
     return {
-        url: data.current.url,
+        url: data.current?.url,
         image: (
             <Profile
                 {...data.current}
@@ -76,7 +76,7 @@ function getContextRoot(data, url, uri) {
                 showLinks={false}
             />
         ),
-        name: data.current.display_name,
+        name: data.current?.display_name,
     }
 }
 
@@ -133,6 +133,8 @@ export default function ContextSelector({ data: initialData, url, uri, mode }) {
     )
 
     const isLinkSelected = data.links?.some(item => item.url == contextRoot.url);
+    
+    const contextList = data.list ?? [];
 
     const List = <View className="flex-col gap-px">
         {data.links?.filter(item => (item.hidden != true)).map((item) =>
@@ -150,21 +152,18 @@ export default function ContextSelector({ data: initialData, url, uri, mode }) {
                     )}
                     isActive={contextRoot.url == item.url} />
 
-            ) : (
-                <View
-                    key={Math.random()}
-
-                />
-            )
+                ) : null
         )}
-        {data.list.map((item) =>
-            <ListItem
-                key={item.url}
-                url={item.url}
-                text={item.display_name}
-                icon={<Profile {...item} displayType="unit_wo_info" displaySize="sm" />}
-                isActive={item.id === data.current?.id && !isLinkSelected}
-            />
+         {contextList.map((item) =>
+            item?.url ? (
+                <ListItem
+                    key={item.url || item.id}
+                    url={item.url}
+                    text={item.display_name}
+                    icon={<Profile {...item} displayType="unit_wo_info" displaySize="sm" />}
+                    isActive={item.id === data.current?.id && !isLinkSelected}
+                />
+            ) : null
         )}
     </View>
     const DropDown = (
@@ -200,7 +199,7 @@ export default function ContextSelector({ data: initialData, url, uri, mode }) {
     }*/
 
     return (
-        data?.list?.length > 0 || data?.links?.length > 0 ? (
+        contextList.length > 0 || data?.links?.length > 0 ? (
             <Row className="items-center min-w-0 gap-2 ">
                 {!!contextRoot.name &&
                     appSetting('context_selector', 'logo') && (

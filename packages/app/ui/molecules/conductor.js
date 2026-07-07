@@ -14,7 +14,8 @@ import { fetcher } from 'app/lib/fetcher';
 import Snackbar from 'app/ui/atoms/snackbar';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByName } from 'app/components/block';
-import Cover, { CoverSmall } from 'app/components/elements/cover';
+import { Platform } from 'react-native';
+import Cover, { CoverSmall, CoverBackButton } from 'app/components/elements/cover';
 import emitter from 'app/context/emitter'
 import { useSetHeader, useScrollValue, useListMaxScrollOffset, useSetCoverScrollCompensation, defaultHeader, useSetHeaderHeight } from 'app/context/jotai/layout';
 import { getComponent } from 'app/components/registry';
@@ -171,6 +172,34 @@ const TabSceneHeader = React.memo(function TabSceneHeader2({
     sceneHeader,
     filter,
 }) {
+    const ContextSelector = getComponent('molecule', 'context_selector');
+    // One selector for dynamic cover profiles (groups/spaces). Full + small cover
+    // layers stay mounted during crossfade; each DropdownPopup owns an RN Modal and
+    // opening one while two are mounted crashes iOS.
+    const useStandaloneContextSelector =
+        appSetting('context_selector', 'show_always') &&
+        pageContext &&
+        headerMode === 'dynamic';
+
+    const useStandaloneCoverBackButton =
+        Platform.OS !== 'web' && headerMode === 'dynamic';
+
+    const standaloneContextSelector = useStandaloneContextSelector ? (
+        <View className="items-center w-full h-14 px-2">
+            <ContextSelector
+                data={pageContext}
+                url={pageUri}
+                uri={pageUri}
+            />
+        </View>
+    ) : null;
+
+    const standaloneCoverBackButton = useStandaloneCoverBackButton ? (
+        <View className="absolute top-3 left-3 z-50">
+            <CoverBackButton />
+        </View>
+    ) : null;
+
     const coverHeader = useMemo(
         () => (
             <Cover
@@ -178,24 +207,39 @@ const TabSceneHeader = React.memo(function TabSceneHeader2({
                 showMoreMenu={false}
                 uri={pageUri}
                 context={pageContext}
+                suppressContextSelector={useStandaloneContextSelector}
+                suppressCoverBackButton={useStandaloneCoverBackButton}
             />
         ),
-        [coverBlock, pageUri, pageContext]
+        [coverBlock, pageUri, pageContext, useStandaloneContextSelector, useStandaloneCoverBackButton]
     );
     const coverHeaderSmall = useMemo(
         () => (
-            <CoverSmall showMoreMenu context={pageContext} data={coverBlock} />
+            <CoverSmall
+                showMoreMenu
+                context={pageContext}
+                data={coverBlock}
+                uri={pageUri}
+                suppressContextSelector={useStandaloneContextSelector}
+                suppressCoverBackButton={useStandaloneCoverBackButton}
+            />
         ),
-        [coverBlock, pageContext]
+        [coverBlock, pageContext, pageUri, useStandaloneContextSelector, useStandaloneCoverBackButton]
     );
     if (headerMode === 'dynamic') {
         return (
-            <DynamicCoverHeader
-                coverHeader={coverHeader}
-                coverHeaderSmall={coverHeaderSmall}
-                sceneHeader={sceneHeader}
-                filter={filter}
-            />
+            <View className="w-full">
+                {standaloneContextSelector}
+                <View className="w-full relative">
+                    {standaloneCoverBackButton}
+                    <DynamicCoverHeader
+                        coverHeader={coverHeader}
+                        coverHeaderSmall={coverHeaderSmall}
+                        sceneHeader={sceneHeader}
+                        filter={filter}
+                    />
+                </View>
+            </View>
         );
     }
     if (headerMode === 'small') {

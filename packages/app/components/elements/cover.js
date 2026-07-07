@@ -53,17 +53,23 @@ const BackButton = ({ isPerson }) => {
         navigateBackInTab(router, currentTab, currentUser)
     }
 
-    if (hasTabBack){
-        return <Button
+    if (!hasTabBack) {
+        return null
+    }
+
+    return (
+        <Button
             variant="default"
             size="sm"
             rounded={true}
             startDecorator="ArrowLeft"
-            onPress={() => {
-                handleBackPress()
-            }}
+            onPress={handleBackPress}
         />
-    }
+    )
+}
+
+export function CoverBackButton({ isPerson }) {
+    return <GetCoverBackButton isPerson={isPerson} />
 }
 
 function GetCoverBackButton({ isPerson }) {
@@ -104,7 +110,7 @@ function getCoverBackButton(is_person) {
     return <GetCoverBackButton isPerson={is_person} />
 }
 
-export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
+export function CoverSmall({ data, context, showMoreMenu, uri, mode, suppressContextSelector = false, suppressCoverBackButton = false }) {
     const isDesktop = useIsDesktop()
     const { currentUser } = useCurrentUser()
     const isWeb = Platform.OS === 'web'
@@ -124,7 +130,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
 
     const isAddSelector =
         context &&
-        context.list[0] &&
+        context.list?.[0] &&
         data.profile.module == context.list[0].module
     const ContextSelector = getComponent('molecule', 'context_selector')
     /*if (isDesktop && isAddSelector) {
@@ -162,7 +168,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                 <>
                     <View className="flex-1 shrink items-center flex-row gap-2 h-14 ">
                         {(!appSetting('context_selector', 'show_always') ||
-                            !isWeb) && (
+                            !isWeb) && !suppressCoverBackButton && (
                                 <>
                                     {getCoverBackButton(bPerson)}
                                 </>
@@ -192,12 +198,14 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode }) {
                                     )}
                                 </View>
                             )}
-                            {isAddSelector && (
+                            {isAddSelector && !suppressContextSelector && (
                                 <View
                                     className={`${TABLET_MODE_FROM}:hidden w-full flex-1 `}
                                 >
                                     <ContextSelector
                                         data={context}
+                                        url={uri}
+                                        uri={uri}
                                         mode={coverMode !== 'none' ? "min" : "full"}
                                     />
                                 </View>
@@ -248,6 +256,7 @@ function CoverImage({
     title,
     profileDisplaySize,
     is_person,
+    suppressCoverBackButton = false,
 }) {
     const [imageUrl, setImageUrl] = useState(
         mode == 'cover' ? coverData?.src : profileData?.url_avatar,
@@ -397,7 +406,7 @@ function CoverImage({
                     )}
                 </Row>
                 <View className="absolute lg:hidden top-3 left-3 z-50 ">
-                    {getCoverBackButton(is_person)}
+                    {!suppressCoverBackButton ? getCoverBackButton(is_person) : null}
                 </View>
             </View>
             
@@ -443,6 +452,8 @@ export default function Cover({
     showMoreMenu,
     pageData,
     context,
+    suppressContextSelector = false,
+    suppressCoverBackButton = false,
 }) {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
@@ -488,12 +499,12 @@ export default function Cover({
 
         return (
             <>
-                {appSetting('context_selector', 'show_always') ? (
+                {appSetting('context_selector', 'show_always') && !suppressContextSelector ? (
                     <Row
                         className={`web:${TABLET_MODE_FROM}:hidden items-center bg-card justify-between w-full px-3 h-14`}
                     >
                         <View className={`flex-1 justify-center`}>
-                            <ContextSelector data={context} mode="compact" />
+                            <ContextSelector data={context} url={uri} uri={uri} mode="compact" />
                         </View>
                         {!!data?.actions_menu && !menusInNavbar && (
                             <View className={`bg-card/70`}>
@@ -514,13 +525,13 @@ export default function Cover({
 
     return (
         <View className={`mx-auto ${appSetting('layout', 'max_width')}`}>
-            {appSetting('context_selector', 'show_always') ? (
+            {appSetting('context_selector', 'show_always') && !suppressContextSelector ? (
                 <Row
                     className={`${TABLET_MODE_FROM}:hidden items-center w-full h-14 px-2 `}
                 >
                     <View className={`${TABLET_MODE_FROM}:hidden flex-1`}>
                         <View className="flex-1 justify-center ">
-                            <ContextSelector data={context} mode="compact" />
+                            <ContextSelector data={context} url={uri} uri={uri} mode="compact" />
                         </View>
                     </View>
                     <View className="w-12 h-12 "></View>
@@ -535,6 +546,7 @@ export default function Cover({
                     profileData={profileData}
                     allowEdit={bAllowEdit}
                     allowSwitch={isAllowSwitch}
+                    suppressCoverBackButton={suppressCoverBackButton}
                 />
             )}
             <View
