@@ -93,7 +93,7 @@ const buildSubmitParams = (reportForm, values, system, objectId) => {
     const inputs = reportForm?.data?.inputs ?? {};
 
     Object.entries(inputs).forEach(([name, field]) => {
-        if (!field || field.type === 'hidden' || field.type === 'submit' || name === 'csrf_token') {
+        if (!field || name === 'csrf_token') {
             return;
         }
 
