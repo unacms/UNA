@@ -5,8 +5,15 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 import { useIsDesktop } from 'app/context/measure';
 import { cn } from 'app/lib/util'
-import { useBottomSheetData } from 'app/context/bottomsheet';
+
 const isWeb = Platform.OS == 'web'
+
+function getFixedVisibleCount(persistent, allowZeroPersistant, isDesktop) {
+    return Math.min(
+        persistent,
+        allowZeroPersistant ? 0 : (isDesktop ? persistent : 1)
+    );
+}
 
 export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, ButtonEx, allowZeroPersistant = false, items, menuClasses, menuExClasses, isButtonOutside, offsetWidth = 50, persistent = 0 }) {
     const isDesktop = useIsDesktop();
@@ -16,11 +23,19 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
     // `allowZeroPersistant` wins on every viewport so a "more" menu paired with a
     // sibling that renders the persistent buttons can collapse fully (0 inline).
     // Otherwise desktop shows the full persistent count inline and mobile caps at 1.
-    const [visibleItemsCount, setVisibleItemsCount] = useState(isFixedCount ? Math.min(persistent, allowZeroPersistant ? 0 : (isDesktop ? persistent : 1)) : items.length);
+    const [visibleItemsCount, setVisibleItemsCount] = useState(
+        isFixedCount ? getFixedVisibleCount(persistent, allowZeroPersistant, isDesktop) : items.length
+    );
+    useEffect(() => {
+        if (isFixedCount) {
+            setVisibleItemsCount(getFixedVisibleCount(persistent, allowZeroPersistant, isDesktop));
+        }
+    }, [isFixedCount, persistent, allowZeroPersistant, isDesktop]);
+
     const [width, setWidth] = useState(0);
     const [pageData, setPageData] = useState(false);
     const isDynamicMenu = true;//windowWidth > LAYOUT_BREAKPOINTS.sm;
-    const { setBottomSheetData } = useBottomSheetData();
+
     useEffect(() => {
         if (!isFixedCount && itemRefs.current.length > 0) {
             const menuWidth = width;

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { BlockWrapper } from 'app/components/block-wrapper';
@@ -13,25 +14,54 @@ function getSections(data) {
     return [];
 }
 
-async function runGlobalAction(item) {
-    const requestUrl = item?.data?.request_url;
-    if (!requestUrl) return;
+function removeTimerById(prev, timerId) {
+    const sections = getSections(prev)
+        .map((section) => ({
+            ...section,
+            timers: (section.timers || []).filter(
+                (item) => item?.timer?.id !== timerId
+            ),
+        }))
+        .filter((section) => section.timers?.length > 0);
 
-    await fetcher('/api.php?r=' + requestUrl);
-    emitter.emit('page', { action: 'reload' });
+    return { ...prev, sections };
 }
 
 export default function ElementTasksTimers({ data, blockWrapperProps }) {
+    const [timersData, setTimersData] = useState(data);
+
     const NoContent = getComponent('molecule', 'no_content');
 
-    const sections = getSections(data);
-    const globalActions = data?.actions?.items || [];
+    const sections = getSections(timersData);
+    const globalActions = timersData?.actions?.items || [];
     const hasTimers = sections.some((section) => section?.timers?.length > 0);
+
+    useEffect(() => {
+        setTimersData(data);
+    }, [data]);
+
+    useEffect(() => {
+        const subscription = emitter.addListener('task_timer', (event) => {
+            if (event.action === 'log' || event.action === 'clear') {
+                setTimersData((prev) => removeTimerById(prev, event.id));
+            }
+        });
+
+        return () => subscription.remove();
+    }, []);
+
+    async function runGlobalAction(item) {
+        const requestUrl = item?.data?.request_url;
+        if (!requestUrl) return;
+
+        await fetcher('/api.php?r=' + requestUrl);
+        setTimersData((prev) => ({ ...prev, sections: [] }));
+    }
 
     return (
         <BlockWrapper {...blockWrapperProps}>
             <View className="w-full gap-6">
-                {globalActions.length > 0 ? (
+                {(globalActions.length > 0 && hasTimers) ? (
                     <Row className="flex-wrap items-center justify-end gap-2 px-2">
                         {globalActions.map((item) => (
                             <Button

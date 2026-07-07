@@ -69,19 +69,19 @@ export function TaskTimer({ data, className }) {
 
     const runCallback = useCallback(async (item, timerId) => {
       
-        if (item.name == 'start' || item.name == 'resume') {
-            emitter.emit('task_timer', { id: timerId,action: 'start' });
-        }
+       
         const requestUrl = item?.data?.request_url;
 
         if (!requestUrl) return;
         
         const response = await fetcher('/api.php?r=' + requestUrl);
         
-        if (response?.data) {
+        if (response?.data && item.name !== 'log') {
             setTimerData(response.data);
         }
 
+        emitter.emit('task_timer', { id: timerId, action: item.name });
+        
     }, []);
 
     const runCallback2 = useCallback(async () => {
@@ -92,7 +92,6 @@ export function TaskTimer({ data, className }) {
         if (!requestUrl) return;
         
         const response = await fetcher('/api.php?r=' + requestUrl);
-        console.log('response', response);
         if (response?.data) {
             setTimerData(response.data);
         }
@@ -101,7 +100,7 @@ export function TaskTimer({ data, className }) {
 
     useEffect(() => {
         const subscription = emitter.addListener(`task_timer`, (data) => {
-            if (data.id !== timerData.id && data.action == 'start' && timerData.state === 'started') {
+            if (data.id !== timerData.id && (data.action == 'start' || data.action == 'resume' || data.action == 'log') && timerData.state === 'started') {
                 runCallback2()
             }
         })
@@ -122,19 +121,23 @@ export function TaskTimer({ data, className }) {
             show_action: true,
             show_counter: true,
             show_combined: true,
+            isFixedCount: true,
         },
         onclick: (event, item) => runCallback(item, timerData.id),
     }), [runCallback]);
 
 
-
+    const callbackCount = timerData?.actions?.items.filter((item) => item.display_type === 'callback').length;
+    console.log("callbackCount", callbackCount)
     const actionItems = (timerData?.actions?.items || []).map((item) =>
         item.display_type === 'callback'
-            ? { ...item, display_type: 'button', persistent: 1 }
+            ? { ...item, display_type: 'button' }
             : item
     );
 
-    console.log('actionItems', timerData.actions);
+
+    console.log("actionItems", actionItems)
+    if (!timerData) return null;
 
     return (
         <Row className={cn('w-full items-center gap-3', className)}>
@@ -143,7 +146,7 @@ export function TaskTimer({ data, className }) {
                 <Row className="flex-wrap items-center justify-end gap-2">
                         <Menu
                             {...timerData.actions}
-                            persistent={1}
+                            persistent={callbackCount}
                             items={actionItems}
                             alignItems="start"
                             autoSize

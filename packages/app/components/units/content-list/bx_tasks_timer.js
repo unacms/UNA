@@ -5,14 +5,34 @@ import Profile from 'app/ui/molecules/profile';
 import { Card } from 'app/ui/molecules/card';
 import { getComponent } from 'app/components/registry';
 
-export default function Unit({ data }) {
+export default function Unit({ data: timerData }) {
+    
     const TaskTimer = getComponent('molecule', 'task_timer');
-    const context = data?.context;
+    const context = timerData?.context;
+
+
+    
+
+    if (!timerData) return null;
 
     return (
         <Card padding="p-3" className="web:hover:bg-muted/30 web:duration-300">
+            <Row className="items-center gap-3">
+                <View className="flex-auto min-w-0 gap-1">
+                    <Link href={timerData.content_url}>
+                        <Text
+                            numberOfLines={2}
+                            className="text-sm font-semibold text-card-foreground web:hover:text-foreground leading-tight"
+                        >
+                            {timerData.content_title}
+                        </Text>
+                    </Link>
+                </View>
+
+                <TaskTimer data={timerData?.timer} className="w-auto flex-none" />
+            </Row>
             {context?.display_name ? (
-                <Link href={context.url} emulate>
+                <Link href={context.url} >
                     <Row className="items-center gap-2 mb-2">
                         <Profile
                             url_avatar={context.url_avatar}
@@ -30,20 +50,7 @@ export default function Unit({ data }) {
                 </Link>
             ) : null}
 
-            <Row className="items-center gap-3">
-                <View className="flex-auto min-w-0 gap-1">
-                    <Link href={data.content_url} emulate>
-                        <Text
-                            numberOfLines={2}
-                            className="text-sm font-semibold text-card-foreground web:hover:text-foreground leading-tight"
-                        >
-                            {data.content_title}
-                        </Text>
-                    </Link>
-                </View>
-
-                <TaskTimer data={data?.timer} className="w-auto flex-none" />
-            </Row>
+            
         </Card>
     );
 }

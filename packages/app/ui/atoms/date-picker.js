@@ -119,7 +119,7 @@ export function MonthCalendar({ date = new Date(), onSelect, selectedDate }) {
     );
 }
 
-const CalendarHeader = ({ value, addMonth, setDatePart }) => {
+export function CalendarHeader({ value, addMonth, setDatePart }) {
 
     const setY = (val) => {
         setDatePart('y', val);
@@ -155,7 +155,7 @@ const CalendarHeader = ({ value, addMonth, setDatePart }) => {
             <Button rounded startDecorator="ChevronRight" onPress={() => addMonth('m', 1)} />
         </Row>
     )
-};
+}
 
 const formatDateTime = (dateString) => {
     const [datePart, timePart] = dateString.replace('Z', '').split(' ');
@@ -183,8 +183,7 @@ function getDatePart(date, part) {
     return parts[part]
 }
 
-export default function ({ name, value = '', type, onChange }) {
-
+export default function ({ name, value = '', type, onChange, children }) {
     const bIsTime = type === 'datetime';
     const { t } = useTranslation();
     const dateDisplayOpts = useMemo(() => {
@@ -291,6 +290,16 @@ export default function ({ name, value = '', type, onChange }) {
                     </View>
                 </View>
             </Modal>
+            {children ? (
+                <Pressable
+                className="min-w-0 flex-1"
+                onPress={() => setShowModal(true)}
+                accessibilityRole="button"
+                accessibilityLabel={dValue ? formatDate(dValue, t, dateDisplayOpts) : 'Select date'}
+            >   
+                {children}
+            </Pressable>    
+            ) : (
             <Row className="w-full flex-nowrap items-center gap-3">
                 <Pressable
                     className="min-w-0 flex-1"
@@ -331,7 +340,7 @@ export default function ({ name, value = '', type, onChange }) {
                         />
                     </Row>
                 )}
-            </Row>
+            </Row>)}
         </>
     );
 }
