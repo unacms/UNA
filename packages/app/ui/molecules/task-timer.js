@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import Menu from 'app/components/menu';
-import { Button } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import { fetcher } from 'app/lib/fetcher';
 import { cn } from 'app/lib/util';
@@ -100,7 +99,7 @@ export function TaskTimer({ data, className }) {
 
     useEffect(() => {
         const subscription = emitter.addListener(`task_timer`, (data) => {
-            if (data.id !== timerData.id && (data.action == 'start' || data.action == 'resume' || data.action == 'log') && timerData.state === 'started') {
+            if ( (data.action == 'start' || data.action == 'resume' || data.action == 'log') && timerData.state === 'started') {
                 runCallback2()
             }
         })
@@ -128,7 +127,6 @@ export function TaskTimer({ data, className }) {
 
 
     const callbackCount = timerData?.actions?.items.filter((item) => item.display_type === 'callback').length;
-    console.log("callbackCount", callbackCount)
     const actionItems = (timerData?.actions?.items || []).map((item) =>
         item.display_type === 'callback'
             ? { ...item, display_type: 'button' }
@@ -136,7 +134,6 @@ export function TaskTimer({ data, className }) {
     );
 
 
-    console.log("actionItems", actionItems)
     if (!timerData) return null;
 
     return (

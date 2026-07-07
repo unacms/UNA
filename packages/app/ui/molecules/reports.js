@@ -13,6 +13,8 @@ import Form from 'app/components/form';
 import Profile from 'app/ui/molecules/profile';
 import { getComponent } from 'app/components/registry';
 import { Platform } from 'react-native';
+import emitter from 'app/context/emitter'; 
+
 
 const getApiRequest = (action, params) =>
     `/api.php?r=system/${action}/TemplReportServices&params[]=${JSON.stringify(params)}`;
@@ -233,6 +235,10 @@ const ElementReports = (props) => {
             const params = buildSubmitParams(reportForm, values, system, objectId);
             const response = await fetcher(getApiRequest('do', params));
             applyActionResponse(resolveActionPayload(response));
+            console.log('values', values);
+            if (values?.sys == 'bx_tasks_time'){
+                emitter.emit('task_timer', { id: values.timer_id, action: 'log' });
+            }
             closeReportForm();
         } finally {
             setLoading(false);
