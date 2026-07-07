@@ -11,6 +11,12 @@ import { fetcher } from 'app/lib/fetcher';
 import { cn } from 'app/lib/util';
 import emitter from 'app/context/emitter';
 
+const TASKS_LIST_EVENT = 'tasks_list';
+
+function emitTasksListRefresh() {
+    emitter.emit(TASKS_LIST_EVENT, { action: 'reload' });
+}
+
 const ACTION_TITLES = {
     set_completed: 'Complete',
 };
@@ -39,9 +45,7 @@ async function runTaskAction(action, setFormBlock) {
 
     if (action.type === 'callback') {
         await fetcher('/api.php?r=' + action.callback);
-        if (action.on_callback === 'refresh' || action.on_callback === 'hide_row') {
-            emitter.emit('page', { action: 'reload' });
-        }
+        emitTasksListRefresh();
     }
 }
 
@@ -51,7 +55,7 @@ export default function Unit({ data }) {
 
     const handleFormClose = useCallback(() => {
         setFormBlock(null);
-        emitter.emit('page', { action: 'reload' });
+        emitTasksListRefresh();
     }, []);
 
     const actionItems = useMemo(

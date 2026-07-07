@@ -5,13 +5,38 @@ import { useState, useReducer, useMemo, useCallback, useEffect } from 'react';
 import { Modal, Button, InputWithIcons, TextInputClear } from 'app/design/controls'
 import { Text } from 'app/design/typography';
 import { Platform } from 'react-native'
-import { formatDate } from 'app/lib/util'
+import { formatDate, appSetting } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
 import * as RNLocalize from 'react-native-localize';
 
 const timeInputKeyboard = Platform.OS === 'web'
     ? { type: 'text', inputMode: 'numeric' }
     : { keyboardType: 'numeric' };
+
+const hours = Array.from({ length: 24 }, (_, i) => {
+    const label = String(i).padStart(2, '0');
+    return { value: label, label };
+});
+
+const minutes = Array.from({ length: 60 }, (_, i) => {
+    const label = String(i).padStart(2, '0');
+    return { value: label, label };
+});
+
+function TimeSelectField({ value, options, onChange, label }) {
+    return (
+        <View className="h-9 w-20 shrink-0">
+            <Dropdown
+                labelField="label"
+                valueField="value"
+                onChange={onChange}
+                data={options}
+                value={value}
+                accessibilityLabel={label}
+            />
+        </View>
+    );
+}
 
 function TimeSpinField({ value, onChangeText, onBlur, onStep, label }) {
     return (
@@ -185,6 +210,7 @@ function getDatePart(date, part) {
 
 export default function ({ name, value = '', type, onChange, children }) {
     const bIsTime = type === 'datetime';
+    const timeMode = appSetting('forms', 'time');
     const { t } = useTranslation();
     const dateDisplayOpts = useMemo(() => {
         const tag = RNLocalize.getLocales()?.[0]?.languageTag || 'en-US';
@@ -320,25 +346,45 @@ export default function ({ name, value = '', type, onChange, children }) {
                 </Pressable>
 
                 {bIsTime && (
-                    <Row className="h-11 w-auto shrink-0 flex-none items-center gap-1 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg px-1.5">
-                        <TimeSpinField
-                            value={tValue[0]}
-                            onChangeText={text => handleChangeTime(text, 23, 'h')}
-                            onBlur={handleChangeTime2}
-                            onStep={delta => adjustTime('h', delta)}
-                            label="hours"
-                        />
-                        <View className="h-9 w-2 shrink-0 items-center justify-center">
-                            <Text className="text-sm font-medium tracking-tight text-secondary-foreground">:</Text>
-                        </View>
-                        <TimeSpinField
-                            value={tValue[1]}
-                            onChangeText={text => handleChangeTime(text, 59, 'm')}
-                            onBlur={handleChangeTime2}
-                            onStep={delta => adjustTime('m', delta)}
-                            label="minutes"
-                        />
-                    </Row>
+                    timeMode === 'select' ? (
+                        <Row className="h-11  w-auto shrink-0 flex-none items-center gap-1 px-1.5">
+                            <TimeSelectField
+                                value={tValue[0]}
+                                options={hours}
+                                onChange={val => applyTimeValues(val, tValue[1], false)}
+                                label="hours"
+                            />
+                            <View className="h-9 w-2 shrink-0 items-center justify-center">
+                                <Text className="text-sm font-medium tracking-tight text-secondary-foreground">:</Text>
+                            </View>
+                            <TimeSelectField
+                                value={tValue[1]}
+                                options={minutes}
+                                onChange={val => applyTimeValues(tValue[0], val, false)}
+                                label="minutes"
+                            />
+                        </Row>
+                    ) : (
+                        <Row className="h-11 w-auto shrink-0 flex-none items-center gap-1 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg px-1.5">
+                            <TimeSpinField
+                                value={tValue[0]}
+                                onChangeText={text => handleChangeTime(text, 23, 'h')}
+                                onBlur={handleChangeTime2}
+                                onStep={delta => adjustTime('h', delta)}
+                                label="hours"
+                            />
+                            <View className="h-9 w-2 shrink-0 items-center justify-center">
+                                <Text className="text-sm font-medium tracking-tight text-secondary-foreground">:</Text>
+                            </View>
+                            <TimeSpinField
+                                value={tValue[1]}
+                                onChangeText={text => handleChangeTime(text, 59, 'm')}
+                                onBlur={handleChangeTime2}
+                                onStep={delta => adjustTime('m', delta)}
+                                label="minutes"
+                            />
+                        </Row>
+                    )
                 )}
             </Row>)}
         </>
