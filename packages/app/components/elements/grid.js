@@ -288,17 +288,61 @@ const MultiAdd = React.memo(({ data, setBottomSheetData, handleUpdate }) => {
 })
     ;
 
-const fetchGridData = async ({ pageParam, settings, selectedFilter, searchValue }) => {
+const FILTER_PARAM_DIVIDER = '%23-%23';
+const RESERVED_FILTER_KEYS = new Set(['search']);
+
+const isNumberedFilterKey = (key) => /^filter\d+$/.test(key);
+
+const getDropdownFilterKeys = (filters) => {
+    if (!filters) return [];
+    return Object.keys(filters)
+        .filter((key) => !RESERVED_FILTER_KEYS.has(key) && Array.isArray(filters[key]) && filters[key].length > 0)
+        .sort((a, b) => {
+            const aNum = isNumberedFilterKey(a) ? parseInt(a.replace('filter', ''), 10) : Infinity;
+            const bNum = isNumberedFilterKey(b) ? parseInt(b.replace('filter', ''), 10) : Infinity;
+            if (aNum !== bNum) return aNum - bNum;
+            return a.localeCompare(b);
+        });
+};
+
+const getNumberedFilterKeys = (keys) => keys.filter(isNumberedFilterKey);
+
+const getQueryParamFilterKeys = (keys) => keys.filter((key) => !isNumberedFilterKey(key));
+
+const hasSearchFilter = (filters) => filters != null && 'search' in filters;
+
+const mapFilterDropdownItems = (items) => items.map((aItem) => ({
+    id: aItem.value,
+    name: aItem.title.toLowerCase(),
+    title: aItem.title
+}));
+
+const buildFilterParam = (numberedFilterKeys, selectedFilters, searchValue) => {
+    const parts = numberedFilterKeys.map((key) => selectedFilters[key]?.id ?? '');
+    parts.push(searchValue ?? '');
+    return parts.join(FILTER_PARAM_DIVIDER);
+};
+
+const buildQueryAppend = (settings, queryParamFilterKeys, selectedFilters) => {
+    const append = { ...(settings?.query_append || {}) };
+    queryParamFilterKeys.forEach((key) => {
+        const value = selectedFilters[key]?.id;
+        if (value !== undefined && value !== '') {
+            append[key] = value;
+        }
+    });
+    return append;
+};
+
+const fetchGridData = async ({ pageParam, settings, selectedFilters, numberedFilterKeys, queryAppend, searchValue }) => {
     const start = pageParam?.start || 0;
     let url = "&start=" + start;
-    url += '&filter=' + (selectedFilter ? selectedFilter.id + '%23-%23' : '') + searchValue;
+    url += '&filter=' + buildFilterParam(numberedFilterKeys, selectedFilters, searchValue);
 
     let sUrl = '/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=' + settings.object + '&a=display';
-    if (settings?.query_append) {
-        Object.keys(settings.query_append).forEach((sKey) => {
-            sUrl += '&' + sKey + '=' + settings.query_append[sKey];
-        });
-    }
+    Object.keys(queryAppend).forEach((sKey) => {
+        sUrl += '&' + sKey + '=' + queryAppend[sKey];
+    });
 
     const fetchedData = await fetcher(sUrl + url);
 
@@ -330,7 +374,7 @@ export default function ElementGrid(props) {
     const [selected, setSelected] = useState([]);
     const [showConfirm, setShowConfirm] = useState({ show: false, cb: null });
     const [calculateMsg, setCalculateMsg] = useState(false);
-    const [selectedFilter, setSelectedFilter] = useState('');
+    const [selectedFilters, setSelectedFilters] = useState({});
     const [searchValue, setSearchValue] = useState('');
     const [timeStamp, setTimeStamp] = useState(Date.now());
     const [modalContent, setModalContent] = useState(false);
@@ -338,11 +382,36 @@ export default function ElementGrid(props) {
     const { t } = useTranslation();
     const currentBreakpoint = useBreakpoint();
 
+    const dropdownFilterKeys = useMemo(
+        () => getDropdownFilterKeys(settings.filters),
+        [settings.filters]
+    );
+
+    const numberedFilterKeys = useMemo(
+        () => getNumberedFilterKeys(dropdownFilterKeys),
+        [dropdownFilterKeys]
+    );
+
+    const queryParamFilterKeys = useMemo(
+        () => getQueryParamFilterKeys(dropdownFilterKeys),
+        [dropdownFilterKeys]
+    );
+
+    const queryAppend = useMemo(
+        () => buildQueryAppend(settings, queryParamFilterKeys, selectedFilters),
+        [settings?.query_append, queryParamFilterKeys, selectedFilters]
+    );
+
+    const filterParam = useMemo(
+        () => buildFilterParam(numberedFilterKeys, selectedFilters, searchValue),
+        [numberedFilterKeys, selectedFilters, searchValue]
+    );
+
     const queryKey = [
         'grid',
         settings.object,
-        selectedFilter?.id || '',
-        searchValue,
+        filterParam,
+        JSON.stringify(queryAppend),
         timeStamp
     ];
 
@@ -359,7 +428,9 @@ export default function ElementGrid(props) {
         queryFn: ({ pageParam }) => fetchGridData({
             pageParam,
             settings,
-            selectedFilter,
+            selectedFilters,
+            numberedFilterKeys,
+            queryAppend,
             searchValue
         }),
         getNextPageParam: (lastPage) => {
@@ -469,13 +540,13 @@ export default function ElementGrid(props) {
 
     const fetchData = useCallback(async (action, params, callback) => {
         let sUrl = callback ? '/api.php?r=' + callback : '/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=' + settings.object + '&a=' + action;
-        if (settings?.query_append && !callback)
-            Object.keys(settings.query_append).forEach((sKey) => {
-                sUrl += '&' + sKey + '=' + settings.query_append[sKey];
+        if (!callback)
+            Object.keys(queryAppend).forEach((sKey) => {
+                sUrl += '&' + sKey + '=' + queryAppend[sKey];
             });
 
         return await fetcher(sUrl + (callback ? '' : params));
-    }, [settings.object]);
+    }, [settings.object, queryAppend]);
 
     const handleEndReached = useCallback(() => {
         if (!hasNextPage) return;
@@ -514,8 +585,8 @@ export default function ElementGrid(props) {
         setTimeStamp(Date.now());
     };
 
-    const handleFilter = (value) => {
-        setSelectedFilter(value);
+    const handleFilter = (filterKey, value) => {
+        setSelectedFilters((prev) => ({ ...prev, [filterKey]: value }));
         setTimeStamp(Date.now());
     };
 
@@ -527,19 +598,6 @@ export default function ElementGrid(props) {
         fetchData('reorder', '&' + updatedData.map(item => `${settings.object}_row[]=${item.id}`).join('&'));
         refetch();
     }, [dataItems, settings, fetchData, refetch]);
-
-    const dropdownItems = useMemo(() => {
-        // Check the condition inside useMemo
-        if (settings.filters?.filter1 && settings.filters.filter1.length > 0) {
-            return settings.filters.filter1.map((aItem) => ({
-                id: aItem.value,
-                name: aItem.title.toLowerCase(),
-                title: aItem.title
-            }));
-        }
-        return []; // Return an empty array if the condition is not met
-    }, [settings.filters?.filter1]);
-
 
     if (!data.header)
         return <></>
@@ -577,14 +635,22 @@ export default function ElementGrid(props) {
             handleOk={() => setCalculateMsg(false)}
         />
         <Row className='xl:justify-between mt-2 mb-4 '>
-            {Object.keys(settings.filters).length > 0 &&
+            {(dropdownFilterKeys.length > 0 || hasSearchFilter(settings.filters)) &&
                 <Row className="gap-x-2 ">
-                    {settings.filters?.filter1 && settings.filters.filter1.length > 0 &&
-                        <DropdownMenu items={dropdownItems} onSelect={(oItem) => { handleFilter(oItem) }}>
-                            <Button title={selectedFilter ? selectedFilter.title : dropdownItems[0].title} size="sm" />
-                        </DropdownMenu>
-                    }
-                    {settings.filters?.search &&
+                    {dropdownFilterKeys.map((filterKey) => {
+                        const items = mapFilterDropdownItems(settings.filters[filterKey]);
+                        const selected = selectedFilters[filterKey];
+                        return (
+                            <DropdownMenu
+                                key={filterKey}
+                                items={items}
+                                onSelect={(oItem) => handleFilter(filterKey, oItem)}
+                            >
+                                <Button title={selected?.title ?? items[0]?.title} size="sm" />
+                            </DropdownMenu>
+                        );
+                    })}
+                    {hasSearchFilter(settings.filters) &&
                         <Input size="small" placeholder={t('Search')} name="search" onChangeText={(value) => handleSearch(value)} />
                     }
                 </Row>
