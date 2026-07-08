@@ -129,9 +129,10 @@ export default function Form({
         });
     }, [dynamicData, initedData]);
 
-    if (onFormEmpty && dynamicData && dynamicData.data?.length == 0) {
+    useEffect(() => {
+        if (!onFormEmpty || !dynamicData || dynamicData.data?.length !== 0) return;
         onFormEmpty();
-    }
+    }, [onFormEmpty, dynamicData]);
 
     const { processedInputs, defaultValues } = useMemo(() => {
         const dv = {};

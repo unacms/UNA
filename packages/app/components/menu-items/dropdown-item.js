@@ -57,6 +57,14 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
         return <View key={key}>{item.title}</View>;
     }
 
+    if (item.type === 'group_header') {
+        return (
+            <View key={key} className="px-1 pt-3 pb-1">
+                <Text className="text-base  font-semibold text-foreground">{item.title}</Text>
+            </View>
+        );
+    }
+
     const icon = getIcon(item, iconSize, rowHovered);
 
     const itemTextKey = classes?.item_text_key || 'item_text';

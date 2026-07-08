@@ -4,8 +4,8 @@ import { Text } from 'app/design/typography';
 import Link from 'app/ui/atoms/link';
 import ProfilesList from 'app/ui/molecules/profile_list';
 import { Card } from 'app/ui/molecules/card';
-import { Button, Modal } from 'app/design/controls';
-import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import { Modal } from 'app/design/controls';
+import Menu from 'app/components/menu';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { fetcher } from 'app/lib/fetcher';
 import { cn } from 'app/lib/util';
@@ -17,15 +17,13 @@ function emitTasksListRefresh() {
     emitter.emit(TASKS_LIST_EVENT, { action: 'reload' });
 }
 
-const ACTION_TITLES = {
-    set_completed: 'Complete',
-};
-
-function actionsToDropdownItems(actions = []) {
-    return (actions || []).map((action) => ({
+function actionsToMenuItems(actions = []) {
+    return actions.map((action) => ({
         id: action.name,
         name: action.name,
-        title: ACTION_TITLES[action.name] || action.title || action.name,
+        title: action.title || action.name,
+        icon: action.icon || '',
+        display_type: 'button',
         action,
     }));
 }
@@ -38,7 +36,7 @@ async function runTaskAction(action, setFormBlock) {
         setFormBlock({
             content: fetchedData.data,
             designbox_id: 0,
-            title: ACTION_TITLES[action.name] || action.title,
+            title: action.title,
         });
         return;
     }
@@ -58,10 +56,19 @@ export default function Unit({ data }) {
         emitTasksListRefresh();
     }, []);
 
-    const actionItems = useMemo(
-        () => actionsToDropdownItems(data?.actions),
+    const menuItems = useMemo(
+        () => actionsToMenuItems(data?.actions),
         [data?.actions]
     );
+
+    const menuParams = useMemo(() => ({
+        className: 'gap-x-1',
+        button_variant: 'default',
+        button_size: 'xs',
+        button_rounded: false,
+        button_full_width: false,
+        onclick: (event, item) => runTaskAction(item.action, setFormBlock),
+    }), []);
 
     const meta = [data?.type, data?.state, data?.priority, data?.time]
         .filter(Boolean)
@@ -81,7 +88,7 @@ export default function Unit({ data }) {
                 </Modal>
             ) : null}
 
-            <Row className="items-start gap-3">
+            <Row className="items-center gap-3">
                 <View className="flex-auto min-w-0 gap-1">
                     <Link href={data.url} emulate>
                         <Text
@@ -108,13 +115,15 @@ export default function Unit({ data }) {
                     <ProfilesList data={data.members} maxCount={3} displaySize="xs" />
                 ) : null}
 
-                {actionItems.length ? (
-                    <DropdownMenu
-                        items={actionItems}
-                        onSelect={(item) => runTaskAction(item.action, setFormBlock)}
-                    >
-                        <Button variant="text" size="sm" rounded startDecorator="Ellipsis" />
-                    </DropdownMenu>
+                {menuItems.length ? (
+                    <Menu
+                        object="bx_tasks"
+                        items={menuItems}
+                        displayType="button"
+                        alignItems="start"
+                        autoFilter={false}
+                        params={menuParams}
+                    />
                 ) : null}
             </Row>
         </Card>
