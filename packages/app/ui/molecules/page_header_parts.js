@@ -260,9 +260,9 @@ export const PageHeaderBody = memo(({
                 </View>
                 {isWeb && <MenuTop url={pageData?.url} uri={pageData?.uri} />}
                 <View className={' ' + appSetting('layout', 'header', 'content_right')}>
-                <Row className='w-full'>
+                
                     {header.headerActions ?? <HeaderElement mode="small" url={pageData?.url} uri={pageData?.uri} />}
-                </Row>
+                
                 </View>
             </Row>
             {header.subHeader ? (

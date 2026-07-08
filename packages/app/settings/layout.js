@@ -12,18 +12,18 @@ export const settingsLayout = {
         avaliable_langs: ['auto', 'en', 'ru'],
         screen: ' w-full  ',
         max_width: ' w-full ',
-        max_width_content: ' w-full max-w-7xl ',
+        max_width_content: ' w-full max-w-7xl p-4 ',
         panel_group_content: '  sm:p-2 mx-auto flex-1 ',
-        max_width_landing: 'w-full max-w-7xl border-x border-border/60 border-dashed',
+        max_width_landing: 'w-full max-w-7xl ',
         max_width_block: ' max-w-7xl ',
         /** UNA page layout keys → shell/content classNames (default.js, login columnLayout). Add keys as you wire more UNA layouts. */
         page_layouts: {
             layout_1_column_thin: {
-                shell: 'w-full max-w-7xl  p-4 lg:p-6 mx-auto my-auto justify-center',
+                shell: 'w-full p-4 mx-auto',
                 content: 'w-full max-w-md mx-auto',
             },
             layout_1_column_half: {
-                shell: 'w-full lg:flex-row px-4 lg:px-6 py-8 lg:py-12 mx-auto my-auto ',
+                shell: 'w-full p-4 mx-auto ',
                 content: 'w-full max-w-2xl mx-auto',
             },
         },
@@ -65,14 +65,18 @@ export const settingsLayout = {
         show_tabbar_on_mobile_non_logged: false,
 
         header: {
-            container: ' w-full z-50 header-fixed web:fixed native:absolute bg-card web:top-0 web:transition-transform web:duration-300 web:ease-in-out',
-            content: ' items-center justify-between h-14 w-full mx-auto',
-            content_pinned_fixed: '    ',
-            content_left: ' items-center flex-none  2xl:w-full max-w-xs ms-3 lg:ms-4 gap-2',
+            container: ' w-full z-50 header-fixed web:fixed native:absolute bg-background web:top-0 web:transition-transform web:duration-300 web:ease-in-out',
+            /** Optional. When set (non-blank), appended to `container` while scrollY > 0 (full-width bar: shadow, border, etc.). */
+            container_scrolled: '',
+            content: ' items-center justify-between h-14 w-full max-w-screen-xl mx-auto',
+            /** Optional. When set (non-blank), applied to header content only while scrollY > 0. If unset, legacy `content_pinned_fixed` behavior is unchanged. */
+            content_scrolled: ' shadow-border-b dark:shadow-border-b-deep ',
+            content_pinned_fixed: ' bg-background ',
+            content_left: 'flex-none 2xl:w-full max-w-xs ms-3 lg:ms-4 gap-2',
             content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-3xl px-4 ',
+            content_right: ' items-end flex-none 2xl:w-full max-w-xs me-3 lg:me-4 gap-2',
             active_item_indicator: 'absolute -bottom-1 left-0 h-0.5 rounded-full flex-none bg-ring',
             active_item_indicator_bg: 'absolute bottom-0 left-0 h-12 w-full overflow-hidden rounded-lg flex-none',
-            content_right: ' items-center flex-none justify-end 2xl:w-full max-w-xs me-3 lg:me-4 gap-2',
         },
         vertical: {
             blocks: [

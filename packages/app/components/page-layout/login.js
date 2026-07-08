@@ -20,7 +20,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import { getUnaPageLayoutClasses } from 'app/lib/util'
 
 const LOGIN_FULL_WIDTH = {
-    shell: 'w-full max-w-7xl p-4 lg:p-6 mx-auto my-auto',
+    shell: 'w-full max-w-7xl p-4 mx-auto my-auto',
     content: 'w-full mx-auto',
 }
 
@@ -28,29 +28,24 @@ function PageContent({ children }) {
     const { t } = useTranslation()
 
     return (
-        <View className="w-full justify-center max-w-lg p-4 mx-auto">
+        <View className="w-full justify-center max-w-md mx-auto">
             <View className="gap-4">
-                
+                {children}
+                <AuthPanel showSeparator={true} forgotPasswordLink={true} />
 
-                        {children}
-                        <AuthPanel showSeparator={true} forgotPasswordLink={true} />
-
-                    
-                    
-                        <Row className=" mx-auto gap-1 justify-center items-center text-center">
-                            <Text className="text-base text-secondary-foreground">
-                                {t('splash_page_login2')}
-                            </Text>
-                            <Link
-                                variant="accent"
-                                size="md"
-                                href="/create-account"
-                                haptics="Medium"
-                            >
-                                {t('splash_page_new_account')}
-                            </Link>
-                        </Row>
-                    
+                <Row className=" mx-auto gap-1 justify-center items-center text-center">
+                    <Text className="text-base text-secondary-foreground">
+                        {t('splash_page_login2')}
+                    </Text>
+                    <Link
+                        variant="accent"
+                        size="md"
+                        href="/create-account"
+                        haptics="Medium"
+                    >
+                        {t('splash_page_new_account')}
+                    </Link>
+                </Row>
             </View>
         </View>
     )
@@ -64,14 +59,14 @@ export default function PageLayout({ data, children, columnLayout = '' }) {
     return (
         <Page data={data}>
             {isWeb ? (
-                    <View className={unaLayout.shell}>
-                        {showLoginAside ? appStatic('components_logincontent') : null}
-                        <View className={unaLayout.content}>
-                                <PageContent>
-                                    {children}
-                                </PageContent>
-                        </View>
+                <View className={unaLayout.shell}>
+                    {showLoginAside
+                        ? appStatic('components_logincontent')
+                        : null}
+                    <View className={unaLayout.content}>
+                        <PageContent>{children}</PageContent>
                     </View>
+                </View>
             ) : (
                 <View className="flex-1">
                     <PageContent>{children}</PageContent>

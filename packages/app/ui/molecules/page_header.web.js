@@ -34,6 +34,55 @@ function clearEnterFrame(frameRef) {
     }
 }
 
+const DEFAULT_CONTENT_PINNED_FIXED =
+    ' bg-card backdrop-blur-xl shadow-sm ';
+
+/**
+ * Resolves flow + fixed-overlay content classNames.
+ * When `layout.header.content_scrolled` is unset/blank, output matches the legacy paths exactly.
+ */
+function resolveHeaderContentClassNames({ usesFixedOverlayHeader, isScrolled }) {
+    const content = appSetting('layout', 'header', 'content');
+    const contentScrolledRaw = appSetting('layout', 'header', 'content_scrolled');
+    const contentScrolled =
+        typeof contentScrolledRaw === 'string' ? contentScrolledRaw.trim() : '';
+    const usesScrollContentStyles = contentScrolled.length > 0;
+
+    if (!usesScrollContentStyles) {
+        const flowHeaderContentClassName = usesFixedOverlayHeader
+            ? `${content} `
+            : content;
+        const fixedHeaderContentClassName =
+            appSetting('layout', 'header', 'content_pinned_fixed') ||
+            DEFAULT_CONTENT_PINNED_FIXED;
+        const fixedOverlayContentClassName = `${content} ${fixedHeaderContentClassName}`;
+        return { flowHeaderContentClassName, fixedOverlayContentClassName };
+    }
+
+    const scrolledSuffix = isScrolled ? ` ${contentScrolled}` : '';
+    const flowHeaderContentClassName = usesFixedOverlayHeader
+        ? `${content}${scrolledSuffix} `
+        : `${content}${scrolledSuffix}`;
+
+    const pinnedRaw = appSetting('layout', 'header', 'content_pinned_fixed');
+    const pinnedExtra = typeof pinnedRaw === 'string' ? pinnedRaw.trim() : '';
+    const pinnedSuffix = isScrolled && pinnedExtra.length > 0 ? ` ${pinnedExtra}` : '';
+    const fixedOverlayContentClassName = `${content}${scrolledSuffix}${pinnedSuffix}`;
+
+    return { flowHeaderContentClassName, fixedOverlayContentClassName };
+}
+
+/** Optional `layout.header.container_scrolled` suffix; blank/undefined leaves container classes unchanged. */
+function getContainerScrolledSuffix(isScrolled) {
+    if (!isScrolled) {
+        return '';
+    }
+    const containerScrolledRaw = appSetting('layout', 'header', 'container_scrolled');
+    const containerScrolled =
+        typeof containerScrolledRaw === 'string' ? containerScrolledRaw.trim() : '';
+    return containerScrolled.length > 0 ? ` ${containerScrolled}` : '';
+}
+
 export const PageHeader = ({ pageData }) => {
     const headerState = usePageHeaderBase(pageData, { resetHeaderOnRoute: true });
     const {
@@ -122,7 +171,9 @@ export const PageHeader = ({ pageData }) => {
     const showFixedHeader = isFixedMounted && !isClosing;
     const shouldRenderFixedLayer = usesFixedOverlayHeader && (isFixedMounted || isClosing);
     const allowPointerEvents = showFixedHeader && !isEntering;
-    const headerContainerBaseClass = appSetting('layout', 'header', 'container')
+    const isScrolled = scrollY > 0;
+    const headerContainerBaseClass =
+        appSetting('layout', 'header', 'container') + getContainerScrolledSuffix(isScrolled);
     const fixedHeaderClass =
         ' header-fixed web:fixed web:top-0 web:left-0 web:right-0 web:z-50  ';
     const flowTransitionClass =
@@ -137,11 +188,8 @@ export const PageHeader = ({ pageData }) => {
     const fixedHeaderMotionTransition =
         'web:transition-[transform,opacity] web:duration-300 web:ease-in-out';
     const fixedHeaderContainerClassName = `${headerContainerBaseClass} ${fixedHeaderClass} ${fixedHeaderMotionClass} ${fixedHeaderMotionTransition}`;
-    const flowHeaderContentClassName = usesFixedOverlayHeader
-        ? `${appSetting('layout', 'header', 'content')} `
-        : appSetting('layout', 'header', 'content');
-    const fixedHeaderContentClassName = appSetting('layout', 'header', 'content_pinned_fixed')
-        || ' bg-card border-b border-border/60 backdrop-blur-xl shadow-sm ';
+    const { flowHeaderContentClassName, fixedOverlayContentClassName } =
+        resolveHeaderContentClassNames({ usesFixedOverlayHeader, isScrolled });
     const headerPointerEvents = usesFixedOverlayHeader && shouldRenderFixedLayer && !allowPointerEvents
         ? 'none'
         : 'auto';
@@ -174,7 +222,7 @@ export const PageHeader = ({ pageData }) => {
                 >
                     <PageHeaderBody
                         {...headerState}
-                        contentClassName={`${appSetting('layout', 'header', 'content')} ${fixedHeaderContentClassName}`}
+                        contentClassName={fixedOverlayContentClassName}
                         pageData={pageData}
                     />
                 </View>
