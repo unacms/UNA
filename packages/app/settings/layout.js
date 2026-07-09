@@ -12,10 +12,10 @@ export const settingsLayout = {
         avaliable_langs: ['auto', 'en', 'ru'],
         screen: ' w-full  ',
         max_width: ' w-full ',
-        max_width_content: ' w-full max-w-7xl p-4 ',
+        max_width_content: ' w-full max-w-8xl p-4 ',
         panel_group_content: '  sm:p-2 mx-auto flex-1 ',
-        max_width_landing: 'w-full max-w-7xl ',
-        max_width_block: ' max-w-7xl ',
+        max_width_landing: 'w-full max-w-8xl ',
+        max_width_block: ' max-w-8xl ',
         /** UNA page layout keys → shell/content classNames (default.js, login columnLayout). Add keys as you wire more UNA layouts. */
         page_layouts: {
             layout_1_column_thin: {
@@ -28,7 +28,7 @@ export const settingsLayout = {
             },
         },
         padding_content: ' @list-sm/list:m-1 @list-md/list:m-2',
-        home_container: ' w-full max-w-9xl ',
+        home_container: ' w-full max-w-8xl ',
         feed_container: ' w-full flex-1 max-w-3xl sm:p-4 mx-auto ',
         post_container: ' max-w-3xl w-full flex-1 bg-card text-card-foreground rounded-2xl p-3 sm:py-4 lg:my-4 mx-auto ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
 
@@ -68,11 +68,11 @@ export const settingsLayout = {
             container: ' w-full z-50 header-fixed web:fixed native:absolute bg-background web:top-0 web:transition-transform web:duration-300 web:ease-in-out',
             /** Optional. When set (non-blank), appended to `container` while scrollY > 0 (full-width bar: shadow, border, etc.). */
             container_scrolled: '',
-            content: ' items-center justify-between h-14 w-full max-w-screen-xl mx-auto',
+            content: ' items-center justify-between h-14 w-full max-w-8xl mx-auto',
             /** Optional. When set (non-blank), applied to header content only while scrollY > 0. If unset, legacy `content_pinned_fixed` behavior is unchanged. */
             content_scrolled: ' shadow-border-b dark:shadow-border-b-deep ',
             content_pinned_fixed: ' bg-background ',
-            content_left: 'flex-none 2xl:w-full items-center max-w-xs ms-3 lg:ms-4 gap-2',
+            content_left: 'flex-none 2xl:w-full max-w-xs ms-3 lg:ms-4 gap-2',
             content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-3xl px-4 ',
             content_right: ' items-end flex-none 2xl:w-full max-w-xs me-3 lg:me-4 gap-2',
             active_item_indicator: 'absolute -bottom-1 left-0 h-0.5 rounded-full flex-none bg-ring',

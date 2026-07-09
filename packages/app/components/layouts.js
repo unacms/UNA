@@ -53,7 +53,7 @@ export default function Layouts({ path, data }) {
 
         if (semver.ltr(v, minVersion, { includePrerelease: true })) {
             return (
-                <View className="w-full lg:flex-row max-w-7xl mx-auto my-auto">
+                <View className="w-full lg:flex-row max-w-8xl mx-auto my-auto">
                     <View className="max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto gap-y-4">
                         <View>
                             <Card padding="p-6  ">

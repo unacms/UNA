@@ -22,7 +22,7 @@ export const settingsElements = {
         cover_base: 'w-full bg-card  ',
         cover_content:
             'items-center h-full w-full justify-between lg:pt-2 lg:px-2 ',
-        cover_small: 'max-w-7xl mx-auto flex-row w-full items-center ',
+        cover_small: 'max-w-8xl mx-auto flex-row w-full items-center ',
         hide_top_menu_from: 'xl',
     },
     dropdown_menu: {

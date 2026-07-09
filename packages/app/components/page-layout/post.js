@@ -394,7 +394,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
             }
             direction="horizontal"
             {...viewProps}
-            className={` ${appSetting('layout', 'max_width_content')} ${isMultiColumn ? appSetting('layout', 'panel_group_content') : 'max-w-7xl w-full mx-auto flex-1 h-full sm:min-h-[calc(100vh-16rem)]'} `}
+            className={` ${appSetting('layout', 'max_width_content')} ${isMultiColumn ? appSetting('layout', 'panel_group_content') : 'max-w-8xl w-full mx-auto flex-1 h-full sm:min-h-[calc(100vh-16rem)]'} `}
             onLayout={onLayout}
         >
             {isLeftCol && (

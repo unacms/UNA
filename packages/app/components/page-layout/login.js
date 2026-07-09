@@ -20,7 +20,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import { getUnaPageLayoutClasses } from 'app/lib/util'
 
 const LOGIN_FULL_WIDTH = {
-    shell: 'w-full max-w-7xl p-4 mx-auto my-auto',
+    shell: 'w-full max-w-8xl p-4 mx-auto my-auto',
     content: 'w-full mx-auto',
 }
 
