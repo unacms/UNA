@@ -553,7 +553,7 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
     const srch = <Input  size="small" name="search" placeholder={("Search") + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
     const ContextSelector = getComponent('molecule', 'context_selector');
     const header = useMemo(() => (
-        <Row className={' '+appSetting('layout', 'header', 'content')}>
+        <Row className={`${appSetting('layout', 'page_content_width')} ${appSetting('layout', 'header', 'content')}`}>
             <View className='flex-1 hidden lg:flex justify-center items-center'>
                 <View className=' w-full h-12 items-start justify-center'>
                 {srch}
@@ -561,7 +561,7 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
             </View>
             {!showSearch && <View className='flex-1'><Row className={appSetting('layout', 'header', 'content_left')+' lg:hidden '}>
                 {appSetting('messenger', 'back_button') && getBackButtonWeb()}
-                { appSetting('context_selector', 'show_always') ? <><ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /></>:  <Text className={`lg:hidden font-bold truncate flex-1  leading-12 lg:px-2 text-card-foreground text-2xl tracking-tight font-main`}>Messenger</Text>}
+                {appSetting('context_selector', 'show_always') ? <><ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /></>:  <Text className={`lg:hidden font-bold truncate flex-1  leading-12 lg:px-2 text-card-foreground text-2xl tracking-tight font-main`}>Messenger</Text>}
             </Row></View>}
             {showSearch && <Row className={appSetting('layout', 'header', 'content_left')+' lg:hidden'}>
                 {srch}
@@ -645,7 +645,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
     const header = useMemo(() => (
 
-            <Row className={appSetting('layout', 'header', 'content')}>
+            <Row className={`${appSetting('layout', 'page_content_width')} ${appSetting('layout', 'header', 'content')}`}>
                 <Row className={appSetting('layout', 'header', 'content_left')+' lg:hidden'}>
                     {isSmallScreen && <BackButton buttonProps={{ variant: "text", startDecorator: 'ArrowLeft', rounded: 'rounded' }} callback={showConvo} />}
                     <View className="overflow-hidden flex-1">

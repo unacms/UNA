@@ -42,7 +42,7 @@ const DEFAULT_CONTENT_PINNED_FIXED =
  * When `layout.header.content_scrolled` is unset/blank, output matches the legacy paths exactly.
  */
 function resolveHeaderContentClassNames({ usesFixedOverlayHeader, isScrolled }) {
-    const content = appSetting('layout', 'header', 'content');
+    const content = `${appSetting('layout', 'page_content_width')} ${appSetting('layout', 'header', 'content')}`;
     const contentScrolledRaw = appSetting('layout', 'header', 'content_scrolled');
     const contentScrolled =
         typeof contentScrolledRaw === 'string' ? contentScrolledRaw.trim() : '';

@@ -159,8 +159,8 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode, suppressCon
     )
 
     return (
-        <View
-            className={`${conductorTheme.menu_max_width} flex-row`}
+        <Row
+            className={`${appSetting('layout', 'page_content_width')} px-3 lg:px-4 mx-auto `}
         >
             {!currentUser && !bPerson ? (
                 <PageHeaderSmall />
@@ -243,7 +243,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode, suppressCon
                     )}
                 </>
             )}
-        </View>
+        </Row>
     )
 }
 
@@ -362,12 +362,8 @@ function CoverImage({
         const isCover = !!imageUrl
         return (
             <View
-                className={` bg-accent/50 lg:rounded-xl w-full ${appSetting(
-                    'layout',
-                    'max_width_content',
-                )} mx-auto gap-2 flex-1
-                  overflow-hidden ${isCover ? `${appSetting('cover', 'aspect_ratio')}` : 'pb-32'
-                    }`}
+                className={`bg-accent/50 lg:rounded-xl mx-auto gap-2 flex-1 overflow-hidden w-full
+                ${isCover ? `${appSetting('cover', 'aspect_ratio')}` : 'pb-32'}`}
             >
                 {isCover && (
                     <Image
@@ -524,7 +520,7 @@ export default function Cover({
     }
 
     return (
-        <View className={`mx-auto ${appSetting('layout', 'max_width')}`}>
+        <View className={`${appSetting('layout', 'page_content_width')} ${appSetting('layout', 'page_content_padding')} mx-auto`}>
             {appSetting('context_selector', 'show_always') && !suppressContextSelector ? (
                 <Row
                     className={`${TABLET_MODE_FROM}:hidden items-center w-full h-14 px-2 `}
@@ -550,10 +546,7 @@ export default function Cover({
                 />
             )}
             <View
-                className={` ${appSetting(
-                    'layout',
-                    'max_width_content',
-                )} lg:flex-row mx-auto w-full p-3 gap-3 lg:gap-4 z-50`}
+                className={`w-full lg:flex-row mx-auto gap-3 lg:gap-4 z-50`}
             >
                 {bPerson && (
                     <View className="hidden lg:flex flex-none h-24 w-42 justify-end">

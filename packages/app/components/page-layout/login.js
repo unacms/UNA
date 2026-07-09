@@ -1,14 +1,5 @@
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import {
-    Card,
-    CardHeader,
-    CardDescription,
-    CardContent,
-    CardFooter,
-    CardTitle,
-    CardIcon,
-} from 'app/ui/molecules/card'
 import { Platform } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
 import AuthPanel from 'app/ui/molecules/auth'
@@ -16,13 +7,7 @@ import Page from 'app/ui/molecules/page'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
-import { Icon } from 'app/ui/atoms/icon'
-import { getUnaPageLayoutClasses } from 'app/lib/util'
-
-const LOGIN_FULL_WIDTH = {
-    shell: 'w-full max-w-8xl p-4 mx-auto my-auto',
-    content: 'w-full mx-auto',
-}
+import { appSetting } from 'app/lib/util'
 
 function PageContent({ children }) {
     const { t } = useTranslation()
@@ -53,17 +38,16 @@ function PageContent({ children }) {
 
 export default function PageLayout({ data, children, columnLayout = '' }) {
     const isWeb = Platform.OS === 'web'
-    const unaLayout = getUnaPageLayoutClasses(columnLayout) ?? LOGIN_FULL_WIDTH
     const showLoginAside = columnLayout === 'layout_1_column_half'
 
     return (
         <Page data={data}>
             {isWeb ? (
-                <View className={unaLayout.shell}>
+                <View className={`${appSetting('layout', 'page_content_width')} ${appSetting('layout', 'page_content_padding')} mx-auto my-auto`}>
                     {showLoginAside
                         ? appStatic('components_logincontent')
                         : null}
-                    <View className={unaLayout.content}>
+                    <View className={'w-full mx-auto'}>
                         <PageContent>{children}</PageContent>
                     </View>
                 </View>

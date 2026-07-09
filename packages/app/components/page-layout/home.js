@@ -456,12 +456,12 @@ export default function ({ data, blocks }) {
 
     return (
         <>{BlocksCenter}
-            {appSetting('layout', 'home_container') !== false && <PanelGroup
+            <PanelGroup
                 ref={groupRef}
                 key={`cells-home${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
                 autoSaveId={cellsCustomConfig.sizable ? `cells-home` : undefined}
                 direction="horizontal"
-                className={`${appSetting('layout', 'home_container')} mx-auto flex-auto flex-row`}
+                className={`${appSetting('layout', 'page_content_width')} mx-auto flex-auto flex-row`}
                 onLayout={onLayout}
             >
                 {layoutName == 'hor' && isWeb && (
@@ -496,7 +496,7 @@ export default function ({ data, blocks }) {
                         </Panel>
                     </>
                 )}
-            </PanelGroup>}
+            </PanelGroup>
         </>
     )
 }

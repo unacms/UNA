@@ -3,10 +3,6 @@
 export const settingsElements = {
     conductor: {
         menu: ' w-full items-left justify-center ',
-        menu_max_width: ' w-full max-w-8xl px-3 lg:px-4 mx-auto',
-        
-        content_max_width: ' w-full max-w-8xl mx-auto ',
-        content_max_width_nav: ' w-full max-w-8xl  ',
         menu_is_dynamic: false,
         menu_cnt: ' flex-row flex-none gap-1 h-12 lg:h-14 items-center overflow-x-auto ',
         menu_categ_indent: ' pl-8 ',
@@ -22,7 +18,7 @@ export const settingsElements = {
         cover_base: 'w-full bg-card  ',
         cover_content:
             'items-center h-full w-full justify-between lg:pt-2 lg:px-2 ',
-        cover_small: 'max-w-8xl mx-auto flex-row w-full items-center ',
+        cover_small: 'mx-auto flex-row items-center ',
         hide_top_menu_from: 'xl',
     },
     dropdown_menu: {

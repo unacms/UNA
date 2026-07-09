@@ -86,7 +86,7 @@ function PageContentUniversal({ children, data, layoutName }) {
     const hasPanelCells = midCells.some(cell => hasData(cell?.data) && !isRowLayout(cell, currentBreakpoint));
 
     return (
-        <View className={`mx-auto ${appSetting('layout', 'max_width_content')}`}>
+        <View className={`mx-auto ${appSetting('layout', 'page_content_width')} ${appSetting('layout', 'page_content_padding')}`}>
             <PanelRow gap={gap} cell={topCell} currentBreakpoint={currentBreakpoint} />
             {hasPanelCells && (
                 <PanelGroup key={`cells-${uri}-${layoutName}-${sizable ? 'sizable' : 'static'}`} autoSaveId={sizable ? `cells-${uri}-${layoutName}` : undefined} direction="horizontal">

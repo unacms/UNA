@@ -612,8 +612,7 @@ export function TopSidebar({
                 }`}
         >
             <View
-                className={`${isHideOnDesktop ? '' : 'mx-auto'} w-full ${conductorTheme.menu_max_width
-                    }`}
+                className={`${isHideOnDesktop ? '' : 'mx-auto'} ${appSetting('layout', 'page_content_width')} px-3 lg:px-4 mx-auto`}
             >
                 
                     {children}

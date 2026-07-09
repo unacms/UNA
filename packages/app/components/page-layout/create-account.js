@@ -99,10 +99,8 @@ export default function PageLayout({ data, blocks }) {
     return (
         <Page data={data}>
             {isWeb ? (
-                <View className={`flex-1 gap-4 sm:gap-6 p-4 justify-center w-full mx-auto lg:flex-row ${appSetting(
-                        'layout',
-                        'max_width_content',
-                    )}`}
+                <View 
+                    className={`flex-1 gap-4 sm:gap-6 p-4 justify-center w-full mx-auto lg:flex-row ${appSetting('layout','page_content_width')} ${appSetting('layout','page_content_padding')}`}
                 >
                     <View className="items-center lg:items-start relative my-auto flex-auto w-full p-4 gap-4">
                         {appStatic('join_text')}
