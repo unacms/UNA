@@ -72,7 +72,7 @@ export const settingsLayout = {
             /** Optional. When set (non-blank), applied to header content only while scrollY > 0. If unset, legacy `content_pinned_fixed` behavior is unchanged. */
             content_scrolled: ' shadow-border-b dark:shadow-border-b-deep ',
             content_pinned_fixed: ' bg-background ',
-            content_left: 'flex-none 2xl:w-full max-w-xs ms-3 lg:ms-4 gap-2',
+            content_left: 'flex-none 2xl:w-full items-center max-w-xs ms-3 lg:ms-4 gap-2',
             content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-3xl px-4 ',
             content_right: ' items-end flex-none 2xl:w-full max-w-xs me-3 lg:me-4 gap-2',
             active_item_indicator: 'absolute -bottom-1 left-0 h-0.5 rounded-full flex-none bg-ring',
