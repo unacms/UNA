@@ -89,9 +89,9 @@
         @variant dark {
             --background: var(--neutral-950);
             --foreground: var(--neutral-50);
-            --card: var(--neutral-800);
+            --card: var(--neutral-900);
             --card-foreground: var(--neutral-200);
-            --popover: var(--neutral-700);
+            --popover: var(--neutral-800);
             --popover-foreground: var(--neutral-50);
             --primary: var(--accent-600);
             --primary-hover: var(--accent-500);
@@ -100,7 +100,7 @@
             --secondary-foreground: var(--neutral-400);
             --accent: var(--accent-950);
             --accent-foreground: var(--accent-500);
-            --muted: var(--neutral-700);
+            --muted: var(--neutral-800);
             --muted-foreground: var(--neutral-500);
             --destructive: var(--red);
             --destructive-foreground: var(--neutral-950);

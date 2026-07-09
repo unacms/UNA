@@ -467,7 +467,7 @@ export default function ({ data, blocks }) {
                 {layoutName == 'hor' && isWeb && (
                     <>
                         <Panel className={`hidden ${leftBreakpoint}:block sm:w-full `} {...leftPanelProps}>
-                            <View onLayout={handleSideBarLayout} className="flex-auto h-full w-full max-w-96">
+                            <View onLayout={handleSideBarLayout} className="flex-auto h-full w-full">
                                 {SideBarContent}
                             </View>
                         </Panel>

@@ -45,7 +45,7 @@ function MenuTopItem_({ title, icon, isTitle, isActive, isPopup, chevron, animat
 
         <Tooltip content={title}>
             <Row
-                className={`items-center content-center justify-center px-2 h-12 min-w-16 flex-auto flex-wrap rounded-lg  ${isActiveOrOpen
+                className={`items-center content-center justify-center px-2 h-12 min-w-16 flex-auto flex-wrap rounded-xl  ${isActiveOrOpen
                     ? '  text-accent-foreground'
                     : ' text-secondary-foreground web:group-hover:text-foreground web:hover:bg-muted/50 web:group-focus:bg-muted/50 web:active:bg-muted '
                     }`}

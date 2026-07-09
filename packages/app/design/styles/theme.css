@@ -108,7 +108,7 @@
     --shadow-xl-deep: 0 16px 24px rgb(0 0 0 / 0.5);
     --shadow-2xl: 0 24px 48px rgb(0 0 0 / 0.1);
     --shadow-2xl-deep: 0 24px 48px rgb(0 0 0 / 0.5);
-    --shadow-border-b: 0 1px 0 0 rgb(0 0 0 / 0.05);
+    --shadow-border-b: 0 1px 0 0 rgb(0 0 0 / 0.08);
     --shadow-border-b-deep: 0 1px 0 0 rgb(255 255 255 / 0.05);
     --shadow-avatar: inset 0 0 0 1px rgb(0 0 0 / 0.05);
     --shadow-avatar-deep: inset 0 0 0 1px rgb(255 255 255 / 0.05);
