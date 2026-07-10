@@ -38,6 +38,21 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
         }
     }, [])
 
+    useEffect(() => {
+        if (!blockData.text || !blockData.data_url) return;
+
+        const dataUrl = blockData.data_url;
+
+        const poll = async () => {
+            const sResponse = await fetcher(`/api.php?r=${dataUrl}`);
+            setBlockData(sResponse?.data[0]?.data);
+        };
+
+        const intervalId = setInterval(poll, 5000);
+
+        return () => clearInterval(intervalId);
+    }, [blockData.text, blockData.data_url]);
+
     const handleCloseDeployForm = async () => {
 
         const sResponse = await fetcher(`/api.php?r=${blockData.data_url}`);
