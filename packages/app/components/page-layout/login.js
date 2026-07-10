@@ -40,7 +40,6 @@ function PageContent({ children }) {
 export default function PageLayout({ data, children, }) {
     const isWeb = Platform.OS === 'web'
     const showLoginAside = data?.layout === 'layout_1_column_half'
-    console.log("columnLayout", data?.layout)
     const config = data?.config
     const paddingClass = responsiveClasses('padding', config?.padding)
     const gapClass = responsiveClasses('gap', config?.gap)
