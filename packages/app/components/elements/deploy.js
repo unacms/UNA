@@ -1,45 +1,94 @@
 import { BlockWrapper } from 'app/components/block-wrapper'
+import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { Button, Modal } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher';
-import Form from 'app/components/elements/form';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Row, View } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import Confirm from 'app/ui/molecules/confirm';
 import emitter from 'app/context/emitter';
 import Link from 'app/ui/atoms/link';
 
+function getFormNamesFromBlock(block) {
+    const content = Array.isArray(block?.content) ? block.content : [];
+
+    return content
+        .filter((item) => item?.type === 'form')
+        .map((item) => item?.data?.params?.display || item?.name)
+        .filter((name) => name && !name.includes('_delete'));
+}
+
+function formHasInputErrors(formItem) {
+    const inputs = formItem?.data?.inputs;
+    if (!inputs || typeof inputs !== 'object') return false;
+
+    return Object.values(inputs).some((input) => input?.error);
+}
+
+function shouldCloseAfterFormResponse(responseData) {
+    if (!Array.isArray(responseData) || responseData.length === 0) return true;
+    if (responseData.some((item) => item?.reload)) return true;
+
+    const formItems = responseData.filter((item) => item?.type === 'form');
+    if (!formItems.length) return true;
+
+    return !formItems.some(formHasInputErrors);
+}
+
 export default function ElementDeploy({ data, blockWrapperProps, url }) {
     const [blockData, setBlockData] = useState(data);
-    const [pageData, setPageData] = useState(false);
+    const [formBlock, setFormBlock] = useState(null);
     const [showConfirm, setShowConfirm] = useState(false);
-    const handleOpenDeployForm = async (item) => {
+    const dataUrlRef = useRef(data?.data_url);
 
+    useEffect(() => {
+        dataUrlRef.current = blockData?.data_url ?? data?.data_url ?? dataUrlRef.current;
+    }, [blockData?.data_url, data?.data_url]);
+
+    const handleOpenDeployForm = async (item) => {
         if (item.form_url) {
             const sResponse = await fetcher(`/api.php?r=${item.form_url}`);
-            setPageData(sResponse.data);
+            setFormBlock({ content: sResponse.data, designbox_id: 0, title: 'Deployment settings' });
         }
 
         if (item.request_url) {
             setShowConfirm(`/api.php?r=${item.request_url}`)
         }
-
     };
 
+    const refreshBlockData = useCallback(async () => {
+        const dataUrl = dataUrlRef.current;
+        if (!dataUrl) return;
+
+        const sResponse = await fetcher(`/api.php?r=${dataUrl}`);
+        setBlockData(sResponse?.data[0]?.data);
+    }, []);
+
+    const handleCloseDeployForm = useCallback(() => {
+        setFormBlock(null);
+        refreshBlockData();
+    }, [refreshBlockData]);
+
     useEffect(() => {
-        const subscription = emitter.addListener(`form_bx_projects`, (data) => {
-            if (data.action == 'received' && data.data.reload) {
+        if (!formBlock) return;
+
+        const formNames = getFormNamesFromBlock(formBlock);
+        if (!formNames.length) return;
+
+        const subscriptions = formNames.map((formName) =>
+            emitter.addListener(`form_${formName}`, (event) => {
+                if (event.action !== 'received') return;
+                if (!shouldCloseAfterFormResponse(event.data)) return;
+
                 handleCloseDeployForm();
-            }
-        })
+            })
+        );
 
-        return () => {
-            subscription.remove()
-        }
-    }, [])
+        return () => subscriptions.forEach((subscription) => subscription.remove());
+    }, [formBlock, handleCloseDeployForm]);
 
     useEffect(() => {
-        if (!blockData.text || !blockData.data_url) return;
+        if (!blockData.text || blockData?.buttons.length > 0 || !blockData.data_url) return;
 
         const dataUrl = blockData.data_url;
 
@@ -48,19 +97,11 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
             setBlockData(sResponse?.data[0]?.data);
         };
 
+        poll();
         const intervalId = setInterval(poll, 5000);
 
         return () => clearInterval(intervalId);
     }, [blockData.text, blockData.data_url]);
-
-    const handleCloseDeployForm = async () => {
-
-        const sResponse = await fetcher(`/api.php?r=${blockData.data_url}`);
-
-        setBlockData(sResponse?.data[0]?.data);
-        setPageData(false);
-    };
-
 
     return (
         <BlockWrapper {...blockWrapperProps}>
@@ -89,10 +130,12 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
                     ))}
                 </View>
             )}
-            {!!pageData && <Modal scrollable={true} title={"Deployment settings"} onVisible={!!pageData} onClose={handleCloseDeployForm}>
-                <Form {...pageData[0]}></Form>
-            </Modal>}
-            <Confirm onVisible={showConfirm} title="Server will be removed with all data! Are you sure to proceed ?" handleCancel={() => setShowConfirm(false)} handleOk={async () => { await fetcher(showConfirm); setShowConfirm(false);handleCloseDeployForm() }} />
+            {!!formBlock && (
+                <Modal scrollable={true} title={formBlock.title || 'Deployment settings'} onVisible={!!formBlock} onClose={handleCloseDeployForm}>
+                    <BlockByData block={formBlock} onFormEmpty={handleCloseDeployForm} />
+                </Modal>
+            )}
+            <Confirm onVisible={showConfirm} title="Server will be removed with all data! Are you sure to proceed ?" handleCancel={() => setShowConfirm(false)} handleOk={async () => { await fetcher(showConfirm); setShowConfirm(false); handleCloseDeployForm() }} />
         </BlockWrapper>
     );
 }
