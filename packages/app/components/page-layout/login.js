@@ -7,14 +7,12 @@ import Page from 'app/ui/molecules/page'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
-import { getPageContentWidth } from 'app/lib/util'
-import { responsiveClasses } from 'app/lib/responsive-classes'
 
 function PageContent({ children }) {
     const { t } = useTranslation()
 
     return (
-        <View className="w-full justify-center max-w-md mx-auto">
+        <View className="w-full justify-center  mx-auto">
             <View className="gap-4">
                 {children}
                 <AuthPanel showSeparator={true} forgotPasswordLink={true} />
@@ -37,21 +35,19 @@ function PageContent({ children }) {
     )
 }
 
-export default function PageLayout({ data, children, }) {
+export default function PageLayout({ data, children, pageClasses }) {
+    const { contentWidth, padding, gap } = pageClasses ?? {};
     const isWeb = Platform.OS === 'web'
     const showLoginAside = data?.layout === 'layout_1_column_half'
-    const config = data?.config
-    const paddingClass = responsiveClasses('padding', config?.padding)
-    const gapClass = responsiveClasses('gap', config?.gap)
 
     return (
         <Page data={data}>
             {isWeb ? (
-                <View className={`${getPageContentWidth(data?.layout)} ${paddingClass} ${gapClass} mx-auto my-auto`}>
+                <View className={`${contentWidth} ${padding} ${gap} mx-auto my-auto`}>
                     {showLoginAside
                         ? appStatic('components_logincontent')
                         : null}
-                    <View className={'w-full mx-auto'}>
+                    <View className={`w-full mx-auto ${contentWidth}`}>
                         <PageContent>{children}</PageContent>
                     </View>
                 </View>

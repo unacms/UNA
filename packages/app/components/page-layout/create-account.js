@@ -15,8 +15,6 @@ import { Platform } from 'react-native'
 import { appStatic } from 'app/lib/app-static'
 import { useTranslation } from 'react-i18next'
 import AuthPanel from 'app/ui/molecules/auth'
-import { appSetting } from 'app/lib/util'
-import { responsiveClasses } from 'app/lib/responsive-classes'
 import MenuFooter from 'app/components/nav/menu-footer'
 import Page from 'app/ui/molecules/page'
 import Html from 'app/ui/atoms/html';
@@ -74,11 +72,9 @@ function PageContent({ children }) {
     )
 }
 
-export default function PageLayout({ data, blocks }) {
+export default function PageLayout({ data, blocks, pageClasses }) {
     const { t } = useTranslation()
-    const config = data?.config
-    const paddingClass = responsiveClasses('padding', config?.padding)
-    const gapClass = responsiveClasses('gap', config?.gap)
+    const { contentWidth, padding, gap } = pageClasses ?? {}
     const joinData = DataByName(data, blocks.form_join)
     const inviteData = DataByName(data, blocks.form_invitation)
 
@@ -104,7 +100,7 @@ export default function PageLayout({ data, blocks }) {
         <Page data={data}>
             {isWeb ? (
                 <View 
-                    className={`flex-1 justify-center w-full mx-auto lg:flex-row ${appSetting('layout','page_content_width_default')} ${paddingClass} ${gapClass}`}
+                    className={`flex-1 justify-center w-full mx-auto lg:flex-row ${contentWidth} ${padding} ${gap}`}
                 >
                     <View className="items-center lg:items-start relative my-auto flex-auto w-full p-4 gap-4">
                         {appStatic('join_text')}

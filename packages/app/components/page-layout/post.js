@@ -9,7 +9,6 @@ import { useLocalSearchParams } from 'app/lib/hooks/router'
 import emitter from 'app/context/emitter';
 import { useIsDesktop, useWindowHeight, useBreakpoint, useBreakpointName } from 'app/context/measure';
 import { appSetting } from 'app/lib/util';
-import { responsiveClasses } from 'app/lib/responsive-classes';
 import { Card } from 'app/ui/molecules/card';
 import {
     Panel,
@@ -62,10 +61,8 @@ const defineCells = (blocks, data) => {
     return { sideBarBlocks: sideBarBlocks, topBlocks: topBlocks, centerBlocks: centerBlocks, leftBarBlocks: leftBarBlocks };
 };
 
-export default function PageLayout({ data, blocks, isModal = false, url }) {
-    const config = data?.config;
-    const paddingClass = responsiveClasses('padding', config?.padding);
-    const gapClass = responsiveClasses('gap', config?.gap);
+export default function PageLayout({ data, blocks, isModal = false, url, pageClasses }) {
+    const { contentWidth, padding, gap } = pageClasses ?? {};
     const isWeb = Platform.OS == 'web';
     const windowHeight = useWindowHeight();
     const insets = useSafeAreaInsets();
@@ -398,7 +395,7 @@ export default function PageLayout({ data, blocks, isModal = false, url }) {
             }
             direction="horizontal"
             {...viewProps}
-            className={`${appSetting('layout', 'page_content_width_default')} ${paddingClass} ${gapClass} ${isMultiColumn ? appSetting('layout', 'panel_group_content') : ' mx-auto flex-1 h-full sm:min-h-[calc(100vh-16rem)]'} `}
+            className={`${contentWidth} ${padding} ${gap} ${isMultiColumn ? appSetting('layout', 'panel_group_content') : ' mx-auto flex-1 h-full sm:min-h-[calc(100vh-16rem)]'} `}
             onLayout={onLayout}
         >
             {isLeftCol && (

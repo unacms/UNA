@@ -2,7 +2,8 @@
 import Layout from 'app/components/layout';
 import { useCurrentUser, isWebAuthReady } from 'app/context/user'
 import { getComponent } from 'app/components/registry';
-import { appSetting, getLayoutName, strToObj } from 'app/lib/util'
+import { appSetting, getLayoutName, getPageContentWidth, strToObj } from 'app/lib/util'
+import { responsiveClasses } from 'app/lib/responsive-classes'
 import Cell from 'app/components/cell';
 import { Row } from 'app/design/view'
 import { appStatic } from 'app/lib/app-static'
@@ -98,6 +99,13 @@ function PageLayoutContent({ layout, data }) {
     const { currentUser } = useCurrentUser();
     const { layoutName, layoutBlocks, isCustomLayout, columnLayout = '' } = layout;
 
+    const pageClasses = useMemo(() => ({
+        padding: responsiveClasses('padding', data?.config?.padding),
+        gap: responsiveClasses('gap', data?.config?.gap),
+        width: appSetting('layout', 'max_width'),
+        contentWidth: getPageContentWidth(columnLayout || data?.layout || layoutName),
+    }), [data?.config, columnLayout, data?.layout, layoutName]);
+
     const hasProfileInformer = currentUser?.informer?.some(
         item => item.id === "sys-account-profile-system"
     );
@@ -151,7 +159,7 @@ function PageLayoutContent({ layout, data }) {
 
     if (isCustomLayout && layoutBlocks) {
         return (
-            <Component key={componentKey} layoutName={layoutName} columnLayout={columnLayout} data={data} blocks={layoutBlocks} />
+            <Component key={componentKey} layoutName={layoutName} columnLayout={columnLayout} data={data} blocks={layoutBlocks} pageClasses={pageClasses} />
         );
     }
 
@@ -164,7 +172,7 @@ function PageLayoutContent({ layout, data }) {
     ));
 
     return (
-        <Component key={componentKey} layoutName={layoutName} columnLayout={columnLayout} data={data}>
+        <Component key={componentKey} layoutName={layoutName} columnLayout={columnLayout} data={data} pageClasses={pageClasses}>
             {cells}
         </Component>
     );

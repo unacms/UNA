@@ -21,7 +21,6 @@ export const settingsLayout = {
         page_content_padding_default: ' p-4 ',
         page_content_gap: ' gap-4 ',
         page_content_gap_default: ' sm:gap-4 ',
-        page_content_stack: ' flex flex-col ',
         panel_group_content: '  sm:p-2 mx-auto flex-1 ',
         max_width_landing: 'w-full max-w-8xl ',
         max_width_block: ' max-w-8xl ',
