@@ -4,6 +4,31 @@ import { Text } from 'app/design/typography'
 import { Button, NeoButton } from "app/design/controls";
 import emitter from 'app/context/emitter';
 
+export function normalizeFormResponseData(data) {
+    if (data == null) return [];
+    if (Array.isArray(data)) return data;
+    return [data];
+}
+
+/** True when the server response means the form flow is finished (close modal, refresh parent). */
+export function isFormResponseComplete(responseData) {
+    if (responseData == null) return true;
+
+    if (Array.isArray(responseData)) {
+        if (responseData.length === 0) return true;
+        if (responseData.some((item) => item?.reload)) return true;
+        return !responseData.some((item) => item?.type === 'form');
+    }
+
+    if (typeof responseData === 'object') {
+        if (responseData.reload) return true;
+        if (responseData.type === 'form') return false;
+        return true;
+    }
+
+    return true;
+}
+
 export function getFormFieldByData(inputData, handleSubmit, format, externalProps) {
 
     if (!inputData)

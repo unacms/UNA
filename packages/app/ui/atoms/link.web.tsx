@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Pressable } from 'app/design/view'
 import { useRouter } from 'app/lib/hooks/router'
 import { useCallback, useMemo } from 'react';
-import { appSetting, cn, sanitazeUrl } from 'app/lib/util'
+import { appSetting, cn, sanitazeUrl, isExternalUrl } from 'app/lib/util'
 import emitter from 'app/context/emitter';
 
 // Variants and sizes from theme
@@ -30,6 +30,9 @@ export default function ElementLink({
 
     const router = useRouter();
     const href = sanitazeUrl(hrefProp);
+    const isExternal = isExternalUrl(href) || asExternal === true;
+    const resolvedTarget = target ?? (isExternal ? '_blank' : undefined);
+    const rel = resolvedTarget === '_blank' ? 'noopener noreferrer' : undefined;
 
     // Convert alt to aria-label (alt is not valid for <a> elements)
     const accessibleLabel = alt || (typeof children === 'string' ? children : undefined);
@@ -82,7 +85,8 @@ export default function ElementLink({
 
     if (mode === 'plain') {
         return <Link
-                target={target}
+                target={resolvedTarget}
+                rel={rel}
                 href={href}
                 className={className}
                 prefetch={isPrefetch}
@@ -94,7 +98,8 @@ export default function ElementLink({
 
     return (
         <Link
-            target={target}
+            target={resolvedTarget}
+            rel={rel}
             href={href}
             {...rest}
             className={composedClassName}

@@ -11,6 +11,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { useTranslation } from 'react-i18next';
 import emitter from 'app/context/emitter';
 import Confirm from 'app/ui/molecules/confirm';
+import { isFormResponseComplete } from 'app/lib/form-helpers';
 
 
 const TASKS_LIST_EVENT = 'tasks_list';
@@ -101,9 +102,7 @@ function getFormNamesFromBlock(block) {
 }
 
 function shouldRefreshAfterFormResponse(responseData) {
-    if (!Array.isArray(responseData) || responseData.length === 0) return true;
-    if (responseData.some((item) => item?.reload)) return true;
-    return !responseData.some((item) => item?.type === 'form');
+    return isFormResponseComplete(responseData);
 }
 
 function actionNeedsConfirm(action) {

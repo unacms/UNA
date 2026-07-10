@@ -8,6 +8,7 @@ import { Text } from 'app/design/typography';
 import Confirm from 'app/ui/molecules/confirm';
 import emitter from 'app/context/emitter';
 import Link from 'app/ui/atoms/link';
+import { isFormResponseComplete } from 'app/lib/form-helpers';
 
 function getFormNamesFromBlock(block) {
     const content = Array.isArray(block?.content) ? block.content : [];
@@ -18,21 +19,8 @@ function getFormNamesFromBlock(block) {
         .filter((name) => name && !name.includes('_delete'));
 }
 
-function formHasInputErrors(formItem) {
-    const inputs = formItem?.data?.inputs;
-    if (!inputs || typeof inputs !== 'object') return false;
-
-    return Object.values(inputs).some((input) => input?.error);
-}
-
 function shouldCloseAfterFormResponse(responseData) {
-    if (!Array.isArray(responseData) || responseData.length === 0) return true;
-    if (responseData.some((item) => item?.reload)) return true;
-
-    const formItems = responseData.filter((item) => item?.type === 'form');
-    if (!formItems.length) return true;
-
-    return !formItems.some(formHasInputErrors);
+    return isFormResponseComplete(responseData);
 }
 
 export default function ElementDeploy({ data, blockWrapperProps, url }) {

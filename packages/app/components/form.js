@@ -1,11 +1,12 @@
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useState, useMemo, useCallback, useId } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { getFormFieldByData } from 'app/lib/form-helpers'
+import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData } from 'app/lib/form-helpers'
 import { View, Row } from 'app/design/view'
 import { getComponent } from 'app/components/registry';
 import { FeedbackHaptics, storageSet, appSetting, isNumeric, storageGet, isObjectsEqual } from 'app/lib/util';
 import { Platform } from 'react-native';
 import emitter from 'app/context/emitter';
+import { FormInstanceProvider } from 'app/context/form-instance';
 import useDebounce from 'app/lib/hooks/debounce'
 import { Button } from 'app/design/controls';
 import useFetchForm from 'app/lib/hooks/fetch'
@@ -60,6 +61,7 @@ export default function Form({
 
     const { ...methods } = useForm({ mode: 'onChange' });
     const { formState: { isSubmitted } } = methods;
+    const formInstanceId = useId();
 
     const [postData, setPostData] = useState(null);
 
@@ -94,19 +96,30 @@ export default function Form({
             return;
         }
 
-        const items = Array.isArray(dynamicData.data)
-            ? dynamicData.data
-            : [dynamicData.data];
+        const rawData = dynamicData.data;
 
-        if (!items?.length) return;
+        if (isFormResponseComplete(rawData)) {
+            setFormBundle(prev => ({
+                ...prev,
+                form: { ...prev.form, completed: Date.now() },
+                extra: null,
+                response: null,
+            }));
+            emitter.emit(`form_${name}`, { action: 'received', formInstanceId, data: rawData });
+            return;
+        }
+
+        const items = normalizeFormResponseData(rawData);
+
+        if (!items.length) return;
 
         const formItem = items.find(item => item?.type === 'form');
-        const otherItem = items.find(item => item?.type !== 'form');
+        const otherItem = items.find(item => item?.type && item?.type !== 'form');
 
         setFormBundle(prev => {
             const nextForm = formItem?.data
                 ? { ...formItem.data, updated: Date.now() }
-                : (otherItem? {}: { ...prev.form, updated: Date.now() });
+                : { ...prev.form, updated: Date.now() };
 
             const nextResponse = formItem?.response ?? prev.response;
             const nextExtra = otherItem ?? prev.extra;
@@ -127,10 +140,13 @@ export default function Form({
                 response: nextResponse,
             };
         });
-    }, [dynamicData, initedData]);
+
+        emitter.emit(`form_${name}`, { action: 'received', formInstanceId, data: rawData });
+    }, [dynamicData, initedData, formInstanceId, name]);
 
     useEffect(() => {
-        if (!onFormEmpty || !dynamicData || dynamicData.data?.length !== 0) return;
+        if (!onFormEmpty || !dynamicData) return;
+        if (!isFormResponseComplete(dynamicData.data)) return;
         onFormEmpty();
     }, [onFormEmpty, dynamicData]);
 
@@ -208,6 +224,26 @@ export default function Form({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [processedInputs]);
 
+    useEffect(() => {
+        if (!formBundle?.form?.updated || !processedInputs) return;
+
+        const values = Object.keys(processedInputs).reduce((result, key) => {
+            const input = processedInputs[key];
+            if (input?.value || input?.value === 0) {
+                result[key] = input.value;
+            } else if (input?.type === 'switcher' || input?.type === 'checkbox') {
+                result[key] = input.checked ? input.value : '0';
+            } else {
+                result[key] = '';
+            }
+            return result;
+        }, {});
+
+        methods.reset(values, { keepDefaultValues: true });
+        methods.clearErrors();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [formBundle?.form?.updated]);
+
     const { csrf_token, ...restDefaultValues } = defaultValues;
     const cacheKey = `${formName}_${request?.url || false}` ;
 
@@ -238,12 +274,12 @@ export default function Form({
         () =>
             methods.handleSubmit(
                 (data) => {
-                    emitter.emit(`form_${name}`, { action: 'submited' });
+                    emitter.emit(`form_${name}`, { action: 'submited', formInstanceId });
                     onSubmit(data);
                 },
                 onError
             ),
-        [methods, name, onSubmit, onError]
+        [methods, name, formInstanceId, onSubmit, onError]
     );
 
     const handleKeyUp = useCallback((event) => {
@@ -281,14 +317,6 @@ export default function Form({
             _handleSubmit();
         }
     }, [isSubmit, _handleSubmit]);
-
-    useEffect(() => {
-        if (formBundle?.form?.updated)
-            emitter.emit(`form_${name}`, { action: 'received', data: dynamicData.data })
-
-    }, [formBundle?.form?.updated]);
-
-
 
     const { watch } = methods;
     const allFields = watch();
@@ -417,41 +445,45 @@ export default function Form({
     if ('undefined' !== typeof ElementForm) {
         inputs = <ElementForm name={name} data={{ ...formBundle?.form, inputs: filteredInputs }} response={formBundle.response} handleSubmit={_handleSubmit} exProps={exProps}></ElementForm>
         return (
-            <FormProvider {...methods}>
-                {Element && <Element {...formBundle.extra} />}
-                {inputs}
-            </FormProvider>
+            <FormInstanceProvider instanceId={formInstanceId}>
+                <FormProvider {...methods}>
+                    {Element && <Element {...formBundle.extra} />}
+                    {inputs}
+                </FormProvider>
+            </FormInstanceProvider>
         )
     }
 
     return (
-        <View className={`${layout !== 'hor' ? appSetting('forms', 'form_container') : 'w-full'} ${exProps?.classes}`}>
-            {Element && <Element {...formBundle.extra} />}
-            <FormProvider {...methods}>
-                <View className={`${layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : 'w-full gap-4'}`}>
-                    {inputs}
-                    {(isAutoChange) && <Row className={`items-center justify-between  ${layout === 'hor' ? ' ' : ' '} `}>
-                        {(stableStringify(defaultFormValues) != stableStringify(currentFormValues)) && <Button
-                            title='Reset Filters'
-                            startDecorator='X'
-                            size='sm'
-                            fullWidth
-                            variant='secondary'
-                            onPress={() => {
-                                if (isWeb) {
-                                    const url = new URL(window.location.href);
-                                    if (url.searchParams.has('filters')) {
-                                        url.searchParams.delete('filters');
-                                        window.location.replace(`${url.pathname}${url.search}${url.hash}`);
+        <FormInstanceProvider instanceId={formInstanceId}>
+            <View className={`${layout !== 'hor' ? appSetting('forms', 'form_container') : 'w-full'} ${exProps?.classes}`}>
+                {Element && <Element {...formBundle.extra} />}
+                <FormProvider {...methods}>
+                    <View className={`${layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : 'w-full gap-4'}`}>
+                        {inputs}
+                        {(isAutoChange) && <Row className={`items-center justify-between  ${layout === 'hor' ? ' ' : ' '} `}>
+                            {(stableStringify(defaultFormValues) != stableStringify(currentFormValues)) && <Button
+                                title='Reset Filters'
+                                startDecorator='X'
+                                size='sm'
+                                fullWidth
+                                variant='secondary'
+                                onPress={() => {
+                                    if (isWeb) {
+                                        const url = new URL(window.location.href);
+                                        if (url.searchParams.has('filters')) {
+                                            url.searchParams.delete('filters');
+                                            window.location.replace(`${url.pathname}${url.search}${url.hash}`);
+                                        }
                                     }
-                                }
-                                methods.reset();
-                            }}
-                        />
-                        }
-                    </Row>}
-                </View>
-            </FormProvider>
-        </View>
+                                    methods.reset();
+                                }}
+                            />
+                            }
+                        </Row>}
+                    </View>
+                </FormProvider>
+            </View>
+        </FormInstanceProvider>
     );
 }

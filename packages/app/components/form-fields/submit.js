@@ -5,6 +5,7 @@ import { NeoButton, Hidden } from 'app/design/controls';
 import { View, Row } from 'app/design/view';
 import { appSetting, cn } from 'app/lib/util';
 import emitter from 'app/context/emitter';
+import { useFormInstanceId } from 'app/context/form-instance';
 
 const SIZE_TO_CONTROL = {
     xs: 'mini',
@@ -45,6 +46,7 @@ export default function FormFieldSubmit(props) {
     } = props;
 
     const formContext = useFormContext();
+    const formInstanceId = useFormInstanceId();
     const { formState } = formContext;
     const [isSumbitting, setIsSumbitting] = useState(false);
     const { field } = useController({ name, rules: {}, defaultValue: value });
@@ -84,6 +86,7 @@ export default function FormFieldSubmit(props) {
     useEffect(() => {
         let timeoutId;
         const subscription = emitter.addListener(`form_${form_name}`, (data) => {
+            if (formInstanceId != null && data.formInstanceId !== formInstanceId) return;
             if (data.action == 'submited') {
                 setIsSumbitting(true);
             }
@@ -98,7 +101,7 @@ export default function FormFieldSubmit(props) {
             if (timeoutId) clearTimeout(timeoutId);
             subscription.remove();
         };
-    }, [form_name]);
+    }, [form_name, formInstanceId]);
 
     const rowClassName = cn(
         formProps.button_hide_on_small || props.button_hide_on_small ? 'hidden sm:flex' : '',
