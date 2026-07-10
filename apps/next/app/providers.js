@@ -32,6 +32,18 @@ function ensureI18n(lang) {
                 escapeValue: false,
             },
         })
+        return
+    }
+    /**
+     * The i18n singleton outlives a request on the server: without this,
+     * SSR sticks to the language of the first request the process served,
+     * while each client initializes with its own `initialLang` — a hydration
+     * mismatch (e.g. server "Contact" vs client "Контакты"). Resources are
+     * bundled, so changeLanguage resolves synchronously. Server-only: on the
+     * client the user's stored preference (applied post-hydration) must win.
+     */
+    if (typeof window === 'undefined' && lang && i18n.language !== lang) {
+        i18n.changeLanguage(lang)
     }
 }
 
