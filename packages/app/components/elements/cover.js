@@ -160,7 +160,7 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode, suppressCon
 
     return (
         <Row
-            className={`${appSetting('layout', 'page_content_width')} px-3 lg:px-4 mx-auto `}
+            className={`${appSetting('layout', 'page_content_width_default')} px-3 lg:px-4 mx-auto `}
         >
             {!currentUser && !bPerson ? (
                 <PageHeaderSmall />
@@ -520,7 +520,7 @@ export default function Cover({
     }
 
     return (
-        <View className={`${appSetting('layout', 'page_content_width')} ${appSetting('layout', 'page_content_padding')} mx-auto`}>
+        <View className={`${appSetting('layout', 'page_content_width_default')} ${appSetting('layout', 'page_content_padding_default')} mx-auto`}>
             {appSetting('context_selector', 'show_always') && !suppressContextSelector ? (
                 <Row
                     className={`${TABLET_MODE_FROM}:hidden items-center w-full h-14 px-2 `}

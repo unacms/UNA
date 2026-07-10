@@ -576,13 +576,12 @@ export function getPageWidth(uri, config) {
     return appSetting('layout', 'max_width');
 }
 
-/** UNA `page_layouts` entry from settings (shell + content classNames), or null if unknown. */
-export function getUnaPageLayoutClasses(layoutKey) {
+export function getPageContentWidth(layoutKey) {
     if (!layoutKey) {
-        return null;
+        return appSetting('layout', 'page_content_width_default');
     }
-    const pageLayouts = appSetting('layout', 'page_layouts') || {};
-    return pageLayouts[layoutKey] ?? null;
+    const pageLayouts = appSetting('layout', 'page_content_width') || {};
+    return pageLayouts[layoutKey] ?? appSetting('layout', 'page_content_width_default');
 }
 
 export function getAlert(type, data) {
@@ -637,7 +636,6 @@ export function getLayoutName(data, uri) {
             name: 'login',
             blocks: customBlocks,
             custom: true,
-            columnLayout: getUnaPageLayoutClasses(customLayout) ? customLayout : '',
         },
         {
             cond: isCustom,
@@ -1367,7 +1365,12 @@ export function strToObj(s) {
 }
 
 export function getPageSettings(config, uri) {
-    return appSetting('layout', 'user_remote_config') && config ? strToObj(config) : appSetting('layouts', uri);
+    if (!appSetting('layout', 'user_remote_config')) {
+        return appSetting('layouts', uri);
+    }
+    if (!config) return appSetting('layouts', uri);
+    if (typeof config === 'object') return config;
+    return strToObj(config) ?? appSetting('layouts', uri);
 }
 
 export function getMenuSettings(object, config, menu) {

@@ -1,5 +1,6 @@
 import { View } from 'app/design/view';
 import { appSetting } from 'app/lib/util'
+import { responsiveClasses } from 'app/lib/responsive-classes'
 import { memo, useMemo } from 'react';
 import MenuFooter from 'app/components/nav/menu-footer';
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util'
@@ -14,9 +15,11 @@ const hasData = (cellData) => Array.isArray(cellData) && cellData.length > 0;
 function PageContentUniversal({ children, data, layoutName }) {
     const currentBreakpoint = useBreakpoint();
     const uri = data.uri;
+    const config = data?.config;
+    const paddingClass = responsiveClasses('padding', config?.padding);
+    const gapClass = responsiveClasses('gap', config?.gap);
     const cellsCustomConfig = appSetting('layouts', uri);
 
-    const gap = cellsCustomConfig.gap || 4;
     const sizable = cellsCustomConfig.sizable === undefined ? true : cellsCustomConfig.sizable;
 
     const layoutConfigs = {
@@ -86,32 +89,47 @@ function PageContentUniversal({ children, data, layoutName }) {
     const hasPanelCells = midCells.some(cell => hasData(cell?.data) && !isRowLayout(cell, currentBreakpoint));
 
     return (
-        <View className={`mx-auto ${appSetting('layout', 'page_content_width')} ${appSetting('layout', 'page_content_padding')}`}>
-            <PanelRow gap={gap} cell={topCell} currentBreakpoint={currentBreakpoint} />
+        <View className={`mx-auto ${appSetting('layout', 'page_content_width_default')} ${appSetting('layout', 'page_content_stack')} ${paddingClass} ${gapClass}`}>
+            <PanelRow gapClass={gapClass} cell={topCell} currentBreakpoint={currentBreakpoint} />
             {hasPanelCells && (
-                <PanelGroup key={`cells-${uri}-${layoutName}-${sizable ? 'sizable' : 'static'}`} autoSaveId={sizable ? `cells-${uri}-${layoutName}` : undefined} direction="horizontal">
+                <PanelGroup
+                    key={`cells-${uri}-${layoutName}-${sizable ? 'sizable' : 'static'}`}
+                    autoSaveId={sizable ? `cells-${uri}-${layoutName}` : undefined}
+                    direction="horizontal"
+                    className={gapClass}
+                >
                     {midCells.map((cell, i) => {
-                        return <PanelCell key={cell.key} sizable={sizable} currentBreakpoint={currentBreakpoint} cell={cell} index={topCell.length > 0 ? i : 0} />
+                        return (
+                            <PanelCell
+                                key={cell.key}
+                                sizable={sizable}
+                                currentBreakpoint={currentBreakpoint}
+                                cell={cell}
+                                index={topCell.length > 0 ? i : 0}
+                                paddingClass={paddingClass}
+                                gapClass={gapClass}
+                            />
+                        );
                     })}
                 </PanelGroup>
             )}
             {midCells.map((cell, i) => {
-                return <PanelRow key={cell.key} gap={gap} currentBreakpoint={currentBreakpoint} cell={cell} />
+                return <PanelRow key={cell.key} gapClass={gapClass} currentBreakpoint={currentBreakpoint} cell={cell} />
             })}
-            {bottomCell?.data?.length > 0 && <PanelRow gap={gap} cell={bottomCell} currentBreakpoint={currentBreakpoint} />}
+            {bottomCell?.data?.length > 0 && <PanelRow gapClass={gapClass} cell={bottomCell} currentBreakpoint={currentBreakpoint} />}
         </View>
     )
 }
 
-const PanelRow = memo(({ cell, currentBreakpoint, gap }) => {
+const PanelRow = memo(({ cell, currentBreakpoint, gapClass }) => {
     return (hasData(cell?.data) && isRowLayout(cell, currentBreakpoint)) && (
-        <View className={`w-full sm:gap-3 lg:gap-4 `}>
+        <View className={`w-full ${appSetting('layout', 'page_content_stack')} ${gapClass}`}>
             {cell.chd}
         </View>
     );
 })
 
-const PanelCell = memo(({ cell, currentBreakpoint, index, sizable }) => {
+const PanelCell = memo(({ cell, currentBreakpoint, index, sizable, paddingClass, gapClass }) => {
     const panelProps = {
         ...(cell.defaultSize !== undefined && { defaultSize: cell.defaultSize }),
         ...(cell.minSize !== undefined && { minSize: cell.minSize }),
@@ -121,7 +139,7 @@ const PanelCell = memo(({ cell, currentBreakpoint, index, sizable }) => {
         <>
             {(index > 0) && (sizable ? <PanelHandler sizable={sizable} /> : <View className='w-4' />)}
             <Panel {...panelProps} >
-                <View className="w-full gap-3 lg:gap-4 lg:p-4">
+                <View className={`w-full ${appSetting('layout', 'page_content_stack')} ${gapClass} ${paddingClass}`}>
                     {cell.chd}
                 </View>
             </Panel>

@@ -612,7 +612,7 @@ export function TopSidebar({
                 }`}
         >
             <View
-                className={`${isHideOnDesktop ? '' : 'mx-auto'} ${appSetting('layout', 'page_content_width')} px-3 lg:px-4 mx-auto`}
+                className={`${isHideOnDesktop ? '' : 'mx-auto'} ${appSetting('layout', 'page_content_width_default')} px-3 lg:px-4 mx-auto`}
             >
                 
                     {children}

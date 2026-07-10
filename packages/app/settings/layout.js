@@ -12,23 +12,20 @@ export const settingsLayout = {
         avaliable_langs: ['auto', 'en', 'ru'],
         screen: ' w-full  ',
         max_width: ' w-full ',
-        page_content_width: ' w-full max-w-8xl ',
+        page_content_width_default: ' w-full max-w-8xl ',
+        page_content_width:{
+            layout_1_column_thin: 'w-full max-w-md',
+            layout_1_column_half: 'w-full max-w-2xl',
+        },
         page_content_padding: ' p-4 ',
-        page_content_gap: ' sm:gap-y-4 ',
+        page_content_padding_default: ' p-4 ',
+        page_content_gap: ' gap-4 ',
+        page_content_gap_default: ' sm:gap-4 ',
+        page_content_stack: ' flex flex-col ',
         panel_group_content: '  sm:p-2 mx-auto flex-1 ',
         max_width_landing: 'w-full max-w-8xl ',
         max_width_block: ' max-w-8xl ',
-        /** UNA page layout keys → shell/content classNames (default.js, login columnLayout). Add keys as you wire more UNA layouts. */
-        page_layouts: {
-            layout_1_column_thin: {
-                shell: 'w-full p-4 mx-auto',
-                content: 'w-full max-w-md mx-auto',
-            },
-            layout_1_column_half: {
-                shell: 'w-full p-4 mx-auto ',
-                content: 'w-full max-w-2xl mx-auto',
-            },
-        },
+       
         padding_content: ' @list-sm/list:m-1 @list-md/list:m-2',
         feed_container: ' w-full flex-1 max-w-3xl sm:p-4 mx-auto ',
         post_container: ' max-w-3xl w-full flex-1 bg-card text-card-foreground rounded-2xl p-3 sm:py-4 lg:my-4 mx-auto ', // for hor = max-w-screen-xl, for ver = max-w-screen-lg

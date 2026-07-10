@@ -553,7 +553,7 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
     const srch = <Input  size="small" name="search" placeholder={("Search") + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
     const ContextSelector = getComponent('molecule', 'context_selector');
     const header = useMemo(() => (
-        <Row className={`${appSetting('layout', 'page_content_width')} ${appSetting('layout', 'header', 'content')}`}>
+        <Row className={`${appSetting('layout', 'page_content_width_default')} ${appSetting('layout', 'header', 'content')}`}>
             <View className='flex-1 hidden lg:flex justify-center items-center'>
                 <View className=' w-full h-12 items-start justify-center'>
                 {srch}
@@ -645,7 +645,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
     const header = useMemo(() => (
 
-            <Row className={`${appSetting('layout', 'page_content_width')} ${appSetting('layout', 'header', 'content')}`}>
+            <Row className={`${appSetting('layout', 'page_content_width_default')} ${appSetting('layout', 'header', 'content')}`}>
                 <Row className={appSetting('layout', 'header', 'content_left')+' lg:hidden'}>
                     {isSmallScreen && <BackButton buttonProps={{ variant: "text", startDecorator: 'ArrowLeft', rounded: 'rounded' }} callback={showConvo} />}
                     <View className="overflow-hidden flex-1">

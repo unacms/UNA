@@ -408,7 +408,7 @@ export function Conductor({
         >
             {(isUseCurrentHeader || isDesktop) && headerComponent}
             <View
-                className={`${appSetting('layout', 'page_content_width')} mx-auto ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}
+                className={`${appSetting('layout', 'page_content_width_default')} mx-auto ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}
             >
                 <TabSceneHeader
                     route={currentRoute}
@@ -1339,7 +1339,7 @@ const HeaderContainer = ({
                 
             </View>
             <View className={`header-fixed w-full ${isScrolled ? conductorTheme.cover_base : ''} ` + (isScrolled ? 'fixed' : '')}>
-                <View className={`${appSetting('layout', 'page_content_width')} ${conductorTheme.cover_small} ${isScrolled ? 'animate-in fade-in slide-in-from-top-2 duration-300 ease-out' : ''}`}
+                <View className={`${appSetting('layout', 'page_content_width_default')} ${conductorTheme.cover_small} ${isScrolled ? 'animate-in fade-in slide-in-from-top-2 duration-300 ease-out' : ''}`}
                     style={{
                         display: isSmallCoverMounted ? 'flex' : 'none',
                    
@@ -1455,7 +1455,7 @@ const TabSceneHeader = ({ route, setFilterValue }) => {
             )}
             {isTitle && (
                 <View
-                    className={`${appSetting('layout', 'page_content_width')} mx-auto pt-3 px-4`}
+                    className={`${appSetting('layout', 'page_content_width_default')} mx-auto pt-3 px-4`}
                 >
                     <Text className="text-3xl tracking-tight leading-10 font-bold text-secondary-foreground">
                         {route.title}

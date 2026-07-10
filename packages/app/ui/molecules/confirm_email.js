@@ -44,7 +44,7 @@ export default function ElementConfirmEmail(props) {
     };
 
     return (
-        <View className={`${appSetting('layout', 'page_content_width')} ${appSetting('layout', 'page_content_padding')} lg:flex-row mx-auto my-auto`}>
+        <View className={`${appSetting('layout', 'page_content_width_default')} ${appSetting('layout', 'page_content_padding_default')} lg:flex-row mx-auto my-auto`}>
             <View className="max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto gap-y-4">
                 <View>
                     <Redirect ref={redirectdRef} />

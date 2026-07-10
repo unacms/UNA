@@ -7,7 +7,8 @@ import Page from 'app/ui/molecules/page'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
-import { appSetting } from 'app/lib/util'
+import { getPageContentWidth } from 'app/lib/util'
+import { responsiveClasses } from 'app/lib/responsive-classes'
 
 function PageContent({ children }) {
     const { t } = useTranslation()
@@ -36,14 +37,18 @@ function PageContent({ children }) {
     )
 }
 
-export default function PageLayout({ data, children, columnLayout = '' }) {
+export default function PageLayout({ data, children, }) {
     const isWeb = Platform.OS === 'web'
-    const showLoginAside = columnLayout === 'layout_1_column_half'
+    const showLoginAside = data?.layout === 'layout_1_column_half'
+    console.log("columnLayout", data?.layout)
+    const config = data?.config
+    const paddingClass = responsiveClasses('padding', config?.padding)
+    const gapClass = responsiveClasses('gap', config?.gap)
 
     return (
         <Page data={data}>
             {isWeb ? (
-                <View className={`${appSetting('layout', 'page_content_width')} ${appSetting('layout', 'page_content_padding')} mx-auto my-auto`}>
+                <View className={`${getPageContentWidth(data?.layout)} ${paddingClass} ${gapClass} mx-auto my-auto`}>
                     {showLoginAside
                         ? appStatic('components_logincontent')
                         : null}

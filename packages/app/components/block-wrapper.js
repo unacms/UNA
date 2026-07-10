@@ -63,6 +63,7 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
     const isHelpLink = isUrl(pureHelp)
     const isHelp = !!block.help
 
+    console.log("config", config)
 
     return (
         <View className={wrapperClassses || 'w-full'}>
@@ -74,7 +75,7 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                     key={block.id}
                     isBg={bIsShowBg}
                     isPad={bIsShowPadding}
-                    isRoundedAll={config?.rounded}
+                    rounded={config?.rounded}
                     className={[
                         "w-full mx-auto",
                         (!fullWidth && !cssClasses.includes("max-w-") ? appSetting('layout', 'max_width_block') : ""),

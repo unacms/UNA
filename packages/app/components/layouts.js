@@ -2,25 +2,23 @@
 import Layout from 'app/components/layout';
 import { useCurrentUser, isWebAuthReady } from 'app/context/user'
 import { getComponent } from 'app/components/registry';
-import { appSetting, getLayoutName } from 'app/lib/util'
+import { appSetting, getLayoutName, strToObj } from 'app/lib/util'
 import Cell from 'app/components/cell';
-import { View, Row } from 'app/design/view'
+import { Row } from 'app/design/view'
 import { appStatic } from 'app/lib/app-static'
 import Redirect from 'app/ui/atoms/redirect'
 import { useRef, useEffect, useMemo } from 'react';
 import ConfirmEmail from 'app/ui/molecules/confirm_email'
 import PageByUrl from 'app/ui/molecules/page-by-url'
 import { registerAll } from 'app/components/registry-init';
-import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
-import { Button, ButtonLink } from 'app/design/controls'
+import { ButtonLink } from 'app/design/controls'
 import { useWindowDimensions, Platform } from 'react-native';
 import { useSetWindowSize } from 'app/context/measure';
 import semver from 'semver';
-import { useTranslation } from 'react-i18next';
-import { Card, CardHeader, CardTitle, CardContent } from 'app/ui/molecules/card'
-import DropdownPopup from 'app/ui/atoms/dropdown-popup'
-import {FormModalHost} from 'app/ui/molecules/form_modal';
+import { Card } from 'app/ui/molecules/card'
+import { FormModalHost } from 'app/ui/molecules/form_modal';
+import { VersionIncompatible, VersionWarning } from 'app/ui/molecules/version-notice';
 
 function WindowSizeSync() {
     const { width, height } = useWindowDimensions();
@@ -37,80 +35,40 @@ export default function Layouts({ path, data }) {
     if (isWeb)
         registerAll();
 
-    const { currentUser } = useCurrentUser();
-
-    const layout = useMemo(() => {
-        return getLayoutName(data, data?.uri?.toString());
+    const pageData = useMemo(() => {
+        if (!data) return data;
+        const raw = data.config;
+        if (typeof raw !== 'string' || !appSetting('layout', 'user_remote_config')) {
+            return data;
+        }
+        const parsed = strToObj(raw);
+        return parsed ? { ...data, config: parsed } : data;
     }, [data]);
 
 
-    const { t } = useTranslation();
+    const { currentUser } = useCurrentUser();
+
+    const layout = useMemo(() => {
+        return getLayoutName(pageData, pageData?.uri?.toString());
+    }, [pageData]);
+
+
     const v = semver.coerce(data.version)?.version || false;
     const minVersion = appSetting('config', 'min_server_version');
     const maxVersion = appSetting('config', 'stable_server_version');
-    const appVersion = appSetting('config', 'app_version');
-    if (data.version) {
 
-        if (semver.ltr(v, minVersion, { includePrerelease: true })) {
-            return (
-                <View className={`${appSetting('layout', 'page_content_width')} ${appSetting('layout', 'page_content_padding')} lg:flex-row  mx-auto my-auto`}>
-                    <View className="max-w-xl w-full flex-auto mx-auto p-4 sm:p-8 my-auto gap-y-4">
-                        <View>
-                            <Card padding="p-6  ">
-                                <CardHeader>
-                                    <CardTitle>{t("version_incompatible_title")}</CardTitle>
-                                </CardHeader>
-                                <CardContent className="gap-4">
-                                    <Text>
-                                        {t("version_incompatible_text1", { version: appVersion })}
-                                    </Text>
-                                    <Text>
-                                        {t("version_incompatible_text2", { version: data.version, min_version: minVersion })}
-                                    </Text>
-                                    <Text>
-                                        {t("version_incompatible_text3")}
-                                    </Text>
-                                </CardContent>
-                            </Card>
-                        </View>
-                    </View>
-                </View>
-            )
-        }
+    if (data.version && semver.ltr(v, minVersion, { includePrerelease: true })) {
+        return <VersionIncompatible serverVersion={data.version} />;
     }
+
     const isVersionInfo = v && semver.gtr(v, maxVersion, { includePrerelease: true }) && currentUser?.operator;
 
     return (
-        <Layout layout={layout} data={data}>
-            <PageLayoutContent layout={layout} path={path} data={data} />
+        <Layout layout={layout} data={pageData}>
+            <PageLayoutContent layout={layout} path={path} data={pageData} />
             <WindowSizeSync />
-            <FormModalHost/>
-            {isVersionInfo && <View className="fixed bottom-16 left-5"><DropdownPopup
-                open={true}
-                minPopupWidth={320}
-                trigger={<Button
-                    key="btn"
-                    variant="danger"
-                    size="base"
-                    rounded
-                    startDecorator="TriangleAlert"
-                />}
-            >
-                <View className="gap-2">
-                    <Text className="text-xs text-secondary-foreground font-medium">
-                        {t("version_warning_title")}
-                    </Text>
-                    <Text className="text-xs text-secondary-foreground ">
-                        {t("version_warning_text1", { version: appVersion, server_version: data.version })}
-                    </Text>
-                    <Text className="text-xs text-secondary-foreground ">
-                        {t("version_warning_text2", { version: maxVersion })}
-                    </Text>
-                    <Text className="text-xs text-secondary-foreground ">
-                        {t("version_warning_text3")}
-                    </Text>
-                </View>
-            </DropdownPopup></View>}
+            <FormModalHost />
+            {isVersionInfo ? <VersionWarning serverVersion={data.version} /> : null}
         </Layout>
     )
 }

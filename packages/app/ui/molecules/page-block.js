@@ -1,6 +1,7 @@
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util'
+import { responsiveClasses } from 'app/lib/responsive-classes'
 
 const blockTheme = appSetting('theme', 'blocks')
 
@@ -17,12 +18,17 @@ function createBlockComponent({
         className = '',
         isBg,
         isPad,
-        isRoundedAll,
+        rounded,
         ...props
     }) {
+        const roundedClass =
+            baseClass === 'u-block-base'
+                ? responsiveClasses('rounded', rounded)
+                : '';
+
         return (
             <Component
-                className={`${baseClass} ${isRoundedAll && baseClass == 'u-block-base' ? blockTheme['u-block-rounded-all'] : blockTheme['u-block-rounded']} ${isBg && baseClass == 'u-block-base' ? blockTheme['u-block-bg'] : ''} ${isPad ? blockTheme['u-block-pad'] : ''} ${animate ? blockTheme['u-block-animate'] || '' : ''} ${blockTheme[baseClass] || ''} ${className}`}
+                className={`${baseClass} ${isBg && baseClass == 'u-block-base' ? blockTheme['u-block-bg'] : ''} ${isPad ? blockTheme['u-block-pad'] : ''} ${animate ? blockTheme['u-block-animate'] || '' : ''} ${blockTheme[baseClass] || ''} ${roundedClass} ${className}`}
                 role={role}
                 aria-level={ariaLevel}
                 {...props}

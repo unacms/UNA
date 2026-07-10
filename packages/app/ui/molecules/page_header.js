@@ -56,7 +56,7 @@ export const PageHeader = ({ pageData }) => {
         >
             <PageHeaderBody
                 {...headerState}
-                contentClassName={`${appSetting('layout', 'page_content_width')} ${appSetting('layout', 'header', 'content')}`}
+                contentClassName={`${appSetting('layout', 'page_content_width_default')} ${appSetting('layout', 'header', 'content')}`}
                 pageData={pageData}
             />
         </HeaderContainer>
