@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback, useId } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData } from 'app/lib/form-helpers'
+import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData, updateFormDirtyState } from 'app/lib/form-helpers'
 import { View, Row } from 'app/design/view'
 import { getComponent } from 'app/components/registry';
 import { FeedbackHaptics, storageSet, appSetting, isNumeric, storageGet, isObjectsEqual } from 'app/lib/util';
@@ -60,8 +60,14 @@ export default function Form({
     const { auto_focus, ...formProps } = initedFormProps ?? {};
 
     const { ...methods } = useForm({ mode: 'onChange' });
-    const { formState: { isSubmitted } } = methods;
+    const { formState: { isSubmitted, isDirty, isSubmitSuccessful } } = methods;
     const formInstanceId = useId();
+
+    useEffect(() => {
+        const dirty = isDirty && !isSubmitSuccessful;
+        updateFormDirtyState(formInstanceId, dirty);
+        return () => updateFormDirtyState(formInstanceId, false);
+    }, [formInstanceId, isDirty, isSubmitSuccessful]);
 
     const [postData, setPostData] = useState(null);
 

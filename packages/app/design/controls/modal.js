@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'app/lib/hooks/router'
 import { useIsDesktop, useActualWindowHeight } from 'app/context/measure';
 import { NeoButton } from 'app/design/controls/neo-button';
 import emitter from 'app/context/emitter';
+import { confirmDiscardUnsavedFormChanges } from 'app/lib/form-helpers';
 import { ModalKbAwareScroll } from 'app/ui/atoms/kb-avoiding-view';
 
 const isWeb = Platform.OS === 'web';
@@ -59,6 +60,7 @@ export function Modal({
     padding = 'p-4',
     autoHeight = false,
     scrollable = false,
+    skipUnsavedGuard = false,
 }) {
     const isIos = Platform.OS === 'ios';
     const isDesktop = useIsDesktop();
@@ -95,17 +97,36 @@ export function Modal({
         };
     }, []);
 
+    const tryClose = useCallback(async () => {
+        if (typeof onClose !== 'function') return;
+        if (!skipUnsavedGuard) {
+            const proceed = await confirmDiscardUnsavedFormChanges();
+            if (!proceed) return;
+        }
+        onClose();
+    }, [onClose, skipUnsavedGuard]);
+
+    const tryRequestClose = useCallback(async () => {
+        const handler = onRequestClose ?? onClose;
+        if (typeof handler !== 'function') return;
+        if (!skipUnsavedGuard) {
+            const proceed = await confirmDiscardUnsavedFormChanges();
+            if (!proceed) return;
+        }
+        handler();
+    }, [onRequestClose, onClose, skipUnsavedGuard]);
+
     useEffect(() => {
         const subscription = emitter.addListener('link', (data) => {
             if (data.action == 'pressed') {
-                onClose?.()
+                tryClose();
             }
         })
 
         return () => {
             subscription.remove()
         }
-    }, [onClose])
+    }, [tryClose])
 
     // Cleanup guard to prevent removeChild errors
     /*useEffect(() => {
@@ -143,10 +164,10 @@ export function Modal({
 
     const handleWebOuterPress = useCallback((event) => {
         if (isOuterClose) {
-            onClose?.()
+            tryClose();
         }
         event.stopPropagation();
-    }, [isOuterClose, onClose]);
+    }, [isOuterClose, tryClose]);
 
     const handleNativeOuterPress = useCallback(() => {
         emitter.emit('editor', { action: 'blur' });
@@ -160,8 +181,8 @@ export function Modal({
     }, []);
 
     const handleRequestClose = useCallback(() => {
-        (onRequestClose ?? onClose)?.();
-    }, [onRequestClose, onClose]);
+        tryRequestClose();
+    }, [tryRequestClose]);
 
     useEffect(() => {
         if (!isWeb || !scrollable || !onVisible) return;
@@ -247,7 +268,7 @@ export function Modal({
     const content = <><ModalHeader
         title={title}
         headerBorder={headerBorder}
-        onClose={onClose}
+        onClose={tryClose}
     />
         <Cnt
             ref={scrollable && isWeb ? scrollRef : undefined}
@@ -295,7 +316,7 @@ export function Modal({
                                 <ModalHeader
                                     title={title}
                                     headerBorder={headerBorder}
-                                    onClose={onClose}
+                                    onClose={tryClose}
                                 />
                                 <Cnt style={styles} className={`${padding} flex-auto `} {...(scrollable ? { bottomOffset: modalBottomOffset } : {})}>
                                     {children}

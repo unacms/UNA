@@ -11,6 +11,8 @@ import { getModalPostTitle } from 'app/customization/functions'
 import { appSetting } from 'app/lib/util';
 import { useModal, useCloseModal } from 'app/context/jotai/modal';
 import emitter from 'app/context/emitter';
+import { confirmDiscardUnsavedFormChanges } from 'app/lib/form-helpers';
+import { UnsavedFormConfirmHost } from 'app/ui/molecules/unsaved-form-confirm-host';
 
 
 const isWeb = Platform.OS === 'web';
@@ -27,7 +29,7 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
             window.history.replaceState(null, '', previousUrlRef.current);
         }
         setPageData(false);
-    }, []);
+    }, [setPageData]);
 
     const handleRequestClose = useCallback(() => {
         handleModalClose();
@@ -43,7 +45,12 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
 
         window.history.pushState({ modal: true }, '', normalizedUrl);
 
-        const handlePopState = () => {
+        const handlePopState = async () => {
+            const proceed = await confirmDiscardUnsavedFormChanges();
+            if (!proceed) {
+                window.history.pushState({ modal: true }, '', normalizedUrl);
+                return;
+            }
             setPageData(false);
         };
 
@@ -142,14 +149,17 @@ export const FormModalHost = () => {
     const closeModal = useCloseModal();
 
     useEffect(() => {
-        const subscription = emitter.addListener('link', () => {
+        const subscription = emitter.addListener('link', async () => {
+            const proceed = await confirmDiscardUnsavedFormChanges();
+            if (!proceed) return;
             closeModal();
         });
         return () => subscription.remove();
     }, [closeModal]);
 
+    let modalContent = null;
     if (modal.visible && modal.mode === 'content') {
-        return (
+        modalContent = (
             <Modal
                 onVisible={true}
                 onClose={closeModal}
@@ -158,17 +168,25 @@ export const FormModalHost = () => {
                 transparent={true}
                 outerClickClose={isWeb}
             >
-                <View >{modal.content}</View>
+                <View>{modal.content}</View>
             </Modal>
         );
+    } else {
+        modalContent = (
+            <FormModal
+                modalView="content_page"
+                pageData={modal.visible ? modal.pageData : false}
+                setPageData={(v) => { if (!v) closeModal(); }}
+                url={modal.url}
+            />
+        );
     }
+
     return (
-        <FormModal
-            modalView="content_page"
-            pageData={modal.visible ? modal.pageData : false}
-            setPageData={(v) => { if (!v) closeModal(); }}
-            url={modal.url}
-        />
+        <>
+            <UnsavedFormConfirmHost />
+            {modalContent}
+        </>
     );
 }
 

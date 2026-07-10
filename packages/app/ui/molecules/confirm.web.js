@@ -13,7 +13,16 @@ export default function ElementConfirm({ handleOk, handleCancel, onVisible, titl
 
     if (onVisible) {
         return (
-            <Modal id={'file-preview'} onVisible={onVisible} fullWidth={false} maxWidth={maxWidth} autoHeight={autoHeight}>
+            <Modal
+                id={'file-preview'}
+                onVisible={onVisible}
+                fullWidth={false}
+                maxWidth={maxWidth}
+                autoHeight={autoHeight}
+                skipUnsavedGuard
+                outerClickClose
+                onClose={_handleCancel}
+            >
                 <View className='gap-y-4'>
                     <View className='text-center w-full'><Text className="text-center text-base text-muted-foreground  whitespace-pre-line">{title}</Text></View>
                     <Row className='gap-x-4 justify-center'>

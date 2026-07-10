@@ -1,8 +1,53 @@
 
+import { Platform } from 'react-native';
 import { getComponent } from 'app/components/registry';
 import { Text } from 'app/design/typography'
 import { Button, NeoButton } from "app/design/controls";
 import emitter from 'app/context/emitter';
+
+const isWeb = Platform.OS === 'web';
+const dirtyFormInstances = new Set();
+
+/** Track dirty state per mounted form instance (used by Modal close guard on web). */
+export function updateFormDirtyState(formInstanceId, isDirty) {
+    if (!formInstanceId) return;
+    if (isDirty) {
+        dirtyFormInstances.add(formInstanceId);
+    } else {
+        dirtyFormInstances.delete(formInstanceId);
+    }
+}
+
+export function isAnyFormDirty() {
+    return dirtyFormInstances.size > 0;
+}
+
+export const UNSAVED_FORM_CONFIRM_REQUEST = 'unsaved_form_confirm_request';
+
+const DEFAULT_DISCARD_MESSAGE = 'You have unsaved changes. Close without saving?';
+
+let pendingConfirmPromise = null;
+
+/** Returns true when close should proceed. On web, shows Confirm if any form is dirty. */
+export function requestDiscardUnsavedFormChanges(message) {
+    if (!isWeb || !isAnyFormDirty()) return Promise.resolve(true);
+    if (pendingConfirmPromise) return pendingConfirmPromise;
+
+    pendingConfirmPromise = new Promise((resolve) => {
+        emitter.emit(UNSAVED_FORM_CONFIRM_REQUEST, {
+            message: message ?? DEFAULT_DISCARD_MESSAGE,
+            settle: (proceed) => {
+                pendingConfirmPromise = null;
+                resolve(proceed);
+            },
+        });
+    });
+
+    return pendingConfirmPromise;
+}
+
+/** @deprecated Use requestDiscardUnsavedFormChanges (async). */
+export const confirmDiscardUnsavedFormChanges = requestDiscardUnsavedFormChanges;
 
 export function normalizeFormResponseData(data) {
     if (data == null) return [];
