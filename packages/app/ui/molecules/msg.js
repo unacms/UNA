@@ -1,6 +1,8 @@
 import { Alert } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 export default function (props) {
+    const { t } = useTranslation();
 
     const handleOk = async () => {
         props.handleOk();
@@ -8,7 +10,7 @@ export default function (props) {
 
     if (props.onVisible) {
         Alert.alert(props.title, props.text, [
-            {text: 'OK', onPress: () => handleOk()},
+            {text: t('OK'), onPress: () => handleOk()},
           ]);
     }
 

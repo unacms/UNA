@@ -127,7 +127,7 @@ export default function (props) {
                         <Row className="flex-auto  ">
                             <Row className='w-full items-center '>
                                 {(bSearch && currentUser) && <View className=' items-end mx-auto flex-auto max-w-2xl hidden lg:block '>
-                                    <Search type="input" placeholder="Enter search text" />
+                                    <Search type="input" placeholder={t('Enter search text')} />
                                 </View>}
                             </Row>
                         </Row>

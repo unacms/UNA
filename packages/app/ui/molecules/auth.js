@@ -111,7 +111,7 @@ export default function AuthPanel({
             <View
                 className="web:flex-row web:flex-wrap gap-x-2 gap-y-2 w-full"
                 accessibilityRole="group"
-                accessibilityLabel="Alternative sign-in methods"
+                accessibilityLabel={t('auth_alt_methods_a11y')}
             >
                 {hasGoogleAuth() && <AuthGoogle />}
                 {appSetting('auth', 'github') && <AuthGitHub />}

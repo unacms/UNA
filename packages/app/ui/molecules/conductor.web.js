@@ -76,6 +76,7 @@ export function Conductor({
     defaultHeaderHeight = 112,
 }) {
     const [timestamp] = useState(Date.now());
+    const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const { setBottomSheetData } = useBottomSheetData()
     const { layoutName: tmplLayout } = useLayoutSettings()
@@ -266,13 +267,13 @@ export function Conductor({
 
     const showFilters = useCallback(() => {
         setBottomSheetData({
-            title: 'Filters',
+            title: t('Filters'),
             content: LeftBarContentBlocks,
             showClose: true,
             snapPoints: ['50%', '75%'],
             modal: true,
         })
-    }, [LeftBarContentBlocks])
+    }, [LeftBarContentBlocks, t, setBottomSheetData])
 
     useEffect(() => {
         setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100)
@@ -313,7 +314,7 @@ export function Conductor({
                     {showFiltersBtn && (
                         <View className="items-start px-3 lg:px-4 py-2">
                             <Button
-                                title="Filters"
+                                title={t('Filters')}
                                 variant="default"
                                 size="sm"
                                 rounded
@@ -458,6 +459,7 @@ const TabSceneMainContent = ({
         prevItems: []
     })
     const queryClient = useQueryClient()
+    const { t } = useTranslation()
     const pageRouteRef = useRef(pageRoute)
     const qKeyRef = useRef(null)
 
@@ -745,7 +747,7 @@ const TabSceneMainContent = ({
                         }
                     }}
                     variant="primary"
-                    title="Show New"
+                    title={t('Show New')}
                     size="sm"
                 />
             </View>

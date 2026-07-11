@@ -25,6 +25,7 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import BackButton from 'app/components/nav/back';
 import emitter from 'app/context/emitter';
 import { useFocusEffect } from 'app/lib/hooks/router'
+import { useTranslation } from 'react-i18next'
 import {
     Panel,
     PanelGroup,
@@ -37,6 +38,7 @@ import { useSafeAreaInsets } from 'app/lib/hooks/router'
 
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, pageData, onSave, addButtons }) {
     const isWeb = Platform.OS == 'web'
+    const { t } = useTranslation();
     const { setBottomSheetData } = useBottomSheetData();
     const [convoId, setConvoId] = useState(defaultConvoId);
     const [jots, setJots] = useState(false);
@@ -342,9 +344,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                 <Row className='mb-4 gap-x-4'>
                     <Profile displaySize="base" displayType="unit_wo_info" {...sResponse.data.lot.author_data} />
                     <View>
-                        <Text className="text-popover-foreground ">Participants: {sResponse.data.lot.parts}</Text>
-                        <Text className="text-popover-foreground ">Messages: {sResponse.data.lot.messages}</Text>
-                        <Text className="text-popover-foreground ">Files: {sResponse.data.lot.files}</Text>
+                        <Text className="text-popover-foreground ">{t('Participants:')} {sResponse.data.lot.parts}</Text>
+                        <Text className="text-popover-foreground ">{t('Messages:')} {sResponse.data.lot.messages}</Text>
+                        <Text className="text-popover-foreground ">{t('Files:')} {sResponse.data.lot.files}</Text>
                     </View>
                 </Row>
             </View>)
@@ -360,7 +362,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const editConvo = useCallback(async () => {
         let request_url = '/api.php?r=bx_messenger/get_parts_list/Services&params=' + JSON.stringify({ lot: selectedConvo.id2 });
         const sResponse = await fetcher(request_url);
-        setBottomSheetData({ title: 'Add users to start messaging', content: <CreateConvo onSave={onSaveHandler} initedData={sResponse.data} convoId={selectedConvo.id2} />, showClose: true, snapPoints: ['85%', '85%'] });
+        setBottomSheetData({ title: t('messenger_add_users'), content: <CreateConvo onSave={onSaveHandler} initedData={sResponse.data} convoId={selectedConvo.id2} />, showClose: true, snapPoints: ['85%', '85%'] });
     }, [selectedConvo?.id2, convos.data]);
 
     const onFormSubmit = useCallback((formData, d) => {
@@ -538,6 +540,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
 const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, changeConvo, onSave, searchValue, handleSearch, addButtons, isSmallScreen }) => {
     const isWeb = Platform.OS == 'web'
+    const { t } = useTranslation();
     const [showSearch, setShowSearch] = useState(false);
 
     const setHeader = useSetHeader();
@@ -550,7 +553,7 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
         handleSearch('')
     }
 
-    const srch = <Input  size="small" name="search" placeholder={("Search") + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
+    const srch = <Input  size="small" name="search" placeholder={t('Search') + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
     const ContextSelector = getComponent('molecule', 'context_selector');
     const header = useMemo(() => (
         <Row className={`${appSetting('layout', 'page_content_width_default')} ${appSetting('layout', 'header', 'content')}`}>
@@ -561,7 +564,7 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
             </View>
             {!showSearch && <View className='flex-1'><Row className={appSetting('layout', 'header', 'content_left')+' lg:hidden '}>
                 {appSetting('messenger', 'back_button') && getBackButtonWeb()}
-                {appSetting('context_selector', 'show_always') ? <><ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /></>:  <Text className={`lg:hidden font-bold truncate flex-1  leading-12 lg:px-2 text-card-foreground text-2xl tracking-tight font-main`}>Messenger</Text>}
+                {appSetting('context_selector', 'show_always') ? <><ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /></>:  <Text className={`lg:hidden font-bold truncate flex-1  leading-12 lg:px-2 text-card-foreground text-2xl tracking-tight font-main`}>{t('Messenger')}</Text>}
             </Row></View>}
             {showSearch && <Row className={appSetting('layout', 'header', 'content_left')+' lg:hidden'}>
                 {srch}
@@ -702,6 +705,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
 const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, handleLayout }) => {
     const isWeb = Platform.OS == 'web'
+    const { t } = useTranslation();
 
     return (
 
@@ -712,7 +716,7 @@ const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, 
                         <Row className='items-start justify-between max-w-full relative'>
                             <View className=' flex-auto pr-4'>
                                 <Row className='max-w-full '>
-                                    <Text className='text-xs text-popover-foreground '>Reply to: </Text>
+                                    <Text className='text-xs text-popover-foreground '>{t('Reply to:')} </Text>
                                     <Text className='font-semibold text-xs text-popover-foreground '>{replyItem.author_data.display_name}</Text>
                                 </Row>
                                 <Text className='text-sm overflow-hidden text-popover-foreground ' numberOfLines={3}>{linkedText(replyItem.message, "hover:text-accent-foreground")}</Text>

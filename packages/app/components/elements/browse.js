@@ -521,7 +521,7 @@ export default function Browse(props) {
                         }
                     }}
                     variant="primary"
-                    title="Show New"
+                    title={t('Show New')}
                     size="sm"
                 />
             </View>

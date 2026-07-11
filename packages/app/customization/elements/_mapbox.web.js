@@ -9,7 +9,7 @@ const MapComponent = lazy(() => import('app/components/elements/mapbox-inner'));
 export default function ElementMapBox({ data, blockWrapperProps }) {
     const mapRef = useRef(null);
     const [selectedlayers, setSelectedLayers] = useState(['incarcerees']);
-    const [popupInfo, setPopupInfo] = useState(null); // Данные для popup
+    const [popupInfo, setPopupInfo] = useState(null); // Popup content data
     const viewport = {
         longitude: data.center[0],
         latitude: data.center[1],

@@ -19,19 +19,20 @@ import Msg from 'app/ui/molecules/msg';
 import { useTranslation } from 'react-i18next'
 import emitter from 'app/context/emitter';
 import { CaptionForFileInput } from 'app/customization/functions';
+import i18n from 'i18next';
 
 function showPermissionAlert(type, canAskAgain) {
     const isCamera = type === 'camera';
-    const title = isCamera ? 'Camera access' : 'Photo library access';
+    const title = isCamera ? i18n.t('media_permission_camera_title') : i18n.t('media_permission_library_title');
     const message = canAskAgain === false
-        ? 'Permission was denied. Enable it in Settings to upload media.'
-        : 'Permission is required to upload media.';
+        ? i18n.t('media_permission_denied')
+        : i18n.t('media_permission_required');
 
-    const buttons = [{ text: 'Cancel', style: 'cancel' }];
+    const buttons = [{ text: i18n.t('Cancel'), style: 'cancel' }];
 
     if (canAskAgain === false || Platform.OS === 'ios') {
         buttons.push({
-            text: 'Open Settings',
+            text: i18n.t('Open Settings'),
             onPress: () => Linking.openSettings(),
         });
     }
@@ -384,7 +385,7 @@ export default function (props) {
             }
         } catch (err) {
             console.error('[files] selectImage failed:', err);
-            Alert.alert('Upload error', err?.message ?? 'Could not open media picker.');
+            Alert.alert(i18n.t('Upload error'), err?.message ?? i18n.t('Could not open media picker.'));
         }
     }, [name, props.ext_deny, props.ext_allow, props.source, hasPermissionCamera, hasPermissionLibrary, requestPermissionCamera, requestPermissionLibrary, selectImage1]);
 
@@ -613,12 +614,13 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
 }
 
 function ButtonCover({ imageSource, selectImage }) {
+    const { t } = useTranslation();
     let imagesList = imageSource.images;
     let img = imagesList && imagesList.find(item => item.preload === true)
     let isImages = imagesList && imagesList.find(item => item.preload !== true)
 
     return !isImages && <Button
-        title="Add Cover"
+        title={t('Add Cover')}
         startDecorator={img?.preload ? "_loading" : "Image"}
         variant="outline"
         size="xs"

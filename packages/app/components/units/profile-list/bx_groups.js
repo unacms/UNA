@@ -7,8 +7,10 @@ import { fetcher } from 'app/lib/fetcher';
 import { useState } from 'react';
 import { Button, Modal } from 'app/design/controls'
 import Recommendation from 'app/ui/molecules/recommendations'
+import { useTranslation } from 'react-i18next'
 
 export default function Unit(props) {
+    const { t } = useTranslation()
     let data = props.data
 
     const { cardData } = useCardData()
@@ -29,8 +31,8 @@ export default function Unit(props) {
     if (data?.meta?.items?.[0] == 'invitation')
         sMeta = (
             <Row className='gap-x-2'>
-                <Button title="Accept" size="sm" variant="secondary" rounded onPress={() => { processInvitation(data.callback_accept) }} />
-                <Button title="Decline" size="sm" variant="secondary" rounded onPress={() => { processInvitation(data.callback_decline) }} />
+                <Button title={t('Accept')} size="sm" variant="secondary" rounded onPress={() => { processInvitation(data.callback_accept) }} />
+                <Button title={t('Decline')} size="sm" variant="secondary" rounded onPress={() => { processInvitation(data.callback_decline) }} />
             </Row>
         )
 

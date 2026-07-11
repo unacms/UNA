@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import { useCurrentUser } from 'app/context/user'
 import { View } from 'app/design/view'
 import Snackbar from 'app/ui/atoms/snackbar';
+import { useTranslation } from 'react-i18next';
 
 
 export default function PageLayout(props) {
+    const { t } = useTranslation();
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [timeStamp, setTimeStamp] = useState({ts:Date.now(), nts: currentUser?.notificationsTs});
     const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -49,7 +51,7 @@ export default function PageLayout(props) {
                 onPress={handleShowNewContent} 
                 onDismiss={() => setSnackbarVisible(false)}
                 variant="primary" 
-                title="New notifications" 
+                title={t('New notifications')} 
                 size="sm" 
             />
             <BlockByName data={props.data} key={timeStamp.ts} cachePrefix={timeStamp.ts} name={props.blocks.browse} />

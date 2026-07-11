@@ -2,7 +2,7 @@ import { Text } from 'app/design/typography'
 import { View, Row, ScrollView } from 'app/design/view'
 import { Button, Input } from 'app/design/controls';
 import { useCurrentUser } from 'app/context/user';
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Msg from 'app/ui/molecules/msg';
 import { fetcher } from 'app/lib/fetcher';
 import { useTranslation } from 'react-i18next';
@@ -16,10 +16,13 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { getPageData, getLayoutName, BlockDataByType, BlockDataByName } from 'app/lib/util';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 import Page from 'app/ui/molecules/page'
+import emitter from 'app/context/emitter'
 
 export default function ElementCreateProfile({ url }) {
 
     const [pageData, setPageData] = useState(false);
+    const urlRef = useRef(url);
+    urlRef.current = url;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -30,6 +33,20 @@ export default function ElementCreateProfile({ url }) {
         }
         fetchData()
     }, [url]);
+
+    useEffect(() => {
+        const subscription = emitter.addListener('page', (payload) => {
+            if (payload?.action !== 'reload') return;
+            const currentUrl = urlRef.current;
+            if (!currentUrl) return;
+            getPageData(currentUrl, false).then((sResponse) => {
+                if (sResponse?.data) {
+                    setPageData(sResponse.data);
+                }
+            });
+        });
+        return () => subscription.remove();
+    }, []);
 
     if (!pageData)
         return

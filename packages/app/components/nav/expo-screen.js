@@ -7,7 +7,8 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
 import { useLocalSearchParams } from 'app/lib/hooks/router'
 import { ensureTabHistory, pushTabHistory } from 'app/lib/tab-history';
-import { getCachedPageData, setCachedPageData } from 'app/lib/tab-page-cache';
+import { getCachedPageData, setCachedPageData, clearAllPageCache } from 'app/lib/tab-page-cache';
+import emitter from 'app/context/emitter'
 import * as SplashScreen from 'expo-splash-screen';
 
 export async function getData(path, token, origin, headers, callback, params) {
@@ -88,6 +89,14 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken }) => {
 
     const [pageData, setPageData] = useState(null);
     const { bottomSheetData, setBottomSheetData } = useBottomSheetData();
+    const pagePathRef = useRef(pagePath);
+    const tabKeyRef = useRef(tabKey);
+    const currentUserRef = useRef(currentUser);
+    const bottomSheetDataRef = useRef(bottomSheetData);
+    pagePathRef.current = pagePath;
+    tabKeyRef.current = tabKey;
+    currentUserRef.current = currentUser;
+    bottomSheetDataRef.current = bottomSheetData;
 
     useEffect(() => {
         if (!tabKey) return;
@@ -139,6 +148,34 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken }) => {
         fetchPageData();
     }, [pagePath, currentUser?.id, currentUser?.confirmed, tabKey, refreshToken]);
 
+    // Language switch (and other page reloads): drop stale cached JSON and refetch.
+    useEffect(() => {
+        const subscription = emitter.addListener('page', (payload) => {
+            if (payload?.action !== 'reload') return;
+
+            clearAllPageCache();
+
+            const path = pagePathRef.current;
+            const key = tabKeyRef.current;
+            const user = currentUserRef.current;
+            if (!(path && path.startsWith('/') && !path.includes('/?url='))) return;
+
+            const fetchPageData = async () => {
+                const { path: pathWithoutQuery, queryString } = parseUrl(path);
+                const params = queryString ? JSON.stringify(parseQueryString(queryString)) : null;
+                const data = await getData(pathWithoutQuery, null, null, null, null, params);
+                if (data?.props) {
+                    data.props.data.timestamp = Date.now();
+                    setCachedPageData(key, path, data.props, user?.id, user?.confirmed);
+                    const sheet = bottomSheetDataRef.current;
+                    setBottomSheetData(sheet !== false ? false : sheet);
+                    setPageData(data.props);
+                }
+            };
+            fetchPageData();
+        });
+        return () => subscription.remove();
+    }, [setBottomSheetData]);
 
     const splashHiddenRef = useRef(false);
     useEffect(() => {

@@ -174,13 +174,14 @@ const JoinTextComponent = (props) => {
 }
 
 const ComponentsAboutComponent = (props) => {
+    const { t } = useTranslation()
     return (
         <>
             <Text className="text-3xl lg:text-4xl xl:text-5xl font-bold text-secondary-foreground ">
-                About
+                {t('about_page_title')}
             </Text>
             <Text className="text-lg lg:text-xl xl:text-2xl  text-muted-foreground ">
-                The place to connect, share and grow with the community.
+                {t('about_page_text')}
             </Text>
         </>
     )
@@ -216,13 +217,13 @@ const ComponentsCommentsLogin = () => {
             <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8 rounded-2xl  bg-muted-foreground/10 ">
                 <Text className="text-center text-base text-secondary-foreground  ">
                     <Link className="text-primary" href="/login">
-                        <Text className="text-primary">Login</Text>
+                        <Text className="text-primary">{t('Login')}</Text>
                     </Link>{' '}
-                    or{' '}
+                    {t('comments_login_or')}{' '}
                     <Link className="text-primary" href="/create-account">
-                        <Text className="text-primary">create an account</Text>
+                        <Text className="text-primary">{t('create an account')}</Text>
                     </Link>{' '}
-                    to comment
+                    {t('comments_login_to_comment')}
                 </Text>
             </View>
         </View>
@@ -295,7 +296,7 @@ const PageError = ({ error, reset }) => {
                 <Button
                     onPress={() => reset()}
                     variant="default"
-                    title="Reload page"
+                    title={t('Reload page')}
                 ></Button>
             </View>
         </View>
@@ -411,6 +412,7 @@ export function ComponentsIntro(props) {
 }
 
 const ComponentsLoginContentComponent = (props) => {
+    const { t } = useTranslation()
     return (
         <View className="hidden my-auto flex-auto">
             <View className="w-[50%] max-w-80 aspect-square">
@@ -423,7 +425,7 @@ const ComponentsLoginContentComponent = (props) => {
             <View className="flex-auto items-center lg:items-start gap-y-4 sm:gap-y-6 max-w-md sm:max-w-lg lg:max-w-3xl">
                 <View className="gap-y-8 flex-auto my-4 ">
                     <H1 className="text-4xl tracking-tight font-bold text-secondary-foreground  justify-center items-center  ">
-                        Sign in to your account
+                        {t('login_page_title')}
                     </H1>
                     <View className="gap-y-4">
                         <View className="flex-row gap-x-4 ">
@@ -434,7 +436,7 @@ const ComponentsLoginContentComponent = (props) => {
                                 height={24}
                             />
                             <Text className="flex-auto my-auto text-secondary-foreground  text-base font-medium">
-                                Meet new people
+                                {t('login_feature_meet')}
                             </Text>
                         </View>
 
@@ -446,7 +448,7 @@ const ComponentsLoginContentComponent = (props) => {
                                 height={24}
                             />
                             <Text className="flex-auto my-auto text-secondary-foreground  text-base font-medium">
-                                Discover cool spaces
+                                {t('login_feature_discover')}
                             </Text>
                         </View>
 
@@ -458,7 +460,7 @@ const ComponentsLoginContentComponent = (props) => {
                                 height={24}
                             />
                             <Text className="flex-auto my-auto text-secondary-foreground  text-base font-medium">
-                                Share your ideas
+                                {t('login_feature_share')}
                             </Text>
                         </View>
                     </View>

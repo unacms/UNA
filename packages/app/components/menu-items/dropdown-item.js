@@ -48,7 +48,7 @@ export default function DropdownMenuItem({ item, index, link, handleSelect, clas
             return <Pressable onPress={(event) => handleSelect(event, item)}>{item.title}</Pressable>;
         }*/
             if (typeof item.title !== 'string') {
-                return item.title;  // без внешнего Pressable — onPress уже внутри MenuItemEx
+                return item.title;  // no outer Pressable — onPress is already handled inside MenuItemEx
             }
         return item.title;
     }

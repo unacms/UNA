@@ -5,8 +5,10 @@ import { View, Row } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
 import { useState } from 'react';
 import { fetcher } from 'app/lib/fetcher';
+import { useTranslation } from 'react-i18next'
 
 export default function Unit(props) {
+    const { t } = useTranslation()
     const [state, setState] = useState(false);
 
     const processInvitation = async (request_url) => {
@@ -22,8 +24,8 @@ export default function Unit(props) {
     if (data?.meta?.items?.[0] == 'invitation')
         sMeta = (
             <Row className='gap-x-2'>
-                <Button title="Accept" size="sm" variant="secondary" rounded onPress={() => { processInvitation(data.callback_accept) }} />
-                <Button title="Decline" size="sm" variant="secondary" rounded onPress={() => { processInvitation(data.callback_decline) }} />
+                <Button title={t('Accept')} size="sm" variant="secondary" rounded onPress={() => { processInvitation(data.callback_accept) }} />
+                <Button title={t('Decline')} size="sm" variant="secondary" rounded onPress={() => { processInvitation(data.callback_decline) }} />
             </Row>
         )
     return (

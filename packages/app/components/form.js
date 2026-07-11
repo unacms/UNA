@@ -10,6 +10,7 @@ import { FormInstanceProvider } from 'app/context/form-instance';
 import useDebounce from 'app/lib/hooks/debounce'
 import { Button } from 'app/design/controls';
 import useFetchForm from 'app/lib/hooks/fetch'
+import { useTranslation } from 'react-i18next'
 
 const isWeb = Platform.OS === 'web';
 
@@ -56,6 +57,7 @@ export default function Form({
     exProps,
     request
 }) {
+    const { t } = useTranslation();
     const isAutoChange = !!onChange;
     const { auto_focus, ...formProps } = initedFormProps ?? {};
 
@@ -469,7 +471,7 @@ export default function Form({
                         {inputs}
                         {(isAutoChange) && <Row className={`items-center justify-between  ${layout === 'hor' ? ' ' : ' '} `}>
                             {(stableStringify(defaultFormValues) != stableStringify(currentFormValues)) && <Button
-                                title='Reset Filters'
+                                title={t('Reset Filters')}
                                 startDecorator='X'
                                 size='sm'
                                 fullWidth

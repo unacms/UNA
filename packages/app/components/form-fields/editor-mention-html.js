@@ -1,8 +1,8 @@
-// Конвертация между <mention> (react-native-enriched-html) и
-// UNA-форматом <a class="bx-mention-link" data-profile-id href>.
+// Convert between <mention> (react-native-enriched-html) and
+// UNA's <a class="bx-mention-link" data-profile-id href> format.
 
 const MENTION_TAG_RE = /<mention\b([^>]*)>([\s\S]*?)<\/mention>/gi
-// ссылки UNA с классом bx-mention-link или bx-tag
+// UNA links with class bx-mention-link or bx-tag
 const UNA_LINK_RE = /<a\b([^>]*?\bclass="[^"]*\b(?:bx-mention-link|bx-tag)\b[^"]*"[^>]*?)>([\s\S]*?)<\/a>/gi
 
 function attr(attrs, name) {
@@ -10,7 +10,7 @@ function attr(attrs, name) {
     return m ? m[1] : ''
 }
 
-// При сохранении: <mention> -> <a class="bx-mention-link">
+// On save: <mention> -> <a class="bx-mention-link">
 export function mentionsToUnaLinks(html) {
     if (!html) return html
     return html.replace(MENTION_TAG_RE, (_full, attrs, inner) => {
@@ -27,8 +27,8 @@ export function mentionsToUnaLinks(html) {
     })
 }
 
-// При загрузке: <a class="bx-mention-link"> -> <mention> (чтобы упоминания
-// в существующем контенте снова стали редактируемыми упоминаниями)
+// On load: <a class="bx-mention-link"> -> <mention> (so mentions in existing
+// content become editable mention nodes again)
 export function unaLinksToMentions(html) {
     if (!html) return html
     return html.replace(UNA_LINK_RE, (_full, attrs, inner) => {
@@ -43,7 +43,7 @@ export function unaLinksToMentions(html) {
         const display = `${indicator}${name}`
         const idAttr = profileId ? ` data-profile-id="${profileId}"` : ''
         const hrefAttr = href ? ` href="${href}"` : ''
-        // двойные кавычки обязательны для корректного парсинга (issue #404)
+        // double quotes are required for correct parsing (issue #404)
         return `<mention indicator="${indicator}" text="${display}"${idAttr}${hrefAttr}>${display}</mention>`
     })
 }

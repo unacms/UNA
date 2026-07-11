@@ -20,6 +20,7 @@ import semver from 'semver';
 import { Card } from 'app/ui/molecules/card'
 import { FormModalHost } from 'app/ui/molecules/form_modal';
 import { VersionIncompatible, VersionWarning } from 'app/ui/molecules/version-notice';
+import { useTranslation } from 'react-i18next';
 
 function WindowSizeSync() {
     const { width, height } = useWindowDimensions();
@@ -30,6 +31,7 @@ function WindowSizeSync() {
 }
 
 export default function Layouts({ path, data }) {
+    const { t } = useTranslation();
     const uri = data?.uri
     const url = data?.url
     const isWeb = Platform.OS === 'web';
@@ -135,7 +137,7 @@ function PageLayoutContent({ layout, data }) {
         if (currentUser?.menu?.items?.length > 1) {
             return (
                 <Card className='mx-auto my-4'>
-                    <Text className='text-card-foreground text-base font-semibold text-center'>Create a profile...</Text>
+                    <Text className='text-card-foreground text-base font-semibold text-center'>{t('Create a profile to continue')}</Text>
                     <Row className='gap-x-3'>
                         {currentUser.menu.items.map(item => {
                             return (<ButtonLink href={item.link} key={item.name} title={item.title} startDecorator={item.icon} />);

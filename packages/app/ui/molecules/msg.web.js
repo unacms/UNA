@@ -2,8 +2,10 @@ import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
+import { useTranslation } from 'react-i18next';
 
 export default function ElementMsg(props) {
+    const { t } = useTranslation();
 
     const handleOk = async () => {
         props.handleOk();
@@ -17,7 +19,7 @@ export default function ElementMsg(props) {
                     <Icon icon="Info" size={24} />
                     <Text className=" text-base text-card-foreground">{props.title}</Text>
                 </Row>
-                <Row className='justify-center items-center min-w-[100px] mx-auto'><Button variant="primary" fullWidth size="base" title="OK" onPress={() => handleOk()} /></Row>
+                <Row className='justify-center items-center min-w-[100px] mx-auto'><Button variant="primary" fullWidth size="base" title={t('OK')} onPress={() => handleOk()} /></Row>
             </View>
         </Modal>
 

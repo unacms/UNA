@@ -5,8 +5,10 @@ import { fetcher } from 'app/lib/fetcher';
 import { APP_URL } from 'app/config';
 import { View } from 'app/design/view'
 import { Button } from 'app/design/controls';
+import { useTranslation } from 'react-i18next';
 
 export default function NativeStripe({ seller_id, items, payment_type }) {
+    const { t } = useTranslation();
     const [publishableKey, setPublishableKey] = useState('');
     const [clientSecret, setClientSecret] = useState('');
     const { initPaymentSheet, presentPaymentSheet } = useStripe();
@@ -69,24 +71,24 @@ export default function NativeStripe({ seller_id, items, payment_type }) {
                 merchantDisplayName: 'Example, Inc.',
             });
             if (error) {
-                console.error('Ошибка инициализации PaymentSheet:', error);
+                console.error(t('payment_init_error'), error);
             }
         })();
     }, [clientSecret]);
     const onPayPress = async () => {
         const { error } = await presentPaymentSheet();
         if (error) {
-            console.error('Ошибка при оплате:', error);
-            Alert.alert('Ошибка', error.message);
+            console.error(t('payment_error'), error);
+            Alert.alert(t('Error'), error.message);
         } else {
-            Alert.alert('Успех', 'Оплата прошла успешно!');
+            Alert.alert(t('Success'), t('payment_success_message'));
         }
     };
 
     return (
         <View className='p-4'>
             <Button
-                title="Pay"
+                title={t('Pay')}
                 onPress={onPayPress}
                 disabled={!clientSecret}
             />

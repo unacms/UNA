@@ -70,8 +70,8 @@ export default function Unit(props) {
                             </View>
                             <View className="flex-row w-full gap-x-2">
 
-                                {!!data.callback_accept && <Button title="Accept" size="sm" fullWidth variant="primary" onPress={() => { processInvitation(data.callback_accept) }} />}
-                                {!!data.callback_decline && <Button title="Decline" size="sm" fullWidth variant="secondary" onPress={() => { processInvitation(data.callback_decline) }} />}
+                                {!!data.callback_accept && <Button title={t('Accept')} size="sm" fullWidth variant="primary" onPress={() => { processInvitation(data.callback_accept) }} />}
+                                {!!data.callback_decline && <Button title={t('Decline')} size="sm" fullWidth variant="secondary" onPress={() => { processInvitation(data.callback_decline) }} />}
                                 {!!data.redirect_url && <ButtonLink href={data.redirect_url} title={data.redirect_title} size="sm" fullWidth variant="secondary" />}
                             </View>
                         </View>
@@ -98,7 +98,7 @@ export default function Unit(props) {
                     </Text>
                     <View className="flex-none">
                         <Row className='gap-2'>
-                            {!!data.callback_accept && <Button title="Accept" size="xs" variant="primary" rounded onPress={() => { processInvitation(data.callback_accept) }} />}
+                            {!!data.callback_accept && <Button title={t('Accept')} size="xs" variant="primary" rounded onPress={() => { processInvitation(data.callback_accept) }} />}
                             {!!data.callback_decline && <Button startDecorator="X" size="xs" variant="default" rounded onPress={() => { processInvitation(data.callback_decline) }} />}
                             {!!data.redirect_url && <Link href={data.redirect_url}><Button title={data.redirect_title} size="xs" fullWidth variant="default" /></Link>}
                         </Row>

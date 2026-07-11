@@ -107,9 +107,9 @@ export default function RftTextEnriched({
     const { t } = useTranslation()
     const themeName = useThemeName() || 'light'
 
-    // Веб-реализация enriched-html построена на Tiptap, который падает при SSR
-    // (immediatelyRender нельзя пробросить через публичный API). На вебе ждём
-    // монтирования на клиенте; на нативе рендерим сразу.
+    // The web enriched-html build uses Tiptap, which crashes during SSR
+    // (immediatelyRender cannot be passed through the public API). On web we wait
+    // for client mount; on native we render immediately.
     const [mounted, setMounted] = useState(Platform.OS !== 'web')
     useEffect(() => { setMounted(true) }, [])
 
@@ -120,7 +120,7 @@ export default function RftTextEnriched({
     // to the default anchored placement, e.g. on native).
     const [caretPos, setCaretPos] = useState(null)
 
-    // ---- mention fetch url (как в tentap-версии) ----
+    // ---- mention fetch url (same as tentap version) ----
     const object_privacy_view =
         formContext.watch('object_privacy_view') ||
         formContext.watch('cmt_privacy_view')
@@ -140,7 +140,7 @@ export default function RftTextEnriched({
         userId: currentUser?.id,
     })
 
-    // ---- начальное/внешнее значение ----
+    // ---- initial / external value ----
     const lastSetValue = useRef(value)
     useEffect(() => {
         if (editorRef.current && value !== lastSetValue.current) {
@@ -149,7 +149,7 @@ export default function RftTextEnriched({
         }
     }, [value])
 
-    // ---- emitter (focus/blur/set_content), как в tentap-версии ----
+    // ---- emitter (focus/blur/set_content), same as tentap version ----
     useEffect(() => {
         const sub = emitter.addListener('editor', (data) => {
             if (!editorRef.current) return
@@ -259,7 +259,7 @@ export default function RftTextEnriched({
         }
     }, [isPlainText])
 
-    // ---- вставка изображений (paste) ----
+    // ---- image paste ----
     const onPasteImages = useCallback((e) => {
         const imgs = e?.nativeEvent?.images || []
         if (!imgs.length) return
@@ -410,7 +410,7 @@ export default function RftTextEnriched({
         }
     }, [isWeb, mounted, submitOnEnter, isCommentsEditor])
 
-    // ---- стили (htmlStyle) из темы ----
+    // ---- styles (htmlStyle) from theme ----
     const htmlStyle = useMemo(() => {
         const isDark = themeName === 'dark'
         const themeKey = isDark ? 'dark' : 'light'
@@ -428,8 +428,8 @@ export default function RftTextEnriched({
 
     const editorTextColor = themeName === 'dark' ? 'rgba(225,230,240,1)' : 'rgba(30,40,55,1)'
 
-    // До монтирования на клиенте (web SSR) рендерим плейсхолдер нужной высоты,
-    // чтобы не инициализировать Tiptap на сервере и избежать hydration mismatch.
+    // Before client mount (web SSR), render a placeholder of the right height so
+    // we do not initialize Tiptap on the server and avoid a hydration mismatch.
     if (!mounted) {
         return (
             <View

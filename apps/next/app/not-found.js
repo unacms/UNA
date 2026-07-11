@@ -8,6 +8,7 @@ import { cache } from 'react'
 import { UNA_URL, UNA_API_KEY } from 'app/config';
 import { cookies } from 'next/headers'
 import { appSetting } from 'app/config';
+import { resolveServerLangCode } from '../lib/resolve-lang'
 
 const SITE_TITLE = appSetting('config', 'title');;
 // Mirror the resilience tuning used by getRemoteSettings() in packages/app/config.js
@@ -46,7 +47,11 @@ export const getData = cache(async () => {
         },
         cache: 'no-store'
     };
-    const l = UNA_URL + '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + 'home';
+    const langCode = await resolveServerLangCode();
+    let l = UNA_URL + '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + 'home';
+    if (langCode) {
+        l += '&lang=' + encodeURIComponent(langCode);
+    }
 
     for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
         const controller = new AbortController();

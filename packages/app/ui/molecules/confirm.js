@@ -1,9 +1,11 @@
 
 import { Alert } from 'react-native';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 
-export default function ElementConfirm({handleOk, handleCancel, onVisible, title, text, titleOk = "OK", titleCancel = "Cancel"}) {
+export default function ElementConfirm({handleOk, handleCancel, onVisible, title, text, titleOk, titleCancel}) {
+    const { t } = useTranslation();
     const _handleCancel = async () => {
         handleCancel();
     }
@@ -14,8 +16,8 @@ export default function ElementConfirm({handleOk, handleCancel, onVisible, title
 
     if (onVisible) {
         Alert.alert(title, text, [
-            { text: titleOk, onPress: () => _handleOk() },
-            { text: titleCancel, onPress: () => _handleCancel() },
+            { text: titleOk ?? t('OK'), onPress: () => _handleOk() },
+            { text: titleCancel ?? t('Cancel'), onPress: () => _handleCancel() },
         ]);
     }
 

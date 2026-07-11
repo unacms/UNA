@@ -32,8 +32,8 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
     const insets = useSafeAreaInsets();
     const { currentUser } = useCurrentUser();
 
-    // iOS: расстояние от верха экрана до KbAvoidingView = safe area + паддинг модалки (16) + шапка формы (~48) + gap (12).
-    // Android окно ресайзится само, оставляем прежний рабочий offset.
+    // iOS: distance from screen top to KbAvoidingView = safe area + modal padding (16) + form header (~48) + gap (12).
+    // Android resizes the window itself, so keep the previous working offset.
     const modalOffset = isIos ? insets.top + 76 : 60;
 
     const rawEditorText = formContext.watch('text');

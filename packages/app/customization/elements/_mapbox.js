@@ -50,7 +50,7 @@ export default function ElementMapBox({ data, blockWrapperProps }) {
     };
 
     const convertLayoutToStyle = (p) => {
-        if (!p) return {}; // Проверяем, что p существует
+        if (!p) return {}; // Guard: p may be missing
 
         const mapping = {
             layout: {
@@ -182,7 +182,7 @@ export default function ElementMapBox({ data, blockWrapperProps }) {
                             <View className="bg-white p-2 rounded-lg shadow-sm max-w-xs">
                                 {popupInfo.object.link ? <Link href={popupInfo.object.link}><Text className=" text-base font-medium mb-2">{popupInfo.object.name}{popupInfo.object.facility_name}{popupInfo.object.order_name}</Text></Link> : <Text className=" text-base font-medium mb-2">{popupInfo.object.name}{popupInfo.object.facility_name}{popupInfo.object.order_name}</Text>}
                                 {Object.entries(popupInfo.object)
-                                    .filter(([key]) => Object.keys(infoFields).includes(key)) // Убираем ненужные ключи
+                                    .filter(([key]) => Object.keys(infoFields).includes(key)) // Drop keys not in infoFields
                                     .map(([key, value]) => (
                                         <Text key={key} className="mb-2">
                                             {infoFields[key]}{value}

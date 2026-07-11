@@ -33,8 +33,10 @@ import { getComponent } from 'app/components/registry';
 import { BrowseItem } from 'app/lib/common-helpers'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { layoutForList } from 'app/customization/functions'
+import { useTranslation } from 'react-i18next'
 export default function Browse(props) {
     const isWeb = Platform.OS === 'web'
+    const { t } = useTranslation()
     const { currentUser } = useCurrentUser();
 
     const Form = getComponent('element', 'form');
@@ -321,7 +323,7 @@ export default function Browse(props) {
                     }
                 }}
                 variant="primary"
-                title="Show New"
+                title={t('Show New')}
                 size="sm"
             />
         </View></BlockWrapper>

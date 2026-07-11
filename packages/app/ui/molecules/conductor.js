@@ -27,6 +27,7 @@ import {
     setCachedConductorState,
     setListScrollOffset,
 } from 'app/lib/tab-page-cache';
+import { useTranslation } from 'react-i18next';
 import {
     getSkeletonByEndPoint,
     layoutForList,
@@ -429,6 +430,7 @@ const TabScene = React.memo(({
 });
 
 export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
+    const { t } = useTranslation();
     isHideDefaultHeader = isHideDefaultHeader || false;
     useSectionAsMenu = useSectionAsMenu || false;
     skeleton = skeleton || '';
@@ -730,6 +732,16 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     }, [onStartRefresh]);
 
     useEffect(() => {
+        const subscription = emitter.addListener('page', (payload) => {
+            if (!isFocusedRef.current) return;
+            if (payload?.action === 'reload') {
+                onStartRefresh();
+            }
+        });
+        return () => subscription.remove();
+    }, [onStartRefresh]);
+
+    useEffect(() => {
         const subscription = emitter.addListener('conductor', (payload) => {
             if (!isFocusedRef.current) return;
             if (payload?.action !== 'reset_to_first') return;
@@ -844,17 +856,17 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     }, [setFilterValue, setBottomSheetData]);
 
     const showFilters = useCallback(() => {
-        setBottomSheetData({ title: 'Filters', content: <AddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} />, showClose: true, snapPoints: ['60%', '60%'] });
-    }, [leftSideBarBlocks, data, onFormSubmit, layoutName]);
+        setBottomSheetData({ title: t('Filters'), content: <AddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} />, showClose: true, snapPoints: ['60%', '60%'] });
+    }, [leftSideBarBlocks, data, onFormSubmit, layoutName, t, setBottomSheetData]);
 
     const filter = useMemo(
         () =>
             isShowFilters ? (
                 <View className="items-start ml-3 mt-2 mb-1">
-                    <Button title="Filters" variant="default" size="sm" rounded onPress={showFilters} />
+                    <Button title={t('Filters')} variant="default" size="sm" rounded onPress={showFilters} />
                 </View>
             ) : null,
-        [isShowFilters, showFilters]
+        [isShowFilters, showFilters, t]
     );
 
     const coverMode = appSetting(
@@ -978,7 +990,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     return (
         <View className="w-full h-full ">
             <View className="w-full flex-1 ">
-                <Snackbar visible={snackbarVisible} onPress={showNewContent2} onDismiss={() => setSnackbarVisible(false)} variant="primary" title="Show New Posts" size="sm" />
+                <Snackbar visible={snackbarVisible} onPress={showNewContent2} onDismiss={() => setSnackbarVisible(false)} variant="primary" title={t('Show New Posts')} size="sm" />
                 {useLocalHeader && sceneHeaderComp}
                 <TabScene {...tabSceneProps} />
             </View>

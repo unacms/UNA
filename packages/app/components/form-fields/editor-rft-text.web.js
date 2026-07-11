@@ -7,9 +7,9 @@ const EditorInner = lazy(() => import('./editor-inner'));
 const EditorInnerEnriched = lazy(() => import('./editor-inner-enriched'));
 
 export default function RftText(props) {
-    // enriched-html web использует Tiptap под капотом и падает при SSR
-    // (immediatelyRender нельзя пробросить через публичный API) — рендерим
-    // редактор только после монтирования на клиенте.
+    // enriched-html web uses Tiptap under the hood and crashes during SSR
+    // (immediatelyRender cannot be passed through the public API) — render
+    // the editor only after client mount.
     const [mounted, setMounted] = useState(false);
     useEffect(() => setMounted(true), []);
 

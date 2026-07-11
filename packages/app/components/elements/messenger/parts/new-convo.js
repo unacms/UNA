@@ -7,8 +7,10 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { SelectUsers } from 'app/components/form-fields/initial_members';
 import Loading from 'app/ui/atoms/loading'
 import { FormError } from 'app/components/form-fields/_field';
+import { useTranslation } from 'react-i18next'
 
 export default function CreateConvo({ onSave, initedData = [], convoId }) {
+    const { t } = useTranslation();
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const handleSave = async (data) => {
@@ -36,7 +38,7 @@ export default function CreateConvo({ onSave, initedData = [], convoId }) {
             {!loading && <SelectUsers onlyOnce={false} onSave={handleSave} requestUrl={'/api.php?r=bx_messenger/search_users/Services&params='} initedData={initedData} />}
             {loading && <View className='w-full pt-8 items-center'>
                 <Loading />
-                <Text className="pt-8 text-base text-muted-foreground  animate-pulse  font-medium">Creating new conversation, please wait...</Text>
+                <Text className="pt-8 text-base text-muted-foreground  animate-pulse  font-medium">{t('messenger_creating')}</Text>
             </View>
             }
 
@@ -45,6 +47,7 @@ export default function CreateConvo({ onSave, initedData = [], convoId }) {
 };
 
 export function CreateConvoButton({ onSave, onShow, size = 'small', variant = 'secondary' }) {
+    const { t } = useTranslation();
     const { setBottomSheetData } = useBottomSheetData();
 
     const [showModal, setShowModal] = useState(false);
@@ -64,11 +67,11 @@ export function CreateConvoButton({ onSave, onShow, size = 'small', variant = 's
     if (size == 'small')
         btn = <View key={`add-1`} ><Button startDecorator={"Plus"} variant={variant} rounded onPress={() => newConvo()} /></View>
     else {
-        btn = <Button startDecorator={"Plus"} variant="secondary" title="Create your first conversation" rounded onPress={() => { newConvo(), onShow() }} />
+        btn = <Button startDecorator={"Plus"} variant="secondary" title={t('messenger_create_first')} rounded onPress={() => { newConvo(), onShow() }} />
     }
     return <>
         {btn}
-        <Modal title="Add users to start messaging" onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
+        <Modal title={t('messenger_add_users')} onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
             <CreateConvo onSave={onSaveHandler} />
         </Modal>
     </>

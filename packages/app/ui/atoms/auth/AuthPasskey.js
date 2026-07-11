@@ -1,8 +1,10 @@
 import { View, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { Button } from 'app/design/controls';
+import { useTranslation } from 'react-i18next';
 
 export default function AuthPasskey({ button }) {
+    const { t } = useTranslation();
     const handlePasskeyLogin = () => {
         // Actual Passkey login logic will go here
     };
@@ -11,7 +13,7 @@ export default function AuthPasskey({ button }) {
         <View className='flex-1 min-w-200'>
             <Button
                 onPress={handlePasskeyLogin}
-                title="Use Passkey"
+                title={t('Use Passkey')}
                 startDecorator="KeySquare" // Changed to string
                 fullWidth
                 size="base"

@@ -12,9 +12,9 @@ export const MENU_FOOTER_CLASSES = 'flex w-full items-center border-t border-bor
 // Settings use the historical misspelling; keep this key aligned with settings/layout.js.
 const AVAILABLE_LANGS_SETTING_KEY = 'avaliable_langs';
 const FOOTER_THEME_ITEMS = [
-    { id: 'auto', title: 'Auto', icon: 'Eclipse' },
-    { id: 'light', title: 'Light', icon: 'Sun' },
-    { id: 'dark', title: 'Dark', icon: 'Moon' },
+    { id: 'auto', titleKey: 'theme_footer_auto', icon: 'Eclipse' },
+    { id: 'light', titleKey: 'theme_footer_light', icon: 'Sun' },
+    { id: 'dark', titleKey: 'theme_footer_dark', icon: 'Moon' },
 ];
 
 const linkVariantToNeoStyle = {
@@ -80,13 +80,13 @@ function FooterThemeSwitcher({ visualProps }) {
             key: theme.id,
             id: theme.id,
             name: theme.id,
-            title: t(theme.title),
+            title: t(theme.titleKey),
             icon: theme.icon,
             selected: currentThemeName === theme.id,
         }))
     ), [currentThemeName, t]);
     const currentThemeItem = FOOTER_THEME_ITEMS.find((theme) => theme.id === currentThemeName) ?? FOOTER_THEME_ITEMS[0];
-    const themeLabel = t(currentThemeItem.title);
+    const themeLabel = t(currentThemeItem.titleKey);
 
     return (
         <DropdownMenu

@@ -8,6 +8,7 @@ import { View } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { Button } from 'app/design/controls';
 import * as SplashScreen from 'expo-splash-screen';
+import { useTranslation } from 'react-i18next';
 
 /** Don't block UI on the first offline signal (iOS often sends a false offline on resume). */
 const OFFLINE_DEBOUNCE_MS = 1500;
@@ -22,6 +23,7 @@ function isOnline(state) {
 }
 
 export function NetworkStatus({ children }) {
+    const { t } = useTranslation();
     /** null = no first NetInfo response yet (show neither tabs nor false offline) */
     const [blocked, setBlocked] = useState(null);
 
@@ -119,9 +121,9 @@ export function NetworkStatus({ children }) {
         return (
             <View className="flex-1 items-center justify-center bg-background p-6 gap-4 ">
                 <Text className="text-center text-base text-foreground">
-                    No internet connection
+                    {t('No internet connection')}
                 </Text>
-                <View><Button title="Check connection" onPress={recheck} /></View>
+                <View><Button title={t('Check connection')} onPress={recheck} /></View>
 
             </View>
         );
