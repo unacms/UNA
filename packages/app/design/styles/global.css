@@ -158,7 +158,7 @@
         flex-wrap: nowrap;
     }
     /* Web `ScrollView` inner content — vertical (view.web.js). */
-    .neo-sv-с {
+    .neo-sv-c {
         display: flex;
         min-width: 0;
         flex-direction: column;

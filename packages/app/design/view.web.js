@@ -319,7 +319,7 @@ export const ScrollView = interopRender(
                 {...domProps}
             >
                 <div
-                    className={cn(horizontal ? 'neo-sh-с' : 'neo-sv-с', contentContainerClassName)}
+                    className={cn(horizontal ? 'neo-sh-c' : 'neo-sv-c', contentContainerClassName)}
                     style={innerStyle}
                 >
                     {children}
