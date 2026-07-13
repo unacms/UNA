@@ -25,13 +25,14 @@ const minutes = Array.from({ length: 60 }, (_, i) => {
 
 function TimeSelectField({ value, options, onChange, label }) {
     return (
-        <View className="h-9 w-20 shrink-0">
+        <View className="min-h-9 w-20 shrink-0">
             <Dropdown
                 labelField="label"
                 valueField="value"
                 onChange={onChange}
                 data={options}
                 value={value}
+                size="small"
                 accessibilityLabel={label}
             />
         </View>
@@ -347,7 +348,7 @@ export default function ({ name, value = '', type, onChange, children }) {
 
                 {bIsTime && (
                     timeMode === 'select' ? (
-                        <Row className="h-11  w-auto shrink-0 flex-none items-center gap-1 px-1.5">
+                        <Row className="min-h-10 w-auto shrink-0 flex-none items-center gap-1 px-1.5">
                             <TimeSelectField
                                 value={tValue[0]}
                                 options={hours}
@@ -365,7 +366,7 @@ export default function ({ name, value = '', type, onChange, children }) {
                             />
                         </Row>
                     ) : (
-                        <Row className="h-11 w-auto shrink-0 flex-none items-center gap-1 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg px-1.5">
+                        <Row className="min-h-10 w-auto shrink-0 flex-none items-center gap-1 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg px-1.5">
                             <TimeSpinField
                                 value={tValue[0]}
                                 onChangeText={text => handleChangeTime(text, 23, 'h')}

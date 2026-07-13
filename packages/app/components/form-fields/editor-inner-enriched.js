@@ -435,7 +435,7 @@ export default function RftTextEnriched({
             <View
                 className={`flex-auto ${isToolBar
                     ? ' px-3 py-2 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg flex-auto overflow-hidden '
-                    : (bg == 'transparent' ? '' : cn(inputSettings.base, inputSettings.rounded.default, inputSettings.size.default))
+                    : (bg == 'transparent' ? '' : cn(inputSettings.base, inputSettings.rounded.default, inputSettings.size.regular))
                     }`}
                 style={{ minHeight: initialHeight }}
             />
@@ -457,7 +457,7 @@ export default function RftTextEnriched({
             ref={containerRef}
             className={`flex-auto web:cursor-text ${isToolBar
                 ? ' px-3 py-2 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg flex-auto overflow-hidden text-card-foreground '
-                : (bg == 'transparent' ? '' : cn(inputSettings.base, inputSettings.rounded.default, inputSettings.size.default))
+                : (bg == 'transparent' ? '' : cn(inputSettings.base, inputSettings.rounded.default, inputSettings.size.regular))
                 }`}
         >
             {suggestions.length > 0 && (

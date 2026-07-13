@@ -37,7 +37,7 @@ export const PageHeaderSmall = ({ pageData }) => {
             <Link href="/home" alt="Home" className="items-center">
                 {appStatic('logo')}
             </Link>
-            <HeaderElement mode="small" url={pageData?.url} uri={pageData?.uri} />
+            <HeaderElement url={pageData?.url} uri={pageData?.uri} />
         </Row>
     );
 };
@@ -261,7 +261,7 @@ export const PageHeaderBody = memo(({
                 {isWeb && <MenuTop url={pageData?.url} uri={pageData?.uri} />}
                 <View className={' ' + appSetting('layout', 'header', 'content_right')}>
                 
-                    {header.headerActions ?? <HeaderElement mode="small" url={pageData?.url} uri={pageData?.uri} />}
+                    {header.headerActions ?? <HeaderElement url={pageData?.url} uri={pageData?.uri} />}
                 
                 </View>
             </Row>

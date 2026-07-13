@@ -17,7 +17,8 @@ export const InputRounded = {
 
 export const InputSize = {
     small: 'small',
-    default: 'default',
+    regular: 'regular',
+    large: 'large',
 } as const;
 
 interface CustomInputProps extends Omit<TextInputProps, 'style'> {
@@ -44,9 +45,9 @@ const getInputStyleProps = (style: any) =>
         : {};
 
 export const Input = forwardRef<TextInput, CustomInputProps>(
-    ({ className, style, rounded = InputRounded.default, size = InputSize.default, ...props }, ref) => (
+    ({ className, style, rounded = InputRounded.default, size = InputSize.regular, ...props }, ref) => (
         <TextInputDef
-            className={`${className} ${inputSettings.base} ${inputSettings.rounded[rounded]} ${inputSettings.size[size]}`}
+            className={`${className} ${inputSettings.base} ${inputSettings.rounded[rounded]} ${inputSettings.size[size] ?? inputSettings.size.regular}`}
             {...getInputStyleProps(style)}
             {...props}
             ref={ref}
@@ -109,14 +110,19 @@ export const Hidden = forwardRef<TextInput, CustomInputProps>(
 
 interface CustomPickerProps extends PickerProps {
     className?: string;
+    size?: keyof typeof InputSize;
 }
 
 interface PickerStyledRefProps extends PickerProps {
     classes?: string;
     className?: string;
+    size?: keyof typeof InputSize;
 }
 
-const pickerSurfaceClass = `${inputSettings.select} ${inputSettings.rounded.default} ${inputSettings.size.default}`;
+const getPickerSurfaceClass = (size?: keyof typeof InputSize) => {
+    const sizeClass = inputSettings.size[size ?? InputSize.regular] ?? inputSettings.size.regular;
+    return `${inputSettings.select} ${inputSettings.rounded.default} ${sizeClass}`;
+};
 const Picker = PickerDef as any;
 
 const getPickerStyleProps = (style: any) =>
@@ -124,9 +130,9 @@ const getPickerStyleProps = (style: any) =>
         ? { style: [isIos && { borderCurve: 'continuous' }, style].filter(Boolean) }
         : {};
 
-export const PickerStyled = ({ className, style, ...props }: CustomPickerProps) => (
+export const PickerStyled = ({ className, style, size = InputSize.regular, ...props }: CustomPickerProps) => (
     <Picker
-        className={`${pickerSurfaceClass} ${className || ''}`}
+        className={`${getPickerSurfaceClass(size)} ${className || ''}`}
         {...getPickerStyleProps(style)}
         {...props}
     />
@@ -134,11 +140,11 @@ export const PickerStyled = ({ className, style, ...props }: CustomPickerProps) 
 PickerStyled.displayName = 'PickerStyled';
 
 export const PickerStyledRef = forwardRef<any, PickerStyledRefProps>(
-    ({ classes, className, style, ...props }, ref) => (
+    ({ classes, className, style, size = InputSize.regular, ...props }, ref) => (
         <View className={` ${isWeb ? 'flex-auto items-center flex-row' : ''} `}>
             <Picker 
                 ref={ref} 
-                className={`${classes ? classes : pickerSurfaceClass} ${className || ''} w-full`}
+                className={`${classes ? classes : getPickerSurfaceClass(size)} ${className || ''} w-full`}
                 {...getPickerStyleProps(style)}
                 {...props}
             />
@@ -152,9 +158,9 @@ export const PickerStyledRef = forwardRef<any, PickerStyledRefProps>(
 );
 
 
-export const PickerStyledIos = ({ className, style, ...props }: CustomPickerProps) => (
+export const PickerStyledIos = ({ className, style, size = InputSize.regular, ...props }: CustomPickerProps) => (
     <Picker
-        className={`${pickerSurfaceClass} ${className || ''}`}
+        className={`${getPickerSurfaceClass(size)} ${className || ''}`}
         {...getPickerStyleProps(style)}
         {...props}
     />

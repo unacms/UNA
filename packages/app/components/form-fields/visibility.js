@@ -3,7 +3,7 @@ import Field, { getValidationRules } from './_field';
 import { useFormContext, useController } from 'react-hook-form';
 import { Button, Modal, Hidden } from 'app/design/controls'
 import { getVisibilityValues } from './select';
-import { visibilityById } from 'app/lib/util';
+import { visibilityById, appSetting } from 'app/lib/util';
 import RbList from 'app/ui/molecules/radio_list';
 import ChkList from 'app/ui/molecules/checkbox_list';
 import { View, Row, Pressable } from 'app/design/view'
@@ -12,6 +12,8 @@ import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile';
 import { useTheme } from 'app/design/theme';
 import { useTranslation } from 'react-i18next'
+
+const inputSettings = appSetting('theme', 'inputs');
 
 export default function (props) {
     const name = props.name;
@@ -237,7 +239,7 @@ export default function (props) {
         <>
             {modalElement}
             <Field {...props} error2={formContext.formState.errors[name]}>
-                <View className=' bg-input/60 shadow-btn-outline dark:shadow-btn-outline-deep rounded-lg w-full flex-auto items-center flex-row flex-wrap p-1 gap-1 min-h-11'>
+                <View className={`bg-input/60 shadow-btn-outline dark:shadow-btn-outline-deep rounded-lg w-full flex-auto items-center flex-row flex-wrap p-1 gap-1 ${inputSettings.surface_size?.regular ?? 'min-h-10'}`}>
                     <Button
                         title={displayText}
                         startDecorator="Globe"

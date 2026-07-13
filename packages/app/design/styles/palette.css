@@ -105,7 +105,7 @@
             --destructive: var(--red);
             --destructive-foreground: var(--neutral-950);
             --border: var(--neutral-800);
-            --input: var(--neutral-700);
+            --input: var(--neutral-800);
             --ring: var(--accent-500);
             --segment: var(--neutral-800);
             --segment-foreground: var(--neutral-200);

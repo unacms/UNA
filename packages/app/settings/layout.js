@@ -72,7 +72,7 @@ export const settingsLayout = {
             content_left: 'flex-none 2xl:w-full 2xl:max-w-1/4 px-4 gap-2',
             content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-3xl px-4 ',
             content_right: ' items-end flex-none 2xl:w-full 2xl:max-w-1/4 px-4 gap-2',
-            active_item_indicator: 'absolute -bottom-1 left-0 h-0.5 rounded-full flex-none bg-ring',
+            active_item_indicator: 'absolute -bottom-2 left-0 h-0.5 rounded-full flex-none bg-ring',
             active_item_indicator_bg: 'absolute bottom-0 left-0 h-12 w-full overflow-hidden rounded-lg flex-none',
         },
         vertical: {

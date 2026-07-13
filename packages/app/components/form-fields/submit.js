@@ -35,7 +35,7 @@ export default function FormFieldSubmit(props) {
         icon_only = false,
         rounded = false,
         icon,
-        size = 'base',
+        size = 'lg',
         variant,
         style: neoStyle,
         alt,
@@ -76,7 +76,7 @@ export default function FormFieldSubmit(props) {
     const fullWidth = !notFullWidth;
     const controlSize = SIZE_TO_CONTROL[size] || 'regular';
     const buttonStyle =
-        neoStyle ?? (variant ? VARIANT_TO_STYLE[variant] : undefined) ?? 'glassProminent';
+        neoStyle ?? (variant ? VARIANT_TO_STYLE[variant] : undefined) ?? 'borderedProminent';
     const borderShape = icon_only && rounded
         ? 'circle'
         : rounded

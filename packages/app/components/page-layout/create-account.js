@@ -25,29 +25,15 @@ const isWeb = Platform.OS === 'web'
 function PageContent({ children }) {
     const { t } = useTranslation()
     return (
-        <View className="w-full justify-center max-w-sm xl:max-w-md mx-auto">
-            <View>
-                <Card role="form"
-                    titleId="signup-card-title"
-                    aria-describedby="signup-card-description"
-                    className="sm:py-6 gap-4 sm:gap-6 max-w-sm w-full mx-auto">
-                    <CardHeader className="items-center sm:px-6">
-                        <CardIcon id="signup-card-icon">
-                            <Icon icon="UserRoundPlus" width={32} height={32} className="w-6 h-6 sm:w-8 sm:h-8" />
-                        </CardIcon>
-                        <CardTitle className="text-center" id="signup-card-title">{t('create_account_page_caption')}</CardTitle>
-                        <CardDescription className="text-center">
-                            {t('create_account_page_caption2')}
-                        </CardDescription>
-
-                    </CardHeader>
-                    <CardContent className="sm:px-6 gap-4">
+        <View className="w-full justify-center max-w-sm gap-4 mx-auto">
+     
+            
                         
                             {children}
                             <AuthPanel showSeparator={true} createAccountLink={false} loginLink={false} />
                             <Html customClassName="text-xs text-center text-muted-foreground" data={t('create_account_page_terms')}/>
-                    </CardContent>
-                    <CardFooter className="sm:px-6">
+                    
+                    <View className="sm:px-6">
                         <Row className=" mx-auto gap-1 justify-center items-center text-center">
                             <Text className="text-secondary-foreground text-base ">
                                 {t('create_account_page_already_have')}
@@ -63,11 +49,11 @@ function PageContent({ children }) {
                         </Row>
                         
                         
-                    </CardFooter>
-                </Card>
+                    </View>
+                
 
 
-            </View>
+            
         </View>
     )
 }

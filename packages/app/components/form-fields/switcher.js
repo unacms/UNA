@@ -1,5 +1,5 @@
 import Field from './_field';
-import Switch from 'app/ui/atoms/switcher'
+import Switch, { resolveControlSize } from 'app/ui/atoms/switcher'
 import { useFormContext, useController } from 'react-hook-form';
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
@@ -8,8 +8,11 @@ import { appSetting } from 'app/lib/util'
 const switcherTheme = appSetting('theme', 'switcher');
 
 export default function FormFieldSwitcher(props) {
-    const { name, caption, checked, value } = props;
+    const { name, caption, checked, value, size } = props;
     const formContext = useFormContext();
+    const resolvedSize = resolveControlSize(size);
+    const sizeClass =
+        switcherTheme.size?.[resolvedSize] ?? switcherTheme.size?.regular ?? '';
     
     const initialValue = checked ? 1 : 0;
     
@@ -26,10 +29,11 @@ export default function FormFieldSwitcher(props) {
 
     return (
         <Field {...props}>
-            <View className={switcherTheme['u-controls-switcher-container']}>
+            <View className={`${switcherTheme['u-controls-switcher-container']} ${sizeClass}`}>
                 <Switch
                     onValueChange={handleToggle}
                     value={!!field.value}
+                    size={resolvedSize}
                 />
                 <Text className={switcherTheme['u-controls-switcher-text']}>
                     {caption}

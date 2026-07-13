@@ -14,7 +14,8 @@ export const InputRounded = {
 
 export const InputSize = {
     small: 'small',
-    default: 'default',
+    regular: 'regular',
+    large: 'large',
 } as const;
 
 type CustomInputProps = {
@@ -49,6 +50,7 @@ type InputMultiProps = CustomInputProps & {
 type PickerProps = {
     className?: string;
     classes?: string;
+    size?: keyof typeof InputSize;
     children?: any;
     selectedValue?: any;
     value?: any;
@@ -130,12 +132,12 @@ export const TextInputClear = forwardRef<any, CustomInputProps>(
 TextInputClear.displayName = 'TextInputClear';
 
 export const Input = forwardRef<any, CustomInputProps>(
-    ({ className = '', style, rounded = InputRounded.default, size = InputSize.default, multiline, ...props }, ref) => {
+    ({ className = '', style, rounded = InputRounded.default, size = InputSize.regular, multiline, ...props }, ref) => {
         const Component = multiline ? 'textarea' : 'input';
         return (
             <Component
                 ref={ref}
-                className={`${className} ${inputSettings.base} ${inputSettings.rounded[rounded]} ${inputSettings.size[size]}`}
+                className={`${className} ${inputSettings.base} ${inputSettings.rounded[rounded]} ${inputSettings.size[size] ?? inputSettings.size.regular}`}
                 style={style}
                 {...sanitizeInputProps({ multiline, ...props })}
             />
@@ -196,7 +198,10 @@ export const Hidden = forwardRef<any, CustomInputProps>(
 Hidden.displayName = 'Hidden';
 
 /** Same surface tokens as `Input` (rounded + size) so selects match text fields and superellipse. */
-const pickerSurfaceClass = `${inputSettings.select} ${inputSettings.rounded.default} ${inputSettings.size.default}`;
+const getPickerSurfaceClass = (size?: keyof typeof InputSize) => {
+    const sizeClass = inputSettings.size[size ?? InputSize.regular] ?? inputSettings.size.regular;
+    return `${inputSettings.select} ${inputSettings.rounded.default} ${sizeClass}`;
+};
 
 const optionFromChild = (child: any, index: number) => {
     if (!child) return null;
@@ -208,9 +213,9 @@ const optionFromChild = (child: any, index: number) => {
     );
 }
 
-export const PickerStyled = ({ className, children, selectedValue, value, onValueChange, onChange, ...props }: PickerProps) => (
+export const PickerStyled = ({ className, children, selectedValue, value, onValueChange, onChange, size = InputSize.regular, ...props }: PickerProps) => (
     <select
-        className={`${pickerSurfaceClass} ${className || ''}`}
+        className={`${getPickerSurfaceClass(size)} ${className || ''}`}
         value={selectedValue ?? value}
         onChange={(event) => {
             onChange?.(event);
@@ -224,11 +229,11 @@ export const PickerStyled = ({ className, children, selectedValue, value, onValu
 PickerStyled.displayName = 'PickerStyled';
 
 export const PickerStyledRef = forwardRef<any, PickerProps>(
-    ({ classes, className, children, selectedValue, value, onValueChange, onChange, ...props }, ref) => (
+    ({ classes, className, children, selectedValue, value, onValueChange, onChange, size = InputSize.regular, ...props }, ref) => (
         <View className={` ${isWeb ? 'flex-auto items-center flex-row' : ''} `}>
             <select
                 ref={ref}
-                className={`${classes ? classes : pickerSurfaceClass} ${className || ''} w-full`}
+                className={`${classes ? classes : getPickerSurfaceClass(size)} ${className || ''} w-full`}
                 value={selectedValue ?? value}
                 onChange={(event) => {
                     onChange?.(event);

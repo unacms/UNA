@@ -60,6 +60,7 @@ export default function (props) {
                 onChange={setValueF}
                 value={value}
                 data={values}
+                size={props.size}
             />
         </Field>
     );

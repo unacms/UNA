@@ -51,6 +51,7 @@ export default function Dropdown(props) {
             <PickerStyledRef
             style={Platform.OS === 'web' ? undefined : { color: colors.default }}
             disabled={props?.disabled}
+            size={props.size}
            
                 selectedValue={selectedVal}
                 onValueChange={(itemValue, itemIndex) =>
@@ -67,6 +68,7 @@ export default function Dropdown(props) {
             <Button title={selectedText} onPress={() => setShowImage(true)} />
             <Modal title="Title" id={'dropdown'} onVisible={showImage} onClose={() => setShowImage(false)}>
                 <PickerStyledIos itemStyle={{fontSize:16, color:colors.default }}
+                    size={props.size}
                     selectedValue={selectedVal}
                     onValueChange={(itemValue, itemIndex) =>
                     handleChange(itemValue, itemIndex)

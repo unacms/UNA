@@ -233,7 +233,7 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
         case 'switcher':
             return <>
                 <Switch
-                    size="sm"
+                    size="small"
                     onValueChange={() => toggleSwitch(id, indexRow)}
                     value={cell.data == 'active' || cell.data == '1' ? true : false}
 

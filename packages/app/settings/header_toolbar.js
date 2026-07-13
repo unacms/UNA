@@ -4,8 +4,8 @@ export const settingsHeaderToolbar = {
     header_toolbar: {
         /** Default NeoButton style/size for header toolbar items (per platform). Per-item `props.style` / `props.controlSize` override these. */
         neoButton: {
-            desktop: { style: 'bordered', controlSize: 'regular' },
-            mobile: { style: 'borderless', controlSize: 'regular' },
+            desktop: { style: 'bordered', controlSize: 'large' },
+            mobile: { style: 'borderless', controlSize: 'large' },
         },
         hor: {
             loggedIn: [
@@ -17,11 +17,11 @@ export const settingsHeaderToolbar = {
                 { component: 'account', className: 'hidden lg:block' },
             ],
             loggedOut: [
-                { component: 'link', className: 'items-center sm:hidden', href: "/login", title: 'Log In', props: { neoButton: true, style: "glass", controlSize: "regular", borderShape: "circle", image: "UserRound", accessibilityLabel: "Log In" } },
-                { component: 'link', className: 'items-center hidden sm:block', href: "/login", title: 'Log In', props: { neoButton: true, style: "glass", controlSize: "regular", borderShape: "roundedRectangle", title: 'Log In' } },
-                { component: 'link', className: 'items-center hidden sm:block', href: "/create-account", title: 'Sign Up', props: { neoButton: true, style: "glassProminent", controlSize: "regular", borderShape: "roundedRectangle", title: 'Sign Up' } },
-                { component: 'menu_navigation', className: 'items-center sm:hidden', native: false, props: { style: 'glass', controlSize: 'regular', borderShape: 'circle', image: 'Menu', accessibilityLabel: 'Menu' } },
-                { component: 'menu_navigation', className: 'items-center hidden sm:block lg:hidden', native: false, props: { style: 'glass', controlSize: 'regular', borderShape: 'roundedRectangle', image: 'Menu', accessibilityLabel: 'Menu' } },
+                { component: 'link', className: 'items-center sm:hidden', href: "/login", title: 'Log In', props: { neoButton: true, style: "glass", controlSize: 'large', borderShape: "circle", image: "UserRound", accessibilityLabel: "Log In" } },
+                { component: 'link', className: 'items-center hidden sm:block', href: "/login", title: 'Log In', props: { neoButton: true, style: "glass", controlSize: 'large', borderShape: "capsule", title: 'Log In' } },
+                { component: 'link', className: 'items-center hidden sm:block', href: "/create-account", title: 'Sign Up', props: { neoButton: true, style: 'glassProminent', controlSize: 'large', borderShape: "capsule", title: 'Sign Up' } },
+                { component: 'menu_navigation', className: 'items-center sm:hidden', native: false, props: { style: 'glass', controlSize: 'large', borderShape: 'circle', image: 'Menu', accessibilityLabel: 'Menu' } },
+                { component: 'menu_navigation', className: 'items-center hidden sm:block lg:hidden', native: false, props: { style: 'glass', controlSize: 'large', borderShape: 'roundedRectangle', image: 'Menu', accessibilityLabel: 'Menu' } },
             ],
         },
         mixed: {

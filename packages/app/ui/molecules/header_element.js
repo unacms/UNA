@@ -13,7 +13,7 @@ import { useIsDesktop } from 'app/context/measure';
 import { Platform } from 'react-native'
 import { useRouter } from 'app/lib/hooks/router'
 
-export default function HeaderElement({ mode, url, uri }) {
+export default function HeaderElement({ url, uri }) {
     const { currentUser } = useCurrentUser();
     const router = useRouter();
     const bSearch = appSetting('layout', 'search') == true;
