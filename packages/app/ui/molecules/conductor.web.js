@@ -1313,8 +1313,8 @@ const HeaderContainer = ({
     }, [])
     //hideDefaultHeaderFrom
     return (
-        <View className={`z-40 ${conductorTheme.cover_base} ${isUseCurrentHeader || isDesktop ? ' ' : ''}`}>
-            <View className={`w-full cover-1`}
+        <View className={`z-40`}>
+            <View className={`w-full cover-1 ${conductorTheme.cover_base}`}
                 style={{
                     // When scrolled, header-fixed (small cover + tab bar) leaves normal flow,
                     // so reserve its full height here: tab bar (smallCoverHeight) plus the
@@ -1327,7 +1327,7 @@ const HeaderContainer = ({
                     
                         {isCover && !isHideCover && (
                             <View className={conductorTheme.cover_content}>
-                            <View className="w-full" onLayout={onCoverLayout1}>
+                            <View className={`w-full `} onLayout={onCoverLayout1}>
                                 <Cover
                                     data={pageData.cover_block}
                                     mode={headerSettings.cover}
@@ -1340,7 +1340,7 @@ const HeaderContainer = ({
                   
                 
             </View>
-            <View className={`header-fixed w-full ${isScrolled ? conductorTheme.cover_base : ''} ` + (isScrolled ? 'fixed' : '')}>
+            <View className={`header-fixed w-full ${(isScrolled ? 'fixed' : '')}`}>
                 <View className={`${appSetting('layout', 'page_content_width_default')} ${conductorTheme.cover_small} ${isScrolled ? 'animate-in fade-in slide-in-from-top-2 duration-300 ease-out' : ''}`}
                     style={{
                         display: isSmallCoverMounted ? 'flex' : 'none',

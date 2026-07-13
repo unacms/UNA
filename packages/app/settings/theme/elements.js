@@ -2,7 +2,7 @@
 
 export const settingsElements = {
     conductor: {
-        menu: ' w-full items-left justify-center ',
+        menu: ' w-full items-left justify-center bg-background',
         menu_is_dynamic: false,
         menu_cnt: ' flex-row flex-none gap-1 h-12 lg:h-14 items-center overflow-x-auto ',
         menu_categ_indent: ' pl-8 ',
@@ -15,10 +15,11 @@ export const settingsElements = {
         topmenu_button_size: 'base',
         topmenu_button_pressed: true,
         left_menu_cnt: '  ',
-        cover_base: 'w-full bg-background  ',
+        cover_base: 'w-full   ',
         cover_content:
             'items-center h-full w-full justify-between lg:pt-2 lg:px-2 ',
-        cover_small: 'mx-auto flex-row items-center ',
+        cover_small: 'mx-auto flex-row items-center bg-background',
+
         hide_top_menu_from: 'xl',
     },
     dropdown_menu: {
