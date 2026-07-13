@@ -49,7 +49,7 @@ export const settingsLayout = {
         web_haptics_sounds: true,
 
         show_login_modal: 0,
-        redirect_on_forbidden: '/home',
+        //redirect_on_forbidden: '/home',
         lock_unconfirmed: true,
         lock_no_profile: true,
         allow_create_new_profile: true,
