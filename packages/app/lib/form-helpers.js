@@ -4,6 +4,7 @@ import { getComponent } from 'app/components/registry';
 import { Text } from 'app/design/typography'
 import { Button, NeoButton } from "app/design/controls";
 import emitter from 'app/context/emitter';
+import { appSetting } from 'app/lib/util';
 
 const isWeb = Platform.OS === 'web';
 const dirtyFormInstances = new Set();
@@ -20,6 +21,13 @@ export function updateFormDirtyState(formInstanceId, isDirty) {
 
 export function isAnyFormDirty() {
     return dirtyFormInstances.size > 0;
+}
+
+/** True when this form name should not block modal close / navigation on web. */
+export function isFormUnsavedCloseGuardSkipped(formName) {
+    if (!formName) return false;
+    const skipped = appSetting('forms', 'skip_unsaved_close_guard');
+    return Array.isArray(skipped) && skipped.includes(formName);
 }
 
 export const UNSAVED_FORM_CONFIRM_REQUEST = 'unsaved_form_confirm_request';

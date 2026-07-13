@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback, useId } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData, updateFormDirtyState } from 'app/lib/form-helpers'
+import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData, updateFormDirtyState, isFormUnsavedCloseGuardSkipped } from 'app/lib/form-helpers'
 import { View, Row } from 'app/design/view'
 import { getComponent } from 'app/components/registry';
 import { FeedbackHaptics, storageSet, appSetting, isNumeric, storageGet, isObjectsEqual } from 'app/lib/util';
@@ -65,12 +65,6 @@ export default function Form({
     const { formState: { isSubmitted, isDirty, isSubmitSuccessful } } = methods;
     const formInstanceId = useId();
 
-    useEffect(() => {
-        const dirty = isDirty && !isSubmitSuccessful;
-        updateFormDirtyState(formInstanceId, dirty);
-        return () => updateFormDirtyState(formInstanceId, false);
-    }, [formInstanceId, isDirty, isSubmitSuccessful]);
-
     const [postData, setPostData] = useState(null);
 
     const [formBundle, setFormBundle] = useState({
@@ -81,6 +75,19 @@ export default function Form({
     });
 
     const name = formBundle.form?.params?.display?.includes('_delete') ? '' : (formName || formBundle.form?.params?.display)
+
+    const skipUnsavedCloseGuard =
+        exProps?.skipUnsavedCloseGuard === true || isFormUnsavedCloseGuardSkipped(name);
+
+    useEffect(() => {
+        if (skipUnsavedCloseGuard) {
+            updateFormDirtyState(formInstanceId, false);
+            return () => updateFormDirtyState(formInstanceId, false);
+        }
+        const dirty = isDirty && !isSubmitSuccessful;
+        updateFormDirtyState(formInstanceId, dirty);
+        return () => updateFormDirtyState(formInstanceId, false);
+    }, [formInstanceId, isDirty, isSubmitSuccessful, skipUnsavedCloseGuard]);
 
     const { data: dynamicData } = useFetchForm(request?.url, postData);
 

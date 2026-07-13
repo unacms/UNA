@@ -23,6 +23,14 @@ export const settingsForms = {
             '*_object_privacy_view',
         ],
         selector_control_names: ['*_cat', '*_space_cat'],
+        /** Form display names excluded from the web modal "unsaved changes" close guard. */
+        skip_unsaved_close_guard: [
+            'comment',
+            'feed',
+            'feed_edit',
+            'bx_messenger',
+            'bx_timeline_post_add_profile',
+        ],
 
         password_eye_button: {
             size: 'sm',
