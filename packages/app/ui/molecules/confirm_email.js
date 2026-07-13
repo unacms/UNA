@@ -8,7 +8,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { useTranslation } from 'react-i18next';
 import { FormError } from 'app/components/form-fields/_field';
 import Redirect from 'app/ui/atoms/redirect';
-import { storageClear } from 'app/lib/util';
+import { storageClear, appSetting } from 'app/lib/util';
 import { Platform } from 'react-native';
 import Link from 'app/ui/atoms/link';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'app/ui/molecules/card'
