@@ -15,7 +15,7 @@ export const settingsElements = {
         topmenu_button_size: 'base',
         topmenu_button_pressed: true,
         left_menu_cnt: '  ',
-        cover_base: 'w-full bg-card  ',
+        cover_base: 'w-full  ',
         cover_content:
             'items-center h-full w-full justify-between lg:pt-2 lg:px-2 ',
         cover_small: 'mx-auto flex-row items-center ',

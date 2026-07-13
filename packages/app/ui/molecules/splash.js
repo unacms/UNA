@@ -76,7 +76,7 @@ function PageContent({ data }) {
 export default function Splash(props) {
     return (
         <Page processKeyboard={false}>
-            <View className={`flex-1 items-center justify-center lg:flex-row p-4 lg:p-6 gap-6 lg:gap-12 w-full mx-auto ${appSetting('layout', 'max_width_landing')}`}>
+            <View className={`flex-auto items-center justify-center lg:flex-row p-4 lg:p-6 gap-6 lg:gap-12 w-full mx-auto ${appSetting('layout', 'max_width_landing')}`}>
                 {appStatic('splash_text')}
                 <PageContent {...props} />
             </View>

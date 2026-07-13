@@ -39,18 +39,16 @@ export const settingsForms = {
         sys_forgot_password: {
             hide_errors: true,
             button_full_width: true,
-            
         },
 
-        /* bx_invites_request_send: {
+        bx_invites_request_send: {
             hide_errors: true,
             button_full_width: true,
-
         },
+
         sys_account_create: {
             hide_errors: true,
             button_full_width: true,
-
-        },*/
+        },
     }
 }

@@ -66,7 +66,7 @@ export const settingsInputs = {
         // Track
         'u-controls-switcher-track': 'flex-row items-center rounded-full shrink-0',
         'u-controls-switcher-track-regular': 'h-7 w-14 px-1 ',
-        'u-controls-switcher-track-small': 'h-5 w-8 px-0.5',
+        'u-controls-switcher-track-small': 'h-4 w-8 px-0.5 ',
         'u-controls-switcher-track-large': 'h-8 w-16 px-1',
         'u-controls-switcher-track-disabled': 'opacity-50',
 
@@ -74,12 +74,12 @@ export const settingsInputs = {
         'u-controls-switcher-thumb':
             'rounded-full bg-popover/80 shadow-btn-outline dark:shadow-btn-outline-deep web:transition-transform web:duration-200',
         'u-controls-switcher-thumb-regular': 'h-5 w-7 ',
-        'u-controls-switcher-thumb-small': 'h-3 w-3  ',
+        'u-controls-switcher-thumb-small': 'h-3 w-4  ',
         'u-controls-switcher-thumb-large': 'h-6 w-8 ',
 
         // Active thumb position (translateX — ml-auto is not transitionable)
         'u-controls-switcher-thumb-active-regular': 'translate-x-5',
-        'u-controls-switcher-thumb-active-small': 'translate-x-4',
+        'u-controls-switcher-thumb-active-small': 'translate-x-3',
         'u-controls-switcher-thumb-active-large': 'translate-x-6',
 
         // Track Colors
