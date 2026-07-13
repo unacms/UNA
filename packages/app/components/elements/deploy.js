@@ -9,6 +9,7 @@ import Confirm from 'app/ui/molecules/confirm';
 import emitter from 'app/context/emitter';
 import Link from 'app/ui/atoms/link';
 import { isFormResponseComplete } from 'app/lib/form-helpers';
+import { useFocusEffect } from 'app/lib/hooks/router';
 
 function getFormNamesFromBlock(block) {
     const content = Array.isArray(block?.content) ? block.content : [];
@@ -24,10 +25,28 @@ function shouldCloseAfterFormResponse(responseData) {
 }
 
 export default function ElementDeploy({ data, blockWrapperProps, url }) {
-    const [blockData, setBlockData] = useState(data);
+    const [blockData, setBlockData] = useState(null);
     const [formBlock, setFormBlock] = useState(null);
     const [showConfirm, setShowConfirm] = useState(false);
     const dataUrlRef = useRef(data?.data_url);
+
+    const refreshBlockData = useCallback(async () => {
+        const dataUrl = dataUrlRef.current;
+        if (!dataUrl) return;
+
+        const sResponse = await fetcher(`/api.php?r=${dataUrl}`);
+        setBlockData(sResponse?.data[0]?.data);
+    }, []);
+
+    useEffect(() => {
+        refreshBlockData();
+    }, [refreshBlockData]);
+
+    useFocusEffect(
+        useCallback(() => {
+            refreshBlockData();
+        }, [refreshBlockData])
+    );
 
     useEffect(() => {
         dataUrlRef.current = blockData?.data_url ?? data?.data_url ?? dataUrlRef.current;
@@ -44,13 +63,7 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
         }
     };
 
-    const refreshBlockData = useCallback(async () => {
-        const dataUrl = dataUrlRef.current;
-        if (!dataUrl) return;
-
-        const sResponse = await fetcher(`/api.php?r=${dataUrl}`);
-        setBlockData(sResponse?.data[0]?.data);
-    }, []);
+   
 
     const handleCloseDeployForm = useCallback(() => {
         setFormBlock(null);
@@ -76,7 +89,7 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
     }, [formBlock, handleCloseDeployForm]);
 
     useEffect(() => {
-        if (!blockData.text || blockData?.buttons.length > 0 || !blockData.data_url) return;
+        if (!blockData?.text || blockData?.buttons.length > 0 || !blockData.data_url) return;
 
         const dataUrl = blockData.data_url;
 
@@ -89,12 +102,12 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
         const intervalId = setInterval(poll, 5000);
 
         return () => clearInterval(intervalId);
-    }, [blockData.text, blockData.data_url]);
+    }, [blockData?.text, blockData?.data_url]);
 
     return (
         <BlockWrapper {...blockWrapperProps}>
             <Row className="gap-x-2 items-center">
-                {blockData.text && <Text className="text-sm text-destructive">{blockData.text}</Text>}
+                {blockData?.text && <Text className="text-sm text-destructive">{blockData.text}</Text>}
                 {blockData?.buttons.map((item, index) => {
                     return <Button key={item.id || item.name || item.title || `deploy-button-${index}`} title={item.title} variant={index == 0 ? 'primary' : 'default'} onPress={() => handleOpenDeployForm(item)} />
                 })}
