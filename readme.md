@@ -1,3 +1,13 @@
+---
+title: NEO
+description: Welcome to the Next.js Documentation.
+related:
+  title: Next Steps
+  description: Create your first application and learn the core Next.js features.
+  links:
+    - app/getting-started
+---
+
 # NEO Monorepo
 ---
 unified cross-platform codebase for web and native applications built with **Expo**, **NextJS**, and **Uniwind**.
