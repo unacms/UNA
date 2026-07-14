@@ -15,14 +15,7 @@ const useDaemon = (url, isLoadOnInit = false, isActive = true, pollingInterval =
             try {
                 const sResponse = await fetcher(url);
                 if (!cancelled) {
-                    setDaemonData(prev => {
-                        if (prev === sResponse.data) return prev;
-                        if (typeof prev === 'object' && typeof sResponse.data === 'object'
-                            && JSON.stringify(prev) === JSON.stringify(sResponse.data)) {
-                            return prev;
-                        }
-                        return sResponse.data;
-                    });
+                    setDaemonData(sResponse.data);
                 }
             } catch (e) {
                 if (!cancelled) {
