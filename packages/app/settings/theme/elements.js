@@ -92,10 +92,10 @@ export const settingsElements = {
             ' flex-row items-center gap-3 justify-center ',
         'u-block-icon': ' items-center justify-center text-card-foreground flex-none',
         'u-block-icon-size': 20, // Default icon size for block header icons
-        'u-block-name': ' flex-auto gap-1 ',
+        'u-block-name': ' flex-auto gap-2 ',
         'u-block-title':
-            'text-card-foreground leading-6 text-lg lg:text-xl font-bold tracking-tight',
-        'u-block-description': 'text-muted-foreground text-sm font-medium leading-5 px-px',
+            'text-card-foreground text-lg lg:text-xl font-bold tracking-tight',
+        'u-block-description': 'text-muted-foreground text-xs lg:text-sm leading-5 px-px',
         'u-block-content': 'gap-4 ',  
         'u-block-footer':
             'flex text-card-foreground gap-4 pt-2',
