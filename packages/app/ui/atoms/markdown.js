@@ -61,6 +61,7 @@ export default function ElementMarkdown({ data, customClassName, className = '',
         <View className={`max-w-full u-vanilla-html ${customClassName || ''} ${className}`.trim()} ref={innerRef}>
             <EnrichedMarkdownText
                 selectable
+                selectionColor={colors.outline || colors.primary}
                 flavor="github"
                 markdown={data}
                 markdownStyle={markdownStyle}

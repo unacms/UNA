@@ -7,12 +7,24 @@ import {
 } from 'app/design/backdrop-blur-utils'
 
 /**
+ * @typedef {Omit<import('react-native').ViewProps, 'role'> & {
+ *   children?: import('react').ReactNode,
+ *   className?: string,
+ *   role?: import('react-native').ViewProps['role']
+ * }} BackdropBlurViewProps
+ */
+
+/**
  * Uniwind OSS maps `backdrop-filter` to `{}` in its RN CSS processor — bare
  * `backdrop-blur-*` classes have no native effect unless we bridge them here.
  * Variant-prefixed classes stay in className for Uniwind breakpoint/state handling.
  * Does not force overflow-hidden — add it at call sites that need blur clipped to radius.
  */
 export function createBackdropBlurView(RNViewComponent, { mapStyle } = {}) {
+    /**
+     * @param {BackdropBlurViewProps} props
+     * @param {import('react').ForwardedRef<import('react-native').View>} ref
+     */
     const Base = forwardRef(function BackdropBlurView(
         { className, style, children, ...props },
         ref,
