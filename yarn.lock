@@ -9484,6 +9484,11 @@ react-native-enriched-html@^1.0.0:
     "@tiptap/pm" "3.20.4"
     "@tiptap/react" "3.20.4"
 
+react-native-enriched-markdown@^0.7.4:
+  version "0.7.4"
+  resolved "https://registry.yarnpkg.com/react-native-enriched-markdown/-/react-native-enriched-markdown-0.7.4.tgz#d31ca6f4d40cd5b36284932139eb3784415c9af4"
+  integrity sha512-NXkqZL4d5vM6wOBwYwx0r1Xyw2h+E8SyobrS8nKnbpjYOyKZj6zIdOq1KJFrlenJNu/tXpbJ8jtQagaA4Wj4cg==
+
 react-native-gesture-handler@~2.28.0:
   version "2.28.0"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.28.0.tgz#07fb4f5eae72f810aac3019b060d26c1835bfd0c"
