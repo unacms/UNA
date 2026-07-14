@@ -1,8 +1,8 @@
 diff --git a/node_modules/react-native-enriched-html/lib/module/web/formats/EnrichedLink.js b/node_modules/react-native-enriched-html/lib/module/web/formats/EnrichedLink.js
-index 8d16929..26f3146 100644
+index d552741..0646430 100644
 --- a/node_modules/react-native-enriched-html/lib/module/web/formats/EnrichedLink.js
 +++ b/node_modules/react-native-enriched-html/lib/module/web/formats/EnrichedLink.js
-@@ -17,8 +17,9 @@ export const EnrichedLink = Link.extend({
+@@ -51,8 +51,9 @@ export const EnrichedLink = Link.extend({
      return {
        ...parent,
        openOnClick: false,
