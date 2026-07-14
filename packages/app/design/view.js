@@ -9,6 +9,14 @@ import { cn } from 'app/lib/util'
 import { Motion } from '@legendapp/motion'
 import { createBackdropBlurView } from 'app/design/backdrop-blur-view'
 
+/**
+ * @typedef {Omit<import('react-native').ViewProps, 'role'> & {
+ *   children?: import('react').ReactNode,
+ *   className?: string,
+ *   role?: import('react-native').ViewProps['role']
+ * }} DesignViewProps
+ */
+
 export const interopComponent = (Component, displayName) => {
     /** @type {any} */
     const Base = forwardRef((props, ref) => <Component ref={ref} {...props} />)
@@ -23,6 +31,7 @@ export const interopRender = (displayName, render) => {
     return Base
 }
 
+/** @type {import('react').ForwardRefExoticComponent<DesignViewProps & import('react').RefAttributes<RNView>>} */
 export const View = createBackdropBlurView(RNView)
 /** On iOS, shadow shell avoids continuous corners; elsewhere same as View. */
 export const ShadowShell = View
