@@ -266,6 +266,28 @@
         line-height: 18px;
     }
 
+    /*
+     * Markdown code blocks preserve whitespace and can be wider than their
+     * column. Let the block scroll instead of increasing the flex item's
+     * intrinsic width and pushing the page layout wider.
+     */
+    .u-vanilla-html .enrm-text,
+    .u-vanilla-html-small .enrm-text {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .u-vanilla-html pre,
+    .u-vanilla-html-small pre {
+        box-sizing: border-box;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        overflow-x: auto;
+        white-space: pre;
+        -webkit-overflow-scrolling: touch;
+    }
+
     .u-vanilla-html A,
     .u-vanilla-html .link {
         @apply text-accent-foreground;
