@@ -207,8 +207,7 @@ export default function ({ data, blocks }) {
             })}
         </>
     )
-
-    console.log("centerBlocks", centerBlocks)
+    
     const BlocksCenter = <View className={` mx-auto w-full`}>
         {centerBlocks?.map((item, index) => {
             return (
@@ -456,6 +455,7 @@ export default function ({ data, blocks }) {
 
     return (
         <>{BlocksCenter}
+        
             <PanelGroup
                 ref={groupRef}
                 key={`cells-home${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}

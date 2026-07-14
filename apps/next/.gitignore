@@ -39,3 +39,6 @@ yarn-error.log*
 
 # Customization resources (auto-generated from packages/app/customization/resources/web)
 /public/static/
+
+# Auto-copied Emscripten bundle (see next.config.js md4c section)
+/shims/md4c-emscripten.cjs

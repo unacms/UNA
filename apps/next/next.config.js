@@ -77,6 +77,32 @@ const tiptapReactRealPath = fs.existsSync(tiptapReactLocalPath)
     ? tiptapReactLocalPath
     : tiptapReactRootPath;
 
+const md4cEmscriptenLocalPath = path.resolve(
+    __dirname,
+    'node_modules/react-native-enriched-markdown/lib/module/web/wasm/md4c.js'
+);
+const md4cEmscriptenRootPath = path.resolve(
+    workspaceRoot,
+    'node_modules/react-native-enriched-markdown/lib/module/web/wasm/md4c.js'
+);
+const md4cEmscriptenSourcePath = fs.existsSync(md4cEmscriptenLocalPath)
+    ? md4cEmscriptenLocalPath
+    : md4cEmscriptenRootPath;
+
+// md4c.js — UMD/CJS Emscripten-бандл, но lib/module/package.json пакета содержит
+// {"type":"module"}, из-за чего webpack парсит его как ESM и теряет module.exports.
+// Копируем в .cjs вне scope пакета — webpack всегда собирает .cjs как CommonJS.
+const md4cEmscriptenRealPath = path.resolve(__dirname, 'shims/md4c-emscripten.cjs');
+if (fs.existsSync(md4cEmscriptenSourcePath)) {
+    const srcStat = fs.statSync(md4cEmscriptenSourcePath);
+    const needCopy =
+        !fs.existsSync(md4cEmscriptenRealPath) ||
+        fs.statSync(md4cEmscriptenRealPath).size !== srcStat.size;
+    if (needCopy) {
+        fs.copyFileSync(md4cEmscriptenSourcePath, md4cEmscriptenRealPath);
+    }
+}
+
 const nextConfig = {
     typescript: {
         ignoreBuildErrors: true,
@@ -137,6 +163,7 @@ const nextConfig = {
         'expo-camera',
         'expo-document-picker',
         'expo-image-manipulator',
+        'react-native-enriched-markdown',
         'expo-constants',
         "react-native-svg",
         '@expo/metro-runtime',
@@ -169,6 +196,7 @@ const nextConfig = {
             // '$' — точное совпадение, поэтому '@tiptap/react/menus' и пр. не трогаем.
             '@tiptap/react$': path.resolve(__dirname, 'shims/tiptap-react.js'),
             '@tiptap-react-real$': tiptapReactRealPath,
+            'md4c-emscripten-real$': md4cEmscriptenRealPath,
         };
 
         // Add fallback for codegenNativeComponent
@@ -206,6 +234,12 @@ const nextConfig = {
                 (resource) => {
                     resource.request = reanimatedPath;
                 }
+            ),
+            // Fix Emscripten CJS default export for react-native-enriched-markdown WASM parser.
+            // parseMarkdown uses dynamic import('./wasm/md4c') — request is relative, not full path.
+            new webpack.NormalModuleReplacementPlugin(
+                /^\.\/wasm\/md4c$/,
+                path.resolve(__dirname, 'shims/md4c.js')
             )
         );
 
