@@ -112,12 +112,14 @@
 
     .u-vanilla-html blockquote,
     .u-vanilla-html-small blockquote {
-        @apply my-3 border-l-4 border-border pl-4 text-muted-foreground;
+        @apply my-3 border-l-4 border-border pl-4 pr-4 text-muted-foreground;
     }
 
     .u-vanilla-html
         div
-        > :where(:first-child):not(:where([class~='not-prose'] *)),
+        > :where(:first-child):not(
+            :where([class~='not-prose'] *, .markdown-continuation *)
+        ),
     .u-vanilla-html > :where(:first-child):not(:where([class~='not-prose'] *)) {
         margin-top: 0 !important;
     }
@@ -131,7 +133,9 @@
 
     .u-vanilla-html-small
         div
-        > :where(:first-child):not(:where([class~='not-prose'] *)),
+        > :where(:first-child):not(
+            :where([class~='not-prose'] *, .markdown-continuation *)
+        ),
     .u-vanilla-html-small
         > :where(:first-child):not(:where([class~='not-prose'] *)) {
         margin-top: 0 !important;
@@ -264,6 +268,28 @@
         font-size: 12px;
         font-weight: 600;
         line-height: 18px;
+    }
+
+    /*
+     * Markdown code blocks preserve whitespace and can be wider than their
+     * column. Let the block scroll instead of increasing the flex item's
+     * intrinsic width and pushing the page layout wider.
+     */
+    .u-vanilla-html .enrm-text,
+    .u-vanilla-html-small .enrm-text {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .u-vanilla-html pre,
+    .u-vanilla-html-small pre {
+        box-sizing: border-box;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        overflow-x: auto;
+        white-space: pre;
+        -webkit-overflow-scrolling: touch;
     }
 
     .u-vanilla-html A,

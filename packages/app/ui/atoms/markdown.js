@@ -1,11 +1,14 @@
 import { useCallback, useMemo } from 'react'
 import { EnrichedMarkdownText } from 'react-native-enriched-markdown'
 import { Platform } from 'react-native'
-import { View } from 'app/design/view'
+import { useCSSVariable, useResolveClassNames } from 'uniwind'
+import { Row, View } from 'app/design/view'
+import { Text } from 'app/design/typography'
 import { useTheme, useThemeName } from 'app/design/theme'
 import { isExternalUrl, openExternalLink, sanitazeUrl } from 'app/lib/util'
 import { useRouter, useGlobalSearchParams } from 'app/lib/hooks/router'
 import { normalizeLinkHref } from 'app/components/form-fields/editor-mention-html'
+import { Icon } from 'app/ui/atoms/icon'
 
 const headingScale = {
     regular: {
@@ -26,6 +29,150 @@ const headingScale = {
     },
 }
 
+const alertConfig = {
+    NOTE: {
+        label: 'Note',
+        icon: 'Info',
+        surfaceClassName: 'border-sky-500/20 bg-sky-500/10',
+        toneClassName: 'text-sky-700',
+    },
+    TIP: {
+        label: 'Tip',
+        icon: 'Lightbulb',
+        surfaceClassName: 'border-emerald-500/20 bg-emerald-500/10',
+        toneClassName: 'text-emerald-700',
+    },
+    IMPORTANT: {
+        label: 'Important',
+        icon: 'CircleAlert',
+        surfaceClassName: 'border-purple-500/20 bg-purple-500/10',
+        toneClassName: 'text-purple-700',
+    },
+    WARNING: {
+        label: 'Warning',
+        icon: 'TriangleAlert',
+        surfaceClassName: 'border-amber-500/20 bg-amber-500/10',
+        toneClassName: 'text-amber-700',
+    },
+    CAUTION: {
+        label: 'Caution',
+        icon: 'OctagonAlert',
+        surfaceClassName: 'border-red-500/20 bg-red-500/10',
+        toneClassName: 'text-red-700',
+    },
+}
+
+const alertMarkerPattern = /^\s{0,3}>\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*$/i
+const blockquoteLinePattern = /^\s{0,3}>\s?(.*)$/
+const fencePattern = /^\s{0,3}(`{3,}|~{3,})/
+const headingPattern = /^\s{0,3}#{1,6}\s+\S/
+
+function trimBlankLines(lines) {
+    let start = 0
+    let end = lines.length
+    while (start < end && !lines[start].trim()) start += 1
+    while (end > start && !lines[end - 1].trim()) end -= 1
+    return lines.slice(start, end)
+}
+
+function splitMarkdownSegments(markdown) {
+    const lines = String(markdown || '').split(/\r?\n/)
+    const segments = []
+    let regularLines = []
+    let fenceCharacter = null
+    let canUseLeadBlockquote = false
+    let leadBlockquoteHandled = false
+
+    const flushRegular = () => {
+        const value = regularLines.join('\n')
+        if (value.trim()) segments.push({ kind: 'markdown', markdown: value })
+        regularLines = []
+    }
+
+    for (let index = 0; index < lines.length;) {
+        const line = lines[index]
+        const fenceMatch = line.match(fencePattern)
+
+        if (fenceMatch) {
+            if (canUseLeadBlockquote) {
+                canUseLeadBlockquote = false
+                leadBlockquoteHandled = true
+            }
+            const character = fenceMatch[1][0]
+            fenceCharacter = fenceCharacter === character ? null : (fenceCharacter || character)
+            regularLines.push(line)
+            index += 1
+            continue
+        }
+
+        const markerMatch = fenceCharacter ? null : line.match(alertMarkerPattern)
+        if (markerMatch) {
+            if (canUseLeadBlockquote) {
+                canUseLeadBlockquote = false
+                leadBlockquoteHandled = true
+            }
+
+            flushRegular()
+            const alertLines = []
+            index += 1
+
+            while (index < lines.length) {
+                const quoteMatch = lines[index].match(blockquoteLinePattern)
+                if (!quoteMatch) break
+                alertLines.push(quoteMatch[1])
+                index += 1
+            }
+
+            segments.push({
+                kind: 'alert',
+                alertType: markerMatch[1].toUpperCase(),
+                markdown: trimBlankLines(alertLines).join('\n'),
+            })
+            continue
+        }
+
+        if (canUseLeadBlockquote) {
+            if (!line.trim()) {
+                regularLines.push(line)
+                index += 1
+                continue
+            }
+
+            if (blockquoteLinePattern.test(line)) {
+                flushRegular()
+                const leadLines = []
+
+                while (index < lines.length) {
+                    const quoteMatch = lines[index].match(blockquoteLinePattern)
+                    if (!quoteMatch) break
+                    leadLines.push(quoteMatch[1])
+                    index += 1
+                }
+
+                segments.push({
+                    kind: 'lead',
+                    markdown: trimBlankLines(leadLines).join('\n'),
+                })
+                canUseLeadBlockquote = false
+                leadBlockquoteHandled = true
+                continue
+            }
+
+            canUseLeadBlockquote = false
+            leadBlockquoteHandled = true
+        }
+
+        regularLines.push(line)
+        if (!fenceCharacter && !leadBlockquoteHandled && headingPattern.test(line)) {
+            canUseLeadBlockquote = true
+        }
+        index += 1
+    }
+
+    flushRegular()
+    return segments
+}
+
 // Cross-platform Markdown renderer built on `react-native-enriched-markdown`
 // (native text on iOS/Android, md4c/WASM on web — no WebView). Content is
 // expected to arrive as Markdown; link presses route internally via the app
@@ -33,6 +180,28 @@ const headingScale = {
 export default function ElementMarkdown({ data, customClassName, className = '', innerRef }) {
     const { colors } = useTheme()
     const isDark = useThemeName() === 'dark'
+    const [
+        secondaryForegroundToken,
+        cardBackgroundToken,
+        pageBackgroundToken,
+        secondaryBackgroundToken,
+        cardForegroundToken,
+        borderToken,
+    ] = useCSSVariable([
+        '--color-secondary-foreground',
+        '--color-card',
+        '--color-background',
+        '--color-secondary',
+        '--color-card-foreground',
+        '--color-border',
+    ])
+    const secondaryForeground = Platform.OS === 'web'
+        ? 'var(--color-secondary-foreground)'
+        : (secondaryForegroundToken || colors.default)
+    const leadTextStyle = useResolveClassNames('text-lg lg:text-xl text-secondary-foreground')
+    const leadTextColor = Platform.OS === 'web'
+        ? secondaryForeground
+        : (leadTextStyle.color || secondaryForeground)
     const router = useRouter()
     const glob = useGlobalSearchParams()
 
@@ -54,7 +223,21 @@ export default function ElementMarkdown({ data, customClassName, className = '',
 
     const markdownStyle = useMemo(() => {
         const mutedBg = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(3,7,18,0.05)'
-        const borderColor = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(3,7,18,0.12)'
+        const borderColor = Platform.OS === 'web'
+            ? 'var(--color-border)'
+            : (borderToken || (isDark ? 'rgba(255,255,255,0.12)' : 'rgba(3,7,18,0.12)'))
+        const tableEvenBackground = Platform.OS === 'web'
+            ? 'var(--color-card)'
+            : (cardBackgroundToken || (isDark ? 'rgba(24,24,27,1)' : 'rgba(255,255,255,1)'))
+        const tableOddBackground = Platform.OS === 'web'
+            ? 'var(--color-background)'
+            : (pageBackgroundToken || (isDark ? 'rgba(12,12,14,1)' : 'rgba(244,244,245,1)'))
+        const tableHeaderBackground = Platform.OS === 'web'
+            ? 'var(--color-secondary)'
+            : (secondaryBackgroundToken || (isDark ? 'rgba(39,39,42,1)' : 'rgba(228,228,231,1)'))
+        const tableForeground = Platform.OS === 'web'
+            ? 'var(--color-card-foreground)'
+            : (cardForegroundToken || colors.default)
         const headingStyle = {
             color: Platform.OS === 'web' ? 'var(--color-popover-foreground)' : colors.default,
             fontFamily: Platform.OS === 'web' ? 'var(--font-title)' : 'font-title',
@@ -75,23 +258,131 @@ export default function ElementMarkdown({ data, customClassName, className = '',
             em: { color: colors.default },
             code: { color: colors.default, backgroundColor: mutedBg, borderColor },
             codeBlock: { color: colors.default, backgroundColor: mutedBg, borderColor, borderRadius: 8, padding: 12 },
-            table: { color: colors.default, borderColor },
+            table: {
+                color: tableForeground,
+                borderColor,
+                headerBackgroundColor: tableHeaderBackground,
+                headerTextColor: tableForeground,
+                rowEvenBackgroundColor: tableEvenBackground,
+                rowOddBackgroundColor: tableOddBackground,
+            },
             thematicBreak: { color: borderColor },
         }
-    }, [colors.default, colors.primary, isDark, isSmall, fontSize, lineHeight])
+    }, [
+        borderToken,
+        cardBackgroundToken,
+        cardForegroundToken,
+        colors.default,
+        colors.primary,
+        fontSize,
+        isDark,
+        isSmall,
+        lineHeight,
+        pageBackgroundToken,
+        secondaryBackgroundToken,
+    ])
+
+    const alertMarkdownStyle = useMemo(() => ({
+        ...markdownStyle,
+        paragraph: { ...markdownStyle.paragraph, marginTop: 4, marginBottom: 4 },
+        list: { ...markdownStyle.list, marginTop: 4, marginBottom: 4 },
+    }), [markdownStyle])
+
+    const leadMarkdownStyle = useMemo(() => ({
+        ...markdownStyle,
+        paragraph: {
+            ...markdownStyle.paragraph,
+            color: leadTextColor,
+            fontSize: leadTextStyle.fontSize || 18,
+            lineHeight: leadTextStyle.lineHeight || 28,
+            marginTop: 0,
+            marginBottom: 0,
+        },
+        list: {
+            ...markdownStyle.list,
+            color: leadTextColor,
+            fontSize: leadTextStyle.fontSize || 18,
+            lineHeight: leadTextStyle.lineHeight || 28,
+        },
+        strong: { ...markdownStyle.strong, color: leadTextColor },
+        em: { ...markdownStyle.em, color: leadTextColor },
+    }), [leadTextColor, leadTextStyle.fontSize, leadTextStyle.lineHeight, markdownStyle])
+
+    const segments = useMemo(() => splitMarkdownSegments(data), [data])
+    const selectionColor = colors.outline || colors.primary
+    const handleLinkPress = useCallback((event) => navigate(event?.url), [navigate])
 
     if (!data) return null
 
     return (
         <View className={`max-w-full u-vanilla-html ${customClassName || ''} ${className}`.trim()} ref={innerRef}>
-            <EnrichedMarkdownText
-                selectable
-                selectionColor={colors.outline || colors.primary}
-                flavor="github"
-                markdown={data}
-                markdownStyle={markdownStyle}
-                onLinkPress={(e) => navigate(e?.url)}
-            />
+            {segments.map((segment, index) => {
+                if (segment.kind === 'markdown') {
+                    return (
+                        <View
+                            key={`markdown-${index}`}
+                            className={`${index > 0 ? 'markdown-continuation' : ''} min-w-0 max-w-full`}
+                        >
+                            <EnrichedMarkdownText
+                                selectable
+                                selectionColor={selectionColor}
+                                flavor="github"
+                                markdown={segment.markdown}
+                                markdownStyle={markdownStyle}
+                                onLinkPress={handleLinkPress}
+                            />
+                        </View>
+                    )
+                }
+
+                if (segment.kind === 'lead') {
+                    return (
+                        <View
+                            key={`lead-${index}`}
+                            className="my-3 w-full min-w-0 max-w-full text-lg lg:text-xl text-secondary-foreground"
+                        >
+                            <EnrichedMarkdownText
+                                selectable
+                                selectionColor={selectionColor}
+                                flavor="github"
+                                markdown={segment.markdown}
+                                markdownStyle={leadMarkdownStyle}
+                                onLinkPress={handleLinkPress}
+                            />
+                        </View>
+                    )
+                }
+
+                const config = alertConfig[segment.alertType]
+                return (
+                    <View
+                        key={`alert-${segment.alertType}-${index}`}
+                        accessible
+                        accessibilityLabel={`${config.label} alert`}
+                        role={Platform.OS === 'web' ? 'note' : undefined}
+                        className={`my-3 w-full min-w-0 max-w-full overflow-hidden rounded-md border px-4 py-3 ${config.surfaceClassName}`}
+                    >
+                        <Row className={`mb-1.5 items-center gap-2 ${config.toneClassName}`}>
+                            <Icon icon={config.icon} size={18} className={config.toneClassName} />
+                            <Text className={`text-sm font-semibold ${config.toneClassName}`}>
+                                {config.label}
+                            </Text>
+                        </Row>
+                        {segment.markdown ? (
+                            <View className="min-w-0 max-w-full">
+                                <EnrichedMarkdownText
+                                    selectable
+                                    selectionColor={selectionColor}
+                                    flavor="github"
+                                    markdown={segment.markdown}
+                                    markdownStyle={alertMarkdownStyle}
+                                    onLinkPress={handleLinkPress}
+                                />
+                            </View>
+                        ) : null}
+                    </View>
+                )
+            })}
         </View>
     )
 }
