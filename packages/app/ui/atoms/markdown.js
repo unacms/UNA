@@ -58,7 +58,7 @@ export default function ElementMarkdown({ data, customClassName, className = '',
     if (!data) return null
 
     return (
-        <View className={`max-w-full ${customClassName || ''} ${className}`.trim()} ref={innerRef}>
+        <View className={`max-w-full u-vanilla-html ${customClassName || ''} ${className}`.trim()} ref={innerRef}>
             <EnrichedMarkdownText
                 selectable
                 flavor="github"
