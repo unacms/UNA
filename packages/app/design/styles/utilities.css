@@ -149,7 +149,8 @@
     .u-vanilla-html h2,
     .u-vanilla-html h3,
     .u-vanilla-html h4,
-    .u-vanilla-html h5 {
+    .u-vanilla-html h5,
+    .u-vanilla-html h6 {
         @apply text-popover-foreground;
         font-family:
             var(--font-title),
@@ -164,7 +165,8 @@
     .u-vanilla-html-small h2,
     .u-vanilla-html-small h3,
     .u-vanilla-html-small h4,
-    .u-vanilla-html-small h5 {
+    .u-vanilla-html-small h5,
+    .u-vanilla-html-small h6 {
         @apply text-popover-foreground;
         font-family:
             var(--font-title),
@@ -173,6 +175,95 @@
             BlinkMacSystemFont,
             '.SFNSText-Regular',
             sans-serif;
+    }
+
+    .u-vanilla-html h1 {
+        margin-block: 8px 24px;
+        font-size: 36px;
+        font-weight: 700;
+        line-height: 40px;
+        letter-spacing: -0.025em;
+    }
+
+    .u-vanilla-html h2 {
+        margin-block: 24px 16px;
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 32px;
+        letter-spacing: -0.025em;
+    }
+
+    .u-vanilla-html h3 {
+        margin-block: 16px 8px;
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 28px;
+        letter-spacing: -0.025em;
+    }
+
+    .u-vanilla-html h4 {
+        margin-block: 8px 4px;
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 28px;
+    }
+
+    .u-vanilla-html h5 {
+        margin-block: 8px 4px;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 24px;
+    }
+
+    .u-vanilla-html h6 {
+        margin-block: 8px 4px;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 20px;
+    }
+
+    .u-vanilla-html-small h1 {
+        margin-block: 8px 20px;
+        font-size: 30px;
+        font-weight: 700;
+        line-height: 36px;
+        letter-spacing: -0.025em;
+    }
+
+    .u-vanilla-html-small h2 {
+        margin-block: 20px 12px;
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 28px;
+        letter-spacing: -0.025em;
+    }
+
+    .u-vanilla-html-small h3 {
+        margin-block: 14px 6px;
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 24px;
+    }
+
+    .u-vanilla-html-small h4 {
+        margin-block: 8px 4px;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 22px;
+    }
+
+    .u-vanilla-html-small h5 {
+        margin-block: 8px 4px;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 20px;
+    }
+
+    .u-vanilla-html-small h6 {
+        margin-block: 8px 4px;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 18px;
     }
 
     .u-vanilla-html A,
