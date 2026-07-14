@@ -47,7 +47,15 @@
         --green: 34 197 94;
         --yellow: 234 179 8;
         --blue: 59 130 246;
+        --purple: 168 85 247;
         --red: 225 29 72;
+
+        /* Semantic alert tones (GitHub-style Markdown callouts). */
+        --alert-note: var(--blue);
+        --alert-tip: var(--green);
+        --alert-important: var(--purple);
+        --alert-warning: var(--yellow);
+        --alert-caution: var(--red);
 
         /* Semantic — explicit light/dark variants for Uniwind parity */
         @variant light {

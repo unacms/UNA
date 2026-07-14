@@ -77,7 +77,13 @@
     --color-green: rgb(var(--green));
     --color-yellow: rgb(var(--yellow));
     --color-blue: rgb(var(--blue));
+    --color-purple: rgb(var(--purple));
     --color-red: rgb(var(--red));
+    --color-alert-note: rgb(var(--alert-note));
+    --color-alert-tip: rgb(var(--alert-tip));
+    --color-alert-important: rgb(var(--alert-important));
+    --color-alert-warning: rgb(var(--alert-warning));
+    --color-alert-caution: rgb(var(--alert-caution));
     --radius-xs: var(--neo-radius-xs);
     --radius-sm: var(--neo-radius-sm);
     --radius-md: var(--neo-radius-md);

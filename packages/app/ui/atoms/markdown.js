@@ -1,11 +1,13 @@
 import { useCallback, useMemo } from 'react'
 import { EnrichedMarkdownText } from 'react-native-enriched-markdown'
 import { Platform } from 'react-native'
-import { View } from 'app/design/view'
+import { Row, View } from 'app/design/view'
+import { Text } from 'app/design/typography'
 import { useTheme, useThemeName } from 'app/design/theme'
 import { isExternalUrl, openExternalLink, sanitazeUrl } from 'app/lib/util'
 import { useRouter, useGlobalSearchParams } from 'app/lib/hooks/router'
 import { normalizeLinkHref } from 'app/components/form-fields/editor-mention-html'
+import { Icon } from 'app/ui/atoms/icon'
 
 const headingScale = {
     regular: {
@@ -24,6 +26,104 @@ const headingScale = {
         h5: { fontSize: 14, fontWeight: '600', lineHeight: 20, marginTop: 8, marginBottom: 4 },
         h6: { fontSize: 12, fontWeight: '600', lineHeight: 18, marginTop: 8, marginBottom: 4 },
     },
+}
+
+const alertConfig = {
+    NOTE: {
+        label: 'Note',
+        icon: 'Info',
+        surfaceClassName: 'border-sky-500/20 bg-sky-500/10',
+        toneClassName: 'text-sky-700',
+    },
+    TIP: {
+        label: 'Tip',
+        icon: 'Lightbulb',
+        surfaceClassName: 'border-emerald-500/20 bg-emerald-500/10',
+        toneClassName: 'text-emerald-700',
+    },
+    IMPORTANT: {
+        label: 'Important',
+        icon: 'CircleAlert',
+        surfaceClassName: 'border-purple-500/20 bg-purple-500/10',
+        toneClassName: 'text-purple-700',
+    },
+    WARNING: {
+        label: 'Warning',
+        icon: 'TriangleAlert',
+        surfaceClassName: 'border-amber-500/20 bg-amber-500/10',
+        toneClassName: 'text-amber-700',
+    },
+    CAUTION: {
+        label: 'Caution',
+        icon: 'OctagonAlert',
+        surfaceClassName: 'border-red-500/20 bg-red-500/10',
+        toneClassName: 'text-red-700',
+    },
+}
+
+const alertMarkerPattern = /^\s{0,3}>\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*$/i
+const blockquoteLinePattern = /^\s{0,3}>\s?(.*)$/
+const fencePattern = /^\s{0,3}(`{3,}|~{3,})/
+
+function trimBlankLines(lines) {
+    let start = 0
+    let end = lines.length
+    while (start < end && !lines[start].trim()) start += 1
+    while (end > start && !lines[end - 1].trim()) end -= 1
+    return lines.slice(start, end)
+}
+
+function splitMarkdownAlerts(markdown) {
+    const lines = String(markdown || '').split(/\r?\n/)
+    const segments = []
+    let regularLines = []
+    let fenceCharacter = null
+
+    const flushRegular = () => {
+        const value = regularLines.join('\n')
+        if (value.trim()) segments.push({ kind: 'markdown', markdown: value })
+        regularLines = []
+    }
+
+    for (let index = 0; index < lines.length;) {
+        const line = lines[index]
+        const fenceMatch = line.match(fencePattern)
+
+        if (fenceMatch) {
+            const character = fenceMatch[1][0]
+            fenceCharacter = fenceCharacter === character ? null : (fenceCharacter || character)
+            regularLines.push(line)
+            index += 1
+            continue
+        }
+
+        const markerMatch = fenceCharacter ? null : line.match(alertMarkerPattern)
+        if (!markerMatch) {
+            regularLines.push(line)
+            index += 1
+            continue
+        }
+
+        flushRegular()
+        const alertLines = []
+        index += 1
+
+        while (index < lines.length) {
+            const quoteMatch = lines[index].match(blockquoteLinePattern)
+            if (!quoteMatch) break
+            alertLines.push(quoteMatch[1])
+            index += 1
+        }
+
+        segments.push({
+            kind: 'alert',
+            alertType: markerMatch[1].toUpperCase(),
+            markdown: trimBlankLines(alertLines).join('\n'),
+        })
+    }
+
+    flushRegular()
+    return segments
 }
 
 // Cross-platform Markdown renderer built on `react-native-enriched-markdown`
@@ -80,18 +180,65 @@ export default function ElementMarkdown({ data, customClassName, className = '',
         }
     }, [colors.default, colors.primary, isDark, isSmall, fontSize, lineHeight])
 
+    const alertMarkdownStyle = useMemo(() => ({
+        ...markdownStyle,
+        paragraph: { ...markdownStyle.paragraph, marginTop: 4, marginBottom: 4 },
+        list: { ...markdownStyle.list, marginTop: 4, marginBottom: 4 },
+    }), [markdownStyle])
+
+    const segments = useMemo(() => splitMarkdownAlerts(data), [data])
+    const selectionColor = colors.outline || colors.primary
+    const handleLinkPress = useCallback((event) => navigate(event?.url), [navigate])
+
     if (!data) return null
 
     return (
         <View className={`max-w-full u-vanilla-html ${customClassName || ''} ${className}`.trim()} ref={innerRef}>
-            <EnrichedMarkdownText
-                selectable
-                selectionColor={colors.outline || colors.primary}
-                flavor="github"
-                markdown={data}
-                markdownStyle={markdownStyle}
-                onLinkPress={(e) => navigate(e?.url)}
-            />
+            {segments.map((segment, index) => {
+                if (segment.kind === 'markdown') {
+                    return (
+                        <EnrichedMarkdownText
+                            key={`markdown-${index}`}
+                            selectable
+                            selectionColor={selectionColor}
+                            flavor="github"
+                            markdown={segment.markdown}
+                            markdownStyle={markdownStyle}
+                            onLinkPress={handleLinkPress}
+                        />
+                    )
+                }
+
+                const config = alertConfig[segment.alertType]
+                return (
+                    <View
+                        key={`alert-${segment.alertType}-${index}`}
+                        accessible
+                        accessibilityLabel={`${config.label} alert`}
+                        role={Platform.OS === 'web' ? 'note' : undefined}
+                        className={`my-3 w-full min-w-0 max-w-full overflow-hidden rounded-md border px-4 py-3 ${config.surfaceClassName}`}
+                    >
+                        <Row className={`mb-1.5 items-center gap-2 ${config.toneClassName}`}>
+                            <Icon icon={config.icon} size={18} className={config.toneClassName} />
+                            <Text className={`text-sm font-semibold ${config.toneClassName}`}>
+                                {config.label}
+                            </Text>
+                        </Row>
+                        {segment.markdown ? (
+                            <View className="min-w-0 max-w-full">
+                                <EnrichedMarkdownText
+                                    selectable
+                                    selectionColor={selectionColor}
+                                    flavor="github"
+                                    markdown={segment.markdown}
+                                    markdownStyle={alertMarkdownStyle}
+                                    onLinkPress={handleLinkPress}
+                                />
+                            </View>
+                        ) : null}
+                    </View>
+                )
+            })}
         </View>
     )
 }
