@@ -208,8 +208,8 @@ export default function ({ data, blocks }) {
         </>
     )
 
-
-    const BlocksCenter = <View className={`${appSetting('layout', 'max_width')} mx-auto w-full`}>
+    console.log("centerBlocks", centerBlocks)
+    const BlocksCenter = <View className={` mx-auto w-full`}>
         {centerBlocks?.map((item, index) => {
             return (
                 <BlockByName

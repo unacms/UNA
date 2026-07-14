@@ -32,7 +32,7 @@ export default function PageLayout({ data }) {
                     {cells}
                 </View>
                 <View className="flex-1" />
-                <MenuFooter />
+               
             </Page>
         )
     }

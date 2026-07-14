@@ -496,7 +496,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }
 
     return (
-
+        <View style={{height: layoutHeightLeft}}>
         <PanelGroup
             key={`cells-messenger-${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
             autoSaveId={cellsCustomConfig.sizable ? `cells-messenger` : undefined}
@@ -535,6 +535,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                 </View>}
             </Panel>
         </PanelGroup>
+        </View>
     )
 }
 
@@ -593,7 +594,7 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
     
     return (
         <View className='flex-1 bg-card' style={{ minHeight: layoutHeightLeft }}>
-            {(isWeb && !isSmallScreen) && header}
+            {(isWeb && !isSmallScreen) && <View className='w-full px-4'>{header}</View>}
             {data && data.length > 0 ? <View className=' w-full overflow-hidden web:flex-1'
             style={{height:layoutHeightLeft}}
             >
@@ -602,7 +603,7 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
                     data={data}
                     mode="simple"
                     useCustomScrollHandler={isSmallScreen ? true : false}
-
+                    height={layoutHeightLeft - 64}
                     renderItem={({ item, index }) => <ItemConvo selectedIndex={selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />}
                 /></View>
                 : <View className='items-center justify-center w-full h-full'><View className="pt-8">
@@ -649,13 +650,13 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
     const header = useMemo(() => (
 
             <Row className={`${appSetting('layout', 'page_content_width_default')} ${appSetting('layout', 'header', 'content')}`}>
-                <Row className={appSetting('layout', 'header', 'content_left')+' lg:hidden'}>
+                <Row className={appSetting('layout', 'header', 'content_left')+' items-center'}>
                     {isSmallScreen && <BackButton buttonProps={{ variant: "text", startDecorator: 'ArrowLeft', rounded: 'rounded' }} callback={showConvo} />}
                     <View className="overflow-hidden flex-1">
                     <Text numberOfLines={1} className="font-bold text-card-foreground text-2xl tracking-tight overflow-hidden text-ellipsis">{title}</Text>
                     </View>
                 </Row>
-                <Row className='items-center gap-x-2'>
+                <Row className='items-center gap-x-2 pe-4'>
                     <View>
                         <DropdownMenu onSelect={(oItem) => { handleManage(oItem) }} items={menuItems}>
                             <Button
@@ -684,7 +685,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
     }, [isSmallScreen, setHeader, header]));
 
     return (<>
-        {(isWeb && !isSmallScreen) && header}
+        {(isWeb && !isSmallScreen) && <View className='w-full px-4'>{header}</View>}
         {<View className="flex-1">
             <UniList
 
