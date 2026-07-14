@@ -17,7 +17,7 @@ import { useBreakpoint, useBreakpointName, useIsDesktop } from 'app/context/meas
 import { BlockWrapper } from 'app/components/block-wrapper'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { defaultHeader, useSetHeader } from 'app/context/jotai/layout'
-import Html from 'app/ui/atoms/html'
+import Markdown from 'app/ui/atoms/markdown'
 import { useGlobalSearchParams, usePathname } from 'app/lib/hooks/router'
 import { isEmoji } from 'app/lib/util'
 import { getPageData } from 'app/lib/util'
@@ -45,6 +45,59 @@ const getItemPath = (item) => {
 };
 
 const getRouteParam = (value) => Array.isArray(value) ? value[0] : value;
+
+// Strip inline Markdown markers so TOC entries show clean heading text.
+const stripMarkdownInline = (text) => String(text || '')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/__([^_]+)__/g, '$1')
+    .replace(/_([^_]+)_/g, '$1')
+    .replace(/~~([^~]+)~~/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .trim();
+
+const slugifyHeading = (text) => String(text || '')
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-') || 'section';
+
+// Build the TOC from the Markdown source (h2/h3). Parsing the source is reliable
+// and synchronous — the web renderer parses Markdown asynchronously via WASM, so
+// reading the rendered DOM here would race the render and often yield an empty TOC.
+function extractMarkdownHeadings(markdown) {
+    if (!markdown || typeof markdown !== 'string') return [];
+
+    const lines = markdown.split(/\r?\n/);
+    const seenIds = new Map();
+    const items = [];
+    let inFence = false;
+
+    lines.forEach((line) => {
+        if (/^\s*(```|~~~)/.test(line)) {
+            inFence = !inFence;
+            return;
+        }
+        if (inFence) return;
+
+        const match = line.match(/^\s{0,3}(#{2,3})\s+(.+?)\s*#*\s*$/);
+        if (!match) return;
+
+        const level = match[1].length;
+        const text = stripMarkdownInline(match[2]);
+        if (!text) return;
+
+        const base = slugifyHeading(text);
+        const count = seenIds.get(base) || 0;
+        const id = count === 0 ? base : `${base}-${count + 1}`;
+        seenIds.set(base, count + 1);
+
+        items.push({ id, key: `${id}-${items.length}`, text, level });
+    });
+
+    return items;
+}
 
 function useCurrentPathComparable() {
     const pathname = usePathname();
@@ -305,68 +358,57 @@ function PageContentWiki({ data, url }) {
     const centerHtmlContent = pageData?.data?.elements?.cell_center?.[0]?.content?.[0]?.data?.content
     const leftMenu = pageData?.data?.elements?.cell_left?.[0]
 
+    // TOC entries derived from the Markdown source (see extractMarkdownHeadings).
+    const markdownHeadings = useMemo(
+        () => extractMarkdownHeadings(centerHtmlContent),
+        [centerHtmlContent]
+    )
+
     useEffect(() => {
         if (!isWeb) {
             setTocItems([])
             return
         }
 
-        const root = centerContentRef.current
-        if (!root) {
-            setTocItems([])
-            return
-        }
-
-        const seenIds = new Map()
-        const headings = Array.from(root.querySelectorAll('h2, h3'))
-        const items = headings
-            .map((heading, index) => {
-                const text = heading.textContent?.trim()
-                if (!text) {
-                    return null
-                }
-
-                const textBaseId = text
-                    .toLowerCase()
-                    .replace(/[^\w\s-]/g, '')
-                    .trim()
-                    .replace(/\s+/g, '-')
-
-                const headingBaseId = String(heading.id || '').trim()
-                const preferredBaseId = headingBaseId || textBaseId || 'section'
-                const count = seenIds.get(preferredBaseId) || 0
-                const uniqueId = count === 0 ? preferredBaseId : `${preferredBaseId}-${count + 1}`
-                seenIds.set(preferredBaseId, count + 1)
-
-                // Force unique id for React keys and reliable hash navigation.
-                if (heading.id !== uniqueId) {
-                    heading.id = uniqueId
-                }
-
-                return {
-                    id: uniqueId,
-                    key: `${uniqueId}-${index}`,
-                    text,
-                    level: Number(heading.tagName.slice(1))
-                }
-            })
-            .filter(Boolean)
-
         setTocItems((prev) => {
             if (
-                prev.length === items.length &&
+                prev.length === markdownHeadings.length &&
                 prev.every((prevItem, i) =>
-                    prevItem.id === items[i]?.id &&
-                    prevItem.key === items[i]?.key &&
-                    prevItem.text === items[i]?.text &&
-                    prevItem.level === items[i]?.level
+                    prevItem.id === markdownHeadings[i]?.id &&
+                    prevItem.key === markdownHeadings[i]?.key &&
+                    prevItem.text === markdownHeadings[i]?.text &&
+                    prevItem.level === markdownHeadings[i]?.level
                 )
             ) {
                 return prev;
             }
-            return items
+            return markdownHeadings
         })
-    }, [isWeb, centerHtmlContent])
+    }, [isWeb, markdownHeadings])
+
+    // Assign ids to the rendered headings so TOC clicks can scroll to them. The
+    // web renderer emits h2/h3 in source order but without ids, and it renders
+    // asynchronously (WASM) — a MutationObserver re-applies ids once ready.
+    useEffect(() => {
+        if (!isWeb) return
+        const root = centerContentRef.current
+        if (!root) return
+
+        const assignIds = () => {
+            const headings = Array.from(root.querySelectorAll('h2, h3'))
+            headings.forEach((heading, index) => {
+                const item = tocItems[index]
+                if (item && heading.id !== item.id) {
+                    heading.id = item.id
+                }
+            })
+        }
+
+        assignIds()
+        const observer = new MutationObserver(assignIds)
+        observer.observe(root, { childList: true, subtree: true })
+        return () => observer.disconnect()
+    }, [isWeb, tocItems])
 
     const mobileHeaderControls = useMemo(() => {
         if (!showMobileLeftPanel && !(showMobileRightPanel && tocItems.length >= 2)) {
@@ -462,7 +504,7 @@ function PageContentWiki({ data, url }) {
                 <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
                 <Panel className={`native:w-full ${currentBreakpointName}:w-full`} {...centerPanelProps}>
                     <View ref={centerContentRef} className={`p-4 sm:p-6 xl:p-8 gap-3`}>
-                        <Html data={centerHtmlContent} />
+                        <Markdown data={centerHtmlContent} />
                     </View>
                 </Panel>
                 <PanelHandler gap={`hidden ${rightBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
