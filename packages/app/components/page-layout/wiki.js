@@ -485,60 +485,62 @@ function PageContentWiki({ data, url }) {
 
     return (
         <View className={`${appSetting('layout', 'max_width')}`}>
-            <PanelGroup
-                ref={groupRef}
-                key={`cells-wiki${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
-                direction="horizontal"
-                className={`mx-auto flex-auto relative flex-row`}
-                onLayout={onLayout}
-            >
-                <Panel className={`hidden ${leftBreakpoint}:block ${currentBreakpointName}:w-full`} {...leftPanelProps}>
-                    <View className={`fixed-process fixed-process-clamp p-4 ${appSetting('conductor', 'sidebar_container')}`}>
-                        <View className="gap-3">
-                            <BlockWrapper block={{ designbox_id: leftMenu.designbox_id, id: 'wiki-toc', title: leftMenu.title }}  >
-                                <MenuWiki setPageData={setPageData} block={leftMenu} url={pageData.url} />
+            <View className='w-full max-w-8xl mx-auto'>
+                <PanelGroup
+                    ref={groupRef}
+                    key={`cells-wiki${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
+                    direction="horizontal"
+                    className={`mx-auto flex-auto relative flex-row`}
+                    onLayout={onLayout}
+                >
+                    <Panel className={`hidden ${leftBreakpoint}:block ${currentBreakpointName}:w-full`} {...leftPanelProps}>
+                        <View className={`fixed-process fixed-process-clamp p-4 ${appSetting('conductor', 'sidebar_container')}`}>
+                            <View className="gap-3">
+                                <BlockWrapper block={{ designbox_id: leftMenu.designbox_id, id: 'wiki-toc', title: leftMenu.title }}  >
+                                    <MenuWiki setPageData={setPageData} block={leftMenu} url={pageData.url} />
+                                </BlockWrapper>
+                            </View>
+                        </View>
+                    </Panel>
+                    <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
+                    <Panel className={`native:w-full ${currentBreakpointName}:w-full`} {...centerPanelProps}>
+                        <View ref={centerContentRef} className={`p-4 sm:p-6 xl:p-8 gap-3`}>
+                            <Markdown data={centerHtmlContent} />
+                        </View>
+                    </Panel>
+                    <PanelHandler gap={`hidden ${rightBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
+                    <Panel className={`hidden ${rightBreakpoint}:block ${currentBreakpointName}:w-full`} {...rightPanelProps}>
+                        <View className="fixed-process fixed-process-clamp">
+                            <BlockWrapper
+                                showTitle={true}
+                                block={{
+                                    id: 'wiki-toc',
+                                    title: t('On this page'),
+                                    designbox_id: 14
+                                }}
+                            >
+                                <View className="gap-2">
+                                    {tocItems.length >= 2 && (
+                                        tocItems.map((item) => (
+                                            <Row key={`desktop-toc-${item.key}`} className={`items-center gap-2 ${item.level === 3 ? 'pl-4' : ''}`}>
+                                                <Icon name={item.level === 2 ? 'List' : 'Minus'} size={14} className="text-muted-foreground" />
+                                                <Pressable
+                                                    onPress={() => handleTocPress(item.id)}
+                                                    className="py-0.5"
+                                                >
+                                                    <Text className="text-sm leading-tight   text-secondary-foreground web:group-hover:text-foreground">
+                                                        {item.text}
+                                                    </Text>
+                                                </Pressable>
+                                            </Row>
+                                        ))
+                                    )}
+                                </View>
                             </BlockWrapper>
                         </View>
-                    </View>
-                </Panel>
-                <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
-                <Panel className={`native:w-full ${currentBreakpointName}:w-full`} {...centerPanelProps}>
-                    <View ref={centerContentRef} className={`p-4 sm:p-6 xl:p-8 gap-3`}>
-                        <Markdown data={centerHtmlContent} />
-                    </View>
-                </Panel>
-                <PanelHandler gap={`hidden ${rightBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
-                <Panel className={`hidden ${rightBreakpoint}:block ${currentBreakpointName}:w-full`} {...rightPanelProps}>
-                    <View className="fixed-process fixed-process-clamp">
-                        <BlockWrapper
-                            showTitle={true}
-                            block={{
-                                id: 'wiki-toc',
-                                title: t('On this page'),
-                                designbox_id: 14
-                            }}
-                        >
-                            <View className="gap-2">
-                                {tocItems.length >= 2 && (
-                                    tocItems.map((item) => (
-                                        <Row key={`desktop-toc-${item.key}`} className={`items-center gap-2 ${item.level === 3 ? 'pl-4' : ''}`}>
-                                            <Icon name={item.level === 2 ? 'List' : 'Minus'} size={14} className="text-muted-foreground" />
-                                            <Pressable
-                                                onPress={() => handleTocPress(item.id)}
-                                                className="py-0.5"
-                                            >
-                                                <Text className="text-sm leading-tight   text-secondary-foreground web:group-hover:text-foreground">
-                                                    {item.text}
-                                                </Text>
-                                            </Pressable>
-                                        </Row>
-                                    ))
-                                )}
-                            </View>
-                        </BlockWrapper>
-                    </View>
-                </Panel>
-            </PanelGroup>
+                    </Panel>
+                </PanelGroup>
+            </View>
         </View>
     )
 }
