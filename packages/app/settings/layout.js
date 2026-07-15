@@ -8,7 +8,7 @@ export const settingsLayout = {
             feed_unit: 'default',
         },
         avaliable_layouts: ['hor', 'ver', 'mixed'],
-        avaliable_feed_units: ['default', 'small'],
+        avaliable_feed_units: ['Full feed', 'Compact feed'],
         avaliable_langs: ['auto', 'en', 'ru'],
         screen: ' w-full  ',
         max_width: ' w-full flex-auto ',
@@ -45,6 +45,7 @@ export const settingsLayout = {
         background_image_dark: '', 
 
         sounds: true,
+        tab_sounds: false,
         /** When `sounds` is true: enables [web-haptics](https://github.com/lochie/web-haptics) synthesized click audio on mobile web / desktop (same idea as [haptics.lochie.me](https://haptics.lochie.me/)). When false: vibration only, no synth sound. */
         web_haptics_sounds: true,
 
@@ -62,16 +63,16 @@ export const settingsLayout = {
         show_tabbar_on_mobile_non_logged: false,
 
         header: {
-            container: ' w-full z-50 header-fixed web:fixed native:absolute bg-background web:top-0 web:transition-transform web:duration-300 web:ease-in-out',
+            container: ' w-full z-50 header-fixed web:fixed native:absolute bg-card web:top-0 web:transition-transform web:duration-300 web:ease-in-out',
             /** Optional. When set (non-blank), appended to `container` while scrollY > 0 (full-width bar: shadow, border, etc.). */
-            container_scrolled: 'shadow-border-b dark:shadow-border-b-deep',
+            container_scrolled: 'shadow-border-b dark:shadow-border-b-deep bg-card',
             content: ' items-center justify-between h-16 mx-auto',
             /** Optional. When set (non-blank), applied to header content only while scrollY > 0. If unset, legacy `content_pinned_fixed` behavior is unchanged. */
             content_scrolled: '  ',
-            content_pinned_fixed: ' bg-background ',
-            content_left: 'flex-none 2xl:w-full 2xl:max-w-1/4 px-4 gap-2',
+            content_pinned_fixed: ' bg-card ',
+            content_left: 'flex-none 2xl:w-full 2xl:max-w-1/4 px-3 sm:px-4 gap-2',
             content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-3xl px-4 ',
-            content_right: ' items-end flex-none 2xl:w-full 2xl:max-w-1/4 px-4 gap-2',
+            content_right: ' items-end flex-none 2xl:w-full 2xl:max-w-1/4 px-3 sm:px-4 gap-2',
             active_item_indicator: 'absolute -bottom-2 left-0 h-0.5 rounded-full flex-none bg-ring',
             active_item_indicator_bg: 'absolute bottom-0 left-0 h-12 w-full overflow-hidden rounded-lg flex-none',
         },

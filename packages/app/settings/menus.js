@@ -159,6 +159,14 @@ export const settingsMenus = {
                         addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
                     },
                     {
+                        name: 'wiki',
+                        title: 'Documentation',
+                        link: '/wiki/overview',
+                        icon: 'BookOpenText',
+                        animated: true,
+                        addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
+                    },
+                    {
                         name: 'terms',
                         title: 'Terms of Service',
                         link: '/terms',
@@ -192,6 +200,12 @@ export const settingsMenus = {
                 title: 'Terms of Service',
                 link: '/terms',
                 icon: 'Handshake',
+            },
+            {
+                name: 'wiki',
+                title: 'Documentation',
+                link: '/wiki/overview',
+                icon: 'BookOpenText',
             },
             {
                 name: 'privacy',

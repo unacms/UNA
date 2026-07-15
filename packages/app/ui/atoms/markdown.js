@@ -9,6 +9,8 @@ import { isExternalUrl, openExternalLink, sanitazeUrl } from 'app/lib/util'
 import { useRouter, useGlobalSearchParams } from 'app/lib/hooks/router'
 import { normalizeLinkHref } from 'app/components/form-fields/editor-mention-html'
 import { Icon } from 'app/ui/atoms/icon'
+import LazyCodeBlock from 'app/ui/atoms/code-block-lazy'
+import { splitMarkdownSegments } from 'app/lib/markdown/segments'
 
 const headingScale = {
     regular: {
@@ -62,115 +64,92 @@ const alertConfig = {
     },
 }
 
-const alertMarkerPattern = /^\s{0,3}>\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*$/i
-const blockquoteLinePattern = /^\s{0,3}>\s?(.*)$/
-const fencePattern = /^\s{0,3}(`{3,}|~{3,})/
-const headingPattern = /^\s{0,3}#{1,6}\s+\S/
-
-function trimBlankLines(lines) {
-    let start = 0
-    let end = lines.length
-    while (start < end && !lines[start].trim()) start += 1
-    while (end > start && !lines[end - 1].trim()) end -= 1
-    return lines.slice(start, end)
-}
-
-function splitMarkdownSegments(markdown) {
-    const lines = String(markdown || '').split(/\r?\n/)
-    const segments = []
-    let regularLines = []
-    let fenceCharacter = null
-    let canUseLeadBlockquote = false
-    let leadBlockquoteHandled = false
-
-    const flushRegular = () => {
-        const value = regularLines.join('\n')
-        if (value.trim()) segments.push({ kind: 'markdown', markdown: value })
-        regularLines = []
-    }
-
-    for (let index = 0; index < lines.length;) {
-        const line = lines[index]
-        const fenceMatch = line.match(fencePattern)
-
-        if (fenceMatch) {
-            if (canUseLeadBlockquote) {
-                canUseLeadBlockquote = false
-                leadBlockquoteHandled = true
-            }
-            const character = fenceMatch[1][0]
-            fenceCharacter = fenceCharacter === character ? null : (fenceCharacter || character)
-            regularLines.push(line)
-            index += 1
-            continue
+function MarkdownSegments({
+    alertMarkdownStyle,
+    handleLinkPress,
+    leadMarkdownStyle,
+    markdownStyle,
+    segments,
+    selectionColor,
+}) {
+    return segments.map((segment, index) => {
+        if (segment.kind === 'code') {
+            return (
+                <LazyCodeBlock
+                    key={`code-${index}`}
+                    code={segment.code}
+                    language={segment.language}
+                />
+            )
         }
 
-        const markerMatch = fenceCharacter ? null : line.match(alertMarkerPattern)
-        if (markerMatch) {
-            if (canUseLeadBlockquote) {
-                canUseLeadBlockquote = false
-                leadBlockquoteHandled = true
-            }
-
-            flushRegular()
-            const alertLines = []
-            index += 1
-
-            while (index < lines.length) {
-                const quoteMatch = lines[index].match(blockquoteLinePattern)
-                if (!quoteMatch) break
-                alertLines.push(quoteMatch[1])
-                index += 1
-            }
-
-            segments.push({
-                kind: 'alert',
-                alertType: markerMatch[1].toUpperCase(),
-                markdown: trimBlankLines(alertLines).join('\n'),
-            })
-            continue
+        if (segment.kind === 'markdown') {
+            return (
+                <View
+                    key={`markdown-${index}`}
+                    className={`${index > 0 ? 'markdown-continuation' : ''} min-w-0 max-w-full`}
+                >
+                    <EnrichedMarkdownText
+                        selectable
+                        selectionColor={selectionColor}
+                        flavor="github"
+                        markdown={segment.markdown}
+                        markdownStyle={markdownStyle}
+                        onLinkPress={handleLinkPress}
+                    />
+                </View>
+            )
         }
 
-        if (canUseLeadBlockquote) {
-            if (!line.trim()) {
-                regularLines.push(line)
-                index += 1
-                continue
-            }
-
-            if (blockquoteLinePattern.test(line)) {
-                flushRegular()
-                const leadLines = []
-
-                while (index < lines.length) {
-                    const quoteMatch = lines[index].match(blockquoteLinePattern)
-                    if (!quoteMatch) break
-                    leadLines.push(quoteMatch[1])
-                    index += 1
-                }
-
-                segments.push({
-                    kind: 'lead',
-                    markdown: trimBlankLines(leadLines).join('\n'),
-                })
-                canUseLeadBlockquote = false
-                leadBlockquoteHandled = true
-                continue
-            }
-
-            canUseLeadBlockquote = false
-            leadBlockquoteHandled = true
+        if (segment.kind === 'lead') {
+            return (
+                <View
+                    key={`lead-${index}`}
+                    className="my-3 w-full min-w-0 max-w-full text-lg lg:text-xl text-secondary-foreground"
+                >
+                    <EnrichedMarkdownText
+                        selectable
+                        selectionColor={selectionColor}
+                        flavor="github"
+                        markdown={segment.markdown}
+                        markdownStyle={leadMarkdownStyle}
+                        onLinkPress={handleLinkPress}
+                    />
+                </View>
+            )
         }
 
-        regularLines.push(line)
-        if (!fenceCharacter && !leadBlockquoteHandled && headingPattern.test(line)) {
-            canUseLeadBlockquote = true
-        }
-        index += 1
-    }
-
-    flushRegular()
-    return segments
+        const config = alertConfig[segment.alertType]
+        const alertSegments = splitMarkdownSegments(segment.markdown)
+        return (
+            <View
+                key={`alert-${segment.alertType}-${index}`}
+                accessible
+                accessibilityLabel={`${config.label} alert`}
+                role={Platform.OS === 'web' ? 'note' : undefined}
+                className={`my-3 w-full min-w-0 max-w-full overflow-hidden rounded-md border px-4 py-3 ${config.surfaceClassName}`}
+            >
+                <Row className={`mb-1.5 items-center gap-2 ${config.toneClassName}`}>
+                    <Icon icon={config.icon} size={18} className={config.toneClassName} />
+                    <Text className={`text-sm font-semibold ${config.toneClassName}`}>
+                        {config.label}
+                    </Text>
+                </Row>
+                {segment.markdown ? (
+                    <View className="min-w-0 max-w-full">
+                        <MarkdownSegments
+                            alertMarkdownStyle={alertMarkdownStyle}
+                            handleLinkPress={handleLinkPress}
+                            leadMarkdownStyle={leadMarkdownStyle}
+                            markdownStyle={markdownStyle}
+                            segments={alertSegments}
+                            selectionColor={selectionColor}
+                        />
+                    </View>
+                ) : null}
+            </View>
+        )
+    })
 }
 
 // Cross-platform Markdown renderer built on `react-native-enriched-markdown`
@@ -316,73 +295,14 @@ export default function ElementMarkdown({ data, customClassName, className = '',
 
     return (
         <View className={`max-w-full u-vanilla-html ${customClassName || ''} ${className}`.trim()} ref={innerRef}>
-            {segments.map((segment, index) => {
-                if (segment.kind === 'markdown') {
-                    return (
-                        <View
-                            key={`markdown-${index}`}
-                            className={`${index > 0 ? 'markdown-continuation' : ''} min-w-0 max-w-full`}
-                        >
-                            <EnrichedMarkdownText
-                                selectable
-                                selectionColor={selectionColor}
-                                flavor="github"
-                                markdown={segment.markdown}
-                                markdownStyle={markdownStyle}
-                                onLinkPress={handleLinkPress}
-                            />
-                        </View>
-                    )
-                }
-
-                if (segment.kind === 'lead') {
-                    return (
-                        <View
-                            key={`lead-${index}`}
-                            className="my-3 w-full min-w-0 max-w-full text-lg lg:text-xl text-secondary-foreground"
-                        >
-                            <EnrichedMarkdownText
-                                selectable
-                                selectionColor={selectionColor}
-                                flavor="github"
-                                markdown={segment.markdown}
-                                markdownStyle={leadMarkdownStyle}
-                                onLinkPress={handleLinkPress}
-                            />
-                        </View>
-                    )
-                }
-
-                const config = alertConfig[segment.alertType]
-                return (
-                    <View
-                        key={`alert-${segment.alertType}-${index}`}
-                        accessible
-                        accessibilityLabel={`${config.label} alert`}
-                        role={Platform.OS === 'web' ? 'note' : undefined}
-                        className={`my-3 w-full min-w-0 max-w-full overflow-hidden rounded-md border px-4 py-3 ${config.surfaceClassName}`}
-                    >
-                        <Row className={`mb-1.5 items-center gap-2 ${config.toneClassName}`}>
-                            <Icon icon={config.icon} size={18} className={config.toneClassName} />
-                            <Text className={`text-sm font-semibold ${config.toneClassName}`}>
-                                {config.label}
-                            </Text>
-                        </Row>
-                        {segment.markdown ? (
-                            <View className="min-w-0 max-w-full">
-                                <EnrichedMarkdownText
-                                    selectable
-                                    selectionColor={selectionColor}
-                                    flavor="github"
-                                    markdown={segment.markdown}
-                                    markdownStyle={alertMarkdownStyle}
-                                    onLinkPress={handleLinkPress}
-                                />
-                            </View>
-                        ) : null}
-                    </View>
-                )
-            })}
+            <MarkdownSegments
+                alertMarkdownStyle={alertMarkdownStyle}
+                handleLinkPress={handleLinkPress}
+                leadMarkdownStyle={leadMarkdownStyle}
+                markdownStyle={markdownStyle}
+                segments={segments}
+                selectionColor={selectionColor}
+            />
         </View>
     )
 }

@@ -9,6 +9,7 @@ const expoConfig = {
     "slug": "neo",
     "scheme": "neo",
     "version": "1.0.0",
+    "newArchEnabled": true,
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {

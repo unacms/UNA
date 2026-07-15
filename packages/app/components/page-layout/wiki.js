@@ -1,6 +1,6 @@
 import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Platform } from 'react-native'
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import Page from 'app/ui/molecules/page'
@@ -18,7 +18,7 @@ import { BlockWrapper } from 'app/components/block-wrapper'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { defaultHeader, useSetHeader } from 'app/context/jotai/layout'
 import Markdown from 'app/ui/atoms/markdown'
-import { useGlobalSearchParams, usePathname } from 'app/lib/hooks/router'
+import { useFocusEffect, useGlobalSearchParams, usePathname } from 'app/lib/hooks/router'
 import { isEmoji } from 'app/lib/util'
 import { getPageData } from 'app/lib/util'
 
@@ -99,6 +99,23 @@ function extractMarkdownHeadings(markdown) {
     return items;
 }
 
+function getWikiMarkdownContents(cell) {
+    const blocks = Array.isArray(cell) ? cell : Object.values(cell || {});
+
+    return blocks.flatMap((block) => {
+        if (!block?.content || block.hidden == true) return [];
+
+        const contentItems = Array.isArray(block.content)
+            ? block.content
+            : Object.values(block.content);
+
+        return contentItems.flatMap((item) => {
+            const content = item?.data?.content;
+            return typeof content === 'string' ? [content] : [];
+        });
+    });
+}
+
 function useCurrentPathComparable() {
     const pathname = usePathname();
     const params = useGlobalSearchParams();
@@ -168,9 +185,7 @@ function WikiMenuItem({ title, icon, isActive, iconEnd }) {
     )
 }
 
-function ActiveBranchExpander({ items, setExpandedMap }) {
-    const currentPathComparable = useCurrentPathComparable();
-
+function ActiveBranchExpander({ currentPathComparable, items, setExpandedMap }) {
     useEffect(() => {
         const activeExpandedMap = buildExpandedMapForPath(items, currentPathComparable);
         const activeExpandedIds = Object.keys(activeExpandedMap);
@@ -197,7 +212,10 @@ function ActiveBranchExpander({ items, setExpandedMap }) {
 
 function MenuWiki({ setPageData, block, url }) {
     const data = block.content[0].data;
-    const currentPathComparable = useCurrentPathComparable();
+    const routePathComparable = useCurrentPathComparable();
+    const currentPathComparable = isWeb
+        ? routePathComparable
+        : (normalizePathComparable(url) || routePathComparable);
     const initialPathComparable = normalizePathComparable(url);
     const topLevelItems = data?.content?.items || [];
     const [expandedMap, setExpandedMap] = useState(() => buildExpandedMapForPath(topLevelItems, initialPathComparable));
@@ -272,7 +290,11 @@ function MenuWiki({ setPageData, block, url }) {
 
     return (
         <>
-            <ActiveBranchExpander items={topLevelItems} setExpandedMap={setExpandedMap} />
+            <ActiveBranchExpander
+                currentPathComparable={currentPathComparable}
+                items={topLevelItems}
+                setExpandedMap={setExpandedMap}
+            />
             <View className='w-full gap-1.5'>
                 {renderItems(topLevelItems)}
             </View>
@@ -288,7 +310,6 @@ function PageContentWiki({ data, url }) {
     const pathname = usePathname()
     const params = useGlobalSearchParams()
     const initialUrl = getRouteParam(params?.url) || url || pathname
-    const [tocItems, setTocItems] = useState([])
     const centerContentRef = useRef(null)
     const [pageData, setPageData] = useState({ data, url: initialUrl })
 
@@ -324,8 +345,7 @@ function PageContentWiki({ data, url }) {
     const rightBreakpointMinWidth = LAYOUT_BREAKPOINTS[rightBreakpoint] ?? Number.POSITIVE_INFINITY
     const showMobileLeftPanel = currentBreakpoint < leftBreakpointMinWidth
     const showMobileRightPanel = currentBreakpoint < rightBreakpointMinWidth
-    const showBothMobilePanels = showMobileLeftPanel && showMobileRightPanel && tocItems.length >= 2
-    const handleTocPress = (id) => {
+    const handleTocPress = useCallback((id) => {
         if (!isWeb || !id) {
             return
         }
@@ -337,7 +357,7 @@ function PageContentWiki({ data, url }) {
 
         target.scrollIntoView({ behavior: 'smooth', block: 'start' })
         window.history.replaceState(null, '', `#${id}`)
-    }
+    }, [isWeb])
 
     const onLayout = () => {
         if (isWeb) {
@@ -355,7 +375,8 @@ function PageContentWiki({ data, url }) {
         }
     }, [currentBreakpointName, isWeb, leftPanelProps.defaultSize, centerPanelProps.defaultSize, rightPanelProps.defaultSize])
 
-    const centerHtmlContent = pageData?.data?.elements?.cell_center?.[0]?.content?.[0]?.data?.content
+    const centerMarkdownContents = getWikiMarkdownContents(pageData?.data?.elements?.cell_center)
+    const centerHtmlContent = centerMarkdownContents.join('\n\n')
     const leftMenu = pageData?.data?.elements?.cell_left?.[0]
 
     // TOC entries derived from the Markdown source (see extractMarkdownHeadings).
@@ -363,28 +384,8 @@ function PageContentWiki({ data, url }) {
         () => extractMarkdownHeadings(centerHtmlContent),
         [centerHtmlContent]
     )
-
-    useEffect(() => {
-        if (!isWeb) {
-            setTocItems([])
-            return
-        }
-
-        setTocItems((prev) => {
-            if (
-                prev.length === markdownHeadings.length &&
-                prev.every((prevItem, i) =>
-                    prevItem.id === markdownHeadings[i]?.id &&
-                    prevItem.key === markdownHeadings[i]?.key &&
-                    prevItem.text === markdownHeadings[i]?.text &&
-                    prevItem.level === markdownHeadings[i]?.level
-                )
-            ) {
-                return prev;
-            }
-            return markdownHeadings
-        })
-    }, [isWeb, markdownHeadings])
+    const tocItems = markdownHeadings
+    const showBothMobilePanels = showMobileLeftPanel && showMobileRightPanel && tocItems.length >= 2
 
     // Assign ids to the rendered headings so TOC clicks can scroll to them. The
     // web renderer emits h2/h3 in source order but without ids, and it renders
@@ -416,7 +417,7 @@ function PageContentWiki({ data, url }) {
         }
 
         return (
-            <View className="w-full py-2 ">
+            <View className="w-full py-2 px-4 ">
                 <View className="flex-row flex-wrap gap-2">
                     {showMobileLeftPanel && (
                         <View className={`${showBothMobilePanels ? 'flex-1' : 'w-full'}`}>
@@ -475,13 +476,31 @@ function PageContentWiki({ data, url }) {
                 </View>
             </View>
         )
-    }, [showMobileLeftPanel, showMobileRightPanel, showBothMobilePanels, tocItems, t])
+    }, [
+        handleTocPress,
+        leftMenu,
+        pageData.url,
+        setPageData,
+        showBothMobilePanels,
+        showMobileLeftPanel,
+        showMobileRightPanel,
+        t,
+        tocItems,
+    ])
 
     useEffect(() => {
         if (isWeb) {
             setHeader(isDesktop ? defaultHeader : { subHeader: mobileHeaderControls });
         }
     }, [isDesktop, mobileHeaderControls, setHeader]);
+
+    useFocusEffect(
+        useCallback(() => {
+            if (!isWeb) {
+                setHeader(isDesktop ? defaultHeader : { subHeader: mobileHeaderControls });
+            }
+        }, [isDesktop, mobileHeaderControls, setHeader])
+    );
 
     return (
         <View className={`${appSetting('layout', 'max_width')}`}>
@@ -505,7 +524,9 @@ function PageContentWiki({ data, url }) {
                     <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
                     <Panel className={`native:w-full ${currentBreakpointName}:w-full`} {...centerPanelProps}>
                         <View ref={centerContentRef} className={`p-4 sm:p-6 xl:p-8 gap-3`}>
-                            <Markdown data={centerHtmlContent} />
+                            {centerMarkdownContents.map((content, index) => (
+                                <Markdown key={`wiki-content-${index}`} data={content} />
+                            ))}
                         </View>
                     </Panel>
                     <PanelHandler gap={`hidden ${rightBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />

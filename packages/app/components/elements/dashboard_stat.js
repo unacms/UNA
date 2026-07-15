@@ -15,7 +15,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, Row, ScrollView } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { Button } from 'app/design/controls'
+import { Button, NeoButton, NeoButtonLink } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
@@ -117,10 +117,10 @@ function DashboardStatRemote(props) {
                                 {...currentUser}
                                 url_avatar={currentUser.avatar}
                                 displayType="unit_wo_info"
-                                displaySize="2xl"
+                                displaySize="xl"
                             />
                         </BlockIcon>
-                        <BlockName>
+                        <BlockName className="gap-1">
                             <BlockTitle>
                                 <Text className="text-card-foreground text-xl font-semibold">{currentUser.display_name}</Text>
                             </BlockTitle>
@@ -128,6 +128,7 @@ function DashboardStatRemote(props) {
 
                                 <Badge
                                     variant="secondary"
+                                    size="xs"
                                     data={{
                                         text: currentUser.membership_name,
                                         icon: currentUser.membership_icon,
@@ -149,9 +150,20 @@ function DashboardStatRemote(props) {
 
                         </BlockActions>
                     </BlockHeader>
-                    <BlockContent className="p-2">
+                    <BlockContent >
                         <ElementDashboardStat {...props} />
-                        <View className="flex-row flex-wrap gap-3 mt-4">
+                        <View className="grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 ">
+                            <View className="w-full max-w-sm flex-1 min-w-[160px]">
+                                <NeoButtonLink
+                                    href="/wiki/overview"
+                                    label="Documentation"
+                                    style="bordered"
+                                    controlSize="large"
+                                    image="BookOpenText"
+                                    width="fill"
+                                    align="start"
+                                />
+                            </View>
                             {langs.length > 1 && (
                                 <View className="w-full max-w-sm flex-1 min-w-[160px]">
                                     <DropdownMenu
@@ -165,13 +177,14 @@ function DashboardStatRemote(props) {
                                             setLang(oItem.id)
                                         }}
                                     >
-                                        <Button
-                                            variant="default"
-                                            title={t('lang_' + lang)}
-                                            size="lg"
-                                            startDecorator="Languages"
-                                            fullWidth
-                                            align="left"
+                                        <NeoButton
+                                            label={t('lang_' + lang)}
+                                            style="bordered"
+                                            controlSize="large"
+                                            image="Languages"
+                                            width="fill"
+                                            align="start"
+                                            interactive
                                         />
                                     </DropdownMenu>
                                 </View>
@@ -191,13 +204,14 @@ function DashboardStatRemote(props) {
                                             setThemeName(oItem.id)
                                         }}
                                     >
-                                        <Button
-                                            variant="default"
-                                            size="lg"
-                                            title={t('theme_' + themeName)}
-                                            startDecorator="Moon"
-                                            fullWidth
-                                            align="left"
+                                        <NeoButton
+                                            label={t('theme_' + themeName)}
+                                            style="bordered"
+                                            controlSize="large"
+                                            image="Moon"
+                                            width="fill"
+                                            align="start"
+                                            interactive
                                         />
                                     </DropdownMenu>
                                 </View>
@@ -221,13 +235,14 @@ function DashboardStatRemote(props) {
                                                 setLayoutName(oItem.id)
                                             }}
                                         >
-                                            <Button
-                                                variant="default"
-                                                size="lg"
-                                                title={t('format_' + layoutName)}
-                                                startDecorator="Layout"
-                                                fullWidth
-                                                align="left"
+                                            <NeoButton
+                                                label={t('format_' + layoutName)}
+                                                style="bordered"
+                                                controlSize="large"
+                                                image="Layout"
+                                                width="fill"
+                                                align="start"
+                                                interactive
                                             />
                                         </DropdownMenu>
                                     </View>
@@ -249,28 +264,29 @@ function DashboardStatRemote(props) {
                                             updateLayoutSettings({ feed_unit: oItem.id })
                                         }}
                                     >
-                                        <Button
-                                            variant="default"
-                                            size="lg"
-                                            startDecorator="Rows2"
-                                            title={t(layoutSettings.feed_unit)}
-                                            fullWidth
-                                            align="left"
+                                        <NeoButton
+                                            label={t(layoutSettings.feed_unit)}
+                                            style="bordered"
+                                            controlSize="large"
+                                            image="Rows2"
+                                            width="fill"
+                                            align="start"
+                                            interactive
                                         />
                                     </DropdownMenu>
                                 </View>
                             )}
                         </View>
                     </BlockContent>
-                    <BlockFooter className="p-2">
-                        <Link href="/logout">
-                            <Button
-                                variant="default"
-                                size="lg"
-                                title={t('Sign out')}
-                                startDecorator="LogOut"
-                                fullWidth
-                            /></Link>
+                    <BlockFooter className="">
+                        <NeoButtonLink
+                            href="/logout"
+                            label={t('Sign out')}
+                            style="bordered"
+                            controlSize="large"
+                            image="LogOut"
+                            width="fill"
+                        />
                     </BlockFooter>
                 </Block>
             </ScrollView>
@@ -309,7 +325,7 @@ function ElementDashboardStat(props) {
                             return (
 
                                 <View
-                                    className="px-4 py-3 bg-card border border-border/60 shadow-xs web:hover:bg-muted/20 rounded-xl w-full gap-2 flex-1 min-w-48 lg:min-w-64"
+                                    className="px-4 py-3 bg-muted/60 web:hover:bg-muted rounded-xl w-full gap-2 flex-1 min-w-48 lg:min-w-64"
                                     key={index}
                                 ><Link href={link}>
                                         <View className="flex-row w-full h-10 justify-between items-center text-secondary-foreground ">
@@ -371,7 +387,7 @@ function ElementDashboardStat(props) {
                         return (
 
                             <View
-                                className="px-4 py-3 bg-card border border-border/60 shadow-xs web:hover:bg-muted/20 rounded-xl w-full flex-1 min-w-48 lg:min-w-64"
+                                className="px-4 py-3 bg-muted/60 web:hover:bg-muted rounded-xl w-full flex-1 min-w-48 lg:min-w-64"
                                 key={index}
                             ><Link href={item.url} >
                                     <View className="flex-row w-full h-10 justify-between items-center text-card-foreground">
@@ -405,23 +421,22 @@ function ElementDashboardStat(props) {
             </Row>
             {data.manage.items.length > 0 && (
 
-                <View className="my-6 grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+                <View className=" grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
                     {data.manage.items.map((item2, index) => {
                         return (
                             <View
                                 className=" w-full min-w-[160px]  "
                                 key={index}
                             >
-                                <Link href={item2.link}>
-                                    <Button
-                                        variant="secondary"
-                                        align="left"
-                                        size="sm"
-                                        fullWidth
-                                        title={t(item2.title)}
-                                        startDecorator={item2.icon}
-                                    />
-                                </Link>
+                                <NeoButtonLink
+                                    href={item2.link}
+                                    label={t(item2.title)}
+                                    style="bordered"
+                                    controlSize="large"
+                                    image={item2.icon}
+                                    width="fill"
+                                    align="start"
+                                />
                             </View>
                         )
                     })}

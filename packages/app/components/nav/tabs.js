@@ -81,6 +81,15 @@ function getBadgeForTab(currentUser, tab) {
     return null
 }
 
+function scheduleTabFeedback(playTabSound) {
+    if (!appSetting('layout', 'tab_sounds')) return;
+
+    setTimeout(() => {
+        playTabSound();
+        FeedbackHaptics('Select');
+    }, 0);
+}
+
 function processUrl(url, router, currentUser, TabList) {
     if (currentUser?.id) {
         const LinksForTabs = (() => {
@@ -129,7 +138,7 @@ export default function Tabs() {
     const { setBottomSheetData } = useBottomSheetData();
     registerAll();
 
-    const playClick = useSound('click');
+    const playTabSound = useSound('tab');
     // useTranslation must run after all other hooks to avoid hook-order issues
     // if i18n is not initialized, useTranslation may call hooks conditionally
     const { t } = useTranslation();
@@ -374,8 +383,7 @@ export default function Tabs() {
                                                     emitter.emit('conductor', { action: 'reset_to_first' });
                                                 }
 
-                                                playClick();
-                                                FeedbackHaptics('Medium');
+                                                scheduleTabFeedback(playTabSound);
                                                 return;
                                             }
 
@@ -389,8 +397,7 @@ export default function Tabs() {
                                                 }
 
                                             }
-                                            playClick();
-                                            FeedbackHaptics('Medium');
+                                            scheduleTabFeedback(playTabSound);
                                         },
                                     }}
                                     options={options}

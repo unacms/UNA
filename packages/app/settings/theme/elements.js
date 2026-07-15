@@ -100,7 +100,7 @@ export const settingsElements = {
         'u-block-footer':
             'flex text-card-foreground gap-4 pt-2',
         'u-block-actions':
-            'flex flex-row text-card-foreground gap-2 -mx-1.5 -my-1 ',
+            'flex flex-row text-card-foreground gap-2  ',
         'u-block-animate':
             'animate-in fade-in slide-in-from-top-2 duration-200',
     },

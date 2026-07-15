@@ -6,6 +6,12 @@ import { appSetting } from 'app/lib/util'
 const cache = new Map();
 const isSounds = appSetting('layout', 'sounds');
 let audioModeReady = false;
+const soundProfiles = {
+    tab: {
+        playbackRate: 0.9,
+        volume: 0.22,
+    },
+};
 
 export const playSound = (name) => {
     if (!isSounds)
@@ -21,6 +27,11 @@ export const playSound = (name) => {
         let player = cache.get(name);
         if (!player) {
             player = createAudioPlayer(source);
+            const profile = soundProfiles[name];
+            if (profile) {
+                player.volume = profile.volume;
+                player.setPlaybackRate(profile.playbackRate);
+            }
             cache.set(name, player);
         }
 
