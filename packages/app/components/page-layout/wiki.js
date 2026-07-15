@@ -309,9 +309,20 @@ function PageContentWiki({ data, url }) {
     const setHeader = useSetHeader()
     const pathname = usePathname()
     const params = useGlobalSearchParams()
-    const initialUrl = getRouteParam(params?.url) || url || pathname
+    const routeUrl = getRouteParam(params?.url) || url || pathname
     const centerContentRef = useRef(null)
-    const [pageData, setPageData] = useState({ data, url: initialUrl })
+    const [pageData, setPageData] = useState({ data, url: routeUrl })
+
+    // Next preserves this client layout while navigating between wiki routes, so
+    // useState's initializer does not run again. Sync the newly streamed page
+    // data into the layout when the route changes.
+    useEffect(() => {
+        setPageData((current) => (
+            current.data === data && current.url === routeUrl
+                ? current
+                : { data, url: routeUrl }
+        ))
+    }, [data, routeUrl])
 
     const cellsCustomConfig = useMemo(() => {
         return appSetting('layouts', 'wiki') || appSetting('layouts', 'cols-l-c-r')
