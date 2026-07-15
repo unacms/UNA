@@ -561,17 +561,26 @@ export default function RftText({
     }, [formContext.formState.isSubmitted])
 
     const htmlContent = useEditorContent(editor, { type: 'html' })
+    const isInitialHtmlContent = useRef(true)
     useEffect(() => {
+        if (htmlContent === undefined || htmlContent === null) return
         if (stripTags(htmlContent)) {
             if (onFocus) onFocus()
         }
-        if (isPlainText) {
-            field.onChange(
-                stripTagsWithLinks(htmlContent, ['a', 'p', 'br', 'span'])
-            )
-        } else {
-            field.onChange(htmlContent)
+        const next = isPlainText
+            ? stripTagsWithLinks(htmlContent, ['a', 'p', 'br', 'span'])
+            : htmlContent
+        if (isInitialHtmlContent.current) {
+            isInitialHtmlContent.current = false
+            // The editor normalizes initial HTML (wraps text in <p>, emits <p></p>
+            // for empty), which differs from the registered defaultValue and would
+            // mark the form dirty before any user input. Re-baseline instead.
+            if ((stripTags(next) || '') === (stripTags(field.value) || '')) {
+                formContext.resetField(name, { defaultValue: next })
+                return
+            }
         }
+        field.onChange(next)
     }, [htmlContent])
 
     const processImages = (src, formName) => {

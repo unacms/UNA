@@ -14,10 +14,12 @@ export default function FormFieldCheckboxSet(props) {
     
     const rules = {};
     const name = props.name;
-    const defaultValue = props.value ? props.value : '';
-    const { field } = useController({ name, rules, defaultValue });
-
     const df = Array.isArray(props.value) ? props.value.map(String): [];
+    // Register the same shape the mount-time setValue below writes (array of
+    // strings), otherwise the field always differs from its default and the
+    // form is treated as dirty.
+    const { field } = useController({ name, rules, defaultValue: df });
+
     const [value, setValue] = useState(df)
 
     useEffect(() => {

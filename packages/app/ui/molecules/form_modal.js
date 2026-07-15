@@ -12,7 +12,6 @@ import { appSetting } from 'app/lib/util';
 import { useModal, useCloseModal } from 'app/context/jotai/modal';
 import emitter from 'app/context/emitter';
 import { confirmDiscardUnsavedFormChanges } from 'app/lib/form-helpers';
-import { UnsavedFormConfirmHost } from 'app/ui/molecules/unsaved-form-confirm-host';
 
 
 const isWeb = Platform.OS === 'web';
@@ -182,12 +181,7 @@ export const FormModalHost = () => {
         );
     }
 
-    return (
-        <>
-            <UnsavedFormConfirmHost />
-            {modalContent}
-        </>
-    );
+    return modalContent;
 }
 
 export const handleFormModal = async (oItem, event, setPageData, params) => {

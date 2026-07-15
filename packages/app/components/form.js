@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback, useId } from 'react';
+import { useEffect, useState, useMemo, useCallback, useId, useRef } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData, updateFormDirtyState, isFormUnsavedCloseGuardSkipped } from 'app/lib/form-helpers'
 import { View, Row } from 'app/design/view'
@@ -80,14 +80,34 @@ export default function Form({
         exProps?.skipUnsavedCloseGuard === true || isFormUnsavedCloseGuardSkipped(name);
 
     useEffect(() => {
-        if (skipUnsavedCloseGuard) {
+        // Auto-change forms (filters etc.) persist on every change, so they can
+        // never hold unsaved changes — never let them block closing.
+        if (skipUnsavedCloseGuard || isAutoChange) {
             updateFormDirtyState(formInstanceId, false);
             return () => updateFormDirtyState(formInstanceId, false);
         }
         const dirty = isDirty && !isSubmitSuccessful;
         updateFormDirtyState(formInstanceId, dirty);
         return () => updateFormDirtyState(formInstanceId, false);
-    }, [formInstanceId, isDirty, isSubmitSuccessful, skipUnsavedCloseGuard]);
+    }, [formInstanceId, isDirty, isSubmitSuccessful, skipUnsavedCloseGuard, isAutoChange]);
+
+    // RHF quirk: field-level defaultValue (useController) is NOT merged into the
+    // form-level _defaultValues, and useForm() here has no defaultValues. isDirty
+    // compares values against an empty baseline, so any prefilled form (even just
+    // a csrf_token hidden input) is instantly "dirty". Re-baseline once after the
+    // fields have registered and run their mount-time value syncs.
+    const isDirtyBaselineSetRef = useRef(false);
+    useEffect(() => {
+        if (isDirtyBaselineSetRef.current || !formBundle.form?.inputs) return;
+        isDirtyBaselineSetRef.current = true;
+        methods.reset(methods.getValues(), {
+            keepErrors: true,
+            keepTouched: true,
+            keepIsSubmitted: true,
+            keepSubmitCount: true,
+        });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [formBundle.form?.inputs]);
 
     const { data: dynamicData } = useFetchForm(request?.url, postData);
 
@@ -254,7 +274,10 @@ export default function Form({
             return result;
         }, {});
 
-        methods.reset(values, { keepDefaultValues: true });
+        // No keepDefaultValues: the server-provided values become the new baseline,
+        // so a just-updated (untouched) form is not treated as dirty by the
+        // unsaved-changes close guard.
+        methods.reset(values);
         methods.clearErrors();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formBundle?.form?.updated]);

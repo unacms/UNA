@@ -23,6 +23,7 @@ function PlainText(props) {
     const rules = getValidationRules(props);
     const name = props.name;
     const defaultValue = props.value ? props.value : '';
+    const formContext = useFormContext();
     const { field } = useController({ name, rules, defaultValue });
     // Use smaller initial height for comments forms
     const isCommentsForm = props.container_class === 'comments';
@@ -70,8 +71,10 @@ function PlainText(props) {
     }
 
     useEffect(() => {
+        // setValue (shouldDirty: false) instead of field.onChange, so syncing the
+        // server-provided value does not mark the untouched form as dirty.
         if (props.value !== undefined)
-            field.onChange(props.value)
+            formContext.setValue(props.name, props.value)
     }, [props.name, props.value]);
 
     return input

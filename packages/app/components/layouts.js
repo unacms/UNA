@@ -19,6 +19,7 @@ import { useSetWindowSize } from 'app/context/measure';
 import semver from 'semver';
 import { Card } from 'app/ui/molecules/card'
 import { FormModalHost } from 'app/ui/molecules/form_modal';
+import { UnsavedFormConfirmHost } from 'app/ui/molecules/unsaved-form-confirm-host';
 import { VersionIncompatible, VersionWarning } from 'app/ui/molecules/version-notice';
 import { useTranslation } from 'react-i18next';
 
@@ -70,6 +71,7 @@ export default function Layouts({ path, data }) {
         <Layout layout={layout} data={pageData}>
             <PageLayoutContent layout={layout} path={path} data={pageData} />
             <WindowSizeSync />
+            <UnsavedFormConfirmHost />
             <FormModalHost />
             {isVersionInfo ? <VersionWarning serverVersion={data.version} /> : null}
         </Layout>

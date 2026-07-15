@@ -124,10 +124,21 @@ export default function (props) {
         }
     }, [filesData]);
 
+    const isInitialFilesSync = useRef(true);
     useEffect(() => {
         if (props.previewPlaceHolder) {
             props.previewPlaceHolder(name, GhostsList(imageSource.images, bMultiple, handleDelete, props));
         }
+        // The mount-time sync of pre-existing files (values_src) must not mark the
+        // form dirty: re-baseline the field instead of firing onChange.
+        const syncFieldValue = (nextValue) => {
+            if (isInitialFilesSync.current) {
+                isInitialFilesSync.current = false;
+                formContext.resetField(name, { defaultValue: nextValue });
+                return;
+            }
+            field.onChange(nextValue);
+        };
         if (imageSource.images) {
             const fileIds = imageSource.images
                 .filter(item => item.file_id !== undefined) // Keep only items with file_id
@@ -139,10 +150,10 @@ export default function (props) {
             if (name == 'videos') {
                 formContext.setValue('video', fileIds)
             }
-            field.onChange(fileIds);
+            syncFieldValue(fileIds);
         }
         else {
-            field.onChange('');
+            syncFieldValue('');
         }
     }, [imageSource]);
 

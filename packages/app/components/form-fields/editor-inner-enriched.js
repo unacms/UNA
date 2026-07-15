@@ -12,7 +12,7 @@ import { useThemeName } from 'app/design/theme'
 import { useTranslation } from 'react-i18next'
 import Profile from 'app/ui/molecules/profile'
 import Badges from 'app/ui/molecules/badges'
-import { getAlert, stripTagsWithLinks, appSetting, cn } from 'app/lib/util'
+import { getAlert, stripTags, stripTagsWithLinks, appSetting, cn } from 'app/lib/util'
 import emitter from 'app/context/emitter'
 import { mentionsToUnaLinks, unaLinksToMentions, linkifyHtml } from './editor-mention-html'
 import { useMentionSuggestions } from './use-mention-suggestions'
@@ -245,6 +245,7 @@ export default function RftTextEnriched({
     }, [isWeb, suggestions.length > 0])
 
     // ---- HTML -> react-hook-form ----
+    const isInitialHtmlEmission = useRef(true)
     const onChangeHtml = useCallback((e) => {
         const raw = e?.nativeEvent?.value ?? ''
         // Convert mentions to UNA links, then auto-link any plain URLs/emails the
@@ -252,11 +253,20 @@ export default function RftTextEnriched({
         // saved content has real <a> links on every platform.
         const value = linkifyHtml(mentionsToUnaLinks(raw))
         if (onFocus && value) onFocus()
-        if (isPlainText) {
-            field.onChange(stripTagsWithLinks(value, ['a', 'p', 'br', 'span']))
-        } else {
-            field.onChange(value)
+        const next = isPlainText
+            ? stripTagsWithLinks(value, ['a', 'p', 'br', 'span'])
+            : value
+        if (isInitialHtmlEmission.current) {
+            isInitialHtmlEmission.current = false
+            // The editor's first emission is usually its normalized version of the
+            // initial value (extra <p> wrappers etc). Re-baseline instead of firing
+            // onChange so an untouched form is not considered dirty.
+            if ((stripTags(next) || '') === (stripTags(field.value) || '')) {
+                formContext.resetField(name, { defaultValue: next })
+                return
+            }
         }
+        field.onChange(next)
     }, [isPlainText])
 
     // ---- image paste ----
