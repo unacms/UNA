@@ -170,13 +170,29 @@ function normalizeHostname(hostname) {
     return hostname.toLowerCase().replace(/^www\./, '');
 }
 
+function looksLikeAbsoluteUrl(url) {
+    if (/^https?:\/\//i.test(url) || url.startsWith('//')) return true;
+
+    const hostPart = url.split('/')[0].split('?')[0].split('#')[0];
+    if (!hostPart) return false;
+    if (/^localhost(?::\d+)?$/i.test(hostPart)) return true;
+    if (/^\d{1,3}(?:\.\d{1,3}){3}(?::\d+)?$/.test(hostPart)) return true;
+
+    return hostPart.includes('.');
+}
+
 export function getHostnameFromUrl(url) {
     if (!url || typeof url !== 'string') return '';
 
     if (url.startsWith('/') && !url.startsWith('//')) return '';
+    if (!looksLikeAbsoluteUrl(url)) return '';
 
     try {
-        const withProtocol = /^https?:\/\//i.test(url) ? url : `https://${url}`;
+        const withProtocol = /^https?:\/\//i.test(url)
+            ? url
+            : url.startsWith('//')
+                ? `https:${url}`
+                : `https://${url}`;
         return normalizeHostname(new URL(withProtocol).hostname);
     } catch {
         const domain = getDomainFromUrl(url);
@@ -1701,6 +1717,7 @@ export function sanitazeUrl(url) {
 
 export function isExternalUrl(url) {
     const host = getHostnameFromUrl(url);
+    console.log('host', host, url);
     if (!host) return false;
 
     const rootHost = getHostnameFromUrl(appSetting('config', 'native_app_images_url'));
