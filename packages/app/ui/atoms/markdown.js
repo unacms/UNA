@@ -197,6 +197,10 @@ export default function ElementMarkdown({ data, customClassName, className = '',
         }
         const relative = sanitazeUrl(url.replace(/^https?:\/\/[^/]+/, '') || url)
         if (!relative) return
+        if (Platform.OS === 'web') {
+            router.push(relative)
+            return
+        }
         router.push({ pathname: '/' + (glob?.name || ''), params: { url: relative } })
     }, [router, glob?.name])
 

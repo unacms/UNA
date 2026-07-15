@@ -2,6 +2,28 @@ const alertMarkerPattern = /^\s{0,3}>\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\
 const blockquoteLinePattern = /^\s{0,3}>\s?(.*)$/
 const openingFencePattern = /^(\s{0,3})(`{3,}|~{3,})(.*)$/
 const headingPattern = /^\s{0,3}#{1,6}\s+\S/
+const inlineLinkDestinationPattern = /(\]\(\s*<?)([^)\s>]+)(>?)/g
+const absoluteOrRelativeUrlPattern = /^(?:[a-z][a-z\d+\-.]*:|\/|#|\?|\.{1,2}\/)/i
+const bareDomainPattern = /^[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,24}(?:[/?#]|$)/
+
+// Markdown route links use app-root semantics. Without a leading slash, the
+// browser resolves `wiki/accounts` from `/wiki/overview` as
+// `/wiki/wiki/accounts`, even when the click handler later corrects navigation.
+function normalizeMarkdownRouteLinks(markdown) {
+    return String(markdown || '').replace(
+        inlineLinkDestinationPattern,
+        (match, prefix, destination, suffix) => {
+            if (
+                absoluteOrRelativeUrlPattern.test(destination)
+                || bareDomainPattern.test(destination)
+            ) {
+                return match
+            }
+
+            return `${prefix}/${destination}${suffix}`
+        },
+    )
+}
 
 function trimBlankLines(lines) {
     let start = 0
@@ -33,7 +55,12 @@ export function splitMarkdownSegments(markdown) {
 
     const flushRegular = () => {
         const value = regularLines.join('\n')
-        if (value.trim()) segments.push({ kind: 'markdown', markdown: value })
+        if (value.trim()) {
+            segments.push({
+                kind: 'markdown',
+                markdown: normalizeMarkdownRouteLinks(value),
+            })
+        }
         regularLines = []
     }
 
@@ -92,7 +119,7 @@ export function splitMarkdownSegments(markdown) {
             segments.push({
                 kind: 'alert',
                 alertType: markerMatch[1].toUpperCase(),
-                markdown: trimBlankLines(alertLines).join('\n'),
+                markdown: normalizeMarkdownRouteLinks(trimBlankLines(alertLines).join('\n')),
             })
             continue
         }
@@ -117,7 +144,7 @@ export function splitMarkdownSegments(markdown) {
 
                 segments.push({
                     kind: 'lead',
-                    markdown: trimBlankLines(leadLines).join('\n'),
+                    markdown: normalizeMarkdownRouteLinks(trimBlankLines(leadLines).join('\n')),
                 })
                 canUseLeadBlockquote = false
                 leadBlockquoteHandled = true
