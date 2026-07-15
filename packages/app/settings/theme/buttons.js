@@ -363,13 +363,13 @@ export const settingsButtons = {
             // for the glass family).
             bordered: {
                 container: {
-                    default: 'bg-muted/50 backdrop-blur',
-                    hovered: 'bg-muted backdrop-blur',
-                    focused: 'bg-muted backdrop-blur',
-                    pressed: 'bg-accent/60 backdrop-blur',
-                    active: 'bg-muted backdrop-blur',
-                    pressedToggle: 'bg-accent/60 backdrop-blur',
-                    disabled: 'bg-muted opacity-60 backdrop-blur',
+                    default: 'bg-muted/60 ',
+                    hovered: 'bg-muted ',
+                    focused: 'bg-muted ',
+                    pressed: 'bg-accent/60 ',
+                    active: 'bg-muted ',
+                    pressedToggle: 'bg-accent/60 ',
+                    disabled: 'bg-muted opacity-60 ',
                 },
                 text: {
                     base: 'font-medium tracking-tight',
@@ -412,10 +412,10 @@ export const settingsButtons = {
             borderless: {
                 container: {
                     default: '',
-                    hovered: 'bg-muted/50',
-                    focused: 'bg-muted/50',
+                    hovered: 'bg-muted/60',
+                    focused: 'bg-muted/60',
                     pressed: 'bg-muted',
-                    active: 'bg-muted/80',
+                    active: 'bg-muted',
                     pressedToggle: 'bg-muted',
                     disabled: 'opacity-50',
                 },
@@ -435,11 +435,11 @@ export const settingsButtons = {
             // text link (no fill, hover-underline on web).
             link: {
                 container: { default: '', 
-                            hovered: 'bg-muted/50',
-                            focused: 'bg-muted/50',
-                            pressed: 'bg-muted/50',
-                            active: 'bg-muted/50',
-                            pressedToggle: 'bg-muted/50',
+                            hovered: 'bg-muted/60',
+                            focused: 'bg-muted/60',
+                            pressed: 'bg-muted/60',
+                            active: 'bg-muted/60',
+                            pressedToggle: 'bg-muted/60',
                             disabled: 'opacity-50' },
                 text: {
                     base: 'font-medium tracking-tight text-accent-foreground',
