@@ -115,6 +115,15 @@
         @apply my-3 border-l-4 border-border pl-4 pr-4 text-muted-foreground;
     }
 
+    /* Enriched Markdown defaults every block image to a fixed 200px height.
+     * Standalone images are direct children of `.enrm-text`; inline images stay
+     * inside paragraphs and retain the renderer's compact inline dimensions. */
+    .u-vanilla-html .enrm-text > img,
+    .u-vanilla-html-small .enrm-text > img {
+        width: 100% !important;
+        height: auto !important;
+    }
+
     .u-vanilla-html
         div
         > :where(:first-child):not(

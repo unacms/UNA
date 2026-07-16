@@ -21,6 +21,7 @@ import Markdown from 'app/ui/atoms/markdown'
 import { useFocusEffect, useGlobalSearchParams, usePathname } from 'app/lib/hooks/router'
 import { isEmoji } from 'app/lib/util'
 import { getPageData } from 'app/lib/util'
+import emitter from 'app/context/emitter'
 
 const isWeb = Platform.OS === 'web';
 
@@ -113,6 +114,53 @@ function getWikiMarkdownContents(cell) {
             const content = item?.data?.content;
             return typeof content === 'string' ? [content] : [];
         });
+    });
+}
+
+function splitMarkdownIntoSections(contents, tocItems) {
+    let tocIndex = 0;
+
+    return contents.flatMap((markdown, contentIndex) => {
+        const lines = String(markdown || '').split(/\r?\n/);
+        const sections = [];
+        let sectionLines = [];
+        let sectionTocId = null;
+        let fenceCharacter = null;
+
+        const flushSection = () => {
+            const value = sectionLines.join('\n');
+            if (value.trim()) {
+                sections.push({
+                    key: `content-${contentIndex}-section-${sections.length}`,
+                    contentIndex,
+                    markdown: value,
+                    sectionIndex: sections.length,
+                    tocId: sectionTocId,
+                });
+            }
+            sectionLines = [];
+            sectionTocId = null;
+        };
+
+        lines.forEach((line) => {
+            const fenceMatch = line.match(/^\s{0,3}(`{3,}|~{3,})/);
+            if (fenceMatch) {
+                const character = fenceMatch[1][0];
+                fenceCharacter = fenceCharacter === character ? null : (fenceCharacter || character);
+                sectionLines.push(line);
+                return;
+            }
+
+            if (!fenceCharacter && /^\s{0,3}#{2,3}\s+\S/.test(line)) {
+                flushSection();
+                sectionTocId = tocItems[tocIndex]?.id || null;
+                tocIndex += 1;
+            }
+            sectionLines.push(line);
+        });
+
+        flushSection();
+        return sections;
     });
 }
 
@@ -302,7 +350,7 @@ function MenuWiki({ setPageData, block, url }) {
     );
 }
 
-function PageContentWiki({ data, url }) {
+function PageContentWiki({ data, scrollRef, url }) {
     const { t } = useTranslation()
     const isWeb = Platform.OS === 'web'
     const isDesktop = useIsDesktop()
@@ -311,17 +359,22 @@ function PageContentWiki({ data, url }) {
     const params = useGlobalSearchParams()
     const routeUrl = getRouteParam(params?.url) || url || pathname
     const centerContentRef = useRef(null)
+    const headingRefs = useRef(new Map())
     const [pageData, setPageData] = useState({ data, url: routeUrl })
 
     // Next preserves this client layout while navigating between wiki routes, so
     // useState's initializer does not run again. Sync the newly streamed page
     // data into the layout when the route changes.
     useEffect(() => {
-        setPageData((current) => (
-            current.data === data && current.url === routeUrl
-                ? current
-                : { data, url: routeUrl }
-        ))
+        setPageData((current) => {
+            if (current.data === data && current.url === routeUrl) {
+                return current
+            }
+            // Drop native TOC scroll targets from the previous page before
+            // section refs re-register for the new content.
+            headingRefs.current.clear()
+            return { data, url: routeUrl }
+        })
     }, [data, routeUrl])
 
     const cellsCustomConfig = useMemo(() => {
@@ -357,18 +410,31 @@ function PageContentWiki({ data, url }) {
     const showMobileLeftPanel = currentBreakpoint < leftBreakpointMinWidth
     const showMobileRightPanel = currentBreakpoint < rightBreakpointMinWidth
     const handleTocPress = useCallback((id) => {
-        if (!isWeb || !id) {
+        if (!id) return
+
+        if (isWeb) {
+            const target = document.getElementById(id)
+            if (!target) return
+
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            window.history.replaceState(null, '', `#${id}`)
+            emitter.emit('link', { action: 'pressed' })
             return
         }
 
-        const target = document.getElementById(id)
-        if (!target) {
-            return
-        }
+        const target = headingRefs.current.get(id)
+        const scrollView = scrollRef?.current
+        if (!target?.measureLayout || !scrollView?.scrollTo) return
 
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        window.history.replaceState(null, '', `#${id}`)
-    }, [isWeb])
+        target.measureLayout(
+            scrollView,
+            (_x, y) => {
+                scrollView.scrollTo({ y: Math.max(0, y - 16), animated: true })
+                emitter.emit('link', { action: 'pressed' })
+            },
+            () => {},
+        )
+    }, [isWeb, scrollRef])
 
     const onLayout = () => {
         if (isWeb) {
@@ -386,8 +452,14 @@ function PageContentWiki({ data, url }) {
         }
     }, [currentBreakpointName, isWeb, leftPanelProps.defaultSize, centerPanelProps.defaultSize, rightPanelProps.defaultSize])
 
-    const centerMarkdownContents = getWikiMarkdownContents(pageData?.data?.elements?.cell_center)
-    const centerHtmlContent = centerMarkdownContents.join('\n\n')
+    const centerMarkdownContents = useMemo(
+        () => getWikiMarkdownContents(pageData?.data?.elements?.cell_center),
+        [pageData?.data?.elements?.cell_center]
+    )
+    const centerHtmlContent = useMemo(
+        () => centerMarkdownContents.join('\n\n'),
+        [centerMarkdownContents]
+    )
     const leftMenu = pageData?.data?.elements?.cell_left?.[0]
 
     // TOC entries derived from the Markdown source (see extractMarkdownHeadings).
@@ -396,6 +468,10 @@ function PageContentWiki({ data, url }) {
         [centerHtmlContent]
     )
     const tocItems = markdownHeadings
+    const centerMarkdownSections = useMemo(
+        () => isWeb ? [] : splitMarkdownIntoSections(centerMarkdownContents, tocItems),
+        [centerMarkdownContents, isWeb, tocItems]
+    )
     const showBothMobilePanels = showMobileLeftPanel && showMobileRightPanel && tocItems.length >= 2
 
     // Assign ids to the rendered headings so TOC clicks can scroll to them. The
@@ -534,9 +610,25 @@ function PageContentWiki({ data, url }) {
                     </Panel>
                     <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
                     <Panel className={`native:w-full ${currentBreakpointName}:w-full`} {...centerPanelProps}>
-                        <View ref={centerContentRef} className={`p-4 sm:p-6 xl:p-8 gap-3`}>
-                            {centerMarkdownContents.map((content, index) => (
+                        <View ref={centerContentRef} className="p-4 sm:p-6 xl:p-8 gap-4">
+                            {isWeb ? centerMarkdownContents.map((content, index) => (
                                 <Markdown key={`wiki-content-${index}`} data={content} />
+                            )) : centerMarkdownSections.map((section) => (
+                                <View
+                                    key={section.key}
+                                    collapsable={false}
+                                    className={section.contentIndex > 0 && section.sectionIndex === 0 ? 'mt-3' : ''}
+                                    ref={(node) => {
+                                        if (!section.tocId) return
+                                        if (node) {
+                                            headingRefs.current.set(section.tocId, node)
+                                        } else {
+                                            headingRefs.current.delete(section.tocId)
+                                        }
+                                    }}
+                                >
+                                    <Markdown data={section.markdown} />
+                                </View>
                             ))}
                         </View>
                     </Panel>
@@ -578,9 +670,11 @@ function PageContentWiki({ data, url }) {
 }
 
 export default function PageLayoutWiki({ data }) {
+    const scrollRef = useRef(null)
+
     return (
-        <Page data={data}>
-            <PageContentWiki data={data} />
+        <Page data={data} processKeyboard={false} scrollRef={scrollRef}>
+            <PageContentWiki data={data} scrollRef={scrollRef} />
             <View className="flex-1" />
             <MenuFooter />
         </Page>
