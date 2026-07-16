@@ -63,6 +63,9 @@ export function normalizeFormResponseData(data) {
     return [data];
 }
 
+/** Item types that still need client handling (keep form open / set formBundle.extra). */
+const FORM_RESPONSE_ACTIONABLE_TYPES = new Set(['form', 'redirect', 'msg']);
+
 /** True when the server response means the form flow is finished (close modal, refresh parent). */
 export function isFormResponseComplete(responseData) {
     if (responseData == null) return true;
@@ -70,12 +73,12 @@ export function isFormResponseComplete(responseData) {
     if (Array.isArray(responseData)) {
         if (responseData.length === 0) return true;
         if (responseData.some((item) => item?.reload)) return true;
-        return !responseData.some((item) => item?.type === 'form');
+        return !responseData.some((item) => FORM_RESPONSE_ACTIONABLE_TYPES.has(item?.type));
     }
 
     if (typeof responseData === 'object') {
         if (responseData.reload) return true;
-        if (responseData.type === 'form') return false;
+        if (FORM_RESPONSE_ACTIONABLE_TYPES.has(responseData.type)) return false;
         return true;
     }
 
