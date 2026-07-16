@@ -7,7 +7,7 @@ import { KbAvoidingViewScroll } from 'app/ui/atoms/kb-avoiding-view';
 import { useCallback } from 'react';
 import { useFocusEffect }  from 'app/lib/hooks/router'
 
-export default function Page({ children, data, page_width, processKeyboard=true }) {
+export default function Page({ children, data, page_width, processKeyboard=true, scrollRef }) {
     const headerHeightFromAtom = useHeaderHeight();
     const footerHeightFromAtom = useFooterHeight();
     const isWeb = Platform.OS == 'web';
@@ -24,6 +24,7 @@ export default function Page({ children, data, page_width, processKeyboard=true 
 
     return (
         <Wrapper
+            ref={scrollRef}
             {...(!isWeb && !processKeyboard ? { contentContainerStyle: { flexGrow: 1, paddingTop: headerHeightFromAtom } } : {})}
             {...(!isWeb && processKeyboard ? { paddingTop: headerHeightFromAtom } : {})}
             className={(page_width || getPageWidth(data?.uri, data?.config)) + ' mx-auto w-full'}

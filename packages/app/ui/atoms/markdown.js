@@ -5,12 +5,13 @@ import { useCSSVariable, useResolveClassNames } from 'uniwind'
 import { Row, View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { useTheme, useThemeName } from 'app/design/theme'
-import { isExternalUrl, openExternalLink, sanitazeUrl } from 'app/lib/util'
+import { appSetting, isExternalUrl, openExternalLink, sanitazeUrl } from 'app/lib/util'
 import { useRouter, useGlobalSearchParams } from 'app/lib/hooks/router'
 import { normalizeLinkHref } from 'app/components/form-fields/editor-mention-html'
 import { Icon } from 'app/ui/atoms/icon'
 import LazyCodeBlock from 'app/ui/atoms/code-block-lazy'
 import { splitMarkdownSegments } from 'app/lib/markdown/segments'
+import { APP_URL, UNA_URL } from 'app/config'
 
 const headingScale = {
     regular: {
@@ -62,6 +63,60 @@ const alertConfig = {
         surfaceClassName: 'border-red-500/20 bg-red-500/10',
         toneClassName: 'text-red-700',
     },
+}
+
+const markdownImageDestinationPattern = /(!\[[^\]]*\]\(\s*<?)([^)\s>]+)(>?)/g
+const unaStoragePathPattern = /^\/?sys_[^/]+_files\//
+const markdownImageWidth = 1920
+
+function normalizeMarkdownImageSources(markdown) {
+    const unaBaseUrl = String(UNA_URL || '').replace(/\/$/, '')
+    const optimizerBaseUrl = Platform.OS === 'web'
+        ? ''
+        : String(appSetting('config', 'native_app_images_url') || APP_URL || '').replace(/\/$/, '')
+
+    return String(markdown || '').replace(
+        markdownImageDestinationPattern,
+        (match, prefix, destination, suffix) => {
+            if (
+                destination.startsWith('/_next/image?')
+                || /^(?:data:image|blob:)/i.test(destination)
+                || destination.startsWith('/static/')
+            ) {
+                return match
+            }
+
+            let source = destination
+            if (unaStoragePathPattern.test(source)) {
+                source = `/s/${source.replace(/^\/+/, '')}`
+            }
+
+            if (!/^https?:\/\//i.test(source)) {
+                if (!unaBaseUrl) return match
+                source = `${unaBaseUrl}/${source.replace(/^\/+/, '')}`
+            }
+
+            // Match the shared Image atom: optimize UNA-hosted media through
+            // Next on web and through the configured app image host on native.
+            if (!unaBaseUrl || !source.startsWith(`${unaBaseUrl}/`)) {
+                return `${prefix}${source}${suffix}`
+            }
+            if (Platform.OS !== 'web' && !optimizerBaseUrl) {
+                return `${prefix}${source}${suffix}`
+            }
+
+            const optimized = `${optimizerBaseUrl}/_next/image?url=${encodeURIComponent(source)}&w=${markdownImageWidth}&q=75`
+            return `${prefix}${optimized}${suffix}`
+        },
+    )
+}
+
+function normalizeSegmentImages(segments) {
+    return segments.map((segment) => (
+        segment.kind === 'code'
+            ? segment
+            : { ...segment, markdown: normalizeMarkdownImageSources(segment.markdown) }
+    ))
 }
 
 function MarkdownSegments({
@@ -291,7 +346,10 @@ export default function ElementMarkdown({ data, customClassName, className = '',
         em: { ...markdownStyle.em, color: leadTextColor },
     }), [leadTextColor, leadTextStyle.fontSize, leadTextStyle.lineHeight, markdownStyle])
 
-    const segments = useMemo(() => splitMarkdownSegments(data), [data])
+    const segments = useMemo(
+        () => normalizeSegmentImages(splitMarkdownSegments(data)),
+        [data],
+    )
     const selectionColor = colors.outline || colors.primary
     const handleLinkPress = useCallback((event) => navigate(event?.url), [navigate])
 

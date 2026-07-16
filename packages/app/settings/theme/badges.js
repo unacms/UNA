@@ -40,11 +40,11 @@ export const settingsBadges = {
             // Matches profile_sizes['xs']: h-6 (24px)
             padding: ' ',
             wide_padding: ' px-1.5 ',
-            container: ' min-w-6 h-6 gap-1 overflow-hidden justify-center items-center ',
+            container: ' min-w-5 h-5 gap-1 overflow-hidden justify-center items-center ',
             image_container: ' items-center justify-center rounded overflow-hidden ',
             icon_size: 16,
             text: ' text-xs leading-6 px-0.5  ',
-            rounded: ' rounded-lg ',
+            rounded: ' rounded ',
         },
         sm: {
             // Matches profile_sizes['sm']: h-8 (32px)
