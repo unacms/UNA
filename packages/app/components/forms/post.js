@@ -1,11 +1,11 @@
-import { View, Row, ScrollView } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { useState } from 'react'
 import { getFormFieldByData, getHiddenFields } from 'app/lib/form-helpers'
 import Profile from 'app/ui/molecules/profile';
 
 import { useCurrentUser } from 'app/context/user';
 import { Text } from 'app/design/typography'
-import { FileButton } from 'app/lib/form-helpers';
+import MediaAttachments from 'app/components/form-fields/media-attachments'
 
 export default function FormPost(props) {
     const { data, handleSubmit } = props;
@@ -93,69 +93,12 @@ export default function FormPost(props) {
                 </View>
             </View>
             <View className="flex-col">
-                <View className='w-full flex-wrap my-1 flex-row border rounded-xl border-border   py-1 px-2 items-center'>
-                    <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm flex-auto text-secondary-foreground ">Add to post</Text>
-                    <Row className=" justify-center items-center flex-row flex-wrap px-2">
-                        {props.data.inputs['pictures'] && (
-                            <View className="ml-2">
-                                <FileButton field_name='pictures' variant='text' icon="Image" rounded={false} />
-                            </View>
-                        )}
-                        {props.data.inputs['videos'] && (
-                            <View className="ml-2">
-                                <FileButton field_name='videos' variant='text' icon="Image" rounded={false} />
-                            </View>
-                        )}
-                        {props.data.inputs['files'] && (
-                            <View className="ml-2">
-                                <FileButton field_name='files' variant='text' icon="Paperclip" rounded={false} />
-                            </View>
-                        )}
-                        {props.data.inputs['sounds'] && (
-                            <View className="ml-2">
-                                <FileButton field_name='files' variant='text' icon="FileAudio" rounded={false} />
-                            </View>
-                        )}
-
-                    </Row>
-
-                </View>
-                <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled" className="w-full " horizontal={true}>
-                    <Row className='flex-wrap '>
-                        {
-                            getFormFieldByData(
-                                props.data.inputs['pictures'],
-                                props.handleSubmit,
-                                'notitle',
-                                { hide_button: true, list_only: true, asDefaultStorage: true, form_name: props.name }
-                            )
-                        }
-                        {
-                            getFormFieldByData(
-                                props.data.inputs['videos'],
-                                props.handleSubmit,
-                                'notitle',
-                                { hide_button: true, list_only: true }
-                            )
-                        }
-                        {
-                            getFormFieldByData(
-                                props.data.inputs['files'],
-                                props.handleSubmit,
-                                'notitle',
-                                { hide_button: true, list_only: true }
-                            )
-                        }
-                        {
-                            getFormFieldByData(
-                                props.data.inputs['sounds'],
-                                props.handleSubmit,
-                                'notitle',
-                                { hide_button: true, list_only: true }
-                            )
-                        }
-                    </Row>
-                </ScrollView>
+                <MediaAttachments
+                    inputs={inputs}
+                    handleSubmit={handleSubmit}
+                    formName={props.name}
+                    label="Add to post"
+                />
 
                 <View className='w-full my-1 flex-row border rounded-xl border-border  py-1 px-2'>
                     <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm  text-secondary-foreground ">Labels</Text>

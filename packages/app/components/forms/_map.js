@@ -1,6 +1,7 @@
 import FormComments from './comments';
 import FormFeed from './feed';
 import FormPost from './post';
+import FormContent from './content';
 import FormConfirmEmail from './confirm_email';
 import Messenger from './messenger';
 
@@ -10,6 +11,7 @@ export const componentsMapDefault = {
     feed: FormFeed,
     feed_edit: FormFeed,
     bx_posts: FormPost,
+    bx_ads: FormContent,
     bx_forum: FormPost,
     bx_messenger: Messenger
 };
