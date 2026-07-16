@@ -8,6 +8,7 @@ import { BlockWrapper } from 'app/components/block-wrapper'
 export const BrowseSimpleView = {
     Row: 'row',
     Galery: 'galery',
+    Gallery: 'gallery',
     List: 'list'
 } as const;
 
@@ -55,8 +56,12 @@ export default function Browse({ unitMode, data, limit_by, view, autoscroll, blo
         ) : unitElement;
     })
 
+     if (!view && normalizedData?.params?.view){
+        view = normalizedData?.params?.view;
+
+    }
     const content =
-        view === BrowseSimpleView.Galery ? (
+        (view === BrowseSimpleView.Galery || view === BrowseSimpleView.Gallery) ? (
             <Galery autoscroll={autoscroll} items={items} />
         ) : view === BrowseSimpleView.Row ? (
             <Row className="@container/list -mx-2 -my-2 overflow-x-scroll">{items}</Row>
