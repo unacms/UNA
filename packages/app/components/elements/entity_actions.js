@@ -10,7 +10,9 @@ export default function ElementEntityActions({ data, blockWrapperProps }) {
             (item) =>
                 !item.name?.startsWith('edit-') &&
                 !item.name?.startsWith('add-images-to-album') &&
-                !item.name?.startsWith('delete-')
+                !item.name?.startsWith('delete-') &&
+                !item.name?.startsWith('move-image')
+                
         ),
     };
 
