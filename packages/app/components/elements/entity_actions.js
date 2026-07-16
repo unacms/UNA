@@ -9,7 +9,7 @@ export default function ElementEntityActions({ data, blockWrapperProps }) {
         items: (data.items || []).filter(
             (item) =>
                 !item.name?.startsWith('edit-') &&
-                //!item.name?.startsWith('report') &&
+                !item.name?.startsWith('add-images-to-album') &&
                 !item.name?.startsWith('delete-')
         ),
     };
