@@ -1,6 +1,6 @@
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { Button } from 'app/design/controls'
+import { Button, ButtonLink } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import React from 'react'
 import BlockByUrl from 'app/ui/molecules/block'
@@ -30,26 +30,25 @@ export default function () {
             </View>
             <View className="gap-y-2 w-full">
                 <Row className="flex-row gap-y-2 flex-wrap gap-x-2 w-full items-center justify-center"><AuthPanel /></Row>
-                <Link className="flex-1 min-w-200" href="/forgot-password" haptics="Medium">
-                    <Button
+               
+                    <ButtonLink
                         title={t('login_modal_fp')}
                         variant="default"
                         startDecorator="RotateCcw"
                         fullWidth
                         size="base"
-
+                        href="/forgot-password"
                     />
-                </Link>
-                <Link className="flex-1 min-w-200" href="/create-account" haptics="Medium">
+                
                     <Button
                         title={t('login_modal_new_account')}
                         variant="default"
                         fullWidth
                         size="base"
                         startDecorator="UserRoundPlus"
-
+                        href="/create-account"
                     />
-                </Link>
+             
             </View>
         </View>
     )
