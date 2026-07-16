@@ -10,24 +10,22 @@ function getExtDeny(input) {
     return input?.ext_deny ?? input?.extDeny ?? ''
 }
 
-export function getMediaKind(input) {
-    const extAllow = getExtAllow(input)
-    const extDeny = getExtDeny(input)
-
-    const hasAny = (exts) => exts.some((ext) => extAllow.includes(ext) || extDeny.includes(ext))
-
-    // Heuristics based on `ext_allow/ext_deny` logic used by `files.js`.
-    // Used only for UI icons + deciding which field receives pasted-file defaults.
-    const isAudio = hasAny(['mp3', 'm4a', 'm4b', 'wma', 'wav', 'aac', 'ogg'])
-    if (isAudio) return 'audio'
-
-    const hasImages = hasAny(['jpg', 'jpeg', 'jpe', 'png', 'gif', 'webp', 'svg'])
-    const hasVideos = hasAny(['mp4', 'm4v', 'mov', 'webm'])
-
-    if (hasVideos && !hasImages) return 'video'
-    if (hasImages && !hasVideos) return 'image'
-
-    return 'file'
+export function getMediaKind(fieldName) {
+    switch (fieldName) {
+        case 'photo':
+        case 'cmt_image':
+        case 'pictures':
+            return 'image'
+        case 'video':
+        case 'videos':
+            return 'video'
+        case 'sounds':
+            return 'audio'
+        case 'file':
+        case 'files':
+        default:
+            return 'file'
+    }
 }
 
 export function getMediaFields(inputs) {
@@ -36,14 +34,15 @@ export function getMediaFields(inputs) {
         .map(([key, v]) => ({
             key,
             input: v,
-            kind: getMediaKind(v),
+             kind: getMediaKind(key),
         }))
 }
 
 function getIconForKind(kind) {
     switch (kind) {
-        case 'image':
         case 'video':
+            return 'Film'
+        case 'image':
             return 'Image'
         case 'audio':
             return 'FileAudio'
@@ -84,6 +83,7 @@ export default function MediaAttachments({
                                 variant='text'
                                 icon={getIconForKind(kind)}
                                 rounded={false}
+                                tooltip={'Add '+ key}
                             />
                         </View>
                     ))}

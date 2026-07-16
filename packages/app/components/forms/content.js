@@ -30,7 +30,7 @@ export default function FormAds(props) {
                                 inputs={inputs}
                                 handleSubmit={handleSubmit}
                                 formName={name}
-                                label="Add to ad"
+                                label="Attachments"
                             />
                         )
                     }

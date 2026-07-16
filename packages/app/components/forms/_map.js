@@ -12,6 +12,7 @@ export const componentsMapDefault = {
     feed_edit: FormFeed,
     bx_posts: FormPost,
     bx_ads: FormContent,
+    bx_albums: FormContent,
     bx_forum: FormPost,
     bx_messenger: Messenger
 };
