@@ -188,7 +188,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                             data.inputs['photo'],
                                             handleSubmit,
                                             'notitle',
-                                            { hide_button: true, list_only: true }
+                                            { hide_button: true, list_only: true, asDefaultStorage: true, form_name: name }
                                         )
                                     }
                                     {

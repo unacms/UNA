@@ -272,14 +272,18 @@ export default function RftTextEnriched({
     // ---- image paste ----
     const onPasteImages = useCallback((e) => {
         const imgs = e?.nativeEvent?.images || []
-        if (!imgs.length) return
-        const images = imgs.map((img) => ({
-            uri: img.uri,
-            fileName: (img.uri.split('/').pop() || 'image') + '.png',
-            mimeType: img.type || 'image/png',
-        }))
+        if (!imgs.length || !form_name) return
+        const images = imgs.map((img, index) => {
+            const mimeType = img.type || 'image/png'
+            const ext = mimeType.split('/')[1] || 'png'
+            return {
+                uri: img.uri,
+                fileName: `pasted-${Date.now()}-${index}.${ext}`,
+                mimeType,
+            }
+        })
         setFilesData(getAlert('images:pasted', { images, form_name }))
-    }, [form_name])
+    }, [form_name, setFilesData])
 
     // ---- submit on enter ----
     const submitOnEnter = isCommentsEditor

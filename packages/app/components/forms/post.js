@@ -88,7 +88,7 @@ export default function FormPost(props) {
                         inputs['text'],
                         handleSubmit,
                         'notitle',
-                        { placeholder: 'Write your text here...' }
+                        { placeholder: 'Write your text here...', form_name: props.name }
                     )}
                 </View>
             </View>
@@ -127,7 +127,7 @@ export default function FormPost(props) {
                                 props.data.inputs['pictures'],
                                 props.handleSubmit,
                                 'notitle',
-                                { hide_button: true, list_only: true }
+                                { hide_button: true, list_only: true, asDefaultStorage: true, form_name: props.name }
                             )
                         }
                         {

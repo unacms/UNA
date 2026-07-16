@@ -43,7 +43,7 @@ export default function FormMessenger(props) {
     return <View className='w-full px-3' >
         <Row className='w-full items-end'>
             <View className={'mr-2  ' + (isWeb ? '' : ' w-12 ')}>
-                <FileButton field_name='files' icon="Image" asDefaultStorage={true} />
+                <FileButton field_name='files' icon="Image" />
 
             </View>
             <View
@@ -83,7 +83,7 @@ export default function FormMessenger(props) {
             props.data.inputs['files'],
             props.handleSubmit,
             'notitle',
-            { hide_button: true, list_only: true }
+            { hide_button: true, list_only: true, asDefaultStorage: true, form_name: props.name }
         )}</Row>
         {getFormFieldByData(props.data.inputs['cmt_mood'], props.handleSubmit, 'custom')}
     </View>
