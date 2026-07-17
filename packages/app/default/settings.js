@@ -6,6 +6,7 @@ import { settingsBrowse } from 'app/settings/browse';
 import { settingsSocialActions } from 'app/settings/social_actions';
 import { settingsMenus } from 'app/settings/menus';
 import { settingsHeaderToolbar } from 'app/settings/header_toolbar';
+import { settingsWiki } from 'app/settings/wiki';
 import { settingsTheme } from 'app/settings/theme';
 import { settingsElements } from 'app/settings/elements';
 import { settingsConfigs } from 'app/settings/configs'; 
@@ -52,6 +53,7 @@ export const settingsDefault = {
     ...settingsSocialActions,
     ...settingsMenus,
     ...settingsHeaderToolbar,
+    ...settingsWiki,
     ...settingsTheme,
     ...settingsElements,
     ...settingsConfigs,

@@ -9,7 +9,8 @@
     "@legendapp/motion": "^2.5.3",
     "cnfast": "^0.0.8",
     "crypto": "file:../../crypto-shim",
-    "solito": "4.3.0"
+    "solito": "4.3.0",
+    "yaml": "^2.9.0"
   },
   "peerDependencies": {
     "react": ">=19.0.0",

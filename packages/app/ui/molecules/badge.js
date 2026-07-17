@@ -15,7 +15,7 @@ const colorMapping = {
     emerald: { bg: 'bg-emerald-600/20  ', text: 'text-emerald-700 dark:text-emerald-300' },
     purple: { bg: 'bg-purple-600/20', text: ' text-purple-700 dark:text-purple-300' },
     red: { bg: 'bg-red-600/20', text: ' text-red-700 dark:text-red-300' },
-    blue: { bg: 'bg-blue-600/10', text: ' text-blue-600 dark:text-blue-400' },
+    blue: { bg: 'bg-blue-600/20', text: ' text-blue-600 dark:text-blue-400' },
     green: { bg: 'bg-green-600/20', text: ' text-green-700 dark:text-green-300' },
     yellow: { bg: 'bg-yellow-600/20', text: ' text-yellow-700 dark:text-yellow-300' },
     orange: { bg: 'bg-orange-600/20', text: ' text-orange-700 dark:text-orange-300' },
@@ -27,7 +27,7 @@ const colorMapping = {
     gray: { bg: 'bg-gray-600/20', text: ' text-gray-700 dark:text-gray-300' },
     slate: { bg: 'bg-slate-600/20', text: ' text-slate-700 dark:text-slate-300' },
     zinc: { bg: 'bg-zinc-600/20', text: ' text-zinc-700 dark:text-zinc-300' },
-    neutral: { bg: 'bg-secondary-foreground/20', text: ' text-muted-foreground ' },
+    neutral: { bg: 'bg-muted/60', text: ' text-secondary-foreground ' },
     stone: { bg: 'bg-stone-600/20', text: ' text-stone-700 dark:text-stone-300' },
     amber: { bg: 'bg-amber-600/20', text: ' text-amber-700 dark:text-amber-300' },
     lime: { bg: 'bg-lime-600/20', text: ' text-lime-700 dark:text-lime-300' },
@@ -118,8 +118,6 @@ export default function Badge({ data, variant = "default", size = 'sm', rounded 
             </Link>
         );
     } else {
-        data.icon = data.icon || 'CheckMark';
-
         const isIconOnly = isTruthyFlag(data.is_icon_only) || isTruthyFlag(data.icon_only)
         const hasIcon = !!data.icon && isNaN(data.icon)
         const hasImage = !!data.icon_url

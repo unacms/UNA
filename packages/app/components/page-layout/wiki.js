@@ -23,6 +23,8 @@ import { isEmoji } from 'app/lib/util'
 import { getPageData } from 'app/lib/util'
 import emitter from 'app/context/emitter'
 import Image from 'app/ui/atoms/image'
+import { getComponent } from 'app/components/registry'
+import { parseWikiFrontMatter } from 'app/lib/markdown/frontmatter'
 
 const isWeb = Platform.OS === 'web';
 
@@ -471,10 +473,21 @@ function PageContentWiki({ data, scrollRef, url }) {
         }
     }, [currentBreakpointName, isWeb, leftPanelProps.defaultSize, centerPanelProps.defaultSize, rightPanelProps.defaultSize])
 
-    const centerMarkdownContents = useMemo(
+    const rawCenterMarkdownContents = useMemo(
         () => getWikiMarkdownContents(pageData?.data?.elements?.cell_center),
         [pageData?.data?.elements?.cell_center]
     )
+    const wikiDocument = useMemo(
+        () => parseWikiFrontMatter(rawCenterMarkdownContents),
+        [rawCenterMarkdownContents]
+    )
+    const rawMarkdownSource = useMemo(
+        () => rawCenterMarkdownContents.join('\n\n'),
+        [rawCenterMarkdownContents]
+    )
+    const centerMarkdownContents = wikiDocument.contents
+    const documentMetadata = wikiDocument.attributes
+    const WikiDocumentHeader = getComponent('molecule', 'wiki_document_header')
     const centerHtmlContent = useMemo(
         () => centerMarkdownContents.join('\n\n'),
         [centerMarkdownContents]
@@ -598,14 +611,14 @@ function PageContentWiki({ data, scrollRef, url }) {
         if (isWeb) {
             setHeader(isDesktop ? defaultHeader : { subHeader: mobileHeaderControls });
         }
-    }, [isDesktop, mobileHeaderControls, setHeader]);
+    }, [isDesktop, isWeb, mobileHeaderControls, setHeader]);
 
     useFocusEffect(
         useCallback(() => {
             if (!isWeb) {
                 setHeader(isDesktop ? defaultHeader : { subHeader: mobileHeaderControls });
             }
-        }, [isDesktop, mobileHeaderControls, setHeader])
+        }, [isDesktop, isWeb, mobileHeaderControls, setHeader])
     );
 
     return (
@@ -629,7 +642,14 @@ function PageContentWiki({ data, scrollRef, url }) {
                     </Panel>
                     <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
                     <Panel className={`native:w-full ${currentBreakpointName}:w-full`} {...centerPanelProps}>
-                        <View ref={centerContentRef} className="p-4 sm:p-6 xl:p-8 gap-4">
+                        <View ref={centerContentRef} className="p-4 sm:p-6 xl:p-8 gap-6 lg:gap-8">
+                            {documentMetadata?.title && WikiDocumentHeader ? (
+                                <WikiDocumentHeader
+                                    markdownSource={rawMarkdownSource}
+                                    metadata={documentMetadata}
+                                    pageUrl={routeUrl}
+                                />
+                            ) : null}
                             {isWeb ? centerMarkdownContents.map((content, index) => (
                                 <Markdown key={`wiki-content-${index}`} data={content} />
                             )) : centerMarkdownSections.map((section) => (

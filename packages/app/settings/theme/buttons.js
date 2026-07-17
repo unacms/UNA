@@ -287,8 +287,8 @@ export const settingsButtons = {
         // iOS HIG-style minimum is 44pt; web/mouse trims a few pixels because
         // pointers don't need finger-sized targets.
         controlSizes: {
-            mini:    { height: 28, paddingX: 8,  font: 'text-sm leading-7', icon: 16, hitSlop: 10, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
-            small:   { height: 32, paddingX: 10, font: 'text-sm leading-8', icon: 20, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 6 } } },
+            mini:    { height: 28, paddingX: 12,  font: 'text-sm leading-7', icon: 16, hitSlop: 10, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
+            small:   { height: 32, paddingX: 12, font: 'text-sm leading-8', icon: 20, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 6 } } },
             regular: {
                 default: { height: 36, paddingX: 12, font: 'text-sm leading-9', icon: 20, hitSlop: 4, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
                // web:     { height: 36, paddingX: 12 },

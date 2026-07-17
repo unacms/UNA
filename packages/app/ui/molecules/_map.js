@@ -21,6 +21,7 @@ import CounterIndicator from './counter-indicator';
 import ProfileLink from './profile-link'; 
 import NoContent from './no-content'; 
 import { TaskTimer } from './task-timer';
+import WikiDocumentHeader from './wiki-document-header';
 
 export const componentsMapDefault = {
     likes: memo(Likes),
@@ -45,5 +46,6 @@ export const componentsMapDefault = {
     profile_link: ProfileLink,
     no_content: NoContent,
     task_timer: TaskTimer,
+    wiki_document_header: WikiDocumentHeader,
 };
 
