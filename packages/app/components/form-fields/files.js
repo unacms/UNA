@@ -181,6 +181,15 @@ export default function (props) {
         }
     }, [uploadFinished]);
 
+    const getImageMergeKey = (img) => {
+        // Preload items use hash; server ghosts often have no hash — use stable ids.
+        // Never key on undefined: Map would collapse all existing files into one.
+        if (img?.hash != null && img.hash !== '') return `hash:${img.hash}`;
+        if (img?.file_id != null && img.file_id !== '') return `id:${img.file_id}`;
+        if (img?.file_remote_id) return `remote:${img.file_remote_id}`;
+        return null;
+    };
+
     const setImageSourceN = (newImages, bMultiple) => {
         if (!bMultiple){
                 setImageSource({
@@ -192,17 +201,25 @@ export default function (props) {
         setImageSource(prev => {
             const existingImages = prev?.images || [];
 
-            // Build Map from new images by hash
-            const newImagesMap = new Map(newImages.map(img => [img.hash, img]));
+            const newImagesMap = new Map();
+            for (const img of newImages) {
+                const key = getImageMergeKey(img);
+                if (key != null) newImagesMap.set(key, img);
+            }
 
-            // Replace or keep existing images
-            const mergedImages = existingImages.map(img =>
-                newImagesMap.has(img.hash) ? newImagesMap.get(img.hash) : img
+            // Replace preload (by hash) or keep existing; never match on missing keys
+            const mergedImages = existingImages.map((img) => {
+                const key = getImageMergeKey(img);
+                return key != null && newImagesMap.has(key) ? newImagesMap.get(key) : img;
+            });
+
+            const existingKeys = new Set(
+                existingImages.map(getImageMergeKey).filter((k) => k != null)
             );
-
-            // Add only newImages not already in existingImages
-            const existingHashes = new Set(existingImages.map(img => img.hash));
-            const newOnlyImages = newImages.filter(img => !existingHashes.has(img.hash));
+            const newOnlyImages = newImages.filter((img) => {
+                const key = getImageMergeKey(img);
+                return key == null || !existingKeys.has(key);
+            });
 
             return {
                 ...prev,
@@ -579,7 +596,7 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
     ].join(" ");
 
     const sizes2 = isCover ? '100%' : 100;
-
+    console.log('[files] GhostsList', imagesList);
     return imagesList.map((img, index) => {
         const isImage = img?.file_type?.includes('image/');
         const isVideo = img?.file_type?.includes('video/');

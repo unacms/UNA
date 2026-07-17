@@ -90,7 +90,7 @@ export const settingsInputs = {
     checkbox: {
         // Container
         'u-controls-checkbox-container':
-            'items-start px-2.5 py-2 rounded-md w-full gap-2 min-h-10',
+            'items-center px-2.5 py-2 rounded-md w-full gap-2 min-h-10',
 
         // Hover & Active backgrounds (optional — Web-only)
         'u-controls-checkbox-container-bg':

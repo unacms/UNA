@@ -37,12 +37,12 @@ function ChkList({ values, value2, addValue2, isMultiple }) {
             {filteredValues.map((item2, index) => {
                 const key = item2.key;
                 return (
-                    <Pressable key={`lbl-${index}`} onPress={() => addValue2(item2.value)}>
+                    <Pressable key={`lbl-${index}`} onPress={() => addValue2(key)}>
                            <Row className='items-center my-1 border border-border/60  rounded-lg' key={'chk' + index}>
                             <Cnt
                                 value={key}
                                 status={value2.includes(key) ? 'checked' : 'unchecked'}
-                                onPress={() => { addValue2(key); }}
+                                
                                 title={item2.value}
                             />
                         </Row>
@@ -68,7 +68,9 @@ export default function (props) {
     const size = props.size || 'sm';
 
     const addValue2 = useCallback(
+        
         (value) => {
+            console.log('[selector] addValue2', value);
             const selectedValues = value2.includes(value)
                 ? (isMultiple ? value2.filter(item => item !== value) : [value])
                 : (isMultiple ? [...value2, value] : [value]);
@@ -78,9 +80,12 @@ export default function (props) {
         [value2, isMultiple]
     );
 
+    console.log('[selector]111', value2);
+
     const setFormValue = useCallback(
         (value) => {
             const filteredValue = value.filter(item => item);
+            console.log('[selector] setFormValue', filteredValue);
             field.onChange(filteredValue);
             setIsModal(false);
         },
@@ -125,7 +130,7 @@ export default function (props) {
                 variant="primary"
                 size="base"
                 rounded
-                onPress={() => setFormValue(value2)}
+                onPress={() => {console.log('[selector] onPress', value2); setFormValue(value2)}}
             />
         </View>
     </Row>
@@ -137,6 +142,7 @@ export default function (props) {
         transparent={true}
         headerBorder={true}
         scrollable={true}
+        skipUnsavedGuard={true}
     >
         <View className='flex-1'>
             <ChkList isMultiple={isMultiple} values={valuesList} value2={value2} addValue2={addValue2} />
