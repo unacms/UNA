@@ -22,6 +22,7 @@ import { useFocusEffect, useGlobalSearchParams, usePathname } from 'app/lib/hook
 import { isEmoji } from 'app/lib/util'
 import { getPageData } from 'app/lib/util'
 import emitter from 'app/context/emitter'
+import Image from 'app/ui/atoms/image'
 
 const isWeb = Platform.OS === 'web';
 
@@ -198,7 +199,16 @@ function hasActiveDescendant(item, currentPathComparable) {
     return children.some((child) => hasActiveDescendant(child, currentPathComparable));
 }
 
+function isImageSource(icon) {
+    if (typeof icon === 'number') return true; // require('./x.png')
+    if (typeof icon === 'object' && icon !== null && 'uri' in icon) return true;
+    if (typeof icon === 'string' && /^(https?:|file:|content:|data:)/i.test(icon)) return true;
+    return false;
+}
+
 function WikiMenuItem({ title, icon, isActive, iconEnd }) {
+
+    console.log("iconiconicon", icon)
     const iconClassName = isActive
         ? 'text-foreground'
         : 'text-secondary-foreground web:group-hover:text-foreground'
@@ -208,8 +218,17 @@ function WikiMenuItem({ title, icon, isActive, iconEnd }) {
 
     return (
         <Row className="min-h-9 px-3 items-center gap-3">
-            <View className={`h-4 w-4 shrink-0 items-center justify-center rounded-full ${iconBackgroundClassName}`}>
-                {isEmoji(icon) ? (
+            <View className={`h-5 w-5 shrink-0 items-center justify-center rounded-full ${iconBackgroundClassName}`}>
+                {isImageSource(icon) ? (
+                    <Image
+                        src={icon}
+
+                        className="h-4 w-4 rounded-full"
+                        view="cover"
+
+                        sizes='auto'
+                    />
+                ) : isEmoji(icon) ? (
                     <Text className="text-xs leading-none">{icon}</Text>
                 ) : (
                     <Icon icon={icon} size={20} className={iconClassName} />
@@ -299,7 +318,7 @@ function MenuWiki({ setPageData, block, url }) {
             const isExpanded = Boolean(expandedMap[itemId]);
             const depthClassName = getDepthClassName(depth);
             const title = item?.title || item?.name;
-            const icon = item?.icon || 'Circle';
+            const icon = item?.icon || item?.image || 'Circle';
             const canNavigate = hasItemPath(item);
             const itemPathComparable = normalizePathComparable(itemPath);
             const isActive = Boolean(itemPathComparable && itemPathComparable === currentPathComparable);
@@ -432,7 +451,7 @@ function PageContentWiki({ data, scrollRef, url }) {
                 scrollView.scrollTo({ y: Math.max(0, y - 16), animated: true })
                 emitter.emit('link', { action: 'pressed' })
             },
-            () => {},
+            () => { },
         )
     }, [isWeb, scrollRef])
 
