@@ -225,7 +225,7 @@ function WikiMenuItem({ title, icon, isActive, iconEnd }) {
                     <Image
                         src={icon}
 
-                        className="h-4 w-4 rounded-full"
+                        className="h-5 w-5 rounded"
                         view="cover"
 
                         sizes='auto'
