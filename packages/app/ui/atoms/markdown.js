@@ -1,6 +1,6 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { EnrichedMarkdownText } from 'react-native-enriched-markdown'
-import { Platform } from 'react-native'
+import { Image as ReactNativeImage, Platform } from 'react-native'
 import { useCSSVariable, useResolveClassNames } from 'uniwind'
 import { Row, View } from 'app/design/view'
 import { Text } from 'app/design/typography'
@@ -10,7 +10,9 @@ import { useRouter, useGlobalSearchParams } from 'app/lib/hooks/router'
 import { normalizeLinkHref } from 'app/components/form-fields/editor-mention-html'
 import { Icon } from 'app/ui/atoms/icon'
 import LazyCodeBlock from 'app/ui/atoms/code-block-lazy'
+import Image from 'app/ui/atoms/image'
 import { splitMarkdownSegments } from 'app/lib/markdown/segments'
+import { splitSizedMarkdownImages } from 'app/lib/markdown/images'
 import { APP_URL, UNA_URL } from 'app/config'
 
 const headingScale = {
@@ -111,12 +113,79 @@ function normalizeMarkdownImageSources(markdown) {
     )
 }
 
+function resolveMarkdownImageSource(destination) {
+    const unaBaseUrl = String(UNA_URL || '').replace(/\/$/, '')
+    let source = String(destination || '')
+
+    if (
+        /^(?:https?:\/\/|data:image|blob:)/i.test(source)
+        || source.startsWith('/static/')
+    ) {
+        return source
+    }
+
+    if (unaStoragePathPattern.test(source)) {
+        source = `/s/${source.replace(/^\/+/, '')}`
+    }
+
+    if (!unaBaseUrl) return source
+    return `${unaBaseUrl}/${source.replace(/^\/+/, '')}`
+}
+
 function normalizeSegmentImages(segments) {
-    return segments.map((segment) => (
-        segment.kind === 'code'
-            ? segment
-            : { ...segment, markdown: normalizeMarkdownImageSources(segment.markdown) }
-    ))
+    return segments.flatMap((segment) => {
+        if (segment.kind === 'code' || segment.kind === 'alert') return segment
+
+        return splitSizedMarkdownImages(segment.markdown).map((part) => (
+            part.kind === 'image'
+                ? { ...part, src: resolveMarkdownImageSource(part.src) }
+                : {
+                    ...segment,
+                    markdown: normalizeMarkdownImageSources(part.markdown),
+                }
+        ))
+    })
+}
+
+function SizedMarkdownImage({ alt, height, src, width }) {
+    const [intrinsicRatio, setIntrinsicRatio] = useState(null)
+
+    useEffect(() => {
+        if (width && height) return
+
+        ReactNativeImage.getSize(
+            src,
+            (intrinsicWidth, intrinsicHeight) => {
+                if (intrinsicWidth > 0 && intrinsicHeight > 0) {
+                    setIntrinsicRatio(intrinsicWidth / intrinsicHeight)
+                }
+            },
+            () => {},
+        )
+    }, [height, src, width])
+
+    const fallbackSize = width || height || 200
+    const resolvedWidth = width || (intrinsicRatio ? height * intrinsicRatio : fallbackSize)
+    const resolvedHeight = height || (intrinsicRatio ? width / intrinsicRatio : fallbackSize)
+
+    return (
+        <Image
+            alt={alt}
+            contentFit="contain"
+            height={resolvedHeight}
+            nobg
+            sizes={`${resolvedWidth}px`}
+            src={src}
+            style={{
+                borderRadius: 8,
+                height: resolvedHeight,
+                marginBottom: 16,
+                maxWidth: '100%',
+                width: resolvedWidth,
+            }}
+            width={resolvedWidth}
+        />
+    )
 }
 
 function MarkdownSegments({
@@ -128,6 +197,18 @@ function MarkdownSegments({
     selectionColor,
 }) {
     return segments.map((segment, index) => {
+        if (segment.kind === 'image') {
+            return (
+                <SizedMarkdownImage
+                    key={`image-${index}-${segment.src}`}
+                    alt={segment.alt}
+                    height={segment.height}
+                    src={segment.src}
+                    width={segment.width}
+                />
+            )
+        }
+
         if (segment.kind === 'code') {
             return (
                 <LazyCodeBlock
@@ -175,7 +256,7 @@ function MarkdownSegments({
         }
 
         const config = alertConfig[segment.alertType]
-        const alertSegments = splitMarkdownSegments(segment.markdown)
+        const alertSegments = normalizeSegmentImages(splitMarkdownSegments(segment.markdown))
         return (
             <View
                 key={`alert-${segment.alertType}-${index}`}
