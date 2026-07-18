@@ -188,10 +188,10 @@ export default function WikiDocumentHeader({ markdownSource = '', metadata, page
     })
 
     return (
-        <View className="w-full border-b border-border/60 gap-3 pb-1">
+        <View className="w-full border-b border-border/60 gap-3 pb-2">
             <Row className="items-center gap-4">
                 {resolvedIconUrl ? (
-                    <View className="rounded-lg overflow-hidden">
+                    <View className="rounded-lg overflow-hidden h-10 w-10 lg:h-12 lg:w-12">
                     <Image
                         alt={`${title} icon`}
                         contentFit="contain"
@@ -209,15 +209,15 @@ export default function WikiDocumentHeader({ markdownSource = '', metadata, page
                 
             </Row>
             
-                <View className="min-w-0 flex-1 gap-3">
+                <View className="min-w-0 flex-1 gap-4">
                     {description ? (
                         <Text className="text-lg leading-6 text-secondary-foreground">
                             {description}
                         </Text>
                     ) : null}
 
-                    {platformBadges.length || tags.length || packageName ? (
-                        <Row className="flex-wrap items-center gap-2 pt-1">
+                    {platformBadges.length > 0 || tags.length > 0 ? (
+                        <Row className="flex-wrap items-center gap-2 ">
                             {platformBadges.map((badge) => (
                                 <Badge
                                     key={`platform-${badge.key}`}
@@ -227,7 +227,6 @@ export default function WikiDocumentHeader({ markdownSource = '', metadata, page
                                     variant="secondary"
                                 />
                             ))}
-                           
                             {tags.map((tag) => (
                                 <Badge
                                     key={`tag-${tag}`}
@@ -243,7 +242,7 @@ export default function WikiDocumentHeader({ markdownSource = '', metadata, page
                             ))}
                         </Row>
                     ) : null}
-                    <Row className="flex-wrap items-center justify-between gap-2 pt-1">
+                    <Row className="flex-wrap items-center justify-between gap-2 ">
                     {packageName ? (
                             <Row className="flex-wrap items-center gap-1">
                                 <Icon icon="Package" size={16} className="text-secondary-foreground" />

@@ -27,27 +27,27 @@ export const settingsWiki = {
             ai_apps: {
                 chatgpt: {
                     label: 'Open in ChatGPT',
-                    icon: 'Bot',
+                    icon: 'OpenAI',
                     url: 'https://chatgpt.com/?q={prompt}',
                 },
                 codex: {
                     label: 'Open in Codex',
-                    icon: 'SquareTerminal',
+                    icon: 'Codex',
                     url: 'codex://threads/new?prompt={prompt}',
                 },
                 claude: {
                     label: 'Open in Claude',
-                    icon: 'Sparkles',
+                    icon: 'Claude',
                     url: 'claude://claude.ai/new?q={prompt}',
                 },
                 claude_code: {
                     label: 'Open in Claude Code',
-                    icon: 'Terminal',
+                    icon: 'ClaudeCode',
                     url: 'claude-cli://open?q={prompt}',
                 },
                 cursor: {
                     label: 'Open in Cursor',
-                    icon: 'MousePointer2',
+                    icon: 'Cursor',
                     url: 'cursor://anysphere.cursor-deeplink/prompt?text={prompt}',
                 },
             },
