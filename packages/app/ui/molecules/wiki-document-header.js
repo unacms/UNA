@@ -188,9 +188,10 @@ export default function WikiDocumentHeader({ markdownSource = '', metadata, page
     })
 
     return (
-        <View className="w-full border-b border-border/60 gap-2 pb-1">
-            <Row className="items-center gap-3">
+        <View className="w-full border-b border-border/60 gap-3 pb-1">
+            <Row className="items-center gap-4">
                 {resolvedIconUrl ? (
+                    <View className="rounded-lg overflow-hidden">
                     <Image
                         alt={`${title} icon`}
                         contentFit="contain"
@@ -200,7 +201,7 @@ export default function WikiDocumentHeader({ markdownSource = '', metadata, page
                         src={resolvedIconUrl}
                         style={{ borderRadius: 12, height: iconSize, width: iconSize }}
                         width={iconSize}
-                    />
+                    /></View>
                 ) : null}
 
                 

@@ -418,6 +418,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                     <PanelHandler
                         gap={`hidden ${leftBreakpoint}:block`}
                         sizable={cellsCustomConfig.sizable}
+                        panelLine={cellsCustomConfig['panel-line']}
                     />
                 </>
             )}
@@ -458,6 +459,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                     <PanelHandler
                         gap={`hidden ${rightBreakpoint}:block`}
                         sizable={cellsCustomConfig.sizable}
+                        panelLine={cellsCustomConfig['panel-line']}
                     />
                     <Panel
                         className={`hidden ${rightBreakpoint}:block`}

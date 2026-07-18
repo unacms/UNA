@@ -895,6 +895,7 @@ const TabScene = ({
                     <PanelHandler
                         gap={`hidden ${leftBreakpoint}:block`}
                         sizable={cellsCustomConfig.sizable}
+                        panelLine={cellsCustomConfig['panel-line']}
                     />
                 </>
             )}
@@ -914,6 +915,7 @@ const TabScene = ({
                     <PanelHandler
                         gap={`hidden ${rightBreakpoint}:block`}
                         sizable={cellsCustomConfig.sizable}
+                        panelLine={cellsCustomConfig['panel-line']}
                     />
                     <Panel
                         className={`hidden ${rightBreakpoint}:block `}
@@ -1340,7 +1342,7 @@ const HeaderContainer = ({
                   
                 
             </View>
-            <View className={`header-fixed w-full ${(isScrolled ? 'fixed' : '')}`}>
+            <View className={`header-fixed w-full ${conductorTheme.cover_base} ${(isScrolled ? 'fixed' : '')}`}>
                 <View className={`${appSetting('layout', 'page_content_width_default')} ${conductorTheme.cover_small} ${isScrolled ? 'animate-in fade-in slide-in-from-top-2 duration-300 ease-out' : ''}`}
                     style={{
                         display: isSmallCoverMounted ? 'flex' : 'none',

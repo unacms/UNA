@@ -474,6 +474,7 @@ export default function ({ data, blocks }) {
                         <PanelHandler
                             gap={`hidden ${leftBreakpoint}:block`}
                             sizable={cellsCustomConfig.sizable}
+                            panelLine={cellsCustomConfig['panel-line']}
                         />
                     </>
                 )}
@@ -488,6 +489,7 @@ export default function ({ data, blocks }) {
                         <PanelHandler
                             gap={`hidden ${rightBreakpoint}:block`}
                             sizable={cellsCustomConfig.sizable}
+                            panelLine={cellsCustomConfig['panel-line']}
                         />
                         <Panel className={`hidden ${rightBreakpoint}:block ${currentBreakpointName}:w-full`} {...rightPanelProps}>
                             <View onLayout={handleAsideLayout} className="flex-auto h-full w-full">

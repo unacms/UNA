@@ -2,7 +2,7 @@
 
 export const settingsElements = {
     conductor: {
-        menu: ' w-full items-left justify-center bg-background',
+        menu: ' w-full items-left justify-center',
         menu_is_dynamic: false,
         menu_cnt: ' flex-row flex-none gap-1 h-12 lg:h-14 items-center overflow-x-auto ',
         menu_categ_indent: ' pl-8 ',
@@ -15,10 +15,10 @@ export const settingsElements = {
         topmenu_button_size: 'base',
         topmenu_button_pressed: true,
         left_menu_cnt: '  ',
-        cover_base: 'w-full   ',
+        cover_base: 'w-full bg-card shadow-border-b dark:shadow-border-b-deep ',
         cover_content:
-            'items-center h-full w-full justify-between lg:pt-2 lg:px-2 ',
-        cover_small: 'mx-auto flex-row items-center bg-background',
+            'items-center h-full w-full justify-between lg:p-4 ',
+        cover_small: 'mx-auto flex-row items-center ',
 
         hide_top_menu_from: 'xl',
     },
@@ -76,7 +76,7 @@ export const settingsElements = {
         'u-panel-base': ' web:h-full min-w-0 flex-col ',
         'u-panel-handler': 'relative w-0 web:before:absolute web:before:inset-y-0 web:before:-left-0.5 web:before:-right-0.5 web:before:bg-transparent web:before:hover:bg-accent web:before:active:bg-accent/50 web:before:duration-200 ',
         'u-panel-line':
-            'absolute w-px web:h-full bg-border/0 web:group-hover:bg-primary/50 active:bg-primary/50 rounded-full left-1/2 top-0 -translate-x-1/2',
+            'absolute w-px web:h-full web:group-hover:bg-primary/50 active:bg-primary/50 rounded-full left-1/2 top-0 -translate-x-1/2',
         'u-panel-group': ' web:h-full flex ',
     },
     blocks: {
@@ -85,7 +85,7 @@ export const settingsElements = {
         'u-block-bg':
             ' bg-card shadow-card-outline dark:shadow-card-outline-deep ',
         'u-block-pad':
-            ' p-4',
+            ' p-4 ',
         'u-block-rounded': 'rounded-2xl',
         'u-block-rounded-default': 'sm:rounded-2xl',
         'u-block-header':

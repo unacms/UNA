@@ -623,7 +623,7 @@ function PageContentWiki({ data, scrollRef, url }) {
 
     return (
         <View className={`${appSetting('layout', 'max_width')}`}>
-            <View className='w-full max-w-8xl mx-auto'>
+            <View className='w-full mx-auto'>
                 <PanelGroup
                     ref={groupRef}
                     key={`cells-wiki${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
@@ -640,9 +640,9 @@ function PageContentWiki({ data, scrollRef, url }) {
                             </View>
                         </View>
                     </Panel>
-                    <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
+                    <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} panelLine={cellsCustomConfig['panel-line']} />
                     <Panel className={`native:w-full ${currentBreakpointName}:w-full`} {...centerPanelProps}>
-                        <View ref={centerContentRef} className="p-4 sm:p-6 xl:p-8 gap-6 lg:gap-8">
+                        <View ref={centerContentRef} className="p-4 sm:p-6 xl:p-8 2xl:p-12 gap-6 lg:gap-8">
                             {documentMetadata?.title && WikiDocumentHeader ? (
                                 <WikiDocumentHeader
                                     markdownSource={rawMarkdownSource}
@@ -671,7 +671,7 @@ function PageContentWiki({ data, scrollRef, url }) {
                             ))}
                         </View>
                     </Panel>
-                    <PanelHandler gap={`hidden ${rightBreakpoint}:block`} sizable={cellsCustomConfig.sizable} />
+                    <PanelHandler gap={`hidden ${rightBreakpoint}:block`} sizable={cellsCustomConfig.sizable} panelLine={cellsCustomConfig['panel-line']} />
                     <Panel className={`hidden ${rightBreakpoint}:block ${currentBreakpointName}:w-full`} {...rightPanelProps}>
                         <View className="fixed-process fixed-process-clamp">
                             <BlockWrapper

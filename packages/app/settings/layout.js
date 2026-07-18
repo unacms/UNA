@@ -22,7 +22,7 @@ export const settingsLayout = {
         page_content_gap: ' gap-4 ',
         page_content_gap_default: ' sm:gap-4 ',
         panel_group_content: '  sm:p-2 mx-auto flex-1 ',
-        max_width_landing: 'w-full max-w-7xl ',
+        max_width_landing: 'w-full max-w-8xl ',
         max_width_block: ' max-w-8xl ',
        
         padding_content: ' @list-sm/list:m-1 @list-md/list:m-2',
@@ -63,10 +63,10 @@ export const settingsLayout = {
         show_tabbar_on_mobile_non_logged: false,
 
         header: {
-            container: ' w-full z-50 header-fixed web:fixed native:absolute bg-card web:top-0 web:transition-transform web:duration-300 web:ease-in-out',
+            container: ' w-full z-50 header-fixed web:fixed native:absolute bg-card web:top-0 web:transition-transform web:duration-300 web:ease-in-out border-b border-border/60 ',
             /** Optional. When set (non-blank), appended to `container` while scrollY > 0 (full-width bar: shadow, border, etc.). */
-            container_scrolled: 'shadow-border-b dark:shadow-border-b-deep bg-card',
-            content: ' items-center justify-between h-16 mx-auto',
+            container_scrolled: ' shadow-sm dark:shadow-sm-deep ',
+            content: ' items-center justify-between h-16 mx-auto w-full ',
             /** Optional. When set (non-blank), applied to header content only while scrollY > 0. If unset, legacy `content_pinned_fixed` behavior is unchanged. */
             content_scrolled: '  ',
             content_pinned_fixed: ' bg-card ',
@@ -170,6 +170,7 @@ export const settingsLayout = {
         wiki: {
             adjustable: false,
             sizable: true,
+            'panel-line': 'bg-border/60',
             cells: {
                 left: {
                     defaultSize: 0,
@@ -183,8 +184,8 @@ export const settingsLayout = {
                             maxSize: 25,
                         },
                         '2xl': {
-                            defaultSize: 25,
-                            minSize: 25,
+                            defaultSize: 20,
+                            minSize: 15,
                             maxSize: 25,
                         },
                     },
@@ -205,9 +206,9 @@ export const settingsLayout = {
                             maxSize: 50,
                         },
                         '2xl': {
-                            defaultSize: 50,
-                            minSize: 50,
-                            maxSize: 50,
+                            defaultSize: 60,
+                            minSize: 40,
+                            maxSize: 70,
                         },
                     },
                 },
@@ -228,9 +229,9 @@ export const settingsLayout = {
                             maxSize: 25,
                         },
                         '2xl': {
-                            defaultSize: 25,
-                            minSize: 25,
-                            maxSize: 25,
+                            defaultSize: 20,
+                            minSize: 15,
+                            maxSize: 30,
                         },
                     },
                 },

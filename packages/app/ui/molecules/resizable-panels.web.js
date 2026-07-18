@@ -34,12 +34,13 @@ function createPanelComponent({ baseClass, Component = PanelDef, role, ariaLevel
     return forwardRef(PanelSubComponent);
 }
 
-export const PanelHandler = memo(({ gap, sizable, className = '', style }) => {
+export const PanelHandler = memo(({ gap, sizable, panelLine = '', className = '', style }) => {
     
     const gapClass = gap && gap.includes(' ') ? gap : gap ? `w-${gap}` : 'w-1';
 
     const defaultClasses = `${gapClass} web:group web:duration-200 justify-center items-center flex`;
     const finalClasses = `${defaultClasses} ${className}`;
+    const lineClassName = `${panelTheme['u-panel-line']}${panelLine ? ` ${panelLine}` : ''}`;
 
     return (
         <PanelResizeHandle 
@@ -47,7 +48,7 @@ export const PanelHandler = memo(({ gap, sizable, className = '', style }) => {
             disabled={!sizable}
             style={style}
         >
-            {sizable && <View className={panelTheme['u-panel-line']} />}
+            {sizable && <View className={lineClassName} />}
         </PanelResizeHandle>
     );
 });

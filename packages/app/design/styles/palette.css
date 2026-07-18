@@ -105,7 +105,7 @@
             --primary-hover: var(--accent-500);
             --primary-foreground: var(--neutral-50);
             --secondary: var(--neutral-800);
-            --secondary-foreground: var(--neutral-300);
+            --secondary-foreground: var(--neutral-400);
             --accent: var(--accent-950);
             --accent-foreground: var(--accent-500);
             --muted: var(--neutral-800);

@@ -515,6 +515,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             <PanelHandler
                 gap="hidden lg:block"
                 sizable={cellsCustomConfig.sizable}
+                panelLine={cellsCustomConfig['panel-line']}
             />
             <Panel className=" w-full min-w-0" {...cellsCustomConfig.cells?.center}>
                 {panelsVisible.jots && <View className='flex-1  border-border/60 lg:border-l bg-card'>

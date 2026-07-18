@@ -104,7 +104,7 @@
     --shadow-2xs-deep: 0 1px rgb(0 0 0 / 0.25);
     --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.1);
     --shadow-xs-deep: 0 1px 2px 0 rgb(0 0 0 / 0.5);
-    --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.1);
+    --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.05);
     --shadow-sm-deep: 0 1px 3px rgb(0 0 0 / 0.5);
     --shadow-md: 0 4px 6px rgb(0 0 0 / 0.1);
     --shadow-md-deep: 0 4px 6px rgb(0 0 0 / 0.5);
@@ -114,8 +114,8 @@
     --shadow-xl-deep: 0 16px 24px rgb(0 0 0 / 0.5);
     --shadow-2xl: 0 24px 48px rgb(0 0 0 / 0.1);
     --shadow-2xl-deep: 0 24px 48px rgb(0 0 0 / 0.5);
-    --shadow-border-b: 0 1px 0 0 rgb(0 0 0 / 0.08);
-    --shadow-border-b-deep: 0 1px 0 0 rgb(255 255 255 / 0.05);
+    --shadow-border-b: 0 1px 0 0 rgb(0 0 0 / 0.05), 0 1px 4px -1px rgb(0 0 0 / 0.1);
+    --shadow-border-b-deep: 0 1px 0 0 rgb(255 255 255 / 0.05), 0 1px 4px -1px rgb(0 0 0 / 0.5);
     --shadow-avatar: inset 0 0 0 1px rgb(0 0 0 / 0.05);
     --shadow-avatar-deep: inset 0 0 0 1px rgb(255 255 255 / 0.05);
     --shadow-card-outline: var(--neo-shadow-card-outline);

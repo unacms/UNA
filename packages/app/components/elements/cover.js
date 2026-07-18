@@ -520,7 +520,7 @@ export default function Cover({
     }
 
     return (
-        <View className={`${appSetting('layout', 'page_content_width_default')} ${appSetting('layout', 'page_content_padding_default')} mx-auto`}>
+        <View className={`${appSetting('layout', 'page_content_width_default')} mx-auto`}>
             {appSetting('context_selector', 'show_always') && !suppressContextSelector ? (
                 <Row
                     className={`${TABLET_MODE_FROM}:hidden items-center w-full h-14 px-2 `}
@@ -546,7 +546,7 @@ export default function Cover({
                 />
             )}
             <View
-                className={`w-full lg:flex-row mx-auto gap-3 lg:gap-4 z-50`}
+                className={`w-full lg:flex-row mx-auto gap-3 lg:gap-4 px-3 pt-3 lgpx-4 z-50`}
             >
                 {bPerson && (
                     <View className="hidden lg:flex flex-none h-24 w-42 justify-end">
@@ -630,7 +630,7 @@ export default function Cover({
                                 />
                             </View>
                         )}
-                            {!isDesktop && <Row className="gap-2 flex-1 min-w-0 overflow-hidden items-center min-h-10">
+                            {!isDesktop && <Row className="gap-2 min-w-0 overflow-hidden items-center min-h-10">
                             <Text
                                 className="flex-1  truncate tracking-tight text-xl sm:text-3xl font-bold text-foreground"
                                 numberOfLines={1}

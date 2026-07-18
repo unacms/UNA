@@ -98,6 +98,7 @@ function PageContentUniversal({ children, data, layoutName, pageClasses }) {
                             <PanelCell
                                 key={cell.key}
                                 sizable={sizable}
+                                panelLine={cellsCustomConfig?.['panel-line']}
                                 currentBreakpoint={currentBreakpoint}
                                 cell={cell}
                                 index={topCell.length > 0 ? i : 0}
@@ -124,7 +125,7 @@ const PanelRow = memo(({ cell, currentBreakpoint, gapClass }) => {
     );
 })
 
-const PanelCell = memo(({ cell, currentBreakpoint, index, sizable, paddingClass, gapClass }) => {
+const PanelCell = memo(({ cell, currentBreakpoint, index, sizable, panelLine, paddingClass, gapClass }) => {
     const panelProps = {
         ...(cell.defaultSize !== undefined && { defaultSize: cell.defaultSize }),
         ...(cell.minSize !== undefined && { minSize: cell.minSize }),
@@ -132,7 +133,7 @@ const PanelCell = memo(({ cell, currentBreakpoint, index, sizable, paddingClass,
     };
     return (hasData(cell?.data) && !isRowLayout(cell, currentBreakpoint)) && (
         <>
-            {(index > 0) && (sizable ? <PanelHandler sizable={sizable} /> : <View className='w-4' />)}
+            {(index > 0) && (sizable ? <PanelHandler sizable={sizable} panelLine={panelLine} /> : <View className='w-4' />)}
             <Panel {...panelProps} >
                 <View className={`w-full ${gapClass} ${paddingClass}`}>
                     {cell.chd}
