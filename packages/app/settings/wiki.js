@@ -1,5 +1,12 @@
 export const settingsWiki = {
     wiki: {
+        // Client cache TTL for in-layout wiki navigations (sidebar).
+        // Falls back to browse.stale_time when unset.
+        page_cache_stale_ms: 5 * 60 * 1000,
+        breadcrumb: {
+            root_label: 'Docs',
+            root_path: '/docs',
+        },
         document_header: {
             icon_size: 48,
             platforms: {

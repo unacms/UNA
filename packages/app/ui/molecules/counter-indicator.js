@@ -23,7 +23,7 @@ export default function CounterIndicator({addon, isTitle}) {
     if (!isTitle && sButtonAddonText)
         return <View className={`absolute ${sButtonAddonBg} z-20 border-2 border-cardrounded-full px-1 items-center justify-center ${position}`}><Text className={`${sButtonAddonTextColor} text-xs font-semibold`}>{sButtonAddonText}</Text></View>
 
-    return sButtonAddonText ? <View className='flex-1 items-end '>
+    return sButtonAddonText ? <View className='flex-none items-end '>
         <View className={sButtonAddonBg + ' rounded-full px-2 py-0.5 text-center items-center'}>
             <Text className={`${sButtonAddonTextColor} text-xs font-semibold`}>{sButtonAddonText}</Text></View></View> : null;
 }

@@ -323,7 +323,7 @@ export default function ({ data, blocks }) {
 
                             <Row className="flex-auto items-center gap-1">
                                 <Row className="items-center gap-1 flex-auto">
-                                    <Text className="px-2 text-sm leading-tight font-semibold truncate text-card-foreground web:group-hover:text-foreground ">
+                                    <Text className="px-2 text-sm leading-tighter font-semibold truncate text-card-foreground web:group-hover:text-foreground ">
                                         {currentUser.display_name}
                                     </Text>
                                     {currentUser.badges && <Badges badges={currentUser.badges} size="xs" />}

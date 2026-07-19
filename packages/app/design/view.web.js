@@ -271,12 +271,40 @@ export const interopRender = (displayName, render) => {
 
 export const View = interopComponent('div', 'View')
 
+/** Plain left-click only — let cmd/ctrl/shift/middle clicks reach the browser. */
+const isPlainLeftClick = (event) =>
+    event.button === 0 &&
+    !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey
+
 export const Pressable = interopRender(
     'Pressable',
-    ({ className, onLayout, onPress, ...props }, ref) => {
+    ({ className, onLayout, onPress, href, target, rel, ...props }, ref) => {
         const layoutRef = useWebLayout(ref, onLayout)
         const hasCursorClass =
             typeof className === 'string' && /(?:^|\s)(?:web:)?cursor-/.test(className)
+
+        // With href, render a real anchor: status-bar URL preview, open-in-new-tab
+        // and SEO semantics. onPress still handles plain left-clicks (SPA nav).
+        if (href) {
+            const domProps = sanitizeWebProps(props)
+            const handleClick = (event) => {
+                if (!onPress || event.defaultPrevented || !isPlainLeftClick(event)) return
+                event.preventDefault()
+                onPress(event)
+            }
+
+            return (
+                <a
+                    ref={layoutRef}
+                    href={href}
+                    target={target}
+                    rel={rel ?? (target === '_blank' ? 'noopener noreferrer' : undefined)}
+                    className={cn('neo-p', className)}
+                    {...domProps}
+                    onClick={handleClick}
+                />
+            )
+        }
 
         return (
             <div

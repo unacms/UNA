@@ -76,7 +76,7 @@ export const settingsElements = {
         'u-panel-base': ' web:h-full min-w-0 flex-col ',
         'u-panel-handler': 'relative w-0 web:before:absolute web:before:inset-y-0 web:before:-left-0.5 web:before:-right-0.5 web:before:bg-transparent web:before:hover:bg-accent web:before:active:bg-accent/50 web:before:duration-200 ',
         'u-panel-line':
-            'absolute w-px web:h-full web:group-hover:bg-primary/50 active:bg-primary/50 rounded-full left-1/2 top-0 -translate-x-1/2',
+            'absolute w-px web:h-full web:group-hover:bg-primary/50 active:bg-primary/50 rounded-full left-0 top-0 ',
         'u-panel-group': ' web:h-full flex ',
     },
     blocks: {

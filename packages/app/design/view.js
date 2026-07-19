@@ -35,7 +35,13 @@ export const interopRender = (displayName, render) => {
 export const View = createBackdropBlurView(RNView)
 /** On iOS, shadow shell avoids continuous corners; elsewhere same as View. */
 export const ShadowShell = View
-export const Pressable = interopComponent(RNPressable, 'Pressable')
+// Strip web-only anchor props (see view.web.js: href renders a real <a>).
+export const Pressable = interopRender(
+    'Pressable',
+    ({ href: _href, target: _target, rel: _rel, ...props }, ref) => (
+        <RNPressable ref={ref} {...props} />
+    )
+)
 export const ScrollView = interopComponent(RNScrollView, 'ScrollView')
 export const MotionView = withUniwind(Motion.View)
 

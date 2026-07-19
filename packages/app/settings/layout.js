@@ -11,7 +11,7 @@ export const settingsLayout = {
         avaliable_feed_units: ['Full feed', 'Compact feed'],
         avaliable_langs: ['auto', 'en', 'ru'],
         screen: ' w-full  ',
-        max_width: ' w-full flex-auto ',
+        max_width: ' w-full flex-auto web:h-full ',
         page_content_width_default: ' w-full max-w-8xl ',
         page_content_width:{
             layout_1_column_thin: 'w-full max-w-md',
@@ -170,14 +170,20 @@ export const settingsLayout = {
         wiki: {
             adjustable: false,
             sizable: true,
-            'panel-line': 'bg-border/60',
+            'panel-line': 'bg-border/0 web:hover:bg-accent-foreground/60 w-1 duration-300',
             cells: {
                 left: {
                     defaultSize: 0,
                     minSize: 0,
                     maxSize: 25,
-                    breakpoint: 'xl',
+                    // Nav is primary — show from lg; TOC waits for xl.
+                    breakpoint: 'lg',
                     responsive: {
+                        lg: {
+                            defaultSize: 25,
+                            minSize: 25,
+                            maxSize: 25,
+                        },
                         xl: {
                             defaultSize: 25,
                             minSize: 25,
@@ -196,9 +202,9 @@ export const settingsLayout = {
                     maxSize: 100,
                     responsive: {
                         lg: {
-                            defaultSize: 65,
-                            minSize: 65,
-                            maxSize: 65,
+                            defaultSize: 75,
+                            minSize: 75,
+                            maxSize: 75,
                         },
                         xl: {
                             defaultSize: 50,
@@ -216,13 +222,8 @@ export const settingsLayout = {
                     defaultSize: 0,
                     minSize: 0,
                     maxSize: 35,
-                    breakpoint: 'lg',
+                    breakpoint: 'xl',
                     responsive: {
-                        lg: {
-                            defaultSize: 35,
-                            minSize: 35,
-                            maxSize: 35,
-                        },
                         xl: {
                             defaultSize: 25,
                             minSize: 25,

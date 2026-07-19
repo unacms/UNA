@@ -131,6 +131,10 @@ function getImageSizes() {
     return parts.join(', ');
 }
 
+function isSvgImageSrc(value) {
+    return /\.svg(?:$|[?#])/i.test(String(value || ''));
+}
+
 function ElementImageResolved(props) {
     let {
         width,
@@ -142,6 +146,7 @@ function ElementImageResolved(props) {
         nobg,
         sizes = LAYOUT_BREAKPOINTS.lg,
         optimizedWidthCap,
+        unoptimized: forceUnoptimized = false,
         key: _ignoredKey,
         ...rest
     } = props; // remove width & height
@@ -213,10 +218,15 @@ function ElementImageResolved(props) {
         return src;
     }, [src, nativeSrcMode, nativeOptimizedSrc]);
 
-    const canOptimize = Platform.OS === 'web' && (
-        resolvedSrc.startsWith('/') || resolvedSrc.startsWith('data:') || resolvedSrc.startsWith('blob:') ||
-        isHostnameInImageAllowlist(getHostname(resolvedSrc))
-    );
+    // Next.js image optimizer rejects SVG by default ("image type is not allowed"),
+    // which causes a broken-image flash then an unoptimized retry. Skip it up front.
+    const canOptimize = Platform.OS === 'web'
+        && !forceUnoptimized
+        && !isSvgImageSrc(resolvedSrc)
+        && (
+            resolvedSrc.startsWith('/') || resolvedSrc.startsWith('data:') || resolvedSrc.startsWith('blob:') ||
+            isHostnameInImageAllowlist(getHostname(resolvedSrc))
+        );
 
     const [failedAttempts, setFailedAttempts] = useState(0);
 

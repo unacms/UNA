@@ -63,8 +63,11 @@ export default function DropdownPopup({
     useEffect(() => {
         const subscription = emitter.addListener('link', (data) => {
             if (data.action == 'pressed') {
-                if (onOpenChange) {
+                // Close both controlled and uncontrolled popups (e.g. wiki mobile nav).
+                if (isControlledOutside) {
                     onOpenChange(false);
+                } else {
+                    setIsOpen(false);
                 }
             }
         })
@@ -72,7 +75,7 @@ export default function DropdownPopup({
         return () => {
             subscription.remove()
         }
-    }, [onOpenChange])
+    }, [isControlledOutside, onOpenChange])
 
     useEffect(() => {
         // Add safety checks for modal state

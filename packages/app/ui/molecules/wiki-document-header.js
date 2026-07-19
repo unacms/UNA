@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Row, View } from 'app/design/view'
 import { H1C, Text } from 'app/design/typography'
 import { appSetting, openExternalLink, setClipboard } from 'app/lib/util'
@@ -7,6 +8,7 @@ import Badge from 'app/ui/molecules/badge'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { Linking, Platform } from 'react-native'
 import { Icon } from 'app/ui/atoms/icon'
+import { Skeleton } from 'app/ui/atoms/skeleton'
 
 const unaStoragePathPattern = /^\/?sys_[^/]+_files\//
 const markdownSourceStoragePrefix = 'wiki-markdown-source:v1:'
@@ -95,6 +97,47 @@ async function copyMarkdownSource(markdownSource) {
     } finally {
         textarea.remove()
     }
+}
+
+// Icons already fetched this session — skip the skeleton on remount so
+// returning to a cached wiki page doesn't flash a placeholder.
+const loadedIconSrcs = new Set()
+
+function WikiDocumentIcon({ alt, size, src }) {
+    const [loaded, setLoaded] = useState(() => loadedIconSrcs.has(src))
+
+    useEffect(() => {
+        setLoaded(loadedIconSrcs.has(src))
+    }, [src])
+
+    const handleLoad = () => {
+        loadedIconSrcs.add(src)
+        setLoaded(true)
+    }
+
+    return (
+        <View className="relative rounded-lg overflow-hidden h-10 w-10 lg:h-12 lg:w-12 bg-muted">
+            {!loaded ? (
+                <Skeleton
+                    visible
+                    rounded="rounded-lg"
+                    className="absolute inset-0 h-full w-full animate-pulse"
+                />
+            ) : null}
+            {/* SVG skips the Next optimizer inside the Image atom; raster icons optimize normally. */}
+            <Image
+                alt={alt}
+                contentFit="contain"
+                height={size}
+                nobg
+                onLoad={handleLoad}
+                sizes={`${size}px`}
+                src={src}
+                style={{ borderRadius: 12, height: size, width: size }}
+                width={size}
+            />
+        </View>
+    )
 }
 
 export default function WikiDocumentHeader({ markdownSource = '', metadata, pageUrl = '' }) {
@@ -191,17 +234,11 @@ export default function WikiDocumentHeader({ markdownSource = '', metadata, page
         <View className="w-full border-b border-border/60 gap-3 pb-2">
             <Row className="items-center gap-4">
                 {resolvedIconUrl ? (
-                    <View className="rounded-lg overflow-hidden h-10 w-10 lg:h-12 lg:w-12">
-                    <Image
+                    <WikiDocumentIcon
                         alt={`${title} icon`}
-                        contentFit="contain"
-                        height={iconSize}
-                        nobg
-                        sizes={`${iconSize}px`}
+                        size={iconSize}
                         src={resolvedIconUrl}
-                        style={{ borderRadius: 12, height: iconSize, width: iconSize }}
-                        width={iconSize}
-                    /></View>
+                    />
                 ) : null}
 
                 
@@ -209,15 +246,15 @@ export default function WikiDocumentHeader({ markdownSource = '', metadata, page
                 
             </Row>
             
-                <View className="min-w-0 flex-1 gap-4">
+                <View className="min-w-0 flex-1 gap-4 flex-row flex-wrap justify-between">
                     {description ? (
-                        <Text className="text-lg leading-6 text-secondary-foreground">
+                        <Text className="text-lg leading-6 text-secondary-foreground flex-auto">
                             {description}
                         </Text>
                     ) : null}
 
                     {platformBadges.length > 0 || tags.length > 0 ? (
-                        <Row className="flex-wrap items-center gap-2 ">
+                        <Row className="flex-wrap items-center justify-end gap-2 ">
                             {platformBadges.map((badge) => (
                                 <Badge
                                     key={`platform-${badge.key}`}
@@ -293,7 +330,6 @@ export default function WikiDocumentHeader({ markdownSource = '', metadata, page
                         </Row>
                     </Row>
                 </View>
-            
         </View>
     )
 }

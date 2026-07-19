@@ -16,7 +16,7 @@ export default function MenuItemSidebar({ title, icon, isActive, addon, iconEnd 
                 {isEmoji(icon) ? <Text>{icon}</Text> : <Icon icon={icon} size="20" className={`${isActive ? 'text-primary-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`} />}
             </View>
 
-            <Text className={`flex-1 px-2 text-sm leading-tight font-semibold  ${isActive && 'text-foreground' || 'text-secondary-foreground web:group-hover:text-foreground'}`}>{title}</Text>
+            <Text className={`flex-1 px-2 text-sm leading-tighter font-semibold  ${isActive && 'text-foreground' || 'text-secondary-foreground web:group-hover:text-foreground'}`}>{title}</Text>
             {!!iconEnd && <View className={`ml-auto h-9 w-9 items-center justify-center flex rounded-full ${isActive
                     ? ' text-primary-foreground'
                     : 'text-secondary-foreground '

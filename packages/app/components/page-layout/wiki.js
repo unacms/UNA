@@ -16,7 +16,7 @@ import {
 import { useBreakpoint, useBreakpointName, useIsDesktop } from 'app/context/measure'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
-import { defaultHeader, useSetHeader } from 'app/context/jotai/layout'
+import { DEFAULT_HEADER_HEIGHT, defaultHeader, useHeaderHeight, useSetHeader } from 'app/context/jotai/layout'
 import Markdown from 'app/ui/atoms/markdown'
 import { useFocusEffect, useGlobalSearchParams, usePathname } from 'app/lib/hooks/router'
 import { isEmoji } from 'app/lib/util'
@@ -25,14 +25,44 @@ import emitter from 'app/context/emitter'
 import Image from 'app/ui/atoms/image'
 import { getComponent } from 'app/components/registry'
 import { parseWikiFrontMatter } from 'app/lib/markdown/frontmatter'
+import {
+    getCachedWikiPage,
+    mergeWikiPageContent,
+    setCachedWikiPage,
+    wikiCacheKey,
+} from 'app/lib/wiki-page-cache'
+import {
+    useWikiTocSpy,
+    WikiTocDropdown,
+    WikiTocList,
+} from 'app/components/page-layout/wiki-toc'
 
 const isWeb = Platform.OS === 'web';
+/** Extra space below the fixed header when scrolling to a TOC heading. */
+const TOC_SCROLL_GAP = 12
+
+function getWikiHeaderOffset(headerHeight) {
+    if (isWeb && typeof document !== 'undefined') {
+        let sum = 0
+        document.querySelectorAll('.header-fixed').forEach((el) => {
+            const rect = el.getBoundingClientRect()
+            if (rect.height <= 0) return
+            const style = getComputedStyle(el)
+            sum += rect.height
+                + parseFloat(style.marginTop || 0)
+                + parseFloat(style.marginBottom || 0)
+        })
+        if (sum > 0) return sum + TOC_SCROLL_GAP
+    }
+
+    return (Number(headerHeight) || DEFAULT_HEADER_HEIGHT) + TOC_SCROLL_GAP
+}
 
 const depthClassNameMap = {
     0: '',
-    1: 'pl-4',
-    2: 'pl-8',
-    3: 'pl-12',
+    1: 'ps-3',
+    2: 'ps-6',
+    3: 'ps-9',
 };
 
 const getDepthClassName = (depth) => depthClassNameMap[depth] || '';
@@ -49,6 +79,120 @@ const getItemPath = (item) => {
 };
 
 const getRouteParam = (value) => Array.isArray(value) ? value[0] : value;
+
+function findWikiBreadcrumbTrail(items, currentPathComparable, ancestors = []) {
+    for (const item of items || []) {
+        const title = item?.title || item?.name
+        if (!title) continue
+
+        const path = getItemPath(item)
+        const pathKey = normalizePathComparable(path)
+        const crumb = {
+            key: `${pathKey || title}-${ancestors.length}`,
+            title,
+            path: path || null,
+            isCurrent: false,
+        }
+
+        if (pathKey && pathKey === currentPathComparable) {
+            return [...ancestors, { ...crumb, isCurrent: true }]
+        }
+
+        const found = findWikiBreadcrumbTrail(
+            item?.subitems || [],
+            currentPathComparable,
+            [...ancestors, crumb],
+        )
+        if (found) return found
+    }
+
+    return null
+}
+
+function buildWikiBreadcrumbs(menuItems, currentPath) {
+    const currentKey = normalizePathComparable(currentPath)
+    const trail = findWikiBreadcrumbTrail(menuItems, currentKey) || []
+    const root = appSetting('wiki', 'breadcrumb') || {}
+    const rootLabel = String(root.root_label || '').trim()
+    const rootPath = root.root_path
+        ? (String(root.root_path).startsWith('/') ? String(root.root_path) : `/${root.root_path}`)
+        : null
+    const rootKey = normalizePathComparable(rootPath)
+
+    if (!rootLabel) return trail
+
+    const rootCrumb = {
+        key: 'wiki-breadcrumb-root',
+        title: rootLabel,
+        path: rootPath,
+        isCurrent: Boolean(rootKey && rootKey === currentKey),
+    }
+
+    if (trail[0] && normalizePathComparable(trail[0].path) === rootKey) {
+        return trail
+    }
+
+    if (rootCrumb.isCurrent && !trail.length) {
+        return [rootCrumb]
+    }
+
+    if (rootCrumb.isCurrent) {
+        return trail
+    }
+
+    return [rootCrumb, ...trail]
+}
+
+function WikiBreadcrumb({ items, onNavigate, compact = false }) {
+    if (!items?.length) return null
+
+    return (
+        <Row
+            className={`items-center flex-wrap min-w-0 ${compact ? 'gap-1 flex-1' : 'gap-1.5'}`}
+            accessibilityRole="navigation"
+            accessibilityLabel="Breadcrumb"
+        >
+            {items.map((item, index) => (
+                <Row key={item.key} className="items-center gap-1 min-w-0 max-w-full">
+                    {index > 0 ? (
+                        <Icon
+                            icon="ChevronRight"
+                            size={14}
+                            className="shrink-0 text-muted-foreground"
+                        />
+                    ) : null}
+                    {item.isCurrent || !item.path || !onNavigate ? (
+                        <Text
+                            numberOfLines={1}
+                            className={`text-sm leading-5 ${
+                                item.isCurrent
+                                    ? 'text-foreground font-medium'
+                                    : 'text-muted-foreground'
+                            }`}
+                        >
+                            {item.title}
+                        </Text>
+                    ) : (
+                        <Pressable
+                            href={item.path}
+                            onPress={() => onNavigate(item.path)}
+                            className="min-w-0 rounded-md px-1 py-0.5 web:hover:bg-muted/50"
+                            accessibilityRole="link"
+                            accessibilityLabel={item.title}
+                        >
+                            <Text
+                                numberOfLines={1}
+                                className="text-sm leading-5 text-muted-foreground web:hover:text-foreground"
+                            >
+                                {item.title}
+                            </Text>
+                        </Pressable>
+                    )}
+                </Row>
+            ))}
+        </Row>
+    )
+}
 
 // Strip inline Markdown markers so TOC entries show clean heading text.
 const stripMarkdownInline = (text) => String(text || '')
@@ -209,8 +353,6 @@ function isImageSource(icon) {
 }
 
 function WikiMenuItem({ title, icon, isActive, iconEnd }) {
-
-    console.log("iconiconicon", icon)
     const iconClassName = isActive
         ? 'text-foreground'
         : 'text-secondary-foreground web:group-hover:text-foreground'
@@ -237,7 +379,7 @@ function WikiMenuItem({ title, icon, isActive, iconEnd }) {
                 )}
             </View>
 
-            <Text className={` flex-1 text-sm leading-4 font-medium ${isActive ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>
+            <Text className={` flex-1 text-sm leading-5 font-medium ${isActive ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>
                 {title}
             </Text>
 
@@ -279,12 +421,12 @@ function ActiveBranchExpander({ currentPathComparable, items, setExpandedMap }) 
     return null;
 }
 
-function MenuWiki({ setPageData, block, url }) {
+function MenuWiki({ onNavigate, block, url }) {
     const data = block.content[0].data;
     const routePathComparable = useCurrentPathComparable();
-    const currentPathComparable = isWeb
-        ? routePathComparable
-        : (normalizePathComparable(url) || routePathComparable);
+    // Prefer pageData.url so sidebar pushState (web) and in-layout swaps (native)
+    // keep the active item in sync without waiting on the router.
+    const currentPathComparable = normalizePathComparable(url) || routePathComparable;
     const initialPathComparable = normalizePathComparable(url);
     const topLevelItems = data?.content?.items || [];
     const [expandedMap, setExpandedMap] = useState(() => buildExpandedMapForPath(topLevelItems, initialPathComparable));
@@ -292,23 +434,6 @@ function MenuWiki({ setPageData, block, url }) {
     const toggleExpanded = (id) => {
         setExpandedMap((prev) => ({ ...prev, [id]: !prev[id] }));
     };
-
-    const handleMenuPress = async (itemPath) => {
-        if (isWeb) {
-            const currentPath = window.location.pathname
-            if (currentPath !== itemPath) {
-                window.history.pushState({}, '', itemPath)
-            }
-        }
-        try {
-            const sResponse = await getPageData(itemPath, false)
-            setPageData({ data: sResponse.data, url: itemPath })
-        } catch (error) {
-            console.error('Failed to load wiki page:', error)
-        }
-    }
-
-
 
     const renderItems = (items = [], depth = 0, parentIndexPath = '') =>
         items.map((item, index) => {
@@ -328,7 +453,7 @@ function MenuWiki({ setPageData, block, url }) {
             const activeWrapperClassName = menuIsActive ? 'bg-accent/60 rounded-lg web:hover:bg-accent/90' : ' web:hover:bg-muted/50';
 
             const pressHandler = canNavigate
-                ? () => handleMenuPress(itemPath)
+                ? () => onNavigate?.(itemPath)
                 : hasChildren
                     ? () => toggleExpanded(itemId)
                     : undefined;
@@ -339,6 +464,7 @@ function MenuWiki({ setPageData, block, url }) {
                 <View key={`lmenu-${itemId}`} className={`w-full ${depthClassName}`}>
                     <Pressable
                         className={`web:group flex-1 rounded-lg ${activeWrapperClassName}`}
+                        href={canNavigate ? itemPath : undefined}
                         onPress={pressHandler}
                     >
                         <WikiMenuItem
@@ -382,13 +508,104 @@ function PageContentWiki({ data, scrollRef, url }) {
     const centerContentRef = useRef(null)
     const headingRefs = useRef(new Map())
     const [pageData, setPageData] = useState({ data, url: routeUrl })
+    const pageDataRef = useRef(pageData)
+    pageDataRef.current = pageData
+    // Set by in-layout wiki nav. While set, ignore Next props unless they
+    // describe the same page (prevents stale RSC overwriting cache hits).
+    const clientNavKeyRef = useRef(null)
+    const navigateRequestIdRef = useRef(0)
+
+    const navigateToWikiPath = useCallback(async (itemPath) => {
+        if (!itemPath) return
+
+        const pathKey = normalizePathComparable(itemPath)
+        clientNavKeyRef.current = pathKey || null
+
+        if (isWeb) {
+            const currentPath = window.location.pathname
+            if (currentPath !== itemPath) {
+                window.history.pushState({}, '', itemPath)
+            }
+        }
+
+        // Dismiss mobile DropdownPopup menus (listens for link:pressed).
+        emitter.emit('link', { action: 'pressed' })
+
+        const requestId = ++navigateRequestIdRef.current
+        const cached = getCachedWikiPage(pathKey)
+
+        // Show cached page immediately; revalidate in the background when stale.
+        if (cached?.data) {
+            setPageData({ data: cached.data, url: itemPath })
+            if (!cached.isStale) return
+        }
+
+        try {
+            // Content-only: smaller payload; left nav is merged from the current shell.
+            const contentResponse = await getPageData(itemPath, true)
+            if (requestId !== navigateRequestIdRef.current) return
+
+            const shellPage = cached?.data || pageDataRef.current?.data
+            const merged = mergeWikiPageContent(shellPage, contentResponse?.data, itemPath)
+            const shellLeft = shellPage?.elements?.cell_left
+
+            if (merged) {
+                const nextPage = merged.elements?.cell_left
+                    ? merged
+                    : {
+                        ...merged,
+                        elements: {
+                            ...merged.elements,
+                            cell_left: shellLeft,
+                        },
+                    }
+                setCachedWikiPage(pathKey, nextPage)
+                setPageData({ data: nextPage, url: itemPath })
+                return
+            }
+
+            // Content-only missing center (or failed) — fetch the full page.
+            // Never cache/show the previous shell under the new path.
+            const fullResponse = await getPageData(itemPath, false)
+            if (requestId !== navigateRequestIdRef.current) return
+            if (!fullResponse?.data?.elements?.cell_center) return
+
+            setCachedWikiPage(pathKey, fullResponse.data)
+            setPageData({ data: fullResponse.data, url: itemPath })
+        } catch (error) {
+            console.error('Failed to load wiki page:', error)
+        }
+    }, [isWeb])
 
     // Next preserves this client layout while navigating between wiki routes, so
     // useState's initializer does not run again. Sync the newly streamed page
     // data into the layout when the route changes.
     useEffect(() => {
+        // Key off `url` only — UNA `uri` is a page name (e.g. 'wiki'), not a
+        // path, and would produce colliding cache keys across doc pages.
+        const incomingKey = wikiCacheKey(data?.url)
+        const clientKey = clientNavKeyRef.current
+
+        if (clientKey) {
+            // Adopt props once they describe the page we're actually on — either
+            // the in-layout navigation caught up, or a real router navigation
+            // moved to another wiki page (clientKey is then obsolete).
+            const routeKey = wikiCacheKey(routeUrl)
+            if (incomingKey && (incomingKey === clientKey || incomingKey === routeKey)) {
+                clientNavKeyRef.current = null
+                headingRefs.current.clear()
+                setPageData({ data, url: routeUrl })
+                if (data?.elements?.cell_center) {
+                    setCachedWikiPage(incomingKey, data)
+                }
+            }
+            // Otherwise keep the client-driven page (cache/fetch) and do not
+            // warm the cache from a mismatched payload.
+            return
+        }
+
         setPageData((current) => {
-            if (current.data === data && current.url === routeUrl) {
+            if (current.data === data && wikiCacheKey(current.url) === wikiCacheKey(routeUrl)) {
                 return current
             }
             // Drop native TOC scroll targets from the previous page before
@@ -396,7 +613,29 @@ function PageContentWiki({ data, scrollRef, url }) {
             headingRefs.current.clear()
             return { data, url: routeUrl }
         })
+
+        // Warm the sidebar cache from full page payloads (SSR / Next soft nav /
+        // native). routeUrl (not uri) is the fallback so keys stay full paths.
+        if (data?.elements?.cell_center) {
+            setCachedWikiPage(data?.url || routeUrl, data)
+        }
     }, [data, routeUrl])
+
+    // Back/forward across pushState entries: Next may not refetch for shallow
+    // history, so resolve the popped path from the wiki cache (or fetch).
+    useEffect(() => {
+        if (!isWeb) return
+
+        const onPopState = () => {
+            const path = window.location.pathname
+            if (wikiCacheKey(path) === wikiCacheKey(pageDataRef.current?.url)) return
+            // pushState is skipped inside (location already matches the target).
+            navigateToWikiPath(path)
+        }
+
+        window.addEventListener('popstate', onPopState)
+        return () => window.removeEventListener('popstate', onPopState)
+    }, [navigateToWikiPath])
 
     const cellsCustomConfig = useMemo(() => {
         return appSetting('layouts', 'wiki') || appSetting('layouts', 'cols-l-c-r')
@@ -430,32 +669,11 @@ function PageContentWiki({ data, scrollRef, url }) {
     const rightBreakpointMinWidth = LAYOUT_BREAKPOINTS[rightBreakpoint] ?? Number.POSITIVE_INFINITY
     const showMobileLeftPanel = currentBreakpoint < leftBreakpointMinWidth
     const showMobileRightPanel = currentBreakpoint < rightBreakpointMinWidth
-    const handleTocPress = useCallback((id) => {
-        if (!id) return
-
-        if (isWeb) {
-            const target = document.getElementById(id)
-            if (!target) return
-
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-            window.history.replaceState(null, '', `#${id}`)
-            emitter.emit('link', { action: 'pressed' })
-            return
-        }
-
-        const target = headingRefs.current.get(id)
-        const scrollView = scrollRef?.current
-        if (!target?.measureLayout || !scrollView?.scrollTo) return
-
-        target.measureLayout(
-            scrollView,
-            (_x, y) => {
-                scrollView.scrollTo({ y: Math.max(0, y - 16), animated: true })
-                emitter.emit('link', { action: 'pressed' })
-            },
-            () => { },
-        )
-    }, [isWeb, scrollRef])
+    const headerHeight = useHeaderHeight()
+    // pendingScrollId: optimistic highlight while smooth-scrolling to a click.
+    // focusedTocId: last clicked item — keeps bg while that heading stays in view.
+    const [pendingScrollId, setPendingScrollId] = useState(null)
+    const [focusedTocId, setFocusedTocId] = useState(null)
 
     const onLayout = () => {
         if (isWeb) {
@@ -493,6 +711,13 @@ function PageContentWiki({ data, scrollRef, url }) {
         [centerMarkdownContents]
     )
     const leftMenu = pageData?.data?.elements?.cell_left?.[0]
+    const breadcrumbs = useMemo(
+        () => buildWikiBreadcrumbs(
+            leftMenu?.content?.[0]?.data?.content?.items,
+            pageData.url || routeUrl,
+        ),
+        [leftMenu, pageData.url, routeUrl],
+    )
 
     // TOC entries derived from the Markdown source (see extractMarkdownHeadings).
     const markdownHeadings = useMemo(
@@ -505,6 +730,73 @@ function PageContentWiki({ data, scrollRef, url }) {
         [centerMarkdownContents, isWeb, tocItems]
     )
     const showBothMobilePanels = showMobileLeftPanel && showMobileRightPanel && tocItems.length >= 2
+    // Avoid DOM reads during render; measured offset is used for click-to-scroll.
+    const headerOffset = (Number(headerHeight) || DEFAULT_HEADER_HEIGHT) + TOC_SCROLL_GAP
+
+    // Scroll-spy active anchors (Fumadocs-style multi-highlight).
+    const spyActiveIds = useWikiTocSpy(tocItems, {
+        headerOffset,
+        pageKey: wikiCacheKey(pageData.url),
+        contentRootRef: centerContentRef,
+        headingRefs,
+        scrollRef,
+    })
+
+    useEffect(() => {
+        setPendingScrollId(null)
+        setFocusedTocId(null)
+        if (isWeb && typeof window !== 'undefined') {
+            const hashId = window.location.hash.replace(/^#/, '')
+            if (hashId) setFocusedTocId(hashId)
+        }
+    }, [isWeb, pageData.url])
+
+    useEffect(() => {
+        if (pendingScrollId && spyActiveIds.includes(pendingScrollId)) {
+            setPendingScrollId(null)
+        }
+    }, [pendingScrollId, spyActiveIds])
+
+    const activeTocIds = useMemo(() => {
+        if (pendingScrollId && !spyActiveIds.includes(pendingScrollId)) {
+            return [pendingScrollId]
+        }
+        return spyActiveIds
+    }, [pendingScrollId, spyActiveIds])
+
+    const handleTocPress = useCallback((id) => {
+        if (!id) return
+
+        setFocusedTocId(id)
+        setPendingScrollId(id)
+
+        // Dismiss mobile DropdownPopup menus before scrolling.
+        emitter.emit('link', { action: 'pressed' })
+
+        const offset = getWikiHeaderOffset(headerHeight)
+
+        if (isWeb) {
+            const target = document.getElementById(id)
+            if (!target) return
+
+            const top = target.getBoundingClientRect().top + window.scrollY - offset
+            window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
+            window.history.replaceState(null, '', `#${id}`)
+            return
+        }
+
+        const target = headingRefs.current.get(id)
+        const scrollView = scrollRef?.current
+        if (!target?.measureLayout || !scrollView?.scrollTo) return
+
+        target.measureLayout(
+            scrollView,
+            (_x, y) => {
+                scrollView.scrollTo({ y: Math.max(0, y - offset), animated: true })
+            },
+            () => { },
+        )
+    }, [headerHeight, isWeb, scrollRef])
 
     // Assign ids to the rendered headings so TOC clicks can scroll to them. The
     // web renderer emits h2/h3 in source order but without ids, and it renders
@@ -514,12 +806,18 @@ function PageContentWiki({ data, scrollRef, url }) {
         const root = centerContentRef.current
         if (!root) return
 
+        const scrollMargin = `${headerOffset}px`
+
         const assignIds = () => {
             const headings = Array.from(root.querySelectorAll('h2, h3'))
             headings.forEach((heading, index) => {
                 const item = tocItems[index]
                 if (item && heading.id !== item.id) {
                     heading.id = item.id
+                }
+                // Keep native hash / scrollIntoView clear of the fixed header.
+                if (heading.style.scrollMarginTop !== scrollMargin) {
+                    heading.style.scrollMarginTop = scrollMargin
                 }
             })
         }
@@ -528,83 +826,75 @@ function PageContentWiki({ data, scrollRef, url }) {
         const observer = new MutationObserver(assignIds)
         observer.observe(root, { childList: true, subtree: true })
         return () => observer.disconnect()
-    }, [isWeb, tocItems])
+    }, [headerOffset, isWeb, tocItems])
 
+    const showTocMenu = tocItems.length >= 2
+    const tocMenuLabel = t('On this page')
+
+    // Below left-nav breakpoint only. From lg–xl the TOC trigger sits on the
+    // breadcrumb row; at xl+ the right sidebar owns TOC.
     const mobileHeaderControls = useMemo(() => {
-        if (!showMobileLeftPanel && !(showMobileRightPanel && tocItems.length >= 2)) {
+        if (!showMobileLeftPanel || !leftMenu) {
             return null
         }
 
         return (
-            <View className="w-full py-2 px-4 ">
-                <View className="flex-row flex-wrap gap-2">
-                    {showMobileLeftPanel && (
-                        <View className={`${showBothMobilePanels ? 'flex-1' : 'w-full'}`}>
+            <View className="w-full py-2 px-3 sm:px-4 ">
+                <View className="flex-row flex-auto items-center flex-wrap gap-2">
+                    <View className={`flex-row items-center gap-1.5 min-w-0 ${showBothMobilePanels ? 'flex-auto' : 'flex-1'}`}>
+                        <View className="shrink-0">
                             <DropdownPopup
                                 minPopupWidth={256}
                                 contentClasses="rounded-xl border border-popover mt-2 bg-popover/60 backdrop-blur shadow-md"
                                 buttonProps={{
-                                    label: t('Navigation'),
-                                    style: 'glass',
-                                    controlSize: 'small',
-                                    width: 'fill',
-                                    image: 'Menu',
+                                    style: 'borderless',
+                                    controlSize: 'regular',
+                                    image: 'TextAlignStart',
                                     borderShape: 'capsule',
                                 }}
                             >
                                 <View className="p-1">
-                                    <MenuWiki setPageData={setPageData} block={leftMenu} url={pageData.url} />
+                                    <MenuWiki
+                                        onNavigate={navigateToWikiPath}
+                                        block={leftMenu}
+                                        url={pageData.url}
+                                    />
                                 </View>
                             </DropdownPopup>
                         </View>
-                    )}
-                    {showMobileRightPanel && tocItems.length >= 2 && (
-                        <View className={`${showBothMobilePanels ? 'flex-1' : 'w-full'}`}>
-                            <DropdownPopup
-                                minPopupWidth={256}
-                                contentClasses="rounded-xl border border-popover mt-2 bg-popover/60 backdrop-blur shadow-md"
-                                buttonProps={{
-                                    label: t('On this page'),
-                                    style: 'glass',
-                                    controlSize: 'small',
-                                    width: 'fill',
-                                    image: 'ScrollText',
-                                    borderShape: 'capsule',
-                                }}
-                            >
-                                <View className="p-1">
-                                    <View className="gap-2">
-                                        {tocItems.map((item) => (
-                                            <Row key={`mobile-toc-${item.key}`} className={`items-center gap-2 ${item.level === 3 ? 'pl-4' : ''}`}>
-                                                <Icon name={item.level === 2 ? 'List' : 'Minus'} size={14} className="text-muted-foreground" />
-                                                <Pressable
-                                                    onPress={() => handleTocPress(item.id)}
-                                                    className="min-h-9 text-secondary-foreground flex-1 justify-center px-2 rounded-lg web:hover:bg-muted/50 web:hover:text-accent-foreground"
-                                                >
-                                                    <Text className="text-sm leading-tight native:text-secondary-foreground">
-                                                        {item.text}
-                                                    </Text>
-                                                </Pressable>
-                                            </Row>
-                                        ))}
-                                    </View>
-                                </View>
-                            </DropdownPopup>
+                        <WikiBreadcrumb
+                            compact
+                            items={breadcrumbs}
+                            onNavigate={navigateToWikiPath}
+                        />
+                    </View>
+                    {showBothMobilePanels && showTocMenu ? (
+                        <View className="flex-none">
+                            <WikiTocDropdown
+                                items={tocItems}
+                                activeIds={activeTocIds}
+                                focusedId={focusedTocId}
+                                onPress={handleTocPress}
+                                label={tocMenuLabel}
+                            />
                         </View>
-                    )}
+                    ) : null}
                 </View>
             </View>
         )
     }, [
+        activeTocIds,
+        breadcrumbs,
+        focusedTocId,
         handleTocPress,
         leftMenu,
+        navigateToWikiPath,
         pageData.url,
-        setPageData,
         showBothMobilePanels,
         showMobileLeftPanel,
-        showMobileRightPanel,
-        t,
+        showTocMenu,
         tocItems,
+        tocMenuLabel,
     ])
 
     useEffect(() => {
@@ -632,29 +922,67 @@ function PageContentWiki({ data, scrollRef, url }) {
                     onLayout={onLayout}
                 >
                     <Panel className={`hidden ${leftBreakpoint}:block ${currentBreakpointName}:w-full`} {...leftPanelProps}>
-                        <View className={`fixed-process fixed-process-clamp p-4 ${appSetting('conductor', 'sidebar_container')}`}>
+                        <View className={`fixed-process fixed-process-clamp p-4 h-full border-r border-border/60 ${appSetting('conductor', 'sidebar_container')}`}>
                             <View className="gap-3">
                                 <BlockWrapper block={{ designbox_id: leftMenu.designbox_id, id: 'wiki-toc', title: leftMenu.title }}  >
-                                    <MenuWiki setPageData={setPageData} block={leftMenu} url={pageData.url} />
+                                    <MenuWiki
+                                        onNavigate={navigateToWikiPath}
+                                        block={leftMenu}
+                                        url={pageData.url}
+                                    />
                                 </BlockWrapper>
                             </View>
                         </View>
                     </Panel>
                     <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} panelLine={cellsCustomConfig['panel-line']} />
                     <Panel className={`native:w-full ${currentBreakpointName}:w-full`} {...centerPanelProps}>
-                        <View ref={centerContentRef} className="p-4 sm:p-6 xl:p-8 2xl:p-12 gap-6 lg:gap-8">
-                            {documentMetadata?.title && WikiDocumentHeader ? (
-                                <WikiDocumentHeader
-                                    markdownSource={rawMarkdownSource}
-                                    metadata={documentMetadata}
-                                    pageUrl={routeUrl}
-                                />
+                        <View ref={centerContentRef} className="p-3 sm:p-4 lg:px-6 lg:py-6 xl:px-8 2xl:px-12 gap-6 lg:gap-8">
+                            {(breadcrumbs.length || showTocMenu || (documentMetadata?.title && WikiDocumentHeader)) ? (
+                                <View className="gap-3">
+                                    {/* CSS visibility only — do not gate on useBreakpoint (SSR mismatch).
+                                        Breadcrumb from left-nav bp; TOC trigger until right sidebar bp. */}
+                                    {(breadcrumbs.length || showTocMenu) ? (
+                                        <View className={`hidden ${leftBreakpoint}:flex flex-row items-center justify-between gap-2 min-w-0`}>
+                                            {breadcrumbs.length ? (
+                                                <View className="min-w-0 flex-1">
+                                                    <WikiBreadcrumb
+                                                        items={breadcrumbs}
+                                                        onNavigate={navigateToWikiPath}
+                                                    />
+                                                </View>
+                                            ) : (
+                                                <View className="flex-1" />
+                                            )}
+                                            {showTocMenu ? (
+                                                <View className={`shrink-0 ${rightBreakpoint}:hidden`}>
+                                                    <WikiTocDropdown
+                                                        items={tocItems}
+                                                        activeIds={activeTocIds}
+                                                        focusedId={focusedTocId}
+                                                        onPress={handleTocPress}
+                                                        label={tocMenuLabel}
+                                                    />
+                                                </View>
+                                            ) : null}
+                                        </View>
+                                    ) : null}
+                                    {documentMetadata?.title && WikiDocumentHeader ? (
+                                        <WikiDocumentHeader
+                                            markdownSource={rawMarkdownSource}
+                                            metadata={documentMetadata}
+                                            pageUrl={pageData.url || routeUrl}
+                                        />
+                                    ) : null}
+                                </View>
                             ) : null}
                             {isWeb ? centerMarkdownContents.map((content, index) => (
-                                <Markdown key={`wiki-content-${index}`} data={content} />
+                                <Markdown
+                                    key={`wiki-content-${wikiCacheKey(pageData.url) || 'page'}-${index}`}
+                                    data={content}
+                                />
                             )) : centerMarkdownSections.map((section) => (
                                 <View
-                                    key={section.key}
+                                    key={`${wikiCacheKey(pageData.url) || 'page'}-${section.key}`}
                                     collapsable={false}
                                     className={section.contentIndex > 0 && section.sectionIndex === 0 ? 'mt-3' : ''}
                                     ref={(node) => {
@@ -682,23 +1010,15 @@ function PageContentWiki({ data, scrollRef, url }) {
                                     designbox_id: 14
                                 }}
                             >
-                                <View className="gap-2">
-                                    {tocItems.length >= 2 && (
-                                        tocItems.map((item) => (
-                                            <Row key={`desktop-toc-${item.key}`} className={`items-center gap-2 ${item.level === 3 ? 'pl-4' : ''}`}>
-                                                <Icon name={item.level === 2 ? 'List' : 'Minus'} size={14} className="text-muted-foreground" />
-                                                <Pressable
-                                                    onPress={() => handleTocPress(item.id)}
-                                                    className="py-0.5"
-                                                >
-                                                    <Text className="text-sm leading-tight   text-secondary-foreground web:group-hover:text-foreground">
-                                                        {item.text}
-                                                    </Text>
-                                                </Pressable>
-                                            </Row>
-                                        ))
-                                    )}
-                                </View>
+                                {tocItems.length >= 2 ? (
+                                    <WikiTocList
+                                        items={tocItems}
+                                        activeIds={activeTocIds}
+                                        focusedId={focusedTocId}
+                                        onPress={handleTocPress}
+                                        showTrack
+                                    />
+                                ) : null}
                             </BlockWrapper>
                         </View>
                     </Panel>

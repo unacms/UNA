@@ -119,7 +119,8 @@ function PageLayoutContent({ layout, data }) {
     }, [layoutName]);
 
     const componentKey = useMemo(() => {
-        if (layoutName === 'wiki') {
+        // Keep the wiki shell mounted across doc routes (registry key is layout_1_column_wiki).
+        if (layoutName === 'layout_1_column_wiki' || layoutName === 'wiki') {
             return `layout-${layoutName}`;
         }
 

@@ -17,17 +17,17 @@ import { APP_URL, UNA_URL } from 'app/config'
 
 const headingScale = {
     regular: {
-        h1: { fontSize: 36, fontWeight: '700', lineHeight: 40, marginTop: 8, marginBottom: 24 },
-        h2: { fontSize: 24, fontWeight: '700', lineHeight: 32, marginTop: 24, marginBottom: 16 },
-        h3: { fontSize: 20, fontWeight: '700', lineHeight: 28, marginTop: 16, marginBottom: 8 },
+        h1: { fontSize: 36, fontWeight: '700', lineHeight: 40, marginTop: 12, marginBottom: 12 },
+        h2: { fontSize: 24, fontWeight: '700', lineHeight: 32, marginTop: 8, marginBottom: 8 },
+        h3: { fontSize: 20, fontWeight: '700', lineHeight: 28, marginTop: 8, marginBottom: 8 },
         h4: { fontSize: 18, fontWeight: '600', lineHeight: 28, marginTop: 8, marginBottom: 4 },
         h5: { fontSize: 16, fontWeight: '600', lineHeight: 24, marginTop: 8, marginBottom: 4 },
         h6: { fontSize: 14, fontWeight: '600', lineHeight: 20, marginTop: 8, marginBottom: 4 },
     },
     small: {
-        h1: { fontSize: 30, fontWeight: '700', lineHeight: 36, marginTop: 8, marginBottom: 20 },
-        h2: { fontSize: 22, fontWeight: '700', lineHeight: 28, marginTop: 20, marginBottom: 12 },
-        h3: { fontSize: 18, fontWeight: '700', lineHeight: 24, marginTop: 14, marginBottom: 6 },
+        h1: { fontSize: 30, fontWeight: '700', lineHeight: 36, marginTop: 8, marginBottom: 8 },
+        h2: { fontSize: 22, fontWeight: '700', lineHeight: 28, marginTop: 8, marginBottom: 6 },
+        h3: { fontSize: 18, fontWeight: '700', lineHeight: 24, marginTop: 8, marginBottom: 6 },
         h4: { fontSize: 16, fontWeight: '600', lineHeight: 22, marginTop: 8, marginBottom: 4 },
         h5: { fontSize: 14, fontWeight: '600', lineHeight: 20, marginTop: 8, marginBottom: 4 },
         h6: { fontSize: 12, fontWeight: '600', lineHeight: 18, marginTop: 8, marginBottom: 4 },

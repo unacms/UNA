@@ -1,3 +1,5 @@
+import { clearWikiPageCache } from 'app/lib/wiki-page-cache'
+
 const pageDataCache = new Map();
 const conductorCache = new Map();
 const scrollOffsetCache = new Map();
@@ -45,4 +47,5 @@ export function clearAllPageCache() {
     pageDataCache.clear();
     conductorCache.clear();
     scrollOffsetCache.clear();
+    clearWikiPageCache();
 }
