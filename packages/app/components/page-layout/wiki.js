@@ -922,16 +922,19 @@ function PageContentWiki({ data, scrollRef, url }) {
                     onLayout={onLayout}
                 >
                     <Panel className={`hidden ${leftBreakpoint}:block ${currentBreakpointName}:w-full`} {...leftPanelProps}>
-                        <View className={`  h-full border-r border-border/60 ${appSetting('conductor', 'sidebar_container')}`}>
-                            <View className="gap-3 fixed-process p-4 ">
-                                <BlockWrapper block={{ designbox_id: leftMenu.designbox_id, id: 'wiki-toc', title: leftMenu.title }}  >
-                                    <MenuWiki
-                                        onNavigate={navigateToWikiPath}
-                                        block={leftMenu}
-                                        url={pageData.url}
-                                    />
-                                </BlockWrapper>
-                            </View>
+                        {/* fixed-process must be a direct Panel child — layout.web.js uses parent.parent as sticky bounds.
+                            minHeight keeps border-r full viewport when sticky (do not use h-full wrapper — breaks sticky). */}
+                        <View
+                            className={`fixed-process gap-3 border-r border-border/60 p-4 ${appSetting('conductor', 'sidebar_container')}`}
+                            style={isWeb ? { minHeight: `calc(100vh - ${headerHeight}px)` } : undefined}
+                        >
+                            <BlockWrapper block={{ designbox_id: leftMenu.designbox_id, id: 'wiki-toc', title: leftMenu.title }}  >
+                                <MenuWiki
+                                    onNavigate={navigateToWikiPath}
+                                    block={leftMenu}
+                                    url={pageData.url}
+                                />
+                            </BlockWrapper>
                         </View>
                     </Panel>
                     <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} panelLine={cellsCustomConfig['panel-line']} />
