@@ -7,7 +7,7 @@ import Page from 'app/ui/molecules/page'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
-
+import { getPageContentWidth } from 'app/lib/util'
 function PageContent({ children }) {
     const { t } = useTranslation()
 
@@ -36,7 +36,8 @@ function PageContent({ children }) {
 }
 
 export default function PageLayout({ data, children, pageClasses }) {
-    const { contentWidth, padding, gap } = pageClasses ?? {};
+    const { padding, gap } = pageClasses ?? {};
+    const contentWidth = getPageContentWidth(data?.layout)
     const isWeb = Platform.OS === 'web'
     const showLoginAside = data?.layout === 'layout_1_column_half'
 

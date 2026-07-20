@@ -922,8 +922,8 @@ function PageContentWiki({ data, scrollRef, url }) {
                     onLayout={onLayout}
                 >
                     <Panel className={`hidden ${leftBreakpoint}:block ${currentBreakpointName}:w-full`} {...leftPanelProps}>
-                        <View className={`fixed-process fixed-process-clamp p-4 h-full border-r border-border/60 ${appSetting('conductor', 'sidebar_container')}`}>
-                            <View className="gap-3">
+                        <View className={`  h-full border-r border-border/60 ${appSetting('conductor', 'sidebar_container')}`}>
+                            <View className="gap-3 fixed-process p-4 ">
                                 <BlockWrapper block={{ designbox_id: leftMenu.designbox_id, id: 'wiki-toc', title: leftMenu.title }}  >
                                     <MenuWiki
                                         onNavigate={navigateToWikiPath}
@@ -1001,7 +1001,7 @@ function PageContentWiki({ data, scrollRef, url }) {
                     </Panel>
                     <PanelHandler gap={`hidden ${rightBreakpoint}:block`} sizable={cellsCustomConfig.sizable} panelLine={cellsCustomConfig['panel-line']} />
                     <Panel className={`hidden ${rightBreakpoint}:block ${currentBreakpointName}:w-full`} {...rightPanelProps}>
-                        <View className="fixed-process fixed-process-clamp">
+                        <View className="fixed-process ">
                             <BlockWrapper
                                 showTitle={true}
                                 block={{
