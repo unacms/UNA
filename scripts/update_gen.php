@@ -21,7 +21,7 @@ class SQLUpdateChecker {
     const API_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
     const MODEL_VER = 5;
 //    const MODEL = 'gpt-4-turbo';
-    const MODEL = 'gpt-5'; // 'gpt-5-mini';
+    const MODEL = 'gpt-5.6-terra'; // 'gpt-5-mini';
     const MAX_TOKENS_PER_REQUEST = 140000; // Conservative limit for model context // 120000 for gpt4
     const MAX_TOKENS_GPT5 = 9000; // can be increased if "finish_reason: length" error occured
     const MAX_TOKENS = 4000;
@@ -407,7 +407,10 @@ sys_std_roles => name
 sys_std_roles_members => account_id
 sys_std_widgets_bookmarks => widget_id+profile_id
 
-Write minimal necessary code. 
+Write minimal necessary code. Don't use complex SQL like CASE, WHEN, THEN. 
+Output must be compatible with MySQL 5.5.3 and MariaDB 5.5.
+Make sure that not changed fields aren't updated.
+Don't make long delete statements with long condition, simple easy to read approach is better.
 
 OLD install.sql:
 ```sql

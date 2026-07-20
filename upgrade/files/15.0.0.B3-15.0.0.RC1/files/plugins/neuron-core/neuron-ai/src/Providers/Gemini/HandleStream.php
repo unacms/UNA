@@ -1,0 +1,230 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Providers\Gemini;
+
+use Generator;
+use NeuronAI\Chat\Enums\SourceType;
+use NeuronAI\Chat\Messages\AssistantMessage;
+use NeuronAI\Chat\Messages\ContentBlocks\FileContent;
+use NeuronAI\Chat\Messages\ContentBlocks\ImageContent;
+use NeuronAI\Chat\Messages\Message;
+use NeuronAI\Chat\Messages\Stream\Chunks\ReasoningChunk;
+use NeuronAI\Chat\Messages\Stream\Chunks\TextChunk;
+use NeuronAI\Exceptions\HttpException;
+use NeuronAI\Exceptions\ProviderException;
+use NeuronAI\HttpClient\HttpRequest;
+use NeuronAI\HttpClient\StreamInterface;
+use NeuronAI\Tools\ToolInterface;
+
+use function array_key_exists;
+use function json_decode;
+use function json_encode;
+use function mb_strlen;
+use function rtrim;
+
+trait HandleStream
+{
+    protected StreamState $streamState;
+
+    /**
+     * Stream response from the LLM.
+     *
+     * https://ai.google.dev/api/live#messages
+     *
+     * @throws ProviderException
+     * @throws HttpException
+     */
+    public function stream(Message ...$messages): Generator
+    {
+        $body = [
+            'contents' => $this->messageMapper()->map($messages),
+            ...$this->parameters,
+        ];
+
+        if (isset($this->system)) {
+            $body['system_instruction'] = [
+                'parts' => [
+                    ['text' => $this->system],
+                ],
+            ];
+        }
+
+        if (!empty($this->tools)) {
+            $body['tools'] = $this->toolPayloadMapper()->map($this->tools);
+
+            /*
+             * When Gemini thinking models (e.g. 2.5 Pro) are given function tools, they can spontaneously invoke built-in provider-side tools
+             * like run (code execution). Since these are never registered in NeuronAI's tool list, findTool() throws a ProviderException
+             */
+            foreach ($this->tools as $tool) {
+                if ($tool instanceof ToolInterface) {
+                    $body['toolConfig'] = [
+                        'functionCallingConfig' => [
+                            'mode' => 'AUTO',
+                        ],
+                    ];
+                    break;
+                }
+            }
+        }
+
+        $stream = $this->httpClient->stream(
+            HttpRequest::post(
+                uri: "{$this->model}:streamGenerateContent",
+                body: $body
+            )
+        );
+
+        $this->streamState = new StreamState();
+        $lastFinishReason = null;
+
+        while (! $stream->eof()) {
+            $line = $this->readLine($stream);
+
+            if (($line = json_decode((string) $line, true)) === null) {
+                continue;
+            }
+
+            if (array_key_exists('error', $line)) {
+                throw new ProviderException("Gemini API Error (Streaming): " . ($line['error']['message'] ?? json_encode($line['error'])));
+            }
+
+            // Save usage information
+            if (array_key_exists('usageMetadata', $line) &&
+                array_key_exists('promptTokenCount', $line['usageMetadata']) &&
+                array_key_exists('candidatesTokenCount', $line['usageMetadata'])
+            ) {
+                $this->streamState->getUsage()->inputTokens = $line['usageMetadata']['promptTokenCount'] ?? 0;
+                $this->streamState->getUsage()->outputTokens = $line['usageMetadata']['candidatesTokenCount'] ?? 0;
+                $this->streamState->getUsage()->cachedInputTokens = $line['usageMetadata']['cachedContentTokenCount'] ?? 0;
+                $this->streamState->getUsage()->reasoningTokens = $line['usageMetadata']['thoughtsTokenCount'] ?? 0;
+            }
+
+            // Track finishReason — the last value seen is authoritative
+            if (isset($line['candidates'][0]['finishReason'])) {
+                $lastFinishReason = $line['candidates'][0]['finishReason'];
+            }
+
+            // Process tool calls
+            if ($this->hasToolCalls($line)) {
+                $this->streamState->composeToolCalls($line);
+
+                // Gemini 2.5 includes the finish reason in the tool call message. Gemini 3 uses a separate message instead.
+                if (isset($line['candidates'][0]['finishReason']) && $line['candidates'][0]['finishReason'] === 'STOP') {
+                    goto toolcall;
+                }
+                continue;
+            }
+
+            // Handle tool calls when finished
+            if (
+                isset($line['candidates'][0]['finishReason']) &&
+                $line['candidates'][0]['finishReason'] === 'STOP' &&
+                $this->streamState->hasToolCalls()
+            ) {
+                toolcall:
+                return $this->createToolCallMessage(
+                    $this->streamState->getContentBlocks(),
+                    $this->streamState->getToolCalls()
+                )->setUsage($this->streamState->getUsage());
+            }
+
+            if (array_key_exists('groundingMetadata', $line['candidates'][0])) {
+                $citations = $this->extractCitations($line['candidates'][0]['groundingMetadata']);
+            }
+
+            // Process content
+            if (! ($part = $line['candidates'][0]['content']['parts'][0] ?? null)) {
+                continue;
+            }
+
+            if (isset($part['text'])) {
+                yield from $this->handleTextData($part);
+                continue;
+            }
+
+            if (isset($part['inlineData'])) {
+                $this->streamState->addContentBlock('image', new ImageContent(
+                    $part['inlineData']['data'],
+                    SourceType::BASE64,
+                    $part['inlineData']['mimeType']
+                ));
+                continue;
+            }
+
+            if (isset($part['fileData'])) {
+                $this->streamState->addContentBlock('file', new FileContent(
+                    $part['fileData']['fileUri'],
+                    SourceType::URL,
+                    $part['fileData']['mimeType']
+                ));
+            }
+        }
+
+        $message = new AssistantMessage($this->streamState->getContentBlocks());
+        $message->setUsage($this->streamState->getUsage());
+
+        if ($lastFinishReason !== null) {
+            $message->setStopReason($lastFinishReason);
+        }
+
+        if (isset($citations)) {
+            $message->addMetadata('citations', $citations);
+        }
+
+        return $message;
+    }
+
+    protected function handleTextData(array $part): Generator
+    {
+        if ($part['thought'] ?? false) {
+            // Accumulate the reasoning text
+            $this->streamState->updateContentBlock('reasoning', $part['text']);
+            yield new ReasoningChunk($this->streamState->messageId(), $part['text']);
+        } else {
+            // Accumulate simple text output
+            $this->streamState->updateContentBlock('text', $part['text']);
+            yield new TextChunk($this->streamState->messageId(), $part['text']);
+        }
+    }
+
+    /**
+     * Determines if the given line contains tool function calls.
+     *
+     * @param array $line The data line to check for tool function calls.
+     * @return bool Returns true if the line contains tool function calls, otherwise false.
+     */
+    protected function hasToolCalls(array $line): bool
+    {
+        $parts = $line['candidates'][0]['content']['parts'] ?? [];
+
+        foreach ($parts as $part) {
+            if (isset($part['functionCall'])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function readLine(StreamInterface $stream): string
+    {
+        $buffer = '';
+
+        while (! $stream->eof()) {
+            $buffer .= $stream->read(1);
+
+            if (mb_strlen($buffer) === 1 && $buffer !== '{') {
+                $buffer = '';
+            }
+
+            if (json_decode($buffer) !== null) {
+                return $buffer;
+            }
+        }
+
+        return rtrim($buffer, ']');
+    }
+}

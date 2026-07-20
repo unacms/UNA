@@ -1,0 +1,26 @@
+<div class="bx-std-block-caption border-b border-gray-200 dark:border-gray-700">
+    <div class="bx-std-bcap-text">__caption__</div>
+    <bx_if:show_actions>
+        <div class="bx-std-bcap-actions">
+            <bx_repeat:actions>
+            	<div class="bx-std-bcap-action-div bx-def-padding-sec-leftright">&bull;</div>
+                <div id="bx-std-bca-__name__" class="bx-std-bcap-action">
+                    <a class="bx-btn bx-btn-small flex flex-nowrap items-center space-x-1" href="__url__" title="__title__" <bx_if:show_onclick>onclick="__onclick__"</bx_if:show_onclick>>
+                        <bx_if:show_bc_icon>
+                            <div><i class="sys-icon __icon__"></i></div>
+                        </bx_if:show_bc_icon>
+                        <bx_if:show_bc_icon_url>
+                            <div><img class="w-4 h-4" src="__icon_url__" /></div>
+                        </bx_if:show_bc_icon_url>
+                        <bx_if:show_bc_icon_html>
+                            <div>__icon_html__</div>
+                        </bx_if:show_bc_icon_html>
+                        <bx_if:show_bc_text>
+                            <div>__caption__</div>
+                        </bx_if:show_bc_text>
+                    </a>
+                </div>
+            </bx_repeat:actions>
+        </div>
+    </bx_if:show_actions>
+</div>

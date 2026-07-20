@@ -1,0 +1,164 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Providers\Gemini;
+
+use NeuronAI\Chat\Enums\SourceType;
+use NeuronAI\Chat\Messages\AssistantMessage;
+use NeuronAI\Chat\Messages\ContentBlocks\ImageContent;
+use NeuronAI\Chat\Messages\ContentBlocks\ReasoningContent;
+use NeuronAI\Chat\Messages\ContentBlocks\TextContent;
+use NeuronAI\Chat\Messages\Message;
+use NeuronAI\Chat\Messages\Usage;
+use NeuronAI\Exceptions\HttpException;
+use NeuronAI\Exceptions\ProviderException;
+use NeuronAI\HttpClient\HttpRequest;
+use NeuronAI\Tools\ToolInterface;
+
+use function array_filter;
+use function array_key_exists;
+use function json_encode;
+
+trait HandleChat
+{
+    /**
+     * @throws ProviderException
+     * @throws HttpException
+     */
+    public function chat(Message ...$messages): Message
+    {
+        $body = [
+            'contents' => $this->messageMapper()->map($messages),
+            ...$this->parameters,
+        ];
+
+        if (isset($this->system)) {
+            $body['system_instruction'] = [
+                'parts' => [
+                    ['text' => $this->system],
+                ],
+            ];
+        }
+
+        if (!empty($this->tools)) {
+            $body['tools'] = $this->toolPayloadMapper()->map($this->tools);
+
+            /*
+             * When Gemini thinking models (e.g. 2.5 Pro) are given function tools, they can spontaneously invoke built-in provider-side tools
+             * like run (code execution). Since these are never registered in NeuronAI's tool list, findTool() throws a ProviderException
+             */
+            foreach ($this->tools as $tool) {
+                if ($tool instanceof ToolInterface) {
+                    $body['toolConfig'] = [
+                        'functionCallingConfig' => [
+                            'mode' => 'AUTO',
+                        ],
+                    ];
+                    break;
+                }
+            }
+        }
+
+        $response = $this->httpClient->request(
+            HttpRequest::post(
+                uri: "{$this->model}:generateContent",
+                body: $body
+            )
+        );
+
+        return $this->processChatResult($response->json());
+    }
+
+    /**
+     * @throws ProviderException
+     */
+    protected function processChatResult(array $result): AssistantMessage
+    {
+        if (array_key_exists('error', $result)) {
+            throw new ProviderException("Gemini API Error: " . ($result['error']['message'] ?? json_encode($result['error'])));
+        }
+
+        if (!array_key_exists('candidates', $result) || empty($result['candidates'])) {
+            throw new ProviderException("Gemini API returned no candidates. Response: " . json_encode($result));
+        }
+
+        $candidate = $result['candidates'][0];
+        $finishReason = $candidate['finishReason'] ?? 'UNKNOWN';
+
+        if ($finishReason !== 'STOP' && !isset($candidate['content'])) {
+            throw new ProviderException("Gemini API finished with reason: {$finishReason}. Full response: " . json_encode($result));
+        }
+
+        $content = $candidate['content'];
+
+        if (!isset($content['parts']) && $finishReason === 'MAX_TOKENS') {
+            return (new AssistantMessage())->setStopReason($finishReason);
+        }
+
+        $blocks = [];
+        foreach ($content['parts'] as $part) {
+
+            if (isset($part['text'])) {
+                $block = $part['thought'] ?? false
+                    ? new ReasoningContent($part['text'])
+                    : new TextContent($part['text']);
+
+                if (isset($part['thoughtSignature'])) {
+                    $block->addMetadata('thought_signature', $part['thoughtSignature']);
+                }
+
+                $blocks[] = $block;
+            }
+
+            if (isset($part['inlineData'])) {
+                $block = new ImageContent(
+                    $part['inlineData']['data'],
+                    SourceType::BASE64,
+                    $part['inlineData']['mimeType']
+                );
+
+                if (isset($part['thoughtSignature'])) {
+                    $block->addMetadata('thought_signature', $part['thoughtSignature']);
+                }
+
+                $blocks[] = $block;
+            }
+
+            if (isset($part['functionCall'])) {
+                $toolCalls = array_filter($content['parts'], fn (array $item): bool => isset($item['functionCall']));
+                $message = $this->createToolCallMessage($blocks, $toolCalls);
+                break;
+            }
+        }
+
+        // If no tool calls
+        if (!isset($message)) {
+            $message = new AssistantMessage($blocks);
+        }
+
+        if (array_key_exists('groundingMetadata', $result['candidates'][0])) {
+            // Extract citations from groundingMetadata
+            $citations = $this->extractCitations($result['candidates'][0]['groundingMetadata']);
+            if (!empty($citations)) {
+                $message->addMetadata('citations', $citations);
+            }
+        }
+
+        // Attach the usage for the current interaction
+        if (array_key_exists('usageMetadata', $result)) {
+            $message->setUsage(
+                new Usage(
+                    $result['usageMetadata']['promptTokenCount'],
+                    $result['usageMetadata']['candidatesTokenCount'] ?? 0,
+                    $result['usageMetadata']['cachedContentTokenCount'] ?? 0,
+                    $result['usageMetadata']['thoughtsTokenCount'] ?? 0,
+                )
+            );
+        }
+
+        $message->setStopReason($finishReason);
+
+        return $message;
+    }
+}

@@ -1,0 +1,21 @@
+<div class="bx-std-pt-cnt flex justify-between items-center">
+    <div class="bx-std-pt-bp-selects flex flex-wrap">
+        <bx_if:show_selector_types>
+            <div class="bx-std-pt-bp-types m-1">__selector_types__</div>
+        </bx_if:show_selector_types>
+        <div class="bx-std-pt-bp-pages m-1">__selector_pages__</div>
+    </div>
+    <div class="bx-std-pt-bp-buttons flex flex-wrap -m-1">
+        <button class="bx-btn bx-btn-primary m-1" onclick="javascript:__js_object__.performAction('__action_page_create__');"><bx_text:_adm_bp_btn_create_new /></button>
+        <bx_if:show_actions>
+            <bx_if:can_view>
+                <button class="bx-btn m-1" onclick="javascript:window.open('__url_view__','_blank');"><bx_text:_adm_bp_btn_view_page /></button>
+            </bx_if:can_view>
+            <button class="bx-btn m-1" onclick="javascript:__js_object__.performAction('__action_page_edit__')"><bx_text:_adm_bp_btn_settings /></button>
+            <button class="bx-btn m-1" onclick="javascript:__js_object__.performAction('__action_block_create__')"><bx_text:_adm_bp_btn_add_block /></button>
+            <bx_if:can_delete>
+                <button class="bx-btn m-1" onclick="javascript:__js_object__.deletePage();"><bx_text:_adm_bp_btn_delete /></button>
+            </bx_if:can_delete>
+        </bx_if:show_actions>
+    </div>
+</div>

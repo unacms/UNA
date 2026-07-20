@@ -19,7 +19,7 @@ class SQLUpdateChecker {
     const API_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
     const MODEL_VER = 5;
 //    const MODEL = 'gpt-4-turbo';
-    const MODEL = 'gpt-5'; // 'gpt-5-mini';
+    const MODEL = 'gpt-5.6-terra'; // 'gpt-5'; // 'gpt-5-mini';
     const MAX_TOKENS_PER_REQUEST = 140000; // Conservative limit for model context // 120000 for gpt4
     const MAX_TOKENS_GPT5 = 9000; // can be increased if "finish_reason: length" error occured
     const MAX_TOKENS = 4000;

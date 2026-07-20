@@ -1,6 +1,7 @@
 -- PAGES: 
 
 -- PAGES: config_api
+UPDATE `sys_pages_blocks` SET `config_api`='{"content_type":"browse_simple"}' WHERE `object`='bx_albums_view_entry' AND `title`='_bx_albums_page_block_title_entry_attachments';
 
 -- PAGES: active_api
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_albums_create_entry' AND `module`='bx_albums' AND `title_system`='' AND `title`='_bx_albums_page_block_title_create_entry';

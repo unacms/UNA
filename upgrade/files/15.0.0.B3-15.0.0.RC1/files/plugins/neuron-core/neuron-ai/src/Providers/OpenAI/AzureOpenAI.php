@@ -1,0 +1,44 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\Providers\OpenAI;
+
+use NeuronAI\HttpClient\GuzzleHttpClient;
+use NeuronAI\HttpClient\HttpClientInterface;
+
+use function preg_replace;
+use function sprintf;
+use function trim;
+
+class AzureOpenAI extends OpenAI
+{
+    protected string $baseUri = "https://%s/openai/deployments/%s";
+
+    public function __construct(
+        protected string $key,
+        protected string $endpoint,
+        protected string $model,
+        protected string $version,
+        protected bool $strict_response = false,
+        protected array $parameters = [],
+        ?HttpClientInterface $httpClient = null,
+    ) {
+        $this->setBaseUrl();
+
+        $this->httpClient = ($httpClient ?? new GuzzleHttpClient())
+            ->withBaseUri($this->baseUri)
+            ->withHeaders([
+                'Authorization' => 'Bearer ' . $this->key,
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ]);
+    }
+
+    private function setBaseUrl(): void
+    {
+        $this->endpoint = preg_replace('/^https?:\/\/([^\/]*)\/?$/', '$1', $this->endpoint);
+        $this->baseUri = sprintf($this->baseUri, $this->endpoint, $this->model);
+        $this->baseUri = trim($this->baseUri, '/').'/?api-version='.$this->version;
+    }
+}

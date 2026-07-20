@@ -1,0 +1,35 @@
+<div id="bx-agents-agents-form-input-cont" style="overflow:visible;">
+    <select id="bx-agents-agents-form-input" name="form_input" class="bx-def-font-inputs bx-form-input-select">
+        <bx_repeat:form_inputs>
+            <option value="__value__" <bx_if:sel>__sel__</bx_if:sel> data-title="__title_attr__" data-form_input="__value__">__title__</option>
+        </bx_repeat:form_inputs>
+    </select>
+    </div>
+    <script>        
+        $('#bx-agents-agents-form-input').select2({
+            templateResult: (state) => {
+                return $(`
+                    <div class="bx-form-input-wrap">
+                    <div>
+                        <div class="bx-form-input-data">${state.text || state.id}</div>
+                    </div>
+                    </div>
+                `);
+            },
+            templateSelection: d => d.text,
+            tags: true, // allow custom inputs
+            createTag: function (params) {            
+                const term = $.trim(params.term);
+                if (!term) return null;
+                return {
+                    id: term,
+                    text: term,
+                    title: term,
+                    title_attr: term,
+                    value: term,
+                };
+            },
+            placeholder: "Select or type a value"
+        });    
+    
+    </script>
