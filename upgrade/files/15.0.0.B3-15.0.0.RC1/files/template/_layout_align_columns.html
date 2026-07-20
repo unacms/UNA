@@ -1,0 +1,44 @@
+<script>
+    $(document).ready(function () {
+        /*
+        resizeLayoutBlocks();
+
+        $(window).on('resize', function() {
+            resizeLayoutBlocks();
+        });
+        */
+    });
+
+    function resizeLayoutBlocks()
+    {
+        if ($(window).width() <= 720)
+            return;
+
+        var iTimeout = 500;
+        var oLevelCells = function(iCellSmall, iCellLarge) {
+            $('#bx-layout-cell-' + iCellSmall + ' .bx-db-container').css('min-height', $('#bx-layout-cell-' + iCellLarge + ' .bx-db-container').height());
+        }
+
+        if (1 == $('#bx-layout-cell-3 > div').length && 1 == $('#bx-layout-cell-2 > div').length) {
+            var oCell2 = $('#bx-layout-cell-2 .bx-db-container');
+            var oCell3 = $('#bx-layout-cell-3 .bx-db-container');
+
+            if (oCell2.height() > oCell3.height()) {
+                if(oCell2.find('form .bx-form-input-files-uploaders').length > 0)
+                        setTimeout(function() {
+                                oLevelCells(3, 2);
+                        }, iTimeout);
+                else
+                        oLevelCells(3, 2);
+            }
+            else {
+                if(oCell3.find('form .bx-form-input-files-uploaders').length > 0)
+                        setTimeout(function() {
+                                oLevelCells(2, 3);
+                    }, iTimeout);
+                else
+                    oLevelCells(2, 3);
+            }
+        }
+    }
+</script>

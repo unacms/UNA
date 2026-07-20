@@ -33,10 +33,10 @@ $aConfig = array(
      * Installation/Uninstallation Section.
      */
     'install' => array(
-        'execute_sql' => 1,
+        'execute_sql' => 0,
         'update_files' => 1,
         'update_languages' => 0,
-        'clear_db_cache' => 1,
+        'clear_db_cache' => 0,
     ),
 
     /**

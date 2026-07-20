@@ -1,0 +1,83 @@
+{
+    "name": "neuron-core/neuron-ai",
+    "description": "The PHP Agentic Framework.",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Valerio Barbera",
+            "email": "valerio@inspector.dev"
+        }
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^8.1",
+        "guzzlehttp/guzzle": "^7.0",
+        "inspector-apm/inspector-php": "^3.18",
+        "psr/http-message": "^1.0|^2.0"
+    },
+    "require-dev": {
+        "ext-pdo": "*",
+        "amphp/amp": "^3.1.1",
+        "amphp/http-client": "^5.3",
+        "aws/aws-sdk-php": "^3.209",
+        "elasticsearch/elasticsearch": "^8.0",
+        "friendsofphp/php-cs-fixer": "^3.75",
+        "google/auth": "^1.49",
+        "html2text/html2text": "^4.3",
+        "illuminate/database": "^10.0|^11.0|^12.0",
+        "laudis/neo4j-php-client": "^3.4",
+        "opensearch-project/opensearch-php": "^2.5",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^10.0",
+        "rector/rector": "^2.0",
+        "spatie/fork": "^1.2",
+        "tomasvotruba/type-coverage": "^2.0",
+        "typesense/typesense-php": "^5.0",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "bin": [
+        "bin/neuron"
+    ],
+    "scripts": {
+        "analyse": [
+            "vendor/bin/phpstan analyse --memory-limit=1G -v"
+        ],
+        "format": [
+            "@refactor",
+            "@style"
+        ],
+        "style": [
+            "php-cs-fixer fix --allow-risky=yes"
+        ],
+        "refactor": [
+            "vendor/bin/rector"
+        ],
+        "test": [
+            "vendor/bin/phpunit --colors=always"
+        ]
+    },
+    "scripts-descriptions": {
+        "analyse": "Run PHPStan static analysis.",
+        "format": "Run PHP CS Fixer and PHPStan in a pipeline.",
+        "style": "Run PHP CS Fixer to fix coding style issues.",
+        "refactor": "Run rector for code refactoring.",
+        "test": "Run PHPUnit to test"
+    },
+    "autoload": {
+        "psr-4": {
+            "NeuronAI\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "NeuronAI\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        },
+        "process-timeout": 600
+    }
+}

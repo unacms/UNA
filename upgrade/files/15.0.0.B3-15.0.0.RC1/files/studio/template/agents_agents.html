@@ -1,0 +1,64 @@
+<div class="bx-agt-agents w-full flex flex-row flex-wrap items-stretch -m-1">
+    <bx_repeat:agents>
+        <div class="bx-agt-agent-wrp flex w-full sm:w-1/2 lg:w-1/3 p-1">
+            <div class="bx-agt-agent bx-def-border flex-1 flex flex-col p-4 gap-2 rounded-lg shadow-md" data-id="__id__">
+                <div class="bx-agt-a-ic flex items-center justify-between gap-2">
+                    <div class="bx-agt-aic grow-0">__icon__</div>
+                    <div class="bx-agt-aic-aux flex items-center justify-center gap-1 shrink-0">
+                        <bx_if:show_trigger>
+                            <div class="bx-agt-aic-trigger w-7 h-7 flex items-center justify-center bg-gray-200/80 dark:bg-gray-800/80 rounded-full overflow-hidden">
+                                <img class="w-4 h-4" src="__trigger_icon_src__" title="__trigger_title__" />
+                            </div>
+                        </bx_if:show_trigger>
+                        <bx_if:show_model>
+                            <div class="bx-agt-aic-model w-7 h-7 flex items-center justify-center bg-gray-200/80 dark:bg-gray-800/80 rounded-full overflow-hidden">
+                                <img class="w-4 h-4" src="__model_icon_src__" title="__model_title__" />
+                            </div>
+                        </bx_if:show_model>
+                        <bx_if:show_profile>
+                            <div class="bx-agt-aic-profile w-7 h-7 flex items-center justify-center rounded-full overflow-hidden">__unit__</div>
+                        </bx_if:show_profile>
+                    </div>
+                </div>
+                <div class="bx-agt-a-ttl flex justify-between items-center gap-2 pt-1 min-w-0">
+                    <div class="bx-agt-attl flex-1 min-w-0 font-semibold text-base truncate">__title__</div>
+                    <div class="bx-agt-attl-act">__switcher__</div>
+                </div>
+                <div class="bx-agt-a-dsc text-sm">__description__</div>
+            </div>
+        </div>
+    </bx_repeat:agents>
+</div>
+
+<!--
+<div class="neo-v u-card-base bg-card/60 text-card-foreground shadow-card-outline dark:shadow-card-outline-deep px-4 py-4 gap-2 rounded-lg" role="region" aria-labelledby="_r_5_-region-title" bis_skin_checked="1">
+    <div class="neo-v flex-row items-center justify-between gap-2" bis_skin_checked="1">
+        <div class="neo-v w-9 h-9 bg-linear-to-b from-gray-500 to-gray-700 shadow dark:shadow-md-deep rounded-full items-center justify-center overflow-hidden shrink-0" bis_skin_checked="1">
+            <span class="text-white/90" style="display: inline-flex; width: 20px; height: 20px; min-width: 20px; min-height: 20px; background-color: currentcolor; mask-image: url(&quot;/api/api.icon?icon=ShieldUser&amp;width=20&amp;height=20&amp;strokeWidth=2&quot;); mask-size: contain; mask-repeat: no-repeat; mask-position: center center; mask-mode: alpha; flex-shrink: 0;"></span>
+            <span class="absolute text-black/10 translate-y-px" style="display: inline-flex; width: 20px; height: 20px; min-width: 20px; min-height: 20px; background-color: currentcolor; mask-image: url(&quot;/api/api.icon?icon=ShieldUser&amp;width=20&amp;height=20&amp;strokeWidth=2&quot;); mask-size: contain; mask-repeat: no-repeat; mask-position: center center; mask-mode: alpha; flex-shrink: 0;"></span>
+        </div>
+        <div class="neo-v flex-row items-center justify-center gap-1 shrink-0" bis_skin_checked="1">
+            <div class="neo-v w-7 h-7 bg-muted/50 rounded-full items-center justify-center overflow-hidden" aria-label="Alert trigger" bis_skin_checked="1">
+                <span class="text-card-foreground" style="display: inline-flex; width: 16px; height: 16px; min-width: 16px; min-height: 16px; background-color: currentcolor; mask-image: url(&quot;/api/api.icon?icon=BellRing&amp;width=16&amp;height=16&amp;strokeWidth=2&quot;); mask-size: contain; mask-repeat: no-repeat; mask-position: center center; mask-mode: alpha; flex-shrink: 0;"></span>
+            </div>
+            <div class="neo-v w-7 h-7 bg-muted/50 rounded-full items-center justify-center overflow-hidden text-card-foreground" aria-label="Claude" bis_skin_checked="1">
+                <span aria-label="Claude" role="img" class="text-card-foreground block shrink-0" style="width: 16px; height: 16px; background-color: currentcolor; mask-image: url(&quot;/_next/static/media/claude-color.8b281607.svg&quot;); mask-position: center center; mask-repeat: no-repeat; mask-size: contain;"></span>
+            </div>
+            <div class="neo-v w-7 h-7 rounded-full overflow-hidden shadow-avatar dark:shadow-avatar-deep border border-card/80" aria-label="Community Moderator community profile" bis_skin_checked="1"><div aria-label="Community Moderator community profile" class="css-g5y9jx r-1mlwlqe r-1udh08x r-417010" bis_skin_checked="1" style="width: 28px; height: 28px;">
+                <div class="css-g5y9jx r-1niwhzg r-vvn4in r-u6sd8q r-1p0dtai r-1pi2tsx r-1d2f490 r-u8s1d r-zchlnj r-ipm5af r-13qz1uu r-1wyyakw r-4gszlv" bis_skin_checked="1" style="background-image: url(&quot;/_next/static/media/user-01.d5c24ac2.jpg&quot;);"></div>
+                    <img alt="Community Moderator community profile" draggable="false" class="css-9pa8cd" src="/_next/static/media/user-01.d5c24ac2.jpg">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="neo-v flex-row items-center gap-2 pt-1 min-w-0" bis_skin_checked="1">
+        <span class="flex-1 min-w-0 text-foreground font-semibold text-base truncate font-main line-clamp-1">Community Moderator</span>
+        <div class="neo-v shrink-0" bis_skin_checked="1">
+            <div class="neo-p web:cursor-pointer flex-row items-center rounded-full shrink-0 h-5 w-9 px-1 bg-primary" aria-checked="true" aria-disabled="false" role="switch" tabindex="0" bis_skin_checked="1">
+                <div class="neo-v rounded-full bg-popover/80 shadow-btn-outline dark:shadow-btn-outline-deep web:transition-transform web:duration-200 h-3 w-3 translate-x-4" bis_skin_checked="1"></div>
+            </div>
+        </div>
+    </div>
+    <span class="text-sm text-card-foreground font-main line-clamp-3">Reviews flagged posts, enforces guidelines, and keeps discussions constructive across groups and spaces.</span>
+</div>
+-->

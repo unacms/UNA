@@ -1,0 +1,230 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeuronAI\HttpClient;
+
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\RequestOptions;
+use NeuronAI\Exceptions\HttpException;
+use Psr\Http\Message\ResponseInterface;
+
+use function is_array;
+use function is_resource;
+use function trim;
+
+class GuzzleHttpClient implements HttpClientInterface
+{
+    protected string $baseUri = '';
+
+    protected Client $client;
+
+    /**
+     * @param array<string, mixed> $customHeaders
+     */
+    public function __construct(
+        protected array $customHeaders = [],
+        protected float $timeout = 60.0,
+        protected float $connectTimeout = 10.0,
+        protected ?HandlerStack $handler = null,
+        protected array $options = [],
+    ) {
+    }
+
+    public function request(HttpRequest $request): HttpResponse
+    {
+        $client = $this->createClient();
+
+        try {
+            $options = [
+                ...$this->options,
+                RequestOptions::HEADERS => [...$this->customHeaders, ...$request->headers],
+                RequestOptions::TIMEOUT => $this->timeout,
+                RequestOptions::CONNECT_TIMEOUT => $this->connectTimeout,
+            ];
+
+            $response = $this->runRequest($request, $options, $client);
+
+            return new HttpResponse(
+                statusCode: $response->getStatusCode(),
+                body: (string) $response->getBody(),
+                headers: $response->getHeaders(),
+            );
+        } catch (GuzzleException $e) {
+            $this->handleException($request, $e);
+        }
+    }
+
+    public function stream(HttpRequest $request): StreamInterface
+    {
+        $client = $this->createClient();
+
+        try {
+            $options = [
+                RequestOptions::HEADERS => [...$this->customHeaders, ...$request->headers],
+                RequestOptions::TIMEOUT => $this->timeout,
+                RequestOptions::CONNECT_TIMEOUT => $this->connectTimeout,
+                RequestOptions::STREAM => true, // Enable streaming
+            ];
+
+            $response = $this->runRequest($request, $options, $client);
+
+            return new GuzzleStream($response->getBody());
+        } catch (GuzzleException $e) {
+            $this->handleException($request, $e);
+        }
+    }
+
+    public function withBaseUri(string $baseUri): static
+    {
+        $this->baseUri = $baseUri;
+        return $this;
+    }
+
+    public function withHeaders(array $headers): static
+    {
+        $this->customHeaders = [...$this->customHeaders, ...$headers];
+        return $this;
+    }
+
+    public function withTimeout(float $timeout): static
+    {
+        $this->timeout = $timeout;
+        return $this;
+    }
+
+    protected function createClient(): Client
+    {
+        if (isset($this->client)) {
+            return $this->client;
+        }
+
+        $config = [];
+
+        if ($this->handler instanceof HandlerStack) {
+            $config['handler'] = $this->handler;
+        }
+
+        $this->client = new Client($config);
+
+        return $this->client;
+    }
+
+    /**
+     * Check if the body array contains multipart data (resources or nested arrays).
+     *
+     * @param array<string, mixed> $body
+     */
+    protected function isMultipartData(array $body): bool
+    {
+        foreach ($body as $value) {
+            if (is_resource($value)) {
+                return true;
+            }
+
+            if (is_array($value) && isset($value['contents']) && is_resource($value['contents'])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Build multipart data array in Guzzle format.
+     *
+     * @param array<string, mixed> $data
+     * @return array<int, array<string, mixed>>
+     */
+    protected function buildMultipartData(array $data): array
+    {
+        $multipartData = [];
+
+        foreach ($data as $name => $value) {
+            // If it's already a properly formatted array with 'name' key, use it as-is
+            if (is_array($value) && isset($value['name'])) {
+                $multipartData[] = $value;
+                continue;
+            }
+
+            // Otherwise, convert to Guzzle format
+            $part = ['name' => $name];
+
+            if (is_resource($value)) {
+                $part['contents'] = $value;
+            } elseif (is_array($value) && isset($value['contents'])) {
+                $part['contents'] = $value['contents'];
+                if (isset($value['filename'])) {
+                    $part['filename'] = $value['filename'];
+                }
+                if (isset($value['headers'])) {
+                    $part['headers'] = $value['headers'];
+                }
+            } else {
+                $part['contents'] = (string) $value;
+            }
+
+            $multipartData[] = $part;
+        }
+
+        return $multipartData;
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     * @throws GuzzleException
+     */
+    public function runRequest(HttpRequest $request, array $options, Client $client): ResponseInterface
+    {
+        if ($request->body !== null) {
+            if (is_array($request->body)) {
+                // Check if the body contains resources (multipart data)
+                if ($this->isMultipartData($request->body)) {
+                    $options[RequestOptions::MULTIPART] = $this->buildMultipartData($request->body);
+                } else {
+                    $options[RequestOptions::JSON] = $request->body;
+                }
+            } else {
+                $options[RequestOptions::BODY] = $request->body;
+            }
+        }
+
+        $uri = $this->baseUri !== ''
+            ? trim($this->baseUri, '/') . ($request->uri !== '' ? '/'.trim($request->uri, '/') : '')
+            : $request->uri;
+
+        return $client->request($request->method->value, $uri, $options);
+    }
+
+    /**
+     * @throws HttpException
+     */
+    protected function handleException(HttpRequest $request, GuzzleException $e): never
+    {
+        if ($e instanceof RequestException && $e->hasResponse()) {
+            $psrResponse = $e->getResponse();
+            $response = new HttpResponse(
+                statusCode: $psrResponse->getStatusCode(),
+                body: (string) $psrResponse->getBody(),
+                headers: $psrResponse->getHeaders(),
+            );
+
+            throw new HttpException(
+                "HTTP {$response->statusCode} error during {$request->method->value} {$request->uri}: {$response->body}",
+                $request,
+                $response,
+                $e
+            );
+        }
+
+        throw new HttpException(
+            "Network error during {$request->method->value} {$request->uri}: {$e->getMessage()}",
+            $request,
+            null,
+            $e
+        );
+    }
+}

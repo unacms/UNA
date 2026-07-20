@@ -1,0 +1,51 @@
+<div id="bx-agents-agents-form-object-cont" style="overflow:visible;">
+<select id="bx-agents-agents-form-object" name="form_object" class="bx-def-font-inputs bx-form-input-select">
+    <bx_repeat:form_objects>
+        <option value="__value__" <bx_if:sel>__sel__</bx_if:sel>>__title__</option>
+    </bx_repeat:form_objects>
+</select>
+</div>
+<script>
+    $('#bx-agents-agents-form-object').select2({
+        templateResult: (state) => {
+            return $(`
+                <div class="bx-form-object-wrap">
+                    <div>
+                        <div class="bx-form-object-text">${state.text || state.id}</div>
+                    </div>
+                </div>
+            `);
+        },
+        templateSelection: d => d.text,
+        tags: true, // allow custom inputs
+        createTag: function (params) {            
+            const term = $.trim(params.term);
+            if (!term) return null;
+            return {
+                id: term,
+                text: term,
+                title: term,
+                value: term,
+            };
+        },
+        placeholder: "Select or type a value"
+    });
+
+    $('#bx-agents-agents-form-object').on('change', function () {
+        const value = $(this).val();
+        const sUrl = sUrlRoot + "grid.php?o=__grid_object__&a=get_form_inputs&csrf_token=" + window.glGrids.__grid_object__._sCsrfToken;
+        $.post(sUrl, {form_object: value}, function(oResult) {
+            if (typeof(oResult.code) !== 'undefined' && oResult.code == 200) {
+                const newData = oResult.form_inputs;
+                const select = $('#bx-agents-agents-form-input');
+                select.empty();
+                Object.values(newData).forEach(input => {
+                    select.append('<option value="' + input.name + '">' + input.name + (input.caption.length > 0 ? ' - ' + input.caption : '') + '</option>');
+                });
+                select.val(null).trigger('change');
+            }
+        }, 'json');
+    });
+
+
+</script>

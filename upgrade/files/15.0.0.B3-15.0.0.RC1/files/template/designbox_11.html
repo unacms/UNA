@@ -1,0 +1,21 @@
+<!-- Design Box 11 [start]: Content + title + background + padding -->
+<div class="bx-db-container bx-def-color-bg-block bx-def-border-block bx-def-border-radius-block">
+    <div class="bx-db-header px-3 md:px-4 pt-2 md:pt-3">
+        <div class="bx-db-title flex items-center space-x-4">
+            <bx_if:show_db_icon>
+                <div class="bx-dbt-ic grow-0"><i class="sys-icon __icon__"></i></div>
+            </bx_if:show_db_icon>
+            <bx_if:show_db_icon_html>
+                <div class="bx-dbt-ic grow-0">__icon_html__</div>
+            </bx_if:show_db_icon_html>
+            <div class="bx-dbt-cnt">
+                <div class="bx-dbt-ttl">__title__</div>
+                <bx_if:show_db_description>
+                    <div class="bx-dbt-dsc text-sm font-normal">__description__</div>
+                </bx_if:show_db_description>
+            </div>
+        </div>__caption_item__
+    </div>
+    <div class="bx-db-content bx-content-padding-block relative">__designbox_content__</div>
+</div>
+<!-- Design Box 11 [ end ] -->

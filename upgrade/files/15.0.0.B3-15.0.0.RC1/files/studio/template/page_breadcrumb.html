@@ -1,0 +1,58 @@
+<div class="bx-std-pcap-bx-std-pcap">
+    <ul class="bx-menu-hor bx-menu-breadcrumb">
+        <bx_repeat:menu_items>
+            <li class="bx-menu-bc-div px-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right"><path d="m9 18 6-6-6-6"/></svg>
+            </li>
+            <li class="bx-menu-bc-item bx-menu-bc-__name__  __class_add__">
+                <a href="__link__" onclick="__onclick__" title="__title_attr__"__attrs__>
+                    <bx_if:icon>
+                        <div class="bx-mi-icon flex-0 rounded-lg hover:ring-4 hover:ring-gray-200 dark:hover:ring-gray-800 hover:ring-offset-2 hover:ring-offset-white dark:hover:ring-offset-black active:opacity-80 duration-300">
+                            <div class="block ring-white/5 ring-1 ring-inset rounded-lg">
+                                <i class="sys-icon __icon__ bx-def-round-corners bx-def-font-contrasted"></i>
+                            </div>
+                        </div>
+                    </bx_if:icon>
+                    <bx_if:image>
+                        <div class="bx-mi-icon flex-0 rounded-lg hover:ring-4 hover:ring-gray-200 dark:hover:ring-gray-800 hover:ring-offset-2 hover:ring-offset-white dark:hover:ring-offset-black active:opacity-80 duration-300">
+                            <div class="block ring-white/5 ring-1 ring-inset rounded-lg">
+                                <img src="__icon_url__" />
+                            </div>
+                        </div>
+                    </bx_if:image>
+                    <bx_if:image_inline>
+                        <div class="bx-mi-icon flex-0 rounded-lg hover:ring-4 hover:ring-gray-200 dark:hover:ring-gray-800 hover:ring-offset-2 hover:ring-offset-white dark:hover:ring-offset-black active:opacity-80 duration-300">
+                            <div class="block ring-white/5 ring-1 ring-inset rounded-lg">__image__</div>
+                        </div>
+                    </bx_if:image_inline>
+                    <bx_if:title><div class="bx-mi-title flex-1 text-lg font-semibold">__title__</div></bx_if:title>
+                </a>
+            </li>
+        </bx_repeat:menu_items>
+        <bx_if:show_page_action>
+            <li class="bx-menu-bc-actions pl-2">
+                <a class="w-6 h-6 bg-gray-200 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border border-black/10 dark:border-white/10 rounded-full text-gray-600 dark:text-gray-400" href="javascript:void(0)" onclick="__onclick__" title="<bx_text_attribute:_adm_txt_show_actions />">
+                    <bx_icon_inline:ui-chevron-down.svg />
+                </a>
+            </li>
+        </bx_if:show_page_action>
+        <bx_if:show_search>
+            <li class="bx-menu-bc-div px-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-separator-vertical-icon lucide-separator-vertical"><path d="M12 3v18"/></svg>
+            </li>
+            <li class="bx-menu-bc-item bx-menu-tab-search<bx_if:show_active> bx-mt-active</bx_if:show_active> flex-auto">
+                <div class="bg-gray-200 hover:bg-gray-100 text-gray-600 border border-black/10 hover:text-gray-700 hover:ring-4 hover:ring-gray-200 hover:ring-offset-2 hover:ring-offset-white active:opacity-80 duration-300">
+                    <a class="text-gray-600 hover:text-gray-700" href="javascript:void(0)" onclick="javascript:$(this).parents('li:first').toggleClass('bx-mt-active')">
+                        <svg class="flex-none ltr:ml-1.5 rtl:mr-1.5" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 12C5 12.9193 5.18106 13.8295 5.53284 14.6788C5.88463 15.5281 6.40024 16.2997 7.05025 16.9497C7.70026 17.5998 8.47194 18.1154 9.32122 18.4672C10.1705 18.8189 11.0807 19 12 19C12.9193 19 13.8295 18.8189 14.6788 18.4672C15.5281 18.1154 16.2997 17.5998 16.9497 16.9497C17.5998 16.2997 18.1154 15.5281 18.4672 14.6788C18.8189 13.8295 19 12.9193 19 12C19 11.0807 18.8189 10.1705 18.4672 9.32122C18.1154 8.47194 17.5998 7.70026 16.9497 7.05025C16.2997 6.40024 15.5281 5.88463 14.6788 5.53284C13.8295 5.18106 12.9193 5 12 5C11.0807 5 10.1705 5.18106 9.32122 5.53284C8.47194 5.88463 7.70026 6.40024 7.05025 7.05025C6.40024 7.70026 5.88463 8.47194 5.53284 9.32122C5.18106 10.1705 5 11.0807 5 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M23 23L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                    <div class="bx-form-input-wrapper bx-form-input-wrapper-text">
+                        <input type="text" name="search" value="" placeholder="<bx_text_attribute:_adm_tmi_cpt_search />" class="bx-def-font-inputs bx-form-input-text" onkeydown="return oBxDolStudioMenuTop.searchWidget(event)" />
+                    </div>
+                </div>
+            </li>
+        </bx_if:show_search>
+    </ul>
+</div>

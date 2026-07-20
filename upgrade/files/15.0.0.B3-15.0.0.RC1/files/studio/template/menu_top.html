@@ -1,0 +1,14 @@
+<script defer language="javascript">
+<!--
+var oBxDolStudioMenuTop = new BxDolStudioMenuTop({
+    sActionUrl: '<bx_url_studio />ajax.php'
+});
+-->
+</script>
+<div class="bx-std-menu-top-wrp">
+    <div class="bx-std-menu-top-gap flex justify-between items-center flex-1 mt-2 mx-2 bg-white/90 dark:bg-gray-900/90 rounded-xl">
+        <bx_repeat:menus>
+            <div id="bx-std-menu-top bx-std-menu-top-__name__" class="bx-std-menu-top bx-std-menu-top-__name__ bx-def-box-sizing">__content__</div>
+        </bx_repeat:menus>
+    </div>
+</div>

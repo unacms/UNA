@@ -1,0 +1,31 @@
+<?php
+
+$aFilesDelete = [
+    'plugins/aws/aws-sdk-php/src/data/iotevents/2018-07-27/api-2.json.php',
+    'plugins/aws/aws-sdk-php/src/data/iotevents/2018-07-27/endpoint-rule-set-1.json.php',
+    'plugins/aws/aws-sdk-php/src/data/iotevents/2018-07-27/paginators-1.json.php',
+    'plugins/aws/aws-sdk-php/src/data/iotevents-data/2018-10-23/api-2.json.php',
+    'plugins/aws/aws-sdk-php/src/data/iotevents-data/2018-10-23/endpoint-rule-set-1.json.php',
+    'plugins/aws/aws-sdk-php/src/data/iotevents-data/2018-10-23/paginators-1.json.php',
+    'plugins/aws/aws-sdk-php/src/data/panorama/2019-07-24/api-2.json.php',
+    'plugins/aws/aws-sdk-php/src/data/panorama/2019-07-24/endpoint-rule-set-1.json.php',
+    'plugins/aws/aws-sdk-php/src/data/panorama/2019-07-24/paginators-1.json.php',
+    'plugins/aws/aws-sdk-php/src/data/simspaceweaver/2022-10-28/api-2.json.php',
+    'plugins/aws/aws-sdk-php/src/data/simspaceweaver/2022-10-28/endpoint-rule-set-1.json.php',
+    'plugins/aws/aws-sdk-php/src/data/simspaceweaver/2022-10-28/paginators-1.json.php',
+    'plugins/aws/aws-sdk-php/src/IoTEvents/Exception/IoTEventsException.php',
+    'plugins/aws/aws-sdk-php/src/IoTEvents/IoTEventsClient.php',
+    'plugins/aws/aws-sdk-php/src/IoTEventsData/Exception/IoTEventsDataException.php',
+    'plugins/aws/aws-sdk-php/src/IoTEventsData/IoTEventsDataClient.php',
+    'plugins/aws/aws-sdk-php/src/Panorama/Exception/PanoramaException.php',
+    'plugins/aws/aws-sdk-php/src/Panorama/PanoramaClient.php',
+    'plugins/aws/aws-sdk-php/src/SimSpaceWeaver/Exception/SimSpaceWeaverException.php',
+    'plugins/aws/aws-sdk-php/src/SimSpaceWeaver/SimSpaceWeaverClient.php',
+    'plugins/guzzlehttp/guzzle/package-lock.json',
+    'plugins/neuron-core/neuron-ai/src/Observability/HandleInferenceEvents.php',
+    'plugins/neuron-core/neuron-ai/src/Observability/HandleRagEvents.php',
+    'plugins/neuron-core/neuron-ai/src/Observability/HandleStructuredEvents.php',
+    'plugins/neuron-core/neuron-ai/src/Observability/HandleToolEvents.php',
+    'plugins/neuron-core/neuron-ai/src/Observability/HandleWorkflowEvents.php',
+];
+

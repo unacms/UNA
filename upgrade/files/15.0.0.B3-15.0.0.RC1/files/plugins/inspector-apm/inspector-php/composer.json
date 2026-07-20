@@ -1,0 +1,69 @@
+{
+    "name": "inspector-apm/inspector-php",
+    "description": "Inspector monitoring for PHP applications.",
+    "keywords": ["monitoring", "php", "inspector", "observability", "telemetry"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Valerio Barbera",
+            "email": "valerio@inspector.dev"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/neuron-core/neuron-ai"
+        }
+    ],
+    "require": {
+        "php": "^8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Inspector\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "preferred-install": "dist",
+        "platform": {
+            "php": "8.1"
+        }
+    },
+    "minimum-stability": "stable",
+    "require-dev": {
+        "ext-curl": "*",
+        "friendsofphp/php-cs-fixer": "^3.75",
+        "neuron-core/neuron-ai": "4.x-dev",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^9.0",
+        "rector/rector": "^2.2",
+        "tomasvotruba/type-coverage": "^2.0"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Inspector\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": [
+            "vendor/bin/phpunit --colors=always"
+        ],
+        "analyse": [
+            "vendor/bin/phpstan analyse -v --ansi --memory-limit=2G"
+        ],
+        "style": [
+            "php-cs-fixer fix --allow-risky=yes"
+        ],
+        "format": [
+            "vendor/bin/rector",
+            "php-cs-fixer fix --allow-risky=yes"
+        ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-develop": "3.17.x-dev",
+            "dev-main": "3.17.x-dev"
+        }
+    }
+}
