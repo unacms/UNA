@@ -134,6 +134,7 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'at' => 'at-sign',
             'backspace' => 'delete',
             'trash-alt' => 'trash',
+            'magic' => 'wand-sparkles',
         ];
     }
 
