@@ -894,7 +894,6 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     const sceneHeaderComp = useMemo(
         () => (
             <TabSceneHeader
-                key={index}
                 headerMode={headerMode}
                 coverBlock={coverBlock}
                 pageUri={pageUri}
@@ -903,7 +902,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
                 filter={filter}
             />
         ),
-        [headerMode, coverBlock, pageUri, pageContext, sceneHeader, filter, index]
+        [headerMode, coverBlock, pageUri, pageContext, sceneHeader, filter]
     );
 
     const subHeaderRef = useRef(sceneHeaderComp);
