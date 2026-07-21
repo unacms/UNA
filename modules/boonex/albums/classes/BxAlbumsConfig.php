@@ -67,6 +67,9 @@ class BxAlbumsConfig extends BxBaseModTextConfig
             'URI_EDIT_ENTRY' => 'edit-album',
             'URI_MANAGE_COMMON' => 'albums-manage',
             'URI_FAVORITES_LIST' => 'albums-favorites',
+            'URI_EDIT_MEDIA' => 'edit-media',
+            'URI_MOVE_MEDIA' => 'move-media',
+            'URI_DELETE_MEDIA' => 'delete-media',
 
             'URL_HOME' => 'page.php?i=albums-home',
             'URL_POPULAR' => 'page.php?i=albums-popular',
@@ -130,6 +133,7 @@ class BxAlbumsConfig extends BxBaseModTextConfig
             'OBJECT_FORM_MEDIA' => 'bx_albums_media',
             'OBJECT_FORM_MEDIA_DISPLAY_EDIT' => 'bx_albums_media_edit',
             'OBJECT_FORM_MEDIA_DISPLAY_MOVE' => 'bx_albums_media_move',
+            'OBJECT_FORM_MEDIA_DISPLAY_DELETE' => 'bx_albums_media_delete',
             'OBJECT_MENU_ACTIONS_VIEW_ENTRY' => 'bx_albums_view', // actions menu on view entry page
             'OBJECT_MENU_ACTIONS_VIEW_ENTRY_ALL' => 'bx_albums_view_actions', // all actions menu on view entry page
             'OBJECT_MENU_ACTIONS_VIEW_MEDIA' => 'bx_albums_view_media', // actions menu on view media page

@@ -61,24 +61,22 @@ BxAlbumsMain.prototype.onEditMedia = function(oData) {
 
 BxAlbumsMain.prototype.deleteMedia = function(oButton, iId) {
     var $this = this;
+    var oDate = new Date();
 
-    bx_confirm(_t('_Are_you_sure'), function() {
-        var oDate = new Date();
-        $this.loadingInButton(oButton, true);
+    this.loadingInButton(oButton, true);
 
-        $.get(
-            $this._sActionsUrl + 'delete_media/' + iId, 
-            {
-                _t: oDate.getTime()
-            },
-            function(oData) {
-                $this.loadingInButton(oButton, false);
+    $.get(
+        this._sActionsUrl + 'delete_media/' + iId, 
+        {
+            _t: oDate.getTime()
+        },
+        function(oData) {
+            $this.loadingInButton(oButton, false);
 
-                processJsonData(oData);
-            },
-            'json'
-        );
-    });
+            processJsonData(oData);
+        },
+        'json'
+    );
 };
 
 BxAlbumsMain.prototype.moveMedia = function(oButton, iId) {

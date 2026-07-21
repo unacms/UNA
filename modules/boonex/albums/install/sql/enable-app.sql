@@ -41,7 +41,9 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_albums_manage' A
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_albums_administration' AND `module`='bx_albums' AND `title_system`='_bx_albums_page_block_title_system_manage_administration' AND `title`='_bx_albums_page_block_title_manage';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_organizations_view_profile' AND `module`='bx_albums' AND `title_system`='_bx_albums_page_block_title_sys_my_entries' AND `title`='_bx_albums_page_block_title_my_entries';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_persons_view_profile' AND `module`='bx_albums' AND `title_system`='_bx_albums_page_block_title_sys_my_entries' AND `title`='_bx_albums_page_block_title_my_entries';
-
+UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_albums_edit_media' AND `module`='bx_albums' AND `title_system`='' AND `title`='_bx_albums_page_block_title_edit_media';
+UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_albums_move_media' AND `module`='bx_albums' AND `title_system`='' AND `title`='_bx_albums_page_block_title_move_media';
+UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_albums_delete_media' AND `module`='bx_albums' AND `title_system`='' AND `title`='_bx_albums_page_block_title_delete_media';
 -- MENUS:
 
 -- MENUS: config_api

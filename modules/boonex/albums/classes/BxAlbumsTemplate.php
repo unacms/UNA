@@ -420,13 +420,24 @@ class BxAlbumsTemplate extends BxBaseModTextTemplate
 
     function mediaAuthor ($aMediaInfo, $iProfileId = false, $sFuncAuthorDesc = '', $sTemplateName = '') 
     {
-        $oModule = BxDolModule::getInstance($this->MODULE);
-        $CNF = &$oModule->_oConfig->CNF;
+        $CNF = &$this->_oConfig->CNF;
+        $oModule = $this->getModule();
 
-        if (!($aAlbumInfo = $oModule->_oDb->getContentInfoById($aMediaInfo['content_id'])))
-            return '';
+        $aAlbumInfo = $oModule->_oDb->getContentInfoById($aMediaInfo['content_id']);
+        if(!$aAlbumInfo)
+            return $this->_bIsApi ? [] : '';
 
-        return $this->entryAuthor ($aMediaInfo, $aAlbumInfo[$CNF['FIELD_AUTHOR']]);
+        if($this->_bIsApi)
+            return [bx_api_get_block('entity_author', [
+                'author_data' => BxDolProfile::getData($iProfileId),
+                'entry_date' => $aMediaInfo[$CNF['FIELD_ADDED']] ?? '',
+                'entry_context' => '',
+                'menu_manage' => $oModule->getEntryAllActions([$aMediaInfo['id'], $aMediaInfo], [
+                    'object_menu' => $CNF['OBJECT_MENU_ACTIONS_VIEW_MEDIA_ALL']
+                ])
+            ])];
+
+        return $this->entryAuthor($aMediaInfo, $aAlbumInfo[$CNF['FIELD_AUTHOR']]);
     }
 
     function getMediaTitle ($aMediaInfo)

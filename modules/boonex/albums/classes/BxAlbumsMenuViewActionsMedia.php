@@ -87,39 +87,37 @@ class BxAlbumsMenuViewActionsMedia extends BxAlbumsMenuViewActions
     protected function _getMenuItemEditImage($aItem)
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
-        
+
         $aResult = $this->_getMenuItemByNameActions($aItem, [
             'object_menu' => $CNF['OBJECT_MENU_ACTIONS_VIEW_MEDIA']
         ]);
 
-        if($this->_bIsApi)
+        if($this->_bIsApi) {
             $aResult = array_merge($aResult, [
-                'display_type' => 'callback',
-                'data' => [
-                    'request_url' => $this->_sModule . '/edit_media/&params[]=' . $this->_iMediaId, 
-                    'on_callback' => 'modal'
-                ]
+                'link' => BxDolPermalinks::getInstance()->permalink('page.php?i=' . $CNF['URI_EDIT_MEDIA'] . '&id=' . $this->_iMediaId),
             ]);
+
+            unset($aResult['display_type'], $aResult['data']);
+        }
 
         return $aResult;
     }
-	
+
     protected function _getMenuItemDeleteImage($aItem)
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
-        
+
         $aResult = $this->_getMenuItemByNameActions($aItem, [
             'object_menu' => $CNF['OBJECT_MENU_ACTIONS_VIEW_MEDIA']
         ]);
 
-        if($this->_bIsApi)
+        if($this->_bIsApi) {
             $aResult = array_merge($aResult, [
-                'display_type' => 'callback',
-                'data' => [
-                    'request_url' => $this->_sModule . '/delete_media/&params[]=' . $this->_iMediaId, 
-                    'on_callback' => 'hide'
-                ]
+                'link' => BxDolPermalinks::getInstance()->permalink('page.php?i=' . $CNF['URI_DELETE_MEDIA'] . '&id=' . $this->_iMediaId),
             ]);
+
+            unset($aResult['display_type'], $aResult['data']);
+        }
 
         return $aResult;
     }
@@ -132,14 +130,13 @@ class BxAlbumsMenuViewActionsMedia extends BxAlbumsMenuViewActions
             'object_menu' => $CNF['OBJECT_MENU_ACTIONS_VIEW_MEDIA']
         ]);
 
-        if($this->_bIsApi)
+        if($this->_bIsApi) {
             $aResult = array_merge($aResult, [
-                'display_type' => 'callback',
-                'data' => [
-                    'request_url' => $this->_sModule . '/move_media/&params[]=' . $this->_iMediaId, 
-                    'on_callback' => 'modal'
-                ]
+                'link' => BxDolPermalinks::getInstance()->permalink('page.php?i=' . $CNF['URI_MOVE_MEDIA'] . '&id=' . $this->_iMediaId),
             ]);
+
+            unset($aResult['display_type'], $aResult['data']);
+        }
 
         return $aResult;
     }

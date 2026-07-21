@@ -43,7 +43,11 @@ class BxAlbumsFormMedia extends BxTemplFormView
         $this->_iMediaId = $iMediaId;
         $this->_aMediaInfo = $this->_oModule->_oDb->getMediaInfoById($iMediaId);
 
-        $this->aFormAttrs['action'] = BX_DOL_URL_ROOT . $this->_oModule->_oConfig->getBaseUri() . $aAction . '_media/' . $iMediaId;
+        if(bx_is_dynamic_request())        
+            $this->aFormAttrs['action'] = $this->_oModule->_oConfig->getBaseUri() . $aAction . '_media/' . $iMediaId;
+        else
+            $this->aFormAttrs['action'] = BxDolPermalinks::getInstance()->permalink('page.php?i=' . $CNF['URI_' . strtoupper($aAction) . '_MEDIA'] . '&id=' . $iMediaId);
+        $this->aFormAttrs['action'] = bx_absolute_url($this->aFormAttrs['action']);
 
         if(isset($this->aInputs['content_id'])) {
             $aAlbums = $this->_oModule->_oDb->getEntriesBy(array('type' => 'author', 'author' => $this->_aMediaInfo['author']));
