@@ -186,7 +186,7 @@ const TabSceneHeader = React.memo(function TabSceneHeader2({
         Platform.OS !== 'web' && headerMode === 'dynamic';
 
     const standaloneContextSelector = useStandaloneContextSelector ? (
-        <View className="items-center w-full h-14 px-2">
+        <View className="items-center justify-center w-full h-14 px-2 ">
             <ContextSelector
                 data={pageContext}
                 url={pageUri}
