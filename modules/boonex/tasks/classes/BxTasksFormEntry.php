@@ -116,7 +116,7 @@ class BxTasksFormEntry extends BxBaseModTextFormEntry
 
         $sResult = parent::getCode($bDynamicMode);
         $sInclude = $this->_oModule->_oTemplate->addJs(array('tasks.js'), $bDynamicMode);
-        $sResult .= ($bDynamicMode ? $sInclude : '') . $this->_oModule->_oTemplate->getJsCode('tasks');
+        $sResult .= ($bDynamicMode ? $sInclude : '') . $this->_oModule->_oTemplate->getJsCodeView('tasks');
     	return $sResult;
     }
 

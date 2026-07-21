@@ -20,7 +20,7 @@ class BxTasksTemplate extends BxBaseModTextTemplate
         parent::__construct($oConfig, $oDb);
     }
 
-    public function getJsCode($sType, $aParams = [], $mixedWrap = true)
+    public function getJsCodeView($sType, $aParams = [], $mixedWrap = true)
     {
         $aParams = array_merge([
             'aHtmlIds' => $this->_oConfig->getHtmlIds()
@@ -364,7 +364,7 @@ class BxTasksTemplate extends BxBaseModTextTemplate
                 ]
             ],
             'task_lists' => $aEntries,
-            'js_code' => $this->getJsCode('tasks', ['t_confirm_block_deletion' => _t('_bx_tasks_txt_msg_confirm_tasklist_deletion')])
+            'js_code' => $this->getJsCodeView('tasks', ['t_confirm_block_deletion' => _t('_bx_tasks_txt_msg_confirm_tasklist_deletion')])
         ]);
     }
     
