@@ -5,6 +5,7 @@ import Menu from "app/components/menu";
 import { Card, CardList } from 'app/ui/molecules/card'
 import Time from "app/ui/atoms/time";
 import { AuthorData } from 'app/lib/common-helpers'
+import Profile from 'app/ui/molecules/profile'
 import { appSetting } from 'app/lib/util'
 import LinkOrModal from 'app/ui/molecules/link-or-modal'
 import { Skeleton } from 'app/ui/atoms/skeleton'
@@ -93,124 +94,133 @@ Units.Small = function Small({ data }) {
 
 Units.Base = function Base({ data }) {
     const isSkeleton = data?.skeleton
+    const categoryName = data.category?.name
+    const categoryIcon = data.category?.icon
+
     return (
-        <>
-            <View className="p-2 lg:p-4 mx-auto w-full max-w-4xl border-b border-border/60 ">
-                <View className="flex-row  gap-x-4  mx-auto w-full">
-                    <View className="flex-col gap-y-2 hidden sm:flex w-24 flex-none">
-                        <Skeleton className="h-24 w-24" rounded="rounded-xl" visible={isSkeleton}>
-                            <View className="border p-1 border-primary/10 relative flex-none  h-24 w-24 flex-col gap-y-1 bg-primary/10 rounded-xl overflow-hidden items-center justify-center">
-                                <Text className="text-4xl">
-                                    {data.category?.icon}
-                                </Text>
-                                <Text className="text-primary tracking-tighter text-xs">
-                                    {data.category?.name}
-                                </Text>
-                            </View>
-                        </Skeleton>
-                        <Skeleton className="h-8 w-16 mt-auto" visible={isSkeleton}>
-                            <Time
-                                stylesName="  text-center bg-muted   px-2.5 py-2 mt-auto text-xs rounded-full  text-muted"
-                                ts={data.added}
-                            ></Time>
-                        </Skeleton>
-                    </View>
-                    <View className="gap-y-3 flex-auto ">
-                        <View className="flex-row gap-x-4">
-                            <View className="gap-y-2 flex-auto">
-                                <View className="sm:hidden flex-row items-center justify-between w-full">
-                                    <Skeleton className="h-6 w-32" visible={isSkeleton}>
-                                        <AuthorData authorData={{ ...data.author_data, displaySize: 'sm' }} />
+        <View className="pb-4 mb-4 mx-auto w-full border-b border-border/60">
+            <View className="flex-row gap-x-3 mx-auto w-full">
+                {/* Compact category glyph — name lives in the meta row. */}
+                <View className="flex-none pt-0.5">
+                    <Skeleton className="h-10 w-10" rounded="rounded-lg" visible={isSkeleton}>
+                        <View className="h-10 w-10 border border-primary/10 bg-primary/10 rounded-lg items-center justify-center overflow-hidden">
+                            <Text className="text-xl leading-none">
+                                {categoryIcon}
+                            </Text>
+                        </View>
+                    </Skeleton>
+                </View>
+
+                <View className="gap-y-2 flex-auto min-w-0">
+                    <View className="flex-row gap-x-3">
+                        <View className="gap-y-1.5 flex-auto min-w-0">
+                            <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
+                                <View className="flex-auto gap-y-1.5">
+                                    <Skeleton className="h-5 w-3/4" visible={isSkeleton}>
+                                        <Text
+                                            numberOfLines={2}
+                                            className="text-foreground tracking-tight leading-snug web:hover:text-primary text-base font-bold"
+                                        >
+                                            {data.title}
+                                        </Text>
                                     </Skeleton>
-                                    <Skeleton className="h-8 w-16 ml-auto" visible={isSkeleton}>
-                                        <Time
-                                            stylesName=" my-auto  ml-auto bg-muted   px-2.5 py-1 my-auto text-sm rounded-full  text-muted"
-                                            ts={data.added}
-                                        ></Time>
-                                    </Skeleton>
-                                </View>
-                                <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
-                                    <View
-                                        className={`flex-auto gap-y-2`}
-                                    >
-                                        <Skeleton className="h-6 w-3/4 mt-2" visible={isSkeleton}>
+                                    {(data.summary_plain || isSkeleton) ? (
+                                        <Skeleton className="h-9 w-full" rounded="rounded-lg" visible={isSkeleton}>
                                             <Text
-                                                numberOfLines={3}
-                                                className="text-foreground tracking-tight  web:hover:text-primary text-base sm:text-lg font-bold"
-                                            >
-                                                {data.title}
-                                            </Text>
-                                        </Skeleton>
-                                        <Skeleton className="h-16 w-full" rounded="rounded-lg" visible={isSkeleton}>
-                                            <Text
-                                                numberOfLines={3}
-                                                className="text-muted-foreground  mb-auto text-sm"
+                                                numberOfLines={2}
+                                                className="text-muted-foreground text-sm leading-snug"
                                             >
                                                 {data.summary_plain}
                                             </Text>
                                         </Skeleton>
-                                    </View>
-                                </LinkOrModal>
-                            </View>
-
-                            {(data.image || isSkeleton) && (
-                                <View
-                                    className={
-                                        (!data.image
-                                            ? " hidden sm:block "
-                                            : "") +
-                                        " aspect-video flex-none rounded-xl sm:rounded-xl overflow-hidden w-1/4 sm:w-auto sm:h-24 "
-                                    }
-                                >
-                                    <Skeleton className="h-full w-full" rounded="rounded-xl" visible={isSkeleton}>
-                                        {data.image && (
-                                            <Image
-                                                {...data.image}
-                                                alt={data.title}
-                                                view="cover"
-                                                className="u-cover"
-                                                sizes='auto'
-                                            />
-                                        )}
-                                    </Skeleton>
+                                    ) : null}
                                 </View>
-                            )}
+                            </LinkOrModal>
                         </View>
 
-                        <View className="flex-row gap-x-2 mt-auto items-center">
-                            <Skeleton className="h-9 w-40" rounded="rounded-lg" visible={isSkeleton}>
-                                <Menu
-                                    {...data.meta}
-                                    displayType="button"
-                                    displaySize
-                                    params={{
-                                        show_action: true,
-                                        show_counter: true,
-                                        show_combined: true,
-                                    }}
-                                />
-                            </Skeleton>
-                            <Skeleton className="h-8 w-20 ml-auto sm:hidden" rounded="rounded-full" visible={isSkeleton}>
-                                <View className="sm:hidden flex-row gap-x-1 my-auto  ml-auto bg-primary/10 border border-primary/10 px-2.5 py-1 my-auto  rounded-full ">
-                                    <Text className=" text-base rounded-full text-primary tracking-tighter  my-auto">
-                                        {data.category?.icon}
-                                    </Text>
-                                    <Text className="text-sm rounded-full text-primary tracking-tighter my-auto">
-                                        {data.category?.name}
-                                    </Text>
-                                </View>
-                            </Skeleton>
-                            <View className="flex-row hidden flex-auto items-center sm:flex gap-x-4 justify-end">
-                                <Skeleton className="h-6 w-24" visible={isSkeleton}>
-                                    <AuthorData authorData={{ ...data.author_data, displaySize: 'sm' }} />
+                        {(data.image || isSkeleton) && (
+                            <View
+                                className={
+                                    (!data.image ? 'hidden sm:block ' : '')
+                                    + 'aspect-video flex-none rounded-xl overflow-hidden w-1/4 sm:w-auto sm:h-20'
+                                }
+                            >
+                                <Skeleton className="h-full w-full" rounded="rounded-xl" visible={isSkeleton}>
+                                    {data.image ? (
+                                        <Image
+                                            {...data.image}
+                                            alt={data.title}
+                                            view="cover"
+                                            className="u-cover"
+                                            sizes="auto"
+                                        />
+                                    ) : null}
                                 </Skeleton>
                             </View>
+                        )}
+                    </View>
+
+                    <View className="flex-row justify-between gap-x-2 mt-auto items-center">
+                        <View className="flex-row items-center gap-x-1.5 min-w-0">
+                            {/* unit_wo_info + name avoid Profile `unit` flex-1 so "in category" stays adjacent. */}
+                            <Skeleton className="h-6 w-40" visible={isSkeleton}>
+                                <View className="flex-row items-center gap-x-1.5 min-w-0">
+                                    <Profile
+                                        {...data.author_data}
+                                        displayType="unit_wo_info"
+                                        displaySize="xs"
+                                    />
+                                    <View className="flex-row items-center gap-x-1 min-w-0">
+                                        <Profile
+                                            {...data.author_data}
+                                            displayType="unit_text_link"
+                                            displaySize="xs"
+                                        />
+                                        {categoryName ? (
+                                            <>
+                                                <Text className="text-xs text-muted-foreground">
+                                                    in
+                                                </Text>
+                                                <Text
+                                                    numberOfLines={1}
+                                                    className="text-xs font-semibold text-foreground"
+                                                >
+                                                    {categoryName}
+                                                </Text>
+                                            </>
+                                        ) : null}
+                                    </View>
+                                </View>
+                            </Skeleton>
+                            <Text className="text-xs text-muted-foreground flex-none">
+                                ·
+                            </Text>
+                            <Skeleton className="h-5 w-10 flex-none" visible={isSkeleton}>
+                                <Time
+                                    stylesName="text-xs text-muted-foreground"
+                                    ts={data.added}
+                                />
+                            </Skeleton>
                         </View>
+                        <Skeleton className="h-8 w-12 flex-none" rounded="rounded-lg" visible={isSkeleton}>
+                            <Menu
+                                {...data.meta}
+                                displayType="button"
+                                displaySize
+                                params={{
+                                    show_action: true,
+                                    show_counter: true,
+                                    show_combined: true,
+                                    button_style: 'borderless',
+                                    button_size: 'small',
+                                }}
+                            />
+                        </Skeleton>
                     </View>
                 </View>
             </View>
-        </>
-    );
+        </View>
+    )
 }
 
 export default function BxForum(props) {

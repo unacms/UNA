@@ -54,22 +54,20 @@ const Notif = memo(() => (
 ));
 
 const Forum = memo(() => (
-   
-    <View className="flex-col p-2 lg:p-4 border-b border-border/60  animate-pulse flex-col w-full mx-auto max-w-4xl gap-y-1">
-        <View className="flex-row gap-x-2 mb-2 sm:hidden items-center">
-            <View className="h-8 w-8 flex-none bg-muted-foreground/50 rounded-full"></View>
-            <View className="h-4 w-1/4 flex-none bg-muted-foreground/50 rounded-full"></View>
-        </View>
-        <View className="h-4 w-2/3 bg-muted-foreground/50 mb-2 rounded-full"></View>
-        <View className="h-3 w-full bg-muted-foreground/40 rounded-full"></View>
-        <View className="h-3 w-full bg-muted-foreground/40 rounded-full"></View>
-        <View className="h-3 w-2/3 bg-muted-foreground/40 rounded-full"></View>
-        <View className="flex-row gap-x-2 mt-1 hidden sm:flex items-center">
-            <View className="h-5 w-5 flex-none bg-muted-foreground/50 rounded-full"></View>
-            <View className="h-3 w-1/4 flex-none bg-muted-foreground/40 rounded-full"></View>
+    <View className="flex-row p-2 lg:p-4 border-b border-border/60 animate-pulse w-full mx-auto max-w-4xl gap-x-3">
+        <View className="h-10 w-10 flex-none rounded-lg bg-muted-foreground/40" />
+        <View className="flex-auto gap-y-2 min-w-0">
+            <View className="h-4 w-2/3 rounded-full bg-muted-foreground/50" />
+            <View className="h-3 w-full rounded-full bg-muted-foreground/40" />
+            <View className="h-3 w-4/5 rounded-full bg-muted-foreground/40" />
+            <View className="flex-row gap-x-2 mt-1 items-center">
+                <View className="h-6 w-12 rounded-lg bg-muted-foreground/40" />
+                <View className="h-3 w-14 rounded-full bg-muted-foreground/40" />
+                <View className="h-5 w-5 ml-auto rounded-full bg-muted-foreground/50" />
+                <View className="h-3 w-16 rounded-full bg-muted-foreground/40" />
+            </View>
         </View>
     </View>
-   
 ));
 
 const Posts = memo(() => (

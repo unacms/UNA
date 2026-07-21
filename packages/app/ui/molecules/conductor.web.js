@@ -991,7 +991,12 @@ const AddMenu = ({ menu, filter }) => {
                     btn = (
                         <Search
                             section={button.section}
-                            params={{ trigger: { size: 'sm' } }}
+                            params={{
+                                trigger: {
+                                    style: 'bordered',
+                                    controlSize: 'small',
+                                },
+                            }}
                         />
                     )
                 else {
@@ -999,8 +1004,8 @@ const AddMenu = ({ menu, filter }) => {
                         <NeoButton
                             label={t(button.title)}
                             image={button.icon}
-                            style="glass"
-                            controlSize="regular"
+                            style="bordered"
+                            controlSize="small"
                             borderShape="circle"
                             onPress={() => {
                                 setPageData('loading')

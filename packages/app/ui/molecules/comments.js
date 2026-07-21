@@ -3,7 +3,7 @@ import { appSetting, getAlert } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { useActionsData } from 'app/context/actions';
 import { View } from 'app/design/view'
-import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
+import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal, NeoButton } from 'app/design/controls';
 import Redirect from 'app/ui/atoms/redirect';
 import  { useLayoutData } from 'app/context/layout'
 
@@ -93,55 +93,111 @@ export default function ElementComments(oProps) {
     const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 
     const sIcon = isTextMode ? "" : "MessageCircleMore";
+    const neoButtonStyle = oProps.params?.button_style
+        ? (oProps?.primary
+            ? (oProps.params?.button_primary_style || oProps.params.button_style)
+            : oProps.params.button_style)
+        : null;
+
     const sActionButton = useMemo(() => {
-//counter
-        if (bShowCounter && !bShowAction ){
-             if (iCount > 0){
-                return <ButtonAction
+        const actionLabel = bShowCounter
+            ? (iCount > 0 ? iCount : (bShowActionLabel ? sTitle : false))
+            : (bShowActionLabel ? sTitle : false);
+
+        if (bShowCounter && !bShowAction && !(iCount > 0)) {
+            return null;
+        }
+
+        if (neoButtonStyle) {
+            const neoLabel = actionLabel === false || actionLabel == null ? '' : String(actionLabel);
+            return (
+                <NeoButton
+                    key="action"
+                    label={neoLabel}
+                    image={sIcon}
+                    style={neoButtonStyle}
+                    controlSize={oProps.params?.button_size}
+                    borderShape={oProps.params?.button_border_shape}
+                    width={oProps.params?.button_full_width ? 'fill' : 'auto'}
+                    onPress={!bShowActionDisabled ? handlePress : undefined}
+                    disabled={bShowActionDisabled}
+                    accessibilityLabel={neoLabel || undefined}
+                />
+            );
+        }
+
+        // counter-only
+        if (bShowCounter && !bShowAction) {
+            return (
+                <ButtonAction
+                    key="action"
+                    startDecorator={sIcon}
+                    title={iCount}
+                    onPress={!bShowActionDisabled ? handlePress : undefined}
+                    disabled={bShowActionDisabled}
+                    {...oButtonProps}
+                />
+            );
+        }
+
+        if (!bShowCounter && bShowAction) {
+            return (
+                <ButtonAction
+                    key="action"
+                    startDecorator={sIcon}
+                    title={bShowActionLabel ? sTitle : false}
+                    onPress={!bShowActionDisabled ? handlePress : undefined}
+                    disabled={bShowActionDisabled}
+                    {...oButtonProps}
+                />
+            );
+        }
+
+        return (
+            <ButtonAction
                 key="action"
                 startDecorator={sIcon}
-                title={iCount}
+                title={bShowActionLabel ? (iCount > 0 ? iCount : sTitle) : false}
                 onPress={!bShowActionDisabled ? handlePress : undefined}
                 disabled={bShowActionDisabled}
                 {...oButtonProps}
             />
-            
-            }
-            else{
-                return null
-            }
-        }
-
-        if (!bShowCounter && bShowAction ){
-            return <ButtonAction
-            key="action"
-            startDecorator={sIcon}
-            title={bShowActionLabel ? (sTitle) : false}
-            onPress={!bShowActionDisabled ? handlePress : undefined}
-            disabled={bShowActionDisabled}
-            {...oButtonProps}
-        />
-       }
-
-        return <ButtonAction
-            key="action"
-            startDecorator={sIcon}
-            title={bShowActionLabel ? (iCount > 0 ? iCount : sTitle) : false}
-            onPress={!bShowActionDisabled ? handlePress : undefined}
-            disabled={bShowActionDisabled}
-            {...oButtonProps}
-        />
-    }, [bShowActionLabel, sTitle, bShowActionDisabled, handlePress, oButtonProps, bShowCounter, iCount]);
+        );
+    }, [
+        bShowAction,
+        bShowActionLabel,
+        bShowActionDisabled,
+        bShowCounter,
+        handlePress,
+        iCount,
+        neoButtonStyle,
+        oButtonProps,
+        oProps.params?.button_border_shape,
+        oProps.params?.button_full_width,
+        oProps.params?.button_size,
+        sIcon,
+        sTitle,
+    ]);
 
     if (sActionButton == null )
         return null
 
-    if(bShowCombined) {
+    // NeoButton path skips ButtonsGroupMenu (same as shares / cover menus).
+    if (bShowCombined && !neoButtonStyle) {
         let aButtonsGroup = [sActionButton];
         return (
             <View>
                 <Redirect ref={redirectdRef} />
                 <ButtonsGroupMenu  {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
+            </View>
+        );
+    }
+
+    if (bShowCombined && neoButtonStyle) {
+        return (
+            <View>
+                <Redirect ref={redirectdRef} />
+                {sActionButton}
             </View>
         );
     }
