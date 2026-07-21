@@ -2,7 +2,7 @@ import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Platform } from 'react-native'
-import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
+import { appSetting, LAYOUT_BREAKPOINTS, stripTags } from 'app/lib/util'
 import Page from 'app/ui/molecules/page'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
@@ -26,7 +26,10 @@ import Image from 'app/ui/atoms/image'
 import { getComponent } from 'app/components/registry'
 import { parseWikiFrontMatter } from 'app/lib/markdown/frontmatter'
 import {
+    findWikiNavBlock,
+    findWikiTocBlock,
     getCachedWikiPage,
+    isWikiTocBlock,
     mergeWikiPageContent,
     setCachedWikiPage,
     wikiCacheKey,
@@ -251,7 +254,9 @@ function getWikiMarkdownContents(cell) {
     const blocks = Array.isArray(cell) ? cell : Object.values(cell || {});
 
     return blocks.flatMap((block) => {
-        if (!block?.content || block.hidden == true) return [];
+        // Skip UNA wiki TOC service HTML (jQuery #bx_wiki_toc) — TOC links are
+        // built client-side from headings; the block is chrome for the right rail.
+        if (!block?.content || block.hidden == true || isWikiTocBlock(block)) return [];
 
         const contentItems = Array.isArray(block.content)
             ? block.content
@@ -361,7 +366,7 @@ function WikiMenuItem({ title, icon, isActive, iconEnd }) {
         : ' text-secondary-foreground '
 
     return (
-        <Row className="min-h-9 px-3 items-center gap-3">
+        <Row className="min-h-9 px-2 items-center gap-3">
             <View className={`h-5 w-5 shrink-0 items-center justify-center rounded-full ${iconBackgroundClassName}`}>
                 {isImageSource(icon) ? (
                     <Image
@@ -450,7 +455,7 @@ function MenuWiki({ onNavigate, block, url }) {
             const itemPathComparable = normalizePathComparable(itemPath);
             const isActive = Boolean(itemPathComparable && itemPathComparable === currentPathComparable);
             const menuIsActive = canNavigate ? isActive : false;
-            const activeWrapperClassName = menuIsActive ? 'bg-accent/60 rounded-lg web:hover:bg-accent/90' : ' web:hover:bg-muted/50';
+            const activeWrapperClassName = menuIsActive ? 'bg-accent/60 rounded-lg web:hover:bg-accent web:duration-200' : ' web:hover:bg-muted/50 web:duration-200';
 
             const pressHandler = canNavigate
                 ? () => onNavigate?.(itemPath)
@@ -490,7 +495,7 @@ function MenuWiki({ onNavigate, block, url }) {
                 items={topLevelItems}
                 setExpandedMap={setExpandedMap}
             />
-            <View className='w-full gap-1.5'>
+            <View className=' gap-1 lg:-mx-2'>
                 {renderItems(topLevelItems)}
             </View>
         </>
@@ -547,20 +552,10 @@ function PageContentWiki({ data, scrollRef, url }) {
 
             const shellPage = cached?.data || pageDataRef.current?.data
             const merged = mergeWikiPageContent(shellPage, contentResponse?.data, itemPath)
-            const shellLeft = shellPage?.elements?.cell_left
 
             if (merged) {
-                const nextPage = merged.elements?.cell_left
-                    ? merged
-                    : {
-                        ...merged,
-                        elements: {
-                            ...merged.elements,
-                            cell_left: shellLeft,
-                        },
-                    }
-                setCachedWikiPage(pathKey, nextPage)
-                setPageData({ data: nextPage, url: itemPath })
+                setCachedWikiPage(pathKey, merged)
+                setPageData({ data: merged, url: itemPath })
                 return
             }
 
@@ -675,12 +670,6 @@ function PageContentWiki({ data, scrollRef, url }) {
     const [pendingScrollId, setPendingScrollId] = useState(null)
     const [focusedTocId, setFocusedTocId] = useState(null)
 
-    const onLayout = () => {
-        if (isWeb) {
-            setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100)
-        }
-    }
-
     useEffect(() => {
         if (isWeb) {
             groupRef.current?.setLayout([
@@ -710,7 +699,14 @@ function PageContentWiki({ data, scrollRef, url }) {
         () => centerMarkdownContents.join('\n\n'),
         [centerMarkdownContents]
     )
-    const leftMenu = pageData?.data?.elements?.cell_left?.[0]
+    // Custom wiki layout ignores UNA cell placement (classic uses a composite
+    // 3-column page). Resolve nav/TOC chrome by block identity anywhere on the page.
+    const leftMenu = findWikiNavBlock(pageData?.data)
+        || pageData?.data?.elements?.cell_left?.[0]
+    // Right chrome from TemplServiceWiki::page_contents when present; TOC links
+    // below are still derived from page headings (API returns legacy jQuery HTML).
+    // Do not fall back to cell_right[0] — that cell may hold unrelated blocks.
+    const rightBlock = findWikiTocBlock(pageData?.data)
     const breadcrumbs = useMemo(
         () => buildWikiBreadcrumbs(
             leftMenu?.content?.[0]?.data?.content?.items,
@@ -829,7 +825,7 @@ function PageContentWiki({ data, scrollRef, url }) {
     }, [headerOffset, isWeb, tocItems])
 
     const showTocMenu = tocItems.length >= 2
-    const tocMenuLabel = t('On this page')
+    const tocMenuLabel = stripTags(rightBlock?.title) || t('On this page')
 
     // Below left-nav breakpoint only. From lg–xl the TOC trigger sits on the
     // breadcrumb row; at xl+ the right sidebar owns TOC.
@@ -849,7 +845,7 @@ function PageContentWiki({ data, scrollRef, url }) {
                                 buttonProps={{
                                     style: 'borderless',
                                     controlSize: 'regular',
-                                    image: 'TextAlignStart',
+                                    image: 'Menu',
                                     borderShape: 'capsule',
                                 }}
                             >
@@ -911,6 +907,14 @@ function PageContentWiki({ data, scrollRef, url }) {
         }, [isDesktop, isWeb, mobileHeaderControls, setHeader])
     );
 
+    // Sticky pin stays at top:0; header clearance lives in scroll content padding so tall
+    // sidebars can still scroll behind translucent/floating headers. Negative margin cancels
+    // the page header spacer so sidebars align with center content before stick engages.
+    const stickySidebarScrollStyle = {
+        marginTop: -(Number(headerHeight) || 0),
+        paddingTop: Number(headerHeight) || 0,
+    }
+
     return (
         <View className={`${appSetting('layout', 'max_width')}`}>
             <View className='w-full mx-auto'>
@@ -919,22 +923,33 @@ function PageContentWiki({ data, scrollRef, url }) {
                     key={`cells-wiki${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
                     direction="horizontal"
                     className={`mx-auto flex-auto relative flex-row`}
-                    onLayout={onLayout}
+                    // Default panel-group overflow:hidden creates a scrollport and breaks
+                    // window-scroll sticky. clip still contains resize overflow without that.
+                    style={isWeb ? { overflow: 'clip' } : undefined}
                 >
                     <Panel className={`hidden ${leftBreakpoint}:block ${currentBreakpointName}:w-full`} {...leftPanelProps}>
-                        {/* fixed-process must be a direct Panel child — layout.web.js uses parent.parent as sticky bounds.
-                            minHeight keeps border-r full viewport when sticky (do not use h-full wrapper — breaks sticky). */}
-                        <View
-                            className={`fixed-process gap-3 border-r border-border/60 p-4 ${appSetting('conductor', 'sidebar_container')}`}
-                            style={isWeb ? { minHeight: `calc(100vh - ${headerHeight}px)` } : undefined}
-                        >
-                            <BlockWrapper block={{ designbox_id: leftMenu.designbox_id, id: 'wiki-toc', title: leftMenu.title }}  >
-                                <MenuWiki
-                                    onNavigate={navigateToWikiPath}
+                        {/* Stretch with the panel group (driven by center column). Sticky stays at
+                            top:0 so overflow scroll can pass behind translucent / floating headers.
+                            Header clearance is padding inside the scrollport (not sticky top);
+                            matching negative margin cancels the in-flow header spacer so content
+                            lines up with the center column at rest. Panel group is the sticky
+                            bound — sidebars release above the footer with no footer measurement. */}
+                        <View className="h-full border-r border-border/60">
+                            <View
+                                className={`web:sticky web:top-0 web:max-h-screen web:overflow-y-auto gap-3 ${appSetting('conductor', 'sidebar_container')}`}
+                                style={isWeb ? stickySidebarScrollStyle : undefined}
+                            >
+                                <BlockWrapper
                                     block={leftMenu}
-                                    url={pageData.url}
-                                />
-                            </BlockWrapper>
+                                    config={leftMenu?.config_api}
+                                >
+                                    <MenuWiki
+                                        onNavigate={navigateToWikiPath}
+                                        block={leftMenu}
+                                        url={pageData.url}
+                                    />
+                                </BlockWrapper>
+                            </View>
                         </View>
                     </Panel>
                     <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} panelLine={cellsCustomConfig['panel-line']} />
@@ -1004,25 +1019,30 @@ function PageContentWiki({ data, scrollRef, url }) {
                     </Panel>
                     <PanelHandler gap={`hidden ${rightBreakpoint}:block`} sizable={cellsCustomConfig.sizable} panelLine={cellsCustomConfig['panel-line']} />
                     <Panel className={`hidden ${rightBreakpoint}:block ${currentBreakpointName}:w-full`} {...rightPanelProps}>
-                        <View className="fixed-process ">
-                            <BlockWrapper
-                                showTitle={true}
-                                block={{
-                                    id: 'wiki-toc',
-                                    title: t('On this page'),
-                                    designbox_id: 14
-                                }}
+                        <View className="h-full">
+                            <View
+                                className={`web:sticky web:top-0 web:max-h-screen web:overflow-y-auto gap-3 ${appSetting('conductor', 'sidebar_container')}`}
+                                style={isWeb ? stickySidebarScrollStyle : undefined}
                             >
-                                {tocItems.length >= 2 ? (
-                                    <WikiTocList
-                                        items={tocItems}
-                                        activeIds={activeTocIds}
-                                        focusedId={focusedTocId}
-                                        onPress={handleTocPress}
-                                        showTrack
-                                    />
-                                ) : null}
-                            </BlockWrapper>
+                                <BlockWrapper
+                                    block={rightBlock || {
+                                        id: 'wiki-toc',
+                                        title: t('On this page'),
+                                        designbox_id: 14,
+                                    }}
+                                    config={rightBlock?.config_api}
+                                >
+                                    {tocItems.length >= 2 ? (
+                                        <WikiTocList
+                                            items={tocItems}
+                                            activeIds={activeTocIds}
+                                            focusedId={focusedTocId}
+                                            onPress={handleTocPress}
+                                            showTrack
+                                        />
+                                    ) : null}
+                                </BlockWrapper>
+                            </View>
                         </View>
                     </Panel>
                 </PanelGroup>

@@ -29,7 +29,7 @@ export const COVER_COLLAPSE_SCROLL = 500;
  * After mount, PageHeader `onLayout` replaces this with the measured height.
  * Keep close to `layout.header.content` height (e.g. h-14 → 56) to minimize layout shift.
  */
-export const DEFAULT_HEADER_HEIGHT = 56;
+export const DEFAULT_HEADER_HEIGHT = 64;
 export const headerHeightAtom = atom(isWeb ? DEFAULT_HEADER_HEIGHT : 0);
 export const footerHeightAtom = atom(0);
 

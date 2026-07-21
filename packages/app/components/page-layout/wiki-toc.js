@@ -57,18 +57,29 @@ function findHeadingElement(id, contentRoot) {
 
 /**
  * Compute which TOC headings' sections intersect the reading viewport.
- * A heading's "section" runs from its top to the next heading's top.
+ * A heading's "section" runs from its top to the next heading's top (last
+ * section extends to infinity). When `includeLast` is set — typically near the
+ * document bottom — always keep the final heading active so short trailing
+ * sections still highlight (Fumadocs-style).
  */
-function activeIdsFromPositions(positions, viewTop, viewBottom) {
+function activeIdsFromPositions(positions, viewTop, viewBottom, { includeLast = false } = {}) {
     if (!positions.length) return []
 
     const active = []
     for (let i = 0; i < positions.length; i++) {
         const start = positions[i].top
-        const end = positions[i + 1]?.top
-            ?? (start + Math.max(positions[i].height, 1) + 240)
+        const end = i + 1 < positions.length
+            ? positions[i + 1].top
+            : Number.POSITIVE_INFINITY
         if (end > viewTop && start < viewBottom) {
             active.push(positions[i].id)
+        }
+    }
+
+    if (includeLast) {
+        const lastId = positions[positions.length - 1]?.id
+        if (lastId && !active.includes(lastId)) {
+            active.push(lastId)
         }
     }
 
@@ -85,6 +96,13 @@ function activeIdsFromPositions(positions, viewTop, viewBottom) {
         }
     }
     return bestId ? [bestId] : []
+}
+
+/** True when the viewport is within `threshold` px of the document end. */
+function isNearDocumentBottom(threshold = 32) {
+    if (typeof window === 'undefined' || typeof document === 'undefined') return false
+    const doc = document.documentElement
+    return window.scrollY + window.innerHeight >= doc.scrollHeight - threshold
 }
 
 /**
@@ -128,8 +146,13 @@ export function useWikiTocSpy(tocItems, {
         const publish = () => {
             const root = contentRootRef?.current || null
             const viewTop = Math.max(0, headerOffset)
-            // Upper ~65% of the viewport = "reading" band (similar to Fumadocs rootMargin).
-            const viewBottom = window.innerHeight * 0.65
+            const nearBottom = isNearDocumentBottom()
+            // Upper ~65% reading band (Fumadocs-like). Near the document end, expand
+            // to the full viewport so short trailing headings below that band still
+            // count — and always keep the last TOC item active as a backstop.
+            const viewBottom = nearBottom
+                ? window.innerHeight
+                : window.innerHeight * 0.65
 
             const positions = []
             for (const id of ids) {
@@ -139,7 +162,9 @@ export function useWikiTocSpy(tocItems, {
                 positions.push({ id, top: rect.top, height: rect.height })
             }
 
-            setActiveSafe(activeIdsFromPositions(positions, viewTop, viewBottom))
+            setActiveSafe(activeIdsFromPositions(positions, viewTop, viewBottom, {
+                includeLast: nearBottom,
+            }))
         }
 
         const schedule = () => {
@@ -200,10 +225,17 @@ export function useWikiTocSpy(tocItems, {
             const positions = rows.filter(Boolean)
             if (!positions.length) return
 
+            const vh = Number(windowHeight) || 600
             const viewTop = Number(scrollY) + Math.max(0, headerOffset)
-            const viewBottom = Number(scrollY) + (Number(windowHeight) || 600) * 0.65
+            const last = positions[positions.length - 1]
+            // Native has no document scrollHeight here; treat as near-end when the
+            // viewport extends past the last heading (short trailing sections).
+            const includeLast = Boolean(
+                last && Number(scrollY) + vh >= last.top + Math.max(last.height, 1) + 100
+            )
+            const viewBottom = Number(scrollY) + (includeLast ? vh : vh * 0.65)
 
-            setActiveSafe(activeIdsFromPositions(positions, viewTop, viewBottom))
+            setActiveSafe(activeIdsFromPositions(positions, viewTop, viewBottom, { includeLast }))
         })
 
         return () => {
@@ -557,9 +589,9 @@ export function WikiTocDropdown({ items, activeIds, focusedId = null, onPress, l
                 label,
                 style: 'borderless',
                 controlSize: 'small',
-                image: 'ChevronDown',
+                image: 'TextAlignStart',
                 borderShape: 'capsule',
-                imagePlacement: 'trailing',
+                
             }}
         >
             <View className="p-1">
