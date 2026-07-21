@@ -98,8 +98,8 @@ Units.Base = function Base({ data }) {
     const categoryIcon = data.category?.icon
 
     return (
-        <View className="pb-4 mb-4 mx-auto w-full border-b border-border/60">
-            <View className="flex-row gap-x-3 mx-auto w-full">
+        <View className="pt-4 mx-auto w-full">
+            <CardList className="flex-row gap-x-3 px-4">
                 {/* Compact category glyph — name lives in the meta row. */}
                 <View className="flex-none pt-0.5">
                     <Skeleton className="h-10 w-10" rounded="rounded-lg" visible={isSkeleton}>
@@ -218,7 +218,8 @@ Units.Base = function Base({ data }) {
                         </Skeleton>
                     </View>
                 </View>
-            </View>
+            
+            </CardList>
         </View>
     )
 }
