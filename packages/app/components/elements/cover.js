@@ -632,7 +632,7 @@ export default function Cover({
                         )}
                             {!isDesktop && <Row className="gap-2 min-w-0 overflow-hidden items-center min-h-10">
                             <Text
-                                className="flex-1  truncate tracking-tight text-xl sm:text-3xl font-bold text-foreground"
+                                className=" truncate tracking-tight text-xl sm:text-3xl font-bold text-foreground"
                                 numberOfLines={1}
                             >
                                 {profileData.display_name ||
@@ -645,7 +645,7 @@ export default function Cover({
 
                 </View>
                 {!isDesktop && !menusInNavbar && (
-                    <Row className="justify-between items-center">
+                    <Row className="justify-between items-center mb-2">
                         <CoverMenu
                             {...data.actions_menu}
                             uri={uri}

@@ -47,6 +47,7 @@ export const settingsForms = {
         sys_forgot_password: {
             hide_errors: true,
             button_full_width: true,
+            hide_on_msg: true,
         },
 
         bx_invites_request_send: {

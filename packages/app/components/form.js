@@ -150,6 +150,9 @@ export default function Form({
 
         const formItem = items.find(item => item?.type === 'form');
         const otherItem = items.find(item => item?.type && item?.type !== 'form');
+        // hide_on_msg: replace form only when response is msg-only (success).
+        // If UNA also returns a form (validation errors), keep the form and drop the msg.
+        const hideOnMsg = !!(appSetting('forms', name) || {}).hide_on_msg;
 
         setFormBundle(prev => {
             const nextForm = formItem?.data
@@ -157,7 +160,9 @@ export default function Form({
                 : { ...prev.form, updated: Date.now() };
 
             const nextResponse = formItem?.response ?? prev.response;
-            const nextExtra = otherItem ?? prev.extra;
+            const nextExtra = hideOnMsg && formItem
+                ? null
+                : (otherItem ?? prev.extra);
 
             // Optional: skip setState when nothing actually changed
             const isSameForm = isObjectsEqual(prev.form, nextForm);
@@ -473,6 +478,8 @@ export default function Form({
 
 
     const Element = formBundle.extra ? getComponent('element', String(formBundle.extra.type)) : null;
+    const formSettings = appSetting('forms', name) || {};
+    const hideFormOnMsg = formSettings.hide_on_msg && formBundle.extra?.type === 'msg';
 
     function stableStringify(obj) {
         return JSON.stringify(
@@ -486,7 +493,7 @@ export default function Form({
             <FormInstanceProvider instanceId={formInstanceId}>
                 <FormProvider {...methods}>
                     {Element && <Element {...formBundle.extra} />}
-                    {inputs}
+                    {!hideFormOnMsg ? inputs : null}
                 </FormProvider>
             </FormInstanceProvider>
         )
@@ -496,31 +503,33 @@ export default function Form({
         <FormInstanceProvider instanceId={formInstanceId}>
             <View className={`${layout !== 'hor' ? appSetting('forms', 'form_container') : 'w-full'} ${exProps?.classes}`}>
                 {Element && <Element {...formBundle.extra} />}
-                <FormProvider {...methods}>
-                    <View className={`${layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : 'w-full gap-4'}`}>
-                        {inputs}
-                        {(isAutoChange) && <Row className={`items-center justify-between  ${layout === 'hor' ? ' ' : ' '} `}>
-                            {(stableStringify(defaultFormValues) != stableStringify(currentFormValues)) && <Button
-                                title={t('Reset Filters')}
-                                startDecorator='X'
-                                size='sm'
-                                fullWidth
-                                variant='secondary'
-                                onPress={() => {
-                                    if (isWeb) {
-                                        const url = new URL(window.location.href);
-                                        if (url.searchParams.has('filters')) {
-                                            url.searchParams.delete('filters');
-                                            window.location.replace(`${url.pathname}${url.search}${url.hash}`);
+                {!hideFormOnMsg ? (
+                    <FormProvider {...methods}>
+                        <View className={`${layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : 'w-full gap-4'}`}>
+                            {inputs}
+                            {(isAutoChange) && <Row className={`items-center justify-between  ${layout === 'hor' ? ' ' : ' '} `}>
+                                {(stableStringify(defaultFormValues) != stableStringify(currentFormValues)) && <Button
+                                    title={t('Reset Filters')}
+                                    startDecorator='X'
+                                    size='sm'
+                                    fullWidth
+                                    variant='secondary'
+                                    onPress={() => {
+                                        if (isWeb) {
+                                            const url = new URL(window.location.href);
+                                            if (url.searchParams.has('filters')) {
+                                                url.searchParams.delete('filters');
+                                                window.location.replace(`${url.pathname}${url.search}${url.hash}`);
+                                            }
                                         }
-                                    }
-                                    methods.reset();
-                                }}
-                            />
-                            }
-                        </Row>}
-                    </View>
-                </FormProvider>
+                                        methods.reset();
+                                    }}
+                                />
+                                }
+                            </Row>}
+                        </View>
+                    </FormProvider>
+                ) : null}
             </View>
         </FormInstanceProvider>
     );
