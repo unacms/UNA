@@ -16,8 +16,9 @@ import {
     PanelHandler,
     resolvePanelProps,
 } from 'app/ui/molecules/resizable-panels'
-import { useSetHeader, defaultHeader, useSetFooter } from 'app/context/jotai/layout';
+import { useSetHeader, defaultHeader, useSetFooter, useHeaderHeight } from 'app/context/jotai/layout';
 import { useSafeAreaInsets } from 'app/lib/hooks/router'
+import { useStickyHeaderOffset, stickySidebarStyle } from 'app/lib/hooks/use-sticky-header-offset'
 import { Loading } from 'app/customization/loading'
 const mapLayoutBlocks = (items) =>
     (Array.isArray(items) ? items : []).map(({ source }) => ({
@@ -79,6 +80,9 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
     const setHeader = useSetHeader();
     const setFooter = useSetFooter();
     const searchParams = useLocalSearchParams();
+    const pageHeaderHeight = useHeaderHeight();
+    const stickyTop = useStickyHeaderOffset(isWeb ? pageHeaderHeight : 0);
+    const stickySidebarScrollStyle = stickySidebarStyle(stickyTop);
 
     const localUrl = isModal ? url : searchParams.url;
     const commentsData = useMemo(() => getCommentsData(data, blocks), [data, blocks?.comments]);
@@ -395,7 +399,10 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
             }
             direction="horizontal"
             {...viewProps}
-            className={`${contentWidth} ${padding} ${gap} ${isMultiColumn ? appSetting('layout', 'panel_group_content') : ' mx-auto flex-1 h-full sm:min-h-[calc(100vh-16rem)]'} `}
+            className={`${contentWidth} ${isMultiColumn ? 'mx-auto' : ' mx-auto flex-1 h-full sm:min-h-[calc(100vh-16rem)]'} `}
+            // Default panel-group overflow:hidden creates a scrollport and breaks
+            // window-scroll sticky. clip still contains resize overflow without that.
+            style={{ ...(viewProps.style || {}), overflow: 'clip' }}
             onLayout={onLayout}
         >
             {isLeftCol && (
@@ -404,8 +411,11 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                         className={`hidden ${leftBreakpoint}:block `}
                         {...leftPanelProps}
                     >
-                        <View className="w-full">
-                            <View className="fixed-process w-full hidden sm:flex gap-y-3">
+                        <View className="h-full w-full">
+                            <View
+                                className="web:sticky w-full hidden sm:flex gap-y-3 web:overflow-y-auto"
+                                style={stickySidebarScrollStyle}
+                            >
                                 {
                                     leftBarBlocks.map(([key, value]) => {
                                         return (
@@ -422,7 +432,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                     />
                 </>
             )}
-            <Panel {...centerPanelProps} className="sm:p-2 ">
+            <Panel {...centerPanelProps} className="mt-0.5 sm:m-0 sm:p-3 lg:p-4 ">
                 <Card padding="pt-1" className={`w-full mx-auto `}>
                     <View
                         onLayout={handleListLayout}
@@ -465,8 +475,11 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                         className={`hidden ${rightBreakpoint}:block`}
                         {...rightPanelProps}
                     >
-                        <View className="w-full">
-                            <View className="fixed-process w-full hidden sm:flex gap-3 sm:p-2">
+                        <View className="h-full w-full">
+                            <View
+                                className="web:sticky w-full hidden sm:flex gap-3 lg:gap-4 mt-0.5 sm:m-0 sm:p-3 lg:p-4 web:overflow-y-auto"
+                                style={stickySidebarScrollStyle}
+                            >
                                 {
                                     sideBarBlocks.map((value) => {
                                         return (

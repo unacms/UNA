@@ -60,6 +60,8 @@ import { getComponent } from 'app/components/registry';
 import { BlockByName2 } from 'app/components/block'
 import { useSound } from 'app/lib/hooks/useSound';
 
+import { useStickyHeaderOffset, stickySidebarStyle } from 'app/lib/hooks/use-sticky-header-offset'
+
 const conductorTheme = appSetting('theme', 'conductor')
 
 export function Conductor({
@@ -83,6 +85,10 @@ export function Conductor({
     const cleanUrl = data.url.split('?')[0]
     const isDesktop = useIsDesktop()
     const pageHeaderHeight = useHeaderHeight()
+    // Clear page header + cover/tab `header-fixed` stack (profile menus). Wiki's top:0
+    // padding trick overlaps Conductor's opaque fixed cover bar when scrolled.
+    const stickyTop = useStickyHeaderOffset(pageHeaderHeight)
+    const stickySidebarScrollStyle = stickySidebarStyle(stickyTop)
 
     const coverMode = appSetting(
         'cover',
@@ -345,43 +351,51 @@ export function Conductor({
             menu={menu}
             routes={routes}
             headerSettings={headerSettings}
+            stickyScrollStyle={stickySidebarScrollStyle}
         >
             {LeftBarContentBlocks}
         </LeftSideBarContainer> : null
 
-    const RightColumnContent = isRightCol ? <View className=" fixed-process mt-0.5 sm:m-0 sm:p-3 lg:p-4">
-        {tabRouteSidebarContent.map((item, index) => {
-            return (
-                <ItemRenderer
-                    key={`${tabRoute?.index}-${item.id}`}
-                    unitType={sidebarUnitType}
-                    route={tabRoute}
-                    sidebar={true}
-                    item={item}
-                    unit={
-                        tabRoute?.sidebar?.endpoint?.unit
-                    }
-                    module={
-                        tabRoute?.sidebar?.endpoint?.module
-                            ? tabRoute?.sidebar?.endpoint
-                                ?.module
-                            : ''
-                    }
-                />
-            )
-        })}
-        <View>
-            {!!tabRoute.pageData && (
-                <BlockByName
-                    data={tabRoute.pageData}
-                    name={tabRoute.blocks?.browse_sidebar}
-                    sidebar={true}
-                    perLine={1}
-                    maxItems={1}
-                />
-            )}
+    const RightColumnContent = isRightCol ? (
+        <View className="h-full">
+            <View
+                className={`web:sticky web:overflow-y-auto mt-0.5 sm:m-0 sm:p-3 lg:p-4 ${appSetting('conductor', 'sidebar_container')}`}
+                style={stickySidebarScrollStyle}
+            >
+                {tabRouteSidebarContent.map((item, index) => {
+                    return (
+                        <ItemRenderer
+                            key={`${tabRoute?.index}-${item.id}`}
+                            unitType={sidebarUnitType}
+                            route={tabRoute}
+                            sidebar={true}
+                            item={item}
+                            unit={
+                                tabRoute?.sidebar?.endpoint?.unit
+                            }
+                            module={
+                                tabRoute?.sidebar?.endpoint?.module
+                                    ? tabRoute?.sidebar?.endpoint
+                                        ?.module
+                                    : ''
+                            }
+                        />
+                    )
+                })}
+                <View>
+                    {!!tabRoute.pageData && (
+                        <BlockByName
+                            data={tabRoute.pageData}
+                            name={tabRoute.blocks?.browse_sidebar}
+                            sidebar={true}
+                            perLine={1}
+                            maxItems={1}
+                        />
+                    )}
+                </View>
+            </View>
         </View>
-    </View> : null
+    ) : null
 
     const CenterColumnContent = <TabSceneMainContent
         pageRoute={tabRoute}
@@ -882,6 +896,9 @@ const TabScene = ({
 
             direction="horizontal"
             className={(layoutName == 'navigator' ? '' : '') + ' h-full'}
+            // Default panel-group overflow:hidden creates a scrollport and breaks
+            // window-scroll sticky. clip still contains resize overflow without that.
+            style={{ overflow: 'clip' }}
             onLayout={onLayout}
         >
             {isLeftCol && (
@@ -1173,22 +1190,25 @@ const LeftSideBarContainer = ({
     setIndex,
     children,
     layoutName,
+    stickyScrollStyle,
 }) => {
     const { t } = useTranslation();
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
     const addButtons = <AddMenu menu={menu} filter="hideInSideBar" />
     const title = layoutName == 'profile' ? '' : t(menuSettings?.name)
     const MenuItemSidebar = getComponent('menu-item', 'sidebar');
+    const padClass =
+        layoutName == 'profile'
+            ? 'mt-0.5 sm:m-0 sm:p-3 lg:p-4'
+            : appSetting('conductor', 'sidebar_container')
 
     return (
-        <View
-            className={`fixed-process ${layoutName == 'profile'
-                ? 'mt-0.5 sm:m-0 sm:p-3 lg:p-4' + ' '
-                : appSetting('conductor', 'sidebar_container')
-                }`}
-        >
-            <View className={`${layoutName == 'profile' ? '' : 'mt-fixed-process'}`}>
-                <View className={`${layoutName == 'profile' ? '' : appSetting('conductor', 'sidebar_inner_container')} ${layoutName == 'profile' ? '' : ''}`}>
+        <View className="h-full">
+            <View
+                className={`web:sticky web:overflow-y-auto ${padClass}`}
+                style={stickyScrollStyle}
+            >
+                <View className={layoutName == 'profile' ? '' : appSetting('conductor', 'sidebar_inner_container')}>
                     {(!!title || !!addButtons?.length > 0) && (
                         <Row className={appSetting('conductor', 'sidebar_title')}>
                             <Text className=" text-2xl tracking-tight truncate mr-auto font-bold leading-11 text-card-foreground hidden lg:flex  ">

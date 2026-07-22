@@ -141,6 +141,11 @@ export default function RftTextEnriched({
     })
 
     // ---- initial / external value ----
+    // EnrichedTextInput's web build puts `defaultValue` in useEditor deps, so a
+    // changing defaultValue destroys/recreates TipTap. After destroy, schema is
+    // null and getHTML() throws ("Cannot read properties of null (reading 'cached')").
+    // Keep defaultValue stable for the component lifetime; push later updates via setValue.
+    const initialDefaultValue = useRef(unaLinksToMentions(value || ''))
     const lastSetValue = useRef(value)
     useEffect(() => {
         if (editorRef.current && value !== lastSetValue.current) {
@@ -247,25 +252,30 @@ export default function RftTextEnriched({
     // ---- HTML -> react-hook-form ----
     const isInitialHtmlEmission = useRef(true)
     const onChangeHtml = useCallback((e) => {
-        const raw = e?.nativeEvent?.value ?? ''
+        // Library wraps TipTap HTML in <html>...</html>; strip so RHF value matches
+        // UNA content and doesn't look like an external edit to the value effect.
+        let raw = e?.nativeEvent?.value ?? ''
+        raw = raw.replace(/^<html>/i, '').replace(/<\/html>$/i, '')
         // Convert mentions to UNA links, then auto-link any plain URLs/emails the
         // editor didn't catch itself (web has the library's autolink disabled), so
         // saved content has real <a> links on every platform.
-        const value = linkifyHtml(mentionsToUnaLinks(raw))
-        if (onFocus && value) onFocus()
+        const html = linkifyHtml(mentionsToUnaLinks(raw))
+        if (onFocus && html) onFocus()
         const next = isPlainText
-            ? stripTagsWithLinks(value, ['a', 'p', 'br', 'span'])
-            : value
+            ? stripTagsWithLinks(html, ['a', 'p', 'br', 'span'])
+            : html
         if (isInitialHtmlEmission.current) {
             isInitialHtmlEmission.current = false
             // The editor's first emission is usually its normalized version of the
             // initial value (extra <p> wrappers etc). Re-baseline instead of firing
             // onChange so an untouched form is not considered dirty.
             if ((stripTags(next) || '') === (stripTags(field.value) || '')) {
+                lastSetValue.current = next
                 formContext.resetField(name, { defaultValue: next })
                 return
             }
         }
+        lastSetValue.current = next
         field.onChange(next)
     }, [isPlainText])
 
@@ -515,7 +525,7 @@ export default function RftTextEnriched({
 
             <EnrichedTextInput
                 ref={editorRef}
-                defaultValue={unaLinksToMentions(value)}
+                defaultValue={initialDefaultValue.current}
                 placeholder={placeholder}
                 placeholderTextColor="rgba(120,130,145,1)"
                 editable={!disabled}
