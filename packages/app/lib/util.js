@@ -1717,7 +1717,6 @@ export function sanitazeUrl(url) {
 
 export function isExternalUrl(url) {
     const host = getHostnameFromUrl(url);
-    console.log('host', host, url);
     if (!host) return false;
 
     const rootHost = getHostnameFromUrl(appSetting('config', 'native_app_images_url'));

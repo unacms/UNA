@@ -37,16 +37,16 @@ export const footerHeightAtom = atom(0);
 // being replaced. On web, the DOM may not emit another layout event if the
 // header content is effectively the same, so clearing here can leave content
 // tucked under the fixed header after HMR/theme/layout updates.
+// On native, subHeader toggles must not zero height (Settings tabs clip); the
+// PageHeader container onLayout updates the total instead.
 export const setHeaderAtom = atom(null, (get, set, value) => {
     const prev = get(headerAtom);
     const next = typeof value === 'function' ? value(prev) : value;
     set(headerAtom, next);
-    const hadSubHeader = !!prev?.subHeader;
-    const hasSubHeader = !!next?.subHeader;
-    if (
-        !isWeb &&
-        (next?.header === false || next?.header !== prev?.header || hadSubHeader !== hasSubHeader)
-    ) {
+    // Native: do not zero height when subHeader appears/disappears — that left
+    // list content under Settings tabs until (or unless) a later measure. Keep
+    // the previous offset; PageHeader container onLayout corrects the total.
+    if (!isWeb && (next?.header === false || next?.header !== prev?.header)) {
         set(headerHeightAtom, 0);
     }
 });

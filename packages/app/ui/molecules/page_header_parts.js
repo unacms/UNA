@@ -115,13 +115,19 @@ export function usePageHeaderBase(pageData, { resetHeaderOnRoute = false } = {})
 
     const onMainHeaderLayout = useCallback((event) => {
         mainHeaderHeightRef.current = event.nativeEvent.layout.height;
-        syncHeaderHeight();
-    }, [syncHeaderHeight]);
+        // Native: total height comes from PageHeader container onLayout so we
+        // never publish "main + 0" before subHeader measures (Settings tabs clip).
+        if (isWeb) {
+            syncHeaderHeight();
+        }
+    }, [isWeb, syncHeaderHeight]);
 
     const onSubHeaderLayout = useCallback((event) => {
         subHeaderHeightRef.current = event.nativeEvent.layout.height;
-        syncHeaderHeight();
-    }, [syncHeaderHeight]);
+        if (isWeb) {
+            syncHeaderHeight();
+        }
+    }, [isWeb, syncHeaderHeight]);
 
     useEffect(() => {
         if (header.header === false) {
@@ -131,8 +137,12 @@ export function usePageHeaderBase(pageData, { resetHeaderOnRoute = false } = {})
         if (!header.subHeader) {
             subHeaderHeightRef.current = 0;
         }
-        syncHeaderHeight();
-    }, [header.header, header.subHeader, setHeaderHeightAtom, syncHeaderHeight]);
+        // Web: keep summing main + sub. Native: PageHeader onLayout owns the total;
+        // only sync here when there is no subHeader (main-only).
+        if (isWeb || !header.subHeader) {
+            syncHeaderHeight();
+        }
+    }, [header.header, header.subHeader, isWeb, setHeaderHeightAtom, syncHeaderHeight]);
 
     return {
         currentUser,

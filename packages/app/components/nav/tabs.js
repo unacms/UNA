@@ -371,6 +371,20 @@ export default function Tabs() {
                                             }
 
                                             const tabKey = `/tab${index}`;
+
+                                            if (e.type == 'tabPress') {
+
+                                                if (tabUrl == notificationUrl) {
+
+                                                    clearNotif()
+                                                    setCurrentUser({
+                                                        notifications: 0,
+                                                        notificationsTs: Date.now()
+                                                    });
+                                                }
+
+                                            }
+                                            
                                             if (pathname?.startsWith(tabKey)) {
                                                 e.preventDefault?.();
                                                 e.stopPropagation?.();
@@ -387,16 +401,7 @@ export default function Tabs() {
                                                 return;
                                             }
 
-                                            if (e.type == 'tabPress') {
-                                                if (tabUrl == notificationUrl) {
-                                                    clearNotif()
-                                                    setCurrentUser({
-                                                        notifications: 0,
-                                                        notificationsTs: Date.now()
-                                                    });
-                                                }
-
-                                            }
+                                            
                                             scheduleTabFeedback(playTabSound);
                                         },
                                     }}
