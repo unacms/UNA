@@ -13,6 +13,7 @@ import { storageClear, getAlert } from 'app/lib/util';
 import { useLayoutData } from 'app/context/layout';
 import { getComponent } from 'app/components/registry'
 import Badge from 'app/ui/molecules/badge'
+import emitter from 'app/context/emitter'
 
 const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps) => {
 
@@ -62,8 +63,13 @@ const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, red
 
     let request_url = '/api.php?r=' + buttonProps.request_url;
     const sResponse = await fetcher(request_url);
-    if (oProps.data.on_callback == 'hide')
+    if (oProps.data.on_callback == 'hide') {
         setButtonProps({...buttonProps, visible:false})
+        // Wiki delete-block: refresh the page shell so the block disappears.
+        if (String(buttonProps.request_url || '').includes('wiki_action')) {
+            emitter.emit('wiki', { action: 'reload' })
+        }
+    }
 
     if (oProps.data.on_callback == 'change')
         setButtonProps({...buttonProps, title:sResponse.data?.title, request_url:sResponse.data?.request_url})

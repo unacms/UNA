@@ -15,6 +15,8 @@ import {
 } from 'app/ui/molecules/resizable-panels'
 import { useBreakpoint, useBreakpointName, useIsDesktop } from 'app/context/measure'
 import { BlockWrapper } from 'app/components/block-wrapper'
+import { BlockByData } from 'app/components/block'
+import Menu from 'app/components/menu'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { DEFAULT_HEADER_HEIGHT, defaultHeader, useHeaderHeight, useSetHeader } from 'app/context/jotai/layout'
 import Markdown from 'app/ui/atoms/markdown'
@@ -24,7 +26,8 @@ import { getPageData } from 'app/lib/util'
 import emitter from 'app/context/emitter'
 import Image from 'app/ui/atoms/image'
 import { getComponent } from 'app/components/registry'
-import { parseWikiFrontMatter } from 'app/lib/markdown/frontmatter'
+import { parseWikiFrontMatter, parseFrontMatter } from 'app/lib/markdown/frontmatter'
+import Time from 'app/ui/atoms/time'
 import {
     findWikiNavBlock,
     findWikiTocBlock,
@@ -250,7 +253,9 @@ function extractMarkdownHeadings(markdown) {
     return items;
 }
 
-function getWikiMarkdownContents(cell) {
+const WIKI_ACTION_TYPES = new Set(['wiki_add_block', 'wiki_add_page']);
+
+function getWikiCenterContentItems(cell) {
     const blocks = Array.isArray(cell) ? cell : Object.values(cell || {});
 
     return blocks.flatMap((block) => {
@@ -262,58 +267,103 @@ function getWikiMarkdownContents(cell) {
             ? block.content
             : Object.values(block.content);
 
-        return contentItems.flatMap((item) => {
-            const content = item?.data?.content;
-            return typeof content === 'string' ? [content] : [];
-        });
+        return contentItems.filter(Boolean);
     });
 }
 
-function splitMarkdownIntoSections(contents, tocItems) {
-    let tocIndex = 0;
-
-    return contents.flatMap((markdown, contentIndex) => {
-        const lines = String(markdown || '').split(/\r?\n/);
-        const sections = [];
-        let sectionLines = [];
-        let sectionTocId = null;
-        let fenceCharacter = null;
-
-        const flushSection = () => {
-            const value = sectionLines.join('\n');
-            if (value.trim()) {
-                sections.push({
-                    key: `content-${contentIndex}-section-${sections.length}`,
-                    contentIndex,
-                    markdown: value,
-                    sectionIndex: sections.length,
-                    tocId: sectionTocId,
-                });
-            }
-            sectionLines = [];
-            sectionTocId = null;
-        };
-
-        lines.forEach((line) => {
-            const fenceMatch = line.match(/^\s{0,3}(`{3,}|~{3,})/);
-            if (fenceMatch) {
-                const character = fenceMatch[1][0];
-                fenceCharacter = fenceCharacter === character ? null : (fenceCharacter || character);
-                sectionLines.push(line);
-                return;
-            }
-
-            if (!fenceCharacter && /^\s{0,3}#{2,3}\s+\S/.test(line)) {
-                flushSection();
-                sectionTocId = tocItems[tocIndex]?.id || null;
-                tocIndex += 1;
-            }
-            sectionLines.push(line);
-        });
-
-        flushSection();
-        return sections;
+/** Markdown sources from every article block (skip add-page / add-block CTAs). */
+function getWikiMarkdownContents(cell) {
+    return getWikiCenterContentItems(cell).flatMap((item) => {
+        if (WIKI_ACTION_TYPES.has(item?.type)) return [];
+        const content = item?.data?.content;
+        return typeof content === 'string' ? [content] : [];
     });
+}
+
+/** All non-TOC center blocks (article + add CTAs). */
+function getWikiCenterBlocks(cell) {
+    const blocks = Array.isArray(cell) ? cell : Object.values(cell || {});
+    return blocks.filter((block) => (
+        block
+        && block.hidden != true
+        && !isWikiTocBlock(block)
+        && block.content
+    ));
+}
+
+function isWikiActionBlock(block) {
+    const contentItems = Array.isArray(block?.content)
+        ? block.content
+        : Object.values(block?.content || {});
+    return contentItems.some((item) => WIKI_ACTION_TYPES.has(item?.type));
+}
+
+function getWikiBlockPayload(block) {
+    const contentItems = Array.isArray(block?.content)
+        ? block.content
+        : Object.values(block?.content || {});
+    const item = contentItems.find((entry) => !WIKI_ACTION_TYPES.has(entry?.type)) || contentItems[0];
+    const raw = typeof item?.data?.content === 'string' ? item.data.content : '';
+    const parsed = parseFrontMatter(raw);
+    return {
+        item,
+        menu: item?.data?.menu || null,
+        added: item?.data?.info?.added,
+        attributes: parsed.attributes,
+        body: parsed.attributes ? parsed.body : raw,
+        raw,
+    };
+}
+
+/** UNA-style article block: docs header + manage menu + Markdown body. */
+function WikiArticleBlock({
+    block,
+    pageUrl,
+    WikiDocumentHeader,
+}) {
+    const { menu, added, attributes, body, raw } = getWikiBlockPayload(block);
+    const hasDocHeader = Boolean(attributes?.title && WikiDocumentHeader);
+
+    return (
+        <BlockWrapper block={block} config={block?.config_api} showTitle={!hasDocHeader}>
+            {hasDocHeader ? (
+                <WikiDocumentHeader
+                    markdownSource={raw}
+                    metadata={attributes}
+                    pageUrl={pageUrl}
+                />
+            ) : null}
+            {body ? <Markdown data={body} /> : null}
+            {menu?.items?.length ? (
+                <Row className="mb-2 justify-end ">
+                    <View className="w-full  ">
+                    
+                    <Menu
+                     {...menu}
+                   // displayType="element"
+                    alignItems="start"
+                   // showMatched={true}
+                    autoSize={true}
+                    autoFilter={false}
+                    params={{
+                        className: 'gap-x-2',
+                        button_variant: 'default',
+                        button_size: 'sm',
+                        button_rounded: false,
+                        button_full_width: false, show_action: true, show_counter: true, show_combined: true
+                    }}
+                />
+                    </View>
+                </Row>
+            ) : null}
+            {added ? (
+                <Time
+                    className="text-muted-foreground text-xs leading-5"
+                    ts={added}
+                />
+            ) : null}
+        </BlockWrapper>
+    );
 }
 
 function useCurrentPathComparable() {
@@ -632,6 +682,27 @@ function PageContentWiki({ data, scrollRef, url }) {
         return () => window.removeEventListener('popstate', onPopState)
     }, [navigateToWikiPath])
 
+    // Reload current wiki page after add-page / add-block form success.
+    useEffect(() => {
+        const subscription = emitter.addListener('wiki', async (payload) => {
+            if (payload?.action !== 'reload') return
+            const path = pageDataRef.current?.url || routeUrl
+            if (!path) return
+
+            const itemPath = path.startsWith('/') ? path : `/${path}`
+            try {
+                const fullResponse = await getPageData(itemPath, false)
+                if (!fullResponse?.data?.elements?.cell_center) return
+                setCachedWikiPage(itemPath, fullResponse.data)
+                headingRefs.current.clear()
+                setPageData({ data: fullResponse.data, url: itemPath })
+            } catch (error) {
+                console.error('Failed to reload wiki page:', error)
+            }
+        })
+        return () => subscription.remove()
+    }, [routeUrl])
+
     const cellsCustomConfig = useMemo(() => {
         return appSetting('layouts', 'wiki') || appSetting('layouts', 'cols-l-c-r')
     }, [])
@@ -680,20 +751,21 @@ function PageContentWiki({ data, scrollRef, url }) {
         }
     }, [currentBreakpointName, isWeb, leftPanelProps.defaultSize, centerPanelProps.defaultSize, rightPanelProps.defaultSize])
 
+    const centerCell = pageData?.data?.elements?.cell_center
+    const wikiCenterBlocks = useMemo(
+        () => getWikiCenterBlocks(centerCell),
+        [centerCell]
+    )
     const rawCenterMarkdownContents = useMemo(
-        () => getWikiMarkdownContents(pageData?.data?.elements?.cell_center),
-        [pageData?.data?.elements?.cell_center]
+        () => getWikiMarkdownContents(centerCell),
+        [centerCell]
     )
     const wikiDocument = useMemo(
         () => parseWikiFrontMatter(rawCenterMarkdownContents),
         [rawCenterMarkdownContents]
     )
-    const rawMarkdownSource = useMemo(
-        () => rawCenterMarkdownContents.join('\n\n'),
-        [rawCenterMarkdownContents]
-    )
+    // Bodies only (frontmatter stripped) — feeds TOC heading extraction.
     const centerMarkdownContents = wikiDocument.contents
-    const documentMetadata = wikiDocument.attributes
     const WikiDocumentHeader = getComponent('molecule', 'wiki_document_header')
     const centerHtmlContent = useMemo(
         () => centerMarkdownContents.join('\n\n'),
@@ -721,10 +793,6 @@ function PageContentWiki({ data, scrollRef, url }) {
         [centerHtmlContent]
     )
     const tocItems = markdownHeadings
-    const centerMarkdownSections = useMemo(
-        () => isWeb ? [] : splitMarkdownIntoSections(centerMarkdownContents, tocItems),
-        [centerMarkdownContents, isWeb, tocItems]
-    )
     const showBothMobilePanels = showMobileLeftPanel && showMobileRightPanel && tocItems.length >= 2
     // Avoid DOM reads during render; measured offset is used for click-to-scroll.
     const headerOffset = (Number(headerHeight) || DEFAULT_HEADER_HEIGHT) + TOC_SCROLL_GAP
@@ -955,70 +1023,56 @@ function PageContentWiki({ data, scrollRef, url }) {
                     <PanelHandler gap={`hidden ${leftBreakpoint}:block`} sizable={cellsCustomConfig.sizable} panelLine={cellsCustomConfig['panel-line']} />
                     <Panel className={`native:w-full ${currentBreakpointName}:w-full`} {...centerPanelProps}>
                         <View ref={centerContentRef} className="p-3 sm:p-4 lg:px-6 lg:py-6 xl:px-8 2xl:px-12 gap-6 lg:gap-8">
-                            {(breadcrumbs.length || showTocMenu || (documentMetadata?.title && WikiDocumentHeader)) ? (
+                            {(breadcrumbs.length || showTocMenu) ? (
                                 <View className="gap-3">
                                     {/* CSS visibility only — do not gate on useBreakpoint (SSR mismatch).
                                         Breadcrumb from left-nav bp; TOC trigger until right sidebar bp. */}
-                                    {(breadcrumbs.length || showTocMenu) ? (
-                                        <View className={`hidden ${leftBreakpoint}:flex flex-row items-center justify-between gap-2 min-w-0`}>
-                                            {breadcrumbs.length ? (
-                                                <View className="min-w-0 flex-1">
-                                                    <WikiBreadcrumb
-                                                        items={breadcrumbs}
-                                                        onNavigate={navigateToWikiPath}
-                                                    />
-                                                </View>
-                                            ) : (
-                                                <View className="flex-1" />
-                                            )}
-                                            {showTocMenu ? (
-                                                <View className={`shrink-0 ${rightBreakpoint}:hidden`}>
-                                                    <WikiTocDropdown
-                                                        items={tocItems}
-                                                        activeIds={activeTocIds}
-                                                        focusedId={focusedTocId}
-                                                        onPress={handleTocPress}
-                                                        label={tocMenuLabel}
-                                                    />
-                                                </View>
-                                            ) : null}
-                                        </View>
-                                    ) : null}
-                                    {documentMetadata?.title && WikiDocumentHeader ? (
-                                        <WikiDocumentHeader
-                                            markdownSource={rawMarkdownSource}
-                                            metadata={documentMetadata}
-                                            pageUrl={pageData.url || routeUrl}
-                                        />
-                                    ) : null}
+                                    <View className={`hidden ${leftBreakpoint}:flex flex-row items-center justify-between gap-2 min-w-0`}>
+                                        {breadcrumbs.length ? (
+                                            <View className="min-w-0 flex-1">
+                                                <WikiBreadcrumb
+                                                    items={breadcrumbs}
+                                                    onNavigate={navigateToWikiPath}
+                                                />
+                                            </View>
+                                        ) : (
+                                            <View className="flex-1" />
+                                        )}
+                                        {showTocMenu ? (
+                                            <View className={`shrink-0 ${rightBreakpoint}:hidden`}>
+                                                <WikiTocDropdown
+                                                    items={tocItems}
+                                                    activeIds={activeTocIds}
+                                                    focusedId={focusedTocId}
+                                                    onPress={handleTocPress}
+                                                    label={tocMenuLabel}
+                                                />
+                                            </View>
+                                        ) : null}
+                                    </View>
                                 </View>
                             ) : null}
-                            {isWeb ? centerMarkdownContents.map((content, index) => (
-                                <Markdown
-                                    key={`wiki-content-${wikiCacheKey(pageData.url) || 'page'}-${index}`}
-                                    data={content}
-                                />
-                            )) : centerMarkdownSections.map((section) => (
-                                <View
-                                    key={`${wikiCacheKey(pageData.url) || 'page'}-${section.key}`}
-                                    collapsable={false}
-                                    className={section.contentIndex > 0 && section.sectionIndex === 0 ? 'mt-3' : ''}
-                                    ref={(node) => {
-                                        if (!section.tocId) return
-                                        if (node) {
-                                            headingRefs.current.set(section.tocId, node)
-                                        } else {
-                                            headingRefs.current.delete(section.tocId)
-                                        }
-                                    }}
-                                >
-                                    <Markdown data={section.markdown} />
-                                </View>
+                            {wikiCenterBlocks.map((block) => (
+                                isWikiActionBlock(block) ? (
+                                    <BlockByData
+                                        key={`wiki-action-${block.id || block.source}`}
+                                        data={block}
+                                        url={pageData.url || routeUrl}
+                                        uri={pageData?.data?.uri}
+                                    />
+                                ) : (
+                                    <WikiArticleBlock
+                                        key={`wiki-block-${block.id || block.source}`}
+                                        block={block}
+                                        pageUrl={pageData.url || routeUrl}
+                                        WikiDocumentHeader={WikiDocumentHeader}
+                                    />
+                                )
                             ))}
                         </View>
                     </Panel>
                     <PanelHandler gap={`hidden ${rightBreakpoint}:block`} sizable={cellsCustomConfig.sizable} panelLine={cellsCustomConfig['panel-line']} />
-                    <Panel className={`hidden ${rightBreakpoint}:block ${currentBreakpointName}:w-full`} {...rightPanelProps}>
+                    <Panel className={`${showTocMenu ? `hidden ${rightBreakpoint}:block` : 'hidden'} ${currentBreakpointName}:w-full`} {...rightPanelProps}>
                         <View className="h-full">
                             <View
                                 className={`web:sticky web:top-0 web:max-h-screen web:overflow-y-auto gap-3 ${appSetting('conductor', 'sidebar_container')}`}
@@ -1032,15 +1086,13 @@ function PageContentWiki({ data, scrollRef, url }) {
                                     }}
                                     config={rightBlock?.config_api}
                                 >
-                                    {tocItems.length >= 2 ? (
-                                        <WikiTocList
-                                            items={tocItems}
-                                            activeIds={activeTocIds}
-                                            focusedId={focusedTocId}
-                                            onPress={handleTocPress}
-                                            showTrack
-                                        />
-                                    ) : null}
+                                    <WikiTocList
+                                        items={tocItems}
+                                        activeIds={activeTocIds}
+                                        focusedId={focusedTocId}
+                                        onPress={handleTocPress}
+                                        showTrack
+                                    />
                                 </BlockWrapper>
                             </View>
                         </View>

@@ -2,6 +2,7 @@ import Link from './link';
 import Button from './button';
 import Element from './element';
 import Callback from './callback';
+import Modal from './modal';
 import DropdownItem from './dropdown-item';
 import Submenu from './submenu';
 import TopMenu from './topmenu';
@@ -15,6 +16,8 @@ export const componentsMapDefault = {
     button: memo(Button),
     element: memo(Element),
     callback: memo(Callback),
+   // modal: memo(Callback),
+    modal: memo(Modal),
     dropdown: memo(DropdownItem),
     sidebar: memo(Sidebar),
     unit: memo(Unit),
