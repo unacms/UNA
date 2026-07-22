@@ -53,6 +53,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_unsubscribe_new
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_cmts_administration' AND `module`='system' AND `title_system`='_sys_page_block_title_system_cmts_administration' AND `title`='_sys_page_block_title_cmts_administration';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_redirect' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_redirect';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_search_keyword' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_search_keyword_result';
+UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_wiki_add_page' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_wiki_add_page';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_sub_wiki_page_contents' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_wiki_page_contents';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_std_dashboard' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_std_dash_version';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='sys_std_dashboard' AND `module`='system' AND `title_system`='' AND `title`='_sys_page_block_title_std_dash_space';

@@ -141,6 +141,14 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
     }
 
     /**
+     * Get module name
+     */
+    public function getModule ()
+    {
+        return $this->_aObject['module'];
+    }
+
+    /**
      * Get WIKI block content
      * @param $iBlockId block ID
      * @param $sLang optional language name
@@ -151,35 +159,35 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
         if (!$sLang)
             $sLang = bx_lang_name();
 
-        $s = '';
-        $sControls = '';
+        $sContent = '';
         $aWikiVer = $this->_oQuery->getBlockContent ($iBlockId, $sLang, $iRevision);
         $aWikiLatest = $this->_oQuery->getBlockContent ($iBlockId, $sLang);
         if ($aWikiVer) {
             if ($this->_bProcessMarkdown && !$this->_bIsApi) {
                 $oParsedown = new BxDolParsedown();
                 $oParsedown->setSafeMode($aWikiVer['unsafe'] ? false : true);
-                $s = $oParsedown->text($aWikiVer['content']);
+                $sContent = $oParsedown->text($aWikiVer['content']);
             }
-            else {
-                $s = $aWikiVer['content'];
-            }
+            else
+                $sContent = $aWikiVer['content'];
         }
 
         if (!$aWikiVer && $aWikiLatest) {
-            return _t('_sys_wiki_error_no_rev', $iRevision ? $iRevision : 0, $sLang);
+            return ($sMsg = _t('_sys_wiki_error_no_rev', $iRevision ? $iRevision : 0, $sLang)) && $this->_bIsApi ? ['content' => $sMsg] : $sMsg;
         }
 
         if (!$aWikiVer && !$aWikiLatest && $this->isAllowed('edit')) {
-            $s = _t('_sys_wiki_error_no_revs');
+            $sContent = _t('_sys_wiki_error_no_revs');
         }
 
-        $sControls = '';
-        if (!$this->_bIsApi && ($aWikiVer || $this->isAllowed('edit'))) {
-            $sControls = BxDolService::call('system', 'wiki_controls', array($this, $aWikiVer, $aWikiLatest, $iBlockId), 'TemplServiceWiki');
-        }
+        $mixedControls = '';
+        if ($aWikiVer || $this->isAllowed('edit'))
+            $mixedControls = bx_srv('system', 'wiki_controls', [$this, $aWikiVer, $aWikiLatest, $iBlockId], 'TemplServiceWiki');
 
-        return $s . $sControls;
+        return $this->_bIsApi ? array_merge([
+            'content' => $sContent,
+            'menu' => ''
+        ], $mixedControls) : $sContent . $mixedControls;
     }
 
     /**
@@ -375,9 +383,11 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
             return array('code' => 0, 'language' => $aWikiVer['language'], 'content' => $aWikiVer['content'], 'block_id' => $aWikiVer['block_id']);
     }
 
-    public function actionDeleteVersion ()
+    public function actionDeleteVersion ($iBlockId = 0)
     {
-        $iBlockId = (int)bx_get('block_id');
+        if(!$iBlockId && ($_iBlockId = bx_get('block_id')) !== false)
+            $iBlockId = (int)$_iBlockId;
+
         $sLang = bx_lang_name();
         $oLang = BxDolLanguages::getInstance();
 
@@ -385,9 +395,9 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
         $aVars['select_all'] = _t('_Select_all');
 
         if (!$aVars['bx_repeat:revisions'])
-            return BxDolTemplate::getInstance()->parseHtmlByName('wiki_msg.html', array(
+            return ($sMsg = _t('_sys_wiki_error_no_revs')) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : BxDolTemplate::getInstance()->parseHtmlByName('wiki_msg.html', array(
                 'close' => _t('_sys_close'),
-                'msg' => _t('_sys_wiki_error_no_revs'),
+                'msg' => $sMsg,
             ));
 
         $aForm = array(
@@ -415,7 +425,7 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
                     'type' => 'custom',
                     'name' => 'revision',
                     'caption' => '',
-                    'content' => BxDolTemplate::getInstance()->parseHtmlByName('wiki_delete_version.html', $aVars),
+                    'content' => $this->_bIsApi ? $aVars : BxDolTemplate::getInstance()->parseHtmlByName('wiki_delete_version.html', $aVars),
                 ),
                 'buttons' => array(
                     'type' => 'input_set',
@@ -442,10 +452,15 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
 
         if ($oForm->isSubmittedAndValid ()) {
             $i = $this->_oQuery->deleteRevisions ($iBlockId, $sLang, bx_get('revision'));
-            return array('code' => 0, 'actions' => array('Reload', 'ClosePopup', 'ShowMsg'), 'block_id' => $iBlockId, 'msg' => _t('_sys_wiki_revisions_deleted', $i));
+            return ($sMsg = _t('_sys_wiki_revisions_deleted', $i)) && $this->_bIsApi ? [bx_api_get_msg($sMsg), ['ext' => ['code' => 0, 'block_id' => $iBlockId]]] : ['code' => 0, 'actions' => ['Reload', 'ClosePopup', 'ShowMsg'], 'block_id' => $iBlockId, 'msg' => $sMsg];
         }
         else {
-            return BxDolTemplate::getInstance()->parseHtmlByName('wiki_form.html', array(
+            return $this->_bIsApi ? [bx_api_get_block('form', $oForm->getCodeAPI(), [
+                'ext' => [
+                    'name' => $this->_sObject, 
+                    'request' => ['url' => '/api.php?r=system/wiki_action/TemplServiceWiki&params[]=' . $this->getUri() . '&params[]=delete-version&params[]=' . $iBlockId, 'immutable' => true]
+                ]
+            ])] : BxDolTemplate::getInstance()->parseHtmlByName('wiki_form.html', array(
                 'form' => $oForm->getCode(),
                 'block_id' => $iBlockId,
                 'wiki_action_uri' => $this->getUri(),
@@ -455,24 +470,26 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
         }
     }
 
-    public function actionAddPage ()
+    public function actionAddPage ($sPageUri = '')
     {
+        if(!$sPageUri && ($_sPage = bx_get('page')) !== false)
+            $sPageUri = bx_process_input($_sPage);
+
         // validate page URI
-        $sPageUri = strtolower(bx_get('page'));
-        if (!preg_match("/^[a-z0-9_-]+$/", $sPageUri))
-            return _t('_sys_wiki_error_incorrect_page_uri', bx_process_output($sPageUri));
+        if(!preg_match("/^[a-z0-9_-]+$/", $sPageUri))
+            return ($sMsg = _t('_sys_wiki_error_incorrect_page_uri', bx_process_output($sPageUri))) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : $sMsg;
 
         // check if such page exist
         $oPage1 = BxDolPage::getObjectInstanceByUri($sPageUri);
         $oPage2 = BxDolPage::getObjectInstance($this->_aObject['module'] . '_' . str_replace('-', '_', $sPageUri));
-        if ($oPage1 || $oPage2)
-            return _t('_sys_wiki_error_page_exists', bx_process_output($sPageUri));
+        if($oPage1 || $oPage2)
+            return ($sMsg = _t('_sys_wiki_error_page_exists', bx_process_output($sPageUri))) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : $sMsg;
 
         // get lang category where translations will be added
         $oLang = BxDolStudioLanguagesUtils::getInstance();
         $iLangCat = $oLang->getLanguageCategory($this->_sLangCateg);
-        if (!$iLangCat)
-            return _t('_sys_wiki_error_occured', 9);
+        if(!$iLangCat)
+            return ($sMsg = _t('_sys_wiki_error_occured', 9)) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : $sMsg;
 
         // set default values for the form
         $aValues = array();
@@ -537,101 +554,122 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
         $oForm = new BxTemplStudioFormView ($aForm);
         $oForm->initChecker();
 
-        if ($oForm->isSubmittedAndValid ()) {
-
+        if ($oForm->isSubmittedAndValid()) {
             // insert page
             $sLangKey = '_' . $this->_aObject['module'] . '_' . str_replace('-', '_', $sPageUri) . '_' . time();
             $iPageId = $this->addPage ($sPageUri, $sLangKey);
             if (!$iPageId)
-                return array('code' => 10, 'actions' => array('ShowMsg'), 'msg' => _t('_sys_wiki_error_occured', 10));
+                return ($sMsg = _t('_sys_wiki_error_occured', 10)) && $this->_bIsApi ? [bx_api_get_msg($sMsg, ['ext' => ['code' => 10]])] : ['code' => 10, 'actions' => ['ShowMsg'], 'msg' => $sMsg];
 
             // insert translations
             $aLangs = $oLang->getLanguages(true, true);
             foreach ($aLangs as $iLangId => $sLangTitle) {
                 $sLang = $oLang->getLangName($iLangId);
-                if (!($sVal = $oForm->getCleanValue('title-' . $sLang)))
+                if(!($sVal = $oForm->getCleanValue('title-' . $sLang)))
                     continue;
+
                 $oLang->addLanguageString($sLangKey, $sVal, $iLangId, $iLangCat);
             }
 
             $sUrl = $this->getPageUrl($sPageUri, false, false);
-            return array('code' => 0, 'url' => BxDolPermalinks::getInstance()->permalink($sUrl));
+            return ['code' => 0, 'url' => BxDolPermalinks::getInstance()->permalink($sUrl)];
         }
         else {
             // display form
-            return BxDolTemplate::getInstance()->parseHtmlByName('wiki_create_page_form.html', array(
+            return $this->_bIsApi ? [bx_api_get_block('form', $oForm->getCodeAPI(), [
+                'ext' => [
+                    'name' => $this->_sObject, 
+                    'request' => ['url' => '/api.php?r=system/wiki_action/TemplServiceWiki&params[]=' . $this->getUri() . '&params[]=add-page&params[]=' . $sPageUri, 'immutable' => true]
+                ]
+            ])] : BxDolTemplate::getInstance()->parseHtmlByName('wiki_create_page_form.html', [
                 'form' => $oForm->getCode(),
                 'wiki_action_uri' => $this->getUri(),
                 'action' => 'add-page',
-            ));
+            ]);
         }
     }
 
-    public function actionAdd ()
+    public function actionAdd($sPage = '', $iCellId = 0)
     {
-        $iCellId = (int)bx_get('cell_id');
-        $sPage = bx_get('page');
+        if(!$sPage && ($_sPage = bx_get('page')) !== false)
+            $sPage = bx_process_input($_sPage);
+
+        if(!$iCellId && ($_iCellId = bx_get('cell_id')) !== false)
+            $iCellId = (int)$_iCellId;
+
         $oPage = BxDolPage::getObjectInstance($sPage);
-        if (!$oPage)
-            return array('code' => 4, 'actions' => array('ShowMsg'), 'msg' => _t('_sys_wiki_error_occured', 4));
+        if(!$oPage)
+            return ($sMsg = _t('_sys_wiki_error_occured', 4)) && $this->_bIsApi ? [bx_api_get_msg($sMsg, ['ext' => ['code' => 4]])] : ['code' => 4, 'actions' => ['ShowMsg'], 'msg' => $sMsg];
 
-        if ($this->_aObject['module'] != $oPage->getModule())
-            return array('code' => 5, 'actions' => array('ShowMsg'), 'msg' => _t('_sys_txt_access_denied'));
+        if($this->_aObject['module'] != $oPage->getModule())
+            return ($sMsg = _t('_sys_txt_access_denied')) && $this->_bIsApi ? [bx_api_get_msg($sMsg, ['ext' => ['code' => 5]])] : ['code' => 5, 'actions' => ['ShowMsg'], 'msg' => $sMsg];
 
-        $iDesignBox = getParam($this->_aObject['module'] . '_design_box');
-        $aBlock = array(
+        $oQueryPageBuilder = new BxDolStudioBuilderPageQuery();
+        if(!($iBlockId = $oQueryPageBuilder->insertBlock([
             'object' => $sPage,
             'cell_id' => $iCellId,
             'module' => $this->_aObject['module'],
             'title_system' => '',
             'title' => '',
-            'designbox_id' => false === $iDesignBox ? 0 : $iDesignBox,
+            'designbox_id' => (int)getParam($this->_aObject['module'] . '_design_box'),
             'visible_for_levels' => 2147483647, 
             'type' => 'wiki',
             'deletable' => 1,
             'copyable' => 0,
             'active' => 1,
-        );
-        $oQueryPageBuilder = new BxDolStudioBuilderPageQuery();
-        if (!($iBlockId = $oQueryPageBuilder->insertBlock($aBlock)))
-            return array('code' => 6, 'actions' => array('ShowMsg'), 'msg' => _t('_sys_wiki_error_occured', 6));
+        ])))
+            return ($sMsg = _t('_sys_wiki_error_occured', 6)) && $this->_bIsApi ? [bx_api_get_msg($sMsg, ['ext' => ['code' => 6]])] : ['code' => 6, 'actions' => ['ShowMsg'], 'msg' => $sMsg];
 
-        return array('code' => 0, 'block_id' => $iBlockId, 'cell_id' => $iCellId);
+        return ['code' => 0, 'block_id' => $iBlockId, 'cell_id' => $iCellId];
     }
 
-    public function actionDeleteBlock ()
+    public function actionDeleteBlock ($iBlockId = 0)
     {
-        $iBlockId = (int)bx_get('block_id');
+        if(!$iBlockId && ($_iBlockId = bx_get('block_id')) !== false)
+            $iBlockId = (int)$_iBlockId;
 
         $oQueryPageBuilder = new BxDolStudioBuilderPageQuery();
-        if (!$oQueryPageBuilder->deleteBlocks(array('type' => 'by_id', 'value' => $iBlockId)))
-            return array('code' => 3, 'actions' => array('ShowMsg'), 'block_id' => $iBlockId, 'msg' => _t('_sys_wiki_error_occured', 3));
+        if (!$oQueryPageBuilder->deleteBlocks(['type' => 'by_id', 'value' => $iBlockId]))
+            return ($sMsg = _t('_sys_wiki_error_occured', 3)) && $this->_bIsApi ? [bx_api_get_msg($sMsg, ['ext' => ['code' => 3, 'block_id' => $iBlockId]])] : ['code' => 3, 'actions' => ['ShowMsg'], 'block_id' => $iBlockId, 'msg' => $sMsg];
 
         self::onBlockDelete($iBlockId);
 
-        return array('code' => 0, 'actions' => array('DeleteBlock', 'ShowMsg'), 'block_id' => $iBlockId, 'msg' => _t('_sys_wiki_block_deleted'));
+        return ($sMsg = _t('_sys_wiki_block_deleted')) && $this->_bIsApi ? [bx_api_get_msg($sMsg, ['ext' => ['code' => 0, 'block_id' => $iBlockId]])] : [
+            'code' => 0, 
+            'actions' => ['DeleteBlock', 'ShowMsg'], 
+            'block_id' => $iBlockId, 
+            'msg' => $sMsg
+        ];
     }
-    public function actionHistory ()
+    public function actionHistory ($iBlockId = 0)
     {
-        $iBlockId = (int)bx_get('block_id');
+        if(!$iBlockId && ($_iBlockId = bx_get('block_id')) !== false)
+            $iBlockId = (int)$_iBlockId;
+
         $sLang = bx_lang_name();
         $oLang = BxDolLanguages::getInstance();
 
         $aVars = $this->getVarsForHistory($iBlockId, $sLang);
+
+        if($this->_bIsApi)
+            return ($aVersions = $aVars['bx_repeat:revisions'] ?: false) ? [bx_api_get_block('simple_list',  $aVersions)] : [bx_api_get_msg(_t('_sys_wiki_error_no_revs'), ['ext' => ['block_id' => $iBlockId]])];
+        
         $aVars['language'] = $oLang->getLangTitle($oLang->getLangId($sLang));
         $aVars['close'] = _t('_sys_close');
         $aVars['msg'] = $aVars['bx_repeat:revisions'] ? '' : _t('_sys_wiki_error_no_revs');
         return BxDolTemplate::getInstance()->parseHtmlByName('wiki_history.html', $aVars);
     }
 
-    public function actionTranslate ()
+    public function actionTranslate ($iBlockId = 0)
     {
-        return $this->actionEdit (true);
+        return $this->actionEdit ($iBlockId, true);
     }
 
-    public function actionEdit ($bTranslate = false)
+    public function actionEdit ($iBlockId = 0, $bTranslate = false)
     {
-        $iBlockId = (int)bx_get('block_id');
+        if(!$iBlockId && ($_iBlockId = bx_get('block_id')) !== false)
+            $iBlockId = (int)$_iBlockId;
+
         $sMainLangLabel = '';
         $aWikiVerMain = array();
         $sLangForTranslate = '';
@@ -639,10 +677,10 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
 
         // don't allow to translate empty blocks
         if (!$aWikiVerMain && $bTranslate)
-            return BxDolTemplate::getInstance()->parseHtmlByName('wiki_msg.html', array(
+            return ($sMsg = _t('_sys_wiki_error_no_revs')) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : BxDolTemplate::getInstance()->parseHtmlByName('wiki_msg.html', [
                 'close' => _t('_sys_close'),
-                'msg' => _t('_sys_wiki_error_no_revs'),
-            ));
+                'msg' => $sMsg,
+            ]);
 
         // get latest revision for block with current lang
         if ($bTranslate) {
@@ -666,7 +704,7 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
         // init form object
         $oForm = BxDolForm::getObjectInstance('sys_wiki', $bTranslate ? 'sys_wiki_translate' : 'sys_wiki_edit');
         if (!$oForm)
-            return _t('_sys_wiki_error_occured', 12);
+            return ($sMsg = _t('_sys_wiki_error_occured', 12)) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : $sMsg;
 
         if (isset($oForm->aInputs['language']))
             $oForm->aInputs['language']['values'] = $aLangsForInput;
@@ -678,13 +716,18 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
         $oForm->initChecker($aWikiVer);
         if (!$oForm->isSubmittedAndValid()) {
             // display form
-            return BxDolTemplate::getInstance()->parseHtmlByName('wiki_form.html', array(
+            return $this->_bIsApi ? [bx_api_get_block('form', $oForm->getCodeAPI(), [
+                'ext' => [
+                    'name' => $this->_sObject, 
+                    'request' => ['url' => '/api.php?r=system/wiki_action/TemplServiceWiki&params[]=' . $this->getUri() . '&params[]=' . ($bTranslate ? 'translate' : 'edit') . '&params[]=' . $iBlockId, 'immutable' => true]
+                ]
+            ])] : BxDolTemplate::getInstance()->parseHtmlByName('wiki_form.html', [
                 'form' => $oForm->getCode(),
                 'block_id' => $iBlockId,
                 'wiki_action_uri' => $this->getUri(),
                 'action' => $bTranslate ? 'translate' : 'edit',
                 'txt_open_editor' => bx_js_string(_t('_sys_wiki_open_in_editor')),
-            ));
+            ]);
         } 
         else {
             $sLang = $oForm->getCleanValue('language');
@@ -739,7 +782,7 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
             // update indexing data
             $this->updateBlockIndexingData($iBlockId);
 
-            return array('code' => 0, 'actions' => array('Reload', 'ClosePopup'), 'block_id' => $iBlockId);
+            return $this->_bIsApi ? ['code' => 0, 'block_id' => $iBlockId] : ['code' => 0, 'actions' => ['Reload', 'ClosePopup'], 'block_id' => $iBlockId];
         }
     }
 
@@ -863,21 +906,36 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
 
     public function getVarsForHistory ($iBlockId, $sLang)
     {
+        $sUrl = '';
+        if(!($aPage = $this->_oQuery->getPageByBlockId($iBlockId))) {
+            list($sPageLink, $aPageParams) = bx_get_base_url_popup();
+            $sUrl = bx_absolute_url(BxDolPermalinks::getInstance()->permalink(bx_append_url_params($sPageLink, $aPageParams)));
+        }
+        else
+            $sUrl = $this->getPageUrl($aPage['uri']);
+
         $a = $this->_oQuery->getBlockHistory($iBlockId, $sLang);
 
-        $aVars = array(
-            'bx_repeat:revisions' => array()
-        );
+        $aVars = [];
         foreach ($a as $r) {
             $oProfile = BxDolProfile::getInstanceMagic($r['profile_id']);
-            list($sPageLink, $aPageParams) = bx_get_base_url_popup(array($r['block_id'].'rev' => $r['revision']));
-            $r['author_url'] = $oProfile->getUrl();
-            $r['author_name'] = $oProfile->getDisplayName();
-            $r['timejs'] = bx_time_js($r['added']);
-            $r['rev_url'] = BxDolPermalinks::getInstance()->permalink(bx_append_url_params($sPageLink, $aPageParams));
-            $aVars['bx_repeat:revisions'][] = $r;
+
+            $sUrlRef = bx_append_url_params($sUrl, [$r['block_id'] . 'rev' => $r['revision']]);
+
+            $aVars[] = array_merge($r, $this->_bIsApi ? [
+                'author_data' => BxDolProfile::getData($oProfile),
+                'rev_url' => bx_api_get_relative_url($sUrlRef)
+            ] : [
+                'author_name' => $oProfile->getDisplayName(),
+                'author_url' => $oProfile->getUrl(),
+                'timejs' => bx_time_js($r['added']),
+                'rev_url' => $sUrlRef
+            ]);
         }
-        return $aVars;
+
+        return [
+            'bx_repeat:revisions' => $aVars
+        ];
     }
 }
 

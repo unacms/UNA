@@ -157,33 +157,20 @@ class BxBaseServicePages extends BxDol
     {
         $mixed = null;
 
-        if (substr_count($sRequest, 'page/')> 0){
-            $_GET['i'] = str_replace('page/', '', $sRequest);
+        if(($sK = 'page') && substr_count($sRequest, $sK . '/') > 0) {
+            $_GET['i'] = str_replace($sK . '/', '', $sRequest);
             $aParams = json_decode($sParams, true);
             if(!empty($aParams) && is_array($aParams))
                 $_GET = array_merge($_GET, $aParams);
-            
+
             $mixed = BxDolPage::getObjectInstanceByURI();
         }
-        else if (($sK = 'wiki') && substr_count($sRequest, $sK . '/') > 0) {
+        else if(($sK = 'wiki') && substr_count($sRequest, $sK . '/') > 0) {
             $sUri = str_replace($sK . '/', '', $sRequest);
 
-            if(($oWiki = BxDolWiki::getObjectInstanceByUri($sK)) !== false) {
-                $oPage = BxDolPage::getObjectInstanceByModuleAndURI($oWiki->getObjectName(), $sUri);
-                if($oPage !== false) {
-                    $_GET['i'] = $sUri;
-                    
-                    /*
-                    $aParams = json_decode($sParams, true);
-                    if(!empty($aParams) && is_array($aParams))
-                        $_GET = array_merge($_GET, $aParams);
-                    */
-                    
-                    $mixed = $oPage;
-                }
-            }
+            $mixed = bx_srv('system', 'wiki_page', [$sK, $sUri], 'TemplServiceWiki');
         }
-        else{
+        else {
             if(!empty($sParams)) {
                 $aParams = json_decode($sParams, true);
                 if(!empty($aParams) && is_array($aParams))

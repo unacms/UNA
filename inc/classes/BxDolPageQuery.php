@@ -117,9 +117,9 @@ class BxDolPageQuery extends BxDolDb
         return BxDolDb::getInstance()->getAll("SELECT * FROM `sys_pages_types` WHERE 1");
     }
 
-    public function getPageLayoutColumns($iLayoutId)
+    public function getPageLayoutColumns($iLayoutId, $sKey = 'index')
     {
-        return $this->getAllWithKey('SELECT * FROM `sys_pages_layout_columns` WHERE `layout_id`=:layout_id', 'index', [
+        return $this->getAllWithKey('SELECT * FROM `sys_pages_layout_columns` WHERE `layout_id`=:layout_id', $sKey, [
             'layout_id' => $iLayoutId
         ]);
     }

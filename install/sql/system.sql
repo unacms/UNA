@@ -6217,7 +6217,8 @@ INSERT INTO `sys_objects_page` (`object`, `uri`, `title_system`, `title`, `modul
 ('sys_audit' ,'audit-administration', '_sys_page_title_system_audit_administration', '_sys_page_title_audit_administration', 'system', 1, 5, '', 192, 1, 'page.php?i=audit-administration', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_search_keyword', 'search-keyword', '_sys_page_title_system_search_keyword', '_sys_page_title_search_keyword', 'system', 1, 5, '', 2147483647, 1, 'searchKeyword.php', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_redirect', 'redirect', '', '_sys_page_title_redirect', 'system', 0, 18, '', 2147483647, 1, 'page.php?i=redirect', '', '', '', 0, 1, 0, '', '', 0),
-('sys_sub_wiki_pages_list', 'wiki-pages-list', '', '_sys_page_title_wiki_pages_list', 'system', 1, 5, '', 2147483647, 1, '', '', '', '', 0, 1, 0, '', '', 0),
+('sys_wiki_add_page', 'wiki-add-page', '', '_sys_page_title_wiki_add_page', 'system', 1, 5, '', 2147483647, 1, 'page.php?i=wiki-add-page', '', '', '', 0, 1, 0, '', '', 0),
+('sys_sub_wiki_pages_list', 'wiki-pages-list', '_sys_page_title_sys_wiki_pages_list', '_sys_page_title_wiki_pages_list', 'system', 1, 5, '', 2147483647, 1, '', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_sub_wiki_page_contents', 'wiki-page-contents', '', '_sys_page_title_wiki_page_contents', 'system', 1, 5, '', 2147483647, 1, '', '', '', '', 0, 1, 0, '', '', 0),
 ('sys_con_friends', 'friends', '_sys_page_title_system_con_friends', '_sys_page_title_con_friends', 'system', 1, 5, '', 2147483646, 1, 'page.php?i=friends', '', '', '', 0, 1, 0, 'BxTemplPageConnections', '', 0),
 ('sys_con_friend_requests', 'friend-requests', '_sys_page_title_system_con_friend_requests', '_sys_page_title_con_friend_requests', 'system', 1, 5, '', 2147483646, 1, 'page.php?i=friend-requests', '', '', '', 0, 1, 0, 'BxTemplPageConnections', '', 0),
@@ -6513,6 +6514,7 @@ INSERT INTO `sys_pages_blocks` (`object`, `cell_id`, `module`, `title_system`, `
 ('sys_search_keyword', 1, 'system', '', '_sys_page_block_title_search_keyword_form', 13, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:19:"search_keyword_form";s:6:"params";a:0:{}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, 1),
 ('sys_search_keyword', 1, 'system', '', '_sys_page_block_title_search_keyword_result', 0, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:21:"search_keyword_result";s:6:"params";a:0:{}s:5:"class";s:13:"TemplServices";}', 0, 1, 1, 1),
 
+('sys_wiki_add_page', 1, 'system', '', '_sys_page_block_title_wiki_add_page', 0, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:13:"wiki_add_page";s:6:"params";a:2:{i:0;s:8:"{object}";i:1;s:5:"{uri}";}s:5:"class";s:16:"TemplServiceWiki";}', 0, 1, 1, 1),
 ('sys_sub_wiki_pages_list', 1, 'system', '', '_sys_page_block_title_wiki_pages_list', 0, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:10:"pages_list";s:6:"params";a:0:{}s:5:"class";s:16:"TemplServiceWiki";}', 0, 1, 1, 1),
 ('sys_sub_wiki_page_contents', 1, 'system', '', '_sys_page_block_title_wiki_page_contents', 0, 0, 0, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:13:"page_contents";s:6:"params";a:0:{}s:5:"class";s:16:"TemplServiceWiki";}', 0, 1, 1, 1),
 

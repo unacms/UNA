@@ -1292,14 +1292,17 @@ class BxBasePage extends BxDolPage
     {
         $oWiki = BxDolWiki::getObjectInstance($this->_aObject['module']);
         if (!$oWiki) {
-            $sContent = _t('_sys_wiki_error_missing_wiki_object', $this->_aObject['module']);
+            $sContent = ($sMsg = _t('_sys_wiki_error_missing_wiki_object', $this->_aObject['module'])) && $this->_bIsApi ? ['content' => $sMsg] : $sMsg;
         } 
         else {
-            $sContent = $oWiki->getBlockContent($aBlock['id'], false, (int)bx_get($aBlock['id'].'rev') ? (int)bx_get($aBlock['id'].'rev') : false);
+            $sContent = $oWiki->getBlockContent($aBlock['id'], false, ($iRevision = bx_get($aBlock['id'] . 'rev')) !== false ? (int)$iRevision : false);
         }
 
-        if(bx_is_api())
-            return [bx_api_get_block('html', ['title' => _t($aBlock['title']), 'content' => $sContent])];
+        if($this->_bIsApi)
+            return [bx_api_get_block('html', array_merge([
+                'title' => _t($aBlock['title']), 
+                'content' => ''
+            ], $sContent))];
 
         $s = '<div id="bx-page-wiki-container-' . $aBlock['id'] . '" class="bx-page-wiki-container markdown-body bx-def-vanilla-html">' . $sContent . '</div>';
         $s = $this->_replaceMarkers($s, array('block_id' => $aBlock['id']));

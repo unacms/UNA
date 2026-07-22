@@ -128,7 +128,9 @@ class BxBaseServices extends BxDol implements iBxDolProfileService
 
             'GetLabels' => 'BxBaseLabelsServices',
             'GetForm' => 'BxBaseSearchExtendedServices',
-            'GetResults' => 'BxBaseSearchExtendedServices'
+            'GetResults' => 'BxBaseSearchExtendedServices',
+
+            'WikiAction' => 'BxBaseServiceWiki'
         );
     }
 

@@ -115,6 +115,8 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
 {
     protected static $_aBlockProcessing = [];
 
+    protected $_bIsApi;
+
     protected $_sObject;
     protected $_aObject;
     protected $_oQuery;
@@ -129,6 +131,8 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
     protected function __construct($aObject)
     {
         parent::__construct();
+
+        $this->_bIsApi = bx_is_api();
 
         $this->_sObject = $aObject['object'];
         $this->_aObject = $aObject;

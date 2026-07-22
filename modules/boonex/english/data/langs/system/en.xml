@@ -3960,6 +3960,9 @@ If it is not enabled then please consider implement this optimization, since it 
     <string name="_sys_page_title_unsubscribe_news"><![CDATA[Unsubscribe From Site Newsletters]]></string>
     <string name="_sys_page_title_unsubscribe_notifications"><![CDATA[Unsubscribe From Site Notifications]]></string>
     <string name="_sys_page_title_studio_dashboard"><![CDATA[Studio Dashboard]]></string>
+    <string name="_sys_page_title_sys_wiki_pages_list"><![CDATA[Wiki: Add Page]]></string>
+    <string name="_sys_page_title_wiki_add_page"><![CDATA[Add Page]]></string>
+    <string name="_sys_page_block_title_wiki_add_page"><![CDATA[Add Page]]></string>
     <string name="_sys_page_title_wiki_pages_list"><![CDATA[Subpage: Pages List]]></string>
     <string name="_sys_page_title_wiki_page_contents"><![CDATA[Subpage: Page Contents]]></string>
     <string name="_sys_page_title_system_con_friends"><![CDATA[Connections - Friends]]></string>

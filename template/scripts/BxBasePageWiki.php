@@ -25,6 +25,13 @@ class BxBasePageWiki extends BxTemplPage
         if($aPagesList && ($aCell = $aPagesList['elements']['cell_center'] ?? false))
             $aPage['elements']['cell_left'] = $aCell;
 
+        $sCell = 'center';
+        if(($oWiki = BxDolWiki::getObjectInstance($this->_aObject['module'])) && $oWiki->isAllowed('add')) {
+            $aLayoutColumns = $this->_oQuery->getPageLayoutColumns($this->_aObject['layout_id'], 'name');
+
+            $aPage['elements']['cell_' . $sCell][] = bx_srv('system', 'wiki_add_block', [$oWiki, $this->_sObject, 'cell_' . $aLayoutColumns[$sCell]['index']], 'TemplServiceWiki');
+        }
+
         return $aPage;
     }
 

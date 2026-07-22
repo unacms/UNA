@@ -12,8 +12,16 @@
  */
 class BxBaseServiceWiki extends BxDol
 {
+    protected $_bIsApi;
     protected $_bJsCssAdded = false;
 
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->_bIsApi = bx_is_api();
+    }
+    
     /**
      * @page service Service Calls
      * @section bx_system_general System Services 
@@ -34,46 +42,100 @@ class BxBaseServiceWiki extends BxDol
     public function serviceWikiPage ($sWikiObjectUri, $sUri)
     {
         $oWiki = BxDolWiki::getObjectInstanceByUri($sWikiObjectUri);
-        if (!$oWiki) {
-            $oTemplate = BxDolTemplate::getInstance();
-            $oTemplate->displayPageNotFound();
-            return;
+        if(!$oWiki) {
+            if($this->_bIsApi)
+                return null;
+
+            BxDolTemplate::getInstance()->displayPageNotFound();
         }
 
         $oPage = BxDolPage::getObjectInstanceByModuleAndURI($oWiki->getObjectName(), $sUri);
-        if ($oPage) {
-
+        if($oPage) {
             $_GET['i'] = $sUri;
 
+            if($this->_bIsApi)
+                return $oPage;
+
             $oPage->displayPage();
+        } 
+        else {
+            if($oWiki->isAllowed('add-page')) {
+                if(($oPage = BxDolPage::getObjectInstanceByURI($sUri)) !== false) {
+                    if($this->_bIsApi) {
+                        $aPage = $oPage->getObject();
+                        if(($sUrl = $aPage['url'] ?? false))
+                            return bx_api_get_relative_url(BX_DOL_URL_ROOT . BxDolPermalinks::getInstance()->permalink($aPage['url']));
+                        else
+                            return null;
+                    }
 
-        } else {
+                    BxDolTemplate::getInstance()->displayErrorOccured(_t("_sys_wiki_error_page_exists", bx_process_output($sUri)));
+                } 
+                else {
+                    $oPage = BxDolPage::getObjectInstance('sys_wiki_add_page');
+                    if(!$oPage)
+                        return $this->_bIsApi ? null : BxDolTemplate::getInstance()->displayPageNotFound();
 
-            if ($oWiki->isAllowed('add-page')) {
-                $oPage = BxDolPage::getObjectInstanceByURI($sUri);
-                $oTemplate = BxDolTemplate::getInstance();
-                if ($oPage) {                    
-                    $oTemplate->displayErrorOccured(_t("_sys_wiki_error_page_exists", bx_process_output($sUri)));
-                } else {
-                    $this->_addCssJs (true);
-                    $s = $oTemplate->parseHtmlByName('wiki_create_page.html', array(
-                        'page_uri' => bx_process_output($sUri),
-                        'action_uri' => $oWiki->getUri(),
-                        'create_page' => _t('_sys_wiki_add_page'),
-                        'text' => _t('_sys_wiki_add_page_text'),
-                    ));
-                    $oTemplate->setPageNameIndex (BX_PAGE_DEFAULT);
-                    $oTemplate->setPageHeader (_t('_sys_wiki_add_page'));
-                    $oTemplate->setPageContent ('page_main_code', $s);
-                    $oTemplate->getPageCode();
+                    $oPage->addMarkers([
+                        'object' => $oWiki->getObjectName(),
+                        'uri' => $sUri
+                    ]);
+
+                    if($this->_bIsApi)
+                        return $oPage;
+
+                    $this->_addCssJs(true);
+                    $oPage->displayPage();
                 }
-            } 
+            }
             else {
-                $oTemplate = BxDolTemplate::getInstance();
-                $oTemplate->displayPageNotFound();
+                if($this->_bIsApi)
+                    return null;
+
+                BxDolTemplate::getInstance()->displayPageNotFound();
             }
         }
+    }
 
+    /**
+     * @page service Service Calls
+     * @section bx_system_general System Services 
+     * @subsection bx_system_general-wiki Wiki
+     * @subsubsection bx_system_general-wiki_add_page wiki_add_page
+     * 
+     * @code bx_srv('system', 'wiki_add_page', [...], 'TemplServiceWiki'); @endcode
+     * 
+     * Display add WIKI page.
+     * @param $sObject wiki object name
+     * @param $sUri new page URI
+     * 
+     * @see BxBaseServiceWiki::serviceWikiAddPage
+     */
+    /** 
+     * @ref bx_system_general-wiki_add_page "wiki_add_page"
+     */
+    public function serviceWikiAddPage ($sObject, $sUri)
+    {
+        $oWiki = BxDolWiki::getObjectInstance($sObject);
+        if(!$oWiki)
+            return $this->_bIsApi ? [] : '';
+
+        $sTitle = _t('_sys_wiki_add_page');
+        $sText = _t('_sys_wiki_add_page_text');
+        
+        if($this->_bIsApi)
+            return [bx_api_get_block('wiki_add_page', [
+                'title' => $sTitle,
+                'text' => $sText,
+                'request_url' => 'system/wiki_action/TemplServiceWiki&params[]=' . $oWiki->getUri() . '&params[]=add-page&params[]=' . $sUri
+            ])];
+
+        return BxDolTemplate::getInstance()->parseHtmlByName('wiki_create_page.html', [
+            'page_uri' => bx_process_output($sUri),
+            'action_uri' => $oWiki->getUri(),
+            'create_page' => $sTitle,
+            'text' => $sText,
+        ]);
     }
 
     /**
@@ -95,19 +157,18 @@ class BxBaseServiceWiki extends BxDol
     public function serviceWikiAction ($sWikiObjectUri, $sAction)
     {
         $oWiki = BxDolWiki::getObjectInstanceByUri($sWikiObjectUri);
-        if (!$oWiki) {
-            echoJson(array('code' => 1, 'actions' => 'ShowMsg', 'msg' => _t('_sys_wiki_error_missing_wiki_object', $sWikiObjectUri)));
-            return;
-        }
+        if(!$oWiki)
+            return ($sMsg = _t('_sys_wiki_error_missing_wiki_object', $sWikiObjectUri)) && $this->_bIsApi ? [bx_api_get_msg($sMsg, ['ext' => ['code' => 1]])] : echoJson(['code' => 1, 'actions' => 'ShowMsg', 'msg' => $sMsg]);
 
         $sMethod = 'action' . bx_gen_method_name($sAction, array('-'));
-        if (!method_exists($oWiki, $sMethod) || !$oWiki->isAllowed($sAction)) {            
-            echoJson(array('code' => 2, 'actions' => 'ShowMsg', 'msg' => _t('_sys_wiki_error_action_not_allowed', $sAction, $sWikiObjectUri)));
-            return;
-        }
-        
-        $mixed = $oWiki->$sMethod();
-        if (is_array($mixed))
+        if(!method_exists($oWiki, $sMethod) || !$oWiki->isAllowed($sAction))
+            return ($sMsg = _t('_sys_wiki_error_action_not_allowed', $sAction, $sWikiObjectUri)) && $this->_bIsApi ? [bx_api_get_msg($sMsg, ['ext' => ['code' => 2]])] : echoJson(['code' => 2, 'actions' => 'ShowMsg', 'msg' => $sMsg]);
+
+        $mixed = call_user_func_array([$oWiki, $sMethod], array_slice(func_get_args(), 2));
+        if($this->_bIsApi)
+            return $mixed;
+
+        if(is_array($mixed))
             echoJson($mixed);
         else
             echo $mixed;
@@ -126,39 +187,64 @@ class BxBaseServiceWiki extends BxDol
     /** 
      * @ref bx_system_general-wiki_controls "wiki_controls"
      */
-    public function serviceWikiControls ($oWikiObject, $aWikiVer, $aWikiVerLatest, $sBlockId)
+    public function serviceWikiControls ($oWikiObject, $aWikiVer, $aWikiVerLatest, $iBlockId)
     {
-        $this->_addCssJs ();
-    
-        $sInfo = '';
-        if ($aWikiVer && $aWikiVerLatest['revision'] == $aWikiVer['revision']) {
-            $sInfo = bx_time_js($aWikiVer['added']);
+        $this->_addCssJs();
+
+        $sObject = $oWikiObject->getObjectName();
+        $bAllowedManage = $oWikiObject->isAllowed('history');
+
+        $mixedInfo = '';
+        if($aWikiVer && $aWikiVerLatest['revision'] == $aWikiVer['revision']) {
+            $mixedInfo = $this->_bIsApi ? [
+                'added' => $aWikiVer['added']
+            ] : bx_time_js($aWikiVer['added']);
         } 
-        elseif ($aWikiVer) {
+        else if($aWikiVer) {
             $oProfile = BxDolProfile::getInstanceMagic($aWikiVer['profile_id']);
-            $sInfo = _t('_sys_wiki_view_rev', $aWikiVer['revision'], $oProfile->getUrl(), $oProfile->getDisplayName(), bx_time_js($aWikiVer['added']));
+
+            $mixedInfo = $this->_bIsApi ? [
+                'revision' => $aWikiVer['revision'],
+                'author_data' => BxDolProfile::getData($aWikiVer['profile_id']),
+                'added' => $aWikiVer['added']
+            ] : _t('_sys_wiki_view_rev', $aWikiVer['revision'], $oProfile->getUrl(), $oProfile->getDisplayName(), bx_time_js($aWikiVer['added']));
+        }
+
+        if($this->_bIsApi) {
+            $mixedMenu = '';
+            if($bAllowedManage) {
+                $oMenu = BxTemplMenu::getObjectInstance('sys_wiki');
+                $oMenu->setParams($sObject, $iBlockId);
+
+                $mixedMenu = $oMenu->getCodeAPI();
+            }
+
+            return [
+                'info' => $mixedInfo,
+                'menu' => $mixedMenu
+            ];
         }
 
         $o = BxDolTemplate::getInstance();
         $o->addJs('stackedit.js/stackedit.min.js');
-        return $o->parseHtmlByName('wiki_controls.html', array(
-            'obj' => $oWikiObject->getObjectName(),
-            'block_id' => $sBlockId,
-            'info' => $sInfo,
-            'options' => json_encode(array(
-                'block_id' => $sBlockId,
+        return $o->parseHtmlByName('wiki_controls.html', [
+            'obj' => $sObject,
+            'block_id' => $iBlockId,
+            'info' => $mixedInfo,
+            'options' => json_encode([
+                'block_id' => $iBlockId,
                 'language' => isset($aWikiVer['language']) ? $aWikiVer['language'] : bx_lang_name(),
                 'wiki_action_uri' => $oWikiObject->getUri(),
                 't_confirm_block_deletion' => _t('_sys_wiki_confirm_block_deletion'),
-            )),
-            'bx_if:menu' => array(
-                'condition' => $oWikiObject->isAllowed('history'),
-                'content' => array(
-                    'obj' => $oWikiObject->getObjectName(),
-                    'block_id' => $sBlockId,
-                ),
-            ),
-        ));
+            ]),
+            'bx_if:menu' => [
+                'condition' => $bAllowedManage,
+                'content' => [
+                    'obj' => $sObject,
+                    'block_id' => $iBlockId,
+                ],
+            ],
+        ]);
     }
 
     /**
@@ -176,18 +262,43 @@ class BxBaseServiceWiki extends BxDol
      */
     public function serviceWikiAddBlock ($oWikiObject, $sPageObject, $sCellId)
     {
-        $this->_addCssJs ();
-        if (!preg_match("/cell_(\d+)/", $sCellId, $aMatches))
-            return '';
-        $iCellId = $aMatches[1];
+        $this->_addCssJs();
 
-        $o = BxDolTemplate::getInstance();        
-        return $o->parseHtmlByName('wiki_add_block.html', array(
-            'add_block' => _t('_sys_wiki_add_block'),
+        $aMatches = [];
+        if(!preg_match("/cell_(\d+)/", $sCellId, $aMatches))
+            return '';
+
+        $iCellId = $aMatches[1];
+        $sTxtAddBlock = _t('_sys_wiki_add_block');
+
+        if($this->_bIsApi) {
+            $sUri = $oWikiObject->getUri();
+
+            return [
+                'id' => $sUri . '_add_block',
+                'module' => $oWikiObject->getModule(),
+                'title' => '',
+                'description' => '',
+                'icon' => '',
+                'designbox_id' => 0,
+                'hidden_on' => false,
+                'content' => [bx_api_get_block('wiki_add_block', [
+                    'title' => $sTxtAddBlock, 
+                    'request_url' => 'system/wiki_action/TemplServiceWiki&params[]=' . $sUri . '&params[]=add&params[]=' . $sPageObject . '&params[]=' . $iCellId
+                ])],
+                'content_empty' => '',
+                'config_api' => '',
+                'menu' => '',
+                'source' => 'system:block_' . $sUri . '_add_block'
+            ];
+        }
+
+        return BxDolTemplate::getInstance()->parseHtmlByName('wiki_add_block.html', [
+            'add_block' => $sTxtAddBlock,
             'page' => $sPageObject,
             'cell_id' => $iCellId,
             'action_uri' => $oWikiObject->getUri(),
-        ));
+        ]);
     }
 
     /**
