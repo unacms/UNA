@@ -1,6 +1,6 @@
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import { Button, Input } from 'app/design/controls';
+import { NeoButton, NeoButtonLink, Input } from 'app/design/controls';
 import { useCurrentUser } from 'app/context/user';
 import { useState, useRef } from 'react'
 import Msg from 'app/ui/molecules/msg';
@@ -10,7 +10,6 @@ import { FormError } from 'app/components/form-fields/_field';
 import Redirect from 'app/ui/atoms/redirect';
 import { storageClear, appSetting } from 'app/lib/util';
 import { Platform } from 'react-native';
-import Link from 'app/ui/atoms/link';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'app/ui/molecules/card'
 
 export default function ElementConfirmEmail(props) {
@@ -50,9 +49,9 @@ export default function ElementConfirmEmail(props) {
                     <Redirect ref={redirectdRef} />
                     <Card padding="p-6  gap-6">
                         <CardHeader>
-                            <CardTitle>{t("Unconfirmed email address")}</CardTitle>
+                            <CardTitle>{t("Verify your email address")}</CardTitle>
                             <CardDescription>
-                                {t("Please check your email")}
+                                {t("Enter the verification code we sent to your email.")}
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="gap-4">
@@ -60,9 +59,14 @@ export default function ElementConfirmEmail(props) {
                             <View className='gap-y-4'>
                                 <Row className='w-full gap-x-2 items-start justify-between'>
                                     <View className='flex-auto'>
-                                        <Input placeholder={t("Verification code")} value={inputValue} onChangeText={(value) => { setInputValue(value) }} />
+                                        <Input placeholder={t("Enter verification code")} value={inputValue} onChangeText={(value) => { setInputValue(value) }} />
                                     </View>
-                                    <Button variant="primary" size="lg" title={t("Confirm")} onPress={() => handleConfirm()} />
+                                    <NeoButton
+                                        style="borderedProminent"
+                                        controlSize="large"
+                                        label={t("Verify")}
+                                        onPress={() => handleConfirm()}
+                                    />
                                 </Row>
                                 {inputError && <FormError errorText={t("Code invalid")} />}
                                 <View className="flex-row items-center justify-center w-full">
@@ -71,10 +75,20 @@ export default function ElementConfirmEmail(props) {
                                     <View className="flex-1 h-px w-full bg-secondary dark:bg-muted-foreground" />
                                 </View>
                                 <View className="gap-y-2 w-full">
-                                    <Button size="lg" title={t("Resend email")} onPress={pressBack} fullWidth />
-                                    <Link href="/logout" className="w-full">
-                                        <Button size="lg" title={t("Sign out")} fullWidth />
-                                    </Link>
+                                    <NeoButton
+                                        style="bordered"
+                                        controlSize="large"
+                                        label={t("Resend verification email")}
+                                        onPress={pressBack}
+                                        width="fill"
+                                    />
+                                    <NeoButtonLink
+                                        href="/logout"
+                                        style="bordered"
+                                        controlSize="regular"
+                                        label={t("Sign out")}
+                                        width="fill"
+                                    />
                                 </View>
                             </View>
                         </CardContent>
