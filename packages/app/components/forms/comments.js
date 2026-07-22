@@ -83,7 +83,7 @@ export default function FormComments(props) {
     props.data.inputs['cmt_image'].rounded = 'true'
     props.data.inputs['cmt_image'].variant = 'default'
 
-    const hasContent = !!hasText || !!imagesValue
+    const hasContent = !!hasText || !!imagesValue || props.data.inputs['cmt_text'].html == 2 || props.data.inputs['cmt_text'].html == 1
 
     return (
         
