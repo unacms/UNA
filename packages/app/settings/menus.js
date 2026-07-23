@@ -158,6 +158,14 @@ export const settingsMenus = {
                         animated: true,
                         addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
                     },
+                    {
+                        name: 'discussions-home',
+                        title: 'Discussions',
+                        link: '/discussions-home',
+                        icon: 'MessagesSquare',
+                        animated: true,
+                        addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
+                    },
                    
                     
 
