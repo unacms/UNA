@@ -1708,7 +1708,8 @@ headroom.js@^0.12.0:
 
 "highlight.js@github:highlightjs/highlight.js":
   version "11.11.2"
-  resolved "https://codeload.github.com/highlightjs/highlight.js/tar.gz/ab608abb1d7e130a5809c0d2167ac2342d6b2fe1"
+  uid a86584bc783488a36e8dfd329fae234120803e73
+  resolved "https://codeload.github.com/highlightjs/highlight.js/tar.gz/a86584bc783488a36e8dfd329fae234120803e73"
 
 hls.js@^1.6.16:
   version "1.6.16"
@@ -2166,7 +2167,8 @@ jstree@^3.3.17:
 
 "jush@https://github.com/vrana/jush":
   version "0.0.0"
-  resolved "https://github.com/vrana/jush#ea9e45938e3fbfaea0c586c179af986879520749"
+  uid "58301645e2de1ec434d4f5a1c970d09bbc6a4000"
+  resolved "https://github.com/vrana/jush#58301645e2de1ec434d4f5a1c970d09bbc6a4000"
 
 just-diff-apply@^5.2.0:
   version "5.5.0"
@@ -2467,10 +2469,10 @@ minizlib@^3.0.1, minizlib@^3.1.0:
   dependencies:
     minipass "^7.1.2"
 
-moment-timezone@^0.6.2:
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.6.2.tgz#a704cca03ee502f0df6edd42efcdcc61ee03190e"
-  integrity sha512-lDsQv8FoGdBUdf0+TjGsq2orxKuXdwFlQ6Zw6TX3xIcTwTfEpCLyKqvEauvCHJ8iu3KBV8+uPhlv70YsNGdUBQ==
+moment-timezone@^0.6.3:
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.6.3.tgz#e386bad3116567a44477653ad6543b071bc153b7"
+  integrity sha512-pVEPA/HCFHHbwJ130ywnzYuZpkEGcP6Daa/OwNebpA18MybeFHmQilAGGovXgWijQ8vQtmud9jZrziUBgsykfg==
   dependencies:
     moment "^2.29.4"
 
