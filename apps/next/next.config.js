@@ -164,6 +164,7 @@ const nextConfig = {
         'expo-document-picker',
         'expo-image-manipulator',
         'react-native-enriched-markdown',
+        '@mdxeditor/editor',
         'expo-constants',
         "react-native-svg",
         '@expo/metro-runtime',

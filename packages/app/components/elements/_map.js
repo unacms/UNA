@@ -49,7 +49,8 @@ import TasksMenu from './tasks_menu';
 import TasksTimers from './tasks_timers';
 import TasksList from './tasks_list';
 import TaskTimer from './task_timer';
-import WikiAction from './wiki_action';
+import WikiBlocks from './wiki_blocks';
+import WikiHistory from './wiki_history';
 
 export const componentsMapDefault = {
     messenger_main_page: Messenger,
@@ -65,8 +66,9 @@ export const componentsMapDefault = {
     tasks_timers: TasksTimers,
     tasks_list: TasksList,
     task_timer: TaskTimer,
-    wiki_add_block: WikiAction,
-    wiki_add_page: WikiAction,
+    wiki_add_block: WikiBlocks,
+    wiki_add_page: WikiBlocks,
+    wiki_history: WikiHistory,
     chart: Chart,
     bundles: Bundles,
     membership: Membership,

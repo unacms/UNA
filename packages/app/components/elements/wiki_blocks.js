@@ -1,14 +1,24 @@
 import { useCallback, useState } from 'react'
+import { Platform } from 'react-native'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { BlockByDataInt as BlockByData } from 'app/components/block'
 import { Modal, NeoButton } from 'app/design/controls'
 import { View } from 'app/design/view'
-import { Text } from 'app/design/typography'
 import { fetcher } from 'app/lib/fetcher'
 import emitter from 'app/context/emitter'
 
 function reloadWikiPage() {
     emitter.emit('wiki', { action: 'reload' })
+}
+
+/** After add-page the shell is often not PageContentWiki (uri wiki-add-page), so wiki emit is a no-op. */
+function reloadAfterAddPage() {
+    reloadWikiPage()
+    if (Platform.OS === 'web' && typeof window !== 'undefined') {
+        window.location.reload()
+        return
+    }
+    emitter.emit('page', { action: 'reload' })
 }
 
 async function openWikiActionForm(requestUrl, title, setFormBlock) {
@@ -32,12 +42,13 @@ async function runWikiAddBlock(requestUrl) {
 /**
  * UNA wiki CTA: Add Block (callback + reload) / Add Page (form modal).
  */
-export default function ElementWikiAction({ data, type, blockWrapperProps, onFormEmpty }) {
+export default function WikiBlocks({ data, type, blockWrapperProps, onFormEmpty }) {
     const [formBlock, setFormBlock] = useState(null)
     const title = data?.title || (type === 'wiki_add_page' ? 'Add Page' : 'Add Block')
     const text = data?.text
     const requestUrl = data?.request_url
     const isPage = type === 'wiki_add_page'
+    const label = [text, title].filter(Boolean).join(' ')
 
     const handleClose = useCallback(() => {
         setFormBlock(null)
@@ -46,8 +57,12 @@ export default function ElementWikiAction({ data, type, blockWrapperProps, onFor
     const handleFormEmpty = useCallback(() => {
         setFormBlock(null)
         onFormEmpty?.()
+        if (isPage) {
+            reloadAfterAddPage()
+            return
+        }
         reloadWikiPage()
-    }, [onFormEmpty])
+    }, [onFormEmpty, isPage])
 
     const handlePress = useCallback(() => {
         if (isPage) {
@@ -83,20 +98,13 @@ export default function ElementWikiAction({ data, type, blockWrapperProps, onFor
                 </Modal>
             ) : null}
 
-            <View className={isPage ? 'items-center gap-4 py-8 sm:py-12' : 'w-full py-2'}>
-                {text ? (
-                    <Text className="text-center text-base leading-6 text-muted-foreground max-w-md">
-                        {text}
-                    </Text>
-                ) : null}
+            <View className="w-full py-2">
                 <NeoButton
-                    label={title}
+                    label={label}
                     image={isPage ? 'FilePlus' : 'Plus'}
-                    style={isPage ? 'borderedProminent' : 'borderless'}
-                    borderShape="roundedRectangle"
-                    controlSize="regular"
-                    width={isPage ? 'auto' : 'fill'}
-                    className={isPage ? undefined : 'border border-dashed border-border'}
+                    style="borderless"
+                    width="fill"
+                    className="border border-dashed border-border"
                     onPress={handlePress}
                 />
             </View>

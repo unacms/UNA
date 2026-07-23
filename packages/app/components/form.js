@@ -186,9 +186,39 @@ export default function Form({
 
     useEffect(() => {
         if (!onFormEmpty || !dynamicData) return;
-        if (!isFormResponseComplete(dynamicData.data)) return;
-        onFormEmpty();
-    }, [onFormEmpty, dynamicData]);
+        if (isFormResponseComplete(dynamicData.data)) {
+            onFormEmpty();
+            return;
+        }
+        // Modal / formOnly: UNA often returns msg, redirect, or the same form
+        // again with no field errors — treat those as done so parents can reload.
+        if (!exProps?.formOnly) return;
+
+        const items = normalizeFormResponseData(dynamicData.data);
+        if (!items.length) {
+            onFormEmpty();
+            return;
+        }
+
+        const formItem = items.find((item) => item?.type === 'form');
+        const hasFieldErrors = formItem
+            ? Object.values(formItem.data?.inputs || {}).some((input) => {
+                  const err = input?.error;
+                  if (!err) return false;
+                  if (Array.isArray(err)) return !!String(err[0] || '').trim();
+                  return !!String(err).trim();
+              })
+            : false;
+        if (hasFieldErrors) return;
+
+        const done = items.some(
+            (item) =>
+                item?.type === 'msg' ||
+                item?.type === 'redirect' ||
+                item?.type === 'form'
+        );
+        if (done) onFormEmpty();
+    }, [onFormEmpty, dynamicData, exProps?.formOnly]);
 
     const { processedInputs, defaultValues } = useMemo(() => {
         const dv = {};

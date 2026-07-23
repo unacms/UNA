@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { ButtonMenuActionDefault, ButtonMenuActionText, Modal, NeoButton } from 'app/design/controls'
 import { View } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher'
 import { BlockByDataInt as BlockByData } from 'app/components/block'
 import { getComponent } from 'app/components/registry'
+import emitter from 'app/context/emitter'
 
 async function openModalFromRequest(oProps, setFormBlock) {
     const requestUrl = oProps?.data?.request_url
@@ -36,20 +37,31 @@ export default function MenuItemModal(oProps) {
         void openModalFromRequest(oProps, setFormBlock)
     }
 
+    const handleClose = useCallback(() => {
+        setFormBlock(null)
+    }, [])
+
+    // After form submit success: close modal and reload wiki page.
+    // Emit is a no-op when no wiki listener is mounted.
+    const handleFormEmpty = useCallback(() => {
+        setFormBlock(null)
+        emitter.emit('wiki', { action: 'reload' })
+    }, [])
+
     const formModal = formBlock ? (
         <Modal
             title={formBlock.title || ' '}
             onVisible={!!formBlock}
-            onClose={() => setFormBlock(null)}
+            onClose={handleClose}
             scrollable
             transparent
         >
             <View className="px-3 sm:px-4">
                 <BlockByData
                     block={formBlock}
-                    onFormEmpty={() => setFormBlock(null)}
+                    onFormEmpty={handleFormEmpty}
                     exProps={{
-                        onClose: () => setFormBlock(null),
+                        onClose: handleClose,
                         resetOnSubmit: true,
                         formOnly: true,
                     }}

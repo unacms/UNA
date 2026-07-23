@@ -5,7 +5,9 @@ import Password from './password';
 import Submit from './submit';
 import Switcher from './switcher';
 import TextField from './text';
+import TextTranslatable from './text_translatable';
 import Editor from './editor';
+import EditorMarkdown from './editor-markdown';
 import Select from './select';
 import Files from './files';
 import Location from './location';
@@ -47,10 +49,12 @@ export const componentsMapDefault = {
     switcher: Switcher,
     checkbox: Switcher,
     text: TextField,
+    text_translatable: TextTranslatable,
     phone: TextField,
     value: TextField,
     price: TextField,
     textarea: Editor,
+    textarea_markdown: EditorMarkdown,
     select: Select,
     select_multiple: Selector,
     radio_set: Select,

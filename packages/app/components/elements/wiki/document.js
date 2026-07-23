@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Linking, Platform } from 'react-native'
 import { Row, View } from 'app/design/view'
 import { H1C, Text } from 'app/design/typography'
 import { appSetting, openExternalLink, setClipboard } from 'app/lib/util'
@@ -6,9 +7,13 @@ import Image from 'app/ui/atoms/image'
 import { NeoButtonLink } from 'app/design/controls'
 import Badge from 'app/ui/molecules/badge'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
-import { Linking, Platform } from 'react-native'
 import { Icon } from 'app/ui/atoms/icon'
 import { Skeleton } from 'app/ui/atoms/skeleton'
+import Markdown from 'app/ui/atoms/markdown'
+import Menu from 'app/components/menu'
+import { BlockWrapper } from 'app/components/block-wrapper'
+import Time from 'app/ui/atoms/time'
+import { getWikiBlockPayload } from './helpers'
 
 const unaStoragePathPattern = /^\/?sys_[^/]+_files\//
 const markdownSourceStoragePrefix = 'wiki-markdown-source:v1:'
@@ -124,7 +129,6 @@ function WikiDocumentIcon({ alt, size, src }) {
                     className="absolute inset-0 h-full w-full animate-pulse"
                 />
             ) : null}
-            {/* SVG skips the Next optimizer inside the Image atom; raster icons optimize normally. */}
             <Image
                 alt={alt}
                 contentFit="contain"
@@ -140,7 +144,7 @@ function WikiDocumentIcon({ alt, size, src }) {
     )
 }
 
-export default function WikiDocumentHeader({ markdownSource = '', metadata, pageUrl = '' }) {
+export function WikiDocumentHeader({ markdownSource = '', metadata, pageUrl = '' }) {
     const {
         description,
         iconUrl,
@@ -240,63 +244,58 @@ export default function WikiDocumentHeader({ markdownSource = '', metadata, page
                         src={resolvedIconUrl}
                     />
                 ) : null}
-
-                
-                    <H1C isfirst islast>{title}</H1C>
-                
+                <H1C isfirst islast>{title}</H1C>
             </Row>
-            
-                <View className="min-w-0 flex-1 gap-4 flex-row flex-wrap justify-between">
-                    {description ? (
-                        <Text className="text-lg leading-6 text-secondary-foreground flex-auto">
-                            {description}
-                        </Text>
-                    ) : null}
+            <View className="min-w-0 flex-1 gap-4 flex-row flex-wrap justify-between">
+                {description ? (
+                    <Text className="text-lg leading-6 text-secondary-foreground flex-auto">
+                        {description}
+                    </Text>
+                ) : null}
 
-                    {platformBadges.length > 0 || tags.length > 0 ? (
-                        <Row className="flex-wrap items-center justify-end gap-2 ">
-                            {platformBadges.map((badge) => (
-                                <Badge
-                                    key={`platform-${badge.key}`}
-                                    data={{ ...badge.data }}
-                                    rounded
-                                    size="sm"
-                                    variant="secondary"
-                                />
-                            ))}
-                            {tags.map((tag) => (
-                                <Badge
-                                    key={`tag-${tag}`}
-                                    data={{
-                                        color: tagConfig.color || 'neutral',
-                                        icon: tagConfig.icon || 'Tag',
-                                        text: tag,
-                                    }}
-                                    rounded
-                                    size="sm"
-                                    variant="outline"
-                                />
-                            ))}
+                {platformBadges.length > 0 || tags.length > 0 ? (
+                    <Row className="flex-wrap items-center justify-end gap-2 ">
+                        {platformBadges.map((badge) => (
+                            <Badge
+                                key={`platform-${badge.key}`}
+                                data={{ ...badge.data }}
+                                rounded
+                                size="sm"
+                                variant="secondary"
+                            />
+                        ))}
+                        {tags.map((tag) => (
+                            <Badge
+                                key={`tag-${tag}`}
+                                data={{
+                                    color: tagConfig.color || 'neutral',
+                                    icon: tagConfig.icon || 'Tag',
+                                    text: tag,
+                                }}
+                                rounded
+                                size="sm"
+                                variant="outline"
+                            />
+                        ))}
+                    </Row>
+                ) : null}
+                <Row className="flex-wrap items-center justify-between gap-2 ">
+                    {packageName ? (
+                        <Row className="flex-wrap items-center gap-1">
+                            <Icon icon="Package" size={16} className="text-secondary-foreground" />
+                            <Text className="text-sm leading-7 text-secondary-foreground">Version:</Text>
+                            <Badge
+                                data={{
+                                    color: 'neutral',
+                                    text: packageName,
+                                }}
+                                rounded
+                                size="xs"
+                                variant="secondary"
+                            />
                         </Row>
                     ) : null}
-                    <Row className="flex-wrap items-center justify-between gap-2 ">
-                    {packageName ? (
-                            <Row className="flex-wrap items-center gap-1">
-                                <Icon icon="Package" size={16} className="text-secondary-foreground" />
-                                <Text className="text-sm leading-7 text-secondary-foreground">Version:</Text>
-                                <Badge
-                                    data={{
-                                        color: 'neutral',
-                                       
-                                        text: packageName,
-                                    }}
-                                    rounded
-                                    size="xs"
-                                    variant="secondary"
-                                />
-                                </Row>
-                            ) : null}
-                        <Row className="flex-wrap items-center gap-2 ">
+                    <Row className="flex-wrap items-center gap-2 ">
                         {sourceCodeUrl ? (
                             <NeoButtonLink
                                 accessibilityLabel={`View ${title} source code`}
@@ -311,7 +310,6 @@ export default function WikiDocumentHeader({ markdownSource = '', metadata, page
                                 target="_blank"
                             />
                         ) : null}
-                         
                         {markdownSource ? (
                             <DropdownMenu
                                 items={markdownMenuItems}
@@ -327,9 +325,59 @@ export default function WikiDocumentHeader({ markdownSource = '', metadata, page
                                 triggerAccessibilityLabel="Markdown actions"
                             />
                         ) : null}
-                        </Row>
                     </Row>
-                </View>
+                </Row>
+            </View>
         </View>
     )
+}
+
+/** UNA-style article block: docs header + manage menu + Markdown body. */
+export function WikiArticleBlock({
+    block,
+    pageUrl,
+}) {
+    const { menu, added, attributes, body, raw } = getWikiBlockPayload(block);
+    const hasDocHeader = Boolean(attributes?.title);
+
+    return (
+        <BlockWrapper block={block} config={block?.config_api} showTitle={!hasDocHeader}>
+            {hasDocHeader ? (
+                <WikiDocumentHeader
+                    markdownSource={raw}
+                    metadata={attributes}
+                    pageUrl={pageUrl}
+                />
+            ) : null}
+            {body ? <Markdown data={body} /> : null}
+            {menu?.items?.length ? (
+                <Row className="mb-2 justify-end">
+                    <View className="w-full">
+                        <Menu
+                            {...menu}
+                            alignItems="start"
+                            autoSize
+                            autoFilter={false}
+                            params={{
+                                className: 'gap-x-2',
+                                button_variant: 'default',
+                                button_size: 'sm',
+                                button_rounded: false,
+                                button_full_width: false,
+                                show_action: true,
+                                show_counter: true,
+                                show_combined: true,
+                            }}
+                        />
+                    </View>
+                </Row>
+            ) : null}
+            {added ? (
+                <Time
+                    className="text-muted-foreground text-xs leading-5"
+                    ts={added}
+                />
+            ) : null}
+        </BlockWrapper>
+    );
 }

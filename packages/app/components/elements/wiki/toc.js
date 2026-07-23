@@ -3,14 +3,12 @@
 import { View, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
-import { Platform } from 'react-native'
 import Svg, { ClipPath, Defs, Path, Rect } from 'react-native-svg'
 import { useCSSVariable } from 'uniwind'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { useScrollValue } from 'app/context/jotai/layout'
 import { useWindowHeight } from 'app/context/measure'
-
-const isWeb = Platform.OS === 'web'
+import { isWeb } from './helpers'
 
 // The web spy uses its own window scroll listener. Never subscribe the wiki
 // layout to the scroll atom on web — it updates every frame during scroll and
@@ -591,7 +589,6 @@ export function WikiTocDropdown({ items, activeIds, focusedId = null, onPress, l
                 controlSize: 'small',
                 image: 'TextAlignStart',
                 borderShape: 'capsule',
-                
             }}
         >
             <View className="p-1">
@@ -605,3 +602,4 @@ export function WikiTocDropdown({ items, activeIds, focusedId = null, onPress, l
         </DropdownPopup>
     )
 }
+
