@@ -39,7 +39,7 @@ export function layoutForList(endpoint, unitMode = '') {
         return 'w-full';
 
     if (moduleName == 'bx_forum' || requestUrl?.includes('r=bx_forum'))
-         return 'w-full';
+         return 'w-full mb-0.5 sm:mb-0 @list-sm/list:p-2 @list-sm/list:m-0';
 
     if (moduleName == 'bx_groups' || requestUrl?.includes('r=bx_groups'))
         return 'w-full @list-sm/list:w-1/2 @list-md/list:w-1/3 @list-lg/list:w-1/4 p-1.5';

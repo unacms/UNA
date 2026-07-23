@@ -63,8 +63,6 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
     const isHelpLink = isUrl(pureHelp)
     const isHelp = !!block.help
 
-    console.log("config", config)
-
     return (
         <View className={wrapperClassses || 'w-full'}>
             {(isHelp && !isHelpLink) && <Modal title="Help" onVisible={!!showHelp} onClose={() => { setShowHelp(false) }} transparent={false}>

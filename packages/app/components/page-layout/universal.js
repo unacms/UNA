@@ -135,7 +135,7 @@ const PanelCell = memo(({ cell, currentBreakpoint, index, sizable, panelLine, pa
         <>
             {(index > 0) && (sizable ? <PanelHandler sizable={sizable} panelLine={panelLine} /> : <View className='w-4' />)}
             <Panel {...panelProps} >
-                <View className={`w-full ${gapClass} ${paddingClass}`}>
+                <View className={`w-full ${gapClass} `/*${paddingClass}*/}>
                     {cell.chd}
                 </View>
             </Panel>

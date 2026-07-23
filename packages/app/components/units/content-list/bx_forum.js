@@ -98,10 +98,10 @@ Units.Base = function Base({ data }) {
     const categoryIcon = data.category?.icon
 
     return (
-        
-            <CardList className="flex-row gap-3 mb-px sm:mb-3" padding="p-3">
+        <View className=" mx-auto w-full">
+            <CardList className="flex-row gap-x-3 px-4">
                 {/* Compact category glyph — name lives in the meta row. */}
-                <View className="flex-none">
+                <View className="flex-none pt-0.5">
                     <Skeleton className="h-10 w-10" rounded="rounded-lg" visible={isSkeleton}>
                         <View className="h-10 w-10 border border-primary/10 bg-primary/10 rounded-lg items-center justify-center overflow-hidden">
                             <Text className="text-xl leading-none">
@@ -111,15 +111,15 @@ Units.Base = function Base({ data }) {
                     </Skeleton>
                 </View>
 
-                <View className="gap-1 flex-auto min-w-0">
+                <View className="gap-y-2 flex-auto min-w-0">
                     <View className="flex-row gap-x-3">
                         <View className="gap-y-1.5 flex-auto min-w-0">
                             <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
-                                <View className="flex-auto gap-1">
+                                <View className="flex-auto gap-y-1.5">
                                     <Skeleton className="h-5 w-3/4" visible={isSkeleton}>
                                         <Text
                                             numberOfLines={2}
-                                            className="text-foreground tracking-tight web:hover:text-primary text-base font-bold"
+                                            className="text-foreground tracking-tight leading-snug web:hover:text-primary text-base font-bold"
                                         >
                                             {data.title}
                                         </Text>
@@ -142,7 +142,7 @@ Units.Base = function Base({ data }) {
                             <View
                                 className={
                                     (!data.image ? 'hidden sm:block ' : '')
-                                    + 'aspect-video flex-none rounded-lg overflow-hidden w-1/4 sm:w-auto sm:h-20'
+                                    + 'aspect-video flex-none rounded-xl overflow-hidden w-1/4 sm:w-auto sm:h-20'
                                 }
                             >
                                 <Skeleton className="h-full w-full" rounded="rounded-xl" visible={isSkeleton}>
@@ -220,7 +220,7 @@ Units.Base = function Base({ data }) {
                 </View>
             
             </CardList>
-        
+        </View>
     )
 }
 

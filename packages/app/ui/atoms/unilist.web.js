@@ -298,15 +298,17 @@ export default function UniList(props) {
             }
             else {
                 return (
-                    <View className={`${listPadding} relative`} style={wrapperStyle}>
+                    <View className="@container/list" style={wrapperStyle}>
+                    
                         <View
-                            className={`transition-opacity duration-500 ease-out ${showContent ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                            className={`${listPadding} transition-opacity duration-500 ease-out ${showContent ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
                             style={wrapperStyle}
                         >
                             {ListHeaderComponent && ListHeaderComponent()}
                             <Virtuoso
-                                itemContent={itemContent}
+                                
                                 {...commonVirtuosoProps}
+                                itemContent={itemContent}
                                 {...(listState?.ranges && { restoreStateFrom: listState })}
                                 {...(scrollToLastItem && { initialTopMostItemIndex: data.length })}
                                 endReached={onEndReached}
@@ -317,6 +319,7 @@ export default function UniList(props) {
                                 {overlayPreload}
                             </View>
                         )}
+           
                     </View>
                 )
             }
