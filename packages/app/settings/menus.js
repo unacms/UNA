@@ -151,35 +151,15 @@ export const settingsMenus = {
                         addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
                     },
                     {
-                        name: 'about',
-                        title: 'About Us',
-                        link: '/about',
-                        icon: 'Info',
-                        animated: true,
-                        addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
-                    },
-                    {
                         name: 'wiki',
                         title: 'Documentation',
-                        link: '/wiki/overview',
+                        link: '/docs',
                         icon: 'BookOpenText',
                         animated: true,
                         addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
                     },
-                    {
-                        name: 'terms',
-                        title: 'Terms of Service',
-                        link: '/terms',
-                        icon: 'Info',
-                    },
-                    {
-                        name: 'contact',
-                        title: 'Contact Us',
-                        link: '/contact',
-                        icon: 'Mail',
-                        animated: true,
-                        addClassName: 'icon-scene-fill web:group-hover:icon-scene-draw',
-                    },
+                   
+                    
 
                 ]
             },

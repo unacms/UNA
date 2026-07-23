@@ -60,9 +60,9 @@ export const settingsElements = {
         header: ' px-3 py-2 min-h-14 items-start justify-start border-b border-border/60 ',
     },
     cards: {
-        'u-card-list': ' u-card-list bg-card shadow-card-outline dark:shadow-card-outline-deep sm:rounded-xl ',
+        'u-card-list': ' u-card-list bg-card/80 shadow-card-outline dark:shadow-card-outline-deep sm:rounded-xl ',
         'u-card-list-padding': 'p-3 lg:p-4 sm:rounded-xl',
-        'u-card-base': 'u-card-base  rounded-xl bg-card text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
+        'u-card-base': 'u-card-base rounded-xl bg-card/80 text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
         'u-card-padding': 'py-4 ',
         'u-card-header': 'px-4',
         'u-card-icon': ' ',
@@ -83,14 +83,14 @@ export const settingsElements = {
         'u-block-base':
             ' text-card-foreground gap-3 sm:gap-4',
         'u-block-bg':
-            ' bg-card shadow-card-outline dark:shadow-card-outline-deep ',
+            ' bg-card/80 shadow-card-outline dark:shadow-card-outline-deep ',
         'u-block-pad':
             ' p-4 ',
-        'u-block-rounded': 'rounded-2xl',
-        'u-block-rounded-default': 'sm:rounded-2xl',
+        'u-block-rounded': 'rounded-xl',
+        'u-block-rounded-default': 'sm:rounded-xl',
         'u-block-header':
             ' flex-row items-center gap-3 justify-center ',
-        'u-block-icon': ' items-center justify-center text-card-foreground flex-none',
+        'u-block-icon': ' items-center w-6 h-6 justify-center text-card-foreground flex-none',
         'u-block-icon-size': 20, // Default icon size for block header icons
         'u-block-name': ' flex-auto gap-2 ',
         'u-block-title':

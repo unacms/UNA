@@ -47,8 +47,8 @@ export const settingsElements = {
         show_nav_counters: true, // OLD appSetting('layout', 'show_nav_counters')
         show_nav_titles: false, // OLD appSetting('layout', 'show_nav_titles')
         hide_browse_filter: true, // OLD appSetting('layout', 'hide_browse_filter')
-        sidebar_container: '  ',
-        sidebar_inner_container: ' xl:mx-4 p-4 gap-4 overflow-y-auto flex flex-col bg-card shadow-card-outline dark:shadow-card-outline-deep rounded-xl mt-4',
+        sidebar_container: ' h-full  ',
+        sidebar_inner_container: ' xl:mx-4 px-4 py-2 gap-1 overflow-y-auto flex flex-col bg-card/80 shadow-card-outline dark:shadow-card-outline-deep rounded-xl mt-4',
         sidebar_title: 'sticky h-10 justify-between items-center z-10',
         sidebar_position: ' z-50  ',
         bgrDecorator: true, // Enable/disable decorator background globally for conductor buttons

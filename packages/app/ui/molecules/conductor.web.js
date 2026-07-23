@@ -25,7 +25,7 @@ import {
     getAddon
 } from 'app/lib/conductor-helpers'
 import { ItemRenderer } from 'app/components/item-renderer'
-import { Button, NeoButton } from 'app/design/controls'
+import { Button, NeoButton, NeoButtonLink } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers'
@@ -1219,52 +1219,53 @@ const LeftSideBarContainer = ({
                     )}
                     <View className="flex-1 gap-4">
                         {layoutName == 'navigator' && routes.length > 1 && (
-                            <View className='w-full gap-3.5 -my-0.5'>
+                            <View className=' gap-1 -mx-2'>
                                 {routes
                                     .filter((aItem) => aItem.hideInTop != true)
                                     .map((a) => {
                                         const isActive = a.index === index;
-                                        const activeWrapperClassName = isActive ? 'u-link-ghost-active  rounded-lg' : '';
                                         const btn = <MenuItemSidebar addon={getAddon(a.addon)} title={a.title} icon={a.icon || 'Circle'} isActive={isActive} />
 
                                         if (a?.icon == '*') {
                                             return (
-                                                <Link
+                                                <NeoButtonLink
                                                     href={a.link}
                                                     key={`lmenu-${a.index}`}
                                                     alt={a.title}
-                                                    variant="ghost"
-                                                    size="lg"
-                                                    className={`group ${activeWrapperClassName}`.trim()}
+                                                    style="borderless"
+                                                    controlSize="large"
+                                                    width="fill"
+                                                    align="start"
+                                                    contentInsets={{ x: 8 }}
+                                                    selected={isActive}
+                                                    selectedState="pressed"
+                                                    className="group"
                                                 >
                                                     {btn}
-                                                </Link>
+                                                </NeoButtonLink>
                                             )
                                         }
                                         return (
-                                            <Link
+                                            <NeoButtonLink
                                                 href={a.key}
                                                 key={`lmenu-${a.index}`}
                                                 alt={a.title}
-                                                variant="ghost"
-                                                size="lg"
-                                                className={`group ${activeWrapperClassName}`.trim()}
+                                                style="borderless"
+                                                controlSize="large"
+                                                width="fill"
+                                                align="start"
+                                                contentInsets={{ x: 8 }}
+                                                selected={isActive}
+                                                selectedState="pressed"
+                                                className={`group ${a.ident ? conductorTheme.menu_categ_indent : ''}`.trim()}
+                                                onPress={(event) => {
+                                                    setIndex(a.index)
+                                                    window.history.pushState({}, '', a.key)
+                                                    event.preventDefault()
+                                                }}
                                             >
-                                                <Pressable
-                                                    className={
-                                                        a.ident
-                                                            ? conductorTheme.menu_categ_indent
-                                                            : ''
-                                                    }
-                                                    onPress={(event) => {
-                                                        setIndex(a.index)
-                                                        window.history.pushState({}, '', a.key)
-                                                        event.preventDefault()
-                                                    }}
-                                                >
-                                                    {btn}
-                                                </Pressable>
-                                            </Link>
+                                                {btn}
+                                            </NeoButtonLink>
                                         )
                                     })}
                             </View>

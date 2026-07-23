@@ -7,6 +7,7 @@ import Page from 'app/ui/molecules/page'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
 import { Icon } from 'app/ui/atoms/icon'
+import { NeoButton, NeoButtonLink } from 'app/design/controls'
 import {
     Panel,
     PanelGroup,
@@ -409,23 +410,21 @@ function isImageSource(icon) {
 
 function WikiMenuItem({ title, icon, isActive, iconEnd }) {
     const iconClassName = isActive
-        ? 'text-foreground'
+        ? 'text-accent-foreground'
         : 'text-secondary-foreground web:group-hover:text-foreground'
     const iconBackgroundClassName = isActive
-        ? ' text-accent-foreground '
-        : ' text-secondary-foreground '
+        ? 'text-accent-foreground'
+        : 'text-secondary-foreground'
 
     return (
-        <Row className="min-h-9 px-2 items-center gap-3">
-            <View className={`h-5 w-5 shrink-0 items-center justify-center rounded-full ${iconBackgroundClassName}`}>
+        <Row className="w-full items-center gap-2">
+            <View className={`h-6 w-6 shrink-0 items-center justify-center rounded-full ${iconBackgroundClassName}`}>
                 {isImageSource(icon) ? (
                     <Image
                         src={icon}
-
                         className="h-5 w-5 rounded"
                         view="cover"
-
-                        sizes='auto'
+                        sizes="auto"
                     />
                 ) : isEmoji(icon) ? (
                     <Text className="text-xs leading-none">{icon}</Text>
@@ -434,7 +433,7 @@ function WikiMenuItem({ title, icon, isActive, iconEnd }) {
                 )}
             </View>
 
-            <Text className={` flex-1 text-sm leading-5 font-medium ${isActive ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>
+            <Text className={`flex-1 text-sm leading-5 font-semibold ${isActive ? 'text-accent-foreground' : 'text-secondary-foreground web:group-hover:text-foreground'}`}>
                 {title}
             </Text>
 
@@ -505,30 +504,54 @@ function MenuWiki({ onNavigate, block, url }) {
             const itemPathComparable = normalizePathComparable(itemPath);
             const isActive = Boolean(itemPathComparable && itemPathComparable === currentPathComparable);
             const menuIsActive = canNavigate ? isActive : false;
-            const activeWrapperClassName = menuIsActive ? 'bg-accent/60 rounded-lg web:hover:bg-accent web:duration-200' : ' web:hover:bg-muted/50 web:duration-200';
-
-            const pressHandler = canNavigate
-                ? () => onNavigate?.(itemPath)
-                : hasChildren
-                    ? () => toggleExpanded(itemId)
-                    : undefined;
+            // Parent-only nodes (no path) toggle expand/collapse; leaves navigate.
             const showChevron = !canNavigate && hasChildren;
             const menuIconEnd = showChevron ? (isExpanded ? 'ChevronDown' : 'ChevronRight') : null;
+            const menuItem = (
+                <WikiMenuItem
+                    title={title}
+                    icon={icon}
+                    isActive={menuIsActive}
+                    iconEnd={menuIconEnd}
+                />
+            );
 
             return (
                 <View key={`lmenu-${itemId}`} className={`w-full ${depthClassName}`}>
-                    <Pressable
-                        className={`web:group flex-1 rounded-lg ${activeWrapperClassName}`}
-                        href={canNavigate ? itemPath : undefined}
-                        onPress={pressHandler}
-                    >
-                        <WikiMenuItem
-                            title={title}
-                            icon={icon}
-                            isActive={menuIsActive}
-                            iconEnd={menuIconEnd}
-                        />
-                    </Pressable>
+                    {canNavigate ? (
+                        <NeoButtonLink
+                            href={itemPath}
+                            alt={title}
+                            style="borderless"
+                            controlSize="large"
+                            width="fill"
+                            align="start"
+                            contentInsets={{ x: 8 }}
+                            selected={menuIsActive}
+                            selectedState="pressed"
+                            className="group"
+                            onPress={(event) => {
+                                onNavigate?.(itemPath)
+                                event?.preventDefault?.()
+                            }}
+                        >
+                            {menuItem}
+                        </NeoButtonLink>
+                    ) : (
+                        <NeoButton
+                            alt={title}
+                            style="borderless"
+                            controlSize="large"
+                            width="fill"
+                            align="start"
+                            contentInsets={{ x: 8 }}
+                            interactive
+                            className="group"
+                            onPress={hasChildren ? () => toggleExpanded(itemId) : undefined}
+                        >
+                            {menuItem}
+                        </NeoButton>
+                    )}
                     {hasChildren && isExpanded && (
                         <View className="mt-1 gap-1">
                             {renderItems(children, depth + 1, indexPath)}
