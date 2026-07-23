@@ -11,6 +11,8 @@ define('BX_PAGE_COLUMN_DUAL', 3); ///< page, with 2 columns
 
 class BxDolStudioTemplate extends BxDolTemplate implements iBxDolSingleton
 {
+    protected $_sFolderModuleIcons;
+
     protected function __construct()
     {
         if (isset($GLOBALS['bxDolClasses'][get_class($this)]))
@@ -42,6 +44,8 @@ class BxDolStudioTemplate extends BxDolTemplate implements iBxDolSingleton
         $this->_iMix = 0;
         if(is_array($this->_sCode))
             list($this->_sCode, $this->_iMix) = $this->_sCode;
+
+        $this->_sFolderModuleIcons = 'images/modules/';
 
         $this->addLocation('studio', $this->_sRootPath, $this->_sRootUrl);
         $this->addLocationJs('system_admin_js', $this->_sRootPath . 'js/' , $this->_sRootUrl . 'js/');
@@ -130,6 +134,11 @@ class BxDolStudioTemplate extends BxDolTemplate implements iBxDolSingleton
         }
 
         return $this->processInjection($this->getPageNameIndex(), $sKey, $sRet);
+    }
+
+    function getModuleIconUrl($sName, $sCheckIn = BX_DOL_TEMPLATE_CHECK_IN_BOTH)
+    {
+        return $this->_getAbsoluteLocation('url', $this->_sFolderModuleIcons, $sName, $sCheckIn);
     }
 
     function setPageBreadcrumb($aItems)

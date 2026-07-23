@@ -61,12 +61,13 @@ class BxDolStudioUtils extends BxDol
         if(!is_array($mixedWidget)) 
             $mixedWidget = BxDolStudioWidgetsQuery::getInstance()->getWidgets(array('type' => 'by_id', 'value' => (int)$mixedWidget));
 
-        $sUrl = BxDolStudioTemplate::getInstance()->getIconUrl($mixedWidget['icon']);
-        if(empty($sUrl)) {
-            $aModule = BxDolModuleQuery::getInstance()->getModuleByName($mixedWidget['module']);
-            if(!empty($aModule) && is_array($aModule))
-                $sUrl = BxDolStudioUtils::getIconDefault($aModule['type']);
-        }
+        $oTemplate = BxDolStudioTemplate::getInstance();
+
+        $sUrl = $oTemplate->getModuleIconUrl($mixedWidget['module'] . '.svg');
+        if(empty($sUrl))
+            $sUrl = $oTemplate->getIconUrl($mixedWidget['icon']);
+        if(empty($sUrl) && ($aModule = BxDolModuleQuery::getInstance()->getModuleByName($mixedWidget['module'])) && is_array($aModule))
+            $sUrl = BxDolStudioUtils::getIconDefault($aModule['type']);
 
         return $sUrl;
     }
