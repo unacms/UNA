@@ -2,22 +2,19 @@
 import Field, { getValidationRules } from './_field'
 import { useController, useFormContext } from 'react-hook-form'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import * as EnrichedMarkdown from 'react-native-enriched-markdown'
+import { EnrichedMarkdownTextInput } from 'react-native-enriched-markdown'
 import { Button } from 'app/design/controls'
 import { View } from 'app/design/view'
 import { useTheme, useThemeName } from 'app/design/theme'
 import { useCSSVariable } from 'uniwind'
 import { appSetting, cn } from 'app/lib/util'
 import emitter from 'app/context/emitter'
-import MdxMarkdownEditor from './editor-markdown-mdx'
 
-const EnrichedMarkdownTextInput = EnrichedMarkdown.EnrichedMarkdownTextInput
 const inputSettings = appSetting('theme', 'inputs')
 
 /**
- * Markdown form field for wiki.
- * Native: EnrichedMarkdownTextInput.
- * Web: @mdxeditor/editor via editor-markdown-mdx.web.js.
+ * Wiki Markdown form field (native) — EnrichedMarkdownTextInput.
+ * Web resolves `editor-markdown.web.js` (@mdxeditor/editor).
  */
 export default function FormFieldMarkdownEditor(props) {
     const formContext = useFormContext()
@@ -40,7 +37,6 @@ export default function FormFieldMarkdownEditor(props) {
                 bg={props.bg}
                 disabled={props.disabled}
                 autofocus={props.autofocus}
-                caption={props.caption}
                 onFocus={props.onFocus}
                 placeholder={placeholder}
                 initialHeight={initialHeight}
@@ -89,7 +85,6 @@ function MarkdownTextInput({
     }, [externalValue, name, setValue])
 
     useEffect(() => {
-        if (!EnrichedMarkdownTextInput) return undefined
         const sub = emitter.addListener('editor', (data) => {
             if (!editorRef.current) return
             if (data.action === 'focus') {
@@ -120,24 +115,6 @@ function MarkdownTextInput({
                 inputSettings.rounded.default,
                 inputSettings.size.regular,
             )
-
-    // Web: MDXEditor (resolved via editor-markdown-mdx.web.js).
-    if (!EnrichedMarkdownTextInput) {
-        return (
-            <MdxMarkdownEditor
-                field={field}
-                externalValue={externalValue}
-                lastWrittenRef={lastWrittenRef}
-                initialHeight={initialHeight}
-                maxHeight={maxHeight}
-                placeholder={placeholder}
-                autofocus={autofocus}
-                disabled={disabled}
-                bg={bg}
-                showToolbar={showToolbar}
-            />
-        )
-    }
 
     const editorTextColor = foregroundToken || colors.default
     const linkColor = themeName === 'dark'
