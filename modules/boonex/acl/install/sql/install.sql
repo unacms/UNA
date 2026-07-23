@@ -127,13 +127,14 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 ('bx_acl_administration', 'actions', '', '20%', 0, '', '', 12),
 
 ('bx_acl_view', 'level_icon', '_bx_acl_grid_column_level_icon', '5%', 0, 0, '', 1),
-('bx_acl_view', 'level_name', '_bx_acl_grid_column_level_name', '25%', 1, 32, '', 2),
-('bx_acl_view', 'description', '_bx_acl_grid_column_description', '10%', 1, 8, '', 3),
-('bx_acl_view', 'details', '_bx_acl_grid_column_details', '10%', 1, 8, '', 4),
-('bx_acl_view', 'price', '_bx_acl_grid_column_price', '10%', 0, 16, '', 5),
-('bx_acl_view', 'period', '_bx_acl_grid_column_period', '10%', 0, 16, '', 6),
-('bx_acl_view', 'trial', '_bx_acl_grid_column_trial', '10%', 0, 16, '', 7),
-('bx_acl_view', 'actions', '', '20%', 0, '', '', 8);
+('bx_acl_view', 'level_name', '_bx_acl_grid_column_level_name', '15%', 1, 16, '', 2),
+('bx_acl_view', 'caption', '_bx_acl_grid_column_caption', '10%', 1, 16, '', 3),
+('bx_acl_view', 'description', '_bx_acl_grid_column_description', '10%', 1, 8, '', 4),
+('bx_acl_view', 'details', '_bx_acl_grid_column_details', '10%', 1, 8, '', 5),
+('bx_acl_view', 'price', '_bx_acl_grid_column_price', '10%', 0, 16, '', 6),
+('bx_acl_view', 'period', '_bx_acl_grid_column_period', '10%', 0, 16, '', 7),
+('bx_acl_view', 'trial', '_bx_acl_grid_column_trial', '10%', 0, 16, '', 8),
+('bx_acl_view', 'actions', '', '20%', 0, '', '', 9);
 
 INSERT INTO `sys_grid_actions` (`object`, `type`, `name`, `title`, `icon`, `icon_only`, `confirm`, `order`) VALUES
 ('bx_acl_administration', 'independent', 'add', '_bx_acl_grid_action_add', '', 0, 0, 1),
