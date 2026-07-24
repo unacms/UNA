@@ -171,6 +171,17 @@ export async function generateMetadata(props) {
     const image = data?.data?.image;
     const isClientProject = UNA_URL != 'https://api.neo.so';
 
+    const appleAppId = appSetting('smart_app_banner', 'apple_app_id');
+    const appleAppArgument = appSetting('smart_app_banner', 'apple_app_argument');
+    const other = {
+        'mobile-web-app-capable': 'yes',
+    };
+    if (appleAppId) {
+        other['apple-itunes-app'] = appleAppArgument
+            ? `app-id=${appleAppId}, app-argument=${appleAppArgument}`
+            : `app-id=${appleAppId}`;
+    }
+
     return {
         title: name,
         description: description,
@@ -178,9 +189,7 @@ export async function generateMetadata(props) {
         icons: {
             icon: isClientProject ? '/static/favicon.svg' : '/favicon.svg',
         },
-        other: {
-            'mobile-web-app-capable': 'yes',
-        },
+        other,
         openGraph: {
             title: name,
             description: description,

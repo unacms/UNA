@@ -54,5 +54,11 @@ export const settingsConfigs = {
         url: '/messenger', 
         back_button: false, 
     },
-    
+    // Web smart app banner (iOS Safari meta + Android custom bar). Empty apple_app_id = no iOS meta.
+    smart_app_banner: {
+        apple_app_id: '',
+        apple_app_argument: '',
+        play_store_url: '',
+        app_icon_url: '',
+    },
 }
