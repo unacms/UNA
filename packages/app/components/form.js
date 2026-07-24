@@ -31,7 +31,7 @@ function getFormFieldList(name, inputs, handleSubmit, isInitial = false, lastCha
     }
 
     return Object.keys(inputs).map(function (key) {
-        return getFormFieldByData(inputs[key], handleSubmit, 'default', { ...formProps, form_name: name, last_changed: lastChangedField, saveOnChanges: saveOnChanges })
+        return getFormFieldByData(inputs[key], handleSubmit, 'default', { ...formProps, form_name: name, last_changed: lastChangedField, saveOnChanges: saveOnChanges }, key)
     });
 }
 

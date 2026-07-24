@@ -105,7 +105,8 @@ export default function MediaAttachments({
                             'notitle',
                             shouldAsDefaultStorage
                                 ? { hide_button: true, list_only: true, asDefaultStorage: true, form_name: formName }
-                                : { hide_button: true, list_only: true }
+                                : { hide_button: true, list_only: true },
+                            key
                         )
                     })}
                 </Row>

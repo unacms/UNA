@@ -71,13 +71,13 @@ export const settingsButtons = {
         },
         default:{
             container:{
-                base:' border  border-border ',
+                base:' border border-border/60 ',
                 default:' bg-popover/60 shadow-btn-outline dark:shadow-btn-outline-deep  ',
-                active:' bg-emerald-500 shadow-btn-outline dark:shadow-btn-outline-deep ',
-                pressed:'bg-red-500 ',
+                active:' bg-muted/60 shadow-sm ',
+                pressed:' bg-muted/60 shadow-sm ',
                 hovered:' bg-popover shadow-btn-outline dark:shadow-btn-outline-deep ',
-                focused:' bg-popover/80 shadow-btn-outline dark:shadow-btn-outline-deep ',
-                disabled:' bg-popover/60 dark:bg-border/60 shadow-btn-outline dark:shadow-btn-outline-deep opacity-50 ',
+                focused:' bg-popover shadow-btn-outline dark:shadow-btn-outline-deep ',
+                disabled:' bg-popover shadow-btn-outline dark:shadow-btn-outline-deep opacity-50 ',
 
             },
             text:{

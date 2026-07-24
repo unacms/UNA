@@ -85,14 +85,15 @@ export function isFormResponseComplete(responseData) {
     return true;
 }
 
-export function getFormFieldByData(inputData, handleSubmit, format, externalProps) {
+export function getFormFieldByData(inputData, handleSubmit, format, externalProps, uniqueKey) {
 
     if (!inputData)
         return <></>;
     const InputType = getComponent('form-field', String(inputData.type));
     if (!InputType)
         return <Text>Unsupported field type: {JSON.stringify(inputData)}</Text>
-    const fallbackKey = inputData.name || inputData.key || `${inputData.type}_${inputData.caption || 'field'}`;
+    // Prefer the inputs-map key: UNA reuses names like `block_end_field` for multiple fields.
+    const fallbackKey = uniqueKey || inputData.key || inputData.name || `${inputData.type}_${inputData.caption || 'field'}`;
     return <InputType key={fallbackKey} {...inputData} format={format} handleSubmit={handleSubmit} {...externalProps} />;
 
 }
@@ -101,7 +102,7 @@ export function getHiddenFields(inputs, handleSubmit) {
     return Object.keys(inputs)
         .map((key) => {
             if (inputs[key].type === "hidden") {
-                return getFormFieldByData(inputs[key], handleSubmit, 'nofield');
+                return getFormFieldByData(inputs[key], handleSubmit, 'nofield', undefined, key);
             }
             return null;
         })

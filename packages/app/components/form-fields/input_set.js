@@ -35,14 +35,17 @@ export default function FormFieldControls(props) {
     return (
         <Field {...props} error2={formContext.formState.errors[props.name]}>
             <Row className="items-end gap-2 flex-wrap w-full">
-                {children.map((child, index) => (
+                {children.map((child, index) => {
+                    const childKey = `${props.name || 'input_set'}_${child.name || child.type || 'field'}_${index}`
+                    return (
                     <View
-                        key={child.name || `input_set_${props.name}_${index}`}
+                        key={childKey}
                         className="flex-1 min-w-16"
                     >
-                        {getFormFieldByData(child, props.handleSubmit, 'notitle', childProps)}
+                        {getFormFieldByData(child, props.handleSubmit, 'notitle', childProps, childKey)}
                     </View>
-                ))}
+                    )
+                })}
             </Row>
         </Field>
     );

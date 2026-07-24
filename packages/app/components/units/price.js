@@ -28,7 +28,7 @@ function getPriceParts(data)
 function UniPriceCard({ data, onBuy }) {
     const { t } = useTranslation()
     const { currentUser, setCurrentUser } = useCurrentUser();
-    const firstNonEmpty = data.actions.data.find(
+    const firstNonEmpty = data?.actions?.data?.find(
         (action) => action && Object.keys(action).length > 0
     );
 
@@ -88,8 +88,11 @@ function UniPriceCard({ data, onBuy }) {
                 </View>
             </CardHeader>
             <CardFooter>
-                {currentUser ? <Button variant="primary" title={firstNonEmpty.title} onPress={() => { onBuy(firstNonEmpty) }} /> :
-                <ButtonLink href="/create-account" variant="primary" title='Create  account' />}
+                {currentUser
+                    ? (!!firstNonEmpty && (
+                        <Button variant="primary" title={firstNonEmpty.title} onPress={() => { onBuy(firstNonEmpty) }} />
+                    ))
+                    : <ButtonLink href="/create-account" variant="primary" title='Create  account' />}
             </CardFooter>
         </Card>
     )
@@ -97,7 +100,7 @@ function UniPriceCard({ data, onBuy }) {
 
 function UniPriceList({ data, onBuy }) {
     const { t } = useTranslation()
-    const firstNonEmpty = data.actions.data.find(
+    const firstNonEmpty = data?.actions?.data?.find(
         (action) => action && Object.keys(action).length > 0
     );
     const priceParts = getPriceParts(data)

@@ -43,7 +43,8 @@ export default function FormAds(props) {
                             form_name: name,
                             noPadding: key === lastKey,
                             use_caption_as_placeholder: useCaptionAsPlaceholder,
-                        }
+                        },
+                        key
                     )
                 })}
             </View>
