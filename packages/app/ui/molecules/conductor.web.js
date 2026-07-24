@@ -419,6 +419,7 @@ export function Conductor({
         ts={ts}
         timestamp={timestamp}
         skeleton={skeleton}
+        excludeLeftbarFromMain={showFiltersBtn}
     />
 
     return (
@@ -456,7 +457,8 @@ const TabSceneMainContent = ({
     ts,
     timestamp,
     onFormChangedValues,
-    isUseCurrentHeader
+    isUseCurrentHeader,
+    excludeLeftbarFromMain = false,
 }) => {
     const isDesktop = useIsDesktop()
     const pageData = pageRoute.pageData
@@ -675,16 +677,20 @@ const TabSceneMainContent = ({
         const sidebarContent = pageRoute?.sidebar?.content ?? [];
         const visibleItems = refetchState.visibleItems ?? [];
 
+        // Leftbar that opens in Filters bottom sheet must not also render in main.
+        const mobileLeftbar = excludeLeftbarFromMain
+            ? []
+            : leftbarContent.filter(item => !item.data?.hidden_on?.includes?.('phone'));
 
         const base = isDesktop
             ? [...dataItemsPageFiltered, ...visibleItems]
-            : [...leftbarContent.filter(item => !item.data?.hidden_on?.includes?.('phone')), ...dataItemsPageFiltered, ...visibleItems, ...sidebarContent.filter(item => !item.data?.hidden_on?.includes?.('phone'))];
+            : [...mobileLeftbar, ...dataItemsPageFiltered, ...visibleItems, ...sidebarContent.filter(item => !item.data?.hidden_on?.includes?.('phone'))];
 
         if (!feedType) return base;
         return base.map(item =>
             item.feed_type === feedType ? item : { ...item, feed_type: feedType }
         );
-    }, [dataItemsPageFiltered, refetchState.visibleItems, isDesktop, pageRoute?.endpoint?.request_url, pageRoute?.leftbar?.content, pageRoute?.sidebar?.content, feedType]);
+    }, [dataItemsPageFiltered, refetchState.visibleItems, isDesktop, pageRoute?.endpoint?.request_url, pageRoute?.leftbar?.content, pageRoute?.sidebar?.content, feedType, excludeLeftbarFromMain]);
 
     useEffect(() => {
         if (isUseCurrentHeader) {
