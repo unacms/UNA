@@ -461,7 +461,7 @@ export default function ({ data, blocks }) {
                 key={`cells-home${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
                 autoSaveId={cellsCustomConfig.sizable ? `cells-home` : undefined}
                 direction="horizontal"
-                className={`${appSetting('layout', 'page_content_width_default')} mx-auto flex-auto flex-row`}
+                className={`${appSetting('layout', 'page_content_width_default')} ns--panel-group-- mx-auto flex-auto flex-row ne--`}
                 onLayout={onLayout}
             >
                 {layoutName == 'hor' && isWeb && (

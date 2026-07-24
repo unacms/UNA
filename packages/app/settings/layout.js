@@ -12,16 +12,12 @@ export const settingsLayout = {
         avaliable_langs: ['auto', 'en', 'ru'],
         screen: ' w-full  ',
 
-        neoshell_main_wrapper: ' ns--main-wrapper-- ',
-        neoshell_main_content: ' ns--main-content-- ',
-        neoshell_header_wrapper: ' ns--header-wrapper-- ',
-        neoshell_header_wrapper_scrolled: ' ns--header-wrapper-scrolled-- ',
-        neoshell_header_content: ' ns--header-content-- ',
-        neoshell_header_content_scrolled: ' ns--header-content-scrolled-- ',
 
+      
 
         max_width: ' ns--undefined-- w-full flex-auto web:h-full ne--  ',
         page_content_width_default: ' ns--page-content-width-- w-full max-w-8xl ne--  ',
+        
         page_content_width:{
             layout_1_column_thin: 'w-full max-w-md',
             layout_1_column_half: 'w-full max-w-2xl',
