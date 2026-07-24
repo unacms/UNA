@@ -36,7 +36,7 @@ export const settingsInputs = {
         // Shared control heights — text inputs, selects, and matching surfaces.
         size:{
             small: 'px-2 leading-5 min-h-9',
-            regular: 'px-3 leading-5 min-h-10',
+            regular: 'px-3 leading-5 min-h-11',
             large: 'px-3 leading-5 min-h-12',
         },
         // Height-only tokens for chip wells / wrappers that bring their own padding.
@@ -49,35 +49,54 @@ export const settingsInputs = {
         'text-card-foreground placeholder:text-muted-foreground py-2 bg-input/50 shadow-input-outline dark:shadow-input-outline-deep flex-auto text-base placeholder-muted-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-card web:focus-visible:border-ring web:overflow-hidden',
         // Height/padding come from `size` (same as Input) so select stays in sync.
         select: ' pr-10 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep web:focus:bg-card flex-auto text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
+
+        // Adaptive / floating eyebrow labels (`forms.adaptive_labels`)
+        // Vertical position is Animated (center → top edge) — see adaptive-label.js.
+        // Tune horizontal inset / chip / type here; use *_offset (px) for vertical nudge.
+        adaptive_label: 'ml-2 px-2 self-start',
+        adaptive_label_floated: 'bg-card',
+        adaptive_label_text_resting: 'text-base text-muted-foreground',
+        adaptive_label_text_floated: 'text-sm text-muted-foreground',
+        adaptive_label_resting_offset: 0,
+        adaptive_label_floated_offset: -2,
+        adaptive_label_duration: 200,
     },
     switcher: {
         // Container (height/padding via size.*)
         'u-controls-switcher-container':
-            'items-center flex-row-reverse justify-between gap-x-2 min-w-12 rounded-lg flex-auto bg-input/60 shadow-input-outline dark:shadow-input-outline-deep ',
+            'items-center flex-row-reverse justify-between gap-x-2 min-w-12  flex-auto  shadow-input-outline dark:shadow-input-outline-deep ',
         size: {
-            small: 'min-h-9 px-2',
-            regular: 'min-h-10 px-3',
-            large: 'min-h-12 px-3',
+            small: 'min-h-9 px-2 rounded-lg',
+            regular: 'min-h-11 px-3 rounded-lg',
+            large: 'min-h-12 px-3 rounded-xl',
         },
 
         // Text
         'u-controls-switcher-text': 'text-card-foreground text-base flex-1 ',
 
         // Track
-        'u-controls-switcher-track': 'flex-row items-center rounded-full shrink-0',
+        'u-controls-switcher-track':
+            'flex-row items-center rounded-full shrink-0 web:transition-colors web:duration-200',
         'u-controls-switcher-track-regular': 'h-7 w-14 px-1 ',
         'u-controls-switcher-track-small': 'h-4 w-8 px-0.5 ',
         'u-controls-switcher-track-large': 'h-8 w-16 px-1',
         'u-controls-switcher-track-disabled': 'opacity-50',
 
-        // Thumb
+        // Thumb (position/scale animated in `ui/atoms/switcher.js` — no CSS transform transition)
         'u-controls-switcher-thumb':
-            'rounded-full bg-popover/80 shadow-btn-outline dark:shadow-btn-outline-deep web:transition-transform web:duration-200',
+            'rounded-full bg-white/90 shadow-sm',
         'u-controls-switcher-thumb-regular': 'h-5 w-7 ',
         'u-controls-switcher-thumb-small': 'h-3 w-4  ',
         'u-controls-switcher-thumb-large': 'h-6 w-8 ',
 
-        // Active thumb position (translateX — ml-auto is not transitionable)
+        // Thumb travel distance in px (rem=16). Used by Animated spring in switcher atom.
+        thumb_travel: {
+            small: 12,
+            regular: 20,
+            large: 24,
+        },
+
+        // Legacy active translate classes (unused by animated switcher; kept for forks)
         'u-controls-switcher-thumb-active-regular': 'translate-x-5',
         'u-controls-switcher-thumb-active-small': 'translate-x-3',
         'u-controls-switcher-thumb-active-large': 'translate-x-6',
@@ -109,6 +128,9 @@ export const settingsInputs = {
         // Checkbox square indicator
         'u-controls-checkbox-indicator':
             'shrink-0 h-5 w-5 rounded-md shadow-btn-outline dark:shadow-btn-outline-deep  bg-input justify-center items-center',
+        // Explicit border for contrast on light card / grid surfaces
+        'u-controls-checkbox-indicator-border':
+            'border border-border',
 
         // Radiobutton circular indicator
         'u-controls-radiobutton-indicator':

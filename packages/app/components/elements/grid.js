@@ -6,7 +6,7 @@ import Time from 'app/ui/atoms/time';
 import Profile from 'app/ui/molecules/profile';
 import Confirm from 'app/ui/molecules/confirm';
 import Msg from 'app/ui/molecules/msg';
-import { Button, ButtonLink } from 'app/design/controls'
+import { NeoButton, NeoButtonLink } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher';
 import React, { useEffect, useState, useMemo, useCallback, useRef, useReducer } from 'react';
 import Switch from 'app/ui/atoms/switcher'
@@ -21,7 +21,6 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Icon } from 'app/ui/atoms/icon'
 import Redirect from 'app/ui/atoms/redirect';
 import Stripe from 'app/ui/molecules/stripe';
-import { useBreakpoint } from 'app/context/measure';
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import Loading from 'app/ui/atoms/loading'
@@ -33,12 +32,126 @@ import {
 import { getDataForMenu } from 'app/lib/util'
 import { Platform } from 'react-native'
 
-const getWidth1 = (width) => {
-    if (!width)
-        return undefined;
+/**
+ * Flex-none columns use fixed width/minWidth so header + body rows share the
+ * same track sizes (content-sized flex columns diverge per row and misalign labels).
+ */
+const CONTROL_COL_STYLE = {
+    checkbox: { flexGrow: 0, flexShrink: 0, width: 44, minWidth: 44 },
+    order: { flexGrow: 0, flexShrink: 0, width: 36, minWidth: 36 },
+    switcher: { flexGrow: 0, flexShrink: 0, width: 64, minWidth: 64 },
+    // Fixed track for row actions (right-aligned); header label stays empty.
+    actions: { flexGrow: 0, flexShrink: 0, width: 168, minWidth: 168 },
+};
 
-    return width
-}
+/** Short meta columns — fixed track (`flex-none`). */
+const FLEX_NONE_NAME_RE =
+    /^(date|datetime|time|added|created|changed|period|price|amount)$/i;
+const META_COL_WIDTH = 108;
+
+const ROW_GAP = 8;
+const ROW_PAD_X = 16; // px-2 each side
+
+const isFlexNoneMetaColumn = (name = '') =>
+    FLEX_NONE_NAME_RE.test(name) ||
+    /date|time|added|created|changed/i.test(name);
+
+/**
+ * Text columns (title, provider, …): flex-auto — share leftover space.
+ * Controls / date / actions: flex-none — fixed tracks for header/body alignment.
+ */
+const getColumnStyle = (itemCell) => {
+    const name = itemCell?.name || '';
+
+    if (CONTROL_COL_STYLE[name]) {
+        return CONTROL_COL_STYLE[name];
+    }
+
+    if (isFlexNoneMetaColumn(name)) {
+        return {
+            flexGrow: 0,
+            flexShrink: 0,
+            width: META_COL_WIDTH,
+            minWidth: META_COL_WIDTH,
+        };
+    }
+
+    // flex-auto text columns — grow/shrink; floor keeps a readable minimum.
+    return {
+        flexGrow: 1,
+        flexShrink: 1,
+        flexBasis: 0,
+        minWidth: 72,
+    };
+};
+
+const getTableMinWidth = (columns = []) => {
+    const colsMin = columns.reduce((sum, col) => {
+        const style = getColumnStyle(col);
+        return sum + (style.minWidth || style.width || 72);
+    }, 0);
+    const gaps = Math.max(0, columns.length - 1) * ROW_GAP;
+    return colsMin + gaps + ROW_PAD_X;
+};
+
+/** Ensure an actions column exists (empty label) so Date/meta headers keep their track. */
+const normalizeGridHeader = (rawHeader, sampleRow) => {
+    const cols = (rawHeader || []).filter((item) => item?.name != 'reports');
+    const hasActionsCol = cols.some((c) => c?.name === 'actions');
+    const rowHasActions =
+        !!sampleRow &&
+        Object.values(sampleRow).some((cell) => cell?.type === 'actions');
+
+    if (!hasActionsCol && rowHasActions) {
+        cols.push({ name: 'actions', title: '' });
+    }
+
+    return cols.map((col) =>
+        col?.name === 'actions' ? { ...col, title: col.title || '' } : col
+    );
+};
+
+const getActionButtonIcon = (name) => {
+    if (name == 'delete') return 'Trash';
+    if (name == 'edit') return 'Pencil';
+    if (name == 'promotion') return 'ChartLine';
+    if (name == 'edit_budget') return 'Wallet';
+    if (name == 'set_role') return 'UserRoundCog';
+    if (name == 'actions') return 'Ellipsis';
+    return false;
+};
+
+/**
+ * UNA grids often ship both a text "View details" control and an `edit` icon that
+ * open the same modal/url. Prefer the icon action and drop the duplicate text one.
+ */
+const dedupeGridRowActions = (actions) => {
+    const list = (actions || []).filter((item) => item?.type);
+    const edit = list.find((a) => a.name === 'edit');
+    if (!edit) return list;
+
+    const editUrl = edit.url || edit.link || '';
+
+    return list.filter((action) => {
+        if (action.name === 'edit' || action.name === 'delete') return true;
+        if (getActionButtonIcon(action.name)) return true;
+
+        const title = String(action.title || '');
+        if (/view\s*details/i.test(title)) return false;
+        if (editUrl && (action.url === editUrl || action.link === editUrl)) return false;
+
+        if (
+            action.type === 'modal' &&
+            edit.type === 'modal' &&
+            ((edit.action && edit.action === action.action) ||
+                (edit.callback && edit.callback === action.callback))
+        ) {
+            return false;
+        }
+
+        return true;
+    });
+};
 
 const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowConfirm, deleteRows, fetchData, handleBlock, refetch }) => {
     const [hide, setHide] = useState(false);
@@ -76,28 +189,6 @@ const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowC
         }
     }
 
-    const getActionButtonIcon = (name) => {
-        if (name == 'delete') {
-            return 'Trash'
-        }
-        if (name == 'edit') {
-            return 'Pencil'
-        }
-        if (name == 'promotion') {
-            return 'ChartLine'
-        }
-        if (name == 'edit_budget') {
-            return 'Wallet'
-        }
-        if (name == 'set_role') {
-            return 'UserRoundCog'
-        }
-        if (name == 'actions') {
-            return 'Ellipsis'
-        }
-        return false;
-    };
-
     let icon = getActionButtonIcon(itemAction.name);
 
     const excludedActions = ['clear_reports', 'set_acl_level'];
@@ -107,23 +198,22 @@ const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowC
     }
 
     const commonProps = {
-        variant: itemAction.type === 'link' ? 'outline' : 'text',
-        size: 'sm',
-        title: icon ? '' : itemAction.title,
-        startDecorator: icon
+        style: 'borderless',
+        controlSize: 'small',
+        label: icon ? undefined : itemAction.title,
+        image: icon || undefined,
+        accessibilityLabel: itemAction.title,
     };
 
     if (itemAction.type === 'link') {
         return (
-         
-                <ButtonLink key={index} href={itemAction.url}{...commonProps} />
-            
+            <NeoButtonLink key={index} href={itemAction.url} {...commonProps} />
         );
     }
 
     if (itemAction.type === 'modal') {
         return (
-            <Button
+            <NeoButton
                 {...commonProps}
                 onPress={() => {
                     handleBlock(itemAction);
@@ -157,11 +247,11 @@ const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowC
     if (itemAction.type === 'menu') {
         return (
             <>
-                {!menuData ? <Button
-                    variant="text"
-                    size="sm"
-                    rounded
-                    startDecorator="Ellipsis"
+                {!menuData ? <NeoButton
+                    style="borderless"
+                    controlSize="small"
+                    image="Ellipsis"
+                    accessibilityLabel={itemAction.title || 'Actions'}
                     onPress={() => {
                         if (Platform.OS === 'web')
                             setMenuData({
@@ -176,11 +266,12 @@ const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowC
                     defaultOpen={true}
                     onSelect={handleMenuManageSelect}
                 >
-                    <Button
-                        variant="text"
-                        size="sm"
-                        rounded
-                        startDecorator="Ellipsis"
+                    <NeoButton
+                        style="borderless"
+                        controlSize="small"
+                        image="Ellipsis"
+                        accessibilityLabel={itemAction.title || 'Actions'}
+                        interactive
                     />
                 </DropdownMenu>}
             </>
@@ -189,7 +280,7 @@ const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowC
 
     if (itemAction.type === 'object') {
         return (
-            <Button
+            <NeoButton
                 {...commonProps}
                 onPress={() => {
                     handleBlock(itemAction);
@@ -202,11 +293,12 @@ const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowC
         return (
             <>
                 <Redirect ref={redirectRef} />
-                <Button
+                <NeoButton
                     key={index}
                     {...commonProps}
                     onPress={() => getAction(itemAction, setShowConfirm)}
-                /></>
+                />
+            </>
         );
     }
 
@@ -221,52 +313,63 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
         case 'link':
             return <Link href={cell.data.url}><Text className="text-primary">{cell.data.text}</Text></Link>
         case 'text':
-            return <Text className="text-secondary-foreground  truncate overflow-hidden">{stripTags(cell.value)}</Text>
+            return <Text className="text-secondary-foreground truncate" numberOfLines={1}>{stripTags(cell.value)}</Text>
         case 'price':
-            return <Text className="text-secondary-foreground  truncate overflow-hidden">{cell.value.value + ' ' + cell.value.currency}</Text>
+            return <Text className="text-secondary-foreground" numberOfLines={1}>{cell.value.value + ' ' + cell.value.currency}</Text>
         case 'period':
-            return <Text className="text-secondary-foreground  truncate overflow-hidden">{cell.value.period + ' ' + cell.value.unit}</Text>
+            return <Text className="text-secondary-foreground" numberOfLines={1}>{cell.value.period + ' ' + cell.value.unit}</Text>
         case 'order':
-            return <Text className="text-secondary-foreground  text-lg">
-                <Icon icon='MoveVertical' />
-            </Text>
+            return (
+                <View className="items-start justify-center">
+                    <Icon icon="GripVertical" size={18} className="text-muted-foreground" />
+                </View>
+            )
         case 'switcher':
-            return <>
-                <Switch
-                    size="small"
-                    onValueChange={() => toggleSwitch(id, indexRow)}
-                    value={cell.data == 'active' || cell.data == '1' ? true : false}
-
-                /></>
+            return (
+                <View className="items-start justify-center">
+                    <Switch
+                        size="small"
+                        onValueChange={() => toggleSwitch(id, indexRow)}
+                        value={cell.data == 'active' || cell.data == '1' ? true : false}
+                    />
+                </View>
+            )
         case 'checkbox':
-            return <>
-                <CheckBox
-                    value={selected.includes(cell.data)}
-                    status={selected.includes(cell.data) ? 'checked' : 'unchecked'}
-                    onPress={() => setSelection(cell.data)}
-                    isBackground={false}
-                /></>
+            return (
+                <View className="items-start justify-center">
+                    <CheckBox
+                        value={selected.includes(cell.data)}
+                        status={selected.includes(cell.data) ? 'checked' : 'unchecked'}
+                        onPress={() => setSelection(cell.data)}
+                        isBackground={false}
+                        compact
+                    />
+                </View>
+            )
         case 'profile':
             return <Profile {...cell.data} displaySize="sm" />
         case 'actions':
-            return (<Row className='space-x-2 justify-end'>
-                {cell.data.filter(item => item?.type).map((itemAction, index) => (
-                    <ActionButton
-                        key={"ab" + index}
-                        index={index}
-                        itemAction={itemAction}
-                        indexRow={indexRow}
-                        id={id}
-                        setShowConfirm={setShowConfirm}
-                        deleteRows={deleteRows}
-                        fetchData={fetchData}
-                        refetch={refetch}
-                        setTimeStamp={setTimeStamp}
-                        handleBlock={handleBlock}
-                    // You need to define this function in your component
-                    />
-                ))}
-            </Row>)
+            return (
+                <View className="w-full items-end justify-center">
+                    <Row className="gap-1.5 items-center justify-end flex-nowrap">
+                        {dedupeGridRowActions(cell.data).map((itemAction, index) => (
+                            <ActionButton
+                                key={"ab" + index}
+                                index={index}
+                                itemAction={itemAction}
+                                indexRow={indexRow}
+                                id={id}
+                                setShowConfirm={setShowConfirm}
+                                deleteRows={deleteRows}
+                                fetchData={fetchData}
+                                refetch={refetch}
+                                setTimeStamp={setTimeStamp}
+                                handleBlock={handleBlock}
+                            />
+                        ))}
+                    </Row>
+                </View>
+            )
 
     }
     return <Text className="text-secondary-foreground ">{JSON.stringify(cell)}</Text>
@@ -283,7 +386,7 @@ const MultiAdd = React.memo(({ data, setBottomSheetData, handleUpdate }) => {
     };
 
     return <DropdownMenu items={data.values} onSelect={(oItem) => { handleAction(oItem) }}>
-        <Button startDecorator="Plus" variant="default" size="sm" title={data.title} />
+        <NeoButton style="borderedProminent" controlSize="large" image="Plus" label={data.title} interactive />
     </DropdownMenu>
 })
     ;
@@ -361,7 +464,10 @@ export default function ElementGrid(props) {
     const { setBottomSheetData } = useBottomSheetData();
     const data = props.data;
     let settings = data.settings;
-    const header = (data.header || []).filter((item) => (item?.name != 'reports'))
+    const header = useMemo(
+        () => normalizeGridHeader(data.header, data.data?.[0]),
+        [data.header, data.data]
+    );
     const isSortable = header.find((item) => item?.name == 'order');
     const [refetchState, dispatch] = useReducer(refetchUniListReducer, {
         visibleItems: [],
@@ -380,7 +486,8 @@ export default function ElementGrid(props) {
     const [modalContent, setModalContent] = useState(false);
     const [modalContentElement, setModalContentElement] = useState(false);
     const { t } = useTranslation();
-    const currentBreakpoint = useBreakpoint();
+
+    const tableMinWidth = useMemo(() => getTableMinWidth(header), [header]);
 
     const dropdownFilterKeys = useMemo(
         () => getDropdownFilterKeys(settings.filters),
@@ -634,9 +741,9 @@ export default function ElementGrid(props) {
             text={calculateMsg}
             handleOk={() => setCalculateMsg(false)}
         />
-        <Row className='xl:justify-between mt-2 mb-4 '>
+        <Row className="w-full flex-wrap items-center justify-between gap-3 mt-2 mb-4">
             {(dropdownFilterKeys.length > 0 || hasSearchFilter(settings.filters)) &&
-                <Row className="gap-x-2 ">
+                <Row className="flex-1 min-w-48 flex-wrap gap-2 items-center">
                     {dropdownFilterKeys.map((filterKey) => {
                         const items = mapFilterDropdownItems(settings.filters[filterKey]);
                         const selected = selectedFilters[filterKey];
@@ -646,126 +753,177 @@ export default function ElementGrid(props) {
                                 items={items}
                                 onSelect={(oItem) => handleFilter(filterKey, oItem)}
                             >
-                                <Button title={selected?.title ?? items[0]?.title} size="sm" />
+                                <NeoButton
+                                    style="bordered"
+                                    controlSize="small"
+                                    label={selected?.title ?? items[0]?.title}
+                                    interactive
+                                />
                             </DropdownMenu>
                         );
                     })}
                     {hasSearchFilter(settings.filters) &&
-                        <Input size="small" placeholder={t('Search')} name="search" onChangeText={(value) => handleSearch(value)} />
+                        <Input size="small" placeholder={t('Search')} name="search" onChangeText={(value) => handleSearch(value)} className="min-w-40 flex-1" />
                     }
                 </Row>
             }
-            <Row className="gap-x-2 ml-1 items-center">
+            <Row className="flex-wrap gap-2 items-center shrink-0">
 
                 {actionsIndependent.map((item, index) => {
                     if (item.type == 'modal') {
-                        return <Button key={`btn-${item.name}`} startDecorator="Plus" size="sm" showTitleFromSize='sm' title={t(item?.title || "Add new")} onPress={() => { handleActionBlock(item) }} />
+                        return (
+                            <NeoButton
+                                key={`btn-${item.name}`}
+                                style="borderedProminent"
+                                controlSize="large"
+                                image="Plus"
+                                label={t(item?.title || "Add new")}
+                                onPress={() => { handleActionBlock(item) }}
+                            />
+                        )
                     }
                     if (item.type == 'menu') {
                         return <MultiAdd key={`btn-${item.name}`} handleUpdate={handleUpdate} setBottomSheetData={setBottomSheetData} data={item} />
                     }
                     if (item.type == 'link') {
-                        return <ButtonLink key={`btn-${item.name}`} href={item.link || item.url} size="sm" title={item.title} showTitleFromSize='sm' />
+                        return (
+                            <NeoButtonLink
+                                key={`btn-${item.name}`}
+                                href={item.link || item.url}
+                                style="borderedProminent"
+                                controlSize="large"
+                                label={item.title}
+                            />
+                        )
                     }
                 })}
 
                 {actionsBulk.map((item, index) => {
                     if (item.name == 'calculate') {
-                        return <Button key={item.name}  size="sm" showTitleFromSize='sm' title={t("Calculate")} disabled={selected.length == 0} onPress={() => { handleCalculateSelected() }} />
+                        return (
+                            <NeoButton
+                                key={item.name}
+                                style="bordered"
+                                controlSize="small"
+                                label={t("Calculate")}
+                                disabled={selected.length == 0}
+                                onPress={() => { handleCalculateSelected() }}
+                            />
+                        )
                     }
                     if (item.name == 'delete') {
-                        return <Button key={item.name} startDecorator="Trash" size="sm" showTitleFromSize='sm' title={t("Delete selected")} disabled={selected.length == 0} onPress={() => { handleDeleteSelected() }} />
+                        return (
+                            <NeoButton
+                                key={item.name}
+                                style="bordered"
+                                controlSize="large"
+                                image="Trash"
+                                label={t("Delete selected")}
+                                disabled={selected.length == 0}
+                                onPress={() => { handleDeleteSelected() }}
+                            />
+                        )
                     }
                     if (item.name == 'stripe_v3') {
-                        return <Button key={item.name} size="sm" title={t("Checkout with Stripe")} showTitleFromSize='sm' disabled={selected.length == 0} onPress={() => { handleActionBlockPayment('stripe_v3') }} />
+                        return (
+                            <NeoButton
+                                key={item.name}
+                                style="bordered"
+                                controlSize="small"
+                                label={t("Checkout with Stripe")}
+                                disabled={selected.length == 0}
+                                onPress={() => { handleActionBlockPayment('stripe_v3') }}
+                            />
+                        )
                     }
                 })}
-
-                {
-                    /*
-                       {
-                                        data.actions.bulk.credits && (
-                                            <Button  size="base" title={t("Checkout with Credits")}  showTitleFromSize='sm' disabled={selected.length == 0} onPress={() => {alert("TODO Checkout with Credits")}} />)
-                                        }
-                                    {
-                                        data.actions.bulk.paypal_api && (
-                                            <Button  size="base" title={t("Checkout with PayPal")}  showTitleFromSize='sm' disabled={selected.length == 0} onPress={() => {alert("TODO CheCheckout with PayPal")}} />)
-                                         }
-                                    
-                    */
-
-                }
             </Row>
         </Row>
-        <View className='border border-border/60 rounded-lg'>
-            <Row className='w-full justify-between py-2 border-b border-border/60'>
-                {
-                    header.map((itemCell, index) => {
-                        //getWidth(itemCell.width) 
+        <ScrollView
+            horizontal
+            className="w-full"
+            contentContainerClassName="w-full min-w-full"
+            showsHorizontalScrollIndicator
+        >
+            <View
+                className="w-full border border-border/60 rounded-lg"
+                style={{ width: '100%', minWidth: tableMinWidth }}
+            >
+                <Row className="w-full items-center gap-2 px-2 py-2 border-b border-border/60">
+                    {header.map((itemCell, index) => {
+                        const isActions = itemCell.name === 'actions';
+                        const label =
+                            itemCell.title == 'Select' || isActions
+                                ? ''
+                                : itemCell.title;
                         return (
-                            <View key={'header' + index} style={{ width: getWidth1(itemCell.width) }} className={' py-1 p-1 xl:p-2 '}>
-                                <Text className="font-bold text-secondary-foreground ">{itemCell.title == 'Select' ? '' : itemCell.title}</Text>
+                            <View
+                                key={'header' + index}
+                                style={getColumnStyle(itemCell)}
+                                className={`justify-center py-1 min-w-0 ${isActions ? 'items-end' : 'items-start'}`}
+                            >
+                                {/* Actions keeps an empty label so Date/meta stay on their tracks */}
+                                <Text
+                                    className="font-bold text-secondary-foreground text-left"
+                                    numberOfLines={1}
+                                >
+                                    {label || (isActions ? ' ' : '')}
+                                </Text>
                             </View>
-
                         );
-                    })
-                }
-            </Row>
-            {(!dataItems || dataItems.length === 0) && status === 'success' && !hasNextPage && (
-                <View className="items-center pt-4">
-                    <Text className="text-secondary-foreground ">Nothing to show</Text>
-                </View>
-            )}
-
-            <UniList
-                height={400}
-                sortable={isSortable}
-                onSort={handleSort}
-                data={dataItems}
-                onEndReached={handleEndReached}
-                refreshing={isRefetching}
-                onRefresh={refetch}
-                ListFooterComponent={hasNextPage && isFetchingNextPage ? (
-                    <View className="p-4 items-center">
-                        <Loading size="small" />
+                    })}
+                </Row>
+                {(!dataItems || dataItems.length === 0) && status === 'success' && !hasNextPage && (
+                    <View className="items-start px-2 pt-4 pb-4">
+                        <Text className="text-secondary-foreground ">Nothing to show</Text>
                     </View>
-                ) : null}
-                renderItem={({ item, index: indexRow }) => {
-                    return (
-                        <Row className={` justify-between border-b border-border/60 web:hover:bg-muted/40 ${indexRow % 2 != 0 && ' '}`}>
-                            {header.map((cellHeader, index) => (
-                                <View key={'cell_' + indexRow + '_' + index} style={{ width: getWidth1(cellHeader.width) }} className={`py-1 p-1 xl:p-2 justify-center`}>
-                                    <Cell
-                                        cell={item[cellHeader.name]}
-                                        indexRow={indexRow}
-                                        id={item[settings.field_id]}
-                                        toggleSwitch={toggleSwitch}
-                                        setSelection={setSelection}
-                                        selected={selected}
-                                        setShowConfirm={setShowConfirm}
-                                        deleteRows={deleteRows}
-                                        fetchData={fetchData}
-                                        refetch={refetch}
-                                        setTimeStamp={setTimeStamp}
-                                        handleBlock={handleActionBlock}
-                                    />
-                                </View>
-                            ))}
-                        </Row>
-                    );
-                }}
-            />
+                )}
 
-        </View>
+                <UniList
+                    height={400}
+                    sortable={isSortable}
+                    onSort={handleSort}
+                    data={dataItems}
+                    onEndReached={handleEndReached}
+                    refreshing={isRefetching}
+                    onRefresh={refetch}
+                    ListFooterComponent={hasNextPage && isFetchingNextPage ? (
+                        <View className="p-4 items-center">
+                            <Loading size="small" />
+                        </View>
+                    ) : null}
+                    renderItem={({ item, index: indexRow }) => {
+                        return (
+                            <Row className="w-full items-center gap-2 px-2 py-2 border-b border-border/60 web:hover:bg-muted/40">
+                                {header.map((cellHeader, index) => (
+                                    <View
+                                        key={'cell_' + indexRow + '_' + index}
+                                        style={getColumnStyle(cellHeader)}
+                                        className={`justify-center min-h-9 min-w-0 ${cellHeader.name === 'actions' ? 'items-end' : 'items-start'}`}
+                                    >
+                                        <Cell
+                                            cell={item[cellHeader.name]}
+                                            indexRow={indexRow}
+                                            id={item[settings.field_id]}
+                                            toggleSwitch={toggleSwitch}
+                                            setSelection={setSelection}
+                                            selected={selected}
+                                            setShowConfirm={setShowConfirm}
+                                            deleteRows={deleteRows}
+                                            fetchData={fetchData}
+                                            refetch={refetch}
+                                            setTimeStamp={setTimeStamp}
+                                            handleBlock={handleActionBlock}
+                                        />
+                                    </View>
+                                ))}
+                            </Row>
+                        );
+                    }}
+                />
+            </View>
+        </ScrollView>
     </View>;
 
-    const gridContent = (
-        currentBreakpoint === 0 ? <ScrollView horizontal={true} className='min-w-full'>
-            <View className='w-full mx-auto ' style={{ minWidth: 600 }} >
-                {a}
-            </View>
-        </ScrollView> : a
-    );
-
-    return <BlockWrapper {...props.blockWrapperProps}>{gridContent}</BlockWrapper>
+    return <BlockWrapper {...props.blockWrapperProps}>{a}</BlockWrapper>
 }

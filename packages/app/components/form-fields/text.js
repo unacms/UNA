@@ -1,4 +1,5 @@
 import Field, { getValidationRules } from './_field';
+import AdaptiveLabel from './adaptive-label';
 import { useController, useFormContext } from 'react-hook-form';
 import { Input } from 'app/design/controls'
 import { useEffect } from 'react';
@@ -24,9 +25,11 @@ export default function FormFieldText(props) {
         return  !field.value ? null : <Field {...props} caption={props.caption+': '+field.value} error2={formContext.formState.errors[name]}/>
     }
 
+    const isPhone = name.includes("phone") || props.type == "phone";
+
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
-            {name.includes("phone") || props.type == "phone" ? <PhoneInput
+            {isPhone ? <PhoneInput
                 autoFocus={props.auto_focus}
                 name={name}
                 readOnly={props?.attrs?.readonly == 'readonly' || props?.attrs?.disabled == 'disabled'}
@@ -34,30 +37,32 @@ export default function FormFieldText(props) {
                 value={String(field.value)}
                 ariaLabel={props.caption}
                 field={field}
-            /> : <Input
-                textContentType="none"
-
-                /* experiment */
-                
-                autoComplete="off"
-                autoCorrect={false}
-                spellCheck={false}
-                secureTextEntry={false}
-                keyboardType="default"
-                /* experiment */
-
-                autoFocus={props.auto_focus}
-                name={name}
-                readOnly={props?.attrs?.readonly == 'readonly' || props?.attrs?.disabled == 'disabled' || props.type == "value"}
-                placeholder={placeholder}
-                placeholderTextColor="#6b7280"
-                onChangeText={field.onChange}
-                onBlur={field.onBlur}
-                value={String(field.value)}
-                aria-label={props.caption}
-                {...(props.checker?.params?.max ? { maxLength: props.checker.params.max } : {})}
-            />
-            }
+            /> : (
+                <AdaptiveLabel
+                    caption={props.caption}
+                    value={field.value}
+                    useCaptionAsPlaceholder={props.use_caption_as_placeholder}
+                >
+                    <Input
+                        textContentType="none"
+                        autoComplete="off"
+                        autoCorrect={false}
+                        spellCheck={false}
+                        secureTextEntry={false}
+                        keyboardType="default"
+                        autoFocus={props.auto_focus}
+                        name={name}
+                        readOnly={props?.attrs?.readonly == 'readonly' || props?.attrs?.disabled == 'disabled' || props.type == "value"}
+                        placeholder={placeholder}
+                        placeholderTextColor="#6b7280"
+                        onChangeText={field.onChange}
+                        onBlur={field.onBlur}
+                        value={String(field.value)}
+                        aria-label={props.caption}
+                        {...(props.checker?.params?.max ? { maxLength: props.checker.params.max } : {})}
+                    />
+                </AdaptiveLabel>
+            )}
         </Field>
     );
 }

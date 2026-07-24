@@ -17,6 +17,12 @@ export const settingsForms = {
             'sys_forgot_password',
             'bx_invites_request_send',
         ],
+        /**
+         * When true, forms in `without_captions` use floating “eyebrow” labels:
+         * caption rests inside the field like a placeholder, then moves onto the
+         * top edge when the field is focused or has a value.
+         */
+        adaptive_labels: true,
         visibility_control_names: [
             // appSetting('layout', 'form_' + name + '_control_names')
             '*_allow_view_to',

@@ -1,4 +1,5 @@
 import Field from './_field';
+import AdaptiveLabel from './adaptive-label';
 import { useController } from 'react-hook-form';
 import { Input } from 'app/design/controls'
 import { Button } from 'app/design/controls'
@@ -19,28 +20,34 @@ export default function FormFieldPassword(props) {
 
     return (
         <Field {...props}>
-            <View>
-            <Input 
-                textContentType="password"
-                autoComplete="current-password"
-                placeholderTextColor="#6b7280"
-                placeholder = {placeholder}
-                secureTextEntry={isVisible}
-                name={props.name}
-                onChangeText={field.onChange}
-                onBlur={field.onBlur}
-                value={field.value}
-               // style={{paddingRight: 48}}
-            />
-            <View className="absolute right-1 top-1/2 -translate-y-1/2 justify-center items-center">
-                <Button
-                    startDecorator={isVisible ? buttonConfig.startDecorator.visible : buttonConfig.startDecorator.hidden}
-                    size={buttonConfig.size}
-                    variant={buttonConfig.variant}
-                    rounded={buttonConfig.rounded}
-                    onPress={() => { setIsVisible(!isVisible) }}
-                />
-            </View>
+            <View className="relative w-full">
+                <AdaptiveLabel
+                    caption={props.caption}
+                    value={field.value}
+                    useCaptionAsPlaceholder={props.use_caption_as_placeholder}
+                >
+                    <Input
+                        textContentType="password"
+                        autoComplete="current-password"
+                        placeholderTextColor="#6b7280"
+                        placeholder={placeholder}
+                        secureTextEntry={isVisible}
+                        name={props.name}
+                        onChangeText={field.onChange}
+                        onBlur={field.onBlur}
+                        value={field.value}
+                        aria-label={props.caption}
+                    />
+                </AdaptiveLabel>
+                <View className="absolute right-1 top-1/2 -translate-y-1/2 justify-center items-center z-20">
+                    <Button
+                        startDecorator={isVisible ? buttonConfig.startDecorator.visible : buttonConfig.startDecorator.hidden}
+                        size={buttonConfig.size}
+                        variant={buttonConfig.variant}
+                        rounded={buttonConfig.rounded}
+                        onPress={() => { setIsVisible(!isVisible) }}
+                    />
+                </View>
             </View>
         </Field>
     );
