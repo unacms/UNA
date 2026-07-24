@@ -129,7 +129,17 @@ export default function (props) {
     </Row>
 
     const modalContent = isModalSub ? (
-        <ChkList values={subOptions} setValue={handleSubValueChange} selectedValue={subValues} />
+        subOptions.length === 0 ? (
+            <Text className="text-muted-foreground text-center py-6 px-4">
+                {t('Nothing to show')}
+            </Text>
+        ) : (
+            <ChkList values={subOptions} setValue={handleSubValueChange} selectedValue={subValues} />
+        )
+    ) : filteredValues.length === 0 ? (
+        <Text className="text-muted-foreground text-center py-6 px-4">
+            {t('Nothing to show')}
+        </Text>
     ) : (
         <>
             <RbList values={filteredValues} setValue={handleValueChange} selectedValue={field.value} />
