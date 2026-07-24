@@ -28,6 +28,10 @@ export default function FormFieldMarkdownEditor(props) {
         props.required,
         props.name,
     ])
+    const disabled =
+        props?.attrs?.readonly == 'readonly' ||
+        props?.attrs?.disabled == 'disabled' ||
+        !!props.disabled
 
     return (
         <Field {...props} error2={formContext.formState.errors[props.name]}>
@@ -35,7 +39,7 @@ export default function FormFieldMarkdownEditor(props) {
                 name={props.name}
                 value={props.value}
                 bg={props.bg}
-                disabled={props.disabled}
+                disabled={disabled}
                 autofocus={props.autofocus}
                 onFocus={props.onFocus}
                 placeholder={placeholder}
@@ -157,7 +161,7 @@ export function MarkdownTextInput({
                 onBlur={field.onBlur}
             />
 
-            {showToolbar && styleState ? (
+            {showToolbar && !disabled && styleState ? (
                 <View className="mt-2 flex-row flex-wrap gap-1">
                     <ToolbarButton
                         label="B"

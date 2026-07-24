@@ -107,6 +107,15 @@ const nextConfig = {
     typescript: {
         ignoreBuildErrors: true,
     },
+    // Bridge non-public GOOGLE_WEB_CLIENT_ID into the client bundle so SSR and
+    // hydration agree on whether Google auth (and the OR separator) render.
+    // Prefer NEXT_PUBLIC_* when set; fall back to the server-only name used in .env.
+    env: {
+        NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID:
+            process.env.NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID ||
+            process.env.GOOGLE_WEB_CLIENT_ID ||
+            '',
+    },
     // Disable source maps in production
     productionBrowserSourceMaps: false,
     /*experimental: {

@@ -170,7 +170,7 @@ export default function FormFieldMarkdownTranslatable(props) {
             }
         >
             <View className="gap-y-2 w-full">
-                {entries.length > 1 ? (
+                {entries.length > 0 ? (
                     <Row className="flex-wrap gap-1.5">
                         {entries.map((entry) => {
                             const selected =

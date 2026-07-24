@@ -51,6 +51,12 @@ export default function FormFieldMarkdownEditor(props) {
         props.required,
         props.name,
     ])
+    const disabled =
+        props?.attrs?.readonly == 'readonly' ||
+        props?.attrs?.readonly == true ||
+        props?.attrs?.disabled == 'disabled' ||
+        !!props.disabled
+
 
     return (
         <Field {...props} error2={formContext.formState.errors[props.name]}>
@@ -58,7 +64,7 @@ export default function FormFieldMarkdownEditor(props) {
                 name={props.name}
                 value={props.value}
                 bg={props.bg}
-                disabled={props.disabled}
+                disabled={disabled}
                 autofocus={props.autofocus}
                 placeholder={placeholder}
                 initialHeight={initialHeight}
@@ -124,6 +130,9 @@ export function MarkdownTextInput({
         return () => sub.remove()
     }, [field, mounted])
 
+    // readOnly: edit off, scroll/select still work. Hide toolbar when locked.
+    const toolbarVisible = showToolbar && !disabled
+
     const plugins = useMemo(() => {
         const list = [
             headingsPlugin({ allowedHeadingLevels: [1, 2, 3, 4, 5, 6] }),
@@ -153,7 +162,7 @@ export function MarkdownTextInput({
             }),
             diffSourcePlugin({ viewMode: 'rich-text' }),
         ]
-        if (showToolbar) {
+        if (toolbarVisible) {
             list.push(
                 toolbarPlugin({
                     toolbarContents: () => (
@@ -175,13 +184,15 @@ export function MarkdownTextInput({
             )
         }
         return list
-    }, [showToolbar])
+    }, [toolbarVisible])
 
+    // overflow-hidden + maxHeight clips content; in readOnly use overflow-y-auto so it scrolls.
     const surfaceClassName =
         bg === 'transparent'
-            ? 'flex-auto overflow-hidden min-w-0'
+            ? cn('flex-auto min-w-0', disabled ? 'overflow-y-auto' : 'overflow-hidden')
             : cn(
-                'flex-auto overflow-hidden min-w-0',
+                'flex-auto min-w-0',
+                disabled ? 'overflow-y-auto' : 'overflow-hidden',
                 inputSettings.base,
                 inputSettings.rounded.default,
             )
@@ -204,8 +215,9 @@ export function MarkdownTextInput({
                 markdown={initialMarkdown.current}
                 placeholder={placeholder}
                 readOnly={!!disabled}
-                autoFocus={!!autofocus}
+                autoFocus={!disabled && !!autofocus}
                 onChange={(markdown, initialMarkdownNormalize) => {
+                    if (disabled) return
                     const next = markdown ?? ''
                     lastWrittenRef.current = next
                     if (initialMarkdownNormalize) return
