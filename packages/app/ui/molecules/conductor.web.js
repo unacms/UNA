@@ -59,6 +59,7 @@ import { useSetHeader, defaultHeader, useHeaderHeight } from 'app/context/jotai/
 import { getComponent } from 'app/components/registry';
 import { BlockByName2 } from 'app/components/block'
 import { useSound } from 'app/lib/hooks/useSound';
+import { getPageContentWidth } from 'app/lib/util'
 
 import { useStickyHeaderOffset, stickySidebarStyle } from 'app/lib/hooks/use-sticky-header-offset'
 
@@ -192,6 +193,8 @@ export function Conductor({
         currentRoute?.config
     )
 
+    const contentWidth = getPageContentWidth(layoutName)
+
     // Disable offset for adjustable panel layouts
     if (cellsCustomConfig?.adjustable) {
         initialHeaderSettings.offset = false
@@ -300,6 +303,7 @@ export function Conductor({
 
     const headerComponent = (
         <HeaderContainer
+            contentWidth={contentWidth}
             isCover={isCover}
             isCoverDisabled={isCoverDisabled}
             isUseCurrentHeader={isUseCurrentHeader}
@@ -423,11 +427,12 @@ export function Conductor({
         >
             {(isUseCurrentHeader || isDesktop) && headerComponent}
             <View
-                className={`${appSetting('layout', 'page_content_width_default')} mx-auto ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}
+                className={`${contentWidth} mx-auto ${tmplLayout == 'mixed' ? 'mt-12' : ''}`}
             >
                 <TabSceneHeader
                     route={currentRoute}
                     setFilterValue={setFilterValue}
+                    contentWidth={contentWidth}
                 />
                 <TabScene
                     layoutName={layoutName}
@@ -1287,6 +1292,7 @@ const HeaderContainer = ({
     isCover,
     isHideCover,
     isCoverDisabled,
+    contentWidth,
     isUseCurrentHeader
 }) => {
     const [hideDefaultHeaderFrom, setHideDefaultHeaderFrom] = useState(100);
@@ -1369,7 +1375,7 @@ const HeaderContainer = ({
                 
             </View>
             <View className={`header-fixed w-full ${conductorTheme.cover_base} ${(isScrolled ? 'fixed' : '')}`}>
-                <View className={`${appSetting('layout', 'page_content_width_default')} ${conductorTheme.cover_small} ${isScrolled ? 'animate-in fade-in slide-in-from-top-2 duration-300 ease-out' : ''}`}
+                <View className={`${contentWidth} ${conductorTheme.cover_small} ${isScrolled ? 'animate-in fade-in slide-in-from-top-2 duration-300 ease-out' : ''}`}
                     style={{
                         display: isSmallCoverMounted ? 'flex' : 'none',
                    
@@ -1462,7 +1468,7 @@ const TabBar = ({
     }
 }
 
-const TabSceneHeader = ({ route, setFilterValue }) => {
+const TabSceneHeader = ({ route, setFilterValue, contentWidth }) => {
     const filters = appSetting('conductor', 'hide_browse_filter')
         ? null
         : route?.endpoint?.filters
@@ -1485,7 +1491,7 @@ const TabSceneHeader = ({ route, setFilterValue }) => {
             )}
             {isTitle && (
                 <View
-                    className={`${appSetting('layout', 'page_content_width_default')} mx-auto pt-3 px-4`}
+                    className={`${contentWidth} mx-auto pt-3 px-4`}
                 >
                     <Text className="text-3xl tracking-tight leading-10 font-bold text-secondary-foreground">
                         {route.title}
