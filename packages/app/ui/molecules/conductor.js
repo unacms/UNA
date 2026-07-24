@@ -973,12 +973,19 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
     const FormHeader = useMemo(() => {
         if (!formProps) return undefined;
+        const formUrl = currentRoute?.link || currentRoute?.pageData?.url;
         return () => (
             <View className="w-full">
-                <Form {...formProps} key="form" name={formProps.name} onChange={onFormChangedValues} />
+                <Form
+                    {...formProps}
+                    key={formUrl ? `form-${formUrl}` : 'form'}
+                    name={formProps.name}
+                    url={formUrl}
+                    onChange={onFormChangedValues}
+                />
             </View>
         );
-    }, [formProps, onFormChangedValues]);
+    }, [formProps, onFormChangedValues, currentRoute?.link, currentRoute?.pageData?.url]);
 
     if (!!formProps) {
         Object.assign(tabSceneProps, {

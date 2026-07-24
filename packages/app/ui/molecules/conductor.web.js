@@ -728,7 +728,13 @@ const TabSceneMainContent = ({
                 className={`transition-opacity duration-500 ease-out ${showContent ? 'opacity-100' : 'opacity-0 pointer-events-none'} ${!showContent ? 'absolute inset-x-0 top-0 h-0 overflow-hidden' : ''}`}
             >
                 {(formProps) && <View className=" w-full">
-                    <Form {...formProps} key="form" name={formProps.name} onChange={onFormChangedValues} />
+                    <Form
+                        {...formProps}
+                        key={`form-${pageRoute?.link || pageRoute?.pageData?.url || 'filters'}`}
+                        name={formProps.name}
+                        url={pageRoute?.link || pageRoute?.pageData?.url}
+                        onChange={onFormChangedValues}
+                    />
                 </View>
                 }
                 <UniList

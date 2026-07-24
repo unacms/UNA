@@ -55,7 +55,8 @@ export default function Form({
     onChange,
     saveOnChanges,
     exProps,
-    request
+    request,
+    url,
 }) {
     const { t } = useTranslation();
     const isAutoChange = !!onChange;
@@ -318,7 +319,9 @@ export default function Form({
     }, [formBundle?.form?.updated]);
 
     const { csrf_token, ...restDefaultValues } = defaultValues;
-    const cacheKey = `${formName}_${request?.url || false}` ;
+    // Include page url (not uri — uri can be shared across different pages) so
+    // auto-change filter drafts do not bleed between routes.
+    const cacheKey = `${formName}_${request?.url || false}_${url || ''}`;
 
     const onSubmit = async d => {
         FeedbackHaptics('Medium')
