@@ -427,7 +427,9 @@ class BxBaseFormView extends BxDolForm
             if(!empty($aInput['error']))
                 $aInput['error'] = strip_tags($aInput['error']);
 
-            if (isset($aInput['type']) && 'files' == $aInput['type']){
+            $bType = isset($aInput['type']);
+
+            if ($bType && 'files' == $aInput['type']) {
                 $oStorage = BxDolStorage::getObjectInstance($aInput['storage_object']);
                 $aInput['ext_allow'] = $oStorage->getObjectData()['ext_allow'];
                 $aInput['ext_deny'] = $oStorage->getObjectData()['ext_deny'];
@@ -454,21 +456,21 @@ class BxBaseFormView extends BxDolForm
                 }
             }
 
-            if (isset($aInput['type']) && 'custom' == $aInput['type']){
+            if ($bType && 'custom' == $aInput['type']){
                 $sCustomMethod = 'genCustomInput' . $this->_genMethodName($aInput['name']);
                 if (method_exists($this, $sCustomMethod))
                      $aInput = $this->$sCustomMethod($aInput);
             }
 
-            if (isset($aInput['type']) && 'block_header' == $aInput['type']){
+            if ($bType && 'block_header' == $aInput['type']){
                 $aInput['name'] = $sKey;
             }
 
-            if (isset($aInput['type']) && 'block_header' == $aInput['type']){
+            if ($bType && 'block_header' == $aInput['type']){
                 $aInput['name'] = $sKey;
             }
 
-            if (isset($aInput['type']) && 'location' == $aInput['type']){
+            if ($bType && 'location' == $aInput['type']){
                 $oLocation = BxDolLocationField::getObjectInstance(getParam('sys_location_field_default'));
 
                 $aVars = [];
@@ -481,9 +483,16 @@ class BxBaseFormView extends BxDolForm
                 $aInput['value'] = $aVars;
             }
 
-            if (isset($aInput['type']) && 'textarea' == $aInput['type']){
+            if ($bType && 'textarea' == $aInput['type']){
                 if (isset($aInput['value'], $aInput['html']) && (int)$aInput['html'] == 0)
                     $aInput['value'] = strip_tags($aInput['value']);
+            }
+
+            if ($bType && 'price' == $aInput['type']) {
+                $aInput['value'] = [
+                    'value' => $aInput['value'],
+                    'currency' => BxDolPayments::getInstance()->getOption('default_currency_sign') ?: getParam('currency_sign')
+                ];
             }
 
             /**
