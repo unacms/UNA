@@ -48,7 +48,7 @@ export default function FormFieldMarkdownEditor(props) {
     )
 }
 
-function MarkdownTextInput({
+export function MarkdownTextInput({
     name,
     value: valueProp,
     initialHeight = 120,

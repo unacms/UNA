@@ -6,6 +6,7 @@ import Submit from './submit';
 import Switcher from './switcher';
 import TextField from './text';
 import TextTranslatable from './text_translatable';
+import MarkdownTranslatable from './markdown_translatable';
 import Editor from './editor';
 import EditorMarkdown from './editor-markdown';
 import Select from './select';
@@ -50,11 +51,13 @@ export const componentsMapDefault = {
     checkbox: Switcher,
     text: TextField,
     text_translatable: TextTranslatable,
+    markdown_translatable: MarkdownTranslatable,
     phone: TextField,
     value: TextField,
     price: TextField,
     textarea: Editor,
     textarea_markdown: EditorMarkdown,
+    markdown: EditorMarkdown,
     select: Select,
     select_multiple: Selector,
     radio_set: Select,

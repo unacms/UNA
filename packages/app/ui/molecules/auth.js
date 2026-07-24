@@ -15,11 +15,22 @@ import { useTranslation } from 'react-i18next'
 function hasGoogleAuth() {
     const google = appSetting('auth', 'google')
     if (!google || typeof google !== 'object') return false
-    return Platform.select({
+    return !!Platform.select({
         ios: google.ios_client_id,
         android: google.android_client_id,
         default: google.web_client_id,
     })
+}
+
+function hasAltAuth() {
+    return !!(
+        hasGoogleAuth() ||
+        appSetting('auth', 'github') ||
+        appSetting('auth', 'linkedin') ||
+        appSetting('auth', 'x') ||
+        appSetting('auth', 'passkey') ||
+        appSetting('auth', 'saml')
+    )
 }
 
 export default function AuthPanel({
@@ -30,6 +41,7 @@ export default function AuthPanel({
 }) {
 
     const { t } = useTranslation()
+    const altAuth = hasAltAuth()
     return (
         <View className="w-full gap-4">
             {forgotPasswordLink && (
@@ -82,7 +94,7 @@ export default function AuthPanel({
                 </Link>
             )}
 
-            {(showSeparator && (hasGoogleAuth() || appSetting('auth', 'github') || appSetting('auth', 'linkedin') || appSetting('auth', 'x') || appSetting('auth', 'passkey') || appSetting('auth', 'saml'))) && (
+            {showSeparator && altAuth ? (
                 <View
                     className="flex-row items-center justify-center w-full"
                     accessibilityRole="separator"
@@ -107,19 +119,21 @@ export default function AuthPanel({
                     />
 
                 </View>
-            )}
-            <View
-                className="web:flex-row web:flex-wrap gap-x-2 gap-y-2 w-full"
-                accessibilityRole="group"
-                accessibilityLabel={t('auth_alt_methods_a11y')}
-            >
-                {hasGoogleAuth() && <AuthGoogle />}
-                {appSetting('auth', 'github') && <AuthGitHub />}
-                {appSetting('auth', 'linkedin') && <AuthLinkedIn />}
-                {appSetting('auth', 'x') && <AuthX />}
-                {appSetting('auth', 'passkey') && <AuthPasskey />}
-                {appSetting('auth', 'saml') && <AuthSAML />}
-            </View>
+            ) : null}
+            {altAuth ? (
+                <View
+                    className="web:flex-row web:flex-wrap gap-x-2 gap-y-2 w-full"
+                    accessibilityRole="group"
+                    accessibilityLabel={t('auth_alt_methods_a11y')}
+                >
+                    {hasGoogleAuth() ? <AuthGoogle /> : null}
+                    {appSetting('auth', 'github') ? <AuthGitHub /> : null}
+                    {appSetting('auth', 'linkedin') ? <AuthLinkedIn /> : null}
+                    {appSetting('auth', 'x') ? <AuthX /> : null}
+                    {appSetting('auth', 'passkey') ? <AuthPasskey /> : null}
+                    {appSetting('auth', 'saml') ? <AuthSAML /> : null}
+                </View>
+            ) : null}
         </View>
     )
 }
