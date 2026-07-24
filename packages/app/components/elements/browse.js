@@ -468,7 +468,7 @@ export default function Browse(props) {
 
     return (
         <BlockWrapper {...props.blockWrapperProps}>
-            <View className={`w-full ${isOneLine ? '' : 'web:h-full'}`}>
+            <View className={`w-full ${isOneLine ? '' : 'web:h-full '}`}>
                 <View className="w-full" ></View>
                 <View className={`w-full ${props.showBg ? blockTheme['u-block-bg'] + ' ' + blockTheme['u-block-pad'] + ' ' + blockTheme['u-block-base'] : ''} ${blockTheme['u-block-rounded-all']}`} style={isOneLine || !isWeb ? {} : styles}>
                     {isShowTitleInside && (

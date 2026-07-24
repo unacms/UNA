@@ -160,13 +160,13 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode, suppressCon
 
     return (
         <Row
-            className={`${appSetting('layout', 'page_content_width_default')} px-3 lg:px-4 mx-auto `}
+            className={`${appSetting('layout', 'page_content_width_default')} ns--cover-small-title-wrapper-- px-3 lg:px-4 mx-auto ne-- `}
         >
             {!currentUser && !bPerson ? (
                 <PageHeaderSmall />
             ) : (
                 <>
-                    <View className="flex-1 shrink items-center flex-row gap-2 h-14 ">
+                    <View className=" ns--cover-small-title-content-- flex-1 shrink items-center flex-row gap-2 h-14 ne-- ">
                         {(!appSetting('context_selector', 'show_always') ||
                             !isWeb) && !suppressCoverBackButton && (
                                 <>
@@ -214,8 +214,8 @@ export function CoverSmall({ data, context, showMoreMenu, uri, mode, suppressCon
 
                     </View>
                     {!menusInNavbar && (
-                        <View className=" items-center justify-center h-14">
-                            <Row className="w-full justify-between ">
+                        <View className=" ns--cover-small-title-menu-wrapper-- items-center justify-center h-14 ne--">
+                            <Row className=" ns--cover-small-title-menu-content-- w-full justify-between ne-- ">
                                 {!showMoreMenu &&
                                     (!appSetting(
                                         'cover',
@@ -520,7 +520,7 @@ export default function Cover({
     }
 
     return (
-        <View className={`${appSetting('layout', 'page_content_width_default')} mx-auto`}>
+        <View className={`${appSetting('layout', 'page_content_width_default')} ns--cover-wrapper-- mx-auto ne-- `}>
             {appSetting('context_selector', 'show_always') && !suppressContextSelector ? (
                 <Row
                     className={`${TABLET_MODE_FROM}:hidden items-center w-full h-14 px-2 `}

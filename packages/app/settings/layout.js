@@ -11,8 +11,17 @@ export const settingsLayout = {
         avaliable_feed_units: ['Full feed', 'Compact feed'],
         avaliable_langs: ['auto', 'en', 'ru'],
         screen: ' w-full  ',
-        max_width: ' w-full flex-auto web:h-full ',
-        page_content_width_default: ' w-full max-w-8xl ',
+
+        neoshell_main_wrapper: ' ns--main-wrapper-- ',
+        neoshell_main_content: ' ns--main-content-- ',
+        neoshell_header_wrapper: ' ns--header-wrapper-- ',
+        neoshell_header_wrapper_scrolled: ' ns--header-wrapper-scrolled-- ',
+        neoshell_header_content: ' ns--header-content-- ',
+        neoshell_header_content_scrolled: ' ns--header-content-scrolled-- ',
+
+
+        max_width: ' ns--undefined-- w-full flex-auto web:h-full ne--  ',
+        page_content_width_default: ' ns--page-content-width-- w-full max-w-8xl ne--  ',
         page_content_width:{
             layout_1_column_thin: 'w-full max-w-md',
             layout_1_column_half: 'w-full max-w-2xl',
@@ -63,12 +72,12 @@ export const settingsLayout = {
         show_tabbar_on_mobile_non_logged: false,
 
         header: {
-            container: ' w-full z-50 header-fixed web:fixed native:absolute bg-card web:top-0 web:transition-transform web:duration-300 web:ease-in-out border-b border-border/60 ',
+            container: ' ns--header-wrapper-- w-full z-50 header-fixed web:fixed native:absolute bg-card web:top-0 web:transition-transform web:duration-300 web:ease-in-out border-b border-border/60 ne--',
             /** Optional. When set (non-blank), appended to `container` while scrollY > 0 (full-width bar: shadow, border, etc.). */
-            container_scrolled: ' shadow-sm dark:shadow-sm-deep ',
-            content: ' items-center justify-between h-16 mx-auto w-full ',
+            container_scrolled: ' ns--header-wrapper-scrolled-- shadow-sm dark:shadow-sm-deep ne-- ',
+            content: ' ns--header-content-- items-center justify-between h-16 mx-auto w-full ne-- ',
             /** Optional. When set (non-blank), applied to header content only while scrollY > 0. If unset, legacy `content_pinned_fixed` behavior is unchanged. */
-            content_scrolled: '  ',
+            content_scrolled: ' ns--header-content-scrolled--  ',
             content_pinned_fixed: ' bg-card ',
             content_left: 'flex-none 2xl:w-full 2xl:max-w-1/4 px-3 sm:px-4 gap-2',
             content_center: ' hidden flex-1 lg:flex gap-2 items-center justify-center max-w-3xl px-4 ',

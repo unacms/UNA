@@ -15,8 +15,7 @@ import {
 /** Matches `web:duration-300` (must be a static class for Tailwind JIT). Dismiss unmount waits for transition end. */
 const FIXED_BAR_MOTION_MS = 300;
 const FIXED_BAR_DISMISS_MS = FIXED_BAR_MOTION_MS + 80;
-/** Flow row (in-flow placeholder) transition when not using overlay. */
-const FIXED_BAR_TRANSITION_CLASS = 'web:duration-300 web:ease-in-out ';
+
 
 export { PageHeaderSmall, TextHeader };
 
@@ -175,12 +174,12 @@ export const PageHeader = ({ pageData }) => {
     const headerContainerBaseClass =
         appSetting('layout', 'header', 'container') + getContainerScrolledSuffix(isScrolled);
     const fixedHeaderClass =
-        ' header-fixed web:fixed web:top-0 web:left-0 web:right-0 web:z-50  ';
+        ' ns--header-wrapper-fixed-- header-fixed web:fixed web:top-0 web:left-0 web:right-0 web:z-50 ne--';
     const flowTransitionClass =
-        ` web:transition-[transform,opacity,background-color,border-color] ${FIXED_BAR_TRANSITION_CLASS} `;
+        ` ns--header-wrapper--transition-- web:transition-[transform,opacity,background-color,border-color] web:duration-300 web:ease-in-out ne-- `;
     const flowHeaderContainerClassName = usesFixedOverlayHeader
         ? `${headerContainerBaseClass} web:relative web:top-auto web:translate-y-0 ${flowTransitionClass}`
-        : `${headerContainerBaseClass} ${fixedHeaderClass} ${isCollapsibleHeader && scrollDirection === 1 ? 'web:-translate-y-full' : 'web:translate-y-0'} ${flowTransitionClass}`;
+        : `${headerContainerBaseClass} ${fixedHeaderClass} ${isCollapsibleHeader && scrollDirection === 1 ? 'web:-translate-y-full' : ' ns--header-position-start-- web:translate-y-0 ne--' } ${flowTransitionClass}`;
     const fixedHeaderMotionClass =
         isClosing || isEntering
             ? 'web:-translate-y-full web:opacity-0'

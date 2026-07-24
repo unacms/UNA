@@ -417,7 +417,7 @@ export function Conductor({
 
     return (
         <View
-            className="w-full h-full"
+            className="ns--conductor-wrapper-- w-full h-full ne--"
             scrollEnabled={false}
             style={{ minHeight: `calc(100dvh - ${pageHeaderHeight}px)` }}
         >
@@ -1341,7 +1341,7 @@ const HeaderContainer = ({
     }, [])
     //hideDefaultHeaderFrom
     return (
-        <View className={`z-40`}>
+        <View className={`ns--cover-wrapper-- z-40 ne--`}>
             <View className={`w-full cover-1 ${conductorTheme.cover_base}`}
                 style={{
                     // When scrolled, header-fixed (small cover + tab bar) leaves normal flow,

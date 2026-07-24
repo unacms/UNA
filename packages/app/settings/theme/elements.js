@@ -15,9 +15,9 @@ export const settingsElements = {
         topmenu_button_size: 'base',
         topmenu_button_pressed: true,
         left_menu_cnt: '  ',
-        cover_base: 'w-full bg-card shadow-border-b dark:shadow-border-b-deep ',
+        cover_base: 'ns--cover-base- w-full bg-card shadow-border-b dark:shadow-border-b-deep ne--',
         cover_content:
-            'items-center h-full w-full justify-between lg:p-4 ',
+            'ns--conductor-cover-content-- items-center h-full w-full justify-between lg:p-4 ne--',
         cover_small: 'mx-auto flex-row items-center ',
 
         hide_top_menu_from: 'xl',
