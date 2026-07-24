@@ -110,7 +110,9 @@ export function Conductor({
 
     useEffect(() => {
         setRoutes(initedTabs)
-    }, [keyword, data.url, data.elements])
+        // Intentionally omit data.elements: soft-nav to the same URL replaces the
+        // elements object every time and was wiping the inited list endpoint.
+    }, [keyword, data.url])
 
     // found current index from routes
     const getFoundIndex = useCallback(() => {
