@@ -383,7 +383,7 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
             return array('code' => 0, 'language' => $aWikiVer['language'], 'content' => $aWikiVer['content'], 'block_id' => $aWikiVer['block_id']);
     }
 
-    public function actionDeleteVersion ($iBlockId = 0)
+    public function actionDeleteVersion ($iBlockId = 0, $mixedParams = false)
     {
         if(!$iBlockId && ($_iBlockId = bx_get('block_id')) !== false)
             $iBlockId = (int)$_iBlockId;
@@ -399,6 +399,18 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
                 'close' => _t('_sys_close'),
                 'msg' => $sMsg,
             ));
+
+        if($this->_bIsApi) {
+            if($mixedParams && is_string($mixedParams)) {
+                $i = $this->_oQuery->deleteRevisions ($iBlockId, $sLang, explode(',', $mixedParams));
+                return [bx_api_get_msg(_t('_sys_wiki_revisions_deleted', $i), ['ext' => ['code' => 0, 'block_id' => $iBlockId]])];
+            }
+
+            return [bx_api_get_block('wiki_history',  $aVars['bx_repeat:revisions'], ['ext' => [
+                'mode' => 'edit', 
+                'request_url' => 'system/wiki_action/TemplServiceWiki&params[]=' . $this->getUri() . '&params[]=delete-version&params[]=' . $iBlockId . '&params[]=',
+            ]])];
+        }
 
         $aForm = array(
             'form_attrs' => array(
@@ -425,7 +437,7 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
                     'type' => 'custom',
                     'name' => 'revision',
                     'caption' => '',
-                    'content' => $this->_bIsApi ? $aVars : BxDolTemplate::getInstance()->parseHtmlByName('wiki_delete_version.html', $aVars),
+                    'content' => BxDolTemplate::getInstance()->parseHtmlByName('wiki_delete_version.html', $aVars),
                 ),
                 'buttons' => array(
                     'type' => 'input_set',
@@ -452,15 +464,10 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
 
         if ($oForm->isSubmittedAndValid ()) {
             $i = $this->_oQuery->deleteRevisions ($iBlockId, $sLang, bx_get('revision'));
-            return ($sMsg = _t('_sys_wiki_revisions_deleted', $i)) && $this->_bIsApi ? [bx_api_get_msg($sMsg), ['ext' => ['code' => 0, 'block_id' => $iBlockId]]] : ['code' => 0, 'actions' => ['Reload', 'ClosePopup', 'ShowMsg'], 'block_id' => $iBlockId, 'msg' => $sMsg];
+            return ['code' => 0, 'actions' => ['Reload', 'ClosePopup', 'ShowMsg'], 'block_id' => $iBlockId, 'msg' => _t('_sys_wiki_revisions_deleted', $i)];
         }
         else {
-            return $this->_bIsApi ? [bx_api_get_block('form', $oForm->getCodeAPI(), [
-                'ext' => [
-                    'name' => $this->_sObject, 
-                    'request' => ['url' => '/api.php?r=system/wiki_action/TemplServiceWiki&params[]=' . $this->getUri() . '&params[]=delete-version&params[]=' . $iBlockId, 'immutable' => true]
-                ]
-            ])] : BxDolTemplate::getInstance()->parseHtmlByName('wiki_form.html', array(
+            return BxDolTemplate::getInstance()->parseHtmlByName('wiki_form.html', array(
                 'form' => $oForm->getCode(),
                 'block_id' => $iBlockId,
                 'wiki_action_uri' => $this->getUri(),
@@ -617,6 +624,7 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
             'deletable' => 1,
             'copyable' => 0,
             'active' => 1,
+            'active_api' => 1,
         ])))
             return ($sMsg = _t('_sys_wiki_error_occured', 6)) && $this->_bIsApi ? [bx_api_get_msg($sMsg, ['ext' => ['code' => 6]])] : ['code' => 6, 'actions' => ['ShowMsg'], 'msg' => $sMsg];
 
@@ -652,8 +660,8 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
         $aVars = $this->getVarsForHistory($iBlockId, $sLang);
 
         if($this->_bIsApi)
-            return ($aVersions = $aVars['bx_repeat:revisions'] ?: false) ? [bx_api_get_block('simple_list',  $aVersions)] : [bx_api_get_msg(_t('_sys_wiki_error_no_revs'), ['ext' => ['block_id' => $iBlockId]])];
-        
+            return ($aVersions = $aVars['bx_repeat:revisions'] ?: false) ? [bx_api_get_block('wiki_history',  $aVersions)] : [bx_api_get_msg(_t('_sys_wiki_error_no_revs'), ['ext' => ['block_id' => $iBlockId]])];
+
         $aVars['language'] = $oLang->getLangTitle($oLang->getLangId($sLang));
         $aVars['close'] = _t('_sys_close');
         $aVars['msg'] = $aVars['bx_repeat:revisions'] ? '' : _t('_sys_wiki_error_no_revs');
@@ -662,7 +670,7 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
 
     public function actionTranslate ($iBlockId = 0)
     {
-        return $this->actionEdit ($iBlockId, true);
+        return $this->actionEdit($iBlockId, true);
     }
 
     public function actionEdit ($iBlockId = 0, $bTranslate = false)
@@ -671,7 +679,7 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
             $iBlockId = (int)$_iBlockId;
 
         $sMainLangLabel = '';
-        $aWikiVerMain = array();
+        $aWikiVerMain = [];
         $sLangForTranslate = '';
         $aLangsForInput = $this->getLangsForInput ($iBlockId, $bTranslate, $sMainLangLabel, $aWikiVerMain, $sLangForTranslate);
 
@@ -683,34 +691,72 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
             ]);
 
         // get latest revision for block with current lang
-        if ($bTranslate) {
-            $aWikiVer = $this->_oQuery->getBlockContent ($iBlockId, $sLangForTranslate, false, false);
-        }
-        else {
-            $aWikiVer = $this->_oQuery->getBlockContent ($iBlockId, bx_lang_name());
-        }
-
-        if ($aWikiVer) // unset notes since we need this field empty in the form
+        $aWikiVer = call_user_func_array([$this->_oQuery, 'getBlockContent'], $bTranslate ? [$iBlockId, $sLangForTranslate, false, false] : [$iBlockId, bx_lang_name()]);
+        if($aWikiVer) // unset notes since we need this field empty in the form
             unset($aWikiVer['notes']);
 
-        if (!$aWikiVer) { // check for new block, so initialize with default values
-            $aWikiVer = array('block_id' => $iBlockId);
-            if ($bTranslate)
-                $aWikiVer['language'] = $sLangForTranslate;
-            else
-                $aWikiVer['language'] = bx_lang_name();
-        }
+        if(!$aWikiVer) // check for new block, so initialize with default values
+            $aWikiVer = [
+                'block_id' => $iBlockId,
+                'language' => $bTranslate ? $sLangForTranslate : bx_lang_name()
+            ];
 
         // init form object
         $oForm = BxDolForm::getObjectInstance('sys_wiki', $bTranslate ? 'sys_wiki_translate' : 'sys_wiki_edit');
-        if (!$oForm)
+        if(!$oForm)
             return ($sMsg = _t('_sys_wiki_error_occured', 12)) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : $sMsg;
 
-        if (isset($oForm->aInputs['language']))
-            $oForm->aInputs['language']['values'] = $aLangsForInput;
-        if (isset($oForm->aInputs['content_main']) && $sMainLangLabel) {
-            $oForm->aInputs['content_main']['caption'] = $sMainLangLabel;
-            $oForm->aInputs['content_main']['content'] = $aWikiVerMain ? BxDolTemplate::getInstance()->parseHtmlByName('wiki_content.html', array('content' => $aWikiVerMain['content'])) : '';
+        if(isset($oForm->aInputs['language'])) {
+            if($this->_bIsApi)
+                foreach($aLangsForInput as $sKey => $aLangForInput)
+                    $oForm->aInputs['language']['values'][$sKey] = $aLangForInput['title'];
+            else
+                $oForm->aInputs['language']['values'] = $aLangsForInput;
+        }
+
+        if(($sK = 'content_main') && isset($oForm->aInputs[$sK]) && $sMainLangLabel)
+            $oForm->aInputs[$sK] = array_merge($oForm->aInputs[$sK], [
+                'caption' => $sMainLangLabel,
+                'content' => $aWikiVerMain ? BxDolTemplate::getInstance()->parseHtmlByName('wiki_content.html', ['content' => $aWikiVerMain['content']]) : ''
+            ]);
+
+        if($this->_bIsApi) {
+            if(($sK = 'content_main') && isset($oForm->aInputs[$sK]) && $sMainLangLabel) {
+                $oForm->aInputs[$sK] = array_merge($oForm->aInputs[$sK], [
+                    'type' => 'markdown',
+                    'value' => $aWikiVerMain ? $aWikiVerMain['content'] : '',
+                    'attrs' => [
+                        'readonly' => true
+                    ]
+                ]);
+
+                unset($oForm->aInputs[$sK]['content']);
+            }
+
+            if(($sK = 'content') && isset($oForm->aInputs[$sK])) {
+                $sFieldName = 'translations';
+
+                $aValues = array_flip(array_keys($aLangsForInput));
+                array_walk($aValues, function(&$mixedValue, $sKey) use($iBlockId) {
+                    $mixedValue = '';
+                    if(($aWikiVer = $this->_oQuery->getBlockContent($iBlockId, $sKey, false, false)) && is_array($aWikiVer))
+                        $mixedValue = $aWikiVer['content'];
+                });
+
+                foreach($aLangsForInput as $sName => $aInfo)
+                    $aLangsForInput[$sName]['name'] = $sFieldName . '-' . $aInfo['name'];
+
+                $oForm->aInputs[$sK] = array_merge($oForm->aInputs[$sK], [
+                    'type' => 'markdown_translatable',
+                    'name' => $sFieldName,
+                    'value' => '',
+                    'values' => $aValues,
+                    'translations' => array_values($aLangsForInput),
+                    'db' => null
+                ]);
+            }
+
+            unset($oForm->aInputs['language']);
         }
 
         $oForm->initChecker($aWikiVer);
@@ -730,60 +776,57 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
             ]);
         } 
         else {
-            $sLang = $oForm->getCleanValue('language');
-
-            // get previous revision with priority for current language
-            $aWikiVer = $this->_oQuery->getBlockContent ($iBlockId, $sLang);
-
-            $bMainLang = $this->getFieldMainLangFlag ($oForm, $sLang, $aWikiVer);
-            $sRev = $this->getFieldRev ($oForm, $sLang, $aWikiVer);
-            $bUnsafe = $this->getFieldUnsafeFlag ($oForm, $sLang, $aWikiVer);
-
-            // insert new revision (main lang is NOT allowed for translations)
-            $iTime = time();
-            if ((!$bMainLang || ($bMainLang && $this->isAllowed('edit'))) && $this->isContentChanged($iBlockId, $sLang, $oForm->getCleanValue('content'))) {
-                $sId = $oForm->insert(array(
-                    'added' => $iTime, 
-                    'revision' => $sRev,
-                    'main_lang' => $bMainLang, 
-                    'profile_id' => bx_get_logged_profile_id(),
-                    'unsafe' => $bUnsafe,
-                ));
-            }
+            if(($sLang = $oForm->getCleanValue('language')) !== false && ($sContent = $oForm->getCleanValue('content')) !== false)
+                $sId = $this->_addBlockRevision($iBlockId, $sLang, $sContent, $oForm);
 
             // process translations if available
-            if (($sTranslations = bx_get('translations')) && ($aTranslations = json_decode($sTranslations, true))) {
+            $aTranslations = [];
+            if(($sTranslations = bx_get('translations')) !== false)
+                $aTranslations = json_decode($sTranslations, true);
+            else
+                foreach($aLangsForInput as $sName => $aInfo)
+                    if(($sTranslation = bx_get('translations-' . $sName)) !== false)
+                        $aTranslations[$sName] = $sTranslation;
+
+            if($aTranslations && is_array($aTranslations))
                 foreach ($aTranslations as $sLang => $sContent) {
-                    if ($sLang == $oForm->getCleanValue('language'))
+                    if($sLang == $oForm->getCleanValue('language'))
                         continue;
 
-                    // get previous revision with priority for current language
-                    $aWikiVer = $this->_oQuery->getBlockContent ($iBlockId, $sLang);
-
-                    $bMainLang = $this->getFieldMainLangFlag ($oForm, $sLang, $aWikiVer);
-                    $sRev = $this->getFieldRev ($oForm, $sLang, $aWikiVer);
-                    $bUnsafe = $this->getFieldUnsafeFlag ($oForm, $sLang, $aWikiVer);
-
-                    // insert new revision (main lang is NOT allowed for translations)
-                    if ((!$bMainLang || ($bMainLang && $this->isAllowed('edit'))) && $this->isContentChanged($iBlockId, $sLang, $sContent)) {
-                        $sId =  $oForm->insert(array(
-                            'added' => $iTime, 
-                            'revision' => $sRev,
-                            'main_lang' => $bMainLang, 
-                            'profile_id' => bx_get_logged_profile_id(),
-                            'unsafe' => $bUnsafe,
-                            'language' => $sLang,
-                            'content' => $sContent,
-                        ));
-                    }
+                    $sId = $this->_addBlockRevision($iBlockId, $sLang, $sContent, $oForm);
                 }
-            }
 
             // update indexing data
             $this->updateBlockIndexingData($iBlockId);
 
             return $this->_bIsApi ? ['code' => 0, 'block_id' => $iBlockId] : ['code' => 0, 'actions' => ['Reload', 'ClosePopup'], 'block_id' => $iBlockId];
         }
+    }
+
+    protected function _addBlockRevision($iBlockId, $sLang, $sContent, &$oForm)
+    {
+        // get previous revision with priority for current language
+        $aWikiVer = $this->_oQuery->getBlockContent ($iBlockId, $sLang);
+
+        $bMainLang = $this->getFieldMainLangFlag ($oForm, $sLang, $aWikiVer);
+        $sRev = $this->getFieldRev ($oForm, $sLang, $aWikiVer);
+        $bUnsafe = $this->getFieldUnsafeFlag ($oForm, $sLang, $aWikiVer);
+
+        // insert new revision (main lang is NOT allowed for translations)
+        $iId = 0;
+        if((!$bMainLang || ($bMainLang && $this->isAllowed('edit'))) && $this->isContentChanged($iBlockId, $sLang, $sContent)) {
+            $iId =  $oForm->insert([
+                'added' => time(), 
+                'revision' => $sRev,
+                'main_lang' => $bMainLang, 
+                'profile_id' => bx_get_logged_profile_id(),
+                'unsafe' => $bUnsafe,
+                'language' => $sLang,
+                'content' => $sContent,
+            ]);
+        }
+
+        return $iId;
     }
 
     public function actionConvertLinks ()
@@ -879,22 +922,27 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
         $aLangs = BxDolLanguages::getInstance()->getLanguages(false, true);
         foreach ($aLangs as $sKey => $sLang) {
             $aWikiVer = $this->_oQuery->getBlockContent ($iBlockId, $sKey, false, false);
+            $bWikiVer = $aWikiVer && is_array($aWikiVer);
 
-            $bMainLang = $aWikiVer && $aWikiVer['main_lang'];
+            $bOutdatedLang = !$bWikiVer || $iUpdatedMainLang > $aWikiVer['added'];
+            $bMainLang = $bWikiVer && $aWikiVer['main_lang'];
             $sMainLang = $bMainLang ? '★' : '';
+            $sComment = $bWikiVer ? bx_time_js($aWikiVer['added']) : _t('_sys_wiki_lang_missing');
 
-            $sComment = !$aWikiVer ? _t('_sys_wiki_lang_missing') : bx_time_js($aWikiVer['added']);
-            if(!$aWikiVer || $iUpdatedMainLang > $aWikiVer['added'])
-                $aLangs[$sKey] = _t('_sys_wiki_lang_mask_warn', $sLang, $sMainLang, $sComment);
-            else
-                $aLangs[$sKey] = _t('_sys_wiki_lang_mask', $sLang, $sMainLang, $sComment);
+            $aLangs[$sKey] = $this->_bIsApi ? [
+                'name' => $sKey,
+                'title' => $sLang, 
+                'added' => $bWikiVer ? $aWikiVer['added'] : '', 
+                'main' => $bMainLang, 
+                'outdated' => $bOutdatedLang
+            ] : _t('_sys_wiki_lang_mask' . ($bOutdatedLang ? '_warn' : ''), $sLang, $sMainLang, $sComment);
 
             if($bTranslateForm) {
                 if(!$bMainLang && !$sLangForTranslate)
                     $sLangForTranslate = $sKey;
 
                 if($bMainLang) {
-                    $sMainLangLabel = $aLangs[$sKey];
+                    $sMainLangLabel = $this->_bIsApi ? $aLangs[$sKey]['title'] : $aLangs[$sKey];
                     unset($aLangs[$sKey]);
                     continue;
                 }
@@ -902,7 +950,7 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
         }
 
         return $aLangs;
-    }    
+    }
 
     public function getVarsForHistory ($iBlockId, $sLang)
     {

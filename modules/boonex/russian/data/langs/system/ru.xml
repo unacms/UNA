@@ -3918,11 +3918,13 @@
 	<string name="_sys_page_title_unsubscribe_news"><![CDATA[Отписаться от новостей сайта]]></string>
 	<string name="_sys_page_title_unsubscribe_notifications"><![CDATA[Отписаться от уведомлений сайта]]></string>
 	<string name="_sys_page_title_studio_dashboard"><![CDATA[Студия - Панель]]></string>
-        <string name="_sys_page_title_sys_wiki_pages_list"><![CDATA[Вики: Добавить страницу]]></string>
+        <string name="_sys_page_title_sys_wiki_add_page"><![CDATA[Вики: Добавить страницу]]></string>
         <string name="_sys_page_title_wiki_add_page"><![CDATA[Добавить страницу]]></string>
         <string name="_sys_page_block_title_wiki_add_page"><![CDATA[Добавить страницу]]></string>
-        <string name="_sys_page_title_wiki_pages_list"><![CDATA[Подстраница: Список страниц]]></string>
-	<string name="_sys_page_title_wiki_page_contents"><![CDATA[Подстраница: Содержание страницы]]></string>
+        <string name="_sys_page_title_sys_wiki_pages_list"><![CDATA[Вики: Меню (список страниц)]]></string>
+        <string name="_sys_page_title_wiki_pages_list"><![CDATA[Меню]]></string>
+	<string name="_sys_page_title_sys_wiki_page_contents"><![CDATA[Вики: Оглавление (для текущей страницы)]]></string>
+        <string name="_sys_page_title_wiki_page_contents"><![CDATA[Оглавление]]></string>
         <string name="_sys_page_title_system_con_friends"><![CDATA[Связи - Друзья]]></string>
         <string name="_sys_page_title_con_friends"><![CDATA[Друзья]]></string>
         <string name="_sys_page_title_system_con_friend_requests"><![CDATA[Связи - Хотят дружить]]></string>

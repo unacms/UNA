@@ -65,6 +65,8 @@ class BxBaseStudioFormView extends BxDolStudioForm
         $sInputName = $aInput['name'];
         $aInputAttrs = isset($aInput['attrs']) && is_array($aInput['attrs']) ? $aInput['attrs'] : array();
 
+        $aInputLang = $aInput;
+
         $oFunctions = BxTemplStudioFunctions::getInstance();
 
         $oLanguage = BxDolStudioLanguagesUtils::getInstance();
@@ -79,7 +81,9 @@ class BxBaseStudioFormView extends BxDolStudioForm
 
         $aLanguages = $oLanguage->getLanguagesInfo();
 
-        $aInput['type'] = 'hidden';
+        if(!$this->_bIsApi)
+            $aInput['type'] = 'hidden';
+        $aInput['translations'] = [];
         $aInput['attrs'] = array_merge($aInputAttrs, array(
             'id' => $sInputIdPrefix . $aInput['name']
         ));
@@ -87,9 +91,18 @@ class BxBaseStudioFormView extends BxDolStudioForm
 
         $aStrings = !empty($aInput['value']) ? $oLanguage->getLanguageString($aInput['value']) : array();
 
-        $aTmplVars = array();
+        $aTmplVars = [];
         foreach($aLanguages as $aLanguage) {
             $bLanguage = $aLanguage['name'] == $sLanguage;
+            $sInputLangName = $sInputName . '-' . $aLanguage['name'];
+
+            $aInput['translations'][] = [
+                'title' => $aLanguage['title'],
+                'name' => $sInputLangName
+            ];
+
+            if($this->_bIsApi)
+                continue;
 
             $sValue = '';
             if(key_exists($aLanguage['id'], $aStrings))
@@ -98,22 +111,20 @@ class BxBaseStudioFormView extends BxDolStudioForm
                 $sValue = $aInput['values'][$aLanguage['name']];
             $bValue = !empty($sValue);
 
-            $aInput['type'] = $sType;
-            $aInput['name'] = $sInputName . '-' . $aLanguage['name'];
-            $aInput['value'] = $sValue;
-            $aInput['attrs'] = array_merge($aInputAttrs, array(
-                'id' => $sInputIdPrefix . $aInput['name']
+            $aInputLang['type'] = $sType;
+            $aInputLang['name'] = $sInputLangName;
+            $aInputLang['value'] = $sValue;
+            $aInputLang['attrs'] = array_merge($aInputAttrs, array(
+                'id' => $sInputIdPrefix . $aInputLang['name']
             ));
 
             $sInput .= $this->oTemplate->parseHtmlByName('form_input_translation.html', array(
-                'class' => ' bx-form-input-translation-' . $aInput['name'],
+                'class' => ' bx-form-input-translation-' . $aInputLang['name'],
                 'attrs' => bx_convert_array2attrs(array(
                     'style' => !$bLanguage ? 'display:none;' : ''
                 )),
-                'content' => $this->{$aInputMethod[$sType]}($aInput)
+                'content' => $this->{$aInputMethod[$sType]}($aInputLang)
             ));
-                    
-                    
 
             $aTmplVarValue = array(
                 'condition' => $bValue,
