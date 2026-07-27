@@ -171,9 +171,9 @@ class BxBaseStudioWidget extends BxDolStudioWidget
                 if(isset($mixedContent['content']))
                     $sResult .= $this->getBlockCode($mixedContent);
                 else
-                    foreach($mixedContent as $sBlock)
-                        $sResult .= $this->getBlockCode([
-                            'content' => $sBlock
+                    foreach($mixedContent as $mixedBlock)
+                        $sResult .= $this->getBlockCode(is_array($mixedBlock) ? $mixedBlock : [
+                            'content' => $mixedBlock
                         ]);
             }
             else if(is_a($mixedContent, 'BxDolPage'))

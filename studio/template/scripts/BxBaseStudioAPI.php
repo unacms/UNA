@@ -29,10 +29,11 @@ class BxBaseStudioAPI extends BxDolStudioAPI
             BX_DOL_STUDIO_API_TYPE_KEYS => array('icon' => 'key'),
         );
 
-        $this->aGridObjects = array(
+        $this->aGridObjects = [
             'keys' => 'sys_studio_api_keys',
             'origins' => 'sys_studio_api_origins',
-        );
+            'configs' => 'sys_studio_api_configs',
+        ];
     }
 
     public function getPageMenu($aMenu = array(), $aMarkers = array())
@@ -71,7 +72,17 @@ class BxBaseStudioAPI extends BxDolStudioAPI
             'api_config'
         ]);
 
-        return $oOptions->getCode() . $this->getPageJsCode();
+        $this->aPageCss = array_merge($this->aPageCss, $oOptions->getCss());
+        $this->aPageJs = array_merge($this->aPageJs, $oOptions->getJs());
+
+        return [[
+            'caption' => '_adm_api_page_block_title_config_system',
+            'content' => $oOptions->getCode() . $this->getPageJsCode()
+        ], [
+            'caption' => '_adm_api_page_block_title_config_modules',
+            'content' => $this->getGrid($this->aGridObjects['configs'])
+            
+        ]];
     }
 
     protected function getKeys()

@@ -69,6 +69,7 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'facebook-square' => 'log-in', //TODO: Brand icon. Update later.
             'file-alt' => 'file',
             'file-alt' => 'file-text',
+            'file-import' => 'file-input',
             'file-export' => 'file-output',
             'file-invoice' => 'receipt',
             'file-word' => 'file-text',

@@ -500,6 +500,15 @@ class BxDolStudioInstaller extends BxDolInstallerUtils
         bx_alert('system', 'disable', 0, false, array ('config' => $this->_aConfig, 'result' => &$aResult));
         return $aResult;
     }
+    
+    public function callAction($sOperation, $sAction)
+    {
+        $sMethod = 'action' . bx_gen_method_name($sAction);
+        if(!method_exists($this, $sMethod))
+            return ['code' => BX_DOL_STUDIO_INSTALLER_FAILED, 'msg' => _t('_sys_txt_not_found')];
+
+        return $this->$sMethod($sOperation);
+    }
 
     //--- Get/Set Methods ---//
     public function getVendor()

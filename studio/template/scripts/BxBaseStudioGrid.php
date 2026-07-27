@@ -113,6 +113,17 @@ class BxBaseStudioGrid extends BxDolStudioGrid
             ]
         ]);
     }
+
+    protected function _getIds()
+    {
+        if(($aIds = bx_get('ids')) && is_array($aIds))
+            return reset($aIds);
+
+        if(($iId = bx_get('id')) !== false) 
+            return (int)$iId;
+
+        return false;
+    }
 }
 
 /** @} */
