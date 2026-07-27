@@ -1708,8 +1708,8 @@ headroom.js@^0.12.0:
 
 "highlight.js@github:highlightjs/highlight.js":
   version "11.11.2"
-  uid a86584bc783488a36e8dfd329fae234120803e73
-  resolved "https://codeload.github.com/highlightjs/highlight.js/tar.gz/a86584bc783488a36e8dfd329fae234120803e73"
+  uid "723ba01b0abbe7ddb85b98726ad19f11be1155b8"
+  resolved "https://codeload.github.com/highlightjs/highlight.js/tar.gz/723ba01b0abbe7ddb85b98726ad19f11be1155b8"
 
 hls.js@^1.6.16:
   version "1.6.16"
@@ -2167,8 +2167,8 @@ jstree@^3.3.17:
 
 "jush@https://github.com/vrana/jush":
   version "0.0.0"
-  uid "58301645e2de1ec434d4f5a1c970d09bbc6a4000"
-  resolved "https://github.com/vrana/jush#58301645e2de1ec434d4f5a1c970d09bbc6a4000"
+  uid "0b8908cfe38145383754cef417e2f9d0ede82745"
+  resolved "https://github.com/vrana/jush#0b8908cfe38145383754cef417e2f9d0ede82745"
 
 just-diff-apply@^5.2.0:
   version "5.5.0"
@@ -3037,10 +3037,10 @@ proxy-agent-negotiate@1.1.0:
   resolved "https://registry.yarnpkg.com/proxy-agent-negotiate/-/proxy-agent-negotiate-1.1.0.tgz#de7d37aede9d71e74346125d6f484fac8092b615"
   integrity sha512-N8IBcM3UgCVzz2L2Lqv8DVntDnnC8/hiV4nEDUPkqq72TPUgYWjQc+bdZlBPZK9LzPAvOY//gAt0S0DApoOXWQ==
 
-pusher-js@^8.5.0:
-  version "8.5.0"
-  resolved "https://registry.yarnpkg.com/pusher-js/-/pusher-js-8.5.0.tgz#329d4fb4b5e4ae0a5e0a558b6da1a852c4badae4"
-  integrity sha512-V7uzGi9bqOOOyM/6IkJdpFyjGZj7llz1v0oWnYkZKcYLvbz6VcHVLmzKqkvegjuMumpfIEKGLmWHwFb39XFCpw==
+pusher-js@^8.6.0:
+  version "8.6.0"
+  resolved "https://registry.yarnpkg.com/pusher-js/-/pusher-js-8.6.0.tgz#933e924f59938b31e2e9eb41af9c8b6bf9932f6b"
+  integrity sha512-wShJPfCS/kYkCBVzVW67wa9cnQIgHTszEK2XHNrFkOgGruuGw081aERAxfRjfdFU+WcIt8x6dvbwkTW4iZuQ8Q==
   dependencies:
     tweetnacl "^1.0.3"
 
@@ -3624,9 +3624,9 @@ tailwindcss@^3.4.17:
     sucrase "^3.35.0"
 
 tar@^7.4.3, tar@^7.5.1, tar@^7.5.19, tar@^7.5.4:
-  version "7.5.20"
-  resolved "https://registry.yarnpkg.com/tar/-/tar-7.5.20.tgz#37a65aa911cbd69864002e14bf8a926a5551e240"
-  integrity sha512-9FcyK4PA6+WbzlTM9WhQm6vB5W7cP7dUiPsv1g7YDwEQnQ1CGpK3MGlKk/ITVWMk05kHZuBhmVhiv8LZoy/PFQ==
+  version "7.5.22"
+  resolved "https://registry.yarnpkg.com/tar/-/tar-7.5.22.tgz#a696f998136e71487dc3f869a85bba2c67971ba9"
+  integrity sha512-MFO/QzvtAOmJbkhOaCTvbGcFN9L9b+JunIsDwaKljSOdcLMea3NJ1k9Usz/rjdfSXTq4dfzfeS7W4p4YOAAHeA==
   dependencies:
     "@isaacs/fs-minipass" "^4.0.0"
     chownr "^3.0.0"
