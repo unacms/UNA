@@ -1,6 +1,8 @@
-import { useCallback, useState, useEffect, useRef, useMemo, memo, useReducer } from 'react'
+import { useCallback, useState, useEffect, useRef, useMemo, memo, useReducer, useContext } from 'react'
 import { Text } from 'app/design/typography'
 import { View, ViewRef, Row, Pressable } from 'app/design/view'
+import { Icon } from 'app/ui/atoms/icon'
+import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu'
 import UniList from 'app/ui/atoms/unilist'
 import {
     appSetting,
@@ -271,20 +273,45 @@ export function Conductor({
         getDataForRoute(routes, index, setRoutes)
     }, [index])
 
+    const leftbarContent = currentRoute?.leftbar?.content ?? []
+    const leftbarMenuBlocks = useMemo(
+        () =>
+            leftbarContent.filter(
+                (item) =>
+                    !!item?.data?.config_api?.use_as_menu &&
+                    getDropdownItemsFromLeftbarBlock(item).length > 0
+            ),
+        [leftbarContent]
+    )
+    const leftbarFilterBlocks = useMemo(
+        () =>
+            leftbarContent.filter((item) => {
+                if (!item?.data?.config_api?.use_as_menu) return true
+                // Fallback: menu flag set but no extractable links → keep in Filters
+                return getDropdownItemsFromLeftbarBlock(item).length === 0
+            }),
+        [leftbarContent]
+    )
+
     const LeftBarContentBlocks = LeftBarContent(
         currentRoute,
         onFormChangedValues
+    )
+    const LeftBarFilterBlocks = LeftBarContent(
+        currentRoute,
+        onFormChangedValues,
+        leftbarFilterBlocks
     )
 
     const showFilters = useCallback(() => {
         setBottomSheetData({
             title: t('Filters'),
-            content: LeftBarContentBlocks,
+            content: LeftBarFilterBlocks,
             showClose: true,
             snapPoints: ['50%', '75%'],
             modal: true,
         })
-    }, [LeftBarContentBlocks, t, setBottomSheetData])
+    }, [LeftBarFilterBlocks, t, setBottomSheetData])
 
     useEffect(() => {
         setTimeout(() => window.dispatchEvent(new Event('resize_panel')), 100)
@@ -296,10 +323,16 @@ export function Conductor({
         data?.cover_block?.profile?.id === data?.context?.current?.id &&
         isDesktop
 
+    // Filters sheet only for non-menu leftbar blocks; use_as_menu goes into TabBar dropdowns.
     const showFiltersBtn =
         !isDesktop &&
         layoutName === 'navigator' &&
-        (currentRoute?.leftbar?.content?.length ?? 0) > 0
+        leftbarFilterBlocks.length > 0
+
+    const excludeLeftbarFromMain =
+        !isDesktop &&
+        layoutName === 'navigator' &&
+        leftbarContent.length > 0
 
     const isUseCurrentHeader = layoutName === 'profile' && (!isCoverDisabled || !isDesktop);
 
@@ -322,6 +355,7 @@ export function Conductor({
                         onChangeRoute={onChangeRoute}
                         omitDefaultBackground={false}
                         pageData={data}
+                        leftbarMenus={!isDesktop ? leftbarMenuBlocks : []}
                     />
                     {showFiltersBtn && (
                         <View className="items-start px-3 lg:px-4 py-2">
@@ -419,7 +453,7 @@ export function Conductor({
         ts={ts}
         timestamp={timestamp}
         skeleton={skeleton}
-        excludeLeftbarFromMain={showFiltersBtn}
+        excludeLeftbarFromMain={excludeLeftbarFromMain}
     />
 
     return (
@@ -970,8 +1004,8 @@ const getUnitType = (currentRoute) =>
         (b) => !b.sidebar && b.unitType
     )?.unitType
 
-const LeftBarContent = (route, onFormChangedValues) => {
-    const items = route?.leftbar?.content ?? []
+const LeftBarContent = (route, onFormChangedValues, itemsOverride) => {
+    const items = itemsOverride ?? route?.leftbar?.content ?? []
     if (items.length === 0) return null
 
     return (
@@ -987,6 +1021,96 @@ const LeftBarContent = (route, onFormChangedValues) => {
                 </View>
             ))}
         </View>
+    )
+}
+
+const normalizeLeftbarMenuItem = (item, index) => {
+    const rawLink = item?.url || item?.link || ''
+    const link =
+        rawLink && rawLink !== 'javascript:void(0)'
+            ? rawLink.startsWith('/')
+                ? rawLink
+                : `/${rawLink}`
+            : ''
+    return {
+        id: item?.id ?? item?.name ?? index,
+        title: item?.title || item?.name || '',
+        icon: item?.icon || 'Circle',
+        link,
+    }
+}
+
+const getDropdownItemsFromLeftbarBlock = (blockItem) => {
+    const elements = blockItem?.data?.content
+    if (!Array.isArray(elements)) return []
+
+    return elements
+        .flatMap((el) => {
+            const type = el?.type || el?.content_type
+            if (type === 'menu') {
+                const items = el?.data?.content?.items ?? el?.content?.items ?? []
+                return items.map(normalizeLeftbarMenuItem)
+            }
+            if (type === 'categories_list') {
+                const items = Array.isArray(el?.data)
+                    ? el.data
+                    : Array.isArray(el?.data?.content)
+                        ? el.data.content
+                        : []
+                return items.map(normalizeLeftbarMenuItem)
+            }
+            // Fallback: content element whose data is already a list of links
+            if (
+                Array.isArray(el?.data) &&
+                el.data[0] &&
+                (el.data[0].url || el.data[0].link || el.data[0].name || el.data[0].title)
+            ) {
+                return el.data.map(normalizeLeftbarMenuItem)
+            }
+            return []
+        })
+        .filter((item) => item.title)
+}
+
+function LeftbarMenuTrigger({ title, icon }) {
+    const isOpen = useContext(DropdownMenuOpenContext) ?? false
+    return (
+        <Row
+            className={`items-center h-9 px-2 gap-1 rounded-full shrink-0 web:cursor-pointer ${
+                isOpen ? 'bg-muted' : 'web:hover:bg-muted/50'
+            }`}
+        >
+            <Icon icon={icon} size={16} className="text-secondary-foreground shrink-0" />
+            <Text className="text-sm font-semibold text-card-foreground whitespace-nowrap">
+                {title}
+            </Text>
+            <Icon
+                icon={isOpen ? 'ChevronUp' : 'ChevronDown'}
+                size={16}
+                className="text-muted-foreground shrink-0"
+            />
+        </Row>
+    )
+}
+
+function LeftbarMenuDropdown({ blockItem, t }) {
+    const items = useMemo(
+        () => getDropdownItemsFromLeftbarBlock(blockItem),
+        [blockItem]
+    )
+    if (!items.length) return null
+
+    const title = t(blockItem?.data?.title || 'Menu')
+    const icon = blockItem?.data?.config_api?.icon || 'LayoutGrid'
+
+    return (
+        <DropdownMenu
+            items={items}
+            mode="popup"
+            triggerAccessibilityLabel={title}
+        >
+            <LeftbarMenuTrigger title={title} icon={icon} />
+        </DropdownMenu>
     )
 }
 
@@ -1426,15 +1550,21 @@ const TabBar = ({
     setIndex,
     onChangeRoute,
     omitDefaultBackground = false,
+    leftbarMenus = [],
 }) => {
     const { t } = useTranslation()
     const { layoutName: layout } = useLayoutSettings()
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
     const isDesktop = useIsDesktop()
+    const hasLeftbarMenus = !isDesktop && leftbarMenus.length > 0
 
     if (routes.length > 0) {
         const addButtons = <AddMenu menu={menu} filter="hideInTopBar" />
-        const isShowSecondLine = (routes.length > 1 || !!pageData.cover_block?.actions_menu)
+        const isShowSecondLine = (
+            routes.length > 1 ||
+            !!pageData.cover_block?.actions_menu ||
+            hasLeftbarMenus
+        )
         return (
             <TopSidebar
                 layoutName={layoutName}
@@ -1443,8 +1573,8 @@ const TabBar = ({
                 layout={layout}
                 title={t(menuSettings?.name)}
             >
-                 {isShowSecondLine && <Row className="px-0 w-full">
-                    <View className="flex-1 h-12 lg:h-14">
+                 {isShowSecondLine && <Row className="px-0 w-full items-center">
+                    <View className="flex-1 h-12 lg:h-14 min-w-0">
                         {routes.length > 1 && <ConductorMenu
                             routes={routes}
                             index={index}
@@ -1453,6 +1583,17 @@ const TabBar = ({
                             onChangeRoute={onChangeRoute}
                         />}
                     </View>
+                    {hasLeftbarMenus && (
+                        <Row className="items-center gap-1 shrink-0 pl-1">
+                            {leftbarMenus.map((blockItem) => (
+                                <LeftbarMenuDropdown
+                                    key={blockItem.id ?? blockItem.block?.name}
+                                    blockItem={blockItem}
+                                    t={t}
+                                />
+                            ))}
+                        </Row>
+                    )}
                     {!!pageData.cover_block?.actions_menu && (
                         <Row className={conductorTheme.more_menu_container}>
                             {isDesktop && !!appSetting(
