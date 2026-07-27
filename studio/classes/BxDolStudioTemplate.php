@@ -92,6 +92,22 @@ class BxDolStudioTemplate extends BxDolTemplate implements iBxDolSingleton
         $this->_oTemplateFunctions = BxTemplStudioFunctions::getInstance($this);
     }
 
+    function getIconUrl($sName, $sCheckIn = BX_DOL_TEMPLATE_CHECK_IN_BOTH)
+    {
+        if(($sModuleIcon = $this->_getModuleIcon('url', $sName)) !== false)
+            return $sModuleIcon;
+
+        return parent::getIconUrl($sName, $sCheckIn);
+    }
+
+    function getIconPath($sName, $sCheckIn = BX_DOL_TEMPLATE_CHECK_IN_BOTH)
+    {
+        if(($sModuleIcon = $this->_getModuleIcon('path', $sName)) !== false)
+            return $sModuleIcon;
+
+        return parent::getIconUrl($sName, $sCheckIn);
+    }
+
     function _getAbsoluteLocation($sType, $sFolder, $sName, $sCheckIn = BX_DOL_TEMPLATE_CHECK_IN_BOTH)
     {
     	return parent::_getAbsoluteLocation($sType, $sFolder, $sName, BX_DOL_TEMPLATE_CHECK_IN_BASE);
@@ -139,6 +155,11 @@ class BxDolStudioTemplate extends BxDolTemplate implements iBxDolSingleton
     function getModuleIconUrl($sName, $sCheckIn = BX_DOL_TEMPLATE_CHECK_IN_BOTH)
     {
         return $this->_getAbsoluteLocation('url', $this->_sFolderModuleIcons, $sName, $sCheckIn);
+    }
+
+    function getModuleIconPath($sName, $sCheckIn = BX_DOL_TEMPLATE_CHECK_IN_BOTH)
+    {
+        return $this->_getAbsoluteLocation('path', $this->_sFolderModuleIcons, $sName, $sCheckIn);
     }
 
     function setPageBreadcrumb($aItems)
@@ -227,6 +248,20 @@ class BxDolStudioTemplate extends BxDolTemplate implements iBxDolSingleton
         $this->addCss($oPage->getPageCss());
         $this->addJs($oPage->getPageJs());
         $this->getPageCode();
+    }
+
+    protected function _getModuleIcon($sType, $sName)
+    {
+        if(strpos($sName, '|') !== false) {
+            list($sLocation, $sFile) = explode('|', $sName);
+            if($sFile == 'std-icon.svg' && strpos($sLocation, '@') !== false) {
+                list($sModule) = explode('@', $sLocation);
+                if($sModule && ($sModuleIcon = $this->{'getModuleIcon' . ucfirst($sType)}($sModule . '.svg')))
+                    return $sModuleIcon;
+            }
+        }
+
+        return false;
     }
 }
 
