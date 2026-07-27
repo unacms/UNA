@@ -193,6 +193,7 @@ export default function Form({
         }
         // Modal / formOnly: UNA often returns msg, redirect, or the same form
         // again with no field errors — treat those as done so parents can reload.
+        // A different form (wizard / next step) must keep the modal open.
         if (!exProps?.formOnly) return;
 
         const items = normalizeFormResponseData(dynamicData.data);
@@ -202,6 +203,15 @@ export default function Form({
         }
 
         const formItem = items.find((item) => item?.type === 'form');
+        const nextDisplay = formItem?.data?.params?.display || formItem?.name;
+        const currentDisplay = formName || formBundle.form?.params?.display;
+        const isNextStepForm =
+            !!formItem &&
+            !!nextDisplay &&
+            !!currentDisplay &&
+            nextDisplay !== currentDisplay;
+        if (isNextStepForm) return;
+
         const hasFieldErrors = formItem
             ? Object.values(formItem.data?.inputs || {}).some((input) => {
                   const err = input?.error;
@@ -219,7 +229,7 @@ export default function Form({
                 item?.type === 'form'
         );
         if (done) onFormEmpty();
-    }, [onFormEmpty, dynamicData, exProps?.formOnly]);
+    }, [onFormEmpty, dynamicData, exProps?.formOnly, formName, formBundle.form?.params?.display]);
 
     const { processedInputs, defaultValues } = useMemo(() => {
         const dv = {};

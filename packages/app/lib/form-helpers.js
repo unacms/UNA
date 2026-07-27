@@ -88,13 +88,15 @@ export function isFormResponseComplete(responseData) {
 export function getFormFieldByData(inputData, handleSubmit, format, externalProps, uniqueKey) {
 
     if (!inputData)
-        return <></>;
+        return null;
+    // Prefer the inputs-map key: UNA reuses names like `block_end_field` for multiple fields.
+    // Keep key AFTER {...inputData} — UNA field objects often include a non-unique `key`
+    // that would otherwise overwrite the stable list key and warn in FormAds / maps.
+    const fallbackKey = uniqueKey || inputData.key || inputData.name || `${inputData.type}_${inputData.caption || 'field'}`;
     const InputType = getComponent('form-field', String(inputData.type));
     if (!InputType)
-        return <Text>Unsupported field type: {JSON.stringify(inputData)}</Text>
-    // Prefer the inputs-map key: UNA reuses names like `block_end_field` for multiple fields.
-    const fallbackKey = uniqueKey || inputData.key || inputData.name || `${inputData.type}_${inputData.caption || 'field'}`;
-    return <InputType key={fallbackKey} {...inputData} format={format} handleSubmit={handleSubmit} {...externalProps} />;
+        return <Text key={fallbackKey}>Unsupported field type: {JSON.stringify(inputData)}</Text>
+    return <InputType {...inputData} format={format} handleSubmit={handleSubmit} {...externalProps} key={fallbackKey} />;
 
 }
 
