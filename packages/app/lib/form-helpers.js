@@ -94,8 +94,10 @@ export function getFormFieldByData(inputData, handleSubmit, format, externalProp
     // that would otherwise overwrite the stable list key and warn in FormAds / maps.
     const fallbackKey = uniqueKey || inputData.key || inputData.name || `${inputData.type}_${inputData.caption || 'field'}`;
     const InputType = getComponent('form-field', String(inputData.type));
-    if (!InputType)
-        return <Text key={fallbackKey}>Unsupported field type: {JSON.stringify(inputData)}</Text>
+    if (!InputType){
+        console.log(`Unsupported field type: ${JSON.stringify(inputData)}`)
+        return <Text key={fallbackKey}></Text>
+    }
     return <InputType {...inputData} format={format} handleSubmit={handleSubmit} {...externalProps} key={fallbackKey} />;
 
 }
