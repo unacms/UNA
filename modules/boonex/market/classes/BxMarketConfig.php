@@ -116,6 +116,7 @@ class BxMarketConfig extends BxBaseModTextConfig
             'PARAM_NUM_RSS' => 'bx_market_rss_num',
             'PARAM_SEARCHABLE_FIELDS' => 'bx_market_searchable_fields',
             'PARAM_PER_PAGE_FOR_FAVORITES_LISTS' => 'bx_market_per_page_for_favorites_lists',
+            'PARAM_VISIBLE_CATEGORIES' => 'bx_market_visible_categories',
 
             // objects            
             'OBJECT_STORAGE' => 'bx_market_photos',
@@ -223,6 +224,7 @@ class BxMarketConfig extends BxBaseModTextConfig
                 'txt_all_entries_in' => '_bx_market_txt_all_entries_in',
                 'txt_all_entries_by_author' => '_bx_market_page_title_browse_by_author',
                 'txt_all_entries_by_context' => '_bx_market_page_title_browse_by_context',
+                'txt_all_categories' => '_bx_market_txt_all_categories',
                 'txt_per_day' => '_bx_market_txt_per_day',
                 'txt_per_day_short' => '_bx_market_txt_per_day_short',
                 'txt_per_week' => '_bx_market_txt_per_week',

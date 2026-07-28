@@ -11,150 +11,15 @@
  * Menu representation.
  * @see BxDolMenu
  */
-class BxForumMenuCategories extends BxTemplMenu
+class BxForumMenuCategories extends BxBaseModTextMenuCategories
 {
-    protected $_sModule;
-    protected $_oModule;
-
-    protected $_iMenuItemsMin;
-
     public function __construct ($aObject, $oTemplate)
     {
-        parent::__construct ($aObject, $oTemplate);
-
         $this->_sModule = 'bx_forum';
-        $this->_oModule = BxDolModule::getInstance($this->_sModule);
-        $this->_bDisplayAddons = true;
-    }
 
-    public function getMenuItems ()
-    {
-        $CNF = &$this->_oModule->_oConfig->CNF;
-
-        $oCategory = BxDolCategory::getObjectInstance('bx_forum_cats');
-        if(!$oCategory)
-            return [];
-
-        $aCategories = $oCategory->getCategoriesList(false, true);
-        if($this->_bIsApi && $aCategories && is_array($aCategories))
-            return reset($aCategories)['data'];
-
-        if(!isset($aCategories['bx_repeat:cats']))
-            return [];
-
-        $iCount = 0;
-        foreach ($aCategories['bx_repeat:cats'] as $sKey => $aCategory) {
-            $iCount +=  $aCategories['bx_repeat:cats'][$sKey]['num'];
-        }
-
-        $aItems = [[
-            'class_add' => 'bx-psmi-show-0' .  (bx_get('category') == '' ? ' bx-menu-item-active' : ''),
-            'name' => 'show-0',
-            'title' => _t('_bx_forum_txt_all_categories'),
-            'link' => BxDolPermalinks::getInstance()->permalink($CNF['URL_HOME']),
-            'icon' => '',
-            'bx_if:onclick' => [
-                'condition' => false,
-                'content' => [
-                    'onclick' => 'javascript:',
-                ]
-            ],
-            'attrs' => '',
-            'bx_if:image' => array (
-                'condition' => false,
-                'content' => [],
-            ),
-            'bx_if:image_inline' => array (
-                'condition' => false,
-                'content' => [],
-            ),
-            'bx_if:icon' => array (
-                'condition' => true,
-                'content' => ['icon' => 'swatchbook'],
-            ),
-            'bx_if:icon-a' => array (
-                'condition' => false,
-                'content' => [],
-            ),
-            'bx_if:icon-html' => array (
-                'condition' => false,
-                'content' => [],
-            ),
-            'bx_if:addon' => [
-                'condition' => true,
-                'content' => ['addon' => $iCount]
-            ]
-        ]];
-
-        foreach ($aCategories['bx_repeat:cats'] as $sKey => $aCategory) {
-            $aCategoryData = $this->_oModule->_oDb->getCategories(['type' => 'by_category', 'category' => $aCategory['value']]);
-            if(empty($aCategoryData) || (!empty($aCategoryData['visible_for_levels']) && BxDolAcl::getInstance()->isMemberLevelInSet($aCategoryData['visible_for_levels']))) {
-
-                $aCategories['bx_repeat:cats'][$sKey]['icon'] = $this->_oTemplate->getImage(isset($aCategoryData['icon']) ? $aCategoryData['icon'] : 'folder', array('class' => 'sys-icon sys-colored'));
-
-                if (!isset($aCategoryData['icon']) || $aCategoryData['icon'] == '')
-                    $aCategoryData['icon'] = 'folder';
-
-                list($sIcon, $sIconUrl, $sIconA, $sIconHtml) = BxTemplFunctions::getInstance()->getIcon($aCategoryData['icon']);
-
-                $aItems[] =  [
-                    // TODO
-                    'class_add' => 'bx-psmi-show-' . $aCategories['bx_repeat:cats'][$sKey]['value'] . (bx_get('category') == $aCategories['bx_repeat:cats'][$sKey]['value'] ? ' bx-menu-item-active' : ''),
-                    'name' => 'show-' . $aCategories['bx_repeat:cats'][$sKey]['value'],
-                    'title' => $aCategories['bx_repeat:cats'][$sKey]['name'],
-                    'link' => $aCategories['bx_repeat:cats'][$sKey]['url'],
-                    'icon' => $aCategoryData['icon'],
-                    'bx_if:onclick' => [
-                        'condition' => false,
-                        'content' => [
-                            'onclick' => 'javascript:',
-                        ]
-                    ],
-                    'attrs' => '',
-                    'bx_if:image' => array (
-                        'condition' => (bool)$sIconUrl,
-                        'content' => array('icon_url' => $sIconUrl),
-                    ),
-                    'bx_if:image_inline' => array (
-                        'condition' => false,
-                        'content' => array('image' => ''),
-                    ),
-                    'bx_if:icon' => array (
-                        'condition' => (bool)$sIcon,
-                        'content' => array('icon' => $sIcon),
-                    ),
-                    'bx_if:icon-a' => array (
-                        'condition' => (bool)$sIconA,
-                        'content' => array('icon-a' => $sIconA),
-                    ),
-                    'bx_if:icon-html' => array (
-                        'condition' => (bool)$sIconHtml,
-                        'content' => array('icon' => $sIconHtml),
-                    ),
-                    'bx_if:addon' => [
-                        'condition' => true,
-                        'content' => ['addon' => $aCategories['bx_repeat:cats'][$sKey]['num']]
-                    ]
-                ];
-            }
-        }
-
-        if(empty($aItems) || !is_array($aItems))
-            return $aItems;
-
-        return $this->_addMenuItemsMoreLess($aItems, (int)getParam('bx_forum_visible_categories'));
-    }
-    
-    protected function _getMenuItem($a)
-    {
-        $mixedResult = parent::_getMenuItem($a);
-
-        if($mixedResult !== false && !empty($mixedResult['link']) && strpos($mixedResult['link'], 'javascript:') === false)
-            $mixedResult['link'] = bx_append_url_params($mixedResult['link'], [
-                'owner' => 1
-            ]);
-
-        return $mixedResult;
+        parent::__construct ($aObject, $oTemplate);
+        
+        $this->_bExtendedMode = true;
     }
 }
 

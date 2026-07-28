@@ -16,7 +16,7 @@
     <string name="_bx_market_option_searchable_fields"><![CDATA[Searchable fields for keyword search]]></string>
     <string name="_bx_market_option_per_page_for_favorites_lists"><![CDATA[Number of favorite lists per page]]></string>
     <string name="_bx_market_option_enable_icon"><![CDATA[Enable product icon]]></string>
-    
+    <string name="_bx_market_option_visible_categories"><![CDATA[Number of visible categories]]></string>
 
     <string name="_bx_market_form_entry"><![CDATA[Product]]></string>
     <string name="_bx_market_form_entry_display_add"><![CDATA[Add Product]]></string>
@@ -365,7 +365,7 @@
     <string name="_bx_market_menu_item_title_products_licenses_administration"><![CDATA[All Licenses]]></string>
     <string name="_bx_market_menu_item_title_system_products_licenses"><![CDATA[My Licenses]]></string>
     <string name="_bx_market_menu_item_title_products_licenses"><![CDATA[My Licenses]]></string>
-    
+    <string name="_bx_market_menu_title_categories"><![CDATA[Categories]]></string>
 
     <string name="_bx_market_grid_filter_item_title_adm_select_one_filter1"><![CDATA[All Statuses]]></string>
     <string name="_bx_market_grid_filter_item_title_adm_select_one_filter2"><![CDATA[Any Audience]]></string>
@@ -468,6 +468,7 @@
 
     <string name="_bx_market_txt_all_entries_by"><![CDATA[{0} products]]></string>
     <string name="_bx_market_txt_all_entries_in"><![CDATA[<a href="{0}">All Products in {1} ({2})</a>]]></string>
+    <string name="_bx_market_txt_all_categories"><![CDATA[All Categories]]></string>
     <string name="_bx_market_txt_category"><![CDATA[Category:]]></string>
     <string name="_bx_market_txt_most_current_version"><![CDATA[The most current version]]></string>
     <string name="_bx_market_txt_sample_single"><![CDATA[product]]></string>

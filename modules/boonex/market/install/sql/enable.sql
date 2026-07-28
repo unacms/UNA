@@ -21,7 +21,8 @@ INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `c
 ('bx_market_per_page_browse_showcase', '32', @iCategId, '_sys_option_per_page_browse_showcase', 'digit', '', '', '', 23),
 ('bx_market_rss_num', '10', @iCategId, '_bx_market_option_rss_num', 'digit', '', '', '', 25),
 ('bx_market_searchable_fields', 'title,text', @iCategId, '_bx_market_option_searchable_fields', 'list', '', '', 'a:2:{s:6:"module";s:9:"bx_market";s:6:"method";s:21:"get_searchable_fields";}', 30),
-('bx_market_enable_icon', '', @iCategId, '_bx_market_option_enable_icon', 'checkbox', '', '', '', 40);
+('bx_market_enable_icon', '', @iCategId, '_bx_market_option_enable_icon', 'checkbox', '', '', '', 40),
+('bx_market_visible_categories', '10', @iCategId, '_bx_market_option_visible_categories', 'digit', '', '', '', 50);
 
 -- PAGE: create entry
 INSERT INTO `sys_objects_page`(`object`, `title_system`, `title`, `module`, `layout_id`, `visible_for_levels`, `visible_for_levels_editable`, `uri`, `url`, `meta_description`, `meta_keywords`, `meta_robots`, `cache_lifetime`, `cache_editable`, `deletable`, `override_class_name`, `override_class_file`) VALUES 
@@ -191,7 +192,8 @@ INSERT INTO `sys_objects_page`(`object`, `uri`, `title_system`, `title`, `module
 
 INSERT INTO `sys_pages_blocks`(`object`, `cell_id`, `module`, `title_system`, `title`, `designbox_id`, `visible_for_levels`, `type`, `content`, `deletable`, `copyable`, `active`, `order`) VALUES 
 ('bx_market_home', 1, 'bx_market', '', '_bx_market_page_block_title_popular_keywords', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:14:"keywords_cloud";s:6:"params";a:2:{i:0;s:9:"bx_market";i:1;s:9:"bx_market";}s:5:"class";s:20:"TemplServiceMetatags";}', 0, 1, 1, 0),
-('bx_market_home', 1, 'bx_market', '', '_bx_market_page_block_title_cats', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:15:"categories_list";s:6:"params";a:2:{i:0;s:14:"bx_market_cats";i:1;a:1:{s:10:"show_empty";b:1;}}s:5:"class";s:20:"TemplServiceCategory";}', 0, 0, 1, 1),
+('bx_market_home', 1, 'bx_market', '', '_bx_market_page_block_title_cats', 11, 2147483647, 'menu', 'bx_market_categories', 0, 0, 1, 0),
+('bx_market_home', 1, 'bx_market', '', '_bx_market_page_block_title_cats', 11, 2147483647, 'service', 'a:4:{s:6:"module";s:6:"system";s:6:"method";s:15:"categories_list";s:6:"params";a:2:{i:0;s:14:"bx_market_cats";i:1;a:1:{s:10:"show_empty";b:1;}}s:5:"class";s:20:"TemplServiceCategory";}', 0, 0, 0, 1),
 ('bx_market_home', 2, 'bx_market', '', '_bx_market_page_block_title_featured_entries', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:9:"bx_market";s:6:"method";s:15:"browse_featured";s:6:"params";a:1:{i:0;s:7:"gallery";}}', 0, 1, 1, 0),
 ('bx_market_home', 2, 'bx_market', '', '_bx_market_page_block_title_latest_entries', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:9:"bx_market";s:6:"method";s:13:"browse_public";s:6:"params";a:1:{i:0;s:7:"gallery";}}', 0, 1, 1, 1),
 ('bx_market_home', 2, 'bx_market', '', '_bx_market_page_block_title_popular_entries', 11, 2147483647, 'service', 'a:3:{s:6:"module";s:9:"bx_market";s:6:"method";s:14:"browse_popular";s:6:"params";a:2:{i:0;s:7:"gallery";i:1;b:0;}}', 0, 1, 1, 2),
@@ -410,6 +412,10 @@ INSERT INTO `sys_menu_sets`(`set_name`, `module`, `title`, `deletable`) VALUES
 INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `addon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `editable`, `order`) VALUES 
 ('bx_market_licenses_submenu', 'bx_market', 'products-licenses-administration', '_bx_market_menu_item_title_system_products_licenses_administration', '_bx_market_menu_item_title_products_licenses_administration', 'page.php?i=products-licenses-administration', '', '_self', '', '', '', 192, 1, 0, 1, 1),
 ('bx_market_licenses_submenu', 'bx_market', 'products-licenses', '_bx_market_menu_item_title_system_products_licenses', '_bx_market_menu_item_title_products_licenses', 'page.php?i=products-licenses', '', '_self', '', '', '', 2147483646, 1, 0, 1, 2);
+
+-- MENU: categories
+INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
+('bx_market_categories', '_bx_market_menu_title_categories', '', 'bx_market', 21, 0, 1, 'BxMarketMenuCategories', 'modules/boonex/market/classes/BxMarketMenuCategories.php');
 
 -- MENU: profile stats
 SET @iNotifMenuOrder = (SELECT IFNULL(MAX(`order`), 0) FROM `sys_menu_items` WHERE `set_name` = 'sys_profile_stats' AND `active` = 1 LIMIT 1);

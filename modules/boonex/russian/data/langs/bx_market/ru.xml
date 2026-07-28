@@ -16,6 +16,7 @@
     <string name="_bx_market_option_searchable_fields"><![CDATA[Поля для поиска по ключевому слову]]></string>
     <string name="_bx_market_option_per_page_for_favorites_lists"><![CDATA[Количество списков избранного на странице]]></string>
     <string name="_bx_market_option_enable_icon"><![CDATA[Включить значок продукта]]></string>
+    <string name="_bx_market_option_visible_categories"><![CDATA[Количество отображаемых категорий]]></string>
 
     <string name="_bx_market_form_entry"><![CDATA[Продукт]]></string>
     <string name="_bx_market_form_entry_display_add"><![CDATA[Добавление продукта]]></string>
@@ -160,14 +161,14 @@
     <string name="_bx_market_page_title_sys_download_entry"><![CDATA[Скачать продукт]]></string>
     <string name="_bx_market_page_title_download_entry"><![CDATA[Скачать продукт]]></string>
     <string name="_bx_market_page_block_title_download_entry"><![CDATA[Скачать продукт]]></string>
-	<string name="_bx_market_page_title_sys_view_entry"><![CDATA[Просмотреть продукт]]></string>
-	<string name="_bx_market_page_title_view_entry"><![CDATA[{title}]]></string>
-	<string name="_bx_market_page_block_title_entry_text"><![CDATA[Обзор продукта]]></string>
-	<string name="_bx_market_page_title_browse"><![CDATA[Продукты]]></string>
-	<string name="_bx_market_page_title_search_results"><![CDATA[Продукты, соответствующие "{0}"]]></string>
-	<string name="_bx_market_page_title_browse_by_author"><![CDATA[Продукты {display_name}]]></string>
-  <string name="_bx_market_page_title_browse_by_context"><![CDATA[Продукты в контексте: {display_name}]]></string>
-	<string name="_bx_market_page_title_browse_featured"><![CDATA[Продвинутые продукты]]></string>
+    <string name="_bx_market_page_title_sys_view_entry"><![CDATA[Просмотреть продукт]]></string>
+    <string name="_bx_market_page_title_view_entry"><![CDATA[{title}]]></string>
+    <string name="_bx_market_page_block_title_entry_text"><![CDATA[Обзор продукта]]></string>
+    <string name="_bx_market_page_title_browse"><![CDATA[Продукты]]></string>
+    <string name="_bx_market_page_title_search_results"><![CDATA[Продукты, соответствующие "{0}"]]></string>
+    <string name="_bx_market_page_title_browse_by_author"><![CDATA[Продукты {display_name}]]></string>
+    <string name="_bx_market_page_title_browse_by_context"><![CDATA[Продукты в контексте: {display_name}]]></string>
+    <string name="_bx_market_page_title_browse_featured"><![CDATA[Продвинутые продукты]]></string>
     <string name="_bx_market_page_title_browse_latest"><![CDATA[Новые продукты]]></string>
     <string name="_bx_market_page_title_browse_popular"><![CDATA[Популярные продукты]]></string>
     <string name="_bx_market_page_title_browse_top"><![CDATA[Топ продуктов]]></string>
@@ -192,7 +193,7 @@
     <string name="_bx_market_page_block_title_entry_actions"><![CDATA[Действия]]></string>
     <string name="_bx_market_page_block_title_entry_breadcrumb"><![CDATA["Хлебные крошки"]]></string>
     <string name="_bx_market_page_block_title_entry_comments"><![CDATA[Обзоры]]></string>
-	<string name="_bx_market_page_block_title_entry_reports"><![CDATA[Жалобы]]></string>
+    <string name="_bx_market_page_block_title_entry_reports"><![CDATA[Жалобы]]></string>
     <string name="_bx_market_page_block_title_entry_comments_link"><![CDATA[Обзоры к <a href="{entry_link}">{title}</a>]]></string>
     <string name="_bx_market_page_block_title_entry_comments_n"><![CDATA[Обзоры ({0})]]></string>
     <string name="_bx_market_page_block_title_entry_info"><![CDATA[Информация]]></string>
@@ -287,7 +288,7 @@
     <string name="_bx_market_menu_item_title_edit_entry"><![CDATA[Редактировать продукт]]></string>
     <string name="_bx_market_menu_item_title_system_delete_entry"><![CDATA[Удалить продукт]]></string>
     <string name="_bx_market_menu_item_title_delete_entry"><![CDATA[Удалить продукт]]></string>
-	<string name="_bx_market_menu_item_title_system_add_to_cart"><![CDATA[Купить]]></string>
+    <string name="_bx_market_menu_item_title_system_add_to_cart"><![CDATA[Купить]]></string>
     <string name="_bx_market_menu_item_title_add_to_cart"><![CDATA[Купить за {0}{1}]]></string>
     <string name="_bx_market_menu_item_title_system_subscribe"><![CDATA[Подписаться]]></string>
     <string name="_bx_market_menu_item_title_subscribe"><![CDATA[Подписаться за {0}{1}/{2}]]></string>
@@ -301,7 +302,7 @@
     <string name="_bx_market_menu_item_title_hide_entry"><![CDATA[Скрыть]]></string>
     <string name="_bx_market_menu_item_title_system_entries_home"><![CDATA[Рынок]]></string>
     <string name="_bx_market_menu_item_title_entries_home"><![CDATA[Рынок]]></string>
-	<string name="_bx_market_menu_item_title_system_entries_categories"><![CDATA[Категории]]></string>
+    <string name="_bx_market_menu_item_title_system_entries_categories"><![CDATA[Категории]]></string>
     <string name="_bx_market_menu_item_title_entries_categories"><![CDATA[Категории]]></string>
     <string name="_bx_market_menu_item_title_system_entries_public"><![CDATA[Рынок]]></string>
     <string name="_bx_market_menu_item_title_entries_public"><![CDATA[Рынок]]></string>
@@ -333,20 +334,20 @@
     <string name="_bx_market_menu_item_title_view_entries_author"><![CDATA[Продукты]]></string>
     <string name="_bx_market_menu_item_title_system_view_entries_in_context"><![CDATA[Продукты]]></string>
     <string name="_bx_market_menu_item_title_view_entries_in_context"><![CDATA[Продукты]]></string>
-  <string name="_bx_market_menu_title_entries_my"><![CDATA[Мои продукты - Меню действий]]></string>
+    <string name="_bx_market_menu_title_entries_my"><![CDATA[Мои продукты - Меню действий]]></string>
     <string name="_bx_market_menu_set_title_entries_my"><![CDATA[Мои продукты - Меню]]></string>
-	<string name="_bx_market_menu_item_title_system_manage_my_products"><![CDATA[Мои продукты]]></string>
+    <string name="_bx_market_menu_item_title_system_manage_my_products"><![CDATA[Мои продукты]]></string>
     <string name="_bx_market_menu_item_title_manage_my_products"><![CDATA[Продукты]]></string>
     <string name="_bx_market_menu_set_title_manage_tools"><![CDATA[Инструменты управления - Подменю]]></string>
     <string name="_bx_market_menu_title_manage_tools"><![CDATA[Инструменты управления - Подменю]]></string>
     <string name="_bx_market_menu_item_title_system_manage_account"><![CDATA[Управление аккаунтом]]></string>
     <string name="_bx_market_menu_item_title_manage_account"><![CDATA[Управление аккаунтом]]></string>
-	<string name="_bx_market_menu_item_title_system_admt_products"><![CDATA[Продукты]]></string>
-	<string name="_bx_market_menu_item_title_admt_products"><![CDATA[Продукты]]></string>
-	<string name="_bx_market_menu_item_title_manage_my"><![CDATA[Мои продукты]]></string>
-	<string name="_bx_market_menu_item_title_manage_all"><![CDATA[Все продукты]]></string>
-	<string name="_bx_market_menu_item_title_system_licenses"><![CDATA[Лицензии]]></string>
-	<string name="_bx_market_menu_item_title_licenses"><![CDATA[Лицензии]]></string>
+    <string name="_bx_market_menu_item_title_system_admt_products"><![CDATA[Продукты]]></string>
+    <string name="_bx_market_menu_item_title_admt_products"><![CDATA[Продукты]]></string>
+    <string name="_bx_market_menu_item_title_manage_my"><![CDATA[Мои продукты]]></string>
+    <string name="_bx_market_menu_item_title_manage_all"><![CDATA[Все продукты]]></string>
+    <string name="_bx_market_menu_item_title_system_licenses"><![CDATA[Лицензии]]></string>
+    <string name="_bx_market_menu_item_title_licenses"><![CDATA[Лицензии]]></string>
     <string name="_bx_market_menu_title_snippet"><![CDATA[Отрывок - Действия]]></string>
     <string name="_bx_market_menu_set_title_snippet"><![CDATA[Отрывок - Действия]]></string>
     <string name="_bx_market_menu_item_title_system_snippet_more"><![CDATA[Ещё действия]]></string>
@@ -360,7 +361,7 @@
     <string name="_bx_market_menu_item_title_products_licenses_administration"><![CDATA[Все лицензии]]></string>
     <string name="_bx_market_menu_item_title_system_products_licenses"><![CDATA[Мои лицензии]]></string>
     <string name="_bx_market_menu_item_title_products_licenses"><![CDATA[Мои лицензии]]></string>
-
+    <string name="_bx_market_menu_title_categories"><![CDATA[Категории]]></string>
 
     <string name="_bx_market_grid_filter_item_title_adm_select_one_filter1"><![CDATA[Все статусы]]></string>
     <string name="_bx_market_grid_filter_item_title_adm_select_one_filter2"><![CDATA[Любая аудитория]]></string>
@@ -462,6 +463,7 @@
 
     <string name="_bx_market_txt_all_entries_by"><![CDATA[{0} продуктов]]></string>
     <string name="_bx_market_txt_all_entries_in"><![CDATA[<a href="{0}">Все продукты в {1} ({2})</a>]]></string>
+    <string name="_bx_market_txt_all_categories"><![CDATA[Все категории]]></string>
     <string name="_bx_market_txt_category"><![CDATA[Категория:]]></string>
     <string name="_bx_market_txt_most_current_version"><![CDATA[Самая новая версия]]></string>
     <string name="_bx_market_txt_sample_single"><![CDATA[продукт]]></string>
