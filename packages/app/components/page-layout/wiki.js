@@ -339,7 +339,6 @@ function PageContentWiki({ data, scrollRef, url }) {
 
     return (
         <View className={`${appSetting('layout', 'max_width')}`}>
-            <View className='w-full mx-auto'>
                 <PanelGroup
                     ref={groupRef}
                     key={`cells-wiki${cellsCustomConfig.sizable ? 'sizable' : 'static'}`}
@@ -451,7 +450,6 @@ function PageContentWiki({ data, scrollRef, url }) {
                         </View>
                     </Panel>
                 </PanelGroup>
-            </View>
         </View>
     )
 }
