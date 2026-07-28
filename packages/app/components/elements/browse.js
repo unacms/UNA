@@ -27,7 +27,7 @@ import emitter from 'app/context/emitter'
 import Snackbar from 'app/ui/atoms/snackbar'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { BlockWrapper } from 'app/components/block-wrapper'
-import { useIsFocused } from '@react-navigation/native'
+import { useIsFocused } from 'app/lib/hooks/router'
 import { useScrollValue } from 'app/context/jotai/layout'
 import { setListScrollOffset } from 'app/lib/tab-page-cache'
 

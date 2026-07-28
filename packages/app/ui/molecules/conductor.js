@@ -19,8 +19,7 @@ import Cover, { CoverSmall, CoverBackButton } from 'app/components/elements/cove
 import emitter from 'app/context/emitter'
 import { useSetHeader, useScrollValue, useListMaxScrollOffset, useSetCoverScrollCompensation, defaultHeader, useSetHeaderHeight } from 'app/context/jotai/layout';
 import { getComponent } from 'app/components/registry';
-import { useFocusEffect } from 'app/lib/hooks/router'
-import { useIsFocused } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from 'app/lib/hooks/router'
 import { appSetting } from 'app/lib/util'
 import {
     getCachedConductorState,

@@ -23,7 +23,7 @@ import { Button } from 'app/design/controls'
 import { useWindowHeight } from 'app/context/measure';
 import emitter from 'app/context/emitter'
 import Snackbar from 'app/ui/atoms/snackbar'
-import { useIsFocused } from '@react-navigation/native'
+import { useIsFocused } from 'app/lib/hooks/router'
 import { useScrollValue } from 'app/context/jotai/layout'
 import { setListScrollOffset } from 'app/lib/tab-page-cache'
 import {

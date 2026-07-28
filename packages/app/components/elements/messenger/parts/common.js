@@ -24,8 +24,7 @@ import { getBackButtonWeb } from 'app/lib/common-helpers'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import BackButton from 'app/components/nav/back';
 import emitter from 'app/context/emitter';
-import { useFocusEffect } from 'app/lib/hooks/router'
-import { useIsFocused } from '@react-navigation/native'
+import { useFocusEffect, useIsFocused } from 'app/lib/hooks/router'
 import { useTranslation } from 'react-i18next'
 import {
     Panel,

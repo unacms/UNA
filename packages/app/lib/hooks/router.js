@@ -13,6 +13,8 @@ export {
 
 export { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+export { useIsFocused } from '@react-navigation/native';
+
 export function goBack(navigation, router, callback) {
     if (callback) {
         callback();
