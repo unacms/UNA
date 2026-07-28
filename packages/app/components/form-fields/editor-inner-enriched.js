@@ -159,9 +159,9 @@ export default function RftTextEnriched({
         const sub = emitter.addListener('editor', (data) => {
             if (!editorRef.current) return
             if (data.action === 'blur') {
-              /*  data.timeout
-                    ? setTimeout(() => editorRef.current?.blur(), data.timeout)
-                    : editorRef.current.blur()*/
+                data.timeout
+                    ? setTimeout(() => editorRef.current?.blur?.(), data.timeout)
+                    : editorRef.current.blur?.()
             }
             if (data.action === 'focus') {
                 if (isWeb) {
@@ -170,8 +170,8 @@ export default function RftTextEnriched({
                     // iOS: after the keyboard is dismissed the native input can keep a
                     // stale first-responder state, so a plain focus() no-ops. Blur first
                     // to clear it, then focus to reliably re-summon the keyboard.
-                  //  editorRef.current.blur?.()
-                  //  setTimeout(() => editorRef.current?.focus(), 50)
+                    editorRef.current.blur?.()
+                    setTimeout(() => editorRef.current?.focus?.(), 50)
                 }
             }
             if (data.action === 'set_content') {
@@ -181,6 +181,12 @@ export default function RftTextEnriched({
         })
         return () => sub.remove()
     }, [])
+
+    useEffect(() => {
+        if (formContext.formState.isSubmitted && kb_stay_open != true) {
+            editorRef.current?.blur?.()
+        }
+    }, [formContext.formState.isSubmitted])
 
     const insertMention = useCallback((user) => {
         const indicator = mention[1] || '@'

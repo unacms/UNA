@@ -1,7 +1,8 @@
 
 import { Platform } from 'react-native';
 import { getComponent } from 'app/components/registry';
-import { Button, NeoButton } from "app/design/controls";
+import { Button } from "app/design/controls/buttons";
+import { NeoButton } from "app/design/controls/neo-button";
 import emitter from 'app/context/emitter';
 import { appSetting } from 'app/lib/util';
 

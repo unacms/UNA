@@ -553,10 +553,7 @@ export default function RftText({
 
     useEffect(() => {
         if (formContext.formState.isSubmitted && kb_stay_open != true) {
-            /*setTimeout(() => {
-                editor.blur();
-            }, 800);
-            */
+            editor?.blur?.()
         }
     }, [formContext.formState.isSubmitted])
 

@@ -1,7 +1,7 @@
 import { View, Row, ScrollView } from 'app/design/view'
 import { useEffect, useMemo } from 'react'
 import { getFormFieldByData } from 'app/lib/form-helpers'
-import { Platform } from 'react-native'
+import { Keyboard, Platform } from 'react-native'
 import { useFormContext } from 'react-hook-form'
 import { editorHtmlHasContent, removeEmptyTags } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
@@ -58,9 +58,12 @@ export default function FormComments(props) {
             emitter.emit(`comment`, { action: 'send'})
             emitter.emit(`editor`, { action: 'set_content', value: '' })
             emitter.emit(`fld_files_cmt_image`, { action: 'clear' })
-            
+            if (!isWeb) {
+                emitter.emit('editor', { action: 'blur' })
+                Keyboard.dismiss()
+            }
         }
-    }, [formContext.formState.isSubmitted, formContext]);
+    }, [formContext.formState.isSubmitted, formContext, isWeb]);
 
     const handleSubmitWithSanitization = () => {
         let sanitizedHtml = removeEmptyTags(formContext.getValues('cmt_text') || '');
