@@ -30,35 +30,35 @@ export const settingsInputs = {
     },
     inputs: {
         rounded:{
-            default: 'rounded-lg',
+            default: 'rounded-xl',
             full: 'rounded-full',
         },
         // Shared control heights — text inputs, selects, and matching surfaces.
         size:{
-            small: 'px-2 leading-5 min-h-9',
-            regular: 'px-3 leading-5 min-h-11',
-            large: 'px-3 leading-5 min-h-12',
+            small: 'px-3 leading-4 min-h-9',
+            regular: 'px-3.5 leading-5 min-h-12',
+            large: 'px-4 leading-6 min-h-14',
         },
         // Height-only tokens for chip wells / wrappers that bring their own padding.
         surface_size:{
             small: 'min-h-9',
-            regular: 'min-h-10',
+            regular: 'min-h-12',
             large: 'min-h-12',
         },
         base: 
-        'text-card-foreground placeholder:text-muted-foreground py-2 bg-input/50 shadow-input-outline dark:shadow-input-outline-deep flex-auto text-base placeholder-muted-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-card web:focus-visible:border-ring web:overflow-hidden',
+        'text-card-foreground placeholder:text-muted-foreground py-2 bg-input shadow-input-outline dark:shadow-input-outline-deep flex-auto text-base placeholder-muted-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-card web:focus-visible:border-ring web:overflow-hidden',
         // Height/padding come from `size` (same as Input) so select stays in sync.
         select: ' pr-10 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep web:focus:bg-card flex-auto text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
 
         // Adaptive / floating eyebrow labels (`forms.adaptive_labels`)
         // Vertical position is Animated (center → top edge) — see adaptive-label.js.
         // Tune horizontal inset / chip / type here; use *_offset (px) for vertical nudge.
-        adaptive_label: 'ml-2 px-2 self-start',
-        adaptive_label_floated: 'bg-card',
+        adaptive_label: 'ml-3 self-start',
+        adaptive_label_floated: 'bg-card px-1.5 shadow-input-outline dark:shadow-input-outline-deep rounded-md',
         adaptive_label_text_resting: 'text-base text-muted-foreground',
-        adaptive_label_text_floated: 'text-sm text-muted-foreground',
+        adaptive_label_text_floated: 'text-xs leading-5 text-muted-foreground',
         adaptive_label_resting_offset: 0,
-        adaptive_label_floated_offset: -2,
+        adaptive_label_floated_offset: -1,
         adaptive_label_duration: 200,
     },
     switcher: {

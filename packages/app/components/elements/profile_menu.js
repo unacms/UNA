@@ -12,7 +12,7 @@ export default function ElementProfileMenu({ data, blockWrapperProps }) {
     const menu_items = appSetting('layout', 'user_remote_config') ? menuItemsByNameNew('menu_post', data, currentUser) : menuItemsByName('', appSetting('menu_items', 'menu_sidebar'), currentUser);
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <View className="profile-menu gap-4 ">
+            <View className="profile-menu gap-0.5 -mx-2">
                 {menu_items.map((item, index) => (
                     <MenuItemSidebarWithWrapper key={`menu-${index}`} icon={item.icon} link={item.link} title={t(item.title)} index={index} userUrl={currentUser.url} />
                 ))}

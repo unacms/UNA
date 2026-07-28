@@ -1,27 +1,54 @@
-import { Pressable } from 'app/design/view'
-import Link from 'app/ui/atoms/link'
 import { getComponent } from 'app/components/registry'
-import { Platform } from 'react-native'
+import { NeoButton, NeoButtonLink } from 'app/design/controls'
 
-export default function MenuItemSidebarWithWrapper({ link, title, index, icon = 'Circle', userUrl, isActive, onPress, addon }) {
+export default function MenuItemSidebarWithWrapper({
+    link,
+    title,
+    icon = 'Circle',
+    userUrl,
+    isActive,
+    onPress,
+    addon,
+    className = '',
+}) {
+    const MenuItemSidebar = getComponent('menu-item', 'sidebar')
+    const finalLink = link?.includes('{profile}')
+        ? link.replace('{profile}', userUrl || '')
+        : link
 
-    const MenuItemSidebar = getComponent('menu-item', 'sidebar');
-    const finalLink = link?.includes('{profile}') ? link.replace('{profile}', userUrl || '') : link;
-    const isWeb = Platform.OS === 'web';
-    const Wrapper = onPress && !isWeb ? Pressable : Link;
-    const activeWrapperClassName = isActive ? 'u-link-ghost-active bg-accent/60 web:hover:bg-accent rounded-lg' : '';
-    const wrapperProps = onPress
-        ? {
-            ...(isWeb
-                ? { emulate: true, onPress, alt: title, variant: 'ghost', size: 'lg' }
-                : { onPress }),
-            className: `group ${activeWrapperClassName}`.trim(),
-        }
-        : { href: finalLink, alt: title, variant: 'ghost', size: 'lg', className: `group ${activeWrapperClassName}`.trim() };
+    const content = (
+        <MenuItemSidebar
+            title={title}
+            icon={icon}
+            isActive={isActive}
+            addon={addon}
+        />
+    )
+
+    const commonProps = {
+        alt: title,
+        style: 'borderless',
+        controlSize: 'xlarge',
+        width: 'fill',
+        align: 'start',
+        contentInsets: { x: 8 },
+        selected: isActive,
+        selectedState: 'pressed',
+        className: `group ${className}`.trim(),
+        onPress,
+    }
+
+    if (finalLink) {
+        return (
+            <NeoButtonLink href={finalLink} {...commonProps}>
+                {content}
+            </NeoButtonLink>
+        )
+    }
 
     return (
-        <Wrapper {...wrapperProps}>
-            <MenuItemSidebar title={title} icon={icon} isActive={isActive} addon={addon} />
-        </Wrapper>
+        <NeoButton {...commonProps} interactive>
+            {content}
+        </NeoButton>
     )
 }

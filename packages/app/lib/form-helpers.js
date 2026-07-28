@@ -1,10 +1,14 @@
 
 import { Platform } from 'react-native';
 import { getComponent } from 'app/components/registry';
-import { Text } from 'app/design/typography'
 import { Button, NeoButton } from "app/design/controls";
 import emitter from 'app/context/emitter';
 import { appSetting } from 'app/lib/util';
+
+/** Ignores injected field props (e.g. use_caption_as_placeholder) — do not use DOM Text. */
+function UnsupportedFormField() {
+    return null;
+}
 
 const isWeb = Platform.OS === 'web';
 const dirtyFormInstances = new Set();
@@ -96,7 +100,7 @@ export function getFormFieldByData(inputData, handleSubmit, format, externalProp
     const InputType = getComponent('form-field', String(inputData.type));
     if (!InputType){
         console.log(`Unsupported field type: ${JSON.stringify(inputData)}`)
-        return <Text key={fallbackKey}></Text>
+        return <UnsupportedFormField key={fallbackKey} />;
     }
     return <InputType {...inputData} format={format} handleSubmit={handleSubmit} {...externalProps} key={fallbackKey} />;
 

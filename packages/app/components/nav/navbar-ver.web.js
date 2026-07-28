@@ -92,7 +92,7 @@ const SideBar = memo(({ headerSettings, currentUser, uri, url, bSearch, menuPopu
                         <ContextSelector data={context} url={url} uri={uri} />
                     )
                 }
-                <View className='hidden lg:block'>
+                <View className='hidden lg:block gap-1 -mx-2'>
                     {menu_sidebar_items.map(
                         (item, index) =>
                             <MenuItemSidebarWithWrapper key={`menu-${index}`} icon = {item.icon} link={item.link} title={t(item.title)} index={index} userUrl={currentUser.url}/>  

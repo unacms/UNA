@@ -1362,7 +1362,7 @@ const LeftSideBarContainer = ({
                     )}
                     <View className="flex-1 gap-4">
                         {layoutName == 'navigator' && routes.length > 1 && (
-                            <View className=' gap-1 -mx-2'>
+                            <View className=' gap-0.5 -mx-2'>
                                 {routes
                                     .filter((aItem) => aItem.hideInTop != true)
                                     .map((a) => {
@@ -1376,7 +1376,7 @@ const LeftSideBarContainer = ({
                                                     key={`lmenu-${a.index}`}
                                                     alt={a.title}
                                                     style="borderless"
-                                                    controlSize="large"
+                                                    controlSize="xlarge"
                                                     width="fill"
                                                     align="start"
                                                     contentInsets={{ x: 8 }}
@@ -1394,7 +1394,7 @@ const LeftSideBarContainer = ({
                                                 key={`lmenu-${a.index}`}
                                                 alt={a.title}
                                                 style="borderless"
-                                                controlSize="large"
+                                                controlSize="xlarge"
                                                 width="fill"
                                                 align="start"
                                                 contentInsets={{ x: 8 }}

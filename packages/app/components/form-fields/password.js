@@ -39,7 +39,7 @@ export default function FormFieldPassword(props) {
                         aria-label={props.caption}
                     />
                 </AdaptiveLabel>
-                <View className="absolute right-1 top-1/2 -translate-y-1/2 justify-center items-center z-20">
+                <View className="absolute right-2 top-1/2 -translate-y-1/2 justify-center items-center z-20">
                     <Button
                         startDecorator={isVisible ? buttonConfig.startDecorator.visible : buttonConfig.startDecorator.hidden}
                         size={buttonConfig.size}

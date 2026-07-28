@@ -9,7 +9,6 @@ import {
 } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { useTranslation } from 'react-i18next'
-import Link from 'app/ui/atoms/link'
 import Profile from 'app/ui/molecules/profile'
 import { Text } from 'app/design/typography'
 import { Platform } from 'react-native'
@@ -26,7 +25,7 @@ import Badges from 'app/ui/molecules/badges'
 import { useBreakpoint, useWindowSize, useIsDesktop, useWindowHeight, useWindowWidth, useBreakpointName } from 'app/context/measure';
 import { useSetHeader, useHeaderHeight, defaultHeader } from 'app/context/jotai/layout';
 import { useFocusEffect }  from 'app/lib/hooks/router'
-import { Button, ButtonLink, NeoButton } from 'app/design/controls'
+import { Button, ButtonLink, NeoButton, NeoButtonLink } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon';
 
 const TABLET_MODE_FROM = appSetting('layout', 'tablet_mode_from')
@@ -304,49 +303,55 @@ export default function ({ data, blocks }) {
                 height: `calc(100vh - ${headerHeight}px)`,
                 width: sideBarWidth,
             }}
-            className="flex-auto p-4 gap-1 fixed overflow-scroll "
+            className="flex-auto p-4 gap-0.5 fixed overflow-scroll "
         >
             
                 {appSetting('layout', 'show_profile_info') && (
-                    
-                    <Link variant='ghost' size='lg' href={currentUser.url} emulate={true} className="mt-2 flex-row items-center">
-                      
-
-                            <Profile
-                                {...currentUser}
-                                url_avatar={currentUser.avatar}
-                                displayType="unit_wo_info"
-                                displaySize="md"
-                                showLinks={false}
-                            />
-
-
-                            <Row className="flex-auto items-center gap-1">
-                                <Row className="items-center gap-1 flex-auto">
-                                    <Text className="px-2 text-sm leading-tighter font-semibold truncate text-card-foreground web:group-hover:text-foreground ">
-                                        {currentUser.display_name}
-                                    </Text>
-                                    {currentUser.badges && <Badges badges={currentUser.badges} size="xs" />}
+                    <View className="-mx-2">
+                        <NeoButtonLink
+                            href={currentUser.url}
+                            alt={currentUser.display_name}
+                            style="borderless"
+                            controlSize="xlarge"
+                            width="fill"
+                            align="start"
+                            contentInsets={{ x: 8 }}
+                            className="group"
+                        >
+                            <Row className="w-full items-center">
+                                <Profile
+                                    {...currentUser}
+                                    url_avatar={currentUser.avatar}
+                                    displayType="unit_wo_info"
+                                    displaySize="sm"
+                                    showLinks={false}
+                                />
+                                <Row className="flex-auto items-center gap-1">
+                                    <Row className="items-center gap-1 flex-auto">
+                                        <Text className="px-2 text-sm leading-tighter font-semibold truncate text-card-foreground web:group-hover:text-foreground">
+                                            {currentUser.display_name}
+                                        </Text>
+                                        {currentUser.badges ? <Badges badges={currentUser.badges} size="xs" /> : null}
+                                    </Row>
+                                    {currentUser.membership_name ? (
+                                        <Badge
+                                            size="xs"
+                                            variant="default"
+                                            data={{
+                                                text: currentUser.membership_name,
+                                                icon: currentUser.membership_icon,
+                                                icon_url: currentUser.membership_icon_url
+                                            }}
+                                        />
+                                    ) : null}
                                 </Row>
-                                {currentUser.membership_name && (
-                                    <Badge
-                                        size="xs"
-                                        variant="default"
-                                        data={{
-                                            text: currentUser.membership_name,
-                                            icon: currentUser.membership_icon,
-                                            icon_url: currentUser.membership_icon_url
-                                        }}
-                                    />
-                                )}
                             </Row>
-                        
-                    </Link>
-
+                        </NeoButtonLink>
+                    </View>
                 )}
 
                 {feedList.length > 1 && (
-                    <View className=" py-3 border-b border-border/60 gap-4  ">
+                    <View className="py-3 border-b border-border/60 gap-0.5 -mx-2">
                         {feedList.map((item, index) => {
                             return (
                                 <MenuItemSidebarWithWrapper
@@ -367,7 +372,7 @@ export default function ({ data, blocks }) {
 
                 {navBarBlocks.map((item, index) => {
                     return (
-                        <View className={(appSetting('layout', 'show_profile_info') || feedList.length > 1) || index > 0 ? "mt-3 " : ''} key={'block_' + index}>
+                        <View className={(appSetting('layout', 'show_profile_info') || feedList.length > 1) || index > 0 ? " " : ''} key={'block_' + index}>
                             <BlockByName
                                 name={item.block}
                                 data={data}

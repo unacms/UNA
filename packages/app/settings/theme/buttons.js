@@ -9,32 +9,40 @@ export const settingsButtons = {
             container: 'px-2 gap-1 h-7 min-w-7',
             container_icon_only: 'h-7 w-7 items-center justify-center',
             text: 'text-xs leading-7',
-            icon_size: 16,
+            icon_size: 14,
             hitSlop: 8,
         },
         sm: {
             rounded: 'rounded-lg ',
-            container: 'px-2.5 gap-1 h-9 min-w-9 ',
-            container_icon_only: 'h-9 w-9',
+            container: 'px-2.5 gap-1 h-8 min-w-8 ',
+            container_icon_only: 'h-8 w-8',
             text: 'text-sm leading-5',
-            icon_size: 20,
+            icon_size: 16,
             hitSlop: 6,
         },
         base: {
             rounded: 'rounded-xl',
-            container: 'px-3 gap-2 min-h-11 min-w-11',
-            container_icon_only: 'min-h-11 min-w-11',
-            title_container: ' leading-11 text-base',
-            icon_size: 24,
-            hitSlop: 2,
+            container: 'px-3 gap-2 min-h-9 min-w-9',
+            container_icon_only: 'min-h-9 min-w-9',
+            title_container: ' leading-9 text-base',
+            icon_size: 20,
+            hitSlop: 4,
         },
         lg: {
+            rounded: 'rounded-xl',
+            container: 'px-4 gap-2 min-h-10 min-w-10',
+            container_icon_only: 'min-h-10 min-w-10',
+            title_container: ' leading-10 text-base',
+            icon_size: 20,
+            hitSlop: 2,
+        },
+        xl: {
             rounded: 'rounded-xl',
             container: 'px-4 gap-2 min-h-12 min-w-12',
             container_icon_only: 'min-h-12 min-w-12',
             title_container: ' leading-12 text-base',
             icon_size: 24,
-            hitSlop: 14,
+            hitSlop: 0,
         },
     },
     button_styles: {
@@ -287,8 +295,8 @@ export const settingsButtons = {
         // iOS HIG-style minimum is 44pt; web/mouse trims a few pixels because
         // pointers don't need finger-sized targets.
         controlSizes: {
-            mini:    { height: 28, paddingX: 12,  font: 'text-sm leading-7', icon: 16, hitSlop: 10, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
-            small:   { height: 32, paddingX: 12, font: 'text-sm leading-8', icon: 20, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 6 } } },
+            mini:    { height: 28, paddingX: 12,  font: 'text-sm leading-7', icon: 14, hitSlop: 10, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
+            small:   { height: 32, paddingX: 12, font: 'text-sm leading-8', icon: 16, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 6 } } },
             regular: {
                 default: { height: 36, paddingX: 12, font: 'text-sm leading-9', icon: 20, hitSlop: 4, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
                // web:     { height: 36, paddingX: 12 },
@@ -363,13 +371,13 @@ export const settingsButtons = {
             // for the glass family).
             bordered: {
                 container: {
-                    default: 'bg-muted/60 ',
+                    default: 'bg-muted/50 ',
                     hovered: 'bg-muted ',
                     focused: 'bg-muted ',
-                    pressed: 'bg-accent/60 ',
+                    pressed: 'bg-accent/50 ',
                     active: 'bg-muted ',
-                    pressedToggle: 'bg-accent/60 ',
-                    disabled: 'bg-muted opacity-60 ',
+                    pressedToggle: 'bg-accent/50 ',
+                    disabled: 'bg-muted opacity-50 ',
                 },
                 text: {
                     base: 'font-medium tracking-tight',
@@ -412,10 +420,10 @@ export const settingsButtons = {
             borderless: {
                 container: {
                     default: '',
-                    hovered: 'bg-muted/60',
-                    focused: 'bg-muted/60',
-                    pressed: 'bg-accent/60 web:hover:bg-accent',
-                    active: 'bg-muted/60 ',
+                    hovered: 'bg-muted/50',
+                    focused: 'bg-muted/50',
+                    pressed: 'bg-accent/50 web:hover:bg-accent',
+                    active: 'bg-muted/50 ',
                     pressedToggle: 'bg-muted',
                     disabled: 'opacity-50',
                 },

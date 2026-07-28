@@ -1,25 +1,18 @@
-/* Global outline color only (no width). Components control size/offset. */
+/* Global focus ring. Use solid (not auto) — auto ignores custom outline-color
+ * in Firefox/Safari. Keep offset ≥ 0 so overflow:hidden/clip on inputs doesn't
+ * eat the ring. Same alpha in light and dark (dark used to force / 0.8 and
+ * override this). */
 *:focus-visible {
-    outline-color: rgb(var(--ring) / 0.8);
-    outline-style: auto;    
-    outline-offset: 2px;
-    outline-width: 3px;
+    outline-color: rgb(var(--ring) / 0.5);
+    outline-style: solid;
+    outline-offset: -1px;
+    outline-width: 4px;
 }
 
 select {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-}
-
-[data-theme="dark"] *:focus-visible {
-    outline-color: rgb(var(--ring) / 0.8);
-}
-
-@media (prefers-color-scheme: dark) {
-    :root *:focus-visible {
-        outline-color: rgb(var(--ring) / 0.8);
-    }
 }
 
 /* The enriched editor (Tiptap/ProseMirror) gets its focus affordance from its
