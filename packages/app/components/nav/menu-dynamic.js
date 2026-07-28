@@ -4,6 +4,7 @@ import { Platform } from 'react-native'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
 import { useIsDesktop } from 'app/context/measure';
+import { useBottomSheetData } from 'app/context/bottomsheet';
 import { cn } from 'app/lib/util'
 
 const isWeb = Platform.OS == 'web'
@@ -17,6 +18,7 @@ function getFixedVisibleCount(persistent, allowZeroPersistant, isDesktop) {
 
 export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, ButtonEx, allowZeroPersistant = false, items, menuClasses, menuExClasses, isButtonOutside, offsetWidth = 50, persistent = 0 }) {
     const isDesktop = useIsDesktop();
+    const { setBottomSheetData } = useBottomSheetData();
     
     const itemRefs = useRef([]);
     const itemRefsMore = useRef();
@@ -76,9 +78,19 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
 
     }, [isDynamicMenu]);
 
+    // Overflow items render MenuItemEx as `title` (React node), so DropdownMenuItem
+    // skips the outer handleSelect that normally closes the native bottomsheet.
+    // Close it explicitly from the press paths that actually fire.
+    const dismissOverflowMenu = useCallback(() => {
+        if (!isWeb) {
+            setBottomSheetData(false);
+        }
+    }, [setBottomSheetData]);
+
     const ExMenu = (visibleItemsCount < items.length) && (
         <DropdownMenu
             onSelect={(oItem, event) => {
+                dismissOverflowMenu();
                 if (oItem.noAction) {
                     handleFormModal(oItem, event, setPageData)
                 }
@@ -95,8 +107,8 @@ export default function DynamicMenu({ name, isFixedCount, MenuItem, MenuItemEx, 
                         item={{
                             ...aItem,
                             onPress: (event) => {
+                                dismissOverflowMenu();
                                 if (aItem.noAction) {
-                                   
                                     handleFormModal(aItem, event, setPageData);
                                     return;
                                 }

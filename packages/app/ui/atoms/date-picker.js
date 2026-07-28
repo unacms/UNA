@@ -166,7 +166,7 @@ export function CalendarHeader({ value, addMonth, setDatePart }) {
                     valueField="value"
                     onChange={setM}
                     data={months}
-                    value={value ? value.getMonth().toString() : ''}
+                    value={value ? value.getMonth() : ''}
                 />
             </View>
             <View className='w-28'>
@@ -175,7 +175,7 @@ export function CalendarHeader({ value, addMonth, setDatePart }) {
                     valueField="value"
                     onChange={setY}
                     data={years}
-                    value={value ? value.getFullYear().toString() : ''}
+                    value={value ? value.getFullYear() : ''}
                 />
             </View>
             <Button rounded startDecorator="ChevronRight" onPress={() => addMonth('m', 1)} />

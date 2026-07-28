@@ -5,7 +5,9 @@ import fs from 'fs';
 import path from 'path';
 
 export const config = {
-    matcher: ["/((?!sw.js|logo192.png|loader.svg|favicon.ico|favicon.svg|manifest.json|static/|_vercel).*)"],
+    // Skip /.well-known/* so Digital Asset Links / AASA hit App Router routes
+    // directly (no 404, no UNA rewrite).
+    matcher: ["/((?!sw.js|logo192.png|loader.svg|favicon.ico|favicon.svg|manifest.json|static/|_vercel|\\.well-known).*)"],
     //runtime: 'experimental-edge',
 };
 
@@ -30,9 +32,14 @@ export async function proxy(request) {
     const staticExtensions = ['.map'];
     const isSourceMap = staticExtensions.some(ext => pathname.endsWith(ext));
     const isWellKnown = pathname.startsWith('/.well-known/');
-    const isAppleAppSiteAssociation = pathname.startsWith('/.well-known/apple-app-site-association');
-    
-    if (isAppleAppSiteAssociation) {
+    // Android App Links + iOS Universal Links verification files must be publicly
+    // reachable (no redirects, application/json). Do not 404 these paths.
+    const isDigitalAssetLinks =
+        pathname === '/.well-known/assetlinks.json' ||
+        pathname === '/.well-known/apple-app-site-association' ||
+        pathname === '/apple-app-site-association';
+
+    if (isDigitalAssetLinks) {
         const res = NextResponse.next();
         res.headers.set('Content-Type', 'application/json');
         return res;

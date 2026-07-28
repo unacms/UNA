@@ -44,6 +44,11 @@ enableScreens(appSetting('native', 'enable_screens'));
 
 const themeSettings = appSetting('theme', 'native_tabs');
 
+function formatBadgeCount(count) {
+    const n = Number(count) || 0;
+    return n > 99 ? 99 : n;
+}
+
 function getBadgeForTab(currentUser, tab) {
     const badgeTextSize = appSetting('theme', 'native_tabs', 'badgeTextSize') || 'text-xs';
 
@@ -53,7 +58,7 @@ function getBadgeForTab(currentUser, tab) {
     ) {
         return (
             <Text className={`${badgeTextSize} text-white font-medium`}>
-                {currentUser?.notifications}
+                {formatBadgeCount(currentUser?.notifications)}
             </Text>
         )
     }
@@ -64,7 +69,10 @@ function getBadgeForTab(currentUser, tab) {
     ) {
         return (
             <Text className={`${badgeTextSize} text-white font-medium`}>
-                {currentUser?.counters?.bx_messenger_new_messages + currentUser?.notifications}
+                {formatBadgeCount(
+                    (currentUser?.counters?.bx_messenger_new_messages || 0) +
+                        (currentUser?.notifications || 0)
+                )}
             </Text>
         )
     }
@@ -74,7 +82,7 @@ function getBadgeForTab(currentUser, tab) {
     ) {
         return (
             <Text className={`${badgeTextSize} text-white font-medium`}>
-                {currentUser?.counters?.bx_messenger_new_messages}
+                {formatBadgeCount(currentUser?.counters?.bx_messenger_new_messages)}
             </Text>
         )
     }
