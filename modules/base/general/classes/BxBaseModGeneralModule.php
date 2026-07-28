@@ -718,6 +718,9 @@ class BxBaseModGeneralModule extends BxDolModule
             'EntityEdit' => '',
             'EntityDelete' => '',
             'UpdateImage' => '',
+            //manage
+            'GetInfo' => '',
+            'EditEntity' => '',
             // polls
             'GetPollForm' => '',
             'SubmitPollForm' => '',
@@ -935,24 +938,17 @@ class BxBaseModGeneralModule extends BxDolModule
 
         $aContentInfo = $this->_getFields($iContentId);
         if(empty($aContentInfo))
-            return array();
+            return [];
 
-        if(!$bSearchableFieldsOnly)
+        if($bSearchableFieldsOnly === false)
             return $aContentInfo;
+        else if(is_string($bSearchableFieldsOnly) && isset($aContentInfo[$bSearchableFieldsOnly]))
+            return $aContentInfo[$bSearchableFieldsOnly];
 
-        if(empty($CNF['PARAM_SEARCHABLE_FIELDS']))
-            return array();
+        if(($sSf = $CNF['PARAM_SEARCHABLE_FIELDS'] ?? false) && ($aFields = explode(',', getParam($sSf))))
+            return array_intersect_key($aContentInfo, array_flip($aFields));
 
-        $aFields = explode(',', getParam($CNF['PARAM_SEARCHABLE_FIELDS']));
-        if(empty($aFields))
-            return array();
-
-        $aResult = array();
-        foreach($aFields as $sField)
-            if(isset($aContentInfo[$sField]))
-                $aResult[$sField] = $aContentInfo[$sField];
-
-        return $aResult;
+        return [];
     }
 
     public function serviceGetInfoApi ($iContentId, $bExtendedUnits = false)
@@ -2234,6 +2230,9 @@ class BxBaseModGeneralModule extends BxDolModule
      */
     public function serviceEditEntity ($iContentId, $aValues, $sDisplay = false)
     {
+        if($this->_bIsApi && is_string($aValues))
+            $aValues = bx_api_get_browse_params($aValues);
+
         $oFormsHelper = $this->getFormsHelper();
         return $oFormsHelper->editData($iContentId, $aValues, $sDisplay);
     }
