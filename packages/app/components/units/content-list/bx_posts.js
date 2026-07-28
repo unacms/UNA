@@ -12,7 +12,7 @@ Units.Base = function Base({ data, listIndex }) {
     const isSkeleton = data?.skeleton;
     const isLcpCandidate = listIndex === 0;
     return (
-        <Card padding="p-1">
+        <Card padding="p-1 gap-3">
             <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-accent">
                 <Skeleton className="" rounded='rounded-lg' visible={isSkeleton}>
                     {data.image && (
@@ -28,20 +28,20 @@ Units.Base = function Base({ data, listIndex }) {
                     )}
                 </Skeleton>
             </View>
-            <View className="flex-auto h-40 flex-col p-2 pt-3">
-                <Skeleton className="h-6 w-3/4 mt-2" visible={isSkeleton}>
+            <View className="flex-auto h-36 flex-col px-2 gap-y-3">
+                <Skeleton className="h-6 w-3/4 " visible={isSkeleton}>
                     <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
                         <Text numberOfLines={2} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-tight font-semibold">
                             {data.title}
                         </Text>
                     </LinkOrModal>
                 </Skeleton>
-                <Skeleton className="h-16 w-full mt-2" rounded="rounded-lg" visible={isSkeleton}>
+                <Skeleton className="h-16" rounded="rounded-lg" visible={isSkeleton}>
                     <Text numberOfLines={3} className="text-secondary-foreground mt-2 mb-auto text-sm ">
                         {data.summary_plain}
                     </Text>
                 </Skeleton>
-                <View className="mt-2 ">
+                <View className=" ">
                     <Skeleton preset="author" visible={isSkeleton}>
                         <AuthorData authorData={data.author_data} />
                     </Skeleton>

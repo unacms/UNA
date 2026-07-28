@@ -30,12 +30,12 @@ export function getBackButtonWeb() {
 }
 
 export const AuthorData = memo(({ authorData, displaySize }) => (
-    <Profile
+    <Row className="gap-x-2 items-center"><Profile
         {...authorData}
         displayType="unit"
         displaySize={displaySize || "xs"}
         showInfo="false"
-    />
+    /></Row>
 ));
 
 export const BrowseItem = memo(({ item, index, numColumns, data, unitMode, props }) => (

@@ -222,7 +222,7 @@ export const settingsMenus = {
             {
                 key: '/tab1',
                 title: 'Friends',
-                url: '/friends',
+                url: '/posts-home',
                 icon: 'UsersRound',
                 badge: 'friends',
                 animated: true,

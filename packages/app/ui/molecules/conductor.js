@@ -329,6 +329,8 @@ const AddBlocks = React.memo(({
     </>
 });
 
+const AT_TOP_SCROLL_THRESHOLD = 50;
+
 const TabScene = React.memo(({
     route,
     hasNextPage,
@@ -341,6 +343,7 @@ const TabScene = React.memo(({
     refreshing,
     numColumns,
     skipHeaderOffset,
+    listRef,
 }) => {
 
     const handleEndReached = useCallback(
@@ -425,6 +428,7 @@ const TabScene = React.memo(({
             refreshing={refreshing}
             onEndReached={handleEndReached}
             skipHeaderOffset={skipHeaderOffset}
+            refer={listRef}
         />
     )
 });
@@ -458,6 +462,12 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     const isFocused = useIsFocused();
     const isFocusedRef = useRef(isFocused);
     isFocusedRef.current = isFocused;
+
+    const listRef = useRef(null);
+    const scrollValue = useScrollValue();
+    const scrollValueRef = useRef(0);
+    scrollValueRef.current = scrollValue;
+    const activeRequestUrlRef = useRef(null);
 
     useEffect(() => {
         if (!deepEqual(menu, menuState)) {
@@ -526,6 +536,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         () => routes.find((item) => item.index === index),
         [routes, index]
     );
+    activeRequestUrlRef.current = activeRoute?.endpoint?.request_url ?? null;
     const currentRoute = useMemo(() => {
         return activeRoute?.inited ? activeRoute : (prevRoute ?? activeRoute);
     }, [activeRoute, prevRoute]);
@@ -751,6 +762,19 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
                 return;
             }
 
+            const requestUrl = activeRequestUrlRef.current;
+            if (scrollValueRef.current > AT_TOP_SCROLL_THRESHOLD) {
+                if (requestUrl) {
+                    setListScrollOffset(requestUrl, 0);
+                }
+                if (listRef.current?.scrollToOffset) {
+                    listRef.current.scrollToOffset({ offset: 0, animated: true });
+                } else {
+                    listRef.current?.scrollToIndex?.({ index: 0, animated: true });
+                }
+                return;
+            }
+
             onStartRefresh();
         });
         return () => subscription.remove();
@@ -942,6 +966,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         hasNextPage: hasNextPage,
         isFetchingNextPage: isFetchingNextPage,
         skipHeaderOffset: useLocalHeader,
+        listRef: listRef,
     };
 
     const onFormChangedValues = useCallback((values) => {

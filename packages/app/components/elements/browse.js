@@ -27,6 +27,9 @@ import emitter from 'app/context/emitter'
 import Snackbar from 'app/ui/atoms/snackbar'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { BlockWrapper } from 'app/components/block-wrapper'
+import { useIsFocused } from '@react-navigation/native'
+import { useScrollValue } from 'app/context/jotai/layout'
+import { setListScrollOffset } from 'app/lib/tab-page-cache'
 
 import {
     refetchUniListReducer,
@@ -39,6 +42,7 @@ import { BrowseItem } from 'app/lib/common-helpers'
 import { useIsDesktop } from 'app/context/measure';
 import { BlockTitle } from 'app/ui/molecules/page-block'
 const blockTheme = appSetting('theme', 'blocks');
+const AT_TOP_SCROLL_THRESHOLD = 50;
 
 export default function Browse(props) {
 
@@ -48,6 +52,12 @@ export default function Browse(props) {
     const Form = getComponent('element', 'form');
     const isDesktop = useIsDesktop();
     const uniRef = useRef()
+    const isFocused = useIsFocused();
+    const isFocusedRef = useRef(isFocused);
+    isFocusedRef.current = isFocused;
+    const scrollValue = useScrollValue();
+    const scrollValueRef = useRef(0);
+    scrollValueRef.current = scrollValue;
     const [refetchState, dispatch] = useReducer(refetchUniListReducer, {
         visibleItems: [],
         hasNewData: false
@@ -294,6 +304,33 @@ export default function Browse(props) {
         });
         return () => subscription.remove();
     }, [refetch]);
+
+    // Bottom-tab reselect (same event as Conductor): scroll to top, or reload if already at top.
+    useEffect(() => {
+        if (props.data?.unit !== 'feed' || isOneLine || isOnePage) return;
+
+        const subscription = emitter.addListener('conductor', (payload) => {
+            if (!isFocusedRef.current) return;
+            if (payload?.action !== 'reset_to_first') return;
+
+            const requestUrl = data.request_url || props?.url;
+            if (scrollValueRef.current > AT_TOP_SCROLL_THRESHOLD) {
+                if (requestUrl) {
+                    setListScrollOffset(requestUrl, 0);
+                }
+                if (uniRef.current?.scrollToOffset) {
+                    uniRef.current.scrollToOffset({ offset: 0, animated: true });
+                } else {
+                    uniRef.current?.scrollToIndex?.({ index: 0, animated: true });
+                }
+                return;
+            }
+
+            refetchRef.current.skipToast = true;
+            refetch();
+        });
+        return () => subscription.remove();
+    }, [props.data?.unit, isOneLine, isOnePage, data.request_url, props?.url, refetch]);
 
     const dataItems = refetchState.visibleItems
 

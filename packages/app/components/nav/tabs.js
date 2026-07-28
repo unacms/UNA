@@ -389,8 +389,6 @@ export default function Tabs() {
                                                 e.preventDefault?.();
                                                 e.stopPropagation?.();
 
-                                                setLayoutData(getAlert('list:move_to_top', true));
-
                                                 if (canGoBackInTab(tabKey)) {
                                                     navigateBackInTab(router, tabKey, currentUser);
                                                 } else {
