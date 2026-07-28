@@ -11,7 +11,7 @@ import { Platform } from 'react-native'
 import useFetchForm from 'app/lib/hooks/fetch'
 import { useCurrentUser } from 'app/context/user';
 import { subscribe } from 'app/ui/atoms/socket';
-import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
+import { KbStickyView } from 'app/ui/atoms/kb-avoiding-view';
 import ItemConvo from 'app/components/elements/messenger/parts/item-convo';
 import ItemJot from 'app/components/elements/messenger/parts/item-jot';
 import { linkedText } from 'app/lib/text-helpers';
@@ -36,9 +36,20 @@ import { useSetHeader, defaultHeader, useSetHeaderHeight } from 'app/context/jot
 import { getComponent } from 'app/components/registry';
 import { useSafeAreaInsets } from 'app/lib/hooks/router'
 
+// Keep in sync with tabBarStyle.height in app/components/nav/tabs.js
+const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 52 : 56
+
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, pageData, onSave, addButtons }) {
     const isWeb = Platform.OS == 'web'
     const { t } = useTranslation();
+    const insets = useSafeAreaInsets();
+    // Form sits above the tab bar. On Android the root SafeAreaView also pads
+    // insets.bottom (iOS edges omit bottom) — sticky must compensate both or the
+    // composer lands too high when the keyboard covers that space.
+    // e.g. Android: 56 + ~44 nav inset ≈ 100
+    const stickyOpened = !isWeb
+        ? TAB_BAR_HEIGHT + (Platform.OS === 'android' ? insets.bottom : 0)
+        : 0;
     const { setBottomSheetData } = useBottomSheetData();
     const [convoId, setConvoId] = useState(defaultConvoId);
     const [jots, setJots] = useState(false);
@@ -464,8 +475,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     ]);
 
     const handleLayout = useCallback((event) => {
-        if (isWeb)
-            setFormHeight(event.nativeEvent.layout.height)
+        setFormHeight(event.nativeEvent.layout.height)
     }, []);
 
     const cellsCustomConfig = appSetting('layouts', 'messenger')
@@ -476,13 +486,13 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                 {panelsVisible.convos && <View className=' w-full  overflow-hidden'>
                     {convosComponent}
                 </View>}
-                {panelsVisible.jots && <View className='flex-1  '>
+                {panelsVisible.jots && <View className='flex-1'>
                     <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
-                    <View className={`w-full  ${!isWeb ? 'flex-1' : ''}`} style={{ height: layoutHeightRight - (isSmallScreen ? 64 : 0)}}>
+                    <View className="w-full flex-1">
                         {jotsComponent}
                     </View>
-                    <KbAvoidingView>
-                        <View onLayout={handleLayout} className='  w-full ' >
+                    <KbStickyView offset={{ closed: 0, opened: stickyOpened }}>
+                        <View onLayout={handleLayout} className="w-full">
                             <FormContainer
                                 form={data.form}
                                 replyItem={replyItem}
@@ -490,7 +500,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                                 handleCancelReply={handleCancelReply}
                             />
                         </View>
-                    </KbAvoidingView>
+                    </KbStickyView>
                 </View>}
             </View>)
     }
@@ -523,7 +533,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                     <View className={`w-full ${!isWeb ? 'flex-1' : ''}`} style={{ height: layoutHeightRight }}>
                         {jotsComponent}
                     </View>
-                    <KbAvoidingView>
+                    <KbStickyView offset={{ closed: 0, opened: 0 }}>
                         <View onLayout={handleLayout} className='  w-full ' >
                             <FormContainer
                                 form={data.form}
@@ -532,7 +542,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                                 handleCancelReply={handleCancelReply}
                             />
                         </View>
-                    </KbAvoidingView>
+                    </KbStickyView>
                 </View>}
             </Panel>
         </PanelGroup>
@@ -705,16 +715,15 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
     </>);
 });
 
-const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, handleLayout }) => {
-    const isWeb = Platform.OS == 'web'
+const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply }) => {
     const { t } = useTranslation();
 
     return (
 
-        <View className={` ${isWeb ? '' : 'min-h-20'}`} onLayout={handleLayout} style={{ paddingTop: 12, paddingBottom: 12 }}>
+        <View className="p-1.5 sm:p-2.5">
             <View className=' ' >
                 {
-                    replyItem && (<View className='bg-card rounded-sm border-l-2 border-primary/50 py-1 pl-2 mt-2 mx-2'>
+                    replyItem && (<View className='bg-accent/60 rounded-xl border border-accent px-2.5 py-2 mb-2'>
                         <Row className='items-start justify-between max-w-full relative'>
                             <View className=' flex-auto pr-4'>
                                 <Row className='max-w-full '>
@@ -723,8 +732,8 @@ const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, 
                                 </Row>
                                 <Text className='text-sm overflow-hidden text-popover-foreground ' numberOfLines={3}>{linkedText(replyItem.message, "hover:text-accent-foreground")}</Text>
                             </View>
-                            <View className=" right-0 t-0">
-                                <Button align="start" rounded startDecorator="X" size="xs" variant="outline" onPress={() => handleCancelReply()} />
+                            <View className=" -right-1 -top-1">
+                                <Button align="start" rounded startDecorator="X" size="xs" variant="text" onPress={() => handleCancelReply()} />
                             </View>
                         </Row>
                     </View>)

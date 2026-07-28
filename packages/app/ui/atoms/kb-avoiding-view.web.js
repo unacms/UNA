@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, ScrollView } from 'react-native'
+import { KeyboardAvoidingView, ScrollView, View } from 'react-native'
 import { Platform } from 'react-native'
 import React from 'react';
 
@@ -21,6 +21,11 @@ export default function KbAvoidingView(props) {
             {children}
         </KeyboardAvoidingView>
     );
+}
+
+/** Web: no keyboard sticky — render as a plain View. */
+export function KbStickyView({ children, offset, enabled, ...rest }) {
+    return <View {...rest}>{children}</View>;
 }
 
 export const KbAvoidingViewScroll = React.forwardRef((props, ref) => {

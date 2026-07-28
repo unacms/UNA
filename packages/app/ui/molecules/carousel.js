@@ -28,7 +28,7 @@ const Image2 = memo((item) => {
 });
 
 
-const Gallery = React.memo(({ data, handleShowImage, windowWidthOr }) => {
+const Gallery = React.memo(({ data, handleShowImage, windowWidthOr, containerWidth }) => {
     const data2 = useMemo(() => data.slice(0, 3), [data]);
     const len = useMemo(() => data2.length, [data2]);
     const dataR1 = useMemo(() => (len === 3 ? data2.slice(0, 1) : data2.slice(0, 2)), [data2, len]);
@@ -36,6 +36,8 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr }) => {
     const isWeb = Platform.OS == 'web'
     const max_image_width = appSetting('carousel', 'image_width');
     const max_image_aspect = appSetting('carousel', 'image_aspect_ratio');
+    // Prefer measured container width (e.g. messenger max-w-xs) over full window
+    const availableWidth = containerWidth > 0 ? containerWidth : Math.max((windowWidthOr || 0) - 20, 0);
 
     if (data2.length == 1) {
 
@@ -64,16 +66,15 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr }) => {
                 </View>)
             }
             aspectStyle = w / h;
-            if (w > (windowWidthOr - 20)) {
-                h = (windowWidthOr - 20) / w * h
-                w = windowWidthOr - 20;
-
+            if (availableWidth > 0 && w > availableWidth) {
+                h = availableWidth / w * h;
+                w = availableWidth;
             }
 
             return (
                 /*bg-secondary  */
-                <View className={`${max_image_width}  ${aspect} w-full items-start justify-center  002`}>
-                    <View className='rounded-lg overflow-hidden' style={{ aspectRatio: aspectStyle, width: w, height: h }} >
+                <View className={`${max_image_width}  ${aspect} w-full items-start justify-center rounded-lg overflow-hidden 002`}>
+                    <View className='rounded-lg overflow-hidden max-w-full' style={{ aspectRatio: aspectStyle, width: w }} >
                         <Image2 handleShowImage={handleShowImage} data={data} row={0} index={0} key={0} src={data[0].src} type={data[0].type} />
                     </View>
                 </View>
@@ -86,7 +87,7 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr }) => {
             return (
                 /*bg-secondary  */
                 <View className={`${max_image_width}  ${aspect} w-full items-center justify-center bg-muted  rounded-lg overflow-hidden`}>
-                    <View style={{ aspectRatio: aspectStyle }} className='h-full'>
+                    <View style={{ aspectRatio: aspectStyle }} className='h-full max-w-full'>
                         <Image2 handleShowImage={handleShowImage} data={data} row={0} index={0} key={0} width={w} height={h} src={data[0].src} type={data[0].type} />
                     </View>
                 </View>
@@ -111,14 +112,14 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr }) => {
             </Row>
         </View>
     )
-}, (prevProps, nextProps) => prevProps.data2 === nextProps.data2);
+});
 
 function CarouselContent({ data }) {
     const [currentImageIndex, setCurrentImageIndex] = useState(false);
     const [imageSize, setImageSize] = useState([0, 0]);
     const [imageSize2, setImageSize2] = useState([0, 0]);
 
-    const [width, setWidth] = useState(400);
+    const [containerWidth, setContainerWidth] = useState(0);
 
     const { width: windowWidthOr, height: windowHeightOr } = useWindowSize();
 
@@ -127,9 +128,9 @@ function CarouselContent({ data }) {
     }, []);
 
     const handleLayout = useCallback((event) => {
-        if (event.nativeEvent.layout.width !== width)
-            setWidth(event.nativeEvent.layout.width);
-    }, [width]);
+        const nextWidth = event.nativeEvent.layout.width;
+        setContainerWidth((prev) => (prev !== nextWidth ? nextWidth : prev));
+    }, []);
 
     const previewBounds = useMemo(() => {
         const widthRatio = windowWidthOr >= 1536 ? 0.62 : windowWidthOr >= 1280 ? 0.68 : windowWidthOr >= 1024 ? 0.76 : 0.92;
@@ -209,8 +210,8 @@ function CarouselContent({ data }) {
             </Row>
 
         </Modal>}
-        <View className='w-full mx-auto'>
-            <Gallery windowWidthOr={windowWidthOr} data={data} handleShowImage={handleShowImage} />
+        <View className='w-full mx-auto overflow-hidden' onLayout={handleLayout}>
+            <Gallery windowWidthOr={windowWidthOr} containerWidth={containerWidth} data={data} handleShowImage={handleShowImage} />
         </View>
 
     </>

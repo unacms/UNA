@@ -90,7 +90,7 @@ export default function FormComments(props) {
 
     return (
         
-        <View className="w-full  flex-auto">
+        <View className={`w-full flex-auto bg-card/90 backdrop-blur-lg shadow-btn-glass dark:shadow-btn-glass-deep ${hasContent ? 'rounded-2xl' : 'rounded-full'}`}>
             {getFormFieldByData(
                 props.data.inputs['action'],
                 props.handleSubmit,
@@ -116,7 +116,7 @@ export default function FormComments(props) {
                 props.handleSubmit,
                 'custom'
             )}
-            <Row className={`w-full gap-1 bg-card/90 backdrop-blur-lg flex-auto shadow-btn-glass dark:shadow-btn-glass-deep ${shouldGrowFromBottom ? 'items-end' : 'items-start'} ${hasContent ? 'rounded-2xl' : 'rounded-full'}`}>
+            <Row className={`w-full gap-1 flex-auto ${shouldGrowFromBottom ? 'items-end' : 'items-start'} `}>
                
                 <View className="flex-auto ">
                     <View className=" items-stretch " >
@@ -198,7 +198,7 @@ export default function FormComments(props) {
                 </View>
             </Row>
             <ScrollView horizontal={true}>
-                <Row className="flex-wrap">{
+                <Row className="flex-wrap mb-1 mx-1">{
                     getFormFieldByData(
                         props.data.inputs['cmt_image'],
                         props.handleSubmit,

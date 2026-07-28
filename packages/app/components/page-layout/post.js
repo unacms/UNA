@@ -3,7 +3,7 @@ import { View } from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
-import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view';
+import KbAvoidingView, { KbStickyView } from 'app/ui/atoms/kb-avoiding-view';
 import { Platform } from 'react-native'
 import { useLocalSearchParams } from 'app/lib/hooks/router'
 import emitter from 'app/context/emitter';
@@ -291,12 +291,10 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                         />}
                 </View>
 
-                <KbAvoidingView className="absolute bottom-0 left-0 right-0 z-10" modalOffset={insets.top+24}>{/*was 90 56=14*4 modal header*/}
-                    <View
-                        onLayout={handleLayout}
-                        className="  "
-                        style={{ paddingBottom: insets.bottom }}
-                    >
+                <KbStickyView
+                    offset={{ closed: 0, opened: insets.bottom }}
+                >
+                    <View onLayout={handleLayout}>
                         <CommentsForm
                             isModal={isModal}
                             objectId={commentsObjectId}
@@ -305,7 +303,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                             requestUrl={commentsRequestUrl}
                         />
                     </View>
-                </KbAvoidingView>
+                </KbStickyView>
             </View>
         )
 

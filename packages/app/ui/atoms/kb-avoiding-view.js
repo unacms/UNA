@@ -1,6 +1,6 @@
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Platform } from 'react-native'
-import { KeyboardAwareScrollView, KeyboardAvoidingView, KeyboardProvider } from "react-native-keyboard-controller";
+import { KeyboardAwareScrollView, KeyboardAvoidingView, KeyboardProvider, KeyboardStickyView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated from "react-native-reanimated";
 
@@ -39,6 +39,23 @@ export default function KbAvoidingView({children, className, modalOffset}) {
         >
             {children}
         </KeyboardAvoidingView>
+    )
+}
+
+/**
+ * Footer/form that translates with the keyboard (does not resize the layout).
+ * Prefer over KbAvoidingView for absolute bottom composers.
+ */
+export function KbStickyView({ children, style, offset, enabled = true, ...rest }) {
+    return (
+        <KeyboardStickyView
+            style={style}
+            offset={offset}
+            enabled={enabled}
+            {...rest}
+        >
+            {children}
+        </KeyboardStickyView>
     )
 }
 

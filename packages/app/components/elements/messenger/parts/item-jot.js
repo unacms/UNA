@@ -69,7 +69,7 @@ export default function JotItem({ item, index, handleReply }) {
         params: { ...item.reactions.params, button_size: "xs", button_variant: "link" }
     };
 
-    const Jot = <TouchableWithoutFeedback onPress={() => { emitter.emit('editor', { action: 'blur' }) }}><View className='w-full py-3 px-3'>
+    const Jot = <TouchableWithoutFeedback onPress={() => { emitter.emit('editor', { action: 'blur' }) }}><View className='w-full pb-3 px-3'>
         <Row className="gap-2">
             
                 <Profile {...item.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
@@ -113,17 +113,17 @@ export default function JotItem({ item, index, handleReply }) {
                             <Text className="text-xs text-secondary-foreground  font-default">{linkedText(item?.reply_message, "hover:text-accent-foreground")}</Text>
                         </View>}
                         <Text className=" text-sm text-secondary-foreground">{linkedText(item?.message, "hover:text-accent-foreground")}</Text>
-                        {aImg.length > 0 && <Carousel data={aImg} />}
+                        {aImg.length > 0 && <View className="max-w-xs w-full"><Carousel data={aImg} /></View>}
                     </View>}
                 </View>
             </View>
         </Row>
-        <View className="flex-row justify-between items-center ml-2 mt-0.5">
+        <View className="flex-row justify-between items-center mt-0.5">
             <View className="pl-12">
-                <Button align="start" title={t("Reply")} size="xs" startDecorator="Reply" variant="link" onPress={() => handleReplyInner(item)} rounded />
+                <Button align="start" title={t("Reply")} size="xs" startDecorator="MessageCircle" variant="link" onPress={() => handleReplyInner(item)} rounded />
             </View>
-            <Row className='mr-1'>
-                <View className='mr-2 '>
+            <Row className='gap-1'>
+                <View className=''>
                     <Reactions key={'reactions_' + item.id} {...reactionsWithUpdatedParams} />
                 </View>
                 {aManageMenu.length > 0 &&
