@@ -25,6 +25,7 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import BackButton from 'app/components/nav/back';
 import emitter from 'app/context/emitter';
 import { useFocusEffect } from 'app/lib/hooks/router'
+import { useIsFocused } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import {
     Panel,
@@ -55,7 +56,12 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [jots, setJots] = useState(false);
     const [listError, setListError] = useState(false);
     const isSmallScreen = !useIsDesktop();
+    const isFocused = useIsFocused();
+    const isFocusedRef = useRef(isFocused);
+    isFocusedRef.current = isFocused;
     const [panelsVisible, setPanelsVisible] = useState({ convos: true, jots: isSmallScreen ? false : true });
+    const panelsVisibleRef = useRef(panelsVisible);
+    panelsVisibleRef.current = panelsVisible;
     const [commentForm, setCommentForm] = useState(false);
     const [jotUpdated, setJotUpdated] = useState(false);
     const [formHeight, setFormHeight] = useState(0);
@@ -318,7 +324,18 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             return;
 
         window.history.pushState(null, null, appSetting('messenger', 'url'));
-    }, []);
+    }, [isWeb]);
+
+    // Bottom-tab reselect: leave open chat and show conversation list.
+    useEffect(() => {
+        const subscription = emitter.addListener('conductor', (payload) => {
+            if (!isFocusedRef.current) return;
+            if (payload?.action !== 'reset_to_first') return;
+            if (!(isSmallScreen && panelsVisibleRef.current.jots && !panelsVisibleRef.current.convos)) return;
+            showConvo();
+        });
+        return () => subscription.remove();
+    }, [isSmallScreen, showConvo]);
 
     const deleteConvo = useCallback(async () => {
         let request_url = '/api.php?r=bx_messenger/delete_convo/Services&params=' + JSON.stringify({ lot: selectedConvo.id2 });
@@ -600,7 +617,7 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
 
         setHeaderHeightAtom(32)
         setHeader(isSmallScreen ? { header: header } : defaultHeader);
-        //return () => setHeader(defaultHeader);
+        return () => setHeader(defaultHeader);
     }, [isSmallScreen, setHeader, header]));
     
     return (
@@ -692,7 +709,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
     useFocusEffect(useCallback(() => {
         if (isWeb) return;
         setHeader(isSmallScreen ? { header: header } : defaultHeader);
-        //return () => setHeader(defaultHeader);
+        return () => setHeader(defaultHeader);
     }, [isSmallScreen, setHeader, header]));
 
     return (<>
