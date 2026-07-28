@@ -16,7 +16,7 @@ class BxDolStudioApiConfigs extends BxTemplStudioGrid
 
     protected function _getDataSql($sFilter, $sOrderField, $sOrderDir, $iStart, $iPerPage)
     {
-        $this->_aOptions['source'] .= " AND `name`<>'system' AND `enabled`<>0 ";
+        $this->_aOptions['source'] .= " AND `enabled`<>0 ";
 
         return parent::_getDataSql($sFilter, $sOrderField, $sOrderDir, $iStart, $iPerPage);
     }

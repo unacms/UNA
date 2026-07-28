@@ -1783,7 +1783,7 @@ CREATE TABLE `sys_modules` (
 );
 
 INSERT INTO `sys_modules` (`type`, `name`, `title`, `vendor`, `version`, `path`, `uri`, `class_prefix`, `db_prefix`, `lang_category`, `dependencies`, `date`, `enabled`) VALUES
-('module', 'system', 'System', 'UNA, Inc', '9', '', 'system', 'Bx', 'sys_', 'System', '', UNIX_TIMESTAMP(), 1);
+('module', 'system', 'System', 'UNA INC', '', 'system/', 'system', 'Bx', 'sys_', 'System', '', UNIX_TIMESTAMP(), 1);
 
 
 CREATE TABLE `sys_modules_file_tracks` (
