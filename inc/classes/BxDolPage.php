@@ -466,8 +466,9 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
     static public function transformSeoLink ($sLink, $sPrefix, $aParams = array())
     {
         static $aMemoryUrls = [];
-        if (isset($aMemoryUrls[$sLink]))
-            return $aMemoryUrls[$sLink];
+        $sMemoryUrlCacheKey = $sLink . serialize($aParams);
+        if (isset($aMemoryUrls[$sMemoryUrlCacheKey]))
+            return $aMemoryUrls[$sMemoryUrlCacheKey];
 
         if (!getParam('permalinks_seo_links'))
             return false;
@@ -608,7 +609,7 @@ class BxDolPage extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
             }
         }
         
-        $aMemoryUrls[$sLink] = $sRet;
+        $aMemoryUrls[$sMemoryUrlCacheKey] = $sRet;
 
         return $sRet;
     }
