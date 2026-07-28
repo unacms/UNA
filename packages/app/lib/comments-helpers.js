@@ -194,13 +194,11 @@ export function CommentsBrowse({
                 dispatch({ type: 'SET_ITEMS', items: newItems })
 
                 if (refetchRef.current) {
-                   // refetchRef.current.prevItems = newItems;// disable for current refetch
-                    refetchRef.current.skipToast = true;
+                    refetchRef.current.prevItems = newItems
+                    refetchRef.current.skipToast = true
                 }
 
                 setScrollIndex(newItem.id)
-                refetchRef.current.skipToast = true;
-                refetch()
             }
         })
 
@@ -221,7 +219,6 @@ export function CommentsBrowse({
         hasNextPage,
         isFetchingNextPage,
         refetch,
-        isRefetching,
     } = useInfiniteQuery({
         queryKey: qKey,
         queryFn: fetchComments,
@@ -418,7 +415,6 @@ export function CommentsBrowse({
                 data={dataOut}
                 refer={flashListRef}
                 onRefresh={refetch}
-                refreshing={isRefetching}
                 renderItem={renderItem}
                 onEndReached={handleEndReached}
                 ListFooterComponent={renderListFooter}

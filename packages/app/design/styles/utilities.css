@@ -112,7 +112,9 @@
 
     .u-vanilla-html blockquote,
     .u-vanilla-html-small blockquote {
-        @apply my-3 border-l-4 border-border pl-4 pr-4 text-muted-foreground;
+        @variant web {
+            @apply my-3 border-l-4 border-border pl-4 pr-4 text-muted-foreground;
+        }
     }
 
     /* Enriched Markdown defaults every block image to a fixed 200px height.
