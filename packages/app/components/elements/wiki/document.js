@@ -254,7 +254,7 @@ export function WikiDocumentHeader({ markdownSource = '', metadata, pageUrl = ''
                 ) : null}
 
                 {platformBadges.length > 0 || tags.length > 0 ? (
-                    <Row className="flex-wrap items-center justify-end gap-2 ">
+                    <Row className="flex-wrap items-center justify-start gap-2  max-w-full min-w-0 shrink">
                         {platformBadges.map((badge) => (
                             <Badge
                                 key={`platform-${badge.key}`}

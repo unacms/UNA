@@ -192,7 +192,7 @@ export const settingsMenus = {
             {
                 name: 'wiki',
                 title: 'Documentation',
-                link: '/wiki/overview',
+                link: '/docs',
                 icon: 'BookOpenText',
             },
             {

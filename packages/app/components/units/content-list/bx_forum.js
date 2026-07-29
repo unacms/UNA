@@ -124,44 +124,7 @@ Units.Base = function Base({ data }) {
                                             {data.title}
                                         </Text>
                                     </Skeleton>
-                                    {(data.summary_plain || isSkeleton) ? (
-                                        <Skeleton className="h-9 w-full" rounded="rounded-lg" visible={isSkeleton}>
-                                            <Text
-                                                numberOfLines={2}
-                                                className="text-muted-foreground text-sm leading-snug"
-                                            >
-                                                {data.summary_plain}
-                                            </Text>
-                                        </Skeleton>
-                                    ) : null}
-                                </View>
-                            </LinkOrModal>
-                        </View>
-
-                        {(data.image || isSkeleton) && (
-                            <View
-                                className={
-                                    (!data.image ? 'hidden sm:block ' : '')
-                                    + 'aspect-video flex-none rounded-xl overflow-hidden w-1/4 sm:w-auto sm:h-20'
-                                }
-                            >
-                                <Skeleton className="h-full w-full" rounded="rounded-xl" visible={isSkeleton}>
-                                    {data.image ? (
-                                        <Image
-                                            {...data.image}
-                                            alt={data.title}
-                                            view="cover"
-                                            className="u-cover"
-                                            sizes="auto"
-                                        />
-                                    ) : null}
-                                </Skeleton>
-                            </View>
-                        )}
-                    </View>
-
-                    <View className="flex-row justify-between gap-x-2 mt-auto items-center">
-                        <View className="flex-row items-center gap-x-1.5 min-w-0">
+                                    <View className="flex-row items-center gap-x-1.5 min-w-0">
                             {/* unit_wo_info + name avoid Profile `unit` flex-1 so "in category" stays adjacent. */}
                             <Skeleton className="h-6 w-40" visible={isSkeleton}>
                                 <View className="flex-row items-center gap-x-1.5 min-w-0">
@@ -202,6 +165,44 @@ Units.Base = function Base({ data }) {
                                 />
                             </Skeleton>
                         </View>
+                                    {(data.summary_plain || isSkeleton) ? (
+                                        <Skeleton className="h-9 w-full" rounded="rounded-lg" visible={isSkeleton}>
+                                            <Text
+                                                numberOfLines={2}
+                                                className="text-muted-foreground text-sm leading-snug"
+                                            >
+                                                {data.summary_plain}
+                                            </Text>
+                                        </Skeleton>
+                                    ) : null}
+                                </View>
+                            </LinkOrModal>
+                        </View>
+
+                        {(data.image || isSkeleton) && (
+                            <View
+                                className={
+                                    (!data.image ? 'hidden sm:block ' : '')
+                                    + 'aspect-video flex-none rounded-xl overflow-hidden w-1/4 sm:w-auto sm:h-20'
+                                }
+                            >
+                                <Skeleton className="h-full w-full" rounded="rounded-xl" visible={isSkeleton}>
+                                    {data.image ? (
+                                        <Image
+                                            {...data.image}
+                                            alt={data.title}
+                                            view="cover"
+                                            className="u-cover"
+                                            sizes="auto"
+                                        />
+                                    ) : null}
+                                </Skeleton>
+                            </View>
+                        )}
+                    </View>
+
+                    <View className="flex-row justify-between gap-x-2 mt-auto items-center">
+                        
                         <Skeleton className="h-8 w-12 flex-none" rounded="rounded-lg" visible={isSkeleton}>
                             <Menu
                                 {...data.meta}
