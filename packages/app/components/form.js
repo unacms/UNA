@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback, useId, useRef } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData, updateFormDirtyState, isFormUnsavedCloseGuardSkipped } from 'app/lib/form-helpers'
+import { getFormFieldByData, isFormResponseComplete, normalizeFormResponseData, updateFormDirtyState, isFormUnsavedCloseGuardSkipped, formHasPendingUploads } from 'app/lib/form-helpers'
 import { View, Row } from 'app/design/view'
 import { getComponent } from 'app/components/registry';
 import { FeedbackHaptics, storageSet, appSetting, isNumeric, storageGet, isObjectsEqual } from 'app/lib/util';
@@ -360,6 +360,9 @@ export default function Form({
         () =>
             methods.handleSubmit(
                 (data) => {
+                    if (formHasPendingUploads(name, formInstanceId)) {
+                        return;
+                    }
                     emitter.emit(`form_${name}`, { action: 'submited', formInstanceId });
                     onSubmit(data);
                 },

@@ -135,6 +135,7 @@ export default function FormMessenger(props) {
                                             handleSubmitWithSanitization,
                                             'custom',
                                             {
+                                                form_name: props.name,
                                                 disabled: !hasSubmittableText && !imagesValue,
                                                 className: 'w-full h-full',
                                                 notFullWidth: true,

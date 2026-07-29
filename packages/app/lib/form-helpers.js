@@ -1,10 +1,12 @@
 
+import { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 import { getComponent } from 'app/components/registry';
 import { Button } from "app/design/controls/buttons";
 import { NeoButton } from "app/design/controls/neo-button";
 import emitter from 'app/context/emitter';
 import { appSetting } from 'app/lib/util';
+import { useFormInstanceId } from 'app/context/form-instance';
 
 /** Ignores injected field props (e.g. use_caption_as_placeholder) — do not use DOM Text. */
 function UnsupportedFormField() {
@@ -13,6 +15,69 @@ function UnsupportedFormField() {
 
 const isWeb = Platform.OS === 'web';
 const dirtyFormInstances = new Set();
+
+/** Pending file uploads per form instance — Set of hashes so 2 starts / 1 end stays disabled. */
+const pendingUploadsByForm = new Map();
+
+function uploadFormKey(formName, formInstanceId) {
+    return `${formName || ''}:${formInstanceId ?? ''}`;
+}
+
+export function formHasPendingUploads(formName, formInstanceId) {
+    const set = pendingUploadsByForm.get(uploadFormKey(formName, formInstanceId));
+    return !!(set && set.size > 0);
+}
+
+export function trackFormUploadStart(formName, formInstanceId, hash) {
+    if (!formName || hash == null || hash === '') return;
+    const key = uploadFormKey(formName, formInstanceId);
+    if (!pendingUploadsByForm.has(key)) pendingUploadsByForm.set(key, new Set());
+    pendingUploadsByForm.get(key).add(hash);
+    emitter.emit(`form_${formName}`, {
+        action: 'upload_start',
+        formInstanceId,
+        hash,
+    });
+}
+
+export function trackFormUploadEnd(formName, formInstanceId, hash) {
+    if (!formName || hash == null || hash === '') return;
+    const key = uploadFormKey(formName, formInstanceId);
+    const set = pendingUploadsByForm.get(key);
+    if (set) {
+        set.delete(hash);
+        if (set.size === 0) pendingUploadsByForm.delete(key);
+    }
+    emitter.emit(`form_${formName}`, {
+        action: 'upload_end',
+        formInstanceId,
+        hash,
+    });
+}
+
+/** True while this form instance has in-flight file uploads. */
+export function useFormUploading(formName) {
+    const formInstanceId = useFormInstanceId();
+    const [uploading, setUploading] = useState(() =>
+        formHasPendingUploads(formName, formInstanceId)
+    );
+
+    useEffect(() => {
+        if (!formName) {
+            setUploading(false);
+            return;
+        }
+        setUploading(formHasPendingUploads(formName, formInstanceId));
+        const subscription = emitter.addListener(`form_${formName}`, (data) => {
+            if (formInstanceId != null && data.formInstanceId !== formInstanceId) return;
+            if (data.action !== 'upload_start' && data.action !== 'upload_end') return;
+            setUploading(formHasPendingUploads(formName, formInstanceId));
+        });
+        return () => subscription.remove();
+    }, [formName, formInstanceId]);
+
+    return uploading;
+}
 
 /** Track dirty state per mounted form instance (used by Modal close guard on web). */
 export function updateFormDirtyState(formInstanceId, isDirty) {

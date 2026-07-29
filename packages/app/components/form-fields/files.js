@@ -20,6 +20,8 @@ import { useTranslation } from 'react-i18next'
 import emitter from 'app/context/emitter';
 import { CaptionForFileInput } from 'app/customization/functions';
 import i18n from 'i18next';
+import { useFormInstanceId } from 'app/context/form-instance';
+import { trackFormUploadStart, trackFormUploadEnd } from 'app/lib/form-helpers';
 
 function showPermissionAlert(type, canAskAgain) {
     const isCamera = type === 'camera';
@@ -104,10 +106,20 @@ export default function (props) {
     const [hasPermissionLibrary, requestPermissionLibrary] = ImagePicker.useMediaLibraryPermissions();
 
     const isAutoGhosts = appSetting('forms', 'auto_ghosts_in_files')
+    const formInstanceId = useFormInstanceId();
+    const formName = props.form_name;
 
     const url = useMemo(() => {
         return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&obfuscate_faces=' + obfuscateFaces + '&uo=' + (props.uploaders?.[0] ?? '') + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (bMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
     }, [props, obfuscateFaces]);
+
+    const onUploadFinished = useCallback((payload) => {
+        const hash = payload?.extraVar?.hash;
+        if (hash != null && hash !== '') {
+            trackFormUploadEnd(formName, formInstanceId, hash);
+        }
+        setUploadFinished(payload);
+    }, [formName, formInstanceId]);
 
 
     useEffect(() => {
@@ -239,43 +251,54 @@ export default function (props) {
             let uri = i.uri;
             const hash = md5(uri);
             objectsToAdd.push({ preload: true, file_type: i.mimeType, type: i.type, hash: hash, uri: uri });
+            trackFormUploadStart(formName, formInstanceId, hash);
 
             const isImage = i?.mimeType?.includes('image/');
             if (isImage) {
                 ImageNative.getSize(uri, async (width, height) => {
-                    uri = await prepareImageForUpload({
-                        uri,
-                        width,
-                        height,
-                        fileSizeBytes: i?.fileSize,
-                        maxWidth: 2000,
-                        maxHeight: 2000,
-                        webpOverMb: 4,
-                    });
+                    try {
+                        uri = await prepareImageForUpload({
+                            uri,
+                            width,
+                            height,
+                            fileSizeBytes: i?.fileSize,
+                            maxWidth: 2000,
+                            maxHeight: 2000,
+                            webpOverMb: 4,
+                        });
 
-                    uploadImage(
-                        uri,
-                        url + '&a=upload',
-                        setUploadFinished,
-                        { hash: hash }
-                    );
+                        await uploadImage(
+                            uri,
+                            url + '&a=upload',
+                            onUploadFinished,
+                            { hash: hash }
+                        );
+                    } catch (err) {
+                        console.error('[files] upload failed:', err);
+                        trackFormUploadEnd(formName, formInstanceId, hash);
+                    }
 
                     let fileType = i.type ? i.type + '/' : uri.split(';')[0].split(':')[1];
                     k = [
                         ...k,
                         { file_url: uri, file_type: fileType, preload: true, hash: hash }
                     ];
+                }, () => {
+                    trackFormUploadEnd(formName, formInstanceId, hash);
                 });
             }
             else {
-
-
-                uploadImage(
-                    uri,
-                    url + '&a=upload',
-                    setUploadFinished,
-                    { hash: hash }
-                );
+                try {
+                    await uploadImage(
+                        uri,
+                        url + '&a=upload',
+                        onUploadFinished,
+                        { hash: hash }
+                    );
+                } catch (err) {
+                    console.error('[files] upload failed:', err);
+                    trackFormUploadEnd(formName, formInstanceId, hash);
+                }
 
                 let fileType = i.type ? i.type + '/' : uri.split(';')[0].split(':')[1];
                 /*k = [

@@ -6,6 +6,7 @@ import { View, Row } from 'app/design/view';
 import { appSetting, cn } from 'app/lib/util';
 import emitter from 'app/context/emitter';
 import { useFormInstanceId } from 'app/context/form-instance';
+import { useFormUploading } from 'app/lib/form-helpers';
 
 const SIZE_TO_CONTROL = {
     xs: 'mini',
@@ -49,6 +50,7 @@ export default function FormFieldSubmit(props) {
     const formInstanceId = useFormInstanceId();
     const { formState } = formContext;
     const [isSumbitting, setIsSumbitting] = useState(false);
+    const isUploading = useFormUploading(form_name);
     const { field } = useController({ name, rules: {}, defaultValue: value });
 
     const formProps = appSetting('forms', form_name) || {};
@@ -113,6 +115,8 @@ export default function FormFieldSubmit(props) {
         ? { root: RESPONSIVE_SUBMIT_WIDTH, container: RESPONSIVE_SUBMIT_CONTAINER }
         : undefined;
 
+    const isBusy = isSumbitting || isUploading;
+
     return (
         <Field {...props}>
             <Row className={rowClassName}>
@@ -120,7 +124,7 @@ export default function FormFieldSubmit(props) {
                     <NeoButton
                         label={icon_only ? undefined : value}
                         image={icon}
-                        loading={isSumbitting}
+                        loading={isBusy}
                         style={buttonStyle}
                         controlSize={controlSize}
                         borderShape={borderShape}
@@ -129,7 +133,7 @@ export default function FormFieldSubmit(props) {
                         tooltip={tooltip}
                         classNames={responsiveButtonClassNames}
                         onPress={handlePress}
-                        disabled={isSumbitting || disabled}
+                        disabled={isBusy || disabled}
                     />
                 </View>
                 {saveOnChanges && (

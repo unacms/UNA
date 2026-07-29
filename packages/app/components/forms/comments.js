@@ -175,6 +175,7 @@ export default function FormComments(props) {
                                         handleSubmitWithSanitization,
                                         'custom',
                                         {
+                                            form_name: props.name,
                                             disabled: !hasSubmittableText && !imagesValue,
                                             className: 'w-full h-full',
                                             notFullWidth: true,
