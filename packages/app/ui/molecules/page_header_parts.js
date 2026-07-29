@@ -202,6 +202,7 @@ export const PageHeaderBody = memo(({
     const BackButtonElement = ({ className = 'items-center' }) => (
         <View className={className}>
             <NeoButton
+                borderShape="circle" 
                 image="ArrowLeft"
                 style={isDesktop ? 'bordered' : 'glass'}
                 controlSize="regular"
@@ -241,7 +242,7 @@ export const PageHeaderBody = memo(({
         if (!isWeb && canShowBackButton) {
             return (
                 <View onLayout={onMainHeaderLayout}>
-                    <Row className={contentClassName}>
+                    <Row className={`${contentClassName}`}>
                         <BackButtonElement className="items-center mr-2" />
                         <View className="flex-1">{header.header}</View>
                     </Row>
@@ -259,7 +260,7 @@ export const PageHeaderBody = memo(({
         <>
             <Row className={' ' + contentClassName} onLayout={onMainHeaderLayout}>
                 <View className={' ' + appSetting('layout', 'header', 'content_left')}>
-                    <Row className='flex-none '>
+                    <Row className='flex-none  items-center gap-x-2'>
                         {canShowBackButton && (
                             <BackButtonElement />
                         )}
