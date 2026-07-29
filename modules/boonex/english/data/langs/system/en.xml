@@ -787,16 +787,16 @@
 	<string name="_adm_form_btn_forms_cancel"><![CDATA[Cancel]]></string>
 	<string name="_adm_form_btn_forms_edit"><![CDATA[Edit form]]></string>
 	<string name="_adm_form_btn_forms_save"><![CDATA[Save]]></string>
-  <string name="_adm_form_btn_categories_cancel"><![CDATA[Cancel]]></string>
-  <string name="_adm_form_btn_categories_submit"><![CDATA[Submit]]></string>
+        <string name="_adm_form_btn_categories_cancel"><![CDATA[Cancel]]></string>
+        <string name="_adm_form_btn_categories_submit"><![CDATA[Submit]]></string>
         <string name="_adm_form_btn_labels_add"><![CDATA[Add]]></string>
         <string name="_adm_form_btn_labels_back"><![CDATA[Back]]></string>
         <string name="_adm_form_btn_labels_cancel"><![CDATA[Cancel]]></string>
         <string name="_adm_form_btn_labels_submit"><![CDATA[Submit]]></string>
-  <string name="_adm_form_btn_badges_add"><![CDATA[Add new badge]]></string>
-  <string name="_adm_form_btn_badges_delete"><![CDATA[Delete]]></string>
-  <string name="_adm_form_btn_categories_add"><![CDATA[Add]]></string>
-  <string name="_adm_form_btn_categories_delete"><![CDATA[Delete]]></string>
+        <string name="_adm_form_btn_badges_add"><![CDATA[Add new badge]]></string>
+        <string name="_adm_form_btn_badges_delete"><![CDATA[Delete]]></string>
+        <string name="_adm_form_btn_categories_add"><![CDATA[Add]]></string>
+        <string name="_adm_form_btn_categories_delete"><![CDATA[Delete]]></string>
 	<string name="_adm_form_btn_pre_lists_add"><![CDATA[Add]]></string>
 	<string name="_adm_form_btn_pre_lists_cancel"><![CDATA[Cancel]]></string>
 	<string name="_adm_form_btn_pre_lists_create"><![CDATA[Add New List]]></string>
@@ -809,13 +809,11 @@
 	<string name="_adm_form_btn_pre_values_create"><![CDATA[Add New Item]]></string>
 	<string name="_adm_form_btn_pre_values_delete_item"><![CDATA[Delete Item]]></string>
 	<string name="_adm_form_btn_pre_values_edit_item"><![CDATA[Edit Item]]></string>
-  
-  <string name="_adm_form_btn_reports_check_in"><![CDATA[Check in]]></string>
-  <string name="_adm_form_btn_reports_check_out"><![CDATA[Check out]]></string>
-  <string name="_adm_form_btn_reports_audit"><![CDATA[Audit]]></string>
-  <string name="_adm_form_btn_reports_hide"><![CDATA[Hide]]></string>
-  <string name="_adm_form_btn_reports_unhide"><![CDATA[Unhide]]></string>
-  
+    <string name="_adm_form_btn_reports_check_in"><![CDATA[Check in]]></string>
+    <string name="_adm_form_btn_reports_check_out"><![CDATA[Check out]]></string>
+    <string name="_adm_form_btn_reports_audit"><![CDATA[Audit]]></string>
+    <string name="_adm_form_btn_reports_hide"><![CDATA[Hide]]></string>
+    <string name="_adm_form_btn_reports_unhide"><![CDATA[Unhide]]></string>
     <string name="_adm_form_btn_search_forms_edit"><![CDATA[Edit search form]]></string>
     <string name="_adm_form_btn_search_forms_fields_edit"><![CDATA[Edit search field]]></string>
     <string name="_adm_form_btn_search_forms_fields_reset"><![CDATA[Reset]]></string>
@@ -823,6 +821,7 @@
     <string name="_adm_form_btn_search_forms_save"><![CDATA[Save]]></string>
     <string name="_adm_form_btn_search_forms_cancel"><![CDATA[Cancel]]></string>
     <string name="_adm_form_dsc_displays_title"><![CDATA[Name of the form display mode. Displayed in Studio only.]]></string>
+    <string name="_adm_form_dsc_field_area_label"><![CDATA[Accessible name for the field. It is useful when the visible text content of the field is not descriptive enough or absent.]]></string>
     <string name="_adm_form_dsc_field_attrs_max"><![CDATA[Enter numeric value]]></string>
     <string name="_adm_form_dsc_field_attrs_min"><![CDATA[Enter numeric value]]></string>
     <string name="_adm_form_dsc_field_attrs_src"><![CDATA[Enter correct image URL]]></string>
@@ -949,7 +948,8 @@
 	<string name="_adm_form_txt_displays_manage_fields"><![CDATA[Manage fields]]></string>
 	<string name="_adm_form_txt_displays_title"><![CDATA[System Name]]></string>
 	<string name="_adm_form_txt_field_add_popup"><![CDATA[Add New Field]]></string>
-	<string name="_adm_form_txt_field_attrs_max"><![CDATA[Max Value]]></string>
+	<string name="_adm_form_txt_field_area_label"><![CDATA[Text for 'area-label' attribute]]></string>
+        <string name="_adm_form_txt_field_attrs_max"><![CDATA[Max Value]]></string>
 	<string name="_adm_form_txt_field_attrs_min"><![CDATA[Min Value]]></string>
 	<string name="_adm_form_txt_field_attrs_src"><![CDATA[Image Source]]></string>
 	<string name="_adm_form_txt_field_attrs_step"><![CDATA[Step]]></string>

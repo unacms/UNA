@@ -788,8 +788,8 @@
         <string name="_adm_form_btn_labels_back"><![CDATA[Назад]]></string>
         <string name="_adm_form_btn_labels_cancel"><![CDATA[Отменить]]></string>
         <string name="_adm_form_btn_labels_submit"><![CDATA[Отправить]]></string>
-  <string name="_adm_form_btn_badges_add"><![CDATA[Добавить бейдж]]></string>
-  <string name="_adm_form_btn_badges_delete"><![CDATA[Удалить]]></string>
+        <string name="_adm_form_btn_badges_add"><![CDATA[Добавить бейдж]]></string>
+        <string name="_adm_form_btn_badges_delete"><![CDATA[Удалить]]></string>
 	<string name="_adm_form_btn_pre_lists_add"><![CDATA[Добавить]]></string>
 	<string name="_adm_form_btn_pre_lists_cancel"><![CDATA[Отменить]]></string>
 	<string name="_adm_form_btn_pre_lists_create"><![CDATA[Добавить новый список]]></string>
@@ -802,12 +802,10 @@
 	<string name="_adm_form_btn_pre_values_create"><![CDATA[Добавить новый элемент]]></string>
 	<string name="_adm_form_btn_pre_values_delete_item"><![CDATA[Удалить элемент]]></string>
 	<string name="_adm_form_btn_pre_values_edit_item"><![CDATA[Редактировать элемент]]></string>
-
-  <string name="_adm_form_btn_reports_check_in"><![CDATA[Взять в работу]]></string>
-  <string name="_adm_form_btn_reports_check_out"><![CDATA[Закончить работу]]></string>
-  <string name="_adm_form_btn_reports_hide"><![CDATA[Скрыть]]></string>
-  <string name="_adm_form_btn_reports_unhide"><![CDATA[Открыть]]></string>
-  
+    <string name="_adm_form_btn_reports_check_in"><![CDATA[Взять в работу]]></string>
+    <string name="_adm_form_btn_reports_check_out"><![CDATA[Закончить работу]]></string>
+    <string name="_adm_form_btn_reports_hide"><![CDATA[Скрыть]]></string>
+    <string name="_adm_form_btn_reports_unhide"><![CDATA[Открыть]]></string>
     <string name="_adm_form_btn_search_forms_edit"><![CDATA[Редактировать форму поиска]]></string>
     <string name="_adm_form_btn_search_forms_fields_edit"><![CDATA[Редактировать поле формы поиска]]></string>
     <string name="_adm_form_btn_search_forms_fields_reset"><![CDATA[Сбросить]]></string>
@@ -815,6 +813,7 @@
     <string name="_adm_form_btn_search_forms_save"><![CDATA[Сохранить]]></string>
     <string name="_adm_form_btn_search_forms_cancel"><![CDATA[Отменить]]></string>
     <string name="_adm_form_dsc_displays_title"><![CDATA[Название режима отображения Формы. Видимо только в Студии.]]></string>
+    <string name="_adm_form_dsc_field_area_label"><![CDATA[Доступное имя для поля. Полезно, когда видимое текстовое содержимое поля недостаточно описательно или отсутствует.]]></string>
     <string name="_adm_form_dsc_field_attrs_max"><![CDATA[Введите числовое значение]]></string>
     <string name="_adm_form_dsc_field_attrs_min"><![CDATA[Введите числовое значение]]></string>
     <string name="_adm_form_dsc_field_attrs_src"><![CDATA[Введите правильный URL картинки]]></string>
@@ -940,6 +939,7 @@
 	<string name="_adm_form_txt_displays_manage_fields"><![CDATA[Управление полями]]></string>
 	<string name="_adm_form_txt_displays_title"><![CDATA[Системное имя]]></string>
 	<string name="_adm_form_txt_field_add_popup"><![CDATA[Добавить новое Поле]]></string>
+        <string name="_adm_form_txt_field_area_label"><![CDATA[Текст для атрибута 'area-label']]></string>
 	<string name="_adm_form_txt_field_attrs_max"><![CDATA[Макс. значение]]></string>
 	<string name="_adm_form_txt_field_attrs_min"><![CDATA[Мин. значение]]></string>
 	<string name="_adm_form_txt_field_attrs_src"><![CDATA[Адрес картинки]]></string>

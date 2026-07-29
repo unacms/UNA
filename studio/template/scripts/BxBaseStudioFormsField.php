@@ -1286,6 +1286,17 @@ class BxBaseStudioFormsFieldText extends BxBaseStudioFormsFieldBlockHeader
                     'pass' => 'Xss',
                 )
             ),
+            'area_label' => array(
+                'type' => 'text_translatable',
+                'name' => 'area_label',
+                'caption' => _t('_adm_form_txt_field_area_label'),
+                'info' => _t('_adm_form_dsc_field_area_label'),
+                'value' => '_sys_form_txt_field',
+                'required' => '0',
+                'db' => array (
+                    'pass' => 'Xss',
+                ),
+            ),
             'required' => array(
                 'type' => 'switcher',
                 'name' => 'required',

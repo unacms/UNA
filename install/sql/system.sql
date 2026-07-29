@@ -3948,6 +3948,7 @@ CREATE TABLE IF NOT EXISTS `sys_form_inputs` (
   `caption` varchar(255) NOT NULL,
   `info` varchar(255) NOT NULL,
   `help` varchar(255) NOT NULL,
+  `area_label` varchar(255) NOT NULL DEFAULT '',
   `icon` text NOT NULL,
   `required` tinyint(4) NOT NULL DEFAULT '0',
   `unique` tinyint(4) NOT NULL DEFAULT '0',

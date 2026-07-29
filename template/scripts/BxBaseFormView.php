@@ -1575,6 +1575,9 @@ BLAH;
         if (!isset($aAttrs['data-format-datetime']))
             $aAttrs['data-frmt-datetime'] = getParam('sys_format_datetime');
 
+        if(($sAreaLabel = $this->_genInputAreaLabel($aInput) ?: bx_html_attribute($this->_genInputCaption($aInput))))
+            $aAttrs['area-label'] = $sAreaLabel;
+
         // for inputs with labels generate id
         if (isset($aInput['label']))
             $aAttrs['id'] = $this->getInputId($aInput);
@@ -1655,6 +1658,9 @@ BLAH;
 
         if(isset($aInput['name'])) 
             $aAttrs['name'] = $aInput['name'];
+
+        if(($sAreaLabel = $this->_genInputAreaLabel($aInput) ?: bx_html_attribute($aInput['value'])))
+            $aAttrs['area-label'] = $sAreaLabel;
         
         return $aAttrs;
     }
@@ -1741,6 +1747,9 @@ BLAH;
         $aAttrs = !empty($aInput['attrs']) ? $aInput['attrs'] : array();
 
         $aAttrs['name'] = $aInput['name'];
+
+        if(($sAreaLabel = $this->_genInputAreaLabel($aInput) ?: bx_html_attribute($this->_genInputCaption($aInput))))
+            $aAttrs['area-label'] = $sAreaLabel;
 
         // for inputs with labels generate id
         if (isset($aInput['label']))
@@ -2319,6 +2328,9 @@ BLAH;
             $aAttrs['multiple'] = 'multiple';
         }
 
+        if(($sAreaLabel = $this->_genInputAreaLabel($aInput) ?: bx_html_attribute($this->_genInputCaption($aInput))))
+            $aAttrs['area-label'] = $sAreaLabel;
+
         // for inputs with labels generate id
         if (isset($aInput['label']))
             $aAttrs['id'] = $this->getInputId($aInput);
@@ -2351,6 +2363,9 @@ BLAH;
         $aAttrs = empty($aInput['attrs']) || 'radio_set' == $aInput['type'] || 'checkbox_set' == $aInput['type'] ? array() : $aInput['attrs'];
 
         $aAttrs['name']  = $aInput['name'];
+
+        if(($sAreaLabel = $this->_genInputAreaLabel($aInput) ?: bx_html_attribute($this->_genInputCaption($aInput))))
+            $aAttrs['area-label'] = $sAreaLabel;
 
         // for inputs with labels generate id
         if (isset($aInput['label']))
@@ -2661,6 +2676,16 @@ BLAH;
 
             return '';
         }
+    }
+
+    protected function _genInputCaption($aInput)
+    {
+        return ($sCaption = $aInput['caption'] ?? '') ? bx_process_output($sCaption, BX_DATA_HTML) : '';
+    }
+
+    protected function _genInputAreaLabel($aInput)
+    {
+        return ($sAreaLabel = $aInput['area_label'] ?? '') && ($sAreaLabel = strip_tags(_t($sAreaLabel))) ? bx_html_attribute($sAreaLabel) : '';
     }
 
     public static function getJsCalendarLangs ()
