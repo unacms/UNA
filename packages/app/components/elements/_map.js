@@ -8,6 +8,7 @@ import Redirect from './redirect';
 import EntityText from './entity_text';
 import EntityPoll from './entity_poll';
 import EntityAttachments from './entity_attachments';
+import MarketAttachments from './market_attachments';
 import EntityAuthor from './entity_author';
 import EntityActions from './entity_actions';
 import EntityInfo from './entity_info';
@@ -94,6 +95,7 @@ export const componentsMapDefault = {
     entity_author: EntityAuthor,
     entity_actions: EntityActions,
     entity_attachments: EntityAttachments,
+    market_attachments: MarketAttachments,
     entity_info: EntityInfo,
     entity_cover: EntityCover,
     profile_menu: ProfileMenu,
