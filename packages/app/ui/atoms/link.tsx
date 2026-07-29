@@ -35,11 +35,13 @@ export default function ElementLink({
     const glob = useGlobalSearchParams();
     const { currentUser } = useCurrentUser();
 
+    const finalHref = sanitazeUrl(href);
+
     const handlePress = useCallback((e: any) => {
         if (haptics) FeedbackHaptics(haptics);
-        emitter.emit('link', { action: 'pressed' });
+        emitter.emit('link', { action: 'pressed', href: finalHref });
         onPress?.(e); 
-    }, [haptics]);
+    }, [haptics, finalHref, onPress]);
 
     const TabList = useMemo(() => {
         return currentUser
@@ -48,8 +50,6 @@ export default function ElementLink({
     }, [currentUser?.id]);
 
    
-    const finalHref = sanitazeUrl(href);
-
     // Match against tab urls + transpile_urls so in-app links route to the same
     // tab as deep links (see processUrl in components/nav/tabs.js).
     const LinksForTabs = useMemo(() => {

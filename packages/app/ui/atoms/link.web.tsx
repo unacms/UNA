@@ -38,16 +38,16 @@ export default function ElementLink({
     const accessibleLabel = alt || (typeof children === 'string' ? children : undefined);
 
     const handlePress = useCallback((event) => {
+        emitter.emit('link', { action: 'pressed', href });
         if (onPress) onPress(event);
         if (href) {
             router.push(href);
             event?.preventDefault?.();
         }
-        emitter.emit('link', { action: 'pressed' });
     }, [href, router, onPress]);
 
     const handleLinkClick = useCallback((event) => {  
-        emitter.emit('link', { action: 'pressed' });
+        emitter.emit('link', { action: 'pressed', href });
         if (onClick) onClick();
     }, [onClick, target, href]);
 

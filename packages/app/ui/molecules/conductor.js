@@ -19,7 +19,7 @@ import Cover, { CoverSmall, CoverBackButton } from 'app/components/elements/cove
 import emitter from 'app/context/emitter'
 import { useSetHeader, useScrollValue, useListMaxScrollOffset, useSetCoverScrollCompensation, defaultHeader, useSetHeaderHeight } from 'app/context/jotai/layout';
 import { getComponent } from 'app/components/registry';
-import { useFocusEffect, useIsFocused } from 'app/lib/hooks/router'
+import { useFocusEffect, useIsFocused, useRouter } from 'app/lib/hooks/router'
 import { appSetting } from 'app/lib/util'
 import {
     getCachedConductorState,
@@ -262,7 +262,7 @@ const TabSceneHeader = React.memo(function TabSceneHeader2({
     return null;
 });
 
-const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute, routesRef }) => {
+const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute, routesRef, onSelectTab }) => {
     const MenuItemSubmenu = getComponent('menu-item', 'submenu');
     if (routes.length > 1) {
         return (
@@ -282,10 +282,13 @@ const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute, routesRef }
                                     disabled={a?.item?.disabled}
                                     addon={getAddon(a.addon)}
                                     onPress={() => {
-                                        setIndex(a.index)
-
-                                        if (onChangeRoute) {
-                                            onChangeRoute(routesRef?.current?.[a.index] ?? a)
+                                        if (onSelectTab) {
+                                            onSelectTab(a);
+                                        } else {
+                                            setIndex(a.index)
+                                            if (onChangeRoute) {
+                                                onChangeRoute(routesRef?.current?.[a.index] ?? a)
+                                            }
                                         }
                                     }}
                                     item={a}
@@ -432,6 +435,46 @@ const TabScene = React.memo(({
     )
 });
 
+/** Match conductor submenu tab to page URL.
+ * Supports nested paths: `group-respect/9c882` → tab `group-respect`.
+ * Returns -1 when no tab matches (callers that need a default use `?? 0`). */
+function findConductorTabIndex(tabRoutes, url, useSectionAsMenu) {
+    if (!tabRoutes?.length || url == null || url === '') return -1;
+    const cleanUrl = String(url).split('?')[0].replace(/^\//, '');
+    let bestIndex = -1;
+    let bestLen = -1;
+
+    for (let i = 0; i < tabRoutes.length; i++) {
+        const item = tabRoutes[i];
+        if (useSectionAsMenu) {
+            if (url === item.key) return i;
+            continue;
+        }
+        if (item.key?.includes('?')) {
+            if (url === item.key || cleanUrl === item.key.split('?')[0].replace(/^\//, '')) {
+                return i;
+            }
+            continue;
+        }
+        const itemKey = (item.key || '').replace(/^\//, '');
+        if (!itemKey) continue;
+        const matches =
+            cleanUrl === itemKey ||
+            cleanUrl.startsWith(`${itemKey}/`) ||
+            `/${cleanUrl}`.includes(`/${itemKey}`);
+        if (matches && itemKey.length > bestLen) {
+            bestIndex = i;
+            bestLen = itemKey.length;
+        }
+    }
+    return bestIndex;
+}
+
+function findConductorTabIndexOrZero(tabRoutes, url, useSectionAsMenu) {
+    const index = findConductorTabIndex(tabRoutes, url, useSectionAsMenu);
+    return index !== -1 ? index : 0;
+}
+
 export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
     const { t } = useTranslation();
     isHideDefaultHeader = isHideDefaultHeader || false;
@@ -468,31 +511,24 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     scrollValueRef.current = scrollValue;
     const activeRequestUrlRef = useRef(null);
 
+    const setRoutes = /*useCallback(*/(a) => {
+        setRoutes1(a);
+    }/*, []);*/
+
     useEffect(() => {
         if (!deepEqual(menu, menuState)) {
             setMenuState(menu);
             setRoutes(initedTabs);
         }
-    }, [menu, menuState, initedTabs, setRoutes, data]);
-
-    const setRoutes = /*useCallback(*/(a) => {
-        setRoutes1(a);
-    }/*, []);*/
+    }, [menu, menuState, initedTabs, data]);
 
     routesRef.current = routes;
-    const initialIndex = useMemo(() => {
-        if (typeof cachedConductor?.index === 'number') {
-            return cachedConductor.index;
-        }
-        const idx = routes.findIndex(item => {
-            if (useSectionAsMenu) {
-                return data.url === item.key;
-            } else {
-                return `/${data.url}`.includes(`/${item.key}`);
-            }
-        });
-        return idx === -1 ? 0 : idx; // Default to 0 if no matching route is found
-    }, [routes, data.url, useSectionAsMenu]);
+    // Always align submenu to page URL. Cached index is the last *clicked* tab and
+    // must not win over the URL when re-entering the same page (e.g. group-respect/…).
+    const initialIndex = useMemo(
+        () => findConductorTabIndexOrZero(routes, data?.url, useSectionAsMenu),
+        [routes, data?.url, useSectionAsMenu]
+    );
 
     const [index, _setIndex] = useState(initialIndex);
     const [prevIndex, setPrevIndex] = useState(initialIndex);
@@ -521,6 +557,50 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         setPrevIndex(indexRef.current);
         _setIndex(newIndex);
     }, []);
+
+    const router = useRouter();
+
+    // Web parity: history.pushState on submenu click so the shell URL tracks the tab.
+    // Without this, data.url stays on the entry page (group-respect/…) and re-opening
+    // that URL is a no-op — Expo does not re-render and url-only effects never run.
+    const onSelectTab = useCallback((tab) => {
+        setIndex(tab.index);
+        const raw = tab?.link || tab?.key;
+        if (raw) {
+            const tabUrl = String(raw).startsWith('/') ? String(raw) : `/${raw}`;
+            try {
+                router.setParams({ url: tabUrl });
+            } catch (_) {
+                /* router may be unavailable outside a screen */
+            }
+        }
+        if (onChangeRoute) {
+            onChangeRoute(routesRef.current?.[tab.index] ?? tab);
+        }
+    }, [setIndex, router, onChangeRoute]);
+
+    // Sync when page URL / soft-refresh timestamp changes.
+    useEffect(() => {
+        setRoutes(initedTabs);
+        const foundIndex = findConductorTabIndex(initedTabs, data?.url, useSectionAsMenu);
+        if (foundIndex !== -1 && foundIndex !== indexRef.current) {
+            setIndex(foundIndex);
+        }
+    }, [keyword, data?.url, data?.timestamp]);
+
+    // Same-URL link presses still fire (navigation may no-op) — switch submenu by href.
+    useEffect(() => {
+        const sub = emitter.addListener('link', (payload) => {
+            if (!isFocusedRef.current) return;
+            const href = payload?.href;
+            if (!href) return;
+            const foundIndex = findConductorTabIndex(routesRef.current, href, useSectionAsMenu);
+            if (foundIndex !== -1 && foundIndex !== indexRef.current) {
+                setIndex(foundIndex);
+            }
+        });
+        return () => sub.remove();
+    }, [useSectionAsMenu, setIndex]);
 
 
     /*const currentRoute = useMemo(() => routes.find((item) => item.index === index), [routes, index]);
@@ -819,7 +899,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
     const tabBarRoutes = useMemo(
         () =>
-            routes.map(({ index: routeIndex, title, hideInTop, menu_settings, addon, item, key }) => ({
+            routes.map(({ index: routeIndex, title, hideInTop, menu_settings, addon, item, key, link }) => ({
                 index: routeIndex,
                 title,
                 hideInTop,
@@ -827,6 +907,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
                 addon,
                 item,
                 key,
+                link,
             })),
         [tabBarMetaKey]
     );
@@ -839,9 +920,10 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
                 index={index}
                 setIndex={setIndex}
                 onChangeRoute={onChangeRoute}
+                onSelectTab={onSelectTab}
             />
         ),
-        [tabBarRoutes, index, setIndex, onChangeRoute]
+        [tabBarRoutes, index, setIndex, onChangeRoute, onSelectTab]
     );
 
     const setFilterValue = useCallback((values) => {
