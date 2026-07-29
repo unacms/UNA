@@ -544,7 +544,12 @@ class BxBaseMenu extends BxDolMenu
 
     protected function _getMenuTitle($a)
     {
-        return bx_html_attribute(strip_tags(!empty($a['title_attr']) && ($sTitleAttr = _t($a['title_attr'])) ? $sTitleAttr : $a['title']));
+        return bx_html_attribute(strip_tags(($sTitleAttr = $a['title_attr'] ?? '') && ($sTitleAttr = _t($sTitleAttr)) ? $sTitleAttr : $a['title']));
+    }
+
+    protected function _getMenuAreaLabel($a)
+    {
+        return ($sAreaLabel = $a['area_label'] ?? '') && ($sAreaLabel = strip_tags(_t($sAreaLabel))) ? bx_html_attribute($sAreaLabel) : '';
     }
 
     protected function _getMenuCallbackDataAPI($a)
@@ -614,7 +619,9 @@ class BxBaseMenu extends BxDolMenu
     protected function _getMenuAttrs ($aMenuItem)
     {
         $sAttrs = '';
-        if(($sTitleAttr = $this->_getMenuTitle($aMenuItem)))
+
+        $sTitleAttr = $this->_getMenuTitle($aMenuItem);
+        if($sTitleAttr)
             $sAttrs .= ' title="' . $sTitleAttr . '"';
 
         if(!empty($aMenuItem['target']))
@@ -623,8 +630,8 @@ class BxBaseMenu extends BxDolMenu
         if($this->_bAddNoFollow && !empty($aMenuItem['link']) && preg_match('@^https?://@', $aMenuItem['link']) && strncmp($aMenuItem['link'], BX_DOL_URL_ROOT, strlen(BX_DOL_URL_ROOT)) !== 0)
             $sAttrs .= ' rel="noreferrer"';
 
-        if(!empty($aMenuItem['area_label']))
-            $sAttrs .= ' area-label="' . bx_html_attribute(_t($aMenuItem['area_label'])) . '"';
+        if(($sAreaLabel = $this->_getMenuAreaLabel($aMenuItem) ?: $sTitleAttr))
+            $sAttrs .= ' area-label="' . $sAreaLabel . '"';
 
         return $sAttrs;
     }
