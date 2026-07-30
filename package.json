@@ -27,7 +27,7 @@
     "flatpickr": "^4.6.13",
     "flickity": "^3.0.0",
     "fullcalendar": "^6.1.21",
-    "grapesjs": "^0.23.2",
+    "grapesjs": "^0.23.3",
     "grapesjs-blocks-basic": "^1.0.2",
     "grapesjs-preset-newsletter": "^1.0.2",
     "grapesjs-preset-webpage": "^1.0.3",
@@ -152,7 +152,7 @@
     "@tailwindcss/typography": "^0.5.19",
     "bower": "^1.8.14",
     "npm-run-all": "^4.1.5",
-    "rollup": "^4.62.2",
+    "rollup": "^4.62.3",
     "tailwindcss": "^3.4.17",
     "uglify-js": "^3.19.3"
   }
