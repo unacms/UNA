@@ -52,6 +52,8 @@ import TasksList from './tasks_list';
 import TaskTimer from './task_timer';
 import WikiBlocks from './wiki_blocks';
 import WikiHistory from './wiki_history';
+import CreditsCheckout from './credits_checkout';
+
 
 export const componentsMapDefault = {
     messenger_main_page: Messenger,
@@ -91,6 +93,7 @@ export const componentsMapDefault = {
     login: Login,
     redirect: Redirect,
     entity_text: EntityText,
+    credits_checkout:CreditsCheckout,
     entity_poll: EntityPoll,
     entity_author: EntityAuthor,
     entity_actions: EntityActions,

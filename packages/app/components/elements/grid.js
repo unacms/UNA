@@ -31,6 +31,7 @@ import {
 } from 'app/lib/conductor-helpers'
 import { getDataForMenu } from 'app/lib/util'
 import { Platform } from 'react-native'
+import { getPageData } from 'app/lib/util';
 
 /**
  * Flex-none columns use fixed width/minWidth so header + body rows share the
@@ -463,8 +464,6 @@ export default function ElementGrid(props) {
 
     const { setBottomSheetData } = useBottomSheetData();
     const data = props.data;
-
-    console.log(data);
     let settings = data.settings;
     const header = useMemo(
         () => normalizeGridHeader(data.header, data.data?.[0]),
@@ -632,15 +631,44 @@ export default function ElementGrid(props) {
             setModalContentElement(<Stripe payment_type={payment_type} seller_id={settings.query_append.seller_id} items={selected} />);
         }
         if (type == 'credits') {
-            let response = await fetchData('checkout', '&provider=credits&seller_id=' + settings.query_append.seller_id + '&' + selected.map(id => `ids[]=${id}`).join('&'))
-            
-            let response2 = await fetcher(response.data.url)
-           
-            console.log("response2", response2);
-            //TODO 
-            //setModalContentElement(<Credits />);
-       
-            
+            const fail = (msg) => {
+                setCalculateMsg(msg || t('Something went wrong'));
+            };
+
+            console.log("selected", selected);
+
+            const response = await fetchData(
+                'checkout',
+                '&provider=credits&seller_id=' + settings.query_append.seller_id + '&' + selected.map(id => `ids[]=${id}`).join('&')
+            );
+
+            const checkoutMsg = Array.isArray(response?.data)
+                ? response.data.find((item) => item?.type === 'msg')
+                : null;
+            if (checkoutMsg?.data) {
+                fail(typeof checkoutMsg.data === 'string' ? checkoutMsg.data : checkoutMsg.data?.msg || checkoutMsg.data?.message);
+                return;
+            }
+
+            if (!response?.data?.url) {
+                fail(t('Checkout URL not found'));
+                return;
+            }
+
+            const response2 = await fetcher(response.data.url);
+            if (!response2?.data?.url) {
+                fail(t('Payment page URL not found'));
+                return;
+            }
+
+            const response3 = await getPageData(response2.data.url);
+            const content = response3?.data?.elements?.cell_center?.[0]?.content;
+            if (!content?.length) {
+                fail(t('Checkout content not found'));
+                return;
+            }
+
+            setModalContent({ content, designbox_id: 0 });
         }
     };
 
