@@ -122,19 +122,15 @@ class BxDolSearchExtended extends BxDolFactory implements iBxDolFactoryObject
     {
         self::getMention(bx_get('symbol'));
     }
-    
+
     static function getMention($sSymbol)
     {
-        $bIsApi = bx_is_api();
-
         $aResult = [];
         switch($sSymbol) {
             case '@':
                 $aResult = BxDolService::call('system', 'profiles_search', array(bx_get('term')), 'TemplServiceProfiles');
-                foreach ($aResult as &$aItem) {
+                foreach ($aResult as &$aItem)
                     $aItem['symbol'] = bx_get('symbol');
-                    $aItem['url'] = $bIsApi ? bx_api_get_relative_url($aItem['url']) : $aItem['url'];
-                }
                 break;
 
             case '#':
@@ -143,7 +139,7 @@ class BxDolSearchExtended extends BxDolFactory implements iBxDolFactoryObject
                     $aResult[] = [
                         'label' => $aItem['meta'], 
                         'value' => $aItem['id'], 
-                        'url' => $bIsApi ? bx_api_get_relative_url($aItem['url']) : $aItem['url'], 
+                        'url' => $aItem['url'], 
                         'symbol' => bx_get('symbol')
                     ];
                 break;
