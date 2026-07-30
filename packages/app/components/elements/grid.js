@@ -632,7 +632,7 @@ export default function ElementGrid(props) {
             setModalContentElement(<Stripe payment_type={payment_type} seller_id={settings.query_append.seller_id} items={selected} />);
         }
         if (type == 'credits') {
-            let response = await fetchData('checkout', 'provider=credits&seller_id=' + settings.query_append.seller_id + '&' + selected.map(id => `ids[]=${id}`).join('&'))
+            let response = await fetchData('checkout', '&provider=credits&seller_id=' + settings.query_append.seller_id + '&' + selected.map(id => `ids[]=${id}`).join('&'))
             //TODO 
             //setModalContentElement(<Credits />);
        
