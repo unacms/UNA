@@ -49,7 +49,6 @@ class BxCreditsTemplate extends BxBaseModGeneralTemplate
 
     public function getBlockCheckout($oBuyer, $oSeller, $aData)
     {
-        $CNF = &$this->_oConfig->CNF;
         $sStylePrefix = $this->_oConfig->getPrefix('style');
         $sJsObject = $this->_oConfig->getJsObject('checkout');
 
@@ -70,13 +69,26 @@ class BxCreditsTemplate extends BxBaseModGeneralTemplate
                 'item_title' => $aItem['title'],
                 'item_quantity' => $aItem['quantity'] . $sTxtQt
             );
+        
+        $sTitle = _t('_bx_credits_txt_checkout_to', $oSeller->getDisplayName());
+        if($this->_bIsApi)
+            return [
+                'title' => $sTitle,
+                'items' => $aTmplVarsItems,
+                'amount' => [
+                    'value' => (float)$aData['amountm'],
+                    'currency' => $aData['currency']['code'] ?? $aCurrency['code']
+                ],
+                'rate' => $fRate != 1 ? $fRate : '',
+                'request_url' => '/api.php?r=' . $this->_oConfig->getName() . '/checkout&params[]='
+            ];
 
         $this->addJs(array('checkout.js'));
         $this->addCss(array('checkout.css'));
         return $this->parseHtmlByName('checkout.html', array(
             'sp' => $sStylePrefix,
             'jo' => $sJsObject,
-            'title' => _t('_bx_credits_txt_checkout_to', $oSeller->getDisplayName()),
+            'title' => $sTitle,
             'bx_repeat:items' => $aTmplVarsItems,
             'amount' => $sCurrencySign . sprintf("%.2f", (float)($aData['amountm'])),
             'bx_if:show_rate' => array(

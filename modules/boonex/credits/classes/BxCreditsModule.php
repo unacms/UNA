@@ -67,15 +67,37 @@ class BxCreditsModule extends BxBaseModGeneralModule
 
     public function actionCheckout()
     {
+        return echoJson($this->serviceCheckout());
+    }
+
+    public function actionSubscribe()
+    {
+        return echoJson($this->serviceSubscribe());
+    }
+
+    public function serviceGetSafeServices()
+    {
+        return [
+            'GetBlockBundles' => '',
+            'GetBlockOrders' => '',
+            'GetBlockHistory' => '',
+            'AddToCart' => '',
+            'Checkout' => '',
+            'Subscribe' => ''
+        ];
+    }
+
+    public function serviceCheckout()
+    {
         $iBuyerId = bx_get_logged_profile_id();
         if(!$iBuyerId)
-            return echoJson(['code' => 1, 'msg' => _t('_bx_credits_err_unknown_buyer')]);
+            return ['code' => 1, 'msg' => _t('_bx_credits_err_unknown_buyer')];
 
         $sErrIncorrectData = _t('_bx_credits_err_incorrect_data');
 
         $aData = $this->_oConfig->getCheckoutData();
         if(empty($aData) || !is_array($aData))
-            return echoJson(['code' => 2, 'msg' => $sErrIncorrectData]);
+            return ['code' => 2, 'msg' => $sErrIncorrectData];
 
         $fConversion = $this->_oConfig->getConversionRateUse();
         $iPrecision = $this->_oConfig->getPrecision();
@@ -89,7 +111,7 @@ class BxCreditsModule extends BxBaseModGeneralModule
         if(!empty($aPpOrders) && is_array($aPpOrders)) {
             $aPpOrder = reset($aPpOrders);
             if(empty($aPpOrder) || !is_array($aPpOrder) || (int)$aPpOrder['seller_id'] != $iSellerId)
-                return echoJson(['code' => 3, 'msg' => $sErrIncorrectData]);
+                return ['code' => 3, 'msg' => $sErrIncorrectData];
 
             $fAmountM = (float)$aPpOrder['amount'];
             $sCurrencyDefault = $oPayments->getCurrencyCode();
@@ -97,12 +119,12 @@ class BxCreditsModule extends BxBaseModGeneralModule
                 $fAmountM = $oPayments->convert ($fAmountM, $aPpOrder['currency'], $sCurrencyDefault);
 
             if($this->_oConfig->convertM2C($fAmountM, $fConversion, $iPrecision) != $fAmount)
-                return echoJson(['code' => 3, 'msg' => $sErrIncorrectData]);
+                return ['code' => 3, 'msg' => $sErrIncorrectData];
         }
 
         $fBalance = (float)$this->_oDb->getProfile(['type' => 'balance', 'id' => $iBuyerId]);
         if($fAmount > $fBalance)
-            return echoJson(['code' => 4, 'msg' => _t('_bx_credits_err_low_balance')]);
+            return ['code' => 4, 'msg' => _t('_bx_credits_err_low_balance')];
 
         $sOrder = $this->_oConfig->getOrder();
         $sInfo = '_bx_credits_txt_history_info_checkout';
@@ -135,28 +157,30 @@ class BxCreditsModule extends BxBaseModGeneralModule
             'order' => $sOrder
         ]);
 
-        return echoJson([
+        $sRedirect = bx_append_url_params($aData['return_data_url'], ['o' => $sOrder, 'c' => $aData['custom']]);
+
+        return [
             'code' => 0,
-            'redirect' => bx_append_url_params($aData['return_data_url'], ['o' => $sOrder, 'c' => $aData['custom']])
-        ]);
+            'redirect' => $this->_bIsApi ? bx_api_get_relative_url($sRedirect) : $sRedirect
+        ];
     }
 
-    public function actionSubscribe()
+    public function serviceSubscribe()
     {
         $iBuyerId = bx_get_logged_profile_id();
         if(!$iBuyerId)
-            return echoJson(array('code' => 1, 'msg' => _t('_bx_credits_err_unknown_buyer')));
+            return ['code' => 1, 'msg' => _t('_bx_credits_err_unknown_buyer')];
 
         $aData = $this->_oConfig->getCheckoutData();
         if(empty($aData) || !is_array($aData))
-            return echoJson(array('code' => 2, 'msg' => _t('_bx_credits_err_incorrect_data')));
+            return ['code' => 2, 'msg' => _t('_bx_credits_err_incorrect_data')];
 
         $iSellerId = (int)$aData['seller'];
         $fAmount = (float)$aData['amount'];
 
         $fBalance = (float)$this->_oDb->getProfile(array('type' => 'balance', 'id' => $iBuyerId));
         if($fAmount > $fBalance)
-            return echoJson(array('code' => 3, 'msg' => _t('_bx_credits_err_low_balance')));
+            return ['code' => 3, 'msg' => _t('_bx_credits_err_low_balance')];
 
         $sUnique = $this->_oConfig->getOrder(9);
         $sCustomer = 'bx_cus_' . $sUnique;
@@ -187,24 +211,16 @@ class BxCreditsModule extends BxBaseModGeneralModule
             'subscription' => $sSubscription
         ]);
 
-        return echoJson([
-            'code' => 0,
-            'redirect' => bx_append_url_params($aData['return_data_url'], [
-                'cs' => $sCustomer, 
-                'sb' => $sSubscription,
-                'tr' => $aData['trial'],
-                'c' => $aData['custom']
-            ])
+        $sRedirect = bx_append_url_params($aData['return_data_url'], [
+            'cs' => $sCustomer, 
+            'sb' => $sSubscription,
+            'tr' => $aData['trial'],
+            'c' => $aData['custom']
         ]);
-    }
-
-    public function serviceGetSafeServices()
-    {
+        
         return [
-            'GetBlockBundles' => '',
-            'GetBlockOrders' => '',
-            'GetBlockHistory' => '',
-            'AddToCart' => ''
+            'code' => 0,
+            'redirect' => $this->_bIsApi ? bx_api_get_relative_url($sRedirect) : $sRedirect
         ];
     }
 
@@ -250,12 +266,12 @@ class BxCreditsModule extends BxBaseModGeneralModule
     {
         $oBuyer = BxDolProfile::getInstance();
         if(!$oBuyer)
-            return MsgBox(_t('_bx_credits_err_unknown_buyer'));
+            return ($sMsg = _t('_bx_credits_err_unknown_buyer')) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : MsgBox($sMsg);
         
         $iSeller = (int)bx_get('seller');
         $oSeller = BxDolProfile::getInstance($iSeller);
         if(!$oSeller)
-            return MsgBox(_t('_bx_credits_err_unknown_seller'));
+            return ($sMsg = _t('_bx_credits_err_unknown_seller')) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : MsgBox($sMsg);
 
         $fAmountM = $fAmountMInDef = (float)bx_get('amount');
 
@@ -291,7 +307,9 @@ class BxCreditsModule extends BxBaseModGeneralModule
             'custom' => bx_process_input(bx_get('custom')),
             'return_data_url' => bx_process_input(bx_get('return_data_url')),
         ]);
-        return $this->_oTemplate->getBlockCheckout($oBuyer, $oSeller, $aData);
+
+        $mixedResult = $this->_oTemplate->getBlockCheckout($oBuyer, $oSeller, $aData);
+        return $this->_bIsApi ? [bx_api_get_block('credits_checkout', $mixedResult)] : $mixedResult;
     }
 
     public function serviceGetPopupSubscribe($aData)
