@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
-import { ButtonMenuActionDefault, ButtonMenuActionText, NeoButton } from 'app/design/controls';
-import { View } from 'app/design/view';
+import { ButtonMenuActionDefault, ButtonMenuActionText, NeoButton, Modal } from 'app/design/controls';
+import { View, ScrollView } from 'app/design/view';
 import { fetcher } from 'app/lib/fetcher';
 import Submenu from './submenu'
 import SubmenuShare from './submenu-share'
@@ -13,9 +13,11 @@ import { storageClear, getAlert } from 'app/lib/util';
 import { useLayoutData } from 'app/context/layout';
 import { getComponent } from 'app/components/registry'
 import Badge from 'app/ui/molecules/badge'
+import Msg from 'app/ui/molecules/msg'
+import Stripe from 'app/ui/molecules/stripe';
 import emitter from 'app/context/emitter'
 
-const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps) => {
+const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps, setShowMsg, setShowModal) => {
 
     const setMembership = async (val) => {
         oProps.data.value = val;
@@ -74,8 +76,14 @@ const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, red
     if (oProps.data.on_callback == 'change')
         setButtonProps({...buttonProps, title:sResponse.data?.title, request_url:sResponse.data?.request_url})
 
-    if (oProps.data.on_callback == 'redirect')
-        redirectdRef.current.redirect(sResponse.data?.url ? sResponse.data?.url : sResponse.data);
+    if (oProps.data.on_callback == 'redirect'){
+        if (sResponse.data?.[0]?.type == 'msg') {
+            setShowMsg(sResponse.data?.[0]?.data);
+        }
+        else{
+            redirectdRef.current.redirect(sResponse.data?.url ? sResponse.data?.url : sResponse.data);
+        }
+    }
     
     if (oProps.data.on_callback == 'alert') {
         if (oProps.data.on_callback_clear_cache)
@@ -88,6 +96,15 @@ const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, red
             storageClear();
         setLayoutData(getAlert(oProps.data.on_callback_param, { time: Date.now(), reload: true }));
     }
+    if (oProps.data.on_callback == 'object') {
+        const paymentData = {
+            ...oProps.data,
+            ...(sResponse?.data && typeof sResponse.data === 'object' && !Array.isArray(sResponse.data) ? sResponse.data : {}),
+        };
+        if (paymentData.object_name == 'stripe_v3') {
+            setShowModal(paymentData);
+        }
+    }
 };
 
 export default function MenuItemButton(oProps) {
@@ -97,6 +114,8 @@ export default function MenuItemButton(oProps) {
     const { setBottomSheetData } = useBottomSheetData();
     //const [isVisible, setIsVisible] = useState(true);
     const [ buttonProps, setButtonProps ] = useState({isVisible:true, title:oProps.title, request_url:oProps.data?.request_url});
+    const [showMsg, setShowMsg] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     const { setLayoutData } = useLayoutData();
 
     const oIconAliases = {
@@ -149,7 +168,7 @@ export default function MenuItemButton(oProps) {
             if (oProps.mode == 'dropdown-menu') {
                 sContent = <><Redirect ref={redirectdRef} /><DropdownMenuItem 
                     item={{title: buttonProps.title, icon: sButtonIcon}} 
-                    handleSelect = {(event) => handleClick(event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps)}
+                    handleSelect = {(event) => handleClick(event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps, setShowMsg, setShowModal)}
                 /></>
             }
             else{
@@ -166,10 +185,10 @@ export default function MenuItemButton(oProps) {
                         borderShape={oProps.params?.button_border_shape}
                         width={oProps.params?.button_full_width ? 'fill' : 'auto'}
                         contentInsets={oProps.params?.button_content_insets}
-                        onPress={(event) => handleClick(event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps)}
+                        onPress={(event) => handleClick(event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps, setShowMsg, setShowModal)}
                     />
                 ) : (
-                    <ButtonAction onPress={(event) => handleClick(event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps)} title={buttonProps.title} startDecorator={sButtonIcon} {...oButtonProps} />
+                    <ButtonAction onPress={(event) => handleClick(event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps, setShowMsg, setShowModal)} title={buttonProps.title} startDecorator={sButtonIcon} {...oButtonProps} />
                 );
 
                 sContent = (
@@ -184,10 +203,19 @@ export default function MenuItemButton(oProps) {
     if (!buttonProps.isVisible)
         return <></>
 
+    const msgBox = <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />;
+    const stripeModal = showModal ? (
+        <Modal onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
+            <ScrollView className="h-[400px]">
+                <Stripe payment_type={showModal.payment_type} seller_id={showModal.seller_id} items={showModal.items} />
+            </ScrollView>
+        </Modal>
+    ) : null;
+
     if (oProps.mode == 'dropdown-menu') {
-        return sContent;
+        return <>{msgBox}{stripeModal}{sContent}</>;
     }
     return (
-        <View className={'menu-item flex-auto ' + (bShowVertical ? ' w-full' : ' flex-row items-center justify-center')}>{sContent}</View>
+        <View className={'menu-item flex-auto ' + (bShowVertical ? ' w-full' : ' flex-row items-center justify-center')}>{msgBox}{stripeModal}{sContent}</View>
     );
 }

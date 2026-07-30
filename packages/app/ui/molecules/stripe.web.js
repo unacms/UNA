@@ -54,9 +54,16 @@ export default function ElementStripe({ seller_id, items, payment_type }) {
         stripePromise = loadStripe(publicKey);
 
     useEffect(() => {
-        performAction('stripe_v3_create_session_api', { type: payment_type, seller_id: seller_id, items: items.join('&'), return_url: APP_URL }, (oData) => {
-            setClientSecret(oData.clientSecret)
-        });
+        performAction('stripe_v3_create_session_api', 
+            { 
+                type: payment_type, 
+                seller_id: seller_id, 
+                items: items.join('&'), 
+                return_url: APP_URL 
+            }, (oData) => {
+                setClientSecret(oData.clientSecret)
+            }
+        );
     }, [])
 
 

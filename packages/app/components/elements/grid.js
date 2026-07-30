@@ -313,7 +313,7 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
         case 'link':
             return <Link href={cell.data.url}><Text className="text-primary">{cell.data.text}</Text></Link>
         case 'text':
-            return <Text className="text-secondary-foreground truncate" numberOfLines={1}>{stripTags(cell.value)}</Text>
+            return <Text className="block max-w-full min-w-0 overflow-hidden truncate text-secondary-foreground"  numberOfLines={1}>{stripTags(cell.value)}</Text>
         case 'price':
             return <Text className="text-secondary-foreground" numberOfLines={1}>{cell.value.value + ' ' + cell.value.currency}</Text>
         case 'period':
@@ -463,6 +463,8 @@ export default function ElementGrid(props) {
 
     const { setBottomSheetData } = useBottomSheetData();
     const data = props.data;
+
+    console.log(data);
     let settings = data.settings;
     const header = useMemo(
         () => normalizeGridHeader(data.header, data.data?.[0]),
@@ -621,12 +623,21 @@ export default function ElementGrid(props) {
             setBottomSheetData({ title: cnt.content[0]?.title || data.title, content: <View className='px-1'><BlockByData onFormEmpty={() => handleUpdate()} block={cnt} /></View> });
         }
         if (data.type == 'object') {
-            setModalContentElement(<Stripe seller_id={data.seller_id} items={data.items} />);
+            setModalContentElement(<Stripe payment_type={data.payment_type} seller_id={data.seller_id} items={data.items} />);
         }
     };
 
-    const handleActionBlockPayment = async () => {
-        setModalContentElement(<Stripe seller_id={settings.query_append.seller_id} items={selected} />);
+    const handleActionBlockPayment = async (type, payment_type) => {
+        if (type == 'stripe_v3') {
+            setModalContentElement(<Stripe payment_type={payment_type} seller_id={settings.query_append.seller_id} items={selected} />);
+        }
+        if (type == 'credits') {
+            let response = await fetchData('checkout', 'provider=credits&seller_id=' + settings.query_append.seller_id + '&' + selected.map(id => `ids[]=${id}`).join('&'))
+            //TODO 
+            //setModalContentElement(<Credits />);
+       
+            
+        }
     };
 
     const handleCloseModal = () => {
@@ -825,6 +836,7 @@ export default function ElementGrid(props) {
                         )
                     }
                     if (item.name == 'stripe_v3') {
+                        
                         return (
                             <NeoButton
                                 key={item.name}
@@ -832,7 +844,19 @@ export default function ElementGrid(props) {
                                 controlSize="small"
                                 label={t("Checkout with Stripe")}
                                 disabled={selected.length == 0}
-                                onPress={() => { handleActionBlockPayment('stripe_v3') }}
+                                onPress={() => { handleActionBlockPayment('stripe_v3', item.payment_type) }}
+                            />
+                        )
+                    }
+                    if (item.name == 'credits') {
+                        return (
+                            <NeoButton
+                                key={item.name}
+                                style="bordered"
+                                controlSize="small"
+                                label={t("Checkout with Credits")}
+                                disabled={selected.length == 0}
+                                onPress={() => { handleActionBlockPayment('credits') }}
                             />
                         )
                     }
