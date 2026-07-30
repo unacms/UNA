@@ -633,6 +633,10 @@ export default function ElementGrid(props) {
         }
         if (type == 'credits') {
             let response = await fetchData('checkout', '&provider=credits&seller_id=' + settings.query_append.seller_id + '&' + selected.map(id => `ids[]=${id}`).join('&'))
+            
+            let response2 = await fetcher(response.data.url)
+           
+            console.log("response2", response2);
             //TODO 
             //setModalContentElement(<Credits />);
        
