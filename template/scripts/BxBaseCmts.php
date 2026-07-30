@@ -1295,7 +1295,7 @@ class BxBaseCmts extends BxDolCmts
         if((int)$iCmtParentId > 0) {
             $aParent = $this->getCommentRow($iCmtParentId);
 
-            $iLevel = (int)$aParent['cmt_level'] + 1;
+            $iLevel = (int)($aParent['cmt_level'] ?? 0) + 1;
             $iCmtVisualParentId = $iLevel > $this->getMaxLevel() ? $aParent['cmt_vparent_id'] : $iCmtParentId;
         }
 
