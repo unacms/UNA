@@ -136,12 +136,14 @@ class BxMarketModule extends BxBaseModTextModule
 
     public function serviceGetSafeServices()
     {
-        $a = parent::serviceGetSafeServices();
-        return array_merge($a, array (
+        return array_merge(parent::serviceGetSafeServices(), [
             'EntityDownload' => '',
             'EntityAuthorEntities' => '',
             'BlockLicenses' => '',
-        ));
+
+            'AddToCartApi' => '',
+            'SubscribeApi' => '',
+        ]);
     }
 
     /**
@@ -245,12 +247,19 @@ class BxMarketModule extends BxBaseModTextModule
             array('id' => 'bx-market-show-more', 'name' => 'bx-market-show-more', 'class' => '', 'link' => 'javascript:void(0)', 'target' => '_self', 'onclick' => 'javascript:' . $sJsObject . '.showMore();', 'title' => _t('_bx_market_menu_item_title_downloads_more')),
         )));
 
-        return array(
+        $mixedResult = $this->_oTemplate->entryAttachmentsByStorage($CNF['OBJECT_STORAGE_FILES'], $aContentInfo, [
+            'filter_field' => ''
+        ]);
+
+        if($this->_bIsApi)
+            foreach($mixedResult as $iKey => $aBlock)
+                if($aBlock['type'] == 'entity_attachments')
+                    $mixedResult[$iKey]['type'] = 'market_attachments';
+
+        return [
             'menu' => $oMenu,
-            'content' => $this->_oTemplate->entryAttachmentsByStorage($CNF['OBJECT_STORAGE_FILES'], $aContentInfo, array(
-                'filter_field' => ''
-            ))
-        );
+            'content' => $mixedResult
+        ];
     }
 
     /**
@@ -294,22 +303,30 @@ class BxMarketModule extends BxBaseModTextModule
     /** 
      * @ref bx_market-entity_author_entities "entity_author_entities"
      */
-	public function serviceEntityAuthorEntities($iContentId = 0)
+    public function serviceEntityAuthorEntities($iContentId = 0)
     {
-    	$CNF = &$this->_oConfig->CNF;
+        $CNF = &$this->_oConfig->CNF;
 
-    	$aContentInfo = $this->_getContentInfo($iContentId);
-    	if($aContentInfo === false)
-    		return false;
+        $aContentInfo = $this->_getContentInfo($iContentId);
+        if($aContentInfo === false)
+            return false;
 
-		$oProfile = BxDolProfile::getInstance($aContentInfo[$CNF['FIELD_AUTHOR']]);
-        if (!$oProfile)
-            $oProfile = BxDolProfileUndefined::getInstance();
+        $mixedResult = $this->_serviceBrowse ('author', ['author' => $aContentInfo[$CNF['FIELD_AUTHOR']], 'except' => [$iContentId], 'per_page' => 2], BX_DB_PADDING_DEF, true);
+        if(!$mixedResult || !is_array($mixedResult))
+            return $mixedResult;
 
-		$aBlock = $this->_serviceBrowse ('author', array('author' => $aContentInfo[$CNF['FIELD_AUTHOR']], 'except' => array($iContentId), 'per_page' => 2), BX_DB_PADDING_DEF, true);
-		$aBlock['title'] = _t('_bx_market_page_block_title_entry_author_entries', $oProfile->getDisplayName());
+        $sAuthor = ($oProfile = BxDolProfile::getInstance($aContentInfo[$CNF['FIELD_AUTHOR']])) !== false || ($oProfile = BxDolProfileUndefined::getInstance()) !== false ? $oProfile->getDisplayName() : '';
+        $sTitle = _t('_bx_market_page_block_title_entry_author_entries', $sAuthor);
 
-    	return $aBlock;
+        if($this->_bIsApi)
+            return [
+                'title' => $sTitle,
+                'content' => $mixedResult
+            ];
+        else
+            $mixedResult['title'] = $sTitle;
+
+        return $mixedResult;
     }
 
     /**
@@ -1130,10 +1147,50 @@ class BxMarketModule extends BxBaseModTextModule
     /** 
      * @ref bx_market-cancel_subscription_item "cancel_subscription_item"
      */
-	public function serviceCancelSubscriptionItem($iClientId, $iSellerId, $iItemId, $iItemCount, $sOrder)
+    public function serviceCancelSubscriptionItem($iClientId, $iSellerId, $iItemId, $iItemCount, $sOrder)
     {
-    	//TODO: Do something if it's necessary.
-    	return true;
+        //TODO: Do something if it's necessary.
+        return true;
+    }
+
+    public function serviceAddToCartApi($sDescriptor)
+    {
+        if(!$this->_bIsApi)
+            return;
+
+        $oPayment = BxDolPayments::getInstance();
+
+        $aDescriptor = $oPayment->getActiveObject()->_oConfig->descriptorS2A($sDescriptor);
+        if(!$aDescriptor || !is_array($aDescriptor)) 
+            return [bx_api_get_msg(_t('_sys_txt_error_occured'))]; //TODO: Ask Roman How to return error message.
+
+        $iSeller = (int)$aDescriptor[0];
+        $aResult = $oPayment->addToCart($iSeller, $this->_oConfig->getName(), (int)$aDescriptor[2], 1, true);
+        if(($iCode = $aResult['code'] ?? false) && (int)$iCode != 0)
+            return [bx_api_get_msg($aResult['message'])]; //TODO: Ask Roman How to return error message.
+        else
+            return [
+                'url' => bx_api_get_relative_url($oPayment->getCartUrl($iSeller))
+            ];
+    }
+
+    public function serviceSubscribeApi($sProvider, $sDescriptor)
+    {
+        if(!$this->_bIsApi)
+            return;
+
+        $oPayment = BxDolPayments::getInstance();
+
+        $aDescriptor = $oPayment->getActiveObject()->_oConfig->descriptorS2A($sDescriptor);
+        if(!$aDescriptor || !is_array($aDescriptor)) 
+            return [bx_api_get_msg(_t('_sys_txt_error_occured'))];
+
+        $iSeller = (int)$aDescriptor[0];
+        $aResult = $oPayment->subscribeWithAddons($iSeller, $sProvider, $this->_oConfig->getName(), (int)$aDescriptor[2], 1, true);
+        if(($iCode = $aResult['code'] ?? false) && (int)$iCode != 0)
+            return [bx_api_get_msg($aResult['message'])];
+
+        return [];
     }
 
     protected function _serviceRegisterItem($iClientId, $iSellerId, $iItemId, $iItemCount, $sOrder, $sLicense, $sType)

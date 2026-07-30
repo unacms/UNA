@@ -1,5 +1,7 @@
 -- PAGES: config_api
-UPDATE `sys_objects_page` SET `config_api`='{\r\n    layout: \'post\',\r\n   \r\n}' WHERE `object`='bx_market_view_entry';
+UPDATE `sys_objects_page` SET `config_api`='{"layout": "post"}' WHERE `object`='bx_market_view_entry';
+UPDATE `sys_pages_blocks` SET `config_api`='{"content_type":"browse_simple"}' WHERE `object`='bx_market_view_entry' AND `title`='_bx_market_page_block_title_entry_author_entries';
+
 
 -- PAGES: active_api
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_market_create_entry' AND `module`='bx_market' AND `title_system`='' AND `title`='_bx_market_page_block_title_create_entry';
