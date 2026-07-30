@@ -97,7 +97,7 @@ export default function RftText({
     const object_id = formContext.watch('id')
     const m = name == 'cmt_text' ? 'sys_cmts' : 'bx_timeline'
 
-    let url1 = '/searchExtended.php?action=get_mention'
+    let url1 = '/searchExtended.php?api=1&action=get_mention'
     if (m) url1 += '&m=' + m
     if (object_privacy_view)
         url1 += '&object_privacy_view=' + object_privacy_view

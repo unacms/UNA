@@ -126,7 +126,7 @@ export default function RftTextEnriched({
         formContext.watch('cmt_privacy_view')
     const object_id = formContext.watch('id')
     const m = name == 'cmt_text' ? 'sys_cmts' : 'bx_timeline'
-    let mentionUrl = '/searchExtended.php?action=get_mention'
+    let mentionUrl = '/searchExtended.php?api=1&action=get_mention'
     if (m) mentionUrl += '&m=' + m
     if (object_privacy_view) mentionUrl += '&object_privacy_view=' + object_privacy_view
     if (object_id) mentionUrl += '&cid=' + object_id
