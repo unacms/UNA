@@ -30,11 +30,11 @@ class BxPaymentProviderCredits extends BxBaseModPaymentProvider implements iBxBa
     public function initializeCheckout($iPendingId, $aCartInfo, $sRedirect = '')
     {
         if(!BxDolModuleQuery::getInstance()->isEnabledByName($this->_sModuleCredits))
-            return $this->_sLangsPrefix . 'cdt_err_not_available';
+            return ($sMsg = $this->_sLangsPrefix . 'cdt_err_not_available') && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : $sMsg;
 
         $aPending = $this->_oModule->_oDb->getOrderPending(array('type' => 'id', 'id' => $iPendingId));
         if(!empty($aPending['order']) || !empty($aPending['error_code']) || !empty($aPending['error_msg']) || (int)$aPending['processed'] != 0)
-            return $this->_sLangsPrefix . 'err_already_processed';
+            return ($sMsg = $this->_sLangsPrefix . 'err_already_processed') && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : $sMsg;
 
         $iSellerId = (int)$aCartInfo['vendor_id'];
         $sCustomData = $this->_constructCustomData($aCartInfo['vendor_id'], $iPendingId);
@@ -61,6 +61,9 @@ class BxPaymentProviderCredits extends BxBaseModPaymentProvider implements iBxBa
                 }
 
                 $sCheckoutUrl = bx_srv($this->_sModuleCredits, 'get_checkout_url');
+                if($this->_bIsApi)
+                    return ['redirect' => bx_api_get_relative_url(bx_append_url_params($sCheckoutUrl, $aFormData))];
+
                 $this->_oModule->_oTemplate->displayPageCodeRedirect($sCheckoutUrl, $aFormData);
                 exit;
 

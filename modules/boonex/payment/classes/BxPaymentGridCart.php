@@ -63,31 +63,40 @@ class BxPaymentGridCart extends BxBaseModPaymentGridCarts
 
     public function performActionCheckout()
     {
-    	$aParams = array(
+        $aParams = array(
             'seller_id' => bx_process_input(bx_get('seller_id'), BX_DATA_INT), 
             'provider' => bx_process_input(bx_get('provider')), 
             'items' => bx_process_input(bx_get('ids'))
-    	);
+        );
 
-    	if(empty($aParams['seller_id']) || empty($aParams['provider']))
-            return echoJson(array());
+        if(empty($aParams['seller_id']) || empty($aParams['provider']))
+            return $this->_bIsApi ? [] : echoJson([]);
 
         if(empty($aParams['items']) || !is_array($aParams['items'])) 
-            return echoJson(array('msg' => _t('_bx_payment_err_nothing_selected')));
+            return ($sMsg = _t('_bx_payment_err_nothing_selected')) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : echoJson(['msg' => $sMsg]);
 
         $oProvider = $this->_oModule->getObjectProvider($aParams['provider'], $aParams['seller_id']);
         if($oProvider !== false) {
-            if(method_exists($oProvider, 'overwriteCheckoutParamsSingle'))
-                return echoJson($oProvider->overwriteCheckoutParamsSingle($aParams, $this));
+            if(method_exists($oProvider, 'overwriteCheckoutParamsSingle') && ($aResults = $oProvider->overwriteCheckoutParamsSingle($aParams, $this)))
+                return $this->_bIsApi ? $aResults : echoJson($aResults);
 
             if(method_exists($oProvider, 'getCheckoutParamsSingle'))
                 $aParams = $oProvider->getCheckoutParamsSingle($aParams, $this);
         }
 
-        echoJson(array(
-            'eval' => $this->_oModule->_oConfig->getJsObject('cart') . '.onCartCheckout(oData);', 
-            'link' => bx_append_url_params($this->_oModule->_oConfig->getUrl('URL_CART_CHECKOUT'), $aParams)
-        ));
+        if($this->_bIsApi) {
+            $sItems = $this->_oModule->_oConfig->descriptorsA2S($aParams['items']);
+            $sRedirect = $this->_oModule->_oConfig->urlEncode($this->_oModule->_oConfig->getUrl('URL_HISTORY'));
+
+            return [
+                'url' => '/api.php?r=' . $this->MODULE . '/initialize_checkout_api&params[]=' . implode('&params[]=', [BX_PAYMENT_TYPE_SINGLE, $aParams['seller_id'], $aParams['provider'], $sItems, $sRedirect])
+            ];
+        }
+        else
+            echoJson([
+                'eval' => $this->_oModule->_oConfig->getJsObject('cart') . '.onCartCheckout(oData);', 
+                'link' => bx_append_url_params($this->_oModule->_oConfig->getUrl('URL_CART_CHECKOUT'), $aParams)
+            ]);
     }
 
     protected function _getCellTitle($mixedValue, $sKey, $aField, $aRow)
@@ -278,6 +287,7 @@ class BxPaymentGridCart extends BxBaseModPaymentGridCarts
                 continue;
 
             $aActions[$aProvider['name']] = [
+                'payment_type' => BX_PAYMENT_TYPE_SINGLE,
                 'name' => $aProvider['name'],
                 'title'=> _t('_bx_payment_grid_action_title_crt_checkout', _t($CNF['T']['TXT_CART_PROVIDER'] . $aProvider['name'])),
                 'icon' => '',

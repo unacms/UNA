@@ -1114,18 +1114,19 @@ class BxPaymentModule extends BxBaseModPaymentModule
 
     public function serviceInitializeCheckoutApi($sType, $iSellerId, $sProvider, $aItems = [], $sRedirect = '', $aCustoms = [])
     {
+        if(is_string($aItems))
+            $aItems = $this->_oConfig->descriptorsM2A($aItems, true);
+
         $mixedResult = $this->serviceInitializeCheckout($sType, $iSellerId, $sProvider, $aItems, $sRedirect, $aCustoms);
         if(is_string($mixedResult))
             return [bx_api_get_msg($mixedResult)];
         
         if(is_array($mixedResult)) {
-            if(isset($mixedResult['redirect'])) {
-                header('Location: ' . bx_api_get_relative_url($mixedResult['redirect']));
-                exit;
-            }
+            if(($sRedirect = $mixedResult['redirect'] ?? false))
+                return ['url' => $sRedirect];
 
-            if(isset($mixedResult['message']))
-                return [bx_api_get_msg($mixedResult['message'])];
+            if(($sMsg = $mixedResult['message'] ?? false))
+                return [bx_api_get_msg($sMsg)];
         }
 
         return [];

@@ -299,24 +299,27 @@ class BxPaymentConfig extends BxBaseModPaymentConfig
     /**
      * Conver items to array with necessary structure.
      *
-     * @param  string/array $mixed - string with cart items divided with (:) or an array of cart items.
-     * @return array        with items.
+     * @param string/array $mixed - string with cart items divided with (:) or an array of cart items.
+     * @param boolean $bDescriptorsOnly - converts a string with cart items to an array of descriptors represented as strings.
+     * @return array with items.
      */
-    public function descriptorsM2A($mixed)
+    public function descriptorsM2A($mixed, $bDescriptorsOnly = false)
     {
-        $aResults = array();
+        $aResults = [];
 
+        $aItems = [];
         if(is_string($mixed))
            $aItems = explode($this->getDivider('DIVIDER_DESCRIPTORS'), $mixed);
         else if(is_array($mixed))
            $aItems = $mixed;
-        else
-            $aItems = array();
+
+        if($bDescriptorsOnly)
+            return $aItems;
 
         foreach($aItems as $mixedItem) {
             $aItem = is_array($mixedItem) ? $mixedItem : $this->descriptorS2A($mixedItem);
 
-            $aResult = array('vendor_id' => $aItem[0], 'module_id' => $aItem[1], 'item_id' => $aItem[2], 'item_count' => $aItem[3]);
+            $aResult = ['vendor_id' => $aItem[0], 'module_id' => $aItem[1], 'item_id' => $aItem[2], 'item_count' => $aItem[3]];
             if(isset($aItem[4]))
                 $aResult['item_addons'] = $aItem[4];
 

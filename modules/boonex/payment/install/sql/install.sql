@@ -379,12 +379,12 @@ INSERT INTO `sys_grid_fields` (`object`, `name`, `title`, `width`, `translatable
 ('bx_payment_grid_carts', 'items_price', '_bx_payment_grid_column_title_crts_items_price', '20%', 0, '16', '', 4),
 ('bx_payment_grid_carts', 'actions', '', '18%', 0, '', '', 5),
 
-('bx_payment_grid_cart', 'checkbox', '', '2%', 0, '', '', 1),
+('bx_payment_grid_cart', 'checkbox', '', '5%', 0, '', '', 1),
 ('bx_payment_grid_cart', 'title', '_bx_payment_grid_column_title_crt_title', '25%', 0, '24', '', 2),
-('bx_payment_grid_cart', 'description', '_bx_payment_grid_column_title_crt_description', '35%', 0, '48', '', 3),
+('bx_payment_grid_cart', 'description', '_bx_payment_grid_column_title_crt_description', '45%', 0, '48', '', 3),
 ('bx_payment_grid_cart', 'quantity', '_bx_payment_grid_column_title_crt_quantity', '10%', 0, '16', '', 4),
-('bx_payment_grid_cart', 'price_single', '_bx_payment_grid_column_title_crt_price', '10%', 0, '16', '', 5),
-('bx_payment_grid_cart', 'actions', '', '18%', 0, '', '', 6),
+('bx_payment_grid_cart', 'price_single', '_bx_payment_grid_column_title_crt_price', '5%', 0, '16', '', 5),
+('bx_payment_grid_cart', 'actions', '', '10%', 0, '', '', 6),
 
 ('bx_payment_grid_sbs_list_my', 'checkbox', '', '2%', 0, '0', '', 1),
 ('bx_payment_grid_sbs_list_my', 'seller_id', '_bx_payment_grid_column_title_sbs_seller_id', '16%', 0, '0', '', 2),
