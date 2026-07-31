@@ -266,10 +266,13 @@ class BxCreditsConfig extends BxBaseModGeneralConfig
 
     public function getBundleDescription($aBundle)
     {
-        if(empty($aBundle[$this->CNF['FIELD_BONUS']]))
-            return $aBundle[$this->CNF['FIELD_AMOUNT']];
+        if(($sDsc = _t($aBundle[$this->CNF['FIELD_DESCRIPTION']]) ?: false))
+            return $sDsc;
 
-        return _t('_bx_credits_txt_n_plus_m_for_free', $aBundle[$this->CNF['FIELD_AMOUNT']], $aBundle[$this->CNF['FIELD_BONUS']]);
+        if(($iBns = (int)$aBundle[$this->CNF['FIELD_BONUS']] ?: false))
+            return _t('_bx_credits_txt_n_plus_m_for_free', $aBundle[$this->CNF['FIELD_AMOUNT']], $iBns);
+
+        return $aBundle[$this->CNF['FIELD_AMOUNT']];
     }
 
     public function getCheckoutData()

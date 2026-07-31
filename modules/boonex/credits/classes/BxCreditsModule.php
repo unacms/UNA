@@ -157,11 +157,17 @@ class BxCreditsModule extends BxBaseModGeneralModule
             'order' => $sOrder
         ]);
 
-        $sRedirect = bx_append_url_params($aData['return_data_url'], ['o' => $sOrder, 'c' => $aData['custom']]);
+        $aParams = [
+            'o' => $sOrder, 
+            'c' => $aData['custom']
+        ];
 
-        return [
+        return $this->_bIsApi ? [
+            'code' => 0, 
+            'request_url' => $aData['return_data_url'] . '&params[]=' . json_encode($aParams)
+        ] : [
             'code' => 0,
-            'redirect' => $this->_bIsApi ? bx_api_get_relative_url($sRedirect) : $sRedirect
+            'redirect' => bx_append_url_params($aData['return_data_url'], $aParams)
         ];
     }
 
@@ -211,16 +217,19 @@ class BxCreditsModule extends BxBaseModGeneralModule
             'subscription' => $sSubscription
         ]);
 
-        $sRedirect = bx_append_url_params($aData['return_data_url'], [
+        $aParams = [
             'cs' => $sCustomer, 
             'sb' => $sSubscription,
             'tr' => $aData['trial'],
             'c' => $aData['custom']
-        ]);
-        
-        return [
+        ];
+
+        return $this->_bIsApi ? [
             'code' => 0,
-            'redirect' => $this->_bIsApi ? bx_api_get_relative_url($sRedirect) : $sRedirect
+            'request_url' => $aData['return_data_url'] . '&params[]=' . json_encode($aParams)
+        ] : [
+            'code' => 0,
+            'redirect' => bx_append_url_params($aData['return_data_url'], $aParams)
         ];
     }
 
