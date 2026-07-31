@@ -185,7 +185,10 @@ class BxBaseModPaymentConfig extends BxBaseModGeneralConfig
         else
             $sResult = bx_absolute_url(BxDolPermalinks::getInstance()->permalink($this->CNF[$sType], $aParams));
 
-    	return $bSsl ? $this->http2https($sResult) : $sResult;
+        if($this->_bIsApi)
+            return bx_api_get_relative_url($sResult);
+
+        return $bSsl ? $this->http2https($sResult) : $sResult;
     }
 
     public function getDivider($sType)

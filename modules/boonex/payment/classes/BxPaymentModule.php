@@ -189,7 +189,8 @@ class BxPaymentModule extends BxBaseModPaymentModule
 
             'GetProviderOptions' => '',
             'InitializeCheckoutApi' => '',
-            'StripeV3CreateSessionApi' => ''
+            'StripeV3CreateSessionApi' => '',
+            'FinalizeCheckout' => ''
         ]);
     }
 
@@ -1149,13 +1150,16 @@ class BxPaymentModule extends BxBaseModPaymentModule
     
     public function serviceFinalizeCheckout($sProvider, $mixedVendorId = "", $aData = [])
     {
+        if($this->_bIsApi && is_string($aData))
+            $aData = bx_api_get_browse_params($aData);
+
         $oProvider = $this->getObjectProvider($sProvider, $mixedVendorId);
         if($oProvider === false || !$oProvider->isActive())
-            return ['error' => $this->_sLangsPrefix . 'err_incorrect_provider'];
+            return ($sMsg = $this->_sLangsPrefix . 'err_incorrect_provider') && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : ['error' => $sMsg];
 
         $aResult = $oProvider->finalizeCheckout($aData);
         if((int)$aResult['code'] != BX_PAYMENT_RESULT_SUCCESS) 
-            return ['error' => $aResult['message']];
+            return $this->_bIsApi ? [bx_api_get_msg($aResult['message'])] : ['error' => $aResult['message']];
 
         $aPending = $this->_oDb->getOrderPending(['type' => 'id', 'id' => (int)$aResult['pending_id']]);
         $bTypeRecurring = $aPending['type'] == BX_PAYMENT_TYPE_RECURRING;
@@ -1178,7 +1182,7 @@ class BxPaymentModule extends BxBaseModPaymentModule
             );
 
             if(!$this->getObjectSubscriptions()->register($aPending, $aSubscription))
-                return ['error' => $this->_sLangsPrefix . 'err_already_registered'];
+                return ($sMsg = $this->_sLangsPrefix . 'err_already_registered') && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : ['error' => $sMsg];
         }
 
         $this->onPaymentRegisterBefore($aPending);
@@ -1216,7 +1220,7 @@ class BxPaymentModule extends BxBaseModPaymentModule
         if(!empty($aResult['redirect'])) 
             return ['redirect' => $this->_oConfig->urlDecode($aResult['redirect'])];
 
-        return ['message' => $aResult['message']];
+        return $this->_bIsApi ? [bx_api_get_msg($aResult['message'])] : ['message' => $aResult['message']];
     }
 
     public function actionFinalizedCheckout($sProvider, $mixedVendorId = "")
@@ -2064,7 +2068,7 @@ class BxPaymentModule extends BxBaseModPaymentModule
 
             $aSessionParams['return_url'] = $aParams['return_url'] . '/api.php?r=' . $this->getName() . '/initialize_checkout_api&params[]=' . implode('&params[]=', [$sType, $iSellerId, $sProvider, $sItems, $sRedirect]);
         }
-        
+
         $minxedSession = $oProvider->createSessionPaymentEmbedded($sType, $iClientId, $iSellerId, $sItems, $aSessionParams);
         if($minxedSession === false)
             return [bx_api_get_msg(_t($this->_sLangsPrefix . 'err_cannot_perform'))];

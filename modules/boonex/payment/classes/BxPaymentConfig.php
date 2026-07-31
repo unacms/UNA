@@ -46,6 +46,7 @@ class BxPaymentConfig extends BxBaseModPaymentConfig
             'URL_DETAILS' => 'page.php?i=payment-details',
             'URL_RETURN' => 'page.php?i=payment-cart-thank-you',
             'URL_RETURN_DATA' => $sBaseUrl . 'finalize_checkout/',
+            'URL_RETURN_DATA_API' => 'api.php?r=' . $aModule['name'] . '/finalize_checkout&params[]=',
             'URL_NOTIFY' => $sBaseUrl . 'notify/',
             'URL_CHECKOUT_OFFLINE' => 'page.php?i=payment-checkout-offline',
 
