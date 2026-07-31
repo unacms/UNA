@@ -154,20 +154,60 @@ const dedupeGridRowActions = (actions) => {
     });
 };
 
-const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowConfirm, deleteRows, fetchData, handleBlock, refetch }) => {
+/** Pull a single grid row from a UNA action API response. */
+const extractGridRowFromResponse = (response) => {
+    const data = response?.data;
+    if (!data) return null;
+
+    if (Array.isArray(data?.data) && data.data.length > 0) {
+        return data.data[0];
+    }
+    if (data?.data && typeof data.data === 'object' && !Array.isArray(data.data)) {
+        return data.data;
+    }
+    if (Array.isArray(data) && data.length > 0) {
+        const first = data[0];
+        // Content blocks (msg/form/redirect) are not grid rows.
+        if (first?.type === 'msg' || first?.type === 'form' || first?.type === 'redirect') {
+            return null;
+        }
+        return first;
+    }
+    if (typeof data === 'object' && !Array.isArray(data) && !data.settings && !data.header) {
+        return data;
+    }
+
+    return null;
+};
+
+const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowConfirm, deleteRows, updateRow, fetchData, handleBlock, refetch }) => {
     const [hide, setHide] = useState(false);
     const [menuData, setMenuData] = useState(false)
     const redirectRef = useRef();
-    const getActionAfter = async (itemAction) => {
+    const getActionAfter = async (itemAction, response) => {
 
         /*if (itemAction.on_callback == 'hide') {
             setHide(true);
         }*/
         if (itemAction.on_callback == 'hide_row') {
             deleteRows([itemAction.attr.bx_grid_action_data, id]);
+            return;
         }
         if (itemAction.on_callback == 'redirect') {
             redirectRef.current.redirect(itemAction.redirect_url);
+            return;
+        }
+        if (itemAction.on_callback == 'refresh_row') {
+            const row = extractGridRowFromResponse(response);
+            const rowId = itemAction.attr?.bx_grid_action_data ?? id;
+            if (row && rowId != null) {
+                updateRow(rowId, row);
+            }
+            return;
+        }
+        if (itemAction.on_callback == 'refresh') {
+            setTimeStamp(Date.now());
+            return;
         }
 
         refetch();
@@ -178,15 +218,15 @@ const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowC
             setShowConfirm({
                 show: true,
                 cb: async () => {
-                    await fetchData(itemAction.name, '&ids[]=' + itemAction.attr.bx_grid_action_data);
-                    getActionAfter(itemAction);
+                    const response = await fetchData(itemAction.name, '&ids[]=' + itemAction.attr.bx_grid_action_data);
+                    getActionAfter(itemAction, response);
 
                 }
             });
         }
         else {
-            await fetchData(itemAction.name, '&ids[]=' + itemAction.attr.bx_grid_action_data);
-            getActionAfter(itemAction);
+            const response = await fetchData(itemAction.name, '&ids[]=' + itemAction.attr.bx_grid_action_data);
+            getActionAfter(itemAction, response);
         }
     }
 
@@ -226,11 +266,19 @@ const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowC
     const handleMenuManageSelect = async (oItem, event) => {
         if (oItem.display_type === "callback") {
             const handleCallback = async () => {
-                await fetcher('/api.php?r=' + oItem.data.request_url);
+                const response = await fetcher('/api.php?r=' + oItem.data.request_url);
                 if (oItem.data.on_callback === 'hide') {
                     setHide(true);
                 } else if (oItem.data.on_callback === 'hide_row') {
                     deleteRows([oItem.data.id]);
+                } else if (oItem.data.on_callback === 'refresh_row') {
+                    const row = extractGridRowFromResponse(response);
+                    const rowId = oItem.data.id ?? id;
+                    if (row && rowId != null) {
+                        updateRow(rowId, row);
+                    }
+                } else if (oItem.data.on_callback === 'refresh') {
+                    setTimeStamp(Date.now());
                 }
             };
 
@@ -305,7 +353,7 @@ const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowC
 
 });
 
-const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selected, setTimeStamp, setShowConfirm, deleteRows, refetch, fetchData, handleBlock }) => {
+const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selected, setTimeStamp, setShowConfirm, deleteRows, updateRow, refetch, fetchData, handleBlock }) => {
     switch (cell?.type) {
         case 'time':
             return <Time ts={cell.data} stylesName={'text-sm text-secondary-foreground '}></Time>
@@ -362,6 +410,7 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
                                 id={id}
                                 setShowConfirm={setShowConfirm}
                                 deleteRows={deleteRows}
+                                updateRow={updateRow}
                                 fetchData={fetchData}
                                 refetch={refetch}
                                 setTimeStamp={setTimeStamp}
@@ -588,6 +637,17 @@ export default function ElementGrid(props) {
         }
 
     }, [refetch]);
+
+    const updateRow = useCallback((rowId, rowData) => {
+        if (rowId == null || !rowData) return;
+
+        const next = { ...rowData, id: rowData.id ?? rowId };
+        const prev = refetchRef.current?.prevItems || [];
+        const items = prev.map((item) => (item.id == rowId ? next : item));
+
+        dispatch({ type: 'SET_ITEMS', items });
+        refetchRef.current.prevItems = items;
+    }, []);
 
     const handleDeleteSelected = () => {
         setShowConfirm({
@@ -966,6 +1026,7 @@ export default function ElementGrid(props) {
                                             selected={selected}
                                             setShowConfirm={setShowConfirm}
                                             deleteRows={deleteRows}
+                                            updateRow={updateRow}
                                             fetchData={fetchData}
                                             refetch={refetch}
                                             setTimeStamp={setTimeStamp}
