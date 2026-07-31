@@ -201,6 +201,7 @@ class BxBaseServiceLogin extends BxDol
         }
 
         if ($bApi) {
+            $oForm->initChecker();
             if ($oForm->isSubmittedAndValid()) {
                 $oAccount = BxDolAccount::getInstance(trim($oForm->getCleanValue('ID')));
                 bx_login($oAccount->id(), $oForm->getRememberMe());

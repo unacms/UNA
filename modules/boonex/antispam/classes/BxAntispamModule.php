@@ -216,7 +216,8 @@ class BxAntispamModule extends BxDolModule
     public function serviceCheckFormForToxicity(&$oForm) {
         $this->_bLastSubmittedFormWasToxic = false;
 
-        if (!$oForm->isValid() || !$oForm->isSubmitted()) return false;
+        if (!$oForm->isSubmitted() || !$oForm->isValid()) 
+            return false;
 
         $sSubmitName = false;
         $sFormText = '';
