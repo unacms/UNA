@@ -40,6 +40,15 @@ function resolveCreditsAmount(amount, rate) {
     return value
 }
 
+function resolveRequestUrl(requestUrl) {
+    if (!requestUrl) return null
+    const apiPhpIndex = requestUrl.indexOf('api.php')
+    if (apiPhpIndex !== -1) {
+        return '/' + requestUrl.slice(apiPhpIndex).replace(/^api\.php\/\?/, 'api.php?')
+    }
+    if (requestUrl.startsWith('/')) return requestUrl
+    return '/api.php?r=' + requestUrl
+}
 
 function CreditsIcon() {
     return (
@@ -58,14 +67,15 @@ export default function CreditsCheckout({ blockWrapperProps, data, onFormEmpty }
     const items = Array.isArray(data?.items) ? data.items : []
     const priceLabel = formatMoney(data?.amount?.value, data?.amount?.currency)
     const creditsLabel = formatCredits(resolveCreditsAmount(data?.amount, data?.rate))
+    const requestUrl = resolveRequestUrl(data?.request_url)
 
     const handleCheckout = async () => {
-        if (!data?.request_url || loading) return
+        if (!requestUrl || loading) return
 
         setLoading(true)
         setErrorMsg(null)
         try {
-            const response = await fetcher(data.request_url)
+            const response = await fetcher(requestUrl)
             const payload = response?.data
 
             if (payload?.msg) {
@@ -136,7 +146,7 @@ export default function CreditsCheckout({ blockWrapperProps, data, onFormEmpty }
                     <Button
                         variant="default"
                         title={t('Checkout')}
-                        disabled={loading || !data?.request_url}
+                        disabled={loading || !requestUrl}
                         onPress={handleCheckout}
                     />
                 </View>
