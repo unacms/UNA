@@ -419,7 +419,13 @@ const TabScene = React.memo(({
             unit={route.endpoint?.unit}
             renderItem={renderItem}
             ListFooterComponent={
-                (route?.endpoint?.request_url ? (route?.endpoint?.finished ? (route.data.length == 0 ? <NoContent endpoint={route?.endpoint} /> : <></>) : Preload) : <></>)
+                (route?.endpoint?.request_url ? (
+                    route?.endpoint?.finished && !isFetchingNextPage && !refreshing
+                        ? ((route.data || []).filter((item) => item.type != 'block').length == 0
+                            ? <NoContent endpoint={route?.endpoint} />
+                            : <></>)
+                        : (route?.endpoint?.finished ? <></> : Preload)
+                ) : <></>)
             }
             maxToRenderPerBatch={5}
             initialNumToRender={5}
@@ -475,7 +481,7 @@ function findConductorTabIndexOrZero(tabRoutes, url, useSectionAsMenu) {
     return index !== -1 ? index : 0;
 }
 
-export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword }) {
+export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSideBarBlocks, menu, layoutName, data, blocks, useSectionAsMenu, unitMode, skeleton, onChangeRoute, keyword, ts }) {
     const { t } = useTranslation();
     isHideDefaultHeader = isHideDefaultHeader || false;
     useSectionAsMenu = useSectionAsMenu || false;
@@ -579,14 +585,14 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         }
     }, [setIndex, router, onChangeRoute]);
 
-    // Sync when page URL / soft-refresh timestamp changes.
+    // Sync when page URL / soft-refresh timestamp changes (ts from profile soft-reload).
     useEffect(() => {
         setRoutes(initedTabs);
         const foundIndex = findConductorTabIndex(initedTabs, data?.url, useSectionAsMenu);
         if (foundIndex !== -1 && foundIndex !== indexRef.current) {
             setIndex(foundIndex);
         }
-    }, [keyword, data?.url, data?.timestamp]);
+    }, [keyword, data?.url, data?.timestamp, ts]);
 
     // Same-URL link presses still fire (navigation may no-op) — switch submenu by href.
     useEffect(() => {
@@ -620,14 +626,20 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         return activeRoute?.inited ? activeRoute : (prevRoute ?? activeRoute);
     }, [activeRoute, prevRoute]);
     // Query key follows the selected tab only after fetchAndUpdateData inits it — not prevRoute's endpoint.
+    // Full params (incl. status) so group activate/deactivate does not reuse an empty cache.
+    const endpointParamsKey = useMemo(
+        () => JSON.stringify(activeRoute?.inited ? (activeRoute?.endpoint?.params ?? null) : null),
+        [activeRoute?.inited, activeRoute?.endpoint?.params]
+    );
     const qKey = useMemo(
         () => [
             activeRoute?.inited ? activeRoute?.endpoint?.request_url : null,
             index,
             keyword,
-            JSON.stringify(activeRoute?.inited ? activeRoute?.endpoint?.params?.filters : undefined),
+            endpointParamsKey,
+            ts,
         ],
-        [activeRoute, index, keyword]
+        [activeRoute?.inited, activeRoute?.endpoint?.request_url, index, keyword, endpointParamsKey, ts]
     );
     const queryClient = useQueryClient();
 

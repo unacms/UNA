@@ -10,6 +10,7 @@ import { NeoButton } from 'app/design/controls/neo-button';
 import emitter from 'app/context/emitter';
 import { confirmDiscardUnsavedFormChanges } from 'app/lib/form-helpers';
 import { ModalKbAwareScroll } from 'app/ui/atoms/kb-avoiding-view';
+import { pushFormEnsureVisibleHandler, scrollContainerByDelta } from 'app/lib/form-ensure-visible';
 
 const isWeb = Platform.OS === 'web';
 const isIosWeb = isWeb && typeof navigator !== 'undefined' && /iP(hone|od|ad)/.test(navigator.userAgent);
@@ -70,6 +71,35 @@ export function Modal({
     const insets = useSafeAreaInsets();
     const fogRef = useRef(null);
     const scrollRef = useRef(null);
+    const scrollYRef = useRef(0);
+
+    const handleScroll = useCallback((event) => {
+        const y = event?.nativeEvent?.contentOffset?.y;
+        if (typeof y === 'number') scrollYRef.current = y;
+    }, []);
+
+    useEffect(() => {
+        if (!scrollable || !onVisible) return undefined;
+
+        return pushFormEnsureVisibleHandler(({ windowY }) => {
+            const scrollView = scrollRef.current;
+            if (!scrollView) return;
+
+            // Keep field near the top of the modal viewport (below header).
+            const modalTop =
+                typeof scrollView.getBoundingClientRect === 'function'
+                    ? scrollView.getBoundingClientRect().top
+                    : 0;
+            const target = modalTop + 24 + (title ? 8 : 0);
+            const delta = windowY - target;
+            scrollContainerByDelta(scrollView, delta, scrollYRef.current);
+            if (typeof scrollView.scrollTop === 'number') {
+                scrollYRef.current = scrollView.scrollTop;
+            } else {
+                scrollYRef.current = Math.max(0, scrollYRef.current + delta);
+            }
+        });
+    }, [scrollable, onVisible, title]);
 
     useEffect(() => {
         if (!isIosWeb || !window.visualViewport) return;
@@ -271,7 +301,9 @@ export function Modal({
         onClose={tryClose}
     />
         <Cnt
-            ref={scrollable && isWeb ? scrollRef : undefined}
+            ref={scrollable ? scrollRef : undefined}
+            onScroll={scrollable ? handleScroll : undefined}
+            scrollEventThrottle={scrollable ? 16 : undefined}
             style={!isDesktop && isWeb ? {} : styles}
             className={`${padding} flex-auto `}
         >
@@ -318,7 +350,14 @@ export function Modal({
                                     headerBorder={headerBorder}
                                     onClose={tryClose}
                                 />
-                                <Cnt style={styles} className={`${padding} flex-auto `} {...(scrollable ? { bottomOffset: modalBottomOffset } : {})}>
+                                <Cnt
+                                    ref={scrollable ? scrollRef : undefined}
+                                    onScroll={scrollable ? handleScroll : undefined}
+                                    scrollEventThrottle={scrollable ? 16 : undefined}
+                                    style={styles}
+                                    className={`${padding} flex-auto `}
+                                    {...(scrollable ? { bottomOffset: modalBottomOffset } : {})}
+                                >
                                     {children}
                                 </Cnt>
                             </View>

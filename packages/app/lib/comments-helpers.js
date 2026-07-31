@@ -22,6 +22,14 @@ import Snackbar from 'app/ui/atoms/snackbar'
 import emitter from 'app/context/emitter'
 import { appStatic } from 'app/lib/app-static';
 import { ProfileDisplayName } from 'app/customization/functions';
+import { Keyboard, Platform, TouchableWithoutFeedback } from 'react-native';
+
+/** EnrichedTextInput keeps first responder unless explicitly blurred (unlike plain TextInput). */
+function dismissCommentEditorKeyboard() {
+    if (Platform.OS === 'web') return;
+    emitter.emit('editor', { action: 'blur' });
+    Keyboard.dismiss();
+}
 
 export function CommentsBrowse({
     browse,
@@ -367,12 +375,14 @@ export function CommentsBrowse({
     }
 
     const renderListFooter = useCallback(() => (
-        <>
-            {(browseParams.object_id && hasNextPage && isFetchingNextPage) ? (
-                <View className=''><Loading /></View>
-            ) : (!refetchState.visibleItems.length && !refetchRef.current.isFirstLoad ? appStatic('components_comments_empty') : null)}
-            {marginBottom > 0 ? <View style={{ height: marginBottom }} /> : null}
-        </>
+        <TouchableWithoutFeedback onPress={dismissCommentEditorKeyboard}>
+            <View>
+                {(browseParams.object_id && hasNextPage && isFetchingNextPage) ? (
+                    <View className=''><Loading /></View>
+                ) : (!refetchState.visibleItems.length && !refetchRef.current.isFirstLoad ? appStatic('components_comments_empty') : null)}
+                {marginBottom > 0 ? <View style={{ height: marginBottom }} /> : null}
+            </View>
+        </TouchableWithoutFeedback>
     ), [
         browseParams.object_id,
         hasNextPage,
@@ -383,21 +393,27 @@ export function CommentsBrowse({
 
     const renderItem = useCallback(({ item, index }) => {
         if (item.id.toString().includes('block')) {
-            return item.data;
+            return (
+                <TouchableWithoutFeedback onPress={dismissCommentEditorKeyboard}>
+                    <View>{item.data}</View>
+                </TouchableWithoutFeedback>
+            );
         }
         return (
-            <View className="px-3 sm:px-4" key={index}>
-                <UnitComments
-                    selectedId={scrollToIndex}
-                    hideActions={hideActions}
-                    replyId={replyId}
-                    module={browseParams.module}
-                    {...item}
-                    view={viewMode}
-                    max_level={browseParams.max_level}
-                    isNewComment={false}
-                />
-            </View>
+            <TouchableWithoutFeedback onPress={dismissCommentEditorKeyboard}>
+                <View className="px-3 sm:px-4" key={index}>
+                    <UnitComments
+                        selectedId={scrollToIndex}
+                        hideActions={hideActions}
+                        replyId={replyId}
+                        module={browseParams.module}
+                        {...item}
+                        view={viewMode}
+                        max_level={browseParams.max_level}
+                        isNewComment={false}
+                    />
+                </View>
+            </TouchableWithoutFeedback>
         );
     }, [scrollToIndex, hideActions, replyId, browseParams.module, browseParams.max_level, viewMode]);
 
@@ -418,6 +434,9 @@ export function CommentsBrowse({
                 renderItem={renderItem}
                 onEndReached={handleEndReached}
                 ListFooterComponent={renderListFooter}
+                keyboardShouldPersistTaps="handled"
+                keyboardDismissMode="on-drag"
+                onScrollBeginDrag={dismissCommentEditorKeyboard}
             />
             </View>
             {/*!refetchState.visibleItems.length && appStatic('components_comments_empty')*/}

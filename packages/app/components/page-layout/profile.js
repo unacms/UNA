@@ -4,6 +4,7 @@ import { appSetting, getBlocksFromData, cloneObject, getPageData } from 'app/lib
 import { useLayoutData } from 'app/context/layout';
 import { useRouter, redirectTo, useFocusEffect } from 'app/lib/hooks/router'
 import { useCurrentUser } from 'app/context/user';
+import { subscribe } from 'app/ui/atoms/socket';
 const ConductorMemo = memo(Conductor, (prev, next) => prev.ts === next.ts);
 
 export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
@@ -30,6 +31,22 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
             })();
         }
     }, [layoutData?.data?.time]);
+
+    // Soft-reload profile/group page when UNA pushes profile_{id} / changed
+    // (e.g. after entity edit). Do not touch currentUser — payload is the entity.
+    useEffect(() => {
+        const profileId = pageData?.cover_block?.profile?.id;
+        const pageUrl = pageData?.url;
+        if (!profileId || !pageUrl) return;
+
+        return subscribe('profile_' + profileId, 'changed', async () => {
+            const sResponse = await getPageData(pageUrl);
+            if (sResponse?.data) {
+                console.log('profile_' + profileId, pageData.ts, sResponse.data.ts,sResponse.data);
+                setPageData(sResponse.data);
+            }
+        });
+    }, [pageData?.cover_block?.profile?.id, pageData?.url]);
 
     useEffect(() => {
         if (pageData?.ts !== data?.ts) setPageData(data);

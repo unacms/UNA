@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react'
+import { Platform } from 'react-native'
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
@@ -5,9 +7,49 @@ import { linkedText } from 'app/lib/text-helpers'
 import { appSetting, stripTags } from 'app/lib/util'
 import { Icon } from 'app/ui/atoms/icon'
 import { Button } from 'app/design/controls'
+import { queueFormEnsureVisible } from 'app/lib/form-ensure-visible'
+
+const isWeb = Platform.OS === 'web'
 
 export default function (props) {
     const caption = props.format === 'notitle' ? '' : props.caption
+    const wrapRef = useRef(null)
+
+    const errorText = Array.isArray(props.error) ? props.error[0] : props.error
+
+    useEffect(() => {
+        if (!errorText) return
+
+        const node = wrapRef.current
+        if (!node) return
+
+        const reportY = (y) => {
+            if (typeof y === 'number' && !Number.isNaN(y)) {
+                queueFormEnsureVisible(y)
+            }
+        }
+
+        // Defer until after layout paints the error bubble.
+        const id = requestAnimationFrame(() => {
+            // Web: prefer real DOM node — RN View ref often has no scrollIntoView,
+            // and modal RemoveScroll needs the modal ScrollView handler path.
+            if (isWeb && typeof document !== 'undefined' && props.name) {
+                const el = document.querySelector(
+                    `.form-control-${CSS.escape(String(props.name))}`
+                )
+                if (el?.getBoundingClientRect) {
+                    reportY(el.getBoundingClientRect().top)
+                    return
+                }
+            }
+
+            if (typeof node.measureInWindow === 'function') {
+                node.measureInWindow((_x, y) => reportY(y))
+            }
+        })
+
+        return () => cancelAnimationFrame(id)
+    }, [errorText, props.name])
 
     const sClassName =
         '  form-control form-control-' +
@@ -53,7 +95,7 @@ export default function (props) {
     )
 
     return (
-        <View className={sClassName}>
+        <View ref={wrapRef} collapsable={false} className={sClassName}>
             {props.name && props.last_changed == props.name && (
                 <View className="absolute right-0 top-0 mb-1">
                     <Button

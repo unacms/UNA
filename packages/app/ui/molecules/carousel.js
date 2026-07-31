@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, memo } from 'react';
-import { View, Pressable, Row, ScrollView } from 'app/design/view'
+import { View, Pressable, Row } from 'app/design/view'
 import Image from 'app/ui/atoms/image';
-import { Modal, Button } from "app/design/controls";
+import { Modal, Button, NeoButton } from "app/design/controls";
 import { Text } from 'app/design/typography';
 import { Image as ImageOr, Platform } from 'react-native';
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
@@ -116,14 +116,14 @@ const Gallery = React.memo(({ data, handleShowImage, windowWidthOr, containerWid
 
 function CarouselContent({ data }) {
     const [currentImageIndex, setCurrentImageIndex] = useState(false);
-    const [imageSize, setImageSize] = useState([0, 0]);
     const [imageSize2, setImageSize2] = useState([0, 0]);
-
+    const [viewerSize, setViewerSize] = useState({ width: 0, height: 0 });
     const [containerWidth, setContainerWidth] = useState(0);
 
-    const { width: windowWidthOr, height: windowHeightOr } = useWindowSize();
+    const { width: windowWidthOr } = useWindowSize();
 
     const handleShowImage = useCallback((img) => {
+        setImageSize2([0, 0]);
         setCurrentImageIndex(img.index);
     }, []);
 
@@ -132,88 +132,134 @@ function CarouselContent({ data }) {
         setContainerWidth((prev) => (prev !== nextWidth ? nextWidth : prev));
     }, []);
 
-    const previewBounds = useMemo(() => {
-        const widthRatio = windowWidthOr >= 1536 ? 0.62 : windowWidthOr >= 1280 ? 0.68 : windowWidthOr >= 1024 ? 0.76 : 0.92;
-        const heightRatio = Platform.OS === 'ios'
-            ? (windowHeightOr >= 900 ? 0.8 : 0.74)
-            : (windowHeightOr >= 900 ? 0.82 : 0.76);
-
-        const maxWidth = Math.max(Math.min(windowWidthOr * widthRatio, 1100), 0);
-        const maxHeight = Math.max(Math.min(windowHeightOr * heightRatio, windowHeightOr - 56), 0);
-
-        return { maxWidth, maxHeight };
-    }, [windowWidthOr, windowHeightOr]);
+    const handleViewerLayout = useCallback((event) => {
+        const { width, height } = event.nativeEvent.layout;
+        setViewerSize((prev) =>
+            prev.width === width && prev.height === height ? prev : { width, height }
+        );
+    }, []);
 
     useEffect(() => {
-        if (currentImageIndex !== false) {
-            ImageOr.getSize(
-                data[currentImageIndex].src,
-                (width, height) => {
-                    let imageAspectRatio = width / height;
-                    let ww = previewBounds.maxWidth;
-                    let wh = previewBounds.maxHeight;
+        if (currentImageIndex === false) return;
 
-                    if (!ww || !wh) return;
+        const item = data[currentImageIndex];
+        if (!item || item.type !== 'image') return;
 
-                    let newImageWidth, newImageHeight;
-                    //  let wh = windowWidthOr * wh1/ww;
-                    let windowAspectRatio = ww / wh;
+        const ww = viewerSize.width;
+        const wh = viewerSize.height;
+        if (!ww || !wh) return;
 
-                    if (imageAspectRatio > windowAspectRatio) {
-                        newImageWidth = ww;
-                        newImageHeight = ww / imageAspectRatio;
-                    } else {
-                        newImageHeight = wh;
-                        newImageWidth = wh * imageAspectRatio;
-                    }
-                    setImageSize2([newImageWidth, newImageHeight]);
-                }
-            );
-        }
-    }, [currentImageIndex, data, previewBounds.maxWidth, previewBounds.maxHeight]);
+        ImageOr.getSize(item.src, (width, height) => {
+            if (!width || !height) return;
+
+            const imageAspectRatio = width / height;
+            const viewerAspectRatio = ww / wh;
+
+            let newImageWidth;
+            let newImageHeight;
+            if (imageAspectRatio > viewerAspectRatio) {
+                newImageWidth = ww;
+                newImageHeight = ww / imageAspectRatio;
+            } else {
+                newImageHeight = wh;
+                newImageWidth = wh * imageAspectRatio;
+            }
+            setImageSize2([newImageWidth, newImageHeight]);
+        });
+    }, [currentImageIndex, data, viewerSize.width, viewerSize.height]);
 
     return <>
-        {currentImageIndex !== false && <Modal padding="" title="Viewer" onVisible={currentImageIndex !== false} onClose={() => { setCurrentImageIndex(false) }} transparent={true} >
-            <Row className=' w-full mx-auto items-center justify-center h-full'>
-                {
-                    (imageSize2[0] > 0 && data[currentImageIndex].type == 'image') && (
-                        <ScrollView
-                            style={{ width: '100%', height: previewBounds.maxHeight }}
-                            contentContainerStyle={{ minHeight: previewBounds.maxHeight, alignItems: 'center', justifyContent: 'center' }}
+        {currentImageIndex !== false && (
+            <Modal
+                padding=""
+                maxWidth="max-w-full"
+                onVisible={currentImageIndex !== false}
+                onClose={() => setCurrentImageIndex(false)}
+            >
+                <View
+                    className="relative w-full h-full flex-1 items-center justify-center overflow-hidden"
+                    onLayout={handleViewerLayout}
+                >
+                    <View className="absolute right-3 top-3 z-50">
+                        <NeoButton
+                            style="bordered"
+                            controlSize="regular"
+                            borderShape="circle"
+                            image="X"
+                            accessibilityLabel="Close"
+                            onPress={() => setCurrentImageIndex(false)}
+                        />
+                    </View>
+
+                    {imageSize2[0] > 0 && data[currentImageIndex].type === 'image' ? (
+                        <Pressable
+                            style={{ width: imageSize2[0], height: imageSize2[1], overflow: 'hidden' }}
+                            onPress={() => setCurrentImageIndex(false)}
                         >
-                            <Pressable style={{ width: imageSize2[0], height: imageSize2[1], maxWidth: '100%', alignSelf: 'center', overflow: 'hidden' }} onPress={() => setCurrentImageIndex(false)}>
-                                {currentImageIndex !== false && (
-                                       <ReactNativeZoomableView
-                                       maxZoom={30}
-                                       contentWidth={imageSize2[0]}
-                                       contentHeight={imageSize2[1]}
-                                     >
-                                    <Image width={imageSize2[0]} height={imageSize2[1]} sizes={LAYOUT_BREAKPOINTS.xl} src={data[currentImageIndex].src} alt='' nobg contentFit="contain" />
-                                    </ReactNativeZoomableView>
-                                )}
-                                <Row className='absolute w-full -mt-4 top-1/2 items-center justify-between w-full px-4'>
-                                    {
-                                        currentImageIndex > 0 ? <Button variant="default" rounded size="base" onPress={() => setCurrentImageIndex(currentImageIndex - 1)} startDecorator="ArrowLeft" /> : <View className='mr-1 w-10'></View>
-                                    }
-                                    {
-                                        (currentImageIndex != data.length - 1) ? <Button variant="default" rounded size="base" onPress={() => setCurrentImageIndex(currentImageIndex + 1)} startDecorator="ArrowRight" /> : <View className='mr-1 w-10'></View>
-                                    }
-                                </Row>
-                            </Pressable>
-                        </ScrollView>
-                    )
-                }
-                {
-                    data[currentImageIndex].type == 'video' && <Pressable onPress={() => setCurrentImageIndex(false)}><View className='aspect-video max-w-xl' style={{ width: windowWidthOr }}><Video autoplay="autoplay" muted={false} controls={true} src={data[currentImageIndex].src} /></View></Pressable>
-                }
+                            <ReactNativeZoomableView
+                                maxZoom={30}
+                                contentWidth={imageSize2[0]}
+                                contentHeight={imageSize2[1]}
+                            >
+                                <Image
+                                    width={imageSize2[0]}
+                                    height={imageSize2[1]}
+                                    sizes={LAYOUT_BREAKPOINTS.xl}
+                                    src={data[currentImageIndex].src}
+                                    alt=""
+                                    nobg
+                                    contentFit="contain"
+                                />
+                            </ReactNativeZoomableView>
+                        </Pressable>
+                    ) : null}
 
-            </Row>
+                    {data[currentImageIndex].type === 'video' ? (
+                        <Pressable onPress={() => setCurrentImageIndex(false)}>
+                            <View className="aspect-video max-w-xl w-full" style={{ width: Math.min(windowWidthOr, viewerSize.width || windowWidthOr) }}>
+                                <Video autoplay="autoplay" muted={false} controls={true} src={data[currentImageIndex].src} />
+                            </View>
+                        </Pressable>
+                    ) : null}
 
-        </Modal>}
-        <View className='w-full mx-auto overflow-hidden' onLayout={handleLayout}>
+                    {data[currentImageIndex].type === 'image' ? (
+                        <Row style={{ pointerEvents: 'box-none' }} className="absolute inset-x-0 top-1/2 -mt-4 items-center justify-between px-4">
+                            {currentImageIndex > 0 ? (
+                                <Button
+                                    variant="default"
+                                    rounded
+                                    size="base"
+                                    onPress={() => {
+                                        setImageSize2([0, 0]);
+                                        setCurrentImageIndex(currentImageIndex - 1);
+                                    }}
+                                    startDecorator="ArrowLeft"
+                                />
+                            ) : (
+                                <View className="w-10" />
+                            )}
+                            {currentImageIndex !== data.length - 1 ? (
+                                <Button
+                                    variant="default"
+                                    rounded
+                                    size="base"
+                                    onPress={() => {
+                                        setImageSize2([0, 0]);
+                                        setCurrentImageIndex(currentImageIndex + 1);
+                                    }}
+                                    startDecorator="ArrowRight"
+                                />
+                            ) : (
+                                <View className="w-10" />
+                            )}
+                        </Row>
+                    ) : null}
+                </View>
+            </Modal>
+        )}
+        <View className="w-full mx-auto overflow-hidden" onLayout={handleLayout}>
             <Gallery windowWidthOr={windowWidthOr} containerWidth={containerWidth} data={data} handleShowImage={handleShowImage} />
         </View>
-
     </>
 }
 

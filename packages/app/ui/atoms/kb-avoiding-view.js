@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Platform } from 'react-native'
 import { KeyboardAwareScrollView, KeyboardAvoidingView, KeyboardProvider, KeyboardStickyView } from "react-native-keyboard-controller";
@@ -63,16 +64,21 @@ export function ModalKeyboardProvider({ children }) {
     return <KeyboardProvider>{children}</KeyboardProvider>;
 }
 
-export function ModalKbAwareScroll({
-    children,
-    style,
-    className,
-    bottomOffset = 24,
-    keyboardShouldPersistTaps = "handled",
-    onScroll,
-}) {
+export const ModalKbAwareScroll = forwardRef(function ModalKbAwareScroll(
+    {
+        children,
+        style,
+        className,
+        bottomOffset = 24,
+        keyboardShouldPersistTaps = "handled",
+        onScroll,
+        ...rest
+    },
+    ref
+) {
     return (
         <KeyboardAwareScrollView
+            ref={ref}
             ScrollViewComponent={Animated.ScrollView}
             className={className}
             style={style}
@@ -81,27 +87,43 @@ export function ModalKbAwareScroll({
             contentContainerStyle={{ flexGrow: 1 }}
             bottomOffset={bottomOffset}
             enabled={true}
+            {...rest}
         >
             {children}
         </KeyboardAwareScrollView>
     );
-}
+});
 
-export function KbAvoidingViewScroll({ children, onScroll, paddingTop = 0 }) {
+export const KbAvoidingViewScroll = forwardRef(function KbAvoidingViewScroll(
+    {
+        children,
+        onScroll,
+        paddingTop = 0,
+        className,
+        style,
+        keyboardShouldPersistTaps = "always",
+        ...rest
+    },
+    ref
+) {
     const { top } = useSafeAreaInsets();
     const headerHeight = useHeaderHeight();
     const keyboardOffset = top + headerHeight + (Platform.OS === "ios" ? 58 : 44);
     return (
         <KeyboardAwareScrollView
+            ref={ref}
             ScrollViewComponent={Animated.ScrollView}
-            className="flex-1"
-            onScroll={onScroll}    
-            contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-start", paddingTop:paddingTop }}
+            className={className ?? "flex-1"}
+            style={style}
+            onScroll={onScroll}
+            keyboardShouldPersistTaps={keyboardShouldPersistTaps}
+            contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-start", paddingTop: paddingTop }}
             bottomOffset={keyboardOffset}
             extraKeyboardSpace={0}
             enabled={true}
+            {...rest}
         >
             {children}
         </KeyboardAwareScrollView>
     );
-}
+});

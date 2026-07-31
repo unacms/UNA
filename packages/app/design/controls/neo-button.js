@@ -318,6 +318,8 @@ export const NeoButton = (props) => {
         interactive = false,
         haptics,
         onPress,
+        onPressIn,
+        onPressOut,
         onLongPress,
 
         // Layout
@@ -541,8 +543,14 @@ export const NeoButton = (props) => {
         ...(useNativePressable ? {
             disabled: !isActive,
             hitSlop: resolvedHitSlop,
-            onPressIn: () => setIsPressed(true),
-            onPressOut: () => setIsPressed(false),
+            onPressIn: (event) => {
+                setIsPressed(true);
+                onPressIn?.(event);
+            },
+            onPressOut: (event) => {
+                setIsPressed(false);
+                onPressOut?.(event);
+            },
             onFocus: () => setIsFocused(true),
             onBlur: () => setIsFocused(false),
             ...hoverHandlers,

@@ -177,10 +177,17 @@ export function Conductor({
     const currentRoute = routes.find((item) => item.index === index)
 
     useEffect(() => {
-        const foundIndex = getFoundIndex()
-        if (foundIndex !== index) setIndex(foundIndex)
-        // storageClear('ul:data', currentRoute.storageKeyValue)
-        // storageClear('ul:state', currentRoute.storageKeyValue)
+        setRoutes(initedTabs)
+        const foundIndex = initedTabs.findIndex((item) => {
+            if (useSectionAsMenu) {
+                return data.url === item.key
+            }
+            return item.key.includes('?')
+                ? data.url === item.key
+                : cleanUrl === item.key
+        })
+        const nextIndex = foundIndex !== -1 ? foundIndex : 0
+        if (nextIndex !== index) setIndex(nextIndex)
     }, [ts])
 
     const prevRoute = useMemo(
@@ -520,11 +527,12 @@ const TabSceneMainContent = ({
     const pageRouteRef = useRef(pageRoute)
     const qKeyRef = useRef(null)
 
+    const endpointParamsKey = JSON.stringify(pageRoute?.endpoint?.params ?? null)
     const qKey = [
         pageRoute?.endpoint?.request_url,
         pageRoute.link,
         keyword,
-        JSON.stringify(pageRoute?.endpoint?.params?.filters),
+        endpointParamsKey,
         ts,
         timestamp
     ]
@@ -532,13 +540,15 @@ const TabSceneMainContent = ({
     useEffect(() => {
         pageRouteRef.current = pageRoute
         qKeyRef.current = qKey
-    }, [pageRoute, qKey])
+    }, [pageRoute, endpointParamsKey, ts, timestamp, keyword, pageRoute?.endpoint?.request_url, pageRoute.link])
 
     const {
         data: pagesData,
         fetchNextPage,
         hasNextPage,
+        isFetching,
         isFetchingNextPage,
+        isPending,
         refetch,
         isRefetching
     } = useInfiniteQuery({
@@ -615,7 +625,20 @@ const TabSceneMainContent = ({
 
     useEffect(() => {
         refetchRef.current.skipToast = true
-    }, [qKey])
+    }, [endpointParamsKey, ts, timestamp, keyword, pageRoute?.endpoint?.request_url, pageRoute.link])
+
+    // Soft-reload / endpoint params change (e.g. group status): wait for a fresh
+    // query result before showing NoContent — otherwise stale hasNextPage=false wins.
+    const [listReady, setListReady] = useState(!pageRoute?.endpoint?.request_url)
+    useEffect(() => {
+        refetchRef.current.skipToast = true
+        refetchRef.current.isFirstLoad = true
+        if (pageRoute?.endpoint?.request_url) {
+            setListReady(false)
+        } else {
+            setListReady(true)
+        }
+    }, [ts, endpointParamsKey, pageRoute?.endpoint?.request_url])
 
 
     const handleEndReached = useCallback(
@@ -639,6 +662,7 @@ const TabSceneMainContent = ({
             refetchRef.current.prevItems = items
             refetchRef.current.isFirstLoad = false
             refetchRef.current.skipToast = false
+            setListReady(true)
             return
         }
 
@@ -798,7 +822,7 @@ const TabSceneMainContent = ({
 
                 />
                 {(pageRoute?.endpoint?.request_url && hasNextPage) && PreloadShort}
-                {(pageRoute?.endpoint?.request_url && hasNextPage === false && dataItems.filter((item) => item.type != 'block').length == 0) && <NoContent endpoint={pageRoute?.endpoint} />}
+                {(pageRoute?.endpoint?.request_url && listReady && hasNextPage === false && !isPending && !isFetching && dataItems.filter((item) => item.type != 'block').length == 0) && <NoContent endpoint={pageRoute?.endpoint} />}
                 <Snackbar
                     visible={refetchState.hasNewData}
                     onPress={() => {

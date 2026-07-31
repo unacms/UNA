@@ -34,6 +34,8 @@ function PlainText(props) {
     const isAutoHeight = true;
 
     const minHeightValue = isCommentsForm ? 24 : 100;
+    const maxHeightValue = 200;
+    const clampedHeight = Math.min(Math.max(height ?? minHeightValue, minHeightValue), maxHeightValue);
 
     let input = (
         <InputMulti
@@ -47,10 +49,14 @@ function PlainText(props) {
             aria-label={accessibility}
             onContentSizeChange={e => {
                 if (isAutoHeight) {
-                    setHeight(e.nativeEvent.contentSize.height);
+                    const next = Math.min(
+                        Math.max(e.nativeEvent.contentSize.height, minHeightValue),
+                        maxHeightValue
+                    );
+                    setHeight(prev => (prev === next ? prev : next));
                 }
             }}
-            style={isAutoHeight ? { height:Math.max(height,minHeightValue), minHeight: minHeightValue, maxHeight:200 } : {}}
+            style={isAutoHeight ? { height: clampedHeight, minHeight: minHeightValue, maxHeight: maxHeightValue } : {}}
             /*defaultValue={props.value || props.default_value || ''}*/
         />
     );

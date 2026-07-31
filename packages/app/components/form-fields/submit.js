@@ -1,4 +1,5 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
+import { Keyboard, Platform } from 'react-native';
 import Field, { FormError } from './_field';
 import { useController, useFormContext } from 'react-hook-form';
 import { NeoButton, Hidden } from 'app/design/controls';
@@ -7,6 +8,8 @@ import { appSetting, cn } from 'app/lib/util';
 import emitter from 'app/context/emitter';
 import { useFormInstanceId } from 'app/context/form-instance';
 import { useFormUploading } from 'app/lib/form-helpers';
+
+const isNative = Platform.OS !== 'web';
 
 const SIZE_TO_CONTROL = {
     xs: 'mini',
@@ -52,12 +55,21 @@ export default function FormFieldSubmit(props) {
     const [isSumbitting, setIsSumbitting] = useState(false);
     const isUploading = useFormUploading(form_name);
     const { field } = useController({ name, rules: {}, defaultValue: value });
+    // Guards against onPressIn + onPress both firing on the same gesture.
+    const pressLockRef = useRef(false);
 
     const formProps = appSetting('forms', form_name) || {};
 
-    const handlePress = useCallback(async () => {
-        if (formState.isSubmitting || disabled) return;
+    const handlePress = useCallback(() => {
+        if (formState.isSubmitting || disabled || pressLockRef.current) return;
+        pressLockRef.current = true;
+        if (isNative) Keyboard.dismiss();
         handleSubmit();
+        // Unlock after the gesture settles so a failed validation can be retried,
+        // but not so fast that the matching onPress double-fires.
+        setTimeout(() => {
+            pressLockRef.current = false;
+        }, 400);
     }, [disabled, handleSubmit, formState.isSubmitting]);
 
     const handleReset = useCallback(() => {
@@ -133,6 +145,8 @@ export default function FormFieldSubmit(props) {
                         tooltip={tooltip}
                         classNames={responsiveButtonClassNames}
                         onPress={handlePress}
+                        // Native: fire on press-in so keyboard layout jump cannot cancel onPress.
+                        {...(isNative ? { onPressIn: handlePress } : {})}
                         disabled={isBusy || disabled}
                     />
                 </View>
