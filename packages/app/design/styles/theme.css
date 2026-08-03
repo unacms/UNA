@@ -8,7 +8,10 @@
  * override radii at runtime — e.g. for the iOS-style superellipse corners).
  */
  @theme inline {
-    /* Web: --font-* from next/font on <html>. V4 max-w-* uses --container-*; keep NEO list query sizes under list-* so max-w-sm/md/etc. stay unchanged. */
+    /* Web: next/font sets --font-*-family on <html>. Native: Expo overrides with System. */
+    --font-main: var(--font-main), ui-sans-serif, system-ui, sans-serif;
+    --font-title: var(--font-title), ui-serif, Georgia, serif;
+    /* V4 max-w-* uses --container-*; keep NEO list query sizes under list-* so max-w-sm/md/etc. stay unchanged. */
     --breakpoint-3xl: 120rem;
     --container-list-xs: 32rem;
     --container-list-sm: 40rem;
