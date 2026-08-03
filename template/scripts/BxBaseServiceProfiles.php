@@ -961,7 +961,7 @@ class BxBaseServiceProfiles extends BxDol
  
         if($this->_bIsApi) {
             $aDataApi = [];
-            if($bApiGetData) {
+            if($bApiGetData && $aData && $aData['queries']) {
                 $aItems = BxDolDb::getInstance()->getAll('(' . implode(') UNION (', $aData['queries']) . ') ORDER BY `added` DESC ' . $aData['limit']);
 
                 $oProfileQuery = BxDolProfileQuery::getInstance();
