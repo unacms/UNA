@@ -68,7 +68,7 @@ export default function Unit(props) {
                                     )}
                                 </Skeleton>
                             </View>
-                            <View className="flex-auto px-2 py-3 gap-y-2 h-32 ">
+                            <View className="flex-auto px-2 py-3 gap-y-2 h-34 ">
                                 <Row className="justify-between">
                                     <View className=" gap-y-3 flex-auto">
                                         <Skeleton className="h-6 w-1/4" visible={isSkeleton}>
@@ -82,10 +82,10 @@ export default function Unit(props) {
                                                         : "Free"}
                                             </Text>
                                         </Skeleton>
-                                        <Skeleton className="h-6 w-3/4 mt-2" visible={isSkeleton}>
+                                        <Skeleton className="h-6 w-full mt-2" visible={isSkeleton}>
                                             <View className="overflow-hidden">
                                                 <Text
-                                                    numberOfLines={2}
+                                                    numberOfLines={1}
                                                     className="text-foreground tracking-tight  web:hover:text-primary leading-5 text-base font-bold"
                                                 >
                                                     {data.title}
@@ -93,22 +93,12 @@ export default function Unit(props) {
                                             </View>
                                         </Skeleton>
                                     </View>
-                                    {data.image && (
-                                        <View className="h-14 w-14 aspect-square overflow-hidden border border-border/60  rounded-lg">
-                                            <Image
-                                                {...data.image}
-                                                alt={data.title}
-                                                view="cover"
-                                                nobg={true}
-                                                sizes='auto'
-                                            />
-                                        </View>
-                                    )}
+                                    
                                 </Row>
                                 {sRate}
-                                <Skeleton className="h-6 w-full" visible={isSkeleton}>
+                                <Skeleton className="h-12 w-full" visible={isSkeleton}>
                                     <Text
-                                        numberOfLines={1}
+                                        numberOfLines={2}
                                         className="text-muted-foreground  mb-auto text-sm"
                                     >
                                         {data.summary_plain}
@@ -118,9 +108,24 @@ export default function Unit(props) {
                         </View>
                     </LinkOrModal>
                     <View className="p-2">
+                        <Row>
                         <Skeleton preset="author" visible={isSkeleton}>
                             {sMeta}
                         </Skeleton>
+                        {data.image && (
+                                        <View className="h-8 w-8 aspect-square overflow-hidden  rounded-lg">
+                                            <Image
+                                                {...data.image}
+                                                alt={data.title}
+                                                view="cover"
+                                                nobg={true}
+                                                sizes='auto'
+                                            />
+                                        </View>
+                                    )}
+                        
+                        
+                        </Row>
                     </View>
                 </View>
             

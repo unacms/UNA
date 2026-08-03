@@ -450,7 +450,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                         <View
                             onLayout={handleLayout}
                             style={isFormFixed && listWidth ? { width: listWidth + 5 } : undefined}
-                            className="w-full max-lg:web:fixed max-lg:web:bottom-0 max-lg:z-50 lg:static "
+                            className="w-full max-lg:web:fixed max-lg:web:bottom-0 max-lg:z-50 lg:static min-h-4"
                         >
                                 <CommentsForm
                                     objectId={commentsObjectId}

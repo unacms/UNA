@@ -136,6 +136,13 @@ export default function Badge({ data, variant = "default", size = 'sm', rounded 
             textColorClass = badgeTheme['u-badge-' + variant + '-text'] || badgeTheme['u-badge-text-' + variant] || ''
         }
 
+        const baseClasses = `items-center flex-row web:inline-flex`
+        const containerSize = size && badgeSizes[size]?.container || ''
+        const roundedSize = size && badgeSizes[size]?.rounded || 'rounded-md '
+        const pad = size && ((hasText || hasBoth) ? badgeSizes[size]?.wide_padding : badgeSizes[size]?.padding) || ''
+        const containerClasses = `${baseClasses} ${containerSize} ${pad}`.trim()
+        const defaultPadNoSize = !size ? 'px-1' : ''
+
         // UNA icon-only badges: show the icon/image alone, no pill background.
         if (isIconOnly && (hasIcon || hasImage)) {
             const iconOnlyContent = hasIcon ? (
@@ -156,19 +163,16 @@ export default function Badge({ data, variant = "default", size = 'sm', rounded 
                 )
             }
             return (
-                <View className={`items-center justify-center ${className}`}>
-                    {iconOnlyContent}
+                <View className={`${containerClasses} ${defaultPadNoSize} ${rounded ? (typeof rounded === 'string' ? rounded : 'rounded-full') : roundedSize} ${className}`}>
+                    <View className={`items-center justify-center ${className}`}>
+                        {iconOnlyContent}
+                    </View>
                 </View>
             )
         }
 
         // Build base classes; default padding/rounding only if size not provided
-        const baseClasses = `items-center flex-row web:inline-flex`
-        const containerSize = size && badgeSizes[size]?.container || ''
-        const roundedSize = size && badgeSizes[size]?.rounded || 'rounded-md '
-        const pad = size && ((hasText || hasBoth) ? badgeSizes[size]?.wide_padding : badgeSizes[size]?.padding) || ''
-        const containerClasses = `${baseClasses} ${containerSize} ${pad}`.trim()
-        const defaultPadNoSize = !size ? 'px-1' : ''
+        
 
         return (
             <View className={`${containerClasses} ${backgroundClass} ${defaultPadNoSize} ${rounded ? (typeof rounded === 'string' ? rounded : 'rounded-full') : roundedSize} ${className}`}>
