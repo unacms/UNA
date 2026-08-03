@@ -87,7 +87,7 @@ export default function FormMessenger(props) {
                 <View className="flex-auto ">
                     <View className=" items-stretch ">
                         <View
-                            className={`p-2.5 min-h-11 flex-auto items-center ${shouldGrowFromBottom ? 'justify-center' : 'justify-start'} ${hasContent ? 'mb-10' : 'ms-10'}`}
+                            className={`p-2.5 min-h-12 flex-auto items-center ${shouldGrowFromBottom ? 'justify-center' : 'justify-center'} ${hasContent ? 'mb-10' : 'ms-10'}`}
                             style={{
                                 ...(isWeb && { transition: 'height 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), padding-bottom 0.1s cubic-bezier(0.25, 0.1, 0.25, 1)' })
                             }}
@@ -113,7 +113,7 @@ export default function FormMessenger(props) {
                             )}
                         </View>
                         {currentUser ? (
-                            <View className="absolute flex bottom-1.5 left-1.5 items-center justify-center">
+                            <View className="absolute flex  left-2 bottom-2 items-center justify-center">
                                 <Profile
                                     {...currentUser}
                                     url_avatar={currentUser.avatar}
@@ -122,7 +122,7 @@ export default function FormMessenger(props) {
                                 />
                             </View>
                         ) : null}
-                        <View className="flex-row absolute bottom-1.5 right-1.5 ">
+                        <View className="flex-row absolute bottom-2 right-2 ">
                             <Row className={'items-center justify-center gap-2'}>
                                 <FileButton style="borderless" field_name='files' size="sm" icon="Image" source='library' />
                                 {!isWeb ? (
@@ -158,7 +158,7 @@ export default function FormMessenger(props) {
                 </View>
             </Row>
             <ScrollView horizontal={true}>
-                <Row className="flex-wrap mb-1 mx-1">
+                <Row className="flex-wrap  mx-1">
                     {getFormFieldByData(
                         props.data.inputs['files'],
                         props.handleSubmit,

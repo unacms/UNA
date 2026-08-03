@@ -581,23 +581,21 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
         handleSearch('')
     }
 
-    const srch = <Input  size="small" name="search" placeholder={t('Search') + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
+    const srch = <Input className="w-full min-w-0" size="small" rounded="full" name="search" placeholder={t('Search') + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
     const ContextSelector = getComponent('molecule', 'context_selector');
     const header = useMemo(() => (
         <Row className={`${appSetting('layout', 'page_content_width_default')} ${appSetting('layout', 'header', 'content')}`}>
-            <View className='flex-1 hidden lg:flex justify-center items-center'>
-                <View className=' w-full h-12 items-start justify-center'>
+            <View className='hidden lg:flex flex-1 min-w-0 w-full pe-2'>
                 {srch}
-                </View>
             </View>
-            {!showSearch && <View className='flex-1'><Row className={appSetting('layout', 'header', 'content_left')+' lg:hidden '}>
+            {!showSearch && <View className='flex-1 min-w-0 lg:hidden'><Row className={appSetting('layout', 'header', 'content_left')}>
                 {appSetting('messenger', 'back_button') && getBackButtonWeb()}
-                {appSetting('context_selector', 'show_always') ? <><ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /></>:  <Text className={`lg:hidden font-bold truncate flex-1  leading-12 lg:px-2 text-card-foreground text-2xl tracking-tight font-main`}>{t('Messenger')}</Text>}
+                {appSetting('context_selector', 'show_always') ? <><ContextSelector url={pageData?.url} uri={pageData?.uri} data={pageData?.context} /></>:  <Text className={`font-bold truncate flex-1 leading-12 lg:px-2 text-card-foreground text-2xl tracking-tight font-main`}>{t('Messenger')}</Text>}
             </Row></View>}
-            {showSearch && <Row className={appSetting('layout', 'header', 'content_left')+' lg:hidden'}>
+            {showSearch && <View className={`${appSetting('layout', 'header', 'content_left')} flex-1 min-w-0 lg:hidden`}>
                 {srch}
-            </Row>}
-            <Row className='my-auto'>
+            </View>}
+            <Row className='my-auto shrink-0'>
                 <View className='lg:hidden mr-1 lg:mr-0 '>
                     <Button size="base" startDecorator="Search" variant="text" rounded onPress={() => handleSearch2()} />
                 </View>
@@ -677,13 +675,13 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
     const header = useMemo(() => (
 
             <Row className={`${appSetting('layout', 'page_content_width_default')} ${appSetting('layout', 'header', 'content')}`}>
-                <Row className={appSetting('layout', 'header', 'content_left')+' items-center'}>
+                <Row className="">
                     {isSmallScreen && <BackButton buttonProps={{ variant: "text", startDecorator: 'ArrowLeft', rounded: 'rounded' }} callback={showConvo} />}
                     <View className="overflow-hidden flex-1">
-                    <Text numberOfLines={1} className="font-bold text-card-foreground text-2xl tracking-tight overflow-hidden text-ellipsis">{title}</Text>
+                    <Text numberOfLines={1} className="font-bold text-card-foreground text-lg sm:text-xl tracking-tight overflow-hidden text-ellipsis">{title}</Text>
                     </View>
                 </Row>
-                <Row className='items-center gap-x-2 pe-4'>
+                <Row className='items-center gap-x-2'>
                     <View>
                         <DropdownMenu onSelect={(oItem) => { handleManage(oItem) }} items={menuItems}>
                             <Button
