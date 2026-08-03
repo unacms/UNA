@@ -306,7 +306,7 @@ export default function ({ name, value = '', type, onChange, children }) {
    
     return (
         <>
-            <Modal onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
+            <Modal onVisible={!!showModal} title={'Select date'} onClose={() => { setShowModal(false) }} transparent={false}>
                 <View className='   w-full mx-auto'>
                     <View className='  w-full '>
                         <CalendarHeader value={cValue} addMonth={addMonth} setDatePart={setDatePart} />

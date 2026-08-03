@@ -30,6 +30,7 @@ import Embed from './embed';
 import Polls from './polls';
 import StripeConnect from './stripe_connect';
 import List from './list';
+import Price from './price';
 
 export const componentsMapDefault = {
     input_set: InputSet,
@@ -54,7 +55,7 @@ export const componentsMapDefault = {
     markdown_translatable: MarkdownTranslatable,
     phone: TextField,
     value: TextField,
-    price: TextField,
+    price: Price,
     textarea: Editor,
     textarea_markdown: EditorMarkdown,
     markdown: EditorMarkdown,
