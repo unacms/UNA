@@ -120,7 +120,11 @@ function CarouselContent({ data }) {
     const [viewerSize, setViewerSize] = useState({ width: 0, height: 0 });
     const [containerWidth, setContainerWidth] = useState(0);
 
-    const { width: windowWidthOr } = useWindowSize();
+    const { width: windowWidthOr, height: windowHeightOr } = useWindowSize();
+    const isWeb = Platform.OS === 'web';
+    // Prefer measured modal content size; fall back to window (needed on desktop web where Modal height is auto).
+    const lightboxWidth = (viewerSize.width > 0 ? viewerSize.width : windowWidthOr) || 0;
+    const lightboxHeight = (viewerSize.height > 0 ? viewerSize.height : windowHeightOr) || 0;
 
     const handleShowImage = useCallback((img) => {
         setImageSize2([0, 0]);
@@ -145,8 +149,8 @@ function CarouselContent({ data }) {
         const item = data[currentImageIndex];
         if (!item || item.type !== 'image') return;
 
-        const ww = viewerSize.width;
-        const wh = viewerSize.height;
+        const ww = lightboxWidth;
+        const wh = lightboxHeight;
         if (!ww || !wh) return;
 
         ImageOr.getSize(item.src, (width, height) => {
@@ -166,18 +170,24 @@ function CarouselContent({ data }) {
             }
             setImageSize2([newImageWidth, newImageHeight]);
         });
-    }, [currentImageIndex, data, viewerSize.width, viewerSize.height]);
+    }, [currentImageIndex, data, lightboxWidth, lightboxHeight]);
+
+    const viewerStyle = isWeb && windowHeightOr > 0
+        ? { height: windowHeightOr, minHeight: windowHeightOr, width: '100%' }
+        : { flex: 1, width: '100%' };
 
     return <>
         {currentImageIndex !== false && (
             <Modal
                 padding=""
                 maxWidth="max-w-full"
+                skipUnsavedGuard
                 onVisible={currentImageIndex !== false}
                 onClose={() => setCurrentImageIndex(false)}
             >
                 <View
                     className="relative w-full h-full flex-1 items-center justify-center overflow-hidden"
+                    style={viewerStyle}
                     onLayout={handleViewerLayout}
                 >
                     <View className="absolute right-3 top-3 z-50">
@@ -193,13 +203,23 @@ function CarouselContent({ data }) {
 
                     {imageSize2[0] > 0 && data[currentImageIndex].type === 'image' ? (
                         <Pressable
-                            style={{ width: imageSize2[0], height: imageSize2[1], overflow: 'hidden' }}
+                            style={{
+                                width: lightboxWidth || '100%',
+                                height: lightboxHeight || '100%',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                overflow: 'hidden',
+                            }}
                             onPress={() => setCurrentImageIndex(false)}
                         >
                             <ReactNativeZoomableView
                                 maxZoom={30}
                                 contentWidth={imageSize2[0]}
                                 contentHeight={imageSize2[1]}
+                                style={{
+                                    width: lightboxWidth || undefined,
+                                    height: lightboxHeight || undefined,
+                                }}
                             >
                                 <Image
                                     width={imageSize2[0]}
@@ -215,10 +235,20 @@ function CarouselContent({ data }) {
                     ) : null}
 
                     {data[currentImageIndex].type === 'video' ? (
-                        <Pressable onPress={() => setCurrentImageIndex(false)}>
-                            <View className="aspect-video max-w-xl w-full" style={{ width: Math.min(windowWidthOr, viewerSize.width || windowWidthOr) }}>
-                                <Video autoplay="autoplay" muted={false} controls={true} src={data[currentImageIndex].src} />
-                            </View>
+                        <Pressable
+                            style={{
+                                width: lightboxWidth || '100%',
+                                height: lightboxHeight || '100%',
+                            }}
+                            onPress={() => setCurrentImageIndex(false)}
+                        >
+                            <Video
+                                fill
+                                autoplay="autoplay"
+                                muted={false}
+                                controls={true}
+                                src={data[currentImageIndex].src}
+                            />
                         </Pressable>
                     ) : null}
 
