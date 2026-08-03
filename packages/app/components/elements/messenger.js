@@ -1,8 +1,8 @@
 
-import { memo, useState, useEffect, useCallback, useMemo } from 'react';
+import { memo, useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { parseUrl } from 'app/lib/util'
 import Messenger from 'app/components/elements/messenger/parts/common'
-import { CreateConvoButton } from 'app/components/elements/messenger/parts/new-convo';
+import { CreateConvoButton } from 'app/components/elements/messenger/parts/new-convo'
 import { fetcher } from 'app/lib/fetcher';
 import { Platform } from 'react-native'
 import { useLayoutSettings } from 'app/context/layout-settings';
@@ -31,30 +31,36 @@ export default function MessengerEl(props) {
     const [menu, setMenu] = useState({ data: menuDefaultList, index: menuDefaultList.findIndex(item => item.name == defaultMenuName) });
     const [convos, setConvos] = useState(false);
     const [initedConvoId, setInitedConvoId] = useState(defaultConvoId);
+    const menuRef = useRef(menu);
+    menuRef.current = menu;
+    const fetchRequestId = useRef(0);
 
     const windowWHeight = useWindowHeight();
-    const fetchConvos = useCallback(async (term) => {
-        if (menu) {
-            const menuItem = menu?.data[menu?.index].name;
-            if (menuItem) {
-                if (term) {
-                    let request_url = '/api.php?r=bx_messenger/search_lots/Services&params=' + JSON.stringify({ term: term });
-                    const sResponse = await fetcher(request_url);
-                    setConvos({ data: sResponse.data.lots ? sResponse.data.lots : [] });
-                }
-                else {
-                    let request_url = '/api.php?r=bx_messenger/get_convos_list/Services&params[]=' + JSON.stringify({ group: menuItem, count: 0 });
-                    const sResponse = await fetcher(request_url);
-                    setConvos({ data: sResponse.data });
-                }
+    const fetchConvos = useCallback(async (term = '') => {
+        const menuItem = menuRef.current?.data?.[menuRef.current?.index]?.name;
+        if (!menuItem) return;
 
-            }
+        const requestId = ++fetchRequestId.current;
+        const request_url = term
+            ? '/api.php?r=bx_messenger/search_lots/Services&params=' + JSON.stringify({ term })
+            : '/api.php?r=bx_messenger/get_convos_list/Services&params[]=' + JSON.stringify({ group: menuItem, count: 0 });
+
+        try {
+            const sResponse = await fetcher(request_url);
+            if (requestId !== fetchRequestId.current) return;
+            setConvos({
+                data: term
+                    ? (sResponse.data?.lots ? sResponse.data.lots : [])
+                    : sResponse.data,
+            });
+        } catch {
+            if (requestId !== fetchRequestId.current) return;
         }
     }, []);
 
     useEffect(() => {
         fetchConvos();
-    }, [menu.index]);
+    }, [menu.index, fetchConvos]);
 
     const onSave = useCallback((data) => {
         setConvos(prevConvos => ({

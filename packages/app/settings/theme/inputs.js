@@ -35,9 +35,9 @@ export const settingsInputs = {
         },
         // Shared control heights — text inputs, selects, and matching surfaces.
         size:{
-            small: 'px-3 leading-4 min-h-9',
-            regular: 'px-3.5 leading-5 min-h-12',
-            large: 'px-4 leading-6 min-h-14',
+            small: 'px-3 py-1.5 leading-4 min-h-9',
+            regular: 'px-3.5 py-2 leading-5 min-h-12',
+            large: 'px-4 py-2 leading-6 min-h-14',
         },
         // Height-only tokens for chip wells / wrappers that bring their own padding.
         surface_size:{
@@ -46,7 +46,7 @@ export const settingsInputs = {
             large: 'min-h-12',
         },
         base: 
-        'text-card-foreground placeholder:text-muted-foreground py-2 bg-input shadow-input-outline dark:shadow-input-outline-deep flex-auto text-base placeholder-muted-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-card web:focus-visible:border-ring web:overflow-hidden',
+        'text-card-foreground placeholder:text-muted-foreground  bg-input shadow-input-outline dark:shadow-input-outline-deep text-base placeholder-muted-foreground web:duration-200 web:file:text-foreground web:selection:bg-primary selection:text-primary-foreground web:focus-visible:bg-card web:focus-visible:border-ring web:overflow-hidden',
         // Height/padding come from `size` (same as Input) so select stays in sync.
         select: ' pr-10 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep web:focus:bg-card flex-auto text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
 
