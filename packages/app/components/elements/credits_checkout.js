@@ -5,6 +5,7 @@ import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
 import { BlockWrapper } from 'app/components/block-wrapper'
+import { BlockByDataInt as BlockByData } from 'app/components/block'
 import { fetcher } from 'app/lib/fetcher'
 import Redirect from 'app/ui/atoms/redirect'
 import { useTranslation } from 'react-i18next'
@@ -50,6 +51,14 @@ function resolveRequestUrl(requestUrl) {
     return '/api.php?r=' + requestUrl
 }
 
+/** UNA content blocks (msg/form/redirect) returned as data array. */
+function getContentBlocks(data) {
+    if (Array.isArray(data) && data.length > 0 && data[0]?.type) {
+        return data
+    }
+    return null
+}
+
 function CreditsIcon() {
     return (
         <View className="w-5 h-5 rounded-full border border-muted-foreground/50 items-center justify-center">
@@ -63,11 +72,33 @@ export default function CreditsCheckout({ blockWrapperProps, data, onFormEmpty }
     const redirectRef = useRef()
     const [loading, setLoading] = useState(false)
     const [errorMsg, setErrorMsg] = useState(null)
+    const [resultContent, setResultContent] = useState(null)
 
     const items = Array.isArray(data?.items) ? data.items : []
     const priceLabel = formatMoney(data?.amount?.value, data?.amount?.currency)
     const creditsLabel = formatCredits(resolveCreditsAmount(data?.amount, data?.rate))
     const requestUrl = resolveRequestUrl(data?.request_url)
+
+    const applyPayload = (payload) => {
+        const blocks = getContentBlocks(payload)
+        if (blocks) {
+            setResultContent(blocks)
+            return true
+        }
+
+        if (payload?.msg) {
+            setErrorMsg(payload.msg)
+            return true
+        }
+
+        if (payload?.redirect) {
+            onFormEmpty?.()
+            redirectRef.current?.redirect(payload.redirect)
+            return true
+        }
+
+        return false
+    }
 
     const handleCheckout = async () => {
         if (!requestUrl || loading) return
@@ -78,18 +109,41 @@ export default function CreditsCheckout({ blockWrapperProps, data, onFormEmpty }
             const response = await fetcher(requestUrl)
             const payload = response?.data
 
-            if (payload?.msg) {
-                setErrorMsg(payload.msg)
-                return
-            }
+            if (applyPayload(payload)) return
 
-            if (payload?.redirect) {
+            // Success with follow-up API call (e.g. bx_payment/finalize_checkout).
+            if (payload?.request_url) {
+                const finalizeUrl = resolveRequestUrl(payload.request_url)
+                if (!finalizeUrl) return
+
+                const finalizeResponse = await fetcher(finalizeUrl)
+                if (applyPayload(finalizeResponse?.data)) return
+
                 onFormEmpty?.()
-                redirectRef.current?.redirect(payload.redirect)
             }
         } finally {
             setLoading(false)
         }
+    }
+
+    if (resultContent) {
+        return (
+            <BlockWrapper {...blockWrapperProps}>
+                <View className="gap-4 px-1">
+                    <BlockByData
+                        onFormEmpty={onFormEmpty}
+                        block={{ content: resultContent, designbox_id: 0 }}
+                    />
+                    <View className="items-center">
+                        <Button
+                            variant="default"
+                            title={t('OK')}
+                            onPress={() => onFormEmpty?.()}
+                        />
+                    </View>
+                </View>
+            </BlockWrapper>
+        )
     }
 
     return (

@@ -154,30 +154,51 @@ const dedupeGridRowActions = (actions) => {
     });
 };
 
-/** Pull a single grid row from a UNA action API response. */
-const extractGridRowFromResponse = (response) => {
+/** Pull grid row(s) from a UNA action API response. Always returns an array. */
+const extractGridRowsFromResponse = (response) => {
     const data = response?.data;
-    if (!data) return null;
+    if (!data) return [];
 
-    if (Array.isArray(data?.data) && data.data.length > 0) {
-        return data.data[0];
+    // Shape: { rows: [...] }
+    if (Array.isArray(data.rows) && data.rows.length > 0) {
+        return data.rows;
     }
-    if (data?.data && typeof data.data === 'object' && !Array.isArray(data.data)) {
+    // Shape: { data: [...] } or { data: {...} }
+    if (Array.isArray(data?.data) && data.data.length > 0) {
         return data.data;
     }
+    if (data?.data && typeof data.data === 'object' && !Array.isArray(data.data)) {
+        return [data.data];
+    }
+    // Shape: data is a direct array of rows
     if (Array.isArray(data) && data.length > 0) {
         const first = data[0];
         // Content blocks (msg/form/redirect) are not grid rows.
         if (first?.type === 'msg' || first?.type === 'form' || first?.type === 'redirect') {
-            return null;
+            return [];
         }
-        return first;
-    }
-    if (typeof data === 'object' && !Array.isArray(data) && !data.settings && !data.header) {
         return data;
     }
+    // Shape: single row object (not a full grid payload with settings/header/rows)
+    if (typeof data === 'object' && !Array.isArray(data) && !data.settings && !data.header && !data.rows) {
+        return [data];
+    }
 
-    return null;
+    return [];
+};
+
+/** Pull a single grid row from a UNA action API response. */
+const extractGridRowFromResponse = (response) => {
+    const rows = extractGridRowsFromResponse(response);
+    return rows[0] ?? null;
+};
+
+/** True when a row has designed cells (`{ type, … }`) from grid display API. */
+const isProcessedGridRow = (row) => {
+    if (!row || typeof row !== 'object') return false;
+    return Object.values(row).some(
+        (cell) => cell != null && typeof cell === 'object' && typeof cell.type === 'string'
+    );
 };
 
 const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowConfirm, deleteRows, updateRow, fetchData, handleBlock, refetch }) => {
@@ -197,12 +218,21 @@ const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowC
             redirectRef.current.redirect(itemAction.redirect_url);
             return;
         }
-        if (itemAction.on_callback == 'refresh_row') {
-            const row = extractGridRowFromResponse(response);
-            const rowId = itemAction.attr?.bx_grid_action_data ?? id;
-            if (row && rowId != null) {
-                updateRow(rowId, row);
+        if (itemAction.on_callback == 'refresh_rows') {
+            const rows = extractGridRowsFromResponse(response);
+            // Display API returns cells as `{ type, value|data }`. Some actions
+            // return raw DB fields in `data.rows` — those need a full reload.
+            if (rows.length > 0 && rows.every(isProcessedGridRow)) {
+                const fallbackId = itemAction.attr?.bx_grid_action_data ?? id;
+                rows.forEach((row) => {
+                    const rowId = row?.id ?? fallbackId;
+                    if (row && rowId != null) {
+                        updateRow(rowId, row);
+                    }
+                });
+                return;
             }
+            setTimeStamp(Date.now());
             return;
         }
         if (itemAction.on_callback == 'refresh') {
@@ -273,9 +303,13 @@ const ActionButton = React.memo(({ id, index, itemAction, setTimeStamp, setShowC
                     deleteRows([oItem.data.id]);
                 } else if (oItem.data.on_callback === 'refresh_row') {
                     const row = extractGridRowFromResponse(response);
-                    const rowId = oItem.data.id ?? id;
-                    if (row && rowId != null) {
-                        updateRow(rowId, row);
+                    if (row && isProcessedGridRow(row)) {
+                        const rowId = row.id ?? oItem.data.id ?? id;
+                        if (rowId != null) {
+                            updateRow(rowId, row);
+                        }
+                    } else {
+                        setTimeStamp(Date.now());
                     }
                 } else if (oItem.data.on_callback === 'refresh') {
                     setTimeStamp(Date.now());
