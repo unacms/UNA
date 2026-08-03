@@ -3,6 +3,7 @@ import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
 import { memo, useState, useEffect, useRef, useCallback, useMemo,  } from 'react';
 import { appSetting } from 'app/lib/util'
+import useDebounce from 'app/lib/hooks/debounce'
 import UniList from 'app/ui/atoms/unilist'
 import { Button, Input } from 'app/design/controls'
 import Form from 'app/components/elements/form';
@@ -73,7 +74,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const selectedConvoIndex = convosData && convoId ? convosData.findIndex(item => item.id === convoId) : -1;
     const selectedConvo = convosData ? convosData[selectedConvoIndex] : false;
     const { currentUser, setCurrentUser } = useCurrentUser();
-    const [searchValue, setSearchValue] = useState('');
     const [replyItem, setReplyItem] = useState(false);
   
 
@@ -109,16 +109,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     }, [dynamicData]);
 
-    const handleSearch = useCallback(async (sValue) => {
-        setSearchValue(sValue);
-    }, []);
-
-    useEffect(() => {
-        fetchConvos(searchValue);
-        if (convos && convos?.data && convos?.data?.length > 0) {
-            setConvoId(convos.data[0].id);
-        }
-    }, [searchValue]);
+    const handleSearch = useCallback((term) => {
+        fetchConvos(term);
+    }, [fetchConvos]);
 
     useEffect(() => {
         setConvosData(convos?.data || []);
@@ -423,7 +416,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             selectedConvoIndex={selectedConvoIndex}
             changeConvo={changeConvo}
             handleSearch={handleSearch}
-            searchValue={searchValue}
             onSave={onSave}
             addButtons={addButtons}
         />
@@ -434,7 +426,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         selectedConvoIndex,
         changeConvo,
         handleSearch,
-        searchValue,
         onSave,
         addButtons,
     ]);
@@ -566,22 +557,45 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     )
 }
 
-const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, changeConvo, onSave, searchValue, handleSearch, addButtons, isSmallScreen }) => {
+const SEARCH_DEBOUNCE_MS = 300;
+
+const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, changeConvo, onSave, handleSearch, addButtons, isSmallScreen }) => {
     const isWeb = Platform.OS == 'web'
     const { t } = useTranslation();
     const [showSearch, setShowSearch] = useState(false);
+    const [searchValue, setSearchValue] = useState('');
+    const debouncedSearch = useDebounce(searchValue, SEARCH_DEBOUNCE_MS);
+    const lastEmittedSearch = useRef(null);
 
     const setHeader = useSetHeader();
     const setHeaderHeightAtom = useSetHeaderHeight();
+
+    // Keep typing local; only notify parent after debounce (skip initial empty — parent loads via menu).
+    useEffect(() => {
+        if (lastEmittedSearch.current === null && debouncedSearch === '') {
+            lastEmittedSearch.current = debouncedSearch;
+            return;
+        }
+        if (lastEmittedSearch.current === debouncedSearch) return;
+        lastEmittedSearch.current = debouncedSearch;
+        handleSearch(debouncedSearch);
+    }, [debouncedSearch, handleSearch]);
+
     function handleSearch2() {
         setShowSearch(!showSearch)
     }
 
     function onSave2() {
-        handleSearch('')
+        setSearchValue('');
+        lastEmittedSearch.current = '';
+        handleSearch('');
     }
 
-    const srch = <Input className="w-full min-w-0" size="small" rounded="full" name="search" placeholder={t('Search') + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />;
+    const onChangeSearch = useCallback((value) => {
+        setSearchValue(value);
+    }, []);
+
+    const srch = <Input className="w-full min-w-0" size="small" rounded="full" name="search" placeholder={t('Search') + '...'} value={searchValue} onChangeText={onChangeSearch} />;
     const ContextSelector = getComponent('molecule', 'context_selector');
     const header = useMemo(() => (
         <Row className={`${appSetting('layout', 'page_content_width_default')} ${appSetting('layout', 'header', 'content')}`}>
@@ -602,7 +616,7 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
                 {addButtons}
             </Row>
         </Row>
-    ), [showSearch, searchValue, addButtons]);
+    ), [showSearch, searchValue, addButtons, pageData, t]);
 
     useEffect(() => {
         if (!isWeb) return;
