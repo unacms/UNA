@@ -276,8 +276,14 @@ export default function Form({
                 }
             });
 
-            // defaultValues
-            if (input.value || input.value === 0) {
+            // defaultValues — price comes as `{ value, currency }` from UNA API
+            if (input.type === 'price') {
+                const amount =
+                    input.value != null && typeof input.value === 'object'
+                        ? input.value.value
+                        : input.value;
+                dv[key] = amount == null || amount === '' ? '' : String(amount);
+            } else if (input.value || input.value === 0) {
                 dv[key] = input.value;
             }
 
