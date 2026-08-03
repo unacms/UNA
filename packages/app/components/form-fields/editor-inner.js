@@ -25,6 +25,7 @@ import { appSetting, cn } from 'app/lib/util'
 import emitter from 'app/context/emitter'
 import { TextInput } from 'react-native'
 import { useMentionSuggestions } from './use-mention-suggestions'
+import { useIsDesktop } from 'app/context/measure'
 
 
 const inputSettings = appSetting('theme', 'inputs');
@@ -49,6 +50,7 @@ export default function RftText({
 }) {
 
     const isWeb = Platform.OS === 'web'
+    const isDesktop = useIsDesktop()
     const unicFormName = `${form_name}` // for catch images in editor
 
     let b = [...DEFAULT_TOOLBAR_ITEMS]
@@ -672,7 +674,7 @@ export default function RftText({
             }
 
             if (message?.type === 'requestSubmit') {
-                if (onEnterSubmit) {
+                if (isDesktop && onEnterSubmit) {
                     onEnterSubmit()
                 }
             }
@@ -708,9 +710,11 @@ export default function RftText({
                 if (isWeb) {
                     editor.injectJS(wheelEventForwarder)
                 }
-                const submitOnEnter = isCommentsEditor
-                    ? (enableSubmitOnEnter || appSetting('comments', 'submit_comment_on_enter'))
-                    : enableSubmitOnEnter
+                const submitOnEnter = isDesktop && (
+                    isCommentsEditor
+                        ? (enableSubmitOnEnter || appSetting('comments', 'submit_comment_on_enter'))
+                        : enableSubmitOnEnter
+                )
                 editor.injectJS(`
                     let formName = "${unicFormName}";
                     let lastSelectionRange = null;

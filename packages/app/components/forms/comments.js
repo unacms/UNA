@@ -143,7 +143,7 @@ export default function FormComments(props) {
                                     maxHeight: maxHeightEditor,
                                     onFocus: setIsFocus,
                                     onEnterSubmit: handleEditorEnterSubmit,
-                                    enableSubmitOnEnter: true
+                                    enableSubmitOnEnter: isDesktop
                                 }
                             )}
                         </View>

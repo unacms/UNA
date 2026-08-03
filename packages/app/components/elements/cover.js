@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { View, Row, ScrollView } from 'app/design/view'
 import Image from 'app/ui/atoms/image'
 import { Text } from 'app/design/typography'
@@ -258,10 +258,17 @@ function CoverImage({
     is_person,
     suppressCoverBackButton = false,
 }) {
-    const [imageUrl, setImageUrl] = useState(
-        mode == 'cover' ? coverData?.src : profileData?.url_avatar,
-    )
+    // Props are source of truth after soft-reload (setPageData); local override
+    // is only for optimistic preview during upload.
+    const propImageUrl =
+        mode == 'cover' ? coverData?.src : profileData?.url_avatar
+    const [localImageUrl, setLocalImageUrl] = useState(undefined)
     const [isUploading, setIsUploading] = useState(false)
+    const imageUrl = localImageUrl ?? propImageUrl
+
+    useEffect(() => {
+        setLocalImageUrl(undefined)
+    }, [propImageUrl])
 
     const uo =
         (profileData?.module || '') +
@@ -327,7 +334,7 @@ function CoverImage({
                         })
                     }
                     const hash = md5(uri)
-                    setImageUrl(uri)
+                    setLocalImageUrl(uri)
                     uploadImage(
                         uri,
                         url + '&a=upload',
@@ -352,7 +359,7 @@ function CoverImage({
                 '&params[]=' +
                 uploadInfo.result.data.id
             const sResponse = await fetcher(sRequest)
-            setImageUrl(sResponse.data)
+            setLocalImageUrl(sResponse.data)
         } finally {
             setIsUploading(false)
         }

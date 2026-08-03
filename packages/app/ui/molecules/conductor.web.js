@@ -1525,6 +1525,7 @@ const HeaderContainer = ({
                             <View className={conductorTheme.cover_content}>
                             <View className={`w-full `} onLayout={onCoverLayout1}>
                                 <Cover
+                                    key={`cover-${pageData?.ts ?? ''}:${pageData?.cover_block?.cover?.src ?? ''}:${pageData?.cover_block?.profile?.url_avatar ?? ''}`}
                                     data={pageData.cover_block}
                                     mode={headerSettings.cover}
                                     uri={uri}
@@ -1552,6 +1553,7 @@ const HeaderContainer = ({
                         {((isCover && !isHideCover) || !isDesktop) && (
                             <View className="w-full">
                                 <CoverSmall
+                                    key={`cover-small-${pageData?.ts ?? ''}:${pageData?.cover_block?.cover?.src ?? ''}:${pageData?.cover_block?.profile?.url_avatar ?? ''}`}
                                     context={pageData.context}
                                     data={pageData.cover_block}
                                 />

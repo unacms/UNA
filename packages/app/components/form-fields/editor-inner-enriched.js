@@ -21,6 +21,7 @@ import {
     isCommentEditorEnterKey,
     isCommentEditorNewlineEnter,
 } from 'app/lib/comment-editor-keyboard'
+import { useIsDesktop } from 'app/context/measure'
 
 const MENTION_TYPE_LABELS = {
     bx_persons: 'People',
@@ -96,6 +97,7 @@ export default function RftTextEnriched({
     // Latest mention handlers/state for the web capture-phase key listener.
     const handlersRef = useRef(null)
     const isWeb = Platform.OS === 'web'
+    const isDesktop = useIsDesktop()
     const isToolBar = html == 2 || html == 1
     const isPlainText = html == 3
     const isCommentsEditor = container_class === 'comments'
@@ -301,10 +303,12 @@ export default function RftTextEnriched({
         setFilesData(getAlert('images:pasted', { images, form_name }))
     }, [form_name, setFilesData])
 
-    // ---- submit on enter ----
-    const submitOnEnter = isCommentsEditor
-        ? (enableSubmitOnEnter || appSetting('comments', 'submit_comment_on_enter'))
-        : enableSubmitOnEnter
+    // ---- submit on enter (desktop only; mobile Enter inserts newline) ----
+    const submitOnEnter = isDesktop && (
+        isCommentsEditor
+            ? (enableSubmitOnEnter || appSetting('comments', 'submit_comment_on_enter'))
+            : enableSubmitOnEnter
+    )
 
     const onSubmitEditing = useCallback(() => {
         // Comment composers use newline mode + explicit Enter routing.

@@ -171,6 +171,7 @@ const TabSceneHeader = React.memo(function TabSceneHeader2({
     pageContext,
     sceneHeader,
     filter,
+    ts,
 }) {
     const ContextSelector = getComponent('molecule', 'context_selector');
     // One selector for dynamic cover profiles (groups/spaces). Full + small cover
@@ -183,6 +184,10 @@ const TabSceneHeader = React.memo(function TabSceneHeader2({
 
     const useStandaloneCoverBackButton =
         Platform.OS !== 'web' && headerMode === 'dynamic';
+
+    // Remount covers on soft-reload (profile `ts`) so CoverImage local state
+    // cannot stick after setPageData.
+    const coverKey = `${ts ?? ''}:${coverBlock?.cover?.src ?? ''}:${coverBlock?.profile?.url_avatar ?? ''}`;
 
     const standaloneContextSelector = useStandaloneContextSelector ? (
         <View className="items-center justify-center w-full h-14 px-2 ">
@@ -203,6 +208,7 @@ const TabSceneHeader = React.memo(function TabSceneHeader2({
     const coverHeader = useMemo(
         () => (
             <Cover
+                key={`cover-${coverKey}`}
                 data={coverBlock}
                 showMoreMenu={false}
                 uri={pageUri}
@@ -211,11 +217,12 @@ const TabSceneHeader = React.memo(function TabSceneHeader2({
                 suppressCoverBackButton={useStandaloneCoverBackButton}
             />
         ),
-        [coverBlock, pageUri, pageContext, useStandaloneContextSelector, useStandaloneCoverBackButton]
+        [coverKey, coverBlock, pageUri, pageContext, useStandaloneContextSelector, useStandaloneCoverBackButton]
     );
     const coverHeaderSmall = useMemo(
         () => (
             <CoverSmall
+                key={`cover-small-${coverKey}`}
                 showMoreMenu
                 context={pageContext}
                 data={coverBlock}
@@ -224,7 +231,7 @@ const TabSceneHeader = React.memo(function TabSceneHeader2({
                 suppressCoverBackButton={useStandaloneCoverBackButton}
             />
         ),
-        [coverBlock, pageContext, pageUri, useStandaloneContextSelector, useStandaloneCoverBackButton]
+        [coverKey, coverBlock, pageContext, pageUri, useStandaloneContextSelector, useStandaloneCoverBackButton]
     );
     if (headerMode === 'dynamic') {
         return (
@@ -1017,9 +1024,10 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
                 pageContext={pageContext}
                 sceneHeader={sceneHeader}
                 filter={filter}
+                ts={ts}
             />
         ),
-        [headerMode, coverBlock, pageUri, pageContext, sceneHeader, filter]
+        [headerMode, coverBlock, pageUri, pageContext, sceneHeader, filter, ts]
     );
 
     const subHeaderRef = useRef(sceneHeaderComp);

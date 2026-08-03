@@ -107,7 +107,7 @@ export default function FormMessenger(props) {
                                     initialHeight: minHeightEditor,
                                     maxHeight: maxHeightEditor,
                                     onEnterSubmit: handleEditorEnterSubmit,
-                                    enableSubmitOnEnter: true,
+                                    enableSubmitOnEnter: isDesktop,
                                     focus: true,
                                 }
                             )}
