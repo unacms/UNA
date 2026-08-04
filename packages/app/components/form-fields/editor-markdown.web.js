@@ -23,17 +23,88 @@ import {
     tablePlugin,
     codeBlockPlugin,
     codeMirrorPlugin,
+    CodeMirrorEditor,
     frontmatterPlugin,
     diffSourcePlugin,
     DiffSourceToggleWrapper,
+    realmPlugin,
+    addImportVisitor$,
 } from '@mdxeditor/editor'
 import '@mdxeditor/editor/style.css'
-import { View } from 'app/design/view'
+// After MDXEditor styles — overrides --basePageBg: white and toolbar chrome.
+import './editor-markdown.web.css'
+import { EditorView } from '@codemirror/view'
+import {
+    $createParagraphNode,
+    $createTextNode,
+    $isRootNode,
+} from 'lexical'
+import { useThemeName } from 'app/design/theme'
 import { appSetting, cn } from 'app/lib/util'
 import emitter from 'app/context/emitter'
 import Loading from 'app/ui/atoms/loading'
 
 const inputSettings = appSetting('theme', 'inputs')
+
+/**
+ * With suppressHtmlProcessing, remark still emits raw `{ type: 'html' }` nodes
+ * (e.g. `<br/>`, `</div>`) but MdastHTMLVisitor is not registered — import fails
+ * with `{"type":"html","name":"N/A"}`. Keep HTML as literal text instead.
+ */
+const htmlAsTextPlugin = realmPlugin({
+    init(realm) {
+        realm.pub(addImportVisitor$, {
+            testNode: (node) => node?.type === 'html',
+            visitNode({ mdastNode, lexicalParent, actions }) {
+                const value = mdastNode?.value ?? ''
+                if (!value) return
+
+                const textNode = $createTextNode(value)
+                textNode.setFormat(actions.getParentFormatting())
+                const style = actions.getParentStyle()
+                if (style) textNode.setStyle(style)
+
+                if ($isRootNode(lexicalParent)) {
+                    const paragraph = $createParagraphNode()
+                    paragraph.append(textNode)
+                    lexicalParent.append(paragraph)
+                    return
+                }
+
+                actions.addAndStepInto(textNode)
+            },
+            priority: -50,
+        })
+    },
+})
+
+/** CM6 theme — MDXEditor source/code blocks hardcode basicLight; earlier extensions win. */
+const neoCmDarkTheme = EditorView.theme(
+    {
+        '&': {
+            backgroundColor: 'transparent',
+            color: 'inherit',
+        },
+        '.cm-content': {
+            caretColor: 'currentColor',
+        },
+        '&.cm-focused .cm-cursor': {
+            borderLeftColor: 'currentColor',
+        },
+        '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': {
+            backgroundColor: 'rgb(var(--primary) / 0.35)',
+        },
+        '.cm-gutters': {
+            backgroundColor: 'transparent',
+            color: 'rgb(var(--muted-foreground))',
+            border: 'none',
+        },
+        '.cm-activeLineGutter, .cm-activeLine': {
+            backgroundColor: 'rgb(var(--muted) / 0.25)',
+        },
+    },
+    { dark: true },
+)
 
 /**
  * Wiki Markdown form field (web) — @mdxeditor/editor.
@@ -99,6 +170,8 @@ export function MarkdownTextInput({
     const initialMarkdown = useRef(externalValue)
     const lastWrittenRef = useRef(externalValue)
     const [mounted, setMounted] = useState(false)
+    const themeName = useThemeName()
+    const isDark = themeName === 'dark'
 
     useEffect(() => {
         setMounted(true)
@@ -134,6 +207,7 @@ export function MarkdownTextInput({
     const toolbarVisible = showToolbar && !disabled
 
     const plugins = useMemo(() => {
+        const cmExtensions = isDark ? [neoCmDarkTheme] : []
         const list = [
             headingsPlugin({ allowedHeadingLevels: [1, 2, 3, 4, 5, 6] }),
             listsPlugin(),
@@ -144,8 +218,20 @@ export function MarkdownTextInput({
             linkDialogPlugin(),
             tablePlugin(),
             frontmatterPlugin(),
-            codeBlockPlugin({ defaultCodeBlockLanguage: '' }),
+            htmlAsTextPlugin(),
+            codeBlockPlugin({
+                defaultCodeBlockLanguage: '',
+                // Catch-all so unknown fence languages don't fail import.
+                codeBlockEditorDescriptors: [
+                    {
+                        priority: -10,
+                        match: () => true,
+                        Editor: CodeMirrorEditor,
+                    },
+                ],
+            }),
             codeMirrorPlugin({
+                codeMirrorExtensions: cmExtensions,
                 codeBlockLanguages: {
                     '': 'Plain text',
                     js: 'JavaScript',
@@ -160,11 +246,15 @@ export function MarkdownTextInput({
                     php: 'PHP',
                 },
             }),
-            diffSourcePlugin({ viewMode: 'rich-text' }),
+            diffSourcePlugin({
+                viewMode: 'rich-text',
+                codeMirrorExtensions: cmExtensions,
+            }),
         ]
         if (toolbarVisible) {
             list.push(
                 toolbarPlugin({
+                    toolbarClassName: 'mdxeditor-wiki-toolbar',
                     toolbarContents: () => (
                         <DiffSourceToggleWrapper>
                             <UndoRedo />
@@ -184,50 +274,69 @@ export function MarkdownTextInput({
             )
         }
         return list
-    }, [toolbarVisible])
+    }, [toolbarVisible, isDark])
 
-    // overflow-hidden + maxHeight clips content; in readOnly use overflow-y-auto so it scrolls.
-    const surfaceClassName =
+    // Outer shell clips rounded corners + inset outline; inner pane scrolls.
+    // (overflow:auto on the same node as rounded-xl + shadow-input-outline
+    // makes sticky toolbar corners look crooked.)
+    const shellClassName =
         bg === 'transparent'
-            ? cn('flex-auto min-w-0', disabled ? 'overflow-y-auto' : 'overflow-hidden')
+            ? 'min-w-0 w-full overflow-hidden'
             : cn(
-                'flex-auto min-w-0',
-                disabled ? 'overflow-y-auto' : 'overflow-hidden',
+                'min-w-0 w-full overflow-hidden',
                 inputSettings.base,
                 inputSettings.rounded.default,
             )
 
+    const scrollStyle = {
+        minHeight: initialHeight,
+        maxHeight,
+        overflow: 'auto',
+        WebkitOverflowScrolling: 'touch',
+        overscrollBehavior: 'contain',
+    }
+
     if (!mounted) {
         return (
-            <View className={surfaceClassName} style={{ minHeight: initialHeight }}>
-                <Loading />
-            </View>
+            <div className={shellClassName}>
+                <div
+                    className="flex w-full items-center justify-center"
+                    style={scrollStyle}
+                >
+                    <Loading />
+                </div>
+            </div>
         )
     }
 
     return (
-        <View
-            className={surfaceClassName}
-            style={{ minHeight: initialHeight, maxHeight }}
-        >
-            <MDXEditor
-                ref={editorRef}
-                markdown={initialMarkdown.current}
-                placeholder={placeholder}
-                readOnly={!!disabled}
-                autoFocus={!disabled && !!autofocus}
-                onChange={(markdown, initialMarkdownNormalize) => {
-                    if (disabled) return
-                    const next = markdown ?? ''
-                    lastWrittenRef.current = next
-                    if (initialMarkdownNormalize) return
-                    field.onChange(next)
-                }}
-                onBlur={field.onBlur}
-                plugins={plugins}
-                contentEditableClassName="prose prose-sm dark:prose-invert max-w-none min-h-[7rem] px-1 py-1 text-card-foreground outline-none"
-                className="mdxeditor-wiki w-full bg-transparent text-card-foreground"
-            />
-        </View>
+        <div className={shellClassName}>
+            <div className="w-full" style={scrollStyle}>
+                <MDXEditor
+                    ref={editorRef}
+                    markdown={initialMarkdown.current}
+                    placeholder={placeholder}
+                    readOnly={!!disabled}
+                    autoFocus={!disabled && !!autofocus}
+                    // Wiki markdown is not MDX — HTML/`<br/>`/`</tag>`/`<https://…>` must not
+                    // go through mdast-util-mdx-jsx or rich-text parse fails (see emails-notifications).
+                    suppressHtmlProcessing
+                    onChange={(markdown, initialMarkdownNormalize) => {
+                        if (disabled) return
+                        const next = markdown ?? ''
+                        lastWrittenRef.current = next
+                        if (initialMarkdownNormalize) return
+                        field.onChange(next)
+                    }}
+                    onBlur={field.onBlur}
+                    plugins={plugins}
+                    contentEditableClassName="prose prose-sm dark:prose-invert max-w-none min-h-[7rem] px-3 py-2 outline-none"
+                    className={cn(
+                        'mdxeditor mdxeditor-wiki w-full text-card-foreground',
+                        isDark && 'dark-theme',
+                    )}
+                />
+            </div>
+        </div>
     )
 }
