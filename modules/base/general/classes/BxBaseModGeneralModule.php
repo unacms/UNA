@@ -1812,7 +1812,7 @@ class BxBaseModGeneralModule extends BxDolModule
         $oForm = $oFormsHelper->$sFunc($sDisplay);
 
         $sParamsKey = 'visibility_auto';
-        if((!isset($aParams[$sParamsKey]) || $aParams[$sParamsKey] === true) && ($sField = $CNF['FIELD_ALLOW_VIEW_TO'] ?? false) && !empty($oForm->aInputs[$sField]) && (!$bContext || $mixedContextId < 0)) {
+        if((!isset($aParams[$sParamsKey]) || (bool)$aParams[$sParamsKey] === true) && ($sField = $CNF['FIELD_ALLOW_VIEW_TO'] ?? false) && !empty($oForm->aInputs[$sField]) && (!$bContext || $mixedContextId < 0)) {
             $bContextOwner = $bContext && abs($mixedContextId) == $iLoggedId;
 
             if(!$bContext || $bContextOwner) {
