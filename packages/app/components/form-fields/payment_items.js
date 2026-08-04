@@ -156,7 +156,7 @@ export default function PaymentItems(props) {
 
     return (
         <Field {...props} error2={formContext.formState.errors?.items}>
-            <View className="w-full gap-2 border border-border/60 rounded-xl p-3 bg-card max-h-80">
+            <View className="w-full gap-2 border border-border/60 rounded-xl p-3 bg-card">
                 <Input
                     placeholder={t('Search')}
                     value={filter}
