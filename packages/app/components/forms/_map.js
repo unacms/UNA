@@ -4,6 +4,7 @@ import FormPost from './post';
 import FormContent from './content';
 import FormConfirmEmail from './confirm_email';
 import Messenger from './messenger';
+import FormBxPayment from './bx_payment';
 
 export const componentsMapDefault = {
     sys_confirm_email: FormConfirmEmail,
@@ -14,5 +15,7 @@ export const componentsMapDefault = {
     bx_ads: FormContent,
     bx_albums: FormContent,
     bx_forum: FormPost,
-    bx_messenger: Messenger
+    bx_messenger: Messenger,
+    bx_payment: FormBxPayment,
+    bx_payment_form_processed_add: FormBxPayment,
 };

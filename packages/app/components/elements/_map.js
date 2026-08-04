@@ -53,6 +53,7 @@ import TaskTimer from './task_timer';
 import WikiBlocks from './wiki_blocks';
 import WikiHistory from './wiki_history';
 import CreditsCheckout from './credits_checkout';
+import PaymentOrderAdd from './payment_order_add';
 
 
 export const componentsMapDefault = {
@@ -94,6 +95,7 @@ export const componentsMapDefault = {
     redirect: Redirect,
     entity_text: EntityText,
     credits_checkout:CreditsCheckout,
+    payment_order_add: PaymentOrderAdd,
     entity_poll: EntityPoll,
     entity_author: EntityAuthor,
     entity_actions: EntityActions,

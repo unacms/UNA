@@ -1024,8 +1024,8 @@ export default function ElementGrid(props) {
                     })}
                 </Row>
                 {(!dataItems || dataItems.length === 0) && status === 'success' && !hasNextPage && (
-                    <View className="items-start px-2 pt-4 pb-4">
-                        <Text className="text-secondary-foreground ">Nothing to show</Text>
+                    <View className="items-center px-2 pt-4 pb-4">
+                        <Text className="text-secondary-foreground text-center">Nothing to show</Text>
                     </View>
                 )}
 
