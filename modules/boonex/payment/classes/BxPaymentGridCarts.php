@@ -52,19 +52,21 @@ class BxPaymentGridCarts extends BxBaseModPaymentGridCarts
 
     protected function _getActionContinue ($sType, $sKey, $a, $isSmall = false, $isDisabled = false, $aRow = array())
     {
-    	unset($a['attr']['bx_grid_action_single']);
-    	$a['attr'] = array_merge($a['attr'], array(
-            "onclick" => "window.open('" . bx_append_url_params($this->_oModule->_oConfig->getUrl('URL_CART'), array('seller_id' => $aRow['vendor_id'])) . "','_self');"
-    	));
-        
-         if (bx_is_api()){
-            $a['type'] = 'link';
-            $a['name'] = $sKey;
-            $a['url'] = bx_api_get_relative_url(bx_append_url_params($this->_oModule->_oConfig->getUrl('URL_CART'), array('seller_id' => $aRow['vendor_id'])));
-            return $a;
-        }
+        $sUrl = bx_append_url_params($this->_oModule->_oConfig->getUrl('URL_CART'), array('seller_id' => $aRow['vendor_id']));
 
-        return  parent::_getActionDefault($sType, $sKey, $a, false, $isDisabled, $aRow);
+        if($this->_bIsApi)
+            return array_merge($a, [
+                'type' => 'link',
+                'name' => $sKey,
+                'url' => $sUrl
+            ]);
+
+        unset($a['attr']['bx_grid_action_single']);
+        $a['attr'] = array_merge($a['attr'], array(
+            "onclick" => "window.open('" . $sUrl . "','_self');"
+        ));
+
+        return parent::_getActionDefault($sType, $sKey, $a, false, $isDisabled, $aRow);
     }
 
     protected function _getFilterControls ()

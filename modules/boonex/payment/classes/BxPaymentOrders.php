@@ -46,18 +46,16 @@ class BxPaymentOrders extends BxBaseModPaymentOrders
      */
     public function serviceGetBlockOrders($sType = '', $iUserId = BX_PAYMENT_EMPTY_ID)
     {
-        $CNF = &$this->_oModule->_oConfig->CNF;
-
-    	if(empty($sType) && bx_get('type') !== false)
+        if(empty($sType) && bx_get('type') !== false)
             $sType = bx_process_input(bx_get('type'));
-        
+
         if(empty($sType) || !in_array($sType, array(BX_PAYMENT_ORDERS_TYPE_PENDING, BX_PAYMENT_ORDERS_TYPE_PROCESSED)))
             $sType = BX_PAYMENT_ORDERS_TYPE_PROCESSED;
 
-    	if(!$this->_oModule->isLogged())
-            return array(
-            	'content' => MsgBox(_t($this->_sLangsPrefix . 'err_required_login'))
-            );
+        if(!$this->_oModule->isLogged())
+            return ($sMsg = _t($this->_sLangsPrefix . 'err_required_login')) && $this->_bIsApi ? [bx_api_get_msg ($sMsg)] : [
+                'content' => MsgBox($sMsg)
+            ];
 
         $iUserId = $iUserId != BX_PAYMENT_EMPTY_ID ? $iUserId : $this->_oModule->getProfileId();
         if($sType == BX_PAYMENT_ORDERS_TYPE_PROCESSED)
@@ -65,16 +63,23 @@ class BxPaymentOrders extends BxBaseModPaymentOrders
 
         $this->_oModule->setSiteSubmenu('menu_dashboard', 'system', 'dashboard-orders');
 
+        $sBlockContent = $this->_oModule->_oTemplate->displayBlockOrders($sType, $iUserId);
+        if($this->_bIsApi)
+            return !$sBlockContent ? [bx_api_get_msg(_t($this->_sLangsPrefix . 'msg_no_results'))] : [
+                'title' => _t($this->_sLangsPrefix . 'page_block_title_orders_' . $sType),
+                'content' => [bx_api_get_block('grid', $sBlockContent)]
+            ];
+
         $sBlockSubmenu = $this->_oModule->_oConfig->getObject('menu_orders_submenu');
         $oBlockSubmenu = BxDolMenu::getObjectInstance($sBlockSubmenu);
         if($oBlockSubmenu)
             $oBlockSubmenu->setSelected($this->MODULE, 'orders-' . $sType);
 
-        return array(
+        return [
             'title' => _t($this->_sLangsPrefix . 'page_block_title_orders_' . $sType),
-            'content' => $this->_oModule->_oTemplate->displayBlockOrders($sType, $iUserId),
+            'content' => !$sBlockContent ? MsgBox(_t($this->_sLangsPrefix . 'msg_no_results')) : $sBlockContent,
             'menu' => $oBlockSubmenu
-        );
+        ];
     }
 
     /**

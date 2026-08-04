@@ -11,14 +11,18 @@
 
 class BxBaseModPaymentOrders extends BxDol
 {
-	protected $MODULE;
-	protected $_oModule;
+    protected $MODULE;
+    protected $_oModule;
 
-	function __construct()
+    protected $_bIsApi;
+
+    function __construct()
     {
         parent::__construct();
 
         $this->_oModule = BxDolModule::getInstance($this->MODULE);
+
+        $this->_bIsApi = bx_is_api();
     }
 
     /**

@@ -267,16 +267,19 @@ class BxPaymentTemplate extends BxBaseModPaymentTemplate
         $sGrid = $this->_oConfig->getObject('grid_' . $sType);
         $oGrid = BxDolGrid::getObjectInstance($sGrid);
         if(!$oGrid || empty($iSellerId))
-            return MsgBox(_t($this->_sLangsPrefix . 'msg_no_results'));
+            return '';
 
         $oGrid->addQueryParam('seller_id', $iSellerId);
 
+        if($this->_bIsApi)
+            return $oGrid->getCodeAPI();
+
         $this->addJsCssOrders();
-        return $this->displayJsCode($sType, array(
+        return $this->displayJsCode($sType, [
             'sObjNameGrid' => $sGrid,
             'sParamsDivider' => $this->_oConfig->getDivider('DIVIDER_GRID_FILTERS'),
             'sTextSearchInput' => _t('_sys_grid_search')
-        )) . $oGrid->getCode();
+        ]) . $oGrid->getCode();
     }
 
     public function displayOrder($sType, $iId)

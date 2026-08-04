@@ -26,9 +26,9 @@ class BxBaseModPaymentGridOrders extends BxBaseModPaymentGridTransactions
 
     public function performActionCancel()
     {
-    	$aIds = bx_get('ids');
+        $aIds = bx_get('ids');
         if(!$aIds || !is_array($aIds)) 
-            return echoJson(array());
+            return $this->_bIsApi ? [] : echoJson([]);
 
         $oOrders = $this->_oModule->getObjectOrders();
 
@@ -40,7 +40,10 @@ class BxBaseModPaymentGridOrders extends BxBaseModPaymentGridTransactions
                 $iAffected++;
             }
 
-        echoJson($iAffected ? array('grid' => $this->getCode(false), 'blink' => $aAffected) : array('msg' => _t($this->_sLangsPrefix . 'err_cannot_perform')));
+        if(!$iAffected)
+            return ($sMsg = _t($this->_sLangsPrefix . 'err_cannot_perform')) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : echoJson(['msg' => $sMsg]);
+
+        return $this->_bIsApi ? [] : echoJson(['grid' => $this->getCode(false), 'blink' => $aAffected]);
     }
 }
 

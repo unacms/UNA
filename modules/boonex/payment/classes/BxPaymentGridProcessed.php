@@ -14,7 +14,7 @@ class BxPaymentGridProcessed extends BxBaseModPaymentGridOrders
 {
     public function __construct ($aOptions, $oTemplate = false)
     {
-    	$this->MODULE = 'bx_payment';
+        $this->MODULE = 'bx_payment';
 
         parent::__construct ($aOptions, $oTemplate);
 
@@ -23,10 +23,29 @@ class BxPaymentGridProcessed extends BxBaseModPaymentGridOrders
         $this->_sJsObject = $this->_oModule->_oConfig->getJsObject('processed');
     }
 
+    public function getFormBlockTitleAPI($sAction, $iId = 0)
+    {
+        $sResult = '';
+
+        switch($sAction) {
+            case 'add':
+                $sResult = _t($this->_sLangsPrefix . 'popup_title_ods_order_' . $this->_sOrdersType . '_add');
+                break;
+        }
+
+        return $sResult;
+    }
+
+    public function getFormCallBackUrlAPI($sAction, $iId = 0)
+    {
+         return '/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=' . $this->_sObject . '&a=' . $sAction . '&id=' . $iId;
+    }
+
     public function performActionAdd()
     {
         $sType = BX_PAYMENT_TYPE_SINGLE;
         $sAction = 'add';
+        $sModule = $this->_oModule->_oConfig->getName();
         $sJsObject = $this->_oModule->_oConfig->getJsObject('processed');
 
         $sFormObject = $this->_oModule->_oConfig->getObject('form_processed');
@@ -46,6 +65,8 @@ class BxPaymentGridProcessed extends BxBaseModPaymentGridOrders
         );
 
         $oForm->aInputs['client']['ajax_get_suggestions'] = BX_DOL_URL_ROOT . 'modules/?r=' . $this->_oModule->_oConfig->getUri() . '/get_clients';
+        if($this->_bIsApi)
+            $oForm->aInputs['client']['ajax_get_suggestions'] = $sModule . "/get_clients&params[]=";
 
         $oForm->aInputs['client']['custom'] = array(
             'only_once' => true,
@@ -61,7 +82,10 @@ class BxPaymentGridProcessed extends BxBaseModPaymentGridOrders
 
         $aModules = $this->_oModule->_oDb->getModules();
         foreach($aModules as $aModule)
-           $oForm->aInputs['module_id']['values'][] = array('key' => $aModule['id'], 'value' => $aModule['title']);
+           $oForm->aInputs['module_id']['values'][] = ['key' => $aModule['id'], 'value' => $aModule['title']];
+
+        if($this->_bIsApi)
+            $oForm->aInputs['module_id']['request_url'] = '/api.php?r=' . $sModule . "/get_items&params[]=" . $sType . "&params[]=";
 
         $oForm->aInputs['items']['content'] = $this->_oModule->_oTemplate->displayItems($this->_aQueryAppend['seller_id'], $sType);
 
@@ -70,8 +94,10 @@ class BxPaymentGridProcessed extends BxBaseModPaymentGridOrders
             $sFormMethod = $oForm->aFormAttrs['method'];
 
             $aItemIds = $oForm->getSubmittedValue('items', $sFormMethod);
+            if($this->_bIsApi && is_string($aItemIds))
+                $aItemIds = explode(',', $aItemIds);
             if(empty($aItemIds) || !is_array($aItemIds))
-                return echoJson(array('msg' => $this->_sLangsPrefix . 'err_empty_items'));
+                return ($sMsg = $this->_sLangsPrefix . 'err_empty_items') && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : echoJson(['msg' => $sMsg]);
 
             $aItems = [];
             $sPriceKey = $this->_oModule->_oConfig->getKey('KEY_ARRAY_PRICE_SINGLE');
@@ -81,7 +107,7 @@ class BxPaymentGridProcessed extends BxBaseModPaymentGridOrders
                 $iItemQuantity = (int)$oForm->getSubmittedValue('item-quantity-' . $iItemId, $sFormMethod);
 
                 if($iItemQuantity <= 0)
-                    return echoJson(array('msg' => $this->_sLangsPrefix . 'err_wrong_quantity'));
+                    return ($sMsg = $this->_sLangsPrefix . 'err_wrong_quantity') && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : echoJson(['msg' => $sMsg]);
 
                 $aItems[$iItemId] = [
                     'id' => $iItemId, 
@@ -90,7 +116,7 @@ class BxPaymentGridProcessed extends BxBaseModPaymentGridOrders
                 ];
             }
 
-            $mixedResult = $this->_oModule->getObjectOrders()->addOrder(array(
+            $mixedResult = $this->_oModule->getObjectOrders()->addOrder([
                 'client_id' => $oForm->getCleanValue('client_id'),
                 'seller_id' => $oForm->getCleanValue('seller_id'),
                 'provider' => 'manual',
@@ -100,21 +126,32 @@ class BxPaymentGridProcessed extends BxBaseModPaymentGridOrders
                 'error_msg' => 'Manually processed',        		
                 'module_id' => $oForm->getCleanValue('module_id'),
                 'items' => array_values($aItems)
-            ));
+            ]);
             if(is_array($mixedResult))
-                return echoJson($mixedResult);
+                return $this->_bIsApi ? [bx_api_get_msg($mixedResult['msg'])] : echoJson($mixedResult);
 
             $iPendingId = (int)$mixedResult;
             if(!$this->_oModule->registerPayment($iPendingId))
-                return echoJson(array('msg' => _t($this->_sLangsPrefix . 'err_cannot_perform')));
+                return ($sMsg = _t($this->_sLangsPrefix . 'err_cannot_perform')) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : echoJson(['msg' => $sMsg]);
 
             $aOrders = $this->_oModule->_oDb->getOrderProcessed(['type' => 'pending_id', 'pending_id' => $iPendingId, 'with_key' => 'id']);
             foreach($aOrders as $iOrder => $aOrder)
                 if((float)$aOrder['amount'] != ($fAmount = $aItems[$aOrder['item_id']][$sPriceKey]))
                     $this->_oModule->_oDb->updateOrderProcessed($iOrder, ['amount' => $fAmount]);
 
-            return echoJson(['grid' => $this->getCode(false), 'blink' => array_keys($aOrders)]);
+            return $this->_bIsApi ? [] : echoJson(['grid' => $this->getCode(false), 'blink' => array_keys($aOrders)]);
         }
+
+        if($this->_bIsApi)
+            return [
+                bx_api_get_block('payment_order_add', $oForm->getCodeAPI(), [
+                    'ext' => [
+                        'name' => $this->_oModule->getName(), 
+                        'title' => $this->getFormBlockTitleAPI($sAction),
+                        'request' => ['url' => $this->getFormCallBackUrlAPI($sAction), 'immutable' => true]]
+                    ]
+                )
+            ];
 
         $sKey = 'order_' . $this->_sOrdersType . '_add';
         $sId = $this->_oModule->_oConfig->getHtmlIds('processed', $sKey);
@@ -128,7 +165,7 @@ class BxPaymentGridProcessed extends BxBaseModPaymentGridOrders
             'action' => $sAction
         )));
 
-        echoJson(array('popup' => array('html' => $sContent, 'options' => array('closeOnOuterClick' => false))));
+        echoJson(['popup' => ['html' => $sContent, 'options' => ['closeOnOuterClick' => false]]]);
     }
 
     protected function _getActionCancel ($sType, $sKey, $a, $isSmall = false, $isDisabled = false, $aRow = array())
@@ -136,10 +173,12 @@ class BxPaymentGridProcessed extends BxBaseModPaymentGridOrders
         if(!empty($aRow['seller_id']) && $aRow['seller_id'] != bx_get_logged_profile_id())
             return '';
 
+        if($this->_bIsApi)
+            return array_merge($a, ['name' => $sKey, 'type' => 'callback', 'on_callback' => 'hide_row']);
+
         return $this->_getActionDefault($sType, $sKey, $a, $isSmall, $isDisabled, $aRow);
     }
-            
-            
+
     protected function _getFilterClients()
     {
         $aIds = $this->_oModule->_oDb->getOrderProcessed(array('type' => 'clients', 'seller_id' => $this->_aQueryAppend['seller_id']));

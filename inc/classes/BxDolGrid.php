@@ -676,6 +676,59 @@ class BxDolGrid extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
         return $bFieldsOnly || empty($sOrderClause) ? $sOrderClause : " ORDER BY " . $sOrderClause;
     }
 
+    protected function _getDataUpdated ($aIds)
+    {
+        $sFunc = '_getData' . $this->_aOptions['source_type'] . 'Updated';
+        return method_exists($this, $sFunc) ? $this->$sFunc($aIds) : [];
+    }
+
+    protected function _getDataSqlUpdated ($aIds)
+    {
+        $oDb = BxDolDb::getInstance();
+        $sQuery = $this->_aOptions['source'];
+        if (false === stripos($sQuery, ' WHERE '))
+            $sQuery .= " WHERE 1 ";
+
+        $aResults = false;
+        /**
+         * @hooks
+         * @hookdef hook-grid-get_data_updated 'grid', 'get_data_updated' - hook to override the updated data to be shown in the grid
+         * - $unit_name - equals `grid`
+         * - $action - equals `get_data_updated`
+         * - $object_id - not used
+         * - $sender_id - not used
+         * - $extra_params - array of additional params with the following array keys:
+         *      - `object` - [string] grid object name
+         *      - `options` - [array] grid options array as key&value pairs
+         *      - `markers` - [array] markers array as key&value pairs
+         *      - `ids` - [array] IDs to show updated data for
+         *      - `browse_params` - [array] additional browse params array as key&value pairs
+         *      - `results` - [array] by ref, array of grid rows, where each row is an array of fields values, can be overridden in hook processing
+         * @hook @ref hook-grid-get_data_updated
+         */
+        bx_alert('grid', 'get_data_updated', 0, false, [
+            'object' => $this->_sObject, 
+            'options' => $this->_aOptions, 
+            'markers' => $this->_aMarkers, 
+            'ids' => $aIds, 
+            'browse_params' => $this->_aBrowseParams, 
+            'results' => &$aResults
+        ]);
+        if($aResults !== false)
+            return $aResults;
+
+        if(!$this->_aOptions['field_id'] || !$aIds || !is_array($aIds))
+            return [];
+
+        $sFieldId = $this->_aOptions['field_id'];
+        if(($sTableAlias = $this->_getTableAlias()))
+            $sFieldId = '`' . $sTableAlias . '`.' . $sFieldId;
+
+        $sQuery .= ' AND ' . $sFieldId . ' IN (' . $oDb->implode_escape($aIds) . ')';
+
+        return $oDb->getAll($sQuery);
+    }
+
     protected function _getCellData($sKey, $aField, $aRow)
     {
         if (isset($aRow[$sKey])) {
@@ -713,6 +766,11 @@ class BxDolGrid extends BxDolFactory implements iBxDolFactoryObject, iBxDolRepla
     protected function _getFilterValue()
     {
         return bx_unicode_urldecode(bx_process_input(bx_get($this->_aOptions['filter_get'])));
+    }
+
+    protected function _getTableAlias()
+    {
+        return '';
     }
 
     protected function _getOrderFields($bTranslatable = false)

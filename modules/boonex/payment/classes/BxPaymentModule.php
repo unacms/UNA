@@ -141,18 +141,33 @@ class BxPaymentModule extends BxBaseModPaymentModule
         echoJson($aResult);
     }
 
+    public function serviceGetClients($sParams)
+    {
+        $sTerm = '';
+        if(!($aParams = bx_api_get_browse_params($sParams)) || !($sTerm = $aParams['term'] ?? false))
+            return [];
+
+        return BxDolService::call('system', 'profiles_search', [$sTerm], 'TemplServiceProfiles');
+    }
+
     public function actionGetItems($sType, $iModuleId)
     {
-    	$iSellerId = $this->getProfileId();
-        $aItems = $this->callGetCartItems((int)$iModuleId, array($iSellerId));
-        $aParams = [
-            'filter' => bx_get('filter')
-        ];
-
         echoJson([
             'code' => 0, 
             'eval' => $this->_oConfig->getJsObject('processed') . '.onSelectModule(oData);', 
-            'data' => $this->_oTemplate->displayItems($iSellerId, $sType, $aItems, $aParams)
+            'data' => $this->serviceGetItems($sType, $iModuleId, bx_get('filter'))
+        ]);
+    }
+
+    public function serviceGetItems($sType, $iModuleId, $sFilter = '')
+    {
+        $iSellerId = $this->getProfileId();
+        $aItems = $this->callGetCartItems((int)$iModuleId, [$iSellerId]);
+        if($this->_bIsApi)
+            return $aItems;
+
+        return $this->_oTemplate->displayItems($iSellerId, $sType, $aItems, [
+            'filter' => $sFilter
         ]);
     }
 
@@ -187,6 +202,8 @@ class BxPaymentModule extends BxBaseModPaymentModule
             'Cancel' => 'BxPaymentSubscriptions',
             'CancelByPendingId' => 'BxPaymentSubscriptions',
 
+            'GetClients' => '',
+            'GetItems' => '',
             'GetProviderOptions' => '',
             'InitializeCheckoutApi' => '',
             'StripeV3CreateSessionApi' => '',

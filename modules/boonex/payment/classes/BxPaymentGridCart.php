@@ -101,14 +101,21 @@ class BxPaymentGridCart extends BxBaseModPaymentGridCarts
 
     protected function _getCellTitle($mixedValue, $sKey, $aField, $aRow)
     {
-        if(!$this->_bIsApi)
-            $mixedValue = $this->_oModule->_oTemplate->displayLink('link', array(
-                'href' => $aRow['url'],
-                'title' => bx_html_attribute($aRow['title']),
-                'content' => $aRow['title']
-            ));
+        if($this->_bIsApi)
+            return [
+                'type' => 'link',
+                'name' => $sKey,
+                'data' => [
+                    'url' => bx_api_get_relative_url($aRow['url']),
+                    'text' => $aRow['title']
+                ]
+            ];
 
-    	return parent::_getCellDefault($mixedValue, $sKey, $aField, $aRow);
+        return parent::_getCellDefault($this->_oModule->_oTemplate->displayLink('link', [
+            'href' => $aRow['url'],
+            'title' => bx_html_attribute($aRow['title']),
+            'content' => $aRow['title']
+        ]), $sKey, $aField, $aRow);
     }
 
     protected function _getCellPriceSingle($mixedValue, $sKey, $aField, $aRow)
