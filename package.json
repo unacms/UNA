@@ -58,7 +58,7 @@
     "moment": "^2.30.1",
     "moment-timezone": "^0.6.3",
     "npm": "^12.0.2",
-    "ovenplayer": "^0.10.52",
+    "ovenplayer": "^0.10.53",
     "pdfjs-dist": "^6.2.108",
     "photoswipe": "^5.4.4",
     "player.js": "^0.1.0",
