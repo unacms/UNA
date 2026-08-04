@@ -1170,7 +1170,7 @@ class BxMarketModule extends BxBaseModTextModule
             return [bx_api_get_msg($aResult['message'])]; //TODO: Ask Roman How to return error message.
         else
             return [
-                'url' => bx_api_get_relative_url($oPayment->getCartUrl($iSeller))
+                'url' => $oPayment->getCartUrl($iSeller)
             ];
     }
 
@@ -1460,15 +1460,20 @@ class BxMarketModule extends BxBaseModTextModule
         $sGrid = $this->_oConfig->getGridObject('licenses' . (!empty($sType) ? '_' . $sType : ''));
         $oGrid = BxDolGrid::getObjectInstance($sGrid);
         if(!$oGrid)
-            return '';
+            return $this->_bIsApi ? [] : '';
 
-        $this->_oDb->updateLicense(array('new' => 0), array('profile_id' => bx_get_logged_profile_id(), 'new' => 1));
+        $this->_oDb->updateLicense(['new' => 0], ['profile_id' => bx_get_logged_profile_id(), 'new' => 1]);
 
-        $this->_oTemplate->addJs(array('licenses.js'));
-        return array(
-            'content' => $this->_oTemplate->getJsCode('licenses', array('sObjNameGrid' => $sGrid)) . $oGrid->getCode(),
+        if($this->_bIsApi)
+            return [
+                bx_api_get_block('grid', $oGrid->getCodeAPI())
+            ];
+
+        $this->_oTemplate->addJs(['licenses.js']);
+        return [
+            'content' => $this->_oTemplate->getJsCode('licenses', ['sObjNameGrid' => $sGrid]) . $oGrid->getCode(),
             'menu' => $CNF['OBJECT_MENU_LICENSES']
-        );
+        ];
     }
 
     protected function _getContentInfo($iContentId = 0)
