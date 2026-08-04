@@ -310,7 +310,7 @@ class BxAdsFormEntry extends BxBaseModTextFormEntry
 
         return $this->genInputStandard($aInput);
     }
- 
+
     protected function genCustomViewRowValueCategoryView(&$aInput)
     {
         $CNF = &$this->_oModule->_oConfig->CNF;
@@ -318,11 +318,14 @@ class BxAdsFormEntry extends BxBaseModTextFormEntry
         if(empty($aInput['value']))
             return '';
 
-        $aCategory = $this->_oModule->_oDb->getCategories(array('type' => 'id', 'id' => $aInput['value']));
+        $aCategory = $this->_oModule->_oDb->getCategories(['type' => 'id', 'id' => $aInput['value']]);
         if(empty($aCategory) || !is_array($aCategory))
             return '';
 
-        $sLink = bx_absolute_url(BxDolPermalinks::getInstance()->permalink($CNF['URL_CATEGORIES'], array($CNF['GET_PARAM_CATEGORY'] => $aCategory['id'])));
+        if($this->_bIsApi)
+            $aInput['value'] = bx_process_output(_t($aCategory['title']));
+
+        $sLink = bx_absolute_url(BxDolPermalinks::getInstance()->permalink($CNF['URL_CATEGORIES'], [$CNF['GET_PARAM_CATEGORY'] => $aCategory['id']]));
         return $this->_oModule->_oTemplate->parseLink($sLink, bx_process_output(_t($aCategory['title'])));
     }
 
