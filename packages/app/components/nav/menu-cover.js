@@ -158,14 +158,7 @@ export function CoverMenuMore(props) {
 
     
     propsCopy.items = propsCopy.items.map((aItem) => {
-        if (
-            aItem.name.includes('delete-') || 
-            aItem.name.includes('edit-') || 
-            aItem.name?.includes('join-') ||
-            aItem.name?.includes('-pricing') ||
-            aItem.name?.includes('-sessions') ||
-            aItem.name?.includes('-questionnaire')
-        ) {
+        if (!aItem.display_type && aItem.link) {
             return { ...aItem, noAction: true };
         }
         return aItem;
@@ -175,6 +168,7 @@ export function CoverMenuMore(props) {
     const buttonStyle = isDesktop ? 'bordered' : 'glass'
     const buttonSize = isDesktop ? 'regular' : 'regular'
 
+    console.log('propsCopy', propsCopy)
     return (
         <Menu
             {...propsCopy}

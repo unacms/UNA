@@ -285,19 +285,23 @@ export function Conductor({
         () =>
             leftbarContent.filter(
                 (item) =>
+                    !item?.data?.config_api?.use_as_filter &&
                     !!item?.data?.config_api?.use_as_menu &&
                     getDropdownItemsFromLeftbarBlock(item).length > 0
             ),
         [leftbarContent]
     )
+    // use_as_filter → Filters on any layout (mobile). navigator keeps legacy: all non-menu leftbar.
     const leftbarFilterBlocks = useMemo(
         () =>
             leftbarContent.filter((item) => {
+                if (item?.data?.config_api?.use_as_filter) return true
+                if (layoutName !== 'navigator') return false
                 if (!item?.data?.config_api?.use_as_menu) return true
                 // Fallback: menu flag set but no extractable links → keep in Filters
                 return getDropdownItemsFromLeftbarBlock(item).length === 0
             }),
-        [leftbarContent]
+        [leftbarContent, layoutName]
     )
 
     const LeftBarContentBlocks = LeftBarContent(
@@ -330,16 +334,29 @@ export function Conductor({
         data?.cover_block?.profile?.id === data?.context?.current?.id &&
         isDesktop
 
-    // Filters sheet only for non-menu leftbar blocks; use_as_menu goes into TabBar dropdowns.
-    const showFiltersBtn =
-        !isDesktop &&
-        layoutName === 'navigator' &&
-        leftbarFilterBlocks.length > 0
+    // Mobile: Filters sheet for use_as_filter (any layout) + navigator non-menu leftbar.
+    const showFiltersBtn = !isDesktop && leftbarFilterBlocks.length > 0
 
-    const excludeLeftbarFromMain =
-        !isDesktop &&
-        layoutName === 'navigator' &&
-        leftbarContent.length > 0
+    // Mobile: do not also render menu/filter leftbar blocks above main content.
+    const leftbarExcludedFromMainIds = useMemo(() => {
+        if (isDesktop) return new Set()
+        if (layoutName === 'navigator') {
+            return new Set(
+                leftbarContent.map((item) => item?.id).filter((id) => id != null)
+            )
+        }
+        return new Set(
+            [...leftbarMenuBlocks, ...leftbarFilterBlocks]
+                .map((item) => item?.id)
+                .filter((id) => id != null)
+        )
+    }, [
+        isDesktop,
+        layoutName,
+        leftbarContent,
+        leftbarMenuBlocks,
+        leftbarFilterBlocks,
+    ])
 
     const isUseCurrentHeader = layoutName === 'profile' && (!isCoverDisabled || !isDesktop);
 
@@ -460,7 +477,7 @@ export function Conductor({
         ts={ts}
         timestamp={timestamp}
         skeleton={skeleton}
-        excludeLeftbarFromMain={excludeLeftbarFromMain}
+        leftbarExcludedFromMainIds={leftbarExcludedFromMainIds}
     />
 
     return (
@@ -499,7 +516,7 @@ const TabSceneMainContent = ({
     timestamp,
     onFormChangedValues,
     isUseCurrentHeader,
-    excludeLeftbarFromMain = false,
+    leftbarExcludedFromMainIds = null,
 }) => {
     const isDesktop = useIsDesktop()
     const pageData = pageRoute.pageData
@@ -735,10 +752,13 @@ const TabSceneMainContent = ({
         const sidebarContent = pageRoute?.sidebar?.content ?? [];
         const visibleItems = refetchState.visibleItems ?? [];
 
-        // Leftbar that opens in Filters bottom sheet must not also render in main.
-        const mobileLeftbar = excludeLeftbarFromMain
-            ? []
-            : leftbarContent.filter(item => !item.data?.hidden_on?.includes?.('phone'));
+        // Leftbar already shown as Filters sheet / TabBar dropdown must not also render in main.
+        const excludedIds = leftbarExcludedFromMainIds
+        const mobileLeftbar = leftbarContent.filter((item) => {
+            if (item.data?.hidden_on?.includes?.('phone')) return false
+            if (excludedIds?.has?.(item?.id)) return false
+            return true
+        })
 
         const base = isDesktop
             ? [...dataItemsPageFiltered, ...visibleItems]
@@ -748,7 +768,7 @@ const TabSceneMainContent = ({
         return base.map(item =>
             item.feed_type === feedType ? item : { ...item, feed_type: feedType }
         );
-    }, [dataItemsPageFiltered, refetchState.visibleItems, isDesktop, pageRoute?.endpoint?.request_url, pageRoute?.leftbar?.content, pageRoute?.sidebar?.content, feedType, excludeLeftbarFromMain]);
+    }, [dataItemsPageFiltered, refetchState.visibleItems, isDesktop, pageRoute?.endpoint?.request_url, pageRoute?.leftbar?.content, pageRoute?.sidebar?.content, feedType, leftbarExcludedFromMainIds]);
 
     useEffect(() => {
         if (isUseCurrentHeader) {

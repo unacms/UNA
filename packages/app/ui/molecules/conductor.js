@@ -1,7 +1,10 @@
-import React, { useCallback, useState, useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useState, useEffect, useMemo, useRef, useContext } from "react";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, interpolate, cancelAnimation } from 'react-native-reanimated';
 import { View, ScrollView, Row } from 'app/design/view';
+import { Text } from 'app/design/typography';
 import UniList from 'app/ui/atoms/unilist'
+import { Icon } from 'app/ui/atoms/icon'
+import DropdownMenu, { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu'
 import { deepEqual, getUnitModeBySource } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, getAddon } from 'app/lib/conductor-helpers';
 import { ItemRenderer } from 'app/components/item-renderer';
@@ -269,73 +272,184 @@ const TabSceneHeader = React.memo(function TabSceneHeader2({
     return null;
 });
 
-const TabBar = React.memo(({ routes, index, setIndex, onChangeRoute, routesRef, onSelectTab }) => {
-    const MenuItemSubmenu = getComponent('menu-item', 'submenu');
-    if (routes.length > 1) {
-        return (
-
-            <ScrollView horizontal={true} className=" bg-card ">
-                <Row className="px-3 gap-2 h-14 justify-center" >
-                    {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
-
-
-                        return (
-                            <View className={` items-center justify-center ${a?.menu_settings?.class || ''}`}
-                                key={`tab-${a.index}`}
-                            >
-                                <MenuItemSubmenu
-                                    title={a.title}
-                                    pressed={a.index == index}
-                                    disabled={a?.item?.disabled}
-                                    addon={getAddon(a.addon)}
-                                    onPress={() => {
-                                        if (onSelectTab) {
-                                            onSelectTab(a);
-                                        } else {
-                                            setIndex(a.index)
-                                            if (onChangeRoute) {
-                                                onChangeRoute(routesRef?.current?.[a.index] ?? a)
-                                            }
-                                        }
-                                    }}
-                                    item={a}
-                                />
-                            </View>
-                        )
-                    })}
-                </Row>
-            </ScrollView>
-
-        )
+const normalizeLeftbarMenuItem = (item, index) => {
+    const rawLink = item?.url || item?.link || ''
+    const link =
+        rawLink && rawLink !== 'javascript:void(0)'
+            ? rawLink.startsWith('/')
+                ? rawLink
+                : `/${rawLink}`
+            : ''
+    return {
+        id: item?.id ?? item?.name ?? index,
+        title: item?.title || item?.name || '',
+        icon: item?.icon || 'Circle',
+        link,
     }
+}
+
+const getDropdownItemsFromLeftbarBlock = (blockItem) => {
+    const elements = blockItem?.data?.content
+    if (!Array.isArray(elements)) return []
+
+    return elements
+        .flatMap((el) => {
+            const type = el?.type || el?.content_type
+            if (type === 'menu') {
+                const items = el?.data?.content?.items ?? el?.content?.items ?? []
+                return items.map(normalizeLeftbarMenuItem)
+            }
+            if (type === 'categories_list') {
+                const items = Array.isArray(el?.data)
+                    ? el.data
+                    : Array.isArray(el?.data?.content)
+                        ? el.data.content
+                        : []
+                return items.map(normalizeLeftbarMenuItem)
+            }
+            if (
+                Array.isArray(el?.data) &&
+                el.data[0] &&
+                (el.data[0].url || el.data[0].link || el.data[0].name || el.data[0].title)
+            ) {
+                return el.data.map(normalizeLeftbarMenuItem)
+            }
+            return []
+        })
+        .filter((item) => item.title)
+}
+
+function LeftbarMenuTrigger({ title, icon }) {
+    const isOpen = useContext(DropdownMenuOpenContext) ?? false
+    return (
+        <Row
+            className={`items-center h-9 px-2 gap-1 rounded-full shrink-0 ${
+                isOpen ? 'bg-muted' : ''
+            }`}
+        >
+            <Icon icon={icon} size={16} className="text-secondary-foreground shrink-0" />
+            <Text className="text-sm font-semibold text-card-foreground">
+                {title}
+            </Text>
+            <Icon
+                icon={isOpen ? 'ChevronUp' : 'ChevronDown'}
+                size={16}
+                className="text-muted-foreground shrink-0"
+            />
+        </Row>
+    )
+}
+
+function LeftbarMenuDropdown({ blockItem, t }) {
+    const items = useMemo(
+        () => getDropdownItemsFromLeftbarBlock(blockItem),
+        [blockItem]
+    )
+    if (!items.length) return null
+
+    const title = t(blockItem?.data?.title || 'Menu')
+    const icon = blockItem?.data?.config_api?.icon || 'LayoutGrid'
+
+    return (
+        <DropdownMenu
+            items={items}
+            mode="popup"
+            triggerAccessibilityLabel={title}
+        >
+            <LeftbarMenuTrigger title={title} icon={icon} />
+        </DropdownMenu>
+    )
+}
+
+const TabBar = React.memo(({
+    routes,
+    index,
+    setIndex,
+    onChangeRoute,
+    routesRef,
+    onSelectTab,
+    leftbarMenus = [],
+}) => {
+    const MenuItemSubmenu = getComponent('menu-item', 'submenu');
+    const { t } = useTranslation();
+    const visibleRoutes = routes.filter((aItem) => aItem.hideInTop != true);
+    const hasTabs = visibleRoutes.length > 1;
+    const hasMenus = leftbarMenus.length > 0;
+
+    if (!hasTabs && !hasMenus) return null;
+
+    return (
+        <ScrollView horizontal={true} className=" bg-card ">
+            <Row className="px-3 gap-2 h-14 items-center" >
+                {hasTabs && visibleRoutes.map((a) => (
+                    <View
+                        className={` items-center justify-center ${a?.menu_settings?.class || ''}`}
+                        key={`tab-${a.index}`}
+                    >
+                        <MenuItemSubmenu
+                            title={a.title}
+                            pressed={a.index == index}
+                            disabled={a?.item?.disabled}
+                            addon={getAddon(a.addon)}
+                            onPress={() => {
+                                if (onSelectTab) {
+                                    onSelectTab(a);
+                                } else {
+                                    setIndex(a.index)
+                                    if (onChangeRoute) {
+                                        onChangeRoute(routesRef?.current?.[a.index] ?? a)
+                                    }
+                                }
+                            }}
+                            item={a}
+                        />
+                    </View>
+                ))}
+                {hasMenus && leftbarMenus.map((blockItem) => (
+                    <LeftbarMenuDropdown
+                        key={blockItem.id ?? blockItem.block?.name}
+                        blockItem={blockItem}
+                        t={t}
+                    />
+                ))}
+            </Row>
+        </ScrollView>
+    )
 });
 
 
 const AddBlocks = React.memo(({
-    leftSideBarBlocks, data, onFormSubmit
+    leftSideBarBlocks, data, onFormSubmit, onChange
 }) => {
-    if (!leftSideBarBlocks)
-        return null;
+    if (!leftSideBarBlocks?.length) return null
 
-    let leftSideBarBlocksObj = leftSideBarBlocks.map((block) => {
-        return <BlockByName
-            key={block}
-            data={data}
-            name={block}
-            onFormSubmit={onFormSubmit}
-            saveOnChanges={true}
-        />
-    });
-
-    return <>
-        {(leftSideBarBlocksObj?.length > 0) &&
-            <View className="my-3 mx-2 ">
-                {leftSideBarBlocksObj.map((block, index) => {
-                    return <View key={"lb-" + index}>{block}</View>
-                })}
-            </View>
-        }
-    </>
+    return (
+        <View className="my-3 mx-2 ">
+            {leftSideBarBlocks.map((block, index) => {
+                const name =
+                    typeof block === 'string'
+                        ? block
+                        : block?.block ?? block?.data?.source
+                const key =
+                    typeof block === 'string'
+                        ? block
+                        : block?.id ?? block?.data?.id ?? index
+                if (!name) return null
+                return (
+                    <View key={`lb-${key}`}>
+                        <BlockByName
+                            data={data}
+                            name={name}
+                            onFormSubmit={onFormSubmit}
+                            onChange={onChange}
+                            saveOnChanges={true}
+                            sidebar={true}
+                        />
+                    </View>
+                )
+            })}
+        </View>
+    )
 });
 
 const AT_TOP_SCROLL_THRESHOLD = 50;
@@ -353,6 +467,7 @@ const TabScene = React.memo(({
     numColumns,
     skipHeaderOffset,
     listRef,
+    leftbarExcludedFromMainIds = null,
 }) => {
 
     const handleEndReached = useCallback(
@@ -408,14 +523,43 @@ const TabScene = React.memo(({
     const feedType = route?.endpoint?.params?.type;
 
     const routeData = useMemo(() => {
-        const base = route?.endpoint
-            ? route.data
-            : [...(route.data || []), ...(route.sidebar?.content || [])];
-        if (!feedType || !base) return base;
-        return base.map(item =>
+        const leftbarContent = route?.leftbar?.content ?? []
+        const excludedIds = leftbarExcludedFromMainIds
+        const leftbarIds = new Set(
+            leftbarContent.map((item) => item?.id).filter((id) => id != null)
+        )
+
+        // Same filter as conductor.web.js mobileLeftbar.
+        const mobileLeftbar = leftbarContent.filter((item) => {
+            if (item.data?.hidden_on?.includes?.('phone')) return false
+            if (excludedIds?.has?.(item?.id)) return false
+            return true
+        })
+
+        const rawBase = route?.endpoint
+            ? (route.data || [])
+            : [...(route.data || []), ...(route.sidebar?.content || [])]
+
+        // Drop leftbar blocks from main data (filters/menus or duplicates).
+        const base = rawBase.filter((item) => {
+            if (item?.type === 'block' && leftbarIds.has(item?.id)) return false
+            if (item?.type === 'block' && excludedIds?.has?.(item?.id)) return false
+            return true
+        })
+
+        const combined = [...mobileLeftbar, ...base]
+        if (!feedType) return combined
+        return combined.map((item) =>
             item.feed_type === feedType ? item : { ...item, feed_type: feedType }
-        );
-    }, [route?.endpoint, route?.data, route?.sidebar?.content, feedType]);
+        )
+    }, [
+        route?.endpoint,
+        route?.data,
+        route?.sidebar?.content,
+        route?.leftbar?.content,
+        feedType,
+        leftbarExcludedFromMainIds,
+    ]);
 
     return (
         <UniList
@@ -903,7 +1047,50 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     }, [refreshRequested, queryClient, qKey, fetchNextPage]);
 
 
-    const isShowFilters = layoutName == 'navigator' && leftSideBarBlocks && leftSideBarBlocks?.length > 0;
+    const leftbarContent = currentRoute?.leftbar?.content ?? []
+    // Dropdown only when use_as_menu is explicitly set.
+    const leftbarMenuBlocks = useMemo(
+        () =>
+            leftbarContent.filter(
+                (item) =>
+                    !item?.data?.config_api?.use_as_filter &&
+                    !!item?.data?.config_api?.use_as_menu &&
+                    getDropdownItemsFromLeftbarBlock(item).length > 0
+            ),
+        [leftbarContent]
+    )
+    // use_as_filter → Filters on any layout. navigator keeps legacy: remaining non-menu leftbar.
+    const leftbarFilterBlocks = useMemo(
+        () =>
+            leftbarContent.filter((item) => {
+                if (item?.data?.config_api?.use_as_filter) return true
+                if (layoutName !== 'navigator') return false
+                if (!item?.data?.config_api?.use_as_menu) return true
+                return getDropdownItemsFromLeftbarBlock(item).length === 0
+            }),
+        [leftbarContent, layoutName]
+    )
+    // Same as web: do not also render menu/filter (or all navigator leftbar) in main list.
+    const leftbarExcludedFromMainIds = useMemo(() => {
+        if (layoutName === 'navigator') {
+            return new Set(
+                leftbarContent.map((item) => item?.id).filter((id) => id != null)
+            )
+        }
+        return new Set(
+            [...leftbarMenuBlocks, ...leftbarFilterBlocks]
+                .map((item) => item?.id)
+                .filter((id) => id != null)
+        )
+    }, [layoutName, leftbarContent, leftbarMenuBlocks, leftbarFilterBlocks])
+
+    // Prefer route leftbar; keep legacy string-name prop as fallback.
+    const filtersSheetBlocks = useMemo(() => {
+        if (leftbarFilterBlocks.length > 0) return leftbarFilterBlocks
+        return Array.isArray(leftSideBarBlocks) ? leftSideBarBlocks : []
+    }, [leftbarFilterBlocks, leftSideBarBlocks])
+
+    const isShowFilters = filtersSheetBlocks.length > 0;
 
     const tabBarMetaKey = useMemo(
         () =>
@@ -940,9 +1127,10 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
                 setIndex={setIndex}
                 onChangeRoute={onChangeRoute}
                 onSelectTab={onSelectTab}
+                leftbarMenus={leftbarMenuBlocks}
             />
         ),
-        [tabBarRoutes, index, setIndex, onChangeRoute, onSelectTab]
+        [tabBarRoutes, index, setIndex, onChangeRoute, onSelectTab, leftbarMenuBlocks]
     );
 
     const setFilterValue = useCallback((values) => {
@@ -970,6 +1158,30 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         });
     }, [index])
 
+    const onFormChangedValues = useCallback((values) => {
+        if (!isFormInitialized.current) {
+            isFormInitialized.current = true;
+            return;
+        }
+
+        let filterValues = []
+        for (let key in values) {
+            filterValues.push({
+                name: key,
+                value: Array.isArray(values[key])
+                    ? values[key].join(',')
+                    : values[key],
+            })
+        }
+
+        const currentFilters = routesRef.current?.[index]?.endpoint?.params?.filters
+        const newFilters = {}
+        filterValues.forEach(f => { newFilters[f.name] = f.value })
+        if (JSON.stringify(currentFilters) !== JSON.stringify(newFilters)) {
+            setFilterValue(filterValues)
+        }
+    }, [index, setFilterValue])
+
     const onFormSubmit = useCallback((formData, d) => {
         let filterValues = [];
         for (let key in d) {
@@ -980,8 +1192,20 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     }, [setFilterValue, setBottomSheetData]);
 
     const showFilters = useCallback(() => {
-        setBottomSheetData({ title: t('Filters'), content: <AddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit} />, showClose: true, snapPoints: ['60%', '60%'] });
-    }, [leftSideBarBlocks, data, onFormSubmit, layoutName, t, setBottomSheetData]);
+        setBottomSheetData({
+            title: t('Filters'),
+            content: (
+                <AddBlocks
+                    leftSideBarBlocks={filtersSheetBlocks}
+                    data={currentRoute?.pageData ?? data}
+                    onFormSubmit={onFormSubmit}
+                    onChange={onFormChangedValues}
+                />
+            ),
+            showClose: true,
+            snapPoints: ['60%', '60%'],
+        });
+    }, [filtersSheetBlocks, currentRoute?.pageData, data, onFormSubmit, onFormChangedValues, t, setBottomSheetData]);
 
     const filter = useMemo(
         () =>
@@ -1068,31 +1292,8 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         isFetchingNextPage: isFetchingNextPage,
         skipHeaderOffset: useLocalHeader,
         listRef: listRef,
+        leftbarExcludedFromMainIds,
     };
-
-    const onFormChangedValues = useCallback((values) => {
-        if (!isFormInitialized.current) {
-            isFormInitialized.current = true;
-            return;
-        }
-
-        let filterValues = []
-        for (let key in values) {
-            filterValues.push({
-                name: key,
-                value: Array.isArray(values[key])
-                    ? values[key].join(',')
-                    : values[key],
-            })
-        }
-
-        const currentFilters = routesRef.current?.[index]?.endpoint?.params?.filters
-        const newFilters = {}
-        filterValues.forEach(f => { newFilters[f.name] = f.value })
-        if (JSON.stringify(currentFilters) !== JSON.stringify(newFilters)) {
-            setFilterValue(filterValues)
-        }
-    }, [index])
 
     const Form = getComponent('element', 'form');
     const formProps = currentRoute?.endpoint?.filters;
