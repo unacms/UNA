@@ -117,7 +117,8 @@ class BxAdsModule extends BxBaseModTextModule
             'content' => $this->serviceGetCreatePostForm([
                 'absolute_action_url' => true,
                 'dynamic_mode' => true,
-                'context_id' => ($iContextId = bx_get('context_id')) !== false ? (int)$iContextId : false
+                'visibility_auto' => false,
+                'context_id' => ($iContextId = bx_get('context_id')) !== false ? (int)$iContextId : false,
             ])
         ]);
     }

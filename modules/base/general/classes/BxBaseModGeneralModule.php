@@ -1811,21 +1811,22 @@ class BxBaseModGeneralModule extends BxDolModule
         $sFunc = 'getObjectForm' . ucfirst($sType);
         $oForm = $oFormsHelper->$sFunc($sDisplay);
 
-        $sKey = 'FIELD_ALLOW_VIEW_TO';
-        if(!empty($CNF[$sKey]) && !empty($oForm->aInputs[$CNF[$sKey]]) && (!$bContext || $mixedContextId < 0)) {
+        $sParamsKey = 'visibility_auto';
+        if((!isset($aParams[$sParamsKey]) || $aParams[$sParamsKey] === true) && ($sField = $CNF['FIELD_ALLOW_VIEW_TO'] ?? false) && !empty($oForm->aInputs[$sField]) && (!$bContext || $mixedContextId < 0)) {
             $bContextOwner = $bContext && abs($mixedContextId) == $iLoggedId;
 
             if(!$bContext || $bContextOwner) {
                 $iGc = 0;
                 $iKeyGh = false;
-                foreach($oForm->aInputs[$CNF[$sKey]]['values'] as $iKey => $aValue) {
+                foreach($oForm->aInputs[$sField]['values'] as $iKey => $aValue) {
+                    //--- Remove empty items grouping elements (group_header and group_end w/o subitems). 
                     if(isset($aValue['type']) && in_array($aValue['type'], array('group_header', 'group_end'))) {
                         if($iKeyGh !== false && $iGc == 0) {
-                            unset($oForm->aInputs[$CNF[$sKey]]['values'][$iKeyGh]);
+                            unset($oForm->aInputs[$sField]['values'][$iKeyGh]);
                             $iKeyGh = false;
 
                             if($aValue['type'] == 'group_end')
-                                unset($oForm->aInputs[$CNF[$sKey]]['values'][$iKey]);
+                                unset($oForm->aInputs[$sField]['values'][$iKey]);
                         }
 
                         if($aValue['type'] == 'group_header') {
@@ -1848,12 +1849,12 @@ class BxBaseModGeneralModule extends BxDolModule
                         continue;
                     }
 
-                    unset($oForm->aInputs[$CNF[$sKey]]['values'][$iKey]);
+                    unset($oForm->aInputs[$sField]['values'][$iKey]);
                 }
             }
             else {
-                $oForm->aInputs[$CNF[$sKey]]['value'] = $mixedContextId;
-                $oForm->aInputs[$CNF[$sKey]]['type'] = 'hidden';
+                $oForm->aInputs[$sField]['value'] = $mixedContextId;
+                $oForm->aInputs[$sField]['type'] = 'hidden';
             }
         }
 
