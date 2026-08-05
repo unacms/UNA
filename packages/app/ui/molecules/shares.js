@@ -11,13 +11,14 @@ import {
 } from 'app/design/controls';
 import { useCallback } from 'react';
 import DropdownMenuItem from 'app/components/menu-items/dropdown-item';
+import { APP_URL } from 'app/config';
 
 const handleDo = async (url, event) => {
     event.preventDefault();
 
     try {
         const result = await Share.share({
-            message: url,
+            message: APP_URL + url,
         });
 
         switch (result.action) {

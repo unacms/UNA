@@ -235,27 +235,42 @@ export function Conductor({
         setBottomSheetData(false)
     }, [index])
 
-    const setFilterValue = (values) => {
+    const setFilterValue = (values, rawFormValues) => {
         setIndex((prevIndex) => {
             setRoutes((prevRoutes) => {
                 const newRoutes = [...prevRoutes]
-                newRoutes[prevIndex].endpoint.params.filters = {}
+                const filters = {}
                 values.forEach((value) => {
-                    const name = value.name
-                    const val = value.value
-
-                    if (newRoutes[prevIndex].endpoint.params.filters) {
-                        newRoutes[prevIndex].endpoint.params.filters[name] = val
-                    } else {
-                        newRoutes[prevIndex].endpoint.params.filters = {
-                            [name]: val,
-                        }
-                    }
+                    filters[value.name] = value.value
                 })
 
-                newRoutes[prevIndex].endpoint.finished = false
-                newRoutes[prevIndex].data = []
-                newRoutes[prevIndex].endpoint.params.start = 0
+                const currentFilters =
+                    prevRoutes[prevIndex]?.endpoint?.params?.filters || {}
+                if (
+                    JSON.stringify(currentFilters) === JSON.stringify(filters) &&
+                    (rawFormValues == null ||
+                        JSON.stringify(prevRoutes[prevIndex]?.endpoint?.filterFormValues) ===
+                            JSON.stringify(rawFormValues))
+                ) {
+                    return prevRoutes
+                }
+
+                newRoutes[prevIndex] = {
+                    ...newRoutes[prevIndex],
+                    endpoint: {
+                        ...newRoutes[prevIndex].endpoint,
+                        params: {
+                            ...newRoutes[prevIndex].endpoint.params,
+                            filters,
+                            start: 0,
+                        },
+                        ...(rawFormValues != null
+                            ? { filterFormValues: rawFormValues }
+                            : {}),
+                        finished: false,
+                    },
+                    data: [],
+                }
                 return newRoutes
             })
 
@@ -264,7 +279,7 @@ export function Conductor({
     }
 
     const onFormChangedValues = useCallback((values) => {
-        let filterValues = []
+        const filterValues = []
         for (let key in values) {
             filterValues.push({
                 name: key,
@@ -273,7 +288,7 @@ export function Conductor({
                     : values[key],
             })
         }
-        setFilterValue(filterValues)
+        setFilterValue(filterValues, values)
     }, [])
 
     useEffect(() => {
@@ -311,7 +326,8 @@ export function Conductor({
     const LeftBarFilterBlocks = LeftBarContent(
         currentRoute,
         onFormChangedValues,
-        leftbarFilterBlocks
+        leftbarFilterBlocks,
+        { restoreFormValues: true }
     )
 
     const showFilters = useCallback(() => {
@@ -747,28 +763,39 @@ const TabSceneMainContent = ({
 
     const feedType = pageRoute?.endpoint?.params?.type;
 
-    const dataItems = useMemo(() => {
-        const leftbarContent = pageRoute?.leftbar?.content ?? [];
-        const sidebarContent = pageRoute?.sidebar?.content ?? [];
-        const visibleItems = refetchState.visibleItems ?? [];
-
-        // Leftbar already shown as Filters sheet / TabBar dropdown must not also render in main.
+    // Mobile: same BlockByName path as desktop leftbar (needs pageData.url for active menu).
+    const mobileLeftbarItems = useMemo(() => {
+        if (isDesktop) return []
+        const leftbarContent = pageRoute?.leftbar?.content ?? []
         const excludedIds = leftbarExcludedFromMainIds
-        const mobileLeftbar = leftbarContent.filter((item) => {
+        return leftbarContent.filter((item) => {
             if (item.data?.hidden_on?.includes?.('phone')) return false
             if (excludedIds?.has?.(item?.id)) return false
             return true
         })
+    }, [
+        isDesktop,
+        pageRoute?.leftbar?.content,
+        leftbarExcludedFromMainIds,
+    ])
+
+    const dataItems = useMemo(() => {
+        const sidebarContent = pageRoute?.sidebar?.content ?? [];
+        const visibleItems = refetchState.visibleItems ?? [];
 
         const base = isDesktop
             ? [...dataItemsPageFiltered, ...visibleItems]
-            : [...mobileLeftbar, ...dataItemsPageFiltered, ...visibleItems, ...sidebarContent.filter(item => !item.data?.hidden_on?.includes?.('phone'))];
+            : [...dataItemsPageFiltered, ...visibleItems, ...sidebarContent.filter(item => !item.data?.hidden_on?.includes?.('phone'))];
 
         if (!feedType) return base;
         return base.map(item =>
             item.feed_type === feedType ? item : { ...item, feed_type: feedType }
         );
-    }, [dataItemsPageFiltered, refetchState.visibleItems, isDesktop, pageRoute?.endpoint?.request_url, pageRoute?.leftbar?.content, pageRoute?.sidebar?.content, feedType, leftbarExcludedFromMainIds]);
+    }, [dataItemsPageFiltered, refetchState.visibleItems, isDesktop, pageRoute?.endpoint?.request_url, pageRoute?.sidebar?.content, feedType]);
+
+    const mobileLeftbarBlocks = !isDesktop && mobileLeftbarItems.length > 0
+        ? LeftBarContent(pageRoute, onFormChangedValues, mobileLeftbarItems)
+        : null
 
     useEffect(() => {
         if (isUseCurrentHeader) {
@@ -823,6 +850,7 @@ const TabSceneMainContent = ({
                     />
                 </View>
                 }
+                {mobileLeftbarBlocks}
                 <UniList
 
                     data={dataItems}
@@ -1048,9 +1076,42 @@ const getUnitType = (currentRoute) =>
         (b) => !b.sidebar && b.unitType
     )?.unitType
 
-const LeftBarContent = (route, onFormChangedValues, itemsOverride) => {
+/** Re-apply conductor-stored form values into pageData form inputs (any field type). */
+function pageDataWithRestoredFormValues(pageData, formValues) {
+    if (!pageData?.elements || !formValues || Object.keys(formValues).length === 0) {
+        return pageData
+    }
+    const elements = JSON.parse(JSON.stringify(pageData.elements))
+    const visit = (node) => {
+        if (!node || typeof node !== 'object') return
+        if (Array.isArray(node)) {
+            node.forEach(visit)
+            return
+        }
+        if (
+            (node.type === 'form' || node.content_type === 'form') &&
+            node.data?.inputs
+        ) {
+            Object.keys(formValues).forEach((key) => {
+                if (!node.data.inputs[key]) return
+                node.data.inputs[key].value = formValues[key]
+            })
+        }
+        Object.values(node).forEach(visit)
+    }
+    visit(elements)
+    return { ...pageData, elements }
+}
+
+const LeftBarContent = (route, onFormChangedValues, itemsOverride, options = {}) => {
     const items = itemsOverride ?? route?.leftbar?.content ?? []
     if (items.length === 0) return null
+    const pageData = options.restoreFormValues
+        ? pageDataWithRestoredFormValues(
+              route?.pageData,
+              route?.endpoint?.filterFormValues
+          )
+        : route?.pageData
 
     return (
         <View className="gap-y-4">
@@ -1059,7 +1120,7 @@ const LeftBarContent = (route, onFormChangedValues, itemsOverride) => {
                     <BlockByName
                         name={block.block}
                         onChange={onFormChangedValues}
-                        data={route?.pageData}
+                        data={pageData}
                         sidebar={true}
                     />
                 </View>

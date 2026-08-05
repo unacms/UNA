@@ -454,6 +454,33 @@ const AddBlocks = React.memo(({
 
 const AT_TOP_SCROLL_THRESHOLD = 50;
 
+/** Re-apply conductor-stored form values into pageData form inputs (any field type). */
+function pageDataWithRestoredFormValues(pageData, formValues) {
+    if (!pageData?.elements || !formValues || Object.keys(formValues).length === 0) {
+        return pageData
+    }
+    const elements = JSON.parse(JSON.stringify(pageData.elements))
+    const visit = (node) => {
+        if (!node || typeof node !== 'object') return
+        if (Array.isArray(node)) {
+            node.forEach(visit)
+            return
+        }
+        if (
+            (node.type === 'form' || node.content_type === 'form') &&
+            node.data?.inputs
+        ) {
+            Object.keys(formValues).forEach((key) => {
+                if (!node.data.inputs[key]) return
+                node.data.inputs[key].value = formValues[key]
+            })
+        }
+        Object.values(node).forEach(visit)
+    }
+    visit(elements)
+    return { ...pageData, elements }
+}
+
 const TabScene = React.memo(({
     route,
     hasNextPage,
@@ -522,19 +549,22 @@ const TabScene = React.memo(({
 
     const feedType = route?.endpoint?.params?.type;
 
-    const routeData = useMemo(() => {
+    const mobileLeftbarItems = useMemo(() => {
         const leftbarContent = route?.leftbar?.content ?? []
         const excludedIds = leftbarExcludedFromMainIds
-        const leftbarIds = new Set(
-            leftbarContent.map((item) => item?.id).filter((id) => id != null)
-        )
-
-        // Same filter as conductor.web.js mobileLeftbar.
-        const mobileLeftbar = leftbarContent.filter((item) => {
+        return leftbarContent.filter((item) => {
             if (item.data?.hidden_on?.includes?.('phone')) return false
             if (excludedIds?.has?.(item?.id)) return false
             return true
         })
+    }, [route?.leftbar?.content, leftbarExcludedFromMainIds])
+
+    const routeData = useMemo(() => {
+        const leftbarContent = route?.leftbar?.content ?? []
+        const leftbarIds = new Set(
+            leftbarContent.map((item) => item?.id).filter((id) => id != null)
+        )
+        const excludedIds = leftbarExcludedFromMainIds
 
         const rawBase = route?.endpoint
             ? (route.data || [])
@@ -547,9 +577,9 @@ const TabScene = React.memo(({
             return true
         })
 
-        const combined = [...mobileLeftbar, ...base]
-        if (!feedType) return combined
-        return combined.map((item) =>
+        // Leftbar rendered via BlockByName in header (same as desktop), not as list items.
+        if (!feedType) return base
+        return base.map((item) =>
             item.feed_type === feedType ? item : { ...item, feed_type: feedType }
         )
     }, [
@@ -561,9 +591,36 @@ const TabScene = React.memo(({
         leftbarExcludedFromMainIds,
     ]);
 
+    const leftbarHeader = mobileLeftbarItems.length > 0 ? (
+        <View className="my-3 mx-2 gap-y-4">
+            {mobileLeftbarItems.map((block, index) => {
+                const name = block?.block ?? block?.data?.source
+                if (!name) return null
+                return (
+                    <View key={`lb-${block.id ?? name ?? index}`}>
+                        <BlockByName
+                            data={route?.pageData}
+                            name={name}
+                            sidebar={true}
+                        />
+                    </View>
+                )
+            })}
+        </View>
+    ) : null
+
+    const combinedHeader = (ListHeaderComponent || leftbarHeader) ? () => (
+        <>
+            {typeof ListHeaderComponent === 'function'
+                ? ListHeaderComponent()
+                : ListHeaderComponent || null}
+            {leftbarHeader}
+        </>
+    ) : undefined
+
     return (
         <UniList
-            ListHeaderComponent={typeof ListHeaderComponent === 'function' ? ListHeaderComponent : ListHeaderComponent ? () => ListHeaderComponent : undefined}
+            ListHeaderComponent={combinedHeader}
             index={route.index}
             data={routeData}
             route={route}
@@ -1133,7 +1190,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         [tabBarRoutes, index, setIndex, onChangeRoute, onSelectTab, leftbarMenuBlocks]
     );
 
-    const setFilterValue = useCallback((values) => {
+    const setFilterValue = useCallback((values, rawFormValues) => {
         setRoutes(prevRoutes => {
             const newRoutes = [...prevRoutes];
             if (!newRoutes[index]?.endpoint?.params) return prevRoutes;
@@ -1152,6 +1209,9 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
                         filters,
                         start: 0,
                     },
+                    ...(rawFormValues != null
+                        ? { filterFormValues: rawFormValues }
+                        : {}),
                 },
             };
             return newRoutes;
@@ -1178,7 +1238,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         const newFilters = {}
         filterValues.forEach(f => { newFilters[f.name] = f.value })
         if (JSON.stringify(currentFilters) !== JSON.stringify(newFilters)) {
-            setFilterValue(filterValues)
+            setFilterValue(filterValues, values)
         }
     }, [index, setFilterValue])
 
@@ -1187,17 +1247,21 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
         for (let key in d) {
             filterValues.push({ name: key, value: Array.isArray(d[key]) ? d[key].join(',') : d[key] })
         };
-        setFilterValue(filterValues);
+        setFilterValue(filterValues, d);
         setBottomSheetData(false);
     }, [setFilterValue, setBottomSheetData]);
 
     const showFilters = useCallback(() => {
+        const pageData = pageDataWithRestoredFormValues(
+            currentRoute?.pageData ?? data,
+            routesRef.current?.[index]?.endpoint?.filterFormValues
+        )
         setBottomSheetData({
             title: t('Filters'),
             content: (
                 <AddBlocks
                     leftSideBarBlocks={filtersSheetBlocks}
-                    data={currentRoute?.pageData ?? data}
+                    data={pageData}
                     onFormSubmit={onFormSubmit}
                     onChange={onFormChangedValues}
                 />
@@ -1205,7 +1269,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
             showClose: true,
             snapPoints: ['60%', '60%'],
         });
-    }, [filtersSheetBlocks, currentRoute?.pageData, data, onFormSubmit, onFormChangedValues, t, setBottomSheetData]);
+    }, [filtersSheetBlocks, currentRoute?.pageData, data, onFormSubmit, onFormChangedValues, t, setBottomSheetData, index]);
 
     const filter = useMemo(
         () =>
