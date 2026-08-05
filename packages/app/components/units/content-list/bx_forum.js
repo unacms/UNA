@@ -96,6 +96,7 @@ Units.Base = function Base({ data }) {
     const isSkeleton = data?.skeleton
     const categoryName = data.category?.name
     const categoryIcon = data.category?.icon
+    const showInModal = appSetting('browse', 'show_in_modal', data.module)
 
     return (
         <View className=" mx-auto w-full">
@@ -114,69 +115,77 @@ Units.Base = function Base({ data }) {
                 <View className="gap-y-2 flex-auto min-w-0">
                     <View className="flex-row gap-x-3">
                         <View className="gap-y-1.5 flex-auto min-w-0">
-                            <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
-                                <View className="flex-auto gap-y-1.5">
-                                    <Skeleton className="h-5 w-3/4" visible={isSkeleton}>
-                                        <Text
-                                            numberOfLines={2}
-                                            className="text-foreground tracking-tight leading-snug web:hover:text-primary text-base font-bold"
-                                        >
-                                            {data.title}
-                                        </Text>
-                                    </Skeleton>
+                            <LinkOrModal href={data.url} showInModal={showInModal}>
+                                <Skeleton className="h-5 w-3/4" visible={isSkeleton}>
+                                    <Text
+                                        numberOfLines={2}
+                                        className="text-foreground tracking-tight leading-snug web:hover:text-primary text-base font-bold"
+                                    >
+                                        {data.title}
+                                    </Text>
+                                </Skeleton>
+                            </LinkOrModal>
+
+                            {/* Meta row stays outside the discussion link: the author is its own
+                                link, and an <a> cannot be nested inside another <a>. */}
+                            <View className="flex-row items-center gap-x-1.5 min-w-0">
+                                {/* unit_wo_info + name avoid Profile `unit` flex-1 so "in category" stays adjacent. */}
+                                <Skeleton className="h-6 w-40" visible={isSkeleton}>
                                     <View className="flex-row items-center gap-x-1.5 min-w-0">
-                            {/* unit_wo_info + name avoid Profile `unit` flex-1 so "in category" stays adjacent. */}
-                            <Skeleton className="h-6 w-40" visible={isSkeleton}>
-                                <View className="flex-row items-center gap-x-1.5 min-w-0">
-                                    <Profile
-                                        {...data.author_data}
-                                        displayType="unit_wo_info"
-                                        displaySize="xs"
-                                    />
-                                    <View className="flex-row items-center gap-x-1 min-w-0">
+                                        {/* `showLink` (singular) turns off Profile's emulated-press mode
+                                            so the avatar and name render as real links, not role="button". */}
                                         <Profile
                                             {...data.author_data}
-                                            displayType="unit_text_link"
+                                            displayType="unit_wo_info"
                                             displaySize="xs"
+                                            showLink
                                         />
-                                        {categoryName ? (
-                                            <>
-                                                <Text className="text-xs text-muted-foreground">
-                                                    in
-                                                </Text>
-                                                <Text
-                                                    numberOfLines={1}
-                                                    className="text-xs font-semibold text-foreground"
-                                                >
-                                                    {categoryName}
-                                                </Text>
-                                            </>
-                                        ) : null}
+                                        <View className="flex-row items-center gap-x-1 min-w-0">
+                                            <Profile
+                                                {...data.author_data}
+                                                displayType="unit_text_link"
+                                                displaySize="xs"
+                                                showLink
+                                            />
+                                            {categoryName ? (
+                                                <>
+                                                    <Text className="text-xs text-muted-foreground">
+                                                        in
+                                                    </Text>
+                                                    <Text
+                                                        numberOfLines={1}
+                                                        className="text-xs font-semibold text-foreground"
+                                                    >
+                                                        {categoryName}
+                                                    </Text>
+                                                </>
+                                            ) : null}
+                                        </View>
                                     </View>
-                                </View>
-                            </Skeleton>
-                            <Text className="text-xs text-muted-foreground flex-none">
-                                ·
-                            </Text>
-                            <Skeleton className="h-5 w-10 flex-none" visible={isSkeleton}>
-                                <Time
-                                    stylesName="text-xs text-muted-foreground"
-                                    ts={data.added}
-                                />
-                            </Skeleton>
-                        </View>
-                                    {(data.summary_plain || isSkeleton) ? (
-                                        <Skeleton className="h-9 w-full" rounded="rounded-lg" visible={isSkeleton}>
-                                            <Text
-                                                numberOfLines={2}
-                                                className="text-muted-foreground text-sm leading-snug"
-                                            >
-                                                {data.summary_plain}
-                                            </Text>
-                                        </Skeleton>
-                                    ) : null}
-                                </View>
-                            </LinkOrModal>
+                                </Skeleton>
+                                <Text className="text-xs text-muted-foreground flex-none">
+                                    ·
+                                </Text>
+                                <Skeleton className="h-5 w-10 flex-none" visible={isSkeleton}>
+                                    <Time
+                                        stylesName="text-xs text-muted-foreground"
+                                        ts={data.added}
+                                    />
+                                </Skeleton>
+                            </View>
+
+                            {(data.summary_plain || isSkeleton) ? (
+                                <LinkOrModal href={data.url} showInModal={showInModal}>
+                                    <Skeleton className="h-9 w-full" rounded="rounded-lg" visible={isSkeleton}>
+                                        <Text
+                                            numberOfLines={2}
+                                            className="text-muted-foreground text-sm leading-snug"
+                                        >
+                                            {data.summary_plain}
+                                        </Text>
+                                    </Skeleton>
+                                </LinkOrModal>
+                            ) : null}
                         </View>
 
                         {(data.image || isSkeleton) && (
