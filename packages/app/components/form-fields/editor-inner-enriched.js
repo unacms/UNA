@@ -73,8 +73,8 @@ export default function RftTextEnriched({
 
     const [styleState, setStyleState] = useState(null)
     const [selection, setSelection] = useState({ start: 0, end: 0, text: '' })
-    // Web: caret-relative dropdown placement { top } or { bottom } — prefer above
-    // the typed line (same as tentap) so the list never covers the @query.
+    // Web: viewport-fixed dropdown placement { top } or { bottom } — prefer above
+    // the typed line so the list never covers the @query / gets clipped below.
     const [caretPos, setCaretPos] = useState(null)
 
     // Shared mention pipeline (same fetch/recents/nav as tentap).
@@ -161,12 +161,13 @@ export default function RftTextEnriched({
         setCaretPos(null)
     }, [mentionIndicator, isWeb, recordMention, clearTrigger])
 
-    // Place the list just above the caret line (same idea as tentap's
-    // `style.bottom = height - caretY`). Pin the dropdown's bottom edge above the
-    // typed line so it grows upward and never covers the @query. Fixed max
-    // height — do not shrink it to the editor box.
+    // Fixed to the viewport so feed/card overflow:hidden cannot clip the list.
+    // Prefer ABOVE the caret; flip below only when the viewport has room under
+    // the caret and not enough above (comment fields sit near the screen bottom).
     const DROPDOWN_MAX_H = 160
+    const DROPDOWN_MIN_H = 72
     const DROPDOWN_GAP = 6
+    const DROPDOWN_MAX_W = 448 // max-w-md
     const computeCaretPosition = useCallback(() => {
         if (!isWeb || typeof window === 'undefined') return
         try {
@@ -181,25 +182,41 @@ export default function RftTextEnriched({
             }
             if (!rect) return
             const cRect = container.getBoundingClientRect()
-            const caretTop = rect.top - cRect.top
-            const caretBottom = rect.bottom - cRect.top
-            const containerHeight = cRect.height
-            const spaceAbove = caretTop
-            const spaceBelow = containerHeight - caretBottom
+            const vpAbove = Math.max(0, rect.top)
+            const vpBelow = Math.max(0, window.innerHeight - rect.bottom)
+            const needed = DROPDOWN_MAX_H + DROPDOWN_GAP
+            const canFitAbove = vpAbove >= needed
+            const canFitBelow = vpBelow >= needed
+            // Prefer above. Flip below only when above cannot fit and below can,
+            // or when neither fits but below has clearly more room.
+            const placeBelow =
+                (!canFitAbove && canFitBelow) ||
+                (!canFitAbove && !canFitBelow && vpBelow > vpAbove + 24)
 
-            // Prefer above the line (tentap default). Only flip below when the
-            // caret is on the first line and there is clearly more room under it.
-            if (spaceAbove < 48 && spaceBelow > spaceAbove) {
+            const left = Math.max(8, Math.min(cRect.left, window.innerWidth - DROPDOWN_MAX_W - 8))
+            const width = Math.min(cRect.width || DROPDOWN_MAX_W, DROPDOWN_MAX_W, window.innerWidth - left - 8)
+
+            if (placeBelow) {
                 setCaretPos({
-                    top: caretBottom + DROPDOWN_GAP,
-                    maxHeight: DROPDOWN_MAX_H,
+                    position: 'fixed',
+                    top: rect.bottom + DROPDOWN_GAP,
+                    left,
+                    width,
+                    maxHeight: Math.min(
+                        DROPDOWN_MAX_H,
+                        Math.max(DROPDOWN_MIN_H, vpBelow - DROPDOWN_GAP)
+                    ),
                 })
             } else {
-                // CSS `bottom` = distance from container bottom → dropdown bottom
-                // sits just above the caret line; list grows upward.
                 setCaretPos({
-                    bottom: Math.max(0, containerHeight - caretTop + DROPDOWN_GAP),
-                    maxHeight: DROPDOWN_MAX_H,
+                    position: 'fixed',
+                    bottom: Math.max(0, window.innerHeight - rect.top + DROPDOWN_GAP),
+                    left,
+                    width,
+                    maxHeight: Math.min(
+                        DROPDOWN_MAX_H,
+                        Math.max(DROPDOWN_MIN_H, vpAbove - DROPDOWN_GAP)
+                    ),
                 })
             }
         } catch {
@@ -214,6 +231,14 @@ export default function RftTextEnriched({
             return
         }
         requestAnimationFrame(computeCaretPosition)
+        const onReposition = () => requestAnimationFrame(computeCaretPosition)
+        window.addEventListener('resize', onReposition)
+        // Capture scroll from nested feed/modals so fixed coords stay on the caret.
+        window.addEventListener('scroll', onReposition, true)
+        return () => {
+            window.removeEventListener('resize', onReposition)
+            window.removeEventListener('scroll', onReposition, true)
+        }
     }, [isWeb, suggestions.length, mentionIndicator, computeCaretPosition])
 
     // Web: drive mention trigger from TipTap with the same text-before-cursor
@@ -527,10 +552,13 @@ export default function RftTextEnriched({
                 suggestions={suggestions}
                 onSelect={insertMention}
                 dropdownRef={dropdownRef}
-                className={caretPos ? '' : 'bottom-0'}
+                className={caretPos?.position === 'fixed' ? 'fixed' : caretPos ? '' : 'bottom-0'}
                 style={
                     caretPos
                         ? {
+                            position: caretPos.position,
+                            left: caretPos.left,
+                            width: caretPos.width,
                             maxHeight: caretPos.maxHeight,
                             ...(caretPos.top != null
                                 ? { top: caretPos.top }

@@ -45,7 +45,8 @@ function MentionSuggestionItem({ user, selected, onSelect }) {
 
 /**
  * Shared mention suggestion list for tentap + enriched.
- * Render as a sibling of the editor surface (not inside overflow:hidden).
+ * Prefer `position: fixed` + viewport coords from the editor so card/feed
+ * overflow:hidden cannot clip the list. Falls back to absolute in-container.
  */
 export function MentionSuggestionsDropdown({
     suggestions,
@@ -59,11 +60,13 @@ export function MentionSuggestionsDropdown({
 
     const showHeaders = new Set(suggestions.map((s) => s.type)).size > 1
     let lastType = null
+    const isFixed = style?.position === 'fixed' || /(^|\s)fixed(\s|$)/.test(className)
+    const extraClass = className.replace(/(^|\s)fixed(\s|$)/g, ' ').trim()
 
     return (
         <View
             ref={dropdownRef}
-            className={`absolute max-h-40 w-full max-w-md left-0 z-50 p-1 rounded-xl bg-popover shadow-card-outline dark:shadow-card-outline-deep ${className}`}
+            className={`${isFixed ? 'fixed' : 'absolute'} max-h-40 w-full max-w-md left-0 z-[100] p-1 rounded-xl bg-popover shadow-card-outline dark:shadow-card-outline-deep ${extraClass}`}
             style={style}
         >
             <ScrollView keyboardShouldPersistTaps="always">
