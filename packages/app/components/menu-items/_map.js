@@ -5,6 +5,7 @@ import Callback from './callback';
 import Modal from './modal';
 import DropdownItem from './dropdown-item';
 import Submenu from './submenu';
+import Blockmenu from './blockmenu';
 import TopMenu from './topmenu';
 import Sidebar from './sidebar';
 import Unit from './unit';
@@ -23,6 +24,7 @@ export const componentsMapDefault = {
     unit: memo(Unit),
     sidebar_with_wrapper: memo(SidebarWithWrapper),
     submenu: memo(Submenu),
+    blockmenu: memo(Blockmenu),
     topmenu: memo(TopMenu),
 };
 

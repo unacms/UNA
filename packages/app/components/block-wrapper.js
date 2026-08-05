@@ -6,10 +6,47 @@ import { Block as PageBlock, BlockContent, BlockName, BlockActions, BlockHeader,
 import { useTranslation } from 'react-i18next'
 import { Button, ButtonLink, Modal, NeoButtonLink } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon'
+import { getComponent } from 'app/components/registry'
+import { usePathname } from 'app/lib/hooks/router'
+
+function pathComparable(path) {
+    return String(path || '').replace(/^\/+/, '').split(/[?#]/)[0]
+}
+
+function BlockHeaderMenu({ menu, pathname }) {
+    const MenuItemBlockmenu = getComponent('menu-item', 'blockmenu')
+    const current = pathComparable(pathname)
+    const items = menu?.items
+
+    if (!items?.length || !MenuItemBlockmenu) return null
+
+    return (
+        <View className="flex-row items-center gap-2">
+            {items.map((item) => {
+                const href = item.link || item.url || ''
+                const pressed = Boolean(pathComparable(href) && pathComparable(href) === current)
+
+                return (
+                    <MenuItemBlockmenu
+                        key={item.id || item.name}
+                        title={item.title}
+                        href={href}
+                        pressed={pressed}
+                        disabled={item.disabled}
+                    />
+                )
+            })}
+        </View>
+    )
+}
 
 export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg, fullWidth, contentOnly, list, showPadding, extraProps, children }) {
     const { t } = useTranslation()
     const [showHelp, setShowHelp] = useState(false)
+    const pathname = usePathname()
+
+    const blockMenu = block?.menu?.items?.length ? block.menu : null
+
     if (block?.designbox_id == null)
         return children;
 
@@ -60,8 +97,13 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
         bIsShowTitle = true;
     }
 
+    if (blockMenu) {
+        bIsShowTitle = true;
+    }
+
     const isHelpLink = isUrl(pureHelp)
     const isHelp = !!block.help
+    const hasHeaderActions = !!(config?.header_more_url || blockMenu)
 
     return (
         <View className={wrapperClassses || 'w-full'}>
@@ -93,14 +135,19 @@ export function BlockWrapper({ config, block, wrapperClassses, showTitle, showBg
                                 {!!block.description && <BlockDescription>{block.description}</BlockDescription>}
                             </BlockName>
 
-                            {config?.header_more_url && (<BlockActions>
-                                <NeoButtonLink
-                                    href={config?.header_more_url}
-                                    label={t(config?.header_more_text || 'See all')}
-                                    style="link"
-                                    borderShape="roundedRectangle"
-                                    controlSize="small"
-                                />
+                            {hasHeaderActions && (<BlockActions>
+                                {blockMenu ? (
+                                    <BlockHeaderMenu menu={blockMenu} pathname={pathname} />
+                                ) : null}
+                                {config?.header_more_url ? (
+                                    <NeoButtonLink
+                                        href={config?.header_more_url}
+                                        label={t(config?.header_more_text || 'See all')}
+                                        style="link"
+                                        borderShape="roundedRectangle"
+                                        controlSize="small"
+                                    />
+                                ) : null}
                             </BlockActions>)}
                             {(isHelp && isHelpLink) && <ButtonLink href={pureHelp} target="_blank" title="Help" startDecorator='LifeBuoy' variant="text" />}
                             {(isHelp && !isHelpLink) && <Button onPress={() => setShowHelp(true)} title="Help" startDecorator='LifeBuoy' variant="text" />}
