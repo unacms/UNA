@@ -26,11 +26,20 @@ select {
     outline: none !important;
 }
 
-/* Rich text editors — I-beam over editable surface; pointer on links inside. */
+/* Rich text editors — I-beam over editable surface; pointer on links inside.
+ * TipTap puts min-height on the .eti-editor wrapper while ProseMirror is a
+ * child sized to content only — without inheriting min-height, clicks in the
+ * empty area miss the contenteditable and never focus the editor. */
 .eti-editor,
 .eti-editor .ProseMirror,
 .eti-editor .tiptap {
     cursor: text;
+}
+
+.eti-editor > .ProseMirror,
+.eti-editor > .tiptap {
+    min-height: inherit;
+    box-sizing: border-box;
 }
 
 .eti-editor a {

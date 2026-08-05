@@ -462,6 +462,19 @@ export default function RftTextEnriched({
 
     const editorTextColor = themeName === 'dark' ? 'rgba(225,230,240,1)' : 'rgba(30,40,55,1)'
 
+    // Web: clicks on padding / empty chrome around ProseMirror (toolbar field
+    // padding, areas outside the stretched contenteditable) should still focus.
+    const onContainerMouseDown = useCallback((e) => {
+        if (!isWeb || disabled) return
+        const target = e?.target
+        if (!target?.closest) return
+        if (target.closest('.ProseMirror')) return
+        if (target.closest('a, button, [role="button"]')) return
+        if (dropdownRef.current?.contains?.(target)) return
+        e.preventDefault?.()
+        editorRef.current?.focus?.()
+    }, [isWeb, disabled])
+
     // Before client mount (web SSR), render a placeholder of the right height so
     // we do not initialize Tiptap on the server and avoid a hydration mismatch.
     if (!mounted) {
@@ -489,6 +502,7 @@ export default function RftTextEnriched({
     return (
         <View
             ref={containerRef}
+            onMouseDown={isWeb ? onContainerMouseDown : undefined}
             className={`flex-auto web:cursor-text ${isToolBar
                 ? ' px-3 py-2 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg flex-auto overflow-hidden text-card-foreground '
                 : (bg == 'transparent' ? '' : cn(inputSettings.base, inputSettings.rounded.default, inputSettings.size.regular))
