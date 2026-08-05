@@ -24,7 +24,7 @@ import emitter from 'app/context/emitter'
 import { TextInput } from 'react-native'
 import { useEditorMentions } from 'app/lib/use-editor-mentions'
 import { MentionSuggestionsDropdown } from 'app/lib/mention-suggestions-dropdown'
-import { buildUnaMentionHtml } from './editor-mention-shared'
+import { buildUnaMentionHtml } from 'app/lib/editor-mention-shared'
 import { useIsDesktop } from 'app/context/measure'
 
 

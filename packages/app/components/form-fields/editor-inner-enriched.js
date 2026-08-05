@@ -18,7 +18,7 @@ import {
     insertMentionInTiptap,
     mentionAttributesForUser,
     parseMentionTrigger,
-} from './editor-mention-shared'
+} from 'app/lib/editor-mention-shared'
 import {
     getTiptapEditorFromContainer,
     isCommentEditorEnterKey,
