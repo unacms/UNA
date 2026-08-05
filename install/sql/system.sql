@@ -329,7 +329,7 @@ CREATE TABLE `sys_options` (
   `caption` varchar(255) NOT NULL default '',
   `info` varchar(255) NOT NULL default '',
   `value` mediumtext NOT NULL,
-  `type` enum('value','digit','text','code','checkbox','select','combobox','file','image','list','rlist','rgb','rgba','datetime') NOT NULL default 'digit',
+  `type` enum('value','digit','secret','text','code','checkbox','select','combobox','file','image','list','rlist','rgb','rgba','datetime') NOT NULL default 'digit',
   `extra` text NOT NULL default '',
   `check` varchar(32) NOT NULL,
   `check_params` text NOT NULL,
@@ -388,7 +388,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_push_queue_time', '_adm_stg_cpt_option_sys_push_queue_time', '0', 'digit', '', '', '', '', 7),
 
 (@iCategoryId, 'sys_ftp_login', '_adm_stg_cpt_option_sys_ftp_login', '', 'digit', '', '', '', '', 10),
-(@iCategoryId, 'sys_ftp_password', '_adm_stg_cpt_option_sys_ftp_password', '', 'digit', '', '', '', '', 11),
+(@iCategoryId, 'sys_ftp_password', '_adm_stg_cpt_option_sys_ftp_password', '', 'secret', '', '', '', '', 11),
 (@iCategoryId, 'sys_ftp_dir', '_adm_stg_cpt_option_sys_ftp_dir', '', 'digit', '', '', '', '', 12),
 
 (@iCategoryId, 'sys_template_cache_image_enable', '_adm_stg_cpt_option_sys_template_cache_image_enable', '', 'checkbox', '', '', '', '', 20),
@@ -588,7 +588,7 @@ SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
 (@iCategoryId, 'sys_oauth_key', '_adm_stg_cpt_option_sys_oauth_key', '', '', 'digit', '', '', '', 20),
-(@iCategoryId, 'sys_oauth_secret', '_adm_stg_cpt_option_sys_oauth_secret', '', '', 'digit', '', '', '', 21),
+(@iCategoryId, 'sys_oauth_secret', '_adm_stg_cpt_option_sys_oauth_secret', '', '', 'secret', '', '', '', 21),
 
 (@iCategoryId, 'currency_code', '_adm_stg_cpt_option_currency_code', '', 'USD', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:33:"get_options_currency_code_default";s:5:"class";s:21:"TemplPaymentsServices";}', 'Avail', '_adm_stg_err_option_currency_code', 30),
 (@iCategoryId, 'currency_sign', '_adm_stg_cpt_option_currency_sign', '', '&#36;', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:33:"get_options_currency_sign_default";s:5:"class";s:21:"TemplPaymentsServices";}', 'Avail', '_adm_stg_err_option_currency_sign', 31),
@@ -602,13 +602,13 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `info`, `value`, `ty
 (@iCategoryId, 'sys_embed_default', '_adm_stg_cpt_option_sys_embed_default', '', 'sys_system', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:25:"get_options_embed_default";s:5:"class";s:13:"TemplServices";}', '', '', 70),
 (@iCategoryId, 'sys_embed_lifetime', '_adm_stg_cpt_option_sys_embed_lifetime', '', '30', 'digit', '', '', '', 73),
 
-(@iCategoryId, 'sys_embedly_api_key', '_adm_stg_cpt_option_sys_embedly_api_key', '', '', 'digit', '', '', '', 80),
+(@iCategoryId, 'sys_embedly_api_key', '_adm_stg_cpt_option_sys_embedly_api_key', '', '', 'secret', '', '', '', 80),
 
-(@iCategoryId, 'sys_iframely_api_key', '_adm_stg_cpt_option_sys_iframely_api_key', '', '', 'digit', '', '', '', 90),
+(@iCategoryId, 'sys_iframely_api_key', '_adm_stg_cpt_option_sys_iframely_api_key', '', '', 'secret', '', '', '', 90),
 
-(@iCategoryId, 'sys_embed_microlink_key', '_adm_stg_cpt_option_sys_embed_microlink_key', '', '', 'digit', '', '', '', 100),
+(@iCategoryId, 'sys_embed_microlink_key', '_adm_stg_cpt_option_sys_embed_microlink_key', '', '', 'secret', '', '', '', 100),
 
-(@iCategoryId, 'sys_embed_peekalink_api_key', '_adm_stg_cpt_option_sys_embed_peekalink_api_key', '', '', 'digit', '', '', '', 110);
+(@iCategoryId, 'sys_embed_peekalink_api_key', '_adm_stg_cpt_option_sys_embed_peekalink_api_key', '', '', 'secret', '', '', '', 110);
 
 
 --
@@ -668,7 +668,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_security_form_token_lifetime', '_adm_stg_cpt_option_sys_security_form_token_lifetime', '86400', 'digit', '', '', '', 11),
 (@iCategoryId, 'sys_captcha_default', '_adm_stg_cpt_option_sys_captcha_default', 'sys_recaptcha_new', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:27:"get_options_captcha_default";s:5:"class";s:13:"TemplServices";}', '', '', 19),
 (@iCategoryId, 'sys_recaptcha_key_public', '_adm_stg_cpt_option_sys_recaptcha_key_public', '', 'digit', '', '', '', 20),
-(@iCategoryId, 'sys_recaptcha_key_private', '_adm_stg_cpt_option_sys_recaptcha_key_private', '', 'digit', '', '', '', 21),
+(@iCategoryId, 'sys_recaptcha_key_private', '_adm_stg_cpt_option_sys_recaptcha_key_private', '', 'secret', '', '', '', 21),
 (@iCategoryId, 'sys_add_nofollow', '_adm_stg_cpt_option_sys_add_nofollow', 'on', 'checkbox', '', '', '', 30),
 (@iCategoryId, 'sys_confirmation_before_redirect', '_adm_stg_cpt_option_sys_confirmation_before_redirect', 'on', 'checkbox', '', '', '', 31),
 (@iCategoryId, 'sys_security_block_content_after_n_reports', '_adm_stg_cpt_option_sys_security_block_content_after_n_reports', '0', 'digit', '', '', '', 35),
@@ -690,7 +690,7 @@ SET @iCategoryId = LAST_INSERT_ID();
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
 (@iCategoryId, 'sys_storage_default', '_adm_stg_cpt_option_sys_storage_default', 'Local', 'select', 'Local,S3,S3v4,S3v4alt', '', '', 1),
 (@iCategoryId, 'sys_storage_s3_access_key', '_adm_stg_cpt_option_sys_storage_s3_access_key', '', 'digit', '', '', '', 2),
-(@iCategoryId, 'sys_storage_s3_secret_key', '_adm_stg_cpt_option_sys_storage_s3_secret_key', '', 'digit', '', '', '', 3),
+(@iCategoryId, 'sys_storage_s3_secret_key', '_adm_stg_cpt_option_sys_storage_s3_secret_key', '', 'secret', '', '', '', 3),
 (@iCategoryId, 'sys_storage_s3_bucket', '_adm_stg_cpt_option_sys_storage_s3_bucket', '', 'digit', '', '', '', 4),
 (@iCategoryId, 'sys_storage_s3_domain', '_adm_stg_cpt_option_sys_storage_s3_domain', '', 'digit', '', '', '', 5),
 (@iCategoryId, 'sys_storage_s3_endpoint', '_adm_stg_cpt_option_sys_storage_s3_endpoint', '', 'digit', '', '', '', 6),
@@ -844,7 +844,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_sockets_url', '_adm_stg_cpt_option_sys_sockets_url', '', 'digit', '', '', '', 2),
 (@iCategoryId, 'sys_sockets_app_id', '_adm_stg_cpt_option_sys_sockets_app_id', '', 'digit', '', '', '', 3),
 (@iCategoryId, 'sys_sockets_key', '_adm_stg_cpt_option_sys_sockets_key', '', 'digit', '', '', '', 4),
-(@iCategoryId, 'sys_sockets_secret', '_adm_stg_cpt_option_sys_sockets_secret', '', 'digit', '', '', '', 5);
+(@iCategoryId, 'sys_sockets_secret', '_adm_stg_cpt_option_sys_sockets_secret', '', 'secret', '', '', '', 5);
 
 --
 -- CATEGORY (HIDDEN): Audit

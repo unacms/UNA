@@ -478,8 +478,16 @@ class BxDolStudioOptions extends BxDol
     	if(method_exists($this, $sMethod))
     	    return $this->$sMethod($aOption, $mixedValue);
 
-        if(is_array($mixedValue))
-            $mixedValue = implode(',', $mixedValue);
+        switch($aOption['type']) {
+            case 'secret':
+                if(strcmp(bx_gen_secret($aOption['value']), $mixedValue) == 0)
+                    $mixedValue = $aOption['value'];
+                break;
+
+            default:
+                if(is_array($mixedValue))
+                    $mixedValue = implode(',', $mixedValue);
+        }
 
         return $mixedValue;
     }

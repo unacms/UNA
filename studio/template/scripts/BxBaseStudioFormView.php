@@ -184,6 +184,16 @@ class BxBaseStudioFormView extends BxDolStudioForm
 
         return parent::genInputCheckboxSet($aInput);
     }
+
+    protected function _genInputStandardAttrs(&$aInput)
+    {
+        $aAttrs = parent::_genInputStandardAttrs($aInput);
+
+        if($aInput['type'] == 'text' && ($aInput['secret'] ?? false) && ($sValue = $aAttrs['value'] ?? false))
+            $aAttrs['value'] = bx_gen_secret($sValue);
+
+        return $aAttrs;
+    }
 }
 
 /** @} */

@@ -1330,6 +1330,13 @@ function genRndSalt()
     return genRndPwd(8, true);
 }
 
+function bx_gen_secret($sV)
+{
+    $iL = strlen($sV);
+    $iV = ceil(0.1 * $iL);
+    return substr($sV, 0, $iV) . str_repeat('*', floor(0.8 * $iL)) . substr($sV, -$iV);
+}
+
 /**
  * Encrypt user password.
  * When BX_PWD_ALGO is 'custom', then bx_custom_pwd_encrypt function with custom algorythm must be defined in inc/header.inc.php file.

@@ -1332,29 +1332,29 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
 
     protected function executeStatementSilent($oStatement, $aBindings = array(), $bVerbose = null)
     {
-    	$bResult = $oStatement->execute(!empty($aBindings) && is_array($aBindings) ? $aBindings : null);
-    	if($bResult)
-    		return true;
+        $bResult = $oStatement->execute(!empty($aBindings) && is_array($aBindings) ? $aBindings : null);
+        if($bResult)
+            return true;
 
-		$aError = $oStatement->errorInfo();
+        $aError = $oStatement->errorInfo();
 
         $aTrace = debug_backtrace();
         unset($aTrace[0]);
 
-		$this->_aError = array(
-			'code' => BX_DB_ERR_QUERY_ERROR,
-			'message' => !empty($aError[2]) ? $aError[2] : '',
-			'query' => $oStatement->queryString,
-			'trace' => $aTrace,
-			'verbose' => $bVerbose
-		);
+        $this->_aError = array(
+            'code' => BX_DB_ERR_QUERY_ERROR,
+            'message' => !empty($aError[2]) ? $aError[2] : '',
+            'query' => $oStatement->queryString,
+            'trace' => $aTrace,
+            'verbose' => $bVerbose
+        );
 
-		return false;
+        return false;
     }
 
-	protected function errorOutput($aError)
+    protected function errorOutput($aError)
     {
-		$aErrorLocation = array();
+        $aErrorLocation = [];
 
         if(!empty($aError['query']) && !empty($aError['trace']))
             foreach($aError['trace'] as $aCall )
@@ -1368,41 +1368,43 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
                         }
 
         $sOutput = '';
-        
         if(!empty($aError['query']))
             $sOutput .= '<p><b>Query:</b><br />' . bx_process_output($aError['query']) . '</p>'."\n";
 
         if(!empty($aError['message']))
             $sOutput .= '<p><b>Mysql error:</b><br />' . $aError['message'] . '</p>'."\n";
 
-		if(!empty($aErrorLocation))
-			$sOutput .= '<p><b>Location:</b><br />The error was found in <b>' . $aErrorLocation['function'] . '</b> function in the file <b>' . $aErrorLocation['file'] . '</b> at line <b>' . $aErrorLocation['line'] . '</b>.</p>'."\n";
+        if(!empty($aErrorLocation))
+            $sOutput .= '<p><b>Location:</b><br />The error was found in <b>' . $aErrorLocation['function'] . '</b> function in the file <b>' . $aErrorLocation['file'] . '</b> at line <b>' . $aErrorLocation['line'] . '</b>.</p>'."\n";
 
         $sOutput .= '<p><b>collation_connection:</b><br />' . $this->getOne("SELECT @@collation_connection") . '</p>'."\n";
-        
-		if(!empty($aError['trace'])) {
+
+        if(!empty($aError['trace'])) {
             $sBackTrace = print_r($aError['trace'], true);
-            if (defined ('BX_DATABASE_USER') && !is_array(BX_DATABASE_USER))
+            if(defined ('BX_DATABASE_USER') && !is_array(BX_DATABASE_USER))
                 $sBackTrace = str_replace('[_sUser:protected] => ' . BX_DATABASE_USER, '[_sUser:protected] => *****', $sBackTrace);
-            if (defined ('BX_DATABASE_PASS') && !is_array(BX_DATABASE_PASS))
+            if(defined ('BX_DATABASE_PASS') && !is_array(BX_DATABASE_PASS))
                 $sBackTrace = str_replace('[_sPassword:protected] => ' . BX_DATABASE_PASS, '[_sPassword:protected] => *****', $sBackTrace);
 
-			$sOutput .= '<div><b>Debug backtrace:</b></div><div style="overflow:scroll;height:300px;border:1px solid gray;"><pre>' . htmlspecialchars_adv($sBackTrace) . '</pre></div>';
-		}
+            $sOutput .= '<div><b>Debug backtrace:</b></div><div style="overflow:scroll;height:300px;border:1px solid gray;"><pre>' . htmlspecialchars_adv($sBackTrace) . '</pre></div>';
+        }
 
-		if(!empty(self::$_aParams)) {
-			$sSettings = var_export(self::$_aParams, true);
+        if(!empty(self::$_aParams)) {
+            $aParams = self::$_aParams;
+            $aParamsSecret = $this->getColumn("SELECT `name` FROM `sys_options` WHERE `type`='secret'", "name");
+            if($aParamsSecret && is_array($aParamsSecret))
+                array_walk($aParams, function(&$sValue, $sKey) use ($aParamsSecret) {
+                    if(in_array($sKey, $aParamsSecret))
+                        $sValue = bx_gen_secret($sValue);
+                });
 
-			$sOutput .= '<div><b>Settings:</b></div><div style="overflow:scroll;height:300px;border:1px solid gray;"><pre>' . htmlspecialchars_adv($sSettings) . '</pre></div>';
-		}
+            $sOutput .= '<div><b>Settings:</b></div><div style="overflow:scroll;height:300px;border:1px solid gray;"><pre>' . htmlspecialchars_adv(var_export($aParams, true)) . '</pre></div>';
+        }
 
         $sOutput .= '<p><b>Called script:</b><br />' . htmlspecialchars_adv($_SERVER['PHP_SELF']) . '</p>';
 
-		if(!empty($_REQUEST)) {
-			$sRequest = var_export($_REQUEST, true);
-
-			$sOutput .= '<p><b>Request parameters:</b><br /><pre>' . htmlspecialchars_adv($sRequest) . '</pre></p>';
-		}
+        if(!empty($_REQUEST))
+            $sOutput .= '<p><b>Request parameters:</b><br /><pre>' . htmlspecialchars_adv(var_export($_REQUEST, true)) . '</pre></p>';
 
         return $sOutput;
     }

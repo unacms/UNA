@@ -640,6 +640,18 @@ class BxBaseStudioOptions extends BxDolStudioOptions
                     'db' => ['pass' => 'Xss'],
                 ];
                 break;
+            case 'secret':
+                $aField = [
+                    'type' => 'text',
+                    'name' => $aItem['name'],
+                    'caption' => _t($aItem['caption']),
+                    'info' => _t($aItem['info']),
+                    'value' => $mixedValue,
+                    'attrs' => $aAttributes,
+                    'secret' => 1,
+                    'db' => ['pass' => 'Xss'],
+                ];
+                break;
             case 'text':
                 $aField = [
                     'type' => 'textarea',
