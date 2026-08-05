@@ -3,68 +3,28 @@ import { useController, useFormContext } from 'react-hook-form'
 import { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { Platform } from 'react-native'
 import { EnrichedTextInput } from 'react-native-enriched-html'
-import { View, ScrollView, Pressable } from 'app/design/view'
-import { Text } from 'app/design/typography'
-import { Button } from 'app/design/controls'
+import { View } from 'app/design/view'
 import { useFilesData } from 'app/context/files'
-import { useCurrentUser } from 'app/context/user'
+import { EditorToolbar, useEnrichedToolbar } from 'app/lib/editor-toolbar'
 import { useThemeName } from 'app/design/theme'
-import { useTranslation } from 'react-i18next'
-import Profile from 'app/ui/molecules/profile'
-import Badges from 'app/ui/molecules/badges'
 import { getAlert, stripTags, stripTagsWithLinks, appSetting, cn } from 'app/lib/util'
 import emitter from 'app/context/emitter'
 import { mentionsToUnaLinks, unaLinksToMentions, linkifyHtml } from './editor-mention-html'
-import { useMentionSuggestions } from './use-mention-suggestions'
+import { useEditorMentions } from 'app/lib/use-editor-mentions'
+import { MentionSuggestionsDropdown } from 'app/lib/mention-suggestions-dropdown'
+import {
+    MENTION_INDICATORS,
+    getTextBeforeCursorFromTiptap,
+    insertMentionInTiptap,
+    mentionAttributesForUser,
+    parseMentionTrigger,
+} from './editor-mention-shared'
 import {
     getTiptapEditorFromContainer,
     isCommentEditorEnterKey,
     isCommentEditorNewlineEnter,
 } from 'app/lib/comment-editor-keyboard'
 import { useIsDesktop } from 'app/context/measure'
-
-const MENTION_TYPE_LABELS = {
-    bx_persons: 'People',
-    bx_organizations: 'Organizations',
-    other: 'Other',
-}
-
-function MentionSuggestionItem({ user, selected, onSelect }) {
-    return (
-        <Pressable
-            onPress={onSelect}
-            className={`flex-row items-center gap-2 px-2 py-1.5 rounded-lg ${selected ? 'bg-accent/60' : 'web:hover:bg-muted'}`}
-        >
-            <View className="flex-none">
-                <Profile
-                    id={user.value}
-                    display_name={user.label}
-                    url_avatar={user.url_avatar}
-                    displayType="unit_wo_info"
-                    displaySize="sm"
-                    showLinks={false}
-                />
-            </View>
-            <View className="flex-1 min-w-0">
-                <View className="flex-row items-center gap-1 min-w-0">
-                    <Text numberOfLines={1} className="shrink min-w-0 text-sm font-medium text-card-foreground">
-                        {user.label}
-                    </Text>
-                    {!!user.badges?.length && (
-                        <View className="flex-none flex-row items-center">
-                            <Badges badges={user.badges} size="2xs" />
-                        </View>
-                    )}
-                </View>
-                {!!user.slug && (
-                    <Text numberOfLines={1} className="text-xs text-muted-foreground">
-                        {user.slug}
-                    </Text>
-                )}
-            </View>
-        </Pressable>
-    )
-}
 
 const inputSettings = appSetting('theme', 'inputs')
 
@@ -94,8 +54,6 @@ export default function RftTextEnriched({
     const editorRef = useRef(null)
     const containerRef = useRef(null)
     const dropdownRef = useRef(null)
-    // Latest mention handlers/state for the web capture-phase key listener.
-    const handlersRef = useRef(null)
     const isWeb = Platform.OS === 'web'
     const isDesktop = useIsDesktop()
     const isToolBar = html == 2 || html == 1
@@ -104,9 +62,7 @@ export default function RftTextEnriched({
 
     const { field } = useController({ name, rules: {}, defaultValue: value })
     const formContext = useFormContext()
-    const { currentUser } = useCurrentUser()
-    const { filesData, setFilesData } = useFilesData()
-    const { t } = useTranslation()
+    const { setFilesData } = useFilesData()
     const themeName = useThemeName() || 'light'
 
     // The web enriched-html build uses Tiptap, which crashes during SSR
@@ -116,31 +72,22 @@ export default function RftTextEnriched({
     useEffect(() => { setMounted(true) }, [])
 
     const [styleState, setStyleState] = useState(null)
-    // [text, indicator]
-    const [mention, setMention] = useState(['', ''])
-    // Web: caret-anchored dropdown position { top, left, width } (null = fall back
-    // to the default anchored placement, e.g. on native).
+    const [selection, setSelection] = useState({ start: 0, end: 0, text: '' })
+    // Web: caret-relative dropdown placement { top } or { bottom } — prefer above
+    // the typed line (same as tentap) so the list never covers the @query.
     const [caretPos, setCaretPos] = useState(null)
 
-    // ---- mention fetch url (same as tentap version) ----
-    const object_privacy_view =
-        formContext.watch('object_privacy_view') ||
-        formContext.watch('cmt_privacy_view')
-    const object_id = formContext.watch('id')
-    const m = name == 'cmt_text' ? 'sys_cmts' : 'bx_timeline'
-    let mentionUrl = '/searchExtended.php?api=1&action=get_mention'
-    if (m) mentionUrl += '&m=' + m
-    if (object_privacy_view) mentionUrl += '&object_privacy_view=' + object_privacy_view
-    if (object_id) mentionUrl += '&cid=' + object_id
-
-    // Robust, race-free mention suggestions (debounced + stale-response guarded),
-    // seeded from the user's recent mentions on the bare trigger.
-    const { suggestions, setSuggestions, reset: resetSuggestions, recordMention } = useMentionSuggestions({
-        url: mentionUrl,
-        term: mention[0],
-        indicator: mention[1],
-        userId: currentUser?.id,
-    })
+    // Shared mention pipeline (same fetch/recents/nav as tentap).
+    const {
+        indicator: mentionIndicator,
+        suggestions,
+        setTrigger,
+        clearTrigger,
+        moveSelected,
+        selectedSuggestion,
+        recordMention,
+        handlersRef,
+    } = useEditorMentions({ fieldName: name })
 
     // ---- initial / external value ----
     // EnrichedTextInput's web build puts `defaultValue` in useEditor deps, so a
@@ -191,19 +138,35 @@ export default function RftTextEnriched({
     }, [formContext.formState.isSubmitted])
 
     const insertMention = useCallback((user) => {
-        const indicator = mention[1] || '@'
-        editorRef.current?.setMention(indicator, user.label.trim(), {
-            'data-profile-id': String(user.value),
-            href: user.url,
-            class: `bx-mention-link ${user.classname || ''}`.trim(),
-        })
-        recordMention(user)
-        resetSuggestions()
-        setMention(['', ''])
-        setCaretPos(null)
-    }, [mention, resetSuggestions, recordMention])
+        const indicator = mentionIndicator || '@'
+        let inserted = false
 
-    // ---- web: anchor the dropdown right under the line where "@" is typed ----
+        if (isWeb) {
+            // Prefer direct TipTap insert (same @-token parse as tentap). Library
+            // setMention no-ops when blur ended the MentionPlugin trigger.
+            const tipTap = getTiptapEditorFromContainer(containerRef.current)
+            if (tipTap) inserted = insertMentionInTiptap(tipTap, user, indicator)
+        }
+
+        if (!inserted) {
+            editorRef.current?.setMention?.(
+                indicator,
+                user.label.trim(),
+                mentionAttributesForUser(user)
+            )
+        }
+
+        recordMention(user)
+        clearTrigger()
+        setCaretPos(null)
+    }, [mentionIndicator, isWeb, recordMention, clearTrigger])
+
+    // Place the list just above the caret line (same idea as tentap's
+    // `style.bottom = height - caretY`). Pin the dropdown's bottom edge above the
+    // typed line so it grows upward and never covers the @query. Fixed max
+    // height — do not shrink it to the editor box.
+    const DROPDOWN_MAX_H = 160
+    const DROPDOWN_GAP = 6
     const computeCaretPosition = useCallback(() => {
         if (!isWeb || typeof window === 'undefined') return
         try {
@@ -218,31 +181,86 @@ export default function RftTextEnriched({
             }
             if (!rect) return
             const cRect = container.getBoundingClientRect()
-            // Follow the caret vertically only; the dropdown stays left-aligned and
-            // full-width so it sits directly under the line (anchoring to the caret's
-            // x would push it right and cover the text near the field's right edge).
-            const GAP = 6
-            // Keep in sync with the dropdown's `max-h-*` class below.
-            const MAX_H = 160
             const caretTop = rect.top - cRect.top
             const caretBottom = rect.bottom - cRect.top
-            const spaceBelow = cRect.height - caretBottom
+            const containerHeight = cRect.height
             const spaceAbove = caretTop
-            // Place on whichever side has more room and cap the height to fit, so the
-            // list never covers the typed line and is never clipped by the container.
-            let top, maxHeight
-            if (spaceBelow >= spaceAbove) {
-                top = caretBottom + GAP
-                maxHeight = Math.min(MAX_H, Math.max(0, spaceBelow - GAP))
+            const spaceBelow = containerHeight - caretBottom
+
+            // Prefer above the line (tentap default). Only flip below when the
+            // caret is on the first line and there is clearly more room under it.
+            if (spaceAbove < 48 && spaceBelow > spaceAbove) {
+                setCaretPos({
+                    top: caretBottom + DROPDOWN_GAP,
+                    maxHeight: DROPDOWN_MAX_H,
+                })
             } else {
-                maxHeight = Math.min(MAX_H, Math.max(0, spaceAbove - GAP))
-                top = Math.max(0, caretTop - maxHeight - GAP)
+                // CSS `bottom` = distance from container bottom → dropdown bottom
+                // sits just above the caret line; list grows upward.
+                setCaretPos({
+                    bottom: Math.max(0, containerHeight - caretTop + DROPDOWN_GAP),
+                    maxHeight: DROPDOWN_MAX_H,
+                })
             }
-            setCaretPos({ top, maxHeight })
         } catch {
-            // Selection not available — keep previous/fallback placement.
+            // Selection not available — keep previous / fall back to bottom-0.
         }
     }, [isWeb])
+
+    // Reposition whenever the suggestion list appears or the query changes.
+    useEffect(() => {
+        if (!isWeb || !suggestions.length) {
+            setCaretPos(null)
+            return
+        }
+        requestAnimationFrame(computeCaretPosition)
+    }, [isWeb, suggestions.length, mentionIndicator, computeCaretPosition])
+
+    // Web: drive mention trigger from TipTap with the same text-before-cursor
+    // rule as tentap, so suggestions work even when library mention events miss.
+    useEffect(() => {
+        if (!isWeb || !mounted) return
+
+        let editor = null
+        let cancelled = false
+        let intervalId = null
+
+        const syncTrigger = () => {
+            if (!editor || editor.isDestroyed) return
+            const parsed = parseMentionTrigger(getTextBeforeCursorFromTiptap(editor))
+            if (parsed) {
+                setTrigger(parsed.term, parsed.indicator)
+                requestAnimationFrame(computeCaretPosition)
+            } else {
+                setTrigger('', '')
+                setCaretPos(null)
+            }
+        }
+
+        const attach = () => {
+            editor = getTiptapEditorFromContainer(containerRef.current)
+            if (!editor || editor.isDestroyed) return false
+            editor.on('transaction', syncTrigger)
+            editor.on('selectionUpdate', syncTrigger)
+            return true
+        }
+
+        if (!attach()) {
+            intervalId = setInterval(() => {
+                if (cancelled) return
+                if (attach()) clearInterval(intervalId)
+            }, 50)
+        }
+
+        return () => {
+            cancelled = true
+            if (intervalId) clearInterval(intervalId)
+            if (editor && !editor.isDestroyed) {
+                editor.off('transaction', syncTrigger)
+                editor.off('selectionUpdate', syncTrigger)
+            }
+        }
+    }, [isWeb, mounted, setTrigger, computeCaretPosition])
 
     // ---- web: keep the editor focused while interacting with the dropdown ----
     // Clicking a suggestion would otherwise blur the editor, which ends the mention
@@ -322,16 +340,6 @@ export default function RftTextEnriched({
     }, [onEnterSubmit])
 
     // ---- mention navigation in dropdown ----
-    const moveSelected = (dir) => {
-        setSuggestions((prev) => {
-            const i = prev.findIndex((x) => x.selected)
-            if (i === -1) return prev
-            const len = prev.length
-            const ni = dir === 'up' ? (i - 1 + len) % len : (i + 1) % len
-            return prev.map((x, idx) => ({ ...x, selected: idx === ni, index: idx }))
-        })
-    }
-
     const onKeyPress = useCallback((e) => {
         const nativeEvent = e?.nativeEvent
         const key = nativeEvent?.key
@@ -340,8 +348,7 @@ export default function RftTextEnriched({
         if (!isWeb && submitOnEnter && isCommentsEditor && isCommentEditorEnterKey(nativeEvent)) {
             if (isCommentEditorNewlineEnter(nativeEvent)) return
             if (suggestions.length) {
-                const sel = suggestions.find((x) => x.selected) || suggestions[0]
-                if (sel) insertMention(sel)
+                if (selectedSuggestion) insertMention(selectedSuggestion)
                 return
             }
             onEnterSubmitRef.current?.()
@@ -354,10 +361,9 @@ export default function RftTextEnriched({
         if (key === 'ArrowDown') moveSelected('down')
         else if (key === 'ArrowUp') moveSelected('up')
         else if (key === 'Enter') {
-            const sel = suggestions.find((x) => x.selected) || suggestions[0]
-            if (sel) insertMention(sel)
+            if (selectedSuggestion) insertMention(selectedSuggestion)
         }
-    }, [isWeb, submitOnEnter, isCommentsEditor, suggestions, insertMention])
+    }, [isWeb, submitOnEnter, isCommentsEditor, suggestions, selectedSuggestion, insertMention, moveSelected])
 
     // Web: capture Enter on TipTap (splitBlock for Shift/Option; submit otherwise).
     useEffect(() => {
@@ -396,8 +402,8 @@ export default function RftTextEnriched({
                         case 'Enter':
                             if (isCommentEditorNewlineEnter(event)) break
                             stopKey(event)
-                            const sel = h.suggestions.find((x) => x.selected) || h.suggestions[0]
-                            if (sel) h.insertMention(sel)
+                            const sel = h.selectedSuggestion || h.suggestions[0]
+                            if (sel) insertMention(sel)
                             return
                         case 'ArrowDown':
                             stopKey(event)
@@ -409,7 +415,7 @@ export default function RftTextEnriched({
                             return
                         case 'Escape':
                             stopKey(event)
-                            h.close()
+                            h.clearTrigger()
                             return
                         default:
                             break
@@ -442,7 +448,7 @@ export default function RftTextEnriched({
             if (intervalId) clearInterval(intervalId)
             detach()
         }
-    }, [isWeb, mounted, submitOnEnter, isCommentsEditor])
+    }, [isWeb, mounted, submitOnEnter, isCommentsEditor, handlersRef, insertMention])
 
     // ---- styles (htmlStyle) from theme ----
     const htmlStyle = useMemo(() => {
@@ -475,138 +481,106 @@ export default function RftTextEnriched({
         editorRef.current?.focus?.()
     }, [isWeb, disabled])
 
+    // Native library callbacks (web uses TipTap sync above; keep these as a
+    // fallback and for platforms where the native enriched input fires them).
+    const onStartMention = useCallback((indicator) => {
+        if (!isWeb) setTrigger('', indicator)
+    }, [isWeb, setTrigger])
+    const onChangeMention = useCallback((e) => {
+        if (!isWeb) setTrigger(e.text, e.indicator)
+    }, [isWeb, setTrigger])
+    const onEndMention = useCallback(() => {
+        if (!isWeb) clearTrigger()
+    }, [isWeb, clearTrigger])
+
+    const { items: toolbarItems, linkBar } = useEnrichedToolbar({
+        editorRef,
+        containerRef,
+        styleState,
+        selection,
+        enabled: isToolBar,
+    })
+
+    const shellClass = 'relative flex-auto web:cursor-text overflow-visible'
+    const surfaceClass = isToolBar
+        ? ' px-3 py-2 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg flex-auto overflow-hidden text-card-foreground '
+        : (bg == 'transparent' ? '' : cn(inputSettings.base, inputSettings.rounded.default, inputSettings.size.regular))
+
     // Before client mount (web SSR), render a placeholder of the right height so
     // we do not initialize Tiptap on the server and avoid a hydration mismatch.
     if (!mounted) {
         return (
             <View
-                className={`flex-auto ${isToolBar
-                    ? ' px-3 py-2 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg flex-auto overflow-hidden '
-                    : (bg == 'transparent' ? '' : cn(inputSettings.base, inputSettings.rounded.default, inputSettings.size.regular))
-                    }`}
+                className={`flex-auto ${surfaceClass}`}
                 style={{ minHeight: initialHeight }}
             />
         )
-    }
-
-    const dropdownPositioned = isWeb && caretPos
-
-    // Keep the capture-phase key listener pointed at the latest state/handlers.
-    handlersRef.current = {
-        suggestions,
-        insertMention,
-        moveSelected,
-        close: () => { resetSuggestions(); setMention(['', '']); setCaretPos(null) },
     }
 
     return (
         <View
             ref={containerRef}
             onMouseDown={isWeb ? onContainerMouseDown : undefined}
-            className={`flex-auto web:cursor-text ${isToolBar
-                ? ' px-3 py-2 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg flex-auto overflow-hidden text-card-foreground '
-                : (bg == 'transparent' ? '' : cn(inputSettings.base, inputSettings.rounded.default, inputSettings.size.regular))
-                }`}
+            className={shellClass}
         >
-            {suggestions.length > 0 && (
-                <View
-                    ref={dropdownRef}
-                    className={`absolute max-h-40 w-full max-w-md left-0 z-50 p-1 rounded-xl bg-popover shadow-card-outline dark:shadow-card-outline-deep ${dropdownPositioned ? '' : 'bottom-0'}`}
-                    style={dropdownPositioned ? { top: caretPos.top, maxHeight: caretPos.maxHeight } : undefined}
-                >
-                    <ScrollView keyboardShouldPersistTaps="always">
-                        <View className="gap-0.5">
-                            {(() => {
-                                const showHeaders = new Set(suggestions.map((s) => s.type)).size > 1
-                                let lastType = null
-                                return suggestions.map((user) => {
-                                    const header =
-                                        showHeaders && user.type !== lastType ? (
-                                            <Text
-                                                key={`h-${user.type}`}
-                                                className="px-2 pt-2 pb-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground"
-                                            >
-                                                {t(MENTION_TYPE_LABELS[user.type] || MENTION_TYPE_LABELS.other)}
-                                            </Text>
-                                        ) : null
-                                    lastType = user.type
-                                    return (
-                                        <View key={user.url}>
-                                            {header}
-                                            <MentionSuggestionItem
-                                                user={user}
-                                                selected={user.selected}
-                                                onSelect={() => insertMention(user)}
-                                            />
-                                        </View>
-                                    )
-                                })
-                            })()}
-                        </View>
-                    </ScrollView>
-                </View>
-            )}
-
-            <EnrichedTextInput
-                ref={editorRef}
-                defaultValue={initialDefaultValue.current}
-                placeholder={placeholder}
-                placeholderTextColor="rgba(120,130,145,1)"
-                editable={!disabled}
-                autoFocus={!!autofocus}
-                autoCapitalize="none"
-                mentionIndicators={['@', '#']}
-                htmlStyle={htmlStyle}
-                submitBehavior={
-                    submitOnEnter && isCommentsEditor
-                        ? 'newline'
-                        : submitOnEnter
-                            ? 'submit'
-                            : 'newline'
+            <MentionSuggestionsDropdown
+                suggestions={suggestions}
+                onSelect={insertMention}
+                dropdownRef={dropdownRef}
+                className={caretPos ? '' : 'bottom-0'}
+                style={
+                    caretPos
+                        ? {
+                            maxHeight: caretPos.maxHeight,
+                            ...(caretPos.top != null
+                                ? { top: caretPos.top }
+                                : { bottom: caretPos.bottom }),
+                        }
+                        : undefined
                 }
-                style={{
-                    minHeight: initialHeight,
-                    maxHeight,
-                    color: editorTextColor,
-                    fontSize: 16,
-                    backgroundColor: 'transparent',
-                }}
-                onChangeHtml={onChangeHtml}
-                onChangeState={(e) => setStyleState(e.nativeEvent)}
-                onStartMention={(indicator) => { setMention(['', indicator]); requestAnimationFrame(computeCaretPosition) }}
-                onChangeMention={(e) => { setMention([e.text, e.indicator]); requestAnimationFrame(computeCaretPosition) }}
-                onEndMention={() => { setMention(['', '']); resetSuggestions(); setCaretPos(null) }}
-                onPasteImages={onPasteImages}
-                onSubmitEditing={onSubmitEditing}
-                onKeyPress={onKeyPress}
-                onFocus={() => { if (onFocus) onFocus() }}
             />
 
-            {isToolBar && styleState && (
-                <View className="flex-row flex-wrap gap-1 mt-2">
-                    <ToolbarButton label="B" active={styleState.bold?.isActive} disabled={styleState.bold?.isBlocking} onPress={() => editorRef.current?.toggleBold()} />
-                    <ToolbarButton label="I" active={styleState.italic?.isActive} disabled={styleState.italic?.isBlocking} onPress={() => editorRef.current?.toggleItalic()} />
-                    <ToolbarButton label="U" active={styleState.underline?.isActive} disabled={styleState.underline?.isBlocking} onPress={() => editorRef.current?.toggleUnderline()} />
-                    <ToolbarButton label="S" active={styleState.strikeThrough?.isActive} disabled={styleState.strikeThrough?.isBlocking} onPress={() => editorRef.current?.toggleStrikeThrough()} />
-                    <ToolbarButton label="</>" active={styleState.inlineCode?.isActive} disabled={styleState.inlineCode?.isBlocking} onPress={() => editorRef.current?.toggleInlineCode()} />
-                    <ToolbarButton label="❝" active={styleState.blockQuote?.isActive} onPress={() => editorRef.current?.toggleBlockQuote()} />
-                    <ToolbarButton label="• List" active={styleState.unorderedList?.isActive} onPress={() => editorRef.current?.toggleUnorderedList()} />
-                    <ToolbarButton label="1. List" active={styleState.orderedList?.isActive} onPress={() => editorRef.current?.toggleOrderedList()} />
-                </View>
-            )}
-        </View>
-    )
-}
+            <View className={surfaceClass}>
+                <EnrichedTextInput
+                    ref={editorRef}
+                    defaultValue={initialDefaultValue.current}
+                    placeholder={placeholder}
+                    placeholderTextColor="rgba(120,130,145,1)"
+                    editable={!disabled}
+                    autoFocus={!!autofocus}
+                    autoCapitalize="none"
+                    mentionIndicators={MENTION_INDICATORS}
+                    htmlStyle={htmlStyle}
+                    submitBehavior={
+                        submitOnEnter && isCommentsEditor
+                            ? 'newline'
+                            : submitOnEnter
+                                ? 'submit'
+                                : 'newline'
+                    }
+                    style={{
+                        minHeight: initialHeight,
+                        maxHeight,
+                        color: editorTextColor,
+                        fontSize: 16,
+                        backgroundColor: 'transparent',
+                    }}
+                    onChangeHtml={onChangeHtml}
+                    onChangeState={(e) => setStyleState(e.nativeEvent)}
+                    onChangeSelection={(e) => setSelection(e.nativeEvent || { start: 0, end: 0, text: '' })}
+                    onStartMention={onStartMention}
+                    onChangeMention={onChangeMention}
+                    onEndMention={onEndMention}
+                    onPasteImages={onPasteImages}
+                    onSubmitEditing={onSubmitEditing}
+                    onKeyPress={onKeyPress}
+                    onFocus={() => { if (onFocus) onFocus() }}
+                />
 
-function ToolbarButton({ label, active, disabled, onPress }) {
-    return (
-        <Button
-            variant="text"
-            size="xs"
-            pressed={!!active}
-            disabled={!!disabled}
-            title={label}
-            onPress={onPress}
-        />
+                {isToolBar ? (
+                    <EditorToolbar items={toolbarItems} linkBar={linkBar} />
+                ) : null}
+            </View>
+        </View>
     )
 }

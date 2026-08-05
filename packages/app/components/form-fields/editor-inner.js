@@ -1,12 +1,9 @@
 import { useController, useFormContext } from 'react-hook-form'
-import { Button } from 'app/design/controls'
 import { useState, useRef, useEffect, useMemo } from 'react'
-import { View, Pressable, ScrollView } from 'app/design/view'
+import { View, Pressable } from 'app/design/view'
 import {
-    DEFAULT_TOOLBAR_ITEMS,
     useEditorBridge,
     RichText,
-    Toolbar,
     darkEditorTheme,
     TenTapStartKit,
     LinkBridge,
@@ -16,15 +13,18 @@ import {
     DropCursorBridge,
     PlaceholderBridge,
 } from '@10play/tentap-editor'
+import { EditorToolbar } from 'app/lib/editor-toolbar'
+import { useTentapToolbar } from 'app/lib/editor-toolbar-tentap'
 import { useFilesData } from 'app/context/files'
-import { useCurrentUser } from 'app/context/user'
-import { Platform, KeyboardAvoidingView } from 'react-native'
-import { useTheme, useThemeName } from 'app/design/theme'
+import { Platform } from 'react-native'
+import { useThemeName } from 'app/design/theme'
 import { getAlert, stripTags, stripTagsWithLinks } from 'app/lib/util'
 import { appSetting, cn } from 'app/lib/util'
 import emitter from 'app/context/emitter'
 import { TextInput } from 'react-native'
-import { useMentionSuggestions } from './use-mention-suggestions'
+import { useEditorMentions } from 'app/lib/use-editor-mentions'
+import { MentionSuggestionsDropdown } from 'app/lib/mention-suggestions-dropdown'
+import { buildUnaMentionHtml } from './editor-mention-shared'
 import { useIsDesktop } from 'app/context/measure'
 
 
@@ -53,66 +53,29 @@ export default function RftText({
     const isDesktop = useIsDesktop()
     const unicFormName = `${form_name}` // for catch images in editor
 
-    let b = [...DEFAULT_TOOLBAR_ITEMS]
-    if (isWeb) {
-        const images = [
-            'bold.png',
-            'italic.png',
-            'link.png',
-            'checklist.png',
-            'Aa.png',
-            'code.png',
-            'underline.png',
-            'strikethrough.png',
-            'quote.png',
-            'ul.png',
-            'ol.png',
-            'indent.png',
-            'unindent.png',
-            'undo.png',
-            'redo.png',
-        ]
-
-        images.forEach((img, index) => {
-            b[index].image = () => `/editor/${img}`
-        })
-
-        b.splice(4, 1)
-    }
     const isToolBar = html == 2 || html == 1
     const isPlainText = html == 3
     const suggestionsHeight = 130
-    const { filesData, setFilesData } = useFilesData()
+    const { setFilesData } = useFilesData()
     const { field } = useController({ name, rules: {}, defaultValue: value })
-    const { colors } = useTheme()
     const formContext = useFormContext()
-    const { currentUser } = useCurrentUser()
     const [inputKey, setInputKey] = useState(0);
 
-    const [keywordval, setKeyword] = useState(['', ''])
+    // Shared mention pipeline (same fetch/recents/UI as enriched).
+    const {
+        suggestions,
+        setTrigger,
+        clearTrigger,
+        moveSelected,
+        selectedSuggestion,
+        recordMention,
+        queryToken,
+    } = useEditorMentions({ fieldName: name })
+    // Layout coords from iframe mention messages: [left, bottom]
+    const [mentionCoords, setMentionCoords] = useState([0, 0])
     const [editorHeight, setEditorHeight] = useState(initialHeight)
     const [isEnter, setIsEnter] = useState(false)
     const [suggestionsSize, setSuggestionsSize] = useState([0, 0])
-    const object_privacy_view =
-        formContext.watch('object_privacy_view') ||
-        formContext.watch('cmt_privacy_view')
-    const object_id = formContext.watch('id')
-    const m = name == 'cmt_text' ? 'sys_cmts' : 'bx_timeline'
-
-    let url1 = '/searchExtended.php?api=1&action=get_mention'
-    if (m) url1 += '&m=' + m
-    if (object_privacy_view)
-        url1 += '&object_privacy_view=' + object_privacy_view
-    if (object_id) url1 += '&cid=' + object_id
-
-    // Robust, race-free mention suggestions (debounced + stale-response guarded),
-    // seeded from the user's recent mentions on the bare trigger.
-    const { suggestions, setSuggestions, recordMention } = useMentionSuggestions({
-        url: url1,
-        term: keywordval[0],
-        indicator: keywordval[1],
-        userId: currentUser?.id,
-    })
 
     const isCommentsEditor = container_class === 'comments'
     // text-base (16px) — inputs below 16px trigger mobile web zoom on focus
@@ -492,6 +455,11 @@ export default function RftText({
         bridgeExtensions: uniqueExtensions,
     })
 
+    const { items: toolbarItems, linkBar } = useTentapToolbar({
+        editor,
+        enabled: isToolBar,
+    })
+
     const lastAppliedThemeRef = useRef(null)
 
     useEffect(() => {
@@ -608,38 +576,18 @@ export default function RftText({
 
     const insertMention = async (user, query) => {
         const html = await editor.getHTML()
-        const mentionLink = `<a class="bx-mention-link data-profile-id=${user.value} ${user.classname || ''}" data-profile-id="${user.value}" href="${user.url}">${user.label.trim()}</a>&shy;`
+        const mentionLink = buildUnaMentionHtml(user) + '&shy;'
         const replacementStringWithNbsp = mentionLink + '&nbsp;'
         const updatedContent = html.replace(query, replacementStringWithNbsp)
         editor.setContent(updatedContent)
         recordMention(user)
-        setSuggestions([])
-    }
-
-    const moveSelected = (direction) => {
-        setSuggestions((prevItems) => {
-            const index = prevItems.findIndex((item) => item.selected)
-            if (index === -1) return prevItems
-            const length = prevItems.length
-            const newIndex =
-                direction === 'up'
-                    ? (index - 1 + length) % length
-                    : (index + 1) % length
-
-            const newItems = prevItems.map((item, i) => ({
-                ...item,
-                selected: i === newIndex,
-                index: i,
-            }))
-
-            return newItems
-        })
+        clearTrigger()
     }
 
     useEffect(() => {
         if (isEnter && suggestions.length > 0) {
-            const index = suggestions.findIndex((item) => item.selected)
-            insertMention(suggestions[index], keywordval[1] + keywordval[0])
+            const sel = selectedSuggestion || suggestions[0]
+            if (sel) insertMention(sel, queryToken)
         }
         setIsEnter(false)
     }, [isEnter])
@@ -694,16 +642,12 @@ export default function RftText({
             }
 
             if (message?.type == 'mention') {
-                setKeyword([
-                    message.payload,
-                    message.sym,
-                    message.left,
-                    message.bottom,
-                ])
+                setTrigger(message.payload, message.sym)
+                setMentionCoords([message.left, message.bottom])
             }
 
             if (message?.type == 'mention_hide') {
-                setSuggestions([])
+                clearTrigger()
             }
 
             if (message?.type == 'editor-ready') {
@@ -958,48 +902,27 @@ export default function RftText({
     }
 
     if (
-        keywordval[3] - 24 < suggestionsHeight &&
+        mentionCoords[1] - 24 < suggestionsHeight &&
         suggestionsSize[1] > suggestionsHeight
     ) {
         style.top = suggestionsSize[3] + 24
     } else {
         style.bottom =
-            suggestionsSize[1] - (keywordval[3] > 0 ? keywordval[3] - 24 : 0)
+            suggestionsSize[1] - (mentionCoords[1] > 0 ? mentionCoords[1] - 24 : 0)
     }
     return (
         <View
             onLayout={handleLayout}
-            className={`flex-auto ${isToolBar
+            className={`relative flex-auto ${isToolBar
                 ? ' px-3 py-2 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg focus:bg-card focus:ring-border flex-auto overflow-hidden placeholder-muted-foreground text-card-foreground web:duration-100 '
                 : (bg == 'transparent' ? '' : cn(inputSettings.base, inputSettings.rounded.default, inputSettings.size.regular))
                 }`}
         >
-            {suggestions && suggestions.length > 0 && (
-                <View
-                    className={`absolute max-h-[130px] w-full max-w-md bottom-0 p-1 z-50 rounded-xl border-border  border bg-card backdrop-blur-xl p-1`}
-                    style={style}
-                >
-                    <ScrollView>
-                        {suggestions.map((user) => (
-                            <Button
-                                key={user.url}
-                                variant="text"
-                                pressed={user.selected}
-                                fullWidth
-                                align="left"
-                                size="xs"
-                                title={user.label}
-                                onPress={() => {
-                                    insertMention(
-                                        user,
-                                        keywordval[1] + keywordval[0]
-                                    )
-                                }}
-                            />
-                        ))}
-                    </ScrollView>
-                </View>
-            )}
+            <MentionSuggestionsDropdown
+                suggestions={suggestions}
+                onSelect={(user) => insertMention(user, queryToken)}
+                style={style}
+            />
 
             <Pressable
                 style={{ height: editorHeight }}
@@ -1044,24 +967,9 @@ export default function RftText({
                 />
             </Pressable>
 
-
-            {isToolBar && (
-                <>
-                    <View className="h-12"></View>
-                    <KeyboardAvoidingView
-                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                        style={{
-                            position: 'absolute',
-                            width: '100%',
-                            bottom: 8,
-                        }}
-                    >
-                        <View className="flex-none w-full">
-                            <Toolbar hidden={false} editor={editor} items={b} />
-                        </View>
-                    </KeyboardAvoidingView>
-                </>
-            )}
+            {isToolBar ? (
+                <EditorToolbar items={toolbarItems} linkBar={linkBar} />
+            ) : null}
             <TextInput
                 key={inputKey}
                 autoFocus={inputKey > 0}
