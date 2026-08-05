@@ -25,7 +25,7 @@ SET @iCategId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
 ('bx_xero_client_id', '', @iCategId, '_bx_xero_option_client_id', 'digit', '', '', '', 10),
-('bx_xero_client_secret', '', @iCategId, '_bx_xero_option_client_secret', 'digit', '', '', '', 20),
+('bx_xero_client_secret', '', @iCategId, '_bx_xero_option_client_secret', 'secret', '', '', '', 20),
 ('bx_xero_redirect_url', '{site_url}m/xero/callback', @iCategId, '_bx_xero_option_redirect_url', 'value', '', '', '', 30),
 ('bx_xero_webhook_url', '{site_url}m/xero/webhook', @iCategId, '_bx_xero_option_webhook_url', 'value', '', '', '', 40),
 ('bx_xero_webhook_key', '', @iCategId, '_bx_xero_option_webhook_key', 'digit', '', '', '', 42);

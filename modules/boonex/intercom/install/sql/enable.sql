@@ -12,7 +12,7 @@ SET @iCategId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `check`, `check_error`, `order`, `extra`) VALUES
 ('bx_intercom_option_app_id', '', @iCategId, '_bx_intercom_option_app_id', 'digit', '', '', 10, ''),
-('bx_intercom_option_api_key', '', @iCategId, '_bx_intercom_option_api_key', 'digit', '', '', 20, ''),
+('bx_intercom_option_api_key', '', @iCategId, '_bx_intercom_option_api_key', 'secret', '', '', 20, ''),
 ('bx_intercom_option_hide_launcher', '', @iCategId, '_bx_intercom_option_hide_launcher', 'checkbox', '', '', 22, ''),
 ('bx_intercom_option_alignment', 'right', @iCategId, '_bx_intercom_option_alignment', 'select', '', '', 30, 'right,left'),
 ('bx_intercom_option_horizontal_padding', '20', @iCategId, '_bx_intercom_option_horizontal_padding', 'digit', '', '', 32, ''),

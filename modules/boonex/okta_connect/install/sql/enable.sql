@@ -34,7 +34,7 @@ SET @iCategId = LAST_INSERT_ID();
 INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `check`, `check_error`, `order`, `extra`) VALUES
 ('bx_oktacon_domain', '', @iCategId, '_bx_oktacon_option_domain', 'digit', '', '', 20, ''),
 ('bx_oktacon_client_id', '', @iCategId, '_bx_oktacon_option_client_id', 'digit', '', '', 22, ''),
-('bx_oktacon_secret', '', @iCategId, '_bx_oktacon_option_secret', 'digit', '', '', 24, ''),
+('bx_oktacon_secret', '', @iCategId, '_bx_oktacon_option_secret', 'secret', '', '', 24, ''),
 ('bx_oktacon_scope', 'openid profile email', @iCategId, '_bx_oktacon_option_scope', 'digit', '', '', 26, ''),
 ('bx_oktacon_redirect_page', 'index', @iCategId, '_sys_connect_option_redirect', 'select', '', '', 40, 'join,settings,dashboard,index,custom'),
 ('bx_oktacon_module', 'bx_persons', @iCategId, '_sys_connect_option_module', 'select', '', '', 50, 'a:2:{s:6:"module";s:10:"bx_oktacon";s:6:"method";s:20:"get_profiles_modules";}'),

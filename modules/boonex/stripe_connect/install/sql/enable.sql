@@ -14,9 +14,9 @@ SET @iCategId = LAST_INSERT_ID();
 INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `check`, `check_error`, `order`, `extra`) VALUES
 ('bx_stripe_connect_mode', 'live', @iCategId, '_bx_stripe_connect_option_mode', 'select', '', '', 10, 'a:2:{s:6:"module";s:17:"bx_stripe_connect";s:6:"method";s:16:"get_options_mode";}'),
 ('bx_stripe_connect_api_public_live', '', @iCategId, '_bx_stripe_connect_option_api_public_live', 'digit', '', '', 20, ''),
-('bx_stripe_connect_api_secret_live', '', @iCategId, '_bx_stripe_connect_option_api_secret_live', 'digit', '', '', 30, ''),
+('bx_stripe_connect_api_secret_live', '', @iCategId, '_bx_stripe_connect_option_api_secret_live', 'secret', '', '', 30, ''),
 ('bx_stripe_connect_api_public_test', '', @iCategId, '_bx_stripe_connect_option_api_public_test', 'digit', '', '', 40, ''),
-('bx_stripe_connect_api_secret_test', '', @iCategId, '_bx_stripe_connect_option_api_secret_test', 'digit', '', '', 50, ''),
+('bx_stripe_connect_api_secret_test', '', @iCategId, '_bx_stripe_connect_option_api_secret_test', 'secret', '', '', 50, ''),
 ('bx_stripe_connect_pmode', 'direct', @iCategId, '_bx_stripe_connect_option_pmode', 'select', '', '', 60, 'a:2:{s:6:"module";s:17:"bx_stripe_connect";s:6:"method";s:17:"get_options_pmode";}'),
 ('bx_stripe_connect_fee_single', '', @iCategId, '_bx_stripe_connect_option_fee_single', 'digit', '', '', 70, ''),
 ('bx_stripe_connect_fee_recurring', '', @iCategId, '_bx_stripe_connect_option_fee_recurring', 'digit', '', '', 80, '');

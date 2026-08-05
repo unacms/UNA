@@ -14,7 +14,7 @@ INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `c
 ('bx_smtp_on', '', @iCategId, '_bx_smtp_option_on', 'checkbox', '', '', 10, ''),
 ('bx_smtp_auth', '', @iCategId, '_bx_smtp_option_auth', 'checkbox', '', '', 20, ''),
 ('bx_smtp_username', '', @iCategId, '_bx_smtp_option_username', 'digit', '', '', 30, ''),
-('bx_smtp_password', '', @iCategId, '_bx_smtp_option_password', 'digit', '', '', 40, ''),
+('bx_smtp_password', '', @iCategId, '_bx_smtp_option_password', 'secret', '', '', 40, ''),
 ('bx_smtp_host', '', @iCategId, '_bx_smtp_option_host', 'digit', '', '', 50, ''),
 ('bx_smtp_port', '25', @iCategId, '_bx_smtp_option_port', 'digit', '', '', 60, ''),
 ('bx_smtp_secure', 'Not Secure', @iCategId, '_bx_smtp_option_secure', 'select', '', '', 70, 'Not Secure,SSL,TLS'), 

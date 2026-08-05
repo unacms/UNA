@@ -33,7 +33,7 @@ SET @iCategId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `check`, `check_error`, `order`, `extra`) VALUES
 ('bx_facebook_connect_api_key', '', @iCategId, '_bx_facebook_option_app_id', 'digit', '', '', 10, ''),
-('bx_facebook_connect_secret', '', @iCategId, '_bx_facebook_option_app_secret', 'digit', '', '', 20, ''),
+('bx_facebook_connect_secret', '', @iCategId, '_bx_facebook_option_app_secret', 'secret', '', '', 20, ''),
 ('bx_facebook_connect_redirect_page', 'dashboard', @iCategId, '_sys_connect_option_redirect', 'select', '', '', 30, 'join,settings,dashboard,index'),
 ('bx_facebook_connect_module', 'bx_persons', @iCategId, '_sys_connect_option_module', 'select', '', '', 40, 'a:2:{s:6:"module";s:11:"bx_facebook";s:6:"method";s:20:"get_profiles_modules";}'),
 ('bx_facebook_connect_privacy', '3', @iCategId, '_sys_connect_option_privacy', 'select', '', '', 44, 'a:2:{s:6:"module";s:11:"bx_facebook";s:6:"method";s:18:"get_privacy_groups";}'),

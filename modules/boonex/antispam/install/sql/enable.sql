@@ -45,7 +45,7 @@ SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
 (@iCategoryId, 'bx_antispam_akismet_enable', '_bx_antispam_option_akismet_enable', '', 'checkbox', '', '', '', 10),
-(@iCategoryId, 'bx_antispam_akismet_api_key', '_bx_antispam_option_akismet_api_key', '', 'digit', '', '', '', 20);
+(@iCategoryId, 'bx_antispam_akismet_api_key', '_bx_antispam_option_akismet_api_key', '', 'secret', '', '', '', 20);
 
 
 
@@ -55,7 +55,7 @@ SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
 (@iCategoryId, 'bx_antispam_stopforumspam_enable', '_bx_antispam_option_stopforumspam_enable', 'on', 'checkbox', '', '', '', 10),
-(@iCategoryId, 'bx_antispam_stopforumspam_api_key', '_bx_antispam_option_stopforumspam_api_key', '', 'digit', '', '', '', 20);
+(@iCategoryId, 'bx_antispam_stopforumspam_api_key', '_bx_antispam_option_stopforumspam_api_key', '', 'secret', '', '', '', 20);
 
 INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `order` )  
 VALUES (@iTypeId, 'bx_antispam_disposable_email_domains', '_bx_antispam_adm_stg_cpt_category_disposable_email_domains', 6);
@@ -85,7 +85,7 @@ SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
 (@iCategoryId, 'bx_antispam_toxicity_filter_enable', '_bx_antispam_option_toxicity_filter_enable', '', 'checkbox', '', '', '', 10),
-(@iCategoryId, 'bx_antispam_toxicity_filter_api_key', '_bx_antispam_option_toxicity_filter_api_key', '', 'digit', '', '', '', 20),
+(@iCategoryId, 'bx_antispam_toxicity_filter_api_key', '_bx_antispam_option_toxicity_filter_api_key', '', 'secret', '', '', '', 20),
 (@iCategoryId, 'bx_antispam_toxicity_filter_action', '_bx_antispam_option_toxicity_filter_action', 'none', 'select', 'a:2:{s:6:"module";s:11:"bx_antispam";s:6:"method";s:27:"get_toxicity_filter_actions";}', '', '', 30),
 (@iCategoryId, 'bx_antispam_toxicity_filter_report', '_bx_antispam_option_toxicity_report', '', 'checkbox', 'on', '', '', 40),
 (@iCategoryId, 'bx_antispam_toxicity_filter_threshold', '_bx_antispam_option_toxicity_filter_threshold', '60', 'digit', '', '', '', 50);
@@ -96,8 +96,8 @@ SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
 (@iCategoryId, 'bx_antispam_lasso_moderation_enable', '_bx_antispam_option_lasso_moderation_enable', '', 'checkbox', '', '', '', 10),
-(@iCategoryId, 'bx_antispam_lasso_moderation_api_key', '_bx_antispam_option_lasso_moderation_api_key', '', 'digit', '', '', '', 20),
-(@iCategoryId, 'bx_antispam_lasso_moderation_webhook_secret', '_bx_antispam_option_lasso_moderation_webhook_secret', '', 'digit', '', '', '', 30),
+(@iCategoryId, 'bx_antispam_lasso_moderation_api_key', '_bx_antispam_option_lasso_moderation_api_key', '', 'secret', '', '', '', 20),
+(@iCategoryId, 'bx_antispam_lasso_moderation_webhook_secret', '_bx_antispam_option_lasso_moderation_webhook_secret', '', 'secret', '', '', '', 30),
 (@iCategoryId, 'bx_antispam_lasso_moderation_webhook_url', '_bx_antispam_option_lasso_moderation_webhook_url', '{site_url}m/antispam/content_checked', 'value', '', '', '', 40),
 (@iCategoryId, 'bx_antispam_lasso_moderation_action', '_bx_antispam_option_lasso_moderation_action', 'none', 'select', 'a:2:{s:6:"module";s:11:"bx_antispam";s:6:"method";s:28:"get_lasso_moderation_actions";}', '', '', 50),
 (@iCategoryId, 'bx_antispam_lasso_moderation_report', '_bx_antispam_option_lasso_moderation_report', '', 'checkbox', 'on', '', '', 60),

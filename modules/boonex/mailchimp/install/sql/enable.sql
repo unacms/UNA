@@ -11,7 +11,7 @@ VALUES (@iTypeId, 'bx_mailchimp_general', '_bx_mailchimp_adm_stg_cpt_category_ge
 SET @iCategId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `extra`, `check`, `check_error`, `order`) VALUES
-('bx_mailchimp_option_api_key', '', @iCategId, '_bx_mailchimp_option_api_key', 'digit', '', '', '', 10),
+('bx_mailchimp_option_api_key', '', @iCategId, '_bx_mailchimp_option_api_key', 'secret', '', '', '', 10),
 ('bx_mailchimp_option_list_id', '', @iCategId, '_bx_mailchimp_option_list_id', 'select', 'a:2:{s:6:"module";s:12:"bx_mailchimp";s:6:"method";s:9:"get_lists";}', '', '', 20);
 
 -- Alerts

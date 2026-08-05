@@ -33,7 +33,7 @@ SET @iCategId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `check`, `check_error`, `order`, `extra`) VALUES
 ('bx_dolcon_api_key', '', @iCategId, '_bx_dolcon_option_app_id', 'digit', '', '', 10, ''),
-('bx_dolcon_secret', '', @iCategId, '_bx_dolcon_option_app_secret', 'digit', '', '', 20, ''),
+('bx_dolcon_secret', '', @iCategId, '_bx_dolcon_option_app_secret', 'secret', '', '', 20, ''),
 ('bx_dolcon_url', '', @iCategId, '_bx_dolcon_option_app_url', 'digit', '', '', 30, ''),
 ('bx_dolcon_redirect_page', 'dashboard', @iCategId, '_sys_connect_option_redirect', 'select', '', '', 40, 'join,settings,dashboard,index'),
 ('bx_dolcon_module', 'bx_persons', @iCategId, '_sys_connect_option_module', 'select', '', '', 50, 'a:2:{s:6:"module";s:9:"bx_dolcon";s:6:"method";s:20:"get_profiles_modules";}'),

@@ -24,7 +24,7 @@ SET @iCategoryId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `check`, `check_params`, `check_error`, `extra`, `order`) VALUES
 ('bx_payment_default_currency_code', 'USD', @iCategoryId, '_bx_payment_option_default_currency_code', 'select', 'Avail', '', '_bx_payment_option_err_default_currency_code', 'a:2:{s:6:"module";s:10:"bx_payment";s:6:"method";s:33:"get_options_default_currency_code";}', 1),
-('bx_payment_currency_exchange_api', '', @iCategoryId, '_bx_payment_option_currency_exchange_api', 'digit', '', '', '', '', 10);
+('bx_payment_currency_exchange_api', '', @iCategoryId, '_bx_payment_option_currency_exchange_api', 'secret', '', '', '', '', 10);
 
 INSERT INTO `sys_options_categories` (`type_id`, `name`, `caption`, `order`)
 VALUES (@iTypeId, 'bx_payment_commissions', '_bx_payment_options_category_commissions', 10);

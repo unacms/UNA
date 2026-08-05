@@ -774,12 +774,12 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_push_queue_send_per_start_to_recipient', '_adm_stg_cpt_option_sys_push_queue_send_per_start_to_recipient', '2',  'digit', '', '', '', 11),
 
 (@iCategoryId, 'sys_push_onesignal_app_id', '_adm_stg_cpt_option_sys_push_onesignal_app_id', '', 'digit', '', '', '', 21),
-(@iCategoryId, 'sys_push_onesignal_rest_api', '_adm_stg_cpt_option_sys_push_onesignal_rest_api', '', 'digit', '', '', '', 22),
+(@iCategoryId, 'sys_push_onesignal_rest_api', '_adm_stg_cpt_option_sys_push_onesignal_rest_api', '', 'secret', '', '', '', 22),
 (@iCategoryId, 'sys_push_onesignal_short_name', '_adm_stg_cpt_option_sys_push_onesignal_short_name', '', 'digit', '', '', '', 23),
 (@iCategoryId, 'sys_push_onesignal_safari_id', '_adm_stg_cpt_option_sys_push_onesignal_safari_id', '', 'digit', '', '', '', 24),
 
 (@iCategoryId, 'sys_push_wonderpush_app_id', '_adm_stg_cpt_option_sys_push_wonderpush_app_id', '', 'digit', '', '', '', 30),
-(@iCategoryId, 'sys_push_wonderpush_access_token', '_adm_stg_cpt_option_sys_push_wonderpush_access_token', '', 'digit', '', '', '', 32),
+(@iCategoryId, 'sys_push_wonderpush_access_token', '_adm_stg_cpt_option_sys_push_wonderpush_access_token', '', 'secret', '', '', '', 32),
 (@iCategoryId, 'sys_push_wonderpush_web_key', '_adm_stg_cpt_option_sys_push_wonderpush_web_key', '', 'digit', '', '', '', 34);
 
 
@@ -793,10 +793,10 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 (@iCategoryId, 'sys_sms_default', '_adm_stg_cpt_option_sys_sms_default', '', 'select', 'a:3:{s:6:"module";s:6:"system";s:6:"method";s:23:"get_options_sms_default";s:5:"class";s:13:"TemplServices";}', '', '', 1),
 
 (@iCategoryId, 'sys_sms_twilio_sid', '_adm_stg_cpt_option_sys_sms_twilio_sid', '', 'digit', '', '', '', 11),
-(@iCategoryId, 'sys_sms_twilio_token', '_adm_stg_cpt_option_sys_sms_twilio_token', '', 'digit', '', '', '', 12),
+(@iCategoryId, 'sys_sms_twilio_token', '_adm_stg_cpt_option_sys_sms_twilio_token', '', 'secret', '', '', '', 12),
 (@iCategoryId, 'sys_sms_twilio_from_number', '_adm_stg_cpt_option_sys_sms_twilio_from_number', '', 'digit', '', '', '', 13),
 
-(@iCategoryId, 'sys_sms_smsru_api_id', '_adm_stg_cpt_option_sys_sms_smsru_api_id', '', 'digit', '', '', '', 21),
+(@iCategoryId, 'sys_sms_smsru_api_id', '_adm_stg_cpt_option_sys_sms_smsru_api_id', '', 'secret', '', '', '', 21),
 (@iCategoryId, 'sys_sms_smsru_from_number', '_adm_stg_cpt_option_sys_sms_smsru_from_number', '', 'digit', '', '', '', 22);
 
 
@@ -812,7 +812,7 @@ INSERT INTO `sys_options`(`category_id`, `name`, `caption`, `value`, `type`, `ex
 
 (@iCategoryId, 'sys_location_map_zoom_default', '_adm_stg_cpt_option_sys_location_map_zoom_default', '7', 'digit', '', '', '', 20),
 
-(@iCategoryId, 'sys_maps_api_key', '_adm_stg_cpt_option_sys_maps_api_key', '', 'digit', '', '', '', 30),
+(@iCategoryId, 'sys_maps_api_key', '_adm_stg_cpt_option_sys_maps_api_key', '', 'secret', '', '', '', 30),
 
 (@iCategoryId, 'sys_nominatim_server', '_adm_stg_cpt_option_sys_nominatim_server', 'https://nominatim.openstreetmap.org', 'digit', '', '', '', 40),
 (@iCategoryId, 'sys_nominatim_email', '_adm_stg_cpt_option_sys_nominatim_email', '', 'digit', '', '', '', 42),

@@ -12,7 +12,7 @@ SET @iCategId = LAST_INSERT_ID();
 
 INSERT INTO `sys_options` (`name`, `value`, `category_id`, `caption`, `type`, `check`, `check_error`, `order`, `extra`) VALUES
 ('bx_datafox_id', '', @iCategId, 'DataFox Client ID', 'digit', '', '', 10, ''),
-('bx_datafox_secret', '', @iCategId, 'DataFox Client Secret', 'digit', '', '', 12, '');
+('bx_datafox_secret', '', @iCategId, 'DataFox Client Secret', 'secret', '', '', 12, '');
 
 -- alerts
 
