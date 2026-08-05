@@ -508,7 +508,7 @@ class BxBaseModGeneralMenuViewActions extends BxTemplMenuCustom
                 'object_id' => $this->_iContentId,
                 'params' => [],
                 'action' => [
-                    'url' => bx_replace_markers('{url_encoded}', $this->_aMarkers)
+                    'url' => bx_api_get_relative_url(bx_replace_markers('{url}', $this->_aMarkers))
                 ]
             ]
         ];

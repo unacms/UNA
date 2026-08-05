@@ -1470,84 +1470,46 @@ class BxCreditsModule extends BxBaseModGeneralModule
     protected function _getBlockOrders($sType) 
     {
         $CNF = &$this->_oConfig->CNF;
-
-        $sGrid = $CNF['OBJECT_GRID_ORDERS_' . strtoupper($sType)];
-        $oGrid = BxDolGrid::getObjectInstance($sGrid);
-        if(!$oGrid)
-            return $this->_bIsApi ? [] : '';
-
-        if($this->_bIsApi)
-            return [
-                bx_api_get_block('grid', $oGrid->getCodeAPI())
-            ];
         
-        return [
-            'content' => $oGrid->getCode(),
-            'menu' => $CNF['OBJECT_MENU_MANAGE_SUBMENU']
-        ];
+        return $this->_getBlockGrid($CNF['OBJECT_GRID_ORDERS_' . strtoupper($sType)]);
     }
 
     protected function _getBlockHistory($sType) 
     {
         $CNF = &$this->_oConfig->CNF;
 
-        $sGrid = $CNF['OBJECT_GRID_HISTORY_' . strtoupper($sType)];
-        $oGrid = BxDolGrid::getObjectInstance($sGrid);
-        if(!$oGrid)
-            return $this->_bIsApi ? [] : '';
-
-        if($this->_bIsApi)
-            return [
-                bx_api_get_block('grid', $oGrid->getCodeAPI())
-            ];
-
-        return [
-            'content' => $oGrid->getCode(),
-            'menu' => $CNF['OBJECT_MENU_MANAGE_SUBMENU']
-        ];
+        return $this->_getBlockGrid($CNF['OBJECT_GRID_HISTORY_' . strtoupper($sType)]);
     }
 
     protected function _getBlockWithdrawals($sType) 
     {
         $CNF = &$this->_oConfig->CNF;
 
-        $sGrid = $CNF['OBJECT_GRID_WITHDRAWALS_' . strtoupper($sType)];
-        $oGrid = BxDolGrid::getObjectInstance($sGrid);
-        if(!$oGrid)
-            return $this->_bIsApi ? [] : '';
-
-        if($this->_bIsApi)
-            return [
-                bx_api_get_block('grid', $oGrid->getCodeAPI())
-            ];
-
-        return [
-            'content' => $oGrid->getCode(),
-            'menu' => $CNF['OBJECT_MENU_MANAGE_SUBMENU']
-        ];
+        return $this->_getBlockGrid($CNF['OBJECT_GRID_WITHDRAWALS_' . strtoupper($sType)]);
     }
 
     protected function _getBlockProfiles($sType) 
     {
         $CNF = &$this->_oConfig->CNF;
 
-        $sKey = 'OBJECT_GRID_PROFILES_' . strtoupper($sType);
-        if(empty($CNF[$sKey]))
+        return $this->_getBlockGrid($CNF['OBJECT_GRID_PROFILES_' . strtoupper($sType)]);
+    }
+
+    protected function _getBlockGrid($sGrid) 
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $oGrid = null;
+        if(!$sGrid || !($oGrid = BxDolGrid::getObjectInstance($sGrid)))
             return $this->_bIsApi ? [] : '';
 
-        $sGrid = $CNF[$sKey];
-        $oGrid = BxDolGrid::getObjectInstance($sGrid);
-        if(!$oGrid)
-            return $this->_bIsApi ? [] : '';
-
-        if($this->_bIsApi)
-            return [
-                bx_api_get_block('grid', $oGrid->getCodeAPI())
-            ];
-
-        return [
+        $sMenu = $CNF['OBJECT_MENU_MANAGE_SUBMENU'];
+        return $this->_bIsApi ? [
+            'content' => [bx_api_get_block('grid', $oGrid->getCodeAPI())],
+            'menu' => ($oMenu = BxTemplMenu::getObjectInstance($sMenu)) ? $oMenu->getCodeAPI() : ''
+        ] : [
             'content' => $oGrid->getCode(),
-            'menu' => $CNF['OBJECT_MENU_MANAGE_SUBMENU']
+            'menu' => $sMenu
         ];
     }
 }

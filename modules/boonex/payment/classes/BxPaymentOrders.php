@@ -63,20 +63,20 @@ class BxPaymentOrders extends BxBaseModPaymentOrders
 
         $this->_oModule->setSiteSubmenu('menu_dashboard', 'system', 'dashboard-orders');
 
+        $sBlockTitle = _t($this->_sLangsPrefix . 'page_block_title_orders_' . $sType);
         $sBlockContent = $this->_oModule->_oTemplate->displayBlockOrders($sType, $iUserId);
-        if($this->_bIsApi)
-            return !$sBlockContent ? [bx_api_get_msg(_t($this->_sLangsPrefix . 'msg_no_results'))] : [
-                'title' => _t($this->_sLangsPrefix . 'page_block_title_orders_' . $sType),
-                'content' => [bx_api_get_block('grid', $sBlockContent)]
-            ];
 
         $sBlockSubmenu = $this->_oModule->_oConfig->getObject('menu_orders_submenu');
         $oBlockSubmenu = BxDolMenu::getObjectInstance($sBlockSubmenu);
         if($oBlockSubmenu)
             $oBlockSubmenu->setSelected($this->MODULE, 'orders-' . $sType);
 
-        return [
-            'title' => _t($this->_sLangsPrefix . 'page_block_title_orders_' . $sType),
+        return $this->_bIsApi ? [
+            'title' => $sBlockTitle,
+            'content' => !$sBlockContent ? [bx_api_get_msg(_t($this->_sLangsPrefix . 'msg_no_results'))] : [bx_api_get_block('grid', $sBlockContent)],
+            'menu' => $oBlockSubmenu->getCodeAPI()
+        ] : [
+            'title' => $sBlockTitle,
             'content' => !$sBlockContent ? MsgBox(_t($this->_sLangsPrefix . 'msg_no_results')) : $sBlockContent,
             'menu' => $oBlockSubmenu
         ];

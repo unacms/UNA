@@ -1276,11 +1276,6 @@ class BxBaseModGeneralModule extends BxDolModule
         if(!$oGrid)
             return '';
 
-        if($this->_bIsApi)
-            return [
-                bx_api_get_block('grid', $oGrid->getCodeAPI())
-            ];
-
         $CNF = &$this->_oConfig->CNF;
 
         $mixedMenu = '';
@@ -1304,6 +1299,12 @@ class BxBaseModGeneralModule extends BxDolModule
 
         if(!empty($CNF['OBJECT_MENU_SUBMENU']) && isset($CNF['URI_MANAGE_COMMON']) && ($oSubmenu = BxDolMenu::getObjectInstance($CNF['OBJECT_MENU_SUBMENU'])) !== false)
             $oSubmenu->setSelected($this->_aModule['name'], $CNF['URI_MANAGE_COMMON']);
+
+        if($this->_bIsApi)
+            return [
+                'content' => [bx_api_get_block('grid', $oGrid->getCodeAPI())],
+                'menu' => $mixedMenu ? $mixedMenu->getCodeAPI() : ''
+            ];
 
         $this->_oTemplate->addCss(array('manage_tools.css'));
         $this->_oTemplate->addJs(array('manage_tools.js'));

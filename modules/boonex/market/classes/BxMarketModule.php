@@ -1466,7 +1466,8 @@ class BxMarketModule extends BxBaseModTextModule
 
         if($this->_bIsApi)
             return [
-                bx_api_get_block('grid', $oGrid->getCodeAPI())
+                'content' => [bx_api_get_block('grid', $oGrid->getCodeAPI())],
+                'menu' => ($oMenu = BxTemplMenu::getObjectInstance($CNF['OBJECT_MENU_LICENSES'])) ? $oMenu->getCodeAPI() : ''
             ];
 
         $this->_oTemplate->addJs(['licenses.js']);

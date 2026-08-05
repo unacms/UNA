@@ -20,4 +20,6 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_credits_manage_s
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_credits_manage_submenu' AND `module`='bx_credits' AND `name`='credits-history-administration';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_credits_manage_submenu' AND `module`='bx_credits' AND `name`='credits-orders-common';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_credits_manage_submenu' AND `module`='bx_credits' AND `name`='credits-orders-administration';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_credits_manage_submenu' AND `module`='bx_credits' AND `name`='credits-withdrawals-common';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_credits_manage_submenu' AND `module`='bx_credits' AND `name`='credits-withdrawals-administration';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_credits_manage_submenu' AND `module`='bx_credits' AND `name`='credits-profiles-administration';

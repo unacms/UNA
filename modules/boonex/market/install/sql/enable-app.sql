@@ -17,6 +17,8 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_market_top' AND 
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_market_home' AND `module`='bx_market' AND `title_system`='' AND `title`='_bx_market_page_block_title_latest_entries';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_market_manage' AND `module`='bx_market' AND `title_system`='_bx_market_page_block_title_system_manage' AND `title`='_bx_market_page_block_title_manage';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_market_administration' AND `module`='bx_market' AND `title_system`='_bx_market_page_block_title_system_manage_administration' AND `title`='_bx_market_page_block_title_manage';
+UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_market_licenses_administration' AND `module`='bx_market' AND `title_system`='' AND `title`='_bx_market_page_block_title_licenses_administration';
+UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_market_licenses' AND `module`='bx_market' AND `title_system`='' AND `title`='_bx_market_page_block_title_licenses';
 
 -- MENUS:
 
@@ -27,3 +29,5 @@ UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_market_submenu' 
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_market_submenu' AND `module`='bx_market' AND `name`='products-featured';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_market_submenu' AND `module`='bx_market' AND `name`='products-top';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_market_submenu' AND `module`='bx_market' AND `name`='products-manage';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_market_licenses_submenu' AND `module`='bx_market' AND `name`='products-licenses-administration';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_market_licenses_submenu' AND `module`='bx_market' AND `name`='products-licenses';
