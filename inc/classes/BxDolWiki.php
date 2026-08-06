@@ -706,6 +706,8 @@ class BxDolWiki extends BxDolFactory implements iBxDolFactoryObject
         if(!$oForm)
             return ($sMsg = _t('_sys_wiki_error_occured', 12)) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : $sMsg;
 
+        $oForm->aInputs['content']['html_tags'] = true;
+        
         if(isset($oForm->aInputs['language'])) {
             if($this->_bIsApi)
                 foreach($aLangsForInput as $sKey => $aLangForInput)

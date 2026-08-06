@@ -1707,7 +1707,8 @@ BLAH;
             }
         }
 
-        $sValue = isset($aInput['value']) ? bx_process_output($bHtml || $bCode ? $aInput['value'] : strip_tags($aInput['value']), BX_DATA_TEXT, ['no_process_macros']) : '';
+        $bTagsAllowed = $bHtml || $bCode || ($aInput['html_tags'] ?? false);
+        $sValue = isset($aInput['value']) ? bx_process_output($bTagsAllowed ? $aInput['value'] : strip_tags($aInput['value']), BX_DATA_TEXT, ['no_process_macros']) : '';
 
         $aAgent = [];
         if(!empty($this->_aAgentsFormObject)) {
