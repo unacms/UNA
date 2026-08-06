@@ -5,13 +5,22 @@ import Link from 'app/ui/atoms/link';
 import ProfilesList from 'app/ui/molecules/profile_list';
 import { Card } from 'app/ui/molecules/card';
 import { Modal } from 'app/design/controls';
+import { Icon } from 'app/ui/atoms/icon';
 import Menu from 'app/components/menu';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { fetcher } from 'app/lib/fetcher';
 import { cn } from 'app/lib/util';
 import emitter from 'app/context/emitter';
+import { iconForTaskStatus } from 'app/lib/tasks-meta';
 
 const TASKS_LIST_EVENT = 'tasks_list';
+
+const META_FIELDS = [
+    { key: 'type', icon: 'Tag' },
+    { key: 'state', iconFor: iconForTaskStatus },
+    { key: 'priority', icon: 'Flag' },
+    { key: 'time', icon: 'Clock', altKeys: ['estimate'] },
+];
 
 function emitTasksListRefresh() {
     emitter.emit(TASKS_LIST_EVENT, { action: 'reload' });
@@ -47,9 +56,35 @@ async function runTaskAction(action, setFormBlock) {
     }
 }
 
+function TaskMeta({ data }) {
+    const items = META_FIELDS.flatMap((field) => {
+        const value = data?.[field.key]
+            ?? field.altKeys?.map((key) => data?.[key]).find(Boolean);
+        if (!value) return [];
+        const icon = field.iconFor ? field.iconFor(value) : field.icon;
+        return [{ key: field.key, icon, value: String(value) }];
+    });
+
+    if (!items.length) return null;
+
+    return (
+        <Row className="flex-wrap items-center gap-x-2.5 gap-y-1">
+            {items.map((item) => (
+                <Row key={item.key} className="items-center gap-1 shrink-0">
+                    <Icon icon={item.icon} size={12} className="text-muted-foreground" />
+                    <Text className="text-xs text-muted-foreground" numberOfLines={1}>
+                        {item.value}
+                    </Text>
+                </Row>
+            ))}
+        </Row>
+    );
+}
+
 export default function Unit({ data }) {
     const [formBlock, setFormBlock] = useState(null);
-    const isCompleted = data?.class === 'completed';
+    const isCompleted = data?.class === 'completed'
+        || /^(done|cancelled|duplicate)$/i.test(String(data?.state || ''));
 
     const handleFormClose = useCallback(() => {
         setFormBlock(null);
@@ -69,10 +104,6 @@ export default function Unit({ data }) {
         button_full_width: false,
         onclick: (event, item) => runTaskAction(item.action, setFormBlock),
     }), []);
-
-    const meta = [data?.type, data?.state, data?.priority, data?.time]
-        .filter(Boolean)
-        .join(' · ');
 
     return (
         <Card padding="p-3" className="web:hover:bg-muted/30 web:duration-300">
@@ -104,11 +135,7 @@ export default function Unit({ data }) {
                         </Text>
                     </Link>
 
-                    {meta ? (
-                        <Text className="text-xs text-muted-foreground" numberOfLines={1}>
-                            {meta}
-                        </Text>
-                    ) : null}
+                    <TaskMeta data={data} />
                 </View>
 
                 {data?.members?.length ? (

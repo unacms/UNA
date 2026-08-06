@@ -12,6 +12,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { cn } from 'app/lib/util';
 import { isFormResponseComplete } from 'app/lib/form-helpers';
 import { useTranslation } from 'react-i18next';
+import { iconForTaskStatus } from 'app/lib/tasks-meta';
 
 const SKIP_INPUTS = new Set(['save_me', 'save_all', 'title', 'controls', 'csrf_token', 'csrf']);
 const MULTI_TYPES = new Set(['checkbox_set', 'select_multiple', 'selector']);
@@ -222,6 +223,8 @@ export default function TasksFilterSelector({
     requestUrlAdd,
     requestUrlApply,
     requestUrlSave,
+    savedFilterId,
+    filterSelectionNonce = 0,
     onApplied,
     onSave,
 }) {
@@ -236,6 +239,11 @@ export default function TasksFilterSelector({
     const syncTimerRef = useRef(null);
     const activeFiltersRef = useRef(activeFilters);
     activeFiltersRef.current = activeFilters;
+
+    const isSavedFilterSelected = savedFilterId != null
+        && savedFilterId !== ''
+        && savedFilterId !== 0
+        && savedFilterId !== '0';
 
     const fields = useMemo(() => {
         if (formMeta?.form?.inputs) {
@@ -258,6 +266,29 @@ export default function TasksFilterSelector({
         setActiveFieldId(null);
         setError(null);
     }, []);
+
+    const prevSavedFilterIdRef = useRef(savedFilterId);
+    // When a saved filter is chosen from the dropdown, drop ad-hoc chips.
+    useEffect(() => {
+        const prev = prevSavedFilterIdRef.current;
+        prevSavedFilterIdRef.current = savedFilterId;
+        if (prev === savedFilterId) return;
+        if (!isSavedFilterSelected) return;
+        setActiveFilters([]);
+        setOpen(false);
+        resetView();
+    }, [savedFilterId, isSavedFilterSelected, resetView]);
+
+    // Reselecting the same saved filter (or applying from dropdown) also clears chips.
+    const prevSelectionNonceRef = useRef(filterSelectionNonce);
+    useEffect(() => {
+        if (filterSelectionNonce === prevSelectionNonceRef.current) return;
+        prevSelectionNonceRef.current = filterSelectionNonce;
+        if (!filterSelectionNonce) return;
+        setActiveFilters([]);
+        setOpen(false);
+        resetView();
+    }, [filterSelectionNonce, resetView]);
 
     const resolveSubmitUrl = useCallback((extractedUrl) => {
         if (extractedUrl) return extractedUrl;
@@ -506,9 +537,16 @@ export default function TasksFilterSelector({
                         const checked = existing
                             ? valuesFromFilter(existing).includes(option.value)
                             : false;
+                        const isStateField = /(state|status)/i.test(
+                            `${activeField.id} ${activeField.caption}`
+                        );
+                        const optionIcon = isStateField
+                            ? iconForTaskStatus(option.label || option.value)
+                            : null;
                         return (
                             <FilterRow
                                 key={option.value}
+                                icon={optionIcon}
                                 label={option.label}
                                 selected={checked}
                                 onPress={() => toggleOption(activeField, option.value)}
@@ -541,8 +579,8 @@ export default function TasksFilterSelector({
                     <Button
                         size="sm"
                         rounded={false}
-                        startDecorator={activeFilters.length ? 'Plus' : 'ListFilter'}
-                        title={activeFilters.length ? undefined : t('Filter')}
+                        startDecorator={activeFilters.length ? 'Plus' : 'ListFilterPlus'}
+                        title={activeFilters.length ? undefined : ''}
                     />
                 }
             >
@@ -560,7 +598,7 @@ export default function TasksFilterSelector({
                 />
             ))}
 
-            {activeFilters.length > 0 ? (
+            {activeFilters.length > 0 && !isSavedFilterSelected ? (
                 <Row className="items-center gap-1">
                     <Button
                         size="sm"

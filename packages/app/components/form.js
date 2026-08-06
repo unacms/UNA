@@ -11,8 +11,17 @@ import useDebounce from 'app/lib/hooks/debounce'
 import { Button } from 'app/design/controls';
 import useFetchForm from 'app/lib/hooks/fetch'
 import { useTranslation } from 'react-i18next'
+import { useRouter, usePathname, redirectTo } from 'app/lib/hooks/router'
+import { getTabKeyFromPathname } from 'app/lib/tab-history'
 
 const isWeb = Platform.OS === 'web';
+
+/** Resolve UNA redirect block URI (same rules as elements/redirect). */
+function resolveRedirectUri(redirectItem) {
+    const rawUri = redirectItem?.data?.uri;
+    if (!rawUri || rawUri === '/') return '/home';
+    return rawUri;
+}
 
 function FormProviders({ instanceId, methods, children }) {
     return (
@@ -69,12 +78,16 @@ export default function Form({
     url,
 }) {
     const { t } = useTranslation();
+    const router = useRouter();
+    const pathname = usePathname();
     const isAutoChange = !!onChange;
     const { auto_focus, ...formProps } = initedFormProps ?? {};
 
     const { ...methods } = useForm({ mode: 'onChange' });
     const { formState: { isSubmitted, isDirty, isSubmitSuccessful } } = methods;
     const formInstanceId = useId();
+    // Avoid double navigation if the response effect re-runs with the same redirect.
+    const redirectedUriRef = useRef(null);
 
     const [postData, setPostData] = useState(null);
 
@@ -160,10 +173,23 @@ export default function Form({
         if (!items.length) return;
 
         const formItem = items.find(item => item?.type === 'form');
-        const otherItem = items.find(item => item?.type && item?.type !== 'form');
+        const redirectItem = items.find(item => item?.type === 'redirect');
+        // Prefer non-redirect extras for Element rendering; redirect is handled below
+        // (formOnly modals close before ElementRedirect can run its effect).
+        const otherItem = items.find(
+            item => item?.type && item?.type !== 'form' && item?.type !== 'redirect'
+        );
         // hide_on_msg: replace form only when response is msg-only (success).
         // If UNA also returns a form (validation errors), keep the form and drop the msg.
         const hideOnMsg = !!(appSetting('forms', name) || {}).hide_on_msg;
+
+        if (redirectItem) {
+            const uri = resolveRedirectUri(redirectItem);
+            if (redirectedUriRef.current !== uri) {
+                redirectedUriRef.current = uri;
+                redirectTo(router, uri, getTabKeyFromPathname(pathname));
+            }
+        }
 
         setFormBundle(prev => {
             const nextForm = formItem?.data
@@ -171,9 +197,11 @@ export default function Form({
                 : { ...prev.form, updated: Date.now() };
 
             const nextResponse = formItem?.response ?? prev.response;
+            // Redirect is navigated above — do not mount ElementRedirect (double nav /
+            // formOnly unmount race). Keep msg and other extras as usual.
             const nextExtra = hideOnMsg && formItem
                 ? null
-                : (otherItem ?? prev.extra);
+                : (otherItem ?? (redirectItem ? null : prev.extra));
 
             // Optional: skip setState when nothing actually changed
             const isSameForm = isObjectsEqual(prev.form, nextForm);
@@ -193,7 +221,7 @@ export default function Form({
         });
 
         emitter.emit(`form_${name}`, { action: 'received', formInstanceId, data: rawData });
-    }, [dynamicData, initedData, formInstanceId, name]);
+    }, [dynamicData, initedData, formInstanceId, name, router, pathname]);
 
     useEffect(() => {
         if (!onFormEmpty || !dynamicData) return;
