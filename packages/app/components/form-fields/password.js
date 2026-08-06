@@ -6,6 +6,7 @@ import { Button } from 'app/design/controls'
 import { View } from 'app/design/view'
 import React, { useState } from 'react';
 import { appSetting } from 'app/lib/util';
+import { useNativeReturnKeyNav } from 'app/context/form-focus-chain';
 
 export default function FormFieldPassword(props) {
     const [isVisible, setIsVisible] = useState(true)
@@ -14,6 +15,7 @@ export default function FormFieldPassword(props) {
     const defaultValue = props.value ? props.value : '';
     const { field } = useController({ name, rules, defaultValue });
     const placeholder = props.use_caption_as_placeholder? props.caption : props.placeholder;
+    const { inputRef, returnKeyProps } = useNativeReturnKeyNav(name, props.handleSubmit);
     
     // Get button configuration from settings
     const buttonConfig = appSetting('forms', 'password_eye_button');
@@ -27,6 +29,7 @@ export default function FormFieldPassword(props) {
                     useCaptionAsPlaceholder={props.use_caption_as_placeholder}
                 >
                     <Input
+                        ref={inputRef}
                         textContentType="password"
                         autoComplete="current-password"
                         placeholderTextColor="#6b7280"
@@ -37,6 +40,7 @@ export default function FormFieldPassword(props) {
                         onBlur={field.onBlur}
                         value={field.value}
                         aria-label={props.caption}
+                        {...returnKeyProps}
                     />
                 </AdaptiveLabel>
                 <View className="absolute right-2 top-1/2 -translate-y-1/2 justify-center items-center z-20">

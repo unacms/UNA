@@ -2,6 +2,11 @@ import { KeyboardAvoidingView, ScrollView, View } from 'react-native'
 import { Platform } from 'react-native'
 import React from 'react';
 
+/** Web: no OS keyboard overlay — list only needs the composer height. */
+export function useStickyComposerListInset(formHeight = 0) {
+    return { marginBottom: formHeight, keyboardLift: 0 };
+}
+
 export function ModalKeyboardProvider({ children }) {
     return <>{children}</>;
 }

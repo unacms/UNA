@@ -1,9 +1,42 @@
-import { forwardRef } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 import { useHeaderHeight } from "@react-navigation/elements";
-import { Platform } from 'react-native'
-import { KeyboardAwareScrollView, KeyboardAvoidingView, KeyboardProvider, KeyboardStickyView } from "react-native-keyboard-controller";
+import { Keyboard, Platform } from 'react-native'
+import { KeyboardAwareScrollView, KeyboardAvoidingView, KeyboardProvider, KeyboardStickyView, useKeyboardState } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated from "react-native-reanimated";
+
+/**
+ * Padding for a list under a KbStickyView composer.
+ * KeyboardProvider uses edge-to-edge: Android does NOT resize the window
+ * (behaves like adjustNothing), so the list must pad by form + keyboard lift
+ * on both platforms. Sticky offset.opened is typically insets.bottom.
+ */
+export function useStickyComposerListInset(formHeight = 0) {
+    const insets = useSafeAreaInsets();
+    const controllerHeight = useKeyboardState((s) => (s.isVisible ? s.height : 0));
+    // Fallback: inside RN Modal some Android devices report 0 via the controller.
+    const [rnKeyboardHeight, setRnKeyboardHeight] = useState(0);
+    useEffect(() => {
+        const show = Keyboard.addListener(
+            Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+            (e) => setRnKeyboardHeight(e?.endCoordinates?.height ?? 0)
+        );
+        const hide = Keyboard.addListener(
+            Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+            () => setRnKeyboardHeight(0)
+        );
+        return () => {
+            show.remove();
+            hide.remove();
+        };
+    }, []);
+    const keyboardHeight = Math.max(controllerHeight, rnKeyboardHeight);
+    const keyboardLift = keyboardHeight > 0 ? Math.max(0, keyboardHeight - insets.bottom) : 0;
+    return {
+        marginBottom: formHeight + keyboardLift,
+        keyboardLift,
+    };
+}
 
 /*export default function KbAvoidingView(props) {
     const { children, offset, ...rest } = props;

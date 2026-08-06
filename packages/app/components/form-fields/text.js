@@ -4,7 +4,7 @@ import { useController, useFormContext } from 'react-hook-form';
 import { Input } from 'app/design/controls'
 import { useEffect } from 'react';
 import { lazy } from 'react';
-import { Text } from 'app/design/typography'
+import { useNativeReturnKeyNav } from 'app/context/form-focus-chain';
 
 const PhoneInput = lazy(() => import('app/components/form-fields/phone'));
 
@@ -15,6 +15,11 @@ export default function FormFieldText(props) {
     const formContext = useFormContext();
     const { field } = useController({ name, rules, defaultValue });
     const placeholder = props.use_caption_as_placeholder ? props.caption : props.placeholder;
+    const isPhone = name.includes("phone") || props.type == "phone";
+    const { inputRef, returnKeyProps } = useNativeReturnKeyNav(
+        isPhone || props.type === 'value' ? null : name,
+        props.handleSubmit
+    );
 
     useEffect(() => {
         if (props.value !== undefined)
@@ -24,8 +29,6 @@ export default function FormFieldText(props) {
     if (props.type == "value"){
         return  !field.value ? null : <Field {...props} caption={props.caption+': '+field.value} error2={formContext.formState.errors[name]}/>
     }
-
-    const isPhone = name.includes("phone") || props.type == "phone";
 
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
@@ -44,6 +47,7 @@ export default function FormFieldText(props) {
                     useCaptionAsPlaceholder={props.use_caption_as_placeholder}
                 >
                     <Input
+                        ref={inputRef}
                         textContentType="none"
                         autoComplete="off"
                         autoCorrect={false}
@@ -60,6 +64,7 @@ export default function FormFieldText(props) {
                         value={String(field.value)}
                         aria-label={props.caption}
                         {...(props.checker?.params?.max ? { maxLength: props.checker.params.max } : {})}
+                        {...returnKeyProps}
                     />
                 </AdaptiveLabel>
             )}

@@ -503,11 +503,14 @@ export default function RftText({
                 }
             }
             if (data.action == 'focus') {
-                /*if (data.timeout) {
-                    openKeyboard()
+                // Prefer direct bridge focus (no ghost TextInput remount) to avoid
+                // keyboard bounce. Remount fallback when timeout is set (deep link /
+                // cold open after dismiss, where focus() alone often no-ops on iOS).
+                if (data.timeout) {
+                    setTimeout(() => openKeyboard(), data.timeout);
                 } else {
-                    editor.focus('end')
-                }*/ openKeyboard(data.timeout);
+                    editor.focus('end');
+                }
             }
             if (data.action == 'set_content') {
                 editor.setContent(data.value)

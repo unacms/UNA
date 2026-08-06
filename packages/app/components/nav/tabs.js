@@ -3,7 +3,7 @@ import { View } from 'app/design/view';
 import { Icon } from 'app/ui/atoms/icon';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
-import { useColorScheme } from 'react-native';
+import { Appearance, BackHandler, Platform, useColorScheme } from 'react-native';
 import { DarkTheme, DefaultTheme } from "@react-navigation/native";
 import Profile from 'app/ui/molecules/profile';
 import { useEffect, useMemo, useState } from 'react'
@@ -21,8 +21,6 @@ import { useFonts } from 'expo-font';
 //import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import { enableScreens } from 'react-native-screens';
 import fonts from 'app/customization/design/fonts/fonts';
-import { Platform } from 'react-native'
-import { Appearance } from 'react-native';
 import { Text } from 'app/design/typography'
 import { staticComponents } from 'app/customization/static';
 //import VersionCheck from 'react-native-version-check';
@@ -34,7 +32,13 @@ import { registerAll } from 'app/components/registry-init';
 import * as WebBrowser from 'expo-web-browser';
 import { getDomainFromUrl } from 'app/lib/util';
 import { useSound } from 'app/lib/hooks/useSound';
-import { canGoBackInTab, navigateBackInTab, resetAllTabHistory } from 'app/lib/tab-history';
+import {
+    canGoBackInTab,
+    dismissNavigationOverlays,
+    getTabKeyFromPathname,
+    navigateBackInTab,
+    resetAllTabHistory,
+} from 'app/lib/tab-history';
 import { clearAllPageCache } from 'app/lib/tab-page-cache';
 import emitter from 'app/context/emitter';
 import { useBottomSheetData } from 'app/context/bottomsheet';
@@ -276,6 +280,28 @@ export default function Tabs() {
     }, [currentUser?.id, currentUser?.confirmed]);
     // DEEP LINKING
 
+    // Android system Back → in-tab history (same as header back / re-tap tab), not RN global history.
+    useEffect(() => {
+        if (Platform.OS !== 'android') return;
+
+        const onHardwareBackPress = () => {
+            if (dismissNavigationOverlays()) {
+                return true;
+            }
+
+            const tabKey = getTabKeyFromPathname(pathname);
+            if (canGoBackInTab(tabKey)) {
+                navigateBackInTab(router, tabKey, currentUser);
+                return true;
+            }
+
+            return false;
+        };
+
+        const subscription = BackHandler.addEventListener('hardwareBackPress', onHardwareBackPress);
+        return () => subscription.remove();
+    }, [pathname, router, currentUser]);
+
     useEffect(() => {
         if (currentUser) {
             return scheduleOneSignalSubscription(currentUser, {
@@ -323,7 +349,12 @@ export default function Tabs() {
             <Subscriber />
             <View className="flex-1">
                 <View className="w-full z-50"><AsyncWorker /></View>
-                <RouterTabs key={tabsSessionKey} detachInactiveScreens={shouldDetachInactiveScreens} screenOptions={screenOptions}>
+                <RouterTabs
+                    key={tabsSessionKey}
+                    backBehavior="none"
+                    detachInactiveScreens={shouldDetachInactiveScreens}
+                    screenOptions={screenOptions}
+                >
                     {
                         TabList.map((tab, index) => {
                             const useAnimatedIcon = tab.animated === true;

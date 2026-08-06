@@ -49,6 +49,28 @@ export function CommentsBrowse({
     const UnitComments = getComponent('unit', 'comments');
     const { t } = useTranslation();
     const flashListRef = useRef(null);
+    /** Ignore item taps that start as a scroll (chat UX: keep keyboard while scrolling). */
+    const listDraggingRef = useRef(false);
+    const listDragTimeoutRef = useRef(null);
+
+    const markListDragging = useCallback(() => {
+        listDraggingRef.current = true;
+        if (listDragTimeoutRef.current) clearTimeout(listDragTimeoutRef.current);
+    }, []);
+
+    const clearListDragging = useCallback(() => {
+        if (listDragTimeoutRef.current) clearTimeout(listDragTimeoutRef.current);
+        // Brief grace so a cancelled press after drag does not blur the composer.
+        listDragTimeoutRef.current = setTimeout(() => {
+            listDraggingRef.current = false;
+        }, 80);
+    }, []);
+
+    const dismissComposerIfIdle = useCallback(() => {
+        if (listDraggingRef.current) return;
+        dismissCommentEditorKeyboard();
+    }, []);
+
     const { currentUser } = useCurrentUser();
     const viewMode = browse?.data?.view;
 
@@ -375,12 +397,13 @@ export function CommentsBrowse({
     }
 
     const renderListFooter = useCallback(() => (
-        <TouchableWithoutFeedback onPress={dismissCommentEditorKeyboard}>
+        <TouchableWithoutFeedback onPress={dismissComposerIfIdle}>
             <View>
                 {(browseParams.object_id && hasNextPage && isFetchingNextPage) ? (
                     <View className=''><Loading /></View>
                 ) : (!refetchState.visibleItems.length && !refetchRef.current.isFirstLoad ? appStatic('components_comments_empty') : null)}
-                {marginBottom > 0 ? <View style={{ height: marginBottom }} /> : null}
+                {/* Spacer so last comments clear sticky composer (+ keyboard on native). */}
+                {marginBottom > 0 ? <View style={{ height: marginBottom }} collapsable={false} /> : null}
             </View>
         </TouchableWithoutFeedback>
     ), [
@@ -389,18 +412,19 @@ export function CommentsBrowse({
         isFetchingNextPage,
         refetchState.visibleItems.length,
         marginBottom,
+        dismissComposerIfIdle,
     ]);
 
     const renderItem = useCallback(({ item, index }) => {
         if (item.id.toString().includes('block')) {
             return (
-                <TouchableWithoutFeedback onPress={dismissCommentEditorKeyboard}>
+                <TouchableWithoutFeedback onPress={dismissComposerIfIdle}>
                     <View>{item.data}</View>
                 </TouchableWithoutFeedback>
             );
         }
         return (
-            <TouchableWithoutFeedback onPress={dismissCommentEditorKeyboard}>
+            <TouchableWithoutFeedback onPress={dismissComposerIfIdle}>
                 <View className="px-3 sm:px-4" key={index}>
                     <UnitComments
                         selectedId={scrollToIndex}
@@ -415,28 +439,30 @@ export function CommentsBrowse({
                 </View>
             </TouchableWithoutFeedback>
         );
-    }, [scrollToIndex, hideActions, replyId, browseParams.module, browseParams.max_level, viewMode]);
+    }, [scrollToIndex, hideActions, replyId, browseParams.module, browseParams.max_level, viewMode, dismissComposerIfIdle]);
 
     return (
         <>
-            <View className="flex-1 w-full">
+            <View className="flex-1 w-full min-h-0" style={height > 0 ? { height } : undefined}>
             <UniList
                 mode='simple'
                 isModal={isModal}
                 useCustomScrollHandler={useCustomScrollHandler}
                 useWindowScroll={!isModal}
-                height={height > 0 ? height : undefined}
                 style={{ flex: 1 }}
-                contentContainerStyle={marginBottom > 0 ? { paddingBottom: marginBottom } : undefined}
                 data={dataOut}
+                extraData={marginBottom}
                 refer={flashListRef}
                 onRefresh={refetch}
                 renderItem={renderItem}
                 onEndReached={handleEndReached}
                 ListFooterComponent={renderListFooter}
-                keyboardShouldPersistTaps="handled"
-                keyboardDismissMode="on-drag"
-                onScrollBeginDrag={dismissCommentEditorKeyboard}
+                keyboardShouldPersistTaps="always"
+                keyboardDismissMode="none"
+                onScrollBeginDrag={markListDragging}
+                onScrollEndDrag={clearListDragging}
+                onMomentumScrollBegin={markListDragging}
+                onMomentumScrollEnd={clearListDragging}
             />
             </View>
             {/*!refetchState.visibleItems.length && appStatic('components_comments_empty')*/}
@@ -658,52 +684,65 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
     }, [])
 
     useEffect(() => {
-       
-        if (formData.parent_id > 0) {
-            const updateFormInputs = async () => {
-                let mentionText = '';
-                
-                if (appSetting('comments', 'mentions')) {
-                    const sUrl = appSetting('urls', 'cmts_menthion_url');
-                    if (sUrl) {
-                        const sResponse = await fetcher(`/api.php?r=${sUrl}&params[]=${formData.cmt_id}&params[]=${formData.cmt_object_id}`);
-        
-                        if (sResponse?.data) {
-                            mentionText = `<a class="bx-mention-link ${sResponse.data.add_classes}" ts="${formData.ts}" data-id="[object Object]" href="/mention${sResponse.data.id}" title="${sResponse.data.name.trim()}" dchar="@" data-profile-id="-1" contenteditable="false">${sResponse.data.name.trim()}</a>&shy;&nbsp;`;
-                        }
-                    } else {
-                        if (formData.author?.url === "/javascript:") {
-                            mentionText = `<a class="bx-mention-link" ts="${formData.ts}" data-id="[object Object]" href="#" title="${formData.author.display_name.trim()}" dchar="@" data-profile-id="-1" contenteditable="false">${formData.author.display_name.trim()}</a>&shy;&nbsp;`;
-                        } else if (formData.author?.url) {
-                            mentionText = `<a class="bx-mention-link" ts="${formData.ts}" href="${formData.author.url}">${formData.author.display_name.trim()}</a>&shy;&nbsp;`;
-                        }
+        if (!(formData.parent_id > 0)) return;
+
+        let cancelled = false;
+
+        const updateFormInputs = async () => {
+            let mentionText = '';
+
+            if (appSetting('comments', 'mentions')) {
+                const sUrl = appSetting('urls', 'cmts_menthion_url');
+                if (sUrl) {
+                    const sResponse = await fetcher(`/api.php?r=${sUrl}&params[]=${formData.cmt_id}&params[]=${formData.cmt_object_id}`);
+
+                    if (sResponse?.data) {
+                        mentionText = `<a class="bx-mention-link ${sResponse.data.add_classes}" ts="${formData.ts}" data-id="[object Object]" href="/mention${sResponse.data.id}" title="${sResponse.data.name.trim()}" dchar="@" data-profile-id="-1" contenteditable="false">${sResponse.data.name.trim()}</a>&shy;&nbsp;`;
+                    }
+                } else if (formData.author?.url === "/javascript:") {
+                    mentionText = `<a class="bx-mention-link" ts="${formData.ts}" data-id="[object Object]" href="#" title="${formData.author.display_name.trim()}" dchar="@" data-profile-id="-1" contenteditable="false">${formData.author.display_name.trim()}</a>&shy;&nbsp;`;
+                } else if (formData.author?.url) {
+                    mentionText = `<a class="bx-mention-link" ts="${formData.ts}" href="${formData.author.url}">${formData.author.display_name.trim()}</a>&shy;&nbsp;`;
+                }
+            }
+
+            if (cancelled) return;
+
+            // Parent id only — avoid remounting editor via cmt_text value/autofocus.
+            setForm(prevForm => ({
+                ...prevForm,
+                data: {
+                    ...prevForm.data,
+                    inputs: {
+                        ...prevForm.data.inputs,
+                        cmt_parent_id: {
+                            ...prevForm.data.inputs.cmt_parent_id,
+                            value: formData.parent_id
+                        },
                     }
                 }
-                
-                // Update form state the correct way
-                setForm(prevForm => ({
-                    ...prevForm,
-                    data: {
-                        ...prevForm.data,
-                        inputs: {
-                            ...prevForm.data.inputs,
-                            cmt_parent_id: {
-                                ...prevForm.data.inputs.cmt_parent_id,
-                                value: formData.parent_id
-                            },
-                            cmt_text: {
-                                ...prevForm.data.inputs.cmt_text,
-                                value: mentionText,
-                                autofocus: formData.parent_id
-                            }
-                        }
-                    }
-                }));
-            };
-            
-            updateFormInputs();
-        }
-    }, [formData.parent_id]);
+            }));
+
+            if (mentionText) {
+                emitter.emit('editor', { action: 'set_content', value: mentionText });
+            }
+
+            // Single focus after reply banner + content settle (avoids keyboard bounce).
+            // timeout: 1 → TenTap remount path (reliable IME on iOS) after layout is stable.
+            requestAnimationFrame(() => {
+                if (cancelled) return;
+                setTimeout(() => {
+                    if (cancelled) return;
+                    emitter.emit('editor', { action: 'focus', timeout: 1 });
+                }, 50);
+            });
+        };
+
+        updateFormInputs();
+        return () => {
+            cancelled = true;
+        };
+    }, [formData.parent_id, formData.cmt_id, formData.cmt_object_id, formData.author, formData.ts]);
 
 
 
@@ -734,6 +773,7 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
                 }
             }
         }));
+        emitter.emit('editor', { action: 'set_content', value: '' });
     }
 
     const onFormSubmit = (formData, d) => {
@@ -747,9 +787,9 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
     };
     
     return (
-        <View className=" p-1.5 sm:p-2.5 " >
+        <View className=" web:p-1.5 web:sm:p-2.5 native:px-1.5" >
             {
-                formData.parent_id > 0 && (<View className='bg-accent/60 rounded-xl border border-accent px-2.5 py-2 mb-2'>
+                formData.parent_id > 0 && (<View className='bg-accent rounded-xl border border-accent px-2.5 py-2 mb-2'>
                     <Row className='items-start justify-between max-w-full relative'>
                         <View className=' flex-auto pr-4'>
                             <Row className='max-w-full '>

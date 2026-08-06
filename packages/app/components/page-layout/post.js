@@ -3,7 +3,7 @@ import { View } from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
 import { LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
-import KbAvoidingView, { KbStickyView } from 'app/ui/atoms/kb-avoiding-view';
+import KbAvoidingView, { KbStickyView, useStickyComposerListInset } from 'app/ui/atoms/kb-avoiding-view';
 import { Platform } from 'react-native'
 import { useLocalSearchParams } from 'app/lib/hooks/router'
 import emitter from 'app/context/emitter';
@@ -72,6 +72,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
     const [scrollToEnd, setScrollToEnd] = useState(false);
     const [formHeight, setFormHeight] = useState(0);
     const [listWidth, setListWidth] = useState(0)
+    const { marginBottom: listBottomInset } = useStickyComposerListInset(20);
     const currentBreakpoint = useBreakpoint();
     const currentBreakpointName = useBreakpointName()
     const isLgUp = currentBreakpoint >= LAYOUT_BREAKPOINTS.lg;
@@ -99,10 +100,9 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
         if (localUrl) {
             const hash = localUrl.split('#')[1];
             if (hash) {
-                // click on reply
+                // click on reply — focus deferred to CommentsFormInner after mention settles
                 if (hash.includes('cmt_id=')) {
                     setReplyId(hash);
-                    emitter.emit('editor', { action: 'focus', note: "setReplyId", timeout: 800 });
                     setScrollToEnd(hash.replace('cmt_id=', ''));
                 }
                 else {
@@ -273,13 +273,12 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
         }
     if (isModal) {
         return (
-            <View className="w-full flex-1 relative" >
-                <View className="flex-1 w-full">
+            <View className="w-full flex-1 relative">
+                <View className="flex-1 w-full min-h-0">
                         {data == 'loading' ?
                             <Loading />
                         : <CommentsBrowse
                             useCustomScrollHandler={true}
-                            height={windowHeight - offset2 > 0 ? windowHeight - offset2 : undefined}
                             scrollToIndex={scrollToEnd}
                             addItems={aItems}
                             isModal={true}
@@ -287,7 +286,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                             module={commentsModule}
                             requestUrl={commentsRequestUrl}
                             replyId={replyId}
-                            marginBottom={formHeight}
+                            marginBottom={listBottomInset}
                         />}
                 </View>
 
@@ -351,7 +350,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                     <View
                         onLayout={handleListLayout}
                         style={{ pointerEvents: 'box-none', ...(isFormFixed ? { marginBottom: formHeight } : null) }}
-                        className="w-full flex-1"
+                        className="w-full flex-1 "
                     >
                         <CommentsBrowse
 

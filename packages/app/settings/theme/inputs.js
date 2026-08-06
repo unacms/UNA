@@ -138,9 +138,9 @@ export const settingsInputs = {
         'u-controls-radiobutton-indicator':
             'h-5 w-5 m-1 rounded-full border-2 border-border bg-transparent justify-center items-center ',
 
-        // Active mark inside checkbox (filled square)
+        // Active mark inside checkbox (filled square) — no margin; parent centers it
         'u-controls-checkbox-indicator-active':
-            'h-3 w-3 m-1 bg-primary rounded',
+            'h-3 w-3 bg-primary rounded',
 
         // Active mark inside radiobutton (filled circle)
         'u-controls-radiobutton-indicator-active':

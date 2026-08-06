@@ -5,6 +5,21 @@ import { appSetting, cn } from 'app/lib/util'
 
 const checkboxTheme = appSetting('theme', 'checkbox')
 
+function CheckboxMark({ selected, indicatorClass }) {
+    return (
+        <View className={cn(indicatorClass, 'overflow-hidden')} pointerEvents="none">
+            <CheckboxPrimitive.Root
+                checked={selected}
+                className="h-full w-full items-center justify-center"
+            >
+                <CheckboxPrimitive.Indicator className="items-center justify-center">
+                    <View className={checkboxTheme['u-controls-checkbox-indicator-active']} />
+                </CheckboxPrimitive.Indicator>
+            </CheckboxPrimitive.Root>
+        </View>
+    )
+}
+
 export default function CheckBox2({
     title,
     onPress,
@@ -30,16 +45,7 @@ export default function CheckBox2({
                 accessibilityState={{ checked: selected }}
                 className="items-center justify-center shrink-0 p-0.5"
             >
-                <View className={indicatorClass} pointerEvents="none">
-                    <CheckboxPrimitive.Root
-                        checked={selected}
-                        style={{ width: '100%', height: '100%' }}
-                    >
-                        <CheckboxPrimitive.Indicator>
-                            <View className={checkboxTheme['u-controls-checkbox-indicator-active']} />
-                        </CheckboxPrimitive.Indicator>
-                    </CheckboxPrimitive.Root>
-                </View>
+                <CheckboxMark selected={selected} indicatorClass={indicatorClass} />
             </Pressable>
         )
     }
@@ -57,16 +63,7 @@ export default function CheckBox2({
             </View>
 
             {/* Visual square — toggled by the Pressable container above */}
-            <View className={indicatorClass} pointerEvents="none">
-                <CheckboxPrimitive.Root
-                    checked={selected}
-                    style={{ width: '100%', height: '100%' }}
-                >
-                    <CheckboxPrimitive.Indicator>
-                        <View className={checkboxTheme['u-controls-checkbox-indicator-active']} />
-                    </CheckboxPrimitive.Indicator>
-                </CheckboxPrimitive.Root>
-            </View>
+            <CheckboxMark selected={selected} indicatorClass={indicatorClass} />
         </Pressable>
     )
 }

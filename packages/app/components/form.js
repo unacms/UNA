@@ -14,6 +14,16 @@ import { useTranslation } from 'react-i18next'
 
 const isWeb = Platform.OS === 'web';
 
+function FormProviders({ instanceId, methods, children }) {
+    return (
+        <FormInstanceProvider instanceId={instanceId}>
+            <FormProvider {...methods}>
+                {children}
+            </FormProvider>
+        </FormInstanceProvider>
+    );
+}
+
 function getFormType(name) {
     return getComponent('form', String(name))
 }
@@ -542,47 +552,43 @@ export default function Form({
     if ('undefined' !== typeof ElementForm) {
         inputs = <ElementForm name={name} data={{ ...formBundle?.form, inputs: filteredInputs }} response={formBundle.response} handleSubmit={_handleSubmit} exProps={exProps}></ElementForm>
         return (
-            <FormInstanceProvider instanceId={formInstanceId}>
-                <FormProvider {...methods}>
-                    {Element && <Element {...formBundle.extra} />}
-                    {!hideFormOnMsg ? inputs : null}
-                </FormProvider>
-            </FormInstanceProvider>
+            <FormProviders instanceId={formInstanceId} methods={methods}>
+                {Element && <Element {...formBundle.extra} />}
+                {!hideFormOnMsg ? inputs : null}
+            </FormProviders>
         )
     }
 
     return (
-        <FormInstanceProvider instanceId={formInstanceId}>
+        <FormProviders instanceId={formInstanceId} methods={methods}>
             <View className={`${layout !== 'hor' ? appSetting('forms', 'form_container') : 'w-full'} ${exProps?.classes}`}>
                 {Element && <Element {...formBundle.extra} />}
                 {!hideFormOnMsg ? (
-                    <FormProvider {...methods}>
-                        <View className={`${layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : 'w-full gap-4'}`}>
-                            {inputs}
-                            {(isAutoChange) && <Row className={`items-center justify-between  ${layout === 'hor' ? ' ' : ' '} `}>
-                                {(stableStringify(defaultFormValues) != stableStringify(currentFormValues)) && <Button
-                                    title={t('Reset Filters')}
-                                    startDecorator='X'
-                                    size='sm'
-                                    fullWidth
-                                    variant='secondary'
-                                    onPress={() => {
-                                        if (isWeb) {
-                                            const url = new URL(window.location.href);
-                                            if (url.searchParams.has('filters')) {
-                                                url.searchParams.delete('filters');
-                                                window.location.replace(`${url.pathname}${url.search}${url.hash}`);
-                                            }
+                    <View className={`${layout === 'hor' ? 'flex-row gap-x-4 items-center w-full' : 'w-full gap-4'}`}>
+                        {inputs}
+                        {(isAutoChange) && <Row className={`items-center justify-between  ${layout === 'hor' ? ' ' : ' '} `}>
+                            {(stableStringify(defaultFormValues) != stableStringify(currentFormValues)) && <Button
+                                title={t('Reset Filters')}
+                                startDecorator='X'
+                                size='sm'
+                                fullWidth
+                                variant='secondary'
+                                onPress={() => {
+                                    if (isWeb) {
+                                        const url = new URL(window.location.href);
+                                        if (url.searchParams.has('filters')) {
+                                            url.searchParams.delete('filters');
+                                            window.location.replace(`${url.pathname}${url.search}${url.hash}`);
                                         }
-                                        methods.reset();
-                                    }}
-                                />
-                                }
-                            </Row>}
-                        </View>
-                    </FormProvider>
+                                    }
+                                    methods.reset();
+                                }}
+                            />
+                            }
+                        </Row>}
+                    </View>
                 ) : null}
             </View>
-        </FormInstanceProvider>
+        </FormProviders>
     );
 }
