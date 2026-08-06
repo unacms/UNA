@@ -404,6 +404,7 @@ class BxOAuthAPI extends BxDol
             }
 
             // TODO: fetch extended info from profile module
+            bx_alert('bx_oauth2', 'profile_info', $aProfileInfo['id'], 0, ['info' => &$aProfileInfo]);
         }
 
 
