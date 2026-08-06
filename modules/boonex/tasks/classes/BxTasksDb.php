@@ -123,8 +123,8 @@ class BxTasksDb extends BxBaseModTextDb
 
         if(($iProfileId = $aParams['for_profile'] ?? false)) {
             $aBindings['profile_id'] = (int)$iProfileId;
-            $sJoinClause .= " LEFT JOIN `" . $CNF['TABLE_ASSIGNMENTS'] . "` AS `ta` ON `te`.`id`=`ta`.`content`";
-            $sWhereClause .= " AND (`te`.`" . $CNF['FIELD_AUTHOR'] . "`=:profile_id OR `ta`.`initiator`=:profile_id)";
+            $sJoinClause .= " LEFT JOIN `" . $CNF['TABLE_ASSIGNMENTS'] . "` AS `tafp` ON `te`.`id`=`tafp`.`content`";
+            $sWhereClause .= " AND (`te`.`" . $CNF['FIELD_AUTHOR'] . "`=:profile_id OR `tafp`.`initiator`=:profile_id)";
         }
 
         if(($oCf = BxDolContentFilter::getInstance()) && $oCf->isEnabled())
@@ -259,6 +259,24 @@ class BxTasksDb extends BxBaseModTextDb
                     $sWhereClause = "AND `tf`.`id` = :id";
                     break;
 
+                case 'temporary':
+                    $aMethod['name'] = 'getRow';
+
+                    $sWhereClause .= " AND `tf`.`permanent` = '0'";
+
+                    if(($iContextId = $aParams['context_id'] ?? false) !== false) {
+                        $aMethod['params'][1]['context_id'] = $iContextId;
+                        
+                        $sWhereClause .= " AND `tf`.`context_id` = :context_id";
+                    }
+
+                    if(($iAuthor = $aParams['author'] ?? false) !== false) {
+                        $aMethod['params'][1]['author'] = $iAuthor;
+
+                        $sWhereClause .= " AND `tf`.`author` = :author";
+                    }
+                    break;
+
                 case 'author':
                     $aMethod['params'][1] = [
                         'author' => $aParams['author']
@@ -326,6 +344,17 @@ class BxTasksDb extends BxBaseModTextDb
             'author' => $iAuthor,
             'lifetime' => $iLifetime
         ]);
+    }
+
+    public function getTemporaryFilterId($iContextId, $iAuthorId) 
+    {
+        $aFilter = $this->getFilters([
+            'sample' => 'temporary', 
+            'context_id' => $iContextId, 
+            'author' => $iAuthorId
+        ]);
+
+        return $aFilter && is_array($aFilter) ? $aFilter['id'] : 0;
     }
 
     public function getTimeTracks($aParams = []) 
@@ -671,6 +700,13 @@ class BxTasksDb extends BxBaseModTextDb
                     break;
 
                 $sResult .= $sFld . " IN (" . $this->implode_escape($aCnd['v']) . ")";
+                break;
+            
+            case 'NOT IN':
+                if(empty($aCnd['v']) || !is_array($aCnd['v']))
+                    break;
+
+                $sResult .= $sFld . " NOT IN (" . $this->implode_escape($aCnd['v']) . ")";
                 break;
 
             case 'LIKE':

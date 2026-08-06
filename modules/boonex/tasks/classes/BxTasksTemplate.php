@@ -384,6 +384,7 @@ class BxTasksTemplate extends BxBaseModTextTemplate
         $bContext = !empty($iContextId);
         $bAllowAdd = $bContext && $oModule->isAllowAdd($iContextId);
         $bAllowManage = $bContext && $oModule->isAllowManageByContext($iContextId);
+        $bShowManage = false; //--- Hidden for now.
 
         $iProfileId = bx_get_logged_profile_id();
 
@@ -452,7 +453,7 @@ class BxTasksTemplate extends BxBaseModTextTemplate
                 $sUrl = bx_absolute_url($oPermalinks->permalink('page.php?i=' . $CNF['URI_VIEW_ENTRY'] . '&id=' . $iTaskId));
 
                 $aActions = [];
-                if($this->_bIsApi && $bTasksAllowManage)
+                if($this->_bIsApi && $bShowManage && $bTasksAllowManage)
                     $aActions[] = [
                         'name' => 'set_completed', 
                         'title' => _t('_bx_tasks_menu_item_title_set_' . ($bCompleted ? 'uncompleted' : 'completed')),
@@ -483,19 +484,24 @@ class BxTasksTemplate extends BxBaseModTextTemplate
                     'due' => $aTask[$CNF['FIELD_DUE_DATE']] > 0 ? bx_time_js($aTask[$CNF['FIELD_DUE_DATE']]) : '',
                     'object' => $sJsObject,
                     'bx_repeat:members' => $aTmplVarsMembers,
-                    'bx_if:allow_manage' => [
-                        'condition' => $bTasksAllowManage,
+                    'bx_if:show_manage' => [
+                        'condition' => $bShowManage,
                         'content' => [
-                            'id' => $iTaskId,
-                            'object' => $sJsObject,
-                            'checked' => $bCompleted ? 'checked' : '',
-                        ]
-                    ],
-                    'bx_if:deny_manage' => [
-                        'condition' => !$bTasksAllowManage,
-                        'content' => [
-                            'id' => $iTaskId,
-                            'checked' => $bCompleted ? 'checked' : '',
+                            'bx_if:allow_manage' => [
+                                'condition' => $bTasksAllowManage,
+                                'content' => [
+                                    'id' => $iTaskId,
+                                    'object' => $sJsObject,
+                                    'checked' => $bCompleted ? 'checked' : '',
+                                ]
+                            ],
+                            'bx_if:deny_manage' => [
+                                'condition' => !$bTasksAllowManage,
+                                'content' => [
+                                    'id' => $iTaskId,
+                                    'checked' => $bCompleted ? 'checked' : '',
+                                ]
+                            ]
                         ]
                     ]
                 ]);
@@ -630,6 +636,7 @@ class BxTasksTemplate extends BxBaseModTextTemplate
     {
         $sJsObject = $this->_oConfig->getJsObject('tasks');
         $iLoggedId = bx_get_logged_profile_id();
+        $bShowTemporary = $aParams['show_temporary'] ?? false;
 
         $this->_oDb->cleanFilters($iContextId, $iLoggedId);
 
@@ -649,8 +656,9 @@ class BxTasksTemplate extends BxBaseModTextTemplate
             '_bx_tasks_txt_flt_system' => ['sample' => 'active', 'context_id' => 0, 'author' => 0],
             '_bx_tasks_txt_flt_contextual' => ['sample' => 'active', 'context_id' => $iContextId, 'author' => 0],
             '_bx_tasks_txt_flt_my_permanent' => ['sample' => 'active', 'context_id' => $iContextId, 'author' => $iLoggedId, 'permanent' => 1],
-            '_bx_tasks_txt_flt_my_temporary' => ['sample' => 'active', 'context_id' => $iContextId, 'author' => $iLoggedId, 'permanent' => 0]
         ];
+        if($bShowTemporary)
+            $aTypes['_bx_tasks_txt_flt_my_temporary'] = ['sample' => 'active', 'context_id' => $iContextId, 'author' => $iLoggedId, 'permanent' => 0];
 
         foreach($aTypes as $sTitle => $aType) {
             $aFilterItems = $this->_oDb->getFilters($aType);
@@ -670,7 +678,8 @@ class BxTasksTemplate extends BxBaseModTextTemplate
                 'values' => $aInput['values'],
                 'value' => $aInput['value'],
                 'request_url_add' => $this->MODULE . '/create_filter&params[]=' . $iContextId,
-                'request_url_apply' => $this->MODULE . '/apply_filter&params[]=' . $iContextId . '&params[]='
+                'request_url_apply' => $this->MODULE . '/apply_filter&params[]=' . $iContextId . '&params[]=',
+                'request_url_save' => $this->MODULE . '/save_filter&params[]=' . $iContextId . '&params[]='
             ];
 
         $oForm = new BxTemplFormView([]);

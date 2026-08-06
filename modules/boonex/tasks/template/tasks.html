@@ -26,19 +26,20 @@
             <div class="bx-tasks-tasks">
                 <bx_repeat:tasks>
                     <div class="bx-def-padding-sec  bx-def-border-bottom  bx-tasks-task bx-tasks-task-__class__">
-                        <div class="bx-tasks-task-checkbox pr-2">
-                            <bx_if:allow_manage>
-                                <input id="checkbox__id__" type="checkbox" __checked__ class="promoted-input-checkbox" onclick="__object__.setCompleted(__id__, this)">
-                            </bx_if:allow_manage>
-                            <bx_if:deny_manage>
-                                <input id="checkbox__id__" type="checkbox" __checked__ class="promoted-input-checkbox" disabled>
-                            </bx_if:deny_manage>
-                            <label for="checkbox__id__">
-                                <i class="sys-icon far fa-check-circle bx-tasks-completed"></i>
-                                <i class="sys-icon far circle bx-tasks-uncompleted"></i>
-                            </label>
-                        </div>
-
+                        <bx_if:show_manage>
+                            <div class="bx-tasks-task-checkbox pr-2">
+                                <bx_if:allow_manage>
+                                    <input id="checkbox__id__" type="checkbox" __checked__ class="promoted-input-checkbox" onclick="__object__.setCompleted(__id__, this)">
+                                </bx_if:allow_manage>
+                                <bx_if:deny_manage>
+                                    <input id="checkbox__id__" type="checkbox" __checked__ class="promoted-input-checkbox" disabled>
+                                </bx_if:deny_manage>
+                                <label for="checkbox__id__">
+                                    <i class="sys-icon far fa-check-circle bx-tasks-completed"></i>
+                                    <i class="sys-icon far circle bx-tasks-uncompleted"></i>
+                                </label>
+                            </div>
+                        </bx_if:show_manage>
                         <a href="__url__" class="bx-tasks-task-name pr-2" title="__title__">__title__ </a>
                         <span class="bx-task-badge flex pr-2">__badges__</span>
                         <span class="bx-def-font-small bx-def-font-grayed pr-2">__created__</span>

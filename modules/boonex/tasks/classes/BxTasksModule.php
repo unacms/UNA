@@ -184,6 +184,7 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
             'SetProperty' => '',
             'SetCompleted' => '',
             'CreateFilter' => '',
+            'SaveFilter' => '',
             'ApplyFilter' => '',
             'ProcessTimer' => '',
         ]);
@@ -418,6 +419,7 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
     public function serviceCreateFilter($iContextId)
     {
         $iAuthorId = bx_get_logged_profile_id();
+        $iFilterId = $this->_oDb->getTemporaryFilterId($iContextId, $iAuthorId);
 
         $oForm = $this->_getFilterForm($iContextId);
         if(!$oForm)
@@ -445,7 +447,8 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
                     $sTitle .= $aInput['caption'] . $sFltTitle . ' + ';
                     $aValues[] = [
                         'f' => $sName,
-                        'v' => $mixedValue
+                        'v' => $mixedValue,
+                        'r' => ($mixedR = $oForm->getCleanValue($sName . '_reverse')) !== false ? (int)$mixedR : 0
                     ];
                 }
             }
@@ -464,8 +467,8 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
                 $aValsToAdd['title'] = trim($sTitle, " +");
 
             $aRes = [];
-            if(($iId = (int)$oForm->insert($aValsToAdd)) != 0) {
-                $this->applyFilter($iContextId, $iId);
+            if(($iFilterId && $oForm->update($iFilterId, $aValsToAdd)) || (!$iFilterId && ($iFilterId = (int)$oForm->insert($aValsToAdd)) != 0)) {
+                $this->applyFilter($iContextId, $iFilterId);
 
                 $aRes = $this->_bIsApi ? [] : ['reload' => 1];
             }
@@ -479,6 +482,43 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
             'ext' => [
                 'name' => $this->_aModule['name'], 
                 'request' => ['url' => '/api.php?r=' . $this->_aModule['name'] . '/create_filter/&params[]=' . $iContextId, 'immutable' => true]
+            ]
+        ])] : $oForm;
+    }
+
+    public function serviceSaveFilter($iContextId, $iFilterId = 0)
+    {
+        $iAuthorId = bx_get_logged_profile_id();
+        $iFilterId = $iFilterId ?: $this->_oDb->getTemporaryFilterId($iContextId, $iAuthorId);
+
+        $oForm = $this->_getSaveFilterForm($iContextId);
+        if(!$oForm)
+            return [];
+
+        $oForm->initChecker();
+        if($oForm->isSubmittedAndValid()) {
+            $aValsToAdd = [
+                'author' => $oForm->getCleanValue('save_all') == ($this->_bIsApi ? 1 : 'on') ? 0 : $iAuthorId,
+                'title' => $oForm->getCleanValue('title'),
+                'permanent' => 1
+            ];
+
+            $aRes = [];
+            if($oForm->update($iFilterId, $aValsToAdd)) {
+                $this->applyFilter($iContextId, $iFilterId);
+
+                $aRes = $this->_bIsApi ? [] : ['reload' => 1];
+            }
+            else
+                $aRes = ($sMsg = _t('_bx_tasks_txt_err_cannot_perform_action')) && $this->_bIsApi ? [bx_api_get_msg($sMsg)] : ['msg' => $sMsg];
+
+            return $aRes;
+        }
+
+        return $this->_bIsApi ? [bx_api_get_block('form', $oForm->getCodeAPI(), [
+            'ext' => [
+                'name' => $this->_aModule['name'], 
+                'request' => ['url' => '/api.php?r=' . $this->_aModule['name'] . '/save_filter/&params[]=' . $iContextId, 'immutable' => true]
             ]
         ])] : $oForm;
     }
@@ -1725,7 +1765,7 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         }
         else {
             $mixedV = $aItem['v'];
-            $mixedO = 'IN';
+            $mixedO = !($aItem['r'] ?? 0) ? 'IN' : 'NOT IN';
         }
 
         if(!$mixedV || !$mixedO)
@@ -1740,9 +1780,19 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
     {
         $CNF = &$this->_oConfig->CNF;
 
+        $mixedV = $mixedO = false;
+        if(!($bArray = is_array($aItem['v'])) || count($aItem['v']) == 1) {
+            $mixedV = $bArray ? reset($aItem['v']) : $aItem['v'];
+            $mixedO = '=';
+        }
+        else {
+            $mixedV = $aItem['v'];
+            $mixedO = !($aItem['r'] ?? 0) ? 'IN' : 'NOT IN';
+        }
+
         return [
             'join' => ['cnd' => true, 'j' => 'LEFT', 'tj' => $CNF['TABLE_ASSIGNMENTS'], 'taj' => 'ta', 'fj' => 'content', 'tam' => 'te', 'fm' => 'id'],
-            'where' => ['cnd' => true, 't' => 'ta', 'f' => 'initiator', 'v' => $aItem['v'], 'o' => '=']
+            'where' => ['cnd' => true, 't' => 'ta', 'f' => 'initiator', 'v' => $mixedV, 'o' => $mixedO]
         ];
     }
 
@@ -1775,10 +1825,10 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
             ],
             'inputs' => [
                 $CNF['FIELD_AUTHOR'] => [
-                    'type' => 'radio_set',
+                    'type' => 'checkbox_set',
                 ],
                 $CNF['FIELD_INITIAL_MEMBERS'] => [
-                    'type' => 'radio_set',
+                    'type' => 'checkbox_set',
                 ],
                 $CNF['FIELD_TYPE'] => [
                     'type' => 'checkbox_set',
@@ -1864,17 +1914,85 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         if($iContextId && ($oContext = BxDolProfile::getInstance($iContextId)) !== false)
             $sContextModule = $oContext->getModule();
 
-        foreach([$CNF['FIELD_AUTHOR'], $CNF['FIELD_INITIAL_MEMBERS']] as $sK)
-            if(isset($aForm['inputs'][$sK])) {
+        foreach([$CNF['FIELD_AUTHOR'], $CNF['FIELD_INITIAL_MEMBERS']] as $sK){
+            if(!isset($aForm['inputs'][$sK])) 
+                continue;
+
+            if($oContext !== false) {
                 $aForm['inputs'][$sK]['values']['{logged_pid}'] = _t('_bx_tasks_txt_flt_user_current');
 
-                if($oContext !== false) {
-                    $aMembers = bx_srv($sContextModule, 'fans', [$oContext->getContentId(), true]);
-                    foreach($aMembers as $iMember)
-                        if(($iMember != $this->_iProfileId) && ($oMember = BxDolProfile::getInstance($iMember)) !== false && !($oMember instanceof BxDolProfileUndefined))
-                            $aForm['inputs'][$sK]['values'][$iMember] = $oMember->getDisplayName();
-                }
+                $aMembers = bx_srv($sContextModule, 'fans', [$oContext->getContentId(), true]);
+                foreach($aMembers as $iMember)
+                    if(($iMember != $this->_iProfileId) && ($oMember = BxDolProfile::getInstance($iMember)) !== false && !($oMember instanceof BxDolProfileUndefined))
+                        $aForm['inputs'][$sK]['values'][$iMember] = $oMember->getDisplayName();
             }
+            else
+                unset($aForm['inputs'][$sK]);
+        }
+
+        if(!$oContext || !bx_srv($sContextModule, 'is_admin', [$iContextId, $this->_iProfileId]))
+            unset($aForm['inputs']['save_all']);
+
+        return new BxTemplFormView($aForm);
+    }
+
+    protected function _getSaveFilterForm($iContextId = 0)
+    {
+        $CNF = &$this->_oConfig->CNF;
+
+        $aForm = [
+            'form_attrs' => [
+                'id' => 'bx-tasks-filter-save',
+                'action' => BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'save_filter/' . $iContextId,
+                'method' => BX_DOL_FORM_METHOD_DEFAULT
+            ],
+            'params' => [
+                'db' => [
+                    'table' => $CNF['TABLE_FILTERS'],
+                    'key' => 'id',
+                    'uri' => '',
+                    'uri_title' => '',
+                    'submit_name' => 'do_save'
+                ],
+            ],
+            'inputs' => [
+                'save_all' => [
+                    'type' => 'switcher',
+                    'name' => 'save_all',
+                    'caption' => _t('_bx_tasks_form_f_input_save_all'),
+                    'value' => 'on',
+                ],
+                'title' => [
+                    'type' => 'text',
+                    'name' => 'title',
+                    'caption' => _t('_bx_tasks_form_f_input_title'),
+                    'value' => '',
+                    'required' => '0',
+                ],
+                'controls' => [
+                    'name' => 'controls',
+                    'type' => 'input_set',
+                    [
+                        'type' => 'submit',
+                        'name' => 'do_save',
+                        'value' => _t('_bx_tasks_form_f_input_save'),
+                    ], [
+                        'type' => 'reset',
+                        'name' => 'do_cancel',
+                        'value' => _t('_bx_tasks_form_f_input_cancel'),
+                        'attrs' => [
+                            'onclick' => "$('.bx-popup-applied:visible').dolPopupHide()",
+                            'class' => 'bx-def-margin-sec-left',
+                        ],
+                    ]
+                ]
+            ]
+        ];
+
+        $oContext = false;
+        $sContextModule = '';
+        if($iContextId && ($oContext = BxDolProfile::getInstance($iContextId)) !== false)
+            $sContextModule = $oContext->getModule();
 
         if(!$oContext || !bx_srv($sContextModule, 'is_admin', [$iContextId, $this->_iProfileId]))
             unset($aForm['inputs']['save_all']);
