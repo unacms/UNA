@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import emitter from 'app/context/emitter';
 import Confirm from 'app/ui/molecules/confirm';
 import { isFormResponseComplete } from 'app/lib/form-helpers';
+import TasksFilterSelector from 'app/components/elements/tasks-filter-selector';
 
 
 const TASKS_LIST_EVENT = 'tasks_list';
@@ -287,16 +288,18 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
         await refreshLists();
     }, [filters?.request_url_apply, refreshLists]);
 
-    const addFilter = useCallback(async () => {
-        if (!filters?.request_url_add) return;
-
-        const fetchedData = await fetcher('/api.php?r=' + filters.request_url_add);
+    const openSaveFilter = useCallback(async () => {
+        if (!filters?.request_url_save) return;
+        const url = filters.request_url_save.startsWith('/api.php')
+            ? filters.request_url_save
+            : '/api.php?r=' + filters.request_url_save;
+        const fetchedData = await fetcher(url);
         setFormBlock({
             content: fetchedData.data,
             designbox_id: 0,
-            title: t('Filter'),
+            title: t('Save'),
         });
-    }, [filters?.request_url_add, t]);
+    }, [filters?.request_url_save, t]);
 
     const modalActions = topActions.filter((action) => action.type === 'modal');
     const menuActions = topActions.filter((action) => action.type === 'menu');
@@ -332,8 +335,19 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
             <View className="w-full gap-4">
                 <Row className="flex-wrap items-center justify-between gap-3">
                     {filters ? (
-                        <Row className="items-center gap-2">
-                            {selectableFilterItems.length > 0 ? (
+                        <Row className="flex-wrap items-center gap-2">
+                            {filters.request_url_add ? (
+                                <TasksFilterSelector
+                                    requestUrlAdd={filters.request_url_add}
+                                    requestUrlApply={filters.request_url_apply}
+                                    requestUrlSave={filters.request_url_save}
+                                    onSave={openSaveFilter}
+                                    onApplied={async () => {
+                                        await refreshLists();
+                                        emitTasksListRefresh();
+                                    }}
+                                />
+                            ) : selectableFilterItems.length > 0 ? (
                                 <DropdownMenu items={filterItems} onSelect={applyFilter}>
                                     <Button
                                         size="sm"
@@ -350,13 +364,17 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
                                     title={t('Filter')}
                                 />
                             )}
-                            {filters.request_url_add ? (
-                                <Button
-                                    size="sm"
-                                    rounded={false}
-                                    startDecorator="Plus"
-                                    onPress={addFilter}
-                                />
+                            {filters.request_url_add && selectableFilterItems.length > 1 ? (
+                                <DropdownMenu items={filterItems} onSelect={applyFilter}>
+                                    <Button
+                                        size="sm"
+                                        variant="text"
+                                        startDecorator="FolderOpen"
+                                        title={selectedFilter?.title}
+                                        className="max-w-[200px]"
+                                        classTextName="max-w-[170px]"
+                                    />
+                                </DropdownMenu>
                             ) : null}
                         </Row>
                     ) : (
