@@ -147,6 +147,13 @@ export default function FormPost(props) {
                     'default',
                     { noPadding: true }
                 )}
+                 {getFormFieldByData(
+                    inputs['controls'],
+                    handleSubmit,
+                    'default',
+                    { noPadding: true }
+                )}
+                
             </View>
         </View>
     )
