@@ -879,6 +879,59 @@ export default function ElementGrid(props) {
             handleOk={() => setCalculateMsg(false)}
         />
         <Row className="w-full flex-wrap items-center justify-between gap-3 mt-2 mb-4">
+            {/* Bulk actions operate on the current selection, so they lead the toolbar
+                and stay hidden until something is selected rather than sitting disabled. */}
+            {selected.length > 0 &&
+                <Row className="flex-wrap gap-2 items-center shrink-0">
+                    {actionsBulk.map((item, index) => {
+                        if (item.name == 'calculate') {
+                            return (
+                                <NeoButton
+                                    key={item.name}
+                                    style="bordered"
+                                    controlSize="regular"
+                                    label={t("Calculate")}
+                                    onPress={() => { handleCalculateSelected() }}
+                                />
+                            )
+                        }
+                        if (item.name == 'delete') {
+                            return (
+                                <NeoButton
+                                    key={item.name}
+                                    style="bordered"
+                                    controlSize="regular"
+                                    image="Trash"
+                                    label={t("Delete")}
+                                    onPress={() => { handleDeleteSelected() }}
+                                />
+                            )
+                        }
+                        if (item.name == 'stripe_v3') {
+                            return (
+                                <NeoButton
+                                    key={item.name}
+                                    style="bordered"
+                                    controlSize="small"
+                                    label={t("Checkout with Stripe")}
+                                    onPress={() => { handleActionBlockPayment('stripe_v3', item.payment_type) }}
+                                />
+                            )
+                        }
+                        if (item.name == 'credits') {
+                            return (
+                                <NeoButton
+                                    key={item.name}
+                                    style="bordered"
+                                    controlSize="small"
+                                    label={t("Checkout with Credits")}
+                                    onPress={() => { handleActionBlockPayment('credits') }}
+                                />
+                            )
+                        }
+                    })}
+                </Row>
+            }
             {(dropdownFilterKeys.length > 0 || hasSearchFilter(settings.filters)) &&
                 <Row className="flex-1 min-w-48 flex-wrap gap-2 items-center">
                     {dropdownFilterKeys.map((filterKey) => {
@@ -912,7 +965,7 @@ export default function ElementGrid(props) {
                             <NeoButton
                                 key={`btn-${item.name}`}
                                 style="borderedProminent"
-                                controlSize="large"
+                                controlSize="regular"
                                 image="Plus"
                                 label={t(item?.title || "Add new")}
                                 onPress={() => { handleActionBlock(item) }}
@@ -928,65 +981,13 @@ export default function ElementGrid(props) {
                                 key={`btn-${item.name}`}
                                 href={item.link || item.url}
                                 style="borderedProminent"
-                                controlSize="large"
+                                controlSize="regular"
                                 label={item.title}
                             />
                         )
                     }
                 })}
 
-                {actionsBulk.map((item, index) => {
-                    if (item.name == 'calculate') {
-                        return (
-                            <NeoButton
-                                key={item.name}
-                                style="bordered"
-                                controlSize="small"
-                                label={t("Calculate")}
-                                disabled={selected.length == 0}
-                                onPress={() => { handleCalculateSelected() }}
-                            />
-                        )
-                    }
-                    if (item.name == 'delete') {
-                        return (
-                            <NeoButton
-                                key={item.name}
-                                style="bordered"
-                                controlSize="large"
-                                image="Trash"
-                                label={t("Delete selected")}
-                                disabled={selected.length == 0}
-                                onPress={() => { handleDeleteSelected() }}
-                            />
-                        )
-                    }
-                    if (item.name == 'stripe_v3') {
-                        
-                        return (
-                            <NeoButton
-                                key={item.name}
-                                style="bordered"
-                                controlSize="small"
-                                label={t("Checkout with Stripe")}
-                                disabled={selected.length == 0}
-                                onPress={() => { handleActionBlockPayment('stripe_v3', item.payment_type) }}
-                            />
-                        )
-                    }
-                    if (item.name == 'credits') {
-                        return (
-                            <NeoButton
-                                key={item.name}
-                                style="bordered"
-                                controlSize="small"
-                                label={t("Checkout with Credits")}
-                                disabled={selected.length == 0}
-                                onPress={() => { handleActionBlockPayment('credits') }}
-                            />
-                        )
-                    }
-                })}
             </Row>
         </Row>
         <ScrollView

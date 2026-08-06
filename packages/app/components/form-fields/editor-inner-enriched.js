@@ -529,7 +529,7 @@ export default function RftTextEnriched({
     const shellClass = 'relative flex-auto web:cursor-text overflow-visible'
     const surfaceClass = isToolBar
         ? ' px-3 py-2 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg flex-auto overflow-hidden text-card-foreground '
-        : (bg == 'transparent' ? '' : cn(inputSettings.base, inputSettings.rounded.default, inputSettings.size.regular))
+        : (bg == 'transparent' ? '' : cn(inputSettings.base, inputSettings.size.regular))
 
     // Before client mount (web SSR), render a placeholder of the right height so
     // we do not initialize Tiptap on the server and avoid a hydration mismatch.

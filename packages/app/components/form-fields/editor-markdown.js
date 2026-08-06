@@ -116,7 +116,6 @@ export function MarkdownTextInput({
             : cn(
                 'flex-auto overflow-hidden',
                 inputSettings.base,
-                inputSettings.rounded.default,
                 inputSettings.size.regular,
             )
 

@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import { Platform } from 'react-native';
 import { View, Row } from 'app/design/view'
 import { Icon } from 'app/ui/atoms/icon'
-import { appSetting } from 'app/lib/util'
+import { appSetting, cn } from 'app/lib/util'
 
 const inputSettings = appSetting('theme', 'inputs');
 const isWeb = Platform.OS === 'web';
@@ -137,7 +137,12 @@ export const Input = forwardRef<any, CustomInputProps>(
         return (
             <Component
                 ref={ref}
-                className={`${className} ${inputSettings.base} ${inputSettings.rounded[rounded]} ${inputSettings.size[size] ?? inputSettings.size.regular}`}
+                className={cn(
+                    className,
+                    inputSettings.base,
+                    inputSettings.size[size] ?? inputSettings.size.regular,
+                    rounded === InputRounded.full && inputSettings.rounded.full,
+                )}
                 style={style}
                 {...sanitizeInputProps({ multiline, ...props })}
             />
@@ -197,10 +202,10 @@ export const Hidden = forwardRef<any, CustomInputProps>(
 );
 Hidden.displayName = 'Hidden';
 
-/** Same surface tokens as `Input` (rounded + size) so selects match text fields and superellipse. */
+/** Same surface tokens as `Input` (size includes radius) so selects match text fields and superellipse. */
 const getPickerSurfaceClass = (size?: keyof typeof InputSize) => {
     const sizeClass = inputSettings.size[size ?? InputSize.regular] ?? inputSettings.size.regular;
-    return `${inputSettings.select} ${inputSettings.rounded.default} ${sizeClass}`;
+    return cn(inputSettings.select, sizeClass);
 };
 
 const optionFromChild = (child: any, index: number) => {

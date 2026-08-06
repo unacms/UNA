@@ -41,9 +41,13 @@ function MenuTopItem_({ title, icon, isTitle, isActive, isPopup, chevron, animat
         : 'text-secondary-foreground web:group-hover:text-foreground h-9 w-9 items-center justify-center flex';
     const menuIconClassName = addClassName ? `${baseIconClass} ${addClassName}` : baseIconClass;
 
+    // The hover label exists to name icon-only items. When the title is already
+    // rendered next to the icon it just repeats it, so skip the tooltip.
+    const showTooltip = !isTitle && !!title;
+
     return (
 
-        <Tooltip content={title}>
+        <Tooltip content={title} enabled={showTooltip}>
             <Row
                 className={`items-center content-center justify-center px-2 h-12 min-w-16 flex-auto flex-wrap rounded-xl  ${isActiveOrOpen
                     ? '  text-accent-foreground'

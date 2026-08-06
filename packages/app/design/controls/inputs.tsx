@@ -3,7 +3,7 @@ import { TextInput as TextInputDef, Platform, TextInputProps } from 'react-nativ
 import type { TextInput } from 'react-native';
 import { View, Row } from 'app/design/view'
 import { Icon } from 'app/ui/atoms/icon'
-import { appSetting } from 'app/lib/util'
+import { appSetting, cn } from 'app/lib/util'
 import { Picker as PickerDef, type PickerProps } from '@react-native-picker/picker';
 
 const inputSettings = appSetting('theme', 'inputs');
@@ -47,7 +47,12 @@ const getInputStyleProps = (style: any) =>
 export const Input = forwardRef<TextInput, CustomInputProps>(
     ({ className, style, rounded = InputRounded.default, size = InputSize.regular, ...props }, ref) => (
         <TextInputDef
-            className={`${className} ${inputSettings.base} ${inputSettings.rounded[rounded]} ${inputSettings.size[size] ?? inputSettings.size.regular}`}
+            className={cn(
+                className,
+                inputSettings.base,
+                inputSettings.size[size] ?? inputSettings.size.regular,
+                rounded === InputRounded.full && inputSettings.rounded.full,
+            )}
             {...getInputStyleProps(style)}
             {...props}
             ref={ref}
@@ -121,7 +126,8 @@ interface PickerStyledRefProps extends PickerProps {
 
 const getPickerSurfaceClass = (size?: keyof typeof InputSize) => {
     const sizeClass = inputSettings.size[size ?? InputSize.regular] ?? inputSettings.size.regular;
-    return `${inputSettings.select} ${inputSettings.rounded.default} ${sizeClass}`;
+    // Radius comes from size.* (small/regular/large); no separate rounded.default.
+    return cn(inputSettings.select, sizeClass);
 };
 const Picker = PickerDef as any;
 
