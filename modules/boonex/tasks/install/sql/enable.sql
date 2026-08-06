@@ -174,9 +174,9 @@ INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `tit
 ('sys_site', 'bx_tasks', 'tasks-home', '_bx_tasks_menu_item_title_system_entries_home', '_bx_tasks_menu_item_title_entries_home', 'page.php?i=tasks-home', '', '', 'tasks', '', 2147483647, 1, 1, IFNULL(@iSiteMenuOrder, 0) + 1);
 
 -- MENU: add to "add content" menu
--- SET @iAddMenuOrder = (SELECT `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_add_content_links' AND `active` = 1 ORDER BY `order` DESC LIMIT 1);
--- INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
--- ('sys_add_content_links', 'bx_tasks', 'create-task', '_bx_tasks_menu_item_title_system_create_entry', '_bx_tasks_menu_item_title_create_entry', 'page.php?i=create-task', '', '', 'tasks', '', 2147483647, 1, 1, IFNULL(@iAddMenuOrder, 0) + 1);
+SET @iAddMenuOrder = (SELECT `order` FROM `sys_menu_items` WHERE `set_name` = 'sys_add_content_links' AND `active` = 1 ORDER BY `order` DESC LIMIT 1);
+INSERT INTO `sys_menu_items` (`set_name`, `module`, `name`, `title_system`, `title`, `link`, `onclick`, `target`, `icon`, `submenu_object`, `visible_for_levels`, `active`, `copyable`, `order`) VALUES 
+('sys_add_content_links', 'bx_tasks', 'create-task', '_bx_tasks_menu_item_title_system_create_entry', '_bx_tasks_menu_item_title_create_entry', 'page.php?i=create-task', '', '', 'tasks', '', 2147483647, 1, 1, IFNULL(@iAddMenuOrder, 0) + 1);
 
 -- MENU: create task form attachments (link, photo, video, etc)
 INSERT INTO `sys_objects_menu`(`object`, `title`, `set_name`, `module`, `template_id`, `deletable`, `active`, `override_class_name`, `override_class_file`) VALUES 
@@ -311,7 +311,7 @@ INSERT INTO `sys_menu_items`(`set_name`, `module`, `name`, `title_system`, `titl
 -- PRIVACY 
 
 INSERT INTO `sys_objects_privacy` (`object`, `module`, `action`, `title`, `default_group`, `table`, `table_field_id`, `table_field_author`, `override_class_name`, `override_class_file`) VALUES
-('bx_tasks_allow_view_to', 'bx_tasks', 'view', '_bx_tasks_form_entry_input_allow_view_to', '3', 'bx_tasks_tasks', 'id', 'author', '', '');
+('bx_tasks_allow_view_to', 'bx_tasks', 'view', '_bx_tasks_form_entry_input_allow_view_to', '', 'bx_tasks_tasks', 'id', 'author', 'BxTasksPrivacyView', 'modules/boonex/tasks/classes/BxTasksPrivacyView.php');
 
 
 -- ACL

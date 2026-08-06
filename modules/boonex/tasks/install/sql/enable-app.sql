@@ -3,6 +3,7 @@
 -- PAGES: config_api
 
 -- PAGES: active_api
+UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_tasks_create_entry' AND `module`='bx_tasks' AND `title`='_bx_tasks_page_block_title_create_entry';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_tasks_edit_entry' AND `module`='bx_tasks' AND `title_system`='' AND `title`='_bx_tasks_page_block_title_edit_entry';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_tasks_delete_entry' AND `module`='bx_tasks' AND `title_system`='' AND `title`='_bx_tasks_page_block_title_delete_entry';
 UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_tasks_view_entry' AND `module`='bx_tasks' AND `title_system`='' AND `title`='_bx_tasks_page_block_title_entry_text';
@@ -43,6 +44,7 @@ UPDATE `sys_pages_blocks` SET `active_api`=1 WHERE `object`='bx_tasks_context_se
 
 -- MENUS: active_api
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_site' AND `module`='bx_tasks' AND `name`='tasks-home';
+UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='sys_add_content_links' AND `module`='bx_tasks' AND `name`='create-task';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_tasks_view' AND `module`='bx_tasks' AND `name`='edit-task';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_tasks_view' AND `module`='bx_tasks' AND `name`='edit-task-state';
 UPDATE `sys_menu_items` SET `active_api`=1 WHERE `set_name`='bx_tasks_view' AND `module`='bx_tasks' AND `name`='delete-task';

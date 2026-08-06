@@ -281,7 +281,7 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         return $this->_oDb->deleteList($iId);
     }
 
-    public function serviceProcessTaskForm($iContextId, $iListId)
+    public function serviceProcessTaskForm($iContextId, $iListId = 0)
     {
         if(!$this->isAllowAdd($iContextId))
             return [];
@@ -297,7 +297,7 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
 
         $oForm->initChecker();
         if($oForm->isSubmittedAndValid()) {
-            $iContentId = $oForm->insert([$CNF['FIELD_ALLOW_VIEW_TO'] => -$iContextId, $CNF['FIELD_TASKLIST'] => $iListId]);
+            $iContentId = $oForm->insert([$CNF['FIELD_TASKLIST'] => $iListId]);
             if($iContentId)
                 $this->onPublished($iContentId);
 

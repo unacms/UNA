@@ -74,7 +74,7 @@
     <string name="_bx_tasks_form_entry_input_sys_files"><![CDATA[Files]]></string>
     <string name="_bx_tasks_form_entry_input_files"><![CDATA[]]></string>
     <string name="_bx_tasks_form_entry_input_sys_allow_view_to"><![CDATA[Visibility]]></string>
-    <string name="_bx_tasks_form_entry_input_allow_view_to"><![CDATA[Visibility]]></string>
+    <string name="_bx_tasks_form_entry_input_allow_view_to"><![CDATA[Post to]]></string>
     <string name="_bx_tasks_form_entry_input_sys_date_added"><![CDATA[Created]]></string>
     <string name="_bx_tasks_form_entry_input_date_added"><![CDATA[Created]]></string>
     <string name="_bx_tasks_form_entry_input_sys_date_changed"><![CDATA[Updated]]></string>

@@ -113,6 +113,13 @@ BxTasksView.prototype.processTaskEditProperty = function (iContentId, sProperty,
     });
 };
 
+BxTasksView.prototype.changeAlloViewTo = function (oSource) {
+    var iContext = parseInt($(oSource).val());
+
+    if(iContext && iContext < 0)
+        document.location = bx_append_url_params(document.location.href, {context: iContext});
+};
+
 BxTasksView.prototype.hidePopup = function (oData) {
     $(".bx-popup-applied:visible").dolPopupHide();
 };

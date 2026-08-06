@@ -36,7 +36,18 @@ class BxTasksFormEntry extends BxBaseModTextFormEntry
 
         parent::__construct($aInfo, $oTemplate);
 
+        $CNF = &$this->_oModule->_oConfig->CNF;
+
         $this->_aProperties = $this->_oModule->_oConfig->getProperties();
+
+        if(($sKf = $CNF['FIELD_ALLOW_VIEW_TO'] ?? false) && isset($this->aInputs[$sKf])) {
+            if(!$this->_bIsApi) {
+                $this->aInputs[$sKf]['attrs'] ??= [];
+                $this->aInputs[$sKf]['attrs']['onchange'] = $this->_oModule->_oConfig->getJsObject('tasks') . '.changeAlloViewTo(this);';
+            }
+            else
+                $this->aInputs[$sKf]['request_url_change'] = $this->MODULE . '/process_task_form&params[]=';
+        }
     }
 
     public function setContextId($iContextId)
@@ -47,6 +58,12 @@ class BxTasksFormEntry extends BxBaseModTextFormEntry
         $CNF = &$this->_oModule->_oConfig->CNF;
 
         $this->_iContextId = $iContextId;
+
+        if(($sKf = 'FIELD_ALLOW_VIEW_TO') && isset($CNF[$sKf]) && isset($this->aInputs[$CNF[$sKf]]))
+            $this->aInputs[$CNF[$sKf]] = array_merge($this->aInputs[$CNF[$sKf]], [
+                'type' => 'hidden',
+                'value' => -$iContextId
+            ]);
 
         if(($sKf = 'FIELD_TASKLIST') && isset($CNF[$sKf]) && isset($this->aInputs[$CNF[$sKf]])) {
             $aLists = [['id' => 0, 'title' => _t('_bx_tasks_txt_list_inbox')]];
