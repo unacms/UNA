@@ -2172,8 +2172,8 @@ jstree@^3.3.17:
 
 "jush@https://github.com/vrana/jush":
   version "0.0.0"
-  uid "8bcf49fe97a047355e9455de818b0353a104a5f6"
-  resolved "https://github.com/vrana/jush#8bcf49fe97a047355e9455de818b0353a104a5f6"
+  uid "14081b47ef0be0cb89bfb2208991357c9baa9640"
+  resolved "https://github.com/vrana/jush#14081b47ef0be0cb89bfb2208991357c9baa9640"
 
 just-diff-apply@^5.2.0:
   version "5.5.0"
