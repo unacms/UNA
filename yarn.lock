@@ -1644,10 +1644,10 @@ grapesjs-style-gradient@^3.0.1:
   dependencies:
     grapick "^0.1.13"
 
-grapesjs@^0.23.3:
-  version "0.23.3"
-  resolved "https://registry.yarnpkg.com/grapesjs/-/grapesjs-0.23.3.tgz#1fe6a133a7588ebcbff52037eba35be95a1edf81"
-  integrity sha512-TB14/KBs2WmllfdoQ9p6m0Icdt/Aj+XMEMFivFZwb4WD+nDOgOXQIokmPGrLqphIFXcIjWnHE2FloLwfx63oZA==
+grapesjs@^0.23.4:
+  version "0.23.4"
+  resolved "https://registry.yarnpkg.com/grapesjs/-/grapesjs-0.23.4.tgz#cea8831b3d373001a4aafa13ccdaef41072786f6"
+  integrity sha512-fe3+ZRU1YsR8cFqdjl0TFlNywgBPjlQjDLevyavP8UmT9dfVla5JnfQrFc66gzMBdN1ftNPA23YRdTQJRFTKQA==
   dependencies:
     "@types/backbone" "1.4.15"
     backbone "1.4.1"
@@ -2172,8 +2172,8 @@ jstree@^3.3.17:
 
 "jush@https://github.com/vrana/jush":
   version "0.0.0"
-  uid "8bcf49fe97a047355e9455de818b0353a104a5f6"
-  resolved "https://github.com/vrana/jush#8bcf49fe97a047355e9455de818b0353a104a5f6"
+  uid "14081b47ef0be0cb89bfb2208991357c9baa9640"
+  resolved "https://github.com/vrana/jush#14081b47ef0be0cb89bfb2208991357c9baa9640"
 
 just-diff-apply@^5.2.0:
   version "5.5.0"
