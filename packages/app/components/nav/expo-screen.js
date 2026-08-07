@@ -93,6 +93,7 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken }) => {
     const tabKeyRef = useRef(tabKey);
     const currentUserRef = useRef(currentUser);
     const bottomSheetDataRef = useRef(bottomSheetData);
+    const splashHiddenRef = useRef(false);
     pagePathRef.current = pagePath;
     tabKeyRef.current = tabKey;
     currentUserRef.current = currentUser;
@@ -130,19 +131,29 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken }) => {
         }
 
         const fetchPageData = async () => {
-            const { path: pathWithoutQuery, queryString } = parseUrl(pagePath);
-            const params = queryString ? JSON.stringify(parseQueryString(queryString)) : null;
-            const data = await getData(pathWithoutQuery, null, null, null, null, params);
-            if (data?.props) {
-                if (forceShellRefresh) {
-                    data.props.data.timestamp = Date.now();
-                } else {
-                    const existing = getCachedPageData(tabKey, pagePath, currentUser?.id, currentUser?.confirmed);
-                    data.props.data.timestamp = existing?.data?.timestamp ?? Date.now();
+            try {
+                const { path: pathWithoutQuery, queryString } = parseUrl(pagePath);
+                const params = queryString ? JSON.stringify(parseQueryString(queryString)) : null;
+                const data = await getData(pathWithoutQuery, null, null, null, null, params);
+                if (data?.props) {
+                    if (forceShellRefresh) {
+                        data.props.data.timestamp = Date.now();
+                    } else {
+                        const existing = getCachedPageData(tabKey, pagePath, currentUser?.id, currentUser?.confirmed);
+                        data.props.data.timestamp = existing?.data?.timestamp ?? Date.now();
+                    }
+                    setCachedPageData(tabKey, pagePath, data.props, currentUser?.id, currentUser?.confirmed);
+                    setBottomSheetData(bottomSheetData !== false ? false : bottomSheetData);
+                    setPageData(data.props);
+                } else if (!splashHiddenRef.current) {
+                    splashHiddenRef.current = true;
+                    void SplashScreen.hideAsync().catch(() => {});
                 }
-                setCachedPageData(tabKey, pagePath, data.props, currentUser?.id, currentUser?.confirmed);
-                setBottomSheetData(bottomSheetData !== false ? false : bottomSheetData);
-                setPageData(data.props);
+            } catch {
+                if (!splashHiddenRef.current) {
+                    splashHiddenRef.current = true;
+                    void SplashScreen.hideAsync().catch(() => {});
+                }
             }
         };
         fetchPageData();
@@ -161,15 +172,19 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken }) => {
             if (!(path && path.startsWith('/') && !path.includes('/?url='))) return;
 
             const fetchPageData = async () => {
-                const { path: pathWithoutQuery, queryString } = parseUrl(path);
-                const params = queryString ? JSON.stringify(parseQueryString(queryString)) : null;
-                const data = await getData(pathWithoutQuery, null, null, null, null, params);
-                if (data?.props) {
-                    data.props.data.timestamp = Date.now();
-                    setCachedPageData(key, path, data.props, user?.id, user?.confirmed);
-                    const sheet = bottomSheetDataRef.current;
-                    setBottomSheetData(sheet !== false ? false : sheet);
-                    setPageData(data.props);
+                try {
+                    const { path: pathWithoutQuery, queryString } = parseUrl(path);
+                    const params = queryString ? JSON.stringify(parseQueryString(queryString)) : null;
+                    const data = await getData(pathWithoutQuery, null, null, null, null, params);
+                    if (data?.props) {
+                        data.props.data.timestamp = Date.now();
+                        setCachedPageData(key, path, data.props, user?.id, user?.confirmed);
+                        const sheet = bottomSheetDataRef.current;
+                        setBottomSheetData(sheet !== false ? false : sheet);
+                        setPageData(data.props);
+                    }
+                } catch {
+                    // Keep showing last good pageData if any; splash already handled on cold start.
                 }
             };
             fetchPageData();
@@ -177,7 +192,6 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken }) => {
         return () => subscription.remove();
     }, [setBottomSheetData]);
 
-    const splashHiddenRef = useRef(false);
     useEffect(() => {
         if (!pageData?.data || splashHiddenRef.current) return;
         splashHiddenRef.current = true;

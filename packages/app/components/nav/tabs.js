@@ -32,6 +32,7 @@ import { registerAll } from 'app/components/registry-init';
 import * as WebBrowser from 'expo-web-browser';
 import { getDomainFromUrl } from 'app/lib/util';
 import { useSound } from 'app/lib/hooks/useSound';
+import * as SplashScreen from 'expo-splash-screen';
 import {
     canGoBackInTab,
     dismissNavigationOverlays,
@@ -45,6 +46,11 @@ import { useBottomSheetData } from 'app/context/bottomsheet';
 import BottomSheet from 'app/ui/molecules/bottomsheet_content';
 
 enableScreens(appSetting('native', 'enable_screens'));
+
+/** Cold-start bootstrap: fail fast offline instead of 3×15s fetcher retries. */
+const BOOTSTRAP_TIMEOUT_MS = 5000;
+/** AbortController is unreliable on some Android RN builds — race a hard timer. */
+const BOOTSTRAP_HARD_TIMEOUT_MS = 5500;
 
 const themeSettings = appSetting('theme', 'native_tabs');
 
@@ -316,31 +322,64 @@ export default function Tabs() {
         if (currentUser !== null || bootstrapError) return;
 
         let cancelled = false;
+        let hardTimer = null;
+
+        const hardTimeout = new Promise((_, reject) => {
+            hardTimer = setTimeout(
+                () => reject(new Error('Bootstrap hard timeout')),
+                BOOTSTRAP_HARD_TIMEOUT_MS
+            );
+        });
+
         (async () => {
             try {
-                const data = await getPageData('home');
-                if (!cancelled) setCurrentUser(data.data.user ?? false);
+                const data = await Promise.race([
+                    getPageData('home', false, {
+                        timeoutMs: BOOTSTRAP_TIMEOUT_MS,
+                        maxAttempts: 1,
+                        silent: true,
+                    }),
+                    hardTimeout,
+                ]);
+                if (cancelled) return;
+                if (!data?.data) {
+                    setBootstrapError(true);
+                    void SplashScreen.hideAsync().catch(() => {});
+                    return;
+                }
+                setCurrentUser(data.data.user ?? false);
             } catch {
-                if (!cancelled) setBootstrapError(true);
+                if (!cancelled) {
+                    setBootstrapError(true);
+                    void SplashScreen.hideAsync().catch(() => {});
+                }
+            } finally {
+                if (hardTimer) clearTimeout(hardTimer);
             }
         })();
 
         return () => {
             cancelled = true;
+            if (hardTimer) clearTimeout(hardTimer);
         };
     }, [currentUser, bootstrapError, setCurrentUser]);
 
-    // Conditional render: all hooks must run before this point
-    // Use conditional rendering in JSX instead of early return
-    if (!fontsLoaded || (currentUser === null && !bootstrapError)) {
-        return null;
-    }
+    useEffect(() => {
+        if (!bootstrapError) return;
+        void SplashScreen.hideAsync().catch(() => {});
+    }, [bootstrapError]);
 
+    // Conditional render: all hooks must run before this point
+    // Prefer offline UI even if fonts are still loading (empty font map / hang).
     if (bootstrapError) {
         const OfflineScreen = staticComponents.bootstrap_offline;
         return OfflineScreen
             ? <OfflineScreen onRetry={() => setBootstrapError(false)} />
             : null;
+    }
+
+    if (!fontsLoaded || currentUser === null) {
+        return null;
     }
 
     return (

@@ -20,6 +20,13 @@ export { cn } from 'cnfast';
 const nativeCache = [];
 export const isWeb = Platform.OS === 'web'
 
+/** Clear in-memory native sessionStorage stand-in used by storageSet/Get. */
+export function clearNativeMemoryCache() {
+    for (const key of Object.keys(nativeCache)) {
+        delete nativeCache[key]
+    }
+}
+
 export const LAYOUT_BREAKPOINTS = {
     '2xl': 1536,
     xl: 1280,
@@ -1585,7 +1592,7 @@ export const updateRouteDataForConnection = (endpoint, actions, object, currentR
     }
 };
 
-export async function getPageData(url, codeOnly = false) {
+export async function getPageData(url, codeOnly = false, fetchOptions = {}) {
     const pagePath = parseUrl(url);
     let sAdd = "";
 
@@ -1615,7 +1622,9 @@ export async function getPageData(url, codeOnly = false) {
     const path = pagePath.path.startsWith('/') ? pagePath.path.slice(1) : pagePath.path;
 
     return await fetcher(
-        `/api.php?r=system/get_page_${codeOnly ? 'content_' : ''}by_request/TemplServicePages&params[]=${path}${sAdd}`
+        `/api.php?r=system/get_page_${codeOnly ? 'content_' : ''}by_request/TemplServicePages&params[]=${path}${sAdd}`,
+        false,
+        fetchOptions
     );
 }
 

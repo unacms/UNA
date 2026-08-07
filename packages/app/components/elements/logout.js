@@ -1,25 +1,40 @@
-import { useRouter, usePathname, redirectTo } from 'app/lib/hooks/router'
-import { getTabKeyFromPathname } from 'app/lib/tab-history'
-import { useEffect } from 'react';
+import { useRouter } from 'app/lib/hooks/router'
+import { useEffect, useRef } from 'react';
 import { Text } from 'app/design/typography'
-import { View, Row } from 'app/design/view'
+import { View } from 'app/design/view'
 import { useTranslation } from 'react-i18next'
+import { useCurrentUser } from 'app/context/user'
+import { clearClientSessionState, resetNavigationAfterSignOut } from 'app/lib/session-cleanup'
 
-export default function ElementLogout({data}) {
+export default function ElementLogout({ data }) {
     const { t } = useTranslation();
     const router = useRouter();
-    const pathname = usePathname();
+    const { setCurrentUser } = useCurrentUser();
+    const didCleanupRef = useRef(false);
     const uri = data?.uri === '/' || !data?.uri ? '/home' : data.uri;
     const timeout = data?.timeout;
+
     useEffect(() => {
-        const currentTab = getTabKeyFromPathname(pathname);
+        if (didCleanupRef.current) return;
+        didCleanupRef.current = true;
+
+        // Drop auth + all client caches before rewriting routes so the next
+        // account cannot inherit page/query/tab state from the previous one.
+        setCurrentUser(false);
+        clearClientSessionState();
+
+        const go = () => resetNavigationAfterSignOut(router, { url: uri });
+
         if (timeout) {
-            const timeoutId = setTimeout(() => redirectTo(router, uri, currentTab), timeout);
+            const timeoutId = setTimeout(go, timeout);
             return () => clearTimeout(timeoutId);
         }
-        redirectTo(router, uri, currentTab);
-    }, [uri, timeout]);
+        go();
+    }, [uri, timeout, router, setCurrentUser]);
 
-    return <View className="flex-1 items-center justify-center"><Text className="text-center text-foreground">{t('Logging out...')}</Text></View>;
-
+    return (
+        <View className="flex-1 items-center justify-center">
+            <Text className="text-center text-foreground">{t('Logging out...')}</Text>
+        </View>
+    );
 }

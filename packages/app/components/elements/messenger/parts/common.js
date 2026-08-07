@@ -33,7 +33,7 @@ import {
     PanelHandler,
 } from 'app/ui/molecules/resizable-panels'
 import { useIsDesktop } from 'app/context/measure';
-import { useSetHeader, defaultHeader, useSetHeaderHeight } from 'app/context/jotai/layout';
+import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
 import { getComponent } from 'app/components/registry';
 import { useSafeAreaInsets } from 'app/lib/hooks/router'
 
@@ -55,7 +55,11 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [convoId, setConvoId] = useState(defaultConvoId);
     const [jots, setJots] = useState(false);
     const [listError, setListError] = useState(false);
-    const isSmallScreen = !useIsDesktop();
+    const isDesktop = useIsDesktop();
+    // Side-by-side panels exist only on web. Native (incl. iPad) is always
+    // stack navigation: list → conversation. Width-based "desktop" would leave
+    // both panels "visible" in a phone flex-row (list w-full) so taps never open chat.
+    const isSmallScreen = !isWeb || !isDesktop;
     const isFocused = useIsFocused();
     const isFocusedRef = useRef(isFocused);
     isFocusedRef.current = isFocused;
@@ -568,7 +572,6 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
     const lastEmittedSearch = useRef(null);
 
     const setHeader = useSetHeader();
-    const setHeaderHeightAtom = useSetHeaderHeight();
 
     // Keep typing local; only notify parent after debounce (skip initial empty — parent loads via menu).
     useEffect(() => {
@@ -623,10 +626,12 @@ const Convos = memo(({ layoutHeightLeft, data, pageData, selectedConvoIndex, cha
         setHeader(isSmallScreen ? { header: header } : defaultHeader);
     }, [isSmallScreen, setHeader, header]);
 
+    // Do not override headerHeightAtom here — PageHeader onLayout owns the
+    // measured offset. Hardcoding 32 left the first conversation under the bar
+    // (especially on iPad / wide native where desktop header was used).
     useFocusEffect(useCallback(() => {
         if (isWeb) return;
 
-        setHeaderHeightAtom(32)
         setHeader(isSmallScreen ? { header: header } : defaultHeader);
         return () => setHeader(defaultHeader);
     }, [isSmallScreen, setHeader, header]));

@@ -22,7 +22,10 @@ import { useColorScheme } from 'react-native';
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync().catch(() => {});
+
+/** Absolute last resort: never leave the native splash up forever (Android hang). */
+const SPLASH_FORCE_HIDE_MS = 6000;
 
 // Must be exported or Fast Refresh won't update the context
 export function App() {
@@ -31,17 +34,16 @@ export function App() {
 	const customScreenDelay = Constants.expoConfig?.splash?.timeout || 0;
 
 	const [showSplashScreen, setShowSplashScreen] = useState(customScreenDelay > 0);
-	/*useEffect(() => {
-		const prepareApp = async () => {
 
-				await SplashScreen.hideAsync();
-				setTimeout(() => {
-					setShowSplashScreen(false);
-				}, customScreenDelay);
-
-		};
-		prepareApp();
-	}, []);*/
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			SplashScreen.hideAsync().catch(() => {});
+			if (customScreenDelay > 0) {
+				setShowSplashScreen(false);
+			}
+		}, SPLASH_FORCE_HIDE_MS);
+		return () => clearTimeout(timer);
+	}, [customScreenDelay]);
 
 	const ctx = useMemo(() => require.context('./app'), []);
 

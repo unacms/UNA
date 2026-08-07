@@ -701,8 +701,8 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
 
     const { setBottomSheetData } = useBottomSheetData();
     const initedTabs = useMemo(() => fillTabs(menu, data, blocks, currentUser, useSectionAsMenu), [menu, data, blocks, currentUser, useSectionAsMenu]);;
-    const conductorCacheKey = `${layoutName}:${data?.url ?? ''}`;
-    const cachedConductor = getCachedConductorState(layoutName, data?.url);
+    const conductorCacheKey = `${layoutName}:${data?.url ?? ''}:${currentUser?.id ?? 'guest'}`;
+    const cachedConductor = getCachedConductorState(layoutName, data?.url, currentUser?.id);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [routes, setRoutes1] = useState(cachedConductor?.routes ?? initedTabs);
     const [menuState, setMenuState] = useState(menu);
@@ -761,9 +761,9 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
             setCachedConductorState(layoutName, data.url, {
                 routes: routesRef.current,
                 index: indexRef.current,
-            });
+            }, currentUser?.id);
         };
-    }, [conductorCacheKey, layoutName, data?.url]);
+    }, [conductorCacheKey, layoutName, data?.url, currentUser?.id]);
 
     // Stable identity: setIndex feeds the sceneHeader memo — recreating it every
     // render would recompute the submenu (and rewrite the header atom) on each render.

@@ -14,6 +14,12 @@ import { useTranslation } from 'react-i18next';
 const OFFLINE_DEBOUNCE_MS = 1500;
 /** Re-check immediately after returning from background. */
 const RESUME_RECHECK_MS = 500;
+/** If NetInfo never resolves, don't keep the native splash forever. */
+const NETINFO_FALLBACK_MS = 2500;
+const SPLASH_HIDE_RETRY_MS = 200;
+const SPLASH_HIDE_MAX_ATTEMPTS = 10;
+/** hideAsync can hang on Android — never wait forever. */
+const SPLASH_HIDE_ATTEMPT_MS = 800;
 
 function isOnline(state) {
     if (!state || state.isConnected === false) return false;
@@ -22,13 +28,24 @@ function isOnline(state) {
     return true;
 }
 
+function hideSplashWithTimeout() {
+    return Promise.race([
+        SplashScreen.hideAsync(),
+        new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('Splash hide timeout')), SPLASH_HIDE_ATTEMPT_MS);
+        }),
+    ]);
+}
+
 export function NetworkStatus({ children }) {
     const { t } = useTranslation();
     /** null = no first NetInfo response yet (show neither tabs nor false offline) */
     const [blocked, setBlocked] = useState(null);
 
     const splashHidden = useRef(false);
+    const splashHideInFlight = useRef(false);
     const offlineTimerRef = useRef(null);
+    const offlinePendingRef = useRef(false);
     const resumeTimerRef = useRef(null);
 
     const clearOfflineTimer = useCallback(() => {
@@ -36,13 +53,30 @@ export function NetworkStatus({ children }) {
             clearTimeout(offlineTimerRef.current);
             offlineTimerRef.current = null;
         }
+        offlinePendingRef.current = false;
     }, []);
 
     const hideSplashOnce = useCallback(() => {
-        if (!splashHidden.current) {
-            splashHidden.current = true;
-            void SplashScreen.hideAsync().catch(() => {});
-        }
+        if (splashHidden.current || splashHideInFlight.current) return;
+        splashHideInFlight.current = true;
+
+        const attempt = (n = 0) => {
+            hideSplashWithTimeout()
+                .then(() => {
+                    splashHidden.current = true;
+                    splashHideInFlight.current = false;
+                })
+                .catch(() => {
+                    if (n < SPLASH_HIDE_MAX_ATTEMPTS) {
+                        setTimeout(() => attempt(n + 1), SPLASH_HIDE_RETRY_MS);
+                        return;
+                    }
+                    // Mark done so we don't block forever; native splash may already be gone.
+                    splashHidden.current = true;
+                    splashHideInFlight.current = false;
+                });
+        };
+        attempt();
     }, []);
 
     const applyOnline = useCallback(() => {
@@ -65,9 +99,14 @@ export function NetworkStatus({ children }) {
             return;
         }
 
-        clearOfflineTimer();
+        // Don't restart debounce on every Android NetInfo offline pulse — that can
+        // keep blocked === null forever and look like a stuck splash.
+        if (offlinePendingRef.current) return;
+
+        offlinePendingRef.current = true;
         offlineTimerRef.current = setTimeout(() => {
             offlineTimerRef.current = null;
+            offlinePendingRef.current = false;
             NetInfo.fetch().then((fresh) => {
                 if (isOnline(fresh)) {
                     applyOnline();
@@ -76,7 +115,7 @@ export function NetworkStatus({ children }) {
                 applyOfflineNow(fresh);
             });
         }, OFFLINE_DEBOUNCE_MS);
-    }, [applyOnline, applyOfflineNow, clearOfflineTimer, hideSplashOnce]);
+    }, [applyOnline, applyOfflineNow, hideSplashOnce]);
 
     useEffect(() => {
         NetInfo.fetch().then(sync);
@@ -86,6 +125,15 @@ export function NetworkStatus({ children }) {
             clearOfflineTimer();
         };
     }, [sync, clearOfflineTimer]);
+
+    // Safety: if NetInfo hangs or debounce never settles, unblock UI and hide splash.
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setBlocked((prev) => (prev === null ? false : prev));
+            hideSplashOnce();
+        }, NETINFO_FALLBACK_MS);
+        return () => clearTimeout(timer);
+    }, [hideSplashOnce]);
 
     useEffect(() => {
         const sub = AppState.addEventListener('change', (nextState) => {
@@ -110,6 +158,7 @@ export function NetworkStatus({ children }) {
 
     const recheck = useCallback(() => {
         clearOfflineTimer();
+        setBlocked(null);
         NetInfo.fetch().then(applyOfflineNow);
     }, [applyOfflineNow, clearOfflineTimer]);
 

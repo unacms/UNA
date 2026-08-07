@@ -2,6 +2,7 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useCurrentUser, seedCurrentUserFromPageData, isWebAuthReady } from 'app/context/user';
 import { storageClear } from 'app/lib/util';
+import { clearClientSessionState } from 'app/lib/session-cleanup';
 import { useRouter, redirectTo } from 'app/lib/hooks/router'
 import Layouts from 'app/components/layouts';
 import { useSetScrollDirection, useSetScrollValue } from 'app/context/jotai/layout';
@@ -62,6 +63,8 @@ export function Root(props) {
     useEffect(() => {
         if (data?.user) {
             if (currentUser?.id != data.user.id) {
+                // Login or switch account: never reuse previous session's client caches.
+                clearClientSessionState();
                 setCurrentUser(data.user);
                 storageClear();
             }
@@ -76,6 +79,10 @@ export function Root(props) {
             }
         }
         else {
+            // Session ended (logout / expired): only full-clear when leaving a logged-in user.
+            if (currentUser?.id) {
+                clearClientSessionState();
+            }
             setCurrentUser(false);
             storageClear();
         }

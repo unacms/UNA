@@ -1,7 +1,7 @@
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { NeoButton, NeoButtonLink, Input } from 'app/design/controls';
-import { useCurrentUser } from 'app/context/user';
+import { useCurrentUser } from 'app/context/user'
 import { useState, useRef } from 'react'
 import Msg from 'app/ui/molecules/msg';
 import { fetcher } from 'app/lib/fetcher';
@@ -11,6 +11,10 @@ import Redirect from 'app/ui/atoms/redirect';
 import { storageClear, appSetting } from 'app/lib/util';
 import { Platform } from 'react-native';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'app/ui/molecules/card'
+import { useRouter, redirectTo } from 'app/lib/hooks/router'
+import { clearAllPageCache } from 'app/lib/tab-page-cache'
+import { resetAllTabHistory } from 'app/lib/tab-history'
+import { resolvePostConfirmUrl } from 'app/lib/session-cleanup'
 
 export default function ElementConfirmEmail(props) {
     const isWeb = Platform.OS == 'web'
@@ -19,17 +23,26 @@ export default function ElementConfirmEmail(props) {
     const [inputValue, setInputValue] = useState("");
     const [inputError, setInputError] = useState(false);
     const redirectdRef = useRef();
+    const router = useRouter();
     const { t } = useTranslation();
     const handleConfirm = async () => {
         const sRequest = '/api.php?r=system/confirm_email/TemplServiceAccount&params[]=' + inputValue;
         const sResponse = await fetcher(sRequest);
         if (sResponse.data == true) {
+            const nextUrl = resolvePostConfirmUrl(props.url);
             storageClear();
+            clearAllPageCache();
+            resetAllTabHistory();
             setCurrentUser({
                 confirmed: true,
             });
-            if (isWeb)
-                document.location = props.url[0] != '/' ? '/' + props.url : props.url;
+            if (isWeb) {
+                document.location = nextUrl;
+            } else {
+                // Native previously stayed on whatever deep link was under the
+                // confirm lock (often previous account's /g/...), so force a clean route.
+                redirectTo(router, nextUrl, '/tab0');
+            }
         }
         else {
             setInputError(true);

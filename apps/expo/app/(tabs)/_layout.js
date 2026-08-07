@@ -7,10 +7,8 @@ import { DarkTheme, DefaultTheme } from "@react-navigation/native";
 import { appSetting } from 'app/lib/util';
 import { useEffect } from 'react'
 import { PortalHost } from '@rn-primitives/portal';
-import {
-    QueryClient,
-    QueryClientProvider,
-} from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { queryClient } from 'app/lib/query-client'
 import { Provider as JotaiProvider } from 'jotai'
 import { NetworkStatus } from 'app/ui/molecules/net-info';
 
@@ -38,16 +36,6 @@ import { StatusBar } from 'react-native';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { Uniwind } from 'uniwind';
 import { Platform } from 'react-native';
-
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            staleTime: 60 * 1000,        // 1 minute
-            gcTime: 3 * 60 * 1000,       // 3 minutes (evict inactive cache)
-            refetchOnWindowFocus: false,
-        },
-    },
-});
 
 const AppLayout = React.memo(() => {
 

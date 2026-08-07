@@ -57,7 +57,8 @@ const handleOnDo = (setElementVars, setModalContent, fOnDone, oData) => {
     if (oData?.a == 'questionnaire') {
         setModalContent({ content: oData.data, designbox_id: 0 });
     }
-    else {
+    else if (!oData?.redirect) {
+        // Redirect leaves the page — don't flip title/action before navigation.
         setElementVars(oData);
     }
 
