@@ -3,6 +3,7 @@ import { BlockByDataInt as BlockByData } from 'app/components/block'
 import { NeoButton, Modal } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher';
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import Html from 'app/ui/atoms/html'
 import { Row, View } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import Confirm from 'app/ui/molecules/confirm';
@@ -67,7 +68,7 @@ function getStatusBadgeData(text) {
 }
 
 function isDestructiveButton(item) {
-    return /(tear|delete|destroy|remove|down)/i.test(item?.title || item?.name || '');
+    return /(tear|delete|destroy|remove|down|deploy)/i.test(item?.title || item?.name || '');
 }
 
 export default function ElementDeploy({ data, blockWrapperProps, url }) {
@@ -161,35 +162,32 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
     const buttons = Array.isArray(blockData?.buttons) ? blockData.buttons : [];
     const containers = Array.isArray(blockData?.containers) ? blockData.containers : [];
 
-    const wrapperProps = useMemo(() => {
-        if (!blockWrapperProps?.block || !mainDomain) return blockWrapperProps;
-
-        const originalTitle = blockWrapperProps.block.title;
-        return {
-            ...blockWrapperProps,
-            block: {
-                ...blockWrapperProps.block,
-                title: mainDomain,
-                description: blockWrapperProps.block.description || originalTitle || 'Deployment',
-            },
-        };
-    }, [blockWrapperProps, mainDomain]);
+    const looksLikeHtml = (s) => /<[a-z][\s\S]*>/i.test(String(s ?? ''))
 
     return (
-        <BlockWrapper {...wrapperProps}>
+        <BlockWrapper {...blockWrapperProps}>
             {(!!statusBadge || buttons.length > 0) && (
-                <Row className="w-full items-center justify-between gap-3 flex-wrap">
-                    <View className="flex-row items-center gap-2 min-w-0">
-                        {!!statusBadge && (
-                            <Badge
+                <View className="w-full  gap-3 w-full">
+                    {(!!statusBadge && looksLikeHtml(statusBadge.text)) && (
+
+                        <View className={`bg-${statusBadge.color}-600/20 p-3 text-center rounded-full w-full gap-2`}>
+                            <Html data={statusBadge.text} />
+                        </View>
+
+                    )}
+                    {(!!statusBadge && !looksLikeHtml(statusBadge.text)) && (
+
+                        <Row className="gap-2 items-center">
+                            <Text>Status:</Text><Badge
                                 size="sm"
                                 rounded
                                 data={statusBadge}
-                            />
-                        )}
-                    </View>
+                            /></Row>
+
+                    )}
+
                     {buttons.length > 0 && (
-                        <Row className="items-center gap-2 flex-wrap justify-end">
+                        <Row className="items-center gap-2 flex-wrap justify-start">
                             {buttons.map((item, index) => {
                                 const destructive = isDestructiveButton(item);
                                 const buttonLabel = String(item?.title || item?.name || '').trim();
@@ -198,7 +196,7 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
                                     <NeoButton
                                         key={item.id || item.name || buttonLabel || `deploy-button-${index}`}
                                         buttonStyle={destructive ? 'borderedProminent' : 'bordered'}
-                                        controlSize="small"
+                                        controlSize={buttons.length > 1 ? "small" : "xlarge"}
                                         role={destructive ? 'destructive' : undefined}
                                         accessibilityLabel={buttonLabel}
                                         onPress={() => handleOpenDeployForm(item)}
@@ -217,7 +215,7 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
                             })}
                         </Row>
                     )}
-                </Row>
+                </View>
             )}
             {containers.length > 0 && (
                 <View className="mt-1 gap-2">

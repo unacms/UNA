@@ -158,9 +158,61 @@ export async function proxy(request) {
             q = '?r=q&q=' + b.q + '&t=' + b.t;
         }*/
 
+        const unaTarget =
+            unaUrl + request.nextUrl.pathname.replace('/api/', '/') + q;
+
+        // Stripe Embedded Checkout return_url: browser lands on this API URL and
+        // would otherwise see raw JSON. Serve a tiny HTML bridge that re-fetches
+        // the same URL as XHR (rewrite below) and redirects to data.url.
+        const apiMethod = url.searchParams.get('r') || '';
+        const isCheckoutReturn =
+            apiMethod.includes('initialize_checkout_api') &&
+            url.searchParams.has('session_id');
+        const fetchMode = request.headers.get('sec-fetch-mode') || '';
+        const isXhr =
+            request.headers.get('x-neo-checkout-return') === '1' ||
+            fetchMode === 'cors' ||
+            fetchMode === 'same-origin';
+
+        if (isCheckoutReturn && !isXhr) {
+            const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Redirecting…</title></head><body>
+<script>
+(async function () {
+  try {
+    var res = await fetch(location.pathname + location.search, {
+      credentials: 'same-origin',
+      headers: {
+        'Accept': 'application/json',
+        'X-Neo-Checkout-Return': '1'
+      },
+      cache: 'no-store'
+    });
+    var payload = await res.json();
+    var next = payload && payload.data && payload.data.url;
+    if (typeof next === 'string' && next.length) {
+      location.replace(next);
+      return;
+    }
+    document.body.textContent = JSON.stringify(payload);
+  } catch (e) {
+    document.body.textContent = String(e && e.message ? e.message : e);
+  }
+})();
+</script>
+<noscript>JavaScript is required to complete checkout.</noscript>
+</body></html>`;
+            return new NextResponse(html, {
+                status: 200,
+                headers: {
+                    'content-type': 'text/html; charset=utf-8',
+                    'cache-control': 'no-store',
+                },
+            });
+        }
+
         // Rewrite the request to the UNA backend URL, replacing a local
         // `/api/` prefix with the UNA path and forwarding the modified headers.
-        return NextResponse.rewrite(unaUrl + request.nextUrl.pathname.replace('/api/','/') + q,
+        return NextResponse.rewrite(unaTarget,
         {
             request: {
                 headers: tmpHeaders,
