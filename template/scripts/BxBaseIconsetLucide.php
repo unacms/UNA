@@ -55,6 +55,7 @@ class BxBaseIconsetLucide extends BxBaseIconset
             'ellipsis-h' => 'more-horizontal',
             'ellipsis-v' => 'more-vertical',
             'envelope' => 'mail',
+            'envelope-open' => 'mail-open',
             'envelope-open-text' => 'mail-open',
             'exchange-alt' => 'repeat',
             'exclamation-circle' => 'alert-circle',
