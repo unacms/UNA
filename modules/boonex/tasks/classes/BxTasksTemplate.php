@@ -408,12 +408,15 @@ class BxTasksTemplate extends BxBaseModTextTemplate
             }
         }
         else {
-            $aLists[] = [
-                'id' => 0,
-                'title' => _t('_bx_tasks_txt_list_inbox')
-            ];
-            if(($aListsAdd = $this->_oDb->getLists($iContextId)) && is_array($aListsAdd))
-                $aLists = array_merge($aLists, $aListsAdd);
+            $aListInbox = ['id' => 0, 'title' => _t('_bx_tasks_txt_list_inbox')];
+
+            if(($iListId = $aParams['list'] ?? false) === false) {
+                $aLists[] = $aListInbox;
+                if(($aListsAdd = $this->_oDb->getLists($iContextId)) && is_array($aListsAdd))
+                    $aLists = array_merge($aLists, $aListsAdd);
+            }
+            else
+                $aLists[] = $iListId != 0 ? $this->_oDb->getList($iListId) : $aListInbox;
         }
 
         $aParams = array_merge($aParams, [

@@ -1178,6 +1178,9 @@ class BxTasksModule extends BxBaseModTextModule implements iBxDolCalendarService
         if(!$iProfileId)
             return '';
 
+        if($this->_bIsApi && is_string($aParams))
+            $aParams = bx_api_get_browse_params($aParams);
+
         return $this->serviceBrowseTasks ($iProfileId, $aParams);
     }
 
