@@ -190,6 +190,7 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
                         <Row className="items-center gap-2 flex-wrap justify-start">
                             {buttons.map((item, index) => {
                                 const destructive = isDestructiveButton(item);
+                                const buttonStyle = destructive || item?.primary ? 'borderedProminent' : 'bordered';
                                 const buttonLabel = String(item?.title || item?.name || '').trim();
                                 if (!buttonLabel) return null;
                                 return (

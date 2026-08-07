@@ -83,7 +83,7 @@ export const settingsElements = {
         'u-block-base':
             ' text-card-foreground gap-3 sm:gap-4',
         'u-block-bg':
-            ' bg-card/80 shadow-card-outline dark:shadow-card-outline-deep ',
+            ' bg-card/80 shadow-block-outline dark:shadow-block-outline-deep ',
         'u-block-pad':
             ' p-4 ',
         'u-block-rounded': 'rounded-2xl',

@@ -88,7 +88,10 @@
     }
 }
 
-/* Next-only base vars (web superellipse runtime hooks consumed by global.web.css). */
+/*
+ * Fallback superellipse factors (overridden on <html> from theme.corner_smoothing
+ * via app/design/corner-smoothing.js when enabled). Consumed by global.web.css.
+ */
 @layer base {
     :root {
         --neo-corner-superellipse-factor: 1.6;
