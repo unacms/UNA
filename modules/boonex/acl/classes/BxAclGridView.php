@@ -120,6 +120,15 @@ class BxAclGridView extends BxAclGridLevels
         return implode('', $this->_aJsCodes);
     }
 
+    public function decodeDataAPI($aData)
+    {
+        $aResults = parent::decodeDataAPI($aData);
+        foreach($aResults as $iKey => $aResult)
+            if(($iMemLevelId = $aData[$iKey]['level_id'] ?? false) !== false)
+                 $aResults[$iKey]['level_id'] = $iMemLevelId;
+
+        return $aResults;
+    }
     protected function _getCellLevelIcon($mixedValue, $sKey, $aField, $aRow)
     {
         $mixedValue = $this->_oModule->_oTemplate->displayLevelIcon($mixedValue);
