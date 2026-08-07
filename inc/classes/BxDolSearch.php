@@ -172,9 +172,9 @@ class BxDolSearch extends BxDol
             $aQueries = [];
             foreach($sCode as $aQuery)
                 if(!empty($aQuery['query']))
-                    $aQueries[] = $aQuery['query'];
+                    $aQueries[] = trim($aQuery['query'] . ' ' . $aQuery['order'] . ' ' . $aQuery['limit']);
 
-            $aItems = BxDolDb::getInstance()->getAll('(' . implode(') UNION (', $aQueries) . ') ORDER BY `added` DESC ' . current($sCode)['limit']);
+            $aItems = BxDolDb::getInstance()->getAll('(' . implode(') UNION (', $aQueries) . ')');
 
             $sCode = [];
             foreach($aItems as $aItem)
@@ -1061,7 +1061,8 @@ class BxDolSearchResult implements iBxDolReplaceable
         if($bForUnion)
             return [
                 'query' => $sqlQuery, 
-                'limit' => $aSql['limit']
+                'order' => $aSql['order'] ?? '',
+                'limit' => $aSql['limit'] ?? ''
             ];
 
         if (isset($aSql['order']))
