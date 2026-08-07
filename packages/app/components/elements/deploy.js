@@ -192,13 +192,14 @@ export default function ElementDeploy({ data, blockWrapperProps, url }) {
                         <Row className="items-center gap-2 flex-wrap justify-end">
                             {buttons.map((item, index) => {
                                 const destructive = isDestructiveButton(item);
+                                const buttonStyle = destructive || item?.primary ? 'borderedProminent' : 'bordered';
                                 const buttonLabel = String(item?.title || item?.name || '').trim();
                                 if (!buttonLabel) return null;
                                 return (
                                     <NeoButton
                                         key={item.id || item.name || buttonLabel || `deploy-button-${index}`}
-                                        buttonStyle={destructive ? 'borderedProminent' : 'bordered'}
-                                        controlSize="small"
+                                        buttonStyle={buttonStyle}
+                                        controlSize={item?.size == 'large' ? 'large' : 'small'}
                                         role={destructive ? 'destructive' : undefined}
                                         accessibilityLabel={buttonLabel}
                                         onPress={() => handleOpenDeployForm(item)}
