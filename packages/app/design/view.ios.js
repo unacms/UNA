@@ -6,8 +6,7 @@ import {
 import { forwardRef } from 'react'
 import { withUniwind } from 'uniwind'
 import { Motion } from '@legendapp/motion'
-
-const iosContinuousCurveStyle = { borderCurve: 'continuous' }
+import { iosContinuousCurveStyle } from 'app/design/corner-smoothing'
 
 // Merge style carefully (supports object/array/undefined)
 const withIOSCurve = (style) => [iosContinuousCurveStyle, style].filter(Boolean)

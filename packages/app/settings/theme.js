@@ -31,10 +31,13 @@ export const settingsTheme = {
             safeAreaBackground: 'rgba(24,24,27,1)', // Add this new property
             primaryBg: 'rgba(37,99,235,0.1)',
         },
+        // Web: `corner-shape: superellipse` + radius multiplier (global.web.css).
+        // iOS: `borderCurve: 'continuous'` on design View / inputs.
+        // Set `enabled: false` to use plain CSS border-radius / no continuous curve.
         corner_smoothing: {
-            enabled: true,  
-            factor: 2,
-            full_factor: 1.3,
+            enabled: false,
+            factor: 1.6,
+            full_factor: 1,
         },
         native_tabs: {
             tabBarItemStyle: {

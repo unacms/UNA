@@ -3,6 +3,7 @@ import { TextInput as TextInputDef, Platform, TextInputProps } from 'react-nativ
 import type { TextInput } from 'react-native';
 import { View, Row } from 'app/design/view'
 import { Icon } from 'app/ui/atoms/icon'
+import { iosContinuousCurveStyle } from 'app/design/corner-smoothing'
 import { appSetting, cn } from 'app/lib/util'
 import { Picker as PickerDef, type PickerProps } from '@react-native-picker/picker';
 
@@ -41,7 +42,7 @@ export const TextInputClear = TextInputDef
 
 const getInputStyleProps = (style: any) =>
     (isIos || style)
-        ? { style: [isIos && { borderCurve: 'continuous' }, style].filter(Boolean) }
+        ? { style: [isIos && iosContinuousCurveStyle, style].filter(Boolean) }
         : {};
 
 export const Input = forwardRef<TextInput, CustomInputProps>(
@@ -133,7 +134,7 @@ const Picker = PickerDef as any;
 
 const getPickerStyleProps = (style: any) =>
     (isIos || style)
-        ? { style: [isIos && { borderCurve: 'continuous' }, style].filter(Boolean) }
+        ? { style: [isIos && iosContinuousCurveStyle, style].filter(Boolean) }
         : {};
 
 export const PickerStyled = ({ className, style, size = InputSize.regular, ...props }: CustomPickerProps) => (

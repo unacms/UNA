@@ -635,9 +635,15 @@ html[theme="dark"]:root {
 }
 
 
+/*
+ * Smooth (superellipse) corners — gated by `theme.corner_smoothing.enabled`.
+ * Next layout adds `.neo-corner-smooth` + `--neo-corner-superellipse-*` on <html>
+ * when enabled (see `app/design/corner-smoothing.js`). Without the class, radii
+ * stay at the plain `--neo-radius-*` values from theme.css.
+ */
 @supports (corner-shape: superellipse(1)) {
-    :root,
-    html {
+    :root.neo-corner-smooth,
+    html.neo-corner-smooth {
         --neo-radius-xs: calc(0.125rem * var(--neo-corner-superellipse-factor, 1.6)) !important;
         --neo-radius-sm: calc(0.125rem * var(--neo-corner-superellipse-factor, 1.6)) !important;
         --neo-radius-default: calc(0.25rem * var(--neo-corner-superellipse-factor, 1.6)) !important;
@@ -651,7 +657,7 @@ html[theme="dark"]:root {
     }
 
     /* Apply superellipse shape to any element with a rounded class */
-    :is([class~="rounded"], [class~="rounded-xs"], [class~="rounded-sm"], [class~="rounded-md"],
+    .neo-corner-smooth :is([class~="rounded"], [class~="rounded-xs"], [class~="rounded-sm"], [class~="rounded-md"],
         [class~="rounded-lg"], [class~="rounded-xl"], [class~="rounded-2xl"],
         [class~="rounded-3xl"], [class~="rounded-4xl"],
         [class*=":rounded"], [class*=":rounded-xs"], [class*=":rounded-sm"], [class*=":rounded-md"],
@@ -662,42 +668,42 @@ html[theme="dark"]:root {
     }
 
     /* Full rounding uses full factor */
-    :is([class~="rounded-full"], [class*=":rounded-full"]) {
+    .neo-corner-smooth :is([class~="rounded-full"], [class*=":rounded-full"]) {
         /* stylelint-disable-next-line property-no-unknown */
         corner-shape: superellipse(var(--neo-corner-superellipse-full-factor, 1));
     }
 
     /* Keep pseudo-element rounding visually aligned with smooth corners */
-    .u-link-hitarea::before,
-    .u-link-hitarea-xs::before,
-    .u-link-hitarea-sm::before,
-    .u-link-hitarea-md::before,
-    .u-link-hitarea-lg::before {
+    .neo-corner-smooth .u-link-hitarea::before,
+    .neo-corner-smooth .u-link-hitarea-xs::before,
+    .neo-corner-smooth .u-link-hitarea-sm::before,
+    .neo-corner-smooth .u-link-hitarea-md::before,
+    .neo-corner-smooth .u-link-hitarea-lg::before {
         border-radius: 0;
         /* stylelint-disable-next-line property-no-unknown */
         corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1.6));
     }
 
-    .u-link-ghost::after,
-    .u-link-ghost-active::after,
-    .u-link-press::after {
+    .neo-corner-smooth .u-link-ghost::after,
+    .neo-corner-smooth .u-link-ghost-active::after,
+    .neo-corner-smooth .u-link-press::after {
         border-radius: calc(var(--u-link-ghost-shape-radius, var(--u-link-ghost-radius, 0.375rem)) * var(--neo-corner-superellipse-factor, 1.6));
         /* stylelint-disable-next-line property-no-unknown */
         corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1.6));
     }
 
-    .u-action-hitarea::before,
-    .u-action-hitarea-xs::before,
-    .u-action-hitarea-sm::before,
-    .u-action-hitarea-md::before,
-    .u-action-hitarea-lg::before {
+    .neo-corner-smooth .u-action-hitarea::before,
+    .neo-corner-smooth .u-action-hitarea-xs::before,
+    .neo-corner-smooth .u-action-hitarea-sm::before,
+    .neo-corner-smooth .u-action-hitarea-md::before,
+    .neo-corner-smooth .u-action-hitarea-lg::before {
         border-radius: calc(var(--u-action-hitarea-radius, 0.5rem) * var(--neo-corner-superellipse-factor, 1.6));
         /* stylelint-disable-next-line property-no-unknown */
         corner-shape: superellipse(var(--neo-corner-superellipse-factor, 1.6));
     }
 
     /* Ensure focus rings follow the shape */
-    :is([class~="rounded-none"], [class*=":rounded-none"],
+    .neo-corner-smooth :is([class~="rounded-none"], [class*=":rounded-none"],
         [class~="rounded"], [class$=":rounded"], [class*=":rounded "],
         [class~="rounded-xs"], [class*=":rounded-xs"],
         [class~="rounded-sm"], [class*=":rounded-sm"],
