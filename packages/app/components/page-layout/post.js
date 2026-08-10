@@ -456,7 +456,12 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                 </>
             )}
             <Panel {...centerPanelProps} className="mt-0.5 sm:m-0 sm:p-3 lg:p-4 ">
-                <Block isBg isPad className={`w-full mx-auto `}>
+                {/* `isBg` only — no `isPad`. Everything inside already pads itself:
+                    the list items carry `p-3 sm:px-4` (see `aItems`) and the composer
+                    its own inset. Adding the block's `p-4` on top double-padded the
+                    content. The modal and small-screen branches never wrapped in a
+                    Block, so they were always single-padded — this matches them. */}
+                <Block isBg className={`w-full mx-auto `}>
                     <View
                         onLayout={handleListLayout}
                         style={{ pointerEvents: 'box-none', ...(isFormFixed ? { marginBottom: formHeight } : null) }}
