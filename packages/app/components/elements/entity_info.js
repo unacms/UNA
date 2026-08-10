@@ -1,11 +1,11 @@
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import Time from 'app/ui/atoms/time'
 import Html from 'app/ui/atoms/html'
 import { Icon } from 'app/ui/atoms/icon'
 import { appSetting, cn } from 'app/lib/util'
-import { fetcher } from 'app/lib/fetcher'
+import { useEditableRequest } from 'app/lib/form-helpers'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import Link from 'app/ui/atoms/link'
 import { BlockWrapper } from 'app/components/block-wrapper'
@@ -164,25 +164,6 @@ function fieldValueToUnix(value) {
         : []
 
     return Math.floor(new Date(year, month - 1, day, hours, minutes, seconds).getTime() / 1000)
-}
-
-function useEditableRequest({ initialValue, requestUrl, fieldName, toParam = (v) => v }) {
-    const [value, setValue] = useState(initialValue)
-
-    const commit = useCallback(async (nextValue) => {
-        const prevValue = value
-        setValue(nextValue)
-        try {
-            const param = toParam(nextValue)
-            await fetcher(`/api.php?r=${requestUrl}${fieldName}&params[]=${param}`)
-            return true
-        } catch {
-            setValue(prevValue)
-            return false
-        }
-    }, [fieldName, requestUrl, toParam, value])
-
-    return { value, setValue, commit }
 }
 
 function EditableDate({ field, requestUrl }) {
@@ -490,7 +471,7 @@ export default function ElementEntityInfo({ data, blockWrapperProps }) {
                 return defaultIcon ? infoIcon(defaultIcon) : null
         }
     }
-    console.log("data.inputs", data.inputs)
+
     const inputs = Object.keys(data.inputs).map(function (key) {
         const a = data.inputs[key]
         const v = a.values ? a.values[a.value] : a.value

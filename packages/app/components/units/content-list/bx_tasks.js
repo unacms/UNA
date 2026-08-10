@@ -1,7 +1,6 @@
 import { useMemo, useState, useCallback } from 'react';
-import { View, Row } from 'app/design/view';
+import { View, Row, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import Link from 'app/ui/atoms/link';
 import ProfilesList from 'app/ui/molecules/profile_list';
 import { Card } from 'app/ui/molecules/card';
 import { Modal } from 'app/design/controls';
@@ -24,6 +23,15 @@ const META_FIELDS = [
 
 function emitTasksListRefresh() {
     emitter.emit(TASKS_LIST_EVENT, { action: 'reload' });
+}
+
+function emitTasksListOpen(task) {
+    if (!task?.url) return;
+    emitter.emit(TASKS_LIST_EVENT, {
+        action: 'open',
+        url: task.url,
+        title: task.title,
+    });
 }
 
 function actionsToMenuItems(actions = []) {
@@ -105,6 +113,13 @@ export default function Unit({ data }) {
         onclick: (event, item) => runTaskAction(item.action, setFormBlock),
     }), []);
 
+    const titleClassName = cn(
+        'text-sm font-semibold leading-tight web:hover:text-foreground',
+        isCompleted
+            ? 'text-muted-foreground line-through'
+            : 'text-card-foreground'
+    );
+
     return (
         <Card padding="p-3" className="web:hover:bg-muted/30 web:duration-300">
             {formBlock ? (
@@ -121,20 +136,11 @@ export default function Unit({ data }) {
 
             <Row className="items-center gap-3">
                 <View className="flex-auto min-w-0 gap-1">
-                    <Link href={data.url} emulate>
-                        <Text
-                            numberOfLines={2}
-                            className={cn(
-                                'text-sm font-semibold leading-tight web:hover:text-foreground',
-                                isCompleted
-                                    ? 'text-muted-foreground line-through'
-                                    : 'text-card-foreground'
-                            )}
-                        >
+                    <Pressable onPress={() => emitTasksListOpen(data)}>
+                        <Text numberOfLines={2} className={titleClassName}>
                             {data.title}
                         </Text>
-                    </Link>
-
+                    </Pressable>
                     <TaskMeta data={data} />
                 </View>
 

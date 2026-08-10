@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import { getComponent } from 'app/components/registry';
 import { Button } from "app/design/controls/buttons";
@@ -7,6 +7,35 @@ import { NeoButton } from "app/design/controls/neo-button";
 import emitter from 'app/context/emitter';
 import { appSetting } from 'app/lib/util';
 import { useFormInstanceId } from 'app/context/form-instance';
+import { fetcher } from 'app/lib/fetcher';
+
+/**
+ * Optimistic inline field update via UNA request_url + field name.
+ * Used by entity_info / entity_text editable fields.
+ */
+export function useEditableRequest({ initialValue, requestUrl, fieldName, toParam = (v) => v }) {
+    const [value, setValue] = useState(initialValue)
+    const valueRef = useRef(value)
+    valueRef.current = value
+
+    const commit = useCallback(async (nextValue) => {
+        const prevValue = valueRef.current
+        setValue(nextValue)
+        valueRef.current = nextValue
+        if (!requestUrl) return false
+        try {
+            const param = toParam(nextValue)
+            await fetcher(`/api.php?r=${requestUrl}${fieldName}&params[]=${param}`)
+            return true
+        } catch {
+            setValue(prevValue)
+            valueRef.current = prevValue
+            return false
+        }
+    }, [fieldName, requestUrl, toParam])
+
+    return { value, setValue, commit }
+}
 
 /** Ignores injected field props (e.g. use_caption_as_placeholder) — do not use DOM Text. */
 function UnsupportedFormField() {

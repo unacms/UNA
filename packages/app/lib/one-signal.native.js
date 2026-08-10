@@ -71,3 +71,19 @@ export async function subscribeOneSignal(currentUser, askPermission = false) {
         }
     }
 }
+
+/** Detach external user id on sign-out so the next account is not linked. */
+export async function logoutOneSignal() {
+    if (!oneSignalInitialized || !appSetting('config', 'api_keys', 'onesignal')) {
+        return;
+    }
+
+    try {
+        const { OneSignal } = await import('react-native-onesignal');
+        if (typeof OneSignal?.logout === 'function') {
+            await OneSignal.logout();
+        }
+    } catch (error) {
+        console.error('OneSignal logout error:', error);
+    }
+}

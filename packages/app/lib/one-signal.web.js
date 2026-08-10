@@ -101,3 +101,34 @@ export async function subscribeOneSignal(currentUser, askPermission = true) {
         OneSignal.Slidedown.promptPush();
     }
 }
+
+/** Detach external user id on sign-out so the next account is not linked. */
+export async function logoutOneSignal() {
+    if (typeof window === 'undefined') {
+        return;
+    }
+
+    if (!appSetting('config', 'api_keys', 'onesignal') || appSetting('config', 'onesignal_web_disable')) {
+        return;
+    }
+
+    // react-onesignal.logout() throws if init never completed (e.g. localhost / disabled).
+    const sdkReady =
+        oneSignalInitialized ||
+        window.OneSignal?.isInitialized ||
+        window.OneSignal?._isInitialized;
+
+    if (!sdkReady) {
+        return;
+    }
+
+    try {
+        const { default: OneSignal } = await import('react-onesignal');
+        if (typeof OneSignal?.logout === 'function') {
+            await OneSignal.logout();
+        }
+    } catch (error) {
+        // Non-fatal: session cleanup must not fail because of push SDK state.
+        console.warn('OneSignal logout skipped:', error?.message || error);
+    }
+}
