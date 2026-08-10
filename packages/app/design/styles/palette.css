@@ -80,7 +80,7 @@
             --input: var(--white);
             --button: var(--neutral-50);
             --button-foreground: var(--neutral-800);
-            --button-hover: var(--neutral-200);
+            --button-hover: var(--neutral-100);
             --ring: var(--accent-600);
             --segment: var(--neutral-200);
             --segment-foreground: var(--neutral-700);

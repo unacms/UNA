@@ -204,7 +204,7 @@ export const PageHeaderBody = memo(({
             <NeoButton
                 borderShape="circle" 
                 image="ArrowLeft"
-                style={isDesktop ? 'bordered' : 'glass'}
+                style={isDesktop ? 'bordered' : 'borderless'}
                 controlSize="regular"
                 accessibilityLabel="Back"
                 onPress={onBackPress}

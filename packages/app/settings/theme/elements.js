@@ -60,8 +60,8 @@ export const settingsElements = {
         header: ' px-3 py-2 min-h-14 items-start justify-start border-b border-border/60 ',
     },
     cards: {
-        'u-card-list': ' u-card-list bg-card/80 shadow-card-outline dark:shadow-card-outline-deep sm:rounded-xl ',
-        'u-card-list-padding': 'p-3 lg:p-4 sm:rounded-xl',
+        'u-card-list': ' u-card-list bg-card/80 shadow-card-outline dark:shadow-card-outline-deep sm:rounded-2xl ',
+        'u-card-list-padding': 'p-3 lg:p-4 sm:rounded-2xl',
         'u-card-base': 'u-card-base rounded-xl bg-card/80 text-card-foreground shadow-card-outline dark:shadow-card-outline-deep ',
         'u-card-padding': 'py-4 ',
         'u-card-header': 'px-4',
