@@ -8,6 +8,7 @@ import { useFilesData } from 'app/context/files'
 import { EditorToolbar, useEnrichedToolbar } from 'app/lib/editor-toolbar'
 import { useThemeName } from 'app/design/theme'
 import { getAlert, stripTags, stripTagsWithLinks, appSetting, cn } from 'app/lib/util'
+import { stripInlinePresentation } from 'app/lib/html-helper'
 import emitter from 'app/context/emitter'
 import { mentionsToUnaLinks, unaLinksToMentions, linkifyHtml } from './editor-mention-html'
 import { useEditorMentions } from 'app/lib/use-editor-mentions'
@@ -312,9 +313,11 @@ export default function RftTextEnriched({
         // saved content has real <a> links on every platform.
         const html = linkifyHtml(mentionsToUnaLinks(raw))
         if (onFocus && html) onFocus()
-        const next = isPlainText
-            ? stripTagsWithLinks(html, ['a', 'p', 'br', 'span'])
-            : html
+        const next = stripInlinePresentation(
+            isPlainText
+                ? stripTagsWithLinks(html, ['a', 'p', 'br', 'span'])
+                : html
+        )
         if (isInitialHtmlEmission.current) {
             isInitialHtmlEmission.current = false
             // The editor's first emission is usually its normalized version of the

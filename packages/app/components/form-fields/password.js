@@ -16,8 +16,8 @@ export default function FormFieldPassword(props) {
     const placeholder = props.use_caption_as_placeholder? props.caption : props.placeholder;
     const { inputRef, returnKeyProps } = useNativeReturnKeyNav(name, props.handleSubmit);
     
-    // Get button configuration from settings
-    const buttonConfig = appSetting('forms', 'password_eye_button');
+    const eyeIcons = appSetting('forms', 'password_eye_button')?.image;
+    const eyeIcon = isVisible ? eyeIcons?.visible : eyeIcons?.hidden;
 
     return (
         <Field {...props}>
@@ -42,15 +42,17 @@ export default function FormFieldPassword(props) {
                         {...returnKeyProps}
                     />
                 </AdaptiveLabel>
-                <View className="absolute right-1.5 top-1/2 -translate-y-1/2 justify-center items-center z-20">
-                    <NeoButton
-                        image={isVisible ? buttonConfig.image.visible : buttonConfig.image.hidden}
-                        style="borderless"
-                        controlSize="small"
-                        accessibilityLabel={isVisible ? 'Show password' : 'Hide password'}
-                        onPress={() => { setIsVisible(!isVisible) }}
-                    />
-                </View>
+                {eyeIcon ? (
+                    <View className="absolute right-1.5 top-1/2 -translate-y-1/2 justify-center items-center z-20">
+                        <NeoButton
+                            image={eyeIcon}
+                            style="borderless"
+                            controlSize="small"
+                            accessibilityLabel={isVisible ? 'Show password' : 'Hide password'}
+                            onPress={() => { setIsVisible(!isVisible) }}
+                        />
+                    </View>
+                ) : null}
             </View>
         </Field>
     );

@@ -20,6 +20,7 @@ import { Platform } from 'react-native'
 import { useThemeName } from 'app/design/theme'
 import { getAlert, stripTags, stripTagsWithLinks } from 'app/lib/util'
 import { appSetting, cn } from 'app/lib/util'
+import { stripInlinePresentation } from 'app/lib/html-helper'
 import emitter from 'app/context/emitter'
 import { TextInput } from 'react-native'
 import { useEditorMentions } from 'app/lib/use-editor-mentions'
@@ -288,6 +289,8 @@ export default function RftText({
             font-weight: normal !important;
             font-style: normal !important;
             text-decoration: none !important;
+            color: inherit !important;
+            background: transparent !important;
         }
         blockquote{
             all: unset;
@@ -431,12 +434,15 @@ export default function RftText({
         }
     }
 
-    // Filter duplicate extensions to prevent TipTap warnings
-    // TenTapStartKit includes listItem and textStyle which can conflict with other bridges
+    // Filter duplicate extensions to prevent TipTap warnings.
+    // Drop color/highlight — TenTapStartKit includes ColorBridge (TextStyle), which
+    // keeps pasted docs colors (`style="color: rgb(…)"`) in saved HTML.
+    const EXCLUDED_BRIDGES = new Set(['color', 'highlight'])
     const allExtensions = [...baseExtensions, ...TenTapStartKit];
     const seenNames = new Set();
     const uniqueExtensions = allExtensions.filter((ext) => {
         const name = ext?.name || ext?.tiptapExtension?.name;
+        if (name && EXCLUDED_BRIDGES.has(name)) return false;
         if (name && seenNames.has(name)) {
             return false;
         }
@@ -537,9 +543,11 @@ export default function RftText({
         if (stripTags(htmlContent)) {
             if (onFocus) onFocus()
         }
-        const next = isPlainText
-            ? stripTagsWithLinks(htmlContent, ['a', 'p', 'br', 'span'])
-            : htmlContent
+        const next = stripInlinePresentation(
+            isPlainText
+                ? stripTagsWithLinks(htmlContent, ['a', 'p', 'br', 'span'])
+                : htmlContent
+        )
         if (isInitialHtmlContent.current) {
             isInitialHtmlContent.current = false
             // The editor normalizes initial HTML (wraps text in <p>, emits <p></p>
@@ -873,24 +881,19 @@ export default function RftText({
                     });
 
                     document.addEventListener('paste', (event) => {
-                        const activeElement = document.activeElement;
-                        
-                        if (event.clipboardData.items.length > 0) {
-                            for (let item of event.clipboardData.items) {
-                                if (item.kind === 'file') {
-                                    event.preventDefault();
-                                    const file = item.getAsFile();
-                                    if (file) {
-                                        const reader = new FileReader();
-                                        reader.onload = function (e) {
-                                            window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'paste', form_name: formName, payload: e.target.result }));
-                                        };
-                                        reader.readAsDataURL(file);
-                                    }
+                        if (!event.clipboardData?.items?.length) return;
+                        for (let item of event.clipboardData.items) {
+                            if (item.kind === 'file') {
+                                event.preventDefault();
+                                const file = item.getAsFile();
+                                if (file) {
+                                    const reader = new FileReader();
+                                    reader.onload = function (e) {
+                                        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'paste', form_name: formName, payload: e.target.result }));
+                                    };
+                                    reader.readAsDataURL(file);
                                 }
                             }
-                        } else {
-                            console.warn("Clipboard items are empty!");
                         }
                     })`)
             }

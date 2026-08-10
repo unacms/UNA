@@ -40,6 +40,26 @@ export function flattenNestedAnchors(html) {
     return out
 }
 
+/**
+ * Strip paste/docs presentation junk that fights design tokens (Word/Notion/docs
+ * often wrap text in `<span style="color: …">` / `<font color=…>`).
+ * Use on editor paste/save only — do not strip on render (legacy content stays as stored).
+ * Safe for UNA content: mentions are `<a>`, not styled spans.
+ */
+export function stripInlinePresentation(html) {
+    if (!html || typeof html !== 'string') return html || ''
+
+    return html
+        // Inline CSS (quoted or bare).
+        .replace(/\sstyle\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '')
+        // Legacy presentational attributes.
+        .replace(/\s(?:color|bgcolor|background|face|size)\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '')
+        // Unwrap <font>…</font> (keep children).
+        .replace(/<\/?font\b[^>]*>/gi, '')
+        // Unwrap <span>…</span> left over after style strip (Word/TipTap Color).
+        .replace(/<\/?span\b[^>]*>/gi, '')
+}
+
 // Lightweight web sanitizer used before `dangerouslySetInnerHTML`. Strips script/
 // style blocks, inline event handlers, and `javascript:` URLs. This is not a full
 // XSS suite — UNA content is server-owned — but it removes the obvious injection
