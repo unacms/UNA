@@ -9,6 +9,8 @@ import { useTranslation } from 'react-i18next';
 import { useLayoutData } from 'app/context/layout'
 import { storageClear } from 'app/lib/util'
 import { getComponent } from 'app/components/registry'
+import { useBottomSheetData } from 'app/context/bottomsheet'
+import { Platform } from 'react-native'
 
 const getKey = (sO, iIid, iCid) => {
     return sO + '_' + iIid + '_' + iCid;
@@ -36,7 +38,9 @@ const performAction = async (setLayoutData, sO, iIid, iCid, sKey, sAction, aPara
     const sRequest = '/api.php?r=system/' + sAction + '/TemplServiceConnections&params[]=' + JSON.stringify(aParams);
 
     const oResponse = await fetcher(sRequest);
-    const isReload = oResponse?.data?.a != 'questionnaire';
+    // Leave/etc. with redirect: skip soft-reload of the current page — navigation owns the transition.
+    const hasRedirect = !!oResponse?.data?.redirect;
+    const isReload = oResponse?.data?.a != 'questionnaire' && !hasRedirect;
     if (isReload)
         storageClear();
 
@@ -82,6 +86,7 @@ export default function ElementConnections(oProps) {
     const [elementData, setElementData] = useState(false);
     const [modalContent, setModalContent] = useState(false);
     const { layoutData, setLayoutData } = useLayoutData()
+    const { setBottomSheetData } = useBottomSheetData();
     const { t } = useTranslation();
 
     const oSettings = appSetting('social_actions', 'connection');
@@ -162,14 +167,19 @@ export default function ElementConnections(oProps) {
     if (oProps.mode == 'dropdown-menu') {
         return <>
             <DropdownMenuItem
-              
-               
                 item={{
                     title: sTitle,
                     icon: oIcons[sAction]
                 }}
                 icon={oIcons[sAction]}
-                handleSelect={(event) => {_handleDo(sAction, event) }}
+                handleSelect={(event) => {
+                    // Overflow MenuItemEx is a React-node title — skips MenuBottomSheet's
+                    // outer handleSelect that would dismiss the sheet.
+                    if (Platform.OS !== 'web') {
+                        setBottomSheetData(false);
+                    }
+                    _handleDo(sAction, event);
+                }}
             /></>;
     }
     else {

@@ -9,7 +9,9 @@ import { useTranslation } from 'react-i18next';
 import { useLayoutData } from 'app/context/layout'
 import { storageClear } from 'app/lib/util'
 import { getComponent } from 'app/components/registry'
-import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import DropdownMenu from 'app/ui/atoms/dropdown-menu'
+import { useBottomSheetData } from 'app/context/bottomsheet'
+import { Platform } from 'react-native';
 
 
 const getKey = (sO, iIid, iCid) => {
@@ -32,6 +34,7 @@ export default function ElementConnections({
     const [elementData, setElementData] = useState({ name, actions, title });
     const [modalContent, setModalContent] = useState(false);
     const { t } = useTranslation();
+    const { setBottomSheetData } = useBottomSheetData();
     const settings = appSetting('social_actions', 'connection_ext');
     const params = { ...settings, initial_params };
 
@@ -85,6 +88,9 @@ export default function ElementConnections({
     };
 
     const _handleRequset = async (action, event) => {
+        if (Platform.OS !== 'web') {
+            setBottomSheetData(false);
+        }
         const paramsDefault = { o: object, iid: item_id, cid: content_id, a: action, r: 'object' };
         const response = await fetcher('/api.php?r=system/perform/TemplServiceConnections&params[]=' + JSON.stringify(paramsDefault));
         setElementData({ name: response.data.name, actions: response.data.actions, title: response.data.title })

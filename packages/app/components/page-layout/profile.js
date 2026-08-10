@@ -32,12 +32,16 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
 
     const router = useRouter();
     useEffect(() => {
-        
-        if (layoutData && layoutData?.type == 'connections:action' && layoutData?.data?.data?.redirect) {
+        if (!layoutData || layoutData?.type != 'connections:action') return;
+
+        // Leave/redirect: navigate away without soft-reloading the current group page first.
+        if (layoutData?.data?.data?.redirect) {
             setLayoutData(null);
-            redirectTo(router, layoutData?.data?.data?.redirect);
+            redirectTo(router, layoutData.data.data.redirect);
+            return;
         }
-        if (layoutData && layoutData?.type == 'connections:action' && layoutData?.data?.reload ) {
+
+        if (layoutData?.data?.reload) {
             (async () => {
                 if (layoutData?.data?.object?.initiator == pageData?.cover_block?.profile?.id || layoutData?.data?.object?.content == pageData?.cover_block?.profile?.id || !layoutData?.data?.object?.content) {
                     setLayoutData(null);
@@ -60,7 +64,6 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
         return subscribe('profile_' + profileId, 'changed', async () => {
             const sResponse = await getPageData(pageUrl);
             if (sResponse?.data) {
-                console.log('profile_' + profileId, pageData.ts, sResponse.data.ts,sResponse.data);
                 adoptPageData(sResponse.data);
             }
         });

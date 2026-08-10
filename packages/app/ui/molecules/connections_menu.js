@@ -4,10 +4,13 @@ import { appSetting } from 'app/lib/util';
 import { useState } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import { getComponent } from 'app/components/registry'
+import { useBottomSheetData } from 'app/context/bottomsheet'
+import { Platform } from 'react-native'
 
 export default function ElementConnections(props) {
      const DropdownMenuItem = getComponent('menu-item', 'dropdown');
     const [elementData, setElementData] = useState(props);
+    const { setBottomSheetData } = useBottomSheetData();
     const settings = appSetting('social_actions', 'connection');
     const icons = elementData.o && settings[elementData.o]?.icons != undefined ? settings[elementData.o].icons : {
         add: 'UserCheck',
@@ -26,7 +29,9 @@ export default function ElementConnections(props) {
     };
 
     const handleClick = async (item, event) => {
-
+        if (Platform.OS !== 'web') {
+            setBottomSheetData(false);
+        }
         const params = JSON.stringify({ o: elementData.o, iid: elementData.iid, cid: elementData.cid, a: item.link })
         const r = await fetcher(`/api.php?r=system/perform/TemplServiceConnections&params[]=${params}`);
         if (!r.data.message) {
@@ -40,8 +45,6 @@ export default function ElementConnections(props) {
     if (props.mode == 'dropdown-menu') {
         return <>
                     <DropdownMenuItem
-                      
-                       
                         item={{
                             title: elementData.title,
                             icon: icons[elementData.a]

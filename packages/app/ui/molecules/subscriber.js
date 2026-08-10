@@ -10,6 +10,7 @@ import { getRemoteSettings } from 'app/config';
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting } from 'app/lib/util'
 import emitter from 'app/context/emitter'
+import { checkActionsOnConnectionsChanged } from 'app/customization/functions';
 
 export default function Subscriber() {
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -55,9 +56,14 @@ export default function Subscriber() {
         emitter.emit('connections', { action: 'changed' });
         storageClear();
         const oData = JSON.parse(data);
+        const oActions = checkActionsOnConnectionsChanged(oData);
         if (oData?.user){
-            setCurrentUser(oData.user);
-            setLayoutData(getAlert('connections:action', { object: oData, time: Date.now(), reload: true }));
+            if (oActions?.update_user){
+                setCurrentUser(oData.user);
+            }
+            if (oActions?.reload_page){
+                setLayoutData(getAlert('connections:action', { object: oData, time: Date.now(), reload: true }));
+            }
         }
     }, []);
 

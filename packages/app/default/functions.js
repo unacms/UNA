@@ -146,6 +146,10 @@ export function updateRouteDataForConnections(
     )
 }
 
+export function checkActionsOnConnectionsChanged(oData) {
+    return {update_user:true, reload_page:true};
+}
+
 export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
 
     let oMenuItemPrimary = null;
