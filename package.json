@@ -29,6 +29,9 @@
     "analyze": "cd apps/next && cross-env ANALYZE=true yarn build",
     "clean": "rm -rf ./node_modules ./apps/expo/node_modules ./apps/next/node_modules ./packages/app/node_modules"
   },
+  "engines": {
+  "node": "24.x"
+},
   "nohoist": [
     "**/expo-router",
     "**/expo-router/**"
