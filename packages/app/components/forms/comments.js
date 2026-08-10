@@ -90,7 +90,7 @@ export default function FormComments(props) {
 
     return (
         
-        <View className={`w-full flex-auto bg-card/90 backdrop-blur-lg shadow-btn-glass dark:shadow-btn-glass-deep ${hasContent ? 'rounded-2xl' : 'rounded-full'}`}>
+        <View className={`w-full flex-auto bg-card/90 backdrop-blur-lg shadow-input-outline dark:shadow-input-outline-deep ${hasContent ? 'rounded-2xl' : 'rounded-full'}`}>
             {getFormFieldByData(
                 props.data.inputs['action'],
                 props.handleSubmit,
@@ -121,7 +121,7 @@ export default function FormComments(props) {
                 <View className="flex-auto ">
                     <View className=" items-stretch " >
                         <View
-                            className={`p-2.5 min-h-11 flex-auto items-center ${shouldGrowFromBottom ? "justify-center" : "justify-start"} ${hasContent ? 'mb-10' : 'ms-10'}`}
+                            className={`p-3 min-h-12 flex-auto items-center ${shouldGrowFromBottom ? "justify-center" : "justify-start"} ${hasContent ? 'mb-10' : 'ms-10'}`}
                             style={{
                                 
                                 ...(isWeb && { transition: 'height 0.1s cubic-bezier(0.25, 0.1, 0.25, 1), padding-bottom 0.1s cubic-bezier(0.25, 0.1, 0.25, 1)' })
@@ -154,7 +154,7 @@ export default function FormComments(props) {
                             {...currentUser}
                             url_avatar={currentUser.avatar}
                             displayType="unit_wo_info"
-                            displaySize="sm"
+                            displaySize="md"
                         />
                    
                     </View>
@@ -199,14 +199,14 @@ export default function FormComments(props) {
                 </View>
             </Row>
             <ScrollView horizontal={true}>
-                <Row className="flex-wrap mb-1 mx-1">{
-                    getFormFieldByData(
+                <Row className={imagesValue ? 'flex-wrap mb-1 mx-1' : 'flex-wrap'}>
+                    {getFormFieldByData(
                         props.data.inputs['cmt_image'],
                         props.handleSubmit,
                         'notitle',
                         { hide_button: true, list_only: true, asDefaultStorage: true, form_name: props.name}
-                    )
-                }</Row>
+                    )}
+                </Row>
             </ScrollView>
             {getFormFieldByData(
                 props.data.inputs['cmt_mood'],

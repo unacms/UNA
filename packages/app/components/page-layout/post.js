@@ -9,7 +9,7 @@ import { useLocalSearchParams } from 'app/lib/hooks/router'
 import emitter from 'app/context/emitter';
 import { useIsDesktop, useWindowHeight, useBreakpoint, useBreakpointName } from 'app/context/measure';
 import { appSetting } from 'app/lib/util';
-import { Card } from 'app/ui/molecules/card';
+import { Block } from 'app/ui/molecules/page-block';
 import {
     Panel,
     PanelGroup,
@@ -72,7 +72,11 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
     const [scrollToEnd, setScrollToEnd] = useState(false);
     const [formHeight, setFormHeight] = useState(0);
     const [listWidth, setListWidth] = useState(0)
-    const { marginBottom: listBottomInset } = useStickyComposerListInset(20);
+    const [modalListHeight, setModalListHeight] = useState(0)
+    // Clearance so the last comment can scroll clear of the floating composer.
+    // Must track the composer's real height (measured by `handleLayout`) — a fixed
+    // constant leaves the last comment stuck behind it.
+    const { marginBottom: listBottomInset } = useStickyComposerListInset(formHeight);
     const currentBreakpoint = useBreakpoint();
     const currentBreakpointName = useBreakpointName()
     const isLgUp = currentBreakpoint >= LAYOUT_BREAKPOINTS.lg;
@@ -144,7 +148,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
 
     const aItems = useMemo(() => mainBlocks.map((value, index) => ({
         id: `block_${value.name}`,
-        data: <View className={'p-3 sm:px-4 ' + (index != 0 ? 'pt-0' : 'pt-3')}><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
+        data: <View className={'p-3 sm:px-4 ' + (index != 0 ? 'pt-0' : 'pt-3 sm:pt-4') }><BlockByName isModal={isModal} data={data} name={value} contentOnly={true} /></View>
     })), [blocks, data, isDesktop]);
 
     const isRightCol = sideBarBlocks.length > 0 && isDesktop
@@ -162,6 +166,14 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
     const handleListLayout = (event) => {
         setListWidth(event.nativeEvent.layout.width - 2)
     }
+
+    // Modal only: the comments list must scroll inside its own bounded box (the
+    // pinned composer sits below it), and that requires a resolved px height.
+    // Ignore sub-pixel jitter so the measure→height→measure loop settles.
+    const handleModalListLayout = useCallback((event) => {
+        const next = Math.round(event.nativeEvent.layout.height)
+        setModalListHeight(prev => (Math.abs(prev - next) > 1 ? next : prev))
+    }, []);
 
     const layoutCols =
         !isLeftCol && !isRightCol
@@ -274,7 +286,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
     if (isModal) {
         return (
             <View className="w-full flex-1 relative">
-                <View className="flex-1 w-full min-h-0">
+                <View className="flex-1 w-full min-h-0" onLayout={handleModalListLayout}>
                         {data == 'loading' ?
                             <Loading />
                         : <CommentsBrowse
@@ -287,15 +299,27 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                             requestUrl={commentsRequestUrl}
                             replyId={replyId}
                             marginBottom={listBottomInset}
+                            // The composer below is pinned only because this column is
+                            // height-bounded, so the list has to scroll itself rather
+                            // than delegate outwards. That needs a real px height —
+                            // flex gives this wrapper one, so measure and pass it down.
+                            height={modalListHeight}
                         />}
                 </View>
 
+                {/* Floats over the list (parent is `relative`) so comments scroll
+                    behind the composer's bottom-anchored fade. The list keeps its
+                    own clearance via `listBottomInset`. */}
+                {/* `style`, not `className`: KbStickyView wraps react-native's View
+                    (RNW drops className) and KeyboardStickyView on native. */}
                 <KbStickyView
+                    style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}
                     offset={{ closed: 0, opened: insets.bottom }}
                 >
                     <View onLayout={handleLayout}>
                         <CommentsForm
                             isModal={isModal}
+                            fadeSurface="card"
                             objectId={commentsObjectId}
                             module={commentsModule}
                             form={commentsForm}
@@ -366,7 +390,9 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                         <View
                             onLayout={handleLayout}
                             style={isFormFixed && listWidth ? { width: listWidth + 5 } : undefined}
-                            className="bg-linear-to-t from-card to-transparent web:fixed web:bottom-0 web:z-50 lg:static lg:z-auto lg:w-full"
+                            // pt-12 gives the fade room to start above the input (the
+                            // panel is bottom-anchored, so top padding grows upward).
+                            className="pt-12 lg:pt-0 bg-linear-to-t from-card from-40% to-transparent web:fixed web:bottom-0 web:z-50 lg:static lg:z-auto lg:w-full"
                         >
                             
                                 <CommentsForm
@@ -430,7 +456,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                 </>
             )}
             <Panel {...centerPanelProps} className="mt-0.5 sm:m-0 sm:p-3 lg:p-4 ">
-                <Card padding="pt-1" className={`w-full mx-auto `}>
+                <Block isBg isPad className={`w-full mx-auto `}>
                     <View
                         onLayout={handleListLayout}
                         style={{ pointerEvents: 'box-none', ...(isFormFixed ? { marginBottom: formHeight } : null) }}
@@ -452,6 +478,9 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                             className="w-full max-lg:web:fixed max-lg:web:bottom-0 max-lg:z-50 lg:static min-h-4"
                         >
                                 <CommentsForm
+                                    // No fade here: this branch only renders when
+                                    // `isDesktop` (>= lg), where the composer is
+                                    // `lg:static` — in flow, with nothing behind it.
                                     objectId={commentsObjectId}
                                     module={commentsModule}
                                     form={commentsForm}
@@ -459,7 +488,7 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                                 />
                         </View>
                     </KbAvoidingView>
-                </Card>
+                </Block>
             </Panel>
             {isRightCol && (
                 <>

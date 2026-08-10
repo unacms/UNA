@@ -22,7 +22,32 @@ import Snackbar from 'app/ui/atoms/snackbar'
 import emitter from 'app/context/emitter'
 import { appStatic } from 'app/lib/app-static';
 import { ProfileDisplayName } from 'app/customization/functions';
+
 import { Keyboard, Platform, TouchableWithoutFeedback } from 'react-native';
+
+/**
+ * Bottom-anchored fade for a floating comment composer, keyed by the surface it
+ * covers. Solid at the bottom so the input stays legible, transparent by the top
+ * so comments scrolling behind remain partly visible.
+ *
+ * The run-up comes from `FADE_RUN_UP`, applied as an inline `paddingTop`: the panel
+ * is bottom-anchored, so top padding grows the gradient box upward past the input
+ * without moving the input, letting content fade well before it reaches the field.
+ * It has to be inline rather than a `pt-*` utility — the wrapper already sets
+ * `web:sm:p-2.5`, and that compound variant outranks any plain padding class.
+ * Inline styles apply identically on native.
+ *
+ * The colour classes are whole static literals on purpose: Tailwind (web) and
+ * Uniwind (native) both discover utilities by scanning source text, so an
+ * interpolated name like `from-${surface}` would never be generated. Uniwind
+ * parses `linear-gradient` natively, so these work on both platforms.
+ */
+const FADE_RUN_UP = 48;
+
+const FADE_SURFACE_CLASS = {
+    card: 'bg-linear-to-t from-card from-40% to-transparent',
+    background: 'bg-linear-to-t from-background from-40% to-transparent',
+};
 
 /** EnrichedTextInput keeps first responder unless explicitly blurred (unlike plain TextInput). */
 function dismissCommentEditorKeyboard() {
@@ -449,6 +474,11 @@ export function CommentsBrowse({
                 isModal={isModal}
                 useCustomScrollHandler={useCustomScrollHandler}
                 useWindowScroll={!isModal}
+                // UniList forces window scroll whenever it cannot resolve a height,
+                // which silently overrides `useWindowScroll: false`. In a modal the
+                // window cannot scroll, so without a real px height here the list is
+                // unscrollable and its overflow is clipped.
+                height={height > 0 ? height : undefined}
                 style={{ flex: 1 }}
                 data={dataOut}
                 extraData={marginBottom}
@@ -639,13 +669,21 @@ export function parseData(browse, dynamicData) {
     return browse;
 }
 
-export function CommentsForm({ form: initialForm, requestUrl, module, objectId, isModal = false }) {
+/**
+ * `fadeSurface` — when the composer floats over scrolling comments (modal, and the
+ * fixed composer on small web screens) pass the surface colour it sits on
+ * (`'card'` | `'background'`). The panel then fades from that colour at the bottom
+ * to transparent at the top, so comments passing behind stay partly visible.
+ * Omit it when the composer is in normal flow (desktop full page) — there is
+ * nothing behind it to reveal.
+ */
+export function CommentsForm({ form: initialForm, requestUrl, module, objectId, isModal = false, fadeSurface }) {
     if (!initialForm?.data?.inputs)
         return <></>
-    return <CommentsFormInner form={initialForm} requestUrl={requestUrl} module={module} objectId={objectId} isModal={isModal} />
+    return <CommentsFormInner form={initialForm} requestUrl={requestUrl} module={module} objectId={objectId} isModal={isModal} fadeSurface={fadeSurface} />
 }
 
-function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, isModal = false }) {
+function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, isModal = false, fadeSurface }) {
 
     const [formData, setFormData] = useState({});
 
@@ -787,7 +825,10 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
     };
     
     return (
-        <View className=" web:p-1.5 web:sm:p-2.5 native:px-1.5" >
+        <View
+            className={` web:p-1.5 web:sm:p-2.5 native:px-1.5 ${FADE_SURFACE_CLASS[fadeSurface] || ''}`}
+            style={fadeSurface ? { paddingTop: FADE_RUN_UP } : undefined}
+        >
             {
                 formData.parent_id > 0 && (<View className='bg-accent rounded-xl border border-accent px-2.5 py-2 mb-2'>
                     <Row className='items-start justify-between max-w-full relative'>
