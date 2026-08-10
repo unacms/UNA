@@ -1258,11 +1258,14 @@ class BxDolSearchResult implements iBxDolReplaceable
                             $sqlCondition .= strtoupper($aValue['operator']) . '(' . $sValuesString . ')';
                             break;
                        case 'in_set':
-                           $sqlCondition = "1 << (" . $sqlCondition . " - 1) & " . (int)$aValue['value'];
-                           break;
+                            $sqlCondition = "1 << (" . $sqlCondition . " - 1) & " . (int)$aValue['value'];
+                            break;
                        default:
-                               $sqlCondition .= $aValue['operator'] . (isset($aValue['no_quote_value']) && $aValue['no_quote_value'] ?  $aValue['value'] : $oDb->escape($aValue['value']));
-                       break;
+                            if (!$oDb->isValidOperator($aValue['operator'])) {
+                                throw new Exception('Invalid operator in getRestriction method');
+                            }
+                            $sqlCondition .= $aValue['operator'] . (isset($aValue['no_quote_value']) && $aValue['no_quote_value'] ?  $aValue['value'] : $oDb->escape($aValue['value']));
+                            break;
                     }
                 }
                 if (strlen($sqlCondition) > 0)

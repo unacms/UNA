@@ -38,6 +38,9 @@ class BxAccntDb extends BxBaseModGeneralDb
         $sSql = "SELECT COUNT(*) FROM `sys_accounts` WHERE 1";
         
         foreach($aParams as $aValue){
+            if (!$this->isValidOperator($aValue['operator'])) {
+                throw new Exception('Invalid operator in getEntriesNumByParams method');
+            }
             $sSql .= ' AND ' . (isset($aValue['table'])? '`' . $aValue['table'] .'`.' : '') . '`' . $aValue['key'] ."` " . $aValue['operator'] . " '" . $aValue['value'] . "'";
         }
         

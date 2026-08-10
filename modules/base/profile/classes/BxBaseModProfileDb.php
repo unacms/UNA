@@ -211,6 +211,9 @@ class BxBaseModProfileDb extends BxBaseModGeneralDb
             WHERE 1";
         
         foreach($aParams as $aValue){
+            if (!$this->isValidOperator($aValue['operator'])) {
+                throw new Exception('Invalid operator in getEntriesNumByParams method');
+            }
             $sSql .= ' AND ' . (isset($aValue['table'])? '`' . $aValue['table'] .'`.' : '') . '`' . $aValue['key'] ."` " . $aValue['operator'] . " '" . $aValue['value'] . "'";
         }
         

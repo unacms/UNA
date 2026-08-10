@@ -204,6 +204,9 @@ class BxDolSearchExtended extends BxDolFactory implements iBxDolFactoryObject
                     break;
 
                 default:
+                    if (!$oDb->isValidOperator($aSearchParam['operator'])) {
+                        throw new Exception('Invalid operator in processParams method');
+                    }
                     $sSearchValue = " " . $aSearchParam['operator'] . " :" . $sSearchParam;
 
                     $aQueryParts['bindings'][$sSearchParam] = $aSearchParam['value'];

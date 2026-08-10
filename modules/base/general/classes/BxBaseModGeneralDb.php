@@ -169,6 +169,9 @@ class BxBaseModGeneralDb extends BxDolModuleDb
         $sSql = "SELECT COUNT(*) FROM `" . $this->_oConfig->CNF['TABLE_ENTRIES'] . "` WHERE 1";
         
         foreach($aParams as $aValue){
+            if (!$this->isValidOperator($aValue['operator'])) {
+                throw new Exception('Invalid operator in getEntriesNumByParams method');
+            }
             $sSql .= ' AND `' . $aValue['key'] ."` " . $aValue['operator'] . " '" . $aValue['value'] . "'";
         }
         
@@ -680,6 +683,9 @@ class BxBaseModGeneralDb extends BxDolModuleDb
                     break;
 
                 default:
+                    if (!$this->isValidOperator($aSearchParam['operator'])) {
+                        throw new Exception('Invalid operator in _getEntriesBySearchIds method');
+                    }
                     $sSearchValue = " " . $aSearchParam['operator'] . " :" . $sSearchParam;
                     $aMethod['params'][1][$sSearchParam] = $aSearchParam['value'];
             }
@@ -737,8 +743,23 @@ class BxBaseModGeneralDb extends BxDolModuleDb
             );
 
         $aOrders = array();
-        foreach($aParams['search_params']['order'] as $aOrder) 
-            $aOrders[] = "`" . (isset($aOrder['table']) ? $aOrder['table'] : $CNF['TABLE_ENTRIES']) . "`.`" . (!empty($aOrder['field']) ? $aOrder['field'] : $CNF['FIELD_ADDED']) . "` " . (!empty($aOrder['direction']) ? strtoupper($aOrder['direction']) : 'DESC');
+        foreach($aParams['search_params']['order'] as $aOrder) {
+            $sTable = (isset($aOrder['table']) ? $aOrder['table'] : $CNF['TABLE_ENTRIES']);
+            $sField = $CNF['FIELD_ADDED'];
+            if (!empty($aOrder['field'])) {                
+                if (!$this->isFieldExists($sTable, $aOrder['field'])) {
+                    throw new Exception('Invalid field ' . $aOrder['field'] . ' in table ' . $sTable . ' in _getEntriesBySearchIdsOrder method');
+                }
+                $sField = $aOrder['field'];
+            }
+
+            $sDir = 'DESC';
+            if (!empty($aOrder['direction'])) {
+                $sDir = strtoupper($aOrder['direction']) == 'ASC' ? 'ASC' : 'DESC';
+            }
+
+            $aOrders[] = "`" . $sTable . "`.`" . $sField . "` " . $sDir;
+        }
 
         $sOrderClause .= implode(', ', $aOrders);
     }

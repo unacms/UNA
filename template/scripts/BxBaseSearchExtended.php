@@ -126,6 +126,9 @@ class BxBaseSearchExtended extends BxDolSearchExtended
             $aParamsSearch = $aParams[$sK];
 
         foreach($this->_aObject['fields'] as $aField) {
+            if (!BxDolDb::getInstance()->isValidOperator($aField['search_operator'])) {
+                throw new Exception('Invalid operator in foreach loop in getResults method');
+            }
             $mixedValue = $oForm->getCleanValue($aField['name']);
             if(empty($mixedValue) || (is_array($mixedValue) && bx_is_empty_array($mixedValue)))
                 continue;

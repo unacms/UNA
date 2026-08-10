@@ -1211,6 +1211,41 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
         return trim($s, $sDiv);
     }
 
+    function isValidOperator(string $operator): bool
+    {
+        static $operators = [
+            // Comparison
+            '=', '!=', '<>', '<', '>', '<=', '>=',
+            '<=>',
+    
+            // Logical
+            'AND', 'OR', 'XOR', 'NOT',
+    
+            // Arithmetic
+            '+', '-', '*', '/', '%',
+            'DIV', 'MOD',
+    
+            // Bitwise
+            '&', '|', '^', '<<', '>>',
+    
+            // Other MySQL operators
+            'IS', 'IS NOT',
+            'LIKE', 'NOT LIKE',
+            'REGEXP', 'NOT REGEXP',
+            'IN', 'NOT IN',
+            'BETWEEN', 'NOT BETWEEN',
+    
+            // Custom functions/operators
+            'COUNT', 'LOCATE',
+            'EMPTY VALUE', 
+            'NOT EMPTY VALUE',
+            'NOTHING', 
+            'IN_SET',
+        ];
+    
+        return in_array(strtoupper(trim($operator)), $operators, true);
+    }
+
     protected function log($s)
     {
         if (defined('BX_DIRECTORY_PATH_LOGS')) {
@@ -1394,8 +1429,11 @@ class BxDolDb extends BxDolFactory implements iBxDolSingleton
             $aParamsSecret = $this->getColumn("SELECT `name` FROM `sys_options` WHERE `type`='secret'", "name");
             if($aParamsSecret && is_array($aParamsSecret))
                 array_walk($aParams, function(&$sValue, $sKey) use ($aParamsSecret) {
-                    if(in_array($sKey, $aParamsSecret))
+                    if(in_array($sKey, $aParamsSecret)) {
                         $sValue = bx_gen_secret($sValue);
+                    } elseif (mb_strlen($sValue) > 100) {
+                        $sValue = mb_substr($sValue, 0, 100) . '...';
+                    }
                 });
 
             $sOutput .= '<div><b>Settings:</b></div><div style="overflow:scroll;height:300px;border:1px solid gray;"><pre>' . htmlspecialchars_adv(var_export($aParams, true)) . '</pre></div>';
