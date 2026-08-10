@@ -457,7 +457,11 @@ export default function Tabs() {
                                                     clearNotif()
                                                     setCurrentUser({
                                                         notifications: 0,
-                                                        notificationsTs: Date.now()
+                                                        notificationsTs: Date.now(),
+                                                        counters: {
+                                                            ...(currentUser?.counters || {}),
+                                                            bx_notifications: 0,
+                                                        },
                                                     });
                                                 }
 

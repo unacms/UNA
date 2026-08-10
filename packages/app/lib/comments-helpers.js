@@ -727,13 +727,13 @@ function CommentsFormInner ({ form: initialForm, requestUrl, module, objectId, i
                 emitter.emit('editor', { action: 'set_content', value: mentionText });
             }
 
-            // Single focus after reply banner + content settle (avoids keyboard bounce).
-            // timeout: 1 → TenTap remount path (reliable IME on iOS) after layout is stable.
+            // Direct bridge focus after reply banner + content settle.
+            // Avoid timeout remount (ghost TextInput) — it makes the composer slide in on iOS.
             requestAnimationFrame(() => {
                 if (cancelled) return;
                 setTimeout(() => {
                     if (cancelled) return;
-                    emitter.emit('editor', { action: 'focus', timeout: 1 });
+                    emitter.emit('editor', { action: 'focus' });
                 }, 50);
             });
         };

@@ -118,25 +118,31 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken }) => {
         }
     }, [tabKey, pagePath, refreshToken, currentUser?.id, currentUser?.confirmed]);
 
+    // Stale-while-revalidate: show cache immediately, always refetch from server.
     useEffect(() => {
         if (!(pagePath && pagePath.startsWith('/') && !pagePath.includes('/?url='))) return;
 
         const forceShellRefresh = Boolean(refreshToken);
-        if (!forceShellRefresh) {
-            const cached = getCachedPageData(tabKey, pagePath, currentUser?.id, currentUser?.confirmed);
-            if (cached) {
-                setPageData(cached);
-                return;
-            }
+        const cached = !forceShellRefresh
+            ? getCachedPageData(tabKey, pagePath, currentUser?.id, currentUser?.confirmed)
+            : null;
+        if (cached) {
+            setPageData(cached);
         }
+
+        let cancelled = false;
+        const pathAtStart = pagePath;
 
         const fetchPageData = async () => {
             try {
                 const { path: pathWithoutQuery, queryString } = parseUrl(pagePath);
                 const params = queryString ? JSON.stringify(parseQueryString(queryString)) : null;
                 const data = await getData(pathWithoutQuery, null, null, null, null, params);
+                if (cancelled || pagePathRef.current !== pathAtStart) return;
                 if (data?.props) {
-                    if (forceShellRefresh) {
+                    // Bump timestamp on force refresh or after serving cache so profile/layout
+                    // adopt fresh menu/actions (Trust, connections, etc.).
+                    if (forceShellRefresh || cached) {
                         data.props.data.timestamp = Date.now();
                     } else {
                         const existing = getCachedPageData(tabKey, pagePath, currentUser?.id, currentUser?.confirmed);
@@ -150,6 +156,7 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken }) => {
                     void SplashScreen.hideAsync().catch(() => {});
                 }
             } catch {
+                if (cancelled) return;
                 if (!splashHiddenRef.current) {
                     splashHiddenRef.current = true;
                     void SplashScreen.hideAsync().catch(() => {});
@@ -157,6 +164,9 @@ const Content = ({ pagePath, currentUser, tabKey, isRoot, refreshToken }) => {
             }
         };
         fetchPageData();
+        return () => {
+            cancelled = true;
+        };
     }, [pagePath, currentUser?.id, currentUser?.confirmed, tabKey, refreshToken]);
 
     // Language switch (and other page reloads): drop stale cached JSON and refetch.

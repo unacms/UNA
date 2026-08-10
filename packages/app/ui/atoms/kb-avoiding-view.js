@@ -109,6 +109,10 @@ export const ModalKbAwareScroll = forwardRef(function ModalKbAwareScroll(
     },
     ref
 ) {
+    // ScrollView className padding does not reliably pad the end of scroll content.
+    // Outer modal already applies insets.bottom; keep a fixed breathing room under Save etc.
+    const contentPaddingBottom = 24;
+
     return (
         <KeyboardAwareScrollView
             ref={ref}
@@ -117,7 +121,10 @@ export const ModalKbAwareScroll = forwardRef(function ModalKbAwareScroll(
             style={style}
             onScroll={onScroll}
             keyboardShouldPersistTaps={keyboardShouldPersistTaps}
-            contentContainerStyle={{ flexGrow: 1 }}
+            contentContainerStyle={{
+                flexGrow: 1,
+                paddingBottom: contentPaddingBottom,
+            }}
             bottomOffset={bottomOffset}
             enabled={true}
             {...rest}

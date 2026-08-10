@@ -189,7 +189,7 @@ export function Modal({
     };
     const sClassPosition = positionClasses[position] || positionClasses['center'];
     const Cnt = scrollable ? (isWeb ? ScrollView : ModalKbAwareScroll) : View
-    const modalBottomOffset = 24 + (isIos ? (insets?.bottom ?? 0) : 0)
+    const modalBottomOffset = 24 + (insets?.bottom ?? 0)
 
 
     const handleWebOuterPress = useCallback((event) => {

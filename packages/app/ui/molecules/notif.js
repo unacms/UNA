@@ -58,6 +58,10 @@ export default function ({ buttonProps, children, tooltip, fullWidth, uri }) {
         setCurrentUser({
             notifications: 0,
             notificationsTs: Date.now(),
+            counters: {
+                ...(currentUser?.counters || {}),
+                bx_notifications: 0,
+            },
         })
         setNtfsOpen(bOpen)
     }

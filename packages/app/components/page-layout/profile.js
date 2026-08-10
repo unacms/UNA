@@ -5,12 +5,30 @@ import { useLayoutData } from 'app/context/layout';
 import { useRouter, redirectTo, useFocusEffect } from 'app/lib/hooks/router'
 import { useCurrentUser } from 'app/context/user';
 import { subscribe } from 'app/ui/atoms/socket';
-const ConductorMemo = memo(Conductor, (prev, next) => prev.ts === next.ts);
+import { patchCachedPageDataByUrl } from 'app/lib/tab-page-cache';
+const ConductorMemo = memo(Conductor, (prev, next) => (
+    prev.ts === next.ts && prev.data?.timestamp === next.data?.timestamp
+));
 
 export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
     const { layoutData, setLayoutData } = useLayoutData();
     const [pageData, setPageData] = useState(data);
     const { currentUser, setCurrentUser } = useCurrentUser();
+
+    const adoptPageData = useCallback((next) => {
+        if (!next) return;
+        const stamped = {
+            ...next,
+            timestamp: Date.now(),
+        };
+        setPageData(stamped);
+        patchCachedPageDataByUrl(
+            stamped.url,
+            stamped,
+            currentUser?.id,
+            currentUser?.confirmed,
+        );
+    }, [currentUser?.id, currentUser?.confirmed]);
 
     const router = useRouter();
     useEffect(() => {
@@ -25,7 +43,7 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
                     setLayoutData(null);
                     const sResponse = await getPageData(pageData.url);
                     if (sResponse.data != pageData) {
-                        setPageData(sResponse.data);
+                        adoptPageData(sResponse.data);
                     }
                 }
             })();
@@ -43,14 +61,17 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
             const sResponse = await getPageData(pageUrl);
             if (sResponse?.data) {
                 console.log('profile_' + profileId, pageData.ts, sResponse.data.ts,sResponse.data);
-                setPageData(sResponse.data);
+                adoptPageData(sResponse.data);
             }
         });
-    }, [pageData?.cover_block?.profile?.id, pageData?.url]);
+    }, [pageData?.cover_block?.profile?.id, pageData?.url, adoptPageData]);
 
+    // Adopt shell revalidate (expo-screen stale-while-revalidate bumps timestamp).
     useEffect(() => {
-        if (pageData?.ts !== data?.ts) setPageData(data);
-    }, [data?.ts]);
+        if (pageData?.ts !== data?.ts || pageData?.timestamp !== data?.timestamp) {
+            setPageData(data);
+        }
+    }, [data?.ts, data?.timestamp]);
 
     useFocusEffect(
         useCallback(() => {
@@ -58,11 +79,11 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
                 if (currentUser?.current_context && currentUser?.current_context != pageData?.user?.current_context) {
                     const sResponse = await getPageData(pageData.url);
                     if (sResponse.data != pageData) {
-                        setPageData(sResponse.data);
+                        adoptPageData(sResponse.data);
                     }
                 }
             })();
-        }, [currentUser?.current_context])
+        }, [currentUser?.current_context, adoptPageData])
     );
 
     if (!pageData.menu.items) {
@@ -81,7 +102,7 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
         }
         return base;
 
-    }, [pageData.ts, uri, pageData.url]);
+    }, [pageData.ts, pageData.timestamp, uri, pageData.url]);
 
     const isCoverDisabled = appSetting('cover', 'view_by_module', pageData.cover_block.profile?.module) == 'none';
 

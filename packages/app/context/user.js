@@ -43,10 +43,15 @@ export const useCurrentUserStore = create((set, get) => ({
             return;
         }
 
+        const hasCounters = userUpdate.counters != null;
+        const nextNotifications = hasCounters
+            ? (userUpdate.counters.bx_notifications ?? 0)
+            : (userUpdate.notifications ?? currentUser?.notifications ?? 0);
+
         const updatedUser = {
             ...currentUser, // Copy the current user object
             ...userUpdate,  // Merge the updates (e.g., notifications)
-            notifications: userUpdate.counters?.bx_notifications ?? 0, 
+            notifications: nextNotifications,
         };
         // Only update if the objects are not deeply equal
         if (!isObjectsEqual(currentUser, updatedUser)) {

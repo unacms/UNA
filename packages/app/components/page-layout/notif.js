@@ -17,7 +17,11 @@ export default function PageLayout(props) {
         clearNotif();
         setCurrentUser({
             notifications: 0,
-            notificationsTs:Date.now()
+            notificationsTs: Date.now(),
+            counters: {
+                ...(currentUser?.counters || {}),
+                bx_notifications: 0,
+            },
         });
     }, [])
 
@@ -38,7 +42,11 @@ export default function PageLayout(props) {
         clearNotif();
         setCurrentUser({
             notifications: 0,
-            notificationsTs:Date.now()
+            notificationsTs: Date.now(),
+            counters: {
+                ...(currentUser?.counters || {}),
+                bx_notifications: 0,
+            },
         });
         setSnackbarVisible(false);
     }
