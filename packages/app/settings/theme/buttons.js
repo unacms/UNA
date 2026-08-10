@@ -14,33 +14,33 @@ export const settingsButtons = {
         },
         sm: {
             rounded: 'rounded-lg ',
-            container: 'px-2.5 gap-1 h-8 min-w-8 ',
-            container_icon_only: 'h-8 w-8',
+            container: 'px-2.5 gap-1 h-9 min-w-9 ',
+            container_icon_only: 'h-9 w-9',
             text: 'text-sm leading-5',
             icon_size: 16,
             hitSlop: 6,
         },
         base: {
             rounded: 'rounded-xl',
-            container: 'px-3 gap-2 min-h-9 min-w-9',
-            container_icon_only: 'min-h-9 min-w-9',
-            title_container: ' leading-9 text-base',
+            container: 'px-3 gap-2 min-h-11 min-w-11',
+            container_icon_only: 'min-h-11 min-w-11',
+            title_container: ' leading-11 text-base',
             icon_size: 20,
             hitSlop: 4,
         },
         lg: {
             rounded: 'rounded-xl',
-            container: 'px-4 gap-2 min-h-10 min-w-10',
-            container_icon_only: 'min-h-10 min-w-10',
-            title_container: ' leading-10 text-base',
+            container: 'px-4 gap-2 min-h-12 min-w-12',
+            container_icon_only: 'min-h-12 min-w-12',
+            title_container: ' leading-12 text-base',
             icon_size: 20,
             hitSlop: 2,
         },
         xl: {
             rounded: 'rounded-xl',
-            container: 'px-4 gap-2 min-h-12 min-w-12',
-            container_icon_only: 'min-h-12 min-w-12',
-            title_container: ' leading-12 text-base',
+            container: 'px-4 gap-2 min-h-14 min-w-14',
+            container_icon_only: 'min-h-14 min-w-14',
+            title_container: ' leading-14 text-base',
             icon_size: 24,
             hitSlop: 0,
         },
@@ -295,29 +295,37 @@ export const settingsButtons = {
         // iOS HIG-style minimum is 44pt; web/mouse trims a few pixels because
         // pointers don't need finger-sized targets.
         controlSizes: {
-            mini:    { height: 28, paddingX: 12,  font: 'text-sm leading-7', icon: 14, hitSlop: 10, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
-            small:   { height: 32, paddingX: 12, font: 'text-sm leading-8', icon: 16, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 6 } } },
+            mini:    { height: 28, paddingX: 8,  font: 'text-sm leading-7', icon: 14, hitSlop: 10, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
+            small:   { height: 36, paddingX: 12, font: 'text-sm leading-8', icon: 16, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 6 } } },
             regular: {
-                default: { height: 36, paddingX: 12, font: 'text-sm leading-9', icon: 20, hitSlop: 4, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
-               // web:     { height: 36, paddingX: 12 },
-               // mouse:   { height: 36, paddingX: 12, font: 'text-sm', icon: 20, hitSlop: 2, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
+                default: { height: 44, paddingX: 16, font: 'text-base leading-11', icon: 20, hitSlop: 4, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
+               // web:     { height: 44, paddingX: 12 },
+               // mouse:   { height: 44, paddingX: 12, font: 'text-sm', icon: 20, hitSlop: 2, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
             },
-            large:  { height: 40, paddingX: 20, font: 'text-base leading-10', icon: 20, hitSlop: 2, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
-            xlarge:  { height: 48, paddingX: 24, font: 'text-lg leading-12', icon: 24, hitSlop: 0, labelGap: 12, contentInsets: { mediaLeading: { left: 8 } } },
+            large:  { height: 48, paddingX: 24, font: 'text-base leading-12', icon: 20, hitSlop: 2, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
+            xlarge:  { height: 56, paddingX: 32, font: 'text-lg leading-14', icon: 24, hitSlop: 0, labelGap: 12, contentInsets: { mediaLeading: { left: 8 } } },
         },
 
         // borderShape → rounding strategy. roundedRectangle scales with
         // controlSize; the others are fixed.
+        //
+        // `iconOnlyPadded` keeps the normal horizontal padding on an icon-only
+        // button instead of collapsing it to `px-0`. Without it a capsule
+        // icon-only button is indistinguishable from `circle`: `px-0` plus a
+        // min-width equal to the height lands exactly on a square, which
+        // `rounded-full` then renders as a circle. With it, the pill keeps the
+        // proportions of a labelled button — the iOS Messages send-button look.
+        // `circle` deliberately omits the flag: it must stay a true circle.
         borderShapes: {
-            capsule:   { rounded: 'rounded-full' },
+            capsule:   { rounded: 'rounded-full', iconOnlyPadded: true },
             rectangle: { rounded: 'rounded-none' },
             roundedRectangle: {
                 rounded: {
-                    default: 'rounded-lg',
+                    default: 'rounded-xl',
                     mini:    'rounded-md',
                     small:   'rounded-lg',
-                    large:   'rounded-lg',
-                    xlarge:  'rounded-xl',
+                    large:   'rounded-xl',
+                    xlarge:  'rounded-2xl',
                 },
             },
             circle:    { rounded: 'rounded-full', aspectSquare: true },
@@ -371,23 +379,24 @@ export const settingsButtons = {
             // for the glass family).
             bordered: {
                 container: {
-                    default: 'bg-muted/50 ',
-                    hovered: 'bg-muted ',
-                    focused: 'bg-muted ',
-                    pressed: 'bg-accent/50 ',
-                    active: 'bg-muted ',
-                    pressedToggle: 'bg-accent/50 ',
-                    disabled: 'bg-muted opacity-50 ',
+                    base: ' shadow-btn-outline dark:shadow-btn-outline-deep ',
+                    default: 'bg-button ',
+                    hovered: 'bg-button-hover/60 ',
+                    focused: 'bg-button-hover/60 ',
+                    pressed: 'bg-button-hover ',
+                    active: 'bg-button-hover/60 ',
+                    pressedToggle: 'bg-button-hover ',
+                    disabled: 'bg-button opacity-50 ',
                 },
                 text: {
                     base: 'font-medium tracking-tight',
-                    default: 'text-secondary-foreground',
-                    hovered: 'text-foreground',
-                    focused: 'text-foreground',
-                    pressed: 'text-accent-foreground',
-                    active: 'text-foreground',
-                    pressedToggle: 'text-accent-foreground',
-                    disabled: 'text-muted-foreground',
+                    default: 'text-button-foreground/80',
+                    hovered: 'text-button-foreground',
+                    focused: 'text-button-foreground',
+                    pressed: 'text-button-foreground',
+                    active: 'text-button-foreground',
+                    pressedToggle: 'text-button-foreground',
+                    disabled: 'text-button-foreground/50',
                 },
             },
 

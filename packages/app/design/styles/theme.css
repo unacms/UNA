@@ -20,6 +20,9 @@
     --container-list-xl: 80rem;
     --color-border: rgb(var(--border));
     --color-input: rgb(var(--input));
+    --color-button: rgb(var(--button));
+    --color-button-foreground: rgb(var(--button-foreground));
+    --color-button-hover: rgb(var(--button-hover));
     --color-ring: rgb(var(--ring));
     --color-background: rgb(var(--background));
     --color-foreground: rgb(var(--foreground));
@@ -123,6 +126,8 @@
     --shadow-avatar-deep: inset 0 0 0 1px rgb(255 255 255 / 0.05);
     --shadow-card-outline: var(--neo-shadow-card-outline);
     --shadow-card-outline-deep: var(--neo-shadow-card-outline-deep);
+    --shadow-block-outline: var(--neo-shadow-block-outline);
+    --shadow-block-outline-deep: var(--neo-shadow-block-outline-deep);
     --shadow-input-outline: var(--neo-shadow-input-outline);
     --shadow-input-outline-deep: var(--neo-shadow-input-outline-deep);
     --shadow-btn-outline: var(--neo-shadow-btn-outline);
@@ -168,14 +173,14 @@
         --neo-shadow-card-outline:       inset 0 0 0 1px rgb(255 255 255 / 0.5), 0 4px 12px -4px rgb(0 0 0 / 0.1);
         --neo-shadow-card-outline-deep:  inset 0 0 0 1px rgb(255 255 255 / 0.025), 0 4px 12px -4px rgb(0 0 0 / 0.5);
         
-        --neo-shadow-block-outline:       inset 0 0 0 1px rgb(255 255 255 / 0.6), 0 0 0 1px rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06), 0 2px 4px 0px rgb(0 0 0 / 0.06);
-        --neo-shadow-block-outline-deep:  inset 0 0 0 1px rgb(0 0 0 / 0.6), 0 0 0 1px rgb(255 255 255 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.6), 0 2px 4px 0px rgb(0 0 0 / 0.6);
+        --neo-shadow-block-outline:       inset 0 0 0 1px rgb(0 0 0 / 0.08), inset 0 0 0 2px rgb(255 255 255), 0 1px 3px -1px rgb(0 0 0 / 0.05);
+        --neo-shadow-block-outline-deep:  inset 0 0 0 1px rgb(0 0 0 / 1), inset 0 0 0 2px rgb(255 255 255 / 0.04), 0 1px 3px -1px rgb(0 0 0 / 0.5);
 
 
-        --neo-shadow-input-outline:      inset 0 0 0 1px rgb(0 0 0 / 0.15);
-        --neo-shadow-input-outline-deep: inset 0 0 0 1px rgb(255 255 255 / 0.1);
+        --neo-shadow-input-outline:      inset 0 0 0 1px rgb(0 0 0 / 0.08);
+        --neo-shadow-input-outline-deep: inset 0 0 0 1px rgb(255 255 255 / 0.04);
        
-        --neo-shadow-btn-outline:        inset 0 0 0 1px rgb(255 255 255 / 0.5), 0 4px 12px -4px rgb(0 0 0 / 0.1);
+        --neo-shadow-btn-outline:        inset 0 0 0 1px rgb(0 0 0 / 0.08), inset 0 0 0 2px rgb(255 255 255 / 0.5), 0 1px 3px -1px rgb(0 0 0 / 0.05);
         --neo-shadow-btn-outline-deep:   inset 0 0 0 1px rgb(255 255 255 / 0.025), 0 4px 12px -4px rgb(0 0 0 / 0.5);
        
         --neo-shadow-btn-glass:                        inset 0 0 0 1px rgb(255 255 255 / 0.50), inset 0 1px 0 0 rgb(255 255 255 / 0.50), 0 0 0 1px rgb(0 0 0 / 0.0), 0 2px 8px -2px rgb(0 0 0 / 0.05), 0 4px 16px -4px rgb(0 0 0 / 0.05);

@@ -39,7 +39,7 @@ export default function FormFieldSubmit(props) {
         icon_only = false,
         rounded = false,
         icon,
-        size = 'lg',
+        size = 'base',
         variant,
         style: neoStyle,
         alt,

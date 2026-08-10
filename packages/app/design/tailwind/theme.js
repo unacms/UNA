@@ -1,6 +1,14 @@
 /**
- * Merged Tailwind `theme.extend` for legacy JS config (`apps/next/tailwind.config.js`, loaded via @config from global.css).
- * Design tokens for utilities also live in CSS: design/styles/theme.css + design/styles/palette.css.
+ * Merged Tailwind `theme.extend` for the legacy JS config (`apps/next/tailwind.config.js`).
+ *
+ * That config is NOT loaded by any build — Tailwind v4 requires an explicit
+ * `@config` directive and this repo has none. Utilities are generated from the
+ * CSS-first token map instead: design/styles/theme.css (`@theme inline`) +
+ * design/styles/palette.css, imported by both `global.css` (web) and
+ * `apps/expo/global.combined.css` (native).
+ *
+ * Treat this file as reference only: a token added here but not mirrored into
+ * the `@theme inline` block of design/styles/theme.css produces no CSS at all.
  */
 const merge = require('deepmerge');
 const configCustom = require('app/customization/design/tailwind/theme');

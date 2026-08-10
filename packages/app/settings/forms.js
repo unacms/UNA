@@ -39,13 +39,10 @@ export const settingsForms = {
         ],
 
         password_eye_button: {
-            size: 'sm',
-            variant: 'text',
-            startDecorator: {
+            image: {
                 visible: 'Eye',
                 hidden: 'EyeClosed',
             },
-            rounded: false,
         },
 
         sys_login: { hide_errors: true, button_full_width: true },

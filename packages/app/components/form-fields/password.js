@@ -1,8 +1,7 @@
 import Field from './_field';
 import AdaptiveLabel from './adaptive-label';
 import { useController } from 'react-hook-form';
-import { Input } from 'app/design/controls'
-import { Button } from 'app/design/controls'
+import { Input, NeoButton } from 'app/design/controls'
 import { View } from 'app/design/view'
 import React, { useState } from 'react';
 import { appSetting } from 'app/lib/util';
@@ -43,12 +42,12 @@ export default function FormFieldPassword(props) {
                         {...returnKeyProps}
                     />
                 </AdaptiveLabel>
-                <View className="absolute right-2 top-1/2 -translate-y-1/2 justify-center items-center z-20">
-                    <Button
-                        startDecorator={isVisible ? buttonConfig.startDecorator.visible : buttonConfig.startDecorator.hidden}
-                        size={buttonConfig.size}
-                        variant={buttonConfig.variant}
-                        rounded={buttonConfig.rounded}
+                <View className="absolute right-1.5 top-1/2 -translate-y-1/2 justify-center items-center z-20">
+                    <NeoButton
+                        image={isVisible ? buttonConfig.image.visible : buttonConfig.image.hidden}
+                        style="borderless"
+                        controlSize="small"
+                        accessibilityLabel={isVisible ? 'Show password' : 'Hide password'}
                         onPress={() => { setIsVisible(!isVisible) }}
                     />
                 </View>

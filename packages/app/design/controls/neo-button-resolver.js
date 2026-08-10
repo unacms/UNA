@@ -427,6 +427,9 @@ export function useResolvedNeoButton(props = {}) {
         const shapeCfg = resolveScoped(shapesTree[borderShape], ctx) || {};
         const rounded = shapeCfg.rounded ?? 'rounded-xl';
         const aspectSquare = !!shapeCfg.aspectSquare;
+        // Shapes that keep their horizontal padding when icon-only (capsule),
+        // so the pill stays wider than tall instead of collapsing to a circle.
+        const iconOnlyPadded = !!shapeCfg.iconOnlyPadded;
 
         // 4b) Translate the numeric sizing into utility classes (preferred over
         //     inline styles by the renderer). `undefined` ⇒ renderer inline
@@ -497,7 +500,7 @@ export function useResolvedNeoButton(props = {}) {
             // Resolved axes
             style, controlSize, borderShape, role, imagePlacement, align, width,
             // Sizing (numbers = source of truth; *Cls = preferred utility classes)
-            height, paddingX, fontCls, iconSize, hitSlop, labelGap, contentInsets, rounded, aspectSquare,
+            height, paddingX, fontCls, iconSize, hitSlop, labelGap, contentInsets, rounded, aspectSquare, iconOnlyPadded,
             heightCls, paddingXCls, labelGapCls, hitAreaCls,
             // Slot resolvers (call with current state)
             containerCls, textCls,

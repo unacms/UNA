@@ -83,11 +83,11 @@ export const settingsElements = {
         'u-block-base':
             ' text-card-foreground gap-3 sm:gap-4',
         'u-block-bg':
-            ' bg-card/80 shadow-block-outline dark:shadow-block-outline-deep ',
+            ' bg-card/60 shadow-block-outline dark:shadow-block-outline-deep ',
         'u-block-pad':
             ' p-4 ',
-        'u-block-rounded': 'rounded-2xl',
-        'u-block-rounded-default': 'sm:rounded-2xl',
+        'u-block-rounded': 'rounded-3xl',
+        'u-block-rounded-default': 'sm:rounded-3xl',
         'u-block-header':
             ' flex-row items-center gap-3 justify-center ',
         'u-block-icon': ' items-center w-6 h-6 justify-center text-card-foreground flex-none',

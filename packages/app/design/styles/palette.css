@@ -78,6 +78,9 @@
             --destructive-foreground: var(--white);
             --border: var(--neutral-300);
             --input: var(--white);
+            --button: var(--neutral-50);
+            --button-foreground: var(--neutral-800);
+            --button-hover: var(--neutral-200);
             --ring: var(--accent-600);
             --segment: var(--neutral-200);
             --segment-foreground: var(--neutral-700);
@@ -114,6 +117,9 @@
             --destructive-foreground: var(--neutral-950);
             --border: var(--neutral-800);
             --input: var(--neutral-900);
+            --button: var(--neutral-800);
+            --button-foreground: var(--neutral-200);
+            --button-hover: var(--neutral-700);
             --ring: var(--accent-600);
             --segment: var(--neutral-800);
             --segment-foreground: var(--neutral-200);

@@ -445,8 +445,12 @@ export const NeoButton = (props) => {
     // asymmetric media insets still work; the common case uses the px-* class.
     const insetLeft = resolvedContentInsets?.left ?? resolvedContentInsets?.start ?? resolvedContentInsets?.x;
     const insetRight = resolvedContentInsets?.right ?? resolvedContentInsets?.end ?? resolvedContentInsets?.x;
-    const paddingClass = isIconOnly ? 'px-0' : (resolved.paddingXCls ?? '');
-    const needsPaddingFallback = !isIconOnly && !resolved.paddingXCls;
+    // Icon-only normally drops to `px-0` so the box is square. Shapes flagged
+    // `iconOnlyPadded` (capsule) keep the labelled button's padding instead, so
+    // they stay visibly wider than a circle.
+    const keepsPaddingWhenIconOnly = !isIconOnly || resolved.iconOnlyPadded;
+    const paddingClass = keepsPaddingWhenIconOnly ? (resolved.paddingXCls ?? '') : 'px-0';
+    const needsPaddingFallback = keepsPaddingWhenIconOnly && !resolved.paddingXCls;
 
     // Web-only hit-area utility (RN uses the hitSlop prop instead). See the
     // `hit-area-*` @utility in global.css.
