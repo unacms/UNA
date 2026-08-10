@@ -9,6 +9,7 @@ import {
 } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
 import { View, Row } from 'app/design/view'
+import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
 import {
     getBlocksFromData,
@@ -614,14 +615,28 @@ export function TopSidebar({
             <View
                 className={`${isHideOnDesktop ? '' : 'mx-auto'} ${appSetting('layout', 'page_content_width_default')} px-3 lg:px-4 mx-auto`}
             >
-                
-                    {children}
+                    {/*
+                      * Section title on the tab subbar, for the middle viewport range.
+                      * Below `lg` the title already shows in the page sub-header (see
+                      * the `setHeader` effect in conductor.web.js), and from
+                      * `hide_top_menu_from` (xl) up this whole bar is hidden and the
+                      * left sidebar carries the title — so `hidden lg:flex` alone lands
+                      * it exactly in the gap where nothing else shows it. No `xl:`
+                      * gate is needed: the parent is already hidden there.
+                      */}
+                    <Row className="w-full items-center gap-3 min-w-0">
+                        {!!title && (
+                            <Text className="hidden lg:flex shrink-0 text-xl font-bold tracking-tight text-card-foreground font-main">
+                                {title}
+                            </Text>
+                        )}
+                        <View className="flex-1 min-w-0">{children}</View>
+                    </Row>
                     {layout != 'mixed' && (
                         <Row className={`hidden ${conductorTheme.hide_top_menu_from}:flex cond-buttons-add`}>
                             {addButtons}
                         </Row>
                     )}
-                
             </View>
         </View>
     )

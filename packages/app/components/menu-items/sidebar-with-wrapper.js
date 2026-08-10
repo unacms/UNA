@@ -28,7 +28,7 @@ export default function MenuItemSidebarWithWrapper({
     const commonProps = {
         alt: title,
         style: 'borderless',
-        controlSize: 'xlarge',
+        controlSize: 'large',
         width: 'fill',
         align: 'start',
         contentInsets: { x: 8 },

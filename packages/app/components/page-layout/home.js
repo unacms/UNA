@@ -312,7 +312,10 @@ export default function ({ data, blocks }) {
                             href={currentUser.url}
                             alt={currentUser.display_name}
                             style="borderless"
-                            controlSize="xlarge"
+                            // Matches the sidebar menu items below (see
+                            // menu-items/sidebar-with-wrapper.js) so the profile row
+                            // is not taller than the list it sits above.
+                            controlSize="large"
                             width="fill"
                             align="start"
                             contentInsets={{ x: 8 }}
