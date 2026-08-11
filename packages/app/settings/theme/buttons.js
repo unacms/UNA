@@ -33,7 +33,7 @@ export const settingsButtons = {
             container: 'px-4 gap-2 min-h-12 min-w-12',
             container_icon_only: 'min-h-12 min-w-12',
             title_container: ' leading-12 text-base',
-            icon_size: 20,
+            icon_size: 24,
             hitSlop: 2,
         },
         xl: {
@@ -295,14 +295,14 @@ export const settingsButtons = {
         // iOS HIG-style minimum is 44pt; web/mouse trims a few pixels because
         // pointers don't need finger-sized targets.
         controlSizes: {
-            mini:    { height: 28, paddingX: 8,  font: 'text-sm leading-7', icon: 14, hitSlop: 10, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
-            small:   { height: 36, paddingX: 12, font: 'text-sm leading-8', icon: 16, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 6 } } },
+            mini:    { height: 28, paddingX: 8,  font: 'text-sm leading-7', icon: 16, hitSlop: 10, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
+            small:   { height: 36, paddingX: 12, font: 'text-sm leading-8', icon: 20, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 6 } } },
             regular: {
-                default: { height: 44, paddingX: 16, font: 'text-base leading-11', icon: 20, hitSlop: 4, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
+                default: { height: 44, paddingX: 16, font: 'text-base leading-11', icon: 20, hitSlop: 2, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
                // web:     { height: 44, paddingX: 12 },
                // mouse:   { height: 44, paddingX: 12, font: 'text-sm', icon: 20, hitSlop: 2, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
             },
-            large:  { height: 48, paddingX: 24, font: 'text-base leading-12', icon: 20, hitSlop: 2, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
+            large:  { height: 48, paddingX: 24, font: 'text-base leading-12', icon: 24, hitSlop: 0, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
             xlarge:  { height: 56, paddingX: 32, font: 'text-lg leading-14', icon: 24, hitSlop: 0, labelGap: 12, contentInsets: { mediaLeading: { left: 8 } } },
         },
 
