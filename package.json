@@ -42,7 +42,8 @@
     "web-haptics": "^0.0.6"
   },
   "resolutions": {
-  "@radix-ui/primitive": "1.1.7"
-},
+    "@radix-ui/primitive": "1.1.7",
+    "@radix-ui/react-use-controllable-state": "1.2.3"
+  },
   "packageManager": "yarn@1.22.22"
 }
