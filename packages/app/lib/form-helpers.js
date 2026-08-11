@@ -20,6 +20,8 @@ export function useEditableRequest({ initialValue, requestUrl, fieldName, toPara
 
     const commit = useCallback(async (nextValue) => {
         const prevValue = valueRef.current
+        // Skip no-op saves (e.g. blur/outside click without edits, or double-fire).
+        if (String(nextValue ?? '') === String(prevValue ?? '')) return true
         setValue(nextValue)
         valueRef.current = nextValue
         if (!requestUrl) return false

@@ -66,12 +66,9 @@ function EditableTitleField({
     const wrapRef = useRef(null)
 
     const saveAndClose = useCallback(async () => {
-        const next = draftRef.current
-        if (String(next) !== String(value ?? '')) {
-            await commit(next)
-        }
+        await commit(draftRef.current)
         setEditing(false)
-    }, [commit, value])
+    }, [commit])
 
     useClickOutside(editing, wrapRef, saveAndClose)
 
@@ -130,14 +127,14 @@ function EditableTextField({
     const methods = useForm({
         defaultValues: { [fieldName]: value ?? '' },
     })
+    const { isDirty } = methods.formState
 
     const saveAndClose = useCallback(async () => {
-        const next = methods.getValues(fieldName) ?? ''
-        if (String(next) !== String(value ?? '')) {
-            await commit(next)
+        if (isDirty) {
+            await commit(methods.getValues(fieldName) ?? '')
         }
         setEditing(false)
-    }, [commit, fieldName, methods, value])
+    }, [commit, fieldName, isDirty, methods])
 
     useClickOutside(editing, wrapRef, saveAndClose)
 
