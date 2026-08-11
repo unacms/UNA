@@ -1,9 +1,8 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Tabs from 'app/components/nav/tabs';
 import React, { useMemo } from 'react';
-import { ThemeProvider } from "@react-navigation/native";
+import { ThemeProvider, DarkTheme, DefaultTheme } from "expo-router/react-navigation";
 import { useColorScheme } from 'react-native';
-import { DarkTheme, DefaultTheme } from "@react-navigation/native";
 import { appSetting } from 'app/lib/util';
 import { useEffect } from 'react'
 import { PortalHost } from '@rn-primitives/portal';

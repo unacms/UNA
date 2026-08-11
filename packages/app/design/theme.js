@@ -1,4 +1,4 @@
-import { DarkTheme, DefaultTheme } from "@react-navigation/native";
+import { DarkTheme, DefaultTheme } from "expo-router/react-navigation";
 import { useSyncExternalStore } from 'react';
 import { Platform, useColorScheme } from 'react-native';
 import { appSetting } from 'app/lib/util'

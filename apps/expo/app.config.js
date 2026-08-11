@@ -9,7 +9,6 @@ const expoConfig = {
     "slug": "neo",
     "scheme": "neo",
     "version": "1.0.0",
-    "newArchEnabled": true,
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
@@ -140,11 +139,15 @@ const expoConfig = {
                 cameraPermission: "Application uses the camera to take photos for your profile and posts, and for video during calls—for example, a profile picture or a video call.",
             },
         ],
-        // ["@stripe/stripe-react-native", {"merchantIdentifier": "merchantIdentifier","enableGooglePay": true}],
+        "expo-image",
+        "expo-splash-screen",
+        "expo-status-bar",
+        // merchantIdentifier / enableGooglePay can be overridden in customization/config/app.config.js
+        ["@stripe/stripe-react-native", { enableGooglePay: false }],
         ["expo-build-properties", 
             {
                 ios: {
-                    deploymentTarget: '15.1',
+                    deploymentTarget: '16.4',
                 },
                 android: {
                     minSdkVersion: 29, // Android 10

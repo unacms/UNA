@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@types/react": "~19.1.0",
+    "@types/react": "~19.2.10",
     "eslint": "^9.17.0",
     "lerna-update-wizard": "^1.1.2",
     "patch-package": "^8.0.1",
@@ -41,5 +41,8 @@
     "dotenv-cli": "^11.0.0",
     "web-haptics": "^0.0.6"
   },
+  "resolutions": {
+  "@radix-ui/primitive": "1.1.7"
+},
   "packageManager": "yarn@1.22.22"
 }

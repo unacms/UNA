@@ -28,7 +28,7 @@ function ElementVideoPlayer({ src, controls, cover, fill, autoplay, muted }) {
                     player={player}
                     contentFit={cover ? 'cover' : 'contain'}
                     nativeControls={Boolean(controls)}
-                    allowsFullscreen
+                    fullscreenOptions={{ enable: true }}
                     allowsPictureInPicture={false}
                 />
             </View>
@@ -41,7 +41,7 @@ function ElementVideoPlayer({ src, controls, cover, fill, autoplay, muted }) {
                 style={styles.video}
                 player={player}
                 nativeControls={Boolean(controls)}
-                allowsFullscreen
+                fullscreenOptions={{ enable: true }}
                 allowsPictureInPicture={false}
             />
         </View>

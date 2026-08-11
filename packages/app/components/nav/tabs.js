@@ -4,7 +4,7 @@ import { Icon } from 'app/ui/atoms/icon';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
 import { Appearance, BackHandler, Platform, useColorScheme } from 'react-native';
-import { DarkTheme, DefaultTheme } from "@react-navigation/native";
+import { DarkTheme, DefaultTheme } from "expo-router/react-navigation";
 import Profile from 'app/ui/molecules/profile/profile';
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next';

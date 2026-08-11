@@ -149,7 +149,7 @@ const nextConfig = {
         'react-native-gesture-handler',
         '@react-native-clipboard/clipboard',
         '@babel/core',
-        '@react-navigation/native',
+        'expo-router',
         'react-native-calendars',
         'react-native-image-pan-zoom',
         'react-native-swipe-gestures',
