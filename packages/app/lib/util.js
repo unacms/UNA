@@ -1471,6 +1471,7 @@ export async function getDataForMenu(menu, callback) {
     return data.data
 }
 
+
 export function findIconFromRemote(s) {
     if (!s || /^[A-Z][^\s]*$/.test(s))
         return s;
