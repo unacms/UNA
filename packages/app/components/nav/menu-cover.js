@@ -168,7 +168,6 @@ export function CoverMenuMore(props) {
     const buttonStyle = isDesktop ? 'bordered' : 'glass'
     const buttonSize = isDesktop ? 'regular' : 'regular'
 
-    console.log('propsCopy', propsCopy)
     return (
         <Menu
             {...propsCopy}

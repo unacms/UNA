@@ -10,7 +10,6 @@ import { Skeleton } from 'app/ui/atoms/skeleton';
 
 export default function Unit(props) {
     const data = props.data;
-    console.log('data', data.title, data);
     let sMeta = (
         <Profile
             {...data.author_data}

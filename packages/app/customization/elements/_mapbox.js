@@ -99,11 +99,6 @@ export default function ElementMapBox({ data, blockWrapperProps }) {
             if (feature.properties.cluster_id) {
                 const clusterId = feature.properties.cluster_id;
                 const coordinates = feature.geometry.coordinates;
-                console.log("aaaa", {
-                    longitude: coordinates[0],
-                    latitude: coordinates[1],
-                    zoom: Math.min(viewport.zoom + 2, 18)
-                })
                 setViewport({
                     longitude: coordinates[0],
                     latitude: coordinates[1],

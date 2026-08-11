@@ -70,7 +70,6 @@ export default function (props) {
     const addValue2 = useCallback(
         
         (value) => {
-            console.log('[selector] addValue2', value);
             const selectedValues = value2.includes(value)
                 ? (isMultiple ? value2.filter(item => item !== value) : [value])
                 : (isMultiple ? [...value2, value] : [value]);
@@ -80,12 +79,9 @@ export default function (props) {
         [value2, isMultiple]
     );
 
-    console.log('[selector]111', value2);
-
     const setFormValue = useCallback(
         (value) => {
             const filteredValue = value.filter(item => item);
-            console.log('[selector] setFormValue', filteredValue);
             field.onChange(filteredValue);
             setIsModal(false);
         },
@@ -130,7 +126,7 @@ export default function (props) {
                 variant="primary"
                 size="base"
                 rounded
-                onPress={() => {console.log('[selector] onPress', value2); setFormValue(value2)}}
+                onPress={() => { setFormValue(value2)}}
             />
         </View>
     </Row>

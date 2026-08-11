@@ -61,10 +61,10 @@ Skills are installed with the [Vercel Agent Skills](https://vercel.com/docs/agen
 ## Skill precedence (NEO vs generic guidance)
 
 1. **UNA integration** — Always use [`fetcher`](packages/app/lib/fetcher.js), correct `/api.php?r=...` endpoints, env/proxy rules, and expectations in the [`una-api` skill](.agents/skills/una-api/SKILL.md). Generic Next/React skills may assume arbitrary APIs.
-2. **Cross-platform** — Shared UI and logic belong in `packages/app`; keep [`icon.js`](packages/app/ui/atoms/icon.js) / [`icon.web.js`](packages/app/ui/atoms/icon.web.js) and other platform splits consistent with [.cursorrules](.cursorrules). For **animated** Lucide icons (registry, scenes, SVG constraints), follow [animated-icons.md](animated-icons.md).
+2. **Cross-platform** — Shared UI and logic belong in `packages/app`; keep [`icon.js`](packages/app/ui/atoms/icon.js) / [`iconset.js`](packages/app/ui/atoms/iconset.js) / [`iconset.web.js`](packages/app/ui/atoms/iconset.web.js) and other platform splits consistent with [.cursorrules](.cursorrules). For **animated** Lucide icons (registry, scenes, SVG constraints), follow [animated-icons.md](animated-icons.md).
 3. **Design system** — Prefer semantic tokens and existing components over hardcoded colors or ad hoc Tailwind from generic “design audit” outputs.
 4. **React Compiler** — This repo targets Next.js 16 with React Compiler; follow [Framework Awareness](#framework-awareness) here. Skills that push blanket `memo`/`useCallback` should be applied only when justified (profiling or clear benefit).
-5. **Server vs client** — Default to Server Components per this document; skills suggesting client-only patterns must be weighed against NEO’s architecture.
+5. **Server vs client** — RSC applies in [`apps/next/app`](apps/next/app) only. Shared code in [`packages/app`](packages/app) is predominantly client (`'use client'`) because it must also run under Expo. Do not strip `'use client'` from `packages/app` for “RSC purity.”
 
 ---
 
@@ -126,10 +126,12 @@ cat apps/expo/package.json | grep -E '"expo"|"react-native"'
 
 | Framework | Version | Key Changes |
 |-----------|---------|-------------|
-| **Next.js** | 16.x | React Compiler support (stable), new caching patterns, `use cache` directive |
-| **React** | 19.x | Actions, `use()` hook, improved Suspense |
+| **Next.js** | 16.3.x | React Compiler support (stable), new caching patterns, `use cache` directive |
+| **React** | 19.1.x | Actions, `use()` hook, improved Suspense |
 | **Expo** | 54.x | New Architecture enabled by default, expo-router 6 |
 | **React Native** | 0.81.x | Bridgeless mode, concurrent features |
+| **Tailwind CSS** | 4.2.x | Web via `@tailwindcss/postcss` |
+| **Uniwind** | 1.6.x | Native Tailwind v4 (`apps/expo/global.combined.css`) |
 
 ### Lookup Documentation When Uncertain
 
@@ -151,18 +153,24 @@ Next.js 16 has **stable React Compiler support**. This means:
 
 ## Server vs Client Components
 
-### Default to Server Components
+### Where each model applies (NEO)
 
-**Server Components are the default and preferred choice.** Only use Client Components when absolutely necessary.
+| Layer | Default | Notes |
+|-------|---------|--------|
+| [`apps/next/app`](apps/next/app) | **Server Components** | Thin shells: fetch page JSON, pass into shared client tree |
+| [`packages/app`](packages/app) | **Client** (`'use client'`) | Shared with Expo/React Native — not RSC |
+| [`apps/expo`](apps/expo) | Client / native | Expo Router; no RSC |
+
+Prefer Server Components **inside `apps/next/app`** when they do not need hooks or browser APIs. Do **not** refactor shared `packages/app` UI into RSC.
 
 ```javascript
-// ✅ PREFERRED - Server Component (default)
+// ✅ PREFERRED in apps/next/app — Server Component page shell
 export default async function Page() {
   const data = await fetchData();
-  return <div>{data.title}</div>;
+  return <Root initialData={data} />; // packages/app Root is client
 }
 
-// ⚠️ ONLY WHEN NECESSARY - Client Component
+// ✅ EXPECTED in packages/app — Client Component
 'use client';
 export default function InteractiveWidget() {
   const [state, setState] = useState();
@@ -170,18 +178,19 @@ export default function InteractiveWidget() {
 }
 ```
 
-### When Client Components Are Required
+### When Client Components Are Required (Next app routes)
 
-Use `'use client'` **only** for:
+Use `'use client'` in `apps/next` **only** for:
 
 1. **React hooks that require client state:** `useState`, `useEffect`, `useRef`
 2. **Browser APIs:** `window`, `document`, `localStorage`, `navigator`
 3. **Event handlers that need state:** Click handlers with state updates
 4. **Third-party client-only libraries**
+5. **Anything imported from `packages/app` that already needs the client boundary** (usually already marked)
 
 ### Island Architecture Pattern
 
-When you must use client components, **wrap them as islands** to prevent blocking parent server components:
+When you must use client components under Next, **wrap them as islands** so parent server components can still stream:
 
 ```javascript
 // ✅ CORRECT - Island pattern
@@ -552,8 +561,9 @@ Before submitting changes, verify:
 ### Framework Compliance
 - [ ] Using latest patterns for installed Next.js version
 - [ ] Using latest patterns for installed Expo version
-- [ ] Server Components preferred over Client Components
-- [ ] Client Components wrapped in Suspense where appropriate
+- [ ] In `apps/next/app`: Server Components preferred for page shells / data fetch
+- [ ] In `packages/app`: client shared UI — do not strip `'use client'` for RSC
+- [ ] Client islands under Next wrapped in Suspense where appropriate
 
 ### Component Architecture
 - [ ] New external libraries wrapped in ui/atoms or ui/molecules

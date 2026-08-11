@@ -104,7 +104,6 @@ function Section({ title, children }) {
 }
 
 export default function ElementMarketAttachments({ data, blockWrapperProps }) {
-    console.log('data', data)
     const { latest, older, updates } = classifyAttachments(data)
 
     if (!latest && older.length === 0 && updates.length === 0) {

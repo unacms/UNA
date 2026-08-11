@@ -235,7 +235,6 @@ const ElementReports = (props) => {
             const params = buildSubmitParams(reportForm, values, system, objectId);
             const response = await fetcher(getApiRequest('do', params));
             applyActionResponse(resolveActionPayload(response));
-            console.log('values', values);
             if (values?.sys == 'bx_tasks_time'){
                 emitter.emit('task_timer', { id: values.timer_id, action: 'log' });
             }

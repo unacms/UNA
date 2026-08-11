@@ -24,7 +24,7 @@ NEO Monorepo is a unified codebase providing web and native UI applications for 
 **Key Features:**
 - Shared business logic and UI components across web and native
 - UNA CMS API integration with real-time updates via Pusher
-- Tailwind CSS-based design system with NativeWind
+- Tailwind CSS 4 design system (web) + Uniwind (native)
 - Type-safe development with TypeScript
 
 ---
@@ -50,8 +50,8 @@ neo/
 
 | App | Purpose | Port | Tech Stack |
 |-----|---------|------|------------|
-| `apps/next` | **Production web app** - Main web interface for UNA | 3000 | Next.js 16, Tailwind CSS 3, NativeWind |
-| `apps/expo` | **Production native app** - iOS/Android apps | - | Expo 54, React Native 0.81, NativeWind |
+| `apps/next` | **Production web app** - Main web interface for UNA | 3000 | Next.js 16, Tailwind CSS 4 |
+| `apps/expo` | **Production native app** - iOS/Android apps | - | Expo 54, React Native 0.81, Uniwind |
 
 ### Packages Explained
 
@@ -67,13 +67,14 @@ neo/
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| React | 19.1.0 | UI framework |
+| React | 19.1.x | UI framework (web 19.1.4 / native 19.1.0) |
 | React Native | 0.81.5 | Native mobile framework |
 | Expo | 54.0.x | Native development platform |
-| Next.js | 16.0.6 | Web framework |
+| Next.js | 16.3.x | Web framework |
 | TypeScript | 5.7+ | Type safety |
-| Tailwind CSS | 3.4.17 | Styling (main apps) |
-| NativeWind | 4.2.1 | Tailwind for React Native |
+| Node.js | 24.x | Engines (see root / `apps/next` package.json) |
+| Tailwind CSS | 4.2.x | Styling (web via `@tailwindcss/postcss`) |
+| Uniwind | 1.6.x | Tailwind CSS v4 for React Native (`apps/expo`) |
 
 ### Key Libraries
 
@@ -93,11 +94,11 @@ neo/
 
 ### Prerequisites
 
-- **Node.js** 18+ (LTS recommended)
+- **Node.js** 24.x (see `engines` in root / `apps/next` package.json)
 - **Yarn** 1.22+ (package manager - do NOT use npm)
 - **Xcode** 15+ (for iOS development)
 - **Android Studio** (for Android development)
-- **Expo CLI** (`npm install -g expo-cli`)
+- **Expo CLI** / `npx expo` (for native development)
 
 ### Installation
 

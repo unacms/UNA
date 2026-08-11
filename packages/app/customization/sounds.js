@@ -1,7 +1,7 @@
 'use client'
 
-import { Sounds as SoundsDedault } from 'app/default/sounds';
+import { Sounds as SoundsDefault } from 'app/default/sounds';
 
 export const Sounds = {
-	...SoundsDedault
+	...SoundsDefault
 }

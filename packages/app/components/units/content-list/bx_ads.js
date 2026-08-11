@@ -16,7 +16,6 @@ export default function Unit(props) {
             showInfo="false"
         />
     );
-    console.log("datadata", data)
     return (
 
         <CardList padding='p-2' >

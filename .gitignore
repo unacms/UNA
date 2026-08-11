@@ -90,3 +90,10 @@ package-lock.json
 .windsurf/
 yarn.lock
 
+# Local junk / accidental copies (do not commit)
+*.bak
+*копия*
+*.stackdump
+*crash.log
+*crash*.log
+

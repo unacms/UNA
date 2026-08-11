@@ -729,8 +729,6 @@ export default function ElementGrid(props) {
                 setCalculateMsg(msg || t('Something went wrong'));
             };
 
-            console.log("selected", selected);
-
             const response = await fetchData(
                 'checkout',
                 '&provider=credits&seller_id=' + settings.query_append.seller_id + '&' + selected.map(id => `ids[]=${id}`).join('&')

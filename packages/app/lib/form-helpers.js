@@ -196,7 +196,6 @@ export function getFormFieldByData(inputData, handleSubmit, format, externalProp
     const fallbackKey = uniqueKey || inputData.key || inputData.name || `${inputData.type}_${inputData.caption || 'field'}`;
     const InputType = getComponent('form-field', String(inputData.type));
     if (!InputType){
-        console.log(`Unsupported field type: ${JSON.stringify(inputData)}`)
         return <UnsupportedFormField key={fallbackKey} />;
     }
     return <InputType {...inputData} format={format} handleSubmit={handleSubmit} {...externalProps} key={fallbackKey} />;

@@ -394,15 +394,6 @@ export default function (props) {
             const type = resolvePickerSource(source, props.source ?? 'library');
             const bIsMedia = isMediaField(extDeny, extAllow) || type === 'library' || type === 'camera';
 
-            console.log('[files] selectImage', {
-                name,
-                type,
-                bIsMedia,
-                ext_deny: extDeny,
-                ext_allow: extAllow,
-                granted: hasPermissionLibrary?.granted,
-            });
-
             if (Platform.OS === 'web' || !bIsMedia) {
                 await selectImage1(type, bIsMedia);
                 return;
@@ -619,7 +610,6 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
     ].join(" ");
 
     const sizes2 = isCover ? '100%' : 100;
-    console.log('[files] GhostsList', imagesList);
     return imagesList.map((img, index) => {
         const isImage = img?.file_type?.includes('image/');
         const isVideo = img?.file_type?.includes('video/');
