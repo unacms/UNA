@@ -8,7 +8,7 @@ import { Platform } from 'react-native'
 import { appSetting } from 'app/lib/util'
 import { ActionMenu, CounterMenu } from 'app/lib/feed-helpers'
 import { UnitImages } from 'app/lib/feed-items'
-import { PollItem } from 'app/components/elements/entity_poll';
+import { PollItem } from 'app/components/elements/entity-poll';
 import { BlockWrapper } from 'app/components/block-wrapper'
 
 export default function ElementFeedItem({ data, isModal, blockWrapperProps }) {

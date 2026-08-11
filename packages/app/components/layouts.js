@@ -9,7 +9,7 @@ import { Row } from 'app/design/view'
 import { appStatic } from 'app/lib/app-static'
 import Redirect from 'app/ui/atoms/redirect'
 import { useRef, useEffect, useMemo } from 'react';
-import ConfirmEmail from 'app/ui/molecules/auth/confirm_email'
+import ConfirmEmail from 'app/ui/molecules/auth/confirm-email'
 import PageByUrl from 'app/ui/molecules/page/page-by-url'
 import { registerAll } from 'app/components/registry-init';
 import { Text } from 'app/design/typography'
@@ -18,7 +18,7 @@ import { useWindowDimensions, Platform } from 'react-native';
 import { useSetWindowSize } from 'app/context/measure';
 import semver from 'semver';
 import { Card } from 'app/ui/molecules/page/card'
-import { FormModalHost } from 'app/ui/molecules/dialogs/form_modal';
+import { FormModalHost } from 'app/ui/molecules/dialogs/form-modal';
 import { UnsavedFormConfirmHost } from 'app/ui/molecules/dialogs/unsaved-form-confirm-host';
 import { VersionIncompatible, VersionWarning } from 'app/ui/molecules/system/version-notice';
 import { useTranslation } from 'react-i18next';

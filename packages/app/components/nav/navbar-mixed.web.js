@@ -11,7 +11,7 @@ import { menuItemsByName } from 'app/lib/util'
 import Search from 'app/ui/molecules/sections/search'
 import { useTranslation } from 'react-i18next';
 import MenuDrawer from 'app/components/nav/menu-drawer'
-import ProfileSwitcher from 'app/components/elements/profile_switcher';
+import ProfileSwitcher from 'app/components/elements/profile-switcher';
 import { useBreakpoint, useIsDesktop } from 'app/context/measure';
 
 const HeaderLine = memo(({ headerSettings, currentUser, uri, title, menuPopup, setMenuPopup, showMenu }) => {

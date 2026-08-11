@@ -3,7 +3,7 @@ import PageCustomPost from 'app/components/page-layout/post';
 import PageCustomPostWithoutComments from 'app/components/page-layout/post-without-comments';
 import PageCustomMessenger from 'app/components/page-layout/messenger';
 import PageCustomNavigator from 'app/components/page-layout/navigator';
-import PageCustomNavigatorSearch from 'app/components/page-layout/navigator_search';
+import PageCustomNavigatorSearch from 'app/components/page-layout/navigator-search';
 import PageCustomProfile from 'app/components/page-layout/profile';
 import PageCustomHome from 'app/components/page-layout/home';
 import PageCustomNotif from 'app/components/page-layout/notif';

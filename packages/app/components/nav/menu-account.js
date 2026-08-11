@@ -10,7 +10,7 @@ import {
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { useTranslation } from 'react-i18next'
 import Profile from 'app/ui/molecules/profile/profile'
-import ProfileSwitcher from 'app/components/elements/profile_switcher'
+import ProfileSwitcher from 'app/components/elements/profile-switcher'
 import { useState, useRef } from 'react'
 import { Text } from 'app/design/typography'
 import { fetcher } from 'app/lib/fetcher'

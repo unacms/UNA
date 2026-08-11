@@ -3,14 +3,14 @@ import { settingsLayout } from 'app/settings/layout';
 import { settingsForms } from 'app/settings/forms';
 import { settingsFeed } from 'app/settings/feed';
 import { settingsBrowse } from 'app/settings/browse';
-import { settingsSocialActions } from 'app/settings/social_actions';
+import { settingsSocialActions } from 'app/settings/social-actions';
 import { settingsMenus } from 'app/settings/menus';
-import { settingsHeaderToolbar } from 'app/settings/header_toolbar';
+import { settingsHeaderToolbar } from 'app/settings/header-toolbar';
 import { settingsWiki } from 'app/settings/wiki';
 import { settingsTheme } from 'app/settings/theme';
 import { settingsElements } from 'app/settings/elements';
 import { settingsConfigs } from 'app/settings/configs'; 
-import { ImageAllowlistHostnames } from 'app/settings/images_allowlist'; 
+import { ImageAllowlistHostnames } from 'app/settings/images-allowlist'; 
 export const settingsDefault = {
     config: {
         una_url: env('UNA_URL'),

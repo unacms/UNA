@@ -1,23 +1,23 @@
 import { memo } from "react";
-import UnitGroup from './bx_groups';
-import UnitSpace from './bx_spaces';
-import UnitAd from './bx_ads';
-import UnitChannel from './bx_channels';
-import UnitEvent from './bx_events';
-import UnitForum from './bx_forum';
-import UnitMarket from './bx_market';
-import UnitOrg from './bx_organizations';
-import UnitPerson from './bx_persons';
+import UnitGroup from './bx-groups';
+import UnitSpace from './bx-spaces';
+import UnitAd from './bx-ads';
+import UnitChannel from './bx-channels';
+import UnitEvent from './bx-events';
+import UnitForum from './bx-forum';
+import UnitMarket from './bx-market';
+import UnitOrg from './bx-organizations';
+import UnitPerson from './bx-persons';
 import UnitDefault from './default';
-import UnitPosts from './bx_posts';
-import UnitCourses from './bx_courses';
-import UnitJob from './bx_jobs';
-import UnitVideos from './bx_videos';
-import UnitPoll from './bx_polls';
-import UnitProject from './bx_projects';
-import UnitTasksTimer from './bx_tasks_timer';
-import UnitTasks from './bx_tasks';
-import UnitAlbums from './bx_albums';
+import UnitPosts from './bx-posts';
+import UnitCourses from './bx-courses';
+import UnitJob from './bx-jobs';
+import UnitVideos from './bx-videos';
+import UnitPoll from './bx-polls';
+import UnitProject from './bx-projects';
+import UnitTasksTimer from './bx-tasks-timer';
+import UnitTasks from './bx-tasks';
+import UnitAlbums from './bx-albums';
 
 export const componentsMapDefault = {
     'bx_groups': memo(UnitGroup),

@@ -2,9 +2,9 @@ import FormComments from './comments';
 import FormFeed from './feed';
 import FormPost from './post';
 import FormContent from './content';
-import FormConfirmEmail from './confirm_email';
+import FormConfirmEmail from './confirm-email';
 import Messenger from './messenger';
-import FormBxPayment from './bx_payment';
+import FormBxPayment from './bx-payment';
 
 export const componentsMapDefault = {
     sys_confirm_email: FormConfirmEmail,

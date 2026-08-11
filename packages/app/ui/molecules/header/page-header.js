@@ -7,7 +7,7 @@ import {
     PageHeaderSmall,
     TextHeader,
     usePageHeaderBase,
-} from 'app/ui/molecules/header/page_header_parts';
+} from 'app/ui/molecules/header/page-header-parts';
 
 export { PageHeaderSmall, TextHeader };
 

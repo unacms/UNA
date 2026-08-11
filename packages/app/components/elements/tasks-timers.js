@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { BlockWrapper } from 'app/components/block-wrapper';
-import BrowseSimple from 'app/components/elements/browse_simple';
+import BrowseSimple from 'app/components/elements/browse-simple';
 import { Button } from 'app/design/controls';
 import { getComponent } from 'app/components/registry';
 import { fetcher } from 'app/lib/fetcher';

@@ -1,6 +1,6 @@
-import UnitPerson from './bx_persons';
-import UnitGroups from './bx_groups';
-import UnitSpaces from './bx_spaces';
+import UnitPerson from './bx-persons';
+import UnitGroups from './bx-groups';
+import UnitSpaces from './bx-spaces';
 import UnitDefault from './default';
 
 export const componentsMapDefault = {

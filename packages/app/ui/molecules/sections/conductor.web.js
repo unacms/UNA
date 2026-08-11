@@ -44,7 +44,7 @@ import {
     layoutForList,
     paddingForList
 } from 'app/customization/functions'
-import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form_modal'
+import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form-modal'
 import emitter from 'app/context/emitter'
 import Cover, { CoverSmall } from 'app/components/elements/cover'
 import { CoverMenuMore, CoverMenu } from 'app/components/nav/menu-cover'

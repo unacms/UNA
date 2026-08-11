@@ -31,7 +31,7 @@ import { Platform } from 'react-native'
 import { usePathname, useRouter } from 'app/lib/hooks/router'
 import { getComponent } from 'app/components/registry'
 import { useIsDesktop } from 'app/context/measure'
-import { PageHeaderSmall } from 'app/ui/molecules/header/page_header'
+import { PageHeaderSmall } from 'app/ui/molecules/header/page-header'
 import { canGoBackInTab, getTabKeyFromPathname, navigateBackInTab } from 'app/lib/tab-history'
 import { FeedbackHaptics } from 'app/lib/util'
 const conductorTheme = appSetting('theme', 'conductor')

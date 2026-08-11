@@ -15,7 +15,7 @@ import * as Linking from 'expo-linking';
 import { parseUrl } from 'app/lib/util'
 import { clearNotif } from 'app/lib/util'
 import Suggestions from 'app/ui/molecules/misc/suggestions';
-import AsyncWorker from 'app/ui/molecules/system/async_worker';
+import AsyncWorker from 'app/ui/molecules/system/async-worker';
 import Subscriber from 'app/ui/molecules/system/subscriber';
 import { useFonts } from 'expo-font';
 //import PushNotificationIOS from "@react-native-community/push-notification-ios";
@@ -43,7 +43,7 @@ import {
 import { clearAllPageCache } from 'app/lib/tab-page-cache';
 import emitter from 'app/context/emitter';
 import { useBottomSheetData } from 'app/context/bottomsheet';
-import BottomSheet from 'app/ui/molecules/dialogs/bottomsheet_content';
+import BottomSheet from 'app/ui/molecules/dialogs/bottomsheet-content';
 
 enableScreens(appSetting('native', 'enable_screens'));
 

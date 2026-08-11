@@ -13,7 +13,7 @@ import useFetchForm from 'app/lib/hooks/fetch'
 import { Modal } from 'app/design/controls'
 import Form from 'app/components/elements/form'
 import { useLayoutData } from 'app/context/layout';
-import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form_modal';
+import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form-modal';
 import { useIsDesktop } from 'app/context/measure';
 import { BlockWrapper } from 'app/components/block-wrapper'
 

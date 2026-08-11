@@ -1,4 +1,4 @@
-export * from 'app/lib/feed-items_default';
+export * from 'app/lib/feed-items-default';
 
 // DON'T EDIT THIS FILE IN MAIN REPO!!!
 // only for custom projects 

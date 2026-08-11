@@ -6,7 +6,7 @@ import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile/profile'
 import { CardList } from 'app/ui/molecules/page/card'
 import { useTranslation } from 'react-i18next'
-import FormModal, { handleFormModal, getFormModal } from 'app/ui/molecules/dialogs/form_modal';
+import FormModal, { handleFormModal, getFormModal } from 'app/ui/molecules/dialogs/form-modal';
 import { BlockWrapper } from 'app/components/block-wrapper'
 
 export default function MultiPostForm({ data, blockWrapperProps }) {

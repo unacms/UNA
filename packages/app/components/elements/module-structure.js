@@ -3,11 +3,11 @@ import { useState, useReducer, useCallback } from 'react'
 import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
 import Card from 'app/ui/molecules/page/card'
-import CircularProgress from 'app/ui/atoms/circular_progress'
+import CircularProgress from 'app/ui/atoms/circular-progress'
 import { Button, Modal } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon'
 import { fetcher } from 'app/lib/fetcher'
-import { ContentMore } from 'app/ui/molecules/content/contentmore';
+import { ContentMore } from 'app/ui/molecules/content/content-more';
 import Image from 'app/ui/atoms/image';
 import Svg, { Circle } from 'react-native-svg';
 import Video from 'app/ui/atoms/video';

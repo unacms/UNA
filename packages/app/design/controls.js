@@ -1,6 +1,6 @@
 export { Modal } from 'app/design/controls/modal';
 export { Button, ButtonRef, ButtonLink } from 'app/design/controls/buttons';
-export { ButtonsGroup } from 'app/design/controls/button_groups';
+export { ButtonsGroup } from 'app/design/controls/button-groups';
 
 export { 
     Input,
@@ -20,7 +20,7 @@ export {
     ButtonMenuActionText, 
     ButtonMenuCounterDefault, 
     ButtonMenuCounterText 
-} from 'app/design/controls/button_menus';
+} from 'app/design/controls/button-menus';
 
 export {
     NeoButton, NeoButtonRef, NeoButtonLink,

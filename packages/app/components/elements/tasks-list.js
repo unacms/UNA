@@ -3,7 +3,7 @@ import { ActivityIndicator, Platform } from 'react-native';
 import { View, Row, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { BlockWrapper } from 'app/components/block-wrapper';
-import BrowseSimple from 'app/components/elements/browse_simple';
+import BrowseSimple from 'app/components/elements/browse-simple';
 import { getComponent } from 'app/components/registry';
 import { Button, Modal } from 'app/design/controls';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';

@@ -2,7 +2,7 @@ import { Pressable } from 'app/design/view';
 import Link from 'app/ui/atoms/link'
 import { useState, useCallback } from 'react';
 import { getPageData } from 'app/lib/util';
-import FormModal from 'app/ui/molecules/dialogs/form_modal';
+import FormModal from 'app/ui/molecules/dialogs/form-modal';
 import { Platform } from 'react-native';
 import { useOpenModalByUrl } from 'app/context/jotai/modal';
 

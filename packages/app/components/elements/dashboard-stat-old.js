@@ -8,7 +8,7 @@ import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile/profile'
-import ProfileSwitcher from 'app/components/elements/profile_switcher';
+import ProfileSwitcher from 'app/components/elements/profile-switcher';
 import { Modal } from 'app/design/controls'
 import { appSetting } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';

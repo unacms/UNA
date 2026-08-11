@@ -7,8 +7,8 @@ import SubmenuShare from './submenu-share'
 import Redirect from 'app/ui/atoms/redirect';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Platform } from 'react-native';
-import RbList from 'app/ui/molecules/form-controls/radio_list';
-import ChkList from 'app/ui/molecules/form-controls/checkbox_list';
+import RbList from 'app/ui/molecules/form-controls/radio-list';
+import ChkList from 'app/ui/molecules/form-controls/checkbox-list';
 import { storageClear, getAlert } from 'app/lib/util';
 import { useLayoutData } from 'app/context/layout';
 import { getComponent } from 'app/components/registry'

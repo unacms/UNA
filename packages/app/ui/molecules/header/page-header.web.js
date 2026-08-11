@@ -10,7 +10,7 @@ import {
     PageHeaderSmall,
     TextHeader,
     usePageHeaderBase,
-} from 'app/ui/molecules/header/page_header_parts';
+} from 'app/ui/molecules/header/page-header-parts';
 
 /** Matches `web:duration-300` (must be a static class for Tailwind JIT). Dismiss unmount waits for transition end. */
 const FIXED_BAR_MOTION_MS = 300;

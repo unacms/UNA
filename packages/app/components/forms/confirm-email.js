@@ -1,4 +1,4 @@
-import ConfirmEmail from 'app/ui/molecules/auth/confirm_email'
+import ConfirmEmail from 'app/ui/molecules/auth/confirm-email'
 
 
 export default function ElementConfirmEmail(props) {

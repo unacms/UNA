@@ -6,7 +6,7 @@ const ImageRemotePatternsDefault = [
     { protocol: 'https', hostname: 'app.una.io', pathname: '/**' },
 ];
 
-const custom = require('app/customization/config/images_allowlist');
+const custom = require('app/customization/config/images-allowlist');
 const ImageRemotePatternsCustom = custom.ImageRemotePatterns || [];
 
 const normalizeRemotePattern = (pattern) => {

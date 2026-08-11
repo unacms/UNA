@@ -12,7 +12,7 @@ import { Keyboard } from 'react-native'
 import { useFormContext } from 'react-hook-form'
 import { PollButton, LabelButton, FileButton } from 'app/lib/form-helpers'
 import { useWindowHeight } from 'app/context/measure';
-import ProfileSwitcher from 'app/components/elements/profile_switcher'
+import ProfileSwitcher from 'app/components/elements/profile-switcher'
 import emitter from 'app/context/emitter';
 import { Icon } from 'app/ui/atoms/icon'
 import { Text } from 'app/design/typography';

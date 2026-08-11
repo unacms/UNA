@@ -4,8 +4,8 @@ import { useFormContext, useController } from 'react-hook-form';
 import { Button, Modal, Hidden } from 'app/design/controls'
 import { getVisibilityValues } from './select';
 import { visibilityById, appSetting } from 'app/lib/util';
-import RbList from 'app/ui/molecules/form-controls/radio_list';
-import ChkList from 'app/ui/molecules/form-controls/checkbox_list';
+import RbList from 'app/ui/molecules/form-controls/radio-list';
+import ChkList from 'app/ui/molecules/form-controls/checkbox-list';
 import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'

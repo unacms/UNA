@@ -2,7 +2,7 @@ const path = require('path'); // path import
 const webpack = require('webpack');
 const { withExpo } = require('@expo/next-adapter')
 const merge = require('deepmerge');
-const { ImageRemotePatterns } = require('app/settings/images_allowlist');
+const { ImageRemotePatterns } = require('app/settings/images-allowlist');
 // Import and run resource copying
 const fs = require('fs');
 // Resource copy helper

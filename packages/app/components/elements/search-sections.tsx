@@ -6,7 +6,7 @@ import Link from 'app/ui/atoms/link'
 import { Button } from 'app/design/controls';
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { Icon } from 'app/ui/atoms/icon'
-import BrowseSimple, { BrowseSimpleView } from 'app/components/elements/browse_simple'
+import BrowseSimple, { BrowseSimpleView } from 'app/components/elements/browse-simple'
 
 interface SearchSectionsProps {
     data: {

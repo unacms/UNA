@@ -6,7 +6,7 @@ import { View, Row } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
 import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile/profile'
-import { ContentMore } from 'app/ui/molecules/content/contentmore'
+import { ContentMore } from 'app/ui/molecules/content/content-more'
 import Embed from 'app/ui/molecules/content/embed'
 import Menu from 'app/components/menu'
 import { useCurrentUser } from 'app/context/user'
@@ -25,7 +25,7 @@ import { usePulseOne } from 'app/lib/hooks/usePulseOnce'
 import emitter from 'app/context/emitter';
 import { CardList } from 'app/ui/molecules/page/card'
 import { getPageData } from 'app/lib/util';
-import FormModal from 'app/ui/molecules/dialogs/form_modal';
+import FormModal from 'app/ui/molecules/dialogs/form-modal';
 
 export default function UnitComments(props) {
     const UnitView = props.mode == 'search' ? UnitCommentsSearch : UnitCommentsDefault

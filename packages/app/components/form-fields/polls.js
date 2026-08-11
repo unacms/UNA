@@ -6,7 +6,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Form from 'app/components/elements/form';
 import useFetchForm from 'app/lib/hooks/fetch'
 import emitter from 'app/context/emitter';
-import { PollItem } from 'app/components/elements/entity_poll';
+import { PollItem } from 'app/components/elements/entity-poll';
 
 export default function FormFieldPolls(props) {
     const name = props.name;

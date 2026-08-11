@@ -6,7 +6,7 @@ import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { Card } from 'app/ui/molecules/page/card'
 import Redirect from 'app/ui/atoms/redirect'
-import ProfilesList from 'app/ui/molecules/profile/profile_list'
+import ProfilesList from 'app/ui/molecules/profile/profile-list'
 import { useTranslation } from 'react-i18next';
 import { getUnitMenuItems } from 'app/customization/functions';
 import Profile from 'app/ui/molecules/profile/profile'

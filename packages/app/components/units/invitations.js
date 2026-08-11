@@ -6,7 +6,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { useState } from 'react';
 import { ButtonLink, Button } from 'app/design/controls'
 import Image from 'app/ui/atoms/image'
-import ProfilesList from 'app/ui/molecules/profile/profile_list'
+import ProfilesList from 'app/ui/molecules/profile/profile-list'
 import { useTranslation } from 'react-i18next';
 import { CardList } from 'app/ui/molecules/page/card'
 import { tp } from 'app/lib/util'

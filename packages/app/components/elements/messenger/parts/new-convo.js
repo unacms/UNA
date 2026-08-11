@@ -4,7 +4,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { useState } from 'react';
 import { Button, Modal } from 'app/design/controls'
 import { useBottomSheetData } from 'app/context/bottomsheet';
-import { SelectUsers } from 'app/components/form-fields/initial_members';
+import { SelectUsers } from 'app/components/form-fields/initial-members';
 import Loading from 'app/ui/atoms/loading'
 import { FormError } from 'app/components/form-fields/_field';
 import { useTranslation } from 'react-i18next'
