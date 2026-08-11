@@ -8,7 +8,7 @@ import {
     CardHeader,
     CardTitle,
     CardDescription,
-} from 'app/ui/molecules/card'
+} from 'app/ui/molecules/page/card'
 import { useCurrentUser } from 'app/context/user';
 import Link from 'app/ui/atoms/link'
 import { useTranslation } from 'react-i18next'

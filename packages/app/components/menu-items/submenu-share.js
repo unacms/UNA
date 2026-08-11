@@ -4,7 +4,7 @@ import { ButtonMenuActionDefault, ButtonMenuActionText, NeoButton } from 'app/de
 import { Pressable } from 'app/design/view'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { setClipboard } from 'app/lib/util'
-import Msg from 'app/ui/molecules/msg';
+import Msg from 'app/ui/molecules/dialogs/msg';
 import { useState } from 'react';
 import { appSetting } from 'app/lib/util'
 import { Platform } from 'react-native'

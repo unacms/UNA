@@ -9,7 +9,7 @@ import {
 } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { useTranslation } from 'react-i18next'
-import Profile from 'app/ui/molecules/profile'
+import Profile from 'app/ui/molecules/profile/profile'
 import { Text } from 'app/design/typography'
 import { Platform } from 'react-native'
 import { getComponent } from 'app/components/registry'
@@ -18,10 +18,10 @@ import {
     PanelGroup,
     PanelHandler,
     resolvePanelProps
-} from 'app/ui/molecules/resizable-panels'
+} from 'app/ui/molecules/page/resizable-panels'
 import { useLayoutSettings } from 'app/context/layout-settings'
-import Badge from 'app/ui/molecules/badge'
-import Badges from 'app/ui/molecules/badges'
+import Badge from 'app/ui/molecules/profile/badge'
+import Badges from 'app/ui/molecules/profile/badges'
 import { useBreakpoint, useWindowSize, useIsDesktop, useWindowHeight, useWindowWidth, useBreakpointName } from 'app/context/measure';
 import { useSetHeader, useHeaderHeight, defaultHeader } from 'app/context/jotai/layout';
 import { useFocusEffect }  from 'app/lib/hooks/router'

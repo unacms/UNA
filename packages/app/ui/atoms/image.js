@@ -5,7 +5,7 @@ import { Platform, StyleSheet, PixelRatio, Dimensions } from 'react-native';
 import { appSetting, cn, LAYOUT_BREAKPOINTS } from 'app/lib/util';
 import { useMemo, useState, useEffect, useCallback } from 'react';
 import { UNA_URL, APP_URL, MULTITENANT_IMAGES_PROXY } from 'app/config';
-//import SvgFile from 'app/ui/molecules/svg-file';
+//import SvgFile from 'app/ui/molecules/content/svg-file';
 //import { Image as ImageRN } from 'react-native';
 
 export const SolitoImageStyled = SolitoImage

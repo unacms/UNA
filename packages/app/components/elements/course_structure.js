@@ -3,15 +3,15 @@ import { Text } from 'app/design/typography'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
-import Card from 'app/ui/molecules/card'
+import Card from 'app/ui/molecules/page/card'
 import Progress from 'app/ui/atoms/progress'
-import Scroll from 'app/ui/molecules/scroll'
+import Scroll from 'app/ui/molecules/page/scroll'
 import { memo } from 'react'
 import { useReducer, useCallback } from 'react'
 import { fetcher } from 'app/lib/fetcher'
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { useBottomSheetData } from 'app/context/bottomsheet';
-import { DragContext, DragItem, DragControl } from 'app/ui/molecules/dropable'
+import { DragContext, DragItem, DragControl } from 'app/ui/molecules/form-controls/droppable'
 
 function CourseStructure({ data }) {
     const { setBottomSheetData } = useBottomSheetData();

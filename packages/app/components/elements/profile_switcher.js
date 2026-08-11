@@ -3,7 +3,7 @@ import Link from 'app/ui/atoms/link'
 import { useState, useRef, useEffect } from 'react'
 import { Button } from 'app/design/controls'
 import { Text } from 'app/design/typography'
-import Profile from 'app/ui/molecules/profile'
+import Profile from 'app/ui/molecules/profile/profile'
 import { useCurrentUser } from 'app/context/user'
 import { fetcher } from 'app/lib/fetcher';
 import Redirect from 'app/ui/atoms/redirect';

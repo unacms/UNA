@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting } from 'app/lib/util';
 import { ScrollView, View } from 'app/design/view'
-import Embed from 'app/ui/molecules/embed'
+import Embed from 'app/ui/molecules/content/embed'
 
 function InnerEmbed({ url }) {
     const [state, setState] = useState({

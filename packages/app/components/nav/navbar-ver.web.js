@@ -7,10 +7,10 @@ import { appSetting } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
 import Redirect from 'app/ui/atoms/redirect'
-import Profile from 'app/ui/molecules/profile'
+import Profile from 'app/ui/molecules/profile/profile'
 import { useTranslation } from 'react-i18next';
 import MenuAdd from 'app/components/nav/menu-add'
-import BlockByUrl from 'app/ui/molecules/block'
+import BlockByUrl from 'app/ui/molecules/page/block'
 import MenuAccount from 'app/components/nav/menu-account'
 import { getComponent } from 'app/components/registry'
 import { useIsDesktop } from 'app/context/measure';

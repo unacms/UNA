@@ -2,9 +2,9 @@ import { View } from 'app/design/view';
 import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { memo, useMemo } from 'react';
 import MenuFooter from 'app/components/nav/menu-footer';
-import { Panel, PanelGroup, PanelHandler } from "app/ui/molecules/resizable-panels";
+import { Panel, PanelGroup, PanelHandler } from "app/ui/molecules/page/resizable-panels";
 import { useBreakpoint } from 'app/context/measure';
-import Page from 'app/ui/molecules/page'
+import Page from 'app/ui/molecules/page/page'
 
 const isRowLayout = (cell, currentBreakpoint) => !cell.defaultSize || (cell.breakpoint && currentBreakpoint <= LAYOUT_BREAKPOINTS[cell.breakpoint]);
 const hasData = (cellData) => Array.isArray(cellData) && cellData.length > 0;

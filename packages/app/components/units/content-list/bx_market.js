@@ -2,13 +2,14 @@ import Image from "app/ui/atoms/image";
 import { appSetting } from "app/lib/util";
 import { Text } from "app/design/typography";
 import { View, Row } from "app/design/view";
-import { CardList } from 'app/ui/molecules/card'
-import Profile from 'app/ui/molecules/profile';
-import Stars from 'app/ui/molecules/stars';
-import LinkOrModal from 'app/ui/molecules/link-or-modal'
+import { CardList } from 'app/ui/molecules/page/card'
+import Profile from 'app/ui/molecules/profile/profile';
+import { getComponent } from 'app/components/registry';
+import LinkOrModal from 'app/ui/molecules/dialogs/link-or-modal'
 import { Skeleton } from 'app/ui/atoms/skeleton';
 
 export default function Unit(props) {
+    const Stars = getComponent('molecule', 'stars');
     const data = props.data;
     let sMeta = (
         <Profile

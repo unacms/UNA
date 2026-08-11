@@ -1,4 +1,4 @@
-import ProfilesList from 'app/ui/molecules/profile_list'
+import ProfilesList from 'app/ui/molecules/profile/profile_list'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
 export default function ElementProfilesList({ data, blockWrapperProps }) {

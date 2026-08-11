@@ -1,5 +1,5 @@
 import Time from 'app/ui/atoms/time';
-import Profile from 'app/ui/molecules/profile';
+import Profile from 'app/ui/molecules/profile/profile';
 import { Text } from 'app/design/typography';
 import { Pressable, View } from 'app/design/view';
 import React, { memo, useEffect, useMemo, useState, useCallback } from 'react';
@@ -10,7 +10,7 @@ import Html from "app/ui/atoms/html";
 import { Button } from "app/design/controls";
 import { HistoryServices as Services } from "app/components/elements/messenger/services";
 import DropdownMenu from "app/ui/atoms/dropdown-menu";
-import Reactions from 'app/ui/molecules/reactions';
+import { getComponent } from 'app/components/registry';
 import Form from "../elements/form";
 import { useSendData, updateHistoryPageCache } from "../elements/messenger/hooks/useHistory";
 
@@ -57,7 +57,7 @@ const ListFeed = memo((data) => {
 
 function CarouselMemo({ aImg, b }) {
     const computedData = useMemo(() => {
-        const Carousel = memo(dynamic(() => import('app/ui/molecules/carousel')));
+        const Carousel = memo(dynamic(() => import('app/ui/molecules/content/carousel')));
         return <Carousel data={aImg} />
     }, [b]);
 
@@ -77,6 +77,7 @@ const ImagesComponent = ({ files }) => {
 }
 
 const MsgFeed = memo(({ item, handlerMenuSelect }) => {
+    const Reactions = getComponent('molecule', 'reactions');
     const { currentUser } = useCurrentUser(),
         { author_data, created, count, files, message, menu, id, reactions } = item,
         sCommentClass = "bg-muted-foreground/10 rounded-tl-none rounded-2xl px-4 u-vanilla-html-small",

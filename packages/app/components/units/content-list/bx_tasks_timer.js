@@ -1,8 +1,8 @@
 import { View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import Link from 'app/ui/atoms/link';
-import Profile from 'app/ui/molecules/profile';
-import { Card } from 'app/ui/molecules/card';
+import Profile from 'app/ui/molecules/profile/profile';
+import { Card } from 'app/ui/molecules/page/card';
 import { getComponent } from 'app/components/registry';
 
 export default function Unit({ data: timerData }) {

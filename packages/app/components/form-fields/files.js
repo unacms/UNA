@@ -15,7 +15,7 @@ import { Image as ImageNative, Alert, Linking, Platform } from 'react-native';
 import { useFilesData } from 'app/context/files';
 import { Image as ImageRN } from 'react-native';
 import Video from 'app/ui/atoms/video';
-import Msg from 'app/ui/molecules/msg';
+import Msg from 'app/ui/molecules/dialogs/msg';
 import { useTranslation } from 'react-i18next'
 import emitter from 'app/context/emitter';
 import { CaptionForFileInput } from 'app/customization/functions';

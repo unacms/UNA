@@ -1,13 +1,13 @@
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import Time from 'app/ui/atoms/time'
-import Profile from 'app/ui/molecules/profile'
+import Profile from 'app/ui/molecules/profile/profile'
 import { Icon } from 'app/ui/atoms/icon'
 import { Svg, Path } from 'react-native-svg'
 import { Button, Modal } from 'app/design/controls'
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { fetcher } from 'app/lib/fetcher'
-import Tabs from 'app/ui/molecules/tabs'
+import Tabs from 'app/ui/molecules/tabs/tabs'
 import {
     Table,
     TableHeader,
@@ -17,8 +17,8 @@ import {
     TableCell,
     TableHeaderText,
     TableCellText,
-} from 'app/ui/molecules/table'
-import Badge from 'app/ui/molecules/badge'
+} from 'app/ui/molecules/page/table'
+import Badge from 'app/ui/molecules/profile/badge'
 import { useLayoutSettings } from 'app/context/layout-settings'
 import { Loading } from 'app/customization/loading'
 import { renderForm } from 'app/components/elements/form'

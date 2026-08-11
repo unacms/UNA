@@ -1,5 +1,5 @@
 import { View, ScrollView, Row } from 'app/design/view'
-import Card, {CardList} from 'app/ui/molecules/card'
+import Card, {CardList} from 'app/ui/molecules/page/card'
 import { memo } from 'react'
 const items = Array(5).fill('');
 

@@ -1,7 +1,7 @@
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
-import Card from 'app/ui/molecules/card'
+import Card from 'app/ui/molecules/page/card'
 import { BlockWrapper } from 'app/components/block-wrapper'
 
 export default function CourseStructure({ blockWrapperProps, data }) {

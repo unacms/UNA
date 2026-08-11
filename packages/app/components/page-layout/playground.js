@@ -16,7 +16,7 @@
 import React from 'react';
 import { ScrollView, View, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import Page from 'app/ui/molecules/page';
+import Page from 'app/ui/molecules/page/page';
 import {
     NeoButton, NeoButtonRef,
     NeoButtonStyleProvider, NeoControlSizeProvider,

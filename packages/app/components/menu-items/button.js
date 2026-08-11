@@ -4,7 +4,7 @@ import { View, Row, Pressable } from 'app/design/view';
 import React from 'react';
 import Submenu from './submenu'
 import SubmenuShare from './submenu-share'
-import ProfilesList from "app/ui/molecules/profile_list";
+import ProfilesList from "app/ui/molecules/profile/profile_list";
 import { Text } from 'app/design/typography'
 import { getIconByNameFromIconset } from 'app/lib/util';
 import { getComponent } from 'app/components/registry'

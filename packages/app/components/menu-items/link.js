@@ -2,7 +2,7 @@ import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Link from 'app/ui/atoms/link';
 import Time from 'app/ui/atoms/time';
-import Profile from 'app/ui/molecules/profile';
+import Profile from 'app/ui/molecules/profile/profile';
 import { Icon } from 'app/ui/atoms/icon'
 import { getIconByNameFromIconset } from 'app/lib/util';
 

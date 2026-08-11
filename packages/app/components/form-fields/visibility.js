@@ -4,12 +4,12 @@ import { useFormContext, useController } from 'react-hook-form';
 import { Button, Modal, Hidden } from 'app/design/controls'
 import { getVisibilityValues } from './select';
 import { visibilityById, appSetting } from 'app/lib/util';
-import RbList from 'app/ui/molecules/radio_list';
-import ChkList from 'app/ui/molecules/checkbox_list';
+import RbList from 'app/ui/molecules/form-controls/radio_list';
+import ChkList from 'app/ui/molecules/form-controls/checkbox_list';
 import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
-import Profile from 'app/ui/molecules/profile';
+import Profile from 'app/ui/molecules/profile/profile';
 import { useTheme } from 'app/design/theme';
 import { useTranslation } from 'react-i18next'
 

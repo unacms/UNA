@@ -5,9 +5,9 @@ import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
 import Time from 'app/ui/atoms/time'
-import Profile from 'app/ui/molecules/profile'
-import { ContentMore } from 'app/ui/molecules/contentmore'
-import Embed from 'app/ui/molecules/embed'
+import Profile from 'app/ui/molecules/profile/profile'
+import { ContentMore } from 'app/ui/molecules/content/contentmore'
+import Embed from 'app/ui/molecules/content/embed'
 import Menu from 'app/components/menu'
 import { useCurrentUser } from 'app/context/user'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
@@ -16,16 +16,16 @@ import Form from 'app/components/elements/form'
 import useFetchForm from 'app/lib/hooks/fetch'
 import { useTranslation } from 'react-i18next'
 import Link from 'app/ui/atoms/link'
-import Carousel from 'app/ui/molecules/carousel'
+import Carousel from 'app/ui/molecules/content/carousel'
 import { getComponent } from 'app/components/registry'
 import { StarsView } from 'app/ui/atoms/stars'
 import Loading from 'app/ui/atoms/loading'
 import { Icon } from 'app/ui/atoms/icon'
 import { usePulseOne } from 'app/lib/hooks/usePulseOnce'
 import emitter from 'app/context/emitter';
-import { CardList } from 'app/ui/molecules/card'
+import { CardList } from 'app/ui/molecules/page/card'
 import { getPageData } from 'app/lib/util';
-import FormModal from 'app/ui/molecules/form_modal';
+import FormModal from 'app/ui/molecules/dialogs/form_modal';
 
 export default function UnitComments(props) {
     const UnitView = props.mode == 'search' ? UnitCommentsSearch : UnitCommentsDefault

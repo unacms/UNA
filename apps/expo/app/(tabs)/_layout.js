@@ -10,7 +10,7 @@ import { PortalHost } from '@rn-primitives/portal';
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient } from 'app/lib/query-client'
 import { Provider as JotaiProvider } from 'jotai'
-import { NetworkStatus } from 'app/ui/molecules/net-info';
+import { NetworkStatus } from 'app/ui/molecules/system/net-info';
 
 //import RNScreenshotPrevent, { addListener } from 'react-native-screenshot-prevent';
 import i18n from 'i18next';

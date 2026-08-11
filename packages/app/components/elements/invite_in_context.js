@@ -2,9 +2,9 @@ import { View, Row } from 'app/design/view';
 import { ButtonLink, Input } from 'app/design/controls';
 import { fetcher } from 'app/lib/fetcher';
 import { useState, useEffect } from 'react'
-import Profile from 'app/ui/molecules/profile'
+import Profile from 'app/ui/molecules/profile/profile'
 import { Text } from 'app/design/typography'
-import Card, { CardTitle } from 'app/ui/molecules/card'
+import Card, { CardTitle } from 'app/ui/molecules/page/card'
 
 import { BlockWrapper } from 'app/components/block-wrapper'
 

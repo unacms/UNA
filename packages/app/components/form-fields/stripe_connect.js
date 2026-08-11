@@ -4,7 +4,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { Row } from 'app/design/view'
 import { useRouter, redirectTo } from 'app/lib/hooks/router'
 import { useState } from 'react';
-import Msg from 'app/ui/molecules/msg';
+import Msg from 'app/ui/molecules/dialogs/msg';
 
 export default function FormFieldText(props) {
     const router = useRouter();

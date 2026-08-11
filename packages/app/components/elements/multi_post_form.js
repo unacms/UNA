@@ -3,10 +3,10 @@ import { NeoButton } from 'app/design/controls'
 import { useState, useEffect, useMemo } from 'react'
 import { menuItemsByNameNew, cloneObject } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
-import Profile from 'app/ui/molecules/profile'
-import { CardList } from 'app/ui/molecules/card'
+import Profile from 'app/ui/molecules/profile/profile'
+import { CardList } from 'app/ui/molecules/page/card'
 import { useTranslation } from 'react-i18next'
-import FormModal, { handleFormModal, getFormModal } from 'app/ui/molecules/form_modal';
+import FormModal, { handleFormModal, getFormModal } from 'app/ui/molecules/dialogs/form_modal';
 import { BlockWrapper } from 'app/components/block-wrapper'
 
 export default function MultiPostForm({ data, blockWrapperProps }) {

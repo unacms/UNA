@@ -3,7 +3,7 @@ import Messenger from 'app/components/elements/messenger';
 import { View } from 'app/design/view';
 import MenuFooter from 'app/components/nav/menu-footer';
 import Cell from 'app/components/cell';
-import Page from 'app/ui/molecules/page'
+import Page from 'app/ui/molecules/page/page'
 import { useSetFooter } from 'app/context/jotai/layout';
 import { useEffect } from 'react';
 

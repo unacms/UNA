@@ -1,5 +1,5 @@
 import { Icon } from 'app/ui/atoms/icon'
-import Card from 'app/ui/molecules/card'
+import Card from 'app/ui/molecules/page/card'
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
@@ -7,7 +7,7 @@ import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import { useCurrentUser } from 'app/context/user'
-import Profile from 'app/ui/molecules/profile'
+import Profile from 'app/ui/molecules/profile/profile'
 import ProfileSwitcher from 'app/components/elements/profile_switcher';
 import { Modal } from 'app/design/controls'
 import { appSetting } from 'app/lib/util'

@@ -8,11 +8,11 @@ import { Text, H1C } from 'app/design/typography';
 import { Input } from 'app/design/controls';
 import { appSetting, clearLinks, getYouTubeVideoId, cn } from 'app/lib/util'
 import { useEditableRequest } from 'app/lib/form-helpers'
-import { ContentMore } from 'app/ui/molecules/contentmore';
+import { ContentMore } from 'app/ui/molecules/content/contentmore';
 import EntityAttachments from './entity_attachments';
-import TextMore from 'app/ui/molecules/textmore';
+import TextMore from 'app/ui/molecules/content/textmore';
 import Video from 'app/ui/atoms/video';
-import Youtube from 'app/ui/molecules/youtube'
+import Youtube from 'app/ui/molecules/content/youtube'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import RftText from 'app/components/form-fields/editor-rft-text'
 

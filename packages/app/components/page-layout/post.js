@@ -9,13 +9,13 @@ import { useLocalSearchParams } from 'app/lib/hooks/router'
 import emitter from 'app/context/emitter';
 import { useIsDesktop, useWindowHeight, useBreakpoint, useBreakpointName } from 'app/context/measure';
 import { appSetting } from 'app/lib/util';
-import { Block } from 'app/ui/molecules/page-block';
+import { Block } from 'app/ui/molecules/page/page-block';
 import {
     Panel,
     PanelGroup,
     PanelHandler,
     resolvePanelProps,
-} from 'app/ui/molecules/resizable-panels'
+} from 'app/ui/molecules/page/resizable-panels'
 import { useSetHeader, defaultHeader, useSetFooter, useHeaderHeight } from 'app/context/jotai/layout';
 import { useSafeAreaInsets } from 'app/lib/hooks/router'
 import { useStickyHeaderOffset, stickySidebarStyle } from 'app/lib/hooks/use-sticky-header-offset'

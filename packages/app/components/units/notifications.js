@@ -1,11 +1,11 @@
 import { memo } from 'react';
 import { View } from 'app/design/view'
 import Time from 'app/ui/atoms/time';
-import { CardList } from 'app/ui/molecules/card'
-import Profile from 'app/ui/molecules/profile';
+import { CardList } from 'app/ui/molecules/page/card'
+import Profile from 'app/ui/molecules/profile/profile';
 import Html from 'app/ui/atoms/html';
 import { Skeleton } from 'app/ui/atoms/skeleton';
-import LinkOrModal from 'app/ui/molecules/link-or-modal'
+import LinkOrModal from 'app/ui/molecules/dialogs/link-or-modal'
 import { appSetting, stripTags } from 'app/lib/util'
 import { Text } from 'app/design/typography';
 

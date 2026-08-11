@@ -22,10 +22,10 @@ import {
     CardHeader,
     CardTitle,
     CardContent,
-} from 'app/ui/molecules/card'
+} from 'app/ui/molecules/page/card'
 import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { getComponent } from 'app/components/registry'
-import Scroll from 'app/ui/molecules/scroll'
+import Scroll from 'app/ui/molecules/page/scroll'
 import Link from 'app/ui/atoms/link'
 import { useOpenModalByUrl } from 'app/context/jotai/modal';
 import { Skeleton } from 'app/ui/atoms/skeleton';

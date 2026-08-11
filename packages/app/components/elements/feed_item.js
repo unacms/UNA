@@ -2,7 +2,7 @@ import { View, Row } from 'app/design/view';
 import Html from 'app/ui/atoms/html';
 import { useState, useEffect } from 'react'
 import { useLayoutData } from 'app/context/layout';
-import Embed from 'app/ui/molecules/embed'
+import Embed from 'app/ui/molecules/content/embed'
 import { storageSet, getDataFromCache, cloneObject } from 'app/lib/util';
 import { Platform } from 'react-native'
 import { appSetting } from 'app/lib/util'

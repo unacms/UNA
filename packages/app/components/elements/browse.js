@@ -20,7 +20,7 @@ import { subscribe } from 'app/ui/atoms/socket'
 import { useCurrentUser } from 'app/context/user'
 import { layoutForList } from 'app/customization/functions'
 import Link from 'app/ui/atoms/link'
-import Galery from 'app/ui/molecules/gallery'
+import Galery from 'app/ui/molecules/content/gallery'
 import { Button } from 'app/design/controls'
 import { useWindowHeight } from 'app/context/measure';
 import emitter from 'app/context/emitter'
@@ -40,7 +40,7 @@ import {
 import { getComponent } from 'app/components/registry';
 import { BrowseItem } from 'app/lib/common-helpers'
 import { useIsDesktop } from 'app/context/measure';
-import { BlockTitle } from 'app/ui/molecules/page-block'
+import { BlockTitle } from 'app/ui/molecules/page/page-block'
 const blockTheme = appSetting('theme', 'blocks');
 const AT_TOP_SCROLL_THRESHOLD = 50;
 

@@ -3,7 +3,7 @@ import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user';
-import Profile from 'app/ui/molecules/profile';
+import Profile from 'app/ui/molecules/profile/profile';
 import { usePathname } from 'app/lib/hooks/router';
 import { getFriendsCounter } from 'app/customization/functions';
 import { Icon } from 'app/ui/atoms/icon'

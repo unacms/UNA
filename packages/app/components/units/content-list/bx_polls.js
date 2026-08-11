@@ -1,10 +1,10 @@
 import Image from 'app/ui/atoms/image'
-import Profile from 'app/ui/molecules/profile'
+import Profile from 'app/ui/molecules/profile/profile'
 import { appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
-import { CardList } from 'app/ui/molecules/card'
-import LinkOrModal from 'app/ui/molecules/link-or-modal'
+import { CardList } from 'app/ui/molecules/page/card'
+import LinkOrModal from 'app/ui/molecules/dialogs/link-or-modal'
 
 export default function defaultUnit(props) {
     const data = props.data;

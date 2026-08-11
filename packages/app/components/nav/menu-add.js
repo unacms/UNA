@@ -2,7 +2,7 @@ import { useCurrentUser } from 'app/context/user'
 import { menuItemsByName, appSetting, menuItemsByNameNew, getHeaderToolbarNeoButtonDefaults } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useState } from 'react';
-import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
+import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form_modal';
 import { useIsDesktop } from 'app/context/measure';
 import { useMenuData } from 'app/context/menu-data';
 

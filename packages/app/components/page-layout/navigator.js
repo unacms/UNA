@@ -1,5 +1,5 @@
 import { DataByName } from 'app/components/block'
-import { Conductor } from 'app/ui/molecules/conductor';
+import { Conductor } from 'app/ui/molecules/sections/conductor';
 import { useMemo } from 'react';
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { useEffect } from 'react';

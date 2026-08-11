@@ -8,7 +8,7 @@ import { appSetting, LAYOUT_BREAKPOINTS } from 'app/lib/util'
 import { getBackButtonWeb } from 'app/lib/common-helpers';
 import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
-import Search from 'app/ui/molecules/search'
+import Search from 'app/ui/molecules/sections/search'
 import { useTranslation } from 'react-i18next';
 import MenuDrawer from 'app/components/nav/menu-drawer'
 import ProfileSwitcher from 'app/components/elements/profile_switcher';

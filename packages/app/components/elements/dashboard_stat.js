@@ -1,5 +1,5 @@
 import { Icon } from 'app/ui/atoms/icon'
-import Badge from 'app/ui/molecules/badge'
+import Badge from 'app/ui/molecules/profile/badge'
 import {
     Block,
     BlockHeader,
@@ -10,7 +10,7 @@ import {
     BlockIcon,
     BlockName,
     BlockActions,
-} from 'app/ui/molecules/page-block'
+} from 'app/ui/molecules/page/page-block'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, Row, ScrollView } from 'app/design/view'
@@ -18,7 +18,7 @@ import { Text } from 'app/design/typography'
 import { Button, NeoButton, NeoButtonLink } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import { useCurrentUser } from 'app/context/user'
-import Profile from 'app/ui/molecules/profile'
+import Profile from 'app/ui/molecules/profile/profile'
 import ProfileSwitcher from 'app/components/elements/profile_switcher'
 import { appSetting } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'

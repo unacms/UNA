@@ -1,7 +1,7 @@
 import { ScrollView, View } from 'app/design/view'
-import Tabs from 'app/ui/molecules/tabs'
+import Tabs from 'app/ui/molecules/tabs/tabs'
 import { Modal } from 'app/design/controls';
-import Stripe from 'app/ui/molecules/stripe';
+import Stripe from 'app/ui/molecules/integrations/stripe';
 import { useState, useRef } from 'react';
 import { getComponent } from 'app/components/registry';
 import { appStatic } from 'app/lib/app-static'

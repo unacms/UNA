@@ -3,7 +3,7 @@ import { Button } from 'app/design/controls';
 import { Platform } from 'react-native'
 import Link from 'app/ui/atoms/link'
 import { memo } from 'react';
-import Profile from "app/ui/molecules/profile";
+import Profile from "app/ui/molecules/profile/profile";
 import Unit from 'app/components/unit'
 
 export function getBackButtonWeb() {

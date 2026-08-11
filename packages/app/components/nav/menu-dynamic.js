@@ -2,7 +2,7 @@ import { View, ScrollView, ViewRef, Row } from 'app/design/view'
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Platform } from 'react-native'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
+import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form_modal';
 import { useIsDesktop } from 'app/context/measure';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { cn } from 'app/lib/util'

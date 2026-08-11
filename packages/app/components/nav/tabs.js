@@ -5,7 +5,7 @@ import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
 import { Appearance, BackHandler, Platform, useColorScheme } from 'react-native';
 import { DarkTheme, DefaultTheme } from "@react-navigation/native";
-import Profile from 'app/ui/molecules/profile';
+import Profile from 'app/ui/molecules/profile/profile';
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 //import BottomSheetDataContext from 'app/context/bottomsheet';
@@ -14,9 +14,9 @@ import { scheduleOneSignalSubscription } from 'app/lib/one-signal';
 import * as Linking from 'expo-linking';
 import { parseUrl } from 'app/lib/util'
 import { clearNotif } from 'app/lib/util'
-import Suggestions from 'app/ui/molecules/suggestions';
-import AsyncWorker from 'app/ui/molecules/async_worker';
-import Subscriber from 'app/ui/molecules/subscriber';
+import Suggestions from 'app/ui/molecules/misc/suggestions';
+import AsyncWorker from 'app/ui/molecules/system/async_worker';
+import Subscriber from 'app/ui/molecules/system/subscriber';
 import { useFonts } from 'expo-font';
 //import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import { enableScreens } from 'react-native-screens';
@@ -43,7 +43,7 @@ import {
 import { clearAllPageCache } from 'app/lib/tab-page-cache';
 import emitter from 'app/context/emitter';
 import { useBottomSheetData } from 'app/context/bottomsheet';
-import BottomSheet from 'app/ui/molecules/bottomsheet_content';
+import BottomSheet from 'app/ui/molecules/dialogs/bottomsheet_content';
 
 enableScreens(appSetting('native', 'enable_screens'));
 

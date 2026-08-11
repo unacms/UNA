@@ -1,8 +1,8 @@
 import { useMemo, useState, useCallback } from 'react';
 import { View, Row, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import ProfilesList from 'app/ui/molecules/profile_list';
-import { Card } from 'app/ui/molecules/card';
+import ProfilesList from 'app/ui/molecules/profile/profile_list';
+import { Card } from 'app/ui/molecules/page/card';
 import { Modal } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import Menu from 'app/components/menu';

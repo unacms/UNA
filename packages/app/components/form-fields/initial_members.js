@@ -4,7 +4,7 @@ import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { useState, useEffect, useCallback, useReducer } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { fetcher } from 'app/lib/fetcher';
-import Profile from 'app/ui/molecules/profile'
+import Profile from 'app/ui/molecules/profile/profile'
 import { Button, NeoButton, Input, Modal } from 'app/design/controls'
 import Loading from 'app/ui/atoms/loading'
 import { Icon } from 'app/ui/atoms/icon'

@@ -1,11 +1,12 @@
 import { useCardData } from 'app/context/card'
 import Link from 'app/ui/atoms/link'
-import Profile from 'app/ui/molecules/profile'
+import Profile from 'app/ui/molecules/profile/profile'
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
-import Recommendation from 'app/ui/molecules/recommendations'
+import { getComponent } from 'app/components/registry';
 
 export default function Unit(props) {
+    const Recommendation = getComponent('molecule', 'recommendation');
     let data = props.data
 
     const { cardData } = useCardData()

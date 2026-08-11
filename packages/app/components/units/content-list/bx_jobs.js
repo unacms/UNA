@@ -2,10 +2,11 @@ import Image from "app/ui/atoms/image";
 import Link from "app/ui/atoms/link";
 import { Text } from "app/design/typography";
 import { View, Row } from "app/design/view";
-import { CardList } from 'app/ui/molecules/card'
-import Stars from 'app/ui/molecules/stars';
+import { CardList } from 'app/ui/molecules/page/card'
+import { getComponent } from 'app/components/registry';
 
 export default function Unit(props) {
+    const Stars = getComponent('molecule', 'stars');
     const data = props.data;
 
 

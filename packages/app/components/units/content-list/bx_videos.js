@@ -1,14 +1,14 @@
 import { useState, useCallback } from 'react'
 import Image from 'app/ui/atoms/image'
-import Profile from 'app/ui/molecules/profile'
+import Profile from 'app/ui/molecules/profile/profile'
 import { appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import { Card } from 'app/ui/molecules/card'
+import { Card } from 'app/ui/molecules/page/card'
 import Link from 'app/ui/atoms/link'
 import { Skeleton } from 'app/ui/atoms/skeleton'
 import Time from 'app/ui/atoms/time'
-import LinkOrModal from 'app/ui/molecules/link-or-modal'
+import LinkOrModal from 'app/ui/molecules/dialogs/link-or-modal'
 
 export default function defaultUnit({ data }) {
 

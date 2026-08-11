@@ -2,9 +2,9 @@ import Image from 'app/ui/atoms/image'
 import { appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
-import { CardList, Card } from 'app/ui/molecules/card'
+import { CardList, Card } from 'app/ui/molecules/page/card'
 import { AuthorData } from 'app/lib/common-helpers'
-import LinkOrModal from 'app/ui/molecules/link-or-modal'
+import LinkOrModal from 'app/ui/molecules/dialogs/link-or-modal'
 import { Skeleton } from 'app/ui/atoms/skeleton';
 const Units = {};
 

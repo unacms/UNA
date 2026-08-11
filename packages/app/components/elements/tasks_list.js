@@ -15,7 +15,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { appSetting, cn, getLayoutName, getPageData } from 'app/lib/util';
 import { useTranslation } from 'react-i18next';
 import emitter from 'app/context/emitter';
-import Confirm from 'app/ui/molecules/confirm';
+import Confirm from 'app/ui/molecules/dialogs/confirm';
 import { isFormResponseComplete } from 'app/lib/form-helpers';
 import { Loading } from 'app/customization/loading';
 

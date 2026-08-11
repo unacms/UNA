@@ -2,11 +2,11 @@ import React, { useEffect, useCallback, useState } from 'react';
 import Footer from 'app/customization/nav/footer';
 import { Modal } from 'app/design/controls'
 import Informer from 'app/components/elements/informer';
-import Suggestions from 'app/ui/molecules/suggestions';
-import AsyncWorker from 'app/ui/molecules/async_worker';
+import Suggestions from 'app/ui/molecules/misc/suggestions';
+import AsyncWorker from 'app/ui/molecules/system/async_worker';
 import { View } from 'app/design/view';
 import { useCurrentUser } from 'app/context/user'
-import BottomSheet from 'app/ui/molecules/bottomsheet_content';
+import BottomSheet from 'app/ui/molecules/dialogs/bottomsheet_content';
 import { appSetting, storageClear, storageGet, decodeText } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
 import { scheduleOneSignalSubscription } from 'app/lib/one-signal';
@@ -14,8 +14,8 @@ import { useThemeName } from 'app/design/theme';
 import { useTranslation } from 'react-i18next'
 import { useLayoutSettings } from 'app/context/layout-settings';
 import { useIsDesktop } from 'app/context/measure';
-import PopupModal from 'app/ui/molecules/popup_modal'
-import { PageHeader } from 'app/ui/molecules/page_header';
+import PopupModal from 'app/ui/molecules/dialogs/popup_modal'
+import { PageHeader } from 'app/ui/molecules/header/page_header';
 import { useFooter } from 'app/context/jotai/layout';
 import Script from 'next/script';
 

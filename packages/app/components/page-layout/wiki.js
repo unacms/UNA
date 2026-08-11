@@ -1,7 +1,7 @@
 import { View } from 'app/design/view'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { appSetting, LAYOUT_BREAKPOINTS, stripTags } from 'app/lib/util'
-import Page from 'app/ui/molecules/page'
+import Page from 'app/ui/molecules/page/page'
 import MenuFooter from 'app/components/nav/menu-footer'
 import { useTranslation } from 'react-i18next'
 import {
@@ -9,7 +9,7 @@ import {
   PanelGroup,
   PanelHandler,
   resolvePanelProps,
-} from 'app/ui/molecules/resizable-panels'
+} from 'app/ui/molecules/page/resizable-panels'
 import { useBreakpoint, useBreakpointName, useIsDesktop } from 'app/context/measure'
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { BlockByData } from 'app/components/block'

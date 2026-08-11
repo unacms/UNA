@@ -2,7 +2,7 @@ import { View } from 'app/design/view'
 import Html from 'app/ui/atoms/html'
 import { stripTags, appSetting, isUrl } from 'app/lib/util';
 import { useState } from 'react';
-import { Block as PageBlock, BlockContent, BlockName, BlockActions, BlockHeader, BlockTitle, BlockDescription, BlockIcon } from 'app/ui/molecules/page-block'
+import { Block as PageBlock, BlockContent, BlockName, BlockActions, BlockHeader, BlockTitle, BlockDescription, BlockIcon } from 'app/ui/molecules/page/page-block'
 import { useTranslation } from 'react-i18next'
 import { Button, ButtonLink, Modal, NeoButtonLink } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon'

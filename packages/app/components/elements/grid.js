@@ -3,9 +3,9 @@ import { View, Row, ScrollView } from 'app/design/view'
 import UniList from 'app/ui/atoms/unilist'
 import Link from 'app/ui/atoms/link';
 import Time from 'app/ui/atoms/time';
-import Profile from 'app/ui/molecules/profile';
-import Confirm from 'app/ui/molecules/confirm';
-import Msg from 'app/ui/molecules/msg';
+import Profile from 'app/ui/molecules/profile/profile';
+import Confirm from 'app/ui/molecules/dialogs/confirm';
+import Msg from 'app/ui/molecules/dialogs/msg';
 import { NeoButton, NeoButtonLink } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher';
 import React, { useEffect, useState, useMemo, useCallback, useRef, useReducer } from 'react';
@@ -20,7 +20,7 @@ import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Icon } from 'app/ui/atoms/icon'
 import Redirect from 'app/ui/atoms/redirect';
-import Stripe from 'app/ui/molecules/stripe';
+import Stripe from 'app/ui/molecules/integrations/stripe';
 import { BlockWrapper } from 'app/components/block-wrapper'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import Loading from 'app/ui/atoms/loading'

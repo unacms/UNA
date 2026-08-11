@@ -1,15 +1,16 @@
 import { useCardData } from 'app/context/card'
 import Link from 'app/ui/atoms/link'
-import Profile from 'app/ui/molecules/profile'
+import Profile from 'app/ui/molecules/profile/profile'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
 import { useState } from 'react';
 import { Button, Modal } from 'app/design/controls'
-import Recommendation from 'app/ui/molecules/recommendations'
+import { getComponent } from 'app/components/registry';
 import { useTranslation } from 'react-i18next'
 
 export default function Unit(props) {
+    const Recommendation = getComponent('molecule', 'recommendation');
     const { t } = useTranslation()
     let data = props.data
 

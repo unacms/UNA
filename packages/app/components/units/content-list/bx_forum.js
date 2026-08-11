@@ -2,12 +2,12 @@ import Image from "app/ui/atoms/image";
 import { Text } from "app/design/typography";
 import { View } from "app/design/view";
 import Menu from "app/components/menu";
-import { Card, CardList } from 'app/ui/molecules/card'
+import { Card, CardList } from 'app/ui/molecules/page/card'
 import Time from "app/ui/atoms/time";
 import { AuthorData } from 'app/lib/common-helpers'
-import Profile from 'app/ui/molecules/profile'
+import Profile from 'app/ui/molecules/profile/profile'
 import { appSetting } from 'app/lib/util'
-import LinkOrModal from 'app/ui/molecules/link-or-modal'
+import LinkOrModal from 'app/ui/molecules/dialogs/link-or-modal'
 import { Skeleton } from 'app/ui/atoms/skeleton'
 
 const Units = {};

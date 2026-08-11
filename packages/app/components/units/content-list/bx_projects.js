@@ -3,7 +3,7 @@ import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
-import { Card } from 'app/ui/molecules/card'
+import { Card } from 'app/ui/molecules/page/card'
 import { getUnitMenuItems } from 'app/customization/functions';
 import { Skeleton } from 'app/ui/atoms/skeleton';
 import { Platform } from 'react-native'

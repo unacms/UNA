@@ -1,7 +1,7 @@
 import { View } from 'app/design/view'
 import { appStatic } from 'app/lib/app-static'
 import { useCurrentUser } from 'app/context/user'
-import { PageHeader } from 'app/ui/molecules/page_header';
+import { PageHeader } from 'app/ui/molecules/header/page_header';
 
 export default function Layout({ data, children, layout }) {
 

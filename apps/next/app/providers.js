@@ -9,7 +9,7 @@ import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import { resources } from 'app/customization/translation'
 import { useEffect } from 'react'
-import Subscriber from 'app/ui/molecules/subscriber'
+import Subscriber from 'app/ui/molecules/system/subscriber'
 import { useLayoutSettings } from 'app/context/layout-settings'
 
 function ensureI18n(lang) {

@@ -2,24 +2,25 @@ import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
 import React, { useState, useMemo, useCallback, memo } from 'react';
-import Profile from 'app/ui/molecules/profile'
+import Profile from 'app/ui/molecules/profile/profile'
 import Time from 'app/ui/atoms/time'
 import { Button } from 'app/design/controls'
 import Form from 'app/components/elements/form';
 //import use-SWR from "swr";
 import useFetchForm from 'app/lib/hooks/fetch'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import Reactions from 'app/ui/molecules/reactions';
+import { getComponent } from 'app/components/registry';
 import { useTranslation } from 'react-i18next';
 import { FeedbackHaptics } from 'app/lib/util';
 import { linkedText } from 'app/lib/text-helpers';
 import { Platform } from 'react-native'
-import Carousel from 'app/ui/molecules/carousel'
+import Carousel from 'app/ui/molecules/content/carousel'
 import { Modal } from 'app/design/controls'
 import emitter from 'app/context/emitter';
 import { TouchableWithoutFeedback } from 'react-native';
 
 export default function JotItem({ item, index, handleReply }) {
+    const Reactions = getComponent('molecule', 'reactions');
     const isWeb = Platform.OS == 'web'
     const { t } = useTranslation();
     const [postData, setPostData] = useState(null)

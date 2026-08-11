@@ -1,4 +1,4 @@
-import { Conductor } from 'app/ui/molecules/conductor';
+import { Conductor } from 'app/ui/molecules/sections/conductor';
 import { useState, useEffect, useMemo, memo, useCallback } from 'react';
 import { appSetting, getBlocksFromData, cloneObject, getPageData } from 'app/lib/util';
 import { useLayoutData } from 'app/context/layout';

@@ -12,7 +12,7 @@ import {
     LAYOUT_BREAKPOINTS,
     prepareImageForUpload,
 } from 'app/lib/util'
-import Profile from 'app/ui/molecules/profile'
+import Profile from 'app/ui/molecules/profile/profile'
 import * as ImagePicker from 'expo-image-picker'
 import { NeoButton } from 'app/design/controls/neo-button'
 import { genRnd } from 'app/lib/util'
@@ -31,7 +31,7 @@ import { Platform } from 'react-native'
 import { usePathname, useRouter } from 'app/lib/hooks/router'
 import { getComponent } from 'app/components/registry'
 import { useIsDesktop } from 'app/context/measure'
-import { PageHeaderSmall } from 'app/ui/molecules/page_header'
+import { PageHeaderSmall } from 'app/ui/molecules/header/page_header'
 import { canGoBackInTab, getTabKeyFromPathname, navigateBackInTab } from 'app/lib/tab-history'
 import { FeedbackHaptics } from 'app/lib/util'
 const conductorTheme = appSetting('theme', 'conductor')

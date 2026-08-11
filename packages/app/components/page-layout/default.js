@@ -1,6 +1,6 @@
 import { View } from 'app/design/view';
 import { appStatic } from 'app/lib/app-static';
-import Page from 'app/ui/molecules/page';
+import Page from 'app/ui/molecules/page/page';
 
 export default function PageLayout({ children, data, pageClasses }) {
     const { width, contentWidth, padding, gap } = pageClasses ?? {};

@@ -2,8 +2,8 @@ import Image from 'app/ui/atoms/image'
 
 import Link from 'app/ui/atoms/link'
 import Time from 'app/ui/atoms/time'
-import Profile from 'app/ui/molecules/profile'
-import ProfileHoverCard from 'app/ui/molecules/profile-hover-card'
+import Profile from 'app/ui/molecules/profile/profile'
+import ProfileHoverCard from 'app/ui/molecules/profile/profile-hover-card'
 import {
     memo,
     useMemo,
@@ -29,7 +29,7 @@ import Menu from 'app/components/menu'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { fetcher } from 'app/lib/fetcher'
 import { getComponent } from 'app/components/registry'
-import Card from 'app/ui/molecules/card'
+import Card from 'app/ui/molecules/page/card'
 import AnimatedBlock from 'app/ui/atoms/animated-block'
 import { CommentsBrowse, CommentsBrowseShort /*, CommentsParts*/ } from 'app/lib/comments-helpers'
 import { Pressable } from 'app/design/view'

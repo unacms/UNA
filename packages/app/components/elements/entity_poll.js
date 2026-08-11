@@ -3,7 +3,7 @@ import Image, { POST_ENTRY_COVER_SIZES, POST_ENTRY_COVER_WIDTH_CAP } from 'app/u
 import { Text, H1 } from 'app/design/typography';
 import { appSetting, getYouTubeVideoId } from 'app/lib/util'
 import Video from 'app/ui/atoms/video';
-import Youtube from 'app/ui/molecules/youtube'
+import Youtube from 'app/ui/molecules/content/youtube'
 import { fetcher } from 'app/lib/fetcher';
 import { useReducer } from 'react'
 import RadioButton from 'app/ui/atoms/radiobutton';

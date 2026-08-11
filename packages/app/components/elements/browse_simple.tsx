@@ -1,6 +1,6 @@
 // @ts-nocheck
 import Unit from 'app/components/unit'
-import Galery from 'app/ui/molecules/gallery'
+import Galery from 'app/ui/molecules/content/gallery'
 import { View, Row } from 'app/design/view'
 import { layoutForList } from 'app/customization/functions'
 import { BlockWrapper } from 'app/components/block-wrapper'

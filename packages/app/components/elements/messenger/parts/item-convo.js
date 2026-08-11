@@ -1,6 +1,6 @@
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
-import Profile from 'app/ui/molecules/profile'
+import Profile from 'app/ui/molecules/profile/profile'
 import Time from 'app/ui/atoms/time'
 import { useCurrentUser } from 'app/context/user';
 

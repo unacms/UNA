@@ -6,8 +6,8 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import Html from 'app/ui/atoms/html'
 import { Row, View } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import Confirm from 'app/ui/molecules/confirm';
-import Badge from 'app/ui/molecules/badge';
+import Confirm from 'app/ui/molecules/dialogs/confirm';
+import Badge from 'app/ui/molecules/profile/badge';
 import emitter from 'app/context/emitter';
 import Link from 'app/ui/atoms/link';
 import { isFormResponseComplete } from 'app/lib/form-helpers';

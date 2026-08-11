@@ -5,7 +5,7 @@ import { countries } from 'country-codes-flags-phone-codes';
 import { useTranslation } from 'react-i18next'
 import { Button, Input, Modal } from 'app/design/controls'
 //import { AsYouType } from 'libphonenumber-js' // for future
-import RbList from 'app/ui/molecules/radio_list';
+import RbList from 'app/ui/molecules/form-controls/radio_list';
 
 export default function PhoneInput({ value, placeholderTextColor, autoFocus, field, name, ariaLabel, readOnly }) {
     const { t } = useTranslation();

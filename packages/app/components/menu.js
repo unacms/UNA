@@ -7,7 +7,7 @@ import { Button, NeoButton } from 'app/design/controls';
 import DynamicMenu from 'app/components/nav/menu-dynamic';
 import { DropdownMenuOpenContext } from 'app/ui/atoms/dropdown-menu';
 import { Platform } from 'react-native'
-import FormModal, { handleFormModal } from 'app/ui/molecules/form_modal';
+import FormModal, { handleFormModal } from 'app/ui/molecules/dialogs/form_modal';
 
 const ButtonEx = memo(({ visibleItemsCount, params }) => {
     const isOpen = useContext(DropdownMenuOpenContext) ?? false;

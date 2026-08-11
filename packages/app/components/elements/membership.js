@@ -1,6 +1,6 @@
 
-import ChkList from 'app/ui/molecules/checkbox_list';
-import RbList from 'app/ui/molecules/radio_list';
+import ChkList from 'app/ui/molecules/form-controls/checkbox_list';
+import RbList from 'app/ui/molecules/form-controls/radio_list';
 import { fetcher } from 'app/lib/fetcher';
 import { BlockWrapper } from 'app/components/block-wrapper'
 

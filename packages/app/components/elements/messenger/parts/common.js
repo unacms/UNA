@@ -17,9 +17,9 @@ import ItemConvo from 'app/components/elements/messenger/parts/item-convo';
 import ItemJot from 'app/components/elements/messenger/parts/item-jot';
 import { linkedText } from 'app/lib/text-helpers';
 import CreateConvo, { CreateConvoButton } from 'app/components/elements/messenger/parts/new-convo';
-import Msg from 'app/ui/molecules/msg';
+import Msg from 'app/ui/molecules/dialogs/msg';
 import { useBottomSheetData } from 'app/context/bottomsheet';
-import Profile from 'app/ui/molecules/profile'
+import Profile from 'app/ui/molecules/profile/profile'
 import ElementMsg from 'app/components/elements/msg';
 import { getBackButtonWeb } from 'app/lib/common-helpers'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
@@ -31,7 +31,7 @@ import {
     Panel,
     PanelGroup,
     PanelHandler,
-} from 'app/ui/molecules/resizable-panels'
+} from 'app/ui/molecules/page/resizable-panels'
 import { useIsDesktop } from 'app/context/measure';
 import { useSetHeader, defaultHeader } from 'app/context/jotai/layout';
 import { getComponent } from 'app/components/registry';

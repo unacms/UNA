@@ -7,14 +7,14 @@ import SubmenuShare from './submenu-share'
 import Redirect from 'app/ui/atoms/redirect';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { Platform } from 'react-native';
-import RbList from 'app/ui/molecules/radio_list';
-import ChkList from 'app/ui/molecules/checkbox_list';
+import RbList from 'app/ui/molecules/form-controls/radio_list';
+import ChkList from 'app/ui/molecules/form-controls/checkbox_list';
 import { storageClear, getAlert } from 'app/lib/util';
 import { useLayoutData } from 'app/context/layout';
 import { getComponent } from 'app/components/registry'
-import Badge from 'app/ui/molecules/badge'
-import Msg from 'app/ui/molecules/msg'
-import Stripe from 'app/ui/molecules/stripe';
+import Badge from 'app/ui/molecules/profile/badge'
+import Msg from 'app/ui/molecules/dialogs/msg'
+import Stripe from 'app/ui/molecules/integrations/stripe';
 import emitter from 'app/context/emitter'
 
 const handleClick = async (event, oProps, setBottomSheetData, setLayoutData, redirectdRef, buttonProps, setButtonProps, setShowMsg, setShowModal) => {

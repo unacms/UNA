@@ -2,9 +2,9 @@ import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
-import Card from 'app/ui/molecules/card'
+import Card from 'app/ui/molecules/page/card'
 import Progress from 'app/ui/atoms/progress'
-import Scroll from 'app/ui/molecules/scroll'
+import Scroll from 'app/ui/molecules/page/scroll'
 import { memo } from 'react'
 
 

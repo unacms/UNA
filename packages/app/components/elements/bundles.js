@@ -5,10 +5,10 @@ import Form from 'app/components/elements/form';
 import { useState, useEffect } from 'react';
 import { Row, View } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import Confirm from 'app/ui/molecules/confirm';
+import Confirm from 'app/ui/molecules/dialogs/confirm';
 import emitter from 'app/context/emitter';
 import Link from 'app/ui/atoms/link';
-import { CardList } from 'app/ui/molecules/card'
+import { CardList } from 'app/ui/molecules/page/card'
 import { useTranslation } from 'react-i18next'
 import { useRouter, redirectTo } from 'app/lib/hooks/router'
 

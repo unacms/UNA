@@ -1,6 +1,6 @@
 import { View } from 'app/design/view';
 import Link from 'app/ui/atoms/link';
-import Profile from 'app/ui/molecules/profile';
+import Profile from 'app/ui/molecules/profile/profile';
 import { BlockWrapper } from 'app/components/block-wrapper'
 
 export default function ElementContacts({ data, blockWrapperProps }) {

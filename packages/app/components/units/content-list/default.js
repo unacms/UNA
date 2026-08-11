@@ -1,9 +1,9 @@
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
-import Profile from 'app/ui/molecules/profile'
+import Profile from 'app/ui/molecules/profile/profile'
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
-import Card from 'app/ui/molecules/card'
+import Card from 'app/ui/molecules/page/card'
 import { Skeleton } from 'app/ui/atoms/skeleton'
 
 export default function defaultUnit(props) {

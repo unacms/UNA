@@ -2,19 +2,19 @@ import { View, Row, Pressable, ScrollView  } from 'app/design/view'
 import { useState, useReducer, useCallback } from 'react'
 import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
-import Card from 'app/ui/molecules/card'
+import Card from 'app/ui/molecules/page/card'
 import CircularProgress from 'app/ui/atoms/circular_progress'
 import { Button, Modal } from 'app/design/controls'
 import { Icon } from 'app/ui/atoms/icon'
 import { fetcher } from 'app/lib/fetcher'
-import { ContentMore } from 'app/ui/molecules/contentmore';
+import { ContentMore } from 'app/ui/molecules/content/contentmore';
 import Image from 'app/ui/atoms/image';
 import Svg, { Circle } from 'react-native-svg';
 import Video from 'app/ui/atoms/video';
 import { useBottomSheetData } from 'app/context/bottomsheet';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import { DragContext, DragItem, DragControl } from 'app/ui/molecules/dropable'
+import { DragContext, DragItem, DragControl } from 'app/ui/molecules/form-controls/droppable'
 
 export default function ModuleStructure({ data }) {
     const { setBottomSheetData } = useBottomSheetData();
