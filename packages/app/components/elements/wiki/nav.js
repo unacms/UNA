@@ -118,11 +118,11 @@ export function WikiMenuItem({ title, icon, isActive, iconEnd }) {
 
     return (
         <Row className="w-full items-center gap-2">
-            <View className={`h-6 w-6 shrink-0 items-center justify-center rounded-full ${iconBackgroundClassName}`}>
+            <View className={`h-8 w-8 shrink-0 items-center justify-center  ${iconBackgroundClassName}`}>
                 {isImageSource(icon) ? (
                     <Image
                         src={icon}
-                        className="h-5 w-5 rounded"
+                        className="h-6 w-6 rounded-md"
                         view="cover"
                         sizes="auto"
                     />

@@ -90,8 +90,8 @@ export const settingsElements = {
         'u-block-rounded-default': 'sm:rounded-3xl',
         'u-block-header':
             ' flex-row items-center gap-3 justify-center ',
-        'u-block-icon': ' items-center w-6 h-6 justify-center text-card-foreground flex-none',
-        'u-block-icon-size': 20, // Default icon size for block header icons
+        'u-block-icon': ' items-center w-8 h-8 justify-center text-card-foreground flex-none',
+        'u-block-icon-size': 24, // Default icon size for block header icons
         'u-block-name': ' flex-auto gap-2 ',
         'u-block-title':
             'text-card-foreground text-lg lg:text-xl font-bold tracking-tight',

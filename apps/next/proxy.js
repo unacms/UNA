@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { UNA_URL, UNA_API_KEY, MULTITENANT } from 'app/config';
+import { UNA_URL, UNA_API_KEY, MULTITENANT, joinUnaUrl } from 'app/config';
 import { getDomainByHostname } from 'app/lib/domains/domains';
 import fs from 'fs';
 import path from 'path';
@@ -158,8 +158,11 @@ export async function proxy(request) {
             q = '?r=q&q=' + b.q + '&t=' + b.t;
         }*/
 
-        const unaTarget =
-            unaUrl + request.nextUrl.pathname.replace('/api/', '/') + q;
+        // Join without creating `//api.php` — UNA nginx 308s double-slash URLs,
+        // and that relative Location breaks browser fetch through the proxy.
+        // Use joinUnaUrl so tenant unaUrl and default UNA_URL share the same rules.
+        const unaPath = request.nextUrl.pathname.replace('/api/', '/');
+        const unaTarget = joinUnaUrl(unaPath, unaUrl) + q;
 
         // Stripe Embedded Checkout return_url: browser lands on this API URL and
         // would otherwise see raw JSON. Serve a tiny HTML bridge that re-fetches

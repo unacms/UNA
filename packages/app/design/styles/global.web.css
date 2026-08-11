@@ -2,10 +2,10 @@
  * in Firefox/Safari. Keep offset ≥ 0 so overflow:hidden/clip on inputs doesn't
  * eat the ring. Same alpha in light and dark (dark used to force / 0.8 and
  * override this). */
-*:focus-visible {
-    outline-color: rgb(var(--ring) / 0.5);
+ *:focus-visible {
+    outline-color: rgb(var(--ring) / 0.6);
     outline-style: solid;
-    outline-offset: -1px;
+    outline-offset: 0px;
     outline-width: 4px;
 }
 
