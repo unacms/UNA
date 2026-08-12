@@ -325,7 +325,7 @@ function ElementDashboardStat(props) {
                             return (
 
                                 <View
-                                    className="px-4 py-3 bg-muted/60 web:hover:bg-muted rounded-xl w-full gap-2 flex-1 min-w-48 lg:min-w-64"
+                                    className="px-4 py-3 bg-muted/50 web:hover:bg-muted rounded-xl w-full gap-2 flex-1 min-w-48 lg:min-w-64"
                                     key={index}
                                 ><Link href={link}>
                                         <View className="flex-row w-full h-10 justify-between items-center text-secondary-foreground ">
@@ -387,7 +387,7 @@ function ElementDashboardStat(props) {
                         return (
 
                             <View
-                                className="px-4 py-3 bg-muted/60 web:hover:bg-muted rounded-xl w-full flex-1 min-w-48 lg:min-w-64"
+                                className="px-4 py-3 bg-muted/50 web:hover:bg-muted rounded-xl w-full flex-1 min-w-48 lg:min-w-64"
                                 key={index}
                             ><Link href={item.url} >
                                     <View className="flex-row w-full h-10 justify-between items-center text-card-foreground">

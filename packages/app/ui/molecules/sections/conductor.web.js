@@ -1444,6 +1444,7 @@ const LeftSideBarContainer = ({
     const menuSettings = getMenuSettings(menu.object, menu.config, menu)
     const addButtons = <AddMenu menu={menu} filter="hideInSideBar" />
     const title = layoutName == 'profile' ? '' : t(menuSettings?.name)
+    const icon = layoutName == 'profile' ? '' : (menuSettings?.icon || menu?.icon)
     const MenuItemSidebar = getComponent('menu-item', 'sidebar');
     const padClass =
         layoutName == 'profile'
@@ -1459,15 +1460,25 @@ const LeftSideBarContainer = ({
                 <View className={layoutName == 'profile' ? '' : appSetting('conductor', 'sidebar_inner_container')}>
                     {(!!title || !!addButtons?.length > 0) && (
                         <Row className={appSetting('conductor', 'sidebar_title')}>
-                            <Text className=" text-2xl tracking-tight truncate mr-auto font-bold leading-11 text-card-foreground hidden lg:flex  ">
-                                {t(title)}
-                            </Text>
+                            <Row className="items-center mr-auto min-w-0 hidden rounded-xl lg:flex">
+                                {!!icon && (
+                                    <View className="h-10 w-12 items-center justify-center flex">
+                                    <Icon
+                                        icon={icon}
+                                        size={28}
+                                        className="text-card-foreground shrink-0"
+                                    /></View>
+                                )}
+                                <Text className="text-xl px-0.5 tracking-tight truncate font-bold leading-9 text-card-foreground">
+                                    {t(title)}
+                                </Text>
+                            </Row>
                             <Row>{addButtons}</Row>
                         </Row>
                     )}
                     <View className="flex-1 gap-4">
                         {layoutName == 'navigator' && routes.length > 1 && (
-                            <View className=' gap-0.5 -mx-2'>
+                            <View className=' gap-0.5 '>
                                 {routes
                                     .filter((aItem) => aItem.hideInTop != true)
                                     .map((a) => {
@@ -1484,7 +1495,7 @@ const LeftSideBarContainer = ({
                                                     controlSize="large"
                                                     width="fill"
                                                     align="start"
-                                                    contentInsets={{ x: 8 }}
+                                                    contentInsets={{ x: 6 }}
                                                     selected={isActive}
                                                     selectedState="pressed"
                                                     className="group"
@@ -1502,7 +1513,7 @@ const LeftSideBarContainer = ({
                                                 controlSize="large"
                                                 width="fill"
                                                 align="start"
-                                                contentInsets={{ x: 8 }}
+                                                contentInsets={{ x: 6 }}
                                                 selected={isActive}
                                                 selectedState="pressed"
                                                 className={`group ${a.ident ? conductorTheme.menu_categ_indent : ''}`.trim()}
@@ -1679,6 +1690,7 @@ const TabBar = ({
                 addButtons={addButtons}
                 layout={layout}
                 title={t(menuSettings?.name)}
+                icon={menuSettings?.icon || menu?.icon}
             >
                  {isShowSecondLine && <Row className="px-0 w-full items-center">
                     <View className="flex-1 h-12 lg:h-14 min-w-0">

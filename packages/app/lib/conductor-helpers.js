@@ -11,6 +11,7 @@ import { fetcher } from 'app/lib/fetcher'
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
+import { Icon } from 'app/ui/atoms/icon'
 import {
     getBlocksFromData,
     getPageSettings,
@@ -601,6 +602,7 @@ export function TopSidebar({
     addButtons,
     children,
     title,
+    icon,
     layout,
     layoutName,
     omitDefaultBackground = false,
@@ -626,9 +628,18 @@ export function TopSidebar({
                       */}
                     <Row className="w-full items-center gap-3 min-w-0">
                         {!!title && (
-                            <Text className="hidden lg:flex shrink-0 text-xl font-bold tracking-tight text-card-foreground font-main">
-                                {title}
-                            </Text>
+                            <Row className="hidden lg:flex items-center gap-2 shrink-0 min-w-0">
+                                {!!icon && (
+                                    <Icon
+                                        icon={icon}
+                                        size={22}
+                                        className="text-card-foreground shrink-0"
+                                    />
+                                )}
+                                <Text className="text-xl font-bold tracking-tight text-card-foreground font-main truncate">
+                                    {title}
+                                </Text>
+                            </Row>
                         )}
                         <View className="flex-1 min-w-0">{children}</View>
                     </Row>

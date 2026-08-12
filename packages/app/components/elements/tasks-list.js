@@ -475,7 +475,7 @@ function TasklistsPanel({
                         key={item.id}
                         className={cn(
                             'items-center gap-1 rounded-lg pr-1',
-                            selected && 'bg-muted/60'
+                            selected && 'bg-muted/50'
                         )}
                     >
                         <Pressable
@@ -657,7 +657,7 @@ function FilterRow({ icon, label, selected, showArrow, onPress, trailing }) {
             onPress={onPress}
             className={cn(
                 'flex-row items-center gap-2 rounded-lg px-2 py-2 web:hover:bg-muted/50',
-                selected && 'bg-muted/60'
+                selected && 'bg-muted/50'
             )}
         >
             {icon ? (

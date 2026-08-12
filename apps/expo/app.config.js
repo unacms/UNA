@@ -132,6 +132,7 @@ const expoConfig = {
             },
         ],
         "./plugins/with-expo-audio-no-foreground-services.js",
+        "./plugins/with-disable-enriched-markdown-math.js",
         [
             "expo-image-picker",
             {

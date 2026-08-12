@@ -133,5 +133,8 @@ export function getMenuSettings(object, config, menu) {
     if (a && !a.name && menu?.title)
         a.name = menu.title;
 
+    if (a && !a.icon && menu?.icon)
+        a.icon = menu.icon;
+
     return a
 }

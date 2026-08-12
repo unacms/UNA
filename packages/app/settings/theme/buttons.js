@@ -81,8 +81,8 @@ export const settingsButtons = {
             container:{
                 base:' border border-border/60 ',
                 default:' bg-popover/60 shadow-btn-outline dark:shadow-btn-outline-deep  ',
-                active:' bg-muted/60 shadow-sm ',
-                pressed:' bg-muted/60 shadow-sm ',
+                active:' bg-muted/50 shadow-sm ',
+                pressed:' bg-muted/50 shadow-sm ',
                 hovered:' bg-popover shadow-btn-outline dark:shadow-btn-outline-deep ',
                 focused:' bg-popover shadow-btn-outline dark:shadow-btn-outline-deep ',
                 disabled:' bg-popover shadow-btn-outline dark:shadow-btn-outline-deep opacity-50 ',
@@ -452,11 +452,11 @@ export const settingsButtons = {
             // text link (no fill, hover-underline on web).
             link: {
                 container: { default: '', 
-                            hovered: 'bg-muted/60',
-                            focused: 'bg-muted/60',
-                            pressed: 'bg-muted/60',
-                            active: 'bg-muted/60',
-                            pressedToggle: 'bg-muted/60',
+                            hovered: 'bg-muted/50',
+                            focused: 'bg-muted/50',
+                            pressed: 'bg-muted/50',
+                            active: 'bg-muted/50',
+                            pressedToggle: 'bg-muted/50',
                             disabled: 'opacity-50' },
                 text: {
                     base: 'font-medium tracking-tight text-accent-foreground',
