@@ -49,6 +49,11 @@ function resolvePickerSource(source, fallback = 'library') {
     return fallback;
 }
 
+const IMAGE_FIELD_NAMES = new Set(['photo', 'cmt_image', 'pictures', 'picture', 'covers', 'avatar', 'badge']);
+const VIDEO_FIELD_NAMES = new Set(['video', 'videos']);
+const IMAGE_EXTS = ['jpg', 'jpeg', 'jpe', 'gif', 'png', 'svg', 'webp', 'heic', 'heif'];
+const VIDEO_EXTS = ['mp4', 'mov', 'm4v', 'avi', 'webm', '3gp'];
+
 function isMediaField(extDeny, extAllow) {
     if (extDeny === '' || extAllow === 'mp3,m4a,m4b,wma,wav,3gp') {
         return true;
@@ -57,6 +62,47 @@ function isMediaField(extDeny, extAllow) {
         return true;
     }
     return false;
+}
+
+function allowListHasAny(extAllow, exts) {
+    const allow = (extAllow ?? '').toLowerCase();
+    if (!allow) return false;
+    return exts.some((ext) => allow.includes(ext));
+}
+
+/**
+ * Pick media types for the system picker.
+ * Camera + videos requires NSMicrophoneUsageDescription on iOS; image-only
+ * fields must not request video so photo capture works without mic permission.
+ */
+function resolvePickerMediaTypes(fieldName, extAllow, source) {
+    if (IMAGE_FIELD_NAMES.has(fieldName)) {
+        return ['images'];
+    }
+    if (VIDEO_FIELD_NAMES.has(fieldName)) {
+        return ['videos'];
+    }
+
+    const hasImages = allowListHasAny(extAllow, IMAGE_EXTS);
+    const hasVideos = allowListHasAny(extAllow, VIDEO_EXTS);
+
+    if (hasImages && !hasVideos) {
+        return ['images'];
+    }
+    if (hasVideos && !hasImages) {
+        return ['videos'];
+    }
+
+    // Camera UI for mixed/unknown fields: photos only (avoids mic requirement).
+    if (source === 'camera') {
+        return ['images'];
+    }
+
+    if (hasImages && hasVideos) {
+        return ['images', 'videos'];
+    }
+
+    return ['images', 'videos'];
 }
 
 function resolveNativeMediaTypes(mediaTypes) {
@@ -89,9 +135,7 @@ function getImagePickerOptions(mediaTypes, bMultiple) {
 export default function (props) {
     
     const name = props.name;
-    const [uploadFinished, setUploadFinished] = useState(null);
     const [message, setMessage] = useState(false);
-    const [uploadFinishedArr, setUploadFinishedArr] = useState([]);
     const [imageSource, setImageSource] = useState({ images: props?.values_src });
     const formContext = useFormContext();
     const formValue = formContext.watch(name);
@@ -113,14 +157,75 @@ export default function (props) {
         return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&obfuscate_faces=' + obfuscateFaces + '&uo=' + (props.uploaders?.[0] ?? '') + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (bMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
     }, [props, obfuscateFaces]);
 
+    const getImageMergeKey = (img) => {
+        // Preload items use hash; server ghosts often have no hash — use stable ids.
+        // Never key on undefined: Map would collapse all existing files into one.
+        if (img?.hash != null && img.hash !== '') return `hash:${img.hash}`;
+        if (img?.file_id != null && img.file_id !== '') return `id:${img.file_id}`;
+        if (img?.file_remote_id) return `remote:${img.file_remote_id}`;
+        return null;
+    };
+
+    const setImageSourceN = (newImages, bMultipleFlag) => {
+        if (!bMultipleFlag) {
+            setImageSource({
+                images: newImages
+            });
+            return;
+        }
+        setImageSource(prev => {
+            const existingImages = prev?.images || [];
+
+            const newImagesMap = new Map();
+            for (const img of newImages) {
+                const key = getImageMergeKey(img);
+                if (key != null) newImagesMap.set(key, img);
+            }
+
+            // Replace preload (by hash) or keep existing; never match on missing keys
+            const mergedImages = existingImages.map((img) => {
+                const key = getImageMergeKey(img);
+                return key != null && newImagesMap.has(key) ? newImagesMap.get(key) : img;
+            });
+
+            const existingKeys = new Set(
+                existingImages.map(getImageMergeKey).filter((k) => k != null)
+            );
+            const newOnlyImages = newImages.filter((img) => {
+                const key = getImageMergeKey(img);
+                return key == null || !existingKeys.has(key);
+            });
+
+            return {
+                ...prev,
+                images: [...mergedImages, ...newOnlyImages]
+            };
+        });
+    }
+
     const onUploadFinished = useCallback((payload) => {
         const hash = payload?.extraVar?.hash;
-        if (hash != null && hash !== '') {
-            trackFormUploadEnd(formName, formInstanceId, hash);
-        }
-        setUploadFinished(payload);
-    }, [formName, formInstanceId]);
+        const uploadId = payload?.extraVar?.uploadId || hash;
+        const result = payload?.result;
+        const ghost = result?.data?.ghost;
 
+        // Apply each completion immediately — do not funnel through a single
+        // uploadFinished state (parallel uploads were overwriting each other).
+        if (uploadId) {
+            trackFormUploadEnd(formName, formInstanceId, uploadId);
+        }
+
+        if (isAutoGhosts && ghost) {
+            setImageSourceN([{ ...ghost, hash }], bMultiple);
+        } else if (hash) {
+            setImageSource((prev) => ({
+                ...prev,
+                images: (prev?.images || []).map((img) =>
+                    img.hash === hash ? { ...img, preload: false } : img
+                ),
+            }));
+        }
+    }, [isAutoGhosts, bMultiple, formName, formInstanceId]);
 
     useEffect(() => {
         const uploadImagesAsync = async (assets) => {
@@ -169,168 +274,100 @@ export default function (props) {
         }
     }, [imageSource]);
 
-    useEffect(() => {
-        if (uploadFinished?.result) {
-            if (isAutoGhosts) {
-                if (uploadFinished?.result?.data?.ghost) {
-                    /* const updatedImages = imageSource?.images?.map(item =>
-                         item.hash === uploadFinished.extraVar.hash ? { ...uploadFinished?.result.data.ghost, uri: item.uri } : item
-                     );*/
-                    setImageSourceN([{ ...uploadFinished?.result.data.ghost, hash: uploadFinished.extraVar.hash }], bMultiple);
-                }
-                else {
-
-                    /*  const updatedImages = imageSource?.images.filter(item => item.hash != uploadFinished.extraVar.hash);
-                        console.log("setImageSource3")
-                      setImageSource({ images: updatedImages });*/
-                }
-
-            }
-            else {
-                setUploadFinishedArr((prevArr) => [...prevArr, uploadFinished.extraVar.hash]);
-            }
-
-        }
-    }, [uploadFinished]);
-
-    const getImageMergeKey = (img) => {
-        // Preload items use hash; server ghosts often have no hash — use stable ids.
-        // Never key on undefined: Map would collapse all existing files into one.
-        if (img?.hash != null && img.hash !== '') return `hash:${img.hash}`;
-        if (img?.file_id != null && img.file_id !== '') return `id:${img.file_id}`;
-        if (img?.file_remote_id) return `remote:${img.file_remote_id}`;
-        return null;
-    };
-
-    const setImageSourceN = (newImages, bMultiple) => {
-        if (!bMultiple){
-                setImageSource({
-                    images: newImages
-                }
-            );
-            return;
-        }
-        setImageSource(prev => {
-            const existingImages = prev?.images || [];
-
-            const newImagesMap = new Map();
-            for (const img of newImages) {
-                const key = getImageMergeKey(img);
-                if (key != null) newImagesMap.set(key, img);
-            }
-
-            // Replace preload (by hash) or keep existing; never match on missing keys
-            const mergedImages = existingImages.map((img) => {
-                const key = getImageMergeKey(img);
-                return key != null && newImagesMap.has(key) ? newImagesMap.get(key) : img;
-            });
-
-            const existingKeys = new Set(
-                existingImages.map(getImageMergeKey).filter((k) => k != null)
-            );
-            const newOnlyImages = newImages.filter((img) => {
-                const key = getImageMergeKey(img);
-                return key == null || !existingKeys.has(key);
-            });
-
-            return {
-                ...prev,
-                images: [...mergedImages, ...newOnlyImages]
-            };
-        });
-    }
-
-
     const uploadImages = async (asset) => {
-        let k = imageSource.images ? imageSource.images : [];
-        if (!asset)
-            return
-        let objectsToAdd = [];
+        const existing = imageSource.images ? imageSource.images : [];
+        if (!asset) return existing;
 
-        for (const i of asset) {
-            let uri = i.uri;
-            const hash = md5(uri);
-            objectsToAdd.push({ preload: true, file_type: i.mimeType, type: i.type, hash: hash, uri: uri });
-            trackFormUploadStart(formName, formInstanceId, hash);
+        const objectsToAdd = [];
 
-            const isImage = i?.mimeType?.includes('image/');
-            if (isImage) {
-                ImageNative.getSize(uri, async (width, height) => {
-                    try {
-                        uri = await prepareImageForUpload({
+        const uploadOne = async (i, hash, uploadId) => {
+            const uri = i.uri;
+            const extraVar = { hash, uploadId };
+            const isImage =
+                i?.mimeType?.includes('image/') ||
+                i?.type === 'image' ||
+                (typeof i?.type === 'string' && i.type.startsWith('image'));
+
+            try {
+                if (isImage) {
+                    await new Promise((resolve, reject) => {
+                        ImageNative.getSize(
                             uri,
-                            width,
-                            height,
-                            fileSizeBytes: i?.fileSize,
-                            maxWidth: 2000,
-                            maxHeight: 2000,
-                            webpOverMb: 4,
-                        });
-
-                        await uploadImage(
-                            uri,
-                            url + '&a=upload',
-                            onUploadFinished,
-                            { hash: hash }
+                            async (width, height) => {
+                                try {
+                                    const preparedUri = await prepareImageForUpload({
+                                        uri,
+                                        width,
+                                        height,
+                                        fileSizeBytes: i?.fileSize,
+                                        maxWidth: 2000,
+                                        maxHeight: 2000,
+                                        webpOverMb: 4,
+                                    });
+                                    await uploadImage(
+                                        preparedUri,
+                                        url + '&a=upload',
+                                        onUploadFinished,
+                                        extraVar
+                                    );
+                                    resolve();
+                                } catch (err) {
+                                    reject(err);
+                                }
+                            },
+                            () => reject(new Error('getSize failed'))
                         );
-                    } catch (err) {
-                        console.error('[files] upload failed:', err);
-                        trackFormUploadEnd(formName, formInstanceId, hash);
-                    }
-
-                    let fileType = i.type ? i.type + '/' : uri.split(';')[0].split(':')[1];
-                    k = [
-                        ...k,
-                        { file_url: uri, file_type: fileType, preload: true, hash: hash }
-                    ];
-                }, () => {
-                    trackFormUploadEnd(formName, formInstanceId, hash);
-                });
-            }
-            else {
-                try {
+                    });
+                } else {
                     await uploadImage(
                         uri,
                         url + '&a=upload',
                         onUploadFinished,
-                        { hash: hash }
+                        extraVar
                     );
-                } catch (err) {
-                    console.error('[files] upload failed:', err);
-                    trackFormUploadEnd(formName, formInstanceId, hash);
                 }
-
-                let fileType = i.type ? i.type + '/' : uri.split(';')[0].split(':')[1];
-                /*k = [
-                    ...k,
-                    { file_url: uri, file_type: fileType, preload: true, hash: hash }
-                ];*/
+            } catch (err) {
+                console.error('[files] upload failed:', err);
+                setImageSource((prev) => ({
+                    ...prev,
+                    images: (prev?.images || []).filter(
+                        (img) => img.uploadId !== uploadId
+                    ),
+                }));
+                trackFormUploadEnd(formName, formInstanceId, uploadId);
             }
+        };
+
+        // Register every pending slot synchronously first, then kick off uploads
+        // without awaiting — preloads return immediately, submit stays disabled
+        // until each uploadId gets upload_end.
+        for (const i of asset) {
+            const uri = i.uri;
+            const hash = md5(uri);
+            const uploadId = `${hash}:${genRnd(8)}`;
+            objectsToAdd.push({
+                preload: true,
+                file_type: i.mimeType,
+                type: i.type,
+                hash,
+                uploadId,
+                uri,
+            });
+            trackFormUploadStart(formName, formInstanceId, uploadId);
+            void uploadOne(i, hash, uploadId);
         }
+
         if (bMultiple) {
-            k = [
-                ...k,
-                ...objectsToAdd
-            ];
+            return [...existing, ...objectsToAdd];
         }
-        else {
-            k = [
-                ...objectsToAdd
-            ];
-        }
-        return k;
+        return [...objectsToAdd];
     }
 
     const selectImage1 = useCallback(async (type, bIsMedia) => {
         const extAllow = props.ext_allow ?? '';
 
         if (bIsMedia) {
-            let mediaTypes = ['images', 'videos'];
-            if (extAllow.includes('jpg') && !extAllow.includes('mp4')) {
-                mediaTypes = ['images'];
-            } else if (extAllow.includes('mp4') && !extAllow.includes('jpg')) {
-                mediaTypes = ['videos'];
-            }
+            const mediaTypes = resolvePickerMediaTypes(name, extAllow, type);
 
             let result = null;
 
@@ -385,7 +422,7 @@ export default function (props) {
                 console.error('Error picking document:', err);
             }
         }
-    }, [props.ext_allow, bMultiple, hasPermissionCamera, hasPermissionLibrary, requestPermissionCamera, requestPermissionLibrary]);
+    }, [name, props.ext_allow, bMultiple, hasPermissionCamera, hasPermissionLibrary, requestPermissionCamera, requestPermissionLibrary]);
 
     const selectImage = useCallback(async (source) => {
         try {

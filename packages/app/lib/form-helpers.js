@@ -47,7 +47,7 @@ function UnsupportedFormField() {
 const isWeb = Platform.OS === 'web';
 const dirtyFormInstances = new Set();
 
-/** Pending file uploads per form instance — Set of hashes so 2 starts / 1 end stays disabled. */
+/** Pending file uploads per form instance — Set of ids so 2 starts / 1 end stays disabled. */
 const pendingUploadsByForm = new Map();
 
 function uploadFormKey(formName, formInstanceId) {

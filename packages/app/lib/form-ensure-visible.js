@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 /** Active scroll containers (Page / Modal) register here; topmost wins. */
 
 const handlers = [];
@@ -35,11 +37,12 @@ export function queueFormEnsureVisible(windowY) {
     });
 }
 
-/** RN ScrollView uses { y }; DOM / RN-web nodes use scrollTop. */
+/** RN ScrollView uses scrollTo({ y }); DOM / RN-web nodes use scrollTop. */
 export function scrollContainerByDelta(scrollView, delta, currentY = 0) {
     if (!scrollView || Math.abs(delta) < 40) return;
 
-    if (typeof scrollView.scrollTop === 'number') {
+    // Native host objects often expose getter-only scrollTop — never assign it.
+    if (Platform.OS === 'web' && typeof scrollView.scrollTop === 'number') {
         scrollView.scrollTop = Math.max(0, scrollView.scrollTop + delta);
         return;
     }

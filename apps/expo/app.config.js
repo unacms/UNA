@@ -14,8 +14,12 @@ const expoConfig = {
     "splash": {
         "image": "./assets/images/splash.png",
         "contentFit": "contain",
+        "resizeMode": "contain",
         "timeout": 0,
-        "backgroundColor": "#111827"
+        "backgroundColor": "#111827",
+         // Expo 52+ splash plugin: centered logo size (dp). Fullscreen iOS via enableFullScreenImage_legacy.
+        "imageWidth": 280,
+        "enableFullScreenImage_legacy": true,
     },
     "experiments": {
         "autolinkingModuleResolution": true

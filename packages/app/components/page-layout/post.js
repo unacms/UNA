@@ -368,8 +368,46 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
 
     if (!isWeb || !isDesktop ) {
         const newItems = !isWeb || !isDesktop ? aItems.slice(1) : aItems;
+
+        // Native page: same overlay composer as modal (KbStickyView). KbAvoidingView
+        // padding + Keyboard.dismiss after submit floated the form mid-screen.
+        if (!isWeb) {
+            return (
+                <View {...viewProps} className="w-full h-full">
+                    <View className="max-w-5xl w-full flex-1 bg-card text-card-foreground relative mx-auto">
+                        <View className="flex-1 w-full min-h-0">
+                            <CommentsBrowse
+                                scrollToIndex={scrollToEnd}
+                                addItems={newItems}
+                                browse={commentsBrowse}
+                                module={commentsModule}
+                                requestUrl={commentsRequestUrl}
+                                replyId={replyId}
+                                marginBottom={listBottomInset}
+                            />
+                        </View>
+                        <KbStickyView
+                            style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}
+                            offset={{ closed: 0, opened: insets.bottom }}
+                        >
+                            <View onLayout={handleLayout}>
+                                <CommentsForm
+                                    isModal={isModal}
+                                    fadeSurface="card"
+                                    objectId={commentsObjectId}
+                                    module={commentsModule}
+                                    form={commentsForm}
+                                    requestUrl={commentsRequestUrl}
+                                />
+                            </View>
+                        </KbStickyView>
+                    </View>
+                </View>
+            );
+        }
+
         return (
-            <View {...viewProps} className={`w-full ${isWeb ? '' : 'h-full'}`}>
+            <View {...viewProps} className="w-full">
                 <View className={`max-w-5xl w-full flex-1 bg-card text-card-foreground lg:rounded-2xl lg:my-4 mx-auto `}>
                     <View
                         onLayout={handleListLayout}
@@ -377,7 +415,6 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                         className="w-full flex-1 "
                     >
                         <CommentsBrowse
-
                             scrollToIndex={scrollToEnd}
                             addItems={newItems}
                             browse={commentsBrowse}
@@ -390,19 +427,16 @@ export default function PageLayout({ data, blocks, isModal = false, url, pageCla
                         <View
                             onLayout={handleLayout}
                             style={isFormFixed && listWidth ? { width: listWidth + 5 } : undefined}
-                            // pt-12 gives the fade room to start above the input (the
-                            // panel is bottom-anchored, so top padding grows upward).
+                            // pt-12: fade runs above the input (bottom-anchored panel grows upward).
                             className="pt-12 lg:pt-0 bg-linear-to-t from-card from-40% to-transparent web:fixed web:bottom-0 web:z-50 lg:static lg:z-auto lg:w-full"
                         >
-                            
-                                <CommentsForm
-                                    isModal={isModal}
-                                    objectId={commentsObjectId}
-                                    module={commentsModule}
-                                    form={commentsForm}
-                                    requestUrl={commentsRequestUrl}
-                                />
-                            
+                            <CommentsForm
+                                isModal={isModal}
+                                objectId={commentsObjectId}
+                                module={commentsModule}
+                                form={commentsForm}
+                                requestUrl={commentsRequestUrl}
+                            />
                         </View>
                     </KbAvoidingView>
                 </View>

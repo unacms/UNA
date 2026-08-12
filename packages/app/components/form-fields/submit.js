@@ -61,7 +61,7 @@ export default function FormFieldSubmit(props) {
     const formProps = appSetting('forms', form_name) || {};
 
     const handlePress = useCallback(() => {
-        if (formState.isSubmitting || disabled || pressLockRef.current) return;
+        if (formState.isSubmitting || disabled || isUploading || isSumbitting || pressLockRef.current) return;
         pressLockRef.current = true;
         if (isNative) Keyboard.dismiss();
         handleSubmit();
@@ -70,7 +70,7 @@ export default function FormFieldSubmit(props) {
         setTimeout(() => {
             pressLockRef.current = false;
         }, 400);
-    }, [disabled, handleSubmit, formState.isSubmitting]);
+    }, [disabled, handleSubmit, formState.isSubmitting, isUploading, isSumbitting]);
 
     const handleReset = useCallback(() => {
         const values = formContext.getValues();

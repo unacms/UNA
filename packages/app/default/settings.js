@@ -24,6 +24,8 @@ export const settingsDefault = {
         use_proxy_web: true,
         use_proxy_native: false,
         fetch_timeout_ms: 10000,
+         // Uploads (especially video) need a longer window than regular API calls.
+        upload_timeout_ms: 300000,
         sockets: {
             host: 'ci.una.io',
             port: '443',

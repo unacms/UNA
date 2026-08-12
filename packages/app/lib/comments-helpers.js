@@ -400,25 +400,36 @@ export function CommentsBrowse({
         : refetchState.visibleItems;
 
     function scrollToItemByCommentId(cmtId) {
-        const index = refetchState.visibleItems.findIndex(obj => obj.id == cmtId)
-        const itemIndex = index ? index + 1 + extra.length : index;
+        const itemIndex = dataOut.findIndex(obj => obj.id == cmtId);
+        if (itemIndex < 0) return;
         scrollToItemByIndex(itemIndex);
     }
 
     function scrollToItemByIndex(itemIndex) {
-        if (itemIndex > 0) {
-            setTimeout(() => {
-                if (flashListRef.current)
-                    flashListRef.current.scrollToIndex(
-                        {
-                            animated: true,
-                            index: itemIndex,
-                            align: 'end',
-                            behavior: 'smooth',
-                        }
-                    );
-            }, 300);
-        }
+        if (itemIndex < 0) return;
+
+        const isLast = itemIndex >= dataOut.length - 1;
+
+        const scrollTo = (animated) => {
+            const list = flashListRef.current;
+            if (!list) return;
+            // Includes footer spacer (composer clearance) when present.
+            if (isLast && typeof list.scrollToEnd === 'function') {
+                list.scrollToEnd({ animated });
+                return;
+            }
+            list.scrollToIndex?.({
+                animated,
+                index: itemIndex,
+                align: 'end',
+                behavior: animated ? 'smooth' : 'auto',
+                viewPosition: 1,
+            });
+        };
+
+        // Retry once after row heights are measured (long threads otherwise undershoot).
+        setTimeout(() => scrollTo(true), 300);
+        setTimeout(() => scrollTo(false), 850);
     }
 
     const renderListFooter = useCallback(() => (

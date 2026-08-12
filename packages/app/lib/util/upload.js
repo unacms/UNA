@@ -1,8 +1,11 @@
 import { Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
 import { ImageManipulator, SaveFormat } from 'app/lib/image-manipulator';
+import { appSetting } from 'app/config';
 import { isWeb } from './layout';
 import { genRnd } from './misc';
+
+const UPLOAD_TIMEOUT_MS = appSetting('config', 'upload_timeout_ms') || 300000;
 
 function urltoFile(url, defaultFilename = 'file', defaultMimeType = 'application/octet-stream') {
     return fetch(url)
@@ -46,7 +49,7 @@ export const uploadImageFile = async (file, fetchUrl, calback, extraVar) => {
     const formData = new FormData();
 
     formData.append("file", file);
-    const result = await fetcher([fetchUrl, null, formData]);
+    const result = await fetcher([fetchUrl, null, formData], false, { timeoutMs: UPLOAD_TIMEOUT_MS });
     if (result?.data?.link) {
         calback(result?.data?.link, extraVar);
     }
@@ -145,7 +148,6 @@ export const prepareImageForUpload = async ({
 }
 
 export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
-    const formData = new FormData();
     if (isWeb) {
         let fileType = '';
         let fileExt = '';
@@ -162,35 +164,25 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
             fileExt = fileName.split('.').pop(); // extension
             fileType = `image/${fileExt}`; // MIME type
         }
-        urltoFile(uri, genRnd(8) + '.' + fileExt, fileType)
-            .then(async function (file) {
-                formData.append("file", file);
-                const result = await fetcher([fetchUrl, null, formData]);
-                if (result?.data?.link) {
-                    calback({ result: result?.data?.link, extraVar: extraVar });
-                }
-                else {
-                    calback({ result: result, extraVar: extraVar })
-                }
-
-            });
-    }
-    else {
         const formData = new FormData();
-        const fileName = uri.split('/').pop();
-        const fileType = uri.match(/\.([a-z0-9]+)$/i)[1];
-        formData.append("file", {
-            uri,
-            name: fileName,
-            type: `image/${fileType}`,
-        });
-
-        const result = await fetcher([fetchUrl, null, formData]);
-        if (result?.data?.link) {
-            calback({ result: result?.data?.link, extraVar: extraVar });
-        }
-        else {
-            calback({ result: result, extraVar: extraVar })
-        }
+        const file = await urltoFile(uri, genRnd(8) + '.' + fileExt, fileType);
+        formData.append("file", file);
+        const result = await fetcher([fetchUrl, null, formData], false, { timeoutMs: UPLOAD_TIMEOUT_MS });
+        // Always pass the full API payload so callers can read data.ghost
+        // (passing only data.link dropped ghosts and left preload spinners).
+        calback({ result, extraVar });
+        return;
     }
+
+    const formData = new FormData();
+    const fileName = uri.split('/').pop();
+    const fileType = uri.match(/\.([a-z0-9]+)$/i)[1];
+    formData.append("file", {
+        uri,
+        name: fileName,
+        type: `image/${fileType}`,
+    });
+
+    const result = await fetcher([fetchUrl, null, formData], false, { timeoutMs: UPLOAD_TIMEOUT_MS });
+    calback({ result, extraVar });
 };
