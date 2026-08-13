@@ -2,8 +2,7 @@
 
 import React, { useEffect, useCallback } from 'react';
 import { useCurrentUser } from 'app/context/user';
-import { useLayoutData } from 'app/context/layout';
-import { storageClear, getAlert, getDataFromCache, storageSet } from 'app/lib/util';
+import { storageClear, getDataFromCache, storageSet } from 'app/lib/util';
 import { remoteSettings } from 'app/settings/remote';
 import { subscribe } from 'app/ui/atoms/socket';
 import { getRemoteSettings } from 'app/config';
@@ -12,9 +11,11 @@ import { appSetting } from 'app/lib/util'
 import emitter from 'app/context/emitter'
 import { checkActionsOnConnectionsChanged } from 'app/customization/functions';
 
+// Debounce: UNA often sends several connection events for one join/leave.
+let connectionsReloadTimer = null;
+
 export default function Subscriber() {
     const { currentUser, setCurrentUser } = useCurrentUser();
-    const { setLayoutData } = useLayoutData()
     useEffect(() => {
         const sub1 = subscribe('sys_api_0', 'config_changed', onUpdateSettings);
         return () => {
@@ -33,6 +34,7 @@ export default function Subscriber() {
             sub1();
             sub2();
             sub3();
+            clearTimeout(connectionsReloadTimer);
         };
 
     }, [currentUser?.id])
@@ -52,19 +54,24 @@ export default function Subscriber() {
         setCurrentUser(JSON.parse(data));
     }, []);
 
+    // Fires when this user's connections change on the server (join/leave, friends, etc.).
     const onUpdateConnections = useCallback(async (data) => {
-        emitter.emit('connections', { action: 'changed' });
         storageClear();
         const oData = JSON.parse(data);
         const oActions = checkActionsOnConnectionsChanged(oData);
-        if (oData?.user){
-            if (oActions?.update_user){
-                setCurrentUser(oData.user);
-            }
-            if (oActions?.reload_page){
-                setLayoutData(getAlert('connections:action', { object: oData, time: Date.now(), reload: true }));
-            }
+        if (oData?.user && oActions?.update_user) {
+            setCurrentUser(oData.user);
         }
+        if (!oActions?.reload_page) return;
+        clearTimeout(connectionsReloadTimer);
+        connectionsReloadTimer = setTimeout(() => {
+            emitter.emit('connections', {
+                action: 'changed',
+                object: oData,
+                reload: true,
+            });
+            connectionsReloadTimer = null;
+        }, 400);
     }, []);
 
     const onItemEdited = useCallback(async (strData) => {

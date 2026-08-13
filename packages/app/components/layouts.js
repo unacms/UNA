@@ -2,7 +2,8 @@
 import Layout from 'app/components/layout';
 import { useCurrentUser, isWebAuthReady } from 'app/context/user'
 import { getComponent } from 'app/components/registry';
-import { appSetting, getLayoutName, getPageContentWidth, strToObj } from 'app/lib/util'
+import { appSetting, getLayoutName, getPageContentWidth, getPageData, strToObj } from 'app/lib/util'
+import emitter from 'app/context/emitter';
 import { responsiveClasses } from 'app/lib/responsive-classes'
 import Cell from 'app/components/cell';
 import { Row } from 'app/design/view'
@@ -35,6 +36,8 @@ export default function Layouts({ path, data }) {
     const { t } = useTranslation();
     const uri = data?.uri
     const url = data?.url
+    const urlRef = useRef(url);
+    urlRef.current = url;
     const isWeb = Platform.OS === 'web';
     if (isWeb)
         registerAll();
@@ -48,6 +51,20 @@ export default function Layouts({ path, data }) {
         const parsed = strToObj(raw);
         return parsed ? { ...data, config: parsed } : data;
     }, [data]);
+
+    // When connections change, refetch the current page and pass JSON to listeners.
+    useEffect(() => {
+        const subscription = emitter.addListener('connections', async (payload) => {
+            if (payload?.action !== 'changed' || payload?.reload === false) return;
+            const pageUrl = urlRef.current;
+            if (!pageUrl) return;
+            const sResponse = await getPageData(pageUrl);
+            if (sResponse?.data) {
+                emitter.emit('page', { action: 'updated', data: sResponse.data });
+            }
+        });
+        return () => subscription.remove();
+    }, []);
 
 
     const { currentUser } = useCurrentUser();

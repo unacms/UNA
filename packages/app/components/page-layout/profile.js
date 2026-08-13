@@ -6,6 +6,7 @@ import { useRouter, redirectTo, useFocusEffect } from 'app/lib/hooks/router'
 import { useCurrentUser } from 'app/context/user';
 import { subscribe } from 'app/ui/atoms/socket';
 import { patchCachedPageDataByUrl } from 'app/lib/tab-page-cache';
+import emitter from 'app/context/emitter';
 const ConductorMemo = memo(Conductor, (prev, next) => (
     prev.ts === next.ts && prev.data?.timestamp === next.data?.timestamp
 ));
@@ -31,6 +32,7 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
     }, [currentUser?.id, currentUser?.confirmed]);
 
     const router = useRouter();
+    // After join/leave click: handle leave-redirect; page body comes from page:updated.
     useEffect(() => {
         if (!layoutData || layoutData?.type != 'connections:action') return;
 
@@ -42,17 +44,25 @@ export default function PageLayoutProfile({ layoutName, data, uri, blocks }) {
         }
 
         if (layoutData?.data?.reload) {
-            (async () => {
-                if (layoutData?.data?.object?.initiator == pageData?.cover_block?.profile?.id || layoutData?.data?.object?.content == pageData?.cover_block?.profile?.id || !layoutData?.data?.object?.content) {
-                    setLayoutData(null);
-                    const sResponse = await getPageData(pageData.url);
-                    if (sResponse.data != pageData) {
-                        adoptPageData(sResponse.data);
-                    }
-                }
-            })();
+            setLayoutData(null);
         }
     }, [layoutData?.data?.time]);
+
+    // When the current page was refetched after a connection change, apply it here.
+    useEffect(() => {
+        const pageUrl = pageData?.url;
+        const subscription = emitter.addListener('page', (payload) => {
+            if (payload?.action !== 'updated' || !payload.data) return;
+            const nextUrl = payload.data.url;
+            if (pageUrl && nextUrl) {
+                const a = String(pageUrl).replace(/^\/+/, '');
+                const b = String(nextUrl).replace(/^\/+/, '');
+                if (a !== b) return;
+            }
+            adoptPageData(payload.data);
+        });
+        return () => subscription.remove();
+    }, [pageData?.url, adoptPageData]);
 
     // Soft-reload profile/group page when UNA pushes profile_{id} / changed
     // (e.g. after entity edit). Do not touch currentUser — payload is the entity.

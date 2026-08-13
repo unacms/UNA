@@ -41,7 +41,8 @@ async function connectionRequest(setLayoutData, o, iid, cid, key, action, params
         JSON.stringify(body);
 
     const response = await fetcher(url);
-    // Leave/etc. with redirect: skip soft-reload — navigation owns the transition.
+    // After the user clicks join/leave: update this button (and leave-redirect).
+    // Page JSON is reloaded when the server connection socket arrives.
     const hasRedirect = !!response?.data?.redirect;
     const isReload = response?.data?.a != 'questionnaire' && !hasRedirect;
     if (isReload) storageClear();
