@@ -153,7 +153,7 @@ Input.displayName = 'Input';
 
 export const InputWithIcons = forwardRef<any, InputWithIconsProps>(
     ({ className, startDecorator, endDecorator, style, ...props }, ref) => (
-        <Row className="items-center flex-auto">
+        <Row className="relative w-full items-center">
             {startDecorator && (
                 <View className="absolute left-3.5 h-full items-center justify-center">
                     <Icon icon={startDecorator} size={24} className="text-muted-foreground " />
@@ -161,7 +161,7 @@ export const InputWithIcons = forwardRef<any, InputWithIconsProps>(
             )}
             <Input
                 ref={ref}
-                className={`${className || ''} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`}
+                className={`w-full ${className || ''} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`}
                 style={style}
                 rounded={InputRounded.full}
                 {...props}
@@ -235,7 +235,7 @@ PickerStyled.displayName = 'PickerStyled';
 
 export const PickerStyledRef = forwardRef<any, PickerProps>(
     ({ classes, className, children, selectedValue, value, onValueChange, onChange, size = InputSize.regular, ...props }, ref) => (
-        <View className={` ${isWeb ? 'flex-auto items-center flex-row' : ''} `}>
+        <View className={`relative ${isWeb ? 'flex-auto items-center flex-row' : ''}`}>
             <select
                 ref={ref}
                 className={`${classes ? classes : getPickerSurfaceClass(size)} ${className || ''} w-full`}
