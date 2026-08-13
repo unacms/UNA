@@ -66,12 +66,6 @@ export default function RftTextEnriched({
     const { setFilesData } = useFilesData()
     const themeName = useThemeName() || 'light'
 
-    // The web enriched-html build uses Tiptap, which crashes during SSR
-    // (immediatelyRender cannot be passed through the public API). On web we wait
-    // for client mount; on native we render immediately.
-    const [mounted, setMounted] = useState(Platform.OS !== 'web')
-    useEffect(() => { setMounted(true) }, [])
-
     const [styleState, setStyleState] = useState(null)
     const [selection, setSelection] = useState({ start: 0, end: 0, text: '' })
     // Web: viewport-fixed dropdown placement { top } or { bottom } — prefer above
@@ -245,7 +239,7 @@ export default function RftTextEnriched({
     // Web: drive mention trigger from TipTap with the same text-before-cursor
     // rule as tentap, so suggestions work even when library mention events miss.
     useEffect(() => {
-        if (!isWeb || !mounted) return
+        if (!isWeb) return
 
         let editor = null
         let cancelled = false
@@ -286,7 +280,7 @@ export default function RftTextEnriched({
                 editor.off('selectionUpdate', syncTrigger)
             }
         }
-    }, [isWeb, mounted, setTrigger, computeCaretPosition])
+    }, [isWeb, setTrigger, computeCaretPosition])
 
     // ---- web: keep the editor focused while interacting with the dropdown ----
     // Clicking a suggestion would otherwise blur the editor, which ends the mention
@@ -395,7 +389,7 @@ export default function RftTextEnriched({
 
     // Web: capture Enter on TipTap (splitBlock for Shift/Option; submit otherwise).
     useEffect(() => {
-        if (!isWeb || !mounted) return
+        if (!isWeb) return
 
         let dom = null
         let onKeyDownCapture = null
@@ -476,7 +470,7 @@ export default function RftTextEnriched({
             if (intervalId) clearInterval(intervalId)
             detach()
         }
-    }, [isWeb, mounted, submitOnEnter, isCommentsEditor, handlersRef, insertMention])
+    }, [isWeb, submitOnEnter, isCommentsEditor, handlersRef, insertMention])
 
     // ---- styles (htmlStyle) from theme ----
     const htmlStyle = useMemo(() => {
@@ -533,17 +527,6 @@ export default function RftTextEnriched({
     const surfaceClass = isToolBar
         ? ' px-3 py-2 bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg flex-auto overflow-hidden text-card-foreground '
         : (bg == 'transparent' ? '' : cn(inputSettings.base, inputSettings.size.regular))
-
-    // Before client mount (web SSR), render a placeholder of the right height so
-    // we do not initialize Tiptap on the server and avoid a hydration mismatch.
-    if (!mounted) {
-        return (
-            <View
-                className={`flex-auto ${surfaceClass}`}
-                style={{ minHeight: initialHeight }}
-            />
-        )
-    }
 
     return (
         <View

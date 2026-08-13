@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { View } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { appSetting } from 'app/lib/util';
@@ -11,30 +12,30 @@ const badgeTheme = appSetting('theme', 'badges');
 const badgeSizes = appSetting('theme', 'badge_sizes');
 
 const colorMapping = {
-    // Exact color names to Tailwind classes
-    emerald: { bg: 'bg-emerald-600/20  ', text: 'text-emerald-700 dark:text-emerald-300' },
-    purple: { bg: 'bg-purple-600/20', text: ' text-purple-700 dark:text-purple-300' },
-    red: { bg: 'bg-red-600/20', text: ' text-red-700 dark:text-red-300' },
-    blue: { bg: 'bg-blue-600/20', text: ' text-blue-600 dark:text-blue-400' },
-    green: { bg: 'bg-green-600/20', text: ' text-green-700 dark:text-green-300' },
-    yellow: { bg: 'bg-yellow-600/20', text: ' text-yellow-700 dark:text-yellow-300' },
-    orange: { bg: 'bg-orange-600/20', text: ' text-orange-700 dark:text-orange-300' },
-    teal: { bg: 'bg-teal-600/20', text: ' text-teal-700 dark:text-teal-300' },
-    sky: { bg: 'bg-sky-600/20', text: ' text-sky-700 dark:text-sky-300' },
-    indigo: { bg: 'bg-indigo-600/20', text: ' text-indigo-700 dark:text-indigo-300' },
-    pink: { bg: 'bg-pink-600/20', text: ' text-pink-700 dark:text-pink-300' },
-    rose: { bg: 'bg-rose-600/20', text: ' text-rose-700 dark:text-rose-300' },
-    gray: { bg: 'bg-gray-600/20', text: ' text-gray-700 dark:text-gray-300' },
-    slate: { bg: 'bg-slate-600/20', text: ' text-slate-700 dark:text-slate-300' },
-    zinc: { bg: 'bg-zinc-600/20', text: ' text-zinc-700 dark:text-zinc-300' },
-    neutral: { bg: 'bg-muted/50', text: ' text-secondary-foreground ' },
-    stone: { bg: 'bg-stone-600/20', text: ' text-stone-700 dark:text-stone-300' },
-    amber: { bg: 'bg-amber-600/20', text: ' text-amber-700 dark:text-amber-300' },
-    lime: { bg: 'bg-lime-600/20', text: ' text-lime-700 dark:text-lime-300' },
-    cyan: { bg: 'bg-cyan-600/20', text: ' text-cyan-700 dark:text-cyan-300' },
-    violet: { bg: 'bg-violet-600/20', text: ' text-violet-700 dark:text-violet-300' },
-    fuchsia: { bg: 'bg-fuchsia-600/20', text: ' text-fuchsia-700 dark:text-fuchsia-300' },
-};
+    // Native uses @theme tokens (text-blue); web keeps the Tailwind shade scale.
+     // Exact color names to Tailwind classes
+     emerald: { bg: 'bg-emerald-600/20  ', text: 'text-emerald-700 dark:text-emerald-300' },
+     purple: { bg: 'bg-purple-600/20', text: ' text-purple-700 dark:text-purple-300' },
+     red: { bg: 'bg-red-600/20', text: ' text-red-700 dark:text-red-300' },
+     blue: { bg: 'bg-blue-600/20', text: ' text-blue-600 dark:text-blue-400' },
+     green: { bg: 'bg-green-600/20', text: ' text-green-700 dark:text-green-300' },
+     yellow: { bg: 'bg-yellow-600/20', text: ' text-yellow-700 dark:text-yellow-300' },
+     orange: { bg: 'bg-orange-600/20', text: ' text-orange-700 dark:text-orange-300' },
+     teal: { bg: 'bg-teal-600/20', text: ' text-teal-700 dark:text-teal-300' },
+     sky: { bg: 'bg-sky-600/20', text: ' text-sky-700 dark:text-sky-300' },
+     indigo: { bg: 'bg-indigo-600/20', text: ' text-indigo-700 dark:text-indigo-300' },
+     pink: { bg: 'bg-pink-600/20', text: ' text-pink-700 dark:text-pink-300' },
+     rose: { bg: 'bg-rose-600/20', text: ' text-rose-700 dark:text-rose-300' },
+     gray: { bg: 'bg-gray-600/20', text: ' text-gray-700 dark:text-gray-300' },
+     slate: { bg: 'bg-slate-600/20', text: ' text-slate-700 dark:text-slate-300' },
+     zinc: { bg: 'bg-zinc-600/20', text: ' text-zinc-700 dark:text-zinc-300' },
+     neutral: { bg: 'bg-muted/50', text: ' text-secondary-foreground ' },
+     stone: { bg: 'bg-stone-600/20', text: ' text-stone-700 dark:text-stone-300' },
+     amber: { bg: 'bg-amber-600/20', text: ' text-amber-700 dark:text-amber-300' },
+     lime: { bg: 'bg-lime-600/20', text: ' text-lime-700 dark:text-lime-300' },
+     cyan: { bg: 'bg-cyan-600/20', text: ' text-cyan-700 dark:text-cyan-300' },
+     violet: { bg: 'bg-violet-600/20', text: ' text-violet-700 dark:text-violet-300' },
+     fuchsia: { bg: 'bg-fuchsia-600/20', text: ' text-fuchsia-700 dark:text-fuchsia-300' },};
 
 const isTruthyFlag = (value) => value === true || value === 1 || value === '1'
 
@@ -44,7 +45,7 @@ const extractTextColorClasses = (className = '') =>
     className
         .trim()
         .split(/\s+/)
-        .filter((token) => token.startsWith('text-') || token.startsWith('dark:text-'))
+        .filter((token) => /(?:^|:)text-/.test(token))
         .join(' ')
 
 const rawColorValue = (color) => {
@@ -58,14 +59,17 @@ const rawColorValue = (color) => {
 function BadgeIcon({ icon, size, textColorClass, rawColor }) {
     const { colors } = useTheme()
     const iconColorClass = extractTextColorClasses(textColorClass) || 'text-primary'
-    const hasTextColorClass = /\b(?:dark:)?text-/.test(iconColorClass)
-    const resolved = useResolveClassNames(iconColorClass)
-    // Web SSR: resolving text-* to inline color can fall back to primary and mismatch hydration.
-    // Inline Lucide icons inherit stroke via currentColor + className (see iconset.web.js).
-    const color = hasTextColorClass
+    const nativeColorClass = iconColorClass
+        .split(/\s+/)
+        .filter((token) => token.startsWith('text-'))
+        .join(' ') || 'text-primary'
+    const hasTextColorClass = /(?:^|\s)(?:dark:)?text-/.test(iconColorClass)
+    const resolved = useResolveClassNames(nativeColorClass)
+    // Web: empty color so Lucide/mask inherit via currentColor + className (SSR-safe).
+    // Native: Lucide only tints from the `color` prop; resolve a concrete value.
+    const color = Platform.OS === 'web' && hasTextColorClass
         ? ''
         : (rawColorValue(rawColor) || resolved?.color || colors.primary)
-
 
     return <Icon icon={icon} size={size} className={iconColorClass} color={color} />
 }

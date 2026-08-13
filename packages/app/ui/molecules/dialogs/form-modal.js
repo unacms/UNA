@@ -12,11 +12,12 @@ import { appSetting } from 'app/lib/util';
 import { useModal, useCloseModal } from 'app/context/jotai/modal';
 import emitter from 'app/context/emitter';
 import { confirmDiscardUnsavedFormChanges } from 'app/lib/form-helpers';
-
+import { useTranslation } from 'react-i18next'
 
 const isWeb = Platform.OS === 'web';
 
 export default function FormModal({ pageData, setPageData, modalView, url }) {
+    const { t } = useTranslation()
     const previousUrlRef = useRef(null);
 
     const handleModalClose = useCallback(() => {
@@ -75,7 +76,7 @@ export default function FormModal({ pageData, setPageData, modalView, url }) {
             <Modal
                 onClose={handleClose}
                 onVisible={!!pageData}
-                title={getModalPostTitle(authorData)}
+                title={getModalPostTitle(authorData, t)}
                 padding=""
                 outerClickClose={isWeb}
                 usePadding={true}

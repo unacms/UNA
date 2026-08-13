@@ -627,7 +627,7 @@ export function TopSidebar({
                       * gate is needed: the parent is already hidden there.
                       */}
                     <Row className="w-full items-center gap-3 min-w-0">
-                        {!!title && conductorTheme.show_title !== false && (
+                        {(!!title && conductorTheme.show_title !== false && isHideOnDesktop) && (
                             <Row className="hidden lg:flex items-center gap-2 shrink-0 min-w-0">
                                 {!!icon && (
                                     <Icon

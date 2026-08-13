@@ -274,7 +274,12 @@ export const ItemInfo = memo(({ data, t }) => {
         )
 
     const FeedType = () => {
-        let l = t('feed_type_' + data.type)
+        const typeKey = 'feed_type_' + data.type
+        let l = t(typeKey)
+       
+        if (l === typeKey) {
+            l = t('added a') + ' ' + t('item_' + data.type)
+        }
         if (data.type == 'timeline_common_repost') {
             l += ' ' + data.content.owner_name + "'s " + data.content.parse_type
         }
