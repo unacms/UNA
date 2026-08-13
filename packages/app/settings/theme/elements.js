@@ -21,6 +21,8 @@ export const settingsElements = {
         cover_small: 'mx-auto flex-row items-center ',
 
         hide_top_menu_from: 'xl',
+        // Section title + icon next to conductor tabs (TopSidebar).
+        show_title: true,
     },
     dropdown_menu: {
         content_shadow: ' shadow-lg ',

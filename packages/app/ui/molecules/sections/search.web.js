@@ -117,6 +117,7 @@ export function SearchPanel(props) {
             >
                 <Row className="gap-x-2 justify-center items-center">
                     <Input
+                        className="w-full flex-1 min-w-0"
                         name="search"
                         placeholder={t('Search') + '...'}
                         defaultValue={inputValue}
@@ -294,6 +295,7 @@ export function ElementSearchData(oProps) {
                     }}
                     trigger={
                         <Input
+                            className="w-full"
                             rounded="full"
                             name="search"
                             placeholder={t('Search') + '...'}
@@ -337,8 +339,9 @@ export function ElementSearchData(oProps) {
                     />
                 </View>
             )}
-            <View className="flex-row p-1 mb-2">
+            <View className="w-full p-1 mb-2">
                 <Input
+                    className="w-full"
                     name="search"
                     autoFocus={true}
                     placeholder={t('Start typing to search...')}

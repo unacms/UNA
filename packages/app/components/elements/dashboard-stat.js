@@ -99,6 +99,12 @@ function DashboardStatRemote(props) {
     const { t } = useTranslation()
     const { currentUser } = useCurrentUser()
     const langs = appSetting('layout', 'avaliable_langs')
+    const showWiki = !!appSetting('wiki', 'enable')
+    const showLangs = langs.length > 1
+    const showTheme = !!appSetting('dashboard', 'switch_theme')
+    const showLayouts = appSetting('layout', 'avaliable_layouts').length > 1
+    const showFeedUnits = appSetting('layout', 'avaliable_feed_units').length > 1
+    const showSecondaryActions = showWiki || showLangs || showTheme || showLayouts || showFeedUnits
     let profile = null
     if (currentUser) {
         let dUser = Object.assign({}, currentUser)
@@ -112,7 +118,7 @@ function DashboardStatRemote(props) {
             <ScrollView>
                 <Block className="u-max-width-block">
                     <BlockHeader>
-                        <BlockIcon>
+                        <BlockIcon className="!h-auto !w-auto">
                             <Profile
                                 {...currentUser}
                                 url_avatar={currentUser.avatar}
@@ -150,21 +156,24 @@ function DashboardStatRemote(props) {
 
                         </BlockActions>
                     </BlockHeader>
-                    <BlockContent >
+                    <BlockContent className="pt-3">
                         <ElementDashboardStat {...props} />
+                        {showSecondaryActions ? (
                         <View className="grid w-full grid-cols-1 gap-x-2 gap-y-1.5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 ">
-                            <View className="w-full max-w-sm flex-1 min-w-[160px]">
-                                <NeoButtonLink
-                                    href="/wiki/overview"
-                                    label="Documentation"
-                                    style="bordered"
-                                    controlSize="large"
-                                    image="BookOpenText"
-                                    width="fill"
-                                    align="start"
-                                />
-                            </View>
-                            {langs.length > 1 && (
+                            {showWiki ? (
+                                <View className="w-full max-w-sm flex-1 min-w-[160px]">
+                                    <NeoButtonLink
+                                        href="/wiki/overview"
+                                        label="Documentation"
+                                        style="bordered"
+                                        controlSize="large"
+                                        image="BookOpenText"
+                                        width="fill"
+                                        align="start"
+                                    />
+                                </View>
+                            ) : null}
+                            {showLangs ? (
                                 <View className="w-full max-w-sm flex-1 min-w-[160px]">
                                     <DropdownMenu
                                         items={langs.map((lang) => ({
@@ -188,8 +197,8 @@ function DashboardStatRemote(props) {
                                         />
                                     </DropdownMenu>
                                 </View>
-                            )}
-                            {appSetting('dashboard', 'switch_theme') && (
+                            ) : null}
+                            {showTheme ? (
                                 <View className="w-full max-w-sm flex-1 min-w-[160px]">
                                     <DropdownMenu
                                         items={['dark', 'light', 'auto'].map(
@@ -215,11 +224,10 @@ function DashboardStatRemote(props) {
                                         />
                                     </DropdownMenu>
                                 </View>
-                            )}
+                            ) : null}
 
 
-                            {appSetting('layout', 'avaliable_layouts').length >
-                                1 && (
+                            {showLayouts ? (
                                     <View className="w-full max-w-sm flex-1 min-w-[160px]">
                                         <DropdownMenu
                                             items={appSetting(
@@ -246,9 +254,9 @@ function DashboardStatRemote(props) {
                                             />
                                         </DropdownMenu>
                                     </View>
-                                )}
+                                ) : null}
 
-                            {appSetting('layout', 'avaliable_feed_units').length > 1 && (
+                            {showFeedUnits ? (
                                 <View className="w-full max-w-sm flex-1 min-w-[160px]">
                                     <DropdownMenu
                                         items={appSetting(
@@ -275,8 +283,9 @@ function DashboardStatRemote(props) {
                                         />
                                     </DropdownMenu>
                                 </View>
-                            )}
+                            ) : null}
                         </View>
+                        ) : null}
                     </BlockContent>
                     <BlockFooter className="">
                         <NeoButtonLink

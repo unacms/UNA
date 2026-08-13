@@ -1,5 +1,7 @@
 export const settingsWiki = {
     wiki: {
+        // Show Documentation entry on dashboard (and related surfaces).
+        enable: true,
         // Client cache TTL for in-layout wiki navigations (sidebar).
         // Falls back to browse.stale_time when unset.
         page_cache_stale_ms: 5 * 60 * 1000,
