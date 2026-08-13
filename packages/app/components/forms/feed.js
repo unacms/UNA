@@ -1,5 +1,5 @@
 import { View, Row } from 'app/design/view'
-import { Button } from 'app/design/controls'
+import { NeoButton } from 'app/design/controls'
 import { useState, useRef, useMemo, useEffect } from 'react'
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
@@ -12,11 +12,47 @@ import { Keyboard } from 'react-native'
 import { useFormContext } from 'react-hook-form'
 import { PollButton, LabelButton, FileButton } from 'app/lib/form-helpers'
 import { useWindowHeight } from 'app/context/measure';
-import ProfileSwitcher from 'app/components/elements/profile-switcher'
 import emitter from 'app/context/emitter';
 import { Icon } from 'app/ui/atoms/icon'
 import { Text } from 'app/design/typography';
 import { useSound } from 'app/lib/hooks/useSound';
+
+const ATTACHMENT_BUTTON = { style: 'bordered', controlSize: 'small', borderShape: 'capsule', tooltipSide: 'top' };
+
+function AuthorAudienceButton({ profileData, displayName, destination, destinationIcon, onPress }) {
+    return (
+        <NeoButton
+            style="bordered"
+            controlSize="regular"
+            borderShape="roundedRectangle"
+            align="start"
+            contentInsets="mediaLeading"
+            onPress={onPress}
+            accessibilityLabel={destination ? `${displayName}, ${destination}` : displayName}
+            classNames={{ container: 'gap-x-2 pr-3' }}
+        >
+            <Profile {...profileData} displaySize="md" displayType="unit_wo_info" />
+            <View className="min-w-0">
+                <Text className="text-sm font-medium leading-5 text-button-foreground" numberOfLines={1}>
+                    {displayName}
+                </Text>
+                {destination ? (
+                    <Row className="items-center gap-1 min-w-0">
+                        {destinationIcon ? (
+                            <Icon icon={destinationIcon} size={12} className="text-muted-foreground" />
+                        ) : null}
+                        <Text className="text-xs leading-4 text-muted-foreground" numberOfLines={1}>
+                            {destination}
+                        </Text>
+                    </Row>
+                ) : null}
+            </View>
+            {onPress ? (
+                <Icon icon="ChevronsUpDown" size={16} className="text-muted-foreground" />
+            ) : null}
+        </NeoButton>
+    );
+}
 
 export default function FormFeed({ data, handleSubmit, exProps, name, response }) {
     const formContext = useFormContext()
@@ -77,8 +113,6 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
 
     const isHiddenVisibility = data?.inputs?.['object_privacy_view']?.origtype == 'hidden' || !data?.inputs?.['object_privacy_view']
 
-    const hasMultipleProfiles = currentUser?.profiles_count > 1;
-
     const displayProfile = exProps?.item?.author_data || {
         ...currentUser,
         url_avatar: currentUser.avatar,
@@ -99,45 +133,40 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
             <View className="w-full flex-1 gap-3">
                 <View className="items-start justify-start ">
                     <Row className="w-full items-center justify-between gap-x-2">
-                        <Row className="gap-1 flex-row flex-auto items-center">
-                            <ProfileSwitcher hideTitle={true} listOnly={true}>
-                                <Button
-                                    size="sm"
-                                    variant="secondary"
-                                    startDecorator={<Profile {...profileData} displaySize="xs" displayType="unit_wo_info" />}
-                                    title={displayProfile.display_name}
-                                    endDecorator={hasMultipleProfiles ? 'ChevronsUpDown' : null}
-                                />
-                            </ProfileSwitcher>
-                                <Icon
-                                    icon="ChevronRight"
-                                    size={16}
-                                    className="text-muted-foreground"
-                                />
-                            {data?.inputs?.['object_privacy_view'] ? getFormFieldByData(
-                                {
-                                    ...data.inputs['object_privacy_view'],
-                                },
-                                handleSubmit,
-                                'nofield',
-                                {
-                                    onShowModal: setShowImage,
-                                    showModal: showImage,
-                                    size: 'sm',
-                                    maxLength: 0,
-                                    variant: 'secondary',
-                                    noContainer: true,
-                                    align: 'start',
-
-                                }
-                            ) : 'hz'}
-                        </Row>
-                        <Button
+                        {data?.inputs?.['object_privacy_view'] ? getFormFieldByData(
+                            {
+                                ...data.inputs['object_privacy_view'],
+                            },
+                            handleSubmit,
+                            'nofield',
+                            {
+                                onShowModal: setShowImage,
+                                showModal: showImage,
+                                maxLength: 0,
+                                noContainer: true,
+                                renderTrigger: ({ onPress, displayText, icon }) => (
+                                    <AuthorAudienceButton
+                                        profileData={profileData}
+                                        displayName={displayProfile.display_name}
+                                        destination={displayText}
+                                        destinationIcon={icon}
+                                        onPress={onPress}
+                                    />
+                                ),
+                            }
+                        ) : (
+                            <AuthorAudienceButton
+                                profileData={profileData}
+                                displayName={displayProfile.display_name}
+                            />
+                        )}
+                        <NeoButton
+                            style="bordered"
+                            controlSize="small"
+                            borderShape="circle"
+                            image="X"
+                            accessibilityLabel="Close"
                             onPress={onClose}
-                            variant="secondary"
-                            rounded
-                            size="sm"
-                            startDecorator="X"
                         />
                     </Row>
                 </View>
@@ -239,32 +268,32 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                         )}
                                         {data.inputs['photo'] && (
                                             <View className="">
-                                                <FileButton field_name='photo' icon="Image" tooltip='Add Photos' />
+                                                <FileButton field_name='photo' icon="Image" tooltip='Add Photos' {...ATTACHMENT_BUTTON} />
                                             </View>
                                         )}
                                         {data.inputs['video'] && (
                                             <View className="">
-                                                <FileButton field_name='video' icon="Image" tooltip='Add Photos or Videos' />
+                                                <FileButton field_name='video' icon="Image" tooltip='Add Photos or Videos' {...ATTACHMENT_BUTTON} />
                                             </View>
                                         )}
                                         {(data.inputs['video'] && !isWeb) && (
                                             <View className="">
-                                                <FileButton field_name='video' icon="Image" />
+                                                <FileButton field_name='video' icon="Image" {...ATTACHMENT_BUTTON} />
                                             </View>
                                         )}
                                         {data.inputs['file'] && (
                                             <View>
-                                                <FileButton field_name='file' icon="Paperclip" />
+                                                <FileButton field_name='file' icon="Paperclip" {...ATTACHMENT_BUTTON} />
                                             </View>
                                         )}
                                         {isLabelsPresent && (
                                             <View>
-                                                <LabelButton field_name='labels' />
+                                                <LabelButton field_name='labels' {...ATTACHMENT_BUTTON} />
                                             </View>
                                         )}
                                         {isPollsPresent && (
                                             <View className="">
-                                                <PollButton field_name='polls' />
+                                                <PollButton field_name='polls' {...ATTACHMENT_BUTTON} />
                                             </View>
                                         )}
                                     </Row>
@@ -279,6 +308,8 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                                     disabled: isButtonDisabled,
                                                     noPadding: true,
                                                     size: 'sm',
+                                                    style: 'borderedProminent',
+                                                    rounded: true,
                                                     notFullWidth: true,
                                                     icon: "SendHorizontal",
 

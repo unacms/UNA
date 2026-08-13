@@ -4,7 +4,26 @@ import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
 import { appSetting } from 'app/lib/util';
 
-export default function Tooltip({children, content, enabled = true}) {
+const CLIP_PAD = 8;
+
+function getClipRect(el) {
+    let left = 0;
+    let right = typeof window !== 'undefined' ? window.innerWidth : 0;
+    let node = el?.parentElement;
+    while (node && node !== document.body) {
+        const style = window.getComputedStyle(node);
+        const overflowX = style.overflowX || style.overflow;
+        if (overflowX === 'hidden' || overflowX === 'auto' || overflowX === 'scroll' || overflowX === 'clip') {
+            const rect = node.getBoundingClientRect();
+            left = Math.max(left, rect.left);
+            right = Math.min(right, rect.right);
+        }
+        node = node.parentElement;
+    }
+    return { left, right };
+}
+
+export default function Tooltip({ children, content, enabled = true, side = 'bottom' }) {
     const tooltipsEnabled = appSetting('layout', 'tooltips');
     const shouldRenderTooltip = !!enabled && !!tooltipsEnabled;
 
@@ -42,28 +61,26 @@ export default function Tooltip({children, content, enabled = true}) {
             return;
         }
 
-        if (visible && tooltipRef.current && wrapperRef.current) {
-            const tooltipElement = tooltipRef.current.getBoundingClientRect();
-            const wrapperElement = wrapperRef.current.getBoundingClientRect();
-            const screenWidth = window.innerWidth;
+        if (!visible) {
+            setTooltipStyle({});
+            return;
+        }
 
-            let newStyles = {};
+        if (tooltipRef.current && wrapperRef.current) {
+            const tooltipRect = tooltipRef.current.getBoundingClientRect();
+            const wrapperRect = wrapperRef.current.getBoundingClientRect();
+            const clip = getClipRect(wrapperRef.current);
 
-            const tooltipWidth = tooltipElement.width;
-            const wrapperWidth = wrapperElement.width;
-            const centerOffset = (wrapperWidth - tooltipWidth) / 2;
-
-            newStyles.left = centerOffset + 'px';
-
-            if (tooltipElement.right > screenWidth) {
-                newStyles.left = screenWidth - tooltipElement.right + centerOffset + 'px';
+            const minLeft = (clip.left + CLIP_PAD) - wrapperRect.left;
+            const maxLeft = (clip.right - CLIP_PAD) - tooltipRect.width - wrapperRect.left;
+            let left = (wrapperRect.width - tooltipRect.width) / 2;
+            if (maxLeft >= minLeft) {
+                left = Math.min(Math.max(left, minLeft), maxLeft);
+            } else {
+                left = minLeft;
             }
 
-            if (tooltipElement.left < 0) {
-                newStyles.left = Math.abs(tooltipElement.left) + centerOffset + 'px';
-            }
-
-            setTooltipStyle(newStyles);
+            setTooltipStyle({ left });
         }
     }, [visible, shouldRenderTooltip]);
 
@@ -81,7 +98,7 @@ export default function Tooltip({children, content, enabled = true}) {
             {visible && (
                 <View
                     ref={tooltipRef}
-                    className="absolute z-50 shadow-lg top-full w-auto backdrop-blur bg-popover/90 rounded-full py-1.5 px-3 mt-2.5"
+                    className={`absolute z-50 shadow-lg w-auto backdrop-blur bg-popover/90 rounded-full py-1.5 px-3 ${side === 'top' ? 'bottom-full mb-2.5' : 'top-full mt-2.5'}`}
                     style={tooltipStyle}
                 >
                     <Text className="text-card-foreground whitespace-nowrap text-sm">{content}</Text>

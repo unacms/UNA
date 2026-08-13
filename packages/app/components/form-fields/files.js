@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import Field, { getValidationRules } from './_field';
 import { View, ViewRef, Row, Pressable } from 'app/design/view'
 import * as ImagePicker from 'expo-image-picker';
-import { Button } from 'app/design/controls';
+import { Button, NeoButton } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import { genRnd, appSetting, prepareImageForUpload } from 'app/lib/util';
 import * as DocumentPicker from 'expo-document-picker';
@@ -622,8 +622,15 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
                             alt=""
                         />}
                         {isPreload && <View className={`w-full h-full absolute top-8`}><Loading className="absolute" /></View>}
-                        <View className='absolute top-1 right-1 w-7 h-7 text-center mx-auto'>
-                            <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" title="" rounded size="xs" />
+                        <View className='absolute top-1 right-1'>
+                            <NeoButton
+                                style="glass"
+                                controlSize="mini"
+                                borderShape="circle"
+                                image="X"
+                                accessibilityLabel="Close"
+                                onPress={() => handleDelete(img.file_id)}
+                            />
                         </View>
                     </>)
                     }
@@ -674,15 +681,14 @@ function GhostsList(imagesList, bMultiple, handleDelete, props) {
 
                 {isPreload && <View className={`w-full h-full absolute top-8`}><Loading className="absolute" /></View>}
 
-                <View className="absolute top-1 right-1 w-7 h-7 text-center mx-auto">
-                    <Button
+                <View className="absolute top-1 right-1">
+                    <NeoButton
+                        style="glass"
+                        controlSize="mini"
+                        borderShape="circle"
+                        image="X"
+                        accessibilityLabel="Close"
                         onPress={() => handleDelete(img.file_id)}
-                        variant="default"
-                        startDecorator="X"
-                        align="center"
-                        title=""
-                        rounded
-                        size="xs"
                     />
                 </View>
 

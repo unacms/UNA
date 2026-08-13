@@ -28,8 +28,11 @@
  * (a custom HStack-equivalent). There are no startDecorator /
  * endDecorator / leadingDecorator / trailingDecorator props anymore;
  * use `image` + `imagePlacement` for the common case, children for the
- * rest. This keeps the API mappable 1:1 to `@expo/ui/swift-ui` Button
- * when the `appearance="native"` switch lands.
+ * rest. This keeps the API mappable 1:1 to `@expo/ui/swift-ui` Button.
+ *
+ * Native: `neo_button.native.enabled` routes eligible buttons through
+ * Expo UI (`neo-button-native.{ios,android}.js`). Unmapped icons, custom
+ * children, addons, `selected`, and long-press stay on the JS surface.
  */
 
 import React, { memo } from 'react';
@@ -50,6 +53,7 @@ import {
 } from 'app/lib/util';
 import {
     useResolvedNeoButton,
+    useNeoButtonNative,
     NeoButtonStyleProvider,
     NeoControlSizeProvider,
     useNeoButtonStyle,
@@ -58,9 +62,16 @@ import {
     useNeoEnv,
     resolveScoped,
 } from 'app/design/controls/neo-button-resolver';
+import { NeoButtonNative, getNativeIcon } from 'app/design/controls/neo-button-native';
 
 const isBrowserRuntime = typeof document !== 'undefined';
 const isWeb = Platform.OS === 'web' || process.env.EXPO_OS === 'web' || isBrowserRuntime;
+
+// `width="fill"` takes leftover space in a flex parent (`flex-auto`), not
+// 100% of the parent (`w-full`) — that would shove siblings out of the row.
+// `min-w-0` lets the label ellipsis instead of overflowing. Inner surface
+// still uses `w-full` so the chrome fills this flex item.
+const FILL_WIDTH_CLASS = 'flex-auto min-w-0';
 
 const ICON_ACCESSIBLE_MAP = {
     X: 'Close', ChevronLeft: 'Previous', ChevronRight: 'Next',
@@ -123,13 +134,10 @@ const NeoImage = memo(function NeoImage({ source, size, color, className }) {
     }
     if (source === '_loading') return <Loading size="small" />;
     if (React.isValidElement(source)) return source;
-
     if (typeof source !== 'string') return null;
-
     if (isEmoji(source)) {
         return <Text className={className} style={color ? { color } : undefined}>{source}</Text>;
     }
-
     return (
         <Icon
             size={size}
@@ -299,9 +307,39 @@ function PressHighlight({ active, rounded, color }) {
     );
 }
 
+/* --------------------------- native mode gating ---------------------------- */
+
+function canRenderNativeButton(props, native) {
+    if (props.children !== undefined && props.children !== null && props.children !== false) return false;
+    if (props.addon) return false;
+    if (props.selected !== undefined) return false;
+    if (props.onLongPress) return false;
+
+    const label = props.label ?? props.title;
+    const hasLabel = (typeof label === 'string' && label !== '') || typeof label === 'number';
+    const rawImage = props.systemImage ?? props.image;
+    const hasImage = (typeof rawImage === 'string' && rawImage !== '') || React.isValidElement(rawImage);
+    if (!hasLabel && !hasImage) return false;
+    if (!hasImage) return true;
+
+    return !!getNativeIcon(rawImage, native.config);
+}
+
 /* -------------------------- main Button component ------------------------- */
 
 export const NeoButton = (props) => {
+    const native = useNeoButtonNative(props);
+
+    if (native && NeoButtonNative && canRenderNativeButton(props, native)) {
+        return <NeoButtonNative {...props} nativeConfig={native.config} />;
+    }
+
+    return <NeoButtonStyled {...props} />;
+};
+
+/* ----------------------- JS-styled implementation ------------------------- */
+
+const NeoButtonStyled = (props) => {
     const {
         // SwiftUI core (`buttonStyle` avoids RN `Link` clobbering `style` on native)
         role, style, buttonStyle, controlSize, borderShape, tint,
@@ -327,7 +365,7 @@ export const NeoButton = (props) => {
         showTitleFromSize = '',
 
         // Accessibility / web
-        accessibilityLabel, alt, tooltip = false,
+        accessibilityLabel, alt, tooltip = false, tooltipSide,
         hitarea = true, hitSlop, focusRing,
 
         // Animation override
@@ -354,7 +392,7 @@ export const NeoButton = (props) => {
         focusRing, pressAnimation,
         image: image ?? systemImage,
         systemImage,
-        imagePlacement, align, width, disabled,
+        imagePlacement, align, width, disabled, haptics,
     });
 
     // Effective content props.
@@ -397,14 +435,25 @@ export const NeoButton = (props) => {
 
     /* ------------------------------ handlers ---------------------------- */
 
+    // Fire on press-in (finger down), not onPress (finger up). SwiftUI's
+    // built-in click is press-in; JS Pressable has none, so this is what
+    // makes styled buttons feel like native when `native.enabled` is off.
+    const fireHaptics = () => {
+        if (resolved.haptics) FeedbackHaptics(resolved.haptics);
+    };
+
     const handlePress = (event) => {
-        if (haptics && onPress) FeedbackHaptics(haptics);
         if (isWeb) event?.currentTarget?.blur?.();
         onPress?.(event);
     };
 
+    const handlePressIn = (event) => {
+        fireHaptics();
+        setIsPressed(true);
+        onPressIn?.(event);
+    };
+
     const handleLongPress = (event) => {
-        if (haptics && onLongPress) FeedbackHaptics(haptics);
         onLongPress?.(event);
     };
 
@@ -529,6 +578,7 @@ export const NeoButton = (props) => {
         onPointerDown: (event) => {
             if (disabled) return;
             if (event.pointerType === 'mouse' && event.button !== 0) return;
+            fireHaptics();
             setIsPressed(true);
         },
         onPointerUp: () => setIsPressed(false),
@@ -537,6 +587,7 @@ export const NeoButton = (props) => {
     } : {};
 
     const cntProps = {
+        ...rest,
         className: cn(
             `neo-btn neo-btn-${resolved.style} neo-btn-${resolved.controlSize}`,
             hitAreaClass,
@@ -544,13 +595,12 @@ export const NeoButton = (props) => {
             classNames?.ring,
         ),
         style: containerStyle,
+        ...refProps,
+        ...buttonAttributes,
         ...(useNativePressable ? {
             disabled: !isActive,
             hitSlop: resolvedHitSlop,
-            onPressIn: (event) => {
-                setIsPressed(true);
-                onPressIn?.(event);
-            },
+            onPressIn: handlePressIn,
             onPressOut: (event) => {
                 setIsPressed(false);
                 onPressOut?.(event);
@@ -570,9 +620,6 @@ export const NeoButton = (props) => {
                 ...(onPress ? { onPress: handlePress } : {}),
             } : {}),
         }),
-        ...refProps,
-        ...buttonAttributes,
-        ...rest,
     };
 
     /* ------------------------------ content ----------------------------- */
@@ -623,7 +670,7 @@ export const NeoButton = (props) => {
     );
 
     const wrapperClass = cn(
-        resolved.width === 'fill' ? 'w-full' : 'self-start',
+        resolved.width === 'fill' ? FILL_WIDTH_CLASS : 'self-start',
         classNames?.root,
     );
 
@@ -641,7 +688,7 @@ export const NeoButton = (props) => {
 
     const isDesktop = useNeoEnv().isDesktop;
     if (tooltip && isDesktop) {
-        return <Tooltip content={tooltip} enabled>{wrapped}</Tooltip>;
+        return <Tooltip content={tooltip} side={tooltipSide} enabled>{wrapped}</Tooltip>;
     }
     return wrapped;
 };
@@ -679,7 +726,7 @@ export const NeoButtonLink = ({
     const linkClassName = cn(
         'u-neo-btn-link block',
         hitAreaCls,
-        props.width === 'fill' ? 'w-full' : '',
+        props.width === 'fill' ? FILL_WIDTH_CLASS : '',
     );
     const neoProps = { ...props, buttonStyle: style, hitarea: false, interactive: true };
 
@@ -698,6 +745,7 @@ export {
     useNeoButtonStyle,
     useNeoControlSize,
     useResolvedNeoButton,
+    useNeoButtonNative,
     usePointerCapability,
     resolveScoped,
 };

@@ -24,7 +24,7 @@ import { useWindowHeight } from 'app/context/measure';
 import emitter from 'app/context/emitter'
 import Snackbar from 'app/ui/atoms/snackbar'
 import { useIsFocused } from 'app/lib/hooks/router'
-import { useScrollValue } from 'app/context/jotai/layout'
+import { getScrollValue } from 'app/context/jotai/layout'
 import { setListScrollOffset } from 'app/lib/tab-page-cache'
 import {
     refetchUniListReducer,
@@ -51,9 +51,6 @@ export default function Browse(props) {
     const isFocused = useIsFocused();
     const isFocusedRef = useRef(isFocused);
     isFocusedRef.current = isFocused;
-    const scrollValue = useScrollValue();
-    const scrollValueRef = useRef(0);
-    scrollValueRef.current = scrollValue;
     const [refetchState, dispatch] = useReducer(refetchUniListReducer, {
         visibleItems: [],
         hasNewData: false
@@ -271,7 +268,7 @@ export default function Browse(props) {
             if (payload?.action !== 'reset_to_first') return;
 
             const requestUrl = data.request_url || props?.url;
-            if (scrollValueRef.current > AT_TOP_SCROLL_THRESHOLD) {
+            if (getScrollValue() > AT_TOP_SCROLL_THRESHOLD) {
                 if (requestUrl) {
                     setListScrollOffset(requestUrl, 0);
                 }

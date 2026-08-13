@@ -40,7 +40,7 @@ function ModalHeader({ title, headerBorder, onClose }) {
             {(title && type !== 'string') && (title)}
             {(onClose && type === 'string') && (
                 <View className='absolute right-3 top-0 bottom-0 justify-center items-center'>
-                    <NeoButton style="bordered" controlSize="regular" borderShape="circle" image="X" accessibilityLabel="Close" onPress={onClose} />
+                    <NeoButton style="glass" controlSize="regular" borderShape="circle" image="X" accessibilityLabel="Close" onPress={onClose} />
                 </View>
             )}
         </Row>

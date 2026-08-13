@@ -1542,7 +1542,7 @@
   resolved "https://registry.yarnpkg.com/@expo/sudo-prompt/-/sudo-prompt-9.3.2.tgz#0fd2813402a42988e49145cab220e25bea74b308"
   integrity sha512-HHQigo3rQWKMDzYDLkubN5WQOYXJJE2eNqIQC2axC2iO3mHdwnIR7FgZVvHWtBwAdzBgAP0ECp8KqS8TiMKvgw==
 
-"@expo/ui@^57.0.10":
+"@expo/ui@^57.0.10", "@expo/ui@~57.0.10":
   version "57.0.10"
   resolved "https://registry.yarnpkg.com/@expo/ui/-/ui-57.0.10.tgz#037c6777c89a7c86b629e2ff9553b5a2ecbf9212"
   integrity sha512-cYVo6R6JmJgza2p1jyE1lGfNPWncHJGWRxhTyOi+pLRAAdiwo8Z2LcdaArewEXVUwJTQhczLRxeXGL0i99NUwQ==

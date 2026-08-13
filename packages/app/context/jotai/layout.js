@@ -13,6 +13,17 @@ export const headerAtom = atom(defaultHeader);
 export const footerAtom = atom(true);
 export const scrollDirectionAtom = atom(0);
 export const scrollValueAtom = atom(0);
+// Non-reactive mirror. Scroll writers fire every frame — subscribe with
+// `useScrollValue()` only when the UI must track offset continuously
+// (cover collapse, overlay header). Callbacks should use `getScrollValue()`.
+let scrollValueCurrent = 0;
+export const getScrollValue = () => scrollValueCurrent;
+const setScrollValueAtom = atom(null, (_get, set, value) => {
+    const next = Math.round(Number(value));
+    if (!Number.isFinite(next) || next === scrollValueCurrent) return;
+    scrollValueCurrent = next;
+    set(scrollValueAtom, next);
+});
 /** Max scroll offset the active list can reach (content height − viewport). */
 export const listMaxScrollOffsetAtom = atom(0);
 /**
@@ -62,7 +73,7 @@ export const useSetScrollDirection = () => useSetAtom(scrollDirectionAtom);
 export const useScrollDirection = () => useAtomValue(scrollDirectionAtom);
 
 
-export const useSetScrollValue = () => useSetAtom(scrollValueAtom);
+export const useSetScrollValue = () => useSetAtom(setScrollValueAtom);
 export const useScrollValue = () => useAtomValue(scrollValueAtom);
 
 export const useSetListMaxScrollOffset = () => useSetAtom(listMaxScrollOffsetAtom);

@@ -68,26 +68,32 @@ const SCOPE_KEYS = new Set([
  */
 const MIN_SIZE_CLASS = {
     28: 'min-h-7 min-w-7',
+    32: 'min-h-8 min-w-8',
     36: 'min-h-9 min-w-9',
     40: 'min-h-10 min-w-10',
     44: 'min-h-11 min-w-11',
     52: 'min-h-13 min-w-13',
     60: 'min-h-15 min-w-15',
+    64: 'min-h-16 min-w-16',
 };
 const FIXED_SIZE_CLASS = {
     28: 'h-7 w-7',
+    32: 'h-8 w-8',
     36: 'h-9 w-9',
     40: 'h-10 w-10',
     44: 'h-11 w-11',
     52: 'h-13 w-13',
     60: 'h-15 w-15',
+    64: 'h-16 w-16',
 };
 const PADDING_X_CLASS = {
     0: 'px-0',
     8: 'px-2',
     12: 'px-3',
+    16: 'px-4',
     20: 'px-5',
     24: 'px-6',
+    32: 'px-8',
 };
 const LABEL_GAP_CLASS = {
     0: 'gap-x-0',
@@ -300,7 +306,10 @@ export const useNeoControlSize = () => useContext(NeoControlSizeContext);
 
 const SWIFTUI_BUTTON_STYLE = {
     plain: 'plain',
-    bordered: 'bordered',
+    // `.bordered` tints a translucent wash — palette `--button` (#e4e4e7)
+    // would not match JS `bg-button`. `.borderedProminent` paints that hex
+    // as a solid fill.
+    bordered: 'borderedProminent',
     borderedProminent: 'borderedProminent',
     borderless: 'borderless',
     link: 'borderless',          // SwiftUI has no .link; .borderless is closest
@@ -375,6 +384,41 @@ function resolveStyle({ propStyle, providerStyle, defaultsStyle, roleConfig, sty
     return FALLBACK_STYLE;
 }
 
+/** Theme gate for Expo UI rendering. Content eligibility is `canRenderNativeButton`. */
+export function useNeoButtonNative(props = {}) {
+    const providerStyle = useNeoButtonStyle();
+    const tree = appSetting('theme', 'neo_button');
+
+    if (isWeb) return null;
+
+    const config = tree?.native;
+    if (!config) return null;
+
+    const platform = Platform.OS === 'ios' ? 'ios' : 'android';
+    const ctx = { platform };
+
+    if (!resolveScoped(config.enabled, ctx)) return null;
+
+    const allowedStyles = resolveScoped(config.styles, ctx);
+    if (allowedStyles === false) return null;
+    if (Array.isArray(allowedStyles)) {
+        const defaults = tree?.defaults || {};
+        const stylesTree = tree?.styles || {};
+        const role = props.role ?? defaults.role ?? 'default';
+        const roleConfig = (tree?.roles || {})[role] || {};
+        const style = resolveStyle({
+            propStyle: normalizeStyleProp(props.buttonStyle) ?? normalizeStyleProp(props.style),
+            providerStyle,
+            defaultsStyle: defaults.style,
+            roleConfig,
+            stylesTree,
+        });
+        if (!allowedStyles.includes(style)) return null;
+    }
+
+    return { platform, config };
+}
+
 /**
  * Main hook used by `NeoButton`.
  */
@@ -418,7 +462,7 @@ export function useResolvedNeoButton(props = {}) {
         const paddingX = sizeCfg.paddingX ?? 12;
         const fontCls = sizeCfg.font ?? 'text-base';
         const iconSize = sizeCfg.icon ?? 20;
-        const hitSlop = sizeCfg.hitSlop ?? 4;
+        const hitSlop = sizeCfg.hitSlop ?? 8;
         const labelGap = sizeCfg.labelGap ?? 8;
         const contentInsets = sizeCfg.contentInsets ?? {};
 
@@ -480,6 +524,16 @@ export function useResolvedNeoButton(props = {}) {
         // 8) Tint: prop > role default.
         const tint = props.tint ?? roleConfig.tint ?? null;
 
+        // 8b) Haptics: prop > native override > defaults. Applies to JS-styled
+        // and Expo UI buttons. `false` / `''` opts out. Same `FeedbackHaptics`
+        // types as tabs (`Select` / `Medium` / …).
+        const themeHaptics = (!isWeb ? resolveScoped(tree?.native?.haptics, ctx) : null)
+            ?? resolveScoped(defaults.haptics, ctx)
+            ?? null;
+        const haptics = (props.haptics === false || props.haptics === '')
+            ? null
+            : (typeof props.haptics === 'string' ? props.haptics : themeHaptics);
+
         // 9) Default image (e.g. role 'close' implies 'X' if no image given).
         const defaultImage = roleConfig.defaultImage ?? null;
 
@@ -505,7 +559,7 @@ export function useResolvedNeoButton(props = {}) {
             // Slot resolvers (call with current state)
             containerCls, textCls,
             // Behaviour
-            transition, behaviors,
+            transition, behaviors, haptics,
             // Visuals
             tint, defaultImage,
             // Env (for debugging / ad-hoc consumers)
@@ -521,6 +575,6 @@ export function useResolvedNeoButton(props = {}) {
         props.role, props.style, props.buttonStyle, props.controlSize, props.borderShape,
         props.imagePlacement, props.align, props.width,
         props.tint, props.transition, props.focusRing, props.pressAnimation,
-        props.disabled, props.image, props.systemImage,
+        props.disabled, props.image, props.systemImage, props.haptics,
     ]);
 }

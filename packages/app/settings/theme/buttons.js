@@ -14,8 +14,8 @@ export const settingsButtons = {
         },
         sm: {
             rounded: 'rounded-lg ',
-            container: 'px-2.5 gap-1 h-9 min-w-9 ',
-            container_icon_only: 'h-9 w-9',
+            container: 'px-2.5 gap-1 h-8 min-w-8 ',
+            container_icon_only: 'h-8 w-8',
             text: 'text-sm leading-5',
             icon_size: 16,
             hitSlop: 6,
@@ -26,22 +26,22 @@ export const settingsButtons = {
             container_icon_only: 'min-h-11 min-w-11',
             title_container: ' leading-11 text-base',
             icon_size: 20,
-            hitSlop: 4,
+            hitSlop: 0,
         },
         lg: {
             rounded: 'rounded-xl',
-            container: 'px-4 gap-2 min-h-12 min-w-12',
-            container_icon_only: 'min-h-12 min-w-12',
-            title_container: ' leading-12 text-base',
+            container: 'px-4 gap-2 min-h-13 min-w-13',
+            container_icon_only: 'min-h-13 min-w-13',
+            title_container: ' leading-13 text-base',
             icon_size: 24,
-            hitSlop: 2,
+            hitSlop: 0,
         },
         xl: {
             rounded: 'rounded-xl',
-            container: 'px-4 gap-2 min-h-14 min-w-14',
-            container_icon_only: 'min-h-14 min-w-14',
-            title_container: ' leading-14 text-base',
-            icon_size: 24,
+            container: 'px-4 gap-2 min-h-16 min-w-16',
+            container_icon_only: 'min-h-16 min-w-16',
+            title_container: ' leading-16 text-base',
+            icon_size: 28,
             hitSlop: 0,
         },
     },
@@ -281,6 +281,9 @@ export const settingsButtons = {
             width: 'auto',
             focusRing: { default: 'never', web: 'auto' },
             pressAnimation: true,
+            // Same `FeedbackHaptics` types as tabs (`Select` / `Medium` / …).
+            // `haptics={false}` on a button opts out.
+            haptics: 'Medium',
             // Behavioral flags. The resolver gates event handlers on these so
             // web-only hover code does not run on native, etc.
             behaviors: {
@@ -291,19 +294,147 @@ export const settingsButtons = {
             },
         },
 
-        // controlSize → height / paddingX / font / icon / hitSlop / labelGap.
-        // iOS HIG-style minimum is 44pt; web/mouse trims a few pixels because
-        // pointers don't need finger-sized targets.
-        controlSizes: {
-            mini:    { height: 28, paddingX: 8,  font: 'text-sm leading-7', icon: 16, hitSlop: 10, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
-            small:   { height: 36, paddingX: 12, font: 'text-sm leading-8', icon: 20, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 6 } } },
-            regular: {
-                default: { height: 44, paddingX: 16, font: 'text-base leading-11', icon: 20, hitSlop: 2, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
-               // web:     { height: 44, paddingX: 12 },
-               // mouse:   { height: 44, paddingX: 12, font: 'text-sm', icon: 20, hitSlop: 2, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
+        // Native Expo UI buttons (iOS SwiftUI / Android Material3). Ignored on web.
+        // Unmapped icons, custom children, addons, selected, long-press stay JS-styled.
+        native: {
+            enabled: true,
+            styles: true,
+            androidVariants: {
+                plain: 'text',
+                borderless: 'text',
+                link: 'text',
+                bordered: 'tonal',
+                borderedProminent: 'filled',
+                glass: 'elevated',
+                glassProminent: 'filled',
             },
-            large:  { height: 48, paddingX: 24, font: 'text-base leading-12', icon: 24, hitSlop: 0, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
-            xlarge:  { height: 56, paddingX: 32, font: 'text-lg leading-14', icon: 24, hitSlop: 0, labelGap: 12, contentInsets: { mediaLeading: { left: 8 } } },
+            // Hex only — CSS variables do not resolve inside a native Host.
+            androidColors: {
+                tonal: {
+                    default: {
+                        containerColor: '#e4e4e7',
+                        contentColor: '#27272a',
+                        tintedContainerColor: '#dbeafe',
+                    },
+                    dark: {
+                        containerColor: '#27272a',
+                        contentColor: '#e4e4e7',
+                        tintedContainerColor: '#172554',
+                    },
+                },
+                elevated: {
+                    default: { containerColor: '#e4e4e7', contentColor: '#27272a' },
+                    dark: { containerColor: '#27272a', contentColor: '#e4e4e7' },
+                },
+                text: {
+                    default: { contentColor: '#27272a' },
+                    dark: { contentColor: '#e4e4e7' },
+                },
+                filled: {
+                    default: { containerColor: '#2563eb', contentColor: '#fafafc' },
+                },
+            },
+            iosTint: null,
+            iosColors: {
+                bordered: {
+                    default: { tint: '#e4e4e7', foreground: '#27272a' },
+                    dark: { tint: '#27272a', foreground: '#e4e4e7' },
+                },
+                plain: {
+                    default: { tint: '#27272a' },
+                    dark: { tint: '#e4e4e7' },
+                },
+                borderless: {
+                    default: { tint: '#27272a' },
+                    dark: { tint: '#e4e4e7' },
+                },
+                glass: {
+                    default: { tint: '#27272a' },
+                    dark: { tint: '#e4e4e7' },
+                },
+                link: { default: { tint: '#2563eb' } },
+                borderedProminent: { default: { tint: '#2563eb' } },
+                glassProminent: { default: { tint: '#2563eb' } },
+            },
+            // PostScript name, e.g. { family: 'Inter', weight: 'medium' } — not CSS `font-main`.
+            iosFont: null,
+            iosIconSize: {
+                mini: 14,
+                small: 16,
+                regular: 20,
+                large: 24,
+                extraLarge: 28,
+            },
+            iosControlSize: null,
+            // Discrete SF Symbol effect on press (iOS 17+). `false` to disable.
+            // Per-icon override: `{ name: 'bell.fill', effect: 'wiggle' }`.
+            iosSymbolEffect: { effect: 'bounce' },
+            iosSymbols: {
+                Plus: 'plus',
+                X: 'xmark',
+                ChevronLeft: 'chevron.left',
+                ChevronRight: 'chevron.right',
+                ChevronUp: 'chevron.up',
+                ChevronDown: 'chevron.down',
+                ArrowLeft: 'arrow.left',
+                ArrowRight: 'arrow.right',
+                Search: 'magnifyingglass',
+                Ellipsis: 'ellipsis',
+                Pencil: 'pencil',
+                Trash: 'trash',
+                Check: 'checkmark',
+                Image: 'photo',
+                ImagePlus: 'photo.badge.plus',
+                Video: 'video',
+                Film: 'film',
+                File: 'doc',
+                FileText: 'text.page',
+                Calendar: 'calendar',
+                CalendarPlus: 'calendar.badge.plus',
+                List: 'list.bullet',
+                ListChecks: 'checklist',
+                CheckSquare: 'checkmark.square',
+                CircleStar: 'star.circle',
+                MessageCircleMore: 'message',
+                MessagesSquare: 'bubble.left.and.text.bubble.right',
+                Share2: 'square.and.arrow.up',
+                ScrollText: 'scroll',
+                Hash: 'number',
+                Info: 'info.circle',
+                Clock: 'clock',
+                Cog: 'gearshape',
+                UserRound: 'person',
+                UsersRound: 'person.2',
+                UserPlus: 'person.badge.plus',
+                Building2: 'building.2',
+                Store: 'cart',
+                LibraryBig: 'books.vertical',
+                LayoutDashboard: 'square.grid.2x2',
+                Wallet: 'wallet.pass',
+                LogOut: 'rectangle.portrait.and.arrow.right',
+                Wand: 'wand.and.stars',
+                SquareStack: 'square.stack',
+                Clipboard: 'doc.on.clipboard',
+                RotateCw: 'arrow.clockwise',
+                Award: 'rosette',
+                BadgeCheck: 'checkmark.seal',
+                House: 'house',
+            },
+            androidIcons: null,
+        },
+
+        // HIG scale: mini 28 / small 32 / regular 44 / large 52 / xlarge 64.
+        // hitSlop = max(0, ceil((44 − height) / 2)) so every size hits 44pt.
+        controlSizes: {
+            mini:    { height: 28, paddingX: 10,  font: 'text-xs ', icon: 16, hitSlop: 8, labelGap: 4, contentInsets: { mediaLeading: { left: 2 } } },
+            small:   { height: 36, paddingX: 12, font: 'text-sm ', icon: 20, hitSlop: 6, labelGap: 6, contentInsets: { mediaLeading: { left: 4 } } },
+            regular: {
+                default: { height: 44, paddingX: 16, font: 'text-base leading-11', icon: 24, hitSlop: 0, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
+               // web:     { height: 44, paddingX: 12 },
+               // mouse:   { height: 44, paddingX: 12, font: 'text-sm', icon: 20, hitSlop: 0, labelGap: 8, contentInsets: { mediaLeading: { left: 4 } } },
+            },
+            large:  { height: 52, paddingX: 24, font: 'text-base leading-13', icon: 24, hitSlop: 0, labelGap: 10, contentInsets: { mediaLeading: { left: 6 } } },
+            xlarge:  { height: 64, paddingX: 32, font: 'text-lg leading-16', icon: 28, hitSlop: 0, labelGap: 12, contentInsets: { mediaLeading: { left: 8 } } },
         },
 
         // borderShape → rounding strategy. roundedRectangle scales with
@@ -379,18 +510,18 @@ export const settingsButtons = {
             // for the glass family).
             bordered: {
                 container: {
-                    base: ' shadow-btn-outline dark:shadow-btn-outline-deep ',
+                    base: '  ',
                     default: 'bg-button ',
-                    hovered: 'bg-button-hover/60 ',
-                    focused: 'bg-button-hover/60 ',
+                    hovered: 'bg-button-hover ',
+                    focused: 'bg-button-hover ',
                     pressed: 'bg-button-hover ',
-                    active: 'bg-button-hover/60 ',
+                    active: 'bg-button-hover ',
                     pressedToggle: 'bg-button-hover ',
                     disabled: 'bg-button opacity-50 ',
                 },
                 text: {
                     base: 'font-medium tracking-tight',
-                    default: 'text-button-foreground/80',
+                    default: 'text-button-foreground',
                     hovered: 'text-button-foreground',
                     focused: 'text-button-foreground',
                     pressed: 'text-button-foreground',

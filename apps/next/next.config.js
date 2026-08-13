@@ -202,6 +202,13 @@ const nextConfig = {
             'react-native/Libraries/Utilities/codegenNativeComponent$': tenPlayWebviewShimPath,
             'react-native-reanimated': reanimatedPath,  // <-- Pin version 3.10.1
             'react-native-localize': path.resolve(__dirname, 'stubs/react-native-localize.js'),
+            // Native-only. NeoButton web uses neo-button-native.web.js; this is a
+            // backstop if webpack ever follows .ios.js / .android.js.
+            '@expo/ui': path.resolve(__dirname, 'stubs/expo-ui.js'),
+            '@expo/ui/swift-ui': path.resolve(__dirname, 'stubs/expo-ui.js'),
+            '@expo/ui/swift-ui/modifiers': path.resolve(__dirname, 'stubs/expo-ui.js'),
+            '@expo/ui/jetpack-compose': path.resolve(__dirname, 'stubs/expo-ui.js'),
+            '@expo/ui/jetpack-compose/modifiers': path.resolve(__dirname, 'stubs/expo-ui.js'),
             // Шим форсит immediatelyRender:false (см. shims/tiptap-react.js).
             // '$' — точное совпадение, поэтому '@tiptap/react/menus' и пр. не трогаем.
             '@tiptap/react$': path.resolve(__dirname, 'shims/tiptap-react.js'),
@@ -250,6 +257,10 @@ const nextConfig = {
             new webpack.NormalModuleReplacementPlugin(
                 /^\.\/wasm\/md4c$/,
                 path.resolve(__dirname, 'shims/md4c.js')
+            ),
+            new webpack.NormalModuleReplacementPlugin(
+                /^@expo\/ui(\/.*)?$/,
+                path.resolve(__dirname, 'stubs/expo-ui.js')
             )
         );
 

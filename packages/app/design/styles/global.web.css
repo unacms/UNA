@@ -243,11 +243,11 @@ select {
 }
 
 .u-action-hitarea-sm::before {
-    inset: -4px;
+    inset: -6px;
 }
 
 .u-action-hitarea-md::before {
-    inset: -4px;
+    inset: 0px;
 }
 
 .u-action-hitarea-lg::before {

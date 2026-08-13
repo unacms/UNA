@@ -280,18 +280,18 @@ function ReactionPopover({
                 left: buttonPos.x,
                 elevation: 5,
             }}
-            className=" absolute flex-row rounded-full border border-border/60 p-1 px-1.5 bg-popover items-center h-16"
+            className=" absolute flex-row rounded-full shadow-card-outline dark:shadow-card-outline-deep p-1 px-1.5 bg-popover items-center h-14"
         >
             {items.map((item) => {
                 const content = isEmoji(item.icon) ? (
-                    <View className="w-12 items-center justify-center">
+                    <View className="w-11 items-center justify-center">
                         <Text className="text-3xl  web:hover:scale-110 flex web:hover:bg-muted/50 web:active:bg-muted rounded-full">
                             {item.icon}
                         </Text>
                     </View>
                 ) : (
-                    <View className="w-12 h-12  items-center text-secondary-foreground web:hover:text-foreground web:hover:scale-110 web:duration-200 justify-center flex web:hover:bg-muted/50 web:active:bg-muted rounded-full">
-                        <Icon icon={item.icon} size={30} />
+                    <View className="w-11 h-11  items-center text-secondary-foreground web:hover:text-foreground web:hover:scale-110 web:duration-200 justify-center flex web:hover:bg-muted/50 web:active:bg-muted rounded-full">
+                        <Icon icon={item.icon} size={24} />
                     </View>
                 );
 

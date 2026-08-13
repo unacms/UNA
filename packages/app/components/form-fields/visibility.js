@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Field, { getValidationRules } from './_field';
 import { useFormContext, useController } from 'react-hook-form';
-import { Button, Modal, Hidden } from 'app/design/controls'
+import { Button, NeoButton, Modal, Hidden } from 'app/design/controls'
 import { getVisibilityValues } from './select';
 import { visibilityById, appSetting } from 'app/lib/util';
 import RbList from 'app/ui/molecules/form-controls/radio-list';
@@ -171,13 +171,18 @@ export default function (props) {
         return (
             <>
                 {props.addElement}
+                {props.renderTrigger?.({
+                    onPress: undefined,
+                    displayText: '',
+                    icon: null,
+                })}
                 <Hidden
                     name={name}
                     onChangeText={field.onChange}
                     onBlur={field.onBlur}
                     defaultValue={props.value}
                 />
-                {!!props.owner_info && <Row className=" h-5.5 items-center text-muted-foreground web:group-hover:text-secondary-foreground     web:duration-300">
+                {!!props.owner_info && !props.renderTrigger && <Row className=" h-5.5 items-center text-muted-foreground web:group-hover:text-secondary-foreground     web:duration-300">
                     <View className='flex-none mb-auto'>
                         <Profile
                             {...props.owner_info}
@@ -209,17 +214,26 @@ export default function (props) {
 
     if (props.format == 'nofield') {
         if (props.noContainer) {
+            const trigger = props.renderTrigger
+                ? props.renderTrigger({
+                    onPress: handleShowModal,
+                    displayText,
+                    icon,
+                })
+                : (
+                    <NeoButton
+                        label={displayText}
+                        image={icon}
+                        style={props.style || 'bordered'}
+                        controlSize={props.controlSize || 'mini'}
+                        borderShape={props.borderShape || 'capsule'}
+                        onPress={handleShowModal}
+                    />
+                );
             return (<>
                 {modalElement}
                 {props.addElement}
-                <Button
-                    title={displayText}
-                    startDecorator={icon}
-                    endDecorator="ChevronsUpDown"
-                    variant={props.variant || 'secondary'}
-                    size={props.size || 'sm'}
-                    onPress={() => handleShowModal()}
-                />
+                {trigger}
             </>);
         }
         return (<>

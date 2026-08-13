@@ -303,7 +303,7 @@ export const Button = ({
     const resolvedHitSlop =
         hitSlop !== undefined ? hitSlop :
             hitarea === false ? undefined :
-                { top: BtnClsSize[size].hit_slop, right: BtnClsSize[size].hit_slop, bottom: BtnClsSize[size].hit_slop, left: BtnClsSize[size].hit_slop };
+                { top: BtnClsSize[size].hitSlop, right: BtnClsSize[size].hitSlop, bottom: BtnClsSize[size].hitSlop, left: BtnClsSize[size].hitSlop };
 
     const hitareaClass = hitarea === false ? '' : `u-action-hitarea u-action-hitarea-${size}`;
 

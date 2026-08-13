@@ -64,6 +64,7 @@ export const resourcesDefault = {
 
             "feed_type_bx_posts": "added a Post",
             "feed_type_bx_jobs": "added a Job",
+            "feed_type_bx_tasks": "Task",
             "feed_type_bx_channels": "",
             "feed_type_bx_groups": "added a Group",
             "feed_type_bx_events": "added an Event",

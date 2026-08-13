@@ -1,4 +1,4 @@
-export default function Tooltip({children, content, enabled = true}) {
+export default function Tooltip({ children, content, enabled = true, side }) {
     return children;
 }
 

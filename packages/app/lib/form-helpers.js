@@ -2,7 +2,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import { getComponent } from 'app/components/registry';
-import { Button } from "app/design/controls/buttons";
 import { NeoButton } from "app/design/controls/neo-button";
 import emitter from 'app/context/emitter';
 import { appSetting } from 'app/lib/util';
@@ -217,33 +216,6 @@ export function inputByKey(array, value) {
     return array.find(obj => obj['key'] === value);
 }
 
-export function PollButton({ field_name, size = 'sm', variant = 'secondary', icon = "ChartBarBig", rounded = true }) {
-    return (
-        <Button
-            startDecorator={icon}
-            size={size}
-            variant={variant}
-            rounded
-            tooltip="Add Polls"
-            onPress={() => emitter.emit(`fld_polls_${field_name}`, { action: 'add' })}
-        />
-    );
-}
-
-export function LabelButton({ field_name, size = 'sm', variant = 'secondary', icon = "Hash", title, rounded = true }) {
-    return (
-        <Button
-            startDecorator={icon}
-            size={size}
-            title={title}
-            tooltip="Add Labels"
-            variant={variant}
-            rounded={rounded}
-            onPress={() => emitter.emit(`fld_labels_${field_name}`, { action: 'add' })}
-        />
-    );
-}
-
 const LEGACY_SIZE_TO_CONTROL = {
     xs: 'mini',
     sm: 'small',
@@ -260,28 +232,106 @@ const LEGACY_VARIANT_TO_STYLE = {
     default: 'bordered',
 };
 
+function resolveLegacyNeoButton({
+    size,
+    variant,
+    style: neoStyle,
+    controlSize,
+    borderShape,
+    rounded = true,
+    fallbackStyle = 'borderless',
+}) {
+    return {
+        style: neoStyle ?? (variant ? LEGACY_VARIANT_TO_STYLE[variant] : undefined) ?? fallbackStyle,
+        controlSize: controlSize ?? LEGACY_SIZE_TO_CONTROL[size] ?? 'regular',
+        borderShape: borderShape ?? (rounded ? 'circle' : 'roundedRectangle'),
+    };
+}
+
+export function PollButton({
+    field_name,
+    size = 'sm',
+    variant = 'secondary',
+    style: neoStyle,
+    controlSize,
+    borderShape,
+    icon = "ChartBarBig",
+    rounded = true,
+    ...rest
+}) {
+    const resolved = resolveLegacyNeoButton({
+        size, variant, style: neoStyle, controlSize, borderShape, rounded,
+        fallbackStyle: 'bordered',
+    });
+
+    return (
+        <NeoButton
+            image={icon}
+            style={resolved.style}
+            controlSize={resolved.controlSize}
+            borderShape={resolved.borderShape}
+            tooltip="Add Polls"
+            onPress={() => emitter.emit(`fld_polls_${field_name}`, { action: 'add' })}
+            {...rest}
+        />
+    );
+}
+
+export function LabelButton({
+    field_name,
+    size = 'sm',
+    variant = 'secondary',
+    style: neoStyle,
+    controlSize,
+    borderShape,
+    icon = "Hash",
+    title,
+    rounded = true,
+    ...rest
+}) {
+    const resolved = resolveLegacyNeoButton({
+        size, variant, style: neoStyle, controlSize, borderShape, rounded,
+        fallbackStyle: 'bordered',
+    });
+
+    return (
+        <NeoButton
+            image={icon}
+            label={title}
+            style={resolved.style}
+            controlSize={resolved.controlSize}
+            borderShape={resolved.borderShape}
+            tooltip="Add Labels"
+            onPress={() => emitter.emit(`fld_labels_${field_name}`, { action: 'add' })}
+            {...rest}
+        />
+    );
+}
+
 export function FileButton({
     field_name,
     size = 'sm',
     variant,
     style: neoStyle,
     controlSize,
+    borderShape,
     icon = "Image",
     rounded = true,
     tooltip = "Add Files",
     source = 'library',
     ...rest
 }) {
-    const resolvedStyle =
-        neoStyle ?? (variant ? LEGACY_VARIANT_TO_STYLE[variant] : undefined) ?? 'borderless';
-    const resolvedControlSize = controlSize ?? LEGACY_SIZE_TO_CONTROL[size] ?? 'regular';
+    const resolved = resolveLegacyNeoButton({
+        size, variant, style: neoStyle, controlSize, borderShape, rounded,
+        fallbackStyle: 'borderless',
+    });
 
     return (
         <NeoButton
             image={icon}
-            style={resolvedStyle}
-            controlSize={resolvedControlSize}
-            borderShape={rounded ? 'circle' : 'roundedRectangle'}
+            style={resolved.style}
+            controlSize={resolved.controlSize}
+            borderShape={resolved.borderShape}
             tooltip={tooltip}
             onPress={() => emitter.emit(`fld_files_${field_name}`, { action: 'add', source: source })}
             {...rest}

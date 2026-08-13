@@ -20,7 +20,7 @@ import { BlockByName } from 'app/components/block';
 import { Platform } from 'react-native';
 import Cover, { CoverSmall, CoverBackButton } from 'app/components/elements/cover';
 import emitter from 'app/context/emitter'
-import { useSetHeader, useScrollValue, useListMaxScrollOffset, useSetCoverScrollCompensation, defaultHeader, useSetHeaderHeight } from 'app/context/jotai/layout';
+import { useSetHeader, useScrollValue, getScrollValue, useListMaxScrollOffset, useSetCoverScrollCompensation, defaultHeader, useSetHeaderHeight } from 'app/context/jotai/layout';
 import { getComponent } from 'app/components/registry';
 import { useFocusEffect, useIsFocused, useRouter } from 'app/lib/hooks/router'
 import { appSetting } from 'app/lib/util'
@@ -720,9 +720,6 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
     isFocusedRef.current = isFocused;
 
     const listRef = useRef(null);
-    const scrollValue = useScrollValue();
-    const scrollValueRef = useRef(0);
-    scrollValueRef.current = scrollValue;
     const activeRequestUrlRef = useRef(null);
 
     const setRoutes = /*useCallback(*/(a) => {
@@ -1062,7 +1059,7 @@ export function Conductor({ isCoverDisabled, header, isHideDefaultHeader, leftSi
             }
 
             const requestUrl = activeRequestUrlRef.current;
-            if (scrollValueRef.current > AT_TOP_SCROLL_THRESHOLD) {
+            if (getScrollValue() > AT_TOP_SCROLL_THRESHOLD) {
                 if (requestUrl) {
                     setListScrollOffset(requestUrl, 0);
                 }
