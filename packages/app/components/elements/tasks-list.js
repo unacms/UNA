@@ -13,6 +13,7 @@ import { Icon } from 'app/ui/atoms/icon';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting, cn, getLayoutName, getPageData } from 'app/lib/util';
+import { redirectTo, useRouter } from 'app/lib/hooks/router';
 import { useTranslation } from 'react-i18next';
 import emitter from 'app/context/emitter';
 import Confirm from 'app/ui/molecules/dialogs/confirm';
@@ -231,6 +232,7 @@ function normalizeTasklistItems(raw) {
                 progress: progress != null ? String(progress) : null,
                 completed: !!(item.completed || item.is_completed || item.closed || pctIsComplete(progress)),
                 actions: item.actions,
+                context_id: item.context_id ?? item.context?.id ?? null,
             };
         })
         .filter(Boolean);
@@ -241,53 +243,181 @@ function pctIsComplete(progress) {
     return /^100\s*%/.test(progress.trim());
 }
 
-function extractDedicatedTasklists(payload) {
-    if (!payload || typeof payload !== 'object') return [];
-    return normalizeTasklistItems(
-        payload.tasklists
-        || payload.task_lists
-        || payload.lists_nav
-        || payload.milestones
-    );
+function nestedListNodes(item) {
+    if (!item || typeof item !== 'object') return [];
+    return [item.lists, item.tasklists, item.task_lists]
+        .filter((value) => Array.isArray(value) && value.length);
+}
+
+function flattenListsWithTasks(lists = []) {
+    const out = [];
+    const walk = (nodes) => {
+        if (!Array.isArray(nodes)) return;
+        for (const item of nodes) {
+            if (!item || typeof item !== 'object') continue;
+            for (const children of nestedListNodes(item)) walk(children);
+            if (Array.isArray(item.tasks) && item.tasks.length) out.push(item);
+        }
+    };
+    walk(lists);
+    return out;
+}
+
+const TASKS_HOME_PATH = '/tasks-home';
+
+function isTasklistGroup(item) {
+    return Array.isArray(item?.children);
+}
+
+function hasListId(listId) {
+    return listId != null && String(listId) !== '' && String(listId) !== '0';
+}
+
+function tasksModule(payload) {
+    return String(payload?.request_url || 'bx_tasks').split('/')[0] || 'bx_tasks';
+}
+
+function unwrapTasksListPayload(response) {
+    const normalized = normalizeTasksListPayload(response, null);
+    if (normalized) return normalized;
+    if (Array.isArray(response?.lists)) return response;
+    if (Array.isArray(response?.data?.lists)) return response.data;
+    return null;
 }
 
 function extractTasklists(payload) {
     if (!payload || typeof payload !== 'object') return [];
-    const dedicated = extractDedicatedTasklists(payload);
-    if (dedicated.length) return dedicated;
-
-    // Fallback: navigable lists when browse_context filtering is available
-    if (
-        payload.request_url_browse_context
-        || payload.request_url_tasklist
-        || payload.tasklists_request_url
-        || extractContextId(payload) != null
-    ) {
-        return normalizeTasklistItems(payload.lists);
+    const lists = payload.lists || [];
+    if (!isProfileTasksBrowse(payload)) {
+        return normalizeTasklistItems(lists);
     }
 
-    return [];
+    return lists.flatMap((ctx) => {
+        if (!ctx || typeof ctx !== 'object') return [];
+        const contextId = ctx.context_id ?? ctx.id;
+        if (contextId == null) return [];
+        const children = nestedListNodes(ctx).flat();
+        return [{
+            id: contextId,
+            title: String(ctx.title ?? ctx.list_title ?? ctx.name ?? contextId),
+            count: ctx.count ?? (children.length || null),
+            context_id: contextId,
+            children: normalizeTasklistItems(children.map((child) => ({
+                ...child,
+                context_id: child.context_id ?? contextId,
+            }))),
+        }];
+    });
+}
+
+function isProfileTasksBrowse(payload) {
+    const requestUrl = String(payload?.request_url || '');
+    if (requestUrl.includes('browse_tasks_by_profile')) return true;
+    if (requestUrl.includes('browse_context')) return false;
+    return payload?.context_id == null || Number(payload.context_id) === 0;
+}
+
+function buildTasksHomeUrl(contextPid, listId = 0) {
+    if (contextPid == null || contextPid === '') return null;
+    return `${TASKS_HOME_PATH}?context_pid=${encodeURIComponent(contextPid)}&list=${encodeURIComponent(hasListId(listId) ? listId : 0)}`;
+}
+
+function isTasksHomePath() {
+    if (!isWeb || typeof window === 'undefined') return false;
+    return window.location.pathname.replace(/\/+$/, '') === TASKS_HOME_PATH;
+}
+
+function navigateToPage(router, dest) {
+    if (!dest) return;
+    if (isWeb) {
+        router.push(dest.startsWith('/') ? dest : `/${dest}`);
+        return;
+    }
+    redirectTo(router, dest);
+}
+
+function tasksHomeQueryFromBrowser() {
+    if (!isWeb || typeof window === 'undefined') return { contextPid: null, listId: null };
+    const params = new URLSearchParams(window.location.search);
+    return {
+        contextPid: params.get('context_pid'),
+        listId: params.get('list'),
+    };
+}
+
+function listIdFromBrowser() {
+    const { listId } = tasksHomeQueryFromBrowser();
+    return hasListId(listId) ? listId : null;
+}
+
+function buildContextBrowseUrl(payload, contextPid, listId) {
+    if (hasListId(listId)) {
+        return buildTasklistBrowseUrl({
+            ...payload,
+            context_id: contextPid,
+        }, listId, contextPid);
+    }
+    if (contextPid == null || contextPid === '') return null;
+    return `${tasksModule(payload)}/browse_context&params[]=${contextPid}`;
+}
+
+async function fetchTasklistGroups(payload) {
+    const lists = payload?.lists || [];
+    const groups = await Promise.all(lists.map(async (ctx) => {
+        const contextId = ctx?.context_id ?? ctx?.id;
+        if (contextId == null) return null;
+        let children = nestedListNodes(ctx).flat();
+        if (!children.length && usableContextId(contextId) != null) {
+            const response = await fetcher(`/api.php?r=${tasksModule(payload)}/browse_context&params[]=${contextId}`);
+            children = unwrapTasksListPayload(response)?.lists || [];
+        }
+        return {
+            id: contextId,
+            title: String(ctx.title ?? ctx.list_title ?? ctx.name ?? contextId),
+            count: ctx.count ?? children.length,
+            context_id: contextId,
+            children: normalizeTasklistItems(children.map((list) => ({
+                ...list,
+                context_id: list.context_id ?? contextId,
+            }))),
+        };
+    }));
+    return groups.filter(Boolean);
+}
+
+function findTasklist(items, id) {
+    if (id == null || !Array.isArray(items)) return null;
+    for (const item of items) {
+        if (String(item.id) === String(id)) return item;
+        const nested = findTasklist(item.children, id);
+        if (nested) return nested;
+    }
+    return null;
+}
+
+function usableContextId(value) {
+    if (value == null || value === '') return null;
+    const numeric = Number(value);
+    if (Number.isFinite(numeric) && numeric === 0) return null;
+    return value;
 }
 
 function extractContextId(payload) {
     if (!payload || typeof payload !== 'object') return null;
-    if (payload.context_id != null) return payload.context_id;
-    if (payload.context != null && (typeof payload.context === 'string' || typeof payload.context === 'number')) {
-        return payload.context;
-    }
-    if (payload.profile_id != null) return payload.profile_id;
+    const fromPayload = usableContextId(payload.context_id) ?? usableContextId(payload.context);
+    if (fromPayload != null) return fromPayload;
 
     const url = payload.request_url || payload.request_url_browse_context || '';
-    if (!url) return null;
+    if (!url || String(url).includes('browse_tasks_by_profile')) return null;
 
     const numericParams = [...String(url).matchAll(/params\[\]=(\d+)/g)].map((m) => m[1]);
-    if (numericParams.length) return numericParams[0];
+    if (numericParams.length) return usableContextId(numericParams[0]);
 
     try {
         const jsonMatch = String(url).match(/params\[\]=(\{[^&]+\})/);
         if (jsonMatch?.[1]) {
             const parsed = JSON.parse(decodeURIComponent(jsonMatch[1]));
-            return parsed?.context_id ?? parsed?.context ?? parsed?.id ?? null;
+            return usableContextId(parsed?.context_id ?? parsed?.context ?? parsed?.id ?? null);
         }
     } catch {
         // ignore malformed JSON in request_url
@@ -308,7 +438,7 @@ function encodeListBrowseParam(tasklistId) {
     return json.replaceAll('{', '%7B').replaceAll('}', '%7D');
 }
 
-function buildTasklistBrowseUrl(payload, tasklistId) {
+function buildTasklistBrowseUrl(payload, tasklistId, itemContextId) {
     if (tasklistId == null) return null;
 
     const listParam = encodeListBrowseParam(tasklistId);
@@ -322,7 +452,7 @@ function buildTasklistBrowseUrl(payload, tasklistId) {
             : template + listParam;
     }
 
-    const contextId = extractContextId(payload);
+    const contextId = usableContextId(itemContextId) ?? extractContextId(payload);
     if (contextId == null) return null;
 
     const module = String(payload?.request_url || 'bx_tasks').split('/')[0] || 'bx_tasks';
@@ -449,16 +579,77 @@ function MenuObjectActions({ actions, refreshLists, setShowConfirm }) {
     );
 }
 
+function TasklistRow({
+    item,
+    selected,
+    indented,
+    onSelect,
+    setFormBlock,
+    refreshLists,
+    setShowConfirm,
+}) {
+    return (
+        <Row
+            className={cn(
+                'items-center gap-1 rounded-lg pr-1',
+                selected && 'bg-muted/50'
+            )}
+        >
+            <Pressable
+                onPress={() => onSelect(item)}
+                className={cn(
+                    'min-w-0 flex-1 flex-row items-center gap-2 px-2 py-2 web:hover:bg-muted/50 rounded-lg',
+                    indented && 'pl-7'
+                )}
+            >
+                <Icon
+                    icon="Circle"
+                    size={10}
+                    className={cn(
+                        'shrink-0',
+                        selected ? 'text-primary' : 'text-muted-foreground'
+                    )}
+                    fill={selected ? 'currentColor' : 'none'}
+                />
+                <Text
+                    className="min-w-0 flex-1 text-sm font-medium text-card-foreground"
+                    numberOfLines={1}
+                >
+                    {item.title}
+                </Text>
+                {item.count != null ? (
+                    <Text className="shrink-0 text-xs tabular-nums text-muted-foreground">
+                        {item.count}
+                    </Text>
+                ) : null}
+            </Pressable>
+            {item.actions?.length ? (
+                <TaskActionsDropdown
+                    actions={item.actions}
+                    setFormBlock={setFormBlock}
+                    refreshLists={refreshLists}
+                    setShowConfirm={setShowConfirm}
+                />
+            ) : null}
+        </Row>
+    );
+}
+
 function TasklistsPanel({
     tasklists,
     selectedId,
+    selectedContextId,
     onSelect,
     setFormBlock,
     refreshLists,
     setShowConfirm,
     t,
 }) {
+    const [collapsed, setCollapsed] = useState({});
     if (!tasklists.length) return null;
+
+    const grouped = tasklists.some(isTasklistGroup);
+    const rowProps = { onSelect, setFormBlock, refreshLists, setShowConfirm };
 
     return (
         <View className="w-full lg:w-72 shrink-0 gap-0.5">
@@ -468,55 +659,71 @@ function TasklistsPanel({
                 </Text>
             </Row>
 
-            {tasklists.map((item) => {
-                const selected = selectedId != null && String(selectedId) === String(item.id);
+            {grouped ? tasklists.map((group) => {
+                const groupId = String(group.id);
+                const expanded = !collapsed[groupId];
+                const groupSelected = selectedContextId != null
+                    && String(selectedContextId) === groupId
+                    && selectedId == null;
                 return (
-                    <Row
-                        key={item.id}
-                        className={cn(
-                            'items-center gap-1 rounded-lg pr-1',
-                            selected && 'bg-muted/50'
-                        )}
-                    >
-                        <Pressable
-                            onPress={() => onSelect(item)}
-                            className="min-w-0 flex-1 flex-row items-center gap-2 px-2 py-2 web:hover:bg-muted/50 rounded-lg"
+                    <View key={groupId} className="gap-0.5">
+                        <Row
+                            className={cn(
+                                'items-center gap-0.5 rounded-lg pr-1',
+                                groupSelected && 'bg-muted/50'
+                            )}
                         >
-                            <Icon
-                                icon="Circle"
-                                size={10}
-                                className={cn(
-                                    'shrink-0',
-                                    selected
-                                        ? 'text-primary'
-                                        : 'text-muted-foreground'
-                                )}
-                                fill={selected ? 'currentColor' : 'none'}
-                            />
-                            <Text
-                                className="min-w-0 flex-1 text-sm font-medium text-card-foreground"
-                                numberOfLines={1}
+                            <Pressable
+                                onPress={() => setCollapsed((prev) => ({
+                                    ...prev,
+                                    [groupId]: !prev[groupId],
+                                }))}
+                                className="items-center justify-center p-1.5 rounded-md web:hover:bg-muted/50"
+                                accessibilityRole="button"
+                                accessibilityLabel={expanded ? 'Collapse' : 'Expand'}
                             >
-                                {item.title}
-                            </Text>
-                            {item.count != null ? (
-                                <Text className="shrink-0 text-xs tabular-nums text-muted-foreground">
-                                    {item.count}
+                                <Icon
+                                    icon={expanded ? 'ChevronDown' : 'ChevronRight'}
+                                    size={14}
+                                    className="text-muted-foreground"
+                                />
+                            </Pressable>
+                            <Pressable
+                                onPress={() => onSelect(group)}
+                                className="min-w-0 flex-1 flex-row items-center gap-2 py-2 pr-2 web:hover:bg-muted/50 rounded-lg"
+                            >
+                                <Text
+                                    className="min-w-0 flex-1 text-sm font-semibold text-foreground"
+                                    numberOfLines={1}
+                                >
+                                    {group.title}
                                 </Text>
-                            ) : null}
-                        </Pressable>
-
-                        {item.actions?.length ? (
-                            <TaskActionsDropdown
-                                actions={item.actions}
-                                setFormBlock={setFormBlock}
-                                refreshLists={refreshLists}
-                                setShowConfirm={setShowConfirm}
+                                {group.count != null ? (
+                                    <Text className="shrink-0 text-xs tabular-nums text-muted-foreground">
+                                        {group.count}
+                                    </Text>
+                                ) : null}
+                            </Pressable>
+                        </Row>
+                        {expanded ? (group.children || []).map((item) => (
+                            <TasklistRow
+                                key={item.id}
+                                item={item}
+                                selected={selectedId != null && String(selectedId) === String(item.id)}
+                                indented
+                                {...rowProps}
                             />
-                        ) : null}
-                    </Row>
+                        )) : null}
+                    </View>
                 );
-            })}
+            }) : tasklists.map((item) => (
+                <TasklistRow
+                    key={item.id}
+                    item={item}
+                    selected={selectedId != null && String(selectedId) === String(item.id)}
+                    {...rowProps}
+                />
+            ))}
         </View>
     );
 }
@@ -1130,12 +1337,16 @@ function TasksFilterSelector({
 
 export default function ElementTasksList({ data, blockWrapperProps }) {
     const { t } = useTranslation();
+    const router = useRouter();
     const NoContent = getComponent('molecule', 'no_content');
     const [formBlock, setFormBlock] = useState(null);
     const [listsData, setListsData] = useState(data);
     const [tasklists, setTasklists] = useState(() => extractTasklists(data));
     const [selectedTasklistId, setSelectedTasklistId] = useState(
-        () => data?.tasklist_id ?? data?.selected_tasklist_id ?? null
+        () => data?.tasklist_id ?? data?.selected_tasklist_id ?? listIdFromBrowser()
+    );
+    const [selectedContextPid, setSelectedContextPid] = useState(
+        () => tasksHomeQueryFromBrowser().contextPid
     );
     const [activeTask, setActiveTask] = useState(null);
     const [taskPageData, setTaskPageData] = useState(null);
@@ -1144,17 +1355,19 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
     const [filterSelectionNonce, setFilterSelectionNonce] = useState(0);
     const requestUrlRef = useRef(data?.request_url);
     const taskRequestIdRef = useRef(0);
+    const contextRequestIdRef = useRef(0);
     const previousBrowserUrlRef = useRef(null);
+    const activeTaskRef = useRef(null);
+    const homeDataRef = useRef(data);
     const browseContextRef = useRef({
         request_url: data?.request_url,
         request_url_browse_context: data?.request_url_browse_context,
         request_url_tasklist: data?.request_url_tasklist,
         tasklists_request_url: data?.tasklists_request_url,
-        context_id: data?.context_id,
+        context_id: usableContextId(data?.context_id),
         context: data?.context,
         profile_id: data?.profile_id,
     });
-    const dataRef = useRef(data);
 
     const openTask = useCallback((task) => {
         if (!task?.url) return;
@@ -1176,6 +1389,7 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
             url: task.url,
             title: task.title || task.name || '',
         });
+        activeTaskRef.current = true;
     }, []);
 
     const closeTask = useCallback((options) => {
@@ -1187,21 +1401,67 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
         previousBrowserUrlRef.current = null;
 
         taskRequestIdRef.current += 1;
+        activeTaskRef.current = null;
         setActiveTask(null);
         setTaskPageData(null);
         setTaskPageLoading(false);
     }, []);
 
+    const applyContextQuery = useCallback(async (contextPid, listId) => {
+        const requestId = ++contextRequestIdRef.current;
+        setSelectedContextPid(contextPid || null);
+        setSelectedTasklistId(hasListId(listId) ? listId : null);
+
+        if (!contextPid) {
+            const home = homeDataRef.current;
+            setListsData(home);
+            requestUrlRef.current = home?.request_url;
+            return;
+        }
+
+        const url = buildContextBrowseUrl(browseContextRef.current, contextPid, listId);
+        if (!url) return;
+        requestUrlRef.current = url;
+
+        const home = homeDataRef.current;
+        const alreadyContext = String(usableContextId(home?.context_id)) === String(contextPid)
+            && !isProfileTasksBrowse(home)
+            && !hasListId(listId);
+        if (alreadyContext) {
+            setListsData(home);
+            return;
+        }
+
+        const response = await fetcher('/api.php?r=' + url);
+        if (requestId !== contextRequestIdRef.current) return;
+        const next = unwrapTasksListPayload(response);
+        if (!next) return;
+        setListsData((prev) => {
+            const merged = { ...(prev || {}), ...next };
+            if (prev?.request_url) merged.request_url = prev.request_url;
+            if (!hasListId(listId)) {
+                delete merged.tasklist_id;
+                delete merged.selected_tasklist_id;
+            }
+            return merged;
+        });
+    }, []);
+
     useEffect(() => {
-        if (!isWeb || !activeTask?.url) return;
+        if (!isWeb) return;
 
         const handlePopState = () => {
-            closeTask({ restoreUrl: false });
+            if (activeTaskRef.current) {
+                closeTask({ restoreUrl: false });
+                return;
+            }
+            const { contextPid, listId } = tasksHomeQueryFromBrowser();
+            applyContextQuery(contextPid, listId);
         };
 
         window.addEventListener('popstate', handlePopState);
         return () => window.removeEventListener('popstate', handlePopState);
-    }, [activeTask?.url, closeTask]);
+    }, [closeTask, applyContextQuery]);
 
     useEffect(() => {
         if (!activeTask?.url) {
@@ -1230,33 +1490,58 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
     }, [activeTask?.url]);
 
     useEffect(() => {
-        if (data !== dataRef.current) {
-            dataRef.current = data;
-            setListsData(data);
-            const nextTasklists = extractTasklists(data);
-            if (nextTasklists.length) setTasklists(nextTasklists);
-            if (data?.tasklist_id != null || data?.selected_tasklist_id != null) {
-                setSelectedTasklistId(data.tasklist_id ?? data.selected_tasklist_id);
+        homeDataRef.current = data;
+        setListsData(data);
+        const expanded = extractTasklists(data);
+        setTasklists(expanded);
+        browseContextRef.current = {
+            ...browseContextRef.current,
+            request_url: data?.request_url ?? browseContextRef.current.request_url,
+            request_url_browse_context: data?.request_url_browse_context ?? browseContextRef.current.request_url_browse_context,
+            request_url_tasklist: data?.request_url_tasklist ?? browseContextRef.current.request_url_tasklist,
+            tasklists_request_url: data?.tasklists_request_url ?? browseContextRef.current.tasklists_request_url,
+            context_id: usableContextId(data?.context_id) ?? browseContextRef.current.context_id,
+            context: data?.context ?? browseContextRef.current.context,
+            profile_id: data?.profile_id ?? browseContextRef.current.profile_id,
+        };
+
+        let cancelled = false;
+        const load = async () => {
+            if (isProfileTasksBrowse(data)) {
+                const needsChildren = !expanded.length
+                    || expanded.some((group) => isTasklistGroup(group) && !group.children.length);
+                if (needsChildren) {
+                    const groups = await fetchTasklistGroups(data);
+                    if (!cancelled) setTasklists(groups);
+                }
             }
-            browseContextRef.current = {
-                ...browseContextRef.current,
-                request_url: data?.request_url ?? browseContextRef.current.request_url,
-                request_url_browse_context: data?.request_url_browse_context ?? browseContextRef.current.request_url_browse_context,
-                request_url_tasklist: data?.request_url_tasklist ?? browseContextRef.current.request_url_tasklist,
-                tasklists_request_url: data?.tasklists_request_url ?? browseContextRef.current.tasklists_request_url,
-                context_id: data?.context_id ?? browseContextRef.current.context_id,
-                context: data?.context ?? browseContextRef.current.context,
-                profile_id: data?.profile_id ?? browseContextRef.current.profile_id,
-            };
-        }
-    }, [data]);
+
+            const { contextPid, listId } = tasksHomeQueryFromBrowser();
+            if (!contextPid && !hasListId(listId)) return;
+            if (cancelled) return;
+            await applyContextQuery(contextPid, listId);
+        };
+
+        load();
+        return () => {
+            cancelled = true;
+            contextRequestIdRef.current += 1;
+        };
+    }, [data, applyContextQuery]);
 
     useEffect(() => {
-        if (selectedTasklistId != null) {
-            const filteredUrl = buildTasklistBrowseUrl(browseContextRef.current, selectedTasklistId);
-            if (filteredUrl) {
-                requestUrlRef.current = filteredUrl;
-            }
+        const { contextPid, listId } = tasksHomeQueryFromBrowser();
+        if (contextPid) {
+            const url = buildContextBrowseUrl(browseContextRef.current, contextPid, listId);
+            if (url) requestUrlRef.current = url;
+        } else if (selectedTasklistId != null) {
+            const selected = findTasklist(tasklists, selectedTasklistId);
+            const filteredUrl = buildTasklistBrowseUrl(
+                browseContextRef.current,
+                selectedTasklistId,
+                selected?.context_id
+            );
+            if (filteredUrl) requestUrlRef.current = filteredUrl;
         } else {
             requestUrlRef.current = listsData?.request_url ?? data?.request_url;
         }
@@ -1267,71 +1552,43 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
             request_url_browse_context: listsData.request_url_browse_context ?? browseContextRef.current.request_url_browse_context,
             request_url_tasklist: listsData.request_url_tasklist ?? browseContextRef.current.request_url_tasklist,
             tasklists_request_url: listsData.tasklists_request_url ?? browseContextRef.current.tasklists_request_url,
-            context_id: listsData.context_id ?? browseContextRef.current.context_id,
+            context_id: usableContextId(listsData.context_id) ?? browseContextRef.current.context_id,
             context: listsData.context ?? browseContextRef.current.context,
             profile_id: listsData.profile_id ?? browseContextRef.current.profile_id,
         };
-    }, [listsData, data?.request_url, selectedTasklistId]);
+    }, [listsData, data?.request_url, selectedTasklistId, tasklists]);
 
-    useEffect(() => {
-        // Only refresh sidebar from dedicated tasklists field — not from status lists after filter
-        const dedicated = extractDedicatedTasklists(listsData);
-        if (dedicated.length) setTasklists(dedicated);
-        if (listsData?.tasklist_id != null || listsData?.selected_tasklist_id != null) {
-            setSelectedTasklistId(listsData.tasklist_id ?? listsData.selected_tasklist_id);
-        }
-    }, [listsData]);
-
-    const applyTasklistFilter = useCallback(async (item) => {
+    const applyTasklistFilter = useCallback((item) => {
         if (item?.id == null) return;
-
         closeTask();
+        const contextId = item.context_id
+            ?? (isTasklistGroup(item) ? item.id : null)
+            ?? extractContextId(browseContextRef.current)
+            ?? extractContextId(homeDataRef.current);
+        const listId = isTasklistGroup(item) ? 0 : item.id;
+        const dest = buildTasksHomeUrl(contextId, listId);
+        if (!dest) return;
 
-        const isSame = selectedTasklistId != null
-            && String(selectedTasklistId) === String(item.id);
-
-        if (isSame) {
-            setSelectedTasklistId(null);
-            const baseUrl = browseContextRef.current.request_url
-                ?? listsData?.request_url
-                ?? data?.request_url;
-            if (!baseUrl) return;
-            requestUrlRef.current = baseUrl;
-            const response = await fetcher('/api.php?r=' + baseUrl);
-            setListsData((prev) => {
-                const next = normalizeTasksListPayload(response, prev);
-                if (prev?.request_url) next.request_url = prev.request_url;
-                delete next.tasklist_id;
-                delete next.selected_tasklist_id;
-                return next;
-            });
+        if (isTasksHomePath()) {
+            if (getBrowserLocation() === dest) return;
+            window.history.pushState({ tasksHomeQuery: true }, '', dest);
+            applyContextQuery(contextId, listId);
             return;
         }
 
-        const url = buildTasklistBrowseUrl(browseContextRef.current, item.id);
-        if (!url) return;
-
-        setSelectedTasklistId(item.id);
-        requestUrlRef.current = url;
-        const response = await fetcher('/api.php?r=' + url);
-        setListsData((prev) => {
-            const next = normalizeTasksListPayload(response, {
-                ...prev,
-                tasklist_id: item.id,
-                selected_tasklist_id: item.id,
-            });
-            // Keep the block base URL — filtered browse must not replace it.
-            if (prev?.request_url) next.request_url = prev.request_url;
-            return next;
-        });
-        // Do not emitTasksListRefresh — a second reload without list params would clear the filter.
-    }, [selectedTasklistId, listsData?.request_url, data?.request_url, closeTask]);
+        navigateToPage(router, dest);
+    }, [router, closeTask, applyContextQuery]);
 
     const refreshLists = useCallback(async () => {
         const selectedId = selectedTasklistId;
         let requestUrl = requestUrlRef.current;
         if (selectedId != null) {
-            const filteredUrl = buildTasklistBrowseUrl(browseContextRef.current, selectedId);
+            const selected = findTasklist(tasklists, selectedId);
+            const filteredUrl = buildTasklistBrowseUrl(
+                browseContextRef.current,
+                selectedId,
+                selected?.context_id
+            );
             if (filteredUrl) requestUrl = filteredUrl;
         }
         if (!requestUrl) return;
@@ -1344,7 +1601,7 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
             }
             return next;
         });
-    }, [selectedTasklistId]);
+    }, [selectedTasklistId, tasklists]);
 
     useEffect(() => {
         const subscription = emitter.addListener(TASKS_LIST_EVENT, (event) => {
@@ -1396,7 +1653,10 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
         return () => subscriptions.forEach((subscription) => subscription.remove());
     }, [formBlock, refreshLists]);
 
-    const lists = listsData?.lists || [];
+    const lists = useMemo(
+        () => flattenListsWithTasks(listsData?.lists || []),
+        [listsData?.lists]
+    );
     const statusLists = useMemo(() => groupTasksByStatus(lists), [lists]);
     const filters = listsData?.filters;
     const topActions = listsData?.actions || [];
@@ -1621,6 +1881,7 @@ export default function ElementTasksList({ data, blockWrapperProps }) {
                                 <TasklistsPanel
                                     tasklists={tasklists}
                                     selectedId={selectedTasklistId}
+                                    selectedContextId={selectedContextPid}
                                     onSelect={applyTasklistFilter}
                                     setFormBlock={setFormBlock}
                                     refreshLists={refreshLists}
