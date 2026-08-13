@@ -1712,9 +1712,9 @@ headroom.js@^0.12.0:
   integrity sha512-iXnAafUm3FdzfJ91uixLws2hkKI1jC8bAKK/pt7XYr8Ie1jO7xbK48Ycpl9tUPyBgkzuj1p/PhJS0fy4E/5anA==
 
 "highlight.js@github:highlightjs/highlight.js":
-  version "11.11.2"
-  uid "375f3f445a0456010fffa1b15d78eaaf8c538f77"
-  resolved "https://codeload.github.com/highlightjs/highlight.js/tar.gz/375f3f445a0456010fffa1b15d78eaaf8c538f77"
+  version "11.12.0"
+  uid "27fc2be62282fcce3889866abb61f171e53800f0"
+  resolved "https://codeload.github.com/highlightjs/highlight.js/tar.gz/27fc2be62282fcce3889866abb61f171e53800f0"
 
 hls.js@^1.6.17:
   version "1.6.17"
