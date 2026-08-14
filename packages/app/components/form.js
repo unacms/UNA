@@ -15,6 +15,7 @@ import { useRouter, usePathname, redirectTo } from 'app/lib/hooks/router'
 import { getTabKeyFromPathname } from 'app/lib/tab-history'
 
 const isWeb = Platform.OS === 'web';
+const EMPTY_WATCH = {};
 
 /** Resolve UNA redirect block URI (same rules as elements/redirect). */
 function resolveRedirectUri(redirectItem) {
@@ -84,7 +85,9 @@ export default function Form({
     const { auto_focus, ...formProps } = initedFormProps ?? {};
 
     const { ...methods } = useForm({ mode: 'onChange' });
-    const { formState: { isSubmitted, isDirty, isSubmitSuccessful } } = methods;
+    // Proxy formState: only accessed properties subscribe. Reading isDirty on a
+    // 30-field form (playground, create) re-renders the whole tree on every
+    // setValue and can loop with editors that sync HTML back into RHF.
     const formInstanceId = useId();
     // Avoid double navigation if the response effect re-runs with the same redirect.
     const redirectedUriRef = useRef(null);
@@ -102,18 +105,22 @@ export default function Form({
 
     const skipUnsavedCloseGuard =
         exProps?.skipUnsavedCloseGuard === true || isFormUnsavedCloseGuardSkipped(name);
+    const trackUnsavedDirty = !skipUnsavedCloseGuard && !isAutoChange;
+    const isSubmitted = methods.formState.isSubmitted;
+    const isSubmitSuccessful = methods.formState.isSubmitSuccessful;
+    const isDirty = trackUnsavedDirty ? methods.formState.isDirty : false;
 
     useEffect(() => {
         // Auto-change forms (filters etc.) persist on every change, so they can
         // never hold unsaved changes — never let them block closing.
-        if (skipUnsavedCloseGuard || isAutoChange) {
+        if (!trackUnsavedDirty) {
             updateFormDirtyState(formInstanceId, false);
             return () => updateFormDirtyState(formInstanceId, false);
         }
         const dirty = isDirty && !isSubmitSuccessful;
         updateFormDirtyState(formInstanceId, dirty);
         return () => updateFormDirtyState(formInstanceId, false);
-    }, [formInstanceId, isDirty, isSubmitSuccessful, skipUnsavedCloseGuard, isAutoChange]);
+    }, [formInstanceId, isDirty, isSubmitSuccessful, trackUnsavedDirty]);
 
     // RHF quirk: field-level defaultValue (useController) is NOT merged into the
     // form-level _defaultValues, and useForm() here has no defaultValues. isDirty
@@ -451,8 +458,9 @@ export default function Form({
         }
     }, [isSubmit, _handleSubmit]);
 
-    const { watch } = methods;
-    const allFields = watch();
+    // watch() subscribes the whole Form to every field write. Only filter
+    // (onChange) forms need that; kitchen-sink / regular submit forms do not.
+    const allFields = isAutoChange ? methods.watch() : EMPTY_WATCH;
     const debouncedFields = useDebounce(allFields, 500);
 
     useEffect(() => {
@@ -526,7 +534,9 @@ export default function Form({
             props: {
                 ...input.props,
                 form_layout: layout,
-                use_caption_as_placeholder: appSetting('forms', 'without_captions').includes(name),
+                use_caption_as_placeholder:
+                    input.props.use_caption_as_placeholder ??
+                    appSetting('forms', 'without_captions').includes(name),
                 ...(index === lastNonHiddenIndex && { noPadding: true }),
             },
         }));

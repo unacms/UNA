@@ -53,7 +53,7 @@ export const settingsInputs = {
         select: ' pr-10 bg-input/50 shadow-input-outline dark:shadow-input-outline-deep web:focus:bg-card flex-auto text-base leading-6 overflow-hidden placeholder:text-muted-foreground text-card-foreground web:duration-300 ',
 
         // Adaptive / floating eyebrow labels (`forms.adaptive_labels`)
-        // Vertical position is Animated (center → top edge) — see adaptive-label.js.
+        // Vertical position is Animated (center → top edge) — see AdaptiveLabel in _field.js.
         // Tune horizontal inset / chip / type here; use *_offset (px) for vertical nudge.
         adaptive_label: 'ml-3 self-start',
         adaptive_label_floated: 'bg-accent px-1.5 border border-ring/20 rounded-md',

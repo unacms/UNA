@@ -1,30 +1,24 @@
 import Field from './_field';
 import Switch, { resolveControlSize } from 'app/ui/atoms/switcher'
-import { useFormContext, useController } from 'react-hook-form';
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { appSetting } from 'app/lib/util'
+import { useFormField } from 'app/lib/hooks/use-form-field';
 
 const switcherTheme = appSetting('theme', 'switcher');
 
 export default function FormFieldSwitcher(props) {
-    const { name, caption, checked, value, size } = props;
-    const formContext = useFormContext();
+    const { caption, checked, size } = props;
     const resolvedSize = resolveControlSize(size);
-    const sizeClass =
-        switcherTheme.size?.[resolvedSize] ?? switcherTheme.size?.regular ?? '';
-    
-    const initialValue = checked ? 1 : 0;
-    
-    const { field } = useController({ 
-        name, 
-        control: formContext.control,
-        defaultValue: initialValue 
+    const sizeClass = switcherTheme.size?.[resolvedSize] ?? switcherTheme.size?.regular ?? '';
+
+    const { field } = useFormField(props, {
+        defaultValue: checked ? 1 : 0,
+        syncValue: false,
     });
 
     const handleToggle = () => {
-        const newValue = field.value ? 0 : 1;
-        field.onChange(newValue);
+        field.onChange(field.value ? 0 : 1);
     };
 
     return (

@@ -1,121 +1,149 @@
-import { useState, useMemo } from 'react';
-import { Row, View } from 'app/design/view'
+import { useState } from 'react';
 import CountryFlag from 'react-native-country-flag';
 import { countries } from 'country-codes-flags-phone-codes';
-import { useTranslation } from 'react-i18next'
-import { Button, Input, Modal } from 'app/design/controls'
-//import { AsYouType } from 'libphonenumber-js' // for future
+import { useTranslation } from 'react-i18next';
+import { Row, View } from 'app/design/view';
+import { Button, Input, Modal } from 'app/design/controls';
 import RbList from 'app/ui/molecules/form-controls/radio-list';
+import Field from './_field';
+import { useFormField } from 'app/lib/hooks/use-form-field';
 
-export default function PhoneInput({ value, placeholderTextColor, autoFocus, field, name, ariaLabel, readOnly }) {
+const DEFAULT_COUNTRY = 'us';
+const DEFAULT_PLACEHOLDER = '(123) 456-7890';
+
+const COUNTRY_OPTIONS = countries.map((country) => {
+    const value = country.code.toLowerCase();
+    return {
+        label: country.name,
+        value,
+        dialCode: country.dialCode,
+        icon: <CountryFlag isoCode={value} size={20} />,
+    };
+});
+
+const COUNTRY_BY_CODE = new Map(COUNTRY_OPTIONS.map((country) => [country.value, country]));
+const COUNTRY_BY_DIAL = new Map();
+for (const country of COUNTRY_OPTIONS) {
+    if (!COUNTRY_BY_DIAL.has(country.dialCode)) {
+        COUNTRY_BY_DIAL.set(country.dialCode, country);
+    }
+}
+
+function countryCodeFromValue(value) {
+    const dialCode = String(value ?? '').split(' ')[0];
+    return COUNTRY_BY_DIAL.get(dialCode)?.value || '';
+}
+
+function nationalFromValue(value, dialCode) {
+    const raw = String(value ?? '');
+    if (!raw) return '';
+    if (raw.startsWith(`${dialCode} `)) return raw.slice(dialCode.length + 1);
+    if (raw.startsWith(dialCode)) return raw.slice(dialCode.length).trimStart();
+    return raw;
+}
+
+function formatNationalNumber(text) {
+    const digits = text.replace(/\D/g, '').slice(0, 10);
+    const area = digits.slice(0, 3);
+    const mid = digits.slice(3, 6);
+    const last = digits.slice(6, 10);
+    if (!area) return '';
+    if (digits.length < 3) return `(${area}`;
+    if (!mid) return `(${area})`;
+    if (!last) return `(${area}) ${mid}`;
+    return `(${area}) ${mid}-${last}`;
+}
+
+export default function FormFieldPhone(props) {
+    const {
+        name,
+        field,
+        placeholder,
+        readOnly,
+        placeholderTextColor,
+        focused,
+        onFocus,
+        onBlur,
+        isAdaptiveLabel,
+    } = useFormField(props, { returnKey: false });
+
     const { t } = useTranslation();
-
-    const countryOptions = countries.map(c => ({
-        label: c.name,
-        icon: (
-            <CountryFlag
-                isoCode={c.code.toLowerCase()}
-                size={20}
-            />
-        ),
-        value: c.code.toLowerCase(),
-        orig: c
-    }));
-
-
-    const [selectedCountryCode, setSelectedCountryCode] = useState(getCountryCodeFromPhone(value) || 'us');
-    const selectedCountry = countryOptions.find(c => c.value === selectedCountryCode) || countryOptions[0];
     const [modalVisible, setModalVisible] = useState(false);
     const [searchValue, setSearchValue] = useState('');
-    const [phone, setPhone] = useState(value.replace(selectedCountry.orig.dialCode, ''));
+    const [selectedCountryCode, setSelectedCountryCode] = useState(
+        () => countryCodeFromValue(field.value) || DEFAULT_COUNTRY
+    );
 
-    function getCountryCodeFromPhone(phone) {
-        const a = phone.split(' ');
-        const country = countries.find(c => c.dialCode == a[0]);
-        return country ? country.code.toLowerCase() : '';
-    }
+    const selectedCountry =
+        COUNTRY_BY_CODE.get(selectedCountryCode) ??
+        COUNTRY_BY_CODE.get(DEFAULT_COUNTRY) ??
+        COUNTRY_OPTIONS[0];
+    const nationalNumber = nationalFromValue(field.value, selectedCountry.dialCode);
+    const query = searchValue.trim().toLowerCase();
+    const filteredCountries = query
+        ? COUNTRY_OPTIONS.filter((country) => country.label.toLowerCase().includes(query))
+        : COUNTRY_OPTIONS;
 
-    const formatPhone = (digits) => {
-        const d = digits.slice(0, 10);
-        const part1 = d.slice(0, 3);
-        const part2 = d.slice(3, 6);
-        const part3 = d.slice(6, 10);
-
-        let result = '';
-        if (part1) result += `(${part1}`;
-        if (part1 && part1.length === 3) result += ')';
-        if (part2) result += ` ${part2}`;
-        if (part3) result += `-${part3}`;
-        return result;
-
+    const commitNumber = (national, dialCode = selectedCountry.dialCode) => {
+        field.onChange(national ? `${dialCode} ${national}` : '');
     };
-
-    const handleChange = (text) => {
-        const digits = text.replace(/\D/g, '');
-        const sPhone = formatPhone(digits);
-        setPhone(sPhone);
-        if (sPhone.length === 0)
-            field.onChange('');
-        else
-            field.onChange(`${selectedCountry.orig.dialCode} ${sPhone}`);
-    };
-
-    const filteredValues = useMemo(() => {
-        return searchValue
-            ? countryOptions.filter(item => item.label.toLowerCase().includes(searchValue.toLowerCase()))
-            : countryOptions;
-    }, [searchValue, countryOptions]);
-
 
     return (
-        <Row className='gap-x-2'>
-            <Button
-                size="lg"
-                startDecorator={<CountryFlag
-                    isoCode={selectedCountryCode}
-                    size={24}
-                />}
-                title={`${selectedCountry.orig.dialCode}`}
-                onPress={() => setModalVisible(true)}
-            />
-            <Input
-                value={phone}
-                keyboardType="phone-pad"
-                placeholder="(123) 456-7890"
-                onChangeText={handleChange}
-                maxLength={14}
-                autoFocus={autoFocus}
-                name={name}
-                readOnly={readOnly}
-                placeholderTextColor={placeholderTextColor}
-                onBlur={field.onBlur}
-                aria-label={ariaLabel}
-            />
-            <Modal
-                title={'Choose country'}
-                onClose={() => { setModalVisible(false) }}
-                onVisible={modalVisible}
-                transparent
-                headerBorder
-                scrollable
-            >
-                {
-                    countryOptions.length > 10 && (<View className='pb-2'>
-                        <Input autoFocus={true} name="search" placeholder={t('Search...')} defaultValue={searchValue}
-                            onChangeText={(value) => {
-                                setSearchValue(value)
-                            }}
+        <Field {...props} value={field.value} focused={focused} isAdaptiveLabel={isAdaptiveLabel}>
+            <Row className="gap-x-2">
+                <Button
+                    size="lg"
+                    startDecorator={
+                        <CountryFlag isoCode={selectedCountry.value} size={24} />
+                    }
+                    title={selectedCountry.dialCode}
+                    onPress={() => setModalVisible(true)}
+                />
+                <Input
+                    value={nationalNumber}
+                    keyboardType="phone-pad"
+                    placeholder={placeholder ?? DEFAULT_PLACEHOLDER}
+                    onChangeText={(text) => commitNumber(formatNationalNumber(text))}
+                    maxLength={14}
+                    autoFocus={props.auto_focus}
+                    name={name}
+                    readOnly={readOnly}
+                    placeholderTextColor={placeholderTextColor}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
+                    aria-label={props.caption}
+                />
+                <Modal
+                    title={t('Choose country')}
+                    onClose={() => setModalVisible(false)}
+                    onVisible={modalVisible}
+                    transparent
+                    headerBorder
+                    scrollable
+                >
+                    <View className="pb-2">
+                        <Input
+                            autoFocus
+                            name="search"
+                            placeholder={t('Search...')}
+                            defaultValue={searchValue}
+                            onChangeText={setSearchValue}
                         />
-                    </View>)
-                }
-
-                <RbList values={filteredValues} setValue={(val) => {
-                    setSelectedCountryCode(val);
-                    setPhone('')
-                    setModalVisible(false);
-                }} selectedValue={selectedCountryCode} />
-
-            </Modal>
-        </Row>
+                    </View>
+                    <RbList
+                        values={filteredCountries}
+                        selectedValue={selectedCountryCode}
+                        setValue={(code) => {
+                            const next = COUNTRY_BY_CODE.get(code);
+                            if (!next) return;
+                            setSelectedCountryCode(code);
+                            commitNumber(nationalNumber, next.dialCode);
+                            setSearchValue('');
+                            setModalVisible(false);
+                        }}
+                    />
+                </Modal>
+            </Row>
+        </Field>
     );
 }

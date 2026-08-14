@@ -451,7 +451,7 @@ For "icons connected by a wavy line" graphics (onboarding, pipelines, integratio
 
 ## NeoButton (design-system button)
 
-`NeoButton` is the SwiftUI-faithful button in [`packages/app/design/controls/`](packages/app/design/controls/) (`role`, `style`, `controlSize`, `borderShape`, `tint` axes, providers, transitions, shadow-based surfaces). Full API reference, resolver/scope precedence, SwiftUI/Expo UI mapping, and migration table live in **[`packages/app/design/controls/README.md`](packages/app/design/controls/README.md)**. A live playground for every axis is at the dev-only `/playground` route ([`apps/next/app/playground/page.js`](apps/next/app/playground/page.js)).
+`NeoButton` is the SwiftUI-faithful button in [`packages/app/design/controls/`](packages/app/design/controls/) (`role`, `style`, `controlSize`, `borderShape`, `tint` axes, providers, transitions, shadow-based surfaces). Full API reference, resolver/scope precedence, SwiftUI/Expo UI mapping, and migration table live in **[`packages/app/design/controls/README.md`](packages/app/design/controls/README.md)**. A live playground for every axis is at the dev-only `/pg` route ([`apps/next/app/pg/page.js`](apps/next/app/pg/page.js)).
 
 ---
 

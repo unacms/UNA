@@ -1,73 +1,51 @@
-import Field, { getValidationRules } from './_field';
-import AdaptiveLabel from './adaptive-label';
-import { useController, useFormContext } from 'react-hook-form';
+import Field from './_field';
 import { Input } from 'app/design/controls'
-import { useEffect } from 'react';
-import { lazy } from 'react';
-import { useNativeReturnKeyNav } from 'app/context/form-focus-chain';
-
-const PhoneInput = lazy(() => import('app/components/form-fields/phone'));
+import { useFormField } from 'app/lib/hooks/use-form-field';
 
 export default function FormFieldText(props) {
-    const name = props.name;
-    const defaultValue = props.value ? props.value : '';
-    const rules = getValidationRules(props);
-    const formContext = useFormContext();
-    const { field } = useController({ name, rules, defaultValue });
-    const placeholder = props.use_caption_as_placeholder ? props.caption : props.placeholder;
-    const isPhone = name.includes("phone") || props.type == "phone";
-    const { inputRef, returnKeyProps } = useNativeReturnKeyNav(
-        isPhone || props.type === 'value' ? null : name,
-        props.handleSubmit
-    );
+    
+    const {
+        name,
+        field,
+        placeholder,
+        readOnly,
+        placeholderTextColor,
+        focused,
+        onFocus,
+        onBlur,
+        inputRef,
+        returnKeyProps,
+        isAdaptiveLabel,
+    } = useFormField(props);
 
-    useEffect(() => {
-        if (props.value !== undefined)
-            formContext.setValue(props.name, props.value)
-    }, [props.name, props.value]);
-
-    if (props.type == "value"){
-        return  !field.value ? null : <Field {...props} caption={props.caption+': '+field.value} error2={formContext.formState.errors[name]}/>
+    if (props.type == 'value') {
+        if (!field.value) return null;
+        return <Field {...props} caption={`${props.caption}: ${field.value}`} />;
     }
 
     return (
-        <Field {...props} error2={formContext.formState.errors[name]}>
-            {isPhone ? <PhoneInput
+        <Field {...props} value={field.value} focused={focused} isAdaptiveLabel={isAdaptiveLabel}>
+            <Input
+                ref={inputRef}
+                textContentType="none"
+                autoComplete="off"
+                autoCorrect={false}
+                spellCheck={false}
+                secureTextEntry={false}
+                keyboardType="default"
                 autoFocus={props.auto_focus}
                 name={name}
-                readOnly={props?.attrs?.readonly == 'readonly' || props?.attrs?.disabled == 'disabled'}
-                placeholderTextColor="#6b7280"
+                readOnly={readOnly || props.type == "value"}
+                placeholder={placeholder}
+                placeholderTextColor={placeholderTextColor}
+                onChangeText={field.onChange}
+                onFocus={onFocus}
+                onBlur={onBlur}
                 value={String(field.value)}
-                ariaLabel={props.caption}
-                field={field}
-            /> : (
-                <AdaptiveLabel
-                    caption={props.caption}
-                    value={field.value}
-                    useCaptionAsPlaceholder={props.use_caption_as_placeholder}
-                >
-                    <Input
-                        ref={inputRef}
-                        textContentType="none"
-                        autoComplete="off"
-                        autoCorrect={false}
-                        spellCheck={false}
-                        secureTextEntry={false}
-                        keyboardType="default"
-                        autoFocus={props.auto_focus}
-                        name={name}
-                        readOnly={props?.attrs?.readonly == 'readonly' || props?.attrs?.disabled == 'disabled' || props.type == "value"}
-                        placeholder={placeholder}
-                        placeholderTextColor="#6b7280"
-                        onChangeText={field.onChange}
-                        onBlur={field.onBlur}
-                        value={String(field.value)}
-                        aria-label={props.caption}
-                        {...(props.checker?.params?.max ? { maxLength: props.checker.params.max } : {})}
-                        {...returnKeyProps}
-                    />
-                </AdaptiveLabel>
-            )}
+                aria-label={props.caption}
+                {...(props.checker?.params?.max ? { maxLength: props.checker.params.max } : {})}
+                {...returnKeyProps}
+            />
         </Field>
     );
 }

@@ -2,7 +2,7 @@
 import { useState, useCallback, useRef } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useCurrentUser } from 'app/context/user'
-import { useMentionSuggestions } from 'app/components/form-fields/use-mention-suggestions'
+import { useMentionSuggestions } from 'app/lib/hooks/use-mention-suggestions'
 import { buildMentionSearchUrl } from 'app/lib/editor-mention-shared'
 
 /**

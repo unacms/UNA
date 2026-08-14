@@ -1,5 +1,4 @@
 import Field, { getValidationRules } from './_field';
-import { useController, useFormContext } from 'react-hook-form';
 import { fetcher } from 'app/lib/fetcher';
 import { Button, Modal } from "app/design/controls";
 import { useState, useEffect, useCallback } from 'react';
@@ -7,22 +6,23 @@ import Form from 'app/components/elements/form';
 import useFetchForm from 'app/lib/hooks/fetch'
 import emitter from 'app/context/emitter';
 import { PollItem } from 'app/components/elements/entity-poll';
+import { useFormField } from 'app/lib/hooks/use-form-field';
 
 export default function FormFieldPolls(props) {
     const name = props.name;
     const [isModal, setIsModal] = useState(false);
     const [pollSource, setPollSource] = useState(props.values || []);
     const [dataForm, setDataForm] = useState(false);
-    const defaultValue = props.value ? props.value : '';
-    const rules = getValidationRules(props);
-    const { field } = useController({ name, rules, defaultValue });
-    const { data: dynamicData, error } = useFetchForm(props.request_submit, dataForm);
+    const { field } = useFormField(props, {
+        rules: getValidationRules(props),
+        syncValue: false,
+    });
+    const { data: dynamicData } = useFetchForm(props.request_submit, dataForm);
 
-    
     useEffect(() => {
         if (dynamicData?.data?.id) {
-            const a = field.value.split(',');
-            
+            const a = String(field.value || '').split(',');
+
             a.push(dynamicData.data.id);
             field.onChange([...new Set(a.filter(Boolean))].join(','));
             setIsModal(false);
@@ -48,14 +48,12 @@ export default function FormFieldPolls(props) {
         }
     }, [])
 
-    const formContext = useFormContext();
-
     const showSelect = async () => {
         const sResponse = await fetcher(props.request_get);
         setIsModal(sResponse.data[0])
     }
 
-    const onFormSubmit = useCallback((formData, d) => {
+    const onFormSubmit = useCallback((formData) => {
         setDataForm(formData);
     }, []);
 
@@ -68,7 +66,7 @@ export default function FormFieldPolls(props) {
 
     const frmData = dynamicData?.data[0] || isModal;
     return (
-        <Field {...props} error2={formContext.formState.errors[name]}>
+        <Field {...props}>
             <Modal
                 title={'Create a poll'}
                 onVisible={!!isModal}
@@ -92,5 +90,3 @@ export default function FormFieldPolls(props) {
         </Field>
     );
 }
-
-

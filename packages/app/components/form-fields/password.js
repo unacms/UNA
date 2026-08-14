@@ -1,47 +1,46 @@
 import Field from './_field';
-import AdaptiveLabel from './adaptive-label';
-import { useController } from 'react-hook-form';
 import { Input, NeoButton } from 'app/design/controls'
 import { View } from 'app/design/view'
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { appSetting } from 'app/lib/util';
-import { useNativeReturnKeyNav } from 'app/context/form-focus-chain';
+import { useFormField } from 'app/lib/hooks/use-form-field';
 
 export default function FormFieldPassword(props) {
     const [isVisible, setIsVisible] = useState(true)
-    const rules = {};
-    const name = props.name;
-    const defaultValue = props.value ? props.value : '';
-    const { field } = useController({ name, rules, defaultValue });
-    const placeholder = props.use_caption_as_placeholder? props.caption : props.placeholder;
-    const { inputRef, returnKeyProps } = useNativeReturnKeyNav(name, props.handleSubmit);
-    
+    const {
+        name,
+        field,
+        placeholder,
+        placeholderTextColor,
+        focused,
+        onFocus,
+        onBlur,
+        inputRef,
+        returnKeyProps,
+        isAdaptiveLabel,
+    } = useFormField(props);
+
     const eyeIcons = appSetting('forms', 'password_eye_button')?.image;
     const eyeIcon = isVisible ? eyeIcons?.visible : eyeIcons?.hidden;
 
     return (
-        <Field {...props}>
+        <Field {...props} value={field.value} focused={focused} isAdaptiveLabel={isAdaptiveLabel}>
             <View className="relative w-full">
-                <AdaptiveLabel
-                    caption={props.caption}
+                <Input
+                    ref={inputRef}
+                    textContentType="password"
+                    autoComplete="current-password"
+                    placeholderTextColor={placeholderTextColor}
+                    placeholder={placeholder}
+                    secureTextEntry={isVisible}
+                    name={name}
+                    onChangeText={field.onChange}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
                     value={field.value}
-                    useCaptionAsPlaceholder={props.use_caption_as_placeholder}
-                >
-                    <Input
-                        ref={inputRef}
-                        textContentType="password"
-                        autoComplete="current-password"
-                        placeholderTextColor="#6b7280"
-                        placeholder={placeholder}
-                        secureTextEntry={isVisible}
-                        name={props.name}
-                        onChangeText={field.onChange}
-                        onBlur={field.onBlur}
-                        value={field.value}
-                        aria-label={props.caption}
-                        {...returnKeyProps}
-                    />
-                </AdaptiveLabel>
+                    aria-label={props.caption}
+                    {...returnKeyProps}
+                />
                 {eyeIcon ? (
                     <View className="absolute right-1.5 top-1/2 -translate-y-1/2 justify-center items-center z-20">
                         <NeoButton

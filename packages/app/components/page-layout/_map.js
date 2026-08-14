@@ -10,13 +10,15 @@ import PageCustomNotif from 'app/components/page-layout/notif';
 import PageCustomCreateAccount from 'app/components/page-layout/create-account';
 import PageCustomLogin from 'app/components/page-layout/login';
 import PageUniversal from 'app/components/page-layout/universal';
-import PagePlayground from 'app/components/page-layout/playground';
+import PagePlayground from 'app/components/page-layout/_playground/playground';
+import PagePlaygroundForm from 'app/components/page-layout/_playground/playground-form-layout';
 import PageWiki from 'app/components/page-layout/wiki';
 
 export const componentsMapDefault = {
     'default': PageLayoutDefault,
     'post': PageCustomPost,
     'playground': PagePlayground,
+    'playground-form': PagePlaygroundForm,
     'discussion': PageCustomPost,
     'post-without-comments': PageCustomPostWithoutComments,
     'navigator': PageCustomNavigator,

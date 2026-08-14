@@ -1,9 +1,9 @@
 /**
- * NeoButton playground page-layout.
+ * Dev playground page-layout (`/pg`).
  *
- * Mounted at `/playground` via [`apps/next/app/playground/page.js`](apps/next/app/playground/page.js).
- * Self-contained, dev-only. Safe to delete with the route once the new
- * NeoButton component is approved.
+ * NeoButton axis gallery. Form kitchen sink lives at `/pg/form`.
+ *
+ * Mounted via [`apps/next/app/pg/page.js`](apps/next/app/pg/page.js).
  *
  * The page renders every SwiftUI Button axis: roles, styles, controlSize
  * ladder (mini → xlarge with px values), borderShape (capsule / rectangle /
@@ -233,11 +233,10 @@ export default function PageLayoutPlayground({ data, children }) {
             <ScrollView className="flex-1 bg-background">
                 <View className="p-6 gap-2 max-w-5xl mx-auto w-full">
                     <Text className="text-2xl font-semibold text-foreground">
-                        NeoButton playground (SwiftUI API)
+                        Playground
                     </Text>
                     <Text className="text-sm text-muted-foreground">
-                        Open at /playground. Edit this file to experiment:
-                        packages/app/components/page-layout/playground.js
+                        Open at /pg. Form kitchen sink is at /pg/form.
                     </Text>
                 </View>
 

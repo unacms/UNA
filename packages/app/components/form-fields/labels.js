@@ -1,41 +1,23 @@
 import Field from './_field';
 import { Text } from 'app/design/typography'
-import { View, Row, Pressable } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { useState, useEffect , useCallback } from 'react';
-import { useController } from 'react-hook-form';
 import { Button, Modal } from "app/design/controls";
-import CheckBox from 'app/ui/atoms/checkbox';
+import ChkList from 'app/ui/molecules/form-controls/checkbox-list';
 import emitter from 'app/context/emitter';
 import { LabelButton } from 'app/lib/form-helpers'
+import { useFormField } from 'app/lib/hooks/use-form-field';
+import { appSetting } from 'app/lib/util'
 
-function ChkList({ values, value2, addValue2 }) {
-    return (
-        <>
-            {values.map((item2, index) => (
-                <Pressable key={`lbl-${index}`} onPress={() => addValue2(item2.value)}>
-                    <Row className='items-center my-1 border border-border/60  rounded-lg web:hover:bg-primary/40 web:active:bg-primary/20 ' key={'chk' + index}>
-                        <CheckBox
-                            value={item2.value}
-                            status={value2.includes(item2.value) ? 'checked' : 'unchecked'}
-                            onPress={() => { addValue2(item2.value); }}
-                            title={item2.value}
-                        />
-                    </Row>
-                </Pressable>
-            ))}
-        </>
-    );
-}
+const inputSettings = appSetting('theme', 'inputs');
 
-export default function (props) {
-    const rules = {};
-    const defaultValue = props.value ? props.value : '';
-    const name = props.name ? props.name : '';
-    const variant = props.variant || 'text';
+export default function FormFieldLabels(props) {
+    const { name, field } = useFormField(props);
+    const isEmbedded = !!props.noPadding;
+    const variant = props.variant || (isEmbedded ? 'text' : 'default');
     const size = props.size || 'sm';
-    const { field } = useController({ name, rules, defaultValue });
     const [isModal, setIsModal] = useState(!!props.isShow);
-    const [value2, setValue2] = useState(field.value)
+    const [value2, setValue2] = useState(() => Array.isArray(field.value) ? field.value : []);
 
     useEffect(() => {
         const subscription = emitter.addListener(`fld_labels_${name}`, (data) => {
@@ -49,14 +31,6 @@ export default function (props) {
             subscription.remove()
         }
     }, [])
-
-
-    const addValue2 = (value) => {
-        const selectedValues = value2.includes(value)
-            ? value2.filter(item => item !== value)
-            : [...value2, value];
-        setValue2(selectedValues);
-    }
 
     const setFormValue = useCallback(
         (value) => {
@@ -85,7 +59,10 @@ export default function (props) {
         item.subitems ? [item, ...item.subitems] : item
     );
 
-    const styles = props.align === 'right' ? 'justify-end pl-4' : 'justify-start ';
+    const styles = props.align === 'right' ? 'justify-end' : 'justify-start';
+    const surfaceClass = isEmbedded
+        ? `${styles} w-full flex-auto items-center flex-row flex-wrap`
+        : `${styles} bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg w-full items-center flex-row flex-wrap p-2 gap-1 ${inputSettings.surface_size?.regular ?? 'min-h-10'}`;
 
     const header = <Row className=' w-full justify-between items-center'>
         <View><Button onPress={() => { setIsModal(null) }} variant='secondary' rounded startDecorator="ArrowLeft" /></View>
@@ -110,11 +87,10 @@ export default function (props) {
                 headerBorder={true}
                 scrollable={true}
             >
-                <ChkList values={dataFlat} value2={value2} addValue2={addValue2} />
+                <ChkList values={dataFlat} selectedValue={value2} setValue={setValue2} showApply={false} />
             </Modal>
             <Field {...props}>
-                <View className='w-full justify-between '>
-                    <View className={styles + ' w-full flex-auto items-center flex-row flex-wrap '}>
+                <View className={surfaceClass}>
                         {(!props.hide_button && props.align != 'right') && <LabelButton
                             variant={variant}
                             size={size}
@@ -143,7 +119,6 @@ export default function (props) {
                             title='Tags'
                             field_name={name}
                         />}
-                    </View>
                 </View>
             </Field>
         </>

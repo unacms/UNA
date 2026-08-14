@@ -1,83 +1,29 @@
 import Field from './_field';
-import { View, Row, Pressable } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { useState, useMemo, useCallback } from 'react';
-import { useController } from 'react-hook-form';
-import { Button, Input, Modal } from "app/design/controls";
-import CheckBox from 'app/ui/atoms/checkbox';
-import RadioButton from 'app/ui/atoms/radiobutton';
+import { Button, Modal } from "app/design/controls";
+import ChkList from 'app/ui/molecules/form-controls/checkbox-list';
 import { Text } from 'app/design/typography';
-import { useTranslation } from 'react-i18next';
 import { appSetting } from 'app/lib/util'
+import { useFormField } from 'app/lib/hooks/use-form-field';
 
 const inputSettings = appSetting('theme', 'inputs');
 
-function ChkList({ values, value2, addValue2, isMultiple }) {
-    const [inputValue, setInputValue] = useState('');
-
-    const filteredValues = useMemo(() => {
-        return inputValue
-            ? values.filter(item => item.value.toLowerCase().includes(inputValue.toLowerCase()))
-            : values;
-    }, [inputValue, values]);
-
-    const Cnt = isMultiple ? CheckBox : RadioButton;
-    const { t } = useTranslation();
-    return (
-        <View className='flex-1'>
-            {
-                values.length > 10 && (<View className='pb-2'>
-                    <Input name="search" placeholder={t('Search...')} defaultValue={inputValue}
-                        onChangeText={(value) => {
-                            setInputValue(value)
-                        }}
-                    />
-                </View>)
-            }
-
-            {filteredValues.map((item2, index) => {
-                const key = item2.key;
-                return (
-                    <Pressable key={`lbl-${index}`} onPress={() => addValue2(key)}>
-                           <Row className='items-center my-1 border border-border/60  rounded-lg' key={'chk' + index}>
-                            <Cnt
-                                value={key}
-                                status={value2.includes(key) ? 'checked' : 'unchecked'}
-                                
-                                title={item2.value}
-                            />
-                        </Row>
-                    </Pressable>
-                )
-            })}
-        </View>
-    );
-}
-
-
-export default function (props) {
+export default function FormFieldSelector(props) {
 
     const [isModal, setIsModal] = useState(false);
-    const rules = {};
     const isMultiple = props.origtype == 'select' || props.is_single === true ? false : true;
-    const defaultValue = props?.value ? (Array.isArray(props.value) ? props.value.map(String) : [props.value.toString()]) : '';
-    const name = props.name ? props.name : '';
-    const { field } = useController({ name, rules, defaultValue });
-    const [value2, setValue2] = useState(field.value)
+    const defaultValue = props?.value
+        ? (Array.isArray(props.value) ? props.value.map(String) : [String(props.value)])
+        : [];
+    const { field } = useFormField(props, {
+        defaultValue,
+        syncValue: false,
+    });
+    const [value2, setValue2] = useState(() => (Array.isArray(field.value) ? field.value : defaultValue));
 
     const variant = props.variant || 'default';
     const size = props.size || 'sm';
-
-    const addValue2 = useCallback(
-        
-        (value) => {
-            const selectedValues = value2.includes(value)
-                ? (isMultiple ? value2.filter(item => item !== value) : [value])
-                : (isMultiple ? [...value2, value] : [value]);
-
-            setValue2(selectedValues);
-        },
-        [value2, isMultiple]
-    );
 
     const setFormValue = useCallback(
         (value) => {
@@ -100,9 +46,10 @@ export default function (props) {
 
     const showSelect = useCallback(
         () => {
+            setValue2(Array.isArray(field.value) ? field.value : []);
             setIsModal(true);
         },
-        []
+        [field.value]
     );
 
     const valuesList = useMemo(() => {
@@ -117,6 +64,11 @@ export default function (props) {
             }));
     }, [props.values]);
 
+    const selectedItems = useMemo(() => {
+        const selected = Array.isArray(field.value) ? field.value : [];
+        return valuesList.filter(item => selected.includes(item.key));
+    }, [field.value, valuesList]);
+
     const header = <Row className=' w-full justify-between items-center'>
         <View><Button onPress={() => { setIsModal(null) }} variant='outline' rounded startDecorator="X" /></View>
         <View className='w-full flex-auto items-center justify-center'><Text className="text-muted-foreground  text-xl font-bold">{'Choose ' + props.caption}</Text></View>
@@ -126,7 +78,7 @@ export default function (props) {
                 variant="primary"
                 size="base"
                 rounded
-                onPress={() => { setFormValue(value2)}}
+                onPress={() => { setFormValue(value2) }}
             />
         </View>
     </Row>
@@ -141,7 +93,14 @@ export default function (props) {
         skipUnsavedGuard={true}
     >
         <View className='flex-1'>
-            <ChkList isMultiple={isMultiple} values={valuesList} value2={value2} addValue2={addValue2} />
+            <ChkList
+                values={valuesList}
+                selectedValue={value2}
+                setValue={setValue2}
+                showApply={false}
+                multi={isMultiple}
+                searchable={valuesList.length > 10}
+            />
         </View>
     </Modal>
 
@@ -149,37 +108,34 @@ export default function (props) {
         <>
             {ModalCnt}
             <Field {...props}>
-                
-                    <View className={`${props.align === 'right' ? 'justify-end' : 'justify-start'} bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg w-full flex-auto items-center flex-row flex-wrap p-1 gap-1 ${inputSettings.surface_size?.regular ?? 'min-h-10'}`}>
-                        {props.align == 'right' && <Button
-                            startDecorator={isMultiple ? "Plus" : ""}
-                            variant={variant}
-                            title={isMultiple ? ""  : field.value?.length> 0 ? "Change" : "Select"}
-                            size={size}
-                            onPress={showSelect}
-                        />}
-                        {field.value?.length > 0 && valuesList.filter(item => field.value.includes(item.key)).map((item, index) => (
-                            <View className='m-px' key={'label' + index}>
-                                <Button
-                                    endDecorator="X"
-                                    variant={variant}
-                                    size={size}
-                                    title={item.value}
-                                    onPress={removeValue(item.key)}
-                                />
-                            </View>
-                        )
-                        )}
-                        {props.align != 'right' && <View className='m-px'><Button
-                            startDecorator={isMultiple ? "Plus"  : ""}
+
+                <View className={`${props.align === 'right' ? 'justify-end' : 'justify-start'} bg-input/60 shadow-input-outline dark:shadow-input-outline-deep rounded-lg w-full items-center flex-row flex-wrap p-2 gap-1 ${inputSettings.surface_size?.regular ?? 'min-h-10'}`}>
+                    {props.align == 'right' && <Button
+                        startDecorator={isMultiple ? "Plus" : ""}
+                        variant={variant}
+                        title={isMultiple ? "" : selectedItems.length > 0 ? "Change" : "Select"}
+                        size={size}
+                        onPress={showSelect}
+                    />}
+                    {selectedItems.map((item) => (
+                        <Button
+                            key={item.key}
+                            endDecorator="X"
                             variant={variant}
                             size={size}
-                            title={isMultiple ? "Add"  : "Select"}
-                            onPress={showSelect}
-                        /></View>}
-                    </View>
-                
+                            title={item.value}
+                            onPress={removeValue(item.key)}
+                        />
+                    ))}
+                    {props.align != 'right' && <Button
+                        startDecorator={isMultiple ? "Plus" : ""}
+                        variant={variant}
+                        size={size}
+                        title={isMultiple ? "Add" : "Select"}
+                        onPress={showSelect}
+                    />}
+                </View>
+
             </Field></>
     );
 }
-

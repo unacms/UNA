@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Field, { getValidationRules } from './_field';
-import { useFormContext, useController } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { Button, NeoButton, Modal, Hidden } from 'app/design/controls'
 import { getVisibilityValues } from './select';
 import { visibilityById, appSetting } from 'app/lib/util';
@@ -10,156 +10,157 @@ import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile/profile';
-import { useTheme } from 'app/design/theme';
 import { useTranslation } from 'react-i18next'
+import { useFormField } from 'app/lib/hooks/use-form-field';
 
 const inputSettings = appSetting('theme', 'inputs');
+const SUB_TYPES = new Set([6, 8, 9]);
+const needsSub = (val) => SUB_TYPES.has(Number(val));
+const sameId = (a, b) => String(a) === String(b);
 
-export default function (props) {
-    const name = props.name;
-    const rules = getValidationRules(props);
-    const formContext = useFormContext();
-    const defaultValue = props?.value ? props.value : '';
-    const size = props.size || 'xs';
-    const maxLength = props.maxLength ?? 20;
+function formatOverflow(labels, max = 3) {
+    if (labels.length <= max) return labels.join(', ');
+    return `${labels.slice(0, max).join(', ')} + ${labels.length - max} more`;
+}
+
+function OwnerAvatar({ owner, displaySize = '3xs', displayType = 'unit_wo_info', ...rest }) {
+    if (!owner) return null;
+    return (
+        <Profile
+            {...owner}
+            displayType={displayType}
+            displaySize={displaySize}
+            showLinks={false}
+            {...rest}
+        />
+    );
+}
+
+function friendOptions(values) {
+    return (values || []).map((item) => ({
+        value: item.key,
+        label: item.value?.display_name,
+        icon: (
+            <Profile
+                {...item.value}
+                displayType="unit_wo_info"
+                displaySize="sm"
+            />
+        ),
+    }));
+}
+
+export default function FormFieldVisibility(props) {
+    const { setValue } = useFormContext();
+    const { name, field } = useFormField(props, {
+        rules: getValidationRules(props),
+    });
+
     const { t } = useTranslation();
-
-    const { field } = useController({ name, rules, defaultValue });
     const [isModal, setIsModal] = useState(false);
-    const [isModalSub, setIsModalSub] = useState(false);
-
+    const [subKind, setSubKind] = useState(null);
     const [subValues, setSubValues] = useState(
         props?.subvalue ? props.subvalue.split(",").map(value => parseInt(value, 10)) : []
     );
-
-
-    const { colors } = useTheme();
 
     const handleValueChange = (val) => {
         field.onChange(val);
         if (props.onChange) {
             props.onChange(val)
         }
-        if (val != field.value)
-            setSubValues([])
-        if ([6, 8, 9].includes(val)) {
-            setIsModalSub(val);
-        }
-        else {
-            setIsModal(false);
-        }
+        if (val != field.value) setSubValues([]);
+        if (needsSub(val)) setSubKind(Number(val));
+        else setIsModal(false);
     }
 
     const handleSubValueChange = (val) => {
         setSubValues(val);
-        setIsModalSub(false);
+        setSubKind(null);
     }
 
     const applyVisibility = () => {
         setIsModal(false);
-        formContext.setValue(name + '_items', subValues);
+        setValue(name + '_items', subValues);
     }
 
-    const handleShowModal = () => {
-        setIsModal(true);
-    }
-
-    const prepareValuesFriends = (values) => {
-        return values.map(item => ({
-            key: item.key,
-            value: item.value.display_name,
-            icon: <Profile
-                {...item.value}
-                displayType="unit_wo_info"
-                displaySize="sm"
-            />
-        }));
-    };
-
-    const filteredValues = getVisibilityValues(props.values).filter(item => {
-        if (item.value == '6' && !props.values_friends) return false;
-        if (item.value == '8' && !props.values_relations) return false;
-        if (item.value == '9' && !props.values_memberships) return false;
-        if (item.value == '') return false;
-        return true;
-    });
-
-
-
-
-
-    const values_friends = props.values_friends ? prepareValuesFriends(props.values_friends) : null;
+    const openModal = () => setIsModal(true);
 
     const subOptionsMap = {
-        6: getVisibilityValues(values_friends || []),
+        6: friendOptions(props.values_friends),
         8: getVisibilityValues(props.values_relations || []),
         9: getVisibilityValues(props.values_memberships || []),
     };
+    const subOptions = subOptionsMap[Number(field.value)] || [];
+    const selectedSubLabels = subOptions
+        .filter(item => subValues.some(v => sameId(v, item.value)))
+        .map(item => item.label);
+    const subLabelDisplay = formatOverflow(selectedSubLabels);
 
-    const subOptions = subOptionsMap[field.value] || [];
+    const filteredValues = getVisibilityValues(props.values)
+        .filter((item) => {
+            if (item.value === '' || item.value == null) return false;
+            if (Number(item.value) === 6 && !props.values_friends) return false;
+            if (Number(item.value) === 8 && !props.values_relations) return false;
+            if (Number(item.value) === 9 && !props.values_memberships) return false;
+            return true;
+        })
+        .map((item) => {
+            const visibilityIcon = visibilityById(item.value, t);
+            const isCurrentSub = needsSub(field.value) && sameId(item.value, field.value);
+            return {
+                ...item,
+                info: isCurrentSub ? subLabelDisplay : item.info,
+                label: visibilityIcon?.text || item.label,
+                icon: visibilityIcon?.icon ? (
+                    <View className="h-6 w-6 overflow-hidden">
+                        <Icon icon={visibilityIcon.icon} width={24} height={24} />
+                    </View>
+                ) : null,
+            };
+        });
 
-    const selectedSubLabels = subOptions.filter(item => subValues.includes(item.value)).map(item => item.label);
-
-    const subLabelDisplay = selectedSubLabels.length > 3 ? `${selectedSubLabels.slice(0, 3).join(', ')} + ${selectedSubLabels.length - 3} more` : selectedSubLabels.join(', ');
-
-    filteredValues.forEach(item => {
-        if (parseInt(item.value, 10) === parseInt(field.value, 10) && [6, 8, 9].includes(parseInt(field.value, 10))) {
-            item.info = subLabelDisplay;
-        }
-        const visibilityIcon = visibilityById(item.value, t);
-        item.label = visibilityIcon?.text || item.label;
-        item.icon = visibilityIcon?.icon ? <View className="h-6 w-6 overflow-hidden">
-            <Icon
-                icon={visibilityIcon?.icon}
-                width={24}
-                height={24}
-            />
-        </View> : <></>
-    });
-
-    const selectedItem = filteredValues.find(item => item.value == isModalSub);
-
-    const modalHeader = <Row className={` w-full items-center justify-:px-4 :pt-4`}>
-        <View className='flex-auto absolute left-0 right-0'>
-            <Text className='text-secondary-foreground  text-2xl font-bold tracking-tight text-center '>{selectedItem?.label}</Text>
-        </View>
-        <View >
-            <Button variant='secondary' size='base' rounded startDecorator='ArrowLeft' onPress={() => { setIsModalSub(false) }} />
-        </View>
-    </Row>
-
-    const modalContent = isModalSub ? (
-        subOptions.length === 0 ? (
-            <Text className="text-muted-foreground text-center py-6 px-4">
-                {t('Nothing to show')}
-            </Text>
-        ) : (
-            <ChkList values={subOptions} setValue={handleSubValueChange} selectedValue={subValues} />
-        )
-    ) : filteredValues.length === 0 ? (
+    const selectedItem = filteredValues.find(item => sameId(item.value, subKind));
+    const empty = (
         <Text className="text-muted-foreground text-center py-6 px-4">
             {t('Nothing to show')}
         </Text>
-    ) : (
+    );
+
+    const modalHeader = (
+        <Row className="w-full items-center">
+            <View className="flex-auto absolute left-0 right-0">
+                <Text className="text-secondary-foreground text-2xl font-bold tracking-tight text-center">{selectedItem?.label}</Text>
+            </View>
+            <View>
+                <Button variant="secondary" size="base" rounded startDecorator="ArrowLeft" onPress={() => setSubKind(null)} />
+            </View>
+        </Row>
+    );
+
+    const modalContent = subKind ? (
+        subOptions.length === 0 ? empty : (
+            <ChkList values={subOptions} setValue={handleSubValueChange} selectedValue={subValues} />
+        )
+    ) : filteredValues.length === 0 ? empty : (
         <>
             <RbList values={filteredValues} setValue={handleValueChange} selectedValue={field.value} />
-            <View className='flex-row justify-end pt-3 mt-3 border-t border-border/60 '>
-                <Button 
-                    title="Done" 
-                    size="base" 
-                    variant="primary" 
-                    disabled = {[6, 8, 9].includes(parseInt(field.value, 10)) && selectedSubLabels.length == 0}
-                    onPress={applyVisibility} 
-                    />
+            <View className="flex-row justify-end pt-3 mt-3 border-t border-border/60 ">
+                <Button
+                    title="Done"
+                    size="base"
+                    variant="primary"
+                    disabled={needsSub(field.value) && selectedSubLabels.length == 0}
+                    onPress={applyVisibility}
+                />
             </View>
         </>
     );
 
     const modalElement = (
         <Modal
-            title={isModalSub ? modalHeader : t('Choose audience')}
+            title={subKind ? modalHeader : t('Choose audience')}
             onVisible={isModal}
-            onClose={!isModalSub ? () => setIsModal(false) : undefined}
+            onClose={!subKind ? () => setIsModal(false) : undefined}
             transparent
             headerBorder
             scrollable
@@ -167,6 +168,7 @@ export default function (props) {
             {modalContent}
         </Modal>
     );
+
     if (props.origtype == 'hidden') {
         return (
             <>
@@ -174,14 +176,7 @@ export default function (props) {
                 {props.renderTrigger?.({
                     onPress: undefined,
                     displayText: props.owner_info?.display_name || '',
-                    icon: props.owner_info ? (
-                        <Profile
-                            {...props.owner_info}
-                            displayType="unit_wo_info"
-                            displaySize="3xs"
-                            showLinks={false}
-                        />
-                    ) : null,
+                    icon: props.owner_info ? <OwnerAvatar owner={props.owner_info} displaySize="3xs" /> : null,
                 })}
                 <Hidden
                     name={name}
@@ -189,105 +184,85 @@ export default function (props) {
                     onBlur={field.onBlur}
                     defaultValue={props.value}
                 />
-                {!!props.owner_info && !props.renderTrigger && <Row className=" h-5.5 items-center text-muted-foreground web:group-hover:text-secondary-foreground     web:duration-300">
-                    <View className='flex-none mb-auto'>
-                        <Profile
-                            {...props.owner_info}
-                            displayType="unit_wo_info"
-                            displaySize="2xs"
-                            showLinks={false}
-                        />
-                    </View>
-                    <View className='px-1  flex-auto'>
-                        <Profile
-                            {...props.owner_info}
-                            displayType="unit_wo_image"
-                            displaySize="sm"
-                            showInfo={false}
-                            showLinks={false}
-                        />
-                    </View>
-                </Row>}
+                {!!props.owner_info && !props.renderTrigger && (
+                    <Row className="h-5.5 items-center text-muted-foreground web:group-hover:text-secondary-foreground web:duration-300">
+                        <View className="flex-none mb-auto">
+                            <OwnerAvatar owner={props.owner_info} displaySize="2xs" />
+                        </View>
+                        <View className="px-1 flex-auto">
+                            <OwnerAvatar
+                                owner={props.owner_info}
+                                displayType="unit_wo_image"
+                                displaySize="sm"
+                                showInfo={false}
+                            />
+                        </View>
+                    </Row>
+                )}
             </>
         )
     }
+
     const visibilityData = visibilityById(field.value, t);
     const ownerName = props.owner_info?.display_name || '';
-    const ownerIcon = props.owner_info ? (
-        <Profile
-            {...props.owner_info}
-            displayType="unit_wo_info"
-            displaySize="3xs"
-            showLinks={false}
-        />
-    ) : null;
-    const icon = visibilityData ? visibilityData.icon : (ownerIcon || 'Globe')
-
-    const v = filteredValues.find(item => item.value == field.value);
-    const text = visibilityData ? visibilityData.text : ''
+    const ownerIcon = props.owner_info ? <OwnerAvatar owner={props.owner_info} displaySize="3xs" /> : null;
+    const icon = visibilityData ? visibilityData.icon : (ownerIcon || 'Globe');
+    const selectedOption = filteredValues.find(item => sameId(item.value, field.value));
     const displayText = selectedSubLabels.length > 0
-        ? selectedSubLabels.slice(0, 3).join(', ') + (selectedSubLabels.length > 3 ? ' + ' + (selectedSubLabels.length - 3) + ' more' : '')
-        : text || v?.label || ownerName || t('Choose audience');
+        ? formatOverflow(selectedSubLabels)
+        : visibilityData?.text || selectedOption?.label || ownerName || t('Choose audience');
 
-    if (props.format == 'nofield') {
-        if (props.noContainer) {
-            const trigger = props.renderTrigger
-                ? props.renderTrigger({
-                    onPress: handleShowModal,
-                    displayText,
-                    icon,
-                })
-                : (
-                    <NeoButton
-                        label={displayText}
-                        image={icon}
-                        style={props.style || 'bordered'}
-                        controlSize={props.controlSize || 'mini'}
-                        borderShape={props.borderShape || 'capsule'}
-                        onPress={handleShowModal}
-                    />
-                );
-            return (<>
+    let trigger;
+    if (props.format == 'nofield' && props.noContainer) {
+        trigger = props.renderTrigger
+            ? props.renderTrigger({ onPress: openModal, displayText, icon })
+            : (
+                <NeoButton
+                    label={displayText}
+                    image={icon}
+                    style={props.style || 'bordered'}
+                    controlSize={props.controlSize || 'mini'}
+                    borderShape={props.borderShape || 'capsule'}
+                    onPress={openModal}
+                />
+            );
+        return (
+            <>
                 {modalElement}
                 {props.addElement}
                 {trigger}
-            </>);
-        }
-        return (<>
-            {modalElement}
-            <Pressable onPress={() => handleShowModal()}>
-                {props.addElement}
-                <Row className="  flex-none mr-auto gap-x-0.5 px-1 py-1 rounded-lg items-center text-muted-foreground  web:group-hover:text-secondary-foreground   h-6   web:duration-300">
-                    <Icon
-                        icon={icon}
-                        width={16}
-                        height={16}
-                        className={"text-muted-foreground"}
-                    />
-                    <Text className=" leading-5.5 ml-1 whitespace-nowrap text-ellipsis overflow-hidden tracking-tight text-muted-foreground web:group-hover:text-secondary-foreground   font-medium text-sm native:text-sm ">{displayText}</Text>
-                    <Icon
-                        icon="ChevronDown"
-                        width={16}
-                        height={16}
-                        className={"text-muted-foreground"}
-                    />
-                </Row>
-            </Pressable>
-        </>);
+            </>
+        );
+    }
+
+    if (props.format == 'nofield') {
+        return (
+            <>
+                {modalElement}
+                <Pressable onPress={openModal}>
+                    {props.addElement}
+                    <Row className="flex-none mr-auto gap-x-0.5 px-1 py-1 rounded-lg items-center text-muted-foreground web:group-hover:text-secondary-foreground h-6 web:duration-300">
+                        <Icon icon={icon} width={16} height={16} className="text-muted-foreground" />
+                        <Text className="leading-5.5 ml-1 whitespace-nowrap text-ellipsis overflow-hidden tracking-tight text-muted-foreground web:group-hover:text-secondary-foreground font-medium text-sm native:text-sm">{displayText}</Text>
+                        <Icon icon="ChevronDown" width={16} height={16} className="text-muted-foreground" />
+                    </Row>
+                </Pressable>
+            </>
+        );
     }
 
     return (
         <>
             {modalElement}
-            <Field {...props} error2={formContext.formState.errors[name]}>
-                <View className={`bg-input/60 shadow-btn-outline dark:shadow-btn-outline-deep rounded-lg w-full flex-auto items-center flex-row flex-wrap p-1 gap-1 ${inputSettings.surface_size?.regular ?? 'min-h-10'}`}>
+            <Field {...props}>
+                <View className={`bg-input/60 shadow-btn-outline dark:shadow-btn-outline-deep rounded-lg w-full flex-auto items-center flex-row flex-wrap p-2 gap-1 ${inputSettings.surface_size?.regular ?? 'min-h-10'}`}>
                     <Button
                         title={displayText}
-                        startDecorator="Globe"
+                        startDecorator={visibilityData?.icon || 'Globe'}
                         variant="default"
                         size="sm"
-                        className='my-auto'
-                        onPress={() => handleShowModal()}
+                        className="my-auto"
+                        onPress={openModal}
                     />
                 </View>
             </Field>

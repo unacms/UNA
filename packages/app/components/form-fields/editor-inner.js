@@ -1,4 +1,4 @@
-import { useController, useFormContext } from 'react-hook-form'
+import { useFormContext } from 'react-hook-form'
 import { useState, useRef, useEffect, useMemo } from 'react'
 import { View, Pressable } from 'app/design/view'
 import {
@@ -18,9 +18,9 @@ import { useTentapToolbar } from 'app/lib/editor-toolbar-tentap'
 import { useFilesData } from 'app/context/files'
 import { Platform } from 'react-native'
 import { useThemeName } from 'app/design/theme'
-import { getAlert, stripTags, stripTagsWithLinks } from 'app/lib/util'
-import { appSetting, cn } from 'app/lib/util'
-import { stripInlinePresentation } from 'app/lib/html-helper'
+import { getAlert, stripTags, appSetting, cn } from 'app/lib/util'
+import { commitEditorHtml, normalizeEditorHtml } from 'app/lib/editor-form'
+import { useEditorFormField } from 'app/lib/hooks/use-form-field'
 import emitter from 'app/context/emitter'
 import { TextInput } from 'react-native'
 import { useEditorMentions } from 'app/lib/use-editor-mentions'
@@ -31,24 +31,28 @@ import { useIsDesktop } from 'app/context/measure'
 
 const inputSettings = appSetting('theme', 'inputs');
 
-export default function RftText({
-    name,
-    value = '',
-    initialHeight = 120,
-    maxHeight = 300,
-    onFocus,
-    html,
-    bg,
-    enableSubmitOnEnter = false,
-    placeholder,
-    form_name,
-    container_class,
-    kb_stay_open,
-    onEnterSubmit,
-    disabled,
-    classes,
-    autofocus
-}) {
+export default function RftText(props) {
+    const {
+        value = '',
+        initialHeight = 120,
+        maxHeight = 300,
+        onFocus,
+        html,
+        bg,
+        enableSubmitOnEnter = false,
+        placeholder,
+        form_name,
+        container_class,
+        kb_stay_open,
+        onEnterSubmit,
+        disabled,
+        classes,
+        autofocus
+    } = props
+
+    const { name, field, readOnly } = useEditorFormField(props)
+    const { resetField, formState } = useFormContext()
+    const isDisabled = !!(disabled || readOnly)
 
     const isWeb = Platform.OS === 'web'
     const isDesktop = useIsDesktop()
@@ -58,8 +62,6 @@ export default function RftText({
     const isPlainText = html == 3
     const suggestionsHeight = 130
     const { setFilesData } = useFilesData()
-    const { field } = useController({ name, rules: {}, defaultValue: value })
-    const formContext = useFormContext()
     const [inputKey, setInputKey] = useState(0);
 
     // Shared mention pipeline (same fetch/recents/UI as enriched).
@@ -530,10 +532,10 @@ export default function RftText({
 
 
     useEffect(() => {
-        if (formContext.formState.isSubmitted && kb_stay_open != true) {
+        if (formState.isSubmitted && kb_stay_open != true) {
             editor?.blur?.()
         }
-    }, [formContext.formState.isSubmitted])
+    }, [formState.isSubmitted])
 
     const htmlContent = useEditorContent(editor, { type: 'html' })
     const isInitialHtmlContent = useRef(true)
@@ -542,22 +544,13 @@ export default function RftText({
         if (stripTags(htmlContent)) {
             if (onFocus) onFocus()
         }
-        const next = stripInlinePresentation(
-            isPlainText
-                ? stripTagsWithLinks(htmlContent, ['a', 'p', 'br', 'span'])
-                : htmlContent
-        )
-        if (isInitialHtmlContent.current) {
-            isInitialHtmlContent.current = false
-            // The editor normalizes initial HTML (wraps text in <p>, emits <p></p>
-            // for empty), which differs from the registered defaultValue and would
-            // mark the form dirty before any user input. Re-baseline instead.
-            if ((stripTags(next) || '') === (stripTags(field.value) || '')) {
-                formContext.resetField(name, { defaultValue: next })
-                return
-            }
-        }
-        field.onChange(next)
+        commitEditorHtml({
+            next: normalizeEditorHtml(htmlContent, { isPlainText }),
+            field,
+            name,
+            resetField,
+            isInitialRef: isInitialHtmlContent,
+        })
     }, [htmlContent])
 
     const processImages = (src, formName) => {
@@ -948,7 +941,7 @@ export default function RftText({
                     }}
                     editor={editor}
                     onMessage={onMessage}
-                    editable={!disabled}
+                    editable={!isDisabled}
                     scrollEnabled={false}
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}

@@ -1,21 +1,125 @@
-import { useEffect, useRef } from 'react'
-import { Platform } from 'react-native'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { Animated, Platform } from 'react-native'
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
 import { linkedText } from 'app/lib/text-helpers'
-import { appSetting, stripTags } from 'app/lib/util'
+import { appSetting, cn, stripTags } from 'app/lib/util'
 import { Icon } from 'app/ui/atoms/icon'
 import { Button } from 'app/design/controls'
 import { queueFormEnsureVisible } from 'app/lib/form-ensure-visible'
+import { nativeDriver } from 'app/lib/animation'
 
 const isWeb = Platform.OS === 'web'
+const inputSettings = appSetting('theme', 'inputs')
+const restingOffset = inputSettings.adaptive_label_resting_offset ?? 0
+const floatedOffset = inputSettings.adaptive_label_floated_offset ?? -2
+const duration = inputSettings.adaptive_label_duration ?? 200
 
-export default function (props) {
-    const caption = props.format === 'notitle' ? '' : props.caption
+function AdaptiveLabel({ caption, value, focused, children }) {
+    const hasValue = value != null && String(value).length > 0
+    const floated = !!focused || hasValue
+
+    const [boxH, setBoxH] = useState(0)
+    const [labelH, setLabelH] = useState(0)
+    const translateY = useRef(new Animated.Value(0)).current
+    const readyRef = useRef(false)
+
+    const restingY =
+        boxH > 0 && labelH > 0
+            ? Math.max(0, (boxH - labelH) / 2) + restingOffset
+            : 0
+    const floatedY =
+        labelH > 0 ? -labelH / 2 + floatedOffset : floatedOffset
+
+    useEffect(() => {
+        if (boxH <= 0 || labelH <= 0) return
+
+        const toValue = floated ? floatedY : restingY
+
+        if (!readyRef.current) {
+            readyRef.current = true
+            translateY.setValue(toValue)
+            return
+        }
+
+        Animated.timing(translateY, {
+            toValue,
+            duration,
+            useNativeDriver: nativeDriver,
+        }).start()
+    }, [floated, restingY, floatedY, boxH, labelH, translateY])
+
+    const onBoxLayout = useCallback((event) => {
+        const next = event?.nativeEvent?.layout?.height ?? 0
+        setBoxH((prev) => (prev === next ? prev : next))
+    }, [])
+
+    const onLabelLayout = useCallback((event) => {
+        const next = event?.nativeEvent?.layout?.height ?? 0
+        setLabelH((prev) => (prev === next ? prev : next))
+    }, [])
+
+    return (
+        <View className="relative w-full" onLayout={onBoxLayout}>
+            <Animated.View
+                pointerEvents="none"
+                collapsable={false}
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    zIndex: 10,
+                    opacity: boxH > 0 && labelH > 0 ? 1 : 0,
+                    transform: [{ translateY }],
+                }}
+            >
+                <View
+                    onLayout={onLabelLayout}
+                    className={cn(
+                        inputSettings.adaptive_label,
+                        floated ? inputSettings.adaptive_label_floated : null
+                    )}
+                >
+                    <Text
+                        className={
+                            floated
+                                ? inputSettings.adaptive_label_text_floated
+                                : inputSettings.adaptive_label_text_resting
+                        }
+                    >
+                        {caption}
+                    </Text>
+                </View>
+            </Animated.View>
+            {children}
+        </View>
+    )
+}
+
+export default function _Field({
+    format,
+    caption: captionProp,
+    error,
+    name,
+    form_layout,
+    noPadding,
+    classes,
+    use_caption_as_placeholder,
+    type,
+    checker,
+    required,
+    children,
+    last_changed,
+    handleSubmit,
+    value,
+    focused,
+    isAdaptiveLabel,
+    info,
+}) {
+    const caption = format === 'notitle' ? '' : captionProp
     const wrapRef = useRef(null)
 
-    const errorText = Array.isArray(props.error) ? props.error[0] : props.error
+    const errorText = Array.isArray(error) ? error[0] : error
 
     useEffect(() => {
         if (!errorText) return
@@ -33,9 +137,9 @@ export default function (props) {
         const id = requestAnimationFrame(() => {
             // Web: prefer real DOM node — RN View ref often has no scrollIntoView,
             // and modal RemoveScroll needs the modal ScrollView handler path.
-            if (isWeb && typeof document !== 'undefined' && props.name) {
+            if (isWeb && typeof document !== 'undefined' && name) {
                 const el = document.querySelector(
-                    `.form-control-${CSS.escape(String(props.name))}`
+                    `.form-control-${CSS.escape(String(name))}`
                 )
                 if (el?.getBoundingClientRect) {
                     reportY(el.getBoundingClientRect().top)
@@ -49,23 +153,23 @@ export default function (props) {
         })
 
         return () => cancelAnimationFrame(id)
-    }, [errorText, props.name])
+    }, [errorText, name])
 
     const sClassName =
         '  form-control form-control-' +
-        props.name +
-        (props.form_layout !== 'hor' ? ' w-full ' : '') +
-        (props.noPadding === true ? '  ' : ' ' + appSetting('forms', 'field_padding') + ' ') +
-        (props?.classes ? ' ' + props?.classes : '')
+        name +
+        (form_layout !== 'hor' ? ' w-full ' : '') +
+        (noPadding === true ? '  ' : ' ' + appSetting('forms', 'field_padding') + ' ') +
+        (classes ? ' ' + classes : '')
 
     const optionalText = appSetting('forms', 'optional_text')
     const mandatoryIcon = appSetting('forms', 'mandatory_icon')
     const isShowOptional = optionalText != '' ? '(' + optionalText + ')' : ''
     const isShowCaption =
-        !!props.caption &&
-        props.format == 'default' &&
-        !props.use_caption_as_placeholder &&
-        ['switcher', 'checkbox'].includes(props.type) == false
+        !!captionProp &&
+        format == 'default' &&
+        !use_caption_as_placeholder &&
+        ['switcher', 'checkbox'].includes(type) == false
 
     const captionElement = (
         <View className=" gap-y-1 z-10">
@@ -74,14 +178,14 @@ export default function (props) {
                     <Text className={appSetting('forms', 'caption_classes')}>
                         {caption}
                     </Text>
-                    {props.checker || props.required ? (
+                    {checker || required ? (
                         <></>
                     ) : (
                         <Text className="text-sm sm: text-base text-muted-foreground ">
                             {isShowOptional}
                         </Text>
                     )}
-                    {!!mandatoryIcon && (props.checker || props.required) ? (
+                    {!!mandatoryIcon && (checker || required) ? (
                         <Text className="text-destructive mb-auto leading-5">
                             <Icon icon={mandatoryIcon} size={12} />
                         </Text>
@@ -90,16 +194,16 @@ export default function (props) {
                     )}
                 </Row>
             </Text>
-            <View className="w-full">{props.children}</View>
+            <View className="w-full">{children}</View>
         </View>
     )
 
     return (
         <View ref={wrapRef} collapsable={false} className={sClassName}>
-            {props.name && props.last_changed == props.name && (
+            {name && last_changed == name && (
                 <View className="absolute right-0 top-0 mb-1">
                     <Button
-                        onPress={props.handleSubmit}
+                        onPress={handleSubmit}
                         startDecorator="RotateCw"
                         variant="primary"
                         size="xs"
@@ -107,21 +211,32 @@ export default function (props) {
                     />
                 </View>
             )}
-            {isShowCaption ? captionElement : props.children}
-            {!!props.error && Array.isArray(props.error) && (
+            {isShowCaption ? (
+                captionElement
+            ) : isAdaptiveLabel && caption ? (
+                <AdaptiveLabel
+                    caption={caption}
+                    value={value}
+                    focused={focused}
+                >
+                    {children}
+                </AdaptiveLabel>
+            ) : (
+                children
+            )}
+            {!!error && Array.isArray(error) && (
                 <FormError
-                    errorText={props.error[0]}
-                    errorLink={props.error[1]}
+                    errorText={error[0]}
+                    errorLink={error[1]}
                 />
             )}
-            {!!props.error && !Array.isArray(props.error) && (
-                <FormError errorText={props.error} />
+            {!!error && !Array.isArray(error) && (
+                <FormError errorText={error} />
             )}
-            {/*(props.error2 && props.checker.error!='') && <FormError errorText={props.checker.error} />*/}
-            {!!props.info && (
+            {!!info && (
                 <View className="label">
                     <Text className="mt-1 px-1 text-xs text-muted-foreground">
-                        {stripTags(props.info)}
+                        {stripTags(info)}
                     </Text>
                 </View>
             )}

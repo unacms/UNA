@@ -1,5 +1,5 @@
 'use client'
-import { useController, useFormContext } from 'react-hook-form'
+import { useFormContext } from 'react-hook-form'
 import { useState, useRef, useEffect, useMemo, useCallback, Component } from 'react'
 import { Platform } from 'react-native'
 import { EnrichedTextInput } from 'react-native-enriched-html'
@@ -7,8 +7,9 @@ import { View } from 'app/design/view'
 import { useFilesData } from 'app/context/files'
 import { EditorToolbar, useEnrichedToolbar } from 'app/lib/editor-toolbar'
 import { useThemeName } from 'app/design/theme'
-import { getAlert, stripTags, stripTagsWithLinks, appSetting, cn } from 'app/lib/util'
-import { stripInlinePresentation } from 'app/lib/html-helper'
+import { getAlert, appSetting, cn } from 'app/lib/util'
+import { commitEditorHtml, normalizeEditorHtml } from 'app/lib/editor-form'
+import { useEditorFormField } from 'app/lib/hooks/use-form-field'
 import emitter from 'app/context/emitter'
 import { mentionsToUnaLinks, unaLinksToMentions, linkifyHtml } from './editor-mention-html'
 import { useEditorMentions } from 'app/lib/use-editor-mentions'
@@ -51,24 +52,29 @@ class EnrichedEditorBoundary extends Component {
     }
 }
 
-export default function RftTextEnriched({
-    name,
-    value = '',
-    initialHeight = 120,
-    maxHeight = 300,
-    onFocus,
-    html,
-    bg,
-    enableSubmitOnEnter = false,
-    placeholder,
-    form_name,
-    container_class,
-    kb_stay_open,
-    onEnterSubmit,
-    disabled,
-    classes,
-    autofocus,
-}) {
+export default function RftTextEnriched(props) {
+    const {
+        value = '',
+        initialHeight = 120,
+        maxHeight = 300,
+        onFocus,
+        html,
+        bg,
+        enableSubmitOnEnter = false,
+        placeholder,
+        form_name,
+        container_class,
+        kb_stay_open,
+        onEnterSubmit,
+        disabled,
+        classes,
+        autofocus,
+    } = props
+
+    const { name, field, readOnly } = useEditorFormField(props)
+    const { resetField, formState } = useFormContext()
+    const isDisabled = !!(disabled || readOnly)
+
     const editorRef = useRef(null)
     const containerRef = useRef(null)
     const dropdownRef = useRef(null)
@@ -77,9 +83,6 @@ export default function RftTextEnriched({
     const isToolBar = html == 2 || html == 1
     const isPlainText = html == 3
     const isCommentsEditor = container_class === 'comments'
-
-    const { field } = useController({ name, rules: {}, defaultValue: value })
-    const formContext = useFormContext()
     const { setFilesData } = useFilesData()
     const themeName = useThemeName() || 'light'
 
@@ -156,10 +159,10 @@ export default function RftTextEnriched({
     }, [])
 
     useEffect(() => {
-        if (formContext.formState.isSubmitted && kb_stay_open != true) {
+        if (formState.isSubmitted && kb_stay_open != true) {
             editorRef.current?.blur?.()
         }
-    }, [formContext.formState.isSubmitted])
+    }, [formState.isSubmitted])
 
     const insertMention = useCallback((user) => {
         const indicator = mentionIndicator || '@'
@@ -336,25 +339,16 @@ export default function RftTextEnriched({
         // saved content has real <a> links on every platform.
         const html = linkifyHtml(mentionsToUnaLinks(raw))
         if (onFocus && html) onFocus()
-        const next = stripInlinePresentation(
-            isPlainText
-                ? stripTagsWithLinks(html, ['a', 'p', 'br', 'span'])
-                : html
-        )
-        if (isInitialHtmlEmission.current) {
-            isInitialHtmlEmission.current = false
-            // The editor's first emission is usually its normalized version of the
-            // initial value (extra <p> wrappers etc). Re-baseline instead of firing
-            // onChange so an untouched form is not considered dirty.
-            if ((stripTags(next) || '') === (stripTags(field.value) || '')) {
-                lastSetValue.current = next
-                formContext.resetField(name, { defaultValue: next })
-                return
-            }
-        }
+        const next = normalizeEditorHtml(html, { isPlainText })
+        commitEditorHtml({
+            next,
+            field,
+            name,
+            resetField,
+            isInitialRef: isInitialHtmlEmission,
+        })
         lastSetValue.current = next
-        field.onChange(next)
-    }, [isPlainText])
+    }, [field, isPlainText, name, onFocus, resetField])
 
     // ---- image paste ----
     const onPasteImages = useCallback((e) => {
@@ -522,7 +516,7 @@ export default function RftTextEnriched({
     // Web: clicks on padding / empty chrome around ProseMirror (toolbar field
     // padding, areas outside the stretched contenteditable) should still focus.
     const onContainerMouseDown = useCallback((e) => {
-        if (!isWeb || disabled) return
+        if (!isWeb || isDisabled) return
         const target = e?.target
         if (!target?.closest) return
         if (target.closest('.ProseMirror')) return
@@ -530,7 +524,7 @@ export default function RftTextEnriched({
         if (dropdownRef.current?.contains?.(target)) return
         e.preventDefault?.()
         callEditor('focus')
-    }, [isWeb, disabled])
+    }, [isWeb, isDisabled])
 
     // Native library callbacks (web uses TipTap sync above; keep these as a
     // fallback and for platforms where the native enriched input fires them).
@@ -590,7 +584,7 @@ export default function RftTextEnriched({
                     defaultValue={initialDefaultValue.current}
                     placeholder={placeholder}
                     placeholderTextColor="rgba(120,130,145,1)"
-                    editable={!disabled}
+                    editable={!isDisabled}
                     autoFocus={isWeb ? false : !!autofocus}
                     autoCapitalize="none"
                     mentionIndicators={MENTION_INDICATORS}

@@ -1,13 +1,14 @@
 import { useCallback, useState, useEffect, useRef } from 'react';
 import { Keyboard, Platform } from 'react-native';
 import Field, { FormError } from './_field';
-import { useController, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { NeoButton, Hidden } from 'app/design/controls';
 import { View, Row } from 'app/design/view';
 import { appSetting, cn } from 'app/lib/util';
 import emitter from 'app/context/emitter';
 import { useFormInstanceId } from 'app/context/form-instance';
 import { useFormUploading } from 'app/lib/form-helpers';
+import { useFormField } from 'app/lib/hooks/use-form-field';
 
 const isNative = Platform.OS !== 'web';
 
@@ -31,7 +32,6 @@ const VARIANT_TO_STYLE = {
 
 export default function FormFieldSubmit(props) {
     const {
-        name,
         value,
         form_name,
         handleSubmit,
@@ -50,19 +50,19 @@ export default function FormFieldSubmit(props) {
         bare = false,
     } = props;
 
+    const { name, field, readOnly } = useFormField(props, { returnKey: false });
     const formContext = useFormContext();
     const formInstanceId = useFormInstanceId();
     const { formState } = formContext;
     const [isSumbitting, setIsSumbitting] = useState(false);
     const isUploading = useFormUploading(form_name);
-    const { field } = useController({ name, rules: {}, defaultValue: value });
     // Guards against onPressIn + onPress both firing on the same gesture.
     const pressLockRef = useRef(false);
 
     const formProps = appSetting('forms', form_name) || {};
 
     const handlePress = useCallback(() => {
-        if (formState.isSubmitting || disabled || isUploading || isSumbitting || pressLockRef.current) return;
+        if (formState.isSubmitting || disabled || readOnly || isUploading || isSumbitting || pressLockRef.current) return;
         pressLockRef.current = true;
         if (isNative) Keyboard.dismiss();
         handleSubmit();
@@ -71,7 +71,7 @@ export default function FormFieldSubmit(props) {
         setTimeout(() => {
             pressLockRef.current = false;
         }, 400);
-    }, [disabled, handleSubmit, formState.isSubmitting, isUploading, isSumbitting]);
+    }, [disabled, readOnly, handleSubmit, formState.isSubmitting, isUploading, isSumbitting]);
 
     const handleReset = useCallback(() => {
         const values = formContext.getValues();
@@ -145,7 +145,7 @@ export default function FormFieldSubmit(props) {
             onPress={handlePress}
             // Native: fire on press-in so keyboard layout jump cannot cancel onPress.
             {...(isNative ? { onPressIn: handlePress } : {})}
-            disabled={isBusy || disabled}
+            disabled={isBusy || disabled || readOnly}
         />
     );
 
@@ -154,7 +154,7 @@ export default function FormFieldSubmit(props) {
             name={name}
             onChangeText={field.onChange}
             onBlur={field.onBlur}
-            defaultValue={value}
+            value={String(field.value)}
         />
     );
 

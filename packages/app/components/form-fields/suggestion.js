@@ -1,20 +1,17 @@
 import Field from './_field';
-import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
-import { useState, useRef, useEffect } from 'react';
-import { useController, useFormContext } from 'react-hook-form';
-import { Input } from 'app/design/controls'
+import { useState, useEffect } from 'react';
+import { useFormContext } from 'react-hook-form';
+import { Input, Hidden } from 'app/design/controls'
 import Dropdown from 'app/ui/atoms/dropdown'
 import { fetcher } from 'app/lib/fetcher';
-import { Hidden } from 'app/design/controls'
+import { useFormField } from 'app/lib/hooks/use-form-field';
 
 export default function FormFieldSuggestion(props) {
-    let rules = {};
-    let defaultValue = props.value ? props.value : '';
-    const formContext = useFormContext();
-    let name = props.name ? props.name : '';
-    let { field } = useController({ name, rules, defaultValue });
-   
+    const { setValue } = useFormContext();
+    const { name, field } = useFormField(props);
+    const defaultValue = props.value ? props.value : '';
+
     const [selectedValues, setSelectedValues] = useState([]);
     const [selectedValue, setSelectedValue] = useState('');
 
@@ -24,7 +21,7 @@ export default function FormFieldSuggestion(props) {
     };
 
     const setValueF = (val) =>  {
-        formContext.setValue(name, val);   
+        field.onChange(val);
     }
 
     useEffect(() => {
@@ -33,7 +30,7 @@ export default function FormFieldSuggestion(props) {
                 const sResponse = await fetcher('/api.php?r=' + props.custom.callback + field.value);
                 const names = Object.keys(sResponse.data);
                 names.forEach(name2 => {
-                    formContext.setValue(name2, (sResponse.data[name2].value));
+                    setValue(name2, (sResponse.data[name2].value));
                 });
             }
         })();
@@ -41,7 +38,6 @@ export default function FormFieldSuggestion(props) {
         if (props?.attrs?.disabled == 'disabled'){
             (async () => {
                 const sResponse = await fetcher('/api.php?r=' + props.custom.callback + defaultValue);
-                const names = Object.keys(sResponse.data);
                 setSelectedValue(sResponse.data['name'].value);
             })();
         }
@@ -61,7 +57,7 @@ export default function FormFieldSuggestion(props) {
                 />}
             </View>
             <Hidden 
-                name={props.name}
+                name={name}
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
                 value={String(field.value)}

@@ -11,66 +11,28 @@ import { componentsMap as ContentList } from "app/customization/units/content-li
 import { componentsMap as ProfileList} from "app/customization/units/profile-list/_map";
 import { skeletonsMap as Skeletons} from 'app/customization/skeletons/_map'
 
-export function registerAll() {
-    if (!isInited()){
-        for (const [name, Component] of Object.entries(FormFields)) {
-            if (Component) {
-                registerComponent('form-field', name, Component);
-            }
-        }
-        for (const [name, Component] of Object.entries(Elements)) {
-            if (Component) {
-                registerComponent('element', name, Component);
-            }
-        }
-
-        for (const [name, Component] of Object.entries(Molecules)) {
-            if (Component) {
-                registerComponent('molecule', name, Component);
-            }
-        }
-
-        for (const [name, Component] of Object.entries(Forms)) {
-            if (Component) {
-                registerComponent('form', name, Component);
-            }
-        }
-
-        for (const [name, Component] of Object.entries(Layouts)) {
-            if (Component) {
-                registerComponent('layout', name, Component);
-            }
-        }
-
-        for (const [name, Component] of Object.entries(MenuItems)) {
-            if (Component) {
-                registerComponent('menu-item', name, Component);
-            }
-        }
-
-        for (const [name, Component] of Object.entries(Units)) {
-            if (Component) {
-                registerComponent('unit', name, Component);
-            }
-        }
-
-        for (const [name, Component] of Object.entries(ContentList)) {
-            if (Component) {
-                registerComponent('content-list', name, Component);
-            }
-        }
-
-        for (const [name, Component] of Object.entries(ProfileList)) {
-            if (Component) {
-                registerComponent('profile-list', name, Component);
-            }
-        }
-
-        for (const [name, Component] of Object.entries(Skeletons)) {
-            if (Component) {
-                registerComponent('skeleton', name, Component);
-            }
+function registerGroup(type, map) {
+    for (const [name, Component] of Object.entries(map)) {
+        if (Component) {
+            registerComponent(type, name, Component);
         }
     }
+}
+
+export function registerAll() {
+    const already = isInited();
+    // Form fields always — HMR of `_map` must replace `phone: TextField` → `Phone`.
+    registerGroup('form-field', FormFields);
+    if (already) return;
+
+    registerGroup('element', Elements);
+    registerGroup('molecule', Molecules);
+    registerGroup('form', Forms);
+    registerGroup('layout', Layouts);
+    registerGroup('menu-item', MenuItems);
+    registerGroup('unit', Units);
+    registerGroup('content-list', ContentList);
+    registerGroup('profile-list', ProfileList);
+    registerGroup('skeleton', Skeletons);
 }
 

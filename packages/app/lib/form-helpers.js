@@ -185,6 +185,15 @@ export function isFormResponseComplete(responseData) {
     return true;
 }
 
+/** UNA often sends phones as `type: "text"` with a name containing "phone". */
+function resolveFormFieldType(inputData) {
+    const type = String(inputData.type ?? '');
+    if (type === 'text' && String(inputData.name || '').includes('phone')) {
+        return 'phone';
+    }
+    return type;
+}
+
 export function getFormFieldByData(inputData, handleSubmit, format, externalProps, uniqueKey) {
 
     if (!inputData)
@@ -192,12 +201,13 @@ export function getFormFieldByData(inputData, handleSubmit, format, externalProp
     // Prefer the inputs-map key: UNA reuses names like `block_end_field` for multiple fields.
     // Keep key AFTER {...inputData} — UNA field objects often include a non-unique `key`
     // that would otherwise overwrite the stable list key and warn in FormAds / maps.
-    const fallbackKey = uniqueKey || inputData.key || inputData.name || `${inputData.type}_${inputData.caption || 'field'}`;
-    const InputType = getComponent('form-field', String(inputData.type));
+    const type = resolveFormFieldType(inputData);
+    const fallbackKey = uniqueKey || inputData.key || inputData.name || `${type}_${inputData.caption || 'field'}`;
+    const InputType = getComponent('form-field', type);
     if (!InputType){
         return <UnsupportedFormField key={fallbackKey} />;
     }
-    return <InputType {...inputData} format={format} handleSubmit={handleSubmit} {...externalProps} key={fallbackKey} />;
+    return <InputType {...inputData} format={format} handleSubmit={handleSubmit} {...externalProps} type={type} key={fallbackKey} />;
 
 }
 

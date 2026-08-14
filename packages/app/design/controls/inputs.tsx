@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, type ReactNode } from 'react';
 import { TextInput as TextInputDef, Platform, TextInputProps } from 'react-native'
 import type { TextInput } from 'react-native';
 import { View, Row } from 'app/design/view'
@@ -30,8 +30,8 @@ interface CustomInputProps extends Omit<TextInputProps, 'style'> {
 }
 
 interface InputWithIconsProps extends CustomInputProps {
-    startDecorator?: string;
-    endDecorator?: string;
+    startDecorator?: string | ReactNode;
+    endDecorator?: string | ReactNode;
 }
 
 interface InputMultiProps extends CustomInputProps {
@@ -49,10 +49,10 @@ export const Input = forwardRef<TextInput, CustomInputProps>(
     ({ className, style, rounded = InputRounded.default, size = InputSize.regular, ...props }, ref) => (
         <TextInputDef
             className={cn(
-                className,
                 inputSettings.base,
                 inputSettings.size[size] ?? inputSettings.size.regular,
                 rounded === InputRounded.full && inputSettings.rounded.full,
+                className,
             )}
             {...getInputStyleProps(style)}
             {...props}
@@ -61,26 +61,34 @@ export const Input = forwardRef<TextInput, CustomInputProps>(
     )
 );
 
+function renderInputDecorator(decorator?: string | ReactNode) {
+    if (!decorator) return null;
+    if (typeof decorator === 'string') {
+        return <Icon icon={decorator} size={24} className="text-muted-foreground" />;
+    }
+    return decorator;
+}
+
 export const InputWithIcons = forwardRef<TextInput, InputWithIconsProps>(
-    ({ className, startDecorator, endDecorator, style, ...props }, ref) => (
+    ({ className, startDecorator, endDecorator, style, rounded = InputRounded.full, ...props }, ref) => (
         <Row className="relative w-full items-center">
-            {startDecorator && (
-                <View className="absolute left-3.5 h-full items-center justify-center">
-                    <Icon icon={startDecorator} size={24} className="text-muted-foreground " />
+            {startDecorator ? (
+                <View className="absolute left-3.5 h-full items-center justify-center" pointerEvents="none">
+                    {renderInputDecorator(startDecorator)}
                 </View>
-            )}
+            ) : null}
             <Input
                 ref={ref}
-                className={`w-full ${className || ''} ${startDecorator ? 'pl-12' : ''} ${endDecorator ? 'pr-11' : ''}`}
+                className={`w-full ${className || ''} ${typeof startDecorator === 'string' ? 'pl-12' : startDecorator ? 'pl-10' : ''} ${endDecorator ? 'pr-11' : ''}`}
                 style={style}
-                rounded={InputRounded.full}
+                rounded={rounded}
                 {...props}
             />
-            {endDecorator && (
-                <View className="absolute right-3 h-full items-center justify-center">
-                    <Icon icon={endDecorator} size={24} className="text-muted-foreground " />
+            {endDecorator ? (
+                <View className="absolute right-3 h-full items-center justify-center" pointerEvents="none">
+                    {renderInputDecorator(endDecorator)}
                 </View>
-            )}
+            ) : null}
         </Row>
     )
 );

@@ -1,8 +1,9 @@
 import Field, { getValidationRules } from './_field';
-import { useController, useFormContext } from 'react-hook-form';
-import { InputMulti, TextInputClear } from 'app/design/controls'
-import { useState, useEffect } from 'react';
+import { useFormContext } from 'react-hook-form';
+import { InputMulti } from 'app/design/controls'
+import { useState } from 'react';
 import RftText from './editor-rft-text';
+import { useFormField } from 'app/lib/hooks/use-form-field';
 
 export default function FormFieldText(props) {
     const formContext = useFormContext();      
@@ -18,34 +19,44 @@ export default function FormFieldText(props) {
 }
 
 function PlainText(props) {
+    const {
+        name,
+        field,
+        placeholder,
+        readOnly,
+        placeholderTextColor,
+        onFocus,
+        onBlur,
+    } = useFormField(props, {
+        rules: getValidationRules(props),
+        returnKey: false,
+    });
 
-    const rules = getValidationRules(props);
-    const name = props.name;
-    const defaultValue = props.value ? props.value : '';
-    const formContext = useFormContext();
-    const { field } = useController({ name, rules, defaultValue });
     // Use smaller initial height for comments forms
     const isCommentsForm = props.container_class === 'comments';
     const initialHeight = isCommentsForm ? 24 : null;
     let h = props.height ? props.height : initialHeight;
     const [height, setHeight] = useState(h);
     const accessibility = props.caption.length > 0 ? props.caption : 'text';
-    const placeholder = props.use_caption_as_placeholder ? props.caption : props.placeholder;
     const isAutoHeight = true;
 
     const minHeightValue = isCommentsForm ? 24 : 100;
     const maxHeightValue = 200;
     const clampedHeight = Math.min(Math.max(height ?? minHeightValue, minHeightValue), maxHeightValue);
 
-    let input = (
+    return (
         <InputMulti
             multiline
-            name={props.name}
+            name={name}
             placeholder={placeholder}
+            placeholderTextColor={placeholderTextColor}
             onChangeText={field.onChange}
-            onBlur={field.onBlur}
+            onFocus={onFocus}
+            onBlur={onBlur}
             autoFocus={props.autofocus}
-            value={field.value}
+            value={String(field.value ?? '')}
+            readOnly={readOnly}
+            editable={!readOnly}
             aria-label={accessibility}
             onContentSizeChange={e => {
                 if (isAutoHeight) {
@@ -57,30 +68,6 @@ function PlainText(props) {
                 }
             }}
             style={isAutoHeight ? { height: clampedHeight, minHeight: minHeightValue, maxHeight: maxHeightValue } : {}}
-            /*defaultValue={props.value || props.default_value || ''}*/
         />
     );
-
-    if (props.viewClasses) {
-        input = <TextInputClear
-            multiline
-            placeholder={props.placeholder}
-            onContentSizeChange={e => setHeight(e.nativeEvent.contentSize.height > 70 ? e.nativeEvent.contentSize.height : e.nativeEvent.contentSize.height < 32 ? 32 : e.nativeEvent.contentSize.height)}
-            name={props.name}
-            onChangeText={field.onChange}
-            onBlur={field.onBlur}
-            value={field.value}
-            className='placeholder-muted-foreground text-foreground leading-6 text-lg font-medium py-3 '
-            aria-label={accessibility}
-        />
-    }
-
-    useEffect(() => {
-        // setValue (shouldDirty: false) instead of field.onChange, so syncing the
-        // server-provided value does not mark the untouched form as dirty.
-        if (props.value !== undefined)
-            formContext.setValue(props.name, props.value)
-    }, [props.name, props.value]);
-
-    return input
 }

@@ -2,13 +2,13 @@ import Field from './_field';
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { useState, useEffect, useCallback, useReducer } from 'react';
-import { useController, useFormContext } from 'react-hook-form';
 import { fetcher } from 'app/lib/fetcher';
 import Profile from 'app/ui/molecules/profile/profile'
 import { Button, NeoButton, Input, Modal } from 'app/design/controls'
 import Loading from 'app/ui/atoms/loading'
 import { Icon } from 'app/ui/atoms/icon'
 import { useTranslation } from 'react-i18next';
+import { useFormField } from 'app/lib/hooks/use-form-field';
 
 const User = ({ data, onSelect, type }) => {
     if (type !== 'multi'){
@@ -116,12 +116,8 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
     </View>
 };
 
-export default function (props) {
-    const rules = {};
-    const defaultValue = props.value ? props.value : '';
-    const formContext = useFormContext();
-    const name = props.name ? props.name : '';
-    const { field } = useController({ name, rules, defaultValue });
+export default function FormFieldInitialMembers(props) {
+    const { field } = useFormField(props);
     const [selected, setSelected] = useState(props.value_data ? props.value_data : []);
     const [isModal, setIsModal] = useState(false);
     const isSingle = props?.custom?.only_once;
@@ -133,13 +129,11 @@ export default function (props) {
         const value = data.map(item => item.id);
         setSelected(data)
         field.onChange(value);
-        //setBottomSheetData(false);
         setIsModal(false);
     }
 
-    const showSelect = (val) => {
+    const showSelect = () => {
         setIsModal(true);
-
     }
 
     const onRemove = useCallback((valueToRemove) => {
@@ -149,7 +143,7 @@ export default function (props) {
     }, [selected]);
 
     return (
-        <Field {...props} error2={formContext.formState.errors[name]}>
+        <Field {...props}>
             <Modal id='file-preview2' title={props.title || "Choose users"} onVisible={!!isModal} onClose={() => { setIsModal(false) }}>
                 <SelectUsers isSingle={isSingle} onSave={onSave} requestUrl={'/api.php?r=' + props.ajax_get_suggestions + (props.ajax_get_suggestions.includes("params[]") ? '' : "&params=")} initedData={[]} />
             </Modal>
