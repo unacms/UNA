@@ -41,7 +41,16 @@ export default function ElementLink({
         emitter.emit('link', { action: 'pressed', href });
         if (onPress) onPress(event);
         if (href) {
-            router.push(href);
+            try {
+                router.push(href);
+            } catch (error) {
+                const message = error instanceof Error ? error.message : '';
+                if (typeof window !== 'undefined' && message.includes('before initialization')) {
+                    window.location.assign(href);
+                } else {
+                    throw error;
+                }
+            }
             event?.preventDefault?.();
         }
     }, [href, router, onPress]);

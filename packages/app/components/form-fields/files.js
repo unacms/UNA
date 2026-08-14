@@ -12,7 +12,7 @@ import { uploadImage, md5 } from 'app/lib/util';
 import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
 import { Image as ImageNative, Alert, Linking, Platform } from 'react-native';
-import { useFilesData } from 'app/context/files';
+import { useFilesData, useFilesDataStore } from 'app/context/files';
 import { Image as ImageRN } from 'react-native';
 import Video from 'app/ui/atoms/video';
 import Msg from 'app/ui/molecules/dialogs/msg';
@@ -51,8 +51,15 @@ function resolvePickerSource(source, fallback = 'library') {
 
 const IMAGE_FIELD_NAMES = new Set(['photo', 'cmt_image', 'pictures', 'picture', 'covers', 'avatar', 'badge']);
 const VIDEO_FIELD_NAMES = new Set(['video', 'videos']);
+const FILE_FIELD_NAMES = new Set(['file', 'files']);
 const IMAGE_EXTS = ['jpg', 'jpeg', 'jpe', 'gif', 'png', 'svg', 'webp', 'heic', 'heif'];
 const VIDEO_EXTS = ['mp4', 'mov', 'm4v', 'avi', 'webm', '3gp'];
+
+function shouldUseMediaPicker(fieldName, extDeny, extAllow) {
+    if (FILE_FIELD_NAMES.has(fieldName)) return false;
+    if (IMAGE_FIELD_NAMES.has(fieldName) || VIDEO_FIELD_NAMES.has(fieldName)) return true;
+    return isMediaField(extDeny, extAllow);
+}
 
 function isMediaField(extDeny, extAllow) {
     if (extDeny === '' || extAllow === 'mp3,m4a,m4b,wma,wav,3gp') {
@@ -80,7 +87,8 @@ function resolvePickerMediaTypes(fieldName, extAllow, source) {
         return ['images'];
     }
     if (VIDEO_FIELD_NAMES.has(fieldName)) {
-        return ['videos'];
+        // Composer "Add Photos or Videos" shares this field.
+        return ['images', 'videos'];
     }
 
     const hasImages = allowListHasAny(extAllow, IMAGE_EXTS);
@@ -105,38 +113,74 @@ function resolvePickerMediaTypes(fieldName, extAllow, source) {
     return ['images', 'videos'];
 }
 
-function resolveNativeMediaTypes(mediaTypes) {
-    const hasImages = mediaTypes.includes('images');
-    const hasVideos = mediaTypes.includes('videos');
-
-    if (hasImages && hasVideos) {
-        return ImagePicker.MediaTypeOptions.All;
-    }
-    if (hasVideos) {
-        return ImagePicker.MediaTypeOptions.Videos;
-    }
-    return ImagePicker.MediaTypeOptions.Images;
-}
-
 function getImagePickerOptions(mediaTypes, bMultiple) {
+    const types = mediaTypes?.length ? mediaTypes : ['images'];
+    const includesVideo = types.includes('videos');
     const options = {
-        mediaTypes: Platform.OS === 'web' ? mediaTypes : resolveNativeMediaTypes(mediaTypes),
+        mediaTypes: types,
         quality: 1,
         allowsMultipleSelection: Boolean(bMultiple),
     };
 
     if (Platform.OS === 'ios') {
-        options.UIImagePickerPreferredAssetRepresentationMode = 'current';
+        options.preferredAssetRepresentationMode = includesVideo
+            ? ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Compatible
+            : ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Current;
+        if (includesVideo) {
+            options.shouldDownloadFromNetwork = true;
+        }
     }
 
     return options;
 }
 
+function readFieldImages(key) {
+    if (!key) return undefined;
+    return useFilesDataStore.getState().fieldImages[key];
+}
+
+function writeFieldImages(key, images) {
+    if (!key) return;
+    useFilesDataStore.getState().setFieldImages(key, images || []);
+}
+
+const inFlightUploadIds = new Set();
+
+function assetMimeType(asset) {
+    if (asset?.mimeType) return asset.mimeType;
+    if (asset?.type === 'video' || (typeof asset?.type === 'string' && asset.type.startsWith('video'))) {
+        return 'video/mp4';
+    }
+    if (asset?.type === 'image' || (typeof asset?.type === 'string' && asset.type.startsWith('image'))) {
+        return 'image/jpeg';
+    }
+    return undefined;
+}
+
 export default function (props) {
     
     const name = props.name;
+    const persistKey = [props.form_name, name].filter(Boolean).join(':');
     const [message, setMessage] = useState(false);
-    const [imageSource, setImageSource] = useState({ images: props?.values_src });
+    const persistedImages = useFilesDataStore((state) => (
+        persistKey ? state.fieldImages[persistKey] : undefined
+    ));
+    const [localImages, setLocalImages] = useState(() => props?.values_src);
+    const images = persistKey ? (persistedImages ?? localImages) : localImages;
+    const imageSource = { images };
+    const setImageSource = (updater) => {
+        // Persist outside React setState so a picker remount still keeps previews.
+        if (persistKey) {
+            const prev = { images: readFieldImages(persistKey) ?? localImages ?? [] };
+            const next = typeof updater === 'function' ? updater(prev) : updater;
+            writeFieldImages(persistKey, next?.images || []);
+            return;
+        }
+        setLocalImages((prevImages) => {
+            const next = typeof updater === 'function' ? updater({ images: prevImages }) : updater;
+            return next?.images;
+        });
+    };
     const formContext = useFormContext();
     const formValue = formContext.watch(name);
     const obfuscateFaces = formContext.watch('obfuscate_faces');
@@ -153,9 +197,16 @@ export default function (props) {
     const formInstanceId = useFormInstanceId();
     const formName = props.form_name;
 
+    useEffect(() => {
+        if (!persistKey) return;
+        if (readFieldImages(persistKey) == null && props?.values_src) {
+            writeFieldImages(persistKey, props.values_src);
+        }
+    }, [persistKey, props?.values_src]);
+
     const url = useMemo(() => {
         return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&obfuscate_faces=' + obfuscateFaces + '&uo=' + (props.uploaders?.[0] ?? '') + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (bMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
-    }, [props, obfuscateFaces]);
+    }, [obfuscateFaces, props.uploaders, props.storage_object, props.images_transcoder, props.content_id, props.privacy, bMultiple]);
 
     const getImageMergeKey = (img) => {
         // Preload items use hash; server ghosts often have no hash — use stable ids.
@@ -217,6 +268,8 @@ export default function (props) {
 
         if (isAutoGhosts && ghost) {
             setImageSourceN([{ ...ghost, hash }], bMultiple);
+        } else if (isAutoGhosts) {
+            console.error('[files] upload returned no ghost', result);
         } else if (hash) {
             setImageSource((prev) => ({
                 ...prev,
@@ -256,8 +309,8 @@ export default function (props) {
             }
             field.onChange(nextValue);
         };
-        if (imageSource.images) {
-            const fileIds = imageSource.images
+        if (images) {
+            const fileIds = images
                 .filter(item => item.file_id !== undefined) // Keep only items with file_id
                 .map(item => item.file_id) // Extract file_id
                 .join(',');
@@ -272,21 +325,38 @@ export default function (props) {
         else {
             syncFieldValue('');
         }
-    }, [imageSource]);
+    }, [images]);
 
     const uploadImages = async (asset) => {
-        const existing = imageSource.images ? imageSource.images : [];
+        const existing = persistKey
+            ? (readFieldImages(persistKey) || [])
+            : (imageSource.images ? imageSource.images : []);
         if (!asset) return existing;
 
         const objectsToAdd = [];
 
         const uploadOne = async (i, hash, uploadId) => {
+            if (!uploadId || inFlightUploadIds.has(uploadId)) return;
+            inFlightUploadIds.add(uploadId);
             const uri = i.uri;
-            const extraVar = { hash, uploadId };
+            const mimeType = assetMimeType(i);
+            const extraVar = {
+                hash,
+                uploadId,
+                mimeType,
+                fileName: i.fileName || i.name,
+            };
             const isImage =
-                i?.mimeType?.includes('image/') ||
+                mimeType?.includes('image/') ||
                 i?.type === 'image' ||
                 (typeof i?.type === 'string' && i.type.startsWith('image'));
+
+            const sendFile = (fileUri, fileMeta = extraVar) => uploadImage(
+                fileUri,
+                url + '&a=upload',
+                onUploadFinished,
+                fileMeta
+            );
 
             try {
                 if (isImage) {
@@ -295,46 +365,44 @@ export default function (props) {
                             uri,
                             async (width, height) => {
                                 try {
-                                    const preparedUri = await prepareImageForUpload({
-                                        uri,
-                                        width,
-                                        height,
-                                        fileSizeBytes: i?.fileSize,
-                                        maxWidth: 2000,
-                                        maxHeight: 2000,
-                                        webpOverMb: 4,
-                                    });
-                                    await uploadImage(
-                                        preparedUri,
-                                        url + '&a=upload',
-                                        onUploadFinished,
-                                        extraVar
-                                    );
+                                    let preparedUri = uri;
+                                    try {
+                                        preparedUri = await prepareImageForUpload({
+                                            uri,
+                                            width,
+                                            height,
+                                            fileSizeBytes: i?.fileSize || i?.size,
+                                            maxWidth: 2000,
+                                            maxHeight: 2000,
+                                            webpOverMb: 4,
+                                        });
+                                    } catch (prepareErr) {
+                                        console.warn('[files] image prepare failed, uploading original:', prepareErr);
+                                    }
+                                    const preparedMeta = preparedUri === uri
+                                        ? extraVar
+                                        : { ...extraVar, mimeType: undefined, fileName: undefined };
+                                    await sendFile(preparedUri, preparedMeta);
                                     resolve();
                                 } catch (err) {
                                     reject(err);
                                 }
                             },
-                            () => reject(new Error('getSize failed'))
+                            () => {
+                                sendFile(uri).then(resolve).catch(reject);
+                            }
                         );
                     });
                 } else {
-                    await uploadImage(
-                        uri,
-                        url + '&a=upload',
-                        onUploadFinished,
-                        extraVar
-                    );
+                    await sendFile(uri);
                 }
             } catch (err) {
                 console.error('[files] upload failed:', err);
-                setImageSource((prev) => ({
-                    ...prev,
-                    images: (prev?.images || []).filter(
-                        (img) => img.uploadId !== uploadId
-                    ),
-                }));
+                // Keep the preview — ImagePicker over a modal remounts the form and
+                // aborting the first attempt used to strip the attachment.
                 trackFormUploadEnd(formName, formInstanceId, uploadId);
+            } finally {
+                inFlightUploadIds.delete(uploadId);
             }
         };
 
@@ -343,31 +411,54 @@ export default function (props) {
         // until each uploadId gets upload_end.
         for (const i of asset) {
             const uri = i.uri;
-            const hash = md5(uri);
-            const uploadId = `${hash}:${genRnd(8)}`;
-            objectsToAdd.push({
-                preload: true,
-                file_type: i.mimeType,
-                type: i.type,
-                hash,
-                uploadId,
-                uri,
-            });
+            const hash = i.resumeHash || md5(uri);
+            const uploadId = i.resumeUploadId || `${hash}:${genRnd(8)}`;
+            if (!i.resumeUploadId) {
+                objectsToAdd.push({
+                    preload: true,
+                    file_type: assetMimeType(i),
+                    type: i.type,
+                    fileName: i.fileName || i.name,
+                    fileSize: i.fileSize || i.size,
+                    hash,
+                    uploadId,
+                    uri,
+                });
+            }
             trackFormUploadStart(formName, formInstanceId, uploadId);
             void uploadOne(i, hash, uploadId);
         }
 
-        if (bMultiple) {
-            return [...existing, ...objectsToAdd];
-        }
-        return [...objectsToAdd];
+        if (!objectsToAdd.length) return existing;
+        const next = bMultiple ? [...existing, ...objectsToAdd] : [...objectsToAdd];
+        if (persistKey) writeFieldImages(persistKey, next);
+        return next;
     }
 
-    const selectImage1 = useCallback(async (type, bIsMedia) => {
+    const resumedUploads = useRef(false);
+    useEffect(() => {
+        if (!persistKey || resumedUploads.current || !images?.length) return;
+        const pending = images.filter((img) => img.preload && img.uri && !img.file_id && img.uploadId);
+        if (!pending.length) return;
+        resumedUploads.current = true;
+        void uploadImages(pending.map((img) => ({
+            uri: img.uri,
+            mimeType: img.file_type,
+            type: img.type,
+            fileName: img.fileName,
+            fileSize: img.fileSize,
+            resumeUploadId: img.uploadId,
+            resumeHash: img.hash,
+        })));
+    }, [images, persistKey]);
+
+    const selectImage1 = useCallback(async (type, bIsMedia, mediaTypesOverride) => {
         const extAllow = props.ext_allow ?? '';
 
         if (bIsMedia) {
-            const mediaTypes = resolvePickerMediaTypes(name, extAllow, type);
+            const mediaTypes = mediaTypesOverride?.length
+                ? mediaTypesOverride
+                : resolvePickerMediaTypes(name, extAllow, type);
 
             let result = null;
 
@@ -414,9 +505,9 @@ export default function (props) {
                     multiple: true
                 });
 
-                if (!result.cancelled) {
+                if (!result.canceled && result.assets?.length) {
                     let k = await uploadImages(result.assets);
-                    setImageSource({ images: k });
+                    setImageSourceN(k, bMultiple);
                 }
             } catch (err) {
                 console.error('Error picking document:', err);
@@ -424,15 +515,15 @@ export default function (props) {
         }
     }, [name, props.ext_allow, bMultiple, hasPermissionCamera, hasPermissionLibrary, requestPermissionCamera, requestPermissionLibrary]);
 
-    const selectImage = useCallback(async (source) => {
+    const selectImage = useCallback(async (source, mediaTypesOverride) => {
         try {
             const extAllow = props.ext_allow ?? '';
             const extDeny = props.ext_deny ?? '';
             const type = resolvePickerSource(source, props.source ?? 'library');
-            const bIsMedia = isMediaField(extDeny, extAllow) || type === 'library' || type === 'camera';
+            const bIsMedia = shouldUseMediaPicker(name, extDeny, extAllow);
 
             if (Platform.OS === 'web' || !bIsMedia) {
-                await selectImage1(type, bIsMedia);
+                await selectImage1(type, bIsMedia, mediaTypesOverride);
                 return;
             }
 
@@ -444,7 +535,7 @@ export default function (props) {
                     ? hasPermissionCamera
                     : await requestPermissionCamera();
                 if (permission?.granted) {
-                    await selectImage1('camera', bIsMedia);
+                    await selectImage1('camera', bIsMedia, mediaTypesOverride);
                 } else {
                     showPermissionAlert('camera', permission?.canAskAgain);
                 }
@@ -458,7 +549,7 @@ export default function (props) {
                 ? hasPermissionLibrary
                 : await requestPermissionLibrary();
             if (permission?.granted) {
-                await selectImage1('library', bIsMedia);
+                await selectImage1('library', bIsMedia, mediaTypesOverride);
             } else {
                 showPermissionAlert('library', permission?.canAskAgain);
             }
@@ -471,7 +562,8 @@ export default function (props) {
     useEffect(() => {
         const subscription = emitter.addListener(`fld_files_${name}`, (data) => {
             if (data.action == 'add') {
-                selectImage(data.source);
+                // Let the composer Plus remount finish before presenting a picker.
+                setTimeout(() => selectImage(data.source, data.mediaTypes), 50);
             }
             if (data.action == 'clear') {
                 setImageSource({ images: [] });
@@ -481,6 +573,18 @@ export default function (props) {
             subscription.remove();
         };
     }, [name, selectImage]);
+
+    useEffect(() => {
+        if (!formName) return undefined;
+        const subscription = emitter.addListener(`form_${formName}`, (data) => {
+            if (data.action == 'submited') {
+                useFilesDataStore.getState().clearFieldImages(`${formName}:`);
+            }
+        });
+        return () => {
+            subscription.remove();
+        };
+    }, [formName]);
 
     const handleDelete = useCallback(async (id) => {
         setImageSource(prev => ({

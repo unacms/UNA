@@ -21,7 +21,7 @@ import {
     width as widthModifier,
 } from '@expo/ui/jetpack-compose/modifiers';
 import { useResolvedNeoButton, resolveScoped } from 'app/design/controls/neo-button-resolver';
-import { useFrozenHostSize, wrapNativeButtonHost } from 'app/design/controls/neo-button-native-host';
+import { useFrozenHostSize, useLockedNativePress, wrapNativeButtonHost } from 'app/design/controls/neo-button-native-host';
 import { FeedbackHaptics, findIconFromRemote } from 'app/lib/util';
 
 const VARIANT_COMPONENTS = {
@@ -47,7 +47,7 @@ export function NeoButtonNative(props) {
         role, style, buttonStyle, controlSize, borderShape, tint,
         label, title, loadingLabel, image, systemImage, imagePlacement,
         disabled = false, loading = false,
-        haptics, onPress,
+        haptics, onPress, onPressIn,
         width, align,
         accessibilityLabel, alt,
         className, classNames,
@@ -66,17 +66,22 @@ export function NeoButtonNative(props) {
     const hostClassStyle = useResolveClassNames(hostClasses || '');
     const flatHost = StyleSheet.flatten(hostClassStyle) || {};
 
-    const rnOwnsWidth = fill
-        || flatHost.width != null || flatHost.flexGrow != null
-        || flatHost.flex != null || flatHost.flexBasis != null;
-    const rnOwnsHeight = flatHost.height != null || flatHost.minHeight != null;
-
     const effectiveLabel = (loading && loadingLabel != null && loadingLabel !== '')
         ? loadingLabel
         : (label ?? title ?? '');
 
     const rawImage = systemImage ?? image;
     const iconSource = getNativeIcon(rawImage, nativeConfig);
+    const isIconOnly = !!iconSource && effectiveLabel === '';
+    const iconHostWidth = !isIconOnly
+        ? null
+        : (resolved.aspectSquare
+            ? resolved.height
+            : Math.max(resolved.height, (resolved.paddingX ?? 0) * 2 + (resolved.iconSize ?? 0)));
+    const rnOwnsWidth = iconHostWidth != null || fill
+        || flatHost.width != null || flatHost.flexGrow != null
+        || flatHost.flex != null || flatHost.flexBasis != null;
+    const rnOwnsHeight = true;
 
     const variants = resolveScoped(nativeConfig?.androidVariants, resolved.env) || {};
     const variant = variants[resolved.style] ?? 'tonal';
@@ -110,12 +115,14 @@ export function NeoButtonNative(props) {
         colors = baseColors;
     }
 
-    const handlePress = onPress
+    const firePress = (onPress || onPressIn) && !disabled && !loading
         ? () => {
               if (resolved.haptics) FeedbackHaptics(resolved.haptics);
-              onPress();
+              (onPressIn || onPress)();
+              if (onPress && onPressIn && onPress !== onPressIn) onPress();
           }
         : undefined;
+    const handlePress = useLockedNativePress(firePress);
 
     const frozen = useFrozenHostSize({
         contentKey: [String(effectiveLabel), rawImage || '', variant].join('|'),
@@ -142,11 +149,21 @@ export function NeoButtonNative(props) {
                 vertical: !rnOwnsHeight && !frozen.pinnedHeight,
             }}
             onLayoutContent={frozen.onLayoutContent}
-            style={[hostClassStyle, fill ? { width: '100%' } : null, frozen.style]}
+            ignoreSafeAreaKeyboardInsets
+            style={[
+                hostClassStyle,
+                {
+                    height: resolved.height,
+                    opacity: (disabled || loading) ? 0.6 : 1,
+                },
+                iconHostWidth != null ? { width: iconHostWidth } : null,
+                fill ? { width: '100%' } : null,
+                frozen.style,
+            ]}
         >
             <ButtonComponent
                 onClick={handlePress}
-                enabled={!disabled && !loading}
+                enabled={true}
                 colors={colors}
                 modifiers={rnOwnsWidth ? [fillMaxWidth()] : undefined}
             >
@@ -162,6 +179,8 @@ export function NeoButtonNative(props) {
     return wrapNativeButtonHost(host, {
         hitSlop: resolved.hitSlop,
         fill,
+        height: resolved.height,
+        width: iconHostWidth,
         onPress: handlePress,
         disabled: disabled || loading,
     });

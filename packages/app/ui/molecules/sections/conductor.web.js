@@ -1460,16 +1460,16 @@ const LeftSideBarContainer = ({
                 <View className={layoutName == 'profile' ? '' : appSetting('conductor', 'sidebar_inner_container')}>
                     {(!!title || !!addButtons?.length > 0) && (
                         <Row className={appSetting('conductor', 'sidebar_title')}>
-                            <Row className="items-center mr-auto min-w-0 hidden rounded-xl lg:flex">
+                            <Row className="items-center mr-auto min-w-0 hidden lg:flex">
                                 {!!icon && (
-                                    <View className="h-10 w-12 items-center justify-center flex">
+                                    <View className="h-9 w-9 mx-1 items-center justify-center flex">
                                     <Icon
                                         icon={icon}
                                         size={28}
                                         className="text-card-foreground shrink-0"
                                     /></View>
                                 )}
-                                <Text className="text-xl px-0.5 tracking-tight truncate font-bold leading-9 text-card-foreground">
+                                <Text className="text-2xl px-0.5 tracking-tight truncate font-bold leading-9 text-card-foreground">
                                     {t(title)}
                                 </Text>
                             </Row>
@@ -1495,7 +1495,7 @@ const LeftSideBarContainer = ({
                                                     controlSize="large"
                                                     width="fill"
                                                     align="start"
-                                                    contentInsets={{ x: 6 }}
+                                                    contentInsets={{ x: 8 }}
                                                     selected={isActive}
                                                     selectedState="pressed"
                                                     className="group"
@@ -1513,7 +1513,7 @@ const LeftSideBarContainer = ({
                                                 controlSize="large"
                                                 width="fill"
                                                 align="start"
-                                                contentInsets={{ x: 6 }}
+                                                contentInsets={{ x: 8 }}
                                                 selected={isActive}
                                                 selectedState="pressed"
                                                 className={`group ${a.ident ? conductorTheme.menu_categ_indent : ''}`.trim()}

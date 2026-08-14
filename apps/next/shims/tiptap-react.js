@@ -1,19 +1,14 @@
-// Обёртка над @tiptap/react: задаёт `immediatelyRender` в useEditor.
+// Wrapper around @tiptap/react that always sets `immediatelyRender`.
 //
-// react-native-enriched-html (веб-сборка) вызывает useEditor без этой опции, что
-// ломается двумя способами:
-//   1) immediatelyRender === undefined → @tiptap/react в dev бросает
-//      "SSR has been detected", потому что в Next.js `window.next` есть даже на
-//      клиенте (isNext === true).
-//   2) immediatelyRender === false → на клиенте первый рендер возвращает
-//      editor === null, а внутренний хук пакета useOnEditorChange зовёт
-//      editor.getHTML() без проверки → "Cannot read properties of null".
+// On Next.js, `window.next` exists on the client, so @tiptap/react treats the
+// runtime as SSR. Creating the editor during render then races with destroy
+// (`commandManager` becomes null) and throws:
+//   Cannot read properties of null (reading 'commands')
 //
-// Решение: на сервере false (нет исключения; useEffect на сервере не выполняется,
-// так что null-краша нет), на клиенте true (editor создаётся сразу, не null).
+// Default to false so the editor is created in useEffect. The enriched-html
+// patch null-guards hooks/handles that used to crash when editor was null.
 //
-// Реальный модуль подключается через alias '@tiptap-react-real' (см.
-// next.config.js), чтобы избежать рекурсии алиаса '@tiptap/react'.
+// Real module is aliased as '@tiptap-react-real' (see next.config.js).
 export * from '@tiptap-react-real';
 import { useEditor as realUseEditor } from '@tiptap-react-real';
 
@@ -21,6 +16,6 @@ export function useEditor(options = {}, deps = []) {
     const opts =
         options && options.immediatelyRender !== undefined
             ? options
-            : { ...(options || {}), immediatelyRender: typeof window !== 'undefined' };
+            : { ...(options || {}), immediatelyRender: false };
     return realUseEditor(opts, deps);
 }

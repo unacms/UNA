@@ -13,14 +13,13 @@ import {
     buttonBorderShape as buttonBorderShapeModifier,
     tint as tintModifier,
     foregroundStyle,
-    disabled as disabledModifier,
     accessibilityLabel as accessibilityLabelModifier,
     frame,
     font as fontModifier,
     symbolEffect,
 } from '@expo/ui/swift-ui/modifiers';
 import { useResolvedNeoButton, resolveScoped } from 'app/design/controls/neo-button-resolver';
-import { useFrozenHostSize, wrapNativeButtonHost } from 'app/design/controls/neo-button-native-host';
+import { useFrozenHostSize, useLockedNativePress, wrapNativeButtonHost } from 'app/design/controls/neo-button-native-host';
 import { FeedbackHaptics, findIconFromRemote } from 'app/lib/util';
 
 // SF Symbol names are lowercase dot-separated identifiers ('square.and.arrow.up').
@@ -104,7 +103,7 @@ export function NeoButtonNative(props) {
         role, style, buttonStyle, controlSize, borderShape, tint,
         label, title, loadingLabel, image, systemImage, imagePlacement,
         disabled = false, loading = false,
-        haptics, onPress,
+        haptics, onPress, onPressIn,
         width, align,
         accessibilityLabel, alt,
         className, classNames,
@@ -130,16 +129,15 @@ export function NeoButtonNative(props) {
     const parsedSymbol = resolveIosSymbol(systemImage ?? image, nativeConfig);
     const sfSymbol = parsedSymbol?.name;
     const isIconOnly = !!sfSymbol && !effectiveLabel;
-    // `.circle` clips chrome but SwiftUI still reports capsule intrinsic
-    // width (regular horizontal padding). Pin layout to a square — same as
-    // JS `aspectSquare`. hitSlop does not affect layout.
     const pinToSquare = isIconOnly && resolved.aspectSquare;
-
-    const rnOwnsWidth = pinToSquare || fill
+    // Own width for every icon-only control. Capsule keeps JS paddingX so
+    // bordered chrome is not clipped to the plus glyph (composer Plus).
+    const rnOwnsWidth = isIconOnly || fill
         || flatHost.width != null || flatHost.flexGrow != null
         || flatHost.flex != null || flatHost.flexBasis != null;
-    const rnOwnsHeight = pinToSquare
-        || flatHost.height != null || flatHost.minHeight != null;
+    // Always pin Host height to controlSizes so icon-only and labelled
+    // buttons share one baseline (matchContents hugs SwiftUI chrome).
+    const rnOwnsHeight = true;
     const defaultSymbolEffect = normalizeSymbolEffect(
         resolveScoped(nativeConfig?.iosSymbolEffect, resolved.env),
     );
@@ -168,6 +166,11 @@ export function NeoButtonNative(props) {
     const targetHeight = (rnOwnsHeight
         && [flatHost.height, flatHost.minHeight].find((v) => typeof v === 'number'))
         || resolved.height;
+    const iconHostWidth = !isIconOnly
+        ? null
+        : (pinToSquare
+            ? targetHeight
+            : Math.max(targetHeight, (resolved.paddingX ?? 0) * 2 + (resolved.iconSize ?? 0)));
     const labelFrameHeight = Math.max(resolved.iconSize, targetHeight - vPad * 2);
 
     // FrameModifier drops min/max when `height` is set — use minHeight/maxHeight
@@ -238,20 +241,29 @@ export function NeoButtonNative(props) {
     if (tintValue) modifiers.push(tintModifier(tintValue));
     if (foregroundValue) labelModifiers.push(foregroundStyle(foregroundValue));
     if (isIconOnly && nativeLabel) modifiers.push(accessibilityLabelModifier(nativeLabel));
-    if (disabled || loading) modifiers.push(disabledModifier(true));
-    if (pinToSquare) {
-        modifiers.push(frame({ width: targetHeight, height: targetHeight }));
+    // Do not use SwiftUI `disabled` — it changes intrinsic layout when the
+    // control toggles. Fade + block presses on the RN wrapper instead.
+    if (iconHostWidth != null) {
+        modifiers.push(frame({ width: iconHostWidth, height: targetHeight }));
     } else if (rnOwnsWidth) {
-        modifiers.push(frame({ maxWidth: Infinity, alignment: fillAlignment }));
+        modifiers.push(frame({
+            height: targetHeight,
+            maxWidth: Infinity,
+            alignment: fillAlignment,
+        }));
+    } else {
+        modifiers.push(frame({ height: targetHeight, alignment: 'center' }));
     }
 
-    const handlePress = onPress
+    const firePress = (onPress || onPressIn) && !disabled && !loading
         ? () => {
               if (sfSymbol && iconEffect) symbolTrigger.set(symbolTrigger.get() + 1);
               if (resolved.haptics) FeedbackHaptics(resolved.haptics);
-              onPress();
+              (onPressIn || onPress)();
+              if (onPress && onPressIn && onPress !== onPressIn) onPress();
           }
         : undefined;
+    const handlePress = useLockedNativePress(firePress);
 
     const imageModifiers = (sfSymbol && iconEffect)
         ? [symbolEffect(iconEffect, {
@@ -278,11 +290,17 @@ export function NeoButtonNative(props) {
                 vertical: !rnOwnsHeight && !frozen.pinnedHeight,
             }}
             onLayoutContent={frozen.onLayoutContent}
-            ignoreSafeArea="container"
+            // `container` still applies keyboard safe area — Host box grows
+            // and the visible control sits above it. `all` = Yoga size == chrome.
+            ignoreSafeArea="all"
             collapsable={false}
             style={[
                 hostClassStyle,
-                pinToSquare ? { width: targetHeight, height: targetHeight } : null,
+                {
+                    height: targetHeight,
+                    opacity: (disabled || loading) ? 0.6 : 1,
+                },
+                iconHostWidth != null ? { width: iconHostWidth } : null,
                 fill ? { width: '100%' } : null,
                 frozen.style,
             ]}
@@ -312,6 +330,8 @@ export function NeoButtonNative(props) {
     return wrapNativeButtonHost(host, {
         hitSlop: resolved.hitSlop,
         fill,
+        height: targetHeight,
+        width: iconHostWidth,
         onPress: handlePress,
         disabled: disabled || loading,
     });

@@ -106,22 +106,22 @@ export default function Unit({ data }) {
 
     const menuParams = useMemo(() => ({
         className: 'gap-x-1',
-        button_variant: 'default',
-        button_size: 'xs',
-        button_rounded: false,
+        button_style: 'bordered',
+        button_size: 'mini',
+        button_border_shape: 'capsule',
         button_full_width: false,
         onclick: (event, item) => runTaskAction(item.action, setFormBlock),
     }), []);
 
     const titleClassName = cn(
-        'text-sm font-semibold leading-tight web:hover:text-foreground',
+        'text-base font-semibold leading-tight web:hover:text-foreground',
         isCompleted
             ? 'text-muted-foreground line-through'
             : 'text-card-foreground'
     );
 
     return (
-        <Card padding="p-3" className="web:hover:bg-muted/30 web:duration-300">
+        <Card padding="py-2 px-3" className="web:hover:bg-muted/30 web:duration-300">
             {formBlock ? (
                 <Modal
                     title={formBlock.title || ' '}

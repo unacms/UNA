@@ -1,6 +1,6 @@
 'use client'
 import { useController, useFormContext } from 'react-hook-form'
-import { useState, useRef, useEffect, useMemo, useCallback } from 'react'
+import { useState, useRef, useEffect, useMemo, useCallback, Component } from 'react'
 import { Platform } from 'react-native'
 import { EnrichedTextInput } from 'react-native-enriched-html'
 import { View } from 'app/design/view'
@@ -32,6 +32,23 @@ const inputSettings = appSetting('theme', 'inputs')
 const mentionColors = {
     light: 'rgba(37, 99, 235, 1)',
     dark: 'rgba(59, 130, 246, 1)',
+}
+
+class EnrichedEditorBoundary extends Component {
+    constructor(props) {
+        super(props)
+        this.state = { gen: 0 }
+    }
+    static getDerivedStateFromError() {
+        return {}
+    }
+    componentDidCatch() {
+        this.setState((state) => ({ gen: Math.min(state.gen + 1, 3) }))
+    }
+    render() {
+        if (this.state.gen >= 3) return null
+        return <View key={this.state.gen}>{this.props.children}</View>
+    }
 }
 
 export default function RftTextEnriched({
@@ -91,12 +108,24 @@ export default function RftTextEnriched({
     // Keep defaultValue stable for the component lifetime; push later updates via setValue.
     const initialDefaultValue = useRef(unaLinksToMentions(value || ''))
     const lastSetValue = useRef(value)
+    const callEditor = (method, ...args) => {
+        try {
+            editorRef.current?.[method]?.(...args)
+        } catch {
+            // Web TipTap handle exists before editor.commands is ready.
+        }
+    }
     useEffect(() => {
         if (editorRef.current && value !== lastSetValue.current) {
             lastSetValue.current = value
-            editorRef.current.setValue(unaLinksToMentions(value || ''))
+            callEditor('setValue', unaLinksToMentions(value || ''))
         }
     }, [value])
+    useEffect(() => {
+        if (!autofocus || !isWeb) return undefined
+        const timer = setTimeout(() => callEditor('focus'), 80)
+        return () => clearTimeout(timer)
+    }, [!!autofocus, isWeb])
 
     // ---- emitter (focus/blur/set_content), same as tentap version ----
     useEffect(() => {
@@ -104,23 +133,23 @@ export default function RftTextEnriched({
             if (!editorRef.current) return
             if (data.action === 'blur') {
                 data.timeout
-                    ? setTimeout(() => editorRef.current?.blur?.(), data.timeout)
-                    : editorRef.current.blur?.()
+                    ? setTimeout(() => callEditor('blur'), data.timeout)
+                    : callEditor('blur')
             }
             if (data.action === 'focus') {
                 if (isWeb) {
-                    editorRef.current.focus()
+                    callEditor('focus')
                 } else {
                     // iOS: after the keyboard is dismissed the native input can keep a
                     // stale first-responder state, so a plain focus() no-ops. Blur first
                     // to clear it, then focus to reliably re-summon the keyboard.
-                    editorRef.current.blur?.()
-                    setTimeout(() => editorRef.current?.focus?.(), 50)
+                    callEditor('blur')
+                    setTimeout(() => callEditor('focus'), 50)
                 }
             }
             if (data.action === 'set_content') {
                 lastSetValue.current = data.value
-                editorRef.current.setValue(unaLinksToMentions(data.value || ''))
+                callEditor('setValue', unaLinksToMentions(data.value || ''))
             }
         })
         return () => sub.remove()
@@ -500,7 +529,7 @@ export default function RftTextEnriched({
         if (target.closest('a, button, [role="button"]')) return
         if (dropdownRef.current?.contains?.(target)) return
         e.preventDefault?.()
-        editorRef.current?.focus?.()
+        callEditor('focus')
     }, [isWeb, disabled])
 
     // Native library callbacks (web uses TipTap sync above; keep these as a
@@ -555,13 +584,14 @@ export default function RftTextEnriched({
             />
 
             <View className={surfaceClass}>
+                <EnrichedEditorBoundary>
                 <EnrichedTextInput
                     ref={editorRef}
                     defaultValue={initialDefaultValue.current}
                     placeholder={placeholder}
                     placeholderTextColor="rgba(120,130,145,1)"
                     editable={!disabled}
-                    autoFocus={!!autofocus}
+                    autoFocus={isWeb ? false : !!autofocus}
                     autoCapitalize="none"
                     mentionIndicators={MENTION_INDICATORS}
                     htmlStyle={htmlStyle}
@@ -590,6 +620,7 @@ export default function RftTextEnriched({
                     onKeyPress={onKeyPress}
                     onFocus={() => { if (onFocus) onFocus() }}
                 />
+                </EnrichedEditorBoundary>
 
                 {isToolBar ? (
                     <EditorToolbar items={toolbarItems} linkBar={linkBar} />

@@ -111,17 +111,15 @@ export function TaskTimer({ data, className }) {
 
 
     const menuParams = useMemo(() => ({
-        ...{
-            className: 'gap-x-1',
-            button_variant: 'default',
-            button_size: 'sm',
-            button_rounded: true,
-            button_full_width: false,
-            show_action: true,
-            show_counter: true,
-            show_combined: true,
-            isFixedCount: true,
-        },
+        className: 'gap-x-1',
+        button_style: 'bordered',
+        button_size: 'mini',
+        button_border_shape: 'capsule',
+        button_full_width: false,
+        show_action: true,
+        show_counter: true,
+        show_combined: true,
+        isFixedCount: true,
         onclick: (event, item) => runCallback(item, timerData.id),
     }), [runCallback]);
 
@@ -137,7 +135,7 @@ export function TaskTimer({ data, className }) {
     if (!timerData) return null;
 
     return (
-        <Row className={cn('w-full items-center gap-3', className)}>
+        <Row className={cn('w-full items-center gap-3 flex-wrap', className)}>
             <TimerDisplay data={timerData} />
             <View className="flex-auto min-w-0">
                 <Row className="flex-wrap items-center justify-end gap-2">

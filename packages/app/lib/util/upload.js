@@ -7,6 +7,40 @@ import { genRnd } from './misc';
 
 const UPLOAD_TIMEOUT_MS = appSetting('config', 'upload_timeout_ms') || 300000;
 
+function guessMimeFromExt(ext) {
+    const e = String(ext || '').toLowerCase();
+    if (!e) return 'application/octet-stream';
+    if (e === 'jpg' || e === 'jpeg' || e === 'jpe') return 'image/jpeg';
+    if (e === 'png' || e === 'gif' || e === 'webp' || e === 'heic' || e === 'heif' || e === 'bmp') return `image/${e}`;
+    if (e === 'svg') return 'image/svg+xml';
+    if (e === 'mov') return 'video/quicktime';
+    if (e === 'mp4' || e === 'm4v' || e === 'webm' || e === 'avi' || e === '3gp') return `video/${e}`;
+    if (e === 'pdf') return 'application/pdf';
+    return `application/${e}`;
+}
+
+function extFromMime(mime) {
+    const type = String(mime || '').toLowerCase();
+    if (type === 'image/jpeg' || type === 'image/jpg') return 'jpg';
+    if (type === 'image/svg+xml') return 'svg';
+    if (type === 'video/quicktime') return 'mov';
+    const sub = type.split('/')[1];
+    return sub && sub !== 'octet-stream' ? sub : '';
+}
+
+function resolveNativeUploadMeta(uri, extraVar) {
+    const uriPath = String(uri || '').split('?')[0];
+    const uriName = decodeURIComponent(uriPath.split('/').pop() || '');
+    const uriExt = uriName.match(/\.([a-z0-9]+)$/i)?.[1];
+    const type = extraVar?.mimeType || extraVar?.fileType || guessMimeFromExt(uriExt);
+    const mimeExt = extFromMime(type) || uriExt || '';
+    const rawName = extraVar?.fileName || extraVar?.name || uriName || 'upload';
+    const name = rawName.includes('.')
+        ? rawName
+        : (mimeExt ? `${rawName}.${mimeExt}` : rawName);
+    return { name: name || 'upload', type: type || 'application/octet-stream' };
+}
+
 function urltoFile(url, defaultFilename = 'file', defaultMimeType = 'application/octet-stream') {
     return fetch(url)
         .then(function (response) {
@@ -175,12 +209,11 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
     }
 
     const formData = new FormData();
-    const fileName = uri.split('/').pop();
-    const fileType = uri.match(/\.([a-z0-9]+)$/i)[1];
+    const { name, type } = resolveNativeUploadMeta(uri, extraVar);
     formData.append("file", {
         uri,
-        name: fileName,
-        type: `image/${fileType}`,
+        name,
+        type,
     });
 
     const result = await fetcher([fetchUrl, null, formData], false, { timeoutMs: UPLOAD_TIMEOUT_MS });

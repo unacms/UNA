@@ -1,55 +1,238 @@
-import { View, Row } from 'app/design/view'
+import { View, Row, Pressable } from 'app/design/view'
 import { NeoButton } from 'app/design/controls'
 import { useState, useRef, useMemo, useEffect } from 'react'
 import { getFormFieldByData } from 'app/lib/form-helpers'
-import KbAvoidingView from 'app/ui/atoms/kb-avoiding-view'
-import { Platform } from 'react-native'
+import KbAvoidingView, { useStickyComposerListInset } from 'app/ui/atoms/kb-avoiding-view'
+import { Platform, View as RNView } from 'react-native'
 import { useSafeAreaInsets } from 'app/lib/hooks/router'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile/profile'
-import { stripTags } from 'app/lib/util'
+import { appSetting, stripTags } from 'app/lib/util'
 import { Keyboard } from 'react-native'
 import { useFormContext } from 'react-hook-form'
 import { PollButton, LabelButton, FileButton } from 'app/lib/form-helpers'
-import { useWindowHeight } from 'app/context/measure';
+import { useIsDesktop, useWindowHeight } from 'app/context/measure';
 import emitter from 'app/context/emitter';
 import { Icon } from 'app/ui/atoms/icon'
 import { Text } from 'app/design/typography';
 import { useSound } from 'app/lib/hooks/useSound';
 
+const dropdownTheme = appSetting('theme', 'dropdown');
+const menuSettings = appSetting('theme', 'dropdown_menu');
+const isWeb = Platform.OS === 'web';
+const nativeTruncateProps = isWeb
+    ? {}
+    : { numberOfLines: 1, ellipsizeMode: 'tail', textBreakStrategy: 'simple' };
+
 const ATTACHMENT_BUTTON = { style: 'bordered', controlSize: 'small', borderShape: 'capsule', tooltipSide: 'top' };
+
+function getAttachmentMenuItems(inputs) {
+    const items = [];
+    if (inputs?.photo) {
+        items.push({
+            id: 'photo',
+            title: 'Add Photos',
+            icon: 'Image',
+            onAction: () => emitter.emit('fld_files_photo', { action: 'add', source: 'library', mediaTypes: ['images'] }),
+        });
+    }
+    if (inputs?.video) {
+        items.push({
+            id: 'video',
+            title: 'Add Photos or Videos',
+            icon: 'Image',
+            onAction: () => emitter.emit('fld_files_video', { action: 'add', source: 'library', mediaTypes: ['images', 'videos'] }),
+        });
+    }
+    if (inputs?.file) {
+        items.push({
+            id: 'file',
+            title: 'Add Files',
+            icon: 'Paperclip',
+            onAction: () => emitter.emit('fld_files_file', { action: 'add' }),
+        });
+    }
+    if (inputs?.labels) {
+        items.push({
+            id: 'labels',
+            title: 'Add Labels',
+            icon: 'Hash',
+            onAction: () => emitter.emit('fld_labels_labels', { action: 'add' }),
+        });
+    }
+    if (inputs?.polls) {
+        items.push({
+            id: 'polls',
+            title: 'Add Polls',
+            icon: 'ChartBarBig',
+            onAction: () => emitter.emit('fld_polls_polls', { action: 'add' }),
+        });
+    }
+    return items;
+}
+
+function AttachmentMenuList({ items, onSelect }) {
+    return (
+        <View className={`mb-2 ${dropdownTheme.cnt}`}>
+            {items.map((item) => (
+                <Pressable
+                    key={item.id}
+                    onPress={() => onSelect(item)}
+                    className={menuSettings.item_ver}
+                >
+                    <Row className="items-center">
+                        {item.icon ? (
+                            <View className={menuSettings.item_icon}>
+                                <Icon icon={item.icon} size={menuSettings.icon_size || 20} />
+                            </View>
+                        ) : null}
+                        <Text className={menuSettings.item_text}>{item.title}</Text>
+                    </Row>
+                </Pressable>
+            ))}
+        </View>
+    );
+}
+
+function ComposerDock({ children }) {
+    const { keyboardLift } = useStickyComposerListInset(0);
+    return (
+        <RNView
+            pointerEvents="box-none"
+            style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: keyboardLift,
+                zIndex: 20,
+            }}
+        >
+            {children}
+        </RNView>
+    );
+}
+
+function ComposerToolbar({ data, handleSubmit, isWeb, children }) {
+    const isDesktop = useIsDesktop();
+    const [menuOpen, setMenuOpen] = useState(false);
+    const menuItems = useMemo(
+        () => getAttachmentMenuItems(data.inputs),
+        [data.inputs]
+    );
+
+    const obfuscate = data.inputs['obfuscate_faces'] ? (
+        <View className="flex-none">
+            {getFormFieldByData(data.inputs['obfuscate_faces'], handleSubmit, 'default')}
+        </View>
+    ) : null;
+
+    const leading = isDesktop ? (
+        <RNView style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            {obfuscate}
+            {data.inputs['photo'] ? (
+                <FileButton field_name="photo" icon="Image" tooltip="Add Photos" {...ATTACHMENT_BUTTON} />
+            ) : null}
+            {data.inputs['video'] ? (
+                <FileButton field_name="video" icon="Image" tooltip="Add Photos or Videos" {...ATTACHMENT_BUTTON} />
+            ) : null}
+            {data.inputs['video'] && !isWeb ? (
+                <FileButton field_name="video" icon="Image" {...ATTACHMENT_BUTTON} />
+            ) : null}
+            {data.inputs['file'] ? (
+                <FileButton field_name="file" icon="Paperclip" {...ATTACHMENT_BUTTON} />
+            ) : null}
+            {data.inputs['labels'] ? (
+                <LabelButton field_name="labels" {...ATTACHMENT_BUTTON} />
+            ) : null}
+            {data.inputs['polls'] ? (
+                <PollButton field_name="polls" {...ATTACHMENT_BUTTON} />
+            ) : null}
+        </RNView>
+    ) : (
+        <RNView style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            {obfuscate}
+            {menuItems.length > 0 ? (
+                <NeoButton
+                    {...ATTACHMENT_BUTTON}
+                    image="Plus"
+                    style={menuOpen ? 'borderedProminent' : ATTACHMENT_BUTTON.style}
+                    accessibilityLabel="Add attachment"
+                    onPress={() => setMenuOpen((was) => !was)}
+                />
+            ) : null}
+        </RNView>
+    );
+
+    return (
+        <RNView style={{ alignSelf: 'stretch' }}>
+            {!isDesktop && menuOpen && menuItems.length > 0 ? (
+                <AttachmentMenuList
+                    items={menuItems}
+                    onSelect={(item) => {
+                        setMenuOpen(false);
+                        item.onAction?.();
+                    }}
+                />
+            ) : null}
+            <RNView
+                style={{
+                    width: '100%',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                }}
+            >
+                {leading}
+                {children}
+            </RNView>
+        </RNView>
+    );
+}
 
 function AuthorAudienceButton({ profileData, displayName, destination, destinationIcon, onPress }) {
     return (
         <NeoButton
-            style="bordered"
+            style="borderless"
             controlSize="regular"
-            borderShape="roundedRectangle"
+            borderShape="capsule"
             align="start"
             contentInsets="mediaLeading"
             onPress={onPress}
             accessibilityLabel={destination ? `${displayName}, ${destination}` : displayName}
-            classNames={{ container: 'gap-x-2 pr-3' }}
+            classNames={{
+                root: 'w-max max-w-full min-w-0',
+                container: 'w-max max-w-full min-w-0 gap-x-2 pe-4 -ms-1 -mt-1',
+            }}
         >
-            <Profile {...profileData} displaySize="md" displayType="unit_wo_info" />
-            <View className="min-w-0">
-                <Text className="text-sm font-medium leading-5 text-button-foreground" numberOfLines={1}>
+            <View className="pointer-events-none flex-none">
+                <Profile {...profileData} displaySize="md" displayType="unit_wo_info" showLinks={false} />
+            </View>
+            <View className="min-w-0 max-w-full overflow-hidden">
+                <Text
+                    className="min-w-0 max-w-full truncate text-sm font-semibold tracking-tight leading-5 text-button-foreground"
+                    {...nativeTruncateProps}
+                >
                     {displayName}
                 </Text>
                 {destination ? (
-                    <Row className="items-center gap-1 min-w-0">
-                        {destinationIcon ? (
-                            <Icon icon={destinationIcon} size={12} className="text-muted-foreground" />
+                    <Row className="min-w-0 max-w-full items-center gap-1">
+                        {typeof destinationIcon === 'string' ? (
+                            <Icon icon={destinationIcon} size={12} className="flex-none text-muted-foreground" />
+                        ) : destinationIcon ? (
+                            <View className="pointer-events-none flex-none">{destinationIcon}</View>
                         ) : null}
-                        <Text className="text-xs leading-4 text-muted-foreground" numberOfLines={1}>
+                        <Text
+                            className="min-w-0 shrink truncate text-xs leading-4 text-secondary-foreground"
+                            {...nativeTruncateProps}
+                        >
                             {destination}
                         </Text>
+                        {onPress ? (
+                            <Icon icon="ChevronsUpDown" size={12} className="flex-none text-muted-foreground" />
+                        ) : null}
                     </Row>
                 ) : null}
             </View>
-            {onPress ? (
-                <Icon icon="ChevronsUpDown" size={16} className="text-muted-foreground" />
-            ) : null}
         </NeoButton>
     );
 }
@@ -61,7 +244,6 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
     const [showImage, setShowImage] = useState(isFormOnly ? true : false);
     const [responseId, setResponseId] = useState(0)
 
-    const isWeb = Platform.OS === 'web'
     const isIos = Platform.OS === 'ios'
     const scrollViewRef = useRef(null)
     const screenHeight = useWindowHeight();
@@ -130,9 +312,10 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
     const isButtonDisabled = !hasText || ((!isHiddenVisibility && object_privacy_view == '')) ? true : false;
     if (isFormOnly) {
         return (
-            <View className="w-full flex-1 gap-3">
+            <RNView style={{ position: 'relative', width: '100%', flex: 1, gap: 12 }}>
                 <View className="items-start justify-start ">
                     <Row className="w-full items-center justify-between gap-x-2">
+                        <View className="min-w-0 max-w-full shrink">
                         {data?.inputs?.['object_privacy_view'] ? getFormFieldByData(
                             {
                                 ...data.inputs['object_privacy_view'],
@@ -160,6 +343,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                 displayName={displayProfile.display_name}
                             />
                         )}
+                        </View>
                         <NeoButton
                             style="bordered"
                             controlSize="small"
@@ -167,6 +351,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                             image="X"
                             accessibilityLabel="Close"
                             onPress={onClose}
+                            classNames={{ root: 'flex-none' }}
                         />
                     </Row>
                 </View>
@@ -175,7 +360,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                     {getFormFieldByData(data.inputs['object_cf'], handleSubmit, 'default')}
                     {getFormFieldByData(data.inputs['owner_id'], handleSubmit, 'default')}
                     {getFormFieldByData(data.inputs['type'], handleSubmit, 'default')}
-                    <View className="justify-between flex-auto gap-2">
+                    <View className="flex-auto justify-start pb-14">
                         <View className="w-full flex-auto justify-start ">
                             <View
                                 className="flex-auto "
@@ -195,7 +380,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                         bg: 'transparent',
                                         placeholder: 'Write here...',
                                         linkify: true,
-                                        autofocus: Date.now(),
+                                        autofocus: true,
                                         classes: 'flex-auto',
                                         initialHeight: 160,
                                         maxHeight: screenHeight / 2 - 80 ,
@@ -209,7 +394,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                             data.inputs['video'],
                                             handleSubmit,
                                             'notitle',
-                                            { hide_button: true, list_only: true }
+                                            { hide_button: true, list_only: true, form_name: name }
                                         )
                                     }
                                     {
@@ -225,7 +410,7 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                             data.inputs['file'],
                                             handleSubmit,
                                             'notitle',
-                                            { hide_button: true, list_only: true }
+                                            { hide_button: true, list_only: true, form_name: name }
                                         )
                                     }
                                 </Row>
@@ -253,76 +438,34 @@ export default function FormFeed({ data, handleSubmit, exProps, name, response }
                                 )}
                             </View>
                         </View>
-                        <View className="pb-0">
-                            <View className={`items-center flex-auto w-full gap-2  `}>
-                                <Row className="gap-x-2 w-full justify-between ">
-                                    <Row className="flex-none gap-x-2">
-                                        {data.inputs['obfuscate_faces'] && (
-                                            <View className="">
-                                                {getFormFieldByData(
-                                                    data.inputs['obfuscate_faces'],
-                                                    handleSubmit,
-                                                    'default'
-                                                )}
-                                            </View>
-                                        )}
-                                        {data.inputs['photo'] && (
-                                            <View className="">
-                                                <FileButton field_name='photo' icon="Image" tooltip='Add Photos' {...ATTACHMENT_BUTTON} />
-                                            </View>
-                                        )}
-                                        {data.inputs['video'] && (
-                                            <View className="">
-                                                <FileButton field_name='video' icon="Image" tooltip='Add Photos or Videos' {...ATTACHMENT_BUTTON} />
-                                            </View>
-                                        )}
-                                        {(data.inputs['video'] && !isWeb) && (
-                                            <View className="">
-                                                <FileButton field_name='video' icon="Image" {...ATTACHMENT_BUTTON} />
-                                            </View>
-                                        )}
-                                        {data.inputs['file'] && (
-                                            <View>
-                                                <FileButton field_name='file' icon="Paperclip" {...ATTACHMENT_BUTTON} />
-                                            </View>
-                                        )}
-                                        {isLabelsPresent && (
-                                            <View>
-                                                <LabelButton field_name='labels' {...ATTACHMENT_BUTTON} />
-                                            </View>
-                                        )}
-                                        {isPollsPresent && (
-                                            <View className="">
-                                                <PollButton field_name='polls' {...ATTACHMENT_BUTTON} />
-                                            </View>
-                                        )}
-                                    </Row>
-                                    <View className=" flex-1 web:flex-none items-end ">
-                                        <View>
-                                            {getFormFieldByData(
-                                                data.inputs['tlb_do_submit'],
-                                                handleSubmit,
-                                                'default',
-                                                {
-                                                    form_name: name,
-                                                    disabled: isButtonDisabled,
-                                                    noPadding: true,
-                                                    size: 'sm',
-                                                    style: 'borderedProminent',
-                                                    rounded: true,
-                                                    notFullWidth: true,
-                                                    icon: "SendHorizontal",
-
-                                                }
-                                            )}
-                                        </View>
-                                    </View>
-                                </Row>
-                            </View>
-                        </View>
                     </View>
                 </KbAvoidingView>
-            </View>
+                <ComposerDock>
+                    <ComposerToolbar
+                        data={data}
+                        handleSubmit={handleSubmit}
+                        isWeb={isWeb}
+                    >
+                        {getFormFieldByData(
+                            data.inputs['tlb_do_submit'],
+                            handleSubmit,
+                            'default',
+                            {
+                                form_name: name,
+                                form_layout: 'hor',
+                                disabled: isButtonDisabled,
+                                noPadding: true,
+                                size: 'sm',
+                                style: 'borderedProminent',
+                                rounded: true,
+                                notFullWidth: true,
+                                icon: "SendHorizontal",
+                                bare: true,
+                            }
+                        )}
+                    </ComposerToolbar>
+                </ComposerDock>
+            </RNView>
         )
     }
 }

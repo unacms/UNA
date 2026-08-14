@@ -57,7 +57,7 @@ export const settingsElements = {
     modal: {
         fog: ' bg-background/95 ',
         container:
-        ' bg-card backdrop-blur web:shadow-sm md:rounded-2xl overflow-hidden ',
+        ' bg-card/60 backdrop-blur shadow-card-outline dark:shadow-card-outline-deep md:rounded-3xl overflow-hidden ',
         content: '',
         header: ' px-3 py-2 min-h-14 items-start justify-start border-b border-border/60 ',
     },

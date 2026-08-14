@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import { Pressable, View } from 'react-native';
+import { Pressable } from 'react-native';
 
 const HOST_SIZE_CACHE = new Map();
 const CACHE_LIMIT = 500;
@@ -48,41 +48,53 @@ export function useFrozenHostSize({ contentKey, rnOwnsWidth, rnOwnsHeight }) {
 }
 
 const FILL_STYLE = { flexGrow: 1, flexShrink: 1, flexBasis: 0, minWidth: 0 };
+const PRESS_LOCK_MS = 400;
 
 /**
- * Host is not an RN Pressable, so hitSlop must live on a wrapper.
- * `pointerEvents="box-none"` keeps presses on the chrome with the native
- * button; the wrapper only claims the slop. `accessible={false}` keeps a
- * single VoiceOver node. Fill width is the same wrapper — Host ignores flex-grow.
+ * Host and the RN wrapper can both deliver the same tap. A toggle (composer
+ * Plus) then opens and closes in one gesture.
  */
-export function wrapNativeButtonHost(host, { hitSlop = 0, fill = false, onPress, disabled }) {
+export function useLockedNativePress(handler) {
+    const lock = React.useRef(0);
+    return React.useCallback(() => {
+        if (!handler) return;
+        const now = Date.now();
+        if (now - lock.current < PRESS_LOCK_MS) return;
+        lock.current = now;
+        handler();
+    }, [handler]);
+}
+
+/**
+ * Host is not an RN Pressable, so hitSlop / flex-grow / the actual tap must
+ * live on a wrapper. `box-only` claims the hit — Host often drops SwiftUI
+ * `onPress` (icon-only, keyboard). Pin height so the wrapper matches JS.
+ * Fire on press-in so a keyboard layout jump cannot cancel the action.
+ */
+export function wrapNativeButtonHost(host, { hitSlop = 0, fill = false, onPress, disabled, height, width }) {
     const slop = hitSlop > 0
         ? { top: hitSlop, right: hitSlop, bottom: hitSlop, left: hitSlop }
         : undefined;
-    const fillStyle = fill ? FILL_STYLE : undefined;
-
-    if (!slop && !fill) return host;
-
-    if (slop && onPress && !disabled) {
-        return (
-            <Pressable
-                accessible={false}
-                collapsable={false}
-                onPress={onPress}
-                hitSlop={slop}
-                pointerEvents="box-none"
-                style={fillStyle}
-            >
-                {host}
-            </Pressable>
-        );
-    }
-
-    if (!fill) return host;
+    if (!onPress && !slop && !fill) return host;
 
     return (
-        <View collapsable={false} style={fillStyle}>
+        <Pressable
+            accessible={false}
+            collapsable={false}
+            onPressIn={disabled ? undefined : onPress}
+            hitSlop={slop}
+            pointerEvents="box-only"
+            disabled={!!disabled}
+            style={[
+                fill ? FILL_STYLE : null,
+                {
+                    flexShrink: 0,
+                    ...(height != null ? { height } : null),
+                    ...(width != null ? { width } : null),
+                },
+            ]}
+        >
             {host}
-        </View>
+        </Pressable>
     );
 }

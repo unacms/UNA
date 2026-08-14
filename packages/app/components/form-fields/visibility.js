@@ -173,8 +173,15 @@ export default function (props) {
                 {props.addElement}
                 {props.renderTrigger?.({
                     onPress: undefined,
-                    displayText: '',
-                    icon: null,
+                    displayText: props.owner_info?.display_name || '',
+                    icon: props.owner_info ? (
+                        <Profile
+                            {...props.owner_info}
+                            displayType="unit_wo_info"
+                            displaySize="3xs"
+                            showLinks={false}
+                        />
+                    ) : null,
                 })}
                 <Hidden
                     name={name}
@@ -188,6 +195,7 @@ export default function (props) {
                             {...props.owner_info}
                             displayType="unit_wo_info"
                             displaySize="2xs"
+                            showLinks={false}
                         />
                     </View>
                     <View className='px-1  flex-auto'>
@@ -204,13 +212,22 @@ export default function (props) {
         )
     }
     const visibilityData = visibilityById(field.value, t);
-    const icon = visibilityData ? visibilityData.icon : 'Globe'
+    const ownerName = props.owner_info?.display_name || '';
+    const ownerIcon = props.owner_info ? (
+        <Profile
+            {...props.owner_info}
+            displayType="unit_wo_info"
+            displaySize="3xs"
+            showLinks={false}
+        />
+    ) : null;
+    const icon = visibilityData ? visibilityData.icon : (ownerIcon || 'Globe')
 
     const v = filteredValues.find(item => item.value == field.value);
     const text = visibilityData ? visibilityData.text : ''
     const displayText = selectedSubLabels.length > 0
         ? selectedSubLabels.slice(0, 3).join(', ') + (selectedSubLabels.length > 3 ? ' + ' + (selectedSubLabels.length - 3) + ' more' : '')
-        : text || v?.label || t('Choose audience');
+        : text || v?.label || ownerName || t('Choose audience');
 
     if (props.format == 'nofield') {
         if (props.noContainer) {

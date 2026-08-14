@@ -47,6 +47,7 @@ export default function FormFieldSubmit(props) {
         notFullWidth = false,
         saveOnChanges = false,
         hide_errors = true,
+        bare = false,
     } = props;
 
     const formContext = useFormContext();
@@ -129,26 +130,48 @@ export default function FormFieldSubmit(props) {
 
     const isBusy = isSumbitting || isUploading;
 
+    const submitButton = (
+        <NeoButton
+            label={icon_only ? undefined : value}
+            image={icon}
+            loading={isBusy}
+            style={buttonStyle}
+            controlSize={controlSize}
+            borderShape={borderShape}
+            width="auto"
+            alt={alt}
+            tooltip={tooltip}
+            classNames={responsiveButtonClassNames}
+            onPress={handlePress}
+            // Native: fire on press-in so keyboard layout jump cannot cancel onPress.
+            {...(isNative ? { onPressIn: handlePress } : {})}
+            disabled={isBusy || disabled}
+        />
+    );
+
+    const hiddenField = (
+        <Hidden
+            name={name}
+            onChangeText={field.onChange}
+            onBlur={field.onBlur}
+            defaultValue={value}
+        />
+    );
+
+    if (bare) {
+        return (
+            <>
+                {submitButton}
+                {hiddenField}
+            </>
+        );
+    }
+
     return (
         <Field {...props}>
             <Row className={rowClassName}>
-                <View className={icon_only ? '' : RESPONSIVE_SUBMIT_CONTAINER}>
-                    <NeoButton
-                        label={icon_only ? undefined : value}
-                        image={icon}
-                        loading={isBusy}
-                        style={buttonStyle}
-                        controlSize={controlSize}
-                        borderShape={borderShape}
-                        width="auto"
-                        alt={alt}
-                        tooltip={tooltip}
-                        classNames={responsiveButtonClassNames}
-                        onPress={handlePress}
-                        // Native: fire on press-in so keyboard layout jump cannot cancel onPress.
-                        {...(isNative ? { onPressIn: handlePress } : {})}
-                        disabled={isBusy || disabled}
-                    />
+                <View className={icon_only || notFullWidth ? '' : RESPONSIVE_SUBMIT_CONTAINER}>
+                    {submitButton}
                 </View>
                 {saveOnChanges && (
                     <NeoButton
@@ -162,12 +185,7 @@ export default function FormFieldSubmit(props) {
                     />
                 )}
             </Row>
-            <Hidden
-                name={name}
-                onChangeText={field.onChange}
-                onBlur={field.onBlur}
-                defaultValue={value}
-            />
+            {hiddenField}
             {showErrors && (
                 <View className="mt-2">
                     <FormError errorText="Errors:" />

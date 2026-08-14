@@ -22,7 +22,7 @@ export default function Unit({ data: timerData }) {
                     <Link href={timerData.content_url}>
                         <Text
                             numberOfLines={2}
-                            className="text-sm font-semibold text-card-foreground web:hover:text-foreground leading-tight"
+                            className="text-base font-semibold text-card-foreground web:hover:text-foreground leading-tight"
                         >
                             {timerData.content_title}
                         </Text>
@@ -33,7 +33,7 @@ export default function Unit({ data: timerData }) {
             </Row>
             {context?.display_name ? (
                 <Link href={context.url} >
-                    <Row className="items-center gap-2 mb-2">
+                    <Row className="items-center gap-2">
                         <Profile
                             url_avatar={context.url_avatar}
                             display_name={context.display_name}

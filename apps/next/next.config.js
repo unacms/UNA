@@ -209,7 +209,7 @@ const nextConfig = {
             '@expo/ui/swift-ui/modifiers': path.resolve(__dirname, 'stubs/expo-ui.js'),
             '@expo/ui/jetpack-compose': path.resolve(__dirname, 'stubs/expo-ui.js'),
             '@expo/ui/jetpack-compose/modifiers': path.resolve(__dirname, 'stubs/expo-ui.js'),
-            // Шим форсит immediatelyRender:false (см. shims/tiptap-react.js).
+            // Shim forces immediatelyRender: false (see shims/tiptap-react.js).
             // '$' — точное совпадение, поэтому '@tiptap/react/menus' и пр. не трогаем.
             '@tiptap/react$': path.resolve(__dirname, 'shims/tiptap-react.js'),
             '@tiptap-react-real$': tiptapReactRealPath,

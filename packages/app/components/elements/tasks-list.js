@@ -8,6 +8,7 @@ import { getComponent } from 'app/components/registry';
 import { Button, Modal } from 'app/design/controls';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup';
+import { Card } from 'app/ui/molecules/page/card'
 import CheckBox from 'app/ui/atoms/checkbox';
 import { Icon } from 'app/ui/atoms/icon';
 import { BlockByDataInt as BlockByData } from 'app/components/block';
@@ -652,8 +653,8 @@ function TasklistsPanel({
     const rowProps = { onSelect, setFormBlock, refreshLists, setShowConfirm };
 
     return (
-        <View className="w-full lg:w-72 shrink-0 gap-0.5">
-            <Row className="items-center justify-between gap-2 px-2 py-1.5">
+        <Card className="w-full lg:w-72 shrink-0 gap-2">
+            <Row className="items-center justify-between gap-2 px-2">
                 <Text className="text-base font-semibold text-foreground shrink-0">
                     {t('Tasklists')}
                 </Text>
@@ -724,7 +725,7 @@ function TasklistsPanel({
                     {...rowProps}
                 />
             ))}
-        </View>
+        </Card>
     );
 }
 

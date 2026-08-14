@@ -5,6 +5,7 @@ export default function MenuItemSidebarWithWrapper({
     link,
     title,
     icon = 'Circle',
+    iconEnd,
     userUrl,
     isActive,
     onPress,
@@ -20,6 +21,7 @@ export default function MenuItemSidebarWithWrapper({
         <MenuItemSidebar
             title={title}
             icon={icon}
+            iconEnd={iconEnd}
             isActive={isActive}
             addon={addon}
         />

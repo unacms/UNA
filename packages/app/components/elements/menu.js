@@ -1,19 +1,20 @@
 import { BlockWrapper } from 'app/components/block-wrapper'
-import { Pressable, View } from 'app/design/view'
-import Link from 'app/ui/atoms/link'
-import { Icon } from 'app/ui/atoms/icon'
+import { View } from 'app/design/view'
 import { getComponent } from 'app/components/registry';
+import { appSetting } from 'app/lib/util';
 import { useState } from 'react';
 
+const conductorTheme = appSetting('theme', 'conductor');
+
 export default function ElementMenu({ data, blockWrapperProps, url }) {
-    const MenuItemSidebar = getComponent('menu-item', 'sidebar');
+    const MenuItemSidebarWithWrapper = getComponent('menu-item', 'sidebar_with_wrapper');
     const currentPath = String(url || '');
     const currentPathComparable = currentPath.replace(/^\/+/, '');
     const depthClassNameMap = {
         0: '',
-        1: 'pl-4',
-        2: 'pl-8',
-        3: 'pl-12',
+        1: conductorTheme.menu_categ_indent,
+        2: 'pl-12',
+        3: 'pl-16',
     };
     const getDepthClassName = (depth) => depthClassNameMap[depth] || '';
     const getItemId = (item, indexPath) => String(item?.id || item?.name || item?.url || item?.link || indexPath);
@@ -65,52 +66,33 @@ export default function ElementMenu({ data, blockWrapperProps, url }) {
             const children = item?.subitems || [];
             const hasChildren = children.length > 0;
             const isExpanded = Boolean(expandedMap[itemId]);
-            const depthClassName = getDepthClassName(depth);
-            const activeWrapperClassName = isActive ? 'u-link-ghost-active rounded-lg' : '';
             const title = item?.title || item?.name;
             const icon = item?.icon || 'Circle';
             const canNavigate = hasItemPath(item);
 
             return (
-                <View key={`lmenu-${itemId}`} className={`w-full ${depthClassName}`}>
-                    {canNavigate ? (
-                        <Link
-                            href={itemPath}
-                            alt={title}
-                            variant="ghost"
-                            size="lg"
-                            className={`web:group ${activeWrapperClassName}`.trim()}
-                        >
-                            <MenuItemSidebar title={title} icon={icon} isActive={isActive} />
-                        </Link>
-                    ) : (
-                        <Pressable
-                            className="flex-1"
-                            onPress={hasChildren && !canNavigate ? () => toggleExpanded(itemId) : undefined}
-                        >
-                            <Link
-                           
-                            alt={title}
-                            variant="ghost"
-                            size="lg"
-                            className={`web:group ${activeWrapperClassName}`.trim()}
-                        >
-                            <MenuItemSidebar title={title} icon={icon} isActive={false} iconEnd={hasChildren ? (isExpanded ? 'ChevronDown' : 'ChevronRight') : null} />
-                            </Link>
-                        </Pressable>
-                    )}
-                    {hasChildren && isExpanded && (
-                        <View className="mt-3 gap-3.5">
+                <View key={`lmenu-${itemId}`} className="w-full">
+                    <MenuItemSidebarWithWrapper
+                        link={canNavigate ? itemPath : undefined}
+                        title={title}
+                        icon={icon}
+                        iconEnd={!canNavigate && hasChildren ? (isExpanded ? 'ChevronDown' : 'ChevronRight') : undefined}
+                        isActive={isActive}
+                        onPress={!canNavigate && hasChildren ? () => toggleExpanded(itemId) : undefined}
+                        className={getDepthClassName(depth)}
+                    />
+                    {hasChildren && isExpanded ? (
+                        <View className="gap-0.5">
                             {renderItems(children, depth + 1, indexPath)}
                         </View>
-                    )}
+                    ) : null}
                 </View>
             );
         });
 
     return (
         <BlockWrapper {...blockWrapperProps}>
-            <View className='w-full gap-3.5'>
+            <View className="w-full gap-0.5">
                 {renderItems(topLevelItems)}
             </View>
         </BlockWrapper>
