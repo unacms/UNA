@@ -458,8 +458,10 @@ class BxBaseFormView extends BxDolForm
 
             if ($bType && 'custom' == $aInput['type']){
                 $sCustomMethod = 'genCustomInput' . $this->_genMethodName($aInput['name']);
-                if (method_exists($this, $sCustomMethod))
-                     $aInput = $this->$sCustomMethod($aInput);
+                if (method_exists($this, $sCustomMethod)) {
+                     $mixed = $this->$sCustomMethod($aInput);
+                     $aInput = is_array($mixed) ? $mixed : ['type' => 'custom', 'content' => $mixed];
+                }
             }
 
             if ($bType && 'block_header' == $aInput['type']){
