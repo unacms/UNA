@@ -1,3 +1,4 @@
+import { Platform } from 'react-native'
 import { clearAllPageCache } from 'app/lib/tab-page-cache'
 import { dismissNavigationOverlays, resetAllTabHistory } from 'app/lib/tab-history'
 import { queryClient } from 'app/lib/query-client'
@@ -50,6 +51,11 @@ export function resetNavigationAfterSignOut(router, { url } = {}) {
     const targetUrl = url && url !== '/' ? url : (guestTabs[0]?.url || '/home')
 
     resetAllTabHistory()
+
+    if (Platform.OS === 'web') {
+        window.location.replace(targetUrl)
+        return
+    }
 
     router.replace({
         pathname: '/tab0',
