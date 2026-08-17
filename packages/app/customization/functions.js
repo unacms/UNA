@@ -9,11 +9,11 @@ export * from  'app/default/functions';
 EXAMPLE:
 
 export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
-    let oMenuItemPrimary = null;
-    let oMenuItemSecondary = null;
+    let primaryMenuItem = null;
+    let secondaryMenuItem = null;
     
     return {
-        oMenuItemPrimary,
-        oMenuItemSecondary,
+        primaryMenuItem,
+        secondaryMenuItem,
     };
 }*/

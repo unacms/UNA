@@ -1,131 +1,58 @@
-import { useRef, useMemo, memo } from 'react'
-import { useCardData } from 'app/context/card'
-import Image from 'app/ui/atoms/image'
-import Link from 'app/ui/atoms/link'
-import { tp } from 'app/lib/util'
-import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import { CardList } from 'app/ui/molecules/page/card'
-import Redirect from 'app/ui/atoms/redirect'
-import ProfilesList from 'app/ui/molecules/profile/profile-list'
 import { useTranslation } from 'react-i18next'
-import Letter from 'app/ui/atoms/letter'
-import { getUnitMenuItems } from 'app/customization/functions'
-import { Platform } from 'react-native'
+import {
+    UnitActions,
+    UnitProfileImage,
+    UnitProfileList,
+    UnitTitle,
+    UnitWrapper,
+    useUnitActions,
+} from 'app/lib/unit-helpers'
 
-const ProfilesListCnt = memo(({ data }) => (
-    <ProfilesList data={data} showEmpty={false} maxCount={3} displaySize="2xs" />
-))
-
-function ImageSection({ data }) {
-    const isWeb = Platform.OS == 'web'
-    return (
-        <View
-            className={` ${isWeb && 'h-28 sm:h-auto'
-                } aspect-square sm:w-full rounded-lg overflow-hidden items-center bg-muted justify-center`}
-        >
-            <Image
-                src={data?.image?.src}
-                alt={data.title}
-                view="cover"
-                className="absolute u-cover rounded-lg"
-                sizes='auto'
-            />
-            {!data?.image?.src && (
-                <Letter title={data?.fullname} id={data?.author_data?.id} />
-            )}
-        </View>
-    )
-}
-
-export default function Unit(props) {
+export default function Unit({ data, unitType, module }) {
     const { t } = useTranslation()
-    const data = props.data
-    const redirectdRef = useRef()
-    const { cardData } = useCardData()
+    const { primaryMenuItem, secondaryMenuItem, deleteMenuItem } = useUnitActions({
+        unitType,
+        data,
+        module,
+        t,
+    })
 
-    const friendsLabel =
-        data.mutual_friends_count > 0
-            ? tp('mutual_friends', data?.mutual_friends_count, false)
-            : tp('friends', data?.friends_count, false)
-
-    const handleClick = (event, sUrl) => {
-        event.preventDefault()
-        redirectdRef.current.redirect(sUrl)
-    }
-
-    const { oMenuItemPrimary, oMenuItemSecondary, oMenuItemDelete } = useMemo(() => {
-        return getUnitMenuItems(
-            props.unitType,
-            data,
-            handleClick,
-            t,
-            props.module,
-        )
-    }, [props.unitType, data, handleClick, t])
-
-    const isFollowers =
-        props.unitType == 'person_followers' ||
-            props.unitType == 'person_following' ||
-            props.unitType == 'person_following_recommendations'
-            ? true
-            : false
-
-    if (cardData?.hidden && props.unitType == 'person_friends_recommendations')
-        return
+    const isSkeleton = data?.skeleton
 
     return (
-        <CardList padding="p-1">
-            <Redirect ref={redirectdRef} />
-            <Link className="web:group " href={data.url}>
-                <View
-                    className={`flex-row sm:flex-col p-2 sm:p-0 sm:h-full`}
-                >
-                   
-                    <ImageSection data={data} />
-                     {!!oMenuItemDelete && <View className="absolute right-1 top-1 z-10 shrink-0">{oMenuItemDelete}</View>}
-                    <View className="flex-col pl-4 my-auto sm:p-2 flex-auto ">
-                        <View className="sm:h-12 gap-1">
-                        <Text numberOfLines={1} className=" text-card-foreground leading-6 tracking-tight web:hover:text-foreground web:hover:underline font-semibold">
-
-                                {data.title}
-                        </Text>
+        <UnitWrapper data={data} module={module} as="list" padding="p-1">
+            <View
+                className={`flex-row sm:flex-col p-2 sm:p-0 sm:h-full`}
+            >
+                <UnitProfileImage data={data} skeleton={isSkeleton} />
+                {deleteMenuItem ? <View className="absolute right-1 top-1 z-10 shrink-0">{deleteMenuItem}</View> : null}
+                <View className="flex-col pl-4 my-auto sm:p-2 flex-auto ">
+                    <View className="sm:h-12 gap-1">
+                        <UnitTitle
+                            title={data.title}
+                            skeleton={isSkeleton}
+                            numberOfLines={1}
+                        />
                         <Row className="items-center h-5">
-                                <ProfilesListCnt
-                                    data={
-                                        isFollowers
-                                            ? data.followers_list
-                                            : data.mutual_friends_count > 0
-                                                ? data.mutual_friends_list
-                                                : data.friends_list
-                                    }
-                                />
-
-                                <Text className="truncate text-sm leading-5 tracking-tight flex-auto text-secondary-foreground">
-                                    {isFollowers
-                                        ? data?.followers_count +
-                                        ' followers'
-                                        : friendsLabel}
-                                </Text>
-                            </Row>
-                        </View>
-                        <View className="flex-row sm:flex-col pt-2 ">
-                            <View className="w-1/2 sm:w-full pr-2 sm:pr-0">
-                                {oMenuItemPrimary}
-                            </View>
-                            {!!oMenuItemSecondary && (
-                                <View
-                                    className={`w-1/2 sm:w-auto ${!!oMenuItemPrimary && 'sm:mt-2'
-                                        }`}
-                                >
-                                    {oMenuItemSecondary}
-                                </View>
-                            )}
-                        </View>
+                            <UnitProfileList
+                                data={data}
+                                unitType={unitType}
+                                skeleton={isSkeleton}
+                                labelClassName="truncate text-sm leading-5 tracking-tight flex-auto text-secondary-foreground"
+                            />
+                        </Row>
                     </View>
+                    <UnitActions
+                        primaryMenuItem={primaryMenuItem}
+                        secondaryMenuItem={secondaryMenuItem}
+                        skeleton={isSkeleton}
+                        className="flex-row sm:flex-col pt-2"
+                        primaryClassName="w-1/2 sm:w-full pr-2 sm:pr-0"
+                        secondaryClassName={`w-1/2 sm:w-auto${primaryMenuItem ? ' sm:mt-2' : ''}`}
+                    />
                 </View>
-            </Link>
-        </CardList>
+            </View>
+        </UnitWrapper>
     )
 }
-

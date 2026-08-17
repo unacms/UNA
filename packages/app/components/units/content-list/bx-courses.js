@@ -1,104 +1,62 @@
-import { useState, useMemo, useRef } from 'react'
-import { useCardData } from 'app/context/card'
-import Image from 'app/ui/atoms/image'
-import Link from 'app/ui/atoms/link'
-import { tp } from 'app/lib/util'
-import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import { CardList } from 'app/ui/molecules/page/card'
-import Redirect from 'app/ui/atoms/redirect'
-import ProfilesList from 'app/ui/molecules/profile/profile-list'
 import { useTranslation } from 'react-i18next';
-import { getUnitMenuItems } from 'app/customization/functions';
+import {
+    UnitActions,
+    UnitImage,
+    UnitProfileList,
+    UnitTitle,
+    UnitVisibility,
+    UnitWrapper,
+    useUnitActions,
+} from 'app/lib/unit-helpers';
 
-export default function Unit(props) {
+export default function Unit({ data, unitType, module }) {
     const { t } = useTranslation();
-    const data = props.data;
-    const redirectdRef = useRef();
-    const [popupVisible, setPopupVisible] = useState(false);
+    const { primaryMenuItem, secondaryMenuItem } = useUnitActions({
+        unitType,
+        data,
+        module,
+        t,
+    });
 
-    const { cardData } = useCardData();
-
-    const handleClick = (event, sUrl) => {
-        event.preventDefault();
-
-        redirectdRef.current.redirect(sUrl);
-    };
-
-    const friendsLabel = data.members_count > 0 ? tp("members", data?.members_count) : ''
-
-    const { oMenuItemPrimary, oMenuItemSecondary } = useMemo(() => {
-        return getUnitMenuItems(props.unitType, data, handleClick, t, props.module);
-    }, [props.unitType, data, handleClick, t]);
-
-    switch (props.unitType) {
-        case 'search':
-            return getBase();
-        default:
-            return getBase();
-    }
-
-    function getBase() {
-        return (
-            <>
-                <Redirect ref={redirectdRef} />
-              <CardList padding='p-2' >
-                    <Link className="web:group " href={data.url}>
-                        <View className="flex-row sm:flex-col p-1">
-                            <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center bg-muted-foreground/20">
-                                <Image
-                                    {...data.cover}
-                                    alt={data.title}
-                                    view="cover"
-                                    className="absolute u-cover rounded-lg"
-                                    sizes='auto'
-                                />
-
-                            </View>
-                            <View className="p-3  flex-auto items-between justify-between ">
-                                <View>
-                                <Text numberOfLines={2} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-tight font-semibold">
-
-                                        {data.title}
-                                    </Text>
-                                    <Row className="items-center h-6 my-3">
-
-
-                                        <View className="mr-2  h-6">
-                                            <ProfilesList
-                                                data={
-                                                    data.members_list
-                                                }
-                                                showEmpty={false}
-                                                maxCount={3}
-                                                displaySize="xs"
-                                            />
-
-                                        </View>
-                                        {
-                                            <Text className="truncate text-xs leading-tight flex-auto text-muted-foreground ">
-                                                {friendsLabel}
-                                            </Text>
-                                        }
-
-                                        <Text className=" bg-primary/10  rounded-md  px-1.5 py-1 text-xs flex-none items-center font-semibold text-muted-foreground ">
-                                            {data.visibility != "3" ? (
-                                                <>Private</>
-                                            ) : (
-                                                <>Public</>
-                                            )}
-                                        </Text>
-                                    </Row>
-                                </View>
-                                <View className="flex-row  sm:flex-col  w-full">
-                                    {oMenuItemPrimary}
-                                    {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2  ml-2 sm:ml-0'}`}>{oMenuItemSecondary}</View>}
-                                </View>
-                            </View>
-                        </View>
-                    </Link>
-                </CardList>
-            </>
-        );
-    }
+    const isSkeleton = data?.skeleton;
+    return (
+        <UnitWrapper data={data} module={module} as="list" padding="p-2">
+            <View className="flex-row sm:flex-col p-1">
+                <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center bg-muted-foreground/20">
+                    <UnitImage
+                        image={data.cover}
+                        alt={data.title}
+                        skeleton={isSkeleton}
+                        view="cover"
+                        className="absolute u-cover rounded-lg"
+                    />
+                </View>
+                <View className="p-3  flex-auto items-between justify-between ">
+                    <View>
+                        <UnitTitle
+                            title={data.title}
+                            skeleton={isSkeleton}
+                        />
+                        <Row className="items-center h-6 my-3">
+                            <UnitProfileList
+                                data={data}
+                                skeleton={isSkeleton}
+                                labelClassName="truncate text-xs leading-tight flex-auto text-muted-foreground "
+                                displaySize="xs"
+                            />
+                            <UnitVisibility visibility={data.visibility} skeleton={isSkeleton} />
+                        </Row>
+                    </View>
+                    <UnitActions
+                        primaryMenuItem={primaryMenuItem}
+                        secondaryMenuItem={secondaryMenuItem}
+                        skeleton={isSkeleton}
+                        className="flex-row sm:flex-col w-full"
+                        inlineSecondary
+                    />
+                </View>
+            </View>
+        </UnitWrapper>
+    );
 }

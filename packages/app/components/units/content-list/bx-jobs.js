@@ -1,16 +1,12 @@
-import Image from "app/ui/atoms/image";
 import Link from "app/ui/atoms/link";
 import { Text } from "app/design/typography";
-import { View, Row } from "app/design/view";
+import { View } from "app/design/view";
 import { CardList } from 'app/ui/molecules/page/card'
 import { getComponent } from 'app/components/registry';
+import { UnitText, UnitTitle } from 'app/lib/unit-helpers'
 
-export default function Unit(props) {
+export default function Unit({ data }) {
     const Stars = getComponent('molecule', 'stars');
-    const data = props.data;
-
-
-
     let sRate = undefined;
     if (data.meta?.items)
         data.meta.items.forEach((aItem) => {
@@ -29,12 +25,13 @@ export default function Unit(props) {
             <CardList padding='p-2' className='mb-2 md:mb-0'>
                 <View className="flex-auto">
                     <Link href={data.url}>
-                        <Text numberOfLines={2} className="text-secondary-foreground mb-1  web:hover:text-primary text:lg sm:text-xl font-semibold ">
-                            {data.title}
-                        </Text>
-                        <Text numberOfLines={2} className="text-muted-foreground mb-4  text-xs sm:text-sm">
-                            {data.description}
-                        </Text>
+                        <UnitTitle
+                            title={data.title}
+                        />
+                        <UnitText
+                            text={data.description}
+                            className="text-muted-foreground mb-4  text-xs sm:text-sm"
+                        />
                     </Link>
                     <View className="mt-auto flex-row gap-x-1.5">
                         <Text className="font-medium text-secondary-foreground  text-sm border border-border/60 rounded-full px-2 py-1">Author</Text>

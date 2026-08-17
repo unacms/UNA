@@ -1,49 +1,27 @@
 import { useCardData } from 'app/context/card'
-import Link from 'app/ui/atoms/link'
-import Profile from 'app/ui/molecules/profile/profile'
-import { Text } from 'app/design/typography'
-import { View } from 'app/design/view'
-import { getComponent } from 'app/components/registry';
+import { UnitProfileRow, UnitRecommendation } from 'app/lib/unit-helpers'
 
-export default function Unit(props) {
-    const Recommendation = getComponent('molecule', 'recommendation');
-    let data = props.data
-
+export default function Unit({ data }) {
     const { cardData } = useCardData()
+    if (cardData?.hidden) return null
 
-    if (!!cardData?.hidden) return
-
-    let sMeta = <></>
-    if (data?.meta?.items?.[0]?.data){
-        sMeta = (
-            <Recommendation
-                {...{ ...data?.meta?.items?.[0]?.data, primary: false }}
-                params={{
-                    button_full_width: true,
-                    button_variant: 'default',
-                    button_size: 'xs',
-                }}
-            />
-        )
-    }
     return (
-        <Link variant='ghost' size='lg' href={data.url} emulate={true}>
-            <View
-                className=" flex-row gap-2 items-center web:group "
-            >
-                <Profile
-                    url_avatar={data?.image?.src}
-                    displayType="unit_wo_info"
-                    displaySize="md"
-                    display_name={data.title}
+        <UnitProfileRow
+            data={data}
+            displaySize="md"
+            linkProps={{ variant: 'ghost', size: 'lg' }}
+            className="flex-row gap-2 items-center web:group"
+            titleClassName="text-sm leading-tight font-semibold text-card-foreground web:group-hover:text-foreground"
+            meta={
+                <UnitRecommendation
+                    data={data}
+                    params={{
+                        button_full_width: true,
+                        button_variant: 'default',
+                        button_size: 'xs',
+                    }}
                 />
-                <View className="flex-row justify-between flex-auto items-center">
-                    <Text numberOfLines={2} className="text-sm leading-tight font-semibold text-card-foreground web:group-hover:text-foreground ">
-                        {data.title}
-                    </Text>
-                    <View className="flex-none">{sMeta}</View>
-                </View>
-            </View>
-        </Link>
+            }
+        />
     )
 }

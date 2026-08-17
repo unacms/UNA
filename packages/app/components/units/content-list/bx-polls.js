@@ -1,76 +1,56 @@
-import Image from 'app/ui/atoms/image'
-import Profile from 'app/ui/molecules/profile/profile'
-import { appSetting } from 'app/lib/util'
-import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
-import { CardList } from 'app/ui/molecules/page/card'
-import LinkOrModal from 'app/ui/molecules/dialogs/link-or-modal'
+import {
+    UnitAuthor,
+    UnitImage,
+    UnitText,
+    UnitTitle,
+    UnitWrapper,
+} from 'app/lib/unit-helpers'
 
-export default function defaultUnit(props) {
-    const data = props.data;
-    let sMeta = (
-        <Profile
-            {...data.author_data}
-            displayType="unit"
-            displaySize="xs"
-            showInfo="false"
-        />
-    )
-
+export default function defaultUnit({ data }) {
     return (
-        <CardList padding='p-2' className='mb-2 md:mb-0'>
+        <UnitWrapper data={data} as="list" padding="p-2" className="mb-2 md:mb-0">
             <View className="flex-col h-full">
                 <View className="flex-col  h-full w-full">
-                    <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
+                    <View
+                        className={
+                            data.image
+                                ? 'flex-row-reverse sm:flex-col w-full p-3 sm:p-1 gap-x-2'
+                                : 'flex-col w-full p-3  sm:p-1 '
+                        }
+                    >
                         <View
                             className={
-                                data.image
-                                    ? 'flex-row-reverse sm:flex-col w-full p-3 sm:p-1 gap-x-2'
-                                    : 'flex-col w-full p-3  sm:p-1 '
+                                (!data.image ? 'hidden sm:block ' : '') +
+                                ' aspect-square h-full sm:aspect-video rounded-lg sm:rounded-xl overflow-hidden w-1/4  sm:w-full'
                             }
                         >
+                            <UnitImage
+                                image={data.image}
+                                alt={data.title}
+                                view="cover"
+                            />
+                        </View>
+                        <View className="flex-auto flex-col sm:h-24 mb-auto">
                             <View
-                                className={
-                                    (!data.image ? 'hidden sm:block ' : '') +
-                                    ' aspect-square h-full sm:aspect-video rounded-lg sm:rounded-xl overflow-hidden w-1/4  sm:w-full'
-                                }
+                                className={`flex-auto flex-col ${data.image ? '  ' : ' '
+                                    } gap-y-2 sm:p-2`}
                             >
-                                <Image
-                                    {...data.image}
-                                    alt={data.title}
-                                    view="cover"
-                                    className="u-cover"
-                                    sizes='auto'
+                                <UnitTitle
+                                    title={data.title}
+                                />
+                                <UnitText
+                                    text={data.summary_plain}
+                                    className="text-muted-foreground  mb-auto text-xs"
                                 />
                             </View>
-                            <View className="flex-auto flex-col sm:h-24 mb-auto">
-                                <View
-                                    className={`flex-auto flex-col ${data.image ? '  ' : ' '
-                                        } gap-y-2 sm:p-2`}
-                                >
-                                    {true && (
-                                        <Text
-                                            numberOfLines={2}
-                                            className="text-foreground tracking-tight  web:hover:text-primary leading-tight text-base font-bold"
-                                        >
-                                            {data.title}
-                                        </Text>
-                                    )}
-                                    <Text
-                                        numberOfLines={true ? 2 : 6}
-                                        className="text-muted-foreground  mb-auto text-xs"
-                                    >
-                                        {data.summary_plain}
-                                    </Text>
-                                </View>
-                            </View>
                         </View>
-                    </LinkOrModal>
+                    </View>
                     <View className="border-t border-border/60 mx-2.5 /50 mt-auto  pt-2 pb-2.5 ">
-                        {sMeta}
+                        <UnitAuthor authorData={data.author_data} />
                     </View>
                 </View>
             </View>
-        </CardList>
+        </UnitWrapper>
     )
 }

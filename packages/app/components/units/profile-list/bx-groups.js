@@ -1,76 +1,29 @@
 import { useCardData } from 'app/context/card'
-import Link from 'app/ui/atoms/link'
-import Profile from 'app/ui/molecules/profile/profile'
-import { Text } from 'app/design/typography'
-import { View, Row } from 'app/design/view'
-import { fetcher } from 'app/lib/fetcher';
-import { useState } from 'react';
-import { Button, Modal } from 'app/design/controls'
-import { getComponent } from 'app/components/registry';
-import { useTranslation } from 'react-i18next'
+import {
+    UnitInvitationActions,
+    UnitProfileRow,
+    UnitRecommendation,
+    useInvitationAction,
+} from 'app/lib/unit-helpers'
 
-export default function Unit(props) {
-    const Recommendation = getComponent('molecule', 'recommendation');
-    const { t } = useTranslation()
-    let data = props.data
-
+export default function Unit({ data }) {
     const { cardData } = useCardData()
-    const [state, setState] = useState(false);
+    const { dismissed, processInvitation } = useInvitationAction()
 
-    if (!!cardData?.hidden) return
+    if (cardData?.hidden || dismissed) return null
 
-    let sMeta = <></>
-
-    const processInvitation = async (request_url) => {
-        await fetcher(request_url);
-        setState(true);
-    }
-
-    if (state) return
-
-
-    if (data?.meta?.items?.[0] == 'invitation')
-        sMeta = (
-            <Row className='gap-x-2'>
-                <Button title={t('Accept')} size="sm" variant="secondary" rounded onPress={() => { processInvitation(data.callback_accept) }} />
-                <Button title={t('Decline')} size="sm" variant="secondary" rounded onPress={() => { processInvitation(data.callback_decline) }} />
-            </Row>
-        )
-
-    if (data?.meta?.items?.[0]?.data)
-        sMeta = (
-            <Recommendation
-                {...{ ...data?.meta?.items?.[0]?.data, primary: false }}
-                params={{
-                    button_full_width: true,
-                    button_variant: 'secondary',
-                    button_size: 'sm',
-                }}
-            />
-        )
-    return (
-        <Link href={data.url} emulate={true}>
-            <View
-                className=" flex-row p-2 rounded-xl web:active:opacity-90 web:hover:bg-muted/50 items-center "
-            >
-
-                <Profile
-                    url_avatar={data?.image?.src}
-                    displayType="unit_wo_info"
-                    displaySize="sm"
-                    display_name={data.title}
-                />
-
-
-                <View className="flex-row justify-between flex-auto items-center">
-                    <Text numberOfLines={2} className="text-sm  px-1.5 leading-tight font-semibold text-secondary-foreground ">
-                        {data.title}
-                    </Text>
-
-                    <View className="flex-none">{sMeta}</View>
-                </View>
-
-            </View>
-        </Link>
+    const meta = data?.meta?.items?.[0]?.data ? (
+        <UnitRecommendation
+            data={data}
+            params={{
+                button_full_width: true,
+                button_variant: 'secondary',
+                button_size: 'sm',
+            }}
+        />
+    ) : (
+        <UnitInvitationActions data={data} processInvitation={processInvitation} />
     )
+
+    return <UnitProfileRow data={data} meta={meta} />
 }

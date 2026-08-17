@@ -4,14 +4,15 @@ import Link from 'app/ui/atoms/link';
 import Profile from 'app/ui/molecules/profile/profile';
 import { Card } from 'app/ui/molecules/page/card';
 import { getComponent } from 'app/components/registry';
+import { UnitTitle } from 'app/lib/unit-helpers';
 
 export default function Unit({ data: timerData }) {
-    
+
     const TaskTimer = getComponent('molecule', 'task_timer');
     const context = timerData?.context;
 
 
-    
+
 
     if (!timerData) return null;
 
@@ -20,12 +21,9 @@ export default function Unit({ data: timerData }) {
             <Row className="items-center gap-3">
                 <View className="flex-auto min-w-0 gap-1">
                     <Link href={timerData.content_url}>
-                        <Text
-                            numberOfLines={2}
-                            className="text-base font-semibold text-card-foreground web:hover:text-foreground leading-tight"
-                        >
-                            {timerData.content_title}
-                        </Text>
+                        <UnitTitle
+                            title={timerData.content_title}
+                        />
                     </Link>
                 </View>
 
@@ -50,7 +48,7 @@ export default function Unit({ data: timerData }) {
                 </Link>
             ) : null}
 
-            
+
         </Card>
     );
 }

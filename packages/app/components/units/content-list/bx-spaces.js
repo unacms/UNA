@@ -1,35 +1,28 @@
-import { useMemo, useRef } from 'react'
-import Image from 'app/ui/atoms/image'
-import Link from 'app/ui/atoms/link'
-import { tp, appSetting } from 'app/lib/util'
-import { Text } from 'app/design/typography'
+import { appSetting } from 'app/lib/util'
 import { View, Row } from 'app/design/view'
-import { Card } from 'app/ui/molecules/page/card'
-import Redirect from 'app/ui/atoms/redirect'
-import ProfilesList from 'app/ui/molecules/profile/profile-list'
 import { useTranslation } from 'react-i18next';
-import { getUnitMenuItems } from 'app/customization/functions';
 import Profile from 'app/ui/molecules/profile/profile'
-import Badge from 'app/ui/molecules/profile/badge'
+import {
+    UnitActions,
+    UnitImage,
+    UnitProfileList,
+    UnitTitle,
+    UnitVisibility,
+    UnitWrapper,
+    useUnitActions,
+} from 'app/lib/unit-helpers';
+import Link from 'app/ui/atoms/link'
 
-export default function Unit(props) {
+export default function Unit({ data, unitType, module }) {
     const { t } = useTranslation();
-    const data = props.data;
-    const redirectdRef = useRef();
+    const { primaryMenuItem, secondaryMenuItem, deleteMenuItem } = useUnitActions({
+        unitType,
+        data,
+        module,
+        t,
+    });
 
-    const handleClick = (event, sUrl) => {
-        event.preventDefault();
-
-        redirectdRef.current.redirect(sUrl);
-    };
-
-    const friendsLabel = data.members_count > 0 ? tp("members", data?.members_count) : ''
-
-    const { oMenuItemPrimary, oMenuItemSecondary, oMenuItemDelete } = useMemo(() => {
-        return getUnitMenuItems(props.unitType, data, handleClick, t, props.module);
-    }, [props.unitType, data, handleClick, t]);
-
-    switch (props.unitType) {
+    switch (unitType) {
         case 'list':
             return getList();
         default:
@@ -40,81 +33,51 @@ export default function Unit(props) {
         const bShowProfilePic = appSetting('cover', 'show_pic_by_module', 'bx_spaces')
 
         return (
-            <>
-                <Redirect ref={redirectdRef} />
-                <Card padding="p-1">
-                    <Link className="web:group " href={data.url}>
-                        <View className="flex-row sm:flex-col p-1">
-                            <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-lg overflow-hidden items-center justify-center bg-muted-foreground/20">
-                                <Image
-                                    {...data.cover}
-                                    alt={data.title}
-                                    view="cover"
-                                    className="absolute u-cover rounded-lg"
-                                    sizes='auto'
+            <UnitWrapper data={data} module={module} padding="p-1">
+                <View className="flex-row sm:flex-col p-1">
+                    <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-lg overflow-hidden items-center justify-center bg-muted-foreground/20">
+                        <UnitImage
+                            image={data.cover}
+                            alt={data.title}
+                            view="cover"
+                            className="absolute u-cover rounded-lg"
+                        />
+                    </View>
+                    {!!deleteMenuItem && <View className="absolute right-2 top-2">{deleteMenuItem}</View>}
+                    <View className="p-2 flex-auto items-between justify-between ">
+                        <View>
+                            <Row className="items-center gap-2">
+                                {bShowProfilePic && (
+                                    <Profile
+                                        url_avatar={data?.image?.src}
+                                        displayType="unit_wo_info"
+                                        displaySize="base"
+                                        display_name={data.title}
+                                        id={data.id || data.title}
+                                    />
+                                )}
+                                <UnitTitle
+                                    title={data.title}
+                                    numberOfLines={1}
                                 />
-
-                            </View>
-                            {!!oMenuItemDelete && <View className="absolute right-2 top-2">{oMenuItemDelete}</View>}
-                            <View className="p-2 flex-auto items-between justify-between ">
-                                <View>
-                                    <Row className="items-center gap-2">
-                                        {bShowProfilePic && (
-                                            <Profile
-                                                url_avatar={data?.image?.src}
-                                                displayType="unit_wo_info"
-                                                displaySize="base"
-                                                display_name={data.title}
-                                                id={data.id || data.title}
-                                            />
-                                        )}
-                                        <Text
-                                            numberOfLines={1}
-                                            className="flex-auto text-base leading-tight tracking-tight font-semibold text-secondary-foreground web:group-hover:text-foreground "
-                                        >
-                                            {data.title}
-                                        </Text>
-                                    </Row>
-                                    <Row className="items-center h-5 my-3">
-
-
-                                        <View className="mr-2  h-5">
-                                            <ProfilesList
-                                                data={
-                                                    data.members_list
-                                                }
-                                                showEmpty={false}
-                                                maxCount={3}
-                                                displaySize="2xs"
-                                            />
-
-                                        </View>
-                                        {
-                                            <Text className="truncate text-xs leading-tight flex-auto text-muted-foreground">
-                                                {friendsLabel}
-                                            </Text>
-                                        }
-
-                                        <Badge
-                                            data={{
-                                                text: data.visibility != "3" ? "Private" : "Public",
-                                                icon: data.visibility != "3" ? "Lock" : "Globe",
-                                                color: data.visibility != "3" ? "gray" : "blue"
-                                            }}
-                                            size="xs"
-                                            className="flex-none"
-                                        />
-                                    </Row>
-                                </View>
-                                <View className="flex-row  sm:flex-col  w-full">
-                                    {oMenuItemPrimary}
-                                    {!!oMenuItemSecondary && <View className={`${!!oMenuItemPrimary && 'sm:mt-2  ml-2 sm:ml-0'}`}>{oMenuItemSecondary}</View>}
-                                </View>
-                            </View>
+                            </Row>
+                            <Row className="items-center h-5 my-3">
+                                <UnitProfileList
+                                    data={data}
+                                    labelClassName="truncate text-xs leading-tight flex-auto text-muted-foreground"
+                                />
+                                <UnitVisibility visibility={data.visibility} />
+                            </Row>
                         </View>
-                    </Link>
-                </Card>
-            </>
+                        <UnitActions
+                            primaryMenuItem={primaryMenuItem}
+                            secondaryMenuItem={secondaryMenuItem}
+                            className="flex-row sm:flex-col w-full"
+                            inlineSecondary
+                        />
+                    </View>
+                </View>
+            </UnitWrapper>
         );
     }
 
@@ -132,9 +95,10 @@ export default function Unit(props) {
                             display_name={data.title}
                         /></View>
                     <View className="flex-row justify-between flex-auto items-center">
-                        <Text numberOfLines={2} className="text-sm  px-1.5 leading-tight font-semibold text-secondary-foreground ">
-                            {data.title}
-                        </Text>
+                        <UnitTitle
+                            title={data.title}
+                            numberOfLines={2}
+                        />
                     </View>
                 </View>
             </Link>

@@ -11,6 +11,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { cn } from 'app/lib/util';
 import emitter from 'app/context/emitter';
 import { iconForTaskStatus } from 'app/lib/tasks-meta';
+import { UnitTitle } from 'app/lib/unit-helpers';
 
 const TASKS_LIST_EVENT = 'tasks_list';
 
@@ -137,9 +138,10 @@ export default function Unit({ data }) {
             <Row className="items-center gap-3">
                 <View className="flex-auto min-w-0 gap-1">
                     <Pressable onPress={() => emitTasksListOpen(data)}>
-                        <Text numberOfLines={2} className={titleClassName}>
-                            {data.title}
-                        </Text>
+                        <UnitTitle
+                            title={data.title}
+                            className={titleClassName}
+                        />
                     </Pressable>
                     <TaskMeta data={data} />
                 </View>

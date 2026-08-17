@@ -184,7 +184,7 @@ function AtomProfile_(oProps) {
 
     sSize += ' rounded-full '
 
-    let emulate = oProps.showLink ? false : true
+    let emulate = oProps.emulate !== undefined ? oProps.emulate : (oProps.showLink ? false : true)
 
     //--- with clickable Username (or not)
     const bShowLinks = oProps.showLinks !== false;

@@ -153,9 +153,9 @@ export function checkActionsOnConnectionsChanged(oData) {
 
 export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
 
-    let oMenuItemPrimary = null;
-    let oMenuItemSecondary = null;
-    let oMenuItemDelete = null;
+    let primaryMenuItem = null;
+    let secondaryMenuItem = null;
+    let deleteMenuItem = null;
 
     const MenuItem = getComponent('menu-item', 'unit')
 
@@ -166,7 +166,7 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
         if (moduleName == 'bx_persons' || moduleName == 'bx_organizations' || moduleName == 'system') {
             switch (unitType) {
                 case "person_friends":
-                    oMenuItemPrimary = {
+                    primaryMenuItem = {
                         title: t("Message"),
                         icon: "MessageCircleMore",
                         onPress: async (event) => {
@@ -216,45 +216,45 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
             }
         }
 
-        if (!oMenuItemPrimary) {
-            oMenuItemPrimary = data.meta.items.find(item => item.name === sPrimary);
+        if (!primaryMenuItem) {
+            primaryMenuItem = data.meta.items.find(item => item.name === sPrimary);
         }
 
-        if (!oMenuItemSecondary) {
-            oMenuItemSecondary = data.meta.items.find(item => item.name === sSecondary);
+        if (!secondaryMenuItem) {
+            secondaryMenuItem = data.meta.items.find(item => item.name === sSecondary);
         }
 
-        if (!oMenuItemDelete) {
-            oMenuItemDelete = data.meta.items.find(item => item.name === sDelete);
+        if (!deleteMenuItem) {
+            deleteMenuItem = data.meta.items.find(item => item.name === sDelete);
         }
 
-        if (!oMenuItemPrimary && oMenuItemSecondary) {
-            oMenuItemPrimary = oMenuItemSecondary;
-            oMenuItemSecondary = null;
+        if (!primaryMenuItem && secondaryMenuItem) {
+            primaryMenuItem = secondaryMenuItem;
+            secondaryMenuItem = null;
         }
 
-        if (!oMenuItemPrimary) {
-            oMenuItemPrimary = {
+        if (!primaryMenuItem) {
+            primaryMenuItem = {
                 title: "View",
                 onPress: (event) => handleClick(event, data.url),
             };
         }
 
-        if (oMenuItemPrimary) {
-            oMenuItemPrimary = <MenuItem menuItem={oMenuItemPrimary} isPrimary={true}/>;
+        if (primaryMenuItem) {
+            primaryMenuItem = <MenuItem menuItem={primaryMenuItem} isPrimary={true}/>;
         }
-        oMenuItemSecondary = oMenuItemSecondary
-            ? <MenuItem menuItem={oMenuItemSecondary} isPrimary={false}/>
+        secondaryMenuItem = secondaryMenuItem
+            ? <MenuItem menuItem={secondaryMenuItem} isPrimary={false}/>
             : null;
-        if (oMenuItemDelete) {
-            oMenuItemDelete = {
-                ...oMenuItemDelete,
+        if (deleteMenuItem) {
+            deleteMenuItem = {
+                ...deleteMenuItem,
 
                 data: {
-                    ...oMenuItemDelete.data,
+                    ...deleteMenuItem.data,
                     title: '',
                     params: {
-                        ...oMenuItemDelete.data.params,
+                        ...deleteMenuItem.data.params,
                         button_full_width: false,
                         button_rounded: true,
                         only_icon: true,
@@ -264,14 +264,14 @@ export function getUnitMenuItems(unitType, data, handleClick, t, moduleName) {
                     },
                 },
             };
-            oMenuItemDelete = <MenuItem menuItem={oMenuItemDelete} isPrimary={false}/>
+            deleteMenuItem = <MenuItem menuItem={deleteMenuItem} isPrimary={false}/>
         }
     }
 
     return {
-        oMenuItemPrimary,
-        oMenuItemSecondary,
-        oMenuItemDelete
+        primaryMenuItem,
+        secondaryMenuItem,
+        deleteMenuItem
     };
 }
 

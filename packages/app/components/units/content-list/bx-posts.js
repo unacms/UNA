@@ -1,53 +1,45 @@
-import Image from 'app/ui/atoms/image'
-import { appSetting } from 'app/lib/util'
-import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
-import { CardList, Card } from 'app/ui/molecules/page/card'
-import { AuthorData } from 'app/lib/common-helpers'
-import LinkOrModal from 'app/ui/molecules/dialogs/link-or-modal'
-import { Skeleton } from 'app/ui/atoms/skeleton';
+import {
+    UnitAuthor,
+    UnitImage,
+    UnitText,
+    UnitTitle,
+    UnitWrapper,
+    resolveUnitVariant,
+} from 'app/lib/unit-helpers';
 const Units = {};
 
 Units.Base = function Base({ data, listIndex }) {
     const isSkeleton = data?.skeleton;
     const isLcpCandidate = listIndex === 0;
     return (
-        <Card padding="p-2 gap-3">
+        <UnitWrapper data={data} padding="p-2 gap-3">
             <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-accent">
-                <Skeleton className="" rounded='rounded-lg' visible={isSkeleton}>
-                    {data.image && (
-                        <Image
-                            {...data.image}
-                            alt={data.title}
-                            
-                            className="u-cover aspect-video"
-                            sizes='auto'
-                            optimizedWidthCap={640}
-                            priority={isLcpCandidate}
-                        />
-                    )}
-                </Skeleton>
+                <UnitImage
+                    image={data.image}
+                    alt={data.title}
+                    skeleton={isSkeleton}
+                    className="u-cover aspect-video"
+                    optimizedWidthCap={640}
+                    priority={isLcpCandidate}
+                />
             </View>
-            <View className="flex-auto h-36 flex-col px-2 gap-y-3">
-                <Skeleton className="h-6 w-3/4 " visible={isSkeleton}>
-                    <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
-                        <Text numberOfLines={2} className="text-card-foreground tracking-tight web:hover:text-foreground web:hover:underline leading-tight font-semibold">
-                            {data.title}
-                        </Text>
-                    </LinkOrModal>
-                </Skeleton>
-                <Skeleton className="h-16" rounded="rounded-lg" visible={isSkeleton}>
-                    <Text numberOfLines={3} className="text-secondary-foreground mt-2 mb-auto text-sm ">
-                        {data.summary_plain}
-                    </Text>
-                </Skeleton>
-                <View className=" ">
-                    <Skeleton preset="author" visible={isSkeleton}>
-                        <AuthorData authorData={data.author_data} />
-                    </Skeleton>
-                </View>
+            <View className="flex-auto h-38 flex-col px-2 gap-y-3">
+                <UnitTitle
+                    title={data.title}
+                    skeleton={isSkeleton}
+                    skeletonClassName="h-6 w-3/4"
+                />
+                <UnitText
+                    text={data.summary_plain}
+                    skeleton={isSkeleton}
+                    numberOfLines={3}
+                    skeletonClassName="h-16"
+                    className="min-h-0 text-secondary-foreground mt-2 mb-auto text-sm "
+                />
+                <UnitAuthor authorData={data.author_data} skeleton={isSkeleton} />
             </View>
-        </Card>
+        </UnitWrapper>
     )
 }
 
@@ -55,42 +47,36 @@ Units.Search = function Search({ data, listIndex }) {
     const isSkeleton = data?.skeleton;
     const isLcpCandidate = listIndex === 0;
     return (
-        <CardList padding="p-1">
+        <UnitWrapper data={data} as="list" padding="p-1">
             <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-muted   ">
-                <Skeleton className="h-full w-full" rounded="rounded-lg" visible={isSkeleton}>
-                    {data.image && (
-                        <Image
-                            {...data.image}
-                            alt={data.title}
-                            view="cover"
-                            className="u-cover"
-                            sizes='auto'
-                            optimizedWidthCap={640}
-                            priority={isLcpCandidate}
-                        />
-                    )}
-                </Skeleton>
+                <UnitImage
+                    image={data.image}
+                    alt={data.title}
+                    skeleton={isSkeleton}
+                    view="cover"
+                    skeletonClassName="h-full w-full"
+                    optimizedWidthCap={640}
+                    priority={isLcpCandidate}
+                />
             </View>
             <View className="flex-auto h-40 flex-col p-2 lg:p-3">
-                <Skeleton className="h-6 w-3/4 mt-2" visible={isSkeleton}>
-                    <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
-                        <Text numberOfLines={2} className="text-foreground tracking-tight  web:hover:text-primary leading-tight text-base  font-semibold">
-                            {data.title}
-                        </Text>
-                    </LinkOrModal>
-                </Skeleton>
-                <Skeleton className="h-16 w-full mt-2" rounded="rounded-lg" visible={isSkeleton}>
-                    <Text numberOfLines={3} className="text-muted-foreground  mt-2 mb-auto text-xs ">
-                        {data.summary_plain}
-                    </Text>
-                </Skeleton>
-                <View className="mt-2 ">
-                    <Skeleton preset="author" visible={isSkeleton}>
-                        <AuthorData authorData={data.author_data} />
-                    </Skeleton>
-                </View>
+                <UnitTitle
+                    title={data.title}
+                    skeleton={isSkeleton}
+                    numberOfLines={false}
+                    skeletonClassName="h-6 w-3/4 mt-2"
+                />
+                <UnitText
+                    text={data.summary_plain}
+                    skeleton={isSkeleton}
+                    numberOfLines={3}
+                    skeletonClassName="h-16 w-full mt-2"
+                    className="min-h-0 text-muted-foreground  mt-2 mb-auto text-xs "
+                />
+                <UnitAuthor authorData={data.author_data} skeleton={isSkeleton} className="mt-2" />
             </View>
-        </CardList>
+
+        </UnitWrapper>
     )
 }
 
@@ -98,49 +84,40 @@ Units.Small = function Small({ data, listIndex }) {
     const isSkeleton = data?.skeleton;
     const isLcpCandidate = listIndex === 0;
     return (
-        <CardList padding="p-1">
+        <UnitWrapper data={data} as="list" padding="p-1">
             {(data.image || isSkeleton) && (
                 <View className="aspect-square md:aspect-video flex-none rounded-xl  overflow-hidden h-30 sm:h-36 mb-auto  ">
-                    <Skeleton className="h-full w-full" rounded="rounded-xl" visible={isSkeleton}>
-                        {data.image && (
-                            <Image
-                                {...data.image}
-                                alt={data.title}
-                                view="cover"
-                                className="u-cover"
-                                sizes='auto'
-                                optimizedWidthCap={640}
-                                priority={isLcpCandidate}
-                            />
-                        )}
-                    </Skeleton>
+                    <UnitImage
+                        image={data.image}
+                        alt={data.title}
+                        skeleton={isSkeleton}
+                        view="cover"
+                        skeletonClassName="h-full w-full"
+                        rounded="rounded-xl"
+                        optimizedWidthCap={640}
+                        priority={isLcpCandidate}
+                    />
                 </View>
             )}
             <View className="flex-auto">
-                <Skeleton className="h-6 w-3/4 mt-1" visible={isSkeleton}>
-                    <LinkOrModal href={data.url} showInModal={appSetting('browse', 'show_in_modal', data.module)}>
-                        <Text numberOfLines={2} className="text-secondary-foreground  mb-1 tracking-tight leading-tight  web:hover:text-primary text-lg font-bold">
-                            {data.title}
-                        </Text>
-                    </LinkOrModal>
-                </Skeleton>
-                <Skeleton className="h-12 w-full mb-2" rounded="rounded-lg" visible={isSkeleton}>
-                    <Text numberOfLines={2} className="text-muted-foreground mb-2  text-sm">
-                        {data.summary_plain}
-                    </Text>
-                </Skeleton>
-                <View className="mt-auto">
-                    <Skeleton preset="author" visible={isSkeleton}>
-                        <AuthorData authorData={data.author_data} />
-                    </Skeleton>
-                </View>
+                <UnitTitle
+                    title={data.title}
+                    skeleton={isSkeleton}
+                    skeletonClassName="h-6 w-3/4 mt-1"
+                />
+                <UnitText
+                    text={data.summary_plain}
+                    skeleton={isSkeleton}
+                    skeletonClassName="h-12 w-full mb-2"
+                    className="text-muted-foreground mb-2  text-sm"
+                />
+                <UnitAuthor authorData={data.author_data} skeleton={isSkeleton} className="mt-auto" />
             </View>
-        </CardList>
+        </UnitWrapper>
     )
 }
 
-export default function BxPosts(props) {
-    const unitTypes = appSetting('browse', 'unit_by_mode_' + props.module) || appSetting('browse', 'unit_by_mode_default');
-    const Component = Units[unitTypes[props.unitType] || 'Base'];
-    return <Component data={props.data} listIndex={props.listIndex} />;
+export default function BxPosts({ data, module, unitType, listIndex }) {
+    const Component = resolveUnitVariant(Units, { module, unitType });
+    return <Component data={data} listIndex={listIndex} />;
 }

@@ -1,9 +1,8 @@
-import { View, Row } from 'app/design/view';
+import { View } from 'app/design/view';
 import { Button } from 'app/design/controls';
 import { Platform } from 'react-native'
 import Link from 'app/ui/atoms/link'
 import { memo } from 'react';
-import Profile from "app/ui/molecules/profile/profile";
 import Unit from 'app/components/unit'
 
 export function getBackButtonWeb() {
@@ -28,15 +27,6 @@ export function getBackButtonWeb() {
         )
     }
 }
-
-export const AuthorData = memo(({ authorData, displaySize }) => (
-    <Row className="gap-x-2 items-center"><Profile
-        {...authorData}
-        displayType="unit"
-        displaySize={displaySize || "xs"}
-        showInfo="false"
-    /></Row>
-));
 
 export const BrowseItem = memo(({ item, index, numColumns, data, unitMode, props }) => (
     <View
