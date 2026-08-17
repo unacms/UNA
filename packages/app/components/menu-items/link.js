@@ -3,8 +3,6 @@ import { View } from 'app/design/view'
 import Link from 'app/ui/atoms/link';
 import Time from 'app/ui/atoms/time';
 import Profile from 'app/ui/molecules/profile/profile';
-import { Icon } from 'app/ui/atoms/icon'
-import { getIconByNameFromIconset } from 'app/lib/util';
 
 const DisplayLink = (oProps) => {
     const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'flex max-w-full text-muted-foreground  web:hover:text-popover-foreground  web:hover:underline cursor-pointer');
@@ -30,24 +28,15 @@ export default function MenuItemLink(oProps) {
         return;
 
     const bShowLink = (oProps?.link && oProps.link != 'javascript:void(0)') || false;
-    const bTitleOnly = oProps?.params && oProps.params?.showTitleOnly === true;
-    const oIconset = oProps?.params && !!oProps.params?.iconset ? oProps.params.iconset : {};
-
-   
+  
     const sClassContent = 'flex flex-row items-center';
-
-    let sIcon = '';
-    if(!bTitleOnly) {
-        //if(sButtonIcon == '')
-         //   sButtonIcon = getIconByNameFromIconset(oIconset, oProps.name);
-    }
 
     let sContent = undefined;
     switch(oProps.content_type) {
         case 'time':
             sContent = (
                 <View className={sClassContent}>
-                    {!!sIcon && <Icon icon={sIcon} />}
+                  
                     <Time ts={oProps.title}></Time>
                 </View>
             );
@@ -65,7 +54,7 @@ export default function MenuItemLink(oProps) {
         default:
             sContent = (
                 <View className={sClassContent}>
-                    {!!sIcon && <Icon icon={sIcon} />}
+                 
                     <Text className=" mx-auto px-2 py-0.5 rounded-full bg-muted  flex text-sm text-muted-foreground ">{oProps.title}</Text>
                 </View>
             );
