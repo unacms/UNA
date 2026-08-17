@@ -1,30 +1,18 @@
-import { Share } from 'react-native';
+import { Share, Platform } from 'react-native';
 import { fetcher } from 'app/lib/fetcher';
-import { ButtonMenuActionDefault, ButtonMenuActionText, NeoButton } from 'app/design/controls'
-import { Pressable } from 'app/design/view'
+import { Pressable } from 'app/design/view';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import { setClipboard } from 'app/lib/util'
+import { setClipboard, appSetting } from 'app/lib/util';
 import Msg from 'app/ui/molecules/dialogs/msg';
 import { useState } from 'react';
-import { appSetting } from 'app/lib/util'
-import { Platform } from 'react-native'
+import MenuItemActionBase from 'app/lib/menu-item-helper';
 
 export default function MenuItemSubmenuShare(oProps) {
     const [showMsg, setShowMsg] = useState(false);
-    const isWeb = Platform.OS === 'web'
+    const isWeb = Platform.OS === 'web';
+    const oIconAliases = appSetting('menu_items', 'iconset');
 
-    const oIconAliases = appSetting('menu_items', 'iconset')
-
-    let oButtonProps = {
-        variant: oProps.primary === "1" ? 'primary' : oProps.params?.button_variant,
-        size: oProps.params?.button_size,
-        rounded: oProps.params?.button_rounded,
-        fullWidth: oProps.params?.button_full_width,
-        showTitleFromSize: oProps.paramsi?.button_show_title_from_size || oProps.params?.button_show_title_from_size,
-        ring: oProps.params?.button_ring
-    };
-
-    const handleMenuManageSelect = async (oItem, event) => {
+    const handleMenuManageSelect = async (oItem) => {
         switch (oItem.name) {
             case 'item-repost':
                 const sResponse = await fetcher('/api.php?r=bx_timeline/repost/&params=' + JSON.stringify(Object.values(oItem.data)));
@@ -41,37 +29,24 @@ export default function MenuItemSubmenuShare(oProps) {
             case 'item-share':
                 try {
                     const result = await Share.share({
-                        // title: appSetting('layout', 'share_text'),
                         url: oItem.link,
-                        // message: appSetting('layout', 'share_text') +""+ oItem.link
                     });
 
                     switch (result.action) {
                         case Share.sharedAction:
-                            if (result.activityType) {
-                                // shared with activity type of result.activityType
-                            } else {
-                                // shared
-                            }
-                            break;
-
                         case Share.dismissedAction:
-                            // dismissed
                             break;
                     }
                 } catch (error) {
                 }
                 break;
         }
+    };
 
-    }
-
-    const bShowActionAsButton = oProps.params?.show_action_as_button == undefined || oProps.params.show_action_as_button === true;
-
-    const canWebShare = isWeb && typeof navigator !== "undefined" && typeof navigator.share === "function" || !isWeb;
+    const canWebShare = (isWeb && typeof navigator !== 'undefined' && typeof navigator.share === 'function') || !isWeb;
 
     const aSubmenuExcept = [];
-    const aSubmenuItems = oProps.submenu.items.filter(item => (item.name === "item-share" ? canWebShare : true)).map((oItem) => {
+    const aSubmenuItems = oProps.submenu.items.filter((item) => (item.name === 'item-share' ? canWebShare : true)).map((oItem) => {
         if (!(oItem.id || oItem.name) || aSubmenuExcept.includes(oItem.name))
             return;
 
@@ -85,34 +60,21 @@ export default function MenuItemSubmenuShare(oProps) {
         };
     });
 
-    const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
-    const isPrimary = oProps.primary === true || oProps.primary === 1 || oProps.primary === "1";
-    const neoButtonStyle = isPrimary
-        ? (oProps.params?.button_primary_style || oProps.params?.button_style)
-        : oProps.params?.button_style;
-
     if (aSubmenuItems.length === 1) {
-        return <></>
+        return <></>;
     }
 
     return (
         <>
-            <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
-            <Pressable className={"flex-auto" + (oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? '  px-0 ' : '  pr-2 ') : '')} onPress={(event) => { event.preventDefault() }}>
+            <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false); }} />
+            <Pressable className={'flex-auto' + (oProps.params?.no_gap_between_buttons === true ? (oProps.params?.button_full_width ? '  px-0 ' : '  pr-2 ') : '')} onPress={(event) => { event.preventDefault(); }}>
                 <DropdownMenu items={aSubmenuItems} onSelect={handleMenuManageSelect}>
-                    {oProps.params?.button_style ? (
-                        <NeoButton
-                            label={oProps?.title ? oProps.title : ''}
-                            image={oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''}
-                            style={neoButtonStyle}
-                            controlSize={oProps.params?.button_size}
-                            borderShape={oProps.params?.button_border_shape}
-                            width={oProps.params?.button_full_width ? 'fill' : 'auto'}
-                            contentInsets={oProps.params?.button_content_insets}
-                        />
-                    ) : (
-                        <ButtonAction {...oButtonProps} title={oProps?.title ? oProps.title : ''} startDecorator={oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''} />
-                    )}
+                    <MenuItemActionBase
+                        item={oProps}
+                        title={oProps?.title ? oProps.title : ''}
+                        icon={oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''}
+                        bare
+                    />
                 </DropdownMenu>
             </Pressable>
         </>

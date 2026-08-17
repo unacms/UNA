@@ -1,162 +1,86 @@
-import Link from 'app/ui/atoms/link'
-import { ButtonMenuActionDefault, ButtonMenuActionText, NeoButton } from 'app/design/controls';
-import { View, Row, Pressable } from 'app/design/view';
-import React from 'react';
-import Submenu from './submenu'
-import SubmenuShare from './submenu-share'
-import ProfilesList from "app/ui/molecules/profile/profile-list";
-import { Text } from 'app/design/typography'
-import { getIconByNameFromIconset } from 'app/lib/util';
-import { getComponent } from 'app/components/registry'
+import { View } from 'app/design/view';
+import Submenu from './submenu';
+import SubmenuShare from './submenu-share';
+import ProfilesList from 'app/ui/molecules/profile/profile-list';
+import { Text } from 'app/design/typography';
+import MenuItemActionBase, {
+    formatMenuHref,
+    getMenuItemFlags,
+    resolveMenuItemIcon,
+    MenuItemSubmenuSwitch,
+} from 'app/lib/menu-item-helper';
 
+const SUBMENU_MAP = {
+    'bx_timeline_menu_item_share': SubmenuShare,
+};
 
 export default function MenuItemButton(oProps) {
+    const { showVertical, isTextMode, isDropdown } = getMenuItemFlags(oProps);
 
-    const DropdownMenuItem = getComponent('menu-item', 'dropdown');
-
-    const bShowActionAsButton = oProps.params?.show_action_as_button == undefined || oProps.params.show_action_as_button === true;
-    const bShowVertical = oProps?.params && oProps.params.showVertical != undefined && oProps.params.showVertical === true;
-    const bTitleOnly = oProps?.params && oProps.params?.showTitleOnly === true;
-    const oIconset = oProps?.params && !!oProps.params?.iconset ? oProps.params.iconset : {};
-    const isTextMode = oProps.mode === 'text';
-
-    let sContent = undefined;
-    switch (oProps.content_type) {
-        case 'submenu':
-            const oSubmenuMap = {
-                'bx_timeline_menu_item_share': SubmenuShare,
-            };
-            const Element = oSubmenuMap[oProps.submenu.object] != undefined ? oSubmenuMap[oProps.submenu.object] : Submenu;
-
-            sContent = (
-                <Element key={oProps.id ? oProps.id : oProps.name} show_action_as_button={bShowActionAsButton} {...oProps} />
-            );
-            break;
-
-        default:
-            let oButtonProps = {
-                variant: oProps.primary === "1" ? 'primary' : (oProps.accent === "1" ? 'accent' : (isTextMode ? 'custom' : oProps.params?.button_variant)),
-                size: isTextMode ? 'base' : oProps.params?.button_size,
-                rounded: oProps.params?.button_rounded,
-                fullWidth: oProps.params?.button_full_width,
-                showTitleFromSize: oProps.params?.button_show_title_from_size,
-                ring: oProps.params?.button_ring,
-            };
-
-            const handleClick = (event) => {
-                if (!oProps?.link && !oProps.params?.onclick)
-                    return;
-
-                event.preventDefault();
-
-                if (oProps?.link) {
-                    //  let sUrl = oProps.link[0] === '/' ? oProps.link : '/' + oProps.link;
-                    // redirectdRef.current.redirect(sUrl);
-                }
-
-                if (oProps.params?.onclick)
-                    oProps.params.onclick(event, oProps);
-            };
-
-            const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
-
-            let sButtonIcon = oProps.icon;
-            if (oProps.list && oProps.list.length == 0)
-                sButtonIcon = "Users"
-
-            if (!bTitleOnly) {
-                if (sButtonIcon == '')
-                    sButtonIcon = getIconByNameFromIconset(oIconset, oProps.name);
-            }
-
-            if (isTextMode)
-                sButtonIcon = '';
-
-            const isPrimary = oProps.primary === true || oProps.primary === 1 || oProps.primary === "1";
-            const neoButtonStyle = isPrimary
-                ? (oProps.params?.button_primary_style || oProps.params?.button_style)
-                : oProps.params?.button_style;
-            const hasList = oProps?.list?.length > 0;
-            const listDisplay = hasList ? (
-                <View className={oProps.params?.list_className || ''}>
-                    <ProfilesList
-                        data={oProps.list}
-                        showEmpty={false}
-                        maxCount={oProps.params?.list_max_count || 3}
-                        displaySize={oProps.params?.list_display_size || "sm"}
-                    />
-                </View>
-            ) : null;
-
-            let buttonAction = oProps.params?.button_style ? (
-                <NeoButton
-                    label={oProps.title}
-                    image={sButtonIcon}
-                    style={neoButtonStyle}
-                    controlSize={oProps.params?.button_size}
-                    borderShape={oProps.params?.button_border_shape}
-                    width={oProps.params?.button_full_width ? 'fill' : 'auto'}
-                    contentInsets={oProps.params?.button_content_insets}
-                />
-            ) : (
-                <ButtonAction title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />
-            );
-            if (hasList) {
-                buttonAction = oProps.params?.button_style ? (
-                    <NeoButton
-                        label={oProps.title}
-                        image={listDisplay}
-                        style={neoButtonStyle}
-                        controlSize={oProps.params?.button_size}
-                        borderShape={oProps.params?.button_border_shape}
-                        width={oProps.params?.button_full_width ? 'fill' : 'auto'}
-                        contentInsets={oProps.params?.button_content_insets || oProps.params?.button_image_inset || 'mediaLeading'}
-                    />
-                ) : (
-                    <Text className="text-secondary-foreground web:hover:text-foreground px-2 text-sm font-medium">{oProps.title}</Text>
-                )
-            }
-
-            if (oProps.mode == 'dropdown-menu') {
-                const formattedLink = oProps.link && !oProps.noAction
-                    ? (oProps.link[0] === '/' || oProps.link.includes('://')
-                        ? oProps.link
-                        : '/' + oProps.link)
-                    : null;
-                sContent = <DropdownMenuItem
-                    item={{ title: oProps.title, icon: sButtonIcon }}
-                    handleSelect={oProps.onPress}
-                    {...(formattedLink ? { link: formattedLink } : {})}
-                />
-            }
-            else {
-                sContent = (
-                    <Row className={bShowVertical ? "flex-col flex-auto items-stretch" : "flex-auto items-center"}>
-
-                        {hasList && !oProps.params?.button_style && listDisplay}
-                        {oProps?.link ?
-                            (!oProps.noAction ?
-                                <Link emulate={true} href={oProps.link[0] === '/' ? oProps.link : (oProps?.link?.includes("://") ? oProps.link : '/' + oProps.link)}>
-                                    {buttonAction}
-                                </Link>
-                                : (!oProps.onPress ? buttonAction : React.cloneElement(buttonAction, { onPress: oProps.onPress }))
-                            )
-                            :
-                            (oProps.params?.onclick ? React.cloneElement(buttonAction, { onPress: handleClick }) : buttonAction)
-                        }
-
-                    </Row>
-                );
-            }
+    if (oProps.content_type === 'submenu') {
+        return (
+            <MenuItemSubmenuSwitch
+                item={oProps}
+                map={SUBMENU_MAP}
+                Fallback={Submenu}
+                wrapperClassName={`menu-item flex-auto ${showVertical ? 'w-full' : 'flex-row'}`}
+            />
+        );
     }
 
-    if (oProps.mode == 'dropdown-menu') {
-        return sContent;
-    }
+    const handleClick = (event) => {
+        if (!oProps?.link && !oProps.params?.onclick)
+            return;
+
+        event.preventDefault();
+
+        if (oProps.params?.onclick)
+            oProps.params.onclick(event, oProps);
+    };
+
+    const sButtonIcon = resolveMenuItemIcon(oProps, { emptyListIcon: 'Users' });
+    const hasList = oProps?.list?.length > 0;
+    const listDisplay = hasList ? (
+        <View className={oProps.params?.list_className || ''}>
+            <ProfilesList
+                data={oProps.list}
+                showEmpty={false}
+                maxCount={oProps.params?.list_max_count || 3}
+                displaySize={oProps.params?.list_display_size || 'sm'}
+            />
+        </View>
+    ) : null;
+
+    const formattedLink = oProps.link && !oProps.noAction ? formatMenuHref(oProps.link) : null;
+    const href = isDropdown ? null : formattedLink;
+    const onPress = isDropdown
+        ? oProps.onPress
+        : (href ? undefined : (oProps.link && oProps.noAction ? oProps.onPress : (oProps.params?.onclick ? handleClick : undefined)));
 
     return (
-        <View className={`menu-item flex-auto ${bShowVertical ? 'w-full' : 'flex-row'}`}>
-            {sContent}
-        </View>
+        <MenuItemActionBase
+            item={oProps}
+            title={oProps.title}
+            icon={sButtonIcon}
+            onPress={onPress}
+            href={href}
+            dropdownLink={isDropdown ? formattedLink : undefined}
+            leading={hasList && !oProps.params?.button_style ? listDisplay : null}
+            image={hasList && oProps.params?.button_style ? listDisplay : undefined}
+            contentInsets={hasList && oProps.params?.button_style
+                ? (oProps.params?.button_content_insets || oProps.params?.button_image_inset || 'mediaLeading')
+                : undefined}
+            actionButtonProps={{
+                variant: oProps.primary === '1' ? 'primary' : (oProps.accent === '1' ? 'accent' : (isTextMode ? 'custom' : oProps.params?.button_variant)),
+                size: isTextMode ? 'base' : oProps.params?.button_size,
+            }}
+            wrapperClassName={`menu-item flex-auto ${showVertical ? 'w-full' : 'flex-row'}`}
+            innerClassName={showVertical ? 'flex-col flex-auto items-stretch' : 'flex-auto items-center'}
+            innerAs="row"
+        >
+            {hasList && !oProps.params?.button_style ? (
+                <Text className="text-secondary-foreground web:hover:text-foreground px-2 text-sm font-medium">{oProps.title}</Text>
+            ) : undefined}
+        </MenuItemActionBase>
     );
 }
