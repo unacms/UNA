@@ -421,6 +421,7 @@ export function Conductor({
     const tabRouteSidebarContent = tabRoute?.sidebar?.content ?? []
     const isLeftCol = tabRoute?.leftbar?.content?.length > 0 || layoutName == 'navigator'
     const isRightCol = tabRouteSidebarContent.length > 0 || tabRoute?.blocks?.browse_sidebar
+    console.log('isRightColx', tabRouteSidebarContent.length > 0, tabRoute?.blocks?.browse_sidebar)
     const sidebarUnitType = tabRoute?.blocks?.browse_sidebar?.unitType || 'default'
 
     const LeftColumnContent = isLeftCol ?
@@ -917,6 +918,7 @@ const TabScene = ({
     const currentBreakpointName = useBreakpointName()
 
     const isRightCol = !!rightColumnContent
+    console.log('isRightCol', isRightCol, rightColumnContent)
     const isLeftCol = !!leftColumnContent
 
     const groupRef = useRef(null)
@@ -1019,6 +1021,7 @@ const TabScene = ({
         window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     }, [pageRoute])
 
+    console.log('panelLayoutKey', panelLayoutKey)
     return (
         <PanelGroup
             ref={groupRef}

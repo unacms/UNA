@@ -653,7 +653,7 @@ function TasklistsPanel({
     const rowProps = { onSelect, setFormBlock, refreshLists, setShowConfirm };
 
     return (
-        <Card className="w-full lg:w-72 shrink-0 gap-2">
+        <Card className="w-full lg:w-72 shrink-0 gap-2 p-4">
             <Row className="items-center justify-between gap-2 px-2">
                 <Text className="text-base font-semibold text-foreground shrink-0">
                     {t('Tasklists')}

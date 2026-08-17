@@ -102,7 +102,7 @@ function EditableTitleField({
             }}
             accessibilityRole="button"
             accessibilityLabel="Edit title"
-            className="w-full web:cursor-pointer web:hover:bg-muted/40 rounded-lg"
+            className="w-full web:cursor-pointer rounded-lg"
         >
             {typeof children === 'function' ? children(value) : children}
         </Pressable>
@@ -172,7 +172,7 @@ function EditableTextField({
             onPress={() => setEditing(true)}
             accessibilityRole="button"
             accessibilityLabel="Edit text"
-            className="w-full web:cursor-pointer web:hover:bg-muted/40 rounded-lg"
+            className="w-full web:cursor-pointer rounded-lg"
         >
             {typeof children === 'function' ? children(value) : children}
         </Pressable>

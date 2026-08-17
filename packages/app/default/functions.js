@@ -1,5 +1,5 @@
 import { fetcher } from 'app/lib/fetcher'
-import { updateRouteDataForConnection } from 'app/lib/util'
+import { updateRouteDataForConnection, appSetting } from 'app/lib/util'
 import { getComponent } from 'app/components/registry';
 import { View } from 'app/design/view'
 import { settingsLayout } from 'app/settings/layout'
@@ -61,7 +61,7 @@ export function layoutForList(endpoint, unitMode = '') {
 export function paddingForList(endpoint) {
 
     if (endpoint?.unit == "notifications")
-        return ' bg-card sm:rounded-xl my-4';
+        return appSetting('theme', 'blocks', 'u-block-rounded') + ' ' +appSetting('theme', 'blocks', 'u-block-bg') + ' my-4';
     // Timeline and notifications use no padding (full width items)
     if (!endpoint || endpoint?.request_url?.includes('bx_timeline') || endpoint?.params?.request_url?.includes('bx_timeline'))
         return '';
