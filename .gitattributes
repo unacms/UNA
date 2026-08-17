@@ -1,0 +1,2 @@
+# patch-package diffs must stay LF so they apply on Vercel/Linux
+patches/*.patch text eol=lf

@@ -1,0 +1,72 @@
+diff --git a/node_modules/react-native-enriched-markdown/lib/module/web/renderers/InlineRenderers.js b/node_modules/react-native-enriched-markdown/lib/module/web/renderers/InlineRenderers.js
+index 9aeeabe..b2548f4 100644
+--- a/node_modules/react-native-enriched-markdown/lib/module/web/renderers/InlineRenderers.js
++++ b/node_modules/react-native-enriched-markdown/lib/module/web/renderers/InlineRenderers.js
+@@ -94,6 +94,14 @@ function CodeRenderer({
+     children: node.content ?? renderChildren(node)
+   });
+ }
++function isExternalLink(url) {
++  if (typeof window === 'undefined') return false;
++  try {
++    return new URL(url, window.location.href).origin !== window.location.origin;
++  } catch {
++    return false;
++  }
++}
+ function LinkRenderer({
+   node,
+   style,
+@@ -120,11 +128,12 @@ function LinkRenderer({
+       });
+     }
+   };
++  const external = isExternalLink(url);
+   return /*#__PURE__*/_jsx("a", {
+     href: url,
+     style: linkStyleForUrl(style, url),
+-    target: "_blank",
+-    rel: "noopener noreferrer",
++    target: external ? "_blank" : undefined,
++    rel: external ? "noopener noreferrer" : undefined,
+     onClick: handleClick,
+     onContextMenu: handleContextMenu,
+     children: renderChildren(node)
+diff --git a/node_modules/react-native-enriched-markdown/src/web/renderers/InlineRenderers.tsx b/node_modules/react-native-enriched-markdown/src/web/renderers/InlineRenderers.tsx
+index 55ae16f..d1e3982 100644
+--- a/node_modules/react-native-enriched-markdown/src/web/renderers/InlineRenderers.tsx
++++ b/node_modules/react-native-enriched-markdown/src/web/renderers/InlineRenderers.tsx
+@@ -50,6 +50,16 @@ function CodeRenderer({ node, styles, renderChildren }: RendererProps) {
+   );
+ }
+ 
++function isExternalLink(url: string) {
++  if (typeof window === 'undefined') return false;
++
++  try {
++    return new URL(url, window.location.href).origin !== window.location.origin;
++  } catch {
++    return false;
++  }
++}
++
+ function LinkRenderer({
+   node,
+   style,
+@@ -74,12 +84,14 @@ function LinkRenderer({
+     }
+   };
+ 
++  const external = isExternalLink(url);
++
+   return (
+     <a
+       href={url}
+       style={linkStyleForUrl(style, url)}
+-      target="_blank"
+-      rel="noopener noreferrer"
++      target={external ? '_blank' : undefined}
++      rel={external ? 'noopener noreferrer' : undefined}
+       onClick={handleClick}
+       onContextMenu={handleContextMenu}
+     >
