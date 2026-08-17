@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import { View, Row, ScrollView } from 'app/design/view'
 import Image from 'app/ui/atoms/image'
 import { Text } from 'app/design/typography'
@@ -7,17 +6,12 @@ import {
     appSetting,
     formatDateInterval,
     cloneObject,
-    uploadImage,
-    md5,
     LAYOUT_BREAKPOINTS,
-    prepareImageForUpload,
 } from 'app/lib/util'
 import Profile from 'app/ui/molecules/profile/profile'
-import * as ImagePicker from 'expo-image-picker'
 import { NeoButton } from 'app/design/controls/neo-button'
-import { genRnd } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher'
-import { Image as ImageNative } from 'react-native'
+import { useProfileImageUpload } from 'app/lib/image/use-profile-image-upload'
 import { useCurrentUser } from 'app/context/user'
 import {
     CoverMenuMeta,
@@ -258,163 +252,75 @@ function CoverImage({
     is_person,
     suppressCoverBackButton = false,
 }) {
-    // Props are source of truth after soft-reload (setPageData); local override
-    // is only for optimistic preview during upload.
-    const propImageUrl =
-        mode == 'cover' ? coverData?.src : profileData?.url_avatar
-    const [localImageUrl, setLocalImageUrl] = useState(undefined)
-    const [isUploading, setIsUploading] = useState(false)
-    const imageUrl = localImageUrl ?? propImageUrl
-
-    useEffect(() => {
-        setLocalImageUrl(undefined)
-    }, [propImageUrl])
-
-    const uo =
-        (profileData?.module || '') +
-        (mode == 'cover' ? '_cover_crop' : '_picture_crop')
-    const so = coverData?.storage || ''
-    const img_trans = ''
-    const c = profileData?.info?.id || profileData?.id || 0
+    const { imageUrl, isUploading, pick, modal } = useProfileImageUpload({
+        kind: mode,
+        profileId: profileData?.info?.id || profileData?.id || 0,
+        moduleName: profileData?.module || '',
+        storage: coverData?.storage || '',
+        initialUrl: mode == 'cover' ? coverData?.src : profileData?.url_avatar,
+    })
 
     const handleSwitch = async (id) => {
-        const result = await fetcher(
+        await fetcher(
             '/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' +
             id,
         )
         location.reload()
     }
 
-    const handleUpload = async (mode) => {
-        const url =
-            '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&uo=' +
-            uo +
-            '&so=' +
-            so +
-            '&uid=' +
-            genRnd(8) +
-            '&img_trans=' +
-            img_trans +
-            '&m=0&c=' +
-            c +
-            '&p=0'
-
-        let mediaTypes = ImagePicker.MediaTypeOptions.Images
-
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: mediaTypes,
-            quality: 1,
-            allowsMultipleSelection: false,
-        })
-        if (!result.canceled && Array.isArray(result.assets)) {
-            for (const i of result.assets) {
-                let uri = i.uri
-                ImageNative.getSize(uri, async (width, height) => {
-                    setIsUploading(true)
-                    if (mode == 'cover') {
-                        uri = await prepareImageForUpload({
-                            uri,
-                            width,
-                            height,
-                            fileSizeBytes: i?.fileSize,
-                            maxWidth: 2000,
-                            maxHeight: 2000,
-                            webpOverMb: 4,
-                        })
-                    }
-                    if (mode == 'picture') {
-                        uri = await prepareImageForUpload({
-                            uri,
-                            width,
-                            height,
-                            fileSizeBytes: i?.fileSize,
-                            cropToSquare: true,
-                            squareSize: 500,
-                            webpOverMb: 4,
-                        })
-                    }
-                    const hash = md5(uri)
-                    setLocalImageUrl(uri)
-                    uploadImage(
-                        uri,
-                        url + '&a=upload',
-                        handleInsertImageFinish,
-                        { hash: hash, mode: mode },
-                    )
-                })
-            }
-        }
-    }
-
-    const handleInsertImageFinish = async (uploadInfo) => {
-        try {
-            if (!profileData?.module || !uploadInfo?.result?.data?.id) return
-            const sRequest =
-                '/api.php?r=' +
-                profileData.module +
-                '/update_image/&params[]=' +
-                uploadInfo.extraVar.mode +
-                '&params[]=' +
-                c +
-                '&params[]=' +
-                uploadInfo.result.data.id
-            const sResponse = await fetcher(sRequest)
-            setLocalImageUrl(sResponse.data)
-        } finally {
-            setIsUploading(false)
-        }
-    }
-
     if (mode == 'cover') {
         const isCover = !!imageUrl
         return (
-            <View
-                className={`bg-accent/50 lg:rounded-xl mx-auto gap-2 flex-1 overflow-hidden w-full
-                ${isCover ? `${appSetting('cover', 'aspect_ratio')}` : 'pb-32'}`}
-            >
-                {isCover && (
-                    <Image
-                        alt={title}
-                        view="cover"
-                        sizes={LAYOUT_BREAKPOINTS.xl}
-                        className="u-cover"
-                        src={imageUrl}
-                    />
-                )}
-                {(imageUrl?.includes('data:') || isUploading) && (
-                    <View className="absolute inset-0 h-full w-full opacity-60 bg-card justify-center items-center">
-                        <Loading />
+            <>
+                <View
+                    className={`bg-accent/50 lg:rounded-xl mx-auto gap-2 flex-1 overflow-hidden w-full
+                    ${isCover ? `${appSetting('cover', 'aspect_ratio')}` : 'pb-32'}`}
+                >
+                    {isCover ? (
+                        <Image
+                            alt={title}
+                            view="cover"
+                            sizes={LAYOUT_BREAKPOINTS.xl}
+                            className="u-cover"
+                            src={imageUrl}
+                        />
+                    ) : null}
+                    {imageUrl?.includes('data:') || isUploading ? (
+                        <View className="absolute inset-0 h-full w-full opacity-60 bg-card justify-center items-center">
+                            <Loading />
+                        </View>
+                    ) : null}
+                    <Row className=" justify-end gap-2 absolute top-3 right-3  ">
+                        {allowSwitch ? (
+                            <NeoButton
+                                image="RefreshCw"
+                                style="bordered"
+                                controlSize="regular"
+                                borderShape="circle"
+                                onPress={() => handleSwitch(allowSwitch)}
+                            />
+                        ) : null}
+                        {allowEdit ? (
+                            <NeoButton
+                                image="Camera"
+                                label="Edit Cover"
+                                style="bordered"
+                                controlSize="regular"
+                                borderShape="capsule"
+                                disabled={isUploading}
+                                onPress={pick}
+                            />
+                        ) : null}
+                    </Row>
+                    <View className="absolute lg:hidden top-3 left-3 z-50 ">
+                        {!suppressCoverBackButton ? getCoverBackButton(is_person) : null}
                     </View>
-                )}
-                <Row className=" justify-end gap-2 absolute top-3 right-3  ">
-                    {allowSwitch && (
-                        <NeoButton
-                            image="RefreshCw"
-                            style="bordered"
-                            controlSize="regular"
-                            borderShape="circle"
-                            onPress={() => handleSwitch(allowSwitch)}
-                        />
-                    )}
-                    {allowEdit && (
-                        <NeoButton
-                            image="Camera"
-                            label="Edit Cover"
-                            style="bordered"
-                            controlSize="regular"
-                            borderShape="capsule"
-                            disabled={isUploading}
-                            onPress={() => handleUpload(mode)}
-                        />
-                    )}
-                </Row>
-                <View className="absolute lg:hidden top-3 left-3 z-50 ">
-                    {!suppressCoverBackButton ? getCoverBackButton(is_person) : null}
                 </View>
-            </View>
-            
+                {modal}
+            </>
         )
     }
+
     if (mode == 'picture') {
         return (
             <>
@@ -425,27 +331,30 @@ function CoverImage({
                         displayType="unit_wo_info"
                         displaySize={profileDisplaySize}
                     />
-                    {isUploading && (
+                    {isUploading ? (
                         <View className="absolute inset-0 rounded-full bg-card/80 items-center justify-center">
                             <Loading />
                         </View>
-                    )}
+                    ) : null}
                 </View>
-                {allowEdit && (
-                    <View className="  absolute bottom-1 rounded-full p-1 bg-card right-1 ">
+                {allowEdit ? (
+                    <View className="absolute bottom-1 right-1 rounded-full bg-card p-1">
                         <NeoButton
                             image="Camera"
                             style="glass"
                             controlSize="regular"
                             borderShape="circle"
                             disabled={isUploading}
-                            onPress={() => handleUpload(mode)}
+                            onPress={pick}
                         />
                     </View>
-                )}
+                ) : null}
+                {modal}
             </>
         )
     }
+
+    return null
 }
 
 export default function Cover({
@@ -475,12 +384,12 @@ export default function Cover({
             ? true
             : false
     const bAllowEdit =
-        data?.allow_edit && appSetting('cover', 'allow_edit') && isWeb
+        data?.allow_edit && appSetting('cover', 'allow_edit')
     const foundItem = currentUser?.informer?.find((item) => {
         return item.id == 'sys-switch-profile-context'
     })
     let isAllowSwitch =
-        appSetting('cover', 'allow_switch') && foundItem && isWeb
+        appSetting('cover', 'allow_switch') && foundItem 
             ? foundItem.msg
             : false
     if (isAllowSwitch) {

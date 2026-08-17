@@ -1,6 +1,6 @@
 import { Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
-import { ImageManipulator, SaveFormat } from 'app/lib/image-manipulator';
+import { ImageManipulator, SaveFormat } from 'app/lib/image/manipulator';
 import { appSetting } from 'app/config';
 import { isWeb } from './layout';
 import { genRnd } from './misc';
@@ -157,8 +157,8 @@ export const prepareImageForUpload = async ({
             context.crop({
                 width: squareSide,
                 height: squareSide,
-                originX: 0,
-                originY: 0,
+                originX: width > height ? Math.round((width - squareSide) / 2) : 0,
+                originY: height > width ? Math.round((height - squareSide) / 2) : 0,
             });
             hasActions = true;
         }

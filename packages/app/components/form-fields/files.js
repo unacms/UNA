@@ -16,6 +16,8 @@ import { useFilesData, useFilesDataStore } from 'app/context/files';
 import { Image as ImageRN } from 'react-native';
 import Video from 'app/ui/atoms/video';
 import Msg from 'app/ui/molecules/dialogs/msg';
+import ImageCropModal from 'app/lib/image/crop-modal';
+import { getImageCropKind, isSvgAsset, getAssetImageSize } from 'app/lib/image/crop';
 import { useTranslation } from 'react-i18next'
 import emitter from 'app/context/emitter';
 import { CaptionForFileInput } from 'app/customization/functions';
@@ -192,6 +194,7 @@ export default function (props) {
     const bMultiple = props.multiple;
     const [hasPermissionCamera, requestPermissionCamera] = ImagePicker.useCameraPermissions();
     const [hasPermissionLibrary, requestPermissionLibrary] = ImagePicker.useMediaLibraryPermissions();
+    const [cropSession, setCropSession] = useState(null);
 
     const isAutoGhosts = appSetting('forms', 'auto_ghosts_in_files')
     const formInstanceId = useFormInstanceId();
@@ -359,7 +362,9 @@ export default function (props) {
             );
 
             try {
-                if (isImage) {
+                if (isImage && i?.cropped) {
+                    await sendFile(uri);
+                } else if (isImage) {
                     await new Promise((resolve, reject) => {
                         ImageNative.getSize(
                             uri,
@@ -435,6 +440,50 @@ export default function (props) {
         return next;
     }
 
+    const finishPickedAssets = useCallback(async (assets) => {
+        if (!assets?.length) return;
+        const kind = getImageCropKind(name);
+        const asset = assets[0];
+
+        if (kind && asset && !asset.cropped && !isSvgAsset(asset)) {
+            const size = await getAssetImageSize(asset);
+            if (size) {
+                setCropSession({
+                    assets,
+                    asset,
+                    uri: asset.uri,
+                    width: size.width,
+                    height: size.height,
+                    kind,
+                });
+                return;
+            }
+        }
+
+        const k = await uploadImages(assets);
+        setImageSourceN(k, bMultiple);
+    }, [name, bMultiple]);
+
+    const handleCropCancel = useCallback(() => {
+        setCropSession(null);
+    }, []);
+
+    const handleCropConfirm = useCallback(async ({ uri }) => {
+        const session = cropSession;
+        if (!session) return;
+        const croppedAsset = {
+            ...session.asset,
+            uri,
+            cropped: true,
+            width: undefined,
+            height: undefined,
+            fileSize: undefined,
+        };
+        setCropSession(null);
+        const k = await uploadImages([croppedAsset]);
+        setImageSourceN(k, bMultiple);
+    }, [cropSession, bMultiple]);
+
     const resumedUploads = useRef(false);
     useEffect(() => {
         if (!persistKey || resumedUploads.current || !images?.length) return;
@@ -495,8 +544,7 @@ export default function (props) {
                 if (goodAssets.length !== result.assets.length) {
                     setMessage('Some files are not supported.');
                 }
-                let k = await uploadImages(goodAssets);
-                setImageSourceN(k, bMultiple);
+                await finishPickedAssets(goodAssets);
             }
         } else {
             try {
@@ -506,14 +554,13 @@ export default function (props) {
                 });
 
                 if (!result.canceled && result.assets?.length) {
-                    let k = await uploadImages(result.assets);
-                    setImageSourceN(k, bMultiple);
+                    await finishPickedAssets(result.assets);
                 }
             } catch (err) {
                 console.error('Error picking document:', err);
             }
         }
-    }, [name, props.ext_allow, bMultiple, hasPermissionCamera, hasPermissionLibrary, requestPermissionCamera, requestPermissionLibrary]);
+    }, [name, props.ext_allow, bMultiple, hasPermissionCamera, hasPermissionLibrary, requestPermissionCamera, requestPermissionLibrary, finishPickedAssets]);
 
     const selectImage = useCallback(async (source, mediaTypesOverride) => {
         try {
@@ -609,28 +656,48 @@ export default function (props) {
     if (video_source == 'embed')
         return null;
 
+    const cropModal = (
+        <ImageCropModal
+            visible={!!cropSession}
+            uri={cropSession?.uri}
+            sourceWidth={cropSession?.width}
+            sourceHeight={cropSession?.height}
+            kind={cropSession?.kind || 'picture'}
+            fileSizeBytes={cropSession?.asset?.fileSize || cropSession?.asset?.size}
+            onCancel={handleCropCancel}
+            onConfirm={handleCropConfirm}
+        />
+    );
+
     if (props.view == 'button') {
-        return <ButtonCover imageSource={imageSource} selectImage={selectImage} />
+        return <>
+            {cropModal}
+            <ButtonCover imageSource={imageSource} selectImage={selectImage} />
+        </>
     }
     if (props.view == 'preview') {
-        return imageSource?.images?.length > 0 ? <ActionButton uploadImages={uploadImages} imagesList={imageSource.images} bMultiple={bMultiple} props={props} selectImage={selectImage} handleDelete={handleDelete} />
-            : <></>;
+        return <>
+            {cropModal}
+            {imageSource?.images?.length > 0 ? <ActionButton onSelectAssets={finishPickedAssets} uploadImages={uploadImages} imagesList={imageSource.images} bMultiple={bMultiple} props={props} selectImage={selectImage} handleDelete={handleDelete} />
+                : <></>}
+        </>
     }
     if (props.list_only){
         return GhostsList(imageSource.images, bMultiple, handleDelete, props);
     }
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
+            {cropModal}
             <Msg onVisible={message} title={message} handleOk={() => { setMessage(false) }} />
             {!props.hide_button && <View>
-                <ActionButton uploadImages={uploadImages} imagesList={imageSource.images} props={props} bMultiple={bMultiple} selectImage={selectImage} handleDelete={handleDeleteSingle} />
+                <ActionButton onSelectAssets={finishPickedAssets} uploadImages={uploadImages} imagesList={imageSource.images} props={props} bMultiple={bMultiple} selectImage={selectImage} handleDelete={handleDeleteSingle} />
             </View>}
             {!!props.hide_button && <Row className='flex-wrap gap-1'>{GhostsList(imageSource.images, bMultiple, handleDelete, props)}</Row>}
         </Field>
     );
 }
 
-function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple, uploadImages }) {
+function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple, uploadImages, onSelectAssets }) {
     const { t } = useTranslation()
     const drop = useRef(null);
     const iconMap = {
@@ -678,8 +745,12 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
             if (files && files.length) {
                 const reader = new FileReader();
                 reader.onload = async (event) => {
-                    const k = await uploadImages([{ uri: event.target.result }]);
-                    setImageSource({ images: k });
+                    const picked = [{ uri: event.target.result }];
+                    if (onSelectAssets) {
+                        await onSelectAssets(picked);
+                    } else {
+                        await uploadImages(picked);
+                    }
                 };
                 reader.readAsDataURL(files[0]);
             }
@@ -694,13 +765,16 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
         }
         let w = 'web:w-full ' + appSetting('cover', 'aspect_ratio');
 
-        if (props.name == 'picture')
-            w = 'w-48 h-48 overflow-hidden';
+        const isPictureField = props.name == 'picture' || props.name == 'avatar' || props.name == 'badge';
+        if (props.name == 'picture' || props.name == 'avatar')
+            w = 'w-48 h-48 overflow-hidden rounded-full';
         if (props.name == 'badge')
-            w = 'w-18 h-18 overflow-hidden';
+            w = 'w-18 h-18 overflow-hidden rounded-full';
 
         if (!props.viewClasses) {
-            w += ' bg-input border-border rounded-xl overflow-hidden'
+            w += isPictureField
+                ? ' bg-input border-border overflow-hidden'
+                : ' bg-input border-border rounded-xl overflow-hidden'
         }
         else {
             w += ' ' + props.viewClasses
